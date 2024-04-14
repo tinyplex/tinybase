@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Syncs to/from localClient Bidirectional Both empty 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional Both empty 1`] = `
 [
   "",
   [
@@ -19,7 +19,7 @@ exports[`Syncs to/from localClient Bidirectional Both empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional Both empty: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional Both empty: stats 1`] = `
 [
   {
     "receives": 2,
@@ -32,7 +32,7 @@ exports[`Syncs to/from localClient Bidirectional Both empty: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional Both match 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional Both match 1`] = `
 [
   "Hc2DO@200008DKS9",
   [
@@ -113,7 +113,7 @@ exports[`Syncs to/from localClient Bidirectional Both match 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional Both match: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional Both match: stats 1`] = `
 [
   {
     "receives": 11,
@@ -126,7 +126,7 @@ exports[`Syncs to/from localClient Bidirectional Both match: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different cell 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional different cell 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -163,7 +163,7 @@ exports[`Syncs to/from localClient Bidirectional different cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different cell: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional different cell: stats 1`] = `
 [
   {
     "receives": 9,
@@ -176,7 +176,7 @@ exports[`Syncs to/from localClient Bidirectional different cell: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different row 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional different row 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -218,7 +218,7 @@ exports[`Syncs to/from localClient Bidirectional different row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different row: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional different row: stats 1`] = `
 [
   {
     "receives": 9,
@@ -231,7 +231,7 @@ exports[`Syncs to/from localClient Bidirectional different row: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different table 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional different table 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -284,7 +284,7 @@ exports[`Syncs to/from localClient Bidirectional different table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different table: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional different table: stats 1`] = `
 [
   {
     "receives": 9,
@@ -297,7 +297,7 @@ exports[`Syncs to/from localClient Bidirectional different table: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different tables 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional different tables 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -367,7 +367,7 @@ exports[`Syncs to/from localClient Bidirectional different tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different tables: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional different tables: stats 1`] = `
 [
   {
     "receives": 9,
@@ -380,7 +380,7 @@ exports[`Syncs to/from localClient Bidirectional different tables: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different value 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional different value 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -405,7 +405,7 @@ exports[`Syncs to/from localClient Bidirectional different value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different value: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional different value: stats 1`] = `
 [
   {
     "receives": 5,
@@ -418,7 +418,7 @@ exports[`Syncs to/from localClient Bidirectional different value: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different values 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional different values 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -448,7 +448,7 @@ exports[`Syncs to/from localClient Bidirectional different values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional different values: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional different values: stats 1`] = `
 [
   {
     "receives": 5,
@@ -461,7 +461,7 @@ exports[`Syncs to/from localClient Bidirectional different values: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 empty 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 empty 1`] = `
 [
   "Hc2DO@200005DK@@",
   [
@@ -542,7 +542,7 @@ exports[`Syncs to/from localClient Bidirectional store1 empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 empty: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 empty: stats 1`] = `
 [
   {
     "receives": 7,
@@ -555,7 +555,7 @@ exports[`Syncs to/from localClient Bidirectional store1 empty: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing cell 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 missing cell 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -597,7 +597,7 @@ exports[`Syncs to/from localClient Bidirectional store1 missing cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing cell: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 missing cell: stats 1`] = `
 [
   {
     "receives": 9,
@@ -610,7 +610,7 @@ exports[`Syncs to/from localClient Bidirectional store1 missing cell: stats 1`] 
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing row 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 missing row 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -663,7 +663,7 @@ exports[`Syncs to/from localClient Bidirectional store1 missing row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing row: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 missing row: stats 1`] = `
 [
   {
     "receives": 9,
@@ -676,7 +676,7 @@ exports[`Syncs to/from localClient Bidirectional store1 missing row: stats 1`] =
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing table 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 missing table 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -746,7 +746,7 @@ exports[`Syncs to/from localClient Bidirectional store1 missing table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing table: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 missing table: stats 1`] = `
 [
   {
     "receives": 9,
@@ -759,7 +759,7 @@ exports[`Syncs to/from localClient Bidirectional store1 missing table: stats 1`]
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing tables 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 missing tables 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -840,7 +840,7 @@ exports[`Syncs to/from localClient Bidirectional store1 missing tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing tables: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 missing tables: stats 1`] = `
 [
   {
     "receives": 7,
@@ -853,7 +853,7 @@ exports[`Syncs to/from localClient Bidirectional store1 missing tables: stats 1`
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing value 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 missing value 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -883,7 +883,7 @@ exports[`Syncs to/from localClient Bidirectional store1 missing value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing value: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 missing value: stats 1`] = `
 [
   {
     "receives": 5,
@@ -896,7 +896,7 @@ exports[`Syncs to/from localClient Bidirectional store1 missing value: stats 1`]
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing values 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 missing values 1`] = `
 [
   "Hc2DO@400015DK@@",
   [
@@ -977,7 +977,7 @@ exports[`Syncs to/from localClient Bidirectional store1 missing values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store1 missing values: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store1 missing values: stats 1`] = `
 [
   {
     "receives": 7,
@@ -990,7 +990,7 @@ exports[`Syncs to/from localClient Bidirectional store1 missing values: stats 1`
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 empty 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 empty 1`] = `
 [
   "Hc2DO@200008DKS9",
   [
@@ -1071,7 +1071,7 @@ exports[`Syncs to/from localClient Bidirectional store2 empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 empty: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 empty: stats 1`] = `
 [
   {
     "receives": 6,
@@ -1084,7 +1084,7 @@ exports[`Syncs to/from localClient Bidirectional store2 empty: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing cell 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 missing cell 1`] = `
 [
   "Hc2DO@400018DKS9",
   [
@@ -1126,7 +1126,7 @@ exports[`Syncs to/from localClient Bidirectional store2 missing cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing cell: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 missing cell: stats 1`] = `
 [
   {
     "receives": 9,
@@ -1139,7 +1139,7 @@ exports[`Syncs to/from localClient Bidirectional store2 missing cell: stats 1`] 
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing row 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 missing row 1`] = `
 [
   "Hc2DO@400018DKS9",
   [
@@ -1192,7 +1192,7 @@ exports[`Syncs to/from localClient Bidirectional store2 missing row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing row: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 missing row: stats 1`] = `
 [
   {
     "receives": 9,
@@ -1205,7 +1205,7 @@ exports[`Syncs to/from localClient Bidirectional store2 missing row: stats 1`] =
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing table 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 missing table 1`] = `
 [
   "Hc2DO@400018DKS9",
   [
@@ -1275,7 +1275,7 @@ exports[`Syncs to/from localClient Bidirectional store2 missing table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing table: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 missing table: stats 1`] = `
 [
   {
     "receives": 9,
@@ -1288,7 +1288,7 @@ exports[`Syncs to/from localClient Bidirectional store2 missing table: stats 1`]
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing tables 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 missing tables 1`] = `
 [
   "Hc2DO@400018DKS9",
   [
@@ -1369,7 +1369,7 @@ exports[`Syncs to/from localClient Bidirectional store2 missing tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing tables: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 missing tables: stats 1`] = `
 [
   {
     "receives": 7,
@@ -1382,7 +1382,7 @@ exports[`Syncs to/from localClient Bidirectional store2 missing tables: stats 1`
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing value 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 missing value 1`] = `
 [
   "Hc2DO@400018DKS9",
   [
@@ -1412,7 +1412,7 @@ exports[`Syncs to/from localClient Bidirectional store2 missing value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing value: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 missing value: stats 1`] = `
 [
   {
     "receives": 5,
@@ -1425,7 +1425,7 @@ exports[`Syncs to/from localClient Bidirectional store2 missing value: stats 1`]
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing values 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 missing values 1`] = `
 [
   "Hc2DO@400018DKS9",
   [
@@ -1506,7 +1506,7 @@ exports[`Syncs to/from localClient Bidirectional store2 missing values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Bidirectional store2 missing values: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional store2 missing values: stats 1`] = `
 [
   {
     "receives": 7,
@@ -1519,7 +1519,7 @@ exports[`Syncs to/from localClient Bidirectional store2 missing values: stats 1`
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional All but first empty 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional All but first empty 1`] = `
 [
   "Hc2DO@200008DKS9",
   [
@@ -1600,14 +1600,14 @@ exports[`Syncs to/from localClient Multidirectional All but first empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional All but first empty: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional All but first empty: stats 1`] = `
 {
   "receives": 261,
   "sends": 93,
 }
 `;
 
-exports[`Syncs to/from localClient Multidirectional All but last empty 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional All but last empty 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -1688,14 +1688,14 @@ exports[`Syncs to/from localClient Multidirectional All but last empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional All but last empty: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional All but last empty: stats 1`] = `
 {
   "receives": 261,
   "sends": 93,
 }
 `;
 
-exports[`Syncs to/from localClient Multidirectional All empty 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional All empty 1`] = `
 [
   "",
   [
@@ -1714,14 +1714,14 @@ exports[`Syncs to/from localClient Multidirectional All empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional All empty: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional All empty: stats 1`] = `
 {
   "receives": 180,
   "sends": 20,
 }
 `;
 
-exports[`Syncs to/from localClient Multidirectional All match 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional All match 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -1802,14 +1802,33 @@ exports[`Syncs to/from localClient Multidirectional All match 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional All match: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional All match: stats 1`] = `
 {
   "receives": 990,
   "sends": 750,
 }
 `;
 
-exports[`Syncs to/from localClient Multidirectional all conflicting cells 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  0,
+]
+`;
+
+exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells 2`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -1846,32 +1865,32 @@ exports[`Syncs to/from localClient Multidirectional all conflicting cells 1`] = 
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all conflicting cells 2`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells 3`] = `
 [
-  "Hc2DO@400059DKYL",
+  "Hc2DO@40004;DKf2",
   [
     [
-      "Hc2DO@400059DKYL",
+      "Hc2DO@40004;DKf2",
       {
         "t1": [
-          "Hc2DO@400059DKYL",
+          "Hc2DO@40004;DKf2",
           {
             "r1": [
-              "Hc2DO@400059DKYL",
+              "Hc2DO@40004;DKf2",
               {
                 "c1": [
-                  "Hc2DO@400059DKYL",
+                  "Hc2DO@40004;DKf2",
                   42,
-                  1137977625,
+                  1173554935,
                 ],
               },
-              1417701269,
+              925648642,
             ],
           },
-          2475317497,
+          4239536531,
         ],
       },
-      4151192046,
+      967022414,
     ],
     [
       "",
@@ -1879,25 +1898,32 @@ exports[`Syncs to/from localClient Multidirectional all conflicting cells 2`] = 
       0,
     ],
   ],
-  4151192046,
+  967022414,
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all conflicting cells: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells: stats 1`] = `
+{
+  "receives": 180,
+  "sends": 20,
+}
+`;
+
+exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells: stats 2`] = `
 {
   "receives": 1125,
   "sends": 605,
 }
 `;
 
-exports[`Syncs to/from localClient Multidirectional all conflicting cells: stats 2`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells: stats 3`] = `
 {
   "receives": 1188,
   "sends": 660,
 }
 `;
 
-exports[`Syncs to/from localClient Multidirectional all conflicting values 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all conflicting values 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -1922,7 +1948,7 @@ exports[`Syncs to/from localClient Multidirectional all conflicting values 1`] =
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all conflicting values 2`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all conflicting values 2`] = `
 [
   "Hc2DO@400059DKYL",
   [
@@ -1947,21 +1973,21 @@ exports[`Syncs to/from localClient Multidirectional all conflicting values 2`] =
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all conflicting values: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all conflicting values: stats 1`] = `
 {
   "receives": 765,
   "sends": 245,
 }
 `;
 
-exports[`Syncs to/from localClient Multidirectional all conflicting values: stats 2`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all conflicting values: stats 2`] = `
 {
   "receives": 792,
   "sends": 264,
 }
 `;
 
-exports[`Syncs to/from localClient Multidirectional all different cells 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all different cells 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -2043,14 +2069,14 @@ exports[`Syncs to/from localClient Multidirectional all different cells 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all different cells: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all different cells: stats 1`] = `
 {
   "receives": 1530,
   "sends": 650,
 }
 `;
 
-exports[`Syncs to/from localClient Multidirectional all different rows 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all different rows 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -2186,14 +2212,14 @@ exports[`Syncs to/from localClient Multidirectional all different rows 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all different rows: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all different rows: stats 1`] = `
 {
   "receives": 1530,
   "sends": 650,
 }
 `;
 
-exports[`Syncs to/from localClient Multidirectional all different tables 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all different tables 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -2383,14 +2409,14 @@ exports[`Syncs to/from localClient Multidirectional all different tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all different tables: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all different tables: stats 1`] = `
 {
   "receives": 1530,
   "sends": 650,
 }
 `;
 
-exports[`Syncs to/from localClient Multidirectional all different values 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all different values 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -2460,14 +2486,14 @@ exports[`Syncs to/from localClient Multidirectional all different values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional all different values: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional all different values: stats 1`] = `
 {
   "receives": 1170,
   "sends": 290,
 }
 `;
 
-exports[`Syncs to/from localClient Multidirectional half tables, half values 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional half tables, half values 1`] = `
 [
   "Hc2DO@20000AYRok",
   [
@@ -2548,14 +2574,14 @@ exports[`Syncs to/from localClient Multidirectional half tables, half values 1`]
 ]
 `;
 
-exports[`Syncs to/from localClient Multidirectional half tables, half values: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Multidirectional half tables, half values: stats 1`] = `
 {
   "receives": 680,
   "sends": 440,
 }
 `;
 
-exports[`Syncs to/from localClient Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from localSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -2598,7 +2624,7 @@ exports[`Syncs to/from localClient Unidirectional autoLoad1 but not autoSave2, d
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from localSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
 [
   "Hc2DO@000005DK@@",
   [
@@ -2679,7 +2705,7 @@ exports[`Syncs to/from localClient Unidirectional autoLoad1 but not autoSave2, d
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -2692,7 +2718,7 @@ exports[`Syncs to/from localClient Unidirectional autoLoad1 but not autoSave2, d
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional autoSave1 but not autoLoad2 1`] = `
+exports[`Syncs to/from localSynchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -2773,7 +2799,7 @@ exports[`Syncs to/from localClient Unidirectional autoSave1 but not autoLoad2 1`
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional autoSave1 but not autoLoad2 2`] = `
+exports[`Syncs to/from localSynchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
 [
   "",
   [
@@ -2792,7 +2818,7 @@ exports[`Syncs to/from localClient Unidirectional autoSave1 but not autoLoad2 2`
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -2805,7 +2831,7 @@ exports[`Syncs to/from localClient Unidirectional autoSave1 but not autoLoad2: s
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional load1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from localSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -2848,7 +2874,7 @@ exports[`Syncs to/from localClient Unidirectional load1 but not autoSave2, defau
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional load1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from localSynchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
 [
   "Hc2DO@000005DK@@",
   [
@@ -2929,7 +2955,7 @@ exports[`Syncs to/from localClient Unidirectional load1 but not autoSave2, defau
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -2942,7 +2968,7 @@ exports[`Syncs to/from localClient Unidirectional load1 but not autoSave2, defau
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2 1`] = `
+exports[`Syncs to/from localSynchronizer Unidirectional save1 but not autoLoad2 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -3023,7 +3049,7 @@ exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2 1`] = 
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2 2`] = `
+exports[`Syncs to/from localSynchronizer Unidirectional save1 but not autoLoad2 2`] = `
 [
   "",
   [
@@ -3042,7 +3068,7 @@ exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2 2`] = 
 ]
 `;
 
-exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -3055,7 +3081,7 @@ exports[`Syncs to/from localClient Unidirectional save1 but not autoLoad2: stats
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional Both empty 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional Both empty 1`] = `
 [
   "",
   [
@@ -3074,7 +3100,7 @@ exports[`Syncs to/from wsClient Bidirectional Both empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional Both empty: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional Both empty: stats 1`] = `
 [
   {
     "receives": 2,
@@ -3087,88 +3113,88 @@ exports[`Syncs to/from wsClient Bidirectional Both empty: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional Both match 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional Both match 1`] = `
 [
-  "Hc2DO@D00008DKS9",
+  "Hc2DO@b00008DKS9",
   [
     [
-      "Hc2DO@D00008DKS9",
+      "Hc2DO@b00008DKS9",
       {
         "t1": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           {
             "r1": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c1": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   1,
-                  141369203,
+                  2306325645,
                 ],
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              1895817569,
+              72612749,
             ],
             "r2": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              749346710,
+              1805131739,
             ],
           },
-          3122361667,
+          3805836463,
         ],
         "t2": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           {
             "r2": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              749346710,
+              1805131739,
             ],
           },
-          3344600388,
+          1874867469,
         ],
       },
-      2910562851,
+      561134363,
     ],
     [
-      "Hc2DO@D00008DKS9",
+      "Hc2DO@b00008DKS9",
       {
         "v1": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           1,
-          141369203,
+          2306325645,
         ],
         "v2": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           2,
-          3926301196,
+          28162626,
         ],
       },
-      677216639,
+      1526441185,
     ],
   ],
-  2233871196,
+  2072616954,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional Both match: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional Both match: stats 1`] = `
 [
   {
     "receives": 11,
@@ -3181,32 +3207,32 @@ exports[`Syncs to/from wsClient Bidirectional Both match: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional different cell 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional different cell 1`] = `
 [
-  "Hc2DO@X00015DK@@",
+  "Hc2DOAT00015DK@@",
   [
     [
-      "Hc2DO@X00015DK@@",
+      "Hc2DOAT00015DK@@",
       {
         "t1": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           {
             "r1": [
-              "Hc2DO@X00015DK@@",
+              "Hc2DOAT00015DK@@",
               {
                 "c1": [
-                  "Hc2DO@X00015DK@@",
+                  "Hc2DOAT00015DK@@",
                   2,
-                  1283969274,
+                  2820819517,
                 ],
               },
-              1333407937,
+              3403825154,
             ],
           },
-          2922155308,
+          3260962936,
         ],
       },
-      1978651109,
+      1669339729,
     ],
     [
       "",
@@ -3214,11 +3240,11 @@ exports[`Syncs to/from wsClient Bidirectional different cell 1`] = `
       0,
     ],
   ],
-  1978651109,
+  1669339729,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional different cell: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional different cell: stats 1`] = `
 [
   {
     "receives": 9,
@@ -3231,37 +3257,37 @@ exports[`Syncs to/from wsClient Bidirectional different cell: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional different row 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional different row 1`] = `
 [
-  "Hc2DO@X00015DK@@",
+  "Hc2DOAT00015DK@@",
   [
     [
-      "Hc2DO@X00015DK@@",
+      "Hc2DOAT00015DK@@",
       {
         "t1": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           {
             "r1": [
-              "Hc2DO@X00015DK@@",
+              "Hc2DOAT00015DK@@",
               {
                 "c1": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   1,
-                  141369203,
+                  2306325645,
                 ],
                 "c2": [
-                  "Hc2DO@X00015DK@@",
+                  "Hc2DOAT00015DK@@",
                   2,
-                  1283969274,
+                  2820819517,
                 ],
               },
-              223582376,
+              3947432118,
             ],
           },
-          3892234166,
+          2455924039,
         ],
       },
-      1634182662,
+      1867394026,
     ],
     [
       "",
@@ -3269,11 +3295,11 @@ exports[`Syncs to/from wsClient Bidirectional different row 1`] = `
       0,
     ],
   ],
-  1634182662,
+  1867394026,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional different row: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional different row: stats 1`] = `
 [
   {
     "receives": 9,
@@ -3286,48 +3312,48 @@ exports[`Syncs to/from wsClient Bidirectional different row: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional different table 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional different table 1`] = `
 [
-  "Hc2DO@X00015DK@@",
+  "Hc2DOAT00015DK@@",
   [
     [
-      "Hc2DO@X00015DK@@",
+      "Hc2DOAT00015DK@@",
       {
         "t1": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           {
             "r1": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c1": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   1,
-                  141369203,
+                  2306325645,
                 ],
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              1895817569,
+              72612749,
             ],
             "r2": [
-              "Hc2DO@X00015DK@@",
+              "Hc2DOAT00015DK@@",
               {
                 "c2": [
-                  "Hc2DO@X00015DK@@",
+                  "Hc2DOAT00015DK@@",
                   2,
-                  1283969274,
+                  2820819517,
                 ],
               },
-              1359373919,
+              2223172832,
             ],
           },
-          1478229238,
+          2234311358,
         ],
       },
-      190110768,
+      3329383227,
     ],
     [
       "",
@@ -3335,11 +3361,11 @@ exports[`Syncs to/from wsClient Bidirectional different table 1`] = `
       0,
     ],
   ],
-  190110768,
+  3329383227,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional different table: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional different table: stats 1`] = `
 [
   {
     "receives": 9,
@@ -3352,65 +3378,65 @@ exports[`Syncs to/from wsClient Bidirectional different table: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional different tables 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional different tables 1`] = `
 [
-  "Hc2DO@X00015DK@@",
+  "Hc2DOAT00015DK@@",
   [
     [
-      "Hc2DO@X00015DK@@",
+      "Hc2DOAT00015DK@@",
       {
         "t1": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           {
             "r1": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c1": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   1,
-                  141369203,
+                  2306325645,
                 ],
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              1895817569,
+              72612749,
             ],
             "r2": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              749346710,
+              1805131739,
             ],
           },
-          3122361667,
+          3805836463,
         ],
         "t2": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           {
             "r2": [
-              "Hc2DO@X00015DK@@",
+              "Hc2DOAT00015DK@@",
               {
                 "c2": [
-                  "Hc2DO@X00015DK@@",
+                  "Hc2DOAT00015DK@@",
                   2,
-                  1283969274,
+                  2820819517,
                 ],
               },
-              1359373919,
+              2223172832,
             ],
           },
-          626656497,
+          137667356,
         ],
       },
-      628192679,
+      3271767756,
     ],
     [
       "",
@@ -3418,11 +3444,11 @@ exports[`Syncs to/from wsClient Bidirectional different tables 1`] = `
       0,
     ],
   ],
-  628192679,
+  3271767756,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional different tables: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional different tables: stats 1`] = `
 [
   {
     "receives": 9,
@@ -3435,9 +3461,9 @@ exports[`Syncs to/from wsClient Bidirectional different tables: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional different value 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional different value 1`] = `
 [
-  "Hc2DO@X00015DK@@",
+  "Hc2DOAT00015DK@@",
   [
     [
       "",
@@ -3445,22 +3471,22 @@ exports[`Syncs to/from wsClient Bidirectional different value 1`] = `
       0,
     ],
     [
-      "Hc2DO@X00015DK@@",
+      "Hc2DOAT00015DK@@",
       {
         "v1": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           2,
-          1283969274,
+          2820819517,
         ],
       },
-      981479215,
+      2894164576,
     ],
   ],
-  981479215,
+  2894164576,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional different value: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional different value: stats 1`] = `
 [
   {
     "receives": 5,
@@ -3473,9 +3499,9 @@ exports[`Syncs to/from wsClient Bidirectional different value: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional different values 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional different values 1`] = `
 [
-  "Hc2DO@X00015DK@@",
+  "Hc2DOAT00015DK@@",
   [
     [
       "",
@@ -3483,27 +3509,27 @@ exports[`Syncs to/from wsClient Bidirectional different values 1`] = `
       0,
     ],
     [
-      "Hc2DO@X00015DK@@",
+      "Hc2DOAT00015DK@@",
       {
         "v1": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           1,
-          141369203,
+          2306325645,
         ],
         "v2": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           2,
-          1283969274,
+          2820819517,
         ],
       },
-      2452678006,
+      1311542650,
     ],
   ],
-  2452678006,
+  1311542650,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional different values: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional different values: stats 1`] = `
 [
   {
     "receives": 5,
@@ -3516,88 +3542,88 @@ exports[`Syncs to/from wsClient Bidirectional different values: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 empty 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 empty 1`] = `
 [
-  "Hc2DO@D00005DK@@",
+  "Hc2DO@b00005DK@@",
   [
     [
-      "Hc2DO@D00005DK@@",
+      "Hc2DO@b00005DK@@",
       {
         "t1": [
-          "Hc2DO@D00005DK@@",
+          "Hc2DO@b00005DK@@",
           {
             "r1": [
-              "Hc2DO@D00005DK@@",
+              "Hc2DO@b00005DK@@",
               {
                 "c1": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   1,
-                  2259127772,
+                  2210649866,
                 ],
                 "c2": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   2,
-                  1545323603,
+                  1016220589,
                 ],
               },
-              928719679,
+              1314486915,
             ],
             "r2": [
-              "Hc2DO@D00005DK@@",
+              "Hc2DO@b00005DK@@",
               {
                 "c2": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   2,
-                  1545323603,
+                  1016220589,
                 ],
               },
-              699425543,
+              3587586627,
             ],
           },
-          2423176365,
+          2488254483,
         ],
         "t2": [
-          "Hc2DO@D00005DK@@",
+          "Hc2DO@b00005DK@@",
           {
             "r2": [
-              "Hc2DO@D00005DK@@",
+              "Hc2DO@b00005DK@@",
               {
                 "c2": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   2,
-                  1545323603,
+                  1016220589,
                 ],
               },
-              699425543,
+              3587586627,
             ],
           },
-          2066870701,
+          2436536419,
         ],
       },
-      1390965018,
+      2012141095,
     ],
     [
-      "Hc2DO@D00005DK@@",
+      "Hc2DO@b00005DK@@",
       {
         "v1": [
-          "Hc2DO@D00005DK@@",
+          "Hc2DO@b00005DK@@",
           1,
-          2259127772,
+          2210649866,
         ],
         "v2": [
-          "Hc2DO@D00005DK@@",
+          "Hc2DO@b00005DK@@",
           2,
-          1545323603,
+          1016220589,
         ],
       },
-      4235794163,
+      2967369443,
     ],
   ],
-  2928764905,
+  3341852868,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 empty: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 empty: stats 1`] = `
 [
   {
     "receives": 7,
@@ -3610,37 +3636,37 @@ exports[`Syncs to/from wsClient Bidirectional store1 empty: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 missing cell 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing cell 1`] = `
 [
-  "Hc2DO@X00015DK@@",
+  "Hc2DOAT00015DK@@",
   [
     [
-      "Hc2DO@X00015DK@@",
+      "Hc2DOAT00015DK@@",
       {
         "t1": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           {
             "r1": [
-              "Hc2DO@X00015DK@@",
+              "Hc2DOAT00015DK@@",
               {
                 "c1": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   1,
-                  141369203,
+                  2306325645,
                 ],
                 "c2": [
-                  "Hc2DO@X00015DK@@",
+                  "Hc2DOAT00015DK@@",
                   2,
-                  1283969274,
+                  2820819517,
                 ],
               },
-              223582376,
+              3947432118,
             ],
           },
-          3892234166,
+          2455924039,
         ],
       },
-      1634182662,
+      1867394026,
     ],
     [
       "",
@@ -3648,11 +3674,11 @@ exports[`Syncs to/from wsClient Bidirectional store1 missing cell 1`] = `
       0,
     ],
   ],
-  1634182662,
+  1867394026,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 missing cell: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing cell: stats 1`] = `
 [
   {
     "receives": 9,
@@ -3665,48 +3691,48 @@ exports[`Syncs to/from wsClient Bidirectional store1 missing cell: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 missing row 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing row 1`] = `
 [
-  "Hc2DO@X00015DK@@",
+  "Hc2DOAT00015DK@@",
   [
     [
-      "Hc2DO@X00015DK@@",
+      "Hc2DOAT00015DK@@",
       {
         "t1": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           {
             "r1": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c1": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   1,
-                  141369203,
+                  2306325645,
                 ],
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              1895817569,
+              72612749,
             ],
             "r2": [
-              "Hc2DO@X00015DK@@",
+              "Hc2DOAT00015DK@@",
               {
                 "c2": [
-                  "Hc2DO@X00015DK@@",
+                  "Hc2DOAT00015DK@@",
                   2,
-                  1283969274,
+                  2820819517,
                 ],
               },
-              1359373919,
+              2223172832,
             ],
           },
-          1478229238,
+          2234311358,
         ],
       },
-      190110768,
+      3329383227,
     ],
     [
       "",
@@ -3714,11 +3740,11 @@ exports[`Syncs to/from wsClient Bidirectional store1 missing row 1`] = `
       0,
     ],
   ],
-  190110768,
+  3329383227,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 missing row: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing row: stats 1`] = `
 [
   {
     "receives": 9,
@@ -3731,65 +3757,65 @@ exports[`Syncs to/from wsClient Bidirectional store1 missing row: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 missing table 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing table 1`] = `
 [
-  "Hc2DO@X00015DK@@",
+  "Hc2DOAT00015DK@@",
   [
     [
-      "Hc2DO@X00015DK@@",
+      "Hc2DOAT00015DK@@",
       {
         "t1": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           {
             "r1": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c1": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   1,
-                  141369203,
+                  2306325645,
                 ],
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              1895817569,
+              72612749,
             ],
             "r2": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              749346710,
+              1805131739,
             ],
           },
-          3122361667,
+          3805836463,
         ],
         "t2": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           {
             "r2": [
-              "Hc2DO@X00015DK@@",
+              "Hc2DOAT00015DK@@",
               {
                 "c2": [
-                  "Hc2DO@X00015DK@@",
+                  "Hc2DOAT00015DK@@",
                   2,
-                  1283969274,
+                  2820819517,
                 ],
               },
-              1359373919,
+              2223172832,
             ],
           },
-          626656497,
+          137667356,
         ],
       },
-      628192679,
+      3271767756,
     ],
     [
       "",
@@ -3797,11 +3823,11 @@ exports[`Syncs to/from wsClient Bidirectional store1 missing table 1`] = `
       0,
     ],
   ],
-  628192679,
+  3271767756,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 missing table: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing table: stats 1`] = `
 [
   {
     "receives": 9,
@@ -3814,88 +3840,88 @@ exports[`Syncs to/from wsClient Bidirectional store1 missing table: stats 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 missing tables 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing tables 1`] = `
 [
-  "Hc2DO@X00015DK@@",
+  "Hc2DOAT00015DK@@",
   [
     [
-      "Hc2DO@X00015DK@@",
+      "Hc2DOAT00015DK@@",
       {
         "t1": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           {
             "r1": [
-              "Hc2DO@X00015DK@@",
+              "Hc2DOAT00015DK@@",
               {
                 "c1": [
-                  "Hc2DO@X00015DK@@",
+                  "Hc2DOAT00015DK@@",
                   1,
-                  2995507869,
+                  859366706,
                 ],
                 "c2": [
-                  "Hc2DO@X00015DK@@",
+                  "Hc2DOAT00015DK@@",
                   2,
-                  1283969274,
+                  2820819517,
                 ],
               },
-              217181349,
+              1126924122,
             ],
             "r2": [
-              "Hc2DO@X00015DK@@",
+              "Hc2DOAT00015DK@@",
               {
                 "c2": [
-                  "Hc2DO@X00015DK@@",
+                  "Hc2DOAT00015DK@@",
                   2,
-                  1283969274,
+                  2820819517,
                 ],
               },
-              1359373919,
+              2223172832,
             ],
           },
-          1156609823,
+          2196990372,
         ],
         "t2": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           {
             "r2": [
-              "Hc2DO@X00015DK@@",
+              "Hc2DOAT00015DK@@",
               {
                 "c2": [
-                  "Hc2DO@X00015DK@@",
+                  "Hc2DOAT00015DK@@",
                   2,
-                  1283969274,
+                  2820819517,
                 ],
               },
-              1359373919,
+              2223172832,
             ],
           },
-          626656497,
+          137667356,
         ],
       },
-      2688556063,
+      3631353624,
     ],
     [
-      "Hc2DO@D00008DKS9",
+      "Hc2DO@b00008DKS9",
       {
         "v1": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           1,
-          141369203,
+          2306325645,
         ],
         "v2": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           2,
-          3926301196,
+          28162626,
         ],
       },
-      677216639,
+      1526441185,
     ],
   ],
-  2283642208,
+  2190060537,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 missing tables: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing tables: stats 1`] = `
 [
   {
     "receives": 7,
@@ -3908,9 +3934,9 @@ exports[`Syncs to/from wsClient Bidirectional store1 missing tables: stats 1`] =
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 missing value 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing value 1`] = `
 [
-  "Hc2DO@X00015DK@@",
+  "Hc2DOAT00015DK@@",
   [
     [
       "",
@@ -3918,27 +3944,27 @@ exports[`Syncs to/from wsClient Bidirectional store1 missing value 1`] = `
       0,
     ],
     [
-      "Hc2DO@X00015DK@@",
+      "Hc2DOAT00015DK@@",
       {
         "v1": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           1,
-          2995507869,
+          859366706,
         ],
         "v2": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           2,
-          3926301196,
+          28162626,
         ],
       },
-      1358084754,
+      1665139400,
     ],
   ],
-  1358084754,
+  1665139400,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 missing value: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing value: stats 1`] = `
 [
   {
     "receives": 5,
@@ -3951,88 +3977,88 @@ exports[`Syncs to/from wsClient Bidirectional store1 missing value: stats 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 missing values 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing values 1`] = `
 [
-  "Hc2DO@X00015DK@@",
+  "Hc2DOAT00015DK@@",
   [
     [
-      "Hc2DO@D00008DKS9",
+      "Hc2DO@b00008DKS9",
       {
         "t1": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           {
             "r1": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c1": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   1,
-                  141369203,
+                  2306325645,
                 ],
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              1895817569,
+              72612749,
             ],
             "r2": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              749346710,
+              1805131739,
             ],
           },
-          3122361667,
+          3805836463,
         ],
         "t2": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           {
             "r2": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              749346710,
+              1805131739,
             ],
           },
-          3344600388,
+          1874867469,
         ],
       },
-      2910562851,
+      561134363,
     ],
     [
-      "Hc2DO@X00015DK@@",
+      "Hc2DOAT00015DK@@",
       {
         "v1": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           1,
-          2995507869,
+          859366706,
         ],
         "v2": [
-          "Hc2DO@X00015DK@@",
+          "Hc2DOAT00015DK@@",
           2,
-          1283969274,
+          2820819517,
         ],
       },
-      2145789597,
+      3819949596,
     ],
   ],
-  3533540542,
+  3269326087,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store1 missing values: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing values: stats 1`] = `
 [
   {
     "receives": 7,
@@ -4045,88 +4071,88 @@ exports[`Syncs to/from wsClient Bidirectional store1 missing values: stats 1`] =
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 empty 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 empty 1`] = `
 [
-  "Hc2DO@D00008DKS9",
+  "Hc2DO@b00008DKS9",
   [
     [
-      "Hc2DO@D00008DKS9",
+      "Hc2DO@b00008DKS9",
       {
         "t1": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           {
             "r1": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c1": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   1,
-                  141369203,
+                  2306325645,
                 ],
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              1895817569,
+              72612749,
             ],
             "r2": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              749346710,
+              1805131739,
             ],
           },
-          3122361667,
+          3805836463,
         ],
         "t2": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           {
             "r2": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              749346710,
+              1805131739,
             ],
           },
-          3344600388,
+          1874867469,
         ],
       },
-      2910562851,
+      561134363,
     ],
     [
-      "Hc2DO@D00008DKS9",
+      "Hc2DO@b00008DKS9",
       {
         "v1": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           1,
-          141369203,
+          2306325645,
         ],
         "v2": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           2,
-          3926301196,
+          28162626,
         ],
       },
-      677216639,
+      1526441185,
     ],
   ],
-  2233871196,
+  2072616954,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 empty: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 empty: stats 1`] = `
 [
   {
     "receives": 6,
@@ -4139,37 +4165,37 @@ exports[`Syncs to/from wsClient Bidirectional store2 empty: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 missing cell 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing cell 1`] = `
 [
-  "Hc2DO@X00018DKS9",
+  "Hc2DOAT00018DKS9",
   [
     [
-      "Hc2DO@X00018DKS9",
+      "Hc2DOAT00018DKS9",
       {
         "t1": [
-          "Hc2DO@X00018DKS9",
+          "Hc2DOAT00018DKS9",
           {
             "r1": [
-              "Hc2DO@X00018DKS9",
+              "Hc2DOAT00018DKS9",
               {
                 "c1": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   1,
-                  2259127772,
+                  2210649866,
                 ],
                 "c2": [
-                  "Hc2DO@X00018DKS9",
+                  "Hc2DOAT00018DKS9",
                   2,
-                  3366581501,
+                  4087397074,
                 ],
               },
-              908892303,
+              3428671999,
             ],
           },
-          245552137,
+          2636288698,
         ],
       },
-      3444637849,
+      1903075982,
     ],
     [
       "",
@@ -4177,11 +4203,11 @@ exports[`Syncs to/from wsClient Bidirectional store2 missing cell 1`] = `
       0,
     ],
   ],
-  3444637849,
+  1903075982,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 missing cell: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing cell: stats 1`] = `
 [
   {
     "receives": 9,
@@ -4194,48 +4220,48 @@ exports[`Syncs to/from wsClient Bidirectional store2 missing cell: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 missing row 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing row 1`] = `
 [
-  "Hc2DO@X00018DKS9",
+  "Hc2DOAT00018DKS9",
   [
     [
-      "Hc2DO@X00018DKS9",
+      "Hc2DOAT00018DKS9",
       {
         "t1": [
-          "Hc2DO@X00018DKS9",
+          "Hc2DOAT00018DKS9",
           {
             "r1": [
-              "Hc2DO@D00005DK@@",
+              "Hc2DO@b00005DK@@",
               {
                 "c1": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   1,
-                  2259127772,
+                  2210649866,
                 ],
                 "c2": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   2,
-                  1545323603,
+                  1016220589,
                 ],
               },
-              928719679,
+              1314486915,
             ],
             "r2": [
-              "Hc2DO@X00018DKS9",
+              "Hc2DOAT00018DKS9",
               {
                 "c2": [
-                  "Hc2DO@X00018DKS9",
+                  "Hc2DOAT00018DKS9",
                   2,
-                  3366581501,
+                  4087397074,
                 ],
               },
-              684185783,
+              1473388863,
             ],
           },
-          587835928,
+          2125321408,
         ],
       },
-      2279174522,
+      469752994,
     ],
     [
       "",
@@ -4243,11 +4269,11 @@ exports[`Syncs to/from wsClient Bidirectional store2 missing row 1`] = `
       0,
     ],
   ],
-  2279174522,
+  469752994,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 missing row: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing row: stats 1`] = `
 [
   {
     "receives": 9,
@@ -4260,65 +4286,65 @@ exports[`Syncs to/from wsClient Bidirectional store2 missing row: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 missing table 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing table 1`] = `
 [
-  "Hc2DO@X00018DKS9",
+  "Hc2DOAT00018DKS9",
   [
     [
-      "Hc2DO@X00018DKS9",
+      "Hc2DOAT00018DKS9",
       {
         "t1": [
-          "Hc2DO@D00005DK@@",
+          "Hc2DO@b00005DK@@",
           {
             "r1": [
-              "Hc2DO@D00005DK@@",
+              "Hc2DO@b00005DK@@",
               {
                 "c1": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   1,
-                  2259127772,
+                  2210649866,
                 ],
                 "c2": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   2,
-                  1545323603,
+                  1016220589,
                 ],
               },
-              928719679,
+              1314486915,
             ],
             "r2": [
-              "Hc2DO@D00005DK@@",
+              "Hc2DO@b00005DK@@",
               {
                 "c2": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   2,
-                  1545323603,
+                  1016220589,
                 ],
               },
-              699425543,
+              3587586627,
             ],
           },
-          2423176365,
+          2488254483,
         ],
         "t2": [
-          "Hc2DO@X00018DKS9",
+          "Hc2DOAT00018DKS9",
           {
             "r2": [
-              "Hc2DO@X00018DKS9",
+              "Hc2DOAT00018DKS9",
               {
                 "c2": [
-                  "Hc2DO@X00018DKS9",
+                  "Hc2DOAT00018DKS9",
                   2,
-                  3366581501,
+                  4087397074,
                 ],
               },
-              684185783,
+              1473388863,
             ],
           },
-          3361138456,
+          2077789360,
         ],
       },
-      798956937,
+      3372684598,
     ],
     [
       "",
@@ -4326,11 +4352,11 @@ exports[`Syncs to/from wsClient Bidirectional store2 missing table 1`] = `
       0,
     ],
   ],
-  798956937,
+  3372684598,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 missing table: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing table: stats 1`] = `
 [
   {
     "receives": 9,
@@ -4343,88 +4369,88 @@ exports[`Syncs to/from wsClient Bidirectional store2 missing table: stats 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 missing tables 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing tables 1`] = `
 [
-  "Hc2DO@X00018DKS9",
+  "Hc2DOAT00018DKS9",
   [
     [
-      "Hc2DO@X00018DKS9",
+      "Hc2DOAT00018DKS9",
       {
         "t1": [
-          "Hc2DO@X00018DKS9",
+          "Hc2DOAT00018DKS9",
           {
             "r1": [
-              "Hc2DO@X00018DKS9",
+              "Hc2DOAT00018DKS9",
               {
                 "c1": [
-                  "Hc2DO@X00018DKS9",
+                  "Hc2DOAT00018DKS9",
                   1,
-                  1020097394,
+                  2318393077,
                 ],
                 "c2": [
-                  "Hc2DO@X00018DKS9",
+                  "Hc2DOAT00018DKS9",
                   2,
-                  3366581501,
+                  4087397074,
                 ],
               },
-              2806090366,
+              1927533942,
             ],
             "r2": [
-              "Hc2DO@X00018DKS9",
+              "Hc2DOAT00018DKS9",
               {
                 "c2": [
-                  "Hc2DO@X00018DKS9",
+                  "Hc2DOAT00018DKS9",
                   2,
-                  3366581501,
+                  4087397074,
                 ],
               },
-              684185783,
+              1473388863,
             ],
           },
-          2113703928,
+          2120845789,
         ],
         "t2": [
-          "Hc2DO@X00018DKS9",
+          "Hc2DOAT00018DKS9",
           {
             "r2": [
-              "Hc2DO@X00018DKS9",
+              "Hc2DOAT00018DKS9",
               {
                 "c2": [
-                  "Hc2DO@X00018DKS9",
+                  "Hc2DOAT00018DKS9",
                   2,
-                  3366581501,
+                  4087397074,
                 ],
               },
-              684185783,
+              1473388863,
             ],
           },
-          3361138456,
+          2077789360,
         ],
       },
-      2757826270,
+      15109748,
     ],
     [
-      "Hc2DO@D00005DK@@",
+      "Hc2DO@b00005DK@@",
       {
         "v1": [
-          "Hc2DO@D00005DK@@",
+          "Hc2DO@b00005DK@@",
           1,
-          2259127772,
+          2210649866,
         ],
         "v2": [
-          "Hc2DO@D00005DK@@",
+          "Hc2DO@b00005DK@@",
           2,
-          1545323603,
+          1016220589,
         ],
       },
-      4235794163,
+      2967369443,
     ],
   ],
-  1477967917,
+  2956523671,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 missing tables: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing tables: stats 1`] = `
 [
   {
     "receives": 7,
@@ -4437,9 +4463,9 @@ exports[`Syncs to/from wsClient Bidirectional store2 missing tables: stats 1`] =
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 missing value 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing value 1`] = `
 [
-  "Hc2DO@X00018DKS9",
+  "Hc2DOAT00018DKS9",
   [
     [
       "",
@@ -4447,27 +4473,27 @@ exports[`Syncs to/from wsClient Bidirectional store2 missing value 1`] = `
       0,
     ],
     [
-      "Hc2DO@X00018DKS9",
+      "Hc2DOAT00018DKS9",
       {
         "v1": [
-          "Hc2DO@X00018DKS9",
+          "Hc2DOAT00018DKS9",
           1,
-          1020097394,
+          2318393077,
         ],
         "v2": [
-          "Hc2DO@D00005DK@@",
+          "Hc2DO@b00005DK@@",
           2,
-          1545323603,
+          1016220589,
         ],
       },
-      1075465984,
+      1133830701,
     ],
   ],
-  1075465984,
+  1133830701,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 missing value: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing value: stats 1`] = `
 [
   {
     "receives": 5,
@@ -4480,88 +4506,88 @@ exports[`Syncs to/from wsClient Bidirectional store2 missing value: stats 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 missing values 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing values 1`] = `
 [
-  "Hc2DO@X00018DKS9",
+  "Hc2DOAT00018DKS9",
   [
     [
-      "Hc2DO@D00005DK@@",
+      "Hc2DO@b00005DK@@",
       {
         "t1": [
-          "Hc2DO@D00005DK@@",
+          "Hc2DO@b00005DK@@",
           {
             "r1": [
-              "Hc2DO@D00005DK@@",
+              "Hc2DO@b00005DK@@",
               {
                 "c1": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   1,
-                  2259127772,
+                  2210649866,
                 ],
                 "c2": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   2,
-                  1545323603,
+                  1016220589,
                 ],
               },
-              928719679,
+              1314486915,
             ],
             "r2": [
-              "Hc2DO@D00005DK@@",
+              "Hc2DO@b00005DK@@",
               {
                 "c2": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   2,
-                  1545323603,
+                  1016220589,
                 ],
               },
-              699425543,
+              3587586627,
             ],
           },
-          2423176365,
+          2488254483,
         ],
         "t2": [
-          "Hc2DO@D00005DK@@",
+          "Hc2DO@b00005DK@@",
           {
             "r2": [
-              "Hc2DO@D00005DK@@",
+              "Hc2DO@b00005DK@@",
               {
                 "c2": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   2,
-                  1545323603,
+                  1016220589,
                 ],
               },
-              699425543,
+              3587586627,
             ],
           },
-          2066870701,
+          2436536419,
         ],
       },
-      1390965018,
+      2012141095,
     ],
     [
-      "Hc2DO@X00018DKS9",
+      "Hc2DOAT00018DKS9",
       {
         "v1": [
-          "Hc2DO@X00018DKS9",
+          "Hc2DOAT00018DKS9",
           1,
-          1020097394,
+          2318393077,
         ],
         "v2": [
-          "Hc2DO@X00018DKS9",
+          "Hc2DOAT00018DKS9",
           2,
-          3366581501,
+          4087397074,
         ],
       },
-      3698302226,
+      1129214570,
     ],
   ],
-  2391272456,
+  882943053,
 ]
 `;
 
-exports[`Syncs to/from wsClient Bidirectional store2 missing values: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing values: stats 1`] = `
 [
   {
     "receives": 7,
@@ -4574,183 +4600,183 @@ exports[`Syncs to/from wsClient Bidirectional store2 missing values: stats 1`] =
 ]
 `;
 
-exports[`Syncs to/from wsClient Multidirectional All but first empty 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional All but first empty 1`] = `
 [
-  "Hc2DO@D00008DKS9",
+  "Hc2DO@b00008DKS9",
   [
     [
-      "Hc2DO@D00008DKS9",
+      "Hc2DO@b00008DKS9",
       {
         "t1": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           {
             "r1": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c1": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   1,
-                  141369203,
+                  2306325645,
                 ],
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              1895817569,
+              72612749,
             ],
             "r2": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              749346710,
+              1805131739,
             ],
           },
-          3122361667,
+          3805836463,
         ],
         "t2": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           {
             "r2": [
-              "Hc2DO@D00008DKS9",
+              "Hc2DO@b00008DKS9",
               {
                 "c2": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   2,
-                  3926301196,
+                  28162626,
                 ],
               },
-              749346710,
+              1805131739,
             ],
           },
-          3344600388,
+          1874867469,
         ],
       },
-      2910562851,
+      561134363,
     ],
     [
-      "Hc2DO@D00008DKS9",
+      "Hc2DO@b00008DKS9",
       {
         "v1": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           1,
-          141369203,
+          2306325645,
         ],
         "v2": [
-          "Hc2DO@D00008DKS9",
+          "Hc2DO@b00008DKS9",
           2,
-          3926301196,
+          28162626,
         ],
       },
-      677216639,
+      1526441185,
     ],
   ],
-  2233871196,
+  2072616954,
 ]
 `;
 
-exports[`Syncs to/from wsClient Multidirectional All but first empty: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional All but first empty: stats 1`] = `
 {
   "receives": 261,
   "sends": 93,
 }
 `;
 
-exports[`Syncs to/from wsClient Multidirectional All but last empty 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional All but last empty 1`] = `
 [
-  "Hc2DO@D0000AYRok",
+  "Hc2DO@b0000AYRok",
   [
     [
-      "Hc2DO@D0000AYRok",
+      "Hc2DO@b0000AYRok",
       {
         "t1": [
-          "Hc2DO@D0000AYRok",
+          "Hc2DO@b0000AYRok",
           {
             "r1": [
-              "Hc2DO@D0000AYRok",
+              "Hc2DO@b0000AYRok",
               {
                 "c1": [
-                  "Hc2DO@D0000AYRok",
+                  "Hc2DO@b0000AYRok",
                   1,
-                  3080891852,
+                  1547283890,
                 ],
                 "c2": [
-                  "Hc2DO@D0000AYRok",
+                  "Hc2DO@b0000AYRok",
                   2,
-                  2576740951,
+                  3540394745,
                 ],
               },
-              3076570177,
+              1390191442,
             ],
             "r2": [
-              "Hc2DO@D0000AYRok",
+              "Hc2DO@b0000AYRok",
               {
                 "c2": [
-                  "Hc2DO@D0000AYRok",
+                  "Hc2DO@b0000AYRok",
                   2,
-                  2576740951,
+                  3540394745,
                 ],
               },
-              3125791713,
+              1901074099,
             ],
           },
-          2199299166,
+          467814688,
         ],
         "t2": [
-          "Hc2DO@D0000AYRok",
+          "Hc2DO@b0000AYRok",
           {
             "r2": [
-              "Hc2DO@D0000AYRok",
+              "Hc2DO@b0000AYRok",
               {
                 "c2": [
-                  "Hc2DO@D0000AYRok",
+                  "Hc2DO@b0000AYRok",
                   2,
-                  2576740951,
+                  3540394745,
                 ],
               },
-              3125791713,
+              1901074099,
             ],
           },
-          3602141651,
+          1955311190,
         ],
       },
-      935050963,
+      2446864099,
     ],
     [
-      "Hc2DO@D0000AYRok",
+      "Hc2DO@b0000AYRok",
       {
         "v1": [
-          "Hc2DO@D0000AYRok",
+          "Hc2DO@b0000AYRok",
           1,
-          3080891852,
+          1547283890,
         ],
         "v2": [
-          "Hc2DO@D0000AYRok",
+          "Hc2DO@b0000AYRok",
           2,
-          2576740951,
+          3540394745,
         ],
       },
-      1901817729,
+      2578142538,
     ],
   ],
-  1189138770,
+  141786025,
 ]
 `;
 
-exports[`Syncs to/from wsClient Multidirectional All but last empty: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional All but last empty: stats 1`] = `
 {
   "receives": 261,
   "sends": 93,
 }
 `;
 
-exports[`Syncs to/from wsClient Multidirectional All empty 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional All empty 1`] = `
 [
   "",
   [
@@ -4769,127 +4795,146 @@ exports[`Syncs to/from wsClient Multidirectional All empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Multidirectional All empty: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional All empty: stats 1`] = `
 {
   "receives": 180,
   "sends": 20,
 }
 `;
 
-exports[`Syncs to/from wsClient Multidirectional All match 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional All match 1`] = `
 [
-  "Hc2DO@D0000AYRok",
+  "Hc2DO@b0000AYRok",
   [
     [
-      "Hc2DO@D0000AYRok",
+      "Hc2DO@b0000AYRok",
       {
         "t1": [
-          "Hc2DO@D0000AYRok",
+          "Hc2DO@b0000AYRok",
           {
             "r1": [
-              "Hc2DO@D0000AYRok",
+              "Hc2DO@b0000AYRok",
               {
                 "c1": [
-                  "Hc2DO@D0000AYRok",
+                  "Hc2DO@b0000AYRok",
                   1,
-                  3080891852,
+                  1547283890,
                 ],
                 "c2": [
-                  "Hc2DO@D0000AYRok",
+                  "Hc2DO@b0000AYRok",
                   2,
-                  2576740951,
+                  3540394745,
                 ],
               },
-              3076570177,
+              1390191442,
             ],
             "r2": [
-              "Hc2DO@D0000AYRok",
+              "Hc2DO@b0000AYRok",
               {
                 "c2": [
-                  "Hc2DO@D0000AYRok",
+                  "Hc2DO@b0000AYRok",
                   2,
-                  2576740951,
+                  3540394745,
                 ],
               },
-              3125791713,
+              1901074099,
             ],
           },
-          2199299166,
+          467814688,
         ],
         "t2": [
-          "Hc2DO@D0000AYRok",
+          "Hc2DO@b0000AYRok",
           {
             "r2": [
-              "Hc2DO@D0000AYRok",
+              "Hc2DO@b0000AYRok",
               {
                 "c2": [
-                  "Hc2DO@D0000AYRok",
+                  "Hc2DO@b0000AYRok",
                   2,
-                  2576740951,
+                  3540394745,
                 ],
               },
-              3125791713,
+              1901074099,
             ],
           },
-          3602141651,
+          1955311190,
         ],
       },
-      935050963,
+      2446864099,
     ],
     [
-      "Hc2DO@D0000AYRok",
+      "Hc2DO@b0000AYRok",
       {
         "v1": [
-          "Hc2DO@D0000AYRok",
+          "Hc2DO@b0000AYRok",
           1,
-          3080891852,
+          1547283890,
         ],
         "v2": [
-          "Hc2DO@D0000AYRok",
+          "Hc2DO@b0000AYRok",
           2,
-          2576740951,
+          3540394745,
         ],
       },
-      1901817729,
+      2578142538,
     ],
   ],
-  1189138770,
+  141786025,
 ]
 `;
 
-exports[`Syncs to/from wsClient Multidirectional All match: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional All match: stats 1`] = `
 {
   "receives": 990,
   "sends": 750,
 }
 `;
 
-exports[`Syncs to/from wsClient Multidirectional all conflicting cells 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells 1`] = `
 [
-  "Hc2DO@D0000AYRok",
+  "",
   [
     [
-      "Hc2DO@D0000AYRok",
+      "",
+      {},
+      0,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  0,
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells 2`] = `
+[
+  "Hc2DO@b0000AYRok",
+  [
+    [
+      "Hc2DO@b0000AYRok",
       {
         "t1": [
-          "Hc2DO@D0000AYRok",
+          "Hc2DO@b0000AYRok",
           {
             "r1": [
-              "Hc2DO@D0000AYRok",
+              "Hc2DO@b0000AYRok",
               {
                 "c1": [
-                  "Hc2DO@D0000AYRok",
+                  "Hc2DO@b0000AYRok",
                   10,
-                  577529380,
+                  4238338122,
                 ],
               },
-              1039158697,
+              3055723351,
             ],
           },
-          3244515136,
+          2575941331,
         ],
       },
-      3888205959,
+      321019797,
     ],
     [
       "",
@@ -4897,36 +4942,36 @@ exports[`Syncs to/from wsClient Multidirectional all conflicting cells 1`] = `
       0,
     ],
   ],
-  3888205959,
+  321019797,
 ]
 `;
 
-exports[`Syncs to/from wsClient Multidirectional all conflicting cells 2`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells 3`] = `
 [
-  "Hc2DO@X00059DKYL",
+  "Hc2DOAT0004;DKf2",
   [
     [
-      "Hc2DO@X00059DKYL",
+      "Hc2DOAT0004;DKf2",
       {
         "t1": [
-          "Hc2DO@X00059DKYL",
+          "Hc2DOAT0004;DKf2",
           {
             "r1": [
-              "Hc2DO@X00059DKYL",
+              "Hc2DOAT0004;DKf2",
               {
                 "c1": [
-                  "Hc2DO@X00059DKYL",
+                  "Hc2DOAT0004;DKf2",
                   42,
-                  1693667773,
+                  201072248,
                 ],
               },
-              1832299582,
+              3949721054,
             ],
           },
-          260134536,
+          4159631042,
         ],
       },
-      1450205057,
+      1933790547,
     ],
     [
       "",
@@ -4934,27 +4979,34 @@ exports[`Syncs to/from wsClient Multidirectional all conflicting cells 2`] = `
       0,
     ],
   ],
-  1450205057,
+  1933790547,
 ]
 `;
 
-exports[`Syncs to/from wsClient Multidirectional all conflicting cells: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells: stats 1`] = `
 {
-  "receives": 1125,
-  "sends": 605,
+  "receives": 180,
+  "sends": 20,
 }
 `;
 
-exports[`Syncs to/from wsClient Multidirectional all conflicting cells: stats 2`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells: stats 2`] = `
 {
-  "receives": 1188,
-  "sends": 660,
+  "receives": 1026,
+  "sends": 594,
 }
 `;
 
-exports[`Syncs to/from wsClient Multidirectional all conflicting values 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells: stats 3`] = `
+{
+  "receives": 1089,
+  "sends": 649,
+}
+`;
+
+exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values 1`] = `
 [
-  "Hc2DO@D0000AYRok",
+  "Hc2DO@b0000AYRok",
   [
     [
       "",
@@ -4962,24 +5014,24 @@ exports[`Syncs to/from wsClient Multidirectional all conflicting values 1`] = `
       0,
     ],
     [
-      "Hc2DO@D0000AYRok",
+      "Hc2DO@b0000AYRok",
       {
         "v1": [
-          "Hc2DO@D0000AYRok",
+          "Hc2DO@b0000AYRok",
           10,
-          577529380,
+          4238338122,
         ],
       },
-      1526771073,
+      3234432149,
     ],
   ],
-  1526771073,
+  3234432149,
 ]
 `;
 
-exports[`Syncs to/from wsClient Multidirectional all conflicting values 2`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values 2`] = `
 [
-  "Hc2DO@X00059DKYL",
+  "Hc2DOAT00059DKYL",
   [
     [
       "",
@@ -4987,106 +5039,106 @@ exports[`Syncs to/from wsClient Multidirectional all conflicting values 2`] = `
       0,
     ],
     [
-      "Hc2DO@X00059DKYL",
+      "Hc2DOAT00059DKYL",
       {
         "v1": [
-          "Hc2DO@X00059DKYL",
+          "Hc2DOAT00059DKYL",
           42,
-          1693667773,
+          495881838,
         ],
       },
-      1178141476,
+      1515731520,
     ],
   ],
-  1178141476,
+  1515731520,
 ]
 `;
 
-exports[`Syncs to/from wsClient Multidirectional all conflicting values: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values: stats 1`] = `
 {
-  "receives": 765,
-  "sends": 245,
+  "receives": 666,
+  "sends": 234,
 }
 `;
 
-exports[`Syncs to/from wsClient Multidirectional all conflicting values: stats 2`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values: stats 2`] = `
 {
-  "receives": 792,
-  "sends": 264,
+  "receives": 693,
+  "sends": 253,
 }
 `;
 
-exports[`Syncs to/from wsClient Multidirectional all different cells 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional all different cells 1`] = `
 [
-  "Hc2DO@D0000AYRok",
+  "Hc2DO@b0000AYRok",
   [
     [
-      "Hc2DO@D0000AYRok",
+      "Hc2DO@b0000AYRok",
       {
         "t1": [
-          "Hc2DO@D0000AYRok",
+          "Hc2DO@b0000AYRok",
           {
             "r1": [
-              "Hc2DO@D0000AYRok",
+              "Hc2DO@b0000AYRok",
               {
                 "c1": [
-                  "Hc2DO@D00008DKS9",
+                  "Hc2DO@b00008DKS9",
                   1,
-                  141369203,
+                  2306325645,
                 ],
                 "c10": [
-                  "Hc2DO@D0000AYRok",
+                  "Hc2DO@b0000AYRok",
                   1,
-                  3080891852,
+                  1547283890,
                 ],
                 "c2": [
-                  "Hc2DO@D00005DK@@",
+                  "Hc2DO@b00005DK@@",
                   1,
-                  2259127772,
+                  2210649866,
                 ],
                 "c3": [
-                  "Hc2DO@D00006DKFS",
+                  "Hc2DO@b00006DKFS",
                   1,
-                  3929501942,
+                  2532497584,
                 ],
                 "c4": [
-                  "Hc2DO@D0000;DKf2",
+                  "Hc2DO@b0000;DKf2",
                   1,
-                  4110564894,
+                  132162064,
                 ],
                 "c5": [
-                  "Hc2DO@D0000<DKlE",
+                  "Hc2DO@b0000<DKlE",
                   1,
-                  1506834940,
+                  4170890658,
                 ],
                 "c6": [
-                  "Hc2DO@D00009DKYL",
+                  "Hc2DO@b00009DKYL",
                   1,
-                  1869767149,
+                  468730067,
                 ],
                 "c7": [
-                  "Hc2DO@D0000:DK__",
+                  "Hc2DO@b0000:DK__",
                   1,
-                  1346976663,
+                  1201604225,
                 ],
                 "c8": [
-                  "Hc2DO@D0000?DL?>",
+                  "Hc2DO@b0000?DL?>",
                   1,
-                  2787667558,
+                  4231976772,
                 ],
                 "c9": [
-                  "Hc2DO@D0000@DLEQ",
+                  "Hc2DO@b0000@DLEQ",
                   1,
-                  10218092,
+                  620351342,
                 ],
               },
-              4071113807,
+              4117515284,
             ],
           },
-          3543270401,
+          3730844509,
         ],
       },
-      2249220498,
+      2401104040,
     ],
     [
       "",
@@ -5094,523 +5146,523 @@ exports[`Syncs to/from wsClient Multidirectional all different cells 1`] = `
       0,
     ],
   ],
-  2249220498,
+  2401104040,
 ]
 `;
 
-exports[`Syncs to/from wsClient Multidirectional all different cells: stats 1`] = `
-{
-  "receives": 1530,
-  "sends": 650,
-}
-`;
-
-exports[`Syncs to/from wsClient Multidirectional all different rows 1`] = `
-[
-  "Hc2DO@D0000AYRok",
-  [
-    [
-      "Hc2DO@D0000AYRok",
-      {
-        "t1": [
-          "Hc2DO@D0000AYRok",
-          {
-            "r1": [
-              "Hc2DO@D00008DKS9",
-              {
-                "c1": [
-                  "Hc2DO@D00008DKS9",
-                  1,
-                  141369203,
-                ],
-              },
-              503736403,
-            ],
-            "r10": [
-              "Hc2DO@D0000AYRok",
-              {
-                "c1": [
-                  "Hc2DO@D0000AYRok",
-                  1,
-                  3080891852,
-                ],
-              },
-              543246991,
-            ],
-            "r2": [
-              "Hc2DO@D00005DK@@",
-              {
-                "c1": [
-                  "Hc2DO@D00005DK@@",
-                  1,
-                  2259127772,
-                ],
-              },
-              2570958291,
-            ],
-            "r3": [
-              "Hc2DO@D00006DKFS",
-              {
-                "c1": [
-                  "Hc2DO@D00006DKFS",
-                  1,
-                  3929501942,
-                ],
-              },
-              178858503,
-            ],
-            "r4": [
-              "Hc2DO@D0000;DKf2",
-              {
-                "c1": [
-                  "Hc2DO@D0000;DKf2",
-                  1,
-                  4110564894,
-                ],
-              },
-              2429184703,
-            ],
-            "r5": [
-              "Hc2DO@D0000<DKlE",
-              {
-                "c1": [
-                  "Hc2DO@D0000<DKlE",
-                  1,
-                  1506834940,
-                ],
-              },
-              2307221059,
-            ],
-            "r6": [
-              "Hc2DO@D00009DKYL",
-              {
-                "c1": [
-                  "Hc2DO@D00009DKYL",
-                  1,
-                  1869767149,
-                ],
-              },
-              3641636134,
-            ],
-            "r7": [
-              "Hc2DO@D0000:DK__",
-              {
-                "c1": [
-                  "Hc2DO@D0000:DK__",
-                  1,
-                  1346976663,
-                ],
-              },
-              2186236791,
-            ],
-            "r8": [
-              "Hc2DO@D0000?DL?>",
-              {
-                "c1": [
-                  "Hc2DO@D0000?DL?>",
-                  1,
-                  2787667558,
-                ],
-              },
-              3138709736,
-            ],
-            "r9": [
-              "Hc2DO@D0000@DLEQ",
-              {
-                "c1": [
-                  "Hc2DO@D0000@DLEQ",
-                  1,
-                  10218092,
-                ],
-              },
-              818391198,
-            ],
-          },
-          3270849580,
-        ],
-      },
-      1240725207,
-    ],
-    [
-      "",
-      {},
-      0,
-    ],
-  ],
-  1240725207,
-]
-`;
-
-exports[`Syncs to/from wsClient Multidirectional all different rows: stats 1`] = `
-{
-  "receives": 1530,
-  "sends": 650,
-}
-`;
-
-exports[`Syncs to/from wsClient Multidirectional all different tables 1`] = `
-[
-  "Hc2DO@D0000AYRok",
-  [
-    [
-      "Hc2DO@D0000AYRok",
-      {
-        "t1": [
-          "Hc2DO@D00008DKS9",
-          {
-            "r1": [
-              "Hc2DO@D00008DKS9",
-              {
-                "c1": [
-                  "Hc2DO@D00008DKS9",
-                  1,
-                  141369203,
-                ],
-              },
-              503736403,
-            ],
-          },
-          282063209,
-        ],
-        "t10": [
-          "Hc2DO@D0000AYRok",
-          {
-            "r1": [
-              "Hc2DO@D0000AYRok",
-              {
-                "c1": [
-                  "Hc2DO@D0000AYRok",
-                  1,
-                  3080891852,
-                ],
-              },
-              543246991,
-            ],
-          },
-          3366982826,
-        ],
-        "t2": [
-          "Hc2DO@D00005DK@@",
-          {
-            "r1": [
-              "Hc2DO@D00005DK@@",
-              {
-                "c1": [
-                  "Hc2DO@D00005DK@@",
-                  1,
-                  2259127772,
-                ],
-              },
-              2570958291,
-            ],
-          },
-          519671433,
-        ],
-        "t3": [
-          "Hc2DO@D00006DKFS",
-          {
-            "r1": [
-              "Hc2DO@D00006DKFS",
-              {
-                "c1": [
-                  "Hc2DO@D00006DKFS",
-                  1,
-                  3929501942,
-                ],
-              },
-              178858503,
-            ],
-          },
-          4073559890,
-        ],
-        "t4": [
-          "Hc2DO@D0000;DKf2",
-          {
-            "r1": [
-              "Hc2DO@D0000;DKf2",
-              {
-                "c1": [
-                  "Hc2DO@D0000;DKf2",
-                  1,
-                  4110564894,
-                ],
-              },
-              2429184703,
-            ],
-          },
-          1929979121,
-        ],
-        "t5": [
-          "Hc2DO@D0000<DKlE",
-          {
-            "r1": [
-              "Hc2DO@D0000<DKlE",
-              {
-                "c1": [
-                  "Hc2DO@D0000<DKlE",
-                  1,
-                  1506834940,
-                ],
-              },
-              2307221059,
-            ],
-          },
-          1247737372,
-        ],
-        "t6": [
-          "Hc2DO@D00009DKYL",
-          {
-            "r1": [
-              "Hc2DO@D00009DKYL",
-              {
-                "c1": [
-                  "Hc2DO@D00009DKYL",
-                  1,
-                  1869767149,
-                ],
-              },
-              3641636134,
-            ],
-          },
-          3021790543,
-        ],
-        "t7": [
-          "Hc2DO@D0000:DK__",
-          {
-            "r1": [
-              "Hc2DO@D0000:DK__",
-              {
-                "c1": [
-                  "Hc2DO@D0000:DK__",
-                  1,
-                  1346976663,
-                ],
-              },
-              2186236791,
-            ],
-          },
-          3831766651,
-        ],
-        "t8": [
-          "Hc2DO@D0000?DL?>",
-          {
-            "r1": [
-              "Hc2DO@D0000?DL?>",
-              {
-                "c1": [
-                  "Hc2DO@D0000?DL?>",
-                  1,
-                  2787667558,
-                ],
-              },
-              3138709736,
-            ],
-          },
-          1780034842,
-        ],
-        "t9": [
-          "Hc2DO@D0000@DLEQ",
-          {
-            "r1": [
-              "Hc2DO@D0000@DLEQ",
-              {
-                "c1": [
-                  "Hc2DO@D0000@DLEQ",
-                  1,
-                  10218092,
-                ],
-              },
-              818391198,
-            ],
-          },
-          2489538311,
-        ],
-      },
-      2984234887,
-    ],
-    [
-      "",
-      {},
-      0,
-    ],
-  ],
-  2984234887,
-]
-`;
-
-exports[`Syncs to/from wsClient Multidirectional all different tables: stats 1`] = `
-{
-  "receives": 1530,
-  "sends": 650,
-}
-`;
-
-exports[`Syncs to/from wsClient Multidirectional all different values 1`] = `
-[
-  "Hc2DO@D0000AYRok",
-  [
-    [
-      "",
-      {},
-      0,
-    ],
-    [
-      "Hc2DO@D0000AYRok",
-      {
-        "v1": [
-          "Hc2DO@D00008DKS9",
-          1,
-          141369203,
-        ],
-        "v10": [
-          "Hc2DO@D0000AYRok",
-          1,
-          3080891852,
-        ],
-        "v2": [
-          "Hc2DO@D00005DK@@",
-          1,
-          2259127772,
-        ],
-        "v3": [
-          "Hc2DO@D00006DKFS",
-          1,
-          3929501942,
-        ],
-        "v4": [
-          "Hc2DO@D0000;DKf2",
-          1,
-          4110564894,
-        ],
-        "v5": [
-          "Hc2DO@D0000<DKlE",
-          1,
-          1506834940,
-        ],
-        "v6": [
-          "Hc2DO@D00009DKYL",
-          1,
-          1869767149,
-        ],
-        "v7": [
-          "Hc2DO@D0000:DK__",
-          1,
-          1346976663,
-        ],
-        "v8": [
-          "Hc2DO@D0000?DL?>",
-          1,
-          2787667558,
-        ],
-        "v9": [
-          "Hc2DO@D0000@DLEQ",
-          1,
-          10218092,
-        ],
-      },
-      2132405161,
-    ],
-  ],
-  2132405161,
-]
-`;
-
-exports[`Syncs to/from wsClient Multidirectional all different values: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional all different cells: stats 1`] = `
 {
   "receives": 1170,
-  "sends": 290,
+  "sends": 610,
 }
 `;
 
-exports[`Syncs to/from wsClient Multidirectional half tables, half values 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional all different rows 1`] = `
 [
-  "Hc2DO@D0000AYRok",
+  "Hc2DO@b0000AYRok",
   [
     [
-      "Hc2DO@D0000AYRok",
+      "Hc2DO@b0000AYRok",
       {
         "t1": [
-          "Hc2DO@D0000AYRok",
+          "Hc2DO@b0000AYRok",
           {
             "r1": [
-              "Hc2DO@D0000AYRok",
+              "Hc2DO@b00008DKS9",
               {
                 "c1": [
-                  "Hc2DO@D0000AYRok",
+                  "Hc2DO@b00008DKS9",
                   1,
-                  3080891852,
-                ],
-                "c2": [
-                  "Hc2DO@D0000AYRok",
-                  2,
-                  2576740951,
+                  2306325645,
                 ],
               },
-              3076570177,
+              2837312364,
+            ],
+            "r10": [
+              "Hc2DO@b0000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@b0000AYRok",
+                  1,
+                  1547283890,
+                ],
+              },
+              1534087728,
             ],
             "r2": [
-              "Hc2DO@D0000AYRok",
+              "Hc2DO@b00005DK@@",
               {
-                "c2": [
-                  "Hc2DO@D0000AYRok",
-                  2,
-                  2576740951,
+                "c1": [
+                  "Hc2DO@b00005DK@@",
+                  1,
+                  2210649866,
                 ],
               },
-              3125791713,
+              2289841701,
             ],
-          },
-          2199299166,
-        ],
-        "t2": [
-          "Hc2DO@D0000AYRok",
-          {
-            "r2": [
-              "Hc2DO@D0000AYRok",
+            "r3": [
+              "Hc2DO@b00006DKFS",
               {
-                "c2": [
-                  "Hc2DO@D0000AYRok",
-                  2,
-                  2576740951,
+                "c1": [
+                  "Hc2DO@b00006DKFS",
+                  1,
+                  2532497584,
                 ],
               },
-              3125791713,
+              2011599682,
+            ],
+            "r4": [
+              "Hc2DO@b0000;DKf2",
+              {
+                "c1": [
+                  "Hc2DO@b0000;DKf2",
+                  1,
+                  132162064,
+                ],
+              },
+              225520686,
+            ],
+            "r5": [
+              "Hc2DO@b0000<DKlE",
+              {
+                "c1": [
+                  "Hc2DO@b0000<DKlE",
+                  1,
+                  4170890658,
+                ],
+              },
+              2341649019,
+            ],
+            "r6": [
+              "Hc2DO@b00009DKYL",
+              {
+                "c1": [
+                  "Hc2DO@b00009DKYL",
+                  1,
+                  468730067,
+                ],
+              },
+              3719990207,
+            ],
+            "r7": [
+              "Hc2DO@b0000:DK__",
+              {
+                "c1": [
+                  "Hc2DO@b0000:DK__",
+                  1,
+                  1201604225,
+                ],
+              },
+              2747953737,
+            ],
+            "r8": [
+              "Hc2DO@b0000?DL?>",
+              {
+                "c1": [
+                  "Hc2DO@b0000?DL?>",
+                  1,
+                  4231976772,
+                ],
+              },
+              2544742477,
+            ],
+            "r9": [
+              "Hc2DO@b0000@DLEQ",
+              {
+                "c1": [
+                  "Hc2DO@b0000@DLEQ",
+                  1,
+                  620351342,
+                ],
+              },
+              3505486871,
             ],
           },
-          3602141651,
+          659769743,
         ],
       },
-      935050963,
+      3136498545,
     ],
     [
-      "Hc2DO@D0000<DKlE",
-      {
-        "v1": [
-          "Hc2DO@D0000<DKlE",
-          1,
-          1506834940,
-        ],
-        "v2": [
-          "Hc2DO@D0000<DKlE",
-          2,
-          2236604531,
-        ],
-      },
-      3388356067,
+      "",
+      {},
+      0,
     ],
   ],
-  4266494768,
+  3136498545,
 ]
 `;
 
-exports[`Syncs to/from wsClient Multidirectional half tables, half values: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional all different rows: stats 1`] = `
 {
-  "receives": 680,
-  "sends": 440,
+  "receives": 1170,
+  "sends": 610,
 }
 `;
 
-exports[`Syncs to/from wsClient Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from wsSynchronizer Multidirectional all different tables 1`] = `
+[
+  "Hc2DO@b0000AYRok",
+  [
+    [
+      "Hc2DO@b0000AYRok",
+      {
+        "t1": [
+          "Hc2DO@b00008DKS9",
+          {
+            "r1": [
+              "Hc2DO@b00008DKS9",
+              {
+                "c1": [
+                  "Hc2DO@b00008DKS9",
+                  1,
+                  2306325645,
+                ],
+              },
+              2837312364,
+            ],
+          },
+          1997012997,
+        ],
+        "t10": [
+          "Hc2DO@b0000AYRok",
+          {
+            "r1": [
+              "Hc2DO@b0000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@b0000AYRok",
+                  1,
+                  1547283890,
+                ],
+              },
+              1534087728,
+            ],
+          },
+          3380031394,
+        ],
+        "t2": [
+          "Hc2DO@b00005DK@@",
+          {
+            "r1": [
+              "Hc2DO@b00005DK@@",
+              {
+                "c1": [
+                  "Hc2DO@b00005DK@@",
+                  1,
+                  2210649866,
+                ],
+              },
+              2289841701,
+            ],
+          },
+          1018543939,
+        ],
+        "t3": [
+          "Hc2DO@b00006DKFS",
+          {
+            "r1": [
+              "Hc2DO@b00006DKFS",
+              {
+                "c1": [
+                  "Hc2DO@b00006DKFS",
+                  1,
+                  2532497584,
+                ],
+              },
+              2011599682,
+            ],
+          },
+          3826840410,
+        ],
+        "t4": [
+          "Hc2DO@b0000;DKf2",
+          {
+            "r1": [
+              "Hc2DO@b0000;DKf2",
+              {
+                "c1": [
+                  "Hc2DO@b0000;DKf2",
+                  1,
+                  132162064,
+                ],
+              },
+              225520686,
+            ],
+          },
+          1582140037,
+        ],
+        "t5": [
+          "Hc2DO@b0000<DKlE",
+          {
+            "r1": [
+              "Hc2DO@b0000<DKlE",
+              {
+                "c1": [
+                  "Hc2DO@b0000<DKlE",
+                  1,
+                  4170890658,
+                ],
+              },
+              2341649019,
+            ],
+          },
+          3731522582,
+        ],
+        "t6": [
+          "Hc2DO@b00009DKYL",
+          {
+            "r1": [
+              "Hc2DO@b00009DKYL",
+              {
+                "c1": [
+                  "Hc2DO@b00009DKYL",
+                  1,
+                  468730067,
+                ],
+              },
+              3719990207,
+            ],
+          },
+          1220180763,
+        ],
+        "t7": [
+          "Hc2DO@b0000:DK__",
+          {
+            "r1": [
+              "Hc2DO@b0000:DK__",
+              {
+                "c1": [
+                  "Hc2DO@b0000:DK__",
+                  1,
+                  1201604225,
+                ],
+              },
+              2747953737,
+            ],
+          },
+          4187077524,
+        ],
+        "t8": [
+          "Hc2DO@b0000?DL?>",
+          {
+            "r1": [
+              "Hc2DO@b0000?DL?>",
+              {
+                "c1": [
+                  "Hc2DO@b0000?DL?>",
+                  1,
+                  4231976772,
+                ],
+              },
+              2544742477,
+            ],
+          },
+          144170383,
+        ],
+        "t9": [
+          "Hc2DO@b0000@DLEQ",
+          {
+            "r1": [
+              "Hc2DO@b0000@DLEQ",
+              {
+                "c1": [
+                  "Hc2DO@b0000@DLEQ",
+                  1,
+                  620351342,
+                ],
+              },
+              3505486871,
+            ],
+          },
+          2547563410,
+        ],
+      },
+      3659466814,
+    ],
+    [
+      "",
+      {},
+      0,
+    ],
+  ],
+  3659466814,
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Multidirectional all different tables: stats 1`] = `
+{
+  "receives": 1170,
+  "sends": 610,
+}
+`;
+
+exports[`Syncs to/from wsSynchronizer Multidirectional all different values 1`] = `
+[
+  "Hc2DO@b0000AYRok",
+  [
+    [
+      "",
+      {},
+      0,
+    ],
+    [
+      "Hc2DO@b0000AYRok",
+      {
+        "v1": [
+          "Hc2DO@b00008DKS9",
+          1,
+          2306325645,
+        ],
+        "v10": [
+          "Hc2DO@b0000AYRok",
+          1,
+          1547283890,
+        ],
+        "v2": [
+          "Hc2DO@b00005DK@@",
+          1,
+          2210649866,
+        ],
+        "v3": [
+          "Hc2DO@b00006DKFS",
+          1,
+          2532497584,
+        ],
+        "v4": [
+          "Hc2DO@b0000;DKf2",
+          1,
+          132162064,
+        ],
+        "v5": [
+          "Hc2DO@b0000<DKlE",
+          1,
+          4170890658,
+        ],
+        "v6": [
+          "Hc2DO@b00009DKYL",
+          1,
+          468730067,
+        ],
+        "v7": [
+          "Hc2DO@b0000:DK__",
+          1,
+          1201604225,
+        ],
+        "v8": [
+          "Hc2DO@b0000?DL?>",
+          1,
+          4231976772,
+        ],
+        "v9": [
+          "Hc2DO@b0000@DLEQ",
+          1,
+          620351342,
+        ],
+      },
+      1954131226,
+    ],
+  ],
+  1954131226,
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Multidirectional all different values: stats 1`] = `
+{
+  "receives": 810,
+  "sends": 250,
+}
+`;
+
+exports[`Syncs to/from wsSynchronizer Multidirectional half tables, half values 1`] = `
+[
+  "Hc2DO@b0000AYRok",
+  [
+    [
+      "Hc2DO@b0000AYRok",
+      {
+        "t1": [
+          "Hc2DO@b0000AYRok",
+          {
+            "r1": [
+              "Hc2DO@b0000AYRok",
+              {
+                "c1": [
+                  "Hc2DO@b0000AYRok",
+                  1,
+                  1547283890,
+                ],
+                "c2": [
+                  "Hc2DO@b0000AYRok",
+                  2,
+                  3540394745,
+                ],
+              },
+              1390191442,
+            ],
+            "r2": [
+              "Hc2DO@b0000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@b0000AYRok",
+                  2,
+                  3540394745,
+                ],
+              },
+              1901074099,
+            ],
+          },
+          467814688,
+        ],
+        "t2": [
+          "Hc2DO@b0000AYRok",
+          {
+            "r2": [
+              "Hc2DO@b0000AYRok",
+              {
+                "c2": [
+                  "Hc2DO@b0000AYRok",
+                  2,
+                  3540394745,
+                ],
+              },
+              1901074099,
+            ],
+          },
+          1955311190,
+        ],
+      },
+      2446864099,
+    ],
+    [
+      "Hc2DO@b0000<DKlE",
+      {
+        "v1": [
+          "Hc2DO@b0000<DKlE",
+          1,
+          4170890658,
+        ],
+        "v2": [
+          "Hc2DO@b0000<DKlE",
+          2,
+          3929720221,
+        ],
+      },
+      1986731132,
+    ],
+  ],
+  3887280799,
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Multidirectional half tables, half values: stats 1`] = `
+{
+  "receives": 830,
+  "sends": 590,
+}
+`;
+
+exports[`Syncs to/from wsSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -5653,7 +5705,7 @@ exports[`Syncs to/from wsClient Unidirectional autoLoad1 but not autoSave2, defa
 ]
 `;
 
-exports[`Syncs to/from wsClient Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from wsSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
 [
   "Hc2DO@000005DK@@",
   [
@@ -5734,7 +5786,7 @@ exports[`Syncs to/from wsClient Unidirectional autoLoad1 but not autoSave2, defa
 ]
 `;
 
-exports[`Syncs to/from wsClient Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -5747,7 +5799,7 @@ exports[`Syncs to/from wsClient Unidirectional autoLoad1 but not autoSave2, defa
 ]
 `;
 
-exports[`Syncs to/from wsClient Unidirectional autoSave1 but not autoLoad2 1`] = `
+exports[`Syncs to/from wsSynchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -5828,7 +5880,7 @@ exports[`Syncs to/from wsClient Unidirectional autoSave1 but not autoLoad2 1`] =
 ]
 `;
 
-exports[`Syncs to/from wsClient Unidirectional autoSave1 but not autoLoad2 2`] = `
+exports[`Syncs to/from wsSynchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
 [
   "",
   [
@@ -5847,7 +5899,7 @@ exports[`Syncs to/from wsClient Unidirectional autoSave1 but not autoLoad2 2`] =
 ]
 `;
 
-exports[`Syncs to/from wsClient Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -5860,7 +5912,7 @@ exports[`Syncs to/from wsClient Unidirectional autoSave1 but not autoLoad2: stat
 ]
 `;
 
-exports[`Syncs to/from wsClient Unidirectional load1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from wsSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -5903,7 +5955,7 @@ exports[`Syncs to/from wsClient Unidirectional load1 but not autoSave2, defaults
 ]
 `;
 
-exports[`Syncs to/from wsClient Unidirectional load1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from wsSynchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
 [
   "Hc2DO@000005DK@@",
   [
@@ -5984,7 +6036,7 @@ exports[`Syncs to/from wsClient Unidirectional load1 but not autoSave2, defaults
 ]
 `;
 
-exports[`Syncs to/from wsClient Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -5997,7 +6049,7 @@ exports[`Syncs to/from wsClient Unidirectional load1 but not autoSave2, defaults
 ]
 `;
 
-exports[`Syncs to/from wsClient Unidirectional save1 but not autoLoad2 1`] = `
+exports[`Syncs to/from wsSynchronizer Unidirectional save1 but not autoLoad2 1`] = `
 [
   "Hc2DO@000008DKS9",
   [
@@ -6078,7 +6130,7 @@ exports[`Syncs to/from wsClient Unidirectional save1 but not autoLoad2 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Unidirectional save1 but not autoLoad2 2`] = `
+exports[`Syncs to/from wsSynchronizer Unidirectional save1 but not autoLoad2 2`] = `
 [
   "",
   [
@@ -6097,7 +6149,7 @@ exports[`Syncs to/from wsClient Unidirectional save1 but not autoLoad2 2`] = `
 ]
 `;
 
-exports[`Syncs to/from wsClient Unidirectional save1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
 [
   {
     "receives": 0,
