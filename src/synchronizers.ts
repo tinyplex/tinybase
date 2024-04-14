@@ -68,7 +68,8 @@ export const createCustomSynchronizer = ((
           ([toClientId, handleResponse]) =>
             isUndefined(toClientId) || toClientId == fromClientId
               ? handleResponse(messageBody, fromClientId)
-              : 0,
+              : /*! istanbul ignore next */
+                0,
         );
       } else if (messageType == CONTENT_HASHES && persister.isAutoLoading()) {
         getChangesFromOtherStore(fromClientId, messageBody).then(
