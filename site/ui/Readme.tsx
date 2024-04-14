@@ -19,6 +19,7 @@ const MODULES = [
   'checkpoints',
   'mergeable-store',
   'persisters',
+  'synchronizers',
   'common',
   'tinybase',
 ];

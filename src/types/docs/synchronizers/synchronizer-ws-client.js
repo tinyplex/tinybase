@@ -10,9 +10,11 @@
 /// synchronizer-ws-client
 /**
  * The WsSynchronizer interface
+ * @category Synchronizer
  */
 /// WsSynchronizer
 /**
  * The createWsSynchronizer function
+ * @category Creation
  */
 /// createWsSynchronizer
