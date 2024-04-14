@@ -32,8 +32,8 @@ const TEST_MODULES = [
   'persisters/persister-remote',
   'persisters/persister-sqlite-wasm',
   'persisters/persister-sqlite3',
-  'persisters/persister-sync',
   'persisters/persister-yjs',
+  'synchronizers/persister-sync',
 ];
 const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries', 'ui-react'];
 const ALL_MODULES = [
@@ -65,8 +65,8 @@ const ALL_MODULES = [
   'persisters/persister-remote',
   'persisters/persister-sqlite-wasm',
   'persisters/persister-sqlite3',
-  'persisters/persister-sync',
   'persisters/persister-yjs',
+  'synchronizers/persister-sync',
 ];
 
 export const BIN_DIR = 'bin';

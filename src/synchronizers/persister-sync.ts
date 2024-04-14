@@ -3,7 +3,7 @@ import {
   MessageType,
   SyncPersister,
   createSyncPersister as createSyncPersisterDecl,
-} from '../types/persisters/persister-sync';
+} from '../types/synchronizers/persister-sync';
 import {
   ContentHashes,
   MergeableChanges,

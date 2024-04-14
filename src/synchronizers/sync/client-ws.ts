@@ -3,7 +3,7 @@ import {
   MessageType,
   Receive,
   createWsClient as createWsClientDecl,
-} from '../../types/persisters/persister-sync';
+} from '../../types/synchronizers/persister-sync';
 import {DEBUG, isUndefined, promiseNew, slice} from '../../common/other';
 import {EMPTY_STRING, UTF8} from '../../common/strings';
 import {jsonParse, jsonString} from '../../common/json';
