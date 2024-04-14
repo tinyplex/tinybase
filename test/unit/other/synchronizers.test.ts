@@ -8,7 +8,7 @@ import {
   createSyncPersister,
   createWsClient,
   createWsSimpleServer,
-} from 'tinybase/debug/persisters/persister-sync';
+} from 'tinybase/debug/synchronizers/persister-sync';
 import {Content, MergeableStore, createMergeableStore} from 'tinybase/debug';
 import {WebSocket, WebSocketServer} from 'ws';
 import {pause} from '../common/other';
