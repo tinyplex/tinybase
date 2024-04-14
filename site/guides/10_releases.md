@@ -62,16 +62,15 @@ by certain Persister types: file, local storage, and sessionStorage. This allows
 you to persist the state of a MergeableStore locally before it has had the
 chance to be synchronized online, for example.
 
-The v5.0 release also introduces a very important new Persister called the
-SyncPersister (created with the createSyncPersister function). This implements a
-negotiation protocol that allows multiple MergeableStore objects to synchronize
-across a network, for example.
+The v5.0 release also introduces the very important concept of Synchronizers.
+These implement a negotiation protocol that allows multiple MergeableStore
+objects to synchronize across a network, for example.
 
-When created, a SyncPersister is passed a Client object that handles the sending
-and receipt of the messages required by the protocol. This release includes two
-types of Client: the LocalClient (for syncing on a single local system), and
-more importantly the WsClient (that uses WebSockets to communicate between
-different systems):
+A Synchronizer handles the sending and receipt of the messages required by the
+protocol, and this release includes two types: the LocalSynchronizer (for
+demonstrating synchronization on a single local system), and more importantly
+the WsSynchronizer (that uses WebSockets to communicate between different
+systems):
 
 ```js
 // On a server machine
@@ -109,9 +108,9 @@ synchronizer2.destroy();
 server.destroy();
 ```
 
-Notice that the WsClient assumes that there exists a server that can forward
-requests to other WsClient systems. This can be created using the
-createWsSimpleServer function that takes a WebSocketServer as shown above.
+Notice that the WsSynchronizer assumes that there exists a server that can
+forward requests to other WsSynchronizer systems. This can be created using the
+createWsServer function that takes a WebSocketServer as shown above.
 
 ### Important note
 
