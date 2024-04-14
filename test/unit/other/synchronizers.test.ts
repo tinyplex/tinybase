@@ -3,7 +3,9 @@
 import {
   Content,
   MergeableStore,
+  Receive,
   Synchronizer,
+  createCustomSynchronizer,
   createMergeableStore,
 } from 'tinybase/debug';
 import {WebSocket, WebSocketServer} from 'ws';
@@ -23,7 +25,10 @@ beforeEach(() => {
 type Synchronizable<Environment> = {
   createEnvironment?: () => Environment;
   destroyEnvironment?: (environment: Environment) => void;
-  getSynchronizer: (store: MergeableStore) => Promise<Synchronizer>;
+  getSynchronizer: (
+    store: MergeableStore,
+    environment: Environment,
+  ) => Promise<Synchronizer>;
   pauseMilliseconds: number;
 };
 
@@ -45,9 +50,46 @@ const mockWsSynchronizer: Synchronizable<WsServer> = {
   pauseMilliseconds: 50,
 };
 
+const mockCustomSynchronizer: Synchronizable<Map<string, Receive>> = {
+  createEnvironment: () => new Map(),
+  getSynchronizer: async (
+    store: MergeableStore,
+    clients: Map<string, Receive>,
+  ) => {
+    const clientId = 'client' + clients.size;
+    return createCustomSynchronizer(
+      store,
+      (toClientId, requestId, messageType, messageBody): void => {
+        if (toClientId == null) {
+          clients.forEach((receive, otherClientId) =>
+            otherClientId != clientId
+              ? receive(clientId, requestId, messageType, messageBody)
+              : 0,
+          );
+        } else {
+          clients.get(toClientId)?.(
+            clientId,
+            requestId,
+            messageType,
+            messageBody,
+          );
+        }
+      },
+      (receive: Receive): void => {
+        clients.set(clientId, receive);
+      },
+      (): void => {
+        clients.delete(clientId);
+      },
+    );
+  },
+  pauseMilliseconds: 2,
+};
+
 describe.each([
   ['localSynchronizer', mockLocalSynchronizer],
   ['wsSynchronizer', mockWsSynchronizer],
+  ['customSynchronizer', mockCustomSynchronizer],
 ] as any[])(
   'Syncs to/from %s',
   <Environment>(_name: string, synchronizable: Synchronizable<Environment>) => {
@@ -89,8 +131,14 @@ describe.each([
       beforeEach(async () => {
         store1 = createMergeableStore('s1');
         store2 = createMergeableStore('s2');
-        synchronizer1 = await synchronizable.getSynchronizer(store1);
-        synchronizer2 = await synchronizable.getSynchronizer(store2);
+        synchronizer1 = await synchronizable.getSynchronizer(
+          store1,
+          environment,
+        );
+        synchronizer2 = await synchronizable.getSynchronizer(
+          store2,
+          environment,
+        );
       });
 
       afterEach(() => {
@@ -167,8 +215,14 @@ describe.each([
       beforeEach(async () => {
         store1 = createMergeableStore('s1');
         store2 = createMergeableStore('s2');
-        synchronizer1 = await synchronizable.getSynchronizer(store1);
-        synchronizer2 = await synchronizable.getSynchronizer(store2);
+        synchronizer1 = await synchronizable.getSynchronizer(
+          store1,
+          environment,
+        );
+        synchronizer2 = await synchronizable.getSynchronizer(
+          store2,
+          environment,
+        );
         await synchronizer1.startSync();
         await synchronizer2.startSync();
         await pause(synchronizable.pauseMilliseconds, true);
@@ -454,7 +508,10 @@ describe.each([
         await Promise.all(
           stores.fill(null as any).map(async (_, s) => {
             stores[s] = createMergeableStore('s' + (s + 1));
-            synchronizers[s] = await synchronizable.getSynchronizer(stores[s]);
+            synchronizers[s] = await synchronizable.getSynchronizer(
+              stores[s],
+              environment,
+            );
           }),
         );
         await Promise.all(
