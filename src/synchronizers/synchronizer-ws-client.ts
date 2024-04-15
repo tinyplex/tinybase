@@ -1,17 +1,21 @@
 import {EMPTY_STRING, UTF8} from '../common/strings';
 import {MessageType, Receive} from '../types/synchronizers';
+import {
+  WebSocketTypes,
+  createWsSynchronizer as createWsSynchronizerDecl,
+} from '../types/synchronizers/synchronizer-ws-client';
 import {isUndefined, promiseNew, slice} from '../common/other';
 import {jsonParse, jsonString} from '../common/json';
 import {IdOrNull} from '../types/common';
 import {MESSAGE_SEPARATOR} from './common';
 import {MergeableStore} from '../types/mergeable-store';
-import {WebSocket as WsWebSocket} from 'ws';
 import {createCustomSynchronizer} from '../synchronizers';
-import {createWsSynchronizer as createWsSynchronizerDecl} from '../types/synchronizers/synchronizer-ws-client';
 
-export const createWsSynchronizer = (async (
+export const createWsSynchronizer = (async <
+  WebSocketType extends WebSocketTypes,
+>(
   store: MergeableStore,
-  webSocket: WebSocket | WsWebSocket,
+  webSocket: WebSocketType,
   requestTimeoutSeconds?: number,
   onIgnoredError?: (error: any) => void,
 ) => {
@@ -44,6 +48,7 @@ export const createWsSynchronizer = (async (
     destroy,
     requestTimeoutSeconds,
     onIgnoredError,
+    {getWebSocket: () => webSocket},
   );
 
   addEventListener('message', ({data}) => {
@@ -62,12 +67,13 @@ export const createWsSynchronizer = (async (
       }
     }
   });
+
   return promiseNew((resolve, reject) => {
     if (webSocket.readyState != webSocket.OPEN) {
       addEventListener('error', reject);
-      addEventListener('open', () => resolve(synchronizer));
+      addEventListener('open', () => resolve(synchronizer as any));
     } else {
-      resolve(synchronizer);
+      resolve(synchronizer as any);
     }
   });
 }) as typeof createWsSynchronizerDecl;

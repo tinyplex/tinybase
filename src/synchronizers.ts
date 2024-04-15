@@ -10,13 +10,7 @@ import {
 import {DEBUG, ifNotUndefined, isUndefined, promiseNew} from './common/other';
 import {Id, IdOrNull} from './types/common';
 import {IdMap, mapGet, mapNew, mapSet} from './common/map';
-import {
-  MessageType,
-  Receive,
-  Send,
-  Synchronizer,
-  createCustomSynchronizer as createCustomSynchronizerDecl,
-} from './types/synchronizers';
+import {MessageType, Receive, Send, Synchronizer} from './types/synchronizers';
 import {Tables, Values} from './types/store';
 import {EMPTY_STRING} from './common/strings';
 import {PersisterListener} from './types/persisters';
@@ -32,13 +26,15 @@ const GET_ROW_IDS_DIFF = 4;
 const GET_TABLES_CHANGES = 5;
 const GET_VALUES_CHANGES = 6;
 
-export const createCustomSynchronizer = ((
+export const createCustomSynchronizer = (
   store: MergeableStore,
   send: Send,
   onReceive: (receive: Receive) => void,
   destroyImpl: () => void,
   requestTimeoutSeconds = 1,
   onIgnoredError?: (error: any) => void,
+  // undocumented:
+  extra: {[methodName: string]: (...args: any[]) => any} = {},
 ): Synchronizer => {
   let persisterListener: PersisterListener | undefined;
   let sends = 0;
@@ -226,7 +222,7 @@ export const createCustomSynchronizer = ((
     delPersisterListener,
     onIgnoredError,
     true,
-    {startSync, stopSync, destroy, getSynchronizerStats},
+    {startSync, stopSync, destroy, getSynchronizerStats, ...extra},
   ) as Synchronizer;
   return persister;
-}) as typeof createCustomSynchronizerDecl;
+};
