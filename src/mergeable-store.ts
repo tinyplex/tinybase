@@ -17,7 +17,13 @@ import {
   ValuesStamp,
   createMergeableStore as createMergeableStoreDecl,
 } from './types/mergeable-store';
-import {CellOrUndefined, Changes, Store, ValueOrUndefined} from './types/store';
+import {
+  CellOrUndefined,
+  Changes,
+  Content,
+  Store,
+  ValueOrUndefined,
+} from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
 import {Id, Ids} from './types/common';
 import {
@@ -418,6 +424,12 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         : 0,
     );
 
+  const setDefaultContent = (content: Content): MergeableStore => {
+    transactionTime = '0';
+    store.setContent(content);
+    return mergeableStore as MergeableStore;
+  };
+
   const getTransactionMergeableChanges = (): MergeableChanges => {
     if (isUndefined(transactionMergeableChanges)) {
       const [, , changedCells, , changedValues] = store.getTransactionLog();
@@ -484,6 +496,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     getMergeableValuesHashes,
     getMergeableValuesChanges,
     setMergeableContent,
+    setDefaultContent,
     getTransactionMergeableChanges,
     applyMergeableChanges,
     merge,

@@ -7,6 +7,7 @@ import {
 } from './internal/store';
 import {
   CellOrUndefined,
+  Content,
   NoSchemas,
   NoTablesSchema,
   NoValuesSchema,
@@ -205,6 +206,9 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   setMergeableContent(
     mergeableContent: MergeableContent<Schemas>,
   ): MergeableStore<Schemas>;
+
+  /// MergeableStore.setDefaultContent
+  setDefaultContent(content: Content<Schemas>): MergeableStore<Schemas>;
 
   /// MergeableStore.getTransactionMergeableChanges
   getTransactionMergeableChanges(): MergeableChanges<Schemas>;

@@ -172,6 +172,11 @@
    */
   /// MergeableStore.setMergeableContent
   /**
+   * The setDefaultContent method
+   * @category Setter
+   */
+  /// MergeableStore.setDefaultContent
+  /**
    * The getTransactionMergeableChanges method
    * @category Getter
    */
