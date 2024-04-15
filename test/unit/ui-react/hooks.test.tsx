@@ -439,107 +439,115 @@ describe('Create Hooks', () => {
     expect(didRender).toHaveBeenCalledTimes(5);
     _persister?.stopAutoLoad()?.stopAutoSave();
   });
-});
 
-test('useCreatePersister, then, no destroy', async () => {
-  let _persister: Persister | undefined;
-  tmp.setGracefulCleanup();
-  const fileName = tmp.fileSync().name;
-  const initStore = jest.fn(createStore);
-  const createPersister = jest.fn((store: Store, id: number) => {
-    if (id != 0) {
-      _persister = createFilePersister(store, fileName);
-      return _persister;
-    }
-  });
-  const initPersister = jest.fn(async (persister: Persister, id: number) => {
-    await persister.load({t1: {r1: {c1: id}}});
-  });
-  const Test = ({id}: {id: number}) => {
-    const store = useCreateStore(initStore);
-    const persister = useCreatePersister(
-      store,
-      (store) => createPersister(store, id),
-      [id],
-      async (persister) => await initPersister(persister, id),
-      [id],
-    );
-    return didRender(<>{JSON.stringify([id, persister?.getStats()])}</>);
-  };
-  act(() => {
-    renderer = create(<Test id={0} />);
-  });
-  expect(renderer.toJSON()).toEqual(JSON.stringify([0, null]));
-  act(() => {
-    renderer = create(<Test id={1} />);
-  });
-  await act(async () => {
-    await pause();
-  });
-  expect(renderer.toJSON()).toEqual(JSON.stringify([1, {loads: 1, saves: 0}]));
-  act(() => {
-    renderer.update(<Test id={2} />);
-  });
-  await act(async () => {
-    await pause();
-  });
-  expect(renderer.toJSON()).toEqual(JSON.stringify([2, {loads: 1, saves: 0}]));
-  expect(initStore).toHaveBeenCalledTimes(2);
-  expect(createPersister).toHaveBeenCalledTimes(3);
-  expect(initPersister).toHaveBeenCalledTimes(2);
-  expect(didRender).toHaveBeenCalledTimes(7);
-  _persister?.stopAutoLoad()?.stopAutoSave();
-});
-
-test('useCreatePersister, then, destroy', async () => {
-  const persisters: Persister[] = [];
-  tmp.setGracefulCleanup();
-  const initStore = jest.fn(createStore);
-  const createPersister = jest.fn((store: Store, id: number) => {
+  test('useCreatePersister, then, no destroy', async () => {
+    let _persister: Persister | undefined;
+    tmp.setGracefulCleanup();
     const fileName = tmp.fileSync().name;
-    const persister = createFilePersister(store, fileName);
-    persisters[id] = persister;
-    return persister;
-  });
-  const initPersister = jest.fn(async (persister: Persister, id: number) => {
-    await persister.load({t1: {r1: {c1: id}}});
-  });
-  const destroyPersister = jest.fn(async (persister: Persister) => {
-    expect(persisters).toContain(persister);
-  });
-  const Test = ({id}: {id: number}) => {
-    const store = useCreateStore(initStore);
-    const persister = useCreatePersister(
-      store,
-      (store) => createPersister(store, id),
-      [id],
-      async (persister) => await initPersister(persister, id),
-      [id],
-      destroyPersister,
+    const initStore = jest.fn(createStore);
+    const createPersister = jest.fn((store: Store, id: number) => {
+      if (id != 0) {
+        _persister = createFilePersister(store, fileName);
+        return _persister;
+      }
+    });
+    const initPersister = jest.fn(async (persister: Persister, id: number) => {
+      await persister.load({t1: {r1: {c1: id}}});
+    });
+    const Test = ({id}: {id: number}) => {
+      const store = useCreateStore(initStore);
+      const persister = useCreatePersister(
+        store,
+        (store) => createPersister(store, id),
+        [id],
+        async (persister) => await initPersister(persister, id),
+        [id],
+      );
+      return didRender(<>{JSON.stringify([id, persister?.getStats()])}</>);
+    };
+    act(() => {
+      renderer = create(<Test id={0} />);
+    });
+    expect(renderer.toJSON()).toEqual(JSON.stringify([0, null]));
+    act(() => {
+      renderer = create(<Test id={1} />);
+    });
+    await act(async () => {
+      await pause();
+    });
+    expect(renderer.toJSON()).toEqual(
+      JSON.stringify([1, {loads: 1, saves: 0}]),
     );
-    return didRender(<>{JSON.stringify([id, persister?.getStats()])}</>);
-  };
-  act(() => {
-    renderer = create(<Test id={1} />);
+    act(() => {
+      renderer.update(<Test id={2} />);
+    });
+    await act(async () => {
+      await pause();
+    });
+    expect(renderer.toJSON()).toEqual(
+      JSON.stringify([2, {loads: 1, saves: 0}]),
+    );
+    expect(initStore).toHaveBeenCalledTimes(2);
+    expect(createPersister).toHaveBeenCalledTimes(3);
+    expect(initPersister).toHaveBeenCalledTimes(2);
+    expect(didRender).toHaveBeenCalledTimes(7);
+    _persister?.stopAutoLoad()?.stopAutoSave();
   });
-  await act(async () => {
-    await pause();
+
+  test('useCreatePersister, then, destroy', async () => {
+    const persisters: Persister[] = [];
+    tmp.setGracefulCleanup();
+    const initStore = jest.fn(createStore);
+    const createPersister = jest.fn((store: Store, id: number) => {
+      const fileName = tmp.fileSync().name;
+      const persister = createFilePersister(store, fileName);
+      persisters[id] = persister;
+      return persister;
+    });
+    const initPersister = jest.fn(async (persister: Persister, id: number) => {
+      await persister.load({t1: {r1: {c1: id}}});
+    });
+    const destroyPersister = jest.fn((persister: Persister) => {
+      expect(persisters).toContain(persister);
+    });
+    const Test = ({id}: {id: number}) => {
+      const store = useCreateStore(initStore);
+      const persister = useCreatePersister(
+        store,
+        (store) => createPersister(store, id),
+        [id],
+        async (persister) => await initPersister(persister, id),
+        [id],
+        destroyPersister,
+      );
+      return didRender(<>{JSON.stringify([id, persister?.getStats()])}</>);
+    };
+    act(() => {
+      renderer = create(<Test id={1} />);
+    });
+    await act(async () => {
+      await pause();
+    });
+    expect(renderer.toJSON()).toEqual(
+      JSON.stringify([1, {loads: 1, saves: 0}]),
+    );
+    act(() => {
+      renderer.update(<Test id={2} />);
+    });
+    await act(async () => {
+      await pause();
+    });
+    expect(renderer.toJSON()).toEqual(
+      JSON.stringify([2, {loads: 1, saves: 0}]),
+    );
+    expect(initStore).toHaveBeenCalledTimes(1);
+    expect(createPersister).toHaveBeenCalledTimes(2);
+    expect(initPersister).toHaveBeenCalledTimes(2);
+    expect(destroyPersister).toHaveBeenCalledTimes(1);
+    expect(destroyPersister).toHaveBeenCalledWith(persisters[1]);
+    expect(didRender).toHaveBeenCalledTimes(6);
+    persisters.forEach((persister) => persister.stopAutoLoad().stopAutoSave());
   });
-  expect(renderer.toJSON()).toEqual(JSON.stringify([1, {loads: 1, saves: 0}]));
-  act(() => {
-    renderer.update(<Test id={2} />);
-  });
-  await act(async () => {
-    await pause();
-  });
-  expect(renderer.toJSON()).toEqual(JSON.stringify([2, {loads: 1, saves: 0}]));
-  expect(initStore).toHaveBeenCalledTimes(1);
-  expect(createPersister).toHaveBeenCalledTimes(2);
-  expect(initPersister).toHaveBeenCalledTimes(2);
-  expect(destroyPersister).toHaveBeenCalledTimes(1);
-  expect(destroyPersister).toHaveBeenCalledWith(persisters[1]);
-  expect(didRender).toHaveBeenCalledTimes(6);
-  persisters.forEach((persister) => persister.stopAutoLoad().stopAutoSave());
 });
 
 describe('Context Hooks', () => {
