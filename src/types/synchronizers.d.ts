@@ -1,7 +1,7 @@
 /// synchronizers
 
 import {Id, IdOrNull} from './common';
-import {Tables, Values} from './store';
+import {Content} from './store';
 import {MergeableStore} from './mergeable-store';
 import {Persister} from './persisters';
 
@@ -33,7 +33,7 @@ export type SynchronizerStats = {
 /// Synchronizer
 export interface Synchronizer extends Persister<true> {
   /// Synchronizer.startSync
-  startSync(initialTables?: Tables, initialValues?: Values): Promise<this>;
+  startSync(initialContent?: Content): Promise<this>;
   /// Synchronizer.stopSync
   stopSync(): this;
   /// Synchronizer.getSynchronizerStats

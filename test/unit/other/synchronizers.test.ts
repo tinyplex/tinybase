@@ -184,7 +184,7 @@ describe.each([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await synchronizer1.load({t0: {r0: {c0: 0}}}, {v0: 0});
+        await synchronizer1.load([{t0: {r0: {c0: 0}}}, {v0: 0}]);
         await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent(
           [{t0: {r0: {c0: 0}}}, {v0: 0}],
@@ -196,7 +196,7 @@ describe.each([
       });
 
       test('autoLoad1 but not autoSave2, defaults', async () => {
-        await synchronizer1.startAutoLoad({t0: {r0: {c0: 0}}}, {v0: 0});
+        await synchronizer1.startAutoLoad([{t0: {r0: {c0: 0}}}, {v0: 0}]);
         store2.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
