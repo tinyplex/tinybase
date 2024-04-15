@@ -9511,8 +9511,8 @@
  * // -> '<span>{\"pets\":{\"fido\":{\"species\":\"dog\"}}}</span>'
  *
  * root.render(<App sessionKey="cujoStore" />); // !act
- * // -> 'Persister destroyed for session key fidoStore'
  * // -> 'Persister created for session key cujoStore'
+ * // -> 'Persister destroyed for session key fidoStore'
  *
  * // ... // !act
  * console.log(app.innerHTML);
