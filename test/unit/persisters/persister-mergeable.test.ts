@@ -89,10 +89,10 @@ describe.each([
     expect(await persistable.get(location)).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
     store.setTables({t1: {r1: {c1: 2}}});
-    await pause(1, true);
+    await pause(10, true);
     expect(await persistable.get(location)).toMatchSnapshot();
     store.setTables({t1: {r1: {c1: 2}}});
-    await pause(1, true);
+    await pause(10, true);
     expect(await persistable.get(location)).toMatchSnapshot();
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toEqual(
@@ -106,13 +106,13 @@ describe.each([
       );
     }
     store.setValues({v1: 2});
-    await pause(1, true);
+    await pause(10, true);
     expect(await persistable.get(location)).toMatchSnapshot();
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toEqual(
-        stamped(2, 0, [
+        stamped(20, 0, [
           nullStamped({}),
-          stamped(2, 0, {v1: stamped(2, 0, 2)}),
+          stamped(20, 0, {v1: stamped(20, 0, 2)}),
           1,
         ]),
       );
