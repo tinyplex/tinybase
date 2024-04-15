@@ -31,7 +31,7 @@ export const createCustomSynchronizer = (
   send: Send,
   onReceive: (receive: Receive) => void,
   destroyImpl: () => void,
-  requestTimeoutSeconds = 1,
+  requestTimeoutSeconds: number,
   onIgnoredError?: (error: any) => void,
   // undocumented:
   extra: {[methodName: string]: (...args: any[]) => any} = {},
