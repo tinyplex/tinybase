@@ -49,6 +49,7 @@ type SqliteVariant<Database> = [
   ) => Promise<{[id: string]: any}[]>,
   close: (db: Database) => Promise<void>,
   autoLoadPause?: number,
+  autoLoadIntervalSeconds?: number,
 ];
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
@@ -127,7 +128,6 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
     ): Promise<{[id: string]: any}[]> =>
       (await client.execute({sql, args})).rows,
     async (client: Client) => client.close(),
-    1000,
   ],
   electricSql: [
     async (): Promise<Electric> =>
@@ -156,7 +156,8 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
     async (electricClient: Electric, sql: string, args: any[] = []) =>
       await electricClient.db.raw({sql, args}),
     async (electricClient: Electric) => await electricClient.close(),
-    1000,
+    200,
+    0.2,
   ],
   powerSync: [
     async (): Promise<AbstractPowerSyncDatabase> =>
