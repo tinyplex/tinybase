@@ -1760,14 +1760,20 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
             rerender([]);
           })();
         }
-        return () => {
-          newPersister.destroy();
-          destroy?.(newPersister);
-        };
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, ...createDeps, ...thenDeps, ...destroyDeps],
+    [store, ...createDeps, ...thenDeps],
+  );
+  useEffect(
+    () => () => {
+      if (persister) {
+        persister.destroy();
+        destroy?.(persister);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [persister, ...destroyDeps],
   );
   return persister;
 };
