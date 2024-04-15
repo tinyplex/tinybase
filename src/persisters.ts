@@ -29,12 +29,14 @@ const getStoreFunctions = (
       getContent: () => Content,
       getChanges: () => Changes,
       hasChanges: (changes: Changes) => boolean,
+      setDefaultContent: (content: Content) => Store,
     ]
   | [
       isMergeableStore: 1,
       getContent: () => MergeableContent,
       getChanges: () => MergeableChanges,
       hasChanges: (changes: MergeableChanges) => boolean,
+      setDefaultContent: (content: Content) => MergeableStore,
     ] =>
   !supportsMergeableStore || isUndefined(store.getMergeableContent)
     ? [
@@ -43,6 +45,7 @@ const getStoreFunctions = (
         store.getTransactionChanges,
         ([changedTables, changedValues]: Changes) =>
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+        store.setContent,
       ]
     : [
         1,
@@ -50,6 +53,7 @@ const getStoreFunctions = (
         store.getTransactionMergeableChanges,
         ([, [[, changedTables], [, changedValues]]]: MergeableChanges) =>
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+        store.setDefaultContent,
       ];
 
 export const createCustomPersister = <
@@ -88,8 +92,13 @@ export const createCustomPersister = <
   mapEnsure(scheduleRunning, scheduleId, () => 0);
   mapEnsure(scheduleActions, scheduleId, () => []);
 
-  const [isMergeableStore, getContent, getChanges, hasChanges] =
-    getStoreFunctions(supportsMergeableStore, store as MergeableStore);
+  const [
+    isMergeableStore,
+    getContent,
+    getChanges,
+    hasChanges,
+    setDefaultContent,
+  ] = getStoreFunctions(supportsMergeableStore, store as MergeableStore);
 
   const run = async (): Promise<void> => {
     /*! istanbul ignore else */
@@ -153,7 +162,7 @@ export const createCustomPersister = <
         } catch (error) {
           onIgnoredError?.(error);
           if (initialContent) {
-            store.setContent(initialContent as Content);
+            setDefaultContent(initialContent as Content);
           }
         }
       }),
