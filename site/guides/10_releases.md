@@ -145,6 +145,8 @@ In the persisters module:
 - The createCustomPersister function now takes a final optional boolean
   (`supportsMergeableStore`) to indicate that the Persister can support
   MergeableStore as well as Store objects.
+- A Persister's load method and startAutoLoad method now take a Content object
+  as one parameter, rather than Tables and Values as two.
 - The broadcastTransactionChanges method in the persister-partykit-server module
   has been renamed to the broadcastChanges method.
 

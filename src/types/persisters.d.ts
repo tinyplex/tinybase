@@ -1,6 +1,6 @@
 /// persisters
 
-import {Changes, Content, Store, Tables, Values} from './store.d';
+import {Changes, Content, Store} from './store.d';
 import {
   MergeableChanges,
   MergeableContent,
@@ -99,10 +99,10 @@ export type DpcTabularValues = {
 export interface Persister<SupportsMergeableStore extends boolean = false> {
   //
   /// Persister.load
-  load(initialTables?: Tables, initialValues?: Values): Promise<this>;
+  load(initialContent?: Content): Promise<this>;
 
   /// Persister.startAutoLoad
-  startAutoLoad(initialTables?: Tables, initialValues?: Values): Promise<this>;
+  startAutoLoad(initialContent?: Content): Promise<this>;
 
   /// Persister.stopAutoLoad
   stopAutoLoad(): this;
