@@ -63,7 +63,7 @@ describe('Load from doc', () => {
   });
 
   test('defaulted', async () => {
-    await persister1.load({t1: {r1: {c1: 1}}}, {v1: 1});
+    await persister1.load([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store1.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
   });
 
@@ -75,7 +75,7 @@ describe('Load from doc', () => {
 
   test('slightly broken, can default', async () => {
     docHandler1.change((doc: any) => (doc['tinybase'] = {t: 1}));
-    await persister1.load({t1: {r1: {c1: 1}}}, {v1: 1});
+    await persister1.load([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store1.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
   });
 

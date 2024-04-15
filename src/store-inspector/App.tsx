@@ -23,10 +23,13 @@ export const App = ({
     (s) => createSessionPersister(s, UNIQUE_ID),
     undefined,
     async (persister) => {
-      await persister.load(undefined, {
-        position: index == -1 ? 1 : index,
-        open: !!open,
-      });
+      await persister.load([
+        {},
+        {
+          position: index == -1 ? 1 : index,
+          open: !!open,
+        },
+      ]);
       await persister.startAutoSave();
     },
   );

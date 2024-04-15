@@ -173,7 +173,7 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('defaulted', async () => {
-        await persister.load({t1: {r1: {c1: 1}}}, {v1: 1});
+        await persister.load([{t1: {r1: {c1: 1}}}, {v1: 1}]);
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 
@@ -195,7 +195,7 @@ describe.each(Object.entries(VARIANTS))(
             [{_id: '_', store: '[{"t1":}]'}],
           ],
         });
-        await persister.load({t1: {r1: {c1: 1}}}, {v1: 1});
+        await persister.load([{t1: {r1: {c1: 1}}}, {v1: 1}]);
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 

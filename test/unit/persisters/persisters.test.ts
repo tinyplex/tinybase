@@ -172,7 +172,7 @@ describe.each([
 
   test('loads default when empty', async () => {
     store.setTables({t1: {r1: {c1: 1}}});
-    await persister.load({t1: {r1: {c1: 2}}}, {v1: 1});
+    await persister.load([{t1: {r1: {c1: 2}}}, {v1: 1}]);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
     expect(store.getValues()).toEqual({v1: 1});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
@@ -211,7 +211,7 @@ describe.each([
 
   test('autoSave & autoLoad: no load when saving', async () => {
     if (name == 'file') {
-      await persister.startAutoLoad({t1: {r1: {c1: 1}}});
+      await persister.startAutoLoad([{t1: {r1: {c1: 1}}}, {}]);
       await persister.startAutoSave();
       await nextLoop();
       expect(persister.getStats()).toEqual({loads: 1, saves: 1});
@@ -223,7 +223,7 @@ describe.each([
 
   test('autoSave & autoLoad: no save when loading', async () => {
     if (name == 'file') {
-      await persister.startAutoLoad({t1: {r1: {c1: 1}}});
+      await persister.startAutoLoad([{t1: {r1: {c1: 1}}}, {}]);
       await persister.startAutoSave();
       await nextLoop();
       expect(persister.getStats()).toEqual({loads: 1, saves: 1});
@@ -235,7 +235,7 @@ describe.each([
 
   test('does not delete when autoLoaded is deleted', async () => {
     await persistable.set(location, [{t1: {r1: {c1: 1}}}, {}]);
-    await persister.startAutoLoad({});
+    await persister.startAutoLoad();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     await persistable.del(location);
     await pause(persistable.autoLoadPause);
@@ -244,7 +244,7 @@ describe.each([
 
   test('does not delete when autoLoaded is corrupted', async () => {
     await persistable.set(location, [{t1: {r1: {c1: 1}}}, {}]);
-    await persister.startAutoLoad({});
+    await persister.startAutoLoad();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     persistable.write(location, '{');
     await pause(persistable.autoLoadPause);

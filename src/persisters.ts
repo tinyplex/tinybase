@@ -1,4 +1,4 @@
-import {Changes, Content, Store, Tables, Values} from './types/store.d';
+import {Changes, Content, Store} from './types/store.d';
 import {DEBUG, ifNotUndefined, isString, isUndefined} from './common/other';
 import {
   MergeableChanges,
@@ -146,24 +146,20 @@ export const createCustomPersister = <
   };
 
   const persister: any = {
-    load: async (
-      initialTables?: Tables,
-      initialValues?: Values,
-    ): Promise<Persister> =>
+    load: async (initialContent?: Content): Promise<Persister> =>
       await loadLock(async () => {
         try {
           setContentOrChanges(await getPersisted());
         } catch (error) {
           onIgnoredError?.(error);
-          store.setContent([initialTables, initialValues] as Content);
+          if (initialContent) {
+            store.setContent(initialContent as Content);
+          }
         }
       }),
 
-    startAutoLoad: async (
-      initialTables?: Tables,
-      initialValues?: Values,
-    ): Promise<Persister> => {
-      await persister.stopAutoLoad().load(initialTables, initialValues);
+    startAutoLoad: async (initialContent?: Content): Promise<Persister> => {
+      await persister.stopAutoLoad().load(initialContent);
       autoLoadHandle = addPersisterListener(async (getContent, getChanges) => {
         const changes = getChanges?.();
         await loadLock(async () => {

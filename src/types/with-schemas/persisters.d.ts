@@ -6,8 +6,6 @@ import {
   OptionalSchemas,
   OptionalTablesSchema,
   Store,
-  Tables,
-  Values,
 } from './store.d';
 import {
   MergeableChanges,
@@ -113,16 +111,10 @@ export interface Persister<
   SupportsMergeableStore extends boolean = false,
 > {
   /// Persister.load
-  load(
-    initialTables?: Tables<Schemas[0], true>,
-    initialValues?: Values<Schemas[1], true>,
-  ): Promise<this>;
+  load(initialContent?: Content<Schemas, true>): Promise<this>;
 
   /// Persister.startAutoLoad
-  startAutoLoad(
-    initialTables?: Tables<Schemas[0], true>,
-    initialValues?: Values<Schemas[1], true>,
-  ): Promise<this>;
+  startAutoLoad(initialContent?: Content<Schemas, true>): Promise<this>;
 
   /// Persister.stopAutoLoad
   stopAutoLoad(): this;

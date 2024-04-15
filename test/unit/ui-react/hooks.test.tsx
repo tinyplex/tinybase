@@ -446,7 +446,7 @@ describe('Create Hooks', () => {
       JSON.stringify([1, {loads: 0, saves: 0}, null]),
     );
     await act(async () => {
-      await _persister?.load({t1: {r1: {c1: 1}}});
+      await _persister?.load([{t1: {r1: {c1: 1}}}, {}]);
     });
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([1, {loads: 1, saves: 0}, 1]),
@@ -478,7 +478,7 @@ describe('Create Hooks', () => {
       }
     });
     const initPersister = jest.fn(async (persister: Persister, id: number) => {
-      await persister.load({t1: {r1: {c1: id}}});
+      await persister.load([{t1: {r1: {c1: id}}}, {}]);
     });
     const Test = ({id}: {id: number}) => {
       const store = useCreateStore(initStore);
@@ -531,7 +531,7 @@ describe('Create Hooks', () => {
       return persister;
     });
     const initPersister = jest.fn(async (persister: Persister, id: number) => {
-      await persister.load({t1: {r1: {c1: id}}});
+      await persister.load([{t1: {r1: {c1: id}}}, {}]);
     });
     const destroyPersister = jest.fn((persister: Persister) => {
       expect(persisters).toContain(persister);
@@ -602,7 +602,7 @@ describe('Create Hooks', () => {
       JSON.stringify([1, {loads: 0, saves: 0}, null]),
     );
     await act(async () => {
-      await _synchronizer?.load({t1: {r1: {c1: 1}}});
+      await _synchronizer?.load([{t1: {r1: {c1: 1}}}, {}]);
     });
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([1, {loads: 1, saves: 0}, 1]),
@@ -635,7 +635,7 @@ describe('Create Hooks', () => {
     );
     const initSynchronizer = jest.fn(
       async (synchronizer: Synchronizer, id: number) => {
-        await synchronizer.load({t1: {r1: {c1: id}}});
+        await synchronizer.load([{t1: {r1: {c1: id}}}, {}]);
       },
     );
     const Test = ({id}: {id: number}) => {
@@ -690,7 +690,7 @@ describe('Create Hooks', () => {
     );
     const initSynchronizer = jest.fn(
       async (synchronizer: Synchronizer, id: number) => {
-        await synchronizer.load({t1: {r1: {c1: id}}});
+        await synchronizer.load([{t1: {r1: {c1: id}}}, {}]);
       },
     );
     const destroySynchronizer = jest.fn((synchronizer: Synchronizer) => {

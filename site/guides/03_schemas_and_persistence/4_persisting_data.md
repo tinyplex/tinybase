@@ -93,7 +93,7 @@ synchronous).
 In this example, both automatic loading and saving are configured:
 
 ```js
-await persister.startAutoLoad({pets: {fido: {species: 'dog'}}});
+await persister.startAutoLoad([{pets: {fido: {species: 'dog'}}}, {}]);
 await persister.startAutoSave();
 
 store.delValues().setTables({pets: {felix: {species: 'cat'}}});

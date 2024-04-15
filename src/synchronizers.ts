@@ -11,7 +11,7 @@ import {DEBUG, ifNotUndefined, isUndefined, promiseNew} from './common/other';
 import {Id, IdOrNull} from './types/common';
 import {IdMap, mapGet, mapNew, mapSet} from './common/map';
 import {MessageType, Receive, Send, Synchronizer} from './types/synchronizers';
-import {Tables, Values} from './types/store';
+import {Content} from './types/store';
 import {EMPTY_STRING} from './common/strings';
 import {PersisterListener} from './types/persisters';
 import {collDel} from './common/coll';
@@ -200,10 +200,8 @@ export const createCustomSynchronizer = (
 
   const delPersisterListener = () => (persisterListener = undefined);
 
-  const startSync = async (initialTables?: Tables, initialValues?: Values) =>
-    await (
-      await persister.startAutoLoad(initialTables, initialValues)
-    ).startAutoSave();
+  const startSync = async (initialContent?: Content) =>
+    await (await persister.startAutoLoad(initialContent)).startAutoSave();
 
   const stopSync = () => persister.stopAutoLoad().stopAutoSave();
 
