@@ -615,7 +615,7 @@
  * const store = createStore();
  * const persister = createSessionPersister(store, 'pets');
  *
- * await persister.startAutoLoad({pets: {fido: {species: 'dog'}}});
+ * await persister.startAutoLoad([{pets: {fido: {species: 'dog'}}}, {}]);
  * await persister.startAutoSave();
  *
  * store.setTables({pets: {felix: {species: 'cat'}}});
@@ -642,7 +642,7 @@
    * The load method gets persisted data from storage, and loads it into the
    * Store with which the Persister is associated, once.
    *
-   * The optional parameters allow you to specify what the initial content for
+   * The optional parameter allows you to specify what the initial content for
    * the Store will be if there is nothing currently persisted or if the load
    * fails (for example when the Persister is remote and the environment is
    * offline). This allows you to fallback or instantiate a Store whether it's
@@ -652,10 +652,8 @@
    * machine or a filesystem. Even for those storage types that are synchronous
    * (like browser storage) it is still recommended that you `await` calls to
    * this method or handle the return type natively as a Promise.
-   * @param initialTables An optional Tables object used when the underlying
+   * @param initialContent An optional Content object used when the underlying
    * storage has not previously been populated.
-   * @param initialValues An optional Values object used when the underlying
-   * storage has not previously been populated, since v3.0.
    * @returns A Promise containing a reference to the Persister object.
    * @example
    * This example creates an empty Store, and loads data into it from the
@@ -684,7 +682,7 @@
    * const store = createStore();
    * const persister = createSessionPersister(store, 'pets');
    *
-   * await persister.load({pets: {fido: {species: 'dog'}}});
+   * await persister.load([{pets: {fido: {species: 'dog'}}}, {}]);
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog'}}}
    *
@@ -703,7 +701,7 @@
    * into the Store with which the Persister is associated, once, and then
    * continuously.
    *
-   * The optional parameters allow you to specify what the initial content for
+   * The optional parameter allows you to specify what the initial content for
    * the Store will be if there is nothing currently persisted or if the load
    * fails (for example when the Persister is remote and the environment is
    * offline). This allows you to fallback or instantiate a Store whether it's
@@ -718,10 +716,8 @@
    * the asynchronous load method. Even for those storage types that are
    * synchronous (like browser storage) it is still recommended that you `await`
    * calls to this method or handle the return type natively as a Promise.
-   * @param initialTables An optional Tables object used when the underlying
+   * @param initialContent An optional Content object used when the underlying
    * storage has not previously been populated.
-   * @param initialValues An optional Values object used when the underlying
-   * storage has not previously been populated, since v3.0.
    * @returns A Promise containing a reference to the Persister object.
    * @example
    * This example creates an empty Store, and loads data into it from the
@@ -734,7 +730,7 @@
    * const store = createStore();
    * const persister = createSessionPersister(store, 'pets');
    *
-   * await persister.startAutoLoad({pets: {fido: {species: 'dog'}}});
+   * await persister.startAutoLoad([{pets: {fido: {species: 'dog'}}}, {}]);
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog'}}}
    *
