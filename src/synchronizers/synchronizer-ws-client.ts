@@ -16,7 +16,7 @@ export const createWsSynchronizer = (async <
 >(
   store: MergeableStore,
   webSocket: WebSocketType,
-  requestTimeoutSeconds?: number,
+  requestTimeoutSeconds: number = 1,
   onIgnoredError?: (error: any) => void,
 ) => {
   let currentReceive: Receive;
