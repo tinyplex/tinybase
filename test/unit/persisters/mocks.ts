@@ -341,6 +341,7 @@ const createCustomLocalSynchronizer = (
     (): void => {
       clients.delete(clientId);
     },
+    0.001,
   );
 };
 
