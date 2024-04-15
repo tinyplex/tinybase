@@ -7,7 +7,18 @@ import {Database} from 'sqlite3';
 
 describe.each(Object.entries(VARIANTS))(
   '%s',
-  (_name, [getOpenDatabase, , getPersister, cmd, close, autoLoadPause]) => {
+  (
+    _name,
+    [
+      getOpenDatabase,
+      ,
+      getPersister,
+      cmd,
+      close,
+      autoLoadPause = 20,
+      autoLoadIntervalSeconds = 0.02,
+    ],
+  ) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
 
     let db: Database;
@@ -61,6 +72,7 @@ describe.each(Object.entries(VARIANTS))(
         const persister = getPersister(store, db, {
           mode: 'json',
           storeTableName: 'test',
+          autoLoadIntervalSeconds,
         });
         await persister.save();
         expect(await getDatabase(db)).toEqual({
@@ -84,7 +96,10 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('nothing, empty config', async () => {
-        const persister = getPersister(store, db, {mode: 'json'});
+        const persister = getPersister(store, db, {
+          mode: 'json',
+          autoLoadIntervalSeconds,
+        });
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
@@ -260,9 +275,15 @@ describe.each(Object.entries(VARIANTS))(
       let persister2: Persister;
       beforeEach(() => {
         store1 = createStore();
-        persister1 = getPersister(store1, db);
+        persister1 = getPersister(store1, db, {
+          mode: 'json',
+          autoLoadIntervalSeconds,
+        });
         store2 = createStore();
-        persister2 = getPersister(store2, db);
+        persister2 = getPersister(store2, db, {
+          mode: 'json',
+          autoLoadIntervalSeconds,
+        });
       });
 
       test('manual', async () => {
