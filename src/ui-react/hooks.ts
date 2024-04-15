@@ -85,11 +85,13 @@ import {
   useCheckpointsIds as useCheckpointsIdsDecl,
   useCreateCheckpoints as useCreateCheckpointsDecl,
   useCreateIndexes as useCreateIndexesDecl,
+  useCreateMergeableStore as useCreateMergeableStoreDecl,
   useCreateMetrics as useCreateMetricsDecl,
   useCreatePersister as useCreatePersisterDecl,
   useCreateQueries as useCreateQueriesDecl,
   useCreateRelationships as useCreateRelationshipsDecl,
   useCreateStore as useCreateStoreDecl,
+  useCreateSynchronizer as useCreateSynchronizerDecl,
   useDelCellCallback as useDelCellCallbackDecl,
   useDelRowCallback as useDelRowCallbackDecl,
   useDelTableCallback as useDelTableCallbackDecl,
@@ -227,8 +229,10 @@ import {
   useThingIds,
 } from './context';
 import {ListenerArgument} from '../common/listeners';
+import {MergeableStore} from '../types/mergeable-store';
 import {Persister} from '../types/persisters.d';
 import React from 'react';
+import {Synchronizer} from '../types/synchronizers';
 import {TRANSACTION} from '../tools/common/strings';
 import {objIsEqual} from '../common/obj';
 
@@ -420,6 +424,12 @@ export const useCreateStore: typeof useCreateStoreDecl = (
   createDeps: React.DependencyList = EMPTY_ARRAY,
   // eslint-disable-next-line react-hooks/exhaustive-deps
 ): Store => useMemo(create, createDeps);
+
+export const useCreateMergeableStore: typeof useCreateMergeableStoreDecl = (
+  create: () => MergeableStore,
+  createDeps: React.DependencyList = EMPTY_ARRAY,
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+): MergeableStore => useMemo(create, createDeps);
 
 export const useStoreIds: typeof useStoreIdsDecl = () => useThingIds(1);
 
@@ -1748,7 +1758,6 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
 ): PersisterOrUndefined => {
   const [, rerender] = useState<[]>();
   const [persister, setPersister] = useState<any>();
-
   useEffect(
     () => {
       const newPersister = create(store);
@@ -1776,4 +1785,46 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
     [persister, ...destroyDeps],
   );
   return persister;
+};
+
+export const useCreateSynchronizer: typeof useCreateSynchronizerDecl = <
+  SynchronizerOrUndefined extends Synchronizer | undefined,
+>(
+  store: MergeableStore,
+  create: (store: MergeableStore) => Promise<SynchronizerOrUndefined>,
+  createDeps: React.DependencyList = EMPTY_ARRAY,
+  then?: (synchronizer: Synchronizer) => Promise<void>,
+  thenDeps: React.DependencyList = EMPTY_ARRAY,
+  destroy?: (synchronizer: Synchronizer) => void,
+  destroyDeps: React.DependencyList = EMPTY_ARRAY,
+): SynchronizerOrUndefined => {
+  const [, rerender] = useState<[]>();
+  const [synchronizer, setSynchronizer] = useState<any>();
+  useEffect(
+    () => {
+      (async () => {
+        const newSynchronizer = await create(store);
+        setSynchronizer(newSynchronizer);
+        if (newSynchronizer && then) {
+          (async () => {
+            await then(newSynchronizer);
+            rerender([]);
+          })();
+        }
+      })();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [store, ...createDeps, ...thenDeps],
+  );
+  useEffect(
+    () => () => {
+      if (synchronizer) {
+        synchronizer.destroy();
+        destroy?.(synchronizer);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [synchronizer, ...destroyDeps],
+  );
+  return synchronizer;
 };
