@@ -8,7 +8,18 @@ import {Database} from 'sqlite3';
 
 describe.each(Object.entries(VARIANTS))(
   '%s',
-  (_name, [getOpenDatabase, , getPersister, cmd, close, autoLoadPause]) => {
+  (
+    _name,
+    [
+      getOpenDatabase,
+      ,
+      getPersister,
+      cmd,
+      close,
+      autoLoadPause = 20,
+      autoLoadIntervalSeconds = 0.02,
+    ],
+  ) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
 
     let db: Database;
@@ -31,7 +42,10 @@ describe.each(Object.entries(VARIANTS))(
         });
 
         test('default (off)', async () => {
-          await getPersister(store, db, {mode: 'tabular'}).save();
+          await getPersister(store, db, {
+            mode: 'tabular',
+            autoLoadIntervalSeconds,
+          }).save();
           expect(await getDatabase(db)).toEqual({});
         });
 
@@ -40,6 +54,7 @@ describe.each(Object.entries(VARIANTS))(
             await getPersister(store, db, {
               mode: 'tabular',
               tables: {save: {t1: 't1', t2: 't2'}},
+              autoLoadIntervalSeconds,
             }).save();
             await pause();
             expect(await getDatabase(db)).toEqual({
@@ -57,6 +72,7 @@ describe.each(Object.entries(VARIANTS))(
             await getPersister(store, db, {
               mode: 'tabular',
               tables: {save: {t1: 'test_t1'}},
+              autoLoadIntervalSeconds,
             }).save();
             await pause();
             expect(await getDatabase(db)).toEqual({
@@ -81,6 +97,7 @@ describe.each(Object.entries(VARIANTS))(
                   t4: {tableName: 'tinybase_values'}, // @ts-ignore
                   t5: false,
                 },
+                autoLoadIntervalSeconds,
               },
             }).save();
             await pause();
@@ -106,6 +123,7 @@ describe.each(Object.entries(VARIANTS))(
             await getPersister(store, db, {
               mode: 'tabular',
               values: {save: true},
+              autoLoadIntervalSeconds,
             }).save();
             await pause();
             expect(await getDatabase(db)).toEqual({
@@ -121,6 +139,7 @@ describe.each(Object.entries(VARIANTS))(
               await getPersister(store, db, {
                 mode: 'tabular',
                 values: {save: true, tableName: 'values'},
+                autoLoadIntervalSeconds,
               }).save();
               expect(await getDatabase(db)).toEqual({
                 values: [
@@ -134,6 +153,7 @@ describe.each(Object.entries(VARIANTS))(
               await getPersister(store, db, {
                 mode: 'tabular',
                 values: {save: true, tableName: 'tinybase values'},
+                autoLoadIntervalSeconds,
               }).save();
               expect(await getDatabase(db)).toEqual({
                 'tinybase values': [
@@ -147,6 +167,7 @@ describe.each(Object.entries(VARIANTS))(
               await getPersister(store, db, {
                 mode: 'tabular',
                 values: {save: true, tableName: 'tinybase "values"'},
+                autoLoadIntervalSeconds,
               }).save();
               expect(await getDatabase(db)).toEqual({
                 'tinybase "values"': [
@@ -178,7 +199,10 @@ describe.each(Object.entries(VARIANTS))(
         });
 
         test('default (off)', async () => {
-          await getPersister(store, db, {mode: 'tabular'}).load();
+          await getPersister(store, db, {
+            mode: 'tabular',
+            autoLoadIntervalSeconds,
+          }).load();
           expect(store.getContent()).toEqual([{}, {}]);
         });
 
@@ -187,6 +211,7 @@ describe.each(Object.entries(VARIANTS))(
             await getPersister(store, db, {
               mode: 'tabular',
               tables: {load: {t1: 't1', t2: 't2'}},
+              autoLoadIntervalSeconds,
             }).load();
             expect(store.getContent()).toEqual([
               {t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}},
@@ -197,6 +222,7 @@ describe.each(Object.entries(VARIANTS))(
             await getPersister(store, db, {
               mode: 'tabular',
               tables: {load: {t1: 'test_t1'}},
+              autoLoadIntervalSeconds,
             }).load();
             expect(store.getContent()).toEqual([{test_t1: {r1: {c1: 1}}}, {}]);
           });
@@ -240,6 +266,7 @@ describe.each(Object.entries(VARIANTS))(
                   tinybase_values: {tableId: 'values'},
                 },
               },
+              autoLoadIntervalSeconds,
             }).load();
             expect(store.getContent()).toEqual([
               {
@@ -258,6 +285,7 @@ describe.each(Object.entries(VARIANTS))(
             await getPersister(store, db, {
               mode: 'tabular',
               values: {load: true},
+              autoLoadIntervalSeconds,
             }).load();
             expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
           });
@@ -274,6 +302,7 @@ describe.each(Object.entries(VARIANTS))(
               await getPersister(store, db, {
                 mode: 'tabular',
                 values: {load: true, tableName: 'values'},
+                autoLoadIntervalSeconds,
               }).load();
               expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
             });
@@ -289,6 +318,7 @@ describe.each(Object.entries(VARIANTS))(
               await getPersister(store, db, {
                 mode: 'tabular',
                 values: {load: true, tableName: 'tinybase values'},
+                autoLoadIntervalSeconds,
               }).load();
               expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
             });
@@ -304,6 +334,7 @@ describe.each(Object.entries(VARIANTS))(
               await getPersister(store, db, {
                 mode: 'tabular',
                 values: {load: true, tableName: 'tinybase "values"'},
+                autoLoadIntervalSeconds,
               }).load();
               expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
             });
@@ -322,6 +353,7 @@ describe.each(Object.entries(VARIANTS))(
             save: {t1: 't1', t2: 't2', t3: 't3'},
           },
           values: {load: true, save: true},
+          autoLoadIntervalSeconds,
         });
       });
 
@@ -436,6 +468,7 @@ describe.each(Object.entries(VARIANTS))(
               mode: 'tabular',
               tables: {save: {t1: {tableName: 't1', deleteEmptyColumns: true}}},
               values: {save: true},
+              autoLoadIntervalSeconds,
             });
             store.setCell('t1', 'r2', 'c2', 2).setCell('t1', 'r3', 'c3', 3);
             await persister.save();
@@ -481,6 +514,7 @@ describe.each(Object.entries(VARIANTS))(
                 },
               },
               values: {save: true},
+              autoLoadIntervalSeconds,
             });
             store.setCell('t2', 'r2', 'c2', 2).setCell('t3', 'r3', 'c3', 3);
             await persister.save();
@@ -527,6 +561,7 @@ describe.each(Object.entries(VARIANTS))(
                 },
               },
               values: {save: true},
+              autoLoadIntervalSeconds,
             });
             store.setCell('t2', 'r2', 'c2', 2).setCell('t3', 'r3', 'c3', 3);
             await persister.save();
@@ -661,6 +696,7 @@ describe.each(Object.entries(VARIANTS))(
             save: {t1: 't1', t2: 't2', t3: 't3'},
           },
           values: {load: true, save: true},
+          autoLoadIntervalSeconds,
         });
       });
 
@@ -823,6 +859,7 @@ describe.each(Object.entries(VARIANTS))(
               save: {t1: 't1', t2: 't2', t3: 't3'},
             },
             values: {load: true, save: true},
+            autoLoadIntervalSeconds,
           },
           (sql: string, args?: any[]) => sqlLogs.push([sql, args]),
         );
@@ -1436,12 +1473,14 @@ describe.each(Object.entries(VARIANTS))(
           mode: 'tabular',
           tables: {load: {t1: 't1', t2: 't2'}, save: {t1: 't1', t2: 't2'}},
           values: {load: true, save: true},
+          autoLoadIntervalSeconds,
         });
         store2 = createStore();
         persister2 = getPersister(store2, db, {
           mode: 'tabular',
           tables: {load: {t1: 't1', t2: 't2'}, save: {t1: 't1', t2: 't2'}},
           values: {load: true, save: true},
+          autoLoadIntervalSeconds,
         });
       });
 
