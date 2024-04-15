@@ -5,14 +5,23 @@ import {OptionalSchemas} from '../store';
 import {Synchronizer} from '../synchronizers';
 import {WebSocket as WsWebSocket} from 'ws';
 
+export type WebSocketTypes = WebSocket | WsWebSocket;
+
 /// WsSynchronizer
-export interface WsSynchronizer<Schemas extends OptionalSchemas>
-  extends Synchronizer<Schemas> {}
+export interface WsSynchronizer<
+  Schemas extends OptionalSchemas,
+  WebSocketType extends WebSocketTypes,
+> extends Synchronizer<Schemas> {
+  getWebSocket(): WebSocketType;
+}
 
 /// createWsSynchronizer
-export function createWsSynchronizer<Schemas extends OptionalSchemas>(
+export function createWsSynchronizer<
+  Schemas extends OptionalSchemas,
+  WebSocketType extends WebSocketTypes,
+>(
   store: MergeableStore<Schemas>,
-  webSocket: WebSocket | WsWebSocket,
+  webSocket: WebSocketType,
   requestTimeoutSeconds?: number,
   onIgnoredError?: (error: any) => void,
-): Promise<WsSynchronizer<Schemas>>;
+): Promise<WsSynchronizer<Schemas, WebSocketType>>;
