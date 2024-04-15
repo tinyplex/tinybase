@@ -61,7 +61,9 @@ import {
   ResultTableCellIdsListener,
   ResultTableListener,
 } from './queries.d';
+import {MergeableStore} from './mergeable-store';
 import {Persister} from './persisters.d';
+import {Synchronizer} from './synchronizers';
 
 /// StoreOrStoreId
 export type StoreOrStoreId = Store | Id;
@@ -92,6 +94,12 @@ export function useCreateStore(
   create: () => Store,
   createDeps?: React.DependencyList,
 ): Store;
+
+/// useCreateMergeableStore
+export function useCreateMergeableStore(
+  create: () => MergeableStore,
+  createDeps?: React.DependencyList,
+): MergeableStore;
 
 /// useStoreIds
 export function useStoreIds(): Ids;
@@ -964,6 +972,19 @@ export function useCreatePersister<
   destroy?: (persister: Persister) => void,
   destroyDeps?: React.DependencyList,
 ): PersisterOrUndefined;
+
+/// useCreateSynchronizer
+export function useCreateSynchronizer<
+  SynchronizerOrUndefined extends Synchronizer | undefined,
+>(
+  store: MergeableStore,
+  create: (store: MergeableStore) => Promise<SynchronizerOrUndefined>,
+  createDeps?: React.DependencyList,
+  then?: (synchronizer: Synchronizer) => Promise<void>,
+  thenDeps?: React.DependencyList,
+  destroy?: (synchronizer: Synchronizer) => void,
+  destroyDeps?: React.DependencyList,
+): SynchronizerOrUndefined;
 
 /// ExtraProps
 export type ExtraProps = {[propName: string]: any};

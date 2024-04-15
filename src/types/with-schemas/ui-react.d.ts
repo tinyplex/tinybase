@@ -105,8 +105,10 @@ import {
   ResultTableCellIdsListener,
   ResultTableListener,
 } from './queries.d';
+import {MergeableStore} from './mergeable-store';
 import {Persister} from './persisters.d';
 import {ReactElement} from 'react';
+import {Synchronizer} from './synchronizers.d';
 
 export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// StoreOrStoreId
@@ -135,6 +137,12 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     create: () => Store<Schemas>,
     createDeps?: React.DependencyList,
   ) => Store<Schemas>;
+
+  /// useCreateMergeableStore
+  useCreateMergeableStore: (
+    create: () => MergeableStore<Schemas>,
+    createDeps?: React.DependencyList,
+  ) => MergeableStore<Schemas>;
 
   /// useStoreIds
   useStoreIds: () => Ids;
@@ -1148,6 +1156,21 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     destroy?: (persister: Persister<Schemas>) => void,
     destroyDeps?: React.DependencyList,
   ) => PersisterOrUndefined;
+
+  /// useCreateSynchronizer
+  useCreateSynchronizer: <
+    SynchronizerOrUndefined extends Synchronizer<Schemas> | undefined,
+  >(
+    store: MergeableStore<Schemas>,
+    create: (
+      store: MergeableStore<Schemas>,
+    ) => Promise<SynchronizerOrUndefined>,
+    createDeps?: React.DependencyList,
+    then?: (synchronizer: Synchronizer<Schemas>) => Promise<void>,
+    thenDeps?: React.DependencyList,
+    destroy?: (synchronizer: Synchronizer<Schemas>) => void,
+    destroyDeps?: React.DependencyList,
+  ) => SynchronizerOrUndefined;
 
   /// ExtraProps
   ExtraProps: ExtraProps;
