@@ -81,6 +81,7 @@ const mockCustomSynchronizer: Synchronizable<Map<string, Receive>> = {
       (): void => {
         clients.delete(clientId);
       },
+      0.001,
     );
   },
   pauseMilliseconds: 2,
