@@ -1,6 +1,7 @@
 import {
   Changes,
   Content,
+  DatabasePersisterConfig,
   Id,
   MergeableChanges,
   MergeableContent,
@@ -245,7 +246,7 @@ export const mockMergeableChangesListener: Persistable<string> =
   }, true);
 
 export const mockFile: Persistable = {
-  autoLoadPause: 100,
+  autoLoadPause: 200,
   getLocation: async (): Promise<string> => {
     tmp.setGracefulCleanup();
     return tmp.fileSync().name;
@@ -564,20 +565,26 @@ export const mockIndexedDb = {
 const getMockedSqlite = <Location>(
   getLocation: () => Promise<Location>,
   getLocationMethod: GetLocationMethod<Location>,
-  getPersister: (store: Store, location: Location) => Persister,
+  getPersister: (
+    store: Store,
+    location: Location,
+    storeTableOrConfig: DatabasePersisterConfig,
+  ) => Persister,
   cmd: (
     location: Location,
     sql: string,
     args?: any[],
   ) => Promise<{[id: string]: any}[]>,
   close: (location: Location) => Promise<void>,
-  autoLoadPause: number | undefined,
+  autoLoadPause = 10,
+  autoLoadIntervalSeconds = 0.1,
 ): Persistable<Location> => {
   const mockSqlite = {
     beforeEach: mockFetchWasm,
     getLocation,
     getLocationMethod,
-    getPersister,
+    getPersister: (store: Store, location: Location) =>
+      getPersister(store, location, {mode: 'json', autoLoadIntervalSeconds}),
     get: async (location: Location): Promise<Content | void> =>
       JSON.parse(
         (
