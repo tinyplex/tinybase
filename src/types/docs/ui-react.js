@@ -227,6 +227,10 @@
  */
 /// useCreateStore
 /**
+ * The useCreateMergeableStore hook
+ */
+/// useCreateMergeableStore
+/**
  * The useStoreIds hook is used to retrieve the Ids of all the named Store
  * objects present in the current Provider component context.
  * @returns A list of the Ids in the context.
@@ -9524,6 +9528,139 @@
  *  @category Persister hooks
  */
 /// useCreatePersister
+/**
+ * The useCreateSynchronizer hook is used to create a Synchronizer within a
+ * React application along with convenient memoization and callbacks.
+ *
+ * It is possible to create a Synchronizer outside of the React app with the
+ * regular createSynchronizer function and pass it in, but you may prefer to
+ * create it within the app, perhaps inside the top-level component. To prevent
+ * a new Synchronizer being created every time the app renders or re-renders,
+ * the useCreateMetrics hook performs the creation in an effect.
+ *
+ * If your asynchronous `create` function (the second parameter to the hook)
+ * contains dependencies, the changing of which should cause the Synchronizer to
+ * be recreated, you can provide them in an array in the third parameter, just
+ * as you would for any React hook with dependencies. The MergeableStore passed
+ * in as the first parameter of this hook is used as a dependency by default.
+ *
+ * A second callback, called `then`, can be provided as the fourth parameter.
+ * This is called after the creation, and can also be asynchronous, so that you
+ * can configure the Synchronizer with the startSync method, for example. If
+ * this callback contains dependencies, the changing of which should cause the
+ * Synchronizer to be reconfigured, you can provide them in an array in the
+ * fifth parameter. The Synchronizer itself is used as a dependency by default.
+ *
+ * The `create` function can return undefined, meaning that you can enable or
+ * disable synchronization conditionally within this hook. This is useful for
+ * applications which might turn on or off their cloud synchronization or
+ * collaboration features.
+ *
+ * This hook ensures the Synchronizer object is destroyed whenever a new one is
+ * created or the component is unmounted.
+ * @param store A reference to the MergeableStore for which to create a new
+ * Synchronizer object.
+ * @param create An asynchronous function for performing the creation steps of
+ * the Synchronizer object for the Store.
+ * @param createDeps An optional array of dependencies for the `create`
+ * function, which, if any change, result in its rerun. This parameter defaults
+ * to an empty array.
+ * @param then An optional callback for performing asynchronous post-creation
+ * steps on the Synchronizer, such as starting automatic synchronization.
+ * @param thenDeps An optional array of dependencies for the `then` callback,
+ * which, if any change, result in its rerun. This parameter defaults to an
+ * empty array.
+ * @param destroy An optional callback whenever the Synchronizer is destroyed
+ * due to a change in the `createDeps` dependencies.
+ * @param destroyDeps An optional array of dependencies for the `destroy`
+ * callback, which, if any change, result in `destroy` and `then` being rerun.
+ * This parameter defaults to an empty array.
+ * @returns A reference to the Synchronizer.
+ * @example
+ * This example creates a Synchronizer at the top level of a React application.
+ * Even though the App component is rendered twice, the Synchronizer creation
+ * only occurs once by default.
+ *
+ * ```jsx
+ * const App = () => {
+ *   const store = useCreateMergeableStore(() => createMergeableStore('s1'));
+ *   const synchronizer = useCreateSynchronizer(
+ *     store,
+ *     async (store) => {
+ *       console.log('Synchronizer created');
+ *       return await createLocalSynchronizer(store, 'pets');
+ *     },
+ *   );
+ *   return <span>{JSON.stringify(useTables(store))}</span>;
+ * };
+ *
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App />); // !act
+ * // -> 'Synchronizer created'
+ *
+ * // ... // !act
+ * root.render(<App />); // !act
+ * // No second Synchronizer creation
+ *
+ * root.unmount(); // !act
+ * ```
+ * @example
+ * This example creates a Synchronizer at the top level of a React application.
+ * The App component is rendered twice, each with a different top-level prop.
+ * The useCreateSynchronizer hook takes the `url` prop as a dependency, and so
+ * the Synchronizer object is created again on the second render. The first is
+ * destroyed and the `destroy` parameter is called for it.  A `then` parameter
+ * is provided to start both Synchronizers' synchronization.
+ *
+ * ```jsx
+ * const server1 = createWsServer(new ws.WebSocketServer({port: 8044}));
+ * const server2 = createWsServer(new ws.WebSocketServer({port: 8045}));
+ *
+ * const App = ({url}) => {
+ *   const store = useCreateMergeableStore(() => createMergeableStore('s1'));
+ *   const synchronizer = useCreateSynchronizer(
+ *     store,
+ *     async (store) => {
+ *       const webSocket = new WebSocket(url);
+ *       console.log(`Synchronizer created for ${webSocket.url}`);
+ *       return await createWsSynchronizer(store, webSocket);
+ *     },
+ *     [url],
+ *     async (synchronizer) => {
+ *       await synchronizer.startSync();
+ *     },
+ *     [],
+ *     (synchronizer) => {
+ *       const webSocket = synchronizer.getWebSocket();
+ *       console.log(`Synchronizer destroyed for ${webSocket.url}`);
+ *     },
+ *   );
+ *   return <span>{JSON.stringify(useTables(store))}</span>;
+ * };
+ *
+ * const app = document.createElement('div');
+ * const root = ReactDOMClient.createRoot(app);
+ * root.render(<App url="ws://localhost:8044/" />); // !act
+ * // ... // !act
+ * // -> 'Synchronizer created for ws://localhost:8044/'
+ *
+ *
+ * root.render(<App url="ws://localhost:8045/" />); // !act
+ * // ... // !act
+ * // -> 'Synchronizer created for ws://localhost:8045/'
+ * // -> 'Synchronizer destroyed for ws://localhost:8044/'
+ *
+ * root.unmount(); // !act
+ * // -> 'Synchronizer destroyed for ws://localhost:8045/'
+ *
+ * server1.destroy();
+ * server2.destroy();
+ * ```
+ * @category Synchronizer hooks
+ * @since v5.0.0
+ */
+/// useCreateSynchronizer
 /**
  * The ExtraProps type represents a set of arbitrary additional props.
  * @category Props
