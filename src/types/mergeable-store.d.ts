@@ -1,6 +1,6 @@
 /// mergeable-store
 
-import {CellOrUndefined, Store, ValueOrUndefined} from './store.d';
+import {CellOrUndefined, Content, Store, ValueOrUndefined} from './store.d';
 import {Id, Ids} from './common';
 
 /// Hash
