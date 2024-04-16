@@ -8,6 +8,10 @@
  */
 /// synchronizer-ws-server
 /**
+ * The WsServerStats type
+ */
+/// WsServerStats
+/**
  * The WsServer interface
  */
 /// WsServer
