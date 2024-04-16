@@ -3219,16 +3219,16 @@ exports[`getTransactionMergeableChanges After net noop transaction 1`] = `
 
 exports[`getTransactionMergeableChanges After transaction 1`] = `
 [
-  "Hc2DO@000008DKS9",
+  "",
   [
     [
-      "Hc2DO@000008DKS9",
+      "",
       {
         "t1": [
-          "Hc2DO@000008DKS9",
+          "",
           {
             "r1": [
-              "Hc2DO@000008DKS9",
+              "",
               {
                 "c1": [
                   "Hc2DO@000008DKS9",
@@ -3251,16 +3251,16 @@ exports[`getTransactionMergeableChanges After transaction 1`] = `
 
 exports[`getTransactionMergeableChanges After two transactions 1`] = `
 [
-  "Hc2DO@000008DKS9",
+  "",
   [
     [
-      "Hc2DO@000008DKS9",
+      "",
       {
         "t0": [
-          "Hc2DO@000008DKS9",
+          "",
           {
             "r0": [
-              "Hc2DO@000008DKS9",
+              "",
               {
                 "c0": [
                   "Hc2DO@000008DKS9",
@@ -3320,16 +3320,16 @@ exports[`getTransactionMergeableChanges After two transactions 2`] = `
 
 exports[`getTransactionMergeableChanges After two transactions 3`] = `
 [
-  "Hc2DO@000018DKS9",
+  "",
   [
     [
-      "Hc2DO@000018DKS9",
+      "",
       {
         "t1": [
-          "Hc2DO@000018DKS9",
+          "",
           {
             "r1": [
-              "Hc2DO@000018DKS9",
+              "",
               {
                 "c1": [
                   "Hc2DO@000018DKS9",
@@ -3406,16 +3406,16 @@ exports[`getTransactionMergeableChanges After two transactions 4`] = `
 
 exports[`getTransactionMergeableChanges During and after transaction 1`] = `
 [
-  "Hc2DO@000008DKS9",
+  "",
   [
     [
-      "Hc2DO@000008DKS9",
+      "",
       {
         "t1": [
-          "Hc2DO@000008DKS9",
+          "",
           {
             "r1": [
-              "Hc2DO@000008DKS9",
+              "",
               {
                 "c1": [
                   "Hc2DO@000008DKS9",
@@ -3438,16 +3438,16 @@ exports[`getTransactionMergeableChanges During and after transaction 1`] = `
 
 exports[`getTransactionMergeableChanges During and after transaction 2`] = `
 [
-  "Hc2DO@000008DKS9",
+  "",
   [
     [
-      "Hc2DO@000008DKS9",
+      "",
       {
         "t1": [
-          "Hc2DO@000008DKS9",
+          "",
           {
             "r1": [
-              "Hc2DO@000008DKS9",
+              "",
               {
                 "c1": [
                   "Hc2DO@000008DKS9",
@@ -3470,16 +3470,16 @@ exports[`getTransactionMergeableChanges During and after transaction 2`] = `
 
 exports[`getTransactionMergeableChanges Inside net noop transaction 1`] = `
 [
-  "Hc2DO@000008DKS9",
+  "",
   [
     [
-      "Hc2DO@000008DKS9",
+      "",
       {
         "t1": [
-          "Hc2DO@000008DKS9",
+          "",
           {
             "r1": [
-              "Hc2DO@000008DKS9",
+              "",
               {
                 "c1": [
                   "Hc2DO@000008DKS9",
