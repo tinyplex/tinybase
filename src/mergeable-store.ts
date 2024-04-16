@@ -235,13 +235,17 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       hasHashes,
     );
 
+    const contentTime = getLatestTime(tablesTime, valuesTime);
     stampUpdate(
       contentStampMap,
       hasHashes
         ? incomingContentOrChangesHash
         : tablesStampMap[2] ^ valuesStampMap[2],
-      getLatestTime(tablesTime, valuesTime),
+      contentTime,
     );
+
+    seenHlc(contentTime);
+
     return [tablesChanges, valuesChanges, 1];
   };
 
@@ -265,7 +269,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       );
       const [oldThingTime, , oldThingHash] = thingStampMap;
 
-      if (thingTime > oldThingTime) {
+      if (!oldThingTime || thingTime > oldThingTime) {
         stampUpdate(
           thingStampMap,
           hasHashes
@@ -289,7 +293,6 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         : (oldThingsTime ? getHash(oldThingsTime) : 0) ^ getHash(thingsTime);
     stampUpdate(thingsStampMap, thingsHash, thingsTime);
 
-    seenHlc(thingsTime);
     return [thingsTime, oldThingsHash, thingsStampMap[2]];
   };
 
@@ -431,7 +434,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     );
 
   const setDefaultContent = (content: Content): MergeableStore => {
-    transactionTime = '0';
+    transactionTime = EMPTY_STRING;
     store.setContent(content);
     return mergeableStore as MergeableStore;
   };

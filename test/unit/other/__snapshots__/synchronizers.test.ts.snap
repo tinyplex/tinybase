@@ -2583,44 +2583,44 @@ exports[`Syncs to/from customSynchronizer Multidirectional half tables, half val
 
 exports[`Syncs to/from customSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
 [
-  "0",
+  "",
   [
     [
-      "0",
+      "",
       {
         "t0": [
-          "0",
+          "",
           {
             "r0": [
-              "0",
+              "",
               {
                 "c0": [
-                  "0",
+                  "",
                   0,
-                  1773302445,
+                  401433231,
                 ],
               },
-              1613001927,
+              2660078143,
             ],
           },
-          2354965002,
+          2466603274,
         ],
       },
-      1619222932,
+      471459239,
     ],
     [
-      "0",
+      "",
       {
         "v0": [
-          "0",
+          "",
           0,
-          1773302445,
+          401433231,
         ],
       },
-      4195288285,
+      30487211,
     ],
   ],
-  2592892233,
+  499701516,
 ]
 `;
 
@@ -2833,44 +2833,44 @@ exports[`Syncs to/from customSynchronizer Unidirectional autoSave1 but not autoL
 
 exports[`Syncs to/from customSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
 [
-  "0",
+  "",
   [
     [
-      "0",
+      "",
       {
         "t0": [
-          "0",
+          "",
           {
             "r0": [
-              "0",
+              "",
               {
                 "c0": [
-                  "0",
+                  "",
                   0,
-                  1773302445,
+                  401433231,
                 ],
               },
-              1613001927,
+              2660078143,
             ],
           },
-          2354965002,
+          2466603274,
         ],
       },
-      1619222932,
+      471459239,
     ],
     [
-      "0",
+      "",
       {
         "v0": [
-          "0",
+          "",
           0,
-          1773302445,
+          401433231,
         ],
       },
-      4195288285,
+      30487211,
     ],
   ],
-  2592892233,
+  499701516,
 ]
 `;
 
@@ -5664,44 +5664,44 @@ exports[`Syncs to/from localSynchronizer Multidirectional half tables, half valu
 
 exports[`Syncs to/from localSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
 [
-  "0",
+  "",
   [
     [
-      "0",
+      "",
       {
         "t0": [
-          "0",
+          "",
           {
             "r0": [
-              "0",
+              "",
               {
                 "c0": [
-                  "0",
+                  "",
                   0,
-                  1773302445,
+                  401433231,
                 ],
               },
-              1613001927,
+              2660078143,
             ],
           },
-          2354965002,
+          2466603274,
         ],
       },
-      1619222932,
+      471459239,
     ],
     [
-      "0",
+      "",
       {
         "v0": [
-          "0",
+          "",
           0,
-          1773302445,
+          401433231,
         ],
       },
-      4195288285,
+      30487211,
     ],
   ],
-  2592892233,
+  499701516,
 ]
 `;
 
@@ -5914,44 +5914,44 @@ exports[`Syncs to/from localSynchronizer Unidirectional autoSave1 but not autoLo
 
 exports[`Syncs to/from localSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
 [
-  "0",
+  "",
   [
     [
-      "0",
+      "",
       {
         "t0": [
-          "0",
+          "",
           {
             "r0": [
-              "0",
+              "",
               {
                 "c0": [
-                  "0",
+                  "",
                   0,
-                  1773302445,
+                  401433231,
                 ],
               },
-              1613001927,
+              2660078143,
             ],
           },
-          2354965002,
+          2466603274,
         ],
       },
-      1619222932,
+      471459239,
     ],
     [
-      "0",
+      "",
       {
         "v0": [
-          "0",
+          "",
           0,
-          1773302445,
+          401433231,
         ],
       },
-      4195288285,
+      30487211,
     ],
   ],
-  2592892233,
+  499701516,
 ]
 `;
 
@@ -8745,44 +8745,44 @@ exports[`Syncs to/from wsSynchronizer Multidirectional half tables, half values:
 
 exports[`Syncs to/from wsSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
 [
-  "0",
+  "",
   [
     [
-      "0",
+      "",
       {
         "t0": [
-          "0",
+          "",
           {
             "r0": [
-              "0",
+              "",
               {
                 "c0": [
-                  "0",
+                  "",
                   0,
-                  1773302445,
+                  401433231,
                 ],
               },
-              1613001927,
+              2660078143,
             ],
           },
-          2354965002,
+          2466603274,
         ],
       },
-      1619222932,
+      471459239,
     ],
     [
-      "0",
+      "",
       {
         "v0": [
-          "0",
+          "",
           0,
-          1773302445,
+          401433231,
         ],
       },
-      4195288285,
+      30487211,
     ],
   ],
-  2592892233,
+  499701516,
 ]
 `;
 
@@ -8995,44 +8995,44 @@ exports[`Syncs to/from wsSynchronizer Unidirectional autoSave1 but not autoLoad2
 
 exports[`Syncs to/from wsSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
 [
-  "0",
+  "",
   [
     [
-      "0",
+      "",
       {
         "t0": [
-          "0",
+          "",
           {
             "r0": [
-              "0",
+              "",
               {
                 "c0": [
-                  "0",
+                  "",
                   0,
-                  1773302445,
+                  401433231,
                 ],
               },
-              1613001927,
+              2660078143,
             ],
           },
-          2354965002,
+          2466603274,
         ],
       },
-      1619222932,
+      471459239,
     ],
     [
-      "0",
+      "",
       {
         "v0": [
-          "0",
+          "",
           0,
-          1773302445,
+          401433231,
         ],
       },
-      4195288285,
+      30487211,
     ],
   ],
-  2592892233,
+  499701516,
 ]
 `;
 
