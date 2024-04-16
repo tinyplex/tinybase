@@ -33,6 +33,9 @@ export const getStampHash = (stamp: Stamp<unknown, true>): Hash => stamp[2];
 
 export const hashIdAndHash = (id: Id, hash: Hash) => getHash(id + ':' + hash);
 
+export const getLatestTime = (time1: Time, time2: Time) =>
+  time1 > time2 ? time1 : time2;
+
 export const stampUpdate = (
   stamp: Stamp<unknown, true>,
   hash: Hash,
