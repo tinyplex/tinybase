@@ -289,6 +289,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         : (oldThingsTime ? getHash(oldThingsTime) : 0) ^ getHash(thingsTime);
     stampUpdate(thingsStampMap, thingsHash, thingsTime);
 
+    seenHlc(thingsTime);
     return [thingsTime, oldThingsHash, thingsStampMap[2]];
   };
 
@@ -424,7 +425,6 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         ? store.transaction(() => {
             store.delTables().delValues();
             contentStampMap = newContentStampMap();
-            seenHlc(mergeableContent[0]);
             store.applyChanges(mergeContentOrChanges(mergeableContent, 1));
           })
         : 0,
@@ -444,19 +444,15 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           ? transactionTime ?? (transactionTime = getHlc())
           : EMPTY_STRING;
       const mergeableChanges: MergeableChanges = [
-        time,
-        [
-          stampNewObj(objIsEmpty(changedCells) ? EMPTY_STRING : time),
-          stampNewObj(objIsEmpty(changedValues) ? EMPTY_STRING : time),
-          1,
-        ],
+        EMPTY_STRING,
+        [stampNewObj(), stampNewObj(), 1],
       ];
       const [[, tablesObj], [, valuesObj]] = mergeableChanges[1];
 
       objToArray(changedCells, (changedTable, tableId) => {
-        const [, rowsObj] = (tablesObj[tableId] = stampNewObj(time));
+        const [, rowsObj] = (tablesObj[tableId] = stampNewObj());
         objToArray(changedTable, (changedRow, rowId) => {
-          const [, cellsObj] = (rowsObj[rowId] = stampNewObj(time));
+          const [, cellsObj] = (rowsObj[rowId] = stampNewObj());
           objToArray(
             changedRow,
             ([, newCell], cellId) => (cellsObj[cellId] = [time, newCell]),
@@ -476,10 +472,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const applyMergeableChanges = (
     mergeableChanges: MergeableChanges | MergeableContent,
   ): MergeableStore =>
-    disableListening(() => {
-      seenHlc(mergeableChanges[0]);
-      store.applyChanges(mergeContentOrChanges(mergeableChanges));
-    });
+    disableListening(() =>
+      store.applyChanges(mergeContentOrChanges(mergeableChanges)),
+    );
 
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableChanges = getMergeableContent();
