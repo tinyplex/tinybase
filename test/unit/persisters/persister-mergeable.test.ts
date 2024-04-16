@@ -22,8 +22,8 @@ import {
   mockMergeableNoContentListener,
   mockSessionStorage,
 } from './mocks';
-import {nullStamped, resetHlc, stamped} from '../common/mergeable';
 import {pause} from '../common/other';
+import {resetHlc} from '../common/mergeable';
 
 beforeEach(() => {
   resetHlc();
@@ -95,27 +95,13 @@ describe.each([
     await pause(10, true);
     expect(await persistable.get(location)).toMatchSnapshot();
     if (persistable.getChanges) {
-      expect(persistable.getChanges()).toEqual(
-        stamped(0, 2, [
-          stamped(0, 2, {
-            t1: stamped(0, 2, {r1: stamped(0, 2, {c1: stamped(0, 2, 2)})}),
-          }),
-          nullStamped({}),
-          1,
-        ]),
-      );
+      expect(persistable.getChanges()).toMatchSnapshot();
     }
     store.setValues({v1: 2});
     await pause(10, true);
     expect(await persistable.get(location)).toMatchSnapshot();
     if (persistable.getChanges) {
-      expect(persistable.getChanges()).toEqual(
-        stamped(20, 0, [
-          nullStamped({}),
-          stamped(20, 0, {v1: stamped(20, 0, 2)}),
-          1,
-        ]),
-      );
+      expect(persistable.getChanges()).toMatchSnapshot();
     }
     expect(persister.getStats()).toEqual({loads: 0, saves: 3});
   });

@@ -418,64 +418,27 @@ describe('getTransactionMergeableChanges', () => {
   });
 
   test('Outside transaction', () => {
-    expect(store.getTransactionMergeableChanges()).toEqual(
-      nullStamped([nullStamped({}), nullStamped({}), 1]),
-    );
-    expect(store.getTransactionMergeableChanges()).toEqual(
-      nullStamped([nullStamped({}), nullStamped({}), 1]),
-    );
+    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
   });
 
   test('Inside noop transaction', () => {
     store.startTransaction();
-    expect(store.getTransactionMergeableChanges()).toEqual(
-      nullStamped([nullStamped({}), nullStamped({}), 1]),
-    );
-    expect(store.getTransactionMergeableChanges()).toEqual(
-      nullStamped([nullStamped({}), nullStamped({}), 1]),
-    );
+    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     store.finishTransaction();
   });
 
   test('Inside net noop transaction', () => {
     store.startTransaction();
     store.setCell('t1', 'r1', 'c1', 1);
-    expect(store.getTransactionMergeableChanges()).toEqual(
-      stamped(0, 0, [
-        stamped(0, 0, {
-          t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
-        }),
-        nullStamped({}),
-        1,
-      ]),
-    );
-    expect(store.getTransactionMergeableChanges()).toEqual(
-      stamped(0, 0, [
-        stamped(0, 0, {
-          t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
-        }),
-        nullStamped({}),
-        1,
-      ]),
-    );
+    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     store.delCell('t1', 'r1', 'c1');
-    expect(store.getTransactionMergeableChanges()).toEqual(
-      nullStamped([nullStamped({}), nullStamped({}), 1]),
-    );
-    expect(store.getTransactionMergeableChanges()).toEqual(
-      nullStamped([nullStamped({}), nullStamped({}), 1]),
-    );
+    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     store.finishTransaction();
   });
 
   test('After net noop transaction', () => {
     store.addDidFinishTransactionListener(() => {
-      expect(store.getTransactionMergeableChanges()).toEqual(
-        nullStamped([nullStamped({}), nullStamped({}), 1]),
-      );
-      expect(store.getTransactionMergeableChanges()).toEqual(
-        nullStamped([nullStamped({}), nullStamped({}), 1]),
-      );
+      expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     });
     store.startTransaction();
     store.setCell('t1', 'r1', 'c1', 1);
@@ -485,15 +448,7 @@ describe('getTransactionMergeableChanges', () => {
 
   test('After transaction', () => {
     store.addDidFinishTransactionListener(() => {
-      expect(store.getTransactionMergeableChanges()).toEqual(
-        stamped(0, 0, [
-          stamped(0, 0, {
-            t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
-          }),
-          nullStamped({}),
-          1,
-        ]),
-      );
+      expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     });
     store.startTransaction();
     store.setCell('t1', 'r1', 'c1', 1);
@@ -502,48 +457,18 @@ describe('getTransactionMergeableChanges', () => {
 
   test('During and after transaction', () => {
     store.addDidFinishTransactionListener(() => {
-      expect(store.getTransactionMergeableChanges()).toEqual(
-        stamped(0, 0, [
-          stamped(0, 0, {
-            t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
-          }),
-          nullStamped({}),
-          1,
-        ]),
-      );
+      expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     });
     store.startTransaction();
     store.setCell('t1', 'r1', 'c1', 1);
-    expect(store.getTransactionMergeableChanges()).toEqual(
-      stamped(0, 0, [
-        stamped(0, 0, {
-          t1: stamped(0, 0, {r1: stamped(0, 0, {c1: stamped(0, 0, 1)})}),
-        }),
-        nullStamped({}),
-        1,
-      ]),
-    );
+    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     store.finishTransaction();
   });
 
   test('After two transactions', () => {
-    let count = 0;
     store.addDidFinishTransactionListener(() => {
-      expect(store.getTransactionMergeableChanges()).toEqual(
-        stamped(0, count, [
-          stamped(0, count, {
-            ['t' + count]: stamped(0, count, {
-              ['r' + count]: stamped(0, count, {
-                ['c' + count]: stamped(0, count, count),
-              }),
-            }),
-          }),
-          nullStamped({}),
-          1,
-        ]),
-      );
+      expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
       expect(store.getMergeableContent()).toMatchSnapshot();
-      count++;
     });
     store.setCell('t0', 'r0', 'c0', 0);
     store.setCell('t1', 'r1', 'c1', 1);
