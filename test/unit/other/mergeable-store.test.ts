@@ -514,30 +514,22 @@ describe('apply/setMergeableContent', () => {
 
   test('set into empty store', () => {
     store.setMergeableContent([
-      'Hc2DO@000008DKS9',
+      '',
       [
         [
-          'Hc2DO@000008DKS9',
+          '',
           {
             t1: [
-              'Hc2DO@000008DKS9',
+              '',
               {
-                r1: [
-                  'Hc2DO@000008DKS9',
-                  {c1: ['Hc2DO@000008DKS9', 1, 4065945599]},
-                  1279994494,
-                ],
+                r1: ['', {c1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 1279994494],
               },
               1293085726,
             ],
           },
           4033596827,
         ],
-        [
-          'Hc2DO@000008DKS9',
-          {v1: ['Hc2DO@000008DKS9', 1, 4065945599]},
-          2304392760,
-        ],
+        ['', {v1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 2304392760],
       ],
       2033316771,
     ] as MergeableContent);
@@ -548,30 +540,22 @@ describe('apply/setMergeableContent', () => {
   test('set over existing content', () => {
     store.setContent([{t1: {r1: {c0: 0}}}, {v0: 0}]);
     store.setMergeableContent([
-      'Hc2DO@000018DKS9',
+      '',
       [
         [
-          'Hc2DO@000018DKS9',
+          '',
           {
             t1: [
-              'Hc2DO@000018DKS9',
+              '',
               {
-                r1: [
-                  'Hc2DO@000018DKS9',
-                  {c1: ['Hc2DO@000018DKS9', 1, 3207404266]},
-                  1254797189,
-                ],
+                r1: ['', {c1: ['Hc2DO@000018DKS9', 1, 3207404266]}, 1254797189],
               },
               423436526,
             ],
           },
           639574078,
         ],
-        [
-          'Hc2DO@000018DKS9',
-          {v1: ['Hc2DO@000018DKS9', 1, 3207404266]},
-          2404136035,
-        ],
+        ['', {v1: ['Hc2DO@000018DKS9', 1, 3207404266]}, 2404136035],
       ],
       2840794205,
     ] as MergeableContent);
@@ -584,20 +568,20 @@ describe('apply/setMergeableContent', () => {
 
   test('set with wrong hashes', () => {
     store.setMergeableContent([
-      'Hc2DO@000018DKS9',
+      '',
       [
         [
-          'Hc2DO@000018DKS9',
+          '',
           {
             t1: [
-              'Hc2DO@000018DKS9',
+              '',
               {r1: ['Hc2DO@000018DKS9', {c1: ['Hc2DO@000018DKS9', 1, 1]}, 2]},
               3,
             ],
           },
           4,
         ],
-        ['Hc2DO@000018DKS9', {v1: ['Hc2DO@000018DKS9', 1, 5]}, 6],
+        ['', {v1: ['Hc2DO@000018DKS9', 1, 5]}, 6],
       ],
       7,
     ] as MergeableContent);
