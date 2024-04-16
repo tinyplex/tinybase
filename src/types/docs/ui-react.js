@@ -9584,13 +9584,10 @@
  * ```jsx
  * const App = () => {
  *   const store = useCreateMergeableStore(() => createMergeableStore('s1'));
- *   const synchronizer = useCreateSynchronizer(
- *     store,
- *     async (store) => {
- *       console.log('Synchronizer created');
- *       return await createLocalSynchronizer(store, 'pets');
- *     },
- *   );
+ *   const synchronizer = useCreateSynchronizer(store, async (store) => {
+ *     console.log('Synchronizer created');
+ *     return await createLocalSynchronizer(store, 'pets');
+ *   });
  *   return <span>{JSON.stringify(useTables(store))}</span>;
  * };
  *
@@ -9644,7 +9641,6 @@
  * root.render(<App url="ws://localhost:8044/" />); // !act
  * // ... // !act
  * // -> 'Synchronizer created for ws://localhost:8044/'
- *
  *
  * root.render(<App url="ws://localhost:8045/" />); // !act
  * // ... // !act
