@@ -377,42 +377,36 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     );
 
   const getMergeableTablesChanges = (relativeTo: CellHashes): TablesStamp => {
-    const [, [[tablesTime, tableStampMaps]]] = contentStampMap;
+    const [, [[, tableStampMaps]]] = contentStampMap;
     const tables: TablesStamp[1] = {};
     objForEach(relativeTo, (rowCellHashes, tableId) =>
-      ifNotUndefined(
-        mapGet(tableStampMaps, tableId),
-        ([tableTime, rowStampMaps]) => {
-          const table: TableStamp[1] = {};
-          objForEach(rowCellHashes, (cellHashes, rowId) =>
-            ifNotUndefined(
-              mapGet(rowStampMaps, rowId),
-              ([rowTime, cellStampMaps]) => {
-                const row: RowStamp[1] = mapToObj(
-                  cellStampMaps,
-                  stampClone,
-                  ([, , hash], cellId) => hash == cellHashes?.[cellId],
-                );
-                if (!objIsEmpty(row)) {
-                  table[rowId] = [rowTime, row];
-                }
-              },
-            ),
-          );
-          if (!objIsEmpty(table)) {
-            tables[tableId] = [tableTime, table];
-          }
-        },
-      ),
+      ifNotUndefined(mapGet(tableStampMaps, tableId), ([, rowStampMaps]) => {
+        const table: TableStamp[1] = {};
+        objForEach(rowCellHashes, (cellHashes, rowId) =>
+          ifNotUndefined(mapGet(rowStampMaps, rowId), ([, cellStampMaps]) => {
+            const row: RowStamp[1] = mapToObj(
+              cellStampMaps,
+              stampClone,
+              ([, , hash], cellId) => hash == cellHashes?.[cellId],
+            );
+            if (!objIsEmpty(row)) {
+              table[rowId] = [EMPTY_STRING, row];
+            }
+          }),
+        );
+        if (!objIsEmpty(table)) {
+          tables[tableId] = [EMPTY_STRING, table];
+        }
+      }),
     );
-    return [tablesTime, tables];
+    return [EMPTY_STRING, tables];
   };
 
   const getMergeableValuesHashes = (): ValuesHashes =>
     mapToObj(contentStampMap[1][1][1], getStampHash);
 
   const getMergeableValuesChanges = (relativeTo: ValuesHashes): ValuesStamp => [
-    contentStampMap[1][1][0],
+    EMPTY_STRING,
     mapToObj(
       contentStampMap[1][1][1],
       stampClone,
