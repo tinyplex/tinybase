@@ -47,10 +47,9 @@ export const stampUpdate = (
   }
 };
 
-export const stampNewObj = <Thing>(time: Time): Stamp<IdObj<Thing>> => [
-  time,
-  objNew<Thing>(),
-];
+export const stampNewObj = <Thing>(
+  time: Time = EMPTY_STRING,
+): Stamp<IdObj<Thing>> => [time, objNew<Thing>()];
 
 export const stampNewMap = <Thing>(time = EMPTY_STRING): StampMap<Thing> => [
   time,

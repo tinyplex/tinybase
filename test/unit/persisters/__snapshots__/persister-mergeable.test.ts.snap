@@ -1739,16 +1739,16 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves 3`] = `
 
 exports[`Persists to/from mockMergeableChangesListener autoSaves 4`] = `
 [
-  "Hc2DO@000028DKS9",
+  "",
   [
     [
-      "Hc2DO@000028DKS9",
+      "",
       {
         "t1": [
-          "Hc2DO@000028DKS9",
+          "",
           {
             "r1": [
-              "Hc2DO@000028DKS9",
+              "",
               {
                 "c1": [
                   "Hc2DO@000028DKS9",
@@ -1814,14 +1814,14 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves 5`] = `
 
 exports[`Persists to/from mockMergeableChangesListener autoSaves 6`] = `
 [
-  "Hc2DO@D00008DKS9",
+  "",
   [
     [
       "",
       {},
     ],
     [
-      "Hc2DO@D00008DKS9",
+      "",
       {
         "v1": [
           "Hc2DO@D00008DKS9",
@@ -2242,16 +2242,16 @@ exports[`Persists to/from mockMergeableContentListener autoSaves 3`] = `
 
 exports[`Persists to/from mockMergeableContentListener autoSaves 4`] = `
 [
-  "Hc2DO@000028DKS9",
+  "",
   [
     [
-      "Hc2DO@000028DKS9",
+      "",
       {
         "t1": [
-          "Hc2DO@000028DKS9",
+          "",
           {
             "r1": [
-              "Hc2DO@000028DKS9",
+              "",
               {
                 "c1": [
                   "Hc2DO@000028DKS9",
@@ -2317,14 +2317,14 @@ exports[`Persists to/from mockMergeableContentListener autoSaves 5`] = `
 
 exports[`Persists to/from mockMergeableContentListener autoSaves 6`] = `
 [
-  "Hc2DO@D00008DKS9",
+  "",
   [
     [
       "",
       {},
     ],
     [
-      "Hc2DO@D00008DKS9",
+      "",
       {
         "v1": [
           "Hc2DO@D00008DKS9",
@@ -2745,16 +2745,16 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves 3`] = `
 
 exports[`Persists to/from mockMergeableNoContentListener autoSaves 4`] = `
 [
-  "Hc2DO@000028DKS9",
+  "",
   [
     [
-      "Hc2DO@000028DKS9",
+      "",
       {
         "t1": [
-          "Hc2DO@000028DKS9",
+          "",
           {
             "r1": [
-              "Hc2DO@000028DKS9",
+              "",
               {
                 "c1": [
                   "Hc2DO@000028DKS9",
@@ -2820,14 +2820,14 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves 5`] = `
 
 exports[`Persists to/from mockMergeableNoContentListener autoSaves 6`] = `
 [
-  "Hc2DO@D00008DKS9",
+  "",
   [
     [
       "",
       {},
     ],
     [
-      "Hc2DO@D00008DKS9",
+      "",
       {
         "v1": [
           "Hc2DO@D00008DKS9",
@@ -3420,8 +3420,8 @@ exports[`Persists to/from sessionStorage saves 2`] = `
 
 exports[`Supported, MergeableStore Changes in setPersisted 1`] = `
 [
-  "["Hc2DO@000008DKS9",[["Hc2DO@000008DKS9",{"t1":["Hc2DO@000008DKS9",{"r1":["Hc2DO@000008DKS9",{"c1":["Hc2DO@000008DKS9",1]}]}]}],["",{}],1]]",
-  "["Hc2DO@000018DKS9",[["",{}],["Hc2DO@000018DKS9",{"v1":["Hc2DO@000018DKS9",1]}],1]]",
+  "["",[["",{"t1":["",{"r1":["",{"c1":["Hc2DO@000008DKS9",1]}]}]}],["",{}],1]]",
+  "["",[["",{}],["",{"v1":["Hc2DO@000018DKS9",1]}],1]]",
 ]
 `;
 
