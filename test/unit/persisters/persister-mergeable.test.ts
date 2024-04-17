@@ -122,6 +122,9 @@ describe.each([
       expect(persistable.getChanges()).toMatchSnapshot('delValue changes');
     }
     expect(persister.getStats()).toEqual({loads: 0, saves: 5});
+
+    persister.stopAutoSave();
+    expect(persister.isAutoSaving()).toEqual(false);
   });
 
   test('autoSaves without race', async () => {
@@ -222,6 +225,7 @@ describe.each([
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(store.getMergeableContent()).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
+
     await persistable.set(location, [
       [
         'Hc2DO@000018DKS9',
@@ -247,6 +251,7 @@ describe.each([
     expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
     expect(store.getMergeableContent()).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 2, saves: 0});
+
     await persistable.set(location, [
       [
         'Hc2DO@000028DKS9',
@@ -272,6 +277,8 @@ describe.each([
     expect(store.getMergeableContent()).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 3, saves: 0});
     persister.stopAutoLoad();
+    expect(persister.isAutoLoading()).toEqual(false);
+
     await persistable.set(location, [
       [
         'Hc2DO@000028DKS9',
