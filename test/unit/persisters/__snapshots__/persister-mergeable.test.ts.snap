@@ -1618,7 +1618,7 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delCell 1`] = 
               ],
               "c2": [
                 "Hc2DO@D00008DKS9",
-                undefined,
+                ,
                 4253032043,
               ],
             },
@@ -1696,7 +1696,7 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delValue 1`] =
               ],
               "c2": [
                 "Hc2DO@D00008DKS9",
-                undefined,
+                ,
                 4253032043,
               ],
             },
@@ -1718,7 +1718,7 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delValue 1`] =
       ],
       "v2": [
         "Hc2DO@N00008DKS9",
-        undefined,
+        ,
         4289078209,
       ],
     },
@@ -2193,7 +2193,7 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delCell 1`] = 
               ],
               "c2": [
                 "Hc2DO@D00008DKS9",
-                undefined,
+                ,
                 4253032043,
               ],
             },
@@ -2271,7 +2271,7 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delValue 1`] =
               ],
               "c2": [
                 "Hc2DO@D00008DKS9",
-                undefined,
+                ,
                 4253032043,
               ],
             },
@@ -2293,7 +2293,7 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delValue 1`] =
       ],
       "v2": [
         "Hc2DO@N00008DKS9",
-        undefined,
+        ,
         4289078209,
       ],
     },
@@ -2768,7 +2768,7 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delCell 1`] 
               ],
               "c2": [
                 "Hc2DO@D00008DKS9",
-                undefined,
+                ,
                 4253032043,
               ],
             },
@@ -2846,7 +2846,7 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delValue 1`]
               ],
               "c2": [
                 "Hc2DO@D00008DKS9",
-                undefined,
+                ,
                 4253032043,
               ],
             },
@@ -2868,7 +2868,7 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delValue 1`]
       ],
       "v2": [
         "Hc2DO@N00008DKS9",
-        undefined,
+        ,
         4289078209,
       ],
     },
