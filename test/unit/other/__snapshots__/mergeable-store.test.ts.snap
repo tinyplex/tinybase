@@ -1078,21 +1078,15 @@ exports[`Deltas & Hashes getMergeableCellHashes Non-empty 1`] = `
 
 exports[`Deltas & Hashes getMergeableContentHashes Empty 1`] = `
 [
-  "",
-  [
-    0,
-    0,
-  ],
+  0,
+  0,
 ]
 `;
 
 exports[`Deltas & Hashes getMergeableContentHashes Non-empty 1`] = `
 [
-  "",
-  [
-    988302986,
-    3309870898,
-  ],
+  988302986,
+  3309870898,
 ]
 `;
 
