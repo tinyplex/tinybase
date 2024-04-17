@@ -51,7 +51,7 @@ const getStoreFunctions = (
         1,
         store.getMergeableContent,
         store.getTransactionMergeableChanges,
-        ([[, changedTables], [, changedValues]]: MergeableChanges) =>
+        ([[changedTables], [changedValues]]: MergeableChanges) =>
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
         store.setDefaultContent,
       ];
