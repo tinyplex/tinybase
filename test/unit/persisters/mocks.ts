@@ -139,13 +139,9 @@ const getMockedCustom = (
     customPersister = '';
     return createCustomPersister(
       store,
-      async () => {
-        try {
-          return JSON.parse(customPersister);
-        } catch {}
-      },
+      async () => JSON.parse(customPersister),
       async (getContent, getChanges) => {
-        customPersister = getContent();
+        customPersister = JSON.stringify(getContent());
         customPersisterChanges = getChanges?.() ?? [{}, {}, 1];
       },
       (listener) => {
@@ -160,7 +156,7 @@ const getMockedCustom = (
       {getFoo: () => 'foo'},
     );
   },
-  get: async (): Promise<Content | void> => customPersister,
+  get: async (): Promise<Content | void> => JSON.parse(customPersister),
   set: async (
     location: string,
     content: Content | MergeableContent,
