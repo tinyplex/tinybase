@@ -5,7 +5,7 @@ import {
   createFilePersister as createFilePersisterDecl,
 } from '../types/persisters/persister-file';
 import {MergeableContent, MergeableStore} from '../types/mergeable-store';
-import {jsonParse, jsonString} from '../common/json';
+import {jsonParse, jsonStringWithMap} from '../common/json';
 import {readFile, writeFile} from 'fs/promises';
 import {PersisterListener} from '../types/persisters';
 import {UTF8} from '../common/strings';
@@ -21,7 +21,8 @@ export const createFilePersister = ((
 
   const setPersisted = async (
     getContent: () => Content | MergeableContent,
-  ): Promise<void> => await writeFile(filePath, jsonString(getContent()), UTF8);
+  ): Promise<void> =>
+    await writeFile(filePath, jsonStringWithMap(getContent()), UTF8);
 
   const addPersisterListener = (listener: PersisterListener): FSWatcher =>
     watch(filePath, () => listener());

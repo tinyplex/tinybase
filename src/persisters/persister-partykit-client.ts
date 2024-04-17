@@ -16,7 +16,7 @@ import {EMPTY_STRING} from '../common/strings';
 import PartySocket from 'partysocket';
 import {PersisterListener} from '../types/persisters';
 import {createCustomPersister} from '../persisters';
-import {jsonString} from '../common/json';
+import {jsonStringWithMap} from '../common/json';
 
 type MessageListener = (event: MessageEvent) => void;
 
@@ -51,7 +51,7 @@ export const createPartyKitPersister = ((
   const getOrSetStore = async (content?: Content) =>
     await (
       await fetch(storeUrl, {
-        ...(content ? {method: PUT, body: jsonString(content)} : {}),
+        ...(content ? {method: PUT, body: jsonStringWithMap(content)} : {}),
         mode: 'cors',
         cache: 'no-store',
       })

@@ -1,6 +1,6 @@
 import {T, V, strStartsWith} from '../../common/strings';
 import {isString, size, slice} from '../../common/other';
-import {jsonParse, jsonString} from '../../common/json';
+import {jsonParse, jsonStringWithMap} from '../../common/json';
 
 type MessageType = typeof SET_CHANGES;
 export type StorageKeyType = typeof T | typeof V;
@@ -15,7 +15,7 @@ export const construct = (
   type: MessageType | StorageKeyType,
   payload: any,
 ): string =>
-  prefix + type + (isString(payload) ? payload : jsonString(payload));
+  prefix + type + (isString(payload) ? payload : jsonStringWithMap(payload));
 
 export const deconstruct = (
   prefix: string,

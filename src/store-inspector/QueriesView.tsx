@@ -1,7 +1,7 @@
 /** @jsx createElement */
 
 import {SORT_CELL, STATE_TABLE, getUniqueId, sortedIdsMap} from './common';
-import {jsonParse, jsonString} from '../common/json';
+import {jsonParse, jsonStringWithMap} from '../common/json';
 import {
   useCell,
   useQueries,
@@ -36,7 +36,7 @@ const QueryView = ({
     STATE_TABLE,
     uniqueId,
     SORT_CELL,
-    jsonString,
+    jsonStringWithMap,
     [],
     s,
   );

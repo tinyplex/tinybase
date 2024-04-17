@@ -10,7 +10,7 @@ import {
 } from './common';
 import {SortedTableInHtmlTable, ValuesInHtmlTable} from '../ui-react/dom';
 import {TableProps, ValuesProps} from '../types/ui-react';
-import {jsonParse, jsonString} from '../common/json';
+import {jsonParse, jsonStringWithMap} from '../common/json';
 import {
   useCell,
   useSetCellCallback,
@@ -39,7 +39,7 @@ const TableView = ({
     STATE_TABLE,
     uniqueId,
     SORT_CELL,
-    jsonString,
+    jsonStringWithMap,
     [],
     s,
   );
