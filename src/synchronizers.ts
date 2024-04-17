@@ -18,6 +18,7 @@ import {collDel} from './common/coll';
 import {createCustomPersister} from './persisters';
 import {getHlcFunctions} from './mergeable-store/hlc';
 import {objIsEmpty} from './common/obj';
+import {stampNewObj} from './mergeable-store/stamps';
 
 const RESPONSE = 0;
 const CONTENT_HASHES = 1;
@@ -134,18 +135,13 @@ export const createCustomSynchronizer = (
         GET_CONTENT_HASHES,
       );
     }
-    const [otherContentTime, [otherTablesHash, otherValuesHash]] =
-      otherContentHashes;
+    const [, [otherTablesHash, otherValuesHash]] = otherContentHashes;
     const [, [tablesHash, valuesHash]] = store.getMergeableContentHashes();
 
-    const changes: MergeableChanges = [
-      EMPTY_STRING,
-      [[EMPTY_STRING, {}], [EMPTY_STRING, {}], 1],
-    ];
+    const changes: MergeableChanges = [stampNewObj(), stampNewObj(), 1];
 
     if (tablesHash != otherTablesHash) {
-      changes[0] = otherContentTime;
-      changes[1][0] = (
+      changes[0] = (
         await request<TablesStamp>(
           otherClientId,
           GET_TABLES_CHANGES,
@@ -171,8 +167,7 @@ export const createCustomSynchronizer = (
     }
 
     if (valuesHash != otherValuesHash) {
-      changes[0] = otherContentTime;
-      changes[1][1] = (
+      changes[1] = (
         await request<ValuesStamp>(
           otherClientId,
           GET_VALUES_CHANGES,
@@ -186,7 +181,7 @@ export const createCustomSynchronizer = (
 
   const getPersisted = async (): Promise<any> => {
     const changes = await getChangesFromOtherStore();
-    return !objIsEmpty(changes[1][0][1]) || !objIsEmpty(changes[1][1][1])
+    return !objIsEmpty(changes[0][1]) || !objIsEmpty(changes[1][1])
       ? changes
       : undefined;
   };
