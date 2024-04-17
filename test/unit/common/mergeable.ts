@@ -43,8 +43,8 @@ export const time = (offset: number, counter: number, storeId: string = 's1') =>
   encodeHlc(START_TIME + offset, counter, STORE_ID_HASHES[storeId]);
 
 export const stamped = (offset: number, counter: number, thing: any) => [
-  time(offset, counter, 's1'),
   thing,
+  time(offset, counter, 's1'),
 ];
 
-export const nullStamped = <Thing>(thing: Thing): Stamp<Thing> => ['', thing];
+export const nullStamped = <Thing>(thing: Thing): Stamp<Thing> => [thing, ''];

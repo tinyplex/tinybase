@@ -3,31 +3,31 @@
 exports[`Persists to/from customSynchronizer autoLoads 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -36,31 +36,31 @@ exports[`Persists to/from customSynchronizer autoLoads 1`] = `
 exports[`Persists to/from customSynchronizer autoLoads 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000018DKS9",
                 2,
+                "Hc2DO@000018DKS9",
                 2669080357,
               ],
             },
+            "",
             2240063674,
           ],
         },
+        "",
         528453758,
       ],
     },
+    "",
     472051525,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -69,31 +69,31 @@ exports[`Persists to/from customSynchronizer autoLoads 2`] = `
 exports[`Persists to/from customSynchronizer autoLoads 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1105394814,
           ],
         },
+        "",
         2974635182,
       ],
     },
+    "",
     2668639873,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -102,31 +102,31 @@ exports[`Persists to/from customSynchronizer autoLoads 3`] = `
 exports[`Persists to/from customSynchronizer autoLoads 4`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1105394814,
           ],
         },
+        "",
         2974635182,
       ],
     },
+    "",
     2668639873,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -135,75 +135,75 @@ exports[`Persists to/from customSynchronizer autoLoads 4`] = `
 exports[`Persists to/from customSynchronizer autoSave & autoLoad: roundtrip 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 undefined,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 undefined,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 undefined,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         undefined,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -212,75 +212,75 @@ exports[`Persists to/from customSynchronizer autoSave & autoLoad: roundtrip 1`] 
 exports[`Persists to/from customSynchronizer autoSave & autoLoad: roundtrip 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 undefined,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 undefined,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 undefined,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         undefined,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -289,75 +289,75 @@ exports[`Persists to/from customSynchronizer autoSave & autoLoad: roundtrip 2`] 
 exports[`Persists to/from customSynchronizer autoSave & autoLoad: roundtrip 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 undefined,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 undefined,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 undefined,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         undefined,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -366,47 +366,47 @@ exports[`Persists to/from customSynchronizer autoSave & autoLoad: roundtrip 3`] 
 exports[`Persists to/from customSynchronizer autoSaves: delCell 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 undefined,
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -415,47 +415,47 @@ exports[`Persists to/from customSynchronizer autoSaves: delCell 1`] = `
 exports[`Persists to/from customSynchronizer autoSaves: delValue 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 undefined,
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@N00008DKS9",
         undefined,
+        "Hc2DO@N00008DKS9",
         4289078209,
       ],
     },
+    "",
     2439424877,
   ],
 ]
@@ -464,13 +464,13 @@ exports[`Persists to/from customSynchronizer autoSaves: delValue 1`] = `
 exports[`Persists to/from customSynchronizer autoSaves: initial 1`] = `
 [
   [
-    "",
     {},
+    "",
     0,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -479,42 +479,42 @@ exports[`Persists to/from customSynchronizer autoSaves: initial 1`] = `
 exports[`Persists to/from customSynchronizer autoSaves: setTables 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -523,47 +523,47 @@ exports[`Persists to/from customSynchronizer autoSaves: setTables 1`] = `
 exports[`Persists to/from customSynchronizer autoSaves: setValues 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -572,38 +572,38 @@ exports[`Persists to/from customSynchronizer autoSaves: setValues 1`] = `
 exports[`Persists to/from customSynchronizer loads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
-            1279994494,
+            "",
+            3278308926,
           ],
         },
-        1293085726,
+        "",
+        608074644,
       ],
     },
-    4033596827,
+    "",
+    3689956797,
   ],
   [
-    "Hc2DO@000008DKS9",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
-    2304392760,
+    "",
+    108401272,
   ],
 ]
 `;
@@ -611,37 +611,37 @@ exports[`Persists to/from customSynchronizer loads 1`] = `
 exports[`Persists to/from customSynchronizer saves 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -650,13 +650,13 @@ exports[`Persists to/from customSynchronizer saves 1`] = `
 exports[`Persists to/from customSynchronizer saves 2`] = `
 [
   [
-    "",
     {},
+    "",
     0,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -665,31 +665,31 @@ exports[`Persists to/from customSynchronizer saves 2`] = `
 exports[`Persists to/from file autoLoads 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             1279994494,
           ],
         },
+        "",
         1293085726,
       ],
     },
+    "",
     4033596827,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -698,31 +698,31 @@ exports[`Persists to/from file autoLoads 1`] = `
 exports[`Persists to/from file autoLoads 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000018DKS9",
                 2,
+                "Hc2DO@000018DKS9",
                 2669080357,
               ],
             },
+            "",
             274319047,
           ],
         },
+        "",
         4089057354,
       ],
     },
+    "",
     3386696034,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -731,31 +731,31 @@ exports[`Persists to/from file autoLoads 2`] = `
 exports[`Persists to/from file autoLoads 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1416411412,
           ],
         },
+        "",
         3704904231,
       ],
     },
+    "",
     4008152259,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -764,31 +764,31 @@ exports[`Persists to/from file autoLoads 3`] = `
 exports[`Persists to/from file autoLoads 4`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1416411412,
           ],
         },
+        "",
         3704904231,
       ],
     },
+    "",
     4008152259,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -797,75 +797,75 @@ exports[`Persists to/from file autoLoads 4`] = `
 exports[`Persists to/from file autoSave & autoLoad: roundtrip 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 undefined,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 undefined,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 undefined,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         undefined,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -874,75 +874,75 @@ exports[`Persists to/from file autoSave & autoLoad: roundtrip 1`] = `
 exports[`Persists to/from file autoSave & autoLoad: roundtrip 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 "￼",
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 "￼",
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 "￼",
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         "￼",
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -951,75 +951,75 @@ exports[`Persists to/from file autoSave & autoLoad: roundtrip 2`] = `
 exports[`Persists to/from file autoSave & autoLoad: roundtrip 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 "￼",
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 "￼",
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 "￼",
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         "￼",
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -1028,31 +1028,31 @@ exports[`Persists to/from file autoSave & autoLoad: roundtrip 3`] = `
 exports[`Persists to/from file autoSaves without race 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -1061,31 +1061,31 @@ exports[`Persists to/from file autoSaves without race 1`] = `
 exports[`Persists to/from file autoSaves without race 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1105394814,
           ],
         },
+        "",
         2974635182,
       ],
     },
+    "",
     2668639873,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -1094,47 +1094,47 @@ exports[`Persists to/from file autoSaves without race 2`] = `
 exports[`Persists to/from file autoSaves: delCell 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 "￼",
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -1143,47 +1143,47 @@ exports[`Persists to/from file autoSaves: delCell 1`] = `
 exports[`Persists to/from file autoSaves: delValue 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 "￼",
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@N00008DKS9",
         "￼",
+        "Hc2DO@N00008DKS9",
         4289078209,
       ],
     },
+    "",
     2439424877,
   ],
 ]
@@ -1192,37 +1192,37 @@ exports[`Persists to/from file autoSaves: delValue 1`] = `
 exports[`Persists to/from file autoSaves: initial 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -1231,42 +1231,42 @@ exports[`Persists to/from file autoSaves: initial 1`] = `
 exports[`Persists to/from file autoSaves: setTables 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -1275,47 +1275,47 @@ exports[`Persists to/from file autoSaves: setTables 1`] = `
 exports[`Persists to/from file autoSaves: setValues 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -1324,37 +1324,37 @@ exports[`Persists to/from file autoSaves: setValues 1`] = `
 exports[`Persists to/from file loads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             1279994494,
           ],
         },
+        "",
         1293085726,
       ],
     },
+    "",
     4033596827,
   ],
   [
-    "Hc2DO@000008DKS9",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     2304392760,
   ],
 ]
@@ -1363,37 +1363,37 @@ exports[`Persists to/from file loads 1`] = `
 exports[`Persists to/from file saves 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -1402,37 +1402,37 @@ exports[`Persists to/from file saves 1`] = `
 exports[`Persists to/from file saves 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -1441,31 +1441,31 @@ exports[`Persists to/from file saves 2`] = `
 exports[`Persists to/from localStorage autoLoads 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             1279994494,
           ],
         },
+        "",
         1293085726,
       ],
     },
+    "",
     4033596827,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -1474,31 +1474,31 @@ exports[`Persists to/from localStorage autoLoads 1`] = `
 exports[`Persists to/from localStorage autoLoads 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000018DKS9",
                 2,
+                "Hc2DO@000018DKS9",
                 2669080357,
               ],
             },
+            "",
             274319047,
           ],
         },
+        "",
         4089057354,
       ],
     },
+    "",
     3386696034,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -1507,31 +1507,31 @@ exports[`Persists to/from localStorage autoLoads 2`] = `
 exports[`Persists to/from localStorage autoLoads 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1416411412,
           ],
         },
+        "",
         3704904231,
       ],
     },
+    "",
     4008152259,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -1540,31 +1540,31 @@ exports[`Persists to/from localStorage autoLoads 3`] = `
 exports[`Persists to/from localStorage autoLoads 4`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1416411412,
           ],
         },
+        "",
         3704904231,
       ],
     },
+    "",
     4008152259,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -1573,75 +1573,75 @@ exports[`Persists to/from localStorage autoLoads 4`] = `
 exports[`Persists to/from localStorage autoSave & autoLoad: roundtrip 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 undefined,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 undefined,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 undefined,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         undefined,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -1650,75 +1650,75 @@ exports[`Persists to/from localStorage autoSave & autoLoad: roundtrip 1`] = `
 exports[`Persists to/from localStorage autoSave & autoLoad: roundtrip 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 "￼",
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 "￼",
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 "￼",
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         "￼",
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -1727,75 +1727,75 @@ exports[`Persists to/from localStorage autoSave & autoLoad: roundtrip 2`] = `
 exports[`Persists to/from localStorage autoSave & autoLoad: roundtrip 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 "￼",
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 "￼",
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 "￼",
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         "￼",
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -1804,47 +1804,47 @@ exports[`Persists to/from localStorage autoSave & autoLoad: roundtrip 3`] = `
 exports[`Persists to/from localStorage autoSaves: delCell 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 "￼",
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -1853,47 +1853,47 @@ exports[`Persists to/from localStorage autoSaves: delCell 1`] = `
 exports[`Persists to/from localStorage autoSaves: delValue 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 "￼",
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@N00008DKS9",
         "￼",
+        "Hc2DO@N00008DKS9",
         4289078209,
       ],
     },
+    "",
     2439424877,
   ],
 ]
@@ -1902,37 +1902,37 @@ exports[`Persists to/from localStorage autoSaves: delValue 1`] = `
 exports[`Persists to/from localStorage autoSaves: initial 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -1941,42 +1941,42 @@ exports[`Persists to/from localStorage autoSaves: initial 1`] = `
 exports[`Persists to/from localStorage autoSaves: setTables 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -1985,47 +1985,47 @@ exports[`Persists to/from localStorage autoSaves: setTables 1`] = `
 exports[`Persists to/from localStorage autoSaves: setValues 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -2034,37 +2034,37 @@ exports[`Persists to/from localStorage autoSaves: setValues 1`] = `
 exports[`Persists to/from localStorage loads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             1279994494,
           ],
         },
+        "",
         1293085726,
       ],
     },
+    "",
     4033596827,
   ],
   [
-    "Hc2DO@000008DKS9",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     2304392760,
   ],
 ]
@@ -2073,37 +2073,37 @@ exports[`Persists to/from localStorage loads 1`] = `
 exports[`Persists to/from localStorage saves 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -2112,37 +2112,37 @@ exports[`Persists to/from localStorage saves 1`] = `
 exports[`Persists to/from localStorage saves 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -2151,31 +2151,31 @@ exports[`Persists to/from localStorage saves 2`] = `
 exports[`Persists to/from localSynchronizer autoLoads 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -2184,31 +2184,31 @@ exports[`Persists to/from localSynchronizer autoLoads 1`] = `
 exports[`Persists to/from localSynchronizer autoLoads 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000018DKS9",
                 2,
+                "Hc2DO@000018DKS9",
                 2669080357,
               ],
             },
+            "",
             2240063674,
           ],
         },
+        "",
         528453758,
       ],
     },
+    "",
     472051525,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -2217,31 +2217,31 @@ exports[`Persists to/from localSynchronizer autoLoads 2`] = `
 exports[`Persists to/from localSynchronizer autoLoads 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1105394814,
           ],
         },
+        "",
         2974635182,
       ],
     },
+    "",
     2668639873,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -2250,31 +2250,31 @@ exports[`Persists to/from localSynchronizer autoLoads 3`] = `
 exports[`Persists to/from localSynchronizer autoLoads 4`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1105394814,
           ],
         },
+        "",
         2974635182,
       ],
     },
+    "",
     2668639873,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -2283,75 +2283,75 @@ exports[`Persists to/from localSynchronizer autoLoads 4`] = `
 exports[`Persists to/from localSynchronizer autoSave & autoLoad: roundtrip 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 undefined,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 undefined,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 undefined,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         undefined,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -2360,75 +2360,75 @@ exports[`Persists to/from localSynchronizer autoSave & autoLoad: roundtrip 1`] =
 exports[`Persists to/from localSynchronizer autoSave & autoLoad: roundtrip 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 undefined,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 undefined,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 undefined,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         undefined,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -2437,75 +2437,75 @@ exports[`Persists to/from localSynchronizer autoSave & autoLoad: roundtrip 2`] =
 exports[`Persists to/from localSynchronizer autoSave & autoLoad: roundtrip 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 undefined,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 undefined,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 undefined,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         undefined,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -2514,47 +2514,47 @@ exports[`Persists to/from localSynchronizer autoSave & autoLoad: roundtrip 3`] =
 exports[`Persists to/from localSynchronizer autoSaves: delCell 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 undefined,
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -2563,47 +2563,47 @@ exports[`Persists to/from localSynchronizer autoSaves: delCell 1`] = `
 exports[`Persists to/from localSynchronizer autoSaves: delValue 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 undefined,
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@N00008DKS9",
         undefined,
+        "Hc2DO@N00008DKS9",
         4289078209,
       ],
     },
+    "",
     2439424877,
   ],
 ]
@@ -2612,13 +2612,13 @@ exports[`Persists to/from localSynchronizer autoSaves: delValue 1`] = `
 exports[`Persists to/from localSynchronizer autoSaves: initial 1`] = `
 [
   [
-    "",
     {},
+    "",
     0,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -2627,42 +2627,42 @@ exports[`Persists to/from localSynchronizer autoSaves: initial 1`] = `
 exports[`Persists to/from localSynchronizer autoSaves: setTables 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -2671,47 +2671,47 @@ exports[`Persists to/from localSynchronizer autoSaves: setTables 1`] = `
 exports[`Persists to/from localSynchronizer autoSaves: setValues 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -2720,38 +2720,38 @@ exports[`Persists to/from localSynchronizer autoSaves: setValues 1`] = `
 exports[`Persists to/from localSynchronizer loads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
-            1279994494,
+            "",
+            3278308926,
           ],
         },
-        1293085726,
+        "",
+        608074644,
       ],
     },
-    4033596827,
+    "",
+    3689956797,
   ],
   [
-    "Hc2DO@000008DKS9",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
-    2304392760,
+    "",
+    108401272,
   ],
 ]
 `;
@@ -2759,37 +2759,37 @@ exports[`Persists to/from localSynchronizer loads 1`] = `
 exports[`Persists to/from localSynchronizer saves 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -2798,13 +2798,13 @@ exports[`Persists to/from localSynchronizer saves 1`] = `
 exports[`Persists to/from localSynchronizer saves 2`] = `
 [
   [
-    "",
     {},
+    "",
     0,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -2813,31 +2813,31 @@ exports[`Persists to/from localSynchronizer saves 2`] = `
 exports[`Persists to/from mockMergeableChangesListener autoLoads 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             1279994494,
           ],
         },
+        "",
         1293085726,
       ],
     },
+    "",
     4033596827,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -2846,31 +2846,31 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 1`] = `
 exports[`Persists to/from mockMergeableChangesListener autoLoads 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000018DKS9",
                 2,
+                "Hc2DO@000018DKS9",
                 2669080357,
               ],
             },
+            "",
             178816250,
           ],
         },
+        "",
         910548496,
       ],
     },
+    "",
     377805824,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -2879,31 +2879,31 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 2`] = `
 exports[`Persists to/from mockMergeableChangesListener autoLoads 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             3469660222,
           ],
         },
+        "",
         1206185190,
       ],
     },
+    "",
     3354177867,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -2912,31 +2912,31 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 3`] = `
 exports[`Persists to/from mockMergeableChangesListener autoLoads 4`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             3469660222,
           ],
         },
+        "",
         1206185190,
       ],
     },
+    "",
     3354177867,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -2945,75 +2945,75 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 4`] = `
 exports[`Persists to/from mockMergeableChangesListener autoSave & autoLoad: roundtrip 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 undefined,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 undefined,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 undefined,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         undefined,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -3022,75 +3022,75 @@ exports[`Persists to/from mockMergeableChangesListener autoSave & autoLoad: roun
 exports[`Persists to/from mockMergeableChangesListener autoSave & autoLoad: roundtrip 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 ,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 ,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 ,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         ,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -3099,75 +3099,75 @@ exports[`Persists to/from mockMergeableChangesListener autoSave & autoLoad: roun
 exports[`Persists to/from mockMergeableChangesListener autoSave & autoLoad: roundtrip 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 ,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 ,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 ,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         ,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -3176,47 +3176,47 @@ exports[`Persists to/from mockMergeableChangesListener autoSave & autoLoad: roun
 exports[`Persists to/from mockMergeableChangesListener autoSaves: delCell 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 ,
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -3225,27 +3225,27 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delCell 1`] = 
 exports[`Persists to/from mockMergeableChangesListener autoSaves: delCell changes 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c2": [
-                "Hc2DO@D00008DKS9",
                 undefined,
+                "Hc2DO@D00008DKS9",
               ],
             },
+            "",
           ],
         },
+        "",
       ],
     },
+    "",
   ],
   [
-    "",
     {},
+    "",
   ],
   1,
 ]
@@ -3254,47 +3254,47 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delCell change
 exports[`Persists to/from mockMergeableChangesListener autoSaves: delValue 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 ,
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@N00008DKS9",
         ,
+        "Hc2DO@N00008DKS9",
         4289078209,
       ],
     },
+    "",
     2439424877,
   ],
 ]
@@ -3303,17 +3303,17 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delValue 1`] =
 exports[`Persists to/from mockMergeableChangesListener autoSaves: delValue changes 1`] = `
 [
   [
-    "",
     {},
+    "",
   ],
   [
-    "",
     {
       "v2": [
-        "Hc2DO@N00008DKS9",
         undefined,
+        "Hc2DO@N00008DKS9",
       ],
     },
+    "",
   ],
   1,
 ]
@@ -3322,37 +3322,37 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delValue chang
 exports[`Persists to/from mockMergeableChangesListener autoSaves: initial 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -3361,42 +3361,42 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: initial 1`] = 
 exports[`Persists to/from mockMergeableChangesListener autoSaves: setTables 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -3405,27 +3405,27 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: setTables 1`] 
 exports[`Persists to/from mockMergeableChangesListener autoSaves: setTables changes 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
               ],
             },
+            "",
           ],
         },
+        "",
       ],
     },
+    "",
   ],
   [
-    "",
     {},
+    "",
   ],
   1,
 ]
@@ -3434,47 +3434,47 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: setTables chan
 exports[`Persists to/from mockMergeableChangesListener autoSaves: setValues 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -3483,17 +3483,17 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: setValues 1`] 
 exports[`Persists to/from mockMergeableChangesListener autoSaves: setValues changes 1`] = `
 [
   [
-    "",
     {},
+    "",
   ],
   [
-    "",
     {
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
       ],
     },
+    "",
   ],
   1,
 ]
@@ -3502,37 +3502,37 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: setValues chan
 exports[`Persists to/from mockMergeableChangesListener loads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             1279994494,
           ],
         },
+        "",
         1293085726,
       ],
     },
+    "",
     4033596827,
   ],
   [
-    "Hc2DO@000008DKS9",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     2304392760,
   ],
 ]
@@ -3541,37 +3541,37 @@ exports[`Persists to/from mockMergeableChangesListener loads 1`] = `
 exports[`Persists to/from mockMergeableChangesListener saves 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -3580,37 +3580,37 @@ exports[`Persists to/from mockMergeableChangesListener saves 1`] = `
 exports[`Persists to/from mockMergeableChangesListener saves 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -3619,31 +3619,31 @@ exports[`Persists to/from mockMergeableChangesListener saves 2`] = `
 exports[`Persists to/from mockMergeableContentListener autoLoads 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             1279994494,
           ],
         },
+        "",
         1293085726,
       ],
     },
+    "",
     4033596827,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -3652,31 +3652,31 @@ exports[`Persists to/from mockMergeableContentListener autoLoads 1`] = `
 exports[`Persists to/from mockMergeableContentListener autoLoads 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000018DKS9",
                 2,
+                "Hc2DO@000018DKS9",
                 2669080357,
               ],
             },
+            "",
             274319047,
           ],
         },
+        "",
         4089057354,
       ],
     },
+    "",
     3386696034,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -3685,31 +3685,31 @@ exports[`Persists to/from mockMergeableContentListener autoLoads 2`] = `
 exports[`Persists to/from mockMergeableContentListener autoLoads 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1416411412,
           ],
         },
+        "",
         3704904231,
       ],
     },
+    "",
     4008152259,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -3718,31 +3718,31 @@ exports[`Persists to/from mockMergeableContentListener autoLoads 3`] = `
 exports[`Persists to/from mockMergeableContentListener autoLoads 4`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1416411412,
           ],
         },
+        "",
         3704904231,
       ],
     },
+    "",
     4008152259,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -3751,75 +3751,75 @@ exports[`Persists to/from mockMergeableContentListener autoLoads 4`] = `
 exports[`Persists to/from mockMergeableContentListener autoSave & autoLoad: roundtrip 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 undefined,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 undefined,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 undefined,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         undefined,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -3828,75 +3828,75 @@ exports[`Persists to/from mockMergeableContentListener autoSave & autoLoad: roun
 exports[`Persists to/from mockMergeableContentListener autoSave & autoLoad: roundtrip 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 ,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 ,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 ,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         ,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -3905,75 +3905,75 @@ exports[`Persists to/from mockMergeableContentListener autoSave & autoLoad: roun
 exports[`Persists to/from mockMergeableContentListener autoSave & autoLoad: roundtrip 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 ,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 ,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 ,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         ,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -3982,47 +3982,47 @@ exports[`Persists to/from mockMergeableContentListener autoSave & autoLoad: roun
 exports[`Persists to/from mockMergeableContentListener autoSaves: delCell 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 ,
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -4031,27 +4031,27 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delCell 1`] = 
 exports[`Persists to/from mockMergeableContentListener autoSaves: delCell changes 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c2": [
-                "Hc2DO@D00008DKS9",
                 undefined,
+                "Hc2DO@D00008DKS9",
               ],
             },
+            "",
           ],
         },
+        "",
       ],
     },
+    "",
   ],
   [
-    "",
     {},
+    "",
   ],
   1,
 ]
@@ -4060,47 +4060,47 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delCell change
 exports[`Persists to/from mockMergeableContentListener autoSaves: delValue 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 ,
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@N00008DKS9",
         ,
+        "Hc2DO@N00008DKS9",
         4289078209,
       ],
     },
+    "",
     2439424877,
   ],
 ]
@@ -4109,17 +4109,17 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delValue 1`] =
 exports[`Persists to/from mockMergeableContentListener autoSaves: delValue changes 1`] = `
 [
   [
-    "",
     {},
+    "",
   ],
   [
-    "",
     {
       "v2": [
-        "Hc2DO@N00008DKS9",
         undefined,
+        "Hc2DO@N00008DKS9",
       ],
     },
+    "",
   ],
   1,
 ]
@@ -4128,37 +4128,37 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delValue chang
 exports[`Persists to/from mockMergeableContentListener autoSaves: initial 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -4167,42 +4167,42 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: initial 1`] = 
 exports[`Persists to/from mockMergeableContentListener autoSaves: setTables 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -4211,27 +4211,27 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: setTables 1`] 
 exports[`Persists to/from mockMergeableContentListener autoSaves: setTables changes 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
               ],
             },
+            "",
           ],
         },
+        "",
       ],
     },
+    "",
   ],
   [
-    "",
     {},
+    "",
   ],
   1,
 ]
@@ -4240,47 +4240,47 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: setTables chan
 exports[`Persists to/from mockMergeableContentListener autoSaves: setValues 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -4289,17 +4289,17 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: setValues 1`] 
 exports[`Persists to/from mockMergeableContentListener autoSaves: setValues changes 1`] = `
 [
   [
-    "",
     {},
+    "",
   ],
   [
-    "",
     {
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
       ],
     },
+    "",
   ],
   1,
 ]
@@ -4308,37 +4308,37 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: setValues chan
 exports[`Persists to/from mockMergeableContentListener loads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             1279994494,
           ],
         },
+        "",
         1293085726,
       ],
     },
+    "",
     4033596827,
   ],
   [
-    "Hc2DO@000008DKS9",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     2304392760,
   ],
 ]
@@ -4347,37 +4347,37 @@ exports[`Persists to/from mockMergeableContentListener loads 1`] = `
 exports[`Persists to/from mockMergeableContentListener saves 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -4386,37 +4386,37 @@ exports[`Persists to/from mockMergeableContentListener saves 1`] = `
 exports[`Persists to/from mockMergeableContentListener saves 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -4425,31 +4425,31 @@ exports[`Persists to/from mockMergeableContentListener saves 2`] = `
 exports[`Persists to/from mockMergeableNoContentListener autoLoads 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             1279994494,
           ],
         },
+        "",
         1293085726,
       ],
     },
+    "",
     4033596827,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -4458,31 +4458,31 @@ exports[`Persists to/from mockMergeableNoContentListener autoLoads 1`] = `
 exports[`Persists to/from mockMergeableNoContentListener autoLoads 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000018DKS9",
                 2,
+                "Hc2DO@000018DKS9",
                 2669080357,
               ],
             },
+            "",
             274319047,
           ],
         },
+        "",
         4089057354,
       ],
     },
+    "",
     3386696034,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -4491,31 +4491,31 @@ exports[`Persists to/from mockMergeableNoContentListener autoLoads 2`] = `
 exports[`Persists to/from mockMergeableNoContentListener autoLoads 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1416411412,
           ],
         },
+        "",
         3704904231,
       ],
     },
+    "",
     4008152259,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -4524,31 +4524,31 @@ exports[`Persists to/from mockMergeableNoContentListener autoLoads 3`] = `
 exports[`Persists to/from mockMergeableNoContentListener autoLoads 4`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1416411412,
           ],
         },
+        "",
         3704904231,
       ],
     },
+    "",
     4008152259,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -4557,75 +4557,75 @@ exports[`Persists to/from mockMergeableNoContentListener autoLoads 4`] = `
 exports[`Persists to/from mockMergeableNoContentListener autoSave & autoLoad: roundtrip 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 undefined,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 undefined,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 undefined,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         undefined,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -4634,75 +4634,75 @@ exports[`Persists to/from mockMergeableNoContentListener autoSave & autoLoad: ro
 exports[`Persists to/from mockMergeableNoContentListener autoSave & autoLoad: roundtrip 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 ,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 ,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 ,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         ,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -4711,75 +4711,75 @@ exports[`Persists to/from mockMergeableNoContentListener autoSave & autoLoad: ro
 exports[`Persists to/from mockMergeableNoContentListener autoSave & autoLoad: roundtrip 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 ,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 ,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 ,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         ,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -4788,47 +4788,47 @@ exports[`Persists to/from mockMergeableNoContentListener autoSave & autoLoad: ro
 exports[`Persists to/from mockMergeableNoContentListener autoSaves: delCell 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 ,
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -4837,27 +4837,27 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delCell 1`] 
 exports[`Persists to/from mockMergeableNoContentListener autoSaves: delCell changes 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c2": [
-                "Hc2DO@D00008DKS9",
                 undefined,
+                "Hc2DO@D00008DKS9",
               ],
             },
+            "",
           ],
         },
+        "",
       ],
     },
+    "",
   ],
   [
-    "",
     {},
+    "",
   ],
   1,
 ]
@@ -4866,47 +4866,47 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delCell chan
 exports[`Persists to/from mockMergeableNoContentListener autoSaves: delValue 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 ,
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@N00008DKS9",
         ,
+        "Hc2DO@N00008DKS9",
         4289078209,
       ],
     },
+    "",
     2439424877,
   ],
 ]
@@ -4915,17 +4915,17 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delValue 1`]
 exports[`Persists to/from mockMergeableNoContentListener autoSaves: delValue changes 1`] = `
 [
   [
-    "",
     {},
+    "",
   ],
   [
-    "",
     {
       "v2": [
-        "Hc2DO@N00008DKS9",
         undefined,
+        "Hc2DO@N00008DKS9",
       ],
     },
+    "",
   ],
   1,
 ]
@@ -4934,37 +4934,37 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delValue cha
 exports[`Persists to/from mockMergeableNoContentListener autoSaves: initial 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -4973,42 +4973,42 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: initial 1`] 
 exports[`Persists to/from mockMergeableNoContentListener autoSaves: setTables 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -5017,27 +5017,27 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: setTables 1`
 exports[`Persists to/from mockMergeableNoContentListener autoSaves: setTables changes 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
               ],
             },
+            "",
           ],
         },
+        "",
       ],
     },
+    "",
   ],
   [
-    "",
     {},
+    "",
   ],
   1,
 ]
@@ -5046,47 +5046,47 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: setTables ch
 exports[`Persists to/from mockMergeableNoContentListener autoSaves: setValues 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -5095,17 +5095,17 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: setValues 1`
 exports[`Persists to/from mockMergeableNoContentListener autoSaves: setValues changes 1`] = `
 [
   [
-    "",
     {},
+    "",
   ],
   [
-    "",
     {
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
       ],
     },
+    "",
   ],
   1,
 ]
@@ -5114,37 +5114,37 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: setValues ch
 exports[`Persists to/from mockMergeableNoContentListener loads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             1279994494,
           ],
         },
+        "",
         1293085726,
       ],
     },
+    "",
     4033596827,
   ],
   [
-    "Hc2DO@000008DKS9",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     2304392760,
   ],
 ]
@@ -5153,37 +5153,37 @@ exports[`Persists to/from mockMergeableNoContentListener loads 1`] = `
 exports[`Persists to/from mockMergeableNoContentListener saves 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -5192,37 +5192,37 @@ exports[`Persists to/from mockMergeableNoContentListener saves 1`] = `
 exports[`Persists to/from mockMergeableNoContentListener saves 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -5231,31 +5231,31 @@ exports[`Persists to/from mockMergeableNoContentListener saves 2`] = `
 exports[`Persists to/from sessionStorage autoLoads 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             1279994494,
           ],
         },
+        "",
         1293085726,
       ],
     },
+    "",
     4033596827,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -5264,31 +5264,31 @@ exports[`Persists to/from sessionStorage autoLoads 1`] = `
 exports[`Persists to/from sessionStorage autoLoads 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000018DKS9",
                 2,
+                "Hc2DO@000018DKS9",
                 2669080357,
               ],
             },
+            "",
             274319047,
           ],
         },
+        "",
         4089057354,
       ],
     },
+    "",
     3386696034,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -5297,31 +5297,31 @@ exports[`Persists to/from sessionStorage autoLoads 2`] = `
 exports[`Persists to/from sessionStorage autoLoads 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1416411412,
           ],
         },
+        "",
         3704904231,
       ],
     },
+    "",
     4008152259,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -5330,31 +5330,31 @@ exports[`Persists to/from sessionStorage autoLoads 3`] = `
 exports[`Persists to/from sessionStorage autoLoads 4`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000028DKS9",
                 3,
+                "Hc2DO@000028DKS9",
                 3252714811,
               ],
             },
+            "",
             1416411412,
           ],
         },
+        "",
         3704904231,
       ],
     },
+    "",
     4008152259,
   ],
   [
-    "",
     {},
+    "",
     0,
   ],
 ]
@@ -5363,75 +5363,75 @@ exports[`Persists to/from sessionStorage autoLoads 4`] = `
 exports[`Persists to/from sessionStorage autoSave & autoLoad: roundtrip 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 undefined,
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 undefined,
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 undefined,
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         undefined,
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -5440,75 +5440,75 @@ exports[`Persists to/from sessionStorage autoSave & autoLoad: roundtrip 1`] = `
 exports[`Persists to/from sessionStorage autoSave & autoLoad: roundtrip 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 "￼",
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 "￼",
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 "￼",
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         "￼",
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -5517,75 +5517,75 @@ exports[`Persists to/from sessionStorage autoSave & autoLoad: roundtrip 2`] = `
 exports[`Persists to/from sessionStorage autoSave & autoLoad: roundtrip 3`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000048DKS9",
                 "￼",
+                "Hc2DO@000048DKS9",
                 2289969851,
               ],
             },
+            "",
             1111380841,
           ],
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000038DKS9",
                 "￼",
+                "Hc2DO@000038DKS9",
                 4228156312,
               ],
             },
+            "",
             3156673086,
           ],
         },
+        "",
         1076267906,
       ],
       "t2": [
-        "",
         {
           "r2": [
-            "",
             {
               "c2": [
-                "Hc2DO@000028DKS9",
                 "￼",
+                "Hc2DO@000028DKS9",
                 1517672885,
               ],
             },
+            "",
             3665211872,
           ],
         },
+        "",
         442395888,
       ],
     },
+    "",
     2238694056,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@000058DKS9",
         "￼",
+        "Hc2DO@000058DKS9",
         3070457446,
       ],
     },
+    "",
     3649486446,
   ],
 ]
@@ -5594,47 +5594,47 @@ exports[`Persists to/from sessionStorage autoSave & autoLoad: roundtrip 3`] = `
 exports[`Persists to/from sessionStorage autoSaves: delCell 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 "￼",
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -5643,47 +5643,47 @@ exports[`Persists to/from sessionStorage autoSaves: delCell 1`] = `
 exports[`Persists to/from sessionStorage autoSaves: delValue 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@D00008DKS9",
                 "￼",
+                "Hc2DO@D00008DKS9",
                 4253032043,
               ],
             },
+            "",
             1733027174,
           ],
         },
+        "",
         1843299373,
       ],
     },
+    "",
     3147506727,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@N00008DKS9",
         "￼",
+        "Hc2DO@N00008DKS9",
         4289078209,
       ],
     },
+    "",
     2439424877,
   ],
 ]
@@ -5692,37 +5692,37 @@ exports[`Persists to/from sessionStorage autoSaves: delValue 1`] = `
 exports[`Persists to/from sessionStorage autoSaves: initial 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -5731,42 +5731,42 @@ exports[`Persists to/from sessionStorage autoSaves: initial 1`] = `
 exports[`Persists to/from sessionStorage autoSaves: setTables 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
     },
+    "",
     445733406,
   ],
 ]
@@ -5775,47 +5775,47 @@ exports[`Persists to/from sessionStorage autoSaves: setTables 1`] = `
 exports[`Persists to/from sessionStorage autoSaves: setValues 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
               "c2": [
-                "Hc2DO@000028DKS9",
                 2,
+                "Hc2DO@000028DKS9",
                 1691812082,
               ],
             },
+            "",
             3828687208,
           ],
         },
+        "",
         3894592596,
       ],
     },
+    "",
     2516100462,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000018DKS9",
         1,
+        "Hc2DO@000018DKS9",
         3207404266,
       ],
       "v2": [
-        "Hc2DO@:00008DKS9",
         2,
+        "Hc2DO@:00008DKS9",
         2578009034,
       ],
     },
+    "",
     3246781976,
   ],
 ]
@@ -5824,37 +5824,37 @@ exports[`Persists to/from sessionStorage autoSaves: setValues 1`] = `
 exports[`Persists to/from sessionStorage loads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             1279994494,
           ],
         },
+        "",
         1293085726,
       ],
     },
+    "",
     4033596827,
   ],
   [
-    "Hc2DO@000008DKS9",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     2304392760,
   ],
 ]
@@ -5863,37 +5863,37 @@ exports[`Persists to/from sessionStorage loads 1`] = `
 exports[`Persists to/from sessionStorage saves 1`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -5902,37 +5902,37 @@ exports[`Persists to/from sessionStorage saves 1`] = `
 exports[`Persists to/from sessionStorage saves 2`] = `
 [
   [
-    "",
     {
       "t1": [
-        "",
         {
           "r1": [
-            "",
             {
               "c1": [
-                "Hc2DO@000008DKS9",
                 1,
+                "Hc2DO@000008DKS9",
                 4065945599,
               ],
             },
+            "",
             3278308926,
           ],
         },
+        "",
         608074644,
       ],
     },
+    "",
     3689956797,
   ],
   [
-    "",
     {
       "v1": [
-        "Hc2DO@000008DKS9",
         1,
+        "Hc2DO@000008DKS9",
         4065945599,
       ],
     },
+    "",
     108401272,
   ],
 ]
@@ -5940,11 +5940,11 @@ exports[`Persists to/from sessionStorage saves 2`] = `
 
 exports[`Supported, MergeableStore Changes in setPersisted 1`] = `
 [
-  "[["",{"t1":["",{"r1":["",{"c1":["Hc2DO@000008DKS9",1]}]}]}],["",{}],1]",
-  "[["",{}],["",{"v1":["Hc2DO@000018DKS9",1]}],1]",
+  "[[{"t1":[{"r1":[{"c1":[1,"Hc2DO@000008DKS9"]},""]},""]},""],[{},""],1]",
+  "[[{},""],[{"v1":[1,"Hc2DO@000018DKS9"]},""],1]",
 ]
 `;
 
-exports[`Supported, MergeableStore Content in setPersisted 1`] = `"[["",{"t1":["",{"r1":["",{"c1":["Hc2DO@000008DKS9",1,4065945599]},1279994494]},1293085726]},4033596827],["",{"v1":["Hc2DO@000008DKS9",1,4065945599]},2304392760]]"`;
+exports[`Supported, MergeableStore Content in setPersisted 1`] = `"[[{"t1":[{"r1":[{"c1":[1,"Hc2DO@000008DKS9",4065945599]},"",1279994494]},"",1293085726]},"",4033596827],[{"v1":[1,"Hc2DO@000008DKS9",4065945599]},"",2304392760]]"`;
 
-exports[`Supported, MergeableStore loading from legacy 1`] = `"[["",{"t1":["",{"r1":["",{"c1":["Hc2DO@000008DKS9",1,4065945599]},3278308926]},608074644]},3689956797],["",{"v1":["Hc2DO@000008DKS9",1,4065945599]},108401272]]"`;
+exports[`Supported, MergeableStore loading from legacy 1`] = `"[[{"t1":[{"r1":[{"c1":[1,"Hc2DO@000008DKS9",4065945599]},"",3278308926]},"",608074644]},"",3689956797],[{"v1":[1,"Hc2DO@000008DKS9",4065945599]},"",108401272]]"`;

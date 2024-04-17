@@ -1514,18 +1514,18 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
 // Mergeable methods
 () => {
   const mergeableContent = storeWithSchemas.getMergeableContent();
-  mergeableContent[0][1].t1;
-  mergeableContent[0][1].t2; // !
+  mergeableContent[0][0].t1;
+  mergeableContent[0][0].t2; // !
 
-  mergeableContent[0][1].t1?.[1]?.r1?.[1]?.c1?.[1] as number;
-  mergeableContent[0][1].t1?.[1]?.r1?.[1]?.c1?.[1] as undefined;
-  mergeableContent[0][1].t1?.[1]?.r1?.[1]?.c1d?.[1] as string;
-  mergeableContent[0][1].t1?.[1]?.r1?.[1]?.c1?.[1] as string; // !
-  mergeableContent[0][1].t1?.[1]?.r1?.[1]?.c1d?.[1] as number; // !
-  mergeableContent[0][1].t1?.[1]?.r1?.[1]?.c2?.[1] as number;
+  mergeableContent[0][0].t1?.[0]?.r1?.[0]?.c1?.[0] as number;
+  mergeableContent[0][0].t1?.[0]?.r1?.[0]?.c1?.[0] as undefined;
+  mergeableContent[0][0].t1?.[0]?.r1?.[0]?.c1d?.[0] as string;
+  mergeableContent[0][0].t1?.[0]?.r1?.[0]?.c1?.[0] as string; // !
+  mergeableContent[0][0].t1?.[0]?.r1?.[0]?.c1d?.[0] as number; // !
+  mergeableContent[0][0].t1?.[0]?.r1?.[0]?.c2?.[0] as number;
 
-  mergeableContent[1][1].v1;
-  mergeableContent[1][1].v1![1] as undefined;
-  mergeableContent[1][1].v1![1] as string; // !
-  mergeableContent[1][1].v2; // !
+  mergeableContent[1][0].v1;
+  mergeableContent[1][0].v1![0] as undefined;
+  mergeableContent[1][0].v1![0] as string; // !
+  mergeableContent[1][0].v2; // !
 };
