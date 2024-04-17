@@ -7,7 +7,11 @@ import {
 } from '../types/persisters/persister-browser';
 import {MergeableContent, MergeableStore} from '../types/mergeable-store';
 import {Persister, PersisterListener} from '../types/persisters';
-import {jsonParse, jsonStringWithMap} from '../common/json';
+import {
+  jsonParse,
+  jsonParseWithUndefined,
+  jsonStringWithUndefined,
+} from '../common/json';
 import {createCustomPersister} from '../persisters';
 
 type StorageListener = (event: StorageEvent) => void;
@@ -21,12 +25,12 @@ const createStoragePersister = (
   onIgnoredError?: (error: any) => void,
 ): Persister => {
   const getPersisted = async (): Promise<Content | MergeableContent> =>
-    jsonParse(storage.getItem(storageName) as string);
+    jsonParseWithUndefined(storage.getItem(storageName) as string);
 
   const setPersisted = async (
     getContent: () => Content | MergeableContent,
   ): Promise<void> =>
-    storage.setItem(storageName, jsonStringWithMap(getContent()));
+    storage.setItem(storageName, jsonStringWithUndefined(getContent()));
 
   const addPersisterListener = (
     listener: PersisterListener,
