@@ -155,27 +155,34 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const mergeContentOrChanges = (
     contentOrChanges: MergeableChanges | MergeableContent,
-    hasHashes: 0 | 1 = 0,
+    isChanges: 0 | 1 = 0,
   ): Changes => {
     const tablesChanges = {};
     const valuesChanges = {};
-    const [[tablesObj, incomingTablesTime, incomingTablesHash], values] =
-      contentOrChanges as MergeableContent;
+    const [
+      [tablesObj, incomingTablesTime = EMPTY_STRING, incomingTablesHash = 0],
+      values,
+    ] = contentOrChanges as typeof isChanges extends 1
+      ? MergeableContent
+      : MergeableChanges;
     const [tablesStampMap, valuesStampMap] = contentStampMap;
     const [tableStampMaps, oldTablesTime, oldTablesHash] = tablesStampMap;
 
-    let tablesHash = hasHashes ? incomingTablesHash : oldTablesHash;
+    let tablesHash = isChanges ? incomingTablesHash : oldTablesHash;
     let tablesTime = incomingTablesTime;
     objForEach(
       tablesObj,
-      ([rowsObj, incomingTableTime, incomingTableHash], tableId) => {
+      (
+        [rowsObj, incomingTableTime = EMPTY_STRING, incomingTableHash = 0],
+        tableId,
+      ) => {
         const tableStampMap = mapEnsure<Id, TableStampMap>(
           tableStampMaps,
           tableId,
           stampNewMap,
         );
         const [rowStampMaps, oldTableTime, oldTableHash] = tableStampMap;
-        let tableHash = hasHashes ? incomingTableHash : oldTableHash;
+        let tableHash = isChanges ? incomingTableHash : oldTableHash;
         let tableTime = incomingTableTime;
         objForEach(rowsObj, (row, rowId) => {
           const [rowTime, oldRowHash, rowHash] = mergeCellsOrValues(
@@ -190,22 +197,22 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
               rowId,
               objNew,
             ),
-            hasHashes,
+            isChanges,
           );
 
-          tableHash ^= hasHashes
+          tableHash ^= isChanges
             ? 0
             : (oldRowHash ? hashIdAndHash(rowId, oldRowHash) : 0) ^
               hashIdAndHash(rowId, rowHash);
           tableTime = getLatestTime(tableTime, rowTime);
         });
 
-        tableHash ^= hasHashes
+        tableHash ^= isChanges
           ? 0
           : replaceTimeHash(oldTableTime, incomingTableTime);
         stampUpdate(tableStampMap, tableHash, incomingTableTime);
 
-        tablesHash ^= hasHashes
+        tablesHash ^= isChanges
           ? 0
           : (oldTableHash ? hashIdAndHash(tableId, oldTableHash) : 0) ^
             hashIdAndHash(tableId, tableStampMap[2]);
@@ -213,7 +220,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       },
     );
 
-    tablesHash ^= hasHashes
+    tablesHash ^= isChanges
       ? 0
       : replaceTimeHash(oldTablesTime, incomingTablesTime);
     stampUpdate(tablesStampMap, tablesHash, incomingTablesTime);
@@ -222,7 +229,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       values,
       valuesStampMap,
       valuesChanges,
-      hasHashes,
+      isChanges,
     );
 
     seenHlc(getLatestTime(tablesTime, valuesTime));
@@ -230,44 +237,53 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const mergeCellsOrValues = <Thing extends CellOrUndefined | ValueOrUndefined>(
-    things: Stamp<IdObj<Stamp<Thing, true>>, true>,
+    things: typeof isChanges extends 1
+      ? Stamp<IdObj<Stamp<Thing, true>>, true>
+      : Stamp<IdObj<Stamp<Thing>>>,
     thingsStampMap: StampMap<Stamp<Thing, true>>,
     thingsChanges: {[thingId: Id]: Thing},
-    hasHashes: 0 | 1,
+    isChanges: 0 | 1,
   ): [thingsTime: Time, oldThingsHash: number, newThingsHash: number] => {
-    const [thingsObj, incomingThingsTime, incomingThingsHash] = things;
+    const [
+      thingsObj,
+      incomingThingsTime = EMPTY_STRING,
+      incomingThingsHash = 0,
+    ] = things;
     const [thingStampMaps, oldThingsTime, oldThingsHash] = thingsStampMap;
 
     let thingsTime = incomingThingsTime;
-    let thingsHash = hasHashes ? incomingThingsHash : oldThingsHash;
+    let thingsHash = isChanges ? incomingThingsHash : oldThingsHash;
 
-    objForEach(thingsObj, ([thing, thingTime, incomingThingHash], thingId) => {
-      const thingStampMap = mapEnsure<Id, Stamp<Thing, true>>(
-        thingStampMaps,
-        thingId,
-        () => [undefined as any, EMPTY_STRING, 0],
-      );
-      const [, oldThingTime, oldThingHash] = thingStampMap;
-
-      if (!oldThingTime || thingTime > oldThingTime) {
-        stampUpdate(
-          thingStampMap,
-          hasHashes
-            ? incomingThingHash
-            : getHash(jsonStringWithMap(thing ?? null) + ':' + thingTime),
-          thingTime,
+    objForEach(
+      thingsObj,
+      ([thing, thingTime = EMPTY_STRING, incomingThingHash = 0], thingId) => {
+        const thingStampMap = mapEnsure<Id, Stamp<Thing, true>>(
+          thingStampMaps,
+          thingId,
+          () => [undefined as any, EMPTY_STRING, 0],
         );
-        thingStampMap[0] = thing;
-        thingsChanges[thingId] = thing;
-        thingsHash ^= hasHashes
-          ? 0
-          : hashIdAndHash(thingId, oldThingHash) ^
-            hashIdAndHash(thingId, thingStampMap[2]);
-        thingsTime = getLatestTime(thingsTime, thingTime);
-      }
-    });
+        const [, oldThingTime, oldThingHash] = thingStampMap;
 
-    thingsHash ^= hasHashes
+        if (!oldThingTime || thingTime > oldThingTime) {
+          stampUpdate(
+            thingStampMap,
+            isChanges
+              ? incomingThingHash
+              : getHash(jsonStringWithMap(thing ?? null) + ':' + thingTime),
+            thingTime,
+          );
+          thingStampMap[0] = thing;
+          thingsChanges[thingId] = thing;
+          thingsHash ^= isChanges
+            ? 0
+            : hashIdAndHash(thingId, oldThingHash) ^
+              hashIdAndHash(thingId, thingStampMap[2]);
+          thingsTime = getLatestTime(thingsTime, thingTime);
+        }
+      },
+    );
+
+    thingsHash ^= isChanges
       ? 0
       : replaceTimeHash(oldThingsTime, incomingThingsTime);
     stampUpdate(thingsStampMap, thingsHash, incomingThingsTime);
