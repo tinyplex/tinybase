@@ -138,45 +138,44 @@ export const createCustomSynchronizer = (
     const [otherTablesHash, otherValuesHash] = otherContentHashes;
     const [tablesHash, valuesHash] = store.getMergeableContentHashes();
 
-    const changes: MergeableChanges = [stampNewObj(), stampNewObj(), 1];
+    return [
+      tablesHash == otherTablesHash
+        ? stampNewObj()
+        : (
+            await request<TablesStamp>(
+              otherClientId,
+              GET_TABLES_CHANGES,
+              store.getMergeableCellHashes(
+                (
+                  await request<RowIdsDiff>(
+                    otherClientId,
+                    GET_ROW_IDS_DIFF,
+                    store.getMergeableRowHashes(
+                      (
+                        await request<TableIdsDiff>(
+                          otherClientId,
+                          GET_TABLE_IDS_DIFF,
+                          store.getMergeableTableHashes(),
+                        )
+                      )[0],
+                    ),
+                  )
+                )[0],
+              ),
+            )
+          )[0],
 
-    if (tablesHash != otherTablesHash) {
-      changes[0] = (
-        await request<TablesStamp>(
-          otherClientId,
-          GET_TABLES_CHANGES,
-          store.getMergeableCellHashes(
-            (
-              await request<RowIdsDiff>(
-                otherClientId,
-                GET_ROW_IDS_DIFF,
-                store.getMergeableRowHashes(
-                  (
-                    await request<TableIdsDiff>(
-                      otherClientId,
-                      GET_TABLE_IDS_DIFF,
-                      store.getMergeableTableHashes(),
-                    )
-                  )[0],
-                ),
-              )
-            )[0],
-          ),
-        )
-      )[0];
-    }
-
-    if (valuesHash != otherValuesHash) {
-      changes[1] = (
-        await request<ValuesStamp>(
-          otherClientId,
-          GET_VALUES_CHANGES,
-          store.getMergeableValuesHashes(),
-        )
-      )[0];
-    }
-
-    return changes;
+      valuesHash == otherValuesHash
+        ? stampNewObj()
+        : (
+            await request<ValuesStamp>(
+              otherClientId,
+              GET_VALUES_CHANGES,
+              store.getMergeableValuesHashes(),
+            )
+          )[0],
+      1,
+    ];
   };
 
   const getPersisted = async (): Promise<any> => {
