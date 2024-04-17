@@ -212,6 +212,21 @@ describe.each([
       });
     });
 
+    test('Bidirectional, data already present', async () => {
+      store1 = createMergeableStore('s1');
+      store2 = createMergeableStore('s2');
+      store1.setCell('t1', 'r1', 'c1', 1);
+      store2.setCell('t1', 'r1', 'c2', 2);
+      synchronizer1 = await synchronizable.getSynchronizer(store1, environment);
+      synchronizer2 = await synchronizable.getSynchronizer(store2, environment);
+      await synchronizer1.startSync();
+      await synchronizer2.startSync();
+      await pause(synchronizable.pauseMilliseconds, true);
+      await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
+      synchronizer1.destroy();
+      synchronizer2.destroy();
+    });
+
     describe('Bidirectional', () => {
       beforeEach(async () => {
         store1 = createMergeableStore('s1');
