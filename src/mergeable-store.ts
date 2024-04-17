@@ -67,7 +67,7 @@ import {createStore} from './store';
 import {getHash} from './mergeable-store/hash';
 import {getHlcFunctions} from './mergeable-store/hlc';
 import {isCellOrValueOrNull} from './common/cell';
-import {jsonString} from './common/json';
+import {jsonStringWithMap} from './common/json';
 
 const LISTENER_ARGS: IdObj<number> = {
   HasTable: 1,
@@ -255,7 +255,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           thingStampMap,
           hasHashes
             ? incomingThingHash
-            : getHash(jsonString(thing ?? null) + ':' + thingTime),
+            : getHash(jsonStringWithMap(thing ?? null) + ':' + thingTime),
           thingTime,
         );
         thingStampMap[1] = thing;

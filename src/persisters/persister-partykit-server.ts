@@ -32,7 +32,7 @@ import {
   arrayUnshift,
 } from '../common/array';
 import {ifNotUndefined, isUndefined, promiseAll, slice} from '../common/other';
-import {jsonParse, jsonString} from '../common/json';
+import {jsonParse, jsonStringWithMap} from '../common/json';
 import {objEnsure, objNew, objToArray} from '../common/obj';
 import {mapForEach} from '../common/map';
 
@@ -202,7 +202,7 @@ const constructStorageKey = (
   storagePrefix: string,
   type: StorageKeyType,
   ...ids: Ids
-) => construct(storagePrefix, type, slice(jsonString(ids), 1, -1));
+) => construct(storagePrefix, type, slice(jsonStringWithMap(ids), 1, -1));
 
 const createResponse = async (
   that: TinyBasePartyKitServer,
@@ -243,7 +243,9 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
         this,
         200,
         hasExistingStore
-          ? jsonString(await loadStoreFromStorage(storage, storagePrefix))
+          ? jsonStringWithMap(
+              await loadStoreFromStorage(storage, storagePrefix),
+            )
           : EMPTY_STRING,
       );
     }
