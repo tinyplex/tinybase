@@ -72,15 +72,17 @@ export type ValueStamp<Hashed extends boolean = false> = Stamp<
 >;
 
 /// MergeableContent
-export type MergeableContent = Stamp<
-  [mergeableTables: TablesStamp<true>, mergeableValues: ValuesStamp<true>],
-  true
->;
+export type MergeableContent = [
+  mergeableTables: TablesStamp<true>,
+  mergeableValues: ValuesStamp<true>,
+];
 
 /// MergeableChanges
-export type MergeableChanges = Stamp<
-  [mergeableTables: TablesStamp, mergeableValues: ValuesStamp, isChanges: 1]
->;
+export type MergeableChanges = [
+  mergeableTables: TablesStamp,
+  mergeableValues: ValuesStamp,
+  isChanges: 1,
+];
 
 /// MergeableStore
 export interface MergeableStore extends Store {
