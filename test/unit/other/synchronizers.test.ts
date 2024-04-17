@@ -444,6 +444,87 @@ describe.each([
         await expectEachToHaveContent([{t1: {r1: {c1: 2}}}, {}]);
       });
 
+      test('deleted tables', async () => {
+        store1.setContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+        await pause(synchronizable.pauseMilliseconds, true);
+        store2.delTables();
+        await pause(synchronizable.pauseMilliseconds, true);
+        await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
+      });
+
+      test('deleted table', async () => {
+        store1.setContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+        await pause(synchronizable.pauseMilliseconds, true);
+        store2.delTable('t2');
+        await pause(synchronizable.pauseMilliseconds, true);
+        await expectEachToHaveContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+      });
+
+      test('deleted row', async () => {
+        store1.setContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+        await pause(synchronizable.pauseMilliseconds, true);
+        store2.delRow('t1', 'r2');
+        await pause(synchronizable.pauseMilliseconds, true);
+        await expectEachToHaveContent([
+          {t1: {r1: {c1: 1, c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+      });
+
+      test('deleted cell', async () => {
+        store1.setContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+        await pause(synchronizable.pauseMilliseconds, true);
+        store2.delCell('t1', 'r1', 'c2');
+        await pause(synchronizable.pauseMilliseconds, true);
+        await expectEachToHaveContent([
+          {t1: {r1: {c1: 1}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+      });
+
+      test('deleted values', async () => {
+        store1.setContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+        await pause(synchronizable.pauseMilliseconds, true);
+        store2.delValues();
+        await pause(synchronizable.pauseMilliseconds, true);
+        await expectEachToHaveContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {},
+        ]);
+      });
+
+      test('deleted value', async () => {
+        store1.setContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+        await pause(synchronizable.pauseMilliseconds, true);
+        store2.delValue('v2');
+        await pause(synchronizable.pauseMilliseconds, true);
+        await expectEachToHaveContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1},
+        ]);
+      });
+
       test('store1 missing values', async () => {
         store1.setTables({
           t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
