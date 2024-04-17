@@ -5,7 +5,7 @@ import {
   createWsSynchronizer as createWsSynchronizerDecl,
 } from '../types/synchronizers/synchronizer-ws-client';
 import {isUndefined, promiseNew, slice} from '../common/other';
-import {jsonParse, jsonString} from '../common/json';
+import {jsonParseWithUndefined, jsonStringWithUndefined} from '../common/json';
 import {IdOrNull} from '../types/common';
 import {MESSAGE_SEPARATOR} from './common';
 import {MergeableStore} from '../types/mergeable-store';
@@ -33,7 +33,9 @@ export const createWsSynchronizer = (async <
     ...args: [requestId: IdOrNull, messageType: MessageType, messageBody: any]
   ): void => {
     webSocket.send(
-      (toClientId ?? EMPTY_STRING) + MESSAGE_SEPARATOR + jsonString(args),
+      (toClientId ?? EMPTY_STRING) +
+        MESSAGE_SEPARATOR +
+        jsonStringWithUndefined(args),
     );
   };
 
@@ -58,7 +60,7 @@ export const createWsSynchronizer = (async <
       if (splitAt !== -1) {
         currentReceive(
           slice(data, 0, splitAt),
-          ...(jsonParse(slice(data, splitAt + 1)) as [
+          ...(jsonParseWithUndefined(slice(data, splitAt + 1)) as [
             requestId: IdOrNull,
             messageType: MessageType,
             messageBody: any,
