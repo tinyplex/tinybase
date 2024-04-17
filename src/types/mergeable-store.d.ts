@@ -12,7 +12,7 @@ export type Time = string;
 /// Stamp
 export type Stamp<Thing, Hashed extends boolean = false> = Hashed extends true
   ? [thing: Thing, time: Time, hash: Hash]
-  : [thing: Thing, time: Time];
+  : [thing: Thing, time?: Time];
 
 // ContentHashes
 export type ContentHashes = [tablesHash: Hash, valuesHash: Hash];
