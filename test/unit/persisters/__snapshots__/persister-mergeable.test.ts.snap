@@ -572,13 +572,13 @@ exports[`Persists to/from customSynchronizer autoSaves: setValues 1`] = `
 exports[`Persists to/from customSynchronizer loads 1`] = `
 [
   [
-    "",
+    "Hc2DO@000008DKS9",
     {
       "t1": [
-        "",
+        "Hc2DO@000008DKS9",
         {
           "r1": [
-            "",
+            "Hc2DO@000008DKS9",
             {
               "c1": [
                 "Hc2DO@000008DKS9",
@@ -586,16 +586,16 @@ exports[`Persists to/from customSynchronizer loads 1`] = `
                 4065945599,
               ],
             },
-            3278308926,
+            1279994494,
           ],
         },
-        608074644,
+        1293085726,
       ],
     },
-    3689956797,
+    4033596827,
   ],
   [
-    "",
+    "Hc2DO@000008DKS9",
     {
       "v1": [
         "Hc2DO@000008DKS9",
@@ -603,7 +603,7 @@ exports[`Persists to/from customSynchronizer loads 1`] = `
         4065945599,
       ],
     },
-    108401272,
+    2304392760,
   ],
 ]
 `;
@@ -665,13 +665,13 @@ exports[`Persists to/from customSynchronizer saves 2`] = `
 exports[`Persists to/from file autoLoads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000008DKS9",
@@ -698,13 +698,13 @@ exports[`Persists to/from file autoLoads 1`] = `
 exports[`Persists to/from file autoLoads 2`] = `
 [
   [
-    "Hc2DO@000018DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000018DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000018DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000018DKS9",
@@ -731,13 +731,13 @@ exports[`Persists to/from file autoLoads 2`] = `
 exports[`Persists to/from file autoLoads 3`] = `
 [
   [
-    "Hc2DO@000028DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000028DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000028DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000028DKS9",
@@ -764,13 +764,13 @@ exports[`Persists to/from file autoLoads 3`] = `
 exports[`Persists to/from file autoLoads 4`] = `
 [
   [
-    "Hc2DO@000028DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000028DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000028DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000028DKS9",
@@ -1441,13 +1441,13 @@ exports[`Persists to/from file saves 2`] = `
 exports[`Persists to/from localStorage autoLoads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000008DKS9",
@@ -1474,13 +1474,13 @@ exports[`Persists to/from localStorage autoLoads 1`] = `
 exports[`Persists to/from localStorage autoLoads 2`] = `
 [
   [
-    "Hc2DO@000018DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000018DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000018DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000018DKS9",
@@ -1507,13 +1507,13 @@ exports[`Persists to/from localStorage autoLoads 2`] = `
 exports[`Persists to/from localStorage autoLoads 3`] = `
 [
   [
-    "Hc2DO@000028DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000028DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000028DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000028DKS9",
@@ -1540,13 +1540,13 @@ exports[`Persists to/from localStorage autoLoads 3`] = `
 exports[`Persists to/from localStorage autoLoads 4`] = `
 [
   [
-    "Hc2DO@000028DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000028DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000028DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000028DKS9",
@@ -2720,13 +2720,13 @@ exports[`Persists to/from localSynchronizer autoSaves: setValues 1`] = `
 exports[`Persists to/from localSynchronizer loads 1`] = `
 [
   [
-    "",
+    "Hc2DO@000008DKS9",
     {
       "t1": [
-        "",
+        "Hc2DO@000008DKS9",
         {
           "r1": [
-            "",
+            "Hc2DO@000008DKS9",
             {
               "c1": [
                 "Hc2DO@000008DKS9",
@@ -2734,16 +2734,16 @@ exports[`Persists to/from localSynchronizer loads 1`] = `
                 4065945599,
               ],
             },
-            3278308926,
+            1279994494,
           ],
         },
-        608074644,
+        1293085726,
       ],
     },
-    3689956797,
+    4033596827,
   ],
   [
-    "",
+    "Hc2DO@000008DKS9",
     {
       "v1": [
         "Hc2DO@000008DKS9",
@@ -2751,7 +2751,7 @@ exports[`Persists to/from localSynchronizer loads 1`] = `
         4065945599,
       ],
     },
-    108401272,
+    2304392760,
   ],
 ]
 `;
@@ -2813,13 +2813,13 @@ exports[`Persists to/from localSynchronizer saves 2`] = `
 exports[`Persists to/from mockMergeableChangesListener autoLoads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000008DKS9",
@@ -2846,13 +2846,13 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 1`] = `
 exports[`Persists to/from mockMergeableChangesListener autoLoads 2`] = `
 [
   [
-    "Hc2DO@000018DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000018DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000018DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000018DKS9",
@@ -2860,13 +2860,13 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 2`] = `
                 2669080357,
               ],
             },
-            274319047,
+            178816250,
           ],
         },
-        4089057354,
+        910548496,
       ],
     },
-    3386696034,
+    377805824,
   ],
   [
     "",
@@ -2879,13 +2879,13 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 2`] = `
 exports[`Persists to/from mockMergeableChangesListener autoLoads 3`] = `
 [
   [
-    "Hc2DO@000028DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000028DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000028DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000028DKS9",
@@ -2893,13 +2893,13 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 3`] = `
                 3252714811,
               ],
             },
-            1416411412,
+            3469660222,
           ],
         },
-        3704904231,
+        1206185190,
       ],
     },
-    4008152259,
+    3354177867,
   ],
   [
     "",
@@ -2912,13 +2912,13 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 3`] = `
 exports[`Persists to/from mockMergeableChangesListener autoLoads 4`] = `
 [
   [
-    "Hc2DO@000028DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000028DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000028DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000028DKS9",
@@ -2926,13 +2926,13 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 4`] = `
                 3252714811,
               ],
             },
-            1416411412,
+            3469660222,
           ],
         },
-        3704904231,
+        1206185190,
       ],
     },
-    4008152259,
+    3354177867,
   ],
   [
     "",
@@ -3619,13 +3619,13 @@ exports[`Persists to/from mockMergeableChangesListener saves 2`] = `
 exports[`Persists to/from mockMergeableContentListener autoLoads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000008DKS9",
@@ -3652,13 +3652,13 @@ exports[`Persists to/from mockMergeableContentListener autoLoads 1`] = `
 exports[`Persists to/from mockMergeableContentListener autoLoads 2`] = `
 [
   [
-    "Hc2DO@000018DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000018DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000018DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000018DKS9",
@@ -3685,13 +3685,13 @@ exports[`Persists to/from mockMergeableContentListener autoLoads 2`] = `
 exports[`Persists to/from mockMergeableContentListener autoLoads 3`] = `
 [
   [
-    "Hc2DO@000028DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000028DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000028DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000028DKS9",
@@ -3718,13 +3718,13 @@ exports[`Persists to/from mockMergeableContentListener autoLoads 3`] = `
 exports[`Persists to/from mockMergeableContentListener autoLoads 4`] = `
 [
   [
-    "Hc2DO@000028DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000028DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000028DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000028DKS9",
@@ -4425,13 +4425,13 @@ exports[`Persists to/from mockMergeableContentListener saves 2`] = `
 exports[`Persists to/from mockMergeableNoContentListener autoLoads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000008DKS9",
@@ -4458,13 +4458,13 @@ exports[`Persists to/from mockMergeableNoContentListener autoLoads 1`] = `
 exports[`Persists to/from mockMergeableNoContentListener autoLoads 2`] = `
 [
   [
-    "Hc2DO@000018DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000018DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000018DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000018DKS9",
@@ -4491,13 +4491,13 @@ exports[`Persists to/from mockMergeableNoContentListener autoLoads 2`] = `
 exports[`Persists to/from mockMergeableNoContentListener autoLoads 3`] = `
 [
   [
-    "Hc2DO@000028DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000028DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000028DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000028DKS9",
@@ -4524,13 +4524,13 @@ exports[`Persists to/from mockMergeableNoContentListener autoLoads 3`] = `
 exports[`Persists to/from mockMergeableNoContentListener autoLoads 4`] = `
 [
   [
-    "Hc2DO@000028DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000028DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000028DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000028DKS9",
@@ -5231,13 +5231,13 @@ exports[`Persists to/from mockMergeableNoContentListener saves 2`] = `
 exports[`Persists to/from sessionStorage autoLoads 1`] = `
 [
   [
-    "Hc2DO@000008DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000008DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000008DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000008DKS9",
@@ -5264,13 +5264,13 @@ exports[`Persists to/from sessionStorage autoLoads 1`] = `
 exports[`Persists to/from sessionStorage autoLoads 2`] = `
 [
   [
-    "Hc2DO@000018DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000018DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000018DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000018DKS9",
@@ -5297,13 +5297,13 @@ exports[`Persists to/from sessionStorage autoLoads 2`] = `
 exports[`Persists to/from sessionStorage autoLoads 3`] = `
 [
   [
-    "Hc2DO@000028DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000028DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000028DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000028DKS9",
@@ -5330,13 +5330,13 @@ exports[`Persists to/from sessionStorage autoLoads 3`] = `
 exports[`Persists to/from sessionStorage autoLoads 4`] = `
 [
   [
-    "Hc2DO@000028DKS9",
+    "",
     {
       "t1": [
-        "Hc2DO@000028DKS9",
+        "",
         {
           "r1": [
-            "Hc2DO@000028DKS9",
+            "",
             {
               "c1": [
                 "Hc2DO@000028DKS9",
@@ -5945,6 +5945,6 @@ exports[`Supported, MergeableStore Changes in setPersisted 1`] = `
 ]
 `;
 
-exports[`Supported, MergeableStore Content in setPersisted 1`] = `"[["Hc2DO@000008DKS9",{"t1":["Hc2DO@000008DKS9",{"r1":["Hc2DO@000008DKS9",{"c1":["Hc2DO@000008DKS9",1,4065945599]},1279994494]},1293085726]},4033596827],["Hc2DO@000008DKS9",{"v1":["Hc2DO@000008DKS9",1,4065945599]},2304392760]]"`;
+exports[`Supported, MergeableStore Content in setPersisted 1`] = `"[["",{"t1":["",{"r1":["",{"c1":["Hc2DO@000008DKS9",1,4065945599]},1279994494]},1293085726]},4033596827],["",{"v1":["Hc2DO@000008DKS9",1,4065945599]},2304392760]]"`;
 
 exports[`Supported, MergeableStore loading from legacy 1`] = `"[["",{"t1":["",{"r1":["",{"c1":["Hc2DO@000008DKS9",1,4065945599]},3278308926]},608074644]},3689956797],["",{"v1":["Hc2DO@000008DKS9",1,4065945599]},108401272]]"`;
