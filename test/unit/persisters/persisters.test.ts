@@ -101,31 +101,54 @@ describe.each([
       {v1: 1},
     ]);
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
-    store.setTables({t1: {r1: {c1: 2}}});
+
+    store.setTables({t1: {r1: {c1: 1, c2: 2}}});
     await pause();
     expect(await persistable.get(location)).toEqual([
-      {t1: {r1: {c1: 2}}},
-      {v1: 1},
-    ]);
-    store.setTables({t1: {r1: {c1: 2}}});
-    await pause();
-    expect(await persistable.get(location)).toEqual([
-      {t1: {r1: {c1: 2}}},
+      {t1: {r1: {c1: 1, c2: 2}}},
       {v1: 1},
     ]);
     if (persistable.getChanges) {
-      expect(persistable.getChanges()).toEqual([{t1: {r1: {c1: 2}}}, {}, 1]);
+      expect(persistable.getChanges()).toEqual([{t1: {r1: {c2: 2}}}, {}, 1]);
     }
-    store.setValues({v1: 2});
+    expect(persister.getStats()).toEqual({loads: 0, saves: 2});
+
+    store.setValues({v1: 1, v2: 2});
     await pause();
     expect(await persistable.get(location)).toEqual([
-      {t1: {r1: {c1: 2}}},
-      {v1: 2},
+      {t1: {r1: {c1: 1, c2: 2}}},
+      {v1: 1, v2: 2},
     ]);
     if (persistable.getChanges) {
-      expect(persistable.getChanges()).toEqual([{}, {v1: 2}, 1]);
+      expect(persistable.getChanges()).toEqual([{}, {v2: 2}, 1]);
     }
     expect(persister.getStats()).toEqual({loads: 0, saves: 3});
+
+    store.delCell('t1', 'r1', 'c2');
+    await pause();
+    expect(await persistable.get(location)).toEqual([
+      {t1: {r1: {c1: 1}}},
+      {v1: 1, v2: 2},
+    ]);
+    if (persistable.getChanges) {
+      expect(persistable.getChanges()).toEqual([
+        {t1: {r1: {c2: undefined}}},
+        {},
+        1,
+      ]);
+    }
+    expect(persister.getStats()).toEqual({loads: 0, saves: 4});
+
+    store.delValue('v2');
+    await pause();
+    expect(await persistable.get(location)).toEqual([
+      {t1: {r1: {c1: 1}}},
+      {v1: 1},
+    ]);
+    if (persistable.getChanges) {
+      expect(persistable.getChanges()).toEqual([{}, {v2: undefined}, 1]);
+    }
+    expect(persister.getStats()).toEqual({loads: 0, saves: 5});
   });
 
   test('autoSaves without race', async () => {
