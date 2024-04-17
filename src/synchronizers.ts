@@ -17,6 +17,7 @@ import {PersisterListener} from './types/persisters';
 import {collDel} from './common/coll';
 import {createCustomPersister} from './persisters';
 import {getHlcFunctions} from './mergeable-store/hlc';
+import {objIsEmpty} from './common/obj';
 
 const RESPONSE = 0;
 const CONTENT_HASHES = 1;
@@ -185,7 +186,9 @@ export const createCustomSynchronizer = (
 
   const getPersisted = async (): Promise<any> => {
     const changes = await getChangesFromOtherStore();
-    return changes[0] != EMPTY_STRING ? changes : undefined;
+    return !objIsEmpty(changes[1][0][1]) || !objIsEmpty(changes[1][1][1])
+      ? changes
+      : undefined;
   };
 
   const setPersisted = async (): Promise<void> => {
