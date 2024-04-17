@@ -44,11 +44,23 @@ import fs from 'fs';
 import {mockFetchWasm} from '../common/other';
 import tmp from 'tmp';
 
+const UNDEFINED_MARKER = '\uFFFC';
+
 const GET_HOST = 'http://get.com';
 const SET_HOST = 'http://set.com';
 
 const electricSchema = new DbSchema({}, []);
 type Electric = ElectricClient<typeof electricSchema>;
+
+const jsonStringWithUndefined = (obj: unknown): string =>
+  JSON.stringify(obj, (_key, value) =>
+    value === undefined ? UNDEFINED_MARKER : value,
+  );
+
+const jsonParseWithUndefined = (str: string): any =>
+  JSON.parse(str, (_key, value) =>
+    value === UNDEFINED_MARKER ? undefined : value,
+  );
 
 const yMapMatch = (
   yMapOrParent: YMap<any>,
@@ -139,9 +151,9 @@ const getMockedCustom = (
     customPersister = '';
     return createCustomPersister(
       store,
-      async () => JSON.parse(customPersister),
+      async () => jsonParseWithUndefined(customPersister),
       async (getContent, getChanges) => {
-        customPersister = JSON.stringify(getContent());
+        customPersister = jsonStringWithUndefined(getContent());
         customPersisterChanges = getChanges?.() ?? [{}, {}, 1];
       },
       (listener) => {
@@ -156,11 +168,12 @@ const getMockedCustom = (
       {getFoo: () => 'foo'},
     );
   },
-  get: async (): Promise<Content | void> => JSON.parse(customPersister),
+  get: async (): Promise<Content | void> =>
+    jsonParseWithUndefined(customPersister),
   set: async (
     location: string,
     content: Content | MergeableContent,
-  ): Promise<void> => await write(location, JSON.stringify(content)),
+  ): Promise<void> => await write(location, jsonStringWithUndefined(content)),
   write,
   del: async (): Promise<void> => {
     customPersister = '';
@@ -181,7 +194,7 @@ export const mockContentListener: Persistable<string> = getMockedCustom(
     customPersister = rawContent;
     let content: Content;
     try {
-      content = JSON.parse(rawContent);
+      content = jsonParseWithUndefined(rawContent);
     } catch (e) {
       content = [] as any;
     }
@@ -194,7 +207,7 @@ export const mockChangesListener: Persistable<string> = getMockedCustom(
     customPersister = rawContent;
     let content: Content;
     try {
-      content = JSON.parse(rawContent);
+      content = jsonParseWithUndefined(rawContent);
     } catch (e) {
       content = [] as any;
     }
@@ -216,7 +229,7 @@ export const mockMergeableContentListener: Persistable<string> =
     customPersister = rawContent;
     let content: MergeableContent;
     try {
-      content = JSON.parse(rawContent);
+      content = jsonParseWithUndefined(rawContent);
     } catch (e) {
       content = [] as any;
     }
@@ -228,16 +241,13 @@ export const mockMergeableChangesListener: Persistable<string> =
     customPersister = rawContent;
     let content: MergeableContent;
     try {
-      content = JSON.parse(rawContent);
+      content = jsonParseWithUndefined(rawContent);
     } catch (e) {
       content = [] as any;
     }
     customPersisterListener?.(
       undefined,
-      () =>
-        (typeof content[0] == 'string'
-          ? [content[0], [...(content[1] ?? []), 1]]
-          : [...content, 1]) as any, // changes
+      () => [...content, 1] as any, // changes
     );
   }, true);
 
