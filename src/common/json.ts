@@ -3,7 +3,7 @@ import {object} from './obj';
 
 const UNDEFINED_MARKER = '\uFFFC';
 
-export const jsonString = (obj: unknown): string =>
+export const jsonStringWithMap = (obj: unknown): string =>
   JSON.stringify(obj, (_key, value) =>
     isInstanceOf(value, Map) ? object.fromEntries([...value]) : value,
   );
@@ -15,7 +15,7 @@ export const jsonStringWithUndefined = (obj: unknown): string =>
     value === undefined ? UNDEFINED_MARKER : value,
   );
 
-export const jsonParseWithUndefined = (str: string): unknown =>
+export const jsonParseWithUndefined = (str: string): any =>
   JSON.parse(str, (_key, value) =>
     value === UNDEFINED_MARKER ? undefined : value,
   );
