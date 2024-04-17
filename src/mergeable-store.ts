@@ -300,8 +300,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   ];
 
   const getMergeableContentHashes = (): ContentHashes => [
-    '',
-    [contentStampMap[0][2], contentStampMap[1][2]],
+    contentStampMap[0][2],
+    contentStampMap[1][2],
   ];
 
   const getMergeableTableHashes = (): TableHashes =>
