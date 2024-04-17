@@ -109,7 +109,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional Both match 1`] = `
       1943147459,
     ],
   ],
-  3408012512,
+  0,
 ]
 `;
 
@@ -190,7 +190,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional Both match, different ti
       1943147459,
     ],
   ],
-  3408012512,
+  0,
 ]
 `;
 
@@ -253,7 +253,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different cell 1`] = `
       0,
     ],
   ],
-  1767541769,
+  0,
 ]
 `;
 
@@ -308,7 +308,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different row 1`] = `
       0,
     ],
   ],
-  3787821937,
+  0,
 ]
 `;
 
@@ -374,7 +374,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different table 1`] = `
       0,
     ],
   ],
-  3257993897,
+  0,
 ]
 `;
 
@@ -457,7 +457,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different tables 1`] = `
       0,
     ],
   ],
-  2927036359,
+  0,
 ]
 `;
 
@@ -495,7 +495,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different value 1`] = `
       2788962423,
     ],
   ],
-  2788962423,
+  0,
 ]
 `;
 
@@ -538,7 +538,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different values 1`] = `
       2578062344,
     ],
   ],
-  2578062344,
+  0,
 ]
 `;
 
@@ -632,7 +632,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 empty 1`] = `
       1986878314,
     ],
   ],
-  4035749446,
+  0,
 ]
 `;
 
@@ -687,7 +687,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing cell 1`] 
       0,
     ],
   ],
-  3787821937,
+  0,
 ]
 `;
 
@@ -753,7 +753,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing row 1`] =
       0,
     ],
   ],
-  3257993897,
+  0,
 ]
 `;
 
@@ -836,7 +836,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing table 1`]
       0,
     ],
   ],
-  2927036359,
+  0,
 ]
 `;
 
@@ -930,7 +930,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing tables 1`
       1943147459,
     ],
   ],
-  562375767,
+  0,
 ]
 `;
 
@@ -973,7 +973,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing value 1`]
       3434601239,
     ],
   ],
-  3434601239,
+  0,
 ]
 `;
 
@@ -1067,7 +1067,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing values 1`
       651154652,
     ],
   ],
-  2654987263,
+  0,
 ]
 `;
 
@@ -1161,7 +1161,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 empty 1`] = `
       1943147459,
     ],
   ],
-  3408012512,
+  0,
 ]
 `;
 
@@ -1216,7 +1216,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing cell 1`] 
       0,
     ],
   ],
-  2827718611,
+  0,
 ]
 `;
 
@@ -1282,7 +1282,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing row 1`] =
       0,
     ],
   ],
-  834574742,
+  0,
 ]
 `;
 
@@ -1365,7 +1365,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing table 1`]
       0,
     ],
   ],
-  1087123818,
+  0,
 ]
 `;
 
@@ -1459,7 +1459,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing tables 1`
       1986878314,
     ],
   ],
-  2113044813,
+  0,
 ]
 `;
 
@@ -1502,7 +1502,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing value 1`]
       1631422212,
     ],
   ],
-  1631422212,
+  0,
 ]
 `;
 
@@ -1596,7 +1596,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing values 1`
       3425937146,
     ],
   ],
-  1255300054,
+  0,
 ]
 `;
 
@@ -1651,7 +1651,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional, data already present 1`
       0,
     ],
   ],
-  2091710400,
+  0,
 ]
 `;
 
@@ -1745,7 +1745,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional All but first empty 1
       1943147459,
     ],
   ],
-  3408012512,
+  0,
 ]
 `;
 
@@ -1833,7 +1833,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional All but last empty 1`
       3289288705,
     ],
   ],
-  3773712967,
+  0,
 ]
 `;
 
@@ -1947,7 +1947,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional All match 1`] = `
       3289288705,
     ],
   ],
-  3773712967,
+  0,
 ]
 `;
 
@@ -2010,7 +2010,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells
       0,
     ],
   ],
-  1377017825,
+  0,
 ]
 `;
 
@@ -2047,7 +2047,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells
       0,
     ],
   ],
-  1607505208,
+  0,
 ]
 `;
 
@@ -2093,7 +2093,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional all conflicting value
       41972225,
     ],
   ],
-  41972225,
+  0,
 ]
 `;
 
@@ -2118,7 +2118,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional all conflicting value
       3411649428,
     ],
   ],
-  3411649428,
+  0,
 ]
 `;
 
@@ -2214,7 +2214,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional all different cells 1
       0,
     ],
   ],
-  103817325,
+  0,
 ]
 `;
 
@@ -2357,7 +2357,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional all different rows 1`
       0,
     ],
   ],
-  1675211254,
+  0,
 ]
 `;
 
@@ -2554,7 +2554,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional all different tables 
       0,
     ],
   ],
-  2390533276,
+  0,
 ]
 `;
 
@@ -2631,7 +2631,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional all different values 
       280895690,
     ],
   ],
-  280895690,
+  0,
 ]
 `;
 
@@ -2719,7 +2719,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional half tables, half val
       1843943707,
     ],
   ],
-  1225294685,
+  0,
 ]
 `;
 
@@ -2769,7 +2769,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional autoLoad1 but not autoS
       30487211,
     ],
   ],
-  499701516,
+  0,
 ]
 `;
 
@@ -2850,7 +2850,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional autoLoad1 but not autoS
       2527596417,
     ],
   ],
-  600350802,
+  0,
 ]
 `;
 
@@ -2944,7 +2944,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional autoSave1 but not autoL
       3309870898,
     ],
   ],
-  4288729528,
+  0,
 ]
 `;
 
@@ -3019,7 +3019,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional load1 but not autoSave2
       30487211,
     ],
   ],
-  499701516,
+  0,
 ]
 `;
 
@@ -3100,7 +3100,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional load1 but not autoSave2
       2527596417,
     ],
   ],
-  600350802,
+  0,
 ]
 `;
 
@@ -3194,7 +3194,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional save1 but not autoLoad2
       3309870898,
     ],
   ],
-  4288729528,
+  0,
 ]
 `;
 
@@ -3339,7 +3339,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional Both match 1`] = `
       1943147459,
     ],
   ],
-  3408012512,
+  0,
 ]
 `;
 
@@ -3420,7 +3420,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional Both match, different tim
       1943147459,
     ],
   ],
-  3408012512,
+  0,
 ]
 `;
 
@@ -3483,7 +3483,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different cell 1`] = `
       0,
     ],
   ],
-  1767541769,
+  0,
 ]
 `;
 
@@ -3538,7 +3538,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different row 1`] = `
       0,
     ],
   ],
-  3787821937,
+  0,
 ]
 `;
 
@@ -3604,7 +3604,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different table 1`] = `
       0,
     ],
   ],
-  3257993897,
+  0,
 ]
 `;
 
@@ -3687,7 +3687,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different tables 1`] = `
       0,
     ],
   ],
-  2927036359,
+  0,
 ]
 `;
 
@@ -3725,7 +3725,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different value 1`] = `
       2788962423,
     ],
   ],
-  2788962423,
+  0,
 ]
 `;
 
@@ -3768,7 +3768,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different values 1`] = `
       2578062344,
     ],
   ],
-  2578062344,
+  0,
 ]
 `;
 
@@ -3862,7 +3862,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 empty 1`] = `
       1986878314,
     ],
   ],
-  4035749446,
+  0,
 ]
 `;
 
@@ -3917,7 +3917,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing cell 1`] =
       0,
     ],
   ],
-  3787821937,
+  0,
 ]
 `;
 
@@ -3983,7 +3983,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing row 1`] = 
       0,
     ],
   ],
-  3257993897,
+  0,
 ]
 `;
 
@@ -4066,7 +4066,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing table 1`] 
       0,
     ],
   ],
-  2927036359,
+  0,
 ]
 `;
 
@@ -4160,7 +4160,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing tables 1`]
       1943147459,
     ],
   ],
-  562375767,
+  0,
 ]
 `;
 
@@ -4203,7 +4203,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing value 1`] 
       3434601239,
     ],
   ],
-  3434601239,
+  0,
 ]
 `;
 
@@ -4297,7 +4297,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing values 1`]
       651154652,
     ],
   ],
-  2654987263,
+  0,
 ]
 `;
 
@@ -4391,7 +4391,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 empty 1`] = `
       1943147459,
     ],
   ],
-  3408012512,
+  0,
 ]
 `;
 
@@ -4446,7 +4446,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing cell 1`] =
       0,
     ],
   ],
-  2827718611,
+  0,
 ]
 `;
 
@@ -4512,7 +4512,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing row 1`] = 
       0,
     ],
   ],
-  834574742,
+  0,
 ]
 `;
 
@@ -4595,7 +4595,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing table 1`] 
       0,
     ],
   ],
-  1087123818,
+  0,
 ]
 `;
 
@@ -4689,7 +4689,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing tables 1`]
       1986878314,
     ],
   ],
-  2113044813,
+  0,
 ]
 `;
 
@@ -4732,7 +4732,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing value 1`] 
       1631422212,
     ],
   ],
-  1631422212,
+  0,
 ]
 `;
 
@@ -4826,7 +4826,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing values 1`]
       3425937146,
     ],
   ],
-  1255300054,
+  0,
 ]
 `;
 
@@ -4881,7 +4881,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional, data already present 1`]
       0,
     ],
   ],
-  2091710400,
+  0,
 ]
 `;
 
@@ -4975,7 +4975,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional All but first empty 1`
       1943147459,
     ],
   ],
-  3408012512,
+  0,
 ]
 `;
 
@@ -5063,7 +5063,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional All but last empty 1`]
       3289288705,
     ],
   ],
-  3773712967,
+  0,
 ]
 `;
 
@@ -5177,7 +5177,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional All match 1`] = `
       3289288705,
     ],
   ],
-  3773712967,
+  0,
 ]
 `;
 
@@ -5240,7 +5240,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells 
       0,
     ],
   ],
-  1377017825,
+  0,
 ]
 `;
 
@@ -5277,7 +5277,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells 
       0,
     ],
   ],
-  1607505208,
+  0,
 ]
 `;
 
@@ -5323,7 +5323,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional all conflicting values
       41972225,
     ],
   ],
-  41972225,
+  0,
 ]
 `;
 
@@ -5348,7 +5348,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional all conflicting values
       3411649428,
     ],
   ],
-  3411649428,
+  0,
 ]
 `;
 
@@ -5444,7 +5444,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional all different cells 1`
       0,
     ],
   ],
-  103817325,
+  0,
 ]
 `;
 
@@ -5587,7 +5587,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional all different rows 1`]
       0,
     ],
   ],
-  1675211254,
+  0,
 ]
 `;
 
@@ -5784,7 +5784,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional all different tables 1
       0,
     ],
   ],
-  2390533276,
+  0,
 ]
 `;
 
@@ -5861,7 +5861,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional all different values 1
       280895690,
     ],
   ],
-  280895690,
+  0,
 ]
 `;
 
@@ -5949,7 +5949,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional half tables, half valu
       1843943707,
     ],
   ],
-  1225294685,
+  0,
 ]
 `;
 
@@ -5999,7 +5999,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional autoLoad1 but not autoSa
       30487211,
     ],
   ],
-  499701516,
+  0,
 ]
 `;
 
@@ -6080,7 +6080,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional autoLoad1 but not autoSa
       2527596417,
     ],
   ],
-  600350802,
+  0,
 ]
 `;
 
@@ -6174,7 +6174,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional autoSave1 but not autoLo
       3309870898,
     ],
   ],
-  4288729528,
+  0,
 ]
 `;
 
@@ -6249,7 +6249,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional load1 but not autoSave2,
       30487211,
     ],
   ],
-  499701516,
+  0,
 ]
 `;
 
@@ -6330,7 +6330,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional load1 but not autoSave2,
       2527596417,
     ],
   ],
-  600350802,
+  0,
 ]
 `;
 
@@ -6424,7 +6424,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional save1 but not autoLoad2 
       3309870898,
     ],
   ],
-  4288729528,
+  0,
 ]
 `;
 
@@ -6569,7 +6569,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional Both match 1`] = `
       2620240859,
     ],
   ],
-  413886520,
+  0,
 ]
 `;
 
@@ -6650,7 +6650,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional Both match, different times 
       2620240859,
     ],
   ],
-  413886520,
+  0,
 ]
 `;
 
@@ -6713,7 +6713,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different cell 1`] = `
       0,
     ],
   ],
-  432983675,
+  0,
 ]
 `;
 
@@ -6768,7 +6768,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different row 1`] = `
       0,
     ],
   ],
-  3756284502,
+  0,
 ]
 `;
 
@@ -6834,7 +6834,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different table 1`] = `
       0,
     ],
   ],
-  1667506543,
+  0,
 ]
 `;
 
@@ -6917,7 +6917,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different tables 1`] = `
       0,
     ],
   ],
-  740881779,
+  0,
 ]
 `;
 
@@ -6955,7 +6955,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different value 1`] = `
       4268720149,
     ],
   ],
-  4268720149,
+  0,
 ]
 `;
 
@@ -6998,7 +6998,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different values 1`] = `
       482508559,
     ],
   ],
-  482508559,
+  0,
 ]
 `;
 
@@ -7092,7 +7092,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 empty 1`] = `
       2737635334,
     ],
   ],
-  2484922927,
+  0,
 ]
 `;
 
@@ -7147,7 +7147,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing cell 1`] = `
       0,
     ],
   ],
-  3756284502,
+  0,
 ]
 `;
 
@@ -7213,7 +7213,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing row 1`] = `
       0,
     ],
   ],
-  1667506543,
+  0,
 ]
 `;
 
@@ -7296,7 +7296,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing table 1`] = `
       0,
     ],
   ],
-  740881779,
+  0,
 ]
 `;
 
@@ -7390,7 +7390,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing tables 1`] = 
       2620240859,
     ],
   ],
-  3188402131,
+  0,
 ]
 `;
 
@@ -7433,7 +7433,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing value 1`] = `
       833548477,
     ],
   ],
-  833548477,
+  0,
 ]
 `;
 
@@ -7527,7 +7527,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing values 1`] = 
       2973842537,
     ],
   ],
-  902293386,
+  0,
 ]
 `;
 
@@ -7621,7 +7621,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 empty 1`] = `
       2620240859,
     ],
   ],
-  413886520,
+  0,
 ]
 `;
 
@@ -7676,7 +7676,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing cell 1`] = `
       0,
     ],
   ],
-  3422736124,
+  0,
 ]
 `;
 
@@ -7742,7 +7742,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing row 1`] = `
       0,
     ],
   ],
-  83940360,
+  0,
 ]
 `;
 
@@ -7825,7 +7825,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing table 1`] = `
       0,
     ],
   ],
-  2417881052,
+  0,
 ]
 `;
 
@@ -7919,7 +7919,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing tables 1`] = 
       2737635334,
     ],
   ],
-  2392112095,
+  0,
 ]
 `;
 
@@ -7962,7 +7962,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing value 1`] = `
       1531841895,
     ],
   ],
-  1531841895,
+  0,
 ]
 `;
 
@@ -8056,7 +8056,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing values 1`] = 
       1536466208,
     ],
   ],
-  1822783241,
+  0,
 ]
 `;
 
@@ -8111,7 +8111,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional, data already present 1`] = 
       0,
     ],
   ],
-  2091710400,
+  0,
 ]
 `;
 
@@ -8205,7 +8205,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional All but first empty 1`] =
       2620240859,
     ],
   ],
-  413886520,
+  0,
 ]
 `;
 
@@ -8293,7 +8293,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional All but last empty 1`] = 
       3780620955,
     ],
   ],
-  619230294,
+  0,
 ]
 `;
 
@@ -8407,7 +8407,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional All match 1`] = `
       3780620955,
     ],
   ],
-  619230294,
+  0,
 ]
 `;
 
@@ -8470,7 +8470,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells 2`]
       0,
     ],
   ],
-  902476109,
+  0,
 ]
 `;
 
@@ -8507,7 +8507,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells 3`]
       0,
     ],
   ],
-  677577629,
+  0,
 ]
 `;
 
@@ -8553,7 +8553,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values 1`
       3090506564,
     ],
   ],
-  3090506564,
+  0,
 ]
 `;
 
@@ -8578,7 +8578,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values 2`
       3991068656,
     ],
   ],
-  3991068656,
+  0,
 ]
 `;
 
@@ -8674,7 +8674,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all different cells 1`] =
       0,
     ],
   ],
-  585907964,
+  0,
 ]
 `;
 
@@ -8817,7 +8817,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all different rows 1`] = 
       0,
     ],
   ],
-  3662010654,
+  0,
 ]
 `;
 
@@ -9014,7 +9014,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all different tables 1`] 
       0,
     ],
   ],
-  3530913581,
+  0,
 ]
 `;
 
@@ -9091,7 +9091,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all different values 1`] 
       210062027,
     ],
   ],
-  210062027,
+  0,
 ]
 `;
 
@@ -9179,7 +9179,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional half tables, half values 
       613919465,
     ],
   ],
-  3777539108,
+  0,
 ]
 `;
 
@@ -9229,7 +9229,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional autoLoad1 but not autoSave2
       30487211,
     ],
   ],
-  499701516,
+  0,
 ]
 `;
 
@@ -9310,7 +9310,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional autoLoad1 but not autoSave2
       2527596417,
     ],
   ],
-  600350802,
+  0,
 ]
 `;
 
@@ -9404,7 +9404,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional autoSave1 but not autoLoad2
       3309870898,
     ],
   ],
-  4288729528,
+  0,
 ]
 `;
 
@@ -9479,7 +9479,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional load1 but not autoSave2, de
       30487211,
     ],
   ],
-  499701516,
+  0,
 ]
 `;
 
@@ -9560,7 +9560,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional load1 but not autoSave2, de
       2527596417,
     ],
   ],
-  600350802,
+  0,
 ]
 `;
 
@@ -9654,7 +9654,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional save1 but not autoLoad2 1`]
       3309870898,
     ],
   ],
-  4288729528,
+  0,
 ]
 `;
 
