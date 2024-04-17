@@ -305,6 +305,33 @@ describe.each([
     expect(persister.getStats()).toEqual({loads: 3, saves: 0});
   });
 
+  test('autoSave & autoLoad: roundtrip', async () => {
+    await persister.startAutoSave();
+    store.setTables({t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}});
+    store.setValues({v1: 1, v2: 2});
+    store.delTable('t2');
+    store.delRow('t1', 'r2');
+    store.delCell('t1', 'r1', 'c2');
+    store.delValue('v2');
+    await pause();
+    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    const was = store.getMergeableContent();
+    expect(was).toMatchSnapshot();
+    expect(await persistable.get(location)).toMatchSnapshot();
+    persister.stopAutoSave();
+    store.setMergeableContent([
+      ['', {}, 0],
+      ['', {}, 0],
+    ]);
+    await pause();
+    expect(store.getContent()).toEqual([{}, {}]);
+    expect(await persistable.get(location)).toMatchSnapshot();
+    await persister.startAutoLoad();
+    await nextLoop();
+    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(store.getMergeableContent()).toEqual(was);
+  });
+
   test('autoSave & autoLoad: no load when saving', async () => {
     if (name == 'file') {
       await persister.startAutoLoad([{t1: {r1: {c1: 1}}}, {}]);
