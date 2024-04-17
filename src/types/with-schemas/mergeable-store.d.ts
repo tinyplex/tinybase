@@ -136,22 +136,17 @@ export type ValueStamp<
 > = Stamp<ValueOrUndefined<Schema, ValueId>, Hashed>;
 
 /// MergeableContent
-export type MergeableContent<Schemas extends OptionalSchemas> = Stamp<
-  [
-    mergeableTables: TablesStamp<Schemas[0], true>,
-    mergeableValues: ValuesStamp<Schemas[1], true>,
-  ],
-  true
->;
+export type MergeableContent<Schemas extends OptionalSchemas> = [
+  mergeableTables: TablesStamp<Schemas[0], true>,
+  mergeableValues: ValuesStamp<Schemas[1], true>,
+];
 
 /// MergeableChanges
-export type MergeableChanges<Schemas extends OptionalSchemas> = Stamp<
-  [
-    mergeableTables: TablesStamp<Schemas[0]>,
-    mergeableValues: ValuesStamp<Schemas[1]>,
-    isChanges: 1,
-  ]
->;
+export type MergeableChanges<Schemas extends OptionalSchemas> = [
+  mergeableTables: TablesStamp<Schemas[0]>,
+  mergeableValues: ValuesStamp<Schemas[1]>,
+  isChanges: 1,
+];
 
 /// MergeableStore
 export interface MergeableStore<Schemas extends OptionalSchemas>
