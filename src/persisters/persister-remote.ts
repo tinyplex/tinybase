@@ -4,7 +4,7 @@ import {
   createRemotePersister as createRemotePersisterDecl,
 } from '../types/persisters/persister-remote';
 import {isUndefined, startInterval, stopInterval} from '../common/other';
-import {jsonParse, jsonString} from '../common/json';
+import {jsonParse, jsonStringWithMap} from '../common/json';
 import {PersisterListener} from '../types/persisters';
 import {createCustomPersister} from '../persisters';
 
@@ -29,7 +29,7 @@ export const createRemotePersister = ((
     await fetch(saveUrl, {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: jsonString(getContent()),
+      body: jsonStringWithMap(getContent()),
     });
 
   const addPersisterListener = (listener: PersisterListener): NodeJS.Timeout =>

@@ -2,7 +2,7 @@ import {Cmd, getCommandFunctions} from './commands';
 import {Content, Store} from '../../types/store';
 import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common';
 import {Persister, PersisterListener} from '../../types/persisters';
-import {jsonParse, jsonString} from '../../common/json';
+import {jsonParse, jsonStringWithMap} from '../../common/json';
 import {DefaultedJsonConfig} from './config';
 import {createCustomPersister} from '../../persisters';
 
@@ -40,7 +40,9 @@ export const createJsonSqlitePersister = <ListeningHandle>(
         storeTableName,
         DEFAULT_ROW_ID_COLUMN_NAME,
         {
-          [SINGLE_ROW_ID]: {[STORE_COLUMN]: jsonString(getContent() ?? null)},
+          [SINGLE_ROW_ID]: {
+            [STORE_COLUMN]: jsonStringWithMap(getContent() ?? null),
+          },
         },
         true,
         true,
