@@ -113,6 +113,100 @@ exports[`Syncs to/from customSynchronizer Bidirectional Both match 1`] = `
 ]
 `;
 
+exports[`Syncs to/from customSynchronizer Bidirectional Both match, different times 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {
+        "t1": [
+          "",
+          {
+            "r1": [
+              "",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              2458597615,
+            ],
+            "r2": [
+              "",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              284234904,
+            ],
+          },
+          856216021,
+        ],
+        "t2": [
+          "",
+          {
+            "r2": [
+              "",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              284234904,
+            ],
+          },
+          1147852913,
+        ],
+      },
+      3102750499,
+    ],
+    [
+      "",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          1,
+          2771101213,
+        ],
+        "v2": [
+          "Hc2DO@200008DKS9",
+          2,
+          1735757618,
+        ],
+      },
+      1943147459,
+    ],
+  ],
+  3408012512,
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional Both match, different times: stats 1`] = `
+[
+  {
+    "receives": 6,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 6,
+  },
+]
+`;
+
 exports[`Syncs to/from customSynchronizer Bidirectional Both match: stats 1`] = `
 [
   {
@@ -3249,6 +3343,100 @@ exports[`Syncs to/from localSynchronizer Bidirectional Both match 1`] = `
 ]
 `;
 
+exports[`Syncs to/from localSynchronizer Bidirectional Both match, different times 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {
+        "t1": [
+          "",
+          {
+            "r1": [
+              "",
+              {
+                "c1": [
+                  "Hc2DO@200008DKS9",
+                  1,
+                  2771101213,
+                ],
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              2458597615,
+            ],
+            "r2": [
+              "",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              284234904,
+            ],
+          },
+          856216021,
+        ],
+        "t2": [
+          "",
+          {
+            "r2": [
+              "",
+              {
+                "c2": [
+                  "Hc2DO@200008DKS9",
+                  2,
+                  1735757618,
+                ],
+              },
+              284234904,
+            ],
+          },
+          1147852913,
+        ],
+      },
+      3102750499,
+    ],
+    [
+      "",
+      {
+        "v1": [
+          "Hc2DO@200008DKS9",
+          1,
+          2771101213,
+        ],
+        "v2": [
+          "Hc2DO@200008DKS9",
+          2,
+          1735757618,
+        ],
+      },
+      1943147459,
+    ],
+  ],
+  3408012512,
+]
+`;
+
+exports[`Syncs to/from localSynchronizer Bidirectional Both match, different times: stats 1`] = `
+[
+  {
+    "receives": 6,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 6,
+  },
+]
+`;
+
 exports[`Syncs to/from localSynchronizer Bidirectional Both match: stats 1`] = `
 [
   {
@@ -6382,6 +6570,100 @@ exports[`Syncs to/from wsSynchronizer Bidirectional Both match 1`] = `
     ],
   ],
   413886520,
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Bidirectional Both match, different times 1`] = `
+[
+  "",
+  [
+    [
+      "",
+      {
+        "t1": [
+          "",
+          {
+            "r1": [
+              "",
+              {
+                "c1": [
+                  "Hc2DO@b00008DKS9",
+                  1,
+                  2306325645,
+                ],
+                "c2": [
+                  "Hc2DO@b00008DKS9",
+                  2,
+                  28162626,
+                ],
+              },
+              3263556791,
+            ],
+            "r2": [
+              "",
+              {
+                "c2": [
+                  "Hc2DO@b00008DKS9",
+                  2,
+                  28162626,
+                ],
+              },
+              2907572449,
+            ],
+          },
+          107574019,
+        ],
+        "t2": [
+          "",
+          {
+            "r2": [
+              "",
+              {
+                "c2": [
+                  "Hc2DO@b00008DKS9",
+                  2,
+                  28162626,
+                ],
+              },
+              2907572449,
+            ],
+          },
+          589764632,
+        ],
+      },
+      2223430627,
+    ],
+    [
+      "",
+      {
+        "v1": [
+          "Hc2DO@b00008DKS9",
+          1,
+          2306325645,
+        ],
+        "v2": [
+          "Hc2DO@b00008DKS9",
+          2,
+          28162626,
+        ],
+      },
+      2620240859,
+    ],
+  ],
+  413886520,
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Bidirectional Both match, different times: stats 1`] = `
+[
+  {
+    "receives": 6,
+    "sends": 8,
+  },
+  {
+    "receives": 8,
+    "sends": 6,
+  },
 ]
 `;
 
