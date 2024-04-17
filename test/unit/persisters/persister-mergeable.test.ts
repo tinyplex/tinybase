@@ -85,25 +85,43 @@ describe.each([
 
   test('autoSaves', async () => {
     store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+    expect(persister.isAutoSaving()).toEqual(false);
     await persister.startAutoSave();
-    expect(await persistable.get(location)).toMatchSnapshot();
+    expect(persister.isAutoSaving()).toEqual(true);
+    expect(await persistable.get(location)).toMatchSnapshot('initial');
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
-    store.setTables({t1: {r1: {c1: 2}}});
+
+    store.setTables({t1: {r1: {c1: 1, c2: 2}}});
     await pause(10, true);
-    expect(await persistable.get(location)).toMatchSnapshot();
-    store.setTables({t1: {r1: {c1: 2}}});
-    await pause(10, true);
-    expect(await persistable.get(location)).toMatchSnapshot();
+    expect(await persistable.get(location)).toMatchSnapshot('setTables');
     if (persistable.getChanges) {
-      expect(persistable.getChanges()).toMatchSnapshot();
+      expect(persistable.getChanges()).toMatchSnapshot('setTables changes');
     }
-    store.setValues({v1: 2});
+    expect(persister.getStats()).toEqual({loads: 0, saves: 2});
+
+    store.setValues({v1: 1, v2: 2});
     await pause(10, true);
-    expect(await persistable.get(location)).toMatchSnapshot();
+    expect(await persistable.get(location)).toMatchSnapshot('setValues');
     if (persistable.getChanges) {
-      expect(persistable.getChanges()).toMatchSnapshot();
+      expect(persistable.getChanges()).toMatchSnapshot('setValues changes');
     }
     expect(persister.getStats()).toEqual({loads: 0, saves: 3});
+
+    store.delCell('t1', 'r1', 'c2');
+    await pause(10, true);
+    expect(await persistable.get(location)).toMatchSnapshot('delCell');
+    if (persistable.getChanges) {
+      expect(persistable.getChanges()).toMatchSnapshot('delCell changes');
+    }
+    expect(persister.getStats()).toEqual({loads: 0, saves: 4});
+
+    store.delValue('v2');
+    await pause(10, true);
+    expect(await persistable.get(location)).toMatchSnapshot('delValue');
+    if (persistable.getChanges) {
+      expect(persistable.getChanges()).toMatchSnapshot('delValue changes');
+    }
+    expect(persister.getStats()).toEqual({loads: 0, saves: 5});
   });
 
   test('autoSaves without race', async () => {
@@ -197,7 +215,9 @@ describe.each([
       ],
       ['', {}, 0],
     ]);
+    expect(persister.isAutoLoading()).toEqual(false);
     await persister.startAutoLoad();
+    expect(persister.isAutoLoading()).toEqual(true);
     await nextLoop(true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(store.getMergeableContent()).toMatchSnapshot();
