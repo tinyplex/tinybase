@@ -66,7 +66,7 @@ import {mapEnsure, mapForEach, mapGet, mapToObj} from './common/map';
 import {createStore} from './store';
 import {getHash} from './mergeable-store/hash';
 import {getHlcFunctions} from './mergeable-store/hlc';
-import {isCellOrValueOrNull} from './common/cell';
+import {isCellOrValueOrNullOrUndefined} from './common/cell';
 import {jsonStringWithMap} from './common/json';
 
 const LISTENER_ARGS: IdObj<number> = {
@@ -114,7 +114,8 @@ const validateMergeableContent = (
               stampValidate(rowStamp, (cellStamps) =>
                 objValidate(
                   cellStamps,
-                  (cellStamp) => stampValidate(cellStamp, isCellOrValueOrNull),
+                  (cellStamp) =>
+                    stampValidate(cellStamp, isCellOrValueOrNullOrUndefined),
                   undefined,
                   1,
                 ),
@@ -130,7 +131,7 @@ const validateMergeableContent = (
   stampValidate(mergeableContent[1], (values) =>
     objValidate(
       values,
-      (value) => stampValidate(value, isCellOrValueOrNull),
+      (value) => stampValidate(value, isCellOrValueOrNullOrUndefined),
       undefined,
       1,
     ),
