@@ -131,25 +131,25 @@ describe('getMergeableContent', () => {
 
     let was;
 
-    was = store.getMergeableContent()[0][0];
-    mergeableContent[0][0] = time(0, 1, 's1');
-    expect(store.getMergeableContent()[0][0]).toEqual(was);
+    was = store.getMergeableContent()[0][1];
+    mergeableContent[0][1] = time(0, 1, 's1');
+    expect(store.getMergeableContent()[0][1]).toEqual(was);
 
-    was = mergeableContent[0][1].t1[0];
-    mergeableContent[0][1].t1[0] = time(0, 1, 's1');
-    expect(store.getMergeableContent()[0][1].t1[0]).toEqual(was);
+    was = mergeableContent[0][0].t1[1];
+    mergeableContent[0][0].t1[1] = time(0, 1, 's1');
+    expect(store.getMergeableContent()[0][0].t1[1]).toEqual(was);
 
-    was = store.getMergeableContent()[0][1].t1[1].r1[0];
-    mergeableContent[0][1].t1[1].r1[0] = time(0, 1, 's1');
-    expect(store.getMergeableContent()[0][1].t1[1].r1[0]).toEqual(was);
+    was = store.getMergeableContent()[0][0].t1[0].r1[1];
+    mergeableContent[0][0].t1[0].r1[1] = time(0, 1, 's1');
+    expect(store.getMergeableContent()[0][0].t1[0].r1[1]).toEqual(was);
 
-    was = store.getMergeableContent()[0][1].t1[1].r1[1].c1[0];
-    mergeableContent[0][1].t1[1].r1[1].c1[0] = time(0, 1, 's1');
-    expect(store.getMergeableContent()[0][1].t1[1].r1[1].c1[0]).toEqual(was);
+    was = store.getMergeableContent()[0][0].t1[0].r1[0].c1[1];
+    mergeableContent[0][0].t1[0].r1[0].c1[1] = time(0, 1, 's1');
+    expect(store.getMergeableContent()[0][0].t1[0].r1[0].c1[1]).toEqual(was);
 
-    was = store.getMergeableContent()[1][1].v1[0];
-    mergeableContent[1][1].v1[0] = time(0, 1, 's1');
-    expect(was).toEqual(time(0, 0, 's1'));
+    was = store.getMergeableContent()[1][0].v1[1];
+    mergeableContent[1][0].v1[1] = time(0, 1, 's1');
+    expect(store.getMergeableContent()[1][0].v1[1]).toEqual(was);
   });
 });
 
@@ -507,19 +507,19 @@ describe('apply/setMergeableContent', () => {
   test('set into empty store', () => {
     store.setMergeableContent([
       [
-        '',
         {
           t1: [
-            '',
             {
-              r1: ['', {c1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 1279994494],
+              r1: [{c1: [1, 'Hc2DO@000008DKS9', 4065945599]}, '', 1279994494],
             },
+            '',
             1293085726,
           ],
         },
+        '',
         4033596827,
       ],
-      ['', {v1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 2304392760],
+      [{v1: [1, 'Hc2DO@000008DKS9', 4065945599]}, '', 2304392760],
     ] as MergeableContent);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
@@ -529,19 +529,19 @@ describe('apply/setMergeableContent', () => {
     store.setContent([{t1: {r1: {c0: 0}}}, {v0: 0}]);
     store.setMergeableContent([
       [
-        '',
         {
           t1: [
-            '',
             {
-              r1: ['', {c1: ['Hc2DO@000018DKS9', 1, 3207404266]}, 1254797189],
+              r1: [{c1: [1, 'Hc2DO@000018DKS9', 3207404266]}, '', 1254797189],
             },
+            '',
             423436526,
           ],
         },
+        '',
         639574078,
       ],
-      ['', {v1: ['Hc2DO@000018DKS9', 1, 3207404266]}, 2404136035],
+      [{v1: [1, 'Hc2DO@000018DKS9', 3207404266]}, '', 2404136035],
     ] as MergeableContent);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
@@ -553,17 +553,13 @@ describe('apply/setMergeableContent', () => {
   test('set with wrong hashes', () => {
     store.setMergeableContent([
       [
-        '',
         {
-          t1: [
-            '',
-            {r1: ['Hc2DO@000018DKS9', {c1: ['Hc2DO@000018DKS9', 1, 1]}, 2]},
-            3,
-          ],
+          t1: [{r1: [{c1: [1, 'Hc2DO@000018DKS9', 1]}, '0', 2]}, '', 3],
         },
+        '',
         4,
       ],
-      ['', {v1: ['Hc2DO@000018DKS9', 1, 5]}, 6],
+      [{v1: [1, 'Hc2DO@000018DKS9', 5]}, '', 6],
     ] as MergeableContent);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
