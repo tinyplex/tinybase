@@ -46,6 +46,7 @@ import {
   getLatestTime,
   getStampHash,
   hashIdAndHash,
+  replaceTimeHash,
   stampClone,
   stampMapToObjWithHash,
   stampNewMap,
@@ -208,11 +209,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           tableTime = getLatestTime(tableTime, rowTime);
         });
 
-        tableHash ^=
-          hasHashes || tableTime <= oldTableTime
-            ? 0
-            : (oldTableTime ? getHash(oldTableTime) : 0) ^
-              (incomingTableTime ? getHash(incomingTableTime) : 0);
+        tableHash ^= hasHashes
+          ? 0
+          : replaceTimeHash(oldTableTime, incomingTableTime);
         stampUpdate(tableStampMap, tableHash, incomingTableTime);
 
         tablesHash ^= hasHashes
@@ -223,11 +222,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       },
     );
 
-    tablesHash ^=
-      hasHashes || tablesTime <= oldTablesTime
-        ? 0
-        : (oldTablesTime ? getHash(oldTablesTime) : 0) ^
-          (incomingTablesTime ? getHash(incomingTablesTime) : 0);
+    tablesHash ^= hasHashes
+      ? 0
+      : replaceTimeHash(oldTablesTime, incomingTablesTime);
     stampUpdate(tablesStampMap, tablesHash, incomingTablesTime);
 
     const [valuesTime] = mergeCellsOrValues(
@@ -289,11 +286,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       }
     });
 
-    thingsHash ^=
-      hasHashes || thingsTime <= oldThingsTime
-        ? 0
-        : (oldThingsTime ? getHash(oldThingsTime) : 0) ^
-          (incomingThingsTime ? getHash(incomingThingsTime) : 0);
+    thingsHash ^= hasHashes
+      ? 0
+      : replaceTimeHash(oldThingsTime, incomingThingsTime);
     stampUpdate(thingsStampMap, thingsHash, incomingThingsTime);
 
     return [thingsTime, oldThingsHash, thingsStampMap[2]];
