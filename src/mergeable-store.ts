@@ -164,7 +164,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     const tablesChanges = {};
     const valuesChanges = {};
     const [
-      _incomingContentOrChangesTime,
+      incomingContentOrChangesTime,
       [[incomingTablesTime, tablesObj, incomingTablesHash], values],
       incomingContentOrChangesHash,
     ] = contentOrChanges as MergeableContent;
@@ -211,8 +211,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         tableHash ^=
           hasHashes || tableTime <= oldTableTime
             ? 0
-            : (oldTableTime ? getHash(oldTableTime) : 0) ^ getHash(tableTime);
-        stampUpdate(tableStampMap, tableHash, tableTime);
+            : (oldTableTime ? getHash(oldTableTime) : 0) ^
+              (incomingTableTime ? getHash(incomingTableTime) : 0);
+        stampUpdate(tableStampMap, tableHash, incomingTableTime);
 
         tablesHash ^= hasHashes
           ? 0
@@ -225,8 +226,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     tablesHash ^=
       hasHashes || tablesTime <= oldTablesTime
         ? 0
-        : (oldTablesTime ? getHash(oldTablesTime) : 0) ^ getHash(tablesTime);
-    stampUpdate(tablesStampMap, tablesHash, tablesTime);
+        : (oldTablesTime ? getHash(oldTablesTime) : 0) ^
+          (incomingTablesTime ? getHash(incomingTablesTime) : 0);
+    stampUpdate(tablesStampMap, tablesHash, incomingTablesTime);
 
     const [valuesTime] = mergeCellsOrValues(
       values,
@@ -241,7 +243,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       hasHashes
         ? incomingContentOrChangesHash
         : tablesStampMap[2] ^ valuesStampMap[2],
-      contentTime,
+      incomingContentOrChangesTime,
     );
 
     seenHlc(contentTime);
@@ -290,8 +292,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     thingsHash ^=
       hasHashes || thingsTime <= oldThingsTime
         ? 0
-        : (oldThingsTime ? getHash(oldThingsTime) : 0) ^ getHash(thingsTime);
-    stampUpdate(thingsStampMap, thingsHash, thingsTime);
+        : (oldThingsTime ? getHash(oldThingsTime) : 0) ^
+          (incomingThingsTime ? getHash(incomingThingsTime) : 0);
+    stampUpdate(thingsStampMap, thingsHash, incomingThingsTime);
 
     return [thingsTime, oldThingsHash, thingsStampMap[2]];
   };
