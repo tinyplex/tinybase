@@ -302,8 +302,8 @@ export const mockLocalSynchronizer: Persistable<
   },
   del: async (location: [LocalSynchronizer, MergeableStore]): Promise<void> => {
     location[1].setMergeableContent([
-      ['', {}, 0],
-      ['', {}, 0],
+      [{}, '', 0],
+      [{}, '', 0],
     ]);
   },
   testMissing: false,
@@ -380,8 +380,8 @@ export const mockCustomSynchronizer: Persistable<
     location: [Map<string, Receive>, Synchronizer, MergeableStore],
   ): Promise<void> => {
     location[2].setMergeableContent([
-      ['', {}, 0],
-      ['', {}, 0],
+      [{}, '', 0],
+      [{}, '', 0],
     ]);
   },
   testMissing: false,
