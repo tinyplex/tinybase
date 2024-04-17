@@ -118,7 +118,7 @@ import {
   collSize4,
 } from './common/coll';
 import {getCellOrValueType, setOrDelCell, setOrDelValue} from './common/cell';
-import {jsonParse, jsonString} from './common/json';
+import {jsonParse, jsonStringWithMap} from './common/json';
 import {
   objDel,
   objFreeze,
@@ -1040,18 +1040,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const hasValue = (valueId: Id): boolean => collHas(valuesMap, id(valueId));
 
-  const getTablesJson = (): Json => jsonString(tablesMap);
+  const getTablesJson = (): Json => jsonStringWithMap(tablesMap);
 
-  const getValuesJson = (): Json => jsonString(valuesMap);
+  const getValuesJson = (): Json => jsonStringWithMap(valuesMap);
 
-  const getJson = (): Json => jsonString([tablesMap, valuesMap]);
+  const getJson = (): Json => jsonStringWithMap([tablesMap, valuesMap]);
 
-  const getTablesSchemaJson = (): Json => jsonString(tablesSchemaMap);
+  const getTablesSchemaJson = (): Json => jsonStringWithMap(tablesSchemaMap);
 
-  const getValuesSchemaJson = (): Json => jsonString(valuesSchemaMap);
+  const getValuesSchemaJson = (): Json => jsonStringWithMap(valuesSchemaMap);
 
   const getSchemaJson = (): Json =>
-    jsonString([tablesSchemaMap, valuesSchemaMap]);
+    jsonStringWithMap([tablesSchemaMap, valuesSchemaMap]);
 
   const setContent = ([tables, values]: Content): Store =>
     fluentTransaction(() => {
