@@ -144,27 +144,19 @@ describe.each([
   test('loads', async () => {
     await persistable.set(location, [
       [
-        'Hc2DO@000008DKS9',
         {
           t1: [
-            'Hc2DO@000008DKS9',
             {
-              r1: [
-                'Hc2DO@000008DKS9',
-                {c1: ['Hc2DO@000008DKS9', 1, 4065945599]},
-                1279994494,
-              ],
+              r1: [{c1: [1, 'Hc2DO@000008DKS9', 4065945599]}, '', 1279994494],
             },
+            '',
             1293085726,
           ],
         },
+        '',
         4033596827,
       ],
-      [
-        'Hc2DO@000008DKS9',
-        {v1: ['Hc2DO@000008DKS9', 1, 4065945599]},
-        2304392760,
-      ],
+      [{v1: [1, 'Hc2DO@000008DKS9', 4065945599]}, '', 2304392760],
     ]);
     await persister.load();
     pause(2, true);
@@ -200,19 +192,19 @@ describe.each([
   test('autoLoads', async () => {
     await persistable.set(location, [
       [
-        '',
         {
           t1: [
-            '',
             {
-              r1: ['', {c1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 1279994494],
+              r1: [{c1: [1, 'Hc2DO@000008DKS9', 4065945599]}, '', 1279994494],
             },
+            '',
             1293085726,
           ],
         },
+        '',
         4033596827,
       ],
-      ['', {}, 0],
+      [{}, '', 0],
     ]);
     expect(persister.isAutoLoading()).toEqual(false);
     await persister.startAutoLoad();
@@ -224,19 +216,19 @@ describe.each([
 
     await persistable.set(location, [
       [
-        '',
         {
           t1: [
-            '',
             {
-              r1: ['', {c1: ['Hc2DO@000018DKS9', 2, 2669080357]}, 274319047],
+              r1: [{c1: [2, 'Hc2DO@000018DKS9', 2669080357]}, '', 274319047],
             },
+            '',
             4089057354,
           ],
         },
+        '',
         3386696034,
       ],
-      ['', {}, 0],
+      [{}, '', 0],
     ]);
 
     await pause(persistable.autoLoadPause, true);
@@ -246,19 +238,19 @@ describe.each([
 
     await persistable.set(location, [
       [
-        '',
         {
           t1: [
-            '',
             {
-              r1: ['', {c1: ['Hc2DO@000028DKS9', 3, 3252714811]}, 1416411412],
+              r1: [{c1: [3, 'Hc2DO@000028DKS9', 3252714811]}, '', 1416411412],
             },
+            '',
             3704904231,
           ],
         },
+        '',
         4008152259,
       ],
-      ['', {}, 0],
+      [{}, '', 0],
     ]);
     await pause(persistable.autoLoadPause, true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
@@ -269,19 +261,19 @@ describe.each([
 
     await persistable.set(location, [
       [
-        '',
         {
           t1: [
-            '',
             {
-              r1: ['', {c1: ['Hc2DO@000028DKS9', 3, 3252714811]}, 1416411412],
+              r1: [{c1: [3, 'Hc2DO@000028DKS9', 3252714811]}, '', 1416411412],
             },
+            '',
             3704904231,
           ],
         },
+        '',
         4008152259,
       ],
-      ['', {}, 0],
+      [{}, '', 0],
     ]);
     await pause(persistable.autoLoadPause, true);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
@@ -304,8 +296,8 @@ describe.each([
     expect(await persistable.get(location)).toMatchSnapshot();
     persister.stopAutoSave();
     store.setMergeableContent([
-      ['', {}, 0],
-      ['', {}, 0],
+      [{}, '', 0],
+      [{}, '', 0],
     ]);
     await pause();
     expect(store.getContent()).toEqual([{}, {}]);
@@ -343,19 +335,19 @@ describe.each([
   test('does not delete when autoLoaded is deleted', async () => {
     await persistable.set(location, [
       [
-        '',
         {
           t1: [
-            '',
             {
-              r1: ['', {c1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 1279994494],
+              r1: [{c1: [1, 'Hc2DO@000008DKS9', 4065945599]}, '', 1279994494],
             },
+            '',
             1293085726,
           ],
         },
+        '',
         4033596827,
       ],
-      ['', {}, 0],
+      [{}, '', 0],
     ]);
     await persister.startAutoLoad();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
@@ -367,19 +359,19 @@ describe.each([
   test('does not delete when autoLoaded is corrupted', async () => {
     await persistable.set(location, [
       [
-        '',
         {
           t1: [
-            '',
             {
-              r1: ['', {c1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 1279994494],
+              r1: [{c1: [1, 'Hc2DO@000008DKS9', 4065945599]}, '', 1279994494],
             },
+            '',
             1293085726,
           ],
         },
+        '',
         4033596827,
       ],
-      ['', {}, 0],
+      [{}, '', 0],
     ]);
     await persister.startAutoLoad();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
@@ -456,19 +448,19 @@ describe('Supported, MergeableStore', () => {
     const store = createMergeableStore('s1');
     const content: MergeableContent = [
       [
-        '',
         {
           t1: [
-            '',
             {
-              r1: ['', {c1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 1279994494],
+              r1: [{c1: [1, 'Hc2DO@000008DKS9', 4065945599]}, '', 1279994494],
             },
+            '',
             1293085726,
           ],
         },
+        '',
         4033596827,
       ],
-      ['', {v1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 2304392760],
+      [{v1: [1, 'Hc2DO@000008DKS9', 4065945599]}, '', 2304392760],
     ];
     let persisted = '';
     const persister = createCustomPersister(
