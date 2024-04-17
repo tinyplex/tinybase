@@ -261,7 +261,7 @@ describe.each([
       {t1: {r1: {c1: 1}}},
       {v1: 1},
     ]);
-    await persister.load();
+    await persister.startAutoLoad();
     await nextLoop();
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
   });
