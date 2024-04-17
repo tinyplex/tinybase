@@ -19,15 +19,15 @@ export type TableStampMap = StampMap<RowStampMap>;
 export type RowStampMap = StampMap<CellStamp<true>>;
 export type ValuesStampMap = StampMap<ValueStamp<true>>;
 
-const stampCloneWithHash = <Value>([time, value, hash]: Stamp<
+const stampCloneWithHash = <Value>([value, time, hash]: Stamp<
   Value,
   true
->): Stamp<Value, true> => [time, value, hash];
+>): Stamp<Value, true> => [value, time, hash];
 
-export const stampClone = <Value>([time, value]: Stamp<
+export const stampClone = <Value>([value, time]: Stamp<
   Value,
   boolean
->): Stamp<Value> => [time, value];
+>): Stamp<Value> => [value, time];
 
 export const getStampHash = (stamp: Stamp<unknown, true>): Hash => stamp[2];
 
@@ -45,25 +45,25 @@ export const stampUpdate = (
   time: Time,
 ) => {
   stamp[2] = hash >>> 0;
-  if (time > stamp[0]) {
-    stamp[0] = time;
+  if (time > stamp[1]) {
+    stamp[1] = time;
   }
 };
 
 export const stampNewObj = <Thing>(
   time: Time = EMPTY_STRING,
-): Stamp<IdObj<Thing>> => [time, objNew<Thing>()];
+): Stamp<IdObj<Thing>> => [objNew<Thing>(), time];
 
 export const stampNewMap = <Thing>(time = EMPTY_STRING): StampMap<Thing> => [
-  time,
   mapNew<Id, Thing>(),
+  time,
   0,
 ];
 
 export const stampMapToObjWithHash = <From, To = From>(
-  [time, map, hash]: Stamp<IdMap<From>, true>,
+  [map, time, hash]: Stamp<IdMap<From>, true>,
   mapper: (mapValue: From) => To = stampCloneWithHash as any,
-): Stamp<IdObj<To>, true> => [time, mapToObj(map, mapper), hash];
+): Stamp<IdObj<To>, true> => [mapToObj(map, mapper), time, hash];
 
 export const stampValidate = (
   stamp: Stamp<any, true>,
@@ -71,7 +71,7 @@ export const stampValidate = (
 ) =>
   isArray(stamp) &&
   size(stamp) == 3 &&
-  isString(stamp[0]) &&
-  validateThing(stamp[1]) &&
+  isString(stamp[1]) &&
   getTypeOf(stamp[2]) == NUMBER &&
-  isFiniteNumber(stamp[2]);
+  isFiniteNumber(stamp[2]) &&
+  validateThing(stamp[0]);

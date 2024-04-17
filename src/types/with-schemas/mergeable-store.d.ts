@@ -29,8 +29,8 @@ export type Time = string;
 
 /// Stamp
 export type Stamp<Thing, Hashed extends boolean = false> = Hashed extends true
-  ? [time: Time, thing: Thing, hash: Hash]
-  : [time: Time, thing: Thing];
+  ? [thing: Thing, time: Time, hash: Hash]
+  : [thing: Thing, time: Time];
 
 // ContentHashes
 export type ContentHashes = [[tablesHash: Hash, valuesHash: Hash], time: Time];

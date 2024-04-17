@@ -60,7 +60,6 @@ export const createCustomSynchronizer = (
       if (DEBUG) {
         receives++;
       }
-
       if (messageType == RESPONSE) {
         ifNotUndefined(
           mapGet(pendingRequests, requestId),
@@ -180,7 +179,7 @@ export const createCustomSynchronizer = (
 
   const getPersisted = async (): Promise<any> => {
     const changes = await getChangesFromOtherStore();
-    return !objIsEmpty(changes[0][1]) || !objIsEmpty(changes[1][1])
+    return !objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0])
       ? changes
       : undefined;
   };
