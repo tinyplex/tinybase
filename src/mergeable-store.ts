@@ -88,15 +88,14 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-type ContentStampMap = Stamp<
-  [tablesStampMap: TablesStampMap, valuesStampMap: ValuesStampMap],
-  true
->;
+type ContentStampMap = [
+  tablesStampMap: TablesStampMap,
+  valuesStampMap: ValuesStampMap,
+];
 
 const newContentStampMap = (time = EMPTY_STRING): ContentStampMap => [
-  time,
-  [stampNewMap(time), stampNewMap(time)],
-  0,
+  stampNewMap(time),
+  stampNewMap(time),
 ];
 
 const validateMergeableContent = (
@@ -164,12 +163,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   ): Changes => {
     const tablesChanges = {};
     const valuesChanges = {};
-    const [
-      incomingContentOrChangesTime,
-      [[incomingTablesTime, tablesObj, incomingTablesHash], values],
-      incomingContentOrChangesHash,
-    ] = contentOrChanges as MergeableContent;
-    const [, [tablesStampMap, valuesStampMap]] = contentStampMap;
+    const [, [[incomingTablesTime, tablesObj, incomingTablesHash], values], ,] =
+      contentOrChanges as MergeableContent;
+    const [tablesStampMap, valuesStampMap] = contentStampMap;
     const [oldTablesTime, tableStampMaps, oldTablesHash] = tablesStampMap;
 
     let tablesHash = hasHashes ? incomingTablesHash : oldTablesHash;
@@ -234,16 +230,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       hasHashes,
     );
 
-    const contentTime = getLatestTime(tablesTime, valuesTime);
-    stampUpdate(
-      contentStampMap,
-      hasHashes
-        ? incomingContentOrChangesHash
-        : tablesStampMap[2] ^ valuesStampMap[2],
-      incomingContentOrChangesTime,
-    );
-
-    seenHlc(contentTime);
+    seenHlc(getLatestTime(tablesTime, valuesTime));
 
     return [tablesChanges, valuesChanges, 1];
   };
@@ -309,29 +296,29 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const getId = () => id;
 
   const getMergeableContent = (): MergeableContent => [
-    contentStampMap[0],
+    '',
     [
-      stampMapToObjWithHash(contentStampMap[1][0], (tableStampMap) =>
+      stampMapToObjWithHash(contentStampMap[0], (tableStampMap) =>
         stampMapToObjWithHash(tableStampMap, (rowStampMap) =>
           stampMapToObjWithHash(rowStampMap),
         ),
       ),
-      stampMapToObjWithHash(contentStampMap[1][1]),
+      stampMapToObjWithHash(contentStampMap[1]),
     ],
-    contentStampMap[2],
+    0,
   ];
 
   const getMergeableContentHashes = (): ContentHashes => [
-    contentStampMap[0],
-    [contentStampMap[1][0][2], contentStampMap[1][1][2]],
+    '',
+    [contentStampMap[0][2], contentStampMap[1][2]],
   ];
 
   const getMergeableTableHashes = (): TableHashes =>
-    mapToObj(contentStampMap[1][0][1], getStampHash);
+    mapToObj(contentStampMap[0][1], getStampHash);
 
   const getMergeableTableIdsDiff = (relativeTo: TableHashes): TableIdsDiff => {
     const tableIds: Ids = [];
-    mapForEach(contentStampMap[1][0][1], (tableId, [, , hash]) => {
+    mapForEach(contentStampMap[0][1], (tableId, [, , hash]) => {
       if (hash !== relativeTo?.[tableId]) {
         arrayPush(tableIds, tableId);
       }
@@ -343,7 +330,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     objNew(
       arrayMap(tablesDelta, (tableId) => [
         tableId,
-        mapToObj(mapGet(contentStampMap[1][0][1], tableId)?.[1], getStampHash),
+        mapToObj(mapGet(contentStampMap[0][1], tableId)?.[1], getStampHash),
       ]),
     );
 
@@ -351,7 +338,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     objMap(relativeTo, (rowHashes, tableId) => {
       const rowIds: Ids = [];
       mapForEach(
-        mapGet(contentStampMap[1][0][1], tableId)?.[1],
+        mapGet(contentStampMap[0][1], tableId)?.[1],
         (rowId, [, , hash]) => {
           if (hash !== rowHashes?.[rowId]) {
             arrayPush(rowIds, rowId);
@@ -367,7 +354,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         arrayMap(rowIds, (rowId) => [
           rowId,
           mapToObj(
-            mapGet(mapGet(contentStampMap[1][0][1], tableId)?.[1], rowId)?.[1],
+            mapGet(mapGet(contentStampMap[0][1], tableId)?.[1], rowId)?.[1],
             getStampHash,
           ),
         ]),
@@ -375,7 +362,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     );
 
   const getMergeableTablesChanges = (relativeTo: CellHashes): TablesStamp => {
-    const [, [[, tableStampMaps]]] = contentStampMap;
+    const [[, tableStampMaps]] = contentStampMap;
     const tables: TablesStamp[1] = {};
     objForEach(relativeTo, (rowCellHashes, tableId) =>
       ifNotUndefined(mapGet(tableStampMaps, tableId), ([, rowStampMaps]) => {
@@ -401,12 +388,12 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const getMergeableValuesHashes = (): ValuesHashes =>
-    mapToObj(contentStampMap[1][1][1], getStampHash);
+    mapToObj(contentStampMap[1][1], getStampHash);
 
   const getMergeableValuesChanges = (relativeTo: ValuesHashes): ValuesStamp => [
     EMPTY_STRING,
     mapToObj(
-      contentStampMap[1][1][1],
+      contentStampMap[1][1],
       stampClone,
       ([, , hash], valueId) => hash == relativeTo?.[valueId],
     ),

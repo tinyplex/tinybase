@@ -1233,7 +1233,7 @@ exports[`Merge One way delCell 1`] = `
       0,
     ],
   ],
-  238240702,
+  0,
 ]
 `;
 
@@ -1303,7 +1303,7 @@ exports[`Merge One way delRow 1`] = `
       0,
     ],
   ],
-  1295459070,
+  0,
 ]
 `;
 
@@ -1373,7 +1373,7 @@ exports[`Merge One way delTable 1`] = `
       0,
     ],
   ],
-  2433215523,
+  0,
 ]
 `;
 
@@ -1454,7 +1454,7 @@ exports[`Merge One way delTables 1`] = `
       0,
     ],
   ],
-  4105176891,
+  0,
 ]
 `;
 
@@ -1546,7 +1546,7 @@ exports[`Merge One way delValue 1`] = `
       2393416798,
     ],
   ],
-  2048435045,
+  0,
 ]
 `;
 
@@ -1638,7 +1638,7 @@ exports[`Merge One way delValues 1`] = `
       3959425906,
     ],
   ],
-  414190665,
+  0,
 ]
 `;
 
@@ -1708,7 +1708,7 @@ exports[`Merge One way setCell 1`] = `
       0,
     ],
   ],
-  2603045523,
+  0,
 ]
 `;
 
@@ -1789,7 +1789,7 @@ exports[`Merge One way setCell 2 1`] = `
       0,
     ],
   ],
-  223508698,
+  0,
 ]
 `;
 
@@ -1859,7 +1859,7 @@ exports[`Merge One way setTables 1`] = `
       0,
     ],
   ],
-  2083176685,
+  0,
 ]
 `;
 
@@ -1951,7 +1951,7 @@ exports[`Merge One way setValue 1`] = `
       3354147827,
     ],
   ],
-  861682888,
+  0,
 ]
 `;
 
@@ -2043,7 +2043,7 @@ exports[`Merge One way setValues 1`] = `
       34049206,
     ],
   ],
-  4139223949,
+  0,
 ]
 `;
 
@@ -2086,7 +2086,7 @@ exports[`Merge Two way Causality 1`] = `
       1777490301,
     ],
   ],
-  78557157,
+  0,
 ]
 `;
 
@@ -2129,7 +2129,7 @@ exports[`Merge Two way Causality 2`] = `
       2705602071,
     ],
   ],
-  3034696910,
+  0,
 ]
 `;
 
@@ -2177,7 +2177,7 @@ exports[`Merge Two way Conflict 1`] = `
       707780593,
     ],
   ],
-  4057963084,
+  0,
 ]
 `;
 
@@ -2220,7 +2220,7 @@ exports[`Merge Two way Conflict 2`] = `
       3742178356,
     ],
   ],
-  306321004,
+  0,
 ]
 `;
 
@@ -2268,7 +2268,7 @@ exports[`Merge Two way Conflict 3`] = `
       4021524955,
     ],
   ],
-  586978179,
+  0,
 ]
 `;
 
@@ -2305,7 +2305,7 @@ exports[`Merge Two way Interleaving 1`] = `
       0,
     ],
   ],
-  2242120835,
+  0,
 ]
 `;
 
@@ -2342,7 +2342,7 @@ exports[`Merge Two way Interleaving 2`] = `
       0,
     ],
   ],
-  810253148,
+  0,
 ]
 `;
 
@@ -2385,7 +2385,7 @@ exports[`Merge Two way Mutually exclusive tables & values 1`] = `
       445733406,
     ],
   ],
-  3244367779,
+  0,
 ]
 `;
 
@@ -2456,7 +2456,7 @@ exports[`Merge Two way Mutually exclusive tables & values 2`] = `
       2041201258,
     ],
   ],
-  102986799,
+  0,
 ]
 `;
 
@@ -2537,7 +2537,7 @@ exports[`Merge Two way Mutually exclusive tables & values 3`] = `
       1664817268,
     ],
   ],
-  2675009020,
+  0,
 ]
 `;
 
@@ -2574,7 +2574,7 @@ exports[`Merge Two way Mutually exclusive tables vs values 1`] = `
       0,
     ],
   ],
-  2577270131,
+  0,
 ]
 `;
 
@@ -2599,7 +2599,7 @@ exports[`Merge Two way Mutually exclusive tables vs values 2`] = `
       3867775115,
     ],
   ],
-  3867775115,
+  0,
 ]
 `;
 
@@ -2642,13 +2642,13 @@ exports[`Merge Two way Mutually exclusive tables vs values 3`] = `
       3867775115,
     ],
   ],
-  2132252152,
+  0,
 ]
 `;
 
 exports[`apply/setMergeableContent apply into empty store 1`] = `
 [
-  "Hc2DO@000008DKS9",
+  "",
   [
     [
       "Hc2DO@000008DKS9",
@@ -2685,13 +2685,13 @@ exports[`apply/setMergeableContent apply into empty store 1`] = `
       2304392760,
     ],
   ],
-  2033316771,
+  0,
 ]
 `;
 
 exports[`apply/setMergeableContent apply over existing content 1`] = `
 [
-  "Hc2DO@000018DKS9",
+  "",
   [
     [
       "Hc2DO@000018DKS9",
@@ -2738,7 +2738,7 @@ exports[`apply/setMergeableContent apply over existing content 1`] = `
       505723254,
     ],
   ],
-  2904095789,
+  0,
 ]
 `;
 
@@ -2781,7 +2781,7 @@ exports[`apply/setMergeableContent set into empty store 1`] = `
       2304392760,
     ],
   ],
-  2033316771,
+  0,
 ]
 `;
 
@@ -2824,7 +2824,7 @@ exports[`apply/setMergeableContent set over existing content 1`] = `
       2404136035,
     ],
   ],
-  2840794205,
+  0,
 ]
 `;
 
@@ -2872,7 +2872,7 @@ exports[`apply/setMergeableContent set over existing content 2`] = `
       2404136035,
     ],
   ],
-  1960116107,
+  0,
 ]
 `;
 
@@ -2915,7 +2915,7 @@ exports[`apply/setMergeableContent set with wrong hashes 1`] = `
       6,
     ],
   ],
-  7,
+  0,
 ]
 `;
 
@@ -3034,7 +3034,7 @@ exports[`getMergeableContent Mutate 1`] = `
       2723572765,
     ],
   ],
-  860979262,
+  0,
 ]
 `;
 
@@ -3115,7 +3115,7 @@ exports[`getMergeableContent Set in sequence 1`] = `
       3492436178,
     ],
   ],
-  808418502,
+  0,
 ]
 `;
 
@@ -3196,7 +3196,7 @@ exports[`getMergeableContent Set together 1`] = `
       317280319,
     ],
   ],
-  3458835845,
+  0,
 ]
 `;
 
@@ -3314,7 +3314,7 @@ exports[`getTransactionMergeableChanges After two transactions 2`] = `
       0,
     ],
   ],
-  1403776291,
+  0,
 ]
 `;
 
@@ -3400,7 +3400,7 @@ exports[`getTransactionMergeableChanges After two transactions 4`] = `
       0,
     ],
   ],
-  2794407532,
+  0,
 ]
 `;
 
