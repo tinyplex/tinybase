@@ -15,10 +15,6 @@ export const createLocalSynchronizer = ((
 ) => {
   const clientId: Id = '' + Math.random();
 
-  const onReceive = (receive: Receive): void => {
-    mapSet(clients, clientId, receive);
-  };
-
   const send = (
     toClientId: IdOrNull,
     requestId: IdOrNull,
@@ -37,6 +33,10 @@ export const createLocalSynchronizer = ((
           messageType,
           messageBody,
         );
+  };
+
+  const onReceive = (receive: Receive): void => {
+    mapSet(clients, clientId, receive);
   };
 
   const destroy = (): void => {
