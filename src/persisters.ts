@@ -1,5 +1,5 @@
 import {Changes, Content, Store} from './types/store.d';
-import {DEBUG, ifNotUndefined, isString, isUndefined} from './common/other';
+import {DEBUG, ifNotUndefined, isArray, isUndefined} from './common/other';
 import {
   MergeableChanges,
   MergeableContent,
@@ -51,7 +51,7 @@ const getStoreFunctions = (
         1,
         store.getMergeableContent,
         store.getTransactionMergeableChanges,
-        ([, [[, changedTables], [, changedValues]]]: MergeableChanges) =>
+        ([[, changedTables], [, changedValues]]: MergeableChanges) =>
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
         store.setDefaultContent,
       ];
@@ -145,13 +145,18 @@ export const createCustomPersister = <
       | MergeableChanges
       | undefined,
   ): void => {
-    (isMergeableStore && isString(contentOrChanges?.[0])
-      ? contentOrChanges?.[1][2] === 1
+    (isMergeableStore && isArray(contentOrChanges?.[0])
+      ? contentOrChanges?.[2] === 1
         ? (store as MergeableStore).applyMergeableChanges
         : (store as MergeableStore).setMergeableContent
       : contentOrChanges?.[2] === 1
         ? store.applyChanges
-        : store.setContent)(contentOrChanges as Changes & MergeableChanges);
+        : store.setContent)(
+      contentOrChanges as Content &
+        MergeableContent &
+        Changes &
+        MergeableChanges,
+    );
   };
 
   const persister: any = {
