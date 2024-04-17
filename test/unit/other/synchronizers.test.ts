@@ -271,6 +271,23 @@ describe.each([
         ]);
       });
 
+      test('Both match, different times', async () => {
+        store1.setContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+        await pause(synchronizable.pauseMilliseconds, true);
+        store2.setContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+        await pause(synchronizable.pauseMilliseconds, true);
+        await expectEachToHaveContent([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+      });
+
       test('store1 empty', async () => {
         store2.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
