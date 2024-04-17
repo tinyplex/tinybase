@@ -288,11 +288,8 @@ export const mockLocalSynchronizer: Persistable<
     createLocalSynchronizer(store as MergeableStore),
   get: async (
     location: [LocalSynchronizer, MergeableStore],
-  ): Promise<Content | MergeableContent | void> => {
-    try {
-      location[1].getMergeableContent();
-    } catch {}
-  },
+  ): Promise<Content | MergeableContent | void> =>
+    location[1].getMergeableContent(),
   set: async (
     location: [LocalSynchronizer, MergeableStore],
     content: Content | MergeableContent,
@@ -367,11 +364,8 @@ export const mockCustomSynchronizer: Persistable<
   ) => createCustomLocalSynchronizer(store as MergeableStore, location[0]),
   get: async (
     location: [Map<string, Receive>, Synchronizer, MergeableStore],
-  ): Promise<Content | MergeableContent | void> => {
-    try {
-      location[2].getMergeableContent();
-    } catch {}
-  },
+  ): Promise<Content | MergeableContent | void> =>
+    location[2].getMergeableContent(),
   set: async (
     location: [Map<string, Receive>, Synchronizer, MergeableStore],
     content: Content | MergeableContent,
