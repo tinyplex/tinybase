@@ -200,16 +200,12 @@ describe.each([
   test('autoLoads', async () => {
     await persistable.set(location, [
       [
-        'Hc2DO@000008DKS9',
+        '',
         {
           t1: [
-            'Hc2DO@000008DKS9',
+            '',
             {
-              r1: [
-                'Hc2DO@000008DKS9',
-                {c1: ['Hc2DO@000008DKS9', 1, 4065945599]},
-                1279994494,
-              ],
+              r1: ['', {c1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 1279994494],
             },
             1293085726,
           ],
@@ -228,16 +224,12 @@ describe.each([
 
     await persistable.set(location, [
       [
-        'Hc2DO@000018DKS9',
+        '',
         {
           t1: [
-            'Hc2DO@000018DKS9',
+            '',
             {
-              r1: [
-                'Hc2DO@000018DKS9',
-                {c1: ['Hc2DO@000018DKS9', 2, 2669080357]},
-                274319047,
-              ],
+              r1: ['', {c1: ['Hc2DO@000018DKS9', 2, 2669080357]}, 274319047],
             },
             4089057354,
           ],
@@ -254,16 +246,12 @@ describe.each([
 
     await persistable.set(location, [
       [
-        'Hc2DO@000028DKS9',
+        '',
         {
           t1: [
-            'Hc2DO@000028DKS9',
+            '',
             {
-              r1: [
-                'Hc2DO@000028DKS9',
-                {c1: ['Hc2DO@000028DKS9', 3, 3252714811]},
-                1416411412,
-              ],
+              r1: ['', {c1: ['Hc2DO@000028DKS9', 3, 3252714811]}, 1416411412],
             },
             3704904231,
           ],
@@ -281,16 +269,12 @@ describe.each([
 
     await persistable.set(location, [
       [
-        'Hc2DO@000028DKS9',
+        '',
         {
           t1: [
-            'Hc2DO@000028DKS9',
+            '',
             {
-              r1: [
-                'Hc2DO@000028DKS9',
-                {c1: ['Hc2DO@000028DKS9', 3, 3252714811]},
-                1416411412,
-              ],
+              r1: ['', {c1: ['Hc2DO@000028DKS9', 3, 3252714811]}, 1416411412],
             },
             3704904231,
           ],
@@ -359,16 +343,12 @@ describe.each([
   test('does not delete when autoLoaded is deleted', async () => {
     await persistable.set(location, [
       [
-        'Hc2DO@000008DKS9',
+        '',
         {
           t1: [
-            'Hc2DO@000008DKS9',
+            '',
             {
-              r1: [
-                'Hc2DO@000008DKS9',
-                {c1: ['Hc2DO@000008DKS9', 1, 4065945599]},
-                1279994494,
-              ],
+              r1: ['', {c1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 1279994494],
             },
             1293085726,
           ],
@@ -387,16 +367,12 @@ describe.each([
   test('does not delete when autoLoaded is corrupted', async () => {
     await persistable.set(location, [
       [
-        'Hc2DO@000008DKS9',
+        '',
         {
           t1: [
-            'Hc2DO@000008DKS9',
+            '',
             {
-              r1: [
-                'Hc2DO@000008DKS9',
-                {c1: ['Hc2DO@000008DKS9', 1, 4065945599]},
-                1279994494,
-              ],
+              r1: ['', {c1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 1279994494],
             },
             1293085726,
           ],
@@ -480,27 +456,19 @@ describe('Supported, MergeableStore', () => {
     const store = createMergeableStore('s1');
     const content: MergeableContent = [
       [
-        'Hc2DO@000008DKS9',
+        '',
         {
           t1: [
-            'Hc2DO@000008DKS9',
+            '',
             {
-              r1: [
-                'Hc2DO@000008DKS9',
-                {c1: ['Hc2DO@000008DKS9', 1, 4065945599]},
-                1279994494,
-              ],
+              r1: ['', {c1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 1279994494],
             },
             1293085726,
           ],
         },
         4033596827,
       ],
-      [
-        'Hc2DO@000008DKS9',
-        {v1: ['Hc2DO@000008DKS9', 1, 4065945599]},
-        2304392760,
-      ],
+      ['', {v1: ['Hc2DO@000008DKS9', 1, 4065945599]}, 2304392760],
     ];
     let persisted = '';
     const persister = createCustomPersister(
