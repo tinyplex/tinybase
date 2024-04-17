@@ -101,44 +101,39 @@ const newContentStampMap = (time = EMPTY_STRING): ContentStampMap => [
 const validateMergeableContent = (
   mergeableContent: MergeableContent,
 ): boolean =>
-  stampValidate(
-    mergeableContent,
-    (content) =>
-      isArray(content) &&
-      size(content) == 2 &&
-      stampValidate(content[0], (tableStamps) =>
-        objValidate(
-          tableStamps,
-          (tableStamp) =>
-            stampValidate(tableStamp, (rowStamps) =>
-              objValidate(
-                rowStamps,
-                (rowStamp) =>
-                  stampValidate(rowStamp, (cellStamps) =>
-                    objValidate(
-                      cellStamps,
-                      (cellStamp) =>
-                        stampValidate(cellStamp, isCellOrValueOrNull),
-                      undefined,
-                      1,
-                    ),
-                  ),
-                undefined,
-                1,
+  isArray(mergeableContent) &&
+  size(mergeableContent) == 2 &&
+  stampValidate(mergeableContent[0], (tableStamps) =>
+    objValidate(
+      tableStamps,
+      (tableStamp) =>
+        stampValidate(tableStamp, (rowStamps) =>
+          objValidate(
+            rowStamps,
+            (rowStamp) =>
+              stampValidate(rowStamp, (cellStamps) =>
+                objValidate(
+                  cellStamps,
+                  (cellStamp) => stampValidate(cellStamp, isCellOrValueOrNull),
+                  undefined,
+                  1,
+                ),
               ),
-            ),
-          undefined,
-          1,
+            undefined,
+            1,
+          ),
         ),
-      ) &&
-      stampValidate(content[1], (values) =>
-        objValidate(
-          values,
-          (value) => stampValidate(value, isCellOrValueOrNull),
-          undefined,
-          1,
-        ),
-      ),
+      undefined,
+      1,
+    ),
+  ) &&
+  stampValidate(mergeableContent[1], (values) =>
+    objValidate(
+      values,
+      (value) => stampValidate(value, isCellOrValueOrNull),
+      undefined,
+      1,
+    ),
   );
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
@@ -163,7 +158,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   ): Changes => {
     const tablesChanges = {};
     const valuesChanges = {};
-    const [, [[incomingTablesTime, tablesObj, incomingTablesHash], values], ,] =
+    const [[incomingTablesTime, tablesObj, incomingTablesHash], values] =
       contentOrChanges as MergeableContent;
     const [tablesStampMap, valuesStampMap] = contentStampMap;
     const [oldTablesTime, tableStampMaps, oldTablesHash] = tablesStampMap;
@@ -296,16 +291,12 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const getId = () => id;
 
   const getMergeableContent = (): MergeableContent => [
-    '',
-    [
-      stampMapToObjWithHash(contentStampMap[0], (tableStampMap) =>
-        stampMapToObjWithHash(tableStampMap, (rowStampMap) =>
-          stampMapToObjWithHash(rowStampMap),
-        ),
+    stampMapToObjWithHash(contentStampMap[0], (tableStampMap) =>
+      stampMapToObjWithHash(tableStampMap, (rowStampMap) =>
+        stampMapToObjWithHash(rowStampMap),
       ),
-      stampMapToObjWithHash(contentStampMap[1]),
-    ],
-    0,
+    ),
+    stampMapToObjWithHash(contentStampMap[1]),
   ];
 
   const getMergeableContentHashes = (): ContentHashes => [
@@ -425,11 +416,9 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         !objIsEmpty(changedCells) || !objIsEmpty(changedValues)
           ? transactionTime ?? (transactionTime = getHlc())
           : EMPTY_STRING;
-      const mergeableChanges: MergeableChanges = [
-        EMPTY_STRING,
-        [stampNewObj(), stampNewObj(), 1],
-      ];
-      const [[, tablesObj], [, valuesObj]] = mergeableChanges[1];
+      const changes: MergeableChanges = [stampNewObj(), stampNewObj(), 1];
+
+      const [[, tablesObj], [, valuesObj]] = changes;
 
       objToArray(changedCells, (changedTable, tableId) => {
         const [, rowsObj] = (tablesObj[tableId] = stampNewObj());
@@ -446,7 +435,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         ([, newValue], valueId) => (valuesObj[valueId] = [time, newValue]),
       );
 
-      return mergeableChanges;
+      return changes;
     }
     return transactionMergeableChanges;
   };
