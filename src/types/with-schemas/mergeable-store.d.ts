@@ -33,7 +33,7 @@ export type Stamp<Thing, Hashed extends boolean = false> = Hashed extends true
   : [time: Time, thing: Thing];
 
 // ContentHashes
-export type ContentHashes = [time: Time, [tablesHash: Hash, valuesHash: Hash]];
+export type ContentHashes = [[tablesHash: Hash, valuesHash: Hash], time: Time];
 
 // TablesStamp
 export type TablesStamp<
