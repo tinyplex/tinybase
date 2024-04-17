@@ -209,19 +209,365 @@ exports[`Persists to/from customSynchronizer autoSave & autoLoad: roundtrip 1`] 
 ]
 `;
 
-exports[`Persists to/from customSynchronizer autoSave & autoLoad: roundtrip 2`] = `undefined`;
+exports[`Persists to/from customSynchronizer autoSave & autoLoad: roundtrip 2`] = `
+[
+  [
+    "",
+    {
+      "t1": [
+        "",
+        {
+          "r1": [
+            "",
+            {
+              "c1": [
+                "Hc2DO@000008DKS9",
+                1,
+                4065945599,
+              ],
+              "c2": [
+                "Hc2DO@000048DKS9",
+                undefined,
+                2289969851,
+              ],
+            },
+            1111380841,
+          ],
+          "r2": [
+            "",
+            {
+              "c2": [
+                "Hc2DO@000038DKS9",
+                undefined,
+                4228156312,
+              ],
+            },
+            3156673086,
+          ],
+        },
+        1076267906,
+      ],
+      "t2": [
+        "",
+        {
+          "r2": [
+            "",
+            {
+              "c2": [
+                "Hc2DO@000028DKS9",
+                undefined,
+                1517672885,
+              ],
+            },
+            3665211872,
+          ],
+        },
+        442395888,
+      ],
+    },
+    2238694056,
+  ],
+  [
+    "",
+    {
+      "v1": [
+        "Hc2DO@000018DKS9",
+        1,
+        3207404266,
+      ],
+      "v2": [
+        "Hc2DO@000058DKS9",
+        undefined,
+        3070457446,
+      ],
+    },
+    3649486446,
+  ],
+]
+`;
 
-exports[`Persists to/from customSynchronizer autoSave & autoLoad: roundtrip 3`] = `undefined`;
+exports[`Persists to/from customSynchronizer autoSave & autoLoad: roundtrip 3`] = `
+[
+  [
+    "",
+    {
+      "t1": [
+        "",
+        {
+          "r1": [
+            "",
+            {
+              "c1": [
+                "Hc2DO@000008DKS9",
+                1,
+                4065945599,
+              ],
+              "c2": [
+                "Hc2DO@000048DKS9",
+                undefined,
+                2289969851,
+              ],
+            },
+            1111380841,
+          ],
+          "r2": [
+            "",
+            {
+              "c2": [
+                "Hc2DO@000038DKS9",
+                undefined,
+                4228156312,
+              ],
+            },
+            3156673086,
+          ],
+        },
+        1076267906,
+      ],
+      "t2": [
+        "",
+        {
+          "r2": [
+            "",
+            {
+              "c2": [
+                "Hc2DO@000028DKS9",
+                undefined,
+                1517672885,
+              ],
+            },
+            3665211872,
+          ],
+        },
+        442395888,
+      ],
+    },
+    2238694056,
+  ],
+  [
+    "",
+    {
+      "v1": [
+        "Hc2DO@000018DKS9",
+        1,
+        3207404266,
+      ],
+      "v2": [
+        "Hc2DO@000058DKS9",
+        undefined,
+        3070457446,
+      ],
+    },
+    3649486446,
+  ],
+]
+`;
 
-exports[`Persists to/from customSynchronizer autoSaves: delCell 1`] = `undefined`;
+exports[`Persists to/from customSynchronizer autoSaves: delCell 1`] = `
+[
+  [
+    "",
+    {
+      "t1": [
+        "",
+        {
+          "r1": [
+            "",
+            {
+              "c1": [
+                "Hc2DO@000008DKS9",
+                1,
+                4065945599,
+              ],
+              "c2": [
+                "Hc2DO@D00008DKS9",
+                undefined,
+                4253032043,
+              ],
+            },
+            1733027174,
+          ],
+        },
+        1843299373,
+      ],
+    },
+    3147506727,
+  ],
+  [
+    "",
+    {
+      "v1": [
+        "Hc2DO@000018DKS9",
+        1,
+        3207404266,
+      ],
+      "v2": [
+        "Hc2DO@:00008DKS9",
+        2,
+        2578009034,
+      ],
+    },
+    3246781976,
+  ],
+]
+`;
 
-exports[`Persists to/from customSynchronizer autoSaves: delValue 1`] = `undefined`;
+exports[`Persists to/from customSynchronizer autoSaves: delValue 1`] = `
+[
+  [
+    "",
+    {
+      "t1": [
+        "",
+        {
+          "r1": [
+            "",
+            {
+              "c1": [
+                "Hc2DO@000008DKS9",
+                1,
+                4065945599,
+              ],
+              "c2": [
+                "Hc2DO@D00008DKS9",
+                undefined,
+                4253032043,
+              ],
+            },
+            1733027174,
+          ],
+        },
+        1843299373,
+      ],
+    },
+    3147506727,
+  ],
+  [
+    "",
+    {
+      "v1": [
+        "Hc2DO@000018DKS9",
+        1,
+        3207404266,
+      ],
+      "v2": [
+        "Hc2DO@N00008DKS9",
+        undefined,
+        4289078209,
+      ],
+    },
+    2439424877,
+  ],
+]
+`;
 
-exports[`Persists to/from customSynchronizer autoSaves: initial 1`] = `undefined`;
+exports[`Persists to/from customSynchronizer autoSaves: initial 1`] = `
+[
+  [
+    "",
+    {},
+    0,
+  ],
+  [
+    "",
+    {},
+    0,
+  ],
+]
+`;
 
-exports[`Persists to/from customSynchronizer autoSaves: setTables 1`] = `undefined`;
+exports[`Persists to/from customSynchronizer autoSaves: setTables 1`] = `
+[
+  [
+    "",
+    {
+      "t1": [
+        "",
+        {
+          "r1": [
+            "",
+            {
+              "c1": [
+                "Hc2DO@000008DKS9",
+                1,
+                4065945599,
+              ],
+              "c2": [
+                "Hc2DO@000028DKS9",
+                2,
+                1691812082,
+              ],
+            },
+            3828687208,
+          ],
+        },
+        3894592596,
+      ],
+    },
+    2516100462,
+  ],
+  [
+    "",
+    {
+      "v1": [
+        "Hc2DO@000018DKS9",
+        1,
+        3207404266,
+      ],
+    },
+    445733406,
+  ],
+]
+`;
 
-exports[`Persists to/from customSynchronizer autoSaves: setValues 1`] = `undefined`;
+exports[`Persists to/from customSynchronizer autoSaves: setValues 1`] = `
+[
+  [
+    "",
+    {
+      "t1": [
+        "",
+        {
+          "r1": [
+            "",
+            {
+              "c1": [
+                "Hc2DO@000008DKS9",
+                1,
+                4065945599,
+              ],
+              "c2": [
+                "Hc2DO@000028DKS9",
+                2,
+                1691812082,
+              ],
+            },
+            3828687208,
+          ],
+        },
+        3894592596,
+      ],
+    },
+    2516100462,
+  ],
+  [
+    "",
+    {
+      "v1": [
+        "Hc2DO@000018DKS9",
+        1,
+        3207404266,
+      ],
+      "v2": [
+        "Hc2DO@:00008DKS9",
+        2,
+        2578009034,
+      ],
+    },
+    3246781976,
+  ],
+]
+`;
 
 exports[`Persists to/from customSynchronizer loads 1`] = `
 [
@@ -301,7 +647,20 @@ exports[`Persists to/from customSynchronizer saves 1`] = `
 ]
 `;
 
-exports[`Persists to/from customSynchronizer saves 2`] = `undefined`;
+exports[`Persists to/from customSynchronizer saves 2`] = `
+[
+  [
+    "",
+    {},
+    0,
+  ],
+  [
+    "",
+    {},
+    0,
+  ],
+]
+`;
 
 exports[`Persists to/from file autoLoads 1`] = `
 [
@@ -1998,19 +2357,365 @@ exports[`Persists to/from localSynchronizer autoSave & autoLoad: roundtrip 1`] =
 ]
 `;
 
-exports[`Persists to/from localSynchronizer autoSave & autoLoad: roundtrip 2`] = `undefined`;
+exports[`Persists to/from localSynchronizer autoSave & autoLoad: roundtrip 2`] = `
+[
+  [
+    "",
+    {
+      "t1": [
+        "",
+        {
+          "r1": [
+            "",
+            {
+              "c1": [
+                "Hc2DO@000008DKS9",
+                1,
+                4065945599,
+              ],
+              "c2": [
+                "Hc2DO@000048DKS9",
+                undefined,
+                2289969851,
+              ],
+            },
+            1111380841,
+          ],
+          "r2": [
+            "",
+            {
+              "c2": [
+                "Hc2DO@000038DKS9",
+                undefined,
+                4228156312,
+              ],
+            },
+            3156673086,
+          ],
+        },
+        1076267906,
+      ],
+      "t2": [
+        "",
+        {
+          "r2": [
+            "",
+            {
+              "c2": [
+                "Hc2DO@000028DKS9",
+                undefined,
+                1517672885,
+              ],
+            },
+            3665211872,
+          ],
+        },
+        442395888,
+      ],
+    },
+    2238694056,
+  ],
+  [
+    "",
+    {
+      "v1": [
+        "Hc2DO@000018DKS9",
+        1,
+        3207404266,
+      ],
+      "v2": [
+        "Hc2DO@000058DKS9",
+        undefined,
+        3070457446,
+      ],
+    },
+    3649486446,
+  ],
+]
+`;
 
-exports[`Persists to/from localSynchronizer autoSave & autoLoad: roundtrip 3`] = `undefined`;
+exports[`Persists to/from localSynchronizer autoSave & autoLoad: roundtrip 3`] = `
+[
+  [
+    "",
+    {
+      "t1": [
+        "",
+        {
+          "r1": [
+            "",
+            {
+              "c1": [
+                "Hc2DO@000008DKS9",
+                1,
+                4065945599,
+              ],
+              "c2": [
+                "Hc2DO@000048DKS9",
+                undefined,
+                2289969851,
+              ],
+            },
+            1111380841,
+          ],
+          "r2": [
+            "",
+            {
+              "c2": [
+                "Hc2DO@000038DKS9",
+                undefined,
+                4228156312,
+              ],
+            },
+            3156673086,
+          ],
+        },
+        1076267906,
+      ],
+      "t2": [
+        "",
+        {
+          "r2": [
+            "",
+            {
+              "c2": [
+                "Hc2DO@000028DKS9",
+                undefined,
+                1517672885,
+              ],
+            },
+            3665211872,
+          ],
+        },
+        442395888,
+      ],
+    },
+    2238694056,
+  ],
+  [
+    "",
+    {
+      "v1": [
+        "Hc2DO@000018DKS9",
+        1,
+        3207404266,
+      ],
+      "v2": [
+        "Hc2DO@000058DKS9",
+        undefined,
+        3070457446,
+      ],
+    },
+    3649486446,
+  ],
+]
+`;
 
-exports[`Persists to/from localSynchronizer autoSaves: delCell 1`] = `undefined`;
+exports[`Persists to/from localSynchronizer autoSaves: delCell 1`] = `
+[
+  [
+    "",
+    {
+      "t1": [
+        "",
+        {
+          "r1": [
+            "",
+            {
+              "c1": [
+                "Hc2DO@000008DKS9",
+                1,
+                4065945599,
+              ],
+              "c2": [
+                "Hc2DO@D00008DKS9",
+                undefined,
+                4253032043,
+              ],
+            },
+            1733027174,
+          ],
+        },
+        1843299373,
+      ],
+    },
+    3147506727,
+  ],
+  [
+    "",
+    {
+      "v1": [
+        "Hc2DO@000018DKS9",
+        1,
+        3207404266,
+      ],
+      "v2": [
+        "Hc2DO@:00008DKS9",
+        2,
+        2578009034,
+      ],
+    },
+    3246781976,
+  ],
+]
+`;
 
-exports[`Persists to/from localSynchronizer autoSaves: delValue 1`] = `undefined`;
+exports[`Persists to/from localSynchronizer autoSaves: delValue 1`] = `
+[
+  [
+    "",
+    {
+      "t1": [
+        "",
+        {
+          "r1": [
+            "",
+            {
+              "c1": [
+                "Hc2DO@000008DKS9",
+                1,
+                4065945599,
+              ],
+              "c2": [
+                "Hc2DO@D00008DKS9",
+                undefined,
+                4253032043,
+              ],
+            },
+            1733027174,
+          ],
+        },
+        1843299373,
+      ],
+    },
+    3147506727,
+  ],
+  [
+    "",
+    {
+      "v1": [
+        "Hc2DO@000018DKS9",
+        1,
+        3207404266,
+      ],
+      "v2": [
+        "Hc2DO@N00008DKS9",
+        undefined,
+        4289078209,
+      ],
+    },
+    2439424877,
+  ],
+]
+`;
 
-exports[`Persists to/from localSynchronizer autoSaves: initial 1`] = `undefined`;
+exports[`Persists to/from localSynchronizer autoSaves: initial 1`] = `
+[
+  [
+    "",
+    {},
+    0,
+  ],
+  [
+    "",
+    {},
+    0,
+  ],
+]
+`;
 
-exports[`Persists to/from localSynchronizer autoSaves: setTables 1`] = `undefined`;
+exports[`Persists to/from localSynchronizer autoSaves: setTables 1`] = `
+[
+  [
+    "",
+    {
+      "t1": [
+        "",
+        {
+          "r1": [
+            "",
+            {
+              "c1": [
+                "Hc2DO@000008DKS9",
+                1,
+                4065945599,
+              ],
+              "c2": [
+                "Hc2DO@000028DKS9",
+                2,
+                1691812082,
+              ],
+            },
+            3828687208,
+          ],
+        },
+        3894592596,
+      ],
+    },
+    2516100462,
+  ],
+  [
+    "",
+    {
+      "v1": [
+        "Hc2DO@000018DKS9",
+        1,
+        3207404266,
+      ],
+    },
+    445733406,
+  ],
+]
+`;
 
-exports[`Persists to/from localSynchronizer autoSaves: setValues 1`] = `undefined`;
+exports[`Persists to/from localSynchronizer autoSaves: setValues 1`] = `
+[
+  [
+    "",
+    {
+      "t1": [
+        "",
+        {
+          "r1": [
+            "",
+            {
+              "c1": [
+                "Hc2DO@000008DKS9",
+                1,
+                4065945599,
+              ],
+              "c2": [
+                "Hc2DO@000028DKS9",
+                2,
+                1691812082,
+              ],
+            },
+            3828687208,
+          ],
+        },
+        3894592596,
+      ],
+    },
+    2516100462,
+  ],
+  [
+    "",
+    {
+      "v1": [
+        "Hc2DO@000018DKS9",
+        1,
+        3207404266,
+      ],
+      "v2": [
+        "Hc2DO@:00008DKS9",
+        2,
+        2578009034,
+      ],
+    },
+    3246781976,
+  ],
+]
+`;
 
 exports[`Persists to/from localSynchronizer loads 1`] = `
 [
@@ -2090,7 +2795,20 @@ exports[`Persists to/from localSynchronizer saves 1`] = `
 ]
 `;
 
-exports[`Persists to/from localSynchronizer saves 2`] = `undefined`;
+exports[`Persists to/from localSynchronizer saves 2`] = `
+[
+  [
+    "",
+    {},
+    0,
+  ],
+  [
+    "",
+    {},
+    0,
+  ],
+]
+`;
 
 exports[`Persists to/from mockMergeableChangesListener autoLoads 1`] = `
 [
