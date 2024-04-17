@@ -135,8 +135,8 @@ export const createCustomSynchronizer = (
         GET_CONTENT_HASHES,
       );
     }
-    const [, [otherTablesHash, otherValuesHash]] = otherContentHashes;
-    const [, [tablesHash, valuesHash]] = store.getMergeableContentHashes();
+    const [otherTablesHash, otherValuesHash] = otherContentHashes;
+    const [tablesHash, valuesHash] = store.getMergeableContentHashes();
 
     const changes: MergeableChanges = [stampNewObj(), stampNewObj(), 1];
 
