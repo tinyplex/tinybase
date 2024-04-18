@@ -2061,6 +2061,144 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing values: s
 ]
 `;
 
+exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single cell 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Hc2DO@200008DKS9",
+                2771101213,
+              ],
+            },
+            "",
+            2189044855,
+          ],
+        },
+        "",
+        617947846,
+      ],
+    },
+    "",
+    4015673714,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single cell 2`] = `
+Map {
+  "Hc2DO@000008DKS9" => [
+    "client0→all GET_CONTENT_HASHES """,
+  ],
+  "push 1" => [
+    "client0→all CONTENT_HASHES [0,0]",
+  ],
+  "Hc2DO@000005DK@@" => [
+    "client1→all GET_CONTENT_HASHES """,
+    "client0→client1 RESPONSE [0,0]",
+  ],
+  "push 3" => [
+    "client1→all CONTENT_HASHES [0,0]",
+  ],
+  "push 4" => [
+    "client0→all CONTENT_HASHES [4015673714,0]",
+  ],
+  "Hc2DO@200005DK@@" => [
+    "client1→client0 GET_TABLE_IDS_DIFF {}",
+    "client0→client1 RESPONSE ["t1"]",
+  ],
+  "Hc2DO@400005DK@@" => [
+    "client1→client0 GET_ROW_IDS_DIFF {"t1":{}}",
+    "client0→client1 RESPONSE {"t1":["r1"]}",
+  ],
+  "Hc2DO@400015DK@@" => [
+    "client1→client0 GET_TABLES_CHANGES {"t1":{"r1":{}}}",
+    "client0→client1 RESPONSE [{"t1":[{"r1":[{"c1":[1,"Hc2DO@200008DKS9"]}]}]}]",
+  ],
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single cell: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 7,
+  },
+  {
+    "receives": 7,
+    "sends": 5,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single value 1`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Hc2DO@200008DKS9",
+        2771101213,
+      ],
+    },
+    "",
+    1514415285,
+  ],
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single value 2`] = `
+Map {
+  "Hc2DO@000008DKS9" => [
+    "client0→all GET_CONTENT_HASHES """,
+  ],
+  "push 1" => [
+    "client0→all CONTENT_HASHES [0,0]",
+  ],
+  "Hc2DO@000005DK@@" => [
+    "client1→all GET_CONTENT_HASHES """,
+    "client0→client1 RESPONSE [0,0]",
+  ],
+  "push 3" => [
+    "client1→all CONTENT_HASHES [0,0]",
+  ],
+  "push 4" => [
+    "client0→all CONTENT_HASHES [0,1514415285]",
+  ],
+  "Hc2DO@200005DK@@" => [
+    "client1→client0 GET_VALUES_CHANGES {}",
+    "client0→client1 RESPONSE [{"v1":[1,"Hc2DO@200008DKS9"]}]",
+  ],
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single value: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 5,
+  },
+  {
+    "receives": 5,
+    "sends": 3,
+  },
+]
+`;
+
 exports[`Syncs to/from customSynchronizer Bidirectional, data already present 1`] = `
 [
   [
