@@ -27,7 +27,7 @@ export type TablesStamp<Hashed extends boolean = false> = Stamp<
 export type TableHashes = {[tableId: Id]: Hash};
 
 // TableIdsDiff
-export type TableIdsDiff = Ids;
+export type TableIdsDiff = [changedTableIds: Ids, newTableIds: Ids];
 
 // TableStamp
 export type TableStamp<Hashed extends boolean = false> = Stamp<
@@ -39,7 +39,7 @@ export type TableStamp<Hashed extends boolean = false> = Stamp<
 export type RowHashes = {[tableId: Id]: {[rowId: Id]: Hash}};
 
 // RowIdsDiff
-export type RowIdsDiff = {[tableId: Id]: Ids};
+export type RowIdsDiff = {[tableId: Id]: [changedRowIds: Ids, newRowIds: Ids]};
 
 // RowStamp
 export type RowStamp<Hashed extends boolean = false> = Stamp<

@@ -25,15 +25,16 @@ import {
   ValueOrUndefined,
 } from './types/store';
 import {EMPTY_STRING, strEndsWith, strStartsWith} from './common/strings';
-import {Id, Ids} from './types/common';
 import {
   IdObj,
   objEnsure,
   objForEach,
   objFreeze,
+  objHas,
   objIsEmpty,
   objMap,
   objNew,
+  objNewEmpty,
   objToArray,
   objValidate,
 } from './common/obj';
@@ -63,6 +64,7 @@ import {
   slice,
 } from './common/other';
 import {mapEnsure, mapForEach, mapGet, mapToObj} from './common/map';
+import {Id} from './types/common';
 import {createStore} from './store';
 import {getHash} from './mergeable-store/hash';
 import {getHlcFunctions} from './mergeable-store/hlc';
@@ -323,41 +325,56 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     mapToObj(contentStampMap[0][0], getStampHash);
 
   const getMergeableTableIdsDiff = (relativeTo: TableHashes): TableIdsDiff => {
-    const tableIds: Ids = [];
-    mapForEach(contentStampMap[0][0], (tableId, [, , hash]) => {
-      if (hash !== relativeTo?.[tableId]) {
-        arrayPush(tableIds, tableId);
-      }
-    });
+    const tableIds: TableIdsDiff = [[], []];
+    if (!objIsEmpty(relativeTo)) {
+      mapForEach(contentStampMap[0][0], (tableId, [, , hash]) =>
+        objHas(relativeTo, tableId)
+          ? hash !== relativeTo[tableId]
+            ? arrayPush(tableIds[0], tableId)
+            : 0
+          : arrayPush(tableIds[1], tableId),
+      );
+    }
     return tableIds;
   };
 
-  const getMergeableRowHashes = (tablesDelta: TableIdsDiff): RowHashes =>
+  const getMergeableRowHashes = ([
+    changedTableIds,
+    newTableIds,
+  ]: TableIdsDiff): RowHashes =>
     objNew(
-      arrayMap(tablesDelta, (tableId) => [
-        tableId,
-        mapToObj(mapGet(contentStampMap[0][0], tableId)?.[0], getStampHash),
-      ]),
+      arrayMap(
+        [...changedTableIds, ...newTableIds],
+        (tableId) =>
+          [
+            tableId,
+            mapToObj(mapGet(contentStampMap[0][0], tableId)?.[0], getStampHash),
+          ] as any,
+      ),
     );
 
   const getMergeableRowIdsDiff = (relativeTo: RowHashes): RowIdsDiff =>
     objMap(relativeTo, (rowHashes, tableId) => {
-      const rowIds: Ids = [];
-      mapForEach(
-        mapGet(contentStampMap[0][0], tableId)?.[0],
-        (rowId, [, , hash]) => {
-          if (hash !== rowHashes?.[rowId]) {
-            arrayPush(rowIds, rowId);
-          }
-        },
-      );
+      const rowIds: RowIdsDiff[Id] = [[], []];
+      if (!objIsEmpty(rowHashes)) {
+        mapForEach(
+          mapGet(contentStampMap[0][0], tableId)?.[0],
+          (rowId, [, , hash]) => {
+            objHas(rowHashes, rowId)
+              ? hash !== rowHashes?.[rowId]
+                ? arrayPush(rowIds[0], rowId)
+                : 0
+              : arrayPush(rowIds[1], rowId);
+          },
+        );
+      }
       return rowIds;
     });
 
   const getMergeableCellHashes = (tableDelta: RowIdsDiff): CellHashes =>
-    objMap(tableDelta, (rowIds, tableId) =>
+    objMap(tableDelta, ([changedRowIds, newRowIds], tableId) =>
       objNew(
-        arrayMap(rowIds, (rowId) => [
+        arrayMap([...changedRowIds, ...newRowIds], (rowId) => [
           rowId,
           mapToObj(
             mapGet(mapGet(contentStampMap[0][0], tableId)?.[0], rowId)?.[0],
@@ -370,31 +387,39 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const getMergeableTablesChanges = (relativeTo: CellHashes): TablesStamp => {
     const [[tableStampMaps, tablesTime]] = contentStampMap;
     const tables: TablesStamp[0] = {};
-    objForEach(relativeTo, (rowCellHashes, tableId) =>
-      ifNotUndefined(
-        mapGet(tableStampMaps, tableId),
-        ([rowStampMaps, tableTime]) => {
-          const table: TableStamp[0] = {};
-          objForEach(rowCellHashes, (cellHashes, rowId) =>
-            ifNotUndefined(
-              mapGet(rowStampMaps, rowId),
-              ([cellStampMaps, rowTime]) => {
-                const row: RowStamp[0] = mapToObj(
-                  cellStampMaps,
-                  stampClone,
-                  ([, , hash], cellId) => hash == cellHashes?.[cellId],
-                );
-                if (!objIsEmpty(row)) {
-                  table[rowId] = rowTime ? [row, rowTime] : [row];
-                }
-              },
-            ),
-          );
-          if (!objIsEmpty(table)) {
-            tables[tableId] = tableTime ? [table, tableTime] : [table];
-          }
-        },
-      ),
+    objForEach(
+      objIsEmpty(relativeTo)
+        ? mapToObj(tableStampMaps, objNewEmpty)
+        : relativeTo,
+      (rowCellHashes: CellHashes[Id], tableId: Id) =>
+        ifNotUndefined(
+          mapGet(tableStampMaps, tableId),
+          ([rowStampMaps, tableTime]) => {
+            const table: TableStamp[0] = {};
+            objForEach(
+              objIsEmpty(rowCellHashes)
+                ? mapToObj(rowStampMaps, objNewEmpty)
+                : rowCellHashes,
+              (cellHashes: CellHashes[Id][Id], rowId) =>
+                ifNotUndefined(
+                  mapGet(rowStampMaps, rowId),
+                  ([cellStampMaps, rowTime]) => {
+                    const row: RowStamp[0] = mapToObj(
+                      cellStampMaps,
+                      stampClone,
+                      ([, , hash], cellId) => hash == cellHashes?.[cellId],
+                    );
+                    if (!objIsEmpty(row)) {
+                      table[rowId] = rowTime ? [row, rowTime] : [row];
+                    }
+                  },
+                ),
+            );
+            if (!objIsEmpty(table)) {
+              tables[tableId] = tableTime ? [table, tableTime] : [table];
+            }
+          },
+        ),
     );
     return tablesTime ? [tables, tablesTime] : [tables];
   };
