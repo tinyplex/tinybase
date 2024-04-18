@@ -18,6 +18,16 @@ import {createWsSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-ws
 import {pause} from '../common/other';
 import {resetHlc} from '../common/mergeable';
 
+const messageTypes = [
+  'RESPONSE',
+  'CONTENT_HASHES',
+  'GET_CONTENT_HASHES',
+  'GET_TABLE_IDS_DIFF',
+  'GET_ROW_IDS_DIFF',
+  'GET_TABLES_CHANGES',
+  'GET_VALUES_CHANGES',
+];
+
 beforeEach(() => {
   resetHlc();
 });
@@ -50,16 +60,30 @@ const mockWsSynchronizer: Synchronizable<WsServer> = {
   pauseMilliseconds: 50,
 };
 
-const mockCustomSynchronizer: Synchronizable<Map<string, Receive>> = {
-  createEnvironment: () => new Map(),
+const mockCustomSynchronizer: Synchronizable<
+  [Map<string, Receive>, Map<string, string[]>]
+> = {
+  createEnvironment: () => [new Map(), new Map()],
   getSynchronizer: async (
     store: MergeableStore,
-    clients: Map<string, Receive>,
+    [clients, messages]: [Map<string, Receive>, Map<string, string[]>],
   ) => {
     const clientId = 'client' + clients.size;
     return createCustomSynchronizer(
       store,
       (toClientId, requestId, messageType, messageBody): void => {
+        const requestKey =
+          requestId == null ? 'push ' + messages.size : requestId;
+        if (!messages.has(requestKey)) {
+          messages.set(requestKey, []);
+        }
+        messages
+          .get(requestKey)!
+          .push(
+            `${clientId}→${toClientId ?? 'all'} ${messageTypes[messageType]} ` +
+              JSON.stringify(messageBody),
+          );
+
         if (toClientId == null) {
           clients.forEach((receive, otherClientId) =>
             otherClientId != clientId
@@ -589,6 +613,26 @@ describe.each([
         store2.setValue('v1', 2);
         await pause(synchronizable.pauseMilliseconds, true);
         await expectEachToHaveContent([{}, {v1: 2}]);
+      });
+
+      describe('tracking messages', () => {
+        test('single cell', async () => {
+          if (environment && environment[1]) {
+            store1.setCell('t1', 'r1', 'c1', 1);
+            await pause(synchronizable.pauseMilliseconds, true);
+            await expectEachToHaveContent([{t1: {r1: {c1: 1}}}, {}]);
+            expect(environment[1]).toMatchSnapshot();
+          }
+        });
+
+        test('single value', async () => {
+          if (environment && environment[1]) {
+            store1.setValue('v1', 1);
+            await pause(synchronizable.pauseMilliseconds, true);
+            await expectEachToHaveContent([{}, {v1: 1}]);
+            expect(environment[1]).toMatchSnapshot();
+          }
+        });
       });
     });
 
