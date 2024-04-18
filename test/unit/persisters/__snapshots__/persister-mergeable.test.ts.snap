@@ -3235,17 +3235,13 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delCell change
                 "Hc2DO@D00008DKS9",
               ],
             },
-            "",
           ],
         },
-        "",
       ],
     },
-    "",
   ],
   [
     {},
-    "",
   ],
   1,
 ]
@@ -3304,7 +3300,6 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delValue chang
 [
   [
     {},
-    "",
   ],
   [
     {
@@ -3313,7 +3308,6 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delValue chang
         "Hc2DO@N00008DKS9",
       ],
     },
-    "",
   ],
   1,
 ]
@@ -3415,17 +3409,13 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: setTables chan
                 "Hc2DO@000028DKS9",
               ],
             },
-            "",
           ],
         },
-        "",
       ],
     },
-    "",
   ],
   [
     {},
-    "",
   ],
   1,
 ]
@@ -3484,7 +3474,6 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: setValues chan
 [
   [
     {},
-    "",
   ],
   [
     {
@@ -3493,7 +3482,6 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: setValues chan
         "Hc2DO@:00008DKS9",
       ],
     },
-    "",
   ],
   1,
 ]
@@ -4041,17 +4029,13 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delCell change
                 "Hc2DO@D00008DKS9",
               ],
             },
-            "",
           ],
         },
-        "",
       ],
     },
-    "",
   ],
   [
     {},
-    "",
   ],
   1,
 ]
@@ -4110,7 +4094,6 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delValue chang
 [
   [
     {},
-    "",
   ],
   [
     {
@@ -4119,7 +4102,6 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delValue chang
         "Hc2DO@N00008DKS9",
       ],
     },
-    "",
   ],
   1,
 ]
@@ -4221,17 +4203,13 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: setTables chan
                 "Hc2DO@000028DKS9",
               ],
             },
-            "",
           ],
         },
-        "",
       ],
     },
-    "",
   ],
   [
     {},
-    "",
   ],
   1,
 ]
@@ -4290,7 +4268,6 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: setValues chan
 [
   [
     {},
-    "",
   ],
   [
     {
@@ -4299,7 +4276,6 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: setValues chan
         "Hc2DO@:00008DKS9",
       ],
     },
-    "",
   ],
   1,
 ]
@@ -4847,17 +4823,13 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delCell chan
                 "Hc2DO@D00008DKS9",
               ],
             },
-            "",
           ],
         },
-        "",
       ],
     },
-    "",
   ],
   [
     {},
-    "",
   ],
   1,
 ]
@@ -4916,7 +4888,6 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delValue cha
 [
   [
     {},
-    "",
   ],
   [
     {
@@ -4925,7 +4896,6 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delValue cha
         "Hc2DO@N00008DKS9",
       ],
     },
-    "",
   ],
   1,
 ]
@@ -5027,17 +4997,13 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: setTables ch
                 "Hc2DO@000028DKS9",
               ],
             },
-            "",
           ],
         },
-        "",
       ],
     },
-    "",
   ],
   [
     {},
-    "",
   ],
   1,
 ]
@@ -5096,7 +5062,6 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: setValues ch
 [
   [
     {},
-    "",
   ],
   [
     {
@@ -5105,7 +5070,6 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: setValues ch
         "Hc2DO@:00008DKS9",
       ],
     },
-    "",
   ],
   1,
 ]
@@ -5940,8 +5904,8 @@ exports[`Persists to/from sessionStorage saves 2`] = `
 
 exports[`Supported, MergeableStore Changes in setPersisted 1`] = `
 [
-  "[[{"t1":[{"r1":[{"c1":[1,"Hc2DO@000008DKS9"]},""]},""]},""],[{},""],1]",
-  "[[{},""],[{"v1":[1,"Hc2DO@000018DKS9"]},""],1]",
+  "[[{"t1":[{"r1":[{"c1":[1,"Hc2DO@000008DKS9"]}]}]}],[{}],1]",
+  "[[{}],[{"v1":[1,"Hc2DO@000018DKS9"]}],1]",
 ]
 `;
 
