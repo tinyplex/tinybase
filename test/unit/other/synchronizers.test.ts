@@ -616,12 +616,34 @@ describe.each([
       });
 
       describe('tracking messages', () => {
-        test('single cell', async () => {
+        test('new tables, new table, new row', async () => {
           if (environment && environment[1]) {
-            store1.setCell('t1', 'r1', 'c1', 1);
+            store1.setTables({t1: {r1: {c1: 1}}});
             await pause(synchronizable.pauseMilliseconds, true);
             await expectEachToHaveContent([{t1: {r1: {c1: 1}}}, {}]);
             expect(environment[1]).toMatchSnapshot();
+            environment[1].clear();
+
+            store1.setTables({t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}});
+            await pause(synchronizable.pauseMilliseconds, true);
+            await expectEachToHaveContent([
+              {t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}},
+              {},
+            ]);
+            expect(environment[1]).toMatchSnapshot();
+            environment[1].clear();
+
+            store1.setTables({
+              t1: {r1: {c1: 1}, r2: {c2: 2}},
+              t2: {r2: {c2: 2}},
+            });
+            await pause(synchronizable.pauseMilliseconds, true);
+            await expectEachToHaveContent([
+              {t1: {r1: {c1: 1}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+              {},
+            ]);
+            expect(environment[1]).toMatchSnapshot();
+            environment[1].clear();
           }
         });
 
