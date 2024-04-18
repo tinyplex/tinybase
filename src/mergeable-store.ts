@@ -256,7 +256,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
     objForEach(
       thingsObj,
-      ([thing, thingTime = EMPTY_STRING, incomingThingHash = 0], thingId) => {
+      ([thing, thingTime, incomingThingHash = 0], thingId) => {
         const thingStampMap = mapEnsure<Id, Stamp<Thing, true>>(
           thingStampMaps,
           thingId,
@@ -264,13 +264,13 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         );
         const [, oldThingTime, oldThingHash] = thingStampMap;
 
-        if (!oldThingTime || thingTime > oldThingTime) {
+        if (!oldThingTime || thingTime! > oldThingTime) {
           stampUpdate(
             thingStampMap,
             isChanges
               ? incomingThingHash
               : getHash(jsonStringWithMap(thing ?? null) + ':' + thingTime),
-            thingTime,
+            thingTime!,
           );
           thingStampMap[0] = thing;
           thingsChanges[thingId] = thing;
@@ -278,7 +278,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
             ? 0
             : hashIdAndHash(thingId, oldThingHash) ^
               hashIdAndHash(thingId, thingStampMap[2]);
-          thingsTime = getLatestTime(thingsTime, thingTime);
+          thingsTime = getLatestTime(thingsTime, thingTime!);
         }
       },
     );
@@ -385,31 +385,32 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
                   ([, , hash], cellId) => hash == cellHashes?.[cellId],
                 );
                 if (!objIsEmpty(row)) {
-                  table[rowId] = [row, rowTime];
+                  table[rowId] = rowTime ? [row, rowTime] : [row];
                 }
               },
             ),
           );
           if (!objIsEmpty(table)) {
-            tables[tableId] = [table, tableTime];
+            tables[tableId] = tableTime ? [table, tableTime] : [table];
           }
         },
       ),
     );
-    return [tables, tablesTime];
+    return tablesTime ? [tables, tablesTime] : [tables];
   };
 
   const getMergeableValuesHashes = (): ValuesHashes =>
     mapToObj(contentStampMap[1][0], getStampHash);
 
-  const getMergeableValuesChanges = (relativeTo: ValuesHashes): ValuesStamp => [
-    mapToObj(
-      contentStampMap[1][0],
+  const getMergeableValuesChanges = (relativeTo: ValuesHashes): ValuesStamp => {
+    const [, [valueStampMaps, valuesTime]] = contentStampMap;
+    const values = mapToObj(
+      valueStampMaps,
       stampClone,
       ([, , hash], valueId) => hash == relativeTo?.[valueId],
-    ),
-    contentStampMap[1][1],
-  ];
+    );
+    return valuesTime ? [values, valuesTime] : [values];
+  };
 
   const setMergeableContent = (
     mergeableContent: MergeableContent,
