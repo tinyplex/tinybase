@@ -115,8 +115,8 @@ export interface MergeableStore extends Store {
   /// MergeableStore.getMergeableValuesHashes
   getMergeableValuesHashes(): ValuesHashes;
 
-  /// MergeableStore.getMergeableValuesChanges
-  getMergeableValuesChanges(relativeTo: ValuesHashes): ValuesStamp;
+  /// MergeableStore.getMergeableValueDiff
+  getMergeableValueDiff(relativeTo: ValuesHashes): ValuesStamp;
 
   /// MergeableStore.setMergeableContent
   setMergeableContent(mergeableContent: MergeableContent): MergeableStore;

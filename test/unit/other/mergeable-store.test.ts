@@ -293,13 +293,13 @@ describe('Deltas & Hashes', () => {
   const expectDeltas = () => {
     expect(
       store1.getMergeableTableDiff(store2.getMergeableTableHashes()),
-    ).toMatchSnapshot('getMergeableTableIdsDiff');
+    ).toMatchSnapshot('getMergeableTableDiff');
     expect(
       store1.getMergeableRowDiff(store2.getMergeableRowHashes({t1: 0})),
-    ).toMatchSnapshot('getMergeableRowIdsDiff t1');
+    ).toMatchSnapshot('getMergeableRowDiff t1');
     expect(
       store1.getMergeableRowDiff(store2.getMergeableRowHashes({t2: 0})),
-    ).toMatchSnapshot('getMergeableRowIdsDiff t2');
+    ).toMatchSnapshot('getMergeableRowDiff t2');
     expect(
       store1.getMergeableCellDiff(store2.getMergeableCellHashes({t1: {r1: 0}})),
     ).toMatchSnapshot('getMergeableCellDiff t1 r1');
@@ -307,8 +307,8 @@ describe('Deltas & Hashes', () => {
       store1.getMergeableCellDiff(store2.getMergeableCellHashes({t1: {r1: 0}})),
     ).toMatchSnapshot('getMergeableCellDiff t1 r2');
     expect(
-      store1.getMergeableValuesChanges(store2.getMergeableValuesHashes()),
-    ).toMatchSnapshot('getMergeableValuesChanges');
+      store1.getMergeableValueDiff(store2.getMergeableValuesHashes()),
+    ).toMatchSnapshot('getMergeableValueDiff');
   };
 
   describe('Deltas', () => {
