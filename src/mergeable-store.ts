@@ -41,6 +41,7 @@ import {
   getLatestTime,
   getStampHash,
   hashIdAndHash,
+  newStamp,
   replaceTimeHash,
   stampCloneWithoutHash,
   stampMapToObjWithHash,
@@ -432,7 +433,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         ),
       ),
     );
-    return tablesTime ? [tablesObj, tablesTime] : [tablesObj];
+    return newStamp(tablesObj, tablesTime);
   };
 
   const getMergeableValuesHashes = (): ValuesHashes =>
@@ -445,7 +446,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       stampCloneWithoutHash,
       ([, , hash], valueId) => hash == relativeTo?.[valueId],
     );
-    return valuesTime ? [values, valuesTime] : [values];
+    return newStamp(values, valuesTime);
   };
 
   const setMergeableContent = (
