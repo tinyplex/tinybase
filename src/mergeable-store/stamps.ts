@@ -24,7 +24,7 @@ const stampCloneWithHash = <Value>([value, time, hash]: Stamp<
   true
 >): Stamp<Value, true> => [value, time, hash];
 
-export const stampClone = <Value>([value, time]: Stamp<
+export const stampCloneWithoutHash = <Value>([value, time]: Stamp<
   Value,
   boolean
 >): Stamp<Value> => [value, time];
@@ -36,8 +36,10 @@ export const hashIdAndHash = (id: Id, hash: Hash) => getHash(id + ':' + hash);
 export const replaceTimeHash = (oldTime: Time, newTime: Time) =>
   newTime > oldTime ? (oldTime ? getHash(oldTime) : 0) ^ getHash(newTime) : 0;
 
-export const getLatestTime = (time1: Time, time2: Time) =>
-  time1 > time2 ? time1 : time2;
+export const getLatestTime = (
+  time1: Time | undefined,
+  time2: Time | undefined,
+): Time => ((time1 ?? '') > (time2 ?? '') ? time1 : time2) ?? '';
 
 export const stampUpdate = (
   stamp: Stamp<unknown, true>,
@@ -50,7 +52,8 @@ export const stampUpdate = (
   }
 };
 
-export const stampNewObj = <Thing>(): Stamp<IdObj<Thing>> => [objNew<Thing>()];
+export const stampNewObj = <Thing>(time = EMPTY_STRING): Stamp<IdObj<Thing>> =>
+  time ? [objNew<Thing>(), time] : [objNew<Thing>()];
 
 export const stampNewMap = <Thing>(time = EMPTY_STRING): StampMap<Thing> => [
   mapNew<Id, Thing>(),
@@ -62,6 +65,12 @@ export const stampMapToObjWithHash = <From, To = From>(
   [map, time, hash]: Stamp<IdMap<From>, true>,
   mapper: (mapValue: From) => To = stampCloneWithHash as any,
 ): Stamp<IdObj<To>, true> => [mapToObj(map, mapper), time, hash];
+
+export const stampMapToObjWithoutHash = <From, To = From>(
+  [map, time]: Stamp<IdMap<From>, boolean>,
+  mapper: (mapValue: From) => To = stampCloneWithoutHash as any,
+): Stamp<IdObj<To>> =>
+  time ? [mapToObj(map, mapper), time] : [mapToObj(map, mapper)];
 
 export const stampValidate = (
   stamp: Stamp<any, true>,

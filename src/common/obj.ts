@@ -28,8 +28,6 @@ export const objNew = <Value>(
   entries: [id: string, value: Value][] = [],
 ): IdObj<Value> => object.fromEntries(entries);
 
-export const objNewEmpty = <Value = any>(): IdObj<Value> => ({});
-
 export const objMerge = (...objs: IdObj<unknown>[]) =>
   object.assign({}, ...objs);
 
