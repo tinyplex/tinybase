@@ -13,7 +13,7 @@ import {DEBUG, ifNotUndefined, isUndefined, promiseNew} from './common/other';
 import {Id, IdOrNull} from './types/common';
 import {IdMap, mapGet, mapNew, mapSet} from './common/map';
 import {MessageType, Receive, Send, Synchronizer} from './types/synchronizers';
-import {getLatestTime, stampNewObj} from './mergeable-store/stamps';
+import {getLatestTime, newStamp, stampNewObj} from './mergeable-store/stamps';
 import {objEnsure, objForEach, objIsEmpty} from './common/obj';
 import {Content} from './types/store';
 import {EMPTY_STRING} from './common/strings';
@@ -128,30 +128,30 @@ export const createCustomSynchronizer = (
 
   const mergeTablesStamps = (
     tablesStamp: TablesStamp,
-    [tableStamps, tablesTime]: TablesStamp,
+    [tableStamps2, tablesTime2]: TablesStamp,
   ) => {
-    objForEach(tableStamps, ([rowStamps, tableTime], tableId) => {
+    objForEach(tableStamps2, ([rowStamps2, tableTime2], tableId) => {
       const tableStamp = objEnsure(
         tablesStamp[0],
         tableId,
         stampNewObj<RowStamp>,
       );
-      objForEach(rowStamps, ([cellStamps, rowTime], rowId) => {
+      objForEach(rowStamps2, ([cellStamps2, rowTime2], rowId) => {
         const rowStamp = objEnsure(
           tableStamp[0],
           rowId,
           stampNewObj<CellStamp>,
         );
-        objForEach(cellStamps, ([cell, cellTime = EMPTY_STRING], cellId) =>
-          cellTime >= (rowStamp[0][cellId]?.[1] ?? '')
-            ? (rowStamp[0][cellId] = cellTime ? [cell, cellTime] : [cellTime])
-            : 0,
+        objForEach(
+          cellStamps2,
+          ([cell2, cellTime2], cellId) =>
+            (rowStamp[0][cellId] = newStamp(cell2, cellTime2)),
         );
-        rowStamp[1] = getLatestTime(rowStamp[1], rowTime);
+        rowStamp[1] = getLatestTime(rowStamp[1], rowTime2);
       });
-      tableStamp[1] = getLatestTime(tableStamp[1], tableTime);
+      tableStamp[1] = getLatestTime(tableStamp[1], tableTime2);
     });
-    tablesStamp[1] = getLatestTime(tablesStamp[1], tablesTime);
+    tablesStamp[1] = getLatestTime(tablesStamp[1], tablesTime2);
   };
 
   const getChangesFromOtherStore = async (
