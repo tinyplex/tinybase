@@ -1,7 +1,7 @@
 /// mergeable-store
 
 import {CellOrUndefined, Content, Store, ValueOrUndefined} from './store.d';
-import {Id, Ids} from './common';
+import {Id} from './common';
 
 /// Hash
 export type Hash = number;
@@ -26,9 +26,6 @@ export type TablesStamp<Hashed extends boolean = false> = Stamp<
 // TableHashes
 export type TableHashes = {[tableId: Id]: Hash};
 
-// TableIdsDiff
-export type TableIdsDiff = [changedTableIds: Ids, newTableIds: Ids];
-
 // TableStamp
 export type TableStamp<Hashed extends boolean = false> = Stamp<
   {[rowId: Id]: RowStamp<Hashed>},
@@ -37,9 +34,6 @@ export type TableStamp<Hashed extends boolean = false> = Stamp<
 
 // RowHashes
 export type RowHashes = {[tableId: Id]: {[rowId: Id]: Hash}};
-
-// RowIdsDiff
-export type RowIdsDiff = {[tableId: Id]: [changedRowIds: Ids, newRowIds: Ids]};
 
 // RowStamp
 export type RowStamp<Hashed extends boolean = false> = Stamp<
@@ -99,20 +93,24 @@ export interface MergeableStore extends Store {
   /// MergeableStore.getMergeableTableHashes
   getMergeableTableHashes(): TableHashes;
 
-  /// MergeableStore.getMergeableTableIdsDiff
-  getMergeableTableIdsDiff(relativeTo: TableHashes): TableIdsDiff;
+  /// MergeableStore.getMergeableTableDiff
+  getMergeableTableDiff(
+    relativeTo: TableHashes,
+  ): [newTables: TablesStamp, differentTableHashes: TableHashes];
 
   /// MergeableStore.getMergeableRowHashes
-  getMergeableRowHashes(tablesDelta: TableIdsDiff): RowHashes;
+  getMergeableRowHashes(otherTableHashes: TableHashes): RowHashes;
 
-  /// MergeableStore.getMergeableRowIdsDiff
-  getMergeableRowIdsDiff(relativeTo: RowHashes): RowIdsDiff;
+  /// MergeableStore.getMergeableRowDiff
+  getMergeableRowDiff(
+    otherTableRowHashes: RowHashes,
+  ): [newRows: TablesStamp, differentRowHashes: RowHashes];
 
   /// MergeableStore.getMergeableCellHashes
-  getMergeableCellHashes(tableDelta: RowIdsDiff): CellHashes;
+  getMergeableCellHashes(otherTableRowHashes: RowHashes): CellHashes;
 
-  /// MergeableStore.getMergeableTablesChanges
-  getMergeableTablesChanges(relativeTo: CellHashes): TablesStamp;
+  /// MergeableStore.getMergeableCellDiff
+  getMergeableCellDiff(otherTableRowCellHashes: CellHashes): TablesStamp;
 
   /// MergeableStore.getMergeableValuesHashes
   getMergeableValuesHashes(): ValuesHashes;

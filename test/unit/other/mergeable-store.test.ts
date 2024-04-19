@@ -25,6 +25,67 @@ beforeEach(() => {
   resetHlc();
 });
 
+test('Protocol basics', () => {
+  const store1 = createMergeableStore('s1').setContent([
+    {t1: {r1: {c1: 1}}},
+    {},
+  ]);
+  const store2 = createMergeableStore('s2').setContent([
+    {t1: {r1: {c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+    {},
+  ]);
+  expect(store1.getMergeableContent()).toMatchSnapshot();
+  expect(store2.getMergeableContent()).toMatchSnapshot();
+
+  expect(store1.getMergeableContentHashes()).toEqual([3689956797, 0]);
+  expect(store2.getMergeableContentHashes()).toEqual([4033545870, 0]);
+
+  expect(store1.getMergeableTableHashes()).toEqual({t1: 608074644});
+  expect(store2.getMergeableTableHashes()).toEqual({
+    t1: 2334022845,
+    t2: 527507176,
+  });
+
+  expect(store1.getMergeableTableDiff({t1: 2334022845, t2: 527507176})).toEqual(
+    [[{}], {t1: 608074644}],
+  );
+  expect(store2.getMergeableTableDiff({t1: 608074644})).toEqual([
+    [{t2: [{r2: [{c2: [2, 'Hc2DO@000005DK@@']}]}]}],
+    {t1: 2334022845},
+  ]);
+
+  expect(store1.getMergeableRowHashes({t1: 2334022845})).toEqual({
+    t1: {r1: 3278308926},
+  });
+  expect(store2.getMergeableRowHashes({t1: 608074644})).toEqual({
+    t1: {r1: 478205993, r2: 478205993},
+  });
+
+  expect(
+    store1.getMergeableRowDiff({t1: {r1: 478205993, r2: 478205993}}),
+  ).toEqual([[{}], {t1: {r1: 3278308926}}]);
+  expect(store2.getMergeableRowDiff({t1: {r1: 3278308926}})).toEqual([
+    [{t1: [{r2: [{c2: [2, 'Hc2DO@000005DK@@']}]}]}],
+    {t1: {r1: 478205993}},
+  ]);
+
+  expect(store1.getMergeableCellHashes({t1: {r1: 478205993}})).toEqual({
+    t1: {r1: {c1: 4065945599}},
+  });
+  expect(store2.getMergeableCellHashes({t1: {r1: 3278308926}})).toEqual({
+    t1: {r1: {c2: 2554361111}},
+  });
+
+  expect(store1.getMergeableCellDiff({t1: {r1: {c2: 2554361111}}})).toEqual([
+    {t1: [{r1: [{c1: [1, 'Hc2DO@000008DKS9']}]}]},
+  ]);
+  expect(
+    store2.getMergeableCellDiff({
+      t1: {r1: {c1: 4065945599}},
+    }),
+  ).toEqual([{t1: [{r1: [{c2: [2, 'Hc2DO@000005DK@@']}]}]}]);
+});
+
 test('Create', () => {
   const store = createMergeableStore('s1');
   expect(store.getJson()).toEqual(JSON.stringify([{}, {}]));
@@ -192,7 +253,7 @@ describe('Deltas & Hashes', () => {
 
   describe('getMergeableRowHashes', () => {
     test('Empty', () => {
-      expect(store1.getMergeableRowHashes(['t1'])).toMatchSnapshot();
+      expect(store1.getMergeableRowHashes({t1: 0})).toMatchSnapshot();
     });
 
     test('Non-empty', () => {
@@ -200,13 +261,13 @@ describe('Deltas & Hashes', () => {
         t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
         t2: {r2: {c2: 2}},
       });
-      expect(store1.getMergeableRowHashes(['t1'])).toMatchSnapshot();
+      expect(store1.getMergeableRowHashes({t1: 0})).toMatchSnapshot();
     });
   });
 
   describe('getMergeableCellHashes', () => {
     test('Empty', () => {
-      expect(store1.getMergeableCellHashes({t1: ['r1']})).toMatchSnapshot();
+      expect(store1.getMergeableCellHashes({t1: {r1: 0}})).toMatchSnapshot();
     });
 
     test('Non-empty', () => {
@@ -214,7 +275,7 @@ describe('Deltas & Hashes', () => {
         t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
         t2: {r2: {c2: 2}},
       });
-      expect(store1.getMergeableCellHashes({t1: ['r1']})).toMatchSnapshot();
+      expect(store1.getMergeableCellHashes({t1: {r1: 0}})).toMatchSnapshot();
     });
   });
 
@@ -231,24 +292,20 @@ describe('Deltas & Hashes', () => {
 
   const expectDeltas = () => {
     expect(
-      store1.getMergeableTableIdsDiff(store2.getMergeableTableHashes()),
+      store1.getMergeableTableDiff(store2.getMergeableTableHashes()),
     ).toMatchSnapshot('getMergeableTableIdsDiff');
     expect(
-      store1.getMergeableRowIdsDiff(store2.getMergeableRowHashes(['t1'])),
+      store1.getMergeableRowDiff(store2.getMergeableRowHashes({t1: 0})),
     ).toMatchSnapshot('getMergeableRowIdsDiff t1');
     expect(
-      store1.getMergeableRowIdsDiff(store2.getMergeableRowHashes(['t2'])),
+      store1.getMergeableRowDiff(store2.getMergeableRowHashes({t2: 0})),
     ).toMatchSnapshot('getMergeableRowIdsDiff t2');
     expect(
-      store1.getMergeableTablesChanges(
-        store2.getMergeableCellHashes({t1: ['r1']}),
-      ),
-    ).toMatchSnapshot('getMergeableTablesChanges t1 r1');
+      store1.getMergeableCellDiff(store2.getMergeableCellHashes({t1: {r1: 0}})),
+    ).toMatchSnapshot('getMergeableCellDiff t1 r1');
     expect(
-      store1.getMergeableTablesChanges(
-        store2.getMergeableCellHashes({t1: ['r2']}),
-      ),
-    ).toMatchSnapshot('getMergeableTablesChanges t1 r2');
+      store1.getMergeableCellDiff(store2.getMergeableCellHashes({t1: {r1: 0}})),
+    ).toMatchSnapshot('getMergeableCellDiff t1 r2');
     expect(
       store1.getMergeableValuesChanges(store2.getMergeableValuesHashes()),
     ).toMatchSnapshot('getMergeableValuesChanges');
