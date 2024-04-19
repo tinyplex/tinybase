@@ -28,7 +28,7 @@ const GET_CONTENT_HASHES = 2;
 const GET_TABLE_DIFF = 3;
 const GET_ROW_DIFF = 4;
 const GET_CELL_DIFF = 5;
-const GET_VALUES_CHANGES = 6;
+const GET_VALUE_DIFF = 6;
 
 export const createCustomSynchronizer = (
   store: MergeableStore,
@@ -85,8 +85,8 @@ export const createCustomSynchronizer = (
                 ? store.getMergeableRowDiff(messageBody)
                 : messageType == GET_CELL_DIFF
                   ? store.getMergeableCellDiff(messageBody)
-                  : messageType == GET_VALUES_CHANGES
-                    ? store.getMergeableValuesChanges(messageBody)
+                  : messageType == GET_VALUE_DIFF
+                    ? store.getMergeableValueDiff(messageBody)
                     : undefined,
           (response) => {
             if (DEBUG) {
@@ -208,7 +208,7 @@ export const createCustomSynchronizer = (
         : (
             await request<ValuesStamp>(
               otherClientId,
-              GET_VALUES_CHANGES,
+              GET_VALUE_DIFF,
               store.getMergeableValuesHashes(),
             )
           )[0],

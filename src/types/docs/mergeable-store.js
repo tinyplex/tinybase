@@ -152,10 +152,10 @@
    */
   /// MergeableStore.getMergeableValuesHashes
   /**
-   * The getMergeableValuesChanges method
+   * The getMergeableValueDiff method
    * @category Syncing
    */
-  /// MergeableStore.getMergeableValuesChanges
+  /// MergeableStore.getMergeableValueDiff
   /**
    * The setMergeableContent method
    * @category Setter

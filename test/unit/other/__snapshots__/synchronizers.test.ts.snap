@@ -2568,7 +2568,7 @@ Map {
     "client0→all CONTENT_HASHES [0,1514415285]",
   ],
   "Hc2DO@200005DK@@" => [
-    "client1→client0 GET_VALUES_CHANGES {}",
+    "client1→client0 GET_VALUE_DIFF {}",
     "client0→client1 RESPONSE [{"v1":[1,"Hc2DO@200008DKS9"]}]",
   ],
 }
