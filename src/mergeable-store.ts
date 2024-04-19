@@ -5,12 +5,8 @@ import {
   MergeableContent,
   MergeableStore,
   RowHashes,
-  RowIdsDiff,
-  RowStamp,
   Stamp,
   TableHashes,
-  TableIdsDiff,
-  TableStamp,
   TablesStamp,
   Time,
   ValuesHashes,
@@ -32,9 +28,7 @@ import {
   objFreeze,
   objHas,
   objIsEmpty,
-  objMap,
   objNew,
-  objNewEmpty,
   objToArray,
   objValidate,
 } from './common/obj';
@@ -48,14 +42,14 @@ import {
   getStampHash,
   hashIdAndHash,
   replaceTimeHash,
-  stampClone,
+  stampCloneWithoutHash,
   stampMapToObjWithHash,
+  stampMapToObjWithoutHash,
   stampNewMap,
   stampNewObj,
   stampUpdate,
   stampValidate,
 } from './mergeable-store/stamps';
-import {arrayMap, arrayPush} from './common/array';
 import {
   ifNotUndefined,
   isArray,
@@ -324,104 +318,121 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const getMergeableTableHashes = (): TableHashes =>
     mapToObj(contentStampMap[0][0], getStampHash);
 
-  const getMergeableTableIdsDiff = (relativeTo: TableHashes): TableIdsDiff => {
-    const tableIds: TableIdsDiff = [[], []];
-    if (!objIsEmpty(relativeTo)) {
-      mapForEach(contentStampMap[0][0], (tableId, [, , hash]) =>
-        objHas(relativeTo, tableId)
-          ? hash !== relativeTo[tableId]
-            ? arrayPush(tableIds[0], tableId)
+  const getMergeableTableDiff = (
+    otherTableHashes: TableHashes,
+  ): [newTables: TablesStamp, differentTableHashes: TableHashes] => {
+    const newTables: TablesStamp = stampNewObj(contentStampMap[0][1]);
+    const differentTableHashes: TableHashes = {};
+    mapForEach(
+      contentStampMap[0][0],
+      (tableId, [tableStampMap, tableTime, hash]) =>
+        objHas(otherTableHashes, tableId)
+          ? hash != otherTableHashes[tableId]
+            ? (differentTableHashes[tableId] = hash)
             : 0
-          : arrayPush(tableIds[1], tableId),
-      );
-    }
-    return tableIds;
+          : (newTables[0][tableId] = stampMapToObjWithoutHash(
+              [tableStampMap, tableTime],
+              (rowStampMap) => stampMapToObjWithoutHash(rowStampMap),
+            )),
+    );
+    return [newTables, differentTableHashes];
   };
 
-  const getMergeableRowHashes = ([
-    changedTableIds,
-    newTableIds,
-  ]: TableIdsDiff): RowHashes =>
-    objNew(
-      arrayMap(
-        [...changedTableIds, ...newTableIds],
-        (tableId) =>
-          [
-            tableId,
-            mapToObj(mapGet(contentStampMap[0][0], tableId)?.[0], getStampHash),
-          ] as any,
+  const getMergeableRowHashes = (otherTableHashes: TableHashes): RowHashes => {
+    const rowHashes: RowHashes = {};
+    objForEach(otherTableHashes, (otherTableHash, tableId) =>
+      ifNotUndefined(
+        mapGet(contentStampMap[0][0], tableId),
+        ([rowStampMaps, , tableHash]) =>
+          tableHash != otherTableHash
+            ? mapForEach(
+                rowStampMaps,
+                (rowId, [, , rowHash]) =>
+                  (objEnsure(rowHashes, tableId, objNew)[rowId] = rowHash),
+              )
+            : 0,
       ),
     );
+    return rowHashes;
+  };
 
-  const getMergeableRowIdsDiff = (relativeTo: RowHashes): RowIdsDiff =>
-    objMap(relativeTo, (rowHashes, tableId) => {
-      const rowIds: RowIdsDiff[Id] = [[], []];
-      if (!objIsEmpty(rowHashes)) {
-        mapForEach(
-          mapGet(contentStampMap[0][0], tableId)?.[0],
-          (rowId, [, , hash]) => {
-            objHas(rowHashes, rowId)
-              ? hash !== rowHashes?.[rowId]
-                ? arrayPush(rowIds[0], rowId)
-                : 0
-              : arrayPush(rowIds[1], rowId);
-          },
-        );
-      }
-      return rowIds;
-    });
+  const getMergeableRowDiff = (
+    otherTableRowHashes: RowHashes,
+  ): [newRows: TablesStamp, differentRowHashes: RowHashes] => {
+    const newRows: TablesStamp = stampNewObj(contentStampMap[0][1]);
+    const differentRowHashes: RowHashes = {};
+    objForEach(otherTableRowHashes, (otherRowHashes, tableId) =>
+      mapForEach(
+        mapGet(contentStampMap[0][0], tableId)?.[0],
+        (rowId, [rowStampMap, rowTime, hash]) =>
+          objHas(otherRowHashes, rowId)
+            ? hash !== otherRowHashes[rowId]
+              ? (objEnsure(differentRowHashes, tableId, objNew)[rowId] = hash)
+              : 0
+            : (objEnsure(newRows[0], tableId, stampNewObj)[0][rowId] =
+                stampMapToObjWithoutHash([rowStampMap, rowTime])),
+      ),
+    );
+    return [newRows, differentRowHashes];
+  };
 
-  const getMergeableCellHashes = (tableDelta: RowIdsDiff): CellHashes =>
-    objMap(tableDelta, ([changedRowIds, newRowIds], tableId) =>
-      objNew(
-        arrayMap([...changedRowIds, ...newRowIds], (rowId) => [
-          rowId,
-          mapToObj(
-            mapGet(mapGet(contentStampMap[0][0], tableId)?.[0], rowId)?.[0],
-            getStampHash,
+  const getMergeableCellHashes = (
+    otherTableRowHashes: RowHashes,
+  ): CellHashes => {
+    const cellHashes: CellHashes = {};
+    objForEach(otherTableRowHashes, (otherRowHashes, tableId) =>
+      ifNotUndefined(mapGet(contentStampMap[0][0], tableId), ([rowStampMaps]) =>
+        objForEach(otherRowHashes, (otherRowHash, rowId) =>
+          ifNotUndefined(
+            mapGet(rowStampMaps, rowId),
+            ([cellStampMaps, , rowHash]) =>
+              rowHash !== otherRowHash
+                ? mapForEach(
+                    cellStampMaps,
+                    (cellId, [, , cellHash]) =>
+                      (objEnsure(
+                        objEnsure<CellHashes[Id]>(cellHashes, tableId, objNew),
+                        rowId,
+                        objNew,
+                      )[cellId] = cellHash),
+                  )
+                : 0,
           ),
-        ]),
+        ),
       ),
     );
+    return cellHashes;
+  };
 
-  const getMergeableTablesChanges = (relativeTo: CellHashes): TablesStamp => {
+  const getMergeableCellDiff = (
+    otherTableRowCellHashes: CellHashes,
+  ): TablesStamp => {
     const [[tableStampMaps, tablesTime]] = contentStampMap;
-    const tables: TablesStamp[0] = {};
-    objForEach(
-      objIsEmpty(relativeTo)
-        ? mapToObj(tableStampMaps, objNewEmpty)
-        : relativeTo,
-      (rowCellHashes: CellHashes[Id], tableId: Id) =>
+    const tablesObj: TablesStamp[0] = {};
+    objForEach(otherTableRowCellHashes, (otherRowCellHashes, tableId) =>
+      objForEach(otherRowCellHashes, (otherCellHashes, rowId) =>
         ifNotUndefined(
           mapGet(tableStampMaps, tableId),
-          ([rowStampMaps, tableTime]) => {
-            const table: TableStamp[0] = {};
-            objForEach(
-              objIsEmpty(rowCellHashes)
-                ? mapToObj(rowStampMaps, objNewEmpty)
-                : rowCellHashes,
-              (cellHashes: CellHashes[Id][Id], rowId) =>
-                ifNotUndefined(
-                  mapGet(rowStampMaps, rowId),
-                  ([cellStampMaps, rowTime]) => {
-                    const row: RowStamp[0] = mapToObj(
-                      cellStampMaps,
-                      stampClone,
-                      ([, , hash], cellId) => hash == cellHashes?.[cellId],
-                    );
-                    if (!objIsEmpty(row)) {
-                      table[rowId] = rowTime ? [row, rowTime] : [row];
-                    }
-                  },
+          ([rowStampMaps, tableTime]) =>
+            ifNotUndefined(
+              mapGet(rowStampMaps, rowId),
+              ([cellStampMaps, rowTime]) =>
+                mapForEach(cellStampMaps, (cellId, [cell, cellTime, hash]) =>
+                  hash !== otherCellHashes[cellId]
+                    ? (objEnsure(
+                        objEnsure(tablesObj, tableId, () =>
+                          stampNewObj(tableTime),
+                        )[0],
+                        rowId,
+                        () => stampNewObj(rowTime),
+                      )[0][cellId] = [cell, cellTime])
+                    : 0,
                 ),
-            );
-            if (!objIsEmpty(table)) {
-              tables[tableId] = tableTime ? [table, tableTime] : [table];
-            }
-          },
+            ),
         ),
+      ),
     );
-    return tablesTime ? [tables, tablesTime] : [tables];
+    return tablesTime ? [tablesObj, tablesTime] : [tablesObj];
   };
 
   const getMergeableValuesHashes = (): ValuesHashes =>
@@ -431,7 +442,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     const [, [valueStampMaps, valuesTime]] = contentStampMap;
     const values = mapToObj(
       valueStampMaps,
-      stampClone,
+      stampCloneWithoutHash,
       ([, , hash], valueId) => hash == relativeTo?.[valueId],
     );
     return valuesTime ? [values, valuesTime] : [values];
@@ -507,11 +518,11 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
     getMergeableContentHashes,
     getMergeableTableHashes,
-    getMergeableTableIdsDiff,
+    getMergeableTableDiff,
     getMergeableRowHashes,
-    getMergeableRowIdsDiff,
+    getMergeableRowDiff,
     getMergeableCellHashes,
-    getMergeableTablesChanges,
+    getMergeableCellDiff,
     getMergeableValuesHashes,
     getMergeableValuesChanges,
     setMergeableContent,

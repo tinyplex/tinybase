@@ -36,11 +36,6 @@
  */
 /// TableHashes
 /**
- * The TableIdsDiff type
- * @category Syncing
- */
-/// TableIdsDiff
-/**
  * The TableStamp type
  * @category Stamps
  */
@@ -50,11 +45,6 @@
  * @category Syncing
  */
 /// RowHashes
-/**
- * The RowIdsDiff type
- * @category Syncing
- */
-/// RowIdsDiff
 /**
  * The RowStamp type
  * @category Stamps
@@ -132,30 +122,30 @@
    */
   /// MergeableStore.getMergeableTableHashes
   /**
-   * The getMergeableTableIdsDiff method
+   * The getMergeableTableDiff method
    * @category Syncing
    */
-  /// MergeableStore.getMergeableTableIdsDiff
+  /// MergeableStore.getMergeableTableDiff
   /**
    * The getMergeableRowHashes method
    * @category Syncing
    */
   /// MergeableStore.getMergeableRowHashes
   /**
-   * The getMergeableRowIdsDiff method
+   * The getMergeableRowDiff method
    * @category Syncing
    */
-  /// MergeableStore.getMergeableRowIdsDiff
+  /// MergeableStore.getMergeableRowDiff
   /**
    * The getMergeableCellHashes method
    * @category Syncing
    */
   /// MergeableStore.getMergeableCellHashes
   /**
-   * The getMergeableTablesChanges method
+   * The getMergeableCellDiff method
    * @category Syncing
    */
-  /// MergeableStore.getMergeableTablesChanges
+  /// MergeableStore.getMergeableCellDiff
   /**
    * The getMergeableValuesHashes method
    * @category Syncing
