@@ -22,9 +22,9 @@ const messageTypes = [
   'RESPONSE',
   'CONTENT_HASHES',
   'GET_CONTENT_HASHES',
-  'GET_TABLE_IDS_DIFF',
-  'GET_ROW_IDS_DIFF',
-  'GET_TABLES_CHANGES',
+  'GET_TABLE_DIFF',
+  'GET_ROW_DIFF',
+  'GET_CELL_DIFF',
   'GET_VALUES_CHANGES',
 ];
 
@@ -616,12 +616,12 @@ describe.each([
       });
 
       describe('tracking messages', () => {
-        test('new tables, new table, new row', async () => {
+        test('new tables, new table, new row, new cell; then all', async () => {
           if (environment && environment[1]) {
             store1.setTables({t1: {r1: {c1: 1}}});
             await pause(synchronizable.pauseMilliseconds, true);
-            await expectEachToHaveContent([{t1: {r1: {c1: 1}}}, {}]);
             expect(environment[1]).toMatchSnapshot();
+            await expectEachToHaveContent([{t1: {r1: {c1: 1}}}, {}]);
             environment[1].clear();
 
             store1.setTables({t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}});
@@ -640,6 +640,35 @@ describe.each([
             await pause(synchronizable.pauseMilliseconds, true);
             await expectEachToHaveContent([
               {t1: {r1: {c1: 1}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+              {},
+            ]);
+            expect(environment[1]).toMatchSnapshot();
+            environment[1].clear();
+
+            store1.setTables({
+              t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
+              t2: {r2: {c2: 2}},
+            });
+            await pause(synchronizable.pauseMilliseconds, true);
+            await expectEachToHaveContent([
+              {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
+              {},
+            ]);
+            expect(environment[1]).toMatchSnapshot();
+            environment[1].clear();
+
+            store1.setTables({
+              t1: {r1: {c1: 1, c2: 2, c3: 3}, r2: {c2: 2}, r3: {c3: 3}},
+              t2: {r2: {c2: 2}},
+              t3: {r3: {c3: 3}},
+            });
+            await pause(synchronizable.pauseMilliseconds, true);
+            await expectEachToHaveContent([
+              {
+                t1: {r1: {c1: 1, c2: 2, c3: 3}, r2: {c2: 2}, r3: {c3: 3}},
+                t2: {r2: {c2: 2}},
+                t3: {r3: {c3: 3}},
+              },
               {},
             ]);
             expect(environment[1]).toMatchSnapshot();

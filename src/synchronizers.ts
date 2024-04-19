@@ -1,7 +1,11 @@
 import {
+  CellStamp,
   ContentHashes,
   MergeableChanges,
   MergeableStore,
+  RowHashes,
+  RowStamp,
+  TableHashes,
   TablesStamp,
   ValuesStamp,
 } from './types/mergeable-store';
@@ -9,21 +13,21 @@ import {DEBUG, ifNotUndefined, isUndefined, promiseNew} from './common/other';
 import {Id, IdOrNull} from './types/common';
 import {IdMap, mapGet, mapNew, mapSet} from './common/map';
 import {MessageType, Receive, Send, Synchronizer} from './types/synchronizers';
+import {getLatestTime, stampNewObj} from './mergeable-store/stamps';
+import {objEnsure, objForEach, objIsEmpty} from './common/obj';
 import {Content} from './types/store';
 import {EMPTY_STRING} from './common/strings';
 import {PersisterListener} from './types/persisters';
 import {collDel} from './common/coll';
 import {createCustomPersister} from './persisters';
 import {getHlcFunctions} from './mergeable-store/hlc';
-import {objIsEmpty} from './common/obj';
-import {stampNewObj} from './mergeable-store/stamps';
 
 const RESPONSE = 0;
 const CONTENT_HASHES = 1;
 const GET_CONTENT_HASHES = 2;
-const GET_TABLE_IDS_DIFF = 3;
-const GET_ROW_IDS_DIFF = 4;
-const GET_TABLES_CHANGES = 5;
+const GET_TABLE_DIFF = 3;
+const GET_ROW_DIFF = 4;
+const GET_CELL_DIFF = 5;
 const GET_VALUES_CHANGES = 6;
 
 export const createCustomSynchronizer = (
@@ -75,12 +79,12 @@ export const createCustomSynchronizer = (
         ifNotUndefined(
           messageType == GET_CONTENT_HASHES && persister.isAutoSaving()
             ? store.getMergeableContentHashes()
-            : messageType == GET_TABLE_IDS_DIFF
-              ? store.getMergeableTableIdsDiff(messageBody)
-              : messageType == GET_ROW_IDS_DIFF
-                ? store.getMergeableRowIdsDiff(messageBody)
-                : messageType == GET_TABLES_CHANGES
-                  ? store.getMergeableTablesChanges(messageBody)
+            : messageType == GET_TABLE_DIFF
+              ? store.getMergeableTableDiff(messageBody)
+              : messageType == GET_ROW_DIFF
+                ? store.getMergeableRowDiff(messageBody)
+                : messageType == GET_CELL_DIFF
+                  ? store.getMergeableCellDiff(messageBody)
                   : messageType == GET_VALUES_CHANGES
                     ? store.getMergeableValuesChanges(messageBody)
                     : undefined,
@@ -122,6 +126,34 @@ export const createCustomSynchronizer = (
       send(toClientId, requestId, messageType, messageBody);
     });
 
+  const mergeTablesStamps = (
+    tablesStamp: TablesStamp,
+    [tableStamps, tablesTime]: TablesStamp,
+  ) => {
+    objForEach(tableStamps, ([rowStamps, tableTime], tableId) => {
+      const tableStamp = objEnsure(
+        tablesStamp[0],
+        tableId,
+        stampNewObj<RowStamp>,
+      );
+      objForEach(rowStamps, ([cellStamps, rowTime], rowId) => {
+        const rowStamp = objEnsure(
+          tableStamp[0],
+          rowId,
+          stampNewObj<CellStamp>,
+        );
+        objForEach(cellStamps, ([cell, cellTime = EMPTY_STRING], cellId) =>
+          cellTime >= (rowStamp[0][cellId]?.[1] ?? '')
+            ? (rowStamp[0][cellId] = cellTime ? [cell, cellTime] : [cellTime])
+            : 0,
+        );
+        rowStamp[1] = getLatestTime(rowStamp[1], rowTime);
+      });
+      tableStamp[1] = getLatestTime(tableStamp[1], tableTime);
+    });
+    tablesStamp[1] = getLatestTime(tablesStamp[1], tablesTime);
+  };
+
   const getChangesFromOtherStore = async (
     otherClientId: IdOrNull = null,
     otherContentHashes?: ContentHashes,
@@ -137,47 +169,36 @@ export const createCustomSynchronizer = (
 
     let tablesChanges: TablesStamp = stampNewObj();
     if (tablesHash != otherTablesHash) {
-      const cellHashes = {};
-
-      // console.log('-------------');
-
-      // const tableHashes = store.getMergeableTableHashes();
-      // console.log({tableHashes});
-
-      // const otherTableIdsDiff = (
-      //   await request<TableIdsDiff>(
-      //     otherClientId,
-      //     GET_TABLE_IDS_DIFF,
-      //     tableHashes,
-      //   )
-      // )[0];
-      // console.log({otherTableIdsDiff});
-
-      // if (arrayIsEmpty(otherTableIdsDiff[0])) {
-      //   cellHashes = objNew(
-      //     arrayMap(otherTableIdsDiff[1], (tableId) => [tableId, {}]),
-      //   );
-      // } else {
-      //   const rowHashes = store.getMergeableRowHashes(otherTableIdsDiff);
-      //   console.log({rowHashes});
-      //   const otherRowIdsDiff = (
-      //     await request<RowIdsDiff>(otherClientId, GET_ROW_IDS_DIFF,
-      // rowHashes)
-      //   )[0];
-      //   console.log({otherRowIdsDiff});
-
-      //   cellHashes = store.getMergeableCellHashes(otherRowIdsDiff);
-      // }
-
-      // console.log({cellHashes});
-
-      tablesChanges = (
-        await request<TablesStamp>(
+      const [newTables, differentTableHashes] = (
+        await request<[TablesStamp, TableHashes]>(
           otherClientId,
-          GET_TABLES_CHANGES,
-          cellHashes,
+          GET_TABLE_DIFF,
+          store.getMergeableTableHashes(),
         )
       )[0];
+      tablesChanges = newTables;
+
+      if (!objIsEmpty(differentTableHashes)) {
+        const [newRows, differentRowHashes] = (
+          await request<[TablesStamp, RowHashes]>(
+            otherClientId,
+            GET_ROW_DIFF,
+            store.getMergeableRowHashes(differentTableHashes),
+          )
+        )[0];
+        mergeTablesStamps(tablesChanges, newRows);
+
+        if (!objIsEmpty(differentRowHashes)) {
+          const newCells = (
+            await request<TablesStamp>(
+              otherClientId,
+              GET_CELL_DIFF,
+              store.getMergeableCellHashes(differentRowHashes),
+            )
+          )[0];
+          mergeTablesStamps(tablesChanges, newCells);
+        }
+      }
     }
 
     return [
