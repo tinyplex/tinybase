@@ -439,7 +439,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const getMergeableValuesHashes = (): ValuesHashes =>
     mapToObj(contentStampMap[1][0], getStampHash);
 
-  const getMergeableValuesChanges = (relativeTo: ValuesHashes): ValuesStamp => {
+  const getMergeableValueDiff = (relativeTo: ValuesHashes): ValuesStamp => {
     const [, [valueStampMaps, valuesTime]] = contentStampMap;
     const values = mapToObj(
       valueStampMaps,
@@ -525,7 +525,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     getMergeableCellHashes,
     getMergeableCellDiff,
     getMergeableValuesHashes,
-    getMergeableValuesChanges,
+    getMergeableValueDiff,
     setMergeableContent,
     setDefaultContent,
     getTransactionMergeableChanges,
