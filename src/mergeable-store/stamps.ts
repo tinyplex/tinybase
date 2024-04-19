@@ -27,7 +27,12 @@ const stampCloneWithHash = <Value>([value, time, hash]: Stamp<
 export const stampCloneWithoutHash = <Value>([value, time]: Stamp<
   Value,
   boolean
->): Stamp<Value> => [value, time];
+>): Stamp<Value> => newStamp(value, time);
+
+export const newStamp = <Value>(
+  value: Value,
+  time: Time | undefined,
+): Stamp<Value> => (time ? [value, time] : [value]);
 
 export const getStampHash = (stamp: Stamp<unknown, true>): Hash => stamp[2];
 
@@ -53,7 +58,7 @@ export const stampUpdate = (
 };
 
 export const stampNewObj = <Thing>(time = EMPTY_STRING): Stamp<IdObj<Thing>> =>
-  time ? [objNew<Thing>(), time] : [objNew<Thing>()];
+  newStamp(objNew<Thing>(), time);
 
 export const stampNewMap = <Thing>(time = EMPTY_STRING): StampMap<Thing> => [
   mapNew<Id, Thing>(),
@@ -69,8 +74,7 @@ export const stampMapToObjWithHash = <From, To = From>(
 export const stampMapToObjWithoutHash = <From, To = From>(
   [map, time]: Stamp<IdMap<From>, boolean>,
   mapper: (mapValue: From) => To = stampCloneWithoutHash as any,
-): Stamp<IdObj<To>> =>
-  time ? [mapToObj(map, mapper), time] : [mapToObj(map, mapper)];
+): Stamp<IdObj<To>> => newStamp(mapToObj(map, mapper), time);
 
 export const stampValidate = (
   stamp: Stamp<any, true>,
