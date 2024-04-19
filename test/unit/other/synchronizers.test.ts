@@ -25,7 +25,7 @@ const messageTypes = [
   'GET_TABLE_DIFF',
   'GET_ROW_DIFF',
   'GET_CELL_DIFF',
-  'GET_VALUES_CHANGES',
+  'GET_VALUE_DIFF',
 ];
 
 beforeEach(() => {

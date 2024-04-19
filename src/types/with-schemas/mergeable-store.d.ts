@@ -189,8 +189,8 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   /// MergeableStore.getMergeableValuesHashes
   getMergeableValuesHashes(): ValuesHashes<Schemas[1]>;
 
-  /// MergeableStore.getMergeableValuesChanges
-  getMergeableValuesChanges(
+  /// MergeableStore.getMergeableValueDiff
+  getMergeableValueDiff(
     relativeTo: ValuesHashes<Schemas[1]>,
   ): ValuesStamp<Schemas[1]>;
 
