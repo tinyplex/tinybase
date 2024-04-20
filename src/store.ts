@@ -157,9 +157,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let hadValues = false;
   let transactions = 0;
   let internalListeners: [
-    preStartTransaction?: TransactionListener,
-    preFinishTransaction?: TransactionListener,
-    postFinishTransaction?: TransactionListener,
+    preStartTransaction?: () => void,
+    preFinishTransaction?: () => void,
+    postFinishTransaction?: () => void,
+    cellChanged?: (
+      tableId: Id,
+      rowId: Id,
+      cellId: Id,
+      newCell: CellOrUndefined,
+    ) => void,
+    valueChanged?: (valueId: Id, newValue: ValueOrUndefined) => void,
   ] = [];
   const changedTableIds: ChangedIdsMap = mapNew();
   const changedTableCellIds: ChangedIdsMap2 = mapNew();
@@ -622,8 +629,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
     cellId: Id,
     oldCell?: CellOrUndefined,
     newCell?: CellOrUndefined,
-  ): CellOrUndefined =>
-    (mapEnsure<Id, ChangedCell>(
+  ): void => {
+    mapEnsure<Id, ChangedCell>(
       mapEnsure<Id, IdMap<ChangedCell>>(
         mapEnsure<Id, IdMap2<ChangedCell>>(changedCells, tableId, mapNew),
         rowId,
@@ -631,7 +638,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ),
       cellId,
       () => [oldCell, 0],
-    )[1] = newCell);
+    )[1] = newCell;
+    internalListeners[3]?.(tableId, rowId, cellId, newCell);
+  };
 
   const valueIdsChanged = (
     valueId: Id,
@@ -642,11 +651,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
     valueId: Id,
     oldValue?: ValueOrUndefined,
     newValue?: ValueOrUndefined,
-  ): ValueOrUndefined =>
-    (mapEnsure<Id, ChangedValue>(changedValues, valueId, () => [
+  ): void => {
+    mapEnsure<Id, ChangedValue>(changedValues, valueId, () => [
       oldValue,
       0,
-    ])[1] = newValue);
+    ])[1] = newValue;
+    internalListeners[4]?.(valueId, newValue);
+  };
 
   const cellInvalid = (
     tableId?: Id,
@@ -1332,7 +1343,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       transactions++;
     }
     if (transactions == 1) {
-      internalListeners[0]?.(store);
+      internalListeners[0]?.();
       callListeners(startTransactionListeners, undefined);
     }
     return store;
@@ -1422,9 +1433,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
         if (!collIsEmpty(changedValues)) {
           callValuesListenersForChanges(0);
         }
-        internalListeners[1]?.(store);
+        internalListeners[1]?.();
         callListeners(finishTransactionListeners[1], undefined);
-        internalListeners[2]?.(store);
+        internalListeners[2]?.();
 
         transactions = 0;
         hadTables = hasTables();
@@ -1576,14 +1587,23 @@ export const createStore: typeof createStoreDecl = (): Store => {
       : {};
 
   const setInternalListeners = (
-    preStartTransaction: TransactionListener,
-    preFinishTransaction: TransactionListener,
-    postFinishTransaction: TransactionListener,
+    preStartTransaction: () => void,
+    preFinishTransaction: () => void,
+    postFinishTransaction: () => void,
+    cellChanged: (
+      tableId: Id,
+      rowId: Id,
+      cellId: Id,
+      newCell: CellOrUndefined,
+    ) => void,
+    valueChanged: (valueId: Id, newValue: ValueOrUndefined) => void,
   ) =>
     (internalListeners = [
       preStartTransaction,
       preFinishTransaction,
       postFinishTransaction,
+      cellChanged,
+      valueChanged,
     ]);
 
   const store: any = {
