@@ -50,13 +50,7 @@ import {
   stampUpdate,
   stampValidate,
 } from './mergeable-store/stamps';
-import {
-  ifNotUndefined,
-  isArray,
-  isUndefined,
-  size,
-  slice,
-} from './common/other';
+import {ifNotUndefined, isArray, size, slice} from './common/other';
 import {mapEnsure, mapForEach, mapGet, mapToObj} from './common/map';
 import {Id} from './types/common';
 import {createStore} from './store';
@@ -134,17 +128,19 @@ const validateMergeableContent = (
   );
 
 export const createMergeableStore = ((id: Id): MergeableStore => {
-  let listening = 1;
+  let listeningToRawStoreChanges = 1;
   let contentStampMap = newContentStampMap();
-  let transactionTime: Time | undefined;
+  let defaultingContent: 0 | 1 = 0;
   const [getHlc, seenHlc] = getHlcFunctions(id);
   const store = createStore();
 
-  const disableListening = (actions: () => void): MergeableStore => {
-    const wasListening = listening;
-    listening = 0;
+  const disableListeningToRawStoreChanges = (
+    actions: () => void,
+  ): MergeableStore => {
+    const wasListening = listeningToRawStoreChanges;
+    listeningToRawStoreChanges = 0;
     actions();
-    listening = wasListening;
+    listeningToRawStoreChanges = wasListening;
     return mergeableStore as MergeableStore;
   };
 
@@ -286,15 +282,51 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     return [thingsTime, oldThingsHash, thingsStampMap[2]];
   };
 
-  const preStartTransaction = () => (transactionTime = getHlc());
+  const preStartTransaction = () => {};
 
-  const preFinishTransaction = () => {
-    if (listening) {
-      mergeContentOrChanges(getTransactionMergeableChanges());
+  const preFinishTransaction = () => {};
+
+  const postFinishTransaction = () => {};
+
+  const cellChanged = (
+    tableId: Id,
+    rowId: Id,
+    cellId: Id,
+    newCell: CellOrUndefined,
+  ) => {
+    if (listeningToRawStoreChanges) {
+      mergeContentOrChanges([
+        [
+          {
+            [tableId]: [
+              {
+                [rowId]: [
+                  {
+                    [cellId]: [
+                      newCell,
+                      defaultingContent ? EMPTY_STRING : getHlc(),
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        [{}],
+        1,
+      ]);
     }
   };
 
-  const postFinishTransaction = () => (transactionTime = undefined);
+  const valueChanged = (valueId: Id, newValue: ValueOrUndefined) => {
+    if (listeningToRawStoreChanges) {
+      mergeContentOrChanges([
+        [{}],
+        [{[valueId]: [newValue, defaultingContent ? EMPTY_STRING : getHlc()]}],
+        1,
+      ]);
+    }
+  };
 
   // ---
 
@@ -450,7 +482,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const setMergeableContent = (
     mergeableContent: MergeableContent,
   ): MergeableStore =>
-    disableListening(() =>
+    disableListeningToRawStoreChanges(() =>
       validateMergeableContent(mergeableContent)
         ? store.transaction(() => {
             store.delTables().delValues();
@@ -461,8 +493,11 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     );
 
   const setDefaultContent = (content: Content): MergeableStore => {
-    transactionTime = EMPTY_STRING;
-    store.setContent(content);
+    store.transaction(() => {
+      defaultingContent = 1;
+      store.setContent(content);
+      defaultingContent = 0;
+    });
     return mergeableStore as MergeableStore;
   };
 
@@ -471,28 +506,31 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     const [, , changedCells, , changedValues] = store.getTransactionLog();
     const changes: MergeableChanges = [stampNewObj(), stampNewObj(), 1];
 
-    if (!isUndefined(transactionTime)) {
-      const time = transactionTime;
-      const [[tablesObj], [valuesObj]] = changes;
-      objForEach(changedCells, (changedTable, tableId) => {
-        const rowStampMaps = mapGet(tableStampMaps, tableId)?.[0];
-        const [rowsObj] = (tablesObj[tableId] = stampNewObj());
-        objForEach(changedTable, (changedRow, rowId) => {
-          const cellStampMaps = mapGet(rowStampMaps, rowId)?.[0];
-          const [cellsObj] = (rowsObj[rowId] = stampNewObj());
-          objForEach(changedRow, ([, newCell], cellId) =>
-            time >= (mapGet(cellStampMaps, cellId)?.[1] ?? '')
-              ? (cellsObj[cellId] = [newCell, time])
-              : 0,
-          );
-        });
+    const [[tablesObj], [valuesObj]] = changes;
+    objForEach(changedCells, (changedTable, tableId) => {
+      const rowStampMaps = mapGet(tableStampMaps, tableId)?.[0];
+      const [rowsObj] = (tablesObj[tableId] = stampNewObj());
+      objForEach(changedTable, (changedRow, rowId) => {
+        const cellStampMaps = mapGet(rowStampMaps, rowId)?.[0];
+        const [cellsObj] = (rowsObj[rowId] = stampNewObj());
+        objForEach(
+          changedRow,
+          ([, newCell], cellId) =>
+            (cellsObj[cellId] = newStamp(
+              newCell,
+              mapGet(cellStampMaps, cellId)?.[1],
+            )),
+        );
       });
-      objForEach(changedValues, ([, newValue], valueId) =>
-        time >= (mapGet(valueStampMaps, valueId)?.[1] ?? '')
-          ? (valuesObj[valueId] = [newValue, time])
-          : 0,
-      );
-    }
+    });
+    objForEach(
+      changedValues,
+      ([, newValue], valueId) =>
+        (valuesObj[valueId] = newStamp(
+          newValue,
+          mapGet(valueStampMaps, valueId)?.[1],
+        )),
+    );
 
     return changes;
   };
@@ -500,7 +538,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   const applyMergeableChanges = (
     mergeableChanges: MergeableChanges | MergeableContent,
   ): MergeableStore =>
-    disableListening(() =>
+    disableListeningToRawStoreChanges(() =>
       store.applyChanges(mergeContentOrChanges(mergeableChanges)),
     );
 
@@ -535,6 +573,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     preStartTransaction,
     preFinishTransaction,
     postFinishTransaction,
+    cellChanged,
+    valueChanged,
   );
 
   objToArray(
