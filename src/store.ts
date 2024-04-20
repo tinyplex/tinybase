@@ -157,6 +157,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let hadValues = false;
   let transactions = 0;
   let internalListeners: [
+    preStartTransaction?: TransactionListener,
     preFinishTransaction?: TransactionListener,
     postFinishTransaction?: TransactionListener,
   ] = [];
@@ -1331,6 +1332,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       transactions++;
     }
     if (transactions == 1) {
+      internalListeners[0]?.(store);
       callListeners(startTransactionListeners, undefined);
     }
     return store;
@@ -1420,9 +1422,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
         if (!collIsEmpty(changedValues)) {
           callValuesListenersForChanges(0);
         }
-        internalListeners[0]?.(store);
-        callListeners(finishTransactionListeners[1], undefined);
         internalListeners[1]?.(store);
+        callListeners(finishTransactionListeners[1], undefined);
+        internalListeners[2]?.(store);
 
         transactions = 0;
         hadTables = hasTables();
@@ -1574,9 +1576,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
       : {};
 
   const setInternalListeners = (
+    preStartTransaction: TransactionListener,
     preFinishTransaction: TransactionListener,
     postFinishTransaction: TransactionListener,
-  ) => (internalListeners = [preFinishTransaction, postFinishTransaction]);
+  ) =>
+    (internalListeners = [
+      preStartTransaction,
+      preFinishTransaction,
+      postFinishTransaction,
+    ]);
 
   const store: any = {
     getContent,
