@@ -2063,20 +2063,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing values: s
 
 exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 1`] = `
 Map {
-  "Hc2DO@000008DKS9" => [
-    "client0→all GET_CONTENT_HASHES """,
-  ],
-  "push 1" => [
-    "client0→all CONTENT_HASHES [0,0]",
-  ],
-  "Hc2DO@000005DK@@" => [
-    "client1→all GET_CONTENT_HASHES """,
-    "client0→client1 RESPONSE [0,0]",
-  ],
-  "push 3" => [
-    "client1→all CONTENT_HASHES [0,0]",
-  ],
-  "push 4" => [
+  "push 0" => [
     "client0→all CONTENT_HASHES [4015673714,0]",
   ],
   "Hc2DO@200005DK@@" => [
@@ -2529,6 +2516,18 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new ta
 `;
 
 exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single value 1`] = `
+Map {
+  "push 0" => [
+    "client0→all CONTENT_HASHES [0,1514415285]",
+  ],
+  "Hc2DO@200005DK@@" => [
+    "client1→client0 GET_VALUE_DIFF {}",
+    "client0→client1 RESPONSE [{"v1":[1,"Hc2DO@200008DKS9"]}]",
+  ],
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single value 2`] = `
 [
   [
     {},
@@ -2547,31 +2546,6 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single
     1514415285,
   ],
 ]
-`;
-
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single value 2`] = `
-Map {
-  "Hc2DO@000008DKS9" => [
-    "client0→all GET_CONTENT_HASHES """,
-  ],
-  "push 1" => [
-    "client0→all CONTENT_HASHES [0,0]",
-  ],
-  "Hc2DO@000005DK@@" => [
-    "client1→all GET_CONTENT_HASHES """,
-    "client0→client1 RESPONSE [0,0]",
-  ],
-  "push 3" => [
-    "client1→all CONTENT_HASHES [0,0]",
-  ],
-  "push 4" => [
-    "client0→all CONTENT_HASHES [0,1514415285]",
-  ],
-  "Hc2DO@200005DK@@" => [
-    "client1→client0 GET_VALUE_DIFF {}",
-    "client0→client1 RESPONSE [{"v1":[1,"Hc2DO@200008DKS9"]}]",
-  ],
-}
 `;
 
 exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single value: stats 1`] = `
