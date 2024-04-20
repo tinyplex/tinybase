@@ -270,7 +270,7 @@ exports[`Deltas & Hashes Deltas No match different table: getMergeableRowDiff t1
               ],
               "c2": [
                 2,
-                "Hc2DO@000008DKS9",
+                "Hc2DO@000018DKS9",
               ],
             },
           ],
@@ -297,7 +297,7 @@ exports[`Deltas & Hashes Deltas No match different table: getMergeableTableDiff 
     {},
   ],
   {
-    "t1": 3168434037,
+    "t1": 3977440014,
   },
 ]
 `;
@@ -352,7 +352,7 @@ exports[`Deltas & Hashes Deltas No match different tables: getMergeableTableDiff
               ],
               "c2": [
                 2,
-                "Hc2DO@000008DKS9",
+                "Hc2DO@000018DKS9",
               ],
             },
           ],
@@ -360,7 +360,7 @@ exports[`Deltas & Hashes Deltas No match different tables: getMergeableTableDiff
             {
               "c2": [
                 2,
-                "Hc2DO@000008DKS9",
+                "Hc2DO@000028DKS9",
               ],
             },
           ],
@@ -610,7 +610,7 @@ exports[`Deltas & Hashes Deltas No match store1 missing row: getMergeableTableDi
     {},
   ],
   {
-    "t1": 257231497,
+    "t1": 2956686744,
   },
 ]
 `;
@@ -845,7 +845,7 @@ exports[`Deltas & Hashes Deltas No match store2 empty: getMergeableTableDiff 1`]
               ],
               "c2": [
                 2,
-                "Hc2DO@000008DKS9",
+                "Hc2DO@000018DKS9",
               ],
             },
           ],
@@ -853,7 +853,7 @@ exports[`Deltas & Hashes Deltas No match store2 empty: getMergeableTableDiff 1`]
             {
               "c2": [
                 2,
-                "Hc2DO@000008DKS9",
+                "Hc2DO@000028DKS9",
               ],
             },
           ],
@@ -865,7 +865,7 @@ exports[`Deltas & Hashes Deltas No match store2 empty: getMergeableTableDiff 1`]
             {
               "c2": [
                 2,
-                "Hc2DO@000008DKS9",
+                "Hc2DO@000038DKS9",
               ],
             },
           ],
@@ -882,11 +882,11 @@ exports[`Deltas & Hashes Deltas No match store2 empty: getMergeableValueDiff 1`]
   {
     "v1": [
       1,
-      "Hc2DO@000008DKS9",
+      "Hc2DO@000048DKS9",
     ],
     "v2": [
       2,
-      "Hc2DO@000008DKS9",
+      "Hc2DO@000058DKS9",
     ],
   },
 ]
@@ -901,7 +901,7 @@ exports[`Deltas & Hashes Deltas No match store2 missing cell: getMergeableCellDi
           {
             "c2": [
               2,
-              "Hc2DO@000028DKS9",
+              "Hc2DO@000018DKS9",
             ],
           },
         ],
@@ -920,7 +920,7 @@ exports[`Deltas & Hashes Deltas No match store2 missing cell: getMergeableCellDi
           {
             "c2": [
               2,
-              "Hc2DO@000028DKS9",
+              "Hc2DO@000018DKS9",
             ],
           },
         ],
@@ -937,7 +937,7 @@ exports[`Deltas & Hashes Deltas No match store2 missing cell: getMergeableRowDif
   ],
   {
     "t1": {
-      "r1": 2425428222,
+      "r1": 3086998632,
     },
   },
 ]
@@ -958,7 +958,7 @@ exports[`Deltas & Hashes Deltas No match store2 missing cell: getMergeableTableD
     {},
   ],
   {
-    "t1": 2967216401,
+    "t1": 2003790970,
   },
 ]
 `;
@@ -1018,7 +1018,7 @@ exports[`Deltas & Hashes Deltas No match store2 missing row: getMergeableTableDi
     {},
   ],
   {
-    "t1": 3567498984,
+    "t1": 2238392979,
   },
 ]
 `;
@@ -1069,7 +1069,7 @@ exports[`Deltas & Hashes Deltas No match store2 missing table: getMergeableTable
             {
               "c2": [
                 2,
-                "Hc2DO@000028DKS9",
+                "Hc2DO@000038DKS9",
               ],
             },
           ],
@@ -1131,7 +1131,7 @@ exports[`Deltas & Hashes Deltas No match store2 missing tables: getMergeableTabl
               ],
               "c2": [
                 2,
-                "Hc2DO@000008DKS9",
+                "Hc2DO@000018DKS9",
               ],
             },
           ],
@@ -1139,7 +1139,7 @@ exports[`Deltas & Hashes Deltas No match store2 missing tables: getMergeableTabl
             {
               "c2": [
                 2,
-                "Hc2DO@000008DKS9",
+                "Hc2DO@000028DKS9",
               ],
             },
           ],
@@ -1151,7 +1151,7 @@ exports[`Deltas & Hashes Deltas No match store2 missing tables: getMergeableTabl
             {
               "c2": [
                 2,
-                "Hc2DO@000008DKS9",
+                "Hc2DO@000038DKS9",
               ],
             },
           ],
@@ -1213,7 +1213,7 @@ exports[`Deltas & Hashes Deltas No match store2 missing value: getMergeableValue
   {
     "v2": [
       2,
-      "Hc2DO@000028DKS9",
+      "Hc2DO@000018DKS9",
     ],
   },
 ]
@@ -1267,7 +1267,7 @@ exports[`Deltas & Hashes Deltas No match store2 missing values: getMergeableValu
     ],
     "v2": [
       2,
-      "Hc2DO@000008DKS9",
+      "Hc2DO@000018DKS9",
     ],
   },
 ]
@@ -1280,7 +1280,7 @@ exports[`Deltas & Hashes getMergeableCellHashes Non-empty 1`] = `
   "t1": {
     "r1": {
       "c1": 4065945599,
-      "c2": 903550280,
+      "c2": 2669080357,
     },
   },
 }
@@ -1295,8 +1295,8 @@ exports[`Deltas & Hashes getMergeableContentHashes Empty 1`] = `
 
 exports[`Deltas & Hashes getMergeableContentHashes Non-empty 1`] = `
 [
-  988302986,
-  3309870898,
+  2815319209,
+  1841261522,
 ]
 `;
 
@@ -1305,8 +1305,8 @@ exports[`Deltas & Hashes getMergeableRowHashes Empty 1`] = `{}`;
 exports[`Deltas & Hashes getMergeableRowHashes Non-empty 1`] = `
 {
   "t1": {
-    "r1": 3090025824,
-    "r2": 2068384606,
+    "r1": 3277579774,
+    "r2": 659695446,
   },
 }
 `;
@@ -1315,8 +1315,8 @@ exports[`Deltas & Hashes getMergeableTableHashes Empty 1`] = `{}`;
 
 exports[`Deltas & Hashes getMergeableTableHashes Non-empty 1`] = `
 {
-  "t1": 2570981451,
-  "t2": 635725630,
+  "t1": 2238392979,
+  "t2": 3641929066,
 }
 `;
 
@@ -1325,7 +1325,7 @@ exports[`Deltas & Hashes getMergeableValuesHashes Empty 1`] = `{}`;
 exports[`Deltas & Hashes getMergeableValuesHashes Non-empty 1`] = `
 {
   "v1": 4065945599,
-  "v2": 903550280,
+  "v2": 2669080357,
 }
 `;
 
@@ -1369,32 +1369,32 @@ exports[`Merge One way delCell 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000018DKS9",
-                3207404266,
+                "Hc2DO@000048DKS9",
+                1630348003,
               ],
               "c2": [
                 undefined,
-                "Hc2DO@000028DKS9",
-                1517672885,
+                "Hc2DO@000058DKS9",
+                3070457446,
               ],
             },
             "",
-            90271768,
+            1329873962,
           ],
           "r2": [
             {
               "c1": [
                 0,
-                "Hc2DO@000008DKS9",
-                2614692414,
+                "Hc2DO@000028DKS9",
+                2053295812,
               ],
             },
             "",
-            115816801,
+            2693917663,
           ],
         },
         "",
-        4167093002,
+        2989037115,
       ],
       "t2": [
         {
@@ -1402,20 +1402,20 @@ exports[`Merge One way delCell 1`] = `
             {
               "c1": [
                 0,
-                "Hc2DO@000008DKS9",
-                2614692414,
+                "Hc2DO@000038DKS9",
+                1190671601,
               ],
             },
             "",
-            115816801,
+            2044790046,
           ],
         },
         "",
-        4293955837,
+        198245466,
       ],
     },
     "",
-    238240702,
+    2757715889,
   ],
   [
     {},
@@ -1435,32 +1435,32 @@ exports[`Merge One way delRow 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000018DKS9",
-                3207404266,
+                "Hc2DO@000048DKS9",
+                1630348003,
               ],
               "c2": [
                 undefined,
-                "Hc2DO@000028DKS9",
-                1517672885,
+                "Hc2DO@000058DKS9",
+                3070457446,
               ],
             },
             "",
-            90271768,
+            1329873962,
           ],
           "r2": [
             {
               "c1": [
                 undefined,
-                "Hc2DO@000038DKS9",
-                4228156312,
+                "Hc2DO@000068DKS9",
+                1646436633,
               ],
             },
             "",
-            3414392220,
+            3306584420,
           ],
         },
         "",
-        2190743891,
+        926776032,
       ],
       "t2": [
         {
@@ -1468,20 +1468,20 @@ exports[`Merge One way delRow 1`] = `
             {
               "c1": [
                 0,
-                "Hc2DO@000008DKS9",
-                2614692414,
+                "Hc2DO@000038DKS9",
+                1190671601,
               ],
             },
             "",
-            115816801,
+            2044790046,
           ],
         },
         "",
-        4293955837,
+        198245466,
       ],
     },
     "",
-    1295459070,
+    2370998078,
   ],
   [
     {},
@@ -1501,32 +1501,32 @@ exports[`Merge One way delTable 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000018DKS9",
-                3207404266,
+                "Hc2DO@000048DKS9",
+                1630348003,
               ],
               "c2": [
                 undefined,
-                "Hc2DO@000028DKS9",
-                1517672885,
+                "Hc2DO@000058DKS9",
+                3070457446,
               ],
             },
             "",
-            90271768,
+            1329873962,
           ],
           "r2": [
             {
               "c1": [
                 undefined,
-                "Hc2DO@000038DKS9",
-                4228156312,
+                "Hc2DO@000068DKS9",
+                1646436633,
               ],
             },
             "",
-            3414392220,
+            3306584420,
           ],
         },
         "",
-        2190743891,
+        926776032,
       ],
       "t2": [
         {
@@ -1534,20 +1534,20 @@ exports[`Merge One way delTable 1`] = `
             {
               "c1": [
                 undefined,
-                "Hc2DO@000048DKS9",
-                2289969851,
+                "Hc2DO@000078DKS9",
+                3791145484,
               ],
             },
             "",
-            1628978585,
+            474074414,
           ],
         },
         "",
-        2168095463,
+        2407505441,
       ],
     },
     "",
-    2433215523,
+    1159067993,
   ],
   [
     {},
@@ -1567,32 +1567,32 @@ exports[`Merge One way delTables 1`] = `
             {
               "c1": [
                 undefined,
-                "Hc2DO@000068DKS9",
-                1646436633,
+                "Hc2DO@000098DKS9",
+                1159821978,
               ],
               "c2": [
                 undefined,
-                "Hc2DO@000028DKS9",
-                1517672885,
+                "Hc2DO@000058DKS9",
+                3070457446,
               ],
             },
             "",
-            526436484,
+            749504355,
           ],
           "r2": [
             {
               "c1": [
                 undefined,
-                "Hc2DO@000038DKS9",
-                4228156312,
+                "Hc2DO@000068DKS9",
+                1646436633,
               ],
             },
             "",
-            3414392220,
+            3306584420,
           ],
         },
         "",
-        1525431343,
+        825009660,
       ],
       "t2": [
         {
@@ -1600,31 +1600,31 @@ exports[`Merge One way delTables 1`] = `
             {
               "c1": [
                 undefined,
-                "Hc2DO@000048DKS9",
-                2289969851,
+                "Hc2DO@000078DKS9",
+                3791145484,
               ],
             },
             "",
-            1628978585,
+            474074414,
           ],
           "r2": [
             {
               "c2": [
                 undefined,
-                "Hc2DO@000068DKS9",
-                1646436633,
+                "Hc2DO@0000:8DKS9",
+                4067122285,
               ],
             },
             "",
-            2993345838,
+            185663275,
           ],
         },
         "",
-        2904304634,
+        2804866459,
       ],
     },
     "",
-    4105176891,
+    2496288687,
   ],
   [
     {},
@@ -1644,32 +1644,32 @@ exports[`Merge One way delValue 1`] = `
             {
               "c1": [
                 undefined,
-                "Hc2DO@000068DKS9",
-                1646436633,
+                "Hc2DO@000098DKS9",
+                1159821978,
               ],
               "c2": [
                 undefined,
-                "Hc2DO@000028DKS9",
-                1517672885,
+                "Hc2DO@000058DKS9",
+                3070457446,
               ],
             },
             "",
-            526436484,
+            749504355,
           ],
           "r2": [
             {
               "c1": [
                 undefined,
-                "Hc2DO@000038DKS9",
-                4228156312,
+                "Hc2DO@000068DKS9",
+                1646436633,
               ],
             },
             "",
-            3414392220,
+            3306584420,
           ],
         },
         "",
-        1525431343,
+        825009660,
       ],
       "t2": [
         {
@@ -1677,47 +1677,47 @@ exports[`Merge One way delValue 1`] = `
             {
               "c1": [
                 undefined,
-                "Hc2DO@000048DKS9",
-                2289969851,
+                "Hc2DO@000078DKS9",
+                3791145484,
               ],
             },
             "",
-            1628978585,
+            474074414,
           ],
           "r2": [
             {
               "c2": [
                 undefined,
-                "Hc2DO@000068DKS9",
-                1646436633,
+                "Hc2DO@0000:8DKS9",
+                4067122285,
               ],
             },
             "",
-            2993345838,
+            185663275,
           ],
         },
         "",
-        2904304634,
+        2804866459,
       ],
     },
     "",
-    4105176891,
+    2496288687,
   ],
   [
     {
       "v1": [
         1,
-        "Hc2DO@000088DKS9",
-        1209068807,
+        "Hc2DO@0000=8DKS9",
+        2186700342,
       ],
       "v2": [
         undefined,
-        "Hc2DO@000098DKS9",
-        1159821978,
+        "Hc2DO@0000>8DKS9",
+        3732834865,
       ],
     },
     "",
-    2393416798,
+    3214690238,
   ],
 ]
 `;
@@ -1732,32 +1732,32 @@ exports[`Merge One way delValues 1`] = `
             {
               "c1": [
                 undefined,
-                "Hc2DO@000068DKS9",
-                1646436633,
+                "Hc2DO@000098DKS9",
+                1159821978,
               ],
               "c2": [
                 undefined,
-                "Hc2DO@000028DKS9",
-                1517672885,
+                "Hc2DO@000058DKS9",
+                3070457446,
               ],
             },
             "",
-            526436484,
+            749504355,
           ],
           "r2": [
             {
               "c1": [
                 undefined,
-                "Hc2DO@000038DKS9",
-                4228156312,
+                "Hc2DO@000068DKS9",
+                1646436633,
               ],
             },
             "",
-            3414392220,
+            3306584420,
           ],
         },
         "",
-        1525431343,
+        825009660,
       ],
       "t2": [
         {
@@ -1765,47 +1765,47 @@ exports[`Merge One way delValues 1`] = `
             {
               "c1": [
                 undefined,
-                "Hc2DO@000048DKS9",
-                2289969851,
+                "Hc2DO@000078DKS9",
+                3791145484,
               ],
             },
             "",
-            1628978585,
+            474074414,
           ],
           "r2": [
             {
               "c2": [
                 undefined,
-                "Hc2DO@000068DKS9",
-                1646436633,
+                "Hc2DO@0000:8DKS9",
+                4067122285,
               ],
             },
             "",
-            2993345838,
+            185663275,
           ],
         },
         "",
-        2904304634,
+        2804866459,
       ],
     },
     "",
-    4105176891,
+    2496288687,
   ],
   [
     {
       "v1": [
         undefined,
-        "Hc2DO@0000:8DKS9",
-        4067122285,
+        "Hc2DO@0000?8DKS9",
+        4171001604,
       ],
       "v2": [
         undefined,
-        "Hc2DO@000098DKS9",
-        1159821978,
+        "Hc2DO@0000>8DKS9",
+        3732834865,
       ],
     },
     "",
-    3959425906,
+    3097473817,
   ],
 ]
 `;
@@ -1820,32 +1820,32 @@ exports[`Merge One way setCell 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000018DKS9",
-                3207404266,
+                "Hc2DO@000048DKS9",
+                1630348003,
               ],
               "c2": [
                 0,
-                "Hc2DO@000008DKS9",
-                2614692414,
+                "Hc2DO@000018DKS9",
+                1811946515,
               ],
             },
             "",
-            3517767035,
+            1250862157,
           ],
           "r2": [
             {
               "c1": [
                 0,
-                "Hc2DO@000008DKS9",
-                2614692414,
+                "Hc2DO@000028DKS9",
+                2053295812,
               ],
             },
             "",
-            115816801,
+            2693917663,
           ],
         },
         "",
-        2053381492,
+        46617994,
       ],
       "t2": [
         {
@@ -1853,20 +1853,20 @@ exports[`Merge One way setCell 1`] = `
             {
               "c1": [
                 0,
-                "Hc2DO@000008DKS9",
-                2614692414,
+                "Hc2DO@000038DKS9",
+                1190671601,
               ],
             },
             "",
-            115816801,
+            2044790046,
           ],
         },
         "",
-        4293955837,
+        198245466,
       ],
     },
     "",
-    2603045523,
+    3398661362,
   ],
   [
     {},
@@ -1886,32 +1886,32 @@ exports[`Merge One way setCell 2 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000018DKS9",
-                3207404266,
+                "Hc2DO@000048DKS9",
+                1630348003,
               ],
               "c2": [
                 undefined,
-                "Hc2DO@000028DKS9",
-                1517672885,
+                "Hc2DO@000058DKS9",
+                3070457446,
               ],
             },
             "",
-            90271768,
+            1329873962,
           ],
           "r2": [
             {
               "c1": [
                 undefined,
-                "Hc2DO@000038DKS9",
-                4228156312,
+                "Hc2DO@000068DKS9",
+                1646436633,
               ],
             },
             "",
-            3414392220,
+            3306584420,
           ],
         },
         "",
-        2190743891,
+        926776032,
       ],
       "t2": [
         {
@@ -1919,31 +1919,31 @@ exports[`Merge One way setCell 2 1`] = `
             {
               "c1": [
                 undefined,
-                "Hc2DO@000048DKS9",
-                2289969851,
+                "Hc2DO@000078DKS9",
+                3791145484,
               ],
             },
             "",
-            1628978585,
+            474074414,
           ],
           "r2": [
             {
               "c2": [
                 2,
-                "Hc2DO@000058DKS9",
-                2818632457,
+                "Hc2DO@000088DKS9",
+                3266244960,
               ],
             },
             "",
-            363182914,
+            2353081134,
           ],
         },
         "",
-        341574579,
+        1052771694,
       ],
     },
     "",
-    223508698,
+    1868403663,
   ],
   [
     {},
@@ -1968,27 +1968,27 @@ exports[`Merge One way setTables 1`] = `
               ],
               "c2": [
                 0,
-                "Hc2DO@000008DKS9",
-                2614692414,
+                "Hc2DO@000018DKS9",
+                1811946515,
               ],
             },
             "",
-            140256738,
+            2772034540,
           ],
           "r2": [
             {
               "c1": [
                 0,
-                "Hc2DO@000008DKS9",
-                2614692414,
+                "Hc2DO@000028DKS9",
+                2053295812,
               ],
             },
             "",
-            115816801,
+            2693917663,
           ],
         },
         "",
-        2316497968,
+        631175839,
       ],
       "t2": [
         {
@@ -1996,20 +1996,20 @@ exports[`Merge One way setTables 1`] = `
             {
               "c1": [
                 0,
-                "Hc2DO@000008DKS9",
-                2614692414,
+                "Hc2DO@000038DKS9",
+                1190671601,
               ],
             },
             "",
-            115816801,
+            2044790046,
           ],
         },
         "",
-        4293955837,
+        198245466,
       ],
     },
     "",
-    2083176685,
+    2042818875,
   ],
   [
     {},
@@ -2029,32 +2029,32 @@ exports[`Merge One way setValue 1`] = `
             {
               "c1": [
                 undefined,
-                "Hc2DO@000068DKS9",
-                1646436633,
+                "Hc2DO@000098DKS9",
+                1159821978,
               ],
               "c2": [
                 undefined,
-                "Hc2DO@000028DKS9",
-                1517672885,
+                "Hc2DO@000058DKS9",
+                3070457446,
               ],
             },
             "",
-            526436484,
+            749504355,
           ],
           "r2": [
             {
               "c1": [
                 undefined,
-                "Hc2DO@000038DKS9",
-                4228156312,
+                "Hc2DO@000068DKS9",
+                1646436633,
               ],
             },
             "",
-            3414392220,
+            3306584420,
           ],
         },
         "",
-        1525431343,
+        825009660,
       ],
       "t2": [
         {
@@ -2062,47 +2062,47 @@ exports[`Merge One way setValue 1`] = `
             {
               "c1": [
                 undefined,
-                "Hc2DO@000048DKS9",
-                2289969851,
+                "Hc2DO@000078DKS9",
+                3791145484,
               ],
             },
             "",
-            1628978585,
+            474074414,
           ],
           "r2": [
             {
               "c2": [
                 undefined,
-                "Hc2DO@000068DKS9",
-                1646436633,
+                "Hc2DO@0000:8DKS9",
+                4067122285,
               ],
             },
             "",
-            2993345838,
+            185663275,
           ],
         },
         "",
-        2904304634,
+        2804866459,
       ],
     },
     "",
-    4105176891,
+    2496288687,
   ],
   [
     {
       "v1": [
         1,
-        "Hc2DO@000088DKS9",
-        1209068807,
+        "Hc2DO@0000=8DKS9",
+        2186700342,
       ],
       "v2": [
         0,
-        "Hc2DO@000078DKS9",
-        1524959021,
+        "Hc2DO@0000<8DKS9",
+        2229192514,
       ],
     },
     "",
-    3354147827,
+    918514914,
   ],
 ]
 `;
@@ -2117,32 +2117,32 @@ exports[`Merge One way setValues 1`] = `
             {
               "c1": [
                 undefined,
-                "Hc2DO@000068DKS9",
-                1646436633,
+                "Hc2DO@000098DKS9",
+                1159821978,
               ],
               "c2": [
                 undefined,
-                "Hc2DO@000028DKS9",
-                1517672885,
+                "Hc2DO@000058DKS9",
+                3070457446,
               ],
             },
             "",
-            526436484,
+            749504355,
           ],
           "r2": [
             {
               "c1": [
                 undefined,
-                "Hc2DO@000038DKS9",
-                4228156312,
+                "Hc2DO@000068DKS9",
+                1646436633,
               ],
             },
             "",
-            3414392220,
+            3306584420,
           ],
         },
         "",
-        1525431343,
+        825009660,
       ],
       "t2": [
         {
@@ -2150,47 +2150,47 @@ exports[`Merge One way setValues 1`] = `
             {
               "c1": [
                 undefined,
-                "Hc2DO@000048DKS9",
-                2289969851,
+                "Hc2DO@000078DKS9",
+                3791145484,
               ],
             },
             "",
-            1628978585,
+            474074414,
           ],
           "r2": [
             {
               "c2": [
                 undefined,
-                "Hc2DO@000068DKS9",
-                1646436633,
+                "Hc2DO@0000:8DKS9",
+                4067122285,
               ],
             },
             "",
-            2993345838,
+            185663275,
           ],
         },
         "",
-        2904304634,
+        2804866459,
       ],
     },
     "",
-    4105176891,
+    2496288687,
   ],
   [
     {
       "v1": [
         0,
-        "Hc2DO@000078DKS9",
-        1524959021,
+        "Hc2DO@0000;8DKS9",
+        3122944217,
       ],
       "v2": [
         0,
-        "Hc2DO@000078DKS9",
-        1524959021,
+        "Hc2DO@0000<8DKS9",
+        2229192514,
       ],
     },
     "",
-    34049206,
+    558920470,
   ],
 ]
 `;
@@ -2205,31 +2205,31 @@ exports[`Merge Two way Causality 1`] = `
             {
               "c1": [
                 2,
-                "Hc2DO@000035DK@@",
-                2861658760,
+                "Hc2DO@000025DK@@",
+                3667222557,
               ],
             },
             "",
-            4258698807,
+            953672745,
           ],
         },
         "",
-        562851333,
+        3602741010,
       ],
     },
     "",
-    2780946406,
+    1834808984,
   ],
   [
     {
       "v1": [
         2,
-        "Hc2DO@000045DK@@",
-        3654520707,
+        "Hc2DO@000035DK@@",
+        2861658760,
       ],
     },
     "",
-    1067735783,
+    1777490301,
   ],
 ]
 `;
@@ -2244,31 +2244,31 @@ exports[`Merge Two way Causality 2`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000068DKS9",
-                3013994167,
+                "Hc2DO@000048DKS9",
+                2480417845,
               ],
             },
             "",
-            3089069643,
+            4137739263,
           ],
         },
         "",
-        1054157202,
+        1563206141,
       ],
     },
     "",
-    3120023033,
+    363199193,
   ],
   [
     {
       "v1": [
         3,
-        "Hc2DO@000078DKS9",
-        1715429890,
+        "Hc2DO@000058DKS9",
+        895933976,
       ],
     },
     "",
-    1058637208,
+    2705602071,
   ],
 ]
 `;
@@ -2307,12 +2307,12 @@ exports[`Merge Two way Conflict 1`] = `
       ],
       "v1": [
         1,
-        "Hc2DO@000018DKS9",
-        3207404266,
+        "Hc2DO@000028DKS9",
+        1065108477,
       ],
     },
     "",
-    707780593,
+    1606578288,
   ],
 ]
 `;
@@ -2526,16 +2526,16 @@ exports[`Merge Two way Mutually exclusive tables & values 2`] = `
             {
               "c2": [
                 2,
-                "Hc2DO@100005DK@@",
-                2804922642,
+                "Hc2DO@100015DK@@",
+                2724740231,
               ],
             },
             "",
-            3853242083,
+            3317170052,
           ],
         },
         "",
-        4164031615,
+        1954659064,
       ],
       "t2": [
         {
@@ -2543,31 +2543,31 @@ exports[`Merge Two way Mutually exclusive tables & values 2`] = `
             {
               "c2": [
                 2,
-                "Hc2DO@100005DK@@",
-                2804922642,
+                "Hc2DO@100025DK@@",
+                2257203448,
               ],
             },
             "",
-            3853242083,
+            1788707245,
           ],
         },
         "",
-        1926646263,
+        3326269632,
       ],
     },
     "",
-    2139698757,
+    3054983190,
   ],
   [
     {
       "v2": [
         2,
-        "Hc2DO@100015DK@@",
-        2724740231,
+        "Hc2DO@100035DK@@",
+        74743437,
       ],
     },
     "",
-    2041201258,
+    3825747659,
   ],
 ]
 `;
@@ -2598,16 +2598,16 @@ exports[`Merge Two way Mutually exclusive tables & values 3`] = `
             {
               "c2": [
                 2,
-                "Hc2DO@100005DK@@",
-                2804922642,
+                "Hc2DO@100015DK@@",
+                2724740231,
               ],
             },
             "",
-            3853242083,
+            3317170052,
           ],
         },
         "",
-        363095413,
+        2568473586,
       ],
       "t2": [
         {
@@ -2615,20 +2615,20 @@ exports[`Merge Two way Mutually exclusive tables & values 3`] = `
             {
               "c2": [
                 2,
-                "Hc2DO@100005DK@@",
-                2804922642,
+                "Hc2DO@100025DK@@",
+                2257203448,
               ],
             },
             "",
-            3853242083,
+            1788707245,
           ],
         },
         "",
-        1926646263,
+        3326269632,
       ],
     },
     "",
-    4232740232,
+    2209959623,
   ],
   [
     {
@@ -2639,12 +2639,12 @@ exports[`Merge Two way Mutually exclusive tables & values 3`] = `
       ],
       "v2": [
         2,
-        "Hc2DO@100015DK@@",
-        2724740231,
+        "Hc2DO@100035DK@@",
+        74743437,
       ],
     },
     "",
-    1664817268,
+    4271447253,
   ],
 ]
 `;
@@ -2796,16 +2796,16 @@ exports[`Protocol basics 2`] = `
             {
               "c2": [
                 2,
-                "Hc2DO@000005DK@@",
-                2554361111,
+                "Hc2DO@000015DK@@",
+                167179554,
               ],
             },
             "",
-            478205993,
+            3088830063,
           ],
         },
         "",
-        2334022845,
+        2691149289,
       ],
       "t2": [
         {
@@ -2813,20 +2813,20 @@ exports[`Protocol basics 2`] = `
             {
               "c2": [
                 2,
-                "Hc2DO@000005DK@@",
-                2554361111,
+                "Hc2DO@000025DK@@",
+                3667222557,
               ],
             },
             "",
-            478205993,
+            2373406559,
           ],
         },
         "",
-        527507176,
+        4292512243,
       ],
     },
     "",
-    4033545870,
+    3498589694,
   ],
   [
     {},
@@ -2836,7 +2836,7 @@ exports[`Protocol basics 2`] = `
 ]
 `;
 
-exports[`apply/setMergeableContent apply into empty store 1`] = `
+exports[`applyMergeableChanges/setMergeableContent apply into empty store 1`] = `
 [
   [
     {
@@ -2875,7 +2875,7 @@ exports[`apply/setMergeableContent apply into empty store 1`] = `
 ]
 `;
 
-exports[`apply/setMergeableContent apply over existing content 1`] = `
+exports[`applyMergeableChanges/setMergeableContent apply over existing content 1`] = `
 [
   [
     {
@@ -2909,8 +2909,8 @@ exports[`apply/setMergeableContent apply over existing content 1`] = `
     {
       "v0": [
         0,
-        "Hc2DO@000008DKS9",
-        2614692414,
+        "Hc2DO@000018DKS9",
+        1811946515,
       ],
       "v1": [
         1,
@@ -2919,12 +2919,51 @@ exports[`apply/setMergeableContent apply over existing content 1`] = `
       ],
     },
     "Hc2DO@000018DKS9",
-    505723254,
+    3220353420,
   ],
 ]
 `;
 
-exports[`apply/setMergeableContent set into empty store 1`] = `
+exports[`applyMergeableChanges/setMergeableContent set default 1`] = `
+[
+  [
+    {
+      "t0": [
+        {
+          "r0": [
+            {
+              "c0": [
+                0,
+                "",
+                401433231,
+              ],
+            },
+            "",
+            2660078143,
+          ],
+        },
+        "",
+        2466603274,
+      ],
+    },
+    "",
+    471459239,
+  ],
+  [
+    {
+      "v0": [
+        0,
+        "",
+        401433231,
+      ],
+    },
+    "",
+    30487211,
+  ],
+]
+`;
+
+exports[`applyMergeableChanges/setMergeableContent set into empty store 1`] = `
 [
   [
     {
@@ -2963,7 +3002,7 @@ exports[`apply/setMergeableContent set into empty store 1`] = `
 ]
 `;
 
-exports[`apply/setMergeableContent set over existing content 1`] = `
+exports[`applyMergeableChanges/setMergeableContent set over existing content 1`] = `
 [
   [
     {
@@ -3002,7 +3041,7 @@ exports[`apply/setMergeableContent set over existing content 1`] = `
 ]
 `;
 
-exports[`apply/setMergeableContent set over existing content 2`] = `
+exports[`applyMergeableChanges/setMergeableContent set over existing content 2`] = `
 [
   [
     {
@@ -3046,7 +3085,7 @@ exports[`apply/setMergeableContent set over existing content 2`] = `
 ]
 `;
 
-exports[`apply/setMergeableContent set with wrong hashes 1`] = `
+exports[`applyMergeableChanges/setMergeableContent set with wrong hashes 1`] = `
 [
   [
     {
@@ -3125,32 +3164,32 @@ exports[`getMergeableContent Mutate 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000018DKS9",
-                3207404266,
+                "Hc2DO@000068DKS9",
+                3251374017,
               ],
               "c2": [
                 undefined,
-                "Hc2DO@000028DKS9",
-                1517672885,
+                "Hc2DO@000078DKS9",
+                3791145484,
               ],
             },
             "",
-            90271768,
+            1806732327,
           ],
           "r2": [
             {
               "c1": [
                 undefined,
-                "Hc2DO@000038DKS9",
-                4228156312,
+                "Hc2DO@000088DKS9",
+                4197029487,
               ],
             },
             "",
-            3414392220,
+            2923703903,
           ],
         },
         "",
-        2190743891,
+        1720896634,
       ],
       "t2": [
         {
@@ -3158,36 +3197,36 @@ exports[`getMergeableContent Mutate 1`] = `
             {
               "c1": [
                 undefined,
-                "Hc2DO@000048DKS9",
-                2289969851,
+                "Hc2DO@000098DKS9",
+                1159821978,
               ],
             },
             "",
-            1628978585,
+            2327362953,
           ],
         },
         "",
-        2168095463,
+        2284195162,
       ],
     },
     "",
-    2433215523,
+    2891355473,
   ],
   [
     {
       "v1": [
         5,
-        "Hc2DO@000058DKS9",
-        3265694938,
+        "Hc2DO@0000:8DKS9",
+        3434436441,
       ],
       "v2": [
         undefined,
-        "Hc2DO@000068DKS9",
-        1646436633,
+        "Hc2DO@0000;8DKS9",
+        840500976,
       ],
     },
     "",
-    2723572765,
+    3302417351,
   ],
 ]
 `;
@@ -3284,27 +3323,27 @@ exports[`getMergeableContent Set together 1`] = `
               ],
               "c2": [
                 1,
-                "Hc2DO@000008DKS9",
-                4065945599,
+                "Hc2DO@000018DKS9",
+                3207404266,
               ],
             },
             "",
-            3639814281,
+            1851134271,
           ],
           "r2": [
             {
               "c1": [
                 2,
-                "Hc2DO@000008DKS9",
-                903550280,
+                "Hc2DO@000028DKS9",
+                1691812082,
               ],
             },
             "",
-            3444269370,
+            1951063224,
           ],
         },
         "",
-        871305296,
+        688021747,
       ],
       "t2": [
         {
@@ -3312,36 +3351,36 @@ exports[`getMergeableContent Set together 1`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000008DKS9",
-                2609181593,
+                "Hc2DO@000038DKS9",
+                4033202406,
               ],
             },
             "",
-            2761716482,
+            645465578,
           ],
         },
         "",
-        1127151112,
+        2126674952,
       ],
     },
     "",
-    3703633338,
+    3758433300,
   ],
   [
     {
       "v1": [
         4,
-        "Hc2DO@000008DKS9",
-        4060269138,
+        "Hc2DO@000048DKS9",
+        4189032886,
       ],
       "v2": [
         5,
-        "Hc2DO@000008DKS9",
-        2123438739,
+        "Hc2DO@000058DKS9",
+        3265694938,
       ],
     },
     "",
-    317280319,
+    3492436178,
   ],
 ]
 `;
@@ -3664,7 +3703,7 @@ exports[`getTransactionMergeableChanges After transaction 1`] = `
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
+        "Hc2DO@000018DKS9",
       ],
     },
   ],
@@ -3694,7 +3733,7 @@ exports[`getTransactionMergeableChanges During and after transaction 1`] = `
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
+        "Hc2DO@000018DKS9",
       ],
     },
   ],
@@ -3724,7 +3763,7 @@ exports[`getTransactionMergeableChanges During and after transaction 2`] = `
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
+        "Hc2DO@000018DKS9",
       ],
     },
   ],
@@ -3754,7 +3793,7 @@ exports[`getTransactionMergeableChanges Inside net noop transaction 1`] = `
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
+        "Hc2DO@000018DKS9",
       ],
     },
   ],
