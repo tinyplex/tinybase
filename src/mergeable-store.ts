@@ -470,6 +470,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const getTransactionMergeableChanges = (): MergeableChanges => {
     if (isUndefined(transactionMergeableChanges)) {
+      const [[tableStampMaps], [valueStampMaps]] = contentStampMap;
       const [, , changedCells, , changedValues] = store.getTransactionLog();
       const time =
         !objIsEmpty(changedCells) || !objIsEmpty(changedValues)
@@ -478,20 +479,23 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       const changes: MergeableChanges = [stampNewObj(), stampNewObj(), 1];
 
       const [[tablesObj], [valuesObj]] = changes;
-
-      objToArray(changedCells, (changedTable, tableId) => {
+      objForEach(changedCells, (changedTable, tableId) => {
+        const rowStampMaps = mapGet(tableStampMaps, tableId)?.[0];
         const [rowsObj] = (tablesObj[tableId] = stampNewObj());
-        objToArray(changedTable, (changedRow, rowId) => {
+        objForEach(changedTable, (changedRow, rowId) => {
+          const cellStampMaps = mapGet(rowStampMaps, rowId)?.[0];
           const [cellsObj] = (rowsObj[rowId] = stampNewObj());
-          objToArray(
-            changedRow,
-            ([, newCell], cellId) => (cellsObj[cellId] = [newCell, time]),
+          objForEach(changedRow, ([, newCell], cellId) =>
+            time >= (mapGet(cellStampMaps, cellId)?.[1] ?? '')
+              ? (cellsObj[cellId] = [newCell, time])
+              : 0,
           );
         });
       });
-      objToArray(
-        changedValues,
-        ([, newValue], valueId) => (valuesObj[valueId] = [newValue, time]),
+      objForEach(changedValues, ([, newValue], valueId) =>
+        time >= (mapGet(valueStampMaps, valueId)?.[1] ?? '')
+          ? (valuesObj[valueId] = [newValue, time])
+          : 0,
       );
 
       return changes;

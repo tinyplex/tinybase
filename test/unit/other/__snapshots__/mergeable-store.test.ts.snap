@@ -3346,44 +3346,7 @@ exports[`getMergeableContent Set together 1`] = `
 ]
 `;
 
-exports[`getTransactionMergeableChanges After net noop transaction 1`] = `
-[
-  [
-    {},
-  ],
-  [
-    {},
-  ],
-  1,
-]
-`;
-
-exports[`getTransactionMergeableChanges After transaction 1`] = `
-[
-  [
-    {
-      "t1": [
-        {
-          "r1": [
-            {
-              "c1": [
-                1,
-                "Hc2DO@000008DKS9",
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  [
-    {},
-  ],
-  1,
-]
-`;
-
-exports[`getTransactionMergeableChanges After two transactions 1`] = `
+exports[`getTransactionMergeableChanges After multiple transactions 1`] = `
 [
   [
     {
@@ -3408,7 +3371,7 @@ exports[`getTransactionMergeableChanges After two transactions 1`] = `
 ]
 `;
 
-exports[`getTransactionMergeableChanges After two transactions 2`] = `
+exports[`getTransactionMergeableChanges After multiple transactions 2`] = `
 [
   [
     {
@@ -3441,7 +3404,7 @@ exports[`getTransactionMergeableChanges After two transactions 2`] = `
 ]
 `;
 
-exports[`getTransactionMergeableChanges After two transactions 3`] = `
+exports[`getTransactionMergeableChanges After multiple transactions 3`] = `
 [
   [
     {
@@ -3466,7 +3429,7 @@ exports[`getTransactionMergeableChanges After two transactions 3`] = `
 ]
 `;
 
-exports[`getTransactionMergeableChanges After two transactions 4`] = `
+exports[`getTransactionMergeableChanges After multiple transactions 4`] = `
 [
   [
     {
@@ -3516,6 +3479,199 @@ exports[`getTransactionMergeableChanges After two transactions 4`] = `
 ]
 `;
 
+exports[`getTransactionMergeableChanges After multiple transactions 5`] = `
+[
+  [
+    {},
+  ],
+  [
+    {
+      "v0": [
+        0,
+        "Hc2DO@000028DKS9",
+      ],
+    },
+  ],
+  1,
+]
+`;
+
+exports[`getTransactionMergeableChanges After multiple transactions 6`] = `
+[
+  [
+    {
+      "t0": [
+        {
+          "r0": [
+            {
+              "c0": [
+                0,
+                "Hc2DO@000008DKS9",
+                2614692414,
+              ],
+            },
+            "",
+            1095422483,
+          ],
+        },
+        "",
+        221351349,
+      ],
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Hc2DO@000018DKS9",
+                3207404266,
+              ],
+            },
+            "",
+            3742876152,
+          ],
+        },
+        "",
+        2422641961,
+      ],
+    },
+    "",
+    2794407532,
+  ],
+  [
+    {
+      "v0": [
+        0,
+        "Hc2DO@000028DKS9",
+        2053295812,
+      ],
+    },
+    "",
+    1882187759,
+  ],
+]
+`;
+
+exports[`getTransactionMergeableChanges After multiple transactions 7`] = `
+[
+  [
+    {},
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Hc2DO@000038DKS9",
+      ],
+    },
+  ],
+  1,
+]
+`;
+
+exports[`getTransactionMergeableChanges After multiple transactions 8`] = `
+[
+  [
+    {
+      "t0": [
+        {
+          "r0": [
+            {
+              "c0": [
+                0,
+                "Hc2DO@000008DKS9",
+                2614692414,
+              ],
+            },
+            "",
+            1095422483,
+          ],
+        },
+        "",
+        221351349,
+      ],
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Hc2DO@000018DKS9",
+                3207404266,
+              ],
+            },
+            "",
+            3742876152,
+          ],
+        },
+        "",
+        2422641961,
+      ],
+    },
+    "",
+    2794407532,
+  ],
+  [
+    {
+      "v0": [
+        0,
+        "Hc2DO@000028DKS9",
+        2053295812,
+      ],
+      "v1": [
+        1,
+        "Hc2DO@000038DKS9",
+        952828352,
+      ],
+    },
+    "",
+    1960573623,
+  ],
+]
+`;
+
+exports[`getTransactionMergeableChanges After net noop transaction 1`] = `
+[
+  [
+    {},
+  ],
+  [
+    {},
+  ],
+  1,
+]
+`;
+
+exports[`getTransactionMergeableChanges After transaction 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Hc2DO@000008DKS9",
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Hc2DO@000008DKS9",
+      ],
+    },
+  ],
+  1,
+]
+`;
+
 exports[`getTransactionMergeableChanges During and after transaction 1`] = `
 [
   [
@@ -3535,7 +3691,12 @@ exports[`getTransactionMergeableChanges During and after transaction 1`] = `
     },
   ],
   [
-    {},
+    {
+      "v1": [
+        1,
+        "Hc2DO@000008DKS9",
+      ],
+    },
   ],
   1,
 ]
@@ -3560,7 +3721,12 @@ exports[`getTransactionMergeableChanges During and after transaction 2`] = `
     },
   ],
   [
-    {},
+    {
+      "v1": [
+        1,
+        "Hc2DO@000008DKS9",
+      ],
+    },
   ],
   1,
 ]
@@ -3585,7 +3751,12 @@ exports[`getTransactionMergeableChanges Inside net noop transaction 1`] = `
     },
   ],
   [
-    {},
+    {
+      "v1": [
+        1,
+        "Hc2DO@000008DKS9",
+      ],
+    },
   ],
   1,
 ]
