@@ -146,20 +146,20 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const mergeContentOrChanges = (
     contentOrChanges: MergeableChanges | MergeableContent,
-    isChanges: 0 | 1 = 0,
+    isContent: 0 | 1 = 0,
   ): Changes => {
     const tablesChanges = {};
     const valuesChanges = {};
     const [
       [tablesObj, incomingTablesTime = EMPTY_STRING, incomingTablesHash = 0],
       values,
-    ] = contentOrChanges as typeof isChanges extends 1
+    ] = contentOrChanges as typeof isContent extends 1
       ? MergeableContent
       : MergeableChanges;
     const [tablesStampMap, valuesStampMap] = contentStampMap;
     const [tableStampMaps, oldTablesTime, oldTablesHash] = tablesStampMap;
 
-    let tablesHash = isChanges ? incomingTablesHash : oldTablesHash;
+    let tablesHash = isContent ? incomingTablesHash : oldTablesHash;
     let tablesTime = incomingTablesTime;
     objForEach(
       tablesObj,
@@ -173,7 +173,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
           stampNewMap,
         );
         const [rowStampMaps, oldTableTime, oldTableHash] = tableStampMap;
-        let tableHash = isChanges ? incomingTableHash : oldTableHash;
+        let tableHash = isContent ? incomingTableHash : oldTableHash;
         let tableTime = incomingTableTime;
         objForEach(rowsObj, (row, rowId) => {
           const [rowTime, oldRowHash, rowHash] = mergeCellsOrValues(
@@ -188,22 +188,22 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
               rowId,
               objNew,
             ),
-            isChanges,
+            isContent,
           );
 
-          tableHash ^= isChanges
+          tableHash ^= isContent
             ? 0
             : (oldRowHash ? hashIdAndHash(rowId, oldRowHash) : 0) ^
               hashIdAndHash(rowId, rowHash);
           tableTime = getLatestTime(tableTime, rowTime);
         });
 
-        tableHash ^= isChanges
+        tableHash ^= isContent
           ? 0
           : replaceTimeHash(oldTableTime, incomingTableTime);
         stampUpdate(tableStampMap, tableHash, incomingTableTime);
 
-        tablesHash ^= isChanges
+        tablesHash ^= isContent
           ? 0
           : (oldTableHash ? hashIdAndHash(tableId, oldTableHash) : 0) ^
             hashIdAndHash(tableId, tableStampMap[2]);
@@ -211,7 +211,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       },
     );
 
-    tablesHash ^= isChanges
+    tablesHash ^= isContent
       ? 0
       : replaceTimeHash(oldTablesTime, incomingTablesTime);
     stampUpdate(tablesStampMap, tablesHash, incomingTablesTime);
@@ -220,7 +220,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       values,
       valuesStampMap,
       valuesChanges,
-      isChanges,
+      isContent,
     );
 
     seenHlc(getLatestTime(tablesTime, valuesTime));
