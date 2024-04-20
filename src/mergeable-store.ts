@@ -51,13 +51,7 @@ import {
   stampUpdate,
   stampValidate,
 } from './mergeable-store/stamps';
-import {
-  ifNotUndefined,
-  isArray,
-  isUndefined,
-  size,
-  slice,
-} from './common/other';
+import {ifNotUndefined, isArray, size, slice} from './common/other';
 import {mapEnsure, mapForEach, mapGet, mapToObj} from './common/map';
 import {Id} from './types/common';
 import {createStore} from './store';
@@ -138,7 +132,6 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   let listening = 1;
   let contentStampMap = newContentStampMap();
   let transactionTime: Time | undefined;
-  let transactionMergeableChanges: MergeableChanges | undefined;
   const [getHlc, seenHlc] = getHlcFunctions(id);
   const store = createStore();
 
@@ -290,13 +283,11 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const preFinishTransaction = () => {
     if (listening) {
-      transactionMergeableChanges = getTransactionMergeableChanges();
-      mergeContentOrChanges(transactionMergeableChanges);
+      mergeContentOrChanges(getTransactionMergeableChanges());
     }
   };
 
-  const postFinishTransaction = () =>
-    (transactionTime = transactionMergeableChanges = undefined);
+  const postFinishTransaction = () => (transactionTime = undefined);
 
   // ---
 
@@ -469,38 +460,35 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const getTransactionMergeableChanges = (): MergeableChanges => {
-    if (isUndefined(transactionMergeableChanges)) {
-      const [[tableStampMaps], [valueStampMaps]] = contentStampMap;
-      const [, , changedCells, , changedValues] = store.getTransactionLog();
-      const time =
-        !objIsEmpty(changedCells) || !objIsEmpty(changedValues)
-          ? transactionTime ?? (transactionTime = getHlc())
-          : EMPTY_STRING;
-      const changes: MergeableChanges = [stampNewObj(), stampNewObj(), 1];
+    const [[tableStampMaps], [valueStampMaps]] = contentStampMap;
+    const [, , changedCells, , changedValues] = store.getTransactionLog();
+    const time =
+      !objIsEmpty(changedCells) || !objIsEmpty(changedValues)
+        ? transactionTime ?? (transactionTime = getHlc())
+        : EMPTY_STRING;
+    const changes: MergeableChanges = [stampNewObj(), stampNewObj(), 1];
 
-      const [[tablesObj], [valuesObj]] = changes;
-      objForEach(changedCells, (changedTable, tableId) => {
-        const rowStampMaps = mapGet(tableStampMaps, tableId)?.[0];
-        const [rowsObj] = (tablesObj[tableId] = stampNewObj());
-        objForEach(changedTable, (changedRow, rowId) => {
-          const cellStampMaps = mapGet(rowStampMaps, rowId)?.[0];
-          const [cellsObj] = (rowsObj[rowId] = stampNewObj());
-          objForEach(changedRow, ([, newCell], cellId) =>
-            time >= (mapGet(cellStampMaps, cellId)?.[1] ?? '')
-              ? (cellsObj[cellId] = [newCell, time])
-              : 0,
-          );
-        });
+    const [[tablesObj], [valuesObj]] = changes;
+    objForEach(changedCells, (changedTable, tableId) => {
+      const rowStampMaps = mapGet(tableStampMaps, tableId)?.[0];
+      const [rowsObj] = (tablesObj[tableId] = stampNewObj());
+      objForEach(changedTable, (changedRow, rowId) => {
+        const cellStampMaps = mapGet(rowStampMaps, rowId)?.[0];
+        const [cellsObj] = (rowsObj[rowId] = stampNewObj());
+        objForEach(changedRow, ([, newCell], cellId) =>
+          time >= (mapGet(cellStampMaps, cellId)?.[1] ?? '')
+            ? (cellsObj[cellId] = [newCell, time])
+            : 0,
+        );
       });
-      objForEach(changedValues, ([, newValue], valueId) =>
-        time >= (mapGet(valueStampMaps, valueId)?.[1] ?? '')
-          ? (valuesObj[valueId] = [newValue, time])
-          : 0,
-      );
+    });
+    objForEach(changedValues, ([, newValue], valueId) =>
+      time >= (mapGet(valueStampMaps, valueId)?.[1] ?? '')
+        ? (valuesObj[valueId] = [newValue, time])
+        : 0,
+    );
 
-      return changes;
-    }
-    return transactionMergeableChanges;
+    return changes;
   };
 
   const applyMergeableChanges = (
