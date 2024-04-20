@@ -618,12 +618,13 @@ describe.each([
       describe('tracking messages', () => {
         test('new tables, new table, new row, new cell; then all', async () => {
           if (environment && environment[1]) {
+            environment[1].clear();
             store1.setTables({t1: {r1: {c1: 1}}});
             await pause(synchronizable.pauseMilliseconds, true);
             expect(environment[1]).toMatchSnapshot();
             await expectEachToHaveContent([{t1: {r1: {c1: 1}}}, {}]);
-            environment[1].clear();
 
+            environment[1].clear();
             store1.setTables({t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}});
             await pause(synchronizable.pauseMilliseconds, true);
             await expectEachToHaveContent([
@@ -631,8 +632,8 @@ describe.each([
               {},
             ]);
             expect(environment[1]).toMatchSnapshot();
-            environment[1].clear();
 
+            environment[1].clear();
             store1.setTables({
               t1: {r1: {c1: 1}, r2: {c2: 2}},
               t2: {r2: {c2: 2}},
@@ -643,8 +644,8 @@ describe.each([
               {},
             ]);
             expect(environment[1]).toMatchSnapshot();
-            environment[1].clear();
 
+            environment[1].clear();
             store1.setTables({
               t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
               t2: {r2: {c2: 2}},
@@ -655,8 +656,8 @@ describe.each([
               {},
             ]);
             expect(environment[1]).toMatchSnapshot();
-            environment[1].clear();
 
+            environment[1].clear();
             store1.setTables({
               t1: {r1: {c1: 1, c2: 2, c3: 3}, r2: {c2: 2}, r3: {c3: 3}},
               t2: {r2: {c2: 2}},
@@ -672,16 +673,16 @@ describe.each([
               {},
             ]);
             expect(environment[1]).toMatchSnapshot();
-            environment[1].clear();
           }
         });
 
         test('single value', async () => {
           if (environment && environment[1]) {
+            environment[1].clear();
             store1.setValue('v1', 1);
             await pause(synchronizable.pauseMilliseconds, true);
-            await expectEachToHaveContent([{}, {v1: 1}]);
             expect(environment[1]).toMatchSnapshot();
+            await expectEachToHaveContent([{}, {v1: 1}]);
           }
         });
       });
