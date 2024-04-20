@@ -38,34 +38,34 @@ test('Protocol basics', () => {
   expect(store2.getMergeableContent()).toMatchSnapshot();
 
   expect(store1.getMergeableContentHashes()).toEqual([3689956797, 0]);
-  expect(store2.getMergeableContentHashes()).toEqual([4033545870, 0]);
+  expect(store2.getMergeableContentHashes()).toEqual([3498589694, 0]);
 
   expect(store1.getMergeableTableHashes()).toEqual({t1: 608074644});
   expect(store2.getMergeableTableHashes()).toEqual({
-    t1: 2334022845,
-    t2: 527507176,
-  });
-
-  expect(store1.getMergeableTableDiff({t1: 2334022845, t2: 527507176})).toEqual(
-    [[{}], {t1: 608074644}],
-  );
-  expect(store2.getMergeableTableDiff({t1: 608074644})).toEqual([
-    [{t2: [{r2: [{c2: [2, 'Hc2DO@000005DK@@']}]}]}],
-    {t1: 2334022845},
-  ]);
-
-  expect(store1.getMergeableRowHashes({t1: 2334022845})).toEqual({
-    t1: {r1: 3278308926},
-  });
-  expect(store2.getMergeableRowHashes({t1: 608074644})).toEqual({
-    t1: {r1: 478205993, r2: 478205993},
+    t1: 2691149289,
+    t2: 4292512243,
   });
 
   expect(
-    store1.getMergeableRowDiff({t1: {r1: 478205993, r2: 478205993}}),
+    store1.getMergeableTableDiff({t1: 2691149289, t2: 4292512243}),
+  ).toEqual([[{}], {t1: 608074644}]);
+  expect(store2.getMergeableTableDiff({t1: 608074644})).toEqual([
+    [{t2: [{r2: [{c2: [2, 'Hc2DO@000025DK@@']}]}]}],
+    {t1: 2691149289},
+  ]);
+
+  expect(store1.getMergeableRowHashes({t1: 2691149289})).toEqual({
+    t1: {r1: 3278308926},
+  });
+  expect(store2.getMergeableRowHashes({t1: 608074644})).toEqual({
+    t1: {r1: 478205993, r2: 3088830063},
+  });
+
+  expect(
+    store1.getMergeableRowDiff({t1: {r1: 478205993, r2: 3088830063}}),
   ).toEqual([[{}], {t1: {r1: 3278308926}}]);
   expect(store2.getMergeableRowDiff({t1: {r1: 3278308926}})).toEqual([
-    [{t1: [{r2: [{c2: [2, 'Hc2DO@000005DK@@']}]}]}],
+    [{t1: [{r2: [{c2: [2, 'Hc2DO@000015DK@@']}]}]}],
     {t1: {r1: 478205993}},
   ]);
 
@@ -530,7 +530,7 @@ describe('getTransactionMergeableChanges', () => {
   });
 });
 
-describe('apply/setMergeableContent', () => {
+describe('applyMergeableChanges/setMergeableContent', () => {
   let store: MergeableStore;
 
   beforeEach(() => {
@@ -581,6 +581,12 @@ describe('apply/setMergeableContent', () => {
       [{v1: [1, 'Hc2DO@000008DKS9', 4065945599]}, '', 2304392760],
     ] as MergeableContent);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(store.getMergeableContent()).toMatchSnapshot();
+  });
+
+  test('set default', () => {
+    store.setDefaultContent([{t0: {r0: {c0: 0}}}, {v0: 0}]);
+    expect(store.getContent()).toEqual([{t0: {r0: {c0: 0}}}, {v0: 0}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
   });
 
