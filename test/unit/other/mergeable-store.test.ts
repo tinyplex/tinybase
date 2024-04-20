@@ -482,9 +482,9 @@ describe('getTransactionMergeableChanges', () => {
 
   test('Inside net noop transaction', () => {
     store.startTransaction();
-    store.setCell('t1', 'r1', 'c1', 1);
+    store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
     expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
-    store.delCell('t1', 'r1', 'c1');
+    store.delCell('t1', 'r1', 'c1').delValue('v1');
     expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     store.finishTransaction();
   });
@@ -494,8 +494,8 @@ describe('getTransactionMergeableChanges', () => {
       expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     });
     store.startTransaction();
-    store.setCell('t1', 'r1', 'c1', 1);
-    store.delCell('t1', 'r1', 'c1');
+    store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
+    store.delCell('t1', 'r1', 'c1').delValue('v1');
     store.finishTransaction();
   });
 
@@ -504,7 +504,7 @@ describe('getTransactionMergeableChanges', () => {
       expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     });
     store.startTransaction();
-    store.setCell('t1', 'r1', 'c1', 1);
+    store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
     store.finishTransaction();
   });
 
@@ -513,18 +513,20 @@ describe('getTransactionMergeableChanges', () => {
       expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     });
     store.startTransaction();
-    store.setCell('t1', 'r1', 'c1', 1);
+    store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
     expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     store.finishTransaction();
   });
 
-  test('After two transactions', () => {
+  test('After multiple transactions', () => {
     store.addDidFinishTransactionListener(() => {
       expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
       expect(store.getMergeableContent()).toMatchSnapshot();
     });
     store.setCell('t0', 'r0', 'c0', 0);
     store.setCell('t1', 'r1', 'c1', 1);
+    store.setValue('v0', 0);
+    store.setValue('v1', 1);
   });
 });
 
