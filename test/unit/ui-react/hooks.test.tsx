@@ -596,7 +596,7 @@ describe('Create Hooks', () => {
       renderer = create(<Test id={1} />);
     });
     await act(async () => {
-      await pause();
+      await pause(100);
     });
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([1, {loads: 0, saves: 0}, null]),
@@ -611,7 +611,7 @@ describe('Create Hooks', () => {
       renderer.update(<Test id={2} />);
     });
     await act(async () => {
-      await pause();
+      await pause(100);
     });
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([2, {loads: 0, saves: 0}, 1]),
@@ -657,7 +657,7 @@ describe('Create Hooks', () => {
       renderer = create(<Test id={1} />);
     });
     await act(async () => {
-      await pause();
+      await pause(100);
     });
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([1, {loads: 1, saves: 0}]),
@@ -666,7 +666,7 @@ describe('Create Hooks', () => {
       renderer.update(<Test id={2} />);
     });
     await act(async () => {
-      await pause();
+      await pause(100);
     });
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([2, {loads: 1, saves: 0}]),
@@ -712,7 +712,7 @@ describe('Create Hooks', () => {
       renderer = create(<Test id={1} />);
     });
     await act(async () => {
-      await pause();
+      await pause(100);
     });
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([1, {loads: 1, saves: 0}]),
@@ -721,7 +721,7 @@ describe('Create Hooks', () => {
       renderer.update(<Test id={2} />);
     });
     await act(async () => {
-      await pause();
+      await pause(100);
     });
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([2, {loads: 1, saves: 0}]),
