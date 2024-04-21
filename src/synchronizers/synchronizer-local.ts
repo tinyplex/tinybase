@@ -21,18 +21,22 @@ export const createLocalSynchronizer = ((
     messageType: MessageType,
     messageBody: any,
   ): void => {
-    isUndefined(toClientId)
-      ? mapForEach(clients, (otherClientId, receive) =>
-          otherClientId != clientId
-            ? receive(clientId, requestId, messageType, messageBody)
-            : 0,
-        )
-      : mapGet(clients, toClientId)?.(
-          clientId,
-          requestId,
-          messageType,
-          messageBody,
-        );
+    setTimeout(
+      () =>
+        isUndefined(toClientId)
+          ? mapForEach(clients, (otherClientId, receive) =>
+              otherClientId != clientId
+                ? receive(clientId, requestId, messageType, messageBody)
+                : 0,
+            )
+          : mapGet(clients, toClientId)?.(
+              clientId,
+              requestId,
+              messageType,
+              messageBody,
+            ),
+      0,
+    );
   };
 
   const onReceive = (receive: Receive): void => {
@@ -48,7 +52,7 @@ export const createLocalSynchronizer = ((
     send,
     onReceive,
     destroy,
-    0.001,
+    0.05,
     onIgnoredError,
   );
 }) as typeof createLocalSynchronizerDecl;
