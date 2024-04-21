@@ -234,12 +234,12 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const mergeCellsOrValues = <Thing extends CellOrUndefined | ValueOrUndefined>(
-    things: typeof isChanges extends 1
+    things: typeof isContent extends 1
       ? Stamp<IdObj<Stamp<Thing, true>>, true>
       : Stamp<IdObj<Stamp<Thing>>>,
     thingsStampMap: StampMap<Stamp<Thing, true>>,
     thingsChanges: {[thingId: Id]: Thing},
-    isChanges: 0 | 1,
+    isContent: 0 | 1,
   ): [thingsTime: Time, oldThingsHash: number, newThingsHash: number] => {
     const [
       thingsObj,
@@ -249,7 +249,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     const [thingStampMaps, oldThingsTime, oldThingsHash] = thingsStampMap;
 
     let thingsTime = incomingThingsTime;
-    let thingsHash = isChanges ? incomingThingsHash : oldThingsHash;
+    let thingsHash = isContent ? incomingThingsHash : oldThingsHash;
 
     objForEach(
       thingsObj,
@@ -264,14 +264,14 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
         if (!oldThingTime || thingTime! > oldThingTime) {
           stampUpdate(
             thingStampMap,
-            isChanges
+            isContent
               ? incomingThingHash
               : getHash(jsonStringWithMap(thing ?? null) + ':' + thingTime),
             thingTime!,
           );
           thingStampMap[0] = thing;
           thingsChanges[thingId] = thing;
-          thingsHash ^= isChanges
+          thingsHash ^= isContent
             ? 0
             : hashIdAndHash(thingId, oldThingHash) ^
               hashIdAndHash(thingId, thingStampMap[2]);
@@ -280,7 +280,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
       },
     );
 
-    thingsHash ^= isChanges
+    thingsHash ^= isContent
       ? 0
       : replaceTimeHash(oldThingsTime, incomingThingsTime);
     stampUpdate(thingsStampMap, thingsHash, incomingThingsTime);
