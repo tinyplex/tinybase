@@ -45,7 +45,7 @@ type Synchronizable<Environment> = {
 const mockLocalSynchronizer: Synchronizable<undefined> = {
   getSynchronizer: async (store: MergeableStore) =>
     createLocalSynchronizer(store),
-  pauseMilliseconds: 2,
+  pauseMilliseconds: 50,
 };
 
 const mockWsSynchronizer: Synchronizable<WsServer> = {
