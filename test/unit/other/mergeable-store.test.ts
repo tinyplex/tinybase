@@ -487,6 +487,7 @@ describe('getTransactionMergeableChanges', () => {
     store.delCell('t1', 'r1', 'c1').delValue('v1');
     expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     store.finishTransaction();
+    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
   });
 
   test('After net noop transaction', () => {
@@ -497,6 +498,7 @@ describe('getTransactionMergeableChanges', () => {
     store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
     store.delCell('t1', 'r1', 'c1').delValue('v1');
     store.finishTransaction();
+    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
   });
 
   test('After transaction', () => {
@@ -506,6 +508,7 @@ describe('getTransactionMergeableChanges', () => {
     store.startTransaction();
     store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
     store.finishTransaction();
+    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
   });
 
   test('During and after transaction', () => {
@@ -516,6 +519,7 @@ describe('getTransactionMergeableChanges', () => {
     store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
     expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
     store.finishTransaction();
+    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
   });
 
   test('After multiple transactions', () => {
@@ -527,6 +531,7 @@ describe('getTransactionMergeableChanges', () => {
     store.setCell('t1', 'r1', 'c1', 1);
     store.setValue('v0', 0);
     store.setValue('v1', 1);
+    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
   });
 });
 
