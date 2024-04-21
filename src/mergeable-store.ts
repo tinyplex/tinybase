@@ -5,8 +5,10 @@ import {
   MergeableContent,
   MergeableStore,
   RowHashes,
+  RowStamp,
   Stamp,
   TableHashes,
+  TableStamp,
   TablesStamp,
   Time,
   ValuesHashes,
@@ -31,6 +33,7 @@ import {
   objToArray,
   objValidate,
 } from './common/obj';
+import {IdSet, IdSet3, setAdd, setNew} from './common/set';
 import {
   RowStampMap,
   StampMap,
@@ -50,8 +53,9 @@ import {
   stampUpdate,
   stampValidate,
 } from './mergeable-store/stamps';
+import {collClear, collForEach} from './common/coll';
 import {ifNotUndefined, isArray, size, slice} from './common/other';
-import {mapEnsure, mapForEach, mapGet, mapToObj} from './common/map';
+import {mapEnsure, mapForEach, mapGet, mapNew, mapToObj} from './common/map';
 import {Id} from './types/common';
 import {createStore} from './store';
 import {getHash} from './mergeable-store/hash';
@@ -131,6 +135,8 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   let listeningToRawStoreChanges = 1;
   let contentStampMap = newContentStampMap();
   let defaultingContent: 0 | 1 = 0;
+  const touchedCells: IdSet3 = mapNew();
+  const touchedValues: IdSet = setNew();
   const [getHlc, seenHlc] = getHlcFunctions(id);
   const store = createStore();
 
@@ -286,7 +292,10 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
 
   const preFinishTransaction = () => {};
 
-  const postFinishTransaction = () => {};
+  const postFinishTransaction = () => {
+    collClear(touchedCells);
+    collClear(touchedValues);
+  };
 
   const cellChanged = (
     tableId: Id,
@@ -294,6 +303,14 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
     cellId: Id,
     newCell: CellOrUndefined,
   ) => {
+    setAdd(
+      mapEnsure(
+        mapEnsure(touchedCells, tableId, mapNew<Id, IdSet>),
+        rowId,
+        setNew<Id>,
+      ),
+      cellId,
+    );
     if (listeningToRawStoreChanges) {
       mergeContentOrChanges([
         [
@@ -319,6 +336,7 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const valueChanged = (valueId: Id, newValue: ValueOrUndefined) => {
+    setAdd(touchedValues, valueId);
     if (listeningToRawStoreChanges) {
       mergeContentOrChanges([
         [{}],
@@ -502,37 +520,48 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const getTransactionMergeableChanges = (): MergeableChanges => {
-    const [[tableStampMaps], [valueStampMaps]] = contentStampMap;
-    const [, , changedCells, , changedValues] = store.getTransactionLog();
-    const changes: MergeableChanges = [stampNewObj(), stampNewObj(), 1];
+    const [[tableStampMaps, tablesTime], [valueStampMaps, valuesTime]] =
+      contentStampMap;
 
-    const [[tablesObj], [valuesObj]] = changes;
-    objForEach(changedCells, (changedTable, tableId) => {
-      const rowStampMaps = mapGet(tableStampMaps, tableId)?.[0];
-      const [rowsObj] = (tablesObj[tableId] = stampNewObj());
-      objForEach(changedTable, (changedRow, rowId) => {
-        const cellStampMaps = mapGet(rowStampMaps, rowId)?.[0];
-        const [cellsObj] = (rowsObj[rowId] = stampNewObj());
-        objForEach(
-          changedRow,
-          ([, newCell], cellId) =>
-            (cellsObj[cellId] = newStamp(
-              newCell,
-              mapGet(cellStampMaps, cellId)?.[1],
-            )),
-        );
-      });
-    });
-    objForEach(
-      changedValues,
-      ([, newValue], valueId) =>
-        (valuesObj[valueId] = newStamp(
-          newValue,
-          mapGet(valueStampMaps, valueId)?.[1],
-        )),
+    const tablesObj: TablesStamp[0] = {};
+    collForEach(touchedCells, (touchedTable, tableId) =>
+      ifNotUndefined(
+        mapGet(tableStampMaps, tableId),
+        ([rowStampMaps, tableTime]) => {
+          const tableObj: TableStamp[0] = {};
+          collForEach(touchedTable, (touchedRow, rowId) =>
+            ifNotUndefined(
+              mapGet(rowStampMaps, rowId),
+              ([cellStampMaps, rowTime]) => {
+                const rowObj: RowStamp[0] = {};
+                collForEach(touchedRow, (cellId) => {
+                  ifNotUndefined(
+                    mapGet(cellStampMaps, cellId),
+                    ([cell, time]) => (rowObj[cellId] = newStamp(cell, time)),
+                  );
+                });
+                tableObj[rowId] = newStamp(rowObj, rowTime);
+              },
+            ),
+          );
+          tablesObj[tableId] = newStamp(tableObj, tableTime);
+        },
+      ),
     );
 
-    return changes;
+    const valuesObj: ValuesStamp[0] = {};
+    collForEach(touchedValues, (valueId) =>
+      ifNotUndefined(
+        mapGet(valueStampMaps, valueId),
+        ([value, time]) => (valuesObj[valueId] = newStamp(value, time)),
+      ),
+    );
+
+    return [
+      newStamp(tablesObj, tablesTime),
+      newStamp(valuesObj, valuesTime),
+      1,
+    ];
   };
 
   const applyMergeableChanges = (
