@@ -378,20 +378,20 @@ exports[`Persists to/from customSynchronizer autoSaves: delCell 1`] = `
               ],
               "c2": [
                 undefined,
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOC800008DKS9",
+                144954366,
               ],
             },
             "",
-            1733027174,
+            1386578850,
           ],
         },
         "",
-        1843299373,
+        52583769,
       ],
     },
     "",
-    3147506727,
+    932979697,
   ],
   [
     {
@@ -402,12 +402,12 @@ exports[`Persists to/from customSynchronizer autoSaves: delCell 1`] = `
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DOAT00008DKS9",
+        3238529287,
       ],
     },
     "",
-    3246781976,
+    2654901867,
   ],
 ]
 `;
@@ -427,20 +427,20 @@ exports[`Persists to/from customSynchronizer autoSaves: delValue 1`] = `
               ],
               "c2": [
                 undefined,
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOC800008DKS9",
+                144954366,
               ],
             },
             "",
-            1733027174,
+            1386578850,
           ],
         },
         "",
-        1843299373,
+        52583769,
       ],
     },
     "",
-    3147506727,
+    932979697,
   ],
   [
     {
@@ -451,12 +451,12 @@ exports[`Persists to/from customSynchronizer autoSaves: delValue 1`] = `
       ],
       "v2": [
         undefined,
-        "Hc2DO@N00008DKS9",
-        4289078209,
+        "Hc2DOD\\00008DKS9",
+        3435431839,
       ],
     },
     "",
-    2439424877,
+    2322087015,
   ],
 ]
 `;
@@ -559,12 +559,12 @@ exports[`Persists to/from customSynchronizer autoSaves: setValues 1`] = `
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DOAT00008DKS9",
+        3238529287,
       ],
     },
     "",
-    3246781976,
+    2654901867,
   ],
 ]
 `;
@@ -1106,20 +1106,20 @@ exports[`Persists to/from file autoSaves: delCell 1`] = `
               ],
               "c2": [
                 "￼",
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOF@00008DKS9",
+                1192138781,
               ],
             },
             "",
-            1733027174,
+            3310464097,
           ],
         },
         "",
-        1843299373,
+        3515591663,
       ],
     },
     "",
-    3147506727,
+    2574369580,
   ],
   [
     {
@@ -1130,12 +1130,12 @@ exports[`Persists to/from file autoSaves: delCell 1`] = `
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DOC800008DKS9",
+        509480149,
       ],
     },
     "",
-    3246781976,
+    3243196490,
   ],
 ]
 `;
@@ -1155,20 +1155,20 @@ exports[`Persists to/from file autoSaves: delValue 1`] = `
               ],
               "c2": [
                 "￼",
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOF@00008DKS9",
+                1192138781,
               ],
             },
             "",
-            1733027174,
+            3310464097,
           ],
         },
         "",
-        1843299373,
+        3515591663,
       ],
     },
     "",
-    3147506727,
+    2574369580,
   ],
   [
     {
@@ -1179,12 +1179,12 @@ exports[`Persists to/from file autoSaves: delValue 1`] = `
       ],
       "v2": [
         "￼",
-        "Hc2DO@N00008DKS9",
-        4289078209,
+        "Hc2DOIH00008DKS9",
+        4266814420,
       ],
     },
     "",
-    2439424877,
+    979529979,
   ],
 ]
 `;
@@ -1311,12 +1311,12 @@ exports[`Persists to/from file autoSaves: setValues 1`] = `
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DOC800008DKS9",
+        509480149,
       ],
     },
     "",
-    3246781976,
+    3243196490,
   ],
 ]
 `;
@@ -1816,20 +1816,20 @@ exports[`Persists to/from localStorage autoSaves: delCell 1`] = `
               ],
               "c2": [
                 "￼",
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOAT00008DKS9",
+                4230286480,
               ],
             },
             "",
-            1733027174,
+            1065170459,
           ],
         },
         "",
-        1843299373,
+        2627134724,
       ],
     },
     "",
-    3147506727,
+    4007988216,
   ],
   [
     {
@@ -1840,12 +1840,12 @@ exports[`Persists to/from localStorage autoSaves: delCell 1`] = `
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DO@b00008DKS9",
+        28162626,
       ],
     },
     "",
-    3246781976,
+    1174160861,
   ],
 ]
 `;
@@ -1865,20 +1865,20 @@ exports[`Persists to/from localStorage autoSaves: delValue 1`] = `
               ],
               "c2": [
                 "￼",
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOAT00008DKS9",
+                4230286480,
               ],
             },
             "",
-            1733027174,
+            1065170459,
           ],
         },
         "",
-        1843299373,
+        2627134724,
       ],
     },
     "",
-    3147506727,
+    4007988216,
   ],
   [
     {
@@ -1889,12 +1889,12 @@ exports[`Persists to/from localStorage autoSaves: delValue 1`] = `
       ],
       "v2": [
         "￼",
-        "Hc2DO@N00008DKS9",
-        4289078209,
+        "Hc2DOBF00008DKS9",
+        4057189127,
       ],
     },
     "",
-    2439424877,
+    2665377528,
   ],
 ]
 `;
@@ -2021,12 +2021,12 @@ exports[`Persists to/from localStorage autoSaves: setValues 1`] = `
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DO@b00008DKS9",
+        28162626,
       ],
     },
     "",
-    3246781976,
+    1174160861,
   ],
 ]
 `;
@@ -2526,20 +2526,20 @@ exports[`Persists to/from localSynchronizer autoSaves: delCell 1`] = `
               ],
               "c2": [
                 undefined,
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOAT00008DKS9",
+                4230286480,
               ],
             },
             "",
-            1733027174,
+            1065170459,
           ],
         },
         "",
-        1843299373,
+        2627134724,
       ],
     },
     "",
-    3147506727,
+    4007988216,
   ],
   [
     {
@@ -2550,12 +2550,12 @@ exports[`Persists to/from localSynchronizer autoSaves: delCell 1`] = `
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DO@b00008DKS9",
+        28162626,
       ],
     },
     "",
-    3246781976,
+    1174160861,
   ],
 ]
 `;
@@ -2575,20 +2575,20 @@ exports[`Persists to/from localSynchronizer autoSaves: delValue 1`] = `
               ],
               "c2": [
                 undefined,
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOAT00008DKS9",
+                4230286480,
               ],
             },
             "",
-            1733027174,
+            1065170459,
           ],
         },
         "",
-        1843299373,
+        2627134724,
       ],
     },
     "",
-    3147506727,
+    4007988216,
   ],
   [
     {
@@ -2599,12 +2599,12 @@ exports[`Persists to/from localSynchronizer autoSaves: delValue 1`] = `
       ],
       "v2": [
         undefined,
-        "Hc2DO@N00008DKS9",
-        4289078209,
+        "Hc2DOBF00008DKS9",
+        4057189127,
       ],
     },
     "",
-    2439424877,
+    2665377528,
   ],
 ]
 `;
@@ -2707,12 +2707,12 @@ exports[`Persists to/from localSynchronizer autoSaves: setValues 1`] = `
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DO@b00008DKS9",
+        28162626,
       ],
     },
     "",
-    3246781976,
+    1174160861,
   ],
 ]
 `;
@@ -3188,20 +3188,20 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delCell 1`] = 
               ],
               "c2": [
                 ,
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOC800008DKS9",
+                144954366,
               ],
             },
             "",
-            1733027174,
+            1386578850,
           ],
         },
         "",
-        1843299373,
+        52583769,
       ],
     },
     "",
-    3147506727,
+    932979697,
   ],
   [
     {
@@ -3212,12 +3212,12 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delCell 1`] = 
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DOAT00008DKS9",
+        3238529287,
       ],
     },
     "",
-    3246781976,
+    2654901867,
   ],
 ]
 `;
@@ -3232,7 +3232,7 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delCell change
             {
               "c2": [
                 undefined,
-                "Hc2DO@D00008DKS9",
+                "Hc2DOC800008DKS9",
               ],
             },
           ],
@@ -3262,20 +3262,20 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delValue 1`] =
               ],
               "c2": [
                 ,
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOC800008DKS9",
+                144954366,
               ],
             },
             "",
-            1733027174,
+            1386578850,
           ],
         },
         "",
-        1843299373,
+        52583769,
       ],
     },
     "",
-    3147506727,
+    932979697,
   ],
   [
     {
@@ -3286,12 +3286,12 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delValue 1`] =
       ],
       "v2": [
         ,
-        "Hc2DO@N00008DKS9",
-        4289078209,
+        "Hc2DOD\\00008DKS9",
+        3435431839,
       ],
     },
     "",
-    2439424877,
+    2322087015,
   ],
 ]
 `;
@@ -3305,7 +3305,7 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delValue chang
     {
       "v2": [
         undefined,
-        "Hc2DO@N00008DKS9",
+        "Hc2DOD\\00008DKS9",
       ],
     },
   ],
@@ -3460,12 +3460,12 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: setValues 1`] 
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DOAT00008DKS9",
+        3238529287,
       ],
     },
     "",
-    3246781976,
+    2654901867,
   ],
 ]
 `;
@@ -3479,7 +3479,7 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: setValues chan
     {
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
+        "Hc2DOAT00008DKS9",
       ],
     },
   ],
@@ -3982,20 +3982,20 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delCell 1`] = 
               ],
               "c2": [
                 ,
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOC800008DKS9",
+                144954366,
               ],
             },
             "",
-            1733027174,
+            1386578850,
           ],
         },
         "",
-        1843299373,
+        52583769,
       ],
     },
     "",
-    3147506727,
+    932979697,
   ],
   [
     {
@@ -4006,12 +4006,12 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delCell 1`] = 
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DOAT00008DKS9",
+        3238529287,
       ],
     },
     "",
-    3246781976,
+    2654901867,
   ],
 ]
 `;
@@ -4026,7 +4026,7 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delCell change
             {
               "c2": [
                 undefined,
-                "Hc2DO@D00008DKS9",
+                "Hc2DOC800008DKS9",
               ],
             },
           ],
@@ -4056,20 +4056,20 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delValue 1`] =
               ],
               "c2": [
                 ,
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOC800008DKS9",
+                144954366,
               ],
             },
             "",
-            1733027174,
+            1386578850,
           ],
         },
         "",
-        1843299373,
+        52583769,
       ],
     },
     "",
-    3147506727,
+    932979697,
   ],
   [
     {
@@ -4080,12 +4080,12 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delValue 1`] =
       ],
       "v2": [
         ,
-        "Hc2DO@N00008DKS9",
-        4289078209,
+        "Hc2DOD\\00008DKS9",
+        3435431839,
       ],
     },
     "",
-    2439424877,
+    2322087015,
   ],
 ]
 `;
@@ -4099,7 +4099,7 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delValue chang
     {
       "v2": [
         undefined,
-        "Hc2DO@N00008DKS9",
+        "Hc2DOD\\00008DKS9",
       ],
     },
   ],
@@ -4254,12 +4254,12 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: setValues 1`] 
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DOAT00008DKS9",
+        3238529287,
       ],
     },
     "",
-    3246781976,
+    2654901867,
   ],
 ]
 `;
@@ -4273,7 +4273,7 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: setValues chan
     {
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
+        "Hc2DOAT00008DKS9",
       ],
     },
   ],
@@ -4776,20 +4776,20 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delCell 1`] 
               ],
               "c2": [
                 ,
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOC800008DKS9",
+                144954366,
               ],
             },
             "",
-            1733027174,
+            1386578850,
           ],
         },
         "",
-        1843299373,
+        52583769,
       ],
     },
     "",
-    3147506727,
+    932979697,
   ],
   [
     {
@@ -4800,12 +4800,12 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delCell 1`] 
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DOAT00008DKS9",
+        3238529287,
       ],
     },
     "",
-    3246781976,
+    2654901867,
   ],
 ]
 `;
@@ -4820,7 +4820,7 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delCell chan
             {
               "c2": [
                 undefined,
-                "Hc2DO@D00008DKS9",
+                "Hc2DOC800008DKS9",
               ],
             },
           ],
@@ -4850,20 +4850,20 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delValue 1`]
               ],
               "c2": [
                 ,
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOC800008DKS9",
+                144954366,
               ],
             },
             "",
-            1733027174,
+            1386578850,
           ],
         },
         "",
-        1843299373,
+        52583769,
       ],
     },
     "",
-    3147506727,
+    932979697,
   ],
   [
     {
@@ -4874,12 +4874,12 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delValue 1`]
       ],
       "v2": [
         ,
-        "Hc2DO@N00008DKS9",
-        4289078209,
+        "Hc2DOD\\00008DKS9",
+        3435431839,
       ],
     },
     "",
-    2439424877,
+    2322087015,
   ],
 ]
 `;
@@ -4893,7 +4893,7 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delValue cha
     {
       "v2": [
         undefined,
-        "Hc2DO@N00008DKS9",
+        "Hc2DOD\\00008DKS9",
       ],
     },
   ],
@@ -5048,12 +5048,12 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: setValues 1`
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DOAT00008DKS9",
+        3238529287,
       ],
     },
     "",
-    3246781976,
+    2654901867,
   ],
 ]
 `;
@@ -5067,7 +5067,7 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: setValues ch
     {
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
+        "Hc2DOAT00008DKS9",
       ],
     },
   ],
@@ -5570,20 +5570,20 @@ exports[`Persists to/from sessionStorage autoSaves: delCell 1`] = `
               ],
               "c2": [
                 "￼",
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOAT00008DKS9",
+                4230286480,
               ],
             },
             "",
-            1733027174,
+            1065170459,
           ],
         },
         "",
-        1843299373,
+        2627134724,
       ],
     },
     "",
-    3147506727,
+    4007988216,
   ],
   [
     {
@@ -5594,12 +5594,12 @@ exports[`Persists to/from sessionStorage autoSaves: delCell 1`] = `
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DO@b00008DKS9",
+        28162626,
       ],
     },
     "",
-    3246781976,
+    1174160861,
   ],
 ]
 `;
@@ -5619,20 +5619,20 @@ exports[`Persists to/from sessionStorage autoSaves: delValue 1`] = `
               ],
               "c2": [
                 "￼",
-                "Hc2DO@D00008DKS9",
-                4253032043,
+                "Hc2DOAT00008DKS9",
+                4230286480,
               ],
             },
             "",
-            1733027174,
+            1065170459,
           ],
         },
         "",
-        1843299373,
+        2627134724,
       ],
     },
     "",
-    3147506727,
+    4007988216,
   ],
   [
     {
@@ -5643,12 +5643,12 @@ exports[`Persists to/from sessionStorage autoSaves: delValue 1`] = `
       ],
       "v2": [
         "￼",
-        "Hc2DO@N00008DKS9",
-        4289078209,
+        "Hc2DOBF00008DKS9",
+        4057189127,
       ],
     },
     "",
-    2439424877,
+    2665377528,
   ],
 ]
 `;
@@ -5775,12 +5775,12 @@ exports[`Persists to/from sessionStorage autoSaves: setValues 1`] = `
       ],
       "v2": [
         2,
-        "Hc2DO@:00008DKS9",
-        2578009034,
+        "Hc2DO@b00008DKS9",
+        28162626,
       ],
     },
     "",
-    3246781976,
+    1174160861,
   ],
 ]
 `;

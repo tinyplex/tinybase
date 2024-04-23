@@ -320,20 +320,22 @@ const createCustomLocalSynchronizer = (
   return createCustomSynchronizer(
     store,
     (toClientId, requestId, messageType, messageBody): void => {
-      if (toClientId == null) {
-        clients.forEach((receive, otherClientId) =>
-          otherClientId != clientId
-            ? receive(clientId, requestId, messageType, messageBody)
-            : 0,
-        );
-      } else {
-        clients.get(toClientId)?.(
-          clientId,
-          requestId,
-          messageType,
-          messageBody,
-        );
-      }
+      setTimeout(() => {
+        if (toClientId == null) {
+          clients.forEach((receive, otherClientId) =>
+            otherClientId != clientId
+              ? receive(clientId, requestId, messageType, messageBody)
+              : 0,
+          );
+        } else {
+          clients.get(toClientId)?.(
+            clientId,
+            requestId,
+            messageType,
+            messageBody,
+          );
+        }
+      }, 0);
     },
     (receive: Receive): void => {
       clients.set(clientId, receive);
@@ -341,14 +343,14 @@ const createCustomLocalSynchronizer = (
     (): void => {
       clients.delete(clientId);
     },
-    0.001,
+    0.05,
   );
 };
 
 export const mockCustomSynchronizer: Persistable<
   [Map<string, Receive>, Synchronizer, MergeableStore]
 > = {
-  autoLoadPause: 1,
+  autoLoadPause: 100,
   getLocation: async (): Promise<
     [Map<string, Receive>, Synchronizer, MergeableStore]
   > => {

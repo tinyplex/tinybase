@@ -72,32 +72,36 @@ const mockCustomSynchronizer: Synchronizable<
     return createCustomSynchronizer(
       store,
       (toClientId, requestId, messageType, messageBody): void => {
-        const requestKey =
-          requestId == null ? 'push ' + messages.size : requestId;
-        if (!messages.has(requestKey)) {
-          messages.set(requestKey, []);
-        }
-        messages
-          .get(requestKey)!
-          .push(
-            `${clientId}→${toClientId ?? 'all'} ${messageTypes[messageType]} ` +
-              JSON.stringify(messageBody),
-          );
+        setTimeout(() => {
+          const requestKey =
+            requestId == null ? 'push ' + messages.size : requestId;
+          if (!messages.has(requestKey)) {
+            messages.set(requestKey, []);
+          }
+          messages
+            .get(requestKey)!
+            .push(
+              `${clientId}→${toClientId ?? 'all'} ` +
+                messageTypes[messageType] +
+                ' ' +
+                JSON.stringify(messageBody),
+            );
 
-        if (toClientId == null) {
-          clients.forEach((receive, otherClientId) =>
-            otherClientId != clientId
-              ? receive(clientId, requestId, messageType, messageBody)
-              : 0,
-          );
-        } else {
-          clients.get(toClientId)?.(
-            clientId,
-            requestId,
-            messageType,
-            messageBody,
-          );
-        }
+          if (toClientId == null) {
+            clients.forEach((receive, otherClientId) =>
+              otherClientId != clientId
+                ? receive(clientId, requestId, messageType, messageBody)
+                : 0,
+            );
+          } else {
+            clients.get(toClientId)?.(
+              clientId,
+              requestId,
+              messageType,
+              messageBody,
+            );
+          }
+        }, 0);
       },
       (receive: Receive): void => {
         clients.set(clientId, receive);
@@ -105,10 +109,10 @@ const mockCustomSynchronizer: Synchronizable<
       (): void => {
         clients.delete(clientId);
       },
-      0.001,
+      0.05,
     );
   },
-  pauseMilliseconds: 2,
+  pauseMilliseconds: 100,
 };
 
 describe.each([
