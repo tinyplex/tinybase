@@ -20,8 +20,9 @@ import {resetHlc} from '../common/mergeable';
 
 const messageTypes = [
   'RESPONSE',
-  'CONTENT_HASHES',
   'GET_CONTENT_HASHES',
+  'CONTENT_HASHES',
+  'CONTENT_DIFF',
   'GET_TABLE_DIFF',
   'GET_ROW_DIFF',
   'GET_CELL_DIFF',
