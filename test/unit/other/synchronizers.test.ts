@@ -689,6 +689,32 @@ describe.each([
             await expectEachToHaveContent([{}, {v1: 1}]);
           }
         });
+
+        test('change cell', async () => {
+          if (environment && environment[1]) {
+            store1.setTables({t1: {r1: {c1: 1, c2: 2}}});
+            await pause(synchronizable.pauseMilliseconds, true);
+            environment[1].clear();
+
+            store1.setCell('t1', 'r1', 'c1', 2);
+            await pause(synchronizable.pauseMilliseconds, true);
+            expect(environment[1]).toMatchSnapshot();
+            await expectEachToHaveContent([{t1: {r1: {c1: 2, c2: 2}}}, {}]);
+          }
+        });
+
+        test('change value', async () => {
+          if (environment && environment[1]) {
+            store1.setValues({v1: 1, v2: 2});
+            await pause(synchronizable.pauseMilliseconds, true);
+            environment[1].clear();
+
+            store1.setValue('v1', 2);
+            await pause(synchronizable.pauseMilliseconds, true);
+            expect(environment[1]).toMatchSnapshot();
+            await expectEachToHaveContent([{}, {v1: 2, v2: 2}]);
+          }
+        });
       });
     });
 
