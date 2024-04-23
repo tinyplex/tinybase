@@ -2061,6 +2061,128 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing values: s
 ]
 `;
 
+exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change cell 1`] = `
+Map {
+  "push 0" => [
+    "client0→all CONTENT_HASHES [1120852162,0]",
+  ],
+  "Hc2DOD\\00005DK@@" => [
+    "client1→client0 GET_TABLE_DIFF {"t1":3388937867}",
+    "client0→client1 RESPONSE [[{}],{"t1":4032808966}]",
+  ],
+  "Hc2DOD\\00015DK@@" => [
+    "client1→client0 GET_ROW_DIFF {"t1":{"r1":3196233600}}",
+    "client0→client1 RESPONSE [[{}],{"t1":{"r1":3055280593}}]",
+  ],
+  "Hc2DOD\\00025DK@@" => [
+    "client1→client0 GET_CELL_DIFF {"t1":{"r1":{"c1":351028440,"c2":4087397074}}}",
+    "client0→client1 RESPONSE [{"t1":[{"r1":[{"c1":[2,"Hc2DOC800008DKS9"]}]}]}]",
+  ],
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change cell 2`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                2,
+                "Hc2DOC800008DKS9",
+                509480149,
+              ],
+              "c2": [
+                2,
+                "Hc2DOAT00018DKS9",
+                4087397074,
+              ],
+            },
+            "",
+            3055280593,
+          ],
+        },
+        "",
+        4032808966,
+      ],
+    },
+    "",
+    1120852162,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change cell: stats 1`] = `
+[
+  {
+    "receives": 6,
+    "sends": 9,
+  },
+  {
+    "receives": 9,
+    "sends": 6,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change value 1`] = `
+Map {
+  "push 0" => [
+    "client0→all CONTENT_HASHES [0,902513675]",
+  ],
+  "Hc2DOD\\00005DK@@" => [
+    "client1→client0 GET_VALUE_DIFF {"v1":351028440,"v2":4087397074}",
+    "client0→client1 RESPONSE [{"v1":[2,"Hc2DOC800008DKS9"]}]",
+  ],
+}
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change value 2`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {
+      "v1": [
+        2,
+        "Hc2DOC800008DKS9",
+        509480149,
+      ],
+      "v2": [
+        2,
+        "Hc2DOAT00018DKS9",
+        4087397074,
+      ],
+    },
+    "",
+    902513675,
+  ],
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change value: stats 1`] = `
+[
+  {
+    "receives": 4,
+    "sends": 7,
+  },
+  {
+    "receives": 7,
+    "sends": 4,
+  },
+]
+`;
+
 exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 1`] = `
 Map {
   "push 0" => [
