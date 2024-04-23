@@ -92,7 +92,7 @@ describe.each([
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
 
     store.setTables({t1: {r1: {c1: 1, c2: 2}}});
-    await pause(10, true);
+    await pause(persistable.autoLoadPause, true);
     expect(await persistable.get(location)).toMatchSnapshot('setTables');
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toMatchSnapshot('setTables changes');
@@ -100,7 +100,7 @@ describe.each([
     expect(persister.getStats()).toEqual({loads: 0, saves: 2});
 
     store.setValues({v1: 1, v2: 2});
-    await pause(10, true);
+    await pause(persistable.autoLoadPause, true);
     expect(await persistable.get(location)).toMatchSnapshot('setValues');
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toMatchSnapshot('setValues changes');
@@ -108,7 +108,7 @@ describe.each([
     expect(persister.getStats()).toEqual({loads: 0, saves: 3});
 
     store.delCell('t1', 'r1', 'c2');
-    await pause(10, true);
+    await pause(persistable.autoLoadPause, true);
     expect(await persistable.get(location)).toMatchSnapshot('delCell');
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toMatchSnapshot('delCell changes');
@@ -116,7 +116,7 @@ describe.each([
     expect(persister.getStats()).toEqual({loads: 0, saves: 4});
 
     store.delValue('v2');
-    await pause(10, true);
+    await pause(persistable.autoLoadPause, true);
     expect(await persistable.get(location)).toMatchSnapshot('delValue');
     if (persistable.getChanges) {
       expect(persistable.getChanges()).toMatchSnapshot('delValue changes');
