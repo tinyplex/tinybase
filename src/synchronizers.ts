@@ -2,6 +2,7 @@ import {
   CellStamp,
   ContentHashes,
   MergeableChanges,
+  MergeableContent,
   MergeableStore,
   RowHashes,
   RowStamp,
@@ -23,12 +24,13 @@ import {createCustomPersister} from './persisters';
 import {getHlcFunctions} from './mergeable-store/hlc';
 
 const RESPONSE = 0;
-const CONTENT_HASHES = 1;
-const GET_CONTENT_HASHES = 2;
-const GET_TABLE_DIFF = 3;
-const GET_ROW_DIFF = 4;
-const GET_CELL_DIFF = 5;
-const GET_VALUE_DIFF = 6;
+const GET_CONTENT_HASHES = 1;
+const CONTENT_HASHES = 2;
+const CONTENT_DIFF = 3;
+const GET_TABLE_DIFF = 4;
+const GET_ROW_DIFF = 5;
+const GET_CELL_DIFF = 6;
+const GET_VALUE_DIFF = 7;
 
 export const createCustomSynchronizer = (
   store: MergeableStore,
@@ -73,8 +75,12 @@ export const createCustomSynchronizer = (
         );
       } else if (messageType == CONTENT_HASHES && persister.isAutoLoading()) {
         getChangesFromOtherStore(fromClientId, messageBody).then(
-          (changes: any) => persisterListener?.(undefined, () => changes),
+          (changes: any) => {
+            persisterListener?.(undefined, () => changes);
+          },
         );
+      } else if (messageType == CONTENT_DIFF && persister.isAutoLoading()) {
+        persisterListener?.(undefined, () => messageBody);
       } else {
         ifNotUndefined(
           messageType == GET_CONTENT_HASHES && persister.isAutoSaving()
@@ -216,18 +222,25 @@ export const createCustomSynchronizer = (
     ];
   };
 
-  const getPersisted = async (): Promise<any> => {
+  const getPersisted = async (): Promise<MergeableChanges | undefined> => {
     const changes = await getChangesFromOtherStore();
     return !objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0])
       ? changes
       : undefined;
   };
 
-  const setPersisted = async (): Promise<void> => {
+  const setPersisted = async (
+    getContent: () => MergeableContent,
+    getChanges?: () => MergeableChanges,
+  ): Promise<void> => {
     if (DEBUG) {
       sends++;
     }
-    send(null, null, CONTENT_HASHES, store.getMergeableContentHashes());
+    if (getChanges) {
+      send(null, null, CONTENT_DIFF, getChanges());
+    } else {
+      send(null, null, CONTENT_HASHES, store.getMergeableContentHashes());
+    }
   };
 
   const addPersisterListener = (listener: PersisterListener) =>
@@ -249,8 +262,8 @@ export const createCustomSynchronizer = (
 
   const persister = createCustomPersister(
     store,
-    getPersisted,
-    setPersisted,
+    getPersisted as any,
+    setPersisted as any,
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
