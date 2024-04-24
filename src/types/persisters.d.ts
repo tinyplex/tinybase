@@ -19,7 +19,7 @@ export type PersisterStats = {
 /// PersisterListener
 export type PersisterListener<SupportsMergeableStore extends boolean = false> =
   (
-    getContent?: () =>
+    content?:
       | Content
       | (SupportsMergeableStore extends true ? MergeableContent : never),
     changes?:

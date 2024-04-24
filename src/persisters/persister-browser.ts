@@ -37,7 +37,11 @@ const createStoragePersister = (
   ): StorageListener => {
     const storageListener = (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
-        listener(() => jsonParse(event.newValue as string));
+        try {
+          listener(jsonParse(event.newValue as string));
+        } catch {
+          listener();
+        }
       }
     };
     WINDOW.addEventListener(STORAGE, storageListener);

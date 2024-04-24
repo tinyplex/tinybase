@@ -10846,15 +10846,15 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells: st
 
 exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells: stats 2`] = `
 {
-  "receives": 486,
-  "sends": 54,
+  "receives": 270,
+  "sends": 30,
 }
 `;
 
 exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells: stats 3`] = `
 {
-  "receives": 495,
-  "sends": 55,
+  "receives": 279,
+  "sends": 31,
 }
 `;
 
@@ -10902,15 +10902,15 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values 2`
 
 exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values: stats 1`] = `
 {
-  "receives": 486,
-  "sends": 54,
+  "receives": 270,
+  "sends": 30,
 }
 `;
 
 exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values: stats 2`] = `
 {
-  "receives": 495,
-  "sends": 55,
+  "receives": 279,
+  "sends": 31,
 }
 `;
 
@@ -10994,8 +10994,8 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all different cells 1`] =
 
 exports[`Syncs to/from wsSynchronizer Multidirectional all different cells: stats 1`] = `
 {
-  "receives": 630,
-  "sends": 70,
+  "receives": 270,
+  "sends": 30,
 }
 `;
 
@@ -11133,8 +11133,8 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all different rows 1`] = 
 
 exports[`Syncs to/from wsSynchronizer Multidirectional all different rows: stats 1`] = `
 {
-  "receives": 630,
-  "sends": 70,
+  "receives": 270,
+  "sends": 30,
 }
 `;
 
@@ -11326,8 +11326,8 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all different tables 1`] 
 
 exports[`Syncs to/from wsSynchronizer Multidirectional all different tables: stats 1`] = `
 {
-  "receives": 630,
-  "sends": 70,
+  "receives": 270,
+  "sends": 30,
 }
 `;
 
@@ -11399,8 +11399,8 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all different values 1`] 
 
 exports[`Syncs to/from wsSynchronizer Multidirectional all different values: stats 1`] = `
 {
-  "receives": 630,
-  "sends": 70,
+  "receives": 270,
+  "sends": 30,
 }
 `;
 
