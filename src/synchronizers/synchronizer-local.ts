@@ -52,7 +52,7 @@ export const createLocalSynchronizer = ((
     send,
     onReceive,
     destroy,
-    0.05,
+    0.01,
     onIgnoredError,
   );
 }) as typeof createLocalSynchronizerDecl;
