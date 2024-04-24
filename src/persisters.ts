@@ -122,7 +122,20 @@ export const createCustomPersister = <
     }
   };
 
-  const loadLock = async (actions: Action): Promise<Persister> => {
+  const loadLock = (actions: () => any): Persister => {
+    /*! istanbul ignore else */
+    if (loadSave != 2) {
+      loadSave = 1;
+      if (DEBUG) {
+        loads++;
+      }
+      actions();
+      loadSave = 0;
+    }
+    return persister;
+  };
+
+  const loadLockAsync = async (actions: Action): Promise<Persister> => {
     /*! istanbul ignore else */
     if (loadSave != 2) {
       loadSave = 1;
@@ -161,7 +174,7 @@ export const createCustomPersister = <
 
   const persister: any = {
     load: async (initialContent?: Content): Promise<Persister> =>
-      await loadLock(async () => {
+      await loadLockAsync(async () => {
         try {
           setContentOrChanges(await getPersisted());
         } catch (error) {
@@ -174,16 +187,19 @@ export const createCustomPersister = <
 
     startAutoLoad: async (initialContent?: Content): Promise<Persister> => {
       await persister.stopAutoLoad().load(initialContent);
-      autoLoadHandle = addPersisterListener(async (getContent, changes) => {
-        await loadLock(async () => {
-          try {
-            setContentOrChanges(
-              changes ?? getContent?.() ?? (await getPersisted()),
-            );
-          } catch (error) {
-            onIgnoredError?.(error);
-          }
-        });
+      autoLoadHandle = addPersisterListener(async (content, changes) => {
+        const contentOrChanges = content || changes;
+        if (contentOrChanges) {
+          loadLock(() => setContentOrChanges(contentOrChanges));
+        } else {
+          await loadLockAsync(async () => {
+            try {
+              setContentOrChanges(await getPersisted());
+            } catch (error) {
+              onIgnoredError?.(error);
+            }
+          });
+        }
       });
       return persister;
     },
