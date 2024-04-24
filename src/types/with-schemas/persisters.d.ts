@@ -14,6 +14,39 @@ import {
 } from './mergeable-store';
 import {TableIdFromSchema} from './internal/store';
 
+/// PersistedStore
+export type PersistedStore<
+  Schemas extends OptionalSchemas,
+  SupportsMergeableStore extends boolean = false,
+> =
+  | Store<Schemas>
+  | (SupportsMergeableStore extends true ? MergeableStore<Schemas> : never);
+
+/// PersistedContent
+export type PersistedContent<
+  Schemas extends OptionalSchemas,
+  SupportsMergeableStore extends boolean = false,
+> =
+  | Content<Schemas>
+  | (SupportsMergeableStore extends true ? MergeableContent<Schemas> : never);
+
+/// PersistedChanges
+export type PersistedChanges<
+  Schemas extends OptionalSchemas,
+  SupportsMergeableStore extends boolean = false,
+> =
+  | Changes<Schemas>
+  | (SupportsMergeableStore extends true ? MergeableChanges<Schemas> : never);
+
+/// PersisterListener
+export type PersisterListener<
+  Schemas extends OptionalSchemas,
+  SupportsMergeableStore extends boolean = false,
+> = (
+  content?: PersistedContent<Schemas, SupportsMergeableStore>,
+  changes?: PersistedChanges<Schemas, SupportsMergeableStore>,
+) => void;
+
 /// PersisterStats
 export type PersisterStats = {
   /// PersisterStats.loads
@@ -21,19 +54,6 @@ export type PersisterStats = {
   /// PersisterStats.saves
   saves?: number;
 };
-
-/// PersisterListener
-export type PersisterListener<
-  Schemas extends OptionalSchemas,
-  SupportsMergeableStore extends boolean = false,
-> = (
-  content?:
-    | Content<Schemas, true>
-    | (SupportsMergeableStore extends true ? MergeableContent<Schemas> : never),
-  changes?:
-    | Changes<Schemas>
-    | (SupportsMergeableStore extends true ? MergeableChanges<Schemas> : never),
-) => void;
 
 /// DatabasePersisterConfig
 export type DatabasePersisterConfig<Schemas extends OptionalSchemas> =
@@ -138,9 +158,7 @@ export interface Persister<
   schedule(...actions: Promise<any>[]): Promise<this>;
 
   /// Persister.getStore
-  getStore(): SupportsMergeableStore extends true
-    ? Store<Schemas> | MergeableStore<Schemas>
-    : Store<Schemas>;
+  getStore(): PersistedStore<Schemas, SupportsMergeableStore>;
 
   /// Persister.destroy
   destroy(): this;
@@ -153,30 +171,18 @@ export interface Persister<
 export function createCustomPersister<
   Schemas extends OptionalSchemas,
   ListeningHandle,
-  SupportsMergeableStore extends boolean,
+  SupportsMergeableStore extends boolean = false,
 >(
-  store:
-    | Store<Schemas>
-    | (SupportsMergeableStore extends true ? MergeableStore<Schemas> : never),
+  store: PersistedStore<Schemas, SupportsMergeableStore>,
   getPersisted: () => Promise<
-    | Content<Schemas>
-    | (SupportsMergeableStore extends true ? MergeableContent<Schemas> : never)
-    | undefined
+    PersistedContent<Schemas, SupportsMergeableStore> | undefined
   >,
   setPersisted: (
-    getContent: () =>
-      | Content<Schemas>
-      | (SupportsMergeableStore extends true
-          ? MergeableContent<Schemas>
-          : never),
-    changes?:
-      | Changes<Schemas>
-      | (SupportsMergeableStore extends true
-          ? MergeableChanges<Schemas>
-          : never),
+    getContent: () => PersistedContent<Schemas, SupportsMergeableStore>,
+    changes?: PersistedChanges<Schemas, SupportsMergeableStore>,
   ) => Promise<void>,
   addPersisterListener: (
-    listener: PersisterListener<Schemas>,
+    listener: PersisterListener<Schemas, SupportsMergeableStore>,
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
