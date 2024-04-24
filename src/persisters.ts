@@ -6,6 +6,8 @@ import {
   MergeableStore,
 } from './types/mergeable-store';
 import {
+  PersistedChanges,
+  PersistedContent,
   Persister,
   PersisterListener,
   PersisterStats,
@@ -58,21 +60,15 @@ const getStoreFunctions = (
 
 export const createCustomPersister = <
   ListeningHandle,
-  SupportsMergeableStore extends boolean,
+  SupportsMergeableStore extends boolean = false,
 >(
   store: Store | (SupportsMergeableStore extends true ? MergeableStore : never),
   getPersisted: () => Promise<
-    | Content
-    | (SupportsMergeableStore extends true ? MergeableContent : never)
-    | undefined
+    PersistedContent<SupportsMergeableStore> | undefined
   >,
   setPersisted: (
-    getContent: () =>
-      | Content
-      | (SupportsMergeableStore extends true ? MergeableContent : never),
-    changes?:
-      | Changes
-      | (SupportsMergeableStore extends true ? MergeableChanges : never),
+    getContent: () => PersistedContent<SupportsMergeableStore>,
+    changes?: PersistedChanges<SupportsMergeableStore>,
   ) => Promise<void>,
   addPersisterListener: (listener: PersisterListener) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
