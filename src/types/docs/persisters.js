@@ -64,15 +64,16 @@
  * A PersisterListener is a callback that lets a Persister inform the Store that
  * a change has happened to the underlying data.
  *
- * If the listener has the `getChanges` parameter, it will be used to make an
- * incremental change to the Store. If not, but the `getContent` function _is_
- * available, that will be used to make a wholesale change to the Store. If
- * neither are present, the content will be loaded from the Persister's load
- * method.
- * @param getContent An optional function that, if provided, returns an array of
- * Store content and can be used to immediately wholesale update the Store.
- * @param getChanges An optional function that, if provided, returns a Changes
- * object and can be used to immediately incrementally update the Store.
+ * If the listener is called with the `changes` parameter, it will be used to
+ * make an incremental change to the Store. If not, but the `content` parameter
+ * is available, that will be used to make a wholesale change to the Store. If
+ * neither are present, the content will be loaded using the Persister's load
+ * method. Prior to v5.0, these parameters were callbacks.
+ * @param content If provided, this is a Content object from the the Persister
+ * that will be used to immediately wholesale update the Store.
+ * @param changes If provided, this is a Changes object from the the Persister
+ * that will be used to immediately incrementally update the Store. This takes
+ * priority over the content argument above if present.
  * @category Creation
  * @since v4.0.0
  */

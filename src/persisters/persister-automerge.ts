@@ -154,7 +154,7 @@ export const createAutomergePersister = ((
 
   const addPersisterListener = (listener: PersisterListener): Observer => {
     const observer: Observer = ({doc}) =>
-      listener(() => getDocContent(doc, docObjName));
+      listener(getDocContent(doc, docObjName));
     docHandle.on('change', observer);
     return observer;
   };
