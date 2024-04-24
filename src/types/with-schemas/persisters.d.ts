@@ -169,7 +169,7 @@ export function createCustomPersister<
       | (SupportsMergeableStore extends true
           ? MergeableContent<Schemas>
           : never),
-    getChanges?: () =>
+    changes?:
       | Changes<Schemas>
       | (SupportsMergeableStore extends true
           ? MergeableChanges<Schemas>
