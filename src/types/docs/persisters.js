@@ -42,6 +42,10 @@
  */
 /// persisters
 /**
+ * The StoreTypes type
+ */
+/// StoreTypes
+/**
  * The PersistedStore type
  */
 /// PersistedStore
