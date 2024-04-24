@@ -122,34 +122,6 @@ export const createCustomPersister = <
     }
   };
 
-  const loadLock = (actions: () => any): Persister => {
-    /*! istanbul ignore else */
-    if (loadSave != 2) {
-      loadSave = 1;
-      if (DEBUG) {
-        loads++;
-      }
-      actions();
-      loadSave = 0;
-    }
-    return persister;
-  };
-
-  const loadLockAsync = async (actions: Action): Promise<Persister> => {
-    /*! istanbul ignore else */
-    if (loadSave != 2) {
-      loadSave = 1;
-      if (DEBUG) {
-        loads++;
-      }
-      await persister.schedule(async () => {
-        await actions();
-        loadSave = 0;
-      });
-    }
-    return persister;
-  };
-
   const setContentOrChanges = (
     contentOrChanges:
       | Content
@@ -173,32 +145,43 @@ export const createCustomPersister = <
   };
 
   const persister: any = {
-    load: async (initialContent?: Content): Promise<Persister> =>
-      await loadLockAsync(async () => {
-        try {
-          setContentOrChanges(await getPersisted());
-        } catch (error) {
-          onIgnoredError?.(error);
-          if (initialContent) {
-            setDefaultContent(initialContent as Content);
-          }
+    load: async (initialContent?: Content): Promise<Persister> => {
+      /*! istanbul ignore else */
+      if (loadSave != 2) {
+        loadSave = 1;
+        if (DEBUG) {
+          loads++;
         }
-      }),
+        await persister.schedule(async () => {
+          try {
+            setContentOrChanges(await getPersisted());
+          } catch (error) {
+            onIgnoredError?.(error);
+            if (initialContent) {
+              setDefaultContent(initialContent as Content);
+            }
+          }
+          loadSave = 0;
+        });
+      }
+      return persister;
+    },
 
     startAutoLoad: async (initialContent?: Content): Promise<Persister> => {
       await persister.stopAutoLoad().load(initialContent);
       autoLoadHandle = addPersisterListener(async (content, changes) => {
-        const contentOrChanges = content || changes;
-        if (contentOrChanges) {
-          loadLock(() => setContentOrChanges(contentOrChanges));
-        } else {
-          await loadLockAsync(async () => {
-            try {
-              setContentOrChanges(await getPersisted());
-            } catch (error) {
-              onIgnoredError?.(error);
+        if (changes || content) {
+          /*! istanbul ignore else */
+          if (loadSave != 2) {
+            loadSave = 1;
+            if (DEBUG) {
+              loads++;
             }
-          });
+            setContentOrChanges(changes ?? content);
+            loadSave = 0;
+          }
+        } else {
+          await persister.load();
         }
       });
       return persister;
