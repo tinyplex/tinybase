@@ -2623,7 +2623,99 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional, data already present 1`] = `
+exports[`Syncs to/from customSynchronizer Bidirectional, data already present conflicting cell at same time 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Hc2DO@000008DKS9",
+                4065945599,
+              ],
+            },
+            "",
+            3278308926,
+          ],
+        },
+        "",
+        608074644,
+      ],
+    },
+    "",
+    3689956797,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional, data already present conflicting cell later 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                2,
+                "Hc2DO@100005DK@@",
+                2804922642,
+              ],
+            },
+            "",
+            58371857,
+          ],
+        },
+        "",
+        3714204384,
+      ],
+    },
+    "",
+    3444509272,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
+[
+  {
+    "receives": 8,
+    "sends": 9,
+  },
+  {
+    "receives": 9,
+    "sends": 8,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional, data already present different cell 1`] = `
 [
   [
     {
@@ -2661,7 +2753,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional, data already present 1`
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional, data already present: stats 1`] = `
+exports[`Syncs to/from customSynchronizer Bidirectional, data already present different cell: stats 1`] = `
 [
   {
     "receives": 8,
@@ -2670,6 +2762,126 @@ exports[`Syncs to/from customSynchronizer Bidirectional, data already present: s
   {
     "receives": 9,
     "sends": 8,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional, data already present different row 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Hc2DO@000008DKS9",
+                4065945599,
+              ],
+            },
+            "",
+            3278308926,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Hc2DO@000005DK@@",
+                2554361111,
+              ],
+            },
+            "",
+            478205993,
+          ],
+        },
+        "",
+        995059068,
+      ],
+    },
+    "",
+    1191218241,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional, data already present different row: stats 1`] = `
+[
+  {
+    "receives": 6,
+    "sends": 7,
+  },
+  {
+    "receives": 7,
+    "sends": 6,
+  },
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional, data already present different table 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Hc2DO@000008DKS9",
+                4065945599,
+              ],
+            },
+            "",
+            3278308926,
+          ],
+        },
+        "",
+        608074644,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Hc2DO@000005DK@@",
+                2554361111,
+              ],
+            },
+            "",
+            478205993,
+          ],
+        },
+        "",
+        527507176,
+      ],
+    },
+    "",
+    3783957888,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from customSynchronizer Bidirectional, data already present different table: stats 1`] = `
+[
+  {
+    "receives": 4,
+    "sends": 5,
+  },
+  {
+    "receives": 5,
+    "sends": 4,
   },
 ]
 `;
@@ -6209,7 +6421,99 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing values: st
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional, data already present 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional, data already present conflicting cell at same time 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Hc2DO@000008DKS9",
+                4065945599,
+              ],
+            },
+            "",
+            3278308926,
+          ],
+        },
+        "",
+        608074644,
+      ],
+    },
+    "",
+    3689956797,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from localSynchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
+`;
+
+exports[`Syncs to/from localSynchronizer Bidirectional, data already present conflicting cell later 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                2,
+                "Hc2DO@100005DK@@",
+                2804922642,
+              ],
+            },
+            "",
+            58371857,
+          ],
+        },
+        "",
+        3714204384,
+      ],
+    },
+    "",
+    3444509272,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from localSynchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
+[
+  {
+    "receives": 8,
+    "sends": 9,
+  },
+  {
+    "receives": 9,
+    "sends": 8,
+  },
+]
+`;
+
+exports[`Syncs to/from localSynchronizer Bidirectional, data already present different cell 1`] = `
 [
   [
     {
@@ -6247,7 +6551,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional, data already present 1`]
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional, data already present: stats 1`] = `
+exports[`Syncs to/from localSynchronizer Bidirectional, data already present different cell: stats 1`] = `
 [
   {
     "receives": 8,
@@ -6256,6 +6560,126 @@ exports[`Syncs to/from localSynchronizer Bidirectional, data already present: st
   {
     "receives": 9,
     "sends": 8,
+  },
+]
+`;
+
+exports[`Syncs to/from localSynchronizer Bidirectional, data already present different row 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Hc2DO@000008DKS9",
+                4065945599,
+              ],
+            },
+            "",
+            3278308926,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Hc2DO@000005DK@@",
+                2554361111,
+              ],
+            },
+            "",
+            478205993,
+          ],
+        },
+        "",
+        995059068,
+      ],
+    },
+    "",
+    1191218241,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from localSynchronizer Bidirectional, data already present different row: stats 1`] = `
+[
+  {
+    "receives": 6,
+    "sends": 7,
+  },
+  {
+    "receives": 7,
+    "sends": 6,
+  },
+]
+`;
+
+exports[`Syncs to/from localSynchronizer Bidirectional, data already present different table 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Hc2DO@000008DKS9",
+                4065945599,
+              ],
+            },
+            "",
+            3278308926,
+          ],
+        },
+        "",
+        608074644,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Hc2DO@000005DK@@",
+                2554361111,
+              ],
+            },
+            "",
+            478205993,
+          ],
+        },
+        "",
+        527507176,
+      ],
+    },
+    "",
+    3783957888,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from localSynchronizer Bidirectional, data already present different table: stats 1`] = `
+[
+  {
+    "receives": 4,
+    "sends": 5,
+  },
+  {
+    "receives": 5,
+    "sends": 4,
   },
 ]
 `;
@@ -9795,7 +10219,99 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing values: stats
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional, data already present 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional, data already present conflicting cell at same time 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Hc2DO@000008DKS9",
+                4065945599,
+              ],
+            },
+            "",
+            3278308926,
+          ],
+        },
+        "",
+        608074644,
+      ],
+    },
+    "",
+    3689956797,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Bidirectional, data already present conflicting cell later 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                2,
+                "Hc2DO@100005DK@@",
+                2804922642,
+              ],
+            },
+            "",
+            58371857,
+          ],
+        },
+        "",
+        3714204384,
+      ],
+    },
+    "",
+    3444509272,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
+[
+  {
+    "receives": 8,
+    "sends": 9,
+  },
+  {
+    "receives": 9,
+    "sends": 8,
+  },
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Bidirectional, data already present different cell 1`] = `
 [
   [
     {
@@ -9833,7 +10349,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional, data already present 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional, data already present: stats 1`] = `
+exports[`Syncs to/from wsSynchronizer Bidirectional, data already present different cell: stats 1`] = `
 [
   {
     "receives": 8,
@@ -9842,6 +10358,126 @@ exports[`Syncs to/from wsSynchronizer Bidirectional, data already present: stats
   {
     "receives": 9,
     "sends": 8,
+  },
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Bidirectional, data already present different row 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Hc2DO@000008DKS9",
+                4065945599,
+              ],
+            },
+            "",
+            3278308926,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Hc2DO@000005DK@@",
+                2554361111,
+              ],
+            },
+            "",
+            478205993,
+          ],
+        },
+        "",
+        995059068,
+      ],
+    },
+    "",
+    1191218241,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Bidirectional, data already present different row: stats 1`] = `
+[
+  {
+    "receives": 6,
+    "sends": 7,
+  },
+  {
+    "receives": 7,
+    "sends": 6,
+  },
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Bidirectional, data already present different table 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Hc2DO@000008DKS9",
+                4065945599,
+              ],
+            },
+            "",
+            3278308926,
+          ],
+        },
+        "",
+        608074644,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Hc2DO@000005DK@@",
+                2554361111,
+              ],
+            },
+            "",
+            478205993,
+          ],
+        },
+        "",
+        527507176,
+      ],
+    },
+    "",
+    3783957888,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from wsSynchronizer Bidirectional, data already present different table: stats 1`] = `
+[
+  {
+    "receives": 4,
+    "sends": 5,
+  },
+  {
+    "receives": 5,
+    "sends": 4,
   },
 ]
 `;
