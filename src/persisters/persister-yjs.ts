@@ -195,7 +195,7 @@ export const createYjsPersister = ((
 
   const addPersisterListener = (listener: PersisterListener): Observer => {
     const observer: Observer = (events) =>
-      listener(undefined, () => getChangesFromYDoc(yContent, events));
+      listener(undefined, getChangesFromYDoc(yContent, events));
     yContent.observeDeep(observer);
     return observer;
   };
