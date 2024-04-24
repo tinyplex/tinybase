@@ -27,7 +27,7 @@ export type PersisterListener<
   Schemas extends OptionalSchemas,
   SupportsMergeableStore extends boolean = false,
 > = (
-  getContent?: () =>
+  content?:
     | Content<Schemas, true>
     | (SupportsMergeableStore extends true ? MergeableContent<Schemas> : never),
   changes?:

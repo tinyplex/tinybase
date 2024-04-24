@@ -132,9 +132,8 @@ const docObjMatch = (
 
 let customPersister: any;
 let customPersisterListener:
-  | ((getContent?: () => Content | MergeableContent) => void)
   | ((
-      getContent?: () => Content | MergeableContent,
+      content?: Content | MergeableContent,
       changes?: Changes | MergeableChanges,
     ) => void)
   | undefined;
@@ -198,7 +197,7 @@ export const mockContentListener: Persistable<string> = getMockedCustom(
     } catch (e) {
       content = [] as any;
     }
-    customPersisterListener?.(() => content);
+    customPersisterListener?.(content);
   },
 );
 
@@ -233,7 +232,7 @@ export const mockMergeableContentListener: Persistable<string> =
     } catch (e) {
       content = [] as any;
     }
-    customPersisterListener?.(() => content);
+    customPersisterListener?.(content);
   }, true);
 
 export const mockMergeableChangesListener: Persistable<string> =
