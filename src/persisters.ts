@@ -174,8 +174,7 @@ export const createCustomPersister = <
 
     startAutoLoad: async (initialContent?: Content): Promise<Persister> => {
       await persister.stopAutoLoad().load(initialContent);
-      autoLoadHandle = addPersisterListener(async (getContent, getChanges) => {
-        const changes = getChanges?.();
+      autoLoadHandle = addPersisterListener(async (getContent, changes) => {
         await loadLock(async () => {
           try {
             setContentOrChanges(
