@@ -147,6 +147,8 @@ In the persisters module:
   MergeableStore as well as Store objects.
 - A Persister's load method and startAutoLoad method now take a Content object
   as one parameter, rather than Tables and Values as two.
+- If you create a custom Persister, the setPersisted method now receives changes
+  made to a Store directly by reference, rather than via an accessor.
 - The broadcastTransactionChanges method in the persister-partykit-server module
   has been renamed to the broadcastChanges method.
 
