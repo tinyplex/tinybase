@@ -488,9 +488,8 @@ describe('Supported, MergeableStore', () => {
       async () => [{}, {}],
       async (
         _getContent: () => Content | MergeableContent,
-        getChanges?: () => Changes | MergeableChanges,
+        changes?: Changes | MergeableChanges,
       ) => {
-        const changes = getChanges?.();
         if (changes != undefined) {
           persisted.push(JSON.stringify(changes));
         }

@@ -118,14 +118,13 @@ export const createTabularSqlitePersister = <ListeningHandle>(
 
   const setPersisted = async (
     getContent: () => Content,
-    getChanges?: () => Changes,
+    changes?: Changes,
   ): Promise<void> =>
     await transaction(async () => {
       await refreshSchema();
-      if (!isUndefined(getChanges)) {
-        const [tableChanges, valueChanges] = getChanges();
-        await saveTables(tableChanges, true);
-        await saveValues(valueChanges, true);
+      if (!isUndefined(changes)) {
+        await saveTables(changes[0], true);
+        await saveValues(changes[1], true);
       } else {
         const [tables, values] = getContent();
         await saveTables(tables);
