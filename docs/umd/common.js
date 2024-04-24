@@ -1,1 +1,0 @@
-var e,o;e=this,o=function(e){"use strict";e.defaultSorter=(e,o)=>(e??0)<(o??0)?-1:1},"object"==typeof exports&&"undefined"!=typeof module?o(exports):"function"==typeof define&&define.amd?define(["exports"],o):o((e="undefined"!=typeof globalThis?globalThis:e||self).TinyBaseCommon={});
