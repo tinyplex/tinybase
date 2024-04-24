@@ -1,10 +1,5 @@
 {
-  "ignorePaths": [
-    "*.tsv",
-    "*.webp",
-    "*.svg",
-    "*.snap"
-  ],
+  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.snap", "*.json"],
   "words": [
     "Abad",
     "Adrien",
