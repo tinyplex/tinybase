@@ -42,24 +42,17 @@
  */
 /// persisters
 /**
- * The PersisterStats type describes the number of times a Persister object has
- * loaded or saved data.
- *
- * A PersisterStats object is returned from the getStats method, and is only
- * populated in a debug build.
- * @category Development
+ * The PersistedStore type
  */
-/// PersisterStats
-{
-  /**
-   * The number of times data has been loaded.
-   */
-  /// PersisterStats.loads
-  /**
-   * The number of times data has been saved.
-   */
-  /// PersisterStats.saves
-}
+/// PersistedStore
+/**
+ * The PersistedContent type
+ */
+/// PersistedContent
+/**
+ * The PersistedChanges type
+ */
+/// PersistedChanges
 /**
  * A PersisterListener is a callback that lets a Persister inform the Store that
  * a change has happened to the underlying data.
@@ -78,6 +71,25 @@
  * @since v4.0.0
  */
 /// PersisterListener
+/**
+ * The PersisterStats type describes the number of times a Persister object has
+ * loaded or saved data.
+ *
+ * A PersisterStats object is returned from the getStats method, and is only
+ * populated in a debug build.
+ * @category Development
+ */
+/// PersisterStats
+{
+  /**
+   * The number of times data has been loaded.
+   */
+  /// PersisterStats.loads
+  /**
+   * The number of times data has been saved.
+   */
+  /// PersisterStats.saves
+}
 /**
  * The DatabasePersisterConfig type describes the configuration of a
  * database-oriented Persister, such as those for SQLite.
