@@ -150,7 +150,7 @@ In the persisters module:
 - If you create a custom Persister, the setPersisted method now receives changes
   made to a Store directly by reference, rather than via a callback. Similarly,
   the PersisterListener you register in your addPersisterListener implementation
-  also takes changes by reference rather than via a callback.
+  now takes Content and Changes objects directly rather than via a callback.
 - The broadcastTransactionChanges method in the persister-partykit-server module
   has been renamed to the broadcastChanges method.
 
