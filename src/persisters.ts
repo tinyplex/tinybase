@@ -8,9 +8,11 @@ import {
 import {
   PersistedChanges,
   PersistedContent,
+  PersistedStore,
   Persister,
   PersisterListener,
   PersisterStats,
+  StoreTypes,
 } from './types/persisters.d';
 import {arrayPush, arrayShift} from './common/array';
 import {mapEnsure, mapGet, mapNew, mapSet} from './common/map';
@@ -23,8 +25,8 @@ const scheduleRunning: Map<any, 0 | 1> = mapNew();
 const scheduleActions: Map<any, Action[]> = mapNew();
 
 const getStoreFunctions = (
-  supportsMergeableStore: boolean | undefined,
-  store: MergeableStore,
+  supportedStoreType: StoreTypes = 1,
+  store: PersistedStore<typeof supportedStoreType>,
 ):
   | [
       isMergeableStore: 0,
@@ -40,44 +42,47 @@ const getStoreFunctions = (
       hasChanges: (changes: MergeableChanges) => boolean,
       setDefaultContent: (content: Content) => MergeableStore,
     ] =>
-  !supportsMergeableStore || isUndefined(store.getMergeableContent)
+  supportedStoreType > 1 && 'getMergeableContent' in store
     ? [
-        0,
-        store.getContent,
-        store.getTransactionChanges,
-        ([changedTables, changedValues]: Changes) =>
-          !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
-        store.setContent,
-      ]
-    : [
         1,
         store.getMergeableContent,
         store.getTransactionMergeableChanges,
         ([[changedTables], [changedValues]]: MergeableChanges) =>
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
         store.setDefaultContent,
-      ];
+      ]
+    : supportedStoreType != 2
+      ? [
+          0,
+          store.getContent,
+          store.getTransactionChanges,
+          ([changedTables, changedValues]: Changes) =>
+            !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+          store.setContent,
+        ]
+      : /*! istanbul ignore next */
+        (0 as any);
 
 export const createCustomPersister = <
   ListeningHandle,
-  SupportsMergeableStore extends boolean = false,
+  StoreType extends StoreTypes = 1,
 >(
-  store: Store | (SupportsMergeableStore extends true ? MergeableStore : never),
-  getPersisted: () => Promise<
-    PersistedContent<SupportsMergeableStore> | undefined
-  >,
+  store: PersistedStore<StoreType>,
+  getPersisted: () => Promise<PersistedContent<StoreType> | undefined>,
   setPersisted: (
-    getContent: () => PersistedContent<SupportsMergeableStore>,
-    changes?: PersistedChanges<SupportsMergeableStore>,
+    getContent: () => PersistedContent<StoreType>,
+    changes?: PersistedChanges<StoreType>,
   ) => Promise<void>,
-  addPersisterListener: (listener: PersisterListener) => ListeningHandle,
+  addPersisterListener: (
+    listener: PersisterListener<StoreType>,
+  ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
-  supportsMergeableStore?: SupportsMergeableStore,
+  supportedStoreType?: StoreType,
   // undocumented:
   extra: {[methodName: string]: (...args: any[]) => any} = {},
   scheduleId = [],
-): Persister<SupportsMergeableStore> => {
+): Persister<StoreType> => {
   let loadSave = 0;
   let loads = 0;
   let saves = 0;
@@ -94,7 +99,7 @@ export const createCustomPersister = <
     getChanges,
     hasChanges,
     setDefaultContent,
-  ] = getStoreFunctions(supportsMergeableStore, store as MergeableStore);
+  ] = getStoreFunctions(supportedStoreType, store);
 
   const run = async (): Promise<void> => {
     /*! istanbul ignore else */
@@ -164,7 +169,7 @@ export const createCustomPersister = <
 
   const startAutoLoad = async (
     initialContent?: Content,
-  ): Promise<Persister<SupportsMergeableStore>> => {
+  ): Promise<Persister<StoreType>> => {
     await stopAutoLoad().load(initialContent);
     autoLoadHandle = addPersisterListener(async (content, changes) => {
       if (changes || content) {
@@ -184,7 +189,7 @@ export const createCustomPersister = <
     return persister;
   };
 
-  const stopAutoLoad = (): Persister => {
+  const stopAutoLoad = (): Persister<StoreType> => {
     if (autoLoadHandle) {
       delPersisterListener(autoLoadHandle);
       autoLoadHandle = undefined;
@@ -195,10 +200,8 @@ export const createCustomPersister = <
   const isAutoLoading = () => !isUndefined(autoLoadHandle);
 
   const save = async (
-    changes?:
-      | Changes
-      | (SupportsMergeableStore extends true ? MergeableChanges : never),
-  ): Promise<Persister<SupportsMergeableStore>> => {
+    changes?: PersistedChanges<StoreType>,
+  ): Promise<Persister<StoreType>> => {
     /*! istanbul ignore else */
     if (loadSave != 1) {
       loadSave = 2;
@@ -218,7 +221,7 @@ export const createCustomPersister = <
     return persister;
   };
 
-  const startAutoSave = async (): Promise<Persister> => {
+  const startAutoSave = async (): Promise<Persister<StoreType>> => {
     await stopAutoSave().save();
     autoSaveListenerId = store.addDidFinishTransactionListener(() => {
       const changes = getChanges() as any;
@@ -229,7 +232,7 @@ export const createCustomPersister = <
     return persister;
   };
 
-  const stopAutoSave = (): Persister => {
+  const stopAutoSave = (): Persister<StoreType> => {
     ifNotUndefined(autoSaveListenerId, store.delListener);
     autoSaveListenerId = undefined;
     return persister;
@@ -245,7 +248,7 @@ export const createCustomPersister = <
 
   const getStore = (): Store => store;
 
-  const destroy = (): Persister => stopAutoLoad().stopAutoSave();
+  const destroy = (): Persister<StoreType> => stopAutoLoad().stopAutoSave();
 
   const getStats = (): PersisterStats => (DEBUG ? {loads, saves} : {});
 
@@ -267,5 +270,5 @@ export const createCustomPersister = <
     ...extra,
   };
 
-  return objFreeze(persister as Persister<SupportsMergeableStore>);
+  return objFreeze(persister as Persister<StoreType>);
 };

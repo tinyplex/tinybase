@@ -5,13 +5,13 @@ import {Persister} from '../persisters.d';
 import {Store} from '../store.d';
 
 /// SessionPersister
-export interface SessionPersister extends Persister<true> {
+export interface SessionPersister extends Persister<3> {
   /// SessionPersister.getStorageName
   getStorageName(): string;
 }
 
 /// LocalPersister
-export interface LocalPersister extends Persister<true> {
+export interface LocalPersister extends Persister<3> {
   /// LocalPersister.getStorageName
   getStorageName(): string;
 }
