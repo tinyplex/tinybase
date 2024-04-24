@@ -230,14 +230,14 @@ export const createCustomSynchronizer = (
   };
 
   const setPersisted = async (
-    getContent: () => MergeableContent,
-    getChanges?: () => MergeableChanges,
+    _getContent: () => MergeableContent,
+    changes?: MergeableChanges,
   ): Promise<void> => {
     if (DEBUG) {
       sends++;
     }
-    if (getChanges) {
-      send(null, null, CONTENT_DIFF, getChanges());
+    if (changes) {
+      send(null, null, CONTENT_DIFF, changes);
     } else {
       send(null, null, CONTENT_HASHES, store.getMergeableContentHashes());
     }
