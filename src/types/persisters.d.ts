@@ -22,7 +22,7 @@ export type PersisterListener<SupportsMergeableStore extends boolean = false> =
     getContent?: () =>
       | Content
       | (SupportsMergeableStore extends true ? MergeableContent : never),
-    getChanges?: () =>
+    changes?:
       | Changes
       | (SupportsMergeableStore extends true ? MergeableChanges : never),
   ) => void;

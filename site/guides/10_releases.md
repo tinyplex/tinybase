@@ -148,7 +148,9 @@ In the persisters module:
 - A Persister's load method and startAutoLoad method now take a Content object
   as one parameter, rather than Tables and Values as two.
 - If you create a custom Persister, the setPersisted method now receives changes
-  made to a Store directly by reference, rather than via an accessor.
+  made to a Store directly by reference, rather than via a callback. Similarly,
+  the PersisterListener you register in your addPersisterListener implementation
+  also takes changes by reference rather than via a callback.
 - The broadcastTransactionChanges method in the persister-partykit-server module
   has been renamed to the broadcastChanges method.
 
