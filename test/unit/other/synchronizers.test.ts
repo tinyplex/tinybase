@@ -129,10 +129,7 @@ describe.each([
     let synchronizer1: Synchronizer;
     let synchronizer2: Synchronizer;
 
-    const expectEachToHaveContent = async (
-      content1: Content,
-      content2?: Content,
-    ) => {
+    const expectEachToHaveContent = (content1: Content, content2?: Content) => {
       expect(store1.getContent()).toEqual(content1);
       expect(store2.getContent()).toEqual(content2 ?? content1);
       expect(store1.getMergeableContent()).toMatchSnapshot();
@@ -241,19 +238,66 @@ describe.each([
       });
     });
 
-    test('Bidirectional, data already present', async () => {
-      store1 = createMergeableStore('s1');
-      store2 = createMergeableStore('s2');
-      store1.setCell('t1', 'r1', 'c1', 1);
-      store2.setCell('t1', 'r1', 'c2', 2);
-      synchronizer1 = await synchronizable.getSynchronizer(store1, environment);
-      synchronizer2 = await synchronizable.getSynchronizer(store2, environment);
-      await synchronizer1.startSync();
-      await synchronizer2.startSync();
-      await pause(synchronizable.pauseMilliseconds, true);
-      await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
-      synchronizer1.destroy();
-      synchronizer2.destroy();
+    describe('Bidirectional, data already present', () => {
+      const sync = async () => {
+        synchronizer1 = await synchronizable.getSynchronizer(
+          store1,
+          environment,
+        );
+        synchronizer2 = await synchronizable.getSynchronizer(
+          store2,
+          environment,
+        );
+        await synchronizer1.startSync();
+        await synchronizer2.startSync();
+        await pause(synchronizable.pauseMilliseconds, true);
+      };
+
+      beforeEach(() => {
+        store1 = createMergeableStore('s1');
+        store2 = createMergeableStore('s2');
+      });
+
+      afterEach(() => {
+        synchronizer1.destroy();
+        synchronizer2.destroy();
+      });
+
+      test('conflicting cell at same time', async () => {
+        store1.setCell('t1', 'r1', 'c1', 1);
+        store2.setCell('t1', 'r1', 'c1', 2);
+        await sync();
+        expectEachToHaveContent([{t1: {r1: {c1: 1}}}, {}]);
+      });
+
+      test('conflicting cell later', async () => {
+        store1.setCell('t1', 'r1', 'c1', 1);
+        pause(1, true);
+        store2.setCell('t1', 'r1', 'c1', 2);
+        await sync();
+        expectEachToHaveContent([{t1: {r1: {c1: 2}}}, {}]);
+      });
+
+      test('different cell', async () => {
+        store1.setCell('t1', 'r1', 'c1', 1);
+        store2.setCell('t1', 'r1', 'c2', 2);
+        await sync();
+        expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
+      });
+
+      test('different row', async () => {
+        store1.setCell('t1', 'r1', 'c1', 1);
+        store2.setCell('t1', 'r2', 'c2', 2);
+        await sync();
+        expectEachToHaveContent([{t1: {r1: {c1: 1}, r2: {c2: 2}}}, {}]);
+      });
+
+      test('different table', async () => {
+        store1.setCell('t1', 'r1', 'c1', 1);
+        store2.setCell('t2', 'r2', 'c2', 2);
+        await sync();
+        expectEachToHaveContent([{t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}}, {}]);
+      });
     });
 
     describe('Bidirectional', () => {
