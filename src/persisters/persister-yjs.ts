@@ -76,7 +76,7 @@ const getChangesFromYDoc = (
 const applyChangesToYDoc = (
   yContent: YMap<any>,
   getContent: () => Content,
-  getChanges?: () => Changes,
+  changes?: Changes,
 ) => {
   if (!yContent.size) {
     yContent.set(T, new YMap());
@@ -87,7 +87,7 @@ const applyChangesToYDoc = (
     changesFailed = 1;
   };
   let changesFailed = 1;
-  ifNotUndefined(getChanges?.(), ([cellChanges, valueChanges]) => {
+  ifNotUndefined(changes, ([cellChanges, valueChanges]) => {
     changesFailed = 0;
     objToArray(cellChanges, (table, tableId) =>
       changesFailed
@@ -189,9 +189,9 @@ export const createYjsPersister = ((
 
   const setPersisted = async (
     getContent: () => Content,
-    getChanges?: () => Changes,
+    changes?: Changes,
   ): Promise<void> =>
-    yDoc.transact(() => applyChangesToYDoc(yContent, getContent, getChanges));
+    yDoc.transact(() => applyChangesToYDoc(yContent, getContent, changes));
 
   const addPersisterListener = (listener: PersisterListener): Observer => {
     const observer: Observer = (events) =>
