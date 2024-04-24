@@ -70,7 +70,7 @@ export const createCustomPersister = <
     getContent: () =>
       | Content
       | (SupportsMergeableStore extends true ? MergeableContent : never),
-    getChanges?: () =>
+    changes?:
       | Changes
       | (SupportsMergeableStore extends true ? MergeableChanges : never),
   ) => Promise<void>,
@@ -200,7 +200,7 @@ export const createCustomPersister = <
     isAutoLoading: () => !isUndefined(autoLoadHandle),
 
     save: async (
-      getChanges?: () =>
+      changes?:
         | Changes
         | (SupportsMergeableStore extends true ? MergeableChanges : never),
     ): Promise<Persister> => {
@@ -212,7 +212,7 @@ export const createCustomPersister = <
         }
         await persister.schedule(async () => {
           try {
-            await setPersisted(getContent as any, getChanges);
+            await setPersisted(getContent as any, changes);
           } catch (error) {
             /*! istanbul ignore next */
             onIgnoredError?.(error);
@@ -228,7 +228,7 @@ export const createCustomPersister = <
       autoSaveListenerId = store.addDidFinishTransactionListener(() => {
         const changes = getChanges();
         if (hasChanges(changes as any)) {
-          persister.save(() => changes);
+          persister.save(changes);
         }
       });
       return persister;
