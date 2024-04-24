@@ -24,7 +24,7 @@ export const createFilePersister = ((
   ): Promise<void> =>
     await writeFile(filePath, jsonStringWithUndefined(getContent()), UTF8);
 
-  const addPersisterListener = (listener: PersisterListener): FSWatcher =>
+  const addPersisterListener = (listener: PersisterListener<3>): FSWatcher =>
     watch(filePath, () => listener());
 
   const delPersisterListener = (watcher: FSWatcher): void => watcher?.close();
@@ -36,7 +36,7 @@ export const createFilePersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    true,
+    3,
     {getFilePath: () => filePath},
   ) as FilePersister;
 }) as typeof createFilePersisterDecl;
