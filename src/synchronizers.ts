@@ -76,11 +76,11 @@ export const createCustomSynchronizer = (
       } else if (messageType == CONTENT_HASHES && persister.isAutoLoading()) {
         getChangesFromOtherStore(fromClientId, messageBody).then(
           (changes: any) => {
-            persisterListener?.(undefined, () => changes);
+            persisterListener?.(undefined, changes);
           },
         );
       } else if (messageType == CONTENT_DIFF && persister.isAutoLoading()) {
-        persisterListener?.(undefined, () => messageBody);
+        persisterListener?.(undefined, messageBody);
       } else {
         ifNotUndefined(
           messageType == GET_CONTENT_HASHES && persister.isAutoSaving()
