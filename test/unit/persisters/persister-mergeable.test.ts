@@ -435,7 +435,7 @@ test('Supported, Store', async () => {
     () => null,
     () => null,
     () => null,
-    true,
+    3,
   );
   await persister.load();
   await persister.save();
@@ -472,7 +472,7 @@ describe('Supported, MergeableStore', () => {
       () => null,
       () => null,
       () => null,
-      true,
+      3,
     );
     await persister.load();
     await persister.save();
@@ -497,7 +497,7 @@ describe('Supported, MergeableStore', () => {
       () => null,
       () => null,
       () => null,
-      true,
+      3,
     );
     await persister.startAutoSave();
     store.setCell('t1', 'r1', 'c1', 1);
@@ -519,7 +519,7 @@ describe('Supported, MergeableStore', () => {
       () => null,
       () => null,
       () => null,
-      true,
+      3,
     );
     await persister.load();
     await persister.save();

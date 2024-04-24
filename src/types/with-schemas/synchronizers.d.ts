@@ -32,7 +32,7 @@ export type SynchronizerStats = {
 
 /// Synchronizer
 export interface Synchronizer<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, true> {
+  extends Persister<Schemas, 2> {
   /// Synchronizer.startSync
   startSync(initialContent?: Content<Schemas, true>): Promise<this>;
   /// Synchronizer.stopSync
