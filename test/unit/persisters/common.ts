@@ -6,6 +6,7 @@ import {
   MergeableStore,
   Persister,
   Store,
+  StoreTypes,
 } from 'tinybase/debug';
 import {pause} from '../common/other';
 
@@ -22,7 +23,7 @@ export type Persistable<Location = string> = {
   getPersister: (
     store: Store | MergeableStore,
     location: Location,
-  ) => Persister<boolean>;
+  ) => Persister<StoreTypes>;
   get: (location: Location) => Promise<Content | MergeableContent | void>;
   set: (
     location: Location,

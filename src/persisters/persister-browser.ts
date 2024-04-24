@@ -23,7 +23,7 @@ const createStoragePersister = (
   storageName: string,
   storage: Storage,
   onIgnoredError?: (error: any) => void,
-): Persister => {
+): Persister<3> => {
   const getPersisted = async (): Promise<Content | MergeableContent> =>
     jsonParseWithUndefined(storage.getItem(storageName) as string);
 
@@ -33,7 +33,7 @@ const createStoragePersister = (
     storage.setItem(storageName, jsonStringWithUndefined(getContent()));
 
   const addPersisterListener = (
-    listener: PersisterListener,
+    listener: PersisterListener<3>,
   ): StorageListener => {
     const storageListener = (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
@@ -58,7 +58,7 @@ const createStoragePersister = (
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    true,
+    3,
     {getStorageName: () => storageName},
   );
 };
