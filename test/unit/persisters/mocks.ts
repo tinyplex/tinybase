@@ -161,7 +161,7 @@ const getMockedCustom = (
       },
       () => (customPersisterListener = undefined),
       undefined,
-      supportsMergeableStore,
+      supportsMergeableStore ? 3 : 1,
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       {getFoo: () => 'foo'},
