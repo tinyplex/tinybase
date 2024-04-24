@@ -31,7 +31,7 @@ export type SynchronizerStats = {
 };
 
 /// Synchronizer
-export interface Synchronizer extends Persister<true> {
+export interface Synchronizer extends Persister<2> {
   /// Synchronizer.startSync
   startSync(initialContent?: Content): Promise<this>;
   /// Synchronizer.stopSync

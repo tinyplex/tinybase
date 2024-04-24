@@ -8,27 +8,41 @@ import {
 } from './mergeable-store';
 import {Id} from './common.d';
 
+/// StoreTypes
+export type StoreTypes =
+  | 1 // Store only
+  | 2 // MergeableStore only
+  | 3; // Store and MergeableStore
+
 /// PersistedStore
-export type PersistedStore<SupportsMergeableStore extends boolean = false> =
-  | Store
-  | (SupportsMergeableStore extends true ? MergeableStore : never);
+export type PersistedStore<StoreType extends StoreTypes = 1> =
+  StoreType extends 3
+    ? Store | MergeableStore
+    : StoreType extends 2
+      ? MergeableStore
+      : Store;
 
 /// PersistedContent
-export type PersistedContent<SupportsMergeableStore extends boolean = false> =
-  | Content
-  | (SupportsMergeableStore extends true ? MergeableContent : never);
+export type PersistedContent<StoreType extends StoreTypes = 1> =
+  StoreType extends 3
+    ? Content | MergeableContent
+    : StoreType extends 2
+      ? MergeableContent
+      : Content;
 
 /// PersistedChanges
-export type PersistedChanges<SupportsMergeableStore extends boolean = false> =
-  | Changes
-  | (SupportsMergeableStore extends true ? MergeableChanges : never);
+export type PersistedChanges<StoreType extends StoreTypes = 1> =
+  StoreType extends 3
+    ? Changes | MergeableChanges
+    : StoreType extends 2
+      ? MergeableChanges
+      : Changes;
 
 /// PersisterListener
-export type PersisterListener<SupportsMergeableStore extends boolean = false> =
-  (
-    content?: PersistedContent<SupportsMergeableStore>,
-    changes?: PersistedChanges<SupportsMergeableStore>,
-  ) => void;
+export type PersisterListener<StoreType extends StoreTypes = 1> = (
+  content?: PersistedContent<StoreType>,
+  changes?: PersistedChanges<StoreType>,
+) => void;
 
 /// PersisterStats
 export type PersisterStats = {
@@ -107,7 +121,7 @@ export type DpcTabularValues = {
 };
 
 /// Persister
-export interface Persister<SupportsMergeableStore extends boolean = false> {
+export interface Persister<StoreType extends StoreTypes = 1> {
   //
   /// Persister.load
   load(initialContent?: Content): Promise<this>;
@@ -137,7 +151,7 @@ export interface Persister<SupportsMergeableStore extends boolean = false> {
   schedule(...actions: Promise<any>[]): Promise<this>;
 
   /// Persister.getStore
-  getStore(): PersistedStore<SupportsMergeableStore>;
+  getStore(): PersistedStore<StoreType>;
 
   /// Persister.destroy
   destroy(): this;
@@ -150,20 +164,18 @@ export interface Persister<SupportsMergeableStore extends boolean = false> {
 /// createCustomPersister
 export function createCustomPersister<
   ListeningHandle,
-  SupportsMergeableStore extends boolean = false,
+  StoreType extends StoreTypes = 1,
 >(
-  store: PersistedStore<SupportsMergeableStore>,
-  getPersisted: () => Promise<
-    PersistedContent<SupportsMergeableStore> | undefined
-  >,
+  store: PersistedStore<StoreType>,
+  getPersisted: () => Promise<PersistedContent<StoreType> | undefined>,
   setPersisted: (
-    getContent: () => PersistedContent<SupportsMergeableStore>,
-    changes?: PersistedChanges<SupportsMergeableStore>,
+    getContent: () => PersistedContent<StoreType>,
+    changes?: PersistedChanges<StoreType>,
   ) => Promise<void>,
   addPersisterListener: (
-    listener: PersisterListener<SupportsMergeableStore>,
+    listener: PersisterListener<StoreType>,
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
-  supportsMergeableStore?: SupportsMergeableStore,
-): Persister<SupportsMergeableStore>;
+  supportedStoreType?: StoreType,
+): Persister<StoreType>;
