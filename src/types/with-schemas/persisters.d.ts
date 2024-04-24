@@ -14,37 +14,49 @@ import {
 } from './mergeable-store.d';
 import {TableIdFromSchema} from './internal/store.d';
 
+/// StoreTypes
+export type StoreTypes =
+  | 1 // Store only
+  | 2 // MergeableStore only
+  | 3; // Store and MergeableStore
+
 /// PersistedStore
 export type PersistedStore<
   Schemas extends OptionalSchemas,
-  SupportsMergeableStore extends boolean = false,
-> =
-  | Store<Schemas>
-  | (SupportsMergeableStore extends true ? MergeableStore<Schemas> : never);
+  StoreType extends StoreTypes = 1,
+> = StoreType extends 3
+  ? Store<Schemas> | MergeableStore<Schemas>
+  : StoreType extends 2
+    ? MergeableStore<Schemas>
+    : Store<Schemas>;
 
 /// PersistedContent
 export type PersistedContent<
   Schemas extends OptionalSchemas,
-  SupportsMergeableStore extends boolean = false,
-> =
-  | Content<Schemas>
-  | (SupportsMergeableStore extends true ? MergeableContent<Schemas> : never);
+  StoreType extends StoreTypes = 1,
+> = StoreType extends 3
+  ? Content<Schemas> | MergeableContent<Schemas>
+  : StoreType extends 2
+    ? MergeableContent<Schemas>
+    : Content<Schemas>;
 
 /// PersistedChanges
 export type PersistedChanges<
   Schemas extends OptionalSchemas,
-  SupportsMergeableStore extends boolean = false,
-> =
-  | Changes<Schemas>
-  | (SupportsMergeableStore extends true ? MergeableChanges<Schemas> : never);
+  StoreType extends StoreTypes = 1,
+> = StoreType extends 3
+  ? Changes<Schemas> | MergeableChanges<Schemas>
+  : StoreType extends 2
+    ? MergeableChanges<Schemas>
+    : Changes<Schemas>;
 
 /// PersisterListener
 export type PersisterListener<
   Schemas extends OptionalSchemas,
-  SupportsMergeableStore extends boolean = false,
+  StoreType extends StoreTypes = 1,
 > = (
-  content?: PersistedContent<Schemas, SupportsMergeableStore>,
-  changes?: PersistedChanges<Schemas, SupportsMergeableStore>,
+  content?: PersistedContent<Schemas, StoreType>,
+  changes?: PersistedChanges<Schemas, StoreType>,
 ) => void;
 
 /// PersisterStats
@@ -128,7 +140,7 @@ export type DpcTabularValues = {
 /// Persister
 export interface Persister<
   in out Schemas extends OptionalSchemas,
-  SupportsMergeableStore extends boolean = false,
+  StoreType extends StoreTypes = 1,
 > {
   /// Persister.load
   load(initialContent?: Content<Schemas, true>): Promise<this>;
@@ -158,7 +170,7 @@ export interface Persister<
   schedule(...actions: Promise<any>[]): Promise<this>;
 
   /// Persister.getStore
-  getStore(): PersistedStore<Schemas, SupportsMergeableStore>;
+  getStore(): PersistedStore<Schemas, StoreType>;
 
   /// Persister.destroy
   destroy(): this;
@@ -171,20 +183,18 @@ export interface Persister<
 export function createCustomPersister<
   Schemas extends OptionalSchemas,
   ListeningHandle,
-  SupportsMergeableStore extends boolean = false,
+  StoreType extends StoreTypes = 1,
 >(
-  store: PersistedStore<Schemas, SupportsMergeableStore>,
-  getPersisted: () => Promise<
-    PersistedContent<Schemas, SupportsMergeableStore> | undefined
-  >,
+  store: PersistedStore<Schemas, StoreType>,
+  getPersisted: () => Promise<PersistedContent<Schemas, StoreType> | undefined>,
   setPersisted: (
-    getContent: () => PersistedContent<Schemas, SupportsMergeableStore>,
-    changes?: PersistedChanges<Schemas, SupportsMergeableStore>,
+    getContent: () => PersistedContent<Schemas, StoreType>,
+    changes?: PersistedChanges<Schemas, StoreType>,
   ) => Promise<void>,
   addPersisterListener: (
-    listener: PersisterListener<Schemas, SupportsMergeableStore>,
+    listener: PersisterListener<Schemas, StoreType>,
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
-  supportsMergeableStore?: SupportsMergeableStore,
-): Persister<Schemas, SupportsMergeableStore>;
+  supportedStoreType?: StoreType,
+): Persister<Schemas, StoreType>;

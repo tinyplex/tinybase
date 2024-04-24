@@ -42,7 +42,7 @@ export const createCustomSynchronizer = (
   // undocumented:
   extra: {[methodName: string]: (...args: any[]) => any} = {},
 ): Synchronizer => {
-  let persisterListener: PersisterListener | undefined;
+  let persisterListener: PersisterListener<2> | undefined;
   let sends = 0;
   let receives = 0;
 
@@ -222,8 +222,8 @@ export const createCustomSynchronizer = (
     ];
   };
 
-  const getPersisted = async (): Promise<MergeableChanges | undefined> => {
-    const changes = await getChangesFromOtherStore();
+  const getPersisted = async (): Promise<MergeableContent | undefined> => {
+    const changes = (await getChangesFromOtherStore()) as any;
     return !objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0])
       ? changes
       : undefined;
@@ -243,7 +243,7 @@ export const createCustomSynchronizer = (
     }
   };
 
-  const addPersisterListener = (listener: PersisterListener) =>
+  const addPersisterListener = (listener: PersisterListener<2>) =>
     (persisterListener = listener);
 
   const delPersisterListener = () => (persisterListener = undefined);
@@ -262,12 +262,12 @@ export const createCustomSynchronizer = (
 
   const persister = createCustomPersister(
     store,
-    getPersisted as any,
-    setPersisted as any,
+    getPersisted,
+    setPersisted,
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    true,
+    2,
     {startSync, stopSync, destroy, getSynchronizerStats, ...extra},
   ) as Synchronizer;
   return persister;
