@@ -46,7 +46,7 @@ type Synchronizable<Environment> = {
 const mockLocalSynchronizer: Synchronizable<undefined> = {
   getSynchronizer: async (store: MergeableStore) =>
     createLocalSynchronizer(store),
-  pauseMilliseconds: 50,
+  pauseMilliseconds: 20,
 };
 
 const mockWsSynchronizer: Synchronizable<WsServer> = {
@@ -110,10 +110,10 @@ const mockCustomSynchronizer: Synchronizable<
       (): void => {
         clients.delete(clientId);
       },
-      0.05,
+      0.005,
     );
   },
-  pauseMilliseconds: 100,
+  pauseMilliseconds: 10,
 };
 
 describe.each([
