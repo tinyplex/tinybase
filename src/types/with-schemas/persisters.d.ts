@@ -30,7 +30,7 @@ export type PersisterListener<
   getContent?: () =>
     | Content<Schemas, true>
     | (SupportsMergeableStore extends true ? MergeableContent<Schemas> : never),
-  getChanges?: () =>
+  changes?:
     | Changes<Schemas>
     | (SupportsMergeableStore extends true ? MergeableChanges<Schemas> : never),
 ) => void;

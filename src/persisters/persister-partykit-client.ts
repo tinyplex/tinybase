@@ -78,7 +78,7 @@ export const createPartyKitPersister = ((
         deconstruct(messagePrefix, event.data, 1),
         ([type, payload]) => {
           if (type == SET_CHANGES) {
-            listener(undefined, () => payload);
+            listener(undefined, payload);
           }
         },
       );
