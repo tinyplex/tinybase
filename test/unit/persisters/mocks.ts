@@ -152,9 +152,9 @@ const getMockedCustom = (
     return createCustomPersister(
       store,
       async () => jsonParseWithUndefined(customPersister),
-      async (getContent, getChanges) => {
+      async (getContent, changes) => {
         customPersister = jsonStringWithUndefined(getContent());
-        customPersisterChanges = getChanges?.() ?? [{}, {}, 1];
+        customPersisterChanges = changes ?? [{}, {}, 1];
       },
       (listener) => {
         customPersisterListener = listener;
