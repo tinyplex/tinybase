@@ -8,6 +8,28 @@ import {
 } from './mergeable-store';
 import {Id} from './common.d';
 
+/// PersistedStore
+export type PersistedStore<SupportsMergeableStore extends boolean = false> =
+  | Store
+  | (SupportsMergeableStore extends true ? MergeableStore : never);
+
+/// PersistedContent
+export type PersistedContent<SupportsMergeableStore extends boolean = false> =
+  | Content
+  | (SupportsMergeableStore extends true ? MergeableContent : never);
+
+/// PersistedChanges
+export type PersistedChanges<SupportsMergeableStore extends boolean = false> =
+  | Changes
+  | (SupportsMergeableStore extends true ? MergeableChanges : never);
+
+/// PersisterListener
+export type PersisterListener<SupportsMergeableStore extends boolean = false> =
+  (
+    content?: PersistedContent<SupportsMergeableStore>,
+    changes?: PersistedChanges<SupportsMergeableStore>,
+  ) => void;
+
 /// PersisterStats
 export type PersisterStats = {
   /// PersisterStats.loads
@@ -15,17 +37,6 @@ export type PersisterStats = {
   /// PersisterStats.saves
   saves?: number;
 };
-
-/// PersisterListener
-export type PersisterListener<SupportsMergeableStore extends boolean = false> =
-  (
-    content?:
-      | Content
-      | (SupportsMergeableStore extends true ? MergeableContent : never),
-    changes?:
-      | Changes
-      | (SupportsMergeableStore extends true ? MergeableChanges : never),
-  ) => void;
 
 /// DatabasePersisterConfig
 export type DatabasePersisterConfig = DpcJson | DpcTabular;
@@ -126,9 +137,7 @@ export interface Persister<SupportsMergeableStore extends boolean = false> {
   schedule(...actions: Promise<any>[]): Promise<this>;
 
   /// Persister.getStore
-  getStore(): SupportsMergeableStore extends true
-    ? Store | MergeableStore
-    : Store;
+  getStore(): PersistedStore<SupportsMergeableStore>;
 
   /// Persister.destroy
   destroy(): this;
@@ -143,19 +152,13 @@ export function createCustomPersister<
   ListeningHandle,
   SupportsMergeableStore extends boolean = false,
 >(
-  store: Store | (SupportsMergeableStore extends true ? MergeableStore : never),
+  store: PersistedStore<SupportsMergeableStore>,
   getPersisted: () => Promise<
-    | Content
-    | (SupportsMergeableStore extends true ? MergeableContent : never)
-    | undefined
+    PersistedContent<SupportsMergeableStore> | undefined
   >,
   setPersisted: (
-    getContent: () =>
-      | Content
-      | (SupportsMergeableStore extends true ? MergeableContent : never),
-    changes?:
-      | Changes
-      | (SupportsMergeableStore extends true ? MergeableChanges : never),
+    getContent: () => PersistedContent<SupportsMergeableStore>,
+    changes?: PersistedChanges<SupportsMergeableStore>,
   ) => Promise<void>,
   addPersisterListener: (
     listener: PersisterListener<SupportsMergeableStore>,
