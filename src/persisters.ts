@@ -144,114 +144,130 @@ export const createCustomPersister = <
     );
   };
 
+  const load = async (initialContent?: Content): Promise<Persister> => {
+    /*! istanbul ignore else */
+    if (loadSave != 2) {
+      loadSave = 1;
+      if (DEBUG) {
+        loads++;
+      }
+      await schedule(async () => {
+        try {
+          setContentOrChanges(await getPersisted());
+        } catch (error) {
+          onIgnoredError?.(error);
+          if (initialContent) {
+            setDefaultContent(initialContent as Content);
+          }
+        }
+        loadSave = 0;
+      });
+    }
+    return persister;
+  };
+
+  const startAutoLoad = async (
+    initialContent?: Content,
+  ): Promise<Persister<SupportsMergeableStore>> => {
+    await stopAutoLoad().load(initialContent);
+    autoLoadHandle = addPersisterListener(async (content, changes) => {
+      if (changes || content) {
+        /*! istanbul ignore else */
+        if (loadSave != 2) {
+          loadSave = 1;
+          if (DEBUG) {
+            loads++;
+          }
+          setContentOrChanges(changes ?? content);
+          loadSave = 0;
+        }
+      } else {
+        await load();
+      }
+    });
+    return persister;
+  };
+
+  const stopAutoLoad = (): Persister => {
+    if (autoLoadHandle) {
+      delPersisterListener(autoLoadHandle);
+      autoLoadHandle = undefined;
+    }
+    return persister;
+  };
+
+  const isAutoLoading = () => !isUndefined(autoLoadHandle);
+
+  const save = async (
+    changes?:
+      | Changes
+      | (SupportsMergeableStore extends true ? MergeableChanges : never),
+  ): Promise<Persister<SupportsMergeableStore>> => {
+    /*! istanbul ignore else */
+    if (loadSave != 1) {
+      loadSave = 2;
+      if (DEBUG) {
+        saves++;
+      }
+      await schedule(async () => {
+        try {
+          await setPersisted(getContent as any, changes);
+        } catch (error) {
+          /*! istanbul ignore next */
+          onIgnoredError?.(error);
+        }
+        loadSave = 0;
+      });
+    }
+    return persister;
+  };
+
+  const startAutoSave = async (): Promise<Persister> => {
+    await stopAutoSave().save();
+    autoSaveListenerId = store.addDidFinishTransactionListener(() => {
+      const changes = getChanges() as any;
+      if (hasChanges(changes)) {
+        save(changes);
+      }
+    });
+    return persister;
+  };
+
+  const stopAutoSave = (): Persister => {
+    ifNotUndefined(autoSaveListenerId, store.delListener);
+    autoSaveListenerId = undefined;
+    return persister;
+  };
+
+  const isAutoSaving = () => !isUndefined(autoSaveListenerId);
+
+  const schedule = async (...actions: Action[]): Promise<Persister> => {
+    arrayPush(mapGet(scheduleActions, scheduleId) as Action[], ...actions);
+    await run();
+    return persister;
+  };
+
+  const getStore = (): Store => store;
+
+  const destroy = (): Persister => stopAutoLoad().stopAutoSave();
+
+  const getStats = (): PersisterStats => (DEBUG ? {loads, saves} : {});
+
   const persister: any = {
-    load: async (initialContent?: Content): Promise<Persister> => {
-      /*! istanbul ignore else */
-      if (loadSave != 2) {
-        loadSave = 1;
-        if (DEBUG) {
-          loads++;
-        }
-        await persister.schedule(async () => {
-          try {
-            setContentOrChanges(await getPersisted());
-          } catch (error) {
-            onIgnoredError?.(error);
-            if (initialContent) {
-              setDefaultContent(initialContent as Content);
-            }
-          }
-          loadSave = 0;
-        });
-      }
-      return persister;
-    },
+    load,
+    startAutoLoad,
+    stopAutoLoad,
+    isAutoLoading,
 
-    startAutoLoad: async (initialContent?: Content): Promise<Persister> => {
-      await persister.stopAutoLoad().load(initialContent);
-      autoLoadHandle = addPersisterListener(async (content, changes) => {
-        if (changes || content) {
-          /*! istanbul ignore else */
-          if (loadSave != 2) {
-            loadSave = 1;
-            if (DEBUG) {
-              loads++;
-            }
-            setContentOrChanges(changes ?? content);
-            loadSave = 0;
-          }
-        } else {
-          await persister.load();
-        }
-      });
-      return persister;
-    },
+    save,
+    startAutoSave,
+    stopAutoSave,
+    isAutoSaving,
 
-    stopAutoLoad: (): Persister => {
-      if (autoLoadHandle) {
-        delPersisterListener(autoLoadHandle);
-        autoLoadHandle = undefined;
-      }
-      return persister;
-    },
-
-    isAutoLoading: () => !isUndefined(autoLoadHandle),
-
-    save: async (
-      changes?:
-        | Changes
-        | (SupportsMergeableStore extends true ? MergeableChanges : never),
-    ): Promise<Persister> => {
-      /*! istanbul ignore else */
-      if (loadSave != 1) {
-        loadSave = 2;
-        if (DEBUG) {
-          saves++;
-        }
-        await persister.schedule(async () => {
-          try {
-            await setPersisted(getContent as any, changes);
-          } catch (error) {
-            /*! istanbul ignore next */
-            onIgnoredError?.(error);
-          }
-          loadSave = 0;
-        });
-      }
-      return persister;
-    },
-
-    startAutoSave: async (): Promise<Persister> => {
-      await persister.stopAutoSave().save();
-      autoSaveListenerId = store.addDidFinishTransactionListener(() => {
-        const changes = getChanges();
-        if (hasChanges(changes as any)) {
-          persister.save(changes);
-        }
-      });
-      return persister;
-    },
-
-    stopAutoSave: (): Persister => {
-      ifNotUndefined(autoSaveListenerId, store.delListener);
-      autoSaveListenerId = undefined;
-      return persister;
-    },
-
-    isAutoSaving: () => !isUndefined(autoSaveListenerId),
-
-    schedule: async (...actions: Action[]): Promise<Persister> => {
-      arrayPush(mapGet(scheduleActions, scheduleId) as Action[], ...actions);
-      await run();
-      return persister;
-    },
-
-    getStore: (): Store => store,
-
-    destroy: (): Persister => persister.stopAutoLoad().stopAutoSave(),
-
-    getStats: (): PersisterStats => (DEBUG ? {loads, saves} : {}),
-
+    schedule,
+    getStore,
+    destroy,
+    getStats,
     ...extra,
   };
 
