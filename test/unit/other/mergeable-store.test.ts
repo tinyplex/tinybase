@@ -60,6 +60,7 @@ test('Protocol basics', () => {
   expect(store2.getMergeableRowHashes({t1: 608074644})).toEqual({
     t1: {r1: 478205993, r2: 3088830063},
   });
+  expect(store2.getMergeableRowHashes({t1: 2691149289})).toEqual({});
 
   expect(
     store1.getMergeableRowDiff({t1: {r1: 478205993, r2: 3088830063}}),
@@ -75,6 +76,7 @@ test('Protocol basics', () => {
   expect(store2.getMergeableCellHashes({t1: {r1: 3278308926}})).toEqual({
     t1: {r1: {c2: 2554361111}},
   });
+  expect(store2.getMergeableCellHashes({t1: {r1: 478205993}})).toEqual({});
 
   expect(store1.getMergeableCellDiff({t1: {r1: {c2: 2554361111}}})).toEqual([
     {t1: [{r1: [{c1: [1, 'Hc2DO@000008DKS9']}]}]},
