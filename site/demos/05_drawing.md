@@ -212,12 +212,14 @@ useCreatePersister(
   (store) => createLocalPersister(store, 'drawing/store'),
   [],
   async (persister) => {
-    await persister.startAutoLoad({
-      shapes: {
-        [CANVAS_ID]: {x1: 0, y1: 0, nextId: '1', text: '[canvas]'},
-        1: {},
+    await persister.startAutoLoad([
+      {
+        shapes: {
+          [CANVAS_ID]: {x1: 0, y1: 0, nextId: '1', text: '[canvas]'},
+          1: {},
+        },
       },
-    });
+    ]);
     checkpoints?.clear();
     await persister.startAutoSave();
   },

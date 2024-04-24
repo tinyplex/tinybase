@@ -95,7 +95,7 @@ const App = () => {
     (store) => createLocalPersister(store, 'countries/starStore'),
     [],
     async (persister) => {
-      await persister.startAutoLoad({
+      await persister.startAutoLoad([{
         countries: {
           GB: {star: true},
           NZ: {star: true},
@@ -106,7 +106,7 @@ const App = () => {
           BZ: {star: true},
           US: {star: true},
         },
-      });
+      }]);
       await persister.startAutoSave();
     },
   );
