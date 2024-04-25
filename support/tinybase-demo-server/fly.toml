@@ -8,6 +8,10 @@ primary_region = 'iad'
 
 [build]
 
+[metrics]
+  port = 8044
+  path = "/metrics" 
+
 [http_service]
   internal_port = 8043
   force_https = true
