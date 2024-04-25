@@ -1,0 +1,800 @@
+id	name	gender	born	died	popularity	biography	image
+1	Frank Darabont	2	1959		15	Frank Darabont (born January 28, 1959) is a Hungarian-American film director, screenwriter and producer who has been nominated for three Academy...	/nvOqAQhKtXdHtczgqanoCfltsxJ.jpg
+2	Tim Robbins	2	1958		32	Timothy Francis Robbins (born October 16, 1958) is an American actor, screenwriter, director, producer, and musician. He is best known for his...	/hsCu1JUzQQ4pl7uFxAVFLOs9yHh.jpg
+3	Morgan Freeman	2	1937		60	Morgan Freeman (born June 1, 1937) is an American actor, director, and narrator. Noted for his distinctive deep voice, Freeman is known for his...	/905k0RFzH0Kd6gx8oSxRdnr6FL.jpg
+4	Bob Gunton	2	1945		27	Robert Patrick "Bob" Gunton, Jr. (born November 15, 1945) is an American actor. He is known for playing strict, authoritarian characters, with his...	/rr2KDCKK4t0f5YhZibCpLCAsJxc.jpg
+5	Aditya Chopra	2	1971		5	Aditya Chopra is an Indian filmmaker. His work as a director includes Dilwale Dulhania Le Jayenge (1995), Mohabbatein (2000), Rab Ne Bana Di Jodi...	/eXYKfA6bg12pn9LPrWeRfxYQwcb.jpg
+6	Shah Rukh Khan	2	1965		11	Shah Rukh Khan (born November 2, 1965) is a prominent Bollywood actor and producer. He made his film debut in Deewana (1992). In 2005, the Government...	/nLITkps4X81wy2opHgTJ0cs310I.jpg
+7	Kajol	1	1974		7	Kajol (born Kajol Mukherjee), also known by her married name Kajol Devgan, is an Indian film actress, who predominantly works in Hindi cinema. Born...	/cwum24EsxNwpcEsboKkudiGySLY.jpg
+8	Amrish Puri	2	1932	2005	9	From Wikipedia, the free encyclopedia.	/uhMGFS7tuG71LDv2wk9LfZZ4EG6.jpg
+9	Francis Ford Coppola	2	1939		5	Francis Ford Coppola  (born April 7, 1939) is an American film director, producer and screenwriter. He is widely acclaimed as one of Hollywood's most...	/mGKkVp3l9cipPt10AqoQnwaPrfI.jpg
+10	Marlon Brando	2	1924	2004	15	Marlon Brando Jr. (April 3, 1924 – July 1, 2004) was an American actor. Considered one of the most influential actors of the 20th century, he...	/5o8whyfLBWXLODEcMP8K45lPTjT.jpg
+11	Al Pacino	2	1940		61	Alfredo James Pacino (born April 25, 1940) is an American actor and filmmaker. In a career spanning over five decades, he has received many awards...	/fMDFeVf0pjopTJbyRSLFwNDm8Wr.jpg
+12	James Caan	2	1940	2022	36	James Edmund Caan (/kɑːn/ KAHN; March 26, 1940 – July 6, 2022) was an American actor who was nominated for several awards, including four Golden...	/bGyOCCOIgcIyKjOGLoXoyp0XWHf.jpg
+13	Steven Spielberg	2	1946		33	Steven Allan Spielberg (born December 18, 1946) is an American film director, producer, and screenwriter. He began his career in the New Hollywood...	/tZxcg19YQ3e8fJ0pOs7hjlnmmr6.jpg
+14	Liam Neeson	2	1952		59	An Irish actor who has been nominated for an Oscar, a BAFTA and three Golden Globe Awards. He has starred in a number of notable roles including...	/bboldwqSC6tdw2iL6631c98l2Mn.jpg
+15	Ben Kingsley	2	1943		20	Sir Ben Kingsley, CBE (born 31 December 1943), born Krishna Pandit Bhanji , is a British actor. He has won an Oscar, BAFTA, Golden Globe and Screen...	/vQtBqpF2HDdzbfXHDzR4u37i1Ac.jpg
+16	Ralph Fiennes	2	1962		38	An English actor, director and producer. A noted Shakespeare interpreter, he first achieved success onstage at the Royal National Theatre. Fiennes'...	/tJr9GcmGNHhLVVEH3i7QYbj6hBi.jpg
+17	Robert Duvall	2	1931		37	Robert Selden Duvall (born January 5, 1931) is an American actor and filmmaker. He is the recipient of an Academy Award, four Golden Globe Awards, a...	/ybMmK25h4IVtfE7qrnlVp47RQlh.jpg
+18	Diane Keaton	1	1946		27	Diane Hall Keaton (born Diane Hall; January 5, 1946) is an American actress. Known for her idiosyncratic personality and fashion style, she has...	/9WfaYj5iBMyDX4IJyM1bdMRD3x6.jpg
+19	Ernesto Contreras	2	1969		2	Born in Veracruz, Mexico, in 1969, he is a graduate from the Center for Studies in Communication Sciences and later from the University Center for...	/sRTbKa2fihe8c3IUDLJEZszGALi.jpg
+20	Nora Velázquez	1	1954		1	Mexican actress and comedian with an outstanding career in film, theater and television, known for playing the comic character of Chabelita;...	/iHnjw3XkxoHTjZht0n5gu1qUiSV.jpg
+21	Benny Emmanuel	2	1996		7		/o27QoIpUBWcB3BosFdZnx9Nd9dy.jpg
+22	Luisa Huertas	1	1951		2	Luisa Huertas is an actress of Salvadoran and Mexican nationality, born on June 24, 1951, in San Salvador, El Salvador. Born to a Spanish refugee...	/ptOQB51h66ZjmhEKL4GaSTtqNp7.jpg
+23	Shouko Nakamura	1			4	Shouko NAKAMURA is best known for being the animation director and key animator of Tengen Toppa Gurren Lagann, the episode director, key animator and...	/lIPoHRbL7JKBwwf9FeR36utOUfO.jpg
+24	Kenji Nojima	2	1976		5	Kenji Nojima was born March 16, 1976 in Suginami, Tokyo, Japan. He is a voice actor (seiyuu), singer and narrator employed by Japanese voice talent...	/nRSPVjDkdpnrQabnK5mENH118zN.jpg
+25	Hiroshi Kamiya	2	1975		15	Hiroshi Kamiya is a Japanese voice actor, singer and narrator affiliated with Aoni Production. He is best known for being the voice of Choromatsu...	/u2r0u8tOa0cyh7nawcEOPpcEZr1.jpg
+26	Hideo Ishikawa	2	1969		8	Hideo Ishikawa (石川 英郎) is a Japanese voice actor.	/gEjEDNGt3CHsyzFQdNqewZVbh0.jpg
+27	Hayao Miyazaki	2	1941		13	Hayao Miyazaki (Miyazaki Hayao, born January 5, 1941) is a Japanese manga artist and prominent film director and animator of many popular anime...	/mG3cfxtA5jqDc7fpKgyzZMKoXDh.jpg
+28	Rumi Hiiragi	1	1987		8	Rumi Hiiragi (born August 1, 1987 in Tokyo) is a Japanese actress.	/zITaVtFyc4xSM3mxSoPRWHbqgJI.jpg
+29	Miyu Irino	2	1988		7	Miyu Irino is a Japanese actor and voice actor from Tokyo. He voices the lead character Sora in the Kingdom Hearts video game series. His major anime...	/dcZ4IJX8CBcJzxy8hhKFXv59LDE.jpg
+30	Mari Natsuki	1	1952		12	Junko Nakajima (中島 淳子 Nakajima Junko, born 2 May 1952), more commonly known by her stage name Mari Natsuki (夏木 マリ Natsuki Mari), is a Japanese...	/aRs3dGqA2bCuGSZ7lJGhQKe8rhp.jpg
+31	Makoto Shinkai	2	1973		24	Makoto Niitsu (新津 誠, Niitsu Makoto), also known as Makoto Shinkai (新海 誠, Shinkai Makoto), is a Japanese animator, filmmaker and manga artist best...	/mSCk6PmAR99bCsKJYlMx94vq5qe.jpg
+32	Ryunosuke Kamiki	2	1993		9	Ryunosuke Kamiki is a Japanese actor. He entered the industry in 1995 when he was only 2 years old. He made his drama debut in "Good News", which...	/6MwcfIUraHuKOmwjT4gX8BBB2T6.jpg
+33	Mone Kamishiraishi	1	1998		12	Mone Kamishiraishi is an actress. She was named a Newcomer of the Year at the 38th Japan Academy Prize for her role in the 2014 musical comedy...	/cPydoy2sSqFDsbXeBPmzQGPmq0R.jpg
+34	Ryo Narita	2	1993		6	Ryo Narita is a model and actor from Saitama Prefecture, Japan.	/2EFimbwi4lf9B19cgu2bJaNJiVq.jpg
+35	Sidney Lumet	2	1924	2011	6	Sidney Lumet (June 25, 1924 – April 9, 2011) was an American director, producer and screenwriter with over 50 films to his name. He was nominated for...	/zuYwoP6mTEAJu9pTZ7u3NKP67gu.jpg
+36	Martin Balsam	2	1919	1996	7	Martin Henry Balsam (November 4, 1919 – February 13, 1996) was an American character actor. He is best known for a number of film roles, including...	/2j4LJJfTPQtvnjp8LfSGOvWFATO.jpg
+37	John Fiedler	2	1925	2005	16	John Fielder has made his face and voice recognizable to millions as a character actor. Many would know the bald-pated Fiedler as therapy patient Mr....	/6vfLLGeGuO6Ko0VRnyhgE2v6RUu.jpg
+38	Lee J. Cobb	2	1911	1976	18	Lee J. Cobb (December 8, 1911 - February 11, 1976) ) was an American actor best known for his performance in 12 Angry Men (1957), his Academy...	/yxMxBvM0PZwu7YXQamG0kFwt9DZ.jpg
+39	Tosca Musk	1			5		/usR5NspRlWgXKUe9qVsCtTCpe4l.jpg
+40	Melanie Zanetti	1	1985		29	Melanie Zanetti is an Australian film and television actress. She holds a BA in Acting from the University of Southern Queensland, Toowoomba,...	/lbUQ7ilvBtWMU23reKsHg3jRmsf.jpg
+41	Giulio Berruti	2	1984		31	Giulio Berruti was born on September 27, 1984 in Rome, Lazio, Italy as Giulio Maria Berruti. He is an actor and producer, known for Monte Carlo...	/cCOWVvjQ1TblPvM7TgMBqMczkOX.jpg
+42	Kurt McKinney	2	1962		4		/ebkMXPJXAGsPpfzysNmht6NVtR6.jpg
+43	Bong Joon-ho	2	1969		9	Bong Joon-ho (Korean: 봉준호), born September 14, 1969, is a South Korean film director, producer and screenwriter. His films are characterised by...	/tKLJBqbdH6HFj2QxLA5o8Zk7IVs.jpg
+44	Song Kang-ho	2	1967		24	Song Kang-ho (송강호) is a South Korean actor. Born on January 17, 1967, he first worked in plays, entering a troupe. He started working in films as a...	/dyWUKQlNyr7SUAjo58VZXvPODkr.jpg
+45	Lee Sun-kyun	2	1975		7	Lee Sun-kyun (이선균) is a South Korean actor. He was born on born March 2, 1975. After beginning his career in musical theatre, for many years Lee was...	/mwF2HgyEF2UzxSvNRJEtbWlKbAj.jpg
+46	Cho Yeo-jeong	1	1981		25	Cho Yeo-jeong (조여정) is a South Korean actress. Born on February 10, 1981, she began her career as a model in 1997 at the age of 16 and launched her...	/n7YWOoquBL9g3qEwQ2zvrQSW96L.jpg
+47	James Andrew Fraser	2			1		
+48	Tom Hanks	2	1956		99	Thomas Jeffrey Hanks (born July 9, 1956) is an American actor and filmmaker. Known for both his comedic and dramatic roles, Hanks is one of the most...	/xndWFsBlClOJFRdhSt4NBwiPq2o.jpg
+49	David Morse	2	1953		19	David Bowditch Morse (born October 11, 1953) is an American stage, television, and film actor. He first came to national attention as Dr. Jack...	/tghQO2eZOlnOxOz10oikQpyUA0a.jpg
+50	Bonnie Hunt	1	1961		11	Bonnie Lynne Hunt (born September 22, 1961) is an American actress, comedian, writer, director, television producer and daytime television host.	/nO1jJO1EVzlryfIViEu4zu5Rytw.jpg
+51	Christopher Nolan	2	1970		16	Christopher Edward Nolan, CBE (born 30 July 1970) is a British-American film director, screenwriter, and producer. He was born in Westminster,...	/xuAIuYSmsUzKlUMBFGVZaWsY3DZ.jpg
+52	Christian Bale	2	1974		30	Christian Charles Philip Bale (born 30 January 1974) is an English actor. Known for his versatility and recurring physical transformations to play...	/qCpZn2e3dimwbryLnqxZuI88PTi.jpg
+53	Heath Ledger	2	1979	2008	24	Heath Andrew Ledger (4 April 1979 – 22 January 2008) was an Australian actor and music video director. After playing roles in several Australian...	/5Y9HnYYa9jF4NunY9lSgJGjSe8E.jpg
+54	Michael Caine	2	1933		36	Sir Michael Caine CBE (born Maurice Joseph Micklewhite Jr.; 14 March 1933) is an English actor. Known for his distinctive South London accent, he has...	/hZruclwEPCKw3e83rnFSIH5sRFZ.jpg
+55	Takahiro Miki	2	1974		2		/jUNq43kSRj6dXzDaUzmcDEsT095.jpg
+56	Yuriko Yoshitaka	1	1988		9	Yuriko Yoshitaka is a Japanese actress who is represented by the Japanese agency Amuse. Yoshitaka made her acting debut in 2006. She was given the...	/Zqd3qjiVAfNtBcMAAUNPtvYDV8.jpg
+57	Ryusei Yokohama	2	1996		12		/rYEfBHyJ45GPKI0ZTCjukCzONqX.jpg
+58	Ryosei Tayama	2	1951		2	Ryôsei Tayama (田山 涼成, Tayama Ryōsei, August 9, 1951) is a Japanese actor and talent born in Midori Ward, Nagoya City, Aichi Prefecture. His real name...	/rrQPfdWrrGyHeXTp7uRFRDe8laW.jpg
+59	Sergio Leone	2	1929	1989	22	Sergio Leone (January 3, 1929 – April 30, 1989) was an Italian film director, producer and screenwriter most associated with the "Spaghetti Western"...	/2576qoW8l9Z1nKGM10ar60aIwUu.jpg
+60	Clint Eastwood	2	1930		49	Clinton "Clint" Eastwood Jr. (born May 31, 1930) is an American film actor, director, producer, composer and former politician. Following his...	/dU35NnjZ4aGw5abIJe3WXVf3Eey.jpg
+61	Eli Wallach	2	1915	2014	13	Eli Herschel Wallach (December 7, 1915 – June 24, 2014) was an American film, television and stage actor, who gained fame in the late 1950s. For his...	/880EvYjyIG9BcrM3Jfof0QofmRe.jpg
+62	Lee Van Cleef	2	1925	1989	12	Clarence LeRoy "Lee" Van Cleef Jr. (January 9, 1925 – December 16, 1989) was an American actor best known for his roles in Spaghetti Westerns such as...	/prcDQR2pp0b92j0G8rnX5kQeQk0.jpg
+63	Quentin Tarantino	2	1963		29	Quentin Jerome Tarantino (born March 27, 1963) is an American film director, screenwriter, producer, cinematographer and actor. In the early 1990s he...	/1gjcpAa99FAOWGnrUvHEXXsRs7o.jpg
+64	John Travolta	2	1954		31	An American actor, film producer, dancer, and singer. He first became known in the 1970s, after appearing on the television series Welcome Back,...	/9axs7CGk01nmGqBAppDR92JHucn.jpg
+65	Samuel L. Jackson	2	1948		69	An American film and television actor and film producer. After Jackson became involved with the Civil Rights Movement, he moved on to acting in...	/nCJJ3NVksYNxIzEHcyC1XziwPVj.jpg
+66	Uma Thurman	1	1970		59	Uma Karuna Thurman (born April 29, 1970) is an American actress, writer, producer and model. She has acted in a variety of films, from romantic...	/tHa7u4ScCm9hwSbwodzj8Jmy3io.jpg
+67	Elizabeth Allen Rosenbaum	1			3		
+68	Sofia Carson	1	1993		80	Sofía Daccarett Char, better known as Sofia Carson (born April 10, 1993), is an American singer and actress. Her first appearance on television was...	/tA64dzMN0rAYsBpwC3OTsuOxNoC.jpg
+69	Nicholas Galitzine	2	1994		37	Nicholas Dimitri Constantine Galitzine (born September 29, 1994) is an English actor known for his roles in High Strung (2016), Handsome Devil...	/i5coqGhvx8wjPXT76W3n3fHwgi0.jpg
+70	John Harlan Kim	2	1993		5		/syCWEzV2zFYdYV6Kk4ebTgjGWFK.jpg
+71	Peter Jackson	2	1961		16	Sir Peter Robert Jackson, (born 31 October 1961) is a New Zealand film director, producer, actor, and screenwriter, known for his Lord of the Rings...	/4hh7hips4xc6kgpNDQKQH3goRvJ.jpg
+72	Elijah Wood	2	1981		26	Elijah Jordan Wood (born January 28, 1981) is an American actor and producer. He is best known for his portrayal of Frodo Baggins in the Lord of the...	/7UKRbJBNG7mxBl2QQc5XsAh6F8B.jpg
+73	Ian McKellen	2	1939		29	Sir Ian Murray McKellen, CH, CBE (born 25 May 1939) is an English actor. He is the recipient of six Laurence Olivier Awards, a Tony Award, a Golden...	/5cnnnpnJG6TiYUSS7qgJheUZgnv.jpg
+74	Liv Tyler	1	1977		28	Liv Rundgren Tyler (born Liv Rundgren, July 1, 1977) is an American actress, producer, singer and former model. She is best known for her portrayal...	/9IlcL0MWSNz8YLzqSooRHCQD4Dt.jpg
+75	Robert Zemeckis	2	1951		14	Robert Lee Zemeckis (born May 14, 1951) is an American film director, producer and screenwriter. Zemeckis first came to public attention in the 1980s...	/lPYDQ5LYNJ12rJZENtyASmVZ1Ql.jpg
+76	Robin Wright	1	1966		43	Robin Gayle Wright (born April 8, 1966) is an American actress. She is best known for her roles as Jenny Curran in Forrest Gump, as Buttercup in The...	/lj5o0pvHfWCEaPX3rzeGQkfIQzj.jpg
+77	Gary Sinise	2	1955		21	Gary Sinise (born March 17, 1955) is an American actor, film director and musician.	/ngYV91xYfCu0JNcSxJ4yQ7tzOna.jpg
+78	Rhett Wellington	0			3		/3WWleE8I95hzi3VxH6TunlfyT7j.jpg
+79	Martin Scorsese	2	1942		18	Martin Charles Scorsese (born November 17, 1942) is an American film director, producer, screenwriter, and actor. One of the major figures of the New...	/9U9Y5GQuWX3EZy39B8nkk4NY01S.jpg
+80	Ray Liotta	2	1954	2022	40	Raymond Allen Liotta (December 18, 1954 – May 26, 2022) was an American actor and producer. His best-known roles include Shoeless Joe Jackson in...	/rhaCUi04uEXDFvuPM5Drj1AprE6.jpg
+81	Robert De Niro	2	1943		55	Robert Anthony De Niro Jr. (born August 17, 1943) is an American actor, producer, and director. He is particularly known for his nine collaborations...	/cT8htcckIuyI1Lqwt1CvD02ynTh.jpg
+82	Joe Pesci	2	1943		36	Joseph Frank “Joe” Pesci (born February 9, 1943) is an American actor, comedian, singer and musician. He is known for his roles as violent mobsters,...	/4AO0Rwdg2ky8Usmgzgj0dvhy7Zw.jpg
+83	Giuseppe Tornatore	2	1956		5	Giuseppe Tornatore (born 27 May 1956) is an Italian film director and screenwriter.  Born in Bagheria near Palermo, Tornatore developed an interest...	/pjVrtNGsCSNs5IeRVr34PMn1hVR.jpg
+84	Philippe Noiret	2	1930	2006	8	Philippe Noiret (born 1 October 1930 in Lille – died 23 November 2006 in Paris) was a French film actor.	/13vb0RuOI0t8I1y04pnz81vLptl.jpg
+85	Jacques Perrin	2	1941	2022	4	Jacques Perrin was a French actor and filmmaker. He is occasionally credited as Jacques Simonet. Simonet was his father's name and Perrin his...	/5HRh3Ae5pbLB4sUgBz4Rzr9sSPJ.jpg
+86	Marco Leonardi	2	1971		12	From Wikipedia, the free encyclopedia	/5VVhO9rPvRgKsZME2gZKtG9WgWD.jpg
+87	Akira Kurosawa	2	1910	1998	13	Akira Kurosawa (Kyūjitai: 黒澤 明, Shinjitai: 黒沢 明 Kurosawa Akira; March 23, 1910 – September 6, 1998) was a Japanese film director, producer,...	/uCFWmYXu0EqF5Bd6zWaOS4FxvEB.jpg
+88	Toshirō Mifune	2	1920	1997	13	Toshiro Mifune was a Japanese actor who appeared in almost 170 feature films. He is best known for his 16-film collaboration with filmmaker Akira...	/2GU6d2jm2J644FmYxxl4sbq52Bl.jpg
+89	Takashi Shimura	2	1905	1982	10	​From Wikipedia, the free encyclopedia.  	/ydyAm2vyBbEPZRICIMqqjDm0NM9.jpg
+90	Yoshio Inaba	2	1920	1998	6	​From Wikipedia, the free encyclopedia.  	/5qIAqM5PegWTNq67qNofz78fb6U.jpg
+91	Roberto Benigni	2	1952		20	Roberto Remigio Benigni, Knight Grand Cross OMRI (born 27 October 1952) is an Italian actor, comedian, screenwriter and director of film, theatre and...	/noelOhwX1oaNSvU9NLKhPrHTFI3.jpg
+92	Nicoletta Braschi	1	1960		4	​From Wikipedia, the free encyclopedia.	/i1BYJhg2V6PZEkCaMyYNLRqutmM.jpg
+93	Giorgio Cantarini	2	1992		7	Born and raised in Florence, Italy, Giorgio was the only child born to Rimazio and La Tina Cantarini. Soon after Giorgio, whose family nickname is...	/hzb7CRUnOitz31kQbgUqJpIPcLO.jpg
+94	James Woods	2	1947		18	James Howard Woods (born April 18, 1947) is an American film, stage and television actor. Woods is known for starring in critically acclaimed films...	/tLH7mpH4KqkWL5VgjueTbewGsfK.jpg
+95	Elizabeth McGovern	1	1961		35	Elizabeth McGovern (born July 18, 1961) is an American film, television, and theater actor.	/ihYdCKyr3JPz74tPuvkn1WSNh9b.jpg
+96	Alfred Hitchcock	2	1899	1980	16	Sir Alfred Joseph Hitchcock, KBE (13 August 1899 – 29 April 1980), was an English director and producer. He became known for thrillers, earning him...	/108fiNM6poRieMg7RIqLJRxdAwG.jpg
+97	Anthony Perkins	2	1932	1992	10	Anthony Perkins (April 4, 1932 – September 12, 1992) was an American actor and singer. He is best known for his role as Norman Bates in Alfred...	/7FipKwmg2woHNvt5ATeXLBirHXs.jpg
+98	Janet Leigh	1	1927	2004	25	Janet Leigh (July 6, 1927 – October 3, 2004), born Jeanette Helen Morrison, was an American actress. She was the wife of actor Tony Curtis from June...	/2dv9IqJEx31RSoH7xAHlJZXF5uB.jpg
+99	Vera Miles	1	1929		4	Vera June Miles (born August 23, 1929) is an American actress. Born in Boise City, Oklahoma, Vera Miles attended school in Pratt,  Kansas and...	/7LYmvlED12KqDonOcN90OKZHG3S.jpg
+100	Masaki Kobayashi	2	1916	1996	11	Masaki Kobayashi (February 14, 1916–October 4, 1996) was a Japanese director.	/5epZ39mf1Ii7xOjqYx2YYq39y5X.jpg
+101	Tatsuya Nakadai	2	1932		13	​From Wikipedia, the free encyclopedia.  	/cM9HpQH7Mw8aXsrKGmePEZdhUIU.jpg
+102	Akira Ishihama	2	1935	2022	4		/sQC3XSIR0LeYPz11VJt8nJoeRKY.jpg
+103	Shima Iwashita	1	1941		4	Shima Shinoda, better known as Shima Iwashita (born January 3, 1941, in Tokyo, Japan) is a Japanese actress. She is married to film director Shinoda...	/1dMsifeO8GoAbA3ycEGYni3w0E1.jpg
+104	Isao Takahata	2	1935	2018	6	Isao Takahata (October 29, 1935 - April 5, 2018), co-founder of Studio Ghibli, was one of the most famous directors of Japanese animated films....	/xTkZOWe1VU4xNba1lO0T9trFLHm.jpg
+105	Tsutomu Tatsumi	2	1972		3		/pmOjSeSAnkdFB9T5ns0gNMf3F0C.jpg
+106	Ayano Shiraishi	1	1982		4		/yq981A4jzvSx5z1xfMoDadcDOhn.jpg
+107	Yoshiko Shinohara	1	1948		1		
+108	Kotaro Tamura	2			2		
+109	Taishi Nakagawa	2	1998		8	Taishi Nakagawa is a Japanese actor, host, and model. He is best known in his role as Kakeru Asuda in the 2011 drama Kaseifu no Mita and Noboru...	/mOAiut7G6XeR9qQlmZEmcACzeuA.jpg
+110	Kaya Kiyohara	1	2002		7	Kiyohara Kaya is a Japanese actress and model. She was born in Osaka and is represented by Amuse. Kaya is the winner of the "Amuse Audition Festival...	/p5kjOfECjTSddS5Gz2ztN2JrWDE.jpg
+111	Yume Miyamoto	1	1997		4		/1bpMweFhnzx40CbVP8aU05H8iaJ.jpg
+112	Guel Arraes	2	1953		1	Guel Arraes was born on December 12, 1953 in Recife, Pernambuco, Brazil. He is a director and writer, known for A Dog's Will (2000), Lisbela and the...	/frBx9AAVbssDIaVh1wzfqnNEJ8b.jpg
+113	Matheus Nachtergaele	2	1969		4	Matheus Nachtergaele was born in Sao Paulo, Brazil, in 1969. He showed his talent in many roles, both in cinema and television. Best known for City...	/c8w75b4TlLdXEnnpAgd4R22NDGY.jpg
+114	Selton Mello	2	1972		3	Selton Figueiredo Mello is a Brazilian actor and director. Since his childhood, he acted on TV shows. Now he works on TV, movies and theater....	/sd9pWha3ThWyX5DPsVnZVPKSJ9W.jpg
+115	Rogério Cardoso	2	1937	2003	1	Em 1952 começou a trabalhar como contrarregra de radio teatro na Rádio Clube de Mococa. Foi cantor de auditório de rádio durante os anos de 1955 e...	/ertp7Yo3BhAA9FXaXJo4LDK9Out.jpg
+116	David Fincher	2	1962		16	David Andrew Leo Fincher (born August 28, 1962) is an American film director. His films, mostly psychological thrillers and biographical dramas, have...	/tpEczFclQZeKAiCeKZZ0adRvtfz.jpg
+117	Edward Norton	2	1969		18	Edward Harrison Norton (born August 18, 1969) is an American actor and filmmaker. He has received numerous awards and nominations, including a Golden...	/5XBzD5WuTyVQZeS4VI25z2moMeY.jpg
+118	Brad Pitt	2	1963		65	William Bradley Pitt (born December 18, 1963) is an American actor and film producer. He is the recipient of various accolades, including an Academy...	/lnMiSPqrDDvA1juXYc8pnnyKmo9.jpg
+119	Helena Bonham Carter	1	1966		48	Helena Bonham Carter CBE (born 26 May 1966) is an English actress. Known for her roles in independent films and blockbusters, especially period...	/DDeITcCpnBd0CkAIRPhggy9bt5.jpg
+120	Miloš Forman	2	1932	2018	3	Jan Tomáš "Miloš" Forman (/ˈmiːloʊʃ/; Czech: [ˈmɪloʃ ˈforman]; 18 February 1932 – 13 April 2018) was a Czech and American film director,...	/O2Crxh0l3u1mxHvjA6003gEpi7.jpg
+121	Jack Nicholson	2	1937		19	John Joseph "Jack" Nicholson (born April 22, 1937) is an American actor, film director, producer and writer. He is renowned for his often dark-themed...	/6h12pZsgj3WWjMtykUgfLkLEBWz.jpg
+122	Louise Fletcher	1	1934		13	​From Wikipedia, the free encyclopedia.	/hN15em5LqXqDe1QgDa6lXK9fx3z.jpg
+123	Danny DeVito	2	1944		26	Danny DeVito (born November 17, 1944) is an American actor, comedian, director, and producer. He first gained prominence for his portrayal of Louie...	/uLW4Y9yjtwxtVmcJfwHZ7sKJai4.jpg
+124	Rodney Rothman	2			3		/75yKuJr1wL8qesEDYL2IHK67BEx.jpg
+125	Shameik Moore	2	1995		4	From Wikipedia, the free encyclopedia	/gaSgfLOp9PiKVYmAEuLrcnwP7gV.jpg
+126	Jake Johnson	2	1978		24	Jake Johnson (born May 28, 1978) is an American actor and comedian. He is best known for his role as Nick Miller on the Fox television sitcom New...	/nUfiDAafxbxIqmjbZf0oEcmh3kn.jpg
+127	Hailee Steinfeld	1	1996		54	Hailee Steinfeld (born December 11, 1996) is an American actress and singer. Known for her acting versatility and musical prowess, she is the...	/gI5nV33bBDfHVvu9365Q7QP1suv.jpg
+128	Takahiro Omori	2	1965		3	Takahiro Omori (大森 貴弘, Ōmori Takahiro) (born June 25, 1965) is a Japanese animator, storyboard writer, and director. He has directed many anime...	/d1Yly8QOFS78YLUcV98EQIg3loW.jpg
+129	Izumi Sawada	1			1	Izumi Sawada (沢田 泉, Sawada Izumi, born on december 10th) is a japanese female voice actress born in the Saitama Prefecture. She is affiliated with...	/A59nyfer38Q2J84Fy1lUbqgIFN1.jpg
+130	Hayato Taya	0			5		
+131	Ayane Sakura	1	1994		12	Ayane Sakura is a Japanese voice actress affiliated with I'm Enterprise. She has also performed theme songs and character songs for various series...	/6IxCswQIxI8AlKezwOfk9eS9eGC.jpg
+132	Hideaki Anno	2	1960		6	Hideaki Anno (born May 22, 1960 in Ube, Yamaguchi) is a Japanese animation and film director. Anno is best known for his work on the popular anime...	/AfV9h1RW6uALpx751APdUoX8ONc.jpg
+133	Megumi Ogata	1	1965		9	Megumi Ogata is a Japanese voice actress and singer from the Greater Tokyo Area. As a singer, she goes by the name em:óu. She attended...	/eNdfMUyZgG5P4TNIZpbTAu8gBs9.jpg
+134	Yuko Miyamura	1	1972		3	Yūko Miyamura is a Japanese actress, voice actress, singer and sound director. Her nickname is Miyamū. She played Kazuha Toyama in Detective Conan...	/dVfbS1oiGuzXk5IZLNSsfoLNjUR.jpg
+135	Megumi Hayashibara	1	1967		12	Megumi Hayashibara (林原 めぐみ Hayashibara Megumi) (born March 30, 1967) is a Japanese voice actress, singer, radio personality, and lyricist from Tokyo.	/cZcdY6N7QbkIyEl3mN5fwtRxSxJ.jpg
+136	Fernando Meirelles	2	1955		4	Fernando Meirelles (born November 9, 1955 in São Paulo, Brazil) is a Brazilian film director. He was nominated for an Academy Award for Best Director...	/at0fRZl4fJwqaytXOfvgs1lOM9E.jpg
+137	Alexandre Rodrigues	2	1983		6	Alexandre Rodrigues is a Brazilian actor. He is most famous for playing the part of Buscapé, the narrator and protagonist in the 2002 film City of...	/sN0o245HMVYTnEWPBYt3qdiQupq.jpg
+138	Leandro Firmino	2	1978		9		/xIn29cQ1Xc6c0SvksbeXTpfRr1W.jpg
+139	Phellipe Haagensen	2	1984		5		/3dxy4unadLTAb6aUQUyX2r3AkE.jpg
+140	Naoko Yamada	1	1984		6	Naoko Yamada (山田 尚子) is a Japanese animator, television and film director. Working at Kyoto Animation, she directed the K-On! and Tamako Market anime...	/oJxJKske3yvJqgId30t24qRwDD1.jpg
+141	Saori Hayami	1	1991		17	Saori Hayami is a Japanese voice actress, singer and narrator. She is represented by the agency I'm Enterprise.] As a singer, she is signed to...	/idFQBETcsRV7Uy7InV2x9e2iFWq.jpg
+142	Aoi Yuki	1	1992		11	Aoi Yuki is a Japanese voice actress, actress and singer.	/4kHNZSUIux52UU2BD3H6b5c5ymZ.jpg
+143	Kotono Mitsuishi	1	1967		5	Kotono Mitsuishi is a Japanese voice actress and narrator from Tokyo. She was affiliated with Arts Vision and Lasley Arrow. As a young girl,...	/mvKgkuAVVMmjkFWlwVQu8KCa80O.jpg
+144	Taichi Ishidate	2	1979		2	Taichi Ishidate (石立 太一, Ishidate Taichi) was born in 1979. He is a Kyoto Animation animator and one of the teachers of the studio's animation school.	/nBPuRvo9oWFWqzZiS8U4P9j0qtg.jpg
+145	Yui Ishikawa	1	1989		16	Yui Ishikawa is a Japanese actress and voice actress who was previously represented by Sunaoka Office, but now belongs to mitt management. Before she...	/7IUIHnRDWZq71EHMdomW3AvInd1.jpg
+146	Daisuke Namikawa	2	1976		12	Daisuke Namikawa is a Japanese actor, voice actor and singer. He is sometimes mistaken for fellow voice actor Daisuke Hirakawa, as their names only...	/iw0X8oDutxaBAri3Ifga8nhdUJK.jpg
+147	Takehito Koyasu	2	1967		11	Takehito Koyasu is a Japanese voice actor. Koyasu is part of the voice actor quartet Weiß consisting of Weiß Kreuz voice castmates Shinichiro Miki,...	/8uBkNDKPNmp9JWgMUI02NVyfhi1.jpg
+148	Chieko Baisho	1	1941		5	Chieko Baisho (倍賞 千恵子, Baishō Chieko, born June 29, 1941) is a Japanese actress and singer.	/b8ANR4WfdUZtoU4ktlnMFzbq759.jpg
+149	Takuya Kimura	2	1972		16	Takuya Kimura (Japanese: 木村 拓哉, Hepburn: Kimura Takuya, born November 13, 1972) is a Japanese actor, singer, and radio personality. He is regarded as...	/rafirRSsSsZrSVV3znCUwwSGIGr.jpg
+150	Akihiro Miwa	2	1935		6	Akihiro Maruyama (born May 15, 1935), better known by his stage name Akihiro Miwa, is a Japanese singer, actor, author and drag queen. As an actor he...	/pCfBeLJigKnUWOAy7hsdBR7K0UV.jpg
+151	Genndy Tartakovsky	2	1970		20	Genndy Tartakovsky is a Russian-American animator, director, producer, screenwriter, storyboard artist, comic book writer and artist. He is the...	/9zDGQgvPopxcPWCelOfXZfpffqi.jpg
+152	Bryan Andrews	2			9		
+153	Darrick Bachman	2	1969		1		
+154	Jon Olson	2			3		/crkYY5wcjoDn04BFlkF5WiR3d1A.jpg
+155	Lee Joon-ik	2	1959		3	Lee  Joon-ik (이준익) is a South Korean film director, producer, and occasional actor. Best known for mega-hit King and the Clown (2005), Hope (2013),...	/smZU1xzsTBThtM7Rp6vjaJUpchm.jpg
+156	Sol Kyung-gu	2	1968		8	Sol Kyung-gu (born May 1, 1968) is a Grand Bell Award, Golden Space Needle Award, and Bratislava International Film Festival Best Actor winning South...	/9SqQcvVUPUziK37i5jIeUoqSOMB.jpg
+157	Uhm Ji-won	1	1977		7	Uhm Ji Won is a Korean actress who was born on December 25th, 1977 in South Korea. She had her first acting job in 1998, when she appeared on the...	/tpWZnjZUREwMSzCbKbGPI6DVUdw.jpg
+158	Lee Re	1	2006		11		/i1A5E4v5xRFammipC3H4jeOwczv.jpg
+159	Irvin Kershner	2	1923	2010	2	​From Wikipedia, the free encyclopedia.  	/imtFUtcASoh2e1Emtt62UuFkIWA.jpg
+160	Mark Hamill	2	1951		33	Mark Richard Hamill (born September 25, 1951) is an American actor, voice artist, producer, director, and writer. Hamill is best known for his role...	/zMQ93JTLW8KxusKhOlHFZhih3YQ.jpg
+161	Harrison Ford	2	1942		23	Legendary Hollywood Icon Harrison Ford was born on July 13, 1942 in Chicago, Illinois. His family history includes a strong lineage of actors, radio...	/5M7oN3sznp99hWYQ9sX0xheswWX.jpg
+162	Carrie Fisher	1	1956	2016	16	Carrie Frances Fisher (21 October 1956 - 27 December 2016) was an American actress, novelist, screenwriter, and lecturer. She is most famous for her...	/rfJtncHewKVnHjqpIZvjn24ESeC.jpg
+163	Billy Wilder	2	1906	2002	7	Billy Wilder (22 June 1906 – 27 March 2002) was an Austrian-born director, screenwriter and producer who is regarded as one of the most excellent...	/tfVte6h2dlLn59Q0Mi6AvWAyRLP.jpg
+164	William Holden	2	1918	1981	18	William Holden (April 17, 1918 – November 12, 1981) was an American actor. Holden won the Academy Award for Best Actor in 1953 and the Emmy Award for...	/r1jbczW8yf61Xtki9ojjfxrp0Ap.jpg
+165	Gloria Swanson	1	1899	1983	8	From Wikipedia, the free encyclopedia	/eBRiSSbP5AvXAybv8HbLzpRO9Fp.jpg
+166	Erich von Stroheim	2	1885	1957	6	From Wikipedia	/v0DY16kMSMAqIdI3yYSRGYiz37c.jpg
+167	Ernst Lubitsch	2	1892	1947	4	Ernst Lubitsch was a German-born  film director. His urbane comedies of manners gave him the reputation of being Hollywood's most elegant and...	/tAsEhwiu3oqDgzCZSYN2xu0dEdD.jpg
+168	Margaret Sullavan	1	1909	1960	2	Margaret Brooke Sullavan (May 16, 1909 – January 1, 1960) was an American actress. Sullavan started her career on the stage in 1929. In 1933 she...	/dEZy2AzvB0M1t6lXe1ObZMKALp8.jpg
+169	James Stewart	2	1908	1997	14	James Maitland "Jimmy" Stewart was an American film and stage actor, known for his distinctive voice and his everyman persona. Over the course of his...	/268grdwLf5jAaYgIRpGAxskvqv9.jpg
+170	Frank Morgan	2	1890	1949	8	From Wikipedia, the free encyclopedia.	/vSCvrwFacSTPxxUFf94s3vTH5kA.jpg
+171	Viggo Mortensen	2	1958		35	Viggo Peter Mortensen Jr. born October 20, 1958) is an American actor, writer, director, producer, musician, and multimedia artist. Born and raised...	/vH5gVSpHAMhDaFWfh0Q7BG61O1y.jpg
+172	Haruo Tanaka	2	1912	1992	2	From Wikipedia, the free encyclopedia.	/eziah9QZcIs3SVPgTS3iuyUpiW3.jpg
+173	Nobuo Kaneko	2	1923	1995	2	Nobuo Kaneko (金子信雄 Kaneko Nobuo, 27 March 1923 – 20 January 1995) was a Japanese actor. He appeared in more than 200 films between 1950 and 1993. He...	/iKcZ0rtO5sCfOSEBvyAdCk68EzY.jpg
+174	Roman Polanski	2	1933		13	Roman Polański (born 18 August 1933) is a Polish-French film director, producer, writer and actor. Born in Paris to Polish parents, Polański...	/m23QGZo7NHJj6vaBISZla8GnIB9.jpg
+175	Adrien Brody	2	1973		41	Adrien Nicholas Brody was born in Woodhaven, Queens, New York, the only child of retired history professor Elliot Brody and Hungarian-born...	/1dBItgLFBNGEXnI48VvnnN2vFaX.jpg
+176	Thomas Kretschmann	2	1962		16	Thomas Kretschmann (born 8 September 1962) is a German actor best known for playing Leutnant Hans Von Witzland in the 1993 film Stalingrad, Hauptmann...	/7M0P39a3CVA22dJyv5YQEkTThU7.jpg
+177	Frank Finlay	2	1926	2016	5	Frank received Academy Award, Golden Globe and BAFTA Award nominations for his performance as William Shakespeare’s Iago in Stuart Burge’s 1965 film...	/fz3sIozTo0L1eCKlwHdoe92dcXk.jpg
+178	Tomm Moore	2	1977		2	Tomm Moore is an Irish illustrator, comics artist and filmmaker. He is co-founder of Cartoon Saloon, an animation studio and production company,...	/gqUcu5yEtNgnCaA2jtSOs8DV1Gg.jpg
+179	Honor Kneafsey	1	2004		9		/pgk3qwXCUjYReOwrGCLWm8qCbBx.jpg
+180	Eva Whittaker	1			2		/hvDckVSrRCW5Rb4OpDWN17oGvR7.jpg
+181	Sean Bean	2	1959		37	Shaun Mark "Sean" Bean (born 17 April 1959) is an English film and stage actor. Bean is best known for starring roles in the films Lord of the Rings:...	/kTjiABk3TJ3yI0Cto5RsvyT6V3o.jpg
+182	Matthew McConaughey	2	1969		18	Matthew David McConaughey (born November 4, 1969) is an American actor. He first gained notice for his supporting performance in the coming-of-age...	/2mcg07areWJ4EAtDvafRz7eDVvb.jpg
+183	Anne Hathaway	1	1982		56	Anne Jacqueline Hathaway (born November 12, 1982) is an American actress. She is the recipient of various accolades, including an Academy Award, a...	/tLelKoPNiyJCSEtQTz1FGv4TLGc.jpg
+184	Jessica Chastain	1	1977		40	Jessica Michelle Chastain (born March 24, 1977) is an American actress and film producer. Known for her roles in films with feminist themes, she has...	/eQKnihReJeB9vQEa5gySzAlKfZt.jpg
+185	Damien Chazelle	2	1985		5	Damien Chazelle is an American director and screenwriter. His directorial debut was the musical Guy and Madeline on a Park Bench (2009), his...	/14kRZ3XxNMyBv717YQSXr3wCucy.jpg
+186	Miles Teller	2	1987		121	Miles Alexander Teller (born February 20, 1987) is an American actor and musician. Born in Downingtown, Pennsylvania and an alumnus of NYU's Tisch...	/cg3LW0xX6RKr8dmescxq1bepcb5.jpg
+187	J.K. Simmons	2	1955		59	Jonathan Kimble Simmons (born January 9, 1955) is an American actor. He has been cited as one of the greatest contemporary character actors, and has...	/7kIiPojgSVNRXb5z0hiijcD5LJ6.jpg
+188	Paul Reiser	2	1957		19	From Wikipedia, the free encyclopedia	/v3e5TClep4ugMdU4qSRiKbvLr3B.jpg
+189	Tony Kaye	2	1946		1	A director of films, music videos, advertisements and documentaries. Kaye has made several iconic music videos, including the video for "Runaway...	/5FMrsJ6yDbA3JccaFAKpGk5s6MR.jpg
+190	Edward Furlong	2	1977		21	Edward Walter Furlong (born August 2, 1977) is an American actor whose best known film roles include John Connor in Terminator 2: Judgment Day and...	/e221dMIBgb6Lk092GIkHB9ohQF1.jpg
+191	Beverly D'Angelo	1	1951		42	Beverly D'Angelo (born November 15, 1951) is an American actress and singer.	/8fYQIA8dAaA4GOTxOFSKIvTqzi.jpg
+192	Haruo Sotozaki	2			6		/9SsLeBJkFluywq7YaEQiC9iIFBq.jpg
+193	Natsuki Hanae	2	1991		15	Natsuki Hanae is a Japanese voice actor from Kanagawa Prefecture. He is affiliated with Across Entertainment. In 2015, he won an award at the 9th...	/A1lGrpBEdAUxZA7RoAw4Zr4ved3.jpg
+194	Akari Kito	1	1994		18		/43SgANYtj7vpsHmz68hgPDlxC15.jpg
+195	Hiro Shimono	2	1980		9	Hiro Shimono is a Japanese voice actor and singer affiliated with I'm Enterprise. His notable roles include Keima Katsuragi in...	/i5CaaqKmHH0vKCloqZyrCwn5mWy.jpg
+196	Grace Kelly	1	1929	1982	13	From Wikipedia, the free encyclopedia.	/zLbuA51qjFWrRhxyoEnWu8fOOb7.jpg
+197	Thelma Ritter	1	1902	1969	7	Thelma Ritter (February 14, 1902 – February 5, 1969) was an American actress, best known for her comedic roles as working-class characters and her...	/6gZKUPYiAr5FJWPiR9SvSnt2Ijj.jpg
+198	Leonardo DiCaprio	2	1974		38	Leonardo Wilhelm DiCaprio (born November 11, 1974) is an American actor and film producer. Known for his work in biopics and period films, DiCaprio...	/wo2hJpn04vbtmh0B9utCFdsQhxM.jpg
+199	Joseph Gordon-Levitt	2	1981		35	Joseph Leonard Gordon-Levitt (born February 17, 1981) is an American actor and filmmaker. He has received various accolades, including nominations...	/dhv9f3AaozOjpvjAwVzOWlmmT2V.jpg
+200	Ken Watanabe	2	1959		14	Ken Watanabe (born October 21, 1959) is a Japanese stage, film, and television actor. To English-speaking audiences he is known for playing tragic...	/psAXOYp9SBOXvg6AXzARDedNQ9P.jpg
+201	Gwyneth Paltrow	1	1972		25	Gwyneth Kate Paltrow (born September 27, 1972) is an American actress, businesswoman and author. She has received numerous accolades for her work,...	/slPWN0VvYJtNOEuxlFSsXSNQMaF.jpg
+202	Kyōko Kagawa	1	1931		6	​From Wikipedia, the free encyclopedia.	/q47wPwySJvhj6HQoYb7ON1TjbcV.jpg
+203	Jorge Ulloa	2	1990		1		/aTRa0w2KlUCFsIhyg1UUSLpJcdg.jpg
+204	Raúl Santana	2	1989		3		/t2JoMFV1XIIzcDL4iSplPSxOo1m.jpg
+205	Nataly Valencia	1			1	Nataly Valencia is an Ecuadorian writer and actress, known for feature films "Los canallas" (2009), "Distante Cercanía" (2012), "Dedicada a mi Ex"...	/nXa2JH5shLuF18mh954xRPdHI3y.jpg
+206	Carlos Alcantara	0			1		/kOA49MEbLUCvkob99Ju13H1eYFS.jpg
+207	Youji Matsuda	2	1967		2		/42WeHwCymsgJh3mLAyknCdRcef8.jpg
+208	Yuriko Ishida	1	1969		7		/cADoBCi603Chz2IaxcwWT2mNwCf.jpg
+209	Yūko Tanaka	1	1955		7	Yūko Tanaka is a Japanese actress from Osaka Prefecture, Japan. She has won several acting awards during a long career working in both film and...	/xXek6ZKG9iH5ughIneW3yv9slyY.jpg
+210	Charlie Chaplin	2	1889	1977	28	Charles “Charlie” Chaplin (16 April 1889 – 25 December 1977) was an English comic actor, film director and composer best-known for his work during...	/lRI9Ky1SMOehn04OqhYJ5hQfgIK.jpg
+211	Virginia Cherrill	1	1908	1996	1	​From Wikipedia, the free encyclopedia.  	/d2Mrbpgi9XYPrtGCFKoYYOwmEE6.jpg
+212	Harry Myers	2	1882	1938	1	​From Wikipedia, the free encyclopedia.  	/tmqjmoLhonzM3Ylseu3ZOrSnWV7.jpg
+213	Jack Oakie	2	1903	1978	5	Jack Oakie (November 12, 1903 – January 23, 1978) was an American actor, starring mostly in films, but also working on stage, radio and television.	/9oWdEicbTjfpfiCtvvYuxi0UseU.jpg
+214	Reginald Gardiner	2	1903	1980	3	Reginald Gardiner (27 February 1903 - 7 July 1980) was an English-born actor in film and television and a graduate of the Royal Academy of Dramatic...	/A24zNUDwHQrb9HUhu670r6X9xdo.jpg
+215	Hikaru Yamaguchi	0			1		
+216	Takuya Eguchi	2	1987		20	Takuya Eguchi is a Japanese voice actor and singer from Setagaya, Tokyo. He is affiliated with 81 Produce. He has voiced in a number of lead roles in...	/rL60UEA0FgLCyWi4rCErWswWFin.jpg
+217	Masatomo Nakazawa	2	1983		8	Masatomo Nakazawa (中澤 まさとも, Nakazawa Masatomo, February 14, 1983) is a Japanese voice actor and actor from Nerima, Tokyo. He is attached to Tokyo...	/3pezOVWCMKWdqAzwSo0eKNtso95.jpg
+218	Shogo Yano	2	1989		6		/x08dYf7ClbE92qu0VTFQvquvItl.jpg
+219	Jonathan Demme	2	1944	2017	8	Robert Jonathan Demme (February 22, 1944 – April 26, 2017) was an American filmmaker, producer and screenwriter. He was best known for directing The...	/w9Lw3xTEFQUYELkl9AH5i3p5OhJ.jpg
+220	Jodie Foster	1	1962		19	Alicia Christian "Jodie" Foster (born November 19, 1962) is an American actress, director, and producer. She is the recipient of many accolades...	/AodjR16HMtbV8zZsUJdvJUSYxlo.jpg
+221	Anthony Hopkins	2	1937		24	Sir Philip Anthony Hopkins CBE (born 31 December 1937) is a Welsh actor, film director, and film producer. He is the recipient of numerous accolades,...	/9ukJS2QWTJ22HcwR1ktMmoJ6RSL.jpg
+222	Scott Glenn	2	1939		36	Theodore Scott Glenn (born January 26, 1941) is an American actor.	/keBKcMPojtRTi5ImLXOoKDmDbqU.jpg
+223	Justin Baldoni	2	1984		9	Justin Baldoni is an American film and television actor and director, best known for playing series regular Rafael Solano on the comedy-drama series...	/2sc6iUWljADnqtjsaKU3s6f0DGW.jpg
+224	Steffan Argus	2	1998		3	Steffan Fin Argus (born September 1, 1998) is an American actor, musician, and model.	/3aDbVpQga0Bhcx7GGh3jKVaeJN6.jpg
+225	Sabrina Carpenter	1	1999		20	Sabrina Ann Lynn Carpenter (born May 11, 1999) is an American actress, singer, songwriter and producer, best known for her roles the Disney Channel...	/qUlMOayixPubcwUBYstrWxbzfpb.jpg
+226	Madison Iseman	1	1997		19	Madison Iseman is an American film and television actress, best known for playing main character Charlotte Cooke on the comedy television series...	/dsyANGd3zY1aDTeJLKnPxmrY3iy.jpg
+227	Joseph Kosinski	2	1974		15	Joseph Kosinski (born May 3, 1974) is an American film director best known for the science-fiction films "Tron: Legacy" (2010) and "Oblivion" (2013),...	/oWLUXWY0j8TYzwnf2wETYWO181S.jpg
+228	Tom Cruise	2	1962		63	Thomas Cruise Mapother IV (born July 3, 1962), better known as Tom Cruise, is an American actor and producer. One of the world's highest-paid actors,...	/8qBylBsQf4llkGrWR3qAsOtOU8O.jpg
+229	Jennifer Connelly	1	1970		212	Jennifer Lynn Connelly (born December 12, 1970) is an American actress. She began her career as a child model before making her acting debut in the...	/egh1eOHuYgeoqdlLQgaXMl6cPOm.jpg
+230	Peter Weir	2	1944		4	Peter Lindsay Weir, AM is an Australian film director. After playing a leading role in the Australian New Wave cinema with his films such as Picnic...	/4GxIZX5gtbMpW4ZgHwvGmLSIHOE.jpg
+231	Robin Williams	2	1951	2014	24	Robin McLaurin Williams (July 21, 1951 – August 11, 2014) was an  American actor and stand-up comedian. Rising to fame with his role as  the alien...	/iYdeP6K0qz44Wg2Nw9LPJGMBkQ5.jpg
+232	Ethan Hawke	2	1970		48	Ethan Green Hawke (born November 6, 1970) is an American actor, writer and director. He made his feature film debut in 1985 with the science fiction...	/a7rgJl8TYUWAfJuM4fxbLHgD7BL.jpg
+233	Robert Sean Leonard	2	1969		21	​Robert Sean Leonard (born February 28, 1969) is an award-winning American actor.	/nlDEfUE4GH6UVEQS5v7NG9sXY8X.jpg
+234	Luc Besson	2	1959		12	Luc Besson is a French film director, writer, and producer known for making highly visual thriller and action films.  Besson has been nominated for,...	/dXJdczT1NcvcZtnoWVGT0NmG11v.jpg
+235	Jean Reno	2	1948		29	Jean Reno (born 30 July 1948)is a French actor of Andalusian Spanish descent.  Working in French, English, and Italian, he has appeared not only in...	/4TcZEDVA0u6x5pF2oZMuslxZKHe.jpg
+236	Natalie Portman	1	1981		65	Natalie Portman (born Neta-Lee Hershlag, June 9, 1981) is an actress with dual American and Israeli citizenship. Her first role was in the 1994...	/xcbZjjES1CnvMZMepbS5EaTDUzH.jpg
+237	Gary Oldman	2	1958		30	Gary Leonard Oldman (born 21 March 1958) is an English actor and filmmaker. Regarded as one of the best actors of his generation, he is known for his...	/2v9FVVBUrrkW2m3QOcYkuhq9A6o.jpg
+238	Elem Klimov	2	1933	2003	9	Elem Germanovich Klimov (Russian: Эле́м Ге́рманович Кли́мов; 9 July 1933 – 26 October 2003) was a Soviet Russian film director. He studied at VGIK,...	/vzed7lMJ3ADWm2DnF9C0bSIbiaO.jpg
+239	Aleksei Kravchenko	2	1969		11	From Wikipedia, the free encyclopedia	/52V8xsWjCvrujdGNv0ayvuZBTT0.jpg
+240	Olga Mironova	1			11	Olga Mironova is an actress, known for Come and See (1985).	/wSeCtQNuWVVUlHMAAkxVRSCYh7s.jpg
+241	Liubomiras Laucevicius	2	1950		5		/r6Gdi2P7D6cPHcgTvvO4NSzvb9I.jpg
+242	Paulette Goddard	1	1910	1990	3	From Wikipedia, the free encyclopedia.	/wOVgVjBJjIZL9TiVDunQMn9pD3W.jpg
+243	Henry Bergman	2	1868	1946	3	Henry Bergman (February 23, 1868 – October 22, 1946) was an American actor of stage and film, known for his long association with Charlie Chaplin....	/1vIoHPX8faMuMQJtKrqqrZpGgPQ.jpg
+244	Thomas Kail	2	1978		8	Thomas Kail (born January 30, 1978) is an American theatre director, known for directing the Off-Broadway and Broadway productions of Lin-Manuel...	/fe568wCZjaM7ZmSMcraYe3XN3tt.jpg
+245	Lin-Manuel Miranda	2	1980		11	Lin-Manuel Miranda (born January 16, 1980) is an American composer, lyricist, playwright, and actor best known for creating and starring in the...	/r0wFwPa041pZ1QM66yJWuQXCkqx.jpg
+246	Leslie Odom Jr.	2	1981		3	Leslie Odom Jr. (born August 6, 1981) is an American actor and singer. He has performed on Broadway and in television and film, and has released two...	/pDA11JMNAGQGJo7nRpZHp7pdp9N.jpg
+247	Renée Elise Goldsberry	1	1971		13	Renée Elise Goldsberry (born January 2, 1971) is an American actress, singer and songwriter, known for originating the role of Angelica Schuyler in...	/p4Rjbr8ZpQ7l3qVCGvNqrLlPs4M.jpg
+248	Haley Lu Richardson	1	1995		21	Haley Lu Richardson (born March 7, 1995) is an American actress. Following early television roles on the Disney Channel sitcom Shake It Up (2013) and...	/lU0umjlumJZcbFnJrc5QrJivbuv.jpg
+249	Cole Sprouse	2	1992		19	Cole Sprouse is an Italian-born American actor, collectively known as the Sprouse Bros with his twin brother Dylan Sprouse. By the end of the 2000s,...	/qqarRg2oRYpK2KnHeLqe716nEVE.jpg
+250	Moisés Arias	2	1994		7	Moisés Arias (born April 18, 1994) is an American actor. He is best known for his role on Hannah Montana and as host of Moises Rules.	/gcZFNl5xRIjtiDQ2W66A9v2lEih.jpg
+251	Claudia Cardinale	1	1938		34	​From Wikipedia, the free encyclopedia.  	/eSNCcnxtBJf0AIAB4k7jpFJNwcD.jpg
+252	Henry Fonda	2	1905	1982	13	Henry Jaynes Fonda (May 16, 1905 – August 12, 1982) was an American actor who had a career that spanned five decades in Hollywood. Fonda cultivated a...	/6wXWsqSXF3wCsGcwVqiszy6RX9X.jpg
+253	Jason Robards	2	1922	2000	16	Jason Nelson Robards Jr. (July 26, 1922 – December 26, 2000) was an American actor. Known as an interpreter of the works of playwright Eugene...	/9y0HAtWWBkB02gVzh8QDdz6UYZH.jpg
+254	Matt Peters	2			6	Matt Peters is a storyboard artist and director, known for directing Justice League Dark: Apokolips War (2020), and Scooby-Doo! Shaggy's Showdown...	
+255	Matt Ryan	2	1981		17	Matt Ryan (born 11 April 1981) is a Welsh actor from Swansea. He is known for voicing Edward Kenway in the Ubisoft video game Assassin's Creed IV:...	/qLx6rzn6MMcJtTals5Z7Mb6z4Y9.jpg
+256	Jerry O'Connell	2	1974		14	Jerry O’Connell (born February 17, 1974) is an American actor, best known for his roles on the TV series Sliders and Crossing Jordan as the films...	/p2zcFeDIKUrPrbT5ODqoLifdN3Q.jpg
+257	Taissa Farmiga	1	1994		29	Taissa Farmiga (born August 17, 1994) is an American actress. She began her career on film in the drama Higher Ground (2011), and subsequently made...	/kC2Movbs6uEF8DdDhvyHizQHuru.jpg
+258	Michael J. Fox	2	1961		17	Born Michael Andrew Fox in Edmonton, Alberta, Canada, he adopted the "J" as an homage to character actor Michael J. Pollard. Moving several times...	/2JB4FMgQmnhbBlQ4SxWFN9EIVDi.jpg
+259	Christopher Lloyd	2	1938		34	Christopher Allen Lloyd (born October 22, 1938) is an American actor. He is best known for playing Doc Brown in the Back to the Future trilogy, Uncle...	/nxVjpyb3UrfbPZnEyDNlQVlFAs5.jpg
+260	Lea Thompson	1	1961		16	From Wikipedia, the free encyclopedia.	/85E9NTEfkRdUdK4kTrrnk5of25w.jpg
+261	Mitja Okorn	0			1		
+262	Jaden Smith	2	1998		7	Jaden Christopher Syre Smith (born July 8, 1998) is an American child actor, rapper, songwriter, dancer, and the son of Will Smith and Jada Pinkett...	/meraACSN0LYwLeZlaXN9YW6JCZT.jpg
+263	Cara Delevingne	1	1992		33	Cara Jocelyn Delevingne (born 12 August 1992) is an English model, actress, and singer. She signed with Storm Management after leaving school in...	/izZ8IbsIjNpjZ5S0HIYreVwVRzn.jpg
+264	Cuba Gooding Jr.	2	1968		11	Cuba Gooding was born in Bronx, New York to Shirley, a singer with the Sweethearts, and Cuba Gooding, Sr., a lead vocalist of soul group The Main...	/bxL1lZyMKcexcAKNhkU4Gy73wLb.jpg
+265	Stanley Kubrick	2	1928	1999	17	Stanley Kubrick (July 26, 1928 – March 7, 1999) was an American film director, writer, producer, and photographer who lived in England during most of...	/yFT0VyIelI9aegZrsAwOG5iVP4v.jpg
+266	Kirk Douglas	2	1916	2020	8	Kirk Douglas (born Issur Danielovitch; December 9, 1916 – February 5, 2020) was an American actor, producer, director and author. He grew up as Izzy...	/t94It9bPI6uBvNuuQlQipyYyURC.jpg
+267	Ralph Meeker	2	1920	1988	7	From Wikipedia, the free encyclopedia.	/kw49AcV9vDgTZY2ts6qrPHSTS76.jpg
+268	Adolphe Menjou	2	1890	1963	5	Adolphe Menjou was an American actor, his screen career spanning both silent films (with credited roles from 1916 onward) and talkies. Among the many...	/88FfjxT3cFDIbCIK0UmwyjEF6tU.jpg
+269	Edward Yang	2	1947	2007	7	Edward Yang (Chinese: 楊德昌; pinyin: Yáng Déchāng; November 6, 1947 – June 29, 2007) was a Taiwanese filmmaker. Yang, along with fellow auteurs Hou...	/j7K4l87WXqvzT1abKsvgMVnFOyW.jpg
+270	Chang Chen	2	1976		10	Chang Chen (born October 14, 1976) is a Taiwanese actor, born in Taipei, Taiwan. His name is sometimes seen in the Western order (Chen Chang). He is...	/4BOQ5pJXdsArkMHvyVhrV8Ditnr.jpg
+271	Lisa Yang	0			2		/gt34a707NZaDfzF8pYWqBwZagth.jpg
+272	Chang Kuo-Chu	2	1948		2		/6hGLo2VE970oi3LMPr9QcmiaDSG.jpg
+273	Hiroshi Teshigahara	2	1927	2001	3	From Wikipedia, the free encyclopedia.	/yz6G5YUkbq4NKw7sAjmo74JzuEb.jpg
+274	Eiji Okada	2	1920	1995	7	From Wikipedia, the free encyclopedia.	/psadJTgSSEqaVKDpsk40tb5ypbg.jpg
+275	Kyōko Kishida	1	1930	2006	7	From Wikipedia, the free encyclopedia	/eWBKOdjAJF0Z0K1DGH2vum400c5.jpg
+276	Hiroko Itō	1	1937		1		
+277	Ettore Scola	2	1931	2016	4	Ettore Scola (Italian pronunciation: [ˈɛttore ˈskɔːla]; 10 May 1931 – 19 January 2016) was an Italian screenwriter and film director. He received a...	/yk1wI0N3McnzJHzzPPyN5qLZPMb.jpg
+278	Nino Manfredi	2	1921	2004	4	From Wikipedia, the free encyclopedia	/iFJ9i6GGJ4romvuF922mZNROPKW.jpg
+279	Vittorio Gassman	2	1922	2000	6	Vittorio Gassman Knight Grand Cross OMRI (Italian pronunciation: [vitˈtɔːrjo ˈɡazman]; born Gassmann; 1 September 1922 – 29 June 2000), popularly...	/sLMqeXVCdoIAoTpCZmObfi44uI2.jpg
+280	Stefania Sandrelli	1	1946		12	Stefania Sandrelli (1946) is an Italian actress, famous for her many roles in the commedia all'Italiana, starting from 1960s. At 15 years old she...	/aPmAstwHeEyN17UDKcSJf4OGBEQ.jpg
+281	Jacques Becker	2	1906	1960	2	Jacques Becker (French: [bɛkɛʁ]; 15 September 1906 – 21 February 1960) was a French screenwriter and film director.	/bagZCqB9Ezg2QWEMQwhWbJd9fNi.jpg
+282	Michel Constantin	2	1924	2003	5	Michel Constantin (born Constantin Hokhloff, 13 July 1924 – 29 August 2003) was a French film actor.	/A9rrvk2DkpCcE2LJ18NhCEv6Wfa.jpg
+283	Jean Keraudy	2	1920	2001	6		/bb4FBj9koEbGCfFYzykw9TLIQ8N.jpg
+284	Philippe Leroy	2	1930		9	Philippe Leroy, full name Philippe Leroy-Beaulieu (born 15 October 1930, Paris, France) is a French film actor. He has appeared in over 150 films...	/d4hTg6vJpsUuzDz8iByBXs6B3Mv.jpg
+285	Satoshi Kon	2	1963	2010	11	Satoshi Kon (October 12, 1963 – August 24, 2010) was a Japanese anime director and mangaka from Kushiro, Hokkaidō and a member of the Japan Animation...	/b7Oqg1bjS0e2iEzEjYWnsyVVagt.jpg
+286	Junko Iwao	1	1970		6	From Wikipedia, the free encyclopedia	/bKyMLT1MgDTnXafsq2ur32VMwY5.jpg
+287	Rica Matsumoto	1	1968		5		/ykm6ZpLcX5wblCNp7rOAoZpCh3L.jpg
+288	Shinpachi Tsuji	2	1956		4	From Wikipedia, the free encyclopedia	/af5ILJbixauO84bsuLOr8XSU9yd.jpg
+289	Derek Tsang	2	1979		4		/aEh2IH7r37idxR1xMXtugOOrtBw.jpg
+290	Zhou Dongyu	1	1992		8	Dongyu Zhou, born in Shijiazhuang City, Hebei Province, graduated from the 2011 undergraduate class of the Performance Department of Beijing Film...	/vD2vVvIIx8ygzkhUQZJLkvYT1jr.jpg
+291	Jackson Yee	2	2000		10		/d7y9zz1e5PDstH9PaLFXSXKaXIC.jpg
+292	Yin Fang	2	1986		5		/z5NJCOusV04kVzWXGPqsdUBeMGV.jpg
+293	Souichi Masui	2	1966		2		/eRCRldZdRnflFnzRJbSs6QNEmwm.jpg
+294	Kaito Ishikawa	2	1993		10	Ishikawa Kaito is a voice actor (seiyuu) from Tokyo, Japan. He is affiliated with Pro-Fit.	/kLVhJYH73ust9ComUxGR63DOvxu.jpg
+295	Asami Seto	1	1993		13	Asami Seto is a Japanese voice actress affiliated with Sigma Seven. She made her debut in the television anime Hourou Musuko.	/j88IskzIdGkyHBbjygPyg9EiE90.jpg
+296	Inori Minase	1	1995		12	Inori Minase is a Japanese actress, voice actress and singer who made her singing debut in December 2015 under King Records label. In March 2016, she...	/sSXB0DOmfLy1BGsTN7q98Q9yzAf.jpg
+297	Martin Sheen	2	1940		8	Ramón Antonio Gerardo Estévez (born August 3, 1940), known professionally as Martin Sheen, is an American actor. He first became known for his roles...	/m2Y3Q0uyuW6htrn2W9UWCWMkpZu.jpg
+298	Rebecca Sugar	3	1987		4	Rebecca Sugar (born July 9, 1987), is an American animator, director, screenwriter, producer, and songwriter. She is known for creating the Cartoon...	/n3EAsbD9AiQZAP2VVcGylzDat1L.jpg
+299	Zach Callison	2	1997		6	Zach began acting at the age of seven. He was cast as Winthrop in The Music Man. Zach liked the fact that the lisp he had to use allowed him to spit...	/gGvcqBYFa0WNyx72FOEMfpSFpKS.jpg
+300	Deedee Magno	1	1975		3		/7YE7BszWB45woWAzrBomXu4TgCE.jpg
+301	Estelle	1	1980		3	Estelle Fanta Swaray (born 18 January 1980) is a British singer, songwriter and actress from West London.	/8fImcnwFk2tX5J9JbFnBMn3NObY.jpg
+302	Anthony Russo	2	1970		13	Anthony and Joe Russo, known together professionally as the Russo brothers, are Emmy Award-winning American film and television directors. The...	/xbINBnWn28YygYWUJ1aSAw0xPRv.jpg
+303	Robert Downey Jr.	2	1965		76	Robert John Downey Jr. (born April 4, 1965) is an American actor and producer. Downey made his screen debut in 1970, at the age of five, when he...	/5qHNjhtjMD4YWH3UP0rm4tKwxCL.jpg
+304	Chris Evans	2	1981		81	Christopher Robert Evans (born June 13, 1981) is an American actor. He began his career with roles in television series, such as in Opposite Sex in...	/3bOGNsHlrswhyW79uvIHH1V43JI.jpg
+305	Mark Ruffalo	2	1967		45	Mark Alan Ruffalo (born November 22, 1967) is an American actor and producer. He began acting in the early 1990s and first gained recognition for his...	/z3dvKqMNDQWk3QLxzumloQVR0pv.jpg
+306	Xavier Dolan	2	1989		8	Xavier Dolan (born 20 March 1989), sometimes credited as Xavier Dolan-Tadros, is a Canadian actor, director, screenwriter, editor, costume designer...	/4DsDMNQskzolD477eBY9r2ZYgbt.jpg
+307	Anne Dorval	1	1960		3	Anne Dorval was born in Noranda, Quebec on November 8th, 1960. Since appearing in her first professional theatre role in 1985, she has acted in...	/aKku2zcbDHsbW2vNbYPGRKCF39p.jpg
+308	Antoine Olivier Pilon	2	1997		3	Antoine-Olivier Pilon was born on June 23, 1997 in Montreal, Quebec, Canada. He is an actor and director, known for Mommy (2014), Les Pee-Wee 3D:...	/9hQk8LVi84665FUx2eCjGF72o6N.jpg
+309	Suzanne Clément	1	1969		8	Suzanne Clement is a Canadian film and television actress, best known for her feature film roles in I Killed My Mother (2009), Laurence Anyways...	/at0Z7xuA8SiHTqpI6lsEwDQyMe8.jpg
+310	Tim Roth	2	1961		44	Often mistaken for an American because of his skill at imitating accents, actor Tim Roth was born Timothy Simon Roth on May 14, 1961 in Lambeth,...	/qSizF2i9gz6c6DbAC5RoIq8sVqX.jpg
+311	Pruitt Taylor Vince	2	1960		17	Pruitt Taylor Vince is an American actor.	/jqC1v8tF92QcmkQycnaLSuJiQfl.jpg
+312	Mélanie Thierry	1	1981		13	Mélanie Thierry began her career as a sought-after child and teen model in France, then moved into acting. She began with a series of roles in French...	/dtzfVWfyWgnlgwpzgA4uXDrBcTI.jpg
+313	Yasujirō Ozu	2	1903	1963	5	Yasujirō Ozu was a Japanese film director and screenwriter. He began his career during the era of silent films. Ozu first made a number of short...	/s0KBnwAxr6Aujbi6cA3inDqH8Fe.jpg
+314	Chishū Ryū	2	1904	1993	6	From Wikipedia, the free encyclopedia.	/md0GCQUr0ktyjigmnFhRRhIE1tK.jpg
+315	Chieko Higashiyama	1	1890	1980	2		/jnZHDwtO6hq5mUwp7jO3cw12E6k.jpg
+316	Setsuko Hara	1	1920	2015	8	From Wikipedia, the free encyclopedia.	/zaiy9COvjUVGV6q9x7ptuZeuTCa.jpg
+317	Kenji Nagasaki	2	1979		6	Kenji Nagasaki is an anime director born on February 12, 1979 in Hirakata, Osaka Prefecture, Japan.	/ocQTs3KldutDj5zmqpxN4QsZzxC.jpg
+318	Daiki Yamashita	2	1989		12	Daiki Yamashita (山下 大輝, Yamashita Daiki, born September 7, 1989) is a Japanese voice actor from Shizuoka Prefecture, Japan. He is affiliated with...	/rQNdJdZewk7VGP16ZNbpfJ9ZeMd.jpg
+319	Nobuhiko Okamoto	2	1986		9	Nobuhiko Okamoto is a Japanese voice actor and singer from Tokyo, Japan, affiliated with the Pro-Fit agency. He won the Best New Actor Award on...	/qyZpSYva9O9JQIZ0nVmXTf90FlL.jpg
+320	Yoshio Inoue	0	1979		1		/mtsRxX1ExpeTYTdoNpjnQ8hxorm.jpg
+321	Mehmet Ada Öztekin	2	1976		1		
+322	Aras Bulut İynemli	2	1990		17	After playing a role in 2-3 commercials, in 2010 Aras performed in the drama series As Time Goes By. This drama gained international success and Aras...	/xkx0Gd6g3vxkmdos6eAo1SXLafC.jpg
+323	Nisa Sofiya Aksongur	1	2011		14	Nisa Sofiya Aksongur is an actress, known for Miracle in Cell No. 7 (2019), Kuzgun (2019) and Noah Land (2019).	/rGdkhirqwprZAJDlPTZiQgFY5rk.jpg
+324	İlker Aksum	2	1971		7		/4hBCyX3h89LZXAc0QxX45YEUVpA.jpg
+325	Park Chan-wook	2	1963		11	Park Chan-wook (Korean: 박찬욱 Korean pronunciation: [pak̚t͡ɕʰanuk̚ ]; born August 23, 1963; Seoul) is a South Korean film director, screenwriter,...	/jsSFCVB7MhuVbSLwTgESiXEiNjt.jpg
+326	Choi Min-sik	2	1962		9	Choi Min-sik (최민식) was born on January 22, 1962 and first achieved fame on the stage and on television. He started appearing in films in 1992 and...	/sd7gIA6nEkq6zumkDCfxSE0YSSV.jpg
+327	Yoo Ji-tae	2	1976		17	Yoo Ji-tae (유지태) is a South Korean actor, film director, screenplay writer, and former fashion model. He was born on April 13th 1976. He is married...	/gGGV2gc0orgssYJ0Q9MSomdYo2I.jpg
+328	Kang Hye-jung	1	1982		10	Kang Hye-jung (강혜정) is a South Korean actress, best known for her work in Oldboy (2003) and Welcome to Dongmakgol (2005). Both of these were...	/46RDs0JLTEmI9Fp6hzU50LmJqId.jpg
+329	Kim Min-hee	1	1982		10	Kim Min-hee (김민희, born 1 March 1982) is a South Korean actress and former fashion model. In 2017, she won the Silver Bear for Best Actress at the...	/zZ41nW0GJqesHB75hFP6qllPS9y.jpg
+330	Kim Tae-ri	1	1990		34	Kim Tae-ri (김태리) is a South Korean actress. Kim started her career appearing in theater productions and modelling in TV adverts. She made her feature...	/gFofVUeVlIvBJMUv7maHQwWdfsk.jpg
+331	Ha Jung-woo	2	1978		6	Ha Jung-woo (Korean: 하정우; born Kim Sung-hoon on March 11, 1978) is a South Korean actor, film director, screenwriter and film producer. One of the...	/alHcDyLYbc6C2X9yOHw8mNHZVGu.jpg
+332	Simon Curtis	2	1960		2		/7gQqZO7uoHNrHX6IZfCLCtXBDkU.jpg
+333	Milo Ventimiglia	2	1977		19	Milo Anthony Ventimiglia (born July 8, 1977) is an American television actor best known for his role of Peter Petrelli on the TV series Heroes....	/9yFPsQCYi9sbPQ0xJGtoAF4Ar6v.jpg
+334	Kevin Costner	2	1955		45	Kevin Michael Costner (born January 18, 1955) is an American actor and filmmaker. He has received two Academy Awards, two Golden Globe Awards, a...	/bykmxJHLfbFM3NT05RZXhx8YTzF.jpg
+335	Amanda Seyfried	1	1985		65	Amanda Michelle Seyfried (born December 3, 1985) is an American actress, singer and model. She is the recipient of various accolades, including two...	/irghrZtBw9mhIzgLM2FTwNKHz6t.jpg
+336	Chris Hemsworth	2	1983		113	Chris Hemsworth (born 11 August 1983) is an Australian actor. He is best known for his roles as Kim Hyde in the Australian TV series Home and Away...	/jpurJ9jAcLCYjgHHfYF32m3zJYm.jpg
+337	Sergio Pablos	2			3	Sergio Pablos is a Spanish animator who started out working in the  Disney Studios in Paris. He later on moved to the studio in Burbank.  Pablos’s...	/gef101kaaTev5OxLSYnrC3ev9F1.jpg
+338	Jason Schwartzman	2	1980		21	Jason Francesco Schwartzman (born June 26, 1980) is an American actor and musician.	/gCjMdmW1DiPAClHVl4zHEIffIsE.jpg
+339	Rashida Jones	1	1976		28	Rashida Leah Jones (born February 25, 1976) is an American actress, writer, and producer. She is known for starring as Ann Perkins on the NBC comedy...	/cgWGm9eYCretBWeljPVtpRV7n6V.jpg
+340	Éric Toledano	2	1971		2		/9axN13gdsRpQLKqmvibsc9jqK2q.jpg
+341	François Cluzet	2	1955		6	From Wikipedia, the free encyclopedia	/4mijw9u5p4MJw3OPiHY6glNiA0P.jpg
+342	Omar Sy	2	1978		28	Omar Sy (born 20 January 1978) is a French film actor, best known for his duo with Fred Testot, Omar et Fred, and for his role in The Intouchables,...	/laNZay6AfEzvEvY1NUH9UFiSD0a.jpg
+343	Anne Le Ny	1	1962		3		/cTFJ87eHjaU8EHsQt2TMcsedeut.jpg
+344	Zack Snyder	2	1966		19	Zachary Edward Snyder (born March 1, 1966) is an American film director, producer, screenwriter, and cinematographer. He made his feature film debut...	/iD0GDqkvJXDXiNEZej198hjt3Tt.jpg
+345	Ben Affleck	2	1972		31	Benjamin Géza Affleck-Boldt (born August 15, 1972) is an American actor and filmmaker. His accolades include two Academy Awards and three Golden...	/aTcqu8cI4wMohU17xTdqmXKTGrw.jpg
+346	Henry Cavill	2	1983		52	Henry William Dalgliesh Cavill (born 5 May 1983) is a British actor. He is known for his portrayal of Charles Brandon in Showtime's The Tudors...	/iWdKjMry5Pt7vmxU7bmOQsIUyHa.jpg
+347	Gal Gadot	1	1985		47	Gal Gadot (born: April 30, 1985) is an Israeli actress and model. She was born in Rosh Ha'ayin, Israel, to an Ashkenazi Jewish family (from Poland,...	/plLfB60M5cJrnog8KvAKhI4UJuk.jpg
+348	Ingmar Bergman	2	1918	2007	11	Ernst Ingmar Bergman was a Swedish director, writer and producer for film, stage and television. His influential body of work dealt with bleakness...	/nkmOaXNRoioViN9OQf2n9Iu6akA.jpg
+349	Bibi Andersson	1	1935	2019	12	Her artistic dreams came early in life and were further supported by her older sister Gerd Andersson who became a ballet dancer at the Royal Opera...	/6EGqmWOR3R3jv3IgrEZmCjTAVGv.jpg
+350	Liv Ullmann	1	1938		12	Liv Johanne Ullmann (born 16 December 1938) is a Norwegian actress and film director. Recognised as one of the greatest European actresses, Ullmann...	/zJcCsL8P3Uf2WXxM2HDy0VaSAWa.jpg
+351	Margaretha Krook	1	1925	2001	2		/eIfMDQG8oaU2Vt5xbYt4vS6ftja.jpg
+352	Frank Capra	2	1897	1991	7	Frank Russell Capra (May 18, 1897 – September 3, 1991) was a Sicilian-born American film director and a creative force behind a number of films of...	/1OTZ7CEdEawDgA4qiBidpWTKE2x.jpg
+353	Donna Reed	1	1921	1986	8	From Wikipedia, the free encyclopedia	/ex90rTnQ9DZy3GsHC8lKEw1wTo0.jpg
+354	Lionel Barrymore	2	1878	1954	6	From Wikipedia, the free encyclopedia	/aVa8XUhrpm9Yo0TVUWIp6CmuRfm.jpg
+355	Daniel Scheinert	2	1980		4	Daniel Scheinert is best known as the redneck half of the writing/ directing duo DANIELS along with Daniel Kwan. Together they won Best Director at...	/rb59IHeLhmyBgTeBH5LGXXIt3Y8.jpg
+356	Michelle Yeoh	1	1962		81	Michelle Yeoh Choo-Kheng (born 6 August, 1962) is a Hong Kong-based Malaysian actress and dancer, well known for performing her own stunts in the...	/6oxvfyrrM3YmhgFZSqc8ESqPZoC.jpg
+357	Stephanie Hsu	1	1990		14	Stephanie Hsu is an actress. She was born on November 25, 1990 in Torrance, California. She's known for her work as Mei on Season 3 of The Marvelous...	/d0nLvH8XZW7d7ZJ5mGFM3k0NvRh.jpg
+358	Ke Huy Quan	2	1971		17	Ke Huy Quan, formerly known by his stage name Jonathan Ke Quan, is a Vietnamese-born American actor. He is best known for his performance as Waymond...	/12Nty7ZxuJXoANc5qDQ7U6gYhnI.jpg
+359	Roger Allers	2	1949		7	From Wikipedia, the free encyclopedia.	/sdFyM5FNcJuMv7knrz6swaIHXIJ.jpg
+360	Matthew Broderick	2	1962		17	Matthew Broderick is an American actor whose career has spanned both the silver screen and the stage. Broderick got his start off broadway but...	/8jO89WNvQRTFUrgXuIGOiTRwbYg.jpg
+361	James Earl Jones	2	1931		24	James Earl Jones (born January 17, 1931) is a multi-award-winning American actor of theater and film, well known for his distinctive bass voice and...	/oqMPIsXrl9SZkRfIKN08eFROmH6.jpg
+362	Jeremy Irons	2	1948		49	Jeremy John Irons (born 19 September 1948) is an English actor and activist. After receiving classical training at the Bristol Old Vic Theatre...	/w8Ct1q02Ht3sWdOSqfp3B85TzT.jpg
+363	Mari Okada	1	1976		9	Mari Okada (Japanese: 岡田 麿里) is a Japanese screenwriter, director, and manga artist. She is one of the most prolific writers currently working in the...	/mfq0VCH3tWJGOUGk1ivtyBH1wz3.jpg
+364	Manaka Iwami	1	1998		7	Manaka Iwami (石見 舞菜香, Iwami Manaka) is a Japanese voice actress from Saitama Prefecture. She is affiliated with Raccoon Dog. Previously, she was...	/leKMaCBswXG8u4mfQNQ7J3y6Xow.jpg
+365	Tomokazu Sugita	2	1980		6	Sugita Tomokazu is a voice actor (seiyuu) who was born on October 11, 1980 in Saitama Prefecture, Japan. Previously affiliated with Atomic Monkey, he...	/tW9VGnxmdhy3XTWfssk8ySrDu7K.jpg
+366	Mamoru Hosoda	2	1967		5	Mamoru Hosoda (細田 守 Hosoda Mamoru, born September 19, 1967) is a Japanese film director and animator. He started out working for Toei Animation,...	/5QIWSzXHioDMHk2UMOqz2wbaWMr.jpg
+367	Haru Kuroki	1	1990		9	Haru Kuroki (黒木 華, Kuroki Haru, born 14 March 1990) is a Japanese actress. She gained international recognition by winning Silver Bear (Best Actress...	/rTxASkiwbxohT0UVHORLmECo53Y.jpg
+368	Yukito Nishii	2	1995		4		/53x3K3gwwwOH4qg8YiJEgnrbNRl.jpg
+369	Aoi Miyazaki	1	1985		10	Aoi Miyazaki (born November 30, 1985) is a Japanese actress. She is best known for her pure image and roles such as in Nana and Virgin Snow. Her...	/9xbfwMqlETlGMdiqycmc8FDcWa9.jpg
+370	Vittorio De Sica	2	1901	1974	14	Vittorio De Sica (7 July 1901 – 13 November 1974) was an Italian director and actor, a leading figure in the neorealist movement.	/p793imBa2qIqTKyuXynphs5daYJ.jpg
+371	Lamberto Maggiorani	2	1909	1983	5	​From Wikipedia, the free encyclopedia.  	/qp3oZcD8UwTGRg1GiMMOyWLwSaX.jpg
+372	Enzo Staiola	2	1939		7	​From Wikipedia, the free encyclopedia.  	/k64j9HlXiHIn0DJOUX9Uk8MCtAw.jpg
+373	Lianella Carell	1	1927	2000	3	​From Wikipedia, the free encyclopedia.  	/dbLf4dnEpapogvOYoe6Mm5rbWbG.jpg
+374	Kim Yong-hwa	2	1971		1		/7Y7v7kInxRFLYYr6zNib8E3CcXR.jpg
+375	Ju Ji-hoon	2	1982		19	Ju Ji-hoon is a South Korean actor. He began as a model but transitioned into acting with his breakout role as Crown Prince Lee Shin in 2006's...	/7PYfUrBBXhYv5PIsTalJhjbRteg.jpg
+376	Kim Hyang-gi	1	2000		22	Kim Hyang-gi is a South Korean actress. Kim began her career as a child actress, and has starred in films and television series such as Wedding...	/qAfGNnSzuSRVISUtLssokeHtoWy.jpg
+377	Dino Risi	2	1916	2008	3	Dino Risi (23 December 1916 – 7 June 2008) was an Italian film director. With Mario Monicelli, Luigi Comencini, Nanni Loy and Ettore Scola, he was...	/4Lfp0Yk9UiAH2fJtDcBbTCtnNIM.jpg
+378	Jean-Louis Trintignant	2	1930	2022	10	Jean-Louis Trintignant (11 December 1930 – 17 June 2022) was a French actor who has enjoyed an international acclaim. He won the Best Actor Award at...	/bFsWyNzYCoAFWLmq8A3K9fCfeZG.jpg
+379	Catherine Spaak	1	1945	2022	8	Catherine Spaak (3 April 1945 - 17 April 2022) is a French-Italian actress and singer.	/5WILB2hN0BUCz4HgmoLu7OVq2Hn.jpg
+380	Takaomi Kanasaki	2	1977		4		
+381	Jun Fukushima	2	1976		6	Jun Fukushima is a Japanese voice actor and narrator who is affiliated with Arts Vision. He's been acting since the 1990s. He is sometimes confused...	/gHv2Nw6LAC6OdNuC8tzmW36CHpM.jpg
+382	Rie Takahashi	1	1994		12		/6S7G3FZnma2vo4B8ODqAdbeRKda.jpg
+383	Sora Amamiya	1	1993		11	Sora Amamiya is a Japanese voice actress and singer from Toyko, affiliated with Music Ray'n.  After passing an audition held by Music Ray'n, she made...	/4ZZcdFH4QgbIC8AeJ3BLG1ue7G5.jpg
+384	Shinichiro Ushijima	2			6		
+385	Mahiro Takasugi	2	1996		8	Mahiro Takasugi (高杉 真宙, born July 4, 1996) is a Japanese actor who is affiliated with Spice Power. He is best known for his role as the character...	/oVUBXXLkzdd3yIqRIofZTYuaQfq.jpg
+386	Lynn	1	1992		7	Lynn is a Japanese voice actress from Niigata Prefecture affiliated with the agency Arts Vision. She was born to a Japanese–American father and a...	/kFyuszD3uS5rX4GGf1U5OM5exur.jpg
+387	Bo Burnham	2	1990		20	Robert Pickering "Bo" Burnham (born August 21, 1990) is an American comedian, musician, actor, film director, screenwriter, and poet. He began his...	/xMAatohXadCfz9ipvqvIaTLwOmV.jpg
+388	Peter Farrelly	2	1956		8	Peter John Farrelly (born December 17, 1956) is an American film director, screenwriter, producer, and novelist, known for his work in the comedy...	/3PDYOFfk5NLmNcEz6SFZmdmqVZr.jpg
+389	Mahershala Ali	2	1974		20	Mahershalalhashbaz "Mahershala" Ali (born Mahershalalhashbaz Gilmore; February 16, 1974) is an American actor. Ali began his career as a regular on...	/9ZmSejm5lnUVY5IJ1iNx2QEjnHb.jpg
+390	Linda Cardellini	1	1975		23	Linda Edna Cardellini (born June 25, 1975) is an American actress. In television, she is known for her leading roles in the teen drama Freaks and...	/bcycvynDprC1rrhBNrnBjn5uOUd.jpg
+391	Thomas Astruc	2	1975		6	Thomas Astruc (born 18 January, 1975) is a French animator, director, writer and storyboard artist. He is best known as creator, writer and...	
+392	Anouck Hautbois	1			7		/5D66aDzc8QrkNtdeFb0nsFku6Zh.jpg
+393	Benjamin Bollen	2	1984		9		/qAvG7VqmZp6s2XE3KZooEfYDfW9.jpg
+394	Federico Fellini	2	1920	1993	5	Federico Fellini, Knight Grand Cross (January 20, 1920 – October 31, 1993), was an Italian film director and screenwriter. Known for a distinct style...	/dtT6h0q7t3wLVlzc0ARNR8n5vlm.jpg
+395	Marcello Mastroianni	2	1924	1996	18	Marcello Vincenzo Domenico Mastroianni was an Italian film actor. His honours have included British Film Academy Awards, Best Actor awards at the...	/6SZruohSSQNvG3Urgo73KGLSbJ.jpg
+396	Anouk Aimée	1	1932		11	Anouk Aimée (born 27 April 1932) is a French film actress. Aimée has appeared in 70 films since 1947.	/9pPY3jiJ79wQ5pvLqVqlTlPnkZ6.jpg
+397	Ethan Spaulding	2			2	Ethan Spaulding is an American animation director, producer and storyboard artist, well known as a crew person on the animated television series...	/wLTbLnSJ1jnjA2YOHOPqz2g0XNe.jpg
+398	Patrick Seitz	2			4		/e13Y5m1Ye4CXn7cMUOUvyHGBBRq.jpg
+399	Jordan Rodrigues	2	1992		10	Jordan Rodrigues is an Australian singer, dancer and actor best known for playing Jai Fernandez in Home and Away and Christian Reed in Dance Academy.	/7g9T47nMfC29itacF4bIhcaBJTh.jpg
+400	Jennifer Carpenter	1	1979		13	An American actress, known for her portrayal of Emily Rose in The Exorcism of Emily Rose, Debra Morgan on Dexter, and the lead in the 2008 horror...	/ooIo2LPHxMxkfjz05UAJsUfbtEy.jpg
+401	Charles Laughton	2	1899	1962	13	From Wikipedia, the free encyclopedia.	/eRTDXGpo3JHA5tQ299lJTxeuFao.jpg
+402	Tyrone Power	2	1914	1958	12	One of the great romantic swashbuckling stars of the mid-twentieth  century, and the third Tyrone Power of four in a famed acting dynasty  reaching...	/zHKNyYKkWIQBwhqxCMNBns1eoXR.jpg
+403	Marlene Dietrich	1	1901	1992	8	Marlene Dietrich was a German actress and singer.	/gQFppqFeUdJDfKsp4Lh2G7UDd0R.jpg
+404	Andrei Tarkovsky	2	1932	1986	18	Andrei Tarkovsky was a Soviet filmmaker, writer, film editor, film theorist and opera director, widely regarded as one of the finest filmmakers of...	/j0toVLrgLNuyGnUxGPnSfnPiSf5.jpg
+405	Aleksandr Kaydanovskiy	2	1946	1995	1		/yHYfkxQu3GVKxx5ibFmEom8qAS6.jpg
+406	Anatoliy Solonitsyn	2	1934	1982	5	From Wikipedia, the free encyclopedia	/dE4Q10xL0DGS2u8ISkoxTSRQKub.jpg
+407	Nikolay Grinko	2	1920	1989	1	Nikolai Grigoryevich Grinko or Mykola Hryhorovych Hrynko (Ukrainian: Микола Григорович Гринько; Russian: Николай Григорьевич Гринько) was a Soviet...	/aa90cr3ZfY65ZZaYynFKw8dUXFD.jpg
+408	Lee Unkrich	2	1967		3	Lee Unkrich is an American director and film editor. He is a longtime member of the creative team at Pixar, where he started in 1994 as a film...	/crb297utC6W4HSstOe5djDPTwEN.jpg
+409	Anthony Gonzalez	2	2004		2	Young American actor, born in September 23, 2004, son of  Guatemalan immigrants.	/3SfBmj35OfL8eVIQt9nTixWqVJH.jpg
+410	Gael García Bernal	2	1978		11	Gael García Bernal (born 30 November 1978) is a Mexican actor and producer. He is best known for his performances in the films Bad Education, The...	/7mq3EQN1oJfYNXkv9xKXKu6Ccw5.jpg
+411	Benjamin Bratt	2	1963		17	Benjamin Bratt (born December 16, 1963) is an American actor. He is most famous for his role as Rey Curtis on the TV series Law &amp; Order; and his...	/hBenHPT4iJEG2kt5z2TOGnkRZwh.jpg
+412	Jack Lemmon	2	1925	2001	6	John Uhler "Jack" Lemmon III (February 8, 1925 – June 27, 2001) was an American actor and musician. He starred in more than 60 films including Some...	/yfS8K77QzICgOcBuQfd5WfgOnCo.jpg
+413	Shirley MacLaine	1	1934		11	Shirley MacLaine (born Shirley MacLean Beaty; April 24, 1934) is an American actress, singer, author, activist, and former dancer. Known for her...	/mpW9c34IAFPW0ODuKR8J0FAqN5i.jpg
+414	Fred MacMurray	2	1908	1991	4	Born to Maleta Martin and Frederick MacMurray (concert violinist). Fred sang and played in orchestras to earn tuition. He was educated at Carroll...	/lxxixlFMNH0JuA9K0K3mJmigYcc.jpg
+415	Nick Hurran	2	1959		1	From Wikipedia, the free encyclopedia	/eE7RYTPnICZlGLIX02GRj5CfMk6.jpg
+416	Matt Smith	2	1982		51	Matthew Robert Smith (born 28 October 1982) is an English stage and television actor. He is known for his role as the eleventh incarnation of the...	/xr2GSp8Pm6fT5VGm0I9tsWVcZ8q.jpg
+417	David Tennant	2	1971		41	David John Tennant (born 18 April 1971) is a Scottish actor. He is best known for his roles as the tenth incarnation of The Doctor in Doctor Who...	/zM76EBPZkdkSHyESyIUa47aP87R.jpg
+418	John Hurt	2	1940	2017	20	John Vincent Hurt, CBE (22 January 1940 - 25 January 2017) was an English actor, known for his leading roles as John Merrick in The Elephant Man,...	/wGDGhBOggA8I2ktgc1QoHABEF0m.jpg
+419	Kenji Mizoguchi	2	1898	1956	5	Kenji Mizoguchi (May 16, 1898 – August 24, 1956) was a Japanese film director and screenwriter. His film Ugetsu (1953) won the Silver Lion at the...	/ngKRZZPKh8d7GaeMgcM0eXbzMte.jpg
+420	Kinuyo Tanaka	1	1909	1977	3	From Wikipedia, the free encyclopedia	/noiEyzOXEtqAEN3zQDEJ10748L6.jpg
+421	Yoshiaki Hanayagi	2	1924	1978	1		/4rp6sCsmPhq9RtXkhmpGf0LdEI6.jpg
+422	Jackie Coogan	2	1914	1984	18	​From Wikipedia, the free encyclopedia.	/l9wiXgf7kLiuxgArVVeOqgPYHrm.jpg
+423	Edna Purviance	1	1895	1958	3	​From Wikipedia, the free encyclopedia	/2uEZFOiUMPtctVbAnhf86OR6jQa.jpg
+424	Malcolm McDowell	2	1943		30	Malcolm McDowell is an English actor with a career spanning over forty years. McDowell is principally known for his roles in the controversial films...	/hL8ep4Hqj6izX7IlzE7Bbcfq62w.jpg
+425	Warren Clarke	2	1947	2014	8	Warren Clarke was an English actor. He was known for his appearances in many films, including a significant early role as Dim in Stanley Kubrick's A...	/ecBiugofrkuSk5tRu6IUpQDNGio.jpg
+426	Michael Tarn	2	1951		1	Michael Tarn is a British actor. He is best known for playing Pete in Stanley Kubrick's film A Clockwork Orange (1971).	/wpd4itwGwbHwdqTLUlSx4MSpcAc.jpg
+427	Shelley Duvall	1	1949		13	Shelley Alexis Duvall (born July 7, 1949) is an American film and television actress from Houston, Texas, best known for her unique looks and...	/wuDN3KnBYEILveSbVs44zfeus04.jpg
+428	Danny Lloyd	2	1973		10	​From Wikipedia, the free encyclopedia	/1wDA4ePrWnCX4T6aJpnFqQRa3Xk.jpg
+429	Marcel Carné	2	1906	1996	1	Born in Paris, France, the son of a cabinet maker whose wife died when their son was five, Marcel Carné began his career as a film critic, becoming...	/6ZFHCA0MlQDLIMUzUykmA1Nx08G.jpg
+430	Arletty	1	1898	1992	3	Arletty (15 May 1898 – 24 July 1992) was a French actress, singer, and fashion model.	/iI4wBjZgg6AneXXMUfWF9Gxf27v.jpg
+431	Jean-Louis Barrault	2	1910	1994	1	From Wikipedia, the free encyclopedia.	/i7ctsNqijuw4cOevV5jXYO9GrFt.jpg
+432	Pierre Brasseur	2	1905	1972	4	From Wikipedia, the free encyclopedia.	/y9moezayXgiGbJWa9V1tFuljjc8.jpg
+433	Elio Petri	2	1929	1982	2	Elio Petri was born on January 29, 1929 in Rome, Lazio, Italy as Eraclio Petri. He was a writer and director, known for Indagine su un cittadino al...	/ugTMHGVTEYxcxPqhXOxIROydepZ.jpg
+434	Gian Maria Volonté	2	1933	1994	11	Gian Maria Volonté (9 April 1933 – 6 December 1994) was an Italian actor. He is perhaps most famous outside of Italy for his roles as the main...	/yUkDujrUEvD4NE1YxFSHyu2Ag0J.jpg
+435	Florinda Bolkan	1	1941		8	Florinda Bolkan is a retired Brazilian actress and model.	/iLBiLTmnZtWxvGrhV7JIzI6K0vH.jpg
+436	Gianni Santuccio	0			1		/8T3s738fU2yPD3wwFTbyh2ZHaA1.jpg
+437	Max von Sydow	2	1929	2020	16	Max von Sydow (10 April 1929 – 8 March 2020) was a Swedish actor. He also held French citizenship since 2002. He starred in many films and had...	/fOzSDFqMx84NR7PSv36P7j0Qf1q.jpg
+438	Gunnar Björnstrand	2	1909	1986	5	From Wikipedia, the free encyclopedia.	/vkEY3nex3G0PMMnJ11Kamt4yod.jpg
+439	Bengt Ekerot	2	1920	1971	6	Nils Bengt Folke Ekerot was a Swedish actor and director. He had several important roles in Swedish films, but he became immortalized in 1957 when he...	/4UxoMzIdE9PR4THNr3U2PL17veu.jpg
+440	Céline Sciamma	1	1978		4	Céline Sciamma is a French screenwriter and film director. Sciamma's work is strikingly minimalist, partly the legacy of her mentor, Xavier Beauvois,...	/j35wQETDUc6CdzIgbKWkeahlTlG.jpg
+441	Noémie Merlant	1	1988		4	Noémie Merlant (born November 27, 1988) is a French actress.	/lg83RO8HugXg9zbGtLtlsZSKjgA.jpg
+442	Adèle Haenel	1	1989		8	Adèle Haenel  (born January 1, 1989) is a French actress. She was nominated for a César Award in the Most Promising Actress category for her...	/uf2BVprWBZB7hxv0lj1RO48EDEZ.jpg
+443	Luàna Bajrami	1	2001		3	Luàna Bajrami-Rahmani (born 14 March 2001) is a French-Kosovar actress and filmmaker. She is known for her roles in the films Portrait of a Lady on...	/iBzMJpbrOEKTQooyCOgoKrTW8Hi.jpg
+444	Mélanie Laurent	1	1983		12	Mélanie Laurent (born 21 February 1983) is a French actress, singer, pianist, screenwriter, and director, best known to international audiences for...	/i99ogEo4gQyanCmHWYYoS6hsUqL.jpg
+445	Christoph Waltz	2	1956		11	Christoph Waltz (born 4 October 1956) is an Austrian actor who also holds German citizenship. He received international acclaim for his portrayal of...	/2Hhztd4mUEV9Y25rfkXDwzL9QI9.jpg
+446	Kim Novak	1	1933		16	Marilyn Pauline Novak (born February 13, 1933), known professionally as Kim Novak, is an American retired film and television actress.	/wQYlkzNBJkvFAY3R0FQZfwLhTDx.jpg
+447	Barbara Bel Geddes	1	1922	2005	6	Barbara Bel Geddes (October 31, 1922 – August 8, 2005) was an American actress, artist and children's author. She is best known for her role in the...	/yTvYt74E0Nn0jz61kIsaxcpUpOx.jpg
+448	George Tillman, Jr.	2	1969		2	George Tillman, Jr. is an American film director and producer. He attended John Marshall High School in Milwaukee, where he took Mass Communications...	/l2O5FILKdFQoBW7uDzmm3wyr6cA.jpg
+449	Amandla Stenberg	1	1998		14	Amandla Stenberg (born October 23, 1998) is an American teen actor. They are best known for their portrayal of young Cataleya in Colombiana and Rue...	/kgLB6xhhZKqqwn1lnL5YjIv5frS.jpg
+450	Regina Hall	1	1970		23	An American actress and comedian. She is best known for her multiple leading roles in Girls Trip (2017), Little (2019) and Shaft (2019). Hall, who...	/ulFjyAmpk8AR3XPE8vwzTfWJ0We.jpg
+451	Russell Hornsby	2	1974		14	Russell Hornsby is an American stage and screen actor, best known for his portrayal of Detective Hank Griffin in the television series "Grimm". He...	/lA2XCK2GgwVoboX3NskkKp5rxOF.jpg
+452	George Lucas	2	1944		14	George Walton Lucas Jr. (born May 14, 1944) is an American filmmaker and entrepreneur. Lucas is known for creating the Star Wars and Indiana Jones...	/WCSZzWdtPmdRxH9LUCVi2JPCSJ.jpg
+453	Luca Guadagnino	2	1971		5	Luca Guadagnino is an Italian film director. He rose to notability with the 2005 film Melissa P., and he is a frequent collaborator with actress...	/lO2GD4s6fRloZLEhsZgBlhJQasE.jpg
+454	Timothée Chalamet	2	1995		52	Timothée Hal Chalamet (born December 27, 1995) is an American actor. He made his feature film debut in Jason Reitman's drama Men, Women & Children...	/6Fk1DjtOJ3UckoXi6KtCaiRWPCC.jpg
+455	Armie Hammer	2	1986		29	Armand Douglas "Armie" Hammer (born August 28, 1986) is an American actor. After appearing on television and playing the title role in 2008's Billy:...	/dacZbbnheEhejYbkDgz7WhhSBJp.jpg
+456	Michael Stuhlbarg	2	1968		18	Michael Stewart Stuhlbarg (/ˈstuːlˌbɑːrɡ/; born July 5, 1968) is an American actor. He rose to prominence as troubled university professor Larry...	/seBk12MUK51aUoYX4OW1itfOpJ6.jpg
+457	Bryan Singer	2	1965		5	Bryan Singer (born September 17, 1965) is an American film director and producer. Singer won critical acclaim for his work on The Usual Suspects, and...	/ts06thbCv9Ug2mNpcbcrmLGRL4Q.jpg
+458	Gabriel Byrne	2	1950		20	Gabriel James Byrne (born 12 May 1950) is an Irish actor, film director, film producer, screenwriter, cultural ambassador and audiobook narrator. His...	/9r9oDGENg92VYYFMkV4C09IUlrb.jpg
+459	Stephen Baldwin	2	1966		22	Stephen Baldwin (born May 12, 1966) is an American actor, director, producer and author. He is best known as the youngest of the Baldwin brothers and...	/34GOuRYIkAcKW8newjrnYeC1QPK.jpg
+460	Kevin Spacey	2	1959		17	Kevin Spacey Fowler KBE (born July 26, 1959) is an American actor, producer, and singer. He began his career as a stage actor during the 1980s,...	/dlVRkUYKyZdJ39AN55cY1LoyXAP.jpg
+461	Ridley Scott	2	1937		20	Ridley Scott was born on 30th November, 1937, in South Shields, Tyne and Wear, England, the son of Elizabeth and Colonel Francis Percy Scott. He was...	/zABJmN9opmqD4orWl3KSdCaSo7Q.jpg
+462	Russell Crowe	2	1964		39	Russell Ira Crowe (born 7 April 1964) is an actor, director, musician, and singer. He was born in New Zealand, spent 10 years of his childhood in...	/mGTtPuwE8OR00tkJGmVLJmt8KpW.jpg
+463	Joaquin Phoenix	2	1974		15	Joaquin Rafael Phoenix (born October 28, 1974) is an American actor, producer, and animal rights activist. Known for playing dark and unconventional...	/6xTwQNgaGhsLRMhCAzaBLpF2yYe.jpg
+464	Connie Nielsen	1	1965		41	Connie Inge-Lise Nielsen (born 3 July 1965) is a Danish actress. She is known for her roles in the English language films Gladiator, The Devil's...	/lvQypTfeH2Gn2PTbzq6XkT2PLmn.jpg
+465	Zhao Ji	2			2		/3SbMsocDUMhh6BMPFen0Mv92fzl.jpg
+466	Yang Tianxiang	2	1990		5		/oJj8KXkNMT5Eq8MPvhMzH8pDd7S.jpg
+467	He Zhang	2	1988		1		/6ycY9eMeacPtDDCVHReetRzy5s6.jpg
+468	Xuan Xiaoming	0			1		
+469	Ashley Avis	1	1987		1		
+470	Kate Winslet	1	1975		14	Kate Elizabeth Winslet (born 5 October 1975) is an English actress. Known for her work in independent films, particularly period dramas, as well as...	/e3tdop3WhseRnn8KwMVLAV25Ybv.jpg
+471	Mackenzie Foy	1	2000		27	Mackenzie Christine Foy (born November 10, 2000) is an American model and actress. She is best known for her role as Renesmee Cullen in the 2012 film...	/6n8yZKJ3YHkm4Ds3zNjJpankHUk.jpg
+472	Iain Glen	2	1961		17	Iain Glen (born 24 June 1961) is a Scottish film and stage actor.	/8IC1dwdpK1YPRQAlkaa8bofln1k.jpg
+473	Alan Barillaro	2			3		/7GXd8zQUoEWpcD01EaG29oHSwQE.jpg
+474	Hugh Jackman	2	1968		28	Hugh Michael Jackman (born 12 October 1968) is an Australian actor. Beginning in theatre and television, he landed his breakthrough role as Wolverine...	/oX6CpXmnXCHLyqsa4NEed1DZAKx.jpg
+475	Tom Sizemore	2	1961		14	Tom Sizemore (born November 29, 1961) is an American film and television actor and producer. He is known for his roles in films such as Saving...	/soINOuacuiThRb2LyPD4tTWve7C.jpg
+476	Edward Burns	2	1968		15	Edward Fitzgerald Burns (born January 29, 1968) is an American actor, film producer, writer and director.	/i68I0bNcNd9i88cMQYQvKxX3gBr.jpg
+477	Haruka Fujita	1			2	Haruka Fujita (藤田 春香) is an animator who works with Kyoto Animation.	/d17kGnlHzGKXA1zOp5PJCaDY0r.jpg
+478	Minako Kotobuki	1	1991		6	Minako Kotobuki (寿 美菜子 Kotobuki Minako, born September 17, 1991) is a Japanese actress, voice actress and singer. She is best known for her role as...	/puocmMfvql6X1AvhFTolaV6Vh2r.jpg
+479	Guy Pearce	2	1967		40	Guy Edward Pearce (born 5 October 1967) is an English-born Australian actor and musician, known for his roles as Leonard Shelby in Christopher...	/vTqk6Nh3WgqPubkS23eOlMAwmwa.jpg
+480	Carrie-Anne Moss	1	1967		31	Carrie-Anne Moss (born August 21, 1967) is a Canadian actress. After early roles on television, she rose to international prominence for her role of...	/xD4jTA3KmVp5Rq3aHcymL9DUGjD.jpg
+481	Joe Pantoliano	2	1951		15	An American film and television actor. He played the character of Ralph Cifaretto on The Sopranos, Bob Keane in La Bamba, Cypher in The Matrix, Teddy...	/cXMOad9KKVBK1lg8EjEbcNPn1OT.jpg
+482	Tate Taylor	2	1969		8	Tate Taylor is an American filmmaker and actor. A frequent collaborator with his friends and prolific character actresses Allison Janney and Octavia...	/zJaLbNHLoQMhCAeJhn1J1B0xrup.jpg
+483	Emma Stone	1	1988		51	Emily Jean "Emma" Stone is an American actress. The recipient of numerous accolades, including an Academy Award and a Golden Globe Award, she was the...	/fskoy9QygLcqqlP0omG2Zm60PBS.jpg
+484	Viola Davis	1	1965		30	Viola Davis (born August 11, 1965) is an American actress. Known primarily as a stage actress, Davis won a Tony Award for Best Performance by a...	/bkrRMBXxqR4v3Zeygivfyi6VIfF.jpg
+485	Octavia Spencer	1	1972		21	Octavia Lenora Spencer is an American actress, author, and producer. She is the recipient of several accolades, including an Academy Award, a British...	/35SOy4yQZ9xRSJ0q1L5RLhXfhqN.jpg
+486	Susana Garcia	1			1		
+487	Paulo Gustavo	2	1978	2021	4	Paulo Gustavo was a Brazilian actor, comedian, director, screenwriter, and presenter. He is most known for his monologue Minha Mãe é uma Peça, which,...	/pBpbfY5txgET6mJB6cukhQCNnPA.jpg
+488	Rodrigo Pandolfo	2	1984		1		/al9zNj7pf7ftNzfyWLE5CClTC7S.jpg
+489	Mariana Xavier	1	1980		1		/uZDH0zOfjW83I0q9kMU9Nm1kEr4.jpg
+490	Lilly Wachowski	1	1967		10	Lilly Wachowski (born December 29, 1967) is known as one of the Wachowski sisters — a directing, writing and producing duo most famous for creating...	/afRagUzIMpmaA3EyKtfsY5xA9TK.jpg
+491	Keanu Reeves	2	1964		52	Keanu Charles Reeves is a Canadian actor. Reeves is known for his roles in Bill & Ted's Excellent Adventure, Speed, Point Break, and The Matrix...	/4D0PpNI0kmP58hgrwGC3wCjxhnm.jpg
+492	Laurence Fishburne	2	1961		25	Laurence John Fishburne III (born July 30, 1961) is an American actor and producer. He has been critically hailed for his forceful, militant, and...	/8suOhUmPbfKqDQ17jQ1Gy0mI3P4.jpg
+493	Mel Gibson	2	1956		36	Mel Columcille Gerard Gibson (born January 3, 1956) is an actor, film director, producer and screenwriter. Born in Peekskill, New York, Gibson moved...	/CiAtK8oqGiSpeTCRsEUJEHI2dh.jpg
+494	Andrew Garfield	2	1983		81	Andrew Russell Garfield (born 20 August 1983) is an English and American actor. An alumnus of the Royal Central School of Speech and Drama, he has...	/h0A3pzHaNTVRD7xNfabuoyadJba.jpg
+495	Sam Worthington	2	1976		30	An Australian actor, best known for the portrayals of Jake Sully in Avatar, Marcus Wright in Terminator Salvation and Perseus in Clash of the Titans...	/blKKsHlJIL9PmUQZB8f3YmMBW5Y.jpg
+496	Vince Vaughn	2	1970		37	An American film actor, screenwriter, producer and comedian. He began acting in the late 1980s, appearing in minor television roles before...	/A9fJ88dfXZGpgFTnQIK0bOtjMrj.jpg
+497	Nadine Labaki	1	1974		9	Nadine Labaki (born February 18, 1974) is a Lebanese actress and director. She is one of the well known directors in the Arabic music video industry....	/xfl6idMSJWNU2w7BAGowoamivor.jpg
+498	Zain Al Rafeea	2	2004		4		/b9ZlPHX1KNjy1FeQ1SBAl3lvd8E.jpg
+499	Yordanos Shifera	1			1		/kQUcANAYcpg98zyargFHqv17hhr.jpg
+500	Boluwatife Treasure Bankole	2			2		/790MeyflzEn6DG5wPcsduXbS1Re.jpg
+501	Pete Docter	2	1968		18	Peter Hans "Pete" Docter is an American film director, animator, and screenwriter from Bloomington, Minnesota. He is best known for directing the...	/rrAW10FlcOjqMllSwNBrFjfUT4k.jpg
+502	Jamie Foxx	2	1967		30	Eric Marlon Bishop (born December 13, 1967), professionally known as Jamie Foxx, is an American actor, singer-songwriter, stand-up comedian, and talk...	/oZa2WXbsXRfJp7eI2oorREAaDrd.jpg
+503	Tina Fey	1	1970		11	Elizabeth Stamatina "Tina" Fey (born May 18, 1970) is an American actress, comedian, writer and producer, known for her work on the NBC sketch comedy...	/yPTAi1iucXf85UpiFPtyiTSM6do.jpg
+504	Graham Norton	2	1963		3	Graham William Walker (born 4 April 1963), better known by his stage name Graham Norton, is an Irish television and radio presenter, comedian, and...	/zndDiPrNXtbxGLVhFhSlpCkaHIH.jpg
+505	Albert Brooks	2	1947		15	Albert Lawrence Brooks (born Albert Lawrence Einstein; July 22, 1947) is an American actor, voice actor, writer, comedian and director. He received...	/8iDSGu5l93N7benjf6b3AysBore.jpg
+506	Stephen Chbosky	2	1970		4	Stephen Chbosky (born January 25, 1970) is an American novelist, screenwriter, and film director best-known for writing The New York Times...	/9PdTBjn8dJqfn3ygKvsCdl9G06J.jpg
+507	Jacob Tremblay	2	2006		37	Jacob Tremblay (born October 5, 2006) is a Canadian actor. He starred as Jack Newsome in Room (2015), for which he won the Critics' Choice Movie...	/oNLhzkZXNw1RNihne9P5q57cRcd.jpg
+508	Owen Wilson	2	1968		64	Owen Cunningham Wilson (born November 18, 1968) is an American actor. He has had a long association with filmmaker Wes Anderson with whom he shared...	/op8sGD20k3EQZLR92XtaHoIbW0o.jpg
+509	Julia Roberts	1	1967		36	Julia Fiona Roberts (born October 28, 1967) is an American actress and producer. She established herself as a leading lady in Hollywood after...	/AhQMyQ10kz5g8Y3Fp54GPhgDxQS.jpg
+510	Stanley Donen	2	1924	2019	2	Stanley Donen (April 13, 1924-February 23, 2019) was an American film director and choreographer hailed by David Quinlan as "the King of the...	/ds7TffqzWhnW9kndY1hnOajkpEA.jpg
+511	Gene Kelly	2	1912	1996	9	Eugene Curran Kelly (August 23, 1912 – February 2, 1996) was an American actor, dancer, singer, filmmaker, and choreographer. He was known for his...	/zhVIiUrWtlT4NNT7WCXma1mFD88.jpg
+512	Donald O'Connor	2	1925	2003	11	Donald O’Connor (August 28, 1925 - September 27, 2003) was an American dancer, singer, and actor who came to fame in a series of movies in which he...	/sV7Dx16wcajPsxJItmW5dX4axoW.jpg
+513	Debbie Reynolds	1	1932	2016	5	Mary Frances "Debbie" Reynolds (April 1, 1932 – December 28, 2016) was an American actress, singer, businesswoman, film historian, and humanitarian....	/z5naigs3CDthHEX7qrfHnAsAEYO.jpg
+514	Lorene Scafaria	1	1978		10	Lorene Scafaria (born May 1, 1978) is an American screenwriter, playwright, actress, singer, and film director. She is best known for her work on the...	/uToUw9I39wMiBWkCdcYO6gnz4S8.jpg
+515	Fritz Lang	2	1890	1976	9	Friedrich Christian Anton "Fritz" Lang (December 5, 1890 – August 2, 1976) was an Austrian-American filmmaker, screenwriter, and occasional film...	/9YT60DvkqsSPxoS4b8ezIv76ses.jpg
+516	Gustav Fröhlich	2	1902	1987	2	From Wikipedia, the free encyclopedia	/kqUdWJcrdDIbTi8YvLtok5EmYxQ.jpg
+517	Brigitte Helm	1	1906	1996	8	Brigitte Helm (17 March 1906 – 11 June 1996) was a German actress, best-remembered for her dual role as Maria and her double, the Maschinenmensch, in...	/a7mwxoeF34BCxmteoHQSB1ENth0.jpg
+518	Alfred Abel	2	1879	1937	1	From Wikipedia, the free encyclopedia	/elRbE3CTs41tFKjP05uGVXt4Bxt.jpg
+519	Peggy Holmes	1			5	Peggy Holmes is an American choreographer, dancer, screenwriter, and film director. Her full-length directorial debut was on 2008's The Little...	/HK8r5NFRXTd5PAUM0qY92dBvj0.jpg
+520	Eva Noblezada	1	1996		20	Eva Maria Noblezada is an American actress and singer of Filipino and Mexican descent, most known for her work on the Broadway stage.	/70MN7sFDDGdCczZ4sTgiV6W7CrL.jpg
+521	Simon Pegg	2	1970		22	Simon John Pegg (born 14 February 1970) is an English actor, comedian, screenwriter, and producer. He came to public prominence in the UK as the...	/nOWKXxgADG98RjKyfQ7oSDfns6J.jpg
+522	Jane Fonda	1	1937		13	Jane Seymour Fonda (born December 21, 1937) is an American actress, activist, and former fashion model. She is the recipient of various accolades...	/5Yb3nmRWXXZAxNhfhEuOMdfyVNN.jpg
+523	Todd Phillips	2	1970		17	American screenwriter and film director Todd Phillips made his first while a junior at NYU and it went on to become one of the biggest grossing...	/A6FPht87DiqXzp456WjakLi2AtP.jpg
+524	Zazie Beetz	1	1991		44	Zazie Olivia Beetz (born June 1, 1991) is a German-American actress. She stars in the FX comedy-drama series Atlanta (2016–present), for which she...	/ijrT4pvALvxU0gphea4YxDnDh6e.jpg
+525	Erland Josephson	2	1923	2012	4	From Wikipedia, the free encyclopedia.	/dopG1nAzyT23DMAPyPoUuwbZs4a.jpg
+526	Yōko Tsukasa	1	1934		3	Yōko Tsukasa is a Japanese actress. She won the award for best actress at the 17th Blue Ribbon Awards for Kinokawa.	/cEF3udfW1Miuo4f3wUiFejVukRC.jpg
+527	Natalie Nourigat	1			1		/9qiqAtTsHd0Irz7GFgUP2m8GVcB.jpg
+528	Michael Curtiz	2	1886	1962	10	Michael Curtiz (December 24, 1886 — April 10, 1962), born Manó Kaminer, was a Hungarian-American film director. He had early credits as Mihály...	/qRKA4eYY5Jhu1FaDsh4IUAg264f.jpg
+529	Humphrey Bogart	2	1899	1957	11	Humphrey DeForest Bogart (December 25, 1899 – January 14, 1957) was an American actor. He is widely regarded as a cultural icon. The American Film...	/dXGs7F5ezehcofe6j7Kz7wIhmV6.jpg
+530	Ingrid Bergman	1	1915	1982	13	Ingrid Bergman (29 August 1915 – 29 August 1982) was a Swedish actress who starred in a variety of European and American films. She won three Academy...	/x6LOGUWNHH3pRO8gOup68xPJL46.jpg
+531	Paul Henreid	2	1908	1992	10	Paul Henreid (January  10, 1908 – March 29, 1992) was an Austrian actor and film director, best known for his role in Casablanca.	/1Y04k5ItlDiN1xyghhFHhhGBSOD.jpg
+532	Joseph L. Mankiewicz	2	1909	1993	3	Joseph Leo Mankiewicz was an American film director, screenwriter, and producer. Mankiewicz had a long Hollywood career and is best known as the...	/1zqHOZQlevCE2ld15qUt24Nxr7u.jpg
+533	Bette Davis	1	1908	1989	11	Ruth Elizabeth "Bette" Davis (April 5, 1908 – October 6, 1989) was an American actress of film, television and theater. Noted for her willingness to...	/h8JJeSEB7jc6Ce33Lh7XDQfXaVr.jpg
+534	Anne Baxter	1	1923	1985	16	From Wikipedia, the free encyclopedia	/mUMKB7ZGzHJ38LpDWnA4VheIGBB.jpg
+535	George Sanders	2	1906	1972	7	George Henry Sanders (3 July 1906 – 25 April 1972) was a British film and television actor, singer-songwriter, music composer, and author. His career...	/5tzdY4lCnfbLZU8Wblp5xfjn10B.jpg
+536	Brian De Palma	2	1940		11	Brian Russell De Palma is an American film director and writer. In a career spanning over 40 years, he is probably best known for his suspense and...	/57sJhqM6Sp6WKL3nkA89yZg83bv.jpg
+537	Steven Bauer	2	1956		22	Steven Bauer (born December 2, 1956) is a Cuban-American actor. He is known for his role as Manny Ribera in the 1983 film Scarface, and his role on...	/wWIgfXMRyGFKBWhV9yc8CObNqfh.jpg
+538	Michelle Pfeiffer	1	1958		37	Michelle Marie Pfeiffer (born April 29, 1958) is an American actress and producer. She has received many accolades, including a Golden Globe Award,...	/oGUmQBU87QXAsnaGleYaAjAXSlj.jpg
+539	Ericson Core	2			1	Ericson Core is an American film director and cinematographer, best known for directing the 2006 sports film Invincible and the 2015 film Point...	/pmxQ9fYWWF51cJcTHup95qtGoWQ.jpg
+540	Willem Dafoe	2	1955		44	William James "Willem" Dafoe (born July 22, 1955) is an American actor. He is the recipient of various accolades, including the Volpi Cup for Best...	/ui8e4sgZAwMPi3hzEO53jyBJF9B.jpg
+541	Julianne Nicholson	1	1971		10	Julianne Nicholson (born July 1, 1971) is an American actress. She is known for having played Megan Wheeler on Law & Order: Criminal Intent.	/2RJ30pPSQQxteuoMjhN1FWTwxlZ.jpg
+542	Christopher Heyerdahl	2	1963		11	Christopher Heyerdahl is a Canadian actor who has had roles in many prominent television shows and movies. He is 6 ft 4 in (1.93 m) tall.	/pTPZa3TFIkxRbqM5adXYE51a99s.jpg
+543	Florian Zeller	2	1979		3	Florian Zeller is a French novelist, playwright and director. He won the prestigious Prix Interallié in 2004 for his novel La Fascination du pire...	/e2koSVDhNPlENZ7zRZq2eyC3A7y.jpg
+544	Olivia Colman	1	1974		13	Olivia Colman was born on January 30, 1974 in Norwich, Norfolk, England as Sarah Caroline Olivia Colman. She is an actress and producer, known for...	/1KTXGJaqWRnsoA6qeaUa7U2zkHL.jpg
+545	Mark Gatiss	2	1966		8	Mark Gatiss is an English actor, comedian, screenwriter and novelist. He is known as a member of the comedy team The League of Gentlemen alongside...	/rdinP6RQwKBab7BawJDBzF1I7Qz.jpg
+546	Can Ulkay	2	1964		2		/37ZlEKDZUrYcysyHTD6YMee5EvI.jpg
+547	İsmail Hacıoğlu	2	1985		3	​İsmail Hacıoğlu (d. 1985, İstanbul) Türk sinema ve televizyon oyuncusu. Müjdat Gezen Sanat Merkezi Tiyatro Bölümü ve Mimar Sinan Üniversitesi Devlet...	/8g51lHAupQYaebAjH4ZBFWN97LY.jpg
+548	Kim Seol	1			7		/vdhHyntSe2WCfVJhefol6rFLj6g.jpg
+549	Ali Atay	2	1976		13	Dursun Ali Atay (born 20 April 1976) is a Turkish actor, musician and director. He graduated theatre department of Mimar Sinan Fine Arts University....	/b5pcYB9Rg2ZXbl22TnoFxyTDJNj.jpg
+550	Mario Monicelli	2	1915	2010	2	From Wikipedia, the free encyclopedia	/rNa6Y3aCqQ0rVnQpr1JUfyPNPUV.jpg
+551	Ugo Tognazzi	2	1922	1990	2	​From Wikipedia, the free encyclopedia.  	/sg1hqzAIRKhXMSe32rKFodXbAUW.jpg
+552	Gastone Moschin	2	1929	2017	8	Italian stage, television and film actor perhaps best known for playing Don Fanucci in THE GODFATHER: PART II (1974). From 1970 until his death, he...	/dU58seqJs1NDkNodjwCbGZg3nqT.jpg
+553	Anita Ekberg	1	1931	2015	13	From Wikipedia, the free encyclopedia.	/865fzmRHqj0S9zzmKNNWY1fWbcb.jpg
+554	Matt Damon	2	1970		43	Matthew Paige Damon (born October 8, 1970) is an American actor, film producer, and screenwriter. Ranked among Forbes' most bankable stars, the films...	/At3JgvaNeEN4Z4ESKlhhes85Xo3.jpg
+555	Guy Ritchie	2	1968		32	Guy Stuart Ritchie (born 10 September 1968) is an English film director, producer, writer, and businessman.	/9pLUnjMgIEWXi0mlHYzie9cKUTD.jpg
+556	Jason Flemyng	2	1966		16	Jason Iain Flemyng (born 25 September 1966) is an English actor. He is known for his film work, which has included roles in British films such as...	/6E5KfjDwm00jIfN3LNLL9jZAvx3.jpg
+557	Dexter Fletcher	2	1966		15	Dexter Fletcher (born 31 January 1966) is an English actor and director. He has appeared in Guy Ritchie's Lock, Stock and Two Smoking Barrels and the...	/yRI8MDB5sg8b8EZkzFz5cCBrnKL.jpg
+558	Nick Moran	2	1969		10	Nicholas James "Nick" Moran is an English actor, writer, producer and director, best known for his role as Eddy the card shark in Lock, Stock, and...	/kfWebCAm72JBZLXcNbA2Myr950E.jpg
+559	Buster Keaton	2	1895	1966	10	Buster Keaton (4th October 1895 - 1st February 1966) was an American comic actor, filmmaker, producer and writer. He was best known for his silent...	/kEybBFkO5AX83o3WKyNDfuvfVrn.jpg
+560	Kathryn McGuire	1	1903	1978	5	From Wikipedia, the free encyclopedia	/eKrVqNK3JbZs1I71pCVPA9vVkS6.jpg
+561	Joe Keaton	2	1867	1946	3		/jCPa5FUv7izUmOekWPPd5bQJ8kh.jpg
+562	Walter Salles	2	1956		4	Walter Moreira Salles, Jr. (born April 12, 1956) is a Brazilian filmmaker and film producer of international prominence.	/k3XHgm0f9nJK3ugilBqlm0tHfsw.jpg
+563	Fernanda Montenegro	1	1929		5	Fernanda Montenegro (born Arlete Pinheiro Esteves da Silva; October 16, 1929) is a Brazilian stage, television and film actress, mostly recognized...	/bja0rn1BjAnA5Z5VbEvL2apvMT5.jpg
+564	Vinícius de Oliveira	2	1985		2	Vinícius de Oliveira (born July 18, 1985) is a Brazilian actor. He was born in Rio de Janeiro. He lived in Bonsucesso, Rio de Janeiro with his...	/eDMbfBmAZoT24vTbv0ecpC2MRnH.jpg
+565	Marília Pêra	1	1943	2015	3	Marília Pêra was a Brazilian actress hailed as "one of the decade's [1980s] ten best actresses" by Pauline Kael. Pêra won the National Society of...	/9gxyrjoTlBPjEp6SnISeFU4hVMs.jpg
+566	Machiko Kyō	1	1924	2019	7	Machiko Kyō (Japanese: 京 マチ子 Hepburn: Kyō Machiko, March 25, 1924 – May 12, 2019) was a Japanese actress whose film work occurred primarily during...	/24tQVUgGN4s6rp1P9qlnT74RSJI.jpg
+567	Ivan Lapikov	0	1922	1993	1		/neIQgfxYvSl2ZBzXfKgV8BqyWeq.jpg
+568	Barbara Stanwyck	1	1907	1990	13	Barbara Stanwyck (July 16, 1907 – January 20, 1990) was an American actress. A film and television star, she was known during her 60-year career as a...	/y9BX4FNoFBjP2HPcs8rlzqXjJbu.jpg
+569	Edward G. Robinson	2	1893	1973	7	Edward G. Robinson (born Emanuel Goldenberg; December 12, 1893 – January 26, 1973) was a Romanian-born American actor. Although he played a wide...	/UkZdBmDs7Qw8caX7PlF1Spk8kR.jpg
+570	Harvey Keitel	2	1939		16	An American actor. Some of his more notable starring roles were in Martin Scorsese's Mean Streets and Taxi Driver, Ridley Scott's The Duellists and...	/c1KlwOAlnFhBWfcPIvA6hmrElb6.jpg
+571	Michael Madsen	2	1957		16	An American actor, poet, and photographer. He has starred in central roles in such films as Reservoir Dogs, Free Willy, Donnie Brasco, and Kill Bill,...	/AnQm8pXVbMicr4U0IRsOascthVI.jpg
+572	Alberto Sordi	2	1920	2003	3	Alberto Sordi (15 June 1920 – 25 February 2003) was an Italian actor. He was also a film director and the dubbing voice of Oliver Hardy in the...	/rJhtlCbXFizYE6yW4GmJND45MX7.jpg
+573	Silvana Mangano	1	1930	1989	7	From Wikipedia, the free encyclopedia.  Silvana Mangano (21 April 1930  – 16 December 1989)  was an Italian actress.	/wS40j2uCvA0LenVP8MEhitetnfA.jpg
+574	Matthew Modine	2	1959		22	Matthew Avery Modine (born March 22, 1959) is an award-winning American actor. His film roles include Private Joker in Stanley Kubrick's Full Metal...	/z974QEHL12qUvLyk6hlWGAmDgom.jpg
+575	Adam Baldwin	2	1962		15	Appearing in dozens of films since 1980, Baldwin rose to prominence as the troubled outcast Ricky Linderman in My Bodyguard (1980) and moved on to...	/w5f3i7H8wMzHvzYfezIVN521N7Q.jpg
+576	Vincent D'Onofrio	2	1959		31	Vincent D'Onofrio (born June 30, 1959) is an American actor, film producer, and singer.	/qkyiLolEqYMGH25xD4sFIXAjZQB.jpg
+577	Gus Van Sant	2	1952		6	Gus Green Van Sant, Jr. (born July 24, 1952) is an American director, screenwriter, painter, photographer, musician, and author. He was nominated for...	/kICHgrSh4eiICjz8piy9fTXIgph.jpg
+578	Gianluca Leuzzi	2			1		
+579	Sofia Scalia	1	1997		1		/9kalg3lWQoYV9hCXeXyi0C3FvIv.jpg
+580	Luigi Calagna	2	1992		1		/9JFtQGfnac7lkt5e0rVpRP237dN.jpg
+581	Antonella Carone	1			2		/9w7ektL7qbPZGn4BkkResnW7AGC.jpg
+582	Ilya Naishuller	2	1983		6	Russian film director, film actor, producer, screenwriter and frontman of the indie rock band Biting Elbows. Father is an oligarch - Viktor...	/gvBwViahAMgKrrXi5RX69JZ60dY.jpg
+583	Bob Odenkirk	2	1962		41	Robert "Bob" Odenkirk (born October 22, 1962) is an American actor, comedian, writer, director and producer. He is best known as the co-creator and...	/rF0Lb6SBhGSTvjRffmlKRSeI3jE.jpg
+584	Craig Gillespie	2	1967		3	​Craig Gillespie is an Australian film director best known for directing the 2007 film Lars and the Real Girl the Golden Globe winning film I, Tonya.	/pVHspL9QWsXCm3t3VXEaCJ9y8Zz.jpg
+585	Emma Thompson	1	1959		24	Emma Thompson (born 15 April 1959) is a British actress, comedian and screenwriter. Her first major film role was in the 1989 romantic comedy The...	/xr8Ki3CIqweWWqS5q0kUYdiK6oQ.jpg
+586	Joel Fry	2	1983		21	Joel Fry is a British actor. He appears in a number of television series in the United Kingdom, particularly sitcoms such as White Van Man, Trollied...	/4nEKEWJpaTHncCTv6zeP98V0qGI.jpg
+587	Peter Sellers	2	1925	1980	5	Richard Henry Sellers, CBE (8 September 1925 – 24 July 1980), known as Peter Sellers, was a British comedian and actor best known as Chief Inspector...	/k68WsOAixUuzaTCLFLy5JsODdKL.jpg
+588	George C. Scott	2	1927	1999	9	George Campbell Scott (October 18, 1927 – September 22, 1999) was an American actor, director and producer. He was best known for his stage work, as...	/1dL9hx7nC0cACIVpp6xS1jqJJN7.jpg
+589	Sterling Hayden	2	1916	1986	14	Sterling Walter Hayden, born Sterling Relyea Walter, was an American actor and author. He didn't really harbor any aspirations of being an actor,...	/j1ExJbuBqBa6WEhPVW4J7YGFBWs.jpg
+590	Victor Sjöström	2	1879	1960	3	Victor David Sjöström (20 September 1879 – 3 January 1960), sometimes known in the United States as Victor Seastrom, was a pioneering Swedish film...	/iGtT2mbmLt80YPk9lXJRSyxaEKW.jpg
+591	Ingrid Thulin	1	1926	2004	10	Ingrid Lilian Thulin (Swedish pronunciation: [ˈɪŋːrɪd tɵˈliːn]; 27 January 1926 – 7 January 2004) was a Swedish film actress.	/l7Yi6570rbBLJhED1yDM1vhF8h7.jpg
+592	Pepe Bojórquez	0			1		/hTQfailJNpE6tJ7KQhnRx3M6Za7.jpg
+593	Omar Chaparro	2	1974		6		/eucXVp57mAsea5t3oJFD3KPpqKq.jpg
+594	Ana Claudia Talancón	1	1980		16	​From Wikipedia, the free encyclopedia.            Ana Claudia Talancon was born on May 1st, 1980 in Cancun, Mexico. Her first performance was in her...	/es8No01z8G0MFX2KeiAa2ouRfCD.jpg
+595	Stephanie Cayo	1	1988		11	Stephanie Cristina Cayo Sanguinetti (born April 8, 1988) is a Peruvian actress, singer and songwriter.	/33AqLgvcW7nZg3v0Mm1IuD3OcTP.jpg
+596	Tony Curtis	2	1925	2010	6	Tony Curtis (June 3, 1925 – September 29, 2010) was an American film actor whose career spanned six decades, but had his greatest popularity during...	/4aSmN9M4BbFJbNaMSnjGJHffehQ.jpg
+597	Marilyn Monroe	1	1926	1962	10	Marilyn Monroe (born Norma Jeane Mortenson; June 1, 1926 – August 4, 1962) was an American actress, model, and singer. Famous for playing comedic...	/vcp6rHL2sZWdlJQDEWsEe0jAAe1.jpg
+598	Sigourney Weaver	1	1949		46	Susan Alexandra "Sigourney" Weaver (born October 8, 1949) is an American actress. Weaver is considered to be a pioneer of action heroines in science...	/flfhep27iBxseZIlxOMHt6zJFX1.jpg
+599	Tom Skerritt	2	1933		35	Thomas Roy Skerritt (born August 25, 1933) is an American actor who has appeared in more than forty films and more than two hundred television...	/oWFCyBLm1lsbsbT5Nmx3SPMaqFZ.jpg
+600	Ian Holm	2	1931	2020	11	From Wikipedia, the free encyclopedia	/cOJDgvgj4nMec6Inzj1H5nugTO5.jpg
+601	Oriol Paulo	2	1975		15	Oriol Paulo was born in 1975 in Barcelona, Catalonia, Spain.	/mzX2gRv33Yo2T6Nq5iLgBWurlXw.jpg
+602	Mario Casas	2	1986		12	Mario Casas, has 4 siblings. Born in La Coruña, although very young, at just 4 years old, he left with his family to Barcelona. Later, at the age of...	/dqXRFhBB4OJQSWonymV8BfVghds.jpg
+603	Ana Wagener	1	1962		13	Ana Álvarez Wagener (born 1962) is a Spanish actress. She is known for Biutiful, The Invisible Guest and The Sleeping Voice.	/1UteQMIFBSdcYpZ5zDPI2VNOQYU.jpg
+604	Jose Coronado	2	1957		7	Jose Coronado is a Spanish film and television actor. He won several awards for his performance as the lead actor in the 2011 film “No habrá paz para...	/9xo68HzH8n78Xv6gMzKK7XnjtHd.jpg
+605	Kevin Sullivan	2			1	Kevin Sullivan is a Canadian writer, director, and producer of film and television programs.	/ol3oKZoPfy5ku6z0bmAz3gW8VAp.jpg
+606	Megan Follows	1	1968		16	Megan Follows is a Canadian American stage, film and television actress, best known for playing Anne Shirley in the 1985 miniseries Anne of Green...	/ujKoDCJZ5tp4nSU2rw9LfbrP9ny.jpg
+607	Colleen Dewhurst	1	1924	1991	6	​From Wikipedia, the free encyclopedia.  	/rGesoW2zy7HctJ7IYclmCRe4EPk.jpg
+608	Richard Farnsworth	2	1920	2000	12	From Wikipedia, the free encyclopedia	/fDW2gb090aJkGc7L5xDMPpSZYlw.jpg
+609	Çağatay Ulusoy	2	1990		16	He was born into a Muslim family in Istanbul, Turkey. His father is from Trabzon, a city in the north of Turkey and his mother is from Istanbul....	/46jRPThsxSmgjf2qXLQu2tKSqWz.jpg
+610	Emir Ali Dogrul	0			1		
+611	Ersin Arıcı	0			3		/rFiO8qNURe7u2nOys9EFlkchuZu.jpg
+612	Tim Johnson	2			1		/yQkP9wuYcIceIzH9QnECNqVwkAr.jpg
+613	Jay Baruchel	2	1982		21	Jay Baruchel (born April 9, 1982) is a Canadian actor. He has had a successful career in comedy films, and has appeared in such box office successes...	/aDfqAMsPzIZvvj1ymivsKjRAfyv.jpg
+614	America Ferrera	1	1984		12	America Georgina Ferrera (born April 18, 1984) is a Honduran-American actress, best known for playing the lead role in the television comedy series...	/7F84Lh2lKpvkM3EiOvqqvlOmw93.jpg
+615	Gerard Butler	2	1969		38	Gerard James Butler (born 13 November 1969) is a Scottish actor who has appeared on film, stage, and television.	/eJn92Loeq9GzKJVkCaVEQejIq2Z.jpg
+616	Aki Asakura	1	1991		6		/jkG6FaePu8Ce2NDDqeoGNzQQCH2.jpg
+617	Kengo Kora	2	1987		9	Kengo Kora is a Japanese actor.  In 2014 he won the Blue Ribbon award for Best Actor for 'A Story of Yonosuke'.	/wb293WmYQ7yTAtf3opmhCoTJQfa.jpg
+618	Takeo Chii	2	1942	2012	7		/eCFyIoJOXRgropVjcfapBIW6XAB.jpg
+619	Wim Wenders	2	1945		4	Ernst Wilhelm "Wim" Wenders is a German film director, playwright, author, photographer and producer.	/AbqrYglSgaMfetQAeqdHaqiPSof.jpg
+620	Harry Dean Stanton	2	1926	2017	6	Harry Dean Stanton (July 14, 1926 - September 15, 2017) was an American actor, musician, and singer. Stanton's career spanned over fifty years, which...	/197UiLVdxPOv8196sqmUpJzOQB5.jpg
+621	Nastassja Kinski	1	1961		29	Nastassja Kinski (born January 24, 1961, Nastassja Aglaia Nakszynski) is a German-born American-based actress who has appeared in more than 60 films....	/svYrIUXH59Dd9wp9HBpS1ASvRAu.jpg
+622	Dean Stockwell	2	1936	2021	10	Robert Dean Stockwell (March 5, 1936 – November 7, 2021) was an American film, television and stage actor with a career spanning over 70 years. As a...	/ojjl7TyUHdMRpsRfoVe1ODS3drf.jpg
+623	Renato Salvatori	2	1933	1988	7	Renato Salvatori (20 March 1934 – 27 March 1988) was an Italian multi-purpose character actor.	/z6RqHnK5OpmLNDT4wRV3WkM83FM.jpg
+624	Memmo Carotenuto	2	1908	1980	2		/22yOc8UbcpwNXtxUUgD8C7LwMci.jpg
+625	Yuriy Solomin	2	1935		3		/mHSMNAYOloMJTuyLU4PqsYZFiVD.jpg
+626	Maksim Munzuk	2	1910	1999	1	From Wikipedia, the free encyclopedia	/ygva6jk16z14NLkflL3aldS91aa.jpg
+627	Mikhail Bychkov	0	1950		1		/dJI0aU3l32ob2HT9jPnUOCjXeMD.jpg
+628	David Yates	2	1963		21	David Yates (born 30 November 1963) is an English director of film and television, best known for directing the final four films in the Harry Potter...	/hAHOxR0NK4cZDumqNIpDoEdGVAh.jpg
+629	Daniel Radcliffe	2	1989		45	Daniel Jacob Radcliffe (born 23 July 1989) is an English actor. He portrayed Harry Potter in the film series of the same name, and held various other...	/f9WKorjfanW4PxTxhjRvHtCmfKf.jpg
+630	Rupert Grint	2	1988		14	Rupert Alexander Lloyd Grint (born 24 August 1988) is an English actor. He rose to fame for his role as Ron Weasley in the Harry Potter film series....	/iFlkpTaOF6fGLqxz8b0PhI0i0zN.jpg
+631	Emma Watson	1	1990		31	Emma Charlotte Duerre Watson (born 15 April 1990) is an English actress and activist. She has gained recognition for her roles in both blockbusters...	/A14lLCZYDhfYdBa0fFRpwMDiwRN.jpg
+632	Yûzô Kayama	2	1937		4	From Wikipedia, the free encyclopedia.	/wkBZ1dcVxZv6GzZUFaBMtN11uEI.jpg
+633	Tsutomu Yamazaki	2	1936		2	​From Wikipedia, the free encyclopedia.  	/A4M3eER4ChkV5VebYSpLUEUyrez.jpg
+634	John Landis	2	1950		9	John Landis (born August 3, 1950) is an American film director, screenwriter, actor, and producer. He is known for his comedies, his horror films,...	/nXKdxxELgAaGecCpxAWCoj6TV3f.jpg
+635	Michael Jackson	2	1958	2009	9	Michael Joseph Jackson (August 29, 1958 – June 25, 2009) was an American recording artist, dancer, singer-songwriter, musician, and philanthropist....	/oc5FWwO5VYBjkKkIHTxoCtFXJ1G.jpg
+636	Ola Ray	1	1960		9		/kUpBeOeoCIkLsIDoIXFch9GhEN0.jpg
+637	Vincent Price	2	1911	1993	18	Vincent Leonard Price, Jr. (May 27, 1911 – October 25, 1993) was an American actor, well known for his distinctive voice and performances in horror...	/zhIh0YkweGOjiARx0wKhzdpB6kS.jpg
+638	Jim Carrey	2	1962		26	James Eugene Carrey (born January 17, 1962) is a Canadian and American actor, comedian, writer, and producer. Known for his energetic slapstick...	/u0AqTz6Y7GHPCHINS01P7gPvDSb.jpg
+639	Laura Linney	1	1964		19	Laura Leggett Linney (born February 5, 1964) is an American actress and singer. She is the recipient of several awards, including two Golden Globe...	/ztQXGmNLzhDV22rAvcXzCG4d0cy.jpg
+640	Noah Emmerich	2	1965		12	From Wikipedia, the free encyclopedia.	/qwPPHYWJ3a9yRwFXicbbHsf60Nm.jpg
+641	Peter Lorre	2	1904	1964	13	From Wikipedia, the free encyclopedia.	/rqf6BztvMSAlAA2jrTd0VSORprA.jpg
+642	Ellen Widmann	2	1894	1985	3		
+643	Inge Landgut	1	1922	1986	1	Inge Landgut war eine deutsche Schauspielerin und Synchronsprecherin.	/zNzk5bvChgVx4tAKpuCJPX5xxMO.jpg
+644	Satyajit Ray	2	1921	1992	3	Satyajit Ray (2 May 1921 – 23 April 1992) was an Indian filmmaker, widely regarded as one of the greatest filmmakers of the 20th century. Ray was...	/isH5b6jEti7Lbhv4HWDjtZraPeE.jpg
+645	Subir Banerjee	0			2		/dYUcCuK159NQdptALzcXwGj5JH5.jpg
+646	Uma Das Gupta	1			3		/nanvcNhfI5bGEJTASI0RfaugLOr.jpg
+647	Karuna Banerjee	1	1919	2001	2		/pm4DcNLgkzzuHO53mi1BEuYnliv.jpg
+648	Cha Tae-hyun	2	1976		11	Cha Tae-hyun (차태현) is a South Korean actor and co-founder of the entertainment agency Blossom Entertainment.	/XGrTW6G78veIuvrIiVe8U9HAP6.jpg
+649	Arturo Brachetti	2	1957		1		
+650	Aldo Baglio	2	1958		2	Born Cataldo Baglio in Palermo in a family of modest means originally from San Cataldo (Calabria) – after which he was named - he eventually moves to...	/e28menB9XFWKPHApBRF92BCDTc5.jpg
+651	Giacomo Poretti	2	1956		2		/uWjUObmpR4u9IhGSjt7i5VwGNe1.jpg
+652	Giovanni Storti	2	1957		1	Giovanni Storti (Milano, 20 febbraio 1957) è un attore, comico e regista italiano parte del noto trio comico Aldo, Giovanni &amp; Giacomo. La parte...	/hZYyR8UgY2HSYkmVRC37dUHXyPl.jpg
+653	Sophia Loren	1	1934		12	Sophia Loren, OMRI (born Sofia Villani Scicolone; 20 September 1934) is an Italian actress.	/1bBtumefzTEmhmglAICkfizUgwy.jpg
+654	John Vernon	2	1932	2005	11	John Keith Vernon (born Adolphus Raymondus Vernon Agopsowicz; February 24, 1932 – February 1, 2005) was a Canadian actor. He made a career in...	/gcDiT7lbejFskdFMEx5syWSRfnj.jpg
+655	Denis Villeneuve	2	1967		20	Denis Villeneuve OC CQ (French: [dəni vilnœv]; born October 3, 1967) is a Canadian filmmaker. He is a four-time recipient of the Canadian Screen...	/zdDx9Xs93UIrJFWYApYR28J8M6b.jpg
+656	Lubna Azabal	1	1973		7	From Wikipedia, the free encyclopedia.	/qjsoXqKJPnmoMs1eyeTLBKKShYQ.jpg
+657	Mélissa Désormeaux-Poulin	1	1981		3	Mélissa Désormeaux-Poulin (born in 1981) is a French Canadian actress.	/pMC2DPY01mkxnwGnowJV9X4hp7i.jpg
+658	Maxim Gaudette	2	1974		3	Maxim Gaudette (born June 8, 1974) is a Canadian actor from Quebec. He won the Genie Award for Best Supporting Actor in 2010 for his role as Marc...	/iGFDGJmGUxLOSIamTENFDecJdkA.jpg
+659	Wong Kar-wai	2	1956		10	Wong Kar-wai is a Hong Kong Second Wave filmmaker, internationally renowned as an auteur for his visually unique, highly stylized films. Wong's films...	/gWfo3lseDx5h9YzsfnaVblG3S6c.jpg
+660	Tony Leung Chiu-wai	2	1962		23	Tony Leung Chiu-wai (born 27 June 1962) is a Hong Kong actor and singer. He is considered one of Asia's most successful and internationally...	/pMZJ7c7ururMg5TBjXWWIuT3WFI.jpg
+661	Maggie Cheung	1	1964		17	Maggie Cheung Man yuk (born 20 September 1964) is a Hong Kong actress. Raised in England and Hong Kong, she has over 70 films to her credit since...	/hXsXzhSmzqGKC6yGn8WHsgDujT7.jpg
+662	Rebecca Pan	1	1931		3	She was born in Shanghai on 29 December 1931. She moved to Hong Kong in 1949. Her singing career began in 1957. One of her songs, which she recorded...	/fbFl1uGb5Uo2FPA5S5jvgGevHYE.jpg
+663	Camillo Mastrocinque	2	1901	1969	2		/6UYKq2FDJF1Ka52gnC5Ifbk3vun.jpg
+664	Totò	2	1898	1967	2	Totò was born Antonio Clemente in a poor district of Naples, the illegitimate son of Anna Clemente from Sicily and Marquis Giuseppe De Curtis from...	/x8sM4HlITfhAoXJ2FZrQA7wFgXg.jpg
+665	Peppino De Filippo	2	1903	1980	1	From Wikipedia, the free encyclopedia.	/kGRGCzGrgeClFhzFoFB9bFMDDtz.jpg
+666	Dorian Gray	1	1928	2011	1		/w8tiB8fjzbPnpZsA6wUhZLQmveU.jpg
+667	Paul Thomas Anderson	2	1970		12	Paul Thomas Anderson (born June 26, 1970) is an American film director, producer, and screenwriter. Born in Los Angeles, Anderson developed an...	/29DHpRKddqTwo2NU162Y49JoQYa.jpg
+668	Daniel Day-Lewis	2	1957		17	Daniel Michael Blake Day-Lewis (born 29 April 1957) is an English actor with both British and Irish citizenship. His portrayals of Christy Brown in...	/3kNA9VcmymoEwT0btQ4bvMYxzcP.jpg
+669	Paul Dano	2	1984		34	Paul Franklin Dano (born June 19, 1984) is an American actor. He began his career on Broadway before making his film debut in The Newcomers (2000)....	/zEJJsm0z07EPNl2Pi1h67xuCmcA.jpg
+670	Kevin J. O'Connor	2	1963		14	An American actor. He is known for playing character roles in major studio films such as There Will Be Blood, The Mummy, Clive Barker’s Lord of...	/1q5MnllB6jbwCgMaGistJ917RQL.jpg
+671	Jon Olb	2			1		/mFgacZaHdo5M5kbqsS2AsAmUHW4.jpg
+672	Hannah Gadsby	1	1978		3		/muniJCyvEKACJaijKZZl0T9qZe7.jpg
+673	Michel Gondry	2	1963		3	Michel Gondry (born May 8, 1963) is a French film, commercial, and music video director and a screenwriter. He is noted for his inventive visual...	/1IAnVsl8JgHpUirBXpsbLlWyS1y.jpg
+674	Kirsten Dunst	1	1982		31	Kirsten Caroline Dunst (born April 30, 1982) is an American actress. She has received various accolades, including a Cannes Film Festival Award for...	/sFYHUU1gWd57pttD8732tkBsXV5.jpg
+675	Cecilia Aranovich	1			2		/scM506aaG9M3jsN74tOR76l2kBp.jpg
+676	Matthew Lillard	2	1970		45	Matthew Lyn Lillard (born January 24, 1970) is an American actor, comedian, director, and producer. His early film work includes Chip Sutphin in...	/51v6jsvzuAXYirIzdqcjLBp46d6.jpg
+677	Thea White	1	1940	2021	2	Thea Ruth White (née Zitzner; June 16, 1940) was an American voice actress best known for her voice over work as Muriel Bagge on Courage the Cowardly...	/1l6H1kpB0KLw7Mf2YwqLgkxYDt4.jpg
+678	Grey DeLisle	1	1973		12	Grey DeLisle (born August 24, 1973), sometimes credited as Grey Griffin, is an American voice actress, comedian and singer-songwriter. DeLisle is...	/anib3yRL9GyUvTkYNHWxQPlXLUH.jpg
+679	Martin McDonagh	2	1970		3	Martin McDonagh was born on March 26, 1970 in Camberwell, London, England. He is a writer and director, known for In Bruges (2008), Seven Psychopaths...	/pyDaAVKa8akTLHXzeTyF8oGymXN.jpg
+680	Frances McDormand	1	1957		15	An American film, stage and television actress. McDormand began her career on stage and made her screen debut in the 1984 film Blood Simple, having...	/zUYT6TC5otSTBLVr7skfRVGFE3s.jpg
+681	Sam Rockwell	2	1968		40	Sam Rockwell was born on November 5, 1968, in San Mateo, California, the only child of two actors, Pete Rockwell and Penny Hess. The family moved to...	/vYpWxV0bnUgKo7SdasfGP9HttUq.jpg
+682	Woody Harrelson	2	1961		33	Woodrow Tracy Harrelson (born July 23, 1961) is an American actor and playwright. He is the recipient of several accolades, including a Primetime...	/igxYDQBbTEdAqaJxaW6ffqswmUU.jpg
+683	Thomas Vinterberg	2	1969		2	Thomas Vinterberg (born 19 May 1969) is a Danish film director who, along with Lars von Trier, co-founded the Dogme 95 movement in filmmaking, which...	/1lChKBPVLqbn7Kl8lHghybBVzgw.jpg
+684	Mads Mikkelsen	2	1965		46	Mads Dittmann Mikkelsen (born 22 November 1965) is a Danish actor. Originally a gymnast and dancer, he rose to fame in Denmark as an actor for his...	/ntwPvV4GKGGHO3I7LcHMwhXfsw9.jpg
+685	Thomas Bo Larsen	2	1963		6		/3j2Iq6wkpgNwKz1H2kkywKB6go.jpg
+686	Annika Wedderkopp	1			1		/o0vCTKao4TfkOxA6jxW4LnIS2Ev.jpg
+687	Matías Moltrasio	0			1		
+688	William Levy	2	1980		16	William Gutiérrez Levy is an actor and producer, known for Resident Evil: The Final Chapter (2016), Addicted (2014) and The Single Moms Club (2014).	/fi1k181dsQfV6rtK7zd8m62Wq4L.jpg
+689	Alicia Sanz	1	1988		9		/nZT2vDHcS4jG1136f8MRqiePk5J.jpg
+690	Roberto Sosa	2	1970		2		/iafTdS9GYkyXWrVrqc8saLgXnhK.jpg
+691	Carl Theodor Dreyer	2	1889	1968	4	Carl Theodor Dreyer (3 February 1889 – 20 March 1968), commonly known as Carl Th. Dreyer, was a Danish film director.	/cPH6zLHp3otZkluppZcErWmxCXT.jpg
+692	Maria Falconetti	1	1892	1946	3	​From Wikipedia, the free encyclopedia.  	/gt2p4FrgveCD5qb0uhYH67MIUd5.jpg
+693	Eugène Silvain	2	1851	1930	1		/pTe6VvXg6UeYklsdwuALsoaHlax.jpg
+694	André Berley	2	1890	1936	1		/ckoUscLgTslbUzj293t6mWxCQt9.jpg
+695	Garth Davis	2	1974		1	Garth Davis (born 1974, in Brisbane) is an Australian commercial, television and film director. He is known for directing the Oscar-nominated film...	/lqxIIqqe7T64Oj6I9mofH2irDfd.jpg
+696	Dev Patel	2	1990		21	Dev Patel ( born 23 April 1990) is a British actor. He is the recipient of various accolades including a BAFTA Award, a Screen Actors Guild Award, a...	/jt08kAMlC7s9MJ8PupHBUjY0Ruc.jpg
+697	Rooney Mara	1	1985		20	Patricia Rooney Mara (born April 17, 1985) is an American film and television actress. Mara made her acting debut in 2005 and has gone on to star in...	/ixcGTDGHtwaQnNLpLS1S7V01DUJ.jpg
+698	David Wenham	2	1965		22	David Wenham (born 21 September 1965) is an Australian actor who has appeared in movies, television series and theatre productions. He is known in...	/F7CWSqUE75HtrcdqIQ7UMZ9aTX.jpg
+699	François Truffaut	2	1932	1984	5	François Roland Truffaut (6 February 1932 – 21 October 1984) was an influential film critic and filmmaker and one of the founders of the French New...	/3bXLtipaybsje01LlQvHvuUAZNq.jpg
+700	Jean-Pierre Léaud	2	1944		13	Jean-Pierre Léaud (born May 28, 1944) is a French actor, best known for playing Antoine Doinel in François Truffaut's series of films about that...	/zkWjuuyncnHfYpkUfEguwTTRntb.jpg
+701	Claire Maurier	1	1929		4	Claire Maurier (born Odette-Michelle-Suzanne Agramon; March 27, 1929) is a French actress who has appeared in more than 90 films since 1947.	/rlMYKpiTIzZCw2ee3YGENJZQKPC.jpg
+702	Albert Rémy	2	1911	1967	4	From Wikipedia, the free encyclopedia	/k0IZ9pO6Be6pR0mRtdzVyPeuM3f.jpg
+703	Tony Cervone	2	1966		2		/sxyV4NkHI1INnkVNPtrIEiN2tlQ.jpg
+704	Frank Welker	2	1946		18	Franklin Wendell Welker (born March 12, 1946) is an American voice actor with an extensive career spanning nearly six decades. As of 2021, Welker...	/xXODQ5AX6pG4my8ieeEIuiAREXs.jpg
+705	Mindy Cohn	1	1966		13	Mindy Cohn (born May 20, 1966) is an American television, film and voice actress, who appeared on VH1's List of "100 Greatest Kid Stars". She starred...	/f8wFQ9Ner4FxWLSncpni4w14w5B.jpg
+706	Marco Tullio Giordana	2	1950		1	Marco Tullio Giordana (born 1 October 1950 in Milan) is an Italian director and screenwriter. His film Quando sei nato non puoi più nasconderti was...	/uJBDzGa9Cv6z8kNE6ryXdj4afxC.jpg
+707	Luigi Lo Cascio	2	1967		2	Luigi Lo Cascio is an Italian actor born 20 October 1967 in Palermo.	/yp7Kf2TVSwuDye5F8G9VthK1xyS.jpg
+708	Alessio Boni	2	1966		5		/wmvo4ZfGEnOMwlg1aQCPbhcsLAQ.jpg
+709	Adriana Asti	1	1931		4		/kYZa3wNA2Ncyk3QZTvZo02spqUy.jpg
+710	Joe Wright	2	1972		7	Joe Wright (born 1972) is an English film director best known for 2005's Pride and Prejudice and 2007's Atonement.	/1qA8HudSIwIr7ZdxwfQAgubsDO.jpg
+711	Keira Knightley	1	1985		30	Keira Christina Knightley (born 26 March 1985) is an English actress. She has starred in both independent films and big-budget blockbusters, and is...	/bRC1B2VwV0wK3ElciFAK6QZf2wD.jpg
+712	Matthew Macfadyen	2	1974		28	David Matthew Macfadyen (born 17 October 1974) is an English actor, known for his role as MI5 intelligence officer Tom Quinn in the BBC television...	/2FF3Yjxd7DYR4EIJL6s2GpKDMkJ.jpg
+713	Brenda Blethyn	1	1946		20	From Wikipedia, the free encyclopedia.	/yUq4vKJ3SmvDZNKvXmA4OdXehDj.jpg
+714	Dan Trachtenberg	2	1981		7	Dan Trachtenberg (born May 11, 1981) is a filmmaker and podcaster.  He was formerly a host on The Totally Rad Show and Geekdrome, both of which were...	/ce3rCLjSPyvq89D9kd2pyIlLny1.jpg
+715	Amber Midthunder	1	1997		105	Amber Midthunder (born April 26, 1997) is a Native American actress. She is known for her main role in the FX series Legion, and appearances in...	/f8VWGyaIS38NkDIzQ2hapXKt0N5.jpg
+716	Dane DiLiegro	2	1988		9	Dane DiLiegro (born August 6, 1988) is a professional basketball player turned actor.	/aUemYqMIbk17qDqNHkGc48WUJv8.jpg
+717	Stormee Kipp	0			9		/zMAvWK5V3El3nJvrJbqPVBFSm5P.jpg
+718	Ron Howard	2	1954		15	Ronald William Howard (born March 1, 1954) is an American filmmaker and actor. Howard first came to prominence as a child actor, guest-starring in...	/tDKn6gAgvARdQRfuem2JwyNcP3B.jpg
+719	Colin Farrell	2	1976		26	Colin James Farrell (born 31 May 1976) is an Irish actor. He first appeared in the BBC drama series Ballykissangel (1998), then made his film debut...	/vVqrAhZpojAtp874wBaaFt5T4dN.jpg
+720	Joel Edgerton	2	1974		19	Joel Edgerton (born 23 June 1974) is an Australian actor, director, writer, and producer. He has appeared in the films Star Wars: Episode II – Attack...	/uFLxGHmPaNoTD6EMpMmu5bfP9Fr.jpg
+721	Jim Donovan	2			2	Jim Donovan is a Canadian film and television director based in Toronto, Ontario. He is originally from Montreal, Quebec.	/cwL4t5RMxDiLkvaenmnT6Misc5M.jpg
+722	Katie Douglas	1	1998		17	Katie Emily Douglas is a Canadian actress. She has played Sally Wilcox in Spooksville (2013–2014), Naomi Malik in Global Network’s comedy and drama...	/nBSSJ8ouRbaDvSJEdLxd1oa0Zec.jpg
+723	David James Elliott	2	1960		15	David James Elliott is a Canadian film and television actor, best known for playing lead character Harmon Rabb Jr. on the television series "JAG".	/u71mHttq4ShuhoR5zuIzKR2i3YU.jpg
+724	Rossif Sutherland	2	1978		16	From Wikipedia, the free encyclopedia.	/25N7FFIGuPxSTCMqe0vrywzPwnv.jpg
+725	Greg Berlanti	2	1972		6	Greg Berlanti (born May 24, 1972) is an American television writer and producer.	/1T24SiIIDMa9gAmq7QaYwZywq4y.jpg
+726	Nick Robinson	2	1995		26	Nicholas John "Nick" Robinson (born March 22, 1995) is an American actor. As a child, he appeared in stage productions of A Christmas Carol and Mame...	/mzYszYVPvTdirjkUueziWUHvye7.jpg
+727	Jennifer Garner	1	1972		14	Jennifer Anne Garner (born April 17, 1972) is an American actress. Garner gained recognition on television for her performance as CIA agent Sydney...	/ftymEXqdTnXfaI6dGd9qrJoFOSE.jpg
+728	Josh Duhamel	2	1972		20	Joshua David "Josh" Duhamel (November 14, 1972) was born in Minot, North Dakota. Duhamel is an American actor and former fashion model. He first...	/5Rp9aeWdN2S623KCjwfii9MhDK1.jpg
+729	David Lynch	2	1946		21	David Keith Lynch (born January 20, 1946) is an American filmmaker, painter, visual artist, musician, and writer. Known for his surrealist films, he...	/9xRmptsf4kuEbDpCwl80VpnGg4K.jpg
+730	Anne Bancroft	1	1931	2005	18	Anne Bancroft (born Anna Maria Louisa Italiano; September 17, 1931 – June 6, 2005) was an American actress, director, screenwriter, and singer...	/ydabiabIsMBe2HsNmx43gBpqzxx.jpg
+731	Mathieu Kassovitz	2	1967		8	Mathieu Kassovitz (born 3 August 1967) is a French director, screenwriter, producer and actor, best known for his Cannes-winning drama La Haine....	/3FRBEdKKlxhvPWPt0jzgmSjeHwn.jpg
+732	Vincent Cassel	2	1966		28	Vincent Cassel (born 23 November 1966) is a French actor. He first achieved recognition for his performance as a troubled French Jewish youth in...	/ykBEiVh6YQ9UmMAYUiQkZBH3VV4.jpg
+733	Hubert Koundé	2	1970		4	Hubert Koundé is a French actor and film director. Koundé is best known for his role as Hubert in the film La Haine by Mathieu Kassovitz. He is also...	/nii46CtpR2AYPkl8fBKtbrffqQg.jpg
+734	Saïd Taghmaoui	2	1973		6	Saïd Taghmaoui (born July 19, 1973) is a French actor and screenwriter of Moroccan background. One of his defining screen roles was that of Saïd in...	/kuxI08YpwQFGweIXK7TELknwexr.jpg
+735	Wolfgang Petersen	2	1941	2022	11	Wolfgang Petersen was a German-born screenwriter, producer and film director who spent most of his career in the United States. In the 1960s he began...	/8TTijeJBFITOhvJruS68aCjwK9f.jpg
+736	Jürgen Prochnow	2	1941		8	Jürgen Prochnow is a German actor. His most well-known roles internationally have been as the sympathetic submarine captain in Das Boot (1981), Duke...	/xjakZgQRw4NXefazNuvQEaGhT1U.jpg
+737	Herbert Grönemeyer	2	1956		3	Herbert Arthur Wiglev Clamor Grönemeyer (born 12 April 1956) is a German musician and actor, popular in Germany, Austria and Switzerland. He starred...	/yxYKqI9CaIfbkiCRrmZtfhAYt9r.jpg
+738	Klaus Wennemann	2	1940	2000	3	From Wikipedia, the free encyclopedia	/xHF0akCqkKjIiiSOn79MquMuNMk.jpg
+739	Margarita Terekhova	1	1942		3		/d7Ssc0XPFlv0XZMhOHcwOoACZBQ.jpg
+740	Ignat Daniltsev	2	1962		2		/cf63G5PBEcqVWcHcgkWoTFZ0PU0.jpg
+741	Larisa Tarkovskaya	1	1938	1998	4	Larisa Tarkovskaya (April 15, 1938 – February 19, 1998), born Larisa Pavlovna Egorkina, and Larisa Kizilova during her first marriage, was a Russian...	
+742	James Cameron	2	1954		12	James Cameron was born in Kapuskasing, Ontario, Canada, on August 16, 1954. He moved to the USA in 1971. The son of an engineer, he majored in...	/9DDaI9npzCsMXjlGQNuoUEPCHfm.jpg
+743	Arnold Schwarzenegger	2	1947		35	An Austrian-American former professional bodybuilder, actor, model, businessman and politician who served as the 38th Governor of California...	/zEMhugsgXIpnQqO31GpAJYMUZZ1.jpg
+744	Linda Hamilton	1	1956		21	Linda Hamilton is an American actress, best known for role as Sarah Connor in The Terminator and Terminator 2: Judgment Day; and for her television...	/7FNn9Z5xkRS9EFbGL2tpmpph9xV.jpg
+745	Mitsuko Mito	1	1919	1981	4	Mitsuko Mito (水戸光子 Mito Mitsuko, 23 March 1919 – 5 April 1981) was a Japanese actress. She appeared in more than 50 films between 1935 and 1973.	/fYX7FJf3AMr4xhIPBfkR94OljD.jpg
+746	Rosana Sullivan	1			1		/e5frWLvlZc5n4Lfmogqd5J97aFH.jpg
+747	Keir Dullea	2	1936		12	Keir Dullea (born May 30, 1936) is an American actor best known for the character of astronaut David Bowman, whom he portrayed in the 1968 film 2001:...	/dL9i0nCk2fCgInZNaYVjGck2IBp.jpg
+748	Gary Lockwood	2	1937		11	Gary Lockwood (born February 21, 1937) is an American actor perhaps best known for his iconic 1968 role as the astronaut Dr. Frank Poole in 2001: A...	/lQBqZKpMxGslopZRvFanIWL4pSl.jpg
+749	William Sylvester	2	1922	1995	5	William Sylvester (January 31, 1922 – January 25, 1995) was an American TV and film actor. His most famous film credit was Dr. Heywood Floyd in...	/uTBTJscyXqvDWpv17QyT4VVDAJn.jpg
+750	Taika Waititi	2	1975		42	Taika David Cohen ONZM (born 16 August 1975), known professionally as Taika Waititi, is a New Zealand film and television director, producer,...	/tQeioTj98JxIXldV9yDSUXNt3KY.jpg
+751	Roman Griffin Davis	2	2007		8	Roman Griffin Davis was born in London, England. He holds both French and British nationality, he lives with his parents and twin brothers in East...	/1zQLes0vhspVA6WqYEFQEvRr4xH.jpg
+752	Thomasin McKenzie	1	2000		37	Thomasin Harcourt McKenzie (born 26 July 2000) is an actress from New Zealand. After a minor role in The Hobbit: The Battle of Five Armies, she rose...	/WOpnEFG5Q8LWxP81MtUrskmVox.jpg
+753	Scarlett Johansson	1	1984		61	Scarlett Ingrid Johansson (born November 22, 1984) is an American actress. The world's highest-paid actress in 2018 and 2019, she has featured...	/3JTEc2tGUact9c0WktvpeJ9pajn.jpg
+754	Jang Hoon	2	1975		2		/oKksQCw61rym2D79Sh4IHdQpnvB.jpg
+755	Yoo Hae-jin	2	1970		12	Yoo Hae-jin (born January 4, 1970) is a South Korean actor.	/y6L2EsmnbnCFxCgfHR2oeL7oQoo.jpg
+756	Akira Terao	2	1947		4	Akira Terao (寺尾 聰, Terao Akira, born May 18, 1947) is Japanese musician and movie actor.	/9kCs3MQ5vLjSR9yZNXBfWua9kkP.jpg
+757	Jinpachi Nezu	2	1947	2016	3	​From Wikipedia, the free encyclopedia.  	/wMGQ7RgZ1vf6siHhnnqbb63Yks0.jpg
+758	Taylor Hackford	2	1944		3	Taylor Edwin Hackford (born December 31, 1944 in Santa Barbara, CA) is an American film director and producer. He is best known for his work on films...	/aAP9RYT7XxUiC2NZL9Hi2gEdxGB.jpg
+759	Damian Chapa	2	1963		8	Damian Robert Chapa (born October 29, 1963) is a Mexican-American actor, film director and film producer.	/MAJFUqA0FP3wbRqMSw9ALEuSgP.jpg
+760	Jesse Borrego	2	1962		10		/bK9cPqXTJSRN72ZDKN3UXlKN3gU.jpg
+761	Jamie Payne	2			1		
+762	Jenna Coleman	1	1986		51	Jenna-Louise Coleman, since 2013 credited as Jenna Coleman, is an English actress. She is known for her roles as Jasmine Thomas in the ITV soap opera...	/tnEVlK6gvQfhGOQr3zgZwVt43IW.jpg
+763	Peter Capaldi	2	1958		11	Peter Dougan Capaldi (born 14 April 1958) is a Scottish actor, writer and director. He portrayed the twelfth incarnation of the Doctor in Doctor Who...	/wcsd1tMVFjgplfZlTUfb7fiD2zP.jpg
+764	Hwang Dong-hyuk	2	1971		8	Hwang Dong-hyuk (born May 26, 1971) is a South Korean film director and screenwriter, best known for creating the survival drama Netflix series Squid...	/xyr3b04ayyJtA5ZN3L0Af10WKIR.jpg
+765	Gong Yoo	2	1979		21	Gong Yoo (Hangul: 공유) is a South Korean actor. He started his career in showbiz as a VJ and subsequently debuted with parts in school dramas and...	/ocGoFb6TrK3uWGXt4WnuibUG1vD.jpg
+766	Jung Yu-mi	1	1983		9	Jung Yu-mi (born January 18, 1983) is a South Korean actress. Jung made her feature film debut in Blossom Again (2005), for which she received acting...	/pU8iBcZHhuc4kQe6HHZVcommefG.jpg
+767	Kim Hyun-soo	1	2000		13		/xxkyF7qkLpkuoiknH7mPAVnd7BG.jpg
+768	Noriko Hidaka	1	1962		6		/w757PVYKSDvj2weQrPSCZL5mZh9.jpg
+769	Hitoshi Takagi	2	1925	2004	4		/kQab69jvurfdWZEaziUzhsPaSmd.jpg
+770	Chika Sakamoto	1	1959		3	Chika Sakamoto (坂本 千夏, Sakamoto Chika, August 17, 1959) is a Japanese voice actress (seiyuu) born in Omori, Ota, Tokyo. She is affiliated with Arts...	/vuJylEz0fYajNdyiPop3TVbEVcD.jpg
+771	Kim Sang-kyung	2	1972		8	Kim Sang-kyung (born December 29, 1971) is a South Korean actor. He is known for his leading roles in Memories of Murder (2003) and May 18 (2007).	/5VKIhf0ZVxqtrZfyMPbubZz3INr.jpg
+772	Kim Roi-ha	2	1965		17		/bGHnBUrBKk2ItXDZJrBDnBeQJvj.jpg
+773	Giulietta Masina	1	1921	1994	3	Giulietta Masina (22 February 1921 – 23 March 1994) was an Italian film and stage actress. She starred in La Strada and Nights of Cabiria, both...	/z9s9wep4CJgKQ7TxpcjwLZo4g9y.jpg
+774	François Périer	2	1919	2002	1	From Wikipedia, the free encyclopedia	/aTgZII5M2ZW936lQJIUh94wQTFV.jpg
+775	Franca Marzi	1	1926	1989	1		/u385UEcDZjrZGUrcAXNJpdOD8jD.jpg
+776	Andrew Stanton	2	1965		18	Andrew Stanton (born December 3, 1965) is an American film director, screenwriter, producer, and occasional voice actor based at Pixar Animation...	/gasNitCwepbqNcYBmDHpsCgZH0I.jpg
+777	Ben Burtt	2	1948		9	From Wikipedia, the free encyclopedia.  Benjamin "Ben" Burtt, Jr. (born July 12, 1948) is an American sound designer for the films Star Wars (1977),...	/16OhOb7WngOi4WOnGpRpbDSzYnd.jpg
+778	Elissa Knight	0	1975		6	From Wikipedia, the free encyclopedia.	/vrgL992F6hQYTyNeJWDKRsrolaP.jpg
+779	Jeff Garlin	2	1962		8	Jeffrey "Jeff" Garlin (born June 5, 1962) is an American stand-up comedian, actor, producer, voice artist, director, writer and author, best known...	/8shJOwynglerVVxhOKbvDYTThBd.jpg
+780	Theodore Melfi	2			2	Theodore Melfi is an American screenwriter, film director, and producer.	/hn2z28ofSNRxx4UTo6qOqzYCx0u.jpg
+781	Taraji P. Henson	1	1970		17	Taraji P. Henson (born September 11, 1970) is an American actress, producer and singer. She studied acting at Howard University and began her...	/2jC09Wj8BZAl27W8oTp9r7dRhC5.jpg
+782	Janelle Monáe	1	1985		6	Janelle Monáe Robinson (born December 1, 1985) is an American singer, songwriter, rapper, record producer, actor, and model from Kansas City, Kansas....	/xavjGiGltQEDWqNdbe0zd1lO0UR.jpg
+783	Dorota Kobiela	1	1978		1	Dorota Kobiela is a Polish filmmaker, screenwriter, and producer. She is best known for co-directing her first fully painted animated feature film...	/h7lYgPWNZA4vmdpz8Nti2CpHyrJ.jpg
+784	Douglas Booth	2	1992		19	Douglas John Booth is an English actor. Booth was born in London, England, the son of Vivien (De Cala), an artist, and Simon Booth, who works in...	/3IQQB5SIMyF5d6Tu4pMKU2FQehP.jpg
+785	Eleanor Tomlinson	1	1992		22	Eleanor May Tomlinson (born 19 May 1992) is an English actress. She was born in London, but at a young age, she moved with her family to Beverley,...	/A2lE5kvZE3tIpKwpAtKbjsMHpf2.jpg
+786	Robert Gulaczyk	2	1983		4		/67z7Q0FfebbAHswSLUDNQKUDSPk.jpg
+787	Jake Gyllenhaal	2	1980		50	Jacob Benjamin Gyllenhaal (born December 19, 1980) is an American actor and producer. Born into the Gyllenhaal family, he is the son of director...	/gWYwL7xmRqjWsH3AtYERQOh0V80.jpg
+788	Maria Bello	1	1967		27	Maria Elena Bello (born April 18, 1967)  is an American actress and singer. She started her acting career in small off-Broadway plays, such as The...	/it1f5mxiGIWO0DzTBfwtLTjphZb.jpg
+789	Emeric Pressburger	2	1902	1988	1	Emeric Pressburger (born Imre József Pressburger; 5 December 1902 – 5 February 1988) was a Hungarian British screenwriter, film director, and...	/byPJw21EY1pUWHJtthCs7wUtvoA.jpg
+790	Moira Shearer	1	1926	2006	7	Moira Shearer, Lady Kennedy (17 January 1926 – 31 January 2006), was an internationally famous Scottish ballet dancer and actress. She is best known...	/yBAjgFBYsjWsZnYSsVC8I0R4DXg.jpg
+791	Adolf Wohlbrück	2	1896	1967	2	Adolf Anton Wilhelm Wohlbrück (19 November 1896 – 9 August 1967) was an Austrian actor who settled in the United Kingdom under the name Anton...	/9Zq9vjO9rZorcXad6smfJUW8YhS.jpg
+792	Marius Goring	2	1912	1998	7	The son of Dr Charles Buckman Goring, a renowned physician and criminologist, and Kate Winifred (née MacDonald), a former suffragette and talented...	/wWHj4cTsu4NsZdMLfXC2fhqE28E.jpg
+793	Luchino Visconti	2	1906	1976	2	Luchino Visconti di Modrone, Count of Lonate Pozzolo (2 November 1906 - 17 March 1976) was an Italian theatre, opera and cinema director, as well as...	/wC6D1mDI0KExdllqt6jrbK6Ihbm.jpg
+794	Alain Delon	2	1935		31	Alain Fabien Maurice Marcel Delon is a French-Swiss actor. He rose quickly to stardom, and by the age of 23 was already being compared to French...	/3QGWfT4saSHiTJdhLD4IyuRbYDF.jpg
+795	Annie Girardot	1	1931	2011	14	Annie Girardot (25 October 1931 – 28 February 2011) was a French actress.	/niENJ4OZDKrbymXYf8qPLBIpmAI.jpg
+796	José Padilha	2	1967		9	José Padilha is an award-winning Brazilian director of the Brazilian films Bus 174,Tropa de Elite - which earned him a Golden Bear award at the 2008...	/1v2CvKDLEqxNjZk26Zby0dpasnC.jpg
+797	Wagner Moura	2	1976		18	Wagner Maniçoba de Moura is a Brazilian actor, director and musician. Critically considered one of the protagonists of current Brazilian cinema. He...	/6gcfwvOueJKhDpTP9KLGuWz0Hk4.jpg
+798	Caio Junqueira	2	1976	2019	9		/oO2ncA8EDcszRl4T3d82rPVRQ4w.jpg
+799	André Ramiro	2	1981		1		/zQwMe8kHAlPHqC9RaD92IRLd08K.jpg
