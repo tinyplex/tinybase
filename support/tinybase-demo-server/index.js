@@ -5,10 +5,10 @@ import {createWsServer} from 'tinybase/debug/synchronizers/synchronizer-ws-serve
 const hosts = ['vite.demo.tinybase.org', 'todo.demo.tinybase.org'];
 
 const tinybaseServers = new Map(
-  hosts.map((host) => [
-    host,
-    createWsServer(new WebSocketServer({noServer: true})),
-  ]),
+  hosts.map((host) => {
+    const wsServer = createWsServer(new WebSocketServer({noServer: true}));
+    return [host, wsServer];
+  }),
 );
 
 const server = createServer();
