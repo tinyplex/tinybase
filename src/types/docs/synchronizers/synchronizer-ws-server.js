@@ -8,6 +8,14 @@
  */
 /// synchronizer-ws-server
 /**
+ * The PathIdsListener type
+ */
+/// PathIdsListener
+/**
+ * The ClientIdsListener type
+ */
+/// ClientIdsListener
+/**
  * The WsServerStats type
  */
 /// WsServerStats
