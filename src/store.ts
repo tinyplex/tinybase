@@ -1344,7 +1344,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
     if (transactions == 1) {
       internalListeners[0]?.();
-      callListeners(startTransactionListeners, undefined);
+      callListeners(startTransactionListeners);
     }
     return store;
   };
