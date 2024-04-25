@@ -21,6 +21,11 @@ import {
   CheckpointListener,
   Checkpoints,
 } from '../types/checkpoints';
+import {
+  ClientIdsListener,
+  PathIdsListener,
+  WsServer,
+} from '../types/synchronizers/synchronizer-ws-server';
 import {Id, IdOrNull, Ids} from '../types/common.d';
 import {IdMap, Node, mapGet, mapNew, mapSet, visitTree} from './map';
 import {IdSet, setAdd, setNew} from './set';
@@ -104,7 +109,9 @@ type Listener =
   | ResultRowIdsListener
   | ResultRowListener
   | ResultCellIdsListener
-  | ResultCellListener;
+  | ResultCellListener
+  | PathIdsListener
+  | ClientIdsListener;
 type IdOrBoolean = Id | boolean;
 
 const getWildcardedLeaves = (
@@ -127,14 +134,20 @@ const getWildcardedLeaves = (
 };
 
 export const getListenerFunctions = (
-  getThing: () => Store | Metrics | Indexes | Relationships | Checkpoints,
+  getThing: () =>
+    | Store
+    | Metrics
+    | Indexes
+    | Relationships
+    | Checkpoints
+    | WsServer,
 ): [
   addListener: AddListener,
   callListeners: CallListeners,
   delListener: DelListener,
   callListener: (id: Id) => void,
 ] => {
-  let thing: Store | Metrics | Indexes | Relationships | Checkpoints;
+  let thing: Store | Metrics | Indexes | Relationships | Checkpoints | WsServer;
 
   const [getId, releaseId] = getPoolFunctions();
   const allListeners: IdMap<
