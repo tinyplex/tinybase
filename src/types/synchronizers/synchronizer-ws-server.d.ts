@@ -1,7 +1,21 @@
 /// synchronizer-ws-server
 
-import {Ids} from '../common';
+import {Id, IdOrNull, Ids} from '../common';
+import {GetIdChanges} from '../store';
 import {WebSocketServer} from 'ws';
+
+/// PathIdsListener
+export type PathIdsListener<> = (
+  wsServer: WsServer,
+  getIdChanges: GetIdChanges,
+) => void;
+
+/// ClientIdsListener
+export type ClientIdsListener<> = (
+  wsServer: WsServer,
+  pathId: Id,
+  getIdChanges: GetIdChanges,
+) => void;
 
 /// WsServerStats
 export type WsServerStats = {
@@ -12,8 +26,11 @@ export type WsServerStats = {
 /// WsServer
 export interface WsServer {
   getWebSocketServer: () => WebSocketServer;
-  getPaths: () => string[];
-  getClientIds: (path: string) => Ids;
+  getPathIds: () => Ids;
+  getClientIds: (pathId: Id) => Ids;
+  addPathIdsListener: (listener: PathIdsListener) => Id;
+  addClientIdsListener: (pathId: IdOrNull, listener: ClientIdsListener) => Id;
+  delListener(listenerId: Id): WsServer;
   getStats: () => WsServerStats;
   destroy: () => void;
 }

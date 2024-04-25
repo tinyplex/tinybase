@@ -1,5 +1,12 @@
+import {
+  ClientIdsListener,
+  PathIdsListener,
+  WsServer,
+  WsServerStats,
+  createWsServer as createWsServerDecl,
+} from '../types/synchronizers/synchronizer-ws-server';
 import {EMPTY_STRING, UTF8} from '../common/strings';
-import {Id, Ids} from '../types/common';
+import {Id, IdOrNull, Ids} from '../types/common';
 import {
   IdMap2,
   mapEnsure,
@@ -11,10 +18,6 @@ import {
 } from '../common/map';
 import {WebSocket, WebSocketServer} from 'ws';
 import {
-  WsServerStats,
-  createWsServer as createWsServerDecl,
-} from '../types/synchronizers/synchronizer-ws-server';
-import {
   collClear,
   collDel,
   collIsEmpty,
@@ -22,17 +25,32 @@ import {
   collSize2,
 } from '../common/coll';
 import {ifNotUndefined, slice} from '../common/other';
+import {IdSet2} from '../common/set';
 import {MESSAGE_SEPARATOR} from './common';
+import {getListenerFunctions} from '../common/listeners';
+import {objFreeze} from '../common/obj';
 
 const PATH_REGEX = /\/([^?]*)/;
 
 export const createWsServer = ((webSocketServer: WebSocketServer) => {
+  const pathIdListeners: IdSet2 = mapNew();
+  const clientIdListeners: IdSet2 = mapNew();
   const clientsByPath: IdMap2<WebSocket> = mapNew();
+
+  const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
+    () => wsServer,
+  );
+
   webSocketServer.on('connection', (webSocket, request) =>
-    ifNotUndefined(request.url?.match(PATH_REGEX), ([path]) =>
+    ifNotUndefined(request.url?.match(PATH_REGEX), ([, pathId]) =>
       ifNotUndefined(request.headers['sec-websocket-key'], (clientId) => {
-        const clients = mapEnsure(clientsByPath, path, mapNew<Id, WebSocket>);
+        const clients = mapEnsure(clientsByPath, pathId, mapNew<Id, WebSocket>);
         mapSet(clients, clientId, webSocket);
+
+        if (clients.size == 1) {
+          callListeners(pathIdListeners, undefined, () => ({[pathId]: 1}));
+        }
+        callListeners(clientIdListeners, [pathId], () => ({[clientId]: 1}));
 
         webSocket.on('message', (data) => {
           const payload = data.toString(UTF8);
@@ -56,8 +74,10 @@ export const createWsServer = ((webSocketServer: WebSocketServer) => {
 
         webSocket.on('close', () => {
           collDel(clients, clientId);
+          callListeners(clientIdListeners, [pathId], () => ({[clientId]: -1}));
           if (collIsEmpty(clients)) {
-            collDel(clientsByPath, path);
+            collDel(clientsByPath, pathId);
+            callListeners(pathIdListeners, undefined, () => ({[pathId]: -1}));
           }
         });
       }),
@@ -66,10 +86,23 @@ export const createWsServer = ((webSocketServer: WebSocketServer) => {
 
   const getWebSocketServer = () => webSocketServer;
 
-  const getPaths = (): string[] => mapKeys(clientsByPath);
+  const getPathIds = (): string[] => mapKeys(clientsByPath);
 
   const getClientIds = (path: string): Ids =>
     mapKeys(mapGet(clientsByPath, path));
+
+  const addPathIdsListener = (listener: PathIdsListener) =>
+    addListener(listener, pathIdListeners);
+
+  const addClientIdsListener = (
+    pathId: IdOrNull,
+    listener: ClientIdsListener,
+  ) => addListener(listener, clientIdListeners, [pathId]);
+
+  const delListener = (listenerId: Id): WsServer => {
+    delListenerImpl(listenerId);
+    return wsServer;
+  };
 
   const getStats = (): WsServerStats => ({
     paths: collSize(clientsByPath),
@@ -81,11 +114,16 @@ export const createWsServer = ((webSocketServer: WebSocketServer) => {
     collClear(clientsByPath);
   };
 
-  return {
+  const wsServer = {
     getWebSocketServer,
-    getPaths,
+    getPathIds,
     getClientIds,
+    addPathIdsListener,
+    addClientIdsListener,
+    delListener,
     getStats,
     destroy,
   };
+
+  return objFreeze(wsServer as WsServer);
 }) as typeof createWsServerDecl;
