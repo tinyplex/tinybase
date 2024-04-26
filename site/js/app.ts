@@ -104,9 +104,11 @@ addEventListener('load', () => {
     });
 
   const go = (href: string): void => {
-    if (href.includes('#')) {
-      href = href.substring(0, href.indexOf('#'));
-    }
+    ['?', '#'].forEach((separator) => {
+      if (href.includes(separator)) {
+        href = href.substring(0, href.indexOf(separator));
+      }
+    });
     fetch(`${href}nav.json`)
       .then((response) => response.json())
       .then((navJson) => {
