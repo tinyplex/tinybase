@@ -980,8 +980,6 @@ export function useCreateSynchronizer<
   store: MergeableStore,
   create: (store: MergeableStore) => Promise<SynchronizerOrUndefined>,
   createDeps?: React.DependencyList,
-  then?: (synchronizer: Synchronizer) => Promise<void>,
-  thenDeps?: React.DependencyList,
   destroy?: (synchronizer: Synchronizer) => void,
   destroyDeps?: React.DependencyList,
 ): SynchronizerOrUndefined;

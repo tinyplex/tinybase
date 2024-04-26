@@ -1791,28 +1791,19 @@ export const useCreateSynchronizer: typeof useCreateSynchronizerDecl = <
   store: MergeableStore,
   create: (store: MergeableStore) => Promise<SynchronizerOrUndefined>,
   createDeps: React.DependencyList = EMPTY_ARRAY,
-  then?: (synchronizer: Synchronizer) => Promise<void>,
-  thenDeps: React.DependencyList = EMPTY_ARRAY,
   destroy?: (synchronizer: Synchronizer) => void,
   destroyDeps: React.DependencyList = EMPTY_ARRAY,
 ): SynchronizerOrUndefined => {
-  const [, rerender] = useState<[]>();
   const [synchronizer, setSynchronizer] = useState<any>();
   useEffect(
     () => {
       (async () => {
-        const newSynchronizer = await create(store);
-        setSynchronizer(newSynchronizer);
-        if (newSynchronizer && then) {
-          (async () => {
-            await then(newSynchronizer);
-            rerender([]);
-          })();
-        }
+        const synchronizer = await create(store);
+        setSynchronizer(synchronizer);
       })();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, ...createDeps, ...thenDeps],
+    [store, ...createDeps],
   );
   useEffect(
     () => () => {
