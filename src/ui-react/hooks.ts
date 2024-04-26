@@ -1760,15 +1760,13 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
   const [persister, setPersister] = useState<any>();
   useEffect(
     () => {
-      const newPersister = create(store);
-      setPersister(newPersister);
-      if (newPersister) {
-        if (then) {
-          (async () => {
-            await then(newPersister);
-            rerender([]);
-          })();
-        }
+      const persister = create(store);
+      setPersister(persister);
+      if (persister && then) {
+        (async () => {
+          await then(persister);
+          rerender([]);
+        })();
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
