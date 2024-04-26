@@ -9544,13 +9544,6 @@
  * as you would for any React hook with dependencies. The MergeableStore passed
  * in as the first parameter of this hook is used as a dependency by default.
  *
- * A second callback, called `then`, can be provided as the fourth parameter.
- * This is called after the creation, and can also be asynchronous, so that you
- * can configure the Synchronizer with the startSync method, for example. If
- * this callback contains dependencies, the changing of which should cause the
- * Synchronizer to be reconfigured, you can provide them in an array in the
- * fifth parameter. The Synchronizer itself is used as a dependency by default.
- *
  * The `create` function can return undefined, meaning that you can enable or
  * disable synchronization conditionally within this hook. This is useful for
  * applications which might turn on or off their cloud synchronization or
@@ -9565,11 +9558,6 @@
  * @param createDeps An optional array of dependencies for the `create`
  * function, which, if any change, result in its rerun. This parameter defaults
  * to an empty array.
- * @param then An optional callback for performing asynchronous post-creation
- * steps on the Synchronizer, such as starting automatic synchronization.
- * @param thenDeps An optional array of dependencies for the `then` callback,
- * which, if any change, result in its rerun. This parameter defaults to an
- * empty array.
  * @param destroy An optional callback whenever the Synchronizer is destroyed
  * due to a change in the `createDeps` dependencies.
  * @param destroyDeps An optional array of dependencies for the `destroy`
@@ -9616,7 +9604,7 @@
  *
  * const App = ({url}) => {
  *   const store = useCreateMergeableStore(() => createMergeableStore('s1'));
- *   const synchronizer = useCreateSynchronizer(
+ *   useCreateSynchronizer(
  *     store,
  *     async (store) => {
  *       const webSocket = new WebSocket(url);
@@ -9624,10 +9612,6 @@
  *       return await createWsSynchronizer(store, webSocket);
  *     },
  *     [url],
- *     async (synchronizer) => {
- *       await synchronizer.startSync();
- *     },
- *     [],
  *     (synchronizer) => {
  *       const webSocket = synchronizer.getWebSocket();
  *       console.log(`Synchronizer destroyed for ${webSocket.url}`);

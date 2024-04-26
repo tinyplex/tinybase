@@ -575,11 +575,12 @@ describe('Create Hooks', () => {
     persisters.forEach((persister) => persister.stopAutoLoad().stopAutoSave());
   });
 
-  test('useCreateSynchronizer, no then', async () => {
+  test('useCreateSynchronizer, no destroy', async () => {
     let _synchronizer: Synchronizer | undefined;
     const initStore = jest.fn(() => createMergeableStore('s1'));
     const createSynchronizer = jest.fn(async (store: MergeableStore) => {
-      _synchronizer = await createLocalSynchronizer(store);
+      _synchronizer = createLocalSynchronizer(store);
+      await _synchronizer.load([{t1: {r1: {c1: 1}}}, {}]);
       return _synchronizer;
     });
     const Test = ({id}: {id: number}) => {
@@ -595,26 +596,16 @@ describe('Create Hooks', () => {
     act(() => {
       renderer = create(<Test id={1} />);
     });
-    await act(async () => {
-      await pause(100);
-    });
-    expect(renderer.toJSON()).toEqual(
-      JSON.stringify([1, {loads: 0, saves: 0}, null]),
-    );
-    await act(async () => {
-      await _synchronizer?.load([{t1: {r1: {c1: 1}}}, {}]);
-    });
+    await act(pause);
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([1, {loads: 1, saves: 0}, 1]),
     );
     act(() => {
       renderer.update(<Test id={2} />);
     });
-    await act(async () => {
-      await pause(100);
-    });
+    await act(pause);
     expect(renderer.toJSON()).toEqual(
-      JSON.stringify([2, {loads: 0, saves: 0}, 1]),
+      JSON.stringify([2, {loads: 1, saves: 0}, 1]),
     );
     expect(initStore).toHaveBeenCalledTimes(1);
     expect(createSynchronizer).toHaveBeenCalledTimes(2);
@@ -622,75 +613,15 @@ describe('Create Hooks', () => {
     _synchronizer?.stopAutoLoad()?.stopAutoSave();
   });
 
-  test('useCreateSynchronizer, then, no destroy', async () => {
-    let _synchronizer: Synchronizer | undefined;
-    const initStore = jest.fn(() => createMergeableStore('s1'));
-    const createSynchronizer = jest.fn(
-      async (store: MergeableStore, id: number) => {
-        if (id != 0) {
-          _synchronizer = await createLocalSynchronizer(store);
-          return _synchronizer;
-        }
-      },
-    );
-    const initSynchronizer = jest.fn(
-      async (synchronizer: Synchronizer, id: number) => {
-        await synchronizer.load([{t1: {r1: {c1: id}}}, {}]);
-      },
-    );
-    const Test = ({id}: {id: number}) => {
-      const store = useCreateMergeableStore(initStore);
-      const synchronizer = useCreateSynchronizer(
-        store,
-        async (store) => await createSynchronizer(store, id),
-        [id],
-        async (synchronizer) => await initSynchronizer(synchronizer, id),
-        [id],
-      );
-      return didRender(<>{JSON.stringify([id, synchronizer?.getStats()])}</>);
-    };
-    act(() => {
-      renderer = create(<Test id={0} />);
-    });
-    expect(renderer.toJSON()).toEqual(JSON.stringify([0, null]));
-    act(() => {
-      renderer = create(<Test id={1} />);
-    });
-    await act(async () => {
-      await pause(100);
-    });
-    expect(renderer.toJSON()).toEqual(
-      JSON.stringify([1, {loads: 1, saves: 0}]),
-    );
-    act(() => {
-      renderer.update(<Test id={2} />);
-    });
-    await act(async () => {
-      await pause(100);
-    });
-    expect(renderer.toJSON()).toEqual(
-      JSON.stringify([2, {loads: 1, saves: 0}]),
-    );
-    expect(initStore).toHaveBeenCalledTimes(2);
-    expect(createSynchronizer).toHaveBeenCalledTimes(3);
-    expect(initSynchronizer).toHaveBeenCalledTimes(2);
-    expect(didRender).toHaveBeenCalledTimes(7);
-    _synchronizer?.stopAutoLoad()?.stopAutoSave();
-  });
-
-  test('useCreateSynchronizer, then, destroy', async () => {
+  test('useCreateSynchronizer, destroy', async () => {
     const synchronizers: Synchronizer[] = [];
     const initStore = jest.fn(() => createMergeableStore('s1'));
     const createSynchronizer = jest.fn(
       async (store: MergeableStore, id: number) => {
-        const synchronizer = await createLocalSynchronizer(store);
+        const synchronizer = createLocalSynchronizer(store);
+        await synchronizer.load([{t1: {r1: {c1: id}}}, {}]);
         synchronizers[id] = synchronizer;
         return synchronizer;
-      },
-    );
-    const initSynchronizer = jest.fn(
-      async (synchronizer: Synchronizer, id: number) => {
-        await synchronizer.load([{t1: {r1: {c1: id}}}, {}]);
       },
     );
     const destroySynchronizer = jest.fn((synchronizer: Synchronizer) => {
@@ -702,8 +633,6 @@ describe('Create Hooks', () => {
         store,
         (store) => createSynchronizer(store, id),
         [id],
-        async (synchronizer) => await initSynchronizer(synchronizer, id),
-        [id],
         destroySynchronizer,
       );
       return didRender(<>{JSON.stringify([id, synchronizer?.getStats()])}</>);
@@ -711,27 +640,22 @@ describe('Create Hooks', () => {
     act(() => {
       renderer = create(<Test id={1} />);
     });
-    await act(async () => {
-      await pause(100);
-    });
+    await act(pause);
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([1, {loads: 1, saves: 0}]),
     );
     act(() => {
       renderer.update(<Test id={2} />);
     });
-    await act(async () => {
-      await pause(100);
-    });
+    await act(pause);
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([2, {loads: 1, saves: 0}]),
     );
     expect(initStore).toHaveBeenCalledTimes(1);
     expect(createSynchronizer).toHaveBeenCalledTimes(2);
-    expect(initSynchronizer).toHaveBeenCalledTimes(2);
     expect(destroySynchronizer).toHaveBeenCalledTimes(1);
     expect(destroySynchronizer).toHaveBeenCalledWith(synchronizers[1]);
-    expect(didRender).toHaveBeenCalledTimes(6);
+    expect(didRender).toHaveBeenCalledTimes(4);
     synchronizers.forEach((synchronizer) =>
       synchronizer.stopAutoLoad().stopAutoSave(),
     );
