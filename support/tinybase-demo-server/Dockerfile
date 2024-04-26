@@ -18,7 +18,7 @@ FROM base as build
 
 # Install packages needed to build node modules
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential pkg-config python-is-python3
+  apt-get install --no-install-recommends -y build-essential pkg-config python-is-python3
 
 # Install node modules
 COPY --link bun.lockb package.json ./
@@ -36,4 +36,4 @@ COPY --from=build /app /app
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 8043
-CMD [ "bun", "index.js" ]
+CMD [ "bun", "index.ts" ]
