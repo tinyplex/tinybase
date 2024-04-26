@@ -1166,8 +1166,6 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
       store: MergeableStore<Schemas>,
     ) => Promise<SynchronizerOrUndefined>,
     createDeps?: React.DependencyList,
-    then?: (synchronizer: Synchronizer<Schemas>) => Promise<void>,
-    thenDeps?: React.DependencyList,
     destroy?: (synchronizer: Synchronizer<Schemas>) => void,
     destroyDeps?: React.DependencyList,
   ) => SynchronizerOrUndefined;
