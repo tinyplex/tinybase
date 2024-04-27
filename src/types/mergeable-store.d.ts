@@ -81,9 +81,6 @@ export type MergeableChanges = [
 /// MergeableStore
 export interface MergeableStore extends Store {
   //
-  /// MergeableStore.getId
-  getId(): Id;
-
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent;
 
@@ -137,4 +134,4 @@ export interface MergeableStore extends Store {
 }
 
 /// createMergeableStore
-export function createMergeableStore(id: Id): MergeableStore;
+export function createMergeableStore(uniqueId?: Id): MergeableStore;
