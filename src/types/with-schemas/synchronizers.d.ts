@@ -1,9 +1,9 @@
 /// synchronizers
 
-import {Content, OptionalSchemas} from './store';
-import {Id, IdOrNull} from './common';
-import {MergeableStore} from './mergeable-store';
-import {Persister} from './persisters';
+import {Content, OptionalSchemas} from './store.d';
+import {Id, IdOrNull} from './common.d';
+import {MergeableStore} from './mergeable-store.d';
+import {Persister} from './persisters.d';
 
 /// MessageType
 export type MessageType = number;

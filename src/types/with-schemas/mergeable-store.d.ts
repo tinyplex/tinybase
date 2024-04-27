@@ -4,7 +4,7 @@ import {
   CellIdFromSchema,
   TableIdFromSchema,
   ValueIdFromSchema,
-} from './internal/store';
+} from './internal/store.d';
 import {
   CellOrUndefined,
   Content,
@@ -19,7 +19,7 @@ import {
   ValueOrUndefined,
   ValuesSchema,
 } from './store.d';
-import {Id} from './common';
+import {Id} from './common.d';
 
 /// Hash
 export type Hash = number;
