@@ -1,5 +1,5 @@
 {
-  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.snap", "*.json"],
+  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.snap", "*.json", "*.test.ts"],
   "words": [
     "Abad",
     "Adrien",
@@ -60,7 +60,6 @@
     "havings",
     "hrana",
     "hypot",
-    "IDBP",
     "indexeddb",
     "itsdevcoffee",
     "ized",

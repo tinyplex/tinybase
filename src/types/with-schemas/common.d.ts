@@ -23,3 +23,6 @@ export type SortKey = string | number | boolean;
 
 /// defaultSorter
 export function defaultSorter(sortKey1: SortKey, sortKey2: SortKey): number;
+
+/// getUniqueId
+export function getUniqueId(): Id;
