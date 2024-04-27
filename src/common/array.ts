@@ -41,12 +41,17 @@ export const arrayMap = <Value, Return>(
 ): Return[] => array.map(cb);
 
 export const arraySum = (array: number[]): number =>
-  arrayReduce(array, (i, j) => i + j, 0);
+  arrayReduce<number, number>(array, (i, j) => i + j, 0);
 
 export const arrayIsEmpty = (array: unknown[]): boolean => size(array) == 0;
 
 export const arrayReduce = <Value, Result>(
-  array: Value[],
+  array: {
+    reduce: (
+      cb: (previous: Result, current: Value) => Result,
+      initial: Result,
+    ) => Result;
+  },
   cb: (previous: Result, current: Value) => Result,
   initial: Result,
 ): Result => array.reduce(cb, initial);
