@@ -21,7 +21,7 @@ import {EMPTY_STRING} from './common/strings';
 import {PersisterListener} from './types/persisters';
 import {collDel} from './common/coll';
 import {createCustomPersister} from './persisters';
-import {getHlcFunctions} from './common/hlc';
+import {getUniqueId} from './common';
 
 const RESPONSE = 0;
 const GET_CONTENT_HASHES = 1;
@@ -46,7 +46,6 @@ export const createCustomSynchronizer = (
   let sends = 0;
   let receives = 0;
 
-  const [getHlc] = getHlcFunctions(store.getId());
   const pendingRequests: IdMap<
     [
       toClientId: IdOrNull,
@@ -111,7 +110,7 @@ export const createCustomSynchronizer = (
     messageBody: any = EMPTY_STRING,
   ): Promise<[response: Response, fromClientId: Id]> =>
     promiseNew((resolve, reject) => {
-      const requestId = getHlc();
+      const requestId = getUniqueId();
       const timeout = setTimeout(() => {
         collDel(pendingRequests, requestId);
         reject(
