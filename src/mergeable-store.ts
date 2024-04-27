@@ -60,7 +60,6 @@ import {Id} from './types/common';
 import {createStore} from './store';
 import {getHash} from './common/hash';
 import {getHlcFunctions} from './common/hlc';
-import {getUniqueId} from './common';
 import {isCellOrValueOrNullOrUndefined} from './common/cell';
 import {jsonStringWithMap} from './common/json';
 
@@ -132,9 +131,7 @@ const validateMergeableContent = (
     ),
   );
 
-export const createMergeableStore = ((
-  uniqueId: Id = getUniqueId(),
-): MergeableStore => {
+export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
   let listeningToRawStoreChanges = 1;
   let contentStampMap = newContentStampMap();
   let defaultingContent: 0 | 1 = 0;
