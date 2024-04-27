@@ -52,14 +52,14 @@ import {
   stampNewObj,
   stampUpdate,
   stampValidate,
-} from './mergeable-store/stamps';
+} from './common/stamps';
 import {collClear, collForEach} from './common/coll';
 import {ifNotUndefined, isArray, size, slice} from './common/other';
 import {mapEnsure, mapForEach, mapGet, mapNew, mapToObj} from './common/map';
 import {Id} from './types/common';
 import {createStore} from './store';
-import {getHash} from './mergeable-store/hash';
-import {getHlcFunctions} from './mergeable-store/hlc';
+import {getHash} from './common/hash';
+import {getHlcFunctions} from './common/hlc';
 import {isCellOrValueOrNullOrUndefined} from './common/cell';
 import {jsonStringWithMap} from './common/json';
 
