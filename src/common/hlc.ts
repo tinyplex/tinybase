@@ -1,7 +1,7 @@
-import {DEBUG, isUndefined, mathMax} from '../common/other';
+import {DEBUG, isUndefined, mathMax} from './other';
 import {Id} from '../types/common';
 import {getHash} from './hash';
-import {strCharCodeAt} from '../common/strings';
+import {strCharCodeAt} from './strings';
 
 type HlcParts = [
   logicalTime42: number,

@@ -14,14 +14,14 @@ import {DEBUG, ifNotUndefined, isUndefined, promiseNew} from './common/other';
 import {Id, IdOrNull} from './types/common';
 import {IdMap, mapGet, mapNew, mapSet} from './common/map';
 import {MessageType, Receive, Send, Synchronizer} from './types/synchronizers';
-import {getLatestTime, newStamp, stampNewObj} from './mergeable-store/stamps';
+import {getLatestTime, newStamp, stampNewObj} from './common/stamps';
 import {objEnsure, objForEach, objIsEmpty} from './common/obj';
 import {Content} from './types/store';
 import {EMPTY_STRING} from './common/strings';
 import {PersisterListener} from './types/persisters';
 import {collDel} from './common/coll';
 import {createCustomPersister} from './persisters';
-import {getHlcFunctions} from './mergeable-store/hlc';
+import {getHlcFunctions} from './common/hlc';
 
 const RESPONSE = 0;
 const GET_CONTENT_HASHES = 1;
