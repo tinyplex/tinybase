@@ -1,7 +1,7 @@
 /// mergeable-store
 
 import {CellOrUndefined, Content, Store, ValueOrUndefined} from './store.d';
-import {Id} from './common';
+import {Id} from './common.d';
 
 /// Hash
 export type Hash = number;

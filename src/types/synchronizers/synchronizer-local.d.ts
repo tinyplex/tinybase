@@ -1,7 +1,7 @@
 /// synchronizer-local
 
-import {MergeableStore} from '../mergeable-store';
-import {Synchronizer} from '../synchronizers';
+import {MergeableStore} from '../mergeable-store.d';
+import {Synchronizer} from '../synchronizers.d';
 
 /// LocalSynchronizer
 export interface LocalSynchronizer extends Synchronizer {}
