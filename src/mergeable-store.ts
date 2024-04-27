@@ -60,6 +60,7 @@ import {Id} from './types/common';
 import {createStore} from './store';
 import {getHash} from './common/hash';
 import {getHlcFunctions} from './common/hlc';
+import {getUniqueId} from './common';
 import {isCellOrValueOrNullOrUndefined} from './common/cell';
 import {jsonStringWithMap} from './common/json';
 
@@ -131,13 +132,15 @@ const validateMergeableContent = (
     ),
   );
 
-export const createMergeableStore = ((id: Id): MergeableStore => {
+export const createMergeableStore = ((
+  uniqueId: Id = getUniqueId(),
+): MergeableStore => {
   let listeningToRawStoreChanges = 1;
   let contentStampMap = newContentStampMap();
   let defaultingContent: 0 | 1 = 0;
   const touchedCells: IdSet3 = mapNew();
   const touchedValues: IdSet = setNew();
-  const [getHlc, seenHlc] = getHlcFunctions(id);
+  const [getHlc, seenHlc] = getHlcFunctions(uniqueId);
   const store = createStore();
 
   const disableListeningToRawStoreChanges = (
@@ -347,8 +350,6 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   // ---
-
-  const getId = () => id;
 
   const getMergeableContent = (): MergeableContent => [
     stampMapToObjWithHash(contentStampMap[0], (tableStampMap) =>
@@ -579,7 +580,6 @@ export const createMergeableStore = ((id: Id): MergeableStore => {
   };
 
   const mergeableStore: IdObj<any> = {
-    getId,
     getMergeableContent,
 
     getMergeableContentHashes,
