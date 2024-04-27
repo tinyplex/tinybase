@@ -143,9 +143,6 @@ export type MergeableChanges<Schemas extends OptionalSchemas> = [
 export interface MergeableStore<Schemas extends OptionalSchemas>
   extends Store<Schemas> {
   //
-  /// MergeableStore.getId
-  getId(): Id;
-
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent<Schemas>;
 
@@ -251,4 +248,4 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
 }
 
 /// createMergeableStore
-export function createMergeableStore(id: Id): MergeableStore<NoSchemas>;
+export function createMergeableStore(uniqueId?: Id): MergeableStore<NoSchemas>;
