@@ -1,8 +1,8 @@
 /// persister-libsql
 
-import {DatabasePersisterConfig, Persister} from '../persisters';
+import {DatabasePersisterConfig, Persister} from '../persisters.d';
 import {Client} from '@libsql/client';
-import {Store} from '../store';
+import {Store} from '../store.d';
 
 /// LibSqlPersister
 export interface LibSqlPersister extends Persister {

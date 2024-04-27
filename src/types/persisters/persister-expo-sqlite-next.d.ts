@@ -1,8 +1,8 @@
 /// persister-expo-sqlite-next
 
-import {DatabasePersisterConfig, Persister} from '../persisters';
+import {DatabasePersisterConfig, Persister} from '../persisters.d';
 import {SQLiteDatabase} from 'expo-sqlite/next';
-import {Store} from '../store';
+import {Store} from '../store.d';
 
 /// ExpoSqliteNextPersister
 export interface ExpoSqliteNextPersister extends Persister {

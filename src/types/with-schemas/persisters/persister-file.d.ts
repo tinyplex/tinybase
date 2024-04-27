@@ -1,7 +1,7 @@
 /// persister-file
 
-import {OptionalSchemas, Store} from '../store';
-import {Persister} from '../persisters';
+import {OptionalSchemas, Store} from '../store.d';
+import {Persister} from '../persisters.d';
 
 /// FilePersister
 export interface FilePersister<Schemas extends OptionalSchemas>

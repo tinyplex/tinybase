@@ -1,12 +1,16 @@
-import {Callback, Id} from '../common';
-import {CellIdFromSchema, TableIdFromSchema, ValueIdFromSchema} from './store';
+import {Callback, Id} from '../common.d';
+import {
+  CellIdFromSchema,
+  TableIdFromSchema,
+  ValueIdFromSchema,
+} from './store.d';
 import {ComponentType, ReactElement} from 'react';
-import {OptionalSchemas, Store} from '../store';
-import {Checkpoints} from '../checkpoints';
-import {Indexes} from '../indexes';
-import {Metrics} from '../metrics';
-import {Queries} from '../queries';
-import {Relationships} from '../relationships';
+import {OptionalSchemas, Store} from '../store.d';
+import {Checkpoints} from '../checkpoints.d';
+import {Indexes} from '../indexes.d';
+import {Metrics} from '../metrics.d';
+import {Queries} from '../queries.d';
+import {Relationships} from '../relationships.d';
 
 type StoreOrStoreId<Schemas extends OptionalSchemas> = Store<Schemas> | Id;
 

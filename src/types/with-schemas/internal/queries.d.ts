@@ -1,7 +1,7 @@
-import {CellIdFromSchema, TableIdFromSchema} from './store';
-import {NoTablesSchema, OptionalTablesSchema} from '../store';
-import {Id} from '../common';
-import {ResultCell} from '../queries';
+import {CellIdFromSchema, TableIdFromSchema} from './store.d';
+import {NoTablesSchema, OptionalTablesSchema} from '../store.d';
+import {Id} from '../common.d';
+import {ResultCell} from '../queries.d';
 
 export type JoinedCellIdOrId<
   Schema extends OptionalTablesSchema = NoTablesSchema,

@@ -1,7 +1,7 @@
 /// persister-electric-sql
 
-import {DatabasePersisterConfig, Persister} from '../persisters';
-import {OptionalSchemas, Store} from '../store';
+import {DatabasePersisterConfig, Persister} from '../persisters.d';
+import {OptionalSchemas, Store} from '../store.d';
 import {ElectricClient} from 'electric-sql/client/model';
 
 /// ElectricSqlPersister

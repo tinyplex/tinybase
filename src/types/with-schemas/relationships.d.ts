@@ -1,6 +1,6 @@
 /// relationships
 
-import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
+import {CellIdFromSchema, TableIdFromSchema} from './internal/store.d';
 import {
   GetCell,
   OptionalSchemas,

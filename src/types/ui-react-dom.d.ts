@@ -10,8 +10,8 @@ import {
   ResultCellProps,
   StoreOrStoreId,
   ValueProps,
-} from './ui-react';
-import {Id, Ids} from './common';
+} from './ui-react.d';
+import {Id, Ids} from './common.d';
 import {ComponentType} from 'react';
 
 /// CustomCell

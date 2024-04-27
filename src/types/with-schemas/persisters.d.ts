@@ -8,7 +8,7 @@ import {
   Tables,
   Values,
 } from './store.d';
-import {TableIdFromSchema} from './internal/store';
+import {TableIdFromSchema} from './internal/store.d';
 
 /// PersisterStats
 export type PersisterStats = {

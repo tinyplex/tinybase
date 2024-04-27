@@ -1,7 +1,7 @@
 /// persister-file
 
-import {Persister} from '../persisters';
-import {Store} from '../store';
+import {Persister} from '../persisters.d';
+import {Store} from '../store.d';
 
 /// FilePersister
 export interface FilePersister extends Persister {

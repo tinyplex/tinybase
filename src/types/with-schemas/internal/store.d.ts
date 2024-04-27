@@ -3,8 +3,8 @@ import {
   OptionalTablesSchema,
   OptionalValuesSchema,
   Value,
-} from '../store';
-import {Id} from '../common';
+} from '../store.d';
+import {Id} from '../common.d';
 
 export type TableIdFromSchema<Schema extends OptionalTablesSchema> = AsId<
   keyof Schema

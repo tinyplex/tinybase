@@ -1,7 +1,7 @@
 /// persister-indexed-db
 
-import {OptionalSchemas, Store} from '../store';
-import {Persister} from '../persisters';
+import {OptionalSchemas, Store} from '../store.d';
+import {Persister} from '../persisters.d';
 
 /// IndexedDbPersister
 export interface IndexedDbPersister<Schemas extends OptionalSchemas>

@@ -1,7 +1,7 @@
 /// persister-sqlite-wasm
 
-import {DatabasePersisterConfig, Persister} from '../persisters';
-import {Store} from '../store';
+import {DatabasePersisterConfig, Persister} from '../persisters.d';
+import {Store} from '../store.d';
 
 /// SqliteWasmPersister
 export interface SqliteWasmPersister extends Persister {

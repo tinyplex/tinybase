@@ -1,8 +1,8 @@
 /// persister-partykit-client
 
 import PartySocket from 'partysocket';
-import {Persister} from '../persisters';
-import {Store} from '../store';
+import {Persister} from '../persisters.d';
+import {Store} from '../store.d';
 
 /// PartyKitPersister
 export interface PartyKitPersister extends Persister {

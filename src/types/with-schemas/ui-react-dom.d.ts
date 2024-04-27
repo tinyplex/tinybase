@@ -1,6 +1,6 @@
 /// ui-react-dom
 
-import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
+import {CellIdFromSchema, TableIdFromSchema} from './internal/store.d';
 import {
   CellProps,
   CellPropsForTableIdAndCellId,
@@ -12,11 +12,11 @@ import {
   ResultCellProps,
   StoreOrStoreId,
   ValueProps,
-} from './internal/ui-react';
-import {Id, Ids} from './common';
+} from './internal/ui-react.d';
+import {Id, Ids} from './common.d';
 import {ComponentType} from 'react';
-import {NoSchemas} from '../store';
-import {OptionalSchemas} from './store';
+import {NoSchemas} from '../store.d';
+import {OptionalSchemas} from './store.d';
 
 /// CustomCell
 export type CustomCell<

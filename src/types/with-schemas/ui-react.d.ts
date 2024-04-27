@@ -7,7 +7,7 @@ import {
   NoInfer,
   TableIdFromSchema,
   ValueIdFromSchema,
-} from './internal/store';
+} from './internal/store.d';
 import {
   BackwardCheckpointsProps,
   CellProps,
@@ -41,7 +41,7 @@ import {
   UndoOrRedoInformation,
   ValueProps,
   ValuesProps,
-} from './internal/ui-react';
+} from './internal/ui-react.d';
 import {Callback, Id, IdOrNull, Ids, ParameterizedCallback} from './common.d';
 import {
   Cell,

@@ -10,7 +10,7 @@ import {
   TableIdFromSchema,
   Truncate,
   ValueIdFromSchema,
-} from './internal/store';
+} from './internal/store.d';
 import {Id, IdOrNull, Ids, Json} from './common.d';
 
 /// TablesSchema

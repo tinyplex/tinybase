@@ -1,7 +1,7 @@
 /// persister-browser
 
-import {OptionalSchemas, Store} from '../store';
-import {Persister} from '../persisters';
+import {OptionalSchemas, Store} from '../store.d';
+import {Persister} from '../persisters.d';
 
 /// SessionPersister
 export interface SessionPersister<Schemas extends OptionalSchemas>

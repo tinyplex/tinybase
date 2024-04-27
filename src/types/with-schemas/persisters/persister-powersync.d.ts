@@ -1,7 +1,7 @@
 /// persister-powersync
 
-import {DatabasePersisterConfig, Persister} from '../persisters';
-import {OptionalSchemas, Store} from '../store';
+import {DatabasePersisterConfig, Persister} from '../persisters.d';
+import {OptionalSchemas, Store} from '../store.d';
 import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
 
 /// PowerSyncPersister

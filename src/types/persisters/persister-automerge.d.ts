@@ -1,8 +1,8 @@
 /// persister-automerge
 
 import {DocHandle} from '@automerge/automerge-repo';
-import {Persister} from '../persisters';
-import {Store} from '../store';
+import {Persister} from '../persisters.d';
+import {Store} from '../store.d';
 
 /// AutomergePersister
 export interface AutomergePersister extends Persister {

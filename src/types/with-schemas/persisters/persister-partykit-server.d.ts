@@ -11,9 +11,9 @@ import {
   Value,
   ValueOrUndefined,
   Values,
-} from '../store';
+} from '../store.d';
 import {Connection, Party, Request, Server} from 'partykit/server';
-import {Id} from '../common';
+import {Id} from '../common.d';
 
 /// TinyBasePartyKitServerConfig
 export type TinyBasePartyKitServerConfig = {

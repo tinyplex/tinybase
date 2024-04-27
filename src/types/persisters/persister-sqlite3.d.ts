@@ -1,8 +1,8 @@
 /// persister-sqlite3
 
-import {DatabasePersisterConfig, Persister} from '../persisters';
+import {DatabasePersisterConfig, Persister} from '../persisters.d';
 import {Database} from 'sqlite3';
-import {Store} from '../store';
+import {Store} from '../store.d';
 
 /// Sqlite3Persister
 export interface Sqlite3Persister extends Persister {

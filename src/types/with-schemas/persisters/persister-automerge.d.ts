@@ -1,8 +1,8 @@
 /// persister-automerge
 
-import {OptionalSchemas, Store} from '../store';
+import {OptionalSchemas, Store} from '../store.d';
 import {DocHandle} from '@automerge/automerge-repo';
-import {Persister} from '../persisters';
+import {Persister} from '../persisters.d';
 
 /// AutomergePersister
 export interface AutomergePersister<Schemas extends OptionalSchemas>

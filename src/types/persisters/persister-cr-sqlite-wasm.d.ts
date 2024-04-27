@@ -1,8 +1,8 @@
 /// persister-cr-sqlite-wasm
 
-import {DatabasePersisterConfig, Persister} from '../persisters';
+import {DatabasePersisterConfig, Persister} from '../persisters.d';
 import {DB} from '@vlcn.io/crsqlite-wasm';
-import {Store} from '../store';
+import {Store} from '../store.d';
 
 /// CrSqliteWasmPersister
 export interface CrSqliteWasmPersister extends Persister {

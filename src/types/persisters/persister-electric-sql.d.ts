@@ -1,8 +1,8 @@
 /// persister-electric-sql
 
-import {DatabasePersisterConfig, Persister} from '../persisters';
+import {DatabasePersisterConfig, Persister} from '../persisters.d';
 import {ElectricClient} from 'electric-sql/client/model';
-import {Store} from '../store';
+import {Store} from '../store.d';
 
 /// ElectricSqlPersister
 export interface ElectricSqlPersister extends Persister {

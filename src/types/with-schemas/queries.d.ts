@@ -9,8 +9,8 @@ import {
   OptionalTablesSchema,
   Store,
 } from './store.d';
-import {CellIdFromSchema, TableIdFromSchema} from './internal/store';
-import {GetResultCell, JoinedCellIdOrId} from './internal/queries';
+import {CellIdFromSchema, TableIdFromSchema} from './internal/store.d';
+import {GetResultCell, JoinedCellIdOrId} from './internal/queries.d';
 import {Id, IdOrNull, Ids} from './common.d';
 import {GetIdChanges} from '../store.d';
 

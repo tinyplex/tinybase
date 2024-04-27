@@ -1,7 +1,7 @@
 /// persister-sqlite3
 
-import {DatabasePersisterConfig, Persister} from '../persisters';
-import {OptionalSchemas, Store} from '../store';
+import {DatabasePersisterConfig, Persister} from '../persisters.d';
+import {OptionalSchemas, Store} from '../store.d';
 import {Database} from 'sqlite3';
 
 /// Sqlite3Persister
