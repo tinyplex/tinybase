@@ -1,7 +1,8 @@
-import {DEBUG, isUndefined, mathMax} from './other';
+import {DEBUG, ifNotUndefined, isUndefined, mathMax} from './other';
 import {decode, encode} from './codec';
 import {Id} from '../types/common';
 import {getHash} from './hash';
+import {getUniqueId} from '../common';
 
 type Hlc = string;
 // Sortable 16 digit radix-64 string representing 96 bits:
@@ -46,17 +47,25 @@ const decodeTimeAndCounter = (
 ];
 
 export const getHlcFunctions = (
-  uniqueId: Id,
+  uniqueId?: Id,
 ): [getHlc: () => Hlc, seenHlc: (remoteHlc: Hlc) => void] => {
   let logicalTime = 0;
   let lastCounter = -1;
-  const clientHash30 = getHash(uniqueId);
-  const clientPart =
-    encode(clientHash30 / SHIFT24) +
-    encode(clientHash30 / SHIFT18) +
-    encode(clientHash30 / SHIFT12) +
-    encode(clientHash30 / SHIFT6) +
-    encode(clientHash30);
+
+  const clientPart = ifNotUndefined(
+    uniqueId,
+    (uniqueId) => {
+      const clientHash30 = getHash(uniqueId);
+      return (
+        encode(clientHash30 / SHIFT24) +
+        encode(clientHash30 / SHIFT18) +
+        encode(clientHash30 / SHIFT12) +
+        encode(clientHash30 / SHIFT6) +
+        encode(clientHash30)
+      );
+    },
+    () => getUniqueId(5),
+  ) as string;
 
   const getHlc = (): Hlc => {
     seenHlc();
