@@ -97,11 +97,6 @@
 /// MergeableStore
 {
   /**
-   * The getId method
-   * @category Getter
-   */
-  /// MergeableStore.getId
-  /**
    * The getMergeableContent method
    * @category Getter
    */
