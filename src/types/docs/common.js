@@ -97,3 +97,9 @@
  * @category Convenience
  */
 /// defaultSorter
+/**
+ * The getUniqueId function
+ * @category Convenience
+ * @since v5.0.0
+ */
+/// getUniqueId
