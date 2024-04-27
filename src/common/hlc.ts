@@ -3,11 +3,6 @@ import {decode, encode} from './codec';
 import {Id} from '../types/common';
 import {getHash} from './hash';
 
-type HlcParts = [
-  logicalTime42: number,
-  counter24: number,
-  clientHash30: number,
-];
 type Hlc = string;
 // Sortable 16 digit radix-64 string representing 96 bits:
 // - 42 bits (7 chars) for time in milliseconds (~139 years)
@@ -21,11 +16,7 @@ const SHIFT18 = 2 ** 18;
 const SHIFT12 = 2 ** 12;
 const SHIFT6 = 2 ** 6;
 
-const encodeHlc = (
-  logicalTime42: number,
-  counter24: number,
-  clientHash30: number,
-): Hlc =>
+const encodeTimeAndCounter = (logicalTime42: number, counter24: number) =>
   encode(logicalTime42 / SHIFT36) +
   encode(logicalTime42 / SHIFT30) +
   encode(logicalTime42 / SHIFT24) +
@@ -36,14 +27,11 @@ const encodeHlc = (
   encode(counter24 / SHIFT18) +
   encode(counter24 / SHIFT12) +
   encode(counter24 / SHIFT6) +
-  encode(counter24) +
-  encode(clientHash30 / SHIFT24) +
-  encode(clientHash30 / SHIFT18) +
-  encode(clientHash30 / SHIFT12) +
-  encode(clientHash30 / SHIFT6) +
-  encode(clientHash30);
+  encode(counter24);
 
-const decodeHlc = (hlc16: Hlc): HlcParts => [
+const decodeTimeAndCounter = (
+  hlc16: Hlc,
+): [logicalTime42: number, counter24: number] => [
   decode(hlc16, 0) * SHIFT36 +
     decode(hlc16, 1) * SHIFT30 +
     decode(hlc16, 2) * SHIFT24 +
@@ -55,11 +43,6 @@ const decodeHlc = (hlc16: Hlc): HlcParts => [
     decode(hlc16, 8) * SHIFT12 +
     decode(hlc16, 9) * SHIFT6 +
     decode(hlc16, 10),
-  decode(hlc16, 11) * SHIFT24 +
-    decode(hlc16, 12) * SHIFT18 +
-    decode(hlc16, 13) * SHIFT12 +
-    decode(hlc16, 14) * SHIFT6 +
-    decode(hlc16, 15),
 ];
 
 export const getHlcFunctions = (
@@ -67,17 +50,23 @@ export const getHlcFunctions = (
 ): [getHlc: () => Hlc, seenHlc: (remoteHlc: Hlc) => void] => {
   let logicalTime = 0;
   let lastCounter = -1;
-  const uniqueIdHash = getHash(uniqueId);
+  const clientHash30 = getHash(uniqueId);
+  const clientPart =
+    encode(clientHash30 / SHIFT24) +
+    encode(clientHash30 / SHIFT18) +
+    encode(clientHash30 / SHIFT12) +
+    encode(clientHash30 / SHIFT6) +
+    encode(clientHash30);
 
   const getHlc = (): Hlc => {
     seenHlc();
-    return encodeHlc(logicalTime, ++lastCounter, uniqueIdHash);
+    return encodeTimeAndCounter(logicalTime, ++lastCounter) + clientPart;
   };
 
   const seenHlc = (hlc?: Hlc): void => {
     const previousLogicalTime = logicalTime;
     const [remoteLogicalTime, remoteCounter] =
-      isUndefined(hlc) || hlc == '' ? [0, 0] : decodeHlc(hlc);
+      isUndefined(hlc) || hlc == '' ? [0, 0] : decodeTimeAndCounter(hlc);
     logicalTime = mathMax(
       previousLogicalTime,
       remoteLogicalTime,
