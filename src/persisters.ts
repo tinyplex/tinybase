@@ -42,7 +42,7 @@ const getStoreFunctions = (
       hasChanges: (changes: MergeableChanges) => boolean,
       setDefaultContent: (content: Content) => MergeableStore,
     ] =>
-  supportedStoreType > 1 && 'getMergeableContent' in store
+  supportedStoreType > 1 && 'merge' in store
     ? [
         1,
         store.getMergeableContent,
