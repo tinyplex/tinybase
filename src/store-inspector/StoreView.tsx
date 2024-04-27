@@ -97,7 +97,9 @@ export const StoreView = ({
   return isUndefined(store) ? null : (
     <Details
       uniqueId={getUniqueId('s', storeId)}
-      summary={'Store: ' + (storeId ?? DEFAULT)}
+      summary={
+        ('merge' in store ? 'Mergeable' : '') + 'Store: ' + (storeId ?? DEFAULT)
+      }
       s={s}
     >
       <ValuesView storeId={storeId} store={store} s={s} />
