@@ -4,7 +4,7 @@ import {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-} from './types/mergeable-store';
+} from './types/mergeable-store.d';
 import {
   PersistedChanges,
   PersistedContent,

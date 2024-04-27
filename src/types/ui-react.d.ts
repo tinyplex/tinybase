@@ -61,7 +61,7 @@ import {
   ResultTableCellIdsListener,
   ResultTableListener,
 } from './queries.d';
-import {MergeableStore} from './mergeable-store';
+import {MergeableStore} from './mergeable-store.d';
 import {Persister} from './persisters.d';
 import {Synchronizer} from './synchronizers';
 
