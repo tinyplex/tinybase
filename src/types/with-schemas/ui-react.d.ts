@@ -1149,10 +1149,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     PersisterOrUndefined extends Persister<Schemas> | undefined,
   >(
     store: Store<Schemas>,
-    create: (store: Store<Schemas>) => PersisterOrUndefined,
+    create: (store: Store<Schemas>) => Promise<PersisterOrUndefined>,
     createDeps?: React.DependencyList,
-    then?: (persister: Persister<Schemas>) => Promise<void>,
-    thenDeps?: React.DependencyList,
     destroy?: (persister: Persister<Schemas>) => void,
     destroyDeps?: React.DependencyList,
   ) => PersisterOrUndefined;
