@@ -1,10 +1,11 @@
-import {Id, IdOrNull} from '../types/common';
 import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../common/map';
 import {MessageType, Receive} from '../types/synchronizers';
+import {IdOrNull} from '../types/common';
 import {MergeableStore} from '../types/mergeable-store';
 import {collDel} from '../common/coll';
 import {createCustomSynchronizer} from '../synchronizers';
 import {createLocalSynchronizer as createLocalSynchronizerDecl} from '../types/synchronizers/synchronizer-local';
+import {getUniqueId} from '../common';
 import {isUndefined} from '../common/other';
 
 const clients: IdMap<Receive> = mapNew();
@@ -13,7 +14,7 @@ export const createLocalSynchronizer = ((
   store: MergeableStore,
   onIgnoredError?: (error: any) => void,
 ) => {
-  const clientId: Id = '' + Math.random();
+  const clientId = getUniqueId();
 
   const send = (
     toClientId: IdOrNull,
