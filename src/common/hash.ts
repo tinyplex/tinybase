@@ -1,4 +1,4 @@
-import {arrayForEach} from '../common/array';
+import {arrayForEach} from './array';
 
 const textEncoder = new globalThis.TextEncoder();
 
