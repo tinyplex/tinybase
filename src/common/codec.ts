@@ -4,7 +4,7 @@ import {arrayMap} from './array';
 
 const MASK6 = 63;
 const ENCODE =
-  '0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmno'.split(
+  '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'.split(
     EMPTY_STRING,
   );
 const DECODE = mapNew(arrayMap(ENCODE, (char, index) => [char, index])) as any;
