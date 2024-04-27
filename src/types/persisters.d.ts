@@ -5,7 +5,7 @@ import {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-} from './mergeable-store';
+} from './mergeable-store.d';
 import {Id} from './common.d';
 
 /// StoreTypes
