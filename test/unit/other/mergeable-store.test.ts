@@ -37,55 +37,56 @@ test('Protocol basics', () => {
   expect(store1.getMergeableContent()).toMatchSnapshot();
   expect(store2.getMergeableContent()).toMatchSnapshot();
 
-  expect(store1.getMergeableContentHashes()).toEqual([3689956797, 0]);
-  expect(store2.getMergeableContentHashes()).toEqual([3498589694, 0]);
+  expect(store1.getMergeableContentHashes()).toEqual([1771939739, 0]);
+  expect(store2.getMergeableContentHashes()).toEqual([1389102422, 0]);
 
-  expect(store1.getMergeableTableHashes()).toEqual({t1: 608074644});
+  expect(store1.getMergeableTableHashes()).toEqual({t1: 1072852846});
   expect(store2.getMergeableTableHashes()).toEqual({
-    t1: 2691149289,
-    t2: 4292512243,
+    t1: 185085751,
+    t2: 433370072,
   });
 
-  expect(
-    store1.getMergeableTableDiff({t1: 2691149289, t2: 4292512243}),
-  ).toEqual([[{}], {t1: 608074644}]);
-  expect(store2.getMergeableTableDiff({t1: 608074644})).toEqual([
-    [{t2: [{r2: [{c2: [2, 'Hc2DO@000025DK@@']}]}]}],
-    {t1: 2691149289},
+  expect(store1.getMergeableTableDiff({t1: 185085751, t2: 433370072})).toEqual([
+    [{}],
+    {t1: 1072852846},
+  ]);
+  expect(store2.getMergeableTableDiff({t1: 1072852846})).toEqual([
+    [{t2: [{r2: [{c2: [2, 'Nn1JUF----14JQFF']}]}]}],
+    {t1: 185085751},
   ]);
 
-  expect(store1.getMergeableRowHashes({t1: 2691149289})).toEqual({
-    t1: {r1: 3278308926},
+  expect(store1.getMergeableRowHashes({t1: 185085751})).toEqual({
+    t1: {r1: 550994372},
   });
-  expect(store2.getMergeableRowHashes({t1: 608074644})).toEqual({
-    t1: {r1: 478205993, r2: 3088830063},
+  expect(store2.getMergeableRowHashes({t1: 1072852846})).toEqual({
+    t1: {r1: 3956621994, r2: 1493348312},
   });
-  expect(store2.getMergeableRowHashes({t1: 2691149289})).toEqual({});
+  expect(store2.getMergeableRowHashes({t1: 185085751})).toEqual({});
 
   expect(
-    store1.getMergeableRowDiff({t1: {r1: 478205993, r2: 3088830063}}),
-  ).toEqual([[{}], {t1: {r1: 3278308926}}]);
-  expect(store2.getMergeableRowDiff({t1: {r1: 3278308926}})).toEqual([
-    [{t1: [{r2: [{c2: [2, 'Hc2DO@000015DK@@']}]}]}],
-    {t1: {r1: 478205993}},
+    store1.getMergeableRowDiff({t1: {r1: 3956621994, r2: 1493348312}}),
+  ).toEqual([[{}], {t1: {r1: 550994372}}]);
+  expect(store2.getMergeableRowDiff({t1: {r1: 550994372}})).toEqual([
+    [{t1: [{r2: [{c2: [2, 'Nn1JUF----04JQFF']}]}]}],
+    {t1: {r1: 3956621994}},
   ]);
 
-  expect(store1.getMergeableCellHashes({t1: {r1: 478205993}})).toEqual({
-    t1: {r1: {c1: 4065945599}},
+  expect(store1.getMergeableCellHashes({t1: {r1: 3956621994}})).toEqual({
+    t1: {r1: {c1: 1003668370}},
   });
-  expect(store2.getMergeableCellHashes({t1: {r1: 3278308926}})).toEqual({
-    t1: {r1: {c2: 2554361111}},
+  expect(store2.getMergeableCellHashes({t1: {r1: 550994372}})).toEqual({
+    t1: {r1: {c2: 3611282601}},
   });
-  expect(store2.getMergeableCellHashes({t1: {r1: 478205993}})).toEqual({});
+  expect(store2.getMergeableCellHashes({t1: {r1: 3956621994}})).toEqual({});
 
-  expect(store1.getMergeableCellDiff({t1: {r1: {c2: 2554361111}}})).toEqual([
-    {t1: [{r1: [{c1: [1, 'Hc2DO@000008DKS9']}]}]},
+  expect(store1.getMergeableCellDiff({t1: {r1: {c2: 3611282601}}})).toEqual([
+    {t1: [{r1: [{c1: [1, 'Nn1JUF-----7JQY8']}]}]},
   ]);
   expect(
     store2.getMergeableCellDiff({
-      t1: {r1: {c1: 4065945599}},
+      t1: {r1: {c1: 1003668370}},
     }),
-  ).toEqual([{t1: [{r1: [{c2: [2, 'Hc2DO@000005DK@@']}]}]}]);
+  ).toEqual([{t1: [{r1: [{c2: [2, 'Nn1JUF-----4JQFF']}]}]}]);
 });
 
 test('Create', () => {
@@ -576,7 +577,7 @@ describe('applyMergeableChanges/setMergeableContent', () => {
         {
           t1: [
             {
-              r1: [{c1: [1, 'Hc2DO@000008DKS9', 4065945599]}, '', 1279994494],
+              r1: [{c1: [1, 'Nn1JUF-----7JQY8', 1003668370]}, '', 1279994494],
             },
             '',
             1293085726,
@@ -585,7 +586,7 @@ describe('applyMergeableChanges/setMergeableContent', () => {
         '',
         4033596827,
       ],
-      [{v1: [1, 'Hc2DO@000008DKS9', 4065945599]}, '', 2304392760],
+      [{v1: [1, 'Nn1JUF-----7JQY8', 1003668370]}, '', 2304392760],
     ] as MergeableContent);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
