@@ -1,8 +1,8 @@
 /// synchronizer-local
 
-import {MergeableStore} from '../mergeable-store';
-import {OptionalSchemas} from '../store';
-import {Synchronizer} from '../synchronizers';
+import {MergeableStore} from '../mergeable-store.d';
+import {OptionalSchemas} from '../store.d';
+import {Synchronizer} from '../synchronizers.d';
 
 /// LocalSynchronizer
 export interface LocalSynchronizer<Schemas extends OptionalSchemas>
