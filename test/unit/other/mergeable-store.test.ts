@@ -89,9 +89,33 @@ test('Protocol basics', () => {
   ).toEqual([{t1: [{r1: [{c2: [2, 'Nn1JUF-----4JQFF']}]}]}]);
 });
 
-test('Create', () => {
+test('Create, with uniqueId', () => {
   const store = createMergeableStore('s1');
   expect(store.getJson()).toEqual(JSON.stringify([{}, {}]));
+  store.setCell('t1', 'r1', 'c1', 1);
+  expect(store.getMergeableContent()).toEqual([
+    [
+      {
+        t1: [
+          {r1: [{c1: [1, 'Nn1JUF-----7JQY8', 1003668370]}, '', 550994372]},
+          '',
+          1072852846,
+        ],
+      },
+      '',
+      1771939739,
+    ],
+    [{}, '', 0],
+  ]);
+});
+
+test('Create, no uniqueId', () => {
+  const store = createMergeableStore();
+  expect(store.getJson()).toEqual(JSON.stringify([{}, {}]));
+  store.setCell('t1', 'r1', 'c1', 1);
+  const hlc = store.getMergeableContent()[0][0].t1[0].r1[0].c1[1];
+  expect(hlc.substring(0, 11)).toEqual('Nn1JUF-----');
+  expect(hlc.substring(11, 16)).not.toEqual('7JQY8');
 });
 
 describe('Fluency of inherited methods', () => {
