@@ -6819,7 +6819,7 @@
  *
  * This is unlikely to be used often. For most situations, you will want to use
  * the useQueries hook.
- * @param queriesOrOrQueriesId Either an Id for accessing a Queries object that
+ * @param queriesOrQueriesId Either an Id for accessing a Queries object that
  * was named with an Id in the Provider, or the Queries object itself.
  * @returns A reference to the Queries object (or `undefined` if not within a
  * Provider context, or if the requested Queries object does not exist).
@@ -6880,9 +6880,9 @@
  * Query Ids in the Queries object will cause a re-render. When the component
  * containing this hook is unmounted, the listener will be automatically
  * removed.
- * @param relationshipsOrRelationshipsId The Queries object to be accessed: omit
- * for the default context Queries object, provide an Id for a named context
- * Queries object, or provide an explicit reference.
+ * @param queriesOrQueriesId The Queries object to be accessed: omit for the
+ * default context Queries object, provide an Id for a named context Queries
+ * object, or provide an explicit reference.
  * @returns The Query Ids in the Queries object, or an empty array.
  * @example
  * This example creates an Queries object outside the application, which is used

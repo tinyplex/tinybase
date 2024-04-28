@@ -14,7 +14,7 @@ export interface PowerSyncPersister<Schemas extends OptionalSchemas>
 /// createPowerSyncPersister
 export function createPowerSyncPersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas>,
-  db: AbstractPowerSyncDatabase,
+  powerSync: AbstractPowerSyncDatabase,
   configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,

@@ -86,7 +86,7 @@ export interface Relationships<in out Schemas extends OptionalSchemas> {
   ): void;
 
   /// Relationships.hasRelationship
-  hasRelationship(indexId: Id): boolean;
+  hasRelationship(relationshipId: Id): boolean;
 
   /// Relationships.getLocalTableId
   getLocalTableId<TableId extends TableIdFromSchema<Schemas[0]>>(

@@ -74,7 +74,7 @@ export interface Relationships {
   forEachRelationship(relationshipCallback: RelationshipCallback): void;
 
   /// Relationships.hasRelationship
-  hasRelationship(indexId: Id): boolean;
+  hasRelationship(relationshipId: Id): boolean;
 
   /// Relationships.getLocalTableId
   getLocalTableId(relationshipId: Id): Id | undefined;

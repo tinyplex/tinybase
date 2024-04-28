@@ -13,7 +13,7 @@ export interface PowerSyncPersister extends Persister {
 /// createPowerSyncPersister
 export function createPowerSyncPersister(
   store: Store,
-  db: AbstractPowerSyncDatabase,
+  powerSync: AbstractPowerSyncDatabase,
   configOrStoreTableName?: DatabasePersisterConfig | string,
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
