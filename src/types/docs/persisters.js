@@ -1135,9 +1135,10 @@
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment, since v4.0.4.
- * @param supportsMergeableStore An optional boolean to indicate that this
- * Persister will be able to handle MergeableStore persistence as well as
- * regular Store persistence, since v5.0.
+ * @param supportedStoreType Since v5.0, an optional integer to indicate which
+ * types of Store are supported by this Persister: `1` indicates only a regular
+ * Store is supported, `2` indicates only a MergeableStore is supported, and `3`
+ * indicates that both Store and MergeableStore are supported.
  * @returns A reference to the new Persister object.
  * @example
  * This example creates a custom Persister object and persists the Store to a
