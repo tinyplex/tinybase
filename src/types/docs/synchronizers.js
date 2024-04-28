@@ -61,12 +61,16 @@
  * persist one MergeableStore to another.
  *
  * As well as providing a reference to the MergeableStore to synchronize, you
- * must provide a `client` parameter which identifies the Client that is used to
- * transmit changes to and from this MergeableStore and its peers.
+ * must provide parameters which identify how to send and receive changes to and
+ * from this MergeableStore and its peers.
  * @param store The MergeableStore to synchronize.
- * @param client The reference of the Client.
- * @param requestTimeoutSeconds An optional number of seconds before a request
- * to the Client times out, defaulting to 5.
+ * @param send A Send function for sending a message.
+ * @param onReceive A callback to register a Receive function for receiving a
+ * message.
+ * @param destroy A function called when destroying the Persister which can be
+ * used to clean up underlying resources.
+ * @param requestTimeoutSeconds An number of seconds before a request sent from
+ * this Persister to another peer times out.
  * @param onIgnoredError An optional handler for the errors that the
  * Synchronizer would otherwise ignore when trying to save or load data. This is
  * suitable for debugging synchronization issues in a development environment.
