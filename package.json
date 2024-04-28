@@ -214,7 +214,7 @@
     "publishPackage": "gulp publishPackage"
   },
   "devDependencies": {
-    "@automerge/automerge": "^2.2.0",
+    "@automerge/automerge": "^2.2.1",
     "@automerge/automerge-repo": "^1.1.9",
     "@babel/cli": "^7.24.1",
     "@babel/core": "^7.24.4",
@@ -285,7 +285,7 @@
     "rollup-plugin-prettier": "^4.1.1",
     "sqlite3": "^5.1.7",
     "tinybase": "file:./",
-    "tinydocs": "^0.1.36",
+    "tinydocs": "^0.1.37",
     "tmp": "^0.2.3",
     "ts-unused-exports": "^10.0.1",
     "typescript": "5.4.5",
