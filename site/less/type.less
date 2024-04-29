@@ -37,6 +37,7 @@ html {
   text-rendering: optimizeLegibility;
   font-weight: 400;
   letter-spacing: -0.01rem;
+  line-height: 1.8rem;
 }
 
 code {
@@ -88,8 +89,13 @@ h6 {
 
 p {
   margin: 1rem 0;
-  line-height: 1.6em;
   clear: both;
+  code {
+    background: @borderColor;
+    padding: 0.05em 0.25em;
+    border-radius: 0.25rem;
+    text-decoration-color: transparent;
+  }
 }
 
 .table {
