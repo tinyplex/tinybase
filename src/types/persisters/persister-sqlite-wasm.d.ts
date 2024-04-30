@@ -4,7 +4,7 @@ import {DatabasePersisterConfig, Persister} from '../persisters.d';
 import {Store} from '../store.d';
 
 /// SqliteWasmPersister
-export interface SqliteWasmPersister extends Persister {
+export interface SqliteWasmPersister extends Persister<3> {
   /// SqliteWasmPersister.getDb
   getDb(): any;
 }

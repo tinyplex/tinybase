@@ -5,7 +5,7 @@ import {SQLiteDatabase} from 'expo-sqlite/next';
 import {Store} from '../store.d';
 
 /// ExpoSqliteNextPersister
-export interface ExpoSqliteNextPersister extends Persister {
+export interface ExpoSqliteNextPersister extends Persister<3> {
   /// ExpoSqliteNextPersister.getDb
   getDb(): SQLiteDatabase;
 }

@@ -38,6 +38,7 @@ export const createPowerSyncPersister = ((
     (abortController: AbortController) => abortController.abort(),
     onSqlCommand,
     onIgnoredError,
+    1,
     powerSync,
     'getPowerSync',
     useOnConflict,

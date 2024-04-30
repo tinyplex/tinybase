@@ -25,6 +25,7 @@ export const createLibSqlPersister = ((
     (unsubscribeFunction: UnsubscribeFunction): any => unsubscribeFunction(),
     onSqlCommand,
     onIgnoredError,
+    1,
     client,
     'getClient',
   ) as LibSqlPersister) as typeof createLibSqlPersisterDecl;
