@@ -27,5 +27,6 @@ export const createExpoSqlitePersister = ((
     (subscription: Subscription) => subscription.remove(),
     onSqlCommand,
     onIgnoredError,
+    3,
     db,
   ) as ExpoSqlitePersister) as typeof createExpoSqlitePersisterDecl;
