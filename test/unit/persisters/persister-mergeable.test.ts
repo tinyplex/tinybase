@@ -21,6 +21,8 @@ import {
   mockMergeableContentListener,
   mockMergeableNoContentListener,
   mockSessionStorage,
+  mockSqlite3,
+  mockSqliteWasm,
 } from './mocks';
 import {pause} from '../common/other';
 import {resetHlc} from '../common/mergeable';
@@ -36,6 +38,8 @@ describe.each([
   ['file', mockFile],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
+  ['sqlite3', mockSqlite3],
+  ['sqliteWasm', mockSqliteWasm],
   ['localSynchronizer', mockLocalSynchronizer],
   ['customSynchronizer', mockCustomSynchronizer],
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
