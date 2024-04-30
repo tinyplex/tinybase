@@ -405,24 +405,6 @@ describe.each([
   });
 });
 
-test('Not supported, MergeableStore', async () => {
-  const store = createMergeableStore('s1');
-  let persisted = '';
-  const persister = createCustomPersister(
-    store,
-    async () => [{t1: {r1: {c1: 1}}}, {v1: 1}],
-    async (getContent: () => any) => {
-      persisted = JSON.stringify(getContent());
-    },
-    () => null,
-    () => null,
-  );
-  await persister.load();
-  await persister.save();
-  persister.destroy();
-  expect(persisted).toEqual('[{"t1":{"r1":{"c1":1}}},{"v1":1}]');
-});
-
 test('Supported, Store', async () => {
   const store = createStore();
   let persisted = '';
@@ -436,6 +418,24 @@ test('Supported, Store', async () => {
     () => null,
     () => null,
     3,
+  );
+  await persister.load();
+  await persister.save();
+  persister.destroy();
+  expect(persisted).toEqual('[{"t1":{"r1":{"c1":1}}},{"v1":1}]');
+});
+
+test('Not supported, MergeableStore', async () => {
+  const store = createMergeableStore('s1');
+  let persisted = '';
+  const persister = createCustomPersister(
+    store,
+    async () => [{t1: {r1: {c1: 1}}}, {v1: 1}],
+    async (getContent: () => any) => {
+      persisted = JSON.stringify(getContent());
+    },
+    () => null,
+    () => null,
   );
   await persister.load();
   await persister.save();
@@ -526,4 +526,20 @@ describe('Supported, MergeableStore', () => {
     persister.destroy();
     expect(persisted).toMatchSnapshot();
   });
+});
+
+test('Not supported, Store', async () => {
+  expect(() =>
+    createCustomPersister(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      createStore(),
+      async () => [{t1: {r1: {c1: 1}}}, {v1: 1}],
+      async () => 0,
+      () => null,
+      () => null,
+      () => null,
+      2,
+    ),
+  ).toThrow();
 });
