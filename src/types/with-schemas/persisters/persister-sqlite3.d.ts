@@ -6,7 +6,7 @@ import {Database} from 'sqlite3';
 
 /// Sqlite3Persister
 export interface Sqlite3Persister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas> {
+  extends Persister<Schemas, 3> {
   /// Sqlite3Persister.getDb
   getDb(): Database;
 }

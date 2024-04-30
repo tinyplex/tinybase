@@ -1,12 +1,13 @@
 import {
   DatabasePersisterConfig,
+  PersistedStore,
   Persister,
   PersisterListener,
+  StoreTypes,
 } from '../../types/persisters';
 import {startInterval, stopInterval} from '../../common/other';
 import {Cmd} from './commands';
 import {IdObj} from '../../common/obj';
-import {Store} from '../../types/store';
 import {collValues} from '../../common/coll';
 import {createJsonSqlitePersister} from './json';
 import {createTabularSqlitePersister} from './tabular';
@@ -18,18 +19,22 @@ const PRAGMA = 'pragma_';
 const DATA_VERSION = 'data_version';
 const SCHEMA_VERSION = 'schema_version';
 
-export const createSqlitePersister = <UpdateListeningHandle>(
-  store: Store,
+export const createSqlitePersister = <
+  UpdateListeningHandle,
+  StoreType extends StoreTypes = 1,
+>(
+  store: PersistedStore<StoreType>,
   configOrStoreTableName: DatabasePersisterConfig | string | undefined,
   cmd: Cmd,
   addUpdateListener: (listener: UpdateListener) => UpdateListeningHandle,
   delUpdateListener: (listeningHandle: UpdateListeningHandle) => void,
   onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
+  supportedStoreType: StoreType,
   db: any,
   getThing = 'getDb',
   useOnConflict?: boolean,
-): Persister => {
+): Persister<StoreType> => {
   let dataVersion: number | null;
   let schemaVersion: number | null;
   let totalChanges: number | null;
@@ -42,7 +47,7 @@ export const createSqlitePersister = <UpdateListeningHandle>(
   ] = getConfigStructures(configOrStoreTableName);
 
   const addPersisterListener = (
-    listener: PersisterListener,
+    listener: PersisterListener<StoreType>,
   ): [NodeJS.Timeout, UpdateListeningHandle] => [
     startInterval(
       async () => {
@@ -90,6 +95,7 @@ export const createSqlitePersister = <UpdateListeningHandle>(
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
+    supportedStoreType,
     defaultedConfig as any,
     collValues(managedTableNamesSet),
     db,
