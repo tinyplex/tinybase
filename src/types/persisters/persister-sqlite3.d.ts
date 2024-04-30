@@ -5,7 +5,7 @@ import {Database} from 'sqlite3';
 import {Store} from '../store.d';
 
 /// Sqlite3Persister
-export interface Sqlite3Persister extends Persister {
+export interface Sqlite3Persister extends Persister<3> {
   /// Sqlite3Persister.getDb
   getDb(): Database;
 }
