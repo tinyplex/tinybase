@@ -1,17 +1,21 @@
-import {Content, Store} from '../types/store';
 import {
   LocalPersister,
   SessionPersister,
   createLocalPersister as createLocalPersisterDecl,
   createSessionPersister as createSessionPersisterDecl,
 } from '../types/persisters/persister-browser';
-import {MergeableContent, MergeableStore} from '../types/mergeable-store';
-import {Persister, PersisterListener} from '../types/persisters';
+import {
+  PersistedContent,
+  Persister,
+  PersisterListener,
+} from '../types/persisters';
 import {
   jsonParse,
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../common/json';
+import {MergeableStore} from '../types/mergeable-store';
+import {Store} from '../types/store';
 import {createCustomPersister} from '../persisters';
 
 type StorageListener = (event: StorageEvent) => void;
@@ -24,11 +28,11 @@ const createStoragePersister = (
   storage: Storage,
   onIgnoredError?: (error: any) => void,
 ): Persister<3> => {
-  const getPersisted = async (): Promise<Content | MergeableContent> =>
+  const getPersisted = async (): Promise<PersistedContent<3>> =>
     jsonParseWithUndefined(storage.getItem(storageName) as string);
 
   const setPersisted = async (
-    getContent: () => Content | MergeableContent,
+    getContent: () => PersistedContent<3>,
   ): Promise<void> =>
     storage.setItem(storageName, jsonStringWithUndefined(getContent()));
 
