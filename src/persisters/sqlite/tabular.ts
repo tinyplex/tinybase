@@ -1,15 +1,19 @@
 import {
   CellOrUndefined,
-  Changes,
-  Content,
-  Store,
   Tables,
   ValueOrUndefined,
   Values,
 } from '../../types/store';
 import {Cmd, getCommandFunctions} from './commands';
 import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common';
-import {Persister, PersisterListener} from '../../types/persisters';
+import {
+  PersistedChanges,
+  PersistedContent,
+  PersistedStore,
+  Persister,
+  PersisterListener,
+  StoreTypes,
+} from '../../types/persisters';
 import {isUndefined, promiseAll} from '../../common/other';
 import {objHas, objIsEmpty, objNew} from '../../common/obj';
 import {DefaultedTabularConfig} from './config';
@@ -18,12 +22,18 @@ import {arrayFilter} from '../../common/array';
 import {createCustomPersister} from '../../persisters';
 import {mapMap} from '../../common/map';
 
-export const createTabularSqlitePersister = <ListeningHandle>(
-  store: Store,
+export const createTabularSqlitePersister = <
+  ListeningHandle,
+  StoreType extends StoreTypes = 1,
+>(
+  store: PersistedStore<StoreType>,
   cmd: Cmd,
-  addPersisterListener: (listener: PersisterListener) => ListeningHandle,
+  addPersisterListener: (
+    listener: PersisterListener<StoreType>,
+  ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError: ((error: any) => void) | undefined,
+  supportedStoreType: StoreType,
   [
     tablesLoadConfig,
     tablesSaveConfig,
@@ -33,7 +43,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
   db: any,
   getThing: string,
   useOnConflict?: boolean,
-): Persister => {
+): Persister<StoreType> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(cmd, managedTableNames, onIgnoredError, useOnConflict);
 
@@ -106,27 +116,29 @@ export const createTabularSqlitePersister = <ListeningHandle>(
         ]
       : {};
 
-  const getPersisted = async (): Promise<Content | undefined> =>
-    await transaction(async () => {
+  const getPersisted = async (): Promise<
+    PersistedContent<StoreType> | undefined
+  > =>
+    (await transaction(async () => {
       await refreshSchema();
       const tables = await loadTables();
       const values = await loadValues();
       return !objIsEmpty(tables) || !isUndefined(values)
         ? [tables as Tables, values as Values]
         : undefined;
-    });
+    })) as any; // TODO
 
   const setPersisted = async (
-    getContent: () => Content,
-    changes?: Changes,
+    getContent: () => PersistedContent<StoreType>,
+    changes?: PersistedChanges<StoreType>,
   ): Promise<void> =>
     await transaction(async () => {
       await refreshSchema();
       if (!isUndefined(changes)) {
-        await saveTables(changes[0], true);
-        await saveValues(changes[1], true);
+        await saveTables(changes[0] as any, true); // TODO
+        await saveValues(changes[1] as any, true); // TODO
       } else {
-        const [tables, values] = getContent();
+        const [tables, values] = getContent() as any; // TODO
         await saveTables(tables);
         await saveValues(values);
       }
@@ -139,7 +151,7 @@ export const createTabularSqlitePersister = <ListeningHandle>(
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    1,
+    supportedStoreType,
     {[getThing]: () => db},
     db,
   );

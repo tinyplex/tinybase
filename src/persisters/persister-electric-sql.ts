@@ -32,6 +32,7 @@ export const createElectricSqlPersister = ((
     (unsubscribeFunction: UnsubscribeFunction): any => unsubscribeFunction(),
     onSqlCommand,
     onIgnoredError,
+    1,
     electricClient,
     'getElectricClient',
   ) as ElectricSqlPersister) as typeof createElectricSqlPersisterDecl;
