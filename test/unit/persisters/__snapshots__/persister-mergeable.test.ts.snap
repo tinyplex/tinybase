@@ -10,20 +10,20 @@ exports[`Persists to/from customSynchronizer autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
-                4065945599,
+                "1",
+                1680131417,
               ],
             },
             "",
-            3278308926,
+            2634749936,
           ],
         },
         "",
-        608074644,
+        2598021553,
       ],
     },
     "",
-    3689956797,
+    2494750488,
   ],
   [
     {},
@@ -43,20 +43,20 @@ exports[`Persists to/from customSynchronizer autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "Hc2DO@000018DKS9",
-                2669080357,
+                "2",
+                1107305117,
               ],
             },
             "",
-            2240063674,
+            239923340,
           ],
         },
         "",
-        528453758,
+        806147629,
       ],
     },
     "",
-    472051525,
+    4135100783,
   ],
   [
     {},
@@ -76,20 +76,20 @@ exports[`Persists to/from customSynchronizer autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
-                3252714811,
+                "3",
+                1281296065,
               ],
             },
             "",
-            1105394814,
+            253170412,
           ],
         },
         "",
-        2974635182,
+        942766199,
       ],
     },
     "",
-    2668639873,
+    1560530767,
   ],
   [
     {},
@@ -109,20 +109,20 @@ exports[`Persists to/from customSynchronizer autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
-                3252714811,
+                "3",
+                1281296065,
               ],
             },
             "",
-            1105394814,
+            253170412,
           ],
         },
         "",
-        2974635182,
+        942766199,
       ],
     },
     "",
-    2668639873,
+    1560530767,
   ],
   [
     {},
@@ -579,31 +579,31 @@ exports[`Persists to/from customSynchronizer loads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
-                4065945599,
+                "_",
+                237256183,
               ],
             },
             "",
-            3278308926,
+            2867482913,
           ],
         },
         "",
-        608074644,
+        744460378,
       ],
     },
     "",
-    3689956797,
+    3362283737,
   ],
   [
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
-        4065945599,
+        "_",
+        237256183,
       ],
     },
     "",
-    108401272,
+    2754659917,
   ],
 ]
 `;
@@ -672,7 +672,7 @@ exports[`Persists to/from file autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "1",
                 4065945599,
               ],
             },
@@ -705,7 +705,7 @@ exports[`Persists to/from file autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "Hc2DO@000018DKS9",
+                "2",
                 2669080357,
               ],
             },
@@ -738,7 +738,7 @@ exports[`Persists to/from file autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -771,7 +771,7 @@ exports[`Persists to/from file autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -1331,7 +1331,7 @@ exports[`Persists to/from file loads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "_",
                 4065945599,
               ],
             },
@@ -1350,7 +1350,7 @@ exports[`Persists to/from file loads 1`] = `
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
+        "_",
         4065945599,
       ],
     },
@@ -1448,7 +1448,7 @@ exports[`Persists to/from localStorage autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "1",
                 4065945599,
               ],
             },
@@ -1481,7 +1481,7 @@ exports[`Persists to/from localStorage autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "Hc2DO@000018DKS9",
+                "2",
                 2669080357,
               ],
             },
@@ -1514,7 +1514,7 @@ exports[`Persists to/from localStorage autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -1547,7 +1547,7 @@ exports[`Persists to/from localStorage autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -2041,7 +2041,7 @@ exports[`Persists to/from localStorage loads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "_",
                 4065945599,
               ],
             },
@@ -2060,7 +2060,7 @@ exports[`Persists to/from localStorage loads 1`] = `
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
+        "_",
         4065945599,
       ],
     },
@@ -2158,20 +2158,20 @@ exports[`Persists to/from localSynchronizer autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
-                4065945599,
+                "1",
+                1680131417,
               ],
             },
             "",
-            3278308926,
+            2634749936,
           ],
         },
         "",
-        608074644,
+        2598021553,
       ],
     },
     "",
-    3689956797,
+    2494750488,
   ],
   [
     {},
@@ -2191,20 +2191,20 @@ exports[`Persists to/from localSynchronizer autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "Hc2DO@000018DKS9",
-                2669080357,
+                "2",
+                1107305117,
               ],
             },
             "",
-            2240063674,
+            239923340,
           ],
         },
         "",
-        528453758,
+        806147629,
       ],
     },
     "",
-    472051525,
+    4135100783,
   ],
   [
     {},
@@ -2224,20 +2224,20 @@ exports[`Persists to/from localSynchronizer autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
-                3252714811,
+                "3",
+                1281296065,
               ],
             },
             "",
-            1105394814,
+            253170412,
           ],
         },
         "",
-        2974635182,
+        942766199,
       ],
     },
     "",
-    2668639873,
+    1560530767,
   ],
   [
     {},
@@ -2257,20 +2257,20 @@ exports[`Persists to/from localSynchronizer autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
-                3252714811,
+                "3",
+                1281296065,
               ],
             },
             "",
-            1105394814,
+            253170412,
           ],
         },
         "",
-        2974635182,
+        942766199,
       ],
     },
     "",
-    2668639873,
+    1560530767,
   ],
   [
     {},
@@ -2727,31 +2727,31 @@ exports[`Persists to/from localSynchronizer loads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
-                4065945599,
+                "_",
+                237256183,
               ],
             },
             "",
-            3278308926,
+            2867482913,
           ],
         },
         "",
-        608074644,
+        744460378,
       ],
     },
     "",
-    3689956797,
+    3362283737,
   ],
   [
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
-        4065945599,
+        "_",
+        237256183,
       ],
     },
     "",
-    108401272,
+    2754659917,
   ],
 ]
 `;
@@ -2820,7 +2820,7 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "1",
                 4065945599,
               ],
             },
@@ -2853,20 +2853,20 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "Hc2DO@000018DKS9",
-                2669080357,
+                "2",
+                1107305117,
               ],
             },
             "",
-            178816250,
+            2170608844,
           ],
         },
         "",
-        910548496,
+        3629606658,
       ],
     },
     "",
-    377805824,
+    212435999,
   ],
   [
     {},
@@ -2886,20 +2886,20 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
-                3252714811,
+                "3",
+                1281296065,
               ],
             },
             "",
-            3469660222,
+            2151366316,
           ],
         },
         "",
-        1206185190,
+        1761360728,
       ],
     },
     "",
-    3354177867,
+    2724753575,
   ],
   [
     {},
@@ -2919,20 +2919,20 @@ exports[`Persists to/from mockMergeableChangesListener autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
-                3252714811,
+                "3",
+                1281296065,
               ],
             },
             "",
-            3469660222,
+            2151366316,
           ],
         },
         "",
-        1206185190,
+        1761360728,
       ],
     },
     "",
-    3354177867,
+    2724753575,
   ],
   [
     {},
@@ -3497,7 +3497,7 @@ exports[`Persists to/from mockMergeableChangesListener loads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "_",
                 4065945599,
               ],
             },
@@ -3516,7 +3516,7 @@ exports[`Persists to/from mockMergeableChangesListener loads 1`] = `
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
+        "_",
         4065945599,
       ],
     },
@@ -3614,7 +3614,7 @@ exports[`Persists to/from mockMergeableContentListener autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "1",
                 4065945599,
               ],
             },
@@ -3647,7 +3647,7 @@ exports[`Persists to/from mockMergeableContentListener autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "Hc2DO@000018DKS9",
+                "2",
                 2669080357,
               ],
             },
@@ -3680,7 +3680,7 @@ exports[`Persists to/from mockMergeableContentListener autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -3713,7 +3713,7 @@ exports[`Persists to/from mockMergeableContentListener autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -4291,7 +4291,7 @@ exports[`Persists to/from mockMergeableContentListener loads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "_",
                 4065945599,
               ],
             },
@@ -4310,7 +4310,7 @@ exports[`Persists to/from mockMergeableContentListener loads 1`] = `
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
+        "_",
         4065945599,
       ],
     },
@@ -4408,7 +4408,7 @@ exports[`Persists to/from mockMergeableNoContentListener autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "1",
                 4065945599,
               ],
             },
@@ -4441,7 +4441,7 @@ exports[`Persists to/from mockMergeableNoContentListener autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "Hc2DO@000018DKS9",
+                "2",
                 2669080357,
               ],
             },
@@ -4474,7 +4474,7 @@ exports[`Persists to/from mockMergeableNoContentListener autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -4507,7 +4507,7 @@ exports[`Persists to/from mockMergeableNoContentListener autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -5085,7 +5085,7 @@ exports[`Persists to/from mockMergeableNoContentListener loads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "_",
                 4065945599,
               ],
             },
@@ -5104,7 +5104,7 @@ exports[`Persists to/from mockMergeableNoContentListener loads 1`] = `
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
+        "_",
         4065945599,
       ],
     },
@@ -5202,7 +5202,7 @@ exports[`Persists to/from sessionStorage autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "1",
                 4065945599,
               ],
             },
@@ -5235,7 +5235,7 @@ exports[`Persists to/from sessionStorage autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "Hc2DO@000018DKS9",
+                "2",
                 2669080357,
               ],
             },
@@ -5268,7 +5268,7 @@ exports[`Persists to/from sessionStorage autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -5301,7 +5301,7 @@ exports[`Persists to/from sessionStorage autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -5795,7 +5795,7 @@ exports[`Persists to/from sessionStorage loads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "_",
                 4065945599,
               ],
             },
@@ -5814,7 +5814,7 @@ exports[`Persists to/from sessionStorage loads 1`] = `
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
+        "_",
         4065945599,
       ],
     },
@@ -5912,7 +5912,7 @@ exports[`Persists to/from sqlite3 autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "1",
                 4065945599,
               ],
             },
@@ -5945,7 +5945,7 @@ exports[`Persists to/from sqlite3 autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "Hc2DO@000018DKS9",
+                "2",
                 2669080357,
               ],
             },
@@ -5978,7 +5978,7 @@ exports[`Persists to/from sqlite3 autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -6011,7 +6011,7 @@ exports[`Persists to/from sqlite3 autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -6505,7 +6505,7 @@ exports[`Persists to/from sqlite3 loads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "_",
                 4065945599,
               ],
             },
@@ -6524,7 +6524,7 @@ exports[`Persists to/from sqlite3 loads 1`] = `
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
+        "_",
         4065945599,
       ],
     },
@@ -6622,7 +6622,7 @@ exports[`Persists to/from sqliteWasm autoLoads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "1",
                 4065945599,
               ],
             },
@@ -6655,7 +6655,7 @@ exports[`Persists to/from sqliteWasm autoLoads 2`] = `
             {
               "c1": [
                 2,
-                "Hc2DO@000018DKS9",
+                "2",
                 2669080357,
               ],
             },
@@ -6688,7 +6688,7 @@ exports[`Persists to/from sqliteWasm autoLoads 3`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -6721,7 +6721,7 @@ exports[`Persists to/from sqliteWasm autoLoads 4`] = `
             {
               "c1": [
                 3,
-                "Hc2DO@000028DKS9",
+                "3",
                 3252714811,
               ],
             },
@@ -7215,7 +7215,7 @@ exports[`Persists to/from sqliteWasm loads 1`] = `
             {
               "c1": [
                 1,
-                "Hc2DO@000008DKS9",
+                "_",
                 4065945599,
               ],
             },
@@ -7234,7 +7234,7 @@ exports[`Persists to/from sqliteWasm loads 1`] = `
     {
       "v1": [
         1,
-        "Hc2DO@000008DKS9",
+        "_",
         4065945599,
       ],
     },
@@ -7329,6 +7329,6 @@ exports[`Supported, MergeableStore Changes in setPersisted 1`] = `
 ]
 `;
 
-exports[`Supported, MergeableStore Content in setPersisted 1`] = `"[[{"t1":[{"r1":[{"c1":[1,"Hc2DO@000008DKS9",4065945599]},"",1279994494]},"",1293085726]},"",4033596827],[{"v1":[1,"Hc2DO@000008DKS9",4065945599]},"",2304392760]]"`;
+exports[`Supported, MergeableStore Content in setPersisted 1`] = `"[[{"t1":[{"r1":[{"c1":[1,"_",4065945599]},"",1279994494]},"",1293085726]},"",4033596827],[{"v1":[1,"_",4065945599]},"",2304392760]]"`;
 
 exports[`Supported, MergeableStore loading from legacy 1`] = `"[[{"t1":[{"r1":[{"c1":[1,"Nn1JUF-----7JQY8",1003668370]},"",550994372]},"",1072852846]},"",1771939739],[{"v1":[1,"Nn1JUF----07JQY8",1130939691]},"",3877632732]]"`;
