@@ -59,7 +59,8 @@ const getDefaultedTabularConfigMap = (
   configsObj: IdObj<any>,
   defaultObj: IdObj<any>,
   tableField: 'tableId' | 'tableName',
-  filter: (id: string, firstValue: string) => any,
+  exclude: (id: string, firstValue: string) => any,
+  then: (id: string, firstValue: string) => void,
 ): IdMap<any[]> => {
   const configMap = mapNew<Id, any[]>();
   objToArray(configsObj, (configObj, id) => {
@@ -75,8 +76,9 @@ const getDefaultedTabularConfigMap = (
     );
     if (
       !isUndefined(defaultedConfig[0]) &&
-      !filter(id, defaultedConfig[0] as string)
+      !exclude(id, defaultedConfig[0] as string)
     ) {
+      then(id, defaultedConfig[0] as string);
       mapSet(configMap, id, defaultedConfig);
     }
   });
@@ -117,8 +119,8 @@ export const getConfigStructures = (
       load,
       {[TABLE_ID]: null, [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME},
       TABLE_ID,
-      (tableName) =>
-        setAdd(managedTableNames, tableName) && tableName == valuesTable,
+      (tableName) => tableName == valuesTable,
+      (tableName) => setAdd(managedTableNames, tableName),
     ),
     getDefaultedTabularConfigMap(
       save,
@@ -129,8 +131,8 @@ export const getConfigStructures = (
         [DELETE_EMPTY_TABLE]: 0,
       },
       TABLE_NAME,
-      (_, tableName) =>
-        setAdd(managedTableNames, tableName) && tableName == valuesTable,
+      (_, tableName) => tableName == valuesTable,
+      (_, tableName) => setAdd(managedTableNames, tableName),
     ),
     valuesConfig,
   ] as any;
