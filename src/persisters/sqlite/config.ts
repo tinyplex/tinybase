@@ -12,6 +12,7 @@ import {DEFAULT_ROW_ID_COLUMN_NAME} from './common';
 import {DatabasePersisterConfig} from '../../types/persisters';
 import {Id} from '../../types/common';
 import {TINYBASE} from '../../common/strings';
+import {collHas} from '../../common/coll';
 
 export type DefaultedJsonConfig = [storeTableName: string];
 export type DefaultedTabularConfig = [
@@ -114,12 +115,14 @@ export const getConfigStructures = (
   );
   const valuesTable = valuesConfig[2] as string;
   const managedTableNames = setNew(valuesTable);
+  const excludedTableNames = setNew(valuesTable);
+
   const tabularConfig = [
     getDefaultedTabularConfigMap(
       load,
       {[TABLE_ID]: null, [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME},
       TABLE_ID,
-      (tableName) => tableName == valuesTable,
+      (tableName) => collHas(excludedTableNames, tableName),
       (tableName) => setAdd(managedTableNames, tableName),
     ),
     getDefaultedTabularConfigMap(
@@ -131,7 +134,7 @@ export const getConfigStructures = (
         [DELETE_EMPTY_TABLE]: 0,
       },
       TABLE_NAME,
-      (_, tableName) => tableName == valuesTable,
+      (_, tableName) => collHas(excludedTableNames, tableName),
       (_, tableName) => setAdd(managedTableNames, tableName),
     ),
     valuesConfig,
