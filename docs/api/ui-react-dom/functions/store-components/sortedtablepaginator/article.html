@@ -1,0 +1,53 @@
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/api/">API</a></li><li><a href="/api/ui-react-dom/"><code>ui-react-dom</code></a></li><li><a href="/api/ui-react-dom/functions/">Functions</a></li><li><a href="/api/ui-react-dom/functions/store-components/">Store components</a></li><li><a href="/api/ui-react-dom/functions/store-components/sortedtablepaginator/"><code>SortedTablePaginator</code></a></li></ul></nav><section class="s1" id="/api/ui-react-dom/functions/store-components/sortedtablepaginator/" data-id="STP2"><h1><code>SortedTablePaginator</code></h1><p>The <code>SortedTablePaginator</code> component renders a paginator for a sorted table.</p><pre><code><span class="function"><a href="/api/ui-react-dom/functions/store-components/sortedtablepaginator/">SortedTablePaginator</a></span><span class="punctuation">(</span>props<span class="operator">:</span> <span class="type"><a href="/api/ui-react-dom/type-aliases/props/sortedtablepaginatorprops/">SortedTablePaginatorProps</a></span><span class="punctuation">)</span><span class="operator">:</span> <span class="type"><a href="/api/ui-react/type-aliases/component/componentreturntype/">ComponentReturnType</a></span></code></pre><div class="table"><table><tr><th></th><th>Type</th><th>Description</th></tr><tr><th><code>props</code></th><td><code><span class="type"><a href="/api/ui-react-dom/type-aliases/props/sortedtablepaginatorprops/">SortedTablePaginatorProps</a></span></code></td><td><p>The props for this component.</p></td></tr><tr><th class="right">returns</th><td><code><span class="type"><a href="/api/ui-react/type-aliases/component/componentreturntype/">ComponentReturnType</a></span></code></td><td><p></p><p>The rendering of a paginator control with a label, and next and previous buttons, where appropriate.</p><p></p></td></tr></table></div><p>See the <a href="/demos/ui-components/sortedtableinhtmltable/">&lt;SortedTableInHtmlTable /&gt;</a> demo for this component in action.</p><p>The component displays &#x27;previous&#x27; and &#x27;next&#x27; buttons for paging through the <a href="/api/store/type-aliases/store/table/"><code>Table</code></a> if there are more <a href="/api/store/type-aliases/store/row/"><code>Row</code></a> <a href="/api/common/type-aliases/identity/ids/"><code>Ids</code></a> than fit in each page. The component will also display a label that shows which <a href="/api/store/type-aliases/store/row/"><code>Row</code></a> <a href="/api/common/type-aliases/identity/ids/"><code>Ids</code></a> are being displayed.</p><p>The component&#x27;s props identify initial pagination settings, and it will fire an event when the pagination changes.</p><section class="s2"><h2>Example</h2><p>This example creates a Provider context into which a default <a href="/api/store/interfaces/store/store/"><code>Store</code></a> is provided. The <a href="/api/ui-react-dom/functions/store-components/sortedtableinhtmltable/"><code>SortedTableInHtmlTable</code></a> component within it then renders the <a href="/api/store/type-aliases/store/table/"><code>Table</code></a> in a &lt;table&gt; element with a SortedTablePaginator (the default).</p><pre><code><span class="keyword">const</span> <span class="function-variable">App</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="parameter"><span class="punctuation">{</span>store<span class="punctuation">}</span></span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">(</span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react/functions/context-components/provider/">Provider</a></span></span> <span class="attr-name">store</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>store<span class="punctuation">}</span></span><span class="punctuation">></span></span><span class="plain-text">
+    </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">Pane</span></span> <span class="punctuation">/></span></span><span class="plain-text">
+  </span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span><span class="class-name"><a href="/api/ui-react/functions/context-components/provider/">Provider</a></span></span><span class="punctuation">></span></span>
+<span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">const</span> <span class="function-variable">Pane</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">(</span>
+  <span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name"><a href="/api/ui-react-dom/functions/store-components/sortedtableinhtmltable/">SortedTableInHtmlTable</a></span></span>
+    <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>pets<span class="punctuation">"</span></span>
+    <span class="attr-name">cellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>species<span class="punctuation">"</span></span>
+    <span class="attr-name">limit</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="number">2</span><span class="punctuation">}</span></span>
+    <span class="attr-name">paginator</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span><span class="boolean">true</span><span class="punctuation">}</span></span>
+  <span class="punctuation">/></span></span>
+<span class="punctuation">)</span><span class="punctuation">;</span>
+
+<span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/store/functions/creation/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/setter/settables/">setTables</a></span><span class="punctuation">(</span><span class="punctuation">{</span>
+  <span class="literal-property">pets</span><span class="operator">:</span> <span class="punctuation">{</span>
+    <span class="literal-property">fido</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">species</span><span class="operator">:</span> <span class="string">'dog'</span><span class="punctuation">}</span><span class="punctuation">,</span>
+    <span class="literal-property">felix</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">species</span><span class="operator">:</span> <span class="string">'cat'</span><span class="punctuation">}</span><span class="punctuation">,</span>
+    <span class="literal-property">cujo</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">species</span><span class="operator">:</span> <span class="string">'wolf'</span><span class="punctuation">}</span><span class="punctuation">,</span>
+    <span class="literal-property">lowly</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">species</span><span class="operator">:</span> <span class="string">'worm'</span><span class="punctuation">}</span><span class="punctuation">,</span>
+    <span class="literal-property">polly</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">species</span><span class="operator">:</span> <span class="string">'parrot'</span><span class="punctuation">}</span><span class="punctuation">,</span>
+  <span class="punctuation">}</span><span class="punctuation">,</span>
+<span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">const</span> app <span class="operator">=</span> document<span class="punctuation">.</span><span class="function">createElement</span><span class="punctuation">(</span><span class="string">'div'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+ReactDOMClient<span class="punctuation">.</span><span class="function">createRoot</span><span class="punctuation">(</span>app<span class="punctuation">)</span><span class="punctuation">.</span><span class="function">render</span><span class="punctuation">(</span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span><span class="class-name">App</span></span> <span class="attr-name">store</span><span class="script"><span class="script-punctuation">=</span><span class="punctuation">{</span>store<span class="punctuation">}</span></span> <span class="punctuation">/></span></span><span class="punctuation">)</span><span class="punctuation">;</span>
+console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>app<span class="punctuation">.</span>innerHTML<span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="comment">// -></span>
+<span class="template-string"><span class="template-punctuation">`</span><span class="string">
+&lt;table>
+  &lt;caption>
+    &lt;button class="previous" disabled="">←&lt;/button>
+    &lt;button class="next">→&lt;/button>
+    1 to 2 of 5 rows
+  &lt;/caption>
+  &lt;thead>
+    &lt;tr>
+      &lt;th>Id&lt;/th>
+      &lt;th class="sorted ascending">↑ species&lt;/th>
+    &lt;/tr>
+  &lt;/thead>
+  &lt;tbody>
+    &lt;tr>
+      &lt;th>felix&lt;/th>
+      &lt;td>cat&lt;/td>
+    &lt;/tr>
+    &lt;tr>
+      &lt;th>fido&lt;/th>
+      &lt;td>dog&lt;/td>
+    &lt;/tr>
+  &lt;/tbody>
+&lt;/table>
+</span><span class="template-punctuation">`</span></span><span class="punctuation">;</span>
+</code></pre></section><section class="s2"><h2>Since</h2><p>v4.1.0</p></section></section>
