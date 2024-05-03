@@ -162,14 +162,15 @@
  * The DpcJson type describes the configuration of a database-oriented Persister
  * operating in serialized JSON mode.
  *
- * The only setting is the `storeTableName` property, which indicates the name
- * of a table in the database which will be used to serialize the Store content
- * into. It defaults to `tinybase`.
+ * One setting is the `storeTableName` property, which indicates the name of a
+ * table in the database which will be used to serialize the Store content into.
+ * It defaults to `tinybase`.
  *
  * That table in the database will be given two columns: a primary key column
- * called `_id`, and one called `store`. The Persister will place a single row
- * in this table with `_` in the `_id` column, and the JSON serialization in the
- * `store` column, something like:
+ * called `_id`, and one called `store`. (These column names can be changed
+ * using the `rowIdColumnName` and `storeColumnName` settings). The Persister
+ * will place a single row in this table with `_` in the `_id` column, and the
+ * JSON serialization in the `store` column, something like:
  *
  * ```
  * > SELECT * FROM tinybase;
@@ -209,6 +210,16 @@
    * `tinybase`.
    */
   /// DpcJson.storeTableName
+  /**
+   * The optional name of the column in the database table that will be used as
+   * the Id for the Store, defaulting to '_id', since v5.0.
+   */
+  /// DpcJson.storeIdColumnName
+  /**
+   * The optional name of the column in the database table that will be used for
+   * the JSON of the Store, defaulting to 'store', since v5.0.
+   */
+  /// DpcJson.storeColumnName
 }
 /**
  * The DpcTabular type describes the configuration of a database-oriented
