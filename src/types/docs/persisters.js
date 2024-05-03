@@ -295,6 +295,12 @@
    * The settings for how the Store Values are mapped to and from the database.
    */
   /// DpcTabular.values
+  /**
+   * If the Persister is handling a MergeableStore, the optional suffix for
+   * database table names from and to which time metadata will be loaded or
+   * saved, defaulting to `_times`, since v5.0.
+   */
+  /// DpcTabular.timesTableSuffix
 }
 /**
  * The DpcTabularLoad type describes the configuration for loading Tables in a
@@ -546,7 +552,7 @@
    */
   /// DpcTabularValues.save
   /**
-   * The optional name of the database table from and to which the Store Table
+   * The optional name of the database table from and to which the Store Values
    * should be loaded or saved, defaulting to `tinybase_values`.
    */
   /// DpcTabularValues.tableName
