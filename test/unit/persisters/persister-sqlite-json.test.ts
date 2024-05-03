@@ -34,8 +34,8 @@ describe.each(Object.entries(VARIANTS))(
 
     afterEach(async () => await close(db));
 
-    describe('Custom table name', () => {
-      test('as string', async () => {
+    describe('Config', () => {
+      test('tableName as string', async () => {
         const persister = getPersister(store, db, 'test');
         await persister.save();
         expect(await getDatabase(db)).toEqual({
@@ -46,7 +46,7 @@ describe.each(Object.entries(VARIANTS))(
         });
       });
 
-      test('with spaces', async () => {
+      test('tableName with spaces', async () => {
         const persister = getPersister(store, db, 'test table');
         await persister.save();
         expect(await getDatabase(db)).toEqual({
@@ -57,7 +57,7 @@ describe.each(Object.entries(VARIANTS))(
         });
       });
 
-      test('with quote', async () => {
+      test('tableName with quote', async () => {
         const persister = getPersister(store, db, 'test "table"');
         await persister.save();
         expect(await getDatabase(db)).toEqual({
@@ -68,7 +68,7 @@ describe.each(Object.entries(VARIANTS))(
         });
       });
 
-      test('as config', async () => {
+      test('tableName as config', async () => {
         const persister = getPersister(store, db, {
           mode: 'json',
           storeTableName: 'test',
@@ -79,6 +79,36 @@ describe.each(Object.entries(VARIANTS))(
           test: [
             'CREATE TABLE "test"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
             [{_id: '_', store: '[{},{}]'}],
+          ],
+        });
+      });
+
+      test('storeIdColumnName as string with quotes and spaces', async () => {
+        const persister = getPersister(store, db, {
+          mode: 'json',
+          storeIdColumnName: 'test "id"',
+          autoLoadIntervalSeconds,
+        });
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          tinybase: [
+            'CREATE TABLE "tinybase"("test ""id""" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            [{'test "id"': '_', store: '[{},{}]'}],
+          ],
+        });
+      });
+
+      test('storeColumnName as string with quotes and spaces', async () => {
+        const persister = getPersister(store, db, {
+          mode: 'json',
+          storeColumnName: 'test "store"',
+          autoLoadIntervalSeconds,
+        });
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          tinybase: [
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"test ""store""")',
+            [{_id: '_', 'test "store"': '[{},{}]'}],
           ],
         });
       });
