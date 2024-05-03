@@ -1,7 +1,6 @@
+import {UNDEFINED} from './strings';
 import {isInstanceOf} from './other';
 import {object} from './obj';
-
-const UNDEFINED_MARKER = '\uFFFC';
 
 export const jsonStringWithMap = (obj: unknown): string =>
   JSON.stringify(obj, (_key, value) =>
@@ -12,10 +11,8 @@ export const jsonParse = JSON.parse;
 
 export const jsonStringWithUndefined = (obj: unknown): string =>
   JSON.stringify(obj, (_key, value) =>
-    value === undefined ? UNDEFINED_MARKER : value,
+    value === undefined ? UNDEFINED : value,
   );
 
 export const jsonParseWithUndefined = (str: string): any =>
-  JSON.parse(str, (_key, value) =>
-    value === UNDEFINED_MARKER ? undefined : value,
-  );
+  JSON.parse(str, (_key, value) => (value === UNDEFINED ? undefined : value));
