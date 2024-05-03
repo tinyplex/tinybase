@@ -1,5 +1,4 @@
 import {Cmd, getCommandFunctions} from './commands';
-import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common';
 import {
   PersistedContent,
   PersistedStore,
@@ -12,9 +11,8 @@ import {
   jsonStringWithUndefined,
 } from '../../common/json';
 import {DefaultedJsonConfig} from './config';
+import {SINGLE_ROW_ID} from './common';
 import {createCustomPersister} from '../../persisters';
-
-const STORE_COLUMN = 'store';
 
 export const createJsonSqlitePersister = <
   ListeningHandle,
@@ -28,7 +26,7 @@ export const createJsonSqlitePersister = <
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError: ((error: any) => void) | undefined,
   supportedStoreType: StoreType,
-  [storeTableName]: DefaultedJsonConfig,
+  [storeTableName, storeIdColumnName, storeColumnName]: DefaultedJsonConfig,
   managedTableNames: string[],
   db: any,
   getThing: string,
@@ -41,9 +39,9 @@ export const createJsonSqlitePersister = <
     await transaction(async () => {
       await refreshSchema();
       return jsonParseWithUndefined(
-        ((await loadTable(storeTableName, DEFAULT_ROW_ID_COLUMN_NAME))[
-          SINGLE_ROW_ID
-        ]?.[STORE_COLUMN] as string) ?? 'null',
+        ((await loadTable(storeTableName, storeIdColumnName))[SINGLE_ROW_ID]?.[
+          storeColumnName
+        ] as string) ?? 'null',
       );
     });
 
@@ -54,10 +52,10 @@ export const createJsonSqlitePersister = <
       await refreshSchema();
       await saveTable(
         storeTableName,
-        DEFAULT_ROW_ID_COLUMN_NAME,
+        storeIdColumnName,
         {
           [SINGLE_ROW_ID]: {
-            [STORE_COLUMN]: jsonStringWithUndefined(getContent() ?? null),
+            [storeColumnName]: jsonStringWithUndefined(getContent() ?? null),
           },
         },
         true,

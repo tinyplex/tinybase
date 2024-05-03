@@ -14,7 +14,11 @@ import {Id} from '../../types/common';
 import {TINYBASE} from '../../common/strings';
 import {collHas} from '../../common/coll';
 
-export type DefaultedJsonConfig = [storeTableName: string];
+export type DefaultedJsonConfig = [
+  storeTableName: string,
+  storeIdColumnName: string,
+  storeColumnName: string,
+];
 export type DefaultedTabularConfig = [
   tablesLoadConfig: IdMap<[tableId: Id, rowIdColumnName: string]>,
   tablesSaveConfig: IdMap<
@@ -28,18 +32,27 @@ export type DefaultedTabularConfig = [
   valuesConfig: [load: boolean, save: boolean, tableName: string],
 ];
 
+const COLUMN_NAME = 'ColumnName';
+const STORE = 'store';
+
 const JSON = 'json';
+const STORE_TABLE_NAME = (STORE + 'TableName') as 'storeTableName';
+const STORE_ID_COLUMN_NAME = (STORE +
+  'Id' +
+  COLUMN_NAME) as 'storeIdColumnName';
+const STORE_COLUMN_NAME = (STORE + COLUMN_NAME) as 'storeColumnName';
 const AUTO_LOAD_INTERVAL_SECONDS = 'autoLoadIntervalSeconds';
-const STORE_TABLE_NAME = 'storeTableName';
-const ROW_ID_COLUMN_NAME = 'rowIdColumnName';
+const ROW_ID_COLUMN_NAME = 'rowId' + COLUMN_NAME;
 const TABLE_ID = 'tableId';
 const TABLE_NAME = 'tableName';
 const DELETE_EMPTY_COLUMNS = 'deleteEmptyColumns';
 const DELETE_EMPTY_TABLE = 'deleteEmptyTable';
+
 const DEFAULT_CONFIG: DatabasePersisterConfig = {
   mode: JSON,
   [AUTO_LOAD_INTERVAL_SECONDS]: 1,
 };
+
 const DEFAULT_TABULAR_VALUES_CONFIG = {
   load: 0,
   save: 0,
@@ -96,12 +109,17 @@ export const getConfigStructures = (
 ] => {
   const config = getDefaultedConfig(configOrStoreTableName);
   const autoLoadIntervalSeconds = config[AUTO_LOAD_INTERVAL_SECONDS] as number;
+
   if (config.mode == JSON) {
-    const {storeTableName = TINYBASE} = config;
+    const storeTableName = config[STORE_TABLE_NAME] ?? TINYBASE;
     return [
       1,
       autoLoadIntervalSeconds,
-      [storeTableName],
+      [
+        storeTableName,
+        config[STORE_ID_COLUMN_NAME] ?? DEFAULT_ROW_ID_COLUMN_NAME,
+        config[STORE_COLUMN_NAME] ?? STORE,
+      ],
       setNew(storeTableName),
     ];
   }

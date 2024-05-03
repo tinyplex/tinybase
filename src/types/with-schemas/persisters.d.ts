@@ -78,6 +78,10 @@ export type DpcJson = {
   mode: 'json';
   /// DpcJson.storeTableName
   storeTableName?: string;
+  /// DpcJson.storeIdColumnName
+  storeIdColumnName?: string;
+  /// DpcJson.storeColumnName
+  storeColumnName?: string;
   /// DatabasePersisterConfig.autoLoadIntervalSeconds
   autoLoadIntervalSeconds?: number;
 };
