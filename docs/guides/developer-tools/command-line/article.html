@@ -1,0 +1,56 @@
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/guides/">Guides</a></li><li><a href="/guides/developer-tools/">Developer Tools</a></li><li><a href="/guides/developer-tools/command-line/">Command Line</a></li></ul></nav><section class="s1" id="/guides/developer-tools/command-line/" data-id="CL"><h1>Command Line</h1><p><a href="/">TinyBase</a> v2.2 includes a command line tool to assist with common actions in a non-programmatic tool chain.</p><p>While this tool may add more functionality in the future, for now it is essentially limited to code generation, creating APIs from a file-based schema.</p><p>You can run the <code>tinybase</code> CLI using node&#x27;s <code>npx</code> command:</p><pre><code>npx tinybase
+</code></pre><p>This will emit a list of the commands that are available:</p><pre><code>tinybase <span class="operator">&lt;</span>command<span class="operator">></span>
+
+Usage:
+
+ tinybase <span class="builtin">help</span>
+ - print this message
+
+ tinybase version
+ - get the current TinyBase version
+
+ tinybase getStoreApi <span class="operator">&lt;</span>schemaFile<span class="operator">></span> <span class="operator">&lt;</span>storeName<span class="operator">></span> <span class="operator">&lt;</span>outputDir<span class="operator">></span>
+ - generate .d.ts, .ts, and .tsx files from a schema <span class="function">file</span>
+</code></pre><p>Currently there are three commands. <code>help</code> generates this message and <code>version</code> prints out the version of the installed tinybase module.</p><p>More interestingly, <code>getStoreApi</code> takes schemas (a <a href="/api/store/type-aliases/schema/tablesschema/"><code>TablesSchema</code></a> and <a href="/api/store/type-aliases/schema/valuesschema/"><code>ValuesSchema</code></a>, JSON-encoded in an array pair) from a file and emits <code>.d.ts</code>, <code>.ts</code>, and <code>.tsx</code> files for it (much as described in the <a href="/guides/developer-tools/generating-apis/">Generating APIs</a> guide).</p><p>For example, imagine if you have defined <a href="/">TinyBase</a> <a href="/api/store/type-aliases/schema/tablesschema/"><code>TablesSchema</code></a> and <a href="/api/store/type-aliases/schema/valuesschema/"><code>ValuesSchema</code></a> objects in a file called <code>schema.json</code>:</p><pre><code><span class="punctuation">[</span>
+  <span class="punctuation">{</span>
+    <span class="property">"pets"</span><span class="operator">:</span> <span class="punctuation">{</span>
+      <span class="property">"species"</span><span class="operator">:</span> <span class="punctuation">{</span><span class="property">"type"</span><span class="operator">:</span> <span class="string">"string"</span><span class="punctuation">,</span> <span class="property">"default"</span><span class="operator">:</span> <span class="string">"dog"</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      <span class="property">"price"</span><span class="operator">:</span> <span class="punctuation">{</span><span class="property">"type"</span><span class="operator">:</span> <span class="string">"number"</span><span class="punctuation">}</span>
+    <span class="punctuation">}</span>
+  <span class="punctuation">}</span><span class="punctuation">,</span>
+  <span class="punctuation">{</span>
+    <span class="property">"open"</span><span class="operator">:</span> <span class="punctuation">{</span><span class="property">"type"</span><span class="operator">:</span> <span class="string">"boolean"</span><span class="punctuation">,</span> <span class="property">"default"</span><span class="operator">:</span> <span class="boolean">false</span><span class="punctuation">}</span>
+  <span class="punctuation">}</span>
+<span class="punctuation">]</span>
+</code></pre><p>The <code>getStoreApi</code> command takes a reference to that file, a name for the wrapped store (and file names), and an output directory (which must already exist):</p><pre><code>npx tinybase getStoreApi schema.json shop api
+</code></pre><p>This will list out the two files that have been generated:</p><pre><code>             Definition: <span class="punctuation">[</span><span class="punctuation">..</span>.<span class="punctuation">]</span>/api/shop.d.ts
+         Implementation: <span class="punctuation">[</span><span class="punctuation">..</span>.<span class="punctuation">]</span>/api/shop.ts
+    UI React definition: <span class="punctuation">[</span><span class="punctuation">..</span>.<span class="punctuation">]</span>/api/shop-ui-react.d.ts
+UI React implementation: <span class="punctuation">[</span><span class="punctuation">..</span>.<span class="punctuation">]</span>/api/shop-ui-react.tsx
+</code></pre><p>These will contain the definition of the API:</p><pre><code><span class="comment">//...</span>
+<span class="comment">/**
+ * Represents the 'pets' Table.
+ */</span>
+<span class="keyword">export</span> <span class="keyword">type</span> <span class="class-name">PetsTable</span> <span class="operator">=</span> <span class="punctuation">{</span><span class="punctuation">[</span>rowId<span class="operator">:</span> <span class="type"><a href="/api/common/type-aliases/identity/id/">Id</a></span><span class="punctuation">]</span><span class="operator">:</span> PetsRow<span class="punctuation">}</span><span class="punctuation">;</span>
+
+<span class="comment">/**
+ * Represents a Row when getting the content of the 'pets' Table.
+ */</span>
+<span class="keyword">export</span> <span class="keyword">type</span> <span class="class-name">PetsRow</span> <span class="operator">=</span> <span class="punctuation">{</span>species<span class="operator">:</span> <span class="builtin">string</span><span class="punctuation">;</span> price<span class="operator">?</span><span class="operator">:</span> <span class="builtin">number</span><span class="punctuation">}</span><span class="punctuation">;</span>
+<span class="comment">//...</span>
+</code></pre><p>And the implementation:</p><pre><code><span class="comment">//...</span>
+<span class="keyword">export</span> <span class="keyword">const</span> createShop<span class="operator">:</span> <span class="keyword">typeof</span> <span class="function-variable">createShopDecl</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+  <span class="comment">// ...</span>
+  <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/store/functions/creation/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/setter/settablesschema/">setTablesSchema</a></span><span class="punctuation">(</span><span class="punctuation">{</span>
+    pets<span class="operator">:</span> <span class="punctuation">{</span>
+      species<span class="operator">:</span> <span class="punctuation">{</span>type<span class="operator">:</span> <span class="string">'string'</span><span class="punctuation">,</span> <span class="keyword">default</span><span class="operator">:</span> <span class="string">'dog'</span><span class="punctuation">}</span><span class="punctuation">,</span>
+      price<span class="operator">:</span> <span class="punctuation">{</span>type<span class="operator">:</span> <span class="string">'number'</span><span class="punctuation">}</span><span class="punctuation">,</span>
+    <span class="punctuation">}</span><span class="punctuation">,</span>
+  <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">return</span> <span class="punctuation">{</span>
+    hasPetsTable<span class="operator">:</span> <span class="punctuation">(</span><span class="punctuation">)</span><span class="operator">:</span> <span class="builtin">boolean</span> <span class="operator">=></span> store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/getter/hastable/">hasTable</a></span><span class="punctuation">(</span><span class="string">'pets'</span><span class="punctuation">)</span><span class="punctuation">,</span>
+    getPetsTable<span class="operator">:</span> <span class="punctuation">(</span><span class="punctuation">)</span><span class="operator">:</span> PetsTable <span class="operator">=></span> store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/getter/gettable/">getTable</a></span><span class="punctuation">(</span><span class="string">'pets'</span><span class="punctuation">)</span> <span class="keyword">as</span> PetsTable<span class="punctuation">,</span>
+    <span class="comment">// ...</span>
+  <span class="punctuation">}</span><span class="punctuation">;</span>
+<span class="punctuation">}</span><span class="punctuation">;</span>
+</code></pre><p>...and so on.</p><p>These four files, of course, can now be used to build and implement your own app.</p><p>We conclude this section on developer tools with a look at how you can inspect the content of your data. Please continue to the <a href="/guides/developer-tools/inspecting-data/">Inspecting Data</a> guide.</p></section>
