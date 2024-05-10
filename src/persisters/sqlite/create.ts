@@ -5,7 +5,7 @@ import {
 } from '../../types/persisters';
 import {startInterval, stopInterval} from '../../common/other';
 import {Cmd} from './commands';
-import {SELECT} from './common';
+import {IdObj} from '../../common/obj';
 import {Store} from '../../types/store';
 import {collValues} from '../../common/coll';
 import {createJsonSqlitePersister} from './json';
@@ -13,10 +13,8 @@ import {createTabularSqlitePersister} from './tabular';
 import {getConfigStructures} from './config';
 
 export type UpdateListener = (tableName: string) => void;
-type DataVersionPragma = [{data_version: number}];
-type SchemaVersionPragma = [{schema_version: number}];
 
-const PRAGMA = 'pragma ';
+const PRAGMA = 'pragma_';
 const DATA_VERSION = 'data_version';
 const SCHEMA_VERSION = 'schema_version';
 
@@ -36,8 +34,6 @@ export const createSqlitePersister = <UpdateListeningHandle>(
   let schemaVersion: number | null;
   let totalChanges: number | null;
 
-  const CHANGES_COLUMN = 'c';
-
   const [
     isJson,
     autoLoadIntervalSeconds,
@@ -51,23 +47,18 @@ export const createSqlitePersister = <UpdateListeningHandle>(
     startInterval(
       async () => {
         try {
-          const newDataVersion = (
-            (await cmd(PRAGMA + DATA_VERSION)) as DataVersionPragma
-          )[0][DATA_VERSION];
-          const newSchemaVersion = (
-            (await cmd(PRAGMA + SCHEMA_VERSION)) as SchemaVersionPragma
-          )[0][SCHEMA_VERSION];
-          const newTotalChanges = (
-            await cmd(SELECT + ' TOTAL_CHANGES() ' + CHANGES_COLUMN)
-          )[0][CHANGES_COLUMN];
+          const [{d, s, c}] = (await cmd(
+            `SELECT ${DATA_VERSION} d,${SCHEMA_VERSION} s,TOTAL_CHANGES() c` +
+              ` FROM ${PRAGMA}${DATA_VERSION} JOIN ${PRAGMA}${SCHEMA_VERSION}`,
+          )) as [IdObj<number>];
           if (
-            newDataVersion != (dataVersion ??= newDataVersion) ||
-            newSchemaVersion != (schemaVersion ??= newSchemaVersion) ||
-            newTotalChanges != (totalChanges ??= newTotalChanges)
+            d != (dataVersion ??= d) ||
+            s != (schemaVersion ??= s) ||
+            c != (totalChanges ??= c)
           ) {
             listener();
-            dataVersion = newDataVersion;
-            schemaVersion = newSchemaVersion;
+            dataVersion = d;
+            schemaVersion = s;
           }
         } catch {}
       },
