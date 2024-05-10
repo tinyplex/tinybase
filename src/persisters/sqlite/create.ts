@@ -75,7 +75,7 @@ export const createSqlitePersister = <UpdateListeningHandle>(
     UpdateListeningHandle,
   ]): void => {
     stopInterval(interval);
-    dataVersion = schemaVersion = null;
+    dataVersion = schemaVersion = totalChanges = null;
     delUpdateListener(listeningHandle);
   };
 
