@@ -376,7 +376,7 @@
  * Note that other components that consume a Store registered like this should
  * defend against it being undefined at first. On the first render, the other
  * component will likely not yet have completed the registration. In the example
- * below, we use the null-safe `useStore('petStore')?.getTableIds()` to do this.
+ * below, we use the null-safe `useStore('petStore')?` to do this.
  * @param storeId The Id of the Store object to be registered with the Provider.
  * @param store The Store object to be registered.
  * @example
