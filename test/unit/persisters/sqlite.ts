@@ -21,7 +21,7 @@ import {suppressWarnings} from '../common/other';
 
 export type SqliteWasmDb = [sqlite3: any, db: any];
 
-const electricSchema = new DbSchema({}, []);
+const electricSchema = new DbSchema({}, [], []);
 type Electric = ElectricClient<typeof electricSchema>;
 
 type AbstractPowerSyncDatabase = {

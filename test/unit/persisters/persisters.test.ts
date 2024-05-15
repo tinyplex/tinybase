@@ -37,7 +37,7 @@ import tmp from 'tmp';
 const GET_HOST = 'http://get.com';
 const SET_HOST = 'http://set.com';
 
-const electricSchema = new DbSchema({}, []);
+const electricSchema = new DbSchema({}, [], []);
 type Electric = ElectricClient<typeof electricSchema>;
 
 type GetLocationMethod<Location = string> = [
