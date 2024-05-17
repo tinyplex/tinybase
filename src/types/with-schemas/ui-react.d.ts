@@ -754,7 +754,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useCreateMetrics
   useCreateMetrics: (
-    store: Store<Schemas>,
+    store: Store<Schemas> | undefined,
     create: (store: Store<Schemas>) => Metrics<Schemas>,
     createDeps?: React.DependencyList,
   ) => Metrics<Schemas> | undefined;
@@ -789,7 +789,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useCreateIndexes
   useCreateIndexes: (
-    store: Store<Schemas>,
+    store: Store<Schemas> | undefined,
     create: (store: Store<Schemas>) => Indexes<Schemas>,
     createDeps?: React.DependencyList,
   ) => Indexes<Schemas> | undefined;
@@ -840,7 +840,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useCreateRelationships
   useCreateRelationships: (
-    store: Store<Schemas>,
+    store: Store<Schemas> | undefined,
     create: (store: Store<Schemas>) => Relationships<Schemas>,
     createDeps?: React.DependencyList,
   ) => Relationships<Schemas> | undefined;
@@ -911,7 +911,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useCreateQueries
   useCreateQueries: (
-    store: Store<Schemas>,
+    store: Store<Schemas> | undefined,
     create: (store: Store<Schemas>) => Queries<Schemas>,
     createDeps?: React.DependencyList,
   ) => Queries<Schemas> | undefined;
@@ -1060,7 +1060,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useCreateCheckpoints
   useCreateCheckpoints: (
-    store: Store<Schemas>,
+    store: Store<Schemas> | undefined,
     create: (store: Store<Schemas>) => Checkpoints<Schemas>,
     createDeps?: React.DependencyList,
   ) => Checkpoints<Schemas> | undefined;
@@ -1148,7 +1148,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useCreatePersister: <
     PersisterOrUndefined extends Persister<Schemas> | undefined,
   >(
-    store: Store<Schemas>,
+    store: Store<Schemas> | undefined,
     create: (store: Store<Schemas>) => Promise<PersisterOrUndefined>,
     createDeps?: React.DependencyList,
     destroy?: (persister: Persister<Schemas>) => void,
@@ -1159,7 +1159,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useCreateSynchronizer: <
     SynchronizerOrUndefined extends Synchronizer<Schemas> | undefined,
   >(
-    store: MergeableStore<Schemas>,
+    store: MergeableStore<Schemas> | undefined,
     create: (
       store: MergeableStore<Schemas>,
     ) => Promise<SynchronizerOrUndefined>,
