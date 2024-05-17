@@ -574,7 +574,7 @@ export function useDidFinishTransactionListener(
 
 /// useCreateMetrics
 export function useCreateMetrics(
-  store: Store,
+  store: Store | undefined,
   create: (store: Store) => Metrics,
   createDeps?: React.DependencyList,
 ): Metrics | undefined;
@@ -609,7 +609,7 @@ export function useMetricListener(
 
 /// useCreateIndexes
 export function useCreateIndexes(
-  store: Store,
+  store: Store | undefined,
   create: (store: Store) => Indexes,
   createDeps?: React.DependencyList,
 ): Indexes | undefined;
@@ -660,7 +660,7 @@ export function useSliceRowIdsListener(
 
 /// useCreateRelationships
 export function useCreateRelationships(
-  store: Store,
+  store: Store | undefined,
   create: (store: Store) => Relationships,
   createDeps?: React.DependencyList,
 ): Relationships | undefined;
@@ -731,7 +731,7 @@ export function useLinkedRowIdsListener(
 
 /// useCreateQueries
 export function useCreateQueries(
-  store: Store,
+  store: Store | undefined,
   create: (store: Store) => Queries,
   createDeps?: React.DependencyList,
 ): Queries | undefined;
@@ -880,7 +880,7 @@ export function useResultCellListener(
 
 /// useCreateCheckpoints
 export function useCreateCheckpoints(
-  store: Store,
+  store: Store | undefined,
   create: (store: Store) => Checkpoints,
   createDeps?: React.DependencyList,
 ): Checkpoints | undefined;
@@ -964,7 +964,7 @@ export function useCheckpointListener(
 export function useCreatePersister<
   PersisterOrUndefined extends Persister | undefined,
 >(
-  store: Store,
+  store: Store | undefined,
   create: (store: Store) => PersisterOrUndefined,
   createDeps?: React.DependencyList,
   then?: (persister: Persister) => Promise<void>,
@@ -977,7 +977,7 @@ export function useCreatePersister<
 export function useCreateSynchronizer<
   SynchronizerOrUndefined extends Synchronizer | undefined,
 >(
-  store: MergeableStore,
+  store: MergeableStore | undefined,
   create: (store: MergeableStore) => Promise<SynchronizerOrUndefined>,
   createDeps?: React.DependencyList,
   destroy?: (synchronizer: Synchronizer) => void,
