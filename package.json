@@ -254,11 +254,11 @@
     "country-flag-emoji-json": "^2.0.0",
     "cspell": "^8.8.1",
     "electric-sql": "^0.11.3",
-    "esbuild": "^0.21.2",
+    "esbuild": "^0.21.3",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jest": "^28.5.0",
-    "eslint-plugin-jsdoc": "^48.2.4",
+    "eslint-plugin-jsdoc": "^48.2.5",
     "eslint-plugin-react": "7.34.1",
     "eslint-plugin-react-hooks": "^4.6.2",
     "expo-sqlite": "^13.2.1",
@@ -275,7 +275,7 @@
     "partykit": "^0.0.104",
     "partysocket": "^1.0.1",
     "prettier": "^3.2.5",
-    "puppeteer": "22.8.1",
+    "puppeteer": "22.9.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-test-renderer": "^18.3.1",
@@ -291,7 +291,7 @@
     "ts-unused-exports": "^10.0.1",
     "typescript": "5.4.5",
     "wa-sqlite": "github:rhashimoto/wa-sqlite",
-    "ws": "^8.16.0",
+    "ws": "^8.17.0",
     "yjs": "^13.6.15"
   },
   "peerDependencies": {
@@ -308,7 +308,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sqlite3": "^5.1.7",
-    "ws": "^8.16.0",
+    "ws": "^8.17.0",
     "yjs": "^13.6.15"
   },
   "peerDependenciesMeta": {
