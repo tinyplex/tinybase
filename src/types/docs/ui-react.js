@@ -4581,9 +4581,9 @@
  * regular createMetrics function and pass it in, but you may prefer to create
  * it within the app, perhaps inside the top-level component. To prevent a new
  * Metrics object being created every time the app renders or re-renders, since
- * v5.0 the useCreateMetrics hook performs the creation in an effect. As a
- * result this hook will return `undefined` on the brief first render, which you
- * should defend against.
+ * v5.0 this hook performs the creation in an effect. As a result it will return
+ * `undefined` on the brief first render (or if the Store is not yet defined),
+ * which you should defend against.
  *
  * If your `create` function contains other dependencies, the changing of which
  * should also cause the Metrics object to be recreated, you can provide them in
@@ -5040,9 +5040,9 @@
  * regular createIndexes function and pass it in, but you may prefer to create
  * it within the app, perhaps inside the top-level component. To prevent a new
  * Indexes object being created every time the app renders or re-renders, since
- * v5.0 the useCreateIndexes hook performs the creation in an effect. As a
- * result this hook will return `undefined` on the brief first render, which you
- * should defend against.
+ * v5.0 the this hook performs the creation in an effect. As a result it will
+ * return `undefined` on the brief first render (or if the Store is not yet
+ * defined), which you should defend against.
  *
  * If your `create` function contains other dependencies, the changing of which
  * should also cause the Indexes object to be recreated, you can provide them in
@@ -5692,9 +5692,9 @@
  * the regular createRelationships function and pass it in, but you may prefer
  * to create it within the app, perhaps inside the top-level component. To
  * prevent a new Relationships object being created every time the app renders
- * or re-renders, since v5.0 the useCreateRelationships hook performs the
- * creation in an effect. As a result this hook will return `undefined` on the
- * brief first render, which you should defend against.
+ * or re-renders, since v5.0 this hook performs the creation in an effect. As a
+ * result it will return `undefined` on the brief first render (or if the Store
+ * is not yet defined), which you should defend against.
  *
  * If your `create` function contains other dependencies, the changing of which
  * should also cause the Relationships object to be recreated, you can provide
@@ -6608,9 +6608,9 @@
  * regular createQueries function and pass it in, but you may prefer to create
  * it within the app, perhaps inside the top-level component. To prevent a new
  * Queries object being created every time the app renders or re-renders, since
- * v5.0 the useCreateQueries hook performs the creation in an effect. As a
- * result this hook will return `undefined` on the brief first render, which you
- * should defend against.
+ * v5.0 this hook performs the creation in an effect. As a result it will return
+ * `undefined` on the brief first render (or if the Store is not yet defined),
+ * which you should defend against.
  *
  * If your `create` function contains other dependencies, the changing of which
  * should also cause the Queries object to be recreated, you can provide them in
@@ -8503,9 +8503,9 @@
  * the regular createCheckpoints function and pass it in, but you may prefer to
  * create it within the app, perhaps inside the top-level component. To prevent
  * a new Checkpoints object being created every time the app renders or
- * re-renders, since v5.0 the useCreateMetrics hook performs the creation in an
- * effect. As a result this hook will return `undefined` on the brief first
- * render, which you should defend against.
+ * re-renders, since v5.0 this hook performs the creation in an effect. As a
+ * result it will return `undefined` on the brief first render (or if the
+ * Store is not yet defined), which you should defend against.
  *
  * If your `create` function contains other dependencies, the changing of which
  * should also cause the Checkpoints object to be recreated, you can provide
@@ -9377,7 +9377,7 @@
  * regular createPersister function and pass it in, but you may prefer to create
  * it within the app, perhaps inside the top-level component. To prevent a new
  * Persister being created every time the app renders or re-renders, since v5.0
- * the useCreateMetrics hook performs the creation in an effect.
+ * the this hook performs the creation in an effect.
  *
  * If your `create` function (the second parameter to the hook) contains
  * dependencies, the changing of which should cause the Persister to be
@@ -9396,7 +9396,8 @@
  * Since v4.3.0, the `create` function can return undefined, meaning that you
  * can enable or disable persistence conditionally within this hook. This is
  * useful for applications which might turn on or off their cloud persistence or
- * collaboration features.
+ * collaboration features. This hook can return `undefined` if the Store is not
+ * yet defined, which you should defend against.
  *
  * Since v4.3.19, a `destroy` function can be provided which will be called
  * after an old Persister is destroyed due to a change in the `createDeps`
