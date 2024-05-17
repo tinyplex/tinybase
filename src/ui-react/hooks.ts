@@ -287,7 +287,7 @@ const IS_EQUALS: ((thing1: any, thing2: any) => boolean)[] = [
 ];
 
 const useCreate = (
-  store: Store,
+  store: Store | undefined,
   create: (store: Store) => any,
   createDeps: React.DependencyList = EMPTY_ARRAY,
 ) => {
@@ -295,10 +295,10 @@ const useCreate = (
   const [thing, setThing] = useState();
   useEffect(
     () => {
-      const newThing = create(store);
+      const newThing = store ? create(store) : undefined;
       setThing(newThing);
       rerender([]);
-      return newThing.destroy;
+      return newThing?.destroy;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [store, ...createDeps],
@@ -1179,7 +1179,7 @@ export const useDidFinishTransactionListener: typeof useDidFinishTransactionList
     );
 
 export const useCreateMetrics: typeof useCreateMetricsDecl = (
-  store: Store,
+  store: Store | undefined,
   create: (store: Store) => Metrics,
   createDeps?: React.DependencyList,
 ): Metrics | undefined => useCreate(store, create, createDeps);
@@ -1214,7 +1214,7 @@ export const useMetricListener: typeof useMetricListenerDecl = (
   );
 
 export const useCreateIndexes: typeof useCreateIndexesDecl = (
-  store: Store,
+  store: Store | undefined,
   create: (store: Store) => Indexes,
   createDeps?: React.DependencyList,
 ): Indexes | undefined => useCreate(store, create, createDeps);
@@ -1276,7 +1276,7 @@ export const useSliceRowIdsListener: typeof useSliceRowIdsListenerDecl = (
   );
 
 export const useCreateRelationships: typeof useCreateRelationshipsDecl = (
-  store: Store,
+  store: Store | undefined,
   create: (store: Store) => Relationships,
   createDeps?: React.DependencyList,
 ): Relationships | undefined => useCreate(store, create, createDeps);
@@ -1375,7 +1375,7 @@ export const useLinkedRowIdsListener: typeof useLinkedRowIdsListenerDecl = (
   );
 
 export const useCreateQueries: typeof useCreateQueriesDecl = (
-  store: Store,
+  store: Store | undefined,
   create: (store: Store) => Queries,
   createDeps?: React.DependencyList,
 ): Queries | undefined => useCreate(store, create, createDeps);
@@ -1603,7 +1603,7 @@ export const useResultCellListener: typeof useResultCellListenerDecl = (
   );
 
 export const useCreateCheckpoints: typeof useCreateCheckpointsDecl = (
-  store: Store,
+  store: Store | undefined,
   create: (store: Store) => Checkpoints,
   createDeps?: React.DependencyList,
 ): Checkpoints | undefined => useCreate(store, create, createDeps);
@@ -1749,7 +1749,7 @@ export const useCheckpointListener: typeof useCheckpointListenerDecl = (
 export const useCreatePersister: typeof useCreatePersisterDecl = <
   PersisterOrUndefined extends Persister | undefined,
 >(
-  store: Store,
+  store: Store | undefined,
   create: (store: Store) => PersisterOrUndefined,
   createDeps: React.DependencyList = EMPTY_ARRAY,
   then?: (persister: Persister) => Promise<void>,
@@ -1761,7 +1761,7 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
   const [persister, setPersister] = useState<any>();
   useEffect(
     () => {
-      const persister = create(store);
+      const persister = store ? create(store) : undefined;
       setPersister(persister);
       if (persister && then) {
         (async () => {
@@ -1789,7 +1789,7 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
 export const useCreateSynchronizer: typeof useCreateSynchronizerDecl = <
   SynchronizerOrUndefined extends Synchronizer | undefined,
 >(
-  store: MergeableStore,
+  store: MergeableStore | undefined,
   create: (store: MergeableStore) => Promise<SynchronizerOrUndefined>,
   createDeps: React.DependencyList = EMPTY_ARRAY,
   destroy?: (synchronizer: Synchronizer) => void,
@@ -1799,7 +1799,7 @@ export const useCreateSynchronizer: typeof useCreateSynchronizerDecl = <
   useEffect(
     () => {
       (async () => {
-        const synchronizer = await create(store);
+        const synchronizer = store ? await create(store) : undefined;
         setSynchronizer(synchronizer);
       })();
     },
