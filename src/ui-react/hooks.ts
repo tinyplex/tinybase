@@ -264,7 +264,7 @@ const {
 
 const EMPTY_ARRAY: Readonly<[]> = [];
 
-// 0: object, 1: array, 2: cell/value, 3: boolean, 4: number, 5: checkpoints
+// 0: object, 1: array, 2: checkpoints, 3: cell/value, 4: boolean, 5: number
 const DEFAULTS = [
   {},
   [],
@@ -341,7 +341,8 @@ const useListenable = (
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
     [thing, type, listenable, ...args],
   );
-  return useSyncExternalStore(subscribe, getResult);
+  const result = useSyncExternalStore(subscribe, getResult);
+  return type == 0 ? {...result} : type < 3 ? [...result] : result;
 };
 
 const useListener = (
