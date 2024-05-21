@@ -6,12 +6,13 @@ import {ResultSet, SQLiteDatabase} from 'expo-sqlite';
 import {UpdateListener, createSqlitePersister} from './sqlite/create';
 import {DatabasePersisterConfig} from '../types/persisters';
 import {IdObj} from '../common/obj';
+import {MergeableStore} from '../types/mergeable-store';
 import {Store} from '../types/store';
 
 type Subscription = {remove: () => void};
 
 export const createExpoSqlitePersister = ((
-  store: Store,
+  store: Store | MergeableStore,
   db: SQLiteDatabase,
   configOrStoreTableName?: DatabasePersisterConfig | string,
   onSqlCommand?: (sql: string, args?: any[]) => void,
