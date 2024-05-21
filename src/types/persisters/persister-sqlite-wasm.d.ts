@@ -1,6 +1,7 @@
 /// persister-sqlite-wasm
 
 import {DatabasePersisterConfig, Persister} from '../persisters.d';
+import {MergeableStore} from '../mergeable-store.d';
 import {Store} from '../store.d';
 
 /// SqliteWasmPersister
@@ -11,7 +12,7 @@ export interface SqliteWasmPersister extends Persister<3> {
 
 /// createSqliteWasmPersister
 export function createSqliteWasmPersister(
-  store: Store,
+  store: Store | MergeableStore,
   sqlite3: any,
   db: any,
   configOrStoreTableName?: DatabasePersisterConfig | string,
