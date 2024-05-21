@@ -2,6 +2,7 @@
 
 import {DatabasePersisterConfig, Persister} from '../persisters.d';
 import {OptionalSchemas, Store} from '../store.d';
+import {MergeableStore} from '../mergeable-store.d';
 
 /// SqliteWasmPersister
 export interface SqliteWasmPersister<Schemas extends OptionalSchemas>
@@ -12,7 +13,7 @@ export interface SqliteWasmPersister<Schemas extends OptionalSchemas>
 
 /// createSqliteWasmPersister
 export function createSqliteWasmPersister<Schemas extends OptionalSchemas>(
-  store: Store<Schemas>,
+  store: Store<Schemas> | MergeableStore<Schemas>,
   sqlite3: any,
   db: any,
   configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
