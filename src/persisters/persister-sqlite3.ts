@@ -6,6 +6,7 @@ import {UpdateListener, createSqlitePersister} from './sqlite/create';
 import {Database} from 'sqlite3';
 import {DatabasePersisterConfig} from '../types/persisters';
 import {IdObj} from '../common/obj';
+import {MergeableStore} from '../types/mergeable-store';
 import {Store} from '../types/store';
 import {promiseNew} from '../common/other';
 
@@ -14,7 +15,7 @@ const CHANGE = 'change';
 type Observer = (_: any, _2: any, tableName: string) => void;
 
 export const createSqlite3Persister = ((
-  store: Store,
+  store: Store | MergeableStore,
   db: Database,
   configOrStoreTableName?: DatabasePersisterConfig | string,
   onSqlCommand?: (sql: string, args?: any[]) => void,
