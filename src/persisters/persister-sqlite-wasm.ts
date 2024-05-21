@@ -5,10 +5,11 @@ import {
 import {UpdateListener, createSqlitePersister} from './sqlite/create';
 import {DatabasePersisterConfig} from '../types/persisters';
 import {IdObj} from '../common/obj';
+import {MergeableStore} from '../types/mergeable-store';
 import {Store} from '../types/store';
 
 export const createSqliteWasmPersister = ((
-  store: Store,
+  store: Store | MergeableStore,
   sqlite3: any,
   db: any,
   configOrStoreTableName?: DatabasePersisterConfig | string,
