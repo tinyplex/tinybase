@@ -271,6 +271,22 @@ describe('Create Hooks', () => {
     expect(initMetrics).toHaveBeenCalledTimes(1);
   });
 
+  test('useCreateMetrics (undefined store)', () => {
+    const initMetrics = jest.fn((store: Store) =>
+      createMetrics(store).setMetricDefinition('m1', `t1`),
+    );
+    const Test = () => {
+      const metrics = useCreateMetrics(undefined, (store) =>
+        initMetrics(store),
+      );
+      return didRender(<>{JSON.stringify(metrics?.getMetric('m1'))}</>);
+    };
+    act(() => {
+      renderer = create(<Test />);
+    });
+    expect(renderer.toJSON()).toBeNull();
+  });
+
   test('useCreateIndexes', async () => {
     const initStore = jest.fn(() =>
       createStore().setTables({t1: {r1: {c1: 1}, r2: {c2: 1}}}),
@@ -575,6 +591,19 @@ describe('Create Hooks', () => {
     persisters.forEach((persister) => persister.stopAutoLoad().stopAutoSave());
   });
 
+  test('useCreatePersister, undefined store', async () => {
+    const Test = () => {
+      const persister = useCreatePersister(undefined, (store: Store) =>
+        createFilePersister(store, ''),
+      );
+      return didRender(<>{JSON.stringify(persister?.getStats())}</>);
+    };
+    act(() => {
+      renderer = create(<Test />);
+    });
+    expect(renderer.toJSON()).toBeNull();
+  });
+
   test('useCreateSynchronizer, no destroy', async () => {
     let _synchronizer: Synchronizer | undefined;
     const initStore = jest.fn(() => createMergeableStore('s1'));
@@ -659,6 +688,20 @@ describe('Create Hooks', () => {
     synchronizers.forEach((synchronizer) =>
       synchronizer.stopAutoLoad().stopAutoSave(),
     );
+  });
+
+  test('useCreateSynchronizer, undefined store', async () => {
+    const Test = () => {
+      const synchronizer = useCreateSynchronizer(
+        undefined,
+        async (store: MergeableStore) => createLocalSynchronizer(store),
+      );
+      return didRender(<>{JSON.stringify(synchronizer?.getStats())}</>);
+    };
+    act(() => {
+      renderer = create(<Test />);
+    });
+    expect(renderer.toJSON()).toBeNull();
   });
 });
 
