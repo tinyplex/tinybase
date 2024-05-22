@@ -393,5 +393,59 @@ describe.each(Object.entries(VARIANTS))(
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
       }, 20000);
     });
+
+    test('Multiple stores in different tables', async () => {
+      const store1 = createStore();
+      const persister1 = getPersister(store1, db, {
+        mode: 'json',
+        storeTableName: 'store1',
+        autoLoadIntervalSeconds,
+      });
+      const store2 = createStore();
+      const persister2 = getPersister(store2, db, {
+        mode: 'json',
+        storeTableName: 'store2',
+        autoLoadIntervalSeconds,
+      });
+
+      store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+      await persister1.startAutoSave();
+      await persister1.startAutoLoad();
+
+      store2.setTables({t2: {r2: {c2: 2}}}).setValues({v2: 2});
+      await persister2.startAutoSave();
+      await persister2.startAutoLoad();
+
+      expect(await getDatabase(db)).toEqual({
+        store1: [
+          'CREATE TABLE "store1"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+          [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
+        ],
+        store2: [
+          'CREATE TABLE "store2"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+          [{_id: '_', store: '[{"t2":{"r2":{"c2":2}}},{"v2":2}]'}],
+        ],
+      });
+      expect(persister1.getStats()).toEqual({loads: 1, saves: 1});
+      expect(persister2.getStats()).toEqual({loads: 1, saves: 1});
+
+      await cmd(db, 'UPDATE store1 SET store=? WHERE _id=?', [
+        '[{"t3":{"r3":{"c3":3}}},{"v3":3}]',
+        '_',
+      ]);
+      await pause(autoLoadPause);
+      expect(store1.getContent()).toEqual([{t3: {r3: {c3: 3}}}, {v3: 3}]);
+      expect(persister1.getStats()).toEqual({loads: 2, saves: 1});
+      expect(persister2.getStats()).toEqual({loads: 1, saves: 1});
+
+      await cmd(db, 'UPDATE store21 SET store=? WHERE _id=?', [
+        '[{"t4":{"r4":{"c4":4}}},{"v4":4}]',
+        '_',
+      ]);
+      await pause(autoLoadPause);
+      expect(store1.getContent()).toEqual([{t4: {r4: {c4: 4}}}, {v4: 4}]);
+      expect(persister1.getStats()).toEqual({loads: 2, saves: 1});
+      expect(persister2.getStats()).toEqual({loads: 2, saves: 1});
+    });
   },
 );
