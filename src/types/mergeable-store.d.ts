@@ -131,6 +131,9 @@ export interface MergeableStore extends Store {
 
   /// MergeableStore.merge
   merge(mergeableStore: MergeableStore): MergeableStore;
+
+  /// Store.isMergeable
+  isMergeable: () => boolean;
 }
 
 /// createMergeableStore
