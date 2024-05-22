@@ -1443,6 +1443,9 @@ export interface Store<in out Schemas extends OptionalSchemas> {
 
   /// Store.getListenerStats
   getListenerStats(): StoreListenerStats;
+
+  /// Store.isMergeable
+  isMergeable: () => boolean;
 }
 
 /// createStore
