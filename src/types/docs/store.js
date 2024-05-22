@@ -6588,6 +6588,14 @@
    * @category Development
    */
   /// Store.getListenerStats
+  /**
+   * The isMergeable methods lets you know if the Store is mergeable.
+   *
+   * This will always be false for a Store, and true for a MergeableStore.
+   * @category Information
+   * @since v5.0.0
+   */
+  /// Store.isMergeable
 }
 /**
  * The createStore function creates a Store, and is the main entry point into

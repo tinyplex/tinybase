@@ -625,7 +625,9 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
                   listener(mergeableStore, ...args);
                 return method(...args);
               }
-            : method),
+            : name == 'isMergeable'
+              ? () => true
+              : method),
   );
   return objFreeze(mergeableStore) as MergeableStore;
 }) as typeof createMergeableStoreDecl;
