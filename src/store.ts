@@ -1691,6 +1691,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
     getListenerStats,
 
+    isMergeable: () => false,
+
     // only used internally by other modules
     createStore,
     addListener,
