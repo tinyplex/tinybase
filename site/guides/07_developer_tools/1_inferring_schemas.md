@@ -21,6 +21,8 @@ Usage of the createTools function should be familiar by now, taking a reference
 to a Store:
 
 ```js
+import {createTools} from 'tinybase/tools';
+
 const store = createStore()
   .setValues({employees: 3, open: true})
   .setTable('pets', {

@@ -60,6 +60,8 @@ definitions and (`.ts`) implementations are emitted that you can check in to
 your application's code base:
 
 ```js
+import {createTools} from 'tinybase/tools';
+
 const store = createStore().setTable('pets', {
   fido: {species: 'dog'},
   felix: {species: 'cat'},

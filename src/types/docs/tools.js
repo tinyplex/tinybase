@@ -115,6 +115,8 @@
    * @example
    * This example creates a Tools object and gets basic statistics about it.
    * ```js
+   * import {createTools} from 'tinybase/tools';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog', color: 'brown'},
@@ -133,6 +135,8 @@
    * @example
    * This example creates a Tools object and gets detailed statistics about it.
    * ```js
+   * import {createTools} from 'tinybase/tools';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog', color: 'brown'},
@@ -180,6 +184,8 @@
    * This example creates a Tools object and gets the schema of a Store that
    * already has a TablesSchema.
    * ```js
+   * import {createTools} from 'tinybase/tools';
+   *
    * const store = createStore().setTablesSchema({
    *   pets: {
    *     species: {type: 'string'},
@@ -197,6 +203,8 @@
    * This example creates a Tools object and infers the schema of a Store that
    * doesn't already have a TablesSchema.
    * ```js
+   * import {createTools} from 'tinybase/tools';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog', color: 'brown'},
@@ -237,6 +245,8 @@
    * This example creates a Tools object and gets the schema of a Store that
    * already has a ValuesSchema.
    * ```js
+   * import {createTools} from 'tinybase/tools';
+   *
    * const store = createStore().setValuesSchema({
    *   open: {type: 'boolean', default: true},
    *   employees: {type: 'number'},
@@ -250,6 +260,8 @@
    * This example creates a Tools object and infers the schema of a Store that
    * doesn't already have a ValuesSchema.
    * ```js
+   * import {createTools} from 'tinybase/tools';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * const schema = createTools(store).getStoreValuesSchema();
    *
@@ -325,6 +337,8 @@
    * This example creates a Tools object and generates code for a Store that
    * already has a TablesSchema.
    * ```js
+   * import {createTools} from 'tinybase/tools';
+   *
    * const store = createStore().setTablesSchema({
    *   pets: {
    *     price: {type: 'number'},
@@ -345,6 +359,8 @@
    * This example creates a Tools object and generates code for a Store that
    * doesn't already have a TablesSchema.
    * ```js
+   * import {createTools} from 'tinybase/tools';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {price: 5},
    *   felix: {price: 4},
@@ -399,6 +415,8 @@
    * This example creates a Tools object and generates code for a Store that
    * already has a TablesSchema.
    * ```js
+   * import {createTools} from 'tinybase/tools';
+   *
    * const store = createStore().setTablesSchema({
    *   pets: {
    *     price: {type: 'number'},
@@ -420,6 +438,8 @@
    * This example creates a Tools object and generates code for a Store that
    * doesn't already have a TablesSchema.
    * ```js
+   * import {createTools} from 'tinybase/tools';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {price: 5},
    *   felix: {price: 4},
@@ -449,6 +469,8 @@
    * then gets its reference in order to update its data.
    *
    * ```js
+   * import {createTools} from 'tinybase/tools';
+   *
    * const tools = createTools(createStore());
    * tools.getStore().setCell('species', 'dog', 'price', 5);
    * console.log(tools.getStoreStats().totalCells);
@@ -473,6 +495,8 @@
  * This example creates a Tools object.
  *
  * ```js
+ * import {createTools} from 'tinybase/tools';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', color: 'brown'},
@@ -493,6 +517,8 @@
  * for the same Store to return the same object.
  *
  * ```js
+ * import {createTools} from 'tinybase/tools';
+ *
  * const store = createStore();
  * const tools1 = createTools(store);
  * const tools2 = createTools(store);
