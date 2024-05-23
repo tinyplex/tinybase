@@ -518,6 +518,7 @@ Automerge are two popular examples. The API should be familiar! The following wi
 
 ```js
 import {Doc} from 'yjs';
+import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
 
 store.setTables({pets: {fido: {species: 'dog'}}});
 
@@ -536,6 +537,7 @@ the broadcast channel:
 
 ```js
 import {Repo} from '@automerge/automerge-repo';
+import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
 
 const docHandler = new Repo({
   network: [new BroadcastChannelNetworkAdapter()],

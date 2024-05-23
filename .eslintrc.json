@@ -39,7 +39,10 @@
       2,
       {"argsIgnorePattern": "^_.*", "varsIgnorePattern": "^_.*"}
     ],
-    "max-len": [2, {"code": 80, "ignorePattern": "^(im|ex)ports?\\W.*"}],
+    "max-len": [
+      2,
+      {"code": 80, "ignorePattern": "^(\\s+\\* )?(im|ex)ports?\\W.*"}
+    ],
     "no-var": 2,
     "no-console": 2,
     "object-curly-spacing": [2, "never"],
