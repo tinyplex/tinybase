@@ -1,5 +1,11 @@
 import {Changes, Content, Store} from './types/store.d';
-import {DEBUG, ifNotUndefined, isArray, isUndefined} from './common/other';
+import {
+  DEBUG,
+  errorNew,
+  ifNotUndefined,
+  isArray,
+  isUndefined,
+} from './common/other';
 import {
   MergeableChanges,
   MergeableContent,
@@ -60,8 +66,7 @@ const getStoreFunctions = (
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setContent,
         ]
-      : /*! istanbul ignore next */
-        (0 as any);
+      : errorNew('Store type not supported by this Persister');
 
 export const createCustomPersister = <
   ListeningHandle,
