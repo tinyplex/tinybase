@@ -3,6 +3,11 @@ import {Store, createMergeableStore, createStore} from 'tinybase/debug';
 
 let store: Store;
 
+test('isMergeable', () => {
+  store = createStore();
+  expect(store.isMergeable()).toEqual(false);
+});
+
 // Note that these tests run in order to mutate the store in a sequence.
 
 describe.each([
