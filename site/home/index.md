@@ -245,13 +245,15 @@ store.delListener(listenerId);
 > Read more about the using hooks in the Using React Hooks guide.
 
 ```jsx
+import {createRoot} from 'react-dom/client';
+
 const App1 = () => {
   const color = useCell('pets', 'fido', 'color', store);
   return <>Color: {color}</>;
 };
 
 const app = document.createElement('div');
-const root = ReactDOMClient.createRoot(app);
+const root = createRoot(app);
 root.render(<App1 />); // !act
 console.log(app.innerHTML);
 // -> 'Color: brown'
