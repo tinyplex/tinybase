@@ -80,6 +80,8 @@
  * MergeableStore to another.
  *
  * ```js
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ *
  * const store1 = createMergeableStore('store1').setTables({
  *   pets: {fido: {species: 'dog'}},
  * });
