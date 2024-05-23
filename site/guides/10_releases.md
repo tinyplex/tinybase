@@ -74,6 +74,8 @@ systems):
 
 ```js
 import {WebSocketServer, WebSocket} from 'ws';
+import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 
 // On a server machine
 const server = createWsServer(new WebSocketServer({port: 8043}));
@@ -295,6 +297,8 @@ PartyKit socket object that's been configured to connect to your server
 deployment and named room:
 
 ```js yolo
+import {createPartyKitPersister} from 'tinybase/persisters/persister-partykit-client';
+
 const persister = createPartyKitPersister(
   store,
   new PartySocket({
@@ -339,6 +343,8 @@ createIndexedDbPersister function to create the IndexedDB Persister.
 The API is the same as for all the other Persister APIs:
 
 ```js
+import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
+
 const store = createStore()
   .setTable('pets', {fido: {species: 'dog'}})
   .setTable('species', {dog: {price: 5}})
@@ -489,6 +495,7 @@ and from a local SQLite database. It uses an explicit tabular one-to-one mapping
 for the 'pets' table:
 
 ```js
+import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 
 const sqlite3 = await sqlite3InitModule();

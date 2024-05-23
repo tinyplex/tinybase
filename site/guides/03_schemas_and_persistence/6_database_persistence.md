@@ -49,6 +49,7 @@ memory, but typically you would use the origin private file system (OPFS) as a
 storage back-end.
 
 ```js
+import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 
 const sqlite3 = await sqlite3InitModule();
