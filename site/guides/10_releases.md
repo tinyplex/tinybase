@@ -848,6 +848,8 @@ to perform tasks like generating APIs from schemas, or schemas from data. For
 example:
 
 ```js
+import {createTools} from 'tinybase/tools';
+
 store.setTable('pets', {
   fido: {species: 'dog'},
   felix: {species: 'cat'},
