@@ -464,6 +464,8 @@
  * a <table> element with a CSS class.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -476,7 +478,7 @@
  *   felix: {species: 'cat'},
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -508,6 +510,8 @@
  * row is removed.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -540,7 +544,7 @@
  *   felix: {species: 'cat'},
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -607,6 +611,8 @@
  * Table in a <table> element with a CSS class.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -627,7 +633,7 @@
  *   },
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -659,6 +665,8 @@
  * of each row is removed.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -695,7 +703,7 @@
  *   },
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -748,6 +756,8 @@
  * in a <table> element with a CSS class.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -757,7 +767,7 @@
  *
  * const store = createStore().setValues({open: true, employees: 3});
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -788,6 +798,8 @@
  * the top of the table and the Id column at the start of each row is removed.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -811,7 +823,7 @@
  *
  * const store = createStore().setValues({open: true, employees: 3});
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -859,6 +871,8 @@
  * in a <table> element with a CSS class.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
  *     <Pane />
@@ -877,7 +891,7 @@
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -909,6 +923,8 @@
  * row is removed.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
  *     <Pane />
@@ -946,7 +962,7 @@
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1007,6 +1023,8 @@
  * CSS class. Note the dotted pairs that are used as column headings.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -1026,7 +1044,7 @@
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // ->
@@ -1065,6 +1083,8 @@
  * the table and the Id column at the start of each row is removed.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -1104,7 +1124,7 @@
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // ->
@@ -1156,6 +1176,8 @@
  * ResultTable in a <table> element with a CSS class.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -1172,7 +1194,7 @@
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1204,6 +1226,8 @@
  * the start of each row is removed.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -1238,7 +1262,7 @@
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1307,6 +1331,8 @@
  * renders the ResultTable in a <table> element with a CSS class.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -1327,7 +1353,7 @@
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1359,6 +1385,8 @@
  * column at the start of each row is removed.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -1395,7 +1423,7 @@
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1448,6 +1476,8 @@
  * Cell.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1459,7 +1489,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1506,6 +1536,8 @@
  * Value.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1515,7 +1547,7 @@
  *
  * const store = createStore().setValue('employees', 3);
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1549,6 +1581,8 @@
  * Table in a <table> element with a SortedTablePaginator (the default).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1573,7 +1607,7 @@
  *   },
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1626,6 +1660,8 @@
  * tool.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1635,7 +1671,7 @@
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * // ... // !act
  * console.log(app.innerHTML.substring(0, 35));
  * // -> '<aside id="tinybaseStoreInspector">'
