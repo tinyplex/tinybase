@@ -14,12 +14,14 @@ Firstly, the useCheckpointIds hook is the reactive version of the
 getCheckpointIds method and returns the three-part CheckpointIds array.
 
 ```jsx
+import {createRoot} from 'react-dom/client';
+
 const store = createStore().setTable('pets', {fido: {species: 'dog'}});
 const checkpoints = createCheckpoints(store);
 const App = () => <span>{JSON.stringify(useCheckpointIds(checkpoints))}</span>;
 
 const app = document.createElement('div');
-const root = ReactDOMClient.createRoot(app);
+const root = createRoot(app);
 root.render(<App />); // !act
 console.log(app.innerHTML);
 // -> '<span>[[],"0",[]]</span>'
