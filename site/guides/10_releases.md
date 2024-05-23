@@ -73,14 +73,16 @@ the WsSynchronizer (that uses WebSockets to communicate between different
 systems):
 
 ```js
+import {WebSocketServer, WebSocket} from 'ws';
+
 // On a server machine
-const server = createWsServer(new ws.WebSocketServer({port: 8043}));
+const server = createWsServer(new WebSocketServer({port: 8043}));
 
 // On the first client machine:
 const store1 = createMergeableStore('store1');
 const synchronizer1 = await createWsSynchronizer(
   store1,
-  new ws.WebSocket('ws://localhost:8043'),
+  new WebSocket('ws://localhost:8043'),
 );
 await synchronizer1.startSync();
 store1.setCell('pets', 'fido', 'legs', 4);
@@ -89,7 +91,7 @@ store1.setCell('pets', 'fido', 'legs', 4);
 const store2 = createMergeableStore('store2');
 const synchronizer2 = await createWsSynchronizer(
   store2,
-  new ws.WebSocket('ws://localhost:8043'),
+  new WebSocket('ws://localhost:8043'),
 );
 await synchronizer2.startSync();
 store2.setCell('pets', 'felix', 'price', 5);
@@ -484,6 +486,8 @@ and from a local SQLite database. It uses an explicit tabular one-to-one mapping
 for the 'pets' table:
 
 ```js
+import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
+
 const sqlite3 = await sqlite3InitModule();
 const db = new sqlite3.oo1.DB(':memory:', 'c');
 store.setTables({pets: {fido: {species: 'dog'}}});
@@ -510,9 +514,11 @@ CRDTs allow complex reconciliation and synchronization between clients. Yjs and
 Automerge are two popular examples. The API should be familiar! The following will persist a TinyBase Store to a Yjs document:
 
 ```js
+import {Doc} from 'yjs';
+
 store.setTables({pets: {fido: {species: 'dog'}}});
 
-const doc = new Y.Doc();
+const doc = new Doc();
 const yJsPersister = createYjsPersister(store, doc);
 
 await yJsPersister.save();
@@ -526,7 +532,9 @@ The following is the equivalent for an Automerge document that will sync over
 the broadcast channel:
 
 ```js
-const docHandler = new AutomergeRepo.Repo({
+import {Repo} from '@automerge/automerge-repo';
+
+const docHandler = new Repo({
   network: [new BroadcastChannelNetworkAdapter()],
 }).create();
 const automergePersister = createAutomergePersister(store, docHandler);

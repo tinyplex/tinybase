@@ -31,7 +31,9 @@
    * then gets the database instance back out again.
    *
    * ```js
-   * const db = new sqlite3.Database(':memory:');
+   * import {Database} from 'sqlite3';
+   *
+   * const db = new Database(':memory:');
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createSqlite3Persister(store, db, 'my_tinybase');
    *
@@ -83,7 +85,9 @@
  * Store.
  *
  * ```js
- * const db = new sqlite3.Database(':memory:');
+ * import {Database} from 'sqlite3';
+ *
+ * const db = new Database(':memory:');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createSqlite3Persister(store, db, 'my_tinybase');
  *
@@ -115,7 +119,9 @@
  * local SQLite database with tabular mapping.
  *
  * ```js
- * const db = new sqlite3.Database(':memory:');
+ * import {Database} from 'sqlite3';
+ *
+ * const db = new Database(':memory:');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createSqlite3Persister(store, db, {
  *   mode: 'tabular',
