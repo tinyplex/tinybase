@@ -14,6 +14,8 @@ The getStoreStats method returns a StoreStats object, containing statistics
 about the Store. To get a basic summary, call the method with no arguments:
 
 ```js
+import {createTools} from 'tinybase/tools';
+
 const store = createStore()
   .setTable('pets', {
     fido: {species: 'dog'},

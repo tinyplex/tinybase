@@ -51,7 +51,6 @@ import {transformSync} from 'esbuild';
   TinyBaseSynchronizerLocal,
   TinyBaseSynchronizerWsClient,
   TinyBaseSynchronizerWsServer,
-  TinyBaseTools,
   TinyBaseUiReact,
   TinyBaseUiReactDom,
 ].forEach((module) =>
@@ -68,6 +67,7 @@ import {transformSync} from 'esbuild';
   react: React,
   'react-dom/client': ReactDOMClient,
   sqlite3,
+  'tinybase/tools': TinyBaseTools,
   ws,
   yjs,
 };
