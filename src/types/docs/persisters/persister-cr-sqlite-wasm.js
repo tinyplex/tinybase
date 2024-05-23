@@ -31,6 +31,8 @@
    * then gets the database instance back out again.
    *
    * ```js
+   * import initWasm from '@vlcn.io/crsqlite-wasm';
+   *
    * const crSqlite3 = await initWasm();
    * const db = await crSqlite3.open();
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -84,6 +86,8 @@
  * into the Store.
  *
  * ```js
+ * import initWasm from '@vlcn.io/crsqlite-wasm';
+ *
  * const crSqlite3 = await initWasm();
  * const db = await crSqlite3.open();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -110,6 +114,8 @@
  * a local SQLite database with tabular mapping.
  *
  * ```js
+ * import initWasm from '@vlcn.io/crsqlite-wasm';
+ *
  * const crSqlite3 = await initWasm();
  * const db = await crSqlite3.open();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});

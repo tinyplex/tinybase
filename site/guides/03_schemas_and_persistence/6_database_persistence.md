@@ -49,6 +49,8 @@ memory, but typically you would use the origin private file system (OPFS) as a
 storage back-end.
 
 ```js
+import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
+
 const sqlite3 = await sqlite3InitModule();
 let db = new sqlite3.oo1.DB(':memory:', 'c');
 ```
