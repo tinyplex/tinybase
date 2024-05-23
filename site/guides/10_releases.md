@@ -397,6 +397,7 @@ These pre-built components are showcased in the UI Components demos. Using them
 should be very familiar if you have used the more abstract ui-react module:
 
 ```jsx
+import React from 'react';
 import {createRoot} from 'react-dom/client';
 
 const App = ({store}) => (

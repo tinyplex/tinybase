@@ -12,6 +12,7 @@ Ids in an Index, and registers a listener so that any changes to that result
 will cause a re-render:
 
 ```jsx
+import React from 'react';
 import {createRoot} from 'react-dom/client';
 
 const store = createStore().setTable('pets', {

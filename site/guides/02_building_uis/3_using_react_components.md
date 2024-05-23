@@ -15,6 +15,7 @@ In this simple example, the CellView component is used to render the color Cell
 in a `<span>`:
 
 ```jsx
+import React from 'react';
 import {createRoot} from 'react-dom/client';
 
 const store = createStore().setCell('pets', 'fido', 'color', 'brown');
