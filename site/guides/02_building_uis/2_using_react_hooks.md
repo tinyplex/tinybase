@@ -14,11 +14,13 @@ To start with a simple example, we use the useCell hook in a component called
 Cell is updated, so is the HTML.
 
 ```jsx
+import {createRoot} from 'react-dom/client';
+
 const store = createStore().setCell('pets', 'fido', 'color', 'brown');
 const App = () => <span>{useCell('pets', 'fido', 'color', store)}</span>;
 
 const app = document.createElement('div');
-const root = ReactDOMClient.createRoot(app);
+const root = createRoot(app);
 root.render(<App />); // !act
 console.log(app.innerHTML);
 // -> '<span>brown</span>'
