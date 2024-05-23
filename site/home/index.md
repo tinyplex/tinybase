@@ -245,6 +245,7 @@ store.delListener(listenerId);
 > Read more about the using hooks in the Using React Hooks guide.
 
 ```jsx
+import React from 'react';
 import {createRoot} from 'react-dom/client';
 
 const App1 = () => {

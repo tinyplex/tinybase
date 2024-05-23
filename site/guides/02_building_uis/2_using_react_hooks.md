@@ -14,6 +14,7 @@ To start with a simple example, we use the useCell hook in a component called
 Cell is updated, so is the HTML.
 
 ```jsx
+import React from 'react';
 import {createRoot} from 'react-dom/client';
 
 const store = createStore().setCell('pets', 'fido', 'color', 'brown');

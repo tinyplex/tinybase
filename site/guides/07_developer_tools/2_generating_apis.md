@@ -112,6 +112,7 @@ domain-specific API and the underlying Store interface. Similarly, every React
 hook and component has a domain-specific equivalent:
 
 ```tsx yolo
+import React from 'react';
 import {createRoot} from 'react-dom/client';
 
 const App = () => {
