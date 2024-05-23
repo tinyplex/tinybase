@@ -24,13 +24,15 @@ In this case, we have two Yjs documents that are each bound to their respective
 Store objects by a Persister with auto-load and auto-save:
 
 ```js
-const doc1 = new Y.Doc();
+import {Doc} from 'yjs';
+
+const doc1 = new Doc();
 const store1 = createStore();
 const persister1 = createYjsPersister(store1, doc1);
 await persister1.startAutoLoad();
 await persister1.startAutoSave();
 
-const doc2 = new Y.Doc();
+const doc2 = new Doc();
 const store2 = createStore();
 const persister2 = createYjsPersister(store2, doc2);
 await persister2.startAutoLoad();
@@ -43,10 +45,12 @@ of illustration here, we synthesize that with a simple `syncDocs` function that
 copies full state between the documents:
 
 ```js
+import {applyUpdate, encodeStateAsUpdate} from 'yjs';
+
 const syncDocs = async () => {
   // ...
-  Y.applyUpdate(doc1, Y.encodeStateAsUpdate(doc2));
-  Y.applyUpdate(doc2, Y.encodeStateAsUpdate(doc1));
+  applyUpdate(doc1, encodeStateAsUpdate(doc2));
+  applyUpdate(doc2, encodeStateAsUpdate(doc1));
 };
 ```
 

@@ -21,9 +21,9 @@ import * as TinyBaseSynchronizerWsServer from 'tinybase/debug/synchronizers/sync
 import * as TinyBaseTools from 'tinybase/debug/tools';
 import * as TinyBaseUiReact from 'tinybase/debug/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/debug/ui-react-dom';
-import * as Y from 'yjs';
 import * as sqlite3 from 'sqlite3';
 import * as ws from 'ws';
+import * as yjs from 'yjs';
 import {join, resolve} from 'path';
 import {mockFetchWasm, pause, suppressWarnings} from './common/other';
 import {readFileSync, readdirSync} from 'fs';
@@ -32,15 +32,10 @@ import initWasm from '@vlcn.io/crsqlite-wasm';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {transformSync} from 'esbuild';
 
+// globally present; do not need to be imported in examples
 [
-  {AutomergeRepo},
   {BroadcastChannelNetworkAdapter},
-  {initWasm},
   {React, ReactDOMClient},
-  {sqlite3},
-  {sqlite3InitModule},
-  {ws},
-  {Y},
   ReactDOMTestUtils,
   TinyBase,
   TinyBasePersisterAutomerge,
@@ -65,6 +60,17 @@ import {transformSync} from 'esbuild';
     (globalThis as any)[key] = value;
   }),
 );
+
+// need to be imported in examples
+(globalThis as any).modules = {
+  '@automerge/automerge-repo': AutomergeRepo,
+  '@sqlite.org/sqlite-wasm': sqlite3InitModule,
+  '@vlcn.io/crsqlite-wasm': initWasm,
+  sqlite3,
+  ws,
+  yjs,
+};
+
 Object.assign(globalThis as any, {
   IS_REACT_ACT_ENVIRONMENT: true,
   pause,
@@ -143,7 +149,11 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
         ?.replace(/\/\/ \.\.\.$/gm, 'await pause();\n')
         ?.replace(/^(.*?) \/\/ !act$/gm, 'act(() => {$1});')
         ?.replace(/^(.*?) \/\/ !yolo$/gm, '')
-        ?.replace(/\n+/g, '\n') ?? '';
+        ?.replace(/\n+/g, '\n')
+        ?.replace(
+          /import (.*?) from '(.*?)';/gms,
+          'const $1 = modules[`$2`];',
+        ) ?? '';
     // lol what could go wrong
     try {
       const js = transformSync(realTsx, {loader: 'tsx'});
