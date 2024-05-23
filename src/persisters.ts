@@ -42,14 +42,14 @@ const getStoreFunctions = (
       hasChanges: (changes: MergeableChanges) => boolean,
       setDefaultContent: (content: Content) => MergeableStore,
     ] =>
-  supportedStoreType > 1 && 'merge' in store
+  supportedStoreType > 1 && store.isMergeable()
     ? [
         1,
-        store.getMergeableContent,
-        store.getTransactionMergeableChanges,
+        (store as MergeableStore).getMergeableContent,
+        (store as MergeableStore).getTransactionMergeableChanges,
         ([[changedTables], [changedValues]]: MergeableChanges) =>
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
-        store.setDefaultContent,
+        (store as MergeableStore).setDefaultContent,
       ]
     : supportedStoreType != 2
       ? [
