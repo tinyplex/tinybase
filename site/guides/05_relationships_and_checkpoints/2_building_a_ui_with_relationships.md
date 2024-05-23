@@ -20,6 +20,8 @@ Each hook registers a listener so that any relevant changes will cause a
 re-render. As an example:
 
 ```jsx
+import {createRoot} from 'react-dom/client';
+
 const store = createStore()
   .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
   .setTable('species', {wolf: {price: 10}, dog: {price: 5}});
@@ -34,7 +36,7 @@ const App = () => (
 );
 
 const app = document.createElement('div');
-const root = ReactDOMClient.createRoot(app);
+const root = createRoot(app);
 root.render(<App />); // !act
 console.log(app.innerHTML);
 // -> '<span>dog</span>'

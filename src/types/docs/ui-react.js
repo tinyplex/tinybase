@@ -175,6 +175,8 @@
  * occurs once by default.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = () => {
  *   const store = useCreateStore(() => {
  *     console.log('Store created');
@@ -184,7 +186,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * // -> 'Store created'
  *
@@ -201,6 +203,8 @@
  * the Store is created again on the second render.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({fidoSpecies}) => {
  *   const store = useCreateStore(() => {
  *     console.log(`Store created for fido as ${fidoSpecies}`);
@@ -210,7 +214,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App fidoSpecies="dog" />); // !act
  * // -> 'Store created for fido as dog'
  *
@@ -239,6 +243,8 @@
  * component accesses their Ids.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => {
  *   const store1 = useCreateStore(createStore);
  *   const store2 = useCreateStore(createStore);
@@ -251,7 +257,7 @@
  * const Pane = () => <span>{JSON.stringify(useStoreIds())}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["store1","store2"]</span>'
  * ```
@@ -281,6 +287,8 @@
  * reference to the Store again, without the need to have it passed as a prop.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -290,7 +298,7 @@
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -300,6 +308,8 @@
  * a reference to the Store again, without the need to have it passed as a prop.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -311,7 +321,7 @@
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -343,6 +353,8 @@
  * it more portable.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -354,7 +366,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["pets"]</span>'
@@ -388,6 +400,8 @@
  * This example creates a Provider context. A child component registers a Store
  * into it which is then consumable by a peer child component.
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = () => (
  *   <Provider>
  *     <RegisterStore />
@@ -406,7 +420,7 @@
  * );
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["pets"]</span>'
@@ -439,11 +453,13 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{JSON.stringify(useHasTables(store))}</span>;
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
@@ -457,6 +473,8 @@
  * provided. A component within it then uses the useHasTables hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -466,7 +484,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  * ```
@@ -475,6 +493,8 @@
  * by Id. A component within it then uses the useHasTables hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -484,7 +504,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  * ```
@@ -516,11 +536,13 @@
  * component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{JSON.stringify(useTables(store))}</span>;
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"pets":{"fido":{"color":"brown"}}}</span>'
@@ -534,6 +556,8 @@
  * provided. A component within it then uses the useTables hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -543,7 +567,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"pets":{"fido":{"color":"brown"}}}</span>'
  * ```
@@ -552,6 +576,8 @@
  * by Id. A component within it then uses the useTables hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -561,7 +587,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"pets":{"fido":{"color":"brown"}}}</span>'
  * ```
@@ -591,11 +617,13 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{JSON.stringify(useTableIds(store))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["pets"]</span>'
  *
@@ -608,6 +636,8 @@
  * provided. A component within it then uses the useTableIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -617,7 +647,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["pets"]</span>'
  * ```
@@ -626,6 +656,8 @@
  * by Id. A component within it then uses the useTableIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -635,7 +667,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["pets"]</span>'
  * ```
@@ -667,13 +699,15 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
  *   <span>{JSON.stringify(useHasTable('pets', store))}</span>
  * );
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
@@ -687,6 +721,8 @@
  * provided. A component within it then uses the useHasTable hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -696,7 +732,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  * ```
@@ -705,6 +741,8 @@
  * by Id. A component within it then uses the useHasTable hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -716,7 +754,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  * ```
@@ -749,11 +787,13 @@
  * component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{JSON.stringify(useTable('pets', store))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"fido":{"color":"brown"}}</span>'
  *
@@ -766,6 +806,8 @@
  * provided. A component within it then uses the useTable hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -775,7 +817,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"fido":{"color":"brown"}}</span>'
  * ```
@@ -784,6 +826,8 @@
  * by Id. A component within it then uses the useTable hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -795,7 +839,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"fido":{"color":"brown"}}</span>'
  * ```
@@ -827,13 +871,15 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
  *   <span>{JSON.stringify(useTableCellIds('pets', store))}</span>
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["color"]</span>'
  *
@@ -846,6 +892,8 @@
  * provided. A component within it then uses the useTableCellIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -855,7 +903,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["color"]</span>'
  * ```
@@ -864,6 +912,8 @@
  * by Id. A component within it then uses the useTableCellIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -875,7 +925,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["color"]</span>'
  * ```
@@ -909,13 +959,15 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
  *   <span>{JSON.stringify(useHasTableCell('pets', 'legs', store))}</span>
  * );
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>false</span>'
@@ -929,6 +981,8 @@
  * provided. A component within it then uses the useHasTableCell hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -940,7 +994,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>false</span>'
  * ```
@@ -949,6 +1003,8 @@
  * by Id. A component within it then uses the useHasTableCell hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -962,7 +1018,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>false</span>'
  * ```
@@ -995,11 +1051,13 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{useRowCount('pets', store)}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>1</span>'
  *
@@ -1012,6 +1070,8 @@
  * provided. A component within it then uses the useRowCount hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1021,7 +1081,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>1</span>'
  * ```
@@ -1030,6 +1090,8 @@
  * by Id. A component within it then uses the useRowCount hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -1039,7 +1101,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>1</span>'
  * ```
@@ -1072,11 +1134,13 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{JSON.stringify(useRowIds('pets', store))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido"]</span>'
  *
@@ -1089,6 +1153,8 @@
  * provided. A component within it then uses the useRowIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1098,7 +1164,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido"]</span>'
  * ```
@@ -1107,6 +1173,8 @@
  * by Id. A component within it then uses the useRowIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -1118,7 +1186,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido"]</span>'
  * ```
@@ -1155,6 +1223,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({
  *   pets: {
  *     fido: {species: 'dog'},
@@ -1170,7 +1240,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["felix","fido"]</span>'
  *
@@ -1183,6 +1253,8 @@
  * provided. A component within it then uses the useSortedRowIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1197,7 +1269,7 @@
  *   },
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["felix","fido"]</span>'
  * ```
@@ -1206,6 +1278,8 @@
  * by Id. A component within it then uses the useSortedRowIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -1226,7 +1300,7 @@
  *   },
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["felix","fido"]</span>'
  * ```
@@ -1260,13 +1334,15 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
  *   <span>{JSON.stringify(useHasRow('pets', 'felix', store))}</span>
  * );
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>false</span>'
@@ -1280,6 +1356,8 @@
  * provided. A component within it then uses the useHasRow hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1291,7 +1369,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>false</span>'
  * ```
@@ -1300,6 +1378,8 @@
  * by Id. A component within it then uses the useHasRow hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -1311,7 +1391,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>false</span>'
  * ```
@@ -1345,13 +1425,15 @@
  * component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
  *   <span>{JSON.stringify(useRow('pets', 'fido', store))}</span>
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"color":"brown"}</span>'
  *
@@ -1364,6 +1446,8 @@
  * provided. A component within it then uses the useRow hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1373,7 +1457,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"color":"brown"}</span>'
  * ```
@@ -1382,6 +1466,8 @@
  * by Id. A component within it then uses the useRow hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -1393,7 +1479,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"color":"brown"}</span>'
  * ```
@@ -1426,13 +1512,15 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
  *   <span>{JSON.stringify(useCellIds('pets', 'fido', store))}</span>
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["color"]</span>'
  *
@@ -1445,6 +1533,8 @@
  * provided. A component within it then uses the useCellIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1456,7 +1546,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["color"]</span>'
  * ```
@@ -1465,6 +1555,8 @@
  * by Id. A component within it then uses the useCellIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -1476,7 +1568,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["color"]</span>'
  * ```
@@ -1510,13 +1602,15 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
  *   <span>{JSON.stringify(useHasCell('pets', 'fido', 'legs', store))}</span>
  * );
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>false</span>'
@@ -1530,6 +1624,8 @@
  * provided. A component within it then uses the useHasCell hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1541,7 +1637,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>false</span>'
  * ```
@@ -1550,6 +1646,8 @@
  * by Id. A component within it then uses the useHasCell hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -1563,7 +1661,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>false</span>'
  * ```
@@ -1598,11 +1696,13 @@
  * component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{useCell('pets', 'fido', 'color', store)}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  *
@@ -1615,6 +1715,8 @@
  * provided. A component within it then uses the useCell hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1624,7 +1726,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  * ```
@@ -1633,6 +1735,8 @@
  * by Id. A component within it then uses the useCell hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -1644,7 +1748,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  * ```
@@ -1675,11 +1779,13 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setValue('open', true);
  * const App = () => <span>{JSON.stringify(useHasValues(store))}</span>;
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
@@ -1693,6 +1799,8 @@
  * provided. A component within it then uses the useHasValues hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1702,7 +1810,7 @@
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  * ```
@@ -1711,6 +1819,8 @@
  * by Id. A component within it then uses the useHasValues hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -1720,7 +1830,7 @@
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  * ```
@@ -1752,11 +1862,13 @@
  * component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setValue('open', true);
  * const App = () => <span>{JSON.stringify(useValues(store))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"open":true}</span>'
  *
@@ -1769,6 +1881,8 @@
  * provided. A component within it then uses the useValues hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1778,7 +1892,7 @@
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"open":true}</span>'
  * ```
@@ -1787,6 +1901,8 @@
  * by Id. A component within it then uses the useValues hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -1796,7 +1912,7 @@
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"open":true}</span>'
  * ```
@@ -1827,11 +1943,13 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setValue('open', true);
  * const App = () => <span>{JSON.stringify(useValueIds(store))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["open"]</span>'
  *
@@ -1844,6 +1962,8 @@
  * provided. A component within it then uses the useValueIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1853,7 +1973,7 @@
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["open"]</span>'
  * ```
@@ -1862,6 +1982,8 @@
  * by Id. A component within it then uses the useValueIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -1871,7 +1993,7 @@
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["open"]</span>'
  * ```
@@ -1904,13 +2026,15 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setValue('open', true);
  * const App = () => (
  *   <span>{JSON.stringify(useHasValue('employees', store))}</span>
  * );
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>false</span>'
@@ -1924,6 +2048,8 @@
  * provided. A component within it then uses the useHasValue hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -1933,7 +2059,7 @@
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>false</span>'
  * ```
@@ -1942,6 +2068,8 @@
  * by Id. A component within it then uses the useHasValue hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -1953,7 +2081,7 @@
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>false</span>'
  * ```
@@ -1986,11 +2114,13 @@
  * component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setValue('open', true);
  * const App = () => <span>{JSON.stringify(useValue('open', store))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  *
@@ -2003,6 +2133,8 @@
  * provided. A component within it then uses the useValue hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -2012,7 +2144,7 @@
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  * ```
@@ -2021,6 +2153,8 @@
  * by Id. A component within it then uses the useValue hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
  *     <Pane />
@@ -2032,7 +2166,7 @@
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  * ```
@@ -2084,6 +2218,8 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const App = () => {
  *   const handleClick = useSetTablesCallback(
@@ -2100,7 +2236,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"pets":{"nemo":{"species":"fish"}}}'
@@ -2162,6 +2298,8 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {nemo: {species: 'fish'}});
  * const App = () => {
  *   const handleClick = useSetTableCallback(
@@ -2179,7 +2317,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"nemo":{"species":"fish"}}'
@@ -2244,6 +2382,8 @@
  * updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setRow('pets', 'nemo', {species: 'fish'});
  * const App = () => {
  *   const handleClick = useSetRowCallback(
@@ -2262,7 +2402,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"species":"fish"}'
@@ -2333,6 +2473,8 @@
  * updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setRow('pets', 'nemo', {species: 'fish'});
  * const App = () => {
  *   const handleClick = useAddRowCallback(
@@ -2350,7 +2492,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"nemo":{"species":"fish"}}'
@@ -2416,6 +2558,8 @@
  * handler which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setRow('pets', 'nemo', {species: 'fish'});
  * const App = () => {
  *   const handleClick = useSetPartialRowCallback(
@@ -2435,7 +2579,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"species":"fish"}'
@@ -2502,6 +2646,8 @@
  * which updates the Store with a Cell value when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'nemo', 'species', 'fish');
  * const App = () => {
  *   const handleClick = useSetCellCallback(
@@ -2521,7 +2667,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"species":"fish"}'
@@ -2539,6 +2685,8 @@
  * clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'nemo', 'visits', 1);
  * const App = () => {
  *   const handleClick = useSetCellCallback(
@@ -2558,7 +2706,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"visits":1}'
@@ -2617,6 +2765,8 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setValues({open: true});
  * const App = () => {
  *   const handleClick = useSetValuesCallback(
@@ -2633,7 +2783,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"open":true}'
@@ -2694,6 +2844,8 @@
  * handler which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setValues({open: true});
  * const App = () => {
  *   const handleClick = useSetPartialValuesCallback(
@@ -2711,7 +2863,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"open":true}'
@@ -2774,6 +2926,8 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setValue('open', true);
  * const App = () => {
  *   const handleClick = useSetValueCallback(
@@ -2791,7 +2945,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"open":true}'
@@ -2836,6 +2990,8 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const App = () => {
  *   const handleClick = useDelTablesCallback(store, () =>
@@ -2849,7 +3005,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"pets":{"nemo":{"species":"fish"}}}'
@@ -2894,6 +3050,8 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const App = () => {
  *   const handleClick = useDelTableCallback('pets', store, () =>
@@ -2907,7 +3065,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"pets":{"nemo":{"species":"fish"}}}'
@@ -2953,6 +3111,8 @@
  * deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const App = () => {
  *   const handleClick = useDelRowCallback('pets', 'nemo', store, () =>
@@ -2966,7 +3126,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"pets":{"nemo":{"species":"fish"}}}'
@@ -3016,6 +3176,8 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const App = () => {
  *   const handleClick = useDelCellCallback(
@@ -3034,7 +3196,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"pets":{"nemo":{"species":"fish"}}}'
@@ -3078,6 +3240,8 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setValues({open: true});
  * const App = () => {
  *   const handleClick = useDelValuesCallback(store, () =>
@@ -3091,7 +3255,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"open":true}'
@@ -3137,6 +3301,8 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setValues({open: true, employees: 3});
  * const App = () => {
  *   const handleClick = useDelValueCallback('open', store, () =>
@@ -3150,7 +3316,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  * console.log(span.innerHTML);
  * // -> '{"open":true,"employees":3}'
@@ -3196,6 +3362,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -3208,7 +3376,7 @@
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().hasTables);
  * // -> 1
@@ -3252,6 +3420,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -3264,7 +3434,7 @@
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().tables);
  * // -> 1
@@ -3308,6 +3478,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -3320,7 +3492,7 @@
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().tableIds);
  * // -> 1
@@ -3368,6 +3540,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -3382,7 +3556,7 @@
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().hasTable);
  * // -> 1
@@ -3430,6 +3604,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -3442,7 +3618,7 @@
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().table);
  * // -> 1
@@ -3491,6 +3667,8 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -3503,7 +3681,7 @@
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().tableCellIds);
  * // -> 1
@@ -3554,6 +3732,8 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -3568,7 +3748,7 @@
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().hasTableCell);
  * // -> 1
@@ -3617,6 +3797,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -3629,7 +3811,7 @@
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().rowCount);
  * // -> 1
@@ -3677,6 +3859,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -3689,7 +3873,7 @@
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().rowIds);
  * // -> 1
@@ -3740,6 +3924,8 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -3759,7 +3945,7 @@
  *   },
  * });
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().sortedRowIds);
  * // -> 1
@@ -3814,6 +4000,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -3828,7 +4016,7 @@
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().hasRow);
  * // -> 1
@@ -3883,6 +4071,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -3895,7 +4085,7 @@
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().row);
  * // -> 1
@@ -3950,6 +4140,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -3964,7 +4156,7 @@
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().cellIds);
  * // -> 1
@@ -4020,6 +4212,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -4034,7 +4228,7 @@
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().hasCell);
  * // -> 1
@@ -4090,6 +4284,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -4104,7 +4300,7 @@
  *
  * const store = createStore().setTables({pets: {fido: {color: 'brown'}}});
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().cell);
  * // -> 1
@@ -4149,6 +4345,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -4161,7 +4359,7 @@
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().hasValues);
  * // -> 1
@@ -4205,6 +4403,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -4217,7 +4417,7 @@
  *
  * const store = createStore().setValues({open: true});
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().values);
  * // -> 1
@@ -4262,6 +4462,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -4274,7 +4476,7 @@
  *
  * const store = createStore().setValues({open: true});
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().valueIds);
  * // -> 1
@@ -4324,6 +4526,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -4338,7 +4542,7 @@
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().hasValue);
  * // -> 1
@@ -4386,6 +4590,8 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -4398,7 +4604,7 @@
  *
  * const store = createStore().setValues({open: true});
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().value);
  * // -> 1
@@ -4437,6 +4643,8 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -4449,7 +4657,7 @@
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().transaction);
  * // -> 1
@@ -4489,6 +4697,8 @@
  * unmounted, the listener is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -4503,7 +4713,7 @@
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().transaction);
  * // -> 1
@@ -4543,6 +4753,8 @@
  * unmounted, the listener is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -4557,7 +4769,7 @@
  *
  * const store = createStore();
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} />); // !act
  * console.log(store.getListenerStats().transaction);
  * // -> 1
@@ -4607,6 +4819,8 @@
  * object creation only occurs once by default.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = () => {
  *   const store = useCreateStore(() =>
  *     createStore().setTable('species', {dog: {price: 5}, cat: {price: 4}}),
@@ -4622,7 +4836,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * // -> 'Metrics created'
  *
@@ -4639,6 +4853,8 @@
  * dependency, and so the Metrics object is created again on the second render.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({tableToCount}) => {
  *   const store = useCreateStore(() =>
  *     createStore()
@@ -4660,7 +4876,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App tableToCount="pets" />); // !act
  * // -> 'Count created for pets table'
  *
@@ -4685,6 +4901,8 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => {
  *   const store1 = useCreateStore(createStore);
  *   const metrics1 = useCreateMetrics(store1, createMetrics);
@@ -4699,7 +4917,7 @@
  * const Pane = () => <span>{JSON.stringify(useMetricsIds())}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["metrics1","metrics2"]</span>'
  * ```
@@ -4730,6 +4948,8 @@
  * as a prop.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({metrics}) => (
  *   <Provider metrics={metrics}>
  *     <Pane />
@@ -4739,7 +4959,7 @@
  *
  * const metrics = createMetrics(createStore());
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App metrics={metrics} />); // !act
+ * createRoot(app).render(<App metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -4750,6 +4970,8 @@
  * to have it passed as a prop.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({metrics}) => (
  *   <Provider metricsById={{petStore: metrics}}>
  *     <Pane />
@@ -4761,7 +4983,7 @@
  *
  * const metrics = createMetrics(createStore());
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App metrics={metrics} />); // !act
+ * createRoot(app).render(<App metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -4793,6 +5015,8 @@
  * into it, making it more portable.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({metrics}) => (
  *   <Provider metrics={metrics}>
  *     <Pane />
@@ -4813,7 +5037,7 @@
  * ).setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["highestPrice"]</span>'
@@ -4848,6 +5072,8 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
  *   felix: {species: 'cat'},
@@ -4857,7 +5083,7 @@
  * const App = () => <span>{JSON.stringify(useMetricIds(metrics))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>[]</span>'
  *
@@ -4896,6 +5122,8 @@
  * component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('species', {
  *   dog: {price: 5},
  *   cat: {price: 4},
@@ -4906,7 +5134,7 @@
  * const App = () => <span>{useMetric('highestPrice', metrics)}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>5</span>'
  *
@@ -4919,6 +5147,8 @@
  * is provided. A component within it then uses the useMetric hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({metrics}) => (
  *   <Provider metrics={metrics}>
  *     <Pane />
@@ -4935,7 +5165,7 @@
  * ).setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App metrics={metrics} />); // !act
+ * createRoot(app).render(<App metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>5</span>'
  * ```
@@ -4944,6 +5174,8 @@
  * is provided. A component within it then uses the useMetric hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({metrics}) => (
  *   <Provider metricsById={{petMetrics: metrics}}>
  *     <Pane />
@@ -4960,7 +5192,7 @@
  * ).setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App metrics={metrics} />); // !act
+ * createRoot(app).render(<App metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>5</span>'
  * ```
@@ -4998,6 +5230,8 @@
  * is removed from the Metrics object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({metrics}) => (
  *   <Provider metrics={metrics}>
  *     <Pane />
@@ -5017,7 +5251,7 @@
  * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App metrics={metrics} />); // !act
  * console.log(metrics.getListenerStats().metric);
  * // -> 1
@@ -5066,6 +5300,8 @@
  * object creation only occurs once by default.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = () => {
  *   const store = useCreateStore((store) =>
  *     createStore().setTable('pets', {
@@ -5086,7 +5322,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * // -> 'Indexes created'
  *
@@ -5103,6 +5339,8 @@
  * dependency, and so the Indexes object is created again on the second render.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({cellToIndex}) => {
  *   const store = useCreateStore(() =>
  *     createStore().setTable('pets', {
@@ -5127,7 +5365,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App cellToIndex="species" />); // !act
  * // -> 'Index created for species cell'
  *
@@ -5152,6 +5390,8 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => {
  *   const store1 = useCreateStore(createStore);
  *   const indexes1 = useCreateIndexes(store1, createIndexes);
@@ -5166,7 +5406,7 @@
  * const Pane = () => <span>{JSON.stringify(useIndexesIds())}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["indexes1","indexes2"]</span>'
  * ```
@@ -5197,6 +5437,8 @@
  * as a prop.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
  *     <Pane />
@@ -5206,7 +5448,7 @@
  *
  * const indexes = createIndexes(createStore());
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -5217,6 +5459,8 @@
  * to have it passed as a prop.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexesById={{petStore: indexes}}>
  *     <Pane />
@@ -5228,7 +5472,7 @@
  *
  * const indexes = createIndexes(createStore());
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -5260,6 +5504,8 @@
  * into it, making it more portable.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
  *     <Pane />
@@ -5280,7 +5526,7 @@
  * ).setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["bySpecies"]</span>'
@@ -5315,6 +5561,8 @@
  * component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
  *   felix: {species: 'cat'},
@@ -5324,7 +5572,7 @@
  * const App = () => <span>{JSON.stringify(useIndexIds(indexes))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>[]</span>'
  *
@@ -5361,6 +5609,8 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
  *   felix: {species: 'cat'},
@@ -5373,7 +5623,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["dog","cat"]</span>'
  *
@@ -5386,6 +5636,8 @@
  * is provided. A component within it then uses the useSliceIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
  *     <Pane />
@@ -5402,7 +5654,7 @@
  * ).setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["dog","cat"]</span>'
  * ```
@@ -5411,6 +5663,8 @@
  * is provided. A component within it then uses the useSliceIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexesById={{petIndexes: indexes}}>
  *     <Pane />
@@ -5429,7 +5683,7 @@
  * ).setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["dog","cat"]</span>'
  * ```
@@ -5463,6 +5717,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
  *   felix: {species: 'cat'},
@@ -5477,7 +5733,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  *
@@ -5490,6 +5746,8 @@
  * is provided. A component within it then uses the useSliceRowIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
  *     <Pane />
@@ -5508,7 +5766,7 @@
  * ).setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  * ```
@@ -5517,6 +5775,8 @@
  * is provided. A component within it then uses the useSliceRowIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexesById={{petIndexes: indexes}}>
  *     <Pane />
@@ -5537,7 +5797,7 @@
  * ).setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  * ```
@@ -5576,6 +5836,8 @@
  * is removed from the Indexes object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
  *     <Pane />
@@ -5595,7 +5857,7 @@
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App indexes={indexes} />); // !act
  * console.log(indexes.getListenerStats().sliceIds);
  * // -> 1
@@ -5648,6 +5910,8 @@
  * listener is removed from the Indexes object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
  *     <Pane />
@@ -5669,7 +5933,7 @@
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App indexes={indexes} />); // !act
  * console.log(indexes.getListenerStats().sliceRowIds);
  * // -> 1
@@ -5717,6 +5981,8 @@
  * Relationships object creation only occurs once by default.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = () => {
  *   const store = useCreateStore(() =>
  *     createStore()
@@ -5742,7 +6008,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * // -> 'Relationships created'
  *
@@ -5760,6 +6026,8 @@
  * object is created again on the second render.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({remoteTableAndCellToLink}) => {
  *   const store = useCreateStore(() =>
  *     createStore()
@@ -5790,7 +6058,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App remoteTableAndCellToLink="species" />); // !act
  * // -> 'Relationship created to species'
  *
@@ -5815,6 +6083,8 @@
  * an inner component accesses their Ids.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => {
  *   const store1 = useCreateStore(createStore);
  *   const relationships1 = useCreateRelationships(
@@ -5835,7 +6105,7 @@
  * const Pane = () => <span>{JSON.stringify(useRelationshipsIds())}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["relationships1","relationships2"]</span>'
  * ```
@@ -5868,6 +6138,8 @@
  * have it passed as a prop.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -5879,7 +6151,7 @@
  *
  * const relationships = createRelationships(createStore());
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
@@ -5891,6 +6163,8 @@
  * without the need to have it passed as a prop.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationshipsById={{petStore: relationships}}>
  *     <Pane />
@@ -5904,7 +6178,7 @@
  *
  * const relationships = createRelationships(createStore());
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
@@ -5940,6 +6214,8 @@
  * it, making it more portable.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -5962,7 +6238,7 @@
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["petSpecies"]</span>'
@@ -5998,6 +6274,8 @@
  * Relationship re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
  *   felix: {species: 'cat'},
@@ -6009,7 +6287,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>[]</span>'
  *
@@ -6056,6 +6334,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore()
  *   .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
  *   .setTable('species', {wolf: {price: 10}, dog: {price: 5}});
@@ -6070,7 +6350,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>dog</span>'
  *
@@ -6083,6 +6363,8 @@
  * object is provided. A component within it then uses the useRemoteRowId hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -6097,7 +6379,7 @@
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>dog</span>'
@@ -6107,6 +6389,8 @@
  * object is provided. A component within it then uses the useRemoteRowId hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationshipsById={{petRelationships: relationships}}>
  *     <Pane />
@@ -6123,7 +6407,7 @@
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>dog</span>'
@@ -6159,6 +6443,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore()
  *   .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
  *   .setTable('species', {wolf: {price: 10}, dog: {price: 5}});
@@ -6175,7 +6461,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  *
@@ -6188,6 +6474,8 @@
  * object is provided. A component within it then uses the useLocalRowIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -6204,7 +6492,7 @@
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
@@ -6214,6 +6502,8 @@
  * object is provided. A component within it then uses the useLocalRowIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationshipsById={{petRelationships: relationships}}>
  *     <Pane />
@@ -6234,7 +6524,7 @@
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
@@ -6270,6 +6560,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', next: 'felix'},
  *   felix: {species: 'cat', next: 'cujo'},
@@ -6288,7 +6580,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","felix","cujo"]</span>'
  *
@@ -6302,6 +6594,8 @@
  * object is provided. A component within it then uses the useLinkedRowIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -6320,7 +6614,7 @@
  * ).setRelationshipDefinition('petSequence', 'pets', 'pets', 'next');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","felix","cujo"]</span>'
@@ -6330,6 +6624,8 @@
  * object is provided. A component within it then uses the useLinkedRowIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationshipsById={{petRelationships: relationships}}>
  *     <Pane />
@@ -6352,7 +6648,7 @@
  * ).setRelationshipDefinition('petSequence', 'pets', 'pets', 'next');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","felix","cujo"]</span>'
@@ -6402,6 +6698,8 @@
  * listener is removed from the Relationships object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -6426,7 +6724,7 @@
  * );
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(relationships.getListenerStats().remoteRowId);
  * // -> 1
@@ -6483,6 +6781,8 @@
  * listener is removed from the Relationships object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -6507,7 +6807,7 @@
  * );
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(relationships.getListenerStats().localRowIds);
  * // -> 1
@@ -6558,6 +6858,8 @@
  * listener is removed from the Relationships object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -6584,7 +6886,7 @@
  * );
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(relationships.getListenerStats().linkedRowIds);
  * // -> 1
@@ -6633,6 +6935,8 @@
  * object creation only occurs once by default.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = () => {
  *   const store = useCreateStore(() =>
  *     createStore().setTable('pets', {
@@ -6658,7 +6962,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * // -> 'Queries created'
  *
@@ -6675,6 +6979,8 @@
  * dependency, and so the Queries object is created again on the second render.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = () => {
  *   const store = useCreateStore(() =>
  *     createStore().setTable('pets', {
@@ -6700,7 +7006,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * // -> 'Queries created'
  *
@@ -6723,6 +7029,8 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => {
  *   const store1 = useCreateStore(createStore);
  *   const queries1 = useCreateQueries(store1, createQueries);
@@ -6737,7 +7045,7 @@
  * const Pane = () => <span>{JSON.stringify(useQueriesIds())}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["queries1","queries2"]</span>'
  * ```
@@ -6768,6 +7076,8 @@
  * a prop.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -6777,7 +7087,7 @@
  *
  * const queries = createQueries(createStore());
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -6788,6 +7098,8 @@
  * to have it passed as a prop.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
  *     <Pane />
@@ -6799,7 +7111,7 @@
  *
  * const queries = createQueries(createStore());
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
  * ```
@@ -6832,6 +7144,8 @@
  * into it, making it more portable.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -6855,7 +7169,7 @@
  * });
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["dogColors"]</span>'
@@ -6890,6 +7204,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
  *   felix: {species: 'cat'},
@@ -6899,7 +7215,7 @@
  * const App = () => <span>{JSON.stringify(useQueryIds(queries))}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>[]</span>'
  *
@@ -6942,6 +7258,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat', color: 'black'},
@@ -6960,7 +7278,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"fido":{"color":"brown"},"cujo":{"color":"black"}}</span>'
  *
@@ -6973,6 +7291,8 @@
  * is provided. A component within it then uses the useResultTable hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -6994,7 +7314,7 @@
  * });
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"fido":{"color":"brown"},"cujo":{"color":"black"}}</span>'
  * ```
@@ -7004,6 +7324,8 @@
  * hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
  *     <Pane />
@@ -7024,7 +7346,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"fido":{"color":"brown"},"cujo":{"color":"black"}}</span>'
  * ```
@@ -7059,6 +7381,8 @@
  * query re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat', color: 'black'},
@@ -7080,7 +7404,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["color"]</span>'
  *
@@ -7093,6 +7417,8 @@
  * is provided. A component within it then uses the useResultTableCellIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -7114,7 +7440,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["color","legs"]</span>'
  * ```
@@ -7124,6 +7450,8 @@
  * useResultTableCellIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
  *     <Pane />
@@ -7149,7 +7477,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["color","legs"]</span>'
  * ```
@@ -7185,6 +7513,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat', color: 'black'},
@@ -7201,7 +7531,7 @@
  * const App = () => <span>{useResultRowCount('dogColors', queries)}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>2</span>'
  *
@@ -7214,6 +7544,8 @@
  * is provided. A component within it then uses the useResultRowCount hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -7232,7 +7564,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>2</span>'
  * ```
@@ -7242,6 +7574,8 @@
  * hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
  *     <Pane />
@@ -7262,7 +7596,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>2</span>'
  * ```
@@ -7297,6 +7631,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat', color: 'black'},
@@ -7315,7 +7651,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  *
@@ -7328,6 +7664,8 @@
  * is provided. A component within it then uses the useResultRowIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -7348,7 +7686,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  * ```
@@ -7358,6 +7696,8 @@
  * hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
  *     <Pane />
@@ -7378,7 +7718,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["fido","cujo"]</span>'
  * ```
@@ -7417,6 +7757,8 @@
  * query re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat', color: 'black'},
@@ -7446,7 +7788,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["cujo","fido"]</span>'
  *
@@ -7459,6 +7801,8 @@
  * is provided. A component within it then uses the useResultSortedRowIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -7481,7 +7825,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["cujo","fido"]</span>'
  * ```
@@ -7491,6 +7835,8 @@
  * useResultSortedRowIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
  *     <Pane />
@@ -7522,7 +7868,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["cujo","fido"]</span>'
  * ```
@@ -7558,6 +7904,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat', color: 'black'},
@@ -7576,7 +7924,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"color":"brown"}</span>'
  *
@@ -7589,6 +7937,8 @@
  * is provided. A component within it then uses the useResultRow hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -7609,7 +7959,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"color":"brown"}</span>'
  * ```
@@ -7619,6 +7969,8 @@
  * hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
  *     <Pane />
@@ -7641,7 +7993,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>{"color":"brown"}</span>'
  * ```
@@ -7677,6 +8029,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat', color: 'black'},
@@ -7699,7 +8053,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["species","color"]</span>'
  *
@@ -7712,6 +8066,8 @@
  * is provided. A component within it then uses the useResultCellIds hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -7733,7 +8089,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["species","color"]</span>'
  * ```
@@ -7743,6 +8099,8 @@
  * hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
  *     <Pane />
@@ -7766,7 +8124,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["species","color"]</span>'
  * ```
@@ -7802,6 +8160,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat', color: 'black'},
@@ -7822,7 +8182,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  *
@@ -7835,6 +8195,8 @@
  * is provided. A component within it then uses the useResultCell hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -7856,7 +8218,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  * ```
@@ -7866,6 +8228,8 @@
  * hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
  *     <Pane />
@@ -7887,7 +8251,7 @@
  *   where('species', 'dog');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  * ```
@@ -7927,6 +8291,8 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -7950,7 +8316,7 @@
  *   ({select}) => select('color'),
  * );
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().table);
  * // -> 1
@@ -7999,6 +8365,8 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -8025,7 +8393,7 @@
  *   },
  * );
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().tableCellIds);
  * // -> 1
@@ -8074,6 +8442,8 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -8097,7 +8467,7 @@
  *   ({select}) => select('color'),
  * );
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().rowCount);
  * // -> 1
@@ -8145,6 +8515,8 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -8168,7 +8540,7 @@
  *   ({select}) => select('color'),
  * );
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().rowIds);
  * // -> 1
@@ -8218,6 +8590,8 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -8246,7 +8620,7 @@
  *   ({select}) => select('color'),
  * );
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().sortedRowIds);
  * // -> 1
@@ -8300,6 +8674,8 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -8323,7 +8699,7 @@
  *   ({select}) => select('color'),
  * );
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().row);
  * // -> 1
@@ -8374,6 +8750,8 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -8400,7 +8778,7 @@
  *   },
  * );
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().cellIds);
  * // -> 1
@@ -8456,6 +8834,8 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -8479,7 +8859,7 @@
  *   ({select}) => select('color'),
  * );
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App queries={queries} />); // !act
  * console.log(queries.getListenerStats().cell);
  * // -> 1
@@ -8529,6 +8909,8 @@
  * Checkpoints object creation only occurs once by default.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = () => {
  *   const store = useCreateStore(createStore);
  *   const checkpoints = useCreateCheckpoints(store, (store) => {
@@ -8539,7 +8921,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * // -> 'Checkpoints created'
  *
@@ -8557,6 +8939,8 @@
  * render.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({size}) => {
  *   const store = useCreateStore(createStore);
  *   const checkpoints = useCreateCheckpoints(
@@ -8571,7 +8955,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App size={20} />); // !act
  * // -> 'Checkpoints created, size 20'
  *
@@ -8596,6 +8980,8 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => {
  *   const store1 = useCreateStore(createStore);
  *   const checkpoints1 = useCreateCheckpoints(store1, createCheckpoints);
@@ -8610,7 +8996,7 @@
  * const Pane = () => <span>{JSON.stringify(useCheckpointsIds())}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>["checkpoints1","checkpoints2"]</span>'
  * ```
@@ -8641,6 +9027,8 @@
  * it passed as a prop.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
  *     <Pane />
@@ -8652,7 +9040,7 @@
  *
  * const checkpoints = createCheckpoints(createStore());
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
@@ -8664,6 +9052,8 @@
  * the need to have it passed as a prop.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpointsById={{petStore: checkpoints}}>
  *     <Pane />
@@ -8677,7 +9067,7 @@
  *
  * const checkpoints = createCheckpoints(createStore());
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>0</span>'
@@ -8712,6 +9102,8 @@
  * portable.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
  *     <Pane />
@@ -8727,7 +9119,7 @@
  *
  * const checkpoints = createCheckpoints(createStore());
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>[[],"0",[]]</span>'
@@ -8762,6 +9154,8 @@
  * Ids re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
  * const checkpoints = createCheckpoints(store);
  * const App = () => (
@@ -8769,7 +9163,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>[[],"0",[]]</span>'
  *
@@ -8787,6 +9181,8 @@
  * hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
  *     <Pane />
@@ -8799,7 +9195,7 @@
  * );
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>[[],"0",[]]</span>'
@@ -8810,6 +9206,8 @@
  * hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpointsById={{petCheckpoints: checkpoints}}>
  *     <Pane />
@@ -8824,7 +9222,7 @@
  * );
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>[[],"0",[]]</span>'
@@ -8858,12 +9256,14 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
  * const checkpoints = createCheckpoints(store);
  * const App = () => <span>{useCheckpoint('1', checkpoints)}</span>;
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span></span>'
  *
@@ -8878,6 +9278,8 @@
  * hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
  *     <Pane />
@@ -8890,7 +9292,7 @@
  * ).setCheckpoint('0', 'initial');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>initial</span>'
@@ -8901,6 +9303,8 @@
  * hook.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpointsById={{petCheckpoints: checkpoints}}>
  *     <Pane />
@@ -8913,7 +9317,7 @@
  * ).setCheckpoint('0', 'initial');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>initial</span>'
@@ -8966,6 +9370,8 @@
  * handler which sets a checkpoint when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const checkpoints = createCheckpoints(store);
  * const App = () => {
@@ -8984,7 +9390,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  *
  * store.setCell('pets', 'nemo', 'color', 'orange');
@@ -9015,6 +9421,8 @@
  * clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const checkpoints = createCheckpoints(store);
  * const App = () => (
@@ -9024,7 +9432,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  *
  * store.setCell('pets', 'nemo', 'color', 'orange');
@@ -9059,6 +9467,8 @@
  * clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const checkpoints = createCheckpoints(store);
  * const App = () => (
@@ -9068,7 +9478,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  *
  * store.setCell('pets', 'nemo', 'color', 'orange');
@@ -9132,6 +9542,8 @@
  * moves to a checkpoint when the `span` element is clicked.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const checkpoints = createCheckpoints(store);
  * const App = () => {
@@ -9144,7 +9556,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * const span = app.querySelector('span');
  *
  * store.setCell('pets', 'nemo', 'color', 'orange');
@@ -9178,6 +9590,8 @@
  * This example uses the useUndoInformation hook to create an undo button.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const checkpoints = createCheckpoints(store);
  * const App = () => {
@@ -9190,7 +9604,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>Nothing to undo</span>'
  *
@@ -9220,6 +9634,8 @@
  * This example uses the useUndoInformation hook to create a redo button.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const checkpoints = createCheckpoints(store);
  * const App = () => {
@@ -9232,7 +9648,7 @@
  * };
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>Nothing to redo</span>'
  *
@@ -9273,6 +9689,8 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
  *     <Pane />
@@ -9287,7 +9705,7 @@
  * const checkpoints = createCheckpoints(store);
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(checkpoints.getListenerStats().checkpointIds);
  * // -> 1
@@ -9338,6 +9756,8 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
  *     <Pane />
@@ -9354,7 +9774,7 @@
  * const checkpoints = createCheckpoints(store);
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(checkpoints.getListenerStats().checkpoint);
  * // -> 1
@@ -9432,6 +9852,8 @@
  * occurs once by default.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = () => {
  *   const store = useCreateStore(createStore);
  *   const persister = useCreatePersister(
@@ -9455,7 +9877,7 @@
  * );
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * // -> 'Persister created'
  *
@@ -9476,6 +9898,8 @@
  * destroyed and the `destroy` parameter is called for it.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({sessionKey}) => {
  *   const store = useCreateStore(createStore);
  *   const persister = useCreatePersister(
@@ -9507,7 +9931,7 @@
  * );
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App sessionKey="fidoStore" />); // !act
  * // -> 'Persister created for session key fidoStore'
  *
@@ -9571,6 +9995,8 @@
  * only occurs once by default.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = () => {
  *   const store = useCreateMergeableStore(() => createMergeableStore('s1'));
  *   const synchronizer = useCreateSynchronizer(store, async (store) => {
@@ -9581,7 +10007,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App />); // !act
  * // -> 'Synchronizer created'
  *
@@ -9600,6 +10026,8 @@
  * is provided to start both Synchronizers' synchronization.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * import {WebSocketServer} from 'ws';
  *
  * const server1 = createWsServer(new WebSocketServer({port: 8044}));
@@ -9624,7 +10052,7 @@
  * };
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App url="ws://localhost:8044/" />); // !act
  * // ... // !act
  * // -> 'Synchronizer created for ws://localhost:8044/'
@@ -10526,6 +10954,8 @@
  * props.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store, metrics}) => (
  *   <Provider store={store} metricsById={{petStore: metrics}}>
  *     <Pane />
@@ -10545,7 +10975,7 @@
  * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App store={store} metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>5,4,5</span>'
@@ -10555,6 +10985,8 @@
  * objects are provided, showing how visibility is merged.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({petStore, metrics}) => (
  *   <Provider storesById={{pet: petStore}} metrics={metrics}>
  *     <OuterPane />
@@ -10589,7 +11021,7 @@
  * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App petStore={petStore} metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>5,5,2</span>'
@@ -10621,6 +11053,8 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
  *   <span>
@@ -10629,7 +11063,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  *
@@ -10643,6 +11077,8 @@
  * for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -10656,7 +11092,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>color:{brown}</span>'
  * ```
@@ -10666,6 +11102,8 @@
  * non-existent Cell.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -10679,7 +11117,7 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span></span>'
  * ```
@@ -10717,6 +11155,8 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setRow('pets', 'fido', {species: 'dog'});
  * const App = () => (
  *   <div>
@@ -10725,7 +11165,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog</div>'
  *
@@ -10739,6 +11179,8 @@
  * set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -10762,7 +11204,7 @@
  *   legs: 4,
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>fido:{color:{walnut}species:{dog}}</div>'
  * ```
@@ -10772,6 +11214,8 @@
  * Cell component and a custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -10800,7 +11244,7 @@
  *   color: 'walnut',
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>species</b>: dog</span><span>color: walnut</span></div>'
  * ```
@@ -10840,6 +11284,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({
  *   pets: {
  *     fido: {species: 'dog'},
@@ -10858,7 +11304,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>cat/dog</div>'
  *
@@ -10872,6 +11318,8 @@
  * a custom set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -10896,7 +11344,7 @@
  *   },
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>pets:{felix:{species:{cat}}fido:{species:{dog}}}</div>'
  * ```
@@ -10906,6 +11354,8 @@
  * a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -10936,7 +11386,7 @@
  *   },
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span>felix: cat</span><span><b>fido</b>: dog</span></div>'
  * ```
@@ -10975,6 +11425,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
  * const App = () => (
  *   <div>
@@ -10983,7 +11435,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog</div>'
  *
@@ -10997,6 +11449,8 @@
  * custom set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -11018,7 +11472,7 @@
  *   felix: {color: 'brown', species: 'cat'},
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>pets:{fido:{species:{dog}}felix:{species:{cat}}}</div>'
  * ```
@@ -11028,6 +11482,8 @@
  * custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -11055,7 +11511,7 @@
  *   felix: {species: 'cat'},
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>fido</b>: dog</span><span>felix: cat</span></div>'
  * ```
@@ -11087,6 +11543,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const App = () => (
  *   <div>
@@ -11095,7 +11553,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog</div>'
  *
@@ -11109,6 +11567,8 @@
  * for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -11125,7 +11585,7 @@
  *   species: {dog: {price: 5}},
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>pets:{fido:{species:{dog}}}species:{dog:{price:{5}}}</div>'
  * ```
@@ -11135,6 +11595,8 @@
  * custom Table component and a custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -11161,7 +11623,7 @@
  *   species: {dog: {price: 5}},
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>pets</b>: dog</span><span>species: 5</span></div>'
  * ```
@@ -11191,6 +11653,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setValue('open', true);
  * const App = () => (
  *   <span>
@@ -11199,7 +11663,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>true</span>'
  *
@@ -11213,6 +11677,8 @@
  * Id for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -11226,7 +11692,7 @@
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>open:{true}</span>'
  * ```
@@ -11236,6 +11702,8 @@
  * non-existent Value.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -11249,7 +11717,7 @@
  *
  * const store = createStore().setValue('open', true);
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span></span>'
  * ```
@@ -11285,6 +11753,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setValue('open', true);
  * const App = () => (
  *   <div>
@@ -11293,7 +11763,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>true</div>'
  *
@@ -11307,6 +11777,8 @@
  * Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -11320,7 +11792,7 @@
  *
  * const store = createStore().setValues({open: true, employees: 3});
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>open:{true}employees:{3}</div>'
  * ```
@@ -11330,6 +11802,8 @@
  * custom Value component and a custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({store}) => (
  *   <Provider store={store}>
  *     <Pane />
@@ -11353,7 +11827,7 @@
  *
  * const store = createStore().setValues({open: true, employees: 3});
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App store={store} />); // !act
+ * createRoot(app).render(<App store={store} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>open</b>: true</span><span>employees: 3</span></div>'
  * ```
@@ -11379,6 +11853,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('species', {
  *   dog: {price: 5},
  *   cat: {price: 4},
@@ -11393,7 +11869,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>5</div>'
  *
@@ -11407,6 +11883,8 @@
  * its Id for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({metrics}) => (
  *   <Provider metrics={metrics}>
  *     <Pane />
@@ -11427,7 +11905,7 @@
  * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App metrics={metrics} />); // !act
+ * createRoot(app).render(<App metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>highestPrice:{5}</div>'
  * ```
@@ -11437,6 +11915,8 @@
  * non-existent Metric.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({metrics}) => (
  *   <Provider metrics={metrics}>
  *     <Pane />
@@ -11457,7 +11937,7 @@
  * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App metrics={metrics} />); // !act
+ * createRoot(app).render(<App metrics={metrics} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div></div>'
  * ```
@@ -11488,6 +11968,8 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
  *   felix: {species: 'cat'},
@@ -11506,7 +11988,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog</div>'
  *
@@ -11520,6 +12002,8 @@
  * Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
  *     <Pane />
@@ -11540,7 +12024,7 @@
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog:{fido:{species:{dog}}cujo:{species:{dog}}}</div>'
  * ```
@@ -11550,6 +12034,8 @@
  * custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
  *     <Pane />
@@ -11582,7 +12068,7 @@
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>fido</b>: dog/brown</span><span>cujo: dog</span></div>'
  * ```
@@ -11614,6 +12100,8 @@
  * the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
  *   felix: {species: 'cat'},
@@ -11627,7 +12115,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog/cat</div>'
  *
@@ -11641,6 +12129,8 @@
  * Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
  *     <Pane />
@@ -11660,7 +12150,7 @@
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>bySpecies:{dog:{fido:{species:{dog}}cujo:{species:{dog}}}}</div>'
  * ```
@@ -11670,6 +12160,8 @@
  * custom Slice component and a custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
  *     <Pane />
@@ -11701,7 +12193,7 @@
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App indexes={indexes} />); // !act
+ * createRoot(app).render(<App indexes={indexes} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>dog</b>: dog/dog</span><span>cat: cat</span></div>'
  * ```
@@ -11735,6 +12227,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore()
  *   .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
  *   .setTable('species', {wolf: {price: 10}, dog: {price: 5}});
@@ -11755,7 +12249,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>5</div>'
  *
@@ -11769,6 +12263,8 @@
  * remote Row (with Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -11791,7 +12287,7 @@
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>cujo:{dog:{price:{5}}}</div>'
@@ -11802,6 +12298,8 @@
  * remote Row with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -11832,7 +12330,7 @@
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>dog</b>: 5</span></div>'
@@ -11867,6 +12365,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore()
  *   .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
  *   .setTable('species', {wolf: {price: 10}, dog: {price: 5}});
@@ -11888,7 +12388,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog/dog</div>'
  *
@@ -11902,6 +12402,8 @@
  * local Row objects (with Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -11924,7 +12426,7 @@
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog:{fido:{species:{dog}}cujo:{species:{dog}}}</div>'
@@ -11935,6 +12437,8 @@
  * local Row objects with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -11965,7 +12469,7 @@
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>fido</b>: dog</span><span>cujo: dog</span></div>'
@@ -12000,6 +12504,8 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {next: 'felix'},
  *   felix: {next: 'cujo'},
@@ -12023,7 +12529,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>felix/cujo/dog</div>'
  *
@@ -12038,6 +12544,8 @@
  * local Row objects (with Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -12061,7 +12569,7 @@
  * ).setRelationshipDefinition('petSequence', 'pets', 'pets', 'next');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>fido:{fido:{next:{felix}}felix:{species:{cat}}}</div>'
@@ -12072,6 +12580,8 @@
  * local Row objects with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
  *     <Pane />
@@ -12103,7 +12613,7 @@
  * ).setRelationshipDefinition('petSequence', 'pets', 'pets', 'next');
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App relationships={relationships} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>fido</b>: felix</span><span>felix: cat</span></div>'
@@ -12135,6 +12645,8 @@
  * Store re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat', color: 'black'},
@@ -12157,7 +12669,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>brown</span>'
  *
@@ -12171,6 +12683,8 @@
  * (with its Id for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -12195,7 +12709,7 @@
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span>color:{brown}</span>'
  * ```
@@ -12205,6 +12719,8 @@
  * non-existent Cell.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -12224,7 +12740,7 @@
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<span></span>'
  * ```
@@ -12262,6 +12778,8 @@
  * Store re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat', color: 'black'},
@@ -12287,7 +12805,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>dog/brown</div>'
  *
@@ -12301,6 +12819,8 @@
  * Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -12323,7 +12843,7 @@
  *   select('color');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>fido:{species:{dog}color:{brown}}</div>'
  * ```
@@ -12333,6 +12853,8 @@
  * a custom Cell component and a custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -12369,7 +12891,7 @@
  *   select('color');
  * });
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>species</b>: dog</span><span>color: brown</span></div>'
  * ```
@@ -12408,6 +12930,8 @@
  * the Store re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat', color: 'black'},
@@ -12429,7 +12953,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>black/brown</div>'
  *
@@ -12443,6 +12967,8 @@
  * Table (with Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -12465,7 +12991,7 @@
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>petColors:{felix:{color:{black}}fido:{color:{brown}}}</div>'
  * ```
@@ -12475,6 +13001,8 @@
  * Table with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -12505,7 +13033,7 @@
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span>felix: black</span><span><b>fido</b>: brown</span></div>'
  * ```
@@ -12539,6 +13067,8 @@
  * Store re-renders the component.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat', color: 'black'},
@@ -12555,7 +13085,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>brown/black</div>'
  *
@@ -12569,6 +13099,8 @@
  * (with Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -12587,7 +13119,7 @@
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>petColors:{fido:{color:{brown}}felix:{color:{black}}}</div>'
  * ```
@@ -12597,6 +13129,8 @@
  * with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
  *     <Pane />
@@ -12626,7 +13160,7 @@
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App queries={queries} />); // !act
+ * createRoot(app).render(<App queries={queries} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>fido</b>: brown</span><span>felix: black</span></div>'
  * ```
@@ -12654,6 +13188,8 @@
  * a label (with its Id for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
  * const checkpoints = createCheckpoints(store);
  * const App = () => (
@@ -12667,7 +13203,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>1:{}</div>'
  *
@@ -12709,6 +13245,8 @@
  * of previous checkpoints.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {fido: {color: 'brown'}});
  * const checkpoints = createCheckpoints(store);
  * const App = () => (
@@ -12718,7 +13256,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div></div>'
  *
@@ -12739,6 +13277,8 @@
  * renders the list of previous checkpoints (with Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
  *     <Pane />
@@ -12760,7 +13300,7 @@
  * checkpoints.addCheckpoint('sale'); // !act
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>0:{initial}1:{identified}</div>'
@@ -12772,6 +13312,8 @@
  * custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
  *     <Pane />
@@ -12808,7 +13350,7 @@
  * checkpoints.addCheckpoint('sale'); // !act
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>0</b>: initial</span><span>1: identified</span></div>'
@@ -12841,6 +13383,8 @@
  * current checkpoints.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {fido: {color: 'brown'}});
  * const checkpoints = createCheckpoints(store);
  * const App = () => (
@@ -12850,7 +13394,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div></div>'
  *
@@ -12873,6 +13417,8 @@
  * renders current checkpoint (with its Id for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
  *     <Pane />
@@ -12891,7 +13437,7 @@
  * checkpoints.addCheckpoint('identified'); // !act
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>1:{identified}</div>'
@@ -12903,6 +13449,8 @@
  * custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
  *     <Pane />
@@ -12936,7 +13484,7 @@
  * checkpoints.addCheckpoint('identified'); // !act
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>1</b>: identified</span></div>'
@@ -12975,6 +13523,8 @@
  * of future checkpoints.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const store = createStore().setTable('pets', {fido: {color: 'brown'}});
  * const checkpoints = createCheckpoints(store);
  * const App = () => (
@@ -12984,7 +13534,7 @@
  * );
  *
  * const app = document.createElement('div');
- * ReactDOMClient.createRoot(app).render(<App />); // !act
+ * createRoot(app).render(<App />); // !act
  * console.log(app.innerHTML);
  * // -> '<div></div>'
  *
@@ -13006,6 +13556,8 @@
  * renders the list of future checkpoints (with Ids for readability).
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
  *     <Pane />
@@ -13027,7 +13579,7 @@
  * checkpoints.goTo('0'); // !act
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div>1:{identified}2:{sale}</div>'
@@ -13039,6 +13591,8 @@
  * custom props callback.
  *
  * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
  *     <Pane />
@@ -13075,7 +13629,7 @@
  * checkpoints.goTo('0'); // !act
  *
  * const app = document.createElement('div');
- * const root = ReactDOMClient.createRoot(app);
+ * const root = createRoot(app);
  * root.render(<App checkpoints={checkpoints} />); // !act
  * console.log(app.innerHTML);
  * // -> '<div><span><b>1</b>: identified</span><span>2: sale</span></div>'
