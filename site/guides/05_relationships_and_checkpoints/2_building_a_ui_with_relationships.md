@@ -20,6 +20,7 @@ Each hook registers a listener so that any relevant changes will cause a
 re-render. As an example:
 
 ```jsx
+import React from 'react';
 import {createRoot} from 'react-dom/client';
 
 const store = createStore()
