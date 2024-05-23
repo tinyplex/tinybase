@@ -14,6 +14,7 @@ the `store` prop, and it will be used by default. Notice how the `store`
 variable is not referenced in the child `Pane` component here, for example:
 
 ```jsx
+import React from 'react';
 import {createRoot} from 'react-dom/client';
 
 const App = () => {

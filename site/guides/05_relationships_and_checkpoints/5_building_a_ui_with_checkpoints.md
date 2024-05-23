@@ -14,6 +14,7 @@ Firstly, the useCheckpointIds hook is the reactive version of the
 getCheckpointIds method and returns the three-part CheckpointIds array.
 
 ```jsx
+import React from 'react';
 import {createRoot} from 'react-dom/client';
 
 const store = createStore().setTable('pets', {fido: {species: 'dog'}});

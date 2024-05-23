@@ -35,7 +35,6 @@ import {transformSync} from 'esbuild';
 // globally present; do not need to be imported in examples
 [
   {BroadcastChannelNetworkAdapter},
-  {React},
   ReactDOMTestUtils,
   TinyBase,
   TinyBasePersisterAutomerge,
@@ -64,9 +63,10 @@ import {transformSync} from 'esbuild';
 // need to be imported in examples
 (globalThis as any).modules = {
   '@automerge/automerge-repo': AutomergeRepo,
-  'react-dom/client': ReactDOMClient,
   '@sqlite.org/sqlite-wasm': sqlite3InitModule,
   '@vlcn.io/crsqlite-wasm': initWasm,
+  react: React,
+  'react-dom/client': ReactDOMClient,
   sqlite3,
   ws,
   yjs,
