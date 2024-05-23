@@ -98,7 +98,9 @@ export const StoreView = ({
     <Details
       uniqueId={getUniqueId('s', storeId)}
       summary={
-        ('merge' in store ? 'Mergeable' : '') + 'Store: ' + (storeId ?? DEFAULT)
+        (store.isMergeable() ? 'Mergeable' : '') +
+        'Store: ' +
+        (storeId ?? DEFAULT)
       }
       s={s}
     >
