@@ -41,6 +41,8 @@
    * then gets the PartySocket back out again.
    *
    * ```js yolo
+   * import {createPartyKitPersister} from 'tinybase/persisters/persister-partykit-client';
+   *
    * const partySocket = new PartySocket({
    *   host: PARTYKIT_HOST,
    *   room: 'my_room',
@@ -147,6 +149,8 @@
  * browser's IndexedDB storage.
  *
  * ```js yolo
+ * import {createPartyKitPersister} from 'tinybase/persisters/persister-partykit-client';
+ *
  * const store = createStore()
  *   .setTable('pets', {fido: {species: 'dog'}})
  *   .setTable('species', {dog: {price: 5}})
