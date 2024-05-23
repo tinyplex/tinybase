@@ -10064,6 +10064,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  *
  * const App = () => {
  *   const store = useCreateStore(createStore);
@@ -10111,6 +10112,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  *
  * const App = ({sessionKey}) => {
  *   const store = useCreateStore(createStore);
@@ -10208,6 +10210,7 @@
  *
  * ```jsx
  * import React from 'react';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
@@ -10240,6 +10243,8 @@
  *
  * ```jsx
  * import React from 'react';
+ * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  * import {createRoot} from 'react-dom/client';
  *
  * import {WebSocketServer} from 'ws';

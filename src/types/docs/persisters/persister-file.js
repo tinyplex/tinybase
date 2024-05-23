@@ -28,6 +28,8 @@
    * then gets the file location back out again.
    *
    * ```js
+   * import {createFilePersister} from 'tinybase/persisters/persister-file';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createFilePersister(store, '/app/persisted.json');
    *
@@ -58,6 +60,8 @@
  * file.
  *
  * ```js yolo
+ * import {createFilePersister} from 'tinybase/persisters/persister-file';
+ *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createFilePersister(store, '/app/persisted.json');
  *
