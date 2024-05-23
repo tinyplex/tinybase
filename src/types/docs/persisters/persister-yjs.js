@@ -33,7 +33,9 @@
    * then gets the Yjs document back out again.
    *
    * ```js
-   * const doc = new Y.Doc();
+   * import {Doc} from 'yjs';
+   *
+   * const doc = new Doc();
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createYjsPersister(store, doc);
    *
@@ -66,7 +68,9 @@
  * document.
  *
  * ```js
- * const doc = new Y.Doc();
+ * import {Doc} from 'yjs';
+ *
+ * const doc = new Doc();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createYjsPersister(store, doc);
  *
@@ -89,14 +93,16 @@
  * function.
  *
  * ```js
- * const doc1 = new Y.Doc();
- * const doc2 = new Y.Doc();
+ * import {Doc, applyUpdate, encodeStateAsUpdate} from 'yjs';
+ *
+ * const doc1 = new Doc();
+ * const doc2 = new Doc();
  *
  * // A function to manually synchronize documents with each other. Typically
  * // this would happen over the wire, via a Yjs connection provider.
  * const syncDocs = async () => {
- *   Y.applyUpdate(doc1, Y.encodeStateAsUpdate(doc2));
- *   Y.applyUpdate(doc2, Y.encodeStateAsUpdate(doc1));
+ *   applyUpdate(doc1, encodeStateAsUpdate(doc2));
+ *   applyUpdate(doc2, encodeStateAsUpdate(doc1));
  * };
  *
  * // Bind a persisted Store to each document.
