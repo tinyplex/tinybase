@@ -9600,8 +9600,10 @@
  * is provided to start both Synchronizers' synchronization.
  *
  * ```jsx
- * const server1 = createWsServer(new ws.WebSocketServer({port: 8044}));
- * const server2 = createWsServer(new ws.WebSocketServer({port: 8045}));
+ * import {WebSocketServer} from 'ws';
+ *
+ * const server1 = createWsServer(new WebSocketServer({port: 8044}));
+ * const server2 = createWsServer(new WebSocketServer({port: 8045}));
  *
  * const App = ({url}) => {
  *   const store = useCreateMergeableStore(() => createMergeableStore('s1'));
