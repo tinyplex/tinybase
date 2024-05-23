@@ -25,6 +25,11 @@ beforeEach(() => {
   resetHlc();
 });
 
+test('isMergeable', () => {
+  const store = createMergeableStore();
+  expect(store.isMergeable()).toEqual(true);
+});
+
 test('Protocol basics', () => {
   const store1 = createMergeableStore('s1').setContent([
     {t1: {r1: {c1: 1}}},
