@@ -330,6 +330,8 @@ store.delTablesSchema();
 > Read more about persisters in the Persisting Data guide.
 
 ```js
+import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+
 const persister = createSessionPersister(store, 'demo');
 await persister.save();
 
