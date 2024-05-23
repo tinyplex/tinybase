@@ -14,6 +14,8 @@ the `store` prop, and it will be used by default. Notice how the `store`
 variable is not referenced in the child `Pane` component here, for example:
 
 ```jsx
+import {createRoot} from 'react-dom/client';
+
 const App = () => {
   const store = useCreateStore(() =>
     createStore().setTables({pets: {fido: {species: 'dog', color: 'brown'}}}),
@@ -34,7 +36,7 @@ const Pane = () => (
 );
 
 const app = document.createElement('div');
-const root = ReactDOMClient.createRoot(app);
+const root = createRoot(app);
 root.render(<App />); // !act
 console.log(app.innerHTML);
 // -> '<span>dog,brown</span>'

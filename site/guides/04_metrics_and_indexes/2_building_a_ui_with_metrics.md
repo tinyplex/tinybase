@@ -11,6 +11,8 @@ The useMetric hook is very simple. It gets the current value of a Metric, and
 registers a listener so that any changes to that result will cause a re-render:
 
 ```jsx
+import {createRoot} from 'react-dom/client';
+
 const store = createStore().setTable('species', {
   dog: {price: 5},
   cat: {price: 4},
@@ -21,7 +23,7 @@ metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
 const App = () => <span>{useMetric('highestPrice', metrics)}</span>;
 
 const app = document.createElement('div');
-const root = ReactDOMClient.createRoot(app);
+const root = createRoot(app);
 root.render(<App />); // !act
 console.log(app.innerHTML);
 // -> '<span>5</span>'
