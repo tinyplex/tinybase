@@ -34,6 +34,7 @@
    *
    * ```js
    * import {Doc} from 'yjs';
+   * import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
    *
    * const doc = new Doc();
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -69,6 +70,7 @@
  *
  * ```js
  * import {Doc} from 'yjs';
+ * import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
  *
  * const doc = new Doc();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -94,6 +96,7 @@
  *
  * ```js
  * import {Doc, applyUpdate, encodeStateAsUpdate} from 'yjs';
+ * import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
  *
  * const doc1 = new Doc();
  * const doc2 = new Doc();
