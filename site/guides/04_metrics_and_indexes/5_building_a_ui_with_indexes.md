@@ -12,6 +12,8 @@ Ids in an Index, and registers a listener so that any changes to that result
 will cause a re-render:
 
 ```jsx
+import {createRoot} from 'react-dom/client';
+
 const store = createStore().setTable('pets', {
   fido: {species: 'dog'},
   felix: {species: 'cat'},
@@ -28,7 +30,7 @@ const App = () => (
 );
 
 const app = document.createElement('div');
-const root = ReactDOMClient.createRoot(app);
+const root = createRoot(app);
 root.render(<App />); // !act
 console.log(app.innerHTML);
 // -> '<span>["dog","cat"]</span>'

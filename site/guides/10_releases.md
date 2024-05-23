@@ -397,6 +397,8 @@ These pre-built components are showcased in the UI Components demos. Using them
 should be very familiar if you have used the more abstract ui-react module:
 
 ```jsx
+import {createRoot} from 'react-dom/client';
+
 const App = ({store}) => (
   <SortedTableInHtmlTable tableId="pets" cellId="species" store={store} />
 );
@@ -408,7 +410,7 @@ store.setTables({
   },
 });
 const app = document.createElement('div');
-const root = ReactDOMClient.createRoot(app);
+const root = createRoot(app);
 root.render(<App store={store} />); // !act
 
 console.log(app.innerHTML);
