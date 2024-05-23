@@ -175,6 +175,7 @@
  * occurs once by default.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
@@ -203,6 +204,7 @@
  * the Store is created again on the second render.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({fidoSpecies}) => {
@@ -243,6 +245,7 @@
  * component accesses their Ids.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => {
@@ -287,6 +290,7 @@
  * reference to the Store again, without the need to have it passed as a prop.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -308,6 +312,7 @@
  * a reference to the Store again, without the need to have it passed as a prop.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -353,6 +358,7 @@
  * it more portable.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -400,6 +406,7 @@
  * This example creates a Provider context. A child component registers a Store
  * into it which is then consumable by a peer child component.
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = () => (
@@ -453,6 +460,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -473,6 +481,7 @@
  * provided. A component within it then uses the useHasTables hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -493,6 +502,7 @@
  * by Id. A component within it then uses the useHasTables hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -536,6 +546,7 @@
  * component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -556,6 +567,7 @@
  * provided. A component within it then uses the useTables hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -576,6 +588,7 @@
  * by Id. A component within it then uses the useTables hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -617,6 +630,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -636,6 +650,7 @@
  * provided. A component within it then uses the useTableIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -656,6 +671,7 @@
  * by Id. A component within it then uses the useTableIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -699,6 +715,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -721,6 +738,7 @@
  * provided. A component within it then uses the useHasTable hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -741,6 +759,7 @@
  * by Id. A component within it then uses the useHasTable hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -787,6 +806,7 @@
  * component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -806,6 +826,7 @@
  * provided. A component within it then uses the useTable hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -826,6 +847,7 @@
  * by Id. A component within it then uses the useTable hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -871,6 +893,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -892,6 +915,7 @@
  * provided. A component within it then uses the useTableCellIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -912,6 +936,7 @@
  * by Id. A component within it then uses the useTableCellIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -959,6 +984,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -981,6 +1007,7 @@
  * provided. A component within it then uses the useHasTableCell hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1003,6 +1030,7 @@
  * by Id. A component within it then uses the useHasTableCell hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1051,6 +1079,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -1070,6 +1099,7 @@
  * provided. A component within it then uses the useRowCount hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1090,6 +1120,7 @@
  * by Id. A component within it then uses the useRowCount hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1134,6 +1165,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -1153,6 +1185,7 @@
  * provided. A component within it then uses the useRowIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1173,6 +1206,7 @@
  * by Id. A component within it then uses the useRowIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1223,6 +1257,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({
@@ -1253,6 +1288,7 @@
  * provided. A component within it then uses the useSortedRowIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1278,6 +1314,7 @@
  * by Id. A component within it then uses the useSortedRowIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1334,6 +1371,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -1356,6 +1394,7 @@
  * provided. A component within it then uses the useHasRow hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1378,6 +1417,7 @@
  * by Id. A component within it then uses the useHasRow hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1425,6 +1465,7 @@
  * component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -1446,6 +1487,7 @@
  * provided. A component within it then uses the useRow hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1466,6 +1508,7 @@
  * by Id. A component within it then uses the useRow hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1512,6 +1555,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -1533,6 +1577,7 @@
  * provided. A component within it then uses the useCellIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1555,6 +1600,7 @@
  * by Id. A component within it then uses the useCellIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1602,6 +1648,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -1624,6 +1671,7 @@
  * provided. A component within it then uses the useHasCell hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1646,6 +1694,7 @@
  * by Id. A component within it then uses the useHasCell hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1696,6 +1745,7 @@
  * component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -1715,6 +1765,7 @@
  * provided. A component within it then uses the useCell hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1735,6 +1786,7 @@
  * by Id. A component within it then uses the useCell hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1779,6 +1831,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setValue('open', true);
@@ -1799,6 +1852,7 @@
  * provided. A component within it then uses the useHasValues hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1819,6 +1873,7 @@
  * by Id. A component within it then uses the useHasValues hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1862,6 +1917,7 @@
  * component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setValue('open', true);
@@ -1881,6 +1937,7 @@
  * provided. A component within it then uses the useValues hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1901,6 +1958,7 @@
  * by Id. A component within it then uses the useValues hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1943,6 +2001,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setValue('open', true);
@@ -1962,6 +2021,7 @@
  * provided. A component within it then uses the useValueIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1982,6 +2042,7 @@
  * by Id. A component within it then uses the useValueIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -2026,6 +2087,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setValue('open', true);
@@ -2048,6 +2110,7 @@
  * provided. A component within it then uses the useHasValue hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -2068,6 +2131,7 @@
  * by Id. A component within it then uses the useHasValue hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -2114,6 +2178,7 @@
  * component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setValue('open', true);
@@ -2133,6 +2198,7 @@
  * provided. A component within it then uses the useValue hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -2153,6 +2219,7 @@
  * by Id. A component within it then uses the useValue hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -2218,6 +2285,7 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -2298,6 +2366,7 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {nemo: {species: 'fish'}});
@@ -2382,6 +2451,7 @@
  * updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setRow('pets', 'nemo', {species: 'fish'});
@@ -2473,6 +2543,7 @@
  * updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setRow('pets', 'nemo', {species: 'fish'});
@@ -2558,6 +2629,7 @@
  * handler which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setRow('pets', 'nemo', {species: 'fish'});
@@ -2646,6 +2718,7 @@
  * which updates the Store with a Cell value when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'nemo', 'species', 'fish');
@@ -2685,6 +2758,7 @@
  * clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'nemo', 'visits', 1);
@@ -2765,6 +2839,7 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setValues({open: true});
@@ -2844,6 +2919,7 @@
  * handler which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setValues({open: true});
@@ -2926,6 +3002,7 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setValue('open', true);
@@ -2990,6 +3067,7 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -3050,6 +3128,7 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -3111,6 +3190,7 @@
  * deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -3176,6 +3256,7 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -3240,6 +3321,7 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setValues({open: true});
@@ -3301,6 +3383,7 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setValues({open: true, employees: 3});
@@ -3362,6 +3445,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -3420,6 +3504,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -3478,6 +3563,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -3540,6 +3626,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -3604,6 +3691,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -3667,6 +3755,7 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -3732,6 +3821,7 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -3797,6 +3887,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -3859,6 +3950,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -3924,6 +4016,7 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4000,6 +4093,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4071,6 +4165,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4140,6 +4235,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4212,6 +4308,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4284,6 +4381,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4345,6 +4443,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4403,6 +4502,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4462,6 +4562,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4526,6 +4627,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4590,6 +4692,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4643,6 +4746,7 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4697,6 +4801,7 @@
  * unmounted, the listener is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4753,6 +4858,7 @@
  * unmounted, the listener is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -4819,6 +4925,7 @@
  * object creation only occurs once by default.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
@@ -4853,6 +4960,7 @@
  * dependency, and so the Metrics object is created again on the second render.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({tableToCount}) => {
@@ -4901,6 +5009,7 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => {
@@ -4948,6 +5057,7 @@
  * as a prop.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({metrics}) => (
@@ -4970,6 +5080,7 @@
  * to have it passed as a prop.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({metrics}) => (
@@ -5015,6 +5126,7 @@
  * into it, making it more portable.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({metrics}) => (
@@ -5072,6 +5184,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -5122,6 +5235,7 @@
  * component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('species', {
@@ -5147,6 +5261,7 @@
  * is provided. A component within it then uses the useMetric hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({metrics}) => (
@@ -5174,6 +5289,7 @@
  * is provided. A component within it then uses the useMetric hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({metrics}) => (
@@ -5230,6 +5346,7 @@
  * is removed from the Metrics object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({metrics}) => (
@@ -5300,6 +5417,7 @@
  * object creation only occurs once by default.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
@@ -5339,6 +5457,7 @@
  * dependency, and so the Indexes object is created again on the second render.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({cellToIndex}) => {
@@ -5390,6 +5509,7 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => {
@@ -5437,6 +5557,7 @@
  * as a prop.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -5459,6 +5580,7 @@
  * to have it passed as a prop.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -5504,6 +5626,7 @@
  * into it, making it more portable.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -5561,6 +5684,7 @@
  * component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -5609,6 +5733,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -5636,6 +5761,7 @@
  * is provided. A component within it then uses the useSliceIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -5663,6 +5789,7 @@
  * is provided. A component within it then uses the useSliceIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -5717,6 +5844,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -5746,6 +5874,7 @@
  * is provided. A component within it then uses the useSliceRowIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -5775,6 +5904,7 @@
  * is provided. A component within it then uses the useSliceRowIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -5836,6 +5966,7 @@
  * is removed from the Indexes object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -5910,6 +6041,7 @@
  * listener is removed from the Indexes object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -5981,6 +6113,7 @@
  * Relationships object creation only occurs once by default.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
@@ -6026,6 +6159,7 @@
  * object is created again on the second render.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({remoteTableAndCellToLink}) => {
@@ -6083,6 +6217,7 @@
  * an inner component accesses their Ids.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => {
@@ -6138,6 +6273,7 @@
  * have it passed as a prop.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -6163,6 +6299,7 @@
  * without the need to have it passed as a prop.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -6214,6 +6351,7 @@
  * it, making it more portable.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -6274,6 +6412,7 @@
  * Relationship re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -6334,6 +6473,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore()
@@ -6363,6 +6503,7 @@
  * object is provided. A component within it then uses the useRemoteRowId hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -6389,6 +6530,7 @@
  * object is provided. A component within it then uses the useRemoteRowId hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -6443,6 +6585,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore()
@@ -6474,6 +6617,7 @@
  * object is provided. A component within it then uses the useLocalRowIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -6502,6 +6646,7 @@
  * object is provided. A component within it then uses the useLocalRowIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -6560,6 +6705,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -6594,6 +6740,7 @@
  * object is provided. A component within it then uses the useLinkedRowIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -6624,6 +6771,7 @@
  * object is provided. A component within it then uses the useLinkedRowIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -6698,6 +6846,7 @@
  * listener is removed from the Relationships object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -6781,6 +6930,7 @@
  * listener is removed from the Relationships object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -6858,6 +7008,7 @@
  * listener is removed from the Relationships object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -6935,6 +7086,7 @@
  * object creation only occurs once by default.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
@@ -6979,6 +7131,7 @@
  * dependency, and so the Queries object is created again on the second render.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
@@ -7029,6 +7182,7 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => {
@@ -7076,6 +7230,7 @@
  * a prop.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7098,6 +7253,7 @@
  * to have it passed as a prop.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7144,6 +7300,7 @@
  * into it, making it more portable.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7204,6 +7361,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -7258,6 +7416,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -7291,6 +7450,7 @@
  * is provided. A component within it then uses the useResultTable hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7324,6 +7484,7 @@
  * hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7381,6 +7542,7 @@
  * query re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -7417,6 +7579,7 @@
  * is provided. A component within it then uses the useResultTableCellIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7450,6 +7613,7 @@
  * useResultTableCellIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7513,6 +7677,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -7544,6 +7709,7 @@
  * is provided. A component within it then uses the useResultRowCount hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7574,6 +7740,7 @@
  * hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7631,6 +7798,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -7664,6 +7832,7 @@
  * is provided. A component within it then uses the useResultRowIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7696,6 +7865,7 @@
  * hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7757,6 +7927,7 @@
  * query re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -7801,6 +7972,7 @@
  * is provided. A component within it then uses the useResultSortedRowIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7835,6 +8007,7 @@
  * useResultSortedRowIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7904,6 +8077,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -7937,6 +8111,7 @@
  * is provided. A component within it then uses the useResultRow hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -7969,6 +8144,7 @@
  * hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -8029,6 +8205,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -8066,6 +8243,7 @@
  * is provided. A component within it then uses the useResultCellIds hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -8099,6 +8277,7 @@
  * hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -8160,6 +8339,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -8195,6 +8375,7 @@
  * is provided. A component within it then uses the useResultCell hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -8228,6 +8409,7 @@
  * hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -8291,6 +8473,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -8365,6 +8548,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -8442,6 +8626,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -8515,6 +8700,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -8590,6 +8776,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -8674,6 +8861,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -8750,6 +8938,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -8834,6 +9023,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -8909,6 +9099,7 @@
  * Checkpoints object creation only occurs once by default.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
@@ -8939,6 +9130,7 @@
  * render.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({size}) => {
@@ -8980,6 +9172,7 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => {
@@ -9027,6 +9220,7 @@
  * it passed as a prop.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -9052,6 +9246,7 @@
  * the need to have it passed as a prop.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -9102,6 +9297,7 @@
  * portable.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -9154,6 +9350,7 @@
  * Ids re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
@@ -9181,6 +9378,7 @@
  * hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -9206,6 +9404,7 @@
  * hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -9256,6 +9455,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
@@ -9278,6 +9478,7 @@
  * hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -9303,6 +9504,7 @@
  * hook.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -9370,6 +9572,7 @@
  * handler which sets a checkpoint when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -9421,6 +9624,7 @@
  * clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -9467,6 +9671,7 @@
  * clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -9542,6 +9747,7 @@
  * moves to a checkpoint when the `span` element is clicked.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -9590,6 +9796,7 @@
  * This example uses the useUndoInformation hook to create an undo button.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -9634,6 +9841,7 @@
  * This example uses the useUndoInformation hook to create a redo button.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -9689,6 +9897,7 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -9756,6 +9965,7 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -9852,6 +10062,7 @@
  * occurs once by default.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
@@ -9898,6 +10109,7 @@
  * destroyed and the `destroy` parameter is called for it.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({sessionKey}) => {
@@ -9995,6 +10207,7 @@
  * only occurs once by default.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
@@ -10026,6 +10239,7 @@
  * is provided to start both Synchronizers' synchronization.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * import {WebSocketServer} from 'ws';
@@ -10954,6 +11168,7 @@
  * props.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store, metrics}) => (
@@ -10985,6 +11200,7 @@
  * objects are provided, showing how visibility is merged.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({petStore, metrics}) => (
@@ -11053,6 +11269,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
@@ -11077,6 +11294,7 @@
  * for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11102,6 +11320,7 @@
  * non-existent Cell.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11155,6 +11374,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setRow('pets', 'fido', {species: 'dog'});
@@ -11179,6 +11399,7 @@
  * set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11214,6 +11435,7 @@
  * Cell component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11284,6 +11506,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({
@@ -11318,6 +11541,7 @@
  * a custom set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11354,6 +11578,7 @@
  * a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11425,6 +11650,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
@@ -11449,6 +11675,7 @@
  * custom set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11482,6 +11709,7 @@
  * custom Row component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11543,6 +11771,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -11567,6 +11796,7 @@
  * for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11595,6 +11825,7 @@
  * custom Table component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11653,6 +11884,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setValue('open', true);
@@ -11677,6 +11909,7 @@
  * Id for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11702,6 +11935,7 @@
  * non-existent Value.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11753,6 +11987,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setValue('open', true);
@@ -11777,6 +12012,7 @@
  * Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11802,6 +12038,7 @@
  * custom Value component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -11853,6 +12090,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('species', {
@@ -11883,6 +12121,7 @@
  * its Id for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({metrics}) => (
@@ -11915,6 +12154,7 @@
  * non-existent Metric.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({metrics}) => (
@@ -11968,6 +12208,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -12002,6 +12243,7 @@
  * Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -12034,6 +12276,7 @@
  * custom Row component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -12100,6 +12343,7 @@
  * the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -12129,6 +12373,7 @@
  * Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -12160,6 +12405,7 @@
  * custom Slice component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -12227,6 +12473,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore()
@@ -12263,6 +12510,7 @@
  * remote Row (with Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -12298,6 +12546,7 @@
  * remote Row with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -12365,6 +12614,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore()
@@ -12402,6 +12652,7 @@
  * local Row objects (with Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -12437,6 +12688,7 @@
  * local Row objects with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -12504,6 +12756,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -12544,6 +12797,7 @@
  * local Row objects (with Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -12580,6 +12834,7 @@
  * local Row objects with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -12645,6 +12900,7 @@
  * Store re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -12683,6 +12939,7 @@
  * (with its Id for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -12719,6 +12976,7 @@
  * non-existent Cell.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -12778,6 +13036,7 @@
  * Store re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -12819,6 +13078,7 @@
  * Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -12853,6 +13113,7 @@
  * a custom Cell component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -12930,6 +13191,7 @@
  * the Store re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -12967,6 +13229,7 @@
  * Table (with Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -13001,6 +13264,7 @@
  * Table with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -13067,6 +13331,7 @@
  * Store re-renders the component.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -13099,6 +13364,7 @@
  * (with Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -13129,6 +13395,7 @@
  * with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -13188,6 +13455,7 @@
  * a label (with its Id for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
@@ -13245,6 +13513,7 @@
  * of previous checkpoints.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {fido: {color: 'brown'}});
@@ -13277,6 +13546,7 @@
  * renders the list of previous checkpoints (with Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -13312,6 +13582,7 @@
  * custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -13383,6 +13654,7 @@
  * current checkpoints.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {fido: {color: 'brown'}});
@@ -13417,6 +13689,7 @@
  * renders current checkpoint (with its Id for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -13449,6 +13722,7 @@
  * custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -13523,6 +13797,7 @@
  * of future checkpoints.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {fido: {color: 'brown'}});
@@ -13556,6 +13831,7 @@
  * renders the list of future checkpoints (with Ids for readability).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
@@ -13591,6 +13867,7 @@
  * custom props callback.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
