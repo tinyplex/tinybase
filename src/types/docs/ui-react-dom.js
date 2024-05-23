@@ -464,6 +464,7 @@
  * a <table> element with a CSS class.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -510,6 +511,7 @@
  * row is removed.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -611,6 +613,7 @@
  * Table in a <table> element with a CSS class.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -665,6 +668,7 @@
  * of each row is removed.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -756,6 +760,7 @@
  * in a <table> element with a CSS class.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -798,6 +803,7 @@
  * the top of the table and the Id column at the start of each row is removed.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -871,6 +877,7 @@
  * in a <table> element with a CSS class.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -923,6 +930,7 @@
  * row is removed.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -1023,6 +1031,7 @@
  * CSS class. Note the dotted pairs that are used as column headings.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -1083,6 +1092,7 @@
  * the table and the Id column at the start of each row is removed.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -1176,6 +1186,7 @@
  * ResultTable in a <table> element with a CSS class.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -1226,6 +1237,7 @@
  * the start of each row is removed.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -1331,6 +1343,7 @@
  * renders the ResultTable in a <table> element with a CSS class.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -1385,6 +1398,7 @@
  * column at the start of each row is removed.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -1476,6 +1490,7 @@
  * Cell.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1536,6 +1551,7 @@
  * Value.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1581,6 +1597,7 @@
  * Table in a <table> element with a SortedTablePaginator (the default).
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1660,6 +1677,7 @@
  * tool.
  *
  * ```jsx
+ * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
