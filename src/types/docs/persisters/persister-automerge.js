@@ -34,7 +34,9 @@
    * then gets the Automerge document handler back out again.
    *
    * ```js
-   * const docHandler = new AutomergeRepo.Repo({network: []}).create();
+   * import {Repo} from '@automerge/automerge-repo';
+   *
+   * const docHandler = new Repo({network: []}).create();
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createAutomergePersister(store, docHandler);
    *
@@ -67,7 +69,9 @@
  * Automerge document.
  *
  * ```js
- * const docHandler = new AutomergeRepo.Repo({network: []}).create();
+ * import {Repo} from '@automerge/automerge-repo';
+ *
+ * const docHandler = new Repo({network: []}).create();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createAutomergePersister(store, docHandler);
  *
@@ -85,8 +89,10 @@
  * each other using a network.
  *
  * ```js
+ * import {Repo} from '@automerge/automerge-repo';
+ *
  * // Bind the first Store to a network-enabled automerge-repo
- * const repo1 = new AutomergeRepo.Repo({
+ * const repo1 = new Repo({
  *   network: [new BroadcastChannelNetworkAdapter()],
  * });
  * const docHandler1 = repo1.create();
@@ -97,7 +103,7 @@
  * await persister1.startAutoSave();
  *
  * // Bind the second Store to a different network-enabled automerge-repo
- * const repo2 = new AutomergeRepo.Repo({
+ * const repo2 = new Repo({
  *   network: [new BroadcastChannelNetworkAdapter()],
  * });
  * const docHandler2 = repo2.find(docHandler1.documentId);
