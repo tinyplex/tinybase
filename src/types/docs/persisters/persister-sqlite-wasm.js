@@ -31,6 +31,7 @@
    * then gets the database instance back out again.
    *
    * ```js
+   * import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
    * import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
    *
    * const sqlite3 = await sqlite3InitModule();
@@ -93,6 +94,7 @@
  * Store.
  *
  * ```js
+ * import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
  * import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
  *
  * const sqlite3 = await sqlite3InitModule();
@@ -126,6 +128,9 @@
  * local SQLite database with tabular mapping.
  *
  * ```js
+ * import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
+ * import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
+ *
  * const sqlite3 = await sqlite3InitModule();
  * const db = new sqlite3.oo1.DB(':memory:', 'c');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
