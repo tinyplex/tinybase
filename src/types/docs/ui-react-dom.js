@@ -464,6 +464,7 @@
  * a <table> element with a CSS class.
  *
  * ```jsx
+ * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -511,6 +512,7 @@
  * row is removed.
  *
  * ```jsx
+ * import {CellView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -613,6 +615,7 @@
  * Table in a <table> element with a CSS class.
  *
  * ```jsx
+ * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -668,6 +671,7 @@
  * of each row is removed.
  *
  * ```jsx
+ * import {CellView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -760,6 +764,7 @@
  * in a <table> element with a CSS class.
  *
  * ```jsx
+ * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -803,6 +808,7 @@
  * the top of the table and the Id column at the start of each row is removed.
  *
  * ```jsx
+ * import {Provider, ValueView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -877,6 +883,7 @@
  * in a <table> element with a CSS class.
  *
  * ```jsx
+ * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -930,6 +937,7 @@
  * row is removed.
  *
  * ```jsx
+ * import {CellView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1031,6 +1039,7 @@
  * CSS class. Note the dotted pairs that are used as column headings.
  *
  * ```jsx
+ * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1092,6 +1101,7 @@
  * the table and the Id column at the start of each row is removed.
  *
  * ```jsx
+ * import {CellView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1186,6 +1196,7 @@
  * ResultTable in a <table> element with a CSS class.
  *
  * ```jsx
+ * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1237,6 +1248,7 @@
  * the start of each row is removed.
  *
  * ```jsx
+ * import {Provider, ResultCellView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1343,6 +1355,7 @@
  * renders the ResultTable in a <table> element with a CSS class.
  *
  * ```jsx
+ * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1398,6 +1411,7 @@
  * column at the start of each row is removed.
  *
  * ```jsx
+ * import {Provider, ResultCellView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1490,6 +1504,7 @@
  * Cell.
  *
  * ```jsx
+ * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1551,6 +1566,7 @@
  * Value.
  *
  * ```jsx
+ * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1597,6 +1613,7 @@
  * Table in a <table> element with a SortedTablePaginator (the default).
  *
  * ```jsx
+ * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1677,6 +1694,7 @@
  * tool.
  *
  * ```jsx
+ * import {Provider} from 'tinybase/debug/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *

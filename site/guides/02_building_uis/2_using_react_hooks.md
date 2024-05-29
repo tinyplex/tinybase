@@ -16,6 +16,7 @@ Cell is updated, so is the HTML.
 ```jsx
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import {useCell} from 'tinybase/ui-react';
 
 const store = createStore().setCell('pets', 'fido', 'color', 'brown');
 const App = () => <span>{useCell('pets', 'fido', 'color', store)}</span>;
@@ -53,6 +54,8 @@ They have the same return types. For example, the useTable hook returns an
 object:
 
 ```jsx
+import {useTable} from 'tinybase/ui-react';
+
 const App2 = () => <span>{JSON.stringify(useTable('pets', store))}</span>;
 root.render(<App2 />); // !act
 console.log(app.innerHTML);
@@ -82,6 +85,8 @@ function is to return the value that will be used to update the Cell.
 It's probably easier to understand with an example:
 
 ```jsx
+import {useSetCellCallback} from 'tinybase/ui-react';
+
 const App3 = () => {
   const handleClick = useSetCellCallback(
     'pets',
@@ -131,6 +136,8 @@ convenient aliases for memoization so that object creation can be performed
 inside a component without fear of creating a new instance per render:
 
 ```jsx
+import {useCreateStore} from 'tinybase/ui-react';
+
 const App4 = () => {
   const store = useCreateStore(() => {
     console.log('Store created');
