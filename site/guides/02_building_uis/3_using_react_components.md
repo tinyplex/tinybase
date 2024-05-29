@@ -15,6 +15,7 @@ In this simple example, the CellView component is used to render the color Cell
 in a `<span>`:
 
 ```jsx
+import {CellView} from 'tinybase/ui-react';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 
@@ -44,6 +45,8 @@ It does mean though, that if you use the default RowView component, you will
 simply render a concatenation of the values of its Cells:
 
 ```jsx
+import {RowView} from 'tinybase/ui-react';
+
 store.setCell('pets', 'fido', 'weight', 42);
 const App2 = () => (
   <span>
@@ -108,6 +111,8 @@ To render the contents of a Table into an HTML table, therefore, you might set
 the components up like this:
 
 ```jsx
+import {TableView} from 'tinybase/ui-react';
+
 const MyTableView = (props) => (
   <table>
     <tbody>
