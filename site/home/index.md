@@ -247,6 +247,7 @@ store.delListener(listenerId);
 ```jsx
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import {useCell} from 'tinybase/ui-react';
 
 const App1 = () => {
   const color = useCell('pets', 'fido', 'color', store);
