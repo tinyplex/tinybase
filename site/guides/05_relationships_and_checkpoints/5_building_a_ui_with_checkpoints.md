@@ -14,6 +14,7 @@ Firstly, the useCheckpointIds hook is the reactive version of the
 getCheckpointIds method and returns the three-part CheckpointIds array.
 
 ```jsx
+import {useCheckpointIds} from 'tinybase/ui-react';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 
@@ -41,6 +42,8 @@ useCheckpoint hook returns the label of a checkpoint so that the user knows what
 they are undoing, for example:
 
 ```jsx
+import {useCheckpoint} from 'tinybase/ui-react';
+
 const App2 = () => <span>{useCheckpoint('2', checkpoints)}</span>;
 
 root.render(<App2 />); // !act
@@ -66,6 +69,8 @@ information about whether the action is possible, the event handler, and the
 label - that is fully sufficient to be able to construct an undo/redo UI:
 
 ```jsx
+import {useUndoInformation} from 'tinybase/ui-react';
+
 store.setTables({pets: {nemo: {species: 'fish'}}});
 checkpoints.clear(); // !act
 const App3 = () => {
@@ -95,6 +100,12 @@ Checkpoints object, and list the checkpoints behind or ahead of the current
 state, so that a list of possible undo and redo actions is visible:
 
 ```jsx
+import {
+  BackwardCheckpointsView,
+  CurrentCheckpointView,
+  ForwardCheckpointsView,
+} from 'tinybase/ui-react';
+
 const App4 = () => (
   <div>
     <BackwardCheckpointsView checkpoints={checkpoints} debugIds={true} />/
@@ -124,6 +135,12 @@ used throughout the app, a Checkpoints object can also be provided to be used by
 default:
 
 ```jsx
+import {
+  Provider,
+  useCreateCheckpoints,
+  useCreateStore,
+} from 'tinybase/ui-react';
+
 const App5 = () => {
   const store = useCreateStore(() =>
     createStore().setTable('species', {pets: {nemo: {species: 'fish'}}}),
