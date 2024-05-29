@@ -22,6 +22,7 @@ re-render. As an example:
 ```jsx
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import {useRemoteRowId} from 'tinybase/ui-react';
 
 const store = createStore()
   .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
@@ -51,6 +52,8 @@ The useCreateRelationships hook is used to create a Relationships object within
 a React application with convenient memoization:
 
 ```jsx
+import {useCreateRelationships, useCreateStore} from 'tinybase/ui-react';
+
 const App2 = () => {
   const store = useCreateStore(() =>
     createStore()
@@ -90,6 +93,8 @@ These components can be given a custom RowView-compatible component to render
 their Row children:
 
 ```jsx
+import {CellView, RemoteRowView} from 'tinybase/ui-react';
+
 const MyRowView = (props) => (
   <>
     {props.rowId}: <CellView {...props} cellId="price" />
@@ -119,6 +124,8 @@ context and used throughout the app, a Relationships object can also be provided
 to be used by default:
 
 ```jsx
+import {Provider} from 'tinybase/ui-react';
+
 const App4 = () => {
   const store = useCreateStore(() =>
     createStore()

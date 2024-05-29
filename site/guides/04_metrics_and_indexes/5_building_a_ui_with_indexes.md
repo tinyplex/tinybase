@@ -14,6 +14,7 @@ will cause a re-render:
 ```jsx
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import {useSliceIds} from 'tinybase/ui-react';
 
 const store = createStore().setTable('pets', {
   fido: {species: 'dog'},
@@ -45,6 +46,8 @@ The useCreateIndexes hook is used to create an Indexes object within a React
 application with convenient memoization:
 
 ```jsx
+import {useCreateIndexes, useCreateStore} from 'tinybase/ui-react';
+
 const App2 = () => {
   const store = useCreateStore(() =>
     createStore().setTable('pets', {
@@ -76,6 +79,8 @@ the covers, which means that any changes to the Index or the Row objects
 referenced by it will cause a re-render.
 
 ```jsx
+import {SliceView} from 'tinybase/ui-react';
+
 const App3 = () => (
   <div>
     <SliceView
@@ -97,6 +102,8 @@ children, much like a TableView component can. And an IndexView can be in turn
 given a custom SliceView-compatible component:
 
 ```jsx
+import {IndexView} from 'tinybase/ui-react';
+
 const MyRowView = (props) => <>{props.rowId};</>;
 
 const MySliceView = (props) => (
@@ -125,6 +132,8 @@ used throughout the app, an Indexes object can also be provided to be used by
 default:
 
 ```jsx
+import {Provider, useSliceRowIds} from 'tinybase/ui-react';
+
 const App5 = () => {
   const store = useCreateStore(() =>
     createStore().setTable('pets', {

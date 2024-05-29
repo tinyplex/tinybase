@@ -31,6 +31,7 @@ re-render. As an example:
 ```jsx
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import {useResultRowIds} from 'tinybase/ui-react';
 
 const store = createStore().setTable('pets', {
   fido: {species: 'dog', color: 'brown'},
@@ -64,6 +65,8 @@ The useCreateQueries hook is used to create a Queries object within a React
 application with convenient memoization:
 
 ```jsx
+import {useCreateQueries, useCreateStore} from 'tinybase/ui-react';
+
 const App2 = () => {
   const store = useCreateStore(() =>
     createStore().setTable('pets', {
@@ -105,6 +108,8 @@ Just like their Store equivalents, these components can be given a custom compon
 their children:
 
 ```jsx
+import {ResultCellView, ResultTableView} from 'tinybase/ui-react';
+
 const MyResultRowView = (props) => (
   <span>
     {props.rowId}: <ResultCellView {...props} cellId="color" />
@@ -139,6 +144,8 @@ context and used throughout the app, a Queries object can also be provided to be
 used by default:
 
 ```jsx
+import {Provider, ResultRowView, useRemoteRowId} from 'tinybase/ui-react';
+
 const App4 = () => {
   const store = useCreateStore(() =>
     createStore().setTable('pets', {

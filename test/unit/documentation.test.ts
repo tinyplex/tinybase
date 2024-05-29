@@ -38,7 +38,6 @@ import {transformSync} from 'esbuild';
   ReactDOMTestUtils,
   TinyBase,
 
-  TinyBaseUiReact,
   TinyBaseUiReactDom,
 ].forEach((module) =>
   Object.entries(module).forEach(([key, value]) => {
@@ -54,7 +53,7 @@ import {transformSync} from 'esbuild';
   react: React,
   'react-dom/client': ReactDOMClient,
   sqlite3,
-  'tinybase/tools': TinyBaseTools,
+  'tinybase/debug/ui-react': TinyBaseUiReact,
   'tinybase/persisters/persister-automerge': TinyBasePersisterAutomerge,
   'tinybase/persisters/persister-browser': TinyBasePersisterBrowser,
   'tinybase/persisters/persister-cr-sqlite-wasm': TinyBasePersisterCrSqliteWasm,
@@ -71,6 +70,8 @@ import {transformSync} from 'esbuild';
   'tinybase/synchronizers/synchronizer-local': TinyBaseSynchronizerLocal,
   'tinybase/synchronizers/synchronizer-ws-client': TinyBaseSynchronizerWsClient,
   'tinybase/synchronizers/synchronizer-ws-server': TinyBaseSynchronizerWsServer,
+  'tinybase/tools': TinyBaseTools,
+  'tinybase/ui-react': TinyBaseUiReact,
   ws,
   yjs,
 };
