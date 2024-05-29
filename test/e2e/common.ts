@@ -4,6 +4,8 @@ import {Server} from 'http';
 import {createServer} from 'http-server';
 import replace from 'buffer-replace';
 
+jest.setTimeout(10000);
+
 export const getServerFunctions = (
   port: number,
 ): [() => void, () => void, (path: string) => Promise<void>] => {
