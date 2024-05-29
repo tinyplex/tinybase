@@ -177,6 +177,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useCreateStore} from 'tinybase/ui-react';
  *
  * const App = () => {
  *   const store = useCreateStore(() => {
@@ -206,6 +207,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useCreateStore} from 'tinybase/ui-react';
  *
  * const App = ({fidoSpecies}) => {
  *   const store = useCreateStore(() => {
@@ -245,6 +247,7 @@
  * component accesses their Ids.
  *
  * ```jsx
+ * import {Provider, useCreateStore, useStoreIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -290,6 +293,7 @@
  * reference to the Store again, without the need to have it passed as a prop.
  *
  * ```jsx
+ * import {Provider, useStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -312,6 +316,7 @@
  * a reference to the Store again, without the need to have it passed as a prop.
  *
  * ```jsx
+ * import {Provider, useStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -358,6 +363,7 @@
  * it more portable.
  *
  * ```jsx
+ * import {Provider, useStoreOrStoreById} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -406,6 +412,7 @@
  * This example creates a Provider context. A child component registers a Store
  * into it which is then consumable by a peer child component.
  * ```jsx
+ * import {Provider, useCreateStore, useProvideStore, useStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -462,6 +469,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useHasTables} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{JSON.stringify(useHasTables(store))}</span>;
@@ -481,6 +489,7 @@
  * provided. A component within it then uses the useHasTables hook.
  *
  * ```jsx
+ * import {Provider, useHasTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -502,6 +511,7 @@
  * by Id. A component within it then uses the useHasTables hook.
  *
  * ```jsx
+ * import {Provider, useHasTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -548,6 +558,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useTables} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{JSON.stringify(useTables(store))}</span>;
@@ -567,6 +578,7 @@
  * provided. A component within it then uses the useTables hook.
  *
  * ```jsx
+ * import {Provider, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -588,6 +600,7 @@
  * by Id. A component within it then uses the useTables hook.
  *
  * ```jsx
+ * import {Provider, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -632,6 +645,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useTableIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{JSON.stringify(useTableIds(store))}</span>;
@@ -650,6 +664,7 @@
  * provided. A component within it then uses the useTableIds hook.
  *
  * ```jsx
+ * import {Provider, useTableIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -671,6 +686,7 @@
  * by Id. A component within it then uses the useTableIds hook.
  *
  * ```jsx
+ * import {Provider, useTableIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -717,6 +733,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useHasTable} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
@@ -738,6 +755,7 @@
  * provided. A component within it then uses the useHasTable hook.
  *
  * ```jsx
+ * import {Provider, useHasTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -759,6 +777,7 @@
  * by Id. A component within it then uses the useHasTable hook.
  *
  * ```jsx
+ * import {Provider, useHasTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -808,6 +827,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useTable} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{JSON.stringify(useTable('pets', store))}</span>;
@@ -826,6 +846,7 @@
  * provided. A component within it then uses the useTable hook.
  *
  * ```jsx
+ * import {Provider, useTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -847,6 +868,7 @@
  * by Id. A component within it then uses the useTable hook.
  *
  * ```jsx
+ * import {Provider, useTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -895,6 +917,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useTableCellIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
@@ -915,6 +938,7 @@
  * provided. A component within it then uses the useTableCellIds hook.
  *
  * ```jsx
+ * import {Provider, useTableCellIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -936,6 +960,7 @@
  * by Id. A component within it then uses the useTableCellIds hook.
  *
  * ```jsx
+ * import {Provider, useTableCellIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -986,6 +1011,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useHasTableCell} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
@@ -1007,6 +1033,7 @@
  * provided. A component within it then uses the useHasTableCell hook.
  *
  * ```jsx
+ * import {Provider, useHasTableCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1030,6 +1057,7 @@
  * by Id. A component within it then uses the useHasTableCell hook.
  *
  * ```jsx
+ * import {Provider, useHasTableCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1081,6 +1109,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useRowCount} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{useRowCount('pets', store)}</span>;
@@ -1099,6 +1128,7 @@
  * provided. A component within it then uses the useRowCount hook.
  *
  * ```jsx
+ * import {Provider, useRowCount} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1120,6 +1150,7 @@
  * by Id. A component within it then uses the useRowCount hook.
  *
  * ```jsx
+ * import {Provider, useRowCount} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1167,6 +1198,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useRowIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{JSON.stringify(useRowIds('pets', store))}</span>;
@@ -1185,6 +1217,7 @@
  * provided. A component within it then uses the useRowIds hook.
  *
  * ```jsx
+ * import {Provider, useRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1206,6 +1239,7 @@
  * by Id. A component within it then uses the useRowIds hook.
  *
  * ```jsx
+ * import {Provider, useRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1259,6 +1293,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useSortedRowIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({
  *   pets: {
@@ -1288,6 +1323,7 @@
  * provided. A component within it then uses the useSortedRowIds hook.
  *
  * ```jsx
+ * import {Provider, useSortedRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1314,6 +1350,7 @@
  * by Id. A component within it then uses the useSortedRowIds hook.
  *
  * ```jsx
+ * import {Provider, useSortedRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1373,6 +1410,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useHasRow} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
@@ -1394,6 +1432,7 @@
  * provided. A component within it then uses the useHasRow hook.
  *
  * ```jsx
+ * import {Provider, useHasRow} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1417,6 +1456,7 @@
  * by Id. A component within it then uses the useHasRow hook.
  *
  * ```jsx
+ * import {Provider, useHasRow} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1467,6 +1507,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useRow} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
@@ -1487,6 +1528,7 @@
  * provided. A component within it then uses the useRow hook.
  *
  * ```jsx
+ * import {Provider, useRow} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1508,6 +1550,7 @@
  * by Id. A component within it then uses the useRow hook.
  *
  * ```jsx
+ * import {Provider, useRow} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1557,6 +1600,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useCellIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
@@ -1577,6 +1621,7 @@
  * provided. A component within it then uses the useCellIds hook.
  *
  * ```jsx
+ * import {Provider, useCellIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1600,6 +1645,7 @@
  * by Id. A component within it then uses the useCellIds hook.
  *
  * ```jsx
+ * import {Provider, useCellIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1650,6 +1696,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useHasCell} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
@@ -1671,6 +1718,7 @@
  * provided. A component within it then uses the useHasCell hook.
  *
  * ```jsx
+ * import {Provider, useHasCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1694,6 +1742,7 @@
  * by Id. A component within it then uses the useHasCell hook.
  *
  * ```jsx
+ * import {Provider, useHasCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1747,6 +1796,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useCell} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => <span>{useCell('pets', 'fido', 'color', store)}</span>;
@@ -1765,6 +1815,7 @@
  * provided. A component within it then uses the useCell hook.
  *
  * ```jsx
+ * import {Provider, useCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1786,6 +1837,7 @@
  * by Id. A component within it then uses the useCell hook.
  *
  * ```jsx
+ * import {Provider, useCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1833,6 +1885,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useHasValues} from 'tinybase/ui-react';
  *
  * const store = createStore().setValue('open', true);
  * const App = () => <span>{JSON.stringify(useHasValues(store))}</span>;
@@ -1852,6 +1905,7 @@
  * provided. A component within it then uses the useHasValues hook.
  *
  * ```jsx
+ * import {Provider, useHasValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1873,6 +1927,7 @@
  * by Id. A component within it then uses the useHasValues hook.
  *
  * ```jsx
+ * import {Provider, useHasValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1919,6 +1974,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useValues} from 'tinybase/ui-react';
  *
  * const store = createStore().setValue('open', true);
  * const App = () => <span>{JSON.stringify(useValues(store))}</span>;
@@ -1937,6 +1993,7 @@
  * provided. A component within it then uses the useValues hook.
  *
  * ```jsx
+ * import {Provider, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -1958,6 +2015,7 @@
  * by Id. A component within it then uses the useValues hook.
  *
  * ```jsx
+ * import {Provider, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2003,6 +2061,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useValueIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setValue('open', true);
  * const App = () => <span>{JSON.stringify(useValueIds(store))}</span>;
@@ -2021,6 +2080,7 @@
  * provided. A component within it then uses the useValueIds hook.
  *
  * ```jsx
+ * import {Provider, useValueIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2042,6 +2102,7 @@
  * by Id. A component within it then uses the useValueIds hook.
  *
  * ```jsx
+ * import {Provider, useValueIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2089,6 +2150,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useHasValue} from 'tinybase/ui-react';
  *
  * const store = createStore().setValue('open', true);
  * const App = () => (
@@ -2110,6 +2172,7 @@
  * provided. A component within it then uses the useHasValue hook.
  *
  * ```jsx
+ * import {Provider, useHasValue} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2131,6 +2194,7 @@
  * by Id. A component within it then uses the useHasValue hook.
  *
  * ```jsx
+ * import {Provider, useHasValue} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2180,6 +2244,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useValue} from 'tinybase/ui-react';
  *
  * const store = createStore().setValue('open', true);
  * const App = () => <span>{JSON.stringify(useValue('open', store))}</span>;
@@ -2198,6 +2263,7 @@
  * provided. A component within it then uses the useValue hook.
  *
  * ```jsx
+ * import {Provider, useValue} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2219,6 +2285,7 @@
  * by Id. A component within it then uses the useValue hook.
  *
  * ```jsx
+ * import {Provider, useValue} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2285,6 +2352,7 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useSetTablesCallback, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2366,6 +2434,7 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useSetTableCallback, useTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2451,6 +2520,7 @@
  * updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useRow, useSetRowCallback} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2543,6 +2613,7 @@
  * updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useAddRowCallback, useTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2629,6 +2700,7 @@
  * handler which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useRow, useSetPartialRowCallback} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2718,6 +2790,7 @@
  * which updates the Store with a Cell value when the `span` element is clicked.
  *
  * ```jsx
+ * import {useRow, useSetCellCallback} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2758,6 +2831,7 @@
  * clicked.
  *
  * ```jsx
+ * import {useRow, useSetCellCallback} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2839,6 +2913,7 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useSetValuesCallback, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -2919,6 +2994,7 @@
  * handler which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useSetPartialValuesCallback, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3002,6 +3078,7 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useSetValueCallback, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3067,6 +3144,7 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useDelTablesCallback, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3128,6 +3206,7 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useDelTableCallback, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3190,6 +3269,7 @@
  * deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useDelRowCallback, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3256,6 +3336,7 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useDelCellCallback, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3321,6 +3402,7 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useDelValuesCallback, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3383,6 +3465,7 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
+ * import {useDelValueCallback, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3445,6 +3528,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useHasTablesListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3504,6 +3588,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useTablesListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3563,6 +3648,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useTableIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3626,6 +3712,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useHasTableListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3691,6 +3778,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useTableListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3755,6 +3843,7 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useTableCellIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3821,6 +3910,7 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useHasTableCellListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3887,6 +3977,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useRowCountListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -3950,6 +4041,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useRowIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4016,6 +4108,7 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useSortedRowIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4093,6 +4186,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useHasRowListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4165,6 +4259,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useRowListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4235,6 +4330,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useCellIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4308,6 +4404,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useHasCellListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4381,6 +4478,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useCellListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4443,6 +4541,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useHasValuesListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4502,6 +4601,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useValuesListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4562,6 +4662,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useValueIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4627,6 +4728,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useHasValueListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4692,6 +4794,7 @@
  * is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useValueListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4746,6 +4849,7 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useStartTransactionListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4801,6 +4905,7 @@
  * unmounted, the listener is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useWillFinishTransactionListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4858,6 +4963,7 @@
  * unmounted, the listener is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useDidFinishTransactionListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4925,6 +5031,7 @@
  * object creation only occurs once by default.
  *
  * ```jsx
+ * import {useCreateMetrics, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -4960,6 +5067,7 @@
  * dependency, and so the Metrics object is created again on the second render.
  *
  * ```jsx
+ * import {useCreateMetrics, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5009,6 +5117,7 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import {Provider, useCreateMetrics, useCreateStore, useMetricsIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5057,6 +5166,7 @@
  * as a prop.
  *
  * ```jsx
+ * import {Provider, useMetrics} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5080,6 +5190,7 @@
  * to have it passed as a prop.
  *
  * ```jsx
+ * import {Provider, useMetrics} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5126,6 +5237,7 @@
  * into it, making it more portable.
  *
  * ```jsx
+ * import {Provider, useMetricsOrMetricsById} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5186,6 +5298,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useMetricIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
@@ -5237,6 +5350,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useMetric} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('species', {
  *   dog: {price: 5},
@@ -5261,6 +5375,7 @@
  * is provided. A component within it then uses the useMetric hook.
  *
  * ```jsx
+ * import {Provider, useMetric} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5289,6 +5404,7 @@
  * is provided. A component within it then uses the useMetric hook.
  *
  * ```jsx
+ * import {Provider, useMetric} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5346,6 +5462,7 @@
  * is removed from the Metrics object.
  *
  * ```jsx
+ * import {Provider, useMetricListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5419,6 +5536,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useCreateIndexes, useCreateStore} from 'tinybase/ui-react';
  *
  * const App = () => {
  *   const store = useCreateStore((store) =>
@@ -5459,6 +5577,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useCreateIndexes, useCreateStore} from 'tinybase/ui-react';
  *
  * const App = ({cellToIndex}) => {
  *   const store = useCreateStore(() =>
@@ -5509,6 +5628,7 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import {Provider, useCreateIndexes, useCreateStore, useIndexesIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5557,6 +5677,7 @@
  * as a prop.
  *
  * ```jsx
+ * import {Provider, useIndexes} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5582,6 +5703,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {Provider, useIndexes} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexesById={{petStore: indexes}}>
@@ -5626,6 +5748,7 @@
  * into it, making it more portable.
  *
  * ```jsx
+ * import {Provider, useIndexesOrIndexesById} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5686,6 +5809,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useIndexIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
@@ -5735,6 +5859,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useSliceIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
@@ -5761,6 +5886,7 @@
  * is provided. A component within it then uses the useSliceIds hook.
  *
  * ```jsx
+ * import {Provider, useSliceIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5789,6 +5915,7 @@
  * is provided. A component within it then uses the useSliceIds hook.
  *
  * ```jsx
+ * import {Provider, useSliceIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5846,6 +5973,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useSliceRowIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
@@ -5874,6 +6002,7 @@
  * is provided. A component within it then uses the useSliceRowIds hook.
  *
  * ```jsx
+ * import {Provider, useSliceRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5904,6 +6033,7 @@
  * is provided. A component within it then uses the useSliceRowIds hook.
  *
  * ```jsx
+ * import {Provider, useSliceRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -5966,6 +6096,7 @@
  * is removed from the Indexes object.
  *
  * ```jsx
+ * import {Provider, useSliceIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6041,6 +6172,7 @@
  * listener is removed from the Indexes object.
  *
  * ```jsx
+ * import {Provider, useSliceRowIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6113,6 +6245,7 @@
  * Relationships object creation only occurs once by default.
  *
  * ```jsx
+ * import {useCreateRelationships, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6159,6 +6292,7 @@
  * object is created again on the second render.
  *
  * ```jsx
+ * import {useCreateRelationships, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6217,6 +6351,7 @@
  * an inner component accesses their Ids.
  *
  * ```jsx
+ * import {Provider, useCreateRelationships, useCreateStore, useRelationshipsIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6273,6 +6408,7 @@
  * have it passed as a prop.
  *
  * ```jsx
+ * import {Provider, useRelationships} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6299,6 +6435,7 @@
  * without the need to have it passed as a prop.
  *
  * ```jsx
+ * import {Provider, useRelationships} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6351,6 +6488,7 @@
  * it, making it more portable.
  *
  * ```jsx
+ * import {Provider, useRelationshipsOrRelationshipsById} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6414,6 +6552,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useRelationshipIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
@@ -6475,6 +6614,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useRemoteRowId} from 'tinybase/ui-react';
  *
  * const store = createStore()
  *   .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
@@ -6503,6 +6643,7 @@
  * object is provided. A component within it then uses the useRemoteRowId hook.
  *
  * ```jsx
+ * import {Provider, useRemoteRowId} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6530,6 +6671,7 @@
  * object is provided. A component within it then uses the useRemoteRowId hook.
  *
  * ```jsx
+ * import {Provider, useRemoteRowId} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6587,6 +6729,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useLocalRowIds} from 'tinybase/ui-react';
  *
  * const store = createStore()
  *   .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
@@ -6617,6 +6760,7 @@
  * object is provided. A component within it then uses the useLocalRowIds hook.
  *
  * ```jsx
+ * import {Provider, useLocalRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6646,6 +6790,7 @@
  * object is provided. A component within it then uses the useLocalRowIds hook.
  *
  * ```jsx
+ * import {Provider, useLocalRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6707,6 +6852,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useLinkedRowIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', next: 'felix'},
@@ -6740,6 +6886,7 @@
  * object is provided. A component within it then uses the useLinkedRowIds hook.
  *
  * ```jsx
+ * import {Provider, useLinkedRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6771,6 +6918,7 @@
  * object is provided. A component within it then uses the useLinkedRowIds hook.
  *
  * ```jsx
+ * import {Provider, useLinkedRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6846,6 +6994,7 @@
  * listener is removed from the Relationships object.
  *
  * ```jsx
+ * import {Provider, useRemoteRowIdListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -6930,6 +7079,7 @@
  * listener is removed from the Relationships object.
  *
  * ```jsx
+ * import {Provider, useLocalRowIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7008,6 +7158,7 @@
  * listener is removed from the Relationships object.
  *
  * ```jsx
+ * import {Provider, useLinkedRowIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7086,6 +7237,7 @@
  * object creation only occurs once by default.
  *
  * ```jsx
+ * import {useCreateQueries, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7131,6 +7283,7 @@
  * dependency, and so the Queries object is created again on the second render.
  *
  * ```jsx
+ * import {useCreateQueries, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7182,6 +7335,7 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import {Provider, useCreateQueries, useCreateStore, useQueriesIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7230,6 +7384,7 @@
  * a prop.
  *
  * ```jsx
+ * import {Provider, useQueries} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7253,6 +7408,7 @@
  * to have it passed as a prop.
  *
  * ```jsx
+ * import {Provider, useQueries} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7300,6 +7456,7 @@
  * into it, making it more portable.
  *
  * ```jsx
+ * import {Provider, useQueriesOrQueriesById} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7363,6 +7520,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useQueryIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
@@ -7418,6 +7576,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useResultTable} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
@@ -7450,6 +7609,7 @@
  * is provided. A component within it then uses the useResultTable hook.
  *
  * ```jsx
+ * import {Provider, useResultTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7484,6 +7644,7 @@
  * hook.
  *
  * ```jsx
+ * import {Provider, useResultTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7544,6 +7705,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useResultTableCellIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
@@ -7579,6 +7741,7 @@
  * is provided. A component within it then uses the useResultTableCellIds hook.
  *
  * ```jsx
+ * import {Provider, useResultTableCellIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7613,6 +7776,7 @@
  * useResultTableCellIds hook.
  *
  * ```jsx
+ * import {Provider, useResultTableCellIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7679,6 +7843,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useResultRowCount} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
@@ -7709,6 +7874,7 @@
  * is provided. A component within it then uses the useResultRowCount hook.
  *
  * ```jsx
+ * import {Provider, useResultRowCount} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7740,6 +7906,7 @@
  * hook.
  *
  * ```jsx
+ * import {Provider, useResultRowCount} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7800,6 +7967,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useResultRowIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
@@ -7832,6 +8000,7 @@
  * is provided. A component within it then uses the useResultRowIds hook.
  *
  * ```jsx
+ * import {Provider, useResultRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7865,6 +8034,7 @@
  * hook.
  *
  * ```jsx
+ * import {Provider, useResultRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -7929,6 +8099,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useResultSortedRowIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
@@ -7972,6 +8143,7 @@
  * is provided. A component within it then uses the useResultSortedRowIds hook.
  *
  * ```jsx
+ * import {Provider, useResultSortedRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8007,6 +8179,7 @@
  * useResultSortedRowIds hook.
  *
  * ```jsx
+ * import {Provider, useResultSortedRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8079,6 +8252,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useResultRow} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
@@ -8111,6 +8285,7 @@
  * is provided. A component within it then uses the useResultRow hook.
  *
  * ```jsx
+ * import {Provider, useResultRow} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8144,6 +8319,7 @@
  * hook.
  *
  * ```jsx
+ * import {Provider, useResultRow} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8207,6 +8383,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useResultCellIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
@@ -8243,6 +8420,7 @@
  * is provided. A component within it then uses the useResultCellIds hook.
  *
  * ```jsx
+ * import {Provider, useResultCellIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8277,6 +8455,7 @@
  * hook.
  *
  * ```jsx
+ * import {Provider, useResultCellIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8341,6 +8520,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useResultCell} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
@@ -8375,6 +8555,7 @@
  * is provided. A component within it then uses the useResultCell hook.
  *
  * ```jsx
+ * import {Provider, useResultCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8409,6 +8590,7 @@
  * hook.
  *
  * ```jsx
+ * import {Provider, useResultCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8473,6 +8655,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {Provider, useResultTableListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8548,6 +8731,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {Provider, useResultTableCellIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8626,6 +8810,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {Provider, useResultRowCountListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8700,6 +8885,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {Provider, useResultRowIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8776,6 +8962,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {Provider, useResultSortedRowIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8861,6 +9048,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {Provider, useResultRowListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -8938,6 +9126,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {Provider, useResultCellIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -9023,6 +9212,7 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
+ * import {Provider, useResultCellListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -9099,6 +9289,7 @@
  * Checkpoints object creation only occurs once by default.
  *
  * ```jsx
+ * import {Provider, useCreateCheckpoints, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -9130,6 +9321,7 @@
  * render.
  *
  * ```jsx
+ * import {Provider, useCreateCheckpoints, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -9172,6 +9364,7 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import {Provider, useCheckpointsIds, useCreateStore, useCreateCheckpoints} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -9220,6 +9413,7 @@
  * it passed as a prop.
  *
  * ```jsx
+ * import {Provider, useCheckpoints} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -9246,6 +9440,7 @@
  * the need to have it passed as a prop.
  *
  * ```jsx
+ * import {Provider, useCheckpoints} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -9297,6 +9492,7 @@
  * portable.
  *
  * ```jsx
+ * import {Provider, useCheckpointsOrCheckpointsById} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -9352,6 +9548,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useCheckpointIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
  * const checkpoints = createCheckpoints(store);
@@ -9378,6 +9575,7 @@
  * hook.
  *
  * ```jsx
+ * import {Provider, useCheckpointIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -9404,6 +9602,7 @@
  * hook.
  *
  * ```jsx
+ * import {Provider, useCheckpointIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -9457,6 +9656,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useCheckpoint} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
  * const checkpoints = createCheckpoints(store);
@@ -9478,6 +9678,7 @@
  * hook.
  *
  * ```jsx
+ * import {Provider, useCheckpoint} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -9504,6 +9705,7 @@
  * hook.
  *
  * ```jsx
+ * import {Provider, useCheckpoint} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -9574,6 +9776,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useSetCheckpointCallback} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const checkpoints = createCheckpoints(store);
@@ -9626,6 +9829,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useGoBackwardCallback} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const checkpoints = createCheckpoints(store);
@@ -9673,6 +9877,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useGoForwardCallback} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const checkpoints = createCheckpoints(store);
@@ -9749,6 +9954,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useGoToCallback} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const checkpoints = createCheckpoints(store);
@@ -9798,6 +10004,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useUndoInformation} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const checkpoints = createCheckpoints(store);
@@ -9843,6 +10050,7 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {useRedoInformation} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const checkpoints = createCheckpoints(store);
@@ -9897,6 +10105,7 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useCheckpointIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -9965,6 +10174,7 @@
  * listener is removed from the Store.
  *
  * ```jsx
+ * import {Provider, useCheckpointListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -10062,6 +10272,7 @@
  * occurs once by default.
  *
  * ```jsx
+ * import {useCreatePersister, useCreateStore, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
@@ -10110,6 +10321,7 @@
  * destroyed and the `destroy` parameter is called for it.
  *
  * ```jsx
+ * import {useCreateStore, useCreatePersister, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
@@ -10209,6 +10421,7 @@
  * only occurs once by default.
  *
  * ```jsx
+ * import {useCreateMergeableStore, useCreateSynchronizer, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {createRoot} from 'react-dom/client';
@@ -10242,12 +10455,12 @@
  * is provided to start both Synchronizers' synchronization.
  *
  * ```jsx
+ * import {useCreateMergeableStore, useCreateSynchronizer, useTables} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {WebSocketServer} from 'ws';
  * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  * import {createRoot} from 'react-dom/client';
- *
- * import {WebSocketServer} from 'ws';
  *
  * const server1 = createWsServer(new WebSocketServer({port: 8044}));
  * const server2 = createWsServer(new WebSocketServer({port: 8045}));
@@ -11173,6 +11386,7 @@
  * props.
  *
  * ```jsx
+ * import {CellView, Provider, useMetric} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11205,6 +11419,7 @@
  * objects are provided, showing how visibility is merged.
  *
  * ```jsx
+ * import {CellView, Provider, useCreateStore, useMetric} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11274,6 +11489,7 @@
  * the component.
  *
  * ```jsx
+ * import {CellView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11299,6 +11515,7 @@
  * for readability).
  *
  * ```jsx
+ * import {Provider, CellView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11325,6 +11542,7 @@
  * non-existent Cell.
  *
  * ```jsx
+ * import {Provider, CellView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11380,6 +11598,7 @@
  *
  * ```jsx
  * import React from 'react';
+ * import {RowView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setRow('pets', 'fido', {species: 'dog'});
@@ -11404,6 +11623,7 @@
  * set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
+ * import {Provider, RowView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11440,6 +11660,7 @@
  * Cell component and a custom props callback.
  *
  * ```jsx
+ * import {CellView, Provider, RowView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11512,6 +11733,7 @@
  *
  * ```jsx
  * import React from 'react';
+ * import {SortedTableView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({
@@ -11546,6 +11768,7 @@
  * a custom set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
+ * import {Provider, SortedTableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11583,6 +11806,7 @@
  * a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {Provider, RowView, SortedTableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11656,6 +11880,7 @@
  *
  * ```jsx
  * import React from 'react';
+ * import {TableView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
@@ -11680,6 +11905,7 @@
  * custom set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
+ * import {Provider, TableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11714,6 +11940,7 @@
  * custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {Provider, RowView, TableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11777,6 +12004,7 @@
  *
  * ```jsx
  * import React from 'react';
+ * import {TablesView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -11801,6 +12029,7 @@
  * for readability).
  *
  * ```jsx
+ * import {Provider, TablesView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11830,6 +12059,7 @@
  * custom Table component and a custom props callback.
  *
  * ```jsx
+ * import {Provider, TableView, TablesView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11890,6 +12120,7 @@
  *
  * ```jsx
  * import React from 'react';
+ * import {ValueView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setValue('open', true);
@@ -11914,6 +12145,7 @@
  * Id for readability).
  *
  * ```jsx
+ * import {Provider, ValueView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11940,6 +12172,7 @@
  * non-existent Value.
  *
  * ```jsx
+ * import {Provider, ValueView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -11992,6 +12225,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {ValuesView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12017,6 +12251,7 @@
  * Ids for readability).
  *
  * ```jsx
+ * import {Provider, ValuesView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12043,6 +12278,7 @@
  * custom Value component and a custom props callback.
  *
  * ```jsx
+ * import {Provider, ValueView, ValuesView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12095,6 +12331,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {MetricView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12126,6 +12363,7 @@
  * its Id for readability).
  *
  * ```jsx
+ * import {MetricView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12159,6 +12397,7 @@
  * non-existent Metric.
  *
  * ```jsx
+ * import {MetricView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12214,6 +12453,7 @@
  *
  * ```jsx
  * import React from 'react';
+ * import {SliceView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore().setTable('pets', {
@@ -12248,6 +12488,7 @@
  * Ids for readability).
  *
  * ```jsx
+ * import {Provider, SliceView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12281,6 +12522,7 @@
  * custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {Provider, RowView, SliceView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12348,6 +12590,7 @@
  * the component.
  *
  * ```jsx
+ * import {IndexView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12378,6 +12621,7 @@
  * Ids for readability).
  *
  * ```jsx
+ * import {IndexView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12410,6 +12654,7 @@
  * custom Slice component and a custom props callback.
  *
  * ```jsx
+ * import {IndexView, Provider, SliceView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12479,6 +12724,7 @@
  *
  * ```jsx
  * import React from 'react';
+ * import {RemoteRowView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
  *
  * const store = createStore()
@@ -12515,6 +12761,7 @@
  * remote Row (with Ids for readability).
  *
  * ```jsx
+ * import {Provider, RemoteRowView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12551,6 +12798,7 @@
  * remote Row with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {Provider, RemoteRowView, RowView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12619,6 +12867,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {LocalRowsView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12657,6 +12906,7 @@
  * local Row objects (with Ids for readability).
  *
  * ```jsx
+ * import {LocalRowsView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12693,6 +12943,7 @@
  * local Row objects with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {LocalRowsView, Provider, RowView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12761,6 +13012,7 @@
  * re-renders the component.
  *
  * ```jsx
+ * import {LinkedRowsView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12802,6 +13054,7 @@
  * local Row objects (with Ids for readability).
  *
  * ```jsx
+ * import {LinkedRowsView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12839,6 +13092,7 @@
  * local Row objects with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {LinkedRowsView, Provider, RowView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12905,6 +13159,7 @@
  * Store re-renders the component.
  *
  * ```jsx
+ * import {ResultCellView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12944,6 +13199,7 @@
  * (with its Id for readability).
  *
  * ```jsx
+ * import {Provider, ResultCellView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -12981,6 +13237,7 @@
  * non-existent Cell.
  *
  * ```jsx
+ * import {Provider, ResultCellView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13041,6 +13298,7 @@
  * Store re-renders the component.
  *
  * ```jsx
+ * import {ResultRowView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13083,6 +13341,7 @@
  * Ids for readability).
  *
  * ```jsx
+ * import {Provider, ResultRowView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13118,6 +13377,7 @@
  * a custom Cell component and a custom props callback.
  *
  * ```jsx
+ * import {Provider, ResultCellView, ResultRowView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13196,6 +13456,7 @@
  * the Store re-renders the component.
  *
  * ```jsx
+ * import {ResultSortedTableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13234,6 +13495,7 @@
  * Table (with Ids for readability).
  *
  * ```jsx
+ * import {Provider, ResultSortedTableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13269,6 +13531,7 @@
  * Table with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {Provider, ResultRowView, ResultSortedTableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13336,6 +13599,7 @@
  * Store re-renders the component.
  *
  * ```jsx
+ * import {ResultTableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13369,6 +13633,7 @@
  * (with Ids for readability).
  *
  * ```jsx
+ * import {Provider, ResultTableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13400,6 +13665,7 @@
  * with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import {Provider, ResultRowView, ResultTableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13460,6 +13726,7 @@
  * a label (with its Id for readability).
  *
  * ```jsx
+ * import {CheckpointView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13518,6 +13785,7 @@
  * of previous checkpoints.
  *
  * ```jsx
+ * import {BackwardCheckpointsView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13551,6 +13819,7 @@
  * renders the list of previous checkpoints (with Ids for readability).
  *
  * ```jsx
+ * import {BackwardCheckpointsView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13587,6 +13856,7 @@
  * custom props callback.
  *
  * ```jsx
+ * import {BackwardCheckpointsView, CheckpointView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13659,6 +13929,7 @@
  * current checkpoints.
  *
  * ```jsx
+ * import {CurrentCheckpointView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13694,6 +13965,7 @@
  * renders current checkpoint (with its Id for readability).
  *
  * ```jsx
+ * import {CurrentCheckpointView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13727,6 +13999,7 @@
  * custom props callback.
  *
  * ```jsx
+ * import {CheckpointView, CurrentCheckpointView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13802,6 +14075,7 @@
  * of future checkpoints.
  *
  * ```jsx
+ * import {ForwardCheckpointsView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13836,6 +14110,7 @@
  * renders the list of future checkpoints (with Ids for readability).
  *
  * ```jsx
+ * import {ForwardCheckpointsView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
@@ -13872,6 +14147,7 @@
  * custom props callback.
  *
  * ```jsx
+ * import {CheckpointView, ForwardCheckpointsView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  *
