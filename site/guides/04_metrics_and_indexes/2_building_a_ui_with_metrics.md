@@ -11,6 +11,7 @@ The useMetric hook is very simple. It gets the current value of a Metric, and
 registers a listener so that any changes to that result will cause a re-render:
 
 ```jsx
+import {useMetric} from 'tinybase/ui-react';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 
@@ -38,6 +39,8 @@ The useCreateMetrics hook is used to create a Metrics object within a React
 application with convenient memoization:
 
 ```jsx
+import {useCreateMetrics, useCreateStore} from 'tinybase/ui-react';
+
 const App2 = () => {
   const store = useCreateStore(() =>
     createStore().setTable('species', {
@@ -68,6 +71,8 @@ The MetricView component renders the current value of a Metric, and registers a
 listener so that any changes to that result will cause a re-render.
 
 ```jsx
+import {MetricView} from 'tinybase/ui-react';
+
 const App3 = () => (
   <div>
     <MetricView metricId="highestPrice" metrics={metrics} />
@@ -86,6 +91,8 @@ used throughout the app, a Metrics object can also be provided to be used by
 default:
 
 ```jsx
+import {Provider} from 'tinybase/ui-react';
+
 const App4 = () => {
   const store = useCreateStore(() =>
     createStore().setTable('species', {
