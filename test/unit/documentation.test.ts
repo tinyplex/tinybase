@@ -33,16 +33,11 @@ import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {transformSync} from 'esbuild';
 
 // globally present; do not need to be imported in examples
-[
-  {BroadcastChannelNetworkAdapter},
-  ReactDOMTestUtils,
-  TinyBase,
-
-  TinyBaseUiReactDom,
-].forEach((module) =>
-  Object.entries(module).forEach(([key, value]) => {
-    (globalThis as any)[key] = value;
-  }),
+[{BroadcastChannelNetworkAdapter}, ReactDOMTestUtils, TinyBase].forEach(
+  (module) =>
+    Object.entries(module).forEach(([key, value]) => {
+      (globalThis as any)[key] = value;
+    }),
 );
 
 // need to be imported in examples
@@ -54,6 +49,7 @@ import {transformSync} from 'esbuild';
   'react-dom/client': ReactDOMClient,
   sqlite3,
   'tinybase/debug/ui-react': TinyBaseUiReact,
+  'tinybase/debug/ui-react-dom': TinyBaseUiReactDom,
   'tinybase/persisters/persister-automerge': TinyBasePersisterAutomerge,
   'tinybase/persisters/persister-browser': TinyBasePersisterBrowser,
   'tinybase/persisters/persister-cr-sqlite-wasm': TinyBasePersisterCrSqliteWasm,
@@ -72,6 +68,7 @@ import {transformSync} from 'esbuild';
   'tinybase/synchronizers/synchronizer-ws-server': TinyBaseSynchronizerWsServer,
   'tinybase/tools': TinyBaseTools,
   'tinybase/ui-react': TinyBaseUiReact,
+  'tinybase/ui-react-dom': TinyBaseUiReactDom,
   ws,
   yjs,
 };
