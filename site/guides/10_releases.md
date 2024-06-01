@@ -404,6 +404,7 @@ should be very familiar if you have used the more abstract ui-react module:
 
 ```jsx
 import React from 'react';
+import {SortedTableInHtmlTable} from 'tinybase/debug/ui-react-dom';
 import {createRoot} from 'react-dom/client';
 
 const App = ({store}) => (
