@@ -466,6 +466,7 @@
  * ```jsx
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {TableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -514,6 +515,7 @@
  * ```jsx
  * import {CellView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {TableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -617,6 +619,7 @@
  * ```jsx
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -673,6 +676,7 @@
  * ```jsx
  * import {CellView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -766,6 +770,7 @@
  * ```jsx
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {ValuesInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -810,6 +815,7 @@
  * ```jsx
  * import {Provider, ValueView} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {ValuesInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -885,6 +891,7 @@
  * ```jsx
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {SliceInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -939,6 +946,7 @@
  * ```jsx
  * import {CellView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {SliceInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({indexes}) => (
@@ -1041,6 +1049,7 @@
  * ```jsx
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {RelationshipInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -1103,6 +1112,7 @@
  * ```jsx
  * import {CellView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {RelationshipInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
@@ -1198,6 +1208,7 @@
  * ```jsx
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {ResultTableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -1250,6 +1261,7 @@
  * ```jsx
  * import {Provider, ResultCellView} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {ResultTableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -1357,6 +1369,7 @@
  * ```jsx
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {ResultSortedTableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -1413,6 +1426,7 @@
  * ```jsx
  * import {Provider, ResultCellView} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {ResultSortedTableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
@@ -1504,6 +1518,7 @@
  * Cell.
  *
  * ```jsx
+ * import {EditableCellView} from 'tinybase/ui-react-dom';
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
@@ -1566,6 +1581,7 @@
  * Value.
  *
  * ```jsx
+ * import {EditableValueView} from 'tinybase/ui-react-dom';
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
@@ -1615,6 +1631,7 @@
  * ```jsx
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
@@ -1696,6 +1713,7 @@
  * ```jsx
  * import {Provider} from 'tinybase/debug/ui-react';
  * import React from 'react';
+ * import {StoreInspector} from 'tinybase/debug/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
  *
  * const App = ({store}) => (
