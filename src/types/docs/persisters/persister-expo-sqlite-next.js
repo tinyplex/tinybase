@@ -43,7 +43,11 @@
    * then gets the database instance back out again.
    *
    * ```js yolo
-   * const db = SQLite.openDatabaseSync('my.db');
+   * import {createExpoSqliteNextPersister} from 'tinybase/persisters/persister-expo-sqlite-next';
+   * import {createStore} from 'tinybase';
+   * import {openDatabaseSync} from 'expo-sqlite';
+   *
+   * const db = openDatabaseSync('my.db');
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createExpoSqliteNextPersister(store, db, 'my_tinybase');
    *
@@ -99,7 +103,11 @@
  * into the Store.
  *
  * ```js yolo
- * const db = SQLite.openDatabaseSync('my.db');
+ * import {createExpoSqliteNextPersister} from 'tinybase/persisters/persister-expo-sqlite-next';
+ * import {createStore} from 'tinybase';
+ * import {openDatabaseSync} from 'expo-sqlite';
+ *
+ * const db = openDatabaseSync('my.db');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createExpoSqliteNextPersister(store, db, 'my_tinybase');
  *
@@ -114,10 +122,12 @@
  * // -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
  *
  * await new Promise((resolve) =>
- *   db.allAsync(
- *     'UPDATE my_tinybase SET store = ' +
- *       `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`,
- *   ),
+ *   db
+ *     .allAsync(
+ *       'UPDATE my_tinybase SET store = ' +
+ *         `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`,
+ *     )
+ *     .then(resolve),
  * );
  * await persister.load();
  * console.log(store.getTables());
@@ -130,7 +140,11 @@
  * to a local SQLite database with tabular mapping.
  *
  * ```js yolo
- * const db = SQLite.openDatabaseSync('my.db');
+ * import {createExpoSqliteNextPersister} from 'tinybase/persisters/persister-expo-sqlite-next';
+ * import {createStore} from 'tinybase';
+ * import {openDatabaseSync} from 'expo-sqlite';
+ *
+ * const db = openDatabaseSync('my.db');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createExpoSqliteNextPersister(store, db, {
  *   mode: 'tabular',

@@ -702,13 +702,10 @@
    * const indexes = createIndexes(store);
    * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
    *
-   * const listenerId = indexes.addSliceIdsListener(
-   *   'bySpecies',
-   *   (indexes, indexId) => {
-   *     console.log('Slice Ids for bySpecies index changed');
-   *     console.log(indexes.getSliceIds('bySpecies'));
-   *   },
-   * );
+   * const listenerId = indexes.addSliceIdsListener('bySpecies', (indexes) => {
+   *   console.log('Slice Ids for bySpecies index changed');
+   *   console.log(indexes.getSliceIds('bySpecies'));
+   * });
    *
    * store.setRow('pets', 'lowly', {species: 'worm'});
    * // -> 'Slice Ids for bySpecies index changed'
@@ -792,7 +789,7 @@
    * const listenerId = indexes.addSliceRowIdsListener(
    *   'bySpecies',
    *   'dog',
-   *   (indexes, indexId, sliceId) => {
+   *   (indexes) => {
    *     console.log('Row Ids for dog slice in bySpecies index changed');
    *     console.log(indexes.getSliceRowIds('bySpecies', 'dog'));
    *   },
@@ -868,12 +865,9 @@
    * const indexes = createIndexes(store);
    * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
    *
-   * const listenerId = indexes.addSliceIdsListener(
-   *   'bySpecies',
-   *   (indexes, indexId) => {
-   *     console.log('Slice Ids for bySpecies index changed');
-   *   },
-   * );
+   * const listenerId = indexes.addSliceIdsListener('bySpecies', () => {
+   *   console.log('Slice Ids for bySpecies index changed');
+   * });
    *
    * store.setRow('pets', 'lowly', {species: 'worm'});
    * // -> 'Slice Ids for bySpecies index changed'

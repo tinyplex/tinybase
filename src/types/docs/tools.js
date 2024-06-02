@@ -129,8 +129,7 @@
    *     cat: {price: 4},
    *   })
    *   .setValues({open: true, employees: 3});
-   * const tools = createTools(store);
-   * console.log(tools.getStoreStats());
+   * console.log(createTools(store).getStoreStats());
    * // -> {totalTables: 2, totalRows: 5, totalCells: 8, totalValues: 2, jsonLength: 212}
    * ```
    * @example
@@ -351,7 +350,7 @@
    *     price: {type: 'number'},
    *   },
    * });
-   * const [dTs, ts, uiReactDTs, uiReactTsx] =
+   * const [dTs, ts, _uiReactDTs, _uiReactTsx] =
    *   createTools(store).getStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
@@ -373,7 +372,7 @@
    *   fido: {price: 5},
    *   felix: {price: 4},
    * });
-   * const [dTs, ts, uiReactDTs, uiReactTsx] =
+   * const [dTs, ts, _uiReactDTs, _uiReactTsx] =
    *   createTools(store).getStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
@@ -431,8 +430,7 @@
    *     price: {type: 'number'},
    *   },
    * });
-   * const tools = createTools(store);
-   * const [dTs, ts, uiReactDTs, uiReactTsx] =
+   * const [dTs, ts, _uiReactDTs, _uiReactTsx] =
    *   await createTools(store).getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
@@ -454,8 +452,7 @@
    *   fido: {price: 5},
    *   felix: {price: 4},
    * });
-   * const tools = createTools(store);
-   * const [dTs, ts, uiReactDTs, uiReactTsx] =
+   * const [dTs, ts, _uiReactDTs, _uiReactTsx] =
    *   await createTools(store).getPrettyStoreApi('shop');
    *
    * const dTsLines = dTs.split('\n');
@@ -520,8 +517,7 @@
  *     cat: {price: 4},
  *   })
  *   .setValues({open: true, employees: 3});
- * const tools = createTools(store);
- * console.log(tools.getStoreStats());
+ * console.log(createTools(store).getStoreStats());
  * // -> {totalTables: 2, totalRows: 5, totalCells: 8, totalValues: 2, jsonLength: 212}
  * ```
  * @example

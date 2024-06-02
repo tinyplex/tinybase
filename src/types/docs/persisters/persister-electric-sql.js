@@ -31,10 +31,15 @@
    * then gets the Electric client back out again.
    *
    * ```js yolo
+   * import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
+   * import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
+   * import {createStore} from 'tinybase';
+   * import {schema} from './generated/client';
+   *
    * const electricClient = await electrify(
    *   await ElectricDatabase.init('electric.db', ''),
    *   schema,
-   *   {url: ELECTRIC_URL},
+   *   {url: import.meta.env.ELECTRIC_SERVICE},
    * );
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createElectricSqlPersister(
@@ -92,10 +97,15 @@
  * into the Store.
  *
  * ```js yolo
+ * import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
+ * import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
+ * import {createStore} from 'tinybase';
+ * import {schema} from './generated/client';
+ *
  * const electricClient = await electrify(
  *   await ElectricDatabase.init('electric.db', ''),
  *   schema,
- *   {url: ELECTRIC_URL},
+ *   {url: import.meta.env.ELECTRIC_SERVICE},
  * );
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createElectricSqlPersister(
@@ -128,10 +138,15 @@
  * a local ElectricSql database with tabular mapping.
  *
  * ```js yolo
+ * import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
+ * import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
+ * import {createStore} from 'tinybase';
+ * import {schema} from './generated/client';
+ *
  * const electricClient = await electrify(
  *   await ElectricDatabase.init('electric.db', ''),
  *   schema,
- *   {url: ELECTRIC_URL},
+ *   {url: import.meta.env.ELECTRIC_SERVICE},
  * );
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createElectricSqlPersister(store, electricClient, {

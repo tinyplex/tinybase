@@ -30,6 +30,10 @@
    * then gets the database client back out again.
    *
    * ```js yolo
+   * import {createClient} from '@libsql/client';
+   * import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
+   * import {createStore} from 'tinybase';
+   *
    * const client = createClient({url: 'file:my.db'});
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createLibSqlPersister(store, client, 'my_tinybase');
@@ -81,6 +85,10 @@
  * Store.
  *
  * ```js yolo
+ * import {createClient} from '@libsql/client';
+ * import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
+ * import {createStore} from 'tinybase';
+ *
  * const client = createClient({url: 'file:my.db'});
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createLibSqlPersister(store, client, 'my_tinybase');
@@ -106,6 +114,10 @@
  * local SQLite database with tabular mapping.
  *
  * ```js yolo
+ * import {createClient} from '@libsql/client';
+ * import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
+ * import {createStore} from 'tinybase';
+ *
  * const client = createClient({url: 'file:my.db'});
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createLibSqlPersister(store, client, {
