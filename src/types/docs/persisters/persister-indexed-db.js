@@ -30,6 +30,7 @@
    *
    * ```js
    * import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createIndexedDbPersister(store, 'petStore');
@@ -76,6 +77,7 @@
  *
  * ```js
  * import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
+ * import {createStore} from 'tinybase';
  *
  * const store = createStore()
  *   .setTable('pets', {fido: {species: 'dog'}})

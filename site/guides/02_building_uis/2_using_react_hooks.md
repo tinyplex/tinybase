@@ -16,6 +16,7 @@ Cell is updated, so is the HTML.
 ```jsx
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import {createStore} from 'tinybase';
 import {useCell} from 'tinybase/ui-react';
 
 const store = createStore().setCell('pets', 'fido', 'color', 'brown');

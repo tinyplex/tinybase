@@ -29,6 +29,7 @@
    *
    * ```js
    * import {createRemotePersister} from 'tinybase/persisters/persister-remote';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createRemotePersister(
@@ -80,6 +81,7 @@
  *
  * ```js yolo
  * import {createRemotePersister} from 'tinybase/persisters/persister-remote';
+ * import {createStore} from 'tinybase';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createRemotePersister(

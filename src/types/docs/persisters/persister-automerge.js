@@ -36,6 +36,7 @@
    * ```js
    * import {Repo} from '@automerge/automerge-repo';
    * import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
+   * import {createStore} from 'tinybase';
    *
    * const docHandler = new Repo({network: []}).create();
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -72,6 +73,7 @@
  * ```js
  * import {Repo} from '@automerge/automerge-repo';
  * import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
+ * import {createStore} from 'tinybase';
  *
  * const docHandler = new Repo({network: []}).create();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -93,6 +95,7 @@
  * ```js
  * import {Repo} from '@automerge/automerge-repo';
  * import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
+ * import {createStore} from 'tinybase';
  *
  * // Bind the first Store to a network-enabled automerge-repo
  * const repo1 = new Repo({

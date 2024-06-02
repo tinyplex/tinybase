@@ -16,6 +16,8 @@ Metric which is the hypotenuse of the numeric `distance` Cell values in every
 Row:
 
 ```js
+import {createMetrics, createStore} from 'tinybase';
+
 const store = createStore().setTable('dimensions', {
   x: {distance: 1},
   y: {distance: 2},

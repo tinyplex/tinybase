@@ -12,6 +12,7 @@ Ids in an Index, and registers a listener so that any changes to that result
 will cause a re-render:
 
 ```jsx
+import {createIndexes, createStore} from 'tinybase';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {useSliceIds} from 'tinybase/ui-react';

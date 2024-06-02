@@ -55,6 +55,7 @@ session storage:
 
 ```js
 import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+import {createStore} from 'tinybase';
 
 const store = createStore()
   .setValues({employees: 3})

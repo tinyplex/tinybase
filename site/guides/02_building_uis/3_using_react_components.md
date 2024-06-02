@@ -18,6 +18,7 @@ in a `<span>`:
 import {CellView} from 'tinybase/ui-react';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import {createStore} from 'tinybase';
 
 const store = createStore().setCell('pets', 'fido', 'color', 'brown');
 const App = () => (

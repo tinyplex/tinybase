@@ -16,6 +16,8 @@ key into the Ids of the `species` Table. We create a Relationship definition
 called `petSpecies` which connects the two:
 
 ```js
+import {createRelationships, createStore} from 'tinybase';
+
 const store = createStore()
   .setTable('pets', {
     fido: {species: 'dog'},

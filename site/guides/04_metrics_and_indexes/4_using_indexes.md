@@ -51,6 +51,8 @@ three Row objects, each with a string `species` Cell. We create an Index
 definition called `bySpecies` which groups them:
 
 ```js
+import {createIndexes, createStore} from 'tinybase';
+
 const store = createStore().setTable('pets', {
   fido: {species: 'dog'},
   felix: {species: 'cat'},

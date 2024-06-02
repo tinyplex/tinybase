@@ -157,6 +157,7 @@
  * getting their contents, and then registering and removing listeners for them.
  *
  * ```js
+ * import {createRelationships, createStore} from 'tinybase';
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', next: 'felix'},
@@ -263,6 +264,7 @@
    * `pets` Table that relates a Row to another in the `species` Table.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -293,6 +295,7 @@
    * `pets` Table that relates a Row to another in the same Table.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', next: 'felix'},
    *   felix: {species: 'cat', next: 'cujo'},
@@ -323,6 +326,7 @@
    * simple Relationship, and then removes it.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -360,6 +364,7 @@
    * and then gets its reference in order to update its data.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const relationships = createRelationships(createStore());
    * relationships.setRelationshipDefinition(
    *   'petSpecies',
@@ -383,6 +388,7 @@
    * gets the Ids of the definitions.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const relationships = createRelationships(createStore())
    *   .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
    *   .setRelationshipDefinition('petSequence', 'pets', 'pets', 'next');
@@ -408,6 +414,7 @@
    * lists each Row Id within them.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', next: 'felix'},
    *   felix: {species: 'cat', next: 'cujo'},
@@ -443,6 +450,7 @@
    * This example shows two simple Relationship existence checks.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const relationships = createRelationships(
    *   createStore(),
    * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
@@ -468,6 +476,7 @@
    * underlying local Table Id.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const relationships = createRelationships(createStore());
    * relationships.setRelationshipDefinition(
    *   'petSpecies',
@@ -498,6 +507,7 @@
    * underlying remote Table Id.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const relationships = createRelationships(createStore());
    * relationships.setRelationshipDefinition(
    *   'petSpecies',
@@ -530,6 +540,7 @@
    * not exist, and for a Relationship that has not been defined).
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -575,6 +586,7 @@
    * not exist, and for a Relationship that has not been defined).
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -625,6 +637,7 @@
    * that does not exist, and for a Relationship that has not been defined).
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', next: 'felix'},
    *   felix: {species: 'cat', next: 'cujo'},
@@ -666,6 +679,7 @@
    * definition.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -731,6 +745,7 @@
    * listener that responds to any changes to a specific local Row's remote Row.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -773,6 +788,7 @@
    * method to resolve the remote Row as a whole.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog', color: 'brown'},
@@ -857,6 +873,7 @@
    * objects.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -898,6 +915,7 @@
    * objects.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog', color: 'brown'},
@@ -978,6 +996,7 @@
    * objects.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', next: 'felix'},
    *   felix: {species: 'cat', next: 'cujo'},
@@ -1025,6 +1044,7 @@
    * and then removes it.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -1077,6 +1097,7 @@
    * and then destroys it again, removing the listener.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -1125,6 +1146,7 @@
    * This example gets the listener statistics of a Relationships object.
    *
    * ```js
+   * import {createRelationships, createStore} from 'tinybase';
    * const store = createStore();
    * const relationships = createRelationships(store);
    * relationships.addRemoteRowIdListener(null, null, () => {
@@ -1157,6 +1179,7 @@
  * This example creates a Relationships object.
  *
  * ```js
+ * import {createRelationships, createStore} from 'tinybase';
  * const store = createStore();
  * const relationships = createRelationships(store);
  * console.log(relationships.getRelationshipIds());
@@ -1167,6 +1190,7 @@
  * time for the same Store to return the same object.
  *
  * ```js
+ * import {createRelationships, createStore} from 'tinybase';
  * const store = createStore();
  * const relationships1 = createRelationships(store);
  * const relationships2 = createRelationships(store);
