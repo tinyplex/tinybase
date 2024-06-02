@@ -30,7 +30,11 @@
    * then gets the PowerSync instance back out again.
    *
    * ```js yolo
-   * const ps = `usePowerSync`();
+   * import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
+   * import {createStore} from 'tinybase';
+   * import {usePowerSync} from '@journeyapps/powersync-react';
+   *
+   * const ps = usePowerSync();
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createPowerSyncPersister(store, ps, 'my_tinybase');
    *
@@ -82,6 +86,10 @@
  * Store.
  *
  * ```js yolo
+ * import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
+ * import {createStore} from 'tinybase';
+ * import {usePowerSync} from '@journeyapps/powersync-react';
+ *
  * const ps = usePowerSync();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createPowerSyncPersister(store, ps, 'my_tinybase');
@@ -114,6 +122,10 @@
  * local PowerSync instance with tabular mapping.
  *
  * ```js yolo
+ * import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
+ * import {createStore} from 'tinybase';
+ * import {usePowerSync} from '@journeyapps/powersync-react';
+ *
  * const ps = usePowerSync();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createPowerSyncPersister(store, ps, {
