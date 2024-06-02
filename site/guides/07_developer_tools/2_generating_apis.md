@@ -18,6 +18,7 @@ The method takes a parameter which serves as the 'name' for your wrapped, typed,
 Store:
 
 ```js
+import {createStore} from 'tinybase';
 import {createTools} from 'tinybase/tools';
 
 const store = createStore().setTable('pets', {

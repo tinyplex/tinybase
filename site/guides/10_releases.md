@@ -22,6 +22,8 @@ that to (another) store. The merge method is a convenience function to merge two
 stores together:
 
 ```js
+import {createMergeableStore} from 'tinybase';
+
 const localStore1 = createMergeableStore('store1');
 const localStore2 = createMergeableStore('store2');
 
@@ -344,6 +346,7 @@ The API is the same as for all the other Persister APIs:
 
 ```js
 import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
+import {createStore} from 'tinybase';
 
 const store = createStore()
   .setTable('pets', {fido: {species: 'dog'}})
@@ -909,6 +912,8 @@ Simply provide a custom getSliceIdOrIds function in the setIndexDefinition
 method that returns an array of Slice Ids, rather than a single Id:
 
 ```js
+import {createIndexes} from 'tinybase';
+
 store.setTable('pets', {
   fido: {species: 'dog'},
   felix: {species: 'cat'},

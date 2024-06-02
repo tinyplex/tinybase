@@ -110,6 +110,8 @@
  * registering and removing a listener for them.
  *
  * ```js
+ * import {createCheckpoints, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTables({pets: {fido: {sold: false}}})
  *   .setValue('open', true);
@@ -177,6 +179,8 @@
    * number of checkpoints to demonstrate the oldest being pruned.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {views: 0}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -220,6 +224,8 @@
    * checkpoints, one with a label.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -267,6 +273,8 @@
    * checkpoints, one with a label, which are both then re-labelled.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -308,6 +316,8 @@
    * checkpoint.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const checkpoints = createCheckpoints(createStore());
    * checkpoints.getStore().setCell('pets', 'fido', 'species', 'dog');
    * checkpoints.addCheckpoint();
@@ -333,6 +343,8 @@
    * Ids of the checkpoints as it sets them and moves around the stack.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -369,6 +381,8 @@
    * This example iterates over each Checkpoint in a Checkpoints object.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    * const checkpoints = createCheckpoints(store);
    * store.setCell('pets', 'fido', 'sold', true);
@@ -393,6 +407,8 @@
    * This example shows two simple Checkpoint existence checks.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    * const checkpoints = createCheckpoints(store);
    * console.log(checkpoints.hasCheckpoint('0'));
@@ -418,6 +434,8 @@
    * checkpoint with a label, before retrieving it again.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -434,6 +452,8 @@
    * checkpoint return an `undefined` label.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -467,6 +487,8 @@
    * listener that responds to any changes to the checkpoints.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -523,6 +545,8 @@
    * including when the checkpoint no longer exists.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -571,6 +595,8 @@
    * and then removes it.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -607,6 +633,8 @@
    * goes backward to the state of the Store before the change.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -644,6 +672,8 @@
    * forward again to restore the state with the changes.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -674,6 +704,8 @@
    * has no effect.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -719,6 +751,8 @@
    * tries to go to a checkpoint that does not exist.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -772,6 +806,8 @@
    * a change and then clears the checkpoints.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -824,6 +860,8 @@
    * a change and then clears the forward checkpoints.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -872,6 +910,8 @@
    * removing the listener.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {sold: false}}});
    *
    * const checkpoints = createCheckpoints(store);
@@ -904,6 +944,8 @@
    * This example gets the listener statistics of a Checkpoints object.
    *
    * ```js
+   * import {createCheckpoints, createStore} from 'tinybase';
+   *
    * const store = createStore();
    * const checkpoints = createCheckpoints(store);
    * checkpoints.addCheckpointIdsListener(() => {
@@ -933,6 +975,8 @@
  * This example creates a Checkpoints object.
  *
  * ```js
+ * import {createCheckpoints, createStore} from 'tinybase';
+ *
  * const store = createStore();
  * const checkpoints = createCheckpoints(store);
  * console.log(checkpoints.getCheckpointIds());
@@ -943,6 +987,8 @@
  * time for the same Store to return the same object.
  *
  * ```js
+ * import {createCheckpoints, createStore} from 'tinybase';
+ *
  * const store = createStore();
  * const checkpoints1 = createCheckpoints(store);
  * const checkpoints2 = createCheckpoints(store);

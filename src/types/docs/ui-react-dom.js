@@ -468,6 +468,7 @@
  * import React from 'react';
  * import {TableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -517,6 +518,7 @@
  * import React from 'react';
  * import {TableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -621,6 +623,7 @@
  * import React from 'react';
  * import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -678,6 +681,7 @@
  * import React from 'react';
  * import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -772,6 +776,7 @@
  * import React from 'react';
  * import {ValuesInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -817,6 +822,7 @@
  * import React from 'react';
  * import {ValuesInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -889,6 +895,7 @@
  * in a <table> element with a CSS class.
  *
  * ```jsx
+ * import {createIndexes, createStore} from 'tinybase';
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {SliceInHtmlTable} from 'tinybase/ui-react-dom';
@@ -945,6 +952,7 @@
  *
  * ```jsx
  * import {CellView, Provider} from 'tinybase/ui-react';
+ * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {SliceInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
@@ -1047,6 +1055,7 @@
  * CSS class. Note the dotted pairs that are used as column headings.
  *
  * ```jsx
+ * import {createRelationships, createStore} from 'tinybase';
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {RelationshipInHtmlTable} from 'tinybase/ui-react-dom';
@@ -1111,6 +1120,7 @@
  *
  * ```jsx
  * import {CellView, Provider} from 'tinybase/ui-react';
+ * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {RelationshipInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
@@ -1206,6 +1216,7 @@
  * ResultTable in a <table> element with a CSS class.
  *
  * ```jsx
+ * import {createQueries, createStore} from 'tinybase';
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {ResultTableInHtmlTable} from 'tinybase/ui-react-dom';
@@ -1260,6 +1271,7 @@
  *
  * ```jsx
  * import {Provider, ResultCellView} from 'tinybase/ui-react';
+ * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {ResultTableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
@@ -1367,6 +1379,7 @@
  * renders the ResultTable in a <table> element with a CSS class.
  *
  * ```jsx
+ * import {createQueries, createStore} from 'tinybase';
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {ResultSortedTableInHtmlTable} from 'tinybase/ui-react-dom';
@@ -1425,6 +1438,7 @@
  *
  * ```jsx
  * import {Provider, ResultCellView} from 'tinybase/ui-react';
+ * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {ResultSortedTableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
@@ -1522,6 +1536,7 @@
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -1585,6 +1600,7 @@
  * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -1633,6 +1649,7 @@
  * import React from 'react';
  * import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -1715,6 +1732,7 @@
  * import React from 'react';
  * import {StoreInspector} from 'tinybase/debug/ui-react-dom';
  * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>

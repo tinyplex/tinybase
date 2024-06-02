@@ -25,6 +25,7 @@ Store objects by a Persister with auto-load and auto-save:
 
 ```js
 import {Doc} from 'yjs';
+import {createStore} from 'tinybase';
 import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
 
 const doc1 = new Doc();

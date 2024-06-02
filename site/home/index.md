@@ -185,6 +185,8 @@ id="one-with">"The One You Can Sync"</span>
 > Read more about using keyed value data in The Basics guide.
 
 ```js
+import {createStore} from 'tinybase';
+
 const store = createStore()
   .setValues({employees: 3})
   .setValue('open', true);
@@ -376,6 +378,8 @@ sessionStorage.clear();
 > the Making Queries guide, and the Car Analysis demo and Movie Database demo.
 
 ```js
+import {createQueries} from 'tinybase';
+
 store
   .setTable('pets', {
     fido: {species: 'dog', ownerId: '1', price: 5},
@@ -427,6 +431,8 @@ queries.destroy();
 > Read more about Metrics in the Using Metrics guide.
 
 ```js
+import {createMetrics} from 'tinybase';
+
 store.setTable('species', {
   dog: {price: 5},
   cat: {price: 4},
@@ -468,6 +474,8 @@ metrics.destroy();
 > Read more about Indexes in the Using Indexes guide.
 
 ```js
+import {createIndexes} from 'tinybase';
+
 const indexes = createIndexes(store);
 indexes.setIndexDefinition(
   'bySpecies', // indexId
@@ -504,6 +512,8 @@ indexes.destroy();
 > Read more about Relationships in the Using Relationships guide.
 
 ```js
+import {createRelationships} from 'tinybase';
+
 const relationships = createRelationships(store);
 relationships.setRelationshipDefinition(
   'petSpecies', // relationshipId
@@ -536,6 +546,8 @@ relationships.destroy();
 > Read more about Checkpoints in the Using Checkpoints guide.
 
 ```js
+import {createCheckpoints} from 'tinybase';
+
 const checkpoints = createCheckpoints(store);
 
 store.setCell('pets', 'felix', 'sold', false);

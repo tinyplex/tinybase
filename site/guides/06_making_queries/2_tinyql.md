@@ -10,6 +10,8 @@ programmatic, making it a performant, unambiguous, and composable way to
 transform data.
 
 ```js
+import {createQueries, createStore} from 'tinybase';
+
 const store = createStore().setTable('pets', {
   fido: {species: 'dog', color: 'brown'},
   felix: {species: 'cat', color: 'black'},
