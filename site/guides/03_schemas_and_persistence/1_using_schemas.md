@@ -14,6 +14,8 @@ Typically you will want to set a ValuesSchema prior to loading and setting data
 in your Store:
 
 ```js
+import {createStore} from 'tinybase';
+
 const store = createStore().setValuesSchema({
   employees: {type: 'number'},
   open: {type: 'boolean', default: false},
