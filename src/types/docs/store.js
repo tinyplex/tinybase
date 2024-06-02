@@ -23,7 +23,9 @@
  * guaranteed to contain a boolean `sold` Cell that defaults to `false`.
  *
  * ```js
- * const tableSchema: TablesSchema = {
+ * import {TablesSchema} from 'tinybase';
+ *
+ * export const tableSchema: TablesSchema = {
  *   pets: {
  *     species: {type: 'string'},
  *     sold: {type: 'boolean', default: false},
@@ -52,7 +54,12 @@
  * present, and defaults it to `false`.
  *
  * ```js
- * const requiredBoolean: CellSchema = {type: 'boolean', default: false};
+ * import {CellSchema} from 'tinybase';
+ *
+ * export const requiredBoolean: CellSchema = {
+ *   type: 'boolean',
+ *   default: false,
+ * };
  * ```
  * @category Schema
  */
@@ -68,7 +75,9 @@
  * called `open`, that defaults to `false`.
  *
  * ```js
- * const valuesSchema: ValuesSchema = {
+ * import {ValuesSchema} from 'tinybase';
+ *
+ * export const valuesSchema: ValuesSchema = {
  *   open: {type: 'boolean', default: false},
  * };
  * ```
@@ -95,7 +104,12 @@
  * present, and defaults it to `false`.
  *
  * ```js
- * const requiredBoolean: ValueSchema = {type: 'boolean', default: false};
+ * import {ValueSchema} from 'tinybase';
+ *
+ * export const requiredBoolean: ValueSchema = {
+ *   type: 'boolean',
+ *   default: false,
+ * };
  * ```
  * @category Schema
  * @since v3.0.0
@@ -177,7 +191,9 @@
  * Table objects, keyed by their Id.
  * @example
  * ```js
- * const tables: Tables = {
+ * import {Tables} from 'tinybase';
+ *
+ * export const tables: Tables = {
  *   pets: {
  *     fido: {species: 'dog', color: 'brown'},
  *     felix: {species: 'cat'},
@@ -200,7 +216,9 @@
  * Id.
  * @example
  * ```js
- * const table: Table = {
+ * import {Table} from 'tinybase';
+ *
+ * export const table: Table = {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat'},
  * };
@@ -216,7 +234,9 @@
  * object containing individual Cell objects, keyed by their Id.
  * @example
  * ```js
- * const row: Row = {species: 'dog', color: 'brown'};
+ * import {Row} from 'tinybase';
+ *
+ * export const row: Row = {species: 'dog', color: 'brown'};
  * ```
  * @category Store
  */
@@ -229,7 +249,9 @@
  * number, or boolean.
  * @example
  * ```js
- * const cell: Cell = 'dog';
+ * import {Cell} from 'tinybase';
+ *
+ * export const cell: Cell = 'dog';
  * ```
  * @category Store
  */
@@ -254,7 +276,9 @@
  * their Id.
  * @example
  * ```js
- * const values: Values = {open: true, employees: 4};
+ * import {Values} from 'tinybase';
+ *
+ * export const values: Values = {open: true, employees: 4};
  * ```
  * @category Store
  * @since v3.0.0
@@ -269,7 +293,9 @@
  * string, number, or boolean.
  * @example
  * ```js
- * const value: Value = 'dog';
+ * import {Value} from 'tinybase';
+ *
+ * export const value: Value = 'dog';
  * ```
  * @category Store
  * @since v3.0.0
@@ -5853,7 +5879,7 @@
    *
    * const store = createStore().setValues({open: true, employees: 3});
    * const listenerId = store.addValuesListener(
-   *   (store, getValueChange) => store.setValue('updated', true),
+   *   (store) => store.setValue('updated', true),
    *   true,
    * );
    *
@@ -6015,7 +6041,7 @@
    * const store = createStore().setValues({open: true, employees: 3});
    * const listenerId = store.addHasValueListener(
    *   'employees',
-   *   (store, valueId) => store.setValue('updated', true),
+   *   (store) => store.setValue('updated', true),
    *   true,
    * );
    *
@@ -6108,7 +6134,7 @@
    * const store = createStore().setValues({open: true, employees: 3});
    * const listenerId = store.addValueListener(
    *   'employees',
-   *   (store, valueId) => store.setValue('updated', true),
+   *   (store) => store.setValue('updated', true),
    *   true,
    * );
    *
@@ -6558,11 +6584,9 @@
    *     pets: {fido: {species: 'dog', color: 'brown'}},
    *   })
    *   .setValues({open: true, employees: 3});
-   * const listenerId = store.addStartTransactionListener(
-   *   (store, cellsTouched, valuesTouched) => {
-   *     console.log('Transaction started');
-   *   },
-   * );
+   * const listenerId = store.addStartTransactionListener(() => {
+   *   console.log('Transaction started');
+   * });
    *
    * store.transaction(() =>
    *   store.setCell('pets', 'fido', 'color', 'brown').setValue('employees', 3),

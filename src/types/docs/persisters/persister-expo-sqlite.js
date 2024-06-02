@@ -42,7 +42,11 @@
    * then gets the database instance back out again.
    *
    * ```js yolo
-   * const db = SQLite.openDatabase('my.db');
+   * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite-next';
+   * import {createStore} from 'tinybase';
+   * import {openDatabase} from 'expo-sqlite';
+   *
+   * const db = openDatabase('my.db');
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createExpoSqlitePersister(store, db, 'my_tinybase');
    *
@@ -98,7 +102,11 @@
  * Store.
  *
  * ```js yolo
- * const db = SQLite.openDatabase('my.db');
+ * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite-next';
+ * import {createStore} from 'tinybase';
+ * import {openDatabase} from 'expo-sqlite';
+ *
+ * const db = openDatabase('my.db');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createExpoSqlitePersister(store, db, 'my_tinybase');
  *
@@ -130,7 +138,11 @@
  * local SQLite database with tabular mapping.
  *
  * ```js yolo
- * const db = SQLite.openDatabase('my.db');
+ * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite-next';
+ * import {createStore} from 'tinybase';
+ * import {openDatabase} from 'expo-sqlite';
+ *
+ * const db = openDatabase('my.db');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createExpoSqlitePersister(store, db, {
  *   mode: 'tabular',

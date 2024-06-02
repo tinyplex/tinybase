@@ -155,10 +155,8 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
         ?.replace(/^(.*?) \/\/ !act$/gm, 'act(() => {$1});')
         ?.replace(/^(.*?) \/\/ !yolo$/gm, '')
         ?.replace(/\n+/g, '\n')
-        ?.replace(
-          /import (.*?) from '(.*?)';/gms,
-          'const $1 = modules[`$2`];',
-        ) ?? '';
+        ?.replace(/import (.*?) from '(.*?)';/gms, 'const $1 = modules[`$2`];')
+        ?.replace(/export (const|class) /gm, '$1 ') ?? '';
     // lol what could go wrong
     try {
       const js = transformSync(realTsx, {loader: 'tsx'});
