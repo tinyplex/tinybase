@@ -38,7 +38,7 @@
  * ```js
  * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
  *
- * class MyServer extends TinyBasePartyKitServer {
+ * export class MyServer extends TinyBasePartyKitServer {
  *   readonly config = {
  *     storePath: '/my_tinybase',
  *     storagePrefix: 'tinybase_',
@@ -107,7 +107,7 @@
  * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
  *
  * // This is your PartyKit server entry point.
- * class MyServer extends TinyBasePartyKitServer {
+ * export class MyServer extends TinyBasePartyKitServer {
  *   constructor(party) {
  *     super(party);
  *     // custom constructor code
@@ -164,7 +164,7 @@
    * ```js
    * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
    *
-   * class MyServer extends TinyBasePartyKitServer {
+   * export class MyServer extends TinyBasePartyKitServer {
    *   async onMessage(message, connection) {
    *     await super.onMessage(message, connection);
    *     // custom onMessage code
@@ -190,7 +190,7 @@
    * ```js
    * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
    *
-   * class MyServer extends TinyBasePartyKitServer {
+   * export class MyServer extends TinyBasePartyKitServer {
    *   async onRequest(request) {
    *     // custom onRequest code, else:
    *     return await super.onRequest(request);
@@ -239,7 +239,7 @@
    * ```js
    * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
    *
-   * class MyServer extends TinyBasePartyKitServer {
+   * export class MyServer extends TinyBasePartyKitServer {
    *   canSetTable(tableId, initialSave) {
    *     return initialSave || tableId != 'user';
    *   }
@@ -273,7 +273,7 @@
    * ```js
    * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
    *
-   * class MyServer extends TinyBasePartyKitServer {
+   * export class MyServer extends TinyBasePartyKitServer {
    *   canDelTable(tableId) {
    *     return tableId != 'user';
    *   }
@@ -313,7 +313,7 @@
    * ```js
    * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
    *
-   * class MyServer extends TinyBasePartyKitServer {
+   * export class MyServer extends TinyBasePartyKitServer {
    *   canSetRow(tableId, rowId, initialSave) {
    *     return initialSave || tableId != 'user' || rowId != 'me';
    *   }
@@ -348,7 +348,7 @@
    * ```js
    * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
    *
-   * class MyServer extends TinyBasePartyKitServer {
+   * export class MyServer extends TinyBasePartyKitServer {
    *   canDelRow(tableId, rowId) {
    *     return tableId != 'user' || rowId != 'me';
    *   }
@@ -389,7 +389,7 @@
    * ```js
    * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
    *
-   * class MyServer extends TinyBasePartyKitServer {
+   * export class MyServer extends TinyBasePartyKitServer {
    *   canSetCell(tableId, rowId, cellId, cell, initialSave) {
    *     return (
    *       initialSave || tableId != 'user' || rowId != 'me' || cellId != 'name'
@@ -426,7 +426,7 @@
    * ```js
    * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
    *
-   * class MyServer extends TinyBasePartyKitServer {
+   * export class MyServer extends TinyBasePartyKitServer {
    *   canDelCell(tableId, rowId, cellId) {
    *     return tableId != 'user' || rowId != 'me' || cellId != 'name';
    *   }
@@ -469,9 +469,9 @@
    * ```js
    * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
    *
-   * class MyServer extends TinyBasePartyKitServer {
+   * export class MyServer extends TinyBasePartyKitServer {
    *   canSetValue(valueId, value, initialSave) {
-   *     return initialSave || userId != 'userId';
+   *     return initialSave || valueId != 'userId';
    *   }
    * }
    * ```
@@ -503,7 +503,7 @@
    * ```js
    * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
    *
-   * class MyServer extends TinyBasePartyKitServer {
+   * export class MyServer extends TinyBasePartyKitServer {
    *   canDelValue(valueId) {
    *     return valueId != 'userId';
    *   }

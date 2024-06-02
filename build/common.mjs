@@ -287,6 +287,12 @@ export const lintCheckDocs = async (dir) => {
     overrideConfig: {
       rules: {
         'no-console': 0,
+        'react/prop-types': 0,
+        'react-hooks/rules-of-hooks': 0,
+        'max-len': [
+          2,
+          {code: 80, ignorePattern: '^(\\s+\\* )?((im|ex)ports?|// ->)\\W.*'},
+        ],
       },
     },
   });

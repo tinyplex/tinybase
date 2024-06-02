@@ -657,7 +657,7 @@
    *
    * const listenerId = metrics.addMetricListener(
    *   'highestPrice',
-   *   (metrics, metricId, newMetric, oldMetric) => {
+   *   (metrics, _metricId, newMetric, oldMetric) => {
    *     console.log('highestPrice metric changed');
    *     console.log([oldMetric, newMetric]);
    *   },
@@ -729,12 +729,9 @@
    * const metrics = createMetrics(store);
    * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
    *
-   * const listenerId = metrics.addMetricListener(
-   *   'highestPrice',
-   *   (metrics, metricId, newMetric, oldMetric) => {
-   *     console.log('highestPrice metric changed');
-   *   },
-   * );
+   * const listenerId = metrics.addMetricListener('highestPrice', () => {
+   *   console.log('highestPrice metric changed');
+   * });
    *
    * store.setCell('species', 'horse', 'price', 20);
    * // -> 'highestPrice metric changed'
