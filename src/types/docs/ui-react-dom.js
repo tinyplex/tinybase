@@ -543,7 +543,7 @@
  * const customCells = {
  *   species: {
  *     component: FormattedCellView,
- *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'fido'}),
+ *     getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
  *   },
  * };
  *
@@ -708,7 +708,7 @@
  * const customCells = {
  *   species: {
  *     component: FormattedCellView,
- *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'fido'}),
+ *     getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
  *   },
  * };
  *
@@ -829,10 +829,11 @@
  *     <Pane />
  *   </Provider>
  * );
+ * const getBoldProp = (valueId) => ({bold: valueId == 'open'});
  * const Pane = () => (
  *   <ValuesInHtmlTable
  *     valueComponent={FormattedValueView}
- *     getValueComponentProps={(valueId) => ({bold: valueId == 'open'})}
+ *     getValueComponentProps={getBoldProp}
  *     headerRow={false}
  *     idColumn={false}
  *   />
@@ -923,7 +924,7 @@
  * console.log(app.innerHTML);
  * // ->
  * `
- * <table class=\"slice\">
+ * <table class="slice">
  *   <thead>
  *     <tr>
  *       <th>Id</th>
@@ -981,7 +982,7 @@
  * const customCells = {
  *   species: {
  *     component: FormattedCellView,
- *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'fido'}),
+ *     getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
  *   },
  * };
  *
@@ -1085,7 +1086,7 @@
  * console.log(app.innerHTML);
  * // ->
  * `
- * <table class=\"relationship\">
+ * <table class="relationship">
  *   <thead>
  *     <tr>
  *       <th>pets.Id</th>
@@ -1153,7 +1154,7 @@
  * const customCells = {
  *   'species.price': {
  *     component: FormattedCellView,
- *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'dog'}),
+ *     getComponentProps: (rowId) => ({bold: rowId == 'dog'}),
  *   },
  * };
  *
@@ -1299,7 +1300,7 @@
  * const customCells = {
  *   color: {
  *     component: FormattedResultCellView,
- *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'fido'}),
+ *     getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
  *   },
  * };
  *
@@ -1468,7 +1469,7 @@
  * const customCells = {
  *   color: {
  *     component: FormattedResultCellView,
- *     getComponentProps: (rowId, cellId) => ({bold: rowId == 'fido'}),
+ *     getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
  *   },
  * };
  *

@@ -127,7 +127,9 @@
  * settings.
  *
  * ```js
- * const databasePersisterConfig: DatabasePersisterConfig = {
+ * import {DatabasePersisterConfig} from 'tinybase';
+ *
+ * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'json',
  *   storeTableName: 'my_tinybase',
  *   autoLoadIntervalSeconds: 2,
@@ -139,7 +141,9 @@
  * mappings. See DpcTabular for more details on these settings.
  *
  * ```js
- * const databasePersisterConfig: DatabasePersisterConfig = {
+ * import {DatabasePersisterConfig} from 'tinybase';
+ *
+ * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'tabular',
  *   tables: {
  *     load: {petsInDb: 'pets', speciesInDb: 'species'},
@@ -188,7 +192,9 @@
  * and save a JSON serialization from and to a table called `tinybase_json`.
  *
  * ```js
- * const databasePersisterConfig: DatabasePersisterConfig = {
+ * import {DatabasePersisterConfig} from 'tinybase';
+ *
+ * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'json',
  *   storeTableName: 'tinybase_json',
  * };
@@ -241,7 +247,9 @@
  * For example:
  *
  * ```js
- * const databasePersisterConfig: DatabasePersisterConfig = {
+ * import {DatabasePersisterConfig} from 'tinybase';
+ *
+ * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'tabular',
  *   tables: {
  *     load: {petsInDb: 'pets', speciesInDb: 'species'},
@@ -262,7 +270,9 @@
  * mappings, and Values data from and to a table called `my_tinybase_values`.
  *
  * ```js
- * const databasePersisterConfig: DatabasePersisterConfig = {
+ * import {DatabasePersisterConfig} from 'tinybase';
+ *
+ * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'tabular',
  *   tables: {
  *     load: {petsInDb: 'pets', speciesInDb: 'species'},
@@ -338,7 +348,9 @@
  * Id called 'id' and the other defaults it to '_id'.
  *
  * ```js
- * const databasePersisterConfig: DatabasePersisterConfig = {
+ * import {DatabasePersisterConfig} from 'tinybase';
+ *
+ * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'tabular',
  *   tables: {
  *     load: {
@@ -443,7 +455,9 @@
  * empty.
  *
  * ```js
- * const databasePersisterConfig: DatabasePersisterConfig = {
+ * import {DatabasePersisterConfig} from 'tinybase';
+ *
+ * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'tabular',
  *   tables: {
  *     save: {
@@ -540,7 +554,9 @@
  * table called 'my_tinybase_values'.
  *
  * ```js
- * const databasePersisterConfig: DatabasePersisterConfig = {
+ * import {DatabasePersisterConfig} from 'tinybase';
+ *
+ * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'tabular',
  *   values: {
  *     load: true,
@@ -1029,6 +1045,13 @@
    * hypothetical remote system.
    *
    * ```js yolo
+   * import {
+   *   checkRemoteSystemIsReady,
+   *   getDataFromRemoteSystem,
+   *   sendDataToRemoteSystem,
+   * } from 'custom-remote-handlers';
+   * import {createCustomPersister, createStore} from 'tinybase';
+   *
    * const store = createStore();
    * const persister = createCustomPersister(
    *   store,

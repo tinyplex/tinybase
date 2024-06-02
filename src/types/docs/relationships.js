@@ -769,7 +769,7 @@
    * const listenerId = relationships.addRemoteRowIdListener(
    *   'petSpecies',
    *   'cujo',
-   *   (relationships, relationshipId, localRowId) => {
+   *   (relationships) => {
    *     console.log('petSpecies relationship (from cujo) changed');
    *     console.log(relationships.getRemoteRowId('petSpecies', 'cujo'));
    *   },
@@ -897,7 +897,7 @@
    * const listenerId = relationships.addLocalRowIdsListener(
    *   'petSpecies',
    *   'dog',
-   *   (relationships, relationshipId, remoteRowId) => {
+   *   (relationships) => {
    *     console.log('petSpecies relationship (to dog) changed');
    *     console.log(relationships.getLocalRowIds('petSpecies', 'dog'));
    *   },
@@ -1014,7 +1014,7 @@
    * const listenerId = relationships.addLinkedRowIdsListener(
    *   'petSequence',
    *   'fido',
-   *   (relationships, relationshipId, firstRowId) => {
+   *   (relationships) => {
    *     console.log('petSequence linked list (from fido) changed');
    *     console.log(relationships.getLinkedRowIds('petSequence', 'fido'));
    *   },
@@ -1068,7 +1068,7 @@
    * const listenerId = relationships.addLocalRowIdsListener(
    *   'petSpecies',
    *   'dog',
-   *   (relationships, relationshipId, remoteRowId) => {
+   *   () => {
    *     console.log('petSpecies relationship (to dog) changed');
    *   },
    * );
