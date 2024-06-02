@@ -62,6 +62,8 @@
  * This example creates an Indexes object.
  *
  * ```js
+ * import {createIndexes, createStore} from 'tinybase';
+ *
  * const store = createStore();
  * const indexes = createIndexes(store);
  * console.log(indexes.getIndexIds());
@@ -73,6 +75,8 @@
  * Ids within them) are alphabetically sorted using the defaultSorter function.
  *
  * ```js
+ * import {createIndexes, createStore, defaultSorter} from 'tinybase';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
  *   felix: {species: 'cat'},

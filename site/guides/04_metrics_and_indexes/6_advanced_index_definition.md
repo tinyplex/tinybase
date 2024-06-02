@@ -11,6 +11,8 @@ each Slice. For example, here the members of each species are sorted by weight,
 by specifying that CellId in the fourth parameter:
 
 ```jsx
+import {createIndexes, createStore} from 'tinybase';
+
 const store = createStore().setTable('pets', {
   fido: {species: 'dog', weight: 42},
   felix: {species: 'cat', weight: 13},

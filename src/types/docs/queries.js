@@ -54,6 +54,8 @@
  * number, or boolean.
  * @example
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const resultCell: ResultCell = 'dog';
  * ```
  * @category Result
@@ -529,6 +531,8 @@
  * This example shows a query that selects two Cells from the main query Table.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown', legs: 4},
  *   felix: {species: 'cat', color: 'black', legs: 4},
@@ -552,6 +556,8 @@
  * This example shows a query that selects two Cells, one from a joined Table.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', ownerId: '1'},
@@ -583,6 +589,8 @@
  * This example shows a query that calculates a value from two underlying Cells.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', ownerId: '1'},
@@ -664,6 +672,8 @@
  * Both are aliased with the 'as' function:
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', ownerId: '1'},
@@ -727,6 +737,8 @@
  * in the main query Table.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', ownerId: '1'},
@@ -761,6 +773,8 @@
  * the ResultTable.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', buyerId: '1', sellerId: '2'},
@@ -794,6 +808,8 @@
  * from multiple values in the root Table rather than a single Cell.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', color: 'brown'},
@@ -829,6 +845,8 @@
  * intermediate other.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', ownerId: '1'},
@@ -938,6 +956,8 @@
  * disambiguate them. Note that the selected Cells are also aliased.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', buyerId: '1', sellerId: '2'},
@@ -998,6 +1018,8 @@
  * comparing an underlying Cell from it with a value.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
  *   felix: {species: 'cat'},
@@ -1022,6 +1044,8 @@
  * table has also been aliased, and so its alias is used in the Where clause.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', ownerId: '1'},
@@ -1055,6 +1079,8 @@
  * alias is used in the Where clause.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', ownerId: '1'},
@@ -1172,6 +1198,8 @@
  * single selected Cell from a joined Table.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog'},
@@ -1202,6 +1230,8 @@
  * aggregated by the two other dimensional 'group by' Cells.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', owner: 'alice'},
@@ -1262,6 +1292,8 @@
  * disambiguate them.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', price: 5},
  *   felix: {species: 'cat', price: 4},
@@ -1317,6 +1349,8 @@
  * comparing a Cell from it with a value.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', price: 5},
  *   felix: {species: 'cat', price: 4},
@@ -1346,6 +1380,8 @@
  * a condition that is calculated from Cell values.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', price: 5},
  *   felix: {species: 'cat', price: 4},
@@ -1422,6 +1458,8 @@
  * and removing listeners for them.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', color: 'brown', ownerId: '1'},
@@ -1539,6 +1577,8 @@
    * the `species` Cell matches as certain value.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   * 
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -1567,6 +1607,8 @@
    * query, and then removes it.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -1598,6 +1640,8 @@
    * then gets its reference in order to update its data.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const queries = createQueries(createStore());
    * queries.setQueryDefinition('dogColors', 'pets', ({select, where}) => {
    *   select('color');
@@ -1622,6 +1666,8 @@
    * the Ids of the definitions.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const queries = createQueries(createStore())
    *   .setQueryDefinition('dogColors', 'pets', ({select, where}) => {
    *     select('color');
@@ -1651,6 +1697,8 @@
    * This example iterates over each query in a Queries object.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const queries = createQueries(createStore())
    *   .setQueryDefinition('dogColors', 'pets', ({select, where}) => {
    *     select('color');
@@ -1680,6 +1728,8 @@
    * This example shows two simple query existence checks.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const queries = createQueries(createStore()).setQueryDefinition(
    *   'dogColors',
    *   'pets',
@@ -1711,6 +1761,8 @@
    * underlying Table Id.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const queries = createQueries(createStore()).setQueryDefinition(
    *   'dogColors',
    *   'pets',
@@ -1748,6 +1800,8 @@
    * ResultTable.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -1791,6 +1845,8 @@
    * ResultCell Ids.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -1831,6 +1887,8 @@
    * ResultRow count.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -1872,6 +1930,8 @@
    * ResultRow Ids.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -1930,6 +1990,8 @@
    * ResultRow Ids.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -1974,6 +2036,8 @@
    * the ResultRow.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2018,6 +2082,8 @@
    * ResultCell Ids.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2060,6 +2126,8 @@
    * the ResultCell.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2094,6 +2162,8 @@
    * This example shows two simple ResultTable existence checks.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2128,6 +2198,8 @@
    * This example shows two simple ResultRow existence checks.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2163,6 +2235,8 @@
    * This example shows two simple ResultRow existence checks.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2202,6 +2276,8 @@
    * This example iterates over each query's ResultTable in a Queries object.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2248,6 +2324,8 @@
    * This example iterates over each ResultRow in a query's ResultTable.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2292,6 +2370,8 @@
    * This example iterates over each ResultCell in a query's ResultRow.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2333,6 +2413,8 @@
    * definition.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2379,6 +2461,8 @@
    * specific ResultTable.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2413,6 +2497,8 @@
    * ResultTable.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2472,6 +2558,8 @@
    * Cell Ids of a specific ResultTable.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2507,6 +2595,8 @@
    * ResultCell Ids of any ResultTable.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black', legs: 4},
@@ -2565,6 +2655,8 @@
    * of ResultRow objects in a specific ResultTable.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2599,6 +2691,8 @@
    * of ResultRow objects any ResultTable.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2660,6 +2754,8 @@
    * ResultRow Ids of a specific ResultTable.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2694,6 +2790,8 @@
    * ResultRow Ids of any ResultTable.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2770,6 +2868,8 @@
    * ResultRow Ids of a specific ResultTable.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2810,6 +2910,8 @@
    * their own value, since the `cellId` parameter is explicitly undefined.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2877,6 +2979,8 @@
    * specific ResultRow.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2912,6 +3016,8 @@
    * ResultRow.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -2978,6 +3084,8 @@
    * ResultCell Ids of a specific ResultRow.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -3014,6 +3122,8 @@
    * ResultCell Ids of any ResultRow.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -3084,6 +3194,8 @@
    * specific ResultCell.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -3124,6 +3236,8 @@
    * ResultCell.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown', price: 5},
    *   felix: {species: 'cat', color: 'black', price: 4},
@@ -3176,6 +3290,8 @@
    * then removes it.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -3219,6 +3335,8 @@
    * again, removing the listener.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -3256,6 +3374,8 @@
    * This example gets the listener statistics of a Queries object.
    *
    * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
    * const store = createStore();
    * const queries = createQueries(store);
    * queries.addResultTableListener(null, () => console.log('Result changed'));
@@ -3283,6 +3403,8 @@
  * This example creates a Queries object.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore();
  * const queries = createQueries(store);
  * console.log(queries.getQueryIds());
@@ -3293,6 +3415,8 @@
  * for the same Store to return the same object.
  *
  * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
  * const store = createStore();
  * const queries1 = createQueries(store);
  * const queries2 = createQueries(store);

@@ -11,6 +11,8 @@ this code will replace 'walnut' with 'brown' when the `color` Cell is updated.
 But in fact the correction will fail silently:
 
 ```js
+import {createStore} from 'tinybase';
+
 const store = createStore();
 store.setRow('pets', 'fido', {species: 'dog', color: 'black'});
 

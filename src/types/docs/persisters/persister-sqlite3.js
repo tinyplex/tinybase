@@ -33,6 +33,7 @@
    * ```js
    * import {Database} from 'sqlite3';
    * import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
+   * import {createStore} from 'tinybase';
    *
    * const db = new Database(':memory:');
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -88,6 +89,7 @@
  * ```js
  * import {Database} from 'sqlite3';
  * import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
+ * import {createStore} from 'tinybase';
  *
  * const db = new Database(':memory:');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -123,6 +125,7 @@
  * ```js
  * import {Database} from 'sqlite3';
  * import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
+ * import {createStore} from 'tinybase';
  *
  * const db = new Database(':memory:');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});

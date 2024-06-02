@@ -626,6 +626,7 @@
  *
  * ```js
  * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {createStore} from 'tinybase';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createSessionPersister(store, 'pets');
@@ -649,6 +650,7 @@
  *
  * ```js
  * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {createStore} from 'tinybase';
  *
  * const store = createStore();
  * const persister = createSessionPersister(store, 'pets');
@@ -700,6 +702,7 @@
    *
    * ```js
    * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * sessionStorage.setItem('pets', '[{"pets":{"fido":{"species":"dog"}}},{}]');
    *
@@ -720,6 +723,7 @@
    *
    * ```js
    * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore();
    * const persister = createSessionPersister(store, 'pets');
@@ -770,6 +774,7 @@
    *
    * ```js
    * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore();
    * const persister = createSessionPersister(store, 'pets');
@@ -806,6 +811,7 @@
    *
    * ```js
    * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore();
    * const persister = createSessionPersister(store, 'pets');
@@ -847,6 +853,7 @@
    *
    * ```js
    * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * const persister = createSessionPersister(createStore(), 'pets');
    *
@@ -880,6 +887,7 @@
    *
    * ```js
    * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createSessionPersister(store, 'pets');
@@ -914,6 +922,7 @@
    *
    * ```js
    * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createSessionPersister(store, 'pets');
@@ -947,6 +956,7 @@
    *
    * ```js
    * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createSessionPersister(store, 'pets');
@@ -980,6 +990,7 @@
    *
    * ```js
    * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * const persister = createSessionPersister(createStore(), 'pets');
    *
@@ -1050,6 +1061,7 @@
    *
    * ```js
    * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * const persister = createSessionPersister(createStore(), 'pets');
    * await persister.startAutoSave();
@@ -1079,6 +1091,7 @@
    *
    * ```js
    * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore();
    * const persister = createSessionPersister(store, 'pets');
@@ -1117,6 +1130,7 @@
    *
    * ```js
    * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore();
    * const persister = createSessionPersister(store, 'pets');
@@ -1191,6 +1205,8 @@
  * for changes every second.
  *
  * ```js
+ * import {createCustomPersister, createStore} from 'tinybase';
+ *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * let storeJson;
  *

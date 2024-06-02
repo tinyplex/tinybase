@@ -18,6 +18,8 @@ The transaction method takes a function that makes multiple mutations to the
 store, buffering all calls to the relevant listeners until it completes.
 
 ```js
+import {createStore} from 'tinybase';
+
 const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
 const listenerId = store.addRowListener('pets', 'fido', () =>
   console.log('Fido changed'),

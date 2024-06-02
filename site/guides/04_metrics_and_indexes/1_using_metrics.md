@@ -16,6 +16,8 @@ definition called `highestPrice` which is the maximum value of that Cell across
 the whole Table:
 
 ```js
+import {createMetrics, createStore} from 'tinybase';
+
 const store = createStore().setTable('species', {
   dog: {price: 5},
   cat: {price: 4},

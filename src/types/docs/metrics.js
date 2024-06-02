@@ -187,6 +187,8 @@
  * removing a listener for it.
  *
  * ```js
+ * import {createMetrics, createStore} from 'tinybase';
+ *
  * const store = createStore().setTable('species', {
  *   dog: {price: 5},
  *   cat: {price: 4},
@@ -274,6 +276,8 @@
    * simple Metric to count the Row objects in the Table.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('species', {
    *   dog: {price: 5},
    *   cat: {price: 4},
@@ -292,6 +296,8 @@
    * objects in the Table.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('species', {
    *   dog: {price: 5},
    *   cat: {price: 4},
@@ -309,6 +315,8 @@
    * custom Metric to get the lowest value of each `price` Cell, greater than 2.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('species', {
    *   dog: {price: 5},
    *   cat: {price: 4},
@@ -333,6 +341,8 @@
    * functions.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('species', {
    *   dog: {price: 5},
    *   cat: {price: 4},
@@ -366,6 +376,8 @@
    * custom Metric to get the average value of a discounted price.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('species', {
    *   dog: {price: 5, discount: 0.3},
    *   cat: {price: 4, discount: 0.2},
@@ -395,6 +407,8 @@
    * Metric, and then removes it.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('species', {
    *   dog: {price: 5},
    *   cat: {price: 4},
@@ -422,6 +436,8 @@
    * then gets its reference in order to update its data.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const metrics = createMetrics(createStore());
    * metrics.setMetricDefinition('speciesCount', 'species');
    * metrics.getStore().setCell('species', 'dog', 'price', 5);
@@ -440,6 +456,8 @@
    * the Ids of the definitions.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const metrics = createMetrics(createStore())
    *   .setMetricDefinition('speciesCount', 'species')
    *   .setMetricDefinition('petsCount', 'pets');
@@ -462,6 +480,8 @@
    * This example iterates over each Metric in a Metrics object.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('species', {
    *   dog: {price: 5},
    *   cat: {price: 4},
@@ -489,6 +509,8 @@
    * This example shows two simple Metric existence checks.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore();
    * const metrics = createMetrics(store);
    * metrics.setMetricDefinition('highestPrice', 'species', 'max', 'price');
@@ -516,6 +538,8 @@
    * queries it (and a non-existent definition) to get the underlying Table Id.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const metrics = createMetrics(createStore());
    * metrics.setMetricDefinition('speciesCount', 'species');
    *
@@ -541,6 +565,8 @@
    * been defined).
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('species', {
    *   dog: {price: 5},
    *   cat: {price: 4},
@@ -573,6 +599,8 @@
    * definition.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('species', {
    *   dog: {price: 5},
    *   cat: {price: 4},
@@ -616,6 +644,8 @@
    * listener that responds to any changes to a specific Metric.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('species', {
    *   dog: {price: 5},
    *   cat: {price: 4},
@@ -644,6 +674,8 @@
    * listener that responds to any changes to any Metric.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('species', {
    *   dog: {price: 5},
    *   cat: {price: 4},
@@ -686,6 +718,8 @@
    * then removes it.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('species', {
    *   dog: {price: 5},
    *   cat: {price: 4},
@@ -726,6 +760,8 @@
    * again, removing the listener.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('species', {
    *   dog: {price: 5},
    *   cat: {price: 4},
@@ -760,6 +796,8 @@
    * This example gets the listener statistics of a Metrics object.
    *
    * ```js
+   * import {createMetrics, createStore} from 'tinybase';
+   *
    * const store = createStore();
    * const metrics = createMetrics(store);
    * metrics.addMetricListener(null, () => console.log('Metric changed'));
@@ -784,6 +822,8 @@
  * This example creates a Metrics object.
  *
  * ```js
+ * import {createMetrics, createStore} from 'tinybase';
+ *
  * const store = createStore();
  * const metrics = createMetrics(store);
  * console.log(metrics.getMetricIds());
@@ -794,6 +834,8 @@
  * for the same Store to return the same object.
  *
  * ```js
+ * import {createMetrics, createStore} from 'tinybase';
+ *
  * const store = createStore();
  * const metrics1 = createMetrics(store);
  * const metrics2 = createMetrics(store);

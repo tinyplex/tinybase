@@ -15,6 +15,8 @@ For example, we could link our pets to a remote Table that is keyed off both
 color and species:
 
 ```js
+import {createRelationships, createStore} from 'tinybase';
+
 const store = createStore()
   .setTable('pets', {
     fido: {species: 'dog', color: 'brown'},
