@@ -32,6 +32,7 @@
    *
    * ```js
    * import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
+   * import {createStore} from 'tinybase';
    * import initWasm from '@vlcn.io/crsqlite-wasm';
    *
    * const crSqlite3 = await initWasm();
@@ -88,6 +89,7 @@
  *
  * ```js
  * import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
+ * import {createStore} from 'tinybase';
  * import initWasm from '@vlcn.io/crsqlite-wasm';
  *
  * const crSqlite3 = await initWasm();
@@ -117,6 +119,7 @@
  *
  * ```js
  * import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
+ * import {createStore} from 'tinybase';
  * import initWasm from '@vlcn.io/crsqlite-wasm';
  *
  * const crSqlite3 = await initWasm();

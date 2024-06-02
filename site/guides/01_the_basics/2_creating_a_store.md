@@ -6,6 +6,8 @@ Creating a Store requires just a simple call to the createStore function from
 the store module.
 
 ```js
+import {createStore} from 'tinybase';
+
 const store = createStore();
 ```
 

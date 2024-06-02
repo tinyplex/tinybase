@@ -23,6 +23,8 @@ three Row objects, each with two Cells. We create a query definition called
 value in the other:
 
 ```js
+import {createQueries, createStore} from 'tinybase';
+
 const store = createStore().setTable('pets', {
   fido: {species: 'dog', color: 'brown'},
   felix: {species: 'cat', color: 'black'},
