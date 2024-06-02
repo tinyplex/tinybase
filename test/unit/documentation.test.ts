@@ -33,7 +33,7 @@ import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {transformSync} from 'esbuild';
 
 // globally present; do not need to be imported in examples
-[{BroadcastChannelNetworkAdapter}, ReactDOMTestUtils].forEach((module) =>
+[ReactDOMTestUtils].forEach((module) =>
   Object.entries(module).forEach(([key, value]) => {
     (globalThis as any)[key] = value;
   }),
@@ -42,6 +42,9 @@ import {transformSync} from 'esbuild';
 // need to be imported in examples
 (globalThis as any).modules = {
   '@automerge/automerge-repo': AutomergeRepo,
+  '@automerge/automerge-repo-network-broadcastchannel': {
+    BroadcastChannelNetworkAdapter,
+  },
   '@sqlite.org/sqlite-wasm': sqlite3InitModule,
   '@vlcn.io/crsqlite-wasm': initWasm,
   react: React,

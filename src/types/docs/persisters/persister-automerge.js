@@ -93,6 +93,7 @@
  * each other using a network.
  *
  * ```js
+ * import {BroadcastChannelNetworkAdapter} from '@automerge/automerge-repo-network-broadcastchannel';
  * import {Repo} from '@automerge/automerge-repo';
  * import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
  * import {createStore} from 'tinybase';
