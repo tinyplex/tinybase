@@ -547,6 +547,7 @@ The following is the equivalent for an Automerge document that will sync over
 the broadcast channel:
 
 ```js
+import {BroadcastChannelNetworkAdapter} from '@automerge/automerge-repo-network-broadcastchannel';
 import {Repo} from '@automerge/automerge-repo';
 import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
 
