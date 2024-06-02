@@ -42,6 +42,7 @@
    *
    * ```js yolo
    * import {createPartyKitPersister} from 'tinybase/persisters/persister-partykit-client';
+   * import {createStore} from 'tinybase';
    *
    * const partySocket = new PartySocket({
    *   host: PARTYKIT_HOST,
@@ -150,6 +151,7 @@
  *
  * ```js yolo
  * import {createPartyKitPersister} from 'tinybase/persisters/persister-partykit-client';
+ * import {createStore} from 'tinybase';
  *
  * const store = createStore()
  *   .setTable('pets', {fido: {species: 'dog'}})

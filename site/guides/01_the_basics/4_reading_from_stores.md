@@ -7,6 +7,8 @@ return the Store again, so we can easily instantiate it by chaining methods
 together:
 
 ```js
+import {createStore} from 'tinybase';
+
 const store = createStore()
   .setValues({employees: 3, open: true})
   .setTables({
