@@ -153,7 +153,6 @@
  * // Previous redo of checkpoints '1' and '2' are now not possible.
  *
  * checkpoints.delListener(listenerId);
- * checkpoints.destroy();
  * ```
  * @see Relationships And Checkpoints guides
  * @see Todo App demos
@@ -517,7 +516,6 @@
    * // -> [['0'], '1', []]
    *
    * checkpoints.delListener(listenerId);
-   * checkpoints.destroy();
    * ```
    * @category Listener
    */
@@ -577,7 +575,6 @@
    * // The checkpoint no longer exists.
    *
    * checkpoints.delListener(listenerId);
-   * checkpoints.destroy();
    * ```
    * @category Listener
    */
@@ -839,6 +836,8 @@
    * // -> {pets: {fido: {sold: true, color: 'brown'}}}
    * console.log(checkpoints.getCheckpointIds());
    * // -> [[], '0', []]
+   *
+   * checkpoints.delListener(listenerId);
    * ```
    * @category Lifecycle
    */
@@ -893,6 +892,8 @@
    *
    * console.log(checkpoints.getCheckpointIds());
    * // -> [['0'], '1', []]
+   *
+   * checkpoints.delListener(listenerId);
    * ```
    * @category Lifecycle
    * @since v4.5.3
