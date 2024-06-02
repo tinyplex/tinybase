@@ -189,6 +189,8 @@
   },
   "sideEffects": false,
   "scripts": {
+    "lintFiles": "gulp lintFiles",
+    "lintDocs": "gulp lintDocs",
     "lint": "gulp lint",
     "spell": "gulp spell",
     "ts": "gulp ts",

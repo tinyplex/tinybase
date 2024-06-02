@@ -8,8 +8,8 @@
 */
 
 // All other imports are lazy so that single tasks start up fast.
-import {basename, dirname} from 'path';
-import {existsSync, promises} from 'fs';
+import {basename, dirname, join, resolve} from 'path';
+import {existsSync, promises, readdirSync} from 'fs';
 
 const UTF8 = 'utf-8';
 const TEST_MODULES = [
@@ -103,6 +103,13 @@ export const allOf = async (array, cb) => await Promise.all(array.map(cb));
 export const testModules = async (cb) => await allOf(TEST_MODULES, cb);
 export const allModules = async (cb) => await allOf(ALL_MODULES, cb);
 
+export const clearDir = async (dir = LIB_DIR) => {
+  try {
+    await removeDir(dir);
+  } catch {}
+  await makeDir(dir);
+};
+
 const makeDir = async (dir) => {
   try {
     await promises.mkdir(dir);
@@ -118,12 +125,23 @@ const removeDir = async (dir) => {
   await promises.rm(dir, {recursive: true});
 };
 
-export const clearDir = async (dir = LIB_DIR) => {
-  try {
-    await removeDir(dir);
-  } catch {}
-  await makeDir(dir);
-};
+const forEachDeepFile = (dir, callback, extension = '') =>
+  forEachDirAndFile(
+    dir,
+    (dir) => forEachDeepFile(dir, callback, extension),
+    (file) => callback(file),
+    extension,
+  );
+
+const forEachDirAndFile = (dir, dirCallback, fileCallback, extension = '') =>
+  readdirSync(dir, {withFileTypes: true}).forEach((entry) => {
+    const path = resolve(join(dir, entry.name));
+    entry.isDirectory()
+      ? dirCallback?.(path)
+      : path.endsWith(extension)
+        ? fileCallback?.(path)
+        : null;
+  });
 
 const labelBlocks = new Map();
 const getLabelBlocks = async () => {
@@ -238,10 +256,14 @@ export const execute = async (cmd) => {
 };
 
 export const lintCheck = async (dir) => {
+  await lintCheckFiles(dir);
+  await lintCheckDocs(dir);
+};
+
+export const lintCheckFiles = async (dir) => {
   const {
     default: {ESLint},
   } = await import('eslint');
-  const {default: prettier} = await import('prettier');
   const esLint = new ESLint({
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   });
@@ -251,36 +273,63 @@ export const lintCheck = async (dir) => {
       .length > 0
   ) {
     const formatter = await esLint.loadFormatter();
-    throw formatter.format(results);
+    const errors = await formatter.format(results);
+    throw errors;
   }
+};
+
+export const lintCheckDocs = async (dir) => {
+  const {
+    default: {ESLint},
+  } = await import('eslint');
+  const esLint = new ESLint({
+    extensions: [],
+    overrideConfig: {
+      rules: {
+        'no-console': 0,
+      },
+    },
+  });
+  const {default: prettier} = await import('prettier');
   const prettierConfig = await getPrettierConfig();
   const docConfig = {...prettierConfig, printWidth: 75};
-  await allOf(results, async ({filePath}) => {
+
+  const filePaths = [];
+  ['.js', '.d.ts'].forEach((extension) =>
+    forEachDeepFile(dir, (filePath) => filePaths.push(filePath), extension),
+  );
+  await allOf(filePaths, async (filePath) => {
     const code = await promises.readFile(filePath, UTF8);
     if (
       !(await prettier.check(code, {...prettierConfig, filepath: filePath}))
     ) {
       throw `${filePath} not pretty`;
     }
-    if (filePath.endsWith('.d.ts') || filePath.endsWith('.js')) {
-      await allOf(
-        [...(code.matchAll(LINT_BLOCKS) ?? [])],
-        async ([_, hint, docBlock]) => {
-          if (hint?.trim() == 'override') {
-            return; // can't lint orphaned TS methods
-          }
-          const code = docBlock.replace(/\n +\* ?/g, '\n').trimStart();
-          if (!(await prettier.check(code, docConfig))) {
-            const pretty = (await prettier.format(code, docConfig))
-              .trim()
-              .replace(/^|\n/g, '\n * ');
-            throw (
-              `${filePath} not pretty:\n${code}` + `\n\nShould be:\n${pretty}\n`
-            );
-          }
-        },
-      );
-    }
+    await allOf(
+      [...(code.matchAll(LINT_BLOCKS) ?? [])],
+      async ([_, hint, docBlock]) => {
+        if (hint?.trim() == 'override') {
+          return; // can't lint orphaned TS methods
+        }
+        const code = docBlock.replace(/\n +\* ?/g, '\n').trimStart();
+        if (!(await prettier.check(code, docConfig))) {
+          const pretty = (await prettier.format(code, docConfig))
+            .trim()
+            .replace(/^|\n/g, '\n * ');
+          throw `${filePath} not pretty:\n${code}\n\nShould be:\n${pretty}\n`;
+        }
+        const results = await esLint.lintText(code);
+        if (
+          results.filter(
+            (result) => result.errorCount > 0 || result.warningCount > 0,
+          ).length > 0
+        ) {
+          const formatter = await esLint.loadFormatter();
+          const errors = await formatter.format(results);
+          throw `${filePath} does not lint:\n${code}\n\n${errors}`;
+        }
+      },
+    );
   });
 };
 
