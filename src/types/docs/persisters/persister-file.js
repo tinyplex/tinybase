@@ -29,6 +29,7 @@
    *
    * ```js
    * import {createFilePersister} from 'tinybase/persisters/persister-file';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createFilePersister(store, '/app/persisted.json');
@@ -61,6 +62,7 @@
  *
  * ```js yolo
  * import {createFilePersister} from 'tinybase/persisters/persister-file';
+ * import {createStore} from 'tinybase';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createFilePersister(store, '/app/persisted.json');

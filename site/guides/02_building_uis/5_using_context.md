@@ -17,6 +17,7 @@ variable is not referenced in the child `Pane` component here, for example:
 import {CellView, Provider, useCell, useCreateStore} from 'tinybase/ui-react';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import {createStore} from 'tinybase';
 
 const App = () => {
   const store = useCreateStore(() =>

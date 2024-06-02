@@ -18,6 +18,8 @@ starts off with the `sold` Cell set to `false`. We set a checkpoint when this
 field changes, and which then allows us to return later to that initial state.
 
 ```js
+import {createCheckpoints, createStore} from 'tinybase';
+
 const store = createStore().setTables({pets: {fido: {sold: false}}});
 
 const checkpoints = createCheckpoints(store);

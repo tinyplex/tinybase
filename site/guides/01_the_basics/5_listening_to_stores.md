@@ -31,6 +31,8 @@ to changes to any tabular data in the Store. Firstly, let's set up some simple
 data:
 
 ```js
+import {createStore} from 'tinybase';
+
 const store = createStore().setTables({
   pets: {fido: {species: 'dog'}},
   species: {dog: {price: 5}},
