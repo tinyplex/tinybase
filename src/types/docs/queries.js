@@ -21,7 +21,9 @@
  * object containing individual ResultRow objects, keyed by their Id.
  * @example
  * ```js
- * const resultTable: ResultTable = {
+ * import {ResultTable} from 'tinybase';
+ *
+ * export const resultTable: ResultTable = {
  *   fido: {species: 'dog', color: 'brown'},
  *   felix: {species: 'cat'},
  * };
@@ -39,7 +41,9 @@
  * object containing individual ResultCell objects, keyed by their Id.
  * @example
  * ```js
- * const resultRow: ResultRow = {species: 'dog', color: 'brown'};
+ * import {ResultRow} from 'tinybase';
+ *
+ * export const resultRow: ResultRow = {species: 'dog', color: 'brown'};
  * ```
  * @category Result
  */
@@ -54,9 +58,9 @@
  * number, or boolean.
  * @example
  * ```js
- * import {createQueries, createStore} from 'tinybase';
+ * import {ResultCell} from 'tinybase';
  *
- * const resultCell: ResultCell = 'dog';
+ * export const resultCell: ResultCell = 'dog';
  * ```
  * @category Result
  */
@@ -606,7 +610,7 @@
  * const queries = createQueries(store);
  * queries.setQueryDefinition('query', 'pets', ({select, join}) => {
  *   select(
- *     (getTableCell, rowId) =>
+ *     (getTableCell) =>
  *       `${getTableCell('species')} for ${getTableCell('owners', 'name')}`,
  *   ).as('description');
  *   join('owners', 'ownerId');
@@ -866,7 +870,7 @@
  * const queries = createQueries(store);
  * queries.setQueryDefinition('query', 'pets', ({select, join}) => {
  *   select(
- *     (getTableCell, rowId) =>
+ *     (getTableCell) =>
  *       `${getTableCell('species')} in ${getTableCell('states', 'name')}`,
  *   ).as('description');
  *   // from pets
@@ -2578,7 +2582,7 @@
    *
    * const listenerId = queries.addResultTableCellIdsListener(
    *   'dogColorsAndLegs',
-   *   (queries, tableId) => {
+   *   (queries) => {
    *     console.log(`Cell Ids for dogColorsAndLegs result table changed`);
    *     console.log(queries.getResultTableCellIds('dogColorsAndLegs'));
    *   },
@@ -2773,7 +2777,7 @@
    *
    * const listenerId = queries.addResultRowIdsListener(
    *   'dogColors',
-   *   (queries, tableId) => {
+   *   (queries) => {
    *     console.log(`Row Ids for dogColors result table changed`);
    *     console.log(queries.getResultRowIds('dogColors'));
    *   },
@@ -3105,7 +3109,7 @@
    * const listenerId = queries.addResultCellIdsListener(
    *   'dogColors',
    *   'fido',
-   *   (store, tableId, rowId) => {
+   *   (queries) => {
    *     console.log(`Cell Ids for fido row in dogColors result table changed`);
    *     console.log(queries.getResultCellIds('dogColors', 'fido'));
    *   },
@@ -3306,7 +3310,7 @@
    *   },
    * );
    *
-   * const listenerId = queries.addResultTableListener('species', (queries) =>
+   * const listenerId = queries.addResultTableListener('species', () =>
    *   console.log('species result changed'),
    * );
    *

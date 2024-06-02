@@ -41,11 +41,12 @@
    * then gets the PartySocket back out again.
    *
    * ```js yolo
+   * import PartySocket from 'partysocket';
    * import {createPartyKitPersister} from 'tinybase/persisters/persister-partykit-client';
    * import {createStore} from 'tinybase';
    *
    * const partySocket = new PartySocket({
-   *   host: PARTYKIT_HOST,
+   *   host: '127.0.0.1:1999',
    *   room: 'my_room',
    * });
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -77,7 +78,7 @@
  * to the TinyBasePartyKitServerConfig on the server side.
  *
  * ```js
- * const partyKitPersisterConfig = {
+ * export const partyKitPersisterConfig = {
  *   storeProtocol: 'http',
  *   storePath: '/my_tinybase',
  * };
@@ -150,6 +151,7 @@
  * browser's IndexedDB storage.
  *
  * ```js yolo
+ * import PartySocket from 'partysocket';
  * import {createPartyKitPersister} from 'tinybase/persisters/persister-partykit-client';
  * import {createStore} from 'tinybase';
  *
@@ -158,7 +160,7 @@
  *   .setTable('species', {dog: {price: 5}})
  *   .setValues({open: true});
  * const partySocket = new PartySocket({
- *   host: PARTYKIT_HOST,
+ *   host: '127.0.0.1:1999',
  *   room: 'my_room',
  * });
  * const persister = createPartyKitPersister(store, partySocket);
