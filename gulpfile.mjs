@@ -18,7 +18,8 @@ import {
   compileModule,
   copyDefinitions,
   execute,
-  lintCheck,
+  lintCheckDocs,
+  lintCheckFiles,
   npmInstall,
   npmPublish,
   spellCheck,
@@ -30,7 +31,9 @@ import gulp from 'gulp';
 
 const {parallel, series} = gulp;
 
-export const lint = async () => await lintCheck('.');
+export const lintFiles = async () => await lintCheckFiles('.');
+export const lintDocs = async () => await lintCheckDocs('src');
+export const lint = parallel(lintCheckFiles, lintDocs);
 
 export const spell = async () => {
   await spellCheck('.');
