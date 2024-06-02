@@ -34,6 +34,7 @@
    *
    * ```js
    * import {Doc} from 'yjs';
+   * import {createStore} from 'tinybase';
    * import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
    *
    * const doc = new Doc();
@@ -70,6 +71,7 @@
  *
  * ```js
  * import {Doc} from 'yjs';
+ * import {createStore} from 'tinybase';
  * import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
  *
  * const doc = new Doc();
@@ -96,6 +98,7 @@
  *
  * ```js
  * import {Doc, applyUpdate, encodeStateAsUpdate} from 'yjs';
+ * import {createStore} from 'tinybase';
  * import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
  *
  * const doc1 = new Doc();

@@ -19,6 +19,8 @@ For example, you can set the data for the keyed value structure of Store with th
 method:
 
 ```js
+import {createStore} from 'tinybase';
+
 const store = createStore();
 store.setValues({employees: 3, open: true});
 ```

@@ -145,6 +145,8 @@
  * and removing a listener for it.
  *
  * ```js
+ * import {createIndexes, createStore} from 'tinybase';
+ *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
  *   felix: {species: 'cat'},
@@ -247,6 +249,8 @@
    * simple Index based on the values in the `species` Cell.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -266,6 +270,8 @@
    * Index based on the first letter of the pets' names.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -285,6 +291,8 @@
    * Index based on each of the letters present in the pets' names.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -309,6 +317,8 @@
    * Ids within them) are alphabetically sorted.
    *
    * ```js
+   * import {createIndexes, createStore, defaultSorter} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -342,6 +352,8 @@
    * Index, and then removes it.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -369,6 +381,8 @@
    * then gets its reference in order to update its data.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const indexes = createIndexes(createStore());
    * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
    * indexes.getStore().setCell('pets', 'fido', 'species', 'dog');
@@ -387,6 +401,8 @@
    * the Ids of the definitions.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const indexes = createIndexes(createStore())
    *   .setIndexDefinition('bySpecies', 'pets', 'species')
    *   .setIndexDefinition('byColor', 'pets', 'color');
@@ -412,6 +428,8 @@
    * Slice Id within them.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -449,6 +467,8 @@
    * This example iterates over each Row in a Slice, and lists its Id.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -479,6 +499,8 @@
    * This example shows two simple Index existence checks.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const indexes = createIndexes(createStore());
    * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
    * console.log(indexes.hasIndex('bySpecies'));
@@ -499,6 +521,8 @@
    * This example shows two simple Index existence checks.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -526,6 +550,8 @@
    * queries it (and a non-existent definition) to get the underlying Table Id.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const indexes = createIndexes(createStore());
    * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
    *
@@ -550,6 +576,8 @@
    * the Index (and also the Slice Ids in an Index that has not been defined).
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -582,6 +610,8 @@
    * (and also the Row Ids in Slices that do not exist).
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -616,6 +646,8 @@
    * definition.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -659,6 +691,8 @@
    * listener that responds to any changes to a specific Index.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -687,6 +721,8 @@
    * listener that responds to any changes to any Index.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -742,6 +778,8 @@
    * listener that responds to any changes to a specific Slice.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -771,6 +809,8 @@
    * listener that responds to any changes to any Slice.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', color: 'brown'},
    *   felix: {species: 'cat', color: 'black'},
@@ -817,6 +857,8 @@
    * then removes it.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -857,6 +899,8 @@
    * and then destroys it again, removing the listener.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -894,6 +938,8 @@
    * This example gets the listener statistics of an Indexes object.
    *
    * ```js
+   * import {createIndexes, createStore} from 'tinybase';
+   *
    * const store = createStore();
    * const indexes = createIndexes(store);
    * indexes.addSliceIdsListener(null, () => {
@@ -923,6 +969,8 @@
  * This example creates an Indexes object.
  *
  * ```js
+ * import {createIndexes, createStore} from 'tinybase';
+ *
  * const store = createStore();
  * const indexes = createIndexes(store);
  * console.log(indexes.getIndexIds());
@@ -933,6 +981,8 @@
  * for the same Store to return the same object.
  *
  * ```js
+ * import {createIndexes, createStore} from 'tinybase';
+ *
  * const store = createStore();
  * const indexes1 = createIndexes(store);
  * const indexes2 = createIndexes(store);

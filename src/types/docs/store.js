@@ -1472,6 +1472,8 @@
  * adding and getting some data, and then registering and removing a listener.
  *
  * ```js
+ * import {createStore} from 'tinybase';
+ *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * console.log(store.getRow('pets', 'fido'));
  * // -> {species: 'dog'}
@@ -1509,6 +1511,8 @@
    * This example retrieves the content of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTables({pets: {fido: {species: 'dog'}}})
    *   .setValues({open: true, employees: 3});
@@ -1520,6 +1524,8 @@
    * empty objects.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.getContent());
    * // -> [{}, {}]
@@ -1540,6 +1546,8 @@
    * This example retrieves the tabular data in a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog'}},
    *   species: {dog: {price: 5}},
@@ -1552,6 +1560,8 @@
    * object.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.getTables());
    * // -> {}
@@ -1569,6 +1579,8 @@
    * This example retrieves the Table Ids in a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog'}},
    *   species: {dog: {price: 5}},
@@ -1581,6 +1593,8 @@
    * array.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.getTableIds());
    * // -> []
@@ -1601,6 +1615,8 @@
    * This example retrieves the data in a single Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog'}},
    *   species: {dog: {price: 5}},
@@ -1613,6 +1629,8 @@
    * object.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * console.log(store.getTable('employees'));
    * // -> {}
@@ -1632,6 +1650,8 @@
    * This example retrieves the Cell Ids used across a whole Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     fido: {species: 'dog', color: 'brown'},
@@ -1647,6 +1667,8 @@
    * exist, returning an empty array.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * console.log(store.getTableCellIds('species'));
    * // -> []
@@ -1668,6 +1690,8 @@
    * This example retrieves the number of Row objects in the Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     fido: {species: 'dog'},
@@ -1682,6 +1706,8 @@
    * returning zero.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * console.log(store.getRowCount('employees'));
    * // -> 0
@@ -1701,6 +1727,8 @@
    * This example retrieves the Row Ids in a Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     fido: {species: 'dog'},
@@ -1715,6 +1743,8 @@
    * returning an empty array.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * console.log(store.getRowIds('employees'));
    * // -> []
@@ -1751,6 +1781,8 @@
    * This example retrieves sorted Row Ids in a Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     fido: {species: 'dog'},
@@ -1764,6 +1796,8 @@
    * This example retrieves sorted Row Ids in a Table in reverse order.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     fido: {species: 'dog'},
@@ -1778,6 +1812,8 @@
    * This example retrieves two pages of Row Ids in a Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     fido: {price: 6},
@@ -1798,6 +1834,8 @@
    * `cellId` parameter is undefined.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     fido: {species: 'dog'},
@@ -1813,6 +1851,8 @@
    * returning an empty array.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * console.log(store.getSortedRowIds('employees'));
    * // -> []
@@ -1835,6 +1875,8 @@
    * This example retrieves the data in a single Row.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     fido: {species: 'dog'},
@@ -1849,6 +1891,8 @@
    * object.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * console.log(store.getRow('pets', 'felix'));
    * // -> {}
@@ -1869,6 +1913,8 @@
    * This example retrieves the Cell Ids in a Row.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     fido: {species: 'dog', color: 'brown'},
@@ -1882,6 +1928,8 @@
    * an empty array.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * console.log(store.getCellIds('pets', 'felix'));
    * // -> []
@@ -1900,6 +1948,8 @@
    * This example retrieves a single Cell.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -1910,6 +1960,8 @@
    * This example retrieves a Cell that does not exist, returning `undefined`.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * console.log(store.getCell('pets', 'fido', 'color'));
    * // -> undefined
@@ -1929,6 +1981,8 @@
    * This example retrieves the set of keyed Values in the Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * console.log(store.getValues());
    * // -> {open: true, employees: 3}
@@ -1938,6 +1992,8 @@
    * empty object.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.getValues());
    * // -> {}
@@ -1956,6 +2012,8 @@
    * This example retrieves the Value Ids in a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * console.log(store.getValueIds());
    * // -> ['open', 'employees']
@@ -1965,6 +2023,8 @@
    * returning an empty array.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.getValueIds());
    * // -> []
@@ -1981,6 +2041,8 @@
    * This example retrieves a single Value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * console.log(store.getValue('employees'));
    * // -> 3
@@ -1989,6 +2051,8 @@
    * This example retrieves a Value that does not exist, returning `undefined`.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * console.log(store.getValue('website'));
    * // -> undefined
@@ -2005,6 +2069,8 @@
    * This example shows simple existence checks.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.hasTables());
    * // -> false
@@ -2024,6 +2090,8 @@
    * This example shows two simple Table existence checks.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * console.log(store.hasTable('pets'));
    * // -> true
@@ -2043,6 +2111,8 @@
    * This example shows two simple Cell existence checks.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog'}, felix: {legs: 4}},
    * });
@@ -2067,6 +2137,8 @@
    * This example shows two simple Row existence checks.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * console.log(store.hasRow('pets', 'fido'));
    * // -> true
@@ -2087,6 +2159,8 @@
    * This example shows two simple Cell existence checks.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * console.log(store.hasCell('pets', 'fido', 'species'));
    * // -> true
@@ -2104,6 +2178,8 @@
    * This example shows simple existence checks.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.hasValues());
    * // -> false
@@ -2124,6 +2200,8 @@
    * This example shows two simple Value existence checks.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true});
    * console.log(store.hasValue('open'));
    * // -> true
@@ -2142,6 +2220,8 @@
    * This example serializes the contents of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * console.log(store.getTablesJson());
    * // -> '{"pets":{"fido":{"species":"dog"}}}'
@@ -2150,6 +2230,8 @@
    * This example serializes the contents of an empty Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.getTablesJson());
    * // -> '{}'
@@ -2166,6 +2248,8 @@
    * This example serializes the keyed value contents of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true});
    * console.log(store.getValuesJson());
    * // -> '{"open":true}'
@@ -2174,6 +2258,8 @@
    * This example serializes the contents of an empty Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.getValuesJson());
    * // -> '{}'
@@ -2195,6 +2281,8 @@
    * This example serializes the tabular and keyed value contents of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTables({pets: {fido: {species: 'dog'}}})
    *   .setValues({open: true});
@@ -2205,6 +2293,8 @@
    * This example serializes the contents of an empty Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.getJson());
    * // -> '[{},{}]'
@@ -2224,6 +2314,8 @@
    * This example serializes the TablesSchema of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTablesSchema({
    *   pets: {
    *     species: {type: 'string'},
@@ -2237,6 +2329,8 @@
    * This example serializes the TablesSchema of an empty Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.getTablesSchemaJson());
    * // -> '{}'
@@ -2257,6 +2351,8 @@
    * This example serializes the ValuesSchema of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValuesSchema({
    *   open: {type: 'boolean', default: false},
    * });
@@ -2267,6 +2363,8 @@
    * This example serializes the ValuesSchema of an empty Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.getValuesSchemaJson());
    * // -> '{}'
@@ -2289,6 +2387,8 @@
    * This example serializes the TablesSchema and ValuesSchema of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTablesSchema({
    *     pets: {
@@ -2306,6 +2406,8 @@
    * Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.getSchemaJson());
    * // -> '[{},{}]'
@@ -2321,6 +2423,8 @@
    * This example sets a TablesSchema and checks that it is present.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTablesSchema({
    *   pets: {
    *     price: {type: 'number'},
@@ -2345,6 +2449,8 @@
    * This example sets a ValuesSchema and checks that it is present.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValuesSchema({open: {type: 'boolean'}});
    * console.log(store.hasValuesSchema());
    * // -> true
@@ -2381,6 +2487,8 @@
    * This example sets the data of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setContent([
    *   {pets: {fido: {species: 'dog'}}},
    *   {open: true, employees: 3},
@@ -2395,6 +2503,8 @@
    * invalid, and then completely invalid objects.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setContent([
    *   {pets: {fido: {species: 'dog'}}},
    *   {open: true, employees: 3},
@@ -2436,6 +2546,8 @@
    * This example sets the tabular data of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog'}},
    *   species: {dog: {price: 5}},
@@ -2448,6 +2560,8 @@
    * partly invalid, and then completely invalid, Tables objects.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
    * store.setTables({pets: {felix: {species: 'cat', bug: []}}});
@@ -2485,6 +2599,8 @@
    * This example sets the data of a single Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog'},
    *   felix: {species: 'cat'},
@@ -2497,6 +2613,8 @@
    * invalid, and then completely invalid, Table objects.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
    * store.setTable('pets', {felix: {species: 'cat', bug: []}});
@@ -2536,6 +2654,8 @@
    * This example sets the data of a single Row.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setRow('pets', 'fido', {species: 'dog'});
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog'}}}
@@ -2545,6 +2665,8 @@
    * invalid, and then completely invalid, Row objects.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
    * store.setRow('pets', 'fido', {color: 'brown', bug: []});
@@ -2592,6 +2714,8 @@
    * This example adds a single Row.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * console.log(store.addRow('pets', {species: 'dog'}));
    * // -> '0'
@@ -2603,6 +2727,8 @@
    * and then completely invalid, Row objects.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {'0': {species: 'dog'}}});
    *
    * console.log(store.addRow('pets', {species: 'cat', bug: []}));
@@ -2643,6 +2769,8 @@
    * This example sets some of the data of a single Row.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -2655,6 +2783,8 @@
    * partly invalid, and then completely invalid, Row objects.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
    * store.setPartialRow('pets', 'fido', {color: 'brown', bug: []});
@@ -2695,6 +2825,8 @@
    * This example sets the value of a single Cell.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setCell('pets', 'fido', 'species', 'dog');
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog'}}}
@@ -2703,6 +2835,8 @@
    * This example sets the data of a single Cell by mapping the existing value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const increment = (cell) => cell + 1;
    * const store = createStore().setTables({pets: {fido: {visits: 1}}});
    *
@@ -2715,6 +2849,8 @@
    * Cell value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
    * store.setCell('pets', 'fido', 'bug', []);
@@ -2747,6 +2883,8 @@
    * This example sets the Values of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * console.log(store.getValues());
    * // -> {open: true, employees: 3}
@@ -2756,6 +2894,8 @@
    * invalid, and then completely invalid, Values objects.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true});
    *
    * store.setValues({employees: 3, bug: []});
@@ -2794,6 +2934,8 @@
    * This example sets some of the keyed value data in a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true});
    * store.setPartialValues({employees: 3});
    * console.log(store.getValues());
@@ -2804,6 +2946,8 @@
    * partly invalid, and then completely invalid, Values objects.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true});
    *
    * store.setPartialValues({employees: 3, bug: []});
@@ -2841,6 +2985,8 @@
    * This example sets a single Value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValue('open', true);
    * console.log(store.getValues());
    * // -> {open: true}
@@ -2849,6 +2995,8 @@
    * This example sets the data of a single Value by mapping the existing Value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const increment = (value) => value + 1;
    * const store = createStore().setValues({employees: 3});
    *
@@ -2860,6 +3008,8 @@
    * This example attempts to set an invalid Value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({employees: 3});
    *
    * store.setValue('bug', []);
@@ -2894,6 +3044,8 @@
    * removes a Value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
    *   .setValues({open: true});
@@ -2922,6 +3074,8 @@
    * This example sets the tabular contents of a Store from a serialization.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * store.setTablesJson('{"pets": {"fido": {"species": "dog"}}}');
    * console.log(store.getTables());
@@ -2932,6 +3086,8 @@
    * invalid serialization.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * store.setTablesJson('{"pets": {"fido": {');
    * console.log(store.getTables());
@@ -2955,6 +3111,8 @@
    * This example sets the keyed value contents of a Store from a serialization.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * store.setValuesJson('{"open": true}');
    * console.log(store.getValues());
@@ -2965,6 +3123,8 @@
    * invalid serialization.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * store.setValuesJson('{"open": false');
    * console.log(store.getValues());
@@ -2997,6 +3157,8 @@
    * serialization.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * store.setJson('[{"pets": {"fido": {"species": "dog"}}}, {"open": true}]');
    * console.log(store.getTables());
@@ -3009,6 +3171,8 @@
    * legacy single-object serialization (compatible with v2.x and earlier).
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * store.setJson('{"pets": {"fido": {"species": "dog"}}}');
    * console.log(store.getTables());
@@ -3021,6 +3185,8 @@
    * Store from an invalid serialization.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * store.setValuesJson('[{"pets": {"fido": {"species": "do');
    * console.log(store.getTables());
@@ -3047,6 +3213,8 @@
    * This example sets the TablesSchema of a Store after it has been created.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTablesSchema({
    *   pets: {
    *     species: {type: 'string'},
@@ -3078,6 +3246,8 @@
    * This example sets the ValuesSchema of a Store after it has been created.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValuesSchema({
    *   open: {type: 'boolean', default: false},
    * });
@@ -3111,6 +3281,8 @@
    * been created.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setSchema(
    *   {
    *     pets: {
@@ -3133,6 +3305,8 @@
    * created.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setSchema({
    *   pets: {
    *     species: {type: 'string'},
@@ -3154,6 +3328,8 @@
    * This example removes the data of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
    * store.delTables();
@@ -3171,6 +3347,8 @@
    * This example removes a Table from a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog'}},
    *   species: {dog: {price: 5}},
@@ -3194,6 +3372,8 @@
    * This example removes a Row from a Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog'}, felix: {species: 'cat'}},
    * });
@@ -3236,6 +3416,8 @@
    * This example removes a Cell from a Row without a TablesSchema.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', sold: true}},
    * });
@@ -3249,6 +3431,8 @@
    * its value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTables({
    *     pets: {fido: {species: 'dog', sold: true}},
@@ -3269,6 +3453,8 @@
    * its value, but uses the `forceDel` parameter to override it.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTables({
    *     pets: {fido: {species: 'dog', sold: true}, felix: {species: 'cat'}},
@@ -3298,6 +3484,8 @@
    * This example removes all Values from a Store without a ValuesSchema.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * store.delValues();
    *
@@ -3309,6 +3497,8 @@
    * defaults one of its values.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setValues({open: true, employees: 3})
    *   .setValuesSchema({
@@ -3336,6 +3526,8 @@
    * This example removes a Value from a Store without a ValuesSchema.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * store.delValue('employees');
    *
@@ -3347,6 +3539,8 @@
    * its value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setValues({open: true, employees: 3})
    *   .setValuesSchema({
@@ -3369,6 +3563,8 @@
    * This example removes the TablesSchema of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTablesSchema({
    *   pets: {species: {type: 'string'}},
    * });
@@ -3386,6 +3582,8 @@
    * This example removes the ValuesSchema of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValuesSchema({
    *   sold: {type: 'boolean', default: false},
    * });
@@ -3407,6 +3605,8 @@
    * This example removes the TablesSchema and ValuesSchema of a Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTablesSchema({
    *     pets: {species: {type: 'string'}},
@@ -3457,6 +3657,8 @@
    * once.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * store.addRowListener('pets', 'fido', () => console.log('Fido changed'));
    *
@@ -3479,6 +3681,8 @@
    * change.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * store.addCellListener(
    *   'pets',
@@ -3510,6 +3714,8 @@
    * judges that the transaction should be rolled back to its original state.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
    *   .setValues({open: true});
@@ -3576,6 +3782,8 @@
    * second case, the Row listener is only called once.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * store.addRowListener('pets', 'fido', () => console.log('Fido changed'));
    *
@@ -3608,6 +3816,8 @@
    * detail about what changed is enumerated.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
    *   .setValues({open: true});
@@ -3641,6 +3851,8 @@
    * detail about what changed is enumerated.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
    *   .setValues({open: true});
@@ -3706,6 +3918,8 @@
    * second case, the Row listener is only called once.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * store.addRowListener('pets', 'fido', () => console.log('Fido changed'));
    *
@@ -3729,6 +3943,8 @@
    * the transaction should be rolled back to its original state.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
    *   .setValues({open: true});
@@ -3780,6 +3996,8 @@
    * within them.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog'}},
    *   species: {dog: {price: 5}},
@@ -3811,6 +4029,8 @@
    * This example iterates over each Cell Id used across the whole Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog'}, felix: {species: 'cat', legs: 4}},
    * });
@@ -3839,6 +4059,8 @@
    * within them.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     fido: {species: 'dog'},
@@ -3871,6 +4093,8 @@
    * This example iterates over each Cell in a Row, and lists its value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -3895,6 +4119,8 @@
    * This example iterates over each Value in a Store, and lists its value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * store.forEachValue((valueId, value) => {
    *   console.log(`${valueId}: ${value}`);
@@ -3934,6 +4160,8 @@
    * removed.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -3954,6 +4182,8 @@
    * removed, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * const listenerId = store.addHasTablesListener(
    *   (store, hasTables) => store.setValue('hasTables', hasTables),
@@ -3996,6 +4226,8 @@
    * Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4015,6 +4247,8 @@
    * Store, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4061,6 +4295,8 @@
    * Ids.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const listenerId = store.addTableIdsListener((store) => {
    *   console.log('Table Ids changed');
@@ -4078,6 +4314,8 @@
    * Ids, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const listenerId = store.addTableIdsListener(
    *   (store) => store.setCell('meta', 'update', 'store', true),
@@ -4125,6 +4363,8 @@
    * added or removed.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4148,6 +4388,8 @@
    * removed.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4170,6 +4412,8 @@
    * added or removed, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4221,6 +4465,8 @@
    * specific Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4243,6 +4489,8 @@
    * Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4262,6 +4510,8 @@
    * specific Table, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4315,6 +4565,8 @@
    * Ids that appear anywhere in a Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4334,6 +4586,8 @@
    * Ids that appear anywhere in any Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    *   species: {dog: {price: 5}},
@@ -4361,6 +4615,8 @@
    * anywhere in a Table, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4419,6 +4675,8 @@
    * added to or removed from the Table as a whole.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4445,6 +4703,8 @@
    * added to or removed from the Table as a whole.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4471,6 +4731,8 @@
    * added or removed, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4523,6 +4785,8 @@
    * of Row objects in a specific Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const listenerId = store.addRowCountListener(
    *   'pets',
@@ -4541,6 +4805,8 @@
    * in the number of Row objects of any Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const listenerId = store.addRowCountListener(
    *   null,
@@ -4562,6 +4828,8 @@
    * the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const listenerId = store.addRowCountListener(
    *   'pets',
@@ -4613,6 +4881,8 @@
    * Ids of a specific Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const listenerId = store.addRowIdsListener('pets', (store) => {
    *   console.log('Row Ids for pets table changed');
@@ -4630,6 +4900,8 @@
    * Ids of any Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const listenerId = store.addRowIdsListener(null, (store, tableId) => {
    *   console.log(`Row Ids for ${tableId} table changed`);
@@ -4650,6 +4922,8 @@
    * Ids of a specific Table, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const listenerId = store.addRowIdsListener(
    *   'pets',
@@ -4718,6 +4992,8 @@
    * Row Ids of a specific Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     cujo: {species: 'wolf'},
@@ -4751,6 +5027,8 @@
    * paginated section of the sorted Row Ids of a specific Table.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     fido: {price: 6},
@@ -4789,6 +5067,8 @@
    * since the `cellId` parameter is explicitly undefined.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     fido: {species: 'dog'},
@@ -4823,6 +5103,8 @@
    * not changed.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     fido: {species: 'dog'},
@@ -4856,6 +5138,8 @@
    * Row Ids of a specific Table, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {
    *     cujo: {species: 'wolf'},
@@ -4921,6 +5205,8 @@
    * added or removed.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4947,6 +5233,8 @@
    * removed.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -4972,6 +5260,8 @@
    * added or removed, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -5031,6 +5321,8 @@
    * specific Row.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -5053,6 +5345,8 @@
    * This example registers a listener that responds to any changes to any Row.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -5076,6 +5370,8 @@
    * specific Row, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -5136,6 +5432,8 @@
    * Ids of a specific Row.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const listenerId = store.addCellIdsListener('pets', 'fido', (store) => {
    *   console.log('Cell Ids for fido row in pets table changed');
@@ -5153,6 +5451,8 @@
    * Ids of any Row.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const listenerId = store.addCellIdsListener(
    *   null,
@@ -5177,6 +5477,8 @@
    * Ids of a specific Row, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const listenerId = store.addCellIdsListener(
    *   'pets',
@@ -5235,6 +5537,8 @@
    * added or removed.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -5263,6 +5567,8 @@
    * removed.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -5290,6 +5596,8 @@
    * added or removed, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -5352,6 +5660,8 @@
    * specific Cell.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -5377,6 +5687,8 @@
    * This example registers a listener that responds to any changes to any Cell.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -5403,6 +5715,8 @@
    * specific Cell, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -5452,6 +5766,8 @@
    * removed.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * const listenerId = store.addHasValuesListener((store, hasValues) => {
    *   console.log('Values ' + (hasValues ? 'added' : 'removed'));
@@ -5470,6 +5786,8 @@
    * removed, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * const listenerId = store.addHasValuesListener(
    *   (store, hasValues) => store.setValue('hasValues', hasValues),
@@ -5512,6 +5830,8 @@
    * Store's Values.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * const listenerId = store.addValuesListener((store, getValueChange) => {
    *   console.log('values changed');
@@ -5529,6 +5849,8 @@
    * Store's Values, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * const listenerId = store.addValuesListener(
    *   (store, getValueChange) => store.setValue('updated', true),
@@ -5574,6 +5896,8 @@
    * Ids.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true});
    * const listenerId = store.addValueIdsListener((store) => {
    *   console.log('Value Ids changed');
@@ -5591,6 +5915,8 @@
    * Ids, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true});
    * const listenerId = store.addValueIdsListener(
    *   (store) => store.setValue('updated', true),
@@ -5639,6 +5965,8 @@
    * added or removed.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * const listenerId = store.addHasValueListener(
    *   'employees',
@@ -5660,6 +5988,8 @@
    * removed.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * const listenerId = store.addHasValueListener(
    *   null,
@@ -5680,6 +6010,8 @@
    * added or removed, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * const listenerId = store.addHasValueListener(
    *   'employees',
@@ -5728,6 +6060,8 @@
    * specific Value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * const listenerId = store.addValueListener(
    *   'employees',
@@ -5750,6 +6084,8 @@
    * Value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * const listenerId = store.addValueListener(null, (store, valueId) => {
    *   console.log(`${valueId} value changed`);
@@ -5767,6 +6103,8 @@
    * specific Value, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    * const listenerId = store.addValueListener(
    *   'employees',
@@ -5843,6 +6181,8 @@
    * specific Cell.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -5869,6 +6209,8 @@
    * or Tables objects are provided.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -5918,6 +6260,8 @@
    * values in a Row.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTablesSchema({
    *   pets: {
    *     species: {type: 'string'},
@@ -5980,6 +6324,8 @@
    * specific Cell, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -6057,6 +6403,8 @@
    * specific Value.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true});
    * const listenerId = store.addInvalidValueListener(
    *   'open',
@@ -6078,6 +6426,8 @@
    * responds to cases where an empty Values object is provided.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true});
    * const listenerId = store.addInvalidValueListener(
    *   null,
@@ -6102,6 +6452,8 @@
    * where missing parameters are provided for optional, and defaulted Values.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValuesSchema({
    *   open: {type: 'boolean', default: false},
    *   employees: {type: 'number'},
@@ -6159,6 +6511,8 @@
    * specific Value, and which also mutates the Store itself.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true});
    * const listenerId = store.addInvalidValueListener(
    *   'open',
@@ -6197,6 +6551,8 @@
    * transaction, just before its listeners will be called.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTables({
    *     pets: {fido: {species: 'dog', color: 'brown'}},
@@ -6256,6 +6612,8 @@
    * the `cellsTouched` and `valuesTouched` parameters in the listener work.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTables({
    *     pets: {fido: {species: 'dog', color: 'brown'}},
@@ -6351,6 +6709,8 @@
    * the `cellsTouched` and `valuesTouched` parameters in the listener work.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTables({
    *     pets: {fido: {species: 'dog', color: 'brown'}},
@@ -6428,6 +6788,8 @@
    * condition to the existing data.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const validColors = ['walnut', 'brown', 'black'];
    * const store = createStore();
    * const listenerId = store.addCellListener(
@@ -6461,6 +6823,8 @@
    * called and fires for two Tables in the Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog'}},
    *   species: {dog: {price: 5}},
@@ -6481,6 +6845,8 @@
    * and fires for two Values in the Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setValues({open: true, employees: 3});
    *
    * const listenerId = store.addValueListener(
@@ -6502,6 +6868,8 @@
    * receives empty arguments. The latter is not called at all.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    *
    * const listenerId = store.addWillFinishTransactionListener(
@@ -6540,6 +6908,8 @@
    * This example registers a listener and then removes it.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore().setTables({
    *   pets: {fido: {species: 'dog', color: 'brown'}},
    * });
@@ -6575,6 +6945,8 @@
    * This example gets the listener statistics of a small and simple Store.
    *
    * ```js
+   * import {createStore} from 'tinybase';
+   *
    * const store = createStore();
    * store.addTablesListener(() => console.log('Tables changed'));
    * store.addRowIdsListener(() => console.log('Row Ids changed'));
@@ -6608,6 +6980,8 @@
  * This example creates a Store.
  *
  * ```js
+ * import {createStore} from 'tinybase';
+ *
  * const store = createStore();
  * console.log(store.getTables());
  * // -> {}
@@ -6616,6 +6990,8 @@
  * This example creates a Store with some initial data:
  *
  * ```js
+ * import {createStore} from 'tinybase';
+ *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * console.log(store.getTables());
  * // -> {pets: {fido: {species: 'dog'}}}
@@ -6624,6 +7000,8 @@
  * This example creates a Store with some initial data and a TablesSchema:
  *
  * ```js
+ * import {createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTables({pets: {fido: {species: 'dog'}}})
  *   .setTablesSchema({

@@ -38,6 +38,7 @@
    *
    * ```js
    * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createSessionPersister(store, 'pets');
@@ -75,6 +76,7 @@
    *
    * ```js
    * import {createLocalPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createLocalPersister(store, 'pets');
@@ -108,6 +110,7 @@
  *
  * ```js
  * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {createStore} from 'tinybase';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createSessionPersister(store, 'pets');
@@ -141,6 +144,7 @@
  *
  * ```js
  * import {createLocalPersister} from 'tinybase/persisters/persister-browser';
+ * import {createStore} from 'tinybase';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createLocalPersister(store, 'pets');

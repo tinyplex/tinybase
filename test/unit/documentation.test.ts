@@ -33,11 +33,10 @@ import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {transformSync} from 'esbuild';
 
 // globally present; do not need to be imported in examples
-[{BroadcastChannelNetworkAdapter}, ReactDOMTestUtils, TinyBase].forEach(
-  (module) =>
-    Object.entries(module).forEach(([key, value]) => {
-      (globalThis as any)[key] = value;
-    }),
+[{BroadcastChannelNetworkAdapter}, ReactDOMTestUtils].forEach((module) =>
+  Object.entries(module).forEach(([key, value]) => {
+    (globalThis as any)[key] = value;
+  }),
 );
 
 // need to be imported in examples
@@ -48,6 +47,7 @@ import {transformSync} from 'esbuild';
   react: React,
   'react-dom/client': ReactDOMClient,
   sqlite3,
+  tinybase: TinyBase,
   'tinybase/debug/ui-react': TinyBaseUiReact,
   'tinybase/debug/ui-react-dom': TinyBaseUiReactDom,
   'tinybase/persisters/persister-automerge': TinyBasePersisterAutomerge,
