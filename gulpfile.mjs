@@ -33,7 +33,7 @@ const {parallel, series} = gulp;
 
 export const lintFiles = async () => await lintCheckFiles('.');
 export const lintDocs = async () => await lintCheckDocs('src');
-export const lint = parallel(lintCheckFiles, lintDocs);
+export const lint = parallel(lintFiles, lintDocs);
 
 export const spell = async () => {
   await spellCheck('.');
