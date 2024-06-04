@@ -6,7 +6,7 @@ import {
 import {WebSocketServer} from 'ws';
 import {createServer} from 'http';
 
-const subDomains = ['vite.demo.tinybase.org', 'todo.demo.tinybase.org'];
+const subDomains = ['todo.demo.tinybase.org'];
 
 const wsServersBySubDomain = new Map<string, WsServer>(
   subDomains.map((subDomain) => {
