@@ -10651,7 +10651,7 @@
  * regular createSynchronizer function and pass it in, but you may prefer to
  * create it within the app, perhaps inside the top-level component. To prevent
  * a new Synchronizer being created every time the app renders or re-renders,
- * the useCreateMetrics hook performs the creation in an effect.
+ * the useCreateSynchronizer hook performs the creation in an effect.
  *
  * If your asynchronous `create` function (the second parameter to the hook)
  * contains dependencies, the changing of which should cause the Synchronizer to
