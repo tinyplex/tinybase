@@ -75,9 +75,9 @@ const ALL_MODULES = [
 ];
 
 export const BIN_DIR = 'bin';
-export const LIB_DIR = 'lib';
+export const DIST_DIR = 'dist';
 export const DOCS_DIR = 'docs';
-const TYPES_DIR = 'lib/types';
+const TYPES_DIR = 'dist/types';
 const TYPES_SCHEMA_DIR = `${TYPES_DIR}/with-schemas/`;
 const TMP_DIR = 'tmp';
 const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
@@ -103,7 +103,7 @@ export const allOf = async (array, cb) => await Promise.all(array.map(cb));
 export const testModules = async (cb) => await allOf(TEST_MODULES, cb);
 export const allModules = async (cb) => await allOf(ALL_MODULES, cb);
 
-export const clearDir = async (dir = LIB_DIR) => {
+export const clearDir = async (dir = DIST_DIR) => {
   try {
     await removeDir(dir);
   } catch {}
@@ -399,7 +399,7 @@ export const tsCheck = async (dir) => {
 export const compileModule = async (
   module,
   debug,
-  dir = LIB_DIR,
+  dir = DIST_DIR,
   format = 'esm',
   target = 'esnext',
   cli = false,
@@ -527,8 +527,8 @@ export const test = async (
             collectCoverage: true,
             coverageProvider: 'babel',
             collectCoverageFrom: [
-              `${LIB_DIR}/debug/tinybase.js`,
-              `${LIB_DIR}/debug/ui-react.js`,
+              `${DIST_DIR}/debug/tinybase.js`,
+              `${DIST_DIR}/debug/ui-react.js`,
               // Other modules cannot be fully exercised in isolation.
             ],
             coverageReporters: ['text-summary']
