@@ -66,7 +66,6 @@ const ALL_MODULES = [
   'synchronizers/synchronizer-ws-server',
 ];
 
-const BIN_DIR = 'bin';
 const DIST_DIR = 'dist';
 const DOCS_DIR = 'docs';
 const TYPES_DIR = 'dist/types';
@@ -650,7 +649,8 @@ export const compileForTest = async () => {
     await compileModule(module, true, `${DIST_DIR}/debug`);
   });
   await copyDefinitions();
-  await compileForCli();
+  await compileModule('cli', false, DIST_DIR, undefined, undefined, true);
+  await execute(`chmod +x ${DIST_DIR}/cli.js`);
 };
 
 export const compileForProd = async () => {
@@ -688,14 +688,8 @@ export const compileForProd = async () => {
   );
 
   await copyDefinitions();
-  await compileForCli();
-};
-
-export const compileForCli = async () => {
-  await clearDir(BIN_DIR);
-  await copyPackageFiles();
-  await compileModule('cli', false, BIN_DIR, undefined, undefined, true);
-  await execute(`chmod +x ${BIN_DIR}/cli.js`);
+  await compileModule('cli', false, DIST_DIR, undefined, undefined, true);
+  await execute(`chmod +x ${DIST_DIR}/cli.js`);
 };
 
 export const compileUmdReactDomDebug = async () =>
