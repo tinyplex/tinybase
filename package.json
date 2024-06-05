@@ -16,7 +16,7 @@
   ],
   "type": "module",
   "files": [
-    "lib/**",
+    "dist/**",
     "bin/**"
   ],
   "bin": {
@@ -24,166 +24,166 @@
   },
   "exports": {
     ".": {
-      "types": "./lib/types/tinybase.d.ts",
-      "default": "./lib/tinybase.js"
+      "types": "./dist/types/tinybase.d.ts",
+      "default": "./dist/tinybase.js"
     },
     "./*": {
-      "types": "./lib/types/*.d.ts",
-      "default": "./lib/*.js"
+      "types": "./dist/types/*.d.ts",
+      "default": "./dist/*.js"
     },
     "./package.json": "./package.json",
-    "./cjs": "./lib/cjs/tinybase.cjs",
-    "./cjs/with-schemas": "./lib/cjs/tinybase.cjs",
-    "./cjs/*/with-schemas": "./lib/cjs/*.cjs",
-    "./cjs/*": "./lib/cjs/*.cjs",
-    "./cjs-es6": "./lib/cjs-es6/tinybase.cjs",
-    "./cjs-es6/with-schemas": "./lib/cjs-es6/tinybase.cjs",
-    "./cjs-es6/*/with-schemas": "./lib/cjs-es6/*.cjs",
-    "./cjs-es6/*": "./lib/cjs-es6/*.cjs",
-    "./es6": "./lib/es6/tinybase.js",
-    "./es6/with-schemas": "./lib/es6/tinybase.js",
-    "./es6/*/with-schemas": "./lib/es6/*.js",
-    "./es6/*": "./lib/es6/*.js",
-    "./umd": "./lib/umd/tinybase.js",
-    "./umd/with-schemas": "./lib/umd/tinybase.js",
-    "./umd/*/with-schemas": "./lib/umd/*.js",
-    "./umd/*": "./lib/umd/*.js",
-    "./umd-es6": "./lib/umd-es6/tinybase.js",
-    "./umd-es6/with-schemas": "./lib/umd-es6/tinybase.js",
-    "./umd-es6/*/with-schemas": "./lib/umd-es6/*.js",
-    "./umd-es6/*": "./lib/umd-es6/*.js",
-    "./lib": "./lib/tinybase.js",
-    "./lib/with-schemas": "./lib/tinybase.js",
-    "./lib/*/with-schemas": "./lib/*.js",
-    "./lib/*": "./lib/*.js",
+    "./cjs": "./dist/cjs/tinybase.cjs",
+    "./cjs/with-schemas": "./dist/cjs/tinybase.cjs",
+    "./cjs/*/with-schemas": "./dist/cjs/*.cjs",
+    "./cjs/*": "./dist/cjs/*.cjs",
+    "./cjs-es6": "./dist/cjs-es6/tinybase.cjs",
+    "./cjs-es6/with-schemas": "./dist/cjs-es6/tinybase.cjs",
+    "./cjs-es6/*/with-schemas": "./dist/cjs-es6/*.cjs",
+    "./cjs-es6/*": "./dist/cjs-es6/*.cjs",
+    "./es6": "./dist/es6/tinybase.js",
+    "./es6/with-schemas": "./dist/es6/tinybase.js",
+    "./es6/*/with-schemas": "./dist/es6/*.js",
+    "./es6/*": "./dist/es6/*.js",
+    "./umd": "./dist/umd/tinybase.js",
+    "./umd/with-schemas": "./dist/umd/tinybase.js",
+    "./umd/*/with-schemas": "./dist/umd/*.js",
+    "./umd/*": "./dist/umd/*.js",
+    "./umd-es6": "./dist/umd-es6/tinybase.js",
+    "./umd-es6/with-schemas": "./dist/umd-es6/tinybase.js",
+    "./umd-es6/*/with-schemas": "./dist/umd-es6/*.js",
+    "./umd-es6/*": "./dist/umd-es6/*.js",
+    "./dist": "./dist/tinybase.js",
+    "./dist/with-schemas": "./dist/tinybase.js",
+    "./dist/*/with-schemas": "./dist/*.js",
+    "./dist/*": "./dist/*.js",
     "./debug": {
-      "types": "./lib/types/tinybase.d.ts",
-      "default": "./lib/debug/tinybase.js"
+      "types": "./dist/types/tinybase.d.ts",
+      "default": "./dist/debug/tinybase.js"
     },
     "./debug/with-schemas": {
-      "types": "./lib/types/with-schemas/tinybase.d.ts",
-      "default": "./lib/debug/tinybase.js"
+      "types": "./dist/types/with-schemas/tinybase.d.ts",
+      "default": "./dist/debug/tinybase.js"
     },
     "./debug/*/with-schemas": {
-      "types": "./lib/types/with-schemas/*.d.ts",
-      "default": "./lib/debug/*.js"
+      "types": "./dist/types/with-schemas/*.d.ts",
+      "default": "./dist/debug/*.js"
     },
     "./debug/*": {
-      "types": "./lib/types/*.d.ts",
-      "default": "./lib/debug/*.js"
+      "types": "./dist/types/*.d.ts",
+      "default": "./dist/debug/*.js"
     },
     "./with-schemas": {
-      "types": "./lib/types/with-schemas/tinybase.d.ts",
-      "default": "./lib/tinybase.js"
+      "types": "./dist/types/with-schemas/tinybase.d.ts",
+      "default": "./dist/tinybase.js"
     },
     "./*/with-schemas": {
-      "types": "./lib/types/with-schemas/*.d.ts",
-      "default": "./lib/*.js"
+      "types": "./dist/types/with-schemas/*.d.ts",
+      "default": "./dist/*.js"
     }
   },
   "typesVersions": {
     "*": {
       "*": [
-        "./lib/types/*.d.ts",
-        "./lib/types/tinybase.d.ts"
+        "./dist/types/*.d.ts",
+        "./dist/types/tinybase.d.ts"
       ],
       "cjs": [
-        "./lib/types/tinybase.d.ts"
+        "./dist/types/tinybase.d.ts"
       ],
       "cjs/with-schemas": [
-        "./lib/types/with-schemas/tinybase.d.ts"
+        "./dist/types/with-schemas/tinybase.d.ts"
       ],
       "cjs/*/with-schemas": [
-        "./lib/types/with-schemas/*.d.ts"
+        "./dist/types/with-schemas/*.d.ts"
       ],
       "cjs/*": [
-        "./lib/types/*.d.ts"
+        "./dist/types/*.d.ts"
       ],
       "cjs-es6": [
-        "./lib/types/tinybase.d.ts"
+        "./dist/types/tinybase.d.ts"
       ],
       "cjs-es6/with-schemas": [
-        "./lib/types/with-schemas/tinybase.d.ts"
+        "./dist/types/with-schemas/tinybase.d.ts"
       ],
       "cjs-es6/*/with-schemas": [
-        "./lib/types/with-schemas/*.d.ts"
+        "./dist/types/with-schemas/*.d.ts"
       ],
       "cjs-es6/*": [
-        "./lib/types/*.d.ts"
+        "./dist/types/*.d.ts"
       ],
       "es6": [
-        "./lib/types/tinybase.d.ts"
+        "./dist/types/tinybase.d.ts"
       ],
       "es6/with-schemas": [
-        "./lib/types/with-schemas/tinybase.d.ts"
+        "./dist/types/with-schemas/tinybase.d.ts"
       ],
       "es6/*/with-schemas": [
-        "./lib/types/with-schemas/*.d.ts"
+        "./dist/types/with-schemas/*.d.ts"
       ],
       "es6/*": [
-        "./lib/types/*.d.ts"
+        "./dist/types/*.d.ts"
       ],
       "debug": [
-        "./lib/types/tinybase.d.ts"
+        "./dist/types/tinybase.d.ts"
       ],
       "debug/with-schemas": [
-        "./lib/types/with-schemas/tinybase.d.ts"
+        "./dist/types/with-schemas/tinybase.d.ts"
       ],
       "debug/*/with-schemas": [
-        "./lib/types/with-schemas/*.d.ts"
+        "./dist/types/with-schemas/*.d.ts"
       ],
       "debug/*": [
-        "./lib/types/*.d.ts"
+        "./dist/types/*.d.ts"
       ],
       "umd": [
-        "./lib/types/tinybase.d.ts"
+        "./dist/types/tinybase.d.ts"
       ],
       "umd/with-schemas": [
-        "./lib/types/with-schemas/tinybase.d.ts"
+        "./dist/types/with-schemas/tinybase.d.ts"
       ],
       "umd/*/with-schemas": [
-        "./lib/types/with-schemas/*.d.ts"
+        "./dist/types/with-schemas/*.d.ts"
       ],
       "umd/*": [
-        "./lib/types/*.d.ts"
+        "./dist/types/*.d.ts"
       ],
       "umd-es6": [
-        "./lib/types/tinybase.d.ts"
+        "./dist/types/tinybase.d.ts"
       ],
       "umd-es6/with-schemas": [
-        "./lib/types/with-schemas/tinybase.d.ts"
+        "./dist/types/with-schemas/tinybase.d.ts"
       ],
       "umd-es6/*/with-schemas": [
-        "./lib/types/with-schemas/*.d.ts"
+        "./dist/types/with-schemas/*.d.ts"
       ],
       "umd-es6/*": [
-        "./lib/types/*.d.ts"
+        "./dist/types/*.d.ts"
       ],
       "lib": [
-        "./lib/types/tinybase.d.ts"
+        "./dist/types/tinybase.d.ts"
       ],
       "lib/with-schemas": [
-        "./lib/types/with-schemas/tinybase.d.ts"
+        "./dist/types/with-schemas/tinybase.d.ts"
       ],
       "lib/*/with-schemas": [
-        "./lib/types/with-schemas/*.d.ts"
+        "./dist/types/with-schemas/*.d.ts"
       ],
       "lib/*": [
-        "./lib/types/*.d.ts"
+        "./dist/types/*.d.ts"
       ],
       "with-schemas": [
-        "./lib/types/with-schemas/*.d.ts",
-        "./lib/types/with-schemas/tinybase.d.ts"
+        "./dist/types/with-schemas/*.d.ts",
+        "./dist/types/with-schemas/tinybase.d.ts"
       ],
       "*/with-schemas": [
-        "./lib/types/with-schemas/*.d.ts",
-        "./lib/types/with-schemas/tinybase.d.ts"
+        "./dist/types/with-schemas/*.d.ts",
+        "./dist/types/with-schemas/tinybase.d.ts"
       ]
     }
   },
-  "main": "./lib/tinybase",
-  "types": "./lib/types/tinybase.d.ts",
-  "react-native": "./lib/tinybase.js",
+  "main": "./dist/tinybase",
+  "types": "./dist/types/tinybase.d.ts",
+  "react-native": "./dist/tinybase.js",
   "browser": {
     "fs": false
   },

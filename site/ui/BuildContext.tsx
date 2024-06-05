@@ -37,13 +37,13 @@ const build = ((): Build => {
   ) as Coverage;
 
   const sizes = new Map();
-  forEachDirAndFile('./lib', null, (file) => {
+  forEachDirAndFile('./dist', null, (file) => {
     sizes.set(basename(file), statSync(file).size);
   });
-  forEachDirAndFile('./lib/types', null, (file) => {
+  forEachDirAndFile('./dist/types', null, (file) => {
     sizes.set(basename(file), statSync(file).size);
   });
-  forEachDirAndFile('./lib/debug', null, (file) => {
+  forEachDirAndFile('./dist/debug', null, (file) => {
     sizes.set(`debug-${basename(file)}`, statSync(file).size);
   });
 
