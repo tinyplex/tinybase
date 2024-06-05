@@ -2,4 +2,4 @@
  * This is everything.
  * @packageDocumentation
  */
-/// tinybase
+/// index

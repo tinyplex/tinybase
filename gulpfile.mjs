@@ -5,7 +5,7 @@ import gulp from 'gulp';
 
 const UTF8 = 'utf-8';
 const TEST_MODULES = [
-  'tinybase',
+  'index',
   'ui-react',
   'ui-react-dom',
   'tools',
@@ -31,7 +31,7 @@ const TEST_MODULES = [
 ];
 const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries', 'ui-react'];
 const ALL_MODULES = [
-  'tinybase',
+  'index',
   'store',
   'metrics',
   'indexes',
