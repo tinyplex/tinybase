@@ -21,7 +21,7 @@
     "bin/**"
   ],
   "bin": {
-    "tinybase": "./bin/cli.js"
+    "tinybase": "./cli.js"
   },
   "exports": {
     ".": {
@@ -198,7 +198,6 @@
     "test": "gulp --series testUnit testPerf",
     "compileForTest": "gulp compileForTest",
     "compileForProd": "gulp compileForProd",
-    "compileForCli": "gulp compileForCli",
     "compileUmdReactDomDebug": "gulp compileUmdReactDomDebug",
     "testUnit": "gulp testUnit",
     "testUnitCountAsserts": "gulp testUnitCountAsserts",
