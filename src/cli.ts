@@ -5,7 +5,7 @@ import {dirname, resolve} from 'path';
 import {readFileSync, writeFileSync} from 'fs';
 import {UTF8} from './common/strings';
 import {arrayForEach} from './common/array';
-import {createStore} from './tinybase';
+import {createStore} from './';
 import {createTools} from './tools';
 import {fileURLToPath} from 'url';
 import {isArray} from './common/other';

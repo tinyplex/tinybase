@@ -15,180 +15,78 @@
     "react"
   ],
   "type": "module",
-  "private": true,
-  "files": [
-    "dist/**",
-    "bin/**"
-  ],
   "bin": {
     "tinybase": "./cli.js"
   },
-  "exports": {
-    ".": {
-      "types": "./dist/types/tinybase.d.ts",
-      "default": "./dist/tinybase.js"
-    },
-    "./*": {
-      "types": "./dist/types/*.d.ts",
-      "default": "./dist/*.js"
-    },
-    "./package.json": "./package.json",
-    "./cjs": "./dist/cjs/tinybase.cjs",
-    "./cjs/with-schemas": "./dist/cjs/tinybase.cjs",
-    "./cjs/*/with-schemas": "./dist/cjs/*.cjs",
-    "./cjs/*": "./dist/cjs/*.cjs",
-    "./cjs-es6": "./dist/cjs-es6/tinybase.cjs",
-    "./cjs-es6/with-schemas": "./dist/cjs-es6/tinybase.cjs",
-    "./cjs-es6/*/with-schemas": "./dist/cjs-es6/*.cjs",
-    "./cjs-es6/*": "./dist/cjs-es6/*.cjs",
-    "./es6": "./dist/es6/tinybase.js",
-    "./es6/with-schemas": "./dist/es6/tinybase.js",
-    "./es6/*/with-schemas": "./dist/es6/*.js",
-    "./es6/*": "./dist/es6/*.js",
-    "./umd": "./dist/umd/tinybase.js",
-    "./umd/with-schemas": "./dist/umd/tinybase.js",
-    "./umd/*/with-schemas": "./dist/umd/*.js",
-    "./umd/*": "./dist/umd/*.js",
-    "./umd-es6": "./dist/umd-es6/tinybase.js",
-    "./umd-es6/with-schemas": "./dist/umd-es6/tinybase.js",
-    "./umd-es6/*/with-schemas": "./dist/umd-es6/*.js",
-    "./umd-es6/*": "./dist/umd-es6/*.js",
-    "./dist": "./dist/tinybase.js",
-    "./dist/with-schemas": "./dist/tinybase.js",
-    "./dist/*/with-schemas": "./dist/*.js",
-    "./dist/*": "./dist/*.js",
-    "./debug": {
-      "types": "./dist/types/tinybase.d.ts",
-      "default": "./dist/debug/tinybase.js"
-    },
-    "./debug/with-schemas": {
-      "types": "./dist/types/with-schemas/tinybase.d.ts",
-      "default": "./dist/debug/tinybase.js"
-    },
-    "./debug/*/with-schemas": {
-      "types": "./dist/types/with-schemas/*.d.ts",
-      "default": "./dist/debug/*.js"
-    },
-    "./debug/*": {
-      "types": "./dist/types/*.d.ts",
-      "default": "./dist/debug/*.js"
-    },
-    "./with-schemas": {
-      "types": "./dist/types/with-schemas/tinybase.d.ts",
-      "default": "./dist/tinybase.js"
-    },
-    "./*/with-schemas": {
-      "types": "./dist/types/with-schemas/*.d.ts",
-      "default": "./dist/*.js"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/types/*.d.ts",
-        "./dist/types/tinybase.d.ts"
-      ],
-      "cjs": [
-        "./dist/types/tinybase.d.ts"
-      ],
-      "cjs/with-schemas": [
-        "./dist/types/with-schemas/tinybase.d.ts"
-      ],
-      "cjs/*/with-schemas": [
-        "./dist/types/with-schemas/*.d.ts"
-      ],
-      "cjs/*": [
-        "./dist/types/*.d.ts"
-      ],
-      "cjs-es6": [
-        "./dist/types/tinybase.d.ts"
-      ],
-      "cjs-es6/with-schemas": [
-        "./dist/types/with-schemas/tinybase.d.ts"
-      ],
-      "cjs-es6/*/with-schemas": [
-        "./dist/types/with-schemas/*.d.ts"
-      ],
-      "cjs-es6/*": [
-        "./dist/types/*.d.ts"
-      ],
-      "es6": [
-        "./dist/types/tinybase.d.ts"
-      ],
-      "es6/with-schemas": [
-        "./dist/types/with-schemas/tinybase.d.ts"
-      ],
-      "es6/*/with-schemas": [
-        "./dist/types/with-schemas/*.d.ts"
-      ],
-      "es6/*": [
-        "./dist/types/*.d.ts"
-      ],
-      "debug": [
-        "./dist/types/tinybase.d.ts"
-      ],
-      "debug/with-schemas": [
-        "./dist/types/with-schemas/tinybase.d.ts"
-      ],
-      "debug/*/with-schemas": [
-        "./dist/types/with-schemas/*.d.ts"
-      ],
-      "debug/*": [
-        "./dist/types/*.d.ts"
-      ],
-      "umd": [
-        "./dist/types/tinybase.d.ts"
-      ],
-      "umd/with-schemas": [
-        "./dist/types/with-schemas/tinybase.d.ts"
-      ],
-      "umd/*/with-schemas": [
-        "./dist/types/with-schemas/*.d.ts"
-      ],
-      "umd/*": [
-        "./dist/types/*.d.ts"
-      ],
-      "umd-es6": [
-        "./dist/types/tinybase.d.ts"
-      ],
-      "umd-es6/with-schemas": [
-        "./dist/types/with-schemas/tinybase.d.ts"
-      ],
-      "umd-es6/*/with-schemas": [
-        "./dist/types/with-schemas/*.d.ts"
-      ],
-      "umd-es6/*": [
-        "./dist/types/*.d.ts"
-      ],
-      "lib": [
-        "./dist/types/tinybase.d.ts"
-      ],
-      "lib/with-schemas": [
-        "./dist/types/with-schemas/tinybase.d.ts"
-      ],
-      "lib/*/with-schemas": [
-        "./dist/types/with-schemas/*.d.ts"
-      ],
-      "lib/*": [
-        "./dist/types/*.d.ts"
-      ],
-      "with-schemas": [
-        "./dist/types/with-schemas/*.d.ts",
-        "./dist/types/with-schemas/tinybase.d.ts"
-      ],
-      "*/with-schemas": [
-        "./dist/types/with-schemas/*.d.ts",
-        "./dist/types/with-schemas/tinybase.d.ts"
-      ]
-    }
-  },
-  "main": "./dist/tinybase",
-  "types": "./dist/types/tinybase.d.ts",
-  "react-native": "./dist/tinybase.js",
   "browser": {
     "fs": false
   },
   "sideEffects": false,
+  "peerDependencies": {
+    "@automerge/automerge-repo": "^1.1.12",
+    "@journeyapps/powersync-sdk-common": "^1.6.0",
+    "@libsql/client": "^0.6.2",
+    "@sqlite.org/sqlite-wasm": "^3.46.0-build2",
+    "@vlcn.io/crsqlite-wasm": "^0.16.0",
+    "electric-sql": "^0.12.0",
+    "expo-sqlite": "^13.2.1",
+    "partykit": "^0.0.105",
+    "partysocket": "^1.0.1",
+    "prettier": "^3.3.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sqlite3": "^5.1.7",
+    "ws": "^8.17.0",
+    "yjs": "^13.6.16"
+  },
+  "peerDependenciesMeta": {
+    "@automerge/automerge-repo": {
+      "optional": true
+    },
+    "@libsql/client": {
+      "optional": true
+    },
+    "@journeyapps/powersync-sdk-common": {
+      "optional": true
+    },
+    "@sqlite.org/sqlite-wasm": {
+      "optional": true
+    },
+    "@vlcn.io/crsqlite-wasm": {
+      "optional": true
+    },
+    "electric-sql": {
+      "optional": true
+    },
+    "expo-sqlite": {
+      "optional": true
+    },
+    "partykit": {
+      "optional": true
+    },
+    "partysocket": {
+      "optional": true
+    },
+    "prettier": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "sqlite3": {
+      "optional": true
+    },
+    "ws": {
+      "optional": true
+    },
+    "yjs": {
+      "optional": true
+    }
+  },
+  "private": true,
   "scripts": {
     "lintFiles": "gulp lintFiles",
     "lintDocs": "gulp lintDocs",
@@ -287,7 +185,7 @@
     "rollup-plugin-preserve-shebang": "^1.0.1",
     "rollup-plugin-prettier": "^4.1.1",
     "sqlite3": "^5.1.7",
-    "tinybase": "file:./",
+    "tinybase": "file:./dist",
     "tinydocs": "^0.1.38",
     "tmp": "^0.2.3",
     "ts-unused-exports": "^10.1.0",
@@ -295,69 +193,5 @@
     "wa-sqlite": "github:rhashimoto/wa-sqlite",
     "ws": "^8.17.0",
     "yjs": "^13.6.16"
-  },
-  "peerDependencies": {
-    "@automerge/automerge-repo": "^1.1.12",
-    "@journeyapps/powersync-sdk-common": "^1.6.0",
-    "@libsql/client": "^0.6.2",
-    "@sqlite.org/sqlite-wasm": "^3.46.0-build2",
-    "@vlcn.io/crsqlite-wasm": "^0.16.0",
-    "electric-sql": "^0.12.0",
-    "expo-sqlite": "13.2.1",
-    "partykit": "^0.0.105",
-    "partysocket": "^1.0.1",
-    "prettier": "^3.3.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "sqlite3": "^5.1.7",
-    "ws": "^8.17.0",
-    "yjs": "^13.6.16"
-  },
-  "peerDependenciesMeta": {
-    "@automerge/automerge-repo": {
-      "optional": true
-    },
-    "@libsql/client": {
-      "optional": true
-    },
-    "@journeyapps/powersync-sdk-common": {
-      "optional": true
-    },
-    "@sqlite.org/sqlite-wasm": {
-      "optional": true
-    },
-    "@vlcn.io/crsqlite-wasm": {
-      "optional": true
-    },
-    "electric-sql": {
-      "optional": true
-    },
-    "expo-sqlite": {
-      "optional": true
-    },
-    "partykit": {
-      "optional": true
-    },
-    "partysocket": {
-      "optional": true
-    },
-    "prettier": {
-      "optional": true
-    },
-    "react": {
-      "optional": true
-    },
-    "react-dom": {
-      "optional": true
-    },
-    "sqlite3": {
-      "optional": true
-    },
-    "ws": {
-      "optional": true
-    },
-    "yjs": {
-      "optional": true
-    }
   }
 }
