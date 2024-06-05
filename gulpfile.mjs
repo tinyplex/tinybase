@@ -9,8 +9,8 @@
 
 import {
   BIN_DIR,
+  DIST_DIR,
   DOCS_DIR,
-  LIB_DIR,
   allModules,
   allOf,
   clearDir,
@@ -50,22 +50,22 @@ export const ts = async () => {
 };
 
 export const compileForTest = async () => {
-  await clearDir(LIB_DIR);
+  await clearDir(DIST_DIR);
   await testModules(async (module) => {
-    await compileModule(module, true, `${LIB_DIR}/debug`);
+    await compileModule(module, true, `${DIST_DIR}/debug`);
   });
   await copyDefinitions();
   await compileForCli();
 };
 
 export const compileForProd = async () => {
-  await clearDir(LIB_DIR);
+  await clearDir(DIST_DIR);
 
   await allOf(
     [undefined, 'umd', 'cjs'],
     async (format) =>
       await allOf([undefined, 'es6'], async (target) => {
-        const folder = `${LIB_DIR}/${[format, target]
+        const folder = `${DIST_DIR}/${[format, target]
           .filter((token) => token)
           .join('-')}`;
         await allModules(
@@ -88,7 +88,7 @@ export const compileForProd = async () => {
   );
 
   await allModules(
-    async (module) => await compileModule(module, true, `${LIB_DIR}/debug`),
+    async (module) => await compileModule(module, true, `${DIST_DIR}/debug`),
   );
 
   await copyDefinitions();
@@ -105,7 +105,7 @@ export const compileUmdReactDomDebug = async () =>
   await compileModule(
     'ui-react-dom',
     true,
-    `${LIB_DIR}/umd`,
+    `${DIST_DIR}/umd`,
     'umd',
     undefined,
     false,
