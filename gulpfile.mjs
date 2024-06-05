@@ -154,6 +154,21 @@ const getLabelBlocks = async () => {
   return labelBlocks;
 };
 
+const copyPackageFiles = async () => {
+  const json = JSON.parse(await promises.readFile('package.json', UTF8));
+  delete json.private;
+  delete json.scripts;
+  delete json.devDependencies;
+  await promises.writeFile(
+    join(DIST_DIR, 'package.json'),
+    JSON.stringify(json, undefined, 2),
+    UTF8,
+  );
+
+  await promises.copyFile('LICENSE', join(DIST_DIR, 'LICENSE'));
+  await promises.copyFile('readme.md', join(DIST_DIR, 'readme.md'));
+};
+
 const copyDefinition = async (module) => {
   const labelBlocks = await getLabelBlocks();
   // Add easier-to-read with-schemas blocks
@@ -630,6 +645,7 @@ export const ts = async () => {
 
 export const compileForTest = async () => {
   await clearDir(DIST_DIR);
+  await copyPackageFiles();
   await testModules(async (module) => {
     await compileModule(module, true, `${DIST_DIR}/debug`);
   });
@@ -639,6 +655,7 @@ export const compileForTest = async () => {
 
 export const compileForProd = async () => {
   await clearDir(DIST_DIR);
+  await copyPackageFiles();
 
   await allOf(
     [undefined, 'umd', 'cjs'],
@@ -676,6 +693,7 @@ export const compileForProd = async () => {
 
 export const compileForCli = async () => {
   await clearDir(BIN_DIR);
+  await copyPackageFiles();
   await compileModule('cli', false, BIN_DIR, undefined, undefined, true);
   await execute(`chmod +x ${BIN_DIR}/cli.js`);
 };
