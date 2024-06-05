@@ -15,6 +15,7 @@
     "react"
   ],
   "type": "module",
+  "private": true,
   "files": [
     "dist/**",
     "bin/**"
