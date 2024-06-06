@@ -1,4 +1,4 @@
-import {
+import type {
   CellIdsListener,
   CellListener,
   InvalidCellListener,
@@ -15,34 +15,38 @@ import {
   ValueIdsListener,
   ValueListener,
   ValuesListener,
-} from '../types/store.d';
-import {
+} from '../@types/store';
+import type {
   CheckpointIdsListener,
   CheckpointListener,
   Checkpoints,
-} from '../types/checkpoints';
-import {
+} from '../@types/checkpoints';
+import type {
   ClientIdsListener,
   PathIdsListener,
   WsServer,
-} from '../types/synchronizers/synchronizer-ws-server';
-import {Id, IdOrNull, Ids} from '../types/common.d';
+} from '../@types/synchronizers/synchronizer-ws-server';
+import type {Id, IdOrNull, Ids} from '../@types/common';
 import {IdMap, Node, mapGet, mapNew, mapSet, visitTree} from './map';
 import {IdSet, setAdd, setNew} from './set';
-import {
+import type {
   IndexIdsListener,
   Indexes,
   SliceIdsListener,
   SliceRowIdsListener,
-} from '../types/indexes.d';
-import {
+} from '../@types/indexes';
+import type {
   LocalRowIdsListener,
   RelationshipIdsListener,
   Relationships,
   RemoteRowIdListener,
-} from '../types/relationships.d';
-import {MetricIdsListener, MetricListener, Metrics} from '../types/metrics.d';
-import {
+} from '../@types/relationships';
+import type {
+  MetricIdsListener,
+  MetricListener,
+  Metrics,
+} from '../@types/metrics';
+import type {
   QueryIdsListener,
   ResultCellIdsListener,
   ResultCellListener,
@@ -51,7 +55,7 @@ import {
   ResultRowListener,
   ResultTableCellIdsListener,
   ResultTableListener,
-} from '../types/queries';
+} from '../@types/queries';
 import {arrayForEach, arrayPush} from './array';
 import {collDel, collForEach, collIsEmpty} from './coll';
 import {ifNotUndefined, isUndefined, size} from './other';

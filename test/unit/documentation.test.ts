@@ -178,7 +178,7 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
 
 describe('Documentation tests', () => {
   forEachDeepFile(
-    'src/types/docs',
+    'src/@types',
     (file) =>
       readFileSync(file, 'utf-8')
         .match(/(?<=\* @example\n).*?(?=\s*(\*\/|\* @))/gms)

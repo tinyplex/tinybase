@@ -1,15 +1,15 @@
-import {
+import type {
   CellStamp,
   Hash,
   Stamp,
   Time,
   ValueStamp,
-} from '../types/mergeable-store';
+} from '../@types/mergeable-store';
 import {EMPTY_STRING, NUMBER, getTypeOf} from './strings';
 import {IdMap, mapNew, mapToObj} from './map';
 import {IdObj, objNew} from './obj';
 import {isArray, isFiniteNumber, isString, size} from './other';
-import {Id} from '../types/common';
+import type {Id} from '../@types/common';
 import {getHash} from './hash';
 
 export type StampMap<Thing> = Stamp<IdMap<Thing>, true>;

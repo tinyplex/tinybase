@@ -1,4 +1,4 @@
-import {
+import type {
   CheckpointsOrCheckpointsId,
   IndexesOrIndexesId,
   MetricsOrMetricsId,
@@ -11,17 +11,17 @@ import {
   useQueries as useQueriesDecl,
   useRelationships as useRelationshipsDecl,
   useStore as useStoreDecl,
-} from '../types/ui-react';
-import {Id, Ids} from '../types/common';
+} from '../@types/ui-react';
+import type {Id, Ids} from '../@types/common';
 import {IdObj, objGet, objIds} from '../common/obj';
 import {isString, isUndefined} from '../common/other';
-import {Checkpoints} from '../types/checkpoints';
-import {Indexes} from '../types/indexes';
-import {Metrics} from '../types/metrics';
-import {Queries} from '../types/queries';
+import type {Checkpoints} from '../@types/checkpoints';
+import type {Indexes} from '../@types/indexes';
+import type {Metrics} from '../@types/metrics';
+import type {Queries} from '../@types/queries';
 import React from 'react';
-import {Relationships} from '../types/relationships';
-import {Store} from '../types/store';
+import type {Relationships} from '../@types/relationships';
+import type {Store} from '../@types/store';
 
 const {createContext, useContext, useEffect} = React;
 
