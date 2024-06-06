@@ -1,4 +1,4 @@
-import {TablesSchema, ValuesSchema} from '../../types/store.d';
+import type {TablesSchema, ValuesSchema} from '../../@types/store';
 import {EMPTY_STRING} from '../../common/strings';
 import {getStoreCoreApi} from './core';
 import {getStoreUiReactApi} from './react';
