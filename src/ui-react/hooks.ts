@@ -19,14 +19,14 @@ import {
   VALUE_IDS,
   _HAS,
 } from '../common/strings';
-import {
+import type {
   Callback,
   Id,
   IdOrNull,
   Ids,
   ParameterizedCallback,
-} from '../types/common.d';
-import {
+} from '../@types/common';
+import type {
   Cell,
   CellIdsListener,
   CellListener,
@@ -57,14 +57,14 @@ import {
   ValueListener,
   Values,
   ValuesListener,
-} from '../types/store.d';
-import {
+} from '../@types/store';
+import type {
   CheckpointIds,
   CheckpointIdsListener,
   CheckpointListener,
   Checkpoints,
-} from '../types/checkpoints';
-import {
+} from '../@types/checkpoints';
+import type {
   CheckpointsOrCheckpointsId,
   GetId,
   IndexesOrIndexesId,
@@ -188,20 +188,20 @@ import {
   useValues as useValuesDecl,
   useValuesListener as useValuesListenerDecl,
   useWillFinishTransactionListener as useWillFinishTransactionListenerDecl,
-} from '../types/ui-react.d';
-import {
+} from '../@types/ui-react';
+import type {
   Indexes,
   SliceIdsListener,
   SliceRowIdsListener,
-} from '../types/indexes.d';
-import {
+} from '../@types/indexes';
+import type {
   LinkedRowIdsListener,
   LocalRowIdsListener,
   Relationships,
   RemoteRowIdListener,
-} from '../types/relationships.d';
-import {MetricListener, Metrics} from '../types/metrics.d';
-import {
+} from '../@types/relationships';
+import type {MetricListener, Metrics} from '../@types/metrics';
+import type {
   Queries,
   ResultCellIdsListener,
   ResultCellListener,
@@ -211,7 +211,7 @@ import {
   ResultSortedRowIdsListener,
   ResultTableCellIdsListener,
   ResultTableListener,
-} from '../types/queries.d';
+} from '../@types/queries';
 import {arrayIsEmpty, arrayIsEqual, arrayMap} from '../common/array';
 import {
   getUndefined,
@@ -229,10 +229,10 @@ import {
   useThingIds,
 } from './context';
 import {ListenerArgument} from '../common/listeners';
-import {MergeableStore} from '../types/mergeable-store';
-import {Persister} from '../types/persisters.d';
+import type {MergeableStore} from '../@types/mergeable-store';
+import type {Persister} from '../@types/persisters';
 import React from 'react';
-import {Synchronizer} from '../types/synchronizers';
+import type {Synchronizer} from '../@types/synchronizers';
 import {TRANSACTION} from '../tools/common/strings';
 import {objIsEqual} from '../common/obj';
 

@@ -16,7 +16,7 @@
   ],
   "type": "module",
   "bin": {
-    "tinybase": "./cli.js"
+    "tinybase": "./cli/index.js"
   },
   "browser": {
     "fs": false

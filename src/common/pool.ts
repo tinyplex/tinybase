@@ -1,4 +1,4 @@
-import {Id, Ids} from '../types/common.d';
+import type {Id, Ids} from '../@types/common';
 import {arrayPush, arrayShift} from './array';
 import {size, test} from './other';
 import {EMPTY_STRING} from './strings';
