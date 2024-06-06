@@ -1,6 +1,6 @@
 import {AddListener, CallListeners} from './listeners';
-import {Cell, GetCell, Store} from '../types/store.d';
-import {Id, Ids, SortKey} from '../types/common.d';
+import type {Cell, GetCell, Store} from '../@types/store';
+import type {Id, Ids, SortKey} from '../@types/common';
 import {
   IdMap,
   IdMap2,
@@ -22,13 +22,13 @@ import {
   collValues,
 } from './coll';
 import {ifNotUndefined, isArray, isString, isUndefined} from './other';
-import {Checkpoints} from '../types/checkpoints';
+import type {Checkpoints} from '../@types/checkpoints';
 import {EMPTY_STRING} from './strings';
-import {Indexes} from '../types/indexes.d';
-import {Metrics} from '../types/metrics.d';
-import {Queries} from '../types/queries.d';
-import {Relationships} from '../types/relationships.d';
-import {Tools} from '../types/tools.d';
+import type {Indexes} from '../@types/indexes';
+import type {Metrics} from '../@types/metrics';
+import type {Queries} from '../@types/queries';
+import type {Relationships} from '../@types/relationships';
+import type {Tools} from '../@types/tools';
 
 type OnChangedDecl<RowValue> = (
   change: () => void,

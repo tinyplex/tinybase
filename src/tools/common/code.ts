@@ -21,7 +21,7 @@ import {
 } from '../../common/array';
 import {collHas, collValues} from '../../common/coll';
 import {isArray, size, slice} from '../../common/other';
-import {Id} from '../../types/common.d';
+import type {Id} from '../../@types/common';
 
 export type LINE = string;
 export type LINE_TREE = LINE_OR_LINE_TREE[];

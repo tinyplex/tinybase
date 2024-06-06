@@ -1,7 +1,7 @@
-import {Cell, TablesSchema, Value, ValuesSchema} from '../../types/store.d';
+import type {Cell, TablesSchema, Value, ValuesSchema} from '../../@types/store';
 import {DEFAULT, TYPE} from '../../common/strings';
 import {LINE_OR_LINE_TREE, camel, snake} from './code';
-import {Id} from '../../types/common.d';
+import type {Id} from '../../@types/common';
 import {objToArray} from '../../common/obj';
 
 export type MapTablesSchema = <Return>(
