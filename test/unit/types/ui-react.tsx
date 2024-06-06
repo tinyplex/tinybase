@@ -14,7 +14,7 @@ import {
   createStore,
 } from 'tinybase/debug/with-schemas';
 import React from 'react';
-import {createFilePersister} from 'tinybase/with-schemas/persisters/persister-file';
+import {createFilePersister} from 'tinybase/persisters/persister-file/with-schemas';
 
 const tablesSchema = {
   t0: {c0: {type: 'number'}},

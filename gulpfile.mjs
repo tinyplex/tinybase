@@ -5,7 +5,7 @@ import gulp from 'gulp';
 
 const UTF8 = 'utf-8';
 const TEST_MODULES = [
-  'index',
+  '',
   'ui-react',
   'ui-react-dom',
   'tools',
@@ -29,9 +29,8 @@ const TEST_MODULES = [
   'synchronizers/synchronizer-ws-client',
   'synchronizers/synchronizer-ws-server',
 ];
-const MODULES_TYPED_WITH_INTERNALS = ['store', 'queries', 'ui-react'];
 const ALL_MODULES = [
-  'index',
+  ...TEST_MODULES,
   'store',
   'metrics',
   'indexes',
@@ -42,34 +41,16 @@ const ALL_MODULES = [
   'persisters',
   'synchronizers',
   'common',
-  'ui-react',
-  'ui-react-dom',
-  'tools',
-  'persisters/persister-automerge',
-  'persisters/persister-browser',
-  'persisters/persister-cr-sqlite-wasm',
-  'persisters/persister-electric-sql',
-  'persisters/persister-powersync',
-  'persisters/persister-expo-sqlite',
-  'persisters/persister-expo-sqlite-next',
-  'persisters/persister-file',
-  'persisters/persister-indexed-db',
-  'persisters/persister-libsql',
-  'persisters/persister-partykit-client',
-  'persisters/persister-partykit-server',
-  'persisters/persister-remote',
-  'persisters/persister-sqlite-wasm',
-  'persisters/persister-sqlite3',
-  'persisters/persister-yjs',
-  'synchronizers/synchronizer-local',
-  'synchronizers/synchronizer-ws-client',
-  'synchronizers/synchronizer-ws-server',
+];
+const ALL_DEFINITIONS = [
+  ...ALL_MODULES,
+  '_internal/store',
+  '_internal/queries',
+  '_internal/ui-react',
 ];
 
 const DIST_DIR = 'dist';
 const DOCS_DIR = 'docs';
-const TYPES_DIR = 'dist/types';
-const TYPES_SCHEMA_DIR = `${TYPES_DIR}/with-schemas/`;
 const TMP_DIR = 'tmp';
 const LINT_BLOCKS = /```[jt]sx?( [^\n]+)?(\n.*?)```/gms;
 const TYPES_DOC_CODE_BLOCKS = /\/\/\/\s*(\S*)(.*?)(?=(\s*\/\/)|(\n\n)|(\n$))/gs;
@@ -77,7 +58,7 @@ const TYPES_DOC_BLOCKS = /(\/\*\*.*?\*\/)\s*\/\/\/\s*(\S*)/gs;
 
 const getGlobalName = (module) =>
   'TinyBase' +
-  (module == 'tinybase'
+  (module == ''
     ? ''
     : basename(module)
         .split('-')
@@ -93,6 +74,7 @@ const getPrettierConfig = async () => ({
 const allOf = async (array, cb) => await Promise.all(array.map(cb));
 const testModules = async (cb) => await allOf(TEST_MODULES, cb);
 const allModules = async (cb) => await allOf(ALL_MODULES, cb);
+const allDefinitions = async (cb) => await allOf(ALL_DEFINITIONS, cb);
 
 const clearDir = async (dir = DIST_DIR) => {
   try {
@@ -134,30 +116,18 @@ const forEachDirAndFile = (dir, dirCallback, fileCallback, extension = '') =>
         : null;
   });
 
-const labelBlocks = new Map();
-const getLabelBlocks = async () => {
-  if (labelBlocks.size == 0) {
-    await allModules(async (module) =>
-      [
-        ...(
-          await promises.readFile(`src/types/docs/${module}.js`, UTF8)
-        ).matchAll(TYPES_DOC_BLOCKS),
-      ].forEach(([_, block, label]) => {
-        if (labelBlocks.has(label)) {
-          throw new Error('Duplicate label, ' + label);
-        }
-        labelBlocks.set(label, block);
-      }),
-    );
-  }
-  return labelBlocks;
-};
-
 const copyPackageFiles = async () => {
   const json = JSON.parse(await promises.readFile('package.json', UTF8));
   delete json.private;
   delete json.scripts;
   delete json.devDependencies;
+
+  json.typesVersions = {'*': {}};
+  ['debug/*', 'cjs/*', 'cjs-es6/*', 'es6/*', 'umd/*', 'umd-es6/*', '*'].forEach(
+    (path) =>
+      (json.typesVersions['*'][path] = ['@types/*/index', '@types/index']),
+  );
+
   await promises.writeFile(
     join(DIST_DIR, 'package.json'),
     JSON.stringify(json, undefined, 2),
@@ -168,14 +138,34 @@ const copyPackageFiles = async () => {
   await promises.copyFile('readme.md', join(DIST_DIR, 'readme.md'));
 };
 
-const copyDefinition = async (module) => {
+let labelBlocks;
+const getLabelBlocks = async () => {
+  if (labelBlocks == null) {
+    labelBlocks = new Map();
+    await allModules(async (module) => {
+      [
+        ...(
+          await promises.readFile(`src/@types/${module}/docs.js`, UTF8)
+        ).matchAll(TYPES_DOC_BLOCKS),
+      ].forEach(([_, block, label]) => {
+        if (labelBlocks.has(label)) {
+          throw new Error(`Duplicate label '${label}' in ${module}`);
+        }
+        labelBlocks.set(label, block);
+      });
+    });
+  }
+  return labelBlocks;
+};
+
+const copyDefinition = async (dir, module) => {
   const labelBlocks = await getLabelBlocks();
   // Add easier-to-read with-schemas blocks
   const codeBlocks = new Map();
   [
-    ...(await promises.readFile(`src/types/${module}.d.ts`, UTF8)).matchAll(
-      TYPES_DOC_CODE_BLOCKS,
-    ),
+    ...(
+      await promises.readFile(`src/@types/${module}/index.d.ts`, UTF8)
+    ).matchAll(TYPES_DOC_CODE_BLOCKS),
   ].forEach(([_, label, code]) => {
     const prefix = code.match(/^\n\s*/m)?.[0];
     if (prefix) {
@@ -189,64 +179,54 @@ const copyDefinition = async (module) => {
     }
   });
   const fileRewrite = (block, addOverrideSnippet) =>
-    block
-      .replace(/\.d';/g, `.d.ts';`)
-      .replace(TYPES_DOC_CODE_BLOCKS, (_, label, code) => {
-        if (labelBlocks.has(label)) {
-          const codeOverride = codeBlocks.get(label);
-          let block = labelBlocks.get(label);
-          if (
-            addOverrideSnippet &&
-            codeBlocks.has(label) &&
-            code.includes('<') &&
-            code.includes('Schema') &&
-            !codeOverride.endsWith('{')
-          ) {
-            const prefix = block.match(/^\s+\*$/m)?.[0];
-            if (prefix) {
-              const line = '\n' + prefix;
-              block = block.replace(
-                /^\s+\*$/m,
-                `${prefix}${line}` +
-                  ' This has schema-based typing.' +
-                  ' The following is a simplified representation:' +
-                  `${line}${line} \`\`\`ts override` +
-                  codeOverride.trimEnd() +
-                  `${line} \`\`\`${line}`,
-              );
-            }
-            code = code.replace(/^\s*?\/\/\/.*?\n/gm, '');
+    block.replace(TYPES_DOC_CODE_BLOCKS, (_, label, code) => {
+      if (labelBlocks.has(label)) {
+        const codeOverride = codeBlocks.get(label);
+        let block = labelBlocks.get(label);
+        if (
+          addOverrideSnippet &&
+          codeBlocks.has(label) &&
+          code.includes('<') &&
+          code.includes('Schema') &&
+          !codeOverride.endsWith('{')
+        ) {
+          const prefix = block.match(/^\s+\*$/m)?.[0];
+          if (prefix) {
+            const line = '\n' + prefix;
+            block = block.replace(
+              /^\s+\*$/m,
+              `${prefix}${line}` +
+                ' This has schema-based typing.' +
+                ' The following is a simplified representation:' +
+                `${line}${line} \`\`\`ts override` +
+                codeOverride.trimEnd() +
+                `${line} \`\`\`${line}`,
+            );
           }
-          return block + code;
+          code = code.replace(/^\s*?\/\/\/.*?\n/gm, '');
         }
-        throw `Missing docs label ${label} in ${module}`;
-      });
+        return block + code;
+      }
+      throw `Missing docs label ${label} in ${module}`;
+    });
 
-  await allOf(
-    ['', 'with-schemas/'].concat(
-      ...(MODULES_TYPED_WITH_INTERNALS.includes(module)
-        ? ['with-schemas/internal/']
-        : []),
-    ),
-    async (extraDir) => {
-      await promises.writeFile(
-        await ensureDir(`${TYPES_DIR}/${extraDir}${module}.d.ts`),
-        fileRewrite(
-          await promises.readFile(`src/types/${extraDir}${module}.d.ts`, UTF8),
-          extraDir != '',
+  await allOf(['', '/with-schemas'], async (extraDir) => {
+    await promises.writeFile(
+      await ensureDir(`${dir}/@types/${module}${extraDir}/index.d.ts`),
+      fileRewrite(
+        await promises.readFile(
+          `src/@types/${module}${extraDir}/index.d.ts`,
+          UTF8,
         ),
-        UTF8,
-      );
-    },
-  );
+        extraDir != '',
+      ),
+      UTF8,
+    );
+  });
 };
 
-const copyDefinitions = async () => {
-  await makeDir(TYPES_DIR);
-  await makeDir(TYPES_SCHEMA_DIR);
-  await makeDir(`${TYPES_SCHEMA_DIR}/internal`);
-  await copyDefinition('common');
-  await allModules((module) => copyDefinition(module));
+const copyDefinitions = async (dir) => {
+  await allDefinitions((module) => copyDefinition(dir, module));
 };
 
 const execute = async (cmd) => {
@@ -417,7 +397,7 @@ const compileModule = async (
   const {default: shebang} = await import('rollup-plugin-preserve-shebang');
   const {default: image} = await import('@rollup/plugin-image');
 
-  let inputFile = `src/${module}.ts`;
+  let inputFile = `src/${module}/index.ts`;
   if (!existsSync(inputFile)) {
     inputFile += 'x';
   }
@@ -453,8 +433,8 @@ const compileModule = async (
         preventAssignment: true,
         ...(cli
           ? {
-              [`from './tinybase'`]: `from 'tinybase'`,
-              [`from './tools'`]: `from 'tinybase/tools'`,
+              [`from '../'`]: `from 'tinybase'`,
+              [`from '../tools'`]: `from 'tinybase/tools'`,
             }
           : {}),
       }),
@@ -483,9 +463,11 @@ const compileModule = async (
     },
   };
 
+  const moduleDir = dirname(await ensureDir(dir + '/' + module + '/-'));
+
   const outputConfig = {
-    dir: dirname(await ensureDir(dir + '/' + module)),
-    entryFileNames: `[name]${fileSuffix}.${format == 'cjs' ? 'cjs' : 'js'}`,
+    dir: moduleDir,
+    entryFileNames: `index${fileSuffix}.${format == 'cjs' ? 'cjs' : 'js'}`,
     format,
     globals: {
       'expo-sqlite/next': 'expo-sqlite/next',
@@ -500,7 +482,19 @@ const compileModule = async (
     name: getGlobalName(module) + (debug ? 'Debug' : ''),
   };
 
-  await (await rollup(inputConfig)).write(outputConfig);
+  const {
+    output: [{fileName}],
+  } = await (await rollup(inputConfig)).write(outputConfig);
+
+  if (!cli) {
+    const outputWithSchemasDir = dirname(
+      await ensureDir(dir + '/' + module + '/with-schemas/-'),
+    );
+    await promises.copyFile(
+      join(moduleDir, fileName),
+      join(outputWithSchemasDir, fileName),
+    );
+  }
 };
 
 // coverageMode = 0: none; 1: screen; 2: json; 3: html
@@ -528,8 +522,8 @@ const test = async (
             collectCoverage: true,
             coverageProvider: 'babel',
             collectCoverageFrom: [
-              `${DIST_DIR}/debug/tinybase.js`,
-              `${DIST_DIR}/debug/ui-react.js`,
+              `${DIST_DIR}/debug/tinybase/index.js`,
+              `${DIST_DIR}/debug/ui-react/index.js`,
               // Other modules cannot be fully exercised in isolation.
             ],
             coverageReporters: ['text-summary']
@@ -636,7 +630,9 @@ export const spell = async () => {
 };
 
 export const ts = async () => {
-  await copyDefinitions();
+  await clearDir(DIST_DIR);
+  await copyPackageFiles();
+  await copyDefinitions(DIST_DIR);
   await tsCheck('src');
   await tsCheck('test');
   await tsCheck('site');
@@ -645,17 +641,16 @@ export const ts = async () => {
 export const compileForTest = async () => {
   await clearDir(DIST_DIR);
   await copyPackageFiles();
+  await copyDefinitions(DIST_DIR);
   await testModules(async (module) => {
     await compileModule(module, true, `${DIST_DIR}/debug`);
   });
-  await copyDefinitions();
-  await compileModule('cli', false, DIST_DIR, undefined, undefined, true);
-  await execute(`chmod +x ${DIST_DIR}/cli.js`);
 };
 
 export const compileForProd = async () => {
   await clearDir(DIST_DIR);
   await copyPackageFiles();
+  await copyDefinitions(DIST_DIR);
 
   await allOf(
     [undefined, 'umd', 'cjs'],
@@ -668,6 +663,7 @@ export const compileForProd = async () => {
           async (module) =>
             await compileModule(module, false, folder, format, target),
         );
+        await copyDefinitions(folder);
         if (format || target) {
           await compileModule(
             'ui-react-dom',
@@ -687,9 +683,8 @@ export const compileForProd = async () => {
     async (module) => await compileModule(module, true, `${DIST_DIR}/debug`),
   );
 
-  await copyDefinitions();
   await compileModule('cli', false, DIST_DIR, undefined, undefined, true);
-  await execute(`chmod +x ${DIST_DIR}/cli.js`);
+  await execute(`chmod +x ${DIST_DIR}/cli/index.js`);
 };
 
 export const compileUmdReactDomDebug = async () =>
