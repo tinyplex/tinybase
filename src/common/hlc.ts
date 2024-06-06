@@ -1,8 +1,8 @@
 import {DEBUG, ifNotUndefined, isUndefined, mathMax} from './other';
 import {decode, encode} from './codec';
-import {Id} from '../types/common';
+import type {Id} from '../@types/common';
 import {getHash} from './hash';
-import {getUniqueId} from '../common';
+import {getUniqueId} from './';
 
 type Hlc = string;
 // Sortable 16 digit radix-64 string representing 96 bits:
