@@ -83,7 +83,7 @@ import {
   mapUnique,
   snake,
 } from '../common/code';
-import {TablesSchema, ValuesSchema} from '../../types/store.d';
+import type {TablesSchema, ValuesSchema} from '../../@types/store';
 import {
   arrayForEach,
   arrayJoin,
@@ -91,7 +91,7 @@ import {
   arrayUnshift,
 } from '../../common/array';
 import {isString, isUndefined} from '../../common/other';
-import {Id} from '../../types/common.d';
+import type {Id} from '../../@types/common';
 import {collValues} from '../../common/coll';
 import {getSchemaFunctions} from '../common/schema';
 import {getTypeFunctions} from './types';

@@ -11,7 +11,7 @@ import {
   VALUE,
   VALUES,
 } from '../../common/strings';
-import {Id} from '../../types/common.d';
+import type {Id} from '../../@types/common';
 
 export const upper = (str: string) => str.toUpperCase();
 

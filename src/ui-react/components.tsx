@@ -1,6 +1,6 @@
 /** @jsx createElement */
 
-import {
+import type {
   BackwardCheckpointsProps,
   BackwardCheckpointsView as BackwardCheckpointsViewDecl,
   CellProps,
@@ -47,21 +47,21 @@ import {
   ValueView as ValueViewDecl,
   ValuesProps,
   ValuesView as ValuesViewDecl,
-} from '../types/ui-react.d';
+} from '../@types/ui-react';
 import {
   Context,
   useCheckpointsOrCheckpointsById,
   useIndexesOrIndexesById,
   useRelationshipsOrRelationshipsById,
 } from './context';
-import {Id, Ids} from '../types/common.d';
+import type {Id, Ids} from '../@types/common';
 import React, {ReactElement} from 'react';
 import {
   createElement,
   getIndexStoreTableId,
   getProps,
   getRelationshipsStoreTableIds,
-} from './common';
+} from '../common/react';
 import {isArray, isUndefined} from '../common/other';
 import {objDel, objGet} from '../common/obj';
 import {
@@ -85,9 +85,9 @@ import {
   useValue,
   useValueIds,
 } from './hooks';
-import {CheckpointIds} from '../types/checkpoints';
+import type {CheckpointIds} from '../@types/checkpoints';
 import {EMPTY_STRING} from '../common/strings';
-import {Store} from '../types/store';
+import type {Store} from '../@types/store';
 import {arrayMap} from '../common/array';
 
 const {useCallback, useContext, useMemo, useState} = React;
