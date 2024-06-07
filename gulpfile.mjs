@@ -498,7 +498,7 @@ const compileModule = async (
 // coverageMode = 0: none; 1: screen; 2: json; 3: html
 const test = async (
   dir,
-  {coverageMode, countAsserts, puppeteer, serialTests},
+  {coverageMode, countAsserts, puppeteer, serialTests} = {},
 ) => {
   const {default: jest} = await import('jest');
   await makeDir(TMP_DIR);
@@ -693,11 +693,6 @@ export const testPerf = async () => {
 };
 export const compileAndTestPerf = series(compileForTest, testPerf);
 
-export const testE2e = async () => {
-  await test('test/e2e', {puppeteer: true});
-};
-export const compileAndTestE2e = series(compileForTest, testE2e);
-
 export const compileDocsPagesOnly = async () =>
   await compileDocsAndAssets(false);
 
@@ -707,6 +702,16 @@ export const compileDocsAssetsOnly = async () =>
 export const compileDocs = async () => await compileDocsAndAssets();
 
 export const compileForProdAndDocs = series(compileForProd, compileDocs);
+
+export const testE2e = async () => {
+  await test('test/e2e', {puppeteer: true});
+};
+export const compileAndTestE2e = series(compileForProdAndDocs, testE2e);
+
+export const testProd = async () => {
+  await test('test/prod');
+};
+export const compileAndTestProd = series(compileForProdAndDocs, testProd);
 
 export const serveDocs = async () => {
   const {createServer} = await import('http-server');
