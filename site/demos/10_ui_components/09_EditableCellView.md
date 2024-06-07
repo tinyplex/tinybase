@@ -65,4 +65,4 @@ component so that it uses this view for its own rendering:
 And again, we now have editable data across the Table!
 
 We finish off the demos of the UI components with the debugging tool. Let's
-proceed to the <StoreInspector /> demo.
+proceed to the <Inspector /> demo.

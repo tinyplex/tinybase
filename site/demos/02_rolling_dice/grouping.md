@@ -9,8 +9,8 @@ the rolls by result. We're making changes to the Averaging Dice Rolls demo.
 We import the extra functions and components we need:
 
 ```diff-js
--const {MetricView, Provider, TableView, useCell} = TinyBaseUiReactDebug;
-+const {IndexView, Provider, SliceView, useCell} = TinyBaseUiReactDebug;
+-const {MetricView, Provider, TableView, useCell} = TinyBaseUiReact;
++const {IndexView, Provider, SliceView, useCell} = TinyBaseUiReact;
 -const {createMetrics, createStore} = TinyBase;
 +const {createIndexes, createStore} = TinyBase;
 ```
@@ -94,7 +94,7 @@ component for each roll Row):
 -      Average: <MetricView metricId="average" />
 -    </p>
 -    <TableView tableId="rolls" rowComponent={Roll} />
--    <StoreInspector />
+-    <Inspector />
 -  </Provider>,
 -);
 ```
@@ -103,7 +103,7 @@ component for each roll Row):
 ReactDOM.createRoot(document.body).render(
   <Provider store={store} indexes={indexes}>
     <IndexView indexId="rolls" sliceComponent={Rolls} />
-    <StoreInspector />
+    <Inspector />
   </Provider>,
 );
 ```
