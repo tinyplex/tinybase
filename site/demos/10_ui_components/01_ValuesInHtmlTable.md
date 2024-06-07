@@ -14,9 +14,9 @@ ui-react-dom modules too.
 ```html
 <script src="/umd/react.production.min.js"></script>
 <script src="/umd/react-dom.production.min.js"></script>
-<script src="/umd/tinybase.js"></script>
-<script src="/umd/ui-react.js"></script>
-<script src="/umd/ui-react-dom.js"></script>
+<script src="/umd/tinybase/index.js"></script>
+<script src="/umd/tinybase/ui-react/index.js"></script>
+<script src="/umd/tinybase/ui-react-dom/index.js"></script>
 ```
 
 We need the following parts of the TinyBase API, the ui-react module, and React

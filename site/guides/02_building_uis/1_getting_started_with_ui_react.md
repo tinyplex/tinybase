@@ -12,8 +12,8 @@ look like this:
     <title>My First TinyBase App</title>
     <script src="https://unpkg.com/react/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/tinybase/lib/umd/tinybase.js"></script>
-    <script src="https://unpkg.com/tinybase/lib/umd/ui-react.js"></script>
+    <script src="https://unpkg.com/tinybase/dist/umd/index.js"></script>
+    <script src="https://unpkg.com/tinybase/dist/umd/ui-react/index.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script type="text/babel">
       addEventListener('load', () => {

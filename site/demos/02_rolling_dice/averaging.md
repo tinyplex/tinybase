@@ -9,9 +9,9 @@ First, we pull in React, ReactDOM, and TinyBase:
 ```html
 <script src="/umd/react.production.min.js"></script>
 <script src="/umd/react-dom.production.min.js"></script>
-<script src="/umd/tinybase.js"></script>
-<script src="/umd/ui-react.js"></script>
-<script src="/umd/ui-react-dom-debug.js"></script>
+<script src="/umd/tinybase/index.js"></script>
+<script src="/umd/tinybase/ui-react/index-debug.js"></script>
+<script src="/umd/tinybase/ui-react-dom/index-debug.js"></script>
 ```
 
 We're adding the debug version of the ui-react-dom module so that we can use the
@@ -20,7 +20,7 @@ StoreInspector component for the purposes of seeing how the data is structured.
 We import the functions and components we need, and create the Store object:
 
 ```js
-const {MetricView, Provider, TableView, useCell} = TinyBaseUiReact;
+const {MetricView, Provider, TableView, useCell} = TinyBaseUiReactDebug;
 const {createMetrics, createStore} = TinyBase;
 const {StoreInspector} = TinyBaseUiReactDomDebug;
 
