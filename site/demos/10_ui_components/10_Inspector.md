@@ -1,7 +1,7 @@
-# <StoreInspector />
+# <Inspector />
 
-In this demo, we showcase the StoreInspector component, which allows you to
-view and edit the content of a Store in a debug web environment.
+In this demo, we showcase the Inspector component, which allows you to view and
+edit the content of a Store in a debug web environment.
 
 Let's make changes to the <TableInHtmlTable /> demo so we can start with a
 well-populated Store to inspect.
@@ -10,28 +10,25 @@ well-populated Store to inspect.
 
 ## Set Up
 
-Let's import the StoreInspector component. It is only available in the debug
-version of the ui-react-dom library, and we have a special build of that UMD
-module:
+Let's import the Inspector component:
 
 ```diff-html
  <script src="/umd/react.production.min.js"></script>
  <script src="/umd/react-dom.production.min.js"></script>
  <script src="/umd/tinybase/index.js"></script>
--<script src="/umd/tinybase/ui-react/index.js"></script>
+ <script src="/umd/tinybase/ui-react/index.js"></script>
 -<script src="/umd/tinybase/ui-react-dom/index.js"></script>
-+<script src="/umd/tinybase/ui-react/index-debug.js"></script>
-+<script src="/umd/tinybase/ui-react-dom/index-debug.js"></script>
++<script src="/umd/tinybase/ui-react-inspector/index.js"></script>
 ```
 
-We're going to use the useTableIds hook briefly, and the StoreInspector from the
-debug version of the ui-react-dom module:
+We're going to use the useTableIds hook briefly, and the Inspector from the
+ui-react-inspector module:
 
 ```diff-js
 -const {Provider, useCell, useCreateStore} = TinyBaseUiReact;
-+const {Provider, useCreateStore, useTableIds} = TinyBaseUiReactDebug;
++const {Provider, useCreateStore, useTableIds} = TinyBaseUiReact;
 -const {TableInHtmlTable} = TinyBaseUiReactDom;
-+const {StoreInspector} = TinyBaseUiReactDomDebug;
++const {Inspector} = TinyBaseUiReactInspector;
 ```
 
 The inspector component is best showcased with a larger data set, so we load up
@@ -74,19 +71,19 @@ Let's update the body of the app to show some very basic data about the Store:
 }
 ```
 
-OK, that's not much of an app! But at least we can now instantiate the
-StoreInspector component.
+OK, that's not much of an app! But at least we can now instantiate the Inspector
+component.
 
-## Using the StoreInspector Component
+## Using the Inspector Component
 
-The StoreInspector component can appear anywhere in the app's virtual DOM and
-will appear as an overlay. It is added to an app like so:
+The Inspector component can appear anywhere in the app's virtual DOM and will
+appear as an overlay. It is added to an app like so:
 
 ```diff-jsx
        <div id='info'>
         Loaded tables: {useTableIds().join(', ')}
        </div>
-+      <StoreInspector />
++      <Inspector open={true} />
      </>
    );
  };

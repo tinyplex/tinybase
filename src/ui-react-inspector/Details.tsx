@@ -2,11 +2,11 @@
 
 import {OPEN_CELL, STATE_TABLE} from './common';
 import {ReactNode, SyntheticEvent} from 'react';
-import {useCell, useSetCellCallback} from '../../ui-react';
-import {CURRENT_TARGET} from '../../common/strings';
-import type {Id} from '../../@types/common';
+import {useCell, useSetCellCallback} from '../ui-react';
+import {CURRENT_TARGET} from '../common/strings';
+import type {Id} from '../@types/common';
 import type {StoreProp} from './types';
-import {createElement} from '../../common/react';
+import {createElement} from '../common/react';
 
 export const Details = ({
   uniqueId,
