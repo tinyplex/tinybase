@@ -522,7 +522,7 @@ const test = async (
             collectCoverage: true,
             coverageProvider: 'babel',
             collectCoverageFrom: [
-              `${DIST_DIR}/debug/tinybase/index.js`,
+              `${DIST_DIR}/debug/index.js`,
               `${DIST_DIR}/debug/ui-react/index.js`,
               // Other modules cannot be fully exercised in isolation.
             ],
@@ -597,7 +597,7 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
     exports: 'named',
   });
 
-  const {build} = await import('../tmp/build.js');
+  const {build} = await import('./tmp/build.js');
   await build(DOCS_DIR, api, pages);
   await removeDir(TMP_DIR);
 };
@@ -665,6 +665,16 @@ export const compileForProd = async () => {
         );
         await copyDefinitions(folder);
         if (format || target) {
+          await compileModule(
+            'ui-react',
+            true,
+            folder,
+            format,
+            target,
+            false,
+            true,
+            '-debug',
+          );
           await compileModule(
             'ui-react-dom',
             true,
