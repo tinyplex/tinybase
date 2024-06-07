@@ -61,7 +61,7 @@ from a CDN in a web page. Create a file called `index.html`, for example:
 <html>
   <head>
     <title>My First TinyBase App</title>
-    <script src="https://unpkg.com/tinybase/lib/umd/tinybase.js"></script>
+    <script src="https://unpkg.com/tinybase/dist/umd/index.js"></script>
     <script>
       addEventListener('load', () => {
         const {createStore} = TinyBase;

@@ -13,10 +13,10 @@ First, we pull in React, ReactDOM, and TinyBase:
 ```html
 <script src="/umd/react.production.min.js"></script>
 <script src="/umd/react-dom.production.min.js"></script>
-<script src="/umd/tinybase.js"></script>
-<script src="/umd/persister-browser.js"></script>
-<script src="/umd/ui-react.js"></script>
-<script src="/umd/ui-react-dom-debug.js"></script>
+<script src="/umd/tinybase/index.js"></script>
+<script src="/umd/tinybase/persisters/persister-browser/index.js"></script>
+<script src="/umd/tinybase/ui-react/index-debug.js"></script>
+<script src="/umd/tinybase/ui-react-dom/index-debug.js"></script>
 ```
 
 We'll use a good selection of the TinyBase API and the ui-react module:
@@ -43,7 +43,7 @@ const {
   useSetPartialRowCallback,
   useStore,
   useUndoInformation,
-} = TinyBaseUiReact;
+} = TinyBaseUiReactDebug;
 const {
   createContext,
   useCallback,

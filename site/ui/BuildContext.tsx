@@ -40,7 +40,7 @@ const build = ((): Build => {
   forEachDirAndFile('./dist', null, (file) => {
     sizes.set(basename(file), statSync(file).size);
   });
-  forEachDirAndFile('./dist/types', null, (file) => {
+  forEachDirAndFile('./dist/@types', null, (file) => {
     sizes.set(basename(file), statSync(file).size);
   });
   forEachDirAndFile('./dist/debug', null, (file) => {

@@ -87,8 +87,6 @@ export const build = async (
     .addJsFile('site/js/home.ts')
     .addJsFile('site/js/app.ts')
     .addJsFile('site/js/single.ts')
-    .addFiles('dist/umd', ['js'], 'umd')
-    .addFile('tmp/ui-react-dom-debug.js', 'umd')
     .addFile('node_modules/react/umd/react.production.min.js', 'umd')
     .addFile('node_modules/react-dom/umd/react-dom.production.min.js', 'umd')
     .addFile('tmp/partysocket.js', 'umd')
@@ -103,6 +101,29 @@ export const build = async (
       )}}, {}]`,
       'assets/countries.json',
     );
+  [
+    '',
+    '/store',
+    '/persisters/persister-browser',
+    '/persisters/persister-remote',
+    '/synchronizers/synchronizer-ws-client',
+    '/ui-react',
+    '/ui-react-dom',
+  ].forEach((module) =>
+    docs.addFile('dist/umd' + module + '/index.js', 'umd/tinybase/' + module),
+  );
+  ['/ui-react', '/ui-react-dom'].forEach((module) =>
+    docs.addFile(
+      'dist/umd' + module + '/index-debug.js',
+      'umd/tinybase/' + module,
+    ),
+  );
+
+  docs.addFile(
+    'dist/umd/ui-react-dom/index-debug.js',
+    'umd/tinybase/ui-react-dom',
+  );
+
   if (api) {
     addApi(docs);
   }
@@ -130,38 +151,38 @@ export const build = async (
 
 const addApi = (docs: Docs): Docs =>
   docs
-    .addApiFile('dist/types/common.d.ts')
-    .addApiFile('dist/types/store.d.ts')
-    .addApiFile('dist/types/checkpoints.d.ts')
-    .addApiFile('dist/types/indexes.d.ts')
-    .addApiFile('dist/types/metrics.d.ts')
-    .addApiFile('dist/types/relationships.d.ts')
-    .addApiFile('dist/types/queries.d.ts')
-    .addApiFile('dist/types/mergeable-store.d.ts')
-    .addApiFile('dist/types/persisters.d.ts')
-    .addApiFile('dist/types/persisters/persister-browser.d.ts')
-    .addApiFile('dist/types/persisters/persister-indexed-db.d.ts')
-    .addApiFile('dist/types/persisters/persister-file.d.ts')
-    .addApiFile('dist/types/persisters/persister-remote.d.ts')
-    .addApiFile('dist/types/persisters/persister-yjs.d.ts')
-    .addApiFile('dist/types/persisters/persister-automerge.d.ts')
-    .addApiFile('dist/types/persisters/persister-sqlite3.d.ts')
-    .addApiFile('dist/types/persisters/persister-sqlite-wasm.d.ts')
-    .addApiFile('dist/types/persisters/persister-cr-sqlite-wasm.d.ts')
-    .addApiFile('dist/types/persisters/persister-electric-sql.d.ts')
-    .addApiFile('dist/types/persisters/persister-powersync.d.ts')
-    .addApiFile('dist/types/persisters/persister-expo-sqlite.d.ts')
-    .addApiFile('dist/types/persisters/persister-expo-sqlite-next.d.ts')
-    .addApiFile('dist/types/persisters/persister-libsql.d.ts')
-    .addApiFile('dist/types/persisters/persister-partykit-client.d.ts')
-    .addApiFile('dist/types/persisters/persister-partykit-server.d.ts')
-    .addApiFile('dist/types/synchronizers.d.ts')
-    .addApiFile('dist/types/synchronizers/synchronizer-local.d.ts')
-    .addApiFile('dist/types/synchronizers/synchronizer-ws-client.d.ts')
-    .addApiFile('dist/types/synchronizers/synchronizer-ws-server.d.ts')
-    .addApiFile('dist/types/tools.d.ts')
-    .addApiFile('dist/types/ui-react.d.ts')
-    .addApiFile('dist/types/ui-react-dom.d.ts');
+    .addApiFile('dist/@types/common/index.d.ts')
+    .addApiFile('dist/@types/store/index.d.ts')
+    .addApiFile('dist/@types/checkpoints/index.d.ts')
+    .addApiFile('dist/@types/indexes/index.d.ts')
+    .addApiFile('dist/@types/metrics/index.d.ts')
+    .addApiFile('dist/@types/relationships/index.d.ts')
+    .addApiFile('dist/@types/queries/index.d.ts')
+    .addApiFile('dist/@types/mergeable-store/index.d.ts')
+    .addApiFile('dist/@types/persisters/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-browser/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-indexed-db/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-file/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-remote/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-yjs/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-automerge/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-sqlite3/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-sqlite-wasm/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-cr-sqlite-wasm/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-electric-sql/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-powersync/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-expo-sqlite/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-expo-sqlite-next/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-libsql/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-partykit-client/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-partykit-server/index.d.ts')
+    .addApiFile('dist/@types/synchronizers/index.d.ts')
+    .addApiFile('dist/@types/synchronizers/synchronizer-local/index.d.ts')
+    .addApiFile('dist/@types/synchronizers/synchronizer-ws-client/index.d.ts')
+    .addApiFile('dist/@types/synchronizers/synchronizer-ws-server/index.d.ts')
+    .addApiFile('dist/@types/tools/index.d.ts')
+    .addApiFile('dist/@types/ui-react/index.d.ts')
+    .addApiFile('dist/@types/ui-react-dom/index.d.ts');
 
 const addPages = (docs: Docs): Docs =>
   docs

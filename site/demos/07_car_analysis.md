@@ -35,9 +35,9 @@ As per usual, we first pull in React, ReactDOM, and TinyBase:
 ```html
 <script src="/umd/react.production.min.js"></script>
 <script src="/umd/react-dom.production.min.js"></script>
-<script src="/umd/tinybase.js"></script>
-<script src="/umd/ui-react.js"></script>
-<script src="/umd/ui-react-dom-debug.js"></script>
+<script src="/umd/tinybase/index.js"></script>
+<script src="/umd/tinybase/ui-react/index-debug.js"></script>
+<script src="/umd/tinybase/ui-react-dom/index-debug.js"></script>
 ```
 
 We're adding the debug version of the ui-react-dom module so that we can use the
@@ -56,7 +56,7 @@ const {
   useResultCell,
   useResultSortedRowIds,
   useResultTable,
-} = TinyBaseUiReact;
+} = TinyBaseUiReactDebug;
 const {createElement, useCallback, useEffect, useMemo, useRef, useState} =
   React;
 const {ResultSortedTableInHtmlTable, StoreInspector} = TinyBaseUiReactDomDebug;
