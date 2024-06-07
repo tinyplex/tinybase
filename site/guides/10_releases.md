@@ -446,11 +446,11 @@ input controls for updating Cell and Value content respectively. You can
 generally use them across your table views by adding the `editable` prop to your
 table component.
 
-### The new StoreInspector
+### The new Inspector
 
-![StoreInspector](/store-inspector.webp 'StoreInspector')
+![Inspector](/store-inspector.webp 'Inspector')
 
-The new StoreInspector component allows you to view, understand, and edit the
+The new Inspector component allows you to view, understand, and edit the
 content of a Store in a debug web environment. Try it out in most of the demos
 on the site, including the Movie Database demo, pictured. This requires a debug
 build of the new ui-react-dom module, which is now also included in the UMD
@@ -463,7 +463,9 @@ have also been added to ui-react module. A number of other minor React hooks
 have been added to support the components above.
 
 Demos have been updated to demonstrate the ui-react-dom module and the
-StoreInspector component where appropriate.
+Inspector component where appropriate.
+
+(NB: Previous to v5.0, this component was called `StoreInspector`.)
 
 ## v4.0
 
