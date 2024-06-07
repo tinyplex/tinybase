@@ -283,10 +283,9 @@ console.log(app.innerHTML);
 
 > ## An inspector for your data.
 >
-> If you are building a web application, the new StoreInspector component lets
-> you overlay a view of the data in your Store, Indexes, Relationships, and so
-> on. You can even edit the data in place and see it update in your app
-> immediately.
+> If you are building a web application, the new Inspector component lets you
+> overlay a view of the data in your Store, Indexes, Relationships, and so on.
+> You can even edit the data in place and see it update in your app immediately.
 >
 > Read more about this powerful new tool in the Inspecting Data guide.
 

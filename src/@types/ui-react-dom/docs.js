@@ -416,24 +416,6 @@
   /// SortedTablePaginatorProps.plural
 }
 /**
- * StoreInspectorProps props are used to configure the StoreInspector component.
- * @category Props
- * @since v4.1.0
- */
-/// StoreInspectorProps
-{
-  /**
-   * An optional string to indicate where you want the inspector to first
-   * appear.
-   */
-  /// StoreInspectorProps.position
-  /**
-   * An optional boolean to indicate whether the inspector should start in the
-   * opened state.
-   */
-  /// StoreInspectorProps.open
-}
-/**
  * The TableInHtmlTable component renders the contents of a single Table in a
  * Store as an HTML <table> element, and registers a listener so that any
  * changes to that result will cause a re-render.
@@ -1709,47 +1691,3 @@
  * @since v4.1.0
  */
 /// SortedTablePaginator
-/**
- * The StoreInspector component renders a tool which allows you to view and edit
- * the content of a Store in a debug web environment.
- *
- * See the <StoreInspector /> demo for this component in action.
- *
- * The component displays a nub in the corner of the screen which you may then
- * click to interact with all the Store objects in the Provider component
- * context.
- *
- * The component's props identify the nub's initial location and panel state,
- * though subsequent user changes to that will be preserved on each reload.
- * @param props The props for this component.
- * @returns The rendering of the inspector tool.
- * @example
- * This example creates a Provider context into which a default Store is
- * provided. The StoreInspector component within it then renders the inspector
- * tool.
- *
- * ```jsx
- * import {Provider} from 'tinybase/debug/ui-react';
- * import React from 'react';
- * import {StoreInspector} from 'tinybase/debug/ui-react-dom';
- * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- *
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => <StoreInspector />;
- *
- * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * const app = document.createElement('div');
- * createRoot(app).render(<App store={store} />); // !act
- * // ... // !act
- * console.log(app.innerHTML.substring(0, 35));
- * // -> '<aside id="tinybaseStoreInspector">'
- * ```
- * @category Development components
- * @since v4.1.0
- */
-/// StoreInspector

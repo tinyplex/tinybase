@@ -10,19 +10,19 @@ First, we pull in React, ReactDOM, and TinyBase:
 <script src="/umd/react.production.min.js"></script>
 <script src="/umd/react-dom.production.min.js"></script>
 <script src="/umd/tinybase/index.js"></script>
-<script src="/umd/tinybase/ui-react/index-debug.js"></script>
-<script src="/umd/tinybase/ui-react-dom/index-debug.js"></script>
+<script src="/umd/tinybase/ui-react/index.js"></script>
+<script src="/umd/tinybase/ui-react-inspector/index.js"></script>
 ```
 
-We're adding the debug version of the ui-react-dom module so that we can use the
-StoreInspector component for the purposes of seeing how the data is structured.
+We're using the Inspector component for the purposes of seeing how the data is
+structured.
 
 We import the functions and components we need, and create the Store object:
 
 ```js
-const {MetricView, Provider, TableView, useCell} = TinyBaseUiReactDebug;
+const {MetricView, Provider, TableView, useCell} = TinyBaseUiReact;
 const {createMetrics, createStore} = TinyBase;
-const {StoreInspector} = TinyBaseUiReactDomDebug;
+const {Inspector} = TinyBaseUiReactInspector;
 
 const store = createStore();
 ```
@@ -69,14 +69,14 @@ ReactDOM.createRoot(document.body).render(
       Average: <MetricView metricId="average" />
     </p>
     <TableView tableId="rolls" rowComponent={Roll} />
-    <StoreInspector />
+    <Inspector />
   </Provider>,
 );
 ```
 
-We also added the StoreInspector component at the end there so you can inspect
-what is going on with the data during this demo. Simply click the TinyBase logo
-in the corner.
+We also added the Inspector component at the end there so you can inspect what
+is going on with the data during this demo. Simply click the TinyBase logo in
+the corner.
 
 To roll the dice, we add a new Row every half second with the result, until the
 count of rolls reaches 48:
