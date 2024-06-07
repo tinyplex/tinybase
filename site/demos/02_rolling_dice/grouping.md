@@ -9,8 +9,8 @@ the rolls by result. We're making changes to the Averaging Dice Rolls demo.
 We import the extra functions and components we need:
 
 ```diff-js
--const {MetricView, Provider, TableView, useCell} = TinyBaseUiReact;
-+const {IndexView, Provider, SliceView, useCell} = TinyBaseUiReact;
+-const {MetricView, Provider, TableView, useCell} = TinyBaseUiReactDebug;
++const {IndexView, Provider, SliceView, useCell} = TinyBaseUiReactDebug;
 -const {createMetrics, createStore} = TinyBase;
 +const {createIndexes, createStore} = TinyBase;
 ```

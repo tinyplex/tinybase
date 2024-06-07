@@ -10,11 +10,11 @@ First, we pull in React, ReactDOM, and TinyBase:
 ```html
 <script src="/umd/react.production.min.js"></script>
 <script src="/umd/react-dom.production.min.js"></script>
-<script src="/umd/tinybase.js"></script>
-<script src="/umd/persister-browser.js"></script>
-<script src="/umd/persister-remote.js"></script>
-<script src="/umd/ui-react.js"></script>
-<script src="/umd/ui-react-dom-debug.js"></script>
+<script src="/umd/tinybase/index.js"></script>
+<script src="/umd/tinybase/persisters/persister-browser/index.js"></script>
+<script src="/umd/tinybase/persisters/persister-remote/index.js"></script>
+<script src="/umd/tinybase/ui-react/index-debug.js"></script>
+<script src="/umd/tinybase/ui-react-dom/index-debug.js"></script>
 ```
 
 We're adding the debug version of the ui-react-dom module so that we can use the
@@ -40,7 +40,7 @@ const {
   useSetValuesCallback,
   useSliceRowIds,
   useValues,
-} = TinyBaseUiReact;
+} = TinyBaseUiReactDebug;
 const {createRemotePersister} = TinyBasePersisterRemote;
 const {useCallback} = React;
 const {StoreInspector} = TinyBaseUiReactDomDebug;
