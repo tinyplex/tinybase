@@ -1,14 +1,14 @@
 /** @jsx createElement */
 
-import {arrayIsEmpty, arrayMap} from '../../common/array';
+import {arrayIsEmpty, arrayMap} from '../common/array';
 import {
   createElement,
   useCallback,
   useLayoutEffect,
   useRef,
   useState,
-} from '../../common/react';
-import {isUndefined, mathFloor} from '../../common/other';
+} from '../common/react';
+import {isUndefined, mathFloor} from '../common/other';
 import {
   useIndexes,
   useIndexesIds,
@@ -21,8 +21,8 @@ import {
   useStore,
   useStoreIds,
   useValues,
-} from '../../ui-react';
-import {CURRENT_TARGET} from '../../common/strings';
+} from '../ui-react';
+import {CURRENT_TARGET} from '../common/strings';
 import {IndexesView} from './IndexesView';
 import {MetricsView} from './MetricsView';
 import {QueriesView} from './QueriesView';
@@ -90,7 +90,7 @@ export const Body = ({s}: StoreProp) => {
     arrayIsEmpty(queriesIds) ? (
     <span className="warn">
       There are no Stores or other objects to inspect. Make sure you placed the
-      StoreInspector inside a Provider component.
+      Inspector inside a Provider component.
     </span>
   ) : (
     <article ref={articleRef} onScroll={handleScroll}>

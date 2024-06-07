@@ -15,8 +15,8 @@ First, we pull in React, ReactDOM, and TinyBase:
 <script src="/umd/react-dom.production.min.js"></script>
 <script src="/umd/tinybase/index.js"></script>
 <script src="/umd/tinybase/persisters/persister-browser/index.js"></script>
-<script src="/umd/tinybase/ui-react/index-debug.js"></script>
-<script src="/umd/tinybase/ui-react-dom/index-debug.js"></script>
+<script src="/umd/tinybase/ui-react/index.js"></script>
+<script src="/umd/tinybase/ui-react-inspector/index.js"></script>
 ```
 
 We'll use a good selection of the TinyBase API and the ui-react module:
@@ -43,7 +43,7 @@ const {
   useSetPartialRowCallback,
   useStore,
   useUndoInformation,
-} = TinyBaseUiReactDebug;
+} = TinyBaseUiReact;
 const {
   createContext,
   useCallback,
@@ -54,7 +54,7 @@ const {
   useState,
 } = React;
 const {createLocalPersister} = TinyBasePersisterBrowser;
-const {StoreInspector} = TinyBaseUiReactDomDebug;
+const {Inspector} = TinyBaseUiReactInspector;
 ```
 
 The drawing app relies heavily on being able to drag and drop shapes and their
@@ -255,15 +255,15 @@ passes a `useState` value and setter pair into the app:
         <Canvas />
         <Sidebar />
       </SelectedIdContext.Provider>
-      <StoreInspector />
+      <Inspector />
     </Provider>
   );
 };
 ```
 
-We also added the StoreInspector component at the end there so you can inspect
-what is going on with the data during this demo. Simply click the TinyBase logo
-in the corner.
+We also added the Inspector component at the end there so you can inspect what
+is going on with the data during this demo. Simply click the TinyBase logo in
+the corner.
 
 Anyway, let's mount it into the DOM...
 
