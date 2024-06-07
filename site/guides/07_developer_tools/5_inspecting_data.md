@@ -16,8 +16,8 @@ your web app.
 
 ```html
 <!-- ... -->
-<script src="/umd/ui-react.js"></script>
-<script src="/umd/ui-react-dom-debug.js"></script>
+<script src="/umd/tinybase/ui-react/index-debug.js"></script>
+<script src="/umd/tinybase/ui-react-dom/index-debug.js"></script>
 <!-- ... -->
 ```
 
