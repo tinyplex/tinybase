@@ -1,6 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "react", "jest", "jsdoc"],
+  "plugins": ["@typescript-eslint", "react", "jest", "jsdoc", "import"],
   "extends": [
     "eslint:recommended",
     "plugin:react/all",
@@ -8,6 +8,7 @@
     "plugin:jest/recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:import/recommended",
     "prettier"
   ],
   "env": {
