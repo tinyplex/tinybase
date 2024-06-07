@@ -1,12 +1,12 @@
-import type {Id, Ids} from '../../@types/common';
-import {arrayMap, arraySort} from '../../common/array';
-import type {Store} from '../../@types/store';
-import {jsonStringWithMap} from '../../common/json';
-import {useCallback} from '../../common/react';
-import {useCell} from '../../ui-react';
+import type {Id, Ids} from '../@types/common';
+import {arrayMap, arraySort} from '../common/array';
+import type {Store} from '../@types/store';
+import {jsonStringWithMap} from '../common/json';
+import {useCallback} from '../common/react';
+import {useCell} from '../ui-react';
 
-export const UNIQUE_ID = 'tinybaseStoreInspector';
-export const TITLE = 'TinyBase Store Inspector';
+export const UNIQUE_ID = 'tinybaseInspector';
+export const TITLE = 'TinyBase Inspector';
 export const POSITIONS = ['left', 'top', 'bottom', 'right', 'full'];
 
 export const STATE_TABLE = 'state';

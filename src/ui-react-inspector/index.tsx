@@ -1,20 +1,20 @@
 /** @jsx createElement */
 /** @jsxFrag Fragment */
 
-import {Fragment, createElement} from '../../common/react';
+import {Fragment, createElement} from '../common/react';
 import {POSITIONS, UNIQUE_ID} from './common';
-import {useCreatePersister, useCreateStore} from '../../ui-react';
+import {useCreatePersister, useCreateStore} from '../ui-react';
 import {APP_STYLESHEET} from './style';
+import type {InspectorProps} from '../@types/ui-react-inspector';
 import {Nub} from './Nub';
 import {Panel} from './Panel';
-import type {StoreInspectorProps} from '../../@types/ui-react-dom';
-import {createSessionPersister} from '../../persisters/persister-browser';
-import {createStore} from '../../store';
+import {createSessionPersister} from '../persisters/persister-browser';
+import {createStore} from '../store';
 
-export const App = ({
+export const Inspector = ({
   position = 'right',
   open = false,
-}: StoreInspectorProps) => {
+}: InspectorProps) => {
   const s = useCreateStore(createStore); // The inspector's Store throughout.
   const index = POSITIONS.indexOf(position);
 

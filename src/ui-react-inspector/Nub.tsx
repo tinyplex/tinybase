@@ -1,9 +1,9 @@
 /** @jsx createElement */
 
 import {OPEN_VALUE, POSITION_VALUE, TITLE} from './common';
-import {useSetValueCallback, useValue} from '../../ui-react';
+import {useSetValueCallback, useValue} from '../ui-react';
 import type {StoreProp} from './types';
-import {createElement} from '../../common/react';
+import {createElement} from '../common/react';
 
 export const Nub = ({s}: StoreProp) => {
   const position = useValue(POSITION_VALUE, s) ?? 1;

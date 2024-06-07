@@ -8,6 +8,7 @@ const TEST_MODULES = [
   '',
   'ui-react',
   'ui-react-dom',
+  'ui-react-inspector',
   'tools',
   'persisters/persister-automerge',
   'persisters/persister-browser',
@@ -415,10 +416,7 @@ const compileModule = async (
       'react-dom',
       'url',
       'yjs',
-      './tinybase',
-      './ui-react',
       '../ui-react',
-      './tools',
     ],
     input: inputFile,
     plugins: [
@@ -664,28 +662,6 @@ export const compileForProd = async () => {
             await compileModule(module, false, folder, format, target),
         );
         await copyDefinitions(folder);
-        if (format || target) {
-          await compileModule(
-            'ui-react',
-            true,
-            folder,
-            format,
-            target,
-            false,
-            true,
-            '-debug',
-          );
-          await compileModule(
-            'ui-react-dom',
-            true,
-            folder,
-            format,
-            target,
-            false,
-            true,
-            '-debug',
-          );
-        }
       }),
   );
 
@@ -696,18 +672,6 @@ export const compileForProd = async () => {
   await compileModule('cli', false, DIST_DIR, undefined, undefined, true);
   await execute(`chmod +x ${DIST_DIR}/cli/index.js`);
 };
-
-export const compileUmdReactDomDebug = async () =>
-  await compileModule(
-    'ui-react-dom',
-    true,
-    `${DIST_DIR}/umd`,
-    'umd',
-    undefined,
-    false,
-    true,
-    '-debug',
-  );
 
 export const testUnit = async () => {
   await test('test/unit', {coverageMode: 1});

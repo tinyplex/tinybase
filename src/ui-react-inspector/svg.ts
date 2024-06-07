@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import LOGO from '../../../site/extras/favicon.svg';
-import {arrayMap} from '../../common/array';
+import LOGO from '../../site/extras/favicon.svg';
+import {arrayMap} from '../common/array';
 
 const PENCIL = 'M20 80l5-15l40-40l10 10l-40 40l-15 5m5-15l10 10';
 const PRE_CSS = 'content:url("';

@@ -13,12 +13,12 @@ First, we pull in React, ReactDOM, and TinyBase:
 <script src="/umd/tinybase/index.js"></script>
 <script src="/umd/tinybase/persisters/persister-browser/index.js"></script>
 <script src="/umd/tinybase/persisters/persister-remote/index.js"></script>
-<script src="/umd/tinybase/ui-react/index-debug.js"></script>
-<script src="/umd/tinybase/ui-react-dom/index-debug.js"></script>
+<script src="/umd/tinybase/ui-react/index.js"></script>
+<script src="/umd/tinybase/ui-react-inspector/index.js"></script>
 ```
 
-We're adding the debug version of the ui-react-dom module so that we can use the
-StoreInspector component for the purposes of seeing how the data is structured.
+We're using the Inspector component for the purposes of seeing how the data is
+structured.
 
 We import the functions and components we need:
 
@@ -40,10 +40,10 @@ const {
   useSetValuesCallback,
   useSliceRowIds,
   useValues,
-} = TinyBaseUiReactDebug;
+} = TinyBaseUiReact;
+const {Inspector} = TinyBaseUiReactInspector;
 const {createRemotePersister} = TinyBasePersisterRemote;
 const {useCallback} = React;
-const {StoreInspector} = TinyBaseUiReactDomDebug;
 ```
 
 We also set up some string constants for showing star emojis:
@@ -169,15 +169,15 @@ objects, and the Indexes objects:
     >
       <Filters />
       <Countries />
-      <StoreInspector />
+      <Inspector />
     </Provider>
   );
 };
 ```
 
-We also added the StoreInspector component at the end there so you can inspect
-what is going on with the data during this demo. Simply click the TinyBase logo
-in the corner.
+We also added the Inspector component at the end there so you can inspect what
+is going on with the data during this demo. Simply click the TinyBase logo in
+the corner.
 
 We also use a simple grid layout to arrange the app:
 

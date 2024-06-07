@@ -5,8 +5,8 @@ import {Body} from './Body';
 import {ErrorBoundary} from './ErrorBoundary';
 import {Header} from './Header';
 import type {StoreProp} from './types';
-import {createElement} from '../../common/react';
-import {useValue} from '../../ui-react';
+import {createElement} from '../common/react';
+import {useValue} from '../ui-react';
 
 export const Panel = ({s}: StoreProp) => {
   const position = useValue(POSITION_VALUE, s) ?? 1;

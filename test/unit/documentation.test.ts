@@ -21,6 +21,7 @@ import * as TinyBaseSynchronizerWsServer from 'tinybase/debug/synchronizers/sync
 import * as TinyBaseTools from 'tinybase/debug/tools';
 import * as TinyBaseUiReact from 'tinybase/debug/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/debug/ui-react-dom';
+import * as TinyBaseUiReactInspector from 'tinybase/debug/ui-react-inspector';
 import * as sqlite3 from 'sqlite3';
 import * as ws from 'ws';
 import * as yjs from 'yjs';
@@ -72,6 +73,7 @@ import {transformSync} from 'esbuild';
   'tinybase/tools': TinyBaseTools,
   'tinybase/ui-react': TinyBaseUiReact,
   'tinybase/ui-react-dom': TinyBaseUiReactDom,
+  'tinybase/ui-react-inspector': TinyBaseUiReactInspector,
   ws,
   yjs,
 };
