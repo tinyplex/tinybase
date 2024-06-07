@@ -12,15 +12,16 @@ well-populated Store to inspect.
 
 Let's import the StoreInspector component. It is only available in the debug
 version of the ui-react-dom library, and we have a special build of that UMD
-module for the purposes of this demo:
+module:
 
 ```diff-html
  <script src="/umd/react.production.min.js"></script>
  <script src="/umd/react-dom.production.min.js"></script>
- <script src="/umd/tinybase.js"></script>
- <script src="/umd/ui-react.js"></script>
--<script src="/umd/ui-react-dom.js"></script>
-+<script src="/umd/ui-react-dom-debug.js"></script>
+ <script src="/umd/tinybase/index.js"></script>
+-<script src="/umd/tinybase/ui-react/index.js"></script>
+-<script src="/umd/tinybase/ui-react-dom/index.js"></script>
++<script src="/umd/tinybase/ui-react/index-debug.js"></script>
++<script src="/umd/tinybase/ui-react-dom/index-debug.js"></script>
 ```
 
 We're going to use the useTableIds hook briefly, and the StoreInspector from the
@@ -28,7 +29,7 @@ debug version of the ui-react-dom module:
 
 ```diff-js
 -const {Provider, useCell, useCreateStore} = TinyBaseUiReact;
-+const {Provider, useCreateStore, useTableIds} = TinyBaseUiReact;
++const {Provider, useCreateStore, useTableIds} = TinyBaseUiReactDebug;
 -const {TableInHtmlTable} = TinyBaseUiReactDom;
 +const {StoreInspector} = TinyBaseUiReactDomDebug;
 ```
