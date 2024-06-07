@@ -1,6 +1,6 @@
 /** @jsx createElement */
 
-import {DEFAULT, TABLE, VALUES} from '../../common/strings';
+import {DEFAULT, TABLE, VALUES} from '../common/strings';
 import {
   SORT_CELL,
   STATE_TABLE,
@@ -8,22 +8,22 @@ import {
   sortedIdsMap,
   useEditable,
 } from './common';
-import {SortedTableInHtmlTable, ValuesInHtmlTable} from '../components';
-import type {TableProps, ValuesProps} from '../../@types/ui-react';
-import {jsonParse, jsonStringWithMap} from '../../common/json';
+import {SortedTableInHtmlTable, ValuesInHtmlTable} from '../ui-react-dom';
+import type {TableProps, ValuesProps} from '../@types/ui-react';
+import {jsonParse, jsonStringWithMap} from '../common/json';
 import {
   useCell,
   useSetCellCallback,
   useStore,
   useTableIds,
   useValueIds,
-} from '../../ui-react';
+} from '../ui-react';
 import {Details} from './Details';
-import type {Id} from '../../@types/common';
+import type {Id} from '../@types/common';
 import type {StoreProp} from './types';
-import {arrayIsEmpty} from '../../common/array';
-import {createElement} from '../../common/react';
-import {isUndefined} from '../../common/other';
+import {arrayIsEmpty} from '../common/array';
+import {createElement} from '../common/react';
+import {isUndefined} from '../common/other';
 
 const TableView = ({
   tableId,

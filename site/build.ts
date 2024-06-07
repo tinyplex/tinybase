@@ -109,19 +109,9 @@ export const build = async (
     '/synchronizers/synchronizer-ws-client',
     '/ui-react',
     '/ui-react-dom',
+    '/ui-react-inspector',
   ].forEach((module) =>
     docs.addFile('dist/umd' + module + '/index.js', 'umd/tinybase/' + module),
-  );
-  ['/ui-react', '/ui-react-dom'].forEach((module) =>
-    docs.addFile(
-      'dist/umd' + module + '/index-debug.js',
-      'umd/tinybase/' + module,
-    ),
-  );
-
-  docs.addFile(
-    'dist/umd/ui-react-dom/index-debug.js',
-    'umd/tinybase/ui-react-dom',
   );
 
   if (api) {

@@ -16,21 +16,23 @@ As per usual, we first pull in React, ReactDOM, and TinyBase:
 <script src="/umd/react.production.min.js"></script>
 <script src="/umd/react-dom.production.min.js"></script>
 <script src="/umd/tinybase/index.js"></script>
-<script src="/umd/tinybase/ui-react/index-debug.js"></script>
-<script src="/umd/tinybase/ui-react-dom/index-debug.js"></script>
+<script src="/umd/tinybase/ui-react/index.js"></script>
+<script src="/umd/tinybase/ui-react-dom/index.js"></script>
+<script src="/umd/tinybase/ui-react-inspector/index.js"></script>
 ```
 
-We're adding the debug version of the ui-react-dom module so that we can use the
-StoreInspector component for the purposes of seeing how the data is structured.
+We're using the Inspector component for the purposes of seeing how the data is
+structured.
 
 We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
 
 ```js
 const {createQueries, createStore} = TinyBase;
-const {Provider, useCreateStore} = TinyBaseUiReactDebug;
+const {Provider, useCreateStore} = TinyBaseUiReact;
 const {createElement, useMemo, useState} = React;
-const {SortedTableInHtmlTable, StoreInspector} = TinyBaseUiReactDomDebug;
+const {Inspector} = TinyBaseUiReactInspector;
+const {SortedTableInHtmlTable} = TinyBaseUiReactDom;
 ```
 
 ## Initializing The Application
@@ -64,15 +66,15 @@ loading spinner is shown.
   return (
     <Provider store={store}>
       {isLoading ? <Loading /> : <Body />}
-      <StoreInspector />
+      <Inspector />
     </Provider>
   );
 }
 ```
 
-We also added the StoreInspector component at the end there so you can inspect
-what is going on with the data during this demo. Simply click the TinyBase logo
-in the corner.
+We added the Inspector component at the end there so you can inspect what is
+going on with the data during this demo. Simply click the TinyBase logo in the
+corner.
 
 With simple boilerplate code to load the component, off we go:
 

@@ -36,12 +36,13 @@ As per usual, we first pull in React, ReactDOM, and TinyBase:
 <script src="/umd/react.production.min.js"></script>
 <script src="/umd/react-dom.production.min.js"></script>
 <script src="/umd/tinybase/index.js"></script>
-<script src="/umd/tinybase/ui-react/index-debug.js"></script>
-<script src="/umd/tinybase/ui-react-dom/index-debug.js"></script>
+<script src="/umd/tinybase/ui-react/index.js"></script>
+<script src="/umd/tinybase/ui-react-dom/index.js"></script>
+<script src="/umd/tinybase/ui-react-inspector/index.js"></script>
 ```
 
-We're adding the debug version of the ui-react-dom module so that we can use the
-StoreInspector component for the purposes of seeing how the data is structured.
+We're using the Inspector component for the purposes of seeing how the data is
+structured.
 
 We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
@@ -56,10 +57,11 @@ const {
   useResultCell,
   useResultSortedRowIds,
   useResultTable,
-} = TinyBaseUiReactDebug;
+} = TinyBaseUiReact;
 const {createElement, useCallback, useEffect, useMemo, useRef, useState} =
   React;
-const {ResultSortedTableInHtmlTable, StoreInspector} = TinyBaseUiReactDomDebug;
+const {Inspector} = TinyBaseUiReactInspector;
+const {ResultSortedTableInHtmlTable} = TinyBaseUiReactDom;
 ```
 
 For simplicity, we set up a few convenience arrays that distinguish the columns
@@ -141,15 +143,15 @@ loading spinner is shown.
   return (
     <Provider store={store} queries={queries}>
       {isLoading ? <Loading /> : <Body />}
-      <StoreInspector />
+      <Inspector />
     </Provider>
   );
 }
 ```
 
-We also added the StoreInspector component at the end there so you can inspect
-what is going on with the data during this demo. Simply click the TinyBase logo
-in the corner.
+We also added the Inspector component at the end there so you can inspect what
+is going on with the data during this demo. Simply click the TinyBase logo in
+the corner.
 
 The loading spinner itself is a plain element with some CSS.
 

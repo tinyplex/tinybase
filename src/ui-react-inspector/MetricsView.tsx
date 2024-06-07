@@ -1,16 +1,16 @@
 /** @jsx createElement */
 
-import {arrayIsEmpty, arrayMap} from '../../common/array';
-import {useMetric, useMetricIds, useMetrics} from '../../ui-react';
-import {DEFAULT} from '../../common/strings';
+import {arrayIsEmpty, arrayMap} from '../common/array';
+import {useMetric, useMetricIds, useMetrics} from '../ui-react';
+import {DEFAULT} from '../common/strings';
 import {Details} from './Details';
-import type {Id} from '../../@types/common';
-import type {MetricProps} from '../../@types/ui-react';
-import type {Metrics} from '../../@types/metrics';
+import type {Id} from '../@types/common';
+import type {MetricProps} from '../@types/ui-react';
+import type {Metrics} from '../@types/metrics';
 import type {StoreProp} from './types';
-import {createElement} from '../../common/react';
+import {createElement} from '../common/react';
 import {getUniqueId} from './common';
-import {isUndefined} from '../../common/other';
+import {isUndefined} from '../common/other';
 
 const MetricRow = ({metrics, metricId}: MetricProps) => (
   <tr>
