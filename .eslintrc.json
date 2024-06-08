@@ -39,12 +39,18 @@
         "extensions": [".js", ".jsx", ".ts", ".tsx"]
       }
     },
-    "import/core-modules": ["expo-sqlite"] // ignore
+    "import/core-modules": ["expo-sqlite"]
   },
   "rules": {
     "import/no-unresolved": [
       2,
-      {"ignore": ["^\\./generated/client$", "^custom-remote-handlers$"]}
+      {
+        "ignore": [
+          "^\\./generated/client$",
+          "^custom-remote-handlers$",
+          "^electric-sql/(client/model|notifiers|wa-sqlite)$"
+        ]
+      }
     ],
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/no-var-requires": 0,
