@@ -1,10 +1,10 @@
-import {
+import type {
   WsServer,
   WsServerStats,
-  createWsServer,
 } from 'tinybase/debug/synchronizers/synchronizer-ws-server';
 import {WebSocketServer} from 'ws';
 import {createServer} from 'http';
+import {createWsServer} from 'tinybase/debug/synchronizers/synchronizer-ws-server';
 
 const subDomains = ['todo.demo.tinybase.org'];
 

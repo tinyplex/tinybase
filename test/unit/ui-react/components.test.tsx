@@ -1,45 +1,47 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 
-import {
+import type {
   BackwardCheckpointsProps,
-  BackwardCheckpointsView,
   CellProps,
+  IndexProps,
+  LinkedRowsProps,
+  LocalRowsProps,
+  MetricProps,
+  RemoteRowProps,
+  ResultCellProps,
+  ResultRowProps,
+  ResultSortedTableProps,
+  ResultTableProps,
+  RowProps,
+  SliceProps,
+  SortedTableProps,
+  TableProps,
+  TablesProps,
+  ValueProps,
+  ValuesProps,
+} from 'tinybase/debug/ui-react';
+import {
+  BackwardCheckpointsView,
   CellView,
   CheckpointView,
   CurrentCheckpointView,
   ForwardCheckpointsView,
-  IndexProps,
   IndexView,
-  LinkedRowsProps,
   LinkedRowsView,
-  LocalRowsProps,
   LocalRowsView,
-  MetricProps,
   MetricView,
   Provider,
-  RemoteRowProps,
   RemoteRowView,
-  ResultCellProps,
   ResultCellView,
-  ResultRowProps,
   ResultRowView,
-  ResultSortedTableProps,
   ResultSortedTableView,
-  ResultTableProps,
   ResultTableView,
-  RowProps,
   RowView,
-  SliceProps,
   SliceView,
-  SortedTableProps,
   SortedTableView,
-  TableProps,
   TableView,
-  TablesProps,
   TablesView,
-  ValueProps,
   ValueView,
-  ValuesProps,
   ValuesView,
   useCell,
   useCheckpointIds,
@@ -66,7 +68,7 @@ import {
   useTable,
   useTables,
 } from 'tinybase/debug/ui-react';
-import {
+import type {
   Checkpoints,
   Id,
   Indexes,
@@ -74,6 +76,10 @@ import {
   Queries,
   Relationships,
   Store,
+} from 'tinybase/debug';
+import React, {useCallback} from 'react';
+import {ReactTestRenderer, act, create} from 'react-test-renderer';
+import {
   createCheckpoints,
   createIndexes,
   createMetrics,
@@ -81,8 +87,6 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase/debug';
-import React, {useCallback} from 'react';
-import {ReactTestRenderer, act, create} from 'react-test-renderer';
 import {jest} from '@jest/globals';
 
 let store: Store;
