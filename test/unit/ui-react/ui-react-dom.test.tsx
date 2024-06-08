@@ -13,19 +13,15 @@ import {
   TableInHtmlTable,
   ValuesInHtmlTable,
 } from 'tinybase/debug/ui-react-dom';
+import type {Ids, Indexes, Queries, Relationships, Store} from 'tinybase/debug';
+import {ReactTestRenderer, act, create} from 'react-test-renderer';
 import {
-  Ids,
-  Indexes,
-  Queries,
-  Relationships,
-  Store,
   createIndexes,
   createQueries,
   createRelationships,
   createStore,
 } from 'tinybase/debug';
-import {ReactTestRenderer, act, create} from 'react-test-renderer';
-import {ExtraProps} from 'tinybase/debug/ui-react';
+import type {ExtraProps} from 'tinybase/debug/ui-react';
 import React from 'react';
 
 let store: Store;

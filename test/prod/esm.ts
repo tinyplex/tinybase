@@ -1,16 +1,11 @@
-import {Store, createStore} from 'tinybase';
-import {
-  Store as StoreDebug,
-  createStore as createStoreDebug,
-} from 'tinybase/debug';
-import {
-  Store as StoreDebugWithSchemas,
-  createStore as createStoreDebugWithSchemas,
-} from 'tinybase/debug/with-schemas';
-import {
-  Store as StoreWithSchemas,
-  createStore as createStoreWithSchemas,
-} from 'tinybase/with-schemas';
+import type {Store} from 'tinybase';
+import type {Store as StoreDebug} from 'tinybase/debug';
+import type {Store as StoreDebugWithSchemas} from 'tinybase/debug/with-schemas';
+import type {Store as StoreWithSchemas} from 'tinybase/with-schemas';
+import {createStore} from 'tinybase';
+import {createStore as createStoreDebug} from 'tinybase/debug';
+import {createStore as createStoreDebugWithSchemas} from 'tinybase/debug/with-schemas';
+import {createStore as createStoreWithSchemas} from 'tinybase/with-schemas';
 
 const _store: Store = createStore();
 const _storeDebug: StoreDebug = createStoreDebug();

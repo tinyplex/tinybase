@@ -9,7 +9,7 @@ import type {
   ValueOrUndefined,
   Values,
 } from '../../@types/store';
-import {Connection, Party, Request, Storage} from 'partykit/server';
+import type {Connection, Party, Request, Storage} from 'partykit/server';
 import {EMPTY_STRING, T, V, strStartsWith} from '../../common/strings';
 import type {Id, Ids} from '../../@types/common';
 import {

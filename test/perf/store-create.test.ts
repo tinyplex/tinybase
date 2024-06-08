@@ -1,5 +1,4 @@
 import {
-  Table,
   createIndexes,
   createMetrics,
   createQueries,
@@ -13,6 +12,7 @@ import {
   repeat,
   µs,
 } from './common';
+import type {Table} from 'tinybase/debug';
 
 repeat(
   'Create store without schema',

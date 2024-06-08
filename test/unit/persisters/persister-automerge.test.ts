@@ -3,8 +3,9 @@ import {
   resetNetwork,
 } from '../common/automerge-adaptor';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
-import {Persister, Store, createStore} from 'tinybase/debug';
+import type {Persister, Store} from 'tinybase/debug';
 import {createAutomergePersister} from 'tinybase/debug/persisters/persister-automerge';
+import {createStore} from 'tinybase/debug';
 import {pause} from '../common/other';
 
 let repo1: Repo;

@@ -2,11 +2,12 @@ import type {
   ExpoSqlitePersister,
   createExpoSqlitePersister as createExpoSqlitePersisterDecl,
 } from '../../@types/persisters/persister-expo-sqlite';
-import {ResultSet, SQLiteDatabase} from 'expo-sqlite';
 import {UpdateListener, createSqlitePersister} from '../common/sqlite/create';
 import type {DatabasePersisterConfig} from '../../@types/persisters';
 import {IdObj} from '../../common/obj';
 import type {MergeableStore} from '../../@types/mergeable-store';
+import type {ResultSet} from 'expo-sqlite';
+import {SQLiteDatabase} from 'expo-sqlite';
 import type {Store} from '../../@types/store';
 
 type Subscription = {remove: () => void};

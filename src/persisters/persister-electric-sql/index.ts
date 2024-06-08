@@ -4,10 +4,10 @@ import type {
 } from '../../@types/persisters/persister-electric-sql';
 import {UpdateListener, createSqlitePersister} from '../common/sqlite/create';
 import type {DatabasePersisterConfig} from '../../@types/persisters';
-import {ElectricClient} from 'electric-sql/client/model';
+import type {ElectricClient} from 'electric-sql/client/model';
 import {IdObj} from '../../common/obj';
 import type {Store} from '../../@types/store';
-import {UnsubscribeFunction} from 'electric-sql/dist/notifiers';
+import type {UnsubscribeFunction} from 'electric-sql/dist/notifiers';
 import {arrayForEach} from '../../common/array';
 
 export const createElectricSqlPersister = ((

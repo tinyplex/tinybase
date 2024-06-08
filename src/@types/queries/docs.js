@@ -21,7 +21,7 @@
  * object containing individual ResultRow objects, keyed by their Id.
  * @example
  * ```js
- * import {ResultTable} from 'tinybase';
+ * import type {ResultTable} from 'tinybase';
  *
  * export const resultTable: ResultTable = {
  *   fido: {species: 'dog', color: 'brown'},
@@ -41,7 +41,7 @@
  * object containing individual ResultCell objects, keyed by their Id.
  * @example
  * ```js
- * import {ResultRow} from 'tinybase';
+ * import type {ResultRow} from 'tinybase';
  *
  * export const resultRow: ResultRow = {species: 'dog', color: 'brown'};
  * ```
@@ -58,7 +58,7 @@
  * number, or boolean.
  * @example
  * ```js
- * import {ResultCell} from 'tinybase';
+ * import type {ResultCell} from 'tinybase';
  *
  * export const resultCell: ResultCell = 'dog';
  * ```

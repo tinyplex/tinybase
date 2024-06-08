@@ -1,5 +1,4 @@
 import {
-  NoPropComponent,
   NodeSummary,
   useBaseUrl,
   useIsSingle,
@@ -10,6 +9,7 @@ import {BuildContext} from './BuildContext';
 import {Footer} from './Footer';
 import {Header} from './Header';
 import {Main} from './Main';
+import type {NoPropComponent} from 'tinydocs';
 import React from 'react';
 
 const GTM_ID = 'G-D1MGR8VRWJ';
