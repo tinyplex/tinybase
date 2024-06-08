@@ -42,7 +42,7 @@
    * then gets the database instance back out again.
    *
    * ```js yolo
-   * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite-next';
+   * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
    * import {createStore} from 'tinybase';
    * import {openDatabase} from 'expo-sqlite';
    *
@@ -102,7 +102,7 @@
  * Store.
  *
  * ```js yolo
- * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite-next';
+ * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
  * import {createStore} from 'tinybase';
  * import {openDatabase} from 'expo-sqlite';
  *
@@ -138,7 +138,7 @@
  * local SQLite database with tabular mapping.
  *
  * ```js yolo
- * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite-next';
+ * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
  * import {createStore} from 'tinybase';
  * import {openDatabase} from 'expo-sqlite';
  *

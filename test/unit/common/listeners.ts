@@ -1,4 +1,4 @@
-import {
+import type {
   Checkpoints,
   Indexes,
   Metrics,
@@ -15,7 +15,7 @@ import {
   RelationshipsListener,
   StoreListener,
 } from './types';
-import {
+import type {
   NoSchemas,
   Store as StoreWithSchemas,
 } from 'tinybase/debug/with-schemas';

@@ -1,4 +1,5 @@
-import {Markdown, NoPropComponent, Node, usePageNode} from 'tinydocs';
+import {Markdown, usePageNode} from 'tinydocs';
+import type {NoPropComponent, Node} from 'tinydocs';
 import {useCoverage, useMetadata, useSizes} from './BuildContext';
 import React from 'react';
 import type {Sizes} from './BuildContext';

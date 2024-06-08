@@ -1,5 +1,7 @@
 /// index
 
+/* eslint-disable import/no-unresolved */
+
 export * from './checkpoints';
 export * from './common';
 export * from './indexes';

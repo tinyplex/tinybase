@@ -1,4 +1,5 @@
-import {NoPropComponent, NodeChildren, useRootNode} from 'tinydocs';
+import {NodeChildren, useRootNode} from 'tinydocs';
+import type {NoPropComponent} from 'tinydocs';
 import React from 'react';
 import {useMetadata} from './BuildContext';
 

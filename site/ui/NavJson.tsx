@@ -1,6 +1,5 @@
+import type {NoPropComponent, Node} from 'tinydocs';
 import {
-  NoPropComponent,
-  Node,
   getSkippedChildren,
   isAncestorOrSame,
   useIsSingle,

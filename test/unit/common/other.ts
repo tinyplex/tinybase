@@ -1,4 +1,4 @@
-import {Id, Ids, Indexes, Metrics, Relationships} from 'tinybase/debug';
+import type {Id, Ids, Indexes, Metrics, Relationships} from 'tinybase/debug';
 import {IdObj, IdObj2} from './types';
 import {TextDecoder, TextEncoder} from 'util';
 import fetchMock from 'jest-fetch-mock';
