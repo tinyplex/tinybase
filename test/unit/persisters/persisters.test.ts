@@ -2,7 +2,7 @@
 
 import 'fake-indexeddb/auto';
 import {GetLocationMethod, Persistable, nextLoop} from './common';
-import {Persister, Store, createStore} from 'tinybase/debug';
+import type {Persister, Store} from 'tinybase/debug';
 import {
   mockAutomerge,
   mockChangesListener,
@@ -23,6 +23,7 @@ import {
   mockSqliteWasm,
   mockYjs,
 } from './mocks';
+import {createStore} from 'tinybase/debug';
 import {pause} from '../common/other';
 
 describe.each([

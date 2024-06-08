@@ -1,17 +1,19 @@
 /* eslint-disable jest/no-conditional-expect */
 
-import {
+import type {
   Changes,
   Content,
   MergeableChanges,
   MergeableContent,
   MergeableStore,
   Persister,
+} from 'tinybase/debug';
+import {GetLocationMethod, Persistable, nextLoop} from './common';
+import {
   createCustomPersister,
   createMergeableStore,
   createStore,
 } from 'tinybase/debug';
-import {GetLocationMethod, Persistable, nextLoop} from './common';
 import {
   mockCustomSynchronizer,
   mockFile,

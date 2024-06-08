@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-target-blank */
-import {NoPropComponent} from 'tinydocs';
+import type {NoPropComponent} from 'tinydocs';
 import React from 'react';
 import {useMetadata} from './BuildContext';
 

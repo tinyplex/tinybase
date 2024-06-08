@@ -1,4 +1,5 @@
-import {TablesSchema, createStore} from 'tinybase/debug';
+import type {TablesSchema} from 'tinybase/debug';
+import {createStore} from 'tinybase/debug';
 import {µs} from './common';
 
 const SIZE = 50;

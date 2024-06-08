@@ -23,7 +23,7 @@
  * guaranteed to contain a boolean `sold` Cell that defaults to `false`.
  *
  * ```js
- * import {TablesSchema} from 'tinybase';
+ * import type {TablesSchema} from 'tinybase';
  *
  * export const tableSchema: TablesSchema = {
  *   pets: {
@@ -54,7 +54,7 @@
  * present, and defaults it to `false`.
  *
  * ```js
- * import {CellSchema} from 'tinybase';
+ * import type {CellSchema} from 'tinybase';
  *
  * export const requiredBoolean: CellSchema = {
  *   type: 'boolean',
@@ -75,7 +75,7 @@
  * called `open`, that defaults to `false`.
  *
  * ```js
- * import {ValuesSchema} from 'tinybase';
+ * import type {ValuesSchema} from 'tinybase';
  *
  * export const valuesSchema: ValuesSchema = {
  *   open: {type: 'boolean', default: false},
@@ -104,7 +104,7 @@
  * present, and defaults it to `false`.
  *
  * ```js
- * import {ValueSchema} from 'tinybase';
+ * import type {ValueSchema} from 'tinybase';
  *
  * export const requiredBoolean: ValueSchema = {
  *   type: 'boolean',
@@ -191,7 +191,7 @@
  * Table objects, keyed by their Id.
  * @example
  * ```js
- * import {Tables} from 'tinybase';
+ * import type {Tables} from 'tinybase';
  *
  * export const tables: Tables = {
  *   pets: {
@@ -216,7 +216,7 @@
  * Id.
  * @example
  * ```js
- * import {Table} from 'tinybase';
+ * import type {Table} from 'tinybase';
  *
  * export const table: Table = {
  *   fido: {species: 'dog', color: 'brown'},
@@ -234,7 +234,7 @@
  * object containing individual Cell objects, keyed by their Id.
  * @example
  * ```js
- * import {Row} from 'tinybase';
+ * import type {Row} from 'tinybase';
  *
  * export const row: Row = {species: 'dog', color: 'brown'};
  * ```
@@ -249,7 +249,7 @@
  * number, or boolean.
  * @example
  * ```js
- * import {Cell} from 'tinybase';
+ * import type {Cell} from 'tinybase';
  *
  * export const cell: Cell = 'dog';
  * ```
@@ -276,7 +276,7 @@
  * their Id.
  * @example
  * ```js
- * import {Values} from 'tinybase';
+ * import type {Values} from 'tinybase';
  *
  * export const values: Values = {open: true, employees: 4};
  * ```
@@ -293,7 +293,7 @@
  * string, number, or boolean.
  * @example
  * ```js
- * import {Value} from 'tinybase';
+ * import type {Value} from 'tinybase';
  *
  * export const value: Value = 'dog';
  * ```

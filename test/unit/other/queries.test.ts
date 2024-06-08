@@ -1,4 +1,5 @@
-import {Id, Queries, Store, createQueries, createStore} from 'tinybase/debug';
+import type {Id, Queries, Store} from 'tinybase/debug';
+import {createQueries, createStore} from 'tinybase/debug';
 import {expectChanges, expectNoChanges} from '../common/expect';
 import {QueriesListener} from '../common/types';
 import {createQueriesListener} from '../common/listeners';
