@@ -1,12 +1,5 @@
-import {
-  GetCell,
-  Id,
-  Indexes,
-  SortKey,
-  Store,
-  createIndexes,
-  createStore,
-} from 'tinybase/debug';
+import type {GetCell, Id, Indexes, SortKey, Store} from 'tinybase/debug';
+import {createIndexes, createStore} from 'tinybase/debug';
 import {expectChanges, expectNoChanges} from '../common/expect';
 import {IndexesListener} from '../common/types';
 import {createIndexesListener} from '../common/listeners';

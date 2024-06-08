@@ -1,4 +1,5 @@
-import {Store, createMergeableStore} from 'tinybase/debug';
+import type {Store} from 'tinybase/debug';
+import {createMergeableStore} from 'tinybase/debug';
 import {repeatRows} from './common';
 
 let store: Store;

@@ -1,5 +1,6 @@
-import {Docs, createDocs, getSorter} from 'tinydocs';
+import {createDocs, getSorter} from 'tinydocs';
 import {ArticleInner} from './ui/ArticleInner';
+import type {Docs} from 'tinydocs';
 import {ExecutablePen} from './ui/ExecutablePen';
 import {NavJson} from './ui/NavJson';
 import {Page} from './ui/Page';

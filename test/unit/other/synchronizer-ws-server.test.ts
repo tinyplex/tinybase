@@ -1,15 +1,11 @@
 /* eslint-disable jest/no-conditional-expect */
 
 import {WebSocket, WebSocketServer} from 'ws';
-import {
-  WsServer,
-  createWsServer,
-} from 'tinybase/debug/synchronizers/synchronizer-ws-server';
-import {
-  WsSynchronizer,
-  createWsSynchronizer,
-} from 'tinybase/debug/synchronizers/synchronizer-ws-client';
+import type {WsServer} from 'tinybase/debug/synchronizers/synchronizer-ws-server';
+import type {WsSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-ws-client';
 import {createMergeableStore} from 'tinybase/debug';
+import {createWsServer} from 'tinybase/debug/synchronizers/synchronizer-ws-server';
+import {createWsSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-ws-client';
 import {pause} from '../common/other';
 
 test('Basics', async () => {

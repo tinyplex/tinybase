@@ -1,4 +1,4 @@
-import {
+import type {
   Changes,
   Content,
   DatabasePersisterConfig,
@@ -12,19 +12,17 @@ import {
   Synchronizer,
   Tables,
   Values,
+} from 'tinybase/debug';
+import {DbSchema, ElectricClient} from 'electric-sql/dist/client/model';
+import {DocHandle, Repo} from '@automerge/automerge-repo';
+import {GetLocationMethod, Persistable} from './common';
+import {SqliteWasmDb, VARIANTS} from './sqlite';
+import {Doc as YDoc, Map as YMap} from 'yjs';
+import {
   createCustomPersister,
   createCustomSynchronizer,
   createMergeableStore,
 } from 'tinybase/debug';
-import {DbSchema, ElectricClient} from 'electric-sql/client/model';
-import {DocHandle, Repo} from '@automerge/automerge-repo';
-import {GetLocationMethod, Persistable} from './common';
-import {
-  LocalSynchronizer,
-  createLocalSynchronizer,
-} from 'tinybase/debug/synchronizers/synchronizer-local';
-import {SqliteWasmDb, VARIANTS} from './sqlite';
-import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createLocalPersister,
   createSessionPersister,
@@ -33,9 +31,11 @@ import {deleteDB, openDB} from 'idb';
 import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
 import {DB} from '@vlcn.io/crsqlite-wasm';
 import {Database} from 'sqlite3';
+import type {LocalSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-local';
 import {createAutomergePersister} from 'tinybase/debug/persisters/persister-automerge';
 import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
 import {createIndexedDbPersister} from 'tinybase/debug/persisters/persister-indexed-db';
+import {createLocalSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-local';
 import {createRemotePersister} from 'tinybase/debug/persisters/persister-remote';
 import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
 import crypto from 'crypto';

@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 
-import {
+import type {
   Cell,
   Checkpoints,
   Id,
@@ -15,13 +15,6 @@ import {
   Tables,
   Value,
   Values,
-  createCheckpoints,
-  createIndexes,
-  createMergeableStore,
-  createMetrics,
-  createQueries,
-  createRelationships,
-  createStore,
 } from 'tinybase/debug';
 import {
   Provider,
@@ -149,6 +142,15 @@ import {
 } from 'tinybase/debug/ui-react';
 import React, {ReactElement} from 'react';
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
+import {
+  createCheckpoints,
+  createIndexes,
+  createMergeableStore,
+  createMetrics,
+  createQueries,
+  createRelationships,
+  createStore,
+} from 'tinybase/debug';
 import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
 import {createLocalSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-local';
 import {jest} from '@jest/globals';

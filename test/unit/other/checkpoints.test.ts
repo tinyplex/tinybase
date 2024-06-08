@@ -1,12 +1,5 @@
-import {
-  Checkpoints,
-  Id,
-  Store,
-  Tables,
-  Values,
-  createCheckpoints,
-  createStore,
-} from 'tinybase/debug';
+import type {Checkpoints, Id, Store, Tables, Values} from 'tinybase/debug';
+import {createCheckpoints, createStore} from 'tinybase/debug';
 import {expectChanges, expectNoChanges} from '../common/expect';
 import {CheckpointsListener} from '../common/types';
 import {createCheckpointsListener} from '../common/listeners';

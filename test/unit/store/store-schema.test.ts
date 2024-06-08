@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {
+import type {
   Cell,
   Id,
   Store,
   Tables,
   TablesSchema,
   Value,
-  createMergeableStore,
-  createStore,
 } from 'tinybase/debug/with-schemas';
+import {createMergeableStore, createStore} from 'tinybase/debug/with-schemas';
 import {
   expectChanges,
   expectChangesNoJson,
