@@ -13,7 +13,7 @@ import type {
   Tables,
   Values,
 } from 'tinybase/debug';
-import {DbSchema, ElectricClient} from 'electric-sql/dist/client/model';
+import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {GetLocationMethod, Persistable} from './common';
 import {SqliteWasmDb, VARIANTS} from './sqlite';

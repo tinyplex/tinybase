@@ -31,10 +31,7 @@
    * then gets the Electric client back out again.
    *
    * ```js yolo
-   * import {
-   *   ElectricDatabase,
-   *   electrify,
-   * } from 'electric-sql/dist/drivers/wa-sqlite';
+   * import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
    * import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
    * import {createStore} from 'tinybase';
    * import {schema} from './generated/client';
@@ -100,10 +97,7 @@
  * into the Store.
  *
  * ```js yolo
- * import {
- *   ElectricDatabase,
- *   electrify,
- * } from 'electric-sql/dist/drivers/wa-sqlite';
+ * import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
  * import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
  * import {createStore} from 'tinybase';
  * import {schema} from './generated/client';
@@ -144,10 +138,7 @@
  * a local ElectricSql database with tabular mapping.
  *
  * ```js yolo
- * import {
- *   ElectricDatabase,
- *   electrify,
- * } from 'electric-sql/dist/drivers/wa-sqlite';
+ * import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
  * import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
  * import {createStore} from 'tinybase';
  * import {schema} from './generated/client';
