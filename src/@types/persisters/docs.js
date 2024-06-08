@@ -127,7 +127,7 @@
  * settings.
  *
  * ```js
- * import {DatabasePersisterConfig} from 'tinybase';
+ * import type {DatabasePersisterConfig} from 'tinybase';
  *
  * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'json',
@@ -141,7 +141,7 @@
  * mappings. See DpcTabular for more details on these settings.
  *
  * ```js
- * import {DatabasePersisterConfig} from 'tinybase';
+ * import type {DatabasePersisterConfig} from 'tinybase';
  *
  * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'tabular',
@@ -192,7 +192,7 @@
  * and save a JSON serialization from and to a table called `tinybase_json`.
  *
  * ```js
- * import {DatabasePersisterConfig} from 'tinybase';
+ * import type {DatabasePersisterConfig} from 'tinybase';
  *
  * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'json',
@@ -247,7 +247,7 @@
  * For example:
  *
  * ```js
- * import {DatabasePersisterConfig} from 'tinybase';
+ * import type {DatabasePersisterConfig} from 'tinybase';
  *
  * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'tabular',
@@ -270,7 +270,7 @@
  * mappings, and Values data from and to a table called `my_tinybase_values`.
  *
  * ```js
- * import {DatabasePersisterConfig} from 'tinybase';
+ * import type {DatabasePersisterConfig} from 'tinybase';
  *
  * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'tabular',
@@ -348,7 +348,7 @@
  * Id called 'id' and the other defaults it to '_id'.
  *
  * ```js
- * import {DatabasePersisterConfig} from 'tinybase';
+ * import type {DatabasePersisterConfig} from 'tinybase';
  *
  * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'tabular',
@@ -455,7 +455,7 @@
  * empty.
  *
  * ```js
- * import {DatabasePersisterConfig} from 'tinybase';
+ * import type {DatabasePersisterConfig} from 'tinybase';
  *
  * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'tabular',
@@ -554,7 +554,7 @@
  * table called 'my_tinybase_values'.
  *
  * ```js
- * import {DatabasePersisterConfig} from 'tinybase';
+ * import type {DatabasePersisterConfig} from 'tinybase';
  *
  * export const databasePersisterConfig: DatabasePersisterConfig = {
  *   mode: 'tabular',
