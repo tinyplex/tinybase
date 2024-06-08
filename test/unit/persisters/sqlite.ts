@@ -1,7 +1,7 @@
 import 'fake-indexeddb/auto';
 import {Client, createClient} from '@libsql/client';
 import type {DatabasePersisterConfig, Persister, Store} from 'tinybase/debug';
-import {ElectricDatabase, electrify} from 'electric-sql/dist/drivers/wa-sqlite';
+import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
 import type {
   QueryResult,
   SQLWatchOptions,
@@ -9,8 +9,8 @@ import type {
 } from '@journeyapps/powersync-sdk-common';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import sqlite3, {Database} from 'sqlite3';
-import {DbSchema} from 'electric-sql/dist/client/model';
-import type {ElectricClient} from 'electric-sql/dist/client/model';
+import {DbSchema} from 'electric-sql/client/model';
+import type {ElectricClient} from 'electric-sql/client/model';
 import {createCrSqliteWasmPersister} from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
 import {createElectricSqlPersister} from 'tinybase/debug/persisters/persister-electric-sql';
 import {createLibSqlPersister} from 'tinybase/debug/persisters/persister-libsql';
