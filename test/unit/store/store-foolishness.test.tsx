@@ -6,9 +6,8 @@
 */
 
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
+import type {Relationships, Store} from 'tinybase/debug';
 import {
-  Relationships,
-  Store,
   createCheckpoints,
   createIndexes,
   createMergeableStore,

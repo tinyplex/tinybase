@@ -6,7 +6,7 @@ import {Client} from '@libsql/client';
 import type {DatabasePersisterConfig} from '../../@types/persisters';
 import {IdObj} from '../../common/obj';
 import type {Store} from '../../@types/store';
-import {UnsubscribeFunction} from 'electric-sql/dist/notifiers';
+import type {UnsubscribeFunction} from 'electric-sql/dist/notifiers';
 import {createSqlitePersister} from '../common/sqlite/create';
 
 export const createLibSqlPersister = ((

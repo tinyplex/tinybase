@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {
+import type {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-  createMergeableStore,
 } from 'tinybase/debug';
 import {nullStamped, resetHlc, stamped, time} from '../common/mergeable';
+import {createMergeableStore} from 'tinybase/debug';
 import {pause} from '../common/other';
 
 const permute = (arr: any[]): any[] => {

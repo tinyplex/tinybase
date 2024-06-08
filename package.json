@@ -116,11 +116,13 @@
   },
   "devDependencies": {
     "@automerge/automerge-repo": "^1.2.0",
+    "@automerge/automerge-repo-network-broadcastchannel": "^1.1.12",
     "@babel/cli": "^7.24.7",
     "@babel/core": "^7.24.7",
     "@babel/preset-env": "^7.24.7",
     "@babel/preset-react": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
+    "@journeyapps/powersync-react": "^1.1.3",
     "@journeyapps/powersync-sdk-common": "^1.6.0",
     "@libsql/client": "^0.7.0",
     "@prettier/sync": "^0.5.2",

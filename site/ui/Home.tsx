@@ -1,4 +1,5 @@
-import {Markdown, NoPropComponent, usePageNode} from 'tinydocs';
+import {Markdown, usePageNode} from 'tinydocs';
+import type {NoPropComponent} from 'tinydocs';
 import React from 'react';
 import {useReadme} from './Readme';
 

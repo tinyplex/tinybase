@@ -3,9 +3,8 @@
 // NB: an exclamation mark after a line visually indicates an expected TS error
 
 import * as UiReact from 'tinybase/debug/ui-react/with-schemas';
+import type {Id, NoValuesSchema} from 'tinybase/debug/with-schemas';
 import {
-  Id,
-  NoValuesSchema,
   createCheckpoints,
   createIndexes,
   createMetrics,
@@ -14,7 +13,7 @@ import {
   createStore,
 } from 'tinybase/debug/with-schemas';
 import React from 'react';
-import {createFilePersister} from 'tinybase/persisters/persister-file/with-schemas';
+import {createFilePersister} from 'tinybase/debug/persisters/persister-file/with-schemas';
 
 const tablesSchema = {
   t0: {c0: {type: 'number'}},

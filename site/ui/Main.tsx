@@ -1,12 +1,7 @@
-import {
-  NoPropComponent,
-  NodeNavigation,
-  useIsSingle,
-  usePageNode,
-  useRootNode,
-} from 'tinydocs';
+import {NodeNavigation, useIsSingle, usePageNode, useRootNode} from 'tinydocs';
 import {ArticleInner} from './ArticleInner';
 import {Home} from './Home';
+import type {NoPropComponent} from 'tinydocs';
 import React from 'react';
 
 export const Main: NoPropComponent = () => {

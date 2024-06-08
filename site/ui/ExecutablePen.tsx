@@ -1,4 +1,5 @@
-import {NoPropComponent, useBaseUrl, usePageNode} from 'tinydocs';
+import {useBaseUrl, usePageNode} from 'tinydocs';
+import type {NoPropComponent} from 'tinydocs';
 import React from 'react';
 import prettier from '@prettier/sync';
 

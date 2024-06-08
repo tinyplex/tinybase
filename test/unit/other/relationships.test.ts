@@ -1,11 +1,5 @@
-import {
-  GetCell,
-  Id,
-  Relationships,
-  Store,
-  createRelationships,
-  createStore,
-} from 'tinybase/debug';
+import type {GetCell, Id, Relationships, Store} from 'tinybase/debug';
+import {createRelationships, createStore} from 'tinybase/debug';
 import {expectChanges, expectNoChanges} from '../common/expect';
 import {RelationshipsListener} from '../common/types';
 import {createRelationshipsListener} from '../common/listeners';

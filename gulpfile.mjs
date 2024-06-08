@@ -595,6 +595,7 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
     exports: 'named',
   });
 
+  // eslint-disable-next-line import/no-unresolved
   const {build} = await import('./tmp/build.js');
   await build(DOCS_DIR, api, pages);
   await removeDir(TMP_DIR);
@@ -616,6 +617,16 @@ const {parallel, series} = gulp;
 
 // --
 
+export const compileForTest = async () => {
+  await clearDir(DIST_DIR);
+  await copyPackageFiles();
+  await copyDefinitions(DIST_DIR);
+  await testModules(async (module) => {
+    await compileModule(module, true, `${DIST_DIR}/debug`);
+    await compileModule(module, false, DIST_DIR);
+  });
+};
+
 export const lintFiles = async () => await lintCheckFiles('.');
 export const lintDocs = async () => await lintCheckDocs('src');
 export const lint = parallel(lintFiles, lintDocs);
@@ -628,21 +639,9 @@ export const spell = async () => {
 };
 
 export const ts = async () => {
-  await clearDir(DIST_DIR);
-  await copyPackageFiles();
-  await copyDefinitions(DIST_DIR);
   await tsCheck('src');
   await tsCheck('test');
   await tsCheck('site');
-};
-
-export const compileForTest = async () => {
-  await clearDir(DIST_DIR);
-  await copyPackageFiles();
-  await copyDefinitions(DIST_DIR);
-  await testModules(async (module) => {
-    await compileModule(module, true, `${DIST_DIR}/debug`);
-  });
 };
 
 export const compileForProd = async () => {
@@ -741,8 +740,8 @@ export const preCommit = series(
 
 export const prePublishPackage = series(
   npmInstall,
-  parallel(lint, spell, ts),
   compileForTest,
+  parallel(lint, spell, ts),
   testUnitCountAsserts,
   testPerf,
   compileForProd,
