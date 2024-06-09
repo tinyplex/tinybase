@@ -1,8 +1,8 @@
-import type {TablesSchema, ValuesSchema} from '../../@types/store';
-import {EMPTY_STRING} from '../../common/strings';
-import {getStoreCoreApi} from './core';
-import {getStoreUiReactApi} from './react';
-import {objIsEmpty} from '../../common/obj';
+import type {TablesSchema, ValuesSchema} from '../../@types/store/index.d.ts';
+import {EMPTY_STRING} from '../../common/strings.ts';
+import {getStoreCoreApi} from './core.ts';
+import {getStoreUiReactApi} from './react.ts';
+import {objIsEmpty} from '../../common/obj.ts';
 
 export const getStoreApi = (
   tablesSchema: TablesSchema,

@@ -6,7 +6,7 @@ import type {
   IdOrNull,
   Ids,
   ParameterizedCallback,
-} from '../common';
+} from '../common/index.d.ts';
 import type {
   Cell,
   CellIdsListener,
@@ -40,22 +40,26 @@ import type {
   ValueOrUndefined,
   Values,
   ValuesListener,
-} from '../store';
+} from '../store/index.d.ts';
 import type {
   CheckpointIds,
   CheckpointIdsListener,
   CheckpointListener,
   Checkpoints,
-} from '../checkpoints';
+} from '../checkpoints/index.d.ts';
 import type {ComponentType, ReactElement} from 'react';
-import type {Indexes, SliceIdsListener, SliceRowIdsListener} from '../indexes';
+import type {
+  Indexes,
+  SliceIdsListener,
+  SliceRowIdsListener,
+} from '../indexes/index.d.ts';
 import type {
   LinkedRowIdsListener,
   LocalRowIdsListener,
   Relationships,
   RemoteRowIdListener,
-} from '../relationships';
-import type {MetricListener, Metrics} from '../metrics';
+} from '../relationships/index.d.ts';
+import type {MetricListener, Metrics} from '../metrics/index.d.ts';
 import type {
   Queries,
   ResultCellIdsListener,
@@ -66,10 +70,10 @@ import type {
   ResultSortedRowIdsListener,
   ResultTableCellIdsListener,
   ResultTableListener,
-} from '../queries';
-import type {MergeableStore} from '../mergeable-store';
-import type {Persister} from '../persisters';
-import type {Synchronizer} from '../synchronizers';
+} from '../queries/index.d.ts';
+import type {MergeableStore} from '../mergeable-store/index.d.ts';
+import type {Persister} from '../persisters/index.d.ts';
+import type {Synchronizer} from '../synchronizers/index.d.ts';
 
 /// StoreOrStoreId
 export type StoreOrStoreId = Store | Id;

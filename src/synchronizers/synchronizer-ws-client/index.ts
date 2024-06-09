@@ -1,18 +1,18 @@
-import {EMPTY_STRING, UTF8} from '../../common/strings';
-import type {MessageType, Receive} from '../../@types/synchronizers';
+import {EMPTY_STRING, UTF8} from '../../common/strings.ts';
+import type {MessageType, Receive} from '../../@types/synchronizers/index.d.ts';
 import type {
   WebSocketTypes,
   createWsSynchronizer as createWsSynchronizerDecl,
-} from '../../@types/synchronizers/synchronizer-ws-client';
-import {isUndefined, promiseNew, slice} from '../../common/other';
+} from '../../@types/synchronizers/synchronizer-ws-client/index.d.ts';
+import {isUndefined, promiseNew, slice} from '../../common/other.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
-} from '../../common/json';
-import type {IdOrNull} from '../../@types/common';
-import {MESSAGE_SEPARATOR} from '../common';
-import type {MergeableStore} from '../../@types/mergeable-store';
-import {createCustomSynchronizer} from '../';
+} from '../../common/json.ts';
+import type {IdOrNull} from '../../@types/common/index.d.ts';
+import {MESSAGE_SEPARATOR} from '../common.ts';
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import {createCustomSynchronizer} from '../index.ts';
 
 export const createWsSynchronizer = (async <
   WebSocketType extends WebSocketTypes,

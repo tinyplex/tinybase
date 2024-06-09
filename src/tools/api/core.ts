@@ -19,7 +19,7 @@ import {
   VALUE,
   VALUES,
   VALUE_IDS,
-} from '../../common/strings';
+} from '../../common/strings.ts';
 import {
   CALLBACK,
   CHANGES,
@@ -63,7 +63,7 @@ import {
   getTableDoc,
   getTheContentOfTheStoreDoc,
   getValueContentDoc,
-} from '../common/strings';
+} from '../common/strings.ts';
 import {
   IdMap,
   mapForEach,
@@ -71,7 +71,7 @@ import {
   mapMap,
   mapNew,
   mapSet,
-} from '../../common/map';
+} from '../../common/map.ts';
 import {
   LINE,
   LINE_TREE,
@@ -82,20 +82,20 @@ import {
   getParameterList,
   mapUnique,
   snake,
-} from '../common/code';
-import type {TablesSchema, ValuesSchema} from '../../@types/store';
+} from '../common/code.ts';
+import type {TablesSchema, ValuesSchema} from '../../@types/store/index.d.ts';
 import {
   arrayForEach,
   arrayJoin,
   arrayPush,
   arrayUnshift,
-} from '../../common/array';
-import {isString, isUndefined} from '../../common/other';
-import type {Id} from '../../@types/common';
-import {collValues} from '../../common/coll';
-import {getSchemaFunctions} from '../common/schema';
-import {getTypeFunctions} from './types';
-import {objIsEmpty} from '../../common/obj';
+} from '../../common/array.ts';
+import {isString, isUndefined} from '../../common/other.ts';
+import type {Id} from '../../@types/common/index.d.ts';
+import {collValues} from '../../common/coll.ts';
+import {getSchemaFunctions} from '../common/schema.ts';
+import {getTypeFunctions} from './types.ts';
+import {objIsEmpty} from '../../common/obj.ts';
 
 export type TableTypes = [
   tableType: string,

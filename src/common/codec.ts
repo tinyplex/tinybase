@@ -1,6 +1,6 @@
-import {mapGet, mapNew} from './map';
-import {EMPTY_STRING} from './strings';
-import {arrayMap} from './array';
+import {mapGet, mapNew} from './map.ts';
+import {EMPTY_STRING} from './strings.ts';
+import {arrayMap} from './array.ts';
 
 const MASK6 = 63;
 const ENCODE =

@@ -10,8 +10,8 @@ import {
   TABLES,
   VALUE,
   VALUES,
-} from '../../common/strings';
-import type {Id} from '../../@types/common';
+} from '../../common/strings.ts';
+import type {Id} from '../../@types/common/index.d.ts';
 
 export const upper = (str: string) => str.toUpperCase();
 

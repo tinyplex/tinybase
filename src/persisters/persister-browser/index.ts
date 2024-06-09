@@ -3,20 +3,20 @@ import type {
   SessionPersister,
   createLocalPersister as createLocalPersisterDecl,
   createSessionPersister as createSessionPersisterDecl,
-} from '../../@types/persisters/persister-browser';
+} from '../../@types/persisters/persister-browser/index.d.ts';
 import type {
   PersistedContent,
   Persister,
   PersisterListener,
-} from '../../@types/persisters';
+} from '../../@types/persisters/index.d.ts';
 import {
   jsonParse,
   jsonParseWithUndefined,
   jsonStringWithUndefined,
-} from '../../common/json';
-import type {MergeableStore} from '../../@types/mergeable-store';
-import type {Store} from '../../@types/store';
-import {createCustomPersister} from '../';
+} from '../../common/json.ts';
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {Store} from '../../@types/store/index.d.ts';
+import {createCustomPersister} from '../index.ts';
 
 type StorageListener = (event: StorageEvent) => void;
 const STORAGE = 'storage';

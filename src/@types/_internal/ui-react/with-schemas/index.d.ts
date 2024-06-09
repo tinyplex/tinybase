@@ -1,16 +1,19 @@
-import type {Callback, Id} from '../../../common/with-schemas';
+import type {Callback, Id} from '../../../common/with-schemas/index.d.ts';
 import type {
   CellIdFromSchema,
   TableIdFromSchema,
   ValueIdFromSchema,
-} from '../../store/with-schemas';
+} from '../../store/with-schemas/index.d.ts';
 import type {ComponentType, ReactElement} from 'react';
-import type {OptionalSchemas, Store} from '../../../store/with-schemas';
-import type {Checkpoints} from '../../../checkpoints/with-schemas';
-import type {Indexes} from '../../../indexes/with-schemas';
-import type {Metrics} from '../../../metrics/with-schemas';
-import type {Queries} from '../../../queries/with-schemas';
-import type {Relationships} from '../../../relationships/with-schemas';
+import type {
+  OptionalSchemas,
+  Store,
+} from '../../../store/with-schemas/index.d.ts';
+import type {Checkpoints} from '../../../checkpoints/with-schemas/index.d.ts';
+import type {Indexes} from '../../../indexes/with-schemas/index.d.ts';
+import type {Metrics} from '../../../metrics/with-schemas/index.d.ts';
+import type {Queries} from '../../../queries/with-schemas/index.d.ts';
+import type {Relationships} from '../../../relationships/with-schemas/index.d.ts';
 
 type StoreOrStoreId<Schemas extends OptionalSchemas> = Store<Schemas> | Id;
 

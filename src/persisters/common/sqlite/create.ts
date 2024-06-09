@@ -4,14 +4,14 @@ import type {
   Persister,
   PersisterListener,
   StoreTypes,
-} from '../../../@types/persisters';
-import {startInterval, stopInterval} from '../../../common/other';
-import {Cmd} from './commands';
-import {IdObj} from '../../../common/obj';
-import {collValues} from '../../../common/coll';
-import {createJsonSqlitePersister} from './json';
-import {createTabularSqlitePersister} from './tabular';
-import {getConfigStructures} from './config';
+} from '../../../@types/persisters/index.d.ts';
+import {startInterval, stopInterval} from '../../../common/other.ts';
+import {Cmd} from './commands.ts';
+import {IdObj} from '../../../common/obj.ts';
+import {collValues} from '../../../common/coll.ts';
+import {createJsonSqlitePersister} from './json.ts';
+import {createTabularSqlitePersister} from './tabular.ts';
+import {getConfigStructures} from './config.ts';
 
 export type UpdateListener = (tableName: string) => void;
 

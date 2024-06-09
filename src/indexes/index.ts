@@ -1,7 +1,7 @@
-import {DEBUG, ifNotUndefined, isArray, isUndefined} from '../common/other';
-import {EMPTY_STRING, id} from '../common/strings';
-import type {GetCell, Store} from '../@types/store';
-import type {Id, IdOrNull, Ids, SortKey} from '../@types/common';
+import {DEBUG, ifNotUndefined, isArray, isUndefined} from '../common/other.ts';
+import {EMPTY_STRING, id} from '../common/strings.ts';
+import type {GetCell, Store} from '../@types/store/index.d.ts';
+import type {Id, IdOrNull, Ids, SortKey} from '../@types/common/index.d.ts';
 import {
   IdMap,
   mapForEach,
@@ -9,8 +9,8 @@ import {
   mapKeys,
   mapNew,
   mapSet,
-} from '../common/map';
-import {IdSet, IdSet2, IdSet3, setAdd, setNew} from '../common/set';
+} from '../common/map.ts';
+import {IdSet, IdSet2, IdSet3, setAdd, setNew} from '../common/set.ts';
 import type {
   IndexCallback,
   Indexes,
@@ -19,8 +19,8 @@ import type {
   SliceIdsListener,
   SliceRowIdsListener,
   createIndexes as createIndexesDecl,
-} from '../@types/indexes';
-import {arrayIsSorted, arrayMap, arraySort} from '../common/array';
+} from '../@types/indexes/index.d.ts';
+import {arrayIsSorted, arrayMap, arraySort} from '../common/array.ts';
 import {
   collDel,
   collForEach,
@@ -29,15 +29,15 @@ import {
   collSize2,
   collSize3,
   collValues,
-} from '../common/coll';
+} from '../common/coll.ts';
 import {
   getCreateFunction,
   getDefinableFunctions,
   getRowCellFunction,
-} from '../common/definable';
-import {defaultSorter} from '../common';
-import {getListenerFunctions} from '../common/listeners';
-import {objFreeze} from '../common/obj';
+} from '../common/definable.ts';
+import {defaultSorter} from '../common/index.ts';
+import {getListenerFunctions} from '../common/listeners.ts';
+import {objFreeze} from '../common/obj.ts';
 
 export const createIndexes = getCreateFunction((store: Store): Indexes => {
   const sliceIdsListeners: IdSet2 = mapNew();
