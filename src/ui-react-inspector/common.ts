@@ -1,9 +1,9 @@
-import type {Id, Ids} from '../@types/common';
-import {arrayMap, arraySort} from '../common/array';
-import type {Store} from '../@types/store';
-import {jsonStringWithMap} from '../common/json';
-import {useCallback} from '../common/react';
-import {useCell} from '../ui-react';
+import type {Id, Ids} from '../@types/common/index.d.ts';
+import {arrayMap, arraySort} from '../common/array.ts';
+import type {Store} from '../@types/store/index.d.ts';
+import {jsonStringWithMap} from '../common/json.ts';
+import {useCallback} from '../common/react.ts';
+import {useCell} from '../ui-react/index.ts';
 
 export const UNIQUE_ID = 'tinybaseInspector';
 export const TITLE = 'TinyBase Inspector';

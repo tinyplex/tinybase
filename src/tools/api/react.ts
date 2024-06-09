@@ -31,7 +31,7 @@ import {
   getTheContentOfDoc,
   getTheContentOfTheStoreDoc,
   getValueContentDoc,
-} from '../common/strings';
+} from '../common/strings.ts';
 import {
   BOOLEAN,
   CELL,
@@ -52,8 +52,8 @@ import {
   VALUE,
   VALUES,
   VALUE_IDS,
-} from '../../common/strings';
-import {IdMap, mapGet, mapMap, mapNew} from '../../common/map';
+} from '../../common/strings.ts';
+import {IdMap, mapGet, mapMap, mapNew} from '../../common/map.ts';
 import {
   LINE,
   LINE_OR_LINE_TREE,
@@ -64,14 +64,14 @@ import {
   getParameterList,
   getPropTypeList,
   mapUnique,
-} from '../common/code';
-import {SharedTableTypes, SharedValueTypes, TableTypes} from './core';
-import type {TablesSchema, ValuesSchema} from '../../@types/store';
-import {arrayJoin, arrayPush, arrayUnshift} from '../../common/array';
-import type {Id} from '../../@types/common';
-import {getSchemaFunctions} from '../common/schema';
-import {isUndefined} from '../../common/other';
-import {objIsEmpty} from '../../common/obj';
+} from '../common/code.ts';
+import {SharedTableTypes, SharedValueTypes, TableTypes} from './core.ts';
+import type {TablesSchema, ValuesSchema} from '../../@types/store/index.d.ts';
+import {arrayJoin, arrayPush, arrayUnshift} from '../../common/array.ts';
+import type {Id} from '../../@types/common/index.d.ts';
+import {getSchemaFunctions} from '../common/schema.ts';
+import {isUndefined} from '../../common/other.ts';
+import {objIsEmpty} from '../../common/obj.ts';
 
 const getGet = (noun: string) => GET + noun;
 const getGetAndGetDeps = (noun: string) =>

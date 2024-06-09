@@ -1,7 +1,7 @@
 /// persister-indexed-db
 
-import type {Persister} from '../';
-import type {Store} from '../../store';
+import type {Persister} from '../index.d.ts';
+import type {Store} from '../../store/index.d.ts';
 
 /// IndexedDbPersister
 export interface IndexedDbPersister extends Persister {

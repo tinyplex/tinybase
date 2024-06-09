@@ -1,12 +1,15 @@
 import type {
   CrSqliteWasmPersister,
   createCrSqliteWasmPersister as createCrSqliteWasmPersisterDecl,
-} from '../../@types/persisters/persister-cr-sqlite-wasm';
-import {UpdateListener, createSqlitePersister} from '../common/sqlite/create';
+} from '../../@types/persisters/persister-cr-sqlite-wasm/index.d.ts';
+import {
+  UpdateListener,
+  createSqlitePersister,
+} from '../common/sqlite/create.ts';
 import {DB} from '@vlcn.io/crsqlite-wasm';
-import type {DatabasePersisterConfig} from '../../@types/persisters';
-import {IdObj} from '../../common/obj';
-import type {Store} from '../../@types/store';
+import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
+import {IdObj} from '../../common/obj.ts';
+import type {Store} from '../../@types/store/index.d.ts';
 
 export const createCrSqliteWasmPersister = ((
   store: Store,

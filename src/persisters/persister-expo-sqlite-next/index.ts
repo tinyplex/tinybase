@@ -1,13 +1,17 @@
 import type {
   ExpoSqliteNextPersister,
   createExpoSqliteNextPersister as createExpoSqliteNextPersisterDecl,
-} from '../../@types/persisters/persister-expo-sqlite-next';
-import {SQLiteDatabase, addDatabaseChangeListener} from 'expo-sqlite/next';
-import {UpdateListener, createSqlitePersister} from '../common/sqlite/create';
-import type {DatabasePersisterConfig} from '../../@types/persisters';
-import {IdObj} from '../../common/obj';
-import type {MergeableStore} from '../../@types/mergeable-store';
-import type {Store} from '../../@types/store';
+} from '../../@types/persisters/persister-expo-sqlite-next/index.d.ts';
+import {
+  UpdateListener,
+  createSqlitePersister,
+} from '../common/sqlite/create.ts';
+import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
+import {IdObj} from '../../common/obj.ts';
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {SQLiteDatabase} from 'expo-sqlite/next.d.ts';
+import type {Store} from '../../@types/store/index.d.ts';
+import {addDatabaseChangeListener} from 'expo-sqlite/next.js';
 
 type Subscription = {remove: () => void};
 

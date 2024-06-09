@@ -1,7 +1,11 @@
-import type {CellOrUndefined, Store, ValueOrUndefined} from '../@types/store';
-import {NUMBER, STRING, getTypeOf} from './strings';
-import {isFiniteNumber, isTypeStringOrBoolean, isUndefined} from './other';
-import type {Id} from '../@types/common';
+import type {
+  CellOrUndefined,
+  Store,
+  ValueOrUndefined,
+} from '../@types/store/index.d.ts';
+import {NUMBER, STRING, getTypeOf} from './strings.ts';
+import {isFiniteNumber, isTypeStringOrBoolean, isUndefined} from './other.ts';
+import type {Id} from '../@types/common/index.d.ts';
 
 export type CellOrValueType = 'string' | 'number' | 'boolean';
 

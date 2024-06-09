@@ -16,7 +16,7 @@ import {
   getCallbackDoc,
   getListenerTypeDoc,
   getTheContentOfTheStoreDoc,
-} from '../common/strings';
+} from '../common/strings.ts';
 import {
   CELL,
   CELL_IDS,
@@ -32,14 +32,14 @@ import {
   VALUE,
   VALUES,
   VALUE_IDS,
-} from '../../common/strings';
+} from '../../common/strings.ts';
 import {
   MapCellSchema,
   MapTablesSchema,
   MapValuesSchema,
-} from '../common/schema';
-import {getFieldTypeList, getParameterList} from '../common/code';
-import {isUndefined} from '../../common/other';
+} from '../common/schema.ts';
+import {getFieldTypeList, getParameterList} from '../common/code.ts';
+import {isUndefined} from '../../common/other.ts';
 
 export const getTypeFunctions = (
   addType: (

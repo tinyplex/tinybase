@@ -1,5 +1,5 @@
-import {COMMA, EMPTY_STRING} from '../../common/strings';
-import {EXPORT, lower, upper} from './strings';
+import {COMMA, EMPTY_STRING} from '../../common/strings.ts';
+import {EXPORT, lower, upper} from './strings.ts';
 import {
   IdMap,
   mapEnsure,
@@ -7,8 +7,8 @@ import {
   mapMap,
   mapNew,
   mapSet,
-} from '../../common/map';
-import {IdSet2, setAdd, setNew} from '../../common/set';
+} from '../../common/map.ts';
+import {IdSet2, setAdd, setNew} from '../../common/set.ts';
 import {
   arrayFilter,
   arrayForEach,
@@ -18,10 +18,10 @@ import {
   arrayPush,
   arrayShift,
   arraySort,
-} from '../../common/array';
-import {collHas, collValues} from '../../common/coll';
-import {isArray, size, slice} from '../../common/other';
-import type {Id} from '../../@types/common';
+} from '../../common/array.ts';
+import {collHas, collValues} from '../../common/coll.ts';
+import {isArray, size, slice} from '../../common/other.ts';
+import type {Id} from '../../@types/common/index.d.ts';
 
 export type LINE = string;
 export type LINE_TREE = LINE_OR_LINE_TREE[];

@@ -4,7 +4,7 @@ import type {
   CellIdFromSchema,
   TableIdFromSchema,
   ValueIdFromSchema,
-} from '../../_internal/store/with-schemas';
+} from '../../_internal/store/with-schemas/index.d.ts';
 import type {
   CellOrUndefined,
   Content,
@@ -18,8 +18,8 @@ import type {
   TablesSchema,
   ValueOrUndefined,
   ValuesSchema,
-} from '../../store/with-schemas';
-import type {Id} from '../../common/with-schemas';
+} from '../../store/with-schemas/index.d.ts';
+import type {Id} from '../../common/with-schemas/index.d.ts';
 
 /// Hash
 export type Hash = number;

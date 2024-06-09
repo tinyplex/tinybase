@@ -1,14 +1,14 @@
 /** @jsx createElement */
 
-import {arrayIsEmpty, arrayMap} from '../common/array';
+import {arrayIsEmpty, arrayMap} from '../common/array.ts';
 import {
   createElement,
   useCallback,
   useLayoutEffect,
   useRef,
   useState,
-} from '../common/react';
-import {isUndefined, mathFloor} from '../common/other';
+} from '../common/react.ts';
+import {isUndefined, mathFloor} from '../common/other.ts';
 import {
   useIndexes,
   useIndexesIds,
@@ -21,14 +21,14 @@ import {
   useStore,
   useStoreIds,
   useValues,
-} from '../ui-react';
-import {CURRENT_TARGET} from '../common/strings';
-import {IndexesView} from './IndexesView';
-import {MetricsView} from './MetricsView';
-import {QueriesView} from './QueriesView';
-import {RelationshipsView} from './RelationshipsView';
-import type {StoreProp} from './types';
-import {StoreView} from './StoreView';
+} from '../ui-react/index.ts';
+import {CURRENT_TARGET} from '../common/strings.ts';
+import {IndexesView} from './IndexesView.tsx';
+import {MetricsView} from './MetricsView.tsx';
+import {QueriesView} from './QueriesView.tsx';
+import {RelationshipsView} from './RelationshipsView.tsx';
+import type {StoreProp} from './types.ts';
+import {StoreView} from './StoreView.tsx';
 import {SyntheticEvent} from 'react';
 
 export const Body = ({s}: StoreProp) => {

@@ -1,9 +1,9 @@
-import {COMMA, EMPTY_STRING, strRepeat} from '../../../common/strings';
+import {COMMA, EMPTY_STRING, strRepeat} from '../../../common/strings.ts';
 import type {
   CellOrUndefined,
   Table,
   ValueOrUndefined,
-} from '../../../@types/store';
+} from '../../../@types/store/index.d.ts';
 import {
   IdMap2,
   mapEnsure,
@@ -12,7 +12,7 @@ import {
   mapMatch,
   mapNew,
   mapSet,
-} from '../../../common/map';
+} from '../../../common/map.ts';
 import {
   IdObj,
   IdObj2,
@@ -22,19 +22,19 @@ import {
   objNew,
   objToArray,
   objValues,
-} from '../../../common/obj';
-import {SELECT, escapeId} from './common';
+} from '../../../common/obj.ts';
+import {SELECT, escapeId} from './common.ts';
 import {
   arrayFilter,
   arrayIsEmpty,
   arrayJoin,
   arrayMap,
   arrayPush,
-} from '../../../common/array';
-import {collDel, collHas, collValues} from '../../../common/coll';
-import {isUndefined, promiseAll, size, slice} from '../../../common/other';
-import {setAdd, setNew} from '../../../common/set';
-import type {Id} from '../../../@types/common';
+} from '../../../common/array.ts';
+import {collDel, collHas, collValues} from '../../../common/coll.ts';
+import {isUndefined, promiseAll, size, slice} from '../../../common/other.ts';
+import {setAdd, setNew} from '../../../common/set.ts';
+import type {Id} from '../../../@types/common/index.d.ts';
 
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
 type Schema = IdMap2<string>;

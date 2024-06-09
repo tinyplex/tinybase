@@ -1,5 +1,5 @@
-import {arrayReduce} from './array';
-import {isUndefined} from './other';
+import {arrayReduce} from './array.ts';
+import {isUndefined} from './other.ts';
 
 export type Coll<Value> = Map<unknown, Value> | Set<Value>;
 

@@ -1,7 +1,7 @@
 /// checkpoints
 
-import type {Id, IdOrNull, Ids} from '../common';
-import type {Store} from '../store';
+import type {Id, IdOrNull, Ids} from '../common/index.d.ts';
+import type {Store} from '../store/index.d.ts';
 
 /// CheckpointIds
 export type CheckpointIds = [Ids, Id | undefined, Ids];

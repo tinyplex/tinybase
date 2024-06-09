@@ -1,12 +1,12 @@
 /** @jsx createElement */
 
-import {OPEN_VALUE, POSITIONS, POSITION_VALUE, TITLE} from './common';
-import {useSetValueCallback, useValue} from '../ui-react';
-import {CURRENT_TARGET} from '../common/strings';
+import {OPEN_VALUE, POSITIONS, POSITION_VALUE, TITLE} from './common.ts';
+import {useSetValueCallback, useValue} from '../ui-react/index.ts';
+import {CURRENT_TARGET} from '../common/strings.ts';
 import {MouseEvent} from 'react';
-import type {StoreProp} from './types';
-import {arrayMap} from '../common/array';
-import {createElement} from '../common/react';
+import type {StoreProp} from './types.ts';
+import {arrayMap} from '../common/array.ts';
+import {createElement} from '../common/react.ts';
 
 export const Header = ({s}: StoreProp) => {
   const position = useValue(POSITION_VALUE, s) ?? 1;

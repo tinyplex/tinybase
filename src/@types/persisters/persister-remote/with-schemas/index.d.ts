@@ -1,7 +1,10 @@
 /// persister-remote
 
-import type {OptionalSchemas, Store} from '../../../store/with-schemas';
-import type {Persister} from '../../with-schemas';
+import type {
+  OptionalSchemas,
+  Store,
+} from '../../../store/with-schemas/index.d.ts';
+import type {Persister} from '../../with-schemas/index.d.ts';
 
 /// RemotePersister
 export interface RemotePersister<Schemas extends OptionalSchemas>

@@ -6,13 +6,13 @@ import type {
   OptionalSchemas,
   OptionalTablesSchema,
   Store,
-} from '../../store/with-schemas';
+} from '../../store/with-schemas/index.d.ts';
 import type {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-} from '../../mergeable-store/with-schemas';
-import type {TableIdFromSchema} from '../../_internal/store/with-schemas';
+} from '../../mergeable-store/with-schemas/index.d.ts';
+import type {TableIdFromSchema} from '../../_internal/store/with-schemas/index.d.ts';
 
 /// StoreTypes
 export type StoreTypes =

@@ -1,8 +1,8 @@
 import type {
   AutomergePersister,
   createAutomergePersister as createAutomergePersisterDecl,
-} from '../../@types/persisters/persister-automerge';
-import type {Changes, Content, Store} from '../../@types/store';
+} from '../../@types/persisters/persister-automerge/index.d.ts';
+import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
 import {
   IdObj,
   objDel,
@@ -12,13 +12,13 @@ import {
   objIsEmpty,
   objSize,
   objToArray,
-} from '../../common/obj';
-import {ifNotUndefined, isUndefined} from '../../common/other';
+} from '../../common/obj.ts';
+import {ifNotUndefined, isUndefined} from '../../common/other.ts';
 import {DocHandle} from '@automerge/automerge-repo';
-import type {Id} from '../../@types/common';
-import type {PersisterListener} from '../../@types/persisters';
-import {TINYBASE} from '../../common/strings';
-import {createCustomPersister} from '../';
+import type {Id} from '../../@types/common/index.d.ts';
+import type {PersisterListener} from '../../@types/persisters/index.d.ts';
+import {TINYBASE} from '../../common/strings.ts';
+import {createCustomPersister} from '../index.ts';
 
 type Observer = ({doc}: {doc: any}) => void;
 
@@ -139,7 +139,7 @@ export const createAutomergePersister = ((
 
   const getPersisted = async (): Promise<Content | undefined> => {
     const doc = await docHandle.doc();
-    return objSize(doc[docObjName]) == 2
+    return objSize(doc?.[docObjName]) == 2
       ? getDocContent(doc, docObjName)
       : undefined;
   };

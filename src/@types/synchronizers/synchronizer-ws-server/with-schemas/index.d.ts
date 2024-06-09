@@ -1,7 +1,7 @@
 /// synchronizer-ws-server
 
-import type {Id, IdOrNull, Ids} from '../../../common/with-schemas';
-import type {GetIdChanges} from '../../../store/with-schemas';
+import type {Id, IdOrNull, Ids} from '../../../common/with-schemas/index.d.ts';
+import type {GetIdChanges} from '../../../store/with-schemas/index.d.ts';
 import type {WebSocketServer} from 'ws';
 
 /// PathIdsListener

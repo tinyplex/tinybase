@@ -3,9 +3,13 @@
 import type {
   CellIdFromSchema,
   TableIdFromSchema,
-} from '../../_internal/store/with-schemas';
-import type {GetCell, OptionalSchemas, Store} from '../../store/with-schemas';
-import type {Id, IdOrNull, Ids} from '../../common/with-schemas';
+} from '../../_internal/store/with-schemas/index.d.ts';
+import type {
+  GetCell,
+  OptionalSchemas,
+  Store,
+} from '../../store/with-schemas/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../../common/with-schemas/index.d.ts';
 
 /// Metric
 export type Metric = number;

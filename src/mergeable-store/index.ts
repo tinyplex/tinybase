@@ -14,15 +14,15 @@ import type {
   ValuesHashes,
   ValuesStamp,
   createMergeableStore as createMergeableStoreDecl,
-} from '../@types/mergeable-store';
+} from '../@types/mergeable-store/index.d.ts';
 import type {
   CellOrUndefined,
   Changes,
   Content,
   Store,
   ValueOrUndefined,
-} from '../@types/store';
-import {EMPTY_STRING, strEndsWith, strStartsWith} from '../common/strings';
+} from '../@types/store/index.d.ts';
+import {EMPTY_STRING, strEndsWith, strStartsWith} from '../common/strings.ts';
 import {
   IdObj,
   objEnsure,
@@ -32,8 +32,8 @@ import {
   objNew,
   objToArray,
   objValidate,
-} from '../common/obj';
-import {IdSet, IdSet3, setAdd, setNew} from '../common/set';
+} from '../common/obj.ts';
+import {IdSet, IdSet3, setAdd, setNew} from '../common/set.ts';
 import {
   RowStampMap,
   StampMap,
@@ -52,16 +52,22 @@ import {
   stampNewObj,
   stampUpdate,
   stampValidate,
-} from '../common/stamps';
-import {collClear, collForEach} from '../common/coll';
-import {ifNotUndefined, isArray, size, slice} from '../common/other';
-import {mapEnsure, mapForEach, mapGet, mapNew, mapToObj} from '../common/map';
-import type {Id} from '../@types/common';
-import {createStore} from '../store';
-import {getHash} from '../common/hash';
-import {getHlcFunctions} from '../common/hlc';
-import {isCellOrValueOrNullOrUndefined} from '../common/cell';
-import {jsonStringWithMap} from '../common/json';
+} from '../common/stamps.ts';
+import {collClear, collForEach} from '../common/coll.ts';
+import {ifNotUndefined, isArray, size, slice} from '../common/other.ts';
+import {
+  mapEnsure,
+  mapForEach,
+  mapGet,
+  mapNew,
+  mapToObj,
+} from '../common/map.ts';
+import type {Id} from '../@types/common/index.d.ts';
+import {createStore} from '../store/index.ts';
+import {getHash} from '../common/hash.ts';
+import {getHlcFunctions} from '../common/hlc.ts';
+import {isCellOrValueOrNullOrUndefined} from '../common/cell.ts';
+import {jsonStringWithMap} from '../common/json.ts';
 
 const LISTENER_ARGS: IdObj<number> = {
   HasTable: 1,

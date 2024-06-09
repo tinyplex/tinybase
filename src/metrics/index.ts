@@ -4,11 +4,11 @@ import {
   isFiniteNumber,
   isFunction,
   isUndefined,
-} from '../common/other';
-import {EMPTY_STRING, SUM} from '../common/strings';
-import type {GetCell, Store} from '../@types/store';
-import type {Id, IdOrNull} from '../@types/common';
-import {IdMap, mapGet, mapNew} from '../common/map';
+} from '../common/other.ts';
+import {EMPTY_STRING, SUM} from '../common/strings.ts';
+import type {GetCell, Store} from '../@types/store/index.d.ts';
+import type {Id, IdOrNull} from '../@types/common/index.d.ts';
+import {IdMap, mapGet, mapNew} from '../common/map.ts';
 import type {
   MetricAggregate,
   MetricAggregateAdd,
@@ -18,17 +18,17 @@ import type {
   Metrics,
   MetricsListenerStats,
   createMetrics as createMetricsDecl,
-} from '../@types/metrics';
-import {collSize, collSize2} from '../common/coll';
-import {getAggregateValue, numericAggregators} from '../common/aggregators';
+} from '../@types/metrics/index.d.ts';
+import {collSize, collSize2} from '../common/coll.ts';
+import {getAggregateValue, numericAggregators} from '../common/aggregators.ts';
 import {
   getCreateFunction,
   getDefinableFunctions,
   getRowCellFunction,
-} from '../common/definable';
-import {IdSet2} from '../common/set';
-import {getListenerFunctions} from '../common/listeners';
-import {objFreeze} from '../common/obj';
+} from '../common/definable.ts';
+import {IdSet2} from '../common/set.ts';
+import {getListenerFunctions} from '../common/listeners.ts';
+import {objFreeze} from '../common/obj.ts';
 
 type Aggregators = [
   MetricAggregate,

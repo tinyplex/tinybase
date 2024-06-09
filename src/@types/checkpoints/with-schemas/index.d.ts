@@ -1,7 +1,7 @@
 /// checkpoints
 
-import type {Id, IdOrNull, Ids} from '../../common/with-schemas';
-import type {OptionalSchemas, Store} from '../../store/with-schemas';
+import type {Id, IdOrNull, Ids} from '../../common/with-schemas/index.d.ts';
+import type {OptionalSchemas, Store} from '../../store/with-schemas/index.d.ts';
 
 /// CheckpointIds
 export type CheckpointIds = [Ids, Id | undefined, Ids];

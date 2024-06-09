@@ -1,8 +1,13 @@
-import type {Cell, TablesSchema, Value, ValuesSchema} from '../../@types/store';
-import {DEFAULT, TYPE} from '../../common/strings';
-import {LINE_OR_LINE_TREE, camel, snake} from './code';
-import type {Id} from '../../@types/common';
-import {objToArray} from '../../common/obj';
+import type {
+  Cell,
+  TablesSchema,
+  Value,
+  ValuesSchema,
+} from '../../@types/store/index.d.ts';
+import {DEFAULT, TYPE} from '../../common/strings.ts';
+import {LINE_OR_LINE_TREE, camel, snake} from './code.ts';
+import type {Id} from '../../@types/common/index.d.ts';
+import {objToArray} from '../../common/obj.ts';
 
 export type MapTablesSchema = <Return>(
   callback: (tableId: Id, tableName: string, TABLE_ID: string) => Return,

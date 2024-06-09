@@ -18,14 +18,14 @@ import {
   VALUES,
   VALUE_IDS,
   _HAS,
-} from '../common/strings';
+} from '../common/strings.ts';
 import type {
   Callback,
   Id,
   IdOrNull,
   Ids,
   ParameterizedCallback,
-} from '../@types/common';
+} from '../@types/common/index.d.ts';
 import type {
   Cell,
   CellIdsListener,
@@ -57,13 +57,13 @@ import type {
   ValueListener,
   Values,
   ValuesListener,
-} from '../@types/store';
+} from '../@types/store/index.d.ts';
 import type {
   CheckpointIds,
   CheckpointIdsListener,
   CheckpointListener,
   Checkpoints,
-} from '../@types/checkpoints';
+} from '../@types/checkpoints/index.d.ts';
 import type {
   CheckpointsOrCheckpointsId,
   GetId,
@@ -188,19 +188,19 @@ import type {
   useValues as useValuesDecl,
   useValuesListener as useValuesListenerDecl,
   useWillFinishTransactionListener as useWillFinishTransactionListenerDecl,
-} from '../@types/ui-react';
+} from '../@types/ui-react/index.d.ts';
 import type {
   Indexes,
   SliceIdsListener,
   SliceRowIdsListener,
-} from '../@types/indexes';
+} from '../@types/indexes/index.d.ts';
 import type {
   LinkedRowIdsListener,
   LocalRowIdsListener,
   Relationships,
   RemoteRowIdListener,
-} from '../@types/relationships';
-import type {MetricListener, Metrics} from '../@types/metrics';
+} from '../@types/relationships/index.d.ts';
+import type {MetricListener, Metrics} from '../@types/metrics/index.d.ts';
 import type {
   Queries,
   ResultCellIdsListener,
@@ -211,14 +211,14 @@ import type {
   ResultSortedRowIdsListener,
   ResultTableCellIdsListener,
   ResultTableListener,
-} from '../@types/queries';
-import {arrayIsEmpty, arrayIsEqual, arrayMap} from '../common/array';
+} from '../@types/queries/index.d.ts';
+import {arrayIsEmpty, arrayIsEqual, arrayMap} from '../common/array.ts';
 import {
   getUndefined,
   ifNotUndefined,
   isFunction,
   isUndefined,
-} from '../common/other';
+} from '../common/other.ts';
 import {
   useCheckpointsOrCheckpointsById,
   useIndexesOrIndexesById,
@@ -227,14 +227,14 @@ import {
   useRelationshipsOrRelationshipsById,
   useStoreOrStoreById,
   useThingIds,
-} from './context';
-import {ListenerArgument} from '../common/listeners';
-import type {MergeableStore} from '../@types/mergeable-store';
-import type {Persister} from '../@types/persisters';
+} from './context.ts';
+import {ListenerArgument} from '../common/listeners.ts';
+import type {MergeableStore} from '../@types/mergeable-store/index.d.ts';
+import type {Persister} from '../@types/persisters/index.d.ts';
 import React from 'react';
-import type {Synchronizer} from '../@types/synchronizers';
-import {TRANSACTION} from '../tools/common/strings';
-import {objIsEqual} from '../common/obj';
+import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
+import {TRANSACTION} from '../tools/common/strings.ts';
+import {objIsEqual} from '../common/obj.ts';
 
 export {
   useCheckpoints,
@@ -250,7 +250,7 @@ export {
   useRelationshipsOrRelationshipsById,
   useStore,
   useStoreOrStoreById,
-} from './context';
+} from './context.ts';
 
 const {
   useCallback,
