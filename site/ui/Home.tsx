@@ -1,7 +1,7 @@
 import {Markdown, usePageNode} from 'tinydocs';
 import type {NoPropComponent} from 'tinydocs';
 import React from 'react';
-import {useReadme} from './Readme';
+import {useReadme} from './Readme.tsx';
 
 export const Home: NoPropComponent = (): any => {
   const [summary, body] = useReadme(usePageNode());
