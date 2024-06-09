@@ -31,6 +31,7 @@ import {deleteDB, openDB} from 'idb';
 import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
 import {DB} from '@vlcn.io/crsqlite-wasm';
 import {Database} from 'sqlite3';
+import type {FetchMock} from 'jest-fetch-mock';
 import type {LocalSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-local';
 import {createAutomergePersister} from 'tinybase/debug/persisters/persister-automerge';
 import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
@@ -39,9 +40,12 @@ import {createLocalSynchronizer} from 'tinybase/debug/synchronizers/synchronizer
 import {createRemotePersister} from 'tinybase/debug/persisters/persister-remote';
 import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
 import crypto from 'crypto';
+import fm from 'jest-fetch-mock';
 import fs from 'fs';
 import {mockFetchWasm} from '../common/other.ts';
 import tmp from 'tmp';
+
+const fetchMock = fm as any as FetchMock;
 
 const UNDEFINED_MARKER = '\uFFFC';
 
