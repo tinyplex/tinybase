@@ -1,6 +1,6 @@
 import {NodeNavigation, useIsSingle, usePageNode, useRootNode} from 'tinydocs';
-import {ArticleInner} from './ArticleInner';
-import {Home} from './Home';
+import {ArticleInner} from './ArticleInner.tsx';
+import {Home} from './Home.tsx';
 import type {NoPropComponent} from 'tinydocs';
 import React from 'react';
 

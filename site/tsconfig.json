@@ -12,6 +12,7 @@
     "allowSyntheticDefaultImports": true,
     "types": ["node"],
     "composite": true,
-    "noEmit": true
+    "noEmit": true,
+    "allowImportingTsExtensions": true
   }
 }
