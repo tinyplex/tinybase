@@ -1,12 +1,5 @@
 {
-  "ignorePaths": [
-    "*.tsv",
-    "*.webp",
-    "*.svg",
-    "*.snap",
-    "*.json",
-    "*.test.ts"
-  ],
+  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.snap", "*.json", "*.test.ts"],
   "words": [
     "Abad",
     "Adrien",
@@ -104,6 +97,7 @@
     "nickmessing",
     "nikitavoloboev",
     "nkzw",
+    "nocheck",
     "nwse",
     "oddr",
     "onwarn",
