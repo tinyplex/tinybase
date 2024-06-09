@@ -3,7 +3,7 @@
 import type {
   CellIdFromSchema,
   TableIdFromSchema,
-} from '../../_internal/store/with-schemas';
+} from '../../_internal/store/with-schemas/index.d.ts';
 import type {
   CellProps,
   CellPropsForTableIdAndCellId,
@@ -15,11 +15,11 @@ import type {
   ResultCellProps,
   StoreOrStoreId,
   ValueProps,
-} from '../../_internal/ui-react/with-schemas';
-import type {Id, Ids} from '../../common/with-schemas';
+} from '../../_internal/ui-react/with-schemas/index.d.ts';
+import type {Id, Ids} from '../../common/with-schemas/index.d.ts';
 import type {ComponentType} from 'react';
-import type {NoSchemas} from '../../store';
-import type {OptionalSchemas} from '../../store/with-schemas';
+import type {NoSchemas} from '../../store/index.d.ts';
+import type {OptionalSchemas} from '../../store/with-schemas/index.d.ts';
 
 /// CustomCell
 export type CustomCell<

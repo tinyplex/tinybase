@@ -1,5 +1,5 @@
-import {EMPTY_STRING} from './strings';
-import {size} from './other';
+import {EMPTY_STRING} from './strings.ts';
+import {size} from './other.ts';
 
 export const arrayHas = <Value>(array: Value[], value: Value): boolean =>
   array.includes(value);

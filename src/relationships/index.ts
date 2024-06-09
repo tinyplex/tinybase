@@ -1,8 +1,8 @@
-import {DEBUG, ifNotUndefined, isUndefined} from '../common/other';
-import type {GetCell, Store} from '../@types/store';
-import type {Id, IdOrNull, Ids} from '../@types/common';
-import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../common/map';
-import {IdSet, IdSet3, setAdd, setNew} from '../common/set';
+import {DEBUG, ifNotUndefined, isUndefined} from '../common/other.ts';
+import type {GetCell, Store} from '../@types/store/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
+import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../common/map.ts';
+import {IdSet, IdSet3, setAdd, setNew} from '../common/set.ts';
 import type {
   LinkedRowIdsListener,
   LocalRowIdsListener,
@@ -11,7 +11,7 @@ import type {
   RelationshipsListenerStats,
   RemoteRowIdListener,
   createRelationships as createRelationshipsDecl,
-} from '../@types/relationships';
+} from '../@types/relationships/index.d.ts';
 import {
   collDel,
   collForEach,
@@ -19,15 +19,15 @@ import {
   collIsEmpty,
   collSize3,
   collValues,
-} from '../common/coll';
+} from '../common/coll.ts';
 import {
   getCreateFunction,
   getDefinableFunctions,
   getRowCellFunction,
-} from '../common/definable';
-import {EMPTY_STRING} from '../common/strings';
-import {getListenerFunctions} from '../common/listeners';
-import {objFreeze} from '../common/obj';
+} from '../common/definable.ts';
+import {EMPTY_STRING} from '../common/strings.ts';
+import {getListenerFunctions} from '../common/listeners.ts';
+import {objFreeze} from '../common/obj.ts';
 
 type Relationship = [IdMap<Id>, IdMap<IdSet>, IdMap<IdSet>, IdMap<number>];
 

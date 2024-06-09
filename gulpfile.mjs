@@ -431,8 +431,8 @@ const compileModule = async (
         preventAssignment: true,
         ...(cli
           ? {
-              [`from '../'`]: `from 'tinybase'`,
-              [`from '../tools'`]: `from 'tinybase/tools'`,
+              [`from '../store/index.ts'`]: `from 'tinybase/store/index.js'`,
+              [`from '../tools/index.ts'`]: `from 'tinybase/tools/index.js'`,
             }
           : {}),
       }),
@@ -474,7 +474,7 @@ const compileModule = async (
       fs: 'fs',
       react: 'React',
       yjs: 'yjs',
-      [path.resolve('src/ui-react')]: getGlobalName('ui-react'),
+      [path.resolve('src/ui-react/index.ts')]: getGlobalName('ui-react'),
     },
     interop: 'default',
     name: getGlobalName(module) + (debug ? 'Debug' : ''),

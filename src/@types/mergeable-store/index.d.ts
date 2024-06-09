@@ -1,7 +1,12 @@
 /// mergeable-store
 
-import type {CellOrUndefined, Content, Store, ValueOrUndefined} from '../store';
-import type {Id} from '../common';
+import type {
+  CellOrUndefined,
+  Content,
+  Store,
+  ValueOrUndefined,
+} from '../store/index.d.ts';
+import type {Id} from '../common/index.d.ts';
 
 /// Hash
 export type Hash = number;

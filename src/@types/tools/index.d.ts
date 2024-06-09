@@ -1,7 +1,7 @@
 /// tools
 
-import type {Store, TablesSchema, ValuesSchema} from '../store';
-import type {Id} from '../common';
+import type {Store, TablesSchema, ValuesSchema} from '../store/index.d.ts';
+import type {Id} from '../common/index.d.ts';
 
 /// StoreStats
 export type StoreStats = {

@@ -1,8 +1,8 @@
-import {AVG, MAX, MIN, SUM} from './strings';
-import {Coll, collForEach, collIsEmpty, collSize, collValues} from './coll';
-import {IdMap, mapNew} from './map';
-import {isUndefined, mathMax, mathMin} from './other';
-import {arraySum} from './array';
+import {AVG, MAX, MIN, SUM} from './strings.ts';
+import {Coll, collForEach, collIsEmpty, collSize, collValues} from './coll.ts';
+import {IdMap, mapNew} from './map.ts';
+import {isUndefined, mathMax, mathMin} from './other.ts';
+import {arraySum} from './array.ts';
 
 type Aggregators<Value, AggregateValue> = [
   (values: Value[], length: number) => AggregateValue,

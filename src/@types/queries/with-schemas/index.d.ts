@@ -8,17 +8,17 @@ import type {
   OptionalSchemas,
   OptionalTablesSchema,
   Store,
-} from '../../store/with-schemas';
+} from '../../store/with-schemas/index.d.ts';
 import type {
   CellIdFromSchema,
   TableIdFromSchema,
-} from '../../_internal/store/with-schemas';
+} from '../../_internal/store/with-schemas/index.d.ts';
 import type {
   GetResultCell,
   JoinedCellIdOrId,
-} from '../../_internal/queries/with-schemas';
-import type {Id, IdOrNull, Ids} from '../../common/with-schemas';
-import type {GetIdChanges} from '../../store';
+} from '../../_internal/queries/with-schemas/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../../common/with-schemas/index.d.ts';
+import type {GetIdChanges} from '../../store/index.d.ts';
 
 /// ResultTable
 export type ResultTable = {[rowId: Id]: ResultRow};

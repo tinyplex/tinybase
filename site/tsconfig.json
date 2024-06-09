@@ -5,10 +5,13 @@
     "noImplicitThis": true,
     "strict": true,
     "removeComments": true,
-    "module": "ES2020",
+    "target": "ESNext",
+    "module": "NodeNext",
     "jsx": "react",
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "allowSyntheticDefaultImports": true,
-    "types": ["node"]
+    "types": ["node"],
+    "composite": true,
+    "noEmit": true
   }
 }
