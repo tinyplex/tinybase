@@ -1,4 +1,4 @@
-import {BOOLEAN, FUNCTION, STRING, getTypeOf} from './strings';
+import {BOOLEAN, FUNCTION, STRING, getTypeOf} from './strings.ts';
 
 const promise = Promise;
 

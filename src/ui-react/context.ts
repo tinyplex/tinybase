@@ -11,17 +11,17 @@ import type {
   useQueries as useQueriesDecl,
   useRelationships as useRelationshipsDecl,
   useStore as useStoreDecl,
-} from '../@types/ui-react';
-import type {Id, Ids} from '../@types/common';
-import {IdObj, objGet, objIds} from '../common/obj';
-import {isString, isUndefined} from '../common/other';
-import type {Checkpoints} from '../@types/checkpoints';
-import type {Indexes} from '../@types/indexes';
-import type {Metrics} from '../@types/metrics';
-import type {Queries} from '../@types/queries';
+} from '../@types/ui-react/index.d.ts';
+import type {Id, Ids} from '../@types/common/index.d.ts';
+import {IdObj, objGet, objIds} from '../common/obj.ts';
+import {isString, isUndefined} from '../common/other.ts';
+import type {Checkpoints} from '../@types/checkpoints/index.d.ts';
+import type {Indexes} from '../@types/indexes/index.d.ts';
+import type {Metrics} from '../@types/metrics/index.d.ts';
+import type {Queries} from '../@types/queries/index.d.ts';
 import React from 'react';
-import type {Relationships} from '../@types/relationships';
-import type {Store} from '../@types/store';
+import type {Relationships} from '../@types/relationships/index.d.ts';
+import type {Store} from '../@types/store/index.d.ts';
 
 const {createContext, useContext, useEffect} = React;
 

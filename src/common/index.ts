@@ -1,6 +1,6 @@
-import type {Id, SortKey} from '../@types/common';
-import {arrayReduce} from './array';
-import {encode} from './codec';
+import type {Id, SortKey} from '../@types/common/index.d.ts';
+import {arrayReduce} from './array.ts';
+import {encode} from './codec.ts';
 
 export const defaultSorter = (sortKey1: SortKey, sortKey2: SortKey): number =>
   (sortKey1 ?? 0) < (sortKey2 ?? 0) ? -1 : 1;

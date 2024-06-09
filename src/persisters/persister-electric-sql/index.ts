@@ -1,14 +1,17 @@
 import type {
   ElectricSqlPersister,
   createElectricSqlPersister as createElectricSqlPersisterDecl,
-} from '../../@types/persisters/persister-electric-sql';
-import {UpdateListener, createSqlitePersister} from '../common/sqlite/create';
-import type {DatabasePersisterConfig} from '../../@types/persisters';
+} from '../../@types/persisters/persister-electric-sql/index.d.ts';
+import {
+  UpdateListener,
+  createSqlitePersister,
+} from '../common/sqlite/create.ts';
+import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import type {ElectricClient} from 'electric-sql/client/model';
-import {IdObj} from '../../common/obj';
-import type {Store} from '../../@types/store';
-import type {UnsubscribeFunction} from 'electric-sql/dist/notifiers';
-import {arrayForEach} from '../../common/array';
+import {IdObj} from '../../common/obj.ts';
+import type {Store} from '../../@types/store/index.d.ts';
+import type {UnsubscribeFunction} from 'electric-sql/notifiers';
+import {arrayForEach} from '../../common/array.ts';
 
 export const createElectricSqlPersister = ((
   store: Store,

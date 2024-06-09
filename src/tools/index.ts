@@ -1,20 +1,25 @@
-import type {Cell, Store, TablesSchema, ValuesSchema} from '../@types/store';
-import {CellOrValueType, getCellOrValueType} from '../common/cell';
-import {DEFAULT, TYPE} from '../common/strings';
-import {IdMap, mapEnsure, mapNew, mapSet} from '../common/map';
+import type {
+  Cell,
+  Store,
+  TablesSchema,
+  ValuesSchema,
+} from '../@types/store/index.d.ts';
+import {CellOrValueType, getCellOrValueType} from '../common/cell.ts';
+import {DEFAULT, TYPE} from '../common/strings.ts';
+import {IdMap, mapEnsure, mapNew, mapSet} from '../common/map.ts';
 import type {
   StoreStats,
   Tools,
   createTools as createToolsDecl,
-} from '../@types/tools';
-import {arrayEvery, arrayMap, arrayPush} from '../common/array';
-import {objFreeze, objIsEmpty} from '../common/obj';
-import {promiseAll, size} from '../common/other';
-import {collForEach} from '../common/coll';
-import {formatJsDoc} from './common/code';
-import {getCreateFunction} from '../common/definable';
-import {getStoreApi as getStoreApiImpl} from './api/api';
-import {jsonParse} from '../common/json';
+} from '../@types/tools/index.d.ts';
+import {arrayEvery, arrayMap, arrayPush} from '../common/array.ts';
+import {objFreeze, objIsEmpty} from '../common/obj.ts';
+import {promiseAll, size} from '../common/other.ts';
+import {collForEach} from '../common/coll.ts';
+import {formatJsDoc} from './common/code.ts';
+import {getCreateFunction} from '../common/definable.ts';
+import {getStoreApi as getStoreApiImpl} from './api/api.ts';
+import {jsonParse} from '../common/json.ts';
 
 type CellMeta = [string, IdMap<number>, [number, Cell?], number];
 

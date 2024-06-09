@@ -1,12 +1,12 @@
 /// persisters
 
-import type {Changes, Content, Store} from '../store';
+import type {Changes, Content, Store} from '../store/index.d.ts';
 import type {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-} from '../mergeable-store';
-import type {Id} from '../common';
+} from '../mergeable-store/index.d.ts';
+import type {Id} from '../common/index.d.ts';
 
 /// StoreTypes
 export type StoreTypes =

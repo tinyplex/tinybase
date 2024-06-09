@@ -1,8 +1,8 @@
-import {DEBUG, ifNotUndefined, isUndefined, mathMax} from './other';
-import {decode, encode} from './codec';
-import type {Id} from '../@types/common';
-import {getHash} from './hash';
-import {getUniqueId} from './';
+import {DEBUG, ifNotUndefined, isUndefined, mathMax} from './other.ts';
+import {decode, encode} from './codec.ts';
+import type {Id} from '../@types/common/index.d.ts';
+import {getHash} from './hash.ts';
+import {getUniqueId} from './index.ts';
 
 type Hlc = string;
 // Sortable 16 digit radix-64 string representing 96 bits:

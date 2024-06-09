@@ -11,8 +11,8 @@ import {
   ROW_IDS,
   SORTED_ROW_IDS,
   TABLE,
-} from '../common/strings';
-import {AddListener, CallListeners} from '../common/listeners';
+} from '../common/strings.ts';
+import {AddListener, CallListeners} from '../common/listeners.ts';
 import type {
   Aggregate,
   AggregateAdd,
@@ -28,7 +28,7 @@ import type {
   Select,
   Where,
   createQueries as createQueriesDecl,
-} from '../@types/queries';
+} from '../@types/queries/index.d.ts';
 import type {
   Cell,
   CellOrUndefined,
@@ -37,8 +37,8 @@ import type {
   GetCellChange,
   Row,
   Store,
-} from '../@types/store';
-import type {Id, IdOrNull, Ids} from '../@types/common';
+} from '../@types/store/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
 import {
   IdMap,
   IdMap2,
@@ -48,14 +48,14 @@ import {
   mapNew,
   mapSet,
   visitTree,
-} from '../common/map';
-import {IdSet, setAdd, setNew} from '../common/set';
+} from '../common/map.ts';
+import {IdSet, setAdd, setNew} from '../common/set.ts';
 import {
   arrayEvery,
   arrayForEach,
   arrayIsEmpty,
   arrayPush,
-} from '../common/array';
+} from '../common/array.ts';
 import {
   collClear,
   collDel,
@@ -63,10 +63,10 @@ import {
   collHas,
   collIsEmpty,
   collSize,
-} from '../common/coll';
-import {getAggregateValue, numericAggregators} from '../common/aggregators';
-import {getCellOrValueType, setOrDelCell} from '../common/cell';
-import {getCreateFunction, getDefinableFunctions} from '../common/definable';
+} from '../common/coll.ts';
+import {getAggregateValue, numericAggregators} from '../common/aggregators.ts';
+import {getCellOrValueType, setOrDelCell} from '../common/cell.ts';
+import {getCreateFunction, getDefinableFunctions} from '../common/definable.ts';
 import {
   getUndefined,
   ifNotUndefined,
@@ -74,8 +74,8 @@ import {
   isUndefined,
   size,
   slice,
-} from '../common/other';
-import {objFreeze, objToArray} from '../common/obj';
+} from '../common/other.ts';
+import {objFreeze, objToArray} from '../common/obj.ts';
 
 type StoreWithPrivateMethods = Store & {
   createStore: () => Store;

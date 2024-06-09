@@ -1,7 +1,7 @@
 /// metrics
 
-import type {GetCell, Store} from '../store';
-import type {Id, IdOrNull, Ids} from '../common';
+import type {GetCell, Store} from '../store/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../common/index.d.ts';
 
 /// Metric
 export type Metric = number;
