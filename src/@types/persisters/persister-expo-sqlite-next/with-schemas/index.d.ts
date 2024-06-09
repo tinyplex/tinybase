@@ -1,9 +1,15 @@
 /// persister-expo-sqlite-next
 
-import type {DatabasePersisterConfig, Persister} from '../../with-schemas';
-import type {OptionalSchemas, Store} from '../../../store/with-schemas';
-import type {MergeableStore} from '../../../mergeable-store/with-schemas';
-import type {SQLiteDatabase} from 'expo-sqlite/next';
+import type {
+  DatabasePersisterConfig,
+  Persister,
+} from '../../with-schemas/index.d.ts';
+import type {
+  OptionalSchemas,
+  Store,
+} from '../../../store/with-schemas/index.d.ts';
+import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
+import type {SQLiteDatabase} from 'expo-sqlite/next.d.ts';
 
 /// ExpoSqliteNextPersister
 export interface ExpoSqliteNextPersister<Schemas extends OptionalSchemas>

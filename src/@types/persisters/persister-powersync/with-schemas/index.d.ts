@@ -1,7 +1,13 @@
 /// persister-powersync
 
-import type {DatabasePersisterConfig, Persister} from '../../with-schemas';
-import type {OptionalSchemas, Store} from '../../../store/with-schemas';
+import type {
+  DatabasePersisterConfig,
+  Persister,
+} from '../../with-schemas/index.d.ts';
+import type {
+  OptionalSchemas,
+  Store,
+} from '../../../store/with-schemas/index.d.ts';
 import type {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
 
 /// PowerSyncPersister

@@ -1,15 +1,15 @@
 /** @jsx createElement */
 /** @jsxFrag Fragment */
 
-import {Fragment, createElement} from '../common/react';
-import {POSITIONS, UNIQUE_ID} from './common';
-import {useCreatePersister, useCreateStore} from '../ui-react';
-import {APP_STYLESHEET} from './style';
-import type {InspectorProps} from '../@types/ui-react-inspector';
-import {Nub} from './Nub';
-import {Panel} from './Panel';
-import {createSessionPersister} from '../persisters/persister-browser';
-import {createStore} from '../store';
+import {Fragment, createElement} from '../common/react.ts';
+import {POSITIONS, UNIQUE_ID} from './common.ts';
+import {useCreatePersister, useCreateStore} from '../ui-react/index.ts';
+import {APP_STYLESHEET} from './style.ts';
+import type {InspectorProps} from '../@types/ui-react-inspector/index.d.ts';
+import {Nub} from './Nub.tsx';
+import {Panel} from './Panel.tsx';
+import {createSessionPersister} from '../persisters/persister-browser/index.ts';
+import {createStore} from '../store/index.ts';
 
 export const Inspector = ({
   position = 'right',

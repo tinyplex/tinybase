@@ -6,8 +6,8 @@ import type {
   GetCell,
   GetIdChanges,
   Store,
-} from '../store';
-import type {Id, IdOrNull, Ids} from '../common';
+} from '../store/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../common/index.d.ts';
 
 /// ResultTable
 export type ResultTable = {[rowId: Id]: ResultRow};

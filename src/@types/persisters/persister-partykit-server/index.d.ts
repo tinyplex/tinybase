@@ -7,7 +7,7 @@ import type {
   Content,
   Value,
   ValueOrUndefined,
-} from '../../store';
+} from '../../store/index.d.ts';
 import type {
   Connection,
   Party,
@@ -15,7 +15,7 @@ import type {
   Server,
   Storage,
 } from 'partykit/server';
-import type {Id} from '../../common';
+import type {Id} from '../../common/index.d.ts';
 
 /// TinyBasePartyKitServerConfig
 export type TinyBasePartyKitServerConfig = {

@@ -1,9 +1,9 @@
 /// persister-sqlite3
 
-import type {DatabasePersisterConfig, Persister} from '../';
+import type {DatabasePersisterConfig, Persister} from '../index.d.ts';
 import type {Database} from 'sqlite3';
-import type {MergeableStore} from '../../mergeable-store';
-import type {Store} from '../../store';
+import type {MergeableStore} from '../../mergeable-store/index.d.ts';
+import type {Store} from '../../store/index.d.ts';
 
 /// Sqlite3Persister
 export interface Sqlite3Persister extends Persister<3> {

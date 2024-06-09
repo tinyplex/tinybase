@@ -1,4 +1,4 @@
-import type {Id} from '../@types/common';
+import type {Id} from '../@types/common/index.d.ts';
 
 export const getTypeOf = (thing: unknown): string => typeof thing;
 

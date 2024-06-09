@@ -10,9 +10,13 @@ import {
   STRING,
   VALUE,
   _VALUE,
-} from '../common/strings';
-import type {Cell, Store, Value} from '../@types/store';
-import {CellOrValueType, getCellOrValueType, getTypeCase} from '../common/cell';
+} from '../common/strings.ts';
+import type {Cell, Store, Value} from '../@types/store/index.d.ts';
+import {
+  CellOrValueType,
+  getCellOrValueType,
+  getTypeCase,
+} from '../common/cell.ts';
 import type {
   CellProps,
   ExtraProps,
@@ -20,7 +24,7 @@ import type {
   ResultCellProps,
   StoreOrStoreId,
   ValueProps,
-} from '../@types/ui-react';
+} from '../@types/ui-react/index.d.ts';
 import {
   CellView,
   ResultCellView,
@@ -43,7 +47,7 @@ import {
   useTableCellIds,
   useValue,
   useValueIds,
-} from '../ui-react';
+} from '../ui-react/index.ts';
 import type {
   CustomCell,
   CustomResultCell,
@@ -65,19 +69,19 @@ import type {
   TableInHtmlTableProps,
   ValuesInHtmlTable as ValuesInHtmlTableDecl,
   ValuesInHtmlTableProps,
-} from '../@types/ui-react-dom';
-import type {Id, Ids} from '../@types/common';
+} from '../@types/ui-react-dom/index.d.ts';
+import type {Id, Ids} from '../@types/common/index.d.ts';
 import React, {ComponentType} from 'react';
 import {
   createElement,
   getIndexStoreTableId,
   getProps,
   getRelationshipsStoreTableIds,
-} from '../common/react';
-import {isArray, isString, isUndefined} from '../common/other';
-import {objMap, objNew, objToArray} from '../common/obj';
-import type {Relationships} from '../@types/relationships';
-import {arrayMap} from '../common/array';
+} from '../common/react.ts';
+import {isArray, isString, isUndefined} from '../common/other.ts';
+import {objMap, objNew, objToArray} from '../common/obj.ts';
+import type {Relationships} from '../@types/relationships/index.d.ts';
+import {arrayMap} from '../common/array.ts';
 
 const {useCallback, useMemo, useState} = React;
 

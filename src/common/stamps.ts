@@ -4,13 +4,13 @@ import type {
   Stamp,
   Time,
   ValueStamp,
-} from '../@types/mergeable-store';
-import {EMPTY_STRING, NUMBER, getTypeOf} from './strings';
-import {IdMap, mapNew, mapToObj} from './map';
-import {IdObj, objNew} from './obj';
-import {isArray, isFiniteNumber, isString, size} from './other';
-import type {Id} from '../@types/common';
-import {getHash} from './hash';
+} from '../@types/mergeable-store/index.d.ts';
+import {EMPTY_STRING, NUMBER, getTypeOf} from './strings.ts';
+import {IdMap, mapNew, mapToObj} from './map.ts';
+import {IdObj, objNew} from './obj.ts';
+import {isArray, isFiniteNumber, isString, size} from './other.ts';
+import type {Id} from '../@types/common/index.d.ts';
+import {getHash} from './hash.ts';
 
 export type StampMap<Thing> = Stamp<IdMap<Thing>, true>;
 

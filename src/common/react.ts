@@ -1,10 +1,10 @@
-import type {Id, Ids} from '../@types/common';
-import {IdObj} from './obj';
-import type {Indexes} from '../@types/indexes';
+import type {Id, Ids} from '../@types/common/index.d.ts';
+import {IdObj} from './obj.ts';
+import type {Indexes} from '../@types/indexes/index.d.ts';
 import React from 'react';
-import type {Relationships} from '../@types/relationships';
-import type {Store} from '../@types/store';
-import {isUndefined} from './other';
+import type {Relationships} from '../@types/relationships/index.d.ts';
+import type {Store} from '../@types/store/index.d.ts';
+import {isUndefined} from './other.ts';
 
 export const {
   PureComponent,

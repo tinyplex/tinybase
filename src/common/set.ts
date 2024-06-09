@@ -1,6 +1,6 @@
-import {isArray, isUndefined} from './other';
-import type {Id} from '../@types/common';
-import {IdMap} from './map';
+import {isArray, isUndefined} from './other.ts';
+import type {Id} from '../@types/common/index.d.ts';
+import {IdMap} from './map.ts';
 
 export type IdSet = Set<Id>;
 export type IdSet2 = IdMap<IdSet>;

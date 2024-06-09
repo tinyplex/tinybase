@@ -1,6 +1,6 @@
-import {arrayEvery, arrayForEach, arrayMap} from './array';
-import {ifNotUndefined, isUndefined, size} from './other';
-import type {Id} from '../@types/common';
+import {arrayEvery, arrayForEach, arrayMap} from './array.ts';
+import {ifNotUndefined, isUndefined, size} from './other.ts';
+import type {Id} from '../@types/common/index.d.ts';
 
 export type IdObj<Value> = {[id: string]: Value};
 export type IdObj2<Value> = IdObj<IdObj<Value>>;

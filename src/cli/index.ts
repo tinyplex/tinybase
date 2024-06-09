@@ -1,16 +1,16 @@
 #! /usr/bin/env node
 
-import type {TablesSchema, ValuesSchema} from '../@types/store';
+import type {TablesSchema, ValuesSchema} from '../@types/store/index.d.ts';
 import {dirname, resolve} from 'path';
 import {readFileSync, writeFileSync} from 'fs';
-import {UTF8} from '../common/strings';
-import {arrayForEach} from '../common/array';
-import {createStore} from '../';
-import {createTools} from '../tools';
+import {UTF8} from '../common/strings.ts';
+import {arrayForEach} from '../common/array.ts';
+import {createStore} from '../store/index.ts';
+import {createTools} from '../tools/index.ts';
 import {fileURLToPath} from 'url';
-import {isArray} from '../common/other';
-import {jsonParse} from '../common/json';
-import {objToArray} from '../common/obj';
+import {isArray} from '../common/other.ts';
+import {jsonParse} from '../common/json.ts';
+import {objToArray} from '../common/obj.ts';
 
 const FILE_ERROR = 'provide a valid schemaFile, storeName, and outputDir';
 

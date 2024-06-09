@@ -1,13 +1,16 @@
 import type {
   PowerSyncPersister,
   createPowerSyncPersister as createPowerSyncPersisterDecl,
-} from '../../@types/persisters/persister-powersync';
-import {UpdateListener, createSqlitePersister} from '../common/sqlite/create';
+} from '../../@types/persisters/persister-powersync/index.d.ts';
+import {
+  UpdateListener,
+  createSqlitePersister,
+} from '../common/sqlite/create.ts';
 import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
-import type {DatabasePersisterConfig} from '../../@types/persisters';
-import {IdObj} from '../../common/obj';
-import type {Store} from '../../@types/store';
-import {arrayMap} from '../../common/array';
+import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
+import {IdObj} from '../../common/obj.ts';
+import type {Store} from '../../@types/store/index.d.ts';
+import {arrayMap} from '../../common/array.ts';
 
 export const createPowerSyncPersister = ((
   store: Store,

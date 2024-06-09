@@ -1,8 +1,8 @@
 /// persister-browser
 
-import type {MergeableStore} from '../../mergeable-store';
-import type {Persister} from '../';
-import type {Store} from '../../store';
+import type {MergeableStore} from '../../mergeable-store/index.d.ts';
+import type {Persister} from '../index.d.ts';
+import type {Store} from '../../store/index.d.ts';
 
 /// SessionPersister
 export interface SessionPersister extends Persister<3> {
