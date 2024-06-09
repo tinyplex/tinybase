@@ -5,10 +5,10 @@ import {
   usePageNode,
   useRootNode,
 } from 'tinydocs';
-import {BuildContext} from './BuildContext';
-import {Footer} from './Footer';
-import {Header} from './Header';
-import {Main} from './Main';
+import {BuildContext} from './BuildContext.tsx';
+import {Footer} from './Footer.tsx';
+import {Header} from './Header.tsx';
+import {Main} from './Main.tsx';
 import type {NoPropComponent} from 'tinydocs';
 import React from 'react';
 

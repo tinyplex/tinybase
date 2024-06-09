@@ -8,8 +8,8 @@ import {
   queryById,
   queryElement,
   toggleClass,
-} from './common';
-import {NavNode} from '../ui/NavJson';
+} from './common.ts';
+import type {NavNode} from '../ui/NavJson.tsx';
 
 preLoad();
 
