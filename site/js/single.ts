@@ -1,4 +1,4 @@
-import {addClass, delClass, preLoad, query, queryById} from './common';
+import {addClass, delClass, preLoad, query, queryById} from './common.ts';
 
 preLoad();
 
