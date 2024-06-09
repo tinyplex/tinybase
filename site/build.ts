@@ -1,10 +1,10 @@
 import {createDocs, getSorter} from 'tinydocs';
-import {ArticleInner} from './ui/ArticleInner';
+import {ArticleInner} from './ui/ArticleInner.tsx';
 import type {Docs} from 'tinydocs';
-import {ExecutablePen} from './ui/ExecutablePen';
-import {NavJson} from './ui/NavJson';
-import {Page} from './ui/Page';
-import {Readme} from './ui/Readme';
+import {ExecutablePen} from './ui/ExecutablePen.tsx';
+import {NavJson} from './ui/NavJson.tsx';
+import {Page} from './ui/Page.tsx';
+import {Readme} from './ui/Readme.tsx';
 import {readFileSync} from 'fs';
 
 const GROUPS = ['Interfaces', '*', 'Type aliases'];
