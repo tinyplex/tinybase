@@ -14,7 +14,7 @@ import {
   QueriesListener,
   RelationshipsListener,
   StoreListener,
-} from './types';
+} from './types.ts';
 import type {
   NoSchemas,
   Store as StoreWithSchemas,

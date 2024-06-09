@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 
 import 'fake-indexeddb/auto';
-import {GetLocationMethod, Persistable, nextLoop} from './common';
+import {GetLocationMethod, Persistable, nextLoop} from './common.ts';
 import type {Persister, Store} from 'tinybase/debug';
 import {
   mockAutomerge,
@@ -22,9 +22,9 @@ import {
   mockSqlite3,
   mockSqliteWasm,
   mockYjs,
-} from './mocks';
+} from './mocks.ts';
 import {createStore} from 'tinybase/debug';
-import {pause} from '../common/other';
+import {pause} from '../common/other.ts';
 
 describe.each([
   ['mockChangesListener', mockChangesListener],

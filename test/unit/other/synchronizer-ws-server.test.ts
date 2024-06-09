@@ -6,7 +6,7 @@ import type {WsSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-ws-
 import {createMergeableStore} from 'tinybase/debug';
 import {createWsServer} from 'tinybase/debug/synchronizers/synchronizer-ws-server';
 import {createWsSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-ws-client';
-import {pause} from '../common/other';
+import {pause} from '../common/other.ts';
 
 test('Basics', async () => {
   const wsServer = createWsServer(new WebSocketServer({port: 8046}));
