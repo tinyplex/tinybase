@@ -5,7 +5,7 @@ import {
   getNValues,
   repeat,
   µs,
-} from './common';
+} from './common.ts';
 import {createMergeableStore} from 'tinybase/debug';
 
 repeat(

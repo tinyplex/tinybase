@@ -12,8 +12,8 @@ import type {WsServer} from 'tinybase/debug/synchronizers/synchronizer-ws-server
 import {createLocalSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-local';
 import {createWsServer} from 'tinybase/debug/synchronizers/synchronizer-ws-server';
 import {createWsSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-ws-client';
-import {pause} from '../common/other';
-import {resetHlc} from '../common/mergeable';
+import {pause} from '../common/other.ts';
+import {resetHlc} from '../common/mergeable.ts';
 
 const messageTypes = [
   'RESPONSE',
