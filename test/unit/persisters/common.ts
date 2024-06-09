@@ -8,7 +8,7 @@ import type {
   Store,
   StoreTypes,
 } from 'tinybase/debug';
-import {pause} from '../common/other';
+import {pause} from '../common/other.ts';
 
 export type GetLocationMethod<Location = string> = [
   string,

@@ -3,7 +3,7 @@ import {createRelationships, createStore} from 'tinybase/debug';
 import {expectChanges, expectNoChanges} from '../common/expect.ts';
 import {RelationshipsListener} from '../common/types.ts';
 import {createRelationshipsListener} from '../common/listeners.ts';
-import {getRelationshipsObject} from '../common/other';
+import {getRelationshipsObject} from '../common/other.ts';
 import {jest} from '@jest/globals';
 
 let store: Store;

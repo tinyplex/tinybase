@@ -1,4 +1,4 @@
-import {expectedElement, getServerFunctions} from './common';
+import {expectedElement, getServerFunctions} from './common.ts';
 
 const [startServer, stopServer, expectPage] = getServerFunctions(8800);
 

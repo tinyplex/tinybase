@@ -15,8 +15,8 @@ import type {
 } from 'tinybase/debug';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
-import {GetLocationMethod, Persistable} from './common';
-import {SqliteWasmDb, VARIANTS} from './sqlite';
+import {GetLocationMethod, Persistable} from './common.ts';
+import {SqliteWasmDb, VARIANTS} from './sqlite.ts';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createCustomPersister,
@@ -39,9 +39,8 @@ import {createLocalSynchronizer} from 'tinybase/debug/synchronizers/synchronizer
 import {createRemotePersister} from 'tinybase/debug/persisters/persister-remote';
 import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
 import crypto from 'crypto';
-import fetchMock from 'jest-fetch-mock';
 import fs from 'fs';
-import {mockFetchWasm} from '../common/other';
+import {mockFetchWasm} from '../common/other.ts';
 import tmp from 'tmp';
 
 const UNDEFINED_MARKER = '\uFFFC';
@@ -694,7 +693,7 @@ export const mockAutomerge: Persistable<DocHandle<any>> = {
   getLocationMethod: ['getDocHandle', (location) => location],
   getPersister: createAutomergePersister,
   get: async (docHandle: DocHandle<any>): Promise<Content | void> => {
-    const docContent = (await docHandle.doc())['tinybase'];
+    const docContent = (await docHandle.doc())?.['tinybase'];
     if (Object.keys(docContent).length > 0) {
       return [docContent['t'], docContent['v']] as Content;
     }
