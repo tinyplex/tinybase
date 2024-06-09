@@ -154,7 +154,7 @@ import {
 import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
 import {createLocalSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-local';
 import {jest} from '@jest/globals';
-import {pause} from '../common/other';
+import {pause} from '../common/other.ts';
 import tmp from 'tmp';
 
 let store: Store;

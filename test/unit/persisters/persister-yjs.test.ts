@@ -2,7 +2,7 @@ import type {Persister, Store} from 'tinybase/debug';
 import {Doc as YDoc, Map as YMap, applyUpdate, encodeStateAsUpdate} from 'yjs';
 import {createStore} from 'tinybase/debug';
 import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
-import {pause} from '../common/other';
+import {pause} from '../common/other.ts';
 
 let doc1: YDoc;
 let store1: Store;

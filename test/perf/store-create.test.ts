@@ -11,7 +11,7 @@ import {
   getNValues,
   repeat,
   µs,
-} from './common';
+} from './common.ts';
 import type {Table} from 'tinybase/debug';
 
 repeat(

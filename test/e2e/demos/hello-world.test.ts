@@ -2,7 +2,7 @@ import {
   expectedElement,
   expectedFramedElement,
   getServerFunctions,
-} from '../common';
+} from '../common.ts';
 
 const [startServer, stopServer, expectPage] = getServerFunctions(8801);
 

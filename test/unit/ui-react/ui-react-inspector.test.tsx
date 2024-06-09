@@ -9,7 +9,7 @@ import {
 } from 'react-test-renderer';
 import {Inspector} from 'tinybase/debug/ui-react-inspector';
 import React from 'react';
-import {pause} from '../common/other';
+import {pause} from '../common/other.ts';
 
 let renderer: ReactTestRenderer;
 

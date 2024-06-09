@@ -3,7 +3,7 @@ import {createMetrics, createStore} from 'tinybase/debug';
 import {expectChanges, expectNoChanges} from '../common/expect.ts';
 import {MetricsListener} from '../common/types.ts';
 import {createMetricsListener} from '../common/listeners.ts';
-import {getMetricsObject} from '../common/other';
+import {getMetricsObject} from '../common/other.ts';
 import {jest} from '@jest/globals';
 
 let store: Store;
