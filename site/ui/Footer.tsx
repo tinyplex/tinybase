@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-target-blank */
 import type {NoPropComponent} from 'tinydocs';
 import React from 'react';
-import {useMetadata} from './BuildContext';
+import {useMetadata} from './BuildContext.tsx';
 
 export const Footer: NoPropComponent = () => {
   const {version} = useMetadata();
