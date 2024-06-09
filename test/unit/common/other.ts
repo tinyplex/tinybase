@@ -1,9 +1,8 @@
 import type {Id, Ids, Indexes, Metrics, Relationships} from 'tinybase/debug';
-import {IdObj, IdObj2} from './types';
+import {IdObj, IdObj2} from './types.ts';
 import {TextDecoder, TextEncoder} from 'util';
-import fetchMock from 'jest-fetch-mock';
 import fs from 'fs';
-import {nudgeHlc} from './mergeable';
+import {nudgeHlc} from './mergeable.ts';
 
 Object.assign(globalThis, {TextDecoder, TextEncoder});
 
