@@ -123,10 +123,18 @@ const copyPackageFiles = async () => {
   delete json.scripts;
   delete json.devDependencies;
 
-  json.typesVersions = {'*': {}};
-  ['debug/*', 'cjs/*', 'cjs-es6/*', 'es6/*', 'umd/*', 'umd-es6/*', '*'].forEach(
-    (path) =>
-      (json.typesVersions['*'][path] = ['@types/*/index', '@types/index']),
+  json.exports = {};
+  ['.', './debug', './cjs', './cjs-es6', './es6', './umd', './umd-es6'].forEach(
+    (path) => {
+      json.exports[path] = {
+        default: path + '/index.js',
+        types: './@types/index.d.ts',
+      };
+      json.exports[path + '/*'] = {
+        default: path + '/*/index.js',
+        types: './@types/*/index.d.ts',
+      };
+    },
   );
 
   await promises.writeFile(
@@ -137,6 +145,7 @@ const copyPackageFiles = async () => {
 
   await promises.copyFile('LICENSE', join(DIST_DIR, 'LICENSE'));
   await promises.copyFile('readme.md', join(DIST_DIR, 'readme.md'));
+  await promises.copyFile('releases.md', join(DIST_DIR, 'releases.md'));
 };
 
 let labelBlocks;
