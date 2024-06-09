@@ -1,6 +1,6 @@
-import {T, V, strStartsWith} from '../../common/strings';
-import {isString, size, slice} from '../../common/other';
-import {jsonParse, jsonStringWithMap} from '../../common/json';
+import {T, V, strStartsWith} from '../../common/strings.ts';
+import {isString, size, slice} from '../../common/other.ts';
+import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
 
 type MessageType = typeof SET_CHANGES;
 export type StorageKeyType = typeof T | typeof V;

@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
-import {CLOSE_SVG, DONE_SVG, EDIT_SVG, LOGO_SVG, POSITIONS_SVG} from './svg';
-import {arrayJoin, arrayMap} from '../common/array';
-import {objNew, objToArray} from '../common/obj';
-import {UNIQUE_ID} from './common';
+import {CLOSE_SVG, DONE_SVG, EDIT_SVG, LOGO_SVG, POSITIONS_SVG} from './svg.ts';
+import {arrayJoin, arrayMap} from '../common/array.ts';
+import {objNew, objToArray} from '../common/obj.ts';
+import {UNIQUE_ID} from './common.ts';
 
 const SCROLLBAR = '*::-webkit-scrollbar';
 

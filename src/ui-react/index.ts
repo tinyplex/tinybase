@@ -1,2 +1,2 @@
-export * from './hooks';
-export * from './components';
+export * from './hooks.ts';
+export * from './components.tsx';

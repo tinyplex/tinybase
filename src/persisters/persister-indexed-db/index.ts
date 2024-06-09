@@ -1,20 +1,20 @@
-import type {Content, Store, Table} from '../../@types/store';
-import {IdObj, objHas, objNew, objToArray} from '../../common/obj';
+import type {Content, Store, Table} from '../../@types/store/index.d.ts';
+import {IdObj, objHas, objNew, objToArray} from '../../common/obj.ts';
 import type {
   IndexedDbPersister,
   createIndexedDbPersister as createIndexedDbPersisterDecl,
-} from '../../@types/persisters/persister-indexed-db';
-import {T, V} from '../../common/strings';
-import {arrayMap, arrayPush} from '../../common/array';
+} from '../../@types/persisters/persister-indexed-db/index.d.ts';
+import {T, V} from '../../common/strings.ts';
+import {arrayMap, arrayPush} from '../../common/array.ts';
 import {
   promiseAll,
   promiseNew,
   startInterval,
   stopInterval,
-} from '../../common/other';
-import type {Id} from '../../@types/common';
-import type {PersisterListener} from '../../@types/persisters';
-import {createCustomPersister} from '../';
+} from '../../common/other.ts';
+import type {Id} from '../../@types/common/index.d.ts';
+import type {PersisterListener} from '../../@types/persisters/index.d.ts';
+import {createCustomPersister} from '../index.ts';
 
 const WINDOW = globalThis.window;
 const OBJECT_STORE_NAMES = [T, V];

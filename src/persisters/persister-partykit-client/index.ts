@@ -1,22 +1,22 @@
-import type {Changes, Content, Store} from '../../@types/store';
+import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
 import {
   PUT,
   SET_CHANGES,
   STORE_PATH,
   construct,
   deconstruct,
-} from '../common/partykit';
+} from '../common/partykit.ts';
 import type {
   PartyKitPersister,
   PartyKitPersisterConfig,
   createPartyKitPersister as createPartyKitPersisterDecl,
-} from '../../@types/persisters/persister-partykit-client';
-import {ifNotUndefined, isString} from '../../common/other';
-import {EMPTY_STRING} from '../../common/strings';
-import PartySocket from 'partysocket';
-import type {PersisterListener} from '../../@types/persisters';
-import {createCustomPersister} from '../';
-import {jsonStringWithMap} from '../../common/json';
+} from '../../@types/persisters/persister-partykit-client/index.d.ts';
+import {ifNotUndefined, isString} from '../../common/other.ts';
+import {EMPTY_STRING} from '../../common/strings.ts';
+import type {PartySocket} from 'partysocket';
+import type {PersisterListener} from '../../@types/persisters/index.d.ts';
+import {createCustomPersister} from '../index.ts';
+import {jsonStringWithMap} from '../../common/json.ts';
 
 type MessageListener = (event: MessageEvent) => void;
 

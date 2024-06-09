@@ -1,16 +1,16 @@
-import type {Changes, Content, Store} from '../@types/store';
+import type {Changes, Content, Store} from '../@types/store/index.d.ts';
 import {
   DEBUG,
   errorNew,
   ifNotUndefined,
   isArray,
   isUndefined,
-} from '../common/other';
+} from '../common/other.ts';
 import type {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-} from '../@types/mergeable-store';
+} from '../@types/mergeable-store/index.d.ts';
 import type {
   PersistedChanges,
   PersistedContent,
@@ -19,11 +19,11 @@ import type {
   PersisterListener,
   PersisterStats,
   StoreTypes,
-} from '../@types/persisters';
-import {arrayPush, arrayShift} from '../common/array';
-import {mapEnsure, mapGet, mapNew, mapSet} from '../common/map';
-import {objFreeze, objIsEmpty} from '../common/obj';
-import type {Id} from '../@types/common';
+} from '../@types/persisters/index.d.ts';
+import {arrayPush, arrayShift} from '../common/array.ts';
+import {mapEnsure, mapGet, mapNew, mapSet} from '../common/map.ts';
+import {objFreeze, objIsEmpty} from '../common/obj.ts';
+import type {Id} from '../@types/common/index.d.ts';
 
 type Action = () => Promise<any>;
 

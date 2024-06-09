@@ -1,8 +1,11 @@
 /// persister-file
 
-import type {OptionalSchemas, Store} from '../../../store/with-schemas';
-import type {MergeableStore} from '../../../mergeable-store/with-schemas';
-import type {Persister} from '../../with-schemas';
+import type {
+  OptionalSchemas,
+  Store,
+} from '../../../store/with-schemas/index.d.ts';
+import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
+import type {Persister} from '../../with-schemas/index.d.ts';
 
 /// FilePersister
 export interface FilePersister<Schemas extends OptionalSchemas>

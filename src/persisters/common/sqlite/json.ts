@@ -1,18 +1,18 @@
-import {Cmd, getCommandFunctions} from './commands';
+import {Cmd, getCommandFunctions} from './commands.ts';
 import type {
   PersistedContent,
   PersistedStore,
   Persister,
   PersisterListener,
   StoreTypes,
-} from '../../../@types/persisters';
+} from '../../../@types/persisters/index.d.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
-} from '../../../common/json';
-import {DefaultedJsonConfig} from './config';
-import {SINGLE_ROW_ID} from './common';
-import {createCustomPersister} from '../../';
+} from '../../../common/json.ts';
+import {DefaultedJsonConfig} from './config.ts';
+import {SINGLE_ROW_ID} from './common.ts';
+import {createCustomPersister} from '../../index.ts';
 
 export const createJsonSqlitePersister = <
   ListeningHandle,

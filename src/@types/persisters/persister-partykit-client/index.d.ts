@@ -1,8 +1,8 @@
 /// persister-partykit-client
 
-import type PartySocket from 'partysocket';
-import type {Persister} from '../';
-import type {Store} from '../../store';
+import type {PartySocket} from 'partysocket';
+import type {Persister} from '../index.d.ts';
+import type {Store} from '../../store/index.d.ts';
 
 /// PartyKitPersister
 export interface PartyKitPersister extends Persister {

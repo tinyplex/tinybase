@@ -47,23 +47,23 @@ import type {
   ValueView as ValueViewDecl,
   ValuesProps,
   ValuesView as ValuesViewDecl,
-} from '../@types/ui-react';
+} from '../@types/ui-react/index.d.ts';
 import {
   Context,
   useCheckpointsOrCheckpointsById,
   useIndexesOrIndexesById,
   useRelationshipsOrRelationshipsById,
-} from './context';
-import type {Id, Ids} from '../@types/common';
+} from './context.ts';
+import type {Id, Ids} from '../@types/common/index.d.ts';
 import React, {ReactElement} from 'react';
 import {
   createElement,
   getIndexStoreTableId,
   getProps,
   getRelationshipsStoreTableIds,
-} from '../common/react';
-import {isArray, isUndefined} from '../common/other';
-import {objDel, objGet} from '../common/obj';
+} from '../common/react.ts';
+import {isArray, isUndefined} from '../common/other.ts';
+import {objDel, objGet} from '../common/obj.ts';
 import {
   useCell,
   useCellIds,
@@ -84,11 +84,11 @@ import {
   useTableIds,
   useValue,
   useValueIds,
-} from './hooks';
-import type {CheckpointIds} from '../@types/checkpoints';
-import {EMPTY_STRING} from '../common/strings';
-import type {Store} from '../@types/store';
-import {arrayMap} from '../common/array';
+} from './hooks.ts';
+import type {CheckpointIds} from '../@types/checkpoints/index.d.ts';
+import {EMPTY_STRING} from '../common/strings.ts';
+import type {Store} from '../@types/store/index.d.ts';
+import {arrayMap} from '../common/array.ts';
 
 const {useCallback, useContext, useMemo, useState} = React;
 

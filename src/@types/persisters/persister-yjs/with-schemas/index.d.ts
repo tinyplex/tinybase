@@ -1,7 +1,10 @@
 /// persister-yjs
 
-import type {OptionalSchemas, Store} from '../../../store/with-schemas';
-import type {Persister} from '../../with-schemas';
+import type {
+  OptionalSchemas,
+  Store,
+} from '../../../store/with-schemas/index.d.ts';
+import type {Persister} from '../../with-schemas/index.d.ts';
 import type {Doc as YDoc} from 'yjs';
 
 /// YjsPersister

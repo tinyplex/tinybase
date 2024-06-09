@@ -5,11 +5,13 @@
     "noImplicitThis": true,
     "strict": true,
     "removeComments": true,
-    "target": "ES2020",
-    "module": "ES2020",
+    "target": "ESNext",
+    "module": "NodeNext",
     "jsx": "react",
-    "moduleResolution": "node",
+    "moduleResolution": "NodeNext",
     "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
     "types": [
       "asciichart",
       "jest",
@@ -17,8 +19,6 @@
       "jest-environment-puppeteer",
       "http-server"
     ],
-    "skipLibCheck": true,
-    "typeRoots": ["../node_modules/@types", "./modules"]
-  },
-  "references": [{"path": "../src"}]
+    "skipLibCheck": true
+  }
 }

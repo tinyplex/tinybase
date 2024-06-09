@@ -1,5 +1,5 @@
-import {Coll, collSize2} from './coll';
-import {IdMap, mapNew} from './map';
+import {Coll, collSize2} from './coll.ts';
+import {IdMap, mapNew} from './map.ts';
 
 export type Pair<Value> = [Value, Value];
 

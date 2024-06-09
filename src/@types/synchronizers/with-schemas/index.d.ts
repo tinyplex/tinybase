@@ -1,9 +1,12 @@
 /// synchronizers
 
-import type {Content, OptionalSchemas} from '../../store/with-schemas';
-import type {Id, IdOrNull} from '../../common/with-schemas';
-import type {MergeableStore} from '../../mergeable-store/with-schemas';
-import type {Persister} from '../../persisters/with-schemas';
+import type {
+  Content,
+  OptionalSchemas,
+} from '../../store/with-schemas/index.d.ts';
+import type {Id, IdOrNull} from '../../common/with-schemas/index.d.ts';
+import type {MergeableStore} from '../../mergeable-store/with-schemas/index.d.ts';
+import type {Persister} from '../../persisters/with-schemas/index.d.ts';
 
 /// MessageType
 export type MessageType = number;

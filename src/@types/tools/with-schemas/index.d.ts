@@ -1,7 +1,7 @@
 /// tools
 
-import type {OptionalSchemas, Store} from '../../store/with-schemas';
-import type {Id} from '../../common/with-schemas';
+import type {OptionalSchemas, Store} from '../../store/with-schemas/index.d.ts';
+import type {Id} from '../../common/with-schemas/index.d.ts';
 
 /// StoreStats
 export type StoreStats = {

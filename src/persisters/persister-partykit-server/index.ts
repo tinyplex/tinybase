@@ -8,10 +8,10 @@ import type {
   Value,
   ValueOrUndefined,
   Values,
-} from '../../@types/store';
+} from '../../@types/store/index.d.ts';
 import type {Connection, Party, Request, Storage} from 'partykit/server';
-import {EMPTY_STRING, T, V, strStartsWith} from '../../common/strings';
-import type {Id, Ids} from '../../@types/common';
+import {EMPTY_STRING, T, V, strStartsWith} from '../../common/strings.ts';
+import type {Id, Ids} from '../../@types/common/index.d.ts';
 import {
   PUT,
   SET_CHANGES,
@@ -19,27 +19,27 @@ import {
   StorageKeyType,
   construct,
   deconstruct,
-} from '../common/partykit';
+} from '../common/partykit.ts';
 import type {
   TinyBasePartyKitServerConfig,
   TinyBasePartyKitServer as TinyBasePartyKitServerDecl,
-} from '../../@types/persisters/persister-partykit-server';
+} from '../../@types/persisters/persister-partykit-server/index.d.ts';
 import {
   arrayEvery,
   arrayIsEmpty,
   arrayMap,
   arrayPush,
   arrayUnshift,
-} from '../../common/array';
+} from '../../common/array.ts';
 import {
   ifNotUndefined,
   isUndefined,
   promiseAll,
   slice,
-} from '../../common/other';
-import {jsonParse, jsonStringWithMap} from '../../common/json';
-import {objEnsure, objNew, objToArray} from '../../common/obj';
-import {mapForEach} from '../../common/map';
+} from '../../common/other.ts';
+import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
+import {objEnsure, objNew, objToArray} from '../../common/obj.ts';
+import {mapForEach} from '../../common/map.ts';
 
 /**
  * DurableStorage:

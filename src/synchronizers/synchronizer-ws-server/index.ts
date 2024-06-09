@@ -4,9 +4,9 @@ import type {
   WsServer,
   WsServerStats,
   createWsServer as createWsServerDecl,
-} from '../../@types/synchronizers/synchronizer-ws-server';
-import {EMPTY_STRING, UTF8} from '../../common/strings';
-import type {Id, IdOrNull, Ids} from '../../@types/common';
+} from '../../@types/synchronizers/synchronizer-ws-server/index.d.ts';
+import {EMPTY_STRING, UTF8} from '../../common/strings.ts';
+import type {Id, IdOrNull, Ids} from '../../@types/common/index.d.ts';
 import {
   IdMap2,
   mapEnsure,
@@ -15,7 +15,7 @@ import {
   mapKeys,
   mapNew,
   mapSet,
-} from '../../common/map';
+} from '../../common/map.ts';
 import {WebSocket, WebSocketServer} from 'ws';
 import {
   collClear,
@@ -23,12 +23,12 @@ import {
   collIsEmpty,
   collSize,
   collSize2,
-} from '../../common/coll';
-import {ifNotUndefined, slice} from '../../common/other';
-import {IdSet2} from '../../common/set';
-import {MESSAGE_SEPARATOR} from '../common';
-import {getListenerFunctions} from '../../common/listeners';
-import {objFreeze} from '../../common/obj';
+} from '../../common/coll.ts';
+import {ifNotUndefined, slice} from '../../common/other.ts';
+import {IdSet2} from '../../common/set.ts';
+import {MESSAGE_SEPARATOR} from '../common.ts';
+import {getListenerFunctions} from '../../common/listeners.ts';
+import {objFreeze} from '../../common/obj.ts';
 
 const PATH_REGEX = /\/([^?]*)/;
 

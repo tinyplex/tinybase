@@ -3,9 +3,9 @@ import type {
   Tables,
   ValueOrUndefined,
   Values,
-} from '../../../@types/store';
-import {Cmd, getCommandFunctions} from './commands';
-import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common';
+} from '../../../@types/store/index.d.ts';
+import {Cmd, getCommandFunctions} from './commands.ts';
+import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common.ts';
 import type {
   PersistedChanges,
   PersistedContent,
@@ -13,14 +13,14 @@ import type {
   Persister,
   PersisterListener,
   StoreTypes,
-} from '../../../@types/persisters';
-import {isUndefined, promiseAll} from '../../../common/other';
-import {objHas, objIsEmpty, objNew} from '../../../common/obj';
-import {DefaultedTabularConfig} from './config';
-import type {Id} from '../../../@types/common';
-import {arrayFilter} from '../../../common/array';
-import {createCustomPersister} from '../../';
-import {mapMap} from '../../../common/map';
+} from '../../../@types/persisters/index.d.ts';
+import {isUndefined, promiseAll} from '../../../common/other.ts';
+import {objHas, objIsEmpty, objNew} from '../../../common/obj.ts';
+import {DefaultedTabularConfig} from './config.ts';
+import type {Id} from '../../../@types/common/index.d.ts';
+import {arrayFilter} from '../../../common/array.ts';
+import {createCustomPersister} from '../../index.ts';
+import {mapMap} from '../../../common/map.ts';
 
 export const createTabularSqlitePersister = <
   ListeningHandle,

@@ -1,6 +1,6 @@
 /// ui-react-dom
 
-import type {ComponentReturnType} from '../ui-react';
+import type {ComponentReturnType} from '../ui-react/index.d.ts';
 
 /// InspectorProps
 export type InspectorProps = {

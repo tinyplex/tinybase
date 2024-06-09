@@ -1,7 +1,7 @@
 /// persister-yjs
 
-import type {Persister} from '../';
-import type {Store} from '../../store';
+import type {Persister} from '../index.d.ts';
+import type {Store} from '../../store/index.d.ts';
 import type {Doc as YDoc} from 'yjs';
 
 /// YjsPersister

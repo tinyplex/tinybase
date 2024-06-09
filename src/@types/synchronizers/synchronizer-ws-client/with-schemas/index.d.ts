@@ -1,8 +1,8 @@
 /// synchronizer-ws-client
 
-import type {MergeableStore} from '../../../mergeable-store/with-schemas';
-import type {OptionalSchemas} from '../../../store/with-schemas';
-import type {Synchronizer} from '../../with-schemas';
+import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
+import type {OptionalSchemas} from '../../../store/with-schemas/index.d.ts';
+import type {Synchronizer} from '../../with-schemas/index.d.ts';
 import type {WebSocket as WsWebSocket} from 'ws';
 
 export type WebSocketTypes = WebSocket | WsWebSocket;

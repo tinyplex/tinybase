@@ -17,7 +17,7 @@ import {
   VALUES,
   VALUE_IDS,
   id,
-} from '../common/strings';
+} from '../common/strings.ts';
 import type {
   Cell,
   CellCallback,
@@ -53,7 +53,7 @@ import type {
   Values,
   ValuesSchema,
   createStore as createStoreDecl,
-} from '../@types/store';
+} from '../@types/store/index.d.ts';
 import {
   DEBUG,
   ifNotUndefined,
@@ -61,14 +61,14 @@ import {
   isTypeStringOrBoolean,
   isUndefined,
   slice,
-} from '../common/other';
+} from '../common/other.ts';
 import {
   ExtraArgsGetter,
   IdSetNode,
   PathGetters,
   getListenerFunctions,
-} from '../common/listeners';
-import type {Id, Ids, Json} from '../@types/common';
+} from '../common/listeners.ts';
+import type {Id, Ids, Json} from '../@types/common/index.d.ts';
 import {
   IdMap,
   IdMap2,
@@ -87,8 +87,8 @@ import {
   mapToObj,
   mapToObj2,
   mapToObj3,
-} from '../common/map';
-import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from '../common/set';
+} from '../common/map.ts';
+import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from '../common/set.ts';
 import {
   Pair,
   pairClone,
@@ -96,8 +96,8 @@ import {
   pairIsEqual,
   pairNew,
   pairNewMap,
-} from '../common/pairs';
-import {PoolFunctions, getPoolFunctions} from '../common/pool';
+} from '../common/pairs.ts';
+import {PoolFunctions, getPoolFunctions} from '../common/pool.ts';
 import {
   arrayForEach,
   arrayHas,
@@ -105,7 +105,7 @@ import {
   arrayMap,
   arrayPush,
   arraySort,
-} from '../common/array';
+} from '../common/array.ts';
 import {
   collClear,
   collDel,
@@ -116,9 +116,13 @@ import {
   collSize2,
   collSize3,
   collSize4,
-} from '../common/coll';
-import {getCellOrValueType, setOrDelCell, setOrDelValue} from '../common/cell';
-import {jsonParse, jsonStringWithMap} from '../common/json';
+} from '../common/coll.ts';
+import {
+  getCellOrValueType,
+  setOrDelCell,
+  setOrDelValue,
+} from '../common/cell.ts';
+import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {
   objDel,
   objFreeze,
@@ -126,8 +130,8 @@ import {
   objIsEmpty,
   objToArray,
   objValidate,
-} from '../common/obj';
-import {defaultSorter} from '../common';
+} from '../common/obj.ts';
+import {defaultSorter} from '../common/index.ts';
 
 type TablesSchemaMap = IdMap2<CellSchema>;
 type ValuesSchemaMap = IdMap<ValueSchema>;

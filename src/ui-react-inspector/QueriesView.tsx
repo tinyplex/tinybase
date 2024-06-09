@@ -1,22 +1,22 @@
 /** @jsx createElement */
 
-import {SORT_CELL, STATE_TABLE, getUniqueId, sortedIdsMap} from './common';
-import {jsonParse, jsonStringWithMap} from '../common/json';
+import {SORT_CELL, STATE_TABLE, getUniqueId, sortedIdsMap} from './common.ts';
+import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {
   useCell,
   useQueries,
   useQueryIds,
   useSetCellCallback,
-} from '../ui-react';
-import {DEFAULT} from '../common/strings';
-import {Details} from './Details';
-import type {Id} from '../@types/common';
-import type {Queries} from '../@types/queries';
-import {ResultSortedTableInHtmlTable} from '../ui-react-dom';
-import type {StoreProp} from './types';
-import {arrayIsEmpty} from '../common/array';
-import {createElement} from '../common/react';
-import {isUndefined} from '../common/other';
+} from '../ui-react/index.ts';
+import {DEFAULT} from '../common/strings.ts';
+import {Details} from './Details.tsx';
+import type {Id} from '../@types/common/index.d.ts';
+import type {Queries} from '../@types/queries/index.d.ts';
+import {ResultSortedTableInHtmlTable} from '../ui-react-dom/index.tsx';
+import type {StoreProp} from './types.ts';
+import {arrayIsEmpty} from '../common/array.ts';
+import {createElement} from '../common/react.ts';
+import {isUndefined} from '../common/other.ts';
 
 const QueryView = ({
   queries,

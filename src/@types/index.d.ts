@@ -1,14 +1,12 @@
 /// index
 
-/* eslint-disable import/no-unresolved */
-
-export * from './checkpoints';
-export * from './common';
-export * from './indexes';
-export * from './metrics';
-export * from './persisters';
-export * from './synchronizers';
-export * from './queries';
-export * from './relationships';
-export * from './mergeable-store';
-export * from './store';
+export type * from './checkpoints/index.d.ts';
+export type * from './common/index.d.ts';
+export type * from './indexes/index.d.ts';
+export type * from './metrics/index.d.ts';
+export type * from './persisters/index.d.ts';
+export type * from './synchronizers/index.d.ts';
+export type * from './queries/index.d.ts';
+export type * from './relationships/index.d.ts';
+export type * from './mergeable-store/index.d.ts';
+export type * from './store/index.d.ts';

@@ -1,8 +1,11 @@
 /// persister-partykit-client
 
-import type {OptionalSchemas, Store} from '../../../store/with-schemas';
-import PartySocket from 'partysocket';
-import type {Persister} from '../../with-schemas';
+import type {
+  OptionalSchemas,
+  Store,
+} from '../../../store/with-schemas/index.d.ts';
+import type {PartySocket} from 'partysocket';
+import type {Persister} from '../../with-schemas/index.d.ts';
 
 /// PartyKitPersister
 export interface PartyKitPersister<Schemas extends OptionalSchemas>
