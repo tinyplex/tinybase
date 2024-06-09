@@ -16,10 +16,10 @@
       "asciichart",
       "jest",
       "node",
-      "jest-fetch-mock",
       "jest-environment-puppeteer",
       "http-server"
     ],
+    "typeRoots": ["../node_modules/@types", "./modules"],
     "skipLibCheck": true
   }
 }
