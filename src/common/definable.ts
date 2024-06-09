@@ -1,6 +1,6 @@
-import {AddListener, CallListeners} from './listeners';
-import type {Cell, GetCell, Store} from '../@types/store';
-import type {Id, Ids, SortKey} from '../@types/common';
+import {AddListener, CallListeners} from './listeners.ts';
+import type {Cell, GetCell, Store} from '../@types/store/index.d.ts';
+import type {Id, Ids, SortKey} from '../@types/common/index.d.ts';
 import {
   IdMap,
   IdMap2,
@@ -10,9 +10,9 @@ import {
   mapKeys,
   mapNew,
   mapSet,
-} from './map';
-import {IdSet2, setAdd, setNew} from './set';
-import {arrayForEach, arrayIsEmpty, arrayIsEqual} from './array';
+} from './map.ts';
+import {IdSet2, setAdd, setNew} from './set.ts';
+import {arrayForEach, arrayIsEmpty, arrayIsEqual} from './array.ts';
 import {
   collClear,
   collDel,
@@ -20,15 +20,15 @@ import {
   collHas,
   collIsEmpty,
   collValues,
-} from './coll';
-import {ifNotUndefined, isArray, isString, isUndefined} from './other';
-import type {Checkpoints} from '../@types/checkpoints';
-import {EMPTY_STRING} from './strings';
-import type {Indexes} from '../@types/indexes';
-import type {Metrics} from '../@types/metrics';
-import type {Queries} from '../@types/queries';
-import type {Relationships} from '../@types/relationships';
-import type {Tools} from '../@types/tools';
+} from './coll.ts';
+import {ifNotUndefined, isArray, isString, isUndefined} from './other.ts';
+import type {Checkpoints} from '../@types/checkpoints/index.d.ts';
+import {EMPTY_STRING} from './strings.ts';
+import type {Indexes} from '../@types/indexes/index.d.ts';
+import type {Metrics} from '../@types/metrics/index.d.ts';
+import type {Queries} from '../@types/queries/index.d.ts';
+import type {Relationships} from '../@types/relationships/index.d.ts';
+import type {Tools} from '../@types/tools/index.d.ts';
 
 type OnChangedDecl<RowValue> = (
   change: () => void,

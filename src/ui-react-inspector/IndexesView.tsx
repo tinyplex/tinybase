@@ -1,16 +1,16 @@
 /** @jsx createElement */
 
-import type {IndexProps, SliceProps} from '../@types/ui-react';
-import {arrayIsEmpty, arrayMap} from '../common/array';
-import {getUniqueId, sortedIdsMap, useEditable} from './common';
-import {useIndexIds, useIndexes, useSliceIds} from '../ui-react';
-import {DEFAULT} from '../common/strings';
-import {Details} from './Details';
-import type {Id} from '../@types/common';
-import {SliceInHtmlTable} from '../ui-react-dom';
-import type {StoreProp} from './types';
-import {createElement} from '../common/react';
-import {isUndefined} from '../common/other';
+import type {IndexProps, SliceProps} from '../@types/ui-react/index.d.ts';
+import {arrayIsEmpty, arrayMap} from '../common/array.ts';
+import {getUniqueId, sortedIdsMap, useEditable} from './common.ts';
+import {useIndexIds, useIndexes, useSliceIds} from '../ui-react/index.ts';
+import {DEFAULT} from '../common/strings.ts';
+import {Details} from './Details.tsx';
+import type {Id} from '../@types/common/index.d.ts';
+import {SliceInHtmlTable} from '../ui-react-dom/index.tsx';
+import type {StoreProp} from './types.ts';
+import {createElement} from '../common/react.ts';
+import {isUndefined} from '../common/other.ts';
 
 const IndexView = ({
   indexes,

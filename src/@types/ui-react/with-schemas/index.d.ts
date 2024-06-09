@@ -7,7 +7,7 @@ import type {
   NoInfer,
   TableIdFromSchema,
   ValueIdFromSchema,
-} from '../../_internal/store/with-schemas';
+} from '../../_internal/store/with-schemas/index.d.ts';
 import type {
   BackwardCheckpointsProps,
   CellProps,
@@ -41,14 +41,14 @@ import type {
   UndoOrRedoInformation,
   ValueProps,
   ValuesProps,
-} from '../../_internal/ui-react/with-schemas';
+} from '../../_internal/ui-react/with-schemas/index.d.ts';
 import type {
   Callback,
   Id,
   IdOrNull,
   Ids,
   ParameterizedCallback,
-} from '../../common/with-schemas';
+} from '../../common/with-schemas/index.d.ts';
 import type {
   Cell,
   CellIdsListener,
@@ -82,25 +82,28 @@ import type {
   ValueListener,
   Values,
   ValuesListener,
-} from '../../store/with-schemas';
+} from '../../store/with-schemas/index.d.ts';
 import type {
   CheckpointIds,
   CheckpointIdsListener,
   CheckpointListener,
   Checkpoints,
-} from '../../checkpoints/with-schemas';
+} from '../../checkpoints/with-schemas/index.d.ts';
 import type {
   Indexes,
   SliceIdsListener,
   SliceRowIdsListener,
-} from '../../indexes/with-schemas';
+} from '../../indexes/with-schemas/index.d.ts';
 import type {
   LinkedRowIdsListener,
   LocalRowIdsListener,
   Relationships,
   RemoteRowIdListener,
-} from '../../relationships/with-schemas';
-import type {MetricListener, Metrics} from '../../metrics/with-schemas';
+} from '../../relationships/with-schemas/index.d.ts';
+import type {
+  MetricListener,
+  Metrics,
+} from '../../metrics/with-schemas/index.d.ts';
 import type {
   Queries,
   ResultCell,
@@ -114,11 +117,11 @@ import type {
   ResultTable,
   ResultTableCellIdsListener,
   ResultTableListener,
-} from '../../queries/with-schemas';
-import type {MergeableStore} from '../../mergeable-store/with-schemas';
-import type {Persister} from '../../persisters/with-schemas';
+} from '../../queries/with-schemas/index.d.ts';
+import type {MergeableStore} from '../../mergeable-store/with-schemas/index.d.ts';
+import type {Persister} from '../../persisters/with-schemas/index.d.ts';
 import type {ReactElement} from 'react';
-import type {Synchronizer} from '../../synchronizers/with-schemas';
+import type {Synchronizer} from '../../synchronizers/with-schemas/index.d.ts';
 
 export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// StoreOrStoreId

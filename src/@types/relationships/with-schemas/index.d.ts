@@ -3,15 +3,15 @@
 import type {
   CellIdFromSchema,
   TableIdFromSchema,
-} from '../../_internal/store/with-schemas';
+} from '../../_internal/store/with-schemas/index.d.ts';
 import type {
   GetCell,
   OptionalSchemas,
   OptionalTablesSchema,
   RowCallback,
   Store,
-} from '../../store/with-schemas';
-import type {Id, IdOrNull, Ids} from '../../common/with-schemas';
+} from '../../store/with-schemas/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../../common/with-schemas/index.d.ts';
 
 /// Relationship
 export type Relationship = {

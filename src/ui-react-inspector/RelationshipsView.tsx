@@ -1,16 +1,16 @@
 /** @jsx createElement */
 
-import {getUniqueId, sortedIdsMap, useEditable} from './common';
-import {useRelationshipIds, useRelationships} from '../ui-react';
-import {DEFAULT} from '../common/strings';
-import {Details} from './Details';
-import type {Id} from '../@types/common';
-import {RelationshipInHtmlTable} from '../ui-react-dom';
-import type {Relationships} from '../@types/relationships';
-import type {StoreProp} from './types';
-import {arrayIsEmpty} from '../common/array';
-import {createElement} from '../common/react';
-import {isUndefined} from '../common/other';
+import {getUniqueId, sortedIdsMap, useEditable} from './common.ts';
+import {useRelationshipIds, useRelationships} from '../ui-react/index.ts';
+import {DEFAULT} from '../common/strings.ts';
+import {Details} from './Details.tsx';
+import type {Id} from '../@types/common/index.d.ts';
+import {RelationshipInHtmlTable} from '../ui-react-dom/index.tsx';
+import type {Relationships} from '../@types/relationships/index.d.ts';
+import type {StoreProp} from './types.ts';
+import {arrayIsEmpty} from '../common/array.ts';
+import {createElement} from '../common/react.ts';
+import {isUndefined} from '../common/other.ts';
 
 const RelationshipView = ({
   relationships,

@@ -1,8 +1,8 @@
 import type {GetCell, Id, Indexes, SortKey, Store} from 'tinybase/debug';
 import {createIndexes, createStore} from 'tinybase/debug';
-import {expectChanges, expectNoChanges} from '../common/expect';
-import {IndexesListener} from '../common/types';
-import {createIndexesListener} from '../common/listeners';
+import {expectChanges, expectNoChanges} from '../common/expect.ts';
+import {IndexesListener} from '../common/types.ts';
+import {createIndexesListener} from '../common/listeners.ts';
 import {getIndexesObject} from '../common/other';
 import {jest} from '@jest/globals';
 

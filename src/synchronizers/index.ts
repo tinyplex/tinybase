@@ -9,24 +9,29 @@ import type {
   TableHashes,
   TablesStamp,
   ValuesStamp,
-} from '../@types/mergeable-store';
-import {DEBUG, ifNotUndefined, isUndefined, promiseNew} from '../common/other';
-import type {Id, IdOrNull} from '../@types/common';
-import {IdMap, mapGet, mapNew, mapSet} from '../common/map';
+} from '../@types/mergeable-store/index.d.ts';
+import {
+  DEBUG,
+  ifNotUndefined,
+  isUndefined,
+  promiseNew,
+} from '../common/other.ts';
+import type {Id, IdOrNull} from '../@types/common/index.d.ts';
+import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
 import type {
   MessageType,
   Receive,
   Send,
   Synchronizer,
-} from '../@types/synchronizers';
-import {getLatestTime, newStamp, stampNewObj} from '../common/stamps';
-import {objEnsure, objForEach, objIsEmpty} from '../common/obj';
-import type {Content} from '../@types/store';
-import {EMPTY_STRING} from '../common/strings';
-import type {PersisterListener} from '../@types/persisters';
-import {collDel} from '../common/coll';
-import {createCustomPersister} from '../persisters';
-import {getUniqueId} from '../common';
+} from '../@types/synchronizers/index.d.ts';
+import {getLatestTime, newStamp, stampNewObj} from '../common/stamps.ts';
+import {objEnsure, objForEach, objIsEmpty} from '../common/obj.ts';
+import type {Content} from '../@types/store/index.d.ts';
+import {EMPTY_STRING} from '../common/strings.ts';
+import type {PersisterListener} from '../@types/persisters/index.d.ts';
+import {collDel} from '../common/coll.ts';
+import {createCustomPersister} from '../persisters/index.ts';
+import {getUniqueId} from '../common/index.ts';
 
 const RESPONSE = 0;
 const GET_CONTENT_HASHES = 1;

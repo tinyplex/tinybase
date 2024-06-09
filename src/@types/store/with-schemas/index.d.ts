@@ -11,8 +11,13 @@ import type {
   TableIdFromSchema,
   Truncate,
   ValueIdFromSchema,
-} from '../../_internal/store/with-schemas';
-import type {Id, IdOrNull, Ids, Json} from '../../common/with-schemas';
+} from '../../_internal/store/with-schemas/index.d.ts';
+import type {
+  Id,
+  IdOrNull,
+  Ids,
+  Json,
+} from '../../common/with-schemas/index.d.ts';
 
 /// TablesSchema
 export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
