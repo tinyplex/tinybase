@@ -483,13 +483,13 @@ const compileModule = async (
     entryFileNames: `index${fileSuffix}.${format == 'cjs' ? 'cjs' : 'js'}`,
     format,
     globals: {
-      'expo-sqlite/next': 'expo-sqlite/next',
+      'expo-sqlite/next.js': 'expo-sqlite/next',
       'fs/promises': 'fs/promises',
       'react-dom': 'ReactDOM',
       fs: 'fs',
       react: 'React',
       yjs: 'yjs',
-      [path.resolve('src/ui-react/index.ts')]: getGlobalName('ui-react'),
+      [path.resolve('src/ui-react')]: getGlobalName('ui-react'),
     },
     interop: 'default',
     name: getGlobalName(module) + (debug ? 'Debug' : ''),
@@ -500,19 +500,20 @@ const compileModule = async (
   } = await (await rollup(inputConfig)).write(outputConfig);
 
   // kill me now
+  const index = 'index.' + (format == 'cjs' ? 'c' : '') + 'js';
   if (!cli) {
     const outputWithSchemasDir = dirname(
       await ensureDir(dir + '/' + module + '/with-schemas/-'),
     );
     await copyWithReplace(
       join(moduleDir, fileName),
-      ['../ui-react', '../../ui-react/with-schemas/index.js'],
+      ['../ui-react', '../../ui-react/with-schemas/' + index],
       join(outputWithSchemasDir, fileName),
     );
   }
   await copyWithReplace(
     join(moduleDir, fileName),
-    ['../ui-react', '../ui-react/index.js'],
+    ['../ui-react', '../ui-react/' + index],
     join(moduleDir, fileName),
   );
 };
