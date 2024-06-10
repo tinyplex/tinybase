@@ -1,6 +1,7 @@
 .DS_Store
 bin
 lib
+dist
 tmp
 node_modules
 npm-debug.log

@@ -1,6 +1,7 @@
 /docs/**
 **/bin/**
 **/lib/**
+**/dist/**
 **/tmp/**
 **/node_modules/**
 **/site/extras/**
