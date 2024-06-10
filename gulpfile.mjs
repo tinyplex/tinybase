@@ -117,6 +117,11 @@ const forEachDirAndFile = (dir, dirCallback, fileCallback, extension = '') =>
         : null;
   });
 
+const copyWithReplace = async (src, [from, to], dst = src) => {
+  const file = await promises.readFile(src, UTF8);
+  await promises.writeFile(dst, file.replace(from, to), UTF8);
+};
+
 const copyPackageFiles = async () => {
   const json = JSON.parse(await promises.readFile('package.json', UTF8));
   delete json.private;
@@ -397,7 +402,6 @@ const compileModule = async (
   terse = !debug,
   fileSuffix = '',
 ) => {
-  const path = await import('path');
   const {default: esbuild} = await import('rollup-plugin-esbuild');
   const {rollup} = await import('rollup');
   const {default: terser} = await import('@rollup/plugin-terser');
@@ -414,7 +418,7 @@ const compileModule = async (
 
   const inputConfig = {
     external: [
-      'expo-sqlite/next',
+      'expo-sqlite/next.js',
       'fs',
       'fs/promises',
       'path',
@@ -444,6 +448,7 @@ const compileModule = async (
               [`from '../tools/index.ts'`]: `from 'tinybase/tools/index.js'`,
             }
           : {}),
+        '../ui-react/index.ts': '../ui-react',
       }),
       shebang(),
       image(),
@@ -483,7 +488,7 @@ const compileModule = async (
       fs: 'fs',
       react: 'React',
       yjs: 'yjs',
-      [path.resolve('src/ui-react/index.ts')]: getGlobalName('ui-react'),
+      '../ui-react': getGlobalName('ui-react'),
     },
     interop: 'default',
     name: getGlobalName(module) + (debug ? 'Debug' : ''),
@@ -493,15 +498,22 @@ const compileModule = async (
     output: [{fileName}],
   } = await (await rollup(inputConfig)).write(outputConfig);
 
+  // kill me now
   if (!cli) {
     const outputWithSchemasDir = dirname(
       await ensureDir(dir + '/' + module + '/with-schemas/-'),
     );
-    await promises.copyFile(
+    await copyWithReplace(
       join(moduleDir, fileName),
+      ['../ui-react', '../../ui-react/with-schemas/index.js'],
       join(outputWithSchemasDir, fileName),
     );
   }
+  await copyWithReplace(
+    join(moduleDir, fileName),
+    ['../ui-react', '../ui-react/index.js'],
+    join(moduleDir, fileName),
+  );
 };
 
 // coverageMode = 0: none; 1: screen; 2: json; 3: html
