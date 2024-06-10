@@ -439,7 +439,7 @@ const compileModule = async (
         legalComments: 'inline',
       }),
       replace({
-        '/*!': '/*',
+        '/*!': '\n/*',
         delimiters: ['', ''],
         preventAssignment: true,
         ...(cli
