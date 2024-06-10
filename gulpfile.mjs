@@ -402,6 +402,7 @@ const compileModule = async (
   terse = !debug,
   fileSuffix = '',
 ) => {
+  const path = await import('path');
   const {default: esbuild} = await import('rollup-plugin-esbuild');
   const {rollup} = await import('rollup');
   const {default: terser} = await import('@rollup/plugin-terser');
@@ -488,7 +489,7 @@ const compileModule = async (
       fs: 'fs',
       react: 'React',
       yjs: 'yjs',
-      '../ui-react': getGlobalName('ui-react'),
+      [path.resolve('src/ui-react/index.ts')]: getGlobalName('ui-react'),
     },
     interop: 'default',
     name: getGlobalName(module) + (debug ? 'Debug' : ''),
