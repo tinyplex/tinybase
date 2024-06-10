@@ -252,6 +252,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const validateTable = (table: Table, tableId: Id): boolean =>
     (!hasTablesSchema ||
       collHas(tablesSchemaMap, tableId) ||
+      /*! istanbul ignore next */
       (cellInvalid(tableId) as boolean)) &&
     objValidate(
       table,
