@@ -768,6 +768,7 @@ export const testE2e = async () => {
 export const compileAndTestE2e = series(compileForProdAndDocs, testE2e);
 
 export const testProd = async () => {
+  await execute('attw --pack dist --format table-flipped');
   await test('test/prod');
 };
 export const compileAndTestProd = series(compileForProdAndDocs, testProd);
@@ -805,6 +806,7 @@ export const prePublishPackage = series(
   testUnitCountAsserts,
   testPerf,
   compileForProd,
+  testProd,
   compileDocs,
   testE2e,
 );
