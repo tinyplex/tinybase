@@ -128,19 +128,40 @@ const copyPackageFiles = async () => {
   delete json.scripts;
   delete json.devDependencies;
 
+  json.bin = {tinybase: './cli/index.js'};
+  json.main = './index.js';
+  json.types = './@types/index.d.ts';
+
+  json.typesVersions = {'*': {}};
   json.exports = {};
-  ['.', './debug', './cjs', './cjs-es6', './es6', './umd', './umd-es6'].forEach(
-    (path) => {
-      json.exports[path] = {
-        default: path + '/index.js',
-        types: './@types/index.d.ts',
-      };
-      json.exports[path + '/*'] = {
-        default: path + '/*/index.js',
-        types: './@types/*/index.d.ts',
-      };
-    },
-  );
+  [null, 'es6'].forEach((target) => {
+    [null, 'debug'].forEach((debug) => {
+      allModules((module) => {
+        [null, 'with-schemas'].forEach((withSchemas) => {
+          const path = [target, debug, module, withSchemas]
+            .filter((part) => part)
+            .join('/');
+          const typesPath = ['.', '@types', module, withSchemas, 'index.d.']
+            .filter((part) => part)
+            .join('/');
+
+          json.typesVersions['*'][path ? path : '.'] = [typesPath + 'ts'];
+
+          const exportPath = (path ? '/' : '') + path;
+          json.exports['.' + exportPath] = {
+            require: {
+              types: typesPath + 'cts',
+              default: './cjs' + exportPath + '/index.cjs',
+            },
+            default: {
+              types: typesPath + 'ts',
+              default: '.' + exportPath + '/index.js',
+            },
+          };
+        });
+      });
+    });
+  });
 
   await promises.writeFile(
     join(DIST_DIR, 'package.json'),
@@ -226,8 +247,11 @@ const copyDefinition = async (dir, module) => {
     });
 
   await allOf(['', '/with-schemas'], async (extraDir) => {
+    const definitionFile = await ensureDir(
+      `${dir}/@types/${module}${extraDir}/index.d.ts`,
+    );
     await promises.writeFile(
-      await ensureDir(`${dir}/@types/${module}${extraDir}/index.d.ts`),
+      definitionFile,
       fileRewrite(
         await promises.readFile(
           `src/@types/${module}${extraDir}/index.d.ts`,
@@ -236,6 +260,11 @@ const copyDefinition = async (dir, module) => {
         extraDir != '',
       ),
       UTF8,
+    );
+    await copyWithReplace(
+      definitionFile,
+      [/\.d\.ts/g, '.d.cts'],
+      definitionFile.replace(/index.d.ts$/, 'index.d.cts'),
     );
   });
 };
@@ -394,7 +423,7 @@ const tsCheck = async (dir) => {
 
 const compileModule = async (
   module,
-  debug,
+  debug = false,
   dir = DIST_DIR,
   format = 'esm',
   target = 'esnext',
@@ -639,6 +668,7 @@ const npmPublish = async () => {
 const {parallel, series} = gulp;
 
 // --
+export const preparePackage = copyPackageFiles;
 
 export const compileForTest = async () => {
   await clearDir(DIST_DIR);
@@ -673,22 +703,29 @@ export const compileForProd = async () => {
   await copyDefinitions(DIST_DIR);
 
   await allOf(
-    [undefined, 'umd', 'cjs'],
+    [undefined, 'cjs', 'umd'],
     async (format) =>
-      await allOf([undefined, 'es6'], async (target) => {
-        const folder = `${DIST_DIR}/${[format, target]
-          .filter((token) => token)
-          .join('-')}`;
-        await allModules(
-          async (module) =>
-            await compileModule(module, false, folder, format, target),
-        );
-        await copyDefinitions(folder);
-      }),
-  );
-
-  await allModules(
-    async (module) => await compileModule(module, true, `${DIST_DIR}/debug`),
+      await allOf(
+        [undefined, 'es6'],
+        async (target) =>
+          await allModules(
+            async (module) =>
+              await allOf(
+                [undefined, 'debug'],
+                async (debug) =>
+                  await compileModule(
+                    module,
+                    debug,
+                    `${DIST_DIR}/` +
+                      [format, target, debug]
+                        .filter((part) => part != null)
+                        .join('/'),
+                    format,
+                    target,
+                  ),
+              ),
+          ),
+      ),
   );
 
   await compileModule('cli', false, DIST_DIR, undefined, undefined, true);
