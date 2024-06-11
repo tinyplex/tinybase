@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "5.0.0-beta.18",
+  "version": "5.0.0-beta.19",
   "author": "jamesgpearce",
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
@@ -143,9 +143,9 @@
     "@types/react-dom": "^18.3.0",
     "@types/react-test-renderer": "^18.3.0",
     "@types/tmp": "^0.2.6",
+    "@types/ws": "^8.5.10",
     "@typescript-eslint/eslint-plugin": "^7.13.0",
     "@typescript-eslint/parser": "^7.13.0",
-    "@types/ws": "^8.5.10",
     "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "asciichart": "^1.5.25",
     "babel-eslint": "^10.1.0",
