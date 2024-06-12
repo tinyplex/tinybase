@@ -70,8 +70,8 @@ id="one-with">"The One You Can Sync"</span>
   </li>
   <li>
     Tiny by name, tiny by nature:
-    <a href='#did-we-say-tiny'>@@EVAL("toKb(sizes.get('store.js.gz'))") -
-    @@EVAL("toKb(sizes.get('tinybase.js.gz'))")</a>, no dependencies. <a href='#well-tested-and-documented'>100% tested</a>, 
+    <a href='#did-we-say-tiny'>@@EVAL("toKb(modulesSizes.get('store').get('gz'))") -
+    @@EVAL("toKb(modulesSizes.get('').get('gz'))")</a>, no dependencies. <a href='#well-tested-and-documented'>100% tested</a>, 
     <a href='/guides/the-basics/getting-started/'>fully documented</a>, and of 
     course, <a href='@@EVAL("metadata.repository")'>open source</a>!
   </li>
@@ -592,14 +592,15 @@ export const createShop: typeof createShopDecl = () => {
 > ## Did we say tiny?
 >
 > If you use the basic store module alone, you'll only add a gzipped
-> _@@EVAL("toKb(sizes.get('store.js.gz'))")_ to your app. Incrementally add the
+> _@@EVAL("toKb(modulesSizes.get('store').get('gz'))")_ to your app. Incrementally add the
 > other modules as you need more functionality, or get it all for
-> _@@EVAL("toKb(sizes.get('tinybase.js.gz'))")_.
+> _@@EVAL("toKb(modulesSizes.get('').get('gz'))")_.
 >
-> The optional ui-react module is just another
-> _@@EVAL("toKb(sizes.get('ui-react.js.gz'))")_, the auxiliary tools module is
-> _@@EVAL("toKb(sizes.get('tools.js.gz'))")_, and everything is super fast.
-> Life's easy when you have zero dependencies!
+> The optional ui-react module is just
+> _@@EVAL("toKb(modulesSizes.get('ui-react').get('gz'))")_, the ui-react-dom
+> components are another
+> _@@EVAL("toKb(modulesSizes.get('ui-react-dom').get('gz'))")_, and everything
+> is super fast. Life's easy when you have zero dependencies!
 >
 > Read more about how TinyBase is structured and packaged in the Architecture
 > guide.
