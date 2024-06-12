@@ -21,9 +21,9 @@ export type CheckpointListener = (
 /// CheckpointsListenerStats
 export type CheckpointsListenerStats = {
   /// CheckpointsListenerStats.checkpointIds
-  checkpointIds?: number;
+  checkpointIds: number;
   /// CheckpointsListenerStats.checkpoint
-  checkpoint?: number;
+  checkpoint: number;
 };
 
 /// Checkpoints
