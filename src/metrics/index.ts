@@ -1,10 +1,3 @@
-import {
-  DEBUG,
-  getUndefined,
-  isFiniteNumber,
-  isFunction,
-  isUndefined,
-} from '../common/other.ts';
 import {EMPTY_STRING, SUM} from '../common/strings.ts';
 import type {GetCell, Store} from '../@types/store/index.d.ts';
 import type {Id, IdOrNull} from '../@types/common/index.d.ts';
@@ -26,6 +19,12 @@ import {
   getDefinableFunctions,
   getRowCellFunction,
 } from '../common/definable.ts';
+import {
+  getUndefined,
+  isFiniteNumber,
+  isFunction,
+  isUndefined,
+} from '../common/other.ts';
 import {IdSet2} from '../common/set.ts';
 import {getListenerFunctions} from '../common/listeners.ts';
 import {objFreeze} from '../common/obj.ts';
@@ -140,8 +139,9 @@ export const createMetrics = getCreateFunction((store: Store): Metrics => {
     return metrics;
   };
 
-  const getListenerStats = (): MetricsListenerStats =>
-    DEBUG ? {metric: collSize2(metricListeners)} : {};
+  const getListenerStats = (): MetricsListenerStats => ({
+    metric: collSize2(metricListeners),
+  });
 
   const metrics: any = {
     setMetricDefinition,

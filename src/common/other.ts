@@ -2,8 +2,6 @@ import {BOOLEAN, FUNCTION, STRING, getTypeOf} from './strings.ts';
 
 const promise = Promise;
 
-export const DEBUG = (globalThis as any).DEBUG ?? true;
-
 export const startInterval = (
   callback: () => void,
   sec: number,
