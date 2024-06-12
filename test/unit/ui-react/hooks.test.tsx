@@ -15,7 +15,7 @@ import type {
   Tables,
   Value,
   Values,
-} from 'tinybase/debug';
+} from 'tinybase';
 import {
   Provider,
   useAddRowCallback,
@@ -139,7 +139,7 @@ import {
   useValues,
   useValuesListener,
   useWillFinishTransactionListener,
-} from 'tinybase/debug/ui-react';
+} from 'tinybase/ui-react';
 import React, {ReactElement} from 'react';
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
 import {
@@ -150,9 +150,9 @@ import {
   createQueries,
   createRelationships,
   createStore,
-} from 'tinybase/debug';
-import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
-import {createLocalSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-local';
+} from 'tinybase';
+import {createFilePersister} from 'tinybase/persisters/persister-file';
+import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import {jest} from '@jest/globals';
 import {pause} from '../common/other.ts';
 import tmp from 'tmp';

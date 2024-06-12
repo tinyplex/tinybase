@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment, jest/no-export */
-import type {Row, Table, Tables, Values} from 'tinybase/debug';
+import type {Row, Table, Tables, Values} from 'tinybase';
 import {blue, plot, red, yellow} from 'asciichart';
 import {performance} from 'perf_hooks';
 

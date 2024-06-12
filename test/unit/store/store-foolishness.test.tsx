@@ -6,7 +6,7 @@
 */
 
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
-import type {Relationships, Store} from 'tinybase/debug';
+import type {Relationships, Store} from 'tinybase';
 import {
   createCheckpoints,
   createIndexes,
@@ -14,7 +14,7 @@ import {
   createMetrics,
   createRelationships,
   createStore,
-} from 'tinybase/debug';
+} from 'tinybase';
 import {
   expectChanges,
   expectChangesNoJson,
@@ -35,10 +35,10 @@ import {
   useTable,
   useTableIds,
   useTables,
-} from 'tinybase/debug/ui-react';
+} from 'tinybase/ui-react';
 import React from 'react';
 import {StoreListener} from '../common/types.ts';
-import {createLocalPersister} from 'tinybase/debug/persisters/persister-browser';
+import {createLocalPersister} from 'tinybase/persisters/persister-browser';
 import {createStoreListener} from '../common/listeners.ts';
 
 let renderer: ReactTestRenderer;

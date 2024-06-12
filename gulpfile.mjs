@@ -124,7 +124,6 @@ const copyWithReplace = async (src, [from, to], dst = src) => {
 
 const copyPackageFiles = async (forProd = false) => {
   const targets = forProd ? [null, 'es6'] : [null];
-  const debugs = [null, 'debug'];
   const modules = forProd ? ALL_MODULES : TEST_MODULES;
   const schemas = [null, 'with-schemas'];
 
@@ -140,34 +139,32 @@ const copyPackageFiles = async (forProd = false) => {
   json.typesVersions = {'*': {}};
   json.exports = {};
   targets.forEach((target) => {
-    debugs.forEach((debug) => {
-      modules.forEach((module) => {
-        schemas.forEach((withSchemas) => {
-          const path = [target, debug, module, withSchemas]
-            .filter((part) => part)
-            .join('/');
-          const typesPath = ['.', '@types', module, withSchemas, 'index.d.']
-            .filter((part) => part)
-            .join('/');
-          const codePath = (path ? '/' : '') + path;
+    modules.forEach((module) => {
+      schemas.forEach((withSchemas) => {
+        const path = [target, false, module, withSchemas]
+          .filter((part) => part)
+          .join('/');
+        const typesPath = ['.', '@types', module, withSchemas, 'index.d.']
+          .filter((part) => part)
+          .join('/');
+        const codePath = (path ? '/' : '') + path;
 
-          json.typesVersions['*'][path ? path : '.'] = [typesPath + 'ts'];
+        json.typesVersions['*'][path ? path : '.'] = [typesPath + 'ts'];
 
-          json.exports['.' + codePath] = {
-            ...(forProd
-              ? {
-                  require: {
-                    types: typesPath + 'cts',
-                    default: './cjs' + codePath + '/index.cjs',
-                  },
-                }
-              : {}),
-            default: {
-              types: typesPath + 'ts',
-              default: '.' + codePath + '/index.js',
-            },
-          };
-        });
+        json.exports['.' + codePath] = {
+          ...(forProd
+            ? {
+                require: {
+                  types: typesPath + 'cts',
+                  default: './cjs' + codePath + '/index.cjs',
+                },
+              }
+            : {}),
+          default: {
+            types: typesPath + 'ts',
+            default: '.' + codePath + '/index.js',
+          },
+        };
       });
     });
   });
@@ -432,12 +429,11 @@ const tsCheck = async (dir) => {
 
 const compileModule = async (
   module,
-  debug = false,
   dir = DIST_DIR,
   format = 'esm',
   target = 'esnext',
   cli = false,
-  terse = !debug,
+  terse = false,
   fileSuffix = '',
 ) => {
   const path = await import('path');
@@ -531,7 +527,7 @@ const compileModule = async (
       [path.resolve('src/ui-react')]: getGlobalName('ui-react'),
     },
     interop: 'default',
-    name: getGlobalName(module) + (debug ? 'Debug' : ''),
+    name: getGlobalName(module),
   };
 
   const {
@@ -582,8 +578,8 @@ const test = async (
             collectCoverage: true,
             coverageProvider: 'babel',
             collectCoverageFrom: [
-              `${DIST_DIR}/debug/index.js`,
-              `${DIST_DIR}/debug/ui-react/index.js`,
+              `${DIST_DIR}/index.js`,
+              `${DIST_DIR}/ui-react/index.js`,
               // Other modules cannot be fully exercised in isolation.
             ],
             coverageReporters: ['text-summary']
@@ -686,8 +682,7 @@ export const compileForTest = async () => {
   await copyPackageFiles();
   await copyDefinitions(DIST_DIR);
   await testModules(async (module) => {
-    await compileModule(module, true, `${DIST_DIR}/debug`);
-    await compileModule(module, false, DIST_DIR);
+    await compileModule(module, DIST_DIR);
   });
 };
 
@@ -726,7 +721,6 @@ export const compileForProd = async () => {
                 async (debug) =>
                   await compileModule(
                     module,
-                    debug == 'debug',
                     `${DIST_DIR}/` +
                       [format, target, debug]
                         .filter((part) => part != null)
@@ -739,7 +733,7 @@ export const compileForProd = async () => {
       ),
   );
 
-  await compileModule('cli', false, DIST_DIR, undefined, undefined, true);
+  await compileModule('cli', DIST_DIR, undefined, undefined, true);
   await execute(`chmod +x ${DIST_DIR}/cli/index.js`);
 };
 

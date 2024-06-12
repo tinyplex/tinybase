@@ -1,5 +1,5 @@
-import type {Id, Queries, Store} from 'tinybase/debug';
-import {createQueries, createStore} from 'tinybase/debug';
+import type {Id, Queries, Store} from 'tinybase';
+import {createQueries, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../common/expect.ts';
 import {QueriesListener} from '../common/types.ts';
 import {createQueriesListener} from '../common/listeners.ts';

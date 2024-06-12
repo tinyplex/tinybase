@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import type {Cell, Id, IdOrNull, Store, Value} from 'tinybase/debug';
-import {createMergeableStore, createStore} from 'tinybase/debug';
+import type {Cell, Id, IdOrNull, Store, Value} from 'tinybase';
+import {createMergeableStore, createStore} from 'tinybase';
 import {
   expectChanges,
   expectChangesNoJson,

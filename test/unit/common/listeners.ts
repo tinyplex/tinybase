@@ -5,7 +5,7 @@ import type {
   Queries,
   Relationships,
   Store,
-} from 'tinybase/debug';
+} from 'tinybase';
 import {
   CheckpointsListener,
   IndexesListener,
@@ -15,10 +15,7 @@ import {
   RelationshipsListener,
   StoreListener,
 } from './types.ts';
-import type {
-  NoSchemas,
-  Store as StoreWithSchemas,
-} from 'tinybase/debug/with-schemas';
+import type {NoSchemas, Store as StoreWithSchemas} from 'tinybase/with-schemas';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
