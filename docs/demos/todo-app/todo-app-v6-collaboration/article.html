@@ -76,7 +76,7 @@
 <span class="prefix">+</span>          store<span class="punctuation">,</span>
 <span class="prefix">+</span>          <span class="keyword">new</span> <span class="class-name">WebSocket</span><span class="punctuation">(</span><span class="constant">WS_SERVER</span> <span class="operator">+</span> serverPathId<span class="punctuation">)</span><span class="punctuation">,</span>
 <span class="prefix">+</span>        <span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="prefix">+</span>        <span class="keyword">await</span> synchronizer<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-local/interfaces/synchronizer/localsynchronizer/methods/synchronization/startsync/">startSync</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="prefix">+</span>        <span class="keyword">await</span> synchronizer<span class="punctuation">.</span><span class="function"><a href="/api/synchronizers/interfaces/synchronizer/synchronizer/methods/synchronization/startsync/">startSync</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="prefix">+</span>        checkpoints<span class="operator">?.</span><span class="function"><a href="/api/checkpoints/interfaces/checkpoints/checkpoints/methods/lifecycle/clear/">clear</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="prefix">+</span>        <span class="keyword">return</span> synchronizer<span class="punctuation">;</span>
 <span class="prefix">+</span>      <span class="punctuation">}</span>
