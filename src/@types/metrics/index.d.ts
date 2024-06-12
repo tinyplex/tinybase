@@ -48,7 +48,7 @@ export type MetricListener = (
 /// MetricsListenerStats
 export type MetricsListenerStats = {
   /// MetricsListenerStats.metric
-  metric?: number;
+  metric: number;
 };
 
 /// Metrics

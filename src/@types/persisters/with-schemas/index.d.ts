@@ -62,9 +62,9 @@ export type PersisterListener<
 /// PersisterStats
 export type PersisterStats = {
   /// PersisterStats.loads
-  loads?: number;
+  loads: number;
   /// PersisterStats.saves
-  saves?: number;
+  saves: number;
 };
 
 /// DatabasePersisterConfig

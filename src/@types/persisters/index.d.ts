@@ -47,9 +47,9 @@ export type PersisterListener<StoreType extends StoreTypes = 1> = (
 /// PersisterStats
 export type PersisterStats = {
   /// PersisterStats.loads
-  loads?: number;
+  loads: number;
   /// PersisterStats.saves
-  saves?: number;
+  saves: number;
 };
 
 /// DatabasePersisterConfig

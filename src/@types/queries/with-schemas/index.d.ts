@@ -163,21 +163,21 @@ export type ResultCellChange = [
 /// QueriesListenerStats
 export type QueriesListenerStats = {
   /// QueriesListenerStats.table
-  table?: number;
+  table: number;
   /// QueriesListenerStats.tableCellIds
-  tableCellIds?: number;
+  tableCellIds: number;
   /// QueriesListenerStats.rowCount
-  rowCount?: number;
+  rowCount: number;
   /// QueriesListenerStats.rowIds
-  rowIds?: number;
+  rowIds: number;
   /// QueriesListenerStats.sortedRowIds
-  sortedRowIds?: number;
+  sortedRowIds: number;
   /// QueriesListenerStats.row
-  row?: number;
+  row: number;
   /// QueriesListenerStats.cellIds
-  cellIds?: number;
+  cellIds: number;
   /// QueriesListenerStats.cell
-  cell?: number;
+  cell: number;
 };
 
 /// GetTableCell

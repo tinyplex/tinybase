@@ -23,9 +23,9 @@ export type CheckpointListener<Schemas extends OptionalSchemas> = (
 /// CheckpointsListenerStats
 export type CheckpointsListenerStats = {
   /// CheckpointsListenerStats.checkpointIds
-  checkpointIds?: number;
+  checkpointIds: number;
   /// CheckpointsListenerStats.checkpoint
-  checkpoint?: number;
+  checkpoint: number;
 };
 
 /// Checkpoints
