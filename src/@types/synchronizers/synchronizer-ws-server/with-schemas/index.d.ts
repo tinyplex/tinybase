@@ -19,8 +19,8 @@ export type ClientIdsListener<> = (
 
 /// WsServerStats
 export type WsServerStats = {
-  paths?: number;
-  clients?: number;
+  paths: number;
+  clients: number;
 };
 
 /// WsServer
