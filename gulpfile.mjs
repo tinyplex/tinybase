@@ -468,6 +468,8 @@ const compileModule = async (
       'react-dom',
       'url',
       'yjs',
+      'tinybase/store',
+      'tinybase/tools',
       '../ui-react',
     ],
     input: inputFile,
@@ -483,8 +485,8 @@ const compileModule = async (
         preventAssignment: true,
         ...(cli
           ? {
-              [`from '../store/index.ts'`]: `from 'tinybase/store/index.js'`,
-              [`from '../tools/index.ts'`]: `from 'tinybase/tools/index.js'`,
+              '../store/index.ts': 'tinybase/store',
+              '../tools/index.ts': 'tinybase/tools',
             }
           : {}),
         '../ui-react/index.ts': '../ui-react',
