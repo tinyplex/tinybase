@@ -1,4 +1,4 @@
-import type {Stamp} from 'tinybase/debug';
+import type {Stamp} from 'tinybase';
 
 const MASK6 = 63;
 const SHIFT36 = 2 ** 36;

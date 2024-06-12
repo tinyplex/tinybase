@@ -1,5 +1,5 @@
-import type {GetCell, Id, Relationships, Store} from 'tinybase/debug';
-import {createRelationships, createStore} from 'tinybase/debug';
+import type {GetCell, Id, Relationships, Store} from 'tinybase';
+import {createRelationships, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../common/expect.ts';
 import {RelationshipsListener} from '../common/types.ts';
 import {createRelationshipsListener} from '../common/listeners.ts';
