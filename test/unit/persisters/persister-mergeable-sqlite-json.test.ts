@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import 'fake-indexeddb/auto';
-import type {MergeableStore, Persister} from 'tinybase/debug';
+import type {MergeableStore, Persister} from 'tinybase';
 import {VARIANTS, getDatabaseFunctions} from './sqlite.ts';
 import {mockFetchWasm, pause} from '../common/other.ts';
 import {Database} from 'sqlite3';
-import {createMergeableStore} from 'tinybase/debug';
+import {createMergeableStore} from 'tinybase';
 import {resetHlc} from '../common/mergeable.ts';
 
 beforeEach(() => {

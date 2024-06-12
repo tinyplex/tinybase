@@ -12,7 +12,7 @@ import type {
   Synchronizer,
   Tables,
   Values,
-} from 'tinybase/debug';
+} from 'tinybase';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {GetLocationMethod, Persistable} from './common.ts';
@@ -22,23 +22,23 @@ import {
   createCustomPersister,
   createCustomSynchronizer,
   createMergeableStore,
-} from 'tinybase/debug';
+} from 'tinybase';
 import {
   createLocalPersister,
   createSessionPersister,
-} from 'tinybase/debug/persisters/persister-browser';
+} from 'tinybase/persisters/persister-browser';
 import {deleteDB, openDB} from 'idb';
 import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
 import {DB} from '@vlcn.io/crsqlite-wasm';
 import {Database} from 'sqlite3';
 import type {FetchMock} from 'jest-fetch-mock';
-import type {LocalSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-local';
-import {createAutomergePersister} from 'tinybase/debug/persisters/persister-automerge';
-import {createFilePersister} from 'tinybase/debug/persisters/persister-file';
-import {createIndexedDbPersister} from 'tinybase/debug/persisters/persister-indexed-db';
-import {createLocalSynchronizer} from 'tinybase/debug/synchronizers/synchronizer-local';
-import {createRemotePersister} from 'tinybase/debug/persisters/persister-remote';
-import {createYjsPersister} from 'tinybase/debug/persisters/persister-yjs';
+import type {LocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
+import {createFilePersister} from 'tinybase/persisters/persister-file';
+import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
+import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+import {createRemotePersister} from 'tinybase/persisters/persister-remote';
+import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
 import crypto from 'crypto';
 import fm from 'jest-fetch-mock';
 import fs from 'fs';
