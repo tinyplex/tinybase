@@ -1,6 +1,6 @@
 import 'fake-indexeddb/auto';
 import {Client, createClient} from '@libsql/client';
-import type {DatabasePersisterConfig, Persister, Store} from 'tinybase/debug';
+import type {DatabasePersisterConfig, Persister, Store} from 'tinybase';
 import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
 import type {
   QueryResult,
@@ -11,12 +11,12 @@ import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import sqlite3, {Database} from 'sqlite3';
 import {DbSchema} from 'electric-sql/client/model';
 import type {ElectricClient} from 'electric-sql/client/model';
-import {createCrSqliteWasmPersister} from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
-import {createElectricSqlPersister} from 'tinybase/debug/persisters/persister-electric-sql';
-import {createLibSqlPersister} from 'tinybase/debug/persisters/persister-libsql';
-import {createPowerSyncPersister} from 'tinybase/debug/persisters/persister-powersync';
-import {createSqlite3Persister} from 'tinybase/debug/persisters/persister-sqlite3';
-import {createSqliteWasmPersister} from 'tinybase/debug/persisters/persister-sqlite-wasm';
+import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
+import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
+import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
+import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
+import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
+import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {suppressWarnings} from '../common/other.ts';
 

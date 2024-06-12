@@ -1,4 +1,4 @@
-import type {Id, IdOrNull} from 'tinybase/debug';
+import type {Id, IdOrNull} from 'tinybase';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

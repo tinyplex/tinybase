@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import type {Row, Store, Table, Tables, Values} from 'tinybase/debug';
-import {createMergeableStore, createStore} from 'tinybase/debug';
+import type {Row, Store, Table, Tables, Values} from 'tinybase';
+import {createMergeableStore, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../common/expect.ts';
 import {StoreListener} from '../common/types.ts';
 import {createStoreListener} from '../common/listeners.ts';

@@ -12,16 +12,16 @@ import {
   SortedTablePaginator,
   TableInHtmlTable,
   ValuesInHtmlTable,
-} from 'tinybase/debug/ui-react-dom';
-import type {Ids, Indexes, Queries, Relationships, Store} from 'tinybase/debug';
+} from 'tinybase/ui-react-dom';
+import type {Ids, Indexes, Queries, Relationships, Store} from 'tinybase';
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
 import {
   createIndexes,
   createQueries,
   createRelationships,
   createStore,
-} from 'tinybase/debug';
-import type {ExtraProps} from 'tinybase/debug/ui-react';
+} from 'tinybase';
+import type {ExtraProps} from 'tinybase/ui-react';
 import React from 'react';
 
 let store: Store;

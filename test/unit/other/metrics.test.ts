@@ -1,5 +1,5 @@
-import type {Metrics, Store} from 'tinybase/debug';
-import {createMetrics, createStore} from 'tinybase/debug';
+import type {Metrics, Store} from 'tinybase';
+import {createMetrics, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../common/expect.ts';
 import {MetricsListener} from '../common/types.ts';
 import {createMetricsListener} from '../common/listeners.ts';

@@ -1,6 +1,6 @@
 // NB: an exclamation mark after a line visually indicates an expected TS error
 
-import {createCheckpoints, createStore} from 'tinybase/debug/with-schemas';
+import {createCheckpoints, createStore} from 'tinybase/with-schemas';
 
 const tablesSchema = {
   t0: {c0: {type: 'number'}},

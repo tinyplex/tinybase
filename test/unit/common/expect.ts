@@ -1,4 +1,4 @@
-import type {Id} from 'tinybase/debug';
+import type {Id} from 'tinybase';
 import {Listener} from './types.ts';
 
 export const expectChanges = (

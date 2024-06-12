@@ -1,7 +1,7 @@
-import type {Store} from 'tinybase/debug';
-import type {Tools} from 'tinybase/debug/tools';
-import {createStore} from 'tinybase/debug';
-import {createTools} from 'tinybase/debug/tools';
+import type {Store} from 'tinybase';
+import type {Tools} from 'tinybase/tools';
+import {createStore} from 'tinybase';
+import {createTools} from 'tinybase/tools';
 
 let store: Store;
 let tools: Tools;

@@ -3,7 +3,7 @@ import {
   createMetrics,
   createQueries,
   createStore,
-} from 'tinybase/debug';
+} from 'tinybase';
 import {
   getNCells,
   getNRows,
@@ -12,7 +12,7 @@ import {
   repeat,
   µs,
 } from './common.ts';
-import type {Table} from 'tinybase/debug';
+import type {Table} from 'tinybase';
 
 repeat(
   'Create store without schema',

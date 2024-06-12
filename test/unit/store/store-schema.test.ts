@@ -6,8 +6,8 @@ import type {
   Tables,
   TablesSchema,
   Value,
-} from 'tinybase/debug/with-schemas';
-import {createMergeableStore, createStore} from 'tinybase/debug/with-schemas';
+} from 'tinybase/with-schemas';
+import {createMergeableStore, createStore} from 'tinybase/with-schemas';
 import {
   expectChanges,
   expectChangesNoJson,
