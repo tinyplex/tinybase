@@ -54,14 +54,15 @@ Instructions are available in the README of each:
 
 ## TinyBase in a browser
 
-Another simple way to get started with TinyBase is to include it as a UMD script
-from a CDN in a web page. Create a file called `index.html`, for example:
+Another simple way to get started with TinyBase is to include it as a minified
+UMD script from a CDN in a web page. Create a file called `index.html`, for
+example:
 
 ```html
 <html>
   <head>
     <title>My First TinyBase App</title>
-    <script src="https://unpkg.com/tinybase/dist/umd/index.js"></script>
+    <script src="https://unpkg.com/tinybase/dist/umd/min/index.js"></script>
     <script>
       addEventListener('load', () => {
         const {createStore} = TinyBase;

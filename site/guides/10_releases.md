@@ -118,6 +118,11 @@ also do not have to explicitly specify whether you need the `cjs` version of
 TinyBase - if you are using a `require` rather than an `import`, you will get it
 automatically.
 
+The non-minified version of the code is now default and you need to be explicit
+with you _want_ minified code. Previously you would add `/debug` to the import
+path to get non-minified code, but now you add `/min` to the import path to get
+_minified_ code.
+
 Please read the comprehensive Importing TinyBase guide for more details of how
 to construct the correct import paths in v5.0.
 
