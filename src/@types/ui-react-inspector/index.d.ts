@@ -1,4 +1,4 @@
-/// ui-react-dom
+/// ui-react-inspector
 
 import type {ComponentReturnType} from '../ui-react/index.d.ts';
 
