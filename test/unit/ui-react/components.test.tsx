@@ -19,7 +19,7 @@ import type {
   TablesProps,
   ValueProps,
   ValuesProps,
-} from 'tinybase/debug/ui-react';
+} from 'tinybase/ui-react';
 import {
   BackwardCheckpointsView,
   CellView,
@@ -67,7 +67,7 @@ import {
   useSliceRowIds,
   useTable,
   useTables,
-} from 'tinybase/debug/ui-react';
+} from 'tinybase/ui-react';
 import type {
   Checkpoints,
   Id,
@@ -76,7 +76,7 @@ import type {
   Queries,
   Relationships,
   Store,
-} from 'tinybase/debug';
+} from 'tinybase';
 import React, {useCallback} from 'react';
 import {ReactTestRenderer, act, create} from 'react-test-renderer';
 import {
@@ -86,7 +86,7 @@ import {
   createQueries,
   createRelationships,
   createStore,
-} from 'tinybase/debug';
+} from 'tinybase';
 import {jest} from '@jest/globals';
 
 let store: Store;

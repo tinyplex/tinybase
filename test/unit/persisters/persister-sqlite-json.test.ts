@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import 'fake-indexeddb/auto';
-import type {Persister, Store} from 'tinybase/debug';
+import type {Persister, Store} from 'tinybase';
 import {VARIANTS, getDatabaseFunctions} from './sqlite.ts';
 import {mockFetchWasm, pause} from '../common/other.ts';
 import {Database} from 'sqlite3';
-import {createStore} from 'tinybase/debug';
+import {createStore} from 'tinybase';
 
 describe.each(Object.entries(VARIANTS))(
   '%s',

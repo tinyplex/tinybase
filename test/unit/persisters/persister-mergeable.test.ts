@@ -7,13 +7,13 @@ import type {
   MergeableContent,
   MergeableStore,
   Persister,
-} from 'tinybase/debug';
+} from 'tinybase';
 import {GetLocationMethod, Persistable, nextLoop} from './common.ts';
 import {
   createCustomPersister,
   createMergeableStore,
   createStore,
-} from 'tinybase/debug';
+} from 'tinybase';
 import {
   mockCustomSynchronizer,
   mockFile,
