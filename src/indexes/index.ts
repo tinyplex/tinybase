@@ -1,4 +1,3 @@
-import {DEBUG, ifNotUndefined, isArray, isUndefined} from '../common/other.ts';
 import {EMPTY_STRING, id} from '../common/strings.ts';
 import type {GetCell, Store} from '../@types/store/index.d.ts';
 import type {Id, IdOrNull, Ids, SortKey} from '../@types/common/index.d.ts';
@@ -35,6 +34,7 @@ import {
   getDefinableFunctions,
   getRowCellFunction,
 } from '../common/definable.ts';
+import {ifNotUndefined, isArray, isUndefined} from '../common/other.ts';
 import {defaultSorter} from '../common/index.ts';
 import {getListenerFunctions} from '../common/listeners.ts';
 import {objFreeze} from '../common/obj.ts';
@@ -259,13 +259,10 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
     return indexes;
   };
 
-  const getListenerStats = (): IndexesListenerStats =>
-    DEBUG
-      ? {
-          sliceIds: collSize2(sliceIdsListeners),
-          sliceRowIds: collSize3(sliceRowIdsListeners),
-        }
-      : {};
+  const getListenerStats = (): IndexesListenerStats => ({
+    sliceIds: collSize2(sliceIdsListeners),
+    sliceRowIds: collSize3(sliceRowIdsListeners),
+  });
 
   const indexes: any = {
     setIndexDefinition,
