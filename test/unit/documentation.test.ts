@@ -71,8 +71,6 @@ import {transformSync} from 'esbuild';
   'tinybase/synchronizers/synchronizer-ws-client': TinyBaseSynchronizerWsClient,
   'tinybase/synchronizers/synchronizer-ws-server': TinyBaseSynchronizerWsServer,
   'tinybase/tools': TinyBaseTools,
-  'tinybase/ui-react': TinyBaseUiReact,
-  'tinybase/ui-react-dom': TinyBaseUiReactDom,
   'tinybase/ui-react-inspector': TinyBaseUiReactInspector,
   ws,
   yjs,
