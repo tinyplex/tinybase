@@ -1,7 +1,6 @@
 # Importing TinyBase
 
-This guide provides a quick aside about importing TinyBase into your
-application.
+This guide provides an aside about importing TinyBase into your application.
 
 ## The Simplest Imports
 
@@ -11,9 +10,9 @@ The simplest import of TinyBase is:
 import {createStore, createMetrics} from 'tinybase';
 ```
 
-This will get you an ESNext, ESM, minified import of the main `tinybase` module,
-(which contains most of the core functionality), and should be enough to get
-started. You may also want to import specific persister, synchronizer, or UI
+This will get you an ESNext, ESM, non-minified import of the main `tinybase`
+module, (which contains most of the core functionality), and should be enough to
+get started. You may also want to import specific persister, synchronizer, or UI
 modules:
 
 ```js
@@ -70,26 +69,26 @@ directly under the top-level of the package:
 
 - The default target is ESNext, but ES6 versions are available in `es6`
   sub-folders.
-- The default is minified code, but un-minified debug versions are available in
-  `debug` folders.
+- The default is non-minified code, but minified versions are available in the
+  `min` folders.
 
 These options are added to the path (after `tinybase`) when you import. So for
-example, the default ESNext, minified ESM import of the main `tinybase` module
+example, the default ESNext, non-minified ESM import of the main `tinybase` module
 would be:
 
 ```js yolo
 import {createStore} from 'tinybase';
 ```
 
-Conversely, the ES6, _un_-minified ESM import of the main `tinybase` module would
+Conversely, the ES6, _minified_ ESM import of the main `tinybase` module would
 be:
 
 ```js yolo
-import {createStore} from 'tinybase/es6/debug';
+import {createStore} from 'tinybase/es6/min';
 ```
 
-...and of course `tinybase/es6` and `tinybase/debug` specify minified ES6, and
-un-minified ESNext, respectively.
+...and of course `tinybase/es6` and `tinybase/min` specify non-minified ES6, and
+minified ESNext, respectively.
 
 As seen above, the default format is ESM, but CJS versions are available in
 `cjs` sub-folders. These are automatically used when you use `require` in a CJS
@@ -99,11 +98,11 @@ environment, rather than `import` in ESM:
 const {createStore} = require('tinybase'); // will load tinybase/cjs/index.cjs
 ```
 
-You can combine target paths with this too. This will load the ES6, un-minified
+You can combine target paths with this too. This will load the ES6, minified
 CJS module, for example:
 
 ```js yolo
-const {createStore} = require('tinybase/es6/debug');
+const {createStore} = require('tinybase/es6/min');
 ```
 
 ...and so on.
@@ -127,24 +126,24 @@ clarity) is:
 
 ```sh yolo
 tinybase
-[ /es6 ]
-[ /debug ]
-[ /store | /metrics | /queries | ... ]
-[ /with-schemas ]
+  [ /es6 ]
+    [ /min ]
+      [ /store | /metrics | /queries | ... ]
+        [ /with-schemas ]
 ```
 
 For example, this is a non-exhaustive list of options that are all valid:
 
 | Import                                                   | Format | Target | Minified | Sub-module | With schemas |
 | -------------------------------------------------------- | ------ | ------ | -------- | ---------- | ------------ |
-| `import {...} from 'tinybase';`                          | esm    | esnext | yes      |            | no           |
-| `import {...} from 'tinybase/with-schemas';`             | esm    | esnext | yes      |            | yes          |
-| `import {...} from 'tinybase/debug';`                    | esm    | esnext | no       |            | no           |
-| `import {...} from 'tinybase/es6';`                      | esm    | es6    | yes      |            | no           |
-| `import {...} from 'tinybase/es6/store'`                 | esm    | es6    | yes      | store      | no           |
-| `import {...} from 'tinybase/es6/metrics/with-schemas';` | esm    | es6    | yes      | metrics    | yes          |
-| `const {...} = require('tinybase');`                     | cjs    | esnext | yes      |            | no           |
-| `const {...} = require('tinybase/debug/ui-react');`      | cjs    | esnext | no       | ui-react   | no           |
+| `import {...} from 'tinybase';`                          | esm    | esnext | no       |            | no           |
+| `import {...} from 'tinybase/with-schemas';`             | esm    | esnext | no       |            | yes          |
+| `import {...} from 'tinybase/min';`                      | esm    | esnext | yes      |            | no           |
+| `import {...} from 'tinybase/es6';`                      | esm    | es6    | no       |            | no           |
+| `import {...} from 'tinybase/es6/store'`                 | esm    | es6    | no       | store      | no           |
+| `import {...} from 'tinybase/es6/metrics/with-schemas';` | esm    | es6    | no       | metrics    | yes          |
+| `const {...} = require('tinybase');`                     | cjs    | esnext | no       |            | no           |
+| `const {...} = require('tinybase/min/ui-react');`        | cjs    | esnext | yes      | ui-react   | no           |
 | ...                                                      |        |        |          |            |              |
 
 ## React Native
@@ -175,20 +174,22 @@ getting false positives using TinyBase submodules.
 
 Finally, UMD versions are available in `umd` sub-folders. The `umd` files are
 designed to be linked to in classic-style web pages, rather than `import`ed or
-`require`d:
+`require`d.
+
+It will be typical to use the minified versions of these in production:
 
 ```html
-<script src="https://unpkg.com/tinybase/dist/umd/index.js"></script>
+<script src="https://unpkg.com/tinybase/dist/umd/min/index.js"></script>
 ```
 
-And again, there are ES6 and debug versions of those too:
+But again, there are ES6 and non-minified versions of those too, such as:
 
 ```html
-<script src="https://unpkg.com/tinybase/dist/umd/es6/debug/index.js"></script>
+<script src="https://unpkg.com/tinybase/dist/umd/es6/index.js"></script>
 ```
 
-You can then access the members of these modules using global constants that
-start with the name `TinyBase`. For example:
+When using UMD, you can access the members of these modules using global
+constants that start with the name `TinyBase`. For example:
 
 ```js yolo
 const {createStore} = TinyBase;
@@ -196,6 +197,8 @@ const {Provider, useCell, useCreateStore} = TinyBaseUiReact;
 const {TableInHtmlTable} = TinyBaseUiReactDom;
 const {Inspector} = TinyBaseUiReactInspector;
 ```
+
+If all else fails, take a look into the package folder and see what's what!
 
 ## Enough!
 
