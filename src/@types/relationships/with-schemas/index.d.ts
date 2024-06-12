@@ -55,11 +55,11 @@ export type LinkedRowIdsListener<Schemas extends OptionalSchemas> = (
 /// RelationshipsListenerStats
 export type RelationshipsListenerStats = {
   /// RelationshipsListenerStats.remoteRowId
-  remoteRowId?: number;
+  remoteRowId: number;
   /// RelationshipsListenerStats.localRowIds
-  localRowIds?: number;
+  localRowIds: number;
   /// RelationshipsListenerStats.linkedRowIds
-  linkedRowIds?: number;
+  linkedRowIds: number;
 };
 
 /// Relationships

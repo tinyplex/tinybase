@@ -57,9 +57,9 @@ export type SliceRowIdsListener<Schemas extends OptionalSchemas> = (
 /// IndexesListenerStats
 export type IndexesListenerStats = {
   /// IndexesListenerStats.sliceIds
-  sliceIds?: number;
+  sliceIds: number;
   /// IndexesListenerStats.sliceRowIds
-  sliceRowIds?: number;
+  sliceRowIds: number;
 };
 
 /// Indexes

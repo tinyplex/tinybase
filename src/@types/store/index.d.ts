@@ -365,51 +365,51 @@ export type TransactionLog = [
 /// StoreListenerStats
 export type StoreListenerStats = {
   /// StoreListenerStats.hasTables
-  hasTables?: number;
+  hasTables: number;
   /// StoreListenerStats.tables
-  tables?: number;
+  tables: number;
   /// StoreListenerStats.tableIds
-  tableIds?: number;
+  tableIds: number;
   /// StoreListenerStats.hasTable
-  hasTable?: number;
+  hasTable: number;
   /// StoreListenerStats.table
-  table?: number;
+  table: number;
   /// StoreListenerStats.tableCellIds
-  tableCellIds?: number;
+  tableCellIds: number;
   /// StoreListenerStats.hasTableCell
-  hasTableCell?: number;
+  hasTableCell: number;
   /// StoreListenerStats.rowCount
-  rowCount?: number;
+  rowCount: number;
   /// StoreListenerStats.rowIds
-  rowIds?: number;
+  rowIds: number;
   /// StoreListenerStats.sortedRowIds
-  sortedRowIds?: number;
+  sortedRowIds: number;
   /// StoreListenerStats.hasRow
-  hasRow?: number;
+  hasRow: number;
   /// StoreListenerStats.row
-  row?: number;
+  row: number;
   /// StoreListenerStats.cellIds
-  cellIds?: number;
+  cellIds: number;
   /// StoreListenerStats.hasCell
-  hasCell?: number;
+  hasCell: number;
   /// StoreListenerStats.cell
-  cell?: number;
+  cell: number;
   /// StoreListenerStats.invalidCell
-  invalidCell?: number;
+  invalidCell: number;
   /// StoreListenerStats.hasValues
-  hasValues?: number;
+  hasValues: number;
   /// StoreListenerStats.values
-  values?: number;
+  values: number;
   /// StoreListenerStats.valueIds
-  valueIds?: number;
+  valueIds: number;
   /// StoreListenerStats.hasValue
-  hasValue?: number;
+  hasValue: number;
   /// StoreListenerStats.value
-  value?: number;
+  value: number;
   /// StoreListenerStats.invalidValue
-  invalidValue?: number;
+  invalidValue: number;
   /// StoreListenerStats.transaction
-  transaction?: number;
+  transaction: number;
 };
 
 /// Store
