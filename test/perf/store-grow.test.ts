@@ -1,5 +1,5 @@
-import type {Store} from 'tinybase/debug';
-import {createStore} from 'tinybase/debug';
+import type {Store} from 'tinybase';
+import {createStore} from 'tinybase';
 import {repeatRows} from './common.ts';
 
 let store: Store;

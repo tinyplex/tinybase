@@ -6,7 +6,7 @@ import {
   repeat,
   µs,
 } from './common.ts';
-import {createMergeableStore} from 'tinybase/debug';
+import {createMergeableStore} from 'tinybase';
 
 repeat(
   'Create mergeable store without schema',

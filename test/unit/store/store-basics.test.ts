@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {createMergeableStore, createStore} from 'tinybase/debug';
-import type {Store} from 'tinybase/debug';
+import {createMergeableStore, createStore} from 'tinybase';
+import type {Store} from 'tinybase';
 
 let store: Store;
 
