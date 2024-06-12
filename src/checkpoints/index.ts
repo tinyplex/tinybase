@@ -14,7 +14,6 @@ import type {
   CheckpointsListenerStats,
   createCheckpoints as createCheckpointsDecl,
 } from '../@types/checkpoints/index.d.ts';
-import {DEBUG, ifNotUndefined, isUndefined, size} from '../common/other.ts';
 import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
 import {
   IdMap,
@@ -37,6 +36,7 @@ import {
   arrayUnshift,
 } from '../common/array.ts';
 import {collForEach, collHas, collIsEmpty, collSize2} from '../common/coll.ts';
+import {ifNotUndefined, isUndefined, size} from '../common/other.ts';
 import {setOrDelCell, setOrDelValue} from '../common/cell.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
 import {IdSet2} from '../common/set.ts';
@@ -264,13 +264,10 @@ export const createCheckpoints = getCreateFunction(
       store.delListener(valueListenerId);
     };
 
-    const getListenerStats = (): CheckpointsListenerStats =>
-      DEBUG
-        ? {
-            checkpointIds: collSize2(checkpointIdsListeners),
-            checkpoint: collSize2(checkpointListeners),
-          }
-        : {};
+    const getListenerStats = (): CheckpointsListenerStats => ({
+      checkpointIds: collSize2(checkpointIdsListeners),
+      checkpoint: collSize2(checkpointListeners),
+    });
 
     const _registerListeners = () => {
       cellListenerId = store.addCellListener(

@@ -55,14 +55,6 @@ import type {
   createStore as createStoreDecl,
 } from '../@types/store/index.d.ts';
 import {
-  DEBUG,
-  ifNotUndefined,
-  isFunction,
-  isTypeStringOrBoolean,
-  isUndefined,
-  slice,
-} from '../common/other.ts';
-import {
   ExtraArgsGetter,
   IdSetNode,
   PathGetters,
@@ -122,6 +114,13 @@ import {
   setOrDelCell,
   setOrDelValue,
 } from '../common/cell.ts';
+import {
+  ifNotUndefined,
+  isFunction,
+  isTypeStringOrBoolean,
+  isUndefined,
+  slice,
+} from '../common/other.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {
   objDel,
@@ -1560,36 +1559,33 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return store;
   };
 
-  const getListenerStats = (): StoreListenerStats =>
-    DEBUG
-      ? {
-          hasTables: pairCollSize2(hasTablesListeners),
-          tables: pairCollSize2(tablesListeners),
-          tableIds: pairCollSize2(tableIdsListeners),
-          hasTable: pairCollSize2(hasTableListeners),
-          table: pairCollSize2(tableListeners),
-          tableCellIds: pairCollSize2(tableCellIdsListeners),
-          hasTableCell: pairCollSize2(hasTableCellListeners, collSize3),
-          rowCount: pairCollSize2(rowCountListeners),
-          rowIds: pairCollSize2(rowIdsListeners),
-          sortedRowIds: pairCollSize2(sortedRowIdsListeners),
-          hasRow: pairCollSize2(hasRowListeners, collSize3),
-          row: pairCollSize2(rowListeners, collSize3),
-          cellIds: pairCollSize2(cellIdsListeners, collSize3),
-          hasCell: pairCollSize2(hasCellListeners, collSize4),
-          cell: pairCollSize2(cellListeners, collSize4),
-          invalidCell: pairCollSize2(invalidCellListeners, collSize4),
-          hasValues: pairCollSize2(hasValuesListeners),
-          values: pairCollSize2(valuesListeners),
-          valueIds: pairCollSize2(valueIdsListeners),
-          hasValue: pairCollSize2(hasValueListeners),
-          value: pairCollSize2(valueListeners),
-          invalidValue: pairCollSize2(invalidValueListeners),
-          transaction:
-            collSize2(startTransactionListeners) +
-            pairCollSize2(finishTransactionListeners),
-        }
-      : {};
+  const getListenerStats = (): StoreListenerStats => ({
+    hasTables: pairCollSize2(hasTablesListeners),
+    tables: pairCollSize2(tablesListeners),
+    tableIds: pairCollSize2(tableIdsListeners),
+    hasTable: pairCollSize2(hasTableListeners),
+    table: pairCollSize2(tableListeners),
+    tableCellIds: pairCollSize2(tableCellIdsListeners),
+    hasTableCell: pairCollSize2(hasTableCellListeners, collSize3),
+    rowCount: pairCollSize2(rowCountListeners),
+    rowIds: pairCollSize2(rowIdsListeners),
+    sortedRowIds: pairCollSize2(sortedRowIdsListeners),
+    hasRow: pairCollSize2(hasRowListeners, collSize3),
+    row: pairCollSize2(rowListeners, collSize3),
+    cellIds: pairCollSize2(cellIdsListeners, collSize3),
+    hasCell: pairCollSize2(hasCellListeners, collSize4),
+    cell: pairCollSize2(cellListeners, collSize4),
+    invalidCell: pairCollSize2(invalidCellListeners, collSize4),
+    hasValues: pairCollSize2(hasValuesListeners),
+    values: pairCollSize2(valuesListeners),
+    valueIds: pairCollSize2(valueIdsListeners),
+    hasValue: pairCollSize2(hasValueListeners),
+    value: pairCollSize2(valueListeners),
+    invalidValue: pairCollSize2(invalidValueListeners),
+    transaction:
+      collSize2(startTransactionListeners) +
+      pairCollSize2(finishTransactionListeners),
+  });
 
   const setInternalListeners = (
     preStartTransaction: () => void,
