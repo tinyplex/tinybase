@@ -1,7 +1,6 @@
 import {FunctionComponent, ReactNode, createContext, useContext} from 'react';
 import {readFileSync, statSync} from 'fs';
-import {basename} from 'path';
-import {forEachDirAndFile} from 'tinydocs';
+import {MODULES} from './common.ts';
 
 type CoverageStats = {
   total: number;
@@ -23,12 +22,12 @@ type Metadata = {
   repository: string;
   license: string;
 };
-export type Sizes = Map<string, number>;
+export type ModulesSizes = Map<string, Map<string, number>>;
 
 type Build = {
   coverage: Coverage;
   metadata: Metadata;
-  sizes: Sizes;
+  modulesSizes: ModulesSizes;
 };
 
 const build = ((): Build => {
@@ -36,12 +35,19 @@ const build = ((): Build => {
     readFileSync('./coverage.json', 'utf-8'),
   ) as Coverage;
 
-  const sizes = new Map();
-  forEachDirAndFile('./dist', null, (file) => {
-    sizes.set(basename(file), statSync(file).size);
-  });
-  forEachDirAndFile('./dist/@types', null, (file) => {
-    sizes.set(basename(file), statSync(file).size);
+  const modulesSizes = new Map();
+  MODULES.forEach((module) => {
+    const moduleSizes = new Map();
+    moduleSizes.set(
+      'js',
+      statSync('./dist/' + (module ? module + '/' : '') + 'index.js').size,
+    );
+    moduleSizes.set(
+      'gz',
+      statSync('./dist/min/' + (module ? module + '/' : '') + 'index.js.gz')
+        .size,
+    );
+    modulesSizes.set(module, moduleSizes);
   });
 
   const {name, version, repository, license} = JSON.parse(
@@ -54,7 +60,7 @@ const build = ((): Build => {
     license,
   };
 
-  return {coverage, metadata, sizes};
+  return {coverage, metadata, modulesSizes};
 })();
 
 const Context = createContext<Build>(build);
@@ -67,4 +73,5 @@ export const BuildContext: FunctionComponent<Props> = ({
 
 export const useCoverage = (): Coverage => useContext(Context).coverage;
 export const useMetadata = (): Metadata => useContext(Context).metadata;
-export const useSizes = (): Sizes => useContext(Context).sizes;
+export const useModulesSizes = (): ModulesSizes =>
+  useContext(Context).modulesSizes;
