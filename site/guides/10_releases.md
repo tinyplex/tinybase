@@ -5,21 +5,22 @@ highlighted features.
 
 ## v5.0
 
-This release (currently in beta) contains a new mergeable-store module, which
-contains a subtype of Store - called MergeableStore - that can be merged with
-another.
+This is a major release for TinyBase and adds important new CRDT &
+synchronization functionality. It also includes some breaking changes that may
+affect you (but which should easy to fix they do!)
 
-This is a fundamental building block in adding native CRDT & synchronization
-functionality to TinyBase. There is work yet to be done on the communication
-protocol to negotiate and merge across systems, but in the meantime, stores can
-be merged locally with deterministic results. This implementation uses an
-encoded hybrid logical clock to timestamp the changes made so that they can be
-cleanly merged.
+The main new functionality is in the new mergeable-store module, which contains
+a subtype of Store - called MergeableStore - that can be merged with another
+with deterministic results. The implementation uses an encoded hybrid logical
+clock (HLC) to timestamp the changes made so that they can be cleanly merged. A
+synchronization protocol also lets you negotiate changes between systems.
+
+### Local Merging
 
 The getMergeableContent method on a MergeableStore is used to get the state of a
-store to merge into another. The applyMergeableChanges method will let you apply
-that to (another) store. The merge method is a convenience function to merge two
-stores together:
+store that can be merged into another. The applyMergeableChanges method will let
+you apply that to (another) store. The merge method is a convenience function to
+bidirectionally merge two stores together:
 
 ```js
 import {createMergeableStore} from 'tinybase';
@@ -39,40 +40,21 @@ console.log(localStore2.getContent());
 // -> [{pets: {felix: {color: 'black'}, fido: {color: 'brown'}}}, {}]
 ```
 
-The following important methods are available on the MergeableStore interface
-(in addition to the underlying Store methods):
+This is a simple enough local example to get the idea, but things get more
+exciting when you synchronize stores between systems...
 
-- The getMergeableContent method gets the whole content of the MergeableStore in
-  a way that can merged into another MergeableStore.
-- The setMergeableContent method sets the whole content of a MergeableStore,
-  overwriting what was there before.
-- The getTransactionMergeableChanges method gets the changes that have occurred
-  during a transaction, in a way that can be merged into another MergeableStore.
-- The applyMergeableChanges method merges changes or content (from another
-  MergeableStore's getTransactionMergeableChanges method or getMergeableContent
-  method) into a MergeableStore alongside its existing content.
+### Persisting And Syncing Between Systems
 
-To complement these are the MergeableContent and MergeableChanges types. The
-former represents the whole content of a MergeableStore (complete with
-timestamps and state hashes). The latter represents a set of changes (with just
-timestamps) that can be merged into another MergeableStore.
+Firstly, a MergeableStore can be persisted locally, just like a regular Store.
+This is supported by certain Persister types: file, local and session storage,
+and simple SQLite persisters such as Expo and SQLite3. These allows you to
+persist the state of a MergeableStore locally before it has had the chance to be
+synchronized online, for example.
 
-### Persisting and syncing between systems
-
-A MergeableStore can be persisted locally, just like a regular Store, but only
-by certain Persister types: file, local storage, and sessionStorage. This allows
-you to persist the state of a MergeableStore locally before it has had the
-chance to be synchronized online, for example.
-
-The v5.0 release also introduces the very important concept of Synchronizers.
-These implement a negotiation protocol that allows multiple MergeableStore
-objects to synchronize across a network, for example.
-
-A Synchronizer handles the sending and receipt of the messages required by the
-protocol, and this release includes two types: the LocalSynchronizer (for
-demonstrating synchronization on a single local system), and more importantly
-the WsSynchronizer (that uses WebSockets to communicate between different
-systems):
+But more importantly, the v5.0 release also introduces the new concept of
+synchronization. Synchronizer objects implement a negotiation protocol that
+allows multiple MergeableStore objects to be merged across a network for
+example:
 
 ```js
 import {WebSocketServer, WebSocket} from 'ws';
@@ -114,16 +96,42 @@ synchronizer2.destroy();
 server.destroy();
 ```
 
+This release includes two types of Synchronizer: the LocalSynchronizer (for
+demonstrating synchronization on a single local system), and more importantly
+the WsSynchronizer (that uses WebSockets to communicate between different
+systems, shown above).
+
 Notice that the WsSynchronizer assumes that there exists a server that can
 forward requests to other WsSynchronizer systems. This can be created using the
-createWsServer function that takes a WebSocketServer as shown above.
+createWsServer function that takes a WebSocketServer as also shown above.
 
-### Important note
+### Breaking Changes in v5.0
 
-At this point, the APIs and the mergeable object structures may still change
-considerably before the full v5.0 release.
+#### Module File Structure
 
-### Breaking changes
+Previously, the distributed package contained a `lib` folder with both code and
+type definitions. In v5.0, they have been hoisted to the top level of the
+package so that less-capable bundlers can find the correct files.
+
+If you previously had `/lib/` in your import paths, you should remove it. You
+also do not have to explicitly specify whether you need the `cjs` version of
+TinyBase - if you are using a `require` rather than an `import`, you will get it
+automatically.
+
+Please read the comprehensive Importing TinyBase guide for more details of how
+to construct the correct import paths in v5.0.
+
+#### The TinyBase Inspector
+
+Previously, the React-based inspector (then known as `StoreInspector`) resided
+in the debug version of the ui-react-dom module. It now lives in its own
+ui-react-inspector module (so that it can be used against non-debug code) and
+has been renamed to Inspector.
+
+Please update your imports and rename the component when used, accordingly. See
+the API documentation for details, or the <Inspector /> demo, for example.
+
+#### API Changes
 
 The following changes have been made to the existing TinyBase API for
 consistency. These are less common parts of the API but should straightforward
@@ -209,8 +217,8 @@ how it works for you!
 
 ## v4.6
 
-This release includes the new persister-electric-sql module, which provides
-a Persister for [ElectricSQL](https://electric-sql.com/) client databases.
+This release includes the new persister-electric-sql module, which provides a
+Persister for [ElectricSQL](https://electric-sql.com/) client databases.
 
 Use the Persister by passing in a reference to the Electric client to the
 createElectricSqlPersister function; something like:
@@ -284,8 +292,8 @@ This release includes two new modules:
 
 - The persister-partykit-server module provides a server class for coordinating
   clients and persisting Store data to the PartyKit cloud.
-- The persister-partykit-client module provides the API to create
-  connections to the server and a binding to your Store.
+- The persister-partykit-client module provides the API to create connections to
+  the server and a binding to your Store.
 
 A TinyBase server implementation on PartyKit can be as simple as this:
 
@@ -450,10 +458,10 @@ table component.
 
 ![Inspector](/store-inspector.webp 'Inspector')
 
-The new Inspector component allows you to view, understand, and edit the
-content of a Store in a debug web environment. Try it out in most of the demos
-on the site, including the Movie Database demo, pictured. This requires a debug
-build of the new ui-react-dom module, which is now also included in the UMD
+The new Inspector component allows you to view, understand, and edit the content
+of a Store in a debug web environment. Try it out in most of the demos on the
+site, including the Movie Database demo, pictured. This requires a debug build
+of the new ui-react-dom module, which is now also included in the UMD
 distribution.
 
 Also in this release, the getResultTableCellIds method and
@@ -462,8 +470,8 @@ equivalent useResultTableCellIds hook and useResultTableCellIdsListener hook
 have also been added to ui-react module. A number of other minor React hooks
 have been added to support the components above.
 
-Demos have been updated to demonstrate the ui-react-dom module and the
-Inspector component where appropriate.
+Demos have been updated to demonstrate the ui-react-dom module and the Inspector
+component where appropriate.
 
 (NB: Previous to v5.0, this component was called `StoreInspector`.)
 
@@ -527,7 +535,8 @@ sqlitePersister.destroy();
 ### CRDT Frameworks
 
 CRDTs allow complex reconciliation and synchronization between clients. Yjs and
-Automerge are two popular examples. The API should be familiar! The following will persist a TinyBase Store to a Yjs document:
+Automerge are two popular examples. The API should be familiar! The following
+will persist a TinyBase Store to a Yjs document:
 
 ```js
 import {Doc} from 'yjs';
@@ -584,20 +593,20 @@ tasks, such as when persisting data that requires complex sequences of actions.
 
 The way that data is provided to the DoRollback and TransactionListener
 callbacks at the end of a transaction has changed. Where previously they
-directly received content about changed Cell and Value content, they now
-receive functions that they can choose to call to receive that same data. This
-has a performance improvement, and your callback or listener can choose
-between concise TransactionChanges or more verbose TransactionLog structures
-for that data.
+directly received content about changed Cell and Value content, they now receive
+functions that they can choose to call to receive that same data. This has a
+performance improvement, and your callback or listener can choose between
+concise TransactionChanges or more verbose TransactionLog structures for that
+data.
 
 If you have build a custom persister, you will need to update your
-implementation. Most notably, the `setPersisted` function parameter is
-provided with a `getContent` function to get the content from the Store
-itself, rather than being passed pre-serialized JSON. It also receives
-information about the changes made during a transaction. The `getPersisted`
-function must return the content (or nothing) rather than JSON.
-`startListeningToPersisted` has been renamed `addPersisterListener`, and
-`stopListeningToPersisted` has been renamed `delPersisterListener`.
+implementation. Most notably, the `setPersisted` function parameter is provided
+with a `getContent` function to get the content from the Store itself, rather
+than being passed pre-serialized JSON. It also receives information about the
+changes made during a transaction. The `getPersisted` function must return the
+content (or nothing) rather than JSON. `startListeningToPersisted` has been
+renamed `addPersisterListener`, and `stopListeningToPersisted` has been renamed
+`delPersisterListener`.
 
 ## v3.3
 
@@ -781,9 +790,9 @@ store.setValue('employees', 4);
 store.delListener(listenerId).delValues();
 ```
 
-Guides and documentation have been fully updated, and certain demos - such as the
-Todo App v2 (indexes) demo, and the Countries demo - have been updated to use
-this new functionality.
+Guides and documentation have been fully updated, and certain demos - such as
+the Todo App v2 (indexes) demo, and the Countries demo - have been updated to
+use this new functionality.
 
 If you use the optional ui-react module with TinyBase, v3.0 now uses and expects
 React v18.
@@ -977,8 +986,8 @@ includes the equivalent getResultSortedRowIds method and
 addResultSortedRowIdsListener method.
 
 These are also exposed in the optional ui-react module via the useSortedRowIds
-hook, the useResultSortedRowIds hook, the SortedTableView component and
-the ResultSortedTableView component, and so on.
+hook, the useResultSortedRowIds hook, the SortedTableView component and the
+ResultSortedTableView component, and so on.
 
 ### Queries in the ui-react module
 
