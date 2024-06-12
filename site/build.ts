@@ -33,8 +33,10 @@ const REFLECTIONS = [
   'common',
   'persisters',
   /^persister/,
+  'synchronizers',
+  /^synchronizer/,
   'tools',
-  'ui-react',
+  '/^ui-react/',
   /^TablesProps/,
   /^TableProps/,
   /^SortedTableProps/,
@@ -173,7 +175,8 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/synchronizers/synchronizer-ws-server/index.d.ts')
     .addApiFile('dist/@types/tools/index.d.ts')
     .addApiFile('dist/@types/ui-react/index.d.ts')
-    .addApiFile('dist/@types/ui-react-dom/index.d.ts');
+    .addApiFile('dist/@types/ui-react-dom/index.d.ts')
+    .addApiFile('dist/@types/ui-react-inspector/index.d.ts');
 
 const addPages = (docs: Docs): Docs =>
   docs

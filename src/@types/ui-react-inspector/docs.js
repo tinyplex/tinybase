@@ -4,7 +4,7 @@
  *
  * The component in this module uses the react-dom module and so is not
  * appropriate for environments like React Native.
- * @see UI Components demos
+ * @see <Inspector /> demo
  * @packageDocumentation
  * @module ui-react-inspector
  * @since v5.0.0
