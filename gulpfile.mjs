@@ -2,6 +2,7 @@
 import {basename, dirname, join, resolve} from 'path';
 import {existsSync, promises, readdirSync} from 'fs';
 import gulp from 'gulp';
+import {gzipSync} from 'zlib';
 
 const UTF8 = 'utf-8';
 const TEST_MODULES = [
@@ -122,8 +123,15 @@ const copyWithReplace = async (src, [from, to], dst = src) => {
   await promises.writeFile(dst, file.replace(from, to), UTF8);
 };
 
+const gzipFile = async (fileName) =>
+  await promises.writeFile(
+    `${fileName}.gz`,
+    gzipSync(await promises.readFile(fileName, UTF8), {level: 9}),
+  );
+
 const copyPackageFiles = async (forProd = false) => {
   const targets = forProd ? [null, 'es6'] : [null];
+  const mins = forProd ? [null, 'min'] : [null];
   const modules = forProd ? ALL_MODULES : TEST_MODULES;
   const schemas = [null, 'with-schemas'];
 
@@ -139,32 +147,34 @@ const copyPackageFiles = async (forProd = false) => {
   json.typesVersions = {'*': {}};
   json.exports = {};
   targets.forEach((target) => {
-    modules.forEach((module) => {
-      schemas.forEach((withSchemas) => {
-        const path = [target, false, module, withSchemas]
-          .filter((part) => part)
-          .join('/');
-        const typesPath = ['.', '@types', module, withSchemas, 'index.d.']
-          .filter((part) => part)
-          .join('/');
-        const codePath = (path ? '/' : '') + path;
+    mins.forEach((min) => {
+      modules.forEach((module) => {
+        schemas.forEach((withSchemas) => {
+          const path = [target, min, module, withSchemas]
+            .filter((part) => part)
+            .join('/');
+          const typesPath = ['.', '@types', module, withSchemas, 'index.d.']
+            .filter((part) => part)
+            .join('/');
+          const codePath = (path ? '/' : '') + path;
 
-        json.typesVersions['*'][path ? path : '.'] = [typesPath + 'ts'];
+          json.typesVersions['*'][path ? path : '.'] = [typesPath + 'ts'];
 
-        json.exports['.' + codePath] = {
-          ...(forProd
-            ? {
-                require: {
-                  types: typesPath + 'cts',
-                  default: './cjs' + codePath + '/index.cjs',
-                },
-              }
-            : {}),
-          default: {
-            types: typesPath + 'ts',
-            default: '.' + codePath + '/index.js',
-          },
-        };
+          json.exports['.' + codePath] = {
+            ...(forProd
+              ? {
+                  require: {
+                    types: typesPath + 'cts',
+                    default: './cjs' + codePath + '/index.cjs',
+                  },
+                }
+              : {}),
+            default: {
+              types: typesPath + 'ts',
+              default: '.' + codePath + '/index.js',
+            },
+          };
+        });
       });
     });
   });
@@ -432,16 +442,13 @@ const compileModule = async (
   dir = DIST_DIR,
   format = 'esm',
   target = 'esnext',
+  min = '',
   cli = false,
-  terse = false,
-  fileSuffix = '',
 ) => {
   const path = await import('path');
   const {default: esbuild} = await import('rollup-plugin-esbuild');
   const {rollup} = await import('rollup');
-  const {default: terser} = await import('@rollup/plugin-terser');
   const {default: replace} = await import('@rollup/plugin-replace');
-  const {default: gzipPlugin} = await import('rollup-plugin-gzip');
   const {default: prettierPlugin} = await import('rollup-plugin-prettier');
   const {default: shebang} = await import('rollup-plugin-preserve-shebang');
   const {default: image} = await import('@rollup/plugin-image');
@@ -488,22 +495,8 @@ const compileModule = async (
       }),
       shebang(),
       image(),
-    ].concat(
-      terse
-        ? [
-            terser({
-              toplevel: true,
-              compress: {
-                unsafe: true,
-                passes: 3,
-                ...(module == 'tools'
-                  ? {reduce_vars: false, reduce_funcs: false}
-                  : {}),
-              },
-            }),
-          ].concat(cli ? [] : [gzipPlugin()])
-        : [prettierPlugin(await getPrettierConfig())],
-    ),
+      prettierPlugin(await getPrettierConfig()),
+    ],
     onwarn: (warning, warn) => {
       if (warning.code !== 'MISSING_NODE_BUILTINS') {
         warn(warning);
@@ -513,9 +506,10 @@ const compileModule = async (
 
   const moduleDir = dirname(await ensureDir(dir + '/' + module + '/-'));
 
+  const index = 'index.' + (format == 'cjs' ? 'c' : '') + 'js';
   const outputConfig = {
     dir: moduleDir,
-    entryFileNames: `index${fileSuffix}.${format == 'cjs' ? 'cjs' : 'js'}`,
+    entryFileNames: index,
     format,
     globals: {
       'expo-sqlite/next.js': 'expo-sqlite/next',
@@ -530,27 +524,56 @@ const compileModule = async (
     name: getGlobalName(module),
   };
 
-  const {
-    output: [{fileName}],
-  } = await (await rollup(inputConfig)).write(outputConfig);
+  await (await rollup(inputConfig)).write(outputConfig);
 
   // kill me now
-  const index = 'index.' + (format == 'cjs' ? 'c' : '') + 'js';
+  const outputFile = join(moduleDir, index);
+  const outputFiles = [outputFile];
   if (!cli) {
-    const outputWithSchemasDir = dirname(
-      await ensureDir(dir + '/' + module + '/with-schemas/-'),
+    const outputFileWithSchemas = await ensureDir(
+      join(moduleDir, 'with-schemas', index),
     );
+    outputFiles.push(outputFileWithSchemas);
     await copyWithReplace(
-      join(moduleDir, fileName),
+      outputFile,
       ['../ui-react', '../../ui-react/with-schemas/' + index],
-      join(outputWithSchemasDir, fileName),
+      outputFileWithSchemas,
     );
   }
   await copyWithReplace(
-    join(moduleDir, fileName),
+    outputFile,
     ['../ui-react', '../ui-react/' + index],
-    join(moduleDir, fileName),
+    outputFile,
   );
+
+  allOf(outputFiles, async (outputFile) => {
+    if (min) {
+      // terse;
+      await gzipFile(outputFile);
+    }
+  });
+
+  // await (
+  //   await rollup({input: outputFiles})
+  // ).write({entryFileNames: '[name]._.js'});
+
+  // .concat(
+  //   terse
+  //     ? [
+  //              terser({
+  //         toplevel: true,
+  //         compress: {
+  //           unsafe: true,
+  //           passes: 3,
+  //           ...(module == 'tools'
+  //             ? {reduce_vars: false, reduce_funcs: false}
+  //             : {}),
+  //         },
+  //       }),
+  //  ,
+  //       ].concat(cli ? [] : [gzipPlugin()])
+  //     :
+  // )
 };
 
 // coverageMode = 0: none; 1: screen; 2: json; 3: html
@@ -717,23 +740,24 @@ export const compileForProd = async () => {
           await allModules(
             async (module) =>
               await allOf(
-                [undefined, 'debug'],
-                async (debug) =>
+                [undefined, 'min'],
+                async (min) =>
                   await compileModule(
                     module,
                     `${DIST_DIR}/` +
-                      [format, target, debug]
+                      [format, target, min]
                         .filter((part) => part != null)
                         .join('/'),
                     format,
                     target,
+                    min,
                   ),
               ),
           ),
       ),
   );
 
-  await compileModule('cli', DIST_DIR, undefined, undefined, true);
+  await compileModule('cli', DIST_DIR, undefined, undefined, undefined, true);
   await execute(`chmod +x ${DIST_DIR}/cli/index.js`);
 };
 
