@@ -1,1 +1,802 @@
-var e,l;e=this,l=function(e,l,t){"use strict";const a=e=>typeof e,s=a(""),n=a(!0),o=a(0),u="Value",r="currentTarget",d="value",i=isFinite,c=e=>null==e,m=(e,l,t,a)=>e==s?l:e==o?t:a,{PureComponent:b,Fragment:h,createElement:I,useCallback:C,useLayoutEffect:p,useRef:g,useState:y}=t,T=(e,...l)=>c(e)?{}:e(...l),w=(e,l)=>e.map(l),R=Object,f=R.entries,k=(e=[])=>R.fromEntries(e),S=(e,l)=>w(f(e),(([e,t])=>l(t,e))),{useCallback:N,useMemo:V,useState:v}=t,x="editable",q=(e,t)=>w(l.useTableCellIds(e,t),(l=>e+"."+l)),H=(e,l,t)=>{const a=N(e,l);return t?a:void 0},O=(...e)=>V((()=>e),e),B=(e,l)=>V((()=>({store:e,tableId:l})),[e,l]),F=(e,l)=>V((()=>({queries:e,queryId:l})),[e,l]),E=(e,l=!1,t,a=0,s,n,o,u)=>{const[[r,d,i],c]=v([e,l,a]),m=N((e=>{c(e),u?.(e)}),[u]),b=H((e=>m([e,e==r&&!d,i])),[m,r,d,i],t),h=N((e=>m([r,d,e])),[m,r,d]),C=!0===o?$:o;return[[r,d,i],b,V((()=>!1===o?null:I(C,{offset:i,limit:s,total:n,onChange:h})),[o,C,i,s,n,h])]},P=(e,l,t)=>V((()=>{const n=l??e;return o=Array.isArray(n)?k(w(n,(e=>[e,e]))):n,u=(e,l)=>{return{label:l,component:t,...(n=e,a(n)==s?{label:e}:e)};var n},k(S(o,((e,l)=>[l,u(e,l)])));var o,u}),[l,t,e]),j=({className:e,headerRow:l,idColumn:t,params:[a,s,n,o,u,r]})=>I("table",{className:e},r?I("caption",null,r):null,!1===l?null:I("thead",null,I("tr",null,!1===t?null:I(A,{sort:o??[],label:"Id",onClick:u}),S(a,(({label:e},l)=>I(A,{key:l,cellId:l,label:e,sort:o??[],onClick:u}))))),I("tbody",null,w(n,(e=>I("tr",{key:e},!1===t?null:I("th",null,e),S(a,(({component:l,getComponentProps:t},a)=>I("td",{key:a},I(l,{...T(t,e,a),...s,rowId:e,cellId:a}))))))))),A=({cellId:e,sort:[l,t],label:a=e??"",onClick:s})=>I("th",{onClick:H((()=>s?.(e)),[s,e],s),className:c(t)||l!=e?void 0:`sorted ${t?"de":"a"}scending`},c(t)||l!=e?null:(t?"↓":"↑")+" ",a),L=({localRowId:e,params:[a,s,n,o,u,r,d]})=>{const i=l.useRemoteRowId(u,e,r);return I("tr",null,!1===a?null:I(t.Fragment,null,I("th",null,e),I("th",null,i)),S(s,(({component:l,getComponentProps:t},a)=>{const[s,u]=a.split(".",2),r=s===n?e:s===o?i:null;return c(r)?null:I("td",{key:a},I(l,{...T(t,r,u),store:d,tableId:s,rowId:r,cellId:u}))})))},M=({thing:e,onThingChange:l,className:t,hasSchema:u,showType:c=!0})=>{const[b,h]=v(),[C,p]=v(),[g,y]=v(),[T,w]=v(),[R,f]=v();C!==e&&(h((e=>{const l=a(e);return(e=>e==s||e==n)(l)||l==o&&i(e)?l:void 0})(e)),p(e),y(e+""),w(Number(e)||0),f(!!e));const k=N(((e,t)=>{t(e),p(e),l(e)}),[l]),S=N((()=>{if(!u?.()){const e=m(b,o,n,s),t=m(e,g,T,R);h(e),p(t),l(t)}}),[u,l,g,T,R,b]);return I("div",{className:t},c?I("button",{className:b,onClick:S},b):null,m(b,I("input",{key:b,value:g,onChange:N((e=>k(e[r][d]+"",y)),[k])}),I("input",{key:b,type:"number",value:T,onChange:N((e=>k(Number(e[r][d]||0),w)),[k])}),I("input",{key:b,type:"checkbox",checked:R,onChange:N((e=>k(!!e[r].checked,f)),[k])})))},U=({tableId:e,rowId:t,cellId:a,store:s,className:n,showType:o})=>I(M,{thing:l.useCell(e,t,a,s),onThingChange:l.useSetCellCallback(e,t,a,(e=>e),[],s),className:n??x+"Cell",showType:o,hasSchema:l.useStoreOrStoreById(s)?.hasTablesSchema}),D=({valueId:e,store:t,className:a,showType:s})=>I(M,{thing:l.useValue(e,t),onThingChange:l.useSetValueCallback(e,(e=>e),[],t),className:a??x+u,showType:s,hasSchema:l.useStoreOrStoreById(t)?.hasValuesSchema}),$=({onChange:e,total:l,offset:a=0,limit:s=l,singular:n="row",plural:o=n+"s"})=>{(a>l||a<0)&&(a=0,e(0));const u=H((()=>e(a-s)),[e,a,s],a>0),r=H((()=>e(a+s)),[e,a,s],a+s<l);return I(t.Fragment,null,l>s&&I(t.Fragment,null,I("button",{className:"previous",disabled:0==a,onClick:u},"←"),I("button",{className:"next",disabled:a+s>=l,onClick:r},"→"),a+1," to ",Math.min(l,a+s)," of "),l," ",1!=l?o:n)};e.EditableCellView=U,e.EditableValueView=D,e.RelationshipInHtmlTable=({relationshipId:e,relationships:a,editable:s,customCells:n,className:o,headerRow:u,idColumn:r=!0})=>{const[d,i,c,m]=((e,l)=>[e,e?.getStore(),e?.getLocalTableId(l),e?.getRemoteTableId(l)])(l.useRelationshipsOrRelationshipsById(a),e),b=P([...q(c,i),...q(m,i)],n,s?U:l.CellView),h=O(r,b,c,m,e,d,i);return I("table",{className:o},!1===u?null:I("thead",null,I("tr",null,!1===r?null:I(t.Fragment,null,I("th",null,c,".Id"),I("th",null,m,".Id")),S(b,(({label:e},l)=>I("th",{key:l},e))))),I("tbody",null,w(l.useRowIds(c,i),(e=>I(L,{key:e,localRowId:e,params:h})))))},e.ResultSortedTableInHtmlTable=({queryId:e,cellId:t,descending:a,offset:s,limit:n,queries:o,sortOnClick:u,paginator:r=!1,customCells:d,onChange:i,...c})=>{const[m,b,h]=E(t,a,u,s,n,l.useResultRowCount(e,o),r,i);return I(j,{...c,params:O(P(l.useResultTableCellIds(e,o),d,l.ResultCellView),F(o,e),l.useResultSortedRowIds(e,...m,n,o),m,b,h)})},e.ResultTableInHtmlTable=({queryId:e,queries:t,customCells:a,...s})=>I(j,{...s,params:O(P(l.useResultTableCellIds(e,t),a,l.ResultCellView),F(t,e),l.useResultRowIds(e,t))}),e.SliceInHtmlTable=({indexId:e,sliceId:t,indexes:a,editable:s,customCells:n,...o})=>{const[u,r,d]=((e,l)=>[e,e?.getStore(),e?.getTableId(l)])(l.useIndexesOrIndexesById(a),e);return I(j,{...o,params:O(P(l.useTableCellIds(d,r),n,s?U:l.CellView),B(r,d),l.useSliceRowIds(e,t,u))})},e.SortedTableInHtmlTable=({tableId:e,cellId:t,descending:a,offset:s,limit:n,store:o,editable:u,sortOnClick:r,paginator:d=!1,onChange:i,customCells:c,...m})=>{const[b,h,C]=E(t,a,r,s,n,l.useRowCount(e,o),d,i);return I(j,{...m,params:O(P(l.useTableCellIds(e,o),c,u?U:l.CellView),B(o,e),l.useSortedRowIds(e,...b,n,o),b,h,C)})},e.SortedTablePaginator=$,e.TableInHtmlTable=({tableId:e,store:t,editable:a,customCells:s,...n})=>I(j,{...n,params:O(P(l.useTableCellIds(e,t),s,a?U:l.CellView),B(t,e),l.useRowIds(e,t))}),e.ValuesInHtmlTable=({store:e,editable:t=!1,valueComponent:a=(t?D:l.ValueView),getValueComponentProps:s,className:n,headerRow:o,idColumn:r})=>I("table",{className:n},!1===o?null:I("thead",null,I("tr",null,!1===r?null:I("th",null,"Id"),I("th",null,u))),I("tbody",null,w(l.useValueIds(e),(l=>I("tr",{key:l},!1===r?null:I("th",null,l),I("td",null,I(a,{...T(s,l),valueId:l,store:e})))))))},"object"==typeof exports&&"undefined"!=typeof module?l(exports,require("../ui-react/index.js"),require("react")):"function"==typeof define&&define.amd?define(["exports","../ui-react","react"],l):l((e="undefined"!=typeof globalThis?globalThis:e||self).TinyBaseUiReactDom={},e.TinyBaseUiReact,e.React);
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined'
+    ? factory(exports, require('../ui-react/index.js'), require('react'))
+    : typeof define === 'function' && define.amd
+      ? define(['exports', '../ui-react', 'react'], factory)
+      : ((global =
+          typeof globalThis !== 'undefined' ? globalThis : global || self),
+        factory(
+          (global.TinyBaseUiReactDom = {}),
+          global.TinyBaseUiReact,
+          global.React,
+        ));
+})(this, function (exports, uiReact, React) {
+  'use strict';
+
+  const getTypeOf = (thing) => typeof thing;
+  const EMPTY_STRING = '';
+  const STRING = getTypeOf(EMPTY_STRING);
+  const BOOLEAN = getTypeOf(true);
+  const NUMBER = getTypeOf(0);
+  const CELL = 'Cell';
+  const VALUE = 'Value';
+  const CURRENT_TARGET = 'currentTarget';
+  const _VALUE = 'value';
+
+  const isFiniteNumber = isFinite;
+  const isUndefined = (thing) => thing == void 0;
+  const isTypeStringOrBoolean = (type) => type == STRING || type == BOOLEAN;
+  const isString = (thing) => getTypeOf(thing) == STRING;
+  const isArray = (thing) => Array.isArray(thing);
+
+  const getCellOrValueType = (cellOrValue) => {
+    const type = getTypeOf(cellOrValue);
+    return isTypeStringOrBoolean(type) ||
+      (type == NUMBER && isFiniteNumber(cellOrValue))
+      ? type
+      : void 0;
+  };
+  const getTypeCase = (type, stringCase, numberCase, booleanCase) =>
+    type == STRING ? stringCase : type == NUMBER ? numberCase : booleanCase;
+
+  const {
+    PureComponent,
+    Fragment,
+    createElement,
+    useCallback: useCallback$1,
+    useLayoutEffect,
+    useRef,
+    useState: useState$1,
+  } = React;
+  const getProps = (getProps2, ...ids) =>
+    isUndefined(getProps2) ? {} : getProps2(...ids);
+  const getRelationshipsStoreTableIds = (relationships, relationshipId) => [
+    relationships,
+    relationships?.getStore(),
+    relationships?.getLocalTableId(relationshipId),
+    relationships?.getRemoteTableId(relationshipId),
+  ];
+  const getIndexStoreTableId = (indexes, indexId) => [
+    indexes,
+    indexes?.getStore(),
+    indexes?.getTableId(indexId),
+  ];
+
+  const arrayMap = (array, cb) => array.map(cb);
+
+  const object = Object;
+  const objEntries = object.entries;
+  const objNew = (entries = []) => object.fromEntries(entries);
+  const objToArray = (obj, cb) =>
+    arrayMap(objEntries(obj), ([id, value]) => cb(value, id));
+  const objMap = (obj, cb) =>
+    objNew(objToArray(obj, (value, id) => [id, cb(value, id)]));
+
+  const {useCallback, useMemo, useState} = React;
+  const DOT = '.';
+  const EDITABLE = 'editable';
+  const LEFT_ARROW = '\u2190';
+  const UP_ARROW = '\u2191';
+  const RIGHT_ARROW = '\u2192';
+  const DOWN_ARROW = '\u2193';
+  const useDottedCellIds = (tableId, store) =>
+    arrayMap(
+      uiReact.useTableCellIds(tableId, store),
+      (cellId) => tableId + DOT + cellId,
+    );
+  const useCallbackOrUndefined = (callback, deps, test) => {
+    const returnCallback = useCallback(callback, deps);
+    return test ? returnCallback : void 0;
+  };
+  const useParams = (...args) =>
+    useMemo(
+      () => args,
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      args,
+    );
+  const useStoreCellComponentProps = (store, tableId) =>
+    useMemo(() => ({store, tableId}), [store, tableId]);
+  const useQueriesCellComponentProps = (queries, queryId) =>
+    useMemo(() => ({queries, queryId}), [queries, queryId]);
+  const useSortingAndPagination = (
+    cellId,
+    descending = false,
+    sortOnClick,
+    offset = 0,
+    limit,
+    total,
+    paginator,
+    onChange,
+  ) => {
+    const [[currentCellId, currentDescending, currentOffset], setState] =
+      useState([cellId, descending, offset]);
+    const setStateAndChange = useCallback(
+      (sortAndOffset) => {
+        setState(sortAndOffset);
+        onChange?.(sortAndOffset);
+      },
+      [onChange],
+    );
+    const handleSort = useCallbackOrUndefined(
+      (cellId2) =>
+        setStateAndChange([
+          cellId2,
+          cellId2 == currentCellId ? !currentDescending : false,
+          currentOffset,
+        ]),
+      [setStateAndChange, currentCellId, currentDescending, currentOffset],
+      sortOnClick,
+    );
+    const handleChangeOffset = useCallback(
+      (offset2) =>
+        setStateAndChange([currentCellId, currentDescending, offset2]),
+      [setStateAndChange, currentCellId, currentDescending],
+    );
+    const PaginatorComponent =
+      paginator === true ? SortedTablePaginator : paginator;
+    return [
+      [currentCellId, currentDescending, currentOffset],
+      handleSort,
+      useMemo(
+        () =>
+          paginator === false
+            ? null
+            : /* @__PURE__ */ createElement(PaginatorComponent, {
+                offset: currentOffset,
+                limit,
+                total,
+                onChange: handleChangeOffset,
+              }),
+        [
+          paginator,
+          PaginatorComponent,
+          currentOffset,
+          limit,
+          total,
+          handleChangeOffset,
+        ],
+      ),
+    ];
+  };
+  const useCells = (defaultCellIds, customCells, defaultCellComponent) =>
+    useMemo(() => {
+      const cellIds = customCells ?? defaultCellIds;
+      return objMap(
+        isArray(cellIds)
+          ? objNew(arrayMap(cellIds, (cellId) => [cellId, cellId]))
+          : cellIds,
+        (labelOrCustomCell, cellId) => ({
+          ...{label: cellId, component: defaultCellComponent},
+          ...(isString(labelOrCustomCell)
+            ? {label: labelOrCustomCell}
+            : labelOrCustomCell),
+        }),
+      );
+    }, [customCells, defaultCellComponent, defaultCellIds]);
+  const HtmlTable = ({
+    className,
+    headerRow,
+    idColumn,
+    params: [
+      cells,
+      cellComponentProps,
+      rowIds,
+      sortAndOffset,
+      handleSort,
+      paginatorComponent,
+    ],
+  }) =>
+    /* @__PURE__ */ createElement(
+      'table',
+      {className},
+      paginatorComponent
+        ? /* @__PURE__ */ createElement('caption', null, paginatorComponent)
+        : null,
+      headerRow === false
+        ? null
+        : /* @__PURE__ */ createElement(
+            'thead',
+            null,
+            /* @__PURE__ */ createElement(
+              'tr',
+              null,
+              idColumn === false
+                ? null
+                : /* @__PURE__ */ createElement(HtmlHeaderCell, {
+                    sort: sortAndOffset ?? [],
+                    label: 'Id',
+                    onClick: handleSort,
+                  }),
+              objToArray(cells, ({label}, cellId) =>
+                /* @__PURE__ */ createElement(HtmlHeaderCell, {
+                  key: cellId,
+                  cellId,
+                  label,
+                  sort: sortAndOffset ?? [],
+                  onClick: handleSort,
+                }),
+              ),
+            ),
+          ),
+      /* @__PURE__ */ createElement(
+        'tbody',
+        null,
+        arrayMap(rowIds, (rowId) =>
+          /* @__PURE__ */ createElement(
+            'tr',
+            {key: rowId},
+            idColumn === false
+              ? null
+              : /* @__PURE__ */ createElement('th', null, rowId),
+            objToArray(
+              cells,
+              ({component: CellView2, getComponentProps}, cellId) =>
+                /* @__PURE__ */ createElement(
+                  'td',
+                  {key: cellId},
+                  /* @__PURE__ */ createElement(CellView2, {
+                    ...getProps(getComponentProps, rowId, cellId),
+                    ...cellComponentProps,
+                    rowId,
+                    cellId,
+                  }),
+                ),
+            ),
+          ),
+        ),
+      ),
+    );
+  const HtmlHeaderCell = ({
+    cellId,
+    sort: [sortCellId, sortDescending],
+    label = cellId ?? EMPTY_STRING,
+    onClick,
+  }) =>
+    /* @__PURE__ */ createElement(
+      'th',
+      {
+        onClick: useCallbackOrUndefined(
+          () => onClick?.(cellId),
+          [onClick, cellId],
+          onClick,
+        ),
+        className:
+          isUndefined(sortDescending) || sortCellId != cellId
+            ? void 0
+            : `sorted ${sortDescending ? 'de' : 'a'}scending`,
+      },
+      isUndefined(sortDescending) || sortCellId != cellId
+        ? null
+        : (sortDescending ? DOWN_ARROW : UP_ARROW) + ' ',
+      label,
+    );
+  const RelationshipInHtmlRow = ({
+    localRowId,
+    params: [
+      idColumn,
+      cells,
+      localTableId,
+      remoteTableId,
+      relationshipId,
+      relationships,
+      store,
+    ],
+  }) => {
+    const remoteRowId = uiReact.useRemoteRowId(
+      relationshipId,
+      localRowId,
+      relationships,
+    );
+    return /* @__PURE__ */ createElement(
+      'tr',
+      null,
+      idColumn === false
+        ? null
+        : /* @__PURE__ */ createElement(
+            React.Fragment,
+            null,
+            /* @__PURE__ */ createElement('th', null, localRowId),
+            /* @__PURE__ */ createElement('th', null, remoteRowId),
+          ),
+      objToArray(
+        cells,
+        ({component: CellView2, getComponentProps}, compoundCellId) => {
+          const [tableId, cellId] = compoundCellId.split(DOT, 2);
+          const rowId =
+            tableId === localTableId
+              ? localRowId
+              : tableId === remoteTableId
+                ? remoteRowId
+                : null;
+          return isUndefined(rowId)
+            ? null
+            : /* @__PURE__ */ createElement(
+                'td',
+                {key: compoundCellId},
+                /* @__PURE__ */ createElement(CellView2, {
+                  ...getProps(getComponentProps, rowId, cellId),
+                  store,
+                  tableId,
+                  rowId,
+                  cellId,
+                }),
+              );
+        },
+      ),
+    );
+  };
+  const EditableThing = ({
+    thing,
+    onThingChange,
+    className,
+    hasSchema,
+    showType = true,
+  }) => {
+    const [thingType, setThingType] = useState();
+    const [currentThing, setCurrentThing] = useState();
+    const [stringThing, setStringThing] = useState();
+    const [numberThing, setNumberThing] = useState();
+    const [booleanThing, setBooleanThing] = useState();
+    if (currentThing !== thing) {
+      setThingType(getCellOrValueType(thing));
+      setCurrentThing(thing);
+      setStringThing(String(thing));
+      setNumberThing(Number(thing) || 0);
+      setBooleanThing(Boolean(thing));
+    }
+    const handleThingChange = useCallback(
+      (thing2, setTypedThing) => {
+        setTypedThing(thing2);
+        setCurrentThing(thing2);
+        onThingChange(thing2);
+      },
+      [onThingChange],
+    );
+    const handleTypeChange = useCallback(() => {
+      if (!hasSchema?.()) {
+        const nextType = getTypeCase(thingType, NUMBER, BOOLEAN, STRING);
+        const thing2 = getTypeCase(
+          nextType,
+          stringThing,
+          numberThing,
+          booleanThing,
+        );
+        setThingType(nextType);
+        setCurrentThing(thing2);
+        onThingChange(thing2);
+      }
+    }, [
+      hasSchema,
+      onThingChange,
+      stringThing,
+      numberThing,
+      booleanThing,
+      thingType,
+    ]);
+    return /* @__PURE__ */ createElement(
+      'div',
+      {className},
+      showType
+        ? /* @__PURE__ */ createElement(
+            'button',
+            {className: thingType, onClick: handleTypeChange},
+            thingType,
+          )
+        : null,
+      getTypeCase(
+        thingType,
+        /* @__PURE__ */ createElement('input', {
+          key: thingType,
+          value: stringThing,
+          onChange: useCallback(
+            (event) =>
+              handleThingChange(
+                String(event[CURRENT_TARGET][_VALUE]),
+                setStringThing,
+              ),
+            [handleThingChange],
+          ),
+        }),
+        /* @__PURE__ */ createElement('input', {
+          key: thingType,
+          type: 'number',
+          value: numberThing,
+          onChange: useCallback(
+            (event) =>
+              handleThingChange(
+                Number(event[CURRENT_TARGET][_VALUE] || 0),
+                setNumberThing,
+              ),
+            [handleThingChange],
+          ),
+        }),
+        /* @__PURE__ */ createElement('input', {
+          key: thingType,
+          type: 'checkbox',
+          checked: booleanThing,
+          onChange: useCallback(
+            (event) =>
+              handleThingChange(
+                Boolean(event[CURRENT_TARGET].checked),
+                setBooleanThing,
+              ),
+            [handleThingChange],
+          ),
+        }),
+      ),
+    );
+  };
+  const TableInHtmlTable = ({
+    tableId,
+    store,
+    editable,
+    customCells,
+    ...props
+  }) =>
+    /* @__PURE__ */ createElement(HtmlTable, {
+      ...props,
+      params: useParams(
+        useCells(
+          uiReact.useTableCellIds(tableId, store),
+          customCells,
+          editable ? EditableCellView : uiReact.CellView,
+        ),
+        useStoreCellComponentProps(store, tableId),
+        uiReact.useRowIds(tableId, store),
+      ),
+    });
+  const SortedTableInHtmlTable = ({
+    tableId,
+    cellId,
+    descending,
+    offset,
+    limit,
+    store,
+    editable,
+    sortOnClick,
+    paginator = false,
+    onChange,
+    customCells,
+    ...props
+  }) => {
+    const [sortAndOffset, handleSort, paginatorComponent] =
+      useSortingAndPagination(
+        cellId,
+        descending,
+        sortOnClick,
+        offset,
+        limit,
+        uiReact.useRowCount(tableId, store),
+        paginator,
+        onChange,
+      );
+    return /* @__PURE__ */ createElement(HtmlTable, {
+      ...props,
+      params: useParams(
+        useCells(
+          uiReact.useTableCellIds(tableId, store),
+          customCells,
+          editable ? EditableCellView : uiReact.CellView,
+        ),
+        useStoreCellComponentProps(store, tableId),
+        uiReact.useSortedRowIds(tableId, ...sortAndOffset, limit, store),
+        sortAndOffset,
+        handleSort,
+        paginatorComponent,
+      ),
+    });
+  };
+  const ValuesInHtmlTable = ({
+    store,
+    editable = false,
+    valueComponent: Value = editable ? EditableValueView : uiReact.ValueView,
+    getValueComponentProps,
+    className,
+    headerRow,
+    idColumn,
+  }) =>
+    /* @__PURE__ */ createElement(
+      'table',
+      {className},
+      headerRow === false
+        ? null
+        : /* @__PURE__ */ createElement(
+            'thead',
+            null,
+            /* @__PURE__ */ createElement(
+              'tr',
+              null,
+              idColumn === false
+                ? null
+                : /* @__PURE__ */ createElement('th', null, 'Id'),
+              /* @__PURE__ */ createElement('th', null, VALUE),
+            ),
+          ),
+      /* @__PURE__ */ createElement(
+        'tbody',
+        null,
+        arrayMap(uiReact.useValueIds(store), (valueId) =>
+          /* @__PURE__ */ createElement(
+            'tr',
+            {key: valueId},
+            idColumn === false
+              ? null
+              : /* @__PURE__ */ createElement('th', null, valueId),
+            /* @__PURE__ */ createElement(
+              'td',
+              null,
+              /* @__PURE__ */ createElement(Value, {
+                ...getProps(getValueComponentProps, valueId),
+                valueId,
+                store,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  const SliceInHtmlTable = ({
+    indexId,
+    sliceId,
+    indexes,
+    editable,
+    customCells,
+    ...props
+  }) => {
+    const [resolvedIndexes, store, tableId] = getIndexStoreTableId(
+      uiReact.useIndexesOrIndexesById(indexes),
+      indexId,
+    );
+    return /* @__PURE__ */ createElement(HtmlTable, {
+      ...props,
+      params: useParams(
+        useCells(
+          uiReact.useTableCellIds(tableId, store),
+          customCells,
+          editable ? EditableCellView : uiReact.CellView,
+        ),
+        useStoreCellComponentProps(store, tableId),
+        uiReact.useSliceRowIds(indexId, sliceId, resolvedIndexes),
+      ),
+    });
+  };
+  const RelationshipInHtmlTable = ({
+    relationshipId,
+    relationships,
+    editable,
+    customCells,
+    className,
+    headerRow,
+    idColumn = true,
+  }) => {
+    const [resolvedRelationships, store, localTableId, remoteTableId] =
+      getRelationshipsStoreTableIds(
+        uiReact.useRelationshipsOrRelationshipsById(relationships),
+        relationshipId,
+      );
+    const cells = useCells(
+      [
+        ...useDottedCellIds(localTableId, store),
+        ...useDottedCellIds(remoteTableId, store),
+      ],
+      customCells,
+      editable ? EditableCellView : uiReact.CellView,
+    );
+    const params = useParams(
+      idColumn,
+      cells,
+      localTableId,
+      remoteTableId,
+      relationshipId,
+      resolvedRelationships,
+      store,
+    );
+    return /* @__PURE__ */ createElement(
+      'table',
+      {className},
+      headerRow === false
+        ? null
+        : /* @__PURE__ */ createElement(
+            'thead',
+            null,
+            /* @__PURE__ */ createElement(
+              'tr',
+              null,
+              idColumn === false
+                ? null
+                : /* @__PURE__ */ createElement(
+                    React.Fragment,
+                    null,
+                    /* @__PURE__ */ createElement(
+                      'th',
+                      null,
+                      localTableId,
+                      '.Id',
+                    ),
+                    /* @__PURE__ */ createElement(
+                      'th',
+                      null,
+                      remoteTableId,
+                      '.Id',
+                    ),
+                  ),
+              objToArray(cells, ({label}, cellId) =>
+                /* @__PURE__ */ createElement('th', {key: cellId}, label),
+              ),
+            ),
+          ),
+      /* @__PURE__ */ createElement(
+        'tbody',
+        null,
+        arrayMap(uiReact.useRowIds(localTableId, store), (localRowId) =>
+          /* @__PURE__ */ createElement(RelationshipInHtmlRow, {
+            key: localRowId,
+            localRowId,
+            params,
+          }),
+        ),
+      ),
+    );
+  };
+  const ResultTableInHtmlTable = ({queryId, queries, customCells, ...props}) =>
+    /* @__PURE__ */ createElement(HtmlTable, {
+      ...props,
+      params: useParams(
+        useCells(
+          uiReact.useResultTableCellIds(queryId, queries),
+          customCells,
+          uiReact.ResultCellView,
+        ),
+        useQueriesCellComponentProps(queries, queryId),
+        uiReact.useResultRowIds(queryId, queries),
+      ),
+    });
+  const ResultSortedTableInHtmlTable = ({
+    queryId,
+    cellId,
+    descending,
+    offset,
+    limit,
+    queries,
+    sortOnClick,
+    paginator = false,
+    customCells,
+    onChange,
+    ...props
+  }) => {
+    const [sortAndOffset, handleSort, paginatorComponent] =
+      useSortingAndPagination(
+        cellId,
+        descending,
+        sortOnClick,
+        offset,
+        limit,
+        uiReact.useResultRowCount(queryId, queries),
+        paginator,
+        onChange,
+      );
+    return /* @__PURE__ */ createElement(HtmlTable, {
+      ...props,
+      params: useParams(
+        useCells(
+          uiReact.useResultTableCellIds(queryId, queries),
+          customCells,
+          uiReact.ResultCellView,
+        ),
+        useQueriesCellComponentProps(queries, queryId),
+        uiReact.useResultSortedRowIds(
+          queryId,
+          ...sortAndOffset,
+          limit,
+          queries,
+        ),
+        sortAndOffset,
+        handleSort,
+        paginatorComponent,
+      ),
+    });
+  };
+  const EditableCellView = ({
+    tableId,
+    rowId,
+    cellId,
+    store,
+    className,
+    showType,
+  }) =>
+    /* @__PURE__ */ createElement(EditableThing, {
+      thing: uiReact.useCell(tableId, rowId, cellId, store),
+      onThingChange: uiReact.useSetCellCallback(
+        tableId,
+        rowId,
+        cellId,
+        (cell) => cell,
+        [],
+        store,
+      ),
+      className: className ?? EDITABLE + CELL,
+      showType,
+      hasSchema: uiReact.useStoreOrStoreById(store)?.hasTablesSchema,
+    });
+  const EditableValueView = ({valueId, store, className, showType}) =>
+    /* @__PURE__ */ createElement(EditableThing, {
+      thing: uiReact.useValue(valueId, store),
+      onThingChange: uiReact.useSetValueCallback(
+        valueId,
+        (value) => value,
+        [],
+        store,
+      ),
+      className: className ?? EDITABLE + VALUE,
+      showType,
+      hasSchema: uiReact.useStoreOrStoreById(store)?.hasValuesSchema,
+    });
+  const SortedTablePaginator = ({
+    onChange,
+    total,
+    offset = 0,
+    limit = total,
+    singular = 'row',
+    plural = singular + 's',
+  }) => {
+    if (offset > total || offset < 0) {
+      offset = 0;
+      onChange(0);
+    }
+    const handlePrevClick = useCallbackOrUndefined(
+      () => onChange(offset - limit),
+      [onChange, offset, limit],
+      offset > 0,
+    );
+    const handleNextClick = useCallbackOrUndefined(
+      () => onChange(offset + limit),
+      [onChange, offset, limit],
+      offset + limit < total,
+    );
+    return /* @__PURE__ */ createElement(
+      React.Fragment,
+      null,
+      total > limit &&
+        /* @__PURE__ */ createElement(
+          React.Fragment,
+          null,
+          /* @__PURE__ */ createElement(
+            'button',
+            {
+              className: 'previous',
+              disabled: offset == 0,
+              onClick: handlePrevClick,
+            },
+            LEFT_ARROW,
+          ),
+          /* @__PURE__ */ createElement(
+            'button',
+            {
+              className: 'next',
+              disabled: offset + limit >= total,
+              onClick: handleNextClick,
+            },
+            RIGHT_ARROW,
+          ),
+          offset + 1,
+          ' to ',
+          Math.min(total, offset + limit),
+          ' of ',
+        ),
+      total,
+      ' ',
+      total != 1 ? plural : singular,
+    );
+  };
+
+  exports.EditableCellView = EditableCellView;
+  exports.EditableValueView = EditableValueView;
+  exports.RelationshipInHtmlTable = RelationshipInHtmlTable;
+  exports.ResultSortedTableInHtmlTable = ResultSortedTableInHtmlTable;
+  exports.ResultTableInHtmlTable = ResultTableInHtmlTable;
+  exports.SliceInHtmlTable = SliceInHtmlTable;
+  exports.SortedTableInHtmlTable = SortedTableInHtmlTable;
+  exports.SortedTablePaginator = SortedTablePaginator;
+  exports.TableInHtmlTable = TableInHtmlTable;
+  exports.ValuesInHtmlTable = ValuesInHtmlTable;
+});

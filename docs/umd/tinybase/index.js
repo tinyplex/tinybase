@@ -1,1 +1,4180 @@
-var e,t;e=this,t=function(e){"use strict";const t=e=>typeof e,s="",n=t(s),a=t(!0),o=t(0),r=t(t),l="type",i="default",c="Listener",d="Result",u="add",g="Has",h="Ids",f="Table",b=f+"s",w=f+h,C="Row",L=C+"Count",p=C+h,y="Sorted"+C+h,v="Cell",T=v+h,S="Value",R=S+"s",I=S+h,M=e=>s+e,m=(e,t)=>e.startsWith(t),V=(e,t)=>e.endsWith(t),D=Promise,E=Math.max,H=Math.min,A=isFinite,k=e=>null==e,x=(e,t,s)=>k(e)?s?.():t(e),J=e=>e==n||e==a,F=e=>t(e)==n,Q=e=>t(e)==r,z=e=>Array.isArray(e),P=(e,t,s)=>e.slice(t,s),N=e=>e.length,O=()=>{},W=(e,t)=>e.includes(t),j=(e,t)=>e.every(t),B=(e,t)=>N(e)===N(t)&&j(e,((e,s)=>t[s]===e)),U=(e,t)=>j(e,((s,n)=>0==n||t(e[n-1],s)<=0)),$=(e,t)=>e.sort(t),_=(e,t)=>e.forEach(t),q=(e,t)=>e.map(t),G=e=>X(e,((e,t)=>e+t),0),K=e=>0==N(e),X=(e,t,s)=>e.reduce(t,s),Y=(e,...t)=>e.push(...t),Z=e=>e.pop(),ee=e=>e.shift(),te=Object,se=e=>te.getPrototypeOf(e),ne=te.entries,ae=te.isFrozen,oe=e=>!k(e)&&x(se(e),(e=>e==te.prototype||k(se(e))),(()=>!0)),re=te.keys,le=te.freeze,ie=(e=[])=>te.fromEntries(e),ce=(e,t)=>t in e,de=(e,t)=>(delete e[t],e),ue=(e,t)=>_(ne(e),(([e,s])=>t(s,e))),ge=(e,t)=>q(ne(e),(([e,s])=>t(s,e))),he=e=>oe(e)&&0==(e=>N(re(e)))(e),fe=(e,t,s)=>(ce(e,t)||(e[t]=s()),e[t]),be=(e,t,s,n=0)=>k(e)||!oe(e)||!n&&he(e)||ae(e)?(s?.(),!1):(ge(e,((s,n)=>{t(s,n)||de(e,n)})),!!n||!he(e)),we=e=>e?.size??0,Ce=(e,t)=>e?.has(t)??!1,Le=e=>k(e)||0==we(e),pe=e=>[...e?.values()??[]],ye=e=>e.clear(),ve=(e,t)=>e?.forEach(t),Te=(e,t)=>e?.delete(t),Se=e=>new Map(e),Re=e=>[...e?.keys()??[]],Ie=(e,t)=>e?.get(t),Me=(e,t)=>ve(e,((e,s)=>t(s,e))),me=(e,t,s)=>k(s)?(Te(e,t),e):e?.set(t,s),Ve=(e,t,s,n)=>(Ce(e,t)?n?.(Ie(e,t)):me(e,t,s()),Ie(e,t)),De=(e,t,s,n=me)=>(ge(t,((t,n)=>s(e,n,t))),Me(e,(s=>ce(t,s)?0:n(e,s))),e),Ee=(e,t,s,n)=>{const a={};return ve(e,((e,o)=>{if(!s?.(e,o)){const s=t?t(e,o):e;!n?.(s)&&(a[o]=s)}})),a},He=(e,t,s)=>Ee(e,(e=>Ee(e,t,s)),Le,he),Ae=(e,t,s)=>Ee(e,(e=>He(e,t,s)),Le,he),ke=(e,t)=>{const s=Se();return ve(e,((e,n)=>s.set(n,t?.(e)??e))),s},xe=e=>ke(e,ke),Je=e=>ke(e,xe),Fe=(e,t,s,n,a=0)=>x((s?Ve:Ie)(e,t[a],a>N(t)-2?s:Se),(o=>{if(a>N(t)-2)return n?.(o)&&me(e,t[a]),o;const r=Fe(o,t,s,n,a+1);return Le(o)&&me(e,t[a]),r})),Qe=e=>{const s=t(e);return J(s)||s==o&&A(e)?s:void 0},ze=e=>k(e)||!k(Qe(e)),Pe=(e,t,s,n,a)=>k(a)?e.delCell(t,s,n,!0):e.setCell(t,s,n,a),Ne=(e,t,s)=>k(s)?e.delValue(t):e.setValue(t,s),Oe=e=>new Set(z(e)||k(e)?e:[e]),We=(e,t)=>e?.add(t),je=(e,t,s,n,a)=>{const o=e.hasRow,r=Se(),l=Se(),i=Se(),c=Se(),d=Se(),u=Se(),g=(t,s,...n)=>{const a=Ve(u,t,Oe);return _(n,(t=>We(a,t)&&s&&e.callListener(t))),n},h=(t,...s)=>x(Ie(u,t),(n=>{_(K(s)?pe(n):s,(t=>{e.delListener(t),Te(n,t)})),Le(n)&&me(u,t)})),f=(e,s)=>{me(r,e,s),Ce(l,e)||(me(l,e,t()),me(c,e,Se()),me(d,e,Se()),a(i))},b=e=>{me(r,e),me(l,e),me(c,e),me(d,e),h(e),a(i)};return[()=>e,()=>Re(r),e=>Me(l,e),e=>Ce(l,e),e=>Ie(r,e),e=>Ie(l,e),(e,t)=>me(l,e,t),f,(t,n,a,r,l)=>{f(t,n);const i=Se(),u=Se(),b=Ie(c,t),w=Ie(d,t),C=t=>{const a=s=>e.getCell(n,t,s),c=Ie(b,t),d=o(n,t)?s(r(a,t)):void 0;if(c===d||z(c)&&z(d)&&B(c,d)||me(i,t,[c,d]),!k(l)){const e=Ie(w,t),s=o(n,t)?l(a,t):void 0;e!=s&&me(u,t,s)}},L=e=>{a((()=>{ve(i,(([,e],t)=>me(b,t,e))),ve(u,((e,t)=>me(w,t,e)))}),i,u,b,w,e),ye(i),ye(u)};Me(b,C),e.hasTable(n)&&_(e.getRowIds(n),(e=>{Ce(b,e)||C(e)})),L(!0),h(t),g(t,0,e.addRowListener(n,null,((e,t,s)=>C(s))),e.addTableListener(n,(()=>L())))},b,e=>n(e,i),()=>Me(u,b),g,h]},Be=(e,t)=>F(e)?t=>t(e):e??(()=>t??s),Ue=(e,t)=>{const s=new WeakMap;return n=>{s.has(n)||s.set(n,e(n));const a=s.get(n);return t?.(a),a}},$e=/^\d+$/,_e=()=>{const e=[];let t=0;return[n=>(n?ee(e):null)??s+t++,t=>{$e.test(t)&&N(e)<1e3&&Y(e,t)}]},qe=e=>{let t;const[n,a]=_e(),o=Se();return[(a,r,l,i=[],c=(()=>[]))=>{t??=e();const d=n(1);return me(o,d,[a,r,l,i,c]),We(Fe(r,l??[s],Oe),d),d},(e,n,...a)=>_(((e,t=[s])=>{const n=[],a=(e,s)=>s==N(t)?Y(n,e):null===t[s]?ve(e,(e=>a(e,s+1))):_([t[s],null],(t=>a(Ie(e,t),s+1)));return a(e,0),n})(e,n),(e=>ve(e,(e=>Ie(o,e)[0](t,...n??[],...a))))),e=>x(Ie(o,e),(([,t,n])=>(Fe(t,n??[s],void 0,(t=>(Te(t,e),Le(t)?1:0))),me(o,e),a(e),n))),e=>x(Ie(o,e),(([e,,s=[],n,a])=>{const o=(...r)=>{const l=N(r);l==N(s)?e(t,...r,...a(r)):k(s[l])?_(n[l]?.(...r)??[],(e=>o(...r,e))):o(...r,s[l])};o()}))]},Ge=Ue((e=>{let t,n,a,o=100,r=Se(),l=Se(),i=1;const c=Se(),d=Se(),[u,g,h]=qe((()=>J)),f=Se(),b=Se(),w=[],C=[],L=(t,s)=>{i=0,e.transaction((()=>{const[n,a]=Ie(f,s);ve(n,((s,n)=>ve(s,((s,a)=>ve(s,((s,o)=>Pe(e,n,a,o,s[t]))))))),ve(a,((s,n)=>Ne(e,n,s[t])))})),i=1},p=e=>{me(f,e),me(b,e),g(d,[e])},y=(e,t)=>_(((e,t)=>e.splice(0,t))(e,t??N(e)),p),v=()=>y(w,N(w)-o),T=()=>x(t,(()=>{Y(w,t),v(),y(C),t=void 0,a=1})),S=()=>{t=Z(w),a=1};let R,I;const M=(e=s)=>(k(t)&&(t=s+n++,me(f,t,[r,l]),H(t,e),r=Se(),l=Se(),a=1),t),m=()=>{K(w)||(((e,...t)=>{e.unshift(...t)})(C,M()),L(0,t),t=Z(w),a=1)},V=()=>{K(C)||(Y(w,t),t=ee(C),L(1,t),a=1)},D=()=>{a&&(g(c),a=0)},E=e=>{const t=M(e);return D(),t},H=(e,t)=>(A(e)&&Ie(b,e)!==t&&(me(b,e,t),g(d,[e])),J),A=e=>Ce(f,e),J={setSize:e=>(o=e,v(),J),addCheckpoint:E,setCheckpoint:H,getStore:()=>e,getCheckpointIds:()=>[[...w],t,[...C]],forEachCheckpoint:e=>Me(b,e),hasCheckpoint:A,getCheckpoint:e=>Ie(b,e),goBackward:()=>(m(),D(),J),goForward:()=>(V(),D(),J),goTo:e=>{const s=W(w,e)?m:W(C,e)?V:null;for(;!k(s)&&e!=t;)s();return D(),J},addCheckpointIdsListener:e=>u(e,c),addCheckpointListener:(e,t)=>u(t,d,[e]),delListener:e=>(h(e),J),clear:()=>(y(w),y(C),k(t)||p(t),t=void 0,n=0,E(),J),clearForward:()=>(K(C)||(y(C),g(c)),J),destroy:()=>{e.delListener(R),e.delListener(I)},getListenerStats:()=>({}),_registerListeners:()=>{R=e.addCellListener(null,null,null,((e,t,s,n,a,o)=>{if(i){T();const e=Ve(r,t,Se),l=Ve(e,s,Se),i=Ve(l,n,(()=>[o,void 0]));i[1]=a,i[0]===a&&Le(me(l,n))&&Le(me(e,s))&&Le(me(r,t))&&S(),D()}})),I=e.addValueListener(null,((e,t,s,n)=>{if(i){T();const e=Ve(l,t,(()=>[n,void 0]));e[1]=s,e[0]===s&&Le(me(l,t))&&S(),D()}}))}};return le(J.clear())}),(e=>e._registerListeners())),Ke="-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".split(s),Xe=Se(q(Ke,((e,t)=>[e,t]))),Ye=e=>Ke[63&e],Ze=(e,t)=>Ie(Xe,e[t])??0,et=(e,t)=>(e??0)<(t??0)?-1:1,tt=(e=16)=>X(crypto.getRandomValues(new Uint8Array(e)),((e,t)=>e+Ye(t)),""),st=Ue((e=>{const t=Se(),n=Se(),[a,o,r]=qe((()=>p)),[l,i,c,d,u,g,h,,f,b,w,C]=je(e,Se,(e=>k(e)?s:z(e)?q(e,M):M(e)),a,o),L=(t,s,n)=>{const a=u(t);ve(n,((t,n)=>s(n,(s=>ve(t,(t=>s(t,(s=>e.forEachCell(a,t,s)))))))))},p={setIndexDefinition:(e,s,a,r,l,i=et)=>{const c=k(l)?void 0:([e],[t])=>l(e,t);return f(e,s,((s,a,l,d,u,f)=>{let b=0;const w=Oe(),C=Oe(),L=g(e);if(ve(a,(([e,t],s)=>{const n=Oe(e),a=Oe(t);ve(n,(e=>Te(a,e)?Te(n,e):0)),ve(n,(e=>{We(w,e),x(Ie(L,e),(t=>{Te(t,s),Le(t)&&(me(L,e),b=1)}))})),ve(a,(e=>{We(w,e),Ce(L,e)||(me(L,e,Oe()),b=1),We(Ie(L,e),s),k(r)||We(C,e)}))})),s(),Le(u)||(f?Me(L,(e=>We(C,e))):Me(l,(e=>x(Ie(d,e),(e=>We(C,e))))),ve(C,(e=>{const t=(t,s)=>i(Ie(u,t),Ie(u,s),e),s=[...Ie(L,e)];U(s,t)||(me(L,e,Oe($(s,t))),We(w,e))}))),(b||f)&&!k(c)){const t=[...L];U(t,c)||(h(e,Se($(t,c))),b=1)}b&&o(t,[e]),ve(w,(t=>o(n,[e,t])))}),Be(a),x(r,Be)),p},delIndexDefinition:e=>(b(e),p),getStore:l,getIndexIds:i,forEachIndex:e=>c(((t,s)=>e(t,(e=>L(t,e,s))))),forEachSlice:(e,t)=>L(e,t,g(e)),hasIndex:d,hasSlice:(e,t)=>Ce(g(e),t),getTableId:u,getSliceIds:e=>Re(g(e)),getSliceRowIds:(e,t)=>pe(Ie(g(e),t)),addIndexIdsListener:w,addSliceIdsListener:(e,s)=>a(s,t,[e]),addSliceRowIdsListener:(e,t,s)=>a(s,n,[e,t]),delListener:e=>(r(e),p),destroy:C,getListenerStats:()=>({})};return le(p)})),nt=Se([["avg",[(e,t)=>G(e)/t,(e,t,s)=>e+(t-e)/(s+1),(e,t,s)=>e+(e-t)/(s-1),(e,t,s,n)=>e+(t-s)/n]],["max",[e=>E(...e),(e,t)=>E(t,e),(e,t)=>t==e?void 0:e,(e,t,s)=>s==e?void 0:E(t,e)]],["min",[e=>H(...e),(e,t)=>H(t,e),(e,t)=>t==e?void 0:e,(e,t,s)=>s==e?void 0:H(t,e)]],["sum",[e=>G(e),(e,t)=>e+t,(e,t)=>e-t,(e,t,s)=>e-s+t]]]),at=(e,t,s,n,a,o=!1)=>{if(Le(s))return;const[r,l,i,c]=a;return o||=k(e),ve(n,(([s,n])=>{o||(e=k(s)?l?.(e,n,t++):k(n)?i?.(e,s,t--):c?.(e,n,s,t),o||=k(e))})),o?r(pe(s),we(s)):e},ot=Ue((e=>{const t=Se(),[n,a,o]=qe((()=>C)),[r,l,i,c,d,u,g,,h,f,b,w]=je(e,O,(e=>isNaN(e)||k(e)||!0===e||!1===e||e===s?void 0:1*e),n,a),C={setMetricDefinition:(e,s,n,o,r,l,i)=>{const c=Q(n)?[n,r,l,i]:Ie(nt,n)??Ie(nt,"sum");return h(e,s,((s,n,o,r,l,i)=>{const d=u(e),h=we(r);i||=k(d),s();let f=at(d,h,r,n,c,i);A(f)||(f=void 0),f!=d&&(g(e,f),a(t,[e],f,d))}),Be(o,1)),C},delMetricDefinition:e=>(f(e),C),getStore:r,getMetricIds:l,forEachMetric:i,hasMetric:c,getTableId:d,getMetric:u,addMetricIdsListener:b,addMetricListener:(e,s)=>n(s,t,[e]),delListener:e=>(o(e),C),destroy:w,getListenerStats:()=>({})};return le(C)})),rt=Se(),lt=Se(),it=(e,t,s,n,a,o,r,l={},i=[])=>{let c,d,u,g=0;Ve(rt,i,(()=>0)),Ve(lt,i,(()=>[]));const[h,f,b,w,C]=((e=1,t)=>e>1&&t.isMergeable()?[1,t.getMergeableContent,t.getTransactionMergeableChanges,([[e],[t]])=>!he(e)||!he(t),t.setDefaultContent]:2!=e?[0,t.getContent,t.getTransactionChanges,([e,t])=>!he(e)||!he(t),t.setContent]:(e=>{throw Error("Store type not supported by this Persister")})())(r,e),L=t=>{(h&&z(t?.[0])?1===t?.[2]?e.applyMergeableChanges:e.setMergeableContent:1===t?.[2]?e.applyChanges:e.setContent)(t)},p=async e=>(2!=g&&(g=1,await S((async()=>{try{L(await t())}catch(t){o?.(t),e&&C(e)}g=0}))),R),y=()=>(d&&(a(d),d=void 0),R),v=async e=>(1!=g&&(g=2,await S((async()=>{try{await s(f,e)}catch(e){o?.(e)}g=0}))),R),T=()=>(x(u,e.delListener),u=void 0,R),S=async(...e)=>(Y(Ie(lt,i),...e),await(async()=>{if(!Ie(rt,i)){for(me(rt,i,1);!k(c=ee(Ie(lt,i)));)try{await c()}catch(e){o?.(e)}me(rt,i,0)}})(),R),R={load:p,startAutoLoad:async e=>(await y().load(e),d=n((async(e,t)=>{t||e?2!=g&&(g=1,L(t??e),g=0):await p()})),R),stopAutoLoad:y,isAutoLoading:()=>!k(d),save:v,startAutoSave:async()=>(await T().save(),u=e.addDidFinishTransactionListener((()=>{const e=b();w(e)&&v(e)})),R),stopAutoSave:T,isAutoSaving:()=>!k(u),schedule:S,getStore:()=>e,destroy:()=>y().stopAutoSave(),getStats:()=>({}),...l};return le(R)},ct=new globalThis.TextEncoder,dt=e=>{let t=2166136261;return _(ct.encode(e),(e=>{t^=e,t+=(t<<1)+(t<<4)+(t<<7)+(t<<8)+(t<<24)})),t>>>0},ut=([e,t,s])=>[e,t,s],gt=([e,t])=>ht(e,t),ht=(e,t)=>t?[e,t]:[e],ft=e=>e[2],bt=(e,t)=>dt(e+":"+t),wt=(e,t)=>t>e?(e?dt(e):0)^dt(t):0,Ct=(e,t)=>((e??"")>(t??"")?e:t)??"",Lt=(e,t,s)=>{e[2]=t>>>0,s>e[1]&&(e[1]=s)},pt=(e=s)=>ht(ie(),e),yt=(e=s)=>[Se(),e,0],vt=([e,t,s],n=ut)=>[Ee(e,n),t,s],Tt=([e,t],s=gt)=>ht(Ee(e,s),t),St=(e,s)=>z(e)&&3==N(e)&&F(e[1])&&t(e[2])==o&&A(e[2])&&s(e[0]),Rt=Ue((e=>{const t=e.createStore,n=t(),a=t(),o=Se(),{addListener:r,callListeners:l,delListener:i}=a,[g,h,b,w,S,,,R,,I,M,m,V,D]=je(e,(()=>!0),O,r,l),E=(e,t,...s)=>_(s,(s=>We(Ve(Ve(o,t,Se),e,Oe),s))),H=e=>{x(Ie(o,e),(e=>{Me(e,((e,t)=>ve(t,(t=>e.delListener(t))))),ye(e)})),_([a,n],(t=>t.delTable(e)))},A=(e,t,s)=>E(t,e,t.addStartTransactionListener(s.startTransaction),t.addDidFinishTransactionListener((()=>s.finishTransaction()))),J={setQueryDefinition:(t,o,r)=>{R(t,o),H(t);const l=[],i=[[null,[o,null,null,[],Se()]]],c=[],d=[],u=[];r({select:(e,t)=>{const n=Q(e)?[N(l)+s,e]:[k(t)?e:t,s=>s(e,t)];return Y(l,n),{as:e=>n[0]=e}},join:(e,t,s)=>{const n=k(s)||Q(t)?null:t,a=k(n)?t:s,o=[e,[e,n,Q(a)?a:e=>e(a),[],Se()]];return Y(i,o),{as:e=>o[0]=e}},where:(e,t,s)=>Y(c,Q(e)?e:k(s)?s=>s(e)===t:n=>n(e,t)===s),group:(e,t,s,n,a)=>{const o=[e,[e,Q(t)?[t,s,n,a]:Ie(nt,t)??[(e,t)=>t]]];return Y(d,o),{as:e=>o[0]=e}},having:(e,t)=>Y(u,Q(e)?e:s=>s(e)===t)});const g=Se(l);if(Le(g))return J;const h=Se(i);Me(h,((e,[,t])=>x(Ie(h,t),(({3:t})=>k(e)?0:Y(t,e)))));const f=Se(d);let b=n;if(Le(f)&&K(u))b=a;else{A(t,b,a);const e=Se();Me(f,((t,[s,n])=>We(Ve(e,s,Oe),[t,n])));const s=Oe();Me(g,(t=>Ce(e,t)?0:We(s,t)));const n=Se(),o=(s,n,o,r)=>x(s,(([l,i,c,d])=>{Me(n,((t,[s])=>{const n=Ve(l,t,Se),a=Ie(n,o),i=r?void 0:s;if(a!==i){const s=Oe([[a,i]]),r=we(n);me(n,o,i),ve(Ie(e,t),(([e,t])=>{const a=at(d[e],r,n,s,t);d[e]=k(Qe(a))?null:a}))}})),Le(i)||!j(u,(e=>e((e=>d[e]))))?a.delRow(t,c):k(c)?s[2]=a.addRow(t,d):a.setRow(t,c,d)}));E(b,t,b.addRowListener(t,null,((a,r,l,i)=>{const c=[],d=[],u=Se(),g=b.hasRow(t,l);let h=!g;ve(s,(e=>{const[s,n,a]=i(t,l,e);Y(c,n),Y(d,a),h||=s})),Me(e,(e=>{const[s,,n]=i(t,l,e);(h||s)&&me(u,e,[n])})),h&&o(Fe(n,c,void 0,(([,e])=>(Te(e,l),Le(e)))),u,l,1),g&&o(Fe(n,d,(()=>{const e={};return ve(s,(s=>e[s]=b.getCell(t,l,s))),[Se(),Oe(),void 0,e]}),(([,e])=>{We(e,l)})),u,l)})))}A(t,e,b);const w=(s,n,a,r)=>{const l=t=>e.getCell(n,a,t);_(r,(n=>{const[a,,o,r,i]=Ie(h,n),c=o?.(l,s),[d,u]=Ie(i,s)??[];c!=d&&(k(u)||D(t,u),me(i,s,k(c)?null:[c,...V(t,1,e.addRowListener(a,c,(()=>w(s,a,c,r))))]))})),(s=>{const n=(t,n)=>e.getCell(...k(n)?[o,s,t]:t===o?[o,s,n]:[Ie(h,t)?.[0],Ie(Ie(h,t)?.[4],s)?.[0],n]);b.transaction((()=>j(c,(e=>e(n)))?Me(g,((e,a)=>Pe(b,t,s,e,a(n,s)))):b.delRow(t,s)))})(s)},{3:C}=Ie(h,null);return b.transaction((()=>V(t,1,e.addRowListener(o,null,((s,n,a)=>{e.hasRow(o,a)?w(a,o,a,C):(b.delRow(t,a),ve(h,(({4:e})=>x(Ie(e,a),(([,s])=>{D(t,s),me(e,a)})))))}))))),J},delQueryDefinition:e=>(H(e),I(e),J),getStore:g,getQueryIds:h,forEachQuery:b,hasQuery:w,getTableId:S,addQueryIdsListener:e=>M((()=>e(J))),delListener:e=>(i(e),J),destroy:m,getListenerStats:()=>{const{tables:e,tableIds:t,transaction:s,...n}=a.getListenerStats();return n}};return ge({[f]:[1,1],[f+T]:[0,1],[L]:[0,1],[p]:[0,1],[y]:[0,5],[C]:[1,2],[T]:[0,2],[v]:[1,3]},(([e,t],s)=>{_(e?["get","has","forEach"]:["get"],(e=>J[e+d+s]=(...t)=>a[e+s](...t))),J[u+d+s+c]=(...e)=>a[u+s+c](...P(e,0,t),((s,...n)=>e[t](J,...n)),!0)})),le(J)})),It=Ue((e=>{const t=Se(),n=Se(),a=Se(),o=Se(),[r,l,i]=qe((()=>T)),[c,d,u,g,h,f,,,b,w,C,L]=je(e,(()=>[Se(),Se(),Se(),Se()]),(e=>k(e)?void 0:e+s),r,l),p=(e,t,s)=>x(f(e),(([n,,a])=>{if(!Ce(a,t)){const o=Oe();if(h(e)!=v(e))We(o,t);else{let e=t;for(;!k(e)&&!Ce(o,e);)We(o,e),e=Ie(n,e)}if(s)return o;me(a,t,o)}return Ie(a,t)})),y=(e,t)=>x(f(e),(([,,e])=>me(e,t))),v=e=>Ie(t,e),T={setRelationshipDefinition:(e,s,r,i)=>(me(t,e,r),b(e,s,((t,s)=>{const r=Oe(),i=Oe(),c=Oe(),[d,u]=f(e);ve(s,(([t,s],n)=>{k(t)||(We(i,t),x(Ie(u,t),(e=>{Te(e,n),Le(e)&&me(u,t)}))),k(s)||(We(i,s),Ce(u,s)||me(u,s,Oe()),We(Ie(u,s),n)),We(r,n),me(d,n,s),Me(Ie(o,e),(t=>{Ce(p(e,t),n)&&We(c,t)}))})),t(),ve(r,(t=>l(n,[e,t]))),ve(i,(t=>l(a,[e,t]))),ve(c,(t=>{y(e,t),l(o,[e,t])}))}),Be(i)),T),delRelationshipDefinition:e=>(me(t,e),w(e),T),getStore:c,getRelationshipIds:d,forEachRelationship:t=>u((s=>t(s,(t=>e.forEachRow(h(s),t))))),hasRelationship:g,getLocalTableId:h,getRemoteTableId:v,getRemoteRowId:(e,t)=>Ie(f(e)?.[0],t),getLocalRowIds:(e,t)=>pe(Ie(f(e)?.[1],t)),getLinkedRowIds:(e,t)=>k(f(e))?[t]:pe(p(e,t,!0)),addRelationshipIdsListener:C,addRemoteRowIdListener:(e,t,s)=>r(s,n,[e,t]),addLocalRowIdsListener:(e,t,s)=>r(s,a,[e,t]),addLinkedRowIdsListener:(e,t,s)=>(p(e,t),r(s,o,[e,t])),delListener:e=>(y(...i(e)??[]),T),destroy:L,getListenerStats:()=>({})};return le(T)})),Mt=e=>[e,e],mt=()=>[Se(),Se()],Vt=e=>[...e],Dt=([e,t])=>e===t,Et=e=>JSON.stringify(e,((e,t)=>t instanceof Map?te.fromEntries([...t]):t)),Ht=JSON.parse,At=(e,t,s)=>me(e,t,Ie(e,t)==-s?void 0:s),kt=()=>{let e,t,s=!1,n=!1,a=0,r=[];const d=Se(),h=Se(),y=Se(),m=Se(),V=Se(),D=Se(),E=Se(),H=Se(),A=Se(),F=Se(),z=Se(),N=Se(),O=Se(),j=Se(),U=Oe(),G=Se(),K=Se(),X=Se(),Z=Se(),ee=mt(),te=mt(),se=mt(),ne=mt(),ae=mt(),oe=mt(),re=mt(),ie=mt(),ue=mt(),fe=mt(),pe=mt(),Fe=mt(),ze=mt(),je=mt(),Be=mt(),Ue=mt(),$e=mt(),Ge=mt(),Ke=mt(),Xe=mt(),Ye=mt(),Ze=mt(),tt=Se(),st=mt(),[nt,at,ot,rt]=qe((()=>xs)),lt=e=>{if(!be(e,((e,t)=>W([l,i],t))))return!1;const t=e[l];return!(!J(t)&&t!=o||(Qe(e[i])!=t&&de(e,i),0))},it=(t,s)=>(!e||Ce(z,s)||$t(s))&&be(t,((e,t)=>ct(s,t,e)),(()=>$t(s))),ct=(e,t,s,n)=>be(n?s:ht(s,e,t),((n,a)=>x(dt(e,t,a,n),(e=>(s[a]=e,!0)),(()=>!1))),(()=>$t(e,t))),dt=(t,s,n,a)=>e?x(Ie(Ie(z,t),n),(e=>Qe(a)!=e[l]?$t(t,s,n,a,e[i]):a),(()=>$t(t,s,n,a))):k(Qe(a))?$t(t,s,n,a):a,ut=(e,t)=>be(t?e:ft(e),((t,s)=>x(gt(s,t),(t=>(e[s]=t,!0)),(()=>!1))),(()=>_t())),gt=(e,s)=>t?x(Ie(O,e),(t=>Qe(s)!=t[l]?_t(e,s,t[i]):s),(()=>_t(e,s))):k(Qe(s))?_t(e,s):s,ht=(e,t,s)=>(x(Ie(N,t),(([n,a])=>{ve(n,((t,s)=>{ce(e,s)||(e[s]=t)})),ve(a,(n=>{ce(e,n)||$t(t,s,n)}))})),e),ft=e=>(t&&(ve(j,((t,s)=>{ce(e,s)||(e[s]=t)})),ve(U,(t=>{ce(e,t)||_t(t)}))),e),bt=e=>De(z,e,((e,t,s)=>{const n=Se(),a=Oe();De(Ve(z,t,Se),s,((e,t,s)=>{me(e,t,s),x(s[i],(e=>me(n,t,e)),(()=>We(a,t)))})),me(N,t,[n,a])}),((e,t)=>{me(z,t),me(N,t)})),wt=e=>De(O,e,((e,t,s)=>{me(O,t,s),x(s[i],(e=>me(j,t,e)),(()=>We(U,t)))}),((e,t)=>{me(O,t),me(j,t),Te(U,t)})),Ct=e=>he(e)?Is():ys(e),Lt=e=>De(X,e,((e,t,s)=>pt(t,s)),((e,t)=>Ft(t))),pt=(e,t)=>De(Ve(X,e,(()=>(Nt(e,1),me(G,e,_e()),me(K,e,Se()),Se()))),t,((t,s,n)=>yt(e,t,s,n)),((t,s)=>Qt(e,t,s))),yt=(e,t,s,n,a)=>De(Ve(t,s,(()=>(Ot(e,s,1),Se()))),n,((t,n,a)=>vt(e,s,t,n,a)),((n,o)=>zt(e,t,s,n,o,a))),vt=(e,t,s,n,a)=>{Ce(s,n)||Wt(e,t,n,1);const o=Ie(s,n);a!==o&&(jt(e,t,n,o,a),me(s,n,a))},Tt=(e,t,s,n,a)=>x(Ie(t,s),(t=>vt(e,s,t,n,a)),(()=>yt(e,t,s,ht({[n]:a},e,s)))),St=e=>he(e)?Vs():vs(e),Rt=e=>De(Z,e,((e,t,s)=>It(t,s)),((e,t)=>Pt(t))),It=(e,t)=>{Ce(Z,e)||Bt(e,1);const s=Ie(Z,e);t!==s&&(Ut(e,s,t),me(Z,e,t))},xt=(e,t)=>{const[s]=Ie(G,e),n=s(t);return Ce(Ie(X,e),n)?xt(e,t):n},Jt=e=>Ie(X,e)??pt(e,{}),Ft=e=>pt(e,{}),Qt=(e,t,s)=>{const[,n]=Ie(G,e);n(s),yt(e,t,s,{},!0)},zt=(e,t,s,n,a,o)=>{const r=Ie(Ie(N,e)?.[0],a);if(!k(r)&&!o)return vt(e,s,n,a,r);const l=t=>{jt(e,s,t,Ie(n,t)),Wt(e,s,t,-1),me(n,t)};k(r)?l(a):Me(n,l),Le(n)&&(Ot(e,s,-1),Le(me(t,s))&&(Nt(e,-1),me(X,e),me(G,e),me(K,e)))},Pt=e=>{const t=Ie(j,e);if(!k(t))return It(e,t);Ut(e,Ie(Z,e)),Bt(e,-1),me(Z,e)},Nt=(e,t)=>At(d,e,t),Ot=(e,t,s)=>At(Ve(m,e,Se),t,s)&&me(y,e,Ve(y,e,(()=>0))+s),Wt=(e,t,s,n)=>{const a=Ie(K,e),o=Ie(a,s)??0;(0==o&&1==n||1==o&&-1==n)&&At(Ve(h,e,Se),s,n),me(a,s,o!=-n?o+n:null),At(Ve(Ve(V,e,Se),t,Se),s,n)},jt=(e,t,s,n,a)=>{Ve(Ve(Ve(D,e,Se),t,Se),s,(()=>[n,0]))[1]=a,r[3]?.(e,t,s,a)},Bt=(e,t)=>At(E,e,t),Ut=(e,t,s)=>{Ve(H,e,(()=>[t,0]))[1]=s,r[4]?.(e,s)},$t=(e,t,s,n,a)=>(Y(Ve(Ve(Ve(A,e,Se),t,Se),s,(()=>[])),n),a),_t=(e,t,s)=>(Y(Ve(F,e,(()=>[])),t),s),qt=(e,t,s)=>x(Ie(Ie(Ie(D,e),t),s),(([e,t])=>[!0,e,t]),(()=>[!1,...Mt(cs(e,t,s))])),Gt=e=>x(Ie(H,e),(([e,t])=>[!0,e,t]),(()=>[!1,...Mt(gs(e))])),Kt=e=>Le(A)||Le(Ue[e])?0:ve(e?Je(A):A,((t,s)=>ve(t,((t,n)=>ve(t,((t,a)=>at(Ue[e],[s,n,a],t))))))),Xt=e=>Le(F)||Le($e[e])?0:ve(e?ke(F):F,((t,s)=>at($e[e],[s],t))),Yt=(e,t,s,n)=>{if(!Le(e))return at(t,n,(()=>Ee(e))),Me(e,((e,t)=>at(s,[...n??[],e],1==t))),1},Zt=e=>{const t=hs();t!=s&&at(ee[e],void 0,t);const n=Le(fe[e]),a=Le(ze[e])&&Le(je[e])&&Le(ue[e])&&Le(pe[e])&&Le(oe[e])&&Le(re[e])&&Le(ie[e])&&n&&Le(se[e])&&Le(ne[e]),o=Le(Be[e])&&Le(Fe[e])&&Le(ae[e])&&Le(te[e]);if(!a||!o){const t=e?[ke(d),xe(h),ke(y),xe(m),Je(V),Je(D)]:[d,h,y,m,V,D];if(!a){Yt(t[0],se[e],ne[e]),ve(t[1],((t,s)=>Yt(t,oe[e],re[e],[s]))),ve(t[2],((t,s)=>{0!=t&&at(ie[e],[s],os(s))}));const s=Oe();ve(t[3],((t,a)=>{Yt(t,ue[e],pe[e],[a])&&!n&&(at(fe[e],[a,null]),We(s,a))})),n||ve(t[5],((t,n)=>{if(!Ce(s,n)){const s=Oe();ve(t,(e=>ve(e,(([t,n],a)=>n!==t?We(s,a):Te(e,a))))),ve(s,(t=>at(fe[e],[n,t])))}})),ve(t[4],((t,s)=>ve(t,((t,n)=>Yt(t,ze[e],je[e],[s,n])))))}if(!o){let s;ve(t[5],((t,n)=>{let a;ve(t,((t,o)=>{let r;ve(t,(([t,l],i)=>{l!==t&&(at(Be[e],[n,o,i],l,t,qt),s=a=r=1)})),r&&at(Fe[e],[n,o],qt)})),a&&at(ae[e],[n],qt)})),s&&at(te[e],void 0,qt)}}},es=e=>{const t=Ls();t!=n&&at(Ge[e],void 0,t);const s=Le(Xe[e])&&Le(Ye[e]),a=Le(Ze[e])&&Le(Ke[e]);if(!s||!a){const t=e?[ke(E),ke(H)]:[E,H];if(s||Yt(t[0],Xe[e],Ye[e]),!a){let s;ve(t[1],(([t,n],a)=>{n!==t&&(at(Ze[e],[a],n,t,Gt),s=1)})),s&&at(Ke[e],void 0,Gt)}}},ts=(e,...t)=>(Hs((()=>e(...q(t,M)))),xs),ss=()=>Ae(X),ns=()=>Re(X),as=e=>Re(Ie(K,M(e))),os=e=>we(Ie(X,M(e))),rs=e=>Re(Ie(X,M(e))),ls=(e,t,s,n=0,a)=>{return q(P($((o=Ie(X,M(e)),r=(e,s)=>[k(t)?s:Ie(e,M(t)),s],q([...o?.entries()??[]],(([e,t])=>r(t,e)))),(([e],[t])=>et(e,t)*(s?-1:1))),n,k(a)?a:n+a),(([,e])=>e));var o,r},is=(e,t)=>Re(Ie(Ie(X,M(e)),M(t))),cs=(e,t,s)=>Ie(Ie(Ie(X,M(e)),M(t)),M(s)),ds=()=>Ee(Z),us=()=>Re(Z),gs=e=>Ie(Z,M(e)),hs=()=>!Le(X),fs=e=>Ce(X,M(e)),bs=(e,t)=>Ce(Ie(K,M(e)),M(t)),ws=(e,t)=>Ce(Ie(X,M(e)),M(t)),Cs=(e,t,s)=>Ce(Ie(Ie(X,M(e)),M(t)),M(s)),Ls=()=>!Le(Z),ps=e=>Ce(Z,M(e)),ys=e=>ts((()=>(e=>be(e,it,$t))(e)?Lt(e):0)),vs=e=>ts((()=>ut(e)?Rt(e):0)),Ts=e=>{try{Ct(Ht(e))}catch{}return xs},Ss=t=>ts((()=>{if((e=be(t,(e=>be(e,lt))))&&(bt(t),!Le(X))){const e=ss();Is(),ys(e)}})),Rs=e=>ts((()=>{if(t=(e=>be(e,lt))(e)){const s=ds();Es(),Vs(),t=!0,wt(e),vs(s)}})),Is=()=>ts((()=>Lt({}))),Ms=e=>ts((e=>Ce(X,e)?Ft(e):0),e),ms=(e,t)=>ts(((e,t)=>x(Ie(X,e),(s=>Ce(s,t)?Qt(e,s,t):0))),e,t),Vs=()=>ts((()=>Rt({}))),Ds=()=>ts((()=>{bt({}),e=!1})),Es=()=>ts((()=>{wt({}),t=!1})),Hs=(e,t)=>{if(-1!=a){As();const s=e();return ks(t),s}},As=()=>(-1!=a&&a++,1==a&&(r[0]?.(),at(tt)),xs),ks=e=>(a>0&&(a--,0==a&&(a=1,Kt(1),Le(D)||Zt(1),Xt(1),Le(H)||es(1),e?.(xs)&&(ve(D,((e,t)=>ve(e,((e,s)=>ve(e,(([e],n)=>Pe(xs,t,s,n,e))))))),ye(D),ve(H,(([e],t)=>Ne(xs,t,e))),ye(H)),at(st[0],void 0),a=-1,Kt(0),Le(D)||Zt(0),Xt(0),Le(H)||es(0),r[1]?.(),at(st[1],void 0),r[2]?.(),a=0,s=hs(),n=Ls(),_([d,h,y,m,V,D,A,E,H,F],ye))),xs),xs={getContent:()=>[ss(),ds()],getTables:ss,getTableIds:ns,getTable:e=>He(Ie(X,M(e))),getTableCellIds:as,getRowCount:os,getRowIds:rs,getSortedRowIds:ls,getRow:(e,t)=>Ee(Ie(Ie(X,M(e)),M(t))),getCellIds:is,getCell:cs,getValues:ds,getValueIds:us,getValue:gs,hasTables:hs,hasTable:fs,hasTableCell:bs,hasRow:ws,hasCell:Cs,hasValues:Ls,hasValue:ps,getTablesJson:()=>Et(X),getValuesJson:()=>Et(Z),getJson:()=>Et([X,Z]),getTablesSchemaJson:()=>Et(z),getValuesSchemaJson:()=>Et(O),getSchemaJson:()=>Et([z,O]),hasTablesSchema:()=>e,hasValuesSchema:()=>t,setContent:([e,t])=>ts((()=>{(he(e)?Is:ys)(e),(he(t)?Vs:vs)(t)})),setTables:ys,setTable:(e,t)=>ts((e=>it(t,e)?pt(e,t):0),e),setRow:(e,t,s)=>ts(((e,t)=>ct(e,t,s)?yt(e,Jt(e),t,s):0),e,t),addRow:(e,t,s=!0)=>Hs((()=>{let n;return ct(e,n,t)&&(e=M(e),yt(e,Jt(e),n=xt(e,s?1:0),t)),n})),setPartialRow:(e,t,s)=>ts(((e,t)=>{if(ct(e,t,s,1)){const n=Jt(e);ge(s,((s,a)=>Tt(e,n,t,a,s)))}}),e,t),setCell:(e,t,s,n)=>ts(((e,t,s)=>x(dt(e,t,s,Q(n)?n(cs(e,t,s)):n),(n=>Tt(e,Jt(e),t,s,n)))),e,t,s),setValues:vs,setPartialValues:e=>ts((()=>ut(e,1)?ge(e,((e,t)=>It(t,e))):0)),setValue:(e,t)=>ts((e=>x(gt(e,Q(t)?t(gs(e)):t),(t=>It(e,t)))),e),applyChanges:e=>ts((()=>{ge(e[0],((e,t)=>k(e)?Ms(t):ge(e,((e,s)=>k(e)?ms(t,s):ge(e,((e,n)=>Pe(xs,t,s,n,e))))))),ge(e[1],((e,t)=>Ne(xs,t,e)))})),setTablesJson:Ts,setValuesJson:e=>{try{St(Ht(e))}catch{}return xs},setJson:e=>ts((()=>{try{const[t,s]=Ht(e);Ct(t),St(s)}catch{Ts(e)}})),setTablesSchema:Ss,setValuesSchema:Rs,setSchema:(e,t)=>ts((()=>{Ss(e),Rs(t)})),delTables:Is,delTable:Ms,delRow:ms,delCell:(e,t,s,n)=>ts(((e,t,s)=>x(Ie(X,e),(a=>x(Ie(a,t),(o=>Ce(o,s)?zt(e,a,t,o,s,n):0))))),e,t,s),delValues:Vs,delValue:e=>ts((e=>Ce(Z,e)?Pt(e):0),e),delTablesSchema:Ds,delValuesSchema:Es,delSchema:()=>ts((()=>{Ds(),Es()})),transaction:Hs,startTransaction:As,getTransactionChanges:()=>[Ee(D,((e,t)=>-1===Ie(d,t)?void 0:Ee(e,((e,s)=>-1===Ie(Ie(m,t),s)?void 0:Ee(e,(([,e])=>e),(e=>Dt(e)))),Le,he)),Le,he),Ee(H,(([,e])=>e),(e=>Dt(e))),1],getTransactionLog:()=>[!Le(D),!Le(H),Ae(D,Vt,Dt),Ae(A),Ee(H,Vt,Dt),Ee(F),Ee(d),He(m),Ae(V),Ee(E)],finishTransaction:ks,forEachTable:e=>ve(X,((t,s)=>e(s,(e=>ve(t,((t,s)=>e(s,(e=>Me(t,e))))))))),forEachTableCell:(e,t)=>Me(Ie(K,M(e)),t),forEachRow:(e,t)=>ve(Ie(X,M(e)),((e,s)=>t(s,(t=>Me(e,t))))),forEachCell:(e,t,s)=>Me(Ie(Ie(X,M(e)),M(t)),s),forEachValue:e=>Me(Z,e),addSortedRowIdsListener:(e,t,s,n,a,o,r)=>{let l=ls(e,t,s,n,a);return nt((()=>{const r=ls(e,t,s,n,a);B(r,l)||(l=r,o(xs,e,t,s,n,a,l))}),fe[r?1:0],[e,t],[ns])},addStartTransactionListener:e=>nt(e,tt),addWillFinishTransactionListener:e=>nt(e,st[0]),addDidFinishTransactionListener:e=>nt(e,st[1]),callListener:e=>(rt(e),xs),delListener:e=>(ot(e),xs),getListenerStats:()=>({}),isMergeable:()=>!1,createStore:kt,addListener:nt,callListeners:at,setInternalListeners:(e,t,s,n,a)=>r=[e,t,s,n,a]};return ge({[g+b]:[0,ee,[],()=>[hs()]],[b]:[0,te],[w]:[0,se],[g+f]:[1,ne,[ns],e=>[fs(...e)]],[f]:[1,ae,[ns]],[f+T]:[1,oe,[ns]],[g+f+v]:[2,re,[ns,as],e=>[bs(...e)]],[L]:[1,ie,[ns]],[p]:[1,ue,[ns]],[g+C]:[2,pe,[ns,rs],e=>[ws(...e)]],[C]:[2,Fe,[ns,rs]],[T]:[2,ze,[ns,rs]],[g+v]:[3,je,[ns,rs,is],e=>[Cs(...e)]],[v]:[3,Be,[ns,rs,is],e=>Mt(cs(...e))],InvalidCell:[3,Ue],[g+R]:[0,Ge,[],()=>[Ls()]],[R]:[0,Ke],[I]:[0,Xe],[g+S]:[1,Ye,[us],e=>[ps(...e)]],[S]:[1,Ze,[us],e=>Mt(gs(e[0]))],InvalidValue:[1,$e]},(([e,t,s,n],a)=>{xs[u+a+c]=(...a)=>nt(a[e],t[a[e+1]?1:0],e>0?P(a,0,e):void 0,s,n)})),le(xs)},xt=2**36,Jt=2**30,Ft=2**24,Qt=2**18,zt=4096,Pt={HasTable:1,Table:1,TableCellIds:1,HasTableCell:2,RowCount:1,RowIds:1,SortedRowIds:5,HasRow:2,Row:2,CellIds:2,HasCell:3,Cell:3,HasValue:1,Value:1,InvalidCell:3,InvalidValue:1},Nt=(e=s)=>[yt(e),yt(e)];e.createCheckpoints=Ge,e.createCustomPersister=it,e.createCustomSynchronizer=(e,t,n,a,o,r,l={})=>{let i;const c=Se();n(((s,n,a,o)=>{0==a?x(Ie(c,n),(([e,t])=>k(e)||e==s?t(o,s):0)):2==a&&h.isAutoLoading()?g(s,o).then((e=>{i?.(void 0,e)})):3==a&&h.isAutoLoading()?i?.(void 0,o):x(1==a&&h.isAutoSaving()?e.getMergeableContentHashes():4==a?e.getMergeableTableDiff(o):5==a?e.getMergeableRowDiff(o):6==a?e.getMergeableCellDiff(o):7==a?e.getMergeableValueDiff(o):void 0,(e=>{t(s,n,0,e)}))}));const d=async(e,n,a=s)=>new D(((s,r)=>{const l=tt(),i=setTimeout((()=>{Te(c,l),r(`No response from ${e??"anyone"} to '${n}'`)}),1e3*o);me(c,l,[e,(e,t)=>{clearTimeout(i),Te(c,l),s([e,t])}]),t(e,l,n,a)})),u=(e,[t,s])=>{ue(t,(([t,s],n)=>{const a=fe(e[0],n,pt);ue(t,(([e,t],s)=>{const n=fe(a[0],s,pt);ue(e,(([e,t],s)=>n[0][s]=ht(e,t))),n[1]=Ct(n[1],t)})),a[1]=Ct(a[1],s)})),e[1]=Ct(e[1],s)},g=async(t=null,s)=>{k(s)&&([s,t]=await d(t,1));const[n,a]=s,[o,r]=e.getMergeableContentHashes();let l=pt();if(o!=n){const[s,n]=(await d(t,4,e.getMergeableTableHashes()))[0];if(l=s,!he(n)){const[s,a]=(await d(t,5,e.getMergeableRowHashes(n)))[0];if(u(l,s),!he(a)){const s=(await d(t,6,e.getMergeableCellHashes(a)))[0];u(l,s)}}}return[l,r==a?pt():(await d(t,7,e.getMergeableValuesHashes()))[0],1]},h=it(e,(async()=>{const e=await g();return he(e[0][0])&&he(e[1][0])?void 0:e}),(async(s,n)=>{n?t(null,null,3,n):t(null,null,2,e.getMergeableContentHashes())}),(e=>i=e),(()=>i=void 0),r,2,{startSync:async e=>await(await h.startAutoLoad(e)).startAutoSave(),stopSync:()=>h.stopAutoLoad().stopAutoSave(),destroy:()=>(a(),h.stopSync()),getSynchronizerStats:()=>({}),...l});return h},e.createIndexes=st,e.createMergeableStore=e=>{let t=1,n=Nt(),a=0;const o=Se(),r=Oe(),[l,i]=(e=>{let t=0,s=-1;const n=x(e,(e=>{const t=dt(e);return Ye(t/Ft)+Ye(t/Qt)+Ye(t/zt)+Ye(t/64)+Ye(t)}),(()=>tt(5))),a=e=>{const n=t,[a,o]=k(e)||""==e?[0,0]:[Ze(r=e,0)*xt+Ze(r,1)*Jt+Ze(r,2)*Ft+Ze(r,3)*Qt+Ze(r,4)*zt+64*Ze(r,5)+Ze(r,6),Ze(r,7)*Qt+Ze(r,8)*zt+64*Ze(r,9)+Ze(r,10)];var r;t=E(n,a,Date.now()),s=t==n?t==a?E(s,o):s:t==a?o:-1};return[()=>{return a(),o=++s,Ye((e=t)/xt)+Ye(e/Jt)+Ye(e/Ft)+Ye(e/Qt)+Ye(e/zt)+Ye(e/64)+Ye(e)+Ye(o/Qt)+Ye(o/zt)+Ye(o/64)+Ye(o)+n;var e,o},a]})(e),c=kt(),d=e=>{const s=t;return t=0,e(),t=s,b},u=(e,t=0)=>{const a={},o={},[[r,l=s,c=0],d]=e,[u,h]=n,[f,b,w]=u;let C=t?c:w,L=l;ue(r,(([e,n=s,o=0],r)=>{const l=Ve(f,r,yt),[i,c,d]=l;let u=t?o:d,h=n;ue(e,((e,s)=>{const[n,o,l]=g(e,Ve(i,s,yt),fe(fe(a,r,ie),s,ie),t);u^=t?0:(o?bt(s,o):0)^bt(s,l),h=Ct(h,n)})),u^=t?0:wt(c,n),Lt(l,u,n),C^=t?0:(d?bt(r,d):0)^bt(r,l[2]),L=Ct(L,h)})),C^=t?0:wt(b,l),Lt(u,C,l);const[p]=g(d,h,o,t);return i(Ct(L,p)),[a,o,1]},g=(e,t,n,a)=>{const[o,r=s,l=0]=e,[i,c,d]=t;let u=r,g=a?l:d;return ue(o,(([e,t,o=0],r)=>{const l=Ve(i,r,(()=>[void 0,s,0])),[,c,d]=l;(!c||t>c)&&(Lt(l,a?o:dt(Et(e??null)+":"+t),t),l[0]=e,n[r]=e,g^=a?0:bt(r,d)^bt(r,l[2]),u=Ct(u,t))})),g^=a?0:wt(c,r),Lt(t,g,r),[u,d,t[2]]},h=()=>[vt(n[0],(e=>vt(e,(e=>vt(e))))),vt(n[1])],f=e=>d((()=>c.applyChanges(u(e)))),b={getMergeableContent:h,getMergeableContentHashes:()=>[n[0][2],n[1][2]],getMergeableTableHashes:()=>Ee(n[0][0],ft),getMergeableTableDiff:e=>{const t=pt(n[0][1]),s={};return Me(n[0][0],((n,[a,o,r])=>ce(e,n)?r!=e[n]?s[n]=r:0:t[0][n]=Tt([a,o],(e=>Tt(e))))),[t,s]},getMergeableRowHashes:e=>{const t={};return ue(e,((e,s)=>x(Ie(n[0][0],s),(([n,,a])=>a!=e?Me(n,((e,[,,n])=>fe(t,s,ie)[e]=n)):0)))),t},getMergeableRowDiff:e=>{const t=pt(n[0][1]),s={};return ue(e,((e,a)=>Me(Ie(n[0][0],a)?.[0],((n,[o,r,l])=>ce(e,n)?l!==e[n]?fe(s,a,ie)[n]=l:0:fe(t[0],a,pt)[0][n]=Tt([o,r]))))),[t,s]},getMergeableCellHashes:e=>{const t={};return ue(e,((e,s)=>x(Ie(n[0][0],s),(([n])=>ue(e,((e,a)=>x(Ie(n,a),(([n,,o])=>o!==e?Me(n,((e,[,,n])=>fe(fe(t,s,ie),a,ie)[e]=n)):0)))))))),t},getMergeableCellDiff:e=>{const[[t,s]]=n,a={};return ue(e,((e,s)=>ue(e,((e,n)=>x(Ie(t,s),(([t,o])=>x(Ie(t,n),(([t,r])=>Me(t,((t,[l,i,c])=>c!==e[t]?fe(fe(a,s,(()=>pt(o)))[0],n,(()=>pt(r)))[0][t]=[l,i]:0)))))))))),ht(a,s)},getMergeableValuesHashes:()=>Ee(n[1][0],ft),getMergeableValueDiff:e=>{const[,[t,s]]=n,a=Ee(t,gt,(([,,t],s)=>t==e?.[s]));return ht(a,s)},setMergeableContent:e=>d((()=>(e=>z(e)&&2==N(e)&&St(e[0],(e=>be(e,(e=>St(e,(e=>be(e,(e=>St(e,(e=>be(e,(e=>St(e,ze)),void 0,1)))),void 0,1)))),void 0,1)))&&St(e[1],(e=>be(e,(e=>St(e,ze)),void 0,1))))(e)?c.transaction((()=>{c.delTables().delValues(),n=Nt(),c.applyChanges(u(e,1))})):0)),setDefaultContent:e=>(c.transaction((()=>{a=1,c.setContent(e),a=0})),b),getTransactionMergeableChanges:()=>{const[[e,t],[s,a]]=n,l={};ve(o,((t,s)=>x(Ie(e,s),(([e,n])=>{const a={};ve(t,((t,s)=>x(Ie(e,s),(([e,n])=>{const o={};ve(t,(t=>{x(Ie(e,t),(([e,s])=>o[t]=ht(e,s)))})),a[s]=ht(o,n)})))),l[s]=ht(a,n)}))));const i={};return ve(r,(e=>x(Ie(s,e),(([t,s])=>i[e]=ht(t,s))))),[ht(l,t),ht(i,a),1]},applyMergeableChanges:f,merge:e=>{const t=h(),s=e.getMergeableContent();return e.applyMergeableChanges(t),f(s)}};return c.setInternalListeners((()=>{}),(()=>{}),(()=>{ye(o),ye(r)}),((e,n,r,i)=>{We(Ve(Ve(o,e,Se),n,Oe),r),t&&u([[{[e]:[{[n]:[{[r]:[i,a?s:l()]}]}]}],[{}],1])}),((e,n)=>{We(r,e),t&&u([[{}],[{[e]:[n,a?s:l()]}],1])})),ge(c,((e,t)=>b[t]=m(t,"set")||m(t,"del")||m(t,"apply")||V(t,"Transaction")||"callListener"==t?(...t)=>(e(...t),b):m(t,"add")&&V(t,"Listener")?(...s)=>{const n=Pt[P(t,3,-8)]??0,a=s[n];return s[n]=(e,...t)=>a(b,...t),e(...s)}:"isMergeable"==t?()=>!0:e)),le(b)},e.createMetrics=ot,e.createQueries=Rt,e.createRelationships=It,e.createStore=kt,e.defaultSorter=et,e.getUniqueId=tt},"object"==typeof exports&&"undefined"!=typeof module?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t((e="undefined"!=typeof globalThis?globalThis:e||self).TinyBase={});
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined'
+    ? factory(exports)
+    : typeof define === 'function' && define.amd
+      ? define(['exports'], factory)
+      : ((global =
+          typeof globalThis !== 'undefined' ? globalThis : global || self),
+        factory((global.TinyBase = {})));
+})(this, function (exports) {
+  'use strict';
+
+  const getTypeOf = (thing) => typeof thing;
+  const EMPTY_STRING = '';
+  const STRING = getTypeOf(EMPTY_STRING);
+  const BOOLEAN = getTypeOf(true);
+  const NUMBER = getTypeOf(0);
+  const FUNCTION = getTypeOf(getTypeOf);
+  const TYPE = 'type';
+  const DEFAULT = 'default';
+  const SUM = 'sum';
+  const AVG = 'avg';
+  const MIN = 'min';
+  const MAX = 'max';
+  const LISTENER = 'Listener';
+  const RESULT = 'Result';
+  const GET = 'get';
+  const ADD = 'add';
+  const HAS = 'Has';
+  const IDS = 'Ids';
+  const TABLE = 'Table';
+  const TABLES = TABLE + 's';
+  const TABLE_IDS = TABLE + IDS;
+  const ROW = 'Row';
+  const ROW_COUNT = ROW + 'Count';
+  const ROW_IDS = ROW + IDS;
+  const SORTED_ROW_IDS = 'Sorted' + ROW + IDS;
+  const CELL = 'Cell';
+  const CELL_IDS = CELL + IDS;
+  const VALUE = 'Value';
+  const VALUES = VALUE + 's';
+  const VALUE_IDS = VALUE + IDS;
+  const id = (key) => EMPTY_STRING + key;
+  const strStartsWith = (str, prefix) => str.startsWith(prefix);
+  const strEndsWith = (str, suffix) => str.endsWith(suffix);
+
+  const promise = Promise;
+  const mathMax = Math.max;
+  const mathMin = Math.min;
+  const isFiniteNumber = isFinite;
+  const isInstanceOf = (thing, cls) => thing instanceof cls;
+  const isUndefined = (thing) => thing == void 0;
+  const ifNotUndefined = (value, then, otherwise) =>
+    isUndefined(value) ? otherwise?.() : then(value);
+  const isTypeStringOrBoolean = (type) => type == STRING || type == BOOLEAN;
+  const isString = (thing) => getTypeOf(thing) == STRING;
+  const isFunction = (thing) => getTypeOf(thing) == FUNCTION;
+  const isArray = (thing) => Array.isArray(thing);
+  const slice = (arrayOrString, start, end) => arrayOrString.slice(start, end);
+  const size = (arrayOrString) => arrayOrString.length;
+  const test = (regex, subject) => regex.test(subject);
+  const getUndefined = () => void 0;
+  const promiseNew = (resolver) => new promise(resolver);
+  const errorNew = (message) => {
+    throw new Error(message);
+  };
+
+  const arrayHas = (array, value) => array.includes(value);
+  const arrayEvery = (array, cb) => array.every(cb);
+  const arrayIsEqual = (array1, array2) =>
+    size(array1) === size(array2) &&
+    arrayEvery(array1, (value1, index) => array2[index] === value1);
+  const arrayIsSorted = (array, sorter) =>
+    arrayEvery(
+      array,
+      (value, index) => index == 0 || sorter(array[index - 1], value) <= 0,
+    );
+  const arraySort = (array, sorter) => array.sort(sorter);
+  const arrayForEach = (array, cb) => array.forEach(cb);
+  const arrayMap = (array, cb) => array.map(cb);
+  const arraySum = (array) => arrayReduce(array, (i, j) => i + j, 0);
+  const arrayIsEmpty = (array) => size(array) == 0;
+  const arrayReduce = (array, cb, initial) => array.reduce(cb, initial);
+  const arrayClear = (array, to) => array.splice(0, to);
+  const arrayPush = (array, ...values) => array.push(...values);
+  const arrayPop = (array) => array.pop();
+  const arrayUnshift = (array, ...values) => array.unshift(...values);
+  const arrayShift = (array) => array.shift();
+
+  const object = Object;
+  const getPrototypeOf = (obj) => object.getPrototypeOf(obj);
+  const objEntries = object.entries;
+  const objFrozen = object.isFrozen;
+  const isObject = (obj) =>
+    !isUndefined(obj) &&
+    ifNotUndefined(
+      getPrototypeOf(obj),
+      (objPrototype) =>
+        objPrototype == object.prototype ||
+        isUndefined(getPrototypeOf(objPrototype)),
+
+      /* istanbul ignore next */
+      () => true,
+    );
+  const objIds = object.keys;
+  const objFreeze = object.freeze;
+  const objNew = (entries = []) => object.fromEntries(entries);
+  const objHas = (obj, id) => id in obj;
+  const objDel = (obj, id) => {
+    delete obj[id];
+    return obj;
+  };
+  const objForEach = (obj, cb) =>
+    arrayForEach(objEntries(obj), ([id, value]) => cb(value, id));
+  const objToArray = (obj, cb) =>
+    arrayMap(objEntries(obj), ([id, value]) => cb(value, id));
+  const objSize = (obj) => size(objIds(obj));
+  const objIsEmpty = (obj) => isObject(obj) && objSize(obj) == 0;
+  const objEnsure = (obj, id, getDefaultValue) => {
+    if (!objHas(obj, id)) {
+      obj[id] = getDefaultValue();
+    }
+    return obj[id];
+  };
+  const objValidate = (obj, validateChild, onInvalidObj, emptyIsValid = 0) => {
+    if (
+      isUndefined(obj) ||
+      !isObject(obj) ||
+      (!emptyIsValid && objIsEmpty(obj)) ||
+      objFrozen(obj)
+    ) {
+      onInvalidObj?.();
+      return false;
+    }
+    objToArray(obj, (child, id) => {
+      if (!validateChild(child, id)) {
+        objDel(obj, id);
+      }
+    });
+    return emptyIsValid ? true : !objIsEmpty(obj);
+  };
+
+  const collSizeN = (collSizer) => (coll) =>
+    arrayReduce(
+      collValues(coll),
+      (total, coll2) => total + collSizer(coll2),
+      0,
+    );
+  const collSize = (coll) => coll?.size ?? 0;
+  const collSize2 = collSizeN(collSize);
+  const collSize3 = collSizeN(collSize2);
+  const collSize4 = collSizeN(collSize3);
+  const collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
+  const collIsEmpty = (coll) => isUndefined(coll) || collSize(coll) == 0;
+  const collValues = (coll) => [...(coll?.values() ?? [])];
+  const collClear = (coll) => coll.clear();
+  const collForEach = (coll, cb) => coll?.forEach(cb);
+  const collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
+
+  const mapNew = (entries) => new Map(entries);
+  const mapKeys = (map) => [...(map?.keys() ?? [])];
+  const mapGet = (map, key) => map?.get(key);
+  const mapForEach = (map, cb) =>
+    collForEach(map, (value, key) => cb(key, value));
+  const mapMap = (coll, cb) =>
+    arrayMap([...(coll?.entries() ?? [])], ([key, value]) => cb(value, key));
+  const mapSet = (map, key, value) =>
+    isUndefined(value) ? (collDel(map, key), map) : map?.set(key, value);
+  const mapEnsure = (map, key, getDefaultValue, hadExistingValue) => {
+    if (!collHas(map, key)) {
+      mapSet(map, key, getDefaultValue());
+    } else {
+      hadExistingValue?.(mapGet(map, key));
+    }
+    return mapGet(map, key);
+  };
+  const mapMatch = (map, obj, set, del = mapSet) => {
+    objToArray(obj, (value, id) => set(map, id, value));
+    mapForEach(map, (id) => (objHas(obj, id) ? 0 : del(map, id)));
+    return map;
+  };
+  const mapToObj = (map, valueMapper, excludeMapValue, excludeObjValue) => {
+    const obj = {};
+    collForEach(map, (mapValue, id) => {
+      if (!excludeMapValue?.(mapValue, id)) {
+        const objValue = valueMapper ? valueMapper(mapValue, id) : mapValue;
+        excludeObjValue?.(objValue) ? 0 : (obj[id] = objValue);
+      }
+    });
+    return obj;
+  };
+  const mapToObj2 = (map, valueMapper, excludeMapValue) =>
+    mapToObj(
+      map,
+      (childMap) => mapToObj(childMap, valueMapper, excludeMapValue),
+      collIsEmpty,
+      objIsEmpty,
+    );
+  const mapToObj3 = (map, valueMapper, excludeMapValue) =>
+    mapToObj(
+      map,
+      (childMap) => mapToObj2(childMap, valueMapper, excludeMapValue),
+      collIsEmpty,
+      objIsEmpty,
+    );
+  const mapClone = (map, mapValue) => {
+    const map2 = mapNew();
+    collForEach(map, (value, key) => map2.set(key, mapValue?.(value) ?? value));
+    return map2;
+  };
+  const mapClone2 = (map) => mapClone(map, mapClone);
+  const mapClone3 = (map) => mapClone(map, mapClone2);
+  const visitTree = (node, path, ensureLeaf, pruneLeaf, p = 0) =>
+    ifNotUndefined(
+      (ensureLeaf ? mapEnsure : mapGet)(
+        node,
+        path[p],
+        p > size(path) - 2 ? ensureLeaf : mapNew,
+      ),
+      (nodeOrLeaf) => {
+        if (p > size(path) - 2) {
+          if (pruneLeaf?.(nodeOrLeaf)) {
+            mapSet(node, path[p]);
+          }
+          return nodeOrLeaf;
+        }
+        const leaf = visitTree(nodeOrLeaf, path, ensureLeaf, pruneLeaf, p + 1);
+        if (collIsEmpty(nodeOrLeaf)) {
+          mapSet(node, path[p]);
+        }
+        return leaf;
+      },
+    );
+
+  const getCellOrValueType = (cellOrValue) => {
+    const type = getTypeOf(cellOrValue);
+    return isTypeStringOrBoolean(type) ||
+      (type == NUMBER && isFiniteNumber(cellOrValue))
+      ? type
+      : void 0;
+  };
+  const isCellOrValueOrNullOrUndefined = (cellOrValue) =>
+    isUndefined(cellOrValue) || !isUndefined(getCellOrValueType(cellOrValue));
+  const setOrDelCell = (store, tableId, rowId, cellId, cell) =>
+    isUndefined(cell)
+      ? store.delCell(tableId, rowId, cellId, true)
+      : store.setCell(tableId, rowId, cellId, cell);
+  const setOrDelValue = (store, valueId, value) =>
+    isUndefined(value)
+      ? store.delValue(valueId)
+      : store.setValue(valueId, value);
+
+  const setNew = (entryOrEntries) =>
+    new Set(
+      isArray(entryOrEntries) || isUndefined(entryOrEntries)
+        ? entryOrEntries
+        : [entryOrEntries],
+    );
+  const setAdd = (set, value) => set?.add(value);
+
+  const getDefinableFunctions = (
+    store,
+    getDefaultThing,
+    validateRowValue,
+    addListener,
+    callListeners,
+  ) => {
+    const hasRow = store.hasRow;
+    const tableIds = mapNew();
+    const things = mapNew();
+    const thingIdListeners = mapNew();
+    const allRowValues = mapNew();
+    const allSortKeys = mapNew();
+    const storeListenerIds = mapNew();
+    const getStore = () => store;
+    const getThingIds = () => mapKeys(tableIds);
+    const forEachThing = (cb) => mapForEach(things, cb);
+    const hasThing = (id) => collHas(things, id);
+    const getTableId = (id) => mapGet(tableIds, id);
+    const getThing = (id) => mapGet(things, id);
+    const setThing = (id, thing) => mapSet(things, id, thing);
+    const addStoreListeners = (id, andCall, ...listenerIds) => {
+      const set = mapEnsure(storeListenerIds, id, setNew);
+      arrayForEach(
+        listenerIds,
+        (listenerId) =>
+          setAdd(set, listenerId) && andCall && store.callListener(listenerId),
+      );
+      return listenerIds;
+    };
+    const delStoreListeners = (id, ...listenerIds) =>
+      ifNotUndefined(mapGet(storeListenerIds, id), (allListenerIds) => {
+        arrayForEach(
+          arrayIsEmpty(listenerIds) ? collValues(allListenerIds) : listenerIds,
+          (listenerId) => {
+            store.delListener(listenerId);
+            collDel(allListenerIds, listenerId);
+          },
+        );
+        if (collIsEmpty(allListenerIds)) {
+          mapSet(storeListenerIds, id);
+        }
+      });
+    const setDefinition = (id, tableId) => {
+      mapSet(tableIds, id, tableId);
+      if (!collHas(things, id)) {
+        mapSet(things, id, getDefaultThing());
+        mapSet(allRowValues, id, mapNew());
+        mapSet(allSortKeys, id, mapNew());
+        callListeners(thingIdListeners);
+      }
+    };
+    const setDefinitionAndListen = (
+      id,
+      tableId,
+      onChanged,
+      getRowValue,
+      getSortKey,
+    ) => {
+      setDefinition(id, tableId);
+      const changedRowValues = mapNew();
+      const changedSortKeys = mapNew();
+      const rowValues = mapGet(allRowValues, id);
+      const sortKeys = mapGet(allSortKeys, id);
+      const processRow = (rowId) => {
+        const getCell = (cellId) => store.getCell(tableId, rowId, cellId);
+        const oldRowValue = mapGet(rowValues, rowId);
+        const newRowValue = hasRow(tableId, rowId)
+          ? validateRowValue(getRowValue(getCell, rowId))
+          : void 0;
+        if (
+          !(
+            oldRowValue === newRowValue ||
+            (isArray(oldRowValue) &&
+              isArray(newRowValue) &&
+              arrayIsEqual(oldRowValue, newRowValue))
+          )
+        ) {
+          mapSet(changedRowValues, rowId, [oldRowValue, newRowValue]);
+        }
+        if (!isUndefined(getSortKey)) {
+          const oldSortKey = mapGet(sortKeys, rowId);
+          const newSortKey = hasRow(tableId, rowId)
+            ? getSortKey(getCell, rowId)
+            : void 0;
+          if (oldSortKey != newSortKey) {
+            mapSet(changedSortKeys, rowId, newSortKey);
+          }
+        }
+      };
+      const processTable = (force) => {
+        onChanged(
+          () => {
+            collForEach(changedRowValues, ([, newRowValue], rowId) =>
+              mapSet(rowValues, rowId, newRowValue),
+            );
+            collForEach(changedSortKeys, (newSortKey, rowId) =>
+              mapSet(sortKeys, rowId, newSortKey),
+            );
+          },
+          changedRowValues,
+          changedSortKeys,
+          rowValues,
+          sortKeys,
+          force,
+        );
+        collClear(changedRowValues);
+        collClear(changedSortKeys);
+      };
+      mapForEach(rowValues, processRow);
+      if (store.hasTable(tableId)) {
+        arrayForEach(store.getRowIds(tableId), (rowId) => {
+          if (!collHas(rowValues, rowId)) {
+            processRow(rowId);
+          }
+        });
+      }
+      processTable(true);
+      delStoreListeners(id);
+      addStoreListeners(
+        id,
+        0,
+        store.addRowListener(tableId, null, (_store, _tableId, rowId) =>
+          processRow(rowId),
+        ),
+        store.addTableListener(tableId, () => processTable()),
+      );
+    };
+    const delDefinition = (id) => {
+      mapSet(tableIds, id);
+      mapSet(things, id);
+      mapSet(allRowValues, id);
+      mapSet(allSortKeys, id);
+      delStoreListeners(id);
+      callListeners(thingIdListeners);
+    };
+    const addThingIdsListener = (listener) =>
+      addListener(listener, thingIdListeners);
+    const destroy = () => mapForEach(storeListenerIds, delDefinition);
+    return [
+      getStore,
+      getThingIds,
+      forEachThing,
+      hasThing,
+      getTableId,
+      getThing,
+      setThing,
+      setDefinition,
+      setDefinitionAndListen,
+      delDefinition,
+      addThingIdsListener,
+      destroy,
+      addStoreListeners,
+      delStoreListeners,
+    ];
+  };
+  const getRowCellFunction = (getRowCell, defaultCellValue) =>
+    isString(getRowCell)
+      ? (getCell) => getCell(getRowCell)
+      : getRowCell ?? (() => defaultCellValue ?? EMPTY_STRING);
+  const getCreateFunction = (getFunction, initFunction) => {
+    const thingsByStore = /* @__PURE__ */ new WeakMap();
+    return (store) => {
+      if (!thingsByStore.has(store)) {
+        thingsByStore.set(store, getFunction(store));
+      }
+      const thing = thingsByStore.get(store);
+      initFunction?.(thing);
+      return thing;
+    };
+  };
+
+  const INTEGER = /^\d+$/;
+  const getPoolFunctions = () => {
+    const pool = [];
+    let nextId = 0;
+    return [
+      (reuse) => (reuse ? arrayShift(pool) : null) ?? EMPTY_STRING + nextId++,
+      (id) => {
+        if (test(INTEGER, id) && size(pool) < 1e3) {
+          arrayPush(pool, id);
+        }
+      },
+    ];
+  };
+
+  const getWildcardedLeaves = (deepIdSet, path = [EMPTY_STRING]) => {
+    const leaves = [];
+    const deep = (node, p) =>
+      p == size(path)
+        ? arrayPush(leaves, node)
+        : path[p] === null
+          ? collForEach(node, (node2) => deep(node2, p + 1))
+          : arrayForEach([path[p], null], (id) =>
+              deep(mapGet(node, id), p + 1),
+            );
+    deep(deepIdSet, 0);
+    return leaves;
+  };
+  const getListenerFunctions = (getThing) => {
+    let thing;
+    const [getId, releaseId] = getPoolFunctions();
+    const allListeners = mapNew();
+    const addListener = (
+      listener,
+      idSetNode,
+      path,
+      pathGetters = [],
+      extraArgsGetter = () => [],
+    ) => {
+      thing ??= getThing();
+      const id = getId(1);
+      mapSet(allListeners, id, [
+        listener,
+        idSetNode,
+        path,
+        pathGetters,
+        extraArgsGetter,
+      ]);
+      setAdd(visitTree(idSetNode, path ?? [EMPTY_STRING], setNew), id);
+      return id;
+    };
+    const callListeners = (idSetNode, ids, ...extraArgs) =>
+      arrayForEach(getWildcardedLeaves(idSetNode, ids), (set) =>
+        collForEach(set, (id) =>
+          mapGet(allListeners, id)[0](thing, ...(ids ?? []), ...extraArgs),
+        ),
+      );
+    const delListener = (id) =>
+      ifNotUndefined(mapGet(allListeners, id), ([, idSetNode, idOrNulls]) => {
+        visitTree(idSetNode, idOrNulls ?? [EMPTY_STRING], void 0, (idSet) => {
+          collDel(idSet, id);
+          return collIsEmpty(idSet) ? 1 : 0;
+        });
+        mapSet(allListeners, id);
+        releaseId(id);
+        return idOrNulls;
+      });
+    const callListener = (id) =>
+      ifNotUndefined(
+        mapGet(allListeners, id),
+        ([listener, , path = [], pathGetters, extraArgsGetter]) => {
+          const callWithIds = (...ids) => {
+            const index = size(ids);
+            index == size(path)
+              ? listener(thing, ...ids, ...extraArgsGetter(ids))
+              : isUndefined(path[index])
+                ? arrayForEach(pathGetters[index]?.(...ids) ?? [], (id2) =>
+                    callWithIds(...ids, id2),
+                  )
+                : callWithIds(...ids, path[index]);
+          };
+          callWithIds();
+        },
+      );
+    return [addListener, callListeners, delListener, callListener];
+  };
+
+  const createCheckpoints = getCreateFunction(
+    (store) => {
+      let backwardIdsSize = 100;
+      let currentId;
+      let cellsDelta = mapNew();
+      let valuesDelta = mapNew();
+      let listening = 1;
+      let nextCheckpointId;
+      let checkpointsChanged;
+      const checkpointIdsListeners = mapNew();
+      const checkpointListeners = mapNew();
+      const [addListener, callListeners, delListenerImpl] =
+        getListenerFunctions(() => checkpoints);
+      const deltas = mapNew();
+      const labels = mapNew();
+      const backwardIds = [];
+      const forwardIds = [];
+      const updateStore = (oldOrNew, checkpointId) => {
+        listening = 0;
+        store.transaction(() => {
+          const [cellsDelta2, valuesDelta2] = mapGet(deltas, checkpointId);
+          collForEach(cellsDelta2, (table, tableId) =>
+            collForEach(table, (row, rowId) =>
+              collForEach(row, (oldNew, cellId) =>
+                setOrDelCell(store, tableId, rowId, cellId, oldNew[oldOrNew]),
+              ),
+            ),
+          );
+          collForEach(valuesDelta2, (oldNew, valueId) =>
+            setOrDelValue(store, valueId, oldNew[oldOrNew]),
+          );
+        });
+        listening = 1;
+      };
+      const clearCheckpointId = (checkpointId) => {
+        mapSet(deltas, checkpointId);
+        mapSet(labels, checkpointId);
+        callListeners(checkpointListeners, [checkpointId]);
+      };
+      const clearCheckpointIds = (checkpointIds, to) =>
+        arrayForEach(
+          arrayClear(checkpointIds, to ?? size(checkpointIds)),
+          clearCheckpointId,
+        );
+      const trimBackwardsIds = () =>
+        clearCheckpointIds(backwardIds, size(backwardIds) - backwardIdsSize);
+      const storeChanged = () =>
+        ifNotUndefined(currentId, () => {
+          arrayPush(backwardIds, currentId);
+          trimBackwardsIds();
+          clearCheckpointIds(forwardIds);
+          currentId = void 0;
+          checkpointsChanged = 1;
+        });
+      const storeUnchanged = () => {
+        currentId = arrayPop(backwardIds);
+        checkpointsChanged = 1;
+      };
+      let cellListenerId;
+      let valueListenerId;
+      const addCheckpointImpl = (label = EMPTY_STRING) => {
+        if (isUndefined(currentId)) {
+          currentId = EMPTY_STRING + nextCheckpointId++;
+          mapSet(deltas, currentId, [cellsDelta, valuesDelta]);
+          setCheckpoint(currentId, label);
+          cellsDelta = mapNew();
+          valuesDelta = mapNew();
+          checkpointsChanged = 1;
+        }
+        return currentId;
+      };
+      const goBackwardImpl = () => {
+        if (!arrayIsEmpty(backwardIds)) {
+          arrayUnshift(forwardIds, addCheckpointImpl());
+          updateStore(0, currentId);
+          currentId = arrayPop(backwardIds);
+          checkpointsChanged = 1;
+        }
+      };
+      const goForwardImpl = () => {
+        if (!arrayIsEmpty(forwardIds)) {
+          arrayPush(backwardIds, currentId);
+          currentId = arrayShift(forwardIds);
+          updateStore(1, currentId);
+          checkpointsChanged = 1;
+        }
+      };
+      const callListenersIfChanged = () => {
+        if (checkpointsChanged) {
+          callListeners(checkpointIdsListeners);
+          checkpointsChanged = 0;
+        }
+      };
+      const setSize = (size2) => {
+        backwardIdsSize = size2;
+        trimBackwardsIds();
+        return checkpoints;
+      };
+      const addCheckpoint = (label) => {
+        const id = addCheckpointImpl(label);
+        callListenersIfChanged();
+        return id;
+      };
+      const setCheckpoint = (checkpointId, label) => {
+        if (
+          hasCheckpoint(checkpointId) &&
+          mapGet(labels, checkpointId) !== label
+        ) {
+          mapSet(labels, checkpointId, label);
+          callListeners(checkpointListeners, [checkpointId]);
+        }
+        return checkpoints;
+      };
+      const getStore = () => store;
+      const getCheckpointIds = () => [
+        [...backwardIds],
+        currentId,
+        [...forwardIds],
+      ];
+      const forEachCheckpoint = (checkpointCallback) =>
+        mapForEach(labels, checkpointCallback);
+      const hasCheckpoint = (checkpointId) => collHas(deltas, checkpointId);
+      const getCheckpoint = (checkpointId) => mapGet(labels, checkpointId);
+      const goBackward = () => {
+        goBackwardImpl();
+        callListenersIfChanged();
+        return checkpoints;
+      };
+      const goForward = () => {
+        goForwardImpl();
+        callListenersIfChanged();
+        return checkpoints;
+      };
+      const goTo = (checkpointId) => {
+        const action = arrayHas(backwardIds, checkpointId)
+          ? goBackwardImpl
+          : arrayHas(forwardIds, checkpointId)
+            ? goForwardImpl
+            : null;
+        while (!isUndefined(action) && checkpointId != currentId) {
+          action();
+        }
+        callListenersIfChanged();
+        return checkpoints;
+      };
+      const addCheckpointIdsListener = (listener) =>
+        addListener(listener, checkpointIdsListeners);
+      const addCheckpointListener = (checkpointId, listener) =>
+        addListener(listener, checkpointListeners, [checkpointId]);
+      const delListener = (listenerId) => {
+        delListenerImpl(listenerId);
+        return checkpoints;
+      };
+      const clear = () => {
+        clearCheckpointIds(backwardIds);
+        clearCheckpointIds(forwardIds);
+        if (!isUndefined(currentId)) {
+          clearCheckpointId(currentId);
+        }
+        currentId = void 0;
+        nextCheckpointId = 0;
+        addCheckpoint();
+        return checkpoints;
+      };
+      const clearForward = () => {
+        if (!arrayIsEmpty(forwardIds)) {
+          clearCheckpointIds(forwardIds);
+          callListeners(checkpointIdsListeners);
+        }
+        return checkpoints;
+      };
+      const destroy = () => {
+        store.delListener(cellListenerId);
+        store.delListener(valueListenerId);
+      };
+      const getListenerStats = () => ({
+        checkpointIds: collSize2(checkpointIdsListeners),
+        checkpoint: collSize2(checkpointListeners),
+      });
+      const _registerListeners = () => {
+        cellListenerId = store.addCellListener(
+          null,
+          null,
+          null,
+          (_store, tableId, rowId, cellId, newCell, oldCell) => {
+            if (listening) {
+              storeChanged();
+              const table = mapEnsure(cellsDelta, tableId, mapNew);
+              const row = mapEnsure(table, rowId, mapNew);
+              const oldNew = mapEnsure(row, cellId, () => [oldCell, void 0]);
+              oldNew[1] = newCell;
+              if (
+                oldNew[0] === newCell &&
+                collIsEmpty(mapSet(row, cellId)) &&
+                collIsEmpty(mapSet(table, rowId)) &&
+                collIsEmpty(mapSet(cellsDelta, tableId))
+              ) {
+                storeUnchanged();
+              }
+              callListenersIfChanged();
+            }
+          },
+        );
+        valueListenerId = store.addValueListener(
+          null,
+          (_store, valueId, newValue, oldValue) => {
+            if (listening) {
+              storeChanged();
+              const oldNew = mapEnsure(valuesDelta, valueId, () => [
+                oldValue,
+                void 0,
+              ]);
+              oldNew[1] = newValue;
+              if (
+                oldNew[0] === newValue &&
+                collIsEmpty(mapSet(valuesDelta, valueId))
+              ) {
+                storeUnchanged();
+              }
+              callListenersIfChanged();
+            }
+          },
+        );
+      };
+      const checkpoints = {
+        setSize,
+        addCheckpoint,
+        setCheckpoint,
+        getStore,
+        getCheckpointIds,
+        forEachCheckpoint,
+        hasCheckpoint,
+        getCheckpoint,
+        goBackward,
+        goForward,
+        goTo,
+        addCheckpointIdsListener,
+        addCheckpointListener,
+        delListener,
+        clear,
+        clearForward,
+        destroy,
+        getListenerStats,
+        _registerListeners,
+      };
+      return objFreeze(checkpoints.clear());
+    },
+    (checkpoints) => checkpoints._registerListeners(),
+  );
+
+  const MASK6 = 63;
+  const ENCODE =
+    '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'.split(
+      EMPTY_STRING,
+    );
+  const DECODE = mapNew(arrayMap(ENCODE, (char, index) => [char, index]));
+  const encode = (num) => ENCODE[num & MASK6];
+  const decode = (str, pos) => mapGet(DECODE, str[pos]) ?? 0;
+
+  const defaultSorter = (sortKey1, sortKey2) =>
+    (sortKey1 ?? 0) < (sortKey2 ?? 0) ? -1 : 1;
+  const getUniqueId = (length = 16) =>
+    arrayReduce(
+      crypto.getRandomValues(new Uint8Array(length)),
+      (uniqueId, number) => uniqueId + encode(number),
+      '',
+    );
+
+  const createIndexes = getCreateFunction((store) => {
+    const sliceIdsListeners = mapNew();
+    const sliceRowIdsListeners = mapNew();
+    const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
+      () => indexes,
+    );
+    const [
+      getStore,
+      getIndexIds,
+      forEachIndexImpl,
+      hasIndex,
+      getTableId,
+      getIndex,
+      setIndex,
+      ,
+      setDefinitionAndListen,
+      delDefinition,
+      addIndexIdsListener,
+      destroy,
+    ] = getDefinableFunctions(
+      store,
+      mapNew,
+      (value) =>
+        isUndefined(value)
+          ? EMPTY_STRING
+          : isArray(value)
+            ? arrayMap(value, id)
+            : id(value),
+      addListener,
+      callListeners,
+    );
+    const hasSlice = (indexId, sliceId) => collHas(getIndex(indexId), sliceId);
+    const setIndexDefinition = (
+      indexId,
+      tableId,
+      getSliceIdOrIds,
+      getSortKey,
+      sliceIdSorter,
+      rowIdSorter = defaultSorter,
+    ) => {
+      const sliceIdArraySorter = isUndefined(sliceIdSorter)
+        ? void 0
+        : ([id1], [id2]) => sliceIdSorter(id1, id2);
+      setDefinitionAndListen(
+        indexId,
+        tableId,
+        (
+          change,
+          changedSliceIds,
+          changedSortKeys,
+          sliceIds,
+          sortKeys,
+          force,
+        ) => {
+          let sliceIdsChanged = 0;
+          const changedSlices = setNew();
+          const unsortedSlices = setNew();
+          const index = getIndex(indexId);
+          collForEach(
+            changedSliceIds,
+            ([oldSliceIdOrIds, newSliceIdOrIds], rowId) => {
+              const oldSliceIds = setNew(oldSliceIdOrIds);
+              const newSliceIds = setNew(newSliceIdOrIds);
+              collForEach(oldSliceIds, (oldSliceId) =>
+                collDel(newSliceIds, oldSliceId)
+                  ? collDel(oldSliceIds, oldSliceId)
+                  : 0,
+              );
+              collForEach(oldSliceIds, (oldSliceId) => {
+                setAdd(changedSlices, oldSliceId);
+                ifNotUndefined(mapGet(index, oldSliceId), (oldSlice) => {
+                  collDel(oldSlice, rowId);
+                  if (collIsEmpty(oldSlice)) {
+                    mapSet(index, oldSliceId);
+                    sliceIdsChanged = 1;
+                  }
+                });
+              });
+              collForEach(newSliceIds, (newSliceId) => {
+                setAdd(changedSlices, newSliceId);
+                if (!collHas(index, newSliceId)) {
+                  mapSet(index, newSliceId, setNew());
+                  sliceIdsChanged = 1;
+                }
+                setAdd(mapGet(index, newSliceId), rowId);
+                if (!isUndefined(getSortKey)) {
+                  setAdd(unsortedSlices, newSliceId);
+                }
+              });
+            },
+          );
+          change();
+          if (!collIsEmpty(sortKeys)) {
+            if (force) {
+              mapForEach(index, (sliceId) => setAdd(unsortedSlices, sliceId));
+            } else {
+              mapForEach(changedSortKeys, (rowId) =>
+                ifNotUndefined(mapGet(sliceIds, rowId), (sliceId) =>
+                  setAdd(unsortedSlices, sliceId),
+                ),
+              );
+            }
+            collForEach(unsortedSlices, (sliceId) => {
+              const rowIdArraySorter = (rowId1, rowId2) =>
+                rowIdSorter(
+                  mapGet(sortKeys, rowId1),
+                  mapGet(sortKeys, rowId2),
+                  sliceId,
+                );
+              const sliceArray = [...mapGet(index, sliceId)];
+              if (!arrayIsSorted(sliceArray, rowIdArraySorter)) {
+                mapSet(
+                  index,
+                  sliceId,
+                  setNew(arraySort(sliceArray, rowIdArraySorter)),
+                );
+                setAdd(changedSlices, sliceId);
+              }
+            });
+          }
+          if (sliceIdsChanged || force) {
+            if (!isUndefined(sliceIdArraySorter)) {
+              const indexArray = [...index];
+              if (!arrayIsSorted(indexArray, sliceIdArraySorter)) {
+                setIndex(
+                  indexId,
+                  mapNew(arraySort(indexArray, sliceIdArraySorter)),
+                );
+                sliceIdsChanged = 1;
+              }
+            }
+          }
+          if (sliceIdsChanged) {
+            callListeners(sliceIdsListeners, [indexId]);
+          }
+          collForEach(changedSlices, (sliceId) =>
+            callListeners(sliceRowIdsListeners, [indexId, sliceId]),
+          );
+        },
+        getRowCellFunction(getSliceIdOrIds),
+        ifNotUndefined(getSortKey, getRowCellFunction),
+      );
+      return indexes;
+    };
+    const forEachIndex = (indexCallback) =>
+      forEachIndexImpl((indexId, slices) =>
+        indexCallback(indexId, (sliceCallback) =>
+          forEachSliceImpl(indexId, sliceCallback, slices),
+        ),
+      );
+    const forEachSlice = (indexId, sliceCallback) =>
+      forEachSliceImpl(indexId, sliceCallback, getIndex(indexId));
+    const forEachSliceImpl = (indexId, sliceCallback, slices) => {
+      const tableId = getTableId(indexId);
+      collForEach(slices, (rowIds, sliceId) =>
+        sliceCallback(sliceId, (rowCallback) =>
+          collForEach(rowIds, (rowId) =>
+            rowCallback(rowId, (cellCallback) =>
+              store.forEachCell(tableId, rowId, cellCallback),
+            ),
+          ),
+        ),
+      );
+    };
+    const delIndexDefinition = (indexId) => {
+      delDefinition(indexId);
+      return indexes;
+    };
+    const getSliceIds = (indexId) => mapKeys(getIndex(indexId));
+    const getSliceRowIds = (indexId, sliceId) =>
+      collValues(mapGet(getIndex(indexId), sliceId));
+    const addSliceIdsListener = (indexId, listener) =>
+      addListener(listener, sliceIdsListeners, [indexId]);
+    const addSliceRowIdsListener = (indexId, sliceId, listener) =>
+      addListener(listener, sliceRowIdsListeners, [indexId, sliceId]);
+    const delListener = (listenerId) => {
+      delListenerImpl(listenerId);
+      return indexes;
+    };
+    const getListenerStats = () => ({
+      sliceIds: collSize2(sliceIdsListeners),
+      sliceRowIds: collSize3(sliceRowIdsListeners),
+    });
+    const indexes = {
+      setIndexDefinition,
+      delIndexDefinition,
+      getStore,
+      getIndexIds,
+      forEachIndex,
+      forEachSlice,
+      hasIndex,
+      hasSlice,
+      getTableId,
+      getSliceIds,
+      getSliceRowIds,
+      addIndexIdsListener,
+      addSliceIdsListener,
+      addSliceRowIdsListener,
+      delListener,
+      destroy,
+      getListenerStats,
+    };
+    return objFreeze(indexes);
+  });
+
+  const numericAggregators = mapNew([
+    [
+      AVG,
+      [
+        (numbers, length) => arraySum(numbers) / length,
+        (metric, add, length) => metric + (add - metric) / (length + 1),
+        (metric, remove, length) => metric + (metric - remove) / (length - 1),
+        (metric, add, remove, length) => metric + (add - remove) / length,
+      ],
+    ],
+    [
+      MAX,
+      [
+        (numbers) => mathMax(...numbers),
+        (metric, add) => mathMax(add, metric),
+        (metric, remove) => (remove == metric ? void 0 : metric),
+        (metric, add, remove) =>
+          remove == metric ? void 0 : mathMax(add, metric),
+      ],
+    ],
+    [
+      MIN,
+      [
+        (numbers) => mathMin(...numbers),
+        (metric, add) => mathMin(add, metric),
+        (metric, remove) => (remove == metric ? void 0 : metric),
+        (metric, add, remove) =>
+          remove == metric ? void 0 : mathMin(add, metric),
+      ],
+    ],
+    [
+      SUM,
+      [
+        (numbers) => arraySum(numbers),
+        (metric, add) => metric + add,
+        (metric, remove) => metric - remove,
+        (metric, add, remove) => metric - remove + add,
+      ],
+    ],
+  ]);
+  const getAggregateValue = (
+    aggregateValue,
+    oldLength,
+    newValues,
+    changedValues,
+    aggregators,
+    force = false,
+  ) => {
+    if (collIsEmpty(newValues)) {
+      return void 0;
+    }
+    const [aggregate, aggregateAdd, aggregateRemove, aggregateReplace] =
+      aggregators;
+    force ||= isUndefined(aggregateValue);
+    collForEach(changedValues, ([oldValue, newValue]) => {
+      if (!force) {
+        aggregateValue = isUndefined(oldValue)
+          ? aggregateAdd?.(aggregateValue, newValue, oldLength++)
+          : isUndefined(newValue)
+            ? aggregateRemove?.(aggregateValue, oldValue, oldLength--)
+            : aggregateReplace?.(aggregateValue, newValue, oldValue, oldLength);
+        force ||= isUndefined(aggregateValue);
+      }
+    });
+    return force
+      ? aggregate(collValues(newValues), collSize(newValues))
+      : aggregateValue;
+  };
+
+  const createMetrics = getCreateFunction((store) => {
+    const metricListeners = mapNew();
+    const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
+      () => metrics,
+    );
+    const [
+      getStore,
+      getMetricIds,
+      forEachMetric,
+      hasMetric,
+      getTableId,
+      getMetric,
+      setMetric,
+      ,
+      setDefinitionAndListen,
+      delDefinition,
+      addMetricIdsListener,
+      destroy,
+    ] = getDefinableFunctions(
+      store,
+      getUndefined,
+      (value) =>
+        isNaN(value) ||
+        isUndefined(value) ||
+        value === true ||
+        value === false ||
+        value === EMPTY_STRING
+          ? void 0
+          : value * 1,
+      addListener,
+      callListeners,
+    );
+    const setMetricDefinition = (
+      metricId,
+      tableId,
+      aggregate,
+      getNumber,
+      aggregateAdd,
+      aggregateRemove,
+      aggregateReplace,
+    ) => {
+      const aggregators = isFunction(aggregate)
+        ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace]
+        : mapGet(numericAggregators, aggregate) ??
+          mapGet(numericAggregators, SUM);
+      setDefinitionAndListen(
+        metricId,
+        tableId,
+        (
+          change,
+          changedNumbers,
+          _changedSortKeys,
+          numbers,
+          _sortKeys,
+          force,
+        ) => {
+          const oldMetric = getMetric(metricId);
+          const oldLength = collSize(numbers);
+          force ||= isUndefined(oldMetric);
+          change();
+          let newMetric = getAggregateValue(
+            oldMetric,
+            oldLength,
+            numbers,
+            changedNumbers,
+            aggregators,
+            force,
+          );
+          if (!isFiniteNumber(newMetric)) {
+            newMetric = void 0;
+          }
+          if (newMetric != oldMetric) {
+            setMetric(metricId, newMetric);
+            callListeners(metricListeners, [metricId], newMetric, oldMetric);
+          }
+        },
+        getRowCellFunction(getNumber, 1),
+      );
+      return metrics;
+    };
+    const delMetricDefinition = (metricId) => {
+      delDefinition(metricId);
+      return metrics;
+    };
+    const addMetricListener = (metricId, listener) =>
+      addListener(listener, metricListeners, [metricId]);
+    const delListener = (listenerId) => {
+      delListenerImpl(listenerId);
+      return metrics;
+    };
+    const getListenerStats = () => ({
+      metric: collSize2(metricListeners),
+    });
+    const metrics = {
+      setMetricDefinition,
+      delMetricDefinition,
+      getStore,
+      getMetricIds,
+      forEachMetric,
+      hasMetric,
+      getTableId,
+      getMetric,
+      addMetricIdsListener,
+      addMetricListener,
+      delListener,
+      destroy,
+      getListenerStats,
+    };
+    return objFreeze(metrics);
+  });
+
+  const scheduleRunning = mapNew();
+  const scheduleActions = mapNew();
+  const getStoreFunctions = (supportedStoreType = 1, store) =>
+    supportedStoreType > 1 && store.isMergeable()
+      ? [
+          1,
+          store.getMergeableContent,
+          store.getTransactionMergeableChanges,
+          ([[changedTables], [changedValues]]) =>
+            !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+          store.setDefaultContent,
+        ]
+      : supportedStoreType != 2
+        ? [
+            0,
+            store.getContent,
+            store.getTransactionChanges,
+            ([changedTables, changedValues]) =>
+              !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+            store.setContent,
+          ]
+        : errorNew('Store type not supported by this Persister');
+  const createCustomPersister = (
+    store,
+    getPersisted,
+    setPersisted,
+    addPersisterListener,
+    delPersisterListener,
+    onIgnoredError,
+    supportedStoreType,
+    extra = {},
+    scheduleId = [],
+  ) => {
+    let loadSave = 0;
+    let loads = 0;
+    let saves = 0;
+    let action;
+    let autoLoadHandle;
+    let autoSaveListenerId;
+    mapEnsure(scheduleRunning, scheduleId, () => 0);
+    mapEnsure(scheduleActions, scheduleId, () => []);
+    const [
+      isMergeableStore,
+      getContent,
+      getChanges,
+      hasChanges,
+      setDefaultContent,
+    ] = getStoreFunctions(supportedStoreType, store);
+    const run = async () => {
+      /* istanbul ignore else */
+      if (!mapGet(scheduleRunning, scheduleId)) {
+        mapSet(scheduleRunning, scheduleId, 1);
+        while (
+          !isUndefined(
+            (action = arrayShift(mapGet(scheduleActions, scheduleId))),
+          )
+        ) {
+          try {
+            await action();
+          } catch (error) {
+            /* istanbul ignore next */
+            onIgnoredError?.(error);
+          }
+        }
+        mapSet(scheduleRunning, scheduleId, 0);
+      }
+    };
+    const setContentOrChanges = (contentOrChanges) => {
+      (isMergeableStore && isArray(contentOrChanges?.[0])
+        ? contentOrChanges?.[2] === 1
+          ? store.applyMergeableChanges
+          : store.setMergeableContent
+        : contentOrChanges?.[2] === 1
+          ? store.applyChanges
+          : store.setContent)(contentOrChanges);
+    };
+    const load = async (initialContent) => {
+      /* istanbul ignore else */
+      if (loadSave != 2) {
+        loadSave = 1;
+        loads++;
+        await schedule(async () => {
+          try {
+            setContentOrChanges(await getPersisted());
+          } catch (error) {
+            onIgnoredError?.(error);
+            if (initialContent) {
+              setDefaultContent(initialContent);
+            }
+          }
+          loadSave = 0;
+        });
+      }
+      return persister;
+    };
+    const startAutoLoad = async (initialContent) => {
+      await stopAutoLoad().load(initialContent);
+      autoLoadHandle = addPersisterListener(async (content, changes) => {
+        if (changes || content) {
+          /* istanbul ignore else */
+          if (loadSave != 2) {
+            loadSave = 1;
+            loads++;
+            setContentOrChanges(changes ?? content);
+            loadSave = 0;
+          }
+        } else {
+          await load();
+        }
+      });
+      return persister;
+    };
+    const stopAutoLoad = () => {
+      if (autoLoadHandle) {
+        delPersisterListener(autoLoadHandle);
+        autoLoadHandle = void 0;
+      }
+      return persister;
+    };
+    const isAutoLoading = () => !isUndefined(autoLoadHandle);
+    const save = async (changes) => {
+      /* istanbul ignore else */
+      if (loadSave != 1) {
+        loadSave = 2;
+        saves++;
+        await schedule(async () => {
+          try {
+            await setPersisted(getContent, changes);
+          } catch (error) {
+            /* istanbul ignore next */
+            onIgnoredError?.(error);
+          }
+          loadSave = 0;
+        });
+      }
+      return persister;
+    };
+    const startAutoSave = async () => {
+      await stopAutoSave().save();
+      autoSaveListenerId = store.addDidFinishTransactionListener(() => {
+        const changes = getChanges();
+        if (hasChanges(changes)) {
+          save(changes);
+        }
+      });
+      return persister;
+    };
+    const stopAutoSave = () => {
+      ifNotUndefined(autoSaveListenerId, store.delListener);
+      autoSaveListenerId = void 0;
+      return persister;
+    };
+    const isAutoSaving = () => !isUndefined(autoSaveListenerId);
+    const schedule = async (...actions) => {
+      arrayPush(mapGet(scheduleActions, scheduleId), ...actions);
+      await run();
+      return persister;
+    };
+    const getStore = () => store;
+    const destroy = () => stopAutoLoad().stopAutoSave();
+    const getStats = () => ({loads, saves});
+    const persister = {
+      load,
+      startAutoLoad,
+      stopAutoLoad,
+      isAutoLoading,
+      save,
+      startAutoSave,
+      stopAutoSave,
+      isAutoSaving,
+      schedule,
+      getStore,
+      destroy,
+      getStats,
+      ...extra,
+    };
+    return objFreeze(persister);
+  };
+
+  const textEncoder = new globalThis.TextEncoder();
+  const getHash = (value) => {
+    let hash = 2166136261;
+    arrayForEach(textEncoder.encode(value), (char) => {
+      hash ^= char;
+      hash +=
+        (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+    });
+    return hash >>> 0;
+  };
+
+  const stampCloneWithHash = ([value, time, hash]) => [value, time, hash];
+  const stampCloneWithoutHash = ([value, time]) => newStamp(value, time);
+  const newStamp = (value, time) => (time ? [value, time] : [value]);
+  const getStampHash = (stamp) => stamp[2];
+  const hashIdAndHash = (id, hash) => getHash(id + ':' + hash);
+  const replaceTimeHash = (oldTime, newTime) =>
+    newTime > oldTime ? (oldTime ? getHash(oldTime) : 0) ^ getHash(newTime) : 0;
+  const getLatestTime = (time1, time2) =>
+    ((time1 ?? '') > (time2 ?? '') ? time1 : time2) ?? '';
+  const stampUpdate = (stamp, hash, time) => {
+    stamp[2] = hash >>> 0;
+    if (time > stamp[1]) {
+      stamp[1] = time;
+    }
+  };
+  const stampNewObj = (time = EMPTY_STRING) => newStamp(objNew(), time);
+  const stampNewMap = (time = EMPTY_STRING) => [mapNew(), time, 0];
+  const stampMapToObjWithHash = (
+    [map, time, hash],
+    mapper = stampCloneWithHash,
+  ) => [mapToObj(map, mapper), time, hash];
+  const stampMapToObjWithoutHash = (
+    [map, time],
+    mapper = stampCloneWithoutHash,
+  ) => newStamp(mapToObj(map, mapper), time);
+  const stampValidate = (stamp, validateThing) =>
+    isArray(stamp) &&
+    size(stamp) == 3 &&
+    isString(stamp[1]) &&
+    getTypeOf(stamp[2]) == NUMBER &&
+    isFiniteNumber(stamp[2]) &&
+    validateThing(stamp[0]);
+
+  const RESPONSE = 0;
+  const GET_CONTENT_HASHES = 1;
+  const CONTENT_HASHES = 2;
+  const CONTENT_DIFF = 3;
+  const GET_TABLE_DIFF = 4;
+  const GET_ROW_DIFF = 5;
+  const GET_CELL_DIFF = 6;
+  const GET_VALUE_DIFF = 7;
+  const createCustomSynchronizer = (
+    store,
+    send,
+    onReceive,
+    destroyImpl,
+    requestTimeoutSeconds,
+    onIgnoredError,
+    extra = {},
+  ) => {
+    let persisterListener;
+    let sends = 0;
+    let receives = 0;
+    const pendingRequests = mapNew();
+    onReceive((fromClientId, requestId, messageType, messageBody) => {
+      receives++;
+      if (messageType == RESPONSE) {
+        ifNotUndefined(
+          mapGet(pendingRequests, requestId),
+          ([toClientId, handleResponse]) =>
+            isUndefined(toClientId) || toClientId == fromClientId
+              ? handleResponse(messageBody, fromClientId)
+              : /* istanbul ignore next */
+                0,
+        );
+      } else if (messageType == CONTENT_HASHES && persister.isAutoLoading()) {
+        getChangesFromOtherStore(fromClientId, messageBody).then((changes) => {
+          persisterListener?.(void 0, changes);
+        });
+      } else if (messageType == CONTENT_DIFF && persister.isAutoLoading()) {
+        persisterListener?.(void 0, messageBody);
+      } else {
+        ifNotUndefined(
+          messageType == GET_CONTENT_HASHES && persister.isAutoSaving()
+            ? store.getMergeableContentHashes()
+            : messageType == GET_TABLE_DIFF
+              ? store.getMergeableTableDiff(messageBody)
+              : messageType == GET_ROW_DIFF
+                ? store.getMergeableRowDiff(messageBody)
+                : messageType == GET_CELL_DIFF
+                  ? store.getMergeableCellDiff(messageBody)
+                  : messageType == GET_VALUE_DIFF
+                    ? store.getMergeableValueDiff(messageBody)
+                    : void 0,
+          (response) => {
+            sends++;
+            send(fromClientId, requestId, RESPONSE, response);
+          },
+        );
+      }
+    });
+    const request = async (
+      toClientId,
+      messageType,
+      messageBody = EMPTY_STRING,
+    ) =>
+      promiseNew((resolve, reject) => {
+        const requestId = getUniqueId();
+        const timeout = setTimeout(() => {
+          collDel(pendingRequests, requestId);
+          reject(
+            `No response from ${toClientId ?? 'anyone'} to '${messageType}'`,
+          );
+        }, requestTimeoutSeconds * 1e3);
+        mapSet(pendingRequests, requestId, [
+          toClientId,
+          (response, fromClientId) => {
+            clearTimeout(timeout);
+            collDel(pendingRequests, requestId);
+            resolve([response, fromClientId]);
+          },
+        ]);
+        sends++;
+        send(toClientId, requestId, messageType, messageBody);
+      });
+    const mergeTablesStamps = (tablesStamp, [tableStamps2, tablesTime2]) => {
+      objForEach(tableStamps2, ([rowStamps2, tableTime2], tableId) => {
+        const tableStamp = objEnsure(tablesStamp[0], tableId, stampNewObj);
+        objForEach(rowStamps2, ([cellStamps2, rowTime2], rowId) => {
+          const rowStamp = objEnsure(tableStamp[0], rowId, stampNewObj);
+          objForEach(
+            cellStamps2,
+            ([cell2, cellTime2], cellId) =>
+              (rowStamp[0][cellId] = newStamp(cell2, cellTime2)),
+          );
+          rowStamp[1] = getLatestTime(rowStamp[1], rowTime2);
+        });
+        tableStamp[1] = getLatestTime(tableStamp[1], tableTime2);
+      });
+      tablesStamp[1] = getLatestTime(tablesStamp[1], tablesTime2);
+    };
+    const getChangesFromOtherStore = async (
+      otherClientId = null,
+      otherContentHashes,
+    ) => {
+      if (isUndefined(otherContentHashes)) {
+        [otherContentHashes, otherClientId] = await request(
+          otherClientId,
+          GET_CONTENT_HASHES,
+        );
+      }
+      const [otherTablesHash, otherValuesHash] = otherContentHashes;
+      const [tablesHash, valuesHash] = store.getMergeableContentHashes();
+      let tablesChanges = stampNewObj();
+      if (tablesHash != otherTablesHash) {
+        const [newTables, differentTableHashes] = (
+          await request(
+            otherClientId,
+            GET_TABLE_DIFF,
+            store.getMergeableTableHashes(),
+          )
+        )[0];
+        tablesChanges = newTables;
+        if (!objIsEmpty(differentTableHashes)) {
+          const [newRows, differentRowHashes] = (
+            await request(
+              otherClientId,
+              GET_ROW_DIFF,
+              store.getMergeableRowHashes(differentTableHashes),
+            )
+          )[0];
+          mergeTablesStamps(tablesChanges, newRows);
+          if (!objIsEmpty(differentRowHashes)) {
+            const newCells = (
+              await request(
+                otherClientId,
+                GET_CELL_DIFF,
+                store.getMergeableCellHashes(differentRowHashes),
+              )
+            )[0];
+            mergeTablesStamps(tablesChanges, newCells);
+          }
+        }
+      }
+      return [
+        tablesChanges,
+        valuesHash == otherValuesHash
+          ? stampNewObj()
+          : (
+              await request(
+                otherClientId,
+                GET_VALUE_DIFF,
+                store.getMergeableValuesHashes(),
+              )
+            )[0],
+        1,
+      ];
+    };
+    const getPersisted = async () => {
+      const changes = await getChangesFromOtherStore();
+      return !objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0])
+        ? changes
+        : void 0;
+    };
+    const setPersisted = async (_getContent, changes) => {
+      sends++;
+      if (changes) {
+        send(null, null, CONTENT_DIFF, changes);
+      } else {
+        send(null, null, CONTENT_HASHES, store.getMergeableContentHashes());
+      }
+    };
+    const addPersisterListener = (listener) => (persisterListener = listener);
+    const delPersisterListener = () => (persisterListener = void 0);
+    const startSync = async (initialContent) =>
+      await (await persister.startAutoLoad(initialContent)).startAutoSave();
+    const stopSync = () => persister.stopAutoLoad().stopAutoSave();
+    const destroy = () => {
+      destroyImpl();
+      return persister.stopSync();
+    };
+    const getSynchronizerStats = () => ({sends, receives});
+    const persister = createCustomPersister(
+      store,
+      getPersisted,
+      setPersisted,
+      addPersisterListener,
+      delPersisterListener,
+      onIgnoredError,
+      2,
+      {startSync, stopSync, destroy, getSynchronizerStats, ...extra},
+    );
+    return persister;
+  };
+
+  const createQueries = getCreateFunction((store) => {
+    const createStore = store.createStore;
+    const preStore = createStore();
+    const resultStore = createStore();
+    const preStoreListenerIds = mapNew();
+    const {
+      addListener,
+      callListeners,
+      delListener: delListenerImpl,
+    } = resultStore;
+    const [
+      getStore,
+      getQueryIds,
+      forEachQuery,
+      hasQuery,
+      getTableId,
+      ,
+      ,
+      setDefinition,
+      ,
+      delDefinition,
+      addQueryIdsListenerImpl,
+      destroy,
+      addStoreListeners,
+      delStoreListeners,
+    ] = getDefinableFunctions(
+      store,
+      () => true,
+      getUndefined,
+      addListener,
+      callListeners,
+    );
+    const addPreStoreListener = (preStore2, queryId, ...listenerIds) =>
+      arrayForEach(listenerIds, (listenerId) =>
+        setAdd(
+          mapEnsure(
+            mapEnsure(preStoreListenerIds, queryId, mapNew),
+            preStore2,
+            setNew,
+          ),
+          listenerId,
+        ),
+      );
+    const resetPreStores = (queryId) => {
+      ifNotUndefined(
+        mapGet(preStoreListenerIds, queryId),
+        (queryPreStoreListenerIds) => {
+          mapForEach(queryPreStoreListenerIds, (preStore2, listenerIds) =>
+            collForEach(listenerIds, (listenerId) =>
+              preStore2.delListener(listenerId),
+            ),
+          );
+          collClear(queryPreStoreListenerIds);
+        },
+      );
+      arrayForEach([resultStore, preStore], (store2) =>
+        store2.delTable(queryId),
+      );
+    };
+    const synchronizeTransactions = (queryId, fromStore, toStore) =>
+      addPreStoreListener(
+        fromStore,
+        queryId,
+        fromStore.addStartTransactionListener(toStore.startTransaction),
+        fromStore.addDidFinishTransactionListener(() =>
+          toStore.finishTransaction(),
+        ),
+      );
+    const setQueryDefinition = (queryId, tableId, build) => {
+      setDefinition(queryId, tableId);
+      resetPreStores(queryId);
+      const selectEntries = [];
+      const joinEntries = [[null, [tableId, null, null, [], mapNew()]]];
+      const wheres = [];
+      const groupEntries = [];
+      const havings = [];
+      const select = (arg1, arg2) => {
+        const selectEntry = isFunction(arg1)
+          ? [size(selectEntries) + EMPTY_STRING, arg1]
+          : [
+              isUndefined(arg2) ? arg1 : arg2,
+              (getTableCell) => getTableCell(arg1, arg2),
+            ];
+        arrayPush(selectEntries, selectEntry);
+        return {as: (selectedCellId) => (selectEntry[0] = selectedCellId)};
+      };
+      const join = (joinedTableId, arg1, arg2) => {
+        const fromIntermediateJoinedTableId =
+          isUndefined(arg2) || isFunction(arg1) ? null : arg1;
+        const onArg = isUndefined(fromIntermediateJoinedTableId) ? arg1 : arg2;
+        const joinEntry = [
+          joinedTableId,
+          [
+            joinedTableId,
+            fromIntermediateJoinedTableId,
+            isFunction(onArg) ? onArg : (getCell) => getCell(onArg),
+            [],
+            mapNew(),
+          ],
+        ];
+        arrayPush(joinEntries, joinEntry);
+        return {as: (joinedTableId2) => (joinEntry[0] = joinedTableId2)};
+      };
+      const where = (arg1, arg2, arg3) =>
+        arrayPush(
+          wheres,
+          isFunction(arg1)
+            ? arg1
+            : isUndefined(arg3)
+              ? (getTableCell) => getTableCell(arg1) === arg2
+              : (getTableCell) => getTableCell(arg1, arg2) === arg3,
+        );
+      const group = (
+        selectedCellId,
+        aggregate,
+        aggregateAdd,
+        aggregateRemove,
+        aggregateReplace,
+      ) => {
+        const groupEntry = [
+          selectedCellId,
+          [
+            selectedCellId,
+            isFunction(aggregate)
+              ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace]
+              : mapGet(numericAggregators, aggregate) ?? [
+                  (_cells, length) => length,
+                ],
+          ],
+        ];
+        arrayPush(groupEntries, groupEntry);
+        return {as: (groupedCellId) => (groupEntry[0] = groupedCellId)};
+      };
+      const having = (arg1, arg2) =>
+        arrayPush(
+          havings,
+          isFunction(arg1)
+            ? arg1
+            : (getSelectedOrGroupedCell) =>
+                getSelectedOrGroupedCell(arg1) === arg2,
+        );
+      build({select, join, where, group, having});
+      const selects = mapNew(selectEntries);
+      if (collIsEmpty(selects)) {
+        return queries;
+      }
+      const joins = mapNew(joinEntries);
+      mapForEach(joins, (asTableId, [, fromAsTableId]) =>
+        ifNotUndefined(mapGet(joins, fromAsTableId), ({3: toAsTableIds}) =>
+          isUndefined(asTableId) ? 0 : arrayPush(toAsTableIds, asTableId),
+        ),
+      );
+      const groups = mapNew(groupEntries);
+      let selectJoinWhereStore = preStore;
+      if (collIsEmpty(groups) && arrayIsEmpty(havings)) {
+        selectJoinWhereStore = resultStore;
+      } else {
+        synchronizeTransactions(queryId, selectJoinWhereStore, resultStore);
+        const groupedSelectedCellIds = mapNew();
+        mapForEach(groups, (groupedCellId, [selectedCellId, aggregators]) =>
+          setAdd(mapEnsure(groupedSelectedCellIds, selectedCellId, setNew), [
+            groupedCellId,
+            aggregators,
+          ]),
+        );
+        const groupBySelectedCellIds = setNew();
+        mapForEach(selects, (selectedCellId) =>
+          collHas(groupedSelectedCellIds, selectedCellId)
+            ? 0
+            : setAdd(groupBySelectedCellIds, selectedCellId),
+        );
+        const tree = mapNew();
+        const writeGroupRow = (
+          leaf,
+          changedGroupedSelectedCells,
+          selectedRowId,
+          forceRemove,
+        ) =>
+          ifNotUndefined(
+            leaf,
+            ([selectedCells, selectedRowIds, groupRowId, groupRow]) => {
+              mapForEach(
+                changedGroupedSelectedCells,
+                (selectedCellId, [newCell]) => {
+                  const selectedCell = mapEnsure(
+                    selectedCells,
+                    selectedCellId,
+                    mapNew,
+                  );
+                  const oldLeafCell = mapGet(selectedCell, selectedRowId);
+                  const newLeafCell = forceRemove ? void 0 : newCell;
+                  if (oldLeafCell !== newLeafCell) {
+                    const oldNewSet = setNew([[oldLeafCell, newLeafCell]]);
+                    const oldLength = collSize(selectedCell);
+                    mapSet(selectedCell, selectedRowId, newLeafCell);
+                    collForEach(
+                      mapGet(groupedSelectedCellIds, selectedCellId),
+                      ([groupedCellId, aggregators]) => {
+                        const aggregateValue = getAggregateValue(
+                          groupRow[groupedCellId],
+                          oldLength,
+                          selectedCell,
+                          oldNewSet,
+                          aggregators,
+                        );
+                        groupRow[groupedCellId] = isUndefined(
+                          getCellOrValueType(aggregateValue),
+                        )
+                          ? null
+                          : aggregateValue;
+                      },
+                    );
+                  }
+                },
+              );
+              if (
+                collIsEmpty(selectedRowIds) ||
+                !arrayEvery(havings, (having2) =>
+                  having2((cellId) => groupRow[cellId]),
+                )
+              ) {
+                resultStore.delRow(queryId, groupRowId);
+              } else if (isUndefined(groupRowId)) {
+                leaf[2] = resultStore.addRow(queryId, groupRow);
+              } else {
+                resultStore.setRow(queryId, groupRowId, groupRow);
+              }
+            },
+          );
+        addPreStoreListener(
+          selectJoinWhereStore,
+          queryId,
+          selectJoinWhereStore.addRowListener(
+            queryId,
+            null,
+            (_store, _tableId, selectedRowId, getCellChange) => {
+              const oldPath = [];
+              const newPath = [];
+              const changedGroupedSelectedCells = mapNew();
+              const rowExists = selectJoinWhereStore.hasRow(
+                queryId,
+                selectedRowId,
+              );
+              let changedLeaf = !rowExists;
+              collForEach(groupBySelectedCellIds, (selectedCellId) => {
+                const [changed, oldCell, newCell] = getCellChange(
+                  queryId,
+                  selectedRowId,
+                  selectedCellId,
+                );
+                arrayPush(oldPath, oldCell);
+                arrayPush(newPath, newCell);
+                changedLeaf ||= changed;
+              });
+              mapForEach(groupedSelectedCellIds, (selectedCellId) => {
+                const [changed, , newCell] = getCellChange(
+                  queryId,
+                  selectedRowId,
+                  selectedCellId,
+                );
+                if (changedLeaf || changed) {
+                  mapSet(changedGroupedSelectedCells, selectedCellId, [
+                    newCell,
+                  ]);
+                }
+              });
+              if (changedLeaf) {
+                writeGroupRow(
+                  visitTree(tree, oldPath, void 0, ([, selectedRowIds]) => {
+                    collDel(selectedRowIds, selectedRowId);
+                    return collIsEmpty(selectedRowIds);
+                  }),
+                  changedGroupedSelectedCells,
+                  selectedRowId,
+                  1,
+                );
+              }
+              if (rowExists) {
+                writeGroupRow(
+                  visitTree(
+                    tree,
+                    newPath,
+                    () => {
+                      const groupRow = {};
+                      collForEach(
+                        groupBySelectedCellIds,
+                        (selectedCellId) =>
+                          (groupRow[selectedCellId] =
+                            selectJoinWhereStore.getCell(
+                              queryId,
+                              selectedRowId,
+                              selectedCellId,
+                            )),
+                      );
+                      return [mapNew(), setNew(), void 0, groupRow];
+                    },
+                    ([, selectedRowIds]) => {
+                      setAdd(selectedRowIds, selectedRowId);
+                    },
+                  ),
+                  changedGroupedSelectedCells,
+                  selectedRowId,
+                );
+              }
+            },
+          ),
+        );
+      }
+      synchronizeTransactions(queryId, store, selectJoinWhereStore);
+      const writeSelectRow = (rootRowId) => {
+        const getTableCell = (arg1, arg2) =>
+          store.getCell(
+            ...(isUndefined(arg2)
+              ? [tableId, rootRowId, arg1]
+              : arg1 === tableId
+                ? [tableId, rootRowId, arg2]
+                : [
+                    mapGet(joins, arg1)?.[0],
+                    mapGet(mapGet(joins, arg1)?.[4], rootRowId)?.[0],
+                    arg2,
+                  ]),
+          );
+        selectJoinWhereStore.transaction(() =>
+          arrayEvery(wheres, (where2) => where2(getTableCell))
+            ? mapForEach(selects, (asCellId, tableCellGetter) =>
+                setOrDelCell(
+                  selectJoinWhereStore,
+                  queryId,
+                  rootRowId,
+                  asCellId,
+                  tableCellGetter(getTableCell, rootRowId),
+                ),
+              )
+            : selectJoinWhereStore.delRow(queryId, rootRowId),
+        );
+      };
+      const listenToTable = (rootRowId, tableId2, rowId, joinedTableIds2) => {
+        const getCell = (cellId) => store.getCell(tableId2, rowId, cellId);
+        arrayForEach(joinedTableIds2, (remoteAsTableId) => {
+          const [realJoinedTableId, , on, nextJoinedTableIds, remoteIdPair] =
+            mapGet(joins, remoteAsTableId);
+          const remoteRowId = on?.(getCell, rootRowId);
+          const [previousRemoteRowId, previousRemoteListenerId] =
+            mapGet(remoteIdPair, rootRowId) ?? [];
+          if (remoteRowId != previousRemoteRowId) {
+            if (!isUndefined(previousRemoteListenerId)) {
+              delStoreListeners(queryId, previousRemoteListenerId);
+            }
+            mapSet(
+              remoteIdPair,
+              rootRowId,
+              isUndefined(remoteRowId)
+                ? null
+                : [
+                    remoteRowId,
+                    ...addStoreListeners(
+                      queryId,
+                      1,
+                      store.addRowListener(realJoinedTableId, remoteRowId, () =>
+                        listenToTable(
+                          rootRowId,
+                          realJoinedTableId,
+                          remoteRowId,
+                          nextJoinedTableIds,
+                        ),
+                      ),
+                    ),
+                  ],
+            );
+          }
+        });
+        writeSelectRow(rootRowId);
+      };
+      const {3: joinedTableIds} = mapGet(joins, null);
+      selectJoinWhereStore.transaction(() =>
+        addStoreListeners(
+          queryId,
+          1,
+          store.addRowListener(tableId, null, (_store, _tableId, rootRowId) => {
+            if (store.hasRow(tableId, rootRowId)) {
+              listenToTable(rootRowId, tableId, rootRowId, joinedTableIds);
+            } else {
+              selectJoinWhereStore.delRow(queryId, rootRowId);
+              collForEach(joins, ({4: idsByRootRowId}) =>
+                ifNotUndefined(
+                  mapGet(idsByRootRowId, rootRowId),
+                  ([, listenerId]) => {
+                    delStoreListeners(queryId, listenerId);
+                    mapSet(idsByRootRowId, rootRowId);
+                  },
+                ),
+              );
+            }
+          }),
+        ),
+      );
+      return queries;
+    };
+    const delQueryDefinition = (queryId) => {
+      resetPreStores(queryId);
+      delDefinition(queryId);
+      return queries;
+    };
+    const addQueryIdsListener = (listener) =>
+      addQueryIdsListenerImpl(() => listener(queries));
+    const delListener = (listenerId) => {
+      delListenerImpl(listenerId);
+      return queries;
+    };
+    const getListenerStats = () => {
+      const {
+        tables: _1,
+        tableIds: _2,
+        transaction: _3,
+        ...stats
+      } = resultStore.getListenerStats();
+      return stats;
+    };
+    const queries = {
+      setQueryDefinition,
+      delQueryDefinition,
+      getStore,
+      getQueryIds,
+      forEachQuery,
+      hasQuery,
+      getTableId,
+      addQueryIdsListener,
+      delListener,
+      destroy,
+      getListenerStats,
+    };
+    objToArray(
+      {
+        [TABLE]: [1, 1],
+        [TABLE + CELL_IDS]: [0, 1],
+        [ROW_COUNT]: [0, 1],
+        [ROW_IDS]: [0, 1],
+        [SORTED_ROW_IDS]: [0, 5],
+        [ROW]: [1, 2],
+        [CELL_IDS]: [0, 2],
+        [CELL]: [1, 3],
+      },
+      ([hasAndForEach, argumentCount], gettable) => {
+        arrayForEach(
+          hasAndForEach ? [GET, 'has', 'forEach'] : [GET],
+          (prefix) =>
+            (queries[prefix + RESULT + gettable] = (...args) =>
+              resultStore[prefix + gettable](...args)),
+        );
+        queries[ADD + RESULT + gettable + LISTENER] = (...args) =>
+          resultStore[ADD + gettable + LISTENER](
+            ...slice(args, 0, argumentCount),
+            (_store, ...listenerArgs) =>
+              args[argumentCount](queries, ...listenerArgs),
+            true,
+          );
+      },
+    );
+    return objFreeze(queries);
+  });
+
+  const createRelationships = getCreateFunction((store) => {
+    const remoteTableIds = mapNew();
+    const remoteRowIdListeners = mapNew();
+    const localRowIdsListeners = mapNew();
+    const linkedRowIdsListeners = mapNew();
+    const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
+      () => relationships,
+    );
+    const [
+      getStore,
+      getRelationshipIds,
+      forEachRelationshipImpl,
+      hasRelationship,
+      getLocalTableId,
+      getRelationship,
+      ,
+      ,
+      setDefinitionAndListen,
+      delDefinition,
+      addRelationshipIdsListener,
+      destroy,
+    ] = getDefinableFunctions(
+      store,
+      () => [mapNew(), mapNew(), mapNew(), mapNew()],
+      (value) => (isUndefined(value) ? void 0 : value + EMPTY_STRING),
+      addListener,
+      callListeners,
+    );
+    const getLinkedRowIdsCache = (relationshipId, firstRowId, skipCache) =>
+      ifNotUndefined(
+        getRelationship(relationshipId),
+        ([remoteRows, , linkedRowsCache]) => {
+          if (!collHas(linkedRowsCache, firstRowId)) {
+            const linkedRows = setNew();
+            if (
+              getLocalTableId(relationshipId) !=
+              getRemoteTableId(relationshipId)
+            ) {
+              setAdd(linkedRows, firstRowId);
+            } else {
+              let rowId = firstRowId;
+              while (!isUndefined(rowId) && !collHas(linkedRows, rowId)) {
+                setAdd(linkedRows, rowId);
+                rowId = mapGet(remoteRows, rowId);
+              }
+            }
+            if (skipCache) {
+              return linkedRows;
+            }
+            mapSet(linkedRowsCache, firstRowId, linkedRows);
+          }
+          return mapGet(linkedRowsCache, firstRowId);
+        },
+      );
+    const delLinkedRowIdsCache = (relationshipId, firstRowId) =>
+      ifNotUndefined(getRelationship(relationshipId), ([, , linkedRowsCache]) =>
+        mapSet(linkedRowsCache, firstRowId),
+      );
+    const setRelationshipDefinition = (
+      relationshipId,
+      localTableId,
+      remoteTableId,
+      getRemoteRowId2,
+    ) => {
+      mapSet(remoteTableIds, relationshipId, remoteTableId);
+      setDefinitionAndListen(
+        relationshipId,
+        localTableId,
+        (change, changedRemoteRowIds) => {
+          const changedLocalRows = setNew();
+          const changedRemoteRows = setNew();
+          const changedLinkedRows = setNew();
+          const [localRows, remoteRows] = getRelationship(relationshipId);
+          collForEach(
+            changedRemoteRowIds,
+            ([oldRemoteRowId, newRemoteRowId], localRowId) => {
+              if (!isUndefined(oldRemoteRowId)) {
+                setAdd(changedRemoteRows, oldRemoteRowId);
+                ifNotUndefined(
+                  mapGet(remoteRows, oldRemoteRowId),
+                  (oldRemoteRow) => {
+                    collDel(oldRemoteRow, localRowId);
+                    if (collIsEmpty(oldRemoteRow)) {
+                      mapSet(remoteRows, oldRemoteRowId);
+                    }
+                  },
+                );
+              }
+              if (!isUndefined(newRemoteRowId)) {
+                setAdd(changedRemoteRows, newRemoteRowId);
+                if (!collHas(remoteRows, newRemoteRowId)) {
+                  mapSet(remoteRows, newRemoteRowId, setNew());
+                }
+                setAdd(mapGet(remoteRows, newRemoteRowId), localRowId);
+              }
+              setAdd(changedLocalRows, localRowId);
+              mapSet(localRows, localRowId, newRemoteRowId);
+              mapForEach(
+                mapGet(linkedRowIdsListeners, relationshipId),
+                (firstRowId) => {
+                  if (
+                    collHas(
+                      getLinkedRowIdsCache(relationshipId, firstRowId),
+                      localRowId,
+                    )
+                  ) {
+                    setAdd(changedLinkedRows, firstRowId);
+                  }
+                },
+              );
+            },
+          );
+          change();
+          collForEach(changedLocalRows, (localRowId) =>
+            callListeners(remoteRowIdListeners, [relationshipId, localRowId]),
+          );
+          collForEach(changedRemoteRows, (remoteRowId) =>
+            callListeners(localRowIdsListeners, [relationshipId, remoteRowId]),
+          );
+          collForEach(changedLinkedRows, (firstRowId) => {
+            delLinkedRowIdsCache(relationshipId, firstRowId);
+            callListeners(linkedRowIdsListeners, [relationshipId, firstRowId]);
+          });
+        },
+        getRowCellFunction(getRemoteRowId2),
+      );
+      return relationships;
+    };
+    const forEachRelationship = (relationshipCallback) =>
+      forEachRelationshipImpl((relationshipId) =>
+        relationshipCallback(relationshipId, (rowCallback) =>
+          store.forEachRow(getLocalTableId(relationshipId), rowCallback),
+        ),
+      );
+    const delRelationshipDefinition = (relationshipId) => {
+      mapSet(remoteTableIds, relationshipId);
+      delDefinition(relationshipId);
+      return relationships;
+    };
+    const getRemoteTableId = (relationshipId) =>
+      mapGet(remoteTableIds, relationshipId);
+    const getRemoteRowId = (relationshipId, localRowId) =>
+      mapGet(getRelationship(relationshipId)?.[0], localRowId);
+    const getLocalRowIds = (relationshipId, remoteRowId) =>
+      collValues(mapGet(getRelationship(relationshipId)?.[1], remoteRowId));
+    const getLinkedRowIds = (relationshipId, firstRowId) =>
+      isUndefined(getRelationship(relationshipId))
+        ? [firstRowId]
+        : collValues(getLinkedRowIdsCache(relationshipId, firstRowId, true));
+    const addRemoteRowIdListener = (relationshipId, localRowId, listener) =>
+      addListener(listener, remoteRowIdListeners, [relationshipId, localRowId]);
+    const addLocalRowIdsListener = (relationshipId, remoteRowId, listener) =>
+      addListener(listener, localRowIdsListeners, [
+        relationshipId,
+        remoteRowId,
+      ]);
+    const addLinkedRowIdsListener = (relationshipId, firstRowId, listener) => {
+      getLinkedRowIdsCache(relationshipId, firstRowId);
+      return addListener(listener, linkedRowIdsListeners, [
+        relationshipId,
+        firstRowId,
+      ]);
+    };
+    const delListener = (listenerId) => {
+      delLinkedRowIdsCache(...(delListenerImpl(listenerId) ?? []));
+      return relationships;
+    };
+    const getListenerStats = () => ({
+      remoteRowId: collSize3(remoteRowIdListeners),
+      localRowIds: collSize3(localRowIdsListeners),
+      linkedRowIds: collSize3(linkedRowIdsListeners),
+    });
+    const relationships = {
+      setRelationshipDefinition,
+      delRelationshipDefinition,
+      getStore,
+      getRelationshipIds,
+      forEachRelationship,
+      hasRelationship,
+      getLocalTableId,
+      getRemoteTableId,
+      getRemoteRowId,
+      getLocalRowIds,
+      getLinkedRowIds,
+      addRelationshipIdsListener,
+      addRemoteRowIdListener,
+      addLocalRowIdsListener,
+      addLinkedRowIdsListener,
+      delListener,
+      destroy,
+      getListenerStats,
+    };
+    return objFreeze(relationships);
+  });
+
+  const pairNew = (value) => [value, value];
+  const pairCollSize2 = (pair, func = collSize2) =>
+    func(pair[0]) + func(pair[1]);
+  const pairNewMap = () => [mapNew(), mapNew()];
+  const pairClone = (array) => [...array];
+  const pairIsEqual = ([entry1, entry2]) => entry1 === entry2;
+
+  const jsonStringWithMap = (obj) =>
+    JSON.stringify(obj, (_key, value) =>
+      isInstanceOf(value, Map) ? object.fromEntries([...value]) : value,
+    );
+  const jsonParse = JSON.parse;
+
+  const idsChanged = (changedIds, id2, addedOrRemoved) =>
+    mapSet(
+      changedIds,
+      id2,
+      mapGet(changedIds, id2) == -addedOrRemoved ? void 0 : addedOrRemoved,
+    );
+  const createStore = () => {
+    let hasTablesSchema;
+    let hasValuesSchema;
+    let hadTables = false;
+    let hadValues = false;
+    let transactions = 0;
+    let internalListeners = [];
+    const changedTableIds = mapNew();
+    const changedTableCellIds = mapNew();
+    const changedRowCount = mapNew();
+    const changedRowIds = mapNew();
+    const changedCellIds = mapNew();
+    const changedCells = mapNew();
+    const changedValueIds = mapNew();
+    const changedValues = mapNew();
+    const invalidCells = mapNew();
+    const invalidValues = mapNew();
+    const tablesSchemaMap = mapNew();
+    const tablesSchemaRowCache = mapNew();
+    const valuesSchemaMap = mapNew();
+    const valuesDefaulted = mapNew();
+    const valuesNonDefaulted = setNew();
+    const tablePoolFunctions = mapNew();
+    const tableCellIds = mapNew();
+    const tablesMap = mapNew();
+    const valuesMap = mapNew();
+    const hasTablesListeners = pairNewMap();
+    const tablesListeners = pairNewMap();
+    const tableIdsListeners = pairNewMap();
+    const hasTableListeners = pairNewMap();
+    const tableListeners = pairNewMap();
+    const tableCellIdsListeners = pairNewMap();
+    const hasTableCellListeners = pairNewMap();
+    const rowCountListeners = pairNewMap();
+    const rowIdsListeners = pairNewMap();
+    const sortedRowIdsListeners = pairNewMap();
+    const hasRowListeners = pairNewMap();
+    const rowListeners = pairNewMap();
+    const cellIdsListeners = pairNewMap();
+    const hasCellListeners = pairNewMap();
+    const cellListeners = pairNewMap();
+    const invalidCellListeners = pairNewMap();
+    const invalidValueListeners = pairNewMap();
+    const hasValuesListeners = pairNewMap();
+    const valuesListeners = pairNewMap();
+    const valueIdsListeners = pairNewMap();
+    const hasValueListeners = pairNewMap();
+    const valueListeners = pairNewMap();
+    const startTransactionListeners = mapNew();
+    const finishTransactionListeners = pairNewMap();
+    const [addListener, callListeners, delListenerImpl, callListenerImpl] =
+      getListenerFunctions(() => store);
+    const validateTablesSchema = (tableSchema) =>
+      objValidate(tableSchema, (tableSchema2) =>
+        objValidate(tableSchema2, validateCellOrValueSchema),
+      );
+    const validateValuesSchema = (valuesSchema) =>
+      objValidate(valuesSchema, validateCellOrValueSchema);
+    const validateCellOrValueSchema = (schema) => {
+      if (
+        !objValidate(schema, (_child, id2) => arrayHas([TYPE, DEFAULT], id2))
+      ) {
+        return false;
+      }
+      const type = schema[TYPE];
+      if (!isTypeStringOrBoolean(type) && type != NUMBER) {
+        return false;
+      }
+      if (getCellOrValueType(schema[DEFAULT]) != type) {
+        objDel(schema, DEFAULT);
+      }
+      return true;
+    };
+    const validateTables = (tables) =>
+      objValidate(tables, validateTable, cellInvalid);
+    const validateTable = (table, tableId) =>
+      (!hasTablesSchema ||
+        collHas(tablesSchemaMap, tableId) ||
+        /* istanbul ignore next */
+        cellInvalid(tableId)) &&
+      objValidate(
+        table,
+        (row, rowId) => validateRow(tableId, rowId, row),
+        () => cellInvalid(tableId),
+      );
+    const validateRow = (tableId, rowId, row, skipDefaults) =>
+      objValidate(
+        skipDefaults ? row : addDefaultsToRow(row, tableId, rowId),
+        (cell, cellId) =>
+          ifNotUndefined(
+            getValidatedCell(tableId, rowId, cellId, cell),
+            (validCell) => {
+              row[cellId] = validCell;
+              return true;
+            },
+            () => false,
+          ),
+        () => cellInvalid(tableId, rowId),
+      );
+    const getValidatedCell = (tableId, rowId, cellId, cell) =>
+      hasTablesSchema
+        ? ifNotUndefined(
+            mapGet(mapGet(tablesSchemaMap, tableId), cellId),
+            (cellSchema) =>
+              getCellOrValueType(cell) != cellSchema[TYPE]
+                ? cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
+                : cell,
+            () => cellInvalid(tableId, rowId, cellId, cell),
+          )
+        : isUndefined(getCellOrValueType(cell))
+          ? cellInvalid(tableId, rowId, cellId, cell)
+          : cell;
+    const validateValues = (values, skipDefaults) =>
+      objValidate(
+        skipDefaults ? values : addDefaultsToValues(values),
+        (value, valueId) =>
+          ifNotUndefined(
+            getValidatedValue(valueId, value),
+            (validValue) => {
+              values[valueId] = validValue;
+              return true;
+            },
+            () => false,
+          ),
+        () => valueInvalid(),
+      );
+    const getValidatedValue = (valueId, value) =>
+      hasValuesSchema
+        ? ifNotUndefined(
+            mapGet(valuesSchemaMap, valueId),
+            (valueSchema) =>
+              getCellOrValueType(value) != valueSchema[TYPE]
+                ? valueInvalid(valueId, value, valueSchema[DEFAULT])
+                : value,
+            () => valueInvalid(valueId, value),
+          )
+        : isUndefined(getCellOrValueType(value))
+          ? valueInvalid(valueId, value)
+          : value;
+    const addDefaultsToRow = (row, tableId, rowId) => {
+      ifNotUndefined(
+        mapGet(tablesSchemaRowCache, tableId),
+        ([rowDefaulted, rowNonDefaulted]) => {
+          collForEach(rowDefaulted, (cell, cellId) => {
+            if (!objHas(row, cellId)) {
+              row[cellId] = cell;
+            }
+          });
+          collForEach(rowNonDefaulted, (cellId) => {
+            if (!objHas(row, cellId)) {
+              cellInvalid(tableId, rowId, cellId);
+            }
+          });
+        },
+      );
+      return row;
+    };
+    const addDefaultsToValues = (values) => {
+      if (hasValuesSchema) {
+        collForEach(valuesDefaulted, (value, valueId) => {
+          if (!objHas(values, valueId)) {
+            values[valueId] = value;
+          }
+        });
+        collForEach(valuesNonDefaulted, (valueId) => {
+          if (!objHas(values, valueId)) {
+            valueInvalid(valueId);
+          }
+        });
+      }
+      return values;
+    };
+    const setValidTablesSchema = (tablesSchema) =>
+      mapMatch(
+        tablesSchemaMap,
+        tablesSchema,
+        (_tablesSchema, tableId, tableSchema) => {
+          const rowDefaulted = mapNew();
+          const rowNonDefaulted = setNew();
+          mapMatch(
+            mapEnsure(tablesSchemaMap, tableId, mapNew),
+            tableSchema,
+            (tableSchemaMap, cellId, cellSchema) => {
+              mapSet(tableSchemaMap, cellId, cellSchema);
+              ifNotUndefined(
+                cellSchema[DEFAULT],
+                (def) => mapSet(rowDefaulted, cellId, def),
+                () => setAdd(rowNonDefaulted, cellId),
+              );
+            },
+          );
+          mapSet(tablesSchemaRowCache, tableId, [
+            rowDefaulted,
+            rowNonDefaulted,
+          ]);
+        },
+        (_tablesSchema, tableId) => {
+          mapSet(tablesSchemaMap, tableId);
+          mapSet(tablesSchemaRowCache, tableId);
+        },
+      );
+    const setValidValuesSchema = (valuesSchema) =>
+      mapMatch(
+        valuesSchemaMap,
+        valuesSchema,
+        (_valuesSchema, valueId, valueSchema) => {
+          mapSet(valuesSchemaMap, valueId, valueSchema);
+          ifNotUndefined(
+            valueSchema[DEFAULT],
+            (def) => mapSet(valuesDefaulted, valueId, def),
+            () => setAdd(valuesNonDefaulted, valueId),
+          );
+        },
+        (_valuesSchema, valueId) => {
+          mapSet(valuesSchemaMap, valueId);
+          mapSet(valuesDefaulted, valueId);
+          collDel(valuesNonDefaulted, valueId);
+        },
+      );
+    const setOrDelTables = (tables) =>
+      objIsEmpty(tables) ? delTables() : setTables(tables);
+    const setValidTables = (tables) =>
+      mapMatch(
+        tablesMap,
+        tables,
+        (_tables, tableId, table) => setValidTable(tableId, table),
+        (_tables, tableId) => delValidTable(tableId),
+      );
+    const setValidTable = (tableId, table) =>
+      mapMatch(
+        mapEnsure(tablesMap, tableId, () => {
+          tableIdsChanged(tableId, 1);
+          mapSet(tablePoolFunctions, tableId, getPoolFunctions());
+          mapSet(tableCellIds, tableId, mapNew());
+          return mapNew();
+        }),
+        table,
+        (tableMap, rowId, row) => setValidRow(tableId, tableMap, rowId, row),
+        (tableMap, rowId) => delValidRow(tableId, tableMap, rowId),
+      );
+    const setValidRow = (tableId, tableMap, rowId, row, forceDel) =>
+      mapMatch(
+        mapEnsure(tableMap, rowId, () => {
+          rowIdsChanged(tableId, rowId, 1);
+          return mapNew();
+        }),
+        row,
+        (rowMap, cellId, cell) =>
+          setValidCell(tableId, rowId, rowMap, cellId, cell),
+        (rowMap, cellId) =>
+          delValidCell(tableId, tableMap, rowId, rowMap, cellId, forceDel),
+      );
+    const setValidCell = (tableId, rowId, rowMap, cellId, cell) => {
+      if (!collHas(rowMap, cellId)) {
+        cellIdsChanged(tableId, rowId, cellId, 1);
+      }
+      const oldCell = mapGet(rowMap, cellId);
+      if (cell !== oldCell) {
+        cellChanged(tableId, rowId, cellId, oldCell, cell);
+        mapSet(rowMap, cellId, cell);
+      }
+    };
+    const setCellIntoDefaultRow = (
+      tableId,
+      tableMap,
+      rowId,
+      cellId,
+      validCell,
+    ) =>
+      ifNotUndefined(
+        mapGet(tableMap, rowId),
+        (rowMap) => setValidCell(tableId, rowId, rowMap, cellId, validCell),
+        () =>
+          setValidRow(
+            tableId,
+            tableMap,
+            rowId,
+            addDefaultsToRow({[cellId]: validCell}, tableId, rowId),
+          ),
+      );
+    const setOrDelValues = (values) =>
+      objIsEmpty(values) ? delValues() : setValues(values);
+    const setValidValues = (values) =>
+      mapMatch(
+        valuesMap,
+        values,
+        (_valuesMap, valueId, value) => setValidValue(valueId, value),
+        (_valuesMap, valueId) => delValidValue(valueId),
+      );
+    const setValidValue = (valueId, value) => {
+      if (!collHas(valuesMap, valueId)) {
+        valueIdsChanged(valueId, 1);
+      }
+      const oldValue = mapGet(valuesMap, valueId);
+      if (value !== oldValue) {
+        valueChanged(valueId, oldValue, value);
+        mapSet(valuesMap, valueId, value);
+      }
+    };
+    const getNewRowId = (tableId, reuse) => {
+      const [getId] = mapGet(tablePoolFunctions, tableId);
+      const rowId = getId(reuse);
+      if (!collHas(mapGet(tablesMap, tableId), rowId)) {
+        return rowId;
+      }
+      return getNewRowId(tableId, reuse);
+    };
+    const getOrCreateTable = (tableId) =>
+      mapGet(tablesMap, tableId) ?? setValidTable(tableId, {});
+    const delValidTable = (tableId) => setValidTable(tableId, {});
+    const delValidRow = (tableId, tableMap, rowId) => {
+      const [, releaseId] = mapGet(tablePoolFunctions, tableId);
+      releaseId(rowId);
+      setValidRow(tableId, tableMap, rowId, {}, true);
+    };
+    const delValidCell = (tableId, table, rowId, row, cellId, forceDel) => {
+      const defaultCell = mapGet(
+        mapGet(tablesSchemaRowCache, tableId)?.[0],
+        cellId,
+      );
+      if (!isUndefined(defaultCell) && !forceDel) {
+        return setValidCell(tableId, rowId, row, cellId, defaultCell);
+      }
+      const delCell2 = (cellId2) => {
+        cellChanged(tableId, rowId, cellId2, mapGet(row, cellId2));
+        cellIdsChanged(tableId, rowId, cellId2, -1);
+        mapSet(row, cellId2);
+      };
+      isUndefined(defaultCell) ? delCell2(cellId) : mapForEach(row, delCell2);
+      if (collIsEmpty(row)) {
+        rowIdsChanged(tableId, rowId, -1);
+        if (collIsEmpty(mapSet(table, rowId))) {
+          tableIdsChanged(tableId, -1);
+          mapSet(tablesMap, tableId);
+          mapSet(tablePoolFunctions, tableId);
+          mapSet(tableCellIds, tableId);
+        }
+      }
+    };
+    const delValidValue = (valueId) => {
+      const defaultValue = mapGet(valuesDefaulted, valueId);
+      if (!isUndefined(defaultValue)) {
+        return setValidValue(valueId, defaultValue);
+      }
+      valueChanged(valueId, mapGet(valuesMap, valueId));
+      valueIdsChanged(valueId, -1);
+      mapSet(valuesMap, valueId);
+    };
+    const tableIdsChanged = (tableId, addedOrRemoved) =>
+      idsChanged(changedTableIds, tableId, addedOrRemoved);
+    const rowIdsChanged = (tableId, rowId, addedOrRemoved) =>
+      idsChanged(
+        mapEnsure(changedRowIds, tableId, mapNew),
+        rowId,
+        addedOrRemoved,
+      ) &&
+      mapSet(
+        changedRowCount,
+        tableId,
+        mapEnsure(changedRowCount, tableId, () => 0) + addedOrRemoved,
+      );
+    const cellIdsChanged = (tableId, rowId, cellId, addedOrRemoved) => {
+      const cellIds = mapGet(tableCellIds, tableId);
+      const count = mapGet(cellIds, cellId) ?? 0;
+      if (
+        (count == 0 && addedOrRemoved == 1) ||
+        (count == 1 && addedOrRemoved == -1)
+      ) {
+        idsChanged(
+          mapEnsure(changedTableCellIds, tableId, mapNew),
+          cellId,
+          addedOrRemoved,
+        );
+      }
+      mapSet(
+        cellIds,
+        cellId,
+        count != -addedOrRemoved ? count + addedOrRemoved : null,
+      );
+      idsChanged(
+        mapEnsure(mapEnsure(changedCellIds, tableId, mapNew), rowId, mapNew),
+        cellId,
+        addedOrRemoved,
+      );
+    };
+    const cellChanged = (tableId, rowId, cellId, oldCell, newCell) => {
+      mapEnsure(
+        mapEnsure(mapEnsure(changedCells, tableId, mapNew), rowId, mapNew),
+        cellId,
+        () => [oldCell, 0],
+      )[1] = newCell;
+      internalListeners[3]?.(tableId, rowId, cellId, newCell);
+    };
+    const valueIdsChanged = (valueId, addedOrRemoved) =>
+      idsChanged(changedValueIds, valueId, addedOrRemoved);
+    const valueChanged = (valueId, oldValue, newValue) => {
+      mapEnsure(changedValues, valueId, () => [oldValue, 0])[1] = newValue;
+      internalListeners[4]?.(valueId, newValue);
+    };
+    const cellInvalid = (
+      tableId,
+      rowId,
+      cellId,
+      invalidCell,
+      defaultedCell,
+    ) => {
+      arrayPush(
+        mapEnsure(
+          mapEnsure(mapEnsure(invalidCells, tableId, mapNew), rowId, mapNew),
+          cellId,
+          () => [],
+        ),
+        invalidCell,
+      );
+      return defaultedCell;
+    };
+    const valueInvalid = (valueId, invalidValue, defaultedValue) => {
+      arrayPush(
+        mapEnsure(invalidValues, valueId, () => []),
+        invalidValue,
+      );
+      return defaultedValue;
+    };
+    const getCellChange = (tableId, rowId, cellId) =>
+      ifNotUndefined(
+        mapGet(mapGet(mapGet(changedCells, tableId), rowId), cellId),
+        ([oldCell, newCell]) => [true, oldCell, newCell],
+        () => [false, ...pairNew(getCell(tableId, rowId, cellId))],
+      );
+    const getValueChange = (valueId) =>
+      ifNotUndefined(
+        mapGet(changedValues, valueId),
+        ([oldValue, newValue]) => [true, oldValue, newValue],
+        () => [false, ...pairNew(getValue(valueId))],
+      );
+    const callInvalidCellListeners = (mutator) =>
+      !collIsEmpty(invalidCells) && !collIsEmpty(invalidCellListeners[mutator])
+        ? collForEach(
+            mutator ? mapClone3(invalidCells) : invalidCells,
+            (rows, tableId) =>
+              collForEach(rows, (cells, rowId) =>
+                collForEach(cells, (invalidCell, cellId) =>
+                  callListeners(
+                    invalidCellListeners[mutator],
+                    [tableId, rowId, cellId],
+                    invalidCell,
+                  ),
+                ),
+              ),
+          )
+        : 0;
+    const callInvalidValueListeners = (mutator) =>
+      !collIsEmpty(invalidValues) &&
+      !collIsEmpty(invalidValueListeners[mutator])
+        ? collForEach(
+            mutator ? mapClone(invalidValues) : invalidValues,
+            (invalidValue, valueId) =>
+              callListeners(
+                invalidValueListeners[mutator],
+                [valueId],
+                invalidValue,
+              ),
+          )
+        : 0;
+    const callIdsAndHasListenersIfChanged = (
+      changedIds,
+      idListeners,
+      hasListeners,
+      ids,
+    ) => {
+      if (!collIsEmpty(changedIds)) {
+        callListeners(idListeners, ids, () => mapToObj(changedIds));
+        mapForEach(changedIds, (changedId, changed) =>
+          callListeners(
+            hasListeners,
+            [...(ids ?? []), changedId],
+            changed == 1,
+          ),
+        );
+        return 1;
+      }
+    };
+    const callTabularListenersForChanges = (mutator) => {
+      const hasTablesNow = hasTables();
+      if (hasTablesNow != hadTables) {
+        callListeners(hasTablesListeners[mutator], void 0, hasTablesNow);
+      }
+      const emptySortedRowIdListeners = collIsEmpty(
+        sortedRowIdsListeners[mutator],
+      );
+      const emptyIdAndHasListeners =
+        collIsEmpty(cellIdsListeners[mutator]) &&
+        collIsEmpty(hasCellListeners[mutator]) &&
+        collIsEmpty(rowIdsListeners[mutator]) &&
+        collIsEmpty(hasRowListeners[mutator]) &&
+        collIsEmpty(tableCellIdsListeners[mutator]) &&
+        collIsEmpty(hasTableCellListeners[mutator]) &&
+        collIsEmpty(rowCountListeners[mutator]) &&
+        emptySortedRowIdListeners &&
+        collIsEmpty(tableIdsListeners[mutator]) &&
+        collIsEmpty(hasTableListeners[mutator]);
+      const emptyOtherListeners =
+        collIsEmpty(cellListeners[mutator]) &&
+        collIsEmpty(rowListeners[mutator]) &&
+        collIsEmpty(tableListeners[mutator]) &&
+        collIsEmpty(tablesListeners[mutator]);
+      if (!emptyIdAndHasListeners || !emptyOtherListeners) {
+        const changes = mutator
+          ? [
+              mapClone(changedTableIds),
+              mapClone2(changedTableCellIds),
+              mapClone(changedRowCount),
+              mapClone2(changedRowIds),
+              mapClone3(changedCellIds),
+              mapClone3(changedCells),
+            ]
+          : [
+              changedTableIds,
+              changedTableCellIds,
+              changedRowCount,
+              changedRowIds,
+              changedCellIds,
+              changedCells,
+            ];
+        if (!emptyIdAndHasListeners) {
+          callIdsAndHasListenersIfChanged(
+            changes[0],
+            tableIdsListeners[mutator],
+            hasTableListeners[mutator],
+          );
+          collForEach(changes[1], (changedIds, tableId) =>
+            callIdsAndHasListenersIfChanged(
+              changedIds,
+              tableCellIdsListeners[mutator],
+              hasTableCellListeners[mutator],
+              [tableId],
+            ),
+          );
+          collForEach(changes[2], (changedCount, tableId) => {
+            if (changedCount != 0) {
+              callListeners(
+                rowCountListeners[mutator],
+                [tableId],
+                getRowCount(tableId),
+              );
+            }
+          });
+          const calledSortableTableIds = setNew();
+          collForEach(changes[3], (changedIds, tableId) => {
+            if (
+              callIdsAndHasListenersIfChanged(
+                changedIds,
+                rowIdsListeners[mutator],
+                hasRowListeners[mutator],
+                [tableId],
+              ) &&
+              !emptySortedRowIdListeners
+            ) {
+              callListeners(sortedRowIdsListeners[mutator], [tableId, null]);
+              setAdd(calledSortableTableIds, tableId);
+            }
+          });
+          if (!emptySortedRowIdListeners) {
+            collForEach(changes[5], (rows, tableId) => {
+              if (!collHas(calledSortableTableIds, tableId)) {
+                const sortableCellIds = setNew();
+                collForEach(rows, (cells) =>
+                  collForEach(cells, ([oldCell, newCell], cellId) =>
+                    newCell !== oldCell
+                      ? setAdd(sortableCellIds, cellId)
+                      : collDel(cells, cellId),
+                  ),
+                );
+                collForEach(sortableCellIds, (cellId) =>
+                  callListeners(sortedRowIdsListeners[mutator], [
+                    tableId,
+                    cellId,
+                  ]),
+                );
+              }
+            });
+          }
+          collForEach(changes[4], (rowCellIds, tableId) =>
+            collForEach(rowCellIds, (changedIds, rowId) =>
+              callIdsAndHasListenersIfChanged(
+                changedIds,
+                cellIdsListeners[mutator],
+                hasCellListeners[mutator],
+                [tableId, rowId],
+              ),
+            ),
+          );
+        }
+        if (!emptyOtherListeners) {
+          let tablesChanged;
+          collForEach(changes[5], (rows, tableId) => {
+            let tableChanged;
+            collForEach(rows, (cells, rowId) => {
+              let rowChanged;
+              collForEach(cells, ([oldCell, newCell], cellId) => {
+                if (newCell !== oldCell) {
+                  callListeners(
+                    cellListeners[mutator],
+                    [tableId, rowId, cellId],
+                    newCell,
+                    oldCell,
+                    getCellChange,
+                  );
+                  tablesChanged = tableChanged = rowChanged = 1;
+                }
+              });
+              if (rowChanged) {
+                callListeners(
+                  rowListeners[mutator],
+                  [tableId, rowId],
+                  getCellChange,
+                );
+              }
+            });
+            if (tableChanged) {
+              callListeners(tableListeners[mutator], [tableId], getCellChange);
+            }
+          });
+          if (tablesChanged) {
+            callListeners(tablesListeners[mutator], void 0, getCellChange);
+          }
+        }
+      }
+    };
+    const callValuesListenersForChanges = (mutator) => {
+      const hasValuesNow = hasValues();
+      if (hasValuesNow != hadValues) {
+        callListeners(hasValuesListeners[mutator], void 0, hasValuesNow);
+      }
+      const emptyIdAndHasListeners =
+        collIsEmpty(valueIdsListeners[mutator]) &&
+        collIsEmpty(hasValueListeners[mutator]);
+      const emptyOtherListeners =
+        collIsEmpty(valueListeners[mutator]) &&
+        collIsEmpty(valuesListeners[mutator]);
+      if (!emptyIdAndHasListeners || !emptyOtherListeners) {
+        const changes = mutator
+          ? [mapClone(changedValueIds), mapClone(changedValues)]
+          : [changedValueIds, changedValues];
+        if (!emptyIdAndHasListeners) {
+          callIdsAndHasListenersIfChanged(
+            changes[0],
+            valueIdsListeners[mutator],
+            hasValueListeners[mutator],
+          );
+        }
+        if (!emptyOtherListeners) {
+          let valuesChanged;
+          collForEach(changes[1], ([oldValue, newValue], valueId) => {
+            if (newValue !== oldValue) {
+              callListeners(
+                valueListeners[mutator],
+                [valueId],
+                newValue,
+                oldValue,
+                getValueChange,
+              );
+              valuesChanged = 1;
+            }
+          });
+          if (valuesChanged) {
+            callListeners(valuesListeners[mutator], void 0, getValueChange);
+          }
+        }
+      }
+    };
+    const fluentTransaction = (actions, ...args) => {
+      transaction(() => actions(...arrayMap(args, id)));
+      return store;
+    };
+    const getContent = () => [getTables(), getValues()];
+    const getTables = () => mapToObj3(tablesMap);
+    const getTableIds = () => mapKeys(tablesMap);
+    const getTable = (tableId) => mapToObj2(mapGet(tablesMap, id(tableId)));
+    const getTableCellIds = (tableId) =>
+      mapKeys(mapGet(tableCellIds, id(tableId)));
+    const getRowCount = (tableId) => collSize(mapGet(tablesMap, id(tableId)));
+    const getRowIds = (tableId) => mapKeys(mapGet(tablesMap, id(tableId)));
+    const getSortedRowIds = (tableId, cellId, descending, offset = 0, limit) =>
+      arrayMap(
+        slice(
+          arraySort(
+            mapMap(mapGet(tablesMap, id(tableId)), (row, rowId) => [
+              isUndefined(cellId) ? rowId : mapGet(row, id(cellId)),
+              rowId,
+            ]),
+            ([cell1], [cell2]) =>
+              defaultSorter(cell1, cell2) * (descending ? -1 : 1),
+          ),
+          offset,
+          isUndefined(limit) ? limit : offset + limit,
+        ),
+        ([, rowId]) => rowId,
+      );
+    const getRow = (tableId, rowId) =>
+      mapToObj(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));
+    const getCellIds = (tableId, rowId) =>
+      mapKeys(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));
+    const getCell = (tableId, rowId, cellId) =>
+      mapGet(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId));
+    const getValues = () => mapToObj(valuesMap);
+    const getValueIds = () => mapKeys(valuesMap);
+    const getValue = (valueId) => mapGet(valuesMap, id(valueId));
+    const hasTables = () => !collIsEmpty(tablesMap);
+    const hasTable = (tableId) => collHas(tablesMap, id(tableId));
+    const hasTableCell = (tableId, cellId) =>
+      collHas(mapGet(tableCellIds, id(tableId)), id(cellId));
+    const hasRow = (tableId, rowId) =>
+      collHas(mapGet(tablesMap, id(tableId)), id(rowId));
+    const hasCell = (tableId, rowId, cellId) =>
+      collHas(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId));
+    const hasValues = () => !collIsEmpty(valuesMap);
+    const hasValue = (valueId) => collHas(valuesMap, id(valueId));
+    const getTablesJson = () => jsonStringWithMap(tablesMap);
+    const getValuesJson = () => jsonStringWithMap(valuesMap);
+    const getJson = () => jsonStringWithMap([tablesMap, valuesMap]);
+    const getTablesSchemaJson = () => jsonStringWithMap(tablesSchemaMap);
+    const getValuesSchemaJson = () => jsonStringWithMap(valuesSchemaMap);
+    const getSchemaJson = () =>
+      jsonStringWithMap([tablesSchemaMap, valuesSchemaMap]);
+    const setContent = ([tables, values]) =>
+      fluentTransaction(() => {
+        (objIsEmpty(tables) ? delTables : setTables)(tables);
+        (objIsEmpty(values) ? delValues : setValues)(values);
+      });
+    const setTables = (tables) =>
+      fluentTransaction(() =>
+        validateTables(tables) ? setValidTables(tables) : 0,
+      );
+    const setTable = (tableId, table) =>
+      fluentTransaction(
+        (tableId2) =>
+          validateTable(table, tableId2) ? setValidTable(tableId2, table) : 0,
+        tableId,
+      );
+    const setRow = (tableId, rowId, row) =>
+      fluentTransaction(
+        (tableId2, rowId2) =>
+          validateRow(tableId2, rowId2, row)
+            ? setValidRow(tableId2, getOrCreateTable(tableId2), rowId2, row)
+            : 0,
+        tableId,
+        rowId,
+      );
+    const addRow = (tableId, row, reuseRowIds = true) =>
+      transaction(() => {
+        let rowId = void 0;
+        if (validateRow(tableId, rowId, row)) {
+          tableId = id(tableId);
+          setValidRow(
+            tableId,
+            getOrCreateTable(tableId),
+            (rowId = getNewRowId(tableId, reuseRowIds ? 1 : 0)),
+            row,
+          );
+        }
+        return rowId;
+      });
+    const setPartialRow = (tableId, rowId, partialRow) =>
+      fluentTransaction(
+        (tableId2, rowId2) => {
+          if (validateRow(tableId2, rowId2, partialRow, 1)) {
+            const table = getOrCreateTable(tableId2);
+            objToArray(partialRow, (cell, cellId) =>
+              setCellIntoDefaultRow(tableId2, table, rowId2, cellId, cell),
+            );
+          }
+        },
+        tableId,
+        rowId,
+      );
+    const setCell = (tableId, rowId, cellId, cell) =>
+      fluentTransaction(
+        (tableId2, rowId2, cellId2) =>
+          ifNotUndefined(
+            getValidatedCell(
+              tableId2,
+              rowId2,
+              cellId2,
+              isFunction(cell)
+                ? cell(getCell(tableId2, rowId2, cellId2))
+                : cell,
+            ),
+            (validCell) =>
+              setCellIntoDefaultRow(
+                tableId2,
+                getOrCreateTable(tableId2),
+                rowId2,
+                cellId2,
+                validCell,
+              ),
+          ),
+        tableId,
+        rowId,
+        cellId,
+      );
+    const setValues = (values) =>
+      fluentTransaction(() =>
+        validateValues(values) ? setValidValues(values) : 0,
+      );
+    const setPartialValues = (partialValues) =>
+      fluentTransaction(() =>
+        validateValues(partialValues, 1)
+          ? objToArray(partialValues, (value, valueId) =>
+              setValidValue(valueId, value),
+            )
+          : 0,
+      );
+    const setValue = (valueId, value) =>
+      fluentTransaction(
+        (valueId2) =>
+          ifNotUndefined(
+            getValidatedValue(
+              valueId2,
+              isFunction(value) ? value(getValue(valueId2)) : value,
+            ),
+            (validValue) => setValidValue(valueId2, validValue),
+          ),
+        valueId,
+      );
+    const applyChanges = (changes) =>
+      fluentTransaction(() => {
+        objToArray(changes[0], (table, tableId) =>
+          isUndefined(table)
+            ? delTable(tableId)
+            : objToArray(table, (row, rowId) =>
+                isUndefined(row)
+                  ? delRow(tableId, rowId)
+                  : objToArray(row, (cell, cellId) =>
+                      setOrDelCell(store, tableId, rowId, cellId, cell),
+                    ),
+              ),
+        );
+        objToArray(changes[1], (value, valueId) =>
+          setOrDelValue(store, valueId, value),
+        );
+      });
+    const setTablesJson = (tablesJson) => {
+      try {
+        setOrDelTables(jsonParse(tablesJson));
+      } catch {}
+      return store;
+    };
+    const setValuesJson = (valuesJson) => {
+      try {
+        setOrDelValues(jsonParse(valuesJson));
+      } catch {}
+      return store;
+    };
+    const setJson = (tablesAndValuesJson) =>
+      fluentTransaction(() => {
+        try {
+          const [tables, values] = jsonParse(tablesAndValuesJson);
+          setOrDelTables(tables);
+          setOrDelValues(values);
+        } catch {
+          setTablesJson(tablesAndValuesJson);
+        }
+      });
+    const setTablesSchema = (tablesSchema) =>
+      fluentTransaction(() => {
+        if ((hasTablesSchema = validateTablesSchema(tablesSchema))) {
+          setValidTablesSchema(tablesSchema);
+          if (!collIsEmpty(tablesMap)) {
+            const tables = getTables();
+            delTables();
+            setTables(tables);
+          }
+        }
+      });
+    const setValuesSchema = (valuesSchema) =>
+      fluentTransaction(() => {
+        if ((hasValuesSchema = validateValuesSchema(valuesSchema))) {
+          const values = getValues();
+          delValuesSchema();
+          delValues();
+          hasValuesSchema = true;
+          setValidValuesSchema(valuesSchema);
+          setValues(values);
+        }
+      });
+    const setSchema = (tablesSchema, valuesSchema) =>
+      fluentTransaction(() => {
+        setTablesSchema(tablesSchema);
+        setValuesSchema(valuesSchema);
+      });
+    const delTables = () => fluentTransaction(() => setValidTables({}));
+    const delTable = (tableId) =>
+      fluentTransaction(
+        (tableId2) =>
+          collHas(tablesMap, tableId2) ? delValidTable(tableId2) : 0,
+        tableId,
+      );
+    const delRow = (tableId, rowId) =>
+      fluentTransaction(
+        (tableId2, rowId2) =>
+          ifNotUndefined(mapGet(tablesMap, tableId2), (tableMap) =>
+            collHas(tableMap, rowId2)
+              ? delValidRow(tableId2, tableMap, rowId2)
+              : 0,
+          ),
+        tableId,
+        rowId,
+      );
+    const delCell = (tableId, rowId, cellId, forceDel) =>
+      fluentTransaction(
+        (tableId2, rowId2, cellId2) =>
+          ifNotUndefined(mapGet(tablesMap, tableId2), (tableMap) =>
+            ifNotUndefined(mapGet(tableMap, rowId2), (rowMap) =>
+              collHas(rowMap, cellId2)
+                ? delValidCell(
+                    tableId2,
+                    tableMap,
+                    rowId2,
+                    rowMap,
+                    cellId2,
+                    forceDel,
+                  )
+                : 0,
+            ),
+          ),
+        tableId,
+        rowId,
+        cellId,
+      );
+    const delValues = () => fluentTransaction(() => setValidValues({}));
+    const delValue = (valueId) =>
+      fluentTransaction(
+        (valueId2) =>
+          collHas(valuesMap, valueId2) ? delValidValue(valueId2) : 0,
+        valueId,
+      );
+    const delTablesSchema = () =>
+      fluentTransaction(() => {
+        setValidTablesSchema({});
+        hasTablesSchema = false;
+      });
+    const delValuesSchema = () =>
+      fluentTransaction(() => {
+        setValidValuesSchema({});
+        hasValuesSchema = false;
+      });
+    const delSchema = () =>
+      fluentTransaction(() => {
+        delTablesSchema();
+        delValuesSchema();
+      });
+    const transaction = (actions, doRollback) => {
+      if (transactions != -1) {
+        startTransaction();
+        const result = actions();
+        finishTransaction(doRollback);
+        return result;
+      }
+    };
+    const startTransaction = () => {
+      if (transactions != -1) {
+        transactions++;
+      }
+      if (transactions == 1) {
+        internalListeners[0]?.();
+        callListeners(startTransactionListeners);
+      }
+      return store;
+    };
+    const getTransactionChanges = () => [
+      mapToObj(
+        changedCells,
+        (table, tableId) =>
+          mapGet(changedTableIds, tableId) === -1
+            ? void 0
+            : mapToObj(
+                table,
+                (row, rowId) =>
+                  mapGet(mapGet(changedRowIds, tableId), rowId) === -1
+                    ? void 0
+                    : mapToObj(
+                        row,
+                        ([, newCell]) => newCell,
+                        (changedCell) => pairIsEqual(changedCell),
+                      ),
+                collIsEmpty,
+                objIsEmpty,
+              ),
+        collIsEmpty,
+        objIsEmpty,
+      ),
+      mapToObj(
+        changedValues,
+        ([, newValue]) => newValue,
+        (changedValue) => pairIsEqual(changedValue),
+      ),
+      1,
+    ];
+    const getTransactionLog = () => [
+      !collIsEmpty(changedCells),
+      !collIsEmpty(changedValues),
+      mapToObj3(changedCells, pairClone, pairIsEqual),
+      mapToObj3(invalidCells),
+      mapToObj(changedValues, pairClone, pairIsEqual),
+      mapToObj(invalidValues),
+      mapToObj(changedTableIds),
+      mapToObj2(changedRowIds),
+      mapToObj3(changedCellIds),
+      mapToObj(changedValueIds),
+    ];
+    const finishTransaction = (doRollback) => {
+      if (transactions > 0) {
+        transactions--;
+        if (transactions == 0) {
+          transactions = 1;
+          callInvalidCellListeners(1);
+          if (!collIsEmpty(changedCells)) {
+            callTabularListenersForChanges(1);
+          }
+          callInvalidValueListeners(1);
+          if (!collIsEmpty(changedValues)) {
+            callValuesListenersForChanges(1);
+          }
+          if (doRollback?.(store)) {
+            collForEach(changedCells, (table, tableId) =>
+              collForEach(table, (row, rowId) =>
+                collForEach(row, ([oldCell], cellId) =>
+                  setOrDelCell(store, tableId, rowId, cellId, oldCell),
+                ),
+              ),
+            );
+            collClear(changedCells);
+            collForEach(changedValues, ([oldValue], valueId) =>
+              setOrDelValue(store, valueId, oldValue),
+            );
+            collClear(changedValues);
+          }
+          callListeners(finishTransactionListeners[0], void 0);
+          transactions = -1;
+          callInvalidCellListeners(0);
+          if (!collIsEmpty(changedCells)) {
+            callTabularListenersForChanges(0);
+          }
+          callInvalidValueListeners(0);
+          if (!collIsEmpty(changedValues)) {
+            callValuesListenersForChanges(0);
+          }
+          internalListeners[1]?.();
+          callListeners(finishTransactionListeners[1], void 0);
+          internalListeners[2]?.();
+          transactions = 0;
+          hadTables = hasTables();
+          hadValues = hasValues();
+          arrayForEach(
+            [
+              changedTableIds,
+              changedTableCellIds,
+              changedRowCount,
+              changedRowIds,
+              changedCellIds,
+              changedCells,
+              invalidCells,
+              changedValueIds,
+              changedValues,
+              invalidValues,
+            ],
+            collClear,
+          );
+        }
+      }
+      return store;
+    };
+    const forEachTable = (tableCallback) =>
+      collForEach(tablesMap, (tableMap, tableId) =>
+        tableCallback(tableId, (rowCallback) =>
+          collForEach(tableMap, (rowMap, rowId) =>
+            rowCallback(rowId, (cellCallback) =>
+              mapForEach(rowMap, cellCallback),
+            ),
+          ),
+        ),
+      );
+    const forEachTableCell = (tableId, tableCellCallback) =>
+      mapForEach(mapGet(tableCellIds, id(tableId)), tableCellCallback);
+    const forEachRow = (tableId, rowCallback) =>
+      collForEach(mapGet(tablesMap, id(tableId)), (rowMap, rowId) =>
+        rowCallback(rowId, (cellCallback) => mapForEach(rowMap, cellCallback)),
+      );
+    const forEachCell = (tableId, rowId, cellCallback) =>
+      mapForEach(
+        mapGet(mapGet(tablesMap, id(tableId)), id(rowId)),
+        cellCallback,
+      );
+    const forEachValue = (valueCallback) =>
+      mapForEach(valuesMap, valueCallback);
+    const addSortedRowIdsListener = (
+      tableId,
+      cellId,
+      descending,
+      offset,
+      limit,
+      listener,
+      mutator,
+    ) => {
+      let sortedRowIds = getSortedRowIds(
+        tableId,
+        cellId,
+        descending,
+        offset,
+        limit,
+      );
+      return addListener(
+        () => {
+          const newSortedRowIds = getSortedRowIds(
+            tableId,
+            cellId,
+            descending,
+            offset,
+            limit,
+          );
+          if (!arrayIsEqual(newSortedRowIds, sortedRowIds)) {
+            sortedRowIds = newSortedRowIds;
+            listener(
+              store,
+              tableId,
+              cellId,
+              descending,
+              offset,
+              limit,
+              sortedRowIds,
+            );
+          }
+        },
+        sortedRowIdsListeners[mutator ? 1 : 0],
+        [tableId, cellId],
+        [getTableIds],
+      );
+    };
+    const addStartTransactionListener = (listener) =>
+      addListener(listener, startTransactionListeners);
+    const addWillFinishTransactionListener = (listener) =>
+      addListener(listener, finishTransactionListeners[0]);
+    const addDidFinishTransactionListener = (listener) =>
+      addListener(listener, finishTransactionListeners[1]);
+    const callListener = (listenerId) => {
+      callListenerImpl(listenerId);
+      return store;
+    };
+    const delListener = (listenerId) => {
+      delListenerImpl(listenerId);
+      return store;
+    };
+    const getListenerStats = () => ({
+      hasTables: pairCollSize2(hasTablesListeners),
+      tables: pairCollSize2(tablesListeners),
+      tableIds: pairCollSize2(tableIdsListeners),
+      hasTable: pairCollSize2(hasTableListeners),
+      table: pairCollSize2(tableListeners),
+      tableCellIds: pairCollSize2(tableCellIdsListeners),
+      hasTableCell: pairCollSize2(hasTableCellListeners, collSize3),
+      rowCount: pairCollSize2(rowCountListeners),
+      rowIds: pairCollSize2(rowIdsListeners),
+      sortedRowIds: pairCollSize2(sortedRowIdsListeners),
+      hasRow: pairCollSize2(hasRowListeners, collSize3),
+      row: pairCollSize2(rowListeners, collSize3),
+      cellIds: pairCollSize2(cellIdsListeners, collSize3),
+      hasCell: pairCollSize2(hasCellListeners, collSize4),
+      cell: pairCollSize2(cellListeners, collSize4),
+      invalidCell: pairCollSize2(invalidCellListeners, collSize4),
+      hasValues: pairCollSize2(hasValuesListeners),
+      values: pairCollSize2(valuesListeners),
+      valueIds: pairCollSize2(valueIdsListeners),
+      hasValue: pairCollSize2(hasValueListeners),
+      value: pairCollSize2(valueListeners),
+      invalidValue: pairCollSize2(invalidValueListeners),
+      transaction:
+        collSize2(startTransactionListeners) +
+        pairCollSize2(finishTransactionListeners),
+    });
+    const setInternalListeners = (
+      preStartTransaction,
+      preFinishTransaction,
+      postFinishTransaction,
+      cellChanged2,
+      valueChanged2,
+    ) =>
+      (internalListeners = [
+        preStartTransaction,
+        preFinishTransaction,
+        postFinishTransaction,
+        cellChanged2,
+        valueChanged2,
+      ]);
+    const store = {
+      getContent,
+      getTables,
+      getTableIds,
+      getTable,
+      getTableCellIds,
+      getRowCount,
+      getRowIds,
+      getSortedRowIds,
+      getRow,
+      getCellIds,
+      getCell,
+      getValues,
+      getValueIds,
+      getValue,
+      hasTables,
+      hasTable,
+      hasTableCell,
+      hasRow,
+      hasCell,
+      hasValues,
+      hasValue,
+      getTablesJson,
+      getValuesJson,
+      getJson,
+      getTablesSchemaJson,
+      getValuesSchemaJson,
+      getSchemaJson,
+      hasTablesSchema: () => hasTablesSchema,
+      hasValuesSchema: () => hasValuesSchema,
+      setContent,
+      setTables,
+      setTable,
+      setRow,
+      addRow,
+      setPartialRow,
+      setCell,
+      setValues,
+      setPartialValues,
+      setValue,
+      applyChanges,
+      setTablesJson,
+      setValuesJson,
+      setJson,
+      setTablesSchema,
+      setValuesSchema,
+      setSchema,
+      delTables,
+      delTable,
+      delRow,
+      delCell,
+      delValues,
+      delValue,
+      delTablesSchema,
+      delValuesSchema,
+      delSchema,
+      transaction,
+      startTransaction,
+      getTransactionChanges,
+      getTransactionLog,
+      finishTransaction,
+      forEachTable,
+      forEachTableCell,
+      forEachRow,
+      forEachCell,
+      forEachValue,
+      addSortedRowIdsListener,
+      addStartTransactionListener,
+      addWillFinishTransactionListener,
+      addDidFinishTransactionListener,
+      callListener,
+      delListener,
+      getListenerStats,
+      isMergeable: () => false,
+      // only used internally by other modules
+      createStore,
+      addListener,
+      callListeners,
+      setInternalListeners,
+    };
+    objToArray(
+      {
+        [HAS + TABLES]: [0, hasTablesListeners, [], () => [hasTables()]],
+        [TABLES]: [0, tablesListeners],
+        [TABLE_IDS]: [0, tableIdsListeners],
+        [HAS + TABLE]: [
+          1,
+          hasTableListeners,
+          [getTableIds],
+          (ids) => [hasTable(...ids)],
+        ],
+        [TABLE]: [1, tableListeners, [getTableIds]],
+        [TABLE + CELL_IDS]: [1, tableCellIdsListeners, [getTableIds]],
+        [HAS + TABLE + CELL]: [
+          2,
+          hasTableCellListeners,
+          [getTableIds, getTableCellIds],
+          (ids) => [hasTableCell(...ids)],
+        ],
+        [ROW_COUNT]: [1, rowCountListeners, [getTableIds]],
+        [ROW_IDS]: [1, rowIdsListeners, [getTableIds]],
+        [HAS + ROW]: [
+          2,
+          hasRowListeners,
+          [getTableIds, getRowIds],
+          (ids) => [hasRow(...ids)],
+        ],
+        [ROW]: [2, rowListeners, [getTableIds, getRowIds]],
+        [CELL_IDS]: [2, cellIdsListeners, [getTableIds, getRowIds]],
+        [HAS + CELL]: [
+          3,
+          hasCellListeners,
+          [getTableIds, getRowIds, getCellIds],
+          (ids) => [hasCell(...ids)],
+        ],
+        [CELL]: [
+          3,
+          cellListeners,
+          [getTableIds, getRowIds, getCellIds],
+          (ids) => pairNew(getCell(...ids)),
+        ],
+        InvalidCell: [3, invalidCellListeners],
+        [HAS + VALUES]: [0, hasValuesListeners, [], () => [hasValues()]],
+        [VALUES]: [0, valuesListeners],
+        [VALUE_IDS]: [0, valueIdsListeners],
+        [HAS + VALUE]: [
+          1,
+          hasValueListeners,
+          [getValueIds],
+          (ids) => [hasValue(...ids)],
+        ],
+        [VALUE]: [
+          1,
+          valueListeners,
+          [getValueIds],
+          (ids) => pairNew(getValue(ids[0])),
+        ],
+        InvalidValue: [1, invalidValueListeners],
+      },
+      (
+        [argumentCount, idSetNode, pathGetters, extraArgsGetter],
+        listenable,
+      ) => {
+        store[ADD + listenable + LISTENER] = (...args) =>
+          addListener(
+            args[argumentCount],
+            idSetNode[args[argumentCount + 1] ? 1 : 0],
+            argumentCount > 0 ? slice(args, 0, argumentCount) : void 0,
+            pathGetters,
+            extraArgsGetter,
+          );
+      },
+    );
+    return objFreeze(store);
+  };
+
+  const SHIFT36 = 2 ** 36;
+  const SHIFT30 = 2 ** 30;
+  const SHIFT24 = 2 ** 24;
+  const SHIFT18 = 2 ** 18;
+  const SHIFT12 = 2 ** 12;
+  const SHIFT6 = 2 ** 6;
+  const encodeTimeAndCounter = (logicalTime42, counter24) =>
+    encode(logicalTime42 / SHIFT36) +
+    encode(logicalTime42 / SHIFT30) +
+    encode(logicalTime42 / SHIFT24) +
+    encode(logicalTime42 / SHIFT18) +
+    encode(logicalTime42 / SHIFT12) +
+    encode(logicalTime42 / SHIFT6) +
+    encode(logicalTime42) +
+    encode(counter24 / SHIFT18) +
+    encode(counter24 / SHIFT12) +
+    encode(counter24 / SHIFT6) +
+    encode(counter24);
+  const decodeTimeAndCounter = (hlc16) => [
+    decode(hlc16, 0) * SHIFT36 +
+      decode(hlc16, 1) * SHIFT30 +
+      decode(hlc16, 2) * SHIFT24 +
+      decode(hlc16, 3) * SHIFT18 +
+      decode(hlc16, 4) * SHIFT12 +
+      decode(hlc16, 5) * SHIFT6 +
+      decode(hlc16, 6),
+    decode(hlc16, 7) * SHIFT18 +
+      decode(hlc16, 8) * SHIFT12 +
+      decode(hlc16, 9) * SHIFT6 +
+      decode(hlc16, 10),
+  ];
+  const getHlcFunctions = (uniqueId) => {
+    let logicalTime = 0;
+    let lastCounter = -1;
+    const clientPart = ifNotUndefined(
+      uniqueId,
+      (uniqueId2) => {
+        const clientHash30 = getHash(uniqueId2);
+        return (
+          encode(clientHash30 / SHIFT24) +
+          encode(clientHash30 / SHIFT18) +
+          encode(clientHash30 / SHIFT12) +
+          encode(clientHash30 / SHIFT6) +
+          encode(clientHash30)
+        );
+      },
+      () => getUniqueId(5),
+    );
+    const getHlc = () => {
+      seenHlc();
+      return encodeTimeAndCounter(logicalTime, ++lastCounter) + clientPart;
+    };
+    const seenHlc = (hlc) => {
+      const previousLogicalTime = logicalTime;
+      const [remoteLogicalTime, remoteCounter] =
+        isUndefined(hlc) || hlc == '' ? [0, 0] : decodeTimeAndCounter(hlc);
+      logicalTime = mathMax(
+        previousLogicalTime,
+        remoteLogicalTime,
+        globalThis.HLC_TIME ?? Date.now(),
+      );
+      lastCounter =
+        logicalTime == previousLogicalTime
+          ? logicalTime == remoteLogicalTime
+            ? mathMax(lastCounter, remoteCounter)
+            : lastCounter
+          : logicalTime == remoteLogicalTime
+            ? remoteCounter
+            : -1;
+    };
+    return [getHlc, seenHlc];
+  };
+
+  const LISTENER_ARGS = {
+    HasTable: 1,
+    Table: 1,
+    TableCellIds: 1,
+    HasTableCell: 2,
+    RowCount: 1,
+    RowIds: 1,
+    SortedRowIds: 5,
+    HasRow: 2,
+    Row: 2,
+    CellIds: 2,
+    HasCell: 3,
+    Cell: 3,
+    HasValue: 1,
+    Value: 1,
+    InvalidCell: 3,
+    InvalidValue: 1,
+  };
+  const newContentStampMap = (time = EMPTY_STRING) => [
+    stampNewMap(time),
+    stampNewMap(time),
+  ];
+  const validateMergeableContent = (mergeableContent) =>
+    isArray(mergeableContent) &&
+    size(mergeableContent) == 2 &&
+    stampValidate(mergeableContent[0], (tableStamps) =>
+      objValidate(
+        tableStamps,
+        (tableStamp) =>
+          stampValidate(tableStamp, (rowStamps) =>
+            objValidate(
+              rowStamps,
+              (rowStamp) =>
+                stampValidate(rowStamp, (cellStamps) =>
+                  objValidate(
+                    cellStamps,
+                    (cellStamp) =>
+                      stampValidate(cellStamp, isCellOrValueOrNullOrUndefined),
+                    void 0,
+                    1,
+                  ),
+                ),
+              void 0,
+              1,
+            ),
+          ),
+        void 0,
+        1,
+      ),
+    ) &&
+    stampValidate(mergeableContent[1], (values) =>
+      objValidate(
+        values,
+        (value) => stampValidate(value, isCellOrValueOrNullOrUndefined),
+        void 0,
+        1,
+      ),
+    );
+  const createMergeableStore = (uniqueId) => {
+    let listeningToRawStoreChanges = 1;
+    let contentStampMap = newContentStampMap();
+    let defaultingContent = 0;
+    const touchedCells = mapNew();
+    const touchedValues = setNew();
+    const [getHlc, seenHlc] = getHlcFunctions(uniqueId);
+    const store = createStore();
+    const disableListeningToRawStoreChanges = (actions) => {
+      const wasListening = listeningToRawStoreChanges;
+      listeningToRawStoreChanges = 0;
+      actions();
+      listeningToRawStoreChanges = wasListening;
+      return mergeableStore;
+    };
+    const mergeContentOrChanges = (contentOrChanges, isContent = 0) => {
+      const tablesChanges = {};
+      const valuesChanges = {};
+      const [
+        [tablesObj, incomingTablesTime = EMPTY_STRING, incomingTablesHash = 0],
+        values,
+      ] = contentOrChanges;
+      const [tablesStampMap, valuesStampMap] = contentStampMap;
+      const [tableStampMaps, oldTablesTime, oldTablesHash] = tablesStampMap;
+      let tablesHash = isContent ? incomingTablesHash : oldTablesHash;
+      let tablesTime = incomingTablesTime;
+      objForEach(
+        tablesObj,
+        (
+          [rowsObj, incomingTableTime = EMPTY_STRING, incomingTableHash = 0],
+          tableId,
+        ) => {
+          const tableStampMap = mapEnsure(tableStampMaps, tableId, stampNewMap);
+          const [rowStampMaps, oldTableTime, oldTableHash] = tableStampMap;
+          let tableHash = isContent ? incomingTableHash : oldTableHash;
+          let tableTime = incomingTableTime;
+          objForEach(rowsObj, (row, rowId) => {
+            const [rowTime, oldRowHash, rowHash] = mergeCellsOrValues(
+              row,
+              mapEnsure(rowStampMaps, rowId, stampNewMap),
+              objEnsure(
+                objEnsure(tablesChanges, tableId, objNew),
+                rowId,
+                objNew,
+              ),
+              isContent,
+            );
+            tableHash ^= isContent
+              ? 0
+              : (oldRowHash ? hashIdAndHash(rowId, oldRowHash) : 0) ^
+                hashIdAndHash(rowId, rowHash);
+            tableTime = getLatestTime(tableTime, rowTime);
+          });
+          tableHash ^= isContent
+            ? 0
+            : replaceTimeHash(oldTableTime, incomingTableTime);
+          stampUpdate(tableStampMap, tableHash, incomingTableTime);
+          tablesHash ^= isContent
+            ? 0
+            : (oldTableHash ? hashIdAndHash(tableId, oldTableHash) : 0) ^
+              hashIdAndHash(tableId, tableStampMap[2]);
+          tablesTime = getLatestTime(tablesTime, tableTime);
+        },
+      );
+      tablesHash ^= isContent
+        ? 0
+        : replaceTimeHash(oldTablesTime, incomingTablesTime);
+      stampUpdate(tablesStampMap, tablesHash, incomingTablesTime);
+      const [valuesTime] = mergeCellsOrValues(
+        values,
+        valuesStampMap,
+        valuesChanges,
+        isContent,
+      );
+      seenHlc(getLatestTime(tablesTime, valuesTime));
+      return [tablesChanges, valuesChanges, 1];
+    };
+    const mergeCellsOrValues = (
+      things,
+      thingsStampMap,
+      thingsChanges,
+      isContent,
+    ) => {
+      const [
+        thingsObj,
+        incomingThingsTime = EMPTY_STRING,
+        incomingThingsHash = 0,
+      ] = things;
+      const [thingStampMaps, oldThingsTime, oldThingsHash] = thingsStampMap;
+      let thingsTime = incomingThingsTime;
+      let thingsHash = isContent ? incomingThingsHash : oldThingsHash;
+      objForEach(
+        thingsObj,
+        ([thing, thingTime, incomingThingHash = 0], thingId) => {
+          const thingStampMap = mapEnsure(thingStampMaps, thingId, () => [
+            void 0,
+            EMPTY_STRING,
+            0,
+          ]);
+          const [, oldThingTime, oldThingHash] = thingStampMap;
+          if (!oldThingTime || thingTime > oldThingTime) {
+            stampUpdate(
+              thingStampMap,
+              isContent
+                ? incomingThingHash
+                : getHash(jsonStringWithMap(thing ?? null) + ':' + thingTime),
+              thingTime,
+            );
+            thingStampMap[0] = thing;
+            thingsChanges[thingId] = thing;
+            thingsHash ^= isContent
+              ? 0
+              : hashIdAndHash(thingId, oldThingHash) ^
+                hashIdAndHash(thingId, thingStampMap[2]);
+            thingsTime = getLatestTime(thingsTime, thingTime);
+          }
+        },
+      );
+      thingsHash ^= isContent
+        ? 0
+        : replaceTimeHash(oldThingsTime, incomingThingsTime);
+      stampUpdate(thingsStampMap, thingsHash, incomingThingsTime);
+      return [thingsTime, oldThingsHash, thingsStampMap[2]];
+    };
+    const preStartTransaction = () => {};
+    const preFinishTransaction = () => {};
+    const postFinishTransaction = () => {
+      collClear(touchedCells);
+      collClear(touchedValues);
+    };
+    const cellChanged = (tableId, rowId, cellId, newCell) => {
+      setAdd(
+        mapEnsure(mapEnsure(touchedCells, tableId, mapNew), rowId, setNew),
+        cellId,
+      );
+      if (listeningToRawStoreChanges) {
+        mergeContentOrChanges([
+          [
+            {
+              [tableId]: [
+                {
+                  [rowId]: [
+                    {
+                      [cellId]: [
+                        newCell,
+                        defaultingContent ? EMPTY_STRING : getHlc(),
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          [{}],
+          1,
+        ]);
+      }
+    };
+    const valueChanged = (valueId, newValue) => {
+      setAdd(touchedValues, valueId);
+      if (listeningToRawStoreChanges) {
+        mergeContentOrChanges([
+          [{}],
+          [
+            {
+              [valueId]: [
+                newValue,
+                defaultingContent ? EMPTY_STRING : getHlc(),
+              ],
+            },
+          ],
+          1,
+        ]);
+      }
+    };
+    const getMergeableContent = () => [
+      stampMapToObjWithHash(contentStampMap[0], (tableStampMap) =>
+        stampMapToObjWithHash(tableStampMap, (rowStampMap) =>
+          stampMapToObjWithHash(rowStampMap),
+        ),
+      ),
+      stampMapToObjWithHash(contentStampMap[1]),
+    ];
+    const getMergeableContentHashes = () => [
+      contentStampMap[0][2],
+      contentStampMap[1][2],
+    ];
+    const getMergeableTableHashes = () =>
+      mapToObj(contentStampMap[0][0], getStampHash);
+    const getMergeableTableDiff = (otherTableHashes) => {
+      const newTables = stampNewObj(contentStampMap[0][1]);
+      const differentTableHashes = {};
+      mapForEach(
+        contentStampMap[0][0],
+        (tableId, [tableStampMap, tableTime, hash]) =>
+          objHas(otherTableHashes, tableId)
+            ? hash != otherTableHashes[tableId]
+              ? (differentTableHashes[tableId] = hash)
+              : 0
+            : (newTables[0][tableId] = stampMapToObjWithoutHash(
+                [tableStampMap, tableTime],
+                (rowStampMap) => stampMapToObjWithoutHash(rowStampMap),
+              )),
+      );
+      return [newTables, differentTableHashes];
+    };
+    const getMergeableRowHashes = (otherTableHashes) => {
+      const rowHashes = {};
+      objForEach(otherTableHashes, (otherTableHash, tableId) =>
+        ifNotUndefined(
+          mapGet(contentStampMap[0][0], tableId),
+          ([rowStampMaps, , tableHash]) =>
+            tableHash != otherTableHash
+              ? mapForEach(
+                  rowStampMaps,
+                  (rowId, [, , rowHash]) =>
+                    (objEnsure(rowHashes, tableId, objNew)[rowId] = rowHash),
+                )
+              : 0,
+        ),
+      );
+      return rowHashes;
+    };
+    const getMergeableRowDiff = (otherTableRowHashes) => {
+      const newRows = stampNewObj(contentStampMap[0][1]);
+      const differentRowHashes = {};
+      objForEach(otherTableRowHashes, (otherRowHashes, tableId) =>
+        mapForEach(
+          mapGet(contentStampMap[0][0], tableId)?.[0],
+          (rowId, [rowStampMap, rowTime, hash]) =>
+            objHas(otherRowHashes, rowId)
+              ? hash !== otherRowHashes[rowId]
+                ? (objEnsure(differentRowHashes, tableId, objNew)[rowId] = hash)
+                : 0
+              : (objEnsure(newRows[0], tableId, stampNewObj)[0][rowId] =
+                  stampMapToObjWithoutHash([rowStampMap, rowTime])),
+        ),
+      );
+      return [newRows, differentRowHashes];
+    };
+    const getMergeableCellHashes = (otherTableRowHashes) => {
+      const cellHashes = {};
+      objForEach(otherTableRowHashes, (otherRowHashes, tableId) =>
+        ifNotUndefined(
+          mapGet(contentStampMap[0][0], tableId),
+          ([rowStampMaps]) =>
+            objForEach(otherRowHashes, (otherRowHash, rowId) =>
+              ifNotUndefined(
+                mapGet(rowStampMaps, rowId),
+                ([cellStampMaps, , rowHash]) =>
+                  rowHash !== otherRowHash
+                    ? mapForEach(
+                        cellStampMaps,
+                        (cellId, [, , cellHash]) =>
+                          (objEnsure(
+                            objEnsure(cellHashes, tableId, objNew),
+                            rowId,
+                            objNew,
+                          )[cellId] = cellHash),
+                      )
+                    : 0,
+              ),
+            ),
+        ),
+      );
+      return cellHashes;
+    };
+    const getMergeableCellDiff = (otherTableRowCellHashes) => {
+      const [[tableStampMaps, tablesTime]] = contentStampMap;
+      const tablesObj = {};
+      objForEach(otherTableRowCellHashes, (otherRowCellHashes, tableId) =>
+        objForEach(otherRowCellHashes, (otherCellHashes, rowId) =>
+          ifNotUndefined(
+            mapGet(tableStampMaps, tableId),
+            ([rowStampMaps, tableTime]) =>
+              ifNotUndefined(
+                mapGet(rowStampMaps, rowId),
+                ([cellStampMaps, rowTime]) =>
+                  mapForEach(cellStampMaps, (cellId, [cell, cellTime, hash]) =>
+                    hash !== otherCellHashes[cellId]
+                      ? (objEnsure(
+                          objEnsure(tablesObj, tableId, () =>
+                            stampNewObj(tableTime),
+                          )[0],
+                          rowId,
+                          () => stampNewObj(rowTime),
+                        )[0][cellId] = [cell, cellTime])
+                      : 0,
+                  ),
+              ),
+          ),
+        ),
+      );
+      return newStamp(tablesObj, tablesTime);
+    };
+    const getMergeableValuesHashes = () =>
+      mapToObj(contentStampMap[1][0], getStampHash);
+    const getMergeableValueDiff = (relativeTo) => {
+      const [, [valueStampMaps, valuesTime]] = contentStampMap;
+      const values = mapToObj(
+        valueStampMaps,
+        stampCloneWithoutHash,
+        ([, , hash], valueId) => hash == relativeTo?.[valueId],
+      );
+      return newStamp(values, valuesTime);
+    };
+    const setMergeableContent = (mergeableContent) =>
+      disableListeningToRawStoreChanges(() =>
+        validateMergeableContent(mergeableContent)
+          ? store.transaction(() => {
+              store.delTables().delValues();
+              contentStampMap = newContentStampMap();
+              store.applyChanges(mergeContentOrChanges(mergeableContent, 1));
+            })
+          : 0,
+      );
+    const setDefaultContent = (content) => {
+      store.transaction(() => {
+        defaultingContent = 1;
+        store.setContent(content);
+        defaultingContent = 0;
+      });
+      return mergeableStore;
+    };
+    const getTransactionMergeableChanges = () => {
+      const [[tableStampMaps, tablesTime], [valueStampMaps, valuesTime]] =
+        contentStampMap;
+      const tablesObj = {};
+      collForEach(touchedCells, (touchedTable, tableId) =>
+        ifNotUndefined(
+          mapGet(tableStampMaps, tableId),
+          ([rowStampMaps, tableTime]) => {
+            const tableObj = {};
+            collForEach(touchedTable, (touchedRow, rowId) =>
+              ifNotUndefined(
+                mapGet(rowStampMaps, rowId),
+                ([cellStampMaps, rowTime]) => {
+                  const rowObj = {};
+                  collForEach(touchedRow, (cellId) => {
+                    ifNotUndefined(
+                      mapGet(cellStampMaps, cellId),
+                      ([cell, time]) => (rowObj[cellId] = newStamp(cell, time)),
+                    );
+                  });
+                  tableObj[rowId] = newStamp(rowObj, rowTime);
+                },
+              ),
+            );
+            tablesObj[tableId] = newStamp(tableObj, tableTime);
+          },
+        ),
+      );
+      const valuesObj = {};
+      collForEach(touchedValues, (valueId) =>
+        ifNotUndefined(
+          mapGet(valueStampMaps, valueId),
+          ([value, time]) => (valuesObj[valueId] = newStamp(value, time)),
+        ),
+      );
+      return [
+        newStamp(tablesObj, tablesTime),
+        newStamp(valuesObj, valuesTime),
+        1,
+      ];
+    };
+    const applyMergeableChanges = (mergeableChanges) =>
+      disableListeningToRawStoreChanges(() =>
+        store.applyChanges(mergeContentOrChanges(mergeableChanges)),
+      );
+    const merge = (mergeableStore2) => {
+      const mergeableChanges = getMergeableContent();
+      const mergeableChanges2 = mergeableStore2.getMergeableContent();
+      mergeableStore2.applyMergeableChanges(mergeableChanges);
+      return applyMergeableChanges(mergeableChanges2);
+    };
+    const mergeableStore = {
+      getMergeableContent,
+      getMergeableContentHashes,
+      getMergeableTableHashes,
+      getMergeableTableDiff,
+      getMergeableRowHashes,
+      getMergeableRowDiff,
+      getMergeableCellHashes,
+      getMergeableCellDiff,
+      getMergeableValuesHashes,
+      getMergeableValueDiff,
+      setMergeableContent,
+      setDefaultContent,
+      getTransactionMergeableChanges,
+      applyMergeableChanges,
+      merge,
+    };
+    store.setInternalListeners(
+      preStartTransaction,
+      preFinishTransaction,
+      postFinishTransaction,
+      cellChanged,
+      valueChanged,
+    );
+    objToArray(
+      store,
+      (method, name) =>
+        (mergeableStore[name] = // fluent methods
+          strStartsWith(name, 'set') ||
+          strStartsWith(name, 'del') ||
+          strStartsWith(name, 'apply') ||
+          strEndsWith(name, 'Transaction') ||
+          name == 'callListener'
+            ? (...args) => {
+                method(...args);
+                return mergeableStore;
+              }
+            : strStartsWith(name, 'add') && strEndsWith(name, 'Listener')
+              ? (...args) => {
+                  const listenerArg = LISTENER_ARGS[slice(name, 3, -8)] ?? 0;
+                  const listener = args[listenerArg];
+                  args[listenerArg] = (_store, ...args2) =>
+                    listener(mergeableStore, ...args2);
+                  return method(...args);
+                }
+              : name == 'isMergeable'
+                ? () => true
+                : method),
+    );
+    return objFreeze(mergeableStore);
+  };
+
+  exports.createCheckpoints = createCheckpoints;
+  exports.createCustomPersister = createCustomPersister;
+  exports.createCustomSynchronizer = createCustomSynchronizer;
+  exports.createIndexes = createIndexes;
+  exports.createMergeableStore = createMergeableStore;
+  exports.createMetrics = createMetrics;
+  exports.createQueries = createQueries;
+  exports.createRelationships = createRelationships;
+  exports.createStore = createStore;
+  exports.defaultSorter = defaultSorter;
+  exports.getUniqueId = getUniqueId;
+});

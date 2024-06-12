@@ -1,1 +1,2036 @@
-var e,s;e=this,s=function(e,s){"use strict";const t=e=>typeof e,o="",r=t(o),u=t(t),l="Listener",n="Result",d="Has",a="Ids",i="Table",c=i+"s",I=i+a,C="Row",p=C+"Count",b=C+a,w="Sorted"+C+a,R="Cell",k=R+a,g="Value",L=g+"s",h=g+a,y=e=>null==e,m=(e,s,t)=>y(e)?t?.():s(e),S=e=>t(e)==r,T=e=>t(e)==u,V=e=>e.length,f=()=>{},x=(e,s)=>e.every(s),v=(e,s)=>V(e)===V(s)&&x(e,((e,t)=>s[t]===e)),P=(e,s)=>e.map(s),q=Object,B=e=>q.getPrototypeOf(e),H=q.entries,M=e=>!y(e)&&m(B(e),(e=>e==q.prototype||y(B(e))),(()=>!0)),D=q.keys,F=(e,s)=>m(e,(e=>e[s])),O=(e,s)=>(delete e[s],e),Q=(e,s)=>{const t=H(e);return V(t)===V(D(s))&&x(t,(([e,t])=>M(t)?!!M(s[e])&&Q(s[e],t):s[e]===t))},{createContext:E,useContext:A,useEffect:G}=s,j=E([]),U=(e,s)=>{const t=A(j);return y(e)?t[s]:S(e)?F(t[s+1]??{},e):e},W=(e,s)=>{const t=U(e,s);return y(e)||S(e)?t:e},z=e=>D(A(j)[e]??{}),J=e=>W(e,0),K=e=>W(e,2),N=e=>W(e,4),X=e=>W(e,6),Y=e=>W(e,8),Z=e=>W(e,10),$=e=>e.toLowerCase();$(l);const _="Transaction";$(_);const{useCallback:ee,useEffect:se,useMemo:te,useLayoutEffect:oe,useRef:re,useState:ue,useSyncExternalStore:le}=s,ne=[],de=[{},[],[ne,void 0,ne],void 0,!1,0],ae=(e,s)=>e===s,ie=[Q,v,([e,s,t],[o,r,u])=>s===r&&v(e,o)&&v(t,u)],ce=(e,s,t=ne)=>{const[,o]=ue(),[r,u]=ue();return se((()=>{const t=e?s(e):void 0;return u(t),o([]),t?.destroy}),[e,...t]),r},Ie=(e,s,...t)=>{const o=e?.["add"+s+l]?.(...t);return()=>e?.delListener(o)},Ce=(e,s,t,r=ne)=>{const u=re(de[t]),l=ee((()=>{const o=s?.[(4==t?"has":"get")+e]?.(...r)??de[t];return(ie[t]??ae)(o,u.current)?u.current:u.current=o}),[s,t,e,...r]),n=ee((u=>Ie(s,(4==t?d:o)+e,...r,u)),[s,t,e,...r]),a=le(n,l);return 0==t?{...a}:t<3?[...a]:a},pe=(e,s,t,o=ne,r=ne,...u)=>oe((()=>Ie(s,e,...r,t,...u)),[s,e,...r,...o,...u]),be=(e,s,t,o=ne,r=f,u=ne,...l)=>{const n=J(e);return ee((e=>m(n,(o=>m(t(e,o),(t=>r(o["set"+s](...P(l,(s=>T(s)?s(e,o):s)),t),t)))))),[n,s,...o,...u,...l])},we=(e,s,t=f,o=ne,...r)=>{const u=J(e);return ee((()=>t(u?.["del"+s](...r))),[u,s,...o,...r])},Re=(e,s,t)=>{const o=Z(e);return ee((()=>o?.[s](t)),[o,s,t])},ke=e=>Ce(I,J(e),1),ge=(e,s)=>Ce(b,J(s),1,[e]),Le=(e,s,t,o=0,r,u)=>Ce(w,J(u),1,[e,s,t,o,r]),he=(e,s,t)=>Ce(k,J(t),1,[e,s]),ye=(e,s,t,o)=>Ce(R,J(o),3,[e,s,t]),me=e=>Ce(h,J(e),1),Se=(e,s)=>Ce(g,J(s),3,[e]),Te=(e,s)=>Ce("Metric",K(s),3,[e]),Ve=(e,s)=>Ce("SliceIds",N(s),1,[e]),fe=(e,s,t)=>Ce("Slice"+b,N(t),1,[e,s]),xe=(e,s,t)=>Ce("RemoteRowId",X(t),3,[e,s]),ve=(e,s,t)=>Ce("Local"+b,X(t),1,[e,s]),Pe=(e,s,t)=>Ce("Linked"+b,X(t),1,[e,s]),qe=(e,s)=>Ce(n+b,Y(s),1,[e]),Be=(e,s,t,o=0,r,u)=>Ce(n+w,Y(u),1,[e,s,t,o,r]),He=(e,s,t)=>Ce(n+k,Y(t),1,[e,s]),Me=(e,s,t,o)=>Ce(n+R,Y(o),3,[e,s,t]),De=e=>Ce("CheckpointIds",Z(e),2),Fe=(e,s)=>Ce("Checkpoint",Z(s),3,[e]),Oe=e=>Re(e,"goBackward"),Qe=e=>Re(e,"goForward"),{PureComponent:Ee,Fragment:Ae,createElement:Ge,useCallback:je,useLayoutEffect:Ue,useRef:We,useState:ze}=s,Je=(e,...s)=>y(e)?{}:e(...s),Ke=(e,s)=>[e,e?.getStore(),e?.getLocalTableId(s),e?.getRemoteTableId(s)],{useCallback:Ne,useContext:Xe,useMemo:Ye,useState:Ze}=s,$e=({tableId:e,store:s,rowComponent:t=rs,getRowComponentProps:o,customCellIds:r,separator:u,debugIds:l},n)=>ts(P(n,(u=>Ge(t,{...Je(o,u),key:u,tableId:e,rowId:u,customCellIds:r,store:s,debugIds:l}))),u,l,e),_e=({queryId:e,queries:s,resultRowComponent:t=as,getResultRowComponentProps:o,separator:r,debugIds:u},l)=>ts(P(l,(r=>Ge(t,{...Je(o,r),key:r,queryId:e,rowId:r,queries:s,debugIds:u}))),r,u,e),es=({relationshipId:e,relationships:s,rowComponent:t=rs,getRowComponentProps:o,separator:r,debugIds:u},l,n)=>{const[d,a,i]=Ke(X(s),e),c=l(e,n,d);return ts(P(c,(e=>Ge(t,{...Je(o,e),key:e,tableId:i,rowId:e,store:a,debugIds:u}))),r,u,n)},ss=e=>({checkpoints:s,checkpointComponent:t=is,getCheckpointComponentProps:o,separator:r,debugIds:u})=>{const l=Z(s);return ts(P(e(De(l)),(e=>Ge(t,{...Je(o,e),key:e,checkpoints:l,checkpointId:e,debugIds:u}))),r)},ts=(e,s,t,o)=>{const r=y(s)||!Array.isArray(e)?e:P(e,((e,t)=>t>0?[s,e]:e));return t?[o,":{",r,"}"]:r},os=({tableId:e,rowId:s,cellId:t,store:r,debugIds:u})=>ts(o+(ye(e,s,t,r)??o),void 0,u,t),rs=({tableId:e,rowId:s,store:t,cellComponent:o=os,getCellComponentProps:r,customCellIds:u,separator:l,debugIds:n})=>ts(P(((e,s,t,o)=>{const r=he(s,t,o);return e??r})(u,e,s,t),(u=>Ge(o,{...Je(r,u),key:u,tableId:e,rowId:s,cellId:u,store:t,debugIds:n}))),l,n,s),us=e=>$e(e,ge(e.tableId,e.store)),ls=({valueId:e,store:s,debugIds:t})=>ts(o+(Se(e,s)??o),void 0,t,e),ns=({indexId:e,sliceId:s,indexes:t,rowComponent:o=rs,getRowComponentProps:r,separator:u,debugIds:l})=>{const[n,d,a]=((e,s)=>[e,e?.getStore(),e?.getTableId(s)])(N(t),e),i=fe(e,s,n);return ts(P(i,(e=>Ge(o,{...Je(r,e),key:e,tableId:a,rowId:e,store:d,debugIds:l}))),u,l,s)},ds=({queryId:e,rowId:s,cellId:t,queries:r,debugIds:u})=>ts(o+(Me(e,s,t,r)??o),void 0,u,t),as=({queryId:e,rowId:s,queries:t,resultCellComponent:o=ds,getResultCellComponentProps:r,separator:u,debugIds:l})=>ts(P(He(e,s,t),(u=>Ge(o,{...Je(r,u),key:u,queryId:e,rowId:s,cellId:u,queries:t,debugIds:l}))),u,l,s),is=({checkpoints:e,checkpointId:s,debugIds:t})=>ts(Fe(s,e)??o,void 0,t,s),cs=ss((e=>e[0])),Is=ss((e=>y(e[1])?[]:[e[1]])),Cs=ss((e=>e[2]));e.BackwardCheckpointsView=cs,e.CellView=os,e.CheckpointView=is,e.CurrentCheckpointView=Is,e.ForwardCheckpointsView=Cs,e.IndexView=({indexId:e,indexes:s,sliceComponent:t=ns,getSliceComponentProps:o,separator:r,debugIds:u})=>ts(P(Ve(e,s),(r=>Ge(t,{...Je(o,r),key:r,indexId:e,sliceId:r,indexes:s,debugIds:u}))),r,u,e),e.LinkedRowsView=e=>es(e,Pe,e.firstRowId),e.LocalRowsView=e=>es(e,ve,e.remoteRowId),e.MetricView=({metricId:e,metrics:s,debugIds:t})=>ts(Te(e,s)??o,void 0,t,e),e.Provider=({store:e,storesById:s,metrics:t,metricsById:o,indexes:r,indexesById:u,relationships:l,relationshipsById:n,queries:d,queriesById:a,checkpoints:i,checkpointsById:c,children:I})=>{const C=Xe(j),[p,b]=Ze({}),w=Ne(((e,s)=>b((t=>F(t,e)==s?t:{...t,[e]:s}))),[]),R=Ne((e=>b((s=>({...O(s,e)})))),[]);return Ge(j.Provider,{value:Ye((()=>[e??C[0],{...C[1],...s,...p},t??C[2],{...C[3],...o},r??C[4],{...C[5],...u},l??C[6],{...C[7],...n},d??C[8],{...C[9],...a},i??C[10],{...C[11],...c},w,R]),[e,s,p,t,o,r,u,l,n,d,a,i,c,C,w,R])},I)},e.RemoteRowView=({relationshipId:e,localRowId:s,relationships:t,rowComponent:o=rs,getRowComponentProps:r,debugIds:u})=>{const[l,n,,d]=Ke(X(t),e),a=xe(e,s,l);return ts(y(d)||y(a)?null:Ge(o,{...Je(r,a),key:a,tableId:d,rowId:a,store:n,debugIds:u}),void 0,u,s)},e.ResultCellView=ds,e.ResultRowView=as,e.ResultSortedTableView=({cellId:e,descending:s,offset:t,limit:o,...r})=>_e(r,Be(r.queryId,e,s,t,o,r.queries)),e.ResultTableView=e=>_e(e,qe(e.queryId,e.queries)),e.RowView=rs,e.SliceView=ns,e.SortedTableView=({cellId:e,descending:s,offset:t,limit:o,...r})=>$e(r,Le(r.tableId,e,s,t,o,r.store)),e.TableView=us,e.TablesView=({store:e,tableComponent:s=us,getTableComponentProps:t,separator:o,debugIds:r})=>ts(P(ke(e),(o=>Ge(s,{...Je(t,o),key:o,tableId:o,store:e,debugIds:r}))),o),e.ValueView=ls,e.ValuesView=({store:e,valueComponent:s=ls,getValueComponentProps:t,separator:o,debugIds:r})=>ts(P(me(e),(o=>Ge(s,{...Je(t,o),key:o,valueId:o,store:e,debugIds:r}))),o),e.useAddRowCallback=(e,s,t=ne,o,r=f,u=ne,l=!0)=>{const n=J(o);return ee((t=>m(n,(o=>m(s(t,o),(s=>r(o.addRow(T(e)?e(t,o):e,s,l),o,s)))))),[n,e,...t,...u,l])},e.useCell=ye,e.useCellIds=he,e.useCellIdsListener=(e,s,t,o,r,u)=>pe(k,J(u),t,o,[e,s],r),e.useCellListener=(e,s,t,o,r,u,l)=>pe(R,J(l),o,r,[e,s,t],u),e.useCheckpoint=Fe,e.useCheckpointIds=De,e.useCheckpointIdsListener=(e,s,t)=>pe("CheckpointIds",Z(t),e,s),e.useCheckpointListener=(e,s,t,o)=>pe("Checkpoint",Z(o),s,t,[e]),e.useCheckpoints=e=>U(e,10),e.useCheckpointsIds=()=>z(11),e.useCheckpointsOrCheckpointsById=Z,e.useCreateCheckpoints=(e,s,t)=>ce(e,s,t),e.useCreateIndexes=(e,s,t)=>ce(e,s,t),e.useCreateMergeableStore=(e,s=ne)=>te(e,s),e.useCreateMetrics=(e,s,t)=>ce(e,s,t),e.useCreatePersister=(e,s,t=ne,o,r=ne,u,l=ne)=>{const[,n]=ue(),[d,a]=ue();return se((()=>{const t=e?s(e):void 0;a(t),t&&o&&(async()=>{await o(t),n([])})()}),[e,...t,...r]),se((()=>()=>{d&&(d.destroy(),u?.(d))}),[d,...l]),d},e.useCreateQueries=(e,s,t)=>ce(e,s,t),e.useCreateRelationships=(e,s,t)=>ce(e,s,t),e.useCreateStore=(e,s=ne)=>te(e,s),e.useCreateSynchronizer=(e,s,t=ne,o,r=ne)=>{const[u,l]=ue();return se((()=>{(async()=>{const t=e?await s(e):void 0;l(t)})()}),[e,...t]),se((()=>()=>{u&&(u.destroy(),o?.(u))}),[u,...r]),u},e.useDelCellCallback=(e,s,t,o,r,u,l)=>we(r,R,u,l,e,s,t,o),e.useDelRowCallback=(e,s,t,o,r)=>we(t,C,o,r,e,s),e.useDelTableCallback=(e,s,t,o)=>we(s,i,t,o,e),e.useDelTablesCallback=(e,s,t)=>we(e,c,s,t),e.useDelValueCallback=(e,s,t,o)=>we(s,g,t,o,e),e.useDelValuesCallback=(e,s,t)=>we(e,L,s,t),e.useDidFinishTransactionListener=(e,s,t)=>pe("DidFinish"+_,J(t),e,s),e.useGoBackwardCallback=Oe,e.useGoForwardCallback=Qe,e.useGoToCallback=(e,s=ne,t,o=f,r=ne)=>{const u=Z(t);return ee((s=>m(u,(t=>m(e(s),(e=>o(t.goTo(e),e)))))),[u,...s,...r])},e.useHasCell=(e,s,t,o)=>Ce(R,J(o),4,[e,s,t]),e.useHasCellListener=(e,s,t,o,r,u,l)=>pe(d+R,J(l),o,r,[e,s,t],u),e.useHasRow=(e,s,t)=>Ce(C,J(t),4,[e,s]),e.useHasRowListener=(e,s,t,o,r,u)=>pe(d+C,J(u),t,o,[e,s],r),e.useHasTable=(e,s)=>Ce(i,J(s),4,[e]),e.useHasTableCell=(e,s,t)=>Ce(i+R,J(t),4,[e,s]),e.useHasTableCellListener=(e,s,t,o,r,u)=>pe(d+i+R,J(u),t,o,[e,s],r),e.useHasTableListener=(e,s,t,o,r)=>pe(d+i,J(r),s,t,[e],o),e.useHasTables=e=>Ce(c,J(e),4,[]),e.useHasTablesListener=(e,s,t,o)=>pe(d+c,J(o),e,s,[],t),e.useHasValue=(e,s)=>Ce(g,J(s),4,[e]),e.useHasValueListener=(e,s,t,o,r)=>pe(d+g,J(r),s,t,[e],o),e.useHasValues=e=>Ce(L,J(e),4,[]),e.useHasValuesListener=(e,s,t,o)=>pe(d+L,J(o),e,s,[],t),e.useIndexIds=e=>Ce("IndexIds",N(e),1),e.useIndexes=e=>U(e,4),e.useIndexesIds=()=>z(5),e.useIndexesOrIndexesById=N,e.useLinkedRowIds=Pe,e.useLinkedRowIdsListener=(e,s,t,o,r)=>pe("Linked"+b,X(r),t,o,[e,s]),e.useLocalRowIds=ve,e.useLocalRowIdsListener=(e,s,t,o,r)=>pe("Local"+b,X(r),t,o,[e,s]),e.useMetric=Te,e.useMetricIds=e=>Ce("MetricIds",K(e),1),e.useMetricListener=(e,s,t,o)=>pe("Metric",K(o),s,t,[e]),e.useMetrics=e=>U(e,2),e.useMetricsIds=()=>z(3),e.useMetricsOrMetricsById=K,e.useProvideStore=(e,s)=>{const{12:t,13:o}=A(j);G((()=>(t?.(e,s),()=>o?.(e))),[t,e,s,o])},e.useQueries=e=>U(e,8),e.useQueriesIds=()=>z(9),e.useQueriesOrQueriesById=Y,e.useQueryIds=e=>Ce("QueryIds",Y(e),1),e.useRedoInformation=e=>{const s=Z(e),[,,[t]]=De(s);return[!y(t),Qe(s),t,m(t,(e=>s?.getCheckpoint(e)))??o]},e.useRelationshipIds=e=>Ce("RelationshipIds",X(e),1),e.useRelationships=e=>U(e,6),e.useRelationshipsIds=()=>z(7),e.useRelationshipsOrRelationshipsById=X,e.useRemoteRowId=xe,e.useRemoteRowIdListener=(e,s,t,o,r)=>pe("RemoteRowId",X(r),t,o,[e,s]),e.useResultCell=Me,e.useResultCellIds=He,e.useResultCellIdsListener=(e,s,t,o,r)=>pe(n+k,Y(r),t,o,[e,s]),e.useResultCellListener=(e,s,t,o,r,u)=>pe(n+R,Y(u),o,r,[e,s,t]),e.useResultRow=(e,s,t)=>Ce(n+C,Y(t),0,[e,s]),e.useResultRowCount=(e,s)=>Ce(n+p,Y(s),5,[e]),e.useResultRowCountListener=(e,s,t,o)=>pe(n+p,Y(o),s,t,[e]),e.useResultRowIds=qe,e.useResultRowIdsListener=(e,s,t,o)=>pe(n+b,Y(o),s,t,[e]),e.useResultRowListener=(e,s,t,o,r)=>pe(n+C,Y(r),t,o,[e,s]),e.useResultSortedRowIds=Be,e.useResultSortedRowIdsListener=(e,s,t,o,r,u,l,d)=>pe(n+w,Y(d),u,l,[e,s,t,o,r]),e.useResultTable=(e,s)=>Ce(n+i,Y(s),0,[e]),e.useResultTableCellIds=(e,s)=>Ce(n+i+k,Y(s),1,[e]),e.useResultTableCellIdsListener=(e,s,t,o)=>pe(n+i+k,Y(o),s,t,[e]),e.useResultTableListener=(e,s,t,o)=>pe(n+i,Y(o),s,t,[e]),e.useRow=(e,s,t)=>Ce(C,J(t),0,[e,s]),e.useRowCount=(e,s)=>Ce(p,J(s),5,[e]),e.useRowCountListener=(e,s,t,o,r)=>pe(p,J(r),s,t,[e],o),e.useRowIds=ge,e.useRowIdsListener=(e,s,t,o,r)=>pe(b,J(r),s,t,[e],o),e.useRowListener=(e,s,t,o,r,u)=>pe(C,J(u),t,o,[e,s],r),e.useSetCellCallback=(e,s,t,o,r,u,l,n)=>be(u,R,o,r,l,n,e,s,t),e.useSetCheckpointCallback=(e=f,s=ne,t,o=f,r=ne)=>{const u=Z(t);return ee((s=>m(u,(t=>{const r=e(s);o(t.addCheckpoint(r),t,r)}))),[u,...s,...r])},e.useSetPartialRowCallback=(e,s,t,o,r,u,l)=>be(r,"PartialRow",t,o,u,l,e,s),e.useSetPartialValuesCallback=(e,s,t,o,r)=>be(t,"PartialValues",e,s,o,r),e.useSetRowCallback=(e,s,t,o,r,u,l)=>be(r,C,t,o,u,l,e,s),e.useSetTableCallback=(e,s,t,o,r,u)=>be(o,i,s,t,r,u,e),e.useSetTablesCallback=(e,s,t,o,r)=>be(t,c,e,s,o,r),e.useSetValueCallback=(e,s,t,o,r,u)=>be(o,g,s,t,r,u,e),e.useSetValuesCallback=(e,s,t,o,r)=>be(t,L,e,s,o,r),e.useSliceIds=Ve,e.useSliceIdsListener=(e,s,t,o)=>pe("SliceIds",N(o),s,t,[e]),e.useSliceRowIds=fe,e.useSliceRowIdsListener=(e,s,t,o,r)=>pe("Slice"+b,N(r),t,o,[e,s]),e.useSortedRowIds=Le,e.useSortedRowIdsListener=(e,s,t,o,r,u,l,n,d)=>pe(w,J(d),u,l,[e,s,t,o,r],n),e.useStartTransactionListener=(e,s,t)=>pe("Start"+_,J(t),e,s),e.useStore=e=>U(e,0),e.useStoreIds=()=>z(1),e.useStoreOrStoreById=J,e.useTable=(e,s)=>Ce(i,J(s),0,[e]),e.useTableCellIds=(e,s)=>Ce(i+k,J(s),1,[e]),e.useTableCellIdsListener=(e,s,t,o,r)=>pe(i+k,J(r),s,t,[e],o),e.useTableIds=ke,e.useTableIdsListener=(e,s,t,o)=>pe(I,J(o),e,s,ne,t),e.useTableListener=(e,s,t,o,r)=>pe(i,J(r),s,t,[e],o),e.useTables=e=>Ce(c,J(e),0),e.useTablesListener=(e,s,t,o)=>pe(c,J(o),e,s,ne,t),e.useUndoInformation=e=>{const s=Z(e),[t,r]=De(s);return[(u=t,!(0==V(u))),Oe(s),r,m(r,(e=>s?.getCheckpoint(e)))??o];var u},e.useValue=Se,e.useValueIds=me,e.useValueIdsListener=(e,s,t,o)=>pe(h,J(o),e,s,ne,t),e.useValueListener=(e,s,t,o,r)=>pe(g,J(r),s,t,[e],o),e.useValues=e=>Ce(L,J(e),0),e.useValuesListener=(e,s,t,o)=>pe(L,J(o),e,s,ne,t),e.useWillFinishTransactionListener=(e,s,t)=>pe("WillFinish"+_,J(t),e,s)},"object"==typeof exports&&"undefined"!=typeof module?s(exports,require("react")):"function"==typeof define&&define.amd?define(["exports","react"],s):s((e="undefined"!=typeof globalThis?globalThis:e||self).TinyBaseUiReact={},e.React);
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined'
+    ? factory(exports, require('react'))
+    : typeof define === 'function' && define.amd
+      ? define(['exports', 'react'], factory)
+      : ((global =
+          typeof globalThis !== 'undefined' ? globalThis : global || self),
+        factory((global.TinyBaseUiReact = {}), global.React));
+})(this, function (exports, React) {
+  'use strict';
+
+  const getTypeOf = (thing) => typeof thing;
+  const EMPTY_STRING = '';
+  const STRING = getTypeOf(EMPTY_STRING);
+  const FUNCTION = getTypeOf(getTypeOf);
+  const LISTENER = 'Listener';
+  const RESULT = 'Result';
+  const GET = 'get';
+  const ADD = 'add';
+  const HAS = 'Has';
+  const _HAS = 'has';
+  const IDS = 'Ids';
+  const TABLE = 'Table';
+  const TABLES = TABLE + 's';
+  const TABLE_IDS = TABLE + IDS;
+  const ROW = 'Row';
+  const ROW_COUNT = ROW + 'Count';
+  const ROW_IDS = ROW + IDS;
+  const SORTED_ROW_IDS = 'Sorted' + ROW + IDS;
+  const CELL = 'Cell';
+  const CELL_IDS = CELL + IDS;
+  const VALUE = 'Value';
+  const VALUES = VALUE + 's';
+  const VALUE_IDS = VALUE + IDS;
+
+  const isUndefined = (thing) => thing == void 0;
+  const ifNotUndefined = (value, then, otherwise) =>
+    isUndefined(value) ? otherwise?.() : then(value);
+  const isString = (thing) => getTypeOf(thing) == STRING;
+  const isFunction = (thing) => getTypeOf(thing) == FUNCTION;
+  const isArray = (thing) => Array.isArray(thing);
+  const size = (arrayOrString) => arrayOrString.length;
+  const getUndefined = () => void 0;
+
+  const arrayEvery = (array, cb) => array.every(cb);
+  const arrayIsEqual = (array1, array2) =>
+    size(array1) === size(array2) &&
+    arrayEvery(array1, (value1, index) => array2[index] === value1);
+  const arrayMap = (array, cb) => array.map(cb);
+  const arrayIsEmpty = (array) => size(array) == 0;
+
+  const object = Object;
+  const getPrototypeOf = (obj) => object.getPrototypeOf(obj);
+  const objEntries = object.entries;
+  const isObject = (obj) =>
+    !isUndefined(obj) &&
+    ifNotUndefined(
+      getPrototypeOf(obj),
+      (objPrototype) =>
+        objPrototype == object.prototype ||
+        isUndefined(getPrototypeOf(objPrototype)),
+
+      /* istanbul ignore next */
+      () => true,
+    );
+  const objIds = object.keys;
+  const objGet = (obj, id) => ifNotUndefined(obj, (obj2) => obj2[id]);
+  const objDel = (obj, id) => {
+    delete obj[id];
+    return obj;
+  };
+  const objSize = (obj) => size(objIds(obj));
+  const objIsEqual = (obj1, obj2) => {
+    const entries1 = objEntries(obj1);
+    return (
+      size(entries1) === objSize(obj2) &&
+      arrayEvery(entries1, ([index, value1]) =>
+        isObject(value1)
+          ? isObject(obj2[index])
+            ? objIsEqual(obj2[index], value1)
+            : false
+          : obj2[index] === value1,
+      )
+    );
+  };
+
+  const {
+    createContext,
+    useContext: useContext$1,
+    useEffect: useEffect$1,
+  } = React;
+  const Context = createContext([]);
+  const useThing = (id, offset) => {
+    const contextValue = useContext$1(Context);
+    return isUndefined(id)
+      ? contextValue[offset]
+      : isString(id)
+        ? objGet(contextValue[offset + 1] ?? {}, id)
+        : id;
+  };
+  const useThingOrThingById = (thingOrThingId, offset) => {
+    const thing = useThing(thingOrThingId, offset);
+    return isUndefined(thingOrThingId) || isString(thingOrThingId)
+      ? thing
+      : thingOrThingId;
+  };
+  const useThingIds = (offset) => objIds(useContext$1(Context)[offset] ?? {});
+  const useStore = (id) => useThing(id, 0);
+  const useStoreOrStoreById = (storeOrStoreId) =>
+    useThingOrThingById(storeOrStoreId, 0);
+  const useProvideStore = (storeId, store) => {
+    const {12: addExtraStore, 13: delExtraStore} = useContext$1(Context);
+    useEffect$1(() => {
+      addExtraStore?.(storeId, store);
+      return () => delExtraStore?.(storeId);
+    }, [addExtraStore, storeId, store, delExtraStore]);
+  };
+  const useMetrics = (id) => useThing(id, 2);
+  const useMetricsOrMetricsById = (metricsOrMetricsId) =>
+    useThingOrThingById(metricsOrMetricsId, 2);
+  const useIndexes = (id) => useThing(id, 4);
+  const useIndexesOrIndexesById = (indexesOrIndexesId) =>
+    useThingOrThingById(indexesOrIndexesId, 4);
+  const useRelationships = (id) => useThing(id, 6);
+  const useRelationshipsOrRelationshipsById = (
+    relationshipsOrRelationshipsId,
+  ) => useThingOrThingById(relationshipsOrRelationshipsId, 6);
+  const useQueries = (id) => useThing(id, 8);
+  const useQueriesOrQueriesById = (queriesOrQueriesId) =>
+    useThingOrThingById(queriesOrQueriesId, 8);
+  const useCheckpoints = (id) => useThing(id, 10);
+  const useCheckpointsOrCheckpointsById = (checkpointsOrCheckpointsId) =>
+    useThingOrThingById(checkpointsOrCheckpointsId, 10);
+
+  const lower = (str) => str.toLowerCase();
+  lower(LISTENER);
+  const TRANSACTION = 'Transaction';
+  lower(TRANSACTION);
+
+  const {
+    useCallback: useCallback$2,
+    useEffect,
+    useMemo: useMemo$1,
+    useLayoutEffect: useLayoutEffect$1,
+    useRef: useRef$1,
+    useState: useState$2,
+    useSyncExternalStore,
+  } = React;
+  const EMPTY_ARRAY = [];
+  const DEFAULTS = [
+    {},
+    [],
+    [EMPTY_ARRAY, void 0, EMPTY_ARRAY],
+    void 0,
+    false,
+    0,
+  ];
+  const IS_EQUAL = (thing1, thing2) => thing1 === thing2;
+  const IS_EQUALS = [
+    objIsEqual,
+    arrayIsEqual,
+    (
+      [backwardIds1, currentId1, forwardIds1],
+      [backwardIds2, currentId2, forwardIds2],
+    ) =>
+      currentId1 === currentId2 &&
+      arrayIsEqual(backwardIds1, backwardIds2) &&
+      arrayIsEqual(forwardIds1, forwardIds2),
+  ];
+  const useCreate = (store, create, createDeps = EMPTY_ARRAY) => {
+    const [, rerender] = useState$2();
+    const [thing, setThing] = useState$2();
+    useEffect(
+      () => {
+        const newThing = store ? create(store) : void 0;
+        setThing(newThing);
+        rerender([]);
+        return newThing?.destroy;
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [store, ...createDeps],
+    );
+    return thing;
+  };
+  const addAndDelListener = (thing, listenable, ...args) => {
+    const listenerId = thing?.[ADD + listenable + LISTENER]?.(...args);
+    return () => thing?.delListener(listenerId);
+  };
+  const useListenable = (listenable, thing, type, args = EMPTY_ARRAY) => {
+    const lastResult = useRef$1(DEFAULTS[type]);
+    const getResult = useCallback$2(
+      () => {
+        const nextResult =
+          thing?.[(type == 4 ? _HAS : GET) + listenable]?.(...args) ??
+          DEFAULTS[type];
+        return !(IS_EQUALS[type] ?? IS_EQUAL)(nextResult, lastResult.current)
+          ? (lastResult.current = nextResult)
+          : lastResult.current;
+      },
+      /* eslint-disable-next-line react-hooks/exhaustive-deps */
+      [thing, type, listenable, ...args],
+    );
+    const subscribe = useCallback$2(
+      (listener) =>
+        addAndDelListener(
+          thing,
+          (type == 4 ? HAS : EMPTY_STRING) + listenable,
+          ...args,
+          listener,
+        ),
+      /* eslint-disable-next-line react-hooks/exhaustive-deps */
+      [thing, type, listenable, ...args],
+    );
+    const result = useSyncExternalStore(subscribe, getResult);
+    return type == 0 ? {...result} : type < 3 ? [...result] : result;
+  };
+  const useListener = (
+    listenable,
+    thing,
+    listener,
+    listenerDeps = EMPTY_ARRAY,
+    preArgs = EMPTY_ARRAY,
+    ...postArgs
+  ) =>
+    useLayoutEffect$1(
+      () =>
+        addAndDelListener(thing, listenable, ...preArgs, listener, ...postArgs),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [thing, listenable, ...preArgs, ...listenerDeps, ...postArgs],
+    );
+  const useSetCallback = (
+    storeOrStoreId,
+    settable,
+    get,
+    getDeps = EMPTY_ARRAY,
+    then = getUndefined,
+    thenDeps = EMPTY_ARRAY,
+    ...args
+  ) => {
+    const store = useStoreOrStoreById(storeOrStoreId);
+    return useCallback$2(
+      (parameter) =>
+        ifNotUndefined(store, (store2) =>
+          ifNotUndefined(get(parameter, store2), (thing) =>
+            then(
+              store2['set' + settable](
+                ...arrayMap(args, (arg) =>
+                  isFunction(arg) ? arg(parameter, store2) : arg,
+                ),
+                thing,
+              ),
+              thing,
+            ),
+          ),
+        ),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [store, settable, ...getDeps, ...thenDeps, ...args],
+    );
+  };
+  const useDel = (
+    storeOrStoreId,
+    deletable,
+    then = getUndefined,
+    thenDeps = EMPTY_ARRAY,
+    ...args
+  ) => {
+    const store = useStoreOrStoreById(storeOrStoreId);
+    return useCallback$2(
+      () => then(store?.['del' + deletable](...args)),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [store, deletable, ...thenDeps, ...args],
+    );
+  };
+  const useCheckpointAction = (checkpointsOrCheckpointsId, action, arg) => {
+    const checkpoints = useCheckpointsOrCheckpointsById(
+      checkpointsOrCheckpointsId,
+    );
+    return useCallback$2(
+      () => checkpoints?.[action](arg),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [checkpoints, action, arg],
+    );
+  };
+  const useCreateStore = (create, createDeps = EMPTY_ARRAY) =>
+    useMemo$1(create, createDeps);
+  const useCreateMergeableStore = (create, createDeps = EMPTY_ARRAY) =>
+    useMemo$1(create, createDeps);
+  const useStoreIds = () => useThingIds(1);
+  const useHasTables = (storeOrStoreId) =>
+    useListenable(TABLES, useStoreOrStoreById(storeOrStoreId), 4, []);
+  const useTables = (storeOrStoreId) =>
+    useListenable(TABLES, useStoreOrStoreById(storeOrStoreId), 0);
+  const useTableIds = (storeOrStoreId) =>
+    useListenable(TABLE_IDS, useStoreOrStoreById(storeOrStoreId), 1);
+  const useHasTable = (tableId, storeOrStoreId) =>
+    useListenable(TABLE, useStoreOrStoreById(storeOrStoreId), 4, [tableId]);
+  const useTable = (tableId, storeOrStoreId) =>
+    useListenable(TABLE, useStoreOrStoreById(storeOrStoreId), 0, [tableId]);
+  const useTableCellIds = (tableId, storeOrStoreId) =>
+    useListenable(TABLE + CELL_IDS, useStoreOrStoreById(storeOrStoreId), 1, [
+      tableId,
+    ]);
+  const useHasTableCell = (tableId, cellId, storeOrStoreId) =>
+    useListenable(TABLE + CELL, useStoreOrStoreById(storeOrStoreId), 4, [
+      tableId,
+      cellId,
+    ]);
+  const useRowCount = (tableId, storeOrStoreId) =>
+    useListenable(ROW_COUNT, useStoreOrStoreById(storeOrStoreId), 5, [tableId]);
+  const useRowIds = (tableId, storeOrStoreId) =>
+    useListenable(ROW_IDS, useStoreOrStoreById(storeOrStoreId), 1, [tableId]);
+  const useSortedRowIds = (
+    tableId,
+    cellId,
+    descending,
+    offset = 0,
+    limit,
+    storeOrStoreId,
+  ) =>
+    useListenable(SORTED_ROW_IDS, useStoreOrStoreById(storeOrStoreId), 1, [
+      tableId,
+      cellId,
+      descending,
+      offset,
+      limit,
+    ]);
+  const useHasRow = (tableId, rowId, storeOrStoreId) =>
+    useListenable(ROW, useStoreOrStoreById(storeOrStoreId), 4, [
+      tableId,
+      rowId,
+    ]);
+  const useRow = (tableId, rowId, storeOrStoreId) =>
+    useListenable(ROW, useStoreOrStoreById(storeOrStoreId), 0, [
+      tableId,
+      rowId,
+    ]);
+  const useCellIds = (tableId, rowId, storeOrStoreId) =>
+    useListenable(CELL_IDS, useStoreOrStoreById(storeOrStoreId), 1, [
+      tableId,
+      rowId,
+    ]);
+  const useHasCell = (tableId, rowId, cellId, storeOrStoreId) =>
+    useListenable(CELL, useStoreOrStoreById(storeOrStoreId), 4, [
+      tableId,
+      rowId,
+      cellId,
+    ]);
+  const useCell = (tableId, rowId, cellId, storeOrStoreId) =>
+    useListenable(CELL, useStoreOrStoreById(storeOrStoreId), 3, [
+      tableId,
+      rowId,
+      cellId,
+    ]);
+  const useHasValues = (storeOrStoreId) =>
+    useListenable(VALUES, useStoreOrStoreById(storeOrStoreId), 4, []);
+  const useValues = (storeOrStoreId) =>
+    useListenable(VALUES, useStoreOrStoreById(storeOrStoreId), 0);
+  const useValueIds = (storeOrStoreId) =>
+    useListenable(VALUE_IDS, useStoreOrStoreById(storeOrStoreId), 1);
+  const useHasValue = (valueId, storeOrStoreId) =>
+    useListenable(VALUE, useStoreOrStoreById(storeOrStoreId), 4, [valueId]);
+  const useValue = (valueId, storeOrStoreId) =>
+    useListenable(VALUE, useStoreOrStoreById(storeOrStoreId), 3, [valueId]);
+  const useSetTablesCallback = (
+    getTables,
+    getTablesDeps,
+    storeOrStoreId,
+    then,
+    thenDeps,
+  ) =>
+    useSetCallback(
+      storeOrStoreId,
+      TABLES,
+      getTables,
+      getTablesDeps,
+      then,
+      thenDeps,
+    );
+  const useSetTableCallback = (
+    tableId,
+    getTable,
+    getTableDeps,
+    storeOrStoreId,
+    then,
+    thenDeps,
+  ) =>
+    useSetCallback(
+      storeOrStoreId,
+      TABLE,
+      getTable,
+      getTableDeps,
+      then,
+      thenDeps,
+      tableId,
+    );
+  const useSetRowCallback = (
+    tableId,
+    rowId,
+    getRow,
+    getRowDeps,
+    storeOrStoreId,
+    then,
+    thenDeps,
+  ) =>
+    useSetCallback(
+      storeOrStoreId,
+      ROW,
+      getRow,
+      getRowDeps,
+      then,
+      thenDeps,
+      tableId,
+      rowId,
+    );
+  const useAddRowCallback = (
+    tableId,
+    getRow,
+    getRowDeps = EMPTY_ARRAY,
+    storeOrStoreId,
+    then = getUndefined,
+    thenDeps = EMPTY_ARRAY,
+    reuseRowIds = true,
+  ) => {
+    const store = useStoreOrStoreById(storeOrStoreId);
+    return useCallback$2(
+      (parameter) =>
+        ifNotUndefined(store, (store2) =>
+          ifNotUndefined(getRow(parameter, store2), (row) =>
+            then(
+              store2.addRow(
+                isFunction(tableId) ? tableId(parameter, store2) : tableId,
+                row,
+                reuseRowIds,
+              ),
+              store2,
+              row,
+            ),
+          ),
+        ),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [store, tableId, ...getRowDeps, ...thenDeps, reuseRowIds],
+    );
+  };
+  const useSetPartialRowCallback = (
+    tableId,
+    rowId,
+    getPartialRow,
+    getPartialRowDeps,
+    storeOrStoreId,
+    then,
+    thenDeps,
+  ) =>
+    useSetCallback(
+      storeOrStoreId,
+      'PartialRow',
+      getPartialRow,
+      getPartialRowDeps,
+      then,
+      thenDeps,
+      tableId,
+      rowId,
+    );
+  const useSetCellCallback = (
+    tableId,
+    rowId,
+    cellId,
+    getCell,
+    getCellDeps,
+    storeOrStoreId,
+    then,
+    thenDeps,
+  ) =>
+    useSetCallback(
+      storeOrStoreId,
+      CELL,
+      getCell,
+      getCellDeps,
+      then,
+      thenDeps,
+      tableId,
+      rowId,
+      cellId,
+    );
+  const useSetValuesCallback = (
+    getValues,
+    getValuesDeps,
+    storeOrStoreId,
+    then,
+    thenDeps,
+  ) =>
+    useSetCallback(
+      storeOrStoreId,
+      VALUES,
+      getValues,
+      getValuesDeps,
+      then,
+      thenDeps,
+    );
+  const useSetPartialValuesCallback = (
+    getPartialValues,
+    getPartialValuesDeps,
+    storeOrStoreId,
+    then,
+    thenDeps,
+  ) =>
+    useSetCallback(
+      storeOrStoreId,
+      'PartialValues',
+      getPartialValues,
+      getPartialValuesDeps,
+      then,
+      thenDeps,
+    );
+  const useSetValueCallback = (
+    valueId,
+    getValue,
+    getValueDeps,
+    storeOrStoreId,
+    then,
+    thenDeps,
+  ) =>
+    useSetCallback(
+      storeOrStoreId,
+      VALUE,
+      getValue,
+      getValueDeps,
+      then,
+      thenDeps,
+      valueId,
+    );
+  const useDelTablesCallback = (storeOrStoreId, then, thenDeps) =>
+    useDel(storeOrStoreId, TABLES, then, thenDeps);
+  const useDelTableCallback = (tableId, storeOrStoreId, then, thenDeps) =>
+    useDel(storeOrStoreId, TABLE, then, thenDeps, tableId);
+  const useDelRowCallback = (tableId, rowId, storeOrStoreId, then, thenDeps) =>
+    useDel(storeOrStoreId, ROW, then, thenDeps, tableId, rowId);
+  const useDelCellCallback = (
+    tableId,
+    rowId,
+    cellId,
+    forceDel,
+    storeOrStoreId,
+    then,
+    thenDeps,
+  ) =>
+    useDel(
+      storeOrStoreId,
+      CELL,
+      then,
+      thenDeps,
+      tableId,
+      rowId,
+      cellId,
+      forceDel,
+    );
+  const useDelValuesCallback = (storeOrStoreId, then, thenDeps) =>
+    useDel(storeOrStoreId, VALUES, then, thenDeps);
+  const useDelValueCallback = (valueId, storeOrStoreId, then, thenDeps) =>
+    useDel(storeOrStoreId, VALUE, then, thenDeps, valueId);
+  const useHasTablesListener = (
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      HAS + TABLES,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [],
+      mutator,
+    );
+  const useTablesListener = (listener, listenerDeps, mutator, storeOrStoreId) =>
+    useListener(
+      TABLES,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      EMPTY_ARRAY,
+      mutator,
+    );
+  const useTableIdsListener = (
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      TABLE_IDS,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      EMPTY_ARRAY,
+      mutator,
+    );
+  const useHasTableListener = (
+    tableId,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      HAS + TABLE,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [tableId],
+      mutator,
+    );
+  const useTableListener = (
+    tableId,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      TABLE,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [tableId],
+      mutator,
+    );
+  const useTableCellIdsListener = (
+    tableId,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      TABLE + CELL_IDS,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [tableId],
+      mutator,
+    );
+  const useHasTableCellListener = (
+    tableId,
+    cellId,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      HAS + TABLE + CELL,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [tableId, cellId],
+      mutator,
+    );
+  const useRowCountListener = (
+    tableId,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      ROW_COUNT,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [tableId],
+      mutator,
+    );
+  const useRowIdsListener = (
+    tableId,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      ROW_IDS,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [tableId],
+      mutator,
+    );
+  const useSortedRowIdsListener = (
+    tableId,
+    cellId,
+    descending,
+    offset,
+    limit,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      SORTED_ROW_IDS,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [tableId, cellId, descending, offset, limit],
+      mutator,
+    );
+  const useHasRowListener = (
+    tableId,
+    rowId,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      HAS + ROW,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [tableId, rowId],
+      mutator,
+    );
+  const useRowListener = (
+    tableId,
+    rowId,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      ROW,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [tableId, rowId],
+      mutator,
+    );
+  const useCellIdsListener = (
+    tableId,
+    rowId,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      CELL_IDS,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [tableId, rowId],
+      mutator,
+    );
+  const useHasCellListener = (
+    tableId,
+    rowId,
+    cellId,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      HAS + CELL,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [tableId, rowId, cellId],
+      mutator,
+    );
+  const useCellListener = (
+    tableId,
+    rowId,
+    cellId,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      CELL,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [tableId, rowId, cellId],
+      mutator,
+    );
+  const useHasValuesListener = (
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      HAS + VALUES,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [],
+      mutator,
+    );
+  const useValuesListener = (listener, listenerDeps, mutator, storeOrStoreId) =>
+    useListener(
+      VALUES,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      EMPTY_ARRAY,
+      mutator,
+    );
+  const useValueIdsListener = (
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      VALUE_IDS,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      EMPTY_ARRAY,
+      mutator,
+    );
+  const useHasValueListener = (
+    valueId,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      HAS + VALUE,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [valueId],
+      mutator,
+    );
+  const useValueListener = (
+    valueId,
+    listener,
+    listenerDeps,
+    mutator,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      VALUE,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+      [valueId],
+      mutator,
+    );
+  const useStartTransactionListener = (
+    listener,
+    listenerDeps,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      'Start' + TRANSACTION,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+    );
+  const useWillFinishTransactionListener = (
+    listener,
+    listenerDeps,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      'WillFinish' + TRANSACTION,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+    );
+  const useDidFinishTransactionListener = (
+    listener,
+    listenerDeps,
+    storeOrStoreId,
+  ) =>
+    useListener(
+      'DidFinish' + TRANSACTION,
+      useStoreOrStoreById(storeOrStoreId),
+      listener,
+      listenerDeps,
+    );
+  const useCreateMetrics = (store, create, createDeps) =>
+    useCreate(store, create, createDeps);
+  const useMetricsIds = () => useThingIds(3);
+  const useMetricIds = (metricsOrMetricsId) =>
+    useListenable('MetricIds', useMetricsOrMetricsById(metricsOrMetricsId), 1);
+  const useMetric = (metricId, metricsOrMetricsId) =>
+    useListenable('Metric', useMetricsOrMetricsById(metricsOrMetricsId), 3, [
+      metricId,
+    ]);
+  const useMetricListener = (
+    metricId,
+    listener,
+    listenerDeps,
+    metricsOrMetricsId,
+  ) =>
+    useListener(
+      'Metric',
+      useMetricsOrMetricsById(metricsOrMetricsId),
+      listener,
+      listenerDeps,
+      [metricId],
+    );
+  const useCreateIndexes = (store, create, createDeps) =>
+    useCreate(store, create, createDeps);
+  const useIndexesIds = () => useThingIds(5);
+  const useSliceIds = (indexId, indexesOrIndexesId) =>
+    useListenable('SliceIds', useIndexesOrIndexesById(indexesOrIndexesId), 1, [
+      indexId,
+    ]);
+  const useIndexIds = (indexesOrIndexesId) =>
+    useListenable('IndexIds', useIndexesOrIndexesById(indexesOrIndexesId), 1);
+  const useSliceRowIds = (indexId, sliceId, indexesOrIndexesId) =>
+    useListenable(
+      'Slice' + ROW_IDS,
+      useIndexesOrIndexesById(indexesOrIndexesId),
+      1,
+      [indexId, sliceId],
+    );
+  const useSliceIdsListener = (
+    indexId,
+    listener,
+    listenerDeps,
+    indexesOrIndexesId,
+  ) =>
+    useListener(
+      'SliceIds',
+      useIndexesOrIndexesById(indexesOrIndexesId),
+      listener,
+      listenerDeps,
+      [indexId],
+    );
+  const useSliceRowIdsListener = (
+    indexId,
+    sliceId,
+    listener,
+    listenerDeps,
+    indexesOrIndexesId,
+  ) =>
+    useListener(
+      'Slice' + ROW_IDS,
+      useIndexesOrIndexesById(indexesOrIndexesId),
+      listener,
+      listenerDeps,
+      [indexId, sliceId],
+    );
+  const useCreateRelationships = (store, create, createDeps) =>
+    useCreate(store, create, createDeps);
+  const useRelationshipsIds = () => useThingIds(7);
+  const useRelationshipIds = (relationshipsOrRelationshipsId) =>
+    useListenable(
+      'RelationshipIds',
+      useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
+      1,
+    );
+  const useRemoteRowId = (
+    relationshipId,
+    localRowId,
+    relationshipsOrRelationshipsId,
+  ) =>
+    useListenable(
+      'RemoteRowId',
+      useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
+      3,
+      [relationshipId, localRowId],
+    );
+  const useLocalRowIds = (
+    relationshipId,
+    remoteRowId,
+    relationshipsOrRelationshipsId,
+  ) =>
+    useListenable(
+      'Local' + ROW_IDS,
+      useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
+      1,
+      [relationshipId, remoteRowId],
+    );
+  const useLinkedRowIds = (
+    relationshipId,
+    firstRowId,
+    relationshipsOrRelationshipsId,
+  ) =>
+    useListenable(
+      'Linked' + ROW_IDS,
+      useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
+      1,
+      [relationshipId, firstRowId],
+    );
+  const useRemoteRowIdListener = (
+    relationshipId,
+    localRowId,
+    listener,
+    listenerDeps,
+    relationshipsOrRelationshipsId,
+  ) =>
+    useListener(
+      'RemoteRowId',
+      useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
+      listener,
+      listenerDeps,
+      [relationshipId, localRowId],
+    );
+  const useLocalRowIdsListener = (
+    relationshipId,
+    remoteRowId,
+    listener,
+    listenerDeps,
+    relationshipsOrRelationshipsId,
+  ) =>
+    useListener(
+      'Local' + ROW_IDS,
+      useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
+      listener,
+      listenerDeps,
+      [relationshipId, remoteRowId],
+    );
+  const useLinkedRowIdsListener = (
+    relationshipId,
+    firstRowId,
+    listener,
+    listenerDeps,
+    relationshipsOrRelationshipsId,
+  ) =>
+    useListener(
+      'Linked' + ROW_IDS,
+      useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
+      listener,
+      listenerDeps,
+      [relationshipId, firstRowId],
+    );
+  const useCreateQueries = (store, create, createDeps) =>
+    useCreate(store, create, createDeps);
+  const useQueriesIds = () => useThingIds(9);
+  const useQueryIds = (queriesOrQueriesId) =>
+    useListenable('QueryIds', useQueriesOrQueriesById(queriesOrQueriesId), 1);
+  const useResultTable = (queryId, queriesOrQueriesId) =>
+    useListenable(
+      RESULT + TABLE,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      0,
+      [queryId],
+    );
+  const useResultTableCellIds = (queryId, queriesOrQueriesId) =>
+    useListenable(
+      RESULT + TABLE + CELL_IDS,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      1,
+      [queryId],
+    );
+  const useResultRowCount = (queryId, queriesOrQueriesId) =>
+    useListenable(
+      RESULT + ROW_COUNT,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      5,
+      [queryId],
+    );
+  const useResultRowIds = (queryId, queriesOrQueriesId) =>
+    useListenable(
+      RESULT + ROW_IDS,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      1,
+      [queryId],
+    );
+  const useResultSortedRowIds = (
+    queryId,
+    cellId,
+    descending,
+    offset = 0,
+    limit,
+    queriesOrQueriesId,
+  ) =>
+    useListenable(
+      RESULT + SORTED_ROW_IDS,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      1,
+      [queryId, cellId, descending, offset, limit],
+    );
+  const useResultRow = (queryId, rowId, queriesOrQueriesId) =>
+    useListenable(
+      RESULT + ROW,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      0,
+      [queryId, rowId],
+    );
+  const useResultCellIds = (queryId, rowId, queriesOrQueriesId) =>
+    useListenable(
+      RESULT + CELL_IDS,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      1,
+      [queryId, rowId],
+    );
+  const useResultCell = (queryId, rowId, cellId, queriesOrQueriesId) =>
+    useListenable(
+      RESULT + CELL,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      3,
+      [queryId, rowId, cellId],
+    );
+  const useResultTableListener = (
+    queryId,
+    listener,
+    listenerDeps,
+    queriesOrQueriesId,
+  ) =>
+    useListener(
+      RESULT + TABLE,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      listener,
+      listenerDeps,
+      [queryId],
+    );
+  const useResultTableCellIdsListener = (
+    queryId,
+    listener,
+    listenerDeps,
+    queriesOrQueriesId,
+  ) =>
+    useListener(
+      RESULT + TABLE + CELL_IDS,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      listener,
+      listenerDeps,
+      [queryId],
+    );
+  const useResultRowCountListener = (
+    queryId,
+    listener,
+    listenerDeps,
+    queriesOrQueriesId,
+  ) =>
+    useListener(
+      RESULT + ROW_COUNT,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      listener,
+      listenerDeps,
+      [queryId],
+    );
+  const useResultRowIdsListener = (
+    queryId,
+    listener,
+    listenerDeps,
+    queriesOrQueriesId,
+  ) =>
+    useListener(
+      RESULT + ROW_IDS,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      listener,
+      listenerDeps,
+      [queryId],
+    );
+  const useResultSortedRowIdsListener = (
+    queryId,
+    cellId,
+    descending,
+    offset,
+    limit,
+    listener,
+    listenerDeps,
+    queriesOrQueriesId,
+  ) =>
+    useListener(
+      RESULT + SORTED_ROW_IDS,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      listener,
+      listenerDeps,
+      [queryId, cellId, descending, offset, limit],
+    );
+  const useResultRowListener = (
+    queryId,
+    rowId,
+    listener,
+    listenerDeps,
+    queriesOrQueriesId,
+  ) =>
+    useListener(
+      RESULT + ROW,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      listener,
+      listenerDeps,
+      [queryId, rowId],
+    );
+  const useResultCellIdsListener = (
+    queryId,
+    rowId,
+    listener,
+    listenerDeps,
+    queriesOrQueriesId,
+  ) =>
+    useListener(
+      RESULT + CELL_IDS,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      listener,
+      listenerDeps,
+      [queryId, rowId],
+    );
+  const useResultCellListener = (
+    queryId,
+    rowId,
+    cellId,
+    listener,
+    listenerDeps,
+    queriesOrQueriesId,
+  ) =>
+    useListener(
+      RESULT + CELL,
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      listener,
+      listenerDeps,
+      [queryId, rowId, cellId],
+    );
+  const useCreateCheckpoints = (store, create, createDeps) =>
+    useCreate(store, create, createDeps);
+  const useCheckpointsIds = () => useThingIds(11);
+  const useCheckpointIds = (checkpointsOrCheckpointsId) =>
+    useListenable(
+      'CheckpointIds',
+      useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
+      2,
+    );
+  const useCheckpoint = (checkpointId, checkpointsOrCheckpointsId) =>
+    useListenable(
+      'Checkpoint',
+      useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
+      3,
+      [checkpointId],
+    );
+  const useSetCheckpointCallback = (
+    getCheckpoint = getUndefined,
+    getCheckpointDeps = EMPTY_ARRAY,
+    checkpointsOrCheckpointsId,
+    then = getUndefined,
+    thenDeps = EMPTY_ARRAY,
+  ) => {
+    const checkpoints = useCheckpointsOrCheckpointsById(
+      checkpointsOrCheckpointsId,
+    );
+    return useCallback$2(
+      (parameter) =>
+        ifNotUndefined(checkpoints, (checkpoints2) => {
+          const label = getCheckpoint(parameter);
+          then(checkpoints2.addCheckpoint(label), checkpoints2, label);
+        }),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [checkpoints, ...getCheckpointDeps, ...thenDeps],
+    );
+  };
+  const useGoBackwardCallback = (checkpointsOrCheckpointsId) =>
+    useCheckpointAction(checkpointsOrCheckpointsId, 'goBackward');
+  const useGoForwardCallback = (checkpointsOrCheckpointsId) =>
+    useCheckpointAction(checkpointsOrCheckpointsId, 'goForward');
+  const useGoToCallback = (
+    getCheckpointId,
+    getCheckpointIdDeps = EMPTY_ARRAY,
+    checkpointsOrCheckpointsId,
+    then = getUndefined,
+    thenDeps = EMPTY_ARRAY,
+  ) => {
+    const checkpoints = useCheckpointsOrCheckpointsById(
+      checkpointsOrCheckpointsId,
+    );
+    return useCallback$2(
+      (parameter) =>
+        ifNotUndefined(checkpoints, (checkpoints2) =>
+          ifNotUndefined(getCheckpointId(parameter), (checkpointId) =>
+            then(checkpoints2.goTo(checkpointId), checkpointId),
+          ),
+        ),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [checkpoints, ...getCheckpointIdDeps, ...thenDeps],
+    );
+  };
+  const useUndoInformation = (checkpointsOrCheckpointsId) => {
+    const checkpoints = useCheckpointsOrCheckpointsById(
+      checkpointsOrCheckpointsId,
+    );
+    const [backwardIds, currentId] = useCheckpointIds(checkpoints);
+    return [
+      !arrayIsEmpty(backwardIds),
+      useGoBackwardCallback(checkpoints),
+      currentId,
+      ifNotUndefined(currentId, (id) => checkpoints?.getCheckpoint(id)) ??
+        EMPTY_STRING,
+    ];
+  };
+  const useRedoInformation = (checkpointsOrCheckpointsId) => {
+    const checkpoints = useCheckpointsOrCheckpointsById(
+      checkpointsOrCheckpointsId,
+    );
+    const [, , [forwardId]] = useCheckpointIds(checkpoints);
+    return [
+      !isUndefined(forwardId),
+      useGoForwardCallback(checkpoints),
+      forwardId,
+      ifNotUndefined(forwardId, (id) => checkpoints?.getCheckpoint(id)) ??
+        EMPTY_STRING,
+    ];
+  };
+  const useCheckpointIdsListener = (
+    listener,
+    listenerDeps,
+    checkpointsOrCheckpointsId,
+  ) =>
+    useListener(
+      'CheckpointIds',
+      useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
+      listener,
+      listenerDeps,
+    );
+  const useCheckpointListener = (
+    checkpointId,
+    listener,
+    listenerDeps,
+    checkpointsOrCheckpointsId,
+  ) =>
+    useListener(
+      'Checkpoint',
+      useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
+      listener,
+      listenerDeps,
+      [checkpointId],
+    );
+  const useCreatePersister = (
+    store,
+    create,
+    createDeps = EMPTY_ARRAY,
+    then,
+    thenDeps = EMPTY_ARRAY,
+    destroy,
+    destroyDeps = EMPTY_ARRAY,
+  ) => {
+    const [, rerender] = useState$2();
+    const [persister, setPersister] = useState$2();
+    useEffect(
+      () => {
+        const persister2 = store ? create(store) : void 0;
+        setPersister(persister2);
+        if (persister2 && then) {
+          (async () => {
+            await then(persister2);
+            rerender([]);
+          })();
+        }
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [store, ...createDeps, ...thenDeps],
+    );
+    useEffect(
+      () => () => {
+        if (persister) {
+          persister.destroy();
+          destroy?.(persister);
+        }
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [persister, ...destroyDeps],
+    );
+    return persister;
+  };
+  const useCreateSynchronizer = (
+    store,
+    create,
+    createDeps = EMPTY_ARRAY,
+    destroy,
+    destroyDeps = EMPTY_ARRAY,
+  ) => {
+    const [synchronizer, setSynchronizer] = useState$2();
+    useEffect(
+      () => {
+        (async () => {
+          const synchronizer2 = store ? await create(store) : void 0;
+          setSynchronizer(synchronizer2);
+        })();
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [store, ...createDeps],
+    );
+    useEffect(
+      () => () => {
+        if (synchronizer) {
+          synchronizer.destroy();
+          destroy?.(synchronizer);
+        }
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [synchronizer, ...destroyDeps],
+    );
+    return synchronizer;
+  };
+
+  const {
+    PureComponent,
+    Fragment,
+    createElement,
+    useCallback: useCallback$1,
+    useLayoutEffect,
+    useRef,
+    useState: useState$1,
+  } = React;
+  const getProps = (getProps2, ...ids) =>
+    isUndefined(getProps2) ? {} : getProps2(...ids);
+  const getRelationshipsStoreTableIds = (relationships, relationshipId) => [
+    relationships,
+    relationships?.getStore(),
+    relationships?.getLocalTableId(relationshipId),
+    relationships?.getRemoteTableId(relationshipId),
+  ];
+  const getIndexStoreTableId = (indexes, indexId) => [
+    indexes,
+    indexes?.getStore(),
+    indexes?.getTableId(indexId),
+  ];
+
+  const {useCallback, useContext, useMemo, useState} = React;
+  const tableView = (
+    {
+      tableId,
+      store,
+      rowComponent: Row = RowView,
+      getRowComponentProps,
+      customCellIds,
+      separator,
+      debugIds,
+    },
+    rowIds,
+  ) =>
+    wrap(
+      arrayMap(rowIds, (rowId) =>
+        /* @__PURE__ */ createElement(Row, {
+          ...getProps(getRowComponentProps, rowId),
+          key: rowId,
+          tableId,
+          rowId,
+          customCellIds,
+          store,
+          debugIds,
+        }),
+      ),
+      separator,
+      debugIds,
+      tableId,
+    );
+  const resultTableView = (
+    {
+      queryId,
+      queries,
+      resultRowComponent: ResultRow = ResultRowView,
+      getResultRowComponentProps,
+      separator,
+      debugIds,
+    },
+    rowIds,
+  ) =>
+    wrap(
+      arrayMap(rowIds, (rowId) =>
+        /* @__PURE__ */ createElement(ResultRow, {
+          ...getProps(getResultRowComponentProps, rowId),
+          key: rowId,
+          queryId,
+          rowId,
+          queries,
+          debugIds,
+        }),
+      ),
+      separator,
+      debugIds,
+      queryId,
+    );
+  const useComponentPerRow = (
+    {
+      relationshipId,
+      relationships,
+      rowComponent: Row = RowView,
+      getRowComponentProps,
+      separator,
+      debugIds,
+    },
+    getRowIdsHook,
+    rowId,
+  ) => {
+    const [resolvedRelationships, store, localTableId] =
+      getRelationshipsStoreTableIds(
+        useRelationshipsOrRelationshipsById(relationships),
+        relationshipId,
+      );
+    const rowIds = getRowIdsHook(relationshipId, rowId, resolvedRelationships);
+    return wrap(
+      arrayMap(rowIds, (rowId2) =>
+        /* @__PURE__ */ createElement(Row, {
+          ...getProps(getRowComponentProps, rowId2),
+          key: rowId2,
+          tableId: localTableId,
+          rowId: rowId2,
+          store,
+          debugIds,
+        }),
+      ),
+      separator,
+      debugIds,
+      rowId,
+    );
+  };
+  const getUseCheckpointView =
+    (getCheckpoints) =>
+    ({
+      checkpoints,
+      checkpointComponent: Checkpoint = CheckpointView,
+      getCheckpointComponentProps,
+      separator,
+      debugIds,
+    }) => {
+      const resolvedCheckpoints = useCheckpointsOrCheckpointsById(checkpoints);
+      return wrap(
+        arrayMap(
+          getCheckpoints(useCheckpointIds(resolvedCheckpoints)),
+          (checkpointId) =>
+            /* @__PURE__ */ createElement(Checkpoint, {
+              ...getProps(getCheckpointComponentProps, checkpointId),
+              key: checkpointId,
+              checkpoints: resolvedCheckpoints,
+              checkpointId,
+              debugIds,
+            }),
+        ),
+        separator,
+      );
+    };
+  const Provider = ({
+    store,
+    storesById,
+    metrics,
+    metricsById,
+    indexes,
+    indexesById,
+    relationships,
+    relationshipsById,
+    queries,
+    queriesById,
+    checkpoints,
+    checkpointsById,
+    children,
+  }) => {
+    const parentValue = useContext(Context);
+    const [extraStoresById, setExtraStoresById] = useState({});
+    const addExtraStore = useCallback(
+      (id, store2) =>
+        setExtraStoresById((extraStoresById2) =>
+          objGet(extraStoresById2, id) == store2
+            ? extraStoresById2
+            : {...extraStoresById2, [id]: store2},
+        ),
+      [],
+    );
+    const delExtraStore = useCallback(
+      (id) =>
+        setExtraStoresById((extraStoresById2) => ({
+          ...objDel(extraStoresById2, id),
+        })),
+      [],
+    );
+    return /* @__PURE__ */ createElement(
+      Context.Provider,
+      {
+        value: useMemo(
+          () => [
+            store ?? parentValue[0],
+            {...parentValue[1], ...storesById, ...extraStoresById},
+            metrics ?? parentValue[2],
+            {...parentValue[3], ...metricsById},
+            indexes ?? parentValue[4],
+            {...parentValue[5], ...indexesById},
+            relationships ?? parentValue[6],
+            {...parentValue[7], ...relationshipsById},
+            queries ?? parentValue[8],
+            {...parentValue[9], ...queriesById},
+            checkpoints ?? parentValue[10],
+            {...parentValue[11], ...checkpointsById},
+            addExtraStore,
+            delExtraStore,
+          ],
+          [
+            store,
+            storesById,
+            extraStoresById,
+            metrics,
+            metricsById,
+            indexes,
+            indexesById,
+            relationships,
+            relationshipsById,
+            queries,
+            queriesById,
+            checkpoints,
+            checkpointsById,
+            parentValue,
+            addExtraStore,
+            delExtraStore,
+          ],
+        ),
+      },
+      children,
+    );
+  };
+  const wrap = (children, separator, encloseWithId, id) => {
+    const separated =
+      isUndefined(separator) || !isArray(children)
+        ? children
+        : arrayMap(children, (child, c) =>
+            c > 0 ? [separator, child] : child,
+          );
+    return encloseWithId ? [id, ':{', separated, '}'] : separated;
+  };
+  const useCustomOrDefaultCellIds = (customCellIds, tableId, rowId, store) => {
+    const defaultCellIds = useCellIds(tableId, rowId, store);
+    return customCellIds ?? defaultCellIds;
+  };
+  const CellView = ({tableId, rowId, cellId, store, debugIds}) =>
+    wrap(
+      EMPTY_STRING + (useCell(tableId, rowId, cellId, store) ?? EMPTY_STRING),
+      void 0,
+      debugIds,
+      cellId,
+    );
+  const RowView = ({
+    tableId,
+    rowId,
+    store,
+    cellComponent: Cell = CellView,
+    getCellComponentProps,
+    customCellIds,
+    separator,
+    debugIds,
+  }) =>
+    wrap(
+      arrayMap(
+        useCustomOrDefaultCellIds(customCellIds, tableId, rowId, store),
+        (cellId) =>
+          /* @__PURE__ */ createElement(Cell, {
+            ...getProps(getCellComponentProps, cellId),
+            key: cellId,
+            tableId,
+            rowId,
+            cellId,
+            store,
+            debugIds,
+          }),
+      ),
+      separator,
+      debugIds,
+      rowId,
+    );
+  const TableView = (props) =>
+    tableView(props, useRowIds(props.tableId, props.store));
+  const SortedTableView = ({cellId, descending, offset, limit, ...props}) =>
+    tableView(
+      props,
+      useSortedRowIds(
+        props.tableId,
+        cellId,
+        descending,
+        offset,
+        limit,
+        props.store,
+      ),
+    );
+  const TablesView = ({
+    store,
+    tableComponent: Table = TableView,
+    getTableComponentProps,
+    separator,
+    debugIds,
+  }) =>
+    wrap(
+      arrayMap(useTableIds(store), (tableId) =>
+        /* @__PURE__ */ createElement(Table, {
+          ...getProps(getTableComponentProps, tableId),
+          key: tableId,
+          tableId,
+          store,
+          debugIds,
+        }),
+      ),
+      separator,
+    );
+  const ValueView = ({valueId, store, debugIds}) =>
+    wrap(
+      EMPTY_STRING + (useValue(valueId, store) ?? EMPTY_STRING),
+      void 0,
+      debugIds,
+      valueId,
+    );
+  const ValuesView = ({
+    store,
+    valueComponent: Value = ValueView,
+    getValueComponentProps,
+    separator,
+    debugIds,
+  }) =>
+    wrap(
+      arrayMap(useValueIds(store), (valueId) =>
+        /* @__PURE__ */ createElement(Value, {
+          ...getProps(getValueComponentProps, valueId),
+          key: valueId,
+          valueId,
+          store,
+          debugIds,
+        }),
+      ),
+      separator,
+    );
+  const MetricView = ({metricId, metrics, debugIds}) =>
+    wrap(
+      useMetric(metricId, metrics) ?? EMPTY_STRING,
+      void 0,
+      debugIds,
+      metricId,
+    );
+  const SliceView = ({
+    indexId,
+    sliceId,
+    indexes,
+    rowComponent: Row = RowView,
+    getRowComponentProps,
+    separator,
+    debugIds,
+  }) => {
+    const [resolvedIndexes, store, tableId] = getIndexStoreTableId(
+      useIndexesOrIndexesById(indexes),
+      indexId,
+    );
+    const rowIds = useSliceRowIds(indexId, sliceId, resolvedIndexes);
+    return wrap(
+      arrayMap(rowIds, (rowId) =>
+        /* @__PURE__ */ createElement(Row, {
+          ...getProps(getRowComponentProps, rowId),
+          key: rowId,
+          tableId,
+          rowId,
+          store,
+          debugIds,
+        }),
+      ),
+      separator,
+      debugIds,
+      sliceId,
+    );
+  };
+  const IndexView = ({
+    indexId,
+    indexes,
+    sliceComponent: Slice = SliceView,
+    getSliceComponentProps,
+    separator,
+    debugIds,
+  }) =>
+    wrap(
+      arrayMap(useSliceIds(indexId, indexes), (sliceId) =>
+        /* @__PURE__ */ createElement(Slice, {
+          ...getProps(getSliceComponentProps, sliceId),
+          key: sliceId,
+          indexId,
+          sliceId,
+          indexes,
+          debugIds,
+        }),
+      ),
+      separator,
+      debugIds,
+      indexId,
+    );
+  const RemoteRowView = ({
+    relationshipId,
+    localRowId,
+    relationships,
+    rowComponent: Row = RowView,
+    getRowComponentProps,
+    debugIds,
+  }) => {
+    const [resolvedRelationships, store, , remoteTableId] =
+      getRelationshipsStoreTableIds(
+        useRelationshipsOrRelationshipsById(relationships),
+        relationshipId,
+      );
+    const rowId = useRemoteRowId(
+      relationshipId,
+      localRowId,
+      resolvedRelationships,
+    );
+    return wrap(
+      isUndefined(remoteTableId) || isUndefined(rowId)
+        ? null
+        : /* @__PURE__ */ createElement(Row, {
+            ...getProps(getRowComponentProps, rowId),
+            key: rowId,
+            tableId: remoteTableId,
+            rowId,
+            store,
+            debugIds,
+          }),
+      void 0,
+      debugIds,
+      localRowId,
+    );
+  };
+  const LocalRowsView = (props) =>
+    useComponentPerRow(props, useLocalRowIds, props.remoteRowId);
+  const LinkedRowsView = (props) =>
+    useComponentPerRow(props, useLinkedRowIds, props.firstRowId);
+  const ResultCellView = ({queryId, rowId, cellId, queries, debugIds}) =>
+    wrap(
+      EMPTY_STRING +
+        (useResultCell(queryId, rowId, cellId, queries) ?? EMPTY_STRING),
+      void 0,
+      debugIds,
+      cellId,
+    );
+  const ResultRowView = ({
+    queryId,
+    rowId,
+    queries,
+    resultCellComponent: ResultCell = ResultCellView,
+    getResultCellComponentProps,
+    separator,
+    debugIds,
+  }) =>
+    wrap(
+      arrayMap(useResultCellIds(queryId, rowId, queries), (cellId) =>
+        /* @__PURE__ */ createElement(ResultCell, {
+          ...getProps(getResultCellComponentProps, cellId),
+          key: cellId,
+          queryId,
+          rowId,
+          cellId,
+          queries,
+          debugIds,
+        }),
+      ),
+      separator,
+      debugIds,
+      rowId,
+    );
+  const ResultTableView = (props) =>
+    resultTableView(props, useResultRowIds(props.queryId, props.queries));
+  const ResultSortedTableView = ({
+    cellId,
+    descending,
+    offset,
+    limit,
+    ...props
+  }) =>
+    resultTableView(
+      props,
+      useResultSortedRowIds(
+        props.queryId,
+        cellId,
+        descending,
+        offset,
+        limit,
+        props.queries,
+      ),
+    );
+  const CheckpointView = ({checkpoints, checkpointId, debugIds}) =>
+    wrap(
+      useCheckpoint(checkpointId, checkpoints) ?? EMPTY_STRING,
+      void 0,
+      debugIds,
+      checkpointId,
+    );
+  const BackwardCheckpointsView = getUseCheckpointView(
+    (checkpointIds) => checkpointIds[0],
+  );
+  const CurrentCheckpointView = getUseCheckpointView((checkpointIds) =>
+    isUndefined(checkpointIds[1]) ? [] : [checkpointIds[1]],
+  );
+  const ForwardCheckpointsView = getUseCheckpointView(
+    (checkpointIds) => checkpointIds[2],
+  );
+
+  exports.BackwardCheckpointsView = BackwardCheckpointsView;
+  exports.CellView = CellView;
+  exports.CheckpointView = CheckpointView;
+  exports.CurrentCheckpointView = CurrentCheckpointView;
+  exports.ForwardCheckpointsView = ForwardCheckpointsView;
+  exports.IndexView = IndexView;
+  exports.LinkedRowsView = LinkedRowsView;
+  exports.LocalRowsView = LocalRowsView;
+  exports.MetricView = MetricView;
+  exports.Provider = Provider;
+  exports.RemoteRowView = RemoteRowView;
+  exports.ResultCellView = ResultCellView;
+  exports.ResultRowView = ResultRowView;
+  exports.ResultSortedTableView = ResultSortedTableView;
+  exports.ResultTableView = ResultTableView;
+  exports.RowView = RowView;
+  exports.SliceView = SliceView;
+  exports.SortedTableView = SortedTableView;
+  exports.TableView = TableView;
+  exports.TablesView = TablesView;
+  exports.ValueView = ValueView;
+  exports.ValuesView = ValuesView;
+  exports.useAddRowCallback = useAddRowCallback;
+  exports.useCell = useCell;
+  exports.useCellIds = useCellIds;
+  exports.useCellIdsListener = useCellIdsListener;
+  exports.useCellListener = useCellListener;
+  exports.useCheckpoint = useCheckpoint;
+  exports.useCheckpointIds = useCheckpointIds;
+  exports.useCheckpointIdsListener = useCheckpointIdsListener;
+  exports.useCheckpointListener = useCheckpointListener;
+  exports.useCheckpoints = useCheckpoints;
+  exports.useCheckpointsIds = useCheckpointsIds;
+  exports.useCheckpointsOrCheckpointsById = useCheckpointsOrCheckpointsById;
+  exports.useCreateCheckpoints = useCreateCheckpoints;
+  exports.useCreateIndexes = useCreateIndexes;
+  exports.useCreateMergeableStore = useCreateMergeableStore;
+  exports.useCreateMetrics = useCreateMetrics;
+  exports.useCreatePersister = useCreatePersister;
+  exports.useCreateQueries = useCreateQueries;
+  exports.useCreateRelationships = useCreateRelationships;
+  exports.useCreateStore = useCreateStore;
+  exports.useCreateSynchronizer = useCreateSynchronizer;
+  exports.useDelCellCallback = useDelCellCallback;
+  exports.useDelRowCallback = useDelRowCallback;
+  exports.useDelTableCallback = useDelTableCallback;
+  exports.useDelTablesCallback = useDelTablesCallback;
+  exports.useDelValueCallback = useDelValueCallback;
+  exports.useDelValuesCallback = useDelValuesCallback;
+  exports.useDidFinishTransactionListener = useDidFinishTransactionListener;
+  exports.useGoBackwardCallback = useGoBackwardCallback;
+  exports.useGoForwardCallback = useGoForwardCallback;
+  exports.useGoToCallback = useGoToCallback;
+  exports.useHasCell = useHasCell;
+  exports.useHasCellListener = useHasCellListener;
+  exports.useHasRow = useHasRow;
+  exports.useHasRowListener = useHasRowListener;
+  exports.useHasTable = useHasTable;
+  exports.useHasTableCell = useHasTableCell;
+  exports.useHasTableCellListener = useHasTableCellListener;
+  exports.useHasTableListener = useHasTableListener;
+  exports.useHasTables = useHasTables;
+  exports.useHasTablesListener = useHasTablesListener;
+  exports.useHasValue = useHasValue;
+  exports.useHasValueListener = useHasValueListener;
+  exports.useHasValues = useHasValues;
+  exports.useHasValuesListener = useHasValuesListener;
+  exports.useIndexIds = useIndexIds;
+  exports.useIndexes = useIndexes;
+  exports.useIndexesIds = useIndexesIds;
+  exports.useIndexesOrIndexesById = useIndexesOrIndexesById;
+  exports.useLinkedRowIds = useLinkedRowIds;
+  exports.useLinkedRowIdsListener = useLinkedRowIdsListener;
+  exports.useLocalRowIds = useLocalRowIds;
+  exports.useLocalRowIdsListener = useLocalRowIdsListener;
+  exports.useMetric = useMetric;
+  exports.useMetricIds = useMetricIds;
+  exports.useMetricListener = useMetricListener;
+  exports.useMetrics = useMetrics;
+  exports.useMetricsIds = useMetricsIds;
+  exports.useMetricsOrMetricsById = useMetricsOrMetricsById;
+  exports.useProvideStore = useProvideStore;
+  exports.useQueries = useQueries;
+  exports.useQueriesIds = useQueriesIds;
+  exports.useQueriesOrQueriesById = useQueriesOrQueriesById;
+  exports.useQueryIds = useQueryIds;
+  exports.useRedoInformation = useRedoInformation;
+  exports.useRelationshipIds = useRelationshipIds;
+  exports.useRelationships = useRelationships;
+  exports.useRelationshipsIds = useRelationshipsIds;
+  exports.useRelationshipsOrRelationshipsById =
+    useRelationshipsOrRelationshipsById;
+  exports.useRemoteRowId = useRemoteRowId;
+  exports.useRemoteRowIdListener = useRemoteRowIdListener;
+  exports.useResultCell = useResultCell;
+  exports.useResultCellIds = useResultCellIds;
+  exports.useResultCellIdsListener = useResultCellIdsListener;
+  exports.useResultCellListener = useResultCellListener;
+  exports.useResultRow = useResultRow;
+  exports.useResultRowCount = useResultRowCount;
+  exports.useResultRowCountListener = useResultRowCountListener;
+  exports.useResultRowIds = useResultRowIds;
+  exports.useResultRowIdsListener = useResultRowIdsListener;
+  exports.useResultRowListener = useResultRowListener;
+  exports.useResultSortedRowIds = useResultSortedRowIds;
+  exports.useResultSortedRowIdsListener = useResultSortedRowIdsListener;
+  exports.useResultTable = useResultTable;
+  exports.useResultTableCellIds = useResultTableCellIds;
+  exports.useResultTableCellIdsListener = useResultTableCellIdsListener;
+  exports.useResultTableListener = useResultTableListener;
+  exports.useRow = useRow;
+  exports.useRowCount = useRowCount;
+  exports.useRowCountListener = useRowCountListener;
+  exports.useRowIds = useRowIds;
+  exports.useRowIdsListener = useRowIdsListener;
+  exports.useRowListener = useRowListener;
+  exports.useSetCellCallback = useSetCellCallback;
+  exports.useSetCheckpointCallback = useSetCheckpointCallback;
+  exports.useSetPartialRowCallback = useSetPartialRowCallback;
+  exports.useSetPartialValuesCallback = useSetPartialValuesCallback;
+  exports.useSetRowCallback = useSetRowCallback;
+  exports.useSetTableCallback = useSetTableCallback;
+  exports.useSetTablesCallback = useSetTablesCallback;
+  exports.useSetValueCallback = useSetValueCallback;
+  exports.useSetValuesCallback = useSetValuesCallback;
+  exports.useSliceIds = useSliceIds;
+  exports.useSliceIdsListener = useSliceIdsListener;
+  exports.useSliceRowIds = useSliceRowIds;
+  exports.useSliceRowIdsListener = useSliceRowIdsListener;
+  exports.useSortedRowIds = useSortedRowIds;
+  exports.useSortedRowIdsListener = useSortedRowIdsListener;
+  exports.useStartTransactionListener = useStartTransactionListener;
+  exports.useStore = useStore;
+  exports.useStoreIds = useStoreIds;
+  exports.useStoreOrStoreById = useStoreOrStoreById;
+  exports.useTable = useTable;
+  exports.useTableCellIds = useTableCellIds;
+  exports.useTableCellIdsListener = useTableCellIdsListener;
+  exports.useTableIds = useTableIds;
+  exports.useTableIdsListener = useTableIdsListener;
+  exports.useTableListener = useTableListener;
+  exports.useTables = useTables;
+  exports.useTablesListener = useTablesListener;
+  exports.useUndoInformation = useUndoInformation;
+  exports.useValue = useValue;
+  exports.useValueIds = useValueIds;
+  exports.useValueIdsListener = useValueIdsListener;
+  exports.useValueListener = useValueListener;
+  exports.useValues = useValues;
+  exports.useValuesListener = useValuesListener;
+  exports.useWillFinishTransactionListener = useWillFinishTransactionListener;
+});
