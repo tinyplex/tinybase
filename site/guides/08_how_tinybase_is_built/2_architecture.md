@@ -4,7 +4,7 @@ The architecture of TinyBase is pretty straightforward. This guide runs through
 the main file structure and principles.
 
 The top level directory contains lots of configuration files: for the package as
-a whole (`package.json`), for Jest (`jest.config,js`), for Prettier
+a whole (`package.json`), for Jest (`jest.config.js`), for Prettier
 (`.prettierrc`) and for ESLint (`.eslintrc.json`). TypeScript configuration is
 _not_ in the top-level directory, but is co-located with the `src` and `test`
 files independently.
@@ -15,9 +15,9 @@ the project, many of which are described in the Developing TinyBase guide.
 ## src
 
 The main source code is in the top-level `src` directory, where there is a pair
-of files for each major module: the `.d.ts` file containing the Typescript
-definitions (and the source of truth for the documentation), and the `.ts` file
-containing the main logic.
+of files for each major module: the `.d.ts` files in the `@types` folder
+containing the Typescript definitions (and the source of truth for the
+documentation), and the `.ts` file containing the main logic.
 
 Most modules have a similar pattern: a single creation function (such as the
 createStore function in the case of the store module), and a major interface
@@ -56,34 +56,12 @@ API documentation comes from the `.d.ts` files by way of the TinyDocs library
 (which is essentially a custom wrapper around TypeDoc). Other static assets like
 CSS and JS are built into the final site from other folders in this directory.
 
-## lib
+## dist
 
-Not checked in, but distributed via NPM, is a `lib` directory, which contains
+Not checked in, but distributed via NPM, is a `dist` directory, which contains
 the `.d.ts` type definitions, the compiled `.js` files, and their compressed
-`.js.gz` equivalents. These three files exists for each of the TinyBase
-submodules.
-
-The `tinybase.js` and `tinybase.js.gz` files represent the master package of
-everything together (except the ui-react module and tools module, which always
-remain standalone options). Since many of the submodules share compiled-in
-dependencies, the master package is smaller to include than including all of the
-submodules separately. However, for a very minimal set of modules, you may save
-size by including them piecemeal.
-
-In the root of the `lib` directory, all of these files are built to the
-[`esnext`](https://esbuild.github.io/api/#target) target and the
-[`esm`](https://rollupjs.org/guide/en/#outputformat) format. In addition, there
-are subdirectories that contain builds of different types:
-
-| Directory | Target | Format | Minified |
-| --------- | ------ | ------ | -------- |
-| .         | esnext | esm    | yes      |
-| ./debug   | esnext | esm    | no       |
-| ./umd     | esnext | umd    | yes      |
-| ./cjs     | esnext | cjs    | yes      |
-| ./es6     | es6    | esm    | yes      |
-| ./umd-es6 | es6    | umd    | yes      |
-| ./cjs-es6 | es6    | cjs    | yes      |
+`.js.gz` equivalents. The `exports` field of the `package.json` wire everything
+together into the right place when people use the library.
 
 These build configurations are all defined in the `compileForProd` task in
 `gulpfile.mjs`, and instructions for importing them are in the Importing
