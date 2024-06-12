@@ -122,7 +122,12 @@ const copyWithReplace = async (src, [from, to], dst = src) => {
   await promises.writeFile(dst, file.replace(from, to), UTF8);
 };
 
-const copyPackageFiles = async () => {
+const copyPackageFiles = async (forProd = false) => {
+  const targets = forProd ? [null, 'es6'] : [null];
+  const debugs = [null, 'debug'];
+  const modules = forProd ? ALL_MODULES : TEST_MODULES;
+  const schemas = [null, 'with-schemas'];
+
   const json = JSON.parse(await promises.readFile('package.json', UTF8));
   delete json.private;
   delete json.scripts;
@@ -134,28 +139,32 @@ const copyPackageFiles = async () => {
 
   json.typesVersions = {'*': {}};
   json.exports = {};
-  [null, 'es6'].forEach((target) => {
-    [null, 'debug'].forEach((debug) => {
-      allModules((module) => {
-        [null, 'with-schemas'].forEach((withSchemas) => {
+  targets.forEach((target) => {
+    debugs.forEach((debug) => {
+      modules.forEach((module) => {
+        schemas.forEach((withSchemas) => {
           const path = [target, debug, module, withSchemas]
             .filter((part) => part)
             .join('/');
           const typesPath = ['.', '@types', module, withSchemas, 'index.d.']
             .filter((part) => part)
             .join('/');
+          const codePath = (path ? '/' : '') + path;
 
           json.typesVersions['*'][path ? path : '.'] = [typesPath + 'ts'];
 
-          const exportPath = (path ? '/' : '') + path;
-          json.exports['.' + exportPath] = {
-            require: {
-              types: typesPath + 'cts',
-              default: './cjs' + exportPath + '/index.cjs',
-            },
+          json.exports['.' + codePath] = {
+            ...(forProd
+              ? {
+                  require: {
+                    types: typesPath + 'cts',
+                    default: './cjs' + codePath + '/index.cjs',
+                  },
+                }
+              : {}),
             default: {
               types: typesPath + 'ts',
-              default: '.' + exportPath + '/index.js',
+              default: '.' + codePath + '/index.js',
             },
           };
         });
@@ -668,6 +677,7 @@ const npmPublish = async () => {
 const {parallel, series} = gulp;
 
 // --
+
 export const preparePackage = copyPackageFiles;
 
 export const compileForTest = async () => {
@@ -699,7 +709,7 @@ export const ts = async () => {
 
 export const compileForProd = async () => {
   await clearDir(DIST_DIR);
-  await copyPackageFiles();
+  await copyPackageFiles(true);
   await copyDefinitions(DIST_DIR);
 
   await allOf(
@@ -715,7 +725,7 @@ export const compileForProd = async () => {
                 async (debug) =>
                   await compileModule(
                     module,
-                    debug,
+                    debug == 'debug',
                     `${DIST_DIR}/` +
                       [format, target, debug]
                         .filter((part) => part != null)
