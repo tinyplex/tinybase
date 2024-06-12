@@ -7,7 +7,7 @@ highlighted features.
 
 This is a major release for TinyBase and adds important new CRDT &
 synchronization functionality. It also includes some breaking changes that may
-affect you (but which should easy to fix they do!)
+affect you (but which should easy to fix if they do!)
 
 The main new functionality is in the new mergeable-store module, which contains
 a subtype of Store - called MergeableStore - that can be merged with another
