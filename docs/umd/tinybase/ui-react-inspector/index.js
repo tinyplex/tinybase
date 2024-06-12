@@ -1,1 +1,3336 @@
-var e,t;e=this,t=function(e,t,s){"use strict";const l=e=>typeof e,n="",a=l(n),r=l(!0),o=l(0),i=l(l),d="type",u="default",c="Has",h="Ids",m="Table",g=m+"s",p=m+h,b="Row",I=b+"Count",f=b+h,y="Cell",w=y+h,C="Value",v=C+"s",k=C+h,S="currentTarget",x="value",T=e=>n+e,V=Math.floor,R=isFinite,q=e=>null==e,M=(e,t,s)=>q(e)?s?.():t(e),N=e=>e==a||e==r,L=e=>l(e)==i,E=e=>Array.isArray(e),z=(e,t,s)=>e.slice(t,s),O=e=>e.length,{PureComponent:$,Fragment:J,createElement:A,useCallback:F,useLayoutEffect:P,useRef:B,useState:D}=t,Q=(e,...t)=>q(e)?{}:e(...t),j=(e,t)=>e.sort(t),H=(e,t)=>e.forEach(t),W=(e,t)=>e.map(t),U=e=>0==O(e),G=(e,...t)=>e.push(...t),K=e=>e.shift(),X=Object,Y=e=>X.getPrototypeOf(e),Z=X.entries,_=X.isFrozen,ee=e=>!q(e)&&M(Y(e),(e=>e==X.prototype||q(Y(e))),(()=>!0)),te=X.keys,se=X.freeze,le=(e=[])=>X.fromEntries(e),ne=(e,t)=>t in e,ae=(e,t)=>(delete e[t],e),re=(e,t)=>W(Z(e),(([e,s])=>t(s,e))),oe=e=>ee(e)&&0==(e=>O(te(e)))(e),ie=(e,t,s,l=0)=>q(e)||!ee(e)||!l&&oe(e)||_(e)?(s?.(),!1):(re(e,((s,l)=>{t(s,l)||ae(e,l)})),!!l||!oe(e)),de=e=>JSON.stringify(e,((e,t)=>t instanceof Map?X.fromEntries([...t]):t)),ue=JSON.parse,ce="tinybaseInspector",he="TinyBase Inspector",me=["left","top","bottom","right","full"],ge="state",pe="sort",be="open",Ie="position",fe=be,ye="editable",we=(...e)=>de(e),Ce=(e,t)=>W(j(e),t),ve=(e,t)=>[!!s.useCell(ge,e,ye,t),F((s=>{t.setCell(ge,e,ye,(e=>!e)),s.preventDefault()}),[t,e])],ke="M20 80l5-15l40-40l10 10l-40 40l-15 5m5-15l10 10",Se='content:url("',xe=Se+"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' stroke-width='4' stroke='white' fill='none'>",Te='</svg>")',Ve=Se+"data:image/svg+xml,%3csvg viewBox='0 0 680 680' xmlns='http://www.w3.org/2000/svg' style='width:680px%3bheight:680px'%3e %3cpath stroke='white' stroke-width='80' fill='none' d='M340 617a84 241 90 11.01 0zM131 475a94 254 70 10428-124 114 286 70 01-428 124zm0-140a94 254 70 10428-124 114 286 70 01-428 124zm-12-127a94 254 70 00306 38 90 260 90 01-306-38zm221 3a74 241 90 11.01 0z' /%3e %3cpath fill='%23d81b60' d='M131 475a94 254 70 10428-124 114 286 70 01-428 124zm0-140a94 254 70 10428-124 114 286 70 01-428 124z' /%3e %3cpath d='M249 619a94 240 90 00308-128 114 289 70 01-308 128zM119 208a94 254 70 00306 38 90 260 90 01-306-38zm221 3a74 241 90 11.01 0z' /%3e%3c/svg%3e\")",Re=W([[20,20,20,60],[20,20,60,20],[20,60,60,20],[60,20,20,60],[30,30,40,40]],(([e,t,s,l])=>xe+`<rect x='20' y='20' width='60' height='60' fill='grey'/><rect x='${e}' y='${t}' width='${s}' height='${l}' fill='white'/>`+Te)),qe=xe+"<path d='M20 20l60 60M20 80l60-60' />"+Te,Me=xe+`<path d='${ke}' />`+Te,Ne=xe+`<path d='${ke}M20 20l60 60' />`+Te,Le="*::-webkit-scrollbar",Ee=((e,t="")=>e.join(t))(re({"":"all:initial;font-family:sans-serif;font-size:0.75rem;position:fixed;z-index:999999","*":"all:revert","*::before":"all:revert","*::after":"all:revert",[Le]:"width:0.5rem;height:0.5rem;",[Le+"-track"]:"background:#111",[Le+"-thumb"]:"background:#999;border:1px solid #111",[Le+"-thumb:hover"]:"background:#fff",[Le+"-corner"]:"background:#111",img:"width:1rem;height:1rem;background:#111;border:0;vertical-align:text-bottom",">img":"padding:0.25rem;bottom:0;right:0;position:fixed;"+Ve,...le(W(["bottom:0;left:0","top:0;right:0"],((e,t)=>[`>img[data-position='${t}']`,e]))),main:"display:flex;flex-direction:column;background:#111d;color:#fff;position:fixed;",...le(W(["bottom:0;left:0;width:35vw;height:100vh","top:0;right:0;width:100vw;height:30vh","bottom:0;left:0;width:100vw;height:30vh","top:0;right:0;width:35vw;height:100vh","top:0;right:0;width:100vw;height:100vh"],((e,t)=>[`main[data-position='${t}']`,e]))),header:"display:flex;padding:0.25rem;background:#000;align-items:center","header>img:nth-of-type(1)":Ve,"header>img:nth-of-type(6)":qe,...le(W(Re,((e,t)=>[`header>img[data-id='${t}']`,e]))),"header>span":"flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-left:0.25rem",article:"padding:0.25rem 0.25rem 0.25rem 0.5rem;overflow:auto;flex:1",details:"margin-left:0.75rem;width:fit-content;","details img":"display:none","details[open]>summary img":"display:unset;background:none;margin-left:0.25rem","details[open]>summary img.edit":Me,"details[open]>summary img.done":Ne,summary:"margin-left:-0.75rem;line-height:1.25rem;user-select:none;width:fit-content",table:"border-collapse:collapse;table-layout:fixed;margin-bottom:0.5rem","table input":"background:#111;color:unset;padding:0 0.25rem;border:0;font-size:unset;vertical-align:top;margin:0",'table input[type="number"]':"width:4rem","table tbody button":"font-size:0;background:#fff;border-radius:50%;margin:0 0.125rem 0 0;width:0.85rem;color:#111","table button:first-letter":"font-size:0.75rem",thead:"background:#222","th:nth-of-type(1)":"min-width:2rem;","th.sorted":"background:#000","table caption":"text-align:left;white-space:nowrap;line-height:1.25rem",button:"width:1.5rem;border:none;background:none;color:#fff;padding:0","button[disabled]":"color:#777","button.next":"margin-right:0.5rem",[`th,#${ce} td`]:"overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:12rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left","span.warn":"margin:0.25rem;color:#d81b60"},((e,t)=>e?`#${ce} ${t}{${e}}`:""))),ze=({s:e})=>{const t=s.useValue(Ie,e)??1,l=s.useSetValueCallback(fe,(()=>!0),[],e);return s.useValue(fe,e)?null:A("img",{onClick:l,title:he,"data-position":t})},Oe=({uniqueId:e,summary:t,editable:l,handleEditable:n,children:a,s:r})=>{const o=!!s.useCell(ge,e,be,r),i=s.useSetCellCallback(ge,e,be,(e=>e[S].open),[],r);return A("details",{open:o,onToggle:i},A("summary",null,t,n?A("img",{onClick:n,className:l?"done":"edit"}):null),a)},$e=e=>{const t=l(e);return N(t)||t==o&&R(e)?t:void 0},Je=(e,t,s,l,n)=>q(n)?e.delCell(t,s,l,!0):e.setCell(t,s,l,n),Ae=(e,t,s)=>q(s)?e.delValue(t):e.setValue(t,s),Fe=(e,t,s,l)=>e==a?t:e==o?s:l,{useCallback:Pe,useMemo:Be,useState:De}=t,Qe="editable",je=(e,t)=>W(s.useTableCellIds(e,t),(t=>e+"."+t)),He=(e,t,s)=>{const l=Pe(e,t);return s?l:void 0},We=(...e)=>Be((()=>e),e),Ue=(e,t)=>Be((()=>({store:e,tableId:t})),[e,t]),Ge=(e,t)=>Be((()=>({queries:e,queryId:t})),[e,t]),Ke=(e,t=!1,s,l=0,n,a,r,o)=>{const[[i,d,u],c]=De([e,t,l]),h=Pe((e=>{c(e),o?.(e)}),[o]),m=He((e=>h([e,e==i&&!d,u])),[h,i,d,u],s),g=Pe((e=>h([i,d,e])),[h,i,d]),p=!0===r?it:r;return[[i,d,u],m,Be((()=>!1===r?null:A(p,{offset:u,limit:n,total:a,onChange:g})),[r,p,u,n,a,g])]},Xe=(e,t,s)=>Be((()=>{const n=t??e;return r=E(n)?le(W(n,(e=>[e,e]))):n,o=(e,t)=>{return{label:t,component:s,...(n=e,l(n)==a?{label:e}:e)};var n},le(re(r,((e,t)=>[t,o(e,t)])));var r,o}),[t,s,e]),Ye=({className:e,headerRow:t,idColumn:s,params:[l,n,a,r,o,i]})=>A("table",{className:e},i?A("caption",null,i):null,!1===t?null:A("thead",null,A("tr",null,!1===s?null:A(Ze,{sort:r??[],label:"Id",onClick:o}),re(l,(({label:e},t)=>A(Ze,{key:t,cellId:t,label:e,sort:r??[],onClick:o}))))),A("tbody",null,W(a,(e=>A("tr",{key:e},!1===s?null:A("th",null,e),re(l,(({component:t,getComponentProps:s},l)=>A("td",{key:l},A(t,{...Q(s,e,l),...n,rowId:e,cellId:l}))))))))),Ze=({cellId:e,sort:[t,s],label:l=e??n,onClick:a})=>A("th",{onClick:He((()=>a?.(e)),[a,e],a),className:q(s)||t!=e?void 0:`sorted ${s?"de":"a"}scending`},q(s)||t!=e?null:(s?"↓":"↑")+" ",l),_e=({localRowId:e,params:[l,n,a,r,o,i,d]})=>{const u=s.useRemoteRowId(o,e,i);return A("tr",null,!1===l?null:A(t.Fragment,null,A("th",null,e),A("th",null,u)),re(n,(({component:t,getComponentProps:s},l)=>{const[n,o]=l.split(".",2),i=n===a?e:n===r?u:null;return q(i)?null:A("td",{key:l},A(t,{...Q(s,i,o),store:d,tableId:n,rowId:i,cellId:o}))})))},et=({thing:e,onThingChange:t,className:s,hasSchema:l,showType:n=!0})=>{const[i,d]=De(),[u,c]=De(),[h,m]=De(),[g,p]=De(),[b,I]=De();u!==e&&(d($e(e)),c(e),m(e+""),p(Number(e)||0),I(!!e));const f=Pe(((e,s)=>{s(e),c(e),t(e)}),[t]),y=Pe((()=>{if(!l?.()){const e=Fe(i,o,r,a),s=Fe(e,h,g,b);d(e),c(s),t(s)}}),[l,t,h,g,b,i]);return A("div",{className:s},n?A("button",{className:i,onClick:y},i):null,Fe(i,A("input",{key:i,value:h,onChange:Pe((e=>f(e[S][x]+"",m)),[f])}),A("input",{key:i,type:"number",value:g,onChange:Pe((e=>f(Number(e[S][x]||0),p)),[f])}),A("input",{key:i,type:"checkbox",checked:b,onChange:Pe((e=>f(!!e[S].checked,I)),[f])})))},tt=({tableId:e,cellId:t,descending:l,offset:n,limit:a,store:r,editable:o,sortOnClick:i,paginator:d=!1,onChange:u,customCells:c,...h})=>{const[m,g,p]=Ke(t,l,i,n,a,s.useRowCount(e,r),d,u);return A(Ye,{...h,params:We(Xe(s.useTableCellIds(e,r),c,o?rt:s.CellView),Ue(r,e),s.useSortedRowIds(e,...m,a,r),m,g,p)})},st=({store:e,editable:t=!1,valueComponent:l=(t?ot:s.ValueView),getValueComponentProps:n,className:a,headerRow:r,idColumn:o})=>A("table",{className:a},!1===r?null:A("thead",null,A("tr",null,!1===o?null:A("th",null,"Id"),A("th",null,C))),A("tbody",null,W(s.useValueIds(e),(t=>A("tr",{key:t},!1===o?null:A("th",null,t),A("td",null,A(l,{...Q(n,t),valueId:t,store:e}))))))),lt=({indexId:e,sliceId:t,indexes:l,editable:n,customCells:a,...r})=>{const[o,i,d]=((e,t)=>[e,e?.getStore(),e?.getTableId(t)])(s.useIndexesOrIndexesById(l),e);return A(Ye,{...r,params:We(Xe(s.useTableCellIds(d,i),a,n?rt:s.CellView),Ue(i,d),s.useSliceRowIds(e,t,o))})},nt=({relationshipId:e,relationships:l,editable:n,customCells:a,className:r,headerRow:o,idColumn:i=!0})=>{const[d,u,c,h]=((e,t)=>[e,e?.getStore(),e?.getLocalTableId(t),e?.getRemoteTableId(t)])(s.useRelationshipsOrRelationshipsById(l),e),m=Xe([...je(c,u),...je(h,u)],a,n?rt:s.CellView),g=We(i,m,c,h,e,d,u);return A("table",{className:r},!1===o?null:A("thead",null,A("tr",null,!1===i?null:A(t.Fragment,null,A("th",null,c,".Id"),A("th",null,h,".Id")),re(m,(({label:e},t)=>A("th",{key:t},e))))),A("tbody",null,W(s.useRowIds(c,u),(e=>A(_e,{key:e,localRowId:e,params:g})))))},at=({queryId:e,cellId:t,descending:l,offset:n,limit:a,queries:r,sortOnClick:o,paginator:i=!1,customCells:d,onChange:u,...c})=>{const[h,m,g]=Ke(t,l,o,n,a,s.useResultRowCount(e,r),i,u);return A(Ye,{...c,params:We(Xe(s.useResultTableCellIds(e,r),d,s.ResultCellView),Ge(r,e),s.useResultSortedRowIds(e,...h,a,r),h,m,g)})},rt=({tableId:e,rowId:t,cellId:l,store:n,className:a,showType:r})=>A(et,{thing:s.useCell(e,t,l,n),onThingChange:s.useSetCellCallback(e,t,l,(e=>e),[],n),className:a??Qe+y,showType:r,hasSchema:s.useStoreOrStoreById(n)?.hasTablesSchema}),ot=({valueId:e,store:t,className:l,showType:n})=>A(et,{thing:s.useValue(e,t),onThingChange:s.useSetValueCallback(e,(e=>e),[],t),className:l??Qe+C,showType:n,hasSchema:s.useStoreOrStoreById(t)?.hasValuesSchema}),it=({onChange:e,total:s,offset:l=0,limit:n=s,singular:a="row",plural:r=a+"s"})=>{(l>s||l<0)&&(l=0,e(0));const o=He((()=>e(l-n)),[e,l,n],l>0),i=He((()=>e(l+n)),[e,l,n],l+n<s);return A(t.Fragment,null,s>n&&A(t.Fragment,null,A("button",{className:"previous",disabled:0==l,onClick:o},"←"),A("button",{className:"next",disabled:l+n>=s,onClick:i},"→"),l+1," to ",Math.min(s,l+n)," of "),s," ",1!=s?r:a)},dt=({indexes:e,indexesId:t,indexId:l,s:n})=>A(Oe,{uniqueId:we("i",t,l),summary:"Index: "+l,s:n},W(s.useSliceIds(l,e),(s=>A(ut,{indexes:e,indexesId:t,indexId:l,sliceId:s,s:n,key:s})))),ut=({indexes:e,indexesId:t,indexId:s,sliceId:l,s:n})=>{const a=we("i",t,s,l),[r,o]=ve(a,n);return A(Oe,{uniqueId:a,summary:"Slice: "+l,editable:r,handleEditable:o,s:n},A(lt,{sliceId:l,indexId:s,indexes:e,editable:r}))},ct=({indexesId:e,s:t})=>{const l=s.useIndexes(e),n=s.useIndexIds(l);return q(l)?null:A(Oe,{uniqueId:we("i",e),summary:"Indexes: "+(e??u),s:t},U(n)?"No indexes defined":Ce(n,(s=>A(dt,{indexes:l,indexesId:e,indexId:s,s:t,key:s}))))},ht=({metrics:e,metricId:t})=>A("tr",null,A("th",null,t),A("td",null,e?.getTableId(t)),A("td",null,s.useMetric(t,e))),mt=({metricsId:e,s:t})=>{const l=s.useMetrics(e),n=s.useMetricIds(l);return q(l)?null:A(Oe,{uniqueId:we("m",e),summary:"Metrics: "+(e??u),s:t},U(n)?"No metrics defined":A("table",null,A("thead",null,A("th",null,"Metric Id"),A("th",null,"Table Id"),A("th",null,"Metric")),A("tbody",null,W(n,(e=>A(ht,{metrics:l,metricId:e,key:e}))))))},gt=({queries:e,queriesId:t,queryId:l,s:n})=>{const a=we("q",t,l),[r,o,i]=ue(s.useCell(ge,a,pe,n)??"[]"),d=s.useSetCellCallback(ge,a,pe,de,[],n);return A(Oe,{uniqueId:a,summary:"Query: "+l,s:n},A(at,{queryId:l,queries:e,cellId:r,descending:o,offset:i,limit:10,paginator:!0,sortOnClick:!0,onChange:d}))},pt=({queriesId:e,s:t})=>{const l=s.useQueries(e),n=s.useQueryIds(l);return q(l)?null:A(Oe,{uniqueId:we("q",e),summary:"Queries: "+(e??u),s:t},U(n)?"No queries defined":Ce(n,(s=>A(gt,{queries:l,queriesId:e,queryId:s,s:t,key:s}))))},bt=({relationships:e,relationshipsId:t,relationshipId:s,s:l})=>{const n=we("r",t,s),[a,r]=ve(n,l);return A(Oe,{uniqueId:n,summary:"Relationship: "+s,editable:a,handleEditable:r,s:l},A(nt,{relationshipId:s,relationships:e,editable:a}))},It=({relationshipsId:e,s:t})=>{const l=s.useRelationships(e),n=s.useRelationshipIds(l);return q(l)?null:A(Oe,{uniqueId:we("r",e),summary:"Relationships: "+(e??u),s:t},U(n)?"No relationships defined":Ce(n,(s=>A(bt,{relationships:l,relationshipsId:e,relationshipId:s,s:t,key:s}))))},ft=({tableId:e,store:t,storeId:l,s:n})=>{const a=we("t",l,e),[r,o,i]=ue(s.useCell(ge,a,pe,n)??"[]"),d=s.useSetCellCallback(ge,a,pe,de,[],n),[u,c]=ve(a,n);return A(Oe,{uniqueId:a,summary:m+": "+e,editable:u,handleEditable:c,s:n},A(tt,{tableId:e,store:t,cellId:r,descending:o,offset:i,limit:10,paginator:!0,sortOnClick:!0,onChange:d,editable:u}))},yt=({store:e,storeId:t,s:l})=>{const n=we("v",t),[a,r]=ve(n,l);return U(s.useValueIds(e))?null:A(Oe,{uniqueId:n,summary:v,editable:a,handleEditable:r,s:l},A(st,{store:e,editable:a}))},wt=({storeId:e,s:t})=>{const l=s.useStore(e),n=s.useTableIds(l);return q(l)?null:A(Oe,{uniqueId:we("s",e),summary:(l.isMergeable()?"Mergeable":"")+"Store: "+(e??u),s:t},A(yt,{storeId:e,store:l,s:t}),Ce(n,(s=>A(ft,{store:l,storeId:e,tableId:s,s:t,key:s}))))},Ct=({s:e})=>{const t=B(null),l=B(0),[n,a]=D(!1),{scrollLeft:r,scrollTop:o}=s.useValues(e);P((()=>{const e=t.current;if(e&&!n){const t=new MutationObserver((()=>{e.scrollWidth>=V(r)+e.clientWidth&&e.scrollHeight>=V(o)+e.clientHeight&&e.scrollTo(r,o)}));return t.observe(e,{childList:!0,subtree:!0}),()=>t.disconnect()}}),[n,r,o]);const i=F((t=>{const{scrollLeft:s,scrollTop:n}=t[S];cancelIdleCallback(l.current),l.current=requestIdleCallback((()=>{a(!0),e.setPartialValues({scrollLeft:s,scrollTop:n})}))}),[e]),d=s.useStore(),u=s.useStoreIds(),c=s.useMetrics(),h=s.useMetricsIds(),m=s.useIndexes(),g=s.useIndexesIds(),p=s.useRelationships(),b=s.useRelationshipsIds(),I=s.useQueries(),f=s.useQueriesIds();return q(d)&&U(u)&&q(c)&&U(h)&&q(m)&&U(g)&&q(p)&&U(b)&&q(I)&&U(f)?A("span",{className:"warn"},"There are no Stores or other objects to inspect. Make sure you placed the Inspector inside a Provider component."):A("article",{ref:t,onScroll:i},A(wt,{s:e}),W(u,(t=>A(wt,{storeId:t,s:e,key:t}))),A(mt,{s:e}),W(h,(t=>A(mt,{metricsId:t,s:e,key:t}))),A(ct,{s:e}),W(g,(t=>A(ct,{indexesId:t,s:e,key:t}))),A(It,{s:e}),W(b,(t=>A(It,{relationshipsId:t,s:e,key:t}))),A(pt,{s:e}),W(f,(t=>A(pt,{queriesId:t,s:e,key:t}))))};class vt extends ${constructor(e){super(e),this.state={e:0}}static getDerivedStateFromError(){return{e:1}}componentDidCatch=(e,t)=>console.error(e,t.componentStack);render(){return this.state.e?A("span",{className:"warn"},"Inspector error: please see console for details."):this.props.children}}const kt=({s:e})=>{const t=s.useValue(Ie,e)??1,l=s.useSetValueCallback(fe,(()=>!1),[],e),n=s.useSetValueCallback(Ie,(e=>Number(e[S].dataset.id)),[],e);return A("header",null,A("img",{title:he}),A("span",null,he),W(me,((e,s)=>s==t?null:A("img",{onClick:n,"data-id":s,title:"Dock to "+e,key:s}))),A("img",{onClick:l,title:"Close"}))},St=({s:e})=>{const t=s.useValue(Ie,e)??1;return s.useValue(fe,e)?A("main",{"data-position":t},A(kt,{s:e}),A(vt,null,A(Ct,{s:e}))):null},xt=e=>e?.size??0,Tt=(e,t)=>e?.has(t)??!1,Vt=e=>q(e)||0==xt(e),Rt=e=>e.clear(),qt=(e,t)=>e?.forEach(t),Mt=(e,t)=>e?.delete(t),Nt=e=>new Map(e),Lt=e=>[...e?.keys()??[]],Et=(e,t)=>e?.get(t),zt=(e,t)=>qt(e,((e,s)=>t(s,e))),Ot=(e,t,s)=>q(s)?(Mt(e,t),e):e?.set(t,s),$t=(e,t,s,l)=>(Tt(e,t)?l?.(Et(e,t)):Ot(e,t,s()),Et(e,t)),Jt=(e,t,s,l=Ot)=>(re(t,((t,l)=>s(e,l,t))),zt(e,(s=>ne(t,s)?0:l(e,s))),e),At=(e,t,s,l)=>{const n={};return qt(e,((e,a)=>{if(!s?.(e,a)){const s=t?t(e,a):e;!l?.(s)&&(n[a]=s)}})),n},Ft=(e,t,s)=>At(e,(e=>At(e,t,s)),Vt,oe),Pt=(e,t,s)=>At(e,(e=>Ft(e,t,s)),Vt,oe),Bt=(e,t)=>{const s=Nt();return qt(e,((e,l)=>s.set(l,t?.(e)??e))),s},Dt=e=>Bt(e,Bt),Qt=e=>Bt(e,Dt),jt=(e,t,s,l,n=0)=>M((s?$t:Et)(e,t[n],n>O(t)-2?s:Nt),(a=>{if(n>O(t)-2)return l?.(a)&&Ot(e,t[n]),a;const r=jt(a,t,s,l,n+1);return Vt(a)&&Ot(e,t[n]),r})),Ht=Nt(),Wt=Nt(),Ut="storage",Gt=globalThis.window,Kt=e=>new Set(E(e)||q(e)?e:[e]),Xt=(e,t)=>e?.add(t),Yt=/^\d+$/,Zt=()=>{const e=[];let t=0;return[s=>(s?K(e):null)??n+t++,t=>{Yt.test(t)&&O(e)<1e3&&G(e,t)}]},_t=e=>[e,e],es=()=>[Nt(),Nt()],ts=e=>[...e],ss=([e,t])=>e===t;Nt(W("-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".split(n),((e,t)=>[e,t])));const ls=(e,t,s)=>Ot(e,t,Et(e,t)==-s?void 0:s),ns=()=>{let e,t,s=!1,l=!1,a=0,r=[];const i=Nt(),h=Nt(),S=Nt(),x=Nt(),V=Nt(),R=Nt(),E=Nt(),$=Nt(),J=Nt(),A=Nt(),F=Nt(),P=Nt(),B=Nt(),D=Nt(),Q=Kt(),U=Nt(),K=Nt(),X=Nt(),Y=Nt(),Z=es(),_=es(),ee=es(),te=es(),le=es(),ce=es(),he=es(),me=es(),ge=es(),pe=es(),be=es(),Ie=es(),fe=es(),ye=es(),we=es(),Ce=es(),ve=es(),ke=es(),Se=es(),xe=es(),Te=es(),Ve=es(),Re=Nt(),qe=es(),[Me,Ne,Le,Ee]=(e=>{let t;const[s,l]=Zt(),a=Nt();return[(e,l,r,o=[],i=(()=>[]))=>{t??=Ns;const d=s(1);return Ot(a,d,[e,l,r,o,i]),Xt(jt(l,r??[n],Kt),d),d},(e,s,...l)=>H(((e,t=[n])=>{const s=[],l=(e,n)=>n==O(t)?G(s,e):null===t[n]?qt(e,(e=>l(e,n+1))):H([t[n],null],(t=>l(Et(e,t),n+1)));return l(e,0),s})(e,s),(e=>qt(e,(e=>Et(a,e)[0](t,...s??[],...l))))),e=>M(Et(a,e),(([,t,s])=>(jt(t,s??[n],void 0,(t=>(Mt(t,e),Vt(t)?1:0))),Ot(a,e),l(e),s))),e=>M(Et(a,e),(([e,,s=[],l,n])=>{const a=(...r)=>{const o=O(r);o==O(s)?e(t,...r,...n(r)):q(s[o])?H(l[o]?.(...r)??[],(e=>a(...r,e))):a(...r,s[o])};a()}))]})(),ze=e=>{if(!ie(e,((e,t)=>[d,u].includes(t))))return!1;const t=e[d];return!(!N(t)&&t!=o||($e(e[u])!=t&&ae(e,u),0))},Oe=(t,s)=>(!e||Tt(F,s)||gt(s))&&ie(t,((e,t)=>Fe(s,t,e)),(()=>gt(s))),Fe=(e,t,s,l)=>ie(l?s:Qe(s,e,t),((l,n)=>M(Pe(e,t,n,l),(e=>(s[n]=e,!0)),(()=>!1))),(()=>gt(e,t))),Pe=(t,s,l,n)=>e?M(Et(Et(F,t),l),(e=>$e(n)!=e[d]?gt(t,s,l,n,e[u]):n),(()=>gt(t,s,l,n))):q($e(n))?gt(t,s,l,n):n,Be=(e,t)=>ie(t?e:je(e),((t,s)=>M(De(s,t),(t=>(e[s]=t,!0)),(()=>!1))),(()=>pt())),De=(e,s)=>t?M(Et(B,e),(t=>$e(s)!=t[d]?pt(e,s,t[u]):s),(()=>pt(e,s))):q($e(s))?pt(e,s):s,Qe=(e,t,s)=>(M(Et(P,t),(([l,n])=>{qt(l,((t,s)=>{ne(e,s)||(e[s]=t)})),qt(n,(l=>{ne(e,l)||gt(t,s,l)}))})),e),je=e=>(t&&(qt(D,((t,s)=>{ne(e,s)||(e[s]=t)})),qt(Q,(t=>{ne(e,t)||pt(t)}))),e),He=e=>Jt(F,e,((e,t,s)=>{const l=Nt(),n=Kt();Jt($t(F,t,Nt),s,((e,t,s)=>{Ot(e,t,s),M(s[u],(e=>Ot(l,t,e)),(()=>Xt(n,t)))})),Ot(P,t,[l,n])}),((e,t)=>{Ot(F,t),Ot(P,t)})),We=e=>Jt(B,e,((e,t,s)=>{Ot(B,t,s),M(s[u],(e=>Ot(D,t,e)),(()=>Xt(Q,t)))}),((e,t)=>{Ot(B,t),Ot(D,t),Mt(Q,t)})),Ue=e=>oe(e)?vs():Is(e),Ge=e=>Jt(X,e,((e,t,s)=>Ke(t,s)),((e,t)=>nt(t))),Ke=(e,t)=>Jt($t(X,e,(()=>(it(e,1),Ot(U,e,Zt()),Ot(K,e,Nt()),Nt()))),t,((t,s,l)=>Xe(e,t,s,l)),((t,s)=>at(e,t,s))),Xe=(e,t,s,l,n)=>Jt($t(t,s,(()=>(dt(e,s,1),Nt()))),l,((t,l,n)=>Ye(e,s,t,l,n)),((l,a)=>rt(e,t,s,l,a,n))),Ye=(e,t,s,l,n)=>{Tt(s,l)||ut(e,t,l,1);const a=Et(s,l);n!==a&&(ct(e,t,l,a,n),Ot(s,l,n))},Ze=(e,t,s,l,n)=>M(Et(t,s),(t=>Ye(e,s,t,l,n)),(()=>Xe(e,t,s,Qe({[l]:n},e,s)))),_e=e=>oe(e)?xs():fs(e),et=e=>Jt(Y,e,((e,t,s)=>tt(t,s)),((e,t)=>ot(t))),tt=(e,t)=>{Tt(Y,e)||ht(e,1);const s=Et(Y,e);t!==s&&(mt(e,s,t),Ot(Y,e,t))},st=(e,t)=>{const[s]=Et(U,e),l=s(t);return Tt(Et(X,e),l)?st(e,t):l},lt=e=>Et(X,e)??Ke(e,{}),nt=e=>Ke(e,{}),at=(e,t,s)=>{const[,l]=Et(U,e);l(s),Xe(e,t,s,{},!0)},rt=(e,t,s,l,n,a)=>{const r=Et(Et(P,e)?.[0],n);if(!q(r)&&!a)return Ye(e,s,l,n,r);const o=t=>{ct(e,s,t,Et(l,t)),ut(e,s,t,-1),Ot(l,t)};q(r)?o(n):zt(l,o),Vt(l)&&(dt(e,s,-1),Vt(Ot(t,s))&&(it(e,-1),Ot(X,e),Ot(U,e),Ot(K,e)))},ot=e=>{const t=Et(D,e);if(!q(t))return tt(e,t);mt(e,Et(Y,e)),ht(e,-1),Ot(Y,e)},it=(e,t)=>ls(i,e,t),dt=(e,t,s)=>ls($t(x,e,Nt),t,s)&&Ot(S,e,$t(S,e,(()=>0))+s),ut=(e,t,s,l)=>{const n=Et(K,e),a=Et(n,s)??0;(0==a&&1==l||1==a&&-1==l)&&ls($t(h,e,Nt),s,l),Ot(n,s,a!=-l?a+l:null),ls($t($t(V,e,Nt),t,Nt),s,l)},ct=(e,t,s,l,n)=>{$t($t($t(R,e,Nt),t,Nt),s,(()=>[l,0]))[1]=n,r[3]?.(e,t,s,n)},ht=(e,t)=>ls(E,e,t),mt=(e,t,s)=>{$t($,e,(()=>[t,0]))[1]=s,r[4]?.(e,s)},gt=(e,t,s,l,n)=>(G($t($t($t(J,e,Nt),t,Nt),s,(()=>[])),l),n),pt=(e,t,s)=>(G($t(A,e,(()=>[])),t),s),bt=(e,t,s)=>M(Et(Et(Et(R,e),t),s),(([e,t])=>[!0,e,t]),(()=>[!1,..._t(rs(e,t,s))])),It=e=>M(Et($,e),(([e,t])=>[!0,e,t]),(()=>[!1,..._t(ds(e))])),ft=e=>Vt(J)||Vt(Ce[e])?0:qt(e?Qt(J):J,((t,s)=>qt(t,((t,l)=>qt(t,((t,n)=>Ne(Ce[e],[s,l,n],t))))))),yt=e=>Vt(A)||Vt(ve[e])?0:qt(e?Bt(A):A,((t,s)=>Ne(ve[e],[s],t))),wt=(e,t,s,l)=>{if(!Vt(e))return Ne(t,l,(()=>At(e))),zt(e,((e,t)=>Ne(s,[...l??[],e],1==t))),1},Ct=e=>{const t=us();t!=s&&Ne(Z[e],void 0,t);const l=Vt(pe[e]),n=Vt(fe[e])&&Vt(ye[e])&&Vt(ge[e])&&Vt(be[e])&&Vt(ce[e])&&Vt(he[e])&&Vt(me[e])&&l&&Vt(ee[e])&&Vt(te[e]),a=Vt(we[e])&&Vt(Ie[e])&&Vt(le[e])&&Vt(_[e]);if(!n||!a){const t=e?[Bt(i),Dt(h),Bt(S),Dt(x),Qt(V),Qt(R)]:[i,h,S,x,V,R];if(!n){wt(t[0],ee[e],te[e]),qt(t[1],((t,s)=>wt(t,ce[e],he[e],[s]))),qt(t[2],((t,s)=>{0!=t&&Ne(me[e],[s],Ut(s))}));const s=Kt();qt(t[3],((t,n)=>{wt(t,ge[e],be[e],[n])&&!l&&(Ne(pe[e],[n,null]),Xt(s,n))})),l||qt(t[5],((t,l)=>{if(!Tt(s,l)){const s=Kt();qt(t,(e=>qt(e,(([t,l],n)=>l!==t?Xt(s,n):Mt(e,n))))),qt(s,(t=>Ne(pe[e],[l,t])))}})),qt(t[4],((t,s)=>qt(t,((t,l)=>wt(t,fe[e],ye[e],[s,l])))))}if(!a){let s;qt(t[5],((t,l)=>{let n;qt(t,((t,a)=>{let r;qt(t,(([t,o],i)=>{o!==t&&(Ne(we[e],[l,a,i],o,t,bt),s=n=r=1)})),r&&Ne(Ie[e],[l,a],bt)})),n&&Ne(le[e],[l],bt)})),s&&Ne(_[e],void 0,bt)}}},vt=e=>{const t=ps();t!=l&&Ne(ke[e],void 0,t);const s=Vt(xe[e])&&Vt(Te[e]),n=Vt(Ve[e])&&Vt(Se[e]);if(!s||!n){const t=e?[Bt(E),Bt($)]:[E,$];if(s||wt(t[0],xe[e],Te[e]),!n){let s;qt(t[1],(([t,l],n)=>{l!==t&&(Ne(Ve[e],[n],l,t,It),s=1)})),s&&Ne(Se[e],void 0,It)}}},kt=(e,...t)=>(Rs((()=>e(...W(t,T)))),Ns),St=()=>Pt(X),Ht=()=>Lt(X),Wt=e=>Lt(Et(K,T(e))),Ut=e=>xt(Et(X,T(e))),Gt=e=>Lt(Et(X,T(e))),Yt=(e,t,s,l=0,n)=>{return W(z(j((a=Et(X,T(e)),r=(e,s)=>[q(t)?s:Et(e,T(t)),s],W([...a?.entries()??[]],(([e,t])=>r(t,e)))),(([e],[t])=>((e??0)<(t??0)?-1:1)*(s?-1:1))),l,q(n)?n:l+n),(([,e])=>e));var a,r},as=(e,t)=>Lt(Et(Et(X,T(e)),T(t))),rs=(e,t,s)=>Et(Et(Et(X,T(e)),T(t)),T(s)),os=()=>At(Y),is=()=>Lt(Y),ds=e=>Et(Y,T(e)),us=()=>!Vt(X),cs=e=>Tt(X,T(e)),hs=(e,t)=>Tt(Et(K,T(e)),T(t)),ms=(e,t)=>Tt(Et(X,T(e)),T(t)),gs=(e,t,s)=>Tt(Et(Et(X,T(e)),T(t)),T(s)),ps=()=>!Vt(Y),bs=e=>Tt(Y,T(e)),Is=e=>kt((()=>(e=>ie(e,Oe,gt))(e)?Ge(e):0)),fs=e=>kt((()=>Be(e)?et(e):0)),ys=e=>{try{Ue(ue(e))}catch{}return Ns},ws=t=>kt((()=>{if((e=ie(t,(e=>ie(e,ze))))&&(He(t),!Vt(X))){const e=St();vs(),Is(e)}})),Cs=e=>kt((()=>{if(t=(e=>ie(e,ze))(e)){const s=os();Vs(),xs(),t=!0,We(e),fs(s)}})),vs=()=>kt((()=>Ge({}))),ks=e=>kt((e=>Tt(X,e)?nt(e):0),e),Ss=(e,t)=>kt(((e,t)=>M(Et(X,e),(s=>Tt(s,t)?at(e,s,t):0))),e,t),xs=()=>kt((()=>et({}))),Ts=()=>kt((()=>{He({}),e=!1})),Vs=()=>kt((()=>{We({}),t=!1})),Rs=(e,t)=>{if(-1!=a){qs();const s=e();return Ms(t),s}},qs=()=>(-1!=a&&a++,1==a&&(r[0]?.(),Ne(Re)),Ns),Ms=e=>(a>0&&(a--,0==a&&(a=1,ft(1),Vt(R)||Ct(1),yt(1),Vt($)||vt(1),e?.(Ns)&&(qt(R,((e,t)=>qt(e,((e,s)=>qt(e,(([e],l)=>Je(Ns,t,s,l,e))))))),Rt(R),qt($,(([e],t)=>Ae(Ns,t,e))),Rt($)),Ne(qe[0],void 0),a=-1,ft(0),Vt(R)||Ct(0),yt(0),Vt($)||vt(0),r[1]?.(),Ne(qe[1],void 0),r[2]?.(),a=0,s=us(),l=ps(),H([i,h,S,x,V,R,J,E,$,A],Rt))),Ns),Ns={getContent:()=>[St(),os()],getTables:St,getTableIds:Ht,getTable:e=>Ft(Et(X,T(e))),getTableCellIds:Wt,getRowCount:Ut,getRowIds:Gt,getSortedRowIds:Yt,getRow:(e,t)=>At(Et(Et(X,T(e)),T(t))),getCellIds:as,getCell:rs,getValues:os,getValueIds:is,getValue:ds,hasTables:us,hasTable:cs,hasTableCell:hs,hasRow:ms,hasCell:gs,hasValues:ps,hasValue:bs,getTablesJson:()=>de(X),getValuesJson:()=>de(Y),getJson:()=>de([X,Y]),getTablesSchemaJson:()=>de(F),getValuesSchemaJson:()=>de(B),getSchemaJson:()=>de([F,B]),hasTablesSchema:()=>e,hasValuesSchema:()=>t,setContent:([e,t])=>kt((()=>{(oe(e)?vs:Is)(e),(oe(t)?xs:fs)(t)})),setTables:Is,setTable:(e,t)=>kt((e=>Oe(t,e)?Ke(e,t):0),e),setRow:(e,t,s)=>kt(((e,t)=>Fe(e,t,s)?Xe(e,lt(e),t,s):0),e,t),addRow:(e,t,s=!0)=>Rs((()=>{let l;return Fe(e,l,t)&&(e=T(e),Xe(e,lt(e),l=st(e,s?1:0),t)),l})),setPartialRow:(e,t,s)=>kt(((e,t)=>{if(Fe(e,t,s,1)){const l=lt(e);re(s,((s,n)=>Ze(e,l,t,n,s)))}}),e,t),setCell:(e,t,s,l)=>kt(((e,t,s)=>M(Pe(e,t,s,L(l)?l(rs(e,t,s)):l),(l=>Ze(e,lt(e),t,s,l)))),e,t,s),setValues:fs,setPartialValues:e=>kt((()=>Be(e,1)?re(e,((e,t)=>tt(t,e))):0)),setValue:(e,t)=>kt((e=>M(De(e,L(t)?t(ds(e)):t),(t=>tt(e,t)))),e),applyChanges:e=>kt((()=>{re(e[0],((e,t)=>q(e)?ks(t):re(e,((e,s)=>q(e)?Ss(t,s):re(e,((e,l)=>Je(Ns,t,s,l,e))))))),re(e[1],((e,t)=>Ae(Ns,t,e)))})),setTablesJson:ys,setValuesJson:e=>{try{_e(ue(e))}catch{}return Ns},setJson:e=>kt((()=>{try{const[t,s]=ue(e);Ue(t),_e(s)}catch{ys(e)}})),setTablesSchema:ws,setValuesSchema:Cs,setSchema:(e,t)=>kt((()=>{ws(e),Cs(t)})),delTables:vs,delTable:ks,delRow:Ss,delCell:(e,t,s,l)=>kt(((e,t,s)=>M(Et(X,e),(n=>M(Et(n,t),(a=>Tt(a,s)?rt(e,n,t,a,s,l):0))))),e,t,s),delValues:xs,delValue:e=>kt((e=>Tt(Y,e)?ot(e):0),e),delTablesSchema:Ts,delValuesSchema:Vs,delSchema:()=>kt((()=>{Ts(),Vs()})),transaction:Rs,startTransaction:qs,getTransactionChanges:()=>[At(R,((e,t)=>-1===Et(i,t)?void 0:At(e,((e,s)=>-1===Et(Et(x,t),s)?void 0:At(e,(([,e])=>e),(e=>ss(e)))),Vt,oe)),Vt,oe),At($,(([,e])=>e),(e=>ss(e))),1],getTransactionLog:()=>[!Vt(R),!Vt($),Pt(R,ts,ss),Pt(J),At($,ts,ss),At(A),At(i),Ft(x),Pt(V),At(E)],finishTransaction:Ms,forEachTable:e=>qt(X,((t,s)=>e(s,(e=>qt(t,((t,s)=>e(s,(e=>zt(t,e))))))))),forEachTableCell:(e,t)=>zt(Et(K,T(e)),t),forEachRow:(e,t)=>qt(Et(X,T(e)),((e,s)=>t(s,(t=>zt(e,t))))),forEachCell:(e,t,s)=>zt(Et(Et(X,T(e)),T(t)),s),forEachValue:e=>zt(Y,e),addSortedRowIdsListener:(e,t,s,l,n,a,r)=>{let o=Yt(e,t,s,l,n);return Me((()=>{const r=Yt(e,t,s,l,n);var i,d,u;d=o,O(i=r)===O(d)&&(u=(e,t)=>d[t]===e,i.every(u))||(o=r,a(Ns,e,t,s,l,n,o))}),pe[r?1:0],[e,t],[Ht])},addStartTransactionListener:e=>Me(e,Re),addWillFinishTransactionListener:e=>Me(e,qe[0]),addDidFinishTransactionListener:e=>Me(e,qe[1]),callListener:e=>(Ee(e),Ns),delListener:e=>(Le(e),Ns),getListenerStats:()=>({}),isMergeable:()=>!1,createStore:ns,addListener:Me,callListeners:Ne,setInternalListeners:(e,t,s,l,n)=>r=[e,t,s,l,n]};return re({[c+g]:[0,Z,[],()=>[us()]],[g]:[0,_],[p]:[0,ee],[c+m]:[1,te,[Ht],e=>[cs(...e)]],[m]:[1,le,[Ht]],[m+w]:[1,ce,[Ht]],[c+m+y]:[2,he,[Ht,Wt],e=>[hs(...e)]],[I]:[1,me,[Ht]],[f]:[1,ge,[Ht]],[c+b]:[2,be,[Ht,Gt],e=>[ms(...e)]],[b]:[2,Ie,[Ht,Gt]],[w]:[2,fe,[Ht,Gt]],[c+y]:[3,ye,[Ht,Gt,as],e=>[gs(...e)]],[y]:[3,we,[Ht,Gt,as],e=>_t(rs(...e))],InvalidCell:[3,Ce],[c+v]:[0,ke,[],()=>[ps()]],[v]:[0,Se],[k]:[0,xe],[c+C]:[1,Te,[is],e=>[bs(...e)]],[C]:[1,Ve,[is],e=>_t(ds(e[0]))],InvalidValue:[1,ve]},(([e,t,s,l],n)=>{Ns["add"+n+"Listener"]=(...n)=>Me(n[e],t[n[e+1]?1:0],e>0?z(n,0,e):void 0,s,l)})),se(Ns)};e.Inspector=({position:e="right",open:t=!1})=>{const l=s.useCreateStore(ns),n=me.indexOf(e);return s.useCreatePersister(l,(e=>{return t=ce,s=sessionStorage,((e,t,s,l,n,a,r,o={},i=[])=>{let d,u,c,h=0;$t(Ht,i,(()=>0)),$t(Wt,i,(()=>[]));const[m,g,p,b,I]=((e=1,t)=>e>1&&t.isMergeable()?[1,t.getMergeableContent,t.getTransactionMergeableChanges,([[e],[t]])=>!oe(e)||!oe(t),t.setDefaultContent]:2!=e?[0,t.getContent,t.getTransactionChanges,([e,t])=>!oe(e)||!oe(t),t.setContent]:(e=>{throw Error("Store type not supported by this Persister")})())(r,e),f=t=>{(m&&E(t?.[0])?1===t?.[2]?e.applyMergeableChanges:e.setMergeableContent:1===t?.[2]?e.applyChanges:e.setContent)(t)},y=async e=>(2!=h&&(h=1,await k((async()=>{try{f(await t())}catch(t){e&&I(e)}h=0}))),S),w=()=>(u&&(n(u),u=void 0),S),C=async e=>(1!=h&&(h=2,await k((async()=>{try{await s(g,e)}catch(e){}h=0}))),S),v=()=>(M(c,e.delListener),c=void 0,S),k=async(...e)=>(G(Et(Wt,i),...e),await(async()=>{if(!Et(Ht,i)){for(Ot(Ht,i,1);!q(d=K(Et(Wt,i)));)try{await d()}catch(e){}Ot(Ht,i,0)}})(),S),S={load:y,startAutoLoad:async e=>(await w().load(e),u=l((async(e,t)=>{t||e?2!=h&&(h=1,f(t??e),h=0):await y()})),S),stopAutoLoad:w,isAutoLoading:()=>!q(u),save:C,startAutoSave:async()=>(await v().save(),c=e.addDidFinishTransactionListener((()=>{const e=p();b(e)&&C(e)})),S),stopAutoSave:v,isAutoSaving:()=>!q(c),schedule:k,getStore:()=>e,destroy:()=>w().stopAutoSave(),getStats:()=>({}),...o};return se(S)})(e,(async()=>{return e=s.getItem(t),JSON.parse(e,((e,t)=>"￼"===t?void 0:t));var e}),(async e=>{return s.setItem(t,(l=e(),JSON.stringify(l,((e,t)=>void 0===t?"￼":t))));var l}),(e=>{const l=l=>{if(l.storageArea===s&&l.key===t)try{e(ue(l.newValue))}catch{e()}};return Gt.addEventListener(Ut,l),l}),(e=>Gt.removeEventListener(Ut,e)),0,3,{getStorageName:()=>t});var t,s}),void 0,(async e=>{await e.load([{},{position:-1==n?1:n,open:!!t}]),await e.startAutoSave()})),A(J,null,A("aside",{id:ce},A(ze,{s:l}),A(St,{s:l})),A("style",null,Ee))}},"object"==typeof exports&&"undefined"!=typeof module?t(exports,require("react"),require("../ui-react/index.js")):"function"==typeof define&&define.amd?define(["exports","react","../ui-react"],t):t((e="undefined"!=typeof globalThis?globalThis:e||self).TinyBaseUiReactInspector={},e.React,e.TinyBaseUiReact);
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined'
+    ? factory(exports, require('react'), require('../ui-react/index.js'))
+    : typeof define === 'function' && define.amd
+      ? define(['exports', 'react', '../ui-react'], factory)
+      : ((global =
+          typeof globalThis !== 'undefined' ? globalThis : global || self),
+        factory(
+          (global.TinyBaseUiReactInspector = {}),
+          global.React,
+          global.TinyBaseUiReact,
+        ));
+})(this, function (exports, React, uiReact) {
+  'use strict';
+
+  const getTypeOf = (thing) => typeof thing;
+  const EMPTY_STRING = '';
+  const STRING = getTypeOf(EMPTY_STRING);
+  const BOOLEAN = getTypeOf(true);
+  const NUMBER = getTypeOf(0);
+  const FUNCTION = getTypeOf(getTypeOf);
+  const TYPE = 'type';
+  const DEFAULT = 'default';
+  const LISTENER = 'Listener';
+  const ADD = 'add';
+  const HAS = 'Has';
+  const IDS = 'Ids';
+  const TABLE = 'Table';
+  const TABLES = TABLE + 's';
+  const TABLE_IDS = TABLE + IDS;
+  const ROW = 'Row';
+  const ROW_COUNT = ROW + 'Count';
+  const ROW_IDS = ROW + IDS;
+  const CELL = 'Cell';
+  const CELL_IDS = CELL + IDS;
+  const VALUE = 'Value';
+  const VALUES = VALUE + 's';
+  const VALUE_IDS = VALUE + IDS;
+  const CURRENT_TARGET = 'currentTarget';
+  const _VALUE = 'value';
+  const UNDEFINED = '\uFFFC';
+  const id = (key) => EMPTY_STRING + key;
+
+  const mathFloor = Math.floor;
+  const isFiniteNumber = isFinite;
+  const isInstanceOf = (thing, cls) => thing instanceof cls;
+  const isUndefined = (thing) => thing == void 0;
+  const ifNotUndefined = (value, then, otherwise) =>
+    isUndefined(value) ? otherwise?.() : then(value);
+  const isTypeStringOrBoolean = (type) => type == STRING || type == BOOLEAN;
+  const isString = (thing) => getTypeOf(thing) == STRING;
+  const isFunction = (thing) => getTypeOf(thing) == FUNCTION;
+  const isArray = (thing) => Array.isArray(thing);
+  const slice = (arrayOrString, start, end) => arrayOrString.slice(start, end);
+  const size = (arrayOrString) => arrayOrString.length;
+  const test = (regex, subject) => regex.test(subject);
+  const errorNew = (message) => {
+    throw new Error(message);
+  };
+
+  const {
+    PureComponent,
+    Fragment,
+    createElement,
+    useCallback: useCallback$1,
+    useLayoutEffect,
+    useRef,
+    useState: useState$1,
+  } = React;
+  const getProps = (getProps2, ...ids) =>
+    isUndefined(getProps2) ? {} : getProps2(...ids);
+  const getRelationshipsStoreTableIds = (relationships, relationshipId) => [
+    relationships,
+    relationships?.getStore(),
+    relationships?.getLocalTableId(relationshipId),
+    relationships?.getRemoteTableId(relationshipId),
+  ];
+  const getIndexStoreTableId = (indexes, indexId) => [
+    indexes,
+    indexes?.getStore(),
+    indexes?.getTableId(indexId),
+  ];
+
+  const arrayHas = (array, value) => array.includes(value);
+  const arrayEvery = (array, cb) => array.every(cb);
+  const arrayIsEqual = (array1, array2) =>
+    size(array1) === size(array2) &&
+    arrayEvery(array1, (value1, index) => array2[index] === value1);
+  const arraySort = (array, sorter) => array.sort(sorter);
+  const arrayForEach = (array, cb) => array.forEach(cb);
+  const arrayJoin = (array, sep = EMPTY_STRING) => array.join(sep);
+  const arrayMap = (array, cb) => array.map(cb);
+  const arrayIsEmpty = (array) => size(array) == 0;
+  const arrayReduce = (array, cb, initial) => array.reduce(cb, initial);
+  const arrayPush = (array, ...values) => array.push(...values);
+  const arrayShift = (array) => array.shift();
+
+  const object = Object;
+  const getPrototypeOf = (obj) => object.getPrototypeOf(obj);
+  const objEntries = object.entries;
+  const objFrozen = object.isFrozen;
+  const isObject = (obj) =>
+    !isUndefined(obj) &&
+    ifNotUndefined(
+      getPrototypeOf(obj),
+      (objPrototype) =>
+        objPrototype == object.prototype ||
+        isUndefined(getPrototypeOf(objPrototype)),
+
+      /* istanbul ignore next */
+      () => true,
+    );
+  const objIds = object.keys;
+  const objFreeze = object.freeze;
+  const objNew = (entries = []) => object.fromEntries(entries);
+  const objHas = (obj, id) => id in obj;
+  const objDel = (obj, id) => {
+    delete obj[id];
+    return obj;
+  };
+  const objToArray = (obj, cb) =>
+    arrayMap(objEntries(obj), ([id, value]) => cb(value, id));
+  const objMap = (obj, cb) =>
+    objNew(objToArray(obj, (value, id) => [id, cb(value, id)]));
+  const objSize = (obj) => size(objIds(obj));
+  const objIsEmpty = (obj) => isObject(obj) && objSize(obj) == 0;
+  const objValidate = (obj, validateChild, onInvalidObj, emptyIsValid = 0) => {
+    if (
+      isUndefined(obj) ||
+      !isObject(obj) ||
+      (!emptyIsValid && objIsEmpty(obj)) ||
+      objFrozen(obj)
+    ) {
+      onInvalidObj?.();
+      return false;
+    }
+    objToArray(obj, (child, id) => {
+      if (!validateChild(child, id)) {
+        objDel(obj, id);
+      }
+    });
+    return emptyIsValid ? true : !objIsEmpty(obj);
+  };
+
+  const jsonStringWithMap = (obj) =>
+    JSON.stringify(obj, (_key, value) =>
+      isInstanceOf(value, Map) ? object.fromEntries([...value]) : value,
+    );
+  const jsonParse = JSON.parse;
+  const jsonStringWithUndefined = (obj) =>
+    JSON.stringify(obj, (_key, value) =>
+      value === void 0 ? UNDEFINED : value,
+    );
+  const jsonParseWithUndefined = (str) =>
+    JSON.parse(str, (_key, value) => (value === UNDEFINED ? void 0 : value));
+
+  const UNIQUE_ID = 'tinybaseInspector';
+  const TITLE = 'TinyBase Inspector';
+  const POSITIONS = ['left', 'top', 'bottom', 'right', 'full'];
+  const STATE_TABLE = 'state';
+  const SORT_CELL = 'sort';
+  const OPEN_CELL = 'open';
+  const POSITION_VALUE = 'position';
+  const OPEN_VALUE = OPEN_CELL;
+  const EDITABLE_CELL = 'editable';
+  const getUniqueId = (...args) => jsonStringWithMap(args);
+  const sortedIdsMap = (ids, callback) => arrayMap(arraySort(ids), callback);
+  const useEditable = (uniqueId, s) => [
+    !!uiReact.useCell(STATE_TABLE, uniqueId, EDITABLE_CELL, s),
+    useCallback$1(
+      (event) => {
+        s.setCell(
+          STATE_TABLE,
+          uniqueId,
+          EDITABLE_CELL,
+          (editable) => !editable,
+        );
+        event.preventDefault();
+      },
+      [s, uniqueId],
+    ),
+  ];
+
+  var img =
+    "data:image/svg+xml,%3csvg viewBox='0 0 680 680' xmlns='http://www.w3.org/2000/svg' style='width:680px%3bheight:680px'%3e %3cpath stroke='white' stroke-width='80' fill='none' d='M340 617a84 241 90 11.01 0zM131 475a94 254 70 10428-124 114 286 70 01-428 124zm0-140a94 254 70 10428-124 114 286 70 01-428 124zm-12-127a94 254 70 00306 38 90 260 90 01-306-38zm221 3a74 241 90 11.01 0z' /%3e %3cpath fill='%23d81b60' d='M131 475a94 254 70 10428-124 114 286 70 01-428 124zm0-140a94 254 70 10428-124 114 286 70 01-428 124z' /%3e %3cpath d='M249 619a94 240 90 00308-128 114 289 70 01-308 128zM119 208a94 254 70 00306 38 90 260 90 01-306-38zm221 3a74 241 90 11.01 0z' /%3e%3c/svg%3e";
+
+  const PENCIL = 'M20 80l5-15l40-40l10 10l-40 40l-15 5m5-15l10 10';
+  const PRE_CSS = 'content:url("';
+  const POST_CSS = '")';
+  const PRE =
+    PRE_CSS +
+    `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' stroke-width='4' stroke='white' fill='none'>`;
+  const POST = `</svg>` + POST_CSS;
+  const LOGO_SVG = PRE_CSS + img + POST_CSS;
+  const POSITIONS_SVG = arrayMap(
+    [
+      [20, 20, 20, 60],
+      [20, 20, 60, 20],
+      [20, 60, 60, 20],
+      [60, 20, 20, 60],
+      [30, 30, 40, 40],
+    ],
+    ([x, y, w, h]) =>
+      PRE +
+      `<rect x='20' y='20' width='60' height='60' fill='grey'/><rect x='${x}' y='${y}' width='${w}' height='${h}' fill='white'/>` +
+      POST,
+  );
+  const CLOSE_SVG = PRE + `<path d='M20 20l60 60M20 80l60-60' />` + POST;
+  const EDIT_SVG = PRE + `<path d='${PENCIL}' />` + POST;
+  const DONE_SVG = PRE + `<path d='${PENCIL}M20 20l60 60' />` + POST;
+
+  const SCROLLBAR = '*::-webkit-scrollbar';
+  const APP_STYLESHEET = arrayJoin(
+    objToArray(
+      {
+        '': 'all:initial;font-family:sans-serif;font-size:0.75rem;position:fixed;z-index:999999',
+        '*': 'all:revert',
+        '*::before': 'all:revert',
+        '*::after': 'all:revert',
+        [SCROLLBAR]: 'width:0.5rem;height:0.5rem;',
+        [SCROLLBAR + '-track']: 'background:#111',
+        [SCROLLBAR + '-thumb']: 'background:#999;border:1px solid #111',
+        [SCROLLBAR + '-thumb:hover']: 'background:#fff',
+        [SCROLLBAR + '-corner']: 'background:#111',
+        img: 'width:1rem;height:1rem;background:#111;border:0;vertical-align:text-bottom',
+        // Nub
+        '>img': 'padding:0.25rem;bottom:0;right:0;position:fixed;' + LOGO_SVG,
+        ...objNew(
+          arrayMap(['bottom:0;left:0', 'top:0;right:0'], (css, p) => [
+            `>img[data-position='${p}']`,
+            css,
+          ]),
+        ),
+        // Panel
+        main: 'display:flex;flex-direction:column;background:#111d;color:#fff;position:fixed;',
+        ...objNew(
+          arrayMap(
+            [
+              'bottom:0;left:0;width:35vw;height:100vh',
+              'top:0;right:0;width:100vw;height:30vh',
+              'bottom:0;left:0;width:100vw;height:30vh',
+              'top:0;right:0;width:35vw;height:100vh',
+              'top:0;right:0;width:100vw;height:100vh',
+            ],
+            (css, p) => [`main[data-position='${p}']`, css],
+          ),
+        ),
+        // Header
+        header:
+          'display:flex;padding:0.25rem;background:#000;align-items:center',
+        'header>img:nth-of-type(1)': LOGO_SVG,
+        'header>img:nth-of-type(6)': CLOSE_SVG,
+        ...objNew(
+          arrayMap(POSITIONS_SVG, (SVG, p) => [
+            `header>img[data-id='${p}']`,
+            SVG,
+          ]),
+        ),
+        'header>span':
+          'flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-left:0.25rem',
+        // Body
+        article: 'padding:0.25rem 0.25rem 0.25rem 0.5rem;overflow:auto;flex:1',
+        details: 'margin-left:0.75rem;width:fit-content;',
+        'details img': 'display:none',
+        'details[open]>summary img':
+          'display:unset;background:none;margin-left:0.25rem',
+        'details[open]>summary img.edit': EDIT_SVG,
+        'details[open]>summary img.done': DONE_SVG,
+        summary:
+          'margin-left:-0.75rem;line-height:1.25rem;user-select:none;width:fit-content',
+        // tables
+        table:
+          'border-collapse:collapse;table-layout:fixed;margin-bottom:0.5rem',
+        'table input':
+          'background:#111;color:unset;padding:0 0.25rem;border:0;font-size:unset;vertical-align:top;margin:0',
+        'table input[type="number"]': 'width:4rem',
+        'table tbody button':
+          'font-size:0;background:#fff;border-radius:50%;margin:0 0.125rem 0 0;width:0.85rem;color:#111',
+        'table button:first-letter': 'font-size:0.75rem',
+        thead: 'background:#222',
+        'th:nth-of-type(1)': 'min-width:2rem;',
+        'th.sorted': 'background:#000',
+        'table caption':
+          'text-align:left;white-space:nowrap;line-height:1.25rem',
+        button: 'width:1.5rem;border:none;background:none;color:#fff;padding:0',
+        'button[disabled]': 'color:#777',
+        'button.next': 'margin-right:0.5rem',
+        [`th,#${UNIQUE_ID} td`]:
+          'overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:12rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left',
+        'span.warn': 'margin:0.25rem;color:#d81b60',
+      },
+      (style, selector) => (style ? `#${UNIQUE_ID} ${selector}{${style}}` : ''),
+    ),
+  );
+
+  const Nub = ({s}) => {
+    const position = uiReact.useValue(POSITION_VALUE, s) ?? 1;
+    const handleOpen = uiReact.useSetValueCallback(
+      OPEN_VALUE,
+      () => true,
+      [],
+      s,
+    );
+    return uiReact.useValue(OPEN_VALUE, s)
+      ? null
+      : /* @__PURE__ */ createElement('img', {
+          onClick: handleOpen,
+          title: TITLE,
+          'data-position': position,
+        });
+  };
+
+  const Details = ({
+    uniqueId,
+    summary,
+    editable,
+    handleEditable,
+    children,
+    s,
+  }) => {
+    const open = !!uiReact.useCell(STATE_TABLE, uniqueId, OPEN_CELL, s);
+    const handleToggle = uiReact.useSetCellCallback(
+      STATE_TABLE,
+      uniqueId,
+      OPEN_CELL,
+      (event) => event[CURRENT_TARGET].open,
+      [],
+      s,
+    );
+    return /* @__PURE__ */ createElement(
+      'details',
+      {open, onToggle: handleToggle},
+      /* @__PURE__ */ createElement(
+        'summary',
+        null,
+        summary,
+        handleEditable
+          ? /* @__PURE__ */ createElement('img', {
+              onClick: handleEditable,
+              className: editable ? 'done' : 'edit',
+            })
+          : null,
+      ),
+      children,
+    );
+  };
+
+  const getCellOrValueType = (cellOrValue) => {
+    const type = getTypeOf(cellOrValue);
+    return isTypeStringOrBoolean(type) ||
+      (type == NUMBER && isFiniteNumber(cellOrValue))
+      ? type
+      : void 0;
+  };
+  const setOrDelCell = (store, tableId, rowId, cellId, cell) =>
+    isUndefined(cell)
+      ? store.delCell(tableId, rowId, cellId, true)
+      : store.setCell(tableId, rowId, cellId, cell);
+  const setOrDelValue = (store, valueId, value) =>
+    isUndefined(value)
+      ? store.delValue(valueId)
+      : store.setValue(valueId, value);
+  const getTypeCase = (type, stringCase, numberCase, booleanCase) =>
+    type == STRING ? stringCase : type == NUMBER ? numberCase : booleanCase;
+
+  const {useCallback, useMemo, useState} = React;
+  const DOT = '.';
+  const EDITABLE = 'editable';
+  const LEFT_ARROW = '\u2190';
+  const UP_ARROW = '\u2191';
+  const RIGHT_ARROW = '\u2192';
+  const DOWN_ARROW = '\u2193';
+  const useDottedCellIds = (tableId, store) =>
+    arrayMap(
+      uiReact.useTableCellIds(tableId, store),
+      (cellId) => tableId + DOT + cellId,
+    );
+  const useCallbackOrUndefined = (callback, deps, test) => {
+    const returnCallback = useCallback(callback, deps);
+    return test ? returnCallback : void 0;
+  };
+  const useParams = (...args) =>
+    useMemo(
+      () => args,
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      args,
+    );
+  const useStoreCellComponentProps = (store, tableId) =>
+    useMemo(() => ({store, tableId}), [store, tableId]);
+  const useQueriesCellComponentProps = (queries, queryId) =>
+    useMemo(() => ({queries, queryId}), [queries, queryId]);
+  const useSortingAndPagination = (
+    cellId,
+    descending = false,
+    sortOnClick,
+    offset = 0,
+    limit,
+    total,
+    paginator,
+    onChange,
+  ) => {
+    const [[currentCellId, currentDescending, currentOffset], setState] =
+      useState([cellId, descending, offset]);
+    const setStateAndChange = useCallback(
+      (sortAndOffset) => {
+        setState(sortAndOffset);
+        onChange?.(sortAndOffset);
+      },
+      [onChange],
+    );
+    const handleSort = useCallbackOrUndefined(
+      (cellId2) =>
+        setStateAndChange([
+          cellId2,
+          cellId2 == currentCellId ? !currentDescending : false,
+          currentOffset,
+        ]),
+      [setStateAndChange, currentCellId, currentDescending, currentOffset],
+      sortOnClick,
+    );
+    const handleChangeOffset = useCallback(
+      (offset2) =>
+        setStateAndChange([currentCellId, currentDescending, offset2]),
+      [setStateAndChange, currentCellId, currentDescending],
+    );
+    const PaginatorComponent =
+      paginator === true ? SortedTablePaginator : paginator;
+    return [
+      [currentCellId, currentDescending, currentOffset],
+      handleSort,
+      useMemo(
+        () =>
+          paginator === false
+            ? null
+            : /* @__PURE__ */ createElement(PaginatorComponent, {
+                offset: currentOffset,
+                limit,
+                total,
+                onChange: handleChangeOffset,
+              }),
+        [
+          paginator,
+          PaginatorComponent,
+          currentOffset,
+          limit,
+          total,
+          handleChangeOffset,
+        ],
+      ),
+    ];
+  };
+  const useCells = (defaultCellIds, customCells, defaultCellComponent) =>
+    useMemo(() => {
+      const cellIds = customCells ?? defaultCellIds;
+      return objMap(
+        isArray(cellIds)
+          ? objNew(arrayMap(cellIds, (cellId) => [cellId, cellId]))
+          : cellIds,
+        (labelOrCustomCell, cellId) => ({
+          ...{label: cellId, component: defaultCellComponent},
+          ...(isString(labelOrCustomCell)
+            ? {label: labelOrCustomCell}
+            : labelOrCustomCell),
+        }),
+      );
+    }, [customCells, defaultCellComponent, defaultCellIds]);
+  const HtmlTable = ({
+    className,
+    headerRow,
+    idColumn,
+    params: [
+      cells,
+      cellComponentProps,
+      rowIds,
+      sortAndOffset,
+      handleSort,
+      paginatorComponent,
+    ],
+  }) =>
+    /* @__PURE__ */ createElement(
+      'table',
+      {className},
+      paginatorComponent
+        ? /* @__PURE__ */ createElement('caption', null, paginatorComponent)
+        : null,
+      headerRow === false
+        ? null
+        : /* @__PURE__ */ createElement(
+            'thead',
+            null,
+            /* @__PURE__ */ createElement(
+              'tr',
+              null,
+              idColumn === false
+                ? null
+                : /* @__PURE__ */ createElement(HtmlHeaderCell, {
+                    sort: sortAndOffset ?? [],
+                    label: 'Id',
+                    onClick: handleSort,
+                  }),
+              objToArray(cells, ({label}, cellId) =>
+                /* @__PURE__ */ createElement(HtmlHeaderCell, {
+                  key: cellId,
+                  cellId,
+                  label,
+                  sort: sortAndOffset ?? [],
+                  onClick: handleSort,
+                }),
+              ),
+            ),
+          ),
+      /* @__PURE__ */ createElement(
+        'tbody',
+        null,
+        arrayMap(rowIds, (rowId) =>
+          /* @__PURE__ */ createElement(
+            'tr',
+            {key: rowId},
+            idColumn === false
+              ? null
+              : /* @__PURE__ */ createElement('th', null, rowId),
+            objToArray(
+              cells,
+              ({component: CellView2, getComponentProps}, cellId) =>
+                /* @__PURE__ */ createElement(
+                  'td',
+                  {key: cellId},
+                  /* @__PURE__ */ createElement(CellView2, {
+                    ...getProps(getComponentProps, rowId, cellId),
+                    ...cellComponentProps,
+                    rowId,
+                    cellId,
+                  }),
+                ),
+            ),
+          ),
+        ),
+      ),
+    );
+  const HtmlHeaderCell = ({
+    cellId,
+    sort: [sortCellId, sortDescending],
+    label = cellId ?? EMPTY_STRING,
+    onClick,
+  }) =>
+    /* @__PURE__ */ createElement(
+      'th',
+      {
+        onClick: useCallbackOrUndefined(
+          () => onClick?.(cellId),
+          [onClick, cellId],
+          onClick,
+        ),
+        className:
+          isUndefined(sortDescending) || sortCellId != cellId
+            ? void 0
+            : `sorted ${sortDescending ? 'de' : 'a'}scending`,
+      },
+      isUndefined(sortDescending) || sortCellId != cellId
+        ? null
+        : (sortDescending ? DOWN_ARROW : UP_ARROW) + ' ',
+      label,
+    );
+  const RelationshipInHtmlRow = ({
+    localRowId,
+    params: [
+      idColumn,
+      cells,
+      localTableId,
+      remoteTableId,
+      relationshipId,
+      relationships,
+      store,
+    ],
+  }) => {
+    const remoteRowId = uiReact.useRemoteRowId(
+      relationshipId,
+      localRowId,
+      relationships,
+    );
+    return /* @__PURE__ */ createElement(
+      'tr',
+      null,
+      idColumn === false
+        ? null
+        : /* @__PURE__ */ createElement(
+            React.Fragment,
+            null,
+            /* @__PURE__ */ createElement('th', null, localRowId),
+            /* @__PURE__ */ createElement('th', null, remoteRowId),
+          ),
+      objToArray(
+        cells,
+        ({component: CellView2, getComponentProps}, compoundCellId) => {
+          const [tableId, cellId] = compoundCellId.split(DOT, 2);
+          const rowId =
+            tableId === localTableId
+              ? localRowId
+              : tableId === remoteTableId
+                ? remoteRowId
+                : null;
+          return isUndefined(rowId)
+            ? null
+            : /* @__PURE__ */ createElement(
+                'td',
+                {key: compoundCellId},
+                /* @__PURE__ */ createElement(CellView2, {
+                  ...getProps(getComponentProps, rowId, cellId),
+                  store,
+                  tableId,
+                  rowId,
+                  cellId,
+                }),
+              );
+        },
+      ),
+    );
+  };
+  const EditableThing = ({
+    thing,
+    onThingChange,
+    className,
+    hasSchema,
+    showType = true,
+  }) => {
+    const [thingType, setThingType] = useState();
+    const [currentThing, setCurrentThing] = useState();
+    const [stringThing, setStringThing] = useState();
+    const [numberThing, setNumberThing] = useState();
+    const [booleanThing, setBooleanThing] = useState();
+    if (currentThing !== thing) {
+      setThingType(getCellOrValueType(thing));
+      setCurrentThing(thing);
+      setStringThing(String(thing));
+      setNumberThing(Number(thing) || 0);
+      setBooleanThing(Boolean(thing));
+    }
+    const handleThingChange = useCallback(
+      (thing2, setTypedThing) => {
+        setTypedThing(thing2);
+        setCurrentThing(thing2);
+        onThingChange(thing2);
+      },
+      [onThingChange],
+    );
+    const handleTypeChange = useCallback(() => {
+      if (!hasSchema?.()) {
+        const nextType = getTypeCase(thingType, NUMBER, BOOLEAN, STRING);
+        const thing2 = getTypeCase(
+          nextType,
+          stringThing,
+          numberThing,
+          booleanThing,
+        );
+        setThingType(nextType);
+        setCurrentThing(thing2);
+        onThingChange(thing2);
+      }
+    }, [
+      hasSchema,
+      onThingChange,
+      stringThing,
+      numberThing,
+      booleanThing,
+      thingType,
+    ]);
+    return /* @__PURE__ */ createElement(
+      'div',
+      {className},
+      showType
+        ? /* @__PURE__ */ createElement(
+            'button',
+            {className: thingType, onClick: handleTypeChange},
+            thingType,
+          )
+        : null,
+      getTypeCase(
+        thingType,
+        /* @__PURE__ */ createElement('input', {
+          key: thingType,
+          value: stringThing,
+          onChange: useCallback(
+            (event) =>
+              handleThingChange(
+                String(event[CURRENT_TARGET][_VALUE]),
+                setStringThing,
+              ),
+            [handleThingChange],
+          ),
+        }),
+        /* @__PURE__ */ createElement('input', {
+          key: thingType,
+          type: 'number',
+          value: numberThing,
+          onChange: useCallback(
+            (event) =>
+              handleThingChange(
+                Number(event[CURRENT_TARGET][_VALUE] || 0),
+                setNumberThing,
+              ),
+            [handleThingChange],
+          ),
+        }),
+        /* @__PURE__ */ createElement('input', {
+          key: thingType,
+          type: 'checkbox',
+          checked: booleanThing,
+          onChange: useCallback(
+            (event) =>
+              handleThingChange(
+                Boolean(event[CURRENT_TARGET].checked),
+                setBooleanThing,
+              ),
+            [handleThingChange],
+          ),
+        }),
+      ),
+    );
+  };
+  const SortedTableInHtmlTable = ({
+    tableId,
+    cellId,
+    descending,
+    offset,
+    limit,
+    store,
+    editable,
+    sortOnClick,
+    paginator = false,
+    onChange,
+    customCells,
+    ...props
+  }) => {
+    const [sortAndOffset, handleSort, paginatorComponent] =
+      useSortingAndPagination(
+        cellId,
+        descending,
+        sortOnClick,
+        offset,
+        limit,
+        uiReact.useRowCount(tableId, store),
+        paginator,
+        onChange,
+      );
+    return /* @__PURE__ */ createElement(HtmlTable, {
+      ...props,
+      params: useParams(
+        useCells(
+          uiReact.useTableCellIds(tableId, store),
+          customCells,
+          editable ? EditableCellView : uiReact.CellView,
+        ),
+        useStoreCellComponentProps(store, tableId),
+        uiReact.useSortedRowIds(tableId, ...sortAndOffset, limit, store),
+        sortAndOffset,
+        handleSort,
+        paginatorComponent,
+      ),
+    });
+  };
+  const ValuesInHtmlTable = ({
+    store,
+    editable = false,
+    valueComponent: Value = editable ? EditableValueView : uiReact.ValueView,
+    getValueComponentProps,
+    className,
+    headerRow,
+    idColumn,
+  }) =>
+    /* @__PURE__ */ createElement(
+      'table',
+      {className},
+      headerRow === false
+        ? null
+        : /* @__PURE__ */ createElement(
+            'thead',
+            null,
+            /* @__PURE__ */ createElement(
+              'tr',
+              null,
+              idColumn === false
+                ? null
+                : /* @__PURE__ */ createElement('th', null, 'Id'),
+              /* @__PURE__ */ createElement('th', null, VALUE),
+            ),
+          ),
+      /* @__PURE__ */ createElement(
+        'tbody',
+        null,
+        arrayMap(uiReact.useValueIds(store), (valueId) =>
+          /* @__PURE__ */ createElement(
+            'tr',
+            {key: valueId},
+            idColumn === false
+              ? null
+              : /* @__PURE__ */ createElement('th', null, valueId),
+            /* @__PURE__ */ createElement(
+              'td',
+              null,
+              /* @__PURE__ */ createElement(Value, {
+                ...getProps(getValueComponentProps, valueId),
+                valueId,
+                store,
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  const SliceInHtmlTable = ({
+    indexId,
+    sliceId,
+    indexes,
+    editable,
+    customCells,
+    ...props
+  }) => {
+    const [resolvedIndexes, store, tableId] = getIndexStoreTableId(
+      uiReact.useIndexesOrIndexesById(indexes),
+      indexId,
+    );
+    return /* @__PURE__ */ createElement(HtmlTable, {
+      ...props,
+      params: useParams(
+        useCells(
+          uiReact.useTableCellIds(tableId, store),
+          customCells,
+          editable ? EditableCellView : uiReact.CellView,
+        ),
+        useStoreCellComponentProps(store, tableId),
+        uiReact.useSliceRowIds(indexId, sliceId, resolvedIndexes),
+      ),
+    });
+  };
+  const RelationshipInHtmlTable = ({
+    relationshipId,
+    relationships,
+    editable,
+    customCells,
+    className,
+    headerRow,
+    idColumn = true,
+  }) => {
+    const [resolvedRelationships, store, localTableId, remoteTableId] =
+      getRelationshipsStoreTableIds(
+        uiReact.useRelationshipsOrRelationshipsById(relationships),
+        relationshipId,
+      );
+    const cells = useCells(
+      [
+        ...useDottedCellIds(localTableId, store),
+        ...useDottedCellIds(remoteTableId, store),
+      ],
+      customCells,
+      editable ? EditableCellView : uiReact.CellView,
+    );
+    const params = useParams(
+      idColumn,
+      cells,
+      localTableId,
+      remoteTableId,
+      relationshipId,
+      resolvedRelationships,
+      store,
+    );
+    return /* @__PURE__ */ createElement(
+      'table',
+      {className},
+      headerRow === false
+        ? null
+        : /* @__PURE__ */ createElement(
+            'thead',
+            null,
+            /* @__PURE__ */ createElement(
+              'tr',
+              null,
+              idColumn === false
+                ? null
+                : /* @__PURE__ */ createElement(
+                    React.Fragment,
+                    null,
+                    /* @__PURE__ */ createElement(
+                      'th',
+                      null,
+                      localTableId,
+                      '.Id',
+                    ),
+                    /* @__PURE__ */ createElement(
+                      'th',
+                      null,
+                      remoteTableId,
+                      '.Id',
+                    ),
+                  ),
+              objToArray(cells, ({label}, cellId) =>
+                /* @__PURE__ */ createElement('th', {key: cellId}, label),
+              ),
+            ),
+          ),
+      /* @__PURE__ */ createElement(
+        'tbody',
+        null,
+        arrayMap(uiReact.useRowIds(localTableId, store), (localRowId) =>
+          /* @__PURE__ */ createElement(RelationshipInHtmlRow, {
+            key: localRowId,
+            localRowId,
+            params,
+          }),
+        ),
+      ),
+    );
+  };
+  const ResultSortedTableInHtmlTable = ({
+    queryId,
+    cellId,
+    descending,
+    offset,
+    limit,
+    queries,
+    sortOnClick,
+    paginator = false,
+    customCells,
+    onChange,
+    ...props
+  }) => {
+    const [sortAndOffset, handleSort, paginatorComponent] =
+      useSortingAndPagination(
+        cellId,
+        descending,
+        sortOnClick,
+        offset,
+        limit,
+        uiReact.useResultRowCount(queryId, queries),
+        paginator,
+        onChange,
+      );
+    return /* @__PURE__ */ createElement(HtmlTable, {
+      ...props,
+      params: useParams(
+        useCells(
+          uiReact.useResultTableCellIds(queryId, queries),
+          customCells,
+          uiReact.ResultCellView,
+        ),
+        useQueriesCellComponentProps(queries, queryId),
+        uiReact.useResultSortedRowIds(
+          queryId,
+          ...sortAndOffset,
+          limit,
+          queries,
+        ),
+        sortAndOffset,
+        handleSort,
+        paginatorComponent,
+      ),
+    });
+  };
+  const EditableCellView = ({
+    tableId,
+    rowId,
+    cellId,
+    store,
+    className,
+    showType,
+  }) =>
+    /* @__PURE__ */ createElement(EditableThing, {
+      thing: uiReact.useCell(tableId, rowId, cellId, store),
+      onThingChange: uiReact.useSetCellCallback(
+        tableId,
+        rowId,
+        cellId,
+        (cell) => cell,
+        [],
+        store,
+      ),
+      className: className ?? EDITABLE + CELL,
+      showType,
+      hasSchema: uiReact.useStoreOrStoreById(store)?.hasTablesSchema,
+    });
+  const EditableValueView = ({valueId, store, className, showType}) =>
+    /* @__PURE__ */ createElement(EditableThing, {
+      thing: uiReact.useValue(valueId, store),
+      onThingChange: uiReact.useSetValueCallback(
+        valueId,
+        (value) => value,
+        [],
+        store,
+      ),
+      className: className ?? EDITABLE + VALUE,
+      showType,
+      hasSchema: uiReact.useStoreOrStoreById(store)?.hasValuesSchema,
+    });
+  const SortedTablePaginator = ({
+    onChange,
+    total,
+    offset = 0,
+    limit = total,
+    singular = 'row',
+    plural = singular + 's',
+  }) => {
+    if (offset > total || offset < 0) {
+      offset = 0;
+      onChange(0);
+    }
+    const handlePrevClick = useCallbackOrUndefined(
+      () => onChange(offset - limit),
+      [onChange, offset, limit],
+      offset > 0,
+    );
+    const handleNextClick = useCallbackOrUndefined(
+      () => onChange(offset + limit),
+      [onChange, offset, limit],
+      offset + limit < total,
+    );
+    return /* @__PURE__ */ createElement(
+      React.Fragment,
+      null,
+      total > limit &&
+        /* @__PURE__ */ createElement(
+          React.Fragment,
+          null,
+          /* @__PURE__ */ createElement(
+            'button',
+            {
+              className: 'previous',
+              disabled: offset == 0,
+              onClick: handlePrevClick,
+            },
+            LEFT_ARROW,
+          ),
+          /* @__PURE__ */ createElement(
+            'button',
+            {
+              className: 'next',
+              disabled: offset + limit >= total,
+              onClick: handleNextClick,
+            },
+            RIGHT_ARROW,
+          ),
+          offset + 1,
+          ' to ',
+          Math.min(total, offset + limit),
+          ' of ',
+        ),
+      total,
+      ' ',
+      total != 1 ? plural : singular,
+    );
+  };
+
+  const IndexView = ({indexes, indexesId, indexId, s}) =>
+    /* @__PURE__ */ createElement(
+      Details,
+      {
+        uniqueId: getUniqueId('i', indexesId, indexId),
+        summary: 'Index: ' + indexId,
+        s,
+      },
+      arrayMap(uiReact.useSliceIds(indexId, indexes), (sliceId) =>
+        /* @__PURE__ */ createElement(SliceView, {
+          indexes,
+          indexesId,
+          indexId,
+          sliceId,
+          s,
+          key: sliceId,
+        }),
+      ),
+    );
+  const SliceView = ({indexes, indexesId, indexId, sliceId, s}) => {
+    const uniqueId = getUniqueId('i', indexesId, indexId, sliceId);
+    const [editable, handleEditable] = useEditable(uniqueId, s);
+    return /* @__PURE__ */ createElement(
+      Details,
+      {
+        uniqueId,
+        summary: 'Slice: ' + sliceId,
+        editable,
+        handleEditable,
+        s,
+      },
+      /* @__PURE__ */ createElement(SliceInHtmlTable, {
+        sliceId,
+        indexId,
+        indexes,
+        editable,
+      }),
+    );
+  };
+  const IndexesView = ({indexesId, s}) => {
+    const indexes = uiReact.useIndexes(indexesId);
+    const indexIds = uiReact.useIndexIds(indexes);
+    return isUndefined(indexes)
+      ? null
+      : /* @__PURE__ */ createElement(
+          Details,
+          {
+            uniqueId: getUniqueId('i', indexesId),
+            summary: 'Indexes: ' + (indexesId ?? DEFAULT),
+            s,
+          },
+          arrayIsEmpty(indexIds)
+            ? 'No indexes defined'
+            : sortedIdsMap(indexIds, (indexId) =>
+                /* @__PURE__ */ createElement(IndexView, {
+                  indexes,
+                  indexesId,
+                  indexId,
+                  s,
+                  key: indexId,
+                }),
+              ),
+        );
+  };
+
+  const MetricRow = ({metrics, metricId}) =>
+    /* @__PURE__ */ createElement(
+      'tr',
+      null,
+      /* @__PURE__ */ createElement('th', null, metricId),
+      /* @__PURE__ */ createElement('td', null, metrics?.getTableId(metricId)),
+      /* @__PURE__ */ createElement(
+        'td',
+        null,
+        uiReact.useMetric(metricId, metrics),
+      ),
+    );
+  const MetricsView = ({metricsId, s}) => {
+    const metrics = uiReact.useMetrics(metricsId);
+    const metricIds = uiReact.useMetricIds(metrics);
+    return isUndefined(metrics)
+      ? null
+      : /* @__PURE__ */ createElement(
+          Details,
+          {
+            uniqueId: getUniqueId('m', metricsId),
+            summary: 'Metrics: ' + (metricsId ?? DEFAULT),
+            s,
+          },
+          arrayIsEmpty(metricIds)
+            ? 'No metrics defined'
+            : /* @__PURE__ */ createElement(
+                'table',
+                null,
+                /* @__PURE__ */ createElement(
+                  'thead',
+                  null,
+                  /* @__PURE__ */ createElement('th', null, 'Metric Id'),
+                  /* @__PURE__ */ createElement('th', null, 'Table Id'),
+                  /* @__PURE__ */ createElement('th', null, 'Metric'),
+                ),
+                /* @__PURE__ */ createElement(
+                  'tbody',
+                  null,
+                  arrayMap(metricIds, (metricId) =>
+                    /* @__PURE__ */ createElement(MetricRow, {
+                      metrics,
+                      metricId,
+                      key: metricId,
+                    }),
+                  ),
+                ),
+              ),
+        );
+  };
+
+  const QueryView = ({queries, queriesId, queryId, s}) => {
+    const uniqueId = getUniqueId('q', queriesId, queryId);
+    const [cellId, descending, offset] = jsonParse(
+      uiReact.useCell(STATE_TABLE, uniqueId, SORT_CELL, s) ?? '[]',
+    );
+    const handleChange = uiReact.useSetCellCallback(
+      STATE_TABLE,
+      uniqueId,
+      SORT_CELL,
+      jsonStringWithMap,
+      [],
+      s,
+    );
+    return /* @__PURE__ */ createElement(
+      Details,
+      {uniqueId, summary: 'Query: ' + queryId, s},
+      /* @__PURE__ */ createElement(ResultSortedTableInHtmlTable, {
+        queryId,
+        queries,
+        cellId,
+        descending,
+        offset,
+        limit: 10,
+        paginator: true,
+        sortOnClick: true,
+        onChange: handleChange,
+      }),
+    );
+  };
+  const QueriesView = ({queriesId, s}) => {
+    const queries = uiReact.useQueries(queriesId);
+    const queryIds = uiReact.useQueryIds(queries);
+    return isUndefined(queries)
+      ? null
+      : /* @__PURE__ */ createElement(
+          Details,
+          {
+            uniqueId: getUniqueId('q', queriesId),
+            summary: 'Queries: ' + (queriesId ?? DEFAULT),
+            s,
+          },
+          arrayIsEmpty(queryIds)
+            ? 'No queries defined'
+            : sortedIdsMap(queryIds, (queryId) =>
+                /* @__PURE__ */ createElement(QueryView, {
+                  queries,
+                  queriesId,
+                  queryId,
+                  s,
+                  key: queryId,
+                }),
+              ),
+        );
+  };
+
+  const RelationshipView = ({
+    relationships,
+    relationshipsId,
+    relationshipId,
+    s,
+  }) => {
+    const uniqueId = getUniqueId('r', relationshipsId, relationshipId);
+    const [editable, handleEditable] = useEditable(uniqueId, s);
+    return /* @__PURE__ */ createElement(
+      Details,
+      {
+        uniqueId,
+        summary: 'Relationship: ' + relationshipId,
+        editable,
+        handleEditable,
+        s,
+      },
+      /* @__PURE__ */ createElement(RelationshipInHtmlTable, {
+        relationshipId,
+        relationships,
+        editable,
+      }),
+    );
+  };
+  const RelationshipsView = ({relationshipsId, s}) => {
+    const relationships = uiReact.useRelationships(relationshipsId);
+    const relationshipIds = uiReact.useRelationshipIds(relationships);
+    return isUndefined(relationships)
+      ? null
+      : /* @__PURE__ */ createElement(
+          Details,
+          {
+            uniqueId: getUniqueId('r', relationshipsId),
+            summary: 'Relationships: ' + (relationshipsId ?? DEFAULT),
+            s,
+          },
+          arrayIsEmpty(relationshipIds)
+            ? 'No relationships defined'
+            : sortedIdsMap(relationshipIds, (relationshipId) =>
+                /* @__PURE__ */ createElement(RelationshipView, {
+                  relationships,
+                  relationshipsId,
+                  relationshipId,
+                  s,
+                  key: relationshipId,
+                }),
+              ),
+        );
+  };
+
+  const TableView = ({tableId, store, storeId, s}) => {
+    const uniqueId = getUniqueId('t', storeId, tableId);
+    const [cellId, descending, offset] = jsonParse(
+      uiReact.useCell(STATE_TABLE, uniqueId, SORT_CELL, s) ?? '[]',
+    );
+    const handleChange = uiReact.useSetCellCallback(
+      STATE_TABLE,
+      uniqueId,
+      SORT_CELL,
+      jsonStringWithMap,
+      [],
+      s,
+    );
+    const [editable, handleEditable] = useEditable(uniqueId, s);
+    return /* @__PURE__ */ createElement(
+      Details,
+      {
+        uniqueId,
+        summary: TABLE + ': ' + tableId,
+        editable,
+        handleEditable,
+        s,
+      },
+      /* @__PURE__ */ createElement(SortedTableInHtmlTable, {
+        tableId,
+        store,
+        cellId,
+        descending,
+        offset,
+        limit: 10,
+        paginator: true,
+        sortOnClick: true,
+        onChange: handleChange,
+        editable,
+      }),
+    );
+  };
+  const ValuesView = ({store, storeId, s}) => {
+    const uniqueId = getUniqueId('v', storeId);
+    const [editable, handleEditable] = useEditable(uniqueId, s);
+    return arrayIsEmpty(uiReact.useValueIds(store))
+      ? null
+      : /* @__PURE__ */ createElement(
+          Details,
+          {
+            uniqueId,
+            summary: VALUES,
+            editable,
+            handleEditable,
+            s,
+          },
+          /* @__PURE__ */ createElement(ValuesInHtmlTable, {store, editable}),
+        );
+  };
+  const StoreView = ({storeId, s}) => {
+    const store = uiReact.useStore(storeId);
+    const tableIds = uiReact.useTableIds(store);
+    return isUndefined(store)
+      ? null
+      : /* @__PURE__ */ createElement(
+          Details,
+          {
+            uniqueId: getUniqueId('s', storeId),
+            summary:
+              (store.isMergeable() ? 'Mergeable' : '') +
+              'Store: ' +
+              (storeId ?? DEFAULT),
+            s,
+          },
+          /* @__PURE__ */ createElement(ValuesView, {storeId, store, s}),
+          sortedIdsMap(tableIds, (tableId) =>
+            /* @__PURE__ */ createElement(TableView, {
+              store,
+              storeId,
+              tableId,
+              s,
+              key: tableId,
+            }),
+          ),
+        );
+  };
+
+  const Body = ({s}) => {
+    const articleRef = useRef(null);
+    const idleCallbackRef = useRef(0);
+    const [scrolled, setScrolled] = useState$1(false);
+    const {scrollLeft, scrollTop} = uiReact.useValues(s);
+    useLayoutEffect(() => {
+      const article = articleRef.current;
+      if (article && !scrolled) {
+        const observer = new MutationObserver(() => {
+          if (
+            article.scrollWidth >=
+              mathFloor(scrollLeft) + article.clientWidth &&
+            article.scrollHeight >= mathFloor(scrollTop) + article.clientHeight
+          ) {
+            article.scrollTo(scrollLeft, scrollTop);
+          }
+        });
+        observer.observe(article, {childList: true, subtree: true});
+        return () => observer.disconnect();
+      }
+    }, [scrolled, scrollLeft, scrollTop]);
+    const handleScroll = useCallback$1(
+      (event) => {
+        const {scrollLeft: scrollLeft2, scrollTop: scrollTop2} =
+          event[CURRENT_TARGET];
+        cancelIdleCallback(idleCallbackRef.current);
+        idleCallbackRef.current = requestIdleCallback(() => {
+          setScrolled(true);
+          s.setPartialValues({scrollLeft: scrollLeft2, scrollTop: scrollTop2});
+        });
+      },
+      [s],
+    );
+    const store = uiReact.useStore();
+    const storeIds = uiReact.useStoreIds();
+    const metrics = uiReact.useMetrics();
+    const metricsIds = uiReact.useMetricsIds();
+    const indexes = uiReact.useIndexes();
+    const indexesIds = uiReact.useIndexesIds();
+    const relationships = uiReact.useRelationships();
+    const relationshipsIds = uiReact.useRelationshipsIds();
+    const queries = uiReact.useQueries();
+    const queriesIds = uiReact.useQueriesIds();
+    return isUndefined(store) &&
+      arrayIsEmpty(storeIds) &&
+      isUndefined(metrics) &&
+      arrayIsEmpty(metricsIds) &&
+      isUndefined(indexes) &&
+      arrayIsEmpty(indexesIds) &&
+      isUndefined(relationships) &&
+      arrayIsEmpty(relationshipsIds) &&
+      isUndefined(queries) &&
+      arrayIsEmpty(queriesIds)
+      ? /* @__PURE__ */ createElement(
+          'span',
+          {className: 'warn'},
+          'There are no Stores or other objects to inspect. Make sure you placed the Inspector inside a Provider component.',
+        )
+      : /* @__PURE__ */ createElement(
+          'article',
+          {ref: articleRef, onScroll: handleScroll},
+          /* @__PURE__ */ createElement(StoreView, {s}),
+          arrayMap(storeIds, (storeId) =>
+            /* @__PURE__ */ createElement(StoreView, {
+              storeId,
+              s,
+              key: storeId,
+            }),
+          ),
+          /* @__PURE__ */ createElement(MetricsView, {s}),
+          arrayMap(metricsIds, (metricsId) =>
+            /* @__PURE__ */ createElement(MetricsView, {
+              metricsId,
+              s,
+              key: metricsId,
+            }),
+          ),
+          /* @__PURE__ */ createElement(IndexesView, {s}),
+          arrayMap(indexesIds, (indexesId) =>
+            /* @__PURE__ */ createElement(IndexesView, {
+              indexesId,
+              s,
+              key: indexesId,
+            }),
+          ),
+          /* @__PURE__ */ createElement(RelationshipsView, {s}),
+          arrayMap(relationshipsIds, (relationshipsId) =>
+            /* @__PURE__ */ createElement(RelationshipsView, {
+              relationshipsId,
+              s,
+              key: relationshipsId,
+            }),
+          ),
+          /* @__PURE__ */ createElement(QueriesView, {s}),
+          arrayMap(queriesIds, (queriesId) =>
+            /* @__PURE__ */ createElement(QueriesView, {
+              queriesId,
+              s,
+              key: queriesId,
+            }),
+          ),
+        );
+  };
+
+  class ErrorBoundary extends PureComponent {
+    constructor(props) {
+      super(props);
+      this.state = {e: 0};
+    }
+    static getDerivedStateFromError() {
+      return {e: 1};
+    }
+    // eslint-disable-next-line react/no-arrow-function-lifecycle
+    componentDidCatch = (error, info) =>
+      // eslint-disable-next-line no-console
+      console.error(error, info.componentStack);
+    render() {
+      return this.state.e
+        ? /* @__PURE__ */ createElement(
+            'span',
+            {className: 'warn'},
+            'Inspector error: please see console for details.',
+          )
+        : this.props.children;
+    }
+  }
+
+  const Header = ({s}) => {
+    const position = uiReact.useValue(POSITION_VALUE, s) ?? 1;
+    const handleClose = uiReact.useSetValueCallback(
+      OPEN_VALUE,
+      () => false,
+      [],
+      s,
+    );
+    const handleDock = uiReact.useSetValueCallback(
+      POSITION_VALUE,
+      (event) => Number(event[CURRENT_TARGET].dataset.id),
+      [],
+      s,
+    );
+    return /* @__PURE__ */ createElement(
+      'header',
+      null,
+      /* @__PURE__ */ createElement('img', {title: TITLE}),
+      /* @__PURE__ */ createElement('span', null, TITLE),
+      arrayMap(POSITIONS, (name, p) =>
+        p == position
+          ? null
+          : /* @__PURE__ */ createElement('img', {
+              onClick: handleDock,
+              'data-id': p,
+              title: 'Dock to ' + name,
+              key: p,
+            }),
+      ),
+      /* @__PURE__ */ createElement('img', {
+        onClick: handleClose,
+        title: 'Close',
+      }),
+    );
+  };
+
+  const Panel = ({s}) => {
+    const position = uiReact.useValue(POSITION_VALUE, s) ?? 1;
+    return uiReact.useValue(OPEN_VALUE, s)
+      ? /* @__PURE__ */ createElement(
+          'main',
+          {'data-position': position},
+          /* @__PURE__ */ createElement(Header, {s}),
+          /* @__PURE__ */ createElement(
+            ErrorBoundary,
+            null,
+            /* @__PURE__ */ createElement(Body, {s}),
+          ),
+        )
+      : null;
+  };
+
+  const collSizeN = (collSizer) => (coll) =>
+    arrayReduce(
+      collValues(coll),
+      (total, coll2) => total + collSizer(coll2),
+      0,
+    );
+  const collSize = (coll) => coll?.size ?? 0;
+  const collSize2 = collSizeN(collSize);
+  const collSize3 = collSizeN(collSize2);
+  const collSize4 = collSizeN(collSize3);
+  const collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
+  const collIsEmpty = (coll) => isUndefined(coll) || collSize(coll) == 0;
+  const collValues = (coll) => [...(coll?.values() ?? [])];
+  const collClear = (coll) => coll.clear();
+  const collForEach = (coll, cb) => coll?.forEach(cb);
+  const collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
+
+  const mapNew = (entries) => new Map(entries);
+  const mapKeys = (map) => [...(map?.keys() ?? [])];
+  const mapGet = (map, key) => map?.get(key);
+  const mapForEach = (map, cb) =>
+    collForEach(map, (value, key) => cb(key, value));
+  const mapMap = (coll, cb) =>
+    arrayMap([...(coll?.entries() ?? [])], ([key, value]) => cb(value, key));
+  const mapSet = (map, key, value) =>
+    isUndefined(value) ? (collDel(map, key), map) : map?.set(key, value);
+  const mapEnsure = (map, key, getDefaultValue, hadExistingValue) => {
+    if (!collHas(map, key)) {
+      mapSet(map, key, getDefaultValue());
+    } else {
+      hadExistingValue?.(mapGet(map, key));
+    }
+    return mapGet(map, key);
+  };
+  const mapMatch = (map, obj, set, del = mapSet) => {
+    objToArray(obj, (value, id) => set(map, id, value));
+    mapForEach(map, (id) => (objHas(obj, id) ? 0 : del(map, id)));
+    return map;
+  };
+  const mapToObj = (map, valueMapper, excludeMapValue, excludeObjValue) => {
+    const obj = {};
+    collForEach(map, (mapValue, id) => {
+      if (!excludeMapValue?.(mapValue, id)) {
+        const objValue = valueMapper ? valueMapper(mapValue, id) : mapValue;
+        excludeObjValue?.(objValue) ? 0 : (obj[id] = objValue);
+      }
+    });
+    return obj;
+  };
+  const mapToObj2 = (map, valueMapper, excludeMapValue) =>
+    mapToObj(
+      map,
+      (childMap) => mapToObj(childMap, valueMapper, excludeMapValue),
+      collIsEmpty,
+      objIsEmpty,
+    );
+  const mapToObj3 = (map, valueMapper, excludeMapValue) =>
+    mapToObj(
+      map,
+      (childMap) => mapToObj2(childMap, valueMapper, excludeMapValue),
+      collIsEmpty,
+      objIsEmpty,
+    );
+  const mapClone = (map, mapValue) => {
+    const map2 = mapNew();
+    collForEach(map, (value, key) => map2.set(key, mapValue?.(value) ?? value));
+    return map2;
+  };
+  const mapClone2 = (map) => mapClone(map, mapClone);
+  const mapClone3 = (map) => mapClone(map, mapClone2);
+  const visitTree = (node, path, ensureLeaf, pruneLeaf, p = 0) =>
+    ifNotUndefined(
+      (ensureLeaf ? mapEnsure : mapGet)(
+        node,
+        path[p],
+        p > size(path) - 2 ? ensureLeaf : mapNew,
+      ),
+      (nodeOrLeaf) => {
+        if (p > size(path) - 2) {
+          if (pruneLeaf?.(nodeOrLeaf)) {
+            mapSet(node, path[p]);
+          }
+          return nodeOrLeaf;
+        }
+        const leaf = visitTree(nodeOrLeaf, path, ensureLeaf, pruneLeaf, p + 1);
+        if (collIsEmpty(nodeOrLeaf)) {
+          mapSet(node, path[p]);
+        }
+        return leaf;
+      },
+    );
+
+  const scheduleRunning = mapNew();
+  const scheduleActions = mapNew();
+  const getStoreFunctions = (supportedStoreType = 1, store) =>
+    supportedStoreType > 1 && store.isMergeable()
+      ? [
+          1,
+          store.getMergeableContent,
+          store.getTransactionMergeableChanges,
+          ([[changedTables], [changedValues]]) =>
+            !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+          store.setDefaultContent,
+        ]
+      : supportedStoreType != 2
+        ? [
+            0,
+            store.getContent,
+            store.getTransactionChanges,
+            ([changedTables, changedValues]) =>
+              !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+            store.setContent,
+          ]
+        : errorNew('Store type not supported by this Persister');
+  const createCustomPersister = (
+    store,
+    getPersisted,
+    setPersisted,
+    addPersisterListener,
+    delPersisterListener,
+    onIgnoredError,
+    supportedStoreType,
+    extra = {},
+    scheduleId = [],
+  ) => {
+    let loadSave = 0;
+    let loads = 0;
+    let saves = 0;
+    let action;
+    let autoLoadHandle;
+    let autoSaveListenerId;
+    mapEnsure(scheduleRunning, scheduleId, () => 0);
+    mapEnsure(scheduleActions, scheduleId, () => []);
+    const [
+      isMergeableStore,
+      getContent,
+      getChanges,
+      hasChanges,
+      setDefaultContent,
+    ] = getStoreFunctions(supportedStoreType, store);
+    const run = async () => {
+      /* istanbul ignore else */
+      if (!mapGet(scheduleRunning, scheduleId)) {
+        mapSet(scheduleRunning, scheduleId, 1);
+        while (
+          !isUndefined(
+            (action = arrayShift(mapGet(scheduleActions, scheduleId))),
+          )
+        ) {
+          try {
+            await action();
+          } catch (error) {}
+        }
+        mapSet(scheduleRunning, scheduleId, 0);
+      }
+    };
+    const setContentOrChanges = (contentOrChanges) => {
+      (isMergeableStore && isArray(contentOrChanges?.[0])
+        ? contentOrChanges?.[2] === 1
+          ? store.applyMergeableChanges
+          : store.setMergeableContent
+        : contentOrChanges?.[2] === 1
+          ? store.applyChanges
+          : store.setContent)(contentOrChanges);
+    };
+    const load = async (initialContent) => {
+      /* istanbul ignore else */
+      if (loadSave != 2) {
+        loadSave = 1;
+        loads++;
+        await schedule(async () => {
+          try {
+            setContentOrChanges(await getPersisted());
+          } catch (error) {
+            if (initialContent) {
+              setDefaultContent(initialContent);
+            }
+          }
+          loadSave = 0;
+        });
+      }
+      return persister;
+    };
+    const startAutoLoad = async (initialContent) => {
+      await stopAutoLoad().load(initialContent);
+      autoLoadHandle = addPersisterListener(async (content, changes) => {
+        if (changes || content) {
+          /* istanbul ignore else */
+          if (loadSave != 2) {
+            loadSave = 1;
+            loads++;
+            setContentOrChanges(changes ?? content);
+            loadSave = 0;
+          }
+        } else {
+          await load();
+        }
+      });
+      return persister;
+    };
+    const stopAutoLoad = () => {
+      if (autoLoadHandle) {
+        delPersisterListener(autoLoadHandle);
+        autoLoadHandle = void 0;
+      }
+      return persister;
+    };
+    const isAutoLoading = () => !isUndefined(autoLoadHandle);
+    const save = async (changes) => {
+      /* istanbul ignore else */
+      if (loadSave != 1) {
+        loadSave = 2;
+        saves++;
+        await schedule(async () => {
+          try {
+            await setPersisted(getContent, changes);
+          } catch (error) {}
+          loadSave = 0;
+        });
+      }
+      return persister;
+    };
+    const startAutoSave = async () => {
+      await stopAutoSave().save();
+      autoSaveListenerId = store.addDidFinishTransactionListener(() => {
+        const changes = getChanges();
+        if (hasChanges(changes)) {
+          save(changes);
+        }
+      });
+      return persister;
+    };
+    const stopAutoSave = () => {
+      ifNotUndefined(autoSaveListenerId, store.delListener);
+      autoSaveListenerId = void 0;
+      return persister;
+    };
+    const isAutoSaving = () => !isUndefined(autoSaveListenerId);
+    const schedule = async (...actions) => {
+      arrayPush(mapGet(scheduleActions, scheduleId), ...actions);
+      await run();
+      return persister;
+    };
+    const getStore = () => store;
+    const destroy = () => stopAutoLoad().stopAutoSave();
+    const getStats = () => ({loads, saves});
+    const persister = {
+      load,
+      startAutoLoad,
+      stopAutoLoad,
+      isAutoLoading,
+      save,
+      startAutoSave,
+      stopAutoSave,
+      isAutoSaving,
+      schedule,
+      getStore,
+      destroy,
+      getStats,
+      ...extra,
+    };
+    return objFreeze(persister);
+  };
+
+  const STORAGE = 'storage';
+  const WINDOW = globalThis.window;
+  const createStoragePersister = (
+    store,
+    storageName,
+    storage,
+    onIgnoredError,
+  ) => {
+    const getPersisted = async () =>
+      jsonParseWithUndefined(storage.getItem(storageName));
+    const setPersisted = async (getContent) =>
+      storage.setItem(storageName, jsonStringWithUndefined(getContent()));
+    const addPersisterListener = (listener) => {
+      const storageListener = (event) => {
+        if (event.storageArea === storage && event.key === storageName) {
+          try {
+            listener(jsonParse(event.newValue));
+          } catch {
+            listener();
+          }
+        }
+      };
+      WINDOW.addEventListener(STORAGE, storageListener);
+      return storageListener;
+    };
+    const delPersisterListener = (storageListener) =>
+      WINDOW.removeEventListener(STORAGE, storageListener);
+    return createCustomPersister(
+      store,
+      getPersisted,
+      setPersisted,
+      addPersisterListener,
+      delPersisterListener,
+      onIgnoredError,
+      3,
+      {getStorageName: () => storageName},
+    );
+  };
+  const createSessionPersister = (store, storageName, onIgnoredError) =>
+    createStoragePersister(store, storageName, sessionStorage, onIgnoredError);
+
+  const setNew = (entryOrEntries) =>
+    new Set(
+      isArray(entryOrEntries) || isUndefined(entryOrEntries)
+        ? entryOrEntries
+        : [entryOrEntries],
+    );
+  const setAdd = (set, value) => set?.add(value);
+
+  const INTEGER = /^\d+$/;
+  const getPoolFunctions = () => {
+    const pool = [];
+    let nextId = 0;
+    return [
+      (reuse) => (reuse ? arrayShift(pool) : null) ?? EMPTY_STRING + nextId++,
+      (id) => {
+        if (test(INTEGER, id) && size(pool) < 1e3) {
+          arrayPush(pool, id);
+        }
+      },
+    ];
+  };
+
+  const getWildcardedLeaves = (deepIdSet, path = [EMPTY_STRING]) => {
+    const leaves = [];
+    const deep = (node, p) =>
+      p == size(path)
+        ? arrayPush(leaves, node)
+        : path[p] === null
+          ? collForEach(node, (node2) => deep(node2, p + 1))
+          : arrayForEach([path[p], null], (id) =>
+              deep(mapGet(node, id), p + 1),
+            );
+    deep(deepIdSet, 0);
+    return leaves;
+  };
+  const getListenerFunctions = (getThing) => {
+    let thing;
+    const [getId, releaseId] = getPoolFunctions();
+    const allListeners = mapNew();
+    const addListener = (
+      listener,
+      idSetNode,
+      path,
+      pathGetters = [],
+      extraArgsGetter = () => [],
+    ) => {
+      thing ??= getThing();
+      const id = getId(1);
+      mapSet(allListeners, id, [
+        listener,
+        idSetNode,
+        path,
+        pathGetters,
+        extraArgsGetter,
+      ]);
+      setAdd(visitTree(idSetNode, path ?? [EMPTY_STRING], setNew), id);
+      return id;
+    };
+    const callListeners = (idSetNode, ids, ...extraArgs) =>
+      arrayForEach(getWildcardedLeaves(idSetNode, ids), (set) =>
+        collForEach(set, (id) =>
+          mapGet(allListeners, id)[0](thing, ...(ids ?? []), ...extraArgs),
+        ),
+      );
+    const delListener = (id) =>
+      ifNotUndefined(mapGet(allListeners, id), ([, idSetNode, idOrNulls]) => {
+        visitTree(idSetNode, idOrNulls ?? [EMPTY_STRING], void 0, (idSet) => {
+          collDel(idSet, id);
+          return collIsEmpty(idSet) ? 1 : 0;
+        });
+        mapSet(allListeners, id);
+        releaseId(id);
+        return idOrNulls;
+      });
+    const callListener = (id) =>
+      ifNotUndefined(
+        mapGet(allListeners, id),
+        ([listener, , path = [], pathGetters, extraArgsGetter]) => {
+          const callWithIds = (...ids) => {
+            const index = size(ids);
+            index == size(path)
+              ? listener(thing, ...ids, ...extraArgsGetter(ids))
+              : isUndefined(path[index])
+                ? arrayForEach(pathGetters[index]?.(...ids) ?? [], (id2) =>
+                    callWithIds(...ids, id2),
+                  )
+                : callWithIds(...ids, path[index]);
+          };
+          callWithIds();
+        },
+      );
+    return [addListener, callListeners, delListener, callListener];
+  };
+
+  const pairNew = (value) => [value, value];
+  const pairCollSize2 = (pair, func = collSize2) =>
+    func(pair[0]) + func(pair[1]);
+  const pairNewMap = () => [mapNew(), mapNew()];
+  const pairClone = (array) => [...array];
+  const pairIsEqual = ([entry1, entry2]) => entry1 === entry2;
+
+  const ENCODE =
+    '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'.split(
+      EMPTY_STRING,
+    );
+  mapNew(arrayMap(ENCODE, (char, index) => [char, index]));
+
+  const defaultSorter = (sortKey1, sortKey2) =>
+    (sortKey1 ?? 0) < (sortKey2 ?? 0) ? -1 : 1;
+
+  const idsChanged = (changedIds, id2, addedOrRemoved) =>
+    mapSet(
+      changedIds,
+      id2,
+      mapGet(changedIds, id2) == -addedOrRemoved ? void 0 : addedOrRemoved,
+    );
+  const createStore = () => {
+    let hasTablesSchema;
+    let hasValuesSchema;
+    let hadTables = false;
+    let hadValues = false;
+    let transactions = 0;
+    let internalListeners = [];
+    const changedTableIds = mapNew();
+    const changedTableCellIds = mapNew();
+    const changedRowCount = mapNew();
+    const changedRowIds = mapNew();
+    const changedCellIds = mapNew();
+    const changedCells = mapNew();
+    const changedValueIds = mapNew();
+    const changedValues = mapNew();
+    const invalidCells = mapNew();
+    const invalidValues = mapNew();
+    const tablesSchemaMap = mapNew();
+    const tablesSchemaRowCache = mapNew();
+    const valuesSchemaMap = mapNew();
+    const valuesDefaulted = mapNew();
+    const valuesNonDefaulted = setNew();
+    const tablePoolFunctions = mapNew();
+    const tableCellIds = mapNew();
+    const tablesMap = mapNew();
+    const valuesMap = mapNew();
+    const hasTablesListeners = pairNewMap();
+    const tablesListeners = pairNewMap();
+    const tableIdsListeners = pairNewMap();
+    const hasTableListeners = pairNewMap();
+    const tableListeners = pairNewMap();
+    const tableCellIdsListeners = pairNewMap();
+    const hasTableCellListeners = pairNewMap();
+    const rowCountListeners = pairNewMap();
+    const rowIdsListeners = pairNewMap();
+    const sortedRowIdsListeners = pairNewMap();
+    const hasRowListeners = pairNewMap();
+    const rowListeners = pairNewMap();
+    const cellIdsListeners = pairNewMap();
+    const hasCellListeners = pairNewMap();
+    const cellListeners = pairNewMap();
+    const invalidCellListeners = pairNewMap();
+    const invalidValueListeners = pairNewMap();
+    const hasValuesListeners = pairNewMap();
+    const valuesListeners = pairNewMap();
+    const valueIdsListeners = pairNewMap();
+    const hasValueListeners = pairNewMap();
+    const valueListeners = pairNewMap();
+    const startTransactionListeners = mapNew();
+    const finishTransactionListeners = pairNewMap();
+    const [addListener, callListeners, delListenerImpl, callListenerImpl] =
+      getListenerFunctions(() => store);
+    const validateTablesSchema = (tableSchema) =>
+      objValidate(tableSchema, (tableSchema2) =>
+        objValidate(tableSchema2, validateCellOrValueSchema),
+      );
+    const validateValuesSchema = (valuesSchema) =>
+      objValidate(valuesSchema, validateCellOrValueSchema);
+    const validateCellOrValueSchema = (schema) => {
+      if (
+        !objValidate(schema, (_child, id2) => arrayHas([TYPE, DEFAULT], id2))
+      ) {
+        return false;
+      }
+      const type = schema[TYPE];
+      if (!isTypeStringOrBoolean(type) && type != NUMBER) {
+        return false;
+      }
+      if (getCellOrValueType(schema[DEFAULT]) != type) {
+        objDel(schema, DEFAULT);
+      }
+      return true;
+    };
+    const validateTables = (tables) =>
+      objValidate(tables, validateTable, cellInvalid);
+    const validateTable = (table, tableId) =>
+      (!hasTablesSchema ||
+        collHas(tablesSchemaMap, tableId) ||
+        /* istanbul ignore next */
+        cellInvalid(tableId)) &&
+      objValidate(
+        table,
+        (row, rowId) => validateRow(tableId, rowId, row),
+        () => cellInvalid(tableId),
+      );
+    const validateRow = (tableId, rowId, row, skipDefaults) =>
+      objValidate(
+        skipDefaults ? row : addDefaultsToRow(row, tableId, rowId),
+        (cell, cellId) =>
+          ifNotUndefined(
+            getValidatedCell(tableId, rowId, cellId, cell),
+            (validCell) => {
+              row[cellId] = validCell;
+              return true;
+            },
+            () => false,
+          ),
+        () => cellInvalid(tableId, rowId),
+      );
+    const getValidatedCell = (tableId, rowId, cellId, cell) =>
+      hasTablesSchema
+        ? ifNotUndefined(
+            mapGet(mapGet(tablesSchemaMap, tableId), cellId),
+            (cellSchema) =>
+              getCellOrValueType(cell) != cellSchema[TYPE]
+                ? cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
+                : cell,
+            () => cellInvalid(tableId, rowId, cellId, cell),
+          )
+        : isUndefined(getCellOrValueType(cell))
+          ? cellInvalid(tableId, rowId, cellId, cell)
+          : cell;
+    const validateValues = (values, skipDefaults) =>
+      objValidate(
+        skipDefaults ? values : addDefaultsToValues(values),
+        (value, valueId) =>
+          ifNotUndefined(
+            getValidatedValue(valueId, value),
+            (validValue) => {
+              values[valueId] = validValue;
+              return true;
+            },
+            () => false,
+          ),
+        () => valueInvalid(),
+      );
+    const getValidatedValue = (valueId, value) =>
+      hasValuesSchema
+        ? ifNotUndefined(
+            mapGet(valuesSchemaMap, valueId),
+            (valueSchema) =>
+              getCellOrValueType(value) != valueSchema[TYPE]
+                ? valueInvalid(valueId, value, valueSchema[DEFAULT])
+                : value,
+            () => valueInvalid(valueId, value),
+          )
+        : isUndefined(getCellOrValueType(value))
+          ? valueInvalid(valueId, value)
+          : value;
+    const addDefaultsToRow = (row, tableId, rowId) => {
+      ifNotUndefined(
+        mapGet(tablesSchemaRowCache, tableId),
+        ([rowDefaulted, rowNonDefaulted]) => {
+          collForEach(rowDefaulted, (cell, cellId) => {
+            if (!objHas(row, cellId)) {
+              row[cellId] = cell;
+            }
+          });
+          collForEach(rowNonDefaulted, (cellId) => {
+            if (!objHas(row, cellId)) {
+              cellInvalid(tableId, rowId, cellId);
+            }
+          });
+        },
+      );
+      return row;
+    };
+    const addDefaultsToValues = (values) => {
+      if (hasValuesSchema) {
+        collForEach(valuesDefaulted, (value, valueId) => {
+          if (!objHas(values, valueId)) {
+            values[valueId] = value;
+          }
+        });
+        collForEach(valuesNonDefaulted, (valueId) => {
+          if (!objHas(values, valueId)) {
+            valueInvalid(valueId);
+          }
+        });
+      }
+      return values;
+    };
+    const setValidTablesSchema = (tablesSchema) =>
+      mapMatch(
+        tablesSchemaMap,
+        tablesSchema,
+        (_tablesSchema, tableId, tableSchema) => {
+          const rowDefaulted = mapNew();
+          const rowNonDefaulted = setNew();
+          mapMatch(
+            mapEnsure(tablesSchemaMap, tableId, mapNew),
+            tableSchema,
+            (tableSchemaMap, cellId, cellSchema) => {
+              mapSet(tableSchemaMap, cellId, cellSchema);
+              ifNotUndefined(
+                cellSchema[DEFAULT],
+                (def) => mapSet(rowDefaulted, cellId, def),
+                () => setAdd(rowNonDefaulted, cellId),
+              );
+            },
+          );
+          mapSet(tablesSchemaRowCache, tableId, [
+            rowDefaulted,
+            rowNonDefaulted,
+          ]);
+        },
+        (_tablesSchema, tableId) => {
+          mapSet(tablesSchemaMap, tableId);
+          mapSet(tablesSchemaRowCache, tableId);
+        },
+      );
+    const setValidValuesSchema = (valuesSchema) =>
+      mapMatch(
+        valuesSchemaMap,
+        valuesSchema,
+        (_valuesSchema, valueId, valueSchema) => {
+          mapSet(valuesSchemaMap, valueId, valueSchema);
+          ifNotUndefined(
+            valueSchema[DEFAULT],
+            (def) => mapSet(valuesDefaulted, valueId, def),
+            () => setAdd(valuesNonDefaulted, valueId),
+          );
+        },
+        (_valuesSchema, valueId) => {
+          mapSet(valuesSchemaMap, valueId);
+          mapSet(valuesDefaulted, valueId);
+          collDel(valuesNonDefaulted, valueId);
+        },
+      );
+    const setOrDelTables = (tables) =>
+      objIsEmpty(tables) ? delTables() : setTables(tables);
+    const setValidTables = (tables) =>
+      mapMatch(
+        tablesMap,
+        tables,
+        (_tables, tableId, table) => setValidTable(tableId, table),
+        (_tables, tableId) => delValidTable(tableId),
+      );
+    const setValidTable = (tableId, table) =>
+      mapMatch(
+        mapEnsure(tablesMap, tableId, () => {
+          tableIdsChanged(tableId, 1);
+          mapSet(tablePoolFunctions, tableId, getPoolFunctions());
+          mapSet(tableCellIds, tableId, mapNew());
+          return mapNew();
+        }),
+        table,
+        (tableMap, rowId, row) => setValidRow(tableId, tableMap, rowId, row),
+        (tableMap, rowId) => delValidRow(tableId, tableMap, rowId),
+      );
+    const setValidRow = (tableId, tableMap, rowId, row, forceDel) =>
+      mapMatch(
+        mapEnsure(tableMap, rowId, () => {
+          rowIdsChanged(tableId, rowId, 1);
+          return mapNew();
+        }),
+        row,
+        (rowMap, cellId, cell) =>
+          setValidCell(tableId, rowId, rowMap, cellId, cell),
+        (rowMap, cellId) =>
+          delValidCell(tableId, tableMap, rowId, rowMap, cellId, forceDel),
+      );
+    const setValidCell = (tableId, rowId, rowMap, cellId, cell) => {
+      if (!collHas(rowMap, cellId)) {
+        cellIdsChanged(tableId, rowId, cellId, 1);
+      }
+      const oldCell = mapGet(rowMap, cellId);
+      if (cell !== oldCell) {
+        cellChanged(tableId, rowId, cellId, oldCell, cell);
+        mapSet(rowMap, cellId, cell);
+      }
+    };
+    const setCellIntoDefaultRow = (
+      tableId,
+      tableMap,
+      rowId,
+      cellId,
+      validCell,
+    ) =>
+      ifNotUndefined(
+        mapGet(tableMap, rowId),
+        (rowMap) => setValidCell(tableId, rowId, rowMap, cellId, validCell),
+        () =>
+          setValidRow(
+            tableId,
+            tableMap,
+            rowId,
+            addDefaultsToRow({[cellId]: validCell}, tableId, rowId),
+          ),
+      );
+    const setOrDelValues = (values) =>
+      objIsEmpty(values) ? delValues() : setValues(values);
+    const setValidValues = (values) =>
+      mapMatch(
+        valuesMap,
+        values,
+        (_valuesMap, valueId, value) => setValidValue(valueId, value),
+        (_valuesMap, valueId) => delValidValue(valueId),
+      );
+    const setValidValue = (valueId, value) => {
+      if (!collHas(valuesMap, valueId)) {
+        valueIdsChanged(valueId, 1);
+      }
+      const oldValue = mapGet(valuesMap, valueId);
+      if (value !== oldValue) {
+        valueChanged(valueId, oldValue, value);
+        mapSet(valuesMap, valueId, value);
+      }
+    };
+    const getNewRowId = (tableId, reuse) => {
+      const [getId] = mapGet(tablePoolFunctions, tableId);
+      const rowId = getId(reuse);
+      if (!collHas(mapGet(tablesMap, tableId), rowId)) {
+        return rowId;
+      }
+      return getNewRowId(tableId, reuse);
+    };
+    const getOrCreateTable = (tableId) =>
+      mapGet(tablesMap, tableId) ?? setValidTable(tableId, {});
+    const delValidTable = (tableId) => setValidTable(tableId, {});
+    const delValidRow = (tableId, tableMap, rowId) => {
+      const [, releaseId] = mapGet(tablePoolFunctions, tableId);
+      releaseId(rowId);
+      setValidRow(tableId, tableMap, rowId, {}, true);
+    };
+    const delValidCell = (tableId, table, rowId, row, cellId, forceDel) => {
+      const defaultCell = mapGet(
+        mapGet(tablesSchemaRowCache, tableId)?.[0],
+        cellId,
+      );
+      if (!isUndefined(defaultCell) && !forceDel) {
+        return setValidCell(tableId, rowId, row, cellId, defaultCell);
+      }
+      const delCell2 = (cellId2) => {
+        cellChanged(tableId, rowId, cellId2, mapGet(row, cellId2));
+        cellIdsChanged(tableId, rowId, cellId2, -1);
+        mapSet(row, cellId2);
+      };
+      isUndefined(defaultCell) ? delCell2(cellId) : mapForEach(row, delCell2);
+      if (collIsEmpty(row)) {
+        rowIdsChanged(tableId, rowId, -1);
+        if (collIsEmpty(mapSet(table, rowId))) {
+          tableIdsChanged(tableId, -1);
+          mapSet(tablesMap, tableId);
+          mapSet(tablePoolFunctions, tableId);
+          mapSet(tableCellIds, tableId);
+        }
+      }
+    };
+    const delValidValue = (valueId) => {
+      const defaultValue = mapGet(valuesDefaulted, valueId);
+      if (!isUndefined(defaultValue)) {
+        return setValidValue(valueId, defaultValue);
+      }
+      valueChanged(valueId, mapGet(valuesMap, valueId));
+      valueIdsChanged(valueId, -1);
+      mapSet(valuesMap, valueId);
+    };
+    const tableIdsChanged = (tableId, addedOrRemoved) =>
+      idsChanged(changedTableIds, tableId, addedOrRemoved);
+    const rowIdsChanged = (tableId, rowId, addedOrRemoved) =>
+      idsChanged(
+        mapEnsure(changedRowIds, tableId, mapNew),
+        rowId,
+        addedOrRemoved,
+      ) &&
+      mapSet(
+        changedRowCount,
+        tableId,
+        mapEnsure(changedRowCount, tableId, () => 0) + addedOrRemoved,
+      );
+    const cellIdsChanged = (tableId, rowId, cellId, addedOrRemoved) => {
+      const cellIds = mapGet(tableCellIds, tableId);
+      const count = mapGet(cellIds, cellId) ?? 0;
+      if (
+        (count == 0 && addedOrRemoved == 1) ||
+        (count == 1 && addedOrRemoved == -1)
+      ) {
+        idsChanged(
+          mapEnsure(changedTableCellIds, tableId, mapNew),
+          cellId,
+          addedOrRemoved,
+        );
+      }
+      mapSet(
+        cellIds,
+        cellId,
+        count != -addedOrRemoved ? count + addedOrRemoved : null,
+      );
+      idsChanged(
+        mapEnsure(mapEnsure(changedCellIds, tableId, mapNew), rowId, mapNew),
+        cellId,
+        addedOrRemoved,
+      );
+    };
+    const cellChanged = (tableId, rowId, cellId, oldCell, newCell) => {
+      mapEnsure(
+        mapEnsure(mapEnsure(changedCells, tableId, mapNew), rowId, mapNew),
+        cellId,
+        () => [oldCell, 0],
+      )[1] = newCell;
+      internalListeners[3]?.(tableId, rowId, cellId, newCell);
+    };
+    const valueIdsChanged = (valueId, addedOrRemoved) =>
+      idsChanged(changedValueIds, valueId, addedOrRemoved);
+    const valueChanged = (valueId, oldValue, newValue) => {
+      mapEnsure(changedValues, valueId, () => [oldValue, 0])[1] = newValue;
+      internalListeners[4]?.(valueId, newValue);
+    };
+    const cellInvalid = (
+      tableId,
+      rowId,
+      cellId,
+      invalidCell,
+      defaultedCell,
+    ) => {
+      arrayPush(
+        mapEnsure(
+          mapEnsure(mapEnsure(invalidCells, tableId, mapNew), rowId, mapNew),
+          cellId,
+          () => [],
+        ),
+        invalidCell,
+      );
+      return defaultedCell;
+    };
+    const valueInvalid = (valueId, invalidValue, defaultedValue) => {
+      arrayPush(
+        mapEnsure(invalidValues, valueId, () => []),
+        invalidValue,
+      );
+      return defaultedValue;
+    };
+    const getCellChange = (tableId, rowId, cellId) =>
+      ifNotUndefined(
+        mapGet(mapGet(mapGet(changedCells, tableId), rowId), cellId),
+        ([oldCell, newCell]) => [true, oldCell, newCell],
+        () => [false, ...pairNew(getCell(tableId, rowId, cellId))],
+      );
+    const getValueChange = (valueId) =>
+      ifNotUndefined(
+        mapGet(changedValues, valueId),
+        ([oldValue, newValue]) => [true, oldValue, newValue],
+        () => [false, ...pairNew(getValue(valueId))],
+      );
+    const callInvalidCellListeners = (mutator) =>
+      !collIsEmpty(invalidCells) && !collIsEmpty(invalidCellListeners[mutator])
+        ? collForEach(
+            mutator ? mapClone3(invalidCells) : invalidCells,
+            (rows, tableId) =>
+              collForEach(rows, (cells, rowId) =>
+                collForEach(cells, (invalidCell, cellId) =>
+                  callListeners(
+                    invalidCellListeners[mutator],
+                    [tableId, rowId, cellId],
+                    invalidCell,
+                  ),
+                ),
+              ),
+          )
+        : 0;
+    const callInvalidValueListeners = (mutator) =>
+      !collIsEmpty(invalidValues) &&
+      !collIsEmpty(invalidValueListeners[mutator])
+        ? collForEach(
+            mutator ? mapClone(invalidValues) : invalidValues,
+            (invalidValue, valueId) =>
+              callListeners(
+                invalidValueListeners[mutator],
+                [valueId],
+                invalidValue,
+              ),
+          )
+        : 0;
+    const callIdsAndHasListenersIfChanged = (
+      changedIds,
+      idListeners,
+      hasListeners,
+      ids,
+    ) => {
+      if (!collIsEmpty(changedIds)) {
+        callListeners(idListeners, ids, () => mapToObj(changedIds));
+        mapForEach(changedIds, (changedId, changed) =>
+          callListeners(
+            hasListeners,
+            [...(ids ?? []), changedId],
+            changed == 1,
+          ),
+        );
+        return 1;
+      }
+    };
+    const callTabularListenersForChanges = (mutator) => {
+      const hasTablesNow = hasTables();
+      if (hasTablesNow != hadTables) {
+        callListeners(hasTablesListeners[mutator], void 0, hasTablesNow);
+      }
+      const emptySortedRowIdListeners = collIsEmpty(
+        sortedRowIdsListeners[mutator],
+      );
+      const emptyIdAndHasListeners =
+        collIsEmpty(cellIdsListeners[mutator]) &&
+        collIsEmpty(hasCellListeners[mutator]) &&
+        collIsEmpty(rowIdsListeners[mutator]) &&
+        collIsEmpty(hasRowListeners[mutator]) &&
+        collIsEmpty(tableCellIdsListeners[mutator]) &&
+        collIsEmpty(hasTableCellListeners[mutator]) &&
+        collIsEmpty(rowCountListeners[mutator]) &&
+        emptySortedRowIdListeners &&
+        collIsEmpty(tableIdsListeners[mutator]) &&
+        collIsEmpty(hasTableListeners[mutator]);
+      const emptyOtherListeners =
+        collIsEmpty(cellListeners[mutator]) &&
+        collIsEmpty(rowListeners[mutator]) &&
+        collIsEmpty(tableListeners[mutator]) &&
+        collIsEmpty(tablesListeners[mutator]);
+      if (!emptyIdAndHasListeners || !emptyOtherListeners) {
+        const changes = mutator
+          ? [
+              mapClone(changedTableIds),
+              mapClone2(changedTableCellIds),
+              mapClone(changedRowCount),
+              mapClone2(changedRowIds),
+              mapClone3(changedCellIds),
+              mapClone3(changedCells),
+            ]
+          : [
+              changedTableIds,
+              changedTableCellIds,
+              changedRowCount,
+              changedRowIds,
+              changedCellIds,
+              changedCells,
+            ];
+        if (!emptyIdAndHasListeners) {
+          callIdsAndHasListenersIfChanged(
+            changes[0],
+            tableIdsListeners[mutator],
+            hasTableListeners[mutator],
+          );
+          collForEach(changes[1], (changedIds, tableId) =>
+            callIdsAndHasListenersIfChanged(
+              changedIds,
+              tableCellIdsListeners[mutator],
+              hasTableCellListeners[mutator],
+              [tableId],
+            ),
+          );
+          collForEach(changes[2], (changedCount, tableId) => {
+            if (changedCount != 0) {
+              callListeners(
+                rowCountListeners[mutator],
+                [tableId],
+                getRowCount(tableId),
+              );
+            }
+          });
+          const calledSortableTableIds = setNew();
+          collForEach(changes[3], (changedIds, tableId) => {
+            if (
+              callIdsAndHasListenersIfChanged(
+                changedIds,
+                rowIdsListeners[mutator],
+                hasRowListeners[mutator],
+                [tableId],
+              ) &&
+              !emptySortedRowIdListeners
+            ) {
+              callListeners(sortedRowIdsListeners[mutator], [tableId, null]);
+              setAdd(calledSortableTableIds, tableId);
+            }
+          });
+          if (!emptySortedRowIdListeners) {
+            collForEach(changes[5], (rows, tableId) => {
+              if (!collHas(calledSortableTableIds, tableId)) {
+                const sortableCellIds = setNew();
+                collForEach(rows, (cells) =>
+                  collForEach(cells, ([oldCell, newCell], cellId) =>
+                    newCell !== oldCell
+                      ? setAdd(sortableCellIds, cellId)
+                      : collDel(cells, cellId),
+                  ),
+                );
+                collForEach(sortableCellIds, (cellId) =>
+                  callListeners(sortedRowIdsListeners[mutator], [
+                    tableId,
+                    cellId,
+                  ]),
+                );
+              }
+            });
+          }
+          collForEach(changes[4], (rowCellIds, tableId) =>
+            collForEach(rowCellIds, (changedIds, rowId) =>
+              callIdsAndHasListenersIfChanged(
+                changedIds,
+                cellIdsListeners[mutator],
+                hasCellListeners[mutator],
+                [tableId, rowId],
+              ),
+            ),
+          );
+        }
+        if (!emptyOtherListeners) {
+          let tablesChanged;
+          collForEach(changes[5], (rows, tableId) => {
+            let tableChanged;
+            collForEach(rows, (cells, rowId) => {
+              let rowChanged;
+              collForEach(cells, ([oldCell, newCell], cellId) => {
+                if (newCell !== oldCell) {
+                  callListeners(
+                    cellListeners[mutator],
+                    [tableId, rowId, cellId],
+                    newCell,
+                    oldCell,
+                    getCellChange,
+                  );
+                  tablesChanged = tableChanged = rowChanged = 1;
+                }
+              });
+              if (rowChanged) {
+                callListeners(
+                  rowListeners[mutator],
+                  [tableId, rowId],
+                  getCellChange,
+                );
+              }
+            });
+            if (tableChanged) {
+              callListeners(tableListeners[mutator], [tableId], getCellChange);
+            }
+          });
+          if (tablesChanged) {
+            callListeners(tablesListeners[mutator], void 0, getCellChange);
+          }
+        }
+      }
+    };
+    const callValuesListenersForChanges = (mutator) => {
+      const hasValuesNow = hasValues();
+      if (hasValuesNow != hadValues) {
+        callListeners(hasValuesListeners[mutator], void 0, hasValuesNow);
+      }
+      const emptyIdAndHasListeners =
+        collIsEmpty(valueIdsListeners[mutator]) &&
+        collIsEmpty(hasValueListeners[mutator]);
+      const emptyOtherListeners =
+        collIsEmpty(valueListeners[mutator]) &&
+        collIsEmpty(valuesListeners[mutator]);
+      if (!emptyIdAndHasListeners || !emptyOtherListeners) {
+        const changes = mutator
+          ? [mapClone(changedValueIds), mapClone(changedValues)]
+          : [changedValueIds, changedValues];
+        if (!emptyIdAndHasListeners) {
+          callIdsAndHasListenersIfChanged(
+            changes[0],
+            valueIdsListeners[mutator],
+            hasValueListeners[mutator],
+          );
+        }
+        if (!emptyOtherListeners) {
+          let valuesChanged;
+          collForEach(changes[1], ([oldValue, newValue], valueId) => {
+            if (newValue !== oldValue) {
+              callListeners(
+                valueListeners[mutator],
+                [valueId],
+                newValue,
+                oldValue,
+                getValueChange,
+              );
+              valuesChanged = 1;
+            }
+          });
+          if (valuesChanged) {
+            callListeners(valuesListeners[mutator], void 0, getValueChange);
+          }
+        }
+      }
+    };
+    const fluentTransaction = (actions, ...args) => {
+      transaction(() => actions(...arrayMap(args, id)));
+      return store;
+    };
+    const getContent = () => [getTables(), getValues()];
+    const getTables = () => mapToObj3(tablesMap);
+    const getTableIds = () => mapKeys(tablesMap);
+    const getTable = (tableId) => mapToObj2(mapGet(tablesMap, id(tableId)));
+    const getTableCellIds = (tableId) =>
+      mapKeys(mapGet(tableCellIds, id(tableId)));
+    const getRowCount = (tableId) => collSize(mapGet(tablesMap, id(tableId)));
+    const getRowIds = (tableId) => mapKeys(mapGet(tablesMap, id(tableId)));
+    const getSortedRowIds = (tableId, cellId, descending, offset = 0, limit) =>
+      arrayMap(
+        slice(
+          arraySort(
+            mapMap(mapGet(tablesMap, id(tableId)), (row, rowId) => [
+              isUndefined(cellId) ? rowId : mapGet(row, id(cellId)),
+              rowId,
+            ]),
+            ([cell1], [cell2]) =>
+              defaultSorter(cell1, cell2) * (descending ? -1 : 1),
+          ),
+          offset,
+          isUndefined(limit) ? limit : offset + limit,
+        ),
+        ([, rowId]) => rowId,
+      );
+    const getRow = (tableId, rowId) =>
+      mapToObj(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));
+    const getCellIds = (tableId, rowId) =>
+      mapKeys(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));
+    const getCell = (tableId, rowId, cellId) =>
+      mapGet(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId));
+    const getValues = () => mapToObj(valuesMap);
+    const getValueIds = () => mapKeys(valuesMap);
+    const getValue = (valueId) => mapGet(valuesMap, id(valueId));
+    const hasTables = () => !collIsEmpty(tablesMap);
+    const hasTable = (tableId) => collHas(tablesMap, id(tableId));
+    const hasTableCell = (tableId, cellId) =>
+      collHas(mapGet(tableCellIds, id(tableId)), id(cellId));
+    const hasRow = (tableId, rowId) =>
+      collHas(mapGet(tablesMap, id(tableId)), id(rowId));
+    const hasCell = (tableId, rowId, cellId) =>
+      collHas(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId));
+    const hasValues = () => !collIsEmpty(valuesMap);
+    const hasValue = (valueId) => collHas(valuesMap, id(valueId));
+    const getTablesJson = () => jsonStringWithMap(tablesMap);
+    const getValuesJson = () => jsonStringWithMap(valuesMap);
+    const getJson = () => jsonStringWithMap([tablesMap, valuesMap]);
+    const getTablesSchemaJson = () => jsonStringWithMap(tablesSchemaMap);
+    const getValuesSchemaJson = () => jsonStringWithMap(valuesSchemaMap);
+    const getSchemaJson = () =>
+      jsonStringWithMap([tablesSchemaMap, valuesSchemaMap]);
+    const setContent = ([tables, values]) =>
+      fluentTransaction(() => {
+        (objIsEmpty(tables) ? delTables : setTables)(tables);
+        (objIsEmpty(values) ? delValues : setValues)(values);
+      });
+    const setTables = (tables) =>
+      fluentTransaction(() =>
+        validateTables(tables) ? setValidTables(tables) : 0,
+      );
+    const setTable = (tableId, table) =>
+      fluentTransaction(
+        (tableId2) =>
+          validateTable(table, tableId2) ? setValidTable(tableId2, table) : 0,
+        tableId,
+      );
+    const setRow = (tableId, rowId, row) =>
+      fluentTransaction(
+        (tableId2, rowId2) =>
+          validateRow(tableId2, rowId2, row)
+            ? setValidRow(tableId2, getOrCreateTable(tableId2), rowId2, row)
+            : 0,
+        tableId,
+        rowId,
+      );
+    const addRow = (tableId, row, reuseRowIds = true) =>
+      transaction(() => {
+        let rowId = void 0;
+        if (validateRow(tableId, rowId, row)) {
+          tableId = id(tableId);
+          setValidRow(
+            tableId,
+            getOrCreateTable(tableId),
+            (rowId = getNewRowId(tableId, reuseRowIds ? 1 : 0)),
+            row,
+          );
+        }
+        return rowId;
+      });
+    const setPartialRow = (tableId, rowId, partialRow) =>
+      fluentTransaction(
+        (tableId2, rowId2) => {
+          if (validateRow(tableId2, rowId2, partialRow, 1)) {
+            const table = getOrCreateTable(tableId2);
+            objToArray(partialRow, (cell, cellId) =>
+              setCellIntoDefaultRow(tableId2, table, rowId2, cellId, cell),
+            );
+          }
+        },
+        tableId,
+        rowId,
+      );
+    const setCell = (tableId, rowId, cellId, cell) =>
+      fluentTransaction(
+        (tableId2, rowId2, cellId2) =>
+          ifNotUndefined(
+            getValidatedCell(
+              tableId2,
+              rowId2,
+              cellId2,
+              isFunction(cell)
+                ? cell(getCell(tableId2, rowId2, cellId2))
+                : cell,
+            ),
+            (validCell) =>
+              setCellIntoDefaultRow(
+                tableId2,
+                getOrCreateTable(tableId2),
+                rowId2,
+                cellId2,
+                validCell,
+              ),
+          ),
+        tableId,
+        rowId,
+        cellId,
+      );
+    const setValues = (values) =>
+      fluentTransaction(() =>
+        validateValues(values) ? setValidValues(values) : 0,
+      );
+    const setPartialValues = (partialValues) =>
+      fluentTransaction(() =>
+        validateValues(partialValues, 1)
+          ? objToArray(partialValues, (value, valueId) =>
+              setValidValue(valueId, value),
+            )
+          : 0,
+      );
+    const setValue = (valueId, value) =>
+      fluentTransaction(
+        (valueId2) =>
+          ifNotUndefined(
+            getValidatedValue(
+              valueId2,
+              isFunction(value) ? value(getValue(valueId2)) : value,
+            ),
+            (validValue) => setValidValue(valueId2, validValue),
+          ),
+        valueId,
+      );
+    const applyChanges = (changes) =>
+      fluentTransaction(() => {
+        objToArray(changes[0], (table, tableId) =>
+          isUndefined(table)
+            ? delTable(tableId)
+            : objToArray(table, (row, rowId) =>
+                isUndefined(row)
+                  ? delRow(tableId, rowId)
+                  : objToArray(row, (cell, cellId) =>
+                      setOrDelCell(store, tableId, rowId, cellId, cell),
+                    ),
+              ),
+        );
+        objToArray(changes[1], (value, valueId) =>
+          setOrDelValue(store, valueId, value),
+        );
+      });
+    const setTablesJson = (tablesJson) => {
+      try {
+        setOrDelTables(jsonParse(tablesJson));
+      } catch {}
+      return store;
+    };
+    const setValuesJson = (valuesJson) => {
+      try {
+        setOrDelValues(jsonParse(valuesJson));
+      } catch {}
+      return store;
+    };
+    const setJson = (tablesAndValuesJson) =>
+      fluentTransaction(() => {
+        try {
+          const [tables, values] = jsonParse(tablesAndValuesJson);
+          setOrDelTables(tables);
+          setOrDelValues(values);
+        } catch {
+          setTablesJson(tablesAndValuesJson);
+        }
+      });
+    const setTablesSchema = (tablesSchema) =>
+      fluentTransaction(() => {
+        if ((hasTablesSchema = validateTablesSchema(tablesSchema))) {
+          setValidTablesSchema(tablesSchema);
+          if (!collIsEmpty(tablesMap)) {
+            const tables = getTables();
+            delTables();
+            setTables(tables);
+          }
+        }
+      });
+    const setValuesSchema = (valuesSchema) =>
+      fluentTransaction(() => {
+        if ((hasValuesSchema = validateValuesSchema(valuesSchema))) {
+          const values = getValues();
+          delValuesSchema();
+          delValues();
+          hasValuesSchema = true;
+          setValidValuesSchema(valuesSchema);
+          setValues(values);
+        }
+      });
+    const setSchema = (tablesSchema, valuesSchema) =>
+      fluentTransaction(() => {
+        setTablesSchema(tablesSchema);
+        setValuesSchema(valuesSchema);
+      });
+    const delTables = () => fluentTransaction(() => setValidTables({}));
+    const delTable = (tableId) =>
+      fluentTransaction(
+        (tableId2) =>
+          collHas(tablesMap, tableId2) ? delValidTable(tableId2) : 0,
+        tableId,
+      );
+    const delRow = (tableId, rowId) =>
+      fluentTransaction(
+        (tableId2, rowId2) =>
+          ifNotUndefined(mapGet(tablesMap, tableId2), (tableMap) =>
+            collHas(tableMap, rowId2)
+              ? delValidRow(tableId2, tableMap, rowId2)
+              : 0,
+          ),
+        tableId,
+        rowId,
+      );
+    const delCell = (tableId, rowId, cellId, forceDel) =>
+      fluentTransaction(
+        (tableId2, rowId2, cellId2) =>
+          ifNotUndefined(mapGet(tablesMap, tableId2), (tableMap) =>
+            ifNotUndefined(mapGet(tableMap, rowId2), (rowMap) =>
+              collHas(rowMap, cellId2)
+                ? delValidCell(
+                    tableId2,
+                    tableMap,
+                    rowId2,
+                    rowMap,
+                    cellId2,
+                    forceDel,
+                  )
+                : 0,
+            ),
+          ),
+        tableId,
+        rowId,
+        cellId,
+      );
+    const delValues = () => fluentTransaction(() => setValidValues({}));
+    const delValue = (valueId) =>
+      fluentTransaction(
+        (valueId2) =>
+          collHas(valuesMap, valueId2) ? delValidValue(valueId2) : 0,
+        valueId,
+      );
+    const delTablesSchema = () =>
+      fluentTransaction(() => {
+        setValidTablesSchema({});
+        hasTablesSchema = false;
+      });
+    const delValuesSchema = () =>
+      fluentTransaction(() => {
+        setValidValuesSchema({});
+        hasValuesSchema = false;
+      });
+    const delSchema = () =>
+      fluentTransaction(() => {
+        delTablesSchema();
+        delValuesSchema();
+      });
+    const transaction = (actions, doRollback) => {
+      if (transactions != -1) {
+        startTransaction();
+        const result = actions();
+        finishTransaction(doRollback);
+        return result;
+      }
+    };
+    const startTransaction = () => {
+      if (transactions != -1) {
+        transactions++;
+      }
+      if (transactions == 1) {
+        internalListeners[0]?.();
+        callListeners(startTransactionListeners);
+      }
+      return store;
+    };
+    const getTransactionChanges = () => [
+      mapToObj(
+        changedCells,
+        (table, tableId) =>
+          mapGet(changedTableIds, tableId) === -1
+            ? void 0
+            : mapToObj(
+                table,
+                (row, rowId) =>
+                  mapGet(mapGet(changedRowIds, tableId), rowId) === -1
+                    ? void 0
+                    : mapToObj(
+                        row,
+                        ([, newCell]) => newCell,
+                        (changedCell) => pairIsEqual(changedCell),
+                      ),
+                collIsEmpty,
+                objIsEmpty,
+              ),
+        collIsEmpty,
+        objIsEmpty,
+      ),
+      mapToObj(
+        changedValues,
+        ([, newValue]) => newValue,
+        (changedValue) => pairIsEqual(changedValue),
+      ),
+      1,
+    ];
+    const getTransactionLog = () => [
+      !collIsEmpty(changedCells),
+      !collIsEmpty(changedValues),
+      mapToObj3(changedCells, pairClone, pairIsEqual),
+      mapToObj3(invalidCells),
+      mapToObj(changedValues, pairClone, pairIsEqual),
+      mapToObj(invalidValues),
+      mapToObj(changedTableIds),
+      mapToObj2(changedRowIds),
+      mapToObj3(changedCellIds),
+      mapToObj(changedValueIds),
+    ];
+    const finishTransaction = (doRollback) => {
+      if (transactions > 0) {
+        transactions--;
+        if (transactions == 0) {
+          transactions = 1;
+          callInvalidCellListeners(1);
+          if (!collIsEmpty(changedCells)) {
+            callTabularListenersForChanges(1);
+          }
+          callInvalidValueListeners(1);
+          if (!collIsEmpty(changedValues)) {
+            callValuesListenersForChanges(1);
+          }
+          if (doRollback?.(store)) {
+            collForEach(changedCells, (table, tableId) =>
+              collForEach(table, (row, rowId) =>
+                collForEach(row, ([oldCell], cellId) =>
+                  setOrDelCell(store, tableId, rowId, cellId, oldCell),
+                ),
+              ),
+            );
+            collClear(changedCells);
+            collForEach(changedValues, ([oldValue], valueId) =>
+              setOrDelValue(store, valueId, oldValue),
+            );
+            collClear(changedValues);
+          }
+          callListeners(finishTransactionListeners[0], void 0);
+          transactions = -1;
+          callInvalidCellListeners(0);
+          if (!collIsEmpty(changedCells)) {
+            callTabularListenersForChanges(0);
+          }
+          callInvalidValueListeners(0);
+          if (!collIsEmpty(changedValues)) {
+            callValuesListenersForChanges(0);
+          }
+          internalListeners[1]?.();
+          callListeners(finishTransactionListeners[1], void 0);
+          internalListeners[2]?.();
+          transactions = 0;
+          hadTables = hasTables();
+          hadValues = hasValues();
+          arrayForEach(
+            [
+              changedTableIds,
+              changedTableCellIds,
+              changedRowCount,
+              changedRowIds,
+              changedCellIds,
+              changedCells,
+              invalidCells,
+              changedValueIds,
+              changedValues,
+              invalidValues,
+            ],
+            collClear,
+          );
+        }
+      }
+      return store;
+    };
+    const forEachTable = (tableCallback) =>
+      collForEach(tablesMap, (tableMap, tableId) =>
+        tableCallback(tableId, (rowCallback) =>
+          collForEach(tableMap, (rowMap, rowId) =>
+            rowCallback(rowId, (cellCallback) =>
+              mapForEach(rowMap, cellCallback),
+            ),
+          ),
+        ),
+      );
+    const forEachTableCell = (tableId, tableCellCallback) =>
+      mapForEach(mapGet(tableCellIds, id(tableId)), tableCellCallback);
+    const forEachRow = (tableId, rowCallback) =>
+      collForEach(mapGet(tablesMap, id(tableId)), (rowMap, rowId) =>
+        rowCallback(rowId, (cellCallback) => mapForEach(rowMap, cellCallback)),
+      );
+    const forEachCell = (tableId, rowId, cellCallback) =>
+      mapForEach(
+        mapGet(mapGet(tablesMap, id(tableId)), id(rowId)),
+        cellCallback,
+      );
+    const forEachValue = (valueCallback) =>
+      mapForEach(valuesMap, valueCallback);
+    const addSortedRowIdsListener = (
+      tableId,
+      cellId,
+      descending,
+      offset,
+      limit,
+      listener,
+      mutator,
+    ) => {
+      let sortedRowIds = getSortedRowIds(
+        tableId,
+        cellId,
+        descending,
+        offset,
+        limit,
+      );
+      return addListener(
+        () => {
+          const newSortedRowIds = getSortedRowIds(
+            tableId,
+            cellId,
+            descending,
+            offset,
+            limit,
+          );
+          if (!arrayIsEqual(newSortedRowIds, sortedRowIds)) {
+            sortedRowIds = newSortedRowIds;
+            listener(
+              store,
+              tableId,
+              cellId,
+              descending,
+              offset,
+              limit,
+              sortedRowIds,
+            );
+          }
+        },
+        sortedRowIdsListeners[mutator ? 1 : 0],
+        [tableId, cellId],
+        [getTableIds],
+      );
+    };
+    const addStartTransactionListener = (listener) =>
+      addListener(listener, startTransactionListeners);
+    const addWillFinishTransactionListener = (listener) =>
+      addListener(listener, finishTransactionListeners[0]);
+    const addDidFinishTransactionListener = (listener) =>
+      addListener(listener, finishTransactionListeners[1]);
+    const callListener = (listenerId) => {
+      callListenerImpl(listenerId);
+      return store;
+    };
+    const delListener = (listenerId) => {
+      delListenerImpl(listenerId);
+      return store;
+    };
+    const getListenerStats = () => ({
+      hasTables: pairCollSize2(hasTablesListeners),
+      tables: pairCollSize2(tablesListeners),
+      tableIds: pairCollSize2(tableIdsListeners),
+      hasTable: pairCollSize2(hasTableListeners),
+      table: pairCollSize2(tableListeners),
+      tableCellIds: pairCollSize2(tableCellIdsListeners),
+      hasTableCell: pairCollSize2(hasTableCellListeners, collSize3),
+      rowCount: pairCollSize2(rowCountListeners),
+      rowIds: pairCollSize2(rowIdsListeners),
+      sortedRowIds: pairCollSize2(sortedRowIdsListeners),
+      hasRow: pairCollSize2(hasRowListeners, collSize3),
+      row: pairCollSize2(rowListeners, collSize3),
+      cellIds: pairCollSize2(cellIdsListeners, collSize3),
+      hasCell: pairCollSize2(hasCellListeners, collSize4),
+      cell: pairCollSize2(cellListeners, collSize4),
+      invalidCell: pairCollSize2(invalidCellListeners, collSize4),
+      hasValues: pairCollSize2(hasValuesListeners),
+      values: pairCollSize2(valuesListeners),
+      valueIds: pairCollSize2(valueIdsListeners),
+      hasValue: pairCollSize2(hasValueListeners),
+      value: pairCollSize2(valueListeners),
+      invalidValue: pairCollSize2(invalidValueListeners),
+      transaction:
+        collSize2(startTransactionListeners) +
+        pairCollSize2(finishTransactionListeners),
+    });
+    const setInternalListeners = (
+      preStartTransaction,
+      preFinishTransaction,
+      postFinishTransaction,
+      cellChanged2,
+      valueChanged2,
+    ) =>
+      (internalListeners = [
+        preStartTransaction,
+        preFinishTransaction,
+        postFinishTransaction,
+        cellChanged2,
+        valueChanged2,
+      ]);
+    const store = {
+      getContent,
+      getTables,
+      getTableIds,
+      getTable,
+      getTableCellIds,
+      getRowCount,
+      getRowIds,
+      getSortedRowIds,
+      getRow,
+      getCellIds,
+      getCell,
+      getValues,
+      getValueIds,
+      getValue,
+      hasTables,
+      hasTable,
+      hasTableCell,
+      hasRow,
+      hasCell,
+      hasValues,
+      hasValue,
+      getTablesJson,
+      getValuesJson,
+      getJson,
+      getTablesSchemaJson,
+      getValuesSchemaJson,
+      getSchemaJson,
+      hasTablesSchema: () => hasTablesSchema,
+      hasValuesSchema: () => hasValuesSchema,
+      setContent,
+      setTables,
+      setTable,
+      setRow,
+      addRow,
+      setPartialRow,
+      setCell,
+      setValues,
+      setPartialValues,
+      setValue,
+      applyChanges,
+      setTablesJson,
+      setValuesJson,
+      setJson,
+      setTablesSchema,
+      setValuesSchema,
+      setSchema,
+      delTables,
+      delTable,
+      delRow,
+      delCell,
+      delValues,
+      delValue,
+      delTablesSchema,
+      delValuesSchema,
+      delSchema,
+      transaction,
+      startTransaction,
+      getTransactionChanges,
+      getTransactionLog,
+      finishTransaction,
+      forEachTable,
+      forEachTableCell,
+      forEachRow,
+      forEachCell,
+      forEachValue,
+      addSortedRowIdsListener,
+      addStartTransactionListener,
+      addWillFinishTransactionListener,
+      addDidFinishTransactionListener,
+      callListener,
+      delListener,
+      getListenerStats,
+      isMergeable: () => false,
+      // only used internally by other modules
+      createStore,
+      addListener,
+      callListeners,
+      setInternalListeners,
+    };
+    objToArray(
+      {
+        [HAS + TABLES]: [0, hasTablesListeners, [], () => [hasTables()]],
+        [TABLES]: [0, tablesListeners],
+        [TABLE_IDS]: [0, tableIdsListeners],
+        [HAS + TABLE]: [
+          1,
+          hasTableListeners,
+          [getTableIds],
+          (ids) => [hasTable(...ids)],
+        ],
+        [TABLE]: [1, tableListeners, [getTableIds]],
+        [TABLE + CELL_IDS]: [1, tableCellIdsListeners, [getTableIds]],
+        [HAS + TABLE + CELL]: [
+          2,
+          hasTableCellListeners,
+          [getTableIds, getTableCellIds],
+          (ids) => [hasTableCell(...ids)],
+        ],
+        [ROW_COUNT]: [1, rowCountListeners, [getTableIds]],
+        [ROW_IDS]: [1, rowIdsListeners, [getTableIds]],
+        [HAS + ROW]: [
+          2,
+          hasRowListeners,
+          [getTableIds, getRowIds],
+          (ids) => [hasRow(...ids)],
+        ],
+        [ROW]: [2, rowListeners, [getTableIds, getRowIds]],
+        [CELL_IDS]: [2, cellIdsListeners, [getTableIds, getRowIds]],
+        [HAS + CELL]: [
+          3,
+          hasCellListeners,
+          [getTableIds, getRowIds, getCellIds],
+          (ids) => [hasCell(...ids)],
+        ],
+        [CELL]: [
+          3,
+          cellListeners,
+          [getTableIds, getRowIds, getCellIds],
+          (ids) => pairNew(getCell(...ids)),
+        ],
+        InvalidCell: [3, invalidCellListeners],
+        [HAS + VALUES]: [0, hasValuesListeners, [], () => [hasValues()]],
+        [VALUES]: [0, valuesListeners],
+        [VALUE_IDS]: [0, valueIdsListeners],
+        [HAS + VALUE]: [
+          1,
+          hasValueListeners,
+          [getValueIds],
+          (ids) => [hasValue(...ids)],
+        ],
+        [VALUE]: [
+          1,
+          valueListeners,
+          [getValueIds],
+          (ids) => pairNew(getValue(ids[0])),
+        ],
+        InvalidValue: [1, invalidValueListeners],
+      },
+      (
+        [argumentCount, idSetNode, pathGetters, extraArgsGetter],
+        listenable,
+      ) => {
+        store[ADD + listenable + LISTENER] = (...args) =>
+          addListener(
+            args[argumentCount],
+            idSetNode[args[argumentCount + 1] ? 1 : 0],
+            argumentCount > 0 ? slice(args, 0, argumentCount) : void 0,
+            pathGetters,
+            extraArgsGetter,
+          );
+      },
+    );
+    return objFreeze(store);
+  };
+
+  const Inspector = ({position = 'right', open = false}) => {
+    const s = uiReact.useCreateStore(createStore);
+    const index = POSITIONS.indexOf(position);
+    uiReact.useCreatePersister(
+      s,
+      (s2) => createSessionPersister(s2, UNIQUE_ID),
+      void 0,
+      async (persister) => {
+        await persister.load([
+          {},
+          {
+            position: index == -1 ? 1 : index,
+            open: !!open,
+          },
+        ]);
+        await persister.startAutoSave();
+      },
+    );
+    return /* @__PURE__ */ createElement(
+      Fragment,
+      null,
+      /* @__PURE__ */ createElement(
+        'aside',
+        {id: UNIQUE_ID},
+        /* @__PURE__ */ createElement(Nub, {s}),
+        /* @__PURE__ */ createElement(Panel, {s}),
+      ),
+      /* @__PURE__ */ createElement('style', null, APP_STYLESHEET),
+    );
+  };
+
+  exports.Inspector = Inspector;
+});

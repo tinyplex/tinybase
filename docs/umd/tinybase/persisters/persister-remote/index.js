@@ -1,1 +1,293 @@
-var e,t;e=this,t=function(e){"use strict";const t=clearInterval,a=e=>null==e,s=(e,t,s)=>a(e)?s?.():t(e),n=Object,r=e=>n.getPrototypeOf(e),o=n.keys,i=n.freeze,c=e=>(e=>!a(e)&&s(r(e),(e=>e==n.prototype||a(r(e))),(()=>!0)))(e)&&0==(e=>o(e).length)(e),y=JSON.parse,d=e=>new Map(e),l=(e,t)=>e?.get(t),p=(e,t,s)=>{return a(s)?(n=e,r=t,n?.delete(r),e):e?.set(t,s);var n,r},g=(e,t,a,s)=>{var n,r;return n=e,r=t,n?.has(r)||p(e,t,a()),l(e,t)},h=d(),f=d(),u=e=>e.headers.get("ETag");e.createRemotePersister=(e,r,o,d=5,v)=>{let w;return((e,t,n,r,o,y,d,u={},v=[])=>{let w,b,C,A=0;g(h,v,(()=>0)),g(f,v,(()=>[]));const[S,T,m,M,L]=((e=1,t)=>e>1&&t.isMergeable()?[1,t.getMergeableContent,t.getTransactionMergeableChanges,([[e],[t]])=>!c(e)||!c(t),t.setDefaultContent]:2!=e?[0,t.getContent,t.getTransactionChanges,([e,t])=>!c(e)||!c(t),t.setContent]:(e=>{throw Error("Store type not supported by this Persister")})())(d,e),O=t=>{var a;(S&&(a=t?.[0],Array.isArray(a))?1===t?.[2]?e.applyMergeableChanges:e.setMergeableContent:1===t?.[2]?e.applyChanges:e.setContent)(t)},P=async e=>(2!=A&&(A=1,await D((async()=>{try{O(await t())}catch(t){y?.(t),e&&L(e)}A=0}))),I),x=()=>(b&&(o(b),b=void 0),I),E=async e=>(1!=A&&(A=2,await D((async()=>{try{await n(T,e)}catch(e){y?.(e)}A=0}))),I),j=()=>(s(C,e.delListener),C=void 0,I),D=async(...e)=>(((e,...t)=>{e.push(...t)})(l(f,v),...e),await(async()=>{if(!l(h,v)){for(p(h,v,1);!a((e=l(f,v),w=e.shift()));)try{await w()}catch(e){y?.(e)}p(h,v,0)}var e})(),I),I={load:P,startAutoLoad:async e=>(await x().load(e),b=r((async(e,t)=>{t||e?2!=A&&(A=1,O(t??e),A=0):await P()})),I),stopAutoLoad:x,isAutoLoading:()=>!a(b),save:E,startAutoSave:async()=>(await j().save(),C=e.addDidFinishTransactionListener((()=>{const e=m();M(e)&&E(e)})),I),stopAutoSave:j,isAutoSaving:()=>!a(C),schedule:D,getStore:()=>e,destroy:()=>x().stopAutoSave(),getStats:()=>({}),...u};return i(I)})(e,(async()=>{const e=await fetch(r);return w=u(e),y(await e.text())}),(async e=>{return await fetch(o,{method:"POST",headers:{"Content-Type":"application/json"},body:(t=e(),JSON.stringify(t,((e,t)=>t instanceof Map?n.fromEntries([...t]):t)))});var t}),(e=>setInterval((async()=>{const t=await fetch(r,{method:"HEAD"}),s=u(t);a(w)||a(s)||s==w||(w=s,e())}),1e3*d)),(e=>t(e)),v,1,{getUrls:()=>[r,o]})}},"object"==typeof exports&&"undefined"!=typeof module?t(exports):"function"==typeof define&&define.amd?define(["exports"],t):t((e="undefined"!=typeof globalThis?globalThis:e||self).TinyBasePersisterRemote={});
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined'
+    ? factory(exports)
+    : typeof define === 'function' && define.amd
+      ? define(['exports'], factory)
+      : ((global =
+          typeof globalThis !== 'undefined' ? globalThis : global || self),
+        factory((global.TinyBasePersisterRemote = {})));
+})(this, function (exports) {
+  'use strict';
+
+  const startInterval = (callback, sec, immediate) => {
+    return setInterval(callback, sec * 1e3);
+  };
+  const stopInterval = clearInterval;
+  const isInstanceOf = (thing, cls) => thing instanceof cls;
+  const isUndefined = (thing) => thing == void 0;
+  const ifNotUndefined = (value, then, otherwise) =>
+    isUndefined(value) ? otherwise?.() : then(value);
+  const isArray = (thing) => Array.isArray(thing);
+  const size = (arrayOrString) => arrayOrString.length;
+  const errorNew = (message) => {
+    throw new Error(message);
+  };
+
+  const arrayPush = (array, ...values) => array.push(...values);
+  const arrayShift = (array) => array.shift();
+
+  const object = Object;
+  const getPrototypeOf = (obj) => object.getPrototypeOf(obj);
+  const isObject = (obj) =>
+    !isUndefined(obj) &&
+    ifNotUndefined(
+      getPrototypeOf(obj),
+      (objPrototype) =>
+        objPrototype == object.prototype ||
+        isUndefined(getPrototypeOf(objPrototype)),
+
+      /* istanbul ignore next */
+      () => true,
+    );
+  const objIds = object.keys;
+  const objFreeze = object.freeze;
+  const objSize = (obj) => size(objIds(obj));
+  const objIsEmpty = (obj) => isObject(obj) && objSize(obj) == 0;
+
+  const jsonStringWithMap = (obj) =>
+    JSON.stringify(obj, (_key, value) =>
+      isInstanceOf(value, Map) ? object.fromEntries([...value]) : value,
+    );
+  const jsonParse = JSON.parse;
+
+  const collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
+  const collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
+
+  const mapNew = (entries) => new Map(entries);
+  const mapGet = (map, key) => map?.get(key);
+  const mapSet = (map, key, value) =>
+    isUndefined(value) ? (collDel(map, key), map) : map?.set(key, value);
+  const mapEnsure = (map, key, getDefaultValue, hadExistingValue) => {
+    if (!collHas(map, key)) {
+      mapSet(map, key, getDefaultValue());
+    }
+    return mapGet(map, key);
+  };
+
+  const scheduleRunning = mapNew();
+  const scheduleActions = mapNew();
+  const getStoreFunctions = (supportedStoreType = 1, store) =>
+    supportedStoreType > 1 && store.isMergeable()
+      ? [
+          1,
+          store.getMergeableContent,
+          store.getTransactionMergeableChanges,
+          ([[changedTables], [changedValues]]) =>
+            !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+          store.setDefaultContent,
+        ]
+      : supportedStoreType != 2
+        ? [
+            0,
+            store.getContent,
+            store.getTransactionChanges,
+            ([changedTables, changedValues]) =>
+              !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+            store.setContent,
+          ]
+        : errorNew('Store type not supported by this Persister');
+  const createCustomPersister = (
+    store,
+    getPersisted,
+    setPersisted,
+    addPersisterListener,
+    delPersisterListener,
+    onIgnoredError,
+    supportedStoreType,
+    extra = {},
+    scheduleId = [],
+  ) => {
+    let loadSave = 0;
+    let loads = 0;
+    let saves = 0;
+    let action;
+    let autoLoadHandle;
+    let autoSaveListenerId;
+    mapEnsure(scheduleRunning, scheduleId, () => 0);
+    mapEnsure(scheduleActions, scheduleId, () => []);
+    const [
+      isMergeableStore,
+      getContent,
+      getChanges,
+      hasChanges,
+      setDefaultContent,
+    ] = getStoreFunctions(supportedStoreType, store);
+    const run = async () => {
+      /* istanbul ignore else */
+      if (!mapGet(scheduleRunning, scheduleId)) {
+        mapSet(scheduleRunning, scheduleId, 1);
+        while (
+          !isUndefined(
+            (action = arrayShift(mapGet(scheduleActions, scheduleId))),
+          )
+        ) {
+          try {
+            await action();
+          } catch (error) {
+            /* istanbul ignore next */
+            onIgnoredError?.(error);
+          }
+        }
+        mapSet(scheduleRunning, scheduleId, 0);
+      }
+    };
+    const setContentOrChanges = (contentOrChanges) => {
+      (isMergeableStore && isArray(contentOrChanges?.[0])
+        ? contentOrChanges?.[2] === 1
+          ? store.applyMergeableChanges
+          : store.setMergeableContent
+        : contentOrChanges?.[2] === 1
+          ? store.applyChanges
+          : store.setContent)(contentOrChanges);
+    };
+    const load = async (initialContent) => {
+      /* istanbul ignore else */
+      if (loadSave != 2) {
+        loadSave = 1;
+        loads++;
+        await schedule(async () => {
+          try {
+            setContentOrChanges(await getPersisted());
+          } catch (error) {
+            onIgnoredError?.(error);
+            if (initialContent) {
+              setDefaultContent(initialContent);
+            }
+          }
+          loadSave = 0;
+        });
+      }
+      return persister;
+    };
+    const startAutoLoad = async (initialContent) => {
+      await stopAutoLoad().load(initialContent);
+      autoLoadHandle = addPersisterListener(async (content, changes) => {
+        if (changes || content) {
+          /* istanbul ignore else */
+          if (loadSave != 2) {
+            loadSave = 1;
+            loads++;
+            setContentOrChanges(changes ?? content);
+            loadSave = 0;
+          }
+        } else {
+          await load();
+        }
+      });
+      return persister;
+    };
+    const stopAutoLoad = () => {
+      if (autoLoadHandle) {
+        delPersisterListener(autoLoadHandle);
+        autoLoadHandle = void 0;
+      }
+      return persister;
+    };
+    const isAutoLoading = () => !isUndefined(autoLoadHandle);
+    const save = async (changes) => {
+      /* istanbul ignore else */
+      if (loadSave != 1) {
+        loadSave = 2;
+        saves++;
+        await schedule(async () => {
+          try {
+            await setPersisted(getContent, changes);
+          } catch (error) {
+            /* istanbul ignore next */
+            onIgnoredError?.(error);
+          }
+          loadSave = 0;
+        });
+      }
+      return persister;
+    };
+    const startAutoSave = async () => {
+      await stopAutoSave().save();
+      autoSaveListenerId = store.addDidFinishTransactionListener(() => {
+        const changes = getChanges();
+        if (hasChanges(changes)) {
+          save(changes);
+        }
+      });
+      return persister;
+    };
+    const stopAutoSave = () => {
+      ifNotUndefined(autoSaveListenerId, store.delListener);
+      autoSaveListenerId = void 0;
+      return persister;
+    };
+    const isAutoSaving = () => !isUndefined(autoSaveListenerId);
+    const schedule = async (...actions) => {
+      arrayPush(mapGet(scheduleActions, scheduleId), ...actions);
+      await run();
+      return persister;
+    };
+    const getStore = () => store;
+    const destroy = () => stopAutoLoad().stopAutoSave();
+    const getStats = () => ({loads, saves});
+    const persister = {
+      load,
+      startAutoLoad,
+      stopAutoLoad,
+      isAutoLoading,
+      save,
+      startAutoSave,
+      stopAutoSave,
+      isAutoSaving,
+      schedule,
+      getStore,
+      destroy,
+      getStats,
+      ...extra,
+    };
+    return objFreeze(persister);
+  };
+
+  const getETag = (response) => response.headers.get('ETag');
+  const createRemotePersister = (
+    store,
+    loadUrl,
+    saveUrl,
+    autoLoadIntervalSeconds = 5,
+    onIgnoredError,
+  ) => {
+    let lastEtag;
+    const getPersisted = async () => {
+      const response = await fetch(loadUrl);
+      lastEtag = getETag(response);
+      return jsonParse(await response.text());
+    };
+    const setPersisted = async (getContent) =>
+      await fetch(saveUrl, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: jsonStringWithMap(getContent()),
+      });
+    const addPersisterListener = (listener) =>
+      startInterval(async () => {
+        const response = await fetch(loadUrl, {method: 'HEAD'});
+        const currentEtag = getETag(response);
+        if (
+          !isUndefined(lastEtag) &&
+          !isUndefined(currentEtag) &&
+          currentEtag != lastEtag
+        ) {
+          lastEtag = currentEtag;
+          listener();
+        }
+      }, autoLoadIntervalSeconds);
+    const delPersisterListener = (interval) => stopInterval(interval);
+    return createCustomPersister(
+      store,
+      getPersisted,
+      setPersisted,
+      addPersisterListener,
+      delPersisterListener,
+      onIgnoredError,
+      1,
+      {getUrls: () => [loadUrl, saveUrl]},
+    );
+  };
+
+  exports.createRemotePersister = createRemotePersister;
+});
