@@ -476,7 +476,6 @@ const compileModule = async (
     plugins: [
       esbuild({
         target,
-        define: {'globalThis.DEBUG': '' + debug},
         legalComments: 'inline',
       }),
       replace({

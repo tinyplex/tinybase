@@ -1,4 +1,3 @@
-import {DEBUG, ifNotUndefined, isUndefined} from '../common/other.ts';
 import type {GetCell, Store} from '../@types/store/index.d.ts';
 import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
 import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../common/map.ts';
@@ -25,6 +24,7 @@ import {
   getDefinableFunctions,
   getRowCellFunction,
 } from '../common/definable.ts';
+import {ifNotUndefined, isUndefined} from '../common/other.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
 import {getListenerFunctions} from '../common/listeners.ts';
 import {objFreeze} from '../common/obj.ts';
@@ -250,14 +250,11 @@ export const createRelationships = getCreateFunction(
       return relationships;
     };
 
-    const getListenerStats = (): RelationshipsListenerStats =>
-      DEBUG
-        ? {
-            remoteRowId: collSize3(remoteRowIdListeners),
-            localRowIds: collSize3(localRowIdsListeners),
-            linkedRowIds: collSize3(linkedRowIdsListeners),
-          }
-        : {};
+    const getListenerStats = (): RelationshipsListenerStats => ({
+      remoteRowId: collSize3(remoteRowIdListeners),
+      localRowIds: collSize3(localRowIdsListeners),
+      linkedRowIds: collSize3(linkedRowIdsListeners),
+    });
 
     const relationships: any = {
       setRelationshipDefinition,

@@ -1,11 +1,4 @@
 import type {Changes, Content, Store} from '../@types/store/index.d.ts';
-import {
-  DEBUG,
-  errorNew,
-  ifNotUndefined,
-  isArray,
-  isUndefined,
-} from '../common/other.ts';
 import type {
   MergeableChanges,
   MergeableContent,
@@ -21,6 +14,12 @@ import type {
   StoreTypes,
 } from '../@types/persisters/index.d.ts';
 import {arrayPush, arrayShift} from '../common/array.ts';
+import {
+  errorNew,
+  ifNotUndefined,
+  isArray,
+  isUndefined,
+} from '../common/other.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../common/map.ts';
 import {objFreeze, objIsEmpty} from '../common/obj.ts';
 import type {Id} from '../@types/common/index.d.ts';
@@ -154,9 +153,7 @@ export const createCustomPersister = <
     /*! istanbul ignore else */
     if (loadSave != 2) {
       loadSave = 1;
-      if (DEBUG) {
-        loads++;
-      }
+      loads++;
       await schedule(async () => {
         try {
           setContentOrChanges(await getPersisted());
@@ -181,9 +178,7 @@ export const createCustomPersister = <
         /*! istanbul ignore else */
         if (loadSave != 2) {
           loadSave = 1;
-          if (DEBUG) {
-            loads++;
-          }
+          loads++;
           setContentOrChanges(changes ?? content);
           loadSave = 0;
         }
@@ -210,9 +205,7 @@ export const createCustomPersister = <
     /*! istanbul ignore else */
     if (loadSave != 1) {
       loadSave = 2;
-      if (DEBUG) {
-        saves++;
-      }
+      saves++;
       await schedule(async () => {
         try {
           await setPersisted(getContent as any, changes);
@@ -255,7 +248,7 @@ export const createCustomPersister = <
 
   const destroy = (): Persister<StoreType> => stopAutoLoad().stopAutoSave();
 
-  const getStats = (): PersisterStats => (DEBUG ? {loads, saves} : {});
+  const getStats = (): PersisterStats => ({loads, saves});
 
   const persister: any = {
     load,
