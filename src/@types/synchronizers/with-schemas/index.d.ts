@@ -29,8 +29,8 @@ export type Send = (
 
 /// SynchronizerStats
 export type SynchronizerStats = {
-  sends?: number;
-  receives?: number;
+  sends: number;
+  receives: number;
 };
 
 /// Synchronizer

@@ -58,7 +58,7 @@ export type MetricListener<Schemas extends OptionalSchemas> = (
 /// MetricsListenerStats
 export type MetricsListenerStats = {
   /// MetricsListenerStats.metric
-  metric?: number;
+  metric: number;
 };
 
 /// Metrics
