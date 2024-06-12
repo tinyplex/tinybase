@@ -1,8 +1,9 @@
 import {Markdown, usePageNode} from 'tinydocs';
 import type {NoPropComponent, Node} from 'tinydocs';
-import {useCoverage, useMetadata, useSizes} from './BuildContext.tsx';
+import {useCoverage, useMetadata, useModulesSizes} from './BuildContext.tsx';
+import {MODULES} from './common.ts';
+import type {ModulesSizes} from './BuildContext.tsx';
 import React from 'react';
-import type {Sizes} from './BuildContext.tsx';
 
 export const Readme: NoPropComponent = (): any => {
   const [summary, body] = useReadme(usePageNode());
@@ -11,34 +12,20 @@ export const Readme: NoPropComponent = (): any => {
   return <Markdown markdown={markdown} html={true} skipCode={true} />;
 };
 
-const MODULES = [
-  'store',
-  'metrics',
-  'indexes',
-  'relationships',
-  'queries',
-  'checkpoints',
-  'mergeable-store',
-  'persisters',
-  'synchronizers',
-  'common',
-  'tinybase',
-];
-
 const toKb = (bytes: number | undefined) =>
   bytes != null ? `${(bytes / 1000).toFixed(1)}kB` : '';
 
 export const useReadme = (node: Node): [string, string] => {
   const metadata = useMetadata();
-  const sizes = useSizes();
+  const modulesSizes = useModulesSizes();
   const coverage = useCoverage();
 
   Object.entries({
     toKb,
     metadata,
-    sizes,
+    modulesSizes,
     coverage,
-    getSizeTable: () => getSizeTable(sizes),
+    getSizeTable: () => getSizeTable(modulesSizes),
     getCoverageTable: () => getCoverageTable(coverage),
     getGitHubAvatar,
   }).forEach(([key, value]) => {
@@ -51,27 +38,25 @@ export const useReadme = (node: Node): [string, string] => {
   return [substituteEval(node.summary ?? ''), substituteEval(node.body ?? '')];
 };
 
-const getSizeTable = (sizes: Sizes) =>
+const getSizeTable = (modulesSizes: ModulesSizes) =>
   `<table class='fixed'>
     <tr>
-      <th width='30%'>&nbsp;</th>
-      <th>.js.gz</th>
-      <th>.js</th>
-      <th>debug.js</th>
-      <th>.d.ts</th>
+      <th>&nbsp;</th>
+      <th>Minified .js.gz</th>
+      <th>Source .js</th>
     </tr>
     ${MODULES.map(
       (module) =>
         `<tr>
           <th class='right'>${
-            module == 'tinybase'
-              ? 'tinybase&nbsp;(all)'
-              : `<a href='/api/${module}/'>${module}</a>`
+            module == 'store'
+              ? `<a href='/api/${module}/'>tinybase/store</a>&nbsp;(minimal)`
+              : module == ''
+                ? 'tinybase&nbsp;(complete)'
+                : `<a href='/api/${module}/'>${module}</a>`
           }</th>
-          <td>${toKb(sizes.get(`${module}.js.gz`))}</td>
-          <td>${toKb(sizes.get(`${module}.js`))}</td>
-          <td>${toKb(sizes.get(`debug-${module}.js`))}</td>
-          <td>${toKb(sizes.get(`${module}.d.ts`))}</td>
+          <td>${toKb(modulesSizes.get(module)?.get('gz'))}</td>
+          <td>${toKb(modulesSizes.get(module)?.get('js'))}</td>
         </tr>`,
     ).join('')}
   </table>`;
