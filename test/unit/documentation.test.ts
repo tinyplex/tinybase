@@ -3,25 +3,25 @@ import * as AutomergeRepo from '@automerge/automerge-repo';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import * as ReactDOMTestUtils from 'react-dom/test-utils';
-import * as TinyBase from 'tinybase/debug';
-import * as TinyBasePersisterAutomerge from 'tinybase/debug/persisters/persister-automerge';
-import * as TinyBasePersisterBrowser from 'tinybase/debug/persisters/persister-browser';
-import * as TinyBasePersisterCrSqliteWasm from 'tinybase/debug/persisters/persister-cr-sqlite-wasm';
-import * as TinyBasePersisterFile from 'tinybase/debug/persisters/persister-file';
-import * as TinyBasePersisterIndexedDb from 'tinybase/debug/persisters/persister-indexed-db';
-import * as TinyBasePersisterPartyKitClient from 'tinybase/debug/persisters/persister-partykit-client';
-import * as TinyBasePersisterPartyKitServer from 'tinybase/debug/persisters/persister-partykit-server';
-import * as TinyBasePersisterRemote from 'tinybase/debug/persisters/persister-remote';
-import * as TinyBasePersisterSqlite3 from 'tinybase/debug/persisters/persister-sqlite3';
-import * as TinyBasePersisterSqliteWasm from 'tinybase/debug/persisters/persister-sqlite-wasm';
-import * as TinyBasePersisterYjs from 'tinybase/debug/persisters/persister-yjs';
-import * as TinyBaseSynchronizerLocal from 'tinybase/debug/synchronizers/synchronizer-local';
-import * as TinyBaseSynchronizerWsClient from 'tinybase/debug/synchronizers/synchronizer-ws-client';
-import * as TinyBaseSynchronizerWsServer from 'tinybase/debug/synchronizers/synchronizer-ws-server';
-import * as TinyBaseTools from 'tinybase/debug/tools';
-import * as TinyBaseUiReact from 'tinybase/debug/ui-react';
-import * as TinyBaseUiReactDom from 'tinybase/debug/ui-react-dom';
-import * as TinyBaseUiReactInspector from 'tinybase/debug/ui-react-inspector';
+import * as TinyBase from 'tinybase';
+import * as TinyBasePersisterAutomerge from 'tinybase/persisters/persister-automerge';
+import * as TinyBasePersisterBrowser from 'tinybase/persisters/persister-browser';
+import * as TinyBasePersisterCrSqliteWasm from 'tinybase/persisters/persister-cr-sqlite-wasm';
+import * as TinyBasePersisterFile from 'tinybase/persisters/persister-file';
+import * as TinyBasePersisterIndexedDb from 'tinybase/persisters/persister-indexed-db';
+import * as TinyBasePersisterPartyKitClient from 'tinybase/persisters/persister-partykit-client';
+import * as TinyBasePersisterPartyKitServer from 'tinybase/persisters/persister-partykit-server';
+import * as TinyBasePersisterRemote from 'tinybase/persisters/persister-remote';
+import * as TinyBasePersisterSqlite3 from 'tinybase/persisters/persister-sqlite3';
+import * as TinyBasePersisterSqliteWasm from 'tinybase/persisters/persister-sqlite-wasm';
+import * as TinyBasePersisterYjs from 'tinybase/persisters/persister-yjs';
+import * as TinyBaseSynchronizerLocal from 'tinybase/synchronizers/synchronizer-local';
+import * as TinyBaseSynchronizerWsClient from 'tinybase/synchronizers/synchronizer-ws-client';
+import * as TinyBaseSynchronizerWsServer from 'tinybase/synchronizers/synchronizer-ws-server';
+import * as TinyBaseTools from 'tinybase/tools';
+import * as TinyBaseUiReact from 'tinybase/ui-react';
+import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
+import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
 import * as sqlite3 from 'sqlite3';
 import * as ws from 'ws';
 import * as yjs from 'yjs';
@@ -52,8 +52,8 @@ import {transformSync} from 'esbuild';
   'react-dom/client': ReactDOMClient,
   sqlite3,
   tinybase: TinyBase,
-  'tinybase/debug/ui-react': TinyBaseUiReact,
-  'tinybase/debug/ui-react-dom': TinyBaseUiReactDom,
+  'tinybase/ui-react': TinyBaseUiReact,
+  'tinybase/ui-react-dom': TinyBaseUiReactDom,
   'tinybase/persisters/persister-automerge': TinyBasePersisterAutomerge,
   'tinybase/persisters/persister-browser': TinyBasePersisterBrowser,
   'tinybase/persisters/persister-cr-sqlite-wasm': TinyBasePersisterCrSqliteWasm,

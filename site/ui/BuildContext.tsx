@@ -43,9 +43,6 @@ const build = ((): Build => {
   forEachDirAndFile('./dist/@types', null, (file) => {
     sizes.set(basename(file), statSync(file).size);
   });
-  forEachDirAndFile('./dist/debug', null, (file) => {
-    sizes.set(`debug-${basename(file)}`, statSync(file).size);
-  });
 
   const {name, version, repository, license} = JSON.parse(
     readFileSync('./package.json', 'utf-8'),
