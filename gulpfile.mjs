@@ -452,6 +452,7 @@ const compileModule = async (
   const {default: prettierPlugin} = await import('rollup-plugin-prettier');
   const {default: shebang} = await import('rollup-plugin-preserve-shebang');
   const {default: image} = await import('@rollup/plugin-image');
+  const {default: terser} = await import('@rollup/plugin-terser');
 
   let inputFile = `src/${module}/index.ts`;
   if (!existsSync(inputFile)) {
@@ -495,7 +496,20 @@ const compileModule = async (
       }),
       shebang(),
       image(),
-      prettierPlugin(await getPrettierConfig()),
+      min
+        ? [
+            terser({
+              toplevel: true,
+              compress: {
+                unsafe: true,
+                passes: 3,
+                ...(module == 'tools'
+                  ? {reduce_vars: false, reduce_funcs: false}
+                  : {}),
+              },
+            }),
+          ]
+        : prettierPlugin(await getPrettierConfig()),
     ],
     onwarn: (warning, warn) => {
       if (warning.code !== 'MISSING_NODE_BUILTINS') {
@@ -546,34 +560,9 @@ const compileModule = async (
     outputFile,
   );
 
-  allOf(outputFiles, async (outputFile) => {
-    if (min) {
-      // terse;
-      await gzipFile(outputFile);
-    }
-  });
-
-  // await (
-  //   await rollup({input: outputFiles})
-  // ).write({entryFileNames: '[name]._.js'});
-
-  // .concat(
-  //   terse
-  //     ? [
-  //              terser({
-  //         toplevel: true,
-  //         compress: {
-  //           unsafe: true,
-  //           passes: 3,
-  //           ...(module == 'tools'
-  //             ? {reduce_vars: false, reduce_funcs: false}
-  //             : {}),
-  //         },
-  //       }),
-  //  ,
-  //       ].concat(cli ? [] : [gzipPlugin()])
-  //     :
-  // )
+  if (min) {
+    allOf(outputFiles, async (outputFile) => await gzipFile(outputFile));
+  }
 };
 
 // coverageMode = 0: none; 1: screen; 2: json; 3: html
