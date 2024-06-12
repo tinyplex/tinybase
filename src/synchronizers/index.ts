@@ -10,12 +10,6 @@ import type {
   TablesStamp,
   ValuesStamp,
 } from '../@types/mergeable-store/index.d.ts';
-import {
-  DEBUG,
-  ifNotUndefined,
-  isUndefined,
-  promiseNew,
-} from '../common/other.ts';
 import type {Id, IdOrNull} from '../@types/common/index.d.ts';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
 import type {
@@ -25,6 +19,7 @@ import type {
   Synchronizer,
 } from '../@types/synchronizers/index.d.ts';
 import {getLatestTime, newStamp, stampNewObj} from '../common/stamps.ts';
+import {ifNotUndefined, isUndefined, promiseNew} from '../common/other.ts';
 import {objEnsure, objForEach, objIsEmpty} from '../common/obj.ts';
 import type {Content} from '../@types/store/index.d.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
@@ -70,9 +65,7 @@ export const createCustomSynchronizer = (
       messageType: MessageType,
       messageBody: any,
     ) => {
-      if (DEBUG) {
-        receives++;
-      }
+      receives++;
       if (messageType == RESPONSE) {
         ifNotUndefined(
           mapGet(pendingRequests, requestId),
@@ -104,9 +97,7 @@ export const createCustomSynchronizer = (
                     ? store.getMergeableValueDiff(messageBody)
                     : undefined,
           (response) => {
-            if (DEBUG) {
-              sends++;
-            }
+            sends++;
             send(fromClientId, requestId, RESPONSE, response);
           },
         );
@@ -135,9 +126,7 @@ export const createCustomSynchronizer = (
           resolve([response, fromClientId]);
         },
       ]);
-      if (DEBUG) {
-        sends++;
-      }
+      sends++;
       send(toClientId, requestId, messageType, messageBody);
     });
 
@@ -242,9 +231,7 @@ export const createCustomSynchronizer = (
     _getContent: () => MergeableContent,
     changes?: MergeableChanges,
   ): Promise<void> => {
-    if (DEBUG) {
-      sends++;
-    }
+    sends++;
     if (changes) {
       send(null, null, CONTENT_DIFF, changes);
     } else {
@@ -267,7 +254,7 @@ export const createCustomSynchronizer = (
     return persister.stopSync();
   };
 
-  const getSynchronizerStats = () => (DEBUG ? {sends, receives} : {});
+  const getSynchronizerStats = () => ({sends, receives});
 
   const persister = createCustomPersister(
     store,
