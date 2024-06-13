@@ -61,8 +61,8 @@ export type ValuesStamp<Hashed extends boolean = false> = Stamp<
   Hashed
 >;
 
-// ValuesHashes
-export type ValuesHashes = {[valueId: Id]: Hash};
+// ValueHashes
+export type ValueHashes = {[valueId: Id]: Hash};
 
 // ValueStamp
 export type ValueStamp<Hashed extends boolean = false> = Stamp<
@@ -114,11 +114,11 @@ export interface MergeableStore extends Store {
   /// MergeableStore.getMergeableCellDiff
   getMergeableCellDiff(otherTableRowCellHashes: CellHashes): TablesStamp;
 
-  /// MergeableStore.getMergeableValuesHashes
-  getMergeableValuesHashes(): ValuesHashes;
+  /// MergeableStore.getMergeableValueHashes
+  getMergeableValueHashes(): ValueHashes;
 
   /// MergeableStore.getMergeableValueDiff
-  getMergeableValueDiff(relativeTo: ValuesHashes): ValuesStamp;
+  getMergeableValueDiff(relativeTo: ValueHashes): ValuesStamp;
 
   /// MergeableStore.setMergeableContent
   setMergeableContent(mergeableContent: MergeableContent): MergeableStore;
