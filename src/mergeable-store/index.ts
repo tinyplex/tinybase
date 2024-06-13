@@ -11,7 +11,7 @@ import type {
   TableStamp,
   TablesStamp,
   Time,
-  ValuesHashes,
+  ValueHashes,
   ValuesStamp,
   createMergeableStore as createMergeableStoreDecl,
 } from '../@types/mergeable-store/index.d.ts';
@@ -488,10 +488,10 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
     return newStamp(tablesObj, tablesTime);
   };
 
-  const getMergeableValuesHashes = (): ValuesHashes =>
+  const getMergeableValueHashes = (): ValueHashes =>
     mapToObj(contentStampMap[1][0], getStampHash);
 
-  const getMergeableValueDiff = (relativeTo: ValuesHashes): ValuesStamp => {
+  const getMergeableValueDiff = (relativeTo: ValueHashes): ValuesStamp => {
     const [, [valueStampMaps, valuesTime]] = contentStampMap;
     const values = mapToObj(
       valueStampMaps,
@@ -592,7 +592,7 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
     getMergeableRowDiff,
     getMergeableCellHashes,
     getMergeableCellDiff,
-    getMergeableValuesHashes,
+    getMergeableValueHashes,
     getMergeableValueDiff,
     setMergeableContent,
     setDefaultContent,

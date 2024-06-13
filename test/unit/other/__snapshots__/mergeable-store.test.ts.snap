@@ -1320,9 +1320,9 @@ exports[`Deltas & Hashes getMergeableTableHashes Non-empty 1`] = `
 }
 `;
 
-exports[`Deltas & Hashes getMergeableValuesHashes Empty 1`] = `{}`;
+exports[`Deltas & Hashes getMergeableValueHashes Empty 1`] = `{}`;
 
-exports[`Deltas & Hashes getMergeableValuesHashes Non-empty 1`] = `
+exports[`Deltas & Hashes getMergeableValueHashes Non-empty 1`] = `
 {
   "v1": 1003668370,
   "v2": 705616516,
