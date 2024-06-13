@@ -114,8 +114,8 @@ export type ValuesStamp<
   Hashed
 >;
 
-// ValuesHashes
-export type ValuesHashes<Schema extends OptionalValuesSchema> = {
+// ValueHashes
+export type ValueHashes<Schema extends OptionalValuesSchema> = {
   [ValueId in ValueIdFromSchema<Schema>]?: Hash;
 };
 
@@ -183,12 +183,12 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
     otherTableRowCellHashes: CellHashes<Schemas[0]>,
   ): TablesStamp<Schemas[0]>;
 
-  /// MergeableStore.getMergeableValuesHashes
-  getMergeableValuesHashes(): ValuesHashes<Schemas[1]>;
+  /// MergeableStore.getMergeableValueHashes
+  getMergeableValueHashes(): ValueHashes<Schemas[1]>;
 
   /// MergeableStore.getMergeableValueDiff
   getMergeableValueDiff(
-    relativeTo: ValuesHashes<Schemas[1]>,
+    relativeTo: ValueHashes<Schemas[1]>,
   ): ValuesStamp<Schemas[1]>;
 
   /// MergeableStore.setMergeableContent
