@@ -311,14 +311,14 @@ describe('Deltas & Hashes', () => {
     });
   });
 
-  describe('getMergeableValuesHashes', () => {
+  describe('getMergeableValueHashes', () => {
     test('Empty', () => {
-      expect(store1.getMergeableValuesHashes()).toMatchSnapshot();
+      expect(store1.getMergeableValueHashes()).toMatchSnapshot();
     });
 
     test('Non-empty', () => {
       store1.setValues({v1: 1, v2: 2});
-      expect(store1.getMergeableValuesHashes()).toMatchSnapshot();
+      expect(store1.getMergeableValueHashes()).toMatchSnapshot();
     });
   });
 
@@ -339,7 +339,7 @@ describe('Deltas & Hashes', () => {
       store1.getMergeableCellDiff(store2.getMergeableCellHashes({t1: {r1: 0}})),
     ).toMatchSnapshot('getMergeableCellDiff t1 r2');
     expect(
-      store1.getMergeableValueDiff(store2.getMergeableValuesHashes()),
+      store1.getMergeableValueDiff(store2.getMergeableValueHashes()),
     ).toMatchSnapshot('getMergeableValueDiff');
   };
 
