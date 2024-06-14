@@ -255,6 +255,9 @@ a Persister for the modern version of Expo's
 Note that TinyBase support for the legacy version of Expo-SQLite (`expo-sqlite`)
 is still available in the persister-expo-sqlite module.
 
+NB as of TinyBase v5.0, this is now the default and legacy support has been
+removed.
+
 Thank you to Expo for providing this functionality!
 
 ## v4.4

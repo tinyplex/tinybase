@@ -9,9 +9,9 @@ import {
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
-import type {ResultSet} from 'expo-sqlite';
-import {SQLiteDatabase} from 'expo-sqlite';
+import type {SQLiteDatabase} from 'expo-sqlite';
 import type {Store} from '../../@types/store/index.d.ts';
+import {addDatabaseChangeListener} from 'expo-sqlite';
 
 type Subscription = {remove: () => void};
 
@@ -26,9 +26,9 @@ export const createExpoSqlitePersister = ((
     store,
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
-      ((await db.execAsync([{sql, args}], false))[0] as ResultSet).rows,
+      await db.getAllAsync(sql, args),
     (listener: UpdateListener): Subscription =>
-      db.onDatabaseChange(({tableName}) => listener(tableName)),
+      addDatabaseChangeListener(({tableName}) => listener(tableName)),
     (subscription: Subscription) => subscription.remove(),
     onSqlCommand,
     onIgnoredError,
