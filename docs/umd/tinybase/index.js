@@ -1540,7 +1540,7 @@
               await request(
                 otherClientId,
                 GET_VALUE_DIFF,
-                store.getMergeableValuesHashes(),
+                store.getMergeableValueHashes(),
               )
             )[0],
         1,
@@ -4034,7 +4034,7 @@
       );
       return newStamp(tablesObj, tablesTime);
     };
-    const getMergeableValuesHashes = () =>
+    const getMergeableValueHashes = () =>
       mapToObj(contentStampMap[1][0], getStampHash);
     const getMergeableValueDiff = (relativeTo) => {
       const [, [valueStampMaps, valuesTime]] = contentStampMap;
@@ -4123,7 +4123,7 @@
       getMergeableRowDiff,
       getMergeableCellHashes,
       getMergeableCellDiff,
-      getMergeableValuesHashes,
+      getMergeableValueHashes,
       getMergeableValueDiff,
       setMergeableContent,
       setDefaultContent,
