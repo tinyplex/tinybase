@@ -433,7 +433,7 @@
               await request(
                 otherClientId,
                 GET_VALUE_DIFF,
-                store.getMergeableValuesHashes(),
+                store.getMergeableValueHashes(),
               )
             )[0],
         1,
