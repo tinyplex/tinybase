@@ -126,6 +126,13 @@ _minified_ code.
 Please read the comprehensive Importing TinyBase guide for more details of how
 to construct the correct import paths in v5.0.
 
+#### Expo SQLite Persister
+
+Previously the persister-expo-sqlite module supported expo-sqlite v13 and the
+persister-expo-sqlite-next module supported their modern 'next' package. In
+v5.0, the persister-expo-sqlite module only supports v14 and later, and the
+persister-expo-sqlite-next module has been removed.
+
 #### The TinyBase Inspector
 
 Previously, the React-based inspector (then known as `StoreInspector`) resided
