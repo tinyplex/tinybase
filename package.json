@@ -94,6 +94,7 @@
     "spell": "gulp spell",
     "ts": "gulp ts",
     "test": "gulp --series testUnit testPerf",
+    "preparePackage": "gulp preparePackage",
     "compileForTest": "gulp compileForTest",
     "compileForProd": "gulp compileForProd",
     "testUnit": "gulp testUnit",
