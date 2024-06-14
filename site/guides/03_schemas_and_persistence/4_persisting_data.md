@@ -16,24 +16,23 @@ which returns a new Persister object that can load and save a Store. Between
 them, these allow you to store your TinyBase data locally, remotely, to SQLite
 databases, and across synchronization boundaries with CRDT frameworks.
 
-| Module                     | Function                      | Storage                                                                                                     |
-| -------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| persister-browser          | createSessionPersister        | Browser session storage                                                                                     |
-| persister-browser          | createLocalPersister          | Browser local storage                                                                                       |
-| persister-indexed-db       | createIndexedDbPersister      | Browser IndexedDB                                                                                           |
-| persister-remote           | createRemotePersister         | Remote server                                                                                               |
-| persister-file             | createFilePersister           | Local file (where possible)                                                                                 |
-| persister-partykit-client  | createPartyKitPersister       | PartyKit with the persister-partykit-server module                                                          |
-| persister-sqlite3          | createSqlite3Persister        | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                     |
-| persister-sqlite-wasm      | createSqliteWasmPersister     | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                              |
-| persister-cr-sqlite-wasm   | createCrSqliteWasmPersister   | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                                    |
-| persister-expo-sqlite      | createExpoSqlitePersister     | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)      |
-| persister-expo-sqlite-next | createExpoSqliteNextPersister | SQLite in React Native, via [expo-sqlite/next](https://github.com/expo/expo/tree/main/packages/expo-sqlite) |
-| persister-electric-sql     | createElectricSqlPersister    | Electric SQL, via [electric](https://github.com/electric-sql/electric)                                      |
-| persister-libsql           | createLibSqlPersister         | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)                    |
-| persister-powersync        | createPowerSyncPersister      | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                                |
-| persister-yjs              | createYjsPersister            | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                                            |
-| persister-automerge        | createSqliteWasmPersister     | Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo)                          |
+| Module                    | Function                    | Storage                                                                                                |
+| ------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| persister-browser         | createSessionPersister      | Browser session storage                                                                                |
+| persister-browser         | createLocalPersister        | Browser local storage                                                                                  |
+| persister-indexed-db      | createIndexedDbPersister    | Browser IndexedDB                                                                                      |
+| persister-remote          | createRemotePersister       | Remote server                                                                                          |
+| persister-file            | createFilePersister         | Local file (where possible)                                                                            |
+| persister-partykit-client | createPartyKitPersister     | PartyKit with the persister-partykit-server module                                                     |
+| persister-sqlite3         | createSqlite3Persister      | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                |
+| persister-sqlite-wasm     | createSqliteWasmPersister   | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                         |
+| persister-cr-sqlite-wasm  | createCrSqliteWasmPersister | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                               |
+| persister-expo-sqlite     | createExpoSqlitePersister   | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite) |
+| persister-electric-sql    | createElectricSqlPersister  | Electric SQL, via [electric](https://github.com/electric-sql/electric)                                 |
+| persister-libsql          | createLibSqlPersister       | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)               |
+| persister-powersync       | createPowerSyncPersister    | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                           |
+| persister-yjs             | createYjsPersister          | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                                       |
+| persister-automerge       | createSqliteWasmPersister   | Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo)                     |
 
 See the Database Persistence guide for details on how to work with SQLite
 databases, and the Synchronizing Data guide for more complex synchronization

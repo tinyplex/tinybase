@@ -17,7 +17,6 @@ const TEST_MODULES = [
   'persisters/persister-electric-sql',
   'persisters/persister-powersync',
   'persisters/persister-expo-sqlite',
-  'persisters/persister-expo-sqlite-next',
   'persisters/persister-file',
   'persisters/persister-indexed-db',
   'persisters/persister-libsql',
