@@ -165,7 +165,6 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/persisters/persister-electric-sql/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-powersync/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-expo-sqlite/index.d.ts')
-    .addApiFile('dist/@types/persisters/persister-expo-sqlite-next/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-libsql/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-partykit-client/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-partykit-server/index.d.ts')

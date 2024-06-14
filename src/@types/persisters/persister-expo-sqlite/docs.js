@@ -1,22 +1,18 @@
 /**
  * The persister-expo-sqlite module of the TinyBase project lets you save and
- * load Store data to and from a local Expo-SQLite database (in an appropriate
- * React Native environment).
+ * load Store data to and from a Expo-SQLite database (in an appropriate React
+ * Native environment).
  *
- * This module provides a Persister for the legacy version of Expo's
- * [SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite) library. This API
- * should be used if you are installing the `expo-sqlite` module.
+ * As of TinyBase v5.0, this module provides a Persister for the modern version
+ * of Expo's [SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite) library,
+ * designated 'next' as of November 2023 and default as v14.0 by June 2024.
  *
- * Note that TinyBase support for the modern version of Expo-SQLite
- * (`expo-sqlite-next`) is currently available in the persister-expo-sqlite-next
- * module.
- *
- * Note that this Persister is currently experimental as Expo themselves iterate
- * on the underlying database library API.
+ * Note that TinyBase support for the legacy version of Expo-SQLite is no longer
+ * available.
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-expo-sqlite
- * @since v4.0.3
+ * @since v4.5.0
  */
 /// persister-expo-sqlite
 /**
@@ -29,7 +25,7 @@
  * You should use the createExpoSqlitePersister function to create an
  * ExpoSqlitePersister object.
  * @category Persister
- * @since v4.3.14
+ * @since v4.5.0
  */
 /// ExpoSqlitePersister
 {
@@ -44,9 +40,9 @@
    * ```js yolo
    * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
    * import {createStore} from 'tinybase';
-   * import {openDatabase} from 'expo-sqlite';
+   * import {openDatabaseSync} from 'expo-sqlite';
    *
-   * const db = openDatabase('my.db');
+   * const db = openDatabaseSync('my.db');
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createExpoSqlitePersister(store, db, 'my_tinybase');
    *
@@ -56,7 +52,7 @@
    * persister.destroy();
    * ```
    * @category Getter
-   * @since v4.3.14
+   * @since v4.5.0
    */
   /// ExpoSqlitePersister.getDb
 }
@@ -90,23 +86,23 @@
  * JSON serialization).
  * @param onSqlCommand An optional handler called every time the Persister
  * executes a SQL command or query. This is suitable for logging persistence
- * behavior in a development environment, since v4.0.4.
+ * behavior in a development environment.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
- * debugging persistence issues in a development environment, since v4.0.4.
+ * debugging persistence issues in a development environment.
  * @returns A reference to the new ExpoSqlitePersister object.
  * @example
- * This example creates a ExpoSqlitePersister object and persists the Store to a
- * local SQLite database as a JSON serialization into the `my_tinybase` table.
- * It makes a change to the database directly and then reloads it back into the
- * Store.
+ * This example creates a ExpoSqlitePersister object and persists the Store
+ * to a local SQLite database as a JSON serialization into the `my_tinybase`
+ * table. It makes a change to the database directly and then reloads it back
+ * into the Store.
  *
  * ```js yolo
  * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
  * import {createStore} from 'tinybase';
- * import {openDatabase} from 'expo-sqlite';
+ * import {openDatabaseSync} from 'expo-sqlite';
  *
- * const db = openDatabase('my.db');
+ * const db = openDatabaseSync('my.db');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createExpoSqlitePersister(store, db, 'my_tinybase');
  *
@@ -115,17 +111,18 @@
  *
  * console.log(
  *   await new Promise((resolve) =>
- *     db.all('SELECT * FROM my_tinybase;', (_, rows) => resolve(rows)),
+ *     db.allAsync('SELECT * FROM my_tinybase;').then(resolve),
  *   ),
  * );
  * // -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
  *
  * await new Promise((resolve) =>
- *   db.all(
- *     'UPDATE my_tinybase SET store = ' +
- *       `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`,
- *     resolve,
- *   ),
+ *   db
+ *     .allAsync(
+ *       'UPDATE my_tinybase SET store = ' +
+ *         `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`,
+ *     )
+ *     .then(resolve),
  * );
  * await persister.load();
  * console.log(store.getTables());
@@ -134,15 +131,15 @@
  * persister.destroy();
  * ```
  * @example
- * This example creates a ExpoSqlitePersister object and persists the Store to a
- * local SQLite database with tabular mapping.
+ * This example creates a ExpoSqlitePersister object and persists the Store
+ * to a local SQLite database with tabular mapping.
  *
  * ```js yolo
  * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
  * import {createStore} from 'tinybase';
- * import {openDatabase} from 'expo-sqlite';
+ * import {openDatabaseSync} from 'expo-sqlite';
  *
- * const db = openDatabase('my.db');
+ * const db = openDatabaseSync('my.db');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createExpoSqlitePersister(store, db, {
  *   mode: 'tabular',
@@ -152,16 +149,15 @@
  * await persister.save();
  * console.log(
  *   await new Promise((resolve) =>
- *     db.all('SELECT * FROM pets;', (_, rows) => resolve(rows)),
+ *     db.allAsync('SELECT * FROM pets;').then(resolve),
  *   ),
  * );
  * // -> [{_id: 'fido', species: 'dog'}]
  *
  * await new Promise((resolve) =>
- *   db.all(
- *     `INSERT INTO pets (_id, species) VALUES ('felix', 'cat')`,
- *     resolve,
- *   ),
+ *   db
+ *     .allAsync(`INSERT INTO pets (_id, species) VALUES ('felix', 'cat')`)
+ *     .then(resolve),
  * );
  * await persister.load();
  * console.log(store.getTables());
@@ -170,6 +166,6 @@
  * persister.destroy();
  * ```
  * @category Creation
- * @since v4.0.3
+ * @since v4.5.0
  */
 /// createExpoSqlitePersister
