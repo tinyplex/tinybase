@@ -12,9 +12,10 @@ export const startInterval = (
 };
 export const stopInterval = clearInterval;
 
-export const mathMax = Math.max;
-export const mathMin = Math.min;
-export const mathFloor = Math.floor;
+export const math = Math;
+export const mathMax = math.max;
+export const mathMin = math.min;
+export const mathFloor = math.floor;
 
 export const isFiniteNumber: (num: any) => boolean = isFinite;
 
