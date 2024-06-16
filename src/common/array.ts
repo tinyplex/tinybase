@@ -46,12 +46,7 @@ export const arraySum = (array: number[]): number =>
 export const arrayIsEmpty = (array: unknown[]): boolean => size(array) == 0;
 
 export const arrayReduce = <Value, Result>(
-  array: {
-    reduce: (
-      cb: (previous: Result, current: Value) => Result,
-      initial: Result,
-    ) => Result;
-  },
+  array: Value[],
   cb: (previous: Result, current: Value) => Result,
   initial: Result,
 ): Result => array.reduce(cb, initial);
