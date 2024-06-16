@@ -2,6 +2,9 @@ import {BOOLEAN, FUNCTION, STRING, getTypeOf} from './strings.ts';
 
 const promise = Promise;
 
+export const GLOBAL = globalThis;
+export const WINDOW = GLOBAL.window;
+
 export const startInterval = (
   callback: () => void,
   sec: number,
