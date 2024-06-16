@@ -1,5 +1,5 @@
+import {GLOBAL, ifNotUndefined, isUndefined, mathMax} from './other.ts';
 import {decode, encode} from './codec.ts';
-import {ifNotUndefined, isUndefined, mathMax} from './other.ts';
 import type {Id} from '../@types/common/index.d.ts';
 import {getHash} from './hash.ts';
 import {getUniqueId} from './index.ts';
@@ -79,7 +79,7 @@ export const getHlcFunctions = (
     logicalTime = mathMax(
       previousLogicalTime,
       remoteLogicalTime,
-      (globalThis as any).HLC_TIME ?? Date.now(),
+      (GLOBAL as any).HLC_TIME ?? Date.now(),
     );
     lastCounter =
       logicalTime == previousLogicalTime
