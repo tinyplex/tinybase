@@ -78,7 +78,7 @@ import {
   getProps,
   getRelationshipsStoreTableIds,
 } from '../common/react.ts';
-import {isArray, isString, isUndefined} from '../common/other.ts';
+import {isArray, isString, isUndefined, mathMin} from '../common/other.ts';
 import {objMap, objNew, objToArray} from '../common/obj.ts';
 import type {Relationships} from '../@types/relationships/index.d.ts';
 import {arrayMap} from '../common/array.ts';
@@ -856,7 +856,7 @@ export const SortedTablePaginator: typeof SortedTablePaginatorDecl = ({
           >
             {RIGHT_ARROW}
           </button>
-          {offset + 1} to {Math.min(total, offset + limit)}
+          {offset + 1} to {mathMin(total, offset + limit)}
           {' of '}
         </>
       )}
