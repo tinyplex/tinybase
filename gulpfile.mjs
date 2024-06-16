@@ -576,6 +576,7 @@ const test = async (
   } = await jest.runCLI(
     {
       roots: [dir],
+      setupFilesAfterEnv: ['./test/jest/setup'],
       ...(puppeteer
         ? {
             setupFilesAfterEnv: ['expect-puppeteer'],
@@ -602,7 +603,6 @@ const test = async (
       ...(countAsserts
         ? {
             testEnvironment: './test/jest/environment',
-            setupFilesAfterEnv: ['./test/jest/setup'],
             reporters: ['default', './test/jest/reporter'],
             runInBand: true,
           }
