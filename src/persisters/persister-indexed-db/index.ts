@@ -5,18 +5,18 @@ import type {
   createIndexedDbPersister as createIndexedDbPersisterDecl,
 } from '../../@types/persisters/persister-indexed-db/index.d.ts';
 import {T, V} from '../../common/strings.ts';
-import {arrayMap, arrayPush} from '../../common/array.ts';
 import {
+  WINDOW,
   promiseAll,
   promiseNew,
   startInterval,
   stopInterval,
 } from '../../common/other.ts';
+import {arrayMap, arrayPush} from '../../common/array.ts';
 import type {Id} from '../../@types/common/index.d.ts';
 import type {PersisterListener} from '../../@types/persisters/index.d.ts';
 import {createCustomPersister} from '../index.ts';
 
-const WINDOW = globalThis.window;
 const OBJECT_STORE_NAMES = [T, V];
 const KEY_PATH = {keyPath: 'k'};
 
