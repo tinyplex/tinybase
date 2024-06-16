@@ -15,9 +15,6 @@
     "react"
   ],
   "type": "module",
-  "bin": {
-    "tinybase": "./cli/index.js"
-  },
   "browser": {
     "fs": false
   },
