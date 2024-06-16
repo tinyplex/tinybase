@@ -26,6 +26,7 @@
     "@sqlite.org/sqlite-wasm": "^3.46.0-build2",
     "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "electric-sql": "^0.12.1",
+    "expo": "^51.0.0",
     "expo-sqlite": "^14.0.3",
     "partykit": "^0.0.107",
     "partysocket": "^1.0.1",

@@ -460,7 +460,7 @@ const compileModule = async (
 
   const inputConfig = {
     external: [
-      'expo-sqlite/next.js',
+      'expo-sqlite',
       'fs',
       'fs/promises',
       'path',
@@ -525,7 +525,7 @@ const compileModule = async (
     entryFileNames: index,
     format,
     globals: {
-      'expo-sqlite/next.js': 'expo-sqlite/next',
+      'expo-sqlite': 'expo-sqlite',
       'fs/promises': 'fs/promises',
       'react-dom': 'ReactDOM',
       fs: 'fs',
