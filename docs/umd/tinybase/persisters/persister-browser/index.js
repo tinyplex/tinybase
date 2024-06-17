@@ -11,6 +11,8 @@
 
   const UNDEFINED = '\uFFFC';
 
+  const GLOBAL = globalThis;
+  const WINDOW = GLOBAL.window;
   const isUndefined = (thing) => thing == void 0;
   const ifNotUndefined = (value, then, otherwise) =>
     isUndefined(value) ? otherwise?.() : then(value);
@@ -243,7 +245,6 @@
   };
 
   const STORAGE = 'storage';
-  const WINDOW = globalThis.window;
   const createStoragePersister = (
     store,
     storageName,
