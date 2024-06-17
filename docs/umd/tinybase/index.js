@@ -44,8 +44,11 @@
   const strEndsWith = (str, suffix) => str.endsWith(suffix);
 
   const promise = Promise;
-  const mathMax = Math.max;
-  const mathMin = Math.min;
+  const GLOBAL = globalThis;
+  const math = Math;
+  const mathMax = math.max;
+  const mathMin = math.min;
+  const mathFloor = math.floor;
   const isFiniteNumber = isFinite;
   const isInstanceOf = (thing, cls) => thing instanceof cls;
   const isUndefined = (thing) => thing == void 0;
@@ -774,11 +777,15 @@
   const encode = (num) => ENCODE[num & MASK6];
   const decode = (str, pos) => mapGet(DECODE, str[pos]) ?? 0;
 
+  const getRandomValues = GLOBAL.crypto
+    ? (array) => GLOBAL.crypto.getRandomValues(array)
+    : /* istanbul ignore next */
+      (array) => arrayMap(array, () => mathFloor(math.random() * 256));
   const defaultSorter = (sortKey1, sortKey2) =>
     (sortKey1 ?? 0) < (sortKey2 ?? 0) ? -1 : 1;
   const getUniqueId = (length = 16) =>
     arrayReduce(
-      crypto.getRandomValues(new Uint8Array(length)),
+      getRandomValues(new Uint8Array(length)),
       (uniqueId, number) => uniqueId + encode(number),
       '',
     );
@@ -1347,7 +1354,7 @@
     return objFreeze(persister);
   };
 
-  const textEncoder = new globalThis.TextEncoder();
+  const textEncoder = new GLOBAL.TextEncoder();
   const getHash = (value) => {
     let hash = 2166136261;
     arrayForEach(textEncoder.encode(value), (char) => {
@@ -3667,7 +3674,7 @@
       logicalTime = mathMax(
         previousLogicalTime,
         remoteLogicalTime,
-        globalThis.HLC_TIME ?? Date.now(),
+        GLOBAL.HLC_TIME ?? Date.now(),
       );
       lastCounter =
         logicalTime == previousLogicalTime

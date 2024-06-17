@@ -14,6 +14,9 @@
   const UNDEFINED = '\uFFFC';
 
   const promise = Promise;
+  const GLOBAL = globalThis;
+  const math = Math;
+  const mathFloor = math.floor;
   const isUndefined = (thing) => thing == void 0;
   const ifNotUndefined = (value, then, otherwise) =>
     isUndefined(value) ? otherwise?.() : then(value);
@@ -83,7 +86,7 @@
     return mapGet(map, key);
   };
 
-  new globalThis.TextEncoder();
+  new GLOBAL.TextEncoder();
 
   const newStamp = (value, time) => (time ? [value, time] : [value]);
   const getLatestTime = (time1, time2) =>
@@ -277,9 +280,13 @@
   mapNew(arrayMap(ENCODE, (char, index) => [char, index]));
   const encode = (num) => ENCODE[num & MASK6];
 
+  const getRandomValues = GLOBAL.crypto
+    ? (array) => GLOBAL.crypto.getRandomValues(array)
+    : /* istanbul ignore next */
+      (array) => arrayMap(array, () => mathFloor(math.random() * 256));
   const getUniqueId = (length = 16) =>
     arrayReduce(
-      crypto.getRandomValues(new Uint8Array(length)),
+      getRandomValues(new Uint8Array(length)),
       (uniqueId, number) => uniqueId + encode(number),
       '',
     );
