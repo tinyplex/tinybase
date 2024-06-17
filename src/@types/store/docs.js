@@ -3069,8 +3069,7 @@
    * @param changes The Changes to apply to the Store.
    * @returns A reference to the Store.
    * @example
-   * This example applies a Changes object that sets a Cell and
-   * removes a Value.
+   * This example applies a Changes object that sets a Cell and removes a Value.
    *
    * ```js
    * import {createStore} from 'tinybase';
@@ -3840,6 +3839,7 @@
    * This is useful for deciding whether to rollback a transaction, for example.
    * The returned object is only meaningful if the method is called when the
    * Store is in a transaction - such as in a TransactionListener.
+   * @returns A Changes object representing the changes.
    * @example
    * This example makes changes to the Store. At the end of the transaction,
    * detail about what changed is enumerated.
@@ -3875,6 +3875,7 @@
    * This is useful for deciding whether to rollback a transaction, for example.
    * The returned object is only meaningful if the method is called when the
    * Store is in a transaction - such as in a TransactionListener.
+   * @returns A TransactionLog object representing the changes.
    * @example
    * This example makes changes to the Store. At the end of the transaction,
    * detail about what changed is enumerated.
