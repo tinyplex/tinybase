@@ -30,6 +30,7 @@ import {mockFetchWasm, pause, suppressWarnings} from './common/other.ts';
 import {readFileSync, readdirSync} from 'fs';
 import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './common/automerge-adaptor.ts';
 import initWasm from '@vlcn.io/crsqlite-wasm';
+import {resetHlc} from './common/mergeable.ts';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {transformSync} from 'esbuild';
 
@@ -79,6 +80,7 @@ import {transformSync} from 'esbuild';
 Object.assign(globalThis as any, {
   IS_REACT_ACT_ENVIRONMENT: true,
   pause,
+  resetHlc,
 });
 
 type Results = [any, any][];
@@ -143,8 +145,9 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
           'act(() => dispatchEvent(new $1));\n',
         )
         ?.replace(
-          /\/\/ ->\n`(.*?)`;$/gms,
-          '_expected.push(`$1`.replace(/\\n\\s*/gms, ``));\n',
+          /\/\/ ->\n(.*?);$/gms,
+          (match, expected) =>
+            '_expected.push(' + expected.replace(/\n\s*/gms, ``) + ');\n',
         )
         ?.replace(/\/\/ -> (.*?)$/gm, '_expected.push($1);\n')
         ?.replace(
@@ -154,6 +157,7 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
         ?.replace(/\/\/ \.\.\.$/gm, 'await pause();\n')
         ?.replace(/^(.*?) \/\/ !act$/gm, 'act(() => {$1});')
         ?.replace(/^(.*?) \/\/ !yolo$/gm, '')
+        ?.replace(/\/\/ !resetHlc$/gm, 'resetHlc();')
         ?.replace(/\n+/g, '\n')
         ?.replace(
           /import (type )?(.*?) from '(.*?)';/gms,
