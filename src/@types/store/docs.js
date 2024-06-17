@@ -2509,6 +2509,7 @@
    * can be chained in a fluent style.
    * @param content An array containing the tabular and keyed-value data of the
    * Store to be set.
+   * @returns A reference to the Store.
    * @example
    * This example sets the data of a Store.
    *
@@ -2568,6 +2569,7 @@
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
    * @param tables The data of the Store to be set.
+   * @returns A reference to the Store.
    * @example
    * This example sets the tabular data of a Store.
    *
@@ -2621,6 +2623,7 @@
    * can be chained in a fluent style.
    * @param tableId The Id of the Table in the Store.
    * @param table The data of a single Table to be set.
+   * @returns A reference to the Store.
    * @example
    * This example sets the data of a single Table.
    *
