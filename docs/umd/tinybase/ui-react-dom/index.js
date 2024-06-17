@@ -23,6 +23,8 @@
   const CURRENT_TARGET = 'currentTarget';
   const _VALUE = 'value';
 
+  const math = Math;
+  const mathMin = math.min;
   const isFiniteNumber = isFinite;
   const isUndefined = (thing) => thing == void 0;
   const isTypeStringOrBoolean = (type) => type == STRING || type == BOOLEAN;
@@ -780,7 +782,7 @@
           ),
           offset + 1,
           ' to ',
-          Math.min(total, offset + limit),
+          mathMin(total, offset + limit),
           ' of ',
         ),
       total,
