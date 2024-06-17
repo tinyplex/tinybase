@@ -235,7 +235,6 @@
  *
  * One possible exceptions is the merge method, which can be used to simply
  * merge two co-located MergeableStore instances together.
- *
  * @example
  * This example shows very simple usage of the MergeableStore: whereby two are
  * created, updated with different data, and then merged with one another.
@@ -270,7 +269,8 @@
    * The method is generally intended to be used internally within TinyBase
    * itself and the return type is assumed to be opaque to applications that use
    * it.
-   *
+   * @returns A MergeableContent object for the full content of the
+   * MergeableStore.
    * @example
    * This example creates a MergeableStore, sets some data, and then accesses
    * the content and metadata required to make it mergeable.
@@ -305,30 +305,117 @@
    *   [{}, '', 0],
    * ];
    * ```
-   *  @category Getter
+   * @category Getter
    * @since v5.0.0
    */
   /// MergeableStore.getMergeableContent
   /**
-   * The getMergeableContentAsChanges method
-   * @category Getter
-   * @since v5.0.0
-   */
-  /// MergeableStore.getMergeableContentAsChanges
-  /**
-   * The getMergeableContentHashes method
+   * The getMergeableContentHashes method returns hashes for the full content of
+   * a MergeableStore.
+   *
+   * If two MergeableStore instances have different hashes, that indicates that
+   * the mergeable Tables or Values within them are different and should be
+   * synchronized.
+   *
+   * The method is generally intended to be used internally within TinyBase
+   * itself and the return type is assumed to be opaque to applications that use
+   * it.
+   * @returns A ContentHashes array for the hashes of the full content of the
+   * MergeableStore.
+   * @example
+   * This example creates a MergeableStore, sets some data, and then accesses
+   * the content hashes.
+   *
+   * ```js
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store = createMergeableStore('store1'); // !resetHlc
+   *
+   * store.setCell('pets', 'fido', 'color', 'brown');
+   * console.log(store.getMergeableContentHashes());
+   * // -> [784336119, 0]
+   *
+   * store.setValue('open', true);
+   * console.log(store.getMergeableContentHashes());
+   * // -> [784336119, 2829789038]
+   * ```
    * @category Syncing
    * @since v5.0.0
    */
   /// MergeableStore.getMergeableContentHashes
   /**
-   * The getMergeableTableHashes method
+   * The getMergeableTableHashes method returns hashes for the tabular content
+   * of a MergeableStore.
+   *
+   * If two MergeableStore instances have different hashes, that indicates that
+   * the mergeable Tables within them are different and should be synchronized.
+   *
+   * The method is generally intended to be used internally within TinyBase
+   * itself and the return type is assumed to be opaque to applications that use
+   * it.
+   * @returns A TableHashes object for the hashes of the tabular content of the
+   * MergeableStore.
+   * @example
+   * This example creates a MergeableStore, sets some data, and then accesses
+   * the Table hashes.
+   *
+   * ```js
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store = createMergeableStore('store1'); // !resetHlc
+   *
+   * store.setCell('pets', 'fido', 'color', 'brown');
+   * console.log(store.getMergeableTableHashes());
+   * // -> {"pets": 518810247}
+   *
+   * store.setCell('species', 'dog', 'price', 5);
+   * console.log(store.getMergeableTableHashes());
+   * // -> {pets: 518810247, species: 2324343240}
+   * ```
    * @category Syncing
    * @since v5.0.0
    */
   /// MergeableStore.getMergeableTableHashes
   /**
-   * The getMergeableTableDiff method
+   * The getMergeableTableDiff method returns the hashes of new and differing
+   * Tables of a MergeableStore relative to another.
+   *
+   * The method is generally intended to be used internally within TinyBase
+   * itself and the return type is assumed to be opaque to applications that use
+   * it.
+   * @param relativeTo The TableHashes of another MergeableStore.
+   * @returns A pair of objects describing the new and differing Tables of this
+   * MergeableStore relative to the other.
+   * @example
+   * This example creates two MergeableStores, sets some differing data, and
+   * then identifies the differences in the Tables of one versus the other. Once
+   * they have been merged, the differences are empty.
+   * ```js
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store1 = createMergeableStore('store1'); // !resetHlc
+   * const store2 = createMergeableStore('store2');
+   *
+   * store1.setCell('pets', 'fido', 'color', 'brown');
+   * store2.setCell('pets', 'fido', 'species', 'dog');
+   * store2.setCell('species', 'dog', 'price', 5);
+   *
+   * console.log(
+   *   store2.getMergeableTableDiff(store1.getMergeableTableHashes()),
+   * );
+   * // ->
+   * [
+   *   [{species: [{dog: [{price: [5, 'Nn1JUF----0CnH-J']}]}]}],
+   *   {pets: 1212600658},
+   * ];
+   *
+   * store1.merge(store2);
+   *
+   * console.log(
+   *   store2.getMergeableTableDiff(store1.getMergeableTableHashes()),
+   * );
+   * // -> [[{}], {}]
+   * ```
    * @category Syncing
    * @since v5.0.0
    */
