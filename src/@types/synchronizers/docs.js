@@ -8,22 +8,22 @@
  */
 /// synchronizers
 /**
- * The MessageType type
+ * The MessageType type.
  * @category Synchronization
  */
 /// MessageType
 /**
- * The Receive type
+ * The Receive type.
  * @category Synchronization
  */
 /// Receive
 /**
- * The Send type
+ * The Send type.
  * @category Synchronization
  */
 /// Send
 /**
- * The SynchronizerStats type
+ * The SynchronizerStats type.
  * @category Development
  */
 /// SynchronizerStats
@@ -41,17 +41,17 @@
 /// Synchronizer
 {
   /**
-   * The startSync method
+   * The startSync method.
    * @category Synchronization
    */
   /// Synchronizer.startSync
   /**
-   * The stopSync method
+   * The stopSync method.
    * @category Synchronization
    */
   /// Synchronizer.stopSync
   /**
-   * The getSynchronizerStats method
+   * The getSynchronizerStats method.
    * @category Synchronization
    */
   /// Synchronizer.getSynchronizerStats

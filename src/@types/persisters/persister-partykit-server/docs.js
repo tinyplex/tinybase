@@ -72,7 +72,7 @@
   /// TinyBasePartyKitServerConfig.storagePrefix
   /**
    * An object containing the extra HTTP(S) headers returned to the client from
-   * this server. This defaults to the following three headers to allow CORS:
+   * this server. This defaults to the following three headers to allow CORS.
    *
    * ```
    * Access-Control-Allow-Origin: *
@@ -159,7 +159,7 @@
    *
    * If you choose to implement additional functionality in this method, you
    * must remember to call the super implementation to ensure the TinyBase
-   * synchronization stays supported:
+   * synchronization stays supported.
    *
    * ```js
    * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
@@ -185,7 +185,7 @@
    *
    * If you choose to implement additional functionality in this method, you
    * must remember to call the super implementation to ensure the TinyBase
-   * synchronization stays supported:
+   * synchronization stays supported.
    *
    * ```js
    * import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
