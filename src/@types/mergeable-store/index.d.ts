@@ -97,7 +97,7 @@ export interface MergeableStore extends Store {
 
   /// MergeableStore.getMergeableTableDiff
   getMergeableTableDiff(
-    relativeTo: TableHashes,
+    otherTableHashes: TableHashes,
   ): [newTables: TablesStamp, differingTableHashes: TableHashes];
 
   /// MergeableStore.getMergeableRowHashes
@@ -118,7 +118,7 @@ export interface MergeableStore extends Store {
   getMergeableValueHashes(): ValueHashes;
 
   /// MergeableStore.getMergeableValueDiff
-  getMergeableValueDiff(relativeTo: ValueHashes): ValuesStamp;
+  getMergeableValueDiff(otherValueHashes: ValueHashes): ValuesStamp;
 
   /// MergeableStore.setMergeableContent
   setMergeableContent(mergeableContent: MergeableContent): MergeableStore;

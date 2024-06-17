@@ -154,7 +154,7 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
 
   /// MergeableStore.getMergeableTableDiff
   getMergeableTableDiff(
-    relativeTo: TableHashes<Schemas[0]>,
+    otherTableHashes: TableHashes<Schemas[0]>,
   ): [
     newTables: TablesStamp<Schemas[0]>,
     differingTableHashes: TableHashes<Schemas[0]>,
@@ -188,7 +188,7 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
 
   /// MergeableStore.getMergeableValueDiff
   getMergeableValueDiff(
-    relativeTo: ValueHashes<Schemas[1]>,
+    otherValueHashes: ValueHashes<Schemas[1]>,
   ): ValuesStamp<Schemas[1]>;
 
   /// MergeableStore.setMergeableContent
