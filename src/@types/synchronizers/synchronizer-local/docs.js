@@ -9,12 +9,12 @@
  */
 /// synchronizer-local
 /**
- * The LocalSynchronizer interface
+ * The LocalSynchronizer interface.
  * @category Synchronizer
  */
 /// LocalSynchronizer
 /**
- * The createLocalSynchronizer function
+ * The createLocalSynchronizer function.
  * @category Creation
  */
 /// createLocalSynchronizer
