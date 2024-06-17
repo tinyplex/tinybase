@@ -763,7 +763,7 @@
    * @example
    * This example creates a new MergeableStore with default data, and
    * demonstrates that it is overwritten with another MergeableStore's data on
-   * merge, even if the other Store was provisioned earlier.
+   * merge, even if the other MergeableStore was provisioned earlier.
    *
    * ```js
    * import {createMergeableStore} from 'tinybase';
@@ -787,19 +787,160 @@
    */
   /// MergeableStore.setDefaultContent
   /**
-   * The getTransactionMergeableChanges method.
-   * @category Getter
+   * The getTransactionMergeableChanges method returns the net meaningful
+   * changes that have been made to a MergeableStore during a transaction.
+   *
+   * The method is generally intended to be used internally within TinyBase
+   * itself and the return type is assumed to be opaque to applications that use
+   * it.
+   * @returns A MergeableChanges object representing the changes.
+   * @example
+   * This example makes changes to the MergeableStore. At the end of the
+   * transaction, detail about what changed is enumerated.
+   *
+   * ```js
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store = createMergeableStore('store1'); // !resetHlc
+   * store.setTables({pets: {fido: {species: 'dog', color: 'brown'}}});
+   * store.setValues({open: true});
+   *
+   * store
+   *   .startTransaction()
+   *   .setCell('pets', 'fido', 'color', 'black')
+   *   .setValue('open', false)
+   *   .finishTransaction(() => {
+   *     console.log(store.getTransactionMergeableChanges());
+   *   });
+   * // ->
+   * [
+   *   [{pets: [{fido: [{color: ['black', 'Nn1JUF----2FnHIC']}]}]}],
+   *   [{open: [false, 'Nn1JUF----3FnHIC']}],
+   *   1,
+   * ];
+   * ```
+   * @category Transaction
    * @since v5.0.0
    */
   /// MergeableStore.getTransactionMergeableChanges
   /**
-   * The applyMergeableChanges method.
+   * The applyMergeableChanges method applies a set of mergeable changes or
+   * content to the MergeableStore.
+   *
+   * The method is generally intended to be used internally within TinyBase
+   * itself and the return type is assumed to be opaque to applications that use
+   * it.
+   * @param mergeableChanges The MergeableChanges or MergeableContent to apply
+   * to the MergeableStore.
+   * @returns A reference to the MergeableStore.
+   * @example
+   * This example applies a MergeableChanges object that sets a Cell and removes
+   * a Value.
+   *
+   * ```js
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store = createMergeableStore('store1')
+   *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
+   *   .setValues({open: true});
+   *
+   * store.applyMergeableChanges([
+   *   [{pets: [{fido: [{color: ['black', 'Nn1JUF----2FnHIC']}]}]}],
+   *   [{open: [null, 'Nn1JUF----3FnHIC']}],
+   *   1,
+   * ]);
+   * console.log(store.getTables());
+   * // -> {pets: {fido: {species: 'dog', color: 'black'}}}
+   * console.log(store.getValues());
+   * // -> {}
+   * ```
    * @category Setter
    * @since v5.0.0
    */
   /// MergeableStore.applyMergeableChanges
   /**
-   * The merge method.
+   * The merge method is a convenience method that applies the mergeable content
+   * from two MergeableStores to each other in order to bring them to the same
+   * state.
+   *
+   * This method is symmetrical: applying `store1` to `store2` will have exactly
+   * the same effect as applying `store2` to `store1`.
+   * @param mergeableStore A reference to the other MergeableStore to merge with
+   * this one.
+   * @returns A reference to this MergeableStore.
+   * @example
+   * This example merges two MergeableStore objects together. Note how the final
+   * part of the timestamps on each Cell give you a clue that the data comes
+   * from changes made to different MergeableStore objects.
+   *
+   * ```js
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store1 = createMergeableStore('store1');
+   * store1.setTables({pets: {fido: {species: 'dog', color: 'brown'}}});
+   *
+   * const store2 = createMergeableStore('store2');
+   * store2.setTables({pets: {felix: {species: 'cat', color: 'tan'}}});
+   *
+   * store1.merge(store2);
+   *
+   * console.log(store1.getContent());
+   * // ->
+   * [
+   *   {
+   *     pets: {
+   *       felix: {color: 'tan', species: 'cat'},
+   *       fido: {color: 'brown', species: 'dog'},
+   *     },
+   *   },
+   *   {},
+   * ];
+   *
+   * console.log(store2.getContent());
+   * // ->
+   * [
+   *   {
+   *     pets: {
+   *       felix: {color: 'tan', species: 'cat'},
+   *       fido: {color: 'brown', species: 'dog'},
+   *     },
+   *   },
+   *   {},
+   * ];
+   * console.log(store2.getMergeableContent());
+   * // ->
+   * [
+   *   [
+   *     {
+   *       pets: [
+   *         {
+   *           felix: [
+   *             {
+   *               color: ['tan', 'Nn1JUF----0CnH-J', 2576658292],
+   *               species: ['cat', 'Nn1JUF-----CnH-J', 3409607562],
+   *             },
+   *             '',
+   *             4146239216,
+   *           ],
+   *           fido: [
+   *             {
+   *               color: ['brown', 'Nn1JUF----0FnHIC', 1240535355],
+   *               species: ['dog', 'Nn1JUF-----FnHIC', 290599168],
+   *             },
+   *             '',
+   *             3989065420,
+   *           ],
+   *         },
+   *         '',
+   *         4155188296,
+   *       ],
+   *     },
+   *     '',
+   *     972931118,
+   *   ],
+   *   [{}, '', 0],
+   * ];
+   * ```
    * @category Setter
    * @since v5.0.0
    */
