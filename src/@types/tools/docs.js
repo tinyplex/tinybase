@@ -114,6 +114,7 @@
    * @returns A StoreStats object containing statistics about the Store.
    * @example
    * This example creates a Tools object and gets basic statistics about it.
+   *
    * ```js
    * import {createStore} from 'tinybase';
    * import {createTools} from 'tinybase/tools';
@@ -134,6 +135,7 @@
    * ```
    * @example
    * This example creates a Tools object and gets detailed statistics about it.
+   *
    * ```js
    * import {createStore} from 'tinybase';
    * import {createTools} from 'tinybase/tools';
@@ -184,6 +186,7 @@
    * @example
    * This example creates a Tools object and gets the schema of a Store that
    * already has a TablesSchema.
+   *
    * ```js
    * import {createStore} from 'tinybase';
    * import {createTools} from 'tinybase/tools';
@@ -204,6 +207,7 @@
    * @example
    * This example creates a Tools object and infers the schema of a Store that
    * doesn't already have a TablesSchema.
+   *
    * ```js
    * import {createStore} from 'tinybase';
    * import {createTools} from 'tinybase/tools';
@@ -247,6 +251,7 @@
    * @example
    * This example creates a Tools object and gets the schema of a Store that
    * already has a ValuesSchema.
+   *
    * ```js
    * import {createStore} from 'tinybase';
    * import {createTools} from 'tinybase/tools';
@@ -263,6 +268,7 @@
    * @example
    * This example creates a Tools object and infers the schema of a Store that
    * doesn't already have a ValuesSchema.
+   *
    * ```js
    * import {createStore} from 'tinybase';
    * import {createTools} from 'tinybase/tools';
@@ -341,6 +347,7 @@
    * @example
    * This example creates a Tools object and generates code for a Store that
    * already has a TablesSchema.
+   *
    * ```js
    * import {createStore} from 'tinybase';
    * import {createTools} from 'tinybase/tools';
@@ -364,6 +371,7 @@
    * @example
    * This example creates a Tools object and generates code for a Store that
    * doesn't already have a TablesSchema.
+   *
    * ```js
    * import {createStore} from 'tinybase';
    * import {createTools} from 'tinybase/tools';
@@ -421,6 +429,7 @@
    * @example
    * This example creates a Tools object and generates code for a Store that
    * already has a TablesSchema.
+   *
    * ```js
    * import {createStore} from 'tinybase';
    * import {createTools} from 'tinybase/tools';
@@ -444,6 +453,7 @@
    * @example
    * This example creates a Tools object and generates code for a Store that
    * doesn't already have a TablesSchema.
+   *
    * ```js
    * import {createStore} from 'tinybase';
    * import {createTools} from 'tinybase/tools';
