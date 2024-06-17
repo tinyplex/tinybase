@@ -709,13 +709,79 @@
    */
   /// MergeableStore.getMergeableValueDiff
   /**
-   * The setMergeableContent method.
+   * The setMergeableContent method sets the full content of a MergeableStore,
+   * together with the metadata required to make it mergeable with another.
+   *
+   * The method is generally intended to be used internally within TinyBase
+   * itself and the return type is assumed to be opaque to applications that use
+   * it.
+   * @param content The full content and metadata of a MergeableStore.
+   * @returns A reference to the MergeableStore.
+   * @example
+   * This example creates a new MergeableStore and initializes it with
+   * the content and metadata from another.
+   *
+   * ```js
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store1 = createMergeableStore('store1'); // !resetHlc
+   * store1.setValues({employees: 3});
+   * console.log(store1.getMergeableContent());
+   * // ->
+   * [
+   *   [{}, '', 0],
+   *   [{employees: [3, 'Nn1JUF-----FnHIC', 1940815977]}, '', 1260895905],
+   * ];
+   *
+   * const store2 = createMergeableStore('store2');
+   * store2.setMergeableContent(store1.getMergeableContent());
+   * console.log(store2.getMergeableContent());
+   * // ->
+   * [
+   *   [{}, '', 0],
+   *   [{employees: [3, 'Nn1JUF-----FnHIC', 1940815977]}, '', 1260895905],
+   * ];
+   * ```
    * @category Setter
    * @since v5.0.0
    */
   /// MergeableStore.setMergeableContent
   /**
-   * The setDefaultContent method.
+   * The setDefaultContent method sets initial content of a MergeableStore.
+   *
+   * This differs from the setMergeableContent method in that all of the
+   * metadata is initialized with a empty HLC timestamp - meaning that any
+   * changes applied to it will 'win', yet ensuring that at least default,
+   * initial data exists.
+   *
+   * The method is generally intended to be used internally within TinyBase
+   * itself and the return type is assumed to be opaque to applications that use
+   * it.
+   * @param content An array containing the tabular and keyed-value data to be
+   * set.
+   * @returns A reference to the MergeableStore.
+   * @example
+   * This example creates a new MergeableStore with default data, and
+   * demonstrates that it is overwritten with another MergeableStore's data on
+   * merge, even if the other Store was provisioned earlier.
+   *
+   * ```js
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store1 = createMergeableStore('store1'); // !resetHlc
+   * store1.setValues({employees: 3});
+   *
+   * const store2 = createMergeableStore('store2');
+   * store2.setDefaultContent([{}, {employees: 4}]);
+   * console.log(store2.getMergeableContent());
+   * // -> [[{}, "", 0], [{"employees": [4, "", 2414055963]}, "", 3035768673]]
+   * ```
+   *
+   * store2.merge(store1);
+   *
+   * console.log(store2.getContent());
+   * // -> [{}, {employees: 3}]
+   * ```
    * @category Setter
    * @since v5.0.0
    */
