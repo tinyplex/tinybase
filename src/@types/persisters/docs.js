@@ -41,19 +41,19 @@
  */
 /// persisters
 /**
- * The StoreTypes type
+ * The StoreTypes type.
  */
 /// StoreTypes
 /**
- * The PersistedStore type
+ * The PersistedStore type.
  */
 /// PersistedStore
 /**
- * The PersistedContent type
+ * The PersistedContent type.
  */
 /// PersistedContent
 /**
- * The PersistedChanges type
+ * The PersistedChanges type.
  */
 /// PersistedChanges
 /**
@@ -173,7 +173,7 @@
  * called `_id`, and one called `store`. (These column names can be changed
  * using the `rowIdColumnName` and `storeColumnName` settings). The Persister
  * will place a single row in this table with `_` in the `_id` column, and the
- * JSON serialization in the `store` column, something like:
+ * JSON serialization in the `store` column, something like the following.
  *
  * ```
  * > SELECT * FROM tinybase;
@@ -243,7 +243,7 @@
  *
  * Note that if you are planning to both load from and save to a database, it is
  * important to make sure that the load and save table mappings are symmetrical.
- * For example:
+ * For example, consider the following.
  *
  * ```js
  * import type {DatabasePersisterConfig} from 'tinybase';

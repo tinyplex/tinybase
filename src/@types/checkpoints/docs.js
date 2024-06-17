@@ -252,7 +252,7 @@
   /// Checkpoints.addCheckpoint
   /**
    * The setCheckpoint method updates the label for a checkpoint in the
-   * Checkpoints object after it has been created
+   * Checkpoints object after it has been created.
    *
    * The `label` parameter can be used to describe the actions that changed the
    * Store before the given checkpoint. This can be useful for interfaces that

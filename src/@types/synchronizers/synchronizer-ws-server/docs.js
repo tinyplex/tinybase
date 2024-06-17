@@ -9,23 +9,23 @@
  */
 /// synchronizer-ws-server
 /**
- * The PathIdsListener type
+ * The PathIdsListener type.
  */
 /// PathIdsListener
 /**
- * The ClientIdsListener type
+ * The ClientIdsListener type.
  */
 /// ClientIdsListener
 /**
- * The WsServerStats type
+ * The WsServerStats type.
  */
 /// WsServerStats
 /**
- * The WsServer interface
+ * The WsServer interface.
  */
 /// WsServer
 /**
- * The createWsServer function
+ * The createWsServer function.
  * @category Creation
  */
 /// createWsServer

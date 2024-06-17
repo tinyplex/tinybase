@@ -237,7 +237,7 @@
  */
 /// useCreateStore
 /**
- * The useCreateMergeableStore hook
+ * The useCreateMergeableStore hook.
  */
 /// useCreateMergeableStore
 /**

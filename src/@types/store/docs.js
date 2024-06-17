@@ -659,7 +659,7 @@
  * the Table whose Row Ids changed, and the number of Row objects in the Table.
  * @param store A reference to the Store that changed.
  * @param tableId The Id of the Table that changed.
- * @param count The number of Row objects in the Table
+ * @param count The number of Row objects in the Table.
  * @category Listener
  * @since v4.1.0
  */
@@ -1266,7 +1266,7 @@
   /// StoreListenerStats.hasTableCell
   /**
    * The number of RowCountListener functions registered with the Store, since
-   * v4.1.0
+   * v4.1.0.
    */
   /// StoreListenerStats.rowCount
   /**
@@ -1354,7 +1354,7 @@
  *
  * The keyed value support is best thought of as a flat JavaScript object. The
  * Store contains a number of Value objects, each with a unique ID, and which is
- * a string, boolean, or number:
+ * a string, boolean, or number.
  *
  * ```json
  * {                  // Store
@@ -1438,8 +1438,8 @@
  * There are two extra methods to manipulate Row objects. The addRow method is
  * like the setRow method but automatically assigns it a new unique Id. And the
  * setPartialRow method lets you update multiple Cell values in a Row without
- * affecting the others. (There is a similar setPartialValues method to do the
- * same for the Values in a Store.)
+ * affecting the others. There is a similar setPartialValues method to do the
+ * same for the Values in a Store.
  *
  * You can listen to attempts to write invalid data to a Value or Cell with the
  * addInvalidValueListener method or addInvalidCellListener method.
@@ -2719,7 +2719,7 @@
    *
    * Assuming that at least some of the provided Row object is valid, a new Row
    * will be created. If the object is completely invalid, no change will be
-   * made to the Store and the method will return `undefined`
+   * made to the Store and the method will return `undefined`.
    *
    * You should not guarantee the form of the unique Id that is generated when a
    * Row is added to the Table. However it is likely to be a string
@@ -6181,11 +6181,11 @@
    * Special note should be made for how the listener will be called when a
    * TablesSchema is present. The listener will be called:
    *
-   * - if a Table is being updated that is not specified in the TablesSchema
-   * - if a Cell is of the wrong type specified in the TablesSchema
-   * - if a Cell is omitted and is not defaulted in the TablesSchema
-   * - if an empty Row is provided and there are no Cell defaults in the
-   *   TablesSchema
+   * - if a Table is being updated that is not specified in the TablesSchema,
+   * - if a Cell is of the wrong type specified in the TablesSchema,
+   * - if a Cell is omitted and is not defaulted in the TablesSchema,
+   * - or if an empty Row is provided and there are no Cell defaults in the
+   *   TablesSchema.
    *
    * The listener will not be called if a Cell that is defaulted in the
    * TablesSchema is not provided, as long as all of the Cells that are _not_
@@ -6406,10 +6406,10 @@
    * Special note should be made for how the listener will be called when a
    * ValuesSchema is present. The listener will be called:
    *
-   * - if a Value is being updated that is not specified in the ValuesSchema
-   * - if a Value is of the wrong type specified in the ValuesSchema
-   * - if a Value is omitted when using setValues that is not defaulted in the
-   *   ValuesSchema
+   * - if a Value is being updated that is not specified in the ValuesSchema,
+   * - if a Value is of the wrong type specified in the ValuesSchema,
+   * - or if a Value is omitted when using setValues that is not defaulted in
+   *   the ValuesSchema.
    *
    * The listener will not be called if a Value that is defaulted in the
    * ValuesSchema is not provided, as long as all of the Values that are _not_
