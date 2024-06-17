@@ -6,6 +6,15 @@
  * The main entry point to this module is the createMergeableStore function,
  * which returns a new MergeableStore, a subtype of Store that can be merged
  * with another with deterministic results.
+ *
+ * Please be aware that a lot of the types and methods exposed by this module
+ * are used internally within TinyBase itself (in particular the Synchronizer
+ * framework). They're documented here, but mostly for interest, and it is
+ * generally assumed that they won't be called directly by applications.
+ *
+ * As an application developer, it's more likely that you will continue to use
+ * the main Store methods for reading, writing, and listening to data, and rely
+ * on Synchronizer instances to keep the data in step with other places.
  * @packageDocumentation
  * @module mergeable-store
  * @since v5.0.0
@@ -205,15 +214,98 @@
  */
 /// MergeableChanges
 /**
- * The MergeableStore type
+ * The MergeableStore type represents a Store that carries with it sufficient
+ * metadata to be able to be merged with another MergeableStore with
+ * deterministic results.
+ *
+ * This is the key data type used when you need TinyBase data to be cleanly
+ * synchronized or merged with data elsewhere on the system, or on another
+ * system. It acts as a Conflict-Free Replicated Data Type (CRDT) which allows
+ * deterministic disambiguation of how changes to different instances should be
+ * merged.
+ *
+ * Please be aware that a lot of the methods exposed by this interface are used
+ * internally within TinyBase itself (in particular the Synchronizer framework).
+ * They're documented here, but mostly for interest, and it is generally assumed
+ * that they won't be called directly by applications.
+ *
+ * As an application developer, it's more likely that you will continue to use
+ * the main Store methods for reading, writing, and listening to data, and rely
+ * on Synchronizer instances to keep the data in step with other places.
+ *
+ * One possible exceptions is the merge method, which can be used to simply
+ * merge two co-located MergeableStore instances together.
+ *
+ * @example
+ * This example shows very simple usage of the MergeableStore: whereby two are
+ * created, updated with different data, and then merged with one another.
+ *
+ * ```js
+ * import {createMergeableStore} from 'tinybase';
+ *
+ * const localStore1 = createMergeableStore();
+ * const localStore2 = createMergeableStore();
+ *
+ * localStore1.setCell('pets', 'fido', 'color', 'brown');
+ * localStore2.setCell('pets', 'felix', 'color', 'black');
+ *
+ * localStore1.merge(localStore2);
+ *
+ * console.log(localStore1.getContent());
+ * // -> [{pets: {felix: {color: 'black'}, fido: {color: 'brown'}}}, {}]
+ *
+ * console.log(localStore2.getContent());
+ * // -> [{pets: {felix: {color: 'black'}, fido: {color: 'brown'}}}, {}]
+ *```
  * @category Mergeable
  * @since v5.0.0
  */
 /// MergeableStore
 {
   /**
-   * The getMergeableContent method
-   * @category Getter
+   * The getMergeableContent method returns the full content of a
+   * MergeableStore, together with the metadata required to make it mergeable
+   * with another.
+   *
+   * The method is generally intended to be used internally within TinyBase
+   * itself and the return type is assumed to be opaque to applications that use
+   * it.
+   *
+   * @example
+   * This example creates a MergeableStore, sets some data, and then accesses
+   * the content and metadata required to make it mergeable.
+   *
+   * ```js
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store = createMergeableStore('store1'); // !resetHlc
+   *
+   * store.setCell('pets', 'fido', 'color', 'brown');
+   *
+   * console.log(store.getMergeableContent());
+   * // ->
+   * [
+   *   [
+   *     {
+   *       pets: [
+   *         {
+   *           fido: [
+   *             {color: ['brown', 'Nn1JUF-----FnHIC', 923684530]},
+   *             '',
+   *             851131566,
+   *           ],
+   *         },
+   *         '',
+   *         518810247,
+   *       ],
+   *     },
+   *     '',
+   *     784336119,
+   *   ],
+   *   [{}, '', 0],
+   * ];
+   * ```
+   *  @category Getter
    * @since v5.0.0
    */
   /// MergeableStore.getMergeableContent
