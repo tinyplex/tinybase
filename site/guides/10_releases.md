@@ -25,8 +25,8 @@ bidirectionally merge two stores together:
 ```js
 import {createMergeableStore} from 'tinybase';
 
-const localStore1 = createMergeableStore('store1');
-const localStore2 = createMergeableStore('store2');
+const localStore1 = createMergeableStore();
+const localStore2 = createMergeableStore();
 
 localStore1.setCell('pets', 'fido', 'color', 'brown');
 localStore2.setCell('pets', 'felix', 'color', 'black');
@@ -65,7 +65,7 @@ import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-clien
 const server = createWsServer(new WebSocketServer({port: 8043}));
 
 // On the first client machine:
-const store1 = createMergeableStore('store1');
+const store1 = createMergeableStore();
 const synchronizer1 = await createWsSynchronizer(
   store1,
   new WebSocket('ws://localhost:8043'),
@@ -74,7 +74,7 @@ await synchronizer1.startSync();
 store1.setCell('pets', 'fido', 'legs', 4);
 
 // On the second client machine:
-const store2 = createMergeableStore('store2');
+const store2 = createMergeableStore();
 const synchronizer2 = await createWsSynchronizer(
   store2,
   new WebSocket('ws://localhost:8043'),
