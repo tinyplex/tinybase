@@ -20,5 +20,6 @@ export default {
   transformIgnorePatterns: [
     '<rootDir>/node_modules/(?!(' + esmModules.join('|') + ')/.*)',
   ],
+  modulePathIgnorePatterns: ['tinybase/package.json'], // tests use ./dist
   transform: {'^.+\\.(mjs|js|jsx|ts|tsx)?$': 'babel-jest'},
 };
