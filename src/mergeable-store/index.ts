@@ -491,12 +491,14 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
   const getMergeableValueHashes = (): ValueHashes =>
     mapToObj(contentStampMap[1][0], getStampHash);
 
-  const getMergeableValueDiff = (relativeTo: ValueHashes): ValuesStamp => {
+  const getMergeableValueDiff = (
+    otherValueHashes: ValueHashes,
+  ): ValuesStamp => {
     const [, [valueStampMaps, valuesTime]] = contentStampMap;
     const values = mapToObj(
       valueStampMaps,
       stampCloneWithoutHash,
-      ([, , hash], valueId) => hash == relativeTo?.[valueId],
+      ([, , hash], valueId) => hash == otherValueHashes?.[valueId],
     );
     return newStamp(values, valuesTime);
   };
