@@ -41,7 +41,11 @@
   const UNDEFINED = '\uFFFC';
   const id = (key) => EMPTY_STRING + key;
 
-  const mathFloor = Math.floor;
+  const GLOBAL = globalThis;
+  const WINDOW = GLOBAL.window;
+  const math = Math;
+  const mathMin = math.min;
+  const mathFloor = math.floor;
   const isFiniteNumber = isFinite;
   const isInstanceOf = (thing, cls) => thing instanceof cls;
   const isUndefined = (thing) => thing == void 0;
@@ -1039,7 +1043,7 @@
           ),
           offset + 1,
           ' to ',
-          Math.min(total, offset + limit),
+          mathMin(total, offset + limit),
           ' of ',
         ),
       total,
@@ -1795,7 +1799,6 @@
   };
 
   const STORAGE = 'storage';
-  const WINDOW = globalThis.window;
   const createStoragePersister = (
     store,
     storageName,
