@@ -373,22 +373,22 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
 
   const getMergeableTableDiff = (
     otherTableHashes: TableHashes,
-  ): [newTables: TablesStamp, differentTableHashes: TableHashes] => {
+  ): [newTables: TablesStamp, differingTableHashes: TableHashes] => {
     const newTables: TablesStamp = stampNewObj(contentStampMap[0][1]);
-    const differentTableHashes: TableHashes = {};
+    const differingTableHashes: TableHashes = {};
     mapForEach(
       contentStampMap[0][0],
       (tableId, [tableStampMap, tableTime, hash]) =>
         objHas(otherTableHashes, tableId)
           ? hash != otherTableHashes[tableId]
-            ? (differentTableHashes[tableId] = hash)
+            ? (differingTableHashes[tableId] = hash)
             : 0
           : (newTables[0][tableId] = stampMapToObjWithoutHash(
               [tableStampMap, tableTime],
               (rowStampMap) => stampMapToObjWithoutHash(rowStampMap),
             )),
     );
-    return [newTables, differentTableHashes];
+    return [newTables, differingTableHashes];
   };
 
   const getMergeableRowHashes = (otherTableHashes: TableHashes): RowHashes => {
@@ -411,22 +411,22 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
 
   const getMergeableRowDiff = (
     otherTableRowHashes: RowHashes,
-  ): [newRows: TablesStamp, differentRowHashes: RowHashes] => {
+  ): [newRows: TablesStamp, differingRowHashes: RowHashes] => {
     const newRows: TablesStamp = stampNewObj(contentStampMap[0][1]);
-    const differentRowHashes: RowHashes = {};
+    const differingRowHashes: RowHashes = {};
     objForEach(otherTableRowHashes, (otherRowHashes, tableId) =>
       mapForEach(
         mapGet(contentStampMap[0][0], tableId)?.[0],
         (rowId, [rowStampMap, rowTime, hash]) =>
           objHas(otherRowHashes, rowId)
             ? hash !== otherRowHashes[rowId]
-              ? (objEnsure(differentRowHashes, tableId, objNew)[rowId] = hash)
+              ? (objEnsure(differingRowHashes, tableId, objNew)[rowId] = hash)
               : 0
             : (objEnsure(newRows[0], tableId, stampNewObj)[0][rowId] =
                 stampMapToObjWithoutHash([rowStampMap, rowTime])),
       ),
     );
-    return [newRows, differentRowHashes];
+    return [newRows, differingRowHashes];
   };
 
   const getMergeableCellHashes = (

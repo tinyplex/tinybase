@@ -157,7 +157,7 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
     relativeTo: TableHashes<Schemas[0]>,
   ): [
     newTables: TablesStamp<Schemas[0]>,
-    differentTableHashes: TableHashes<Schemas[0]>,
+    differingTableHashes: TableHashes<Schemas[0]>,
   ];
 
   /// MergeableStore.getMergeableRowHashes
@@ -170,7 +170,7 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
     otherTableRowHashes: RowHashes<Schemas[0]>,
   ): [
     newRows: TablesStamp<Schemas[0]>,
-    differentRowHashes: RowHashes<Schemas[0]>,
+    differingRowHashes: RowHashes<Schemas[0]>,
   ];
 
   /// MergeableStore.getMergeableCellHashes
