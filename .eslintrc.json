@@ -124,7 +124,7 @@
   },
   "overrides": [
     {
-      "files": ["src/types/**"],
+      "files": ["src/@types/**/*.js"],
       "extends": ["plugin:jsdoc/recommended"],
       "rules": {
         "jsdoc/check-tag-names": [
@@ -132,7 +132,7 @@
           {"definedTags": ["category", "packageDocumentation", "jsx"]}
         ],
         "jsdoc/require-jsdoc": [2, {"contexts": ["any"]}],
-        "jsdoc/check-examples": [0, {"contexts": ["any"]}],
+        "jsdoc/check-examples": [0],
         "jsdoc/require-description": [2, {"contexts": ["any"]}],
         "jsdoc/require-returns-check": [0],
         "jsdoc/require-param-type": [0],
