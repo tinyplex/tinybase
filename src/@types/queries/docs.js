@@ -284,7 +284,7 @@
  * @param queries A reference to the Queries object that changed.
  * @param tableId The Id of the ResultTable that changed, which is also the
  * query Id.
- * @param count The number of ResultRow objects in the ResultTable
+ * @param count The number of ResultRow objects in the ResultTable.
  * @category Listener
  * @since v4.1.0
  */
@@ -2841,8 +2841,8 @@
    * ResultCell Id being used to sort them, whether descending or not, and the
    * offset and limit of the number of Ids returned, for pagination purposes. It
    * also receives the sorted array of Ids itself, so that you can use them in
-   * the listener without the additional cost of an explicit call to
-   * getResultSortedRowIds
+   * the listener without the additional cost of an explicit call to the
+   * getResultSortedRowIds method.
    *
    * Such a listener is called when a ResultRow is added or removed, but also
    * when a value in the specified ResultCell (somewhere in the ResultTable) has

@@ -289,12 +289,12 @@
    *
    * The method takes a single argument which represents the name you want the
    * generated store object to have in code. You are expected to save the four
-   * files yourself, as, respectively:
+   * files yourself, as the following:
    *
-   * - `[storeName].d.ts`
-   * - `[storeName].ts`
-   * - `[storeName]-ui-react.d.ts`
-   * - `[storeName]-ui-react.tsx`
+   * - `[storeName].d.ts` as the main definition,
+   * - `[storeName].ts` as the main library,
+   * - `[storeName]-ui-react.d.ts` as the ui-react module definition,
+   * - `[storeName]-ui-react.tsx` as the ui-react module library.
    *
    * Also you should save these alongside each other so that the `.ts(x)` files
    * can import types from the `.d.ts` files.
@@ -402,12 +402,12 @@
    *
    * The method takes a single argument which represents the name you want the
    * generated store object to have in code. You are expected to save the four
-   * files yourself, as, respectively:
+   * files yourself, as the following:
    *
-   * - `[storeName].d.ts`
-   * - `[storeName].ts`
-   * - `[storeName]-ui-react.d.ts`
-   * - `[storeName]-ui-react.tsx`
+   * - `[storeName].d.ts` as the main definition,
+   * - `[storeName].ts` as the main library,
+   * - `[storeName]-ui-react.d.ts` as the ui-react module definition,
+   * - `[storeName]-ui-react.tsx` as the ui-react module library.
    *
    * Also you should save these alongside each other so that the `.ts(x)` files
    * can import types from the `.d.ts` files.

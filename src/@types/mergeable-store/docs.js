@@ -421,74 +421,74 @@
    */
   /// MergeableStore.getMergeableTableDiff
   /**
-   * The getMergeableRowHashes method
+   * The getMergeableRowHashes method.
    * @category Syncing
    * @since v5.0.0
    */
   /// MergeableStore.getMergeableRowHashes
   /**
-   * The getMergeableRowDiff method
+   * The getMergeableRowDiff method.
    * @category Syncing
    * @since v5.0.0
    */
   /// MergeableStore.getMergeableRowDiff
   /**
-   * The getMergeableCellHashes method
+   * The getMergeableCellHashes method.
    * @category Syncing
    * @since v5.0.0
    */
   /// MergeableStore.getMergeableCellHashes
   /**
-   * The getMergeableCellDiff method
+   * The getMergeableCellDiff method.
    * @category Syncing
    * @since v5.0.0
    */
   /// MergeableStore.getMergeableCellDiff
   /**
-   * The getMergeableValueHashes method
+   * The getMergeableValueHashes method.
    * @category Syncing
    * @since v5.0.0
    */
   /// MergeableStore.getMergeableValueHashes
   /**
-   * The getMergeableValueDiff method
+   * The getMergeableValueDiff method.
    * @category Syncing
    * @since v5.0.0
    */
   /// MergeableStore.getMergeableValueDiff
   /**
-   * The setMergeableContent method
+   * The setMergeableContent method.
    * @category Setter
    * @since v5.0.0
    */
   /// MergeableStore.setMergeableContent
   /**
-   * The setDefaultContent method
+   * The setDefaultContent method.
    * @category Setter
    * @since v5.0.0
    */
   /// MergeableStore.setDefaultContent
   /**
-   * The getTransactionMergeableChanges method
+   * The getTransactionMergeableChanges method.
    * @category Getter
    * @since v5.0.0
    */
   /// MergeableStore.getTransactionMergeableChanges
   /**
-   * The applyMergeableChanges method
+   * The applyMergeableChanges method.
    * @category Setter
    * @since v5.0.0
    */
   /// MergeableStore.applyMergeableChanges
   /**
-   * The merge method
+   * The merge method.
    * @category Setter
    * @since v5.0.0
    */
   /// MergeableStore.merge
 }
 /**
- * The createMergeableStore function
+ * The createMergeableStore function.
  * @category Creation
  * @since v5.0.0
  */

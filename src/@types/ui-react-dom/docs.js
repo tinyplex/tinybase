@@ -255,7 +255,7 @@
  * Note the use of dotted 'tableId.cellId' string pairs when specifying custom
  * rendering for the cells in this table, since Cells from both the
  * relationship's 'local' and 'remote' Table objects can be rendered and need to
- * be distinguished
+ * be distinguished.
  * @category Props
  * @since v4.1.0
  */
@@ -1019,7 +1019,7 @@
  * Note the use of dotted 'tableId.cellId' string pairs when specifying custom
  * rendering for the cells in this table, since Cells from both the
  * relationship's 'local' and 'remote' Table objects can be rendered and need to
- * be distinguished
+ * be distinguished.
  *
  * This component uses the useRowIds and useRemoteRowId hooks under the covers,
  * which means that any changes to the structure of either Table resulting in a

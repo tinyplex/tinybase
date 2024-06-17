@@ -102,7 +102,7 @@
  */
 /// defaultSorter
 /**
- * The getUniqueId function
+ * The getUniqueId function.
  * @category Convenience
  * @since v5.0.0
  */
