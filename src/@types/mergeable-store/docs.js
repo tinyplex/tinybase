@@ -715,7 +715,7 @@
    * The method is generally intended to be used internally within TinyBase
    * itself and the return type is assumed to be opaque to applications that use
    * it.
-   * @param content The full content and metadata of a MergeableStore.
+   * @param mergeableContent The full content and metadata of a MergeableStore.
    * @returns A reference to the MergeableStore.
    * @example
    * This example creates a new MergeableStore and initializes it with
