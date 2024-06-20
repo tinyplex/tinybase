@@ -947,7 +947,108 @@
   /// MergeableStore.merge
 }
 /**
- * The createMergeableStore function.
+ * The createMergeableStore function creates a MergeableStore, and is the main
+ * entry point into the mergeable-store module.
+ *
+ * There is one optional parameter which is a uniqueId for the MergeableStore.
+ * This is used to distinguish conflicting changes made in the same millisecond
+ * by two different MergeableStore objects as its hash is added to the end of
+ * the HLC timestamps. Generally this can be omitted unless you have a need for
+ * deterministic HLCs, such as in a testing scenario. Otherwise, TinyBase will
+ * assign a unique Id to the Store at the time of creation.
+ * @returns A reference to the new MergeableStore.
+ * @example
+ * This example creates a MergeableStore.
+ *
+ * ```js
+ * import {createMergeableStore} from 'tinybase';
+ *
+ * const store = createMergeableStore('store1');
+ *
+ * console.log(store.getContent());
+ * // -> [{}, {}]
+ * console.log(store.getMergeableContent());
+ * // -> [[{}, '', 0], [{}, '', 0]]
+ * ```
+ * @example
+ * This example creates a MergeableStore with some initial data:
+ *
+ * ```js
+ * import {createMergeableStore} from 'tinybase';
+ *
+ * const store = createMergeableStore('store1').setTables({
+ *   pets: {fido: {species: 'dog'}},
+ * });
+ *
+ * console.log(store.getContent());
+ * // -> [{pets: {fido: {species: 'dog'}}}, {}]
+ * console.log(store.getMergeableContent());
+ * // ->
+ * [
+ *   [
+ *     {
+ *       pets: [
+ *         {
+ *           fido: [
+ *             {species: ['dog', 'Nn1JUF-----FnHIC', 290599168]},
+ *             '',
+ *             2682656941,
+ *           ],
+ *         },
+ *         '',
+ *         2102515304,
+ *       ],
+ *     },
+ *     '',
+ *     3506229770,
+ *   ],
+ *   [{}, '', 0],
+ * ];
+ * ```
+ * @example
+ * This example creates a MergeableStore with some initial data and a
+ * TablesSchema:
+ *
+ * ```js
+ * import {createMergeableStore} from 'tinybase';
+ *
+ * const store = createMergeableStore('store1')
+ *   .setTables({pets: {fido: {species: 'dog'}}})
+ *   .setTablesSchema({
+ *     pets: {
+ *       species: {type: 'string'},
+ *       sold: {type: 'boolean', default: false},
+ *     },
+ *   });
+ *
+ * console.log(store.getContent());
+ * // -> [{pets: {fido: {sold: false, species: 'dog'}}}, {}]
+ * console.log(store.getMergeableContent());
+ * // ->
+ * [
+ *   [
+ *     {
+ *       pets: [
+ *         {
+ *           fido: [
+ *             {
+ *               sold: [false, 'Nn1JUF----2FnHIC', 2603026204],
+ *               species: ['dog', 'Nn1JUF----1FnHIC', 2817056260],
+ *             },
+ *             '',
+ *             2859424112,
+ *           ],
+ *         },
+ *         '',
+ *         1640515891,
+ *       ],
+ *     },
+ *     '',
+ *     2077041985,
+ *   ],
+ *   [{}, '', 0],
+ * ];
+ * ```
  * @category Creation
  * @since v5.0.0
  */
