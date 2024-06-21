@@ -1,9 +1,9 @@
 import type {
   DatabasePersisterConfig,
+  Persistables,
   PersistedStore,
   Persister,
   PersisterListener,
-  StoreTypes,
 } from '../../../@types/persisters/index.d.ts';
 import {startInterval, stopInterval} from '../../../common/other.ts';
 import {Cmd} from './commands.ts';
@@ -21,20 +21,20 @@ const SCHEMA_VERSION = 'schema_version';
 
 export const createSqlitePersister = <
   UpdateListeningHandle,
-  StoreType extends StoreTypes = 1,
+  Persistable extends Persistables = Persistables.StoreOnly,
 >(
-  store: PersistedStore<StoreType>,
+  store: PersistedStore<Persistable>,
   configOrStoreTableName: DatabasePersisterConfig | string | undefined,
   cmd: Cmd,
   addUpdateListener: (listener: UpdateListener) => UpdateListeningHandle,
   delUpdateListener: (listeningHandle: UpdateListeningHandle) => void,
   onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
-  supportedStoreType: StoreType,
+  persistable: Persistable,
   db: any,
   getThing = 'getDb',
   useOnConflict?: boolean,
-): Persister<StoreType> => {
+): Persister<Persistable> => {
   let dataVersion: number | null;
   let schemaVersion: number | null;
   let totalChanges: number | null;
@@ -47,7 +47,7 @@ export const createSqlitePersister = <
   ] = getConfigStructures(configOrStoreTableName);
 
   const addPersisterListener = (
-    listener: PersisterListener<StoreType>,
+    listener: PersisterListener<Persistable>,
   ): [NodeJS.Timeout, UpdateListeningHandle] => [
     startInterval(
       async () => {
@@ -95,7 +95,7 @@ export const createSqlitePersister = <
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    supportedStoreType,
+    persistable,
     defaultedConfig as any,
     collValues(managedTableNamesSet),
     db,

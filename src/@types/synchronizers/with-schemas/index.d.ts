@@ -5,8 +5,11 @@ import type {
   OptionalSchemas,
 } from '../../store/with-schemas/index.d.ts';
 import type {Id, IdOrNull} from '../../common/with-schemas/index.d.ts';
+import type {
+  Persistables,
+  Persister,
+} from '../../persisters/with-schemas/index.d.ts';
 import type {MergeableStore} from '../../mergeable-store/with-schemas/index.d.ts';
-import type {Persister} from '../../persisters/with-schemas/index.d.ts';
 
 /// MessageType
 export type MessageType = number;
@@ -35,7 +38,7 @@ export type SynchronizerStats = {
 
 /// Synchronizer
 export interface Synchronizer<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, 2> {
+  extends Persister<Schemas, Persistables.MergeableStoreOnly> {
   /// Synchronizer.startSync
   startSync(initialContent?: Content<Schemas, true>): Promise<this>;
   /// Synchronizer.stopSync

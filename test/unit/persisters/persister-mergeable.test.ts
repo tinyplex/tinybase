@@ -10,6 +10,7 @@ import type {
 } from 'tinybase';
 import {GetLocationMethod, Persistable, nextLoop} from './common.ts';
 import {
+  Supports,
   createCustomPersister,
   createMergeableStore,
   createStore,
@@ -472,13 +473,13 @@ describe('Supported, MergeableStore', () => {
     const persister = createCustomPersister(
       store,
       async () => content,
-      async (getContent: () => Content | MergeableContent) => {
+      async (getContent: () => MergeableContent) => {
         persisted = JSON.stringify(getContent());
       },
       () => null,
       () => null,
       () => null,
-      3,
+      Supports.MergeableStoreOnly,
     );
     await persister.load();
     await persister.save();
@@ -540,12 +541,14 @@ test('Not supported, Store', async () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       createStore(),
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       async () => [{t1: {r1: {c1: 1}}}, {v1: 1}],
       async () => 0,
       () => null,
       () => null,
       () => null,
-      2,
+      Supports.MergeableStoreOnly,
     ),
   ).toThrow();
 });

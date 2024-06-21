@@ -1,10 +1,10 @@
 import {Cmd, getCommandFunctions} from './commands.ts';
 import type {
+  Persistables,
   PersistedContent,
   PersistedStore,
   Persister,
   PersisterListener,
-  StoreTypes,
 } from '../../../@types/persisters/index.d.ts';
 import {
   jsonParseWithUndefined,
@@ -16,26 +16,26 @@ import {createCustomPersister} from '../../index.ts';
 
 export const createJsonSqlitePersister = <
   ListeningHandle,
-  StoreType extends StoreTypes = 1,
+  Persistable extends Persistables = Persistables.StoreOnly,
 >(
-  store: PersistedStore<StoreType>,
+  store: PersistedStore<Persistable>,
   cmd: Cmd,
   addPersisterListener: (
-    listener: PersisterListener<StoreType>,
+    listener: PersisterListener<Persistable>,
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError: ((error: any) => void) | undefined,
-  supportedStoreType: StoreType,
+  persistable: Persistable,
   [storeTableName, storeIdColumnName, storeColumnName]: DefaultedJsonConfig,
   managedTableNames: string[],
   db: any,
   getThing: string,
   useOnConflict?: boolean,
-): Persister<StoreType> => {
+): Persister<Persistable> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(cmd, managedTableNames, onIgnoredError, useOnConflict);
 
-  const getPersisted = async (): Promise<PersistedContent<StoreType>> =>
+  const getPersisted = async (): Promise<PersistedContent<Persistable>> =>
     await transaction(async () => {
       await refreshSchema();
       return jsonParseWithUndefined(
@@ -46,7 +46,7 @@ export const createJsonSqlitePersister = <
     });
 
   const setPersisted = async (
-    getContent: () => PersistedContent<StoreType>,
+    getContent: () => PersistedContent<Persistable>,
   ): Promise<void> =>
     await transaction(async () => {
       await refreshSchema();
@@ -70,7 +70,7 @@ export const createJsonSqlitePersister = <
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    supportedStoreType,
+    persistable,
     {[getThing]: () => db},
     db,
   );

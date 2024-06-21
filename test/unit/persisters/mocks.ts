@@ -7,8 +7,10 @@ import type {
   MergeableContent,
   MergeableStore,
   Persister,
+  PersisterListener,
   Receive,
   Store,
+  Supports,
   Synchronizer,
   Tables,
   Values,
@@ -135,10 +137,7 @@ const docObjMatch = (
 
 let customPersister: any;
 let customPersisterListener:
-  | ((
-      content?: Content | MergeableContent,
-      changes?: Changes | MergeableChanges,
-    ) => void)
+  | PersisterListener<Supports.StoreOnly | Supports.StoreOrMergeableStore>
   | undefined;
 let customPersisterChanges: Changes | MergeableChanges = [{}, {}, 1];
 
@@ -229,7 +228,7 @@ export const mockMergeableNoContentListener: Persistable<string> =
 export const mockMergeableContentListener: Persistable<string> =
   getMockedCustom(async (_location: string, rawContent: any): Promise<void> => {
     customPersister = rawContent;
-    let content: MergeableContent;
+    let content: any;
     try {
       content = jsonParseWithUndefined(rawContent);
     } catch (e) {

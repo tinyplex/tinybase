@@ -1,5 +1,12 @@
 {
-  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.snap", "*.json", "*.test.ts"],
+  "ignorePaths": [
+    "*.tsv",
+    "*.webp",
+    "*.svg",
+    "*.snap",
+    "*.json",
+    "*.test.ts"
+  ],
   "words": [
     "Abad",
     "Adrien",
@@ -111,6 +118,7 @@
     "partysocket",
     "Pearce",
     "Persistable",
+    "Persistables",
     "Porco",
     "PowerSync",
     "prettierrc",
