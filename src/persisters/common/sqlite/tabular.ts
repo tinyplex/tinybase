@@ -7,12 +7,12 @@ import type {
 import {Cmd, getCommandFunctions} from './commands.ts';
 import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common.ts';
 import type {
+  Persistables,
   PersistedChanges,
   PersistedContent,
   PersistedStore,
   Persister,
   PersisterListener,
-  StoreTypes,
 } from '../../../@types/persisters/index.d.ts';
 import {isUndefined, promiseAll} from '../../../common/other.ts';
 import {objHas, objIsEmpty, objNew} from '../../../common/obj.ts';
@@ -24,16 +24,16 @@ import {mapMap} from '../../../common/map.ts';
 
 export const createTabularSqlitePersister = <
   ListeningHandle,
-  StoreType extends StoreTypes = 1,
+  Persistable extends Persistables = Persistables.StoreOnly,
 >(
-  store: PersistedStore<StoreType>,
+  store: PersistedStore<Persistable>,
   cmd: Cmd,
   addPersisterListener: (
-    listener: PersisterListener<StoreType>,
+    listener: PersisterListener<Persistable>,
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError: ((error: any) => void) | undefined,
-  supportedStoreType: StoreType,
+  persistable: Persistable,
   [
     tablesLoadConfig,
     tablesSaveConfig,
@@ -43,7 +43,7 @@ export const createTabularSqlitePersister = <
   db: any,
   getThing: string,
   useOnConflict?: boolean,
-): Persister<StoreType> => {
+): Persister<Persistable> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(cmd, managedTableNames, onIgnoredError, useOnConflict);
 
@@ -117,7 +117,7 @@ export const createTabularSqlitePersister = <
       : {};
 
   const getPersisted = async (): Promise<
-    PersistedContent<StoreType> | undefined
+    PersistedContent<Persistable> | undefined
   > =>
     (await transaction(async () => {
       await refreshSchema();
@@ -129,8 +129,8 @@ export const createTabularSqlitePersister = <
     })) as any; // TODO
 
   const setPersisted = async (
-    getContent: () => PersistedContent<StoreType>,
-    changes?: PersistedChanges<StoreType>,
+    getContent: () => PersistedContent<Persistable>,
+    changes?: PersistedChanges<Persistable>,
   ): Promise<void> =>
     await transaction(async () => {
       await refreshSchema();
@@ -151,7 +151,7 @@ export const createTabularSqlitePersister = <
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    supportedStoreType,
+    persistable,
     {[getThing]: () => db},
     db,
   );

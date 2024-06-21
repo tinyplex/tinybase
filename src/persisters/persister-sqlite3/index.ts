@@ -10,6 +10,7 @@ import {Database} from 'sqlite3';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import {Persistables} from '../index.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {promiseNew} from '../../common/other.ts';
 
@@ -42,6 +43,6 @@ export const createSqlite3Persister = ((
     (observer: Observer): any => db.off(CHANGE, observer),
     onSqlCommand,
     onIgnoredError,
-    3,
+    Persistables.StoreOrMergeableStore,
     db,
   ) as Sqlite3Persister) as typeof createSqlite3PersisterDecl;

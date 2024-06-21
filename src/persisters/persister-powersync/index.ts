@@ -9,6 +9,7 @@ import {
 import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
+import {Persistables} from '../index.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
 
@@ -41,7 +42,7 @@ export const createPowerSyncPersister = ((
     (abortController: AbortController) => abortController.abort(),
     onSqlCommand,
     onIgnoredError,
-    1,
+    Persistables.StoreOnly,
     powerSync,
     'getPowerSync',
     useOnConflict,

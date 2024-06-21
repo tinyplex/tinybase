@@ -9,6 +9,7 @@ import {
 import {DB} from '@vlcn.io/crsqlite-wasm';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
+import {Persistables} from '../index.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 
 export const createCrSqliteWasmPersister = ((
@@ -28,6 +29,6 @@ export const createCrSqliteWasmPersister = ((
     (removeListener: () => void): void => removeListener(),
     onSqlCommand,
     onIgnoredError,
-    1,
+    Persistables.StoreOnly,
     db,
   ) as CrSqliteWasmPersister) as typeof createCrSqliteWasmPersisterDecl;
