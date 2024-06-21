@@ -13,12 +13,12 @@ import {
   objSize,
   objToArray,
 } from '../../common/obj.ts';
+import {Persistables, createCustomPersister} from '../index.ts';
 import {ifNotUndefined, isUndefined} from '../../common/other.ts';
 import {DocHandle} from '@automerge/automerge-repo';
 import type {Id} from '../../@types/common/index.d.ts';
 import type {PersisterListener} from '../../@types/persisters/index.d.ts';
 import {TINYBASE} from '../../common/strings.ts';
-import {createCustomPersister} from '../index.ts';
 
 type Observer = ({doc}: {doc: any}) => void;
 
@@ -170,7 +170,7 @@ export const createAutomergePersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    1,
+    Persistables.StoreOnly,
     {getDocHandle: () => docHandle},
   ) as AutomergePersister;
 }) as typeof createAutomergePersisterDecl;

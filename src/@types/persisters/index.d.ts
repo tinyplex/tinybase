@@ -8,40 +8,46 @@ import type {
 } from '../mergeable-store/index.d.ts';
 import type {Id} from '../common/index.d.ts';
 
-/// StoreTypes
-export type StoreTypes =
-  | 1 // Store only
-  | 2 // MergeableStore only
-  | 3; // Store and MergeableStore
+/// Persistables
+export const enum Persistables {
+  StoreOnly = 1,
+  MergeableStoreOnly = 2,
+  StoreOrMergeableStore = 3,
+}
 
 /// PersistedStore
-export type PersistedStore<StoreType extends StoreTypes = 1> =
-  StoreType extends 3
-    ? Store | MergeableStore
-    : StoreType extends 2
-      ? MergeableStore
-      : Store;
+export type PersistedStore<
+  Persistable extends Persistables = Persistables.StoreOnly,
+> = Persistable extends Persistables.StoreOrMergeableStore
+  ? Store | MergeableStore
+  : Persistable extends Persistables.MergeableStoreOnly
+    ? MergeableStore
+    : Store;
 
 /// PersistedContent
-export type PersistedContent<StoreType extends StoreTypes = 1> =
-  StoreType extends 3
-    ? Content | MergeableContent
-    : StoreType extends 2
-      ? MergeableContent
-      : Content;
+export type PersistedContent<
+  Persistable extends Persistables = Persistables.StoreOnly,
+> = Persistable extends Persistables.StoreOrMergeableStore
+  ? Content | MergeableContent
+  : Persistable extends Persistables.MergeableStoreOnly
+    ? MergeableContent
+    : Content;
 
 /// PersistedChanges
-export type PersistedChanges<StoreType extends StoreTypes = 1> =
-  StoreType extends 3
-    ? Changes | MergeableChanges
-    : StoreType extends 2
-      ? MergeableChanges
-      : Changes;
+export type PersistedChanges<
+  Persistable extends Persistables = Persistables.StoreOnly,
+> = Persistable extends Persistables.StoreOrMergeableStore
+  ? Changes | MergeableChanges
+  : Persistable extends Persistables.MergeableStoreOnly
+    ? MergeableChanges
+    : Changes;
 
 /// PersisterListener
-export type PersisterListener<StoreType extends StoreTypes = 1> = (
-  content?: PersistedContent<StoreType>,
-  changes?: PersistedChanges<StoreType>,
+export type PersisterListener<
+  Persistable extends Persistables = Persistables.StoreOnly,
+> = (
+  content?: PersistedContent<Persistable>,
+  changes?: PersistedChanges<Persistable>,
 ) => void;
 
 /// PersisterStats
@@ -125,7 +131,9 @@ export type DpcTabularValues = {
 };
 
 /// Persister
-export interface Persister<StoreType extends StoreTypes = 1> {
+export interface Persister<
+  Persistable extends Persistables = Persistables.StoreOnly,
+> {
   //
   /// Persister.load
   load(initialContent?: Content): Promise<this>;
@@ -155,7 +163,7 @@ export interface Persister<StoreType extends StoreTypes = 1> {
   schedule(...actions: Promise<any>[]): Promise<this>;
 
   /// Persister.getStore
-  getStore(): PersistedStore<StoreType>;
+  getStore(): PersistedStore<Persistable>;
 
   /// Persister.destroy
   destroy(): this;
@@ -168,18 +176,18 @@ export interface Persister<StoreType extends StoreTypes = 1> {
 /// createCustomPersister
 export function createCustomPersister<
   ListeningHandle,
-  StoreType extends StoreTypes = 1,
+  Persistable extends Persistables = Persistables.StoreOnly,
 >(
-  store: PersistedStore<StoreType>,
-  getPersisted: () => Promise<PersistedContent<StoreType> | undefined>,
+  store: PersistedStore<Persistable>,
+  getPersisted: () => Promise<PersistedContent<Persistable> | undefined>,
   setPersisted: (
-    getContent: () => PersistedContent<StoreType>,
-    changes?: PersistedChanges<StoreType>,
+    getContent: () => PersistedContent<Persistable>,
+    changes?: PersistedChanges<Persistable>,
   ) => Promise<void>,
   addPersisterListener: (
-    listener: PersisterListener<StoreType>,
+    listener: PersisterListener<Persistable>,
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
-  supportedStoreType?: StoreType,
-): Persister<StoreType>;
+  persistable?: Persistable,
+): Persister<Persistable>;
