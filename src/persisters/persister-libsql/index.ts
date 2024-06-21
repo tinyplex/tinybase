@@ -5,6 +5,7 @@ import type {
 import {Client} from '@libsql/client';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
+import {Persistables} from '../index.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import type {UnsubscribeFunction} from 'electric-sql/notifiers';
 import {createSqlitePersister} from '../common/sqlite/create.ts';
@@ -25,7 +26,7 @@ export const createLibSqlPersister = ((
     (unsubscribeFunction: UnsubscribeFunction): any => unsubscribeFunction(),
     onSqlCommand,
     onIgnoredError,
-    1,
+    Persistables.StoreOnly,
     client,
     'getClient',
   ) as LibSqlPersister) as typeof createLibSqlPersisterDecl;

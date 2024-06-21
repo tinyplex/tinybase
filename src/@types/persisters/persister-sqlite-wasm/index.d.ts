@@ -1,11 +1,16 @@
 /// persister-sqlite-wasm
 
-import type {DatabasePersisterConfig, Persister} from '../index.d.ts';
+import type {
+  DatabasePersisterConfig,
+  Persistables,
+  Persister,
+} from '../index.d.ts';
 import type {MergeableStore} from '../../mergeable-store/index.d.ts';
 import type {Store} from '../../store/index.d.ts';
 
 /// SqliteWasmPersister
-export interface SqliteWasmPersister extends Persister<3> {
+export interface SqliteWasmPersister
+  extends Persister<Persistables.StoreOrMergeableStore> {
   /// SqliteWasmPersister.getDb
   getDb(): any;
 }

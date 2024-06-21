@@ -2,6 +2,7 @@
 
 import type {
   DatabasePersisterConfig,
+  Persistables,
   Persister,
 } from '../../with-schemas/index.d.ts';
 import type {
@@ -13,7 +14,7 @@ import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d
 
 /// Sqlite3Persister
 export interface Sqlite3Persister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, 3> {
+  extends Persister<Schemas, Persistables.StoreOrMergeableStore> {
   /// Sqlite3Persister.getDb
   getDb(): Database;
 }

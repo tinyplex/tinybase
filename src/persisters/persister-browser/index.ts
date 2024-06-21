@@ -4,7 +4,9 @@ import type {
   createLocalPersister as createLocalPersisterDecl,
   createSessionPersister as createSessionPersisterDecl,
 } from '../../@types/persisters/persister-browser/index.d.ts';
+import {Persistables, createCustomPersister} from '../index.ts';
 import type {
+  Persistables as PersistablesType,
   PersistedContent,
   Persister,
   PersisterListener,
@@ -17,7 +19,6 @@ import {
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {WINDOW} from '../../common/other.ts';
-import {createCustomPersister} from '../index.ts';
 
 type StorageListener = (event: StorageEvent) => void;
 const STORAGE = 'storage';
@@ -27,17 +28,18 @@ const createStoragePersister = (
   storageName: string,
   storage: Storage,
   onIgnoredError?: (error: any) => void,
-): Persister<3> => {
-  const getPersisted = async (): Promise<PersistedContent<3>> =>
-    jsonParseWithUndefined(storage.getItem(storageName) as string);
+): Persister<PersistablesType.StoreOrMergeableStore> => {
+  const getPersisted = async (): Promise<
+    PersistedContent<PersistablesType.StoreOrMergeableStore>
+  > => jsonParseWithUndefined(storage.getItem(storageName) as string);
 
   const setPersisted = async (
-    getContent: () => PersistedContent<3>,
+    getContent: () => PersistedContent<PersistablesType.StoreOrMergeableStore>,
   ): Promise<void> =>
     storage.setItem(storageName, jsonStringWithUndefined(getContent()));
 
   const addPersisterListener = (
-    listener: PersisterListener<3>,
+    listener: PersisterListener<PersistablesType.StoreOrMergeableStore>,
   ): StorageListener => {
     const storageListener = (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
@@ -62,7 +64,7 @@ const createStoragePersister = (
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    3,
+    Persistables.StoreOrMergeableStore,
     {getStorageName: () => storageName},
   );
 };

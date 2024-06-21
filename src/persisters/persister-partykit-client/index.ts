@@ -11,11 +11,11 @@ import type {
   PartyKitPersisterConfig,
   createPartyKitPersister as createPartyKitPersisterDecl,
 } from '../../@types/persisters/persister-partykit-client/index.d.ts';
+import {Persistables, createCustomPersister} from '../index.ts';
 import {ifNotUndefined, isString} from '../../common/other.ts';
 import {EMPTY_STRING} from '../../common/strings.ts';
 import type {PartySocket} from 'partysocket';
 import type {PersisterListener} from '../../@types/persisters/index.d.ts';
-import {createCustomPersister} from '../index.ts';
 import {jsonStringWithMap} from '../../common/json.ts';
 
 type MessageListener = (event: MessageEvent) => void;
@@ -97,7 +97,7 @@ export const createPartyKitPersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    1,
+    Persistables.StoreOnly,
     {getConnection: () => connection},
   ) as PartyKitPersister;
 }) as typeof createPartyKitPersisterDecl;
