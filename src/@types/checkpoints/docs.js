@@ -72,7 +72,7 @@
  * purposes.
  *
  * A CheckpointsListenerStats object is returned from the getListenerStats
- * method, and is only populated in a debug build.
+ * method.
  * @category Development
  */
 /// CheckpointsListenerStats
@@ -935,10 +935,8 @@
    * The CheckpointsListenerStats object contains a breakdown of the different
    * types of listener.
    *
-   * The statistics are only populated in a debug build: production builds
-   * return an empty object. The method is intended to be used during
-   * development to ensure your application is not leaking listener
-   * registrations, for example.
+   * The method is intended to be used during development to ensure your
+   * application is not leaking listener registrations, for example.
    * @returns A CheckpointsListenerStats object containing Checkpoints listener
    * statistics.
    * @example
