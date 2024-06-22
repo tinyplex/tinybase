@@ -6,11 +6,11 @@ import type {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
+  Persistables,
   Persister,
   PersisterListener,
   Receive,
   Store,
-  Supports,
   Synchronizer,
   Tables,
   Values,
@@ -137,7 +137,9 @@ const docObjMatch = (
 
 let customPersister: any;
 let customPersisterListener:
-  | PersisterListener<Supports.StoreOnly | Supports.StoreOrMergeableStore>
+  | PersisterListener<
+      Persistables.StoreOnly | Persistables.StoreOrMergeableStore
+    >
   | undefined;
 let customPersisterChanges: Changes | MergeableChanges = [{}, {}, 1];
 

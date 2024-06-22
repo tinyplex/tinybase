@@ -10,7 +10,7 @@ import type {
 } from 'tinybase';
 import {GetLocationMethod, Persistable, nextLoop} from './common.ts';
 import {
-  Supports,
+  Persistables,
   createCustomPersister,
   createMergeableStore,
   createStore,
@@ -479,7 +479,7 @@ describe('Supported, MergeableStore', () => {
       () => null,
       () => null,
       () => null,
-      Supports.MergeableStoreOnly,
+      Persistables.MergeableStoreOnly,
     );
     await persister.load();
     await persister.save();
@@ -548,7 +548,7 @@ test('Not supported, Store', async () => {
       () => null,
       () => null,
       () => null,
-      Supports.MergeableStoreOnly,
+      Persistables.MergeableStoreOnly,
     ),
   ).toThrow();
 });
