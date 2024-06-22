@@ -8,46 +8,44 @@ import type {
 } from '../mergeable-store/index.d.ts';
 import type {Id} from '../common/index.d.ts';
 
-/// Persistables
-export const enum Persistables {
+/// Persists
+export const enum Persists {
+  /// Persists.StoreOnly
   StoreOnly = 1,
+  /// Persists.MergeableStoreOnly
   MergeableStoreOnly = 2,
+  /// Persists.StoreOrMergeableStore
   StoreOrMergeableStore = 3,
 }
 
 /// PersistedStore
-export type PersistedStore<
-  Persistable extends Persistables = Persistables.StoreOnly,
-> = Persistable extends Persistables.StoreOrMergeableStore
-  ? Store | MergeableStore
-  : Persistable extends Persistables.MergeableStoreOnly
-    ? MergeableStore
-    : Store;
+export type PersistedStore<Persist extends Persists = Persists.StoreOnly> =
+  Persist extends Persists.StoreOrMergeableStore
+    ? Store | MergeableStore
+    : Persist extends Persists.MergeableStoreOnly
+      ? MergeableStore
+      : Store;
 
 /// PersistedContent
-export type PersistedContent<
-  Persistable extends Persistables = Persistables.StoreOnly,
-> = Persistable extends Persistables.StoreOrMergeableStore
-  ? Content | MergeableContent
-  : Persistable extends Persistables.MergeableStoreOnly
-    ? MergeableContent
-    : Content;
+export type PersistedContent<Persist extends Persists = Persists.StoreOnly> =
+  Persist extends Persists.StoreOrMergeableStore
+    ? Content | MergeableContent
+    : Persist extends Persists.MergeableStoreOnly
+      ? MergeableContent
+      : Content;
 
 /// PersistedChanges
-export type PersistedChanges<
-  Persistable extends Persistables = Persistables.StoreOnly,
-> = Persistable extends Persistables.StoreOrMergeableStore
-  ? Changes | MergeableChanges
-  : Persistable extends Persistables.MergeableStoreOnly
-    ? MergeableChanges
-    : Changes;
+export type PersistedChanges<Persist extends Persists = Persists.StoreOnly> =
+  Persist extends Persists.StoreOrMergeableStore
+    ? Changes | MergeableChanges
+    : Persist extends Persists.MergeableStoreOnly
+      ? MergeableChanges
+      : Changes;
 
 /// PersisterListener
-export type PersisterListener<
-  Persistable extends Persistables = Persistables.StoreOnly,
-> = (
-  content?: PersistedContent<Persistable>,
-  changes?: PersistedChanges<Persistable>,
+export type PersisterListener<Persist extends Persists = Persists.StoreOnly> = (
+  content?: PersistedContent<Persist>,
+  changes?: PersistedChanges<Persist>,
 ) => void;
 
 /// PersisterStats
@@ -131,9 +129,7 @@ export type DpcTabularValues = {
 };
 
 /// Persister
-export interface Persister<
-  Persistable extends Persistables = Persistables.StoreOnly,
-> {
+export interface Persister<Persist extends Persists = Persists.StoreOnly> {
   //
   /// Persister.load
   load(initialContent?: Content): Promise<this>;
@@ -163,7 +159,7 @@ export interface Persister<
   schedule(...actions: Promise<any>[]): Promise<this>;
 
   /// Persister.getStore
-  getStore(): PersistedStore<Persistable>;
+  getStore(): PersistedStore<Persist>;
 
   /// Persister.destroy
   destroy(): this;
@@ -176,18 +172,18 @@ export interface Persister<
 /// createCustomPersister
 export function createCustomPersister<
   ListeningHandle,
-  Persistable extends Persistables = Persistables.StoreOnly,
+  Persist extends Persists = Persists.StoreOnly,
 >(
-  store: PersistedStore<Persistable>,
-  getPersisted: () => Promise<PersistedContent<Persistable> | undefined>,
+  store: PersistedStore<Persist>,
+  getPersisted: () => Promise<PersistedContent<Persist> | undefined>,
   setPersisted: (
-    getContent: () => PersistedContent<Persistable>,
-    changes?: PersistedChanges<Persistable>,
+    getContent: () => PersistedContent<Persist>,
+    changes?: PersistedChanges<Persist>,
   ) => Promise<void>,
   addPersisterListener: (
-    listener: PersisterListener<Persistable>,
+    listener: PersisterListener<Persist>,
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
-  persistable?: Persistable,
-): Persister<Persistable>;
+  persistable?: Persist,
+): Persister<Persist>;

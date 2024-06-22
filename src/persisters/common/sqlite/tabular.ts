@@ -7,12 +7,12 @@ import type {
 import {Cmd, getCommandFunctions} from './commands.ts';
 import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common.ts';
 import type {
-  Persistables,
   PersistedChanges,
   PersistedContent,
   PersistedStore,
   Persister,
   PersisterListener,
+  Persists,
 } from '../../../@types/persisters/index.d.ts';
 import {isUndefined, promiseAll} from '../../../common/other.ts';
 import {objHas, objIsEmpty, objNew} from '../../../common/obj.ts';
@@ -24,16 +24,16 @@ import {mapMap} from '../../../common/map.ts';
 
 export const createTabularSqlitePersister = <
   ListeningHandle,
-  Persistable extends Persistables = Persistables.StoreOnly,
+  Persist extends Persists = Persists.StoreOnly,
 >(
-  store: PersistedStore<Persistable>,
+  store: PersistedStore<Persist>,
   cmd: Cmd,
   addPersisterListener: (
-    listener: PersisterListener<Persistable>,
+    listener: PersisterListener<Persist>,
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError: ((error: any) => void) | undefined,
-  persistable: Persistable,
+  persistable: Persist,
   [
     tablesLoadConfig,
     tablesSaveConfig,
@@ -43,7 +43,7 @@ export const createTabularSqlitePersister = <
   db: any,
   getThing: string,
   useOnConflict?: boolean,
-): Persister<Persistable> => {
+): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(cmd, managedTableNames, onIgnoredError, useOnConflict);
 
@@ -117,7 +117,7 @@ export const createTabularSqlitePersister = <
       : {};
 
   const getPersisted = async (): Promise<
-    PersistedContent<Persistable> | undefined
+    PersistedContent<Persist> | undefined
   > =>
     (await transaction(async () => {
       await refreshSchema();
@@ -129,8 +129,8 @@ export const createTabularSqlitePersister = <
     })) as any; // TODO
 
   const setPersisted = async (
-    getContent: () => PersistedContent<Persistable>,
-    changes?: PersistedChanges<Persistable>,
+    getContent: () => PersistedContent<Persist>,
+    changes?: PersistedChanges<Persist>,
   ): Promise<void> =>
     await transaction(async () => {
       await refreshSchema();

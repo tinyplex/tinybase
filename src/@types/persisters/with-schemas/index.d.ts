@@ -14,50 +14,53 @@ import type {
 } from '../../mergeable-store/with-schemas/index.d.ts';
 import type {TableIdFromSchema} from '../../_internal/store/with-schemas/index.d.ts';
 
-/// Persistables
-export const enum Persistables {
+/// Persists
+export const enum Persists {
+  /// Persists.StoreOnly
   StoreOnly = 1,
+  /// Persists.MergeableStoreOnly
   MergeableStoreOnly = 2,
+  /// Persists.StoreOrMergeableStore
   StoreOrMergeableStore = 3,
 }
 
 /// PersistedStore
 export type PersistedStore<
   Schemas extends OptionalSchemas,
-  Persistable extends Persistables = Persistables.StoreOnly,
-> = Persistable extends Persistables.StoreOrMergeableStore
+  Persist extends Persists = Persists.StoreOnly,
+> = Persist extends Persists.StoreOrMergeableStore
   ? Store<Schemas> | MergeableStore<Schemas>
-  : Persistable extends Persistables.MergeableStoreOnly
+  : Persist extends Persists.MergeableStoreOnly
     ? MergeableStore<Schemas>
     : Store<Schemas>;
 
 /// PersistedContent
 export type PersistedContent<
   Schemas extends OptionalSchemas,
-  Persistable extends Persistables = Persistables.StoreOnly,
-> = Persistable extends Persistables.StoreOrMergeableStore
+  Persist extends Persists = Persists.StoreOnly,
+> = Persist extends Persists.StoreOrMergeableStore
   ? Content<Schemas> | MergeableContent<Schemas>
-  : Persistable extends Persistables.MergeableStoreOnly
+  : Persist extends Persists.MergeableStoreOnly
     ? MergeableContent<Schemas>
     : Content<Schemas>;
 
 /// PersistedChanges
 export type PersistedChanges<
   Schemas extends OptionalSchemas,
-  Persistable extends Persistables = Persistables.StoreOnly,
-> = Persistable extends Persistables.StoreOrMergeableStore
+  Persist extends Persists = Persists.StoreOnly,
+> = Persist extends Persists.StoreOrMergeableStore
   ? Changes<Schemas> | MergeableChanges<Schemas>
-  : Persistable extends Persistables.MergeableStoreOnly
+  : Persist extends Persists.MergeableStoreOnly
     ? MergeableChanges<Schemas>
     : Changes<Schemas>;
 
 /// PersisterListener
 export type PersisterListener<
   Schemas extends OptionalSchemas,
-  Persistable extends Persistables = Persistables.StoreOnly,
+  Persist extends Persists = Persists.StoreOnly,
 > = (
-  content?: PersistedContent<Schemas, Persistable>,
-  changes?: PersistedChanges<Schemas, Persistable>,
+  content?: PersistedContent<Schemas, Persist>,
+  changes?: PersistedChanges<Schemas, Persist>,
 ) => void;
 
 /// PersisterStats
@@ -145,7 +148,7 @@ export type DpcTabularValues = {
 /// Persister
 export interface Persister<
   in out Schemas extends OptionalSchemas,
-  Persistable extends Persistables = Persistables.StoreOnly,
+  Persist extends Persists = Persists.StoreOnly,
 > {
   /// Persister.load
   load(initialContent?: Content<Schemas, true>): Promise<this>;
@@ -175,7 +178,7 @@ export interface Persister<
   schedule(...actions: Promise<any>[]): Promise<this>;
 
   /// Persister.getStore
-  getStore(): PersistedStore<Schemas, Persistable>;
+  getStore(): PersistedStore<Schemas, Persist>;
 
   /// Persister.destroy
   destroy(): this;
@@ -188,20 +191,18 @@ export interface Persister<
 export function createCustomPersister<
   Schemas extends OptionalSchemas,
   ListeningHandle,
-  Persistable extends Persistables = Persistables.StoreOnly,
+  Persist extends Persists = Persists.StoreOnly,
 >(
-  store: PersistedStore<Schemas, Persistable>,
-  getPersisted: () => Promise<
-    PersistedContent<Schemas, Persistable> | undefined
-  >,
+  store: PersistedStore<Schemas, Persist>,
+  getPersisted: () => Promise<PersistedContent<Schemas, Persist> | undefined>,
   setPersisted: (
-    getContent: () => PersistedContent<Schemas, Persistable>,
-    changes?: PersistedChanges<Schemas, Persistable>,
+    getContent: () => PersistedContent<Schemas, Persist>,
+    changes?: PersistedChanges<Schemas, Persist>,
   ) => Promise<void>,
   addPersisterListener: (
-    listener: PersisterListener<Schemas, Persistable>,
+    listener: PersisterListener<Schemas, Persist>,
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
-  persistable?: Persistable,
-): Persister<Schemas, Persistable>;
+  persistable?: Persist,
+): Persister<Schemas, Persist>;

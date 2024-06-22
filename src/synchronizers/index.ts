@@ -18,11 +18,11 @@ import type {
   Send,
   Synchronizer,
 } from '../@types/synchronizers/index.d.ts';
-import {Persistables, createCustomPersister} from '../persisters/index.ts';
 import type {
-  Persistables as PersistablesType,
   PersisterListener,
+  Persists as PersistsType,
 } from '../@types/persisters/index.d.ts';
+import {Persists, createCustomPersister} from '../persisters/index.ts';
 import {getLatestTime, newStamp, stampNewObj} from '../common/stamps.ts';
 import {ifNotUndefined, isUndefined, promiseNew} from '../common/other.ts';
 import {objEnsure, objForEach, objIsEmpty} from '../common/obj.ts';
@@ -51,7 +51,7 @@ export const createCustomSynchronizer = (
   extra: {[methodName: string]: (...args: any[]) => any} = {},
 ): Synchronizer => {
   let persisterListener:
-    | PersisterListener<PersistablesType.MergeableStoreOnly>
+    | PersisterListener<PersistsType.MergeableStoreOnly>
     | undefined;
   let sends = 0;
   let receives = 0;
@@ -245,7 +245,7 @@ export const createCustomSynchronizer = (
   };
 
   const addPersisterListener = (
-    listener: PersisterListener<PersistablesType.MergeableStoreOnly>,
+    listener: PersisterListener<PersistsType.MergeableStoreOnly>,
   ) => (persisterListener = listener);
 
   const delPersisterListener = () => (persisterListener = undefined);
@@ -269,7 +269,7 @@ export const createCustomSynchronizer = (
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    Persistables.MergeableStoreOnly,
+    Persists.MergeableStoreOnly,
     {startSync, stopSync, destroy, getSynchronizerStats, ...extra},
   ) as Synchronizer;
   return persister;

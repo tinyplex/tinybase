@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 
 import 'fake-indexeddb/auto';
-import {GetLocationMethod, Persistable, nextLoop} from './common.ts';
+import {GetLocationMethod, Persist, nextLoop} from './common.ts';
 import type {Persister, Store} from 'tinybase';
 import {
   mockAutomerge,
@@ -45,7 +45,7 @@ describe.each([
   ['crSqliteWasm', mockCrSqliteWasm],
   ['yjs', mockYjs],
   ['automerge', mockAutomerge],
-])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
+])('Persists to/from %s', (name: string, persistable: Persist<any>) => {
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;
   let store: Store;

@@ -1,5 +1,5 @@
 import type {Content, Store} from '../../@types/store/index.d.ts';
-import {Persistables, createCustomPersister} from '../index.ts';
+import {Persists, createCustomPersister} from '../index.ts';
 import type {
   RemotePersister,
   createRemotePersister as createRemotePersisterDecl,
@@ -56,7 +56,7 @@ export const createRemotePersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    Persistables.StoreOnly,
+    Persists.StoreOnly,
     {getUrls: () => [loadUrl, saveUrl]},
   ) as RemotePersister;
 }) as typeof createRemotePersisterDecl;

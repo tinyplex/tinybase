@@ -4,8 +4,8 @@ import type {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-  Persistables,
   Persister,
+  Persists,
   Store,
 } from 'tinybase';
 import {pause} from '../common/other.ts';
@@ -15,7 +15,7 @@ export type GetLocationMethod<Location = string> = [
   (location: Location) => unknown,
 ];
 
-export type Persistable<Location = string> = {
+export type Persist<Location = string> = {
   beforeEach?: () => void;
   autoLoadPause?: number;
   getLocation: () => Promise<Location>;
@@ -23,7 +23,7 @@ export type Persistable<Location = string> = {
   getPersister: (
     store: Store | MergeableStore,
     location: Location,
-  ) => Persister<Persistables>;
+  ) => Persister<Persists>;
   get: (location: Location) => Promise<Content | MergeableContent | void>;
   set: (
     location: Location,

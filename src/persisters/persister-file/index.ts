@@ -3,12 +3,12 @@ import type {
   FilePersister,
   createFilePersister as createFilePersisterDecl,
 } from '../../@types/persisters/persister-file/index.d.ts';
-import {Persistables, createCustomPersister} from '../index.ts';
 import type {
-  Persistables as PersistablesType,
   PersistedContent,
   PersisterListener,
+  Persists as PersistsType,
 } from '../../@types/persisters/index.d.ts';
+import {Persists, createCustomPersister} from '../index.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
@@ -24,16 +24,16 @@ export const createFilePersister = ((
   onIgnoredError?: (error: any) => void,
 ): FilePersister => {
   const getPersisted = async (): Promise<
-    PersistedContent<PersistablesType.StoreOrMergeableStore>
+    PersistedContent<PersistsType.StoreOrMergeableStore>
   > => jsonParseWithUndefined(await readFile(filePath, UTF8));
 
   const setPersisted = async (
-    getContent: () => PersistedContent<PersistablesType.StoreOrMergeableStore>,
+    getContent: () => PersistedContent<PersistsType.StoreOrMergeableStore>,
   ): Promise<void> =>
     await writeFile(filePath, jsonStringWithUndefined(getContent()), UTF8);
 
   const addPersisterListener = (
-    listener: PersisterListener<PersistablesType.StoreOrMergeableStore>,
+    listener: PersisterListener<PersistsType.StoreOrMergeableStore>,
   ): FSWatcher => watch(filePath, () => listener());
 
   const delPersisterListener = (watcher: FSWatcher): void => watcher?.close();
@@ -45,7 +45,7 @@ export const createFilePersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    Persistables.StoreOrMergeableStore,
+    Persists.StoreOrMergeableStore,
     {getFilePath: () => filePath},
   ) as FilePersister;
 }) as typeof createFilePersisterDecl;
