@@ -1226,8 +1226,7 @@
  *
  * The StoreListenerStats object contains a breakdown of the different types of
  * listener. Totals include both mutator and non-mutator listeners. A
- * StoreListenerStats object is returned from the getListenerStats method, and
- * is only populated in a debug build.
+ * StoreListenerStats object is returned from the getListenerStats method.
  * @category Development
  */
 /// StoreListenerStats
@@ -6964,10 +6963,8 @@
    * The StoreListenerStats object contains a breakdown of the different types
    * of listener. Totals include both mutator and non-mutator listeners.
    *
-   * The statistics are only populated in a debug build: production builds
-   * return an empty object. The method is intended to be used during
-   * development to ensure your application is not leaking listener
-   * registrations, for example.
+   * The method is intended to be used during development to ensure your
+   * application is not leaking listener registrations, for example.
    * @returns A StoreListenerStats object containing Store listener statistics.
    * @example
    * This example gets the listener statistics of a small and simple Store.
