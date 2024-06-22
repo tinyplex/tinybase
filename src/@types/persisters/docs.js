@@ -41,19 +41,47 @@
  */
 /// persisters
 /**
- * The Persistables enum.
+ * The Persists enum.
+ * @category Mergeable
+ * @since v5.0.0
  */
-/// Persistables
+/// Persists
+{
+  /**
+   * The StoreOnly enum value.
+   * @category Mergeable
+   * @since v5.0.0
+   */
+  /// Persists.StoreOnly
+  /**
+   * The MergeableStoreOnly enum value.
+   * @category Mergeable
+   * @since v5.0.0
+   */
+  /// Persists.MergeableStoreOnly
+  /**
+   * The StoreOrMergeableStore enum value.
+   * @category Mergeable
+   * @since v5.0.0
+   */
+  /// Persists.StoreOrMergeableStore
+}
 /**
  * The PersistedStore type.
+ * @category Mergeable
+ * @since v5.0.0
  */
 /// PersistedStore
 /**
  * The PersistedContent type.
+ * @category Mergeable
+ * @since v5.0.0
  */
 /// PersistedContent
 /**
  * The PersistedChanges type.
+ * @category Mergeable
+ * @since v5.0.0
  */
 /// PersistedChanges
 /**

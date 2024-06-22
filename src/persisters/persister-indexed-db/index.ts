@@ -4,7 +4,7 @@ import type {
   IndexedDbPersister,
   createIndexedDbPersister as createIndexedDbPersisterDecl,
 } from '../../@types/persisters/persister-indexed-db/index.d.ts';
-import {Persistables, createCustomPersister} from '../index.ts';
+import {Persists, createCustomPersister} from '../index.ts';
 import {T, V} from '../../common/strings.ts';
 import {
   WINDOW,
@@ -126,7 +126,7 @@ export const createIndexedDbPersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    Persistables.StoreOnly,
+    Persists.StoreOnly,
     {getDbName: () => dbName},
   ) as IndexedDbPersister;
 }) as typeof createIndexedDbPersisterDecl;

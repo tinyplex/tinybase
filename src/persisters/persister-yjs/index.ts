@@ -13,7 +13,7 @@ import {
   objNew,
   objToArray,
 } from '../../common/obj.ts';
-import {Persistables, createCustomPersister} from '../index.ts';
+import {Persists, createCustomPersister} from '../index.ts';
 import {T, TINYBASE, V} from '../../common/strings.ts';
 import {Doc as YDoc, YEvent, Map as YMap} from 'yjs';
 import type {
@@ -224,7 +224,7 @@ export const createYjsPersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    Persistables.StoreOnly,
+    Persists.StoreOnly,
     {getYDoc: () => yDoc},
   ) as YjsPersister;
 }) as typeof createYjsPersisterDecl;

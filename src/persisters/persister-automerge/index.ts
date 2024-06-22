@@ -13,7 +13,7 @@ import {
   objSize,
   objToArray,
 } from '../../common/obj.ts';
-import {Persistables, createCustomPersister} from '../index.ts';
+import {Persists, createCustomPersister} from '../index.ts';
 import {ifNotUndefined, isUndefined} from '../../common/other.ts';
 import {DocHandle} from '@automerge/automerge-repo';
 import type {Id} from '../../@types/common/index.d.ts';
@@ -170,7 +170,7 @@ export const createAutomergePersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    Persistables.StoreOnly,
+    Persists.StoreOnly,
     {getDocHandle: () => docHandle},
   ) as AutomergePersister;
 }) as typeof createAutomergePersisterDecl;

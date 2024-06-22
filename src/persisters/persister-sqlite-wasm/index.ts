@@ -9,7 +9,7 @@ import {
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
-import {Persistables} from '../index.ts';
+import {Persists} from '../index.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 
 export const createSqliteWasmPersister = ((
@@ -36,6 +36,6 @@ export const createSqliteWasmPersister = ((
     (): void => sqlite3.capi.sqlite3_update_hook(db, () => 0, 0),
     onSqlCommand,
     onIgnoredError,
-    Persistables.StoreOrMergeableStore,
+    Persists.StoreOrMergeableStore,
     db,
   ) as SqliteWasmPersister) as typeof createSqliteWasmPersisterDecl;

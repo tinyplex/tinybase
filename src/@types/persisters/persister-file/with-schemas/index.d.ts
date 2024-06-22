@@ -4,12 +4,12 @@ import type {
   OptionalSchemas,
   Store,
 } from '../../../store/with-schemas/index.d.ts';
-import type {Persistables, Persister} from '../../with-schemas/index.d.ts';
+import type {Persister, Persists} from '../../with-schemas/index.d.ts';
 import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
 
 /// FilePersister
 export interface FilePersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persistables.StoreOrMergeableStore> {
+  extends Persister<Schemas, Persists.StoreOrMergeableStore> {
   /// FilePersister.getFilePath
   getFilePath(): string;
 }

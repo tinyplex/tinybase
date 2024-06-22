@@ -5,13 +5,13 @@ import type {
   MergeableStore,
 } from '../@types/mergeable-store/index.d.ts';
 import type {
-  Persistables as PersistablesType,
   PersistedChanges,
   PersistedContent,
   PersistedStore,
   Persister,
   PersisterListener,
   PersisterStats,
+  Persists as PersistsType,
 } from '../@types/persisters/index.d.ts';
 import {arrayPush, arrayShift} from '../common/array.ts';
 import {
@@ -24,7 +24,7 @@ import {mapEnsure, mapGet, mapNew, mapSet} from '../common/map.ts';
 import {objFreeze, objIsEmpty} from '../common/obj.ts';
 import type {Id} from '../@types/common/index.d.ts';
 
-export const Persistables = {
+export const Persists = {
   StoreOnly: 1,
   MergeableStoreOnly: 2,
   StoreOrMergeableStore: 3,
@@ -36,7 +36,7 @@ const scheduleRunning: Map<any, 0 | 1> = mapNew();
 const scheduleActions: Map<any, Action[]> = mapNew();
 
 const getStoreFunctions = (
-  persistable: PersistablesType = Persistables.StoreOnly,
+  persistable: PersistsType = Persists.StoreOnly,
   store: PersistedStore<typeof persistable>,
 ):
   | [
@@ -53,7 +53,7 @@ const getStoreFunctions = (
       hasChanges: (changes: MergeableChanges) => boolean,
       setDefaultContent: (content: Content) => MergeableStore,
     ] =>
-  persistable != Persistables.StoreOnly && store.isMergeable()
+  persistable != Persists.StoreOnly && store.isMergeable()
     ? [
         1,
         (store as MergeableStore).getMergeableContent,
@@ -62,7 +62,7 @@ const getStoreFunctions = (
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
         (store as MergeableStore).setDefaultContent,
       ]
-    : persistable != Persistables.MergeableStoreOnly
+    : persistable != Persists.MergeableStoreOnly
       ? [
           0,
           store.getContent,
@@ -75,24 +75,24 @@ const getStoreFunctions = (
 
 export const createCustomPersister = <
   ListeningHandle,
-  Persistable extends PersistablesType = PersistablesType.StoreOnly,
+  Persist extends PersistsType = PersistsType.StoreOnly,
 >(
-  store: PersistedStore<Persistable>,
-  getPersisted: () => Promise<PersistedContent<Persistable> | undefined>,
+  store: PersistedStore<Persist>,
+  getPersisted: () => Promise<PersistedContent<Persist> | undefined>,
   setPersisted: (
-    getContent: () => PersistedContent<Persistable>,
-    changes?: PersistedChanges<Persistable>,
+    getContent: () => PersistedContent<Persist>,
+    changes?: PersistedChanges<Persist>,
   ) => Promise<void>,
   addPersisterListener: (
-    listener: PersisterListener<Persistable>,
+    listener: PersisterListener<Persist>,
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
-  persistable?: Persistable,
+  persistable?: Persist,
   // undocumented:
   extra: {[methodName: string]: (...args: any[]) => any} = {},
   scheduleId = [],
-): Persister<Persistable> => {
+): Persister<Persist> => {
   let loadSave = 0;
   let loads = 0;
   let saves = 0;
@@ -177,7 +177,7 @@ export const createCustomPersister = <
 
   const startAutoLoad = async (
     initialContent?: Content,
-  ): Promise<Persister<Persistable>> => {
+  ): Promise<Persister<Persist>> => {
     await stopAutoLoad().load(initialContent);
     autoLoadHandle = addPersisterListener(async (content, changes) => {
       if (changes || content) {
@@ -195,7 +195,7 @@ export const createCustomPersister = <
     return persister;
   };
 
-  const stopAutoLoad = (): Persister<Persistable> => {
+  const stopAutoLoad = (): Persister<Persist> => {
     if (autoLoadHandle) {
       delPersisterListener(autoLoadHandle);
       autoLoadHandle = undefined;
@@ -206,8 +206,8 @@ export const createCustomPersister = <
   const isAutoLoading = () => !isUndefined(autoLoadHandle);
 
   const save = async (
-    changes?: PersistedChanges<Persistable>,
-  ): Promise<Persister<Persistable>> => {
+    changes?: PersistedChanges<Persist>,
+  ): Promise<Persister<Persist>> => {
     /*! istanbul ignore else */
     if (loadSave != 1) {
       loadSave = 2;
@@ -225,7 +225,7 @@ export const createCustomPersister = <
     return persister;
   };
 
-  const startAutoSave = async (): Promise<Persister<Persistable>> => {
+  const startAutoSave = async (): Promise<Persister<Persist>> => {
     await stopAutoSave().save();
     autoSaveListenerId = store.addDidFinishTransactionListener(() => {
       const changes = getChanges() as any;
@@ -236,7 +236,7 @@ export const createCustomPersister = <
     return persister;
   };
 
-  const stopAutoSave = (): Persister<Persistable> => {
+  const stopAutoSave = (): Persister<Persist> => {
     ifNotUndefined(autoSaveListenerId, store.delListener);
     autoSaveListenerId = undefined;
     return persister;
@@ -252,7 +252,7 @@ export const createCustomPersister = <
 
   const getStore = (): Store => store;
 
-  const destroy = (): Persister<Persistable> => stopAutoLoad().stopAutoSave();
+  const destroy = (): Persister<Persist> => stopAutoLoad().stopAutoSave();
 
   const getStats = (): PersisterStats => ({loads, saves});
 
@@ -274,5 +274,5 @@ export const createCustomPersister = <
     ...extra,
   };
 
-  return objFreeze(persister as Persister<Persistable>);
+  return objFreeze(persister as Persister<Persist>);
 };
