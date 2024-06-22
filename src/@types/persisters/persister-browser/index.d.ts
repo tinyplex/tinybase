@@ -1,19 +1,19 @@
 /// persister-browser
 
-import type {Persistables, Persister} from '../index.d.ts';
+import type {Persister, Persists} from '../index.d.ts';
 import type {MergeableStore} from '../../mergeable-store/index.d.ts';
 import type {Store} from '../../store/index.d.ts';
 
 /// SessionPersister
 export interface SessionPersister
-  extends Persister<Persistables.StoreOrMergeableStore> {
+  extends Persister<Persists.StoreOrMergeableStore> {
   /// SessionPersister.getStorageName
   getStorageName(): string;
 }
 
 /// LocalPersister
 export interface LocalPersister
-  extends Persister<Persistables.StoreOrMergeableStore> {
+  extends Persister<Persists.StoreOrMergeableStore> {
   /// LocalPersister.getStorageName
   getStorageName(): string;
 }

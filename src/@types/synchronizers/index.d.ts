@@ -1,7 +1,7 @@
 /// synchronizers
 
 import type {Id, IdOrNull} from '../common/index.d.ts';
-import type {Persistables, Persister} from '../persisters/index.d.ts';
+import type {Persister, Persists} from '../persisters/index.d.ts';
 import type {Content} from '../store/index.d.ts';
 import type {MergeableStore} from '../mergeable-store/index.d.ts';
 
@@ -31,8 +31,7 @@ export type SynchronizerStats = {
 };
 
 /// Synchronizer
-export interface Synchronizer
-  extends Persister<Persistables.MergeableStoreOnly> {
+export interface Synchronizer extends Persister<Persists.MergeableStoreOnly> {
   /// Synchronizer.startSync
   startSync(initialContent?: Content): Promise<this>;
   /// Synchronizer.stopSync

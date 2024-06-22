@@ -8,9 +8,9 @@ import type {
   MergeableStore,
   Persister,
 } from 'tinybase';
-import {GetLocationMethod, Persistable, nextLoop} from './common.ts';
+import {GetLocationMethod, Persist, nextLoop} from './common.ts';
 import {
-  Persistables,
+  Persists,
   createCustomPersister,
   createMergeableStore,
   createStore,
@@ -45,7 +45,7 @@ describe.each([
   ['sqliteWasm', mockSqliteWasm],
   ['localSynchronizer', mockLocalSynchronizer],
   ['customSynchronizer', mockCustomSynchronizer],
-])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
+])('Persists to/from %s', (name: string, persistable: Persist<any>) => {
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;
   let store: MergeableStore;
@@ -479,7 +479,7 @@ describe('Supported, MergeableStore', () => {
       () => null,
       () => null,
       () => null,
-      Persistables.MergeableStoreOnly,
+      Persists.MergeableStoreOnly,
     );
     await persister.load();
     await persister.save();
@@ -548,7 +548,7 @@ test('Not supported, Store', async () => {
       () => null,
       () => null,
       () => null,
-      Persistables.MergeableStoreOnly,
+      Persists.MergeableStoreOnly,
     ),
   ).toThrow();
 });

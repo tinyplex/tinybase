@@ -4,19 +4,19 @@ import type {
   OptionalSchemas,
   Store,
 } from '../../../store/with-schemas/index.d.ts';
-import type {Persistables, Persister} from '../../with-schemas/index.d.ts';
+import type {Persister, Persists} from '../../with-schemas/index.d.ts';
 import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
 
 /// SessionPersister
 export interface SessionPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persistables.StoreOrMergeableStore> {
+  extends Persister<Schemas, Persists.StoreOrMergeableStore> {
   /// SessionPersister.getStorageName
   getStorageName(): string;
 }
 
 /// LocalPersister
 export interface LocalPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persistables.StoreOrMergeableStore> {
+  extends Persister<Schemas, Persists.StoreOrMergeableStore> {
   /// LocalPersister.getStorageName
   getStorageName(): string;
 }
