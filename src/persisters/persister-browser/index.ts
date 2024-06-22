@@ -4,13 +4,13 @@ import type {
   createLocalPersister as createLocalPersisterDecl,
   createSessionPersister as createSessionPersisterDecl,
 } from '../../@types/persisters/persister-browser/index.d.ts';
-import {Persistables, createCustomPersister} from '../index.ts';
 import type {
-  Persistables as PersistablesType,
   PersistedContent,
   Persister,
   PersisterListener,
+  Persists as PersistsType,
 } from '../../@types/persisters/index.d.ts';
+import {Persists, createCustomPersister} from '../index.ts';
 import {
   jsonParse,
   jsonParseWithUndefined,
@@ -28,18 +28,18 @@ const createStoragePersister = (
   storageName: string,
   storage: Storage,
   onIgnoredError?: (error: any) => void,
-): Persister<PersistablesType.StoreOrMergeableStore> => {
+): Persister<PersistsType.StoreOrMergeableStore> => {
   const getPersisted = async (): Promise<
-    PersistedContent<PersistablesType.StoreOrMergeableStore>
+    PersistedContent<PersistsType.StoreOrMergeableStore>
   > => jsonParseWithUndefined(storage.getItem(storageName) as string);
 
   const setPersisted = async (
-    getContent: () => PersistedContent<PersistablesType.StoreOrMergeableStore>,
+    getContent: () => PersistedContent<PersistsType.StoreOrMergeableStore>,
   ): Promise<void> =>
     storage.setItem(storageName, jsonStringWithUndefined(getContent()));
 
   const addPersisterListener = (
-    listener: PersisterListener<PersistablesType.StoreOrMergeableStore>,
+    listener: PersisterListener<PersistsType.StoreOrMergeableStore>,
   ): StorageListener => {
     const storageListener = (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
@@ -64,7 +64,7 @@ const createStoragePersister = (
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    Persistables.StoreOrMergeableStore,
+    Persists.StoreOrMergeableStore,
     {getStorageName: () => storageName},
   );
 };

@@ -2,8 +2,8 @@
 
 import type {
   DatabasePersisterConfig,
-  Persistables,
   Persister,
+  Persists,
 } from '../../with-schemas/index.d.ts';
 import type {
   OptionalSchemas,
@@ -14,7 +14,7 @@ import type {SQLiteDatabase} from 'expo-sqlite';
 
 /// ExpoSqlitePersister
 export interface ExpoSqlitePersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persistables.StoreOrMergeableStore> {
+  extends Persister<Schemas, Persists.StoreOrMergeableStore> {
   /// ExpoSqlitePersister.getDb
   getDb(): SQLiteDatabase;
 }

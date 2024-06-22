@@ -1,10 +1,10 @@
 import {Cmd, getCommandFunctions} from './commands.ts';
 import type {
-  Persistables,
   PersistedContent,
   PersistedStore,
   Persister,
   PersisterListener,
+  Persists,
 } from '../../../@types/persisters/index.d.ts';
 import {
   jsonParseWithUndefined,
@@ -16,26 +16,26 @@ import {createCustomPersister} from '../../index.ts';
 
 export const createJsonSqlitePersister = <
   ListeningHandle,
-  Persistable extends Persistables = Persistables.StoreOnly,
+  Persist extends Persists = Persists.StoreOnly,
 >(
-  store: PersistedStore<Persistable>,
+  store: PersistedStore<Persist>,
   cmd: Cmd,
   addPersisterListener: (
-    listener: PersisterListener<Persistable>,
+    listener: PersisterListener<Persist>,
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError: ((error: any) => void) | undefined,
-  persistable: Persistable,
+  persistable: Persist,
   [storeTableName, storeIdColumnName, storeColumnName]: DefaultedJsonConfig,
   managedTableNames: string[],
   db: any,
   getThing: string,
   useOnConflict?: boolean,
-): Persister<Persistable> => {
+): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(cmd, managedTableNames, onIgnoredError, useOnConflict);
 
-  const getPersisted = async (): Promise<PersistedContent<Persistable>> =>
+  const getPersisted = async (): Promise<PersistedContent<Persist>> =>
     await transaction(async () => {
       await refreshSchema();
       return jsonParseWithUndefined(
@@ -46,7 +46,7 @@ export const createJsonSqlitePersister = <
     });
 
   const setPersisted = async (
-    getContent: () => PersistedContent<Persistable>,
+    getContent: () => PersistedContent<Persist>,
   ): Promise<void> =>
     await transaction(async () => {
       await refreshSchema();
