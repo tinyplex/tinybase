@@ -43,7 +43,7 @@
 /**
  * The Persists enum.
  *
- * This is blah
+ * This is used to indicate what types of Store a Persister can support.
  * @category Mergeable
  * @since v5.0.0
  */
