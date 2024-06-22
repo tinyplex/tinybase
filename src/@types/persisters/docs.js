@@ -106,8 +106,7 @@
  * The PersisterStats type describes the number of times a Persister object has
  * loaded or saved data.
  *
- * A PersisterStats object is returned from the getStats method, and is only
- * populated in a debug build.
+ * A PersisterStats object is returned from the getStats method.
  * @category Development
  */
 /// PersisterStats
@@ -1165,10 +1164,8 @@
    * The PersisterStats object contains a count of the number of times the
    * Persister has loaded and saved data.
    *
-   * The statistics are only populated in a debug build: production builds
-   * return an empty object. The method is intended to be used during
-   * development to ensure your persistence layer is acting as expected, for
-   * example.
+   * The method is intended to be used during development to ensure your
+   * persistence layer is acting as expected, for example.
    * @returns A PersisterStats object containing Persister load and save
    * statistics.
    * @example
