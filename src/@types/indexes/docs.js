@@ -107,8 +107,7 @@
  * The IndexesListenerStats type describes the number of listeners registered
  * with the Indexes object, and can be used for debugging purposes.
  *
- * A IndexesListenerStats object is returned from the getListenerStats method,
- * and is only populated in a debug build.
+ * A IndexesListenerStats object is returned from the getListenerStats method.
  * @category Development
  */
 /// IndexesListenerStats
@@ -922,10 +921,8 @@
    * The IndexesListenerStats object contains a breakdown of the different types
    * of listener.
    *
-   * The statistics are only populated in a debug build: production builds
-   * return an empty object. The method is intended to be used during
-   * development to ensure your application is not leaking listener
-   * registrations, for example.
+   * The method is intended to be used during development to ensure your
+   * application is not leaking listener registrations, for example.
    * @returns A IndexesListenerStats object containing Indexes listener
    * statistics.
    * @example
