@@ -42,6 +42,8 @@
 /// persisters
 /**
  * The Persists enum.
+ *
+ * This is blah
  * @category Mergeable
  * @since v5.0.0
  */
@@ -49,20 +51,14 @@
 {
   /**
    * The StoreOnly enum value.
-   * @category Mergeable
-   * @since v5.0.0
    */
   /// Persists.StoreOnly
   /**
    * The MergeableStoreOnly enum value.
-   * @category Mergeable
-   * @since v5.0.0
    */
   /// Persists.MergeableStoreOnly
   /**
    * The StoreOrMergeableStore enum value.
-   * @category Mergeable
-   * @since v5.0.0
    */
   /// Persists.StoreOrMergeableStore
 }
