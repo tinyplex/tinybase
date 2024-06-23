@@ -86,17 +86,15 @@
     return mapGet(map, key);
   };
 
-  new GLOBAL.TextEncoder();
-
-  const newStamp = (value, time) => (time ? [value, time] : [value]);
-  const getLatestTime = (time1, time2) =>
-    ((time1 ?? '') > (time2 ?? '') ? time1 : time2) ?? '';
-  const stampNewObj = (time = EMPTY_STRING) => newStamp(objNew(), time);
-
+  const Persists = {
+    StoreOnly: 1,
+    MergeableStoreOnly: 2,
+    StoreOrMergeableStore: 3,
+  };
   const scheduleRunning = mapNew();
   const scheduleActions = mapNew();
-  const getStoreFunctions = (supportedStoreType = 1, store) =>
-    supportedStoreType > 1 && store.isMergeable()
+  const getStoreFunctions = (persistable = Persists.StoreOnly, store) =>
+    persistable != Persists.StoreOnly && store.isMergeable()
       ? [
           1,
           store.getMergeableContent,
@@ -105,7 +103,7 @@
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setDefaultContent,
         ]
-      : supportedStoreType != 2
+      : persistable != Persists.MergeableStoreOnly
         ? [
             0,
             store.getContent,
@@ -122,7 +120,7 @@
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    supportedStoreType,
+    persistable,
     extra = {},
     scheduleId = [],
   ) => {
@@ -140,7 +138,7 @@
       getChanges,
       hasChanges,
       setDefaultContent,
-    ] = getStoreFunctions(supportedStoreType, store);
+    ] = getStoreFunctions(persistable, store);
     const run = async () => {
       /* istanbul ignore else */
       if (!mapGet(scheduleRunning, scheduleId)) {
@@ -271,6 +269,13 @@
     };
     return objFreeze(persister);
   };
+
+  new GLOBAL.TextEncoder();
+
+  const newStamp = (value, time) => (time ? [value, time] : [value]);
+  const getLatestTime = (time1, time2) =>
+    ((time1 ?? '') > (time2 ?? '') ? time1 : time2) ?? '';
+  const stampNewObj = (time = EMPTY_STRING) => newStamp(objNew(), time);
 
   const MASK6 = 63;
   const ENCODE =
@@ -477,7 +482,7 @@
       addPersisterListener,
       delPersisterListener,
       onIgnoredError,
-      2,
+      Persists.MergeableStoreOnly,
       {startSync, stopSync, destroy, getSynchronizerStats, ...extra},
     );
     return persister;
