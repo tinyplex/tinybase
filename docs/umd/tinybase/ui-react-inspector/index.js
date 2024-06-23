@@ -1626,10 +1626,15 @@
       },
     );
 
+  const Persists = {
+    StoreOnly: 1,
+    MergeableStoreOnly: 2,
+    StoreOrMergeableStore: 3,
+  };
   const scheduleRunning = mapNew();
   const scheduleActions = mapNew();
-  const getStoreFunctions = (supportedStoreType = 1, store) =>
-    supportedStoreType > 1 && store.isMergeable()
+  const getStoreFunctions = (persistable = Persists.StoreOnly, store) =>
+    persistable != Persists.StoreOnly && store.isMergeable()
       ? [
           1,
           store.getMergeableContent,
@@ -1638,7 +1643,7 @@
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setDefaultContent,
         ]
-      : supportedStoreType != 2
+      : persistable != Persists.MergeableStoreOnly
         ? [
             0,
             store.getContent,
@@ -1655,7 +1660,7 @@
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    supportedStoreType,
+    persistable,
     extra = {},
     scheduleId = [],
   ) => {
@@ -1673,7 +1678,7 @@
       getChanges,
       hasChanges,
       setDefaultContent,
-    ] = getStoreFunctions(supportedStoreType, store);
+    ] = getStoreFunctions(persistable, store);
     const run = async () => {
       /* istanbul ignore else */
       if (!mapGet(scheduleRunning, scheduleId)) {
@@ -1831,7 +1836,7 @@
       addPersisterListener,
       delPersisterListener,
       onIgnoredError,
-      3,
+      Persists.StoreOrMergeableStore,
       {getStorageName: () => storageName},
     );
   };
