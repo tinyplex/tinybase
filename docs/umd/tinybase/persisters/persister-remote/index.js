@@ -44,12 +44,6 @@
   const objSize = (obj) => size(objIds(obj));
   const objIsEmpty = (obj) => isObject(obj) && objSize(obj) == 0;
 
-  const jsonStringWithMap = (obj) =>
-    JSON.stringify(obj, (_key, value) =>
-      isInstanceOf(value, Map) ? object.fromEntries([...value]) : value,
-    );
-  const jsonParse = JSON.parse;
-
   const collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
   const collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
 
@@ -64,10 +58,15 @@
     return mapGet(map, key);
   };
 
+  const Persists = {
+    StoreOnly: 1,
+    MergeableStoreOnly: 2,
+    StoreOrMergeableStore: 3,
+  };
   const scheduleRunning = mapNew();
   const scheduleActions = mapNew();
-  const getStoreFunctions = (supportedStoreType = 1, store) =>
-    supportedStoreType > 1 && store.isMergeable()
+  const getStoreFunctions = (persistable = Persists.StoreOnly, store) =>
+    persistable != Persists.StoreOnly && store.isMergeable()
       ? [
           1,
           store.getMergeableContent,
@@ -76,7 +75,7 @@
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setDefaultContent,
         ]
-      : supportedStoreType != 2
+      : persistable != Persists.MergeableStoreOnly
         ? [
             0,
             store.getContent,
@@ -93,7 +92,7 @@
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    supportedStoreType,
+    persistable,
     extra = {},
     scheduleId = [],
   ) => {
@@ -111,7 +110,7 @@
       getChanges,
       hasChanges,
       setDefaultContent,
-    ] = getStoreFunctions(supportedStoreType, store);
+    ] = getStoreFunctions(persistable, store);
     const run = async () => {
       /* istanbul ignore else */
       if (!mapGet(scheduleRunning, scheduleId)) {
@@ -243,6 +242,12 @@
     return objFreeze(persister);
   };
 
+  const jsonStringWithMap = (obj) =>
+    JSON.stringify(obj, (_key, value) =>
+      isInstanceOf(value, Map) ? object.fromEntries([...value]) : value,
+    );
+  const jsonParse = JSON.parse;
+
   const getETag = (response) => response.headers.get('ETag');
   const createRemotePersister = (
     store,
@@ -284,7 +289,7 @@
       addPersisterListener,
       delPersisterListener,
       onIgnoredError,
-      1,
+      Persists.StoreOnly,
       {getUrls: () => [loadUrl, saveUrl]},
     );
   };

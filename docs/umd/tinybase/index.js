@@ -1175,10 +1175,15 @@
     return objFreeze(metrics);
   });
 
+  const Persists = {
+    StoreOnly: 1,
+    MergeableStoreOnly: 2,
+    StoreOrMergeableStore: 3,
+  };
   const scheduleRunning = mapNew();
   const scheduleActions = mapNew();
-  const getStoreFunctions = (supportedStoreType = 1, store) =>
-    supportedStoreType > 1 && store.isMergeable()
+  const getStoreFunctions = (persistable = Persists.StoreOnly, store) =>
+    persistable != Persists.StoreOnly && store.isMergeable()
       ? [
           1,
           store.getMergeableContent,
@@ -1187,7 +1192,7 @@
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setDefaultContent,
         ]
-      : supportedStoreType != 2
+      : persistable != Persists.MergeableStoreOnly
         ? [
             0,
             store.getContent,
@@ -1204,7 +1209,7 @@
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    supportedStoreType,
+    persistable,
     extra = {},
     scheduleId = [],
   ) => {
@@ -1222,7 +1227,7 @@
       getChanges,
       hasChanges,
       setDefaultContent,
-    ] = getStoreFunctions(supportedStoreType, store);
+    ] = getStoreFunctions(persistable, store);
     const run = async () => {
       /* istanbul ignore else */
       if (!mapGet(scheduleRunning, scheduleId)) {
@@ -1584,7 +1589,7 @@
       addPersisterListener,
       delPersisterListener,
       onIgnoredError,
-      2,
+      Persists.MergeableStoreOnly,
       {startSync, stopSync, destroy, getSynchronizerStats, ...extra},
     );
     return persister;
@@ -3937,20 +3942,20 @@
       mapToObj(contentStampMap[0][0], getStampHash);
     const getMergeableTableDiff = (otherTableHashes) => {
       const newTables = stampNewObj(contentStampMap[0][1]);
-      const differentTableHashes = {};
+      const differingTableHashes = {};
       mapForEach(
         contentStampMap[0][0],
         (tableId, [tableStampMap, tableTime, hash]) =>
           objHas(otherTableHashes, tableId)
             ? hash != otherTableHashes[tableId]
-              ? (differentTableHashes[tableId] = hash)
+              ? (differingTableHashes[tableId] = hash)
               : 0
             : (newTables[0][tableId] = stampMapToObjWithoutHash(
                 [tableStampMap, tableTime],
                 (rowStampMap) => stampMapToObjWithoutHash(rowStampMap),
               )),
       );
-      return [newTables, differentTableHashes];
+      return [newTables, differingTableHashes];
     };
     const getMergeableRowHashes = (otherTableHashes) => {
       const rowHashes = {};
@@ -3971,20 +3976,20 @@
     };
     const getMergeableRowDiff = (otherTableRowHashes) => {
       const newRows = stampNewObj(contentStampMap[0][1]);
-      const differentRowHashes = {};
+      const differingRowHashes = {};
       objForEach(otherTableRowHashes, (otherRowHashes, tableId) =>
         mapForEach(
           mapGet(contentStampMap[0][0], tableId)?.[0],
           (rowId, [rowStampMap, rowTime, hash]) =>
             objHas(otherRowHashes, rowId)
               ? hash !== otherRowHashes[rowId]
-                ? (objEnsure(differentRowHashes, tableId, objNew)[rowId] = hash)
+                ? (objEnsure(differingRowHashes, tableId, objNew)[rowId] = hash)
                 : 0
               : (objEnsure(newRows[0], tableId, stampNewObj)[0][rowId] =
                   stampMapToObjWithoutHash([rowStampMap, rowTime])),
         ),
       );
-      return [newRows, differentRowHashes];
+      return [newRows, differingRowHashes];
     };
     const getMergeableCellHashes = (otherTableRowHashes) => {
       const cellHashes = {};
@@ -4043,12 +4048,12 @@
     };
     const getMergeableValueHashes = () =>
       mapToObj(contentStampMap[1][0], getStampHash);
-    const getMergeableValueDiff = (relativeTo) => {
+    const getMergeableValueDiff = (otherValueHashes) => {
       const [, [valueStampMaps, valuesTime]] = contentStampMap;
       const values = mapToObj(
         valueStampMaps,
         stampCloneWithoutHash,
-        ([, , hash], valueId) => hash == relativeTo?.[valueId],
+        ([, , hash], valueId) => hash == otherValueHashes?.[valueId],
       );
       return newStamp(values, valuesTime);
     };
@@ -4173,6 +4178,7 @@
     return objFreeze(mergeableStore);
   };
 
+  exports.Persists = Persists;
   exports.createCheckpoints = createCheckpoints;
   exports.createCustomPersister = createCustomPersister;
   exports.createCustomSynchronizer = createCustomSynchronizer;
