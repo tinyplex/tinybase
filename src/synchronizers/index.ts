@@ -13,7 +13,7 @@ import type {
 import type {Id, IdOrNull} from '../@types/common/index.d.ts';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
 import type {
-  MessageType,
+  Message as MessageType,
   Receive,
   Send,
   Synchronizer,
@@ -31,14 +31,16 @@ import {EMPTY_STRING} from '../common/strings.ts';
 import {collDel} from '../common/coll.ts';
 import {getUniqueId} from '../common/index.ts';
 
-const RESPONSE = 0;
-const GET_CONTENT_HASHES = 1;
-const CONTENT_HASHES = 2;
-const CONTENT_DIFF = 3;
-const GET_TABLE_DIFF = 4;
-const GET_ROW_DIFF = 5;
-const GET_CELL_DIFF = 6;
-const GET_VALUE_DIFF = 7;
+export const Message = {
+  Response: 0,
+  GetContentHashes: 1,
+  ContentHashes: 2,
+  ContentDiff: 3,
+  GetTableDiff: 4,
+  GetRowDiff: 5,
+  GetCellDiff: 6,
+  GetValueDiff: 7,
+};
 
 export const createCustomSynchronizer = (
   store: MergeableStore,
@@ -67,43 +69,44 @@ export const createCustomSynchronizer = (
     (
       fromClientId: Id,
       requestId: IdOrNull,
-      messageType: MessageType,
-      messageBody: any,
+      message: MessageType,
+      body: any,
     ) => {
       receives++;
-      if (messageType == RESPONSE) {
+      if (message == Message.Response) {
         ifNotUndefined(
           mapGet(pendingRequests, requestId),
           ([toClientId, handleResponse]) =>
             isUndefined(toClientId) || toClientId == fromClientId
-              ? handleResponse(messageBody, fromClientId)
+              ? handleResponse(body, fromClientId)
               : /*! istanbul ignore next */
                 0,
         );
-      } else if (messageType == CONTENT_HASHES && persister.isAutoLoading()) {
-        getChangesFromOtherStore(fromClientId, messageBody).then(
-          (changes: any) => {
-            persisterListener?.(undefined, changes);
-          },
-        );
-      } else if (messageType == CONTENT_DIFF && persister.isAutoLoading()) {
-        persisterListener?.(undefined, messageBody);
+      } else if (
+        message == Message.ContentHashes &&
+        persister.isAutoLoading()
+      ) {
+        getChangesFromOtherStore(fromClientId, body).then((changes: any) => {
+          persisterListener?.(undefined, changes);
+        });
+      } else if (message == Message.ContentDiff && persister.isAutoLoading()) {
+        persisterListener?.(undefined, body);
       } else {
         ifNotUndefined(
-          messageType == GET_CONTENT_HASHES && persister.isAutoSaving()
+          message == Message.GetContentHashes && persister.isAutoSaving()
             ? store.getMergeableContentHashes()
-            : messageType == GET_TABLE_DIFF
-              ? store.getMergeableTableDiff(messageBody)
-              : messageType == GET_ROW_DIFF
-                ? store.getMergeableRowDiff(messageBody)
-                : messageType == GET_CELL_DIFF
-                  ? store.getMergeableCellDiff(messageBody)
-                  : messageType == GET_VALUE_DIFF
-                    ? store.getMergeableValueDiff(messageBody)
+            : message == Message.GetTableDiff
+              ? store.getMergeableTableDiff(body)
+              : message == Message.GetRowDiff
+                ? store.getMergeableRowDiff(body)
+                : message == Message.GetCellDiff
+                  ? store.getMergeableCellDiff(body)
+                  : message == Message.GetValueDiff
+                    ? store.getMergeableValueDiff(body)
                     : undefined,
           (response) => {
             sends++;
-            send(fromClientId, requestId, RESPONSE, response);
+            send(fromClientId, requestId, Message.Response, response);
           },
         );
       }
@@ -112,16 +115,14 @@ export const createCustomSynchronizer = (
 
   const request = async <Response>(
     toClientId: IdOrNull,
-    messageType: MessageType,
-    messageBody: any = EMPTY_STRING,
+    message: MessageType,
+    body: any = EMPTY_STRING,
   ): Promise<[response: Response, fromClientId: Id]> =>
     promiseNew((resolve, reject) => {
       const requestId = getUniqueId();
       const timeout = setTimeout(() => {
         collDel(pendingRequests, requestId);
-        reject(
-          `No response from ${toClientId ?? 'anyone'} to '${messageType}'`,
-        );
+        reject(`No response from ${toClientId ?? 'anyone'} to '${message}'`);
       }, requestTimeoutSeconds * 1000);
       mapSet(pendingRequests, requestId, [
         toClientId,
@@ -132,7 +133,7 @@ export const createCustomSynchronizer = (
         },
       ]);
       sends++;
-      send(toClientId, requestId, messageType, messageBody);
+      send(toClientId, requestId, message, body);
     });
 
   const mergeTablesStamps = (
@@ -170,7 +171,7 @@ export const createCustomSynchronizer = (
     if (isUndefined(otherContentHashes)) {
       [otherContentHashes, otherClientId] = await request<ContentHashes>(
         otherClientId,
-        GET_CONTENT_HASHES,
+        Message.GetContentHashes,
       );
     }
     const [otherTablesHash, otherValuesHash] = otherContentHashes;
@@ -181,7 +182,7 @@ export const createCustomSynchronizer = (
       const [newTables, differentTableHashes] = (
         await request<[TablesStamp, TableHashes]>(
           otherClientId,
-          GET_TABLE_DIFF,
+          Message.GetTableDiff,
           store.getMergeableTableHashes(),
         )
       )[0];
@@ -191,7 +192,7 @@ export const createCustomSynchronizer = (
         const [newRows, differentRowHashes] = (
           await request<[TablesStamp, RowHashes]>(
             otherClientId,
-            GET_ROW_DIFF,
+            Message.GetRowDiff,
             store.getMergeableRowHashes(differentTableHashes),
           )
         )[0];
@@ -201,7 +202,7 @@ export const createCustomSynchronizer = (
           const newCells = (
             await request<TablesStamp>(
               otherClientId,
-              GET_CELL_DIFF,
+              Message.GetCellDiff,
               store.getMergeableCellHashes(differentRowHashes),
             )
           )[0];
@@ -217,7 +218,7 @@ export const createCustomSynchronizer = (
         : (
             await request<ValuesStamp>(
               otherClientId,
-              GET_VALUE_DIFF,
+              Message.GetValueDiff,
               store.getMergeableValueHashes(),
             )
           )[0],
@@ -238,9 +239,14 @@ export const createCustomSynchronizer = (
   ): Promise<void> => {
     sends++;
     if (changes) {
-      send(null, null, CONTENT_DIFF, changes);
+      send(null, null, Message.ContentDiff, changes);
     } else {
-      send(null, null, CONTENT_HASHES, store.getMergeableContentHashes());
+      send(
+        null,
+        null,
+        Message.ContentHashes,
+        store.getMergeableContentHashes(),
+      );
     }
   };
 
