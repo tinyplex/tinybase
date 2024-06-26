@@ -8,23 +8,69 @@
  */
 /// synchronizers
 /**
- * The MessageType type.
+ * The Message enum is used to indicate the type of the message being passed
+ * between Synchronizer instances.
+ *
+ * These message comprise the basic synchronization protocol for merging
+ * MergeableStore instances across multiple systems.
+ *
+ * The enum is generally intended to be used internally within TinyBase itself
+ * and opaque to applications that use synchronization.
  * @category Synchronization
+ * @since v5.0.0
  */
-/// MessageType
+/// Message
+{
+  /**
+   * A message that is a response to a previous request.
+   */
+  /// Message.Response
+  /**
+   * A message that is a request to get ContentHashes from another
+   * MergeableStore.
+   */
+  /// Message.GetContentHashes
+  /**
+   * A message that contains ContentHashes.
+   */
+  /// Message.ContentHashes
+  /**
+   * A message that contains a ContentDiff.
+   */
+  /// Message.ContentDiff
+  /**
+   * A message that is a request to get a TableDiff from another MergeableStore.
+   */
+  /// Message.GetTableDiff
+  /**
+   * A message that is a request to get a RowDiff from another MergeableStore.
+   */
+  /// Message.GetRowDiff
+  /**
+   * A message that is a request to get a CellDiff from another MergeableStore.
+   */
+  /// Message.GetCellDiff
+  /**
+   * A message that is a request to get a ValueDiff from another MergeableStore.
+   */
+  /// Message.GetValueDiff
+}
 /**
  * The Receive type.
  * @category Synchronization
+ * @since v5.0.0
  */
 /// Receive
 /**
  * The Send type.
  * @category Synchronization
+ * @since v5.0.0
  */
 /// Send
 /**
  * The SynchronizerStats type.
  * @category Development
+ * @since v5.0.0
  */
 /// SynchronizerStats
 /**
@@ -106,5 +152,6 @@
  * synchronizer2.destroy();
  * ```
  * @category Creation
+ * @since v5.0.0
  */
 /// createCustomSynchronizer
