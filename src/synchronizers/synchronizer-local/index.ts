@@ -1,5 +1,5 @@
 import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../../common/map.ts';
-import type {MessageType, Receive} from '../../@types/synchronizers/index.d.ts';
+import type {Message, Receive} from '../../@types/synchronizers/index.d.ts';
 import type {IdOrNull} from '../../@types/common/index.d.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import {collDel} from '../../common/coll.ts';
@@ -19,23 +19,18 @@ export const createLocalSynchronizer = ((
   const send = (
     toClientId: IdOrNull,
     requestId: IdOrNull,
-    messageType: MessageType,
-    messageBody: any,
+    message: Message,
+    body: any,
   ): void => {
     setTimeout(
       () =>
         isUndefined(toClientId)
           ? mapForEach(clients, (otherClientId, receive) =>
               otherClientId != clientId
-                ? receive(clientId, requestId, messageType, messageBody)
+                ? receive(clientId, requestId, message, body)
                 : 0,
             )
-          : mapGet(clients, toClientId)?.(
-              clientId,
-              requestId,
-              messageType,
-              messageBody,
-            ),
+          : mapGet(clients, toClientId)?.(clientId, requestId, message, body),
       0,
     );
   };
