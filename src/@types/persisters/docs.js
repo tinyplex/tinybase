@@ -1,31 +1,35 @@
 /* eslint-disable max-len */
 /**
  * The persisters module of the TinyBase project provides a simple framework for
- * saving and loading Store data, to and from different destinations, or
- * underlying storage types.
+ * saving and loading Store and MergeableStore data, to and from different
+ * destinations, or underlying storage types.
  *
  * Several entry points are provided (in separately installed modules), each of
  * which returns a new Persister object that can load and save a Store. Between
  * them, these allow you to store your TinyBase data locally, remotely, to
  * SQLite databases, and across synchronization boundaries with CRDT frameworks.
  *
- * |Module|Function|Storage|
- * |-|-|-|
- * |persister-browser|createSessionPersister|Browser session storage|
- * |persister-browser|createLocalPersister|Browser local storage|
- * |persister-indexed-db|createIndexedDbPersister|Browser IndexedDB|
- * |persister-remote|createRemotePersister|Remote server|
- * |persister-file|createFilePersister|Local file (where possible)|
- * |persister-partykit-client|createPartyKitPersister|PartyKit with the persister-partykit-server module|
- * |persister-sqlite3|createSqlite3Persister|SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)|
- * |persister-sqlite-wasm|createSqliteWasmPersister|SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)|
- * |persister-cr-sqlite-wasm|createCrSqliteWasmPersister|SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)|
- * |persister-expo-sqlite|createExpoSqlitePersister|SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)|
- * |persister-electric-sql|createElectricSqlPersister|Electric SQL, via [electric-sql](https://github.com/electric-sql/electric)|
- * |persister-libsql|createLibSqlPersister|LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)|
- * |persister-powersync|createPowerSyncPersister|PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)|
- * |persister-yjs|createYjsPersister|Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)|
- * |persister-automerge|createSqliteWasmPersister|Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo)|
+ * |Module|Function|Storage|Store|MergeableStore
+ * |-|-|-|-|-|
+ * |persister-browser|createSessionPersister|Browser session storage|Yes|Yes
+ * |persister-browser|createLocalPersister|Browser local storage|Yes|Yes
+ * |persister-indexed-db|createIndexedDbPersister|Browser IndexedDB|Yes|No
+ * |persister-file|createFilePersister|Local file (where possible)|Yes|Yes
+ * |persister-remote|createRemotePersister|Remote server|Yes|No
+ * |persister-sqlite3|createSqlite3Persister|SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)|Yes|Yes*
+ * |persister-sqlite-wasm|createSqliteWasmPersister|SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)|Yes|Yes*
+ * |persister-expo-sqlite|createExpoSqlitePersister|SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)|Yes|Yes*
+ * |persister-partykit-client|createPartyKitPersister|PartyKit with the persister-partykit-server module|Yes|No
+ * |persister-cr-sqlite-wasm|createCrSqliteWasmPersister|SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)|Yes|No
+ * |persister-electric-sql|createElectricSqlPersister|Electric SQL, via [electric-sql](https://github.com/electric-sql/electric)|Yes|No
+ * |persister-libsql|createLibSqlPersister|LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)|Yes|No
+ * |persister-powersync|createPowerSyncPersister|PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)|Yes|No
+ * |persister-yjs|createYjsPersister|Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)|Yes|No
+ * |persister-automerge|createSqliteWasmPersister|Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo)|Yes|No|
+ *
+ * (*) Note that SQLite-based Persisters can currently only persist
+ * MergeableStore data when using the JSON-based DpcJson mode, and not in a
+ * tabular fashion.
  *
  * Since persistence requirements can be different for every app, the
  * createCustomPersister function in this module can also be used to easily
@@ -41,54 +45,89 @@
  */
 /// persisters
 /**
- * The Persists enum.
+ * The Persists enum is used to indicate whether a Persister can support a
+ * regular Store, a MergeableStore, or both.
  *
- * This is used to indicate what types of Store a Persister can support.
+ * The enum is intended to be used by the author of a Persister to indicate
+ * which types of store can be persisted. If you discover type errors when
+ * trying to instantiate a Persister, it is most likely that you are passing in
+ * an unsupported type of store.
+ *
+ * See the createCustomPersister method for examples of this enum being used.
  * @category Mergeable
  * @since v5.0.0
  */
 /// Persists
 {
   /**
-   * The StoreOnly enum value.
+   * Indicates that only a regular Store can be supported by a Persister.
    */
   /// Persists.StoreOnly
   /**
-   * The MergeableStoreOnly enum value.
+   * Indicates that only a MergeableStore can be supported by a Persister.
    */
   /// Persists.MergeableStoreOnly
   /**
-   * The StoreOrMergeableStore enum value.
+   * Indicates that either a regular Store or a MergeableStore can be supported
+   * by a Persister.
    */
   /// Persists.StoreOrMergeableStore
 }
 /**
- * The PersistedStore type.
+ * The PersistedStore type is a generic representation of the type of store
+ * being handled by a Persister.
+ *
+ * Using the values of the Persists enum, the generic parameter indicates
+ * whether the Persister is handling a regular Store, a MergeableStore, or
+ * either.
+ *
+ * If the generic parameter is unspecified, the StoreOnly enum value is used,
+ * meaning that PersistedStore is equivalent to a regular Store.
  * @category Mergeable
  * @since v5.0.0
  */
 /// PersistedStore
 /**
- * The PersistedContent type.
+ * The PersistedContent type is a generic representation of the content in the
+ * type of store being handled by a Persister.
+ *
+ * Using the values of the Persists enum, the generic parameter indicates
+ * whether the Persister is handling content from a regular Store (the Content
+ * type), a MergeableStore (the MergeableContent type), or either (the union of
+ * the two).
+ *
+ * If the generic parameter is unspecified, the StoreOnly enum value is used,
+ * meaning that PersistedContent is equivalent to the Content type.
  * @category Mergeable
  * @since v5.0.0
  */
 /// PersistedContent
 /**
- * The PersistedChanges type.
+ * The PersistedChanges type is a generic representation of changes made to the
+ * type of store being handled by a Persister.
+ *
+ * Using the values of the Persists enum, the generic parameter indicates
+ * whether the Persister is handling changes for a regular Store (the Changes
+ * type), a MergeableStore (the MergeableChanges type), or either (the union of
+ * the two).
  * @category Mergeable
  * @since v5.0.0
  */
 /// PersistedChanges
 /**
- * A PersisterListener is a callback that lets a Persister inform the Store that
- * a change has happened to the underlying data.
+ * A PersisterListener is a generic representation of the callback that lets a
+ * Persister inform the store that a change has happened to the underlying data.
+ *
+ * Using the values of the Persists enum, the generic parameter indicates
+ * whether the Persister is handling content and changes from a regular Store, a
+ * MergeableStore, or either.
  *
  * If the listener is called with the `changes` parameter, it will be used to
  * make an incremental change to the Store. If not, but the `content` parameter
  * is available, that will be used to make a wholesale change to the Store. If
  * neither are present, the content will be loaded using the Persister's load
- * method. Prior to v5.0, these parameters were callbacks.
+ * method. Prior to v5.0, these parameters were callbacks and the overall type
+ * was non-generic.
  * @param content If provided, this is a Content object from the the Persister
  * that will be used to immediately wholesale update the Store.
  * @param changes If provided, this is a Changes object from the the Persister
@@ -553,8 +592,8 @@
          */
         /// DpcTabularSave.deleteEmptyColumns
         /**
-         * Whether tables in the database will be removed if the Store Table
-         * is empty, defaulting to false.
+         * Whether tables in the database will be removed if the Store Table is
+         * empty, defaulting to false.
          */
         /// DpcTabularSave.deleteEmptyTable
       }
@@ -610,15 +649,21 @@
  * A Persister object lets you save and load Store data to and from different
  * locations, or underlying storage types.
  *
- * This is useful for preserving Store data between browser sessions or reloads,
- * saving or loading browser state to or from a server, or saving Store data to
- * disk in a environment with filesystem access.
+ * This is useful for preserving Store or MergeableStore data between browser
+ * sessions or reloads, saving or loading browser state to or from a server, or
+ * saving Store data to disk in a environment with filesystem access.
  *
  * Creating a Persister depends on the choice of underlying storage where the
  * data is to be stored. Options include the createSessionPersister function,
  * the createLocalPersister function, the createRemotePersister function, and
  * the createFilePersister function. The createCustomPersister function can also
  * be used to easily create a fully customized way to save and load Store data.
+ *
+ * Using the values of the Persists enum, the generic parameter to the Persister
+ * indicates whether it can handle a regular Store, a MergeableStore, or either.
+ * Consult the table in the overall persister module documentation to see
+ * current support for each. The different levels of support are also described
+ * for each of the types of Persister themselves.
  *
  * A Persister lets you explicit save or load data, with the save method and the
  * load method respectively. These methods are both asynchronous (since the
@@ -1097,9 +1142,9 @@
    */
   /// Persister.schedule
   /**
-   * The getStore method returns a reference to the underlying Store that is
-   * backing this Persister object.
-   * @returns A reference to the Store.
+   * The getStore method returns a reference to the underlying Store or
+   * MergeableStore that is backing this Persister object.
+   * @returns A reference to the Store or MergeableStore.
    * @example
    * This example creates a Persister object against a newly-created Store and
    * then gets its reference in order to update its data.
@@ -1237,47 +1282,118 @@
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment, since v4.0.4.
- * @param persistable Since v5.0, an optional integer to indicate which types of
- * Store are supported by this Persister: `1` indicates only a regular Store is
- * supported, `2` indicates only a MergeableStore is supported, and `3`
- * indicates that both Store and MergeableStore are supported.
+ * @param persist Since v5.0, an optional integer from the Persists enum to
+ * indicate which types of Store are supported by this Persister: `1` indicates
+ * only a regular Store is supported, `2` indicates only a MergeableStore is
+ * supported, and `3` indicates that both Store and MergeableStore are
+ * supported.
  * @returns A reference to the new Persister object.
  * @example
- * This example creates a custom Persister object and persists the Store to a
- * local string called `storeJson` and which would automatically load by polling
- * for changes every second.
+ * This example creates a custom Persister object and persists a Store to a
+ * local string called `persistedJson` and which would automatically load by
+ * polling for changes every second. It implicitly supports only a regular
+ * Store.
  *
  * ```js
  * import {createCustomPersister, createStore} from 'tinybase';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * let storeJson;
+ * let persistedJson;
  *
  * const persister = createCustomPersister(
  *   store,
  *   async () => {
  *     // getPersisted
- *     return JSON.parse(storeJson);
+ *     return JSON.parse(persistedJson);
  *   },
  *   async (getContent) => {
  *     // setPersisted
- *     storeJson = JSON.stringify(getContent());
+ *     persistedJson = JSON.stringify(getContent());
  *   },
  *   (listener) => setInterval(listener, 1000),
  *   (interval) => clearInterval(interval),
  * );
  *
  * await persister.save();
- * console.log(storeJson);
+ * console.log(persistedJson);
  * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
  *
- * storeJson = '[{"pets":{"fido":{"species":"dog","color":"brown"}}},{}]';
+ * persistedJson = '[{"pets":{"fido":{"species":"dog","color":"brown"}}},{}]';
  * await persister.load();
  *
  * console.log(store.getTables());
  * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
  *
  * persister.destroy();
+ * ```
+ * @example
+ * This example demonstrates a Persister creation function which returns a
+ * Persister. This can persists a store to a local string called `persistedJson`
+ * and which would automatically load by polling for changes every second.
+ * It emits warnings to the console and explicitly supports either a Store or a
+ * MergeableStore.
+ *
+ * ```js
+ * import {
+ *   Persists,
+ *   createCustomPersister,
+ *   createMergeableStore,
+ *   createStore,
+ * } from 'tinybase';
+ *
+ * let persistedJson;
+ * const createJsonPersister = (storeOrMergeableStore) =>
+ *   createCustomPersister(
+ *     storeOrMergeableStore,
+ *     async () => {
+ *       // getPersisted
+ *       return JSON.parse(persistedJson);
+ *     },
+ *     async (getContent) => {
+ *       // setPersisted
+ *       persistedJson = JSON.stringify(getContent());
+ *     },
+ *     (listener) => setInterval(listener, 1000),
+ *     (interval) => clearInterval(interval),
+ *     console.warn,
+ *     Persists.StoreOrMergeableStore,
+ *   );
+ *
+ * const store = createStore();
+ * store.setTables({pets: {fido: {species: 'dog'}}});
+ * const storePersister = createJsonPersister(store);
+ * await storePersister.save();
+ * console.log(persistedJson);
+ * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
+ * storePersister.destroy();
+ *
+ * const mergeableStore = createMergeableStore('mergeableStore1'); // !resetHlc
+ * mergeableStore.setTables({pets: {fido: {species: 'dog'}}});
+ * const mergeableStorePersister = createJsonPersister(mergeableStore);
+ * await mergeableStorePersister.save();
+ * console.log(JSON.parse(persistedJson));
+ * // ->
+ * [
+ *   [
+ *     {
+ *       pets: [
+ *         {
+ *           fido: [
+ *             {species: ['dog', 'Nn1JUF-----Zjl0M', 4176151067]},
+ *             '',
+ *             2722999044,
+ *           ],
+ *         },
+ *         '',
+ *         3367164653,
+ *       ],
+ *     },
+ *     '',
+ *     30627183,
+ *   ],
+ *   [{}, '', 0],
+ * ];
+ * mergeableStorePersister.destroy();
  * ```
  * @category Creation
  */
