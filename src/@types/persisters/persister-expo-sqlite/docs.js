@@ -57,9 +57,12 @@
   /// ExpoSqlitePersister.getDb
 }
 /**
- * The createExpoSqlitePersister function creates a Persister object that can
- * persist the Store to a local Expo-SQLite database (in an appropriate React
- * Native environment).
+ * The createExpoSqlitePersister function creates an ExpoSqlitePersister object
+ * that can persist the Store to a local Expo-SQLite database.
+ *
+ * An ExpoSqlitePersister supports regular Store objects, and can also be used
+ * to persist the metadata of a MergeableStore when using the JSON serialization
+ * mode, as described below.
  *
  * Note that this Persister is currently experimental as Expo themselves iterate
  * on the underlying database library API.
@@ -78,7 +81,7 @@
  *
  * See the documentation for the DpcJson and DpcTabular types for more
  * information on how both of those modes can be configured.
- * @param store The Store to persist.
+ * @param store The Store or MergeableStore to persist.
  * @param db The database instance that was returned from
  * `SQLite.openDatabase(...)`.
  * @param configOrStoreTableName A DatabasePersisterConfig to configure the

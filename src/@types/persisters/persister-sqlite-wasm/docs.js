@@ -56,8 +56,12 @@
   /// SqliteWasmPersister.getDb
 }
 /**
- * The createSqliteWasmPersister function creates a Persister object that can
- * persist the Store to a local SQLite database (in an appropriate environment).
+ * The createSqliteWasmPersister function creates a SqliteWasmPersister object
+ * that can persist the Store to a local SQLite database.
+ *
+ * A SqliteWasmPersister supports regular Store objects, and can also be used to
+ * persist the metadata of a MergeableStore when using the JSON serialization
+ * mode, as described below.
  *
  * As well as providing a reference to the Store to persist, you must provide
  * `sqlite3` and `db` parameters which identify the WASM module and database
@@ -74,7 +78,7 @@
  *
  * See the documentation for the DpcJson and DpcTabular types for more
  * information on how both of those modes can be configured.
- * @param store The Store to persist.
+ * @param store The Store or MergeableStore to persist.
  * @param sqlite3 The WASM module that was returned from `sqlite3InitModule`.
  * @param db The database instance that was returned from `new
  * sqlite3.oo1.DB(...)`.

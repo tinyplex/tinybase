@@ -92,13 +92,15 @@
   /// LocalPersister.getStorageName
 }
 /**
- * The createSessionPersister function creates a Persister object that can
- * persist the Store to the browser's session storage.
+ * The createSessionPersister function creates a SessionPersister object that
+ * can persist the Store to the browser's session storage.
+ *
+ * A SessionPersister supports both regular Store and MergeableStore objects.
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `storageName` parameter which is unique to your application. This is the key
  * that the browser uses to identify the storage location.
- * @param store The Store to persist.
+ * @param store The Store or MergeableStore to persist.
  * @param storageName The unique key to identify the storage location.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
@@ -126,13 +128,15 @@
  */
 /// createSessionPersister
 /**
- * The createLocalPersister function creates a Persister object that can persist
- * the Store to the browser's local storage.
+ * The createLocalPersister function creates a LocalPersister object that can
+ * persist the Store to the browser's local storage.
+ *
+ * A LocalPersister supports both regular Store and MergeableStore objects.
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `storageName` parameter which is unique to your application. This is the key
  * that the browser uses to identify the storage location.
- * @param store The Store to persist.
+ * @param store The Store or MergeableStore to persist.
  * @param storageName The unique key to identify the storage location.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for

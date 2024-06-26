@@ -52,8 +52,11 @@
   /// YjsPersister.getYDoc
 }
 /**
- * The createYjsPersister function creates a Persister object that can persist
- * the Store to a Yjs document.
+ * The createYjsPersister function creates a YjsPersister object that can
+ * persist the Store to a Yjs document.
+ *
+ * A YjsPersister only supports regular Store objects, and cannot be used to
+ * persist the metadata of a MergeableStore.
  *
  * As well as providing a reference to the Store to persist, you must provide
  * the Yjs document to persist it to.

@@ -49,8 +49,11 @@
   /// LibSqlPersister.getClient
 }
 /**
- * The createLibSqlPersister function creates a Persister object that can
- * persist the Store to a local LibSQL database (in an appropriate environment).
+ * The createLibSqlPersister function creates a LibSqlPersister object that can
+ * persist a Store to a local LibSQL database.
+ *
+ * A LibSqlPersister only supports regular Store objects, and cannot be used to
+ * persist the metadata of a MergeableStore.
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `client` parameter which identifies the database client.

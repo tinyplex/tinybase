@@ -49,9 +49,12 @@
   /// PowerSyncPersister.getPowerSync
 }
 /**
- * The createPowerSyncPersister function creates a Persister object that can
- * persist the Store to a local SQLite database that is automatically synced
- * using the PowerSync service.
+ * The createPowerSyncPersister function creates a PowerSyncPersister object
+ * that can persist the Store to a local SQLite database that is automatically
+ * synced using the PowerSync service.
+ *
+ * A PowerSyncPersister only supports regular Store objects, and cannot be used
+ * to persist the metadata of a MergeableStore.
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `powerSync` parameter which identifies the PowerSync instance.
