@@ -33,7 +33,7 @@ export const createTabularSqlitePersister = <
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError: ((error: any) => void) | undefined,
-  persistable: Persist,
+  persist: Persist,
   [
     tablesLoadConfig,
     tablesSaveConfig,
@@ -151,7 +151,7 @@ export const createTabularSqlitePersister = <
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    persistable,
+    persist,
     {[getThing]: () => db},
     db,
   );
