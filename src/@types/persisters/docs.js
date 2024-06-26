@@ -292,6 +292,11 @@
  * The DpcTabular type describes the configuration of a database-oriented
  * Persister that is operating in tabular mapping mode.
  *
+ * This configuration can only be used when the Persister is persisting a
+ * regular Store. For those database-oriented Persister types that support
+ * MergeableStore data, you will need to use JSON-serialization, es described
+ * in the DpcJson section.
+ *
  * It is important to note that both the tabular mapping in ('save') and out
  * ('load') of an underlying database are disabled by default. This is to ensure
  * that if you pass in an existing populated database you don't run the
