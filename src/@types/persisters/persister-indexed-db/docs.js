@@ -46,8 +46,11 @@
   /// IndexedDbPersister.getDbName
 }
 /**
- * The createIndexedDbPersister function creates a Persister object that can
- * persist the Store to the browser's IndexedDB storage.
+ * The createIndexedDbPersister function creates an IndexedDbPersister object
+ * that can persist a Store to the browser's IndexedDB storage.
+ *
+ * An IndexedDbPersister only supports regular Store objects, and cannot be used
+ * to persist the metadata of a MergeableStore.
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `dbName` parameter which is unique to your application. This is the key used

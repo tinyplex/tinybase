@@ -59,9 +59,11 @@
   /// ElectricSqlPersister.getElectricClient
 }
 /**
- * The createElectricSqlPersister function creates a Persister object that can
- * persist the Store to a local ElectricSQL database (in an appropriate
- * environment).
+ * The createElectricSqlPersister function creates an ElectricSqlPersister
+ * object that can persist a Store to a local ElectricSQL database.
+ *
+ * An ElectricSqlPersister only supports regular Store objects, and cannot be
+ * used to persist the metadata of a MergeableStore.
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `electricClient` parameter which identifies the Electric client.
