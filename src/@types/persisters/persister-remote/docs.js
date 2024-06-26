@@ -50,8 +50,11 @@
   /// RemotePersister.getUrls
 }
 /**
- * The createRemotePersister function creates a Persister object that can
+ * The createRemotePersister function creates a RemotePersister object that can
  * persist the Store to a remote server.
+ *
+ * A RemotePersister only supports regular Store objects, and cannot be used to
+ * persist the metadata of a MergeableStore.
  *
  * As well as providing a reference to the Store to persist, you must provide
  * `loadUrl` and `saveUrl` parameters. These identify the endpoints of the
@@ -59,9 +62,9 @@
  * the `POST` method (to send the Store JSON to save) respectively.
  *
  * For when you choose to enable automatic loading for the Persister (with the
- * startAutoLoad method), it will poll the loadUrl for changes, using the
- * `ETag` HTTP header to identify if things have changed. The
- * `autoLoadIntervalSeconds` method is used to indicate how often to do this.
+ * startAutoLoad method), it will poll the loadUrl for changes, using the `ETag`
+ * HTTP header to identify if things have changed. The `autoLoadIntervalSeconds`
+ * method is used to indicate how often to do this.
  *
  * If you are implementing the server portion of this functionality yourself,
  * remember to ensure that the `ETag` header changes every time the server's

@@ -111,9 +111,12 @@
   /// PartyKitPersisterConfig.messagePrefix
 }
 /**
- * The createPartyKitPersister function creates a Persister object that can
- * persist the Store to durable PartyKit storage, enabling synchronization of
- * the same Store across multiple clients.
+ * The createPartyKitPersister function creates a PartyKitPersister object that
+ * can persist the Store to durable PartyKit storage, enabling synchronization
+ * of the same Store across multiple clients.
+ *
+ * A PartyKitPersister only supports regular Store objects, and cannot be used
+ * to persist the metadata of a MergeableStore.
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `connection` parameter which is a PartyKit PartySocket that you have already

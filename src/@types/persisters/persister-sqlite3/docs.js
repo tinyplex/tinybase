@@ -50,8 +50,12 @@
   /// Sqlite3Persister.getDb
 }
 /**
- * The createSqlite3Persister function creates a Persister object that can
- * persist the Store to a local SQLite database (in an appropriate environment).
+ * The createSqlite3Persister function creates a Sqlite3Persister object that
+ * can persist the Store to a local SQLite database.
+ *
+ * A Sqlite3Persister supports regular Store objects, and can also be used to
+ * persist the metadata of a MergeableStore when using the JSON serialization
+ * mode, as described below.
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `db` parameter which identifies the database instance.
@@ -67,7 +71,7 @@
  *
  * See the documentation for the DpcJson and DpcTabular types for more
  * information on how both of those modes can be configured.
- * @param store The Store to persist.
+ * @param store The Store or MergeableStore to persist.
  * @param db The database instance that was returned from `new
  * sqlite3.Database(...)`.
  * @param configOrStoreTableName A DatabasePersisterConfig to configure the

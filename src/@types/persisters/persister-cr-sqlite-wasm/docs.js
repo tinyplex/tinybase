@@ -51,9 +51,11 @@
   /// CrSqliteWasmPersister.getDb
 }
 /**
- * The createCrSqliteWasmPersister function creates a Persister object that can
- * persist the Store to a local CR-SQLite database (in an appropriate
- * environment).
+ * The createCrSqliteWasmPersister function creates a CrSqliteWasmPersister
+ * object that can persist the Store to a local CR-SQLite database.
+ *
+ * A CrSqliteWasmPersister only supports regular Store objects, and cannot be
+ * used to persist the metadata of a MergeableStore.
  *
  * As well as providing a reference to the Store to persist, you must provide a
  * `db` parameter which identifies the database instance.
