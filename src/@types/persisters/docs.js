@@ -53,7 +53,7 @@
  * trying to instantiate a Persister, it is most likely that you are passing in
  * an unsupported type of store.
  *
- * See the createCustomPersister method for examples of this enum being used.
+ * See the createCustomPersister method for an example of this enum being used.
  * @category Mergeable
  * @since v5.0.0
  */

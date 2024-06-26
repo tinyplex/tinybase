@@ -11,23 +11,40 @@ import type {
 } from '../../persisters/with-schemas/index.d.ts';
 import type {MergeableStore} from '../../mergeable-store/with-schemas/index.d.ts';
 
-/// MessageType
-export type MessageType = number;
+/// Message
+export const enum Message {
+  /// Message.Response
+  Response = 0,
+  /// Message.GetContentHashes
+  GetContentHashes = 1,
+  /// Message.ContentHashes
+  ContentHashes = 2,
+  /// Message.ContentDiff
+  ContentDiff = 3,
+  /// Message.GetTableDiff
+  GetTableDiff = 4,
+  /// Message.GetRowDiff
+  GetRowDiff = 5,
+  /// Message.GetCellDiff
+  GetCellDiff = 6,
+  /// Message.GetValueDiff
+  GetValueDiff = 7,
+}
 
 /// Receive
 export type Receive = (
   fromClientId: Id,
   requestId: Id,
-  messageType: MessageType,
-  messageBody: any,
+  message: Message,
+  body: any,
 ) => void;
 
 /// Send
 export type Send = (
   toClientId: IdOrNull,
   requestId: Id,
-  messageType: MessageType,
-  messageBody: any,
+  message: Message,
+  body: any,
 ) => void;
 
 /// SynchronizerStats

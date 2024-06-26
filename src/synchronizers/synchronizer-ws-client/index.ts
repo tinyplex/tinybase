@@ -1,5 +1,5 @@
 import {EMPTY_STRING, UTF8} from '../../common/strings.ts';
-import type {MessageType, Receive} from '../../@types/synchronizers/index.d.ts';
+import type {Message, Receive} from '../../@types/synchronizers/index.d.ts';
 import type {
   WebSocketTypes,
   createWsSynchronizer as createWsSynchronizerDecl,
@@ -33,7 +33,7 @@ export const createWsSynchronizer = (async <
 
   const send = (
     toClientId: IdOrNull,
-    ...args: [requestId: IdOrNull, messageType: MessageType, messageBody: any]
+    ...args: [requestId: IdOrNull, message: Message, body: any]
   ): void => {
     webSocket.send(
       (toClientId ?? EMPTY_STRING) +
@@ -65,8 +65,8 @@ export const createWsSynchronizer = (async <
           slice(data, 0, splitAt),
           ...(jsonParseWithUndefined(slice(data, splitAt + 1)) as [
             requestId: IdOrNull,
-            messageType: MessageType,
-            messageBody: any,
+            message: Message,
+            body: any,
           ]),
         );
       }
