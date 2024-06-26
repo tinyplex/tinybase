@@ -36,8 +36,8 @@ const scheduleRunning: Map<any, 0 | 1> = mapNew();
 const scheduleActions: Map<any, Action[]> = mapNew();
 
 const getStoreFunctions = (
-  persistable: PersistsType = Persists.StoreOnly,
-  store: PersistedStore<typeof persistable>,
+  persist: PersistsType = Persists.StoreOnly,
+  store: PersistedStore<typeof persist>,
 ):
   | [
       isMergeableStore: 0,
@@ -53,7 +53,7 @@ const getStoreFunctions = (
       hasChanges: (changes: MergeableChanges) => boolean,
       setDefaultContent: (content: Content) => MergeableStore,
     ] =>
-  persistable != Persists.StoreOnly && store.isMergeable()
+  persist != Persists.StoreOnly && store.isMergeable()
     ? [
         1,
         (store as MergeableStore).getMergeableContent,
@@ -62,7 +62,7 @@ const getStoreFunctions = (
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
         (store as MergeableStore).setDefaultContent,
       ]
-    : persistable != Persists.MergeableStoreOnly
+    : persist != Persists.MergeableStoreOnly
       ? [
           0,
           store.getContent,
@@ -88,7 +88,7 @@ export const createCustomPersister = <
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
-  persistable?: Persist,
+  persist?: Persist,
   // undocumented:
   extra: {[methodName: string]: (...args: any[]) => any} = {},
   scheduleId = [],
@@ -109,7 +109,7 @@ export const createCustomPersister = <
     getChanges,
     hasChanges,
     setDefaultContent,
-  ] = getStoreFunctions(persistable, store);
+  ] = getStoreFunctions(persist, store);
 
   const run = async (): Promise<void> => {
     /*! istanbul ignore else */

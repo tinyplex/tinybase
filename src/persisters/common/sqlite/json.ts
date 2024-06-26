@@ -25,7 +25,7 @@ export const createJsonSqlitePersister = <
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError: ((error: any) => void) | undefined,
-  persistable: Persist,
+  persist: Persist,
   [storeTableName, storeIdColumnName, storeColumnName]: DefaultedJsonConfig,
   managedTableNames: string[],
   db: any,
@@ -70,7 +70,7 @@ export const createJsonSqlitePersister = <
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    persistable,
+    persist,
     {[getThing]: () => db},
     db,
   );
