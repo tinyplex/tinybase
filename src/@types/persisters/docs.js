@@ -13,12 +13,12 @@
  * |-|-|-|-|-|
  * |persister-browser|createSessionPersister|Browser session storage|Yes|Yes
  * |persister-browser|createLocalPersister|Browser local storage|Yes|Yes
- * |persister-indexed-db|createIndexedDbPersister|Browser IndexedDB|Yes|No
  * |persister-file|createFilePersister|Local file (where possible)|Yes|Yes
- * |persister-remote|createRemotePersister|Remote server|Yes|No
  * |persister-sqlite3|createSqlite3Persister|SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)|Yes|Yes*
  * |persister-sqlite-wasm|createSqliteWasmPersister|SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)|Yes|Yes*
  * |persister-expo-sqlite|createExpoSqlitePersister|SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)|Yes|Yes*
+ * |persister-indexed-db|createIndexedDbPersister|Browser IndexedDB|Yes|No
+ * |persister-remote|createRemotePersister|Remote server|Yes|No
  * |persister-partykit-client|createPartyKitPersister|PartyKit with the persister-partykit-server module|Yes|No
  * |persister-cr-sqlite-wasm|createCrSqliteWasmPersister|SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)|Yes|No
  * |persister-electric-sql|createElectricSqlPersister|Electric SQL, via [electric-sql](https://github.com/electric-sql/electric)|Yes|No
@@ -661,7 +661,7 @@
  *
  * Using the values of the Persists enum, the generic parameter to the Persister
  * indicates whether it can handle a regular Store, a MergeableStore, or either.
- * Consult the table in the overall persister module documentation to see
+ * Consult the table in the overall persisters module documentation to see
  * current support for each. The different levels of support are also described
  * for each of the types of Persister themselves.
  *
