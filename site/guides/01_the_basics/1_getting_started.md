@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide gets up you up and running quickly with TinyBase.
+This guide gets you up and running quickly with TinyBase.
 
 It is not intended to be a detailed introduction to installing JavaScript build-
 and run-time environments! It assumes that you have (or know how to have) a
