@@ -661,8 +661,9 @@
  * Creating a Persister depends on the choice of underlying storage where the
  * data is to be stored. Options include the createSessionPersister function,
  * the createLocalPersister function, the createRemotePersister function, and
- * the createFilePersister function. The createCustomPersister function can also
- * be used to easily create a fully customized way to save and load Store data.
+ * the createFilePersister function, as just simple examples. The
+ * createCustomPersister function can also be used to easily create a fully
+ * customized way to save and load Store data.
  *
  * Using the values of the Persists enum, the generic parameter to the Persister
  * indicates whether it can handle a regular Store, a MergeableStore, or either.
