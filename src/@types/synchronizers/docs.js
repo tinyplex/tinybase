@@ -56,31 +56,82 @@
   /// Message.GetValueDiff
 }
 /**
- * The Receive type.
+ * The Receive type describes a function that knows how to handle the arrival of
+ * a message as part of the synchronization protocol.
+ *
+ * When a message arrives (most likely from another system), the function will
+ * be called with parameters that indicate where the message came from, and its
+ * meaning and content.
+ * @param fromClientId The Id of the other client (in other words, the other
+ * system) that sent the message.
+ * @param requestId The optional Id of the message, which should be returned in
+ * the response (if requested) to constitute a matched request/response
+ * transaction.
+ * @param message A number that indicates the type of the message, according to
+ * the Message enum.
+ * @param body A message-specific payload.
  * @category Synchronization
  * @since v5.0.0
  */
 /// Receive
 /**
- * The Send type.
+ * The Send type describes a function that knows how to dispatch a message as
+ * part of the synchronization protocol.
+ * @param toClientId The optional Id of the other client (in other words, the
+ * other system) to which the message should be sent. If omitted, this is to be
+ * a broadcast.
+ * @param requestId The optional Id of the message, which should be awaited in
+ * the response (if requested) to constitute a matched request/response
+ * transaction.
+ * @param message A number that indicates the type of the message, according to
+ * the Message enum.
+ * @param body A message-specific payload.
  * @category Synchronization
  * @since v5.0.0
  */
 /// Send
 /**
- * The SynchronizerStats type.
+ * The SynchronizerStats type describes the number of times a Synchronizer
+ * object has sent or received data.
+ *
+ * A SynchronizerStats object is returned from the getSynchronizerStats method.
  * @category Development
  * @since v5.0.0
  */
 /// SynchronizerStats
+{
+  /**
+   * The number of times messages have been sent.
+   */
+  /// SynchronizerStats.sends
+  /**
+   * The number of times messages has been received.
+   */
+  /// SynchronizerStats.receives
+}
 /**
- * The Synchronizer interface is a minor extension to the Persister interface.
+ * The Synchronizer object lets you synchronize MergeableStore data with another
+ * TinyBase client or system.
  *
- * It provides extra convenience methods for starting and stopping the
+ * This is useful for sharing data between users, or between devices of a single
+ * user. This is especially valuable when there is the possibility that there
+ * has been a lack of immediate connectivity between clients and the
+ * synchronization requires some negotiation to orchestrate merging the
+ * MergeableStore objects together.
+ *
+ * Creating a Synchronizer depends on the choice of underlying medium over which
+ * the synchronization will take place. Options include the createWsSynchronizer
+ * function (for a Synchronizer that will sync over web-sockets), and the
+ * createLocalSynchronizer function (for a Synchronizer that will sync two
+ * MergeableStore objects in memory on one system). The createCustomSynchronizer
+ * function can also be used to easily create a fully customized way to send and
+ * receive the messages of the synchronization protocol.
+ *
+ * Note that, as an interface, it is an extension to the Persister interface,
+ * since they share underlying implementations. Think of a Synchronizer as
+ * 'persisting' your MergeableStore to another client (and vice-versa). For
+ * example, it provides extra convenience methods for starting and stopping the
  * synchronization.
- *
- * You should use the createCustomSynchronizer function to create a Synchronizer
- * object.
  * @category Synchronizer
  * @since v5.0.0
  */
@@ -121,36 +172,6 @@
  * Synchronizer would otherwise ignore when trying to save or load data. This is
  * suitable for debugging synchronization issues in a development environment.
  * @returns A reference to the new Synchronizer object.
- * @example
- * This example creates a Synchronizer object and synchronizes one
- * MergeableStore to another.
- *
- * ```js
- * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
- * import {createMergeableStore} from 'tinybase';
- *
- * const store1 = createMergeableStore('store1').setTables({
- *   pets: {fido: {species: 'dog'}},
- * });
- * const synchronizer1 = createLocalSynchronizer(store1);
- *
- * const store2 = createMergeableStore('store2');
- * const synchronizer2 = createLocalSynchronizer(store2);
- * await synchronizer2.startSync();
- *
- * await synchronizer1.save();
- * // ...
- * // Store2 will be synced with Store1.
- *
- * console.log(store2.getTables());
- * // -> {pets: {fido: {species: 'dog'}}}
- *
- * await synchronizer1.load();
- * // Store1 will be synced with Store2.
- *
- * synchronizer1.destroy();
- * synchronizer2.destroy();
- * ```
  * @category Creation
  * @since v5.0.0
  */

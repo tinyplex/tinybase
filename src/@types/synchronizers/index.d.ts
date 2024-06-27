@@ -43,7 +43,9 @@ export type Send = (
 
 /// SynchronizerStats
 export type SynchronizerStats = {
+  /// SynchronizerStats.sends
   sends: number;
+  /// SynchronizerStats.receives
   receives: number;
 };
 
