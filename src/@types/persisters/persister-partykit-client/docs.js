@@ -3,8 +3,8 @@
  * client portion of the PartyKit integration.
  *
  * It contains a Persister which, when run in a PartyKit client environment,
- * lets you save and load Store data from the client to durable PartyKit cloud
- * storage of a server (that is using the complementary
+ * lets you save and load Store data from the client to the durable PartyKit
+ * cloud storage of a server (that is using the complementary
  * persister-partykit-server module).
  *
  * This enables synchronization of the same Store across multiple clients in a
@@ -19,11 +19,13 @@
  */
 /// persister-partykit-client
 /**
- * The PartyKitPersister interface is a minor extension to the Persister
- * interface.
+ * The PartyKitPersister interface represents a Persister that lets you save and
+ * load Store data from the client to the durable PartyKit cloud storage of a
+ * server.
  *
- * It simply provides an extra getConnection method for accessing the
- * PartySocket the Store is being persisted to.
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getConnection method for accessing the PartySocket the Store is being
+ * persisted to.
  *
  * You should use the createPartyKitPersister function to create a
  * PartyKitPersister object.

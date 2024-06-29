@@ -1,6 +1,6 @@
 /**
  * The persister-automerge module of the TinyBase project provides a way to save
- * and load Store data, to and from an Automerge document.
+ * and load Store data to and from an Automerge document.
  *
  * A single entry point, the createAutomergePersister function, is provided,
  * which returns a new Persister object that can bind a Store to a provided
@@ -12,11 +12,12 @@
  */
 /// persister-automerge
 /**
- * The AutomergePersister interface is a minor extension to the Persister
- * interface.
+ * The AutomergePersister interface represents a Persister that lets you save
+ * and load Store data to and from an Automerge document.
  *
- * It simply provides an extra getDocHandle method for accessing the Automerge
- * document handler the Store is being persisted to.
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getDocHandle method for accessing the Automerge document handler the
+ * Store is being persisted to.
  *
  * You should use the createAutomergePersister function to create an
  * AutomergePersister object.

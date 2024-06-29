@@ -1,6 +1,6 @@
 /**
  * The persister-yjs module of the TinyBase project provides a way to save and
- * load Store data, to and from a Yjs document.
+ * load Store data to and from a Yjs document.
  *
  * A single entry point, the createYjsPersister function, is provided, which
  * returns a new Persister object that can bind a Store to a provided Yjs
@@ -12,10 +12,12 @@
  */
 /// persister-yjs
 /**
- * The YjsPersister interface is a minor extension to the Persister interface.
+ * The YjsPersister interface represents a Persister that lets you save and load
+ * Store data to and from a Yjs document.
  *
- * It simply provides an extra getYDoc method for accessing the Yjs document the
- * Store is being persisted to.
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getYDoc method for accessing the Yjs document the Store is being
+ * persisted to.
  *
  * You should use the createYjsPersister function to create a YjsPersister
  * object.

@@ -16,11 +16,12 @@
  */
 /// persister-expo-sqlite
 /**
- * The ExpoSqlitePersister interface is a minor extension to the Persister
- * interface.
+ * The ExpoSqlitePersister interface represents a Persister that lets you save
+ * and load Store data to and from a Expo-SQLite database.
  *
- * It simply provides an extra getDb method for accessing a reference to the
- * database instance the Store is being persisted to.
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getDb method for accessing a reference to the database instance the
+ * Store is being persisted to.
  *
  * You should use the createExpoSqlitePersister function to create an
  * ExpoSqlitePersister object.

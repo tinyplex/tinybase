@@ -9,11 +9,12 @@
  */
 /// persister-sqlite3
 /**
- * The Sqlite3Persister interface is a minor extension to the Persister
- * interface.
+ * The Sqlite3Persister interface represents a Persister that lets you save and
+ * load Store data to and from a local SQLite database.
  *
- * It simply provides an extra getDb method for accessing a reference to the
- * database instance the Store is being persisted to.
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getDb method for accessing a reference to the database instance the
+ * Store is being persisted to.
  *
  * You should use the createSqlite3Persister function to create a
  * Sqlite3Persister object.
