@@ -9,11 +9,12 @@
  */
 /// persister-electric-sql
 /**
- * The ElectricSqlPersister interface is a minor extension to the Persister
- * interface.
+ * The ElectricSqlPersister interface represents a Persister that lets you save
+ * and load Store data to and from a local ElectricSQL database.
  *
- * It simply provides an extra getElectricClient method for accessing a
- * reference to the Electric client the Store is being persisted to.
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getElectricClient method for accessing a reference to the Electric
+ * client the Store is being persisted to.
  *
  * You should use the createElectricSqlPersister function to create an
  * ElectricSqlPersister object.

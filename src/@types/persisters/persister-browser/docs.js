@@ -15,11 +15,12 @@
  */
 /// persister-browser
 /**
- * The SessionPersister interface is a minor extension to the Persister
- * interface.
+ * The SessionPersister interface represents a Persister that lets you save and
+ * load Store data to and from the browser's session storage.
  *
- * It simply provides an extra getStorageName method for accessing the unique
- * key of the storage location the Store is being persisted to.
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getStorageName method for accessing the unique key of the storage
+ * location the Store is being persisted to.
  *
  * You should use the createSessionPersister function to create a
  * SessionPersister object.
@@ -54,10 +55,12 @@
   /// SessionPersister.getStorageName
 }
 /**
- * The LocalPersister interface is a minor extension to the Persister interface.
+ * The LocalPersister interface represents a Persister that lets you save and
+ * load Store data to and from the browser's local storage.
  *
- * It simply provides an extra getStorageName method for accessing the unique
- * key of the storage location the Store is being persisted to.
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getStorageName method for accessing the unique key of the storage
+ * location the Store is being persisted to.
  *
  * You should use the createLocalPersister function to create a LocalPersister
  * object.
