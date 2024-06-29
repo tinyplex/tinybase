@@ -129,27 +129,216 @@
  *
  * Note that, as an interface, it is an extension to the Persister interface,
  * since they share underlying implementations. Think of a Synchronizer as
- * 'persisting' your MergeableStore to another client (and vice-versa). For
- * example, it provides extra convenience methods for starting and stopping the
- * synchronization.
+ * 'persisting' your MergeableStore to another client (and vice-versa).
+ * @example
+ * This example creates two empty MergeableStore objects, creates a
+ * LocalSynchronizer for each, and starts synchronizing them. A change in one
+ * becomes evident in the other.
+ *
+ * ```js
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {createMergeableStore} from 'tinybase';
+ *
+ * const store1 = createMergeableStore();
+ * const store2 = createMergeableStore();
+ *
+ * const synchronizer1 = createLocalSynchronizer(store1);
+ * const synchronizer2 = createLocalSynchronizer(store2);
+ *
+ * await synchronizer1.startSync();
+ * await synchronizer2.startSync();
+ *
+ * store1.setTables({pets: {fido: {species: 'dog'}}});
+ * // ...
+ * console.log(store2.getTables());
+ * // -> {pets: {fido: {species: 'dog'}}}
+ *
+ * store2.setRow('pets', 'felix', {species: 'cat'});
+ * // ...
+ * console.log(store1.getTables());
+ * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
+ *
+ * synchronizer1.destroy();
+ * synchronizer2.destroy();
+ * ```
  * @category Synchronizer
  * @since v5.0.0
  */
 /// Synchronizer
 {
   /**
-   * The startSync method.
+   * The startSync method is used to start the process of synchronization
+   * between this instance and another matching Synchronizer.
+   *
+   * The underlying implementation of a Synchronizer is shared with the
+   * Persister framework, and so this startSync method is equivalent to starting
+   * both auto-loading (listening to sync messages from other active
+   * Synchronizer instances) and auto-saving (sending sync messages to it).
+   *
+   * This method is asynchronous so you should you `await` calls to this method
+   * or handle the return type natively as a Promise.
+   * @param initialContent An optional Content object used when no content is
+   * available from another other peer Synchronizer instances.
+   * @returns A Promise containing a reference to the Synchronizer object.
+   * @example
+   * This example creates two empty MergeableStore objects, creates a
+   * LocalSynchronizer for each, and starts synchronizing them. A change in one
+   * becomes evident in the other.
+   *
+   * ```js
+   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store1 = createMergeableStore();
+   * const store2 = createMergeableStore();
+   *
+   * const synchronizer1 = createLocalSynchronizer(store1);
+   * const synchronizer2 = createLocalSynchronizer(store2);
+   *
+   * await synchronizer1.startSync();
+   * await synchronizer2.startSync();
+   *
+   * store1.setTables({pets: {fido: {species: 'dog'}}});
+   * // ...
+   * console.log(store2.getTables());
+   * // -> {pets: {fido: {species: 'dog'}}}
+   *
+   * store2.setRow('pets', 'felix', {species: 'cat'});
+   * // ...
+   * console.log(store1.getTables());
+   * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
+   *
+   * synchronizer1.destroy();
+   * synchronizer2.destroy();
+   * ```
+   * @example
+   * This example creates two empty MergeableStore objects, creates a
+   * LocalSynchronizer for each, and starts synchronizing them with default
+   * content. The default content from the first Synchronizer's startSync method
+   * ends up populated in both MergeableStore instances: by the time the second
+   * started, the first was available to synchronize with and its default was
+   * not needed.
+   *
+   * ```js
+   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store1 = createMergeableStore();
+   * const store2 = createMergeableStore();
+   *
+   * const synchronizer1 = createLocalSynchronizer(store1);
+   * const synchronizer2 = createLocalSynchronizer(store2);
+   *
+   * await synchronizer1.startSync([{pets: {fido: {species: 'dog'}}}, {}]);
+   * await synchronizer2.startSync([{pets: {felix: {species: 'cat'}}}, {}]);
+   *
+   * // ...
+   *
+   * console.log(store1.getTables());
+   * // -> {pets: {fido: {species: 'dog'}}}
+   * console.log(store2.getTables());
+   * // -> {pets: {fido: {species: 'dog'}}}
+   *
+   * synchronizer1.destroy();
+   * synchronizer2.destroy();
+   * ```
    * @category Synchronization
+   * @since v5.0.0
    */
   /// Synchronizer.startSync
   /**
-   * The stopSync method.
+   * The stopSync method is used to stop the process of synchronization between
+   * this instance and another matching Synchronizer.
+   *
+   * The underlying implementation of a Synchronizer is shared with the
+   * Persister framework, and so this startSync method is equivalent to stopping
+   * both auto-loading (listening to sync messages from other active
+   * Synchronizer instances) and auto-saving (sending sync messages to them).
+   * @returns A reference to the Synchronizer object.
+   * @example
+   * This example creates two empty MergeableStore objects, creates a
+   * LocalSynchronizer for each, and starts - then stops - synchronizing them.
+   * Subsequent changes are not merged.
+   *
+   * ```js
+   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store1 = createMergeableStore();
+   * const synchronizer1 = createLocalSynchronizer(store1);
+   * await synchronizer1.startSync();
+   *
+   * const store2 = createMergeableStore();
+   * const synchronizer2 = createLocalSynchronizer(store2);
+   * await synchronizer2.startSync();
+   *
+   * store1.setTables({pets: {fido: {species: 'dog'}}});
+   * // ...
+   * console.log(store1.getTables());
+   * // -> {pets: {fido: {species: 'dog'}}}
+   * console.log(store2.getTables());
+   * // -> {pets: {fido: {species: 'dog'}}}
+   *
+   * synchronizer1.stopSync();
+   * synchronizer2.stopSync();
+   *
+   * store1.setCell('pets', 'fido', 'color', 'brown');
+   * // ...
+   * console.log(store1.getTables());
+   * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
+   * console.log(store2.getTables());
+   * // -> {pets: {fido: {species: 'dog'}}}
+   *
+   * synchronizer1.destroy();
+   * synchronizer2.destroy();
+   * ```
    * @category Synchronization
+   * @since v5.0.0
    */
   /// Synchronizer.stopSync
   /**
-   * The getSynchronizerStats method.
+   * The getSynchronizerStats method provides a set of statistics about the
+   * Synchronizer, and is used for debugging purposes.
+   *
+   * The SynchronizerStats object contains a count of the number of times the
+   * Persister has sent and received messages.
+   *
+   * The method is intended to be used during development to ensure your
+   * synchronization layer is acting as expected, for example.
+   * @returns A SynchronizerStats object containing Synchronizer send and
+   * receive statistics.
+   * @example
+   * This example gets the send and receive statistics of two active
+   * Synchronizer instances.
+   *
+   * ```js
+   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store1 = createMergeableStore();
+   * const store2 = createMergeableStore();
+   *
+   * const synchronizer1 = createLocalSynchronizer(store1);
+   * const synchronizer2 = createLocalSynchronizer(store2);
+   *
+   * await synchronizer1.startSync();
+   * await synchronizer2.startSync();
+   *
+   * store1.setTables({pets: {fido: {species: 'dog'}}});
+   * // ...
+   * store2.setRow('pets', 'felix', {species: 'cat'});
+   * // ...
+   *
+   * console.log(synchronizer1.getSynchronizerStats());
+   * // -> {receives: 4, sends: 5}
+   * console.log(synchronizer2.getSynchronizerStats());
+   * // -> {receives: 5, sends: 4}
+   *
+   * synchronizer1.destroy();
+   * synchronizer2.destroy();
+   * ```
    * @category Synchronization
+   * @since v5.0.0
    */
   /// Synchronizer.getSynchronizerStats
 }
