@@ -9,15 +9,43 @@
  */
 /// synchronizer-local
 /**
- * The LocalSynchronizer interface.
+ * The LocalSynchronizer interface represents a Synchronizer that lets you
+ * synchronize MergeableStore data to and from other MergeableStore instances on
+ * the same local machine.
+ *
+ * Having no specialized methods, it is a synonym for the Synchronizer
+ * interface. This is also something of a showcase Synchronizer, rather than
+ * something you would use in a production environment. If you _do_ need to
+ * synchronize two in-memory MergeableStore instances, you may prefer to use the
+ * merge function on either one of them instead of going to the effort of
+ * setting up this Synchronizer.
+ *
+ * You should use the createLocalSynchronizer function to create a
+ * LocalSynchronizer object.
  * @category Synchronizer
  * @since v5.0.0
  */
 /// LocalSynchronizer
 /**
- * The createLocalSynchronizer function.
+ * The createLocalSynchronizer function creates a LocalSynchronizer object that
+ * can synchronize MergeableStore data to and from other MergeableStore
+ * instances on the same local machine.
+ *
+ * This is something of a showcase Synchronizer, rather than something you would
+ * use in a production environment. If you _do_ need to synchronize two
+ * in-memory MergeableStore instances, you may prefer to use the merge function
+ * on either one of them instead of going to the effort of setting up this
+ * Synchronizer.
+ *
+ * As well as providing a reference to the MergeableStore to persist, you can
+ * provide a handler for any otherwise ignored synchronization errors.
+ * @param store The MergeableStore to synchronize.
+ * @param onIgnoredError An optional handler for the errors that the
+ * Synchronizer would otherwise ignore when trying to synchronize data. This is
+ * suitable for debugging synchronization issues in a development environment.
+ * @returns A reference to the new LocalSynchronizer object.
  * @example
- * This example creates a Synchronizer object and synchronizes one
+ * This example creates a LocalSynchronizer object and synchronizes one
  * MergeableStore to another.
  *
  * ```js
