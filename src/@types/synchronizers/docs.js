@@ -348,11 +348,13 @@
  *
  * As well as providing a reference to the MergeableStore to synchronize, you
  * must provide parameters which identify how to send and receive changes to and
- * from this MergeableStore and its peers.
+ * from this MergeableStore and its peers. This is entirely dependent upon the
+ * medium of communication used.
  * @param store The MergeableStore to synchronize.
  * @param send A Send function for sending a message.
- * @param onReceive A callback to register a Receive function for receiving a
- * message.
+ * @param onReceive A callback (called once when the Synchronizer is created)
+ * that is passed a Receive function that you need to ensure can receive
+ * messages.
  * @param destroy A function called when destroying the Persister which can be
  * used to clean up underlying resources.
  * @param requestTimeoutSeconds An number of seconds before a request sent from
@@ -361,6 +363,67 @@
  * Synchronizer would otherwise ignore when trying to save or load data. This is
  * suitable for debugging synchronization issues in a development environment.
  * @returns A reference to the new Synchronizer object.
+ * @example
+ * This example creates a function for creating custom Synchronizer objects via
+ * a very naive pair of message buses (which are first-in, first-out). Each
+ * Synchronizer can write to the other's bus, and they each poll to read from
+ * their own. The example then uses these Synchronizer instances to sync two
+ * MergeableStore objects together
+ *
+ * ```js
+ * import {
+ *   createCustomSynchronizer,
+ *   createMergeableStore,
+ *   getUniqueId,
+ * } from 'tinybase';
+ *
+ * const bus1 = [];
+ * const bus2 = [];
+ *
+ * const createBusSynchronizer = (store, localBus, remoteBus) => {
+ *   let timer;
+ *   const clientId = getUniqueId();
+ *   return createCustomSynchronizer(
+ *     store,
+ *     (toClientId, requestId, message, body) => {
+ *       // send
+ *       remoteBus.push([clientId, requestId, message, body]);
+ *     },
+ *     (receive) => {
+ *       // onReceive
+ *       timer = setInterval(() => {
+ *         if (localBus.length > 0) {
+ *           const [fromClientId, requestId, message, body] =
+ *             localBus.shift();
+ *           console.info({fromClientId, requestId, message, body});
+ *           receive(fromClientId, requestId, message, body);
+ *         }
+ *       }, 1);
+ *     },
+ *     () => clearInterval(timer), // destroy
+ *     1,
+ *   );
+ * };
+ *
+ * const store1 = createMergeableStore();
+ * const store2 = createMergeableStore();
+ *
+ * const synchronizer1 = createBusSynchronizer(store1, bus1, bus2);
+ * const synchronizer2 = createBusSynchronizer(store2, bus2, bus1);
+ *
+ * await synchronizer1.startSync();
+ * await synchronizer2.startSync();
+ *
+ * store1.setTables({pets: {fido: {species: 'dog'}}});
+ * // ...
+ * console.log(store1.getTables());
+ * // -> {pets: {fido: {species: 'dog'}}}
+ * console.log(store2.getTables());
+ * // -> {pets: {fido: {species: 'dog'}}}
+ *
+ * synchronizer1.destroy();
+ * synchronizer2.destroy();
+ * ```
  * @category Creation
  * @since v5.0.0
  */
