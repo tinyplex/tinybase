@@ -393,10 +393,7 @@
  *       // onReceive
  *       timer = setInterval(() => {
  *         if (localBus.length > 0) {
- *           const [fromClientId, requestId, message, body] =
- *             localBus.shift();
- *           console.info({fromClientId, requestId, message, body});
- *           receive(fromClientId, requestId, message, body);
+ *           receive(...localBus.shift());
  *         }
  *       }, 1);
  *     },
