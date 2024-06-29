@@ -360,7 +360,7 @@
  * @param requestTimeoutSeconds An number of seconds before a request sent from
  * this Persister to another peer times out.
  * @param onIgnoredError An optional handler for the errors that the
- * Synchronizer would otherwise ignore when trying to save or load data. This is
+ * Synchronizer would otherwise ignore when trying to synchronize data. This is
  * suitable for debugging synchronization issues in a development environment.
  * @returns A reference to the new Synchronizer object.
  * @example
