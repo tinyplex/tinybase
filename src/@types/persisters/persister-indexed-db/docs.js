@@ -7,11 +7,12 @@
  */
 /// persister-indexed-db
 /**
- * The IndexedDbPersister interface is a minor extension to the Persister
- * interface.
+ * The IndexedDbPersister interface represents a Persister that lets you save
+ * and load Store data to and from browser IndexedDB storage.
  *
- * It simply provides an extra getDbName method for accessing the unique key of
- * the IndexedDB the Store is being persisted to.
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getDbName method for accessing the unique key of the IndexedDB the
+ * Store is being persisted to.
  *
  * You should use the createIndexedDbPersister function to create an
  * IndexedDbPersister object.

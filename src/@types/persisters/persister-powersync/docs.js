@@ -9,11 +9,13 @@
  */
 /// persister-powersync
 /**
- * The PowerSyncPersister interface is a minor extension to the Persister
- * interface.
+ * The PowerSyncPersister interface represents a Persister that lets you save
+ * and load Store data to and from a local SQLite database that is automatically
+ * synced using the PowerSync service.
  *
- * It simply provides an extra getPowerSync method for accessing a reference to
- * the PowerSync instance the Store is being persisted to.
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getPowerSync method for accessing a reference to the PowerSync instance
+ * the Store is being persisted to.
  *
  * You should use the createPowerSyncPersister function to create a
  * PowerSyncPersister object.

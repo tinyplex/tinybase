@@ -7,11 +7,11 @@
  */
 /// persister-remote
 /**
- * The RemotePersister interface is a minor extension to the Persister
- * interface.
+ * The RemotePersister interface represents a Persister that lets you save and
+ * load Store data to and from a remote server.
  *
- * It simply provides an extra getUrls method for accessing the URLs the Store
- * is being persisted to.
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getUrls method for accessing the URLs the Store is being persisted to.
  *
  * You should use the createRemotePersister function to create a RemotePersister
  * object.

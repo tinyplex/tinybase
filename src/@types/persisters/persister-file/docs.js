@@ -7,10 +7,12 @@
  */
 /// persister-file
 /**
- * The FilePersister interface is a minor extension to the Persister interface.
+ * The FilePersister interface represents a Persister that lets you save and
+ * load Store data to and from a local file system.
  *
- * It simply provides an extra getFilePath method for accessing the location of
- * the local file the Store is being persisted to.
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getFilePath method for accessing the location of the local file the
+ * Store is being persisted to.
  *
  * You should use the createFilePersister function to create a FilePersister
  * object.

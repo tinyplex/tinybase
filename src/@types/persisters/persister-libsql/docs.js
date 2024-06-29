@@ -9,11 +9,12 @@
  */
 /// persister-libsql
 /**
- * The LibSqlPersister interface is a minor extension to the Persister
- * interface.
+ * The LibSqlPersister interface represents a Persister that lets you save and
+ * load Store data to and from a local LibSQL database.
  *
- * It simply provides an extra getClient method for accessing a reference to the
- * database client the Store is being persisted to.
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getClient method for accessing a reference to the database client the
+ * Store is being persisted to.
  *
  * You should use the createLibSqlPersister function to create a LibSqlPersister
  * object.
