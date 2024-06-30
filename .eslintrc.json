@@ -126,15 +126,19 @@
     {
       "files": ["src/@types/**/*.js"],
       "extends": ["plugin:jsdoc/recommended"],
+      "settings": {
+        "jsdoc": {"mode": "jsdoc", "contexts": ["any"]}
+      },
       "rules": {
         "jsdoc/check-tag-names": [
           2,
-          {"definedTags": ["category", "packageDocumentation", "jsx"]}
+          {"definedTags": ["category", "packageDocumentation"]}
         ],
-        "jsdoc/require-jsdoc": [2, {"contexts": ["any"]}],
-        "jsdoc/require-description": [2, {"contexts": ["any"]}],
+        "jsdoc/require-jsdoc": [2],
+        "jsdoc/require-description": [2],
         "jsdoc/require-description-complete-sentence": [2],
         "jsdoc/require-returns-description": [2],
+        "jsdoc/no-blank-blocks": [2],
         "jsdoc/require-param-type": [0],
         "jsdoc/require-returns-type": [0]
       }

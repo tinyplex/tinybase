@@ -1796,7 +1796,6 @@
    * @param queryId The Id of a query.
    * @returns An object containing the entire data of the ResultTable of the
    * query.
-   * @returns The result of the query, structured as a ResultTable.
    * @example
    * This example creates a Queries object, a single query definition, and then
    * calls this method on it (as well as a non-existent definition) to get the
