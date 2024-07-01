@@ -604,6 +604,7 @@ export const createShop: typeof createShopDecl = () => {
 
 <section id="sponsors">
 <h2>Proud to be sponsored by:</h2>
+@@EVAL("getGitHubAvatar('cpojer')")
 @@EVAL("getGitHubAvatar('expo')")
 @@EVAL("getGitHubAvatar('beekeeb')")
 @@EVAL("getGitHubAvatar('cancelself')")
@@ -615,7 +616,9 @@ export const createShop: typeof createShopDecl = () => {
 <h2>Excited to be used by:</h2>
 @@EVAL("getGitHubAvatar('Apocalypsor')")
 @@EVAL("getGitHubAvatar('brentvatne')")
+@@EVAL("getGitHubAvatar('byCedric')")
 @@EVAL("getGitHubAvatar('circadian-risk')")
+@@EVAL("getGitHubAvatar('cpojer')")
 @@EVAL("getGitHubAvatar('cubecull')")
 @@EVAL("getGitHubAvatar('erwinkn')")
 @@EVAL("getGitHubAvatar('expo')")
@@ -638,14 +641,19 @@ export const createShop: typeof createShopDecl = () => {
 @@EVAL("getGitHubAvatar('marksteve')")
 @@EVAL("getGitHubAvatar('miking-the-viking')")
 @@EVAL("getGitHubAvatar('mjamesderocher')")
+@@EVAL("getGitHubAvatar('mouktardev')")
+@@EVAL("getGitHubAvatar('nickmessing')")
 @@EVAL("getGitHubAvatar('nikitavoloboev')")
+@@EVAL("getGitHubAvatar('nkzw-tech')")
 @@EVAL("getGitHubAvatar('palerdot')")
 @@EVAL("getGitHubAvatar('PorcoRosso85')")
+@@EVAL("getGitHubAvatar('primodiumxyz')")
 @@EVAL("getGitHubAvatar('shaneosullivan')")
 @@EVAL("getGitHubAvatar('sudo-self')")
 @@EVAL("getGitHubAvatar('SuperSonicHub1')")
 @@EVAL("getGitHubAvatar('threepointone')")
 @@EVAL("getGitHubAvatar('uptonking')")
+@@EVAL("getGitHubAvatar('ViktorZhurbin')")
 @@EVAL("getGitHubAvatar('WonderPanda')")
 </section>
 
