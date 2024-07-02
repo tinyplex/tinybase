@@ -214,7 +214,6 @@
     "publishPackage": "gulp publishPackage"
   },
   "devDependencies": {
-    "@automerge/automerge": "^2.2.4",
     "@automerge/automerge-repo": "^1.2.0",
     "@babel/cli": "^7.24.7",
     "@babel/core": "^7.24.7",
