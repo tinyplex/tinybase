@@ -24,4 +24,13 @@ module.exports = (path, options) =>
 
       return packageJson;
     },
+    pathFilter: (packageJson, _, relativePath) => {
+      if (
+        packageJson.name == '@automerge/automerge' &&
+        relativePath == 'dist/cjs/slim_next.cjs'
+      ) {
+        return 'dist/cjs/fullfat_base64.cjs';
+      }
+      return relativePath;
+    },
   });
