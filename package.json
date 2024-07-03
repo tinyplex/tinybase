@@ -114,9 +114,8 @@
     "publishPackage": "gulp publishPackage"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.15.3",
-    "@automerge/automerge": "^2.2.2",
-    "@automerge/automerge-repo-network-broadcastchannel": "^1.1.12",
+    "@arethetypeswrong/cli": "^0.16.0",
+    "@automerge/automerge-repo-network-broadcastchannel": "^1.2.0",
     "@babel/cli": "^7.24.7",
     "@babel/core": "^7.24.7",
     "@babel/preset-env": "^7.24.7",
@@ -164,7 +163,7 @@
     "eslint-plugin-jsdoc": "^48.5.0",
     "eslint-plugin-react": "7.34.3",
     "eslint-plugin-react-hooks": "^4.6.2",
-    "expo-sqlite": "14.0.3",
+    "expo-sqlite": "14.0.4",
     "fake-indexeddb": "^6.0.0",
     "gulp": "^5.0.0",
     "gulp-gzip": "^1.4.2",
@@ -193,7 +192,7 @@
     "ts-unused-exports": "^10.1.0",
     "typescript": "5.5.3",
     "wa-sqlite": "github:rhashimoto/wa-sqlite",
-    "ws": "^8.17.0",
+    "ws": "^8.17.1",
     "yjs": "^13.6.18"
   }
 }
