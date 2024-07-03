@@ -23,35 +23,43 @@
 {
   /**
    * A message that is a response to a previous request.
+   * @category Enum
    */
   /// Message.Response
   /**
    * A message that is a request to get ContentHashes from another
    * MergeableStore.
+   * @category Enum
    */
   /// Message.GetContentHashes
   /**
    * A message that contains ContentHashes.
+   * @category Enum
    */
   /// Message.ContentHashes
   /**
    * A message that contains a ContentDiff.
+   * @category Enum
    */
   /// Message.ContentDiff
   /**
    * A message that is a request to get a TableDiff from another MergeableStore.
+   * @category Enum
    */
   /// Message.GetTableDiff
   /**
    * A message that is a request to get a RowDiff from another MergeableStore.
+   * @category Enum
    */
   /// Message.GetRowDiff
   /**
    * A message that is a request to get a CellDiff from another MergeableStore.
+   * @category Enum
    */
   /// Message.GetCellDiff
   /**
    * A message that is a request to get a ValueDiff from another MergeableStore.
+   * @category Enum
    */
   /// Message.GetValueDiff
 }
@@ -102,10 +110,12 @@
 {
   /**
    * The number of times messages have been sent.
+   * @category Stat
    */
   /// SynchronizerStats.sends
   /**
    * The number of times messages has been received.
+   * @category Stat
    */
   /// SynchronizerStats.receives
 }

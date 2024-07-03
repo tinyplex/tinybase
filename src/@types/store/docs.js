@@ -1234,106 +1234,129 @@
   /**
    * The number of HasTablesListener functions registered with the Store, since
    * v4.4.
+   * @category Stat
    */
   /// StoreListenerStats.hasTables
   /**
    * The number of TablesListener functions registered with the Store.
+   * @category Stat
    */
   /// StoreListenerStats.tables
   /**
    * The number of TableIdsListener functions registered with the Store.
+   * @category Stat
    */
   /// StoreListenerStats.tableIds
   /**
    * The number of HasTableListener functions registered with the Store, since
    * v4.4.
+   * @category Stat
    */
   /// StoreListenerStats.hasTable
   /**
    * The number of TableListener functions registered with the Store.
+   * @category Stat
    */
   /// StoreListenerStats.table
   /**
    * The number of TableCellIdsListener functions registered with the Store,
    * since v3.3.
+   * @category Stat
    */
   /// StoreListenerStats.tableCellIds
   /**
    * The number of HasTableCellListener functions registered with the Store,
    * since v4.4.
+   * @category Stat
    */
   /// StoreListenerStats.hasTableCell
   /**
    * The number of RowCountListener functions registered with the Store, since
    * v4.1.0.
+   * @category Stat
    */
   /// StoreListenerStats.rowCount
   /**
    * The number of RowIdsListener functions registered with the Store.
+   * @category Stat
    */
   /// StoreListenerStats.rowIds
   /**
    * The number of SortedRowIdsListener functions registered with the Store.
+   * @category Stat
    */
   /// StoreListenerStats.sortedRowIds
   /**
    * The number of HasRowListener functions registered with the Store, since
    * v4.4.
+   * @category Stat
    */
   /// StoreListenerStats.hasRow
   /**
    * The number of RowListener functions registered with the Store.
+   * @category Stat
    */
   /// StoreListenerStats.row
   /**
    * The number of CellIdsListener functions registered with the Store.
+   * @category Stat
    */
   /// StoreListenerStats.cellIds
   /**
    * The number of HasCellListener functions registered with the Store, since
    * v4.4.
+   * @category Stat
    */
   /// StoreListenerStats.hasCell
   /**
    * The number of CellListener functions registered with the Store.
+   * @category Stat
    */
   /// StoreListenerStats.cell
   /**
    * The number of InvalidCellListener functions registered with the Store.
+   * @category Stat
    */
   /// StoreListenerStats.invalidCell
   /**
    * The number of HasValuesListener functions registered with the Store, since
    * v4.4.
+   * @category Stat
    */
   /// StoreListenerStats.hasValues
   /**
    * The number of ValuesListener functions registered with the Store, since
    * v3.0.
+   * @category Stat
    */
   /// StoreListenerStats.values
   /**
    * The number of ValueIdsListener functions registered with the Store, since
    * v3.0.
+   * @category Stat
    */
   /// StoreListenerStats.valueIds
   /**
    * The number of HasValueListener functions registered with the Store, since
    * v4.4.
+   * @category Stat
    */
   /// StoreListenerStats.hasValue
   /**
    * The number of ValueListener functions registered with the Store, since
    * v3.0.
+   * @category Stat
    */
   /// StoreListenerStats.value
   /**
    * The number of InvalidValueListener functions registered with the Store,
    * since v3.0.
+   * @category Stat
    */
   /// StoreListenerStats.invalidValue
   /**
    * The number of TransactionListener functions registered with the Store.
+   * @category Stat
    */
   /// StoreListenerStats.transaction
 }

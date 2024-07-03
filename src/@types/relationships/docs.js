@@ -119,16 +119,19 @@
   /**
    * The number of RemoteRowIdListener functions registered with the
    * Relationships object.
+   * @category Stat
    */
   /// RelationshipsListenerStats.remoteRowId
   /**
    * The number of LocalRowIdsListener functions registered with the
    * Relationships object.
+   * @category Stat
    */
   /// RelationshipsListenerStats.localRowIds
   /**
    * The number of LinkedRowId functions registered with the Relationships
    * object.
+   * @category Stat
    */
   /// RelationshipsListenerStats.linkedRowIds
 }

@@ -61,15 +61,18 @@
 {
   /**
    * Indicates that only a regular Store can be supported by a Persister.
+   * @category Enum
    */
   /// Persists.StoreOnly
   /**
    * Indicates that only a MergeableStore can be supported by a Persister.
+   * @category Enum
    */
   /// Persists.MergeableStoreOnly
   /**
    * Indicates that either a regular Store or a MergeableStore can be supported
    * by a Persister.
+   * @category Enum
    */
   /// Persists.StoreOrMergeableStore
 }
@@ -148,10 +151,12 @@
 {
   /**
    * The number of times data has been loaded.
+   * @category Stat
    */
   /// PersisterStats.loads
   /**
    * The number of times data has been saved.
+   * @category Stat
    */
   /// PersisterStats.saves
 }
@@ -220,6 +225,7 @@
   /**
    * How often the Persister should poll the database for any changes made to it
    * by other clients, defaulting to 1 second.
+   * @category Configuration
    */
   /// DatabasePersisterConfig.autoLoadIntervalSeconds
 }
@@ -269,22 +275,26 @@
    * The mode to be used for persisting the Store to the database, in this case
    * JSON serialization. See the DpcTabular type for the alternative tabular
    * mapping mode.
+   * @category Configuration
    */
   /// DpcJson.mode
   /**
    * An optional string which indicates the name of a table in the database
    * which will be used to serialize the Store content into. It defaults to
    * `tinybase`.
+   * @category Configuration
    */
   /// DpcJson.storeTableName
   /**
    * The optional name of the column in the database table that will be used as
    * the Id for the Store, defaulting to '_id', since v5.0.
+   * @category Configuration
    */
   /// DpcJson.storeIdColumnName
   /**
    * The optional name of the column in the database table that will be used for
    * the JSON of the Store, defaulting to 'store', since v5.0.
+   * @category Configuration
    */
   /// DpcJson.storeColumnName
 }
@@ -360,32 +370,38 @@
    * The mode to be used for persisting the Store to the database, in this case
    * tabular mapping. See the DpcJson type for the alternative JSON
    * serialization mode.
+   * @category Configuration
    */
   /// DpcTabular.mode
   /**
    * The settings for how the Store Tables are mapped to and from the database.
+   * @category Configuration
    */
   /// DpcTabular.tables
   {
     /**
      * The settings for how the database tables are mapped into the Store Tables
      * when loading.
+     * @category Configuration
      */
     /// DpcTabular.tables.load
     /**
      * The settings for how the Store Tables are mapped out to the database
      * tables when saving.
+     * @category Configuration
      */
     /// DpcTabular.tables.save
   }
   /**
    * The settings for how the Store Values are mapped to and from the database.
+   * @category Configuration
    */
   /// DpcTabular.values
   /**
    * If the Persister is handling a MergeableStore, the optional suffix for
    * database table names from and to which time metadata will be loaded or
    * saved, defaulting to `_times`, since v5.0.
+   * @category Configuration
    */
   /// DpcTabular.timesTableSuffix
 }
@@ -473,11 +489,13 @@
         /**
          * The Id of the Store Table into which data from this database table
          * should be loaded.
+         * @category Configuration
          */
         /// DpcTabularLoad.tableId
         /**
          * The optional name of the column in the database table that will be
          * used as the Row Ids in the Store Table, defaulting to '_id'.
+         * @category Configuration
          */
         /// DpcTabularLoad.rowIdColumnName
       }
@@ -584,21 +602,25 @@
         /**
          * The name of the database table out to which the Store Table should be
          * saved.
+         * @category Configuration
          */
         /// DpcTabularSave.tableName
         /**
          * The optional name of the column in the database table that will be
          * used to save the Row Ids from the Store Table, defaulting to '_id'.
+         * @category Configuration
          */
         /// DpcTabularSave.rowIdColumnName
         /**
          * Whether columns in the database table will be removed if they are
          * empty in the Store Table, defaulting to false.
+         * @category Configuration
          */
         /// DpcTabularSave.deleteEmptyColumns
         /**
          * Whether tables in the database will be removed if the Store Table is
          * empty, defaulting to false.
+         * @category Configuration
          */
         /// DpcTabularSave.deleteEmptyTable
       }
@@ -638,15 +660,18 @@
 {
   /**
    * Whether Store Values will be loaded from a database table.
+   * @category Configuration
    */
   /// DpcTabularValues.load
   /**
    * Whether Store Values will be saved to a database table.
+   * @category Configuration
    */
   /// DpcTabularValues.save
   /**
    * The optional name of the database table from and to which the Store Values
    * should be loaded or saved, defaulting to `tinybase_values`.
+   * @category Configuration
    */
   /// DpcTabularValues.tableName
 }

@@ -453,41 +453,49 @@
   /**
    * The number of ResultTableListener functions registered with the Queries
    * object.
+   * @category Stat
    */
   /// QueriesListenerStats.table
   /**
    * The number of ResultTableCellIdsListener functions registered with the
    * Queries object, since v3.3.
+   * @category Stat
    */
   /// QueriesListenerStats.tableCellIds
   /**
    * The number of ResultRowCountListener functions registered with the Queries
    * object, since v4.1.
+   * @category Stat
    */
   /// QueriesListenerStats.rowCount
   /**
    * The number of ResultRowIdsListener functions registered with the Queries
    * object.
+   * @category Stat
    */
   /// QueriesListenerStats.rowIds
   /**
    * The number of SortedRowIdsListener functions registered with the Queries
    * object.
+   * @category Stat
    */
   /// QueriesListenerStats.sortedRowIds
   /**
    * The number of ResultRowListener functions registered with the Queries
    * object.
+   * @category Stat
    */
   /// QueriesListenerStats.row
   /**
    * The number of ResultCellIdsListener functions registered with the Queries
    * object.
+   * @category Stat
    */
   /// QueriesListenerStats.cellIds
   /**
    * The number of ResultCellListener functions registered with the Queries
    * object.
+   * @category Stat
    */
   /// QueriesListenerStats.cell
 }
@@ -509,6 +517,7 @@
    * or filtered.
    * @param cellId The Id of the Cell to fetch the value for.
    * @returns A Cell value or `undefined`.
+   * @category Callback
    */
   /// GetTableCell.1
   /**
@@ -520,6 +529,7 @@
    * used.
    * @param joinedCellId The Id of the Cell to fetch the value for.
    * @returns A Cell value or `undefined`.
+   * @category Callback
    */
   /// GetTableCell.2
 }
@@ -633,6 +643,7 @@
    * @param cellId The Id of the Cell to fetch the value for.
    * @returns A SelectedAs object so that the selected Cell Id can be optionally
    * aliased.
+   * @category Definition
    */
   /// Select.1
   /**
@@ -645,6 +656,7 @@
    * @param joinedCellId The Id of the Cell to fetch the value for.
    * @returns A SelectedAs object so that the selected Cell Id can be optionally
    * aliased.
+   * @category Definition
    */
   /// Select.2
   /**
@@ -656,6 +668,7 @@
    * value from multiple Cell values and the Row Id.
    * @returns A SelectedAs object so that the selected Cell Id can be optionally
    * aliased.
+   * @category Definition
    */
   /// Select.3
 }
@@ -711,6 +724,7 @@
 {
   /**
    * A function that lets you specify an alias for the Cell Id.
+   * @category Definition
    */
   /// SelectedAs.as
 }
@@ -898,6 +912,7 @@
    * Table's Row Id.
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
+   * @category Definition
    */
   /// Join.1
   /**
@@ -910,6 +925,7 @@
    * Id.
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
+   * @category Definition
    */
   /// Join.2
   /**
@@ -924,6 +940,7 @@
    * joined Table's Row Id.
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
+   * @category Definition
    */
   /// Join.3
   /**
@@ -940,6 +957,7 @@
    * Table's Row Id.
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
+   * @category Definition
    */
   /// Join.4
 }
@@ -995,6 +1013,7 @@
 /// JoinedAs
 /**
  * A function that lets you specify an alias for the joined Table Id.
+ * @category Definition
  */
 /// JoinedAs.as
 /**
@@ -1127,6 +1146,7 @@
    * @param cellId The Id of the Cell in the query's root Table to test.
    * @param equals The value that the Cell has to have for the Row to be
    * included in the result.
+   * @category Definition
    */
   /// Where.1
   /**
@@ -1138,6 +1158,7 @@
    * @param joinedCellId The Id of the Cell in the joined Table to test.
    * @param equals The value that the Cell has to have for the Row to be
    * included in the result.
+   * @category Definition
    */
   /// Where.2
   /**
@@ -1146,6 +1167,7 @@
    * the main and (optionally) joined Tables.
    * @param condition A callback that takes a GetTableCell function and that
    * should return `true` for the Row to be included in the result.
+   * @category Definition
    */
   /// Where.3
 }
@@ -1324,6 +1346,7 @@
 /// GroupedAs
 /**
  * A function that lets you specify an alias for the grouped Cell Id.
+ * @category Definition
  */
 /// GroupedAs.as
 /**
@@ -1426,6 +1449,7 @@
    * @param selectedOrGroupedCellId The Id of the Cell in the query to test.
    * @param equals The value that the Cell has to have for the Row to be
    * included in the result.
+   * @category Definition
    */
   /// Having.1
   /**
@@ -1433,6 +1457,7 @@
    * those Rows which meet a calculated boolean condition.
    * @param condition A callback that takes a GetCell function and that should
    * return `true` for the Row to be included in the result.
+   * @category Definition
    */
   /// Having.2
 }

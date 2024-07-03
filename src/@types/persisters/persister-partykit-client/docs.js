@@ -94,12 +94,14 @@
    * The HTTP protocol to use (in addition to the websocket channel). This
    * defaults to 'https' but you may wish to use 'http' for local PartyKit
    * development.
+   * @category Configuration
    */
   /// PartyKitPersisterConfig.storeProtocol
   /**
    * The path used to set and get the whole Store over HTTP(S) on the server.
    * This must match the storePath property of the TinyBasePartyKitServerConfig
    * object used on the server. Both default to '/store'.
+   * @category Configuration
    */
   /// PartyKitPersisterConfig.storePath
   /**
@@ -109,6 +111,7 @@
    * This must match the messagePrefix property of the
    * TinyBasePartyKitServerConfig object used on the server. Both default to an
    * empty string.
+   * @category Configuration
    */
   /// PartyKitPersisterConfig.messagePrefix
 }

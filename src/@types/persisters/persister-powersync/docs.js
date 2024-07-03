@@ -19,6 +19,7 @@
  *
  * You should use the createPowerSyncPersister function to create a
  * PowerSyncPersister object.
+ * @category Persister
  * @since v4.8.0
  */
 /// PowerSyncPersister

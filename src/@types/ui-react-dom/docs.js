@@ -22,16 +22,19 @@
   /**
    * An optional string that will be used as the label at the top of the table
    * column for this Cell.
+   * @category Prop
    */
   /// CustomCell.label
   /**
    * An optional custom component for rendering each Cell in the Table (to
    * override the default CellView component).
+   * @category Prop
    */
   /// CustomCell.component
   /**
    * An optional function for generating extra props for each custom Cell
    * component based on Row and Cell Id.
+   * @category Prop
    */
   /// CustomCell.getComponentProps
 }
@@ -46,16 +49,19 @@
   /**
    * An optional string that will be used as the label at the top of the table
    * column for this Cell.
+   * @category Prop
    */
   /// CustomResultCell.label
   /**
    * An optional custom component for rendering each Cell in the ResultTable (to
    * override the default ResultCellView component).
+   * @category Prop
    */
   /// CustomResultCell.component
   /**
    * An optional function for generating extra props for each custom Cell
    * component based on Row and Cell Id.
+   * @category Prop
    */
   /// CustomResultCell.getComponentProps
 }
@@ -70,16 +76,19 @@
 {
   /**
    * A string className to use on the root of the resulting element.
+   * @category Prop
    */
   /// HtmlTableProps.className
   /**
    * Whether a header row should be rendered at the top of the table, defaulting
    * to `true`.
+   * @category Prop
    */
   /// HtmlTableProps.headerRow
   /**
    * Whether an Id column should be rendered on the left of the table,
    * defaulting to `true`.
+   * @category Prop
    */
   /// HtmlTableProps.idColumn
 }
@@ -93,17 +102,20 @@
 {
   /**
    * The Id of the Table in the Store to be rendered.
+   * @category Prop
    */
   /// TableInHtmlTableProps.tableId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
+   * @category Prop
    */
   /// TableInHtmlTableProps.store
   /**
    * Whether the Cells should be editable. This affects the default CellView
    * component (to use the EditableCellView component instead) but of course
    * will not affect custom Cell components if you have set them.
+   * @category Prop
    */
   /// TableInHtmlTableProps.editable
   /**
@@ -112,6 +124,7 @@
    * Cell Ids as keys, and with a value that can either be a string label to
    * show in the column header, or a CustomCell object to further configure the
    * column.
+   * @category Prop
    */
   /// TableInHtmlTableProps.customCells
 }
@@ -125,34 +138,41 @@
 {
   /**
    * The Id of the Table in the Store to be rendered.
+   * @category Prop
    */
   /// SortedTableInHtmlTableProps.tableId
   /**
    * The Id of the Cell whose values are used for the sorting. If omitted, the
    * view will sort the Row Id itself.
+   * @category Prop
    */
   /// SortedTableInHtmlTableProps.cellId
   /**
    * Whether the sorting should be in descending order.
+   * @category Prop
    */
   /// SortedTableInHtmlTableProps.descending
   /**
    * The number of Row Ids to skip for pagination purposes.
+   * @category Prop
    */
   /// SortedTableInHtmlTableProps.offset
   /**
    * The maximum number of Row Ids to return.
+   * @category Prop
    */
   /// SortedTableInHtmlTableProps.limit
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
+   * @category Prop
    */
   /// SortedTableInHtmlTableProps.store
   /**
    * Whether the Cells should be editable. This affects the default CellView
    * component (to use the EditableCellView component instead) but of course
    * will not affect custom Cell components if you have set them.
+   * @category Prop
    */
   /// SortedTableInHtmlTableProps.editable
   /**
@@ -161,22 +181,26 @@
    * Cell Ids as keys, and with a value that can either be a string label to
    * show in the column header, or a CustomCell object to further configure the
    * column.
+   * @category Prop
    */
   /// SortedTableInHtmlTableProps.customCells
   /**
    * Whether the table should be interactive such that clicking a header changes
    * the sorting and/or direction.
+   * @category Prop
    */
   /// SortedTableInHtmlTableProps.sortOnClick
   /**
    * Either `true` to show the default SortedTablePaginator for the Table, or
    * provide your own paginator component that takes SortedTablePaginatorProps.
+   * @category Prop
    */
   /// SortedTableInHtmlTableProps.paginator
   /**
    * A function that is called whenever the sorting or pagination of the Table
    * is changed by the user, invoked with the sorted Cell Id, whether descending
    * or not, and the offset of the pagination.
+   * @category Prop
    */
   /// SortedTableInHtmlTableProps.onChange
 }
@@ -191,22 +215,26 @@
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
+   * @category Prop
    */
   /// ValuesInHtmlTableProps.store
   /**
    * Whether the Values should be editable. This affects the default ValueView
    * component (to use the EditableValueView component instead) but of course
    * will not affect a custom valueComponent if you have set one.
+   * @category Prop
    */
   /// ValuesInHtmlTableProps.editable
   /**
    * A custom component for rendering each Value in the Store (to override the
    * default ValueView component).
+   * @category Prop
    */
   /// ValuesInHtmlTableProps.valueComponent
   /**
    * A function for generating extra props for each custom Value component based
    * on its Id.
+   * @category Prop
    */
   /// ValuesInHtmlTableProps.getValueComponentProps
 }
@@ -220,22 +248,26 @@
 {
   /**
    * The Id of the Index in the Indexes object.
+   * @category Prop
    */
   /// SliceInHtmlTableProps.indexId
   /**
    * The Id of the Slice in the Index to be rendered.
+   * @category Prop
    */
   /// SliceInHtmlTableProps.sliceId
   /**
    * The Indexes object to be accessed: omit for the default context Indexes
    * object, provide an Id for a named context Indexes object, or provide an
    * explicit reference.
+   * @category Prop
    */
   /// SliceInHtmlTableProps.indexes
   /**
    * Whether the Cells should be editable. This affects the default CellView
    * component (to use the EditableCellView component instead) but of course
    * will not affect custom Cell components if you have set them.
+   * @category Prop
    */
   /// SliceInHtmlTableProps.editable
   /**
@@ -244,6 +276,7 @@
    * Cell Ids as keys, and with a value that can either be a string label to
    * show in the column header, or a CustomCell object to further configure the
    * column.
+   * @category Prop
    */
   /// SliceInHtmlTableProps.customCells
 }
@@ -264,18 +297,21 @@
   /**
    * The Id of the relationship in the Relationships object for which the
    * relationship Table Rows will be rendered.
+   * @category Prop
    */
   /// RelationshipInHtmlTable.relationshipId
   /**
    * The Relationships object to be accessed: omit for the default context
    * Relationships object, provide an Id for a named context Relationships
    * object, or provide an explicit reference.
+   * @category Prop
    */
   /// RelationshipInHtmlTable.relationships
   /**
    * Whether the Cells should be editable. This affects the default CellView
    * component (to use the EditableCellView component instead) but of course
    * will not affect custom Cell components if you have set them.
+   * @category Prop
    */
   /// RelationshipInHtmlTable.editable
   /**
@@ -285,6 +321,7 @@
    * pairs as keys, and with a value that can either be a string label to show
    * in the column header, or a CustomCell object to further configure the
    * column.
+   * @category Prop
    */
   /// RelationshipInHtmlTable.customCells
 }
@@ -299,12 +336,14 @@
   /**
    * The Id of the query in the Queries object for which the ResultTable will be
    * rendered.
+   * @category Prop
    */
   /// ResultTableInHtmlTableProps.queryId
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
+   * @category Prop
    */
   /// ResultTableInHtmlTableProps.queries
   /**
@@ -313,6 +352,7 @@
    * desired Cell Ids as keys, and with a value that can either be a string
    * label to show in the column header, or a ResultCustomCell object to further
    * configure the column.
+   * @category Prop
    */
   /// ResultTableInHtmlTableProps.customCells
 }
@@ -328,29 +368,35 @@
   /**
    * The Id of the query in the Queries object for which the ResultTable will be
    * rendered.
+   * @category Prop
    */
   /// ResultSortedTableInHtmlTableProps.queryId
   /**
    * The Id of the Cell whose values are used for the sorting. If omitted, the
    * view will sort the Row Id itself.
+   * @category Prop
    */
   /// ResultSortedTableInHtmlTableProps.cellId
   /**
    * Whether the sorting should be in descending order.
+   * @category Prop
    */
   /// ResultSortedTableInHtmlTableProps.descending
   /**
    * The number of Row Ids to skip for pagination purposes.
+   * @category Prop
    */
   /// ResultSortedTableInHtmlTableProps.offset
   /**
    * The maximum number of Row Ids to return.
+   * @category Prop
    */
   /// ResultSortedTableInHtmlTableProps.limit
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
+   * @category Prop
    */
   /// ResultSortedTableInHtmlTableProps.queries
   /**
@@ -359,23 +405,27 @@
    * desired Cell Ids as keys, and with a value that can either be a string
    * label to show in the column header, or a ResultCustomCell object to further
    * configure the column.
+   * @category Prop
    */
   /// ResultSortedTableInHtmlTableProps.customCells
   /**
    * Whether the table should be interactive such that clicking a header changes
    * the sorting and/or direction.
+   * @category Prop
    */
   /// ResultSortedTableInHtmlTableProps.sortOnClick
   /**
    * Either `true` to show the default SortedTablePaginator for the ResultTable,
    * or provide your own paginator component that takes
    * SortedTablePaginatorProps.
+   * @category Prop
    */
   /// ResultSortedTableInHtmlTableProps.paginator
   /**
    * A function that is called whenever the sorting or pagination of the
    * ResultTable is changed by the user, invoked with the sorted Cell Id,
    * whether descending or not, and the offset of the pagination.
+   * @category Prop
    */
   /// ResultSortedTableInHtmlTableProps.onChange
 }
@@ -390,28 +440,34 @@
   /**
    * An event that will fire when the offset is updated, called with the new
    * offset.
+   * @category Prop
    */
   /// SortedTablePaginatorProps.onChange
   /**
    * The number of Row Ids to skip for pagination.
+   * @category Prop
    */
   /// SortedTablePaginatorProps.offset
   /**
    * The maximum number of Row Ids being returned.
+   * @category Prop
    */
   /// SortedTablePaginatorProps.limit
   /**
    * The total number of Row Ids in the paginated table.
+   * @category Prop
    */
   /// SortedTablePaginatorProps.total
   /**
    * A noun to use in the pagination label for a single row, defaulting to
    * 'row'.
+   * @category Prop
    */
   /// SortedTablePaginatorProps.singular
   /**
    * A noun to use in the pagination label for multiple rows, defaulting to the
    * value of the singular noun suffixed with the letter 's'.
+   * @category Prop
    */
   /// SortedTablePaginatorProps.plural
 }

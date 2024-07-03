@@ -238,6 +238,7 @@
 /// useCreateStore
 /**
  * The useCreateMergeableStore hook.
+ * @category Store hooks
  */
 /// useCreateMergeableStore
 /**
@@ -10793,25 +10794,30 @@
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
+   * @category Prop
    */
   /// TablesProps.store
   /**
    * A component for rendering each Table in the Store (to override the default
    * TableView component).
+   * @category Prop
    */
   /// TablesProps.tableComponent
   /**
    * A custom function for generating extra props for each Table component based
    * on its Id.
+   * @category Prop
    */
   /// TablesProps.getTableComponentProps
   /**
    * A component or string to separate each Table component.
+   * @category Prop
    */
   /// TablesProps.separator
   /**
    * Whether the component should also render the Ids of each Table, and its
    * descendent objects, to assist with debugging.
+   * @category Prop
    */
   /// TablesProps.debugIds
 }
@@ -10824,35 +10830,42 @@
 {
   /**
    * The Id of the Table in the Store to be rendered.
+   * @category Prop
    */
   /// TableProps.tableId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
+   * @category Prop
    */
   /// TableProps.store
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default RowView component).
+   * @category Prop
    */
   /// TableProps.rowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
+   * @category Prop
    */
   /// TableProps.getRowComponentProps
   /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
    * Table's Cells in a given order.
+   * @category Prop
    */
   /// TableProps.customCellIds
   /**
    * A component or string to separate each Row component.
+   * @category Prop
    */
   /// TableProps.separator
   /**
    * Whether the component should also render the Id of the Table, and its
    * descendent objects, to assist with debugging.
+   * @category Prop
    */
   /// TableProps.debugIds
 }
@@ -10866,52 +10879,63 @@
 {
   /**
    * The Id of the Table in the Store to be rendered.
+   * @category Prop
    */
   /// SortedTableProps.tableId
   /**
    * The Id of the Cell whose values are used for the sorting. If omitted, the
    * view will sort the Row Id itself.
+   * @category Prop
    */
   /// SortedTableProps.cellId
   /**
    * Whether the sorting should be in descending order.
+   * @category Prop
    */
   /// SortedTableProps.descending
   /**
    * The number of Row Ids to skip for pagination purposes.
+   * @category Prop
    */
   /// SortedTableProps.offset
   /**
    * The maximum number of Row Ids to return.
+   * @category Prop
    */
   /// SortedTableProps.limit
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
+   * @category Prop
    */
   /// SortedTableProps.store
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default RowView component).
+   * @category Prop
    */
   /// SortedTableProps.rowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
+   * @category Prop
    */
   /// SortedTableProps.getRowComponentProps
   /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
    * sorted Table's Cells in a given order.
+   * @category Prop
    */
   /// SortedTableProps.customCellIds
   /**
    * A component or string to separate each Row component.
+   * @category Prop
    */
   /// SortedTableProps.separator
   /**
    * Whether the component should also render the Id of the Table, and its
    * descendent objects, to assist with debugging.
+   * @category Prop
    */
   /// SortedTableProps.debugIds
 }
@@ -10924,39 +10948,47 @@
 {
   /**
    * The Id of the Table in the Store.
+   * @category Prop
    */
   /// RowProps.tableId
   /**
    * The Id of the Row in the Table to be rendered.
+   * @category Prop
    */
   /// RowProps.rowId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
+   * @category Prop
    */
   /// RowProps.store
   /**
    * A custom component for rendering each Cell in the Row (to override the
    * default CellView component).
+   * @category Prop
    */
   /// RowProps.cellComponent
   /**
    * A function for generating extra props for each custom Cell component based
    * on its Id.
+   * @category Prop
    */
   /// RowProps.getCellComponentProps
   /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
    * Row's Cells in a given order.
+   * @category Prop
    */
   /// RowProps.customCellIds
   /**
    * A component or string to separate each Cell component.
+   * @category Prop
    */
   /// RowProps.separator
   /**
    * Whether the component should also render the Id of the Row, and its
    * descendent objects, to assist with debugging.
+   * @category Prop
    */
   /// RowProps.debugIds
 }
@@ -10969,24 +11001,29 @@
 {
   /**
    * The Id of the Table in the Store.
+   * @category Prop
    */
   /// CellProps.tableId
   /**
    * The Id of the Row in the Table.
+   * @category Prop
    */
   /// CellProps.rowId
   /**
    * The Id of the Cell in the Row to be rendered.
+   * @category Prop
    */
   /// CellProps.cellId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
+   * @category Prop
    */
   /// CellProps.store
   /**
    * Whether the component should also render the Id of the Cell to assist with
    * debugging.
+   * @category Prop
    */
   /// CellProps.debugIds
 }
@@ -11001,25 +11038,30 @@
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
+   * @category Prop
    */
   /// ValuesProps.store
   /**
    * A custom component for rendering each Value in the Store (to override the
    * default ValueView component).
+   * @category Prop
    */
   /// ValuesProps.valueComponent
   /**
    * A function for generating extra props for each custom Value component based
    * on its Id.
+   * @category Prop
    */
   /// ValuesProps.getValueComponentProps
   /**
    * A component or string to separate each Value component.
+   * @category Prop
    */
   /// ValuesProps.separator
   /**
    * Whether the component should also render the Ids of each Value to assist
    * with debugging.
+   * @category Prop
    */
   /// ValuesProps.debugIds
 }
@@ -11033,16 +11075,19 @@
 {
   /**
    * The Id of the Value in the Row to be rendered.
+   * @category Prop
    */
   /// ValueProps.valueId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
+   * @category Prop
    */
   /// ValueProps.store
   /**
    * Whether the component should also render the Id of the Value to assist with
    * debugging.
+   * @category Prop
    */
   /// ValueProps.debugIds
 }
@@ -11055,17 +11100,20 @@
 {
   /**
    * The Id of the Metric in the Metrics object to be rendered.
+   * @category Prop
    */
   /// MetricProps.metricId
   /**
    * The Metrics object to be accessed: omit for the default context Metrics
    * object, provide an Id for a named context Metrics object, or provide an
    * explicit reference.
+   * @category Prop
    */
   /// MetricProps.metrics
   /**
    * Whether the component should also render the Id of the Metric to assist
    * with debugging.
+   * @category Prop
    */
   /// MetricProps.debugIds
 }
@@ -11078,30 +11126,36 @@
 {
   /**
    * The Id of the Index in the Indexes object to be rendered.
+   * @category Prop
    */
   /// IndexProps.indexId
   /**
    * The Indexes object to be accessed: omit for the default context Indexes
    * object, provide an Id for a named context Indexes object, or provide an
    * explicit reference.
+   * @category Prop
    */
   /// IndexProps.indexes
   /**
    * A component for rendering each Slice in the Index.
+   * @category Prop
    */
   /// IndexProps.sliceComponent
   /**
    * A function for generating extra props for each Slice component based on its
    * Id.
+   * @category Prop
    */
   /// IndexProps.getSliceComponentProps
   /**
    * A component or string to separate each Slice component.
+   * @category Prop
    */
   /// IndexProps.separator
   /**
    * Whether the component should also render the Id of the Index, and its
    * descendent objects, to assist with debugging.
+   * @category Prop
    */
   /// IndexProps.debugIds
 }
@@ -11114,34 +11168,41 @@
 {
   /**
    * The Id of the Index in the Indexes object.
+   * @category Prop
    */
   /// SliceProps.indexId
   /**
    * The Id of the Slice in the Index to be rendered.
+   * @category Prop
    */
   /// SliceProps.sliceId
   /**
    * The Indexes object to be accessed: omit for the default context Indexes
    * object, provide an Id for a named context Indexes object, or provide an
    * explicit reference.
+   * @category Prop
    */
   /// SliceProps.indexes
   /**
    * A component for rendering each Row in the Index.
+   * @category Prop
    */
   /// SliceProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
+   * @category Prop
    */
   /// SliceProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
+   * @category Prop
    */
   /// SliceProps.separator
   /**
    * Whether the component should also render the Id of the Slice, and its
    * descendent objects, to assist with debugging.
+   * @category Prop
    */
   /// SliceProps.debugIds
 }
@@ -11155,31 +11216,37 @@
 {
   /**
    * The Id of the Relationship in the Relationships object.
+   * @category Prop
    */
   /// RemoteRowProps.relationshipId
   /**
    * The Id of the local Row for which to render the remote Row.
+   * @category Prop
    */
   /// RemoteRowProps.localRowId
   /**
    * The Relationships object to be accessed: omit for the default context
    * Relationships object, provide an Id for a named context Relationships
    * object, or provide an explicit reference.
+   * @category Prop
    */
   /// RemoteRowProps.relationships
   /**
    * A component for rendering each (remote, local, or linked) Row in the
    * Relationship.
+   * @category Prop
    */
   /// RemoteRowProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
+   * @category Prop
    */
   /// RemoteRowProps.getRowComponentProps
   /**
    * Whether the component should also render the Id of the Row in the
    * Relationship, and its descendent objects, to assist with debugging.
+   * @category Prop
    */
   /// RemoteRowProps.debugIds
 }
@@ -11193,35 +11260,42 @@
 {
   /**
    * The Id of the Relationship in the Relationships object.
+   * @category Prop
    */
   /// LocalRowsProps.relationshipId
   /**
    * The Id of the remote Row for which to render the local Rows.
+   * @category Prop
    */
   /// LocalRowsProps.remoteRowId
   /**
    * The Relationships object to be accessed: omit for the default context
    * Relationships object, provide an Id for a named context Relationships
    * object, or provide an explicit reference.
+   * @category Prop
    */
   /// LocalRowsProps.relationships
   /**
    * A component for rendering each (remote, local, or linked) Row in the
    * Relationship.
+   * @category Prop
    */
   /// LocalRowsProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
+   * @category Prop
    */
   /// LocalRowsProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
+   * @category Prop
    */
   /// LocalRowsProps.separator
   /**
    * Whether the component should also render the Id of the Row in the
    * Relationship, and its descendent objects, to assist with debugging.
+   * @category Prop
    */
   /// LocalRowsProps.debugIds
 }
@@ -11235,35 +11309,42 @@
 {
   /**
    * The Id of the Relationship in the Relationships object.
+   * @category Prop
    */
   /// LinkedRowsProps.relationshipId
   /**
    * The Id of the first Row in the linked list Relationship.
+   * @category Prop
    */
   /// LinkedRowsProps.firstRowId
   /**
    * The Relationships object to be accessed: omit for the default context
    * Relationships object, provide an Id for a named context Relationships
    * object, or provide an explicit reference.
+   * @category Prop
    */
   /// LinkedRowsProps.relationships
   /**
    * A component for rendering each (remote, local, or linked) Row in the
    * Relationship.
+   * @category Prop
    */
   /// LinkedRowsProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
+   * @category Prop
    */
   /// LinkedRowsProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
+   * @category Prop
    */
   /// LinkedRowsProps.separator
   /**
    * Whether the component should also render the Id of the Row in the
    * Relationship, and its descendent objects, to assist with debugging.
+   * @category Prop
    */
   /// LinkedRowsProps.debugIds
 }
@@ -11278,31 +11359,37 @@
   /**
    * The Id of the query in the Queries object for which the ResultTable will be
    * rendered.
+   * @category Prop
    */
   /// ResultTableProps.queryId
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
+   * @category Prop
    */
   /// ResultTableProps.queries
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default ResultRowView component).
+   * @category Prop
    */
   /// ResultTableProps.resultRowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
+   * @category Prop
    */
   /// ResultTableProps.getResultRowComponentProps
   /**
    * A component or string to separate each Row component.
+   * @category Prop
    */
   /// ResultTableProps.separator
   /**
    * Whether the component should also render the Id of the query, and its
    * descendent objects, to assist with debugging.
+   * @category Prop
    */
   /// ResultTableProps.debugIds
 }
@@ -11317,48 +11404,58 @@
   /**
    * The Id of the query in the Queries object for which the sorted ResultTable
    * will be rendered.
+   * @category Prop
    */
   /// ResultSortedTableProps.queryId
   /**
    * The Id of the Cell whose values are used for the sorting. If omitted, the
    * view will sort the Row Id itself.
+   * @category Prop
    */
   /// ResultSortedTableProps.cellId
   /**
    * Whether the sorting should be in descending order.
+   * @category Prop
    */
   /// ResultSortedTableProps.descending
   /**
    * The number of Row Ids to skip for pagination purposes.
+   * @category Prop
    */
   /// ResultSortedTableProps.offset
   /**
    * The maximum number of Row Ids to return.
+   * @category Prop
    */
   /// ResultSortedTableProps.limit
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
+   * @category Prop
    */
   /// ResultSortedTableProps.queries
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default ResultRowView component).
+   * @category Prop
    */
   /// ResultSortedTableProps.resultRowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
+   * @category Prop
    */
   /// ResultSortedTableProps.getResultRowComponentProps
   /**
    * A component or string to separate each Row component.
+   * @category Prop
    */
   /// ResultSortedTableProps.separator
   /**
    * Whether the component should also render the Id of the query, and its
    * descendent objects, to assist with debugging.
+   * @category Prop
    */
   /// ResultSortedTableProps.debugIds
 }
@@ -11373,35 +11470,42 @@
   /**
    * The Id of the query in the Queries object for which the ResultTable will be
    * rendered.
+   * @category Prop
    */
   /// ResultRowProps.queryId
   /**
    * The Id of the Row in the ResultTable to be rendered.
+   * @category Prop
    */
   /// ResultRowProps.rowId
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
+   * @category Prop
    */
   /// ResultRowProps.queries
   /**
    * A custom component for rendering each Cell in the Row (to override the
    * default CellView component).
+   * @category Prop
    */
   /// ResultRowProps.resultCellComponent
   /**
    * A function for generating extra props for each custom Cell component based
    * on its Id.
+   * @category Prop
    */
   /// ResultRowProps.getResultCellComponentProps
   /**
    * A component or string to separate each Cell component.
+   * @category Prop
    */
   /// ResultRowProps.separator
   /**
    * Whether the component should also render the Id of the Row, and its
    * descendent objects, to assist with debugging.
+   * @category Prop
    */
   /// ResultRowProps.debugIds
 }
@@ -11416,25 +11520,30 @@
   /**
    * The Id of the query in the Queries object for which the ResultTable will be
    * rendered.
+   * @category Prop
    */
   /// ResultCellProps.queryId
   /**
    * The Id of the Row in the Table.
+   * @category Prop
    */
   /// ResultCellProps.rowId
   /**
    * The Id of the Cell in the Row to be rendered.
+   * @category Prop
    */
   /// ResultCellProps.cellId
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
+   * @category Prop
    */
   /// ResultCellProps.queries
   /**
    * Whether the component should also render the Id of the Cell to assist with
    * debugging.
+   * @category Prop
    */
   /// ResultCellProps.debugIds
 }
@@ -11447,17 +11556,20 @@
 {
   /**
    * The Id of the checkpoint in the Checkpoints object.
+   * @category Prop
    */
   /// CheckpointProps.checkpointId
   /**
    * The Checkpoints object to be accessed: omit for the default context
    * Checkpoints object, provide an Id for a named context Checkpoints object,
    * or provide an explicit reference.
+   * @category Prop
    */
   /// CheckpointProps.checkpoints
   /**
    * Whether the component should also render the Id of the checkpoint to assist
    * with debugging.
+   * @category Prop
    */
   /// CheckpointProps.debugIds
 }
@@ -11473,24 +11585,29 @@
    * The Checkpoints object to be accessed: omit for the default context
    * Checkpoints object, provide an Id for a named context Checkpoints object,
    * or provide an explicit reference.
+   * @category Prop
    */
   /// BackwardCheckpointsProps.checkpoints
   /**
    * A component for rendering each checkpoint in the Checkpoints object.
+   * @category Prop
    */
   /// BackwardCheckpointsProps.checkpointComponent
   /**
    * A function for generating extra props for each checkpoint component based
    * on its Id.
+   * @category Prop
    */
   /// BackwardCheckpointsProps.getCheckpointComponentProps
   /**
    * A component or string to separate each Checkpoint component.
+   * @category Prop
    */
   /// BackwardCheckpointsProps.separator
   /**
    * Whether the component should also render the Ids of the checkpoints to
    * assist with debugging.
+   * @category Prop
    */
   /// BackwardCheckpointsProps.debugIds
 }
@@ -11506,20 +11623,24 @@
    * The Checkpoints object to be accessed: omit for the default context
    * Checkpoints object, provide an Id for a named context Checkpoints object,
    * or provide an explicit reference.
+   * @category Prop
    */
   /// CurrentCheckpointProps.checkpoints
   /**
    * A component for rendering each checkpoint in the Checkpoints object.
+   * @category Prop
    */
   /// CurrentCheckpointProps.checkpointComponent
   /**
    * A function for generating extra props for each checkpoint component based
    * on its Id.
+   * @category Prop
    */
   /// CurrentCheckpointProps.getCheckpointComponentProps
   /**
    * Whether the component should also render the Ids of the checkpoints to
    * assist with debugging.
+   * @category Prop
    */
   /// CurrentCheckpointProps.debugIds
 }
@@ -11535,24 +11656,29 @@
    * The Checkpoints object to be accessed: omit for the default context
    * Checkpoints object, provide an Id for a named context Checkpoints object,
    * or provide an explicit reference.
+   * @category Prop
    */
   /// ForwardCheckpointsProps.checkpoints
   /**
    * A component for rendering each checkpoint in the Checkpoints object.
+   * @category Prop
    */
   /// ForwardCheckpointsProps.checkpointComponent
   /**
    * A function for generating extra props for each checkpoint component based
    * on its Id.
+   * @category Prop
    */
   /// ForwardCheckpointsProps.getCheckpointComponentProps
   /**
    * A component or string to separate each Checkpoint component.
+   * @category Prop
    */
   /// ForwardCheckpointsProps.separator
   /**
    * Whether the component should also render the Ids of the checkpoints to
    * assist with debugging.
+   * @category Prop
    */
   /// ForwardCheckpointsProps.debugIds
 }
@@ -11571,61 +11697,73 @@
   /**
    * A default single Store object that will be available within the Provider
    * context.
+   * @category Prop
    */
   /// ProviderProps.store
   /**
    * An object containing multiple Store objects that will be available within
    * the Provider context by their Id.
+   * @category Prop
    */
   /// ProviderProps.storesById
   /**
    * A default single Metrics object that will be available within the Provider
    * context.
+   * @category Prop
    */
   /// ProviderProps.metrics
   /**
    * An object containing multiple Metrics objects that will be available within
    * the Provider context by their Id.
+   * @category Prop
    */
   /// ProviderProps.metricsById
   /**
    * A default single Indexes object that will be available within the Provider
    * context.
+   * @category Prop
    */
   /// ProviderProps.indexes
   /**
    * An object containing multiple Indexes objects that will be available within
    * the Provider context by their Id.
+   * @category Prop
    */
   /// ProviderProps.indexesById
   /**
    * A default single Relationships object that will be available within the
    * Provider context.
+   * @category Prop
    */
   /// ProviderProps.relationships
   /**
    * An object containing multiple Relationships objects that will be available
    * within the Provider context by their Id.
+   * @category Prop
    */
   /// ProviderProps.relationshipsById
   /**
    * A default single Queries object that will be available within the Provider
    * context, since v2.0.
+   * @category Prop
    */
   /// ProviderProps.queries
   /**
    * An object containing multiple Queries objects that will be available within
    * the Provider context by their Id, since v2.0.
+   * @category Prop
    */
   /// ProviderProps.queriesById
   /**
    * A default single Checkpoints object that will be available within the
    * Provider context.
+   * @category Prop
    */
   /// ProviderProps.checkpoints
   /**
    * An object containing multiple Checkpoints objects that will be available
    * within the Provider context by their Id.
+   * @category Prop
    */
   /// ProviderProps.checkpointsById
 }

@@ -20,11 +20,13 @@
   /**
    * An optional string to indicate where you want the inspector to first
    * appear.
+   * @category Prop
    */
   /// InspectorProps.position
   /**
    * An optional boolean to indicate whether the inspector should start in the
    * opened state.
+   * @category Prop
    */
   /// InspectorProps.open
 }

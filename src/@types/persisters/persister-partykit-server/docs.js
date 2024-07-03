@@ -54,6 +54,7 @@
    * The path used to set and get the whole Store over HTTP(S) on the server.
    * This must match the storePath property of the PartyKitPersisterConfig used
    * on the client. Both default to '/store'.
+   * @category Configuration
    */
   /// TinyBasePartyKitServerConfig.storePath
   /**
@@ -62,12 +63,14 @@
    * not collide with any other message syntax that your room is using. This
    * must match the messagePrefix property of the PartyKitPersisterConfig object
    * used on the client. Both default to an empty string.
+   * @category Configuration
    */
   /// TinyBasePartyKitServerConfig.messagePrefix
   /**
    * The prefix used before all the keys in the server's durable storage. Use
    * this in case you are worried about the Store data colliding with other data
    * stored in the room. Defaults to an empty string.
+   * @category Configuration
    */
   /// TinyBasePartyKitServerConfig.storagePrefix
   /**
@@ -83,6 +86,7 @@
    * If you set this field, it will override the default completely. So, for
    * example, if you add another header but still want the CORS defaults, you
    * will need to explicitly set the Access-Control-Allow headers above again.
+   * @category Configuration
    */
   /// TinyBasePartyKitServerConfig.responseHeaders
 }
@@ -133,7 +137,7 @@
  * See the [PartyKit server API
  * documentation](https://docs.partykit.io/reference/partyserver-api/) for
  * more details.
- * @category Creation
+ * @category Server
  * @since v4.3.0
  */
 /// TinyBasePartyKitServer

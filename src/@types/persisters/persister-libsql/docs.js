@@ -18,6 +18,7 @@
  *
  * You should use the createLibSqlPersister function to create a LibSqlPersister
  * object.
+ * @category Persister
  * @since v4.7.0
  */
 /// LibSqlPersister
