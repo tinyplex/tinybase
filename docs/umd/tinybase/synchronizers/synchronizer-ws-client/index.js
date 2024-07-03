@@ -93,8 +93,8 @@
   };
   const scheduleRunning = mapNew();
   const scheduleActions = mapNew();
-  const getStoreFunctions = (persistable = Persists.StoreOnly, store) =>
-    persistable != Persists.StoreOnly && store.isMergeable()
+  const getStoreFunctions = (persist = Persists.StoreOnly, store) =>
+    persist != Persists.StoreOnly && store.isMergeable()
       ? [
           1,
           store.getMergeableContent,
@@ -103,7 +103,7 @@
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setDefaultContent,
         ]
-      : persistable != Persists.MergeableStoreOnly
+      : persist != Persists.MergeableStoreOnly
         ? [
             0,
             store.getContent,
@@ -120,7 +120,7 @@
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    persistable,
+    persist,
     extra = {},
     scheduleId = [],
   ) => {
@@ -138,7 +138,7 @@
       getChanges,
       hasChanges,
       setDefaultContent,
-    ] = getStoreFunctions(persistable, store);
+    ] = getStoreFunctions(persist, store);
     const run = async () => {
       /* istanbul ignore else */
       if (!mapGet(scheduleRunning, scheduleId)) {
@@ -296,14 +296,16 @@
       '',
     );
 
-  const RESPONSE = 0;
-  const GET_CONTENT_HASHES = 1;
-  const CONTENT_HASHES = 2;
-  const CONTENT_DIFF = 3;
-  const GET_TABLE_DIFF = 4;
-  const GET_ROW_DIFF = 5;
-  const GET_CELL_DIFF = 6;
-  const GET_VALUE_DIFF = 7;
+  const Message = {
+    Response: 0,
+    GetContentHashes: 1,
+    ContentHashes: 2,
+    ContentDiff: 3,
+    GetTableDiff: 4,
+    GetRowDiff: 5,
+    GetCellDiff: 6,
+    GetValueDiff: 7,
+  };
   const createCustomSynchronizer = (
     store,
     send,
@@ -317,55 +319,52 @@
     let sends = 0;
     let receives = 0;
     const pendingRequests = mapNew();
-    onReceive((fromClientId, requestId, messageType, messageBody) => {
+    onReceive((fromClientId, requestId, message, body) => {
       receives++;
-      if (messageType == RESPONSE) {
+      if (message == Message.Response) {
         ifNotUndefined(
           mapGet(pendingRequests, requestId),
           ([toClientId, handleResponse]) =>
             isUndefined(toClientId) || toClientId == fromClientId
-              ? handleResponse(messageBody, fromClientId)
+              ? handleResponse(body, fromClientId)
               : /* istanbul ignore next */
                 0,
         );
-      } else if (messageType == CONTENT_HASHES && persister.isAutoLoading()) {
-        getChangesFromOtherStore(fromClientId, messageBody).then((changes) => {
+      } else if (
+        message == Message.ContentHashes &&
+        persister.isAutoLoading()
+      ) {
+        getChangesFromOtherStore(fromClientId, body).then((changes) => {
           persisterListener?.(void 0, changes);
         });
-      } else if (messageType == CONTENT_DIFF && persister.isAutoLoading()) {
-        persisterListener?.(void 0, messageBody);
+      } else if (message == Message.ContentDiff && persister.isAutoLoading()) {
+        persisterListener?.(void 0, body);
       } else {
         ifNotUndefined(
-          messageType == GET_CONTENT_HASHES && persister.isAutoSaving()
+          message == Message.GetContentHashes && persister.isAutoSaving()
             ? store.getMergeableContentHashes()
-            : messageType == GET_TABLE_DIFF
-              ? store.getMergeableTableDiff(messageBody)
-              : messageType == GET_ROW_DIFF
-                ? store.getMergeableRowDiff(messageBody)
-                : messageType == GET_CELL_DIFF
-                  ? store.getMergeableCellDiff(messageBody)
-                  : messageType == GET_VALUE_DIFF
-                    ? store.getMergeableValueDiff(messageBody)
+            : message == Message.GetTableDiff
+              ? store.getMergeableTableDiff(body)
+              : message == Message.GetRowDiff
+                ? store.getMergeableRowDiff(body)
+                : message == Message.GetCellDiff
+                  ? store.getMergeableCellDiff(body)
+                  : message == Message.GetValueDiff
+                    ? store.getMergeableValueDiff(body)
                     : void 0,
           (response) => {
             sends++;
-            send(fromClientId, requestId, RESPONSE, response);
+            send(fromClientId, requestId, Message.Response, response);
           },
         );
       }
     });
-    const request = async (
-      toClientId,
-      messageType,
-      messageBody = EMPTY_STRING,
-    ) =>
+    const request = async (toClientId, message, body = EMPTY_STRING) =>
       promiseNew((resolve, reject) => {
         const requestId = getUniqueId();
         const timeout = setTimeout(() => {
           collDel(pendingRequests, requestId);
-          reject(
-            `No response from ${toClientId ?? 'anyone'} to '${messageType}'`,
-          );
+          reject(`No response from ${toClientId ?? 'anyone'} to '${message}'`);
         }, requestTimeoutSeconds * 1e3);
         mapSet(pendingRequests, requestId, [
           toClientId,
@@ -376,7 +375,7 @@
           },
         ]);
         sends++;
-        send(toClientId, requestId, messageType, messageBody);
+        send(toClientId, requestId, message, body);
       });
     const mergeTablesStamps = (tablesStamp, [tableStamps2, tablesTime2]) => {
       objForEach(tableStamps2, ([rowStamps2, tableTime2], tableId) => {
@@ -401,7 +400,7 @@
       if (isUndefined(otherContentHashes)) {
         [otherContentHashes, otherClientId] = await request(
           otherClientId,
-          GET_CONTENT_HASHES,
+          Message.GetContentHashes,
         );
       }
       const [otherTablesHash, otherValuesHash] = otherContentHashes;
@@ -411,7 +410,7 @@
         const [newTables, differentTableHashes] = (
           await request(
             otherClientId,
-            GET_TABLE_DIFF,
+            Message.GetTableDiff,
             store.getMergeableTableHashes(),
           )
         )[0];
@@ -420,7 +419,7 @@
           const [newRows, differentRowHashes] = (
             await request(
               otherClientId,
-              GET_ROW_DIFF,
+              Message.GetRowDiff,
               store.getMergeableRowHashes(differentTableHashes),
             )
           )[0];
@@ -429,7 +428,7 @@
             const newCells = (
               await request(
                 otherClientId,
-                GET_CELL_DIFF,
+                Message.GetCellDiff,
                 store.getMergeableCellHashes(differentRowHashes),
               )
             )[0];
@@ -444,7 +443,7 @@
           : (
               await request(
                 otherClientId,
-                GET_VALUE_DIFF,
+                Message.GetValueDiff,
                 store.getMergeableValueHashes(),
               )
             )[0],
@@ -460,9 +459,14 @@
     const setPersisted = async (_getContent, changes) => {
       sends++;
       if (changes) {
-        send(null, null, CONTENT_DIFF, changes);
+        send(null, null, Message.ContentDiff, changes);
       } else {
-        send(null, null, CONTENT_HASHES, store.getMergeableContentHashes());
+        send(
+          null,
+          null,
+          Message.ContentHashes,
+          store.getMergeableContentHashes(),
+        );
       }
     };
     const addPersisterListener = (listener) => (persisterListener = listener);
