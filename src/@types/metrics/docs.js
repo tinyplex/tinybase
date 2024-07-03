@@ -161,6 +161,7 @@
 {
   /**
    * The number of MetricListener functions registered with the Metrics object.
+   * @category Stat
    */
   /// MetricsListenerStats.metric
 }

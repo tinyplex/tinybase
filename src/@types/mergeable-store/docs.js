@@ -775,10 +775,8 @@
    * store2.setDefaultContent([{}, {employees: 4}]);
    * console.log(store2.getMergeableContent());
    * // -> [[{}, "", 0], [{"employees": [4, "", 2414055963]}, "", 3035768673]]
-   * ```
    *
    * store2.merge(store1);
-   *
    * console.log(store2.getContent());
    * // -> [{}, {employees: 3}]
    * ```

@@ -115,11 +115,13 @@
   /**
    * The number of SlideIdsListener functions registered with the Indexes
    * object.
+   * @category Stat
    */
   /// IndexesListenerStats.sliceIds
   /**
    * The number of SliceRowIdsListener functions registered with the Indexes
    * object.
+   * @category Stat
    */
   /// IndexesListenerStats.sliceRowIds
 }

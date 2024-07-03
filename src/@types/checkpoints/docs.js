@@ -80,11 +80,13 @@
   /**
    * The number of CheckpointIdsListener functions registered with the
    * Checkpoints object.
+   * @category Stat
    */
   /// CheckpointsListenerStats.checkpointIds
   /**
    * The number of CheckpointListener functions registered with the Checkpoints
    * object.
+   * @category Stat
    */
   /// CheckpointsListenerStats.checkpoint
 }

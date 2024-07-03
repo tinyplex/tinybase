@@ -126,13 +126,22 @@
     {
       "files": ["src/@types/**/*.js"],
       "extends": ["plugin:jsdoc/recommended"],
-      "settings": {
-        "jsdoc": {"mode": "jsdoc", "contexts": ["any"]}
-      },
+      "settings": {"jsdoc": {"mode": "typescript", "contexts": ["any"]}},
       "rules": {
         "jsdoc/check-tag-names": [
           2,
           {"definedTags": ["category", "packageDocumentation"]}
+        ],
+        "jsdoc/no-restricted-syntax": [
+          2,
+          {
+            "contexts": [
+              {
+                "comment": "JsdocBlock[postDelimiter=\"\"]:not(:has(JsdocTag[tag=/category|packageDocumentation/]))",
+                "message": "A non module block requires a @category tag"
+              }
+            ]
+          }
         ],
         "jsdoc/require-jsdoc": [2],
         "jsdoc/require-description": [2],
