@@ -422,11 +422,13 @@
  * await synchronizer2.startSync();
  *
  * store1.setTables({pets: {fido: {species: 'dog'}}});
+ * store2.setTables({pets: {felix: {species: 'cat'}}});
+ *
  * // ...
  * console.log(store1.getTables());
- * // -> {pets: {fido: {species: 'dog'}}}
+ * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  * console.log(store2.getTables());
- * // -> {pets: {fido: {species: 'dog'}}}
+ * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
  * synchronizer1.destroy();
  * synchronizer2.destroy();
