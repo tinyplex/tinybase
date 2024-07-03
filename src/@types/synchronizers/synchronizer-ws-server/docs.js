@@ -10,22 +10,31 @@
 /// synchronizer-ws-server
 /**
  * The PathIdsListener type.
+ * @category Listener
+ * @since v5.0.0
  */
 /// PathIdsListener
 /**
  * The ClientIdsListener type.
+ * @category Listener
+ * @since v5.0.0
  */
 /// ClientIdsListener
 /**
  * The WsServerStats type.
+ * @category Development
+ * @since v5.0.0
  */
 /// WsServerStats
 /**
  * The WsServer interface.
+ * @category Server
+ * @since v5.0.0
  */
 /// WsServer
 /**
  * The createWsServer function.
  * @category Creation
+ * @since v5.0.0
  */
 /// createWsServer
