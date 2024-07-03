@@ -627,7 +627,6 @@ export const createShop: typeof createShopDecl = () => {
 @@EVAL("getGitHubAvatar('feychenie')")
 @@EVAL("getGitHubAvatar('flaming-codes')")
 @@EVAL("getGitHubAvatar('fostertheweb')")
-@@EVAL("getGitHubAvatar('fostertheweb')")
 @@EVAL("getGitHubAvatar('generates')")
 @@EVAL("getGitHubAvatar('Giulio987')")
 @@EVAL("getGitHubAvatar('itsdevcoffee')")
