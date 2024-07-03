@@ -67,7 +67,65 @@
   /// WsSynchronizer.getWebSocket
 }
 /**
- * The createWsSynchronizer function.
+ * The createWsSynchronizer function creates a WsSynchronizer object that can
+ * synchronize MergeableStore data to and from other MergeableStore instances
+ * via WebSockets facilitated by a server.
+ *
+ * As well as providing a reference to the MergeableStore to persist, you can
+ * provide a configured WebSocket to send synchronization messages over.
+ *
+ * This method is asynchronous because it will await the websocket's connection
+ * to the server. You will need to `await` a call to this function or handle the
+ * return type natively as a Promise.
+ * @param store The MergeableStore to synchronize.
+ * @param webSocket The WebSocket to send synchronization messages over.
+ * @param requestTimeoutSeconds An optional time in seconds that the
+ * Synchronizer will wait for responses to request messages, defaulting to 1.
+ * @param onIgnoredError An optional handler for the errors that the
+ * Synchronizer would otherwise ignore when trying to synchronize data. This is
+ * suitable for debugging synchronization issues in a development environment.
+ * @returns A reference to the new WsSynchronizer object.
+ * @example
+ * This example creates two WsSynchronizer objects to synchronize one
+ * MergeableStore to another via a server.
+ *
+ * ```js
+ * import {WebSocketServer, WebSocket} from 'ws';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ *
+ * const server = createWsServer(new WebSocketServer({port: 8047}));
+ *
+ * const store1 = createMergeableStore();
+ * const store2 = createMergeableStore();
+ *
+ * const synchronizer1 = await createWsSynchronizer(
+ *   store1,
+ *   new WebSocket('ws://localhost:8047'),
+ * );
+ * const synchronizer2 = await createWsSynchronizer(
+ *   store2,
+ *   new WebSocket('ws://localhost:8047'),
+ * );
+ *
+ * await synchronizer1.startSync();
+ * await synchronizer2.startSync();
+ *
+ * store1.setTables({pets: {fido: {species: 'dog'}}});
+ * store2.setTables({pets: {felix: {species: 'cat'}}});
+ *
+ * // ...
+ * console.log(store1.getTables());
+ * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
+ * console.log(store2.getTables());
+ * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
+ *
+ * synchronizer1.destroy();
+ * synchronizer2.destroy();
+ * server.destroy();
+ * ```
  * @category Creation
+ * @since v5.0.0
  */
 /// createWsSynchronizer

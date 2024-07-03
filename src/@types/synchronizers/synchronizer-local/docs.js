@@ -45,31 +45,30 @@
  * suitable for debugging synchronization issues in a development environment.
  * @returns A reference to the new LocalSynchronizer object.
  * @example
- * This example creates a LocalSynchronizer object and synchronizes one
+ * This example creates two LocalSynchronizer objects to synchronize one
  * MergeableStore to another.
  *
  * ```js
  * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {createMergeableStore} from 'tinybase';
  *
- * const store1 = createMergeableStore('store1').setTables({
- *   pets: {fido: {species: 'dog'}},
- * });
- * const synchronizer1 = createLocalSynchronizer(store1);
+ * const store1 = createMergeableStore();
+ * const store2 = createMergeableStore();
  *
- * const store2 = createMergeableStore('store2');
+ * const synchronizer1 = createLocalSynchronizer(store1);
  * const synchronizer2 = createLocalSynchronizer(store2);
+ *
+ * await synchronizer1.startSync();
  * await synchronizer2.startSync();
  *
- * await synchronizer1.save();
+ * store1.setTables({pets: {fido: {species: 'dog'}}});
+ * store2.setTables({pets: {felix: {species: 'cat'}}});
+ *
  * // ...
- * // Store2 will be synced with Store1.
- *
+ * console.log(store1.getTables());
+ * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  * console.log(store2.getTables());
- * // -> {pets: {fido: {species: 'dog'}}}
- *
- * await synchronizer1.load();
- * // Store1 will be synced with Store2.
+ * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
  * synchronizer1.destroy();
  * synchronizer2.destroy();
