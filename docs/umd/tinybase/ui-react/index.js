@@ -155,7 +155,6 @@
     false,
     0,
   ];
-  const IS_EQUAL = (thing1, thing2) => thing1 === thing2;
   const IS_EQUALS = [
     objIsEqual,
     arrayIsEqual,
@@ -167,6 +166,7 @@
       arrayIsEqual(backwardIds1, backwardIds2) &&
       arrayIsEqual(forwardIds1, forwardIds2),
   ];
+  const isEqual = (thing1, thing2) => thing1 === thing2;
   const useCreate = (store, create, createDeps = EMPTY_ARRAY) => {
     const [, rerender] = useState$2();
     const [thing, setThing] = useState$2();
@@ -186,33 +186,41 @@
     const listenerId = thing?.[ADD + listenable + LISTENER]?.(...args);
     return () => thing?.delListener(listenerId);
   };
-  const useListenable = (listenable, thing, type, args = EMPTY_ARRAY) => {
-    const lastResult = useRef$1(DEFAULTS[type]);
+  const useListenable = (listenable, thing, returnType, args = EMPTY_ARRAY) => {
+    const lastResult = useRef$1(DEFAULTS[returnType]);
     const getResult = useCallback$2(
       () => {
         const nextResult =
-          thing?.[(type == 4 ? _HAS : GET) + listenable]?.(...args) ??
-          DEFAULTS[type];
-        return !(IS_EQUALS[type] ?? IS_EQUAL)(nextResult, lastResult.current)
+          thing?.[(returnType == 4 /* Boolean */ ? _HAS : GET) + listenable]?.(
+            ...args,
+          ) ?? DEFAULTS[returnType];
+        return !(IS_EQUALS[returnType] ?? isEqual)(
+          nextResult,
+          lastResult.current,
+        )
           ? (lastResult.current = nextResult)
           : lastResult.current;
       },
       /* eslint-disable-next-line react-hooks/exhaustive-deps */
-      [thing, type, listenable, ...args],
+      [thing, returnType, listenable, ...args],
     );
     const subscribe = useCallback$2(
       (listener) =>
         addAndDelListener(
           thing,
-          (type == 4 ? HAS : EMPTY_STRING) + listenable,
+          (returnType == 4 /* Boolean */ ? HAS : EMPTY_STRING) + listenable,
           ...args,
           listener,
         ),
       /* eslint-disable-next-line react-hooks/exhaustive-deps */
-      [thing, type, listenable, ...args],
+      [thing, returnType, listenable, ...args],
     );
     const result = useSyncExternalStore(subscribe, getResult);
-    return type == 0 ? {...result} : type < 3 ? [...result] : result;
+    return returnType == 0 /* Object */
+      ? {...result}
+      : returnType < 3 /* CellOrValue */
+        ? [...result]
+        : result;
   };
   const useListener = (
     listenable,
@@ -287,28 +295,53 @@
     useMemo$1(create, createDeps);
   const useStoreIds = () => useThingIds(1);
   const useHasTables = (storeOrStoreId) =>
-    useListenable(TABLES, useStoreOrStoreById(storeOrStoreId), 4, []);
+    useListenable(
+      TABLES,
+      useStoreOrStoreById(storeOrStoreId),
+      4 /* Boolean */,
+      [],
+    );
   const useTables = (storeOrStoreId) =>
-    useListenable(TABLES, useStoreOrStoreById(storeOrStoreId), 0);
+    useListenable(TABLES, useStoreOrStoreById(storeOrStoreId), 0 /* Object */);
   const useTableIds = (storeOrStoreId) =>
-    useListenable(TABLE_IDS, useStoreOrStoreById(storeOrStoreId), 1);
+    useListenable(
+      TABLE_IDS,
+      useStoreOrStoreById(storeOrStoreId),
+      1 /* Array */,
+    );
   const useHasTable = (tableId, storeOrStoreId) =>
-    useListenable(TABLE, useStoreOrStoreById(storeOrStoreId), 4, [tableId]);
+    useListenable(TABLE, useStoreOrStoreById(storeOrStoreId), 4 /* Boolean */, [
+      tableId,
+    ]);
   const useTable = (tableId, storeOrStoreId) =>
-    useListenable(TABLE, useStoreOrStoreById(storeOrStoreId), 0, [tableId]);
+    useListenable(TABLE, useStoreOrStoreById(storeOrStoreId), 0 /* Object */, [
+      tableId,
+    ]);
   const useTableCellIds = (tableId, storeOrStoreId) =>
-    useListenable(TABLE + CELL_IDS, useStoreOrStoreById(storeOrStoreId), 1, [
-      tableId,
-    ]);
+    useListenable(
+      TABLE + CELL_IDS,
+      useStoreOrStoreById(storeOrStoreId),
+      1 /* Array */,
+      [tableId],
+    );
   const useHasTableCell = (tableId, cellId, storeOrStoreId) =>
-    useListenable(TABLE + CELL, useStoreOrStoreById(storeOrStoreId), 4, [
-      tableId,
-      cellId,
-    ]);
+    useListenable(
+      TABLE + CELL,
+      useStoreOrStoreById(storeOrStoreId),
+      4 /* Boolean */,
+      [tableId, cellId],
+    );
   const useRowCount = (tableId, storeOrStoreId) =>
-    useListenable(ROW_COUNT, useStoreOrStoreById(storeOrStoreId), 5, [tableId]);
+    useListenable(
+      ROW_COUNT,
+      useStoreOrStoreById(storeOrStoreId),
+      5 /* Number */,
+      [tableId],
+    );
   const useRowIds = (tableId, storeOrStoreId) =>
-    useListenable(ROW_IDS, useStoreOrStoreById(storeOrStoreId), 1, [tableId]);
+    useListenable(ROW_IDS, useStoreOrStoreById(storeOrStoreId), 1 /* Array */, [
+      tableId,
+    ]);
   const useSortedRowIds = (
     tableId,
     cellId,
@@ -317,50 +350,68 @@
     limit,
     storeOrStoreId,
   ) =>
-    useListenable(SORTED_ROW_IDS, useStoreOrStoreById(storeOrStoreId), 1, [
-      tableId,
-      cellId,
-      descending,
-      offset,
-      limit,
-    ]);
+    useListenable(
+      SORTED_ROW_IDS,
+      useStoreOrStoreById(storeOrStoreId),
+      1 /* Array */,
+      [tableId, cellId, descending, offset, limit],
+    );
   const useHasRow = (tableId, rowId, storeOrStoreId) =>
-    useListenable(ROW, useStoreOrStoreById(storeOrStoreId), 4, [
+    useListenable(ROW, useStoreOrStoreById(storeOrStoreId), 4 /* Boolean */, [
       tableId,
       rowId,
     ]);
   const useRow = (tableId, rowId, storeOrStoreId) =>
-    useListenable(ROW, useStoreOrStoreById(storeOrStoreId), 0, [
+    useListenable(ROW, useStoreOrStoreById(storeOrStoreId), 0 /* Object */, [
       tableId,
       rowId,
     ]);
   const useCellIds = (tableId, rowId, storeOrStoreId) =>
-    useListenable(CELL_IDS, useStoreOrStoreById(storeOrStoreId), 1, [
-      tableId,
-      rowId,
-    ]);
+    useListenable(
+      CELL_IDS,
+      useStoreOrStoreById(storeOrStoreId),
+      1 /* Array */,
+      [tableId, rowId],
+    );
   const useHasCell = (tableId, rowId, cellId, storeOrStoreId) =>
-    useListenable(CELL, useStoreOrStoreById(storeOrStoreId), 4, [
+    useListenable(CELL, useStoreOrStoreById(storeOrStoreId), 4 /* Boolean */, [
       tableId,
       rowId,
       cellId,
     ]);
   const useCell = (tableId, rowId, cellId, storeOrStoreId) =>
-    useListenable(CELL, useStoreOrStoreById(storeOrStoreId), 3, [
-      tableId,
-      rowId,
-      cellId,
-    ]);
+    useListenable(
+      CELL,
+      useStoreOrStoreById(storeOrStoreId),
+      3 /* CellOrValue */,
+      [tableId, rowId, cellId],
+    );
   const useHasValues = (storeOrStoreId) =>
-    useListenable(VALUES, useStoreOrStoreById(storeOrStoreId), 4, []);
+    useListenable(
+      VALUES,
+      useStoreOrStoreById(storeOrStoreId),
+      4 /* Boolean */,
+      [],
+    );
   const useValues = (storeOrStoreId) =>
-    useListenable(VALUES, useStoreOrStoreById(storeOrStoreId), 0);
+    useListenable(VALUES, useStoreOrStoreById(storeOrStoreId), 0 /* Object */);
   const useValueIds = (storeOrStoreId) =>
-    useListenable(VALUE_IDS, useStoreOrStoreById(storeOrStoreId), 1);
+    useListenable(
+      VALUE_IDS,
+      useStoreOrStoreById(storeOrStoreId),
+      1 /* Array */,
+    );
   const useHasValue = (valueId, storeOrStoreId) =>
-    useListenable(VALUE, useStoreOrStoreById(storeOrStoreId), 4, [valueId]);
+    useListenable(VALUE, useStoreOrStoreById(storeOrStoreId), 4 /* Boolean */, [
+      valueId,
+    ]);
   const useValue = (valueId, storeOrStoreId) =>
-    useListenable(VALUE, useStoreOrStoreById(storeOrStoreId), 3, [valueId]);
+    useListenable(
+      VALUE,
+      useStoreOrStoreById(storeOrStoreId),
+      3 /* CellOrValue */,
+      [valueId],
+    );
   const useSetTablesCallback = (
     getTables,
     getTablesDeps,
@@ -890,11 +941,18 @@
     useCreate(store, create, createDeps);
   const useMetricsIds = () => useThingIds(3);
   const useMetricIds = (metricsOrMetricsId) =>
-    useListenable('MetricIds', useMetricsOrMetricsById(metricsOrMetricsId), 1);
+    useListenable(
+      'MetricIds',
+      useMetricsOrMetricsById(metricsOrMetricsId),
+      1 /* Array */,
+    );
   const useMetric = (metricId, metricsOrMetricsId) =>
-    useListenable('Metric', useMetricsOrMetricsById(metricsOrMetricsId), 3, [
-      metricId,
-    ]);
+    useListenable(
+      'Metric',
+      useMetricsOrMetricsById(metricsOrMetricsId),
+      3 /* CellOrValue */,
+      [metricId],
+    );
   const useMetricListener = (
     metricId,
     listener,
@@ -912,16 +970,23 @@
     useCreate(store, create, createDeps);
   const useIndexesIds = () => useThingIds(5);
   const useSliceIds = (indexId, indexesOrIndexesId) =>
-    useListenable('SliceIds', useIndexesOrIndexesById(indexesOrIndexesId), 1, [
-      indexId,
-    ]);
+    useListenable(
+      'SliceIds',
+      useIndexesOrIndexesById(indexesOrIndexesId),
+      1 /* Array */,
+      [indexId],
+    );
   const useIndexIds = (indexesOrIndexesId) =>
-    useListenable('IndexIds', useIndexesOrIndexesById(indexesOrIndexesId), 1);
+    useListenable(
+      'IndexIds',
+      useIndexesOrIndexesById(indexesOrIndexesId),
+      1 /* Array */,
+    );
   const useSliceRowIds = (indexId, sliceId, indexesOrIndexesId) =>
     useListenable(
       'Slice' + ROW_IDS,
       useIndexesOrIndexesById(indexesOrIndexesId),
-      1,
+      1 /* Array */,
       [indexId, sliceId],
     );
   const useSliceIdsListener = (
@@ -958,7 +1023,7 @@
     useListenable(
       'RelationshipIds',
       useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
-      1,
+      1 /* Array */,
     );
   const useRemoteRowId = (
     relationshipId,
@@ -968,7 +1033,7 @@
     useListenable(
       'RemoteRowId',
       useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
-      3,
+      3 /* CellOrValue */,
       [relationshipId, localRowId],
     );
   const useLocalRowIds = (
@@ -979,7 +1044,7 @@
     useListenable(
       'Local' + ROW_IDS,
       useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
-      1,
+      1 /* Array */,
       [relationshipId, remoteRowId],
     );
   const useLinkedRowIds = (
@@ -990,7 +1055,7 @@
     useListenable(
       'Linked' + ROW_IDS,
       useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
-      1,
+      1 /* Array */,
       [relationshipId, firstRowId],
     );
   const useRemoteRowIdListener = (
@@ -1039,33 +1104,37 @@
     useCreate(store, create, createDeps);
   const useQueriesIds = () => useThingIds(9);
   const useQueryIds = (queriesOrQueriesId) =>
-    useListenable('QueryIds', useQueriesOrQueriesById(queriesOrQueriesId), 1);
+    useListenable(
+      'QueryIds',
+      useQueriesOrQueriesById(queriesOrQueriesId),
+      1 /* Array */,
+    );
   const useResultTable = (queryId, queriesOrQueriesId) =>
     useListenable(
       RESULT + TABLE,
       useQueriesOrQueriesById(queriesOrQueriesId),
-      0,
+      0 /* Object */,
       [queryId],
     );
   const useResultTableCellIds = (queryId, queriesOrQueriesId) =>
     useListenable(
       RESULT + TABLE + CELL_IDS,
       useQueriesOrQueriesById(queriesOrQueriesId),
-      1,
+      1 /* Array */,
       [queryId],
     );
   const useResultRowCount = (queryId, queriesOrQueriesId) =>
     useListenable(
       RESULT + ROW_COUNT,
       useQueriesOrQueriesById(queriesOrQueriesId),
-      5,
+      5 /* Number */,
       [queryId],
     );
   const useResultRowIds = (queryId, queriesOrQueriesId) =>
     useListenable(
       RESULT + ROW_IDS,
       useQueriesOrQueriesById(queriesOrQueriesId),
-      1,
+      1 /* Array */,
       [queryId],
     );
   const useResultSortedRowIds = (
@@ -1079,28 +1148,28 @@
     useListenable(
       RESULT + SORTED_ROW_IDS,
       useQueriesOrQueriesById(queriesOrQueriesId),
-      1,
+      1 /* Array */,
       [queryId, cellId, descending, offset, limit],
     );
   const useResultRow = (queryId, rowId, queriesOrQueriesId) =>
     useListenable(
       RESULT + ROW,
       useQueriesOrQueriesById(queriesOrQueriesId),
-      0,
+      0 /* Object */,
       [queryId, rowId],
     );
   const useResultCellIds = (queryId, rowId, queriesOrQueriesId) =>
     useListenable(
       RESULT + CELL_IDS,
       useQueriesOrQueriesById(queriesOrQueriesId),
-      1,
+      1 /* Array */,
       [queryId, rowId],
     );
   const useResultCell = (queryId, rowId, cellId, queriesOrQueriesId) =>
     useListenable(
       RESULT + CELL,
       useQueriesOrQueriesById(queriesOrQueriesId),
-      3,
+      3 /* CellOrValue */,
       [queryId, rowId, cellId],
     );
   const useResultTableListener = (
@@ -1222,13 +1291,13 @@
     useListenable(
       'CheckpointIds',
       useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
-      2,
+      2 /* Checkpoints */,
     );
   const useCheckpoint = (checkpointId, checkpointsOrCheckpointsId) =>
     useListenable(
       'Checkpoint',
       useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
-      3,
+      3 /* CellOrValue */,
       [checkpointId],
     );
   const useSetCheckpointCallback = (

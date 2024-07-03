@@ -65,8 +65,8 @@
   };
   const scheduleRunning = mapNew();
   const scheduleActions = mapNew();
-  const getStoreFunctions = (persistable = Persists.StoreOnly, store) =>
-    persistable != Persists.StoreOnly && store.isMergeable()
+  const getStoreFunctions = (persist = Persists.StoreOnly, store) =>
+    persist != Persists.StoreOnly && store.isMergeable()
       ? [
           1,
           store.getMergeableContent,
@@ -75,7 +75,7 @@
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setDefaultContent,
         ]
-      : persistable != Persists.MergeableStoreOnly
+      : persist != Persists.MergeableStoreOnly
         ? [
             0,
             store.getContent,
@@ -92,7 +92,7 @@
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    persistable,
+    persist,
     extra = {},
     scheduleId = [],
   ) => {
@@ -110,7 +110,7 @@
       getChanges,
       hasChanges,
       setDefaultContent,
-    ] = getStoreFunctions(persistable, store);
+    ] = getStoreFunctions(persist, store);
     const run = async () => {
       /* istanbul ignore else */
       if (!mapGet(scheduleRunning, scheduleId)) {
