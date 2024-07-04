@@ -508,7 +508,7 @@ indexes.destroy();
 >
 > Like everything else, you can set listeners on Relationships too.
 >
-> Read more about Relationships in the Relationships guide.
+> Read more about Relationships in the Using Relationships guide.
 
 ```js
 import {createRelationships} from 'tinybase';
