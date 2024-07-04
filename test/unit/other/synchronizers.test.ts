@@ -109,9 +109,9 @@ const mockCustomSynchronizer: Synchronizable<
 };
 
 describe.each([
-  ['localSynchronizer', mockLocalSynchronizer],
-  ['wsSynchronizer', mockWsSynchronizer],
-  ['customSynchronizer', mockCustomSynchronizer],
+  ['LocalSynchronizer', mockLocalSynchronizer],
+  ['WsSynchronizer', mockWsSynchronizer],
+  ['Custom Synchronizer', mockCustomSynchronizer],
 ] as any[])(
   'Syncs to/from %s',
   <Environment>(_name: string, synchronizable: Synchronizable<Environment>) => {
