@@ -35,7 +35,7 @@ export const createLocalSynchronizer = ((
     );
   };
 
-  const onReceive = (receive: Receive): void => {
+  const registerReceive = (receive: Receive): void => {
     mapSet(clients, clientId, receive);
   };
 
@@ -46,7 +46,7 @@ export const createLocalSynchronizer = ((
   return createCustomSynchronizer(
     store,
     send,
-    onReceive,
+    registerReceive,
     destroy,
     0.01,
     onIgnoredError,

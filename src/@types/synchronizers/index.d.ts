@@ -63,7 +63,7 @@ export interface Synchronizer extends Persister<Persists.MergeableStoreOnly> {
 export function createCustomSynchronizer(
   store: MergeableStore,
   send: Send,
-  onReceive: (receive: Receive) => void,
+  registerReceive: (receive: Receive) => void,
   destroy: () => void,
   requestTimeoutSeconds: number,
   onIgnoredError?: (error: any) => void,

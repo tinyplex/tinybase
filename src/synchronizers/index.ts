@@ -45,7 +45,7 @@ export const Message = {
 export const createCustomSynchronizer = (
   store: MergeableStore,
   send: Send,
-  onReceive: (receive: Receive) => void,
+  registerReceive: (receive: Receive) => void,
   destroyImpl: () => void,
   requestTimeoutSeconds: number,
   onIgnoredError?: (error: any) => void,
@@ -65,7 +65,7 @@ export const createCustomSynchronizer = (
     ]
   > = mapNew();
 
-  onReceive(
+  registerReceive(
     (
       fromClientId: Id,
       requestId: IdOrNull,
