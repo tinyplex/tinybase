@@ -5,17 +5,32 @@ highlighted features.
 
 ## v5.0
 
-This is a major release for TinyBase and adds important new CRDT &
-synchronization functionality. It also includes some breaking changes that may
-affect you (but which should easy to fix if they do!)
+We're excited to announce this major release for TinyBase! It includes
+important data synchronization functionality and a range of other improvements.
 
-The main new functionality is in the new mergeable-store module, which contains
+## In Summary
+
+- [The new MergeableStore type](#the-new-mergeableStore-type) wraps your data as
+  a Conflict-Free Replicated Data Type (CRDT).
+- [The new Synchronizer framework](#the-new-synchronizer-framework) keeps
+  multiple instances of data in sync across different media.
+- An [improved module folder structure](#improved-module-folder-structure)
+  removes common packaging and bundling issues.
+- The TinyBase Inspector is now in its own standalone ui-react-inspector module.
+- TinyBase now supports only Expo SQLite v14 ([SDK
+  51](https://expo.dev/changelog/2024/05-07-sdk-51)) and above.
+
+There are also some small [breaking changes](#breaking-changes-in-v50) that may
+affect you (but which should easy to fix if they do).
+
+Let's look at the major functionality in more detail!
+
+### The New MergeableStore Type
+
+A key part of TinyBase v5.0 is the new mergeable-store module, which contains
 a subtype of Store - called MergeableStore - that can be merged with another
 with deterministic results. The implementation uses an encoded hybrid logical
-clock (HLC) to timestamp the changes made so that they can be cleanly merged. A
-synchronization protocol also lets you negotiate changes between systems.
-
-### Local Merging
+clock (HLC) to timestamp the changes made so that they can be cleanly merged.
 
 The getMergeableContent method on a MergeableStore is used to get the state of a
 store that can be merged into another. The applyMergeableChanges method will let
@@ -28,33 +43,35 @@ import {createMergeableStore} from 'tinybase';
 const localStore1 = createMergeableStore();
 const localStore2 = createMergeableStore();
 
-localStore1.setCell('pets', 'fido', 'color', 'brown');
-localStore2.setCell('pets', 'felix', 'color', 'black');
+localStore1.setCell('pets', 'fido', 'species', 'dog');
+localStore2.setCell('pets', 'felix', 'species', 'cat');
 
 localStore1.merge(localStore2);
 
 console.log(localStore1.getContent());
-// -> [{pets: {felix: {color: 'black'}, fido: {color: 'brown'}}}, {}]
+// -> [{pets: {felix: {species: 'cat'}, fido: {species: 'dog'}}}, {}]
 
 console.log(localStore2.getContent());
-// -> [{pets: {felix: {color: 'black'}, fido: {color: 'brown'}}}, {}]
+// -> [{pets: {felix: {species: 'cat'}, fido: {species: 'dog'}}}, {}]
 ```
 
-This is a simple enough local example to get the idea, but things get more
-exciting when you synchronize stores between systems...
+Please read the new Using A MergeableStore guide for more details of how to
+use this important new API.
 
-### Persisting And Syncing Between Systems
+A MergeableStore can be persisted locally, just like a regular Store into file,
+local and session storage, and simple SQLite environments such as Expo and
+SQLite3. These allow you to save the state of a MergeableStore locally before it
+has had the chance to be synchronized online, for example.
 
-Firstly, a MergeableStore can be persisted locally, just like a regular Store.
-This is supported by certain Persister types: file, local and session storage,
-and simple SQLite persisters such as Expo and SQLite3. These allows you to
-persist the state of a MergeableStore locally before it has had the chance to be
-synchronized online, for example.
+Which leads us onto the next important feature in v5.0, allowing you to
+synchronize stores between systems...
 
-But more importantly, the v5.0 release also introduces the new concept of
-synchronization. Synchronizer objects implement a negotiation protocol that
-allows multiple MergeableStore objects to be merged across a network for
-example:
+### The New Synchronizer Framework
+
+The v5.0 release also introduces the new concept of synchronization.
+Synchronizer objects implement a negotiation protocol that allows multiple
+MergeableStore objects to be merged together. This can be across a network,
+using WebSockets, for example:
 
 ```js
 import {WebSocketServer, WebSocket} from 'ws';
@@ -81,7 +98,6 @@ const synchronizer2 = await createWsSynchronizer(
 );
 await synchronizer2.startSync();
 store2.setCell('pets', 'felix', 'price', 5);
-
 // ...
 
 console.log(store1.getTables());
@@ -89,30 +105,42 @@ console.log(store1.getTables());
 console.log(store2.getTables());
 // -> {pets: {felix: {price: 5}, fido: {legs: 4}}}
 
-// \(⊙.⊙)/
-
 synchronizer1.destroy();
 synchronizer2.destroy();
 server.destroy();
 ```
 
-This release includes three types of Synchronizer: the WsSynchronizer (that uses
-WebSockets to communicate between different systems, shown above), the
-BroadcastChannelSynchronizer (that uses the browser's BroadcastChannel API to
-communicate between different tabs and workers), and the LocalSynchronizer (for
-demonstrating synchronization on a single local system).
+This release includes three types of Synchronizer:
+
+- The WsSynchronizer uses WebSockets to communicate between different systems as
+  shown above.
+- The BroadcastChannelSynchronizer uses the browser's BroadcastChannel API to
+  communicate between different tabs and workers.
+- The LocalSynchronizer demonstrates synchronization in memory on a single local
+  system.
 
 Notice that the WsSynchronizer assumes that there exists a server that can
 forward requests to other WsSynchronizer systems. This can be created using the
 createWsServer function that takes a WebSocketServer as also shown above.
 
+Please read the new Using A Synchronizer guide for more details of how to
+synchronize your data.
+
+### Improved Module Folder Structure
+
+We have previously found issues with legacy bundlers and other tools that didn't
+fully support the new `exports` field in the module's package.
+
+To mitigate that, the TinyBase distribution now has a top-level folder structure
+that fully echoes the import paths, including signifiers for JavaScript
+versions, schema support, minification and so on.
+
+Please read the comprehensive Importing TinyBase guide for more details of how
+to construct the correct import paths in v5.0.
+
 ### Breaking Changes in v5.0
 
 #### Module File Structure
-
-Previously, the distributed package contained a `lib` folder with both code and
-type definitions. In v5.0, they have been hoisted to the top level of the
-package so that less-capable bundlers can find the correct files.
 
 If you previously had `/lib/` in your import paths, you should remove it. You
 also do not have to explicitly specify whether you need the `cjs` version of
@@ -123,9 +151,6 @@ The non-minified version of the code is now default and you need to be explicit
 with you _want_ minified code. Previously you would add `/debug` to the import
 path to get non-minified code, but now you add `/min` to the import path to get
 _minified_ code.
-
-Please read the comprehensive Importing TinyBase guide for more details of how
-to construct the correct import paths in v5.0.
 
 #### Expo SQLite Persister
 
