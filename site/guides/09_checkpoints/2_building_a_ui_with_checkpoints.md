@@ -172,4 +172,4 @@ that for all the other types of top level object, making it easy to attach
 checkpoints and undo/redo functionality to your user interface.
 
 Let's move on to the ways in which we can create more advanced queries in the
-Queries guide.
+Using Queries guide.

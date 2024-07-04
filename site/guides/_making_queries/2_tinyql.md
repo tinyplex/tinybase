@@ -1,3 +1,3 @@
 # TinyQL
 
--> /guides/queries/tinyql
+-> /guides/using-queries/tinyql

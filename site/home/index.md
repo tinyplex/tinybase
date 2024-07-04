@@ -374,7 +374,7 @@ sessionStorage.clear();
 > queries just as easily as you do to raw tables.
 >
 > Read more about Queries in the [v2.0 Release Notes](/guides/releases/#v2-0),
-> the Queries guide, and the Car Analysis demo and Movie Database demo.
+> the Using Queries guide, and the Car Analysis demo and Movie Database demo.
 
 ```js
 import {createQueries} from 'tinybase';

@@ -1,4 +1,4 @@
-# Using Queries
+# An Intro To Queries
 
 This guide describes how the queries module gives you the ability to create
 queries against Tables in the Store - such as selecting specific Row and Cell
