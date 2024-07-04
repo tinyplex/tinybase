@@ -171,3 +171,6 @@ for logging commands and queries made to the underlying database.
 Use the persisters module to load and save data from and to a variety of common
 persistence layers. When these don't suffice, you can also develop custom
 Persisters of your own.
+
+Next we move on to look at how to fully synchronize TinyBase Stores with
+databases, particularly SQLite, in the Database Persistence guide.
