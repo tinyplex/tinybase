@@ -96,10 +96,11 @@ synchronizer2.destroy();
 server.destroy();
 ```
 
-This release includes two types of Synchronizer: the LocalSynchronizer (for
-demonstrating synchronization on a single local system), and more importantly
-the WsSynchronizer (that uses WebSockets to communicate between different
-systems, shown above).
+This release includes three types of Synchronizer: the WsSynchronizer (that uses
+WebSockets to communicate between different systems, shown above), the
+BroadcastChannelSynchronizer (that uses the browser's BroadcastChannel API to
+communicate between different tabs and workers), and the LocalSynchronizer (for
+demonstrating synchronization on a single local system).
 
 Notice that the WsSynchronizer assumes that there exists a server that can
 forward requests to other WsSynchronizer systems. This can be created using the
