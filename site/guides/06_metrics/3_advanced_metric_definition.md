@@ -118,4 +118,4 @@ console.log(metrics.getMetric('countOfDenseCuboids'));
 
 And with that, we have covered most of the basics of using the metrics module.
 Let's move on to a very similar module for indexing data, as covered in the
-Indexes guide.
+Using Indexes guide.
