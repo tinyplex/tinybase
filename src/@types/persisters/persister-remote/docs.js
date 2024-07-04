@@ -4,6 +4,7 @@
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-remote
+ * @since v1.0.0
  */
 /// persister-remote
 /**
@@ -103,5 +104,6 @@
  * persister.destroy();
  * ```
  * @category Creation
+ * @since v1.0.0
  */
 /// createRemotePersister

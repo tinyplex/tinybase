@@ -13,7 +13,7 @@
 /**
  * InspectorProps props are used to configure the Inspector component.
  * @category Props
- * @since v4.1.0
+ * @since v5.0.0
  */
 /// InspectorProps
 {
@@ -21,12 +21,14 @@
    * An optional string to indicate where you want the inspector to first
    * appear.
    * @category Prop
+   * @since v5.0.0
    */
   /// InspectorProps.position
   /**
    * An optional boolean to indicate whether the inspector should start in the
    * opened state.
    * @category Prop
+   * @since v5.0.0
    */
   /// InspectorProps.open
 }
@@ -71,6 +73,6 @@
  * // -> '<aside id="tinybaseInspector">'
  * ```
  * @category Development components
- * @since v4.1.0
+ * @since v5.0.0
  */
 /// Inspector

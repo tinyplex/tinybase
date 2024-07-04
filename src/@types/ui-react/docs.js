@@ -20,6 +20,7 @@
  * @see Drawing demo
  * @packageDocumentation
  * @module ui-react
+ * @since v1.0.0
  */
 /// ui-react
 /**
@@ -35,6 +36,7 @@
  * Many hooks and components in this ui-react module take this type as a
  * parameter or a prop, allowing you to pass in either the Store or its Id.
  * @category Identity
+ * @since v1.0.0
  */
 /// StoreOrStoreId
 /**
@@ -52,6 +54,7 @@
  * Many hooks and components in this ui-react module take this type as a
  * parameter or a prop, allowing you to pass in either the Store or its Id.
  * @category Identity
+ * @since v1.0.0
  */
 /// MetricsOrMetricsId
 /**
@@ -69,6 +72,7 @@
  * Many hooks and components in this ui-react module take this type as a
  * parameter or a prop, allowing you to pass in either the Store or its Id.
  * @category Identity
+ * @since v1.0.0
  */
 /// IndexesOrIndexesId
 /**
@@ -86,6 +90,7 @@
  * Many hooks and components in this ui-react module take this type as a
  * parameter or a prop, allowing you to pass in either the Store or its Id.
  * @category Identity
+ * @since v1.0.0
  */
 /// RelationshipsOrRelationshipsId
 /**
@@ -121,6 +126,7 @@
  * Many hooks and components in this ui-react module take this type as a
  * parameter or a prop, allowing you to pass in either the Store or its Id.
  * @category Identity
+ * @since v1.0.0
  */
 /// CheckpointsOrCheckpointsId
 /**
@@ -132,6 +138,7 @@
  * useUndoInformation hook and the useRedoInformation hook for more details and
  * examples.
  * @category Checkpoints
+ * @since v1.0.0
  */
 /// UndoOrRedoInformation
 /**
@@ -143,6 +150,7 @@
  * of the object to set can also be dependent on the event or parameter
  * provided (as well as the object itself being set).
  * @category Identity
+ * @since v1.0.0
  */
 /// GetId
 /**
@@ -234,11 +242,13 @@
  * // -> '<span>cat</span>'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useCreateStore
 /**
  * The useCreateMergeableStore hook.
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useCreateMergeableStore
 /**
@@ -342,6 +352,7 @@
  * // -> '<span>0</span>'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useStore
 /**
@@ -637,6 +648,7 @@
  * // -> '<span>{"pets":{"fido":{"color":"brown"}}}</span>'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useTables
 /**
@@ -726,6 +738,7 @@
  * // -> '<span>["pets"]</span>'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useTableIds
 /**
@@ -916,6 +929,7 @@
  * // -> '<span>{"fido":{"color":"brown"}}</span>'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useTable
 /**
@@ -1299,6 +1313,7 @@
  * // -> '<span>["fido"]</span>'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useRowIds
 /**
@@ -1619,6 +1634,7 @@
  * // -> '<span>{"color":"brown"}</span>'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useRow
 /**
@@ -1717,6 +1733,7 @@
  * // -> '<span>["color"]</span>'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useCellIds
 /**
@@ -1915,6 +1932,7 @@
  * // -> '<span>brown</span>'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useCell
 /**
@@ -2459,6 +2477,7 @@
  * // -> '{"pets":{"nemo":{"species":"fish","bubbles":true}}}'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useSetTablesCallback
 /**
@@ -2543,6 +2562,7 @@
  * // -> '{"nemo":{"species":"fish","bubbles":true}}'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useSetTableCallback
 /**
@@ -2631,6 +2651,7 @@
  * // -> '{"species":"fish","bubbles":true}'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useSetRowCallback
 /**
@@ -2724,6 +2745,7 @@
  * // -> '{"0":{"species":"frog","bubbles":true},"nemo":{"species":"fish"}}'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useAddRowCallback
 /**
@@ -2814,6 +2836,7 @@
  * // -> '{"species":"fish","bubbles":true}'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useSetPartialRowCallback
 /**
@@ -2947,6 +2970,7 @@
  * // -> '{"visits":2}'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useSetCellCallback
 /**
@@ -3258,6 +3282,7 @@
  * // -> '{}'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useDelTablesCallback
 /**
@@ -3321,6 +3346,7 @@
  * // -> '{}'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useDelTableCallback
 /**
@@ -3385,6 +3411,7 @@
  * // -> '{}'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useDelRowCallback
 /**
@@ -3458,6 +3485,7 @@
  * // -> '{}'
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useDelCellCallback
 /**
@@ -3708,6 +3736,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useTablesListener
 /**
@@ -3769,6 +3798,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useTableIdsListener
 /**
@@ -3901,6 +3931,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useTableListener
 /**
@@ -3967,6 +3998,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useTableCellIdsListener
 /**
@@ -4168,6 +4200,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useRowIdsListener
 /**
@@ -4389,6 +4422,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useRowListener
 /**
@@ -4463,6 +4497,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useCellIdsListener
 /**
@@ -4613,6 +4648,7 @@
  * // -> 0
  * ```
  * @category Store hooks
+ * @since v1.0.0
  */
 /// useCellListener
 /**
@@ -5226,6 +5262,7 @@
  * // -> '<span>2</span>'
  * ```
  * @category Metrics hooks
+ * @since v1.0.0
  */
 /// useCreateMetrics
 /**
@@ -5338,6 +5375,7 @@
  * // -> '<span>0</span>'
  * ```
  * @category Metrics hooks
+ * @since v1.0.0
  */
 /// useMetrics
 /**
@@ -5562,6 +5600,7 @@
  * // -> '<span>5</span>'
  * ```
  * @category Metrics hooks
+ * @since v1.0.0
  */
 /// useMetric
 /**
@@ -5632,6 +5671,7 @@
  * // -> 0
  * ```
  * @category Metrics hooks
+ * @since v1.0.0
  */
 /// useMetricListener
 /**
@@ -5753,6 +5793,7 @@
  * // -> '<span>["brown","black"]</span>'
  * ```
  * @category Indexes hooks
+ * @since v1.0.0
  */
 /// useCreateIndexes
 /**
@@ -5865,6 +5906,7 @@
  * // -> '<span>0</span>'
  * ```
  * @category Indexes hooks
+ * @since v1.0.0
  */
 /// useIndexes
 /**
@@ -6091,6 +6133,7 @@
  * // -> '<span>["dog","cat"]</span>'
  * ```
  * @category Indexes hooks
+ * @since v1.0.0
  */
 /// useSliceIds
 /**
@@ -6214,6 +6257,7 @@
  * // -> '<span>["fido","cujo"]</span>'
  * ```
  * @category Indexes hooks
+ * @since v1.0.0
  */
 /// useSliceRowIds
 /**
@@ -6285,6 +6329,7 @@
  * // -> 0
  * ```
  * @category Indexes hooks
+ * @since v1.0.0
  */
 /// useSliceIdsListener
 /**
@@ -6364,6 +6409,7 @@
  * // -> 0
  * ```
  * @category Indexes hooks
+ * @since v1.0.0
  */
 /// useSliceRowIdsListener
 /**
@@ -6496,6 +6542,7 @@
  * // -> '<span>brown</span>'
  * ```
  * @category Relationships hooks
+ * @since v1.0.0
  */
 /// useCreateRelationships
 /**
@@ -6622,6 +6669,7 @@
  * // -> '<span>0</span>'
  * ```
  * @category Relationships hooks
+ * @since v1.0.0
  */
 /// useRelationships
 /**
@@ -6869,6 +6917,7 @@
  * // -> '<span>dog</span>'
  * ```
  * @category Relationships hooks
+ * @since v1.0.0
  */
 /// useRemoteRowId
 /**
@@ -6995,6 +7044,7 @@
  * // -> '<span>["fido","cujo"]</span>'
  * ```
  * @category Relationships hooks
+ * @since v1.0.0
  */
 /// useLocalRowIds
 /**
@@ -7128,6 +7178,7 @@
  * // -> '<span>["fido","felix","cujo"]</span>'
  * ```
  * @category Relationships hooks
+ * @since v1.0.0
  */
 /// useLinkedRowIds
 /**
@@ -7214,6 +7265,7 @@
  * // -> 0
  * ```
  * @category Relationships hooks
+ * @since v1.0.0
  */
 /// useRemoteRowIdListener
 /**
@@ -7300,6 +7352,7 @@
  * // -> 0
  * ```
  * @category Relationships hooks
+ * @since v1.0.0
  */
 /// useLocalRowIdsListener
 /**
@@ -7383,6 +7436,7 @@
  * // -> 0
  * ```
  * @category Relationships hooks
+ * @since v1.0.0
  */
 /// useLinkedRowIdsListener
 /**
@@ -9580,6 +9634,7 @@
  * // -> '<span>[[],"0",[]]</span>'
  * ```
  * @category Checkpoints hooks
+ * @since v1.0.0
  */
 /// useCreateCheckpoints
 /**
@@ -9698,6 +9753,7 @@
  * // -> '<span>0</span>'
  * ```
  * @category Checkpoints hooks
+ * @since v1.0.0
  */
 /// useCheckpoints
 /**
@@ -9868,6 +9924,7 @@
  * // -> '<span>[[],"0",[]]</span>'
  * ```
  * @category Checkpoints hooks
+ * @since v1.0.0
  */
 /// useCheckpointIds
 /**
@@ -9972,6 +10029,7 @@
  * // -> '<span>initial</span>'
  * ```
  * @category Checkpoints hooks
+ * @since v1.0.0
  */
 /// useCheckpoint
 /**
@@ -10052,6 +10110,7 @@
  * // -> 'Checkpoint 1 set, with #span button'
  * ```
  * @category Checkpoints hooks
+ * @since v1.0.0
  */
 /// useSetCheckpointCallback
 /**
@@ -10101,6 +10160,7 @@
  * // -> [[], "0", ["1"]]
  * ```
  * @category Checkpoints hooks
+ * @since v1.0.0
  */
 /// useGoBackwardCallback
 /**
@@ -10154,6 +10214,7 @@
  * // -> [["0"], "1", []]
  * ```
  * @category Checkpoints hooks
+ * @since v1.0.0
  */
 /// useGoForwardCallback
 /**
@@ -10231,6 +10292,7 @@
  * // -> [[], "0", ["1"]]
  * ```
  * @category Checkpoints hooks
+ * @since v1.0.0
  */
 /// useGoToCallback
 /**
@@ -10279,6 +10341,7 @@
  * // -> '<span>Undo color</span>'
  * ```
  * @category Checkpoints hooks
+ * @since v1.0.0
  */
 /// useUndoInformation
 /**
@@ -10328,6 +10391,7 @@
  * // -> '<span>Redo color</span>'
  * ```
  * @category Checkpoints hooks
+ * @since v1.0.0
  */
 /// useRedoInformation
 /**
@@ -10392,6 +10456,7 @@
  * // -> 0
  * ```
  * @category Checkpoints hooks
+ * @since v1.0.0
  */
 /// useCheckpointIdsListener
 /**
@@ -10462,6 +10527,7 @@
  * // -> 0
  * ```
  * @category Checkpoints hooks
+ * @since v1.0.0
  */
 /// useCheckpointListener
 /**
@@ -10641,7 +10707,8 @@
  * root.unmount(); // !act
  * // -> 'Persister destroyed for session key cujoStore'
  * ```
- *  @category Persister hooks
+ * @category Persister hooks
+ * @since v1.0.0
  */
 /// useCreatePersister
 /**
@@ -10782,12 +10849,14 @@
 /**
  * The ExtraProps type represents a set of arbitrary additional props.
  * @category Props
+ * @since v1.0.0
  */
 /// ExtraProps
 /**
  * TablesProps props are used for components that refer to all the Tables in a
  * Store, such as the TablesView component.
  * @category Props
+ * @since v1.0.0
  */
 /// TablesProps
 {
@@ -10795,29 +10864,34 @@
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// TablesProps.store
   /**
    * A component for rendering each Table in the Store (to override the default
    * TableView component).
    * @category Prop
+   * @since v1.0.0
    */
   /// TablesProps.tableComponent
   /**
    * A custom function for generating extra props for each Table component based
    * on its Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// TablesProps.getTableComponentProps
   /**
    * A component or string to separate each Table component.
    * @category Prop
+   * @since v1.0.0
    */
   /// TablesProps.separator
   /**
    * Whether the component should also render the Ids of each Table, and its
    * descendent objects, to assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// TablesProps.debugIds
 }
@@ -10825,47 +10899,55 @@
  * TableProps props are used for components that refer to a single Table in a
  * Store, such as the TableView component.
  * @category Props
+ * @since v1.0.0
  */
 /// TableProps
 {
   /**
    * The Id of the Table in the Store to be rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// TableProps.tableId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// TableProps.store
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default RowView component).
    * @category Prop
+   * @since v1.0.0
    */
   /// TableProps.rowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// TableProps.getRowComponentProps
   /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
    * Table's Cells in a given order.
    * @category Prop
+   * @since v1.0.0
    */
   /// TableProps.customCellIds
   /**
    * A component or string to separate each Row component.
    * @category Prop
+   * @since v1.0.0
    */
   /// TableProps.separator
   /**
    * Whether the component should also render the Id of the Table, and its
    * descendent objects, to assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// TableProps.debugIds
 }
@@ -10880,62 +10962,73 @@
   /**
    * The Id of the Table in the Store to be rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// SortedTableProps.tableId
   /**
    * The Id of the Cell whose values are used for the sorting. If omitted, the
    * view will sort the Row Id itself.
    * @category Prop
+   * @since v1.0.0
    */
   /// SortedTableProps.cellId
   /**
    * Whether the sorting should be in descending order.
    * @category Prop
+   * @since v1.0.0
    */
   /// SortedTableProps.descending
   /**
    * The number of Row Ids to skip for pagination purposes.
    * @category Prop
+   * @since v1.0.0
    */
   /// SortedTableProps.offset
   /**
    * The maximum number of Row Ids to return.
    * @category Prop
+   * @since v1.0.0
    */
   /// SortedTableProps.limit
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// SortedTableProps.store
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default RowView component).
    * @category Prop
+   * @since v1.0.0
    */
   /// SortedTableProps.rowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// SortedTableProps.getRowComponentProps
   /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
    * sorted Table's Cells in a given order.
    * @category Prop
+   * @since v1.0.0
    */
   /// SortedTableProps.customCellIds
   /**
    * A component or string to separate each Row component.
    * @category Prop
+   * @since v1.0.0
    */
   /// SortedTableProps.separator
   /**
    * Whether the component should also render the Id of the Table, and its
    * descendent objects, to assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// SortedTableProps.debugIds
 }
@@ -10943,52 +11036,61 @@
  * RowProps props are used for components that refer to a single Row in a Table,
  * such as the RowView component.
  * @category Props
+ * @since v1.0.0
  */
 /// RowProps
 {
   /**
    * The Id of the Table in the Store.
    * @category Prop
+   * @since v1.0.0
    */
   /// RowProps.tableId
   /**
    * The Id of the Row in the Table to be rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// RowProps.rowId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// RowProps.store
   /**
    * A custom component for rendering each Cell in the Row (to override the
    * default CellView component).
    * @category Prop
+   * @since v1.0.0
    */
   /// RowProps.cellComponent
   /**
    * A function for generating extra props for each custom Cell component based
    * on its Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// RowProps.getCellComponentProps
   /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
    * Row's Cells in a given order.
    * @category Prop
+   * @since v1.0.0
    */
   /// RowProps.customCellIds
   /**
    * A component or string to separate each Cell component.
    * @category Prop
+   * @since v1.0.0
    */
   /// RowProps.separator
   /**
    * Whether the component should also render the Id of the Row, and its
    * descendent objects, to assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// RowProps.debugIds
 }
@@ -10996,34 +11098,40 @@
  * CellProps props are used for components that refer to a single Cell in a Row,
  * such as the CellView component.
  * @category Props
+ * @since v1.0.0
  */
 /// CellProps
 {
   /**
    * The Id of the Table in the Store.
    * @category Prop
+   * @since v1.0.0
    */
   /// CellProps.tableId
   /**
    * The Id of the Row in the Table.
    * @category Prop
+   * @since v1.0.0
    */
   /// CellProps.rowId
   /**
    * The Id of the Cell in the Row to be rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// CellProps.cellId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// CellProps.store
   /**
    * Whether the component should also render the Id of the Cell to assist with
    * debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// CellProps.debugIds
 }
@@ -11039,29 +11147,34 @@
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// ValuesProps.store
   /**
    * A custom component for rendering each Value in the Store (to override the
    * default ValueView component).
    * @category Prop
+   * @since v1.0.0
    */
   /// ValuesProps.valueComponent
   /**
    * A function for generating extra props for each custom Value component based
    * on its Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// ValuesProps.getValueComponentProps
   /**
    * A component or string to separate each Value component.
    * @category Prop
+   * @since v1.0.0
    */
   /// ValuesProps.separator
   /**
    * Whether the component should also render the Ids of each Value to assist
    * with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// ValuesProps.debugIds
 }
@@ -11076,18 +11189,21 @@
   /**
    * The Id of the Value in the Row to be rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// ValueProps.valueId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// ValueProps.store
   /**
    * Whether the component should also render the Id of the Value to assist with
    * debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// ValueProps.debugIds
 }
@@ -11095,12 +11211,14 @@
  * MetricProps props are used for components that refer to a single Metric in a
  * Metrics object, such as the MetricView component.
  * @category Props
+ * @since v1.0.0
  */
 /// MetricProps
 {
   /**
    * The Id of the Metric in the Metrics object to be rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// MetricProps.metricId
   /**
@@ -11108,12 +11226,14 @@
    * object, provide an Id for a named context Metrics object, or provide an
    * explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// MetricProps.metrics
   /**
    * Whether the component should also render the Id of the Metric to assist
    * with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// MetricProps.debugIds
 }
@@ -11121,12 +11241,14 @@
  * IndexProps props are used for components that refer to a single Index in an
  * Indexes object, such as the IndexView component.
  * @category Props
+ * @since v1.0.0
  */
 /// IndexProps
 {
   /**
    * The Id of the Index in the Indexes object to be rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// IndexProps.indexId
   /**
@@ -11134,28 +11256,33 @@
    * object, provide an Id for a named context Indexes object, or provide an
    * explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// IndexProps.indexes
   /**
    * A component for rendering each Slice in the Index.
    * @category Prop
+   * @since v1.0.0
    */
   /// IndexProps.sliceComponent
   /**
    * A function for generating extra props for each Slice component based on its
    * Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// IndexProps.getSliceComponentProps
   /**
    * A component or string to separate each Slice component.
    * @category Prop
+   * @since v1.0.0
    */
   /// IndexProps.separator
   /**
    * Whether the component should also render the Id of the Index, and its
    * descendent objects, to assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// IndexProps.debugIds
 }
@@ -11163,17 +11290,20 @@
  * SliceProps props are used for components that refer to a single Slice in an
  * Index object, such as the SliceView component.
  * @category Props
+ * @since v1.0.0
  */
 /// SliceProps
 {
   /**
    * The Id of the Index in the Indexes object.
    * @category Prop
+   * @since v1.0.0
    */
   /// SliceProps.indexId
   /**
    * The Id of the Slice in the Index to be rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// SliceProps.sliceId
   /**
@@ -11181,28 +11311,33 @@
    * object, provide an Id for a named context Indexes object, or provide an
    * explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// SliceProps.indexes
   /**
    * A component for rendering each Row in the Index.
    * @category Prop
+   * @since v1.0.0
    */
   /// SliceProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// SliceProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
    * @category Prop
+   * @since v1.0.0
    */
   /// SliceProps.separator
   /**
    * Whether the component should also render the Id of the Slice, and its
    * descendent objects, to assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// SliceProps.debugIds
 }
@@ -11211,17 +11346,20 @@
  * Relationship in a Relationships object, and where you want to render a remote
  * Row based on a local Row, such as in the RemoteRowView component.
  * @category Props
+ * @since v1.0.0
  */
 /// RemoteRowProps
 {
   /**
    * The Id of the Relationship in the Relationships object.
    * @category Prop
+   * @since v1.0.0
    */
   /// RemoteRowProps.relationshipId
   /**
    * The Id of the local Row for which to render the remote Row.
    * @category Prop
+   * @since v1.0.0
    */
   /// RemoteRowProps.localRowId
   /**
@@ -11229,24 +11367,28 @@
    * Relationships object, provide an Id for a named context Relationships
    * object, or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// RemoteRowProps.relationships
   /**
    * A component for rendering each (remote, local, or linked) Row in the
    * Relationship.
    * @category Prop
+   * @since v1.0.0
    */
   /// RemoteRowProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// RemoteRowProps.getRowComponentProps
   /**
    * Whether the component should also render the Id of the Row in the
    * Relationship, and its descendent objects, to assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// RemoteRowProps.debugIds
 }
@@ -11255,17 +11397,20 @@
  * Relationship in a Relationships object, and where you want to render local
  * Rows based on a remote Row, such as the LocalRowsView component.
  * @category Props
+ * @since v1.0.0
  */
 /// LocalRowsProps
 {
   /**
    * The Id of the Relationship in the Relationships object.
    * @category Prop
+   * @since v1.0.0
    */
   /// LocalRowsProps.relationshipId
   /**
    * The Id of the remote Row for which to render the local Rows.
    * @category Prop
+   * @since v1.0.0
    */
   /// LocalRowsProps.remoteRowId
   /**
@@ -11273,29 +11418,34 @@
    * Relationships object, provide an Id for a named context Relationships
    * object, or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// LocalRowsProps.relationships
   /**
    * A component for rendering each (remote, local, or linked) Row in the
    * Relationship.
    * @category Prop
+   * @since v1.0.0
    */
   /// LocalRowsProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// LocalRowsProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
    * @category Prop
+   * @since v1.0.0
    */
   /// LocalRowsProps.separator
   /**
    * Whether the component should also render the Id of the Row in the
    * Relationship, and its descendent objects, to assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// LocalRowsProps.debugIds
 }
@@ -11304,17 +11454,20 @@
  * Relationship in a Relationships object, and where you want to render a linked
  * list of Rows starting from a first Row, such as the LinkedRowsView component.
  * @category Props
+ * @since v1.0.0
  */
 /// LinkedRowsProps
 {
   /**
    * The Id of the Relationship in the Relationships object.
    * @category Prop
+   * @since v1.0.0
    */
   /// LinkedRowsProps.relationshipId
   /**
    * The Id of the first Row in the linked list Relationship.
    * @category Prop
+   * @since v1.0.0
    */
   /// LinkedRowsProps.firstRowId
   /**
@@ -11322,29 +11475,34 @@
    * Relationships object, provide an Id for a named context Relationships
    * object, or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// LinkedRowsProps.relationships
   /**
    * A component for rendering each (remote, local, or linked) Row in the
    * Relationship.
    * @category Prop
+   * @since v1.0.0
    */
   /// LinkedRowsProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// LinkedRowsProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
    * @category Prop
+   * @since v1.0.0
    */
   /// LinkedRowsProps.separator
   /**
    * Whether the component should also render the Id of the Row in the
    * Relationship, and its descendent objects, to assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// LinkedRowsProps.debugIds
 }
@@ -11360,6 +11518,7 @@
    * The Id of the query in the Queries object for which the ResultTable will be
    * rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultTableProps.queryId
   /**
@@ -11367,29 +11526,34 @@
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultTableProps.queries
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default ResultRowView component).
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultTableProps.resultRowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultTableProps.getResultRowComponentProps
   /**
    * A component or string to separate each Row component.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultTableProps.separator
   /**
    * Whether the component should also render the Id of the query, and its
    * descendent objects, to assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultTableProps.debugIds
 }
@@ -11405,27 +11569,32 @@
    * The Id of the query in the Queries object for which the sorted ResultTable
    * will be rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultSortedTableProps.queryId
   /**
    * The Id of the Cell whose values are used for the sorting. If omitted, the
    * view will sort the Row Id itself.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultSortedTableProps.cellId
   /**
    * Whether the sorting should be in descending order.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultSortedTableProps.descending
   /**
    * The number of Row Ids to skip for pagination purposes.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultSortedTableProps.offset
   /**
    * The maximum number of Row Ids to return.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultSortedTableProps.limit
   /**
@@ -11433,29 +11602,34 @@
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultSortedTableProps.queries
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default ResultRowView component).
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultSortedTableProps.resultRowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultSortedTableProps.getResultRowComponentProps
   /**
    * A component or string to separate each Row component.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultSortedTableProps.separator
   /**
    * Whether the component should also render the Id of the query, and its
    * descendent objects, to assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultSortedTableProps.debugIds
 }
@@ -11471,11 +11645,13 @@
    * The Id of the query in the Queries object for which the ResultTable will be
    * rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultRowProps.queryId
   /**
    * The Id of the Row in the ResultTable to be rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultRowProps.rowId
   /**
@@ -11483,29 +11659,34 @@
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultRowProps.queries
   /**
    * A custom component for rendering each Cell in the Row (to override the
    * default CellView component).
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultRowProps.resultCellComponent
   /**
    * A function for generating extra props for each custom Cell component based
    * on its Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultRowProps.getResultCellComponentProps
   /**
    * A component or string to separate each Cell component.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultRowProps.separator
   /**
    * Whether the component should also render the Id of the Row, and its
    * descendent objects, to assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultRowProps.debugIds
 }
@@ -11521,16 +11702,19 @@
    * The Id of the query in the Queries object for which the ResultTable will be
    * rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultCellProps.queryId
   /**
    * The Id of the Row in the Table.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultCellProps.rowId
   /**
    * The Id of the Cell in the Row to be rendered.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultCellProps.cellId
   /**
@@ -11538,12 +11722,14 @@
    * object, provide an Id for a named context Queries object, or provide an
    * explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultCellProps.queries
   /**
    * Whether the component should also render the Id of the Cell to assist with
    * debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// ResultCellProps.debugIds
 }
@@ -11551,12 +11737,14 @@
  * CheckpointProps props are used for components that refer to a single
  * checkpoint in a Checkpoints object, such as the CheckpointView component.
  * @category Props
+ * @since v1.0.0
  */
 /// CheckpointProps
 {
   /**
    * The Id of the checkpoint in the Checkpoints object.
    * @category Prop
+   * @since v1.0.0
    */
   /// CheckpointProps.checkpointId
   /**
@@ -11564,12 +11752,14 @@
    * Checkpoints object, provide an Id for a named context Checkpoints object,
    * or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// CheckpointProps.checkpoints
   /**
    * Whether the component should also render the Id of the checkpoint to assist
    * with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// CheckpointProps.debugIds
 }
@@ -11578,6 +11768,7 @@
  * of previous checkpoints in a Checkpoints object, such as the
  * BackwardCheckpointsView component.
  * @category Props
+ * @since v1.0.0
  */
 /// BackwardCheckpointsProps
 {
@@ -11586,28 +11777,33 @@
    * Checkpoints object, provide an Id for a named context Checkpoints object,
    * or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// BackwardCheckpointsProps.checkpoints
   /**
    * A component for rendering each checkpoint in the Checkpoints object.
    * @category Prop
+   * @since v1.0.0
    */
   /// BackwardCheckpointsProps.checkpointComponent
   /**
    * A function for generating extra props for each checkpoint component based
    * on its Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// BackwardCheckpointsProps.getCheckpointComponentProps
   /**
    * A component or string to separate each Checkpoint component.
    * @category Prop
+   * @since v1.0.0
    */
   /// BackwardCheckpointsProps.separator
   /**
    * Whether the component should also render the Ids of the checkpoints to
    * assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// BackwardCheckpointsProps.debugIds
 }
@@ -11616,6 +11812,7 @@
  * current checkpoints in a Checkpoints object, such as the
  * BackwardCheckpointsView component.
  * @category Props
+ * @since v1.0.0
  */
 /// CurrentCheckpointProps
 {
@@ -11624,23 +11821,27 @@
    * Checkpoints object, provide an Id for a named context Checkpoints object,
    * or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// CurrentCheckpointProps.checkpoints
   /**
    * A component for rendering each checkpoint in the Checkpoints object.
    * @category Prop
+   * @since v1.0.0
    */
   /// CurrentCheckpointProps.checkpointComponent
   /**
    * A function for generating extra props for each checkpoint component based
    * on its Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// CurrentCheckpointProps.getCheckpointComponentProps
   /**
    * Whether the component should also render the Ids of the checkpoints to
    * assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// CurrentCheckpointProps.debugIds
 }
@@ -11649,6 +11850,7 @@
  * future checkpoints in a Checkpoints object, such as the
  * ForwardCheckpointsView component.
  * @category Props
+ * @since v1.0.0
  */
 /// ForwardCheckpointsProps
 {
@@ -11657,28 +11859,33 @@
    * Checkpoints object, provide an Id for a named context Checkpoints object,
    * or provide an explicit reference.
    * @category Prop
+   * @since v1.0.0
    */
   /// ForwardCheckpointsProps.checkpoints
   /**
    * A component for rendering each checkpoint in the Checkpoints object.
    * @category Prop
+   * @since v1.0.0
    */
   /// ForwardCheckpointsProps.checkpointComponent
   /**
    * A function for generating extra props for each checkpoint component based
    * on its Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// ForwardCheckpointsProps.getCheckpointComponentProps
   /**
    * A component or string to separate each Checkpoint component.
    * @category Prop
+   * @since v1.0.0
    */
   /// ForwardCheckpointsProps.separator
   /**
    * Whether the component should also render the Ids of the checkpoints to
    * assist with debugging.
    * @category Prop
+   * @since v1.0.0
    */
   /// ForwardCheckpointsProps.debugIds
 }
@@ -11691,6 +11898,7 @@
  * Additionally, multiple of each type of object can be provided in an Id-keyed
  * map to the `___ById` props.
  * @category Props
+ * @since v1.0.0
  */
 /// ProviderProps
 {
@@ -11698,72 +11906,84 @@
    * A default single Store object that will be available within the Provider
    * context.
    * @category Prop
+   * @since v1.0.0
    */
   /// ProviderProps.store
   /**
    * An object containing multiple Store objects that will be available within
    * the Provider context by their Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// ProviderProps.storesById
   /**
    * A default single Metrics object that will be available within the Provider
    * context.
    * @category Prop
+   * @since v1.0.0
    */
   /// ProviderProps.metrics
   /**
    * An object containing multiple Metrics objects that will be available within
    * the Provider context by their Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// ProviderProps.metricsById
   /**
    * A default single Indexes object that will be available within the Provider
    * context.
    * @category Prop
+   * @since v1.0.0
    */
   /// ProviderProps.indexes
   /**
    * An object containing multiple Indexes objects that will be available within
    * the Provider context by their Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// ProviderProps.indexesById
   /**
    * A default single Relationships object that will be available within the
    * Provider context.
    * @category Prop
+   * @since v1.0.0
    */
   /// ProviderProps.relationships
   /**
    * An object containing multiple Relationships objects that will be available
    * within the Provider context by their Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// ProviderProps.relationshipsById
   /**
    * A default single Queries object that will be available within the Provider
    * context, since v2.0.
    * @category Prop
+   * @since v1.0.0
    */
   /// ProviderProps.queries
   /**
    * An object containing multiple Queries objects that will be available within
    * the Provider context by their Id, since v2.0.
    * @category Prop
+   * @since v1.0.0
    */
   /// ProviderProps.queriesById
   /**
    * A default single Checkpoints object that will be available within the
    * Provider context.
    * @category Prop
+   * @since v1.0.0
    */
   /// ProviderProps.checkpoints
   /**
    * An object containing multiple Checkpoints objects that will be available
    * within the Provider context by their Id.
    * @category Prop
+   * @since v1.0.0
    */
   /// ProviderProps.checkpointsById
 }
@@ -11771,6 +11991,7 @@
  * ComponentReturnType is a simple alias for what a React component can return:
  * either a ReactElement, or `null` for an empty component.
  * @category Component
+ * @since v1.0.0
  */
 /// ComponentReturnType
 /**
@@ -11882,6 +12103,7 @@
  * // -> '<span>5,5,2</span>'
  * ```
  * @category Context components
+ * @since v1.0.0
  */
 /// Provider
 /**
@@ -11986,6 +12208,7 @@
  * // -> '<span></span>'
  * ```
  * @category Store components
+ * @since v1.0.0
  */
 /// CellView
 /**
@@ -12123,6 +12346,7 @@
  * // -> '<div><span><b>species</b>: dog</span><span>color: walnut</span></div>'
  * ```
  * @category Store components
+ * @since v1.0.0
  */
 /// RowView
 /**
@@ -12410,6 +12634,7 @@
  * // -> '<div><span><b>fido</b>: dog</span><span>felix: cat</span></div>'
  * ```
  * @category Store components
+ * @since v1.0.0
  */
 /// TableView
 /**
@@ -12532,6 +12757,7 @@
  * // -> '<div><span><b>pets</b>: dog</span><span>species: 5</span></div>'
  * ```
  * @category Store components
+ * @since v1.0.0
  */
 /// TablesView
 /**
@@ -12874,6 +13100,7 @@
  * // -> '<div></div>'
  * ```
  * @category Metrics components
+ * @since v1.0.0
  */
 /// MetricView
 /**
@@ -13015,6 +13242,7 @@
  * // -> '<div><span><b>fido</b>: dog/brown</span><span>cujo: dog</span></div>'
  * ```
  * @category Indexes components
+ * @since v1.0.0
  */
 /// SliceView
 /**
@@ -13150,6 +13378,7 @@
  * // -> '<div><span><b>dog</b>: dog/dog</span><span>cat: cat</span></div>'
  * ```
  * @category Indexes components
+ * @since v1.0.0
  */
 /// IndexView
 /**
@@ -13298,6 +13527,7 @@
  * // -> '<div><span><b>dog</b>: 5</span></div>'
  * ```
  * @category Relationships components
+ * @since v1.0.0
  */
 /// RemoteRowView
 /**
@@ -13447,6 +13677,7 @@
  * // -> '<div><span><b>fido</b>: dog</span><span>cujo: dog</span></div>'
  * ```
  * @category Relationships components
+ * @since v1.0.0
  */
 /// LocalRowsView
 /**
@@ -13601,6 +13832,7 @@
  * // -> '<div><span><b>fido</b>: felix</span><span>felix: cat</span></div>'
  * ```
  * @category Relationships components
+ * @since v1.0.0
  */
 /// LinkedRowsView
 /**
@@ -14243,6 +14475,7 @@
  * // -> '<div>1:{sold}</div>'
  * ```
  * @category Checkpoints components
+ * @since v1.0.0
  */
 /// CheckpointView
 /**
@@ -14394,6 +14627,7 @@
  * // -> '<div><span><b>0</b>: initial</span><span>1: identified</span></div>'
  * ```
  * @category Checkpoints components
+ * @since v1.0.0
  */
 /// BackwardCheckpointsView
 /**
@@ -14545,6 +14779,7 @@
  * // -> '<div><span>2: sale</span></div>'
  * ```
  * @category Checkpoints components
+ * @since v1.0.0
  */
 /// CurrentCheckpointView
 /**
@@ -14697,5 +14932,6 @@
  * // -> '<div><span><b>1</b>: identified</span><span>2: sale</span></div>'
  * ```
  * @category Checkpoints components
+ * @since v1.0.0
  */
 /// ForwardCheckpointsView

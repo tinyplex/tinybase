@@ -8,6 +8,7 @@
  * of checkpoints change.
  * @packageDocumentation
  * @module checkpoints
+ * @since v1.0.0
  */
 /// checkpoints
 /**
@@ -25,6 +26,7 @@
  *   the checkpoints in the redo stack for this Store). They are in
  *   chronological order with the newest checkpoint at the end of the array.
  * @category Identity
+ * @since v1.0.0
  */
 /// CheckpointIds
 /**
@@ -37,6 +39,7 @@
  * @param checkpointId The Id of the Checkpoint that the callback can operate
  * on.
  * @category Callback
+ * @since v1.0.0
  */
 /// CheckpointCallback
 /**
@@ -50,6 +53,7 @@
  * object.
  * @param checkpoints A reference to the Checkpoints object that changed.
  * @category Listener
+ * @since v1.0.0
  */
 /// CheckpointIdsListener
 /**
@@ -64,6 +68,7 @@
  * @param checkpoints A reference to the Checkpoints object that changed.
  * @param checkpointId The Id of the checkpoint that changed.
  * @category Listener
+ * @since v1.0.0
  */
 /// CheckpointListener
 /**
@@ -74,6 +79,7 @@
  * A CheckpointsListenerStats object is returned from the getListenerStats
  * method.
  * @category Development
+ * @since v1.0.0
  */
 /// CheckpointsListenerStats
 {
@@ -81,12 +87,14 @@
    * The number of CheckpointIdsListener functions registered with the
    * Checkpoints object.
    * @category Stat
+   * @since v1.0.0
    */
   /// CheckpointsListenerStats.checkpointIds
   /**
    * The number of CheckpointListener functions registered with the Checkpoints
    * object.
    * @category Stat
+   * @since v1.0.0
    */
   /// CheckpointsListenerStats.checkpoint
 }
@@ -160,6 +168,7 @@
  * @see Todo App demos
  * @see Drawing demo
  * @category Checkpoints
+ * @since v1.0.0
  */
 /// Checkpoints
 {
@@ -205,6 +214,7 @@
    * // -> [['1', '2'], '3', []]
    * ```
    * @category Configuration
+   * @since v1.0.0
    */
   /// Checkpoints.setSize
   /**
@@ -250,6 +260,7 @@
    * // -> 'sale'
    * ```
    * @category Setter
+   * @since v1.0.0
    */
   /// Checkpoints.addCheckpoint
   /**
@@ -305,6 +316,7 @@
    * // -> undefined
    * ```
    * @category Setter
+   * @since v1.0.0
    */
   /// Checkpoints.setCheckpoint
   /**
@@ -326,6 +338,7 @@
    * // -> [['0'], '1', []]
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Checkpoints.getStore
   /**
@@ -366,6 +379,7 @@
    * // -> [['0'], '1', []]
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Checkpoints.getCheckpointIds
   /**
@@ -396,6 +410,7 @@
    * // -> '1:sale'
    * ```
    * @category Iterator
+   * @since v1.0.0
    */
   /// Checkpoints.forEachCheckpoint
   /**
@@ -418,6 +433,7 @@
    * // -> false
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Checkpoints.hasCheckpoint
   /**
@@ -471,6 +487,7 @@
    * // -> undefined
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Checkpoints.getCheckpoint
   /**
@@ -520,6 +537,7 @@
    * checkpoints.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Checkpoints.addCheckpointIdsListener
   /**
@@ -579,6 +597,7 @@
    * checkpoints.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Checkpoints.addCheckpointListener
   /**
@@ -619,6 +638,7 @@
    * // The listener is not called.
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Checkpoints.delListener
   /**
@@ -652,6 +672,7 @@
    * // -> [[], '0', ['1']]
    * ```
    * @category Movement
+   * @since v1.0.0
    */
   /// Checkpoints.goBackward
   /**
@@ -734,6 +755,7 @@
    * // The original change cannot be redone.
    * ```
    * @category Movement
+   * @since v1.0.0
    */
   /// Checkpoints.goForward
   /**
@@ -784,6 +806,7 @@
    * // -> [['0'], '1', ['2']]
    * ```
    * @category Movement
+   * @since v1.0.0
    */
   /// Checkpoints.goTo
   /**
@@ -842,6 +865,7 @@
    * checkpoints.delListener(listenerId);
    * ```
    * @category Lifecycle
+   * @since v1.0.0
    */
   /// Checkpoints.clear
   /**
@@ -927,6 +951,7 @@
    * // -> 0
    * ```
    * @category Lifecycle
+   * @since v1.0.0
    */
   /// Checkpoints.destroy
   /**
@@ -960,6 +985,7 @@
    * // -> {checkpointIds: 1, checkpoint: 1}
    * ```
    * @category Development
+   * @since v1.0.0
    */
   /// Checkpoints.getListenerStats
 }
@@ -997,5 +1023,6 @@
  * // -> true
  * ```
  * @category Creation
+ * @since v1.0.0
  */
 /// createCheckpoints
