@@ -72,7 +72,7 @@
  * synchronize MergeableStore data to and from other MergeableStore instances
  * via WebSockets facilitated by a WsServer.
  *
- * As well as providing a reference to the MergeableStore to persist, you can
+ * As well as providing a reference to the MergeableStore to persist, you must
  * provide a configured WebSocket to send synchronization messages over.
  *
  * This method is asynchronous because it will await the websocket's connection
