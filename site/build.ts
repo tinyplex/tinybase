@@ -172,6 +172,9 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/synchronizers/synchronizer-local/index.d.ts')
     .addApiFile('dist/@types/synchronizers/synchronizer-ws-client/index.d.ts')
     .addApiFile('dist/@types/synchronizers/synchronizer-ws-server/index.d.ts')
+    .addApiFile(
+      'dist/@types/synchronizers/synchronizer-broadcast-channel/index.d.ts',
+    )
     .addApiFile('dist/@types/tools/index.d.ts')
     .addApiFile('dist/@types/ui-react/index.d.ts')
     .addApiFile('dist/@types/ui-react-dom/index.d.ts')
