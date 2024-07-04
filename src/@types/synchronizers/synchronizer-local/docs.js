@@ -13,15 +13,15 @@
  * synchronize MergeableStore data to and from other MergeableStore instances on
  * the same local machine.
  *
+ * You should use the createLocalSynchronizer function to create a
+ * LocalSynchronizer object.
+ *
  * Having no specialized methods, it is a synonym for the Synchronizer
  * interface. This is also something of a showcase Synchronizer, rather than
  * something you would use in a production environment. If you _do_ need to
  * synchronize two in-memory MergeableStore instances, you may prefer to use the
  * merge function on either one of them instead of going to the effort of
  * setting up this Synchronizer.
- *
- * You should use the createLocalSynchronizer function to create a
- * LocalSynchronizer object.
  * @category Synchronizer
  * @since v5.0.0
  */
