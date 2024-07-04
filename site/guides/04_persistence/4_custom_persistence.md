@@ -76,6 +76,3 @@ Note that the other creation functions (such as the createSessionPersister
 function and createFilePersister function, for example) all use this function
 under the covers. See those implementations for ideas on how to implement your
 own Persister types.
-
-Next we move on to look at how to fully synchronize TinyBase Stores with
-databases, particularly SQLite, in the Database Persistence guide.

@@ -1,4 +1,4 @@
-# Using Metrics
+# An Intro To Metrics
 
 This guide describes how the metrics module gives you the ability to create and
 track metrics based on the data in Store objects.

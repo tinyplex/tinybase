@@ -427,7 +427,7 @@ queries.destroy();
 > which is most expensive. When we add horses to our pet store, the listener
 > detects that the highest price has changed.
 >
-> Read more about Metrics in the Metrics guide.
+> Read more about Metrics in the Using Metrics guide.
 
 ```js
 import {createMetrics} from 'tinybase';

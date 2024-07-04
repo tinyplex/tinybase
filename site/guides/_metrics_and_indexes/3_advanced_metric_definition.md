@@ -1,3 +1,3 @@
 # Advanced Metric Definition
 
--> /guides/metrics/advanced-metric-definition
+-> /guides/using-metrics/advanced-metric-definition
