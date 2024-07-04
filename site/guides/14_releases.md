@@ -607,7 +607,7 @@ tasks, such as when persisting data that requires complex sequences of actions.
 ### Breaking changes
 
 The way that data is provided to the DoRollback and TransactionListener
-callbacks at the end of a transaction has changed. Where previously they
+callbacks at the end of a transaction has changed. Although previously they
 directly received content about changed Cell and Value content, they now receive
 functions that they can choose to call to receive that same data. This has a
 performance improvement, and your callback or listener can choose between

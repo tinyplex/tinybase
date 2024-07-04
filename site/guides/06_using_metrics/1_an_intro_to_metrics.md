@@ -41,10 +41,10 @@ The out-of-the-box aggregations you can use in the third parameter are `sum`,
 
 ## Metric Reactivity
 
-Where things get interesting is when the underlying data changes. The Metrics
-object takes care of tracking changes that will affect the Metric. A similar
-paradigm to that used on the Store is used to let you add a listener to the
-Metrics object. The listener fires when there's a new highest price:
+Things get interesting when the underlying data changes. The Metrics object
+takes care of tracking changes that will affect the Metric. A similar paradigm
+to that used on the Store is used to let you add a listener to the Metrics
+object. The listener fires when there's a new highest price:
 
 ```js
 const listenerId = metrics.addMetricListener('highestPrice', () => {

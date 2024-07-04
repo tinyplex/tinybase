@@ -59,7 +59,7 @@
  * being added, return `undefined` and the Metric will be completely
  * recalculated.
  *
- * Where possible, if you are providing a custom MetricAggregate, seek an
+ * When possible, if you are providing a custom MetricAggregate, seek an
  * implementation of an MetricAggregateAdd function that can reduce the
  * complexity cost of growing the input data set. See the setMetricDefinition
  * method for more examples.
@@ -87,7 +87,7 @@
  * values, and the previous minimum is being removed. The whole of the rest of
  * the list will need to be re-scanned to find a new minimum.
  *
- * Where possible, if you are providing a custom MetricAggregate, seek an
+ * When possible, if you are providing a custom MetricAggregate, seek an
  * implementation of an MetricAggregateRemove function that can reduce the
  * complexity cost of shrinking the input data set. See the setMetricDefinition
  * method for more examples.
@@ -112,7 +112,7 @@
  * If it is not possible to shortcut the aggregation based on just one value
  * changing, return `undefined` and the Metric will be completely recalculated.
  *
- * Where possible, if you are providing a custom MetricAggregate, seek an
+ * When possible, if you are providing a custom MetricAggregate, seek an
  * implementation of an MetricAggregateReplace function that can reduce the
  * complexity cost of changing the input data set in place. See the
  * setMetricDefinition method for more examples.
