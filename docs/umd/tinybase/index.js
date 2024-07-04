@@ -1416,7 +1416,7 @@
   const createCustomSynchronizer = (
     store,
     send,
-    onReceive,
+    registerReceive,
     destroyImpl,
     requestTimeoutSeconds,
     onIgnoredError,
@@ -1426,7 +1426,7 @@
     let sends = 0;
     let receives = 0;
     const pendingRequests = mapNew();
-    onReceive((fromClientId, requestId, message, body) => {
+    registerReceive((fromClientId, requestId, message, body) => {
       receives++;
       if (message == Message.Response) {
         ifNotUndefined(
