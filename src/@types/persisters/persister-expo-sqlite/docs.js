@@ -9,7 +9,7 @@
  *
  * Note that TinyBase support for the legacy version of Expo-SQLite is no longer
  * available.
- * @see Persisting Data guide
+ * @see Database Persistence guide
  * @packageDocumentation
  * @module persister-expo-sqlite
  * @since v4.5.0
@@ -19,12 +19,12 @@
  * The ExpoSqlitePersister interface represents a Persister that lets you save
  * and load Store data to and from a Expo-SQLite database.
  *
+ * You should use the createExpoSqlitePersister function to create an
+ * ExpoSqlitePersister object.
+ *
  * It is a minor extension to the Persister interface and simply provides an
  * extra getDb method for accessing a reference to the database instance the
  * Store is being persisted to.
- *
- * You should use the createExpoSqlitePersister function to create an
- * ExpoSqlitePersister object.
  * @category Persister
  * @since v4.5.0
  */

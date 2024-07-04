@@ -1,7 +1,7 @@
 /**
  * The persister-indexed-db module of the TinyBase project lets you save and
  * load Store data to and from browser IndexedDB storage.
- * @see Persisting Data guide
+ * @see Persistence guides
  * @packageDocumentation
  * @module persister-indexed-db
  * @since v4.2.0
@@ -11,12 +11,12 @@
  * The IndexedDbPersister interface represents a Persister that lets you save
  * and load Store data to and from browser IndexedDB storage.
  *
+ * You should use the createIndexedDbPersister function to create an
+ * IndexedDbPersister object.
+ *
  * It is a minor extension to the Persister interface and simply provides an
  * extra getDbName method for accessing the unique key of the IndexedDB the
  * Store is being persisted to.
- *
- * You should use the createIndexedDbPersister function to create an
- * IndexedDbPersister object.
  * @category Persister
  * @since v4.3.14
  */

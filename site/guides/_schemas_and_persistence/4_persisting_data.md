@@ -1,3 +1,3 @@
 # Persisting Data
 
--> /guides/persistence/persisting-data
+-> /guides/persistence/an-intro-to-persistence

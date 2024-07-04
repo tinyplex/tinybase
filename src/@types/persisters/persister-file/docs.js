@@ -1,7 +1,7 @@
 /**
  * The persister-file module of the TinyBase project lets you save and load
  * Store data to and from a local file system (in an appropriate environment).
- * @see Persisting Data guide
+ * @see Persistence guides
  * @packageDocumentation
  * @module persister-file
  * @since v1.0.0
@@ -11,12 +11,12 @@
  * The FilePersister interface represents a Persister that lets you save and
  * load Store data to and from a local file system.
  *
+ * You should use the createFilePersister function to create a FilePersister
+ * object.
+ *
  * It is a minor extension to the Persister interface and simply provides an
  * extra getFilePath method for accessing the location of the local file the
  * Store is being persisted to.
- *
- * You should use the createFilePersister function to create a FilePersister
- * object.
  * @category Persister
  * @since v4.3.14
  */

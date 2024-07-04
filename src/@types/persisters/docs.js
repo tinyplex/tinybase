@@ -35,9 +35,7 @@
  * Since persistence requirements can be different for every app, the
  * createCustomPersister function in this module can also be used to easily
  * create a fully customized way to save and load Store data.
- * @see Persisting Data guide
- * @see Database Persistence guide
- * @see Third-Party CRDT Persistence guide
+ * @see Persistence guides
  * @see Countries demo
  * @see Todo App demos
  * @see Drawing demo

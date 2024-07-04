@@ -2,7 +2,7 @@
  * The persister-electric-sql module of the TinyBase project lets you save and
  * load Store data to and from a local ElectricSQL database (in an appropriate
  * environment).
- * @see Persisting Data guide
+ * @see Database Persistence guide
  * @packageDocumentation
  * @module persister-electric-sql
  * @since v4.6.0
@@ -12,12 +12,12 @@
  * The ElectricSqlPersister interface represents a Persister that lets you save
  * and load Store data to and from a local ElectricSQL database.
  *
+ * You should use the createElectricSqlPersister function to create an
+ * ElectricSqlPersister object.
+ *
  * It is a minor extension to the Persister interface and simply provides an
  * extra getElectricClient method for accessing a reference to the Electric
  * client the Store is being persisted to.
- *
- * You should use the createElectricSqlPersister function to create an
- * ElectricSqlPersister object.
  * @category Persister
  * @since v4.6.0
  */

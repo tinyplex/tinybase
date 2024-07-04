@@ -11,7 +11,7 @@
  *
  * Note that both the client and server parts of this Persister are currently
  * experimental as PartyKit is new and still maturing.
- * @see Persisting Data guide
+ * @see Persistence guides
  * @packageDocumentation
  * @module persister-partykit-server
  * @since v4.3.0
