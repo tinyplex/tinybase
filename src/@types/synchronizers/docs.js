@@ -1,5 +1,5 @@
 /**
- * The persister-sync module of the TinyBase project lets you synchronize
+ * The synchronizers module of the TinyBase project lets you synchronize
  * MergeableStore data to and from other MergeableStore instances.
  * @see Synchronization guide
  * @packageDocumentation

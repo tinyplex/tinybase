@@ -332,14 +332,11 @@
    * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
    *
    * const server = createWsServer(new WebSocketServer({port: 8047}));
-   * const listenerId = server.addClientIdsListener(
-   *   null,
-   *   (server, pathId) => {
-   *     console.log(
-   *       `${server.getClientIds(pathId).length} client(s) in ${pathId}`,
-   *     );
-   *   },
-   * );
+   * const listenerId = server.addClientIdsListener(null, (server, pathId) => {
+   *   console.log(
+   *     `${server.getClientIds(pathId).length} client(s) in ${pathId}`,
+   *   );
+   * });
    *
    * const synchronizer1 = await createWsSynchronizer(
    *   createMergeableStore(),
@@ -386,11 +383,9 @@
    * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
    *
    * const server = createWsServer(new WebSocketServer({port: 8047}));
-   * const listenerId = server.addPathIdsListener(
-   *   (server) => {
-   *     console.log('Paths changed');
-   *   },
-   * );
+   * const listenerId = server.addPathIdsListener(() => {
+   *   console.log('Paths changed');
+   * });
    *
    * const synchronizer = await createWsSynchronizer(
    *   createMergeableStore(),
@@ -428,9 +423,6 @@
    * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
    *
    * const server = createWsServer(new WebSocketServer({port: 8047}));
-   *
-   * const store1 = createMergeableStore();
-   * const store2 = createMergeableStore();
    *
    * const synchronizer1 = await createWsSynchronizer(
    *   createMergeableStore(),
@@ -504,7 +496,7 @@
  * information about the address of the client that connects to it.
  *
  * ```js
- * import {WebSocketServer, WebSocket} from 'ws';
+ * import {WebSocket, WebSocketServer} from 'ws';
  * import {createMergeableStore} from 'tinybase';
  * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
