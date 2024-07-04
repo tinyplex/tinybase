@@ -2,7 +2,7 @@
  * The persister-libsql module of the TinyBase project lets you save and load
  * Store data to and from a local LibSQL database (in an appropriate
  * environment).
- * @see Persisting Data guide
+ * @see Database Persistence guide
  * @packageDocumentation
  * @module persister-libsql
  * @since v4.7.0
@@ -12,12 +12,12 @@
  * The LibSqlPersister interface represents a Persister that lets you save and
  * load Store data to and from a local LibSQL database.
  *
+ * You should use the createLibSqlPersister function to create a LibSqlPersister
+ * object.
+ *
  * It is a minor extension to the Persister interface and simply provides an
  * extra getClient method for accessing a reference to the database client the
  * Store is being persisted to.
- *
- * You should use the createLibSqlPersister function to create a LibSqlPersister
- * object.
  * @category Persister
  * @since v4.7.0
  */

@@ -15,12 +15,12 @@
  * The YjsPersister interface represents a Persister that lets you save and load
  * Store data to and from a Yjs document.
  *
+ * You should use the createYjsPersister function to create a YjsPersister
+ * object.
+ *
  * It is a minor extension to the Persister interface and simply provides an
  * extra getYDoc method for accessing the Yjs document the Store is being
  * persisted to.
- *
- * You should use the createYjsPersister function to create a YjsPersister
- * object.
  * @category Persister
  * @since v4.3.14
  */

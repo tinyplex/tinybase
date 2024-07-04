@@ -15,12 +15,12 @@
  * The AutomergePersister interface represents a Persister that lets you save
  * and load Store data to and from an Automerge document.
  *
+ * You should use the createAutomergePersister function to create an
+ * AutomergePersister object.
+ *
  * It is a minor extension to the Persister interface and simply provides an
  * extra getDocHandle method for accessing the Automerge document handler the
  * Store is being persisted to.
- *
- * You should use the createAutomergePersister function to create an
- * AutomergePersister object.
  * @category Persister
  * @since v4.3.14
  */
