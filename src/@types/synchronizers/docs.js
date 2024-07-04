@@ -372,9 +372,9 @@
  * medium of communication used.
  * @param store The MergeableStore to synchronize.
  * @param send A Send function for sending a message.
- * @param onReceive A callback (called once when the Synchronizer is created)
- * that is passed a Receive function that you need to ensure can receive
- * messages addressed or broadcast to this client.
+ * @param registerReceive A callback (called once when the Synchronizer is
+ * created) that is passed a Receive function that you need to ensure will
+ * receive messages addressed or broadcast to this client.
  * @param destroy A function called when destroying the Persister which can be
  * used to clean up underlying resources.
  * @param requestTimeoutSeconds An number of seconds before a request sent from
@@ -410,7 +410,7 @@
  *       remoteBus.push([clientId, requestId, message, body]);
  *     },
  *     (receive) => {
- *       // onReceive
+ *       // registerReceive
  *       timer = setInterval(() => {
  *         if (localBus.length > 0) {
  *           receive(...localBus.shift());
