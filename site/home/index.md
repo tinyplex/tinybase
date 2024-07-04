@@ -542,7 +542,7 @@ relationships.destroy();
 > pet is brought back to the shop, and we go back to that checkpoint to revert
 > the store to its previous state.
 >
-> Read more about Checkpoints in the Checkpoints guide.
+> Read more about Checkpoints in the Using Checkpoints guide.
 
 ```js
 import {createCheckpoints} from 'tinybase';

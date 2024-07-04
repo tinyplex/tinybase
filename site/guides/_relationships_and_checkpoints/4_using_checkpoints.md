@@ -1,3 +1,3 @@
 # Using Checkpoints
 
--> /guides/checkpoints/using-checkpoints
+-> /guides/using-checkpoints/an-intro-to-checkpoints

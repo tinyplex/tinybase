@@ -1,4 +1,4 @@
-# Checkpoints
+# Using Checkpoints
 
 These guides discuss how to use Checkpoints that allow you to build undo and
 redo functionality.
