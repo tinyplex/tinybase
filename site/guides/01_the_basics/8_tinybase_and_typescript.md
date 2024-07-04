@@ -1,4 +1,4 @@
-# TinyBase and TypeScript
+# TinyBase And TypeScript
 
 This guide summarizes the three different levels of TypeScript coverage you can
 use with TinyBase.
