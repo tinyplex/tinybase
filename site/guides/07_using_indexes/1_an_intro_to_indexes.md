@@ -1,4 +1,4 @@
-# Using Indexes
+# An Intro To Indexes
 
 This guide describes how the indexes module gives you the ability to create and
 track indexes based on the data in Store objects, and which allow you to look up

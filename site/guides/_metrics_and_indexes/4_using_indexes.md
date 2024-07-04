@@ -1,3 +1,3 @@
 # Using Indexes
 
--> /guides/indexes/using-indexes
+-> /guides/using-indexes/an-intro-to-indexes

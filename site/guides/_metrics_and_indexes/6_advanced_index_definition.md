@@ -1,3 +1,3 @@
 # Advanced Index Definition
 
--> /guides/indexes/advanced-index-definition
+-> /guides/using-indexes/advanced-index-definition

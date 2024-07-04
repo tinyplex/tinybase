@@ -226,7 +226,7 @@
  * metrics.delListener(listenerId);
  * metrics.destroy();
  * ```
- * @see Metrics And Indexes guides
+ * @see Using Metrics guides
  * @see Rolling Dice demos
  * @see Country demo
  * @see Todo App demos

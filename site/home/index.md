@@ -470,7 +470,7 @@ metrics.destroy();
 > Indexes objects are reactive too. So you can set listeners on them just as you
 > do for the data in the underlying Store.
 >
-> Read more about Indexes in the Indexes guide.
+> Read more about Indexes in the Using Indexes guide.
 
 ```js
 import {createIndexes} from 'tinybase';
