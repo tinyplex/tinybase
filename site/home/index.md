@@ -427,7 +427,7 @@ queries.destroy();
 > which is most expensive. When we add horses to our pet store, the listener
 > detects that the highest price has changed.
 >
-> Read more about Metrics in the Using Metrics guide.
+> Read more about Metrics in the Metrics guide.
 
 ```js
 import {createMetrics} from 'tinybase';
@@ -470,7 +470,7 @@ metrics.destroy();
 > Indexes objects are reactive too. So you can set listeners on them just as you
 > do for the data in the underlying Store.
 >
-> Read more about Indexes in the Using Indexes guide.
+> Read more about Indexes in the Indexes guide.
 
 ```js
 import {createIndexes} from 'tinybase';
