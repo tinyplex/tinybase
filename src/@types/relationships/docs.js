@@ -236,7 +236,7 @@
  * relationships.delListener(listenerId2);
  * relationships.destroy();
  * ```
- * @see Relationships And Checkpoints guides
+ * @see Relationships guide
  * @see Drawing demo
  * @category Relationships
  * @since v1.0.0

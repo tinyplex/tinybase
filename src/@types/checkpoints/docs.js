@@ -164,7 +164,7 @@
  *
  * checkpoints.delListener(listenerId);
  * ```
- * @see Relationships And Checkpoints guides
+ * @see Checkpoints guide
  * @see Todo App demos
  * @see Drawing demo
  * @category Checkpoints

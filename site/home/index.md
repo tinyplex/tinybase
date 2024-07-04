@@ -374,7 +374,7 @@ sessionStorage.clear();
 > queries just as easily as you do to raw tables.
 >
 > Read more about Queries in the [v2.0 Release Notes](/guides/releases/#v2-0),
-> the Making Queries guide, and the Car Analysis demo and Movie Database demo.
+> the Queries guide, and the Car Analysis demo and Movie Database demo.
 
 ```js
 import {createQueries} from 'tinybase';
@@ -508,7 +508,7 @@ indexes.destroy();
 >
 > Like everything else, you can set listeners on Relationships too.
 >
-> Read more about Relationships in the Using Relationships guide.
+> Read more about Relationships in the Relationships guide.
 
 ```js
 import {createRelationships} from 'tinybase';
@@ -542,7 +542,7 @@ relationships.destroy();
 > pet is brought back to the shop, and we go back to that checkpoint to revert
 > the store to its previous state.
 >
-> Read more about Checkpoints in the Using Checkpoints guide.
+> Read more about Checkpoints in the Checkpoints guide.
 
 ```js
 import {createCheckpoints} from 'tinybase';
