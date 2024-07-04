@@ -1,3 +1,3 @@
 # Using Relationships
 
--> /guides/relationships/using-relationships
+-> /guides/using-relationships/an-intro-to-relationships

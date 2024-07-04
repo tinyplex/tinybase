@@ -1,4 +1,4 @@
-# Using Relationships
+# An Intro To Relationships
 
 This guide describes how the relationships module gives you the ability to
 create and track relationships between Row objects based on the data in a Store.

@@ -1,3 +1,3 @@
 # Relationships And Checkpoints
 
--> /guides/relationships
+-> /guides/using-relationships
