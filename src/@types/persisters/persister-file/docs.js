@@ -4,6 +4,7 @@
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-file
+ * @since v1.0.0
  */
 /// persister-file
 /**
@@ -80,5 +81,6 @@
  * persister.destroy();
  * ```
  * @category Creation
+ * @since v1.0.0
  */
 /// createFilePersister

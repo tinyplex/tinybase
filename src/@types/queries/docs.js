@@ -29,6 +29,7 @@
  * };
  * ```
  * @category Result
+ * @since v2.0.0
  */
 /// ResultTable
 /**
@@ -46,6 +47,7 @@
  * export const resultRow: ResultRow = {species: 'dog', color: 'brown'};
  * ```
  * @category Result
+ * @since v2.0.0
  */
 /// ResultRow
 /**
@@ -63,12 +65,14 @@
  * export const resultCell: ResultCell = 'dog';
  * ```
  * @category Result
+ * @since v2.0.0
  */
 /// ResultCell
 /**
  * The ResultCellOrUndefined type is the data structure representing a single
  * cell in the results of a query, or the value `undefined`.
  * @category Result
+ * @since v2.0.0
  */
 /// ResultCellOrUndefined
 /**
@@ -184,6 +188,7 @@
  * @param forEachRow A function that will let you iterate over the ResultRow
  * objects in this ResultTable.
  * @category Callback
+ * @since v2.0.0
  */
 /// ResultTableCallback
 /**
@@ -197,6 +202,7 @@
  * @param forEachRow A function that will let you iterate over the ResultCell
  * values in this ResultRow.
  * @category Callback
+ * @since v2.0.0
  */
 /// ResultRowCallback
 /**
@@ -209,6 +215,7 @@
  * @param cellId The Id of the ResultCell that the callback can operate on.
  * @param cell The value of the ResultCell.
  * @category Callback
+ * @since v2.0.0
  */
 /// ResultCellCallback
 /**
@@ -222,6 +229,7 @@
  * Queries object.
  * @param queries A reference to the Queries object that changed.
  * @category Listener
+ * @since v2.0.0
  */
 /// QueryIdsListener
 /**
@@ -427,6 +435,7 @@
  * @returns A ResultCellChange array containing information about the
  * ResultCell's changes.
  * @category Listener
+ * @since v2.0.0
  */
 /// GetResultCellChange
 /**
@@ -438,6 +447,7 @@
  * ResultCell before the current transaction, the new value after it, and a
  * convenience flag that indicates that the value has changed.
  * @category Listener
+ * @since v2.0.0
  */
 /// ResultCellChange
 /**
@@ -454,48 +464,56 @@
    * The number of ResultTableListener functions registered with the Queries
    * object.
    * @category Stat
+   * @since v2.0.0
    */
   /// QueriesListenerStats.table
   /**
    * The number of ResultTableCellIdsListener functions registered with the
    * Queries object, since v3.3.
    * @category Stat
+   * @since v2.0.0
    */
   /// QueriesListenerStats.tableCellIds
   /**
    * The number of ResultRowCountListener functions registered with the Queries
    * object, since v4.1.
    * @category Stat
+   * @since v2.0.0
    */
   /// QueriesListenerStats.rowCount
   /**
    * The number of ResultRowIdsListener functions registered with the Queries
    * object.
    * @category Stat
+   * @since v2.0.0
    */
   /// QueriesListenerStats.rowIds
   /**
    * The number of SortedRowIdsListener functions registered with the Queries
    * object.
    * @category Stat
+   * @since v2.0.0
    */
   /// QueriesListenerStats.sortedRowIds
   /**
    * The number of ResultRowListener functions registered with the Queries
    * object.
    * @category Stat
+   * @since v2.0.0
    */
   /// QueriesListenerStats.row
   /**
    * The number of ResultCellIdsListener functions registered with the Queries
    * object.
    * @category Stat
+   * @since v2.0.0
    */
   /// QueriesListenerStats.cellIds
   /**
    * The number of ResultCellListener functions registered with the Queries
    * object.
    * @category Stat
+   * @since v2.0.0
    */
   /// QueriesListenerStats.cell
 }
@@ -518,6 +536,7 @@
    * @param cellId The Id of the Cell to fetch the value for.
    * @returns A Cell value or `undefined`.
    * @category Callback
+   * @since v2.0.0
    */
   /// GetTableCell.1
   /**
@@ -530,6 +549,7 @@
    * @param joinedCellId The Id of the Cell to fetch the value for.
    * @returns A Cell value or `undefined`.
    * @category Callback
+   * @since v2.0.0
    */
   /// GetTableCell.2
 }
@@ -644,6 +664,7 @@
    * @returns A SelectedAs object so that the selected Cell Id can be optionally
    * aliased.
    * @category Definition
+   * @since v2.0.0
    */
   /// Select.1
   /**
@@ -657,6 +678,7 @@
    * @returns A SelectedAs object so that the selected Cell Id can be optionally
    * aliased.
    * @category Definition
+   * @since v2.0.0
    */
   /// Select.2
   /**
@@ -669,6 +691,7 @@
    * @returns A SelectedAs object so that the selected Cell Id can be optionally
    * aliased.
    * @category Definition
+   * @since v2.0.0
    */
   /// Select.3
 }
@@ -725,6 +748,7 @@
   /**
    * A function that lets you specify an alias for the Cell Id.
    * @category Definition
+   * @since v2.0.0
    */
   /// SelectedAs.as
 }
@@ -913,6 +937,7 @@
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
    * @category Definition
+   * @since v2.0.0
    */
   /// Join.1
   /**
@@ -926,6 +951,7 @@
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
    * @category Definition
+   * @since v2.0.0
    */
   /// Join.2
   /**
@@ -941,6 +967,7 @@
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
    * @category Definition
+   * @since v2.0.0
    */
   /// Join.3
   /**
@@ -958,6 +985,7 @@
    * @returns A JoinedAs object so that the joined Table Id can be optionally
    * aliased.
    * @category Definition
+   * @since v2.0.0
    */
   /// Join.4
 }
@@ -1014,6 +1042,7 @@
 /**
  * A function that lets you specify an alias for the joined Table Id.
  * @category Definition
+ * @since v2.0.0
  */
 /// JoinedAs.as
 /**
@@ -1147,6 +1176,7 @@
    * @param equals The value that the Cell has to have for the Row to be
    * included in the result.
    * @category Definition
+   * @since v2.0.0
    */
   /// Where.1
   /**
@@ -1159,6 +1189,7 @@
    * @param equals The value that the Cell has to have for the Row to be
    * included in the result.
    * @category Definition
+   * @since v2.0.0
    */
   /// Where.2
   /**
@@ -1168,6 +1199,7 @@
    * @param condition A callback that takes a GetTableCell function and that
    * should return `true` for the Row to be included in the result.
    * @category Definition
+   * @since v2.0.0
    */
   /// Where.3
 }
@@ -1347,6 +1379,7 @@
 /**
  * A function that lets you specify an alias for the grouped Cell Id.
  * @category Definition
+ * @since v2.0.0
  */
 /// GroupedAs.as
 /**
@@ -1450,6 +1483,7 @@
    * @param equals The value that the Cell has to have for the Row to be
    * included in the result.
    * @category Definition
+   * @since v2.0.0
    */
   /// Having.1
   /**
@@ -1458,6 +1492,7 @@
    * @param condition A callback that takes a GetCell function and that should
    * return `true` for the Row to be included in the result.
    * @category Definition
+   * @since v2.0.0
    */
   /// Having.2
 }

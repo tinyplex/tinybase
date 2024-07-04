@@ -8,12 +8,14 @@
  * listeners for when they change.
  * @packageDocumentation
  * @module metrics
+ * @since v1.0.0
  */
 /// metrics
 /**
  * The Metric type is simply an alias, but represents a number formed by
  * aggregating multiple other numbers together.
  * @category Metric
+ * @since v1.0.0
  */
 /// Metric
 /**
@@ -26,6 +28,7 @@
  * @param metricId The Id of the Metric that the callback can operate on.
  * @param metric The value of the Metric.
  * @category Callback
+ * @since v1.0.0
  */
 /// MetricCallback
 /**
@@ -40,6 +43,7 @@
  * @param length The length of the array of numbers in the Metric's aggregation.
  * @returns The value of the Metric.
  * @category Aggregators
+ * @since v1.0.0
  */
 /// MetricAggregate
 /**
@@ -64,6 +68,7 @@
  * @param length The length of the array of numbers in the Metric's aggregation.
  * @returns The new value of the Metric.
  * @category Aggregators
+ * @since v1.0.0
  */
 /// MetricAggregateAdd
 /**
@@ -91,6 +96,7 @@
  * @param length The length of the array of numbers in the Metric's aggregation.
  * @returns The new value of the Metric.
  * @category Aggregators
+ * @since v1.0.0
  */
 /// MetricAggregateRemove
 /**
@@ -116,6 +122,7 @@
  * @param length The length of the array of numbers in the Metric's aggregation.
  * @returns The new value of the Metric.
  * @category Aggregators
+ * @since v1.0.0
  */
 /// MetricAggregateReplace
 /**
@@ -128,6 +135,7 @@
  * When called, a MetricIdsListener is given a reference to the Metrics object.
  * @param metrics A reference to the Metrics object that changed.
  * @category Listener
+ * @since v1.0.0
  */
 /// MetricIdsListener
 /**
@@ -148,6 +156,7 @@
  * @param newMetric The new value of the Metric that changed.
  * @param oldMetric The old value of the Metric that changed.
  * @category Listener
+ * @since v1.0.0
  */
 /// MetricListener
 /**
@@ -156,12 +165,14 @@
  *
  * A MetricsListenerStats object is returned from the getListenerStats method.
  * @category Development
+ * @since v1.0.0
  */
 /// MetricsListenerStats
 {
   /**
    * The number of MetricListener functions registered with the Metrics object.
    * @category Stat
+   * @since v1.0.0
    */
   /// MetricsListenerStats.metric
 }
@@ -220,6 +231,7 @@
  * @see Country demo
  * @see Todo App demos
  * @category Metrics
+ * @since v1.0.0
  */
 /// Metrics
 {
@@ -396,6 +408,7 @@
    * // -> 2.5
    * ```
    * @category Configuration
+   * @since v1.0.0
    */
   /// Metrics.setMetricDefinition
   /**
@@ -425,6 +438,7 @@
    * // -> []
    * ```
    * @category Configuration
+   * @since v1.0.0
    */
   /// Metrics.delMetricDefinition
   /**
@@ -445,6 +459,7 @@
    * // -> 1
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Metrics.getStore
   /**
@@ -466,6 +481,7 @@
    * // -> ['speciesCount', 'petsCount']
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Metrics.getMetricIds
   /**
@@ -498,6 +514,7 @@
    * // -> ['lowestPrice', 1]
    * ```
    * @category Iterator
+   * @since v1.0.0
    */
   /// Metrics.forEachMetric
   /**
@@ -524,6 +541,7 @@
    * // -> true
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Metrics.hasMetric
   /**
@@ -549,6 +567,7 @@
    * // -> undefined
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Metrics.getTableId
   /**
@@ -582,6 +601,7 @@
    * // -> undefined
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Metrics.getMetric
   /**
@@ -703,6 +723,7 @@
    * metrics.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Metrics.addMetricListener
   /**
@@ -743,6 +764,7 @@
    * // The listener is not called.
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Metrics.delListener
   /**
@@ -776,6 +798,7 @@
    * // -> 0
    * ```
    * @category Lifecycle
+   * @since v1.0.0
    */
   /// Metrics.destroy
   /**
@@ -801,6 +824,7 @@
    * // -> {metric: 1}
    * ```
    * @category Development
+   * @since v1.0.0
    */
   /// Metrics.getListenerStats
 }
@@ -838,5 +862,6 @@
  * // -> true
  * ```
  * @category Creation
+ * @since v1.0.0
  */
 /// createMetrics

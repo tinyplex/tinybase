@@ -4,6 +4,7 @@
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-indexed-db
+ * @since v4.2.0
  */
 /// persister-indexed-db
 /**

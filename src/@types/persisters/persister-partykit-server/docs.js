@@ -14,7 +14,7 @@
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-partykit-server
- * @since 4.3.0
+ * @since v4.3.0
  */
 /// persister-partykit-server
 /**
@@ -55,6 +55,7 @@
    * This must match the storePath property of the PartyKitPersisterConfig used
    * on the client. Both default to '/store'.
    * @category Configuration
+   * @since v4.3.0
    */
   /// TinyBasePartyKitServerConfig.storePath
   /**
@@ -64,6 +65,7 @@
    * must match the messagePrefix property of the PartyKitPersisterConfig object
    * used on the client. Both default to an empty string.
    * @category Configuration
+   * @since v4.3.0
    */
   /// TinyBasePartyKitServerConfig.messagePrefix
   /**
@@ -71,6 +73,7 @@
    * this in case you are worried about the Store data colliding with other data
    * stored in the room. Defaults to an empty string.
    * @category Configuration
+   * @since v4.3.0
    */
   /// TinyBasePartyKitServerConfig.storagePrefix
   /**
@@ -87,6 +90,7 @@
    * example, if you add another header but still want the CORS defaults, you
    * will need to explicitly set the Access-Control-Allow headers above again.
    * @category Configuration
+   * @since v4.3.0
    */
   /// TinyBasePartyKitServerConfig.responseHeaders
 }

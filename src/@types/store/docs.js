@@ -8,6 +8,7 @@
  * tabular data within.
  * @packageDocumentation
  * @module store
+ * @since v1.0.0
  */
 /// store
 /**
@@ -33,6 +34,7 @@
  * };
  * ```
  * @category Schema
+ * @since v1.0.0
  */
 /// TablesSchema
 /**
@@ -62,6 +64,7 @@
  * };
  * ```
  * @category Schema
+ * @since v1.0.0
  */
 /// CellSchema
 /**
@@ -119,36 +122,42 @@
  * The NoTablesSchema type is a TablesSchema-like type for when one has not been
  * provided.
  * @category Schema
+ * @since v1.0.0
  */
 /// NoTablesSchema
 /**
  * The NoValuesSchema type is a ValuesSchema-like type for when one has not been
  * provided.
  * @category Schema
+ * @since v1.0.0
  */
 /// NoValuesSchema
 /**
  * The OptionalTablesSchema type is used by generic types that can optionally
  * take a TablesSchema.
  * @category Schema
+ * @since v1.0.0
  */
 /// OptionalTablesSchema
 /**
  * The OptionalValuesSchema type is used by generic types that can optionally
  * take a ValuesSchema.
  * @category Schema
+ * @since v1.0.0
  */
 /// OptionalValuesSchema
 /**
  * The OptionalSchemas type is used by generic types that can optionally take
  * either or both of a TablesSchema and ValuesSchema.
  * @category Schema
+ * @since v1.0.0
  */
 /// OptionalSchemas
 /**
  * The NoSchemas type is used as a default by generic types that can optionally
  * take either or both of a TablesSchema and ValuesSchema.
  * @category Schema
+ * @since v1.0.0
  */
 /// NoSchemas
 /**
@@ -205,6 +214,7 @@
  * };
  * ```
  * @category Store
+ * @since v1.0.0
  */
 /// Tables
 /**
@@ -224,6 +234,7 @@
  * };
  * ```
  * @category Store
+ * @since v1.0.0
  */
 /// Table
 /**
@@ -239,6 +250,7 @@
  * export const row: Row = {species: 'dog', color: 'brown'};
  * ```
  * @category Store
+ * @since v1.0.0
  */
 /// Row
 /**
@@ -254,6 +266,7 @@
  * export const cell: Cell = 'dog';
  * ```
  * @category Store
+ * @since v1.0.0
  */
 /// Cell
 /**
@@ -264,6 +277,7 @@
  * such as when it has been deleted, or when describing a previous state where
  * the Cell value has since been added.
  * @category Store
+ * @since v1.0.0
  */
 /// CellOrUndefined
 /**
@@ -323,6 +337,7 @@
  * @param forEachRow A function that will let you iterate over the Row objects
  * in this Table.
  * @category Callback
+ * @since v1.0.0
  */
 /// TableCallback
 /**
@@ -335,6 +350,7 @@
  * @param cellId The Id of the Cell that the callback can operate on.
  * @param count The number of times this Cell is used across a whole Table.
  * @category Callback
+ * @since v1.0.0
  */
 /// TableCellCallback
 /**
@@ -348,6 +364,7 @@
  * @param forEachRow A function that will let you iterate over the Cell values
  * in this Row.
  * @category Callback
+ * @since v1.0.0
  */
 /// RowCallback
 /**
@@ -360,6 +377,7 @@
  * @param cellId The Id of the Cell that the callback can operate on.
  * @param cell The value of the Cell.
  * @category Callback
+ * @since v1.0.0
  */
 /// CellCallback
 /**
@@ -384,6 +402,7 @@
  * examples.
  * @param cell The current value of the Cell to map to a new value.
  * @category Callback
+ * @since v1.0.0
  */
 /// MapCell
 /**
@@ -407,6 +426,7 @@
  * method of an Indexes object. See those methods for specific examples.
  * @param cellId The Id of the Cell to fetch the value for.
  * @category Callback
+ * @since v1.0.0
  */
 /// GetCell
 /**
@@ -502,6 +522,7 @@
  * Store directly to decide whether to do the rollback.
  * @param store A reference to the Store that is completing a transaction.
  * @category Callback
+ * @since v1.0.0
  */
 /// DoRollback
 /**
@@ -518,6 +539,7 @@
  * transaction.
  * @param store A reference to the Store that is completing a transaction.
  * @category Listener
+ * @since v1.0.0
  */
 /// TransactionListener
 /**
@@ -554,6 +576,7 @@
  * @param getCellChange A function that returns information about any Cell's
  * changes.
  * @category Listener
+ * @since v1.0.0
  */
 /// TablesListener
 /**
@@ -571,6 +594,7 @@
  * @param getIdChanges A function that returns information about the Id changes,
  * since v3.3.
  * @category Listener
+ * @since v1.0.0
  */
 /// TableIdsListener
 /**
@@ -610,6 +634,7 @@
  * @param getCellChange A function that returns information about any Cell's
  * changes.
  * @category Listener
+ * @since v1.0.0
  */
 /// TableListener
 /**
@@ -681,6 +706,7 @@
  * @param getIdChanges A function that returns information about the Id changes,
  * since v3.3.
  * @category Listener
+ * @since v1.0.0
  */
 /// RowIdsListener
 /**
@@ -747,6 +773,7 @@
  * @param getCellChange A function that returns information about any Cell's
  * changes.
  * @category Listener
+ * @since v1.0.0
  */
 /// RowListener
 /**
@@ -767,6 +794,7 @@
  * @param getIdChanges A function that returns information about the Id changes,
  * since v3.3.
  * @category Listener
+ * @since v1.0.0
  */
 /// CellIdsListener
 /**
@@ -815,6 +843,7 @@
  * @param getCellChange A function that returns information about any Cell's
  * changes.
  * @category Listener
+ * @since v1.0.0
  */
 /// CellListener
 /**
@@ -851,6 +880,7 @@
  * @param getValueChange A function that returns information about any Value's
  * changes.
  * @category Listener
+ * @since v1.0.0
  */
 /// ValuesListener
 /**
@@ -868,6 +898,7 @@
  * @param getIdChanges A function that returns information about the Id changes,
  * since v3.3.
  * @category Listener
+ * @since v1.0.0
  */
 /// ValueIdsListener
 /**
@@ -984,6 +1015,7 @@
  * @param cellId The Id of the Cell to inspect.
  * @returns A CellChange array containing information about the Cell's changes.
  * @category Listener
+ * @since v1.0.0
  */
 /// GetCellChange
 /**
@@ -994,6 +1026,7 @@
  * the current transaction, the new value after it, and a convenience flag that
  * indicates that the value has changed.
  * @category Listener
+ * @since v1.0.0
  */
 /// CellChange
 /**
@@ -1008,6 +1041,7 @@
  * @returns A ValueChange array containing information about the Value's
  * changes.
  * @category Listener
+ * @since v1.0.0
  */
 /// GetValueChange
 /**
@@ -1018,6 +1052,7 @@
  * before the current transaction, the new value after it, and a convenience
  * flag that indicates that the value has changed.
  * @category Listener
+ * @since v1.0.0
  */
 /// ValueChange
 /**
@@ -1228,6 +1263,7 @@
  * listener. Totals include both mutator and non-mutator listeners. A
  * StoreListenerStats object is returned from the getListenerStats method.
  * @category Development
+ * @since v1.0.0
  */
 /// StoreListenerStats
 {
@@ -1235,128 +1271,151 @@
    * The number of HasTablesListener functions registered with the Store, since
    * v4.4.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.hasTables
   /**
    * The number of TablesListener functions registered with the Store.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.tables
   /**
    * The number of TableIdsListener functions registered with the Store.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.tableIds
   /**
    * The number of HasTableListener functions registered with the Store, since
    * v4.4.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.hasTable
   /**
    * The number of TableListener functions registered with the Store.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.table
   /**
    * The number of TableCellIdsListener functions registered with the Store,
    * since v3.3.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.tableCellIds
   /**
    * The number of HasTableCellListener functions registered with the Store,
    * since v4.4.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.hasTableCell
   /**
    * The number of RowCountListener functions registered with the Store, since
    * v4.1.0.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.rowCount
   /**
    * The number of RowIdsListener functions registered with the Store.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.rowIds
   /**
    * The number of SortedRowIdsListener functions registered with the Store.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.sortedRowIds
   /**
    * The number of HasRowListener functions registered with the Store, since
    * v4.4.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.hasRow
   /**
    * The number of RowListener functions registered with the Store.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.row
   /**
    * The number of CellIdsListener functions registered with the Store.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.cellIds
   /**
    * The number of HasCellListener functions registered with the Store, since
    * v4.4.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.hasCell
   /**
    * The number of CellListener functions registered with the Store.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.cell
   /**
    * The number of InvalidCellListener functions registered with the Store.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.invalidCell
   /**
    * The number of HasValuesListener functions registered with the Store, since
    * v4.4.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.hasValues
   /**
    * The number of ValuesListener functions registered with the Store, since
    * v3.0.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.values
   /**
    * The number of ValueIdsListener functions registered with the Store, since
    * v3.0.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.valueIds
   /**
    * The number of HasValueListener functions registered with the Store, since
    * v4.4.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.hasValue
   /**
    * The number of ValueListener functions registered with the Store, since
    * v3.0.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.value
   /**
    * The number of InvalidValueListener functions registered with the Store,
    * since v3.0.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.invalidValue
   /**
    * The number of TransactionListener functions registered with the Store.
    * @category Stat
+   * @since v1.0.0
    */
   /// StoreListenerStats.transaction
 }
@@ -1544,6 +1603,7 @@
  * @see Hello World demos
  * @see Todo App demos
  * @category Store
+ * @since v1.0.0
  */
 /// Store
 {
@@ -1615,6 +1675,7 @@
    * // -> {}
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Store.getTables
   /**
@@ -1648,6 +1709,7 @@
    * // -> []
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Store.getTableIds
   /**
@@ -1684,6 +1746,7 @@
    * // -> {}
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Store.getTable
   /**
@@ -1798,6 +1861,7 @@
    * // -> []
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Store.getRowIds
   /**
@@ -1946,6 +2010,7 @@
    * // -> {}
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Store.getRow
   /**
@@ -1983,6 +2048,7 @@
    * // -> []
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Store.getCellIds
   /**
@@ -2015,6 +2081,7 @@
    * // -> undefined
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Store.getCell
   /**
@@ -2127,6 +2194,7 @@
    * // -> true
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Store.hasTables
   /**
@@ -2147,6 +2215,7 @@
    * // -> false
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Store.hasTable
   /**
@@ -2194,6 +2263,7 @@
    * // -> false
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Store.hasRow
   /**
@@ -2216,6 +2286,7 @@
    * // -> false
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Store.hasCell
   /**
@@ -2348,6 +2419,7 @@
    * // -> '[{},{}]'
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Store.getJson
   /**
@@ -2461,6 +2533,7 @@
    * // -> '[{},{}]'
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Store.getSchemaJson
   /**
@@ -2623,6 +2696,7 @@
    * // -> {pets: {felix: {species: 'cat'}}}
    * ```
    * @category Setter
+   * @since v1.0.0
    */
   /// Store.setTables
   /**
@@ -2677,6 +2751,7 @@
    * // -> {pets: {felix: {species: 'cat'}}}
    * ```
    * @category Setter
+   * @since v1.0.0
    */
   /// Store.setTable
   /**
@@ -2729,6 +2804,7 @@
    * // -> {pets: {fido: {color: 'brown'}}}
    * ```
    * @category Setter
+   * @since v1.0.0
    */
   /// Store.setRow
   /**
@@ -2793,6 +2869,7 @@
    * // -> {pets: {'0': {species: 'dog'}, '1': {species: 'cat'}}}
    * ```
    * @category Setter
+   * @since v1.0.0
    */
   /// Store.addRow
   /**
@@ -2847,6 +2924,7 @@
    * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
    * ```
    * @category Setter
+   * @since v1.0.0
    */
   /// Store.setPartialRow
   /**
@@ -2909,6 +2987,7 @@
    * // -> {pets: {fido: {species: 'dog'}}}
    * ```
    * @category Setter
+   * @since v1.0.0
    */
   /// Store.setCell
   /**
@@ -3245,6 +3324,7 @@
    * // -> {}
    * ```
    * @category Setter
+   * @since v1.0.0
    */
   /// Store.setJson
   /**
@@ -3369,6 +3449,7 @@
    * // -> {pets: {0: {species: 'dog', sold: false}}}
    * ```
    * @category Setter
+   * @since v1.0.0
    */
   /// Store.setSchema
   /**
@@ -3387,6 +3468,7 @@
    * // -> {}
    * ```
    * @category Deleter
+   * @since v1.0.0
    */
   /// Store.delTables
   /**
@@ -3409,6 +3491,7 @@
    * // -> {species: {dog: {price: 5}}}
    * ```
    * @category Deleter
+   * @since v1.0.0
    */
   /// Store.delTable
   /**
@@ -3433,6 +3516,7 @@
    * // -> {pets: {felix: {species: 'cat'}}}
    * ```
    * @category Deleter
+   * @since v1.0.0
    */
   /// Store.delRow
   /**
@@ -3521,6 +3605,7 @@
    * // -> {pets: {felix: {species: 'cat', sold: false}}}
    * ```
    * @category Deleter
+   * @since v1.0.0
    */
   /// Store.delCell
   /**
@@ -3623,6 +3708,7 @@
    * // -> '{}'
    * ```
    * @category Deleter
+   * @since v1.0.0
    */
   /// Store.delTablesSchema
   /**
@@ -3801,6 +3887,7 @@
    * // -> {open: true}
    * ```
    * @category Transaction
+   * @since v1.0.0
    */
   /// Store.transaction
   /**
@@ -4064,6 +4151,7 @@
    * // -> '- dog'
    * ```
    * @category Iterator
+   * @since v1.0.0
    */
   /// Store.forEachTable
   /**
@@ -4129,6 +4217,7 @@
    * // -> '- color'
    * ```
    * @category Iterator
+   * @since v1.0.0
    */
   /// Store.forEachRow
   /**
@@ -4157,6 +4246,7 @@
    * // -> 'color: brown'
    * ```
    * @category Iterator
+   * @since v1.0.0
    */
   /// Store.forEachCell
   /**
@@ -4316,6 +4406,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Store.addTablesListener
   /**
@@ -4381,6 +4472,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Store.addTableIdsListener
   /**
@@ -4580,6 +4672,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Store.addTableListener
   /**
@@ -4685,6 +4778,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Store.addTableCellIdsListener
   /**
@@ -4990,6 +5084,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Store.addRowIdsListener
   /**
@@ -5442,6 +5537,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Store.addRowListener
   /**
@@ -5547,6 +5643,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Store.addCellIdsListener
   /**
@@ -5788,6 +5885,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Store.addCellListener
   /**
@@ -6944,6 +7042,7 @@
    * store.delListener(listenerId2);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Store.callListener
   /**
@@ -6977,6 +7076,7 @@
    * // The listener is not called.
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Store.delListener
   /**
@@ -7006,6 +7106,7 @@
    * // -> 1
    * ```
    * @category Development
+   * @since v1.0.0
    */
   /// Store.getListenerStats
   /**
@@ -7063,5 +7164,6 @@
  * ```
  * @see The Basics guides
  * @category Creation
+ * @since v1.0.0
  */
 /// createStore

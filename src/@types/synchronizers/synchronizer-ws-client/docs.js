@@ -17,6 +17,7 @@
  * type from the well-known `ws` package (such that the Synchronizer can be used
  * in a server environment).
  * @category Creation
+ * @since v5.0.0
  */
 /// WebSocketTypes
 /**

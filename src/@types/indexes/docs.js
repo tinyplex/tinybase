@@ -8,6 +8,7 @@
  * listeners for when they change.
  * @packageDocumentation
  * @module indexes
+ * @since v1.0.0
  */
 /// indexes
 /**
@@ -21,6 +22,7 @@
  * enumerate and access its structure with the getSliceIds method and
  * getSliceRowIds method.
  * @category Concept
+ * @since v1.0.0
  */
 /// Index
 /**
@@ -33,6 +35,7 @@
  * Note that the Slice type is not actually used in the API, and you instead get
  * Row Ids directly with the getSliceRowIds method.
  * @category Concept
+ * @since v1.0.0
  */
 /// Slice
 /**
@@ -46,6 +49,7 @@
  * @param forEachRow A function that will let you iterate over the Slice objects
  * in this Index.
  * @category Callback
+ * @since v1.0.0
  */
 /// IndexCallback
 /**
@@ -59,6 +63,7 @@
  * @param forEachRow A function that will let you iterate over the Row objects
  * in this Slice.
  * @category Callback
+ * @since v1.0.0
  */
 /// SliceCallback
 /**
@@ -71,6 +76,7 @@
  * When called, an IndexIdsListener is given a reference to the Indexes object.
  * @param indexes A reference to the Indexes object that changed.
  * @category Listener
+ * @since v1.0.0
  */
 /// IndexIdsListener
 /**
@@ -85,6 +91,7 @@
  * @param indexes A reference to the Indexes object that changed.
  * @param indexId The Id of the Index that changed.
  * @category Listener
+ * @since v1.0.0
  */
 /// SliceIdsListener
 /**
@@ -101,6 +108,7 @@
  * @param indexId The Id of the Index that changed.
  * @param sliceId The Id of the Slice that changed.
  * @category Listener
+ * @since v1.0.0
  */
 /// SliceRowIdsListener
 /**
@@ -109,6 +117,7 @@
  *
  * A IndexesListenerStats object is returned from the getListenerStats method.
  * @category Development
+ * @since v1.0.0
  */
 /// IndexesListenerStats
 {
@@ -116,12 +125,14 @@
    * The number of SlideIdsListener functions registered with the Indexes
    * object.
    * @category Stat
+   * @since v1.0.0
    */
   /// IndexesListenerStats.sliceIds
   /**
    * The number of SliceRowIdsListener functions registered with the Indexes
    * object.
    * @category Stat
+   * @since v1.0.0
    */
   /// IndexesListenerStats.sliceRowIds
 }
@@ -181,6 +192,7 @@
  * @see Todo App demos
  * @see Word Frequencies demo
  * @category Indexes
+ * @since v1.0.0
  */
 /// Indexes
 {
@@ -342,6 +354,7 @@
    * // -> ['felix', 'fido']
    * ```
    * @category Configuration
+   * @since v1.0.0
    */
   /// Indexes.setIndexDefinition
   /**
@@ -371,6 +384,7 @@
    * // -> []
    * ```
    * @category Configuration
+   * @since v1.0.0
    */
   /// Indexes.delIndexDefinition
   /**
@@ -391,6 +405,7 @@
    * // -> ['dog']
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Indexes.getStore
   /**
@@ -412,6 +427,7 @@
    * // -> ['bySpecies', 'byColor']
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Indexes.getIndexIds
   /**
@@ -452,6 +468,7 @@
    * // -> '- black'
    * ```
    * @category Iterator
+   * @since v1.0.0
    */
   /// Indexes.forEachIndex
   /**
@@ -489,6 +506,7 @@
    * // -> '- felix'
    * ```
    * @category Iterator
+   * @since v1.0.0
    */
   /// Indexes.forEachSlice
   /**
@@ -510,6 +528,7 @@
    * // -> false
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Indexes.hasIndex
   /**
@@ -537,6 +556,7 @@
    * // -> false
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Indexes.hasSlice
   /**
@@ -562,6 +582,7 @@
    * // -> undefined
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Indexes.getTableId
   /**
@@ -594,6 +615,7 @@
    * // -> []
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Indexes.getSliceIds
   /**
@@ -630,6 +652,7 @@
    * // -> []
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Indexes.getSliceRowIds
   /**
@@ -748,6 +771,7 @@
    * indexes.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Indexes.addSliceIdsListener
   /**
@@ -839,6 +863,7 @@
    * indexes.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Indexes.addSliceRowIdsListener
   /**
@@ -880,6 +905,7 @@
    * // The listener is not called.
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Indexes.delListener
   /**
@@ -913,6 +939,7 @@
    * // -> 0
    * ```
    * @category Lifecycle
+   * @since v1.0.0
    */
   /// Indexes.destroy
   /**
@@ -946,6 +973,7 @@
    * // -> {sliceIds: 1, sliceRowIds: 1}
    * ```
    * @category Development
+   * @since v1.0.0
    */
   /// Indexes.getListenerStats
 }
@@ -983,5 +1011,6 @@
  * // -> true
  * ```
  * @category Creation
+ * @since v1.0.0
  */
 /// createIndexes
