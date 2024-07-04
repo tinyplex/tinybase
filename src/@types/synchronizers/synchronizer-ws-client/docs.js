@@ -25,12 +25,12 @@
  * synchronize MergeableStore data to and from other MergeableStore instances
  * via WebSockets facilitated by a server.
  *
+ * You should use the createWsSynchronizer function to create a WsSynchronizer
+ * object.
+ *
  * It is a minor extension to the Synchronizer interface and simply provides an
  * extra getWebSocket method for accessing a reference to the WebSocket being
  * used.
- *
- * You should use the createWsSynchronizer function to create a WsSynchronizer
- * object.
  * @category Synchronizer
  * @since v5.0.0
  */
