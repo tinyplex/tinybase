@@ -100,5 +100,5 @@ console.log(indexes.getSliceRowIds('byWeightRange', 'light'));
 ```
 
 And with that, we have covered most of the basics of using the indexes module.
-Let's move on to a very similar module for creating relationships between data -
-as well as tracking changes - in the Relationships And Checkpoints guide.
+Let's move on to a very similar module for creating relationships between data
+in the Relationships guide.
