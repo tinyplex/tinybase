@@ -42,6 +42,7 @@
  * @see Drawing demo
  * @packageDocumentation
  * @module persisters
+ * @since v1.0.0
  */
 /// persisters
 /**
@@ -62,17 +63,20 @@
   /**
    * Indicates that only a regular Store can be supported by a Persister.
    * @category Enum
+   * @since v5.0.0
    */
   /// Persists.StoreOnly
   /**
    * Indicates that only a MergeableStore can be supported by a Persister.
    * @category Enum
+   * @since v5.0.0
    */
   /// Persists.MergeableStoreOnly
   /**
    * Indicates that either a regular Store or a MergeableStore can be supported
    * by a Persister.
    * @category Enum
+   * @since v5.0.0
    */
   /// Persists.StoreOrMergeableStore
 }
@@ -146,17 +150,20 @@
  *
  * A PersisterStats object is returned from the getStats method.
  * @category Development
+ * @since v1.0.0
  */
 /// PersisterStats
 {
   /**
    * The number of times data has been loaded.
    * @category Stat
+   * @since v1.0.0
    */
   /// PersisterStats.loads
   /**
    * The number of times data has been saved.
    * @category Stat
+   * @since v1.0.0
    */
   /// PersisterStats.saves
 }
@@ -226,6 +233,7 @@
    * How often the Persister should poll the database for any changes made to it
    * by other clients, defaulting to 1 second.
    * @category Configuration
+   * @since v4.0.0
    */
   /// DatabasePersisterConfig.autoLoadIntervalSeconds
 }
@@ -276,6 +284,7 @@
    * JSON serialization. See the DpcTabular type for the alternative tabular
    * mapping mode.
    * @category Configuration
+   * @since v4.0.0
    */
   /// DpcJson.mode
   /**
@@ -283,18 +292,21 @@
    * which will be used to serialize the Store content into. It defaults to
    * `tinybase`.
    * @category Configuration
+   * @since v4.0.0
    */
   /// DpcJson.storeTableName
   /**
    * The optional name of the column in the database table that will be used as
    * the Id for the Store, defaulting to '_id', since v5.0.
    * @category Configuration
+   * @since v4.0.0
    */
   /// DpcJson.storeIdColumnName
   /**
    * The optional name of the column in the database table that will be used for
    * the JSON of the Store, defaulting to 'store', since v5.0.
    * @category Configuration
+   * @since v4.0.0
    */
   /// DpcJson.storeColumnName
 }
@@ -371,11 +383,13 @@
    * tabular mapping. See the DpcJson type for the alternative JSON
    * serialization mode.
    * @category Configuration
+   * @since v4.0.0
    */
   /// DpcTabular.mode
   /**
    * The settings for how the Store Tables are mapped to and from the database.
    * @category Configuration
+   * @since v4.0.0
    */
   /// DpcTabular.tables
   {
@@ -383,18 +397,21 @@
      * The settings for how the database tables are mapped into the Store Tables
      * when loading.
      * @category Configuration
+     * @since v4.0.0
      */
     /// DpcTabular.tables.load
     /**
      * The settings for how the Store Tables are mapped out to the database
      * tables when saving.
      * @category Configuration
+     * @since v4.0.0
      */
     /// DpcTabular.tables.save
   }
   /**
    * The settings for how the Store Values are mapped to and from the database.
    * @category Configuration
+   * @since v4.0.0
    */
   /// DpcTabular.values
   /**
@@ -402,6 +419,7 @@
    * database table names from and to which time metadata will be loaded or
    * saved, defaulting to `_times`, since v5.0.
    * @category Configuration
+   * @since v4.0.0
    */
   /// DpcTabular.timesTableSuffix
 }
@@ -490,12 +508,14 @@
          * The Id of the Store Table into which data from this database table
          * should be loaded.
          * @category Configuration
+         * @since v4.0.0
          */
         /// DpcTabularLoad.tableId
         /**
          * The optional name of the column in the database table that will be
          * used as the Row Ids in the Store Table, defaulting to '_id'.
          * @category Configuration
+         * @since v4.0.0
          */
         /// DpcTabularLoad.rowIdColumnName
       }
@@ -603,24 +623,28 @@
          * The name of the database table out to which the Store Table should be
          * saved.
          * @category Configuration
+         * @since v4.0.0
          */
         /// DpcTabularSave.tableName
         /**
          * The optional name of the column in the database table that will be
          * used to save the Row Ids from the Store Table, defaulting to '_id'.
          * @category Configuration
+         * @since v4.0.0
          */
         /// DpcTabularSave.rowIdColumnName
         /**
          * Whether columns in the database table will be removed if they are
          * empty in the Store Table, defaulting to false.
          * @category Configuration
+         * @since v4.0.0
          */
         /// DpcTabularSave.deleteEmptyColumns
         /**
          * Whether tables in the database will be removed if the Store Table is
          * empty, defaulting to false.
          * @category Configuration
+         * @since v4.0.0
          */
         /// DpcTabularSave.deleteEmptyTable
       }
@@ -661,17 +685,20 @@
   /**
    * Whether Store Values will be loaded from a database table.
    * @category Configuration
+   * @since v4.0.0
    */
   /// DpcTabularValues.load
   /**
    * Whether Store Values will be saved to a database table.
    * @category Configuration
+   * @since v4.0.0
    */
   /// DpcTabularValues.save
   /**
    * The optional name of the database table from and to which the Store Values
    * should be loaded or saved, defaulting to `tinybase_values`.
    * @category Configuration
+   * @since v4.0.0
    */
   /// DpcTabularValues.tableName
 }
@@ -789,6 +816,7 @@
  * sessionStorage.clear();
  * ```
  * @category Persister
+ * @since v1.0.0
  */
 /// Persister
 {
@@ -854,6 +882,7 @@
    * sessionStorage.clear();
    * ```
    * @category Load
+   * @since v1.0.0
    */
   /// Persister.load
   /**
@@ -909,6 +938,7 @@
    * sessionStorage.clear();
    * ```
    * @category Load
+   * @since v1.0.0
    */
   /// Persister.startAutoLoad
   /**
@@ -955,6 +985,7 @@
    * sessionStorage.clear();
    * ```
    * @category Load
+   * @since v1.0.0
    */
   /// Persister.stopAutoLoad
   /**
@@ -1014,6 +1045,7 @@
    * sessionStorage.clear();
    * ```
    * @category Save
+   * @since v1.0.0
    */
   /// Persister.save
   /**
@@ -1053,6 +1085,7 @@
    * sessionStorage.clear();
    * ```
    * @category Save
+   * @since v1.0.0
    */
   /// Persister.startAutoSave
   /**
@@ -1092,6 +1125,7 @@
    * sessionStorage.clear();
    * ```
    * @category Save
+   * @since v1.0.0
    */
   /// Persister.stopAutoSave
   /**
@@ -1195,6 +1229,7 @@
    * sessionStorage.clear();
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Persister.getStore
   /**
@@ -1227,6 +1262,7 @@
    * // -> 0
    * ```
    * @category Lifecycle
+   * @since v1.0.0
    */
   /// Persister.destroy
   /**
@@ -1271,6 +1307,7 @@
    * sessionStorage.clear();
    * ```
    * @category Development
+   * @since v1.0.0
    */
   /// Persister.getStats
 }
@@ -1427,5 +1464,6 @@
  * mergeableStorePersister.destroy();
  * ```
  * @category Creation
+ * @since v1.0.0
  */
 /// createCustomPersister

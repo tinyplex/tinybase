@@ -8,6 +8,7 @@
  * directly, and register listeners for when they change.
  * @packageDocumentation
  * @module relationships
+ * @since v1.0.0
  */
 /// relationships
 /**
@@ -27,6 +28,7 @@
  * instead enumerate and access its structure with the getRemoteRowId method,
  * the getLocalRowIds method, and the getLinkedRowIds method.
  * @category Concept
+ * @since v1.0.0
  */
 /// Relationship
 /**
@@ -41,6 +43,7 @@
  * @param forEachRow A function that will let you iterate over the local Row
  * objects in this Relationship.
  * @category Callback
+ * @since v1.0.0
  */
 /// RelationshipCallback
 /**
@@ -54,6 +57,7 @@
  * Relationships object.
  * @param relationships A reference to the Relationships object that changed.
  * @category Listener
+ * @since v1.0.0
  */
 /// RelationshipIdsListener
 /**
@@ -70,6 +74,7 @@
  * @param relationshipId The Id of the Relationship that changed.
  * @param localRowId The Id of the local Row whose remote Row Id changed.
  * @category Listener
+ * @since v1.0.0
  */
 /// RemoteRowIdListener
 /**
@@ -86,6 +91,7 @@
  * @param relationshipId The Id of the Relationship that changed.
  * @param remoteRowId The Id of the remote Row whose local Row Ids changed.
  * @category Listener
+ * @since v1.0.0
  */
 /// LocalRowIdsListener
 /**
@@ -103,6 +109,7 @@
  * @param firstRowId The Id of the first Row of the the linked list whose
  * members changed.
  * @category Listener
+ * @since v1.0.0
  */
 /// LinkedRowIdsListener
 /**
@@ -113,6 +120,7 @@
  * A RelationshipsListenerStats object is returned from the getListenerStats
  * method.
  * @category Development
+ * @since v1.0.0
  */
 /// RelationshipsListenerStats
 {
@@ -120,18 +128,21 @@
    * The number of RemoteRowIdListener functions registered with the
    * Relationships object.
    * @category Stat
+   * @since v1.0.0
    */
   /// RelationshipsListenerStats.remoteRowId
   /**
    * The number of LocalRowIdsListener functions registered with the
    * Relationships object.
    * @category Stat
+   * @since v1.0.0
    */
   /// RelationshipsListenerStats.localRowIds
   /**
    * The number of LinkedRowId functions registered with the Relationships
    * object.
    * @category Stat
+   * @since v1.0.0
    */
   /// RelationshipsListenerStats.linkedRowIds
 }
@@ -228,6 +239,7 @@
  * @see Relationships And Checkpoints guides
  * @see Drawing demo
  * @category Relationships
+ * @since v1.0.0
  */
 /// Relationships
 {
@@ -317,6 +329,7 @@
    * // -> ['fido', 'felix', 'cujo']
    * ```
    * @category Configuration
+   * @since v1.0.0
    */
   /// Relationships.setRelationshipDefinition
   /**
@@ -356,6 +369,7 @@
    * // -> []
    * ```
    * @category Configuration
+   * @since v1.0.0
    */
   /// Relationships.delRelationshipDefinition
   /**
@@ -380,6 +394,7 @@
    * // -> 'dog'
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Relationships.getStore
   /**
@@ -399,6 +414,7 @@
    * // -> ['petSpecies', 'petSequence']
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Relationships.getRelationshipIds
   /**
@@ -441,6 +457,7 @@
    * // -> '- cujo'
    * ```
    * @category Iterator
+   * @since v1.0.0
    */
   /// Relationships.forEachRelationship
   /**
@@ -463,6 +480,7 @@
    * // -> false
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Relationships.hasRelationship
   /**
@@ -494,6 +512,7 @@
    * // -> undefined
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Relationships.getLocalTableId
   /**
@@ -525,6 +544,7 @@
    * // -> undefined
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Relationships.getRemoteTableId
   /**
@@ -571,6 +591,7 @@
    * // -> undefined
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Relationships.getRemoteRowId
   /**
@@ -617,6 +638,7 @@
    * // -> []
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Relationships.getLocalRowIds
   /**
@@ -665,6 +687,7 @@
    * // -> ['fido']
    * ```
    * @category Getter
+   * @since v1.0.0
    */
   /// Relationships.getLinkedRowIds
   /**
@@ -843,6 +866,7 @@
    * relationships.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Relationships.addRemoteRowIdListener
   /**
@@ -965,6 +989,7 @@
    * relationships.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Relationships.addLocalRowIdsListener
   /**
@@ -1031,6 +1056,7 @@
    * relationships.delListener(listenerId);
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Relationships.addLinkedRowIdsListener
   /**
@@ -1086,6 +1112,7 @@
    * // The listener is not called.
    * ```
    * @category Listener
+   * @since v1.0.0
    */
   /// Relationships.delListener
   /**
@@ -1129,6 +1156,7 @@
    * // -> 0
    * ```
    * @category Lifecycle
+   * @since v1.0.0
    */
   /// Relationships.destroy
   /**
@@ -1164,6 +1192,7 @@
    * // -> 1
    * ```
    * @category Development
+   * @since v1.0.0
    */
   /// Relationships.getListenerStats
 }
@@ -1199,5 +1228,6 @@
  * // -> true
  * ```
  * @category Creation
+ * @since v1.0.0
  */
 /// createRelationships

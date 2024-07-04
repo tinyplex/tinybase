@@ -22,33 +22,39 @@
   /**
    * The number of Table objects in the Store.
    * @category Stat
+   * @since v2.2.0
    */
   /// StoreStats.totalTables
   /**
    * The number of Row objects in the Store, across all Table objects.
    * @category Stat
+   * @since v2.2.0
    */
   /// StoreStats.totalRows
   /**
    * The number of Cell objects in the Store, across all Row objects, across all
    * Table objects.
    * @category Stat
+   * @since v2.2.0
    */
   /// StoreStats.totalCells
   /**
    * The number of Value objects in the Store, since v3.0.
    * @category Stat
+   * @since v2.2.0
    */
   /// StoreStats.totalValues
   /**
    * The string length of the Store when serialized to JSON.
    * @category Stat
+   * @since v2.2.0
    */
   /// StoreStats.jsonLength
   /**
    * Additional detailed statistics about the Store if the `detail` flag is
    * specified in the getStoreStats method.
    * @category Stat
+   * @since v2.2.0
    */
   /// StoreStats.detail
 }
@@ -66,6 +72,7 @@
   /**
    * Information about each Table in the Store.
    * @category Stat
+   * @since v2.2.0
    */
   /// StoreStatsDetail.tables
 }
@@ -80,16 +87,19 @@
   /**
    * The number of Row objects in the Table.
    * @category Stat
+   * @since v2.2.0
    */
   /// StoreStatsTableDetail.tableRows
   /**
    * The number of Cell objects in the Table, across all Row objects.
    * @category Stat
+   * @since v2.2.0
    */
   /// StoreStatsTableDetail.tableCells
   /**
    * Detail about the Table object.
    * @category Stat
+   * @since v2.2.0
    */
   /// StoreStatsTableDetail.rows
 }
@@ -104,6 +114,7 @@
   /**
    * The number of Cell objects in the Row.
    * @category Stat
+   * @since v2.2.0
    */
   /// StoreStatsRowDetail.rowCells
 }

@@ -137,8 +137,16 @@
           {
             "contexts": [
               {
-                "comment": "JsdocBlock[postDelimiter=\"\"]:not(:has(JsdocTag[tag=/category|packageDocumentation/]))",
-                "message": "A non module block requires a @category tag"
+                "comment": "JsdocBlock:not(:has(JsdocTag[tag=/category|packageDocumentation/]))",
+                "message": "Every non-module block requires a @category tag"
+              },
+              {
+                "comment": "JsdocBlock:not(:has(JsdocTag[tag=since]))",
+                "message": "Every block requires a @since tag"
+              },
+              {
+                "comment": "JsdocBlock:has(JsdocTag[tag=since] ~ JsdocTag[tag=since])",
+                "message": "Every block must have only one @since tag"
               }
             ]
           }

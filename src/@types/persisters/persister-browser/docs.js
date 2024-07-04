@@ -12,6 +12,7 @@
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-browser
+ * @since v1.0.0
  */
 /// persister-browser
 /**
@@ -128,6 +129,7 @@
  * sessionStorage.clear();
  * ```
  * @category Creation
+ * @since v1.0.0
  */
 /// createSessionPersister
 /**
@@ -164,5 +166,6 @@
  * localStorage.clear();
  * ```
  * @category Creation
+ * @since v1.0.0
  */
 /// createLocalPersister

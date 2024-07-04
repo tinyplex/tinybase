@@ -64,11 +64,13 @@
   /**
    * The number of paths currently being served by the WsServer.
    * @category Stat
+   * @since v5.0.0
    */
   /// WsServerStats.paths
   /**
    * The number of clients currently being served by the WsServer.
    * @category Stat
+   * @since v5.0.0
    */
   /// WsServerStats.clients
 }

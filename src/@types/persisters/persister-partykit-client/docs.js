@@ -15,7 +15,7 @@
  * @see Persisting Data guide
  * @packageDocumentation
  * @module persister-partykit-client
- * @since 4.3.0
+ * @since v4.3.0
  */
 /// persister-partykit-client
 /**
@@ -95,6 +95,7 @@
    * defaults to 'https' but you may wish to use 'http' for local PartyKit
    * development.
    * @category Configuration
+   * @since v4.3.0
    */
   /// PartyKitPersisterConfig.storeProtocol
   /**
@@ -102,6 +103,7 @@
    * This must match the storePath property of the TinyBasePartyKitServerConfig
    * object used on the server. Both default to '/store'.
    * @category Configuration
+   * @since v4.3.0
    */
   /// PartyKitPersisterConfig.storePath
   /**
@@ -112,6 +114,7 @@
    * TinyBasePartyKitServerConfig object used on the server. Both default to an
    * empty string.
    * @category Configuration
+   * @since v4.3.0
    */
   /// PartyKitPersisterConfig.messagePrefix
 }
@@ -179,6 +182,6 @@
  * persister.destroy();
  * ```
  * @category Creation
- * @since 4.3.0
+ * @since v4.3.0
  */
 /// createPartyKitPersister
