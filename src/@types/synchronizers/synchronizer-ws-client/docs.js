@@ -91,7 +91,7 @@
  * MergeableStore to another via a server.
  *
  * ```js
- * import {WebSocketServer, WebSocket} from 'ws';
+ * import {WebSocket, WebSocketServer} from 'ws';
  * import {createMergeableStore} from 'tinybase';
  * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
