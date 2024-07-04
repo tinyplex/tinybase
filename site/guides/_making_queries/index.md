@@ -1,3 +1,3 @@
-# Making Queries 
+# Making Queries
 
--> /guides/queries
+-> /guides/using-queries

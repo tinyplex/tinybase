@@ -1,4 +1,4 @@
-# Queries
+# Using Queries
 
 These guides discuss how to define queries that let you select specific Row and
 Cell combinations from each Table, and benefit from powerful features like

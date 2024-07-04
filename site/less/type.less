@@ -90,12 +90,14 @@ h6 {
 p {
   margin: 1rem 0;
   clear: both;
-  code {
-    background: @borderColor;
-    padding: 0.05em 0.25em;
-    border-radius: 0.25rem;
-    text-decoration-color: transparent;
-  }
+}
+
+p code,
+article ul code {
+  background: @borderColor;
+  padding: 0.05em 0.25em;
+  border-radius: 0.25rem;
+  text-decoration-color: transparent;
 }
 
 .table {
