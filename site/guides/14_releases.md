@@ -771,7 +771,7 @@ TinyBase:
 - Schema-based Typing (since v3.1)
 - ORM-like type definitions (since v2.2)
 
-These are each described in the new TinyBase and TypeScript guide.
+These are each described in the new TinyBase And TypeScript guide.
 
 Also in v3.1, the ORM-like type definition generation in the tools module has
 been extended to emit ui-react module definitions.

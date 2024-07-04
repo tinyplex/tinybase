@@ -109,7 +109,7 @@ const {createStore} = require('tinybase/es6/min');
 
 ## Indicating Schema-based Typing
 
-As we will see in more details in the following TinyBase and TypeScript guide,
+As we will see in more details in the following TinyBase And TypeScript guide,
 it is possible to use schema-aware type definitions by appending `with-schemas`
 to the very end of the path like this:
 
