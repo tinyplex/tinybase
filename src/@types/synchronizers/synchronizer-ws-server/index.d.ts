@@ -19,21 +19,31 @@ export type ClientIdsListener<> = (
 
 /// WsServerStats
 export type WsServerStats = {
+  /// WsServerStats.paths
   paths: number;
+  /// WsServerStats.clients
   clients: number;
 };
 
 /// WsServer
 export interface WsServer {
+  /// WsServer.getWebSocketServer
   getWebSocketServer: () => WebSocketServer;
+  /// WsServer.getPathIds
   getPathIds: () => Ids;
+  /// WsServer.getClientIds
   getClientIds: (pathId: Id) => Ids;
+  /// WsServer.addPathIdsListener
   addPathIdsListener: (listener: PathIdsListener) => Id;
+  /// WsServer.addClientIdsListener
   addClientIdsListener: (pathId: IdOrNull, listener: ClientIdsListener) => Id;
+  /// WsServer.delListener
   delListener(listenerId: Id): WsServer;
+  /// WsServer.getStats
   getStats: () => WsServerStats;
+  /// WsServer.destroy
   destroy: () => void;
 }
 
 /// createWsServer
-export function createWsServer(WebSocketServer: WebSocketServer): WsServer;
+export function createWsServer(webSocketServer: WebSocketServer): WsServer;

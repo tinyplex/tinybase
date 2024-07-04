@@ -36,7 +36,7 @@
 /// WsSynchronizer
 {
   /**
-   * The getWebSocket method returns reference to the WebSocket being used for
+   * The getWebSocket method returns a reference to the WebSocket being used for
    * synchronization.
    * @returns The WebSocket reference.
    * @example
@@ -69,7 +69,7 @@
 /**
  * The createWsSynchronizer function creates a WsSynchronizer object that can
  * synchronize MergeableStore data to and from other MergeableStore instances
- * via WebSockets facilitated by a server.
+ * via WebSockets facilitated by a WsServer.
  *
  * As well as providing a reference to the MergeableStore to persist, you can
  * provide a configured WebSocket to send synchronization messages over.
