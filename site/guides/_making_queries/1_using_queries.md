@@ -1,3 +1,3 @@
 # Using Queries
 
--> /guides/queries/using_queries
+-> /guides/using-queries/an-intro-to-queries
