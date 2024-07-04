@@ -102,7 +102,7 @@
  * being added, return `undefined` and the aggregation will be completely
  * recalculated.
  *
- * Where possible, if you are providing a custom Aggregate, seek an
+ * When possible, if you are providing a custom Aggregate, seek an
  * implementation of an AggregateAdd function that can reduce the complexity
  * cost of growing the input data set.
  * @param current The current value of the aggregation.
@@ -129,7 +129,7 @@
  * values, and the previous minimum is being removed. The whole of the rest of
  * the list will need to be re-scanned to find a new minimum.
  *
- * Where possible, if you are providing a custom Aggregate, seek an
+ * When possible, if you are providing a custom Aggregate, seek an
  * implementation of an AggregateRemove function that can reduce the complexity
  * cost of shrinking the input data set.
  * @param current The current value of the aggregation.
@@ -154,7 +154,7 @@
  * changing, return `undefined` and the aggregation will be completely
  * recalculated.
  *
- * Where possible, if you are providing a custom Aggregate, seek an
+ * When possible, if you are providing a custom Aggregate, seek an
  * implementation of an AggregateReplace function that can reduce the complexity
  * cost of changing the input data set in place.
  * @param current The current value of the aggregation.
