@@ -1,4 +1,4 @@
-# Indexes
+# Using Indexes
 
 These guides discuss how to define Indexes that allow fast access to matching
 Row objects.
