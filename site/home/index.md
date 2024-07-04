@@ -301,7 +301,7 @@ console.log(app.innerHTML);
 > In this example, we set a new Row without the `sold` Cell in it. The schema
 > ensures it's present with default of `false`.
 >
-> Read more about schemas in the Using Schemas guide.
+> Read more about schemas in the Schemas guide.
 
 ```js
 store.setTablesSchema({
@@ -329,7 +329,7 @@ store.delTablesSchema();
 > modules, or to [Yjs](https://yjs.dev/) or [Automerge](https://automerge.org/)
 > CRDT documents.
 >
-> Read more about persisters in the Persisting Data guide.
+> Read more about persisters in the Persistence guides.
 
 ```js
 import {createSessionPersister} from 'tinybase/persisters/persister-browser';
