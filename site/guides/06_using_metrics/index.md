@@ -1,4 +1,4 @@
-# Metrics
+# Using Metrics
 
 These guides discuss how to define Metrics that aggregate values together.
 

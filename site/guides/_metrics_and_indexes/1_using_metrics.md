@@ -1,3 +1,3 @@
 # Using Metrics
 
--> /guides/metrics/using-metrics
+-> /guides/using-metrics/an-intro-to-metrics

@@ -264,6 +264,6 @@ With care, you can load and save Store data from and to a SQLite database in a
 variety of ways and via different modules. This is new in v4.0, so feedback on
 the functionality is welcomed!
 
-Finally we move on to look at how to fully synchronize TinyBase Stores using
-more complex CRDT frameworks, such as Yjs and Automerge, in the Synchronizing
-Data guide.
+Next we move on to look at how to fully synchronize TinyBase Stores using more
+complex CRDT frameworks, such as Yjs and Automerge, in the Third-Party CRDT
+Persistence guide.

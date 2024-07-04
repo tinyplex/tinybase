@@ -1,3 +1,3 @@
 # Metrics And Indexes
 
--> /guides/metrics
+-> /guides/using-metrics
