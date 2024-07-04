@@ -189,7 +189,7 @@ But again, there are ES6 and non-minified versions of those too, such as:
 ```
 
 When using UMD, you can access the members of these modules using global
-constants that start with the name `TinyBase`. For example:
+constants that start with the name TinyBase. For example:
 
 ```js yolo
 const {createStore} = TinyBase;
