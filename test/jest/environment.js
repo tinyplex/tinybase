@@ -1,4 +1,5 @@
 import {TextDecoder, TextEncoder} from 'util';
+import {BroadcastChannel} from 'worker_threads';
 import {TestEnvironment} from 'jest-environment-jsdom';
 
 export default class extends TestEnvironment {
@@ -11,6 +12,7 @@ export default class extends TestEnvironment {
       Request,
       env: this.constructor,
       structuredClone,
+      BroadcastChannel,
     });
     await super.setup();
   }
