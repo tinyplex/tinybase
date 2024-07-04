@@ -570,7 +570,7 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 > your data and encourage type-safety when reading and writing data - as well as
 > `.ts` implementations that provide ORM-like methods for your named tables.
 >
-> Read more about type support in the TinyBase and TypeScript guide.
+> Read more about type support in the TinyBase And TypeScript guide.
 
 ```js yolo
 const tools = createTools(store);
