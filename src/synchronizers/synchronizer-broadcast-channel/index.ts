@@ -22,7 +22,7 @@ export const createBroadcastChannelSynchronizer = ((
   ): void =>
     channel.postMessage([clientId, toClientId, requestId, message, body]);
 
-  const onReceive = (receive: Receive): void => {
+  const registerReceive = (receive: Receive): void => {
     channel.onmessage = ({
       data: [fromClientId, toClientId, requestId, message, body],
     }) =>
@@ -38,7 +38,7 @@ export const createBroadcastChannelSynchronizer = ((
   return createCustomSynchronizer(
     store,
     send,
-    onReceive,
+    registerReceive,
     destroy,
     0.01,
     onIgnoredError,

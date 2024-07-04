@@ -25,7 +25,7 @@ export const createWsSynchronizer = (async <
   const addEventListener = (event: string, handler: (...args: any[]) => void) =>
     (webSocket.addEventListener as any)(event, handler);
 
-  const onReceive = (receive: Receive): void =>
+  const registerReceive = (receive: Receive): void =>
     addEventListener('message', ({data}) => {
       const payload = data.toString(UTF8);
       const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
@@ -58,7 +58,7 @@ export const createWsSynchronizer = (async <
   const synchronizer = createCustomSynchronizer(
     store,
     send,
-    onReceive,
+    registerReceive,
     destroy,
     requestTimeoutSeconds,
     onIgnoredError,
