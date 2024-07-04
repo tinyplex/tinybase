@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Syncs to/from customSynchronizer Bidirectional Both empty 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional Both empty 1`] = `
 [
   [
     {},
@@ -15,7 +15,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional Both empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional Both empty: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional Both empty: stats 1`] = `
 [
   {
     "receives": 2,
@@ -28,7 +28,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional Both empty: stats 1`] = 
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional Both match 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional Both match 1`] = `
 [
   [
     {
@@ -105,7 +105,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional Both match 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional Both match, different times 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional Both match, different times 1`] = `
 [
   [
     {
@@ -182,7 +182,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional Both match, different ti
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional Both match, different times: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional Both match, different times: stats 1`] = `
 [
   {
     "receives": 2,
@@ -195,7 +195,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional Both match, different ti
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional Both match: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional Both match: stats 1`] = `
 [
   {
     "receives": 3,
@@ -208,7 +208,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional Both match: stats 1`] = 
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional deleted cell 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional deleted cell 1`] = `
 [
   [
     {
@@ -285,7 +285,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional deleted cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional deleted cell: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional deleted cell: stats 1`] = `
 [
   {
     "receives": 3,
@@ -298,7 +298,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional deleted cell: stats 1`] 
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional deleted row 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional deleted row 1`] = `
 [
   [
     {
@@ -375,7 +375,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional deleted row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional deleted row: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional deleted row: stats 1`] = `
 [
   {
     "receives": 3,
@@ -388,7 +388,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional deleted row: stats 1`] =
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional deleted table 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional deleted table 1`] = `
 [
   [
     {
@@ -465,7 +465,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional deleted table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional deleted table: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional deleted table: stats 1`] = `
 [
   {
     "receives": 3,
@@ -478,7 +478,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional deleted table: stats 1`]
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional deleted tables 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional deleted tables 1`] = `
 [
   [
     {
@@ -555,7 +555,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional deleted tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional deleted tables: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional deleted tables: stats 1`] = `
 [
   {
     "receives": 3,
@@ -568,7 +568,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional deleted tables: stats 1`
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional deleted value 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional deleted value 1`] = `
 [
   [
     {
@@ -645,7 +645,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional deleted value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional deleted value: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional deleted value: stats 1`] = `
 [
   {
     "receives": 3,
@@ -658,7 +658,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional deleted value: stats 1`]
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional deleted values 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional deleted values 1`] = `
 [
   [
     {
@@ -735,7 +735,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional deleted values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional deleted values: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional deleted values: stats 1`] = `
 [
   {
     "receives": 3,
@@ -748,7 +748,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional deleted values: stats 1`
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional different cell 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional different cell 1`] = `
 [
   [
     {
@@ -781,7 +781,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional different cell: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional different cell: stats 1`] = `
 [
   {
     "receives": 3,
@@ -794,7 +794,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different cell: stats 1`
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional different row 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional different row 1`] = `
 [
   [
     {
@@ -832,7 +832,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional different row: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional different row: stats 1`] = `
 [
   {
     "receives": 3,
@@ -845,7 +845,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different row: stats 1`]
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional different table 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional different table 1`] = `
 [
   [
     {
@@ -894,7 +894,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional different table: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional different table: stats 1`] = `
 [
   {
     "receives": 3,
@@ -907,7 +907,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different table: stats 1
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional different tables 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional different tables 1`] = `
 [
   [
     {
@@ -973,7 +973,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional different tables: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional different tables: stats 1`] = `
 [
   {
     "receives": 3,
@@ -986,7 +986,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different tables: stats 
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional different value 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional different value 1`] = `
 [
   [
     {},
@@ -1007,7 +1007,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional different value: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional different value: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1020,7 +1020,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different value: stats 1
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional different values 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional different values 1`] = `
 [
   [
     {},
@@ -1046,7 +1046,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional different values: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional different values: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1059,7 +1059,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional different values: stats 
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 empty 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 empty 1`] = `
 [
   [
     {
@@ -1136,7 +1136,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 empty: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 empty: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1149,7 +1149,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 empty: stats 1`] 
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 missing cell 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 missing cell 1`] = `
 [
   [
     {
@@ -1187,7 +1187,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing cell 1`] 
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 missing cell: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 missing cell: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1200,7 +1200,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing cell: sta
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 missing row 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 missing row 1`] = `
 [
   [
     {
@@ -1249,7 +1249,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing row 1`] =
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 missing row: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 missing row: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1262,7 +1262,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing row: stat
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 missing table 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 missing table 1`] = `
 [
   [
     {
@@ -1328,7 +1328,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing table 1`]
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 missing table: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 missing table: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1341,7 +1341,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing table: st
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 missing tables 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 missing tables 1`] = `
 [
   [
     {
@@ -1418,7 +1418,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing tables 1`
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 missing tables: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 missing tables: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1431,7 +1431,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing tables: s
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 missing value 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 missing value 1`] = `
 [
   [
     {},
@@ -1457,7 +1457,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing value 1`]
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 missing value: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 missing value: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1470,7 +1470,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing value: st
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 missing values 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 missing values 1`] = `
 [
   [
     {
@@ -1547,7 +1547,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing values 1`
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store1 missing values: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store1 missing values: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1560,7 +1560,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store1 missing values: s
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 empty 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 empty 1`] = `
 [
   [
     {
@@ -1637,7 +1637,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 empty: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 empty: stats 1`] = `
 [
   {
     "receives": 2,
@@ -1650,7 +1650,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 empty: stats 1`] 
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 missing cell 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 missing cell 1`] = `
 [
   [
     {
@@ -1688,7 +1688,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing cell 1`] 
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 missing cell: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 missing cell: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1701,7 +1701,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing cell: sta
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 missing row 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 missing row 1`] = `
 [
   [
     {
@@ -1750,7 +1750,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing row 1`] =
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 missing row: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 missing row: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1763,7 +1763,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing row: stat
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 missing table 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 missing table 1`] = `
 [
   [
     {
@@ -1829,7 +1829,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing table 1`]
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 missing table: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 missing table: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1842,7 +1842,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing table: st
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 missing tables 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 missing tables 1`] = `
 [
   [
     {
@@ -1919,7 +1919,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing tables 1`
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 missing tables: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 missing tables: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1932,7 +1932,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing tables: s
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 missing value 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 missing value 1`] = `
 [
   [
     {},
@@ -1958,7 +1958,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing value 1`]
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 missing value: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 missing value: stats 1`] = `
 [
   {
     "receives": 3,
@@ -1971,7 +1971,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing value: st
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 missing values 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 missing values 1`] = `
 [
   [
     {
@@ -2048,7 +2048,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing values 1`
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional store2 missing values: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional store2 missing values: stats 1`] = `
 [
   {
     "receives": 3,
@@ -2061,7 +2061,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional store2 missing values: s
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change cell 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages change cell 1`] = `
 Map {
   "push 0" => [
     "client0→all CONTENT_DIFF [[{"t1":[{"r1":[{"c1":[2,"Nn1JUFJ----7JQY8"]}]}]}],[{}],1]",
@@ -2069,7 +2069,7 @@ Map {
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change cell 2`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages change cell 2`] = `
 [
   [
     {
@@ -2107,7 +2107,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change cell: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages change cell: stats 1`] = `
 [
   {
     "receives": 2,
@@ -2120,7 +2120,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change value 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages change value 1`] = `
 Map {
   "push 0" => [
     "client0→all CONTENT_DIFF [[{}],[{"v1":[2,"Nn1JUFJ----7JQY8"]}],1]",
@@ -2128,7 +2128,7 @@ Map {
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change value 2`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages change value 2`] = `
 [
   [
     {},
@@ -2154,7 +2154,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change value: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages change value: stats 1`] = `
 [
   {
     "receives": 2,
@@ -2167,7 +2167,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages change
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 1`] = `
 Map {
   "push 0" => [
     "client0→all CONTENT_DIFF [[{"t1":[{"r1":[{"c1":[1,"Nn1JUF9----7JQY8"]}]}]}],[{}],1]",
@@ -2175,7 +2175,7 @@ Map {
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 2`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 2`] = `
 [
   [
     {
@@ -2208,7 +2208,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new ta
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 3`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 3`] = `
 [
   [
     {
@@ -2258,7 +2258,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new ta
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 4`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 4`] = `
 Map {
   "push 0" => [
     "client0→all CONTENT_DIFF [[{"t2":[{"r2":[{"c2":[2,"Nn1JUFJ----7JQY8"]}]}]}],[{}],1]",
@@ -2266,7 +2266,7 @@ Map {
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 5`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 5`] = `
 [
   [
     {
@@ -2327,7 +2327,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new ta
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 6`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 6`] = `
 Map {
   "push 0" => [
     "client0→all CONTENT_DIFF [[{"t1":[{"r2":[{"c2":[2,"Nn1JUFT----7JQY8"]}]}]}],[{}],1]",
@@ -2335,7 +2335,7 @@ Map {
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 7`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 7`] = `
 [
   [
     {
@@ -2401,7 +2401,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new ta
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 8`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 8`] = `
 Map {
   "push 0" => [
     "client0→all CONTENT_DIFF [[{"t1":[{"r1":[{"c2":[2,"Nn1JUFc----7JQY8"]}]}]}],[{}],1]",
@@ -2409,7 +2409,7 @@ Map {
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 9`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 9`] = `
 [
   [
     {
@@ -2508,7 +2508,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new ta
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 10`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all 10`] = `
 Map {
   "push 0" => [
     "client0→all CONTENT_DIFF [[{"t1":[{"r1":[{"c3":[3,"Nn1JUFm----7JQY8"]}],"r3":[{"c3":[3,"Nn1JUFm---07JQY8"]}]}],"t3":[{"r3":[{"c3":[3,"Nn1JUFm---17JQY8"]}]}]}],[{}],1]",
@@ -2516,7 +2516,7 @@ Map {
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all: stats 1`] = `
 [
   {
     "receives": 2,
@@ -2529,7 +2529,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new ta
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all: stats 2`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all: stats 2`] = `
 [
   {
     "receives": 2,
@@ -2542,7 +2542,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new ta
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all: stats 3`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all: stats 3`] = `
 [
   {
     "receives": 2,
@@ -2555,7 +2555,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new ta
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all: stats 4`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all: stats 4`] = `
 [
   {
     "receives": 2,
@@ -2568,7 +2568,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new ta
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all: stats 5`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages new tables, new table, new row, new cell; then all: stats 5`] = `
 [
   {
     "receives": 2,
@@ -2581,7 +2581,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages new ta
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single value 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages single value 1`] = `
 Map {
   "push 0" => [
     "client0→all CONTENT_DIFF [[{}],[{"v1":[1,"Nn1JUF9----7JQY8"]}],1]",
@@ -2589,7 +2589,7 @@ Map {
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single value 2`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages single value 2`] = `
 [
   [
     {},
@@ -2610,7 +2610,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single value: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional tracking messages single value: stats 1`] = `
 [
   {
     "receives": 2,
@@ -2623,7 +2623,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional tracking messages single
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional, data already present conflicting cell at same time 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present conflicting cell at same time 1`] = `
 [
   [
     {
@@ -2656,7 +2656,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional, data already present co
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
 [
   {
     "receives": 5,
@@ -2669,7 +2669,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional, data already present co
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional, data already present conflicting cell later 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present conflicting cell later 1`] = `
 [
   [
     {
@@ -2702,7 +2702,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional, data already present co
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
 [
   {
     "receives": 8,
@@ -2715,7 +2715,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional, data already present co
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional, data already present different cell 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present different cell 1`] = `
 [
   [
     {
@@ -2753,7 +2753,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional, data already present di
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional, data already present different cell: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present different cell: stats 1`] = `
 [
   {
     "receives": 8,
@@ -2766,7 +2766,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional, data already present di
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional, data already present different row 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present different row 1`] = `
 [
   [
     {
@@ -2810,7 +2810,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional, data already present di
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional, data already present different row: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present different row: stats 1`] = `
 [
   {
     "receives": 6,
@@ -2823,7 +2823,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional, data already present di
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional, data already present different table 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present different table 1`] = `
 [
   [
     {
@@ -2873,7 +2873,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional, data already present di
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Bidirectional, data already present different table: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present different table: stats 1`] = `
 [
   {
     "receives": 4,
@@ -2886,7 +2886,7 @@ exports[`Syncs to/from customSynchronizer Bidirectional, data already present di
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional All but first empty 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional All but first empty 1`] = `
 [
   [
     {
@@ -2963,14 +2963,14 @@ exports[`Syncs to/from customSynchronizer Multidirectional All but first empty 1
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional All but first empty: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional All but first empty: stats 1`] = `
 {
   "receives": 189,
   "sends": 21,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional All but last empty 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional All but last empty 1`] = `
 [
   [
     {
@@ -3047,14 +3047,14 @@ exports[`Syncs to/from customSynchronizer Multidirectional All but last empty 1`
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional All but last empty: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional All but last empty: stats 1`] = `
 {
   "receives": 189,
   "sends": 21,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional All empty 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional All empty 1`] = `
 [
   [
     {},
@@ -3069,14 +3069,14 @@ exports[`Syncs to/from customSynchronizer Multidirectional All empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional All empty: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional All empty: stats 1`] = `
 {
   "receives": 180,
   "sends": 20,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional All match 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional All match 1`] = `
 [
   [
     {
@@ -3153,14 +3153,14 @@ exports[`Syncs to/from customSynchronizer Multidirectional All match 1`] = `
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional All match: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional All match: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting cells 1`] = `
 [
   [
     {},
@@ -3175,7 +3175,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells 2`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting cells 2`] = `
 [
   [
     {
@@ -3208,7 +3208,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells 3`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting cells 3`] = `
 [
   [
     {
@@ -3241,28 +3241,28 @@ exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting cells: stats 1`] = `
 {
   "receives": 180,
   "sends": 20,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells: stats 2`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting cells: stats 2`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all conflicting cells: stats 3`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting cells: stats 3`] = `
 {
   "receives": 279,
   "sends": 31,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all conflicting values 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting values 1`] = `
 [
   [
     {},
@@ -3283,7 +3283,7 @@ exports[`Syncs to/from customSynchronizer Multidirectional all conflicting value
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all conflicting values 2`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting values 2`] = `
 [
   [
     {},
@@ -3304,21 +3304,21 @@ exports[`Syncs to/from customSynchronizer Multidirectional all conflicting value
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all conflicting values: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting values: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all conflicting values: stats 2`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting values: stats 2`] = `
 {
   "receives": 279,
   "sends": 31,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all different cells 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all different cells 1`] = `
 [
   [
     {
@@ -3396,14 +3396,14 @@ exports[`Syncs to/from customSynchronizer Multidirectional all different cells 1
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all different cells: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all different cells: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all different rows 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all different rows 1`] = `
 [
   [
     {
@@ -3535,14 +3535,14 @@ exports[`Syncs to/from customSynchronizer Multidirectional all different rows 1`
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all different rows: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all different rows: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all different tables 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all different tables 1`] = `
 [
   [
     {
@@ -3728,14 +3728,14 @@ exports[`Syncs to/from customSynchronizer Multidirectional all different tables 
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all different tables: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all different tables: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all different values 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all different values 1`] = `
 [
   [
     {},
@@ -3801,14 +3801,14 @@ exports[`Syncs to/from customSynchronizer Multidirectional all different values 
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional all different values: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional all different values: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional half tables, half values 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional half tables, half values 1`] = `
 [
   [
     {
@@ -3885,14 +3885,14 @@ exports[`Syncs to/from customSynchronizer Multidirectional half tables, half val
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Multidirectional half tables, half values: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Multidirectional half tables, half values: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from customSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
 [
   [
     {
@@ -3931,7 +3931,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional autoLoad1 but not autoS
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
 [
   [
     {
@@ -4008,7 +4008,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional autoLoad1 but not autoS
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -4021,7 +4021,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional autoLoad1 but not autoS
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
 [
   [
     {
@@ -4098,7 +4098,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional autoSave1 but not autoL
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
 [
   [
     {},
@@ -4113,7 +4113,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional autoSave1 but not autoL
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -4126,7 +4126,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional autoSave1 but not autoL
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
 [
   [
     {
@@ -4165,7 +4165,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional load1 but not autoSave2
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
 [
   [
     {
@@ -4242,7 +4242,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional load1 but not autoSave2
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -4255,7 +4255,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional load1 but not autoSave2
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Unidirectional save1 but not autoLoad2 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional save1 but not autoLoad2 1`] = `
 [
   [
     {
@@ -4332,7 +4332,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional save1 but not autoLoad2
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Unidirectional save1 but not autoLoad2 2`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional save1 but not autoLoad2 2`] = `
 [
   [
     {},
@@ -4347,7 +4347,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional save1 but not autoLoad2
 ]
 `;
 
-exports[`Syncs to/from customSynchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -4360,7 +4360,7 @@ exports[`Syncs to/from customSynchronizer Unidirectional save1 but not autoLoad2
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional Both empty 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional Both empty 1`] = `
 [
   [
     {},
@@ -4375,7 +4375,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional Both empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional Both empty: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional Both empty: stats 1`] = `
 [
   {
     "receives": 2,
@@ -4388,7 +4388,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional Both empty: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional Both match 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional Both match 1`] = `
 [
   [
     {
@@ -4465,7 +4465,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional Both match 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional Both match, different times 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional Both match, different times 1`] = `
 [
   [
     {
@@ -4542,7 +4542,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional Both match, different tim
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional Both match, different times: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional Both match, different times: stats 1`] = `
 [
   {
     "receives": 2,
@@ -4555,7 +4555,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional Both match, different tim
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional Both match: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional Both match: stats 1`] = `
 [
   {
     "receives": 3,
@@ -4568,7 +4568,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional Both match: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional deleted cell 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional deleted cell 1`] = `
 [
   [
     {
@@ -4645,7 +4645,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional deleted cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional deleted cell: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional deleted cell: stats 1`] = `
 [
   {
     "receives": 3,
@@ -4658,7 +4658,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional deleted cell: stats 1`] =
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional deleted row 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional deleted row 1`] = `
 [
   [
     {
@@ -4735,7 +4735,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional deleted row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional deleted row: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional deleted row: stats 1`] = `
 [
   {
     "receives": 3,
@@ -4748,7 +4748,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional deleted row: stats 1`] = 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional deleted table 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional deleted table 1`] = `
 [
   [
     {
@@ -4825,7 +4825,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional deleted table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional deleted table: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional deleted table: stats 1`] = `
 [
   {
     "receives": 3,
@@ -4838,7 +4838,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional deleted table: stats 1`] 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional deleted tables 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional deleted tables 1`] = `
 [
   [
     {
@@ -4915,7 +4915,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional deleted tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional deleted tables: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional deleted tables: stats 1`] = `
 [
   {
     "receives": 3,
@@ -4928,7 +4928,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional deleted tables: stats 1`]
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional deleted value 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional deleted value 1`] = `
 [
   [
     {
@@ -5005,7 +5005,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional deleted value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional deleted value: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional deleted value: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5018,7 +5018,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional deleted value: stats 1`] 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional deleted values 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional deleted values 1`] = `
 [
   [
     {
@@ -5095,7 +5095,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional deleted values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional deleted values: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional deleted values: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5108,7 +5108,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional deleted values: stats 1`]
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional different cell 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional different cell 1`] = `
 [
   [
     {
@@ -5141,7 +5141,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional different cell: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional different cell: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5154,7 +5154,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different cell: stats 1`]
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional different row 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional different row 1`] = `
 [
   [
     {
@@ -5192,7 +5192,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional different row: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional different row: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5205,7 +5205,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different row: stats 1`] 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional different table 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional different table 1`] = `
 [
   [
     {
@@ -5254,7 +5254,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional different table: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional different table: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5267,7 +5267,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different table: stats 1`
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional different tables 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional different tables 1`] = `
 [
   [
     {
@@ -5333,7 +5333,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional different tables: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional different tables: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5346,7 +5346,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different tables: stats 1
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional different value 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional different value 1`] = `
 [
   [
     {},
@@ -5367,7 +5367,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional different value: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional different value: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5380,7 +5380,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different value: stats 1`
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional different values 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional different values 1`] = `
 [
   [
     {},
@@ -5406,7 +5406,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional different values: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional different values: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5419,7 +5419,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional different values: stats 1
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 empty 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 empty 1`] = `
 [
   [
     {
@@ -5496,7 +5496,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 empty: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 empty: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5509,7 +5509,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 empty: stats 1`] =
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 missing cell 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 missing cell 1`] = `
 [
   [
     {
@@ -5547,7 +5547,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing cell 1`] =
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 missing cell: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 missing cell: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5560,7 +5560,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing cell: stat
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 missing row 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 missing row 1`] = `
 [
   [
     {
@@ -5609,7 +5609,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing row 1`] = 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 missing row: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 missing row: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5622,7 +5622,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing row: stats
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 missing table 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 missing table 1`] = `
 [
   [
     {
@@ -5688,7 +5688,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing table 1`] 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 missing table: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 missing table: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5701,7 +5701,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing table: sta
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 missing tables 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 missing tables 1`] = `
 [
   [
     {
@@ -5778,7 +5778,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing tables 1`]
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 missing tables: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 missing tables: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5791,7 +5791,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing tables: st
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 missing value 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 missing value 1`] = `
 [
   [
     {},
@@ -5817,7 +5817,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing value 1`] 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 missing value: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 missing value: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5830,7 +5830,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing value: sta
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 missing values 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 missing values 1`] = `
 [
   [
     {
@@ -5907,7 +5907,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing values 1`]
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store1 missing values: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store1 missing values: stats 1`] = `
 [
   {
     "receives": 3,
@@ -5920,7 +5920,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store1 missing values: st
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 empty 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 empty 1`] = `
 [
   [
     {
@@ -5997,7 +5997,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 empty: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 empty: stats 1`] = `
 [
   {
     "receives": 2,
@@ -6010,7 +6010,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 empty: stats 1`] =
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 missing cell 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 missing cell 1`] = `
 [
   [
     {
@@ -6048,7 +6048,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing cell 1`] =
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 missing cell: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 missing cell: stats 1`] = `
 [
   {
     "receives": 3,
@@ -6061,7 +6061,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing cell: stat
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 missing row 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 missing row 1`] = `
 [
   [
     {
@@ -6110,7 +6110,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing row 1`] = 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 missing row: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 missing row: stats 1`] = `
 [
   {
     "receives": 3,
@@ -6123,7 +6123,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing row: stats
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 missing table 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 missing table 1`] = `
 [
   [
     {
@@ -6189,7 +6189,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing table 1`] 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 missing table: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 missing table: stats 1`] = `
 [
   {
     "receives": 3,
@@ -6202,7 +6202,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing table: sta
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 missing tables 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 missing tables 1`] = `
 [
   [
     {
@@ -6279,7 +6279,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing tables 1`]
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 missing tables: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 missing tables: stats 1`] = `
 [
   {
     "receives": 3,
@@ -6292,7 +6292,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing tables: st
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 missing value 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 missing value 1`] = `
 [
   [
     {},
@@ -6318,7 +6318,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing value 1`] 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 missing value: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 missing value: stats 1`] = `
 [
   {
     "receives": 3,
@@ -6331,7 +6331,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing value: sta
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 missing values 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 missing values 1`] = `
 [
   [
     {
@@ -6408,7 +6408,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing values 1`]
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional store2 missing values: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional store2 missing values: stats 1`] = `
 [
   {
     "receives": 3,
@@ -6421,7 +6421,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional store2 missing values: st
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional, data already present conflicting cell at same time 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present conflicting cell at same time 1`] = `
 [
   [
     {
@@ -6454,7 +6454,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional, data already present con
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
 [
   {
     "receives": 5,
@@ -6467,7 +6467,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional, data already present con
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional, data already present conflicting cell later 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present conflicting cell later 1`] = `
 [
   [
     {
@@ -6500,7 +6500,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional, data already present con
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
 [
   {
     "receives": 8,
@@ -6513,7 +6513,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional, data already present con
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional, data already present different cell 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present different cell 1`] = `
 [
   [
     {
@@ -6551,7 +6551,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional, data already present dif
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional, data already present different cell: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present different cell: stats 1`] = `
 [
   {
     "receives": 8,
@@ -6564,7 +6564,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional, data already present dif
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional, data already present different row 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present different row 1`] = `
 [
   [
     {
@@ -6608,7 +6608,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional, data already present dif
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional, data already present different row: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present different row: stats 1`] = `
 [
   {
     "receives": 6,
@@ -6621,7 +6621,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional, data already present dif
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional, data already present different table 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present different table 1`] = `
 [
   [
     {
@@ -6671,7 +6671,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional, data already present dif
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Bidirectional, data already present different table: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present different table: stats 1`] = `
 [
   {
     "receives": 4,
@@ -6684,7 +6684,7 @@ exports[`Syncs to/from localSynchronizer Bidirectional, data already present dif
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional All but first empty 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional All but first empty 1`] = `
 [
   [
     {
@@ -6761,14 +6761,14 @@ exports[`Syncs to/from localSynchronizer Multidirectional All but first empty 1`
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional All but first empty: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional All but first empty: stats 1`] = `
 {
   "receives": 189,
   "sends": 21,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional All but last empty 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional All but last empty 1`] = `
 [
   [
     {
@@ -6845,14 +6845,14 @@ exports[`Syncs to/from localSynchronizer Multidirectional All but last empty 1`]
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional All but last empty: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional All but last empty: stats 1`] = `
 {
   "receives": 189,
   "sends": 21,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional All empty 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional All empty 1`] = `
 [
   [
     {},
@@ -6867,14 +6867,14 @@ exports[`Syncs to/from localSynchronizer Multidirectional All empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional All empty: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional All empty: stats 1`] = `
 {
   "receives": 180,
   "sends": 20,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional All match 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional All match 1`] = `
 [
   [
     {
@@ -6951,14 +6951,14 @@ exports[`Syncs to/from localSynchronizer Multidirectional All match 1`] = `
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional All match: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional All match: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting cells 1`] = `
 [
   [
     {},
@@ -6973,7 +6973,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells 2`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting cells 2`] = `
 [
   [
     {
@@ -7006,7 +7006,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells 3`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting cells 3`] = `
 [
   [
     {
@@ -7039,28 +7039,28 @@ exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting cells: stats 1`] = `
 {
   "receives": 180,
   "sends": 20,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells: stats 2`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting cells: stats 2`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all conflicting cells: stats 3`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting cells: stats 3`] = `
 {
   "receives": 279,
   "sends": 31,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all conflicting values 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting values 1`] = `
 [
   [
     {},
@@ -7081,7 +7081,7 @@ exports[`Syncs to/from localSynchronizer Multidirectional all conflicting values
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all conflicting values 2`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting values 2`] = `
 [
   [
     {},
@@ -7102,21 +7102,21 @@ exports[`Syncs to/from localSynchronizer Multidirectional all conflicting values
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all conflicting values: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting values: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all conflicting values: stats 2`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting values: stats 2`] = `
 {
   "receives": 279,
   "sends": 31,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all different cells 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all different cells 1`] = `
 [
   [
     {
@@ -7194,14 +7194,14 @@ exports[`Syncs to/from localSynchronizer Multidirectional all different cells 1`
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all different cells: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all different cells: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all different rows 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all different rows 1`] = `
 [
   [
     {
@@ -7333,14 +7333,14 @@ exports[`Syncs to/from localSynchronizer Multidirectional all different rows 1`]
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all different rows: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all different rows: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all different tables 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all different tables 1`] = `
 [
   [
     {
@@ -7526,14 +7526,14 @@ exports[`Syncs to/from localSynchronizer Multidirectional all different tables 1
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all different tables: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all different tables: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all different values 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all different values 1`] = `
 [
   [
     {},
@@ -7599,14 +7599,14 @@ exports[`Syncs to/from localSynchronizer Multidirectional all different values 1
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional all different values: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional all different values: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional half tables, half values 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional half tables, half values 1`] = `
 [
   [
     {
@@ -7683,14 +7683,14 @@ exports[`Syncs to/from localSynchronizer Multidirectional half tables, half valu
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Multidirectional half tables, half values: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Multidirectional half tables, half values: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from localSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
 [
   [
     {
@@ -7729,7 +7729,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional autoLoad1 but not autoSa
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
 [
   [
     {
@@ -7806,7 +7806,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional autoLoad1 but not autoSa
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -7819,7 +7819,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional autoLoad1 but not autoSa
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
 [
   [
     {
@@ -7896,7 +7896,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional autoSave1 but not autoLo
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
 [
   [
     {},
@@ -7911,7 +7911,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional autoSave1 but not autoLo
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -7924,7 +7924,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional autoSave1 but not autoLo
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
 [
   [
     {
@@ -7963,7 +7963,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional load1 but not autoSave2,
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
 [
   [
     {
@@ -8040,7 +8040,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional load1 but not autoSave2,
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -8053,7 +8053,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional load1 but not autoSave2,
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Unidirectional save1 but not autoLoad2 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional save1 but not autoLoad2 1`] = `
 [
   [
     {
@@ -8130,7 +8130,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional save1 but not autoLoad2 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Unidirectional save1 but not autoLoad2 2`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional save1 but not autoLoad2 2`] = `
 [
   [
     {},
@@ -8145,7 +8145,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional save1 but not autoLoad2 
 ]
 `;
 
-exports[`Syncs to/from localSynchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -8158,7 +8158,7 @@ exports[`Syncs to/from localSynchronizer Unidirectional save1 but not autoLoad2:
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional Both empty 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional Both empty 1`] = `
 [
   [
     {},
@@ -8173,7 +8173,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional Both empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional Both empty: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional Both empty: stats 1`] = `
 [
   {
     "receives": 2,
@@ -8186,7 +8186,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional Both empty: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional Both match 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional Both match 1`] = `
 [
   [
     {
@@ -8263,7 +8263,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional Both match 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional Both match, different times 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional Both match, different times 1`] = `
 [
   [
     {
@@ -8340,7 +8340,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional Both match, different times 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional Both match, different times: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional Both match, different times: stats 1`] = `
 [
   {
     "receives": 2,
@@ -8353,7 +8353,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional Both match, different times:
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional Both match: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional Both match: stats 1`] = `
 [
   {
     "receives": 3,
@@ -8366,7 +8366,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional Both match: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional deleted cell 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional deleted cell 1`] = `
 [
   [
     {
@@ -8443,7 +8443,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional deleted cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional deleted cell: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional deleted cell: stats 1`] = `
 [
   {
     "receives": 3,
@@ -8456,7 +8456,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional deleted cell: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional deleted row 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional deleted row 1`] = `
 [
   [
     {
@@ -8533,7 +8533,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional deleted row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional deleted row: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional deleted row: stats 1`] = `
 [
   {
     "receives": 3,
@@ -8546,7 +8546,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional deleted row: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional deleted table 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional deleted table 1`] = `
 [
   [
     {
@@ -8623,7 +8623,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional deleted table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional deleted table: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional deleted table: stats 1`] = `
 [
   {
     "receives": 3,
@@ -8636,7 +8636,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional deleted table: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional deleted tables 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional deleted tables 1`] = `
 [
   [
     {
@@ -8713,7 +8713,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional deleted tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional deleted tables: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional deleted tables: stats 1`] = `
 [
   {
     "receives": 3,
@@ -8726,7 +8726,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional deleted tables: stats 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional deleted value 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional deleted value 1`] = `
 [
   [
     {
@@ -8803,7 +8803,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional deleted value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional deleted value: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional deleted value: stats 1`] = `
 [
   {
     "receives": 3,
@@ -8816,7 +8816,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional deleted value: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional deleted values 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional deleted values 1`] = `
 [
   [
     {
@@ -8893,7 +8893,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional deleted values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional deleted values: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional deleted values: stats 1`] = `
 [
   {
     "receives": 3,
@@ -8906,7 +8906,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional deleted values: stats 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional different cell 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional different cell 1`] = `
 [
   [
     {
@@ -8939,7 +8939,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional different cell: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional different cell: stats 1`] = `
 [
   {
     "receives": 3,
@@ -8952,7 +8952,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different cell: stats 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional different row 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional different row 1`] = `
 [
   [
     {
@@ -8990,7 +8990,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional different row: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional different row: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9003,7 +9003,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different row: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional different table 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional different table 1`] = `
 [
   [
     {
@@ -9052,7 +9052,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional different table: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional different table: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9065,7 +9065,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different table: stats 1`] =
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional different tables 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional different tables 1`] = `
 [
   [
     {
@@ -9131,7 +9131,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different tables 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional different tables: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional different tables: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9144,7 +9144,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different tables: stats 1`] 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional different value 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional different value 1`] = `
 [
   [
     {},
@@ -9165,7 +9165,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional different value: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional different value: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9178,7 +9178,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different value: stats 1`] =
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional different values 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional different values 1`] = `
 [
   [
     {},
@@ -9204,7 +9204,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different values 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional different values: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional different values: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9217,7 +9217,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional different values: stats 1`] 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 empty 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 empty 1`] = `
 [
   [
     {
@@ -9294,7 +9294,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 empty: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 empty: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9307,7 +9307,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 empty: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing cell 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 missing cell 1`] = `
 [
   [
     {
@@ -9345,7 +9345,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing cell: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 missing cell: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9358,7 +9358,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing cell: stats 1
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing row 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 missing row 1`] = `
 [
   [
     {
@@ -9407,7 +9407,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing row: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 missing row: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9420,7 +9420,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing row: stats 1`
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing table 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 missing table 1`] = `
 [
   [
     {
@@ -9486,7 +9486,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing table: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 missing table: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9499,7 +9499,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing table: stats 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing tables 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 missing tables 1`] = `
 [
   [
     {
@@ -9576,7 +9576,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing tables 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing tables: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 missing tables: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9589,7 +9589,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing tables: stats
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing value 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 missing value 1`] = `
 [
   [
     {},
@@ -9615,7 +9615,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing value: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 missing value: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9628,7 +9628,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing value: stats 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing values 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 missing values 1`] = `
 [
   [
     {
@@ -9705,7 +9705,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing values 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing values: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store1 missing values: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9718,7 +9718,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store1 missing values: stats
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 empty 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 empty 1`] = `
 [
   [
     {
@@ -9795,7 +9795,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 empty: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 empty: stats 1`] = `
 [
   {
     "receives": 2,
@@ -9808,7 +9808,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 empty: stats 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing cell 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 missing cell 1`] = `
 [
   [
     {
@@ -9846,7 +9846,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing cell 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing cell: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 missing cell: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9859,7 +9859,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing cell: stats 1
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing row 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 missing row 1`] = `
 [
   [
     {
@@ -9908,7 +9908,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing row 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing row: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 missing row: stats 1`] = `
 [
   {
     "receives": 3,
@@ -9921,7 +9921,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing row: stats 1`
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing table 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 missing table 1`] = `
 [
   [
     {
@@ -9987,7 +9987,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing table 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing table: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 missing table: stats 1`] = `
 [
   {
     "receives": 3,
@@ -10000,7 +10000,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing table: stats 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing tables 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 missing tables 1`] = `
 [
   [
     {
@@ -10077,7 +10077,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing tables 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing tables: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 missing tables: stats 1`] = `
 [
   {
     "receives": 3,
@@ -10090,7 +10090,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing tables: stats
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing value 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 missing value 1`] = `
 [
   [
     {},
@@ -10116,7 +10116,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing value 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing value: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 missing value: stats 1`] = `
 [
   {
     "receives": 3,
@@ -10129,7 +10129,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing value: stats 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing values 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 missing values 1`] = `
 [
   [
     {
@@ -10206,7 +10206,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing values 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing values: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional store2 missing values: stats 1`] = `
 [
   {
     "receives": 3,
@@ -10219,7 +10219,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional store2 missing values: stats
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional, data already present conflicting cell at same time 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional, data already present conflicting cell at same time 1`] = `
 [
   [
     {
@@ -10252,7 +10252,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional, data already present confli
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
 [
   {
     "receives": 5,
@@ -10265,7 +10265,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional, data already present confli
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional, data already present conflicting cell later 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional, data already present conflicting cell later 1`] = `
 [
   [
     {
@@ -10298,7 +10298,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional, data already present confli
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
 [
   {
     "receives": 8,
@@ -10311,7 +10311,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional, data already present confli
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional, data already present different cell 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional, data already present different cell 1`] = `
 [
   [
     {
@@ -10349,7 +10349,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional, data already present differ
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional, data already present different cell: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional, data already present different cell: stats 1`] = `
 [
   {
     "receives": 8,
@@ -10362,7 +10362,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional, data already present differ
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional, data already present different row 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional, data already present different row 1`] = `
 [
   [
     {
@@ -10406,7 +10406,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional, data already present differ
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional, data already present different row: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional, data already present different row: stats 1`] = `
 [
   {
     "receives": 6,
@@ -10419,7 +10419,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional, data already present differ
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional, data already present different table 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional, data already present different table 1`] = `
 [
   [
     {
@@ -10469,7 +10469,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional, data already present differ
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Bidirectional, data already present different table: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Bidirectional, data already present different table: stats 1`] = `
 [
   {
     "receives": 4,
@@ -10482,7 +10482,7 @@ exports[`Syncs to/from wsSynchronizer Bidirectional, data already present differ
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional All but first empty 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional All but first empty 1`] = `
 [
   [
     {
@@ -10559,14 +10559,14 @@ exports[`Syncs to/from wsSynchronizer Multidirectional All but first empty 1`] =
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional All but first empty: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional All but first empty: stats 1`] = `
 {
   "receives": 189,
   "sends": 21,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional All but last empty 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional All but last empty 1`] = `
 [
   [
     {
@@ -10643,14 +10643,14 @@ exports[`Syncs to/from wsSynchronizer Multidirectional All but last empty 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional All but last empty: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional All but last empty: stats 1`] = `
 {
   "receives": 189,
   "sends": 21,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional All empty 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional All empty 1`] = `
 [
   [
     {},
@@ -10665,14 +10665,14 @@ exports[`Syncs to/from wsSynchronizer Multidirectional All empty 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional All empty: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional All empty: stats 1`] = `
 {
   "receives": 180,
   "sends": 20,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional All match 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional All match 1`] = `
 [
   [
     {
@@ -10749,14 +10749,14 @@ exports[`Syncs to/from wsSynchronizer Multidirectional All match 1`] = `
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional All match: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional All match: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting cells 1`] = `
 [
   [
     {},
@@ -10771,7 +10771,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells 1`]
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells 2`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting cells 2`] = `
 [
   [
     {
@@ -10804,7 +10804,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells 2`]
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells 3`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting cells 3`] = `
 [
   [
     {
@@ -10837,28 +10837,28 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells 3`]
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting cells: stats 1`] = `
 {
   "receives": 180,
   "sends": 20,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells: stats 2`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting cells: stats 2`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting cells: stats 3`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting cells: stats 3`] = `
 {
   "receives": 279,
   "sends": 31,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting values 1`] = `
 [
   [
     {},
@@ -10879,7 +10879,7 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values 1`
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values 2`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting values 2`] = `
 [
   [
     {},
@@ -10900,21 +10900,21 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values 2`
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting values: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all conflicting values: stats 2`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting values: stats 2`] = `
 {
   "receives": 279,
   "sends": 31,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all different cells 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all different cells 1`] = `
 [
   [
     {
@@ -10992,14 +10992,14 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all different cells 1`] =
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all different cells: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all different cells: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all different rows 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all different rows 1`] = `
 [
   [
     {
@@ -11131,14 +11131,14 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all different rows 1`] = 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all different rows: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all different rows: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all different tables 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all different tables 1`] = `
 [
   [
     {
@@ -11324,14 +11324,14 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all different tables 1`] 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all different tables: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all different tables: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all different values 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all different values 1`] = `
 [
   [
     {},
@@ -11397,14 +11397,14 @@ exports[`Syncs to/from wsSynchronizer Multidirectional all different values 1`] 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional all different values: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional all different values: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional half tables, half values 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional half tables, half values 1`] = `
 [
   [
     {
@@ -11481,14 +11481,14 @@ exports[`Syncs to/from wsSynchronizer Multidirectional half tables, half values 
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Multidirectional half tables, half values: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Multidirectional half tables, half values: stats 1`] = `
 {
   "receives": 270,
   "sends": 30,
 }
 `;
 
-exports[`Syncs to/from wsSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
 [
   [
     {
@@ -11527,7 +11527,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional autoLoad1 but not autoSave2
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
 [
   [
     {
@@ -11604,7 +11604,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional autoLoad1 but not autoSave2
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -11617,7 +11617,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional autoLoad1 but not autoSave2
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
 [
   [
     {
@@ -11694,7 +11694,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional autoSave1 but not autoLoad2
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
 [
   [
     {},
@@ -11709,7 +11709,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional autoSave1 but not autoLoad2
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -11722,7 +11722,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional autoSave1 but not autoLoad2
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
 [
   [
     {
@@ -11761,7 +11761,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional load1 but not autoSave2, de
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
 [
   [
     {
@@ -11838,7 +11838,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional load1 but not autoSave2, de
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -11851,7 +11851,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional load1 but not autoSave2, de
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Unidirectional save1 but not autoLoad2 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional save1 but not autoLoad2 1`] = `
 [
   [
     {
@@ -11928,7 +11928,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional save1 but not autoLoad2 1`]
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Unidirectional save1 but not autoLoad2 2`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional save1 but not autoLoad2 2`] = `
 [
   [
     {},
@@ -11943,7 +11943,7 @@ exports[`Syncs to/from wsSynchronizer Unidirectional save1 but not autoLoad2 2`]
 ]
 `;
 
-exports[`Syncs to/from wsSynchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
 [
   {
     "receives": 0,
