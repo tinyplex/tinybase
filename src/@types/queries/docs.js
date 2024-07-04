@@ -1588,7 +1588,7 @@
  * queries.delListener(listenerId);
  * queries.destroy();
  * ```
- * @see Making Queries guides
+ * @see Queries guides
  * @see Car Analysis demo
  * @see Movie Database demo
  * @category Queries
