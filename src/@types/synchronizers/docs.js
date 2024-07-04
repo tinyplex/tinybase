@@ -120,7 +120,7 @@
   /// SynchronizerStats.receives
 }
 /**
- * The Synchronizer object lets you synchronize MergeableStore data with another
+ * A Synchronizer object lets you synchronize MergeableStore data with another
  * TinyBase client or system.
  *
  * This is useful for sharing data between users, or between devices of a single
