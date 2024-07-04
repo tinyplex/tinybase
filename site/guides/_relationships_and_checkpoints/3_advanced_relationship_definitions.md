@@ -1,3 +1,3 @@
 # Advanced Relationship Definitions
 
--> /guides/relationships/advanced-relationship-definitions
+-> /guides/using-relationships/advanced-relationship-definitions
