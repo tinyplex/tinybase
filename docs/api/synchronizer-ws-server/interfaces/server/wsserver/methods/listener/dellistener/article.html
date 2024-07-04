@@ -4,11 +4,9 @@
 <span class="keyword">import</span> <span class="punctuation">{</span>createWsSynchronizer<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/synchronizers/synchronizer-ws-client'</span><span class="punctuation">;</span>
 
 <span class="keyword">const</span> server <span class="operator">=</span> <span class="function"><a href="/api/synchronizer-ws-server/functions/creation/createwsserver/">createWsServer</a></span><span class="punctuation">(</span><span class="keyword">new</span> <span class="class-name">WebSocketServer</span><span class="punctuation">(</span><span class="punctuation">{</span><span class="literal-property">port</span><span class="operator">:</span> <span class="number">8047</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="keyword">const</span> listenerId <span class="operator">=</span> server<span class="punctuation">.</span><span class="function">addPathIdsListener</span><span class="punctuation">(</span>
-  <span class="punctuation">(</span><span class="parameter">server</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
-    console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="string">'Paths changed'</span><span class="punctuation">)</span><span class="punctuation">;</span>
-  <span class="punctuation">}</span><span class="punctuation">,</span>
-<span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">const</span> listenerId <span class="operator">=</span> server<span class="punctuation">.</span><span class="function">addPathIdsListener</span><span class="punctuation">(</span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
+  console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="string">'Paths changed'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
 <span class="keyword">const</span> synchronizer <span class="operator">=</span> <span class="keyword">await</span> <span class="function"><a href="/api/synchronizer-ws-client/functions/creation/createwssynchronizer/">createWsSynchronizer</a></span><span class="punctuation">(</span>
   <span class="function"><a href="/api/mergeable-store/functions/creation/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>

@@ -309,7 +309,7 @@
   const createCustomSynchronizer = (
     store,
     send,
-    onReceive,
+    registerReceive,
     destroyImpl,
     requestTimeoutSeconds,
     onIgnoredError,
@@ -319,7 +319,7 @@
     let sends = 0;
     let receives = 0;
     const pendingRequests = mapNew();
-    onReceive((fromClientId, requestId, message, body) => {
+    registerReceive((fromClientId, requestId, message, body) => {
       receives++;
       if (message == Message.Response) {
         ifNotUndefined(
@@ -498,43 +498,37 @@
     requestTimeoutSeconds = 1,
     onIgnoredError,
   ) => {
-    let currentReceive;
     const addEventListener = (event, handler) =>
       webSocket.addEventListener(event, handler);
-    const onReceive = (receive) => {
-      currentReceive = receive;
-    };
-    const send = (toClientId, ...args) => {
+    const registerReceive = (receive) =>
+      addEventListener('message', ({data}) => {
+        const payload = data.toString(UTF8);
+        const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
+        if (splitAt !== -1) {
+          receive(
+            slice(data, 0, splitAt),
+            ...jsonParseWithUndefined(slice(data, splitAt + 1)),
+          );
+        }
+      });
+    const send = (toClientId, ...args) =>
       webSocket.send(
         (toClientId ?? EMPTY_STRING) +
           MESSAGE_SEPARATOR +
           jsonStringWithUndefined(args),
       );
-    };
     const destroy = () => {
       webSocket.close();
     };
     const synchronizer = createCustomSynchronizer(
       store,
       send,
-      onReceive,
+      registerReceive,
       destroy,
       requestTimeoutSeconds,
       onIgnoredError,
       {getWebSocket: () => webSocket},
     );
-    addEventListener('message', ({data}) => {
-      if (!isUndefined(currentReceive)) {
-        const payload = data.toString(UTF8);
-        const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
-        if (splitAt !== -1) {
-          currentReceive(
-            slice(data, 0, splitAt),
-            ...jsonParseWithUndefined(slice(data, splitAt + 1)),
-          );
-        }
-      }
-    });
     return promiseNew((resolve, reject) => {
       if (webSocket.readyState != webSocket.OPEN) {
         addEventListener('error', reject);
