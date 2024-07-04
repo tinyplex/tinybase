@@ -4,11 +4,11 @@ import type {
   WebSocketTypes,
   createWsSynchronizer as createWsSynchronizerDecl,
 } from '../../@types/synchronizers/synchronizer-ws-client/index.d.ts';
-import {isUndefined, promiseNew, slice} from '../../common/other.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../../common/json.ts';
+import {promiseNew, slice} from '../../common/other.ts';
 import type {IdOrNull} from '../../@types/common/index.d.ts';
 import {MESSAGE_SEPARATOR} from '../common.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
@@ -22,25 +22,34 @@ export const createWsSynchronizer = (async <
   requestTimeoutSeconds: number = 1,
   onIgnoredError?: (error: any) => void,
 ) => {
-  let currentReceive: Receive;
-
   const addEventListener = (event: string, handler: (...args: any[]) => void) =>
     (webSocket.addEventListener as any)(event, handler);
 
-  const onReceive = (receive: Receive): void => {
-    currentReceive = receive;
-  };
+  const onReceive = (receive: Receive): void =>
+    addEventListener('message', ({data}) => {
+      const payload = data.toString(UTF8);
+      const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
+      if (splitAt !== -1) {
+        receive(
+          slice(data, 0, splitAt),
+          ...(jsonParseWithUndefined(slice(data, splitAt + 1)) as [
+            requestId: IdOrNull,
+            message: Message,
+            body: any,
+          ]),
+        );
+      }
+    });
 
   const send = (
     toClientId: IdOrNull,
     ...args: [requestId: IdOrNull, message: Message, body: any]
-  ): void => {
+  ): void =>
     webSocket.send(
       (toClientId ?? EMPTY_STRING) +
         MESSAGE_SEPARATOR +
         jsonStringWithUndefined(args),
     );
-  };
 
   const destroy = (): void => {
     webSocket.close();
@@ -55,23 +64,6 @@ export const createWsSynchronizer = (async <
     onIgnoredError,
     {getWebSocket: () => webSocket},
   );
-
-  addEventListener('message', ({data}) => {
-    if (!isUndefined(currentReceive)) {
-      const payload = data.toString(UTF8);
-      const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
-      if (splitAt !== -1) {
-        currentReceive(
-          slice(data, 0, splitAt),
-          ...(jsonParseWithUndefined(slice(data, splitAt + 1)) as [
-            requestId: IdOrNull,
-            message: Message,
-            body: any,
-          ]),
-        );
-      }
-    }
-  });
 
   return promiseNew((resolve, reject) => {
     if (webSocket.readyState != webSocket.OPEN) {
