@@ -47,4 +47,4 @@ console.log(relationships.getLocalRowIds('petSpeciesColor', 'dog_black'));
 And with that, we have covered most of the basics of using the relationships
 module.
 
-Let's move on to keeping track of changes to your data in the Checkpoints guide.
+Let's move on to keeping track of changes to your data in the Using Checkpoints guide.
