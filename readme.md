@@ -246,7 +246,7 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 // -> false
 ```
 
-<section><h2 id="type-definitions-orm-like-apis">Type definitions &amp; ORM-like APIs</h2><p>TinyBase has comprehensive type definitions, and even offers definitions that infer API types from the data schemas you apply.</p><p>Furthermore, you can easily create TypeScript <code>.d.ts</code> definitions that model your data and encourage type-safety when reading and writing data - as well as <code>.ts</code> implementations that provide ORM-like methods for your named tables.</p><p>Read more about type support in the TinyBase and TypeScript guide.</p></section>
+<section><h2 id="type-definitions-orm-like-apis">Type definitions &amp; ORM-like APIs</h2><p>TinyBase has comprehensive type definitions, and even offers definitions that infer API types from the data schemas you apply.</p><p>Furthermore, you can easily create TypeScript <code>.d.ts</code> definitions that model your data and encourage type-safety when reading and writing data - as well as <code>.ts</code> implementations that provide ORM-like methods for your named tables.</p><p>Read more about type support in the <a href="https://beta.tinybase.org/guides/the-basics/tinybase-and-typescript/">TinyBase And TypeScript</a> guide.</p></section>
 
 ```js yolo
 const tools = createTools(store);
