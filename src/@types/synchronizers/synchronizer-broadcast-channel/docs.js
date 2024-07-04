@@ -32,8 +32,8 @@
    * newly-created MergeableStore and then gets the channel name back out again.
    *
    * ```js
-   * import {createMergeableStore} from 'tinybase';
    * import {createBroadcastChannelSynchronizer} from 'tinybase/synchronizers/synchronizer-broadcast-channel';
+   * import {createMergeableStore} from 'tinybase';
    *
    * const store = createMergeableStore();
    * const synchronizer = await createBroadcastChannelSynchronizer(
@@ -77,8 +77,14 @@
  * const store1 = createMergeableStore();
  * const store2 = createMergeableStore();
  *
- * const synchronizer1 = createBroadcastChannelSynchronizer(store1, 'channelA');
- * const synchronizer2 = createBroadcastChannelSynchronizer(store2, 'channelA');
+ * const synchronizer1 = createBroadcastChannelSynchronizer(
+ *   store1,
+ *   'channelA',
+ * );
+ * const synchronizer2 = createBroadcastChannelSynchronizer(
+ *   store2,
+ *   'channelA',
+ * );
  *
  * await synchronizer1.startSync();
  * await synchronizer2.startSync();
