@@ -1,4 +1,4 @@
-# Using Checkpoints
+# An Intro To Checkpoints
 
 This guide describes how the checkpoints module gives you the ability to create
 and track changes to a Store's data for the purposes of undo and redo
