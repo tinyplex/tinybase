@@ -4,6 +4,7 @@ import type {Content, MergeableStore, Receive, Synchronizer} from 'tinybase';
 import {WebSocket, WebSocketServer} from 'ws';
 import {createCustomSynchronizer, createMergeableStore} from 'tinybase';
 import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+import {createBroadcastChannelSynchronizer} from 'tinybase/synchronizers/synchronizer-broadcast-channel';
 import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
@@ -51,6 +52,12 @@ const mockWsSynchronizer: Synchronizable<WsServer> = {
     return await createWsSynchronizer(store, webSocket, 0.04);
   },
   pauseMilliseconds: 50,
+};
+
+const mockBroadcastChannelSynchronizer: Synchronizable<undefined> = {
+  getSynchronizer: async (store: MergeableStore) =>
+    createBroadcastChannelSynchronizer(store, 'channel'),
+  pauseMilliseconds: 20,
 };
 
 const mockCustomSynchronizer: Synchronizable<
@@ -111,6 +118,7 @@ const mockCustomSynchronizer: Synchronizable<
 describe.each([
   ['LocalSynchronizer', mockLocalSynchronizer],
   ['WsSynchronizer', mockWsSynchronizer],
+  ['BroadcastChannelSynchronizer', mockBroadcastChannelSynchronizer],
   ['Custom Synchronizer', mockCustomSynchronizer],
 ] as any[])(
   'Syncs to/from %s',

@@ -1,5 +1,3803 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional Both empty 1`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional Both empty: stats 1`] = `
+[
+  {
+    "receives": 2,
+    "sends": 3,
+  },
+  {
+    "receives": 3,
+    "sends": 2,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional Both match 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---07JQY8",
+                1418868799,
+              ],
+            },
+            "",
+            3458635876,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---17JQY8",
+                3094997130,
+              ],
+            },
+            "",
+            60968023,
+          ],
+        },
+        "",
+        4193817040,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---27JQY8",
+                3234811493,
+              ],
+            },
+            "",
+            4143244248,
+          ],
+        },
+        "",
+        2871027187,
+      ],
+    },
+    "",
+    1847652697,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ---37JQY8",
+        1429931447,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---47JQY8",
+        1890271195,
+      ],
+    },
+    "",
+    2758209033,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional Both match, different times 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---07JQY8",
+                1418868799,
+              ],
+            },
+            "",
+            3458635876,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---17JQY8",
+                3094997130,
+              ],
+            },
+            "",
+            60968023,
+          ],
+        },
+        "",
+        4193817040,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---27JQY8",
+                3234811493,
+              ],
+            },
+            "",
+            4143244248,
+          ],
+        },
+        "",
+        2871027187,
+      ],
+    },
+    "",
+    1847652697,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ---37JQY8",
+        1429931447,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---47JQY8",
+        1890271195,
+      ],
+    },
+    "",
+    2758209033,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional Both match, different times: stats 1`] = `
+[
+  {
+    "receives": 2,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 2,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional Both match: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional deleted cell 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                undefined,
+                "Nn1JUFc----4JQFF",
+                1384431476,
+              ],
+            },
+            "",
+            3043185664,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---17JQY8",
+                3094997130,
+              ],
+            },
+            "",
+            60968023,
+          ],
+        },
+        "",
+        2888654847,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---27JQY8",
+                3234811493,
+              ],
+            },
+            "",
+            4143244248,
+          ],
+        },
+        "",
+        2871027187,
+      ],
+    },
+    "",
+    238781960,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ---37JQY8",
+        1429931447,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---47JQY8",
+        1890271195,
+      ],
+    },
+    "",
+    2758209033,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional deleted cell: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional deleted row 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---07JQY8",
+                1418868799,
+              ],
+            },
+            "",
+            3458635876,
+          ],
+          "r2": [
+            {
+              "c2": [
+                undefined,
+                "Nn1JUFc----4JQFF",
+                1384431476,
+              ],
+            },
+            "",
+            250777337,
+          ],
+        },
+        "",
+        227071613,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---27JQY8",
+                3234811493,
+              ],
+            },
+            "",
+            4143244248,
+          ],
+        },
+        "",
+        2871027187,
+      ],
+    },
+    "",
+    3363726717,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ---37JQY8",
+        1429931447,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---47JQY8",
+        1890271195,
+      ],
+    },
+    "",
+    2758209033,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional deleted row: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional deleted table 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---07JQY8",
+                1418868799,
+              ],
+            },
+            "",
+            3458635876,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---17JQY8",
+                3094997130,
+              ],
+            },
+            "",
+            60968023,
+          ],
+        },
+        "",
+        4193817040,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                undefined,
+                "Nn1JUFc----4JQFF",
+                1384431476,
+              ],
+            },
+            "",
+            250777337,
+          ],
+        },
+        "",
+        1075097394,
+      ],
+    },
+    "",
+    4173978025,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ---37JQY8",
+        1429931447,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---47JQY8",
+        1890271195,
+      ],
+    },
+    "",
+    2758209033,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional deleted table: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional deleted tables 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                undefined,
+                "Nn1JUFc----4JQFF",
+                1384431476,
+              ],
+              "c2": [
+                undefined,
+                "Nn1JUFc---04JQFF",
+                1899705793,
+              ],
+            },
+            "",
+            1466986007,
+          ],
+          "r2": [
+            {
+              "c2": [
+                undefined,
+                "Nn1JUFc---14JQFF",
+                21663072,
+              ],
+            },
+            "",
+            1375543291,
+          ],
+        },
+        "",
+        1747234950,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                undefined,
+                "Nn1JUFc---24JQFF",
+                737739303,
+              ],
+            },
+            "",
+            2395520220,
+          ],
+        },
+        "",
+        2210666299,
+      ],
+    },
+    "",
+    1253765604,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ---37JQY8",
+        1429931447,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---47JQY8",
+        1890271195,
+      ],
+    },
+    "",
+    2758209033,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional deleted tables: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional deleted value 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---07JQY8",
+                1418868799,
+              ],
+            },
+            "",
+            3458635876,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---17JQY8",
+                3094997130,
+              ],
+            },
+            "",
+            60968023,
+          ],
+        },
+        "",
+        4193817040,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---27JQY8",
+                3234811493,
+              ],
+            },
+            "",
+            4143244248,
+          ],
+        },
+        "",
+        2871027187,
+      ],
+    },
+    "",
+    1847652697,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ---37JQY8",
+        1429931447,
+      ],
+      "v2": [
+        undefined,
+        "Nn1JUFc----4JQFF",
+        1384431476,
+      ],
+    },
+    "",
+    134410395,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional deleted value: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional deleted values 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---07JQY8",
+                1418868799,
+              ],
+            },
+            "",
+            3458635876,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---17JQY8",
+                3094997130,
+              ],
+            },
+            "",
+            60968023,
+          ],
+        },
+        "",
+        4193817040,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---27JQY8",
+                3234811493,
+              ],
+            },
+            "",
+            4143244248,
+          ],
+        },
+        "",
+        2871027187,
+      ],
+    },
+    "",
+    1847652697,
+  ],
+  [
+    {
+      "v1": [
+        undefined,
+        "Nn1JUFc----4JQFF",
+        1384431476,
+      ],
+      "v2": [
+        undefined,
+        "Nn1JUFc---04JQFF",
+        1899705793,
+      ],
+    },
+    "",
+    1512277979,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional deleted values: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional different cell 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                2,
+                "Nn1JUFc----4JQFF",
+                1470534267,
+              ],
+            },
+            "",
+            1803484473,
+          ],
+        },
+        "",
+        2567458708,
+      ],
+    },
+    "",
+    1544781696,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional different cell: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional different row 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFc----4JQFF",
+                1470534267,
+              ],
+            },
+            "",
+            3785573602,
+          ],
+        },
+        "",
+        3836172136,
+      ],
+    },
+    "",
+    3208234102,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional different row: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional different table 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---07JQY8",
+                1418868799,
+              ],
+            },
+            "",
+            3458635876,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFc----4JQFF",
+                1470534267,
+              ],
+            },
+            "",
+            1513266715,
+          ],
+        },
+        "",
+        15896453,
+      ],
+    },
+    "",
+    2486445715,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional different table: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional different tables 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---07JQY8",
+                1418868799,
+              ],
+            },
+            "",
+            3458635876,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---17JQY8",
+                3094997130,
+              ],
+            },
+            "",
+            60968023,
+          ],
+        },
+        "",
+        4193817040,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFc----4JQFF",
+                1470534267,
+              ],
+            },
+            "",
+            1513266715,
+          ],
+        },
+        "",
+        1299117770,
+      ],
+    },
+    "",
+    2411298910,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional different tables: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional different value 1`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {
+      "v1": [
+        2,
+        "Nn1JUFc----4JQFF",
+        1470534267,
+      ],
+    },
+    "",
+    3813613211,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional different value: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional different values 1`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ----7JQY8",
+        1481367041,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFc----4JQFF",
+        1470534267,
+      ],
+    },
+    "",
+    3126505818,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional different values: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 empty 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----4JQFF",
+                3184960709,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---04JQFF",
+                3965936079,
+              ],
+            },
+            "",
+            1654399056,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---14JQFF",
+                3153764134,
+              ],
+            },
+            "",
+            4049756473,
+          ],
+        },
+        "",
+        3078376028,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---24JQFF",
+                2126267977,
+              ],
+            },
+            "",
+            4192295099,
+          ],
+        },
+        "",
+        2607556155,
+      ],
+    },
+    "",
+    1750281465,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ---34JQFF",
+        1823786343,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---44JQFF",
+        1734181531,
+      ],
+    },
+    "",
+    1169757397,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 empty: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 3,
+  },
+  {
+    "receives": 3,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 missing cell 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFc----4JQFF",
+                1470534267,
+              ],
+            },
+            "",
+            3785573602,
+          ],
+        },
+        "",
+        3836172136,
+      ],
+    },
+    "",
+    3208234102,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 missing cell: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 missing row 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---07JQY8",
+                1418868799,
+              ],
+            },
+            "",
+            3458635876,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFc----4JQFF",
+                1470534267,
+              ],
+            },
+            "",
+            1513266715,
+          ],
+        },
+        "",
+        15896453,
+      ],
+    },
+    "",
+    2486445715,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 missing row: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 missing table 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---07JQY8",
+                1418868799,
+              ],
+            },
+            "",
+            3458635876,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---17JQY8",
+                3094997130,
+              ],
+            },
+            "",
+            60968023,
+          ],
+        },
+        "",
+        4193817040,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFc----4JQFF",
+                1470534267,
+              ],
+            },
+            "",
+            1513266715,
+          ],
+        },
+        "",
+        1299117770,
+      ],
+    },
+    "",
+    2411298910,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 missing table: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 missing tables 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFc----4JQFF",
+                1996434924,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFc---04JQFF",
+                3513748222,
+              ],
+            },
+            "",
+            3340266122,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFc---14JQFF",
+                1401629575,
+              ],
+            },
+            "",
+            1118310044,
+          ],
+        },
+        "",
+        790163703,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFc---24JQFF",
+                4119140544,
+              ],
+            },
+            "",
+            3079998867,
+          ],
+        },
+        "",
+        2276465787,
+      ],
+    },
+    "",
+    769311997,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ----7JQY8",
+        1481367041,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---07JQY8",
+        1418868799,
+      ],
+    },
+    "",
+    1216860496,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 missing tables: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 missing value 1`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFc----4JQFF",
+        1996434924,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ----7JQY8",
+        3659329950,
+      ],
+    },
+    "",
+    3254582342,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 missing value: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 missing values 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---07JQY8",
+                1418868799,
+              ],
+            },
+            "",
+            3458635876,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---17JQY8",
+                3094997130,
+              ],
+            },
+            "",
+            60968023,
+          ],
+        },
+        "",
+        4193817040,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---27JQY8",
+                3234811493,
+              ],
+            },
+            "",
+            4143244248,
+          ],
+        },
+        "",
+        2871027187,
+      ],
+    },
+    "",
+    1847652697,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFc----4JQFF",
+        1996434924,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFc---04JQFF",
+        3513748222,
+      ],
+    },
+    "",
+    2865979238,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store1 missing values: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 empty 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---07JQY8",
+                1418868799,
+              ],
+            },
+            "",
+            3458635876,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---17JQY8",
+                3094997130,
+              ],
+            },
+            "",
+            60968023,
+          ],
+        },
+        "",
+        4193817040,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---27JQY8",
+                3234811493,
+              ],
+            },
+            "",
+            4143244248,
+          ],
+        },
+        "",
+        2871027187,
+      ],
+    },
+    "",
+    1847652697,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ---37JQY8",
+        1429931447,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---47JQY8",
+        1890271195,
+      ],
+    },
+    "",
+    2758209033,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 empty: stats 1`] = `
+[
+  {
+    "receives": 2,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 2,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 missing cell 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----4JQFF",
+                3184960709,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFc----7JQY8",
+                2350014587,
+              ],
+            },
+            "",
+            496435892,
+          ],
+        },
+        "",
+        1980228450,
+      ],
+    },
+    "",
+    4251504207,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 missing cell: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 missing row 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----4JQFF",
+                3184960709,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---04JQFF",
+                3965936079,
+              ],
+            },
+            "",
+            1654399056,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFc----7JQY8",
+                2350014587,
+              ],
+            },
+            "",
+            1566142183,
+          ],
+        },
+        "",
+        2019424368,
+      ],
+    },
+    "",
+    239140857,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 missing row: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 missing table 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----4JQFF",
+                3184960709,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---04JQFF",
+                3965936079,
+              ],
+            },
+            "",
+            1654399056,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---14JQFF",
+                3153764134,
+              ],
+            },
+            "",
+            4049756473,
+          ],
+        },
+        "",
+        3078376028,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFc----7JQY8",
+                2350014587,
+              ],
+            },
+            "",
+            1566142183,
+          ],
+        },
+        "",
+        2563870402,
+      ],
+    },
+    "",
+    854291236,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 missing table: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 missing tables 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFc----7JQY8",
+                1216579812,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFc---07JQY8",
+                225485122,
+              ],
+            },
+            "",
+            1474890997,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFc---17JQY8",
+                1869365143,
+              ],
+            },
+            "",
+            4243480302,
+          ],
+        },
+        "",
+        3140366585,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFc---27JQY8",
+                461201512,
+              ],
+            },
+            "",
+            1520335250,
+          ],
+        },
+        "",
+        3082480385,
+      ],
+    },
+    "",
+    2486674283,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ----4JQFF",
+        3184960709,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---04JQFF",
+        3965936079,
+      ],
+    },
+    "",
+    1914509780,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 missing tables: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 missing value 1`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFc----7JQY8",
+        1216579812,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ----4JQFF",
+        1711779930,
+      ],
+    },
+    "",
+    4231211153,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 missing value: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 missing values 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----4JQFF",
+                3184960709,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---04JQFF",
+                3965936079,
+              ],
+            },
+            "",
+            1654399056,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---14JQFF",
+                3153764134,
+              ],
+            },
+            "",
+            4049756473,
+          ],
+        },
+        "",
+        3078376028,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---24JQFF",
+                2126267977,
+              ],
+            },
+            "",
+            4192295099,
+          ],
+        },
+        "",
+        2607556155,
+      ],
+    },
+    "",
+    1750281465,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFc----7JQY8",
+        1216579812,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFc---07JQY8",
+        225485122,
+      ],
+    },
+    "",
+    3300569323,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional store2 missing values: stats 1`] = `
+[
+  {
+    "receives": 3,
+    "sends": 4,
+  },
+  {
+    "receives": 4,
+    "sends": 3,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present conflicting cell at same time 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUF-----7JQY8",
+                1003668370,
+              ],
+            },
+            "",
+            550994372,
+          ],
+        },
+        "",
+        1072852846,
+      ],
+    },
+    "",
+    1771939739,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
+[
+  {
+    "receives": 5,
+    "sends": 6,
+  },
+  {
+    "receives": 6,
+    "sends": 5,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present conflicting cell later 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                2,
+                "Nn1JUF0----4JQFF",
+                2941533140,
+              ],
+            },
+            "",
+            3925016800,
+          ],
+        },
+        "",
+        1318000614,
+      ],
+    },
+    "",
+    1398390790,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
+[
+  {
+    "receives": 8,
+    "sends": 9,
+  },
+  {
+    "receives": 9,
+    "sends": 8,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present different cell 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUF-----7JQY8",
+                1003668370,
+              ],
+              "c2": [
+                2,
+                "Nn1JUF-----4JQFF",
+                3611282601,
+              ],
+            },
+            "",
+            3405955950,
+          ],
+        },
+        "",
+        1385929071,
+      ],
+    },
+    "",
+    3956372965,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present different cell: stats 1`] = `
+[
+  {
+    "receives": 8,
+    "sends": 9,
+  },
+  {
+    "receives": 9,
+    "sends": 8,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present different row 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUF-----7JQY8",
+                1003668370,
+              ],
+            },
+            "",
+            550994372,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUF-----4JQFF",
+                3611282601,
+              ],
+            },
+            "",
+            3956621994,
+          ],
+        },
+        "",
+        514840343,
+      ],
+    },
+    "",
+    1075396718,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present different row: stats 1`] = `
+[
+  {
+    "receives": 6,
+    "sends": 7,
+  },
+  {
+    "receives": 7,
+    "sends": 6,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present different table 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUF-----7JQY8",
+                1003668370,
+              ],
+            },
+            "",
+            550994372,
+          ],
+        },
+        "",
+        1072852846,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUF-----4JQFF",
+                3611282601,
+              ],
+            },
+            "",
+            3956621994,
+          ],
+        },
+        "",
+        559790201,
+      ],
+    },
+    "",
+    2579067098,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present different table: stats 1`] = `
+[
+  {
+    "receives": 4,
+    "sends": 5,
+  },
+  {
+    "receives": 5,
+    "sends": 4,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All but first empty 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---07JQY8",
+                1418868799,
+              ],
+            },
+            "",
+            3458635876,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---17JQY8",
+                3094997130,
+              ],
+            },
+            "",
+            60968023,
+          ],
+        },
+        "",
+        4193817040,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---27JQY8",
+                3234811493,
+              ],
+            },
+            "",
+            4143244248,
+          ],
+        },
+        "",
+        2871027187,
+      ],
+    },
+    "",
+    1847652697,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ---37JQY8",
+        1429931447,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---47JQY8",
+        1890271195,
+      ],
+    },
+    "",
+    2758209033,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All but first empty: stats 1`] = `
+{
+  "receives": 189,
+  "sends": 21,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All but last empty 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----GdXzv",
+                2848116809,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---0GdXzv",
+                3966100299,
+              ],
+            },
+            "",
+            2097058346,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---1GdXzv",
+                3491378270,
+              ],
+            },
+            "",
+            3743013602,
+          ],
+        },
+        "",
+        2099656078,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---2GdXzv",
+                1492410301,
+              ],
+            },
+            "",
+            3007495395,
+          ],
+        },
+        "",
+        1102670774,
+      ],
+    },
+    "",
+    1290328994,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ---3GdXzv",
+        2660222579,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---4GdXzv",
+        3705103879,
+      ],
+    },
+    "",
+    2654343074,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All but last empty: stats 1`] = `
+{
+  "receives": 189,
+  "sends": 21,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All empty 1`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All empty: stats 1`] = `
+{
+  "receives": 180,
+  "sends": 20,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All match 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----GdXzv",
+                2848116809,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---0GdXzv",
+                3966100299,
+              ],
+            },
+            "",
+            2097058346,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---1GdXzv",
+                3491378270,
+              ],
+            },
+            "",
+            3743013602,
+          ],
+        },
+        "",
+        2099656078,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---2GdXzv",
+                1492410301,
+              ],
+            },
+            "",
+            3007495395,
+          ],
+        },
+        "",
+        1102670774,
+      ],
+    },
+    "",
+    1290328994,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ---3GdXzv",
+        2660222579,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---4GdXzv",
+        3705103879,
+      ],
+    },
+    "",
+    2654343074,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All match: stats 1`] = `
+{
+  "receives": 270,
+  "sends": 30,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting cells 1`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting cells 2`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                10,
+                "Nn1JUFJ----GdXzv",
+                2938835537,
+              ],
+            },
+            "",
+            70367925,
+          ],
+        },
+        "",
+        2452067305,
+      ],
+    },
+    "",
+    915195486,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting cells 3`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                42,
+                "Nn1JUFc----AJQq1",
+                4260140052,
+              ],
+            },
+            "",
+            1299197824,
+          ],
+        },
+        "",
+        1697250428,
+      ],
+    },
+    "",
+    1939462604,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting cells: stats 1`] = `
+{
+  "receives": 180,
+  "sends": 20,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting cells: stats 2`] = `
+{
+  "receives": 270,
+  "sends": 30,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting cells: stats 3`] = `
+{
+  "receives": 279,
+  "sends": 31,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting values 1`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {
+      "v1": [
+        10,
+        "Nn1JUFJ----GdXzv",
+        2938835537,
+      ],
+    },
+    "",
+    1774860763,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting values 2`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {
+      "v1": [
+        42,
+        "Nn1JUFc----8JQdR",
+        178939027,
+      ],
+    },
+    "",
+    1068823922,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting values: stats 1`] = `
+{
+  "receives": 270,
+  "sends": 30,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting values: stats 2`] = `
+{
+  "receives": 279,
+  "sends": 31,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all different cells 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+              "c10": [
+                1,
+                "Nn1JUFJ----GdXzv",
+                2848116809,
+              ],
+              "c2": [
+                1,
+                "Nn1JUFJ----4JQFF",
+                3184960709,
+              ],
+              "c3": [
+                1,
+                "Nn1JUFJ----5JQLY",
+                1021698973,
+              ],
+              "c4": [
+                1,
+                "Nn1JUFJ----AJQq1",
+                1721210160,
+              ],
+              "c5": [
+                1,
+                "Nn1JUFJ----BJQwK",
+                2312160621,
+              ],
+              "c6": [
+                1,
+                "Nn1JUFJ----8JQdR",
+                1994551575,
+              ],
+              "c7": [
+                1,
+                "Nn1JUFJ----9JQjj",
+                3071238614,
+              ],
+              "c8": [
+                1,
+                "Nn1JUFJ----EJRED",
+                56320826,
+              ],
+              "c9": [
+                1,
+                "Nn1JUFJ----FJRKW",
+                1821667204,
+              ],
+            },
+            "",
+            1639107489,
+          ],
+        },
+        "",
+        4032434416,
+      ],
+    },
+    "",
+    2792496147,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all different cells: stats 1`] = `
+{
+  "receives": 270,
+  "sends": 30,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all different rows 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+            },
+            "",
+            3146898169,
+          ],
+          "r10": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----GdXzv",
+                2848116809,
+              ],
+            },
+            "",
+            4133604847,
+          ],
+          "r2": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----4JQFF",
+                3184960709,
+              ],
+            },
+            "",
+            1087269971,
+          ],
+          "r3": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----5JQLY",
+                1021698973,
+              ],
+            },
+            "",
+            4106007678,
+          ],
+          "r4": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----AJQq1",
+                1721210160,
+              ],
+            },
+            "",
+            3797005459,
+          ],
+          "r5": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----BJQwK",
+                2312160621,
+              ],
+            },
+            "",
+            3029739090,
+          ],
+          "r6": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----8JQdR",
+                1994551575,
+              ],
+            },
+            "",
+            3996112601,
+          ],
+          "r7": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----9JQjj",
+                3071238614,
+              ],
+            },
+            "",
+            3992682577,
+          ],
+          "r8": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----EJRED",
+                56320826,
+              ],
+            },
+            "",
+            494987056,
+          ],
+          "r9": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----FJRKW",
+                1821667204,
+              ],
+            },
+            "",
+            3174350083,
+          ],
+        },
+        "",
+        754469793,
+      ],
+    },
+    "",
+    2262912522,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all different rows: stats 1`] = `
+{
+  "receives": 270,
+  "sends": 30,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all different tables 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----7JQY8",
+                1481367041,
+              ],
+            },
+            "",
+            3146898169,
+          ],
+        },
+        "",
+        3777210625,
+      ],
+      "t10": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----GdXzv",
+                2848116809,
+              ],
+            },
+            "",
+            4133604847,
+          ],
+        },
+        "",
+        288445572,
+      ],
+      "t2": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----4JQFF",
+                3184960709,
+              ],
+            },
+            "",
+            1087269971,
+          ],
+        },
+        "",
+        2256810252,
+      ],
+      "t3": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----5JQLY",
+                1021698973,
+              ],
+            },
+            "",
+            4106007678,
+          ],
+        },
+        "",
+        231558365,
+      ],
+      "t4": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----AJQq1",
+                1721210160,
+              ],
+            },
+            "",
+            3797005459,
+          ],
+        },
+        "",
+        144067911,
+      ],
+      "t5": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----BJQwK",
+                2312160621,
+              ],
+            },
+            "",
+            3029739090,
+          ],
+        },
+        "",
+        2470673298,
+      ],
+      "t6": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----8JQdR",
+                1994551575,
+              ],
+            },
+            "",
+            3996112601,
+          ],
+        },
+        "",
+        1751960316,
+      ],
+      "t7": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----9JQjj",
+                3071238614,
+              ],
+            },
+            "",
+            3992682577,
+          ],
+        },
+        "",
+        1686980072,
+      ],
+      "t8": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----EJRED",
+                56320826,
+              ],
+            },
+            "",
+            494987056,
+          ],
+        },
+        "",
+        3191971278,
+      ],
+      "t9": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----FJRKW",
+                1821667204,
+              ],
+            },
+            "",
+            3174350083,
+          ],
+        },
+        "",
+        908722820,
+      ],
+    },
+    "",
+    2545745135,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all different tables: stats 1`] = `
+{
+  "receives": 270,
+  "sends": 30,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all different values 1`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ----7JQY8",
+        1481367041,
+      ],
+      "v10": [
+        1,
+        "Nn1JUFJ----GdXzv",
+        2848116809,
+      ],
+      "v2": [
+        1,
+        "Nn1JUFJ----4JQFF",
+        3184960709,
+      ],
+      "v3": [
+        1,
+        "Nn1JUFJ----5JQLY",
+        1021698973,
+      ],
+      "v4": [
+        1,
+        "Nn1JUFJ----AJQq1",
+        1721210160,
+      ],
+      "v5": [
+        1,
+        "Nn1JUFJ----BJQwK",
+        2312160621,
+      ],
+      "v6": [
+        1,
+        "Nn1JUFJ----8JQdR",
+        1994551575,
+      ],
+      "v7": [
+        1,
+        "Nn1JUFJ----9JQjj",
+        3071238614,
+      ],
+      "v8": [
+        1,
+        "Nn1JUFJ----EJRED",
+        56320826,
+      ],
+      "v9": [
+        1,
+        "Nn1JUFJ----FJRKW",
+        1821667204,
+      ],
+    },
+    "",
+    2033425825,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all different values: stats 1`] = `
+{
+  "receives": 270,
+  "sends": 30,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional half tables, half values 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUFJ----GdXzv",
+                2848116809,
+              ],
+              "c2": [
+                2,
+                "Nn1JUFJ---0GdXzv",
+                3966100299,
+              ],
+            },
+            "",
+            2097058346,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---1GdXzv",
+                3491378270,
+              ],
+            },
+            "",
+            3743013602,
+          ],
+        },
+        "",
+        2099656078,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUFJ---2GdXzv",
+                1492410301,
+              ],
+            },
+            "",
+            3007495395,
+          ],
+        },
+        "",
+        1102670774,
+      ],
+    },
+    "",
+    1290328994,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUFJ----BJQwK",
+        2312160621,
+      ],
+      "v2": [
+        2,
+        "Nn1JUFJ---0BJQwK",
+        3171014571,
+      ],
+    },
+    "",
+    2945486458,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional half tables, half values: stats 1`] = `
+{
+  "receives": 270,
+  "sends": 30,
+}
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
+[
+  [
+    {
+      "t0": [
+        {
+          "r0": [
+            {
+              "c0": [
+                0,
+                "",
+                401433231,
+              ],
+            },
+            "",
+            2660078143,
+          ],
+        },
+        "",
+        2466603274,
+      ],
+    },
+    "",
+    471459239,
+  ],
+  [
+    {
+      "v0": [
+        0,
+        "",
+        401433231,
+      ],
+    },
+    "",
+    30487211,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUF-----4JQFF",
+                1571158606,
+              ],
+              "c2": [
+                2,
+                "Nn1JUF----04JQFF",
+                2579924428,
+              ],
+            },
+            "",
+            393549698,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUF----14JQFF",
+                1095759933,
+              ],
+            },
+            "",
+            3942864403,
+          ],
+        },
+        "",
+        3161951752,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUF----24JQFF",
+                3217479738,
+              ],
+            },
+            "",
+            2455282067,
+          ],
+        },
+        "",
+        3011490602,
+      ],
+    },
+    "",
+    2409336257,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUF----34JQFF",
+        2710197892,
+      ],
+      "v2": [
+        2,
+        "Nn1JUF----44JQFF",
+        1199714240,
+      ],
+    },
+    "",
+    1331128504,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUF-----7JQY8",
+                1003668370,
+              ],
+              "c2": [
+                2,
+                "Nn1JUF----07JQY8",
+                705616516,
+              ],
+            },
+            "",
+            995081933,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUF----17JQY8",
+                1804136345,
+              ],
+            },
+            "",
+            3962195473,
+          ],
+        },
+        "",
+        1450058239,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUF----27JQY8",
+                3879084990,
+              ],
+            },
+            "",
+            2456610213,
+          ],
+        },
+        "",
+        2784993043,
+      ],
+    },
+    "",
+    720532853,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUF----37JQY8",
+        3542219356,
+      ],
+      "v2": [
+        2,
+        "Nn1JUF----47JQY8",
+        1836742504,
+      ],
+    },
+    "",
+    608507240,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 2,
+  },
+  {
+    "receives": 2,
+    "sends": 0,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
+[
+  [
+    {
+      "t0": [
+        {
+          "r0": [
+            {
+              "c0": [
+                0,
+                "",
+                401433231,
+              ],
+            },
+            "",
+            2660078143,
+          ],
+        },
+        "",
+        2466603274,
+      ],
+    },
+    "",
+    471459239,
+  ],
+  [
+    {
+      "v0": [
+        0,
+        "",
+        401433231,
+      ],
+    },
+    "",
+    30487211,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUF-----4JQFF",
+                1571158606,
+              ],
+              "c2": [
+                2,
+                "Nn1JUF----04JQFF",
+                2579924428,
+              ],
+            },
+            "",
+            393549698,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUF----14JQFF",
+                1095759933,
+              ],
+            },
+            "",
+            3942864403,
+          ],
+        },
+        "",
+        3161951752,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUF----24JQFF",
+                3217479738,
+              ],
+            },
+            "",
+            2455282067,
+          ],
+        },
+        "",
+        3011490602,
+      ],
+    },
+    "",
+    2409336257,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUF----34JQFF",
+        2710197892,
+      ],
+      "v2": [
+        2,
+        "Nn1JUF----44JQFF",
+        1199714240,
+      ],
+    },
+    "",
+    1331128504,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional save1 but not autoLoad2 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUF-----7JQY8",
+                1003668370,
+              ],
+              "c2": [
+                2,
+                "Nn1JUF----07JQY8",
+                705616516,
+              ],
+            },
+            "",
+            995081933,
+          ],
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUF----17JQY8",
+                1804136345,
+              ],
+            },
+            "",
+            3962195473,
+          ],
+        },
+        "",
+        1450058239,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                2,
+                "Nn1JUF----27JQY8",
+                3879084990,
+              ],
+            },
+            "",
+            2456610213,
+          ],
+        },
+        "",
+        2784993043,
+      ],
+    },
+    "",
+    720532853,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUF----37JQY8",
+        3542219356,
+      ],
+      "v2": [
+        2,
+        "Nn1JUF----47JQY8",
+        1836742504,
+      ],
+    },
+    "",
+    608507240,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional save1 but not autoLoad2 2`] = `
+[
+  [
+    {},
+    "",
+    0,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
+`;
+
 exports[`Syncs to/from Custom Synchronizer Bidirectional Both empty 1`] = `
 [
   [
