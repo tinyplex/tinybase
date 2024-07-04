@@ -5,7 +5,7 @@
  * A single entry point, the createAutomergePersister function, is provided,
  * which returns a new Persister object that can bind a Store to a provided
  * Automerge document handle (and in turn, its document).
- * @see Synchronizing Data guide
+ * @see Third-Party CRDT Persistence guide
  * @packageDocumentation
  * @module persister-automerge
  * @since v4.0.0

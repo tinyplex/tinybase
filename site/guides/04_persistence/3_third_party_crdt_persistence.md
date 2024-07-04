@@ -1,24 +1,29 @@
-# Synchronizing Data
+# Third-Party CRDT Persistence
 
 Some persister modules let you save and load Store data to underlying storage
 types that can provide synchronization, local-first reconciliation, and CRDTs.
 
 These include:
 
-- The createYjsPersister function (in the persister-yjs module) returns a
-  Persister that connects to a [Yjs](https://yjs.dev/) document.
-- The createAutomergePersister function (in the persister-automerge module)
-  returns a Persister that connects to an [Automerge](https://automerge.org/)
-  document via [automerge-repo](https://github.com/automerge/automerge-repo).
+- The createYjsPersister function (in the persister-yjs module), which returns a
+  YjsPersister that connects to a [Yjs](https://yjs.dev/) document.
+- The createAutomergePersister function (in the persister-automerge module),
+  which returns an AutomergePersister that connects to an
+  [Automerge](https://automerge.org/) document via
+  [automerge-repo](https://github.com/automerge/automerge-repo).
 
 The APIs are exactly the same as for other persisters, but there is some
 additional infrastructure behind the scenes to ensure that the updates are as
 incremental and atomic as possible, improving the reconciliation capabilities.
 
+For TinyBase v5's first-party CRDT and synchronization techniques, see instead
+the Synchronization guides.
+
 ## A Synchronization Walkthrough
 
-For fully-fledged synchronization, you will want to use both auto-load and
-auto-save between the Store and the underlying synchronization framework.
+For fully-fledged synchronization with a third-party framework, you will want to
+use both auto-load and auto-save between the Store and the underlying
+synchronization framework.
 
 In this case, we have two Yjs documents that are each bound to their respective
 Store objects by a Persister with auto-load and auto-save:

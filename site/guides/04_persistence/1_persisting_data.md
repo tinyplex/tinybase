@@ -3,7 +3,9 @@
 The persister module lets you save and load Store data to and from different
 locations, or underlying storage types.
 
-This is useful for preserving Store data between browser sessions or reloads,
+Remember that TinyBase Stores are in-memory data structures, so you will
+generally want to use a Persister to store that data longer-term. For example,
+they are useful for preserving Store data between browser sessions or reloads,
 saving or loading browser state to or from a server, saving Store data to disk
 in a environment with filesystem access, or, in v4.0 and above, to SQLite and
 CRDT frameworks like [Yjs](https://yjs.dev/) and
@@ -11,39 +13,65 @@ CRDT frameworks like [Yjs](https://yjs.dev/) and
 
 ## Types of Persisters
 
-Several entry points are provided (in separately installed modules), each of
-which returns a new Persister object that can load and save a Store. Between
+Many entry points are provided (in separately installed modules), each of which
+returns different types of Persister that can load and save a Store. Between
 them, these allow you to store your TinyBase data locally, remotely, to SQLite
 databases, and across synchronization boundaries with CRDT frameworks.
 
-| Module                    | Function                    | Storage                                                                                                |
-| ------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------ |
-| persister-browser         | createSessionPersister      | Browser session storage                                                                                |
-| persister-browser         | createLocalPersister        | Browser local storage                                                                                  |
-| persister-indexed-db      | createIndexedDbPersister    | Browser IndexedDB                                                                                      |
-| persister-remote          | createRemotePersister       | Remote server                                                                                          |
-| persister-file            | createFilePersister         | Local file (where possible)                                                                            |
-| persister-partykit-client | createPartyKitPersister     | PartyKit with the persister-partykit-server module                                                     |
-| persister-sqlite3         | createSqlite3Persister      | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                |
-| persister-sqlite-wasm     | createSqliteWasmPersister   | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                         |
-| persister-cr-sqlite-wasm  | createCrSqliteWasmPersister | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                               |
-| persister-expo-sqlite     | createExpoSqlitePersister   | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite) |
-| persister-electric-sql    | createElectricSqlPersister  | Electric SQL, via [electric](https://github.com/electric-sql/electric)                                 |
-| persister-libsql          | createLibSqlPersister       | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)               |
-| persister-powersync       | createPowerSyncPersister    | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                           |
-| persister-yjs             | createYjsPersister          | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                                       |
-| persister-automerge       | createSqliteWasmPersister   | Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo)                     |
+### Basic Persisters
+
+These are reasonably simple Persisters that generally load and save a
+JSON-serialized version of your Store. They are good for smaller data sets and
+where you need to have something saved in a basic browser or server environment.
+
+| Persister          | Creation function        | Storage                 |
+| ------------------ | ------------------------ | ----------------------- |
+| SessionPersister   | createSessionPersister   | Browser session storage |
+| LocalPersister     | createLocalPersister     | Browser local storage   |
+| FilePersister      | createFilePersister      | Local file              |
+| IndexedDbPersister | createIndexedDbPersister | Browser IndexedDB       |
+| RemotePersister    | createRemotePersister    | Remote server           |
+
+### Database Persisters
+
+These are Persisters that can load and save either a JSON-serialized, or tabular
+version of your Store into a database. They are good for larger data sets, often
+on a server - but can also work in a browser environment when a SQLite instance
+is available.
+
+| Persister             | Creation function           | Storage                                                                                                |
+| --------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Sqlite3Persister      | createSqlite3Persister      | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                |
+| SqliteWasmPersister   | createSqliteWasmPersister   | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                         |
+| ExpoSqlitePersister   | createExpoSqlitePersister   | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite) |
+| CrSqliteWasmPersister | createCrSqliteWasmPersister | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                               |
+| ElectricSqlPersister  | createElectricSqlPersister  | Electric SQL, via [electric](https://github.com/electric-sql/electric)                                 |
+| LibSqlPersister       | createLibSqlPersister       | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)               |
+| PowerSyncPersister    | createPowerSyncPersister    | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                           |
 
 See the Database Persistence guide for details on how to work with SQLite
-databases, and the Synchronizing Data guide for more complex synchronization
-with the CRDT frameworks.
+databases.
 
-There is also a way to developer custom Persisters of your own, which we
-describe in the Custom Persistence guide.
+### Third-Party CRDT & Socket Persisters
+
+These Persisters can bind your Store into third-party CRDT frameworks, or
+synchronize over sockets to PartyKit.
+
+| Persister          | Creation function        | Storage                                                                            |
+| ------------------ | ------------------------ | ---------------------------------------------------------------------------------- |
+| YjsPersister       | createYjsPersister       | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                   |
+| AutomergePersister | createAutomergePersister | Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo) |
+| PartyKitPersister  | createPartyKitPersister  | [PartyKit](https://www.partykit.io/), via the persister-partykit-server module     |
+
+See the Third-Party CRDT Persistence guide for more complex synchronization with
+the CRDT frameworks.
+
+There is also a way to develop custom Persisters of your own, which we describe
+in the Custom Persistence guide.
 
 ## Persister Operations
 
-A Persister lets you explicit save or load data, with the save method and the
+A Persister lets you explicitly save or load data, with the save method and the
 load method respectively. These methods are both asynchronous (since the
 underlying data storage may also be) and return promises. As a result you should
 use the `await` keyword to call them in a way that guarantees subsequent
@@ -142,4 +170,4 @@ for logging commands and queries made to the underlying database.
 
 Use the persisters module to load and save data from and to a variety of common
 persistence layers. When these don't suffice, you can also develop custom
-Persisters of your own, for which we proceed to the Custom Persistence guide.
+Persisters of your own.

@@ -5,7 +5,7 @@
  * A single entry point, the createYjsPersister function, is provided, which
  * returns a new Persister object that can bind a Store to a provided Yjs
  * document.
- * @see Synchronizing Data guide
+ * @see Third-Party CRDT Persistence guide
  * @packageDocumentation
  * @module persister-yjs
  * @since v4.0.0

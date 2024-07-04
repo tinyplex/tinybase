@@ -1,7 +1,7 @@
 /**
  * The synchronizer-ws-server module of the TinyBase project lets you create
  * a server that facilitates synchronization between clients.
- * @see Synchronizing Data guide
+ * @see Synchronization guide
  * @see Todo App v6 (collaboration) demo
  * @packageDocumentation
  * @module synchronizer-ws-server
