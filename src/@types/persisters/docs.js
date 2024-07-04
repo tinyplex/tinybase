@@ -4,28 +4,29 @@
  * saving and loading Store and MergeableStore data, to and from different
  * destinations, or underlying storage types.
  *
- * Several entry points are provided (in separately installed modules), each of
- * which returns a new Persister object that can load and save a Store. Between
- * them, these allow you to store your TinyBase data locally, remotely, to
- * SQLite databases, and across synchronization boundaries with CRDT frameworks.
+ * Many entry points are provided (in separately installed modules), each of
+ * which returns different types of Persister that can load and save a Store.
+ * Between them, these allow you to store your TinyBase data locally, remotely,
+ * to SQLite databases, and across synchronization boundaries with CRDT
+ * frameworks.
  *
- * |Module|Function|Storage|Store|MergeableStore
- * |-|-|-|-|-|
- * |persister-browser|createSessionPersister|Browser session storage|Yes|Yes
- * |persister-browser|createLocalPersister|Browser local storage|Yes|Yes
- * |persister-file|createFilePersister|Local file (where possible)|Yes|Yes
- * |persister-sqlite3|createSqlite3Persister|SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)|Yes|Yes*
- * |persister-sqlite-wasm|createSqliteWasmPersister|SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)|Yes|Yes*
- * |persister-expo-sqlite|createExpoSqlitePersister|SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)|Yes|Yes*
- * |persister-indexed-db|createIndexedDbPersister|Browser IndexedDB|Yes|No
- * |persister-remote|createRemotePersister|Remote server|Yes|No
- * |persister-partykit-client|createPartyKitPersister|PartyKit with the persister-partykit-server module|Yes|No
- * |persister-cr-sqlite-wasm|createCrSqliteWasmPersister|SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)|Yes|No
- * |persister-electric-sql|createElectricSqlPersister|Electric SQL, via [electric-sql](https://github.com/electric-sql/electric)|Yes|No
- * |persister-libsql|createLibSqlPersister|LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)|Yes|No
- * |persister-powersync|createPowerSyncPersister|PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)|Yes|No
- * |persister-yjs|createYjsPersister|Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)|Yes|No
- * |persister-automerge|createSqliteWasmPersister|Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo)|Yes|No|
+ * |Persister|Storage|Store|MergeableStore
+ * |-|-|-|-|
+ * |SessionPersister|Browser session storage|Yes|Yes
+ * |LocalPersister|Browser local storage|Yes|Yes
+ * |FilePersister|Local file (where possible)|Yes|Yes
+ * |IndexedDbPersister|Browser IndexedDB|Yes|No
+ * |RemotePersister|Remote server|Yes|No
+ * |Sqlite3Persister|SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)|Yes|Yes*
+ * |SqliteWasmPersister|SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)|Yes|Yes*
+ * |ExpoSqlitePersister|SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)|Yes|Yes*
+ * |CrSqliteWasmPersister|SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)|Yes|No
+ * |ElectricSqlPersister|Electric SQL, via [electric-sql](https://github.com/electric-sql/electric)|Yes|No
+ * |LibSqlPersister|LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)|Yes|No
+ * |PowerSyncPersister|PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)|Yes|No
+ * |YjsPersister|Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)|Yes|No
+ * |SqliteWasmPersister|Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo)|Yes|No
+ * |PartyKitPersister|[PartyKit](https://www.partykit.io/), via the persister-partykit-server module|Yes|No|
  *
  * (*) Note that SQLite-based Persisters can currently only persist
  * MergeableStore data when using the JSON-based DpcJson mode, and not in a
@@ -36,7 +37,7 @@
  * create a fully customized way to save and load Store data.
  * @see Persisting Data guide
  * @see Database Persistence guide
- * @see Synchronizing Data guide
+ * @see Third-Party CRDT Persistence guide
  * @see Countries demo
  * @see Todo App demos
  * @see Drawing demo

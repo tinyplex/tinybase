@@ -1,3 +1,3 @@
 # Synchronizing Data
 
--> /guides/persistence/synchronizing-data
+-> /guides/persistence/third-party-crdt-persistence
