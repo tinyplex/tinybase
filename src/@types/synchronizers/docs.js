@@ -374,7 +374,7 @@
  * @param send A Send function for sending a message.
  * @param onReceive A callback (called once when the Synchronizer is created)
  * that is passed a Receive function that you need to ensure can receive
- * messages.
+ * messages addressed or broadcast to this client.
  * @param destroy A function called when destroying the Persister which can be
  * used to clean up underlying resources.
  * @param requestTimeoutSeconds An number of seconds before a request sent from
