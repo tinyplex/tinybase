@@ -9,7 +9,7 @@
  *   browser's session storage.
  * - The createLocalPersister function returns a Persister that uses the
  *   browser's local storage.
- * @see Persisting Data guide
+ * @see Persistence guides
  * @packageDocumentation
  * @module persister-browser
  * @since v1.0.0
@@ -19,12 +19,12 @@
  * The SessionPersister interface represents a Persister that lets you save and
  * load Store data to and from the browser's session storage.
  *
+ * You should use the createSessionPersister function to create a
+ * SessionPersister object.
+ *
  * It is a minor extension to the Persister interface and simply provides an
  * extra getStorageName method for accessing the unique key of the storage
  * location the Store is being persisted to.
- *
- * You should use the createSessionPersister function to create a
- * SessionPersister object.
  * @category Persister
  * @since v4.3.14
  */

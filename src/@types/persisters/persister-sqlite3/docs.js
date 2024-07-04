@@ -2,7 +2,7 @@
  * The persister-sqlite3 module of the TinyBase project lets you save and load
  * Store data to and from a local SQLite database (in an appropriate
  * environment).
- * @see Persisting Data guide
+ * @see Database Persistence guide
  * @packageDocumentation
  * @module persister-sqlite3
  * @since v4.0.0
@@ -12,12 +12,12 @@
  * The Sqlite3Persister interface represents a Persister that lets you save and
  * load Store data to and from a local SQLite database.
  *
+ * You should use the createSqlite3Persister function to create a
+ * Sqlite3Persister object.
+ *
  * It is a minor extension to the Persister interface and simply provides an
  * extra getDb method for accessing a reference to the database instance the
  * Store is being persisted to.
- *
- * You should use the createSqlite3Persister function to create a
- * Sqlite3Persister object.
  * @category Persister
  * @since v4.3.14
  */

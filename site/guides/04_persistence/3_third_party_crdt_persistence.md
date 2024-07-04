@@ -3,14 +3,10 @@
 Some persister modules let you save and load Store data to underlying storage
 types that can provide synchronization, local-first reconciliation, and CRDTs.
 
-These include:
-
-- The createYjsPersister function (in the persister-yjs module), which returns a
-  YjsPersister that connects to a [Yjs](https://yjs.dev/) document.
-- The createAutomergePersister function (in the persister-automerge module),
-  which returns an AutomergePersister that connects to an
-  [Automerge](https://automerge.org/) document via
-  [automerge-repo](https://github.com/automerge/automerge-repo).
+| Persister          | Storage                                                                            |
+| ------------------ | ---------------------------------------------------------------------------------- |
+| YjsPersister       | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                   |
+| AutomergePersister | Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo) |
 
 The APIs are exactly the same as for other persisters, but there is some
 additional infrastructure behind the scenes to ensure that the updates are as

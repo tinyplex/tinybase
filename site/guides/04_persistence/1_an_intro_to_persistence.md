@@ -1,4 +1,4 @@
-# Persisting Data
+# An Intro To Persistence
 
 The persister module lets you save and load Store data to and from different
 locations, or underlying storage types.
@@ -24,13 +24,13 @@ These are reasonably simple Persisters that generally load and save a
 JSON-serialized version of your Store. They are good for smaller data sets and
 where you need to have something saved in a basic browser or server environment.
 
-| Persister          | Creation function        | Storage                 |
-| ------------------ | ------------------------ | ----------------------- |
-| SessionPersister   | createSessionPersister   | Browser session storage |
-| LocalPersister     | createLocalPersister     | Browser local storage   |
-| FilePersister      | createFilePersister      | Local file              |
-| IndexedDbPersister | createIndexedDbPersister | Browser IndexedDB       |
-| RemotePersister    | createRemotePersister    | Remote server           |
+| Persister          | Storage                 |
+| ------------------ | ----------------------- |
+| SessionPersister   | Browser session storage |
+| LocalPersister     | Browser local storage   |
+| FilePersister      | Local file              |
+| IndexedDbPersister | Browser IndexedDB       |
+| RemotePersister    | Remote server           |
 
 ### Database Persisters
 
@@ -39,15 +39,15 @@ version of your Store into a database. They are good for larger data sets, often
 on a server - but can also work in a browser environment when a SQLite instance
 is available.
 
-| Persister             | Creation function           | Storage                                                                                                |
-| --------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------ |
-| Sqlite3Persister      | createSqlite3Persister      | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                |
-| SqliteWasmPersister   | createSqliteWasmPersister   | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                         |
-| ExpoSqlitePersister   | createExpoSqlitePersister   | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite) |
-| CrSqliteWasmPersister | createCrSqliteWasmPersister | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                               |
-| ElectricSqlPersister  | createElectricSqlPersister  | Electric SQL, via [electric](https://github.com/electric-sql/electric)                                 |
-| LibSqlPersister       | createLibSqlPersister       | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)               |
-| PowerSyncPersister    | createPowerSyncPersister    | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                           |
+| Persister             | Storage                                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------------------ |
+| Sqlite3Persister      | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                |
+| SqliteWasmPersister   | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                         |
+| ExpoSqlitePersister   | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite) |
+| CrSqliteWasmPersister | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                               |
+| ElectricSqlPersister  | Electric SQL, via [electric](https://github.com/electric-sql/electric)                                 |
+| LibSqlPersister       | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)               |
+| PowerSyncPersister    | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                           |
 
 See the Database Persistence guide for details on how to work with SQLite
 databases.
@@ -57,11 +57,11 @@ databases.
 These Persisters can bind your Store into third-party CRDT frameworks, or
 synchronize over sockets to PartyKit.
 
-| Persister          | Creation function        | Storage                                                                            |
-| ------------------ | ------------------------ | ---------------------------------------------------------------------------------- |
-| YjsPersister       | createYjsPersister       | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                   |
-| AutomergePersister | createAutomergePersister | Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo) |
-| PartyKitPersister  | createPartyKitPersister  | [PartyKit](https://www.partykit.io/), via the persister-partykit-server module     |
+| Persister          | Storage                                                                            |
+| ------------------ | ---------------------------------------------------------------------------------- |
+| YjsPersister       | Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)                                   |
+| AutomergePersister | Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo) |
+| PartyKitPersister  | [PartyKit](https://www.partykit.io/), via the persister-partykit-server module     |
 
 See the Third-Party CRDT Persistence guide for more complex synchronization with
 the CRDT frameworks.

@@ -1,7 +1,7 @@
 /**
  * The persister-remote module of the TinyBase project lets you save and load
  * Store data to and from a remote server.
- * @see Persisting Data guide
+ * @see Persistence guides
  * @packageDocumentation
  * @module persister-remote
  * @since v1.0.0
@@ -11,11 +11,11 @@
  * The RemotePersister interface represents a Persister that lets you save and
  * load Store data to and from a remote server.
  *
- * It is a minor extension to the Persister interface and simply provides an
- * extra getUrls method for accessing the URLs the Store is being persisted to.
- *
  * You should use the createRemotePersister function to create a RemotePersister
  * object.
+ *
+ * It is a minor extension to the Persister interface and simply provides an
+ * extra getUrls method for accessing the URLs the Store is being persisted to.
  * @category Persister
  * @since v4.3.14
  */

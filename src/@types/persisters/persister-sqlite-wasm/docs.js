@@ -2,7 +2,7 @@
  * The persister-sqlite-wasm module of the TinyBase project lets you save and
  * load Store data to and from a local SQLite database (in an appropriate
  * environment).
- * @see Persisting Data guide
+ * @see Database Persistence guide
  * @packageDocumentation
  * @module persister-sqlite-wasm
  * @since v4.0.0
@@ -12,12 +12,12 @@
  * The SqliteWasmPersister interface represents a Persister that lets you save
  * and load Store data to and from a local SQLite database.
  *
+ * You should use the createSqliteWasmPersister function to create a
+ * SqliteWasmPersister object.
+ *
  * It is a minor extension to the Persister interface and simply provides an
  * extra getDb method for accessing a reference to the database instance the
  * Store is being persisted to.
- *
- * You should use the createSqliteWasmPersister function to create a
- * SqliteWasmPersister object.
  * @category Persister
  * @since v4.3.14
  */

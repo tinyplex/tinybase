@@ -12,7 +12,7 @@
  *
  * Note that both the client and server parts of this Persister are currently
  * experimental as PartyKit is new and still maturing.
- * @see Persisting Data guide
+ * @see Persistence guides
  * @packageDocumentation
  * @module persister-partykit-client
  * @since v4.3.0
@@ -23,12 +23,12 @@
  * load Store data from the client to the durable PartyKit cloud storage of a
  * server.
  *
+ * You should use the createPartyKitPersister function to create a
+ * PartyKitPersister object.
+ *
  * It is a minor extension to the Persister interface and simply provides an
  * extra getConnection method for accessing the PartySocket the Store is being
  * persisted to.
- *
- * You should use the createPartyKitPersister function to create a
- * PartyKitPersister object.
  * @category Persister
  * @since v4.3.14
  */
