@@ -36,19 +36,15 @@ body > main > article#home {
     max-width: 40rem;
     margin: auto;
     h2 {
-      font-size: 2rem;
+      font-size: 3rem;
+      line-height: 3.6rem;
       text-align: center;
-      span {
+      em {
         white-space: nowrap;
       }
     }
     p {
       text-align: center;
-    }
-    p#copy {
-      font-size: 1.1rem;
-      line-height: 2rem;
-      margin-bottom: 0rem;
     }
   }
   span#one-with {
@@ -59,46 +55,6 @@ body > main > article#home {
     text-align: center;
     white-space: nowrap;
     font-size: 1.1rem;
-  }
-  > ul {
-    margin: 0;
-    li {
-      margin-bottom: 1rem;
-      &:before {
-        font-family: Icons;
-        font-size: 1.6rem;
-        vertical-align: middle;
-        line-height: 1.4rem;
-        text-align: left;
-        margin-left: -2rem;
-      }
-    }
-    &:nth-of-type(1) {
-      li:nth-of-type(1):before {
-        content: '\f191';
-      }
-      li:nth-of-type(2):before {
-        content: '\e627';
-      }
-      li:nth-of-type(3):before {
-        content: '\e429';
-      }
-      li:nth-of-type(4):before {
-        content: '\f6ef';
-      }
-      li:nth-of-type(5):before {
-        content: '\ead3';
-      }
-      li:nth-of-type(6):before {
-        content: '\eb5a';
-      }
-      li:nth-of-type(7):before {
-        content: '\f84d';
-      }
-      li:nth-of-type(8):before {
-        content: '\f720';
-      }
-    }
   }
   > p > a {
     display: block;
@@ -138,7 +94,6 @@ body > main > article#home {
   em a {
     color: @accentColor;
     font-style: normal;
-    font-weight: 800;
   }
   pre {
     font-size: 0.94rem;
@@ -228,10 +183,13 @@ body > main > article#home {
     > .table {
       margin-top: 0.5rem;
     }
-    > section:nth-of-type(2n + 3) {
+    > .table th:first-child {
+      width: 45%;
+    }
+    > section:nth-of-type(2n + 7) {
       grid-column-start: 4;
     }
-    > section:nth-of-type(2n + 4) {
+    > section:nth-of-type(2n + 8) {
       text-align: right;
     }
     > section#hero {

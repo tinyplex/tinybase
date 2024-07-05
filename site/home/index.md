@@ -4,12 +4,6 @@
   <h2>
     The <em>reactive</em> data store for <span>local-first apps</span>.
   </h2>
-  <p id='copy'>
-    Build blisteringly fast web apps that work both online and offline. Manage 
-    your state locally, synchronize it to the cloud when you need to, or even 
-    make it collaborative. But, most importantly... have fun building stuff 
-    again!
-  </p>
 </section>
 
 <a href='/guides/releases/#v5-0'><em>NEW!</em> v5.0 release</a> <span
@@ -23,59 +17,50 @@ id="one-with">"The One You Can Sync"</span>
 
 ---
 
-<ul>
-  <li>
-    Manage <a href='#start-with-a-simple-key-value-store'>key-value 
-    data</a>, <a href='#level-up-to-use-tabular-data'>tabular data</a> - or 
-    both - with optional 
-    <a href='#apply-schemas-to-tables-values'>schematization</a> to model 
-    your app's data structures.
-  </li>
-  <li>
-    <a href='#register-granular-listeners'>Flexibly reactive</a> to
-    reconciled updates, so you only spend rendering cycles on things that 
-    change.
-  </li>
-  <li>
-    <a href='#build-complex-queries-with-tinyql'>Powerful query engine</a> to
-    select, join, filter, group, sort and paginate data - reactively - and 
-    without SQL.
-  </li>
-  <li>
-    Built-in <a href='#create-indexes-for-fast-lookups'>indexing</a>,
-    <a href='#define-metrics-and-aggregations'>metric aggregation</a>,
-    <a href='#model-table-relationships'>tabular relationships</a> - and
-    even an <a href='#set-checkpoints-for-an-undo-stack'>undo stack</a>
-    for your app state.
-  </li>
-  <li>
-    Create <a href='#type-definitions-orm-like-apis'>type definitions &amp; 
-    ORM-like APIs</a>, from schema or inference. 
-    <a href='#an-inspector-for-your-data'>Inspect your data</a> (<em>new!</em>) 
-    directly in the browser.
-  </li>
-  <li>
-    Easily <a href='#persist-to-storage-sqlite-crdts'>sync your data</a> to 
-    browser <a href='/api/persister-browser'>storage</a>, 
-    <a href='/api/persister-indexed-db/'>IndexedDB</a>,
-    <a href='/guides/schemas-and-persistence/database-persistence/'>SQLite</a>, 
-    <a href='/guides/schemas-and-persistence/synchronizing-data/'>CRDTs</a>; and 
-    (<em>new!</em>) <a href='/api/persister-partykit-client/'>PartyKit</a> and
-    <a href='https://electric-sql.com/'>ElectricSQL</a>.
-  </li>
-  <li>
-    Optional <a href='#call-hooks-to-bind-to-data'>bindings to React</a> and 
-    (<em>new!</em>) <a href='#pre-built-reactive-components'>pre-built 
-    components</a> that let you easily build fully reactive user interfaces.
-  </li>
-  <li>
-    Tiny by name, tiny by nature:
-    <a href='#did-we-say-tiny'>@@EVAL("toKb(modulesSizes.get('store').get('gz'))") -
-    @@EVAL("toKb(modulesSizes.get('').get('gz'))")</a>, no dependencies. <a href='#well-tested-and-documented'>100% tested</a>, 
-    <a href='/guides/the-basics/getting-started/'>fully documented</a>, and of 
-    course, <a href='@@EVAL("metadata.repository")'>open source</a>!
-  </li>
-</ul>
+> ## It's _Reactive_
+>
+> TinyBase lets you [listen to changes](#register-granular-listeners) made to
+> any part of your data. This means your app will be fast, since you only spend
+> rendering cycles on things that change. The optional [bindings to
+> React](#call-hooks-to-bind-to-data) and
+> [pre-built components](#pre-built-reactive-components) let you easily build
+> fully reactive UIs on top of TinyBase. You even get a built-in [undo
+> stack](#set-checkpoints-for-an-undo-stack), and [developer
+> tools](#an-inspector-for-your-data)!
+
+> ## It's _Database-Like_
+>
+> Store [key-value data](#start-with-a-simple-key-value-store) and [tabular
+> data](#level-up-to-use-tabular-data) with optional typed
+> [schematization]('#apply-schemas-to-tables-values) to model your app's data
+> structures. TinyBase provides built-in
+> [indexing](#create-indexes-for-fast-lookups), [metric
+> aggregation](#define-metrics-and-aggregations), and tabular
+> [relationships](#model-table-relationships) APIs - or the powerful [query
+> engine](#build-complex-queries-with-tinyql) to select, join, filter, and group
+> data (reactively!) without SQL.
+
+> ## It _Synchronizes_
+>
+> TinyBase is an in-memory data store, but you can easily
+> [persist](#persist-to-storage-sqlite-crdts) your data to [browser
+> storage](/api/persister-browser), [IndexedDB](/api/persister-indexed-db), many
+> flavors of [database](/guides/persistence/database-persistence/), and
+> [more](/guides/persistence/third-party-crdt-persistence/). TinyBase now has
+> native CRDT support, meaning that you can [natively
+> synchronize](/guides/synchronization/) and merge data across multiple sources
+> and clients.
+
+> ## It's Built For A _Local-First_ World
+>
+> TinyBase works anywhere that JavaScript does, but it's especially great for
+> local-first apps: where data is stored locally on the user's device and that
+> can be run offline. It's tiny by name, tiny by nature: just
+> [@@EVAL("toKb(modulesSizes.get('store').get('gz'))")-@@EVAL("toKb(modulesSizes.get('').get('gz'))")](#did-we-say-tiny)
+> and with no dependencies - yet <a href='#well-tested-and-documented'>100%
+> tested</a>, <a href='/guides/the-basics/getting-started/'>fully
+> documented</a>, and of course, <a href='@@EVAL("metadata.repository")'>open
+> source</a>!
 
 ---
 
