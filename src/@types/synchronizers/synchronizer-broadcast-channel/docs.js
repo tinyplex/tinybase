@@ -36,10 +36,7 @@
    * import {createMergeableStore} from 'tinybase';
    *
    * const store = createMergeableStore();
-   * const synchronizer = await createBroadcastChannelSynchronizer(
-   *   store,
-   *   'channelA',
-   * );
+   * const synchronizer = createBroadcastChannelSynchronizer(store, 'channelA');
    *
    * console.log(synchronizer.getChannelName());
    * // -> 'channelA'

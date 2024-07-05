@@ -1,6 +1,6 @@
 # An Intro To Persistence
 
-The persister module lets you save and load Store data to and from different
+The persister module framework lets you save and load Store data to and from different
 locations, or underlying storage types.
 
 Remember that TinyBase Stores are in-memory data structures, so you will

@@ -331,6 +331,11 @@ const synchronizer1 = await createWsSynchronizer(
   new WebSocket('ws://localhost:8040'),
 );
 await synchronizer1.startSync();
+
+// ...
+
+synchronizer1.destroy();
+server.destroy();
 ```
 
 > ## Persist to storage, SQLite, & more.
