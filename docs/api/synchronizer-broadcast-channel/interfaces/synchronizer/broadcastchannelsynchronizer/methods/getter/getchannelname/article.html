@@ -2,10 +2,7 @@
 <span class="keyword">import</span> <span class="punctuation">{</span>createMergeableStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
 
 <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/mergeable-store/functions/creation/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="keyword">const</span> synchronizer <span class="operator">=</span> <span class="keyword">await</span> <span class="function"><a href="/api/synchronizer-broadcast-channel/functions/creation/createbroadcastchannelsynchronizer/">createBroadcastChannelSynchronizer</a></span><span class="punctuation">(</span>
-  store<span class="punctuation">,</span>
-  <span class="string">'channelA'</span><span class="punctuation">,</span>
-<span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">const</span> synchronizer <span class="operator">=</span> <span class="function"><a href="/api/synchronizer-broadcast-channel/functions/creation/createbroadcastchannelsynchronizer/">createBroadcastChannelSynchronizer</a></span><span class="punctuation">(</span>store<span class="punctuation">,</span> <span class="string">'channelA'</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>synchronizer<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-broadcast-channel/interfaces/synchronizer/broadcastchannelsynchronizer/methods/getter/getchannelname/">getChannelName</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> 'channelA'</span>
