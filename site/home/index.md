@@ -43,11 +43,11 @@ id="one-with">"The One You Can Sync"</span>
 > ## It _Synchronizes_
 >
 > TinyBase is an in-memory data store, but you can easily
-> [persist](#persist-to-storage-sqlite-crdts) your data to [browser
+> [persist](#persist-to-storage-sqlite-more) your data to [browser
 > storage](/api/persister-browser), [IndexedDB](/api/persister-indexed-db), many
 > flavors of [database](/guides/persistence/database-persistence/), and
 > [more](/guides/persistence/third-party-crdt-persistence/). TinyBase now has
-> native CRDT support, meaning that you can [natively
+> [native CRDT](#synchronize-between-devices) support, meaning that you can [natively
 > synchronize](/guides/synchronization/) and merge data across multiple sources
 > and clients.
 
@@ -56,11 +56,11 @@ id="one-with">"The One You Can Sync"</span>
 > TinyBase works anywhere that JavaScript does, but it's especially great for
 > local-first apps: where data is stored locally on the user's device and that
 > can be run offline. It's tiny by name, tiny by nature: just
-> [@@EVAL("toKb(modulesSizes.get('store').get('gz'))")-@@EVAL("toKb(modulesSizes.get('').get('gz'))")](#did-we-say-tiny)
-> and with no dependencies - yet <a href='#well-tested-and-documented'>100%
-> tested</a>, <a href='/guides/the-basics/getting-started/'>fully
-> documented</a>, and of course, <a href='@@EVAL("metadata.repository")'>open
-> source</a>!
+> [@@EVAL("toKb(modulesSizes.get('store').get('gz'))") -
+> @@EVAL("toKb(modulesSizes.get('').get('gz'))")](#did-we-say-tiny) and with no
+> dependencies - yet <a href='#well-tested-and-documented'>100% tested</a>, <a
+> href='/guides/the-basics/getting-started/'>fully documented</a>, and of
+> course, <a href='@@EVAL("metadata.repository")'>open source</a>!
 
 ---
 
@@ -304,15 +304,44 @@ console.log(store.getRow('pets', 'polly'));
 store.delTablesSchema();
 ```
 
-> ## Persist to storage, SQLite, CRDTs.
+> ## Synchronize between devices.
+>
+> The MergeableStore type acts as a native CRDT, letting you merge data and
+> synchronize it between clients and systems. The synchronization protocol can
+> run over WebSockets, the browser BroadcastChannel, or your own custom
+> synchronization medium.
+>
+> Read more about these techniques in the Synchronization guides.
+
+```js
+import {WebSocketServer, WebSocket} from 'ws';
+import {createMergeableStore} from 'tinybase';
+import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+
+// On a server machine:
+const server = createWsServer(
+  new WebSocketServer({port: 8040}),
+);
+
+// On a client machine:
+const store1 = createMergeableStore();
+const synchronizer1 = await createWsSynchronizer(
+  store1,
+  new WebSocket('ws://localhost:8040'),
+);
+await synchronizer1.startSync();
+```
+
+> ## Persist to storage, SQLite, & more.
 >
 > You can easily persist a Store between browser page reloads or sessions. You
 > can also synchronize it with a web endpoint, or (if you're using TinyBase in
-> an appropriate environment), load and save it to a file. [New in
-> v4.0](/guides/releases/#v4-0), you can bind [TinyBase to
-> SQLite](/guides/schemas-and-persistence/database-persistence/) via a range of
-> modules, or to [Yjs](https://yjs.dev/) or [Automerge](https://automerge.org/)
-> CRDT documents.
+> an appropriate environment), load and save it to a file. You can bind TinyBase
+> to various flavors of
+> [SQLite](/guides/schemas-and-persistence/database-persistence/), or to
+> [Yjs](https://yjs.dev/) and [Automerge](https://automerge.org/) CRDT
+> documents.
 >
 > Read more about persisters in the Persistence guides.
 

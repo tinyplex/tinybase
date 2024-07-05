@@ -78,7 +78,7 @@ import {WebSocketServer, WebSocket} from 'ws';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 
-// On a server machine
+// On a server machine:
 const server = createWsServer(new WebSocketServer({port: 8043}));
 
 // On the first client machine:
