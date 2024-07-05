@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "5.0.5",
+  "version": "5.1.0-beta.0",
   "author": "jamesgpearce",
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
@@ -196,7 +196,7 @@
     "ts-unused-exports": "^10.1.0",
     "typescript": "5.5.3",
     "wa-sqlite": "github:rhashimoto/wa-sqlite",
-    "ws": "^8.18.0",
+    "ws": "^8.17.1",
     "yjs": "^13.6.18"
   }
 }
