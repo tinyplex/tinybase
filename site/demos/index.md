@@ -3,16 +3,40 @@
 This is a selection of demos that show how TinyBase can be used in real-world
 applications.
 
-![Thumbnail of TinyRooms](/tinyrooms.webp 'Thumbnail of TinyRooms') **New!**
+## TinyHub
+
+[TinyHub](https://github.com/tinyplex/tinyhub) is a local-first GitHub client,
+built in public, using TinyBase, React, and GitHub OAuth. You can try it out
+[here](https://tinyhub.org).
+
+## TinyRooms
+
 [TinyRooms](https://github.com/tinyplex/tinyrooms) is a local-first app demo,
-using TinyBase, PartyKit, and optional GitHub OAuth. It is designed to explore
-the challenges of (and possible solutions for) building local-first apps in the
-real world. You can try it out
+using TinyBase, PartyKit, and optional GitHub OAuth. You can try it out
 [here](https://tinyrooms.jamesgpearce.partykit.dev).
 
-For the demos on this site, we start with the obligatory 'Hello World' example,
-and then advance from there. Some demos have multiple versions which start
-simple and then gain additional functionality with subsequent iterations.
+## Vite Templates
+
+You can also use Vite to start simple demo apps of your own. We provide the
+following templates to get started with:
+
+| Template                                                                                       | Language   | React | Plus            |
+| ---------------------------------------------------------------------------------------------- | ---------- | ----- | --------------- |
+| [vite-tinybase](https://github.com/tinyplex/vite-tinybase)                                     | JavaScript | No    |                 |
+| [vite-tinybase-ts](https://github.com/tinyplex/vite-tinybase-ts)                               | TypeScript | No    |                 |
+| [vite-tinybase-react](https://github.com/tinyplex/vite-tinybase-react)                         | JavaScript | Yes   |                 |
+| [vite-tinybase-ts-react](https://github.com/tinyplex/vite-tinybase-ts-react)                   | TypeScript | Yes   |                 |
+| [vite-tinybase-ts-react-sync](https://github.com/tinyplex/vite-tinybase-ts-react-sync)         | TypeScript | Yes   | Synchronization |
+| [vite-tinybase-ts-react-crsqlite](https://github.com/tinyplex/vite-tinybase-ts-react-crsqlite) | TypeScript | Yes   | CR-SQLite       |
+| [tinybase-ts-react-partykit](https://github.com/tinyplex/tinybase-ts-react-partykit)           | TypeScript | Yes   | PartyKit        |
+| [tinybase-ts-react-electricsql](https://github.com/tinyplex/tinybase-ts-react-electricsql)     | TypeScript | Yes   | ElectricSQL     |
+
+## On-site Demos
+
+For the main set of TinyBase demos on this site, we start with the obligatory
+'Hello World' example, and then advance from there. Some demos have multiple
+versions which start simple and then gain additional functionality with
+subsequent iterations.
 
 For a 'kitchen-sink' demo that shows TinyBase really being put through its
 paces, take a look at the Drawing demo.
