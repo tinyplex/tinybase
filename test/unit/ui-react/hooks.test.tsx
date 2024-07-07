@@ -993,6 +993,39 @@ describe('Context Hooks', () => {
 });
 
 describe('Read Hooks', () => {
+  test('return same reference if no change', () => {
+    let previous: Tables;
+    let changed = 0;
+    const Test = () => {
+      const current = useTables(store);
+      if (current != previous) {
+        previous = current;
+        changed++;
+      }
+      return didRender(<>Test</>);
+    };
+    act(() => {
+      renderer = create(<Test />);
+    });
+    expect(changed).toEqual(1);
+    expect(didRender).toHaveBeenCalledTimes(1);
+    act(() => {
+      renderer.update(<Test />);
+    });
+    expect(changed).toEqual(1);
+    expect(didRender).toHaveBeenCalledTimes(2);
+    act(() => {
+      store.setTables({t1: {r1: {c1: 2}}});
+    });
+    expect(changed).toEqual(2);
+    expect(didRender).toHaveBeenCalledTimes(3);
+    act(() => {
+      renderer.update(<Test />);
+    });
+    expect(changed).toEqual(2);
+    expect(didRender).toHaveBeenCalledTimes(4);
+  });
+
   test('useHasTables', () => {
     const Test = () => didRender(<>{JSON.stringify(useHasTables(store))}</>);
     expect(store.getListenerStats().hasTables).toEqual(0);
