@@ -215,12 +215,7 @@
       /* eslint-disable-next-line react-hooks/exhaustive-deps */
       [thing, returnType, listenable, ...args],
     );
-    const result = useSyncExternalStore(subscribe, getResult);
-    return returnType == 0 /* Object */
-      ? {...result}
-      : returnType < 3 /* CellOrValue */
-        ? [...result]
-        : result;
+    return useSyncExternalStore(subscribe, getResult);
   };
   const useListener = (
     listenable,
