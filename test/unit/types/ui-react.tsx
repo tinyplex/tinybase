@@ -464,14 +464,41 @@ const _Deleters = () => {
   });
 
   useDelTableCallback('t1');
+  useDelTableCallback(() => 't1');
   useDelTableCallback('t2'); // !
+  useDelTableCallback(() => 't2'); // !
 
   useDelRowCallback('t1', 'r1');
+  useDelRowCallback(
+    () => 't1',
+    () => 'r1',
+  );
   useDelRowCallback('t2', 'r1'); // !
+  useDelRowCallback(
+    () => 't2', // !
+    () => 'r1',
+  );
 
   useDelCellCallback('t1', 'r1', 'c1');
+  useDelCellCallback(
+    () => 't1',
+    () => 'r1',
+    () => 'c1',
+  );
   useDelCellCallback('t1', 'r1', 'c2'); // !
   useDelCellCallback('t2', 'r1', 'c1'); // !
+  useDelCellCallback(
+    () => 't2', // !
+    () => 'r1',
+    () => 'c1',
+    () => 1,
+  );
+  useDelCellCallback(
+    () => 't1',
+    () => 'r1',
+    () => 'c2', // !
+    () => 1,
+  );
 
   useDelValuesCallback(undefined, (store) => {
     store.getValues().v1;
@@ -479,7 +506,9 @@ const _Deleters = () => {
   });
 
   useDelValueCallback('v1');
+  useDelValueCallback(() => 'v1');
   useDelValueCallback('v2'); // !
+  useDelValueCallback(() => 'v2'); // !
 };
 
 const _Listeners = () => {

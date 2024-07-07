@@ -2512,7 +2512,7 @@
  * @param getTableDeps An optional array of dependencies for the `getTable`
  * function, which, if any change, result in the regeneration of the callback.
  * This parameter defaults to an empty array. Also use this to indicate the
- * dependencies of a GetId functions if used as the tableId argument.
+ * dependencies of a GetId function if used as the tableId argument.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -2693,7 +2693,7 @@
  * @param getRowDeps An optional array of dependencies for the `getRow`
  * function, which, if any change, result in the regeneration of the callback.
  * This parameter defaults to an empty array. Also use this to indicate the
- * dependencies of a GetId functions if used as the tableId argument.
+ * dependencies of a GetId function if used as the tableId argument.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -3227,7 +3227,7 @@
  * all of the tabular data in a Store.
  *
  * This hook is useful, for example, when creating an event handler that will
- * delete data in a Store.
+ * delete data in the Store.
  *
  * For convenience, you can optionally provide a `then` function (with its own
  * set of dependencies) which will be called just after the Store has been
@@ -3286,11 +3286,12 @@
  */
 /// useDelTablesCallback
 /**
- * The useDelTableCallback hook returns a callback that can be used to remove a
- * single Table from a Store.
+ * The useDelTableCallback hook returns a parameterized callback that can be
+ * used to remove a single Table from a Store.
  *
  * This hook is useful, for example, when creating an event handler that will
- * delete data in a Store.
+ * delete data in the Store. In this case, the parameter will likely be the
+ * event, so that you can use data from it as part of the deletion.
  *
  * For convenience, you can optionally provide a `then` function (with its own
  * set of dependencies) which will be called just after the Store has been
@@ -3300,7 +3301,8 @@
  * The Store to which the callback will make the deletion (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- * @param tableId The Id of the Table in the Store.
+ * @param tableId The Id of the Table in the Store to delete, or a GetId
+ * function that will return it.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -3308,8 +3310,9 @@
  * to the Store.
  * @param thenDeps An optional array of dependencies for the `then` function,
  * which, if any change, result in the regeneration of the callback. This
- * parameter defaults to an empty array.
- * @returns A callback for subsequent use.
+ * parameter defaults to an empty array. Also use this to indicate the
+ * dependencies of an GetId function if used as the tableId argument.
+ * @returns A parameterized callback for subsequent use.
  * @example
  * This example uses the useDelTableCallback hook to create an event handler
  * which deletes from the Store when the `span` element is clicked.
@@ -3350,11 +3353,12 @@
  */
 /// useDelTableCallback
 /**
- * The useDelRowCallback hook returns a callback that can be used to remove a
- * single Row from a Table.
+ * The useDelRowCallback hook returns a parameterized callback that can be used
+ * to remove a single Row from a Table.
  *
  * This hook is useful, for example, when creating an event handler that will
- * delete data in a Store.
+ * delete data in the Store. In this case, the parameter will likely be the
+ * event, so that you can use data from it as part of the deletion.
  *
  * For convenience, you can optionally provide a `then` function (with its own
  * set of dependencies) which will be called just after the Store has been
@@ -3364,8 +3368,10 @@
  * The Store to which the callback will make the deletion (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- * @param tableId The Id of the Table in the Store.
- * @param rowId The Id of the Row in the Table.
+ * @param tableId The Id of the Table in the Store, or a GetId function that
+ * will return it.
+ * @param rowId The Id of the Row in the Table to delete, or a GetId function
+ * that will return it.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -3373,8 +3379,10 @@
  * to the Store.
  * @param thenDeps An optional array of dependencies for the `then` function,
  * which, if any change, result in the regeneration of the callback. This
- * parameter defaults to an empty array.
- * @returns A callback for subsequent use.
+ * parameter defaults to an empty array. Also use this to indicate the
+ * dependencies of any GetId functions if used as the tableId or rowId
+ * arguments.
+ * @returns A parameterized callback for subsequent use.
  * @example
  * This example uses the useDelRowCallback hook to create an event handler which
  * deletes from the Store when the `span` element is clicked.
@@ -3415,11 +3423,12 @@
  */
 /// useDelRowCallback
 /**
- * The useDelCellCallback hook returns a callback that can be used to remove a
- * single Cell from a Row.
+ * The useDelCellCallback hook returns a parameterized callback that can be used
+ * to remove a single Cell from a Row.
  *
  * This hook is useful, for example, when creating an event handler that will
- * delete data in a Store.
+ * delete data in the Store. In this case, the parameter will likely be the
+ * event, so that you can use data from it as part of the deletion.
  *
  * For convenience, you can optionally provide a `then` function (with its own
  * set of dependencies) which will be called just after the Store has been
@@ -3429,9 +3438,12 @@
  * The Store to which the callback will make the deletion (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- * @param tableId The Id of the Table in the Store.
- * @param rowId The Id of the Row in the Table.
- * @param cellId The Id of the Cell in the Row.
+ * @param tableId The Id of the Table in the Store, or a GetId function that
+ * will return it.
+ * @param rowId The Id of the Row in the Table, or a GetId function that will
+ * return it.
+ * @param cellId The Id of the Cell in the Row to delete, or a GetId function
+ * that will return it.
  * @param forceDel An optional flag to indicate that the whole Row should be
  * deleted, even if a TablesSchema provides a default value for this Cell.
  * Defaults to `false`.
@@ -3442,8 +3454,10 @@
  * to the Store.
  * @param thenDeps An optional array of dependencies for the `then` function,
  * which, if any change, result in the regeneration of the callback. This
- * parameter defaults to an empty array.
- * @returns A callback for subsequent use.
+ * parameter defaults to an empty array. Also use this to indicate the
+ * dependencies of any GetId functions if used as the tableId, rowId, or cellId
+ * arguments.
+ * @returns A parameterized callback for subsequent use.
  * @example
  * This example uses the useDelCellCallback hook to create an event handler
  * which deletes from the Store when the `span` element is clicked.
@@ -3552,11 +3566,12 @@
  */
 /// useDelValuesCallback
 /**
- * The useDelValueCallback hook returns a callback that can be used to remove a
- * single Value from a Store.
+ * The useDelValueCallback hook returns a parameterized callback that can be
+ * used to remove a single Value from a Store.
  *
  * This hook is useful, for example, when creating an event handler that will
- * delete data in a Store.
+ * delete data in the Store. In this case, the parameter will likely be the
+ * event, so that you can use data from it as part of the deletion.
  *
  * For convenience, you can optionally provide a `then` function (with its own
  * set of dependencies) which will be called just after the Store has been
@@ -3566,7 +3581,8 @@
  * The Store to which the callback will make the deletion (indicated by the
  * hook's `storeOrStoreId` parameter) is always automatically used as a hook
  * dependency for the callback.
- * @param valueId The Id of the Value in the Store.
+ * @param valueId The Id of the Value in the Store to delete, or a GetId
+ * function that will return it.
  * @param storeOrStoreId The Store to be updated: omit for the default context
  * Store, provide an Id for a named context Store, or provide an explicit
  * reference.
@@ -3574,8 +3590,9 @@
  * to the Store.
  * @param thenDeps An optional array of dependencies for the `then` function,
  * which, if any change, result in the regeneration of the callback. This
- * parameter defaults to an empty array.
- * @returns A callback for subsequent use.
+ * parameter defaults to an empty array. Also use this to indicate the
+ * dependencies of a GetId function if used as the valueId argument.
+ * @returns A parameterized callback for subsequent use.
  * @example
  * This example uses the useDelValueCallback hook to create an event handler
  * which deletes from the Store when the `span` element is clicked.

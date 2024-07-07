@@ -449,35 +449,39 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => Callback;
 
   /// useDelTableCallback
-  useDelTableCallback: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
+  useDelTableCallback: <
+    Parameter,
+    TableId extends TableIdFromSchema<Schemas[0]>,
+  >(
+    tableId: TableId | GetId<Schemas, Parameter, TableId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>) => void,
     thenDeps?: React.DependencyList,
-  ) => Callback;
+  ) => ParameterizedCallback<Parameter>;
 
   /// useDelRowCallback
-  useDelRowCallback: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId,
-    rowId: Id,
+  useDelRowCallback: <Parameter, TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId | GetId<Schemas, Parameter, TableId>,
+    rowId: Id | GetId<Schemas, Parameter, Id>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>) => void,
     thenDeps?: React.DependencyList,
-  ) => Callback;
+  ) => ParameterizedCallback<Parameter>;
 
   /// useDelCellCallback
   useDelCellCallback: <
+    Parameter,
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
-    tableId: TableId,
-    rowId: Id,
-    cellId: CellId,
+    tableId: TableId | GetId<Schemas, Parameter, TableId>,
+    rowId: Id | GetId<Schemas, Parameter, Id>,
+    cellId: CellId | GetId<Schemas, Parameter, CellId>,
     forceDel?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>) => void,
     thenDeps?: React.DependencyList,
-  ) => Callback;
+  ) => ParameterizedCallback<Parameter>;
 
   /// useDelValuesCallback
   useDelValuesCallback: (
@@ -487,12 +491,15 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   ) => Callback;
 
   /// useDelValueCallback
-  useDelValueCallback: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
-    valueId: ValueId,
+  useDelValueCallback: <
+    Parameter,
+    ValueId extends ValueIdFromSchema<Schemas[1]>,
+  >(
+    valueId: ValueId | GetId<Schemas, Parameter, ValueId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
     then?: (store: Store<Schemas>) => void,
     thenDeps?: React.DependencyList,
-  ) => Callback;
+  ) => ParameterizedCallback<Parameter>;
 
   /// useHasTablesListener
   useHasTablesListener: (

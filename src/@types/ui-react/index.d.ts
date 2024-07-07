@@ -333,32 +333,32 @@ export function useDelTablesCallback(
 ): Callback;
 
 /// useDelTableCallback
-export function useDelTableCallback(
-  tableId: Id,
+export function useDelTableCallback<Parameter>(
+  tableId: Id | GetId<Parameter>,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
-): Callback;
+): ParameterizedCallback<Parameter>;
 
 /// useDelRowCallback
-export function useDelRowCallback(
-  tableId: Id,
-  rowId: Id,
+export function useDelRowCallback<Parameter>(
+  tableId: Id | GetId<Parameter>,
+  rowId: Id | GetId<Parameter>,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
-): Callback;
+): ParameterizedCallback<Parameter>;
 
 /// useDelCellCallback
-export function useDelCellCallback(
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
+export function useDelCellCallback<Parameter>(
+  tableId: Id | GetId<Parameter>,
+  rowId: Id | GetId<Parameter>,
+  cellId: Id | GetId<Parameter>,
   forceDel?: boolean,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
-): Callback;
+): ParameterizedCallback<Parameter>;
 
 /// useDelValuesCallback
 export function useDelValuesCallback(
@@ -368,12 +368,12 @@ export function useDelValuesCallback(
 ): Callback;
 
 /// useDelValueCallback
-export function useDelValueCallback(
-  valueId: Id,
+export function useDelValueCallback<Parameter>(
+  valueId: Id | GetId<Parameter>,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
-): Callback;
+): ParameterizedCallback<Parameter>;
 
 /// useHasTablesListener
 export function useHasTablesListener(

@@ -3408,6 +3408,37 @@ describe('Write Hooks', () => {
     expect(store.getTables()).toEqual({});
   });
 
+  test('useDelTableCallback, parameterized Id (including handler memo)', () => {
+    let previousHandler: any;
+    let handlerChanged = 0;
+    const Test = () => {
+      const handler = useDelTableCallback<React.MouseEvent<HTMLDivElement>>(
+        (e) => 't' + e.screenX,
+        store,
+      );
+      if (handler != previousHandler) {
+        handlerChanged++;
+        previousHandler = handler;
+      }
+      return <div onClick={handler} />;
+    };
+    act(() => {
+      renderer = create(<Test />);
+    });
+    expect(handlerChanged).toEqual(1);
+
+    act(() => {
+      renderer.root.findByType('div').props.onClick({screenX: 0});
+    });
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    expect(handlerChanged).toEqual(1);
+    act(() => {
+      renderer.root.findByType('div').props.onClick({screenX: 1});
+    });
+    expect(store.getTables()).toEqual({});
+    expect(handlerChanged).toEqual(1);
+  });
+
   test('useDelRowCallback', () => {
     const Test = () => <div onClick={useDelRowCallback('t1', 'r1', store)} />;
     act(() => {
@@ -3418,6 +3449,31 @@ describe('Write Hooks', () => {
       renderer.root.findByType('div').props.onClick();
     });
     expect(store.getTables()).toEqual({});
+  });
+
+  test('useDelRowCallback, parameterized Ids', () => {
+    const Test = () => (
+      <div
+        onClick={useDelRowCallback(
+          (e) => 't' + e.screenX,
+          (e) => 'r' + e.screenX,
+          store,
+        )}
+      />
+    );
+    act(() => {
+      store.setCell('t1', 'r2', 'c2', 2);
+      renderer = create(<Test />);
+    });
+
+    act(() => {
+      renderer.root.findByType('div').props.onClick({screenX: 0});
+    });
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}, r2: {c2: 2}}});
+    act(() => {
+      renderer.root.findByType('div').props.onClick({screenX: 1});
+    });
+    expect(store.getTables()).toEqual({t1: {r2: {c2: 2}}});
   });
 
   test('useDelCellCallback', () => {
@@ -3432,6 +3488,33 @@ describe('Write Hooks', () => {
       renderer.root.findByType('div').props.onClick();
     });
     expect(store.getTables()).toEqual({});
+  });
+
+  test('useDelCellCallback, parameterized Ids', () => {
+    const Test = () => (
+      <div
+        onClick={useDelCellCallback(
+          (e) => 't' + e.screenX,
+          (e) => 'r' + e.screenX,
+          (e) => 'c' + e.screenX,
+          false,
+          store,
+        )}
+      />
+    );
+    act(() => {
+      store.setCell('t1', 'r1', 'c2', 2);
+      renderer = create(<Test />);
+    });
+
+    act(() => {
+      renderer.root.findByType('div').props.onClick({screenX: 0});
+    });
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 1, c2: 2}}});
+    act(() => {
+      renderer.root.findByType('div').props.onClick({screenX: 1});
+    });
+    expect(store.getTables()).toEqual({t1: {r1: {c2: 2}}});
   });
 
   test('useDelValuesCallback', () => {
@@ -3456,6 +3539,25 @@ describe('Write Hooks', () => {
       renderer.root.findByType('div').props.onClick();
     });
     expect(store.getValues()).toEqual({});
+  });
+
+  test('useDelValueCallback, parameterized Id', () => {
+    const Test = () => (
+      <div onClick={useDelValueCallback((e) => 'v' + e.screenX, store)} />
+    );
+    act(() => {
+      store.setValue('v2', 2);
+      renderer = create(<Test />);
+    });
+
+    act(() => {
+      renderer.root.findByType('div').props.onClick({screenX: 0});
+    });
+    expect(store.getValues()).toEqual({v1: 1, v2: 2});
+    act(() => {
+      renderer.root.findByType('div').props.onClick({screenX: 1});
+    });
+    expect(store.getValues()).toEqual({v2: 2});
   });
 
   describe('Checkpoints', () => {

@@ -383,44 +383,51 @@ const useSetCallback = <Parameter, Thing>(
 ): ParameterizedCallback<Parameter> => {
   const store = useStoreOrStoreById(storeOrStoreId);
   return useCallback(
-    (parameter) =>
+    (parameter?: Parameter) =>
       ifNotUndefined(store, (store: any) =>
         ifNotUndefined(get(parameter as any, store), (thing: Thing) =>
           then(
             store['set' + settable](
-              ...arrayMap(args, (arg) =>
-                isFunction(arg) ? arg(parameter as any, store) : arg,
-              ),
+              ...argsOrGetArgs(args, store, parameter),
               thing,
             ),
             thing,
           ),
         ),
       ),
-    /* eslint-disable react-hooks/exhaustive-deps */
-    [
-      store,
-      settable,
-      ...getDeps,
-      ...thenDeps,
-      ...arrayFilter(args, (arg) => !isFunction(arg)),
-    ],
-    /* eslint-enable react-hooks/exhaustive-deps */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [store, settable, ...getDeps, ...thenDeps, ...nonFunctionDeps(args)],
   );
 };
 
-const useDel = (
+const argsOrGetArgs = <Parameter>(
+  args: (Id | GetId<Parameter> | boolean | undefined)[],
+  store: Store,
+  parameter?: Parameter,
+) =>
+  arrayMap(args, (arg) =>
+    isFunction(arg) ? arg(parameter as any, store) : arg,
+  );
+
+const nonFunctionDeps = <Parameter>(
+  args: (Id | GetId<Parameter> | boolean | undefined)[],
+) => arrayFilter(args, (arg) => !isFunction(arg));
+
+const useDel = <Parameter>(
   storeOrStoreId: StoreOrStoreId | undefined,
   deletable: string,
   then: (store: Store) => void = getUndefined,
   thenDeps: React.DependencyList = EMPTY_ARRAY,
-  ...args: (Id | boolean | undefined)[]
-) => {
+  ...args: (Id | GetId<Parameter> | boolean | undefined)[]
+): ParameterizedCallback<Parameter> => {
   const store: any = useStoreOrStoreById(storeOrStoreId);
   return useCallback(
-    () => then(store?.['del' + deletable](...args)),
+    (parameter?: Parameter) =>
+      then(
+        store?.['del' + deletable](...argsOrGetArgs(args, store, parameter)),
+      ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, deletable, ...thenDeps, ...args],
+    [store, deletable, ...thenDeps, ...nonFunctionDeps(args)],
   );
 };
 
@@ -848,30 +855,32 @@ export const useDelTablesCallback: typeof useDelTablesCallbackDecl = (
   thenDeps?: React.DependencyList,
 ): Callback => useDel(storeOrStoreId, TABLES, then, thenDeps);
 
-export const useDelTableCallback: typeof useDelTableCallbackDecl = (
-  tableId: Id,
+export const useDelTableCallback: typeof useDelTableCallbackDecl = <Parameter>(
+  tableId: Id | GetId<Parameter>,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
-): Callback => useDel(storeOrStoreId, TABLE, then, thenDeps, tableId);
+): ParameterizedCallback<Parameter> =>
+  useDel(storeOrStoreId, TABLE, then, thenDeps, tableId);
 
-export const useDelRowCallback: typeof useDelRowCallbackDecl = (
-  tableId: Id,
-  rowId: Id,
+export const useDelRowCallback: typeof useDelRowCallbackDecl = <Parameter>(
+  tableId: Id | GetId<Parameter>,
+  rowId: Id | GetId<Parameter>,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
-): Callback => useDel(storeOrStoreId, ROW, then, thenDeps, tableId, rowId);
+): ParameterizedCallback<Parameter> =>
+  useDel(storeOrStoreId, ROW, then, thenDeps, tableId, rowId);
 
-export const useDelCellCallback: typeof useDelCellCallbackDecl = (
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
+export const useDelCellCallback: typeof useDelCellCallbackDecl = <Parameter>(
+  tableId: Id | GetId<Parameter>,
+  rowId: Id | GetId<Parameter>,
+  cellId: Id | GetId<Parameter>,
   forceDel?: boolean,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
-): Callback =>
+): ParameterizedCallback<Parameter> =>
   useDel(
     storeOrStoreId,
     CELL,
@@ -889,12 +898,13 @@ export const useDelValuesCallback: typeof useDelValuesCallbackDecl = (
   thenDeps?: React.DependencyList,
 ): Callback => useDel(storeOrStoreId, VALUES, then, thenDeps);
 
-export const useDelValueCallback: typeof useDelValueCallbackDecl = (
-  valueId: Id,
+export const useDelValueCallback: typeof useDelValueCallbackDecl = <Parameter>(
+  valueId: Id | GetId<Parameter>,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
   thenDeps?: React.DependencyList,
-): Callback => useDel(storeOrStoreId, VALUE, then, thenDeps, valueId);
+): ParameterizedCallback<Parameter> =>
+  useDel(storeOrStoreId, VALUE, then, thenDeps, valueId);
 
 export const useHasTablesListener: typeof useHasTablesListenerDecl = (
   listener: HasTablesListener,
