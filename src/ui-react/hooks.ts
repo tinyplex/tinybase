@@ -212,7 +212,12 @@ import type {
   ResultTableCellIdsListener,
   ResultTableListener,
 } from '../@types/queries/index.d.ts';
-import {arrayIsEmpty, arrayIsEqual, arrayMap} from '../common/array.ts';
+import {
+  arrayFilter,
+  arrayIsEmpty,
+  arrayIsEqual,
+  arrayMap,
+} from '../common/array.ts';
 import {
   getUndefined,
   ifNotUndefined,
@@ -392,8 +397,15 @@ const useSetCallback = <Parameter, Thing>(
           ),
         ),
       ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, settable, ...getDeps, ...thenDeps, ...args],
+    /* eslint-disable react-hooks/exhaustive-deps */
+    [
+      store,
+      settable,
+      ...getDeps,
+      ...thenDeps,
+      ...arrayFilter(args, (arg) => !isFunction(arg)),
+    ],
+    /* eslint-enable react-hooks/exhaustive-deps */
   );
 };
 

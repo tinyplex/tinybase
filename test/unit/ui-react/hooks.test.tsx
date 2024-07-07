@@ -2741,8 +2741,10 @@ describe('Write Hooks', () => {
     expect(clickHandler1).not.toEqual(clickHandler2);
   });
 
-  test('useSetTableCallback', () => {
+  test('useSetTableCallback (including handler memo)', () => {
     const then = jest.fn((_store?: Store, _table?: Table) => null);
+    let previousHandler: any;
+    let handlerChanged = 0;
     const Test = ({
       value,
       then,
@@ -2750,21 +2752,28 @@ describe('Write Hooks', () => {
       readonly value: number;
       readonly then: (store?: Store, table?: Table) => void;
     }) => {
-      return (
-        <div
-          onClick={useSetTableCallback<React.MouseEvent<HTMLDivElement>>(
-            't1',
-            (e) => ({r1: {c1: e.screenX * value}}),
-            [value],
-            store,
-            then,
-          )}
-        />
+      const handler = useSetTableCallback<React.MouseEvent<HTMLDivElement>>(
+        't1',
+        (e) => ({r1: {c1: e.screenX * value}}),
+        [value],
+        store,
+        then,
       );
+      if (handler != previousHandler) {
+        handlerChanged++;
+        previousHandler = handler;
+      }
+      return <div onClick={handler} />;
     };
     act(() => {
       renderer = create(<Test value={2} then={then} />);
     });
+    expect(handlerChanged).toEqual(1);
+
+    act(() => {
+      renderer.update(<Test value={2} then={then} />);
+    });
+    expect(handlerChanged).toEqual(1);
 
     const clickHandler1 = renderer.root.findByType('div').props.onClick;
     act(() => {
@@ -2776,12 +2785,15 @@ describe('Write Hooks', () => {
     act(() => {
       renderer.update(<Test value={3} then={then} />);
     });
+    expect(handlerChanged).toEqual(2);
     const clickHandler2 = renderer.root.findByType('div').props.onClick;
     expect(clickHandler1).not.toEqual(clickHandler2);
   });
 
-  test('useSetTableCallback, parameterized Id', () => {
+  test('useSetTableCallback, parameterized Id (including handler memo)', () => {
     const then = jest.fn((_store?: Store, _table?: Table) => null);
+    let previousHandler: any;
+    let handlerChanged = 0;
     const Test = ({
       value,
       then,
@@ -2789,21 +2801,28 @@ describe('Write Hooks', () => {
       readonly value: number;
       readonly then: (store?: Store, table?: Table) => void;
     }) => {
-      return (
-        <div
-          onClick={useSetTableCallback<React.MouseEvent<HTMLDivElement>>(
-            (e) => 't' + e.screenY,
-            (e) => ({r1: {c1: e.screenX * value}}),
-            [value],
-            store,
-            then,
-          )}
-        />
+      const handler = useSetTableCallback<React.MouseEvent<HTMLDivElement>>(
+        (e) => 't' + e.screenY,
+        (e) => ({r1: {c1: e.screenX * value}}),
+        [value],
+        store,
+        then,
       );
+      if (handler != previousHandler) {
+        handlerChanged++;
+        previousHandler = handler;
+      }
+      return <div onClick={handler} />;
     };
     act(() => {
       renderer = create(<Test value={2} then={then} />);
     });
+    expect(handlerChanged).toEqual(1);
+
+    act(() => {
+      renderer.update(<Test value={2} then={then} />);
+    });
+    expect(handlerChanged).toEqual(1);
 
     const clickHandler1 = renderer.root.findByType('div').props.onClick;
     act(() => {
@@ -2821,6 +2840,7 @@ describe('Write Hooks', () => {
     act(() => {
       renderer.update(<Test value={3} then={then} />);
     });
+    expect(handlerChanged).toEqual(2);
     const clickHandler2 = renderer.root.findByType('div').props.onClick;
     expect(clickHandler1).not.toEqual(clickHandler2);
   });
