@@ -317,6 +317,14 @@ describe.each([
     }
   });
 
+  test('does not autoLoad from non-existent', async () => {
+    if (persistable.testMissing) {
+      store.setTables({t1: {r1: {c1: 1}}});
+      await persistable.getPersister(store, '_').startAutoLoad();
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    }
+  });
+
   test('does not load from possibly invalid', async () => {
     if (name == 'file') {
       store.setTables({t1: {r1: {c1: 1}}});

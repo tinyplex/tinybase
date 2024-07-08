@@ -179,19 +179,24 @@ export const createCustomPersister = <
     initialContent?: Content,
   ): Promise<Persister<Persist>> => {
     await stopAutoLoad().load(initialContent);
-    autoLoadHandle = addPersisterListener(async (content, changes) => {
-      if (changes || content) {
-        /*! istanbul ignore else */
-        if (loadSave != 2) {
-          loadSave = 1;
-          loads++;
-          setContentOrChanges(changes ?? content);
-          loadSave = 0;
+    try {
+      autoLoadHandle = addPersisterListener(async (content, changes) => {
+        if (changes || content) {
+          /*! istanbul ignore else */
+          if (loadSave != 2) {
+            loadSave = 1;
+            loads++;
+            setContentOrChanges(changes ?? content);
+            loadSave = 0;
+          }
+        } else {
+          await load();
         }
-      } else {
-        await load();
-      }
-    });
+      });
+    } catch (error) {
+      /*! istanbul ignore next */
+      onIgnoredError?.(error);
+    }
     return persister;
   };
 
