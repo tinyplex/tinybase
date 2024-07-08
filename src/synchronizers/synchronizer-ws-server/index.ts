@@ -8,6 +8,7 @@ import type {
 import {EMPTY_STRING, UTF8} from '../../common/strings.ts';
 import type {Id, IdOrNull, Ids} from '../../@types/common/index.d.ts';
 import {
+  IdMap,
   IdMap2,
   mapEnsure,
   mapForEach,
@@ -27,19 +28,45 @@ import {
 import {ifNotUndefined, slice} from '../../common/other.ts';
 import {IdSet2} from '../../common/set.ts';
 import {MESSAGE_SEPARATOR} from '../common.ts';
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {Persister} from '../../@types/persisters/index.d.ts';
+import {createMergeableStore} from '../../mergeable-store/index.ts';
 import {getListenerFunctions} from '../../common/listeners.ts';
 import {objFreeze} from '../../common/obj.ts';
 
 const PATH_REGEX = /\/([^?]*)/;
 
-export const createWsServer = ((webSocketServer: WebSocketServer) => {
+export const createWsServer = ((
+  webSocketServer: WebSocketServer,
+  createPersister?: (store: MergeableStore, path: Id) => Persister | undefined,
+) => {
   const pathIdListeners: IdSet2 = mapNew();
   const clientIdListeners: IdSet2 = mapNew();
   const clientsByPath: IdMap2<WebSocket> = mapNew();
+  const persistersByPath: IdMap<Persister> = mapNew();
 
   const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
     () => wsServer,
   );
+
+  const startPath = (pathId: Id) => {
+    callListeners(pathIdListeners, undefined, pathId, 1);
+    ifNotUndefined(
+      createPersister?.(createMergeableStore(), pathId),
+      async (persister) => {
+        mapSet(persistersByPath, pathId, persister);
+        await persister.startAutoLoad();
+        await persister.startAutoSave();
+      },
+    );
+  };
+
+  const finishPath = (pathId: Id) => {
+    ifNotUndefined(mapGet(persistersByPath, pathId), (persister) =>
+      persister.destroy(),
+    );
+    callListeners(pathIdListeners, undefined, pathId, -1);
+  };
 
   webSocketServer.on('connection', (webSocket, request) =>
     ifNotUndefined(request.url?.match(PATH_REGEX), ([, pathId]) =>
@@ -48,7 +75,7 @@ export const createWsServer = ((webSocketServer: WebSocketServer) => {
         mapSet(clients, clientId, webSocket);
 
         if (clients.size == 1) {
-          callListeners(pathIdListeners, undefined, pathId, 1);
+          startPath(pathId);
         }
         callListeners(clientIdListeners, [pathId], clientId, 1);
 
@@ -77,7 +104,7 @@ export const createWsServer = ((webSocketServer: WebSocketServer) => {
           callListeners(clientIdListeners, [pathId], clientId, -1);
           if (collIsEmpty(clients)) {
             collDel(clientsByPath, pathId);
-            callListeners(pathIdListeners, undefined, pathId, -1);
+            finishPath(pathId);
           }
         });
       }),

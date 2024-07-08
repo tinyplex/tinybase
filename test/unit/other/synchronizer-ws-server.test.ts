@@ -3,10 +3,14 @@
 import {WebSocket, WebSocketServer} from 'ws';
 import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import type {WsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createMergeableStore} from 'tinybase';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+import {join} from 'path';
 import {pause} from '../common/other.ts';
+import {readdirSync} from 'fs';
+import tmp from 'tmp';
 
 test('Basics', async () => {
   const wsServer = createWsServer(new WebSocketServer({port: 8046}));
@@ -171,5 +175,40 @@ describe('Multiple connections', () => {
       {p1: {[c2]: -1}},
     ]);
     expect(clientIdsLog2).toEqual([{p2: {[c3]: 1}}]);
+  });
+});
+
+describe('Persistence', () => {
+  let tmpDir: string;
+
+  beforeEach(() => {
+    tmp.setGracefulCleanup();
+    tmpDir = tmp.dirSync().name;
+  });
+
+  test('single store', async () => {
+    const wsServer = createWsServer(
+      new WebSocketServer({port: 8046}),
+      (store, pathId) => {
+        return createFilePersister(
+          store,
+          join(tmpDir, pathId.replaceAll('/', '-') + '.json'),
+        );
+      },
+    );
+
+    const s1 = createMergeableStore('s1');
+    const synchronizer1 = await createWsSynchronizer(
+      s1,
+      new WebSocket('ws://localhost:8046'),
+    );
+    await synchronizer1.startSync();
+    s1.setCell('pets', 'fido', 'legs', 4);
+
+    await pause();
+    expect(readdirSync(tmpDir)).toEqual(['.json']);
+
+    synchronizer1.destroy();
+    wsServer.destroy();
   });
 });
