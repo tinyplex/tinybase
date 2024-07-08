@@ -1,4 +1,5 @@
-import {FSWatcher, watch} from 'fs';
+import {EMPTY_STRING, UTF8} from '../../common/strings.ts';
+import {FSWatcher, existsSync, watch, writeFileSync} from 'fs';
 import type {
   FilePersister,
   createFilePersister as createFilePersisterDecl,
@@ -16,7 +17,6 @@ import {
 import {readFile, writeFile} from 'fs/promises';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
-import {UTF8} from '../../common/strings.ts';
 
 export const createFilePersister = ((
   store: Store | MergeableStore,
@@ -34,7 +34,12 @@ export const createFilePersister = ((
 
   const addPersisterListener = (
     listener: PersisterListener<PersistsType.StoreOrMergeableStore>,
-  ): FSWatcher => watch(filePath, () => listener());
+  ): FSWatcher => {
+    if (!existsSync(filePath)) {
+      writeFileSync(filePath, EMPTY_STRING, UTF8);
+    }
+    return watch(filePath, () => listener());
+  };
 
   const delPersisterListener = (watcher: FSWatcher): void => watcher?.close();
 
