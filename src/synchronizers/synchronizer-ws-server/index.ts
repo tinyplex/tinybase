@@ -48,9 +48,9 @@ export const createWsServer = ((webSocketServer: WebSocketServer) => {
         mapSet(clients, clientId, webSocket);
 
         if (clients.size == 1) {
-          callListeners(pathIdListeners, undefined, () => ({[pathId]: 1}));
+          callListeners(pathIdListeners, undefined, pathId, 1);
         }
-        callListeners(clientIdListeners, [pathId], () => ({[clientId]: 1}));
+        callListeners(clientIdListeners, [pathId], clientId, 1);
 
         webSocket.on('message', (data) => {
           const payload = data.toString(UTF8);
@@ -74,10 +74,10 @@ export const createWsServer = ((webSocketServer: WebSocketServer) => {
 
         webSocket.on('close', () => {
           collDel(clients, clientId);
-          callListeners(clientIdListeners, [pathId], () => ({[clientId]: -1}));
+          callListeners(clientIdListeners, [pathId], clientId, -1);
           if (collIsEmpty(clients)) {
             collDel(clientsByPath, pathId);
-            callListeners(pathIdListeners, undefined, () => ({[pathId]: -1}));
+            callListeners(pathIdListeners, undefined, pathId, -1);
           }
         });
       }),

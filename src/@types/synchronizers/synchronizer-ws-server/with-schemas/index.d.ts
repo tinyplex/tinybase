@@ -1,20 +1,22 @@
 /// synchronizer-ws-server
 
 import type {Id, IdOrNull, Ids} from '../../../common/with-schemas/index.d.ts';
-import type {GetIdChanges} from '../../../store/with-schemas/index.d.ts';
+import type {IdAddedOrRemoved} from '../../../store/with-schemas/index.d.ts';
 import type {WebSocketServer} from 'ws';
 
 /// PathIdsListener
-export type PathIdsListener<> = (
+export type PathIdsListener = (
   wsServer: WsServer,
-  getIdChanges: GetIdChanges<Id>,
+  pathId: Id,
+  addedOrRemoved: IdAddedOrRemoved,
 ) => void;
 
 /// ClientIdsListener
-export type ClientIdsListener<> = (
+export type ClientIdsListener = (
   wsServer: WsServer,
   pathId: Id,
-  getIdChanges: GetIdChanges<Id>,
+  clientId: Id,
+  addedOrRemoved: IdAddedOrRemoved,
 ) => void;
 
 /// WsServerStats

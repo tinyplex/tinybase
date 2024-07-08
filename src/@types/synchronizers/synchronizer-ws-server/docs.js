@@ -14,19 +14,19 @@
  *
  * A WsServer listens to any path, allowing an app to have the concept of
  * distinct 'rooms' that only certain clients are participating in. As soon as a
- * single client connects to a new path, this listener will be called with a
- * GetIdChanges callback that you can use to determine its Id.
+ * single client connects to a new path, this listener will be called with the
+ * Id of the new path and an `addedOrRemoved` value of `1`.
  *
- * When the final client disconnects from a path, it will be called again with a
- * GetIdChanges callback that you can again use to determine its Id.
+ * When the final client disconnects from a path, it will be called again with
+ * the Id of the deactivated path and an `addedOrRemoved` value of `-1`.
  *
  * A PathIdsListener is provided when using the addPathIdsListener method. See
  * that method for specific examples.
  * @param wsServer A reference to the WsServer.
- * @param getIdChanges A function that returns information about the path Id
- * change.
+ * @param pathId The Id of the path being added or removed.
+ * @param addedOrRemoved Whether the path was added (`1`) or removed (`-1`).
  * @category Listener
- * @since v5.0.0
+ * @since v5.0.3
  */
 /// PathIdsListener
 /**
@@ -35,20 +35,21 @@
  *
  * A WsServer listens to any path, allowing an app to have the concept of
  * distinct 'rooms' that only certain clients are participating in. As soon as a
- * new client connects to a path, this listener will be called with a
- * GetIdChanges callback that you can use to determine its Id.
+ * new client connects to a path, this listener will be called with the Id of
+ * the path, the Id of the new client, and an `addedOrRemoved` value of `1`.
  *
- * When the client disconnects from a path, it will be called again with a
- * GetIdChanges callback that you can again use to determine its Id.
+ * When the client disconnects from a path, it will be called again with the Id
+ * of the path, the Id of the leaving client, and an `addedOrRemoved` value of
+ * `-1`.
  *
  * A ClientIdsListener is provided when using the addClientIdsListener method.
  * See that method for specific examples.
  * @param wsServer A reference to the WsServer.
  * @param pathId The path that the client joined or left.
- * @param getIdChanges A function that returns information about the client Id
- * change.
+ * @param clientId The Id of the client being added or removed.
+ * @param addedOrRemoved Whether the client was added (`1`) or removed (`-1`).
  * @category Listener
- * @since v5.0.0
+ * @since v5.0.3
  */
 /// ClientIdsListener
 /**
@@ -228,33 +229,35 @@
    * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
    *
    * const server = createWsServer(new WebSocketServer({port: 8047}));
-   * const listenerId = server.addPathIdsListener((server, getIdChanges) => {
-   *   console.log(getIdChanges());
-   *   console.log(server.getPathIds());
-   * });
+   * const listenerId = server.addPathIdsListener(
+   *   (server, pathId, addedOrRemoved) => {
+   *     console.log(pathId + (addedOrRemoved == 1 ? ' added' : ' removed'));
+   *     console.log(server.getPathIds());
+   *   },
+   * );
    *
    * const synchronizer1 = await createWsSynchronizer(
    *   createMergeableStore(),
    *   new WebSocket('ws://localhost:8047/roomA'),
    * );
-   * // -> {'roomA': 1}
+   * // -> 'roomA added'
    * // -> ['roomA']
    *
    * const synchronizer2 = await createWsSynchronizer(
    *   createMergeableStore(),
    *   new WebSocket('ws://localhost:8047/roomB'),
    * );
-   * // -> {'roomB': 1}
+   * // -> 'roomB added'
    * // -> ['roomA', 'roomB']
    *
    * synchronizer1.destroy();
    * // ...
-   * // -> {'roomA': -1}
+   * // -> 'roomA removed'
    * // -> ['roomB']
    *
    * synchronizer2.destroy();
    * // ...
-   * // -> {'roomB': -1}
+   * // -> 'roomB removed'
    * // -> []
    *
    * server.delListener(listenerId);

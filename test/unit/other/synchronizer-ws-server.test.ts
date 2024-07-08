@@ -89,32 +89,38 @@ describe('Multiple connections', () => {
 
   test('Listeners', async () => {
     const pathIdsLog: {[pathId: string]: -1 | 1}[] = [];
-    wsServer.addPathIdsListener((server, getIdChanges) => {
+    wsServer.addPathIdsListener((server, pathId, addedOrRemoved) => {
       expect(server).toEqual(wsServer);
-      pathIdsLog.push(getIdChanges());
+      pathIdsLog.push({[pathId]: addedOrRemoved});
     });
 
     const allClientIdsLog: {[pathId: string]: {[clientId: string]: -1 | 1}}[] =
       [];
-    wsServer.addClientIdsListener(null, (server, pathId, getIdChanges) => {
-      expect(server).toEqual(wsServer);
-      allClientIdsLog.push({[pathId]: getIdChanges()});
-    });
+    wsServer.addClientIdsListener(
+      null,
+      (server, pathId, clientId, addedOrRemoved) => {
+        expect(server).toEqual(wsServer);
+        allClientIdsLog.push({[pathId]: {[clientId]: addedOrRemoved}});
+      },
+    );
 
     const clientIdsLog1: {[pathId: string]: {[clientId: string]: -1 | 1}}[] =
       [];
-    wsServer.addClientIdsListener('p1', (server, pathId, getIdChanges) => {
-      expect(server).toEqual(wsServer);
-      clientIdsLog1.push({[pathId]: getIdChanges()});
-    });
+    wsServer.addClientIdsListener(
+      'p1',
+      (server, pathId, clientId, addedOrRemoved) => {
+        expect(server).toEqual(wsServer);
+        clientIdsLog1.push({[pathId]: {[clientId]: addedOrRemoved}});
+      },
+    );
 
     const clientIdsLog2: {[pathId: string]: {[clientId: string]: -1 | 1}}[] =
       [];
     const listenerId = wsServer.addClientIdsListener(
       'p2',
-      (server, pathId, getIdChanges) => {
+      (server, pathId, clientId, addedOrRemoved) => {
         expect(server).toEqual(wsServer);
-        clientIdsLog2.push({[pathId]: getIdChanges()});
+        clientIdsLog2.push({[pathId]: {[clientId]: addedOrRemoved}});
       },
     );
 
