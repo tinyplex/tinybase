@@ -236,6 +236,37 @@ describe('Persistence', () => {
       [{}, '', 0],
     ]);
 
+    serverStore.setCell('pets', 'felix', 'legs', 3);
+    await pause();
+    expect(store1.getTables()).toEqual({
+      pets: {fido: {legs: 4}, felix: {legs: 3}},
+    });
+    expect(JSON.parse(readFileSync(join(tmpDir, '.json'), 'utf-8'))).toEqual([
+      [
+        {
+          pets: [
+            {
+              fido: [
+                {legs: [4, 'Nn1JUF-----7JQY8', 3062053843]},
+                '',
+                1065496390,
+              ],
+              felix: [
+                {legs: [3, 'Nn1JUF----05JWdY', 4072567171]},
+                '',
+                2053075818,
+              ],
+            },
+            '',
+            28885598,
+          ],
+        },
+        '',
+        3153621606,
+      ],
+      [{}, '', 0],
+    ]);
+
     synchronizer1.destroy();
     wsServer.destroy();
   });
