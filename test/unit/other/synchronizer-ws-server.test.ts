@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 
+import type {Id, MergeableStore} from 'tinybase';
 import {WebSocket, WebSocketServer} from 'ws';
-import {readFileSync, readdirSync} from 'fs';
 import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import type {WsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {createFilePersister} from 'tinybase/persisters/persister-file';
@@ -10,6 +10,7 @@ import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {join} from 'path';
 import {pause} from '../common/other.ts';
+import {readFileSync} from 'fs';
 import {resetHlc} from '../common/mergeable.ts';
 import tmp from 'tmp';
 
@@ -191,16 +192,17 @@ describe('Persistence', () => {
     tmpDir = tmp.dirSync().name;
   });
 
+  const createPersister = (serverStore: MergeableStore, pathId: Id) =>
+    createFilePersister(
+      serverStore,
+      join(tmpDir, pathId.replaceAll('/', '-') + '.json'),
+    );
+
   test('single store', async () => {
     const serverStore = createMergeableStore('ss');
     const wsServer = createWsServer(
       new WebSocketServer({port: 8050}),
-      (pathId) => {
-        return createFilePersister(
-          serverStore,
-          join(tmpDir, pathId.replaceAll('/', '-') + '.json'),
-        );
-      },
+      (pathId) => createPersister(serverStore, pathId),
     );
 
     const store1 = createMergeableStore('s1');
@@ -212,8 +214,7 @@ describe('Persistence', () => {
     store1.setCell('pets', 'fido', 'legs', 4);
 
     await pause();
-
-    expect(readdirSync(tmpDir)).toEqual(['.json']);
+    expect(serverStore.getTables()).toEqual({pets: {fido: {legs: 4}}});
     expect(JSON.parse(readFileSync(join(tmpDir, '.json'), 'utf-8'))).toEqual([
       [
         {
