@@ -17,6 +17,11 @@ import {
   mapNew,
   mapSet,
 } from '../../common/map.ts';
+import type {Persister, Persists} from '../../@types/persisters/index.d.ts';
+import type {
+  Receive,
+  Synchronizer,
+} from '../../@types/synchronizers/index.d.ts';
 import {WebSocket, WebSocketServer} from 'ws';
 import {
   collClear,
@@ -25,86 +30,124 @@ import {
   collSize,
   collSize2,
 } from '../../common/coll.ts';
-import {ifNotUndefined, slice} from '../../common/other.ts';
+import {
+  createPayload,
+  createRawPayload,
+  ifPayloadValid,
+  receivePayload,
+} from '../common.ts';
 import {IdSet2} from '../../common/set.ts';
-import {MESSAGE_SEPARATOR} from '../common.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
-import type {Persister} from '../../@types/persisters/index.d.ts';
-import {createMergeableStore} from '../../mergeable-store/index.ts';
+import {createCustomSynchronizer} from '../index.ts';
 import {getListenerFunctions} from '../../common/listeners.ts';
+import {ifNotUndefined} from '../../common/other.ts';
 import {objFreeze} from '../../common/obj.ts';
 
+type ServerClient = {
+  persister: Persister<
+    Persists.MergeableStoreOnly | Persists.StoreOrMergeableStore
+  >;
+  synchronizer: Synchronizer;
+  send: (payload: string) => void;
+};
+
 const PATH_REGEX = /\/([^?]*)/;
+const SERVER_CLIENT_ID = 'S';
 
 export const createWsServer = ((
   webSocketServer: WebSocketServer,
-  createPersister?: (store: MergeableStore, path: Id) => Persister | undefined,
+  createPersister?: (
+    path: Id,
+  ) =>
+    | Persister<Persists.MergeableStoreOnly | Persists.StoreOrMergeableStore>
+    | undefined,
 ) => {
   const pathIdListeners: IdSet2 = mapNew();
   const clientIdListeners: IdSet2 = mapNew();
   const clientsByPath: IdMap2<WebSocket> = mapNew();
-  const persistersByPath: IdMap<Persister> = mapNew();
+  const serverClientsByPath: IdMap<ServerClient> = mapNew();
 
   const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
     () => wsServer,
   );
 
-  const startPath = (pathId: Id) => {
-    callListeners(pathIdListeners, undefined, pathId, 1);
+  const startServerClient = (pathId: Id) =>
+    ifNotUndefined(createPersister?.(pathId), async (persister) => {
+      const serverClient = mapEnsure(
+        serverClientsByPath,
+        pathId,
+        () => ({persister}) as ServerClient,
+      );
+      const messageHandler = getMessageHandler(SERVER_CLIENT_ID, pathId);
+
+      serverClient.synchronizer = await createCustomSynchronizer(
+        persister.getStore() as MergeableStore,
+        (toClientId, requestId, message, body) =>
+          messageHandler(createPayload(toClientId, requestId, message, body)),
+        (receive: Receive) =>
+          (serverClient.send = (payload) => receivePayload(payload, receive)),
+        () => {},
+        0.1,
+      ).startSync();
+      await persister.startAutoLoad();
+      await persister.startAutoSave();
+    });
+
+  const stopServerClient = (pathId: Id) =>
     ifNotUndefined(
-      createPersister?.(createMergeableStore(), pathId),
-      async (persister) => {
-        mapSet(persistersByPath, pathId, persister);
-        await persister.startAutoLoad();
-        await persister.startAutoSave();
+      mapGet(serverClientsByPath, pathId),
+      ({persister, synchronizer}) => {
+        persister.destroy();
+        synchronizer?.destroy();
+        collDel(serverClientsByPath, pathId);
       },
     );
-  };
 
-  const finishPath = (pathId: Id) => {
-    ifNotUndefined(mapGet(persistersByPath, pathId), (persister) =>
-      persister.destroy(),
-    );
-    callListeners(pathIdListeners, undefined, pathId, -1);
+  const getMessageHandler = (clientId: Id, pathId: Id) => {
+    const clients = mapGet(clientsByPath, pathId);
+    const serverClient = mapGet(serverClientsByPath, pathId);
+    return (payload: string) =>
+      ifPayloadValid(payload, (toClientId, remainder) => {
+        const forwardedPayload = createRawPayload(clientId, remainder);
+        if (toClientId === EMPTY_STRING) {
+          clientId !== SERVER_CLIENT_ID
+            ? serverClient?.send(forwardedPayload)
+            : 0;
+          mapForEach(clients, (otherClientId, otherWebSocket) =>
+            otherClientId !== clientId
+              ? otherWebSocket.send(forwardedPayload)
+              : 0,
+          );
+        } else {
+          (toClientId === SERVER_CLIENT_ID
+            ? serverClient
+            : mapGet(clients, toClientId)
+          )?.send(forwardedPayload);
+        }
+      });
   };
 
   webSocketServer.on('connection', (webSocket, request) =>
     ifNotUndefined(request.url?.match(PATH_REGEX), ([, pathId]) =>
       ifNotUndefined(request.headers['sec-websocket-key'], (clientId) => {
         const clients = mapEnsure(clientsByPath, pathId, mapNew<Id, WebSocket>);
-        mapSet(clients, clientId, webSocket);
-
-        if (clients.size == 1) {
-          startPath(pathId);
+        if (collIsEmpty(clients)) {
+          callListeners(pathIdListeners, undefined, pathId, 1);
+          startServerClient(pathId);
         }
+        mapSet(clients, clientId, webSocket);
         callListeners(clientIdListeners, [pathId], clientId, 1);
 
-        webSocket.on('message', (data) => {
-          const payload = data.toString(UTF8);
-          const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
-          if (splitAt !== -1) {
-            const toClientId = slice(payload, 0, splitAt);
-            const message = slice(payload, splitAt + 1);
-            toClientId === EMPTY_STRING
-              ? mapForEach(clients, (otherClientId, otherWebSocket) =>
-                  otherClientId != clientId
-                    ? otherWebSocket.send(
-                        clientId + MESSAGE_SEPARATOR + message,
-                      )
-                    : 0,
-                )
-              : mapGet(clients, toClientId)?.send(
-                  clientId + MESSAGE_SEPARATOR + message,
-                );
-          }
-        });
+        const messageHandler = getMessageHandler(clientId, pathId);
+        webSocket.on('message', (data) => messageHandler(data.toString(UTF8)));
 
         webSocket.on('close', () => {
           collDel(clients, clientId);
           callListeners(clientIdListeners, [pathId], clientId, -1);
           if (collIsEmpty(clients)) {
             collDel(clientsByPath, pathId);
-            finishPath(pathId);
+            stopServerClient(pathId);
+            callListeners(pathIdListeners, undefined, pathId, -1);
           }
         });
       }),

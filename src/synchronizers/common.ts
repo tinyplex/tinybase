@@ -1,17 +1,17 @@
+import type {Id, IdOrNull} from '../@types/common/index.d.ts';
 import type {Message, Receive} from '../@types/synchronizers/index.d.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../common/json.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
-import type {IdOrNull} from '../@types/common/index.d.ts';
 import {slice} from '../common/other.ts';
 
-export const MESSAGE_SEPARATOR = '\n';
+const MESSAGE_SEPARATOR = '\n';
 
 export const ifPayloadValid = (
   payload: string,
-  then: (fromClientId: string, remainder: string) => void,
+  then: (clientId: string, remainder: string) => void,
 ) => {
   const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
   splitAt !== -1
@@ -19,7 +19,7 @@ export const ifPayloadValid = (
     : 0;
 };
 
-export const unpackAndReceiveWsPayload = (payload: string, receive: Receive) =>
+export const receivePayload = (payload: string, receive: Receive) =>
   ifPayloadValid(payload, (fromClientId, remainder) =>
     receive(
       fromClientId,
@@ -31,10 +31,11 @@ export const unpackAndReceiveWsPayload = (payload: string, receive: Receive) =>
     ),
   );
 
-export const packWsPayload = (
+export const createPayload = (
   toClientId: IdOrNull,
   ...args: [requestId: IdOrNull, message: Message, body: any]
 ): string =>
-  (toClientId ?? EMPTY_STRING) +
-  MESSAGE_SEPARATOR +
-  jsonStringWithUndefined(args);
+  createRawPayload(toClientId ?? EMPTY_STRING, jsonStringWithUndefined(args));
+
+export const createRawPayload = (toClientId: Id, remainder: string): string =>
+  toClientId + MESSAGE_SEPARATOR + remainder;
