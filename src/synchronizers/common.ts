@@ -9,22 +9,27 @@ import {slice} from '../common/other.ts';
 
 export const MESSAGE_SEPARATOR = '\n';
 
-export const unpackAndReceiveWsPayload = (
+export const ifPayloadValid = (
   payload: string,
-  receive: Receive,
+  then: (fromClientId: string, remainder: string) => void,
 ) => {
   const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
   splitAt !== -1
-    ? receive(
-        slice(payload, 0, splitAt),
-        ...(jsonParseWithUndefined(slice(payload, splitAt + 1)) as [
-          requestId: IdOrNull,
-          message: Message,
-          body: any,
-        ]),
-      )
+    ? then(slice(payload, 0, splitAt), slice(payload, splitAt + 1))
     : 0;
 };
+
+export const unpackAndReceiveWsPayload = (payload: string, receive: Receive) =>
+  ifPayloadValid(payload, (fromClientId, remainder) =>
+    receive(
+      fromClientId,
+      ...(jsonParseWithUndefined(remainder) as [
+        requestId: IdOrNull,
+        message: Message,
+        body: any,
+      ]),
+    ),
+  );
 
 export const packWsPayload = (
   toClientId: IdOrNull,
