@@ -32,7 +32,7 @@ id="one-with">"The One You Can Sync"</span>
 >
 > Store [key-value data](#start-with-a-simple-key-value-store) and [tabular
 > data](#level-up-to-use-tabular-data) with optional typed
-> [schematization]('#apply-schemas-to-tables-values) to model your app's data
+> [schematization](#apply-schemas-to-tables-values) to model your app's data
 > structures. TinyBase provides built-in
 > [indexing](#create-indexes-for-fast-lookups), [metric
 > aggregation](#define-metrics-and-aggregations), and tabular
