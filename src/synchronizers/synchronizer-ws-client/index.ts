@@ -31,8 +31,8 @@ export const createWsSynchronizer = (async <
       const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
       if (splitAt !== -1) {
         receive(
-          slice(data, 0, splitAt),
-          ...(jsonParseWithUndefined(slice(data, splitAt + 1)) as [
+          slice(payload, 0, splitAt),
+          ...(jsonParseWithUndefined(slice(payload, splitAt + 1)) as [
             requestId: IdOrNull,
             message: Message,
             body: any,
