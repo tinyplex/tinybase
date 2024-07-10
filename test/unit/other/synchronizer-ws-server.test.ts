@@ -202,16 +202,22 @@ describe('Persistence', () => {
     const serverStore = createMergeableStore('ss');
     const wsServer = createWsServer(
       new WebSocketServer({port: 8050}),
-      (pathId) => createPersister(serverStore, pathId),
+      async (pathId) => {
+        const persister = createPersister(serverStore, pathId);
+        await persister.startAutoLoad();
+        await persister.startAutoSave();
+        return persister;
+      },
+      (_, persister) => persister.destroy(),
     );
 
-    const store1 = createMergeableStore('s1');
-    const synchronizer1 = await createWsSynchronizer(
-      store1,
+    const clientStore = createMergeableStore('s1');
+    const synchronizer = await createWsSynchronizer(
+      clientStore,
       new WebSocket('ws://localhost:8050'),
     );
-    await synchronizer1.startSync();
-    store1.setCell('pets', 'fido', 'legs', 4);
+    await synchronizer.startSync();
+    clientStore.setCell('pets', 'fido', 'legs', 4);
 
     await pause();
     expect(serverStore.getTables()).toEqual({pets: {fido: {legs: 4}}});
@@ -238,7 +244,7 @@ describe('Persistence', () => {
 
     serverStore.setCell('pets', 'felix', 'legs', 3);
     await pause();
-    expect(store1.getTables()).toEqual({
+    expect(clientStore.getTables()).toEqual({
       pets: {fido: {legs: 4}, felix: {legs: 3}},
     });
     expect(JSON.parse(readFileSync(join(tmpDir, '.json'), 'utf-8'))).toEqual([
@@ -267,7 +273,7 @@ describe('Persistence', () => {
       [{}, '', 0],
     ]);
 
-    synchronizer1.destroy();
+    synchronizer.destroy();
     wsServer.destroy();
   });
 });

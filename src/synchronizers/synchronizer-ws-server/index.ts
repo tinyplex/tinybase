@@ -43,25 +43,24 @@ import {getListenerFunctions} from '../../common/listeners.ts';
 import {ifNotUndefined} from '../../common/other.ts';
 import {objFreeze} from '../../common/obj.ts';
 
-type ServerClient = {
-  persister: Persister<
-    Persists.MergeableStoreOnly | Persists.StoreOrMergeableStore
-  >;
-  synchronizer: Synchronizer;
-  send: (payload: string) => void;
-};
-
 const PATH_REGEX = /\/([^?]*)/;
 const SERVER_CLIENT_ID = 'S';
 
-export const createWsServer = ((
+export const createWsServer = (<
+  PathPersister extends Persister<
+    Persists.MergeableStoreOnly | Persists.StoreOrMergeableStore
+  >,
+>(
   webSocketServer: WebSocketServer,
-  createPersister?: (
-    path: Id,
-  ) =>
-    | Persister<Persists.MergeableStoreOnly | Persists.StoreOrMergeableStore>
-    | undefined,
+  createPersisterForPath?: (pathId: Id) => Promise<PathPersister | undefined>,
+  destroyPersisterForPath?: (pathId: Id, persister: PathPersister) => void,
 ) => {
+  type ServerClient = {
+    persister: PathPersister;
+    synchronizer: Synchronizer;
+    send: (payload: string) => void;
+  };
+
   const pathIdListeners: IdSet2 = mapNew();
   const clientIdListeners: IdSet2 = mapNew();
   const clientsByPath: IdMap2<WebSocket> = mapNew();
@@ -71,34 +70,34 @@ export const createWsServer = ((
     () => wsServer,
   );
 
-  const startServerClient = (pathId: Id) =>
-    ifNotUndefined(createPersister?.(pathId), async (persister) => {
-      const serverClient = mapEnsure(
-        serverClientsByPath,
-        pathId,
-        () => ({persister}) as ServerClient,
-      );
-      const messageHandler = getMessageHandler(SERVER_CLIENT_ID, pathId);
-
-      serverClient.synchronizer = await createCustomSynchronizer(
-        persister.getStore() as MergeableStore,
-        (toClientId, requestId, message, body) =>
-          messageHandler(createPayload(toClientId, requestId, message, body)),
-        (receive: Receive) =>
-          (serverClient.send = (payload) => receivePayload(payload, receive)),
-        () => {},
-        0.1,
-      ).startSync();
-      await persister.startAutoLoad();
-      await persister.startAutoSave();
-    });
+  const startServerClient = async (pathId: Id) =>
+    ifNotUndefined(
+      await createPersisterForPath?.(pathId),
+      async (persister) => {
+        const serverClient = mapEnsure(
+          serverClientsByPath,
+          pathId,
+          () => ({persister}) as ServerClient,
+        );
+        const messageHandler = getMessageHandler(SERVER_CLIENT_ID, pathId);
+        serverClient.synchronizer = await createCustomSynchronizer(
+          persister.getStore() as MergeableStore,
+          (toClientId, requestId, message, body) =>
+            messageHandler(createPayload(toClientId, requestId, message, body)),
+          (receive: Receive) =>
+            (serverClient.send = (payload) => receivePayload(payload, receive)),
+          () => {},
+          0.1,
+        ).startSync();
+      },
+    );
 
   const stopServerClient = (pathId: Id) =>
     ifNotUndefined(
       mapGet(serverClientsByPath, pathId),
       ({persister, synchronizer}) => {
-        persister.destroy();
         synchronizer?.destroy();
+        destroyPersisterForPath?.(pathId, persister);
         collDel(serverClientsByPath, pathId);
       },
     );
@@ -129,11 +128,11 @@ export const createWsServer = ((
 
   webSocketServer.on('connection', (webSocket, request) =>
     ifNotUndefined(request.url?.match(PATH_REGEX), ([, pathId]) =>
-      ifNotUndefined(request.headers['sec-websocket-key'], (clientId) => {
+      ifNotUndefined(request.headers['sec-websocket-key'], async (clientId) => {
         const clients = mapEnsure(clientsByPath, pathId, mapNew<Id, WebSocket>);
         if (collIsEmpty(clients)) {
           callListeners(pathIdListeners, undefined, pathId, 1);
-          startServerClient(pathId);
+          await startServerClient(pathId);
         }
         mapSet(clients, clientId, webSocket);
         callListeners(clientIdListeners, [pathId], clientId, 1);

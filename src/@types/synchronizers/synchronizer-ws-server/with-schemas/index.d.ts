@@ -55,14 +55,14 @@ export interface WsServer {
 }
 
 /// createWsServer
-export function createWsServer<Schemas extends OptionalSchemas>(
+export function createWsServer<
+  Schemas extends OptionalSchemas,
+  PathPersister extends Persister<
+    Schemas,
+    Persists.MergeableStoreOnly | Persists.StoreOrMergeableStore
+  >,
+>(
   webSocketServer: WebSocketServer,
-  createPersister?: (
-    pathId: Id,
-  ) =>
-    | Persister<
-        Schemas,
-        Persists.MergeableStoreOnly | Persists.StoreOrMergeableStore
-      >
-    | undefined,
+  createPersisterForPath?: (pathId: Id) => Promise<PathPersister | undefined>,
+  destroyPersisterForPath?: (pathId: Id, persister: PathPersister) => void,
 ): WsServer;

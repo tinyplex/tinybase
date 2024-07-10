@@ -49,11 +49,12 @@ export interface WsServer {
 }
 
 /// createWsServer
-export function createWsServer(
+export function createWsServer<
+  PathPersister extends Persister<
+    Persists.MergeableStoreOnly | Persists.StoreOrMergeableStore
+  >,
+>(
   webSocketServer: WebSocketServer,
-  createPersister?: (
-    pathId: Id,
-  ) =>
-    | Persister<Persists.MergeableStoreOnly | Persists.StoreOrMergeableStore>
-    | undefined,
+  createPersisterForPath?: (pathId: Id) => Promise<PathPersister | undefined>,
+  destroyPersisterForPath?: (pathId: Id, persister: PathPersister) => void,
 ): WsServer;
