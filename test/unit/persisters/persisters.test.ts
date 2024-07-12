@@ -24,9 +24,7 @@ import {
   mockYjs,
 } from './mocks.ts';
 import {createStore} from 'tinybase';
-import {join} from 'path';
 import {pause} from '../common/other.ts';
-import tmp from 'tmp';
 
 describe.each([
   ['mockChangesListener', mockChangesListener],
@@ -52,8 +50,6 @@ describe.each([
   let getLocationMethod: GetLocationMethod<any> | undefined;
   let store: Store;
   let persister: Persister;
-
-  tmp.setGracefulCleanup();
 
   beforeEach(async () => {
     if (persistable.beforeEach != null) {
@@ -318,17 +314,6 @@ describe.each([
       store.setTables({t1: {r1: {c1: 1}}});
       await persistable.getPersister(store, '_').load();
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    }
-  });
-
-  test('does not autoLoad from non-existent', async () => {
-    if (persistable.testMissing) {
-      store.setTables({t1: {r1: {c1: 1}}});
-      const persister = await persistable
-        .getPersister(store, join(tmp.dirSync().name, '_'))
-        .startAutoLoad();
-      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-      persister.destroy();
     }
   });
 
