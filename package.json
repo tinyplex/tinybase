@@ -56,6 +56,9 @@
     "electric-sql": {
       "optional": true
     },
+    "expo": {
+      "optional": true
+    },
     "expo-sqlite": {
       "optional": true
     },
