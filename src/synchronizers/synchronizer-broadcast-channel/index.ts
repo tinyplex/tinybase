@@ -1,4 +1,8 @@
-import type {Message, Receive} from '../../@types/synchronizers/index.d.ts';
+import type {
+  Message,
+  Receive,
+  Send,
+} from '../../@types/synchronizers/index.d.ts';
 import type {IdOrNull} from '../../@types/common/index.d.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {createBroadcastChannelSynchronizer as createBroadcastChannelSynchronizerDecl} from '../../@types/synchronizers/synchronizer-broadcast-channel/index.d.ts';
@@ -9,6 +13,8 @@ import {isUndefined} from '../../common/other.ts';
 export const createBroadcastChannelSynchronizer = ((
   store: MergeableStore,
   channelName: string,
+  onSend?: Send,
+  onReceive?: Receive,
   onIgnoredError?: (error: any) => void,
 ) => {
   const clientId = getUniqueId();
@@ -41,6 +47,8 @@ export const createBroadcastChannelSynchronizer = ((
     registerReceive,
     destroy,
     0.01,
+    onSend,
+    onReceive,
     onIgnoredError,
     {getChannelName: () => channelName},
   );
