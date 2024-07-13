@@ -199,7 +199,7 @@ describe('Persistence', () => {
     );
 
   test('single store', async () => {
-    const serverStore = createMergeableStore('ss');
+    const serverStore = createMergeableStore('serverStore');
     const wsServer = createWsServer(
       new WebSocketServer({port: 8050}),
       async (pathId) => {
@@ -211,7 +211,7 @@ describe('Persistence', () => {
       (_, persister) => persister.destroy(),
     );
 
-    const clientStore = createMergeableStore('s1');
+    const clientStore = createMergeableStore('clientStore');
     const synchronizer = await createWsSynchronizer(
       clientStore,
       new WebSocket('ws://localhost:8050'),
@@ -227,17 +227,17 @@ describe('Persistence', () => {
           pets: [
             {
               fido: [
-                {legs: [4, 'Nn1JUF-----7JQY8', 3062053843]},
+                {legs: [4, 'Nn1JUF-----mYbVE', 185616755]},
                 '',
-                1065496390,
+                3235335260,
               ],
             },
             '',
-            282451392,
+            1444526551,
           ],
         },
         '',
-        3599542709,
+        4030728214,
       ],
       [{}, '', 0],
     ]);
@@ -253,22 +253,22 @@ describe('Persistence', () => {
           pets: [
             {
               fido: [
-                {legs: [4, 'Nn1JUF-----7JQY8', 3062053843]},
+                {legs: [4, 'Nn1JUF-----mYbVE', 185616755]},
                 '',
-                1065496390,
+                3235335260,
               ],
               felix: [
-                {legs: [3, 'Nn1JUF----05JWdY', 4072567171]},
+                {legs: [3, 'Nn1JUF----029WoI', 592848802]},
                 '',
-                2053075818,
+                2181508430,
               ],
             },
             '',
-            28885598,
+            1489134646,
           ],
         },
         '',
-        3153621606,
+        3880491533,
       ],
       [{}, '', 0],
     ]);
