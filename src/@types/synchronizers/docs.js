@@ -321,7 +321,7 @@
    * Synchronizer, and is used for debugging purposes.
    *
    * The SynchronizerStats object contains a count of the number of times the
-   * Persister has sent and received messages.
+   * Synchronizer has sent and received messages.
    *
    * The method is intended to be used during development to ensure your
    * synchronization layer is acting as expected, for example.
@@ -370,15 +370,29 @@
  * must provide parameters which identify how to send and receive changes to and
  * from this MergeableStore and its peers. This is entirely dependent upon the
  * medium of communication used.
+ *
+ * You must also provide a callback for when the Synchronizer is destroyed
+ * (which is a good place to clean up resources and stop communication
+ * listeners), and indicate how long the Synchronizer will wait for responses to
+ * message requests before timing out.
+ *
+ * A final set of optional handlers can be provided to help debug sends,
+ * receives, and errors respectively.
  * @param store The MergeableStore to synchronize.
  * @param send A Send function for sending a message.
  * @param registerReceive A callback (called once when the Synchronizer is
  * created) that is passed a Receive function that you need to ensure will
  * receive messages addressed or broadcast to this client.
- * @param destroy A function called when destroying the Persister which can be
- * used to clean up underlying resources.
+ * @param destroy A function called when destroying the Synchronizer which can
+ * be used to clean up underlying resources.
  * @param requestTimeoutSeconds An number of seconds before a request sent from
- * this Persister to another peer times out.
+ * this Synchronizer to another peer times out.
+ * @param onSend An optional handler for the messages that this Synchronizer
+ * sends. This is suitable for debugging synchronization issues in a development
+ * environment, since v5.1.
+ * @param onReceive An optional handler for the messages that this Synchronizer
+ * receives. This is suitable for debugging synchronization issues in a
+ * development environment, since v5.1.
  * @param onIgnoredError An optional handler for the errors that the
  * Synchronizer would otherwise ignore when trying to synchronize data. This is
  * suitable for debugging synchronization issues in a development environment.
