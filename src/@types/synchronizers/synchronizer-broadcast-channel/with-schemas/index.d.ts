@@ -1,8 +1,8 @@
 /// synchronizer-broadcast-channel
 
+import type {Receive, Send, Synchronizer} from '../../with-schemas/index.d.ts';
 import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
 import type {OptionalSchemas} from '../../../store/with-schemas/index.d.ts';
-import type {Synchronizer} from '../../with-schemas/index.d.ts';
 
 /// BroadcastChannelSynchronizer
 export interface BroadcastChannelSynchronizer<Schemas extends OptionalSchemas>
@@ -17,5 +17,7 @@ export function createBroadcastChannelSynchronizer<
 >(
   store: MergeableStore<Schemas>,
   channelName: string,
+  onSend?: Send,
+  onReceive?: Receive,
   onIgnoredError?: (error: any) => void,
 ): BroadcastChannelSynchronizer<Schemas>;
