@@ -48,6 +48,8 @@ export const createCustomSynchronizer = (
   registerReceive: (receive: Receive) => void,
   destroyImpl: () => void,
   requestTimeoutSeconds: number,
+  onSend?: Send,
+  onReceive?: Receive,
   onIgnoredError?: (error: any) => void,
   // undocumented:
   extra: {[methodName: string]: (...args: any[]) => any} = {},
@@ -72,6 +74,7 @@ export const createCustomSynchronizer = (
     body: any,
   ) => {
     sends++;
+    onSend?.(toClientId, requestId, message, body);
     send(toClientId, requestId, message, body);
   };
 
@@ -244,6 +247,7 @@ export const createCustomSynchronizer = (
       body: any,
     ) => {
       receives++;
+      onReceive?.(fromClientId, requestId, message, body);
       if (message == Message.Response) {
         ifNotUndefined(
           mapGet(pendingRequests, requestId),

@@ -71,5 +71,7 @@ export function createCustomSynchronizer<Schemas extends OptionalSchemas>(
   registerReceive: (receive: Receive) => void,
   destroy: () => void,
   requestTimeoutSeconds: number,
+  onSend?: Send,
+  onReceive?: Receive,
   onIgnoredError?: (error: any) => void,
 ): Synchronizer<Schemas>;
