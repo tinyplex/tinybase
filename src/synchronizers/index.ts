@@ -65,53 +65,15 @@ export const createCustomSynchronizer = (
     ]
   > = mapNew();
 
-  registerReceive(
-    (
-      fromClientId: Id,
-      requestId: IdOrNull,
-      message: MessageType,
-      body: any,
-    ) => {
-      receives++;
-      if (message == Message.Response) {
-        ifNotUndefined(
-          mapGet(pendingRequests, requestId),
-          ([toClientId, handleResponse]) =>
-            isUndefined(toClientId) || toClientId == fromClientId
-              ? handleResponse(body, fromClientId)
-              : /*! istanbul ignore next */
-                0,
-        );
-      } else if (
-        message == Message.ContentHashes &&
-        persister.isAutoLoading()
-      ) {
-        getChangesFromOtherStore(fromClientId, body).then((changes: any) => {
-          persisterListener?.(undefined, changes);
-        });
-      } else if (message == Message.ContentDiff && persister.isAutoLoading()) {
-        persisterListener?.(undefined, body);
-      } else {
-        ifNotUndefined(
-          message == Message.GetContentHashes && persister.isAutoSaving()
-            ? store.getMergeableContentHashes()
-            : message == Message.GetTableDiff
-              ? store.getMergeableTableDiff(body)
-              : message == Message.GetRowDiff
-                ? store.getMergeableRowDiff(body)
-                : message == Message.GetCellDiff
-                  ? store.getMergeableCellDiff(body)
-                  : message == Message.GetValueDiff
-                    ? store.getMergeableValueDiff(body)
-                    : undefined,
-          (response) => {
-            sends++;
-            send(fromClientId, requestId, Message.Response, response);
-          },
-        );
-      }
-    },
-  );
+  const sendImpl = (
+    toClientId: IdOrNull,
+    requestId: IdOrNull,
+    message: MessageType,
+    body: any,
+  ) => {
+    sends++;
+    send(toClientId, requestId, message, body);
+  };
 
   const request = async <Response>(
     toClientId: IdOrNull,
@@ -132,8 +94,7 @@ export const createCustomSynchronizer = (
           resolve([response, fromClientId]);
         },
       ]);
-      sends++;
-      send(toClientId, requestId, message, body);
+      sendImpl(toClientId, requestId, message, body);
     });
 
   const mergeTablesStamps = (
@@ -236,19 +197,15 @@ export const createCustomSynchronizer = (
   const setPersisted = async (
     _getContent: () => MergeableContent,
     changes?: MergeableChanges,
-  ): Promise<void> => {
-    sends++;
-    if (changes) {
-      send(null, null, Message.ContentDiff, changes);
-    } else {
-      send(
-        null,
-        null,
-        Message.ContentHashes,
-        store.getMergeableContentHashes(),
-      );
-    }
-  };
+  ): Promise<void> =>
+    changes
+      ? sendImpl(null, null, Message.ContentDiff, changes)
+      : sendImpl(
+          null,
+          null,
+          Message.ContentHashes,
+          store.getMergeableContentHashes(),
+        );
 
   const addPersisterListener = (
     listener: PersisterListener<PersistsType.MergeableStoreOnly>,
@@ -278,5 +235,53 @@ export const createCustomSynchronizer = (
     Persists.MergeableStoreOnly,
     {startSync, stopSync, destroy, getSynchronizerStats, ...extra},
   ) as Synchronizer;
+
+  registerReceive(
+    (
+      fromClientId: Id,
+      requestId: IdOrNull,
+      message: MessageType,
+      body: any,
+    ) => {
+      receives++;
+      if (message == Message.Response) {
+        ifNotUndefined(
+          mapGet(pendingRequests, requestId),
+          ([toClientId, handleResponse]) =>
+            isUndefined(toClientId) || toClientId == fromClientId
+              ? handleResponse(body, fromClientId)
+              : /*! istanbul ignore next */
+                0,
+        );
+      } else if (
+        message == Message.ContentHashes &&
+        persister.isAutoLoading()
+      ) {
+        getChangesFromOtherStore(fromClientId, body).then((changes: any) => {
+          persisterListener?.(undefined, changes);
+        });
+      } else if (message == Message.ContentDiff && persister.isAutoLoading()) {
+        persisterListener?.(undefined, body);
+      } else {
+        ifNotUndefined(
+          message == Message.GetContentHashes && persister.isAutoSaving()
+            ? store.getMergeableContentHashes()
+            : message == Message.GetTableDiff
+              ? store.getMergeableTableDiff(body)
+              : message == Message.GetRowDiff
+                ? store.getMergeableRowDiff(body)
+                : message == Message.GetCellDiff
+                  ? store.getMergeableCellDiff(body)
+                  : message == Message.GetValueDiff
+                    ? store.getMergeableValueDiff(body)
+                    : undefined,
+          (response) => {
+            sendImpl(fromClientId, requestId, Message.Response, response);
+          },
+        );
+      }
+    },
+  );
+
   return persister;
 };
