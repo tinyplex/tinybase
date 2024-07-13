@@ -75,6 +75,10 @@
  * As well as providing a reference to the MergeableStore to persist, you must
  * provide a configured WebSocket to send synchronization messages over.
  *
+ * You can indicate how long the Synchronizer will wait for responses to message
+ * requests before timing out. A final set of optional handlers can be provided
+ * to help debug sends, receives, and errors respectively.
+ *
  * This method is asynchronous because it will await the websocket's connection
  * to the server. You will need to `await` a call to this function or handle the
  * return type natively as a Promise.
@@ -82,6 +86,12 @@
  * @param webSocket The WebSocket to send synchronization messages over.
  * @param requestTimeoutSeconds An optional time in seconds that the
  * Synchronizer will wait for responses to request messages, defaulting to 1.
+ * @param onSend An optional handler for the messages that this Synchronizer
+ * sends. This is suitable for debugging synchronization issues in a development
+ * environment, since v5.1.
+ * @param onReceive An optional handler for the messages that this Synchronizer
+ * receives. This is suitable for debugging synchronization issues in a
+ * development environment, since v5.1.
  * @param onIgnoredError An optional handler for the errors that the
  * Synchronizer would otherwise ignore when trying to synchronize data. This is
  * suitable for debugging synchronization issues in a development environment.
