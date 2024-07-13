@@ -31,17 +31,17 @@ export const enum Message {
   GetValueDiff = 7,
 }
 
-/// Receive
-export type Receive = (
-  fromClientId: Id,
+/// Send
+export type Send = (
+  toClientId: IdOrNull,
   requestId: Id,
   message: Message,
   body: any,
 ) => void;
 
-/// Send
-export type Send = (
-  toClientId: IdOrNull,
+/// Receive
+export type Receive = (
+  fromClientId: Id,
   requestId: Id,
   message: Message,
   body: any,

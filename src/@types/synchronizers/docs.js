@@ -72,6 +72,22 @@
   /// Message.GetValueDiff
 }
 /**
+ * The Send type describes a function that knows how to dispatch a message as
+ * part of the synchronization protocol.
+ * @param toClientId The optional Id of the other client (in other words, the
+ * other system) to which the message should be sent. If omitted, this is to be
+ * a broadcast.
+ * @param requestId The optional Id of the message, which should be awaited in
+ * the response (if requested) to constitute a matched request/response
+ * transaction.
+ * @param message A number that indicates the type of the message, according to
+ * the Message enum.
+ * @param body A message-specific payload.
+ * @category Synchronization
+ * @since v5.0.0
+ */
+/// Send
+/**
  * The Receive type describes a function that knows how to handle the arrival of
  * a message as part of the synchronization protocol.
  *
@@ -90,22 +106,6 @@
  * @since v5.0.0
  */
 /// Receive
-/**
- * The Send type describes a function that knows how to dispatch a message as
- * part of the synchronization protocol.
- * @param toClientId The optional Id of the other client (in other words, the
- * other system) to which the message should be sent. If omitted, this is to be
- * a broadcast.
- * @param requestId The optional Id of the message, which should be awaited in
- * the response (if requested) to constitute a matched request/response
- * transaction.
- * @param message A number that indicates the type of the message, according to
- * the Message enum.
- * @param body A message-specific payload.
- * @category Synchronization
- * @since v5.0.0
- */
-/// Send
 /**
  * The SynchronizerStats type describes the number of times a Synchronizer
  * object has sent or received data.
