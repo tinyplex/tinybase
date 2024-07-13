@@ -71,7 +71,7 @@ export const createWsServer = (<
   );
 
   const startServerClient = async (pathId: Id) =>
-    ifNotUndefined(
+    await ifNotUndefined(
       await createPersisterForPath?.(pathId),
       async (persister) => {
         const serverClient = mapEnsure(
@@ -126,31 +126,44 @@ export const createWsServer = (<
       });
   };
 
-  webSocketServer.on('connection', (webSocket, request) =>
-    ifNotUndefined(request.url?.match(PATH_REGEX), ([, pathId]) =>
-      ifNotUndefined(request.headers['sec-websocket-key'], async (clientId) => {
-        const clients = mapEnsure(clientsByPath, pathId, mapNew<Id, WebSocket>);
-        if (collIsEmpty(clients)) {
-          callListeners(pathIdListeners, undefined, pathId, 1);
-          await startServerClient(pathId);
-        }
-        mapSet(clients, clientId, webSocket);
-        callListeners(clientIdListeners, [pathId], clientId, 1);
+  webSocketServer.on(
+    'connection',
+    async (webSocket, request) =>
+      await ifNotUndefined(
+        request.url?.match(PATH_REGEX),
+        async ([, pathId]) =>
+          await ifNotUndefined(
+            request.headers['sec-websocket-key'],
+            async (clientId) => {
+              const clients = mapEnsure(
+                clientsByPath,
+                pathId,
+                mapNew<Id, WebSocket>,
+              );
+              if (collIsEmpty(clients)) {
+                callListeners(pathIdListeners, undefined, pathId, 1);
+                await startServerClient(pathId);
+              }
+              mapSet(clients, clientId, webSocket);
+              callListeners(clientIdListeners, [pathId], clientId, 1);
 
-        const messageHandler = getMessageHandler(clientId, pathId);
-        webSocket.on('message', (data) => messageHandler(data.toString(UTF8)));
+              const messageHandler = getMessageHandler(clientId, pathId);
+              webSocket.on('message', (data) =>
+                messageHandler(data.toString(UTF8)),
+              );
 
-        webSocket.on('close', () => {
-          collDel(clients, clientId);
-          callListeners(clientIdListeners, [pathId], clientId, -1);
-          if (collIsEmpty(clients)) {
-            collDel(clientsByPath, pathId);
-            stopServerClient(pathId);
-            callListeners(pathIdListeners, undefined, pathId, -1);
-          }
-        });
-      }),
-    ),
+              webSocket.on('close', () => {
+                collDel(clients, clientId);
+                callListeners(clientIdListeners, [pathId], clientId, -1);
+                if (collIsEmpty(clients)) {
+                  collDel(clientsByPath, pathId);
+                  stopServerClient(pathId);
+                  callListeners(pathIdListeners, undefined, pathId, -1);
+                }
+              });
+            },
+          ),
+      ),
   );
 
   const getWebSocketServer = () => webSocketServer;
