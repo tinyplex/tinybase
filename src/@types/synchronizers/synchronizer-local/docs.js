@@ -37,9 +37,16 @@
  * on either one of them instead of going to the effort of setting up this
  * Synchronizer.
  *
- * As well as providing a reference to the MergeableStore to persist, you can
- * provide a handler for any otherwise ignored synchronization errors.
+ * As well as providing a reference to the MergeableStore to persist, a final
+ * set of optional handlers can be provided to help debug sends, receives, and
+ * errors respectively.
  * @param store The MergeableStore to synchronize.
+ * @param onSend An optional handler for the messages that this Synchronizer
+ * sends. This is suitable for debugging synchronization issues in a development
+ * environment, since v5.1.
+ * @param onReceive An optional handler for the messages that this Synchronizer
+ * receives. This is suitable for debugging synchronization issues in a
+ * development environment, since v5.1.
  * @param onIgnoredError An optional handler for the errors that the
  * Synchronizer would otherwise ignore when trying to synchronize data. This is
  * suitable for debugging synchronization issues in a development environment.
