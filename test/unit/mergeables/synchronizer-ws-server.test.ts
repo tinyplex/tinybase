@@ -27,7 +27,7 @@ test('Basics', async () => {
     new WebSocket('ws://localhost:8049'),
   );
   await synchronizer1.startSync();
-  s1.setCell('pets', 'fido', 'legs', 4);
+  s1.setCell('t1', 'r1', 'c1', 4);
 
   const s2 = createMergeableStore('s2');
   const synchronizer2 = await createWsSynchronizer(
@@ -35,15 +35,15 @@ test('Basics', async () => {
     new WebSocket('ws://localhost:8049'),
   );
   await synchronizer2.startSync();
-  s2.setCell('pets', 'felix', 'price', 5);
+  s2.setCell('t1', 'r2', 'price', 5);
 
   await pause();
 
   expect(s1.getTables()).toEqual({
-    pets: {felix: {price: 5}, fido: {legs: 4}},
+    t1: {r2: {price: 5}, r1: {c1: 4}},
   });
   expect(s2.getTables()).toEqual({
-    pets: {felix: {price: 5}, fido: {legs: 4}},
+    t1: {r2: {price: 5}, r1: {c1: 4}},
   });
 
   synchronizer1.destroy();
@@ -198,8 +198,8 @@ describe('Persistence', () => {
       join(tmpDir, pathId.replaceAll('/', '-') + '.json'),
     );
 
-  test('single store', async () => {
-    const serverStore = createMergeableStore('serverStore');
+  test('single client', async () => {
+    const serverStore = createMergeableStore('ss');
     const wsServer = createWsServer(
       new WebSocketServer({port: 8050}),
       async (pathId) => {
@@ -211,69 +211,206 @@ describe('Persistence', () => {
       (_, persister) => persister.destroy(),
     );
 
-    const clientStore = createMergeableStore('clientStore');
+    const clientStore = createMergeableStore('s1');
     const synchronizer = await createWsSynchronizer(
       clientStore,
-      new WebSocket('ws://localhost:8050'),
+      new WebSocket('ws://localhost:8050/p1'),
     );
     await synchronizer.startSync();
-    clientStore.setCell('pets', 'fido', 'legs', 4);
+    clientStore.setCell('t1', 'r1', 'c1', 1);
 
     await pause();
-    expect(serverStore.getTables()).toEqual({pets: {fido: {legs: 4}}});
-    expect(JSON.parse(readFileSync(join(tmpDir, '.json'), 'utf-8'))).toEqual([
+    expect(serverStore.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    expect(JSON.parse(readFileSync(join(tmpDir, 'p1.json'), 'utf-8'))).toEqual([
       [
         {
-          pets: [
+          t1: [
             {
-              fido: [
-                {legs: [4, 'Nn1JUF-----mYbVE', 185616755]},
-                '',
-                3235335260,
-              ],
+              r1: [{c1: [1, 'Nn1JUF-----7JQY8', 1003668370]}, '', 550994372],
             },
             '',
-            1444526551,
+            1072852846,
           ],
         },
         '',
-        4030728214,
+        1771939739,
       ],
       [{}, '', 0],
     ]);
 
-    serverStore.setCell('pets', 'felix', 'legs', 3);
+    serverStore.setCell('t1', 'r2', 'c2', 2);
     await pause();
     expect(clientStore.getTables()).toEqual({
-      pets: {fido: {legs: 4}, felix: {legs: 3}},
+      t1: {r1: {c1: 1}, r2: {c2: 2}},
     });
-    expect(JSON.parse(readFileSync(join(tmpDir, '.json'), 'utf-8'))).toEqual([
+    expect(JSON.parse(readFileSync(join(tmpDir, 'p1.json'), 'utf-8'))).toEqual([
       [
         {
-          pets: [
+          t1: [
             {
-              fido: [
-                {legs: [4, 'Nn1JUF-----mYbVE', 185616755]},
-                '',
-                3235335260,
-              ],
-              felix: [
-                {legs: [3, 'Nn1JUF----029WoI', 592848802]},
-                '',
-                2181508430,
-              ],
+              r1: [{c1: [1, 'Nn1JUF-----7JQY8', 1003668370]}, '', 550994372],
+              r2: [{c2: [2, 'Nn1JUF----05JWdY', 2495711874]}, '', 698565442],
             },
             '',
-            1489134646,
+            970894102,
           ],
         },
         '',
-        3880491533,
+        3701807090,
       ],
       [{}, '', 0],
     ]);
 
     synchronizer.destroy();
+    wsServer.destroy();
+  });
+
+  test('multiple clients, one path', async () => {
+    const serverStore = createMergeableStore('ss');
+    const wsServer = createWsServer(
+      new WebSocketServer({port: 8050}),
+      async (pathId) => {
+        const persister = createPersister(serverStore, pathId);
+        await persister.startAutoLoad();
+        await persister.startAutoSave();
+        return persister;
+      },
+      (_, persister) => persister.destroy(),
+    );
+
+    const clientStore1 = createMergeableStore('s1');
+    const synchronizer1 = await createWsSynchronizer(
+      clientStore1,
+      new WebSocket('ws://localhost:8050/p1'),
+    );
+    await synchronizer1.startSync();
+    clientStore1.setCell('t1', 'r1', 'c1', 1);
+
+    const clientStore2 = createMergeableStore('s2');
+    const synchronizer2 = await createWsSynchronizer(
+      clientStore2,
+      new WebSocket('ws://localhost:8050/p1'),
+    );
+    await synchronizer2.startSync();
+    clientStore1.setCell('t1', 'r2', 'c2', 2);
+
+    await pause();
+    expect(serverStore.getTables()).toEqual({
+      t1: {r1: {c1: 1}, r2: {c2: 2}},
+    });
+
+    serverStore.setCell('t1', 'r3', 'c3', 3);
+    await pause();
+    expect(clientStore1.getTables()).toEqual({
+      t1: {r1: {c1: 1}, r2: {c2: 2}, r3: {c3: 3}},
+    });
+    expect(clientStore2.getTables()).toEqual({
+      t1: {r1: {c1: 1}, r2: {c2: 2}, r3: {c3: 3}},
+    });
+
+    synchronizer1.destroy();
+    synchronizer2.destroy();
+    wsServer.destroy();
+  });
+
+  test('multiple clients, multiple paths', async () => {
+    const destroyPersister = jest.fn((_, persister) => persister.destroy());
+
+    const serverStore1 = createMergeableStore('ss1');
+    const serverStore2 = createMergeableStore('ss2');
+    const wsServer = createWsServer(
+      new WebSocketServer({port: 8050}),
+      async (pathId) => {
+        const persister = createPersister(
+          pathId == 'p1' ? serverStore1 : serverStore2,
+          pathId,
+        );
+        await persister.startAutoLoad();
+        await persister.startAutoSave();
+        return persister;
+      },
+      destroyPersister,
+    );
+
+    const clientStore1 = createMergeableStore('s1');
+    const synchronizer1 = await createWsSynchronizer(
+      clientStore1,
+      new WebSocket('ws://localhost:8050/p1'),
+    );
+    await synchronizer1.startSync();
+    clientStore1.setCell('t1', 'r1', 'c1', 1);
+
+    const clientStore2 = createMergeableStore('s2');
+    const synchronizer2 = await createWsSynchronizer(
+      clientStore2,
+      new WebSocket('ws://localhost:8050/p1'),
+    );
+    await synchronizer2.startSync();
+    clientStore1.setCell('t2', 'r2', 'c2', 2);
+
+    const clientStore3 = createMergeableStore('s3');
+    const synchronizer3 = await createWsSynchronizer(
+      clientStore3,
+      new WebSocket('ws://localhost:8050/p2'),
+    );
+    await synchronizer3.startSync();
+    clientStore3.setCell('t3', 'r3', 'c3', 3);
+
+    const clientStore4 = createMergeableStore('s4');
+    const synchronizer4 = await createWsSynchronizer(
+      clientStore4,
+      new WebSocket('ws://localhost:8050/p2'),
+    );
+    await synchronizer4.startSync();
+    clientStore4.setCell('t4', 'r4', 'c4', 4);
+    await pause();
+
+    expect(serverStore1.getTables()).toEqual({
+      t1: {r1: {c1: 1}},
+      t2: {r2: {c2: 2}},
+    });
+
+    expect(serverStore2.getTables()).toEqual({
+      t3: {r3: {c3: 3}},
+      t4: {r4: {c4: 4}},
+    });
+
+    serverStore1.setCell('t1', 'r1', 'c5', 5);
+    serverStore2.setCell('t3', 'r3', 'c5', 5);
+
+    await pause();
+    expect(clientStore1.getTables()).toEqual({
+      t1: {r1: {c1: 1, c5: 5}},
+      t2: {r2: {c2: 2}},
+    });
+    expect(clientStore2.getTables()).toEqual({
+      t1: {r1: {c1: 1, c5: 5}},
+      t2: {r2: {c2: 2}},
+    });
+    expect(clientStore3.getTables()).toEqual({
+      t3: {r3: {c3: 3, c5: 5}},
+      t4: {r4: {c4: 4}},
+    });
+    expect(clientStore4.getTables()).toEqual({
+      t3: {r3: {c3: 3, c5: 5}},
+      t4: {r4: {c4: 4}},
+    });
+
+    expect(destroyPersister).toHaveBeenCalledTimes(0);
+    synchronizer1.destroy();
+    await pause();
+    expect(destroyPersister).toHaveBeenCalledTimes(0);
+    synchronizer2.destroy();
+    await pause();
+    expect(destroyPersister).toHaveBeenCalledTimes(1);
+
+    synchronizer3.destroy();
+    await pause();
+    expect(destroyPersister).toHaveBeenCalledTimes(1);
+    synchronizer4.destroy();
+    await pause();
+    expect(destroyPersister).toHaveBeenCalledTimes(2);
+
     wsServer.destroy();
   });
 });
