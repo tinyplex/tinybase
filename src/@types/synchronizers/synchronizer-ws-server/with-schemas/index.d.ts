@@ -1,7 +1,14 @@
 /// synchronizer-ws-server
 
 import type {Id, IdOrNull, Ids} from '../../../common/with-schemas/index.d.ts';
-import type {IdAddedOrRemoved} from '../../../store/with-schemas/index.d.ts';
+import type {
+  IdAddedOrRemoved,
+  OptionalSchemas,
+} from '../../../store/with-schemas/index.d.ts';
+import type {
+  Persister,
+  Persists,
+} from '../../../persisters/with-schemas/index.d.ts';
 import type {WebSocketServer} from 'ws';
 
 /// PathIdsListener
@@ -48,4 +55,14 @@ export interface WsServer {
 }
 
 /// createWsServer
-export function createWsServer(webSocketServer: WebSocketServer): WsServer;
+export function createWsServer<
+  Schemas extends OptionalSchemas,
+  PathPersister extends Persister<
+    Schemas,
+    Persists.MergeableStoreOnly | Persists.StoreOrMergeableStore
+  >,
+>(
+  webSocketServer: WebSocketServer,
+  createPersisterForPath?: (pathId: Id) => Promise<PathPersister | undefined>,
+  destroyPersisterForPath?: (pathId: Id, persister: PathPersister) => void,
+): WsServer;
