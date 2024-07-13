@@ -56,7 +56,7 @@ export const arrayFilter = <Value>(
   cb: (value: Value) => boolean,
 ): Value[] => array.filter(cb);
 
-export const arrayClear = <Value>(array: Value[], to?: number): Value[] =>
+export const arrayClear = <Value>(array: Value[] = [], to?: number): Value[] =>
   array.splice(0, to);
 
 export const arrayPush = <Value>(array: Value[], ...values: Value[]): number =>
