@@ -1,4 +1,8 @@
-import type {Message, Receive} from '../../@types/synchronizers/index.d.ts';
+import type {
+  Message,
+  Receive,
+  Send,
+} from '../../@types/synchronizers/index.d.ts';
 import type {
   WebSocketTypes,
   createWsSynchronizer as createWsSynchronizerDecl,
@@ -16,6 +20,8 @@ export const createWsSynchronizer = (async <
   store: MergeableStore,
   webSocket: WebSocketType,
   requestTimeoutSeconds: number = 1,
+  onSend?: Send,
+  onReceive?: Receive,
   onIgnoredError?: (error: any) => void,
 ) => {
   const addEventListener = (event: string, handler: (...args: any[]) => void) =>
@@ -41,6 +47,8 @@ export const createWsSynchronizer = (async <
     registerReceive,
     destroy,
     requestTimeoutSeconds,
+    onSend,
+    onReceive,
     onIgnoredError,
     {getWebSocket: () => webSocket},
   );
