@@ -1,20 +1,30 @@
 /* eslint-disable jest/no-conditional-expect */
 
+import type {Id, MergeableStore} from 'tinybase';
 import {WebSocket, WebSocketServer} from 'ws';
 import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import type {WsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createMergeableStore} from 'tinybase';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+import {join} from 'path';
 import {pause} from '../common/other.ts';
+import {readFileSync} from 'fs';
+import {resetHlc} from '../common/mergeable.ts';
+import tmp from 'tmp';
+
+beforeEach(() => {
+  resetHlc();
+});
 
 test('Basics', async () => {
-  const wsServer = createWsServer(new WebSocketServer({port: 8046}));
+  const wsServer = createWsServer(new WebSocketServer({port: 8049}));
 
   const s1 = createMergeableStore('s1');
   const synchronizer1 = await createWsSynchronizer(
     s1,
-    new WebSocket('ws://localhost:8046'),
+    new WebSocket('ws://localhost:8049'),
   );
   await synchronizer1.startSync();
   s1.setCell('pets', 'fido', 'legs', 4);
@@ -22,7 +32,7 @@ test('Basics', async () => {
   const s2 = createMergeableStore('s2');
   const synchronizer2 = await createWsSynchronizer(
     s2,
-    new WebSocket('ws://localhost:8046'),
+    new WebSocket('ws://localhost:8049'),
   );
   await synchronizer2.startSync();
   s2.setCell('pets', 'felix', 'price', 5);
@@ -49,7 +59,7 @@ describe('Multiple connections', () => {
   let synchronizer3: WsSynchronizer<WebSocket>;
 
   beforeEach(async () => {
-    wssServer = new WebSocketServer({port: 8046});
+    wssServer = new WebSocketServer({port: 8049});
     wsServer = createWsServer(wssServer);
   });
 
@@ -64,19 +74,19 @@ describe('Multiple connections', () => {
     synchronizer1 = await (
       await createWsSynchronizer(
         createMergeableStore('s1'),
-        new WebSocket('ws://localhost:8046/p1'),
+        new WebSocket('ws://localhost:8049/p1'),
       )
     ).startSync();
     synchronizer2 = await (
       await createWsSynchronizer(
         createMergeableStore('s2'),
-        new WebSocket('ws://localhost:8046/p1'),
+        new WebSocket('ws://localhost:8049/p1'),
       )
     ).startSync();
     synchronizer3 = await (
       await createWsSynchronizer(
         createMergeableStore('s3'),
-        new WebSocket('ws://localhost:8046/p2'),
+        new WebSocket('ws://localhost:8049/p2'),
       )
     ).startSync();
     expect(wsServer.getWebSocketServer()).toEqual(wssServer);
@@ -127,19 +137,19 @@ describe('Multiple connections', () => {
     synchronizer1 = await (
       await createWsSynchronizer(
         createMergeableStore('s1'),
-        new WebSocket('ws://localhost:8046/p1'),
+        new WebSocket('ws://localhost:8049/p1'),
       )
     ).startSync();
     synchronizer2 = await (
       await createWsSynchronizer(
         createMergeableStore('s2'),
-        new WebSocket('ws://localhost:8046/p1'),
+        new WebSocket('ws://localhost:8049/p1'),
       )
     ).startSync();
     synchronizer3 = await (
       await createWsSynchronizer(
         createMergeableStore('s3'),
-        new WebSocket('ws://localhost:8046/p2'),
+        new WebSocket('ws://localhost:8049/p2'),
       )
     ).startSync();
 
@@ -171,5 +181,99 @@ describe('Multiple connections', () => {
       {p1: {[c2]: -1}},
     ]);
     expect(clientIdsLog2).toEqual([{p2: {[c3]: 1}}]);
+  });
+});
+
+describe('Persistence', () => {
+  let tmpDir: string;
+
+  beforeEach(() => {
+    tmp.setGracefulCleanup();
+    tmpDir = tmp.dirSync().name;
+  });
+
+  const createPersister = (serverStore: MergeableStore, pathId: Id) =>
+    createFilePersister(
+      serverStore,
+      join(tmpDir, pathId.replaceAll('/', '-') + '.json'),
+    );
+
+  test('single store', async () => {
+    const serverStore = createMergeableStore('ss');
+    const wsServer = createWsServer(
+      new WebSocketServer({port: 8050}),
+      async (pathId) => {
+        const persister = createPersister(serverStore, pathId);
+        await persister.startAutoLoad();
+        await persister.startAutoSave();
+        return persister;
+      },
+      (_, persister) => persister.destroy(),
+    );
+
+    const clientStore = createMergeableStore('s1');
+    const synchronizer = await createWsSynchronizer(
+      clientStore,
+      new WebSocket('ws://localhost:8050'),
+    );
+    await synchronizer.startSync();
+    clientStore.setCell('pets', 'fido', 'legs', 4);
+
+    await pause();
+    expect(serverStore.getTables()).toEqual({pets: {fido: {legs: 4}}});
+    expect(JSON.parse(readFileSync(join(tmpDir, '.json'), 'utf-8'))).toEqual([
+      [
+        {
+          pets: [
+            {
+              fido: [
+                {legs: [4, 'Nn1JUF-----7JQY8', 3062053843]},
+                '',
+                1065496390,
+              ],
+            },
+            '',
+            282451392,
+          ],
+        },
+        '',
+        3599542709,
+      ],
+      [{}, '', 0],
+    ]);
+
+    serverStore.setCell('pets', 'felix', 'legs', 3);
+    await pause();
+    expect(clientStore.getTables()).toEqual({
+      pets: {fido: {legs: 4}, felix: {legs: 3}},
+    });
+    expect(JSON.parse(readFileSync(join(tmpDir, '.json'), 'utf-8'))).toEqual([
+      [
+        {
+          pets: [
+            {
+              fido: [
+                {legs: [4, 'Nn1JUF-----7JQY8', 3062053843]},
+                '',
+                1065496390,
+              ],
+              felix: [
+                {legs: [3, 'Nn1JUF----05JWdY', 4072567171]},
+                '',
+                2053075818,
+              ],
+            },
+            '',
+            28885598,
+          ],
+        },
+        '',
+        3153621606,
+      ],
+      [{}, '', 0],
+    ]);
+
+    synchronizer.destroy();
+    wsServer.destroy();
   });
 });
