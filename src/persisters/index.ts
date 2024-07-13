@@ -13,7 +13,7 @@ import type {
   PersisterStats,
   Persists as PersistsType,
 } from '../@types/persisters/index.d.ts';
-import {arrayPush, arrayShift} from '../common/array.ts';
+import {arrayClear, arrayPush, arrayShift} from '../common/array.ts';
 import {
   errorNew,
   ifNotUndefined,
@@ -257,7 +257,10 @@ export const createCustomPersister = <
 
   const getStore = (): Store => store;
 
-  const destroy = (): Persister<Persist> => stopAutoLoad().stopAutoSave();
+  const destroy = (): Persister<Persist> => {
+    arrayClear(mapGet(scheduleActions, scheduleId));
+    return stopAutoLoad().stopAutoSave();
+  };
 
   const getStats = (): PersisterStats => ({loads, saves});
 
