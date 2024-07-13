@@ -87,7 +87,10 @@ export const createCustomSynchronizer = (
       const requestId = getUniqueId();
       const timeout = setTimeout(() => {
         collDel(pendingRequests, requestId);
-        reject(`No response from ${toClientId ?? 'anyone'} to '${message}'`);
+        reject(
+          `No response from ${toClientId ?? 'anyone'} to ${requestId}, ` +
+            message,
+        );
       }, requestTimeoutSeconds * 1000);
       mapSet(pendingRequests, requestId, [
         toClientId,
