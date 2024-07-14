@@ -180,7 +180,7 @@ describe.each([
         ]);
         await synchronizer1.save();
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent(
+        expectEachToHaveContent(
           [
             {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
             {v1: 1, v2: 2},
@@ -196,7 +196,7 @@ describe.each([
           {v1: 1, v2: 2},
         ]);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent(
+        expectEachToHaveContent(
           [
             {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
             {v1: 1, v2: 2},
@@ -212,7 +212,7 @@ describe.each([
         ]);
         await synchronizer1.load([{t0: {r0: {c0: 0}}}, {v0: 0}]);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent(
+        expectEachToHaveContent(
           [{t0: {r0: {c0: 0}}}, {v0: 0}],
           [
             {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
@@ -228,7 +228,7 @@ describe.each([
           {v1: 1, v2: 2},
         ]);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent(
+        expectEachToHaveContent(
           [{t0: {r0: {c0: 0}}}, {v0: 0}],
           [
             {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
@@ -325,7 +325,7 @@ describe.each([
       // ---
 
       test('Both empty', async () => {
-        await expectEachToHaveContent([{}, {}]);
+        expectEachToHaveContent([{}, {}]);
       });
 
       test('Both match', async () => {
@@ -338,7 +338,7 @@ describe.each([
           {v1: 1, v2: 2},
         ]);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
@@ -355,7 +355,7 @@ describe.each([
           {v1: 1, v2: 2},
         ]);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
@@ -367,7 +367,7 @@ describe.each([
           {v1: 1, v2: 2},
         ]);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
@@ -379,7 +379,7 @@ describe.each([
           {v1: 1, v2: 2},
         ]);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
@@ -393,7 +393,7 @@ describe.each([
           {v1: 1, v2: 2},
         ]);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
@@ -407,7 +407,7 @@ describe.each([
           {v1: 1, v2: 2},
         ]);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
@@ -418,7 +418,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.setTable('t2', {r2: {c2: 2}});
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {},
         ]);
@@ -432,7 +432,7 @@ describe.each([
           t2: {r2: {c2: 2}},
         });
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {},
         ]);
@@ -446,7 +446,7 @@ describe.each([
           t2: {r2: {c2: 2}},
         });
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {},
         ]);
@@ -457,10 +457,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.setRow('t1', 'r2', {c2: 2});
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
-          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
-          {},
-        ]);
+        expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}}, {}]);
       });
 
       test('store1 missing row', async () => {
@@ -468,10 +465,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
-          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
-          {},
-        ]);
+        expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}}, {}]);
       });
 
       test('store2 missing row', async () => {
@@ -479,10 +473,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store1.setTable('t1', {r1: {c1: 1, c2: 2}, r2: {c2: 2}});
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
-          {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
-          {},
-        ]);
+        expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}}, {}]);
       });
 
       test('different row', async () => {
@@ -490,7 +481,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.setCell('t1', 'r1', 'c2', 2);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
+        expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
       });
 
       test('store1 missing cell', async () => {
@@ -498,7 +489,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.setRow('t1', 'r1', {c1: 1, c2: 2});
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
+        expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
       });
 
       test('store2 missing cell', async () => {
@@ -506,7 +497,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store1.setRow('t1', 'r1', {c1: 1, c2: 2});
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
+        expectEachToHaveContent([{t1: {r1: {c1: 1, c2: 2}}}, {}]);
       });
 
       test('different cell', async () => {
@@ -514,7 +505,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.setCell('t1', 'r1', 'c1', 2);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([{t1: {r1: {c1: 2}}}, {}]);
+        expectEachToHaveContent([{t1: {r1: {c1: 2}}}, {}]);
       });
 
       test('deleted tables', async () => {
@@ -525,7 +516,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.delTables();
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
+        expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
       });
 
       test('deleted table', async () => {
@@ -536,7 +527,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.delTable('t2');
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
@@ -550,7 +541,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.delRow('t1', 'r2');
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
@@ -564,7 +555,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.delCell('t1', 'r1', 'c2');
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
@@ -578,7 +569,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.delValues();
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {},
         ]);
@@ -592,7 +583,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.delValue('v2');
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1},
         ]);
@@ -609,7 +600,7 @@ describe.each([
           {v1: 1, v2: 2},
         ]);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
@@ -626,7 +617,7 @@ describe.each([
           {v1: 1, v2: 2},
         ]);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([
+        expectEachToHaveContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
@@ -637,7 +628,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.setValue('v2', 2);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
+        expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
       });
 
       test('store1 missing value', async () => {
@@ -645,7 +636,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.setValues({v1: 1, v2: 2});
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
+        expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
       });
 
       test('store2 missing value', async () => {
@@ -653,7 +644,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store1.setValues({v1: 1, v2: 2});
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
+        expectEachToHaveContent([{}, {v1: 1, v2: 2}]);
       });
 
       test('different value', async () => {
@@ -661,7 +652,7 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds, true);
         store2.setValue('v1', 2);
         await pause(synchronizable.pauseMilliseconds, true);
-        await expectEachToHaveContent([{}, {v1: 2}]);
+        expectEachToHaveContent([{}, {v1: 2}]);
       });
 
       describe('tracking messages', () => {
@@ -671,12 +662,12 @@ describe.each([
             store1.setTables({t1: {r1: {c1: 1}}});
             await pause(synchronizable.pauseMilliseconds, true);
             expect(environment[1]).toMatchSnapshot();
-            await expectEachToHaveContent([{t1: {r1: {c1: 1}}}, {}]);
+            expectEachToHaveContent([{t1: {r1: {c1: 1}}}, {}]);
 
             environment[1].clear();
             store1.setTables({t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}});
             await pause(synchronizable.pauseMilliseconds, true);
-            await expectEachToHaveContent([
+            expectEachToHaveContent([
               {t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}},
               {},
             ]);
@@ -688,7 +679,7 @@ describe.each([
               t2: {r2: {c2: 2}},
             });
             await pause(synchronizable.pauseMilliseconds, true);
-            await expectEachToHaveContent([
+            expectEachToHaveContent([
               {t1: {r1: {c1: 1}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
               {},
             ]);
@@ -700,7 +691,7 @@ describe.each([
               t2: {r2: {c2: 2}},
             });
             await pause(synchronizable.pauseMilliseconds, true);
-            await expectEachToHaveContent([
+            expectEachToHaveContent([
               {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
               {},
             ]);
@@ -713,7 +704,7 @@ describe.each([
               t3: {r3: {c3: 3}},
             });
             await pause(synchronizable.pauseMilliseconds, true);
-            await expectEachToHaveContent([
+            expectEachToHaveContent([
               {
                 t1: {r1: {c1: 1, c2: 2, c3: 3}, r2: {c2: 2}, r3: {c3: 3}},
                 t2: {r2: {c2: 2}},
@@ -731,7 +722,7 @@ describe.each([
             store1.setValue('v1', 1);
             await pause(synchronizable.pauseMilliseconds, true);
             expect(environment[1]).toMatchSnapshot();
-            await expectEachToHaveContent([{}, {v1: 1}]);
+            expectEachToHaveContent([{}, {v1: 1}]);
           }
         });
 
@@ -744,7 +735,7 @@ describe.each([
             store1.setCell('t1', 'r1', 'c1', 2);
             await pause(synchronizable.pauseMilliseconds, true);
             expect(environment[1]).toMatchSnapshot();
-            await expectEachToHaveContent([{t1: {r1: {c1: 2, c2: 2}}}, {}]);
+            expectEachToHaveContent([{t1: {r1: {c1: 2, c2: 2}}}, {}]);
           }
         });
 
@@ -757,7 +748,7 @@ describe.each([
             store1.setValue('v1', 2);
             await pause(synchronizable.pauseMilliseconds, true);
             expect(environment[1]).toMatchSnapshot();
-            await expectEachToHaveContent([{}, {v1: 2, v2: 2}]);
+            expectEachToHaveContent([{}, {v1: 2, v2: 2}]);
           }
         });
       });
