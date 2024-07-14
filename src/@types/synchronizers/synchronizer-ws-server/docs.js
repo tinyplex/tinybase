@@ -482,7 +482,21 @@
  *
  * This should be run in a server environment, and you must pass in a configured
  * WebSocketServer object in order to create it.
+ *
+ * If you want your server to persist data itself, you can use the optional
+ * second parameter of this function, which allows you to create a Persister for
+ * a new path - whenever a new path is accessed by a client. This Persister will
+ * only exist when there are active clients on that particular path.
+ *
+ * You are responsible for creating a MergeableStore to pass to this Persister,
+ * but starting and stopping its automatic saving and loading is taken care of
+ * by the WsServer. As a result, the server MergeableStore will be kept in sync
+ * with the clients on that path, and in turn with whatever persistence layer
+ * you have configured. See the example below.
  * @param webSocketServer A WebSocketServer object from your server environment.
+ * @param createPersisterForPath An optional function that will create a
+ * MergeableStore and a Persister to synchronize with the clients on a given
+ * path.
  * @returns A reference to the new WsServer object.
  * @example
  * This example creates a WsServer and then destroys it again.
