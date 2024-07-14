@@ -156,7 +156,7 @@ export interface Persister<Persist extends Persists = Persists.StoreOnly> {
   isAutoSaving(): boolean;
 
   /// Persister.schedule
-  schedule(...actions: Promise<any>[]): Promise<this>;
+  schedule(...actions: (() => Promise<any>)[]): Promise<this>;
 
   /// Persister.getStore
   getStore(): PersistedStore<Persist>;
