@@ -69,25 +69,34 @@ export const createWsServer = (<
     () => wsServer,
   );
 
+  const createServerClient = (pathId: Id) =>
+    ifNotUndefined(createPersisterForPath?.(pathId), (persister) => {
+      const serverClient = mapEnsure(
+        serverClientsByPath,
+        pathId,
+        () => ({persister}) as ServerClient,
+      );
+      const messageHandler = getMessageHandler(SERVER_CLIENT_ID, pathId);
+      serverClient.synchronizer = createCustomSynchronizer(
+        persister.getStore() as MergeableStore,
+        (toClientId, requestId, message, body) =>
+          messageHandler(createPayload(toClientId, requestId, message, body)),
+        (receive: Receive) =>
+          (serverClient.send = (payload) => receivePayload(payload, receive)),
+        () => {},
+        1,
+      );
+    });
+
   const startServerClient = async (pathId: Id) =>
     await ifNotUndefined(
-      await createPersisterForPath?.(pathId),
-      async (persister) => {
-        const serverClient = mapEnsure(
-          serverClientsByPath,
-          pathId,
-          () => ({persister}) as ServerClient,
+      mapGet(serverClientsByPath, pathId),
+      async ({persister, synchronizer}) => {
+        await persister.schedule(
+          persister.startAutoLoad,
+          persister.startAutoSave,
+          synchronizer.startSync,
         );
-        const messageHandler = getMessageHandler(SERVER_CLIENT_ID, pathId);
-        serverClient.synchronizer = await createCustomSynchronizer(
-          persister.getStore() as MergeableStore,
-          (toClientId, requestId, message, body) =>
-            messageHandler(createPayload(toClientId, requestId, message, body)),
-          (receive: Receive) =>
-            (serverClient.send = (payload) => receivePayload(payload, receive)),
-          () => {},
-          0.1,
-        ).startSync();
       },
     );
 
@@ -96,7 +105,7 @@ export const createWsServer = (<
       mapGet(serverClientsByPath, pathId),
       ({persister, synchronizer}) => {
         synchronizer?.destroy();
-        destroyPersisterForPath?.(pathId, persister);
+        persister?.destroy();
         collDel(serverClientsByPath, pathId);
       },
     );
@@ -104,7 +113,7 @@ export const createWsServer = (<
   const getMessageHandler = (clientId: Id, pathId: Id) => {
     const clients = mapGet(clientsByPath, pathId);
     const serverClient = mapGet(serverClientsByPath, pathId);
-    return (payload: string) =>
+    const handler = (payload: string) =>
       ifPayloadValid(payload, (toClientId, remainder) => {
         const forwardedPayload = createRawPayload(clientId, remainder);
         if (toClientId === EMPTY_STRING) {
@@ -123,46 +132,44 @@ export const createWsServer = (<
           )?.send(forwardedPayload);
         }
       });
+    return serverClient?.persister
+      ? (payload: string) =>
+          serverClient.persister.schedule(async () => handler(payload))
+      : handler;
   };
 
-  webSocketServer.on(
-    'connection',
-    async (webSocket, request) =>
-      await ifNotUndefined(
-        request.url?.match(PATH_REGEX),
-        async ([, pathId]) =>
-          await ifNotUndefined(
-            request.headers['sec-websocket-key'],
-            async (clientId) => {
-              const clients = mapEnsure(
-                clientsByPath,
-                pathId,
-                mapNew<Id, WebSocket>,
-              );
-              if (collIsEmpty(clients)) {
-                callListeners(pathIdListeners, undefined, pathId, 1);
-                await startServerClient(pathId);
-              }
-              mapSet(clients, clientId, webSocket);
-              callListeners(clientIdListeners, [pathId], clientId, 1);
+  webSocketServer.on('connection', (webSocket, request) =>
+    ifNotUndefined(request.url?.match(PATH_REGEX), ([, pathId]) =>
+      ifNotUndefined(request.headers['sec-websocket-key'], async (clientId) => {
+        const clients = mapEnsure(clientsByPath, pathId, mapNew<Id, WebSocket>);
+        let shouldStartServerClient = 0;
 
-              const messageHandler = getMessageHandler(clientId, pathId);
-              webSocket.on('message', (data) =>
-                messageHandler(data.toString(UTF8)),
-              );
+        if (collIsEmpty(clients)) {
+          callListeners(pathIdListeners, undefined, pathId, 1);
+          createServerClient(pathId);
+          shouldStartServerClient = 1;
+        }
+        callListeners(clientIdListeners, [pathId], clientId, 1);
+        mapSet(clients, clientId, webSocket);
 
-              webSocket.on('close', () => {
-                collDel(clients, clientId);
-                callListeners(clientIdListeners, [pathId], clientId, -1);
-                if (collIsEmpty(clients)) {
-                  collDel(clientsByPath, pathId);
-                  stopServerClient(pathId);
-                  callListeners(pathIdListeners, undefined, pathId, -1);
-                }
-              });
-            },
-          ),
-      ),
+        const messageHandler = getMessageHandler(clientId, pathId);
+        webSocket.on('message', (data) => messageHandler(data.toString(UTF8)));
+
+        if (shouldStartServerClient) {
+          await startServerClient(pathId);
+        }
+
+        webSocket.on('close', () => {
+          collDel(clients, clientId);
+          callListeners(clientIdListeners, [pathId], clientId, -1);
+          if (collIsEmpty(clients)) {
+            collDel(clientsByPath, pathId);
+            stopServerClient(pathId);
+            callListeners(pathIdListeners, undefined, pathId, -1);
+          }
+        });
+      }),
+    ),
   );
 
   const getWebSocketServer = () => webSocketServer;
