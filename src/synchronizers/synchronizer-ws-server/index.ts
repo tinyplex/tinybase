@@ -52,8 +52,7 @@ export const createWsServer = (<
   >,
 >(
   webSocketServer: WebSocketServer,
-  createPersisterForPath?: (pathId: Id) => Promise<PathPersister | undefined>,
-  destroyPersisterForPath?: (pathId: Id, persister: PathPersister) => void,
+  createPersisterForPath?: (pathId: Id) => PathPersister | undefined,
 ) => {
   type ServerClient = {
     persister: PathPersister;
