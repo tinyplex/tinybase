@@ -175,7 +175,7 @@ export interface Persister<
   isAutoSaving(): boolean;
 
   /// Persister.schedule
-  schedule(...actions: Promise<any>[]): Promise<this>;
+  schedule(...actions: (() => Promise<any>)[]): Promise<this>;
 
   /// Persister.getStore
   getStore(): PersistedStore<Schemas, Persist>;

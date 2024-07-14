@@ -1169,6 +1169,8 @@
    * in one call. This will also start to run the first task in the queue (which
    * once complete will then run the next, and so on), and so this method itself
    * is also asynchronous and returns a promise of the Persister.
+   * @param actions One or many functions which will be scheduled, and which can
+   * be asynchronous.
    * @returns A reference to the Persister object.
    * @example
    * This example creates a custom Persister object against a newly-created
