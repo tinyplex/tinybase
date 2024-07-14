@@ -202,13 +202,7 @@ describe('Persistence', () => {
     const serverStore = createMergeableStore('ss');
     const wsServer = createWsServer(
       new WebSocketServer({port: 8050}),
-      async (pathId) => {
-        const persister = createPersister(serverStore, pathId);
-        await persister.startAutoLoad();
-        await persister.startAutoSave();
-        return persister;
-      },
-      (_, persister) => persister.destroy(),
+      (pathId) => createPersister(serverStore, pathId),
     );
 
     const clientStore = createMergeableStore('s1');
@@ -269,13 +263,7 @@ describe('Persistence', () => {
     const serverStore = createMergeableStore('ss');
     const wsServer = createWsServer(
       new WebSocketServer({port: 8050}),
-      async (pathId) => {
-        const persister = createPersister(serverStore, pathId);
-        await persister.startAutoLoad();
-        await persister.startAutoSave();
-        return persister;
-      },
-      (_, persister) => persister.destroy(),
+      (pathId) => createPersister(serverStore, pathId),
     );
 
     const clientStore1 = createMergeableStore('s1');
@@ -314,22 +302,12 @@ describe('Persistence', () => {
   });
 
   test('multiple clients, multiple paths', async () => {
-    const destroyPersister = jest.fn((_, persister) => persister.destroy());
-
     const serverStore1 = createMergeableStore('ss1');
     const serverStore2 = createMergeableStore('ss2');
     const wsServer = createWsServer(
       new WebSocketServer({port: 8050}),
-      async (pathId) => {
-        const persister = createPersister(
-          pathId == 'p1' ? serverStore1 : serverStore2,
-          pathId,
-        );
-        await persister.startAutoLoad();
-        await persister.startAutoSave();
-        return persister;
-      },
-      destroyPersister,
+      (pathId) =>
+        createPersister(pathId == 'p1' ? serverStore1 : serverStore2, pathId),
     );
 
     const clientStore1 = createMergeableStore('s1');
@@ -396,21 +374,41 @@ describe('Persistence', () => {
       t4: {r4: {c4: 4}},
     });
 
-    expect(destroyPersister).toHaveBeenCalledTimes(0);
     synchronizer1.destroy();
-    await pause();
-    expect(destroyPersister).toHaveBeenCalledTimes(0);
     synchronizer2.destroy();
-    await pause();
-    expect(destroyPersister).toHaveBeenCalledTimes(1);
-
     synchronizer3.destroy();
-    await pause();
-    expect(destroyPersister).toHaveBeenCalledTimes(1);
     synchronizer4.destroy();
-    await pause();
-    expect(destroyPersister).toHaveBeenCalledTimes(2);
+    wsServer.destroy();
+  });
 
+  test('two clients, connecting in turn', async () => {
+    const wsServer = createWsServer(
+      new WebSocketServer({port: 8050}),
+      (pathId) => createPersister(createMergeableStore('ss'), pathId),
+    );
+
+    const clientStore1 = createMergeableStore('s1');
+    clientStore1.setCell('t1', 'r1', 'c1', 1);
+    const synchronizer1 = await createWsSynchronizer(
+      clientStore1,
+      new WebSocket('ws://localhost:8050/p'),
+      1,
+    );
+    await synchronizer1.startSync();
+    await pause();
+    synchronizer1.destroy();
+
+    const clientStore2 = createMergeableStore('s2');
+    const synchronizer2 = await createWsSynchronizer(
+      clientStore2,
+      new WebSocket('ws://localhost:8050/p'),
+      1,
+    );
+    await synchronizer2.startSync();
+    await pause();
+    synchronizer2.destroy();
+
+    expect(clientStore2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
     wsServer.destroy();
   });
 });
