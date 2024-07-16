@@ -44,14 +44,14 @@ import {getListenerFunctions} from '../../common/listeners.ts';
 import {ifNotUndefined} from '../../common/other.ts';
 import {objFreeze} from '../../common/obj.ts';
 
-enum SC {
+enum Sc {
   State = 0,
   Persister = 1,
   Synchronizer = 2,
   Send = 3,
   Buffer = 4,
 }
-enum SCState {
+enum ScState {
   Ready,
   Configured,
   Starting,
@@ -69,7 +69,7 @@ export const createWsServer = (<
   createPersisterForPath?: (pathId: Id) => PathPersister | undefined,
 ) => {
   type ServerClient = [
-    state: SCState,
+    state: ScState,
     persister: PathPersister,
     synchronizer: Synchronizer,
     send: (payload: string) => void,
@@ -91,39 +91,39 @@ export const createWsServer = (<
     clients: IdMap<WebSocket>,
   ) =>
     ifNotUndefined(createPersisterForPath?.(pathId), (persister) => {
-      serverClient[SC.State] = 1;
-      serverClient[SC.Persister] = persister;
+      serverClient[Sc.State] = 1;
+      serverClient[Sc.Persister] = persister;
       const messageHandler = getMessageHandler(
         SERVER_CLIENT_ID,
         clients,
         serverClient,
       );
-      serverClient[SC.Synchronizer] = createCustomSynchronizer(
+      serverClient[Sc.Synchronizer] = createCustomSynchronizer(
         persister.getStore() as MergeableStore,
         (toClientId, requestId, message, body) =>
           messageHandler(createPayload(toClientId, requestId, message, body)),
         (receive: Receive) =>
-          (serverClient[SC.Send] = (payload: string) =>
+          (serverClient[Sc.Send] = (payload: string) =>
             receivePayload(payload, receive)),
         () => {},
         1,
       );
-      serverClient[SC.Buffer] = [];
+      serverClient[Sc.Buffer] = [];
     });
 
   const startServerClient = async (serverClient: ServerClient) => {
-    serverClient[SC.State] = SCState.Starting;
-    await serverClient[SC.Persister].schedule(
-      serverClient[SC.Persister].startAutoLoad,
-      serverClient[SC.Persister].startAutoSave,
-      serverClient[SC.Synchronizer].startSync,
+    serverClient[Sc.State] = ScState.Starting;
+    await serverClient[Sc.Persister].schedule(
+      serverClient[Sc.Persister].startAutoLoad,
+      serverClient[Sc.Persister].startAutoSave,
+      serverClient[Sc.Synchronizer].startSync,
     );
-    serverClient[SC.State] = SCState.Ready;
+    serverClient[Sc.State] = ScState.Ready;
   };
 
   const stopServerClient = (serverClient: ServerClient) => {
-    serverClient[SC.Persister]?.destroy();
-    serverClient[SC.Synchronizer]?.destroy();
+    serverClient[Sc.Persister]?.destroy();
+    serverClient[Sc.Synchronizer]?.destroy();
   };
 
   const getMessageHandler =
@@ -133,7 +133,7 @@ export const createWsServer = (<
         const forwardedPayload = createRawPayload(clientId, remainder);
         if (toClientId === EMPTY_STRING) {
           clientId !== SERVER_CLIENT_ID
-            ? serverClient[SC.Send]?.(forwardedPayload)
+            ? serverClient[Sc.Send]?.(forwardedPayload)
             : 0;
           mapForEach(clients, (otherClientId, otherWebSocket) =>
             otherClientId !== clientId
@@ -142,7 +142,7 @@ export const createWsServer = (<
           );
         } else {
           toClientId === SERVER_CLIENT_ID
-            ? serverClient[SC.Send]?.(forwardedPayload)
+            ? serverClient[Sc.Send]?.(forwardedPayload)
             : mapGet(clients, toClientId)?.send(forwardedPayload);
         }
       });
@@ -154,7 +154,7 @@ export const createWsServer = (<
         const serverClient: ServerClient = mapEnsure(
           serverClientsByPath,
           pathId,
-          () => [SCState.Ready] as any,
+          () => [ScState.Ready] as any,
         );
         const messageHandler = getMessageHandler(
           clientId,
@@ -171,15 +171,15 @@ export const createWsServer = (<
 
         webSocket.on('message', (data) => {
           const payload = data.toString(UTF8);
-          serverClient[SC.State] == SCState.Ready
+          serverClient[Sc.State] == ScState.Ready
             ? messageHandler(payload)
-            : arrayPush(serverClient[SC.Buffer], payload);
+            : arrayPush(serverClient[Sc.Buffer], payload);
         });
 
-        if (serverClient[SC.State] == SCState.Configured) {
+        if (serverClient[Sc.State] == ScState.Configured) {
           await startServerClient(serverClient);
-          arrayForEach(serverClient[SC.Buffer], messageHandler);
-          serverClient[SC.Buffer] = [];
+          arrayForEach(serverClient[Sc.Buffer], messageHandler);
+          serverClient[Sc.Buffer] = [];
         }
 
         webSocket.on('close', () => {
