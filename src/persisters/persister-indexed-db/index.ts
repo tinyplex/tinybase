@@ -4,7 +4,6 @@ import type {
   IndexedDbPersister,
   createIndexedDbPersister as createIndexedDbPersisterDecl,
 } from '../../@types/persisters/persister-indexed-db/index.d.ts';
-import {Persists, createCustomPersister} from '../index.ts';
 import {T, V} from '../../common/strings.ts';
 import {
   WINDOW,
@@ -16,6 +15,7 @@ import {
 import {arrayMap, arrayPush} from '../../common/array.ts';
 import type {Id} from '../../@types/common/index.d.ts';
 import type {PersisterListener} from '../../@types/persisters/index.d.ts';
+import {createCustomPersister} from '../index.ts';
 
 const OBJECT_STORE_NAMES = [T, V];
 const KEY_PATH = {keyPath: 'k'};
@@ -126,7 +126,7 @@ export const createIndexedDbPersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    Persists.StoreOnly,
+    1, // StoreOnly,
     {getDbName: () => dbName},
   ) as IndexedDbPersister;
 }) as typeof createIndexedDbPersisterDecl;

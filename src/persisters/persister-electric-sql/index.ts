@@ -9,7 +9,6 @@ import {
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import type {ElectricClient} from 'electric-sql/client/model';
 import {IdObj} from '../../common/obj.ts';
-import {Persists} from '../index.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import type {UnsubscribeFunction} from 'electric-sql/notifiers';
 import {arrayForEach} from '../../common/array.ts';
@@ -36,7 +35,7 @@ export const createElectricSqlPersister = ((
     (unsubscribeFunction: UnsubscribeFunction): any => unsubscribeFunction(),
     onSqlCommand,
     onIgnoredError,
-    Persists.StoreOnly,
+    1, // StoreOnly,
     electricClient,
     'getElectricClient',
   ) as ElectricSqlPersister) as typeof createElectricSqlPersisterDecl;

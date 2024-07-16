@@ -1,5 +1,4 @@
 import type {Content, Store} from '../../@types/store/index.d.ts';
-import {Persists, createCustomPersister} from '../index.ts';
 import type {
   RemotePersister,
   createRemotePersister as createRemotePersisterDecl,
@@ -7,6 +6,7 @@ import type {
 import {isUndefined, startInterval, stopInterval} from '../../common/other.ts';
 import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
 import type {PersisterListener} from '../../@types/persisters/index.d.ts';
+import {createCustomPersister} from '../index.ts';
 
 const getETag = (response: Response) => response.headers.get('ETag');
 
@@ -56,7 +56,7 @@ export const createRemotePersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    Persists.StoreOnly,
+    1, // StoreOnly,
     {getUrls: () => [loadUrl, saveUrl]},
   ) as RemotePersister;
 }) as typeof createRemotePersisterDecl;

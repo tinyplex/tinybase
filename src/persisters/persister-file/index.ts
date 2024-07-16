@@ -9,7 +9,6 @@ import type {
   PersisterListener,
   Persists as PersistsType,
 } from '../../@types/persisters/index.d.ts';
-import {Persists, createCustomPersister} from '../index.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
@@ -17,6 +16,7 @@ import {
 import {readFile, writeFile} from 'fs/promises';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
+import {createCustomPersister} from '../index.ts';
 
 export const createFilePersister = ((
   store: Store | MergeableStore,
@@ -50,7 +50,7 @@ export const createFilePersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    Persists.StoreOrMergeableStore,
+    3, // StoreOrMergeableStore,
     {getFilePath: () => filePath},
   ) as FilePersister;
 }) as typeof createFilePersisterDecl;
