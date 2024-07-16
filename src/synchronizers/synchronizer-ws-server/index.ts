@@ -149,8 +149,8 @@ export const createWsServer = (<
           createServerClient(pathId);
           shouldStartServerClient = 1;
         }
-        callListeners(clientIdListeners, [pathId], clientId, 1);
         mapSet(clients, clientId, webSocket);
+        callListeners(clientIdListeners, [pathId], clientId, 1);
 
         const messageHandler = getMessageHandler(clientId, pathId);
         webSocket.on('message', (data) => messageHandler(data.toString(UTF8)));
