@@ -258,7 +258,7 @@ export const createCustomPersister = <
   const getStore = (): Store => store;
 
   const destroy = (): Persister<Persist> => {
-    arrayClear(mapGet(scheduleActions, scheduleId));
+    arrayClear(mapGet(scheduleActions, scheduleId) as Action[]);
     return stopAutoLoad().stopAutoSave();
   };
 
