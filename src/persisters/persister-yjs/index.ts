@@ -13,7 +13,6 @@ import {
   objNew,
   objToArray,
 } from '../../common/obj.ts';
-import {Persists, createCustomPersister} from '../index.ts';
 import {T, TINYBASE, V} from '../../common/strings.ts';
 import {Doc as YDoc, YEvent, Map as YMap} from 'yjs';
 import type {
@@ -24,6 +23,7 @@ import {arrayForEach, arrayIsEmpty, arrayShift} from '../../common/array.ts';
 import {ifNotUndefined, isUndefined, size} from '../../common/other.ts';
 import type {Id} from '../../@types/common/index.d.ts';
 import type {PersisterListener} from '../../@types/persisters/index.d.ts';
+import {createCustomPersister} from '../index.ts';
 import {mapForEach} from '../../common/map.ts';
 
 type Observer = (events: YEvent<any>[]) => void;
@@ -224,7 +224,7 @@ export const createYjsPersister = ((
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    Persists.StoreOnly,
+    1, // StoreOnly,
     {getYDoc: () => yDoc},
   ) as YjsPersister;
 }) as typeof createYjsPersisterDecl;
