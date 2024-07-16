@@ -495,18 +495,119 @@
  * you have configured. See the example below.
  * @param webSocketServer A WebSocketServer object from your server environment.
  * @param createPersisterForPath An optional function that will create a
- * MergeableStore and a Persister to synchronize with the clients on a given
+ * Persister (with a MergeableStore) to synchronize with the clients on a given
  * path.
  * @returns A reference to the new WsServer object.
  * @example
- * This example creates a WsServer and then destroys it again.
+ * This example creates a WsServer that synchronizes two clients on a shared
+ * path.
  *
  * ```js
  * import {WebSocketServer} from 'ws';
+ * import {createMergeableStore} from 'tinybase';
  * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  *
+ * // Server
  * const server = createWsServer(new WebSocketServer({port: 8047}));
+ *
+ * // Client 1
+ * const clientStore1 = createMergeableStore();
+ * clientStore1.setCell('pets', 'fido', 'species', 'dog');
+ * const synchronizer1 = await createWsSynchronizer(
+ *   clientStore1,
+ *   new WebSocket('ws://localhost:8047/petShop'),
+ * );
+ * await synchronizer1.startSync();
+ * // ...
+ *
+ * // Client 2
+ * const clientStore2 = createMergeableStore();
+ * clientStore2.setCell('pets', 'felix', 'species', 'cat');
+ * const synchronizer2 = await createWsSynchronizer(
+ *   clientStore2,
+ *   new WebSocket('ws://localhost:8047/petShop'),
+ * );
+ * await synchronizer2.startSync();
+ * // ...
+ *
+ * console.log(clientStore1.getTables());
+ * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
+ *
+ * console.log(clientStore2.getTables());
+ * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
+ *
+ * synchronizer1.destroy();
+ * synchronizer2.destroy();
  * server.destroy();
+ * ```
+ * @example
+ * This longer example creates a WsServer that persists a MergeableStore to file
+ * that is synchronized with two clients on a shared path. Later, when a third
+ * client connects, it picks up the data the previous two were using.
+ *
+ * ```js
+ * import {WebSocketServer} from 'ws';
+ * import {createFilePersister} from 'tinybase/persisters/persister-file';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ * import {rmSync} from 'fs';
+ *
+ * // Server
+ * const server = createWsServer(
+ *   new WebSocketServer({port: 8047}),
+ *   (pathId) =>
+ *     createFilePersister(createMergeableStore(), pathId + '.json'),
+ * );
+ *
+ * // Client 1
+ * const clientStore1 = createMergeableStore();
+ * clientStore1.setCell('pets', 'fido', 'species', 'dog');
+ * const synchronizer1 = await createWsSynchronizer(
+ *   clientStore1,
+ *   new WebSocket('ws://localhost:8047/petShop'),
+ * );
+ * await synchronizer1.startSync();
+ * // ...
+ *
+ * // Client 2
+ * const clientStore2 = createMergeableStore();
+ * clientStore2.setCell('pets', 'felix', 'species', 'cat');
+ * const synchronizer2 = await createWsSynchronizer(
+ *   clientStore2,
+ *   new WebSocket('ws://localhost:8047/petShop'),
+ * );
+ * await synchronizer2.startSync();
+ * // ...
+ *
+ * console.log(clientStore1.getTables());
+ * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
+ *
+ * console.log(clientStore2.getTables());
+ * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
+ *
+ * synchronizer1.destroy();
+ * synchronizer2.destroy();
+ *
+ * // ...
+ * // Client 3 connects later
+ * const clientStore3 = createMergeableStore();
+ * const synchronizer3 = await createWsSynchronizer(
+ *   clientStore3,
+ *   new WebSocket('ws://localhost:8047/petShop'),
+ * );
+ * await synchronizer3.startSync();
+ * // ...
+ *
+ * console.log(clientStore3.getTables());
+ * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
+ *
+ * synchronizer3.destroy();
+ * server.destroy();
+ *
+ * // Remove file for the purposes of this demo.
+ * rmSync('petShop.json');
  * ```
  * @example
  * This example creates a WsServer with a custom listener that displays
