@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#v5-0'><em>NEW!</em> v5.0 release</a>
+<a href='/guides/releases/#v5-1'><em>NEW!</em> v5.1 release</a>
 
-<span id="one-with">"The One You Can Sync"</span>
+<span id="one-with">"The One You Can Sync... with a server!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 

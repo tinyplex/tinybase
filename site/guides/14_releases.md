@@ -3,6 +3,35 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v5.1
+
+This release lets you persist data on a server using the createWsServer
+function. This makes it possible for all clients to disconnect from a path, but,
+when they reconnect, for the data to still be present for them to sync with.
+
+This is done by passing in a second argument to the createWsServer function that
+creates a Persister instance (for which also need to create or provide a
+MergeableStore) for a given path:
+
+```js
+import {WebSocketServer} from 'ws';
+import {createFilePersister} from 'tinybase/persisters/persister-file';
+import {createMergeableStore} from 'tinybase';
+import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+
+const persistingServer = createWsServer(
+  new WebSocketServer({port: 8051}),
+  (pathId) => createFilePersister(createMergeableStore(), pathId + '.json'),
+);
+```
+
+This is a very crude (and not production-safe!) example, but demonstrates a
+server that will create a file, based on any path that clients connect to, and
+persist data to it. See the createWsServer function documentation for more
+details.
+
+This implementation is still experimental so please kick the tires!
+
 ## v5.0
 
 We're excited to announce this major release for TinyBase! It includes
@@ -38,8 +67,6 @@ you apply that to (another) store. The merge method is a convenience function to
 bidirectionally merge two stores together:
 
 ```js
-import {createMergeableStore} from 'tinybase';
-
 const localStore1 = createMergeableStore();
 const localStore2 = createMergeableStore();
 
@@ -74,8 +101,7 @@ MergeableStore objects to be merged together. This can be across a network,
 using WebSockets, for example:
 
 ```js
-import {WebSocketServer, WebSocket} from 'ws';
-import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+import {WebSocket} from 'ws';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 
 // On a server machine:
