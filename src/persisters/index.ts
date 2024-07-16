@@ -11,7 +11,7 @@ import type {
   Persister,
   PersisterListener,
   PersisterStats,
-  Persists as PersistsType,
+  Persists as PersistsEnum,
 } from '../@types/persisters/index.d.ts';
 import {arrayClear, arrayPush, arrayShift} from '../common/array.ts';
 import {
@@ -24,10 +24,16 @@ import {mapEnsure, mapGet, mapNew, mapSet} from '../common/map.ts';
 import {objFreeze, objIsEmpty} from '../common/obj.ts';
 import type {Id} from '../@types/common/index.d.ts';
 
+const enum PersistsValues {
+  StoreOnly = 1,
+  MergeableStoreOnly = 2,
+  StoreOrMergeableStore = 3,
+}
+
 export const Persists = {
-  StoreOnly: 1,
-  MergeableStoreOnly: 2,
-  StoreOrMergeableStore: 3,
+  StoreOnly: PersistsValues.StoreOnly,
+  MergeableStoreOnly: PersistsValues.MergeableStoreOnly,
+  StoreOrMergeableStore: PersistsValues.StoreOrMergeableStore,
 };
 
 type Action = () => Promise<any>;
@@ -36,7 +42,7 @@ const scheduleRunning: Map<any, 0 | 1> = mapNew();
 const scheduleActions: Map<any, Action[]> = mapNew();
 
 const getStoreFunctions = (
-  persist: PersistsType = Persists.StoreOnly,
+  persist: PersistsEnum | any = PersistsValues.StoreOnly,
   store: PersistedStore<typeof persist>,
 ):
   | [
@@ -53,7 +59,7 @@ const getStoreFunctions = (
       hasChanges: (changes: MergeableChanges) => boolean,
       setDefaultContent: (content: Content) => MergeableStore,
     ] =>
-  persist != Persists.StoreOnly && store.isMergeable()
+  persist != PersistsValues.StoreOnly && store.isMergeable()
     ? [
         1,
         (store as MergeableStore).getMergeableContent,
@@ -62,7 +68,7 @@ const getStoreFunctions = (
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
         (store as MergeableStore).setDefaultContent,
       ]
-    : persist != Persists.MergeableStoreOnly
+    : persist != PersistsValues.MergeableStoreOnly
       ? [
           0,
           store.getContent,
@@ -75,7 +81,7 @@ const getStoreFunctions = (
 
 export const createCustomPersister = <
   ListeningHandle,
-  Persist extends PersistsType = PersistsType.StoreOnly,
+  Persist extends PersistsEnum = PersistsEnum.StoreOnly,
 >(
   store: PersistedStore<Persist>,
   getPersisted: () => Promise<PersistedContent<Persist> | undefined>,

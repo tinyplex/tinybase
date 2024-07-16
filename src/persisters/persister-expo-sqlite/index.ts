@@ -9,7 +9,6 @@ import {
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
-import {Persists} from '../index.ts';
 import type {SQLiteDatabase} from 'expo-sqlite';
 import type {Store} from '../../@types/store/index.d.ts';
 import {addDatabaseChangeListener} from 'expo-sqlite';
@@ -33,6 +32,6 @@ export const createExpoSqlitePersister = ((
     (subscription: Subscription) => subscription.remove(),
     onSqlCommand,
     onIgnoredError,
-    Persists.StoreOrMergeableStore,
+    3, // StoreOrMergeableStore,
     db,
   ) as ExpoSqlitePersister) as typeof createExpoSqlitePersisterDecl;
