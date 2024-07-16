@@ -24,7 +24,7 @@ Of course it is also possible to create custom Synchronizer objects if you have
 a transmission medium that allows the synchronization messages to be sent
 reliably between clients.
 
-## Synchronizing with WebSockets
+## Synchronizing With WebSockets
 
 A common pattern for synchronizing over the web is to use WebSockets. This
 allows multiple clients to pass lightweight messages to each other, facilitating
@@ -129,7 +129,35 @@ listeners:
 server.destroy();
 ```
 
-## Synchronizing over the browser BroadcastChannel
+### Persisting Data On The Server
+
+New in TinyBase v5.1, the createWsServer function lets you specify a way to
+persist data to the server. This makes it possible for all clients to disconnect
+from a path, but, when they reconnect, for the data to still be present for them
+to sync with.
+
+This is done by passing in a second argument to the function that creates a
+Persister instance (for which also need to create or provide a MergeableStore)
+for a given path:
+
+```js
+import {createFilePersister} from 'tinybase/persisters/persister-file';
+
+const persistingServer = createWsServer(
+  new WebSocketServer({port: 8050}),
+  (pathId) => createFilePersister(createMergeableStore(), pathId + '.json'),
+);
+```
+
+This is a very crude example, but demonstrates a server that will create a file,
+based on any path that clients connect to, and persist data to it. In
+production, you will certainly want to sanitize the file name! And more likely
+you will want to explore using a database-oriented Persister instead of simply
+using raw files.
+
+See the createWsServer function documentation for more details.
+
+## Synchronizing Over The Browser BroadcastChannel
 
 There may be situations where you need to synchronize data between different
 parts of a browser. For example, you might have a transient in-memory
