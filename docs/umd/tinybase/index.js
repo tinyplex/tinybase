@@ -419,7 +419,7 @@
   const getRowCellFunction = (getRowCell, defaultCellValue) =>
     isString(getRowCell)
       ? (getCell) => getCell(getRowCell)
-      : getRowCell ?? (() => defaultCellValue ?? EMPTY_STRING);
+      : (getRowCell ?? (() => defaultCellValue ?? EMPTY_STRING));
   const getCreateFunction = (getFunction, initFunction) => {
     const thingsByStore = /* @__PURE__ */ new WeakMap();
     return (store) => {
@@ -1107,8 +1107,8 @@
     ) => {
       const aggregators = isFunction(aggregate)
         ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace]
-        : mapGet(numericAggregators, aggregate) ??
-          mapGet(numericAggregators, SUM);
+        : (mapGet(numericAggregators, aggregate) ??
+          mapGet(numericAggregators, SUM));
       setDefinitionAndListen(
         metricId,
         tableId,
@@ -1176,14 +1176,14 @@
   });
 
   const Persists = {
-    StoreOnly: 1,
-    MergeableStoreOnly: 2,
-    StoreOrMergeableStore: 3,
+    StoreOnly: 1 /* StoreOnly */,
+    MergeableStoreOnly: 2 /* MergeableStoreOnly */,
+    StoreOrMergeableStore: 3 /* StoreOrMergeableStore */,
   };
   const scheduleRunning = mapNew();
   const scheduleActions = mapNew();
-  const getStoreFunctions = (persist = Persists.StoreOnly, store) =>
-    persist != Persists.StoreOnly && store.isMergeable()
+  const getStoreFunctions = (persist = 1 /* StoreOnly */, store) =>
+    persist != 1 /* StoreOnly */ && store.isMergeable()
       ? [
           1,
           store.getMergeableContent,
@@ -1192,7 +1192,7 @@
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setDefaultContent,
         ]
-      : persist != Persists.MergeableStoreOnly
+      : persist != 2 /* MergeableStoreOnly */
         ? [
             0,
             store.getContent,
@@ -1277,19 +1277,24 @@
     };
     const startAutoLoad = async (initialContent) => {
       await stopAutoLoad().load(initialContent);
-      autoLoadHandle = addPersisterListener(async (content, changes) => {
-        if (changes || content) {
-          /* istanbul ignore else */
-          if (loadSave != 2) {
-            loadSave = 1;
-            loads++;
-            setContentOrChanges(changes ?? content);
-            loadSave = 0;
+      try {
+        autoLoadHandle = addPersisterListener(async (content, changes) => {
+          if (changes || content) {
+            /* istanbul ignore else */
+            if (loadSave != 2) {
+              loadSave = 1;
+              loads++;
+              setContentOrChanges(changes ?? content);
+              loadSave = 0;
+            }
+          } else {
+            await load();
           }
-        } else {
-          await load();
-        }
-      });
+        });
+      } catch (error) {
+        /* istanbul ignore next */
+        onIgnoredError?.(error);
+      }
       return persister;
     };
     const stopAutoLoad = () => {
@@ -1339,7 +1344,10 @@
       return persister;
     };
     const getStore = () => store;
-    const destroy = () => stopAutoLoad().stopAutoSave();
+    const destroy = () => {
+      arrayClear(mapGet(scheduleActions, scheduleId));
+      return stopAutoLoad().stopAutoSave();
+    };
     const getStats = () => ({loads, saves});
     const persister = {
       load,
@@ -1404,14 +1412,14 @@
     validateThing(stamp[0]);
 
   const Message = {
-    Response: 0,
-    GetContentHashes: 1,
-    ContentHashes: 2,
-    ContentDiff: 3,
-    GetTableDiff: 4,
-    GetRowDiff: 5,
-    GetCellDiff: 6,
-    GetValueDiff: 7,
+    Response: 0 /* Response */,
+    GetContentHashes: 1 /* GetContentHashes */,
+    ContentHashes: 2 /* ContentHashes */,
+    ContentDiff: 3 /* ContentDiff */,
+    GetTableDiff: 4 /* GetTableDiff */,
+    GetRowDiff: 5 /* GetRowDiff */,
+    GetCellDiff: 6 /* GetCellDiff */,
+    GetValueDiff: 7 /* GetValueDiff */,
   };
   const createCustomSynchronizer = (
     store,
@@ -1419,6 +1427,8 @@
     registerReceive,
     destroyImpl,
     requestTimeoutSeconds,
+    onSend,
+    onReceive,
     onIgnoredError,
     extra = {},
   ) => {
@@ -1426,52 +1436,20 @@
     let sends = 0;
     let receives = 0;
     const pendingRequests = mapNew();
-    registerReceive((fromClientId, requestId, message, body) => {
-      receives++;
-      if (message == Message.Response) {
-        ifNotUndefined(
-          mapGet(pendingRequests, requestId),
-          ([toClientId, handleResponse]) =>
-            isUndefined(toClientId) || toClientId == fromClientId
-              ? handleResponse(body, fromClientId)
-              : /* istanbul ignore next */
-                0,
-        );
-      } else if (
-        message == Message.ContentHashes &&
-        persister.isAutoLoading()
-      ) {
-        getChangesFromOtherStore(fromClientId, body).then((changes) => {
-          persisterListener?.(void 0, changes);
-        });
-      } else if (message == Message.ContentDiff && persister.isAutoLoading()) {
-        persisterListener?.(void 0, body);
-      } else {
-        ifNotUndefined(
-          message == Message.GetContentHashes && persister.isAutoSaving()
-            ? store.getMergeableContentHashes()
-            : message == Message.GetTableDiff
-              ? store.getMergeableTableDiff(body)
-              : message == Message.GetRowDiff
-                ? store.getMergeableRowDiff(body)
-                : message == Message.GetCellDiff
-                  ? store.getMergeableCellDiff(body)
-                  : message == Message.GetValueDiff
-                    ? store.getMergeableValueDiff(body)
-                    : void 0,
-          (response) => {
-            sends++;
-            send(fromClientId, requestId, Message.Response, response);
-          },
-        );
-      }
-    });
+    const sendImpl = (toClientId, requestId, message, body) => {
+      sends++;
+      onSend?.(toClientId, requestId, message, body);
+      send(toClientId, requestId, message, body);
+    };
     const request = async (toClientId, message, body = EMPTY_STRING) =>
       promiseNew((resolve, reject) => {
         const requestId = getUniqueId();
         const timeout = setTimeout(() => {
           collDel(pendingRequests, requestId);
-          reject(`No response from ${toClientId ?? 'anyone'} to '${message}'`);
+          reject(
+            `No response from ${toClientId ?? 'anyone'} to ${requestId}, ` +
+              message,
+          );
         }, requestTimeoutSeconds * 1e3);
         mapSet(pendingRequests, requestId, [
           toClientId,
@@ -1481,8 +1459,7 @@
             resolve([response, fromClientId]);
           },
         ]);
-        sends++;
-        send(toClientId, requestId, message, body);
+        sendImpl(toClientId, requestId, message, body);
       });
     const mergeTablesStamps = (tablesStamp, [tableStamps2, tablesTime2]) => {
       objForEach(tableStamps2, ([rowStamps2, tableTime2], tableId) => {
@@ -1507,7 +1484,7 @@
       if (isUndefined(otherContentHashes)) {
         [otherContentHashes, otherClientId] = await request(
           otherClientId,
-          Message.GetContentHashes,
+          1 /* GetContentHashes */,
         );
       }
       const [otherTablesHash, otherValuesHash] = otherContentHashes;
@@ -1517,7 +1494,7 @@
         const [newTables, differentTableHashes] = (
           await request(
             otherClientId,
-            Message.GetTableDiff,
+            4 /* GetTableDiff */,
             store.getMergeableTableHashes(),
           )
         )[0];
@@ -1526,7 +1503,7 @@
           const [newRows, differentRowHashes] = (
             await request(
               otherClientId,
-              Message.GetRowDiff,
+              5 /* GetRowDiff */,
               store.getMergeableRowHashes(differentTableHashes),
             )
           )[0];
@@ -1535,7 +1512,7 @@
             const newCells = (
               await request(
                 otherClientId,
-                Message.GetCellDiff,
+                6 /* GetCellDiff */,
                 store.getMergeableCellHashes(differentRowHashes),
               )
             )[0];
@@ -1550,7 +1527,7 @@
           : (
               await request(
                 otherClientId,
-                Message.GetValueDiff,
+                7 /* GetValueDiff */,
                 store.getMergeableValueHashes(),
               )
             )[0],
@@ -1563,19 +1540,15 @@
         ? changes
         : void 0;
     };
-    const setPersisted = async (_getContent, changes) => {
-      sends++;
-      if (changes) {
-        send(null, null, Message.ContentDiff, changes);
-      } else {
-        send(
-          null,
-          null,
-          Message.ContentHashes,
-          store.getMergeableContentHashes(),
-        );
-      }
-    };
+    const setPersisted = async (_getContent, changes) =>
+      changes
+        ? sendImpl(null, null, 3 /* ContentDiff */, changes)
+        : sendImpl(
+            null,
+            null,
+            2 /* ContentHashes */,
+            store.getMergeableContentHashes(),
+          );
     const addPersisterListener = (listener) => (persisterListener = listener);
     const delPersisterListener = () => (persisterListener = void 0);
     const startSync = async (initialContent) =>
@@ -1593,9 +1566,50 @@
       addPersisterListener,
       delPersisterListener,
       onIgnoredError,
-      Persists.MergeableStoreOnly,
+      2,
+      // MergeableStoreOnly
       {startSync, stopSync, destroy, getSynchronizerStats, ...extra},
     );
+    registerReceive((fromClientId, requestId, message, body) => {
+      receives++;
+      onReceive?.(fromClientId, requestId, message, body);
+      if (message == 0 /* Response */) {
+        ifNotUndefined(
+          mapGet(pendingRequests, requestId),
+          ([toClientId, handleResponse]) =>
+            isUndefined(toClientId) || toClientId == fromClientId
+              ? handleResponse(body, fromClientId)
+              : /* istanbul ignore next */
+                0,
+        );
+      } else if (
+        message == 2 /* ContentHashes */ &&
+        persister.isAutoLoading()
+      ) {
+        getChangesFromOtherStore(fromClientId, body).then((changes) => {
+          persisterListener?.(void 0, changes);
+        });
+      } else if (message == 3 /* ContentDiff */ && persister.isAutoLoading()) {
+        persisterListener?.(void 0, body);
+      } else {
+        ifNotUndefined(
+          message == 1 /* GetContentHashes */ && persister.isAutoSaving()
+            ? store.getMergeableContentHashes()
+            : message == 4 /* GetTableDiff */
+              ? store.getMergeableTableDiff(body)
+              : message == 5 /* GetRowDiff */
+                ? store.getMergeableRowDiff(body)
+                : message == 6 /* GetCellDiff */
+                  ? store.getMergeableCellDiff(body)
+                  : message == 7 /* GetValueDiff */
+                    ? store.getMergeableValueDiff(body)
+                    : void 0,
+          (response) => {
+            sendImpl(fromClientId, requestId, 0 /* Response */, response);
+          },
+        );
+      }
+    });
     return persister;
   };
 
@@ -1724,9 +1738,9 @@
             selectedCellId,
             isFunction(aggregate)
               ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace]
-              : mapGet(numericAggregators, aggregate) ?? [
+              : (mapGet(numericAggregators, aggregate) ?? [
                   (_cells, length) => length,
-                ],
+                ]),
           ],
         ];
         arrayPush(groupEntries, groupEntry);
