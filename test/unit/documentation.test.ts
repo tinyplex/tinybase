@@ -23,6 +23,7 @@ import * as TinyBaseTools from 'tinybase/tools';
 import * as TinyBaseUiReact from 'tinybase/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
 import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
+import * as fs from 'fs';
 import * as sqlite3 from 'sqlite3';
 import * as ws from 'ws';
 import * as yjs from 'yjs';
@@ -50,6 +51,7 @@ import {transformSync} from 'esbuild';
   },
   '@sqlite.org/sqlite-wasm': sqlite3InitModule,
   '@vlcn.io/crsqlite-wasm': initWasm,
+  fs,
   react: React,
   'react-dom/client': ReactDOMClient,
   sqlite3,
