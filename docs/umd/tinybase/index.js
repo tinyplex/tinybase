@@ -419,7 +419,7 @@
   const getRowCellFunction = (getRowCell, defaultCellValue) =>
     isString(getRowCell)
       ? (getCell) => getCell(getRowCell)
-      : getRowCell ?? (() => defaultCellValue ?? EMPTY_STRING);
+      : (getRowCell ?? (() => defaultCellValue ?? EMPTY_STRING));
   const getCreateFunction = (getFunction, initFunction) => {
     const thingsByStore = /* @__PURE__ */ new WeakMap();
     return (store) => {
@@ -1107,8 +1107,8 @@
     ) => {
       const aggregators = isFunction(aggregate)
         ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace]
-        : mapGet(numericAggregators, aggregate) ??
-          mapGet(numericAggregators, SUM);
+        : (mapGet(numericAggregators, aggregate) ??
+          mapGet(numericAggregators, SUM));
       setDefinitionAndListen(
         metricId,
         tableId,
@@ -1724,9 +1724,9 @@
             selectedCellId,
             isFunction(aggregate)
               ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace]
-              : mapGet(numericAggregators, aggregate) ?? [
+              : (mapGet(numericAggregators, aggregate) ?? [
                   (_cells, length) => length,
-                ],
+                ]),
           ],
         ];
         arrayPush(groupEntries, groupEntry);
