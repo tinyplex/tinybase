@@ -179,13 +179,13 @@ designed to be linked to in classic-style web pages, rather than `import`ed or
 It will be typical to use the minified versions of these in production:
 
 ```html
-<script src="https://unpkg.com/tinybase/dist/umd/min/index.js"></script>
+<script src="https://unpkg.com/tinybase/umd/min/index.js"></script>
 ```
 
 But again, there are ES6 and non-minified versions of those too, such as:
 
 ```html
-<script src="https://unpkg.com/tinybase/dist/umd/es6/index.js"></script>
+<script src="https://unpkg.com/tinybase/umd/es6/index.js"></script>
 ```
 
 When using UMD, you can access the members of these modules using global

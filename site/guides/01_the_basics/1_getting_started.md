@@ -62,7 +62,7 @@ example:
 <html>
   <head>
     <title>My First TinyBase App</title>
-    <script src="https://unpkg.com/tinybase/dist/umd/min/index.js"></script>
+    <script src="https://unpkg.com/tinybase/umd/min/index.js"></script>
     <script>
       addEventListener('load', () => {
         const {createStore} = TinyBase;
