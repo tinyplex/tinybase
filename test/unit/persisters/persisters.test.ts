@@ -3,6 +3,7 @@
 import 'fake-indexeddb/auto';
 import {GetLocationMethod, Persist, nextLoop} from './common.ts';
 import type {Persister, Store} from 'tinybase';
+import {createCustomPersister, createStore} from 'tinybase';
 import {
   mockAutomerge,
   mockChangesListener,
@@ -23,7 +24,6 @@ import {
   mockSqliteWasm,
   mockYjs,
 } from './mocks.ts';
-import {createStore} from 'tinybase';
 import {pause} from '../common/other.ts';
 
 describe.each([
@@ -332,4 +332,64 @@ describe.each([
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     }
   });
+});
+
+test('does not error on getPersister returning undefined', async () => {
+  const store = createStore();
+  store.setTables({t1: {r1: {c1: 1}}});
+  const persister = createCustomPersister(
+    store,
+    async () => undefined,
+    async () => {},
+    () => 0,
+    () => 0,
+  );
+  await persister.load();
+  expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+});
+
+test('does not error on getPersister returning invalid', async () => {
+  const store = createStore();
+  store.setTables({t1: {r1: {c1: 1}}});
+  const persister = createCustomPersister(
+    store,
+    async () => 1 as any,
+    async () => {},
+    () => 0,
+    () => 0,
+  );
+  await persister.load();
+  expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+});
+
+test('does not error on persister listener returning undefined', async () => {
+  let triggerListener = (_listener: any) => {};
+  const store = createStore();
+  store.setTables({t1: {r1: {c1: 1}}});
+  const persister = createCustomPersister(
+    store,
+    async () => undefined,
+    async () => {},
+    (listener) => (triggerListener = listener),
+    () => 0,
+  );
+  await persister.startAutoLoad();
+  triggerListener(undefined);
+  expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+});
+
+test('does not error on persister listener returning invalid', async () => {
+  let triggerListener = (_listener: any) => {};
+  const store = createStore();
+  store.setTables({t1: {r1: {c1: 1}}});
+  const persister = createCustomPersister(
+    store,
+    async () => 1 as any,
+    async () => {},
+    (listener) => (triggerListener = listener),
+    () => 0,
+  );
+  await persister.startAutoLoad();
+  triggerListener(1);
+  expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
 });
