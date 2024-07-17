@@ -405,6 +405,7 @@
       }
       return true;
     };
+    const validateContent = isArray;
     const validateTables = (tables) =>
       objValidate(tables, validateTable, cellInvalid);
     const validateTable = (table, tableId) =>
@@ -553,6 +554,10 @@
       );
     const setOrDelTables = (tables) =>
       objIsEmpty(tables) ? delTables() : setTables(tables);
+    const setValidContent = ([tables, values]) => {
+      (objIsEmpty(tables) ? delTables : setTables)(tables);
+      (objIsEmpty(values) ? delValues : setValues)(values);
+    };
     const setValidTables = (tables) =>
       mapMatch(
         tablesMap,
@@ -1057,11 +1062,10 @@
     const getValuesSchemaJson = () => jsonStringWithMap(valuesSchemaMap);
     const getSchemaJson = () =>
       jsonStringWithMap([tablesSchemaMap, valuesSchemaMap]);
-    const setContent = ([tables, values]) =>
-      fluentTransaction(() => {
-        (objIsEmpty(tables) ? delTables : setTables)(tables);
-        (objIsEmpty(values) ? delValues : setValues)(values);
-      });
+    const setContent = (content) =>
+      fluentTransaction(() =>
+        validateContent(content) ? setValidContent(content) : 0,
+      );
     const setTables = (tables) =>
       fluentTransaction(() =>
         validateTables(tables) ? setValidTables(tables) : 0,

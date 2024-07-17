@@ -174,7 +174,10 @@
         loads++;
         await schedule(async () => {
           try {
-            setContentOrChanges(await getPersisted());
+            const content = await getPersisted();
+            isArray(content)
+              ? setContentOrChanges(content)
+              : errorNew(`Content is not an array ${content}`);
           } catch (error) {
             onIgnoredError?.(error);
             if (initialContent) {
