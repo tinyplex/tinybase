@@ -118,6 +118,7 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.15.3",
+    "@automerge/automerge-repo": "^1.2.0",
     "@automerge/automerge-repo-network-broadcastchannel": "^1.2.1",
     "@babel/cli": "^7.24.8",
     "@babel/core": "^7.24.9",
@@ -180,7 +181,7 @@
     "partykit": "^0.0.107",
     "partysocket": "^1.0.1",
     "prettier": "^3.3.3",
-    "puppeteer": "22.13.0",
+    "puppeteer": "22.13.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-test-renderer": "^18.3.1",
