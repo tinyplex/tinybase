@@ -116,6 +116,7 @@ import {
 } from '../common/cell.ts';
 import {
   ifNotUndefined,
+  isArray,
   isFunction,
   isTypeStringOrBoolean,
   isUndefined,
@@ -244,6 +245,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
     return true;
   };
+
+  const validateContent = isArray;
 
   const validateTables = (tables: Tables): boolean =>
     objValidate(tables, validateTable, cellInvalid);
@@ -410,6 +413,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const setOrDelTables = (tables: Tables) =>
     objIsEmpty(tables) ? delTables() : setTables(tables);
+
+  const setValidContent = ([tables, values]: Content): void => {
+    (objIsEmpty(tables) ? delTables : setTables)(tables);
+    (objIsEmpty(values) ? delValues : setValues)(values);
+  };
 
   const setValidTables = (tables: Tables): TablesMap =>
     mapMatch(
@@ -1069,11 +1077,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getSchemaJson = (): Json =>
     jsonStringWithMap([tablesSchemaMap, valuesSchemaMap]);
 
-  const setContent = ([tables, values]: Content): Store =>
-    fluentTransaction(() => {
-      (objIsEmpty(tables) ? delTables : setTables)(tables);
-      (objIsEmpty(values) ? delValues : setValues)(values);
-    });
+  const setContent = (content: Content): Store =>
+    fluentTransaction(() =>
+      validateContent(content) ? setValidContent(content) : 0,
+    );
 
   const setTables = (tables: Tables): Store =>
     fluentTransaction(() =>
