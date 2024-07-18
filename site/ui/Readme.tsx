@@ -7,7 +7,7 @@ import React from 'react';
 
 export const Readme: NoPropComponent = (): any => {
   const [summary, body] = useReadme(usePageNode());
-  const markdown = summary + '\n\n' + body;
+  const markdown = summary + '\n\n' + body.replaceAll(/<embed.*? \/>/g, '');
 
   return <Markdown markdown={markdown} html={true} skipCode={true} />;
 };

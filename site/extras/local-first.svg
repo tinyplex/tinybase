@@ -1,0 +1,141 @@
+<svg viewBox="0 0 3000 1100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <filter id="shadow" x="-20%" width="140%" y="-20%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="20" flood-opacity="0.7" />
+    </filter>
+  </defs>
+
+  <line stroke="#d81b60">
+    <animate attributeName="x1" values="1200;1250;1200" dur="2" repeatCount="indefinite" begin="-.25" />
+    <animate attributeName="y1" values="275;325;275" dur="2" repeatCount="indefinite" begin="0" />
+    <animate attributeName="x2" values="250;200;250" dur="2" repeatCount="indefinite" begin="0" />
+    <animate attributeName="y2" values="550;600;550" dur="2" repeatCount="indefinite" begin="-.25" />
+    <animate attributeName="stroke-width" values="0;40;0;0;0;0" dur="3.25" repeatCount="indefinite" begin="0" />
+  </line>
+
+  <line stroke="#d81b60">
+    <animate attributeName="x1" values="2750;2700;2750" dur="2" repeatCount="indefinite" begin="-0.25" />
+    <animate attributeName="y1" values="600;550;600" dur="2" repeatCount="indefinite" begin="0" />
+    <animate attributeName="x2" values="1200;1250;1200" dur="2" repeatCount="indefinite" begin="-.25" />
+    <animate attributeName="y2" values="275;325;275" dur="2" repeatCount="indefinite" begin="0" />
+    <animate attributeName="stroke-width" values="0;40;0;0;0;0" dur="3.25" repeatCount="indefinite" begin="-3" />
+  </line>
+
+  <line stroke="#d81b60">
+    <animate attributeName="x1" values="1200;1250;1200" dur="2" repeatCount="indefinite" begin="-.25" />
+    <animate attributeName="y1" values="275;325;275" dur="2" repeatCount="indefinite" begin="0" />
+    <animate attributeName="x2" values="1700;1750;1700" dur="2" repeatCount="indefinite" begin="0" />
+    <animate attributeName="y2" values="875;825;875" dur="2" repeatCount="indefinite" begin="-0.25" />
+    <animate attributeName="stroke-width" values="0;40;0;0;0;0" dur="3.25" repeatCount="indefinite" begin="-5" />
+  </line>
+
+  <g transform="translate(1000,25) scale(.6)">
+    <use xlink:href="common.svg#logo" />
+    <g transform="translate(340,215) skewY(-10)">
+      <path filter="url(#shadow)"
+        d="M0 410q0 210 210 210h560q130 0 130-130q0-130-130-130q0-360-360-360 q-205 0-205 205q-205 0-205 205"
+        fill="#777" stroke="#fff" stroke-width="10" />
+      <g stroke-width="20" stroke="#fff" fill="none">
+        <g stroke-width="20" stroke="#fff" fill="none">
+          <path d="M220,320 h180" stroke="#333" />
+          <path d="M220,420 h180" stroke="#333" />
+          <path d="M220,520 h180" stroke="#333" />
+          <path d="M480,220 h180" />
+          <path d="M480,320 h180" />
+          <path d="M480,420 h180" />
+          <path d="M480,520 h180" />
+        </g>
+      </g>
+    </g>
+    <animateMotion path="M25 0q25 0 25 25q0 25 -25 25q-25 0-25-25q0-25 25-25" dur="2" repeatCount="indefinite" />
+  </g>
+
+  <line stroke="#d81b60">
+    <animate attributeName="x1" values="250;200;250" dur="2" repeatCount="indefinite" begin="0" />
+    <animate attributeName="y1" values="550;600;550" dur="2" repeatCount="indefinite" begin="-.25" />
+    <animate attributeName="x2" values="1700;1750;1700" dur="2" repeatCount="indefinite" begin="0" />
+    <animate attributeName="y2" values="875;825;875" dur="2" repeatCount="indefinite" begin="-0.25" />
+    <animate attributeName="stroke-width" values="0;40;0;0;0;0" dur="3.25" repeatCount="indefinite" begin="-1" />
+  </line>
+
+  <line stroke="#d81b60">
+    <animate attributeName="x1" values="1700;1750;1700" dur="2" repeatCount="indefinite" begin="0" />
+    <animate attributeName="y1" values="875;825;875" dur="2" repeatCount="indefinite" begin="-0.25" />
+    <animate attributeName="x2" values="2750;2700;2750" dur="2" repeatCount="indefinite" begin="-0.25" />
+    <animate attributeName="y2" values="600;550;600" dur="2" repeatCount="indefinite" begin="0" />
+    <animate attributeName="stroke-width" values="0;40;0;0;0;0" dur="3.25" repeatCount="indefinite" begin="-2" />
+  </line>
+
+  <line stroke="#d81b60">
+    <animate attributeName="x1" values="250;200;250" dur="2" repeatCount="indefinite" begin="0" />
+    <animate attributeName="y1" values="550;600;550" dur="2" repeatCount="indefinite" begin="-.25" />
+    <animate attributeName="x2" values="2750;2700;2750" dur="2" repeatCount="indefinite" begin="-0.25" />
+    <animate attributeName="y2" values="600;550;600" dur="2" repeatCount="indefinite" begin="0" />
+    <animate attributeName="stroke-width" values="0;40;0;0;0;0" dur="3.25" repeatCount="indefinite" begin="-4" />
+  </line>
+
+  <g transform="translate(0,300) scale(0.6)">
+    <use xlink:href="common.svg#logo" />
+    <g transform="translate(340,215) skewY(-10)">
+      <use xlink:href="common.svg#screen" />
+      <g stroke-width="20" stroke="#fff" fill="none">
+        <path d="M90,225 h170" stroke="#333" />
+        <path d="M90,325 h170" stroke="#333" />
+        <path d="M90,425 h170" stroke="#333" />
+        <path d="M320,225 h490" />
+        <path d="M320,325 h490" />
+        <path d="M320,425 h490" />
+        <path d="M320,525 h490" />
+      </g>
+    </g>
+    <animateMotion path="M50 25q0 25 -25 25q-25 0-25-25q0-25 25-25q25 0 25 25" dur="2" repeatCount="indefinite" />
+  </g>
+
+  <g transform="translate(2500,300) scale(0.6)">
+    <use xlink:href="common.svg#logo" />
+    <g transform="translate(340,215) skewY(-10)">
+      <rect height="620" width="340" rx="50" filter="url(#shadow)" fill="#777" stroke="#fff" stroke-width="10" />
+      <path d="M80 0v40q0,25 25,25h130q25,0 25,-25v-40h-180" stroke="#fff" fill="#000" stroke-width="10" />
+      <g stroke-width="20" stroke="#fff" fill="none">
+        <path d="M80,160 h180" stroke="#333" />
+        <path d="M80,260 h180" stroke="#fff" />
+        <path d="M80,360 h180" stroke="#fff" />
+        <path d="M80,460 h180" stroke="#fff" />
+      </g>
+    </g>
+    <animateMotion path="M25 50q-25 0-25-25q0-25 25-25q25 0 25 25q0 25 -25 25" dur="2" repeatCount="indefinite" />
+  </g>
+
+  <g transform="translate(1500,575) scale(0.6)">
+    <use xlink:href="common.svg#logo" />
+    <g transform="translate(340,215) skewY(-10)">
+      <rect height="520" width="640" rx="50" filter="url(#shadow)" fill="#777" stroke="#fff" stroke-width="10" />
+      <path d="M0 170h40q25,0 25,25v130q0,25 -25 25h-40v-180" stroke="#fff" fill="#000" stroke-width="10" />
+      <g stroke-width="20" stroke="#fff" fill="none">
+        <path d="M120,110 h180" stroke="#333" />
+        <path d="M120,210 h180" stroke="#333" />
+        <path d="M120,310 h180" stroke="#333" />
+        <path d="M380,110 h180" />
+        <path d="M380,210 h180" />
+        <path d="M380,310 h180" />
+        <path d="M380,410 h180" />
+      </g>
+    </g>
+    <animateMotion path="M0 25q0-25 25-25q25 0 25 25q0 25 -25 25q-25 0-25-25" dur="2" repeatCount="indefinite" />
+  </g>
+
+  <script>
+    // <![CDATA[
+    const svg = document.querySelector('svg');
+    const update = () => 
+      localStorage.getItem('svg') == 'pause' ? svg.pauseAnimations() : svg.unpauseAnimations()
+    window.addEventListener('storage', (event) => 
+      (event.storageArea == localStorage && event.key == 'svg') ? update() : 0);
+    svg.addEventListener("click", () => { 
+      localStorage.setItem('svg', localStorage.getItem('svg') == 'pause' ? 'play' : 'pause');
+      update();
+    });
+    update();
+    // ]]>
+  </script>
+</svg>
