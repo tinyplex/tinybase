@@ -308,9 +308,9 @@ store.delTablesSchema();
 > ## Synchronize between devices.
 >
 > The MergeableStore type acts as a native CRDT, letting you merge data and
-> synchronize it between clients and systems. The synchronization protocol can
-> run over WebSockets, the browser BroadcastChannel, or your own custom
-> synchronization medium.
+> synchronize it between clients and systems - or even a server. The
+> synchronization protocol can run over WebSockets, the browser
+> BroadcastChannel, or your own custom synchronization medium.
 >
 > Read more about these techniques in the Synchronization guides.
 
