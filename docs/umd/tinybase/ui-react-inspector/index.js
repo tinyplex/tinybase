@@ -96,6 +96,7 @@
   const arrayMap = (array, cb) => array.map(cb);
   const arrayIsEmpty = (array) => size(array) == 0;
   const arrayReduce = (array, cb, initial) => array.reduce(cb, initial);
+  const arrayClear = (array, to) => array.splice(0, to);
   const arrayPush = (array, ...values) => array.push(...values);
   const arrayShift = (array) => array.shift();
 
@@ -1626,15 +1627,10 @@
       },
     );
 
-  const Persists = {
-    StoreOnly: 1,
-    MergeableStoreOnly: 2,
-    StoreOrMergeableStore: 3,
-  };
   const scheduleRunning = mapNew();
   const scheduleActions = mapNew();
-  const getStoreFunctions = (persist = Persists.StoreOnly, store) =>
-    persist != Persists.StoreOnly && store.isMergeable()
+  const getStoreFunctions = (persist = 1 /* StoreOnly */, store) =>
+    persist != 1 /* StoreOnly */ && store.isMergeable()
       ? [
           1,
           store.getMergeableContent,
@@ -1643,7 +1639,7 @@
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setDefaultContent,
         ]
-      : persist != Persists.MergeableStoreOnly
+      : persist != 2 /* MergeableStoreOnly */
         ? [
             0,
             store.getContent,
@@ -1727,19 +1723,21 @@
     };
     const startAutoLoad = async (initialContent) => {
       await stopAutoLoad().load(initialContent);
-      autoLoadHandle = addPersisterListener(async (content, changes) => {
-        if (changes || content) {
-          /* istanbul ignore else */
-          if (loadSave != 2) {
-            loadSave = 1;
-            loads++;
-            setContentOrChanges(changes ?? content);
-            loadSave = 0;
+      try {
+        autoLoadHandle = addPersisterListener(async (content, changes) => {
+          if (changes || content) {
+            /* istanbul ignore else */
+            if (loadSave != 2) {
+              loadSave = 1;
+              loads++;
+              setContentOrChanges(changes ?? content);
+              loadSave = 0;
+            }
+          } else {
+            await load();
           }
-        } else {
-          await load();
-        }
-      });
+        });
+      } catch (error) {}
       return persister;
     };
     const stopAutoLoad = () => {
@@ -1786,7 +1784,10 @@
       return persister;
     };
     const getStore = () => store;
-    const destroy = () => stopAutoLoad().stopAutoSave();
+    const destroy = () => {
+      arrayClear(mapGet(scheduleActions, scheduleId));
+      return stopAutoLoad().stopAutoSave();
+    };
     const getStats = () => ({loads, saves});
     const persister = {
       load,
@@ -1839,7 +1840,8 @@
       addPersisterListener,
       delPersisterListener,
       onIgnoredError,
-      Persists.StoreOrMergeableStore,
+      3,
+      // StoreOrMergeableStore,
       {getStorageName: () => storageName},
     );
   };
