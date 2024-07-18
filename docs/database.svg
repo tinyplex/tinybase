@@ -1,0 +1,84 @@
+<svg viewBox="0 0 3000 1100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="svg">
+  <defs>
+    <defs>
+      <filter id="shadow" x="-20%" width="140%" y="-20%" height="140%">
+        <feDropShadow dx="0" dy="0" stdDeviation="20" flood-opacity="0.7" />
+      </filter>
+    </defs>
+    <g id="table" stroke-width="10">
+      <rect height="170" width="250" stroke="#fff" />
+      <path d="M30,45 h190" stroke="#777" />
+      <path d="M30,85 h190" stroke="#777" />
+      <path d="M30,125 h190" stroke="#777" />
+    </g>
+  </defs>
+
+  <use xlink:href="common.svg#logo" transform="translate(500,150)" />
+
+  <g transform="translate(840,265) skewY(-10)" fill="none">
+    <rect id="content" filter="url(#shadow)" height="620" width="900" stroke="#fff" stroke-width="10" rx="50"
+      fill="#000" />
+    <g stroke="#d81b60" stroke-width="20">
+      <path d="M350,145 h100 v80 h100">
+        <animate id="line1" attributeName="stroke-width" values="80;20" begin="0;line3.end+.5" dur=".5" />
+      </path>
+      <path d="M225,270 v130 h100">
+        <animate id="line2" attributeName="stroke-width" values="80;20" begin="line1.end+.5" dur=".5" />
+      </path>
+      <path d="M575,480 h100 v-210">
+        <animate id="line3" attributeName="stroke-width" values="80;20" begin="line2.end+.5" dur=".5" />
+      </path>
+    </g>
+    <use href="#table" x="100" y="100" />
+    <use href="#table" x="550" y="100" />
+    <use href="#table" x="325" y="360" />
+  </g>
+
+  <g transform="translate(1540,265) skewY(-10)">
+    <use xlink:href="common.svg#screen" />
+    <path d="M0 120h900" stroke-width="10" />
+    <!-- <g opacity="0" stroke-width="20" stroke="#fff" fill="none">
+      <path d="M80,220 h170" stroke="#333" />
+      <path d="M80,320 h170" stroke="#333" />
+      <path d="M80,420 h170" stroke="#333" />
+      <path d="M320,220 h490">
+        <animate id="l1" attributeName="opacity" values="1;0;1" begin="screen1.begin+.5" dur=".25" />
+      </path>
+      <path d="M320,320 h490">
+        <animate id="l2" attributeName="opacity" values="1;0;1" begin="l1.end" dur=".25" />
+      </path>
+      <path d="M320,420 h490">
+        <animate id="l3" attributeName="opacity" values="1;0;1" begin="l2.end" dur=".25" />
+      </path>
+      <path d="M320,520 h490">
+        <animate id="l4" attributeName="opacity" values="1;0;1" begin="l3.end" dur=".25" />
+      </path>
+      <animate id="screen1" attributeName="opacity" values="0;1;1;1;0" begin="0;screen3.end" dur="2" />
+    </g> -->
+    <!-- <g opacity="0" stroke-width="20" stroke="#fff" fill="none">
+      <rect x="90" y="220" height="200" width="200" fill="#0943D9" />
+      <rect x="190" y="320" height="200" width="200" fill="#D99D09" />
+      <rect x="420" y="220" height="200" width="200" fill="#09D918">
+        <animateMotion dur="1" begin="screen2.begin" repeatCount="2"
+          path="M20,50 C20,-50 180,150 180,50 C180-50 20,150 20,50 z" />
+      </rect>
+      <animate id="screen2" attributeName="opacity" values="0;1;1;1;0" begin="screen1.end" dur="2" />
+    </g> -->
+    <g opacity="0" stroke-width="20" stroke="#fff" fill="none">
+      <path d="M90,210 v310 h720" stroke="#333" />
+      <path d="M200,430 l120,-120 l80,80 l120,-120 l80,80 l145,-145" stroke="#09D918" stroke-dasharray="1000"
+        stroke-dashoffset="1000">
+        <animate attributeName="stroke-dashoffset" values="1000;0" begin="screen3.begin" dur="2" />
+        <animate attributeName="stroke-width" values="80;20" begin="screen3.begin+1.5" dur=".5" />
+      </path>
+      <animate id="screen3" attributeName="opacity" values="0;1;1;1;0" begin="0;screen3.end" dur="2" />
+    </g>
+  </g>
+
+  <script>
+    const svg = document.querySelector("svg");
+    svg.addEventListener("click", () => 
+      svg.animationsPaused() ? svg.unpauseAnimations() : svg.pauseAnimations()
+    );
+  </script>
+</svg>

@@ -175,8 +175,13 @@ body > main > article#home {
     > section,
     > pre,
     > img,
+    > embed,
     > .table {
+      width: 100%;
       grid-column-end: span 3;
+    }
+    > embed {
+      align-self: center;
     }
     > pre,
     > img,
@@ -186,10 +191,10 @@ body > main > article#home {
     > .table th:first-child {
       width: 45%;
     }
-    > section:nth-of-type(2n + 7) {
+    > section:nth-of-type(2n + 3) {
       grid-column-start: 4;
     }
-    > section:nth-of-type(2n + 8) {
+    > section:nth-of-type(2n + 2) {
       text-align: right;
     }
     > section#hero {

@@ -29,28 +29,34 @@
 > stack](#set-checkpoints-for-an-undo-stack), and [developer
 > tools](#an-inspector-for-your-data)!
 
+<embed src="reactive.svg" />
+
 > ## It's _Database-Like_
 >
-> Store [key-value data](#start-with-a-simple-key-value-store) and [tabular
+> Consumer app? Enterprise app? Or even a game? Model [key-value
+> data](#start-with-a-simple-key-value-store) and [tabular
 > data](#level-up-to-use-tabular-data) with optional typed
-> [schematization](#apply-schemas-to-tables-values) to model your app's data
-> structures. TinyBase provides built-in
-> [indexing](#create-indexes-for-fast-lookups), [metric
-> aggregation](#define-metrics-and-aggregations), and tabular
-> [relationships](#model-table-relationships) APIs - or the powerful [query
+> [schematization](#apply-schemas-to-tables-values), whatever its data
+> structures. There are built-in [indexing](#create-indexes-for-fast-lookups),
+> [metric aggregation](#define-metrics-and-aggregations), and tabular
+> [relationships](#model-table-relationships) APIs - and a powerful [query
 > engine](#build-complex-queries-with-tinyql) to select, join, filter, and group
 > data (reactively!) without SQL.
 
+<embed src="database.svg" />
+
 > ## It _Synchronizes_
 >
-> TinyBase is an in-memory data store, but you can easily
-> [persist](#persist-to-storage-sqlite-more) your data to [browser
-> storage](/api/persister-browser), [IndexedDB](/api/persister-indexed-db), many
-> flavors of [database](/guides/persistence/database-persistence/), and
-> [more](/guides/persistence/third-party-crdt-persistence/). TinyBase now has
-> [native CRDT](#synchronize-between-devices) support, meaning that you can [natively
-> synchronize](/guides/synchronization/) and merge data across multiple sources
-> and clients.
+> TinyBase has [native CRDT](#synchronize-between-devices) support, meaning that
+> you can deterministically [synchronize](/guides/synchronization/) and merge
+> data across multiple sources, clients, and servers. And although TinyBase is
+> an in-memory data store, but you can easily
+> [persist](#persist-to-storage-sqlite-more) your data to file, [browser
+> storage](/api/persister-browser), [IndexedDB](/api/persister-indexed-db),
+> [SQLite databases](/guides/persistence/database-persistence/), and
+> [more](/guides/persistence/third-party-crdt-persistence/).
+
+<embed src="sync.svg" />
 
 > ## It's Built For A _Local-First_ World
 >
@@ -62,6 +68,8 @@
 > dependencies - yet <a href='#well-tested-and-documented'>100% tested</a>, <a
 > href='/guides/the-basics/getting-started/'>fully documented</a>, and of
 > course, <a href='@@EVAL("metadata.repository")'>open source</a>!
+
+<embed src="local-first.svg" />
 
 ---
 
