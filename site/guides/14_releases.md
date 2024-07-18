@@ -32,6 +32,12 @@ details.
 
 This implementation is still experimental so please kick the tires!
 
+There is one small breaking change in this release: the functions for creating
+Synchronizer objects can now take optional onSend and onReceive callbacks that
+will fire whenever messages pass through the Synchronizer. See, for example, the
+createWsSynchronizer function. These are suitable for debugging synchronization
+issues in a development environment.
+
 ## v5.0
 
 We're excited to announce this major release for TinyBase! It includes
