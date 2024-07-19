@@ -53,7 +53,7 @@
     <set attributeName="opacity" to="1" begin="t2.begin" />
     <animateTransform attributeName="transform" type="skewY" from="10" to="-10" dur="2" additive="sum"
       begin="t2.begin" />
-    <animate id="t2e" attributeName="stroke-width" values="40;10" begin="t2.end" dur="2" />
+    <animate id="t2e" attributeName="stroke-width" values="40;10" begin="t2.end" dur=".5" />
     <animate attributeName="fill" values="#d81b60;#000" begin="t2.end" dur=".5" />
     <set attributeName="opacity" to="0" begin="t2e.end" />
   </use>
