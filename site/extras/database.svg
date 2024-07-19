@@ -18,7 +18,7 @@
       fill="#000" />
     <g stroke="#d81b60" stroke-width="20">
       <path d="M350,145 h100 v80 h100">
-        <animate id="line1" attributeName="stroke-width" values="80;20" begin="0;line3.end+.5" dur=".5" />
+        <animate id="line1" attributeName="stroke-width" values="80;20" begin=".5;line3.end+.5" dur=".5" />
       </path>
       <path d="M225,270 v130 h100">
         <animate id="line2" attributeName="stroke-width" values="80;20" begin="line1.end+.5" dur=".5" />
@@ -50,7 +50,7 @@
       <path d="M320,525 h490">
         <animate id="l4" attributeName="opacity" values="1;0;1" begin="l3.end" dur=".25" />
       </path>
-      <animate id="screen1" attributeName="opacity" values="0;1;1;1;0" begin="0;screen3.end" dur="2" />
+      <animate id="screen1" attributeName="opacity" values="0;1;1;1;0" begin="-1;screen3.end" dur="2" />
     </g>
     <g opacity="0" stroke-width="10" stroke="#fff" fill="none">
       <rect x="90" y="220" height="200" width="200" fill="#0943D9" />
