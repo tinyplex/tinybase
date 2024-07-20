@@ -7,7 +7,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "tinybase": "^5.0.4",
+    "tinybase": "^5.1.0",
     "ws": "^8.18.0"
   },
   "devDependencies": {
