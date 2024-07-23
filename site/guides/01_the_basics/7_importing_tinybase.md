@@ -162,6 +162,10 @@ import {useCell} from 'tinybase/ui-react/index.js';
 This situation is evolving however, so you may find these extra file names
 unnecessary as bundler support improves.
 
+Check out the [Expo TinyBase
+example](https://github.com/expo/examples/tree/master/with-tinybase) for a
+simple working template to get started with TinyBase and React Native.
+
 ## ESlint Resolver Issues
 
 There is a [known
