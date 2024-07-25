@@ -27,6 +27,7 @@ import {arrayForEach, arrayPush} from '../../common/array.ts';
 import {
   collClear,
   collDel,
+  collForEach,
   collIsEmpty,
   collSize,
   collSize2,
@@ -237,8 +238,9 @@ export const createWsServer = (<
   });
 
   const destroy = () => {
-    webSocketServer.close();
     collClear(clientsByPath);
+    collForEach(serverClientsByPath, stopServerClient);
+    webSocketServer.close();
   };
 
   const wsServer = {
