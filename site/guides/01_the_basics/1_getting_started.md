@@ -21,7 +21,7 @@ with modern web projects based on application templates. To use the TinyBase
 template, firstly make a copy of it:
 
 ```sh
-npx degit tinyplex/vite-tinybase my-tinybase-app
+npx tiged tinyplex/vite-tinybase my-tinybase-app
 ```
 
 Then go into the directory, install the dependencies, and run the application:
