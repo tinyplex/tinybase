@@ -3,6 +3,7 @@
 import type {Id, IdOrNull, Ids} from '../../common/index.d.ts';
 import type {Persister, Persists} from '../../persisters/index.d.ts';
 import type {IdAddedOrRemoved} from '../../store/index.d.ts';
+import type {MergeableStore} from '../../mergeable-store/index.d.ts';
 import type {WebSocketServer} from 'ws';
 
 /// PathIdsListener
@@ -55,5 +56,10 @@ export function createWsServer<
   >,
 >(
   webSocketServer: WebSocketServer,
-  createPersisterForPath?: (pathId: Id) => PathPersister | undefined,
+  createPersisterForPath?: (
+    pathId: Id,
+  ) =>
+    | PathPersister
+    | [PathPersister, (store: MergeableStore) => void]
+    | undefined,
 ): WsServer;

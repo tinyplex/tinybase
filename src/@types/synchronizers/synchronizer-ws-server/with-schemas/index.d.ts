@@ -9,6 +9,7 @@ import type {
   Persister,
   Persists,
 } from '../../../persisters/with-schemas/index.d.ts';
+import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
 import type {WebSocketServer} from 'ws';
 
 /// PathIdsListener
@@ -63,5 +64,10 @@ export function createWsServer<
   >,
 >(
   webSocketServer: WebSocketServer,
-  createPersisterForPath?: (pathId: Id) => PathPersister | undefined,
+  createPersisterForPath?: (
+    pathId: Id,
+  ) =>
+    | PathPersister
+    | [PathPersister, (store: MergeableStore<Schemas>) => void]
+    | undefined,
 ): WsServer;

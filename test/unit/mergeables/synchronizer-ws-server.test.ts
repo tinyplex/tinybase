@@ -2,6 +2,7 @@
 
 import type {Id, MergeableStore} from 'tinybase';
 import {WebSocket, WebSocketServer} from 'ws';
+import {readFileSync, writeFileSync} from 'fs';
 import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import type {WsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {createFilePersister} from 'tinybase/persisters/persister-file';
@@ -10,7 +11,6 @@ import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {join} from 'path';
 import {pause} from '../common/other.ts';
-import {readFileSync} from 'fs';
 import {resetHlc} from '../common/mergeable.ts';
 import tmp from 'tmp';
 
@@ -257,6 +257,106 @@ describe('Persistence', () => {
 
     synchronizer.destroy();
     wsServer.destroy();
+  });
+
+  describe('single client to existing path', () => {
+    let serverStore: MergeableStore;
+
+    beforeEach(() => {
+      serverStore = createMergeableStore('ss');
+      writeFileSync(
+        join(tmpDir, 'p1.json'),
+        JSON.stringify([
+          [
+            {
+              t1: [
+                {
+                  r1: [
+                    {c1: [1, 'Nn1JUF-----7JQY8', 1003668370]},
+                    '',
+                    550994372,
+                  ],
+                },
+                '',
+                1072852846,
+              ],
+            },
+            '',
+            1771939739,
+          ],
+          [{}, '', 0],
+        ]),
+        'utf-8',
+      );
+    });
+
+    test('alters data prematurely', async () => {
+      const wsServer = createWsServer(
+        new WebSocketServer({port: 8049}),
+        (pathId) => {
+          serverStore.setValue('p', pathId);
+          return createPersister(serverStore, pathId);
+        },
+      );
+
+      const clientStore = createMergeableStore('s1');
+      const synchronizer = await createWsSynchronizer(
+        clientStore,
+        new WebSocket('ws://localhost:8049/p1'),
+      );
+      await synchronizer.startSync();
+
+      await pause();
+      expect(serverStore.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
+
+      synchronizer.destroy();
+      wsServer.destroy();
+    });
+
+    test('alters data after path first persisted', async () => {
+      const wsServer = createWsServer(
+        new WebSocketServer({port: 8049}),
+        (pathId) => {
+          serverStore.setValue('p', pathId);
+          return [
+            createPersister(serverStore, pathId),
+            (store) => store.setValue('p', pathId),
+          ];
+        },
+      );
+
+      const clientStore = createMergeableStore('s1');
+      const synchronizer = await createWsSynchronizer(
+        clientStore,
+        new WebSocket('ws://localhost:8049/p1'),
+      );
+      await synchronizer.startSync();
+
+      await pause();
+      expect(serverStore.getContent()).toEqual([
+        {t1: {r1: {c1: 1}}},
+        {p: 'p1'},
+      ]);
+      expect(
+        JSON.parse(readFileSync(join(tmpDir, 'p1.json'), 'utf-8')),
+      ).toEqual([
+        [
+          {
+            t1: [
+              {r1: [{c1: [1, 'Nn1JUF-----7JQY8', 1003668370]}, '', 550994372]},
+              '',
+              1072852846,
+            ],
+          },
+          '',
+          1771939739,
+        ],
+        [{p: ['p1', 'Nn1JUF----05JWdY', 328213929]}, '', 1622699135],
+      ]);
+
+      synchronizer.destroy();
+      wsServer.destroy();
+    });
   });
 
   test('multiple clients, one path', async () => {

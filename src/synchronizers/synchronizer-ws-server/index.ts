@@ -37,11 +37,11 @@ import {
   ifPayloadValid,
   receivePayload,
 } from '../common.ts';
+import {ifNotUndefined, isArray} from '../../common/other.ts';
 import {IdSet2} from '../../common/set.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import {createCustomSynchronizer} from '../index.ts';
 import {getListenerFunctions} from '../../common/listeners.ts';
-import {ifNotUndefined} from '../../common/other.ts';
 import {objFreeze} from '../../common/obj.ts';
 
 enum Sc {
@@ -50,6 +50,7 @@ enum Sc {
   Synchronizer = 2,
   Send = 3,
   Buffer = 4,
+  Then = 5,
 }
 enum ScState {
   Ready,
@@ -66,7 +67,12 @@ export const createWsServer = (<
   >,
 >(
   webSocketServer: WebSocketServer,
-  createPersisterForPath?: (pathId: Id) => PathPersister | undefined,
+  createPersisterForPath?: (
+    pathId: Id,
+  ) =>
+    | [PathPersister, (store: MergeableStore) => void]
+    | PathPersister
+    | undefined,
 ) => {
   type ServerClient = [
     state: ScState,
@@ -74,6 +80,7 @@ export const createWsServer = (<
     synchronizer: Synchronizer,
     send: (payload: string) => void,
     buffer: [],
+    then: (store: MergeableStore) => void,
   ];
 
   const pathIdListeners: IdSet2 = mapNew();
@@ -90,16 +97,18 @@ export const createWsServer = (<
     pathId: Id,
     clients: IdMap<WebSocket>,
   ) =>
-    ifNotUndefined(createPersisterForPath?.(pathId), (persister) => {
+    ifNotUndefined(createPersisterForPath?.(pathId), (persisterMaybeThen) => {
       serverClient[Sc.State] = 1;
-      serverClient[Sc.Persister] = persister;
+      serverClient[Sc.Persister] = isArray(persisterMaybeThen)
+        ? persisterMaybeThen[0]
+        : persisterMaybeThen;
       const messageHandler = getMessageHandler(
         SERVER_CLIENT_ID,
         clients,
         serverClient,
       );
       serverClient[Sc.Synchronizer] = createCustomSynchronizer(
-        persister.getStore() as MergeableStore,
+        serverClient[Sc.Persister].getStore() as MergeableStore,
         (toClientId, requestId, message, body) =>
           messageHandler(createPayload(toClientId, requestId, message, body)),
         (receive: Receive) =>
@@ -109,6 +118,9 @@ export const createWsServer = (<
         1,
       );
       serverClient[Sc.Buffer] = [];
+      serverClient[Sc.Then] = isArray(persisterMaybeThen)
+        ? persisterMaybeThen[1]
+        : (_) => 0;
     });
 
   const startServerClient = async (serverClient: ServerClient) => {
@@ -117,6 +129,9 @@ export const createWsServer = (<
       serverClient[Sc.Persister].startAutoLoad,
       serverClient[Sc.Persister].startAutoSave,
       serverClient[Sc.Synchronizer].startSync,
+    );
+    serverClient[Sc.Then](
+      serverClient[Sc.Persister].getStore() as MergeableStore,
     );
     serverClient[Sc.State] = ScState.Ready;
   };

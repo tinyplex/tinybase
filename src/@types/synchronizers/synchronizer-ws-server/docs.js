@@ -493,10 +493,20 @@
  * by the WsServer. As a result, the server MergeableStore will be kept in sync
  * with the clients on that path, and in turn with whatever persistence layer
  * you have configured. See the example below.
+ *
+ * It is not safe to add or manipulate data in the MergeableStore during the
+ * `createPersisterForPath` function, since changes will probably be overwritten
+ * when the Persister starts. If you wish to modify data - or upgrade a schema,
+ * for example - you can have that function instead return an array containing
+ * the Persister _and_ a callback that takes the MergeableStore. That callback
+ * will get called after the Persister has started, and is an appropriate place
+ * to manipulate data in a way that will be transmitted to clients. Again, see
+ * the example below.
  * @param webSocketServer A WebSocketServer object from your server environment.
  * @param createPersisterForPath An optional function that will create a
- * Persister (with a MergeableStore) to synchronize with the clients on a given
- * path.
+ * Persister to synchronize with the clients on a given path (or a two-item
+ * array of Persister and callback that lets you handle data after persistence
+ * has started).
  * @returns A reference to the new WsServer object.
  * @example
  * This example creates a WsServer that synchronizes two clients on a shared
@@ -604,6 +614,46 @@
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
  * synchronizer3.destroy();
+ * server.destroy();
+ *
+ * // Remove file for the purposes of this demo.
+ * rmSync('petShop.json');
+ * ```
+ * @example
+ * This example creates a WsServer that persists a MergeableStore to file that
+ * is synchronized with two clients on a shared path, but also which updates its
+ * data once synchronization has started.
+ *
+ * ```js
+ * import {WebSocketServer} from 'ws';
+ * import {createFilePersister} from 'tinybase/persisters/persister-file';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ * import {rmSync} from 'fs';
+ *
+ * // Server
+ * const server = createWsServer(
+ *   new WebSocketServer({port: 8047}),
+ *   (pathId) => [
+ *     createFilePersister(createMergeableStore(), pathId + '.json'),
+ *     (store) => store.setValue('pathId', pathId),
+ *   ],
+ * );
+ *
+ * const clientStore = createMergeableStore();
+ * clientStore.setCell('pets', 'fido', 'species', 'dog');
+ * const synchronizer = await createWsSynchronizer(
+ *   clientStore,
+ *   new WebSocket('ws://localhost:8047/petShop'),
+ * );
+ * await synchronizer.startSync();
+ * // ...
+ *
+ * console.log(clientStore.getContent());
+ * // -> [{pets: {fido: {species: 'dog'}}}, {"pathId": "petShop"}]
+ *
+ * synchronizer.destroy();
  * server.destroy();
  *
  * // Remove file for the purposes of this demo.
