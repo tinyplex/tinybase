@@ -147,6 +147,8 @@ const persistingServer = createWsServer(
   new WebSocketServer({port: 8050}),
   (pathId) => createFilePersister(createMergeableStore(), pathId + '.json'),
 );
+
+persistingServer.destroy();
 ```
 
 This is a very crude example, but demonstrates a server that will create a file,

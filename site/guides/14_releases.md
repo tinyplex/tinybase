@@ -23,6 +23,8 @@ const persistingServer = createWsServer(
   new WebSocketServer({port: 8051}),
   (pathId) => createFilePersister(createMergeableStore(), pathId + '.json'),
 );
+
+persistingServer.destroy();
 ```
 
 This is a very crude (and not production-safe!) example, but demonstrates a
