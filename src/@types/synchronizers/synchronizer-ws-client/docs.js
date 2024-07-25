@@ -75,6 +75,12 @@
  * As well as providing a reference to the MergeableStore to persist, you must
  * provide a configured WebSocket to send synchronization messages over.
  *
+ * Instead of the raw browser implementation of WebSocket You may prefer to use
+ * the [Reconnecting
+ * WebSocket](https://github.com/pladaria/reconnecting-websocket) wrapper so
+ * that if a client goes offline, it can easily re-establish a connection when
+ * it comes back online. Its API is compatible with this Synchronizer.
+ *
  * You can indicate how long the Synchronizer will wait for responses to message
  * requests before timing out. A final set of optional handlers can be provided
  * to help debug sends, receives, and errors respectively.
