@@ -145,7 +145,11 @@ import {createFilePersister} from 'tinybase/persisters/persister-file';
 
 const persistingServer = createWsServer(
   new WebSocketServer({port: 8050}),
-  (pathId) => createFilePersister(createMergeableStore(), pathId + '.json'),
+  (pathId) =>
+    createFilePersister(
+      createMergeableStore(),
+      pathId.replace(/[^a-zA-Z0-9]/g, '-') + '.json',
+    ),
 );
 
 persistingServer.destroy();

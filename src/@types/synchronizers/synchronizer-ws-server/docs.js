@@ -568,7 +568,10 @@
  * const server = createWsServer(
  *   new WebSocketServer({port: 8047}),
  *   (pathId) =>
- *     createFilePersister(createMergeableStore(), pathId + '.json'),
+ *     createFilePersister(
+ *       createMergeableStore(),
+ *       pathId.replace(/[^a-zA-Z0-9]/g, '-') + '.json',
+ *     ),
  * );
  *
  * // Client 1
@@ -636,7 +639,10 @@
  * const server = createWsServer(
  *   new WebSocketServer({port: 8047}),
  *   (pathId) => [
- *     createFilePersister(createMergeableStore(), pathId + '.json'),
+ *     createFilePersister(
+ *       createMergeableStore(),
+ *       pathId.replace(/[^a-zA-Z0-9]/g, '-') + '.json',
+ *     ),
  *     (store) => store.setValue('pathId', pathId),
  *   ],
  * );
