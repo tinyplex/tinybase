@@ -21,6 +21,6 @@ primary_region = 'iad'
   processes = ['app']
 
 [[vm]]
-  memory = '1gb'
+  memory = '256MB'
   cpu_kind = 'shared'
   cpus = 1
