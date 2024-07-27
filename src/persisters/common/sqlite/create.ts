@@ -8,6 +8,7 @@ import type {
 import {startInterval, stopInterval} from '../../../common/other.ts';
 import {Cmd} from './commands.ts';
 import {IdObj} from '../../../common/obj.ts';
+import {SELECT} from './common.ts';
 import {collValues} from '../../../common/coll.ts';
 import {createJsonSqlitePersister} from './json.ts';
 import {createTabularSqlitePersister} from './tabular.ts';
@@ -53,7 +54,8 @@ export const createSqlitePersister = <
       async () => {
         try {
           const [{d, s, c}] = (await cmd(
-            `SELECT ${DATA_VERSION} d,${SCHEMA_VERSION} s,TOTAL_CHANGES() c` +
+            SELECT +
+              ` ${DATA_VERSION} d,${SCHEMA_VERSION} s,TOTAL_CHANGES() c` +
               ` FROM ${PRAGMA}${DATA_VERSION} JOIN ${PRAGMA}${SCHEMA_VERSION}`,
           )) as [IdObj<number>];
           if (
