@@ -28,7 +28,7 @@ export const createJsonSqlitePersister = <
   persist: Persist,
   [storeTableName, storeIdColumnName, storeColumnName]: DefaultedJsonConfig,
   managedTableNames: string[],
-  db: any,
+  thing: any,
   getThing: string,
   useOnConflict?: boolean,
 ): Persister<Persist> => {
@@ -71,8 +71,8 @@ export const createJsonSqlitePersister = <
     delPersisterListener,
     onIgnoredError,
     persist,
-    {[getThing]: () => db},
-    db,
+    {[getThing]: () => thing},
+    thing,
   );
 
   return persister;
