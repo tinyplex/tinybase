@@ -166,6 +166,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/persisters/persister-yjs/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-automerge/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-sqlite3/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-postgres/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-sqlite-wasm/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-cr-sqlite-wasm/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-electric-sql/index.d.ts')
