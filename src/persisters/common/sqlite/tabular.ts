@@ -40,7 +40,7 @@ export const createTabularSqlitePersister = <
     [valuesLoad, valuesSave, valuesTableName],
   ]: DefaultedTabularConfig,
   managedTableNames: string[],
-  db: any,
+  thing: any,
   getThing: string,
   useOnConflict?: boolean,
 ): Persister<Persist> => {
@@ -152,8 +152,8 @@ export const createTabularSqlitePersister = <
     delPersisterListener,
     onIgnoredError,
     persist,
-    {[getThing]: () => db},
-    db,
+    {[getThing]: () => thing},
+    thing,
   );
 
   return persister;
