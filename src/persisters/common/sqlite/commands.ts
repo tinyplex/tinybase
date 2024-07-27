@@ -71,7 +71,8 @@ export const getCommandFunctions = (
     await promiseAll(
       arrayMap(
         await cmd(
-          'SELECT name ' +
+          SELECT +
+            ' name ' +
             FROM_PRAGMA_TABLE +
             'list ' +
             `WHERE schema='main'AND(type='table'OR type='view')` +
