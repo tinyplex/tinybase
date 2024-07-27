@@ -37,7 +37,7 @@
    *
    * const sql = postgres('postgres://localhost:5432/tinybase');
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
-   * const persister = createPostgresPersister(store, sql, 'my_tinybase');
+   * const persister = await createPostgresPersister(store, sql, 'my_tinybase');
    *
    * console.log(persister.getSql() == sql);
    * // -> true
