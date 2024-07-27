@@ -460,6 +460,9 @@ describe('Create Hooks', () => {
     act(() => {
       renderer = create(<Test id={1} />);
     });
+    await act(async () => {
+      await pause();
+    });
     expect(renderer.toJSON()).toEqual(
       JSON.stringify([1, {loads: 0, saves: 0}, null]),
     );
