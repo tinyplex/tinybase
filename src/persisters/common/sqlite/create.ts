@@ -31,7 +31,7 @@ export const createSqlitePersister = <
   onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   persist: Persist,
-  db: any,
+  thing: any,
   getThing = 'getDb',
   useOnConflict?: boolean,
 ): Persister<Persist> => {
@@ -98,7 +98,7 @@ export const createSqlitePersister = <
     persist,
     defaultedConfig as any,
     collValues(managedTableNamesSet),
-    db,
+    thing,
     getThing,
     useOnConflict,
   );
