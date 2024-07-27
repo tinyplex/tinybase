@@ -26,4 +26,4 @@ export function createPostgresPersister<Schemas extends OptionalSchemas>(
   configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
-): PostgresPersister<Schemas>;
+): Promise<PostgresPersister<Schemas>>;

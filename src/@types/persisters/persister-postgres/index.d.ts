@@ -19,4 +19,4 @@ export function createPostgresPersister(
   configOrStoreTableName?: DatabasePersisterConfig | string,
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
-): PostgresPersister;
+): Promise<PostgresPersister>;
