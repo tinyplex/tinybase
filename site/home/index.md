@@ -259,6 +259,8 @@ console.log(app.innerHTML);
 store.setCell('pets', 'fido', 'color', 'walnut'); // !act
 console.log(app.innerHTML);
 // -> 'Color: walnut'
+
+root.unmount(); // !act
 ```
 
 > ## Pre-built reactive components.
