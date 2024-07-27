@@ -10571,6 +10571,9 @@
  * provide them in an array in the fifth parameter. The Persister itself is used
  * as a dependency by default.
  *
+ * See the note below about possible future deprecation of the `then` callback,
+ * however.
+ *
  * Since v4.3.0, the `create` function can return undefined, meaning that you
  * can enable or disable persistence conditionally within this hook. This is
  * useful for applications which might turn on or off their cloud persistence or
@@ -10584,12 +10587,18 @@
  * example. If this callback itself contains additional dependencies, you can
  * provide them in an array in the seventh parameter.
  *
+ * Since v5.2, the `create` function can be asynchronous, which now makes it a
+ * suitable place to call the Persister's startAutoLoad and startAutoSave
+ * methods. At some major version in the future, the `then` parameter will be
+ * removed, since that only really existed to perform such asynchronous initial
+ * tasks.
+ *
  * This hook ensures the Persister object is destroyed whenever a new one is
  * created or the component is unmounted.
  * @param store A reference to the Store for which to create a new Persister
  * object.
- * @param create A function for performing the creation steps of the Persister
- * object for the Store.
+ * @param create A (possibly asynchronous) function for performing the creation
+ * steps of the Persister object for the Store.
  * @param createDeps An optional array of dependencies for the `create`
  * function, which, if any change, result in its rerun. This parameter defaults
  * to an empty array.
