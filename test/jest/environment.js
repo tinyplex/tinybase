@@ -13,6 +13,8 @@ export default class extends TestEnvironment {
       env: this.constructor,
       structuredClone,
       BroadcastChannel,
+      setImmediate,
+      clearImmediate,
     });
     await super.setup();
   }
