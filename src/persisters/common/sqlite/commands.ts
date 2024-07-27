@@ -5,17 +5,7 @@ import type {
   ValueOrUndefined,
 } from '../../../@types/store/index.d.ts';
 import {
-  IdMap2,
-  mapEnsure,
-  mapGet,
-  mapKeys,
-  mapMatch,
-  mapNew,
-  mapSet,
-} from '../../../common/map.ts';
-import {
   IdObj,
-  IdObj2,
   objDel,
   objIds,
   objIsEmpty,
@@ -23,6 +13,7 @@ import {
   objToArray,
   objValues,
 } from '../../../common/obj.ts';
+import {IdSet2, setAdd, setNew} from '../../../common/set.ts';
 import {SELECT, escapeId} from './common.ts';
 import {
   arrayFilter,
@@ -31,13 +22,13 @@ import {
   arrayMap,
   arrayPush,
 } from '../../../common/array.ts';
-import {collDel, collHas, collValues} from '../../../common/coll.ts';
+import {collClear, collDel, collHas, collValues} from '../../../common/coll.ts';
 import {isUndefined, promiseAll, size, slice} from '../../../common/other.ts';
-import {setAdd, setNew} from '../../../common/set.ts';
+import {mapGet, mapNew, mapSet} from '../../../common/map.ts';
 import type {Id} from '../../../@types/common/index.d.ts';
 
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
-type Schema = IdMap2<string>;
+type Schema = IdSet2;
 
 const TABLE = 'TABLE';
 const ALTER_TABLE = 'ALTER ' + TABLE;
@@ -52,7 +43,7 @@ export const getCommandFunctions = (
   onIgnoredError: ((error: any) => void) | undefined,
   useOnConflict?: boolean,
 ): [
-  refreshSchema: () => Promise<Schema>,
+  refreshSchema: () => Promise<void>,
   loadTable: (tableName: string, rowIdColumnName: string) => Promise<Table>,
   saveTable: (
     tableName: string,
@@ -73,56 +64,38 @@ export const getCommandFunctions = (
   const schemaMap: Schema = mapNew();
 
   const canSelect = (tableName: string, rowIdColumnName: string): boolean =>
-    !isUndefined(mapGet(mapGet(schemaMap, tableName), rowIdColumnName));
+    collHas(mapGet(schemaMap, tableName), rowIdColumnName);
 
-  const refreshSchema = async (): Promise<Schema> =>
-    mapMatch(
-      schemaMap,
-      objNew(
-        await promiseAll(
-          arrayMap(
-            await cmd(
-              'SELECT name ' +
-                FROM_PRAGMA_TABLE +
-                'list ' +
-                `WHERE schema='main'AND(type='table'OR type='view')` +
-                'AND name IN(' +
-                getPlaceholders(managedTableNames) +
-                `)ORDER BY name`,
-              managedTableNames,
-            ),
-            async ({name: tableName}) => [
-              tableName,
-              objNew(
-                arrayMap(
-                  await cmd(
-                    SELECT + ' name,type ' + FROM_PRAGMA_TABLE + 'info(?)',
-                    [tableName],
-                  ),
-                  ({name: columnName, type}) => [columnName, type],
-                ),
+  const refreshSchema = async (): Promise<void> => {
+    collClear(schemaMap);
+    await promiseAll(
+      arrayMap(
+        await cmd(
+          'SELECT name ' +
+            FROM_PRAGMA_TABLE +
+            'list ' +
+            `WHERE schema='main'AND(type='table'OR type='view')` +
+            'AND name IN(' +
+            getPlaceholders(managedTableNames) +
+            `)ORDER BY name`,
+          managedTableNames,
+        ),
+        async ({name}) =>
+          mapSet(
+            schemaMap,
+            name,
+            setNew(
+              arrayMap(
+                await cmd(SELECT + ' name ' + FROM_PRAGMA_TABLE + 'info(?)', [
+                  name,
+                ]),
+                ({name}) => name,
               ),
-            ],
+            ),
           ),
-        ),
-      ) as IdObj2<string>,
-      (_, tableName, tableSchema) =>
-        mapSet(
-          schemaMap,
-          tableName,
-          mapMatch(
-            mapEnsure(schemaMap, tableName, mapNew<Id, string>),
-            tableSchema,
-            (tableSchemaMap, columnName, value) => {
-              if (value != mapGet(tableSchemaMap, columnName)) {
-                mapSet(tableSchemaMap, columnName, value);
-              }
-            },
-            (tableSchema, columnName) => mapSet(tableSchema, columnName),
-          ),
-        ),
-      (_, name) => mapSet(schemaMap, name),
+      ),
     );
+  };
 
   const loadTable = async (
     tableName: string,
@@ -192,24 +165,18 @@ export const getCommandFunctions = (
       mapSet(
         schemaMap,
         tableName,
-        mapNew([
-          [rowIdColumnName, EMPTY_STRING],
-          ...arrayMap(
-            tableColumnNames,
-            (columnName) => [columnName, EMPTY_STRING] as [string, string],
-          ),
-        ]),
+        setNew([rowIdColumnName, ...tableColumnNames]),
       );
     } else {
-      const tableSchemaMap = mapGet(schemaMap, tableName);
-      const columnNamesAccountedFor = setNew(mapKeys(tableSchemaMap));
+      const tableSchemaColumns = mapGet(schemaMap, tableName);
+      const columnNamesAccountedFor = setNew(collValues(tableSchemaColumns));
       await promiseAll([
         ...arrayMap(tableColumnNames, async (columnName) => {
           if (!collDel(columnNamesAccountedFor, columnName)) {
             await cmd(
               ALTER_TABLE + escapeId(tableName) + 'ADD' + escapeId(columnName),
             );
-            mapSet(tableSchemaMap, columnName, EMPTY_STRING);
+            setAdd(tableSchemaColumns, columnName);
           }
         }),
         ...(!partial && deleteEmptyColumns
@@ -223,7 +190,7 @@ export const getCommandFunctions = (
                       'DROP' +
                       escapeId(columnName),
                   );
-                  mapSet(tableSchemaMap, columnName);
+                  collDel(tableSchemaColumns, columnName);
                 }
               },
             )
@@ -263,7 +230,7 @@ export const getCommandFunctions = (
     } else {
       if (!arrayIsEmpty(tableColumnNames)) {
         const changingColumnNames = arrayFilter(
-          mapKeys(mapGet(schemaMap, tableName)),
+          collValues(mapGet(schemaMap, tableName)),
           (columnName) => columnName != rowIdColumnName,
         );
         const args: any[] = [];
