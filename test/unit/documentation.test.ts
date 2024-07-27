@@ -11,6 +11,7 @@ import * as TinyBasePersisterFile from 'tinybase/persisters/persister-file';
 import * as TinyBasePersisterIndexedDb from 'tinybase/persisters/persister-indexed-db';
 import * as TinyBasePersisterPartyKitClient from 'tinybase/persisters/persister-partykit-client';
 import * as TinyBasePersisterPartyKitServer from 'tinybase/persisters/persister-partykit-server';
+import * as TinyBasePersisterPostgres from 'tinybase/persisters/persister-postgres';
 import * as TinyBasePersisterRemote from 'tinybase/persisters/persister-remote';
 import * as TinyBasePersisterSqlite3 from 'tinybase/persisters/persister-sqlite3';
 import * as TinyBasePersisterSqliteWasm from 'tinybase/persisters/persister-sqlite-wasm';
@@ -32,6 +33,7 @@ import {mockFetchWasm, pause, suppressWarnings} from './common/other.ts';
 import {readFileSync, readdirSync} from 'fs';
 import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './common/automerge-adaptor.ts';
 import initWasm from '@vlcn.io/crsqlite-wasm';
+import postgres from 'postgres';
 import {resetHlc} from './common/mergeable.ts';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {transformSync} from 'esbuild';
@@ -52,6 +54,7 @@ import {transformSync} from 'esbuild';
   '@sqlite.org/sqlite-wasm': sqlite3InitModule,
   '@vlcn.io/crsqlite-wasm': initWasm,
   fs,
+  postgres,
   react: React,
   'react-dom/client': ReactDOMClient,
   sqlite3,
@@ -67,6 +70,7 @@ import {transformSync} from 'esbuild';
     TinyBasePersisterPartyKitClient,
   'tinybase/persisters/persister-partykit-server':
     TinyBasePersisterPartyKitServer,
+  'tinybase/persisters/persister-postgres': TinyBasePersisterPostgres,
   'tinybase/persisters/persister-remote': TinyBasePersisterRemote,
   'tinybase/persisters/persister-sqlite3': TinyBasePersisterSqlite3,
   'tinybase/persisters/persister-sqlite-wasm': TinyBasePersisterSqliteWasm,

@@ -22,6 +22,7 @@ const TEST_MODULES = [
   'persisters/persister-libsql',
   'persisters/persister-partykit-client',
   'persisters/persister-partykit-server',
+  'persisters/persister-postgres',
   'persisters/persister-remote',
   'persisters/persister-sqlite-wasm',
   'persisters/persister-sqlite3',
