@@ -8,22 +8,23 @@ import type {Sql} from 'postgres';
 import type {Store} from '../../@types/store/index.d.ts';
 import {createPgPersister} from '../common/pg/create.ts';
 
-export const createPostgresPersister = ((
+export const createPostgresPersister = (async (
   store: Store | MergeableStore,
   sql: Sql,
   configOrStoreTableName?: DatabasePersisterConfig | string,
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
-): PostgresPersister =>
-  createPgPersister(
+): Promise<PostgresPersister> => {
+  return createPgPersister(
     store,
     configOrStoreTableName,
     sql.unsafe,
     () => 0,
     () => 0,
-    onSqlCommand,
-    onIgnoredError,
+    console.info, //   onSqlCommand,
+    console.warn, //  onIgnoredError,
     3, // StoreOrMergeableStore,
     sql,
     'getSql',
-  ) as PostgresPersister) as typeof createPostgresPersisterDecl;
+  ) as PostgresPersister;
+}) as typeof createPostgresPersisterDecl;
