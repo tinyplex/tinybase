@@ -1864,7 +1864,9 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
   PersisterOrUndefined extends Persister | undefined,
 >(
   store: Store | undefined,
-  create: (store: Store) => PersisterOrUndefined,
+  create: (
+    store: Store,
+  ) => PersisterOrUndefined | Promise<PersisterOrUndefined>,
   createDeps: React.DependencyList = EMPTY_ARRAY,
   then?: (persister: Persister) => Promise<void>,
   thenDeps: React.DependencyList = EMPTY_ARRAY,
@@ -1875,14 +1877,16 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
   const [persister, setPersister] = useState<any>();
   useEffect(
     () => {
-      const persister = store ? create(store) : undefined;
-      setPersister(persister);
-      if (persister && then) {
-        (async () => {
-          await then(persister);
-          rerender([]);
-        })();
-      }
+      (async () => {
+        const persister = store ? await create(store) : undefined;
+        setPersister(persister);
+        if (persister && then) {
+          (async () => {
+            await then(persister);
+            rerender([]);
+          })();
+        }
+      })();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [store, ...createDeps, ...thenDeps],
