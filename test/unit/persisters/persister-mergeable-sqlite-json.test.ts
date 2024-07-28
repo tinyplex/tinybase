@@ -49,7 +49,7 @@ describe.each([
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           test: [
-            'CREATE TABLE "test"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "test"("_id" PRIMARY KEY,"store")',
             [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
           ],
         });
@@ -60,7 +60,7 @@ describe.each([
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           'test table': [
-            'CREATE TABLE "test table"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "test table"("_id" PRIMARY KEY,"store")',
             [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
           ],
         });
@@ -71,7 +71,7 @@ describe.each([
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           'test "table"': [
-            'CREATE TABLE "test ""table"""("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "test ""table"""("_id" PRIMARY KEY,"store")',
             [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
           ],
         });
@@ -86,7 +86,7 @@ describe.each([
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           test: [
-            'CREATE TABLE "test"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "test"("_id" PRIMARY KEY,"store")',
             [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
           ],
         });
@@ -98,7 +98,7 @@ describe.each([
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
             [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
           ],
         });
@@ -112,7 +112,7 @@ describe.each([
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
             [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
           ],
         });
@@ -123,7 +123,7 @@ describe.each([
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
             [
               {
                 _id: '_',
@@ -140,7 +140,7 @@ describe.each([
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
             [
               {
                 _id: '_',
@@ -157,7 +157,7 @@ describe.each([
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
             [
               {
                 _id: '_',
@@ -174,7 +174,7 @@ describe.each([
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
             [
               {
                 _id: '_',
@@ -190,7 +190,7 @@ describe.each([
         ]);
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
             [{_id: '_', store: '[{"t1":{"r1":{"c1":2}}},{"v1":2}]'}],
           ],
         });
@@ -213,7 +213,7 @@ describe.each([
       test('broken', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
             [{_id: '_', store: '[{"t1":1}]'}],
           ],
         });
@@ -224,7 +224,7 @@ describe.each([
       test('broken, can default', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
             [{_id: '_', store: '[{"t1":}]'}],
           ],
         });
@@ -235,7 +235,7 @@ describe.each([
       test('tables', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{}]'}],
           ],
         });
@@ -246,7 +246,7 @@ describe.each([
       test('values', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
             [{_id: '_', store: '[{}, {"v1":1}]'}],
           ],
         });
@@ -258,7 +258,7 @@ describe.each([
         beforeEach(async () => {
           await setDatabase(db, {
             tinybase: [
-              'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+              'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
               [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
             ],
           });
@@ -283,7 +283,7 @@ describe.each([
       test('both, change, and then save again', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -294,7 +294,7 @@ describe.each([
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" PRIMARY KEY ON CONFLICT REPLACE,"store")',
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
             [
               {
                 _id: '_',
