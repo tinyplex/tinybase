@@ -43,20 +43,24 @@ describe.each(Object.entries(VARIANTS))(
         });
 
         test('default (off)', async () => {
-          await getPersister(store, db, {
-            mode: 'tabular',
-            autoLoadIntervalSeconds,
-          }).save();
+          await (
+            await getPersister(store, db, {
+              mode: 'tabular',
+              autoLoadIntervalSeconds,
+            })
+          ).save();
           expect(await getDatabase(db)).toEqual({});
         });
 
         describe('tables', () => {
           test('one to one', async () => {
-            await getPersister(store, db, {
-              mode: 'tabular',
-              tables: {save: {t1: 't1', t2: 't2'}},
-              autoLoadIntervalSeconds,
-            }).save();
+            await (
+              await getPersister(store, db, {
+                mode: 'tabular',
+                tables: {save: {t1: 't1', t2: 't2'}},
+                autoLoadIntervalSeconds,
+              })
+            ).save();
             await pause();
             expect(await getDatabase(db)).toEqual({
               t1: [
@@ -70,11 +74,13 @@ describe.each(Object.entries(VARIANTS))(
             });
           });
           test('one mapped', async () => {
-            await getPersister(store, db, {
-              mode: 'tabular',
-              tables: {save: {t1: 'test_t1'}},
-              autoLoadIntervalSeconds,
-            }).save();
+            await (
+              await getPersister(store, db, {
+                mode: 'tabular',
+                tables: {save: {t1: 'test_t1'}},
+                autoLoadIntervalSeconds,
+              })
+            ).save();
             await pause();
             expect(await getDatabase(db)).toEqual({
               test_t1: [
@@ -88,19 +94,21 @@ describe.each(Object.entries(VARIANTS))(
               .setTable('t3', {r3: {c3: 3}})
               .setTable('t4', {r4: {c4: 4}})
               .setTable('t5', {r5: {c5: 5}});
-            await getPersister(store, db, {
-              mode: 'tabular',
-              tables: {
-                save: {
-                  t1: 't1',
-                  t2: {tableName: 't2', rowIdColumnName: 'id2'},
-                  t3: {tableName: 'test "t3"', rowIdColumnName: 'id "3"'},
-                  t4: {tableName: 'tinybase_values'}, // @ts-ignore
-                  t5: false,
+            await (
+              await getPersister(store, db, {
+                mode: 'tabular',
+                tables: {
+                  save: {
+                    t1: 't1',
+                    t2: {tableName: 't2', rowIdColumnName: 'id2'},
+                    t3: {tableName: 'test "t3"', rowIdColumnName: 'id "3"'},
+                    t4: {tableName: 'tinybase_values'}, // @ts-ignore
+                    t5: false,
+                  },
+                  autoLoadIntervalSeconds,
                 },
-                autoLoadIntervalSeconds,
-              },
-            }).save();
+              })
+            ).save();
             await pause();
             expect(await getDatabase(db)).toEqual({
               t1: [
@@ -121,11 +129,13 @@ describe.each(Object.entries(VARIANTS))(
 
         describe('values', () => {
           test('on', async () => {
-            await getPersister(store, db, {
-              mode: 'tabular',
-              values: {save: true},
-              autoLoadIntervalSeconds,
-            }).save();
+            await (
+              await getPersister(store, db, {
+                mode: 'tabular',
+                values: {save: true},
+                autoLoadIntervalSeconds,
+              })
+            ).save();
             await pause();
             expect(await getDatabase(db)).toEqual({
               tinybase_values: [
@@ -137,11 +147,13 @@ describe.each(Object.entries(VARIANTS))(
 
           describe('tableName', () => {
             test('as string', async () => {
-              await getPersister(store, db, {
-                mode: 'tabular',
-                values: {save: true, tableName: 'values'},
-                autoLoadIntervalSeconds,
-              }).save();
+              await (
+                await getPersister(store, db, {
+                  mode: 'tabular',
+                  values: {save: true, tableName: 'values'},
+                  autoLoadIntervalSeconds,
+                })
+              ).save();
               expect(await getDatabase(db)).toEqual({
                 values: [
                   'CREATE TABLE "values"("_id" PRIMARY KEY,"v1","v2")',
@@ -151,11 +163,13 @@ describe.each(Object.entries(VARIANTS))(
             });
 
             test('with space', async () => {
-              await getPersister(store, db, {
-                mode: 'tabular',
-                values: {save: true, tableName: 'tinybase values'},
-                autoLoadIntervalSeconds,
-              }).save();
+              await (
+                await getPersister(store, db, {
+                  mode: 'tabular',
+                  values: {save: true, tableName: 'tinybase values'},
+                  autoLoadIntervalSeconds,
+                })
+              ).save();
               expect(await getDatabase(db)).toEqual({
                 'tinybase values': [
                   'CREATE TABLE "tinybase values"("_id" PRIMARY KEY,"v1","v2")',
@@ -165,11 +179,13 @@ describe.each(Object.entries(VARIANTS))(
             });
 
             test('with quote', async () => {
-              await getPersister(store, db, {
-                mode: 'tabular',
-                values: {save: true, tableName: 'tinybase "values"'},
-                autoLoadIntervalSeconds,
-              }).save();
+              await (
+                await getPersister(store, db, {
+                  mode: 'tabular',
+                  values: {save: true, tableName: 'tinybase "values"'},
+                  autoLoadIntervalSeconds,
+                })
+              ).save();
               expect(await getDatabase(db)).toEqual({
                 'tinybase "values"': [
                   'CREATE TABLE "tinybase ""values"""("_id" PRIMARY KEY,"v1","v2")',
@@ -200,31 +216,37 @@ describe.each(Object.entries(VARIANTS))(
         });
 
         test('default (off)', async () => {
-          await getPersister(store, db, {
-            mode: 'tabular',
-            autoLoadIntervalSeconds,
-          }).load();
+          await (
+            await getPersister(store, db, {
+              mode: 'tabular',
+              autoLoadIntervalSeconds,
+            })
+          ).load();
           expect(store.getContent()).toEqual([{}, {}]);
         });
 
         describe('tables', () => {
           test('one to one', async () => {
-            await getPersister(store, db, {
-              mode: 'tabular',
-              tables: {load: {t1: 't1', t2: 't2'}},
-              autoLoadIntervalSeconds,
-            }).load();
+            await (
+              await getPersister(store, db, {
+                mode: 'tabular',
+                tables: {load: {t1: 't1', t2: 't2'}},
+                autoLoadIntervalSeconds,
+              })
+            ).load();
             expect(store.getContent()).toEqual([
               {t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}},
               {},
             ]);
           });
           test('one mapped', async () => {
-            await getPersister(store, db, {
-              mode: 'tabular',
-              tables: {load: {t1: 'test_t1'}},
-              autoLoadIntervalSeconds,
-            }).load();
+            await (
+              await getPersister(store, db, {
+                mode: 'tabular',
+                tables: {load: {t1: 'test_t1'}},
+                autoLoadIntervalSeconds,
+              })
+            ).load();
             expect(store.getContent()).toEqual([{test_t1: {r1: {c1: 1}}}, {}]);
           });
           test('mix of one to one, mapped, custom ids, broken', async () => {
@@ -255,20 +277,22 @@ describe.each(Object.entries(VARIANTS))(
                 [{_id: '_', v1: 1, v2: 2}],
               ],
             });
-            await getPersister(store, db, {
-              mode: 'tabular',
-              tables: {
-                load: {
-                  t1: 't1',
-                  t2: {tableId: 't2', rowIdColumnName: 'id2'},
-                  t3: {tableId: 'test "t3"', rowIdColumnName: 'id "3"'},
-                  t4: {tableId: 'tinybase_values'}, // @ts-ignore
-                  t5: false,
-                  tinybase_values: {tableId: 'values'},
+            await (
+              await getPersister(store, db, {
+                mode: 'tabular',
+                tables: {
+                  load: {
+                    t1: 't1',
+                    t2: {tableId: 't2', rowIdColumnName: 'id2'},
+                    t3: {tableId: 'test "t3"', rowIdColumnName: 'id "3"'},
+                    t4: {tableId: 'tinybase_values'}, // @ts-ignore
+                    t5: false,
+                    tinybase_values: {tableId: 'values'},
+                  },
                 },
-              },
-              autoLoadIntervalSeconds,
-            }).load();
+                autoLoadIntervalSeconds,
+              })
+            ).load();
             expect(store.getContent()).toEqual([
               {
                 t1: {r1: {c1: 1}},
@@ -283,11 +307,13 @@ describe.each(Object.entries(VARIANTS))(
 
         describe('values', () => {
           test('on', async () => {
-            await getPersister(store, db, {
-              mode: 'tabular',
-              values: {load: true},
-              autoLoadIntervalSeconds,
-            }).load();
+            await (
+              await getPersister(store, db, {
+                mode: 'tabular',
+                values: {load: true},
+                autoLoadIntervalSeconds,
+              })
+            ).load();
             expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
           });
 
@@ -300,11 +326,13 @@ describe.each(Object.entries(VARIANTS))(
                   [{_id: '_', v1: 1, v2: 2}],
                 ],
               });
-              await getPersister(store, db, {
-                mode: 'tabular',
-                values: {load: true, tableName: 'values'},
-                autoLoadIntervalSeconds,
-              }).load();
+              await (
+                await getPersister(store, db, {
+                  mode: 'tabular',
+                  values: {load: true, tableName: 'values'},
+                  autoLoadIntervalSeconds,
+                })
+              ).load();
               expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
             });
 
@@ -316,11 +344,13 @@ describe.each(Object.entries(VARIANTS))(
                   [{_id: '_', v1: 1, v2: 2}],
                 ],
               });
-              await getPersister(store, db, {
-                mode: 'tabular',
-                values: {load: true, tableName: 'tinybase values'},
-                autoLoadIntervalSeconds,
-              }).load();
+              await (
+                await getPersister(store, db, {
+                  mode: 'tabular',
+                  values: {load: true, tableName: 'tinybase values'},
+                  autoLoadIntervalSeconds,
+                })
+              ).load();
               expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
             });
 
@@ -332,11 +362,13 @@ describe.each(Object.entries(VARIANTS))(
                   [{_id: '_', v1: 1, v2: 2}],
                 ],
               });
-              await getPersister(store, db, {
-                mode: 'tabular',
-                values: {load: true, tableName: 'tinybase "values"'},
-                autoLoadIntervalSeconds,
-              }).load();
+              await (
+                await getPersister(store, db, {
+                  mode: 'tabular',
+                  values: {load: true, tableName: 'tinybase "values"'},
+                  autoLoadIntervalSeconds,
+                })
+              ).load();
               expect(store.getContent()).toEqual([{}, {v1: 1, v2: 2}]);
             });
           });
@@ -346,8 +378,8 @@ describe.each(Object.entries(VARIANTS))(
 
     describe('Save to empty database', () => {
       let persister: Persister;
-      beforeEach(() => {
-        persister = getPersister(store, db, {
+      beforeEach(async () => {
+        persister = await getPersister(store, db, {
           mode: 'tabular',
           tables: {
             load: {t1: 't1', t2: 't2', t3: 't3'},
@@ -465,7 +497,7 @@ describe.each(Object.entries(VARIANTS))(
           });
 
           test('columns (enabled)', async () => {
-            const persister = getPersister(store, db, {
+            const persister = await getPersister(store, db, {
               mode: 'tabular',
               tables: {save: {t1: {tableName: 't1', deleteEmptyColumns: true}}},
               values: {save: true},
@@ -505,7 +537,7 @@ describe.each(Object.entries(VARIANTS))(
           });
 
           test('tables (disabled)', async () => {
-            const persister = getPersister(store, db, {
+            const persister = await getPersister(store, db, {
               mode: 'tabular',
               tables: {
                 save: {
@@ -543,7 +575,7 @@ describe.each(Object.entries(VARIANTS))(
           });
 
           test('tables (enabled)', async () => {
-            const persister = getPersister(store, db, {
+            const persister = await getPersister(store, db, {
               mode: 'tabular',
               tables: {
                 save: {
@@ -674,8 +706,8 @@ describe.each(Object.entries(VARIANTS))(
 
     describe('Load from database', () => {
       let persister: Persister;
-      beforeEach(() => {
-        persister = getPersister(store, db, {
+      beforeEach(async () => {
+        persister = await getPersister(store, db, {
           mode: 'tabular',
           tables: {
             load: {t1: 't1', t2: 't2', t3: 't3'},
@@ -829,7 +861,7 @@ describe.each(Object.entries(VARIANTS))(
       let persister: Persister;
       const sqlLogs: [string, any[]?][] = [];
       beforeEach(async () => {
-        persister = getPersister(
+        persister = await getPersister(
           store,
           db,
           {
@@ -1429,16 +1461,16 @@ describe.each(Object.entries(VARIANTS))(
       let store2: Store;
       let persister2: Persister;
 
-      beforeEach(() => {
+      beforeEach(async () => {
         store1 = createStore();
-        persister1 = getPersister(store1, db, {
+        persister1 = await getPersister(store1, db, {
           mode: 'tabular',
           tables: {load: {t1: 't1', t2: 't2'}, save: {t1: 't1', t2: 't2'}},
           values: {load: true, save: true},
           autoLoadIntervalSeconds,
         });
         store2 = createStore();
-        persister2 = getPersister(store2, db, {
+        persister2 = await getPersister(store2, db, {
           mode: 'tabular',
           tables: {load: {t1: 't1', t2: 't2'}, save: {t1: 't1', t2: 't2'}},
           values: {load: true, save: true},
