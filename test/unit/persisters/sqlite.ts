@@ -296,7 +296,7 @@ export const getDatabaseFunctions = <Database>(
     );
 
   const setDatabase = async (db: Database, dump: Dump) => {
-    await cmd(db, 'BEGIN TRANSACTION');
+    await cmd(db, 'BEGIN');
     await Promise.all(
       Object.entries(dump).map(async ([name, [sql, rows]]) => {
         await cmd(db, sql);
@@ -322,7 +322,7 @@ export const getDatabaseFunctions = <Database>(
         );
       }),
     );
-    await cmd(db, 'END TRANSACTION');
+    await cmd(db, 'END');
   };
 
   return [getDatabase, setDatabase];
