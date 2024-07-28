@@ -15,7 +15,7 @@ export type GetLocationMethod<Location = string> = [
   (location: Location) => unknown,
 ];
 
-export type Persist<Location = string> = {
+export type Persistable<Location = string> = {
   beforeEach?: () => void;
   autoLoadPause?: number;
   getLocation: () => Promise<Location>;
@@ -23,7 +23,7 @@ export type Persist<Location = string> = {
   getPersister: (
     store: Store | MergeableStore,
     location: Location,
-  ) => Persister<Persists>;
+  ) => Persister<Persists> | Promise<Persister<Persists>>;
   get: (location: Location) => Promise<Content | MergeableContent | void>;
   set: (
     location: Location,

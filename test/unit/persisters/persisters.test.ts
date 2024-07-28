@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 
 import 'fake-indexeddb/auto';
-import {GetLocationMethod, Persist, nextLoop} from './common/other.ts';
+import {GetLocationMethod, Persistable, nextLoop} from './common/other.ts';
 import type {Persister, Store} from 'tinybase';
 import {createCustomPersister, createStore} from 'tinybase';
 import {
@@ -47,7 +47,7 @@ describe.each([
   ['crSqliteWasm', mockCrSqliteWasm],
   ['yjs', mockYjs],
   ['automerge', mockAutomerge],
-])('Persists to/from %s', (name: string, persistable: Persist<any>) => {
+])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;
   let store: Store;
@@ -62,7 +62,7 @@ describe.each([
     store = createStore();
     location = await persistable.getLocation();
     getLocationMethod = persistable.getLocationMethod;
-    persister = persistable.getPersister(store, location);
+    persister = await persistable.getPersister(store, location);
   });
 
   afterEach(() => {
@@ -316,7 +316,7 @@ describe.each([
   test('does not load from non-existent', async () => {
     if (persistable.testMissing) {
       store.setTables({t1: {r1: {c1: 1}}});
-      await persistable.getPersister(store, '_').load();
+      await (await persistable.getPersister(store, '_')).load();
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     }
   });
@@ -324,9 +324,9 @@ describe.each([
   test('does not autoLoad from non-existent', async () => {
     if (persistable.testMissing) {
       store.setTables({t1: {r1: {c1: 1}}});
-      const persister = await persistable
-        .getPersister(store, join(tmp.dirSync().name, '_'))
-        .startAutoLoad();
+      const persister = await (
+        await persistable.getPersister(store, join(tmp.dirSync().name, '_'))
+      ).startAutoLoad();
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
       persister.destroy();
     }
@@ -335,7 +335,7 @@ describe.each([
   test('does not load from possibly invalid', async () => {
     if (name == 'file') {
       store.setTables({t1: {r1: {c1: 1}}});
-      await persistable.getPersister(store, '.').load();
+      await (await persistable.getPersister(store, '.')).load();
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     }
   });
@@ -343,7 +343,7 @@ describe.each([
   test('does not error on save to possibly invalid', async () => {
     if (name == 'file') {
       store.setTables({t1: {r1: {c1: 1}}});
-      await persistable.getPersister(store, '.').save();
+      await (await persistable.getPersister(store, '.')).save();
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     }
   });
