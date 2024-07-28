@@ -31,7 +31,7 @@ export type Persistable<Location = string> = {
   ) => Promise<void>;
   write: (location: Location, rawContent: any) => Promise<void>;
   del: (location: Location) => Promise<void>;
-  afterEach?: (location: Location) => void;
+  afterEach?: (location: Location) => Promise<void>;
   getChanges?: () => Changes | MergeableChanges;
   testMissing: boolean;
   extraLoad?: 0 | 1;
