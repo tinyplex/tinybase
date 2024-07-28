@@ -48,6 +48,7 @@ is available.
 | ElectricSqlPersister  | Electric SQL, via [electric](https://github.com/electric-sql/electric)                                 |
 | LibSqlPersister       | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)               |
 | PowerSyncPersister    | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                           |
+| PostgresPersister     | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                       |
 
 See the Database Persistence guide for details on how to work with SQLite
 databases.
