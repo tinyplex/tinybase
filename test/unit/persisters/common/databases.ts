@@ -1,6 +1,11 @@
 import 'fake-indexeddb/auto';
 import {Client, createClient} from '@libsql/client';
-import type {DatabasePersisterConfig, Persister, Store} from 'tinybase';
+import {
+  type DatabasePersisterConfig,
+  type Persister,
+  type Store,
+  getUniqueId,
+} from 'tinybase';
 import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
 import type {
   QueryResult,
@@ -11,16 +16,20 @@ import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import sqlite3, {Database} from 'sqlite3';
 import {DbSchema} from 'electric-sql/client/model';
 import type {ElectricClient} from 'electric-sql/client/model';
+import type {Sql} from 'postgres';
 import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
 import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
+import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
+import postgres from 'postgres';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {suppressWarnings} from '../../common/other.ts';
 
 export type SqliteWasmDb = [sqlite3: any, db: any];
+export type SqlAndName = [Sql, string];
 
 const electricSchema = new DbSchema({}, [], []);
 type Electric = ElectricClient<typeof electricSchema>;
@@ -33,7 +42,7 @@ type AbstractPowerSyncDatabase = {
 
 type Dump = {[name: string]: [sql: string, rows: {[column: string]: any}[]]};
 
-type SqliteVariant<Database> = [
+type DatabaseVariant<Database> = [
   getOpenDatabase: () => Promise<Database>,
   getLocationMethod: [string, (database: Database) => unknown],
   getPersister: (
@@ -104,7 +113,37 @@ const getPowerSyncDatabase = (
   };
 };
 
-export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
+export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
+  postgres: [
+    async (): Promise<SqlAndName> => {
+      const sql = postgres('postgres://localhost:5432');
+      const name = 'tinybase_' + getUniqueId();
+      sql`CREATE DATABASE ${name}`;
+      return [sql, name];
+    },
+    ['getSql', (sql: SqlAndName) => sql[0]],
+    (
+      store: Store,
+      [sql]: SqlAndName,
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
+      onIgnoredError?: (error: any) => void,
+    ) =>
+      (createPostgresPersister as any)(
+        store,
+        sql,
+        storeTableOrConfig,
+        onSqlCommand,
+        onIgnoredError,
+      ),
+    async ([sql]: SqlAndName, sqlStr: string, args: any[] = []) =>
+      await sql.unsafe(sqlStr, args),
+    async ([sql, name]: SqlAndName) => {
+      sql`DROP DATABASE ${name}`;
+      await sql.end();
+    },
+  ],
+
   libSql: [
     async (): Promise<Client> => createClient({url: 'file::memory:'}),
     ['getClient', (client: Client) => client],
@@ -185,7 +224,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
   ],
   sqlite3: [
     async (): Promise<Database> => new sqlite3.Database(':memory:'),
-    ['getDb', (database: Database) => database],
+    ['getDb', (db: Database) => db],
     (
       store: Store,
       db: Database,
@@ -221,7 +260,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
         const db = new sqlite3.oo1.DB(':memory:', 'c');
         return [sqlite3, db];
       }),
-    ['getDb', (sqliteWasmDb: SqliteWasmDb) => sqliteWasmDb[1]],
+    ['getDb', (db: SqliteWasmDb) => db[1]],
     (
       store: Store,
       [sqlite3, db]: SqliteWasmDb,
@@ -246,7 +285,7 @@ export const VARIANTS: {[name: string]: SqliteVariant<any>} = {
   crSqliteWasm: [
     async (): Promise<DB> =>
       await suppressWarnings(async () => await (await initWasm()).open()),
-    ['getDb', (database: DB) => database],
+    ['getDb', (db: DB) => db],
     (
       store: Store,
       db: DB,
