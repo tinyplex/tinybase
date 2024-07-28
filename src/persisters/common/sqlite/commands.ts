@@ -159,7 +159,7 @@ export const getCommandFunctions = (
           escapeId(tableName) +
           '(' +
           escapeId(rowIdColumnName) +
-          ` PRIMARY KEY ON CONFLICT REPLACE${arrayJoin(
+          ` PRIMARY KEY${arrayJoin(
             arrayMap(tableColumnNames, (cellId) => COMMA + escapeId(cellId)),
           )});`,
       );

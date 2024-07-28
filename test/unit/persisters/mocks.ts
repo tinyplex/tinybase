@@ -597,13 +597,14 @@ const getMockedSqlite = <Location>(
     write: async (location: Location, rawContent: any): Promise<void> => {
       await cmd(
         location,
-        'CREATE TABLE IF NOT EXISTS tinybase ' +
-          '(_id PRIMARY KEY ON CONFLICT REPLACE, store);',
+        'CREATE TABLE IF NOT EXISTS tinybase ' + '(_id PRIMARY KEY, store);',
       );
-      await cmd(location, 'INSERT INTO tinybase (_id, store) VALUES (?, ?)', [
-        '_',
-        rawContent,
-      ]);
+      await cmd(
+        location,
+        'INSERT INTO tinybase (_id, store) VALUES (?, ?) ' +
+          'ON CONFLICT DO UPDATE SET store=excluded.store',
+        ['_', rawContent],
+      );
     },
     del: async (location: Location) => {
       try {
