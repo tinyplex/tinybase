@@ -25,6 +25,7 @@ export const createJsonPgPersister = <
   ) => ListeningHandle,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError: ((error: any) => void) | undefined,
+  destroyImpl: () => void,
   persist: Persist,
   [storeTableName, storeIdColumnName, storeColumnName]: DefaultedJsonConfig,
   managedTableNames: string[],
@@ -62,6 +63,11 @@ export const createJsonPgPersister = <
       );
     });
 
+  const destroy = () => {
+    destroyImpl();
+    return persister.stopAutoLoad().stopAutoSave();
+  };
+
   const persister: any = createCustomPersister(
     store,
     getPersisted,
@@ -70,7 +76,7 @@ export const createJsonPgPersister = <
     delPersisterListener,
     onIgnoredError,
     persist,
-    {[getThing]: () => thing},
+    {[getThing]: () => thing, destroy},
     thing,
   );
 

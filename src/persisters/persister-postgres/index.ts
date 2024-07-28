@@ -15,14 +15,16 @@ export const createPostgresPersister = (async (
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Promise<PostgresPersister> => {
+  const mainConnection = await sql.reserve();
   return createPgPersister(
     store,
     configOrStoreTableName,
-    sql.unsafe,
+    mainConnection.unsafe,
     () => 0,
     () => 0,
-    console.info, //   onSqlCommand,
-    console.warn, //  onIgnoredError,
+    onSqlCommand,
+    onIgnoredError,
+    mainConnection.release,
     3, // StoreOrMergeableStore,
     sql,
     'getSql',
