@@ -119,6 +119,34 @@
  * persister.destroy();
  * await sql.end();
  * ```
+ * @example
+ * This example creates a PostgresPersister object and persists the Store to a
+ * local PostgreSQL database with tabular mapping.
+ *
+ * ```js
+ * import postgres from 'postgres';
+ * import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
+ * import {createStore} from 'tinybase';
+ *
+ * const sql = postgres('postgres://localhost:5432/tinybase');
+ * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+ * const persister = await createPostgresPersister(store, sql, {
+ *   mode: 'tabular',
+ *   tables: {load: {pets: 'pets'}, save: {pets: 'pets'}},
+ * });
+ *
+ * await persister.save();
+ * console.log(await sql`SELECT * FROM pets;`);
+ * // -> [{_id: 'fido', species: 'dog'}]
+ *
+ * await sql`INSERT INTO pets (_id, species) VALUES ('felix', '"cat"')`;
+ * await persister.load();
+ * console.log(store.getTables());
+ * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
+ *
+ * persister.destroy();
+ * await sql.end();
+ * ```
  * @category Creation
  * @since 5.2.0
  */
