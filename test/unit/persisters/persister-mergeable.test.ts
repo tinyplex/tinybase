@@ -8,7 +8,7 @@ import type {
   MergeableStore,
   Persister,
 } from 'tinybase';
-import {GetLocationMethod, Persist, nextLoop} from './common.ts';
+import {GetLocationMethod, Persist, nextLoop} from './common/other.ts';
 import {
   Persists,
   createCustomPersister,
@@ -26,7 +26,7 @@ import {
   mockSessionStorage,
   mockSqlite3,
   mockSqliteWasm,
-} from './mocks.ts';
+} from './common/mocks.ts';
 import {pause} from '../common/other.ts';
 import {resetHlc} from '../common/mergeable.ts';
 

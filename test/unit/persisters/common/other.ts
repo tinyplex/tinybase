@@ -8,7 +8,7 @@ import type {
   Persists,
   Store,
 } from 'tinybase';
-import {pause} from '../common/other.ts';
+import {pause} from '../../common/other.ts';
 
 export type GetLocationMethod<Location = string> = [
   string,

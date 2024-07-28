@@ -17,8 +17,8 @@ import type {
 } from 'tinybase';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
-import {GetLocationMethod, Persist} from './common.ts';
-import {SqliteWasmDb, VARIANTS} from './sqlite.ts';
+import {GetLocationMethod, Persist} from './other.ts';
+import {SqliteWasmDb, VARIANTS} from './databases.ts';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createCustomPersister,
@@ -44,7 +44,7 @@ import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
 import crypto from 'crypto';
 import fm from 'jest-fetch-mock';
 import fs from 'fs';
-import {mockFetchWasm} from '../common/other.ts';
+import {mockFetchWasm} from '../../common/other.ts';
 import tmp from 'tmp';
 
 const fetchMock = fm as any as FetchMock;
