@@ -116,9 +116,12 @@ const getPowerSyncDatabase = (
 export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
   postgres: [
     async (): Promise<SqlAndName> => {
-      const sql = postgres('postgres://localhost:5432');
       const name = 'tinybase_' + getUniqueId();
-      await sql`CREATE DATABASE ${sql(name)}`;
+      const adminSql = postgres('postgres://localhost:5432/');
+      await adminSql`CREATE DATABASE ${adminSql(name)}`;
+      await adminSql.end();
+
+      const sql = postgres('postgres://localhost:5432/' + name);
       return [sql, name];
     },
     ['getSql', (sql: SqlAndName) => sql[0]],
@@ -139,8 +142,11 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
     async ([sql]: SqlAndName, sqlStr: string, args: any[] = []) =>
       await sql.unsafe(sqlStr, args),
     async ([sql, name]: SqlAndName) => {
-      await sql`DROP DATABASE ${sql(name)}`;
       await sql.end();
+
+      const adminSql = postgres('postgres://localhost:5432/');
+      await adminSql`DROP DATABASE ${adminSql(name)}`;
+      await adminSql.end();
     },
   ],
 
