@@ -563,7 +563,7 @@ export const mockIndexedDb = {
   testMissing: true,
 };
 
-const getMockedSqlite = <Location>(
+const getMockedDatabase = <Location>(
   getLocation: () => Promise<Location>,
   getLocationMethod: GetLocationMethod<Location>,
   getPersister: (
@@ -618,21 +618,21 @@ const getMockedSqlite = <Location>(
   return mockSqlite;
 };
 
-export const mockElectricSql = getMockedSqlite<Electric>(
+export const mockElectricSql = getMockedDatabase<Electric>(
   ...VARIANTS.electricSql,
 );
 
-export const mockPowerSync = getMockedSqlite<AbstractPowerSyncDatabase>(
+export const mockPowerSync = getMockedDatabase<AbstractPowerSyncDatabase>(
   ...VARIANTS.powerSync,
 );
 
-export const mockSqlite3 = getMockedSqlite<Database>(...VARIANTS.sqlite3);
+export const mockSqlite3 = getMockedDatabase<Database>(...VARIANTS.sqlite3);
 
-export const mockSqliteWasm = getMockedSqlite<SqliteWasmDb>(
+export const mockSqliteWasm = getMockedDatabase<SqliteWasmDb>(
   ...VARIANTS.sqliteWasm,
 );
 
-export const mockCrSqliteWasm = getMockedSqlite<DB>(...VARIANTS.crSqliteWasm);
+export const mockCrSqliteWasm = getMockedDatabase<DB>(...VARIANTS.crSqliteWasm);
 
 export const mockYjs: Persist<YDoc> = {
   autoLoadPause: 100,
