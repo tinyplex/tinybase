@@ -30,14 +30,14 @@ describe.each(Object.entries(VARIANTS))(
       mockFetchWasm();
       db = await getOpenDatabase();
       store = createStore();
-      persister = getPersister(store, db);
+      persister = await getPersister(store, db);
     });
 
     afterEach(async () => await close(db));
 
     describe('Config', () => {
       test('tableName as string', async () => {
-        const persister = getPersister(store, db, 'test');
+        const persister = await getPersister(store, db, 'test');
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           test: [
@@ -48,7 +48,7 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('tableName with spaces', async () => {
-        const persister = getPersister(store, db, 'test table');
+        const persister = await getPersister(store, db, 'test table');
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           'test table': [
@@ -59,7 +59,7 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('tableName with quote', async () => {
-        const persister = getPersister(store, db, 'test "table"');
+        const persister = await getPersister(store, db, 'test "table"');
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           'test "table"': [
@@ -70,7 +70,7 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('tableName as config', async () => {
-        const persister = getPersister(store, db, {
+        const persister = await getPersister(store, db, {
           mode: 'json',
           storeTableName: 'test',
           autoLoadIntervalSeconds,
@@ -85,7 +85,7 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('storeIdColumnName as string with quotes and spaces', async () => {
-        const persister = getPersister(store, db, {
+        const persister = await getPersister(store, db, {
           mode: 'json',
           storeIdColumnName: 'test "id"',
           autoLoadIntervalSeconds,
@@ -100,7 +100,7 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('storeColumnName as string with quotes and spaces', async () => {
-        const persister = getPersister(store, db, {
+        const persister = await getPersister(store, db, {
           mode: 'json',
           storeColumnName: 'test "store"',
           autoLoadIntervalSeconds,
@@ -127,7 +127,7 @@ describe.each(Object.entries(VARIANTS))(
       });
 
       test('nothing, empty config', async () => {
-        const persister = getPersister(store, db, {
+        const persister = await getPersister(store, db, {
           mode: 'json',
           autoLoadIntervalSeconds,
         });
@@ -304,14 +304,14 @@ describe.each(Object.entries(VARIANTS))(
       let persister1: Persister;
       let store2: Store;
       let persister2: Persister;
-      beforeEach(() => {
+      beforeEach(async () => {
         store1 = createStore();
-        persister1 = getPersister(store1, db, {
+        persister1 = await getPersister(store1, db, {
           mode: 'json',
           autoLoadIntervalSeconds,
         });
         store2 = createStore();
-        persister2 = getPersister(store2, db, {
+        persister2 = await getPersister(store2, db, {
           mode: 'json',
           autoLoadIntervalSeconds,
         });

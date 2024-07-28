@@ -38,14 +38,14 @@ describe.each([
       mockFetchWasm();
       db = await getOpenDatabase();
       store = createMergeableStore('s1');
-      persister = getPersister(store, db);
+      persister = await getPersister(store, db);
     });
 
     afterEach(async () => await close(db));
 
     describe('Custom table name', () => {
       test('as string', async () => {
-        const persister = getPersister(store, db, 'test');
+        const persister = await getPersister(store, db, 'test');
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           test: [
@@ -56,7 +56,7 @@ describe.each([
       });
 
       test('with spaces', async () => {
-        const persister = getPersister(store, db, 'test table');
+        const persister = await getPersister(store, db, 'test table');
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           'test table': [
@@ -67,7 +67,7 @@ describe.each([
       });
 
       test('with quote', async () => {
-        const persister = getPersister(store, db, 'test "table"');
+        const persister = await getPersister(store, db, 'test "table"');
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           'test "table"': [
@@ -78,7 +78,7 @@ describe.each([
       });
 
       test('as config', async () => {
-        const persister = getPersister(store, db, {
+        const persister = await getPersister(store, db, {
           mode: 'json',
           storeTableName: 'test',
           autoLoadIntervalSeconds,
@@ -105,7 +105,7 @@ describe.each([
       });
 
       test('nothing, empty config', async () => {
-        const persister = getPersister(store, db, {
+        const persister = await getPersister(store, db, {
           mode: 'json',
           autoLoadIntervalSeconds,
         });
@@ -312,14 +312,14 @@ describe.each([
       let persister1: Persister;
       let store2: MergeableStore;
       let persister2: Persister;
-      beforeEach(() => {
+      beforeEach(async () => {
         store1 = createMergeableStore('s1');
-        persister1 = getPersister(store1, db, {
+        persister1 = await getPersister(store1, db, {
           mode: 'json',
           autoLoadIntervalSeconds,
         });
         store2 = createMergeableStore('s2');
-        persister2 = getPersister(store2, db, {
+        persister2 = await getPersister(store2, db, {
           mode: 'json',
           autoLoadIntervalSeconds,
         });

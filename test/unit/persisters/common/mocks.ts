@@ -17,8 +17,8 @@ import type {
 } from 'tinybase';
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
-import {GetLocationMethod, Persist} from './other.ts';
-import {SqliteWasmDb, VARIANTS} from './databases.ts';
+import {GetLocationMethod, Persistable} from './other.ts';
+import {SqlAndName, SqliteWasmDb, VARIANTS} from './databases.ts';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createCustomPersister,
@@ -144,7 +144,7 @@ let customPersisterChanges: Changes | MergeableChanges = [{}, {}, 1];
 const getMockedCustom = (
   write: (location: string, rawContent: any) => Promise<void>,
   supportsMergeableStore = false,
-): Persist => ({
+): Persistable => ({
   autoLoadPause: 100,
   getLocation: async (): Promise<string> => '',
   getLocationMethod: ['getFoo', () => 'foo'],
@@ -183,14 +183,14 @@ const getMockedCustom = (
   testMissing: true,
 });
 
-export const mockNoContentListener: Persist<string> = getMockedCustom(
+export const mockNoContentListener: Persistable<string> = getMockedCustom(
   async (_location: string, rawContent: any): Promise<void> => {
     customPersister = rawContent;
     customPersisterListener?.();
   },
 );
 
-export const mockContentListener: Persist<string> = getMockedCustom(
+export const mockContentListener: Persistable<string> = getMockedCustom(
   async (_location: string, rawContent: any): Promise<void> => {
     customPersister = rawContent;
     let content: Content;
@@ -203,7 +203,7 @@ export const mockContentListener: Persist<string> = getMockedCustom(
   },
 );
 
-export const mockChangesListener: Persist<string> = getMockedCustom(
+export const mockChangesListener: Persistable<string> = getMockedCustom(
   async (_location: string, rawContent: any): Promise<void> => {
     customPersister = rawContent;
     let content: Content;
@@ -219,16 +219,14 @@ export const mockChangesListener: Persist<string> = getMockedCustom(
   },
 );
 
-export const mockMergeableNoContentListener: Persist<string> = getMockedCustom(
-  async (_location: string, rawContent: any): Promise<void> => {
+export const mockMergeableNoContentListener: Persistable<string> =
+  getMockedCustom(async (_location: string, rawContent: any): Promise<void> => {
     customPersister = rawContent;
     customPersisterListener?.();
-  },
-  true,
-);
+  }, true);
 
-export const mockMergeableContentListener: Persist<string> = getMockedCustom(
-  async (_location: string, rawContent: any): Promise<void> => {
+export const mockMergeableContentListener: Persistable<string> =
+  getMockedCustom(async (_location: string, rawContent: any): Promise<void> => {
     customPersister = rawContent;
     let content: any;
     try {
@@ -237,12 +235,10 @@ export const mockMergeableContentListener: Persist<string> = getMockedCustom(
       content = [] as any;
     }
     customPersisterListener?.(content);
-  },
-  true,
-);
+  }, true);
 
-export const mockMergeableChangesListener: Persist<string> = getMockedCustom(
-  async (_location: string, rawContent: any): Promise<void> => {
+export const mockMergeableChangesListener: Persistable<string> =
+  getMockedCustom(async (_location: string, rawContent: any): Promise<void> => {
     customPersister = rawContent;
     let content: MergeableContent;
     try {
@@ -254,11 +250,9 @@ export const mockMergeableChangesListener: Persist<string> = getMockedCustom(
       undefined,
       [...content, 1] as any, // changes
     );
-  },
-  true,
-);
+  }, true);
 
-export const mockFile: Persist = {
+export const mockFile: Persistable = {
   autoLoadPause: 200,
   getLocation: async (): Promise<string> => {
     tmp.setGracefulCleanup();
@@ -281,7 +275,7 @@ export const mockFile: Persist = {
   testMissing: true,
 };
 
-export const mockLocalSynchronizer: Persist<
+export const mockLocalSynchronizer: Persistable<
   [LocalSynchronizer, MergeableStore]
 > = {
   autoLoadPause: 50,
@@ -354,7 +348,7 @@ const createCustomLocalSynchronizer = (
   );
 };
 
-export const mockCustomSynchronizer: Persist<
+export const mockCustomSynchronizer: Persistable<
   [Map<string, Receive>, Synchronizer, MergeableStore]
 > = {
   autoLoadPause: 100,
@@ -404,7 +398,7 @@ export const mockCustomSynchronizer: Persist<
 const getMockedStorage = (
   storage: Storage,
   getPersister: (store: Store, location: string) => Persister,
-): Persist => {
+): Persistable => {
   const mockStorage = {
     getLocation: async (): Promise<string> => 'test' + Math.random(),
     getLocationMethod: [
@@ -455,7 +449,7 @@ export const mockSessionStorage = getMockedStorage(
   createSessionPersister,
 );
 
-export const mockRemote: Persist = {
+export const mockRemote: Persistable = {
   beforeEach: (): void => {
     fetchMock.enableMocks();
     fetchMock.resetMocks();
@@ -570,7 +564,7 @@ const getMockedDatabase = <Location>(
     store: Store,
     location: Location,
     storeTableOrConfig: DatabasePersisterConfig,
-  ) => Persister,
+  ) => Promise<Persister>,
   cmd: (
     location: Location,
     sql: string,
@@ -579,13 +573,16 @@ const getMockedDatabase = <Location>(
   close: (location: Location) => Promise<void>,
   autoLoadPause = 10,
   autoLoadIntervalSeconds = 0.1,
-): Persist<Location> => {
-  const mockSqlite = {
+): Persistable<Location> => {
+  const mockDatabase = {
     beforeEach: mockFetchWasm,
     getLocation,
     getLocationMethod,
-    getPersister: (store: Store, location: Location) =>
-      getPersister(store, location, {mode: 'json', autoLoadIntervalSeconds}),
+    getPersister: async (store: Store, location: Location) =>
+      await getPersister(store, location, {
+        mode: 'json',
+        autoLoadIntervalSeconds,
+      }),
     get: async (location: Location): Promise<Content | void> =>
       JSON.parse(
         (
@@ -593,7 +590,7 @@ const getMockedDatabase = <Location>(
         )[0]['store'],
       ),
     set: async (location: Location, rawContent: any): Promise<void> =>
-      await mockSqlite.write(location, JSON.stringify(rawContent)),
+      await mockDatabase.write(location, JSON.stringify(rawContent)),
     write: async (location: Location, rawContent: any): Promise<void> => {
       await cmd(
         location,
@@ -611,11 +608,11 @@ const getMockedDatabase = <Location>(
         await close(location);
       } catch {}
     },
-    afterEach: (location: Location) => mockSqlite.del(location),
+    afterEach: (location: Location) => mockDatabase.del(location),
     testMissing: true,
     autoLoadPause,
   };
-  return mockSqlite;
+  return mockDatabase;
 };
 
 export const mockElectricSql = getMockedDatabase<Electric>(
@@ -634,7 +631,9 @@ export const mockSqliteWasm = getMockedDatabase<SqliteWasmDb>(
 
 export const mockCrSqliteWasm = getMockedDatabase<DB>(...VARIANTS.crSqliteWasm);
 
-export const mockYjs: Persist<YDoc> = {
+export const mockPostgres = getMockedDatabase<SqlAndName>(...VARIANTS.postgres);
+
+export const mockYjs: Persistable<YDoc> = {
   autoLoadPause: 100,
   getLocation: async () => new YDoc(),
   getLocationMethod: ['getYDoc', (location) => location],
@@ -697,7 +696,7 @@ export const mockYjs: Persist<YDoc> = {
   testMissing: false,
 };
 
-export const mockAutomerge: Persist<DocHandle<any>> = {
+export const mockAutomerge: Persistable<DocHandle<any>> = {
   autoLoadPause: 100,
   getLocation: async () => new Repo({network: []}).create(),
   getLocationMethod: ['getDocHandle', (location) => location],
