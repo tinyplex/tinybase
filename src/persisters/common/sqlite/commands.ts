@@ -75,7 +75,7 @@ export const getCommandFunctions = (
             ' name ' +
             FROM_PRAGMA_TABLE +
             'list ' +
-            `WHERE schema='main'AND(type='table'OR type='view')` +
+            `WHERE schema='main'AND type IN('table','view')` +
             'AND name IN(' +
             getPlaceholders(managedTableNames) +
             `)ORDER BY name`,

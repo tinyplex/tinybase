@@ -873,7 +873,7 @@ describe.each(Object.entries(VARIANTS))(
         expect(sqlLogs).toEqual([
           ['BEGIN', undefined],
           [
-            `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+            `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
             ['tinybase_values', 't1', 't2', 't3'],
           ],
           ['CREATE TABLE"t1"("_id" PRIMARY KEY,"c1","c2");', undefined],
@@ -927,7 +927,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
@@ -965,7 +965,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
@@ -1002,7 +1002,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
@@ -1039,7 +1039,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
@@ -1080,7 +1080,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
@@ -1118,7 +1118,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
@@ -1155,7 +1155,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
@@ -1197,7 +1197,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
@@ -1235,7 +1235,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
@@ -1269,7 +1269,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
@@ -1311,7 +1311,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
@@ -1349,7 +1349,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
@@ -1384,7 +1384,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
@@ -1409,7 +1409,7 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND(type='table'OR type='view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
             ['SELECT name FROM pragma_table_info(?)', ['t1']],
