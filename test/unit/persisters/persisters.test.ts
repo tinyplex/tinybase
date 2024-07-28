@@ -65,10 +65,10 @@ describe.each([
     persister = await persistable.getPersister(store, location);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     persister.destroy();
     if (persistable.afterEach != null) {
-      persistable.afterEach(location);
+      await persistable.afterEach(location);
     }
   });
 
@@ -211,7 +211,7 @@ describe.each([
 
   test('does not load from corrupt', async () => {
     store.setTables({t1: {r1: {c1: 1}}});
-    persistable.write(location, '{');
+    await persistable.write(location, '{');
     await persister.load();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
@@ -308,7 +308,7 @@ describe.each([
     await persistable.set(location, [{t1: {r1: {c1: 1}}}, {}]);
     await persister.startAutoLoad();
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    persistable.write(location, '{');
+    await persistable.write(location, '{');
     await pause(persistable.autoLoadPause);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
   });
