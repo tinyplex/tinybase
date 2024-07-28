@@ -1,4 +1,4 @@
-import {COMMA, EMPTY_STRING, strRepeat} from '../../../common/strings.ts';
+import {COMMA, EMPTY_STRING} from '../../../common/strings.ts';
 import type {
   CellOrUndefined,
   Table,
@@ -20,10 +20,11 @@ import {
   arrayIsEmpty,
   arrayJoin,
   arrayMap,
+  arrayNew,
   arrayPush,
 } from '../../../common/array.ts';
 import {collClear, collDel, collHas, collValues} from '../../../common/coll.ts';
-import {isUndefined, promiseAll, size, slice} from '../../../common/other.ts';
+import {isUndefined, promiseAll, size} from '../../../common/other.ts';
 import {mapGet, mapNew, mapSet} from '../../../common/map.ts';
 import type {Id} from '../../../@types/common/index.d.ts';
 
@@ -307,13 +308,7 @@ const upsert = async (
         ),
       ) +
       ')VALUES' +
-      slice(
-        strRepeat(
-          `,(?${strRepeat(',?', size(changingColumnNames))})`,
-          size(args) / (size(changingColumnNames) + 1),
-        ),
-        1,
-      ) +
+      getUpsertPlaceholders(args, size(changingColumnNames) + 1) +
       (useOnConflict
         ? 'ON CONFLICT(' +
           escapeId(rowIdColumnName) +
@@ -333,5 +328,20 @@ const upsert = async (
 const getPlaceholders = (array: any[]) =>
   arrayJoin(
     arrayMap(array, () => '?'),
+    COMMA,
+  );
+
+const getUpsertPlaceholders = (array: any[], columnCount: number) =>
+  arrayJoin(
+    arrayNew(
+      size(array) / columnCount,
+      () =>
+        '(' +
+        arrayJoin(
+          arrayNew(columnCount, () => '?'),
+          COMMA,
+        ) +
+        ')',
+    ),
     COMMA,
   );
