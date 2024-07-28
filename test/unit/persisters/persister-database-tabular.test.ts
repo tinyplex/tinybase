@@ -687,8 +687,11 @@ describe.each(Object.entries(VARIANTS))(
             [{_id: '_', v1: 1}],
           ],
         });
-        await cmd(db, 'UPDATE t1 SET c1=? WHERE _id=?', [2, 'r1']);
-        await cmd(db, 'UPDATE tinybase_values SET v1=? WHERE _id=?', [2, '_']);
+        await cmd(db, 'UPDATE t1 SET c1=$1 WHERE _id=$2', [2, 'r1']);
+        await cmd(db, 'UPDATE tinybase_values SET v1=$1 WHERE _id=$2', [
+          2,
+          '_',
+        ]);
         expect(await getDatabase(db)).toEqual({
           t1: [
             'CREATE TABLE "t1"("_id" PRIMARY KEY,"c1")',
@@ -905,30 +908,30 @@ describe.each(Object.entries(VARIANTS))(
         expect(sqlLogs).toEqual([
           ['BEGIN', undefined],
           [
-            `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+            `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
             ['tinybase_values', 't1', 't2', 't3'],
           ],
           ['CREATE TABLE"t1"("_id" PRIMARY KEY,"c1","c2");', undefined],
           ['CREATE TABLE"t2"("_id" PRIMARY KEY,"c1");', undefined],
           [
-            'INSERT INTO"t1"("_id","c1","c2")VALUES(?,?,?),(?,?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c2"=excluded."c2"',
+            'INSERT INTO"t1"("_id","c1","c2")VALUES($1,$2,$3),($4,$5,$6)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c2"=excluded."c2"',
             ['r1', 1, 2, 'r2', 1, 2],
           ],
           [
-            'INSERT INTO"t2"("_id","c1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
+            'INSERT INTO"t2"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
             ['r1', 1],
           ],
-          ['DELETE FROM"t1"WHERE"_id"NOT IN(?,?)', ['r1', 'r2']],
-          ['DELETE FROM"t2"WHERE"_id"NOT IN(?)', ['r1']],
+          ['DELETE FROM"t1"WHERE"_id"NOT IN($1,$2)', ['r1', 'r2']],
+          ['DELETE FROM"t2"WHERE"_id"NOT IN($1)', ['r1']],
           [
             'CREATE TABLE"tinybase_values"("_id" PRIMARY KEY,"v1","v2");',
             undefined,
           ],
           [
-            'INSERT INTO"tinybase_values"("_id","v1","v2")VALUES(?,?,?)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
+            'INSERT INTO"tinybase_values"("_id","v1","v2")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
             ['_', 1, 2],
           ],
-          ['DELETE FROM"tinybase_values"WHERE"_id"NOT IN(?)', ['_']],
+          ['DELETE FROM"tinybase_values"WHERE"_id"NOT IN($1)', ['_']],
           ['END', undefined],
         ]);
       });
@@ -959,15 +962,15 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
             [`ALTER TABLE"tinybase_values"ADD"v3"`, undefined],
             [
-              'INSERT INTO"tinybase_values"("_id","v3")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"v3"=excluded."v3"',
+              'INSERT INTO"tinybase_values"("_id","v3")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"v3"=excluded."v3"',
               ['_', 3],
             ],
             ['END', undefined],
@@ -997,14 +1000,14 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
             [
-              'INSERT INTO"tinybase_values"("_id","v1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1"',
+              'INSERT INTO"tinybase_values"("_id","v1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1"',
               ['_', 2],
             ],
             ['END', undefined],
@@ -1034,14 +1037,14 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
             [
-              'INSERT INTO"tinybase_values"("_id","v1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1"',
+              'INSERT INTO"tinybase_values"("_id","v1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1"',
               ['_', null],
             ],
             ['END', undefined],
@@ -1071,14 +1074,14 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
             [
-              'INSERT INTO"tinybase_values"("_id","v1","v2")VALUES(?,?,?)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
+              'INSERT INTO"tinybase_values"("_id","v1","v2")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
               ['_', null, null],
             ],
             ['END', undefined],
@@ -1112,15 +1115,15 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
             [`ALTER TABLE"t1"ADD"c3"`, undefined],
             [
-              'INSERT INTO"t1"("_id","c3")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"c3"=excluded."c3"',
+              'INSERT INTO"t1"("_id","c3")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c3"=excluded."c3"',
               ['r1', 3],
             ],
             ['END', undefined],
@@ -1150,14 +1153,14 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
             [
-              'INSERT INTO"t1"("_id","c1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
+              'INSERT INTO"t1"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
               ['r1', 2],
             ],
             ['END', undefined],
@@ -1187,14 +1190,14 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
             [
-              'INSERT INTO"t1"("_id","c1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
+              'INSERT INTO"t1"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
               ['r1', null],
             ],
             ['END', undefined],
@@ -1229,15 +1232,15 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
             [`ALTER TABLE"t1"ADD"c3"`, undefined],
             [
-              'INSERT INTO"t1"("_id","c1","c3")VALUES(?,?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c3"=excluded."c3"',
+              'INSERT INTO"t1"("_id","c1","c3")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c3"=excluded."c3"',
               ['r3', 1, 3],
             ],
             ['END', undefined],
@@ -1267,14 +1270,14 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
             [
-              'INSERT INTO"t1"("_id","c1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
+              'INSERT INTO"t1"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
               ['r1', 2],
             ],
             ['END', undefined],
@@ -1301,13 +1304,13 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
-            ['DELETE FROM"t1"WHERE"_id"=?', ['r1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
+            ['DELETE FROM"t1"WHERE"_id"=$1', ['r1']],
             ['END', undefined],
           ]);
         });
@@ -1343,15 +1346,15 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
             ['CREATE TABLE"t3"("_id" PRIMARY KEY,"c1");', undefined],
             [
-              'INSERT INTO"t3"("_id","c1")VALUES(?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
+              'INSERT INTO"t3"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
               ['r1', 1],
             ],
             ['END', undefined],
@@ -1381,15 +1384,15 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
             ['ALTER TABLE"t2"ADD"c2"', undefined],
             [
-              'INSERT INTO"t2"("_id","c1","c2")VALUES(?,?,?)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c2"=excluded."c2"',
+              'INSERT INTO"t2"("_id","c1","c2")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c2"=excluded."c2"',
               ['r1', 2, 2],
             ],
             ['END', undefined],
@@ -1416,12 +1419,12 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
             ['DELETE FROM"t2"WHERE 1', undefined],
             ['END', undefined],
           ]);
@@ -1441,12 +1444,12 @@ describe.each(Object.entries(VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN(?,?,?,?)ORDER BY name`,
+              `SELECT name FROM pragma_table_list WHERE schema='main'AND type IN('table','view')AND name IN($1,$2,$3,$4)ORDER BY name`,
               ['tinybase_values', 't1', 't2', 't3'],
             ],
-            ['SELECT name FROM pragma_table_info(?)', ['t1']],
-            ['SELECT name FROM pragma_table_info(?)', ['t2']],
-            ['SELECT name FROM pragma_table_info(?)', ['tinybase_values']],
+            ['SELECT name FROM pragma_table_info($1)', ['t1']],
+            ['SELECT name FROM pragma_table_info($1)', ['t2']],
+            ['SELECT name FROM pragma_table_info($1)', ['tinybase_values']],
             ['DELETE FROM"t1"WHERE 1', undefined],
             ['DELETE FROM"t2"WHERE 1', undefined],
             ['END', undefined],
