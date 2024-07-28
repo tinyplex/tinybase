@@ -308,7 +308,7 @@ export const mockLocalSynchronizer: Persistable<
     ]);
   },
   testMissing: false,
-  afterEach: (location: [LocalSynchronizer, MergeableStore]) => {
+  afterEach: async (location: [LocalSynchronizer, MergeableStore]) => {
     location[0].destroy();
   },
 };
@@ -388,7 +388,7 @@ export const mockCustomSynchronizer: Persistable<
     ]);
   },
   testMissing: false,
-  afterEach: (
+  afterEach: async (
     location: [Map<string, Receive>, Synchronizer, MergeableStore],
   ) => {
     location[1].destroy();
@@ -610,7 +610,7 @@ const getMockedDatabase = <Location>(
         await close(location);
       } catch {}
     },
-    afterEach: (location: Location) => mockDatabase.del(location),
+    afterEach: async (location: Location) => await mockDatabase.del(location),
     testMissing: true,
     autoLoadPause,
   };
