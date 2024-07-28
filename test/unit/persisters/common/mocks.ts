@@ -596,12 +596,13 @@ const getMockedDatabase = <Location>(
     write: async (location: Location, rawContent: any): Promise<void> => {
       await cmd(
         location,
-        'CREATE TABLE IF NOT EXISTS tinybase ' + '(_id PRIMARY KEY, store);',
+        'CREATE TABLE IF NOT EXISTS tinybase ' +
+          '(_id text PRIMARY KEY, store json);',
       );
       await cmd(
         location,
         'INSERT INTO tinybase (_id, store) VALUES ($1, $2) ' +
-          'ON CONFLICT DO UPDATE SET store=excluded.store',
+          'ON CONFLICT (_id) DO UPDATE SET store=excluded.store',
         ['_', rawContent],
       );
     },
