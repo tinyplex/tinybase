@@ -17,6 +17,7 @@ import {
   mockMergeableContentListener,
   mockMergeableNoContentListener,
   mockNoContentListener,
+  mockPostgres,
   mockPowerSync,
   mockRemote,
   mockSessionStorage,
@@ -47,6 +48,7 @@ describe.each([
   ['crSqliteWasm', mockCrSqliteWasm],
   ['yjs', mockYjs],
   ['automerge', mockAutomerge],
+  ['postgres', mockPostgres],
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;
