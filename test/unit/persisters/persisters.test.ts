@@ -1,7 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 
 import 'fake-indexeddb/auto';
-import {GetLocationMethod, Persist, nextLoop} from './common.ts';
+import {GetLocationMethod, Persist, nextLoop} from './common/other.ts';
 import type {Persister, Store} from 'tinybase';
 import {createCustomPersister, createStore} from 'tinybase';
 import {
@@ -23,7 +23,7 @@ import {
   mockSqlite3,
   mockSqliteWasm,
   mockYjs,
-} from './mocks.ts';
+} from './common/mocks.ts';
 import {join} from 'path';
 import {pause} from '../common/other.ts';
 import tmp from 'tmp';

@@ -1,20 +1,12 @@
 /* eslint-disable max-len */
 import 'fake-indexeddb/auto';
-import type {MergeableStore, Persister} from 'tinybase';
-import {VARIANTS, getDatabaseFunctions} from './sqlite.ts';
+import type {Persister, Store} from 'tinybase';
+import {VARIANTS, getDatabaseFunctions} from './common/databases.ts';
 import {mockFetchWasm, pause} from '../common/other.ts';
 import {Database} from 'sqlite3';
-import {createMergeableStore} from 'tinybase';
-import {resetHlc} from '../common/mergeable.ts';
+import {createStore} from 'tinybase';
 
-beforeEach(() => {
-  resetHlc();
-});
-
-describe.each([
-  ['sqlite3', VARIANTS.sqlite3],
-  ['sqliteWasm', VARIANTS.sqliteWasm],
-])(
+describe.each(Object.entries(VARIANTS))(
   '%s',
   (
     _name,
@@ -31,53 +23,53 @@ describe.each([
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
 
     let db: Database;
-    let store: MergeableStore;
+    let store: Store;
     let persister: Persister;
 
     beforeEach(async () => {
       mockFetchWasm();
       db = await getOpenDatabase();
-      store = createMergeableStore('s1');
+      store = createStore();
       persister = getPersister(store, db);
     });
 
     afterEach(async () => await close(db));
 
-    describe('Custom table name', () => {
-      test('as string', async () => {
+    describe('Config', () => {
+      test('tableName as string', async () => {
         const persister = getPersister(store, db, 'test');
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           test: [
             'CREATE TABLE "test"("_id" PRIMARY KEY,"store")',
-            [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
+            [{_id: '_', store: '[{},{}]'}],
           ],
         });
       });
 
-      test('with spaces', async () => {
+      test('tableName with spaces', async () => {
         const persister = getPersister(store, db, 'test table');
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           'test table': [
             'CREATE TABLE "test table"("_id" PRIMARY KEY,"store")',
-            [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
+            [{_id: '_', store: '[{},{}]'}],
           ],
         });
       });
 
-      test('with quote', async () => {
+      test('tableName with quote', async () => {
         const persister = getPersister(store, db, 'test "table"');
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           'test "table"': [
             'CREATE TABLE "test ""table"""("_id" PRIMARY KEY,"store")',
-            [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
+            [{_id: '_', store: '[{},{}]'}],
           ],
         });
       });
 
-      test('as config', async () => {
+      test('tableName as config', async () => {
         const persister = getPersister(store, db, {
           mode: 'json',
           storeTableName: 'test',
@@ -87,7 +79,37 @@ describe.each([
         expect(await getDatabase(db)).toEqual({
           test: [
             'CREATE TABLE "test"("_id" PRIMARY KEY,"store")',
-            [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
+            [{_id: '_', store: '[{},{}]'}],
+          ],
+        });
+      });
+
+      test('storeIdColumnName as string with quotes and spaces', async () => {
+        const persister = getPersister(store, db, {
+          mode: 'json',
+          storeIdColumnName: 'test "id"',
+          autoLoadIntervalSeconds,
+        });
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          tinybase: [
+            'CREATE TABLE "tinybase"("test ""id""" PRIMARY KEY,"store")',
+            [{'test "id"': '_', store: '[{},{}]'}],
+          ],
+        });
+      });
+
+      test('storeColumnName as string with quotes and spaces', async () => {
+        const persister = getPersister(store, db, {
+          mode: 'json',
+          storeColumnName: 'test "store"',
+          autoLoadIntervalSeconds,
+        });
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          tinybase: [
+            'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"test ""store""")',
+            [{_id: '_', 'test "store"': '[{},{}]'}],
           ],
         });
       });
@@ -99,7 +121,7 @@ describe.each([
         expect(await getDatabase(db)).toEqual({
           tinybase: [
             'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
-            [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
+            [{_id: '_', store: '[{},{}]'}],
           ],
         });
       });
@@ -113,7 +135,7 @@ describe.each([
         expect(await getDatabase(db)).toEqual({
           tinybase: [
             'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
-            [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
+            [{_id: '_', store: '[{},{}]'}],
           ],
         });
       });
@@ -124,13 +146,7 @@ describe.each([
         expect(await getDatabase(db)).toEqual({
           tinybase: [
             'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
-            [
-              {
-                _id: '_',
-                store:
-                  '[[{"t1":[{"r1":[{"c1":[1,"Nn1JUF-----7JQY8",1003668370]},"",550994372]},"",1072852846]},"",1771939739],[{},"",0]]',
-              },
-            ],
+            [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{}]'}],
           ],
         });
       });
@@ -141,13 +157,7 @@ describe.each([
         expect(await getDatabase(db)).toEqual({
           tinybase: [
             'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
-            [
-              {
-                _id: '_',
-                store:
-                  '[[{},"",0],[{"v1":[1,"Nn1JUF-----7JQY8",1003668370]},"",4180671758]]',
-              },
-            ],
+            [{_id: '_', store: '[{},{"v1":1}]'}],
           ],
         });
       });
@@ -158,13 +168,7 @@ describe.each([
         expect(await getDatabase(db)).toEqual({
           tinybase: [
             'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
-            [
-              {
-                _id: '_',
-                store:
-                  '[[{"t1":[{"r1":[{"c1":[1,"Nn1JUF-----7JQY8",1003668370]},"",550994372]},"",1072852846]},"",1771939739],[{"v1":[1,"Nn1JUF----07JQY8",1130939691]},"",3877632732]]',
-              },
-            ],
+            [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
       });
@@ -175,13 +179,7 @@ describe.each([
         expect(await getDatabase(db)).toEqual({
           tinybase: [
             'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
-            [
-              {
-                _id: '_',
-                store:
-                  '[[{"t1":[{"r1":[{"c1":[1,"Nn1JUF-----7JQY8",1003668370]},"",550994372]},"",1072852846]},"",1771939739],[{"v1":[1,"Nn1JUF----07JQY8",1130939691]},"",3877632732]]',
-              },
-            ],
+            [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
         await cmd(db, 'UPDATE tinybase SET store=? WHERE _id=?', [
@@ -295,30 +293,24 @@ describe.each([
         expect(await getDatabase(db)).toEqual({
           tinybase: [
             'CREATE TABLE "tinybase"("_id" PRIMARY KEY,"store")',
-            [
-              {
-                _id: '_',
-                store:
-                  '[[{"t1":[{"r1":[{"c1":[2,"Nn1JUF----17JQY8",1804136345]},"",1353168687]},"",3452927302]},"",198638919],[{"v1":[2,"Nn1JUF----27JQY8",3879084990]},"",3581950501]]',
-              },
-            ],
+            [{_id: '_', store: '[{"t1":{"r1":{"c1":2}}},{"v1":2}]'}],
           ],
         });
       });
     });
 
     describe('Two stores, one connection, one database', () => {
-      let store1: MergeableStore;
+      let store1: Store;
       let persister1: Persister;
-      let store2: MergeableStore;
+      let store2: Store;
       let persister2: Persister;
       beforeEach(() => {
-        store1 = createMergeableStore('s1');
+        store1 = createStore();
         persister1 = getPersister(store1, db, {
           mode: 'json',
           autoLoadIntervalSeconds,
         });
-        store2 = createMergeableStore('s2');
+        store2 = createStore();
         persister2 = getPersister(store2, db, {
           mode: 'json',
           autoLoadIntervalSeconds,
