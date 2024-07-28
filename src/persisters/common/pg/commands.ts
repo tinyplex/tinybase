@@ -200,7 +200,7 @@ export const getCommandFunctions = (
                   escapeId(tableName) +
                   WHERE +
                   escapeId(rowIdColumnName) +
-                  '=?',
+                  '=$1',
                 [rowId],
               );
             } else if (!arrayIsEmpty(tableColumnNames)) {
