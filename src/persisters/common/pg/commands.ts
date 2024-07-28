@@ -1,4 +1,3 @@
-import {COMMA, EMPTY_STRING, strRepeat} from '../../../common/strings.ts';
 import type {
   CellOrUndefined,
   Table,
@@ -20,11 +19,13 @@ import {
   arrayIsEmpty,
   arrayJoin,
   arrayMap,
+  arrayNew,
   arrayPush,
 } from '../../../common/array.ts';
 import {collClear, collDel, collHas, collValues} from '../../../common/coll.ts';
-import {isUndefined, promiseAll, size, slice} from '../../../common/other.ts';
-import {mapGet, mapNew, mapSet} from '../../../common/map.ts';
+import {isUndefined, promiseAll, size} from '../../../common/other.ts';
+import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
+import {COMMA} from '../../../common/strings.ts';
 import type {Id} from '../../../@types/common/index.d.ts';
 
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
@@ -34,14 +35,12 @@ const TABLE = 'TABLE';
 const ALTER_TABLE = 'ALTER ' + TABLE;
 const DELETE_FROM = 'DELETE FROM';
 const SELECT_STAR_FROM = SELECT + '*FROM';
-const FROM_PRAGMA_TABLE = 'FROM pragma_table_';
 const WHERE = 'WHERE';
 
 export const getCommandFunctions = (
   cmd: Cmd,
   managedTableNames: string[],
   onIgnoredError: ((error: any) => void) | undefined,
-  useOnConflict?: boolean,
 ): [
   refreshSchema: () => Promise<void>,
   loadTable: (tableName: string, rowIdColumnName: string) => Promise<Table>,
@@ -71,28 +70,15 @@ export const getCommandFunctions = (
     await promiseAll(
       arrayMap(
         await cmd(
-          'SELECT name ' +
-            FROM_PRAGMA_TABLE +
-            'list ' +
-            `WHERE schema='main'AND(type='table'OR type='view')` +
-            'AND name IN(' +
+          SELECT +
+            ' table_name t,column_name c FROM information_schema.columns ' +
+            WHERE +
+            ` table_schema='public'AND table_name IN(` +
             getPlaceholders(managedTableNames) +
-            `)ORDER BY name`,
+            ')',
           managedTableNames,
         ),
-        async ({name}) =>
-          mapSet(
-            schemaMap,
-            name,
-            setNew(
-              arrayMap(
-                await cmd(SELECT + ' name ' + FROM_PRAGMA_TABLE + 'info(?)', [
-                  name,
-                ]),
-                ({name}) => name,
-              ),
-            ),
-          ),
+        async ({t, c}) => setAdd(mapEnsure(schemaMap, t, setNew<Id>), c),
       ),
     );
   };
@@ -158,8 +144,11 @@ export const getCommandFunctions = (
           escapeId(tableName) +
           '(' +
           escapeId(rowIdColumnName) +
-          ` PRIMARY KEY ON CONFLICT REPLACE${arrayJoin(
-            arrayMap(tableColumnNames, (cellId) => COMMA + escapeId(cellId)),
+          ` text PRIMARY KEY${arrayJoin(
+            arrayMap(
+              tableColumnNames,
+              (cellId) => COMMA + escapeId(cellId) + ' json',
+            ),
           )});`,
       );
       mapSet(
@@ -215,14 +204,10 @@ export const getCommandFunctions = (
                 [rowId],
               );
             } else if (!arrayIsEmpty(tableColumnNames)) {
-              await upsert(
-                cmd,
-                tableName,
-                rowIdColumnName,
-                objIds(row),
-                [rowId, ...objValues(row)],
-                useOnConflict,
-              );
+              await upsert(cmd, tableName, rowIdColumnName, objIds(row), [
+                rowId,
+                ...objValues(row),
+              ]);
             }
           }),
         );
@@ -249,7 +234,6 @@ export const getCommandFunctions = (
           rowIdColumnName,
           changingColumnNames,
           args,
-          useOnConflict,
         );
         await cmd(
           DELETE_FROM +
@@ -290,12 +274,9 @@ const upsert = async (
   rowIdColumnName: string,
   changingColumnNames: string[],
   args: any[],
-  useOnConflict = true,
 ) =>
   await cmd(
-    'INSERT ' +
-      (useOnConflict ? EMPTY_STRING : 'OR REPLACE ') +
-      'INTO' +
+    'INSERT INTO' +
       escapeId(tableName) +
       '(' +
       escapeId(rowIdColumnName) +
@@ -306,31 +287,41 @@ const upsert = async (
         ),
       ) +
       ')VALUES' +
-      slice(
-        strRepeat(
-          `,(?${strRepeat(',?', size(changingColumnNames))})`,
-          size(args) / (size(changingColumnNames) + 1),
-        ),
-        1,
-      ) +
-      (useOnConflict
-        ? 'ON CONFLICT(' +
-          escapeId(rowIdColumnName) +
-          ')DO UPDATE SET' +
-          arrayJoin(
-            arrayMap(
-              changingColumnNames,
-              (columnName) =>
-                escapeId(columnName) + '=excluded.' + escapeId(columnName),
-            ),
-            COMMA,
-          )
-        : EMPTY_STRING),
+      getUpsertPlaceholders(args, size(changingColumnNames) + 1) +
+      ('ON CONFLICT(' +
+        escapeId(rowIdColumnName) +
+        ')DO UPDATE SET' +
+        arrayJoin(
+          arrayMap(
+            changingColumnNames,
+            (columnName) =>
+              escapeId(columnName) + '=excluded.' + escapeId(columnName),
+          ),
+          COMMA,
+        )),
     arrayMap(args, (arg) => arg ?? null),
   );
 
 const getPlaceholders = (array: any[]) =>
   arrayJoin(
-    arrayMap(array, () => '?'),
+    arrayMap(array, (_, index) => '$' + (index + 1)),
+    COMMA,
+  );
+
+const getUpsertPlaceholders = (array: any[], columnCount: number) =>
+  arrayJoin(
+    arrayNew(
+      size(array) / columnCount,
+      (row) =>
+        '(' +
+        arrayJoin(
+          arrayNew(
+            columnCount,
+            (column) => '$' + (row * columnCount + column + 1),
+          ),
+          COMMA,
+        ) +
+        ')',
+    ),
     COMMA,
   );

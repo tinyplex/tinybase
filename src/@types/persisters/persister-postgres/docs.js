@@ -43,6 +43,7 @@
    * // -> true
    *
    * persister.destroy();
+   * await sql.end();
    * ```
    * @category Getter
    * @since 5.2.0
@@ -87,6 +88,37 @@
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment.
  * @returns A reference to the new PostgresPersister object.
+ * @example
+ * This example creates a PostgresPersister object and persists the Store to a
+ * local PostgreSQL database as a JSON serialization into the `my_tinybase`
+ * table. It makes a change to the database directly and then reloads it back
+ * into the Store.
+ *
+ * ```js
+ * import postgres from 'postgres';
+ * import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
+ * import {createStore} from 'tinybase';
+ *
+ * const sql = postgres('postgres://localhost:5432/tinybase');
+ * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+ * const persister = await createPostgresPersister(store, sql, 'my_tinybase');
+ *
+ * await persister.save();
+ * // Store will be saved to the database.
+ *
+ * console.log(await sql`SELECT * FROM my_tinybase;`);
+ * // -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
+ *
+ * const json = '[{"pets":{"felix":{"species":"cat"}}},{}]';
+ * await sql`UPDATE my_tinybase SET store = ${json} WHERE _id = '_';`;
+ *
+ * await persister.load();
+ * console.log(store.getTables());
+ * // -> {pets: {felix: {species: 'cat'}}}
+ *
+ * persister.destroy();
+ * await sql.end();
+ * ```
  * @category Creation
  * @since 5.2.0
  */
