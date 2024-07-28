@@ -88,7 +88,7 @@ export const getCommandFunctions = (
             name,
             setNew(
               arrayMap(
-                await cmd(SELECT + ' name ' + FROM_PRAGMA_TABLE + 'info(?)', [
+                await cmd(SELECT + ' name ' + FROM_PRAGMA_TABLE + 'info($1)', [
                   name,
                 ]),
                 ({name}) => name,
@@ -213,7 +213,7 @@ export const getCommandFunctions = (
                   escapeId(tableName) +
                   WHERE +
                   escapeId(rowIdColumnName) +
-                  '=?',
+                  '=$1',
                 [rowId],
               );
             } else if (!arrayIsEmpty(tableColumnNames)) {
@@ -327,18 +327,20 @@ const upsert = async (
 
 const getPlaceholders = (array: any[]) =>
   arrayJoin(
-    arrayMap(array, () => '?'),
+    arrayMap(array, (_, index) => '$' + (index + 1)),
     COMMA,
   );
-
 const getUpsertPlaceholders = (array: any[], columnCount: number) =>
   arrayJoin(
     arrayNew(
       size(array) / columnCount,
-      () =>
+      (row) =>
         '(' +
         arrayJoin(
-          arrayNew(columnCount, () => '?'),
+          arrayNew(
+            columnCount,
+            (column) => '$' + (row * columnCount + column + 1),
+          ),
           COMMA,
         ) +
         ')',

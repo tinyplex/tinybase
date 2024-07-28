@@ -586,7 +586,9 @@ const getMockedDatabase = <Location>(
     get: async (location: Location): Promise<Content | void> =>
       JSON.parse(
         (
-          await cmd(location, 'SELECT store FROM tinybase WHERE _id = ?', ['_'])
+          await cmd(location, 'SELECT store FROM tinybase WHERE _id = $1', [
+            '_',
+          ])
         )[0]['store'],
       ),
     set: async (location: Location, rawContent: any): Promise<void> =>
@@ -598,7 +600,7 @@ const getMockedDatabase = <Location>(
       );
       await cmd(
         location,
-        'INSERT INTO tinybase (_id, store) VALUES (?, ?) ' +
+        'INSERT INTO tinybase (_id, store) VALUES ($1, $2) ' +
           'ON CONFLICT DO UPDATE SET store=excluded.store',
         ['_', rawContent],
       );
