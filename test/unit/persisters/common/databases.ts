@@ -18,7 +18,7 @@ import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync'
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
-import {suppressWarnings} from '../common/other.ts';
+import {suppressWarnings} from '../../common/other.ts';
 
 export type SqliteWasmDb = [sqlite3: any, db: any];
 
