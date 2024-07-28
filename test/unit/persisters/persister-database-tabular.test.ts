@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 import 'fake-indexeddb/auto';
 import type {Persister, Store} from 'tinybase';
-import {VARIANTS, getDatabaseFunctions} from './sqlite.ts';
+import {VARIANTS, getDatabaseFunctions} from './common/databases.ts';
 import {mockFetchWasm, pause} from '../common/other.ts';
 import {Database} from 'sqlite3';
 import {createStore} from 'tinybase';
