@@ -51,7 +51,7 @@ type DatabaseVariant<Database> = [
     storeTableOrConfig?: string | DatabasePersisterConfig,
     onSqlCommand?: (sql: string, args?: any[]) => void,
     onIgnoredError?: (error: any) => void,
-  ) => Persister,
+  ) => Promise<Persister>,
   cmd: (
     db: Database,
     sql: string,
@@ -118,18 +118,18 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
     async (): Promise<SqlAndName> => {
       const sql = postgres('postgres://localhost:5432');
       const name = 'tinybase_' + getUniqueId();
-      sql`CREATE DATABASE ${name}`;
+      await sql`CREATE DATABASE ${sql(name)}`;
       return [sql, name];
     },
     ['getSql', (sql: SqlAndName) => sql[0]],
-    (
+    async (
       store: Store,
       [sql]: SqlAndName,
       storeTableOrConfig?: string | DatabasePersisterConfig,
       onSqlCommand?: (sql: string, args?: any[]) => void,
       onIgnoredError?: (error: any) => void,
     ) =>
-      (createPostgresPersister as any)(
+      await (createPostgresPersister as any)(
         store,
         sql,
         storeTableOrConfig,
@@ -139,7 +139,7 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
     async ([sql]: SqlAndName, sqlStr: string, args: any[] = []) =>
       await sql.unsafe(sqlStr, args),
     async ([sql, name]: SqlAndName) => {
-      sql`DROP DATABASE ${name}`;
+      await sql`DROP DATABASE ${sql(name)}`;
       await sql.end();
     },
   ],
