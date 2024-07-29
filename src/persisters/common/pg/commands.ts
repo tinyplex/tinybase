@@ -67,19 +67,17 @@ export const getCommandFunctions = (
 
   const refreshSchema = async (): Promise<void> => {
     collClear(schemaMap);
-    await promiseAll(
-      arrayMap(
-        await cmd(
-          SELECT +
-            ' table_name t,column_name c FROM information_schema.columns ' +
-            WHERE +
-            ` table_schema='public'AND table_name IN(` +
-            getPlaceholders(managedTableNames) +
-            ')',
-          managedTableNames,
-        ),
-        async ({t, c}) => setAdd(mapEnsure(schemaMap, t, setNew<Id>), c),
+    arrayMap(
+      await cmd(
+        SELECT +
+          ' table_name tn,column_name cn FROM information_schema.columns ' +
+          WHERE +
+          ` table_schema='public'AND table_name IN(` +
+          getPlaceholders(managedTableNames) +
+          ')',
+        managedTableNames,
       ),
+      ({tn, cn}) => setAdd(mapEnsure(schemaMap, tn, setNew<Id>), cn),
     );
   };
 
