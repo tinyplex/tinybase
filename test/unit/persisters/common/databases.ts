@@ -143,7 +143,7 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
     async ([sql]: SqlAndName, sqlStr: string, args: any[] = []) =>
       await sql.unsafe(sqlStr, args),
     async ([sql, name]: SqlAndName) => {
-      await sql.end();
+      await sql.end({timeout: 1});
 
       const adminSql = postgres('postgres://localhost:5432/');
       await adminSql`SET client_min_messages TO WARNING;`;

@@ -46,7 +46,7 @@ export const createPostgresPersister = (async (
     (listen: ListenMeta) => listen.unlisten().catch(() => 0),
     onSqlCommand,
     onIgnoredError,
-    cmdSql?.release,
+    () => cmdSql?.release?.(),
     3, // StoreOrMergeableStore,
     sql,
     'getSql',
