@@ -573,6 +573,7 @@ const getMockedDatabase = <Location>(
   close: (location: Location) => Promise<void>,
   autoLoadPause = 10,
   autoLoadIntervalSeconds = 0.1,
+  isPostgres = false,
 ): Persistable<Location> => {
   const mockDatabase = {
     beforeEach: mockFetchWasm,
@@ -594,6 +595,9 @@ const getMockedDatabase = <Location>(
     set: async (location: Location, rawContent: any): Promise<void> =>
       await mockDatabase.write(location, JSON.stringify(rawContent)),
     write: async (location: Location, rawContent: any): Promise<void> => {
+      if (isPostgres) {
+        await cmd(location, 'SET client_min_messages TO WARNING;');
+      }
       await cmd(
         location,
         'CREATE TABLE IF NOT EXISTS tinybase ' +

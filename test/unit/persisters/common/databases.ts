@@ -60,6 +60,7 @@ type DatabaseVariant<Database> = [
   close: (db: Database) => Promise<void>,
   autoLoadPause?: number,
   autoLoadIntervalSeconds?: number,
+  isPostgres?: boolean,
 ];
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
@@ -148,6 +149,9 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
       await adminSql`DROP DATABASE ${adminSql(name)}`;
       await adminSql.end();
     },
+    undefined,
+    undefined,
+    true,
   ],
 
   libSql: [
