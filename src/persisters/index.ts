@@ -91,7 +91,7 @@ export const createCustomPersister = <
   ) => Promise<void>,
   addPersisterListener: (
     listener: PersisterListener<Persist>,
-  ) => ListeningHandle,
+  ) => ListeningHandle | Promise<ListeningHandle>,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
   persist?: Persist,
@@ -189,7 +189,7 @@ export const createCustomPersister = <
   ): Promise<Persister<Persist>> => {
     await stopAutoLoad().load(initialContent);
     try {
-      autoLoadHandle = addPersisterListener(async (content, changes) => {
+      autoLoadHandle = await addPersisterListener(async (content, changes) => {
         if (changes || content) {
           /*! istanbul ignore else */
           if (loadSave != 2) {
