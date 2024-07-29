@@ -25,7 +25,7 @@ import {
 } from '../../../common/array.ts';
 import {collClear, collDel, collHas, collValues} from '../../../common/coll.ts';
 import {isUndefined, promiseAll, size} from '../../../common/other.ts';
-import {mapGet, mapNew, mapSet} from '../../../common/map.ts';
+import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
 import type {Id} from '../../../@types/common/index.d.ts';
 
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
@@ -35,7 +35,8 @@ const TABLE = 'TABLE';
 const ALTER_TABLE = 'ALTER ' + TABLE;
 const DELETE_FROM = 'DELETE FROM';
 const SELECT_STAR_FROM = SELECT + '*FROM';
-const FROM_PRAGMA_TABLE = 'FROM pragma_table_';
+const FROM = 'FROM ';
+const PRAGMA_TABLE = 'pragma_table_';
 const WHERE = 'WHERE';
 
 export const getCommandFunctions = (
@@ -69,33 +70,22 @@ export const getCommandFunctions = (
 
   const refreshSchema = async (): Promise<void> => {
     collClear(schemaMap);
-    await promiseAll(
-      arrayMap(
-        await cmd(
-          SELECT +
-            ' name ' +
-            FROM_PRAGMA_TABLE +
-            'list ' +
-            `WHERE schema='main'AND type IN('table','view')` +
-            'AND name IN(' +
-            getPlaceholders(managedTableNames) +
-            `)ORDER BY name`,
-          managedTableNames,
-        ),
-        async ({name}) =>
-          mapSet(
-            schemaMap,
-            name,
-            setNew(
-              arrayMap(
-                await cmd(SELECT + ' name ' + FROM_PRAGMA_TABLE + 'info($1)', [
-                  name,
-                ]),
-                ({name}) => name,
-              ),
-            ),
-          ),
+    arrayMap(
+      await cmd(
+        SELECT +
+          ' t.name tn,c.name cn ' +
+          FROM +
+          PRAGMA_TABLE +
+          'list()t,' +
+          PRAGMA_TABLE +
+          'info(t.name)c ' +
+          WHERE +
+          ` t.schema='main'AND t.type IN('table','view')AND t.name IN(` +
+          getPlaceholders(managedTableNames) +
+          ')ORDER BY t.name,c.name',
+        managedTableNames,
       ),
+      ({tn, cn}) => setAdd(mapEnsure(schemaMap, tn, setNew<Id>), cn),
     );
   };
 
@@ -330,6 +320,7 @@ const getPlaceholders = (array: any[]) =>
     arrayMap(array, (_, index) => '$' + (index + 1)),
     COMMA,
   );
+
 const getUpsertPlaceholders = (array: any[], columnCount: number) =>
   arrayJoin(
     arrayNew(
