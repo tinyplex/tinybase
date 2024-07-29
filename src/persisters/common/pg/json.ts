@@ -22,7 +22,7 @@ export const createJsonPgPersister = <
   cmd: Cmd,
   addPersisterListener: (
     listener: PersisterListener<Persist>,
-  ) => ListeningHandle,
+  ) => Promise<ListeningHandle>,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError: ((error: any) => void) | undefined,
   destroyImpl: () => void,
