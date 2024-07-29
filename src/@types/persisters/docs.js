@@ -1345,7 +1345,7 @@
  * @param addPersisterListener A function that will register a `listener`
  * listener on underlying changes to the persistence layer. You can return a
  * listening handle that will be provided again when `delPersisterListener` is
- * called.
+ * called. This function can be asynchronous.
  * @param delPersisterListener A function that will unregister the listener from
  * the underlying changes to the persistence layer. It receives whatever was
  * returned from your `addPersisterListener` implementation.

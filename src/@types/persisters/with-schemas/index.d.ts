@@ -201,7 +201,7 @@ export function createCustomPersister<
   ) => Promise<void>,
   addPersisterListener: (
     listener: PersisterListener<Schemas, Persist>,
-  ) => ListeningHandle,
+  ) => ListeningHandle | Promise<ListeningHandle>,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
   persist?: Persist,
