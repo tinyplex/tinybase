@@ -4,15 +4,15 @@ import type {
   createPostgresPersister as createPostgresPersisterDecl,
 } from '../../@types/persisters/persister-postgres/index.d.ts';
 import {UpdateListener, createPgPersister} from '../common/pg/create.ts';
-import {collForEach, collValues} from '../../common/coll.ts';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {TINYBASE} from '../../common/strings.ts';
 import {arrayMap} from '../../common/array.ts';
+import {collValues} from '../../common/coll.ts';
 import {promiseAll} from '../../common/other.ts';
 
-type TablesAndListener = [Set<string>, listener: ListenMeta];
+const TRIGGER = TINYBASE;
 
 export const createPostgresPersister = (async (
   store: Store | MergeableStore,
@@ -29,28 +29,21 @@ export const createPostgresPersister = (async (
     async (
       listener: UpdateListener,
       managedTableNamesSet: Set<string>,
-    ): Promise<TablesAndListener> => {
-      const listenerSql = await sql.listen(TINYBASE, (value: string) =>
+    ): Promise<ListenMeta> => {
+      const listen = await sql.listen(TRIGGER, (value: string) =>
         listener?.(value),
       );
       // eslint-disable-next-line max-len
-      await sql`CREATE OR REPLACE FUNCTION ${sql(TINYBASE)}()RETURNS trigger AS $t$ BEGIN PERFORM pg_notify(${sql(TINYBASE)},TG_TABLE_NAME);END;$t$ LANGUAGE plpgsql;`;
+      await sql`CREATE OR REPLACE FUNCTION ${sql(TRIGGER)}()RETURNS trigger AS $t$ BEGIN PERFORM pg_notify('${sql.unsafe(TRIGGER)}',TG_TABLE_NAME);RETURN NULL;END;$t$ LANGUAGE plpgsql;`;
       await promiseAll(
         arrayMap(collValues(managedTableNamesSet), async (tableName) => {
           // eslint-disable-next-line max-len
-          await sql`CREATE OR REPLACE TRIGGER ${sql(TINYBASE + tableName)} AFTER INSERT OR UPDATE OR DELETE ON ${sql(tableName)} EXECUTE FUNCTION ${sql(TINYBASE)}()`;
-          return TINYBASE + tableName;
+          await sql`CREATE OR REPLACE TRIGGER ${sql(TRIGGER + tableName)} AFTER INSERT OR UPDATE OR DELETE ON ${sql(tableName)} EXECUTE FUNCTION ${sql(TRIGGER)}()`;
         }),
       );
-      return [managedTableNamesSet, listenerSql];
+      return listen;
     },
-    async ([managedTableNamesSet, listenerConnection]: TablesAndListener) => {
-      listenerConnection.unlisten();
-      collForEach(
-        managedTableNamesSet,
-        (tableName) => sql`DROP TRIGGER ${sql(TINYBASE + tableName)}`,
-      );
-    },
+    (listen: ListenMeta) => listen.unlisten().catch(() => 0),
     onSqlCommand,
     onIgnoredError,
     cmdSql?.release,
