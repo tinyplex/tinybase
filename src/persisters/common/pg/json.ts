@@ -64,8 +64,9 @@ export const createJsonPgPersister = <
     });
 
   const destroy = () => {
+    persister.stopAutoLoad().stopAutoSave();
     destroyImpl();
-    return persister.stopAutoLoad().stopAutoSave();
+    return persister;
   };
 
   const persister: any = createCustomPersister(
