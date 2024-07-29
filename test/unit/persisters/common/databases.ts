@@ -146,7 +146,8 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
       await sql.end();
 
       const adminSql = postgres('postgres://localhost:5432/');
-      await adminSql`DROP DATABASE ${adminSql(name)}`;
+      await adminSql`SET client_min_messages TO WARNING;`;
+      await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)}`;
       await adminSql.end();
     },
     undefined,
