@@ -184,7 +184,7 @@ describe.each([
             ],
           ],
         });
-        await cmd(db, 'UPDATE tinybase SET store=? WHERE _id=?', [
+        await cmd(db, 'UPDATE tinybase SET store=$1 WHERE _id=$2', [
           '[{"t1":{"r1":{"c1":2}}},{"v1":2}]',
           '_',
         ]);
@@ -271,7 +271,7 @@ describe.each([
 
         test('then delete', async () => {
           await persister.load();
-          await cmd(db, 'UPDATE tinybase SET store=? WHERE _id=?', [
+          await cmd(db, 'UPDATE tinybase SET store=$1 WHERE _id=$2', [
             '[{},{}]',
             '_',
           ]);

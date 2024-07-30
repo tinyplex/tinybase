@@ -324,6 +324,7 @@ export const getDatabaseFunctions = <Database>(
     sql: string,
     args?: any[],
   ) => Promise<{[id: string]: any}[]>,
+  isPostgres = false,
 ): [
   (db: Database) => Promise<DumpOut>,
   (db: Database, dump: DumpIn) => Promise<void>,
@@ -333,17 +334,19 @@ export const getDatabaseFunctions = <Database>(
     (
       await cmd(
         db,
-        'SELECT t.name tn, c.name cn, LOWER(c.type) ty ' +
-          'FROM pragma_table_list() t, ' +
-          'pragma_table_info(t.name) c ' +
-          `WHERE t.schema='main' AND t.type = 'table' ` +
-          'AND t.name NOT LIKE $1 ' +
-          'AND t.name NOT LIKE $2',
-        // 'SELECT table_name tn, column_name cn, data_type ty ' +
-        //   'FROM information_schema.columns ' +
-        //   `WHERE table_schema='public' ` +
-        //   'AND table_name NOT LIKE $1 ' +
-        //   'AND table_name NOT LIKE $2',
+
+        isPostgres
+          ? 'SELECT table_name tn, column_name cn, data_type ty ' +
+              'FROM information_schema.columns ' +
+              `WHERE table_schema='public' ` +
+              'AND table_name NOT LIKE $1 ' +
+              'AND table_name NOT LIKE $2'
+          : 'SELECT t.name tn, c.name cn, LOWER(c.type) ty ' +
+              'FROM pragma_table_list() t, ' +
+              'pragma_table_info(t.name) c ' +
+              `WHERE t.schema='main' AND t.type = 'table' ` +
+              'AND t.name NOT LIKE $1 ' +
+              'AND t.name NOT LIKE $2',
         ['%sql%', '%electric%'],
       )
     ).forEach(({tn, cn, ty}) => {
