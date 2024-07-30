@@ -18,9 +18,10 @@ describe.each(Object.entries(VARIANTS))(
       close,
       autoLoadPause = 20,
       autoLoadIntervalSeconds = 0.02,
+      isPostgres,
     ],
   ) => {
-    const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
+    const [getDatabase, setDatabase] = getDatabaseFunctions(cmd, isPostgres);
 
     let db: Database;
     let store: Store;
@@ -176,7 +177,7 @@ describe.each(Object.entries(VARIANTS))(
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
-        await cmd(db, 'UPDATE tinybase SET store=? WHERE _id=?', [
+        await cmd(db, 'UPDATE tinybase SET store=$1 WHERE _id=$2', [
           '[{"t1":{"r1":{"c1":2}}},{"v1":2}]',
           '_',
         ]);
@@ -263,7 +264,7 @@ describe.each(Object.entries(VARIANTS))(
 
         test('then delete', async () => {
           await persister.load();
-          await cmd(db, 'UPDATE tinybase SET store=? WHERE _id=?', [
+          await cmd(db, 'UPDATE tinybase SET store=$1 WHERE _id=$2', [
             '[{},{}]',
             '_',
           ]);
