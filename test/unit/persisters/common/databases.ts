@@ -40,7 +40,9 @@ type AbstractPowerSyncDatabase = {
   onChange(options: SQLWatchOptions): AsyncIterable<WatchOnChangeEvent>;
 };
 
-type Dump = {[name: string]: [sql: string, rows: {[column: string]: any}[]]};
+type DumpRows = {[column: string]: any}[];
+type DumpOut = {[table: string]: [{[column: string]: string}, rows: DumpRows]};
+type DumpIn = {[table: string]: [sql: string, rows: DumpRows]};
 
 type DatabaseVariant<Database> = [
   getOpenDatabase: () => Promise<Database>,
@@ -323,29 +325,42 @@ export const getDatabaseFunctions = <Database>(
     args?: any[],
   ) => Promise<{[id: string]: any}[]>,
 ): [
-  (db: Database) => Promise<Dump>,
-  (db: Database, dump: Dump) => Promise<void>,
+  (db: Database) => Promise<DumpOut>,
+  (db: Database, dump: DumpIn) => Promise<void>,
 ] => {
-  const getDatabase = async (db: Database): Promise<Dump> =>
-    Object.fromEntries(
-      await Promise.all(
-        (
-          await cmd(
-            db,
-            'SELECT sql, name FROM sqlite_schema ' +
-              `WHERE type = 'table'` +
-              ' AND name NOT LIKE ? ' +
-              ' AND name NOT LIKE ?',
-            ['%sql%', '%electric%'],
-          )
-        ).map(async ({sql, name}: any) => [
-          name,
-          [sql, await cmd(db, 'SELECT * FROM ' + escapeId(name))],
-        ]),
-      ),
+  const getDatabase = async (db: Database): Promise<DumpOut> => {
+    const dump: DumpOut = {};
+    (
+      await cmd(
+        db,
+        'SELECT t.name tn, c.name cn, LOWER(c.type) ty ' +
+          'FROM pragma_table_list() t, ' +
+          'pragma_table_info(t.name) c ' +
+          `WHERE t.schema='main' AND t.type = 'table' ` +
+          'AND t.name NOT LIKE $1 ' +
+          'AND t.name NOT LIKE $2',
+        // 'SELECT table_name tn, column_name cn, data_type ty ' +
+        //   'FROM information_schema.columns ' +
+        //   `WHERE table_schema='public' ` +
+        //   'AND table_name NOT LIKE $1 ' +
+        //   'AND table_name NOT LIKE $2',
+        ['%sql%', '%electric%'],
+      )
+    ).forEach(({tn, cn, ty}) => {
+      if (!dump[tn]) {
+        dump[tn] = [{}, [{}]];
+      }
+      dump[tn][0][cn] = ty;
+    });
+    await Promise.all(
+      Object.keys(dump).map(async (tn) => {
+        dump[tn][1] = await cmd(db, 'SELECT * FROM ' + escapeId(tn));
+      }),
     );
+    return dump;
+  };
 
-  const setDatabase = async (db: Database, dump: Dump) => {
+  const setDatabase = async (db: Database, dump: DumpIn) => {
     await cmd(db, 'BEGIN');
     await Promise.all(
       Object.entries(dump).map(async ([name, [sql, rows]]) => {
