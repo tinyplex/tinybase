@@ -150,8 +150,11 @@ export const getCommandFunctions = (
           escapeId(tableName) +
           '(' +
           escapeId(rowIdColumnName) +
-          ` PRIMARY KEY${arrayJoin(
-            arrayMap(tableColumnNames, (cellId) => COMMA + escapeId(cellId)),
+          `text PRIMARY KEY${arrayJoin(
+            arrayMap(
+              tableColumnNames,
+              (columnName) => COMMA + escapeId(columnName) + 'json',
+            ),
           )});`,
       );
       mapSet(
@@ -166,7 +169,11 @@ export const getCommandFunctions = (
         ...arrayMap(tableColumnNames, async (columnName) => {
           if (!collDel(columnNamesAccountedFor, columnName)) {
             await cmd(
-              ALTER_TABLE + escapeId(tableName) + 'ADD' + escapeId(columnName),
+              ALTER_TABLE +
+                escapeId(tableName) +
+                'ADD' +
+                escapeId(columnName) +
+                'json',
             );
             setAdd(tableSchemaColumns, columnName);
           }
