@@ -142,10 +142,10 @@ export const getCommandFunctions = (
           escapeId(tableName) +
           '(' +
           escapeId(rowIdColumnName) +
-          ` text PRIMARY KEY${arrayJoin(
+          `text PRIMARY KEY${arrayJoin(
             arrayMap(
               tableColumnNames,
-              (cellId) => COMMA + escapeId(cellId) + ' json',
+              (columnName) => COMMA + escapeId(columnName) + 'json',
             ),
           )});`,
       );
@@ -161,7 +161,11 @@ export const getCommandFunctions = (
         ...arrayMap(tableColumnNames, async (columnName) => {
           if (!collDel(columnNamesAccountedFor, columnName)) {
             await cmd(
-              ALTER_TABLE + escapeId(tableName) + 'ADD' + escapeId(columnName),
+              ALTER_TABLE +
+                escapeId(tableName) +
+                'ADD' +
+                escapeId(columnName) +
+                'json',
             );
             setAdd(tableSchemaColumns, columnName);
           }
