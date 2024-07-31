@@ -5,7 +5,7 @@ import type {
 import {
   UpdateListener,
   createSqlitePersister,
-} from '../common/database/sqlite/create.ts';
+} from '../common/database/sqlite.ts';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
