@@ -256,7 +256,7 @@ export const getCommandFunctions = (
           deleteRowIds,
         );
       } else if (collHas(schemaMap, tableName)) {
-        await cmd(DELETE_FROM + escapeId(tableName) + WHERE + ' 1');
+        await cmd(DELETE_FROM + escapeId(tableName) + WHERE + ' true');
       }
     }
   };
