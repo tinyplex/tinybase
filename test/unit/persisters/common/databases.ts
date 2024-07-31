@@ -161,7 +161,6 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
     undefined,
     true,
   ],
-
   libSql: [
     async (): Promise<Client> => createClient({url: 'file::memory:'}),
     ['getClient', (client: Client) => client],
@@ -186,6 +185,8 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
     ): Promise<{[id: string]: any}[]> =>
       (await client.execute({sql, args})).rows,
     async (client: Client) => client.close(),
+    200,
+    0.2,
   ],
   electricSql: [
     async (): Promise<Electric> =>
