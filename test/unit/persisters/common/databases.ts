@@ -149,10 +149,10 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
       cmdSql.release();
       await sql.end({timeout: 1});
 
-      // const adminSql = postgres('postgres://localhost:5432/');
-      // await adminSql`SET client_min_messages TO WARNING;`;
-      // await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)}`;
-      // await adminSql.end();
+      const adminSql = postgres('postgres://localhost:5432/');
+      await adminSql`SET client_min_messages TO WARNING;`;
+      await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)}`;
+      await adminSql.end();
     },
     undefined,
     undefined,
