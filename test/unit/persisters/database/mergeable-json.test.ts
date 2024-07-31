@@ -22,9 +22,10 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       close,
       autoLoadPause = 20,
       autoLoadIntervalSeconds = 0.02,
+      isPostgres,
     ],
   ) => {
-    const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
+    const [getDatabase, setDatabase] = getDatabaseFunctions(cmd, isPostgres);
 
     let db: any;
     let store: MergeableStore;
