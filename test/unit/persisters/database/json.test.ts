@@ -257,12 +257,12 @@ describe.each(Object.entries(ALL_VARIANTS))(
 
       test('table, empty, missing key', async () => {
         await setDatabase(db, {
-          tinybase: ['CREATE TABLE "tinybase"("store"json)', []],
+          tinybase: ['CREATE TABLE "tinybase"("store"text)', []],
         });
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: 'text', store: 'text'},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
