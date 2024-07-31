@@ -145,6 +145,7 @@
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
  * persister.destroy();
+ * await sql`DROP TABLE IF EXISTS pets`;
  * await sql.end();
  * ```
  * @category Creation
