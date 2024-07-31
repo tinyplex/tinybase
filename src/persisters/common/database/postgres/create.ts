@@ -4,12 +4,12 @@ import type {
   Persister,
   PersisterListener,
   Persists,
-} from '../../../../@types/persisters/index.js';
+} from '../../../../@types/persisters/index.d.ts';
 import {Cmd} from './commands.ts';
 import {collValues} from '../../../../common/coll.ts';
 import {createJsonPgPersister} from './json.ts';
 import {createTabularPgPersister} from './tabular.ts';
-import {getConfigStructures} from './config.ts';
+import {getConfigStructures} from '../config.ts';
 
 export type UpdateListener = (tableName: string) => void;
 

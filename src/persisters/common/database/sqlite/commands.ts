@@ -14,7 +14,7 @@ import {
   objValues,
 } from '../../../../common/obj.ts';
 import {IdSet2, setAdd, setNew} from '../../../../common/set.ts';
-import {SELECT, escapeId} from './common.ts';
+import {SELECT, escapeId} from '../common.ts';
 import {
   arrayFilter,
   arrayIsEmpty,

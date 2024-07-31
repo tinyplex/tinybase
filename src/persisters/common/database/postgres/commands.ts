@@ -2,7 +2,7 @@ import type {
   CellOrUndefined,
   Table,
   ValueOrUndefined,
-} from '../../../../@types/store/index.js';
+} from '../../../../@types/store/index.d.ts';
 import {
   IdObj,
   objDel,
@@ -13,7 +13,7 @@ import {
   objValues,
 } from '../../../../common/obj.ts';
 import {IdSet2, setAdd, setNew} from '../../../../common/set.ts';
-import {SELECT, escapeId} from './common.ts';
+import {SELECT, escapeId} from '../common.ts';
 import {
   arrayFilter,
   arrayIsEmpty,
@@ -182,15 +182,13 @@ export const getCommandFunctions = (
         ),
         ...(!partial && deleteEmptyColumns
           ? arrayMap(collValues(currentColumnNames), async (columnName) => {
-              if (columnName != rowIdColumnName) {
-                await cmd(
-                  ALTER_TABLE +
-                    escapeId(tableName) +
-                    'DROP' +
-                    escapeId(columnName),
-                );
-                collDel(tableSchemaColumns, columnName);
-              }
+              await cmd(
+                ALTER_TABLE +
+                  escapeId(tableName) +
+                  'DROP' +
+                  escapeId(columnName),
+              );
+              collDel(tableSchemaColumns, columnName);
             })
           : []),
       ]);
