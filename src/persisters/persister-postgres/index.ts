@@ -38,6 +38,8 @@ export const createPostgresPersister = (async (
       await promiseAll(
         arrayMap(collValues(managedTableNamesSet), async (tableName) => {
           // eslint-disable-next-line max-len
+          await sql`CREATE TABLE IF NOT EXISTS ${sql(tableName)}("_id"text PRIMARY KEY)`;
+          // eslint-disable-next-line max-len
           await sql`CREATE OR REPLACE TRIGGER ${sql(TRIGGER + tableName)} AFTER INSERT OR UPDATE OR DELETE ON ${sql(tableName)} EXECUTE FUNCTION ${sql(TRIGGER)}()`;
         }),
       );
