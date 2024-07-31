@@ -132,12 +132,10 @@ export const getCommandFunctions = (
     // Create the table or alter or drop columns
     if (!arrayIsEmpty(tableColumnNames) && !collHas(schemaMap, tableName)) {
       await cmd(
-        `CREATE ` +
+        'CREATE ' +
           TABLE +
           escapeId(tableName) +
-          '(' +
-          escapeId(rowIdColumnName) +
-          `text PRIMARY KEY${arrayJoin(
+          `(${escapeId(rowIdColumnName)}text PRIMARY KEY${arrayJoin(
             arrayMap(
               tableColumnNames,
               (columnName) => COMMA + escapeId(columnName) + 'json',
@@ -166,8 +164,9 @@ export const getCommandFunctions = (
               );
               if (index == 0) {
                 await cmd(
-                  // eslint-disable-next-line max-len
-                  `CREATE UNIQUE INDEX pk ON ${escapeId(tableName)}(${escapeId(rowIdColumnName)})`,
+                  'CREATE UNIQUE INDEX pk ON ' +
+                    escapeId(tableName) +
+                    `(${escapeId(rowIdColumnName)})`,
                 );
               }
               setAdd(tableSchemaColumns, columnName);
@@ -246,9 +245,7 @@ export const getCommandFunctions = (
             escapeId(tableName) +
             WHERE +
             escapeId(rowIdColumnName) +
-            'NOT IN(' +
-            getPlaceholders(deleteRowIds) +
-            ')',
+            `NOT IN(${getPlaceholders(deleteRowIds)})`,
           deleteRowIds,
         );
       } else if (collHas(schemaMap, tableName)) {
