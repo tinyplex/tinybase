@@ -124,7 +124,9 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
       await adminSql`CREATE DATABASE ${adminSql(name)}`;
       await adminSql.end();
 
-      const sql = postgres('postgres://localhost:5432/' + name);
+      const sql = postgres('postgres://localhost:5432/' + name, {
+        connection: {client_min_messages: 'warning'},
+      });
       const cmdSql = await sql.reserve();
       return [sql, cmdSql, name];
     },
@@ -149,8 +151,9 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
       cmdSql.release();
       await sql.end({timeout: 1});
 
-      const adminSql = postgres('postgres://localhost:5432/');
-      await adminSql`SET client_min_messages TO WARNING;`;
+      const adminSql = postgres('postgres://localhost:5432/', {
+        connection: {client_min_messages: 'warning'},
+      });
       await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)}`;
       await adminSql.end();
     },
