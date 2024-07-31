@@ -130,51 +130,58 @@ export const getCommandFunctions = (
     }
 
     // Create the table or alter or drop columns
-    if (!arrayIsEmpty(tableColumnNames) && !collHas(schemaMap, tableName)) {
-      await cmd(
-        'CREATE ' +
-          TABLE +
-          escapeId(tableName) +
-          `(${escapeId(rowIdColumnName)}text PRIMARY KEY${arrayJoin(
-            arrayMap(
-              tableColumnNames,
-              (columnName) => COMMA + escapeId(columnName) + 'json',
-            ),
-          )});`,
-      );
-      mapSet(
-        schemaMap,
-        tableName,
-        setNew([rowIdColumnName, ...tableColumnNames]),
-      );
-    } else {
-      const tableSchemaColumns = mapGet(schemaMap, tableName);
-      const currentColumnNames = setNew(collValues(tableSchemaColumns));
-      await promiseAll([
-        ...arrayMap(
-          [rowIdColumnName, ...tableColumnNames],
-          async (columnName, index) => {
-            if (!collDel(currentColumnNames, columnName)) {
-              await cmd(
-                ALTER_TABLE +
-                  escapeId(tableName) +
-                  'ADD' +
-                  escapeId(columnName) +
-                  (index == 0 ? 'text' : 'json'),
-              );
-              if (index == 0) {
+    const tableSchemaColumns = mapGet(schemaMap, tableName);
+    const currentColumnNames = setNew(collValues(tableSchemaColumns));
+
+    if (!arrayIsEmpty(tableColumnNames)) {
+      if (!collHas(schemaMap, tableName)) {
+        await cmd(
+          'CREATE ' +
+            TABLE +
+            escapeId(tableName) +
+            `(${escapeId(rowIdColumnName)}text PRIMARY KEY${arrayJoin(
+              arrayMap(
+                tableColumnNames,
+                (columnName) => COMMA + escapeId(columnName) + 'json',
+              ),
+            )});`,
+        );
+        mapSet(
+          schemaMap,
+          tableName,
+          setNew([rowIdColumnName, ...tableColumnNames]),
+        );
+      } else {
+        await promiseAll(
+          arrayMap(
+            [rowIdColumnName, ...tableColumnNames],
+            async (columnName, index) => {
+              if (!collDel(currentColumnNames, columnName)) {
                 await cmd(
-                  'CREATE UNIQUE INDEX pk ON ' +
+                  ALTER_TABLE +
                     escapeId(tableName) +
-                    `(${escapeId(rowIdColumnName)})`,
+                    'ADD' +
+                    escapeId(columnName) +
+                    (index == 0 ? 'text' : 'json'),
                 );
+                if (index == 0) {
+                  await cmd(
+                    'CREATE UNIQUE INDEX pk ON ' +
+                      escapeId(tableName) +
+                      `(${escapeId(rowIdColumnName)})`,
+                  );
+                }
+                setAdd(tableSchemaColumns, columnName);
               }
-              setAdd(tableSchemaColumns, columnName);
-            }
-          },
-        ),
-        ...(!partial && deleteEmptyColumns
-          ? arrayMap(collValues(currentColumnNames), async (columnName) => {
+            },
+          ),
+        );
+      }
+    }
+    await promiseAll([
+      ...(!partial && deleteEmptyColumns
+        ? arrayMap(collValues(currentColumnNames), async (columnName) => {
+            if (columnName != rowIdColumnName) {
               await cmd(
                 ALTER_TABLE +
                   escapeId(tableName) +
@@ -182,10 +189,10 @@ export const getCommandFunctions = (
                   escapeId(columnName),
               );
               collDel(tableSchemaColumns, columnName);
-            })
-          : []),
-      ]);
-    }
+            }
+          })
+        : []),
+    ]);
 
     // Insert or update or delete data
     if (partial) {
