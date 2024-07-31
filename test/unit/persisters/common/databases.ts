@@ -28,6 +28,7 @@ import postgres from 'postgres';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {suppressWarnings} from '../../common/other.ts';
 
+export type Variants = {[name: string]: DatabaseVariant<any>};
 export type SqliteWasmDb = [sqlite3: any, db: any];
 export type SqlClientsAndName = [Sql, ReservedSql, string];
 
@@ -116,51 +117,70 @@ const getPowerSyncDatabase = (
   };
 };
 
-export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
-  postgres: [
-    async (): Promise<SqlClientsAndName> => {
-      const name = 'tinybase_' + getUniqueId();
-      const adminSql = postgres('postgres://localhost:5432/');
-      await adminSql`CREATE DATABASE ${adminSql(name)}`;
-      await adminSql.end();
-
-      const sql = postgres('postgres://localhost:5432/' + name, {
-        connection: {client_min_messages: 'warning'},
-      });
-      const cmdSql = await sql.reserve();
-      return [sql, cmdSql, name];
-    },
-    ['getSql', (sql: SqlClientsAndName) => sql[0]],
-    async (
+export const SQLITE_MERGEABLE_VARIANTS: Variants = {
+  sqlite3: [
+    async (): Promise<Database> => new sqlite3.Database(':memory:'),
+    ['getDb', (db: Database) => db],
+    (
       store: Store,
-      [sql]: SqlClientsAndName,
+      db: Database,
       storeTableOrConfig?: string | DatabasePersisterConfig,
       onSqlCommand?: (sql: string, args?: any[]) => void,
       onIgnoredError?: (error: any) => void,
     ) =>
-      await (createPostgresPersister as any)(
+      (createSqlite3Persister as any)(
         store,
-        sql,
+        db,
         storeTableOrConfig,
         onSqlCommand,
         onIgnoredError,
       ),
-    async ([, cmdSql]: SqlClientsAndName, sqlStr: string, args: any[] = []) =>
-      await cmdSql.unsafe(sqlStr, args),
-    async ([sql, cmdSql, name]: SqlClientsAndName) => {
-      cmdSql.release();
-      await sql.end({timeout: 1});
-
-      const adminSql = postgres('postgres://localhost:5432/', {
-        connection: {client_min_messages: 'warning'},
-      });
-      await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)}`;
-      await adminSql.end();
-    },
-    undefined,
-    undefined,
-    true,
+    (
+      db: Database,
+      sql: string,
+      args: any[] = [],
+    ): Promise<{[id: string]: any}[]> =>
+      new Promise((resolve, reject) =>
+        db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
+          error
+            ? reject(error)
+            : resolve(rows.map((row: {[id: string]: any}) => ({...row}))),
+        ),
+      ),
+    async (db: Database) => db.close(),
   ],
+  sqliteWasm: [
+    async (): Promise<SqliteWasmDb> =>
+      await suppressWarnings(async () => {
+        const sqlite3 = await sqlite3InitModule();
+        const db = new sqlite3.oo1.DB(':memory:', 'c');
+        return [sqlite3, db];
+      }),
+    ['getDb', (db: SqliteWasmDb) => db[1]],
+    (
+      store: Store,
+      [sqlite3, db]: SqliteWasmDb,
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
+      onIgnoredError?: (error: any) => void,
+    ) =>
+      (createSqliteWasmPersister as any)(
+        store,
+        sqlite3,
+        db,
+        storeTableOrConfig,
+        onSqlCommand,
+        onIgnoredError,
+      ),
+    async ([_, db]: SqliteWasmDb, sql: string, args: any[] = []) =>
+      db
+        .exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'})
+        .map((row: {[id: string]: any}) => ({...row})),
+    async ([_, db]: SqliteWasmDb) => await db.close(),
+  ],
+};
+
+export const SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
   libSql: [
     async (): Promise<Client> => createClient({url: 'file::memory:'}),
     ['getClient', (client: Client) => client],
@@ -241,66 +261,6 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
       ps.execute(sql, args).then((result) => result.rows?._array ?? []),
     (ps: AbstractPowerSyncDatabase) => ps.close(),
   ],
-  sqlite3: [
-    async (): Promise<Database> => new sqlite3.Database(':memory:'),
-    ['getDb', (db: Database) => db],
-    (
-      store: Store,
-      db: Database,
-      storeTableOrConfig?: string | DatabasePersisterConfig,
-      onSqlCommand?: (sql: string, args?: any[]) => void,
-      onIgnoredError?: (error: any) => void,
-    ) =>
-      (createSqlite3Persister as any)(
-        store,
-        db,
-        storeTableOrConfig,
-        onSqlCommand,
-        onIgnoredError,
-      ),
-    (
-      db: Database,
-      sql: string,
-      args: any[] = [],
-    ): Promise<{[id: string]: any}[]> =>
-      new Promise((resolve, reject) =>
-        db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
-          error
-            ? reject(error)
-            : resolve(rows.map((row: {[id: string]: any}) => ({...row}))),
-        ),
-      ),
-    async (db: Database) => db.close(),
-  ],
-  sqliteWasm: [
-    async (): Promise<SqliteWasmDb> =>
-      await suppressWarnings(async () => {
-        const sqlite3 = await sqlite3InitModule();
-        const db = new sqlite3.oo1.DB(':memory:', 'c');
-        return [sqlite3, db];
-      }),
-    ['getDb', (db: SqliteWasmDb) => db[1]],
-    (
-      store: Store,
-      [sqlite3, db]: SqliteWasmDb,
-      storeTableOrConfig?: string | DatabasePersisterConfig,
-      onSqlCommand?: (sql: string, args?: any[]) => void,
-      onIgnoredError?: (error: any) => void,
-    ) =>
-      (createSqliteWasmPersister as any)(
-        store,
-        sqlite3,
-        db,
-        storeTableOrConfig,
-        onSqlCommand,
-        onIgnoredError,
-      ),
-    async ([_, db]: SqliteWasmDb, sql: string, args: any[] = []) =>
-      db
-        .exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'})
-        .map((row: {[id: string]: any}) => ({...row})),
-    async ([_, db]: SqliteWasmDb) => await db.close(),
-  ],
   crSqliteWasm: [
     async (): Promise<DB> =>
       await suppressWarnings(async () => await (await initWasm()).open()),
@@ -322,6 +282,59 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
     async (db: DB, sql: string, args: any[] = []) => await db.execO(sql, args),
     async (db: DB) => await db.close(),
   ],
+};
+
+export const POSTGRESQL_VARIANTS: Variants = {
+  postgres: [
+    async (): Promise<SqlClientsAndName> => {
+      const name = 'tinybase_' + getUniqueId();
+      const adminSql = postgres('postgres://localhost:5432/');
+      await adminSql`CREATE DATABASE ${adminSql(name)}`;
+      await adminSql.end();
+
+      const sql = postgres('postgres://localhost:5432/' + name, {
+        connection: {client_min_messages: 'warning'},
+      });
+      const cmdSql = await sql.reserve();
+      return [sql, cmdSql, name];
+    },
+    ['getSql', (sql: SqlClientsAndName) => sql[0]],
+    async (
+      store: Store,
+      [sql]: SqlClientsAndName,
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
+      onIgnoredError?: (error: any) => void,
+    ) =>
+      await (createPostgresPersister as any)(
+        store,
+        sql,
+        storeTableOrConfig,
+        onSqlCommand,
+        onIgnoredError,
+      ),
+    async ([, cmdSql]: SqlClientsAndName, sqlStr: string, args: any[] = []) =>
+      await cmdSql.unsafe(sqlStr, args),
+    async ([sql, cmdSql, name]: SqlClientsAndName) => {
+      cmdSql.release();
+      await sql.end({timeout: 1});
+
+      const adminSql = postgres('postgres://localhost:5432/', {
+        connection: {client_min_messages: 'warning'},
+      });
+      await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)}`;
+      await adminSql.end();
+    },
+    undefined,
+    undefined,
+    true,
+  ],
+};
+
+export const ALL_VARIANTS: Variants = {
+  ...SQLITE_MERGEABLE_VARIANTS,
+  ...SQLITE_NON_MERGEABLE_VARIANTS,
+  ...POSTGRESQL_VARIANTS,
 };
 
 export const getDatabaseFunctions = <Database>(
