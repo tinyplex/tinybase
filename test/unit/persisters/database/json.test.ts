@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 import 'fake-indexeddb/auto';
-import {ALL_VARIANTS, getDatabaseFunctions} from './common/databases.ts';
+import {ALL_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 import type {Persister, Store} from 'tinybase';
-import {mockFetchWasm, pause} from '../common/other.ts';
+import {mockFetchWasm, pause} from '../../common/other.ts';
 import {createStore} from 'tinybase';
 
 describe.each(Object.entries(ALL_VARIANTS))(
