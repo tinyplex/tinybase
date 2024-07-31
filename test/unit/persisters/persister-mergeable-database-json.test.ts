@@ -1,7 +1,10 @@
 /* eslint-disable max-len */
 import 'fake-indexeddb/auto';
 import type {MergeableStore, Persister} from 'tinybase';
-import {VARIANTS, getDatabaseFunctions} from './common/databases.ts';
+import {
+  SQLITE_MERGEABLE_VARIANTS,
+  getDatabaseFunctions,
+} from './common/databases.ts';
 import {mockFetchWasm, pause} from '../common/other.ts';
 import {createMergeableStore} from 'tinybase';
 import {resetHlc} from '../common/mergeable.ts';
@@ -10,10 +13,7 @@ beforeEach(() => {
   resetHlc();
 });
 
-describe.each([
-  ['sqlite3', VARIANTS.sqlite3],
-  ['sqliteWasm', VARIANTS.sqliteWasm],
-])(
+describe.each(Object.entries(SQLITE_MERGEABLE_VARIANTS))(
   '%s',
   (
     _name,
