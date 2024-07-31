@@ -5,8 +5,8 @@ import type {
 } from '../../@types/persisters/persister-postgres/index.d.ts';
 import {
   UpdateListener,
-  createPgPersister,
-} from '../common/database/postgres/create.ts';
+  createPostgresqlPersister,
+} from '../common/database/postgresql.ts';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
@@ -25,7 +25,7 @@ export const createPostgresPersister = (async (
   onIgnoredError?: (error: any) => void,
 ): Promise<PostgresPersister> => {
   const cmdSql = await sql.reserve?.();
-  return createPgPersister(
+  return createPostgresqlPersister(
     store,
     configOrStoreTableName,
     cmdSql?.unsafe,

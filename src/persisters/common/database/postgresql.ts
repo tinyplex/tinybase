@@ -1,20 +1,29 @@
+import {Cmd, SELECT, WHERE, getPlaceholders} from './common.ts';
 import type {
   DatabasePersisterConfig,
   PersistedStore,
   Persister,
   PersisterListener,
   Persists,
-} from '../../../../@types/persisters/index.d.ts';
-import {Cmd} from '../common.ts';
-import {collValues} from '../../../../common/coll.ts';
-import {createJsonPersister} from '../json.ts';
-import {createTabularPersister} from '../tabular.ts';
-import {getConfigStructures} from '../config.ts';
-import {querySchema} from './schema.ts';
+} from '../../../@types/persisters/index.d.ts';
+import {collValues} from '../../../common/coll.ts';
+import {createJsonPersister} from './json.ts';
+import {createTabularPersister} from './tabular.ts';
+import {getConfigStructures} from './config.ts';
 
 export type UpdateListener = (tableName: string) => void;
 
-export const createPgPersister = <
+const querySchema = async (
+  cmd: Cmd,
+  managedTableNames: string[],
+): Promise<any[]> =>
+  await cmd(
+    // eslint-disable-next-line max-len
+    `${SELECT} table_name tn,column_name cn FROM information_schema.columns ${WHERE} table_schema='public'AND table_name IN(${getPlaceholders(managedTableNames)})`,
+    managedTableNames,
+  );
+
+export const createPostgresqlPersister = <
   UpdateListeningHandle,
   Persist extends Persists = Persists.StoreOnly,
 >(
