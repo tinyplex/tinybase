@@ -30,7 +30,7 @@ import {
 import {deleteDB, openDB} from 'idb';
 import type {FetchMock} from 'jest-fetch-mock';
 import type {LocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
-import {VARIANTS} from './databases.ts';
+import {Variants} from './databases.ts';
 import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
 import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
@@ -612,10 +612,11 @@ export const mockIndexedDb = {
   testMissing: true,
 };
 
-export const mockDatabases = Object.entries(VARIANTS).map(([name, variant]) => [
-  name,
-  getMockedDatabase(...variant),
-]) as [name: string, variant: Persistable][];
+export const getMockDatabases = (variants: Variants) =>
+  Object.entries(variants).map(([name, variant]) => [
+    name,
+    getMockedDatabase(...variant),
+  ]) as [name: string, variant: Persistable][];
 
 export const mockYjs: Persistable<YDoc> = {
   autoLoadPause: 100,

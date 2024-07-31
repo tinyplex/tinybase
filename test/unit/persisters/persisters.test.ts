@@ -5,10 +5,10 @@ import {GetLocationMethod, Persistable, nextLoop} from './common/other.ts';
 import type {Persister, Store} from 'tinybase';
 import {createCustomPersister, createStore} from 'tinybase';
 import {
+  getMockDatabases,
   mockAutomerge,
   mockChangesListener,
   mockContentListener,
-  mockDatabases,
   mockFile,
   mockIndexedDb,
   mockLocalStorage,
@@ -20,6 +20,7 @@ import {
   mockSessionStorage,
   mockYjs,
 } from './common/mocks.ts';
+import {ALL_VARIANTS} from './common/databases.ts';
 import {join} from 'path';
 import {pause} from '../common/other.ts';
 import tmp from 'tmp';
@@ -38,7 +39,7 @@ describe.each([
   ['indexedDb', mockIndexedDb],
   ['yjs', mockYjs],
   ['automerge', mockAutomerge],
-  ...mockDatabases,
+  ...getMockDatabases(ALL_VARIANTS),
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;
