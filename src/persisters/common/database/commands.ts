@@ -1,10 +1,20 @@
+import {
+  ALTER_TABLE,
+  Cmd,
+  DELETE_FROM,
+  QuerySchema,
+  SELECT_STAR_FROM,
+  TABLE,
+  WHERE,
+  escapeId,
+  getPlaceholders,
+} from './common.ts';
 import {COMMA, EMPTY_STRING} from '../../../common/strings.ts';
 import type {
   CellOrUndefined,
   Table,
   ValueOrUndefined,
 } from '../../../@types/store/index.d.ts';
-import {Cmd, QuerySchema, SELECT, escapeId, getPlaceholders} from './common.ts';
 import {IdSet2, setAdd, setNew} from '../../../common/set.ts';
 import {
   arrayFilter,
@@ -28,12 +38,6 @@ import {
 import type {Id} from '../../../@types/common/index.d.ts';
 
 export type Schema = IdSet2;
-
-const TABLE = 'TABLE';
-const ALTER_TABLE = 'ALTER ' + TABLE;
-const DELETE_FROM = 'DELETE FROM';
-const SELECT_STAR_FROM = SELECT + '*FROM';
-const WHERE = 'WHERE';
 
 export const getCommandFunctions = (
   cmd: Cmd,

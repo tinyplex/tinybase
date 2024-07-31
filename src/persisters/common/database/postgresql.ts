@@ -12,17 +12,6 @@ import {createTabularPersister} from './tabular.ts';
 import {getConfigStructures} from './config.ts';
 
 export type UpdateListener = (tableName: string) => void;
-
-const querySchema = async (
-  cmd: Cmd,
-  managedTableNames: string[],
-): Promise<any[]> =>
-  await cmd(
-    // eslint-disable-next-line max-len
-    `${SELECT} table_name tn,column_name cn FROM information_schema.columns ${WHERE} table_schema='public'AND table_name IN(${getPlaceholders(managedTableNames)})`,
-    managedTableNames,
-  );
-
 export const createPostgresqlPersister = <
   UpdateListeningHandle,
   Persist extends Persists = Persists.StoreOnly,
@@ -72,7 +61,12 @@ export const createPostgresqlPersister = <
     persist,
     defaultedConfig as any,
     collValues(managedTableNamesSet),
-    querySchema,
+    async (cmd: Cmd, managedTableNames: string[]): Promise<any[]> =>
+      await cmd(
+        // eslint-disable-next-line max-len
+        `${SELECT} table_name tn,column_name cn FROM information_schema.columns ${WHERE} table_schema='public'AND table_name IN(${getPlaceholders(managedTableNames)})`,
+        managedTableNames,
+      ),
     thing,
     getThing,
   );
