@@ -8,8 +8,7 @@ import {
   mockAutomerge,
   mockChangesListener,
   mockContentListener,
-  mockCrSqliteWasm,
-  mockElectricSql,
+  mockDatabases,
   mockFile,
   mockIndexedDb,
   mockLocalStorage,
@@ -17,12 +16,8 @@ import {
   mockMergeableContentListener,
   mockMergeableNoContentListener,
   mockNoContentListener,
-  mockPostgres,
-  mockPowerSync,
   mockRemote,
   mockSessionStorage,
-  mockSqlite3,
-  mockSqliteWasm,
   mockYjs,
 } from './common/mocks.ts';
 import {join} from 'path';
@@ -41,14 +36,9 @@ describe.each([
   ['sessionStorage', mockSessionStorage],
   ['remote', mockRemote],
   ['indexedDb', mockIndexedDb],
-  ['electricSql', mockElectricSql],
-  ['powerSync', mockPowerSync],
-  ['sqlite3', mockSqlite3],
-  ['sqliteWasm', mockSqliteWasm],
-  ['crSqliteWasm', mockCrSqliteWasm],
   ['yjs', mockYjs],
   ['automerge', mockAutomerge],
-  ['postgres', mockPostgres],
+  ...mockDatabases,
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;

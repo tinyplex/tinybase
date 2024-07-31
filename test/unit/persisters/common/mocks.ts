@@ -15,10 +15,8 @@ import type {
   Tables,
   Values,
 } from 'tinybase';
-import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {GetLocationMethod, Persistable} from './other.ts';
-import {SqlClientsAndName, SqliteWasmDb, VARIANTS} from './databases.ts';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createCustomPersister,
@@ -30,11 +28,9 @@ import {
   createSessionPersister,
 } from 'tinybase/persisters/persister-browser';
 import {deleteDB, openDB} from 'idb';
-import {AbstractPowerSyncDatabase} from '@powersync/common';
-import {DB} from '@vlcn.io/crsqlite-wasm';
-import {Database} from 'sqlite3';
 import type {FetchMock} from 'jest-fetch-mock';
 import type {LocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+import {VARIANTS} from './databases.ts';
 import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
 import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
@@ -53,9 +49,6 @@ const UNDEFINED_MARKER = '\uFFFC';
 
 const GET_HOST = 'http://get.com';
 const SET_HOST = 'http://set.com';
-
-const electricSchema = new DbSchema({}, [], []);
-type Electric = ElectricClient<typeof electricSchema>;
 
 const jsonStringWithUndefined = (obj: unknown): string =>
   JSON.stringify(obj, (_key, value) =>
@@ -182,6 +175,112 @@ const getMockedCustom = (
   getChanges: () => customPersisterChanges,
   testMissing: true,
 });
+
+const getMockedStorage = (
+  storage: Storage,
+  getPersister: (store: Store, location: string) => Persister,
+): Persistable => {
+  const mockStorage = {
+    getLocation: async (): Promise<string> => 'test' + Math.random(),
+    getLocationMethod: [
+      'getStorageName',
+      (location) => location,
+    ] as GetLocationMethod<string>,
+    getPersister,
+    get: async (location: string): Promise<Content | void> => {
+      try {
+        return JSON.parse(storage.getItem(location) ?? '');
+      } catch {}
+    },
+    set: async (
+      location: string,
+      content: Content | MergeableContent,
+    ): Promise<void> =>
+      await mockStorage.write(location, JSON.stringify(content)),
+    write: async (location: string, rawContent: any): Promise<void> => {
+      storage.setItem(location, rawContent);
+      window.dispatchEvent(
+        new StorageEvent('storage', {
+          storageArea: storage,
+          key: location,
+          newValue: rawContent,
+        }),
+      );
+      window.dispatchEvent(
+        new StorageEvent('storage', {
+          storageArea: storage,
+          key: location + 'another',
+        }),
+      );
+    },
+    del: async (location: string): Promise<void> =>
+      storage.removeItem(location),
+    testMissing: true,
+  };
+  return mockStorage;
+};
+
+const getMockedDatabase = <Location>(
+  getLocation: () => Promise<Location>,
+  getLocationMethod: GetLocationMethod<Location>,
+  getPersister: (
+    store: Store,
+    location: Location,
+    storeTableOrConfig: DatabasePersisterConfig,
+  ) => Promise<Persister>,
+  cmd: (
+    location: Location,
+    sql: string,
+    args?: any[],
+  ) => Promise<{[id: string]: any}[]>,
+  close: (location: Location) => Promise<void>,
+  autoLoadPause = 10,
+  autoLoadIntervalSeconds = 0.1,
+  _isPostgres = false,
+): Persistable<Location> => {
+  const mockDatabase = {
+    beforeEach: mockFetchWasm,
+    getLocation,
+    getLocationMethod,
+    getPersister: async (store: Store, location: Location) =>
+      await getPersister(store, location, {
+        mode: 'json',
+        autoLoadIntervalSeconds,
+      }),
+    get: async (location: Location): Promise<Content | void> =>
+      JSON.parse(
+        (
+          await cmd(location, 'SELECT store FROM tinybase WHERE _id = $1', [
+            '_',
+          ])
+        )[0]['store'],
+      ),
+    set: async (location: Location, rawContent: any): Promise<void> =>
+      await mockDatabase.write(location, JSON.stringify(rawContent)),
+    write: async (location: Location, rawContent: any): Promise<void> => {
+      await cmd(
+        location,
+        'CREATE TABLE IF NOT EXISTS tinybase ' +
+          '(_id text PRIMARY KEY, store json);',
+      );
+      await cmd(
+        location,
+        'INSERT INTO tinybase (_id, store) VALUES ($1, $2) ' +
+          'ON CONFLICT (_id) DO UPDATE SET store=excluded.store',
+        ['_', rawContent],
+      );
+    },
+    del: async (location: Location) => {
+      try {
+        await close(location);
+      } catch {}
+    },
+    afterEach: async (location: Location) => await mockDatabase.del(location),
+    testMissing: true,
+    autoLoadPause,
+  };
+  return mockDatabase;
+};
 
 export const mockNoContentListener: Persistable<string> = getMockedCustom(
   async (_location: string, rawContent: any): Promise<void> => {
@@ -395,50 +494,6 @@ export const mockCustomSynchronizer: Persistable<
   },
 };
 
-const getMockedStorage = (
-  storage: Storage,
-  getPersister: (store: Store, location: string) => Persister,
-): Persistable => {
-  const mockStorage = {
-    getLocation: async (): Promise<string> => 'test' + Math.random(),
-    getLocationMethod: [
-      'getStorageName',
-      (location) => location,
-    ] as GetLocationMethod<string>,
-    getPersister,
-    get: async (location: string): Promise<Content | void> => {
-      try {
-        return JSON.parse(storage.getItem(location) ?? '');
-      } catch {}
-    },
-    set: async (
-      location: string,
-      content: Content | MergeableContent,
-    ): Promise<void> =>
-      await mockStorage.write(location, JSON.stringify(content)),
-    write: async (location: string, rawContent: any): Promise<void> => {
-      storage.setItem(location, rawContent);
-      window.dispatchEvent(
-        new StorageEvent('storage', {
-          storageArea: storage,
-          key: location,
-          newValue: rawContent,
-        }),
-      );
-      window.dispatchEvent(
-        new StorageEvent('storage', {
-          storageArea: storage,
-          key: location + 'another',
-        }),
-      );
-    },
-    del: async (location: string): Promise<void> =>
-      storage.removeItem(location),
-    testMissing: true,
-  };
-  return mockStorage;
-};
-
 export const mockLocalStorage = getMockedStorage(
   window.localStorage,
   createLocalPersister,
@@ -557,87 +612,10 @@ export const mockIndexedDb = {
   testMissing: true,
 };
 
-const getMockedDatabase = <Location>(
-  getLocation: () => Promise<Location>,
-  getLocationMethod: GetLocationMethod<Location>,
-  getPersister: (
-    store: Store,
-    location: Location,
-    storeTableOrConfig: DatabasePersisterConfig,
-  ) => Promise<Persister>,
-  cmd: (
-    location: Location,
-    sql: string,
-    args?: any[],
-  ) => Promise<{[id: string]: any}[]>,
-  close: (location: Location) => Promise<void>,
-  autoLoadPause = 10,
-  autoLoadIntervalSeconds = 0.1,
-  _isPostgres = false,
-): Persistable<Location> => {
-  const mockDatabase = {
-    beforeEach: mockFetchWasm,
-    getLocation,
-    getLocationMethod,
-    getPersister: async (store: Store, location: Location) =>
-      await getPersister(store, location, {
-        mode: 'json',
-        autoLoadIntervalSeconds,
-      }),
-    get: async (location: Location): Promise<Content | void> =>
-      JSON.parse(
-        (
-          await cmd(location, 'SELECT store FROM tinybase WHERE _id = $1', [
-            '_',
-          ])
-        )[0]['store'],
-      ),
-    set: async (location: Location, rawContent: any): Promise<void> =>
-      await mockDatabase.write(location, JSON.stringify(rawContent)),
-    write: async (location: Location, rawContent: any): Promise<void> => {
-      await cmd(
-        location,
-        'CREATE TABLE IF NOT EXISTS tinybase ' +
-          '(_id text PRIMARY KEY, store json);',
-      );
-      await cmd(
-        location,
-        'INSERT INTO tinybase (_id, store) VALUES ($1, $2) ' +
-          'ON CONFLICT (_id) DO UPDATE SET store=excluded.store',
-        ['_', rawContent],
-      );
-    },
-    del: async (location: Location) => {
-      try {
-        await close(location);
-      } catch {}
-    },
-    afterEach: async (location: Location) => await mockDatabase.del(location),
-    testMissing: true,
-    autoLoadPause,
-  };
-  return mockDatabase;
-};
-
-export const mockElectricSql = getMockedDatabase<Electric>(
-  ...VARIANTS.electricSql,
-);
-
-export const mockPowerSync = getMockedDatabase<AbstractPowerSyncDatabase>(
-  ...VARIANTS.powerSync,
-);
-
-export const mockSqlite3 = getMockedDatabase<Database>(...VARIANTS.sqlite3);
-
-export const mockSqliteWasm = getMockedDatabase<SqliteWasmDb>(
-  ...VARIANTS.sqliteWasm,
-);
-
-export const mockCrSqliteWasm = getMockedDatabase<DB>(...VARIANTS.crSqliteWasm);
-
-export const mockPostgres = getMockedDatabase<SqlClientsAndName>(
-  ...VARIANTS.postgres,
-);
+export const mockDatabases = Object.entries(VARIANTS).map(([name, variant]) => [
+  name,
+  getMockedDatabase(...variant),
+]) as [name: string, variant: Persistable][];
 
 export const mockYjs: Persistable<YDoc> = {
   autoLoadPause: 100,

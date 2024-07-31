@@ -17,6 +17,7 @@ import {
 } from 'tinybase';
 import {
   mockCustomSynchronizer,
+  mockDatabases,
   mockFile,
   mockLocalStorage,
   mockLocalSynchronizer,
@@ -24,8 +25,6 @@ import {
   mockMergeableContentListener,
   mockMergeableNoContentListener,
   mockSessionStorage,
-  mockSqlite3,
-  mockSqliteWasm,
 } from './common/mocks.ts';
 import {pause} from '../common/other.ts';
 import {resetHlc} from '../common/mergeable.ts';
@@ -41,10 +40,11 @@ describe.each([
   ['file', mockFile],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
-  ['sqlite3', mockSqlite3],
-  ['sqliteWasm', mockSqliteWasm],
   ['localSynchronizer', mockLocalSynchronizer],
   ['customSynchronizer', mockCustomSynchronizer],
+  ...mockDatabases.filter(
+    ([name]) => name == 'sqlite3' || name == 'sqliteWasm',
+  ),
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;
