@@ -18,7 +18,7 @@ import type {
 import {DbSchema, ElectricClient} from 'electric-sql/client/model';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {GetLocationMethod, Persistable} from './other.ts';
-import {SqlAndName, SqliteWasmDb, VARIANTS} from './databases.ts';
+import {SqlClientsAndName, SqliteWasmDb, VARIANTS} from './databases.ts';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createCustomPersister,
@@ -638,7 +638,9 @@ export const mockSqliteWasm = getMockedDatabase<SqliteWasmDb>(
 
 export const mockCrSqliteWasm = getMockedDatabase<DB>(...VARIANTS.crSqliteWasm);
 
-export const mockPostgres = getMockedDatabase<SqlAndName>(...VARIANTS.postgres);
+export const mockPostgres = getMockedDatabase<SqlClientsAndName>(
+  ...VARIANTS.postgres,
+);
 
 export const mockYjs: Persistable<YDoc> = {
   autoLoadPause: 100,
