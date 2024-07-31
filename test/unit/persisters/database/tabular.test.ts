@@ -18,9 +18,10 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
       close,
       autoLoadPause = 20,
       autoLoadIntervalSeconds = 0.02,
+      isPostgres,
     ],
   ) => {
-    const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
+    const [getDatabase, setDatabase] = getDatabaseFunctions(cmd, isPostgres);
 
     let db: any;
     let store: Store;
@@ -797,7 +798,14 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
             values: {load: true, save: true},
             autoLoadIntervalSeconds,
           },
-          (sql: string, args?: any[]) => sqlLogs.push([sql, args]),
+          (sql: string, args?: any[]) => {
+            if (
+              !sql.includes('pragma_table_list') &&
+              !sql.includes('information_schema')
+            ) {
+              sqlLogs.push([sql, args]);
+            }
+          },
         );
         store
           .setTables({
@@ -825,10 +833,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
         });
         expect(sqlLogs).toEqual([
           ['BEGIN', undefined],
-          [
-            `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-            ['tinybase_values', 't1', 't2', 't3'],
-          ],
           [
             'CREATE TABLE"t1"("_id"text PRIMARY KEY,"c1"json,"c2"json);',
             undefined,
@@ -879,10 +883,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           });
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
-            [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
             [`ALTER TABLE"tinybase_values"ADD"v3"json`, undefined],
             [
               'INSERT INTO"tinybase_values"("_id","v3")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"v3"=excluded."v3"',
@@ -912,10 +912,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
-            [
               'INSERT INTO"tinybase_values"("_id","v1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1"',
               ['_', 2],
             ],
@@ -943,10 +939,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
-            [
               'INSERT INTO"tinybase_values"("_id","v1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1"',
               ['_', null],
             ],
@@ -973,10 +965,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           });
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
-            [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
             [
               'INSERT INTO"tinybase_values"("_id","v1","v2")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
               ['_', null, null],
@@ -1008,10 +996,7 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           });
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
-            [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
+
             [`ALTER TABLE"t1"ADD"c3"json`, undefined],
             [
               'INSERT INTO"t1"("_id","c3")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c3"=excluded."c3"',
@@ -1041,10 +1026,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
-            [
               'INSERT INTO"t1"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
               ['r1', 2],
             ],
@@ -1071,10 +1052,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           });
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
-            [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
             [
               'INSERT INTO"t1"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
               ['r1', null],
@@ -1107,10 +1084,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           });
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
-            [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
             [`ALTER TABLE"t1"ADD"c3"json`, undefined],
             [
               'INSERT INTO"t1"("_id","c1","c3")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c3"=excluded."c3"',
@@ -1140,10 +1113,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
             [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
-            [
               'INSERT INTO"t1"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
               ['r1', 2],
             ],
@@ -1167,10 +1136,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           });
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
-            [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
             ['DELETE FROM"t1"WHERE"_id"=$1', ['r1']],
             ['END', undefined],
           ]);
@@ -1200,10 +1165,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           });
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
-            [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
             ['CREATE TABLE"t3"("_id"text PRIMARY KEY,"c1"json);', undefined],
             [
               'INSERT INTO"t3"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
@@ -1235,10 +1196,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           });
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
-            [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
             ['ALTER TABLE"t2"ADD"c2"json', undefined],
             [
               'INSERT INTO"t2"("_id","c1","c2")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c2"=excluded."c2"',
@@ -1267,10 +1224,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           });
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
-            [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
             ['DELETE FROM"t2"WHERE 1', undefined],
             ['END', undefined],
           ]);
@@ -1289,10 +1242,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           });
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
-            [
-              `SELECT t.name tn,c.name cn FROM pragma_table_list()t,pragma_table_info(t.name)c WHERE t.schema='main'AND t.type IN('table','view')AND t.name IN($1,$2,$3,$4)ORDER BY t.name,c.name`,
-              ['tinybase_values', 't1', 't2', 't3'],
-            ],
             ['DELETE FROM"t1"WHERE 1', undefined],
             ['DELETE FROM"t2"WHERE 1', undefined],
             ['END', undefined],
