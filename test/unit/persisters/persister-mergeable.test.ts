@@ -16,8 +16,8 @@ import {
   createStore,
 } from 'tinybase';
 import {
+  getMockDatabases,
   mockCustomSynchronizer,
-  mockDatabases,
   mockFile,
   mockLocalStorage,
   mockLocalSynchronizer,
@@ -26,6 +26,7 @@ import {
   mockMergeableNoContentListener,
   mockSessionStorage,
 } from './common/mocks.ts';
+import {SQLITE_MERGEABLE_VARIANTS} from './common/databases.ts';
 import {pause} from '../common/other.ts';
 import {resetHlc} from '../common/mergeable.ts';
 
@@ -42,9 +43,7 @@ describe.each([
   ['sessionStorage', mockSessionStorage],
   ['localSynchronizer', mockLocalSynchronizer],
   ['customSynchronizer', mockCustomSynchronizer],
-  ...mockDatabases.filter(
-    ([name]) => name == 'sqlite3' || name == 'sqliteWasm',
-  ),
+  ...getMockDatabases(SQLITE_MERGEABLE_VARIANTS),
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   let location: string;
   let getLocationMethod: GetLocationMethod<any> | undefined;
