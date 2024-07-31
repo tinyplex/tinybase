@@ -384,7 +384,9 @@ export const getDatabaseFunctions = <Database>(
     });
     await Promise.all(
       Object.keys(dump).map(async (tn) => {
-        dump[tn][1] = await cmd(db, 'SELECT * FROM ' + escapeId(tn));
+        dump[tn][1] = [
+          ...(await cmd(db, 'SELECT * FROM ' + escapeId(tn) + ' ORDER BY 1')),
+        ];
       }),
     );
     return dump;
