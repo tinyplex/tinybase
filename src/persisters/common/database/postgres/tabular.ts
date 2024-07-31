@@ -4,8 +4,12 @@ import type {
   ValueOrUndefined,
   Values,
 } from '../../../../@types/store/index.d.ts';
-import {Cmd, getCommandFunctions} from './commands.ts';
-import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from '../common.ts';
+import {
+  Cmd,
+  DEFAULT_ROW_ID_COLUMN_NAME,
+  QuerySchema,
+  SINGLE_ROW_ID,
+} from '../common.ts';
 import type {
   PersistedChanges,
   PersistedContent,
@@ -20,6 +24,7 @@ import type {DefaultedTabularConfig} from '../config.ts';
 import type {Id} from '../../../../@types/common/index.d.ts';
 import {arrayFilter} from '../../../../common/array.ts';
 import {createCustomPersister} from '../../../index.ts';
+import {getCommandFunctions} from '../commands.ts';
 import {mapMap} from '../../../../common/map.ts';
 
 export const createTabularPgPersister = <
@@ -41,11 +46,12 @@ export const createTabularPgPersister = <
     [valuesLoad, valuesSave, valuesTableName],
   ]: DefaultedTabularConfig,
   managedTableNames: string[],
+  querySchema: QuerySchema,
   thing: any,
   getThing: string,
 ): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
-    getCommandFunctions(cmd, managedTableNames, onIgnoredError);
+    getCommandFunctions(cmd, managedTableNames, querySchema, onIgnoredError);
 
   const saveTables = async (
     tables:

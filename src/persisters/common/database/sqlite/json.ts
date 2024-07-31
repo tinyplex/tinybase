@@ -1,4 +1,4 @@
-import {Cmd, getCommandFunctions} from './commands.ts';
+import {Cmd, QuerySchema, SINGLE_ROW_ID} from '../common.ts';
 import type {
   PersistedContent,
   PersistedStore,
@@ -11,8 +11,8 @@ import {
   jsonStringWithUndefined,
 } from '../../../../common/json.ts';
 import type {DefaultedJsonConfig} from '../config.ts';
-import {SINGLE_ROW_ID} from '../common.ts';
 import {createCustomPersister} from '../../../index.ts';
+import {getCommandFunctions} from '../commands.ts';
 
 export const createJsonSqlitePersister = <
   ListeningHandle,
@@ -28,12 +28,19 @@ export const createJsonSqlitePersister = <
   persist: Persist,
   [storeTableName, storeIdColumnName, storeColumnName]: DefaultedJsonConfig,
   managedTableNames: string[],
+  querySchema: QuerySchema,
   thing: any,
   getThing: string,
   useOnConflict?: boolean,
 ): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
-    getCommandFunctions(cmd, managedTableNames, onIgnoredError, useOnConflict);
+    getCommandFunctions(
+      cmd,
+      managedTableNames,
+      querySchema,
+      onIgnoredError,
+      useOnConflict,
+    );
 
   const getPersisted = async (): Promise<PersistedContent<Persist>> =>
     await transaction(async () => {
