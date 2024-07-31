@@ -3,7 +3,6 @@ import 'fake-indexeddb/auto';
 import type {Persister, Store} from 'tinybase';
 import {VARIANTS, getDatabaseFunctions} from './common/databases.ts';
 import {mockFetchWasm, pause} from '../common/other.ts';
-import {Database} from 'sqlite3';
 import {createStore} from 'tinybase';
 
 describe.each(Object.entries(VARIANTS))(
@@ -23,7 +22,7 @@ describe.each(Object.entries(VARIANTS))(
   ) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd, isPostgres);
 
-    let db: Database;
+    let db: any;
     let store: Store;
     let persister: Persister;
 

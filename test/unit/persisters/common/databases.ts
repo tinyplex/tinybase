@@ -12,11 +12,11 @@ import type {
   SQLWatchOptions,
   WatchOnChangeEvent,
 } from '@powersync/common';
+import type {ReservedSql, Sql} from 'postgres';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import sqlite3, {Database} from 'sqlite3';
 import {DbSchema} from 'electric-sql/client/model';
 import type {ElectricClient} from 'electric-sql/client/model';
-import type {Sql} from 'postgres';
 import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
 import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
@@ -29,7 +29,7 @@ import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {suppressWarnings} from '../../common/other.ts';
 
 export type SqliteWasmDb = [sqlite3: any, db: any];
-export type SqlAndName = [Sql, string];
+export type SqlClientsAndName = [Sql, ReservedSql, string];
 
 const electricSchema = new DbSchema({}, [], []);
 type Electric = ElectricClient<typeof electricSchema>;
@@ -118,19 +118,20 @@ const getPowerSyncDatabase = (
 
 export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
   postgres: [
-    async (): Promise<SqlAndName> => {
+    async (): Promise<SqlClientsAndName> => {
       const name = 'tinybase_' + getUniqueId();
       const adminSql = postgres('postgres://localhost:5432/');
       await adminSql`CREATE DATABASE ${adminSql(name)}`;
       await adminSql.end();
 
       const sql = postgres('postgres://localhost:5432/' + name);
-      return [sql, name];
+      const cmdSql = await sql.reserve();
+      return [sql, cmdSql, name];
     },
-    ['getSql', (sql: SqlAndName) => sql[0]],
+    ['getSql', (sql: SqlClientsAndName) => sql[0]],
     async (
       store: Store,
-      [sql]: SqlAndName,
+      [sql]: SqlClientsAndName,
       storeTableOrConfig?: string | DatabasePersisterConfig,
       onSqlCommand?: (sql: string, args?: any[]) => void,
       onIgnoredError?: (error: any) => void,
@@ -142,15 +143,16 @@ export const VARIANTS: {[name: string]: DatabaseVariant<any>} = {
         onSqlCommand,
         onIgnoredError,
       ),
-    async ([sql]: SqlAndName, sqlStr: string, args: any[] = []) =>
-      await sql.unsafe(sqlStr, args),
-    async ([sql, name]: SqlAndName) => {
+    async ([, cmdSql]: SqlClientsAndName, sqlStr: string, args: any[] = []) =>
+      await cmdSql.unsafe(sqlStr, args),
+    async ([sql, cmdSql, name]: SqlClientsAndName) => {
+      cmdSql.release();
       await sql.end({timeout: 1});
 
-      const adminSql = postgres('postgres://localhost:5432/');
-      await adminSql`SET client_min_messages TO WARNING;`;
-      await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)}`;
-      await adminSql.end();
+      // const adminSql = postgres('postgres://localhost:5432/');
+      // await adminSql`SET client_min_messages TO WARNING;`;
+      // await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)}`;
+      // await adminSql.end();
     },
     undefined,
     undefined,
@@ -334,7 +336,6 @@ export const getDatabaseFunctions = <Database>(
     (
       await cmd(
         db,
-
         isPostgres
           ? 'SELECT table_name tn, column_name cn, data_type ty ' +
               'FROM information_schema.columns ' +
@@ -381,7 +382,7 @@ export const getDatabaseFunctions = <Database>(
                     .join(',') +
                   ') VALUES (' +
                   Object.keys(row)
-                    .map(() => '?')
+                    .map((_, index) => '$' + (index + 1))
                     .join(',') +
                   ')',
                 Object.values(row),
