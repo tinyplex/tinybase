@@ -3,7 +3,10 @@ import type {
   PostgresPersister,
   createPostgresPersister as createPostgresPersisterDecl,
 } from '../../@types/persisters/persister-postgres/index.d.ts';
-import {UpdateListener, createPgPersister} from '../common/pg/create.ts';
+import {
+  UpdateListener,
+  createPgPersister,
+} from '../common/database/postgres/create.ts';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';

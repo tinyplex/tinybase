@@ -7,7 +7,7 @@ import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import type {UnsubscribeFunction} from 'electric-sql/notifiers';
-import {createSqlitePersister} from '../common/sqlite/create.ts';
+import {createSqlitePersister} from '../common/database/sqlite/create.ts';
 
 export const createLibSqlPersister = ((
   store: Store,
