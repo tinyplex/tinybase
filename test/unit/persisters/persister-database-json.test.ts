@@ -191,6 +191,129 @@ describe.each(Object.entries(VARIANTS))(
       });
     });
 
+    describe('Co-erce database', () => {
+      beforeEach(() => {
+        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+      });
+
+      test('no table', async () => {
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          tinybase: [
+            {_id: 'text', store: 'json'},
+            [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
+          ],
+        });
+      });
+
+      test('wrong table, not removed', async () => {
+        await setDatabase(db, {
+          tinybase2: [
+            'CREATE TABLE "tinybase2"("a"text PRIMARY KEY,"b"json)',
+            [{a: 'a', b: 'b'}],
+          ],
+        });
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          tinybase: [
+            {_id: 'text', store: 'json'},
+            [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
+          ],
+          tinybase2: [{a: 'text', b: 'json'}, [{a: 'a', b: 'b'}]],
+        });
+      });
+
+      test('table, empty', async () => {
+        await setDatabase(db, {
+          tinybase: [
+            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY,"store"json)',
+            [],
+          ],
+        });
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          tinybase: [
+            {_id: 'text', store: 'json'},
+            [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
+          ],
+        });
+      });
+
+      test('table, wrong row, removed', async () => {
+        await setDatabase(db, {
+          tinybase: [
+            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY,"store"json)',
+            [{_id: 'a', store: 'b'}],
+          ],
+        });
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          tinybase: [
+            {_id: 'text', store: 'json'},
+            [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
+          ],
+        });
+      });
+
+      test('table, empty, missing key', async () => {
+        await setDatabase(db, {
+          tinybase: ['CREATE TABLE "tinybase"("store"json)', []],
+        });
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          tinybase: [
+            {_id: 'text', store: 'json'},
+            [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
+          ],
+        });
+      });
+
+      test('table, empty, missing column', async () => {
+        await setDatabase(db, {
+          tinybase: ['CREATE TABLE "tinybase"("_id"text PRIMARY KEY)', []],
+        });
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          tinybase: [
+            {_id: 'text', store: 'json'},
+            [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
+          ],
+        });
+      });
+
+      test('table, empty, wrong column, replaced', async () => {
+        await setDatabase(db, {
+          tinybase: [
+            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY,"b"json)',
+            [],
+          ],
+        });
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          tinybase: [
+            {_id: 'text', store: 'json'},
+            [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
+          ],
+        });
+      });
+
+      test('table, empty, extra column, removed', async () => {
+        await setDatabase(db, {
+          tinybase: [
+            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY,"store"json,"b"json)',
+            [],
+          ],
+        });
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          tinybase: [
+            {_id: 'text', store: 'json'},
+            [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
+          ],
+        });
+      });
+    });
+
     describe('Load from database', () => {
       test('nothing', async () => {
         await persister.load();
