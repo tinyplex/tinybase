@@ -284,6 +284,11 @@ export const SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
   ],
 };
 
+export const SQLITE_VARIANTS: Variants = {
+  ...SQLITE_MERGEABLE_VARIANTS,
+  ...SQLITE_NON_MERGEABLE_VARIANTS,
+};
+
 export const POSTGRESQL_VARIANTS: Variants = {
   postgres: [
     async (): Promise<SqlClientsAndName> => {
@@ -331,9 +336,13 @@ export const POSTGRESQL_VARIANTS: Variants = {
   ],
 };
 
-export const ALL_VARIANTS: Variants = {
+export const MERGEABLE_VARIANTS: Variants = {
   ...SQLITE_MERGEABLE_VARIANTS,
-  ...SQLITE_NON_MERGEABLE_VARIANTS,
+  ...POSTGRESQL_VARIANTS,
+};
+
+export const ALL_VARIANTS: Variants = {
+  ...SQLITE_VARIANTS,
   ...POSTGRESQL_VARIANTS,
 };
 
