@@ -9,8 +9,8 @@ import type {
 import {startInterval, stopInterval} from '../../../../common/other.ts';
 import {IdObj} from '../../../../common/obj.ts';
 import {collValues} from '../../../../common/coll.ts';
-import {createJsonSqlitePersister} from './json.ts';
-import {createTabularSqlitePersister} from './tabular.ts';
+import {createJsonPersister} from '../json.ts';
+import {createTabularPersister} from '../tabular.ts';
 import {getConfigStructures} from '../config.ts';
 import {querySchema} from './schema.ts';
 
@@ -86,7 +86,7 @@ export const createSqlitePersister = <
     delUpdateListener(listeningHandle);
   };
 
-  return (isJson ? createJsonSqlitePersister : createTabularSqlitePersister)(
+  return (isJson ? createJsonPersister : createTabularPersister)(
     store,
     onSqlCommand
       ? async (sql, args) => {
@@ -97,6 +97,7 @@ export const createSqlitePersister = <
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
+    () => 0,
     persist,
     defaultedConfig as any,
     collValues(managedTableNamesSet),
