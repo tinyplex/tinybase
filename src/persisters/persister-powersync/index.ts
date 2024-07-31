@@ -5,7 +5,7 @@ import type {
 import {
   UpdateListener,
   createSqlitePersister,
-} from '../common/sqlite/create.ts';
+} from '../common/database/sqlite/create.ts';
 import {AbstractPowerSyncDatabase} from '@powersync/common';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
