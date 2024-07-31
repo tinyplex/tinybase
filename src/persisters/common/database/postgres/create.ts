@@ -4,9 +4,9 @@ import type {
   Persister,
   PersisterListener,
   Persists,
-} from '../../../@types/persisters/index.d.ts';
+} from '../../../../@types/persisters/index.js';
 import {Cmd} from './commands.ts';
-import {collValues} from '../../../common/coll.ts';
+import {collValues} from '../../../../common/coll.ts';
 import {createJsonPgPersister} from './json.ts';
 import {createTabularPgPersister} from './tabular.ts';
 import {getConfigStructures} from './config.ts';

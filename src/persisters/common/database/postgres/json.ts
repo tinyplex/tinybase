@@ -5,14 +5,14 @@ import type {
   Persister,
   PersisterListener,
   Persists,
-} from '../../../@types/persisters/index.d.ts';
+} from '../../../../@types/persisters/index.js';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
-} from '../../../common/json.ts';
+} from '../../../../common/json.ts';
 import {DefaultedJsonConfig} from './config.ts';
 import {SINGLE_ROW_ID} from './common.ts';
-import {createCustomPersister} from '../../index.ts';
+import {createCustomPersister} from '../../../index.ts';
 
 export const createJsonPgPersister = <
   ListeningHandle,

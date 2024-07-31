@@ -4,12 +4,12 @@ import type {
   Persister,
   PersisterListener,
   Persists,
-} from '../../../@types/persisters/index.d.ts';
-import {startInterval, stopInterval} from '../../../common/other.ts';
+} from '../../../../@types/persisters/index.d.ts';
+import {startInterval, stopInterval} from '../../../../common/other.ts';
 import {Cmd} from './commands.ts';
-import {IdObj} from '../../../common/obj.ts';
+import {IdObj} from '../../../../common/obj.ts';
 import {SELECT} from './common.ts';
-import {collValues} from '../../../common/coll.ts';
+import {collValues} from '../../../../common/coll.ts';
 import {createJsonSqlitePersister} from './json.ts';
 import {createTabularSqlitePersister} from './tabular.ts';
 import {getConfigStructures} from './config.ts';

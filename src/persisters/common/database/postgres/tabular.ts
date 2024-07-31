@@ -3,7 +3,7 @@ import type {
   Tables,
   ValueOrUndefined,
   Values,
-} from '../../../@types/store/index.d.ts';
+} from '../../../../@types/store/index.js';
 import {Cmd, getCommandFunctions} from './commands.ts';
 import {DEFAULT_ROW_ID_COLUMN_NAME, SINGLE_ROW_ID} from './common.ts';
 import type {
@@ -13,14 +13,14 @@ import type {
   Persister,
   PersisterListener,
   Persists,
-} from '../../../@types/persisters/index.d.ts';
-import {isUndefined, promiseAll} from '../../../common/other.ts';
-import {objHas, objIsEmpty, objNew} from '../../../common/obj.ts';
+} from '../../../../@types/persisters/index.js';
+import {isUndefined, promiseAll} from '../../../../common/other.ts';
+import {objHas, objIsEmpty, objNew} from '../../../../common/obj.ts';
 import {DefaultedTabularConfig} from './config.ts';
-import type {Id} from '../../../@types/common/index.d.ts';
-import {arrayFilter} from '../../../common/array.ts';
-import {createCustomPersister} from '../../index.ts';
-import {mapMap} from '../../../common/map.ts';
+import type {Id} from '../../../../@types/common/index.js';
+import {arrayFilter} from '../../../../common/array.ts';
+import {createCustomPersister} from '../../../index.ts';
+import {mapMap} from '../../../../common/map.ts';
 
 export const createTabularPgPersister = <
   ListeningHandle,
