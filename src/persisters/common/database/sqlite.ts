@@ -1,24 +1,35 @@
-import {Cmd, SELECT} from '../common.ts';
+import {Cmd, SELECT, WHERE, getPlaceholders} from './common.ts';
 import type {
   DatabasePersisterConfig,
   PersistedStore,
   Persister,
   PersisterListener,
   Persists,
-} from '../../../../@types/persisters/index.d.ts';
-import {startInterval, stopInterval} from '../../../../common/other.ts';
-import {IdObj} from '../../../../common/obj.ts';
-import {collValues} from '../../../../common/coll.ts';
-import {createJsonPersister} from '../json.ts';
-import {createTabularPersister} from '../tabular.ts';
-import {getConfigStructures} from '../config.ts';
-import {querySchema} from './schema.ts';
+} from '../../../@types/persisters/index.d.ts';
+import {startInterval, stopInterval} from '../../../common/other.ts';
+import {IdObj} from '../../../common/obj.ts';
+import {collValues} from '../../../common/coll.ts';
+import {createJsonPersister} from './json.ts';
+import {createTabularPersister} from './tabular.ts';
+import {getConfigStructures} from './config.ts';
 
 export type UpdateListener = (tableName: string) => void;
 
 const PRAGMA = 'pragma_';
 const DATA_VERSION = 'data_version';
 const SCHEMA_VERSION = 'schema_version';
+const FROM = 'FROM ';
+const PRAGMA_TABLE = 'pragma_table_';
+
+const querySchema = async (
+  cmd: Cmd,
+  managedTableNames: string[],
+): Promise<any[]> =>
+  await cmd(
+    // eslint-disable-next-line max-len
+    `${SELECT} t.name tn,c.name cn ${FROM}${PRAGMA_TABLE}list()t,${PRAGMA_TABLE}info(t.name)c ${WHERE} t.schema='main'AND t.type IN('table','view')AND t.name IN(${getPlaceholders(managedTableNames)})ORDER BY t.name,c.name`,
+    managedTableNames,
+  );
 
 export const createSqlitePersister = <
   UpdateListeningHandle,
