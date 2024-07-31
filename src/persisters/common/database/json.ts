@@ -1,20 +1,20 @@
-import {Cmd, QuerySchema, SINGLE_ROW_ID} from '../common.ts';
+import {Cmd, QuerySchema, SINGLE_ROW_ID} from './common.ts';
 import type {
   PersistedContent,
   PersistedStore,
   Persister,
   PersisterListener,
   Persists,
-} from '../../../../@types/persisters/index.d.ts';
+} from '../../../@types/persisters/index.d.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
-} from '../../../../common/json.ts';
-import type {DefaultedJsonConfig} from '../config.ts';
-import {createCustomPersister} from '../../../index.ts';
-import {getCommandFunctions} from '../commands.ts';
+} from '../../../common/json.ts';
+import type {DefaultedJsonConfig} from './config.ts';
+import {createCustomPersister} from '../../index.ts';
+import {getCommandFunctions} from './commands.ts';
 
-export const createJsonPgPersister = <
+export const createJsonPersister = <
   ListeningHandle,
   Persist extends Persists = Persists.StoreOnly,
 >(
@@ -22,7 +22,7 @@ export const createJsonPgPersister = <
   cmd: Cmd,
   addPersisterListener: (
     listener: PersisterListener<Persist>,
-  ) => Promise<ListeningHandle>,
+  ) => ListeningHandle | Promise<ListeningHandle>,
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError: ((error: any) => void) | undefined,
   destroyImpl: () => void,
@@ -32,9 +32,16 @@ export const createJsonPgPersister = <
   querySchema: QuerySchema,
   thing: any,
   getThing: string,
+  useOnConflict?: boolean,
 ): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
-    getCommandFunctions(cmd, managedTableNames, querySchema, onIgnoredError);
+    getCommandFunctions(
+      cmd,
+      managedTableNames,
+      querySchema,
+      onIgnoredError,
+      useOnConflict,
+    );
 
   const getPersisted = async (): Promise<PersistedContent<Persist>> =>
     await transaction(async () => {

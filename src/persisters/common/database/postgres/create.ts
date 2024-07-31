@@ -7,8 +7,8 @@ import type {
 } from '../../../../@types/persisters/index.d.ts';
 import {Cmd} from '../common.ts';
 import {collValues} from '../../../../common/coll.ts';
-import {createJsonPgPersister} from './json.ts';
-import {createTabularPgPersister} from './tabular.ts';
+import {createJsonPersister} from '../json.ts';
+import {createTabularPersister} from '../tabular.ts';
 import {getConfigStructures} from '../config.ts';
 import {querySchema} from './schema.ts';
 
@@ -48,7 +48,7 @@ export const createPgPersister = <
 
   const delPersisterListener = delUpdateListener;
 
-  return (isJson ? createJsonPgPersister : createTabularPgPersister)(
+  return (isJson ? createJsonPersister : createTabularPersister)(
     store,
     onSqlCommand
       ? async (sql, args) => {
