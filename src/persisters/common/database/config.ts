@@ -1,18 +1,18 @@
-import {IdMap, mapNew, mapSet} from '../../../../common/map.ts';
+import {IdMap, mapNew, mapSet} from '../../../common/map.ts';
 import {
   IdObj,
   objMerge,
   objSize,
   objToArray,
   objValues,
-} from '../../../../common/obj.ts';
-import {isString, isUndefined, slice} from '../../../../common/other.ts';
-import {setAdd, setNew} from '../../../../common/set.ts';
+} from '../../../common/obj.ts';
+import {isString, isUndefined, slice} from '../../../common/other.ts';
+import {setAdd, setNew} from '../../../common/set.ts';
 import {DEFAULT_ROW_ID_COLUMN_NAME} from './common.ts';
-import type {DatabasePersisterConfig} from '../../../../@types/persisters/index.d.ts';
-import type {Id} from '../../../../@types/common/index.d.ts';
-import {TINYBASE} from '../../../../common/strings.ts';
-import {collHas} from '../../../../common/coll.ts';
+import type {DatabasePersisterConfig} from '../../../@types/persisters/index';
+import type {Id} from '../../../@types/common/index';
+import {TINYBASE} from '../../../common/strings.ts';
+import {collHas} from '../../../common/coll.ts';
 
 export type DefaultedJsonConfig = [
   storeTableName: string,
