@@ -31,7 +31,7 @@ import {
 import {isUndefined, promiseAll, size} from '../../../../common/other.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../../../common/map.ts';
 import {COMMA} from '../../../../common/strings.ts';
-import type {Id} from '../../../../@types/common/index.js';
+import type {Id} from '../../../../@types/common/index.d.ts';
 
 export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
 type Schema = IdSet2;
