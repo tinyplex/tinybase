@@ -155,35 +155,39 @@ export const getCommandFunctions = (
       );
     } else {
       const tableSchemaColumns = mapGet(schemaMap, tableName);
-      const columnNamesAccountedFor = setNew(collValues(tableSchemaColumns));
+      const currentColumnNames = setNew(collValues(tableSchemaColumns));
       await promiseAll([
-        ...arrayMap(tableColumnNames, async (columnName) => {
-          if (!collDel(columnNamesAccountedFor, columnName)) {
-            await cmd(
-              ALTER_TABLE +
-                escapeId(tableName) +
-                'ADD' +
-                escapeId(columnName) +
-                'json',
-            );
-            setAdd(tableSchemaColumns, columnName);
-          }
-        }),
+        ...arrayMap(
+          [rowIdColumnName, ...tableColumnNames],
+          async (columnName, index) => {
+            if (!collDel(currentColumnNames, columnName)) {
+              await cmd(
+                ALTER_TABLE +
+                  escapeId(tableName) +
+                  'ADD' +
+                  escapeId(columnName) +
+                  (index == 0 ? 'text' : 'json'),
+              );
+              if (index == 0) {
+                await cmd(
+                  // eslint-disable-next-line max-len
+                  `CREATE UNIQUE INDEX pk ON ${escapeId(tableName)}(${escapeId(rowIdColumnName)})`,
+                );
+              }
+              setAdd(tableSchemaColumns, columnName);
+            }
+          },
+        ),
         ...(!partial && deleteEmptyColumns
-          ? arrayMap(
-              collValues(columnNamesAccountedFor),
-              async (columnName) => {
-                if (columnName != rowIdColumnName) {
-                  await cmd(
-                    ALTER_TABLE +
-                      escapeId(tableName) +
-                      'DROP' +
-                      escapeId(columnName),
-                  );
-                  collDel(tableSchemaColumns, columnName);
-                }
-              },
-            )
+          ? arrayMap(collValues(currentColumnNames), async (columnName) => {
+              await cmd(
+                ALTER_TABLE +
+                  escapeId(tableName) +
+                  'DROP' +
+                  escapeId(columnName),
+              );
+              collDel(tableSchemaColumns, columnName);
+            })
           : []),
       ]);
     }
