@@ -3,7 +3,6 @@ import 'fake-indexeddb/auto';
 import type {MergeableStore, Persister} from 'tinybase';
 import {VARIANTS, getDatabaseFunctions} from './common/databases.ts';
 import {mockFetchWasm, pause} from '../common/other.ts';
-import {Database} from 'sqlite3';
 import {createMergeableStore} from 'tinybase';
 import {resetHlc} from '../common/mergeable.ts';
 
@@ -30,7 +29,7 @@ describe.each([
   ) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd);
 
-    let db: Database;
+    let db: any;
     let store: MergeableStore;
     let persister: Persister;
 
