@@ -197,7 +197,7 @@ export const getCommandFunctions = (
     // Insert or update or delete data
     if (partial) {
       if (isUndefined(content)) {
-        await cmd(DELETE_FROM + escapeId(tableName) + WHERE + ' 1');
+        await cmd(DELETE_FROM + escapeId(tableName) + WHERE + ' true');
       } else {
         await promiseAll(
           objToArray(content, async (row, rowId) => {

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable max-len */
 import 'fake-indexeddb/auto';
+import {ALL_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 import type {Persister, Store} from 'tinybase';
-import {SQLITE_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 import {mockFetchWasm, pause} from '../../common/other.ts';
 import {createStore} from 'tinybase';
 
-describe.each(Object.entries(SQLITE_VARIANTS))(
+describe.each(Object.entries(ALL_VARIANTS))(
   '%s',
   (
     _name,
@@ -235,7 +235,7 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
             expect(store.getContent()).toEqual([{test_t1: {r1: {c1: 1}}}, {}]);
           });
           test('mix of one to one, mapped, custom ids, broken', async () => {
-            db = await getOpenDatabase();
+            const db = await getOpenDatabase();
             await setDatabase(db, {
               t1: [
                 'CREATE TABLE "t1"("_id"text PRIMARY KEY,"c1"json)',
@@ -287,6 +287,7 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
               },
               {},
             ]);
+            await close(db);
           });
         });
 
@@ -304,7 +305,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
 
           describe('tableName', () => {
             test('as string', async () => {
-              db = await getOpenDatabase();
               await setDatabase(db, {
                 values: [
                   'CREATE TABLE "values"("_id"text PRIMARY KEY,"v1"json,"v2"json)',
@@ -322,7 +322,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
             });
 
             test('with space', async () => {
-              db = await getOpenDatabase();
               await setDatabase(db, {
                 'tinybase values': [
                   'CREATE TABLE "tinybase values"("_id"text PRIMARY KEY,"v1"json,"v2"json)',
@@ -340,7 +339,6 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
             });
 
             test('with quote', async () => {
-              db = await getOpenDatabase();
               await setDatabase(db, {
                 'tinybase "values"': [
                   'CREATE TABLE "tinybase ""values"""("_id"text PRIMARY KEY,"v1"json,"v2"json)',
@@ -806,6 +804,7 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
               sqlLogs.push([sql, args]);
             }
           },
+          console.warn,
         );
         store
           .setTables({
@@ -1224,7 +1223,7 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           });
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
-            ['DELETE FROM"t2"WHERE 1', undefined],
+            ['DELETE FROM"t2"WHERE true', undefined],
             ['END', undefined],
           ]);
         });
@@ -1242,8 +1241,8 @@ describe.each(Object.entries(SQLITE_VARIANTS))(
           });
           expect(sqlLogs).toEqual([
             ['BEGIN', undefined],
-            ['DELETE FROM"t1"WHERE 1', undefined],
-            ['DELETE FROM"t2"WHERE 1', undefined],
+            ['DELETE FROM"t1"WHERE true', undefined],
+            ['DELETE FROM"t2"WHERE true', undefined],
             ['END', undefined],
           ]);
         });
