@@ -1,3 +1,4 @@
+import {Cmd, SELECT} from '../common.ts';
 import type {
   DatabasePersisterConfig,
   PersistedStore,
@@ -6,13 +7,12 @@ import type {
   Persists,
 } from '../../../../@types/persisters/index.d.ts';
 import {startInterval, stopInterval} from '../../../../common/other.ts';
-import {Cmd} from './commands.ts';
 import {IdObj} from '../../../../common/obj.ts';
-import {SELECT} from '../common.ts';
 import {collValues} from '../../../../common/coll.ts';
 import {createJsonSqlitePersister} from './json.ts';
 import {createTabularSqlitePersister} from './tabular.ts';
 import {getConfigStructures} from '../config.ts';
+import {querySchema} from './schema.ts';
 
 export type UpdateListener = (tableName: string) => void;
 
@@ -100,6 +100,7 @@ export const createSqlitePersister = <
     persist,
     defaultedConfig as any,
     collValues(managedTableNamesSet),
+    querySchema,
     thing,
     getThing,
     useOnConflict,

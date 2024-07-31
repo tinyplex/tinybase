@@ -5,11 +5,12 @@ import type {
   PersisterListener,
   Persists,
 } from '../../../../@types/persisters/index.d.ts';
-import {Cmd} from './commands.ts';
+import {Cmd} from '../common.ts';
 import {collValues} from '../../../../common/coll.ts';
 import {createJsonPgPersister} from './json.ts';
 import {createTabularPgPersister} from './tabular.ts';
 import {getConfigStructures} from '../config.ts';
+import {querySchema} from './schema.ts';
 
 export type UpdateListener = (tableName: string) => void;
 
@@ -62,6 +63,7 @@ export const createPgPersister = <
     persist,
     defaultedConfig as any,
     collValues(managedTableNamesSet),
+    querySchema,
     thing,
     getThing,
   );

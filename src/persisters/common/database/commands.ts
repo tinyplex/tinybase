@@ -1,19 +1,11 @@
+import {COMMA, EMPTY_STRING} from '../../../common/strings.ts';
 import type {
   CellOrUndefined,
   Table,
   ValueOrUndefined,
-} from '../../../../@types/store/index.d.ts';
-import {
-  IdObj,
-  objDel,
-  objIds,
-  objIsEmpty,
-  objNew,
-  objToArray,
-  objValues,
-} from '../../../../common/obj.ts';
-import {IdSet2, setAdd, setNew} from '../../../../common/set.ts';
-import {SELECT, escapeId} from '../common.ts';
+} from '../../../@types/store/index.d.ts';
+import {Cmd, QuerySchema, SELECT, escapeId, getPlaceholders} from './common.ts';
+import {IdSet2, setAdd, setNew} from '../../../common/set.ts';
 import {
   arrayFilter,
   arrayIsEmpty,
@@ -21,20 +13,21 @@ import {
   arrayMap,
   arrayNew,
   arrayPush,
-} from '../../../../common/array.ts';
+} from '../../../common/array.ts';
+import {collClear, collDel, collHas, collValues} from '../../../common/coll.ts';
+import {isUndefined, promiseAll, size} from '../../../common/other.ts';
+import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
 import {
-  collClear,
-  collDel,
-  collHas,
-  collValues,
-} from '../../../../common/coll.ts';
-import {isUndefined, promiseAll, size} from '../../../../common/other.ts';
-import {mapEnsure, mapGet, mapNew, mapSet} from '../../../../common/map.ts';
-import {COMMA} from '../../../../common/strings.ts';
-import type {Id} from '../../../../@types/common/index.d.ts';
+  objDel,
+  objIds,
+  objIsEmpty,
+  objNew,
+  objToArray,
+  objValues,
+} from '../../../common/obj.ts';
+import type {Id} from '../../../@types/common/index.d.ts';
 
-export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
-type Schema = IdSet2;
+export type Schema = IdSet2;
 
 const TABLE = 'TABLE';
 const ALTER_TABLE = 'ALTER ' + TABLE;
@@ -45,7 +38,9 @@ const WHERE = 'WHERE';
 export const getCommandFunctions = (
   cmd: Cmd,
   managedTableNames: string[],
+  querySchema: QuerySchema,
   onIgnoredError: ((error: any) => void) | undefined,
+  useOnConflict?: boolean,
 ): [
   refreshSchema: () => Promise<void>,
   loadTable: (tableName: string, rowIdColumnName: string) => Promise<Table>,
@@ -72,13 +67,8 @@ export const getCommandFunctions = (
 
   const refreshSchema = async (): Promise<void> => {
     collClear(schemaMap);
-    arrayMap(
-      await cmd(
-        // eslint-disable-next-line max-len
-        `${SELECT} table_name tn,column_name cn FROM information_schema.columns ${WHERE} table_schema='public'AND table_name IN(${getPlaceholders(managedTableNames)})`,
-        managedTableNames,
-      ),
-      ({tn, cn}) => setAdd(mapEnsure(schemaMap, tn, setNew<Id>), cn),
+    arrayMap(await querySchema(cmd, managedTableNames), ({tn, cn}) =>
+      setAdd(mapEnsure(schemaMap, tn, setNew<Id>), cn),
     );
   };
 
@@ -211,10 +201,14 @@ export const getCommandFunctions = (
                 [rowId],
               );
             } else if (!arrayIsEmpty(tableColumnNames)) {
-              await upsert(cmd, tableName, rowIdColumnName, objIds(row), [
-                rowId,
-                ...objValues(row),
-              ]);
+              await upsert(
+                cmd,
+                tableName,
+                rowIdColumnName,
+                objIds(row),
+                [rowId, ...objValues(row)],
+                useOnConflict,
+              );
             }
           }),
         );
@@ -241,6 +235,7 @@ export const getCommandFunctions = (
           rowIdColumnName,
           changingColumnNames,
           args,
+          useOnConflict,
         );
         await cmd(
           DELETE_FROM +
@@ -281,9 +276,12 @@ const upsert = async (
   rowIdColumnName: string,
   changingColumnNames: string[],
   args: any[],
+  useOnConflict = true,
 ) =>
   await cmd(
-    'INSERT INTO' +
+    'INSERT ' +
+      (useOnConflict ? EMPTY_STRING : 'OR REPLACE ') +
+      'INTO' +
       escapeId(tableName) +
       '(' +
       escapeId(rowIdColumnName) +
@@ -295,24 +293,20 @@ const upsert = async (
       ) +
       ')VALUES' +
       getUpsertPlaceholders(args, size(changingColumnNames) + 1) +
-      ('ON CONFLICT(' +
-        escapeId(rowIdColumnName) +
-        ')DO UPDATE SET' +
-        arrayJoin(
-          arrayMap(
-            changingColumnNames,
-            (columnName) =>
-              escapeId(columnName) + '=excluded.' + escapeId(columnName),
-          ),
-          COMMA,
-        )),
+      (useOnConflict
+        ? 'ON CONFLICT(' +
+          escapeId(rowIdColumnName) +
+          ')DO UPDATE SET' +
+          arrayJoin(
+            arrayMap(
+              changingColumnNames,
+              (columnName) =>
+                escapeId(columnName) + '=excluded.' + escapeId(columnName),
+            ),
+            COMMA,
+          )
+        : EMPTY_STRING),
     arrayMap(args, (arg) => arg ?? null),
-  );
-
-const getPlaceholders = (array: any[]) =>
-  arrayJoin(
-    arrayMap(array, (_, index) => '$' + (index + 1)),
-    COMMA,
   );
 
 const getUpsertPlaceholders = (array: any[], columnCount: number) =>
