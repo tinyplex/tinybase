@@ -72,17 +72,8 @@ export const getCommandFunctions = (
     collClear(schemaMap);
     arrayMap(
       await cmd(
-        SELECT +
-          ' t.name tn,c.name cn ' +
-          FROM +
-          PRAGMA_TABLE +
-          'list()t,' +
-          PRAGMA_TABLE +
-          'info(t.name)c ' +
-          WHERE +
-          ` t.schema='main'AND t.type IN('table','view')AND t.name IN(` +
-          getPlaceholders(managedTableNames) +
-          ')ORDER BY t.name,c.name',
+        // eslint-disable-next-line max-len
+        `${SELECT} t.name tn,c.name cn ${FROM}${PRAGMA_TABLE}list()t,${PRAGMA_TABLE}info(t.name)c ${WHERE} t.schema='main'AND t.type IN('table','view')AND t.name IN(${getPlaceholders(managedTableNames)})ORDER BY t.name,c.name`,
         managedTableNames,
       ),
       ({tn, cn}) => setAdd(mapEnsure(schemaMap, tn, setNew<Id>), cn),

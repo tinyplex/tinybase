@@ -69,12 +69,8 @@ export const getCommandFunctions = (
     collClear(schemaMap);
     arrayMap(
       await cmd(
-        SELECT +
-          ' table_name tn,column_name cn FROM information_schema.columns ' +
-          WHERE +
-          ` table_schema='public'AND table_name IN(` +
-          getPlaceholders(managedTableNames) +
-          ')',
+        // eslint-disable-next-line max-len
+        `${SELECT} table_name tn,column_name cn FROM information_schema.columns ${WHERE} table_schema='public'AND table_name IN(${getPlaceholders(managedTableNames)})`,
         managedTableNames,
       ),
       ({tn, cn}) => setAdd(mapEnsure(schemaMap, tn, setNew<Id>), cn),
