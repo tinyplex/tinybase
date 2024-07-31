@@ -12,6 +12,15 @@ export const SINGLE_ROW_ID = '_';
 export const DEFAULT_ROW_ID_COLUMN_NAME = '_id';
 export const SELECT = 'SELECT';
 export const WHERE = 'WHERE';
+export const TABLE = 'TABLE';
+export const ALTER_TABLE = 'ALTER ' + TABLE;
+export const DELETE_FROM = 'DELETE FROM';
+export const SELECT_STAR_FROM = SELECT + '*FROM';
+export const PRAGMA = 'pragma_';
+export const DATA_VERSION = 'data_version';
+export const SCHEMA_VERSION = 'schema_version';
+export const FROM = 'FROM ';
+export const PRAGMA_TABLE = 'pragma_table_';
 
 export const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 
