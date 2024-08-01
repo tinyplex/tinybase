@@ -7,8 +7,8 @@
  * Many entry points are provided (in separately installed modules), each of
  * which returns different types of Persister that can load and save a Store.
  * Between them, these allow you to store your TinyBase data locally, remotely,
- * to SQLite databases, and across synchronization boundaries with CRDT
- * frameworks.
+ * to SQLite and PostgreSQL databases, and across synchronization boundaries
+ * with CRDT frameworks.
  *
  * |Persister|Storage|Store|MergeableStore
  * |-|-|-|-|
@@ -169,7 +169,7 @@
 }
 /**
  * The DatabasePersisterConfig type describes the configuration of a
- * database-oriented Persister, such as those for SQLite.
+ * database-oriented Persister, such as those for SQLite and PostgreSQL.
  *
  * There are two modes for persisting a Store with a database:
  *
