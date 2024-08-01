@@ -3,6 +3,57 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v5.2
+
+This release introduces a new Persister for... PostgreSQL!
+
+Using TinyBase's new persister-postgres module (and the excellent
+[`postgres`](https://github.com/porsager/postgres) module for connection
+duties), things behave in exactly the same way as they do for SQLite. Simply use
+the createPostgresPersister function:
+
+```js
+import postgres from 'postgres';
+import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
+import {createStore} from 'tinybase';
+
+// Create a TinyBase Store.
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+
+// Create a postgres connection and Persister.
+const sql = postgres('postgres://localhost:5432/tinybase');
+const pgPersister = await createPostgresPersister(store, sql, 'my_tinybase');
+
+// Save Store to the database.
+await pgPersister.save();
+
+console.log(await sql`SELECT * FROM my_tinybase;`);
+// -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
+
+// If separately the database gets updated...
+const json = '[{"pets":{"felix":{"species":"cat"}}},{}]';
+await sql`UPDATE my_tinybase SET store = ${json} WHERE _id = '_';`;
+
+// ... then changes are loaded back. Reactive auto-load is also supported!
+await pgPersister.load();
+console.log(store.getTables());
+// -> {pets: {felix: {species: 'cat'}}}
+
+// As always, don't forget to tidy up.
+pgPersister.destroy();
+await sql.end();
+```
+
+This is designed for use on a server, where such a database is more likely to be
+reachable, but any environment that supports the `postgres` module should work.
+
+Note that this Persister supports both the `json` and `tabular` modes for saving
+TinyBase data into the database. See the DatabasePersisterConfig type for more
+details. (Note however that, like the SQLite Persisters, only the `json` mode is
+supported for MergeableStore instances, due to their additional CRDT metadata.)
+
+Please provide feedback on this new release on GitHub!
+
 ## v5.1
 
 This release lets you persist data on a server using the createWsServer
@@ -433,9 +484,8 @@ The API is the same as for all the other Persister APIs:
 
 ```js
 import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
-import {createStore} from 'tinybase';
 
-const store = createStore()
+store
   .setTable('pets', {fido: {species: 'dog'}})
   .setTable('species', {dog: {price: 5}})
   .setValues({open: true});
