@@ -804,7 +804,6 @@ describe.each(Object.entries(ALL_VARIANTS))(
               sqlLogs.push([sql, args]);
             }
           },
-          console.warn,
         );
         store
           .setTables({

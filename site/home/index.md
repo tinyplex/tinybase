@@ -360,7 +360,7 @@ server.destroy();
 > can also synchronize it with a web endpoint, or (if you're using TinyBase in
 > an appropriate environment), load and save it to a file. You can bind TinyBase
 > to various flavors of
-> [databae](/guides/schemas-and-persistence/database-persistence/), or to
+> [database](/guides/schemas-and-persistence/database-persistence/), or to
 > [Yjs](https://yjs.dev/) and [Automerge](https://automerge.org/) CRDT
 > documents.
 >
