@@ -6,7 +6,7 @@ import type {
   QueryResult,
   SQLWatchOptions,
   WatchOnChangeEvent,
-} from '@journeyapps/powersync-sdk-common';
+} from '@powersync/common';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import sqlite3, {Database} from 'sqlite3';
 import {DbSchema} from 'electric-sql/client/model';

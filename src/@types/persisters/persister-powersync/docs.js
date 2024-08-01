@@ -35,7 +35,7 @@
    * ```js yolo
    * import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
    * import {createStore} from 'tinybase';
-   * import {usePowerSync} from '@journeyapps/powersync-react';
+   * import {usePowerSync} from '@powersync/react';
    *
    * const ps = usePowerSync();
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -94,7 +94,7 @@
  * ```js yolo
  * import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
  * import {createStore} from 'tinybase';
- * import {usePowerSync} from '@journeyapps/powersync-react';
+ * import {usePowerSync} from '@powersync/react';
  *
  * const ps = usePowerSync();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -130,7 +130,7 @@
  * ```js yolo
  * import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
  * import {createStore} from 'tinybase';
- * import {usePowerSync} from '@journeyapps/powersync-react';
+ * import {usePowerSync} from '@powersync/react';
  *
  * const ps = usePowerSync();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});

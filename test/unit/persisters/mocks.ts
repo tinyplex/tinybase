@@ -30,7 +30,7 @@ import {
   createSessionPersister,
 } from 'tinybase/persisters/persister-browser';
 import {deleteDB, openDB} from 'idb';
-import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
+import {AbstractPowerSyncDatabase} from '@powersync/common';
 import {DB} from '@vlcn.io/crsqlite-wasm';
 import {Database} from 'sqlite3';
 import type {FetchMock} from 'jest-fetch-mock';
@@ -76,8 +76,8 @@ const yMapMatch = (
   const yMap =
     idInParent == undefined
       ? yMapOrParent
-      : yMapOrParent.get(idInParent) ??
-        yMapOrParent.set(idInParent, new YMap());
+      : (yMapOrParent.get(idInParent) ??
+        yMapOrParent.set(idInParent, new YMap()));
   let changed: 1 | undefined;
   Object.entries(obj).forEach(([id, value]) => {
     if (set(yMap, id, value)) {

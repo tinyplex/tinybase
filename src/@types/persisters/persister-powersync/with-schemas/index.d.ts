@@ -8,7 +8,7 @@ import type {
   OptionalSchemas,
   Store,
 } from '../../../store/with-schemas/index.d.ts';
-import type {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
+import type {AbstractPowerSyncDatabase} from '@powersync/common';
 
 /// PowerSyncPersister
 export interface PowerSyncPersister<Schemas extends OptionalSchemas>

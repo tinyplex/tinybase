@@ -6,7 +6,7 @@ import {
   UpdateListener,
   createSqlitePersister,
 } from '../common/sqlite/create.ts';
-import {AbstractPowerSyncDatabase} from '@journeyapps/powersync-sdk-common';
+import {AbstractPowerSyncDatabase} from '@powersync/common';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {Store} from '../../@types/store/index.d.ts';
