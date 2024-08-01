@@ -7,15 +7,15 @@ Remember that TinyBase Stores are in-memory data structures, so you will
 generally want to use a Persister to store that data longer-term. For example,
 they are useful for preserving Store data between browser sessions or reloads,
 saving or loading browser state to or from a server, saving Store data to disk
-in a environment with filesystem access, or, in v4.0 and above, to SQLite and
-CRDT frameworks like [Yjs](https://yjs.dev/) and
+in a environment with filesystem access, or, in v4.0 and above, to SQLite,
+PostgreSQL, or CRDT frameworks like [Yjs](https://yjs.dev/) and
 [Automerge](https://automerge.org/).
 
 ## Types of Persisters
 
 Many entry points are provided (in separately installed modules), each of which
 returns different types of Persister that can load and save a Store. Between
-them, these allow you to store your TinyBase data locally, remotely, to SQLite
+them, these allow you to store your TinyBase data locally, remotely, to
 databases, and across synchronization boundaries with CRDT frameworks.
 
 ### Basic Persisters
@@ -50,8 +50,7 @@ is available.
 | PowerSyncPersister    | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                           |
 | PostgresPersister     | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                       |
 
-See the Database Persistence guide for details on how to work with SQLite
-databases.
+See the Database Persistence guide for details on how to work with databases.
 
 ### Third-Party CRDT & Socket Persisters
 

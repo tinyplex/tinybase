@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#v5-1'><em>NEW!</em> v5.1 release</a>
+<a href='/guides/releases/#v5-2'><em>NEW!</em> v5.2 release</a>
 
-<span id="one-with">"The One You Can Sync... with a server!"</span>
+<span id="one-with">"The One With PostgreSQL!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
@@ -51,10 +51,10 @@
 > you can deterministically [synchronize](/guides/synchronization/) and merge
 > data across multiple sources, clients, and servers. And although TinyBase is
 > an in-memory data store, but you can easily
-> [persist](#persist-to-storage-sqlite-more) your data to file, [browser
+> [persist](#persist-to-storage-databases-more) your data to file, [browser
 > storage](/api/persister-browser), [IndexedDB](/api/persister-indexed-db),
-> [SQLite databases](/guides/persistence/database-persistence/), and
-> [more](/guides/persistence/third-party-crdt-persistence/).
+> [SQLite or PostgreSQL databases](/guides/persistence/database-persistence/),
+> and [more](/guides/persistence/third-party-crdt-persistence/).
 
 <embed src="sync.svg" />
 
@@ -81,8 +81,18 @@
   </a>
 </div>
 <div>
-  <a href='/api/persister-partykit-client'>
-    <img width="48" src="/partykit.svg" /> PartyKit
+  <a href='/api/persister-indexed-db/functions/creation/createindexeddbpersister'>
+    <img width="48" src="/indexeddb.svg" /> IndexedDB
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/postgresql.svg" /> PostgreSQL
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/sqlite.svg" /> SQLite
   </a>
 </div>
 <div>
@@ -97,11 +107,6 @@
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/sqlite.svg" /> SQLite
-  </a>
-</div>
-<div>
-  <a href='/guides/schemas-and-persistence/database-persistence'>
     <img width="48" src="/turso.svg" />Turso
   </a>
 </div>
@@ -111,8 +116,8 @@
   </a>
 </div>
 <div>
-  <a href='/api/persister-indexed-db/functions/creation/createindexeddbpersister'>
-    <img width="48" src="/indexeddb.svg" /> IndexedDB
+  <a href='/api/persister-partykit-client'>
+    <img width="48" src="/partykit.svg" /> PartyKit
   </a>
 </div>
 <div>
@@ -349,13 +354,13 @@ synchronizer1.destroy();
 server.destroy();
 ```
 
-> ## Persist to storage, SQLite, & more.
+> ## Persist to storage, databases, & more.
 >
 > You can easily persist a Store between browser page reloads or sessions. You
 > can also synchronize it with a web endpoint, or (if you're using TinyBase in
 > an appropriate environment), load and save it to a file. You can bind TinyBase
 > to various flavors of
-> [SQLite](/guides/schemas-and-persistence/database-persistence/), or to
+> [databae](/guides/schemas-and-persistence/database-persistence/), or to
 > [Yjs](https://yjs.dev/) and [Automerge](https://automerge.org/) CRDT
 > documents.
 >
