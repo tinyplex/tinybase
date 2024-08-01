@@ -1,6 +1,6 @@
-import {addClass, delClass, preLoad, query, queryById} from './common.ts';
+import {addClass, commonLoad, delClass, query, queryById} from './common.ts';
 
-preLoad();
+commonLoad();
 
 addEventListener('load', () => {
   const nav: HTMLElement = query('body > main > nav');

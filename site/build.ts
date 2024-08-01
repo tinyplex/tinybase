@@ -1,11 +1,11 @@
 import {createDocs, getSorter} from 'tinydocs';
+import {readFileSync, writeFileSync} from 'fs';
 import {ArticleInner} from './ui/ArticleInner.tsx';
 import type {Docs} from 'tinydocs';
 import {ExecutablePen} from './ui/ExecutablePen.tsx';
 import {NavJson} from './ui/NavJson.tsx';
 import {Page} from './ui/Page.tsx';
 import {Readme} from './ui/Readme.tsx';
-import {readFileSync} from 'fs';
 
 const GROUPS = ['Interfaces', '*', 'Type aliases'];
 const CATEGORIES = [
@@ -85,6 +85,11 @@ export const build = async (
   const baseUrl = version.includes('beta')
     ? 'https://beta.tinybase.org'
     : 'https://tinybase.org';
+  writeFileSync(
+    'site/js/version.ts',
+    `export const thisVersion = 'v${version}';`,
+    'utf-8',
+  );
 
   const docs = createDocs(baseUrl, outDir, !api && !pages)
     .addJsFile('site/js/home.ts')
@@ -104,6 +109,7 @@ export const build = async (
       )}}, {}]`,
       'assets/countries.json',
     );
+
   [
     '',
     '/store',

@@ -1,4 +1,15 @@
+import {thisVersion} from './version.ts';
+
 export const doc = document;
+
+export const commonLoad = () => {
+  darkMode();
+  addEventListener('load', () => {
+    const version: HTMLElement = query('#version');
+    version.innerText = thisVersion;
+    version.style.width = version.scrollWidth + 'px';
+  });
+};
 
 export const query = (query: string): HTMLElement =>
   doc.querySelector(query) as HTMLElement;
@@ -59,8 +70,6 @@ export const toggleClass = (
 const DARK = 'dark';
 const LIGHT = 'light';
 const AUTO = 'auto';
-
-export const preLoad = () => darkMode();
 
 const darkMode = () => {
   const pref = matchMedia('(prefers-color-scheme: dark)');

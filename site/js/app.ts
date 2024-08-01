@@ -1,9 +1,9 @@
 import {
   addClass,
+  commonLoad,
   createElement,
   delClass,
   doc,
-  preLoad,
   query,
   queryById,
   queryElement,
@@ -11,7 +11,7 @@ import {
 } from './common.ts';
 import type {NavNode} from '../ui/NavJson.tsx';
 
-preLoad();
+commonLoad();
 
 addEventListener('load', () => {
   const nav: HTMLElement = query('body > main > nav');

@@ -1,3 +1,3 @@
-import {preLoad} from './common.ts';
+import {commonLoad} from './common.ts';
 
-preLoad();
+commonLoad();
