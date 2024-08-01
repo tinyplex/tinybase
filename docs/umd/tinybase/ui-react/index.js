@@ -1409,14 +1409,16 @@
     const [persister, setPersister] = useState$2();
     useEffect(
       () => {
-        const persister2 = store ? create(store) : void 0;
-        setPersister(persister2);
-        if (persister2 && then) {
-          (async () => {
-            await then(persister2);
-            rerender([]);
-          })();
-        }
+        (async () => {
+          const persister2 = store ? await create(store) : void 0;
+          setPersister(persister2);
+          if (persister2 && then) {
+            (async () => {
+              await then(persister2);
+              rerender([]);
+            })();
+          }
+        })();
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [store, ...createDeps, ...thenDeps],

@@ -1,4 +1,38 @@
-<p>This is a reverse chronological list of the major <a href="https://beta.tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v5-1">v5.1</h2><p>This release lets you persist data on a server using the <a href="https://beta.tinybase.org/api/synchronizer-ws-server/functions/creation/createwsserver/"><code>createWsServer</code></a> function. This makes it possible for all clients to disconnect from a path, but, when they reconnect, for the data to still be present for them to sync with.</p><p>This is done by passing in a second argument to the <a href="https://beta.tinybase.org/api/synchronizer-ws-server/functions/creation/createwsserver/"><code>createWsServer</code></a> function that creates a <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> instance (for which also need to create or provide a <a href="https://beta.tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a>) for a given path:</p>
+<p>This is a reverse chronological list of the major <a href="https://beta.tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h2 id="v5-2">v5.2</h2><p>This release introduces a new <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> for... PostgreSQL!</p><p>Using <a href="https://beta.tinybase.org/">TinyBase</a>&#x27;s new <a href="https://beta.tinybase.org/api/persister-postgres/"><code>persister-postgres</code></a> module (and the excellent <a href="https://github.com/porsager/postgres"><code>postgres</code></a> module for connection duties), things behave in exactly the same way as they do for SQLite. Simply use the <a href="https://beta.tinybase.org/api/persister-postgres/functions/creation/createpostgrespersister/"><code>createPostgresPersister</code></a> function:</p>
+
+```js
+import postgres from 'postgres';
+import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
+import {createStore} from 'tinybase';
+
+// Create a TinyBase Store.
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+
+// Create a postgres connection and Persister.
+const sql = postgres('postgres://localhost:5432/tinybase');
+const pgPersister = await createPostgresPersister(store, sql, 'my_tinybase');
+
+// Save Store to the database.
+await pgPersister.save();
+
+console.log(await sql`SELECT * FROM my_tinybase;`);
+// -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
+
+// If separately the database gets updated...
+const json = '[{"pets":{"felix":{"species":"cat"}}},{}]';
+await sql`UPDATE my_tinybase SET store = ${json} WHERE _id = '_';`;
+
+// ... then changes are loaded back. Reactive auto-load is also supported!
+await pgPersister.load();
+console.log(store.getTables());
+// -> {pets: {felix: {species: 'cat'}}}
+
+// As always, don't forget to tidy up.
+pgPersister.destroy();
+await sql.end();
+```
+
+<p>This is designed for use on a server, where such a database is more likely to be reachable, but any environment that supports the <code>postgres</code> module should work.</p><p>Note that this <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> supports both the <code>json</code> and <code>tabular</code> modes for saving <a href="https://beta.tinybase.org/">TinyBase</a> data into the database. See the <a href="https://beta.tinybase.org/api/persisters/type-aliases/configuration/databasepersisterconfig/"><code>DatabasePersisterConfig</code></a> type for more details. (Note however that, like the SQLite Persisters, only the <code>json</code> mode is supported for <a href="https://beta.tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a> instances, due to their additional CRDT metadata.)</p><p>Please provide feedback on this new release on GitHub!</p><h2 id="v5-1">v5.1</h2><p>This release lets you persist data on a server using the <a href="https://beta.tinybase.org/api/synchronizer-ws-server/functions/creation/createwsserver/"><code>createWsServer</code></a> function. This makes it possible for all clients to disconnect from a path, but, when they reconnect, for the data to still be present for them to sync with.</p><p>This is done by passing in a second argument to the <a href="https://beta.tinybase.org/api/synchronizer-ws-server/functions/creation/createwsserver/"><code>createWsServer</code></a> function that creates a <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> instance (for which also need to create or provide a <a href="https://beta.tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a>) for a given path:</p>
 
 ```js
 import {WebSocketServer} from 'ws';
@@ -143,9 +177,8 @@ await persister.startAutoLoad();
 
 ```js
 import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
-import {createStore} from 'tinybase';
 
-const store = createStore()
+store
   .setTable('pets', {fido: {species: 'dog'}})
   .setTable('species', {dog: {price: 5}})
   .setValues({open: true});
