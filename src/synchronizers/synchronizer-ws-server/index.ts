@@ -71,8 +71,10 @@ export const createWsServer = (<
   createPersisterForPath?: (
     pathId: Id,
   ) =>
-    | [PathPersister, (store: MergeableStore) => void]
     | PathPersister
+    | [PathPersister, (store: MergeableStore) => void]
+    | Promise<PathPersister>
+    | Promise<[PathPersister, (store: MergeableStore) => void]>
     | undefined,
 ) => {
   type ServerClient = [
@@ -93,36 +95,39 @@ export const createWsServer = (<
     () => wsServer,
   );
 
-  const configureServerClient = (
+  const configureServerClient = async (
     serverClient: ServerClient,
     pathId: Id,
     clients: IdMap<WebSocket>,
   ) =>
-    ifNotUndefined(createPersisterForPath?.(pathId), (persisterMaybeThen) => {
-      serverClient[Sc.State] = 1;
-      serverClient[Sc.Persister] = isArray(persisterMaybeThen)
-        ? persisterMaybeThen[0]
-        : persisterMaybeThen;
-      const messageHandler = getMessageHandler(
-        SERVER_CLIENT_ID,
-        clients,
-        serverClient,
-      );
-      serverClient[Sc.Synchronizer] = createCustomSynchronizer(
-        serverClient[Sc.Persister].getStore() as MergeableStore,
-        (toClientId, requestId, message, body) =>
-          messageHandler(createPayload(toClientId, requestId, message, body)),
-        (receive: Receive) =>
-          (serverClient[Sc.Send] = (payload: string) =>
-            receivePayload(payload, receive)),
-        () => {},
-        1,
-      );
-      serverClient[Sc.Buffer] = [];
-      serverClient[Sc.Then] = isArray(persisterMaybeThen)
-        ? persisterMaybeThen[1]
-        : (_) => 0;
-    });
+    ifNotUndefined(
+      await createPersisterForPath?.(pathId),
+      (persisterMaybeThen) => {
+        serverClient[Sc.State] = 1;
+        serverClient[Sc.Persister] = isArray(persisterMaybeThen)
+          ? persisterMaybeThen[0]
+          : persisterMaybeThen;
+        const messageHandler = getMessageHandler(
+          SERVER_CLIENT_ID,
+          clients,
+          serverClient,
+        );
+        serverClient[Sc.Synchronizer] = createCustomSynchronizer(
+          serverClient[Sc.Persister].getStore() as MergeableStore,
+          (toClientId, requestId, message, body) =>
+            messageHandler(createPayload(toClientId, requestId, message, body)),
+          (receive: Receive) =>
+            (serverClient[Sc.Send] = (payload: string) =>
+              receivePayload(payload, receive)),
+          () => {},
+          1,
+        );
+        serverClient[Sc.Buffer] = [];
+        serverClient[Sc.Then] = isArray(persisterMaybeThen)
+          ? persisterMaybeThen[1]
+          : (_) => 0;
+      },
+    );
 
   const startServerClient = async (serverClient: ServerClient) => {
     serverClient[Sc.State] = ScState.Starting;
@@ -180,7 +185,7 @@ export const createWsServer = (<
 
         if (collIsEmpty(clients)) {
           callListeners(pathIdListeners, undefined, pathId, 1);
-          configureServerClient(serverClient, pathId, clients);
+          await configureServerClient(serverClient, pathId, clients);
         }
         mapSet(clients, clientId, webSocket);
         callListeners(clientIdListeners, [pathId], clientId, 1);
