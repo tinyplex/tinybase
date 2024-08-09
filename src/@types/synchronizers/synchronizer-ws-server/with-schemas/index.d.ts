@@ -69,5 +69,7 @@ export function createWsServer<
   ) =>
     | PathPersister
     | [PathPersister, (store: MergeableStore<Schemas>) => void]
+    | Promise<PathPersister>
+    | Promise<[PathPersister, (store: MergeableStore<Schemas>) => void]>
     | undefined,
 ): WsServer;

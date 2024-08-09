@@ -486,7 +486,8 @@
  * If you want your server to persist data itself, you can use the optional
  * second parameter of this function, which allows you to create a Persister for
  * a new path - whenever a new path is accessed by a client. This Persister will
- * only exist when there are active clients on that particular path.
+ * only exist when there are active clients on that particular path. The
+ * creation callback can be asynchronous.
  *
  * You are responsible for creating a MergeableStore to pass to this Persister,
  * but starting and stopping its automatic saving and loading is taken care of
