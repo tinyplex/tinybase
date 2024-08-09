@@ -16,7 +16,7 @@ export const Header: NoPropComponent = () => {
           {version.includes('beta') && (
             <>
               {' '}
-              <em title={version}>&beta;</em>
+              <em>&beta;</em>
             </>
           )}
         </span>
