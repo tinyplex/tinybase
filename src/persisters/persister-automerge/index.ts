@@ -10,6 +10,7 @@ import {
   objGet,
   objHas,
   objIsEmpty,
+  objNew,
   objSize,
   objToArray,
 } from '../../common/obj.ts';
@@ -135,7 +136,7 @@ export const createAutomergePersister = ((
   docObjName = TINYBASE,
   onIgnoredError?: (error: any) => void,
 ): AutomergePersister => {
-  docHandle.change((doc: any) => (doc[docObjName] = {}));
+  docHandle.change((doc: any) => objEnsure(doc, docObjName, objNew));
 
   const getPersisted = async (): Promise<Content | undefined> => {
     const doc = await docHandle.doc();

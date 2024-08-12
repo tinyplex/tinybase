@@ -101,6 +101,16 @@ describe('Load from doc', () => {
     await persister1.load();
     expect(store1.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
   });
+
+  test('persister after data', async () => {
+    docHandler1.change(
+      (doc: any) => (doc['tinybase'] = {t: {t1: {r1: {c1: 1}}}, v: {v1: 1}}),
+    );
+    const store2 = createStore();
+    const persister2 = createAutomergePersister(store2, docHandler1);
+    await persister2.load();
+    expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+  });
 });
 
 describe('Two stores, one doc', () => {
