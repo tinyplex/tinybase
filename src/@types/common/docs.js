@@ -115,7 +115,7 @@
  *
  * This is used internally by TinyBase for the synchronizer protocol and for
  * unique MergeableStore identifiers. But it is useful enough for it to be
- * publicly exposes for purposes such as identifying shared collaboration rooms,
+ * publicly exposed for purposes such as identifying shared collaboration rooms,
  * or creating other Ids that need to be unique.
  *
  * The string may contain numbers, lower or upper case letters, or the '-' or
@@ -123,8 +123,8 @@
  * with a regex like `/[-_0-9A-Za-z]+/`.
  *
  * This function prefers to use the `crypto` module to generate random numbers,
- * but where that is not available (such as in React Native), a Math.random
- * implementation is used. Whilst that my not be cryptographically sound, it
+ * but where that is not available (such as in React Native), a `Math.random`
+ * implementation is used. Whilst that may not be cryptographically sound, it
  * should suffice for most TinyBase-related purposes.
  * @param length The desired length of the unique Id, defaulting to 16.
  * @returns A unique Id of the required length.
