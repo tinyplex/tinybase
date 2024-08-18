@@ -74,9 +74,9 @@
   const MESSAGE_SEPARATOR = '\n';
   const ifPayloadValid = (payload, then) => {
     const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
-    splitAt !== -1
-      ? then(slice(payload, 0, splitAt), slice(payload, splitAt + 1))
-      : 0;
+    if (splitAt !== -1) {
+      then(slice(payload, 0, splitAt), slice(payload, splitAt + 1));
+    }
   };
   const receivePayload = (payload, receive) =>
     ifPayloadValid(payload, (fromClientId, remainder) =>
@@ -192,9 +192,11 @@
         await schedule(async () => {
           try {
             const content = await getPersisted();
-            isArray(content)
-              ? setContentOrChanges(content)
-              : errorNew(`Content is not an array ${content}`);
+            if (isArray(content)) {
+              setContentOrChanges(content);
+            } else {
+              errorNew(`Content is not an array ${content}`);
+            }
           } catch (error) {
             onIgnoredError?.(error);
             if (initialContent) {

@@ -149,9 +149,11 @@
         await schedule(async () => {
           try {
             const content = await getPersisted();
-            isArray(content)
-              ? setContentOrChanges(content)
-              : errorNew(`Content is not an array ${content}`);
+            if (isArray(content)) {
+              setContentOrChanges(content);
+            } else {
+              errorNew(`Content is not an array ${content}`);
+            }
           } catch (error) {
             onIgnoredError?.(error);
             if (initialContent) {

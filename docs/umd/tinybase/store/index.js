@@ -146,7 +146,9 @@
     collForEach(map, (mapValue, id) => {
       if (!excludeMapValue?.(mapValue, id)) {
         const objValue = valueMapper ? valueMapper(mapValue, id) : mapValue;
-        excludeObjValue?.(objValue) ? 0 : (obj[id] = objValue);
+        if (!excludeObjValue?.(objValue)) {
+          obj[id] = objValue;
+        }
       }
     });
     return obj;
@@ -274,13 +276,15 @@
         ([listener, , path = [], pathGetters, extraArgsGetter]) => {
           const callWithIds = (...ids) => {
             const index = size(ids);
-            index == size(path)
-              ? listener(thing, ...ids, ...extraArgsGetter(ids))
-              : isUndefined(path[index])
-                ? arrayForEach(pathGetters[index]?.(...ids) ?? [], (id2) =>
-                    callWithIds(...ids, id2),
-                  )
-                : callWithIds(...ids, path[index]);
+            if (index == size(path)) {
+              listener(thing, ...ids, ...extraArgsGetter(ids));
+            } else if (isUndefined(path[index])) {
+              arrayForEach(pathGetters[index]?.(...ids) ?? [], (id2) =>
+                callWithIds(...ids, id2),
+              );
+            } else {
+              callWithIds(...ids, path[index]);
+            }
           };
           callWithIds();
         },
@@ -665,7 +669,11 @@
         cellIdsChanged(tableId, rowId, cellId2, -1);
         mapSet(row, cellId2);
       };
-      isUndefined(defaultCell) ? delCell2(cellId) : mapForEach(row, delCell2);
+      if (isUndefined(defaultCell)) {
+        delCell2(cellId);
+      } else {
+        mapForEach(row, delCell2);
+      }
       if (collIsEmpty(row)) {
         rowIdsChanged(tableId, rowId, -1);
         if (collIsEmpty(mapSet(table, rowId))) {
