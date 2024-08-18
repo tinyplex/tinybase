@@ -111,7 +111,39 @@
  */
 /// defaultSorter
 /**
- * The getUniqueId function.
+ * The getUniqueId function returns a unique string of a given length.
+ *
+ * This is used internally by TinyBase for the synchronizer protocol and for
+ * unique MergeableStore identifiers. But it is useful enough for it to be
+ * publicly exposes for purposes such as identifying shared collaboration rooms,
+ * or creating other Ids that need to be unique.
+ *
+ * The string may contain numbers, lower or upper case letters, or the '-' or
+ * '_' characters. This makes them URL-safe, and means they can be identified
+ * with a regex like `/[-_0-9A-Za-z]+/`.
+ *
+ * This function prefers to use the `crypto` module to generate random numbers,
+ * but where that is not available (such as in React Native), a Math.random
+ * implementation is used. Whilst that my not be cryptographically sound, it
+ * should suffice for most TinyBase-related purposes.
+ * @param length The desired length of the unique Id, defaulting to 16.
+ * @returns A unique Id of the required length.
+ * @example
+ * This example creates two 8 character long Ids and compares them.
+ *
+ * ```js
+ * import {getUniqueId} from 'tinybase';
+ *
+ * const id1 = getUniqueId(8);
+ * const id2 = getUniqueId(8);
+ *
+ * console.log(id1.length);
+ * // -> 8
+ * console.log(id2.length);
+ * // -> 8
+ * console.log(id1 == id2);
+ * // -> false
+ * ```
  * @category Convenience
  * @since v5.0.0
  */
