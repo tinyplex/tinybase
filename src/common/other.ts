@@ -10,7 +10,9 @@ export const startInterval = (
   sec: number,
   immediate?: 1,
 ) => {
-  immediate && callback();
+  if (immediate) {
+    callback();
+  }
   return setInterval(callback, sec * 1000);
 };
 export const stopInterval = clearInterval;

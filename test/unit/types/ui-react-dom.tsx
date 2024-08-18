@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 // NB: an exclamation mark after a line visually indicates an expected TS error
 
 import * as UiReactDom from 'tinybase/ui-react-dom/with-schemas';
 import type {Id} from 'tinybase/with-schemas';
 import React from 'react';
 
-const tablesSchema = {
+const _tablesSchema = {
   t0: {c0: {type: 'number'}},
   t1: {
     c1: {type: 'number'},
@@ -14,13 +13,13 @@ const tablesSchema = {
   },
 } as const;
 
-const valuesSchema = {
+const _valuesSchema = {
   v1: {type: 'number'},
   v1d: {type: 'string', default: ''},
 } as const;
 
 const UiReactDomWithSchemas = UiReactDom as UiReactDom.WithSchemas<
-  [typeof tablesSchema, typeof valuesSchema]
+  [typeof _tablesSchema, typeof _valuesSchema]
 >;
 const {
   TableInHtmlTable,

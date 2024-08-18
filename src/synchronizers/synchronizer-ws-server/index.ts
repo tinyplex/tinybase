@@ -148,18 +148,18 @@ export const createWsServer = (<
       ifPayloadValid(payload, (toClientId, remainder) => {
         const forwardedPayload = createRawPayload(clientId, remainder);
         if (toClientId === EMPTY_STRING) {
-          clientId !== SERVER_CLIENT_ID
-            ? serverClient[Sc.Send]?.(forwardedPayload)
-            : 0;
+          if (clientId !== SERVER_CLIENT_ID) {
+            serverClient[Sc.Send]?.(forwardedPayload);
+          }
           mapForEach(clients, (otherClientId, otherWebSocket) =>
             otherClientId !== clientId
               ? otherWebSocket.send(forwardedPayload)
               : 0,
           );
+        } else if (toClientId === SERVER_CLIENT_ID) {
+          serverClient[Sc.Send]?.(forwardedPayload);
         } else {
-          toClientId === SERVER_CLIENT_ID
-            ? serverClient[Sc.Send]?.(forwardedPayload)
-            : mapGet(clients, toClientId)?.send(forwardedPayload);
+          mapGet(clients, toClientId)?.send(forwardedPayload);
         }
       });
 
@@ -187,9 +187,11 @@ export const createWsServer = (<
 
         webSocket.on('message', (data) => {
           const payload = data.toString(UTF8);
-          serverClient[Sc.State] == ScState.Ready
-            ? messageHandler(payload)
-            : arrayPush(serverClient[Sc.Buffer], payload);
+          if (serverClient[Sc.State] == ScState.Ready) {
+            messageHandler(payload);
+          } else {
+            arrayPush(serverClient[Sc.Buffer], payload);
+          }
         });
 
         if (serverClient[Sc.State] == ScState.Configured) {

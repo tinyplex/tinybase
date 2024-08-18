@@ -557,7 +557,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
       cellIdsChanged(tableId, rowId, cellId, -1);
       mapSet(row, cellId);
     };
-    isUndefined(defaultCell) ? delCell(cellId) : mapForEach(row, delCell);
+    if (isUndefined(defaultCell)) {
+      delCell(cellId);
+    } else {
+      mapForEach(row, delCell);
+    }
     if (collIsEmpty(row)) {
       rowIdsChanged(tableId, rowId, -1);
       if (collIsEmpty(mapSet(table, rowId))) {

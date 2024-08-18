@@ -147,20 +147,27 @@ const saveStore = async (
                     objToArray(row, async (cell, cellId) => {
                       const ids: [Id, Id, Id] = [tableId, rowId, cellId];
                       const key = constructStorageKey(storagePrefix, T, ...ids);
-                      isUndefined(cell)
-                        ? !initialSave &&
+                      if (isUndefined(cell)) {
+                        if (
+                          !initialSave &&
                           (await that.canDelCell(
                             ...ids,
                             requestOrConnection as Connection,
-                          )) &&
-                          arrayPush(keysToDel, key)
-                        : (await that.canSetCell(
-                            ...ids,
-                            cell,
-                            initialSave,
-                            requestOrConnection,
-                            await storage.get(key),
-                          )) && (keysToSet[key] = cell);
+                          ))
+                        ) {
+                          arrayPush(keysToDel, key);
+                        }
+                      } else if (
+                        await that.canSetCell(
+                          ...ids,
+                          cell,
+                          initialSave,
+                          requestOrConnection,
+                          await storage.get(key),
+                        )
+                      ) {
+                        keysToSet[key] = cell;
+                      }
                     }),
                   )),
             ),
@@ -171,20 +178,24 @@ const saveStore = async (
   await promiseAll(
     objToArray(changes[1], async (value, valueId) => {
       const key = storagePrefix + V + valueId;
-      isUndefined(value)
-        ? !initialSave &&
-          (await that.canDelValue(
-            valueId,
-            requestOrConnection as Connection,
-          )) &&
-          arrayPush(keysToDel, key)
-        : (await that.canSetValue(
-            valueId,
-            value,
-            initialSave,
-            requestOrConnection,
-            await storage.get(key),
-          )) && (keysToSet[key] = value);
+      if (isUndefined(value)) {
+        if (
+          !initialSave &&
+          (await that.canDelValue(valueId, requestOrConnection as Connection))
+        ) {
+          arrayPush(keysToDel, key);
+        }
+      } else if (
+        await that.canSetValue(
+          valueId,
+          value,
+          initialSave,
+          requestOrConnection,
+          await storage.get(key),
+        )
+      ) {
+        keysToSet[key] = value;
+      }
     }),
   );
 

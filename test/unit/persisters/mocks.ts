@@ -54,8 +54,8 @@ const UNDEFINED_MARKER = '\uFFFC';
 const GET_HOST = 'http://get.com';
 const SET_HOST = 'http://set.com';
 
-const electricSchema = new DbSchema({}, [], []);
-type Electric = ElectricClient<typeof electricSchema>;
+const _electricSchema = new DbSchema({}, [], []);
+type Electric = ElectricClient<typeof _electricSchema>;
 
 const jsonStringWithUndefined = (obj: unknown): string =>
   JSON.stringify(obj, (_key, value) =>
@@ -196,7 +196,7 @@ export const mockContentListener: Persist<string> = getMockedCustom(
     let content: Content;
     try {
       content = jsonParseWithUndefined(rawContent);
-    } catch (e) {
+    } catch {
       content = [] as any;
     }
     customPersisterListener?.(content);
@@ -209,7 +209,7 @@ export const mockChangesListener: Persist<string> = getMockedCustom(
     let content: Content;
     try {
       content = jsonParseWithUndefined(rawContent);
-    } catch (e) {
+    } catch {
       content = [] as any;
     }
     customPersisterListener?.(
@@ -233,7 +233,7 @@ export const mockMergeableContentListener: Persist<string> = getMockedCustom(
     let content: any;
     try {
       content = jsonParseWithUndefined(rawContent);
-    } catch (e) {
+    } catch {
       content = [] as any;
     }
     customPersisterListener?.(content);
@@ -247,7 +247,7 @@ export const mockMergeableChangesListener: Persist<string> = getMockedCustom(
     let content: MergeableContent;
     try {
       content = jsonParseWithUndefined(rawContent);
-    } catch (e) {
+    } catch {
       content = [] as any;
     }
     customPersisterListener?.(

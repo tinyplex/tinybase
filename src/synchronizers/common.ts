@@ -14,9 +14,9 @@ export const ifPayloadValid = (
   then: (clientId: string, remainder: string) => void,
 ) => {
   const splitAt = payload.indexOf(MESSAGE_SEPARATOR);
-  splitAt !== -1
-    ? then(slice(payload, 0, splitAt), slice(payload, splitAt + 1))
-    : 0;
+  if (splitAt !== -1) {
+    then(slice(payload, 0, splitAt), slice(payload, splitAt + 1));
+  }
 };
 
 export const receivePayload = (payload: string, receive: Receive) =>

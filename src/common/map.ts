@@ -75,7 +75,9 @@ export const mapToObj = <MapValue, ObjValue = MapValue>(
       const objValue = valueMapper
         ? valueMapper(mapValue, id)
         : (mapValue as any as ObjValue);
-      excludeObjValue?.(objValue) ? 0 : (obj[id] = objValue);
+      if (!excludeObjValue?.(objValue)) {
+        obj[id] = objValue;
+      }
     }
   });
   return obj;

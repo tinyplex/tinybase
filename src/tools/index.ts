@@ -148,7 +148,7 @@ export const createTools = getCreateFunction((store: Store): Tools => {
         await import(PRETTIER_PLUGINS + 'estree'),
         await import(PRETTIER_PLUGINS + 'typescript'),
       );
-    } catch (e) {
+    } catch {
       format = async (str) => str;
     }
     return (await promiseAll(

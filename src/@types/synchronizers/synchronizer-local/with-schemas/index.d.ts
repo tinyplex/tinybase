@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 /// synchronizer-local
 
 import type {Receive, Send, Synchronizer} from '../../with-schemas/index.d.ts';

@@ -113,11 +113,11 @@ const forEachDirAndFile = (
 ): void =>
   readdirSync(dir, {withFileTypes: true}).forEach((entry) => {
     const path = resolve(join(dir, entry.name));
-    entry.isDirectory()
-      ? dirCallback?.(path)
-      : path.endsWith(extension)
-        ? fileCallback?.(path)
-        : null;
+    if (entry.isDirectory()) {
+      dirCallback?.(path);
+    } else if (path.endsWith(extension)) {
+      fileCallback?.(path);
+    }
   });
 
 const prepareTestResultsFromBlock = (block: string, prefix: string): void => {

@@ -88,7 +88,7 @@ const clearDir = async (dir = DIST_DIR) => {
 const makeDir = async (dir) => {
   try {
     await promises.mkdir(dir);
-  } catch (e) {}
+  } catch {}
 };
 
 const ensureDir = async (fileOrDirectory) => {
@@ -111,11 +111,11 @@ const forEachDeepFile = (dir, callback, extension = '') =>
 const forEachDirAndFile = (dir, dirCallback, fileCallback, extension = '') =>
   readdirSync(dir, {withFileTypes: true}).forEach((entry) => {
     const path = resolve(join(dir, entry.name));
-    entry.isDirectory()
-      ? dirCallback?.(path)
-      : path.endsWith(extension)
-        ? fileCallback?.(path)
-        : null;
+    if (entry.isDirectory()) {
+      dirCallback?.(path);
+    } else if (path.endsWith(extension)) {
+      fileCallback?.(path);
+    }
   });
 
 const copyWithReplace = async (src, [from, to], dst = src) => {
@@ -330,6 +330,7 @@ const lintCheckDocs = async (dir) => {
         'no-console': 0,
         'react/prop-types': 0,
         'react-hooks/rules-of-hooks': 0,
+        '@typescript-eslint/no-unused-expressions': 0,
         'max-len': [
           2,
           {code: 80, ignorePattern: '^(\\s+\\* )?((im|ex)ports?|// ->)\\W.*'},

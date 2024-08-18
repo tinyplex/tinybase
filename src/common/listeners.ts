@@ -222,13 +222,15 @@ export const getListenerFunctions = (
       ([listener, , path = [], pathGetters, extraArgsGetter]) => {
         const callWithIds = (...ids: Ids): any => {
           const index = size(ids);
-          index == size(path)
-            ? (listener as any)(thing, ...ids, ...extraArgsGetter(ids))
-            : isUndefined(path[index])
-              ? arrayForEach(pathGetters[index]?.(...ids) ?? [], (id) =>
-                  callWithIds(...ids, id),
-                )
-              : callWithIds(...ids, path[index] as Id);
+          if (index == size(path)) {
+            (listener as any)(thing, ...ids, ...extraArgsGetter(ids));
+          } else if (isUndefined(path[index])) {
+            arrayForEach(pathGetters[index]?.(...ids) ?? [], (id) =>
+              callWithIds(...ids, id),
+            );
+          } else {
+            callWithIds(...ids, path[index] as Id);
+          }
         };
         callWithIds();
       },

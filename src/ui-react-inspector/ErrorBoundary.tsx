@@ -32,6 +32,7 @@ export class ErrorBoundary extends PureComponent<Props, State> {
         Inspector error: please see console for details.
       </span>
     ) : (
+      // eslint-disable-next-line react/prop-types
       this.props.children
     );
   }
