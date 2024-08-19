@@ -8,6 +8,7 @@ import {
   SELECT,
   WHERE,
   getPlaceholders,
+  getWrappedCommand,
 } from './common.ts';
 import type {
   DatabasePersisterConfig,
@@ -31,7 +32,7 @@ export const createSqlitePersister = <
 >(
   store: PersistedStore<Persist>,
   configOrStoreTableName: DatabasePersisterConfig | string | undefined,
-  cmd: Cmd,
+  rawCmd: Cmd,
   addUpdateListener: (listener: UpdateListener) => UpdateListeningHandle,
   delUpdateListener: (listeningHandle: UpdateListeningHandle) => void,
   onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
@@ -44,6 +45,8 @@ export const createSqlitePersister = <
   let dataVersion: number | null;
   let schemaVersion: number | null;
   let totalChanges: number | null;
+
+  const cmd = getWrappedCommand(rawCmd, onSqlCommand);
 
   const [
     isJson,
@@ -93,12 +96,7 @@ export const createSqlitePersister = <
 
   return (isJson ? createJsonPersister : createTabularPersister)(
     store,
-    onSqlCommand
-      ? async (sql, args) => {
-          onSqlCommand(sql, args);
-          return await cmd(sql, args);
-        }
-      : cmd,
+    cmd,
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,

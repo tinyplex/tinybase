@@ -22,6 +22,17 @@ export const SCHEMA_VERSION = 'schema_version';
 export const FROM = 'FROM ';
 export const PRAGMA_TABLE = 'pragma_table_';
 
+export const getWrappedCommand = (
+  rawCmd: Cmd,
+  onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
+): Cmd =>
+  onSqlCommand
+    ? async (sql, args) => {
+        onSqlCommand(sql, args);
+        return await rawCmd(sql, args);
+      }
+    : rawCmd;
+
 export const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 
 export const getPlaceholders = (array: any[]) =>
