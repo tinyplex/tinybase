@@ -555,14 +555,14 @@ export const mockRemote: Persistable = {
 };
 
 export const mockIndexedDb = {
-  autoLoadPause: 110,
+  autoLoadPause: 11,
   getLocation: async (): Promise<string> => 'test' + Math.random(),
   getLocationMethod: [
     'getDbName',
     (location: string) => location,
   ] as GetLocationMethod<string>,
   getPersister: (store: Store, dbName: string) =>
-    createIndexedDbPersister(store, dbName, 0.1),
+    createIndexedDbPersister(store, dbName, 0.01),
   get: async (dbName: string): Promise<Content | void> => {
     try {
       const db = await openDB(dbName, 2, {

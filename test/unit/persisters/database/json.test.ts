@@ -18,8 +18,8 @@ describe.each(Object.entries(POSTGRESQL_VARIANTS))(
       getPersister,
       cmd,
       close,
-      autoLoadPause = 10,
-      autoLoadIntervalSeconds = 0.01,
+      autoLoadPause = 2,
+      autoLoadIntervalSeconds = 0.001,
       isPostgres,
     ],
   ) => {
