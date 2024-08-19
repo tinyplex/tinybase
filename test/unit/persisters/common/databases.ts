@@ -321,7 +321,7 @@ export const POSTGRESQL_VARIANTS: Variants = {
       await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)}`;
       await adminSql.end();
     },
-    10,
+    20,
     undefined,
     true,
   ],
