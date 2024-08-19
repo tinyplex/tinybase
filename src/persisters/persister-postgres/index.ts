@@ -28,14 +28,18 @@ export const createPostgresPersister = (async (
       channel: string,
       notifyListener: NotifyListener,
     ): Promise<ListenMeta> => sql.listen(channel, notifyListener),
-    (notifyListener: ListenMeta) =>
-      notifyListener.unlisten().catch(onIgnoredError),
+    async (notifyListener: ListenMeta) => {
+      try {
+        await notifyListener.unlisten();
+      } catch (e) {
+        onIgnoredError?.(e);
+      }
+    },
     onSqlCommand,
     onIgnoredError,
     () => cmdSql?.release?.(),
     3, // StoreOrMergeableStore,
     sql,
-
     'getSql',
   ) as PostgresPersister;
 }) as typeof createPostgresPersisterDecl;
