@@ -6990,20 +6990,20 @@ exports[`Persists to/from sqlite3 autoSaves: delCell 1`] = `
               ],
               "c2": [
                 "￼",
-                "Nn1JUFJ----7JQY8",
-                780205145,
+                "Nn1JUF3----7JQY8",
+                1964059388,
               ],
             },
             "",
-            2832502186,
+            756126043,
           ],
         },
         "",
-        1098816087,
+        3943446976,
       ],
     },
     "",
-    1923629260,
+    3161300725,
   ],
   [
     {
@@ -7014,12 +7014,12 @@ exports[`Persists to/from sqlite3 autoSaves: delCell 1`] = `
       ],
       "v2": [
         2,
-        "Nn1JUF9----7JQY8",
-        3514165721,
+        "Nn1JUF1----7JQY8",
+        830262161,
       ],
     },
     "",
-    864368485,
+    4272434271,
   ],
 ]
 `;
@@ -7039,20 +7039,20 @@ exports[`Persists to/from sqlite3 autoSaves: delValue 1`] = `
               ],
               "c2": [
                 "￼",
-                "Nn1JUFJ----7JQY8",
-                780205145,
+                "Nn1JUF3----7JQY8",
+                1964059388,
               ],
             },
             "",
-            2832502186,
+            756126043,
           ],
         },
         "",
-        1098816087,
+        3943446976,
       ],
     },
     "",
-    1923629260,
+    3161300725,
   ],
   [
     {
@@ -7063,12 +7063,12 @@ exports[`Persists to/from sqlite3 autoSaves: delValue 1`] = `
       ],
       "v2": [
         "￼",
-        "Nn1JUFT----7JQY8",
-        2276030999,
+        "Nn1JUF5----7JQY8",
+        1157804434,
       ],
     },
     "",
-    4278253927,
+    1587362687,
   ],
 ]
 `;
@@ -7195,12 +7195,12 @@ exports[`Persists to/from sqlite3 autoSaves: setValues 1`] = `
       ],
       "v2": [
         2,
-        "Nn1JUF9----7JQY8",
-        3514165721,
+        "Nn1JUF1----7JQY8",
+        830262161,
       ],
     },
     "",
-    864368485,
+    4272434271,
   ],
 ]
 `;
@@ -7700,20 +7700,20 @@ exports[`Persists to/from sqliteWasm autoSaves: delCell 1`] = `
               ],
               "c2": [
                 "￼",
-                "Nn1JUFJ----7JQY8",
-                780205145,
+                "Nn1JUF3----7JQY8",
+                1964059388,
               ],
             },
             "",
-            2832502186,
+            756126043,
           ],
         },
         "",
-        1098816087,
+        3943446976,
       ],
     },
     "",
-    1923629260,
+    3161300725,
   ],
   [
     {
@@ -7724,12 +7724,12 @@ exports[`Persists to/from sqliteWasm autoSaves: delCell 1`] = `
       ],
       "v2": [
         2,
-        "Nn1JUF9----7JQY8",
-        3514165721,
+        "Nn1JUF1----7JQY8",
+        830262161,
       ],
     },
     "",
-    864368485,
+    4272434271,
   ],
 ]
 `;
@@ -7749,20 +7749,20 @@ exports[`Persists to/from sqliteWasm autoSaves: delValue 1`] = `
               ],
               "c2": [
                 "￼",
-                "Nn1JUFJ----7JQY8",
-                780205145,
+                "Nn1JUF3----7JQY8",
+                1964059388,
               ],
             },
             "",
-            2832502186,
+            756126043,
           ],
         },
         "",
-        1098816087,
+        3943446976,
       ],
     },
     "",
-    1923629260,
+    3161300725,
   ],
   [
     {
@@ -7773,12 +7773,12 @@ exports[`Persists to/from sqliteWasm autoSaves: delValue 1`] = `
       ],
       "v2": [
         "￼",
-        "Nn1JUFT----7JQY8",
-        2276030999,
+        "Nn1JUF5----7JQY8",
+        1157804434,
       ],
     },
     "",
-    4278253927,
+    1587362687,
   ],
 ]
 `;
@@ -7905,12 +7905,12 @@ exports[`Persists to/from sqliteWasm autoSaves: setValues 1`] = `
       ],
       "v2": [
         2,
-        "Nn1JUF9----7JQY8",
-        3514165721,
+        "Nn1JUF1----7JQY8",
+        830262161,
       ],
     },
     "",
-    864368485,
+    4272434271,
   ],
 ]
 `;
