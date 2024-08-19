@@ -234,8 +234,8 @@ const getMockedDatabase = <Location>(
     args?: any[],
   ) => Promise<{[id: string]: any}[]>,
   close: (location: Location) => Promise<void>,
-  autoLoadPause = 10,
-  autoLoadIntervalSeconds = 0.1,
+  autoLoadPause = 2,
+  autoLoadIntervalSeconds = 0.001,
   _isPostgres = false,
 ): Persistable<Location> => {
   const mockDatabase = {
