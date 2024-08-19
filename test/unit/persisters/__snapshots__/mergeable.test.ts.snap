@@ -5570,20 +5570,20 @@ exports[`Persists to/from postgres autoSaves: delCell 1`] = `
               ],
               "c2": [
                 "￼",
-                "Nn1JUFJ----7JQY8",
-                780205145,
+                "Nn1JUFc----7JQY8",
+                4036784140,
               ],
             },
             "",
-            2832502186,
+            1580055069,
           ],
         },
         "",
-        1098816087,
+        3198578267,
       ],
     },
     "",
-    1923629260,
+    3962176564,
   ],
   [
     {
@@ -5594,12 +5594,12 @@ exports[`Persists to/from postgres autoSaves: delCell 1`] = `
       ],
       "v2": [
         2,
-        "Nn1JUF9----7JQY8",
-        3514165721,
+        "Nn1JUFJ----7JQY8",
+        3659329950,
       ],
     },
     "",
-    864368485,
+    143526703,
   ],
 ]
 `;
@@ -5619,20 +5619,20 @@ exports[`Persists to/from postgres autoSaves: delValue 1`] = `
               ],
               "c2": [
                 "￼",
-                "Nn1JUFJ----7JQY8",
-                780205145,
+                "Nn1JUFc----7JQY8",
+                4036784140,
               ],
             },
             "",
-            2832502186,
+            1580055069,
           ],
         },
         "",
-        1098816087,
+        3198578267,
       ],
     },
     "",
-    1923629260,
+    3962176564,
   ],
   [
     {
@@ -5643,12 +5643,12 @@ exports[`Persists to/from postgres autoSaves: delValue 1`] = `
       ],
       "v2": [
         "￼",
-        "Nn1JUFT----7JQY8",
-        2276030999,
+        "Nn1JUFw----7JQY8",
+        1709187352,
       ],
     },
     "",
-    4278253927,
+    2494864705,
   ],
 ]
 `;
@@ -5775,12 +5775,12 @@ exports[`Persists to/from postgres autoSaves: setValues 1`] = `
       ],
       "v2": [
         2,
-        "Nn1JUF9----7JQY8",
-        3514165721,
+        "Nn1JUFJ----7JQY8",
+        3659329950,
       ],
     },
     "",
-    864368485,
+    143526703,
   ],
 ]
 `;
