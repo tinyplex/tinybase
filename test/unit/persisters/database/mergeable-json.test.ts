@@ -20,8 +20,8 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       getPersister,
       cmd,
       close,
-      autoLoadPause = 20,
-      autoLoadIntervalSeconds = 0.02,
+      autoLoadPause = 10,
+      autoLoadIntervalSeconds = 0.01,
       isPostgres,
     ],
   ) => {
@@ -35,7 +35,10 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       mockFetchWasm();
       db = await getOpenDatabase();
       store = createMergeableStore('s1');
-      persister = await getPersister(store, db);
+      persister = await getPersister(store, db, {
+        mode: 'json',
+        autoLoadIntervalSeconds,
+      });
     });
 
     afterEach(async () => await close(db));

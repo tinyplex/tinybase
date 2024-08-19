@@ -16,8 +16,8 @@ describe.each(Object.entries(ALL_VARIANTS))(
       getPersister,
       cmd,
       close,
-      autoLoadPause = 20,
-      autoLoadIntervalSeconds = 0.02,
+      autoLoadPause = 10,
+      autoLoadIntervalSeconds = 0.01,
       isPostgres,
     ],
   ) => {
