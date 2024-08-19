@@ -6,7 +6,7 @@ import type {
 import {TINYBASE, strMatch} from '../../common/strings.ts';
 import {
   UpdateListener,
-  createPostgresqlPersister,
+  createPostgreSqlPersister,
 } from '../common/database/postgresql.ts';
 import {collHas, collValues} from '../../common/coll.ts';
 import {ifNotUndefined, promiseAll} from '../../common/other.ts';
@@ -35,7 +35,7 @@ export const createPostgresPersister = (async (
     await sql`CREATE OR REPLACE TRIGGER ${sql(CHANGE_DATA_TRIGGER + '_' + tableName)} AFTER INSERT OR UPDATE OR DELETE ON ${sql(tableName)} EXECUTE FUNCTION ${sql(CHANGE_DATA_TRIGGER)}()`;
   };
 
-  return createPostgresqlPersister(
+  return createPostgreSqlPersister(
     store,
     configOrStoreTableName,
     cmdSql?.unsafe,
