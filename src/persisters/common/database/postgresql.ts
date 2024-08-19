@@ -66,7 +66,7 @@ export const createPostgreSqlPersister = <
   ): Promise<NotifyListeningHandle> => {
     await cmd(
       // eslint-disable-next-line max-len
-      `CREATE OR REPLACE FUNCTION ${CREATE_TABLE_TRIGGER}()RETURNS event_trigger AS $t2$ DECLARE row record; BEGIN FOR row IN SELECT object_identity FROM pg_event_trigger_ddl_commands()WHERE command_tag='CREATE TABLE' LOOP PERFORM pg_notify('${EVENT_CHANNEL}','c:'+SPLIT_PART(row.object_identity,'.',2));END LOOP;END;$t2$ LANGUAGE plpgsql;`,
+      `CREATE OR REPLACE FUNCTION ${CREATE_TABLE_TRIGGER}()RETURNS event_trigger AS $t2$ DECLARE row record; BEGIN FOR row IN SELECT object_identity FROM pg_event_trigger_ddl_commands()WHERE command_tag='CREATE TABLE' LOOP PERFORM pg_notify('${EVENT_CHANNEL}','c:'||SPLIT_PART(row.object_identity,'.',2));END LOOP;END;$t2$ LANGUAGE plpgsql;`,
     );
 
     try {
@@ -78,7 +78,7 @@ export const createPostgreSqlPersister = <
 
     await cmd(
       // eslint-disable-next-line max-len
-      `CREATE OR REPLACE FUNCTION ${CHANGE_DATA_TRIGGER}()RETURNS trigger AS $t1$ BEGIN PERFORM pg_notify('${EVENT_CHANNEL}','d:'+TG_TABLE_NAME);RETURN NULL;END;$t1$ LANGUAGE plpgsql;`,
+      `CREATE OR REPLACE FUNCTION ${CHANGE_DATA_TRIGGER}()RETURNS trigger AS $t1$ BEGIN PERFORM pg_notify('${EVENT_CHANNEL}','d:'||TG_TABLE_NAME);RETURN NULL;END;$t1$ LANGUAGE plpgsql;`,
     );
     await promiseAll(
       arrayMap(collValues(managedTableNamesSet), async (tableName) => {
