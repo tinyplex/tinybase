@@ -205,8 +205,6 @@ export const SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
     ): Promise<{[id: string]: any}[]> =>
       (await client.execute({sql, args})).rows,
     async (client: Client) => client.close(),
-    200,
-    0.2,
   ],
   electricSql: [
     async (): Promise<Electric> =>
@@ -235,8 +233,6 @@ export const SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
     async (electricClient: Electric, sql: string, args: any[] = []) =>
       await electricClient.db.raw({sql, args}),
     async (electricClient: Electric) => await electricClient.close(),
-    200,
-    0.2,
   ],
   powerSync: [
     async (): Promise<AbstractPowerSyncDatabase> =>
@@ -325,8 +321,8 @@ export const POSTGRESQL_VARIANTS: Variants = {
       await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)}`;
       await adminSql.end();
     },
-    undefined,
-    undefined,
+    20,
+    0.02,
     true,
   ],
 };
