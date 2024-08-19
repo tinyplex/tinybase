@@ -778,6 +778,68 @@ describe.each(Object.entries(ALL_VARIANTS))(
           tinybase_values: [{_id: 'text', v1: 'json'}, [{_id: '_', v1: 2}]],
         });
       });
+
+      test('autoLoad', async () => {
+        await setDatabase(db, {
+          t1: [
+            'CREATE TABLE "t1"("_id"text PRIMARY KEY,"c1"json)',
+            [{_id: 'r1', c1: 1}],
+          ],
+          tinybase_values: [
+            'CREATE TABLE "tinybase_values"("_id"text PRIMARY KEY,"v1"json)',
+            [{_id: '_', v1: 1}],
+          ],
+        });
+        await persister.startAutoLoad();
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        await cmd(db, 'UPDATE t1 SET c1=$1 WHERE _id=$2', [2, 'r1']);
+        await pause(autoLoadPause);
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+        await cmd(db, 'UPDATE tinybase_values SET v1=$1 WHERE _id=$2', [
+          2,
+          '_',
+        ]);
+        await pause(autoLoadPause);
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+      });
+
+      test('autoLoad, table dropped and recreated', async () => {
+        await setDatabase(db, {
+          t1: [
+            'CREATE TABLE "t1"("_id"text PRIMARY KEY,"c1"json)',
+            [{_id: 'r1', c1: 1}],
+          ],
+          tinybase_values: [
+            'CREATE TABLE "tinybase_values"("_id"text PRIMARY KEY,"v1"json)',
+            [{_id: '_', v1: 1}],
+          ],
+        });
+        await persister.startAutoLoad();
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        await cmd(db, 'DROP TABLE t1');
+        await cmd(db, 'CREATE TABLE "t1"("_id"text PRIMARY KEY,"c1"json)');
+        await cmd(db, 'INSERT INTO t1 (_id, c1) VALUES ($1, $2)', ['r1', 3]);
+        await pause(autoLoadPause);
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 3}}}, {v1: 1}]);
+        await cmd(db, 'DROP TABLE tinybase_values');
+        await cmd(
+          db,
+          'CREATE TABLE "tinybase_values"("_id"text PRIMARY KEY,"v1"json)',
+        );
+        await cmd(db, 'INSERT INTO tinybase_values (_id, v1) VALUES ($1, $2)', [
+          '_',
+          3,
+        ]);
+        await pause(autoLoadPause);
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 3}}}, {v1: 3}]);
+        await cmd(db, 'UPDATE t1 SET c1 = $1 WHERE _id = $2', [4, 'r1']);
+        await cmd(db, 'UPDATE tinybase_values SET v1 = $1 WHERE _id = $2', [
+          4,
+          '_',
+        ]);
+        await pause(autoLoadPause);
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 4}}}, {v1: 4}]);
+      });
     });
 
     describe('SQL for granular saves', () => {

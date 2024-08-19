@@ -458,6 +458,12 @@ describe.each(Object.entries(POSTGRESQL_VARIANTS))(
         ]);
         await pause(autoLoadPause);
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 3}}}, {v1: 3}]);
+        await cmd(db, 'UPDATE tinybase SET store = $1 WHERE _id = $2', [
+          '[{"t1":{"r1":{"c1":4}}},{"v1":4}]',
+          '_',
+        ]);
+        await pause(autoLoadPause);
+        expect(store.getContent()).toEqual([{t1: {r1: {c1: 4}}}, {v1: 4}]);
       });
     });
 
