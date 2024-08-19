@@ -5,6 +5,7 @@ import {ALL_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 import type {Persister, Store} from 'tinybase';
 import {mockFetchWasm, pause} from '../../common/other.ts';
 import {createStore} from 'tinybase';
+import {nextLoop} from '../common/other.ts';
 
 describe.each(Object.entries(ALL_VARIANTS))(
   '%s',
@@ -16,8 +17,8 @@ describe.each(Object.entries(ALL_VARIANTS))(
       getPersister,
       cmd,
       close,
-      autoLoadPause = 10,
-      autoLoadIntervalSeconds = 0.01,
+      autoLoadPause = 3,
+      autoLoadIntervalSeconds = 0.001,
       isPostgres,
     ],
   ) => {
@@ -791,6 +792,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
           ],
         });
         await persister.startAutoLoad();
+        await pause(autoLoadPause);
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
         await cmd(db, 'UPDATE t1 SET c1=$1 WHERE _id=$2', [2, 'r1']);
         await pause(autoLoadPause);
@@ -815,6 +817,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
           ],
         });
         await persister.startAutoLoad();
+        await pause(autoLoadPause);
         expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
         await cmd(db, 'DROP TABLE t1');
         await cmd(db, 'CREATE TABLE "t1"("_id"text PRIMARY KEY,"c1"json)');
@@ -1367,45 +1370,54 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('autoSave1 & autoLoad2, complex transactions', async () => {
         await persister1.startAutoSave();
         await persister2.startAutoLoad();
-        store1
-          .setTables({
+        await pause(autoLoadPause);
+        store1.setContent([
+          {
             t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
             t2: {r1: {c1: 1}},
-          })
-          .setValues({v1: 1, v2: 2});
+          },
+          {v1: 1, v2: 2},
+        ]);
+        await nextLoop();
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.setCell('t1', 'r1', 'c1', 2);
+        await nextLoop();
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.delCell('t1', 'r1', 'c2');
+        await nextLoop();
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c1: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.delRow('t1', 'r2');
+        await nextLoop();
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.delTable('t2');
+        await nextLoop();
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
           {t1: {r1: {c1: 2}}},
           {v1: 1, v2: 2},
         ]);
         store1.delValue('v2');
+        await nextLoop();
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
         store1.setValue('v1', 2);
+        await nextLoop();
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
       }, 20000);
