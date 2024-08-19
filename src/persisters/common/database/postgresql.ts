@@ -12,7 +12,7 @@ import {createTabularPersister} from './tabular.ts';
 import {getConfigStructures} from './config.ts';
 
 export type UpdateListener = (tableName: string) => void;
-export const createPostgresqlPersister = <
+export const createPostgreSqlPersister = <
   UpdateListeningHandle,
   Persist extends Persists = Persists.StoreOnly,
 >(
