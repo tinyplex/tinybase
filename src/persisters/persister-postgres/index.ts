@@ -3,6 +3,7 @@ import type {
   PostgresPersister,
   createPostgresPersister as createPostgresPersisterDecl,
 } from '../../@types/persisters/persister-postgres/index.d.ts';
+import {TINYBASE, strMatch} from '../../common/strings.ts';
 import {
   UpdateListener,
   createPostgresqlPersister,
@@ -12,7 +13,6 @@ import {ifNotUndefined, promiseAll} from '../../common/other.ts';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
-import {TINYBASE} from '../../common/strings.ts';
 import {arrayMap} from '../../common/array.ts';
 
 const EVENT_CHANNEL = TINYBASE;
@@ -65,7 +65,7 @@ export const createPostgresPersister = (async (
         EVENT_CHANNEL,
         async (prefixAndTableName) =>
           await ifNotUndefined(
-            prefixAndTableName.match(EVENT_REGEX),
+            strMatch(prefixAndTableName, EVENT_REGEX),
             async ([, eventType, tableName]) => {
               if (
                 eventType == 'c:' &&

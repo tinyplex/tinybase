@@ -59,3 +59,6 @@ export const strStartsWith = (str: string, prefix: string) =>
 
 export const strEndsWith = (str: string, suffix: string) =>
   str.endsWith(suffix);
+
+export const strMatch = (str: string | undefined, regex: RegExp) =>
+  str?.match(regex);

@@ -5,7 +5,7 @@ import type {
   WsServerStats,
   createWsServer as createWsServerDecl,
 } from '../../@types/synchronizers/synchronizer-ws-server/index.d.ts';
-import {EMPTY_STRING, UTF8} from '../../common/strings.ts';
+import {EMPTY_STRING, UTF8, strMatch} from '../../common/strings.ts';
 import type {Id, IdOrNull, Ids} from '../../@types/common/index.d.ts';
 import {
   IdMap,
@@ -169,7 +169,7 @@ export const createWsServer = (<
       });
 
   webSocketServer.on('connection', (webSocket, request) =>
-    ifNotUndefined(request.url?.match(PATH_REGEX), ([, pathId]) =>
+    ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
       ifNotUndefined(request.headers['sec-websocket-key'], async (clientId) => {
         const clients = mapEnsure(clientsByPath, pathId, mapNew<Id, WebSocket>);
         const serverClient: ServerClient = mapEnsure(
