@@ -2,9 +2,8 @@ module.exports = (path, options) =>
   options.defaultResolver(path, {
     ...options,
     packageFilter: (packageJson) => {
-      if (packageJson.name === 'uuid') {
+      if (packageJson.name === '@electric-sql/pglite') {
         delete packageJson.exports;
-        delete packageJson.module;
       }
 
       if (packageJson.name === '@libsql/client') {
@@ -20,6 +19,11 @@ module.exports = (path, options) =>
       if (packageJson.name === '@libsql/isomorphic-fetch') {
         packageJson.main = 'node.js';
         delete packageJson.exports;
+      }
+
+      if (packageJson.name === 'uuid') {
+        delete packageJson.exports;
+        delete packageJson.module;
       }
 
       if (packageJson.name === 'ws') {
