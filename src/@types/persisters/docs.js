@@ -351,10 +351,13 @@
  * mapping mode.
  *
  * Columns in SQLite database have no type, and so in this mode, the table can
- * contain strings, booleans, and numbers for Cells and Values, just as TinyBase
- * does. In PostgreSQL databases, all Cell and Value columns are expected to be
- * typed as `text`, and the strings, booleans, and numbers are all JSON-encoded
- * by the Persister.
+ * contain strings and numbers for Cells and Values, just as TinyBase does.
+ * Booleans, unfortunately, are stored as 0 or 1 in SQLite, and cannot be
+ * distinguished from numbers.
+ *
+ * In PostgreSQL databases, all Cell and Value columns are expected to be typed
+ * as `text`, and the strings, booleans, and numbers are all JSON-encoded by the
+ * Persister.
  *
  * The 'Dpc' prefix indicates that this type is used within the
  * DatabasePersisterConfig type.
