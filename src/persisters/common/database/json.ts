@@ -32,7 +32,9 @@ export const createJsonPersister = <
   querySchema: QuerySchema,
   thing: any,
   getThing: string,
-  useOnConflict?: boolean,
+  typeColumns?: 0 | 1,
+  jsonValues?: 0 | 1,
+  orReplace?: 0 | 1,
 ): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(
@@ -40,7 +42,9 @@ export const createJsonPersister = <
       managedTableNames,
       querySchema,
       onIgnoredError,
-      useOnConflict,
+      typeColumns,
+      jsonValues,
+      orReplace,
     );
 
   const getPersisted = async (): Promise<PersistedContent<Persist>> =>
