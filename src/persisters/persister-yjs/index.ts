@@ -14,7 +14,7 @@ import {
   objToArray,
 } from '../../common/obj.ts';
 import {T, TINYBASE, V} from '../../common/strings.ts';
-import {Doc as YDoc, YEvent, Map as YMap} from 'yjs';
+import {Doc as YDoc, type YEvent, Map as YMap} from 'yjs';
 import type {
   YjsPersister,
   createYjsPersister as createYjsPersisterDecl,
@@ -165,7 +165,8 @@ const yMapMatch = (
 ): 1 | void => {
   const yMap = isUndefined(idInParent)
     ? yMapOrParent
-    : yMapOrParent.get(idInParent) ?? yMapOrParent.set(idInParent, new YMap());
+    : (yMapOrParent.get(idInParent) ??
+      yMapOrParent.set(idInParent, new YMap()));
   let changed: 1 | undefined;
   objToArray(obj, (value, id) => {
     if (set(yMap, id, value)) {
