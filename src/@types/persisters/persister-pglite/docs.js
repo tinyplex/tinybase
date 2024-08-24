@@ -108,8 +108,8 @@
  * await persister.save();
  * // Store will be saved to the database.
  *
- * console.log((await pglite.query(`SELECT * FROM my_tinybase;`, [])).rows);
- * // -> [{_id: '_', store: [{"pets":{"fido":{"species":"dog"}}},{}]}]
+ * console.log((await pglite.query('SELECT * FROM my_tinybase;')).rows);
+ * // -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
  *
  * await pglite.query(`UPDATE my_tinybase SET store = $1 WHERE _id = '_';`,
  *   ['[{"pets":{"felix":{"species":"cat"}}},{}]']
@@ -139,16 +139,19 @@
  * });
  *
  * await persister.save();
- * console.log(await pglite.query('SELECT * FROM pets;'));
- * // -> [{_id: 'fido', species: 'dog'}]
+ * console.log((await pglite.query('SELECT * FROM pets;')).rows);
+ * // -> [{_id: 'fido', species: '"dog"'}]
+ * // Note that Cells and Values are JSON-encoded in PostgreSQL databases.
  *
- * await pglite.query(`INSERT INTO pets (_id, species) VALUES ('felix', '"cat"')`);
+ * await pglite.query(
+ *   `INSERT INTO pets (_id, species) VALUES ('felix', '"cat"')`,
+ * );
  * await persister.load();
  * console.log(store.getTables());
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
  * persister.destroy();
- * await pglite.query(`DROP TABLE IF EXISTS pets`);
+ * await pglite.query('DROP TABLE IF EXISTS pets');
  * await pglite.close();
  * ```
  * @category Creation
