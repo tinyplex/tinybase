@@ -23,6 +23,8 @@ describe.each(Object.entries(ALL_VARIANTS))(
   ) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd, isPostgres);
 
+    const columnType = isPostgres ? 'text' : '';
+
     let db: any;
     let store: Store;
     let persister: Persister;
@@ -44,7 +46,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
         const persister = await getPersister(store, db, 'test');
         await persister.save();
         expect(await getDatabase(db)).toEqual({
-          test: [{_id: 'text', store: 'json'}, [{_id: '_', store: '[{},{}]'}]],
+          test: [
+            {_id: columnType, store: columnType},
+            [{_id: '_', store: '[{},{}]'}],
+          ],
         });
       });
 
@@ -53,7 +58,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           'test table': [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{},{}]'}],
           ],
         });
@@ -64,7 +69,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           'test "table"': [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{},{}]'}],
           ],
         });
@@ -78,7 +83,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
         });
         await persister.save();
         expect(await getDatabase(db)).toEqual({
-          test: [{_id: 'text', store: 'json'}, [{_id: '_', store: '[{},{}]'}]],
+          test: [
+            {_id: columnType, store: columnType},
+            [{_id: '_', store: '[{},{}]'}],
+          ],
         });
       });
 
@@ -91,7 +99,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {'test "id"': 'text', store: 'json'},
+            {'test "id"': columnType, store: columnType},
             [{'test "id"': '_', store: '[{},{}]'}],
           ],
         });
@@ -106,7 +114,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', 'test "store"': 'json'},
+            {_id: columnType, 'test "store"': columnType},
             [{_id: '_', 'test "store"': '[{},{}]'}],
           ],
         });
@@ -118,7 +126,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{},{}]'}],
           ],
         });
@@ -132,7 +140,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{},{}]'}],
           ],
         });
@@ -143,7 +151,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{}]'}],
           ],
         });
@@ -154,7 +162,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{},{"v1":1}]'}],
           ],
         });
@@ -165,7 +173,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -176,7 +184,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -186,7 +194,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         ]);
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":2}}},{"v1":2}]'}],
           ],
         });
@@ -204,7 +212,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -213,31 +221,39 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('wrong table, not removed', async () => {
         await setDatabase(db, {
           tinybase2: [
-            'CREATE TABLE "tinybase2"("a"text PRIMARY KEY,"b"json)',
+            'CREATE TABLE "tinybase2"("a" ' +
+              columnType +
+              ' PRIMARY KEY,"b" ' +
+              columnType +
+              ')',
             [{a: 'a', b: 'b'}],
           ],
         });
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
-          tinybase2: [{a: 'text', b: 'json'}, [{a: 'a', b: 'b'}]],
+          tinybase2: [{a: columnType, b: columnType}, [{a: 'a', b: 'b'}]],
         });
       });
 
       test('table, empty', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY, "store"json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [],
           ],
         });
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -246,14 +262,18 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('table, wrong row, removed', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY, "store"json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [{_id: 'a', store: 'b'}],
           ],
         });
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -261,12 +281,15 @@ describe.each(Object.entries(ALL_VARIANTS))(
 
       test('table, empty, missing key', async () => {
         await setDatabase(db, {
-          tinybase: ['CREATE TABLE "tinybase"("store"text)', []],
+          tinybase: [
+            'CREATE TABLE "tinybase" ("store" ' + columnType + ')',
+            [],
+          ],
         });
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'text'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -274,12 +297,15 @@ describe.each(Object.entries(ALL_VARIANTS))(
 
       test('table, empty, missing column', async () => {
         await setDatabase(db, {
-          tinybase: ['CREATE TABLE "tinybase"("_id"text PRIMARY KEY)', []],
+          tinybase: [
+            'CREATE TABLE "tinybase" ("_id" ' + columnType + ' PRIMARY KEY)',
+            [],
+          ],
         });
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -288,14 +314,18 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('table, empty, wrong column, replaced', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY,"b"json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY,"b" ' +
+              columnType +
+              ')',
             [],
           ],
         });
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -304,14 +334,20 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('table, empty, extra column, removed', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY, "store"json,"b"json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ', "b" ' +
+              columnType +
+              ')',
             [],
           ],
         });
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -332,7 +368,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('broken', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY, "store"json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [{_id: '_', store: '[{"t1":1}]'}],
           ],
         });
@@ -343,7 +383,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('broken, can default', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY, "store"json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [{_id: '_', store: '[{"t1":}]'}],
           ],
         });
@@ -354,7 +398,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('tables', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY, "store"json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{}]'}],
           ],
         });
@@ -365,7 +413,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('values', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY, "store"json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [{_id: '_', store: '[{}, {"v1":1}]'}],
           ],
         });
@@ -377,7 +429,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
         beforeEach(async () => {
           await setDatabase(db, {
             tinybase: [
-              'CREATE TABLE "tinybase"("_id"text PRIMARY KEY, "store"json)',
+              'CREATE TABLE "tinybase" ("_id" ' +
+                columnType +
+                ' PRIMARY KEY, "store" ' +
+                columnType +
+                ')',
               [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
             ],
           });
@@ -402,7 +458,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('both, change, and then save again', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" text PRIMARY KEY, "store" json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -413,7 +473,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":2}}},{"v1":2}]'}],
           ],
         });
@@ -422,7 +482,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('autoLoad', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" text PRIMARY KEY, "store" json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -440,7 +504,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('autoLoad, table dropped and recreated', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id" text PRIMARY KEY, "store" json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -450,7 +518,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await cmd(db, 'DROP TABLE tinybase');
         await cmd(
           db,
-          'CREATE TABLE "tinybase"("_id" text PRIMARY KEY, "store" json)',
+          'CREATE TABLE "tinybase" ("_id" ' +
+            columnType +
+            ' PRIMARY KEY, "store" ' +
+            columnType +
+            ')',
         );
         await cmd(db, 'INSERT INTO tinybase (_id, store) VALUES ($1, $2)', [
           '_',

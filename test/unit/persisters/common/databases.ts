@@ -349,6 +349,7 @@ export const getDatabaseFunctions = <Database>(
     args?: any[],
   ) => Promise<{[id: string]: any}[]>,
   isPostgres = false,
+  jsonValues = false,
 ): [
   (db: Database) => Promise<DumpOut>,
   (db: Database, dump: DumpIn) => Promise<void>,
@@ -380,9 +381,20 @@ export const getDatabaseFunctions = <Database>(
     });
     await Promise.all(
       Object.keys(dump).map(async (tn) => {
-        dump[tn][1] = [
-          ...(await cmd(db, 'SELECT * FROM ' + escapeId(tn) + ' ORDER BY 1')),
-        ];
+        const rows = await cmd(
+          db,
+          'SELECT * FROM ' + escapeId(tn) + ' ORDER BY 1',
+        );
+        rows.forEach((row) => {
+          Object.entries(row).forEach(([column, value], index) => {
+            if (index == 0 || !jsonValues) {
+              row[column] = value;
+            } else {
+              row[column] = JSON.parse(value);
+            }
+          });
+        });
+        dump[tn][1] = [...rows];
       }),
     );
     return dump;
@@ -394,24 +406,30 @@ export const getDatabaseFunctions = <Database>(
       Object.entries(dump).map(async ([name, [sql, rows]]) => {
         await cmd(db, sql);
         await Promise.all(
-          rows.map(
-            async (row) =>
-              await cmd(
-                db,
-                'INSERT INTO ' +
-                  escapeId(name) +
-                  '(' +
-                  Object.keys(row)
-                    .map((cellId) => escapeId(cellId))
-                    .join(',') +
-                  ') VALUES (' +
-                  Object.keys(row)
-                    .map((_, index) => '$' + (index + 1))
-                    .join(',') +
-                  ')',
-                Object.values(row),
-              ),
-          ),
+          rows.map(async (row) => {
+            Object.entries(row).forEach(([column, value], index) => {
+              if (index == 0 || !jsonValues) {
+                row[column] = value;
+              } else {
+                row[column] = JSON.stringify(value);
+              }
+            });
+            await cmd(
+              db,
+              'INSERT INTO ' +
+                escapeId(name) +
+                '(' +
+                Object.keys(row)
+                  .map((cellId) => escapeId(cellId))
+                  .join(',') +
+                ') VALUES (' +
+                Object.keys(row)
+                  .map((_, index) => '$' + (index + 1))
+                  .join(',') +
+                ')',
+              Object.values(row),
+            );
+          }),
         );
       }),
     );
