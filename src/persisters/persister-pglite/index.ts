@@ -2,7 +2,6 @@ import {
   NotifyListener,
   createPostgreSqlPersister,
 } from '../common/database/postgresql.ts';
-import {type PGlite, types} from '@electric-sql/pglite';
 import type {
   PglitePersister,
   createPglitePersister as createPglitePersisterDecl,
@@ -10,11 +9,8 @@ import type {
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {PGlite} from '@electric-sql/pglite';
 import type {Store} from '../../@types/store/index.d.ts';
-
-const OPTIONS = {
-  parsers: {[types.JSON]: (value: any) => value},
-};
 
 export const createPglitePersister = (async (
   store: Store | MergeableStore,
@@ -27,7 +23,7 @@ export const createPglitePersister = (async (
     store,
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
-      (await pglite.query(sql, args, OPTIONS)).rows as any,
+      (await pglite.query(sql, args)).rows as any,
     async (
       channel: string,
       notifyListener: NotifyListener,
