@@ -11,6 +11,7 @@ import * as TinyBasePersisterFile from 'tinybase/persisters/persister-file';
 import * as TinyBasePersisterIndexedDb from 'tinybase/persisters/persister-indexed-db';
 import * as TinyBasePersisterPartyKitClient from 'tinybase/persisters/persister-partykit-client';
 import * as TinyBasePersisterPartyKitServer from 'tinybase/persisters/persister-partykit-server';
+import * as TinyBasePersisterPglite from 'tinybase/persisters/persister-pglite';
 import * as TinyBasePersisterPostgres from 'tinybase/persisters/persister-postgres';
 import * as TinyBasePersisterRemote from 'tinybase/persisters/persister-remote';
 import * as TinyBasePersisterSqlite3 from 'tinybase/persisters/persister-sqlite3';
@@ -25,6 +26,7 @@ import * as TinyBaseUiReact from 'tinybase/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
 import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
 import * as fs from 'fs';
+import * as pglite from '@electric-sql/pglite';
 import * as sqlite3 from 'sqlite3';
 import * as ws from 'ws';
 import * as yjs from 'yjs';
@@ -55,6 +57,7 @@ import {transformSync} from 'esbuild';
   '@vlcn.io/crsqlite-wasm': initWasm,
   fs,
   postgres,
+  '@electric-sql/pglite': pglite,
   react: React,
   'react-dom/client': ReactDOMClient,
   sqlite3,
@@ -70,6 +73,7 @@ import {transformSync} from 'esbuild';
     TinyBasePersisterPartyKitClient,
   'tinybase/persisters/persister-partykit-server':
     TinyBasePersisterPartyKitServer,
+  'tinybase/persisters/persister-pglite': TinyBasePersisterPglite,
   'tinybase/persisters/persister-postgres': TinyBasePersisterPostgres,
   'tinybase/persisters/persister-remote': TinyBasePersisterRemote,
   'tinybase/persisters/persister-sqlite3': TinyBasePersisterSqlite3,
