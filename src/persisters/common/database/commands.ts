@@ -91,18 +91,14 @@ export const getCommandFunctions = (
           arrayFilter(
             arrayMap(
               await cmd(SELECT_STAR_FROM + escapeId(tableName)),
-              (row) =>
-                [
-                  row[rowIdColumnName],
-                  objDel(
-                    {
-                      ...(jsonValues
-                        ? objMap(row, (value) => jsonParse(value))
-                        : row),
-                    },
-                    rowIdColumnName,
-                  ),
-                ] as [string, any],
+              (row) => [
+                row[rowIdColumnName],
+                jsonValues
+                  ? objMap(objDel(row, rowIdColumnName), (value) =>
+                      jsonParse(value),
+                    )
+                  : objDel(row, rowIdColumnName),
+              ],
             ),
             ([rowId, row]) => !isUndefined(rowId) && !objIsEmpty(row),
           ),
