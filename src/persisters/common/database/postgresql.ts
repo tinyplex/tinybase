@@ -16,6 +16,7 @@ import type {
 import {TINYBASE, strMatch} from '../../../common/strings.ts';
 import {collHas, collValues} from '../../../common/coll.ts';
 import {ifNotUndefined, promiseAll} from '../../../common/other.ts';
+import {jsonParse, jsonString} from '../../../common/json.ts';
 import {arrayMap} from '../../../common/array.ts';
 import {createJsonPersister} from './json.ts';
 import {createTabularPersister} from './tabular.ts';
@@ -127,7 +128,9 @@ export const createPostgreSqlPersister = <
       ),
     thing,
     getThing,
-    1,
-    isJson ? 0 : 1,
+    'text',
+    0,
+    (cellOrValue) => jsonString(cellOrValue),
+    (field) => jsonParse(field as string),
   );
 };

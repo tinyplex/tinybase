@@ -32,8 +32,7 @@ export const createJsonPersister = <
   querySchema: QuerySchema,
   thing: any,
   getThing: string,
-  typeColumns?: 0 | 1,
-  jsonValues?: 0 | 1,
+  columnType: string,
   orReplace?: 0 | 1,
 ): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
@@ -42,8 +41,7 @@ export const createJsonPersister = <
       managedTableNames,
       querySchema,
       onIgnoredError,
-      typeColumns,
-      jsonValues,
+      columnType,
       orReplace,
     );
 
