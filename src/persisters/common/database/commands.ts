@@ -26,7 +26,6 @@ import {
 } from '../../../common/array.ts';
 import {collClear, collDel, collHas, collValues} from '../../../common/coll.ts';
 import {isUndefined, promiseAll, size} from '../../../common/other.ts';
-import {jsonParse, jsonString} from '../../../common/json.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
 import {
   objDel,
@@ -46,9 +45,10 @@ export const getCommandFunctions = (
   managedTableNames: string[],
   querySchema: QuerySchema,
   onIgnoredError: ((error: any) => void) | undefined,
-  typeColumns: 0 | 1 = 0,
-  jsonValues: 0 | 1 = 0,
+  columnType: string,
   orReplace?: 0 | 1,
+  encode?: (cellOrValue: any) => string | number,
+  decode?: (field: string | number) => any,
 ): [
   refreshSchema: () => Promise<void>,
   loadTable: (tableName: string, rowIdColumnName: string) => Promise<Table>,
@@ -68,8 +68,6 @@ export const getCommandFunctions = (
   ) => Promise<void>,
   transaction: <Return>(actions: () => Promise<Return>) => Promise<Return>,
 ] => {
-  const columnType = typeColumns ? 'text' : '';
-
   const schemaMap: Schema = mapNew();
 
   const canSelect = (tableName: string, rowIdColumnName: string): boolean =>
@@ -93,10 +91,8 @@ export const getCommandFunctions = (
               await cmd(SELECT_STAR_FROM + escapeId(tableName)),
               (row) => [
                 row[rowIdColumnName],
-                jsonValues
-                  ? objMap(objDel(row, rowIdColumnName), (value) =>
-                      jsonParse(value),
-                    )
+                decode
+                  ? objMap(objDel(row, rowIdColumnName), decode)
                   : objDel(row, rowIdColumnName),
               ],
             ),
@@ -149,7 +145,7 @@ export const getCommandFunctions = (
           'CREATE ' +
             TABLE +
             escapeId(tableName) +
-            `(${escapeId(rowIdColumnName)}text PRIMARY KEY${arrayJoin(
+            `(${escapeId(rowIdColumnName)}${columnType} PRIMARY KEY${arrayJoin(
               arrayMap(
                 tableColumnNames,
                 (columnName) => COMMA + escapeId(columnName) + columnType,
@@ -228,8 +224,8 @@ export const getCommandFunctions = (
                 objIds(row),
                 [
                   rowId,
-                  ...(jsonValues
-                    ? arrayMap(objValues(row), (value) => jsonString(value))
+                  ...(encode
+                    ? arrayMap(objValues(row), encode)
                     : objValues(row)),
                 ],
                 orReplace,
@@ -251,7 +247,7 @@ export const getCommandFunctions = (
             args,
             rowId,
             ...arrayMap(changingColumnNames, (cellId) =>
-              jsonValues ? jsonString(row?.[cellId]) : row?.[cellId],
+              encode ? encode(row?.[cellId]) : row?.[cellId],
             ),
           );
           arrayPush(deleteRowIds, rowId);

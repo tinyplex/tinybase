@@ -18,6 +18,7 @@ import type {
   Persists,
 } from '../../../@types/persisters/index.d.ts';
 import {startInterval, stopInterval} from '../../../common/other.ts';
+import {EMPTY_STRING} from '../../../common/strings.ts';
 import {IdObj} from '../../../common/obj.ts';
 import {collValues} from '../../../common/coll.ts';
 import {createJsonPersister} from './json.ts';
@@ -120,8 +121,10 @@ export const createSqlitePersister = <
       ),
     thing,
     getThing,
-    0,
-    0,
+    EMPTY_STRING,
     orReplace,
+    (cellOrValue: any) =>
+      cellOrValue === true ? 1 : cellOrValue === false ? 0 : cellOrValue,
+    undefined,
   );
 };

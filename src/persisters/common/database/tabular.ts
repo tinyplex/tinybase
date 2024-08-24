@@ -49,9 +49,10 @@ export const createTabularPersister = <
   querySchema: QuerySchema,
   thing: any,
   getThing: string,
-  typeColumns?: 0 | 1,
-  jsonValues?: 0 | 1,
+  columnType: string,
   orReplace?: 0 | 1,
+  encode?: (cellOrValue: any) => string | number,
+  decode?: (field: string | number) => any,
 ): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(
@@ -59,9 +60,10 @@ export const createTabularPersister = <
       managedTableNames,
       querySchema,
       onIgnoredError,
-      typeColumns,
-      jsonValues,
+      columnType,
       orReplace,
+      encode,
+      decode,
     );
 
   const saveTables = async (
