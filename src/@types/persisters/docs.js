@@ -316,8 +316,8 @@
  *
  * This configuration can only be used when the Persister is persisting a
  * regular Store. For those database-oriented Persister types that support
- * MergeableStore data, you will need to use JSON-serialization, es described
- * in the DpcJson section.
+ * MergeableStore data, you will need to use JSON-serialization, es described in
+ * the DpcJson section.
  *
  * It is important to note that both the tabular mapping in ('save') and out
  * ('load') of an underlying database are disabled by default. This is to ensure
@@ -349,6 +349,12 @@
  * See the documentation for the DpcTabularLoad, DpcTabularSave, and
  * DpcTabularValues types for more details on how to configure the tabular
  * mapping mode.
+ *
+ * Columns in SQLite database have no type, and so in this mode, the table can
+ * contain strings, booleans, and numbers for Cells and Values, just as TinyBase
+ * does. In PostgreSQL databases, all Cell and Value columns are expected to be
+ * typed as `text`, and the strings, booleans, and numbers are all JSON-encoded
+ * by the Persister.
  *
  * The 'Dpc' prefix indicates that this type is used within the
  * DatabasePersisterConfig type.
@@ -496,6 +502,11 @@
  *   },
  * }
  * ```
+ *
+ * The example above represents what happens with a SQLite Persister. In
+ * PostgreSQL databases, all Cell and Value columns are expected to be
+ * typed as `text`, and the strings, booleans, and numbers would be JSON-encoded
+ * if you queried them.
  * @category Configuration
  * @since v4.0.0
  */
@@ -611,6 +622,10 @@
  * | cat  | 4     |
  * +------+-------+
  * ```
+ * The example above represents what happens with a SQLite Persister. In
+ * PostgreSQL databases, all Cell and Value columns are expected to be
+ * typed as `text`, and the strings, booleans, and numbers would be JSON-encoded
+ * if you queried them.
  * @category Configuration
  * @since v4.0.0
  */

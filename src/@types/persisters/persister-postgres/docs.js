@@ -137,7 +137,8 @@
  *
  * await persister.save();
  * console.log(await sql`SELECT * FROM pets;`);
- * // -> [{_id: 'fido', species: 'dog'}]
+ * // -> [{_id: 'fido', species: '"dog"'}]
+ * // Note that Cells and Values are JSON-encoded in PostgreSQL databases.
  *
  * await sql`INSERT INTO pets (_id, species) VALUES ('felix', '"cat"')`;
  * await persister.load();
