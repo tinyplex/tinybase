@@ -27,6 +27,8 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
   ) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd, isPostgres);
 
+    const columnType = isPostgres ? 'text' : '';
+
     let db: any;
     let store: MergeableStore;
     let persister: Persister;
@@ -49,7 +51,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           test: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
           ],
         });
@@ -60,7 +62,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           'test table': [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
           ],
         });
@@ -71,7 +73,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           'test "table"': [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
           ],
         });
@@ -86,7 +88,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           test: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
           ],
         });
@@ -98,7 +100,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
           ],
         });
@@ -112,7 +114,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[[{},"",0],[{},"",0]]'}],
           ],
         });
@@ -123,7 +125,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [
               {
                 _id: '_',
@@ -140,7 +142,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [
               {
                 _id: '_',
@@ -157,7 +159,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [
               {
                 _id: '_',
@@ -174,7 +176,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [
               {
                 _id: '_',
@@ -190,7 +192,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         ]);
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [{_id: '_', store: '[{"t1":{"r1":{"c1":2}}},{"v1":2}]'}],
           ],
         });
@@ -213,7 +215,11 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       test('broken', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY,"store"json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [{_id: '_', store: '[{"t1":1}]'}],
           ],
         });
@@ -224,7 +230,11 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       test('broken, can default', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY,"store"json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [{_id: '_', store: '[{"t1":}]'}],
           ],
         });
@@ -235,7 +245,11 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       test('tables', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY,"store"json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{}]'}],
           ],
         });
@@ -246,7 +260,11 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       test('values', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY,"store"json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [{_id: '_', store: '[{}, {"v1":1}]'}],
           ],
         });
@@ -258,7 +276,11 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         beforeEach(async () => {
           await setDatabase(db, {
             tinybase: [
-              'CREATE TABLE "tinybase"("_id"text PRIMARY KEY,"store"json)',
+              'CREATE TABLE "tinybase" ("_id" ' +
+                columnType +
+                ' PRIMARY KEY, "store" ' +
+                columnType +
+                ')',
               [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
             ],
           });
@@ -283,7 +305,11 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       test('both, change, and then save again', async () => {
         await setDatabase(db, {
           tinybase: [
-            'CREATE TABLE "tinybase"("_id"text PRIMARY KEY,"store"json)',
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
             [{_id: '_', store: '[{"t1":{"r1":{"c1":1}}},{"v1":1}]'}],
           ],
         });
@@ -294,7 +320,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await persister.save();
         expect(await getDatabase(db)).toEqual({
           tinybase: [
-            {_id: 'text', store: 'json'},
+            {_id: columnType, store: columnType},
             [
               {
                 _id: '_',
