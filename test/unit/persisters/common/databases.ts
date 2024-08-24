@@ -251,7 +251,7 @@ export const SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
         storeTableOrConfig,
         onSqlCommand,
         onIgnoredError,
-        true,
+        0,
       ),
     (ps: AbstractPowerSyncDatabase, sql: string, args: any[] = []) =>
       ps.execute(sql, args).then((result) => result.rows?._array ?? []),

@@ -127,5 +127,7 @@ export const createPostgreSqlPersister = <
       ),
     thing,
     getThing,
+    1,
+    isJson ? 0 : 1,
   );
 };

@@ -40,7 +40,7 @@ export const createSqlitePersister = <
   persist: Persist,
   thing: any,
   getThing = 'getDb',
-  useOnConflict?: boolean,
+  orReplace?: 0 | 1,
 ): Persister<Persist> => {
   let dataVersion: number | null;
   let schemaVersion: number | null;
@@ -120,6 +120,8 @@ export const createSqlitePersister = <
       ),
     thing,
     getThing,
-    useOnConflict,
+    0,
+    0,
+    orReplace,
   );
 };

@@ -26,11 +26,13 @@ import {
 } from '../../../common/array.ts';
 import {collClear, collDel, collHas, collValues} from '../../../common/coll.ts';
 import {isUndefined, promiseAll, size} from '../../../common/other.ts';
+import {jsonParse, jsonString} from '../../../common/json.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
 import {
   objDel,
   objIds,
   objIsEmpty,
+  objMap,
   objNew,
   objToArray,
   objValues,
@@ -44,7 +46,9 @@ export const getCommandFunctions = (
   managedTableNames: string[],
   querySchema: QuerySchema,
   onIgnoredError: ((error: any) => void) | undefined,
-  useOnConflict?: boolean,
+  typeColumns: 0 | 1 = 0,
+  jsonValues: 0 | 1 = 0,
+  orReplace?: 0 | 1,
 ): [
   refreshSchema: () => Promise<void>,
   loadTable: (tableName: string, rowIdColumnName: string) => Promise<Table>,
@@ -64,6 +68,8 @@ export const getCommandFunctions = (
   ) => Promise<void>,
   transaction: <Return>(actions: () => Promise<Return>) => Promise<Return>,
 ] => {
+  const columnType = typeColumns ? 'text' : '';
+
   const schemaMap: Schema = mapNew();
 
   const canSelect = (tableName: string, rowIdColumnName: string): boolean =>
@@ -85,10 +91,18 @@ export const getCommandFunctions = (
           arrayFilter(
             arrayMap(
               await cmd(SELECT_STAR_FROM + escapeId(tableName)),
-              (row) => [
-                row[rowIdColumnName],
-                objDel({...row}, rowIdColumnName),
-              ],
+              (row) =>
+                [
+                  row[rowIdColumnName],
+                  objDel(
+                    {
+                      ...(jsonValues
+                        ? objMap(row, (value) => jsonParse(value))
+                        : row),
+                    },
+                    rowIdColumnName,
+                  ),
+                ] as [string, any],
             ),
             ([rowId, row]) => !isUndefined(rowId) && !objIsEmpty(row),
           ),
@@ -142,7 +156,7 @@ export const getCommandFunctions = (
             `(${escapeId(rowIdColumnName)}text PRIMARY KEY${arrayJoin(
               arrayMap(
                 tableColumnNames,
-                (columnName) => COMMA + escapeId(columnName) + 'json',
+                (columnName) => COMMA + escapeId(columnName) + columnType,
               ),
             )});`,
         );
@@ -162,7 +176,7 @@ export const getCommandFunctions = (
                     escapeId(tableName) +
                     'ADD' +
                     escapeId(columnName) +
-                    (index == 0 ? 'text' : 'json'),
+                    columnType,
                 );
                 if (index == 0) {
                   await cmd(
@@ -216,8 +230,13 @@ export const getCommandFunctions = (
                 tableName,
                 rowIdColumnName,
                 objIds(row),
-                [rowId, ...objValues(row)],
-                useOnConflict,
+                [
+                  rowId,
+                  ...(jsonValues
+                    ? arrayMap(objValues(row), (value) => jsonString(value))
+                    : objValues(row)),
+                ],
+                orReplace,
               );
             }
           }),
@@ -235,7 +254,9 @@ export const getCommandFunctions = (
           arrayPush(
             args,
             rowId,
-            ...arrayMap(changingColumnNames, (cellId) => row?.[cellId]),
+            ...arrayMap(changingColumnNames, (cellId) =>
+              jsonValues ? jsonString(row?.[cellId]) : row?.[cellId],
+            ),
           );
           arrayPush(deleteRowIds, rowId);
         });
@@ -245,7 +266,7 @@ export const getCommandFunctions = (
           rowIdColumnName,
           changingColumnNames,
           args,
-          useOnConflict,
+          orReplace,
         );
         await cmd(
           DELETE_FROM +
@@ -284,11 +305,11 @@ const upsert = async (
   rowIdColumnName: string,
   changingColumnNames: string[],
   args: any[],
-  useOnConflict = true,
+  orReplace: 0 | 1 = 0,
 ) =>
   await cmd(
     'INSERT ' +
-      (useOnConflict ? EMPTY_STRING : 'OR REPLACE ') +
+      (orReplace ? 'OR REPLACE ' : EMPTY_STRING) +
       'INTO' +
       escapeId(tableName) +
       '(' +
@@ -301,8 +322,9 @@ const upsert = async (
       ) +
       ')VALUES' +
       getUpsertPlaceholders(args, size(changingColumnNames) + 1) +
-      (useOnConflict
-        ? 'ON CONFLICT(' +
+      (orReplace
+        ? EMPTY_STRING
+        : 'ON CONFLICT(' +
           escapeId(rowIdColumnName) +
           ')DO UPDATE SET' +
           arrayJoin(
@@ -312,8 +334,7 @@ const upsert = async (
                 escapeId(columnName) + '=excluded.' + escapeId(columnName),
             ),
             COMMA,
-          )
-        : EMPTY_STRING),
+          )),
     arrayMap(args, (arg) => arg ?? null),
   );
 
