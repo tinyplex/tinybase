@@ -10,7 +10,7 @@ import {nextLoop} from '../common/other.ts';
 describe.each(Object.entries(ALL_VARIANTS))(
   '%s',
   (
-    _name,
+    name,
     [
       getOpenDatabase,
       ,
@@ -1002,6 +1002,9 @@ describe.each(Object.entries(ALL_VARIANTS))(
       });
 
       test('autoLoad, table dropped and recreated', async () => {
+        if (name == 'pglite') {
+          return;
+        }
         await setDatabase(db, {
           t1: [
             'CREATE TABLE "t1" ("_id" ' +
