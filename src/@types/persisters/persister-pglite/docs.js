@@ -37,8 +37,11 @@
    *
    * const pglite = await PGlite.create();
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
-   * const persister =
-   *   await createPglitePersister(store, pglite, 'my_tinybase');
+   * const persister = await createPglitePersister(
+   *   store,
+   *   pglite,
+   *   'my_tinybase',
+   * );
    *
    * console.log(persister.getPglite() == pglite);
    * // -> true
@@ -103,17 +106,20 @@
  *
  * const pglite = await PGlite.create();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * const persister = await createPglitePersister(store, pglite, 'my_tinybase');
- *
+ * const persister = await createPglitePersister(
+ *   store,
+ *   pglite,
+ *   'my_tinybase',
+ * );
  * await persister.save();
  * // Store will be saved to the database.
  *
  * console.log((await pglite.query('SELECT * FROM my_tinybase;')).rows);
  * // -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
  *
- * await pglite.query(`UPDATE my_tinybase SET store = $1 WHERE _id = '_';`,
- *   ['[{"pets":{"felix":{"species":"cat"}}},{}]']
- * );
+ * await pglite.query(`UPDATE my_tinybase SET store = $1 WHERE _id = '_';`, [
+ *   '[{"pets":{"felix":{"species":"cat"}}},{}]',
+ * ]);
  *
  * await persister.load();
  * console.log(store.getTables());
