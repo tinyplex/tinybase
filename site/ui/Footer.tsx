@@ -5,11 +5,11 @@ import React from 'react';
 export const Footer: NoPropComponent = () => (
   <footer>
     <nav>
-      <a id="tw" href="https://twitter.com/tinybasejs" target="_blank">
-        Twitter
+      <a id="tw" href="https://x.com/tinybasejs" target="_blank">
+        X / Twitter
       </a>
-      <a id="fb" href="https://facebook.com/tinybasejs" target="_blank">
-        Facebook
+      <a id="dc" href="https://discord.com/invite/mGz3mevwP8" target="_blank">
+        Discord
       </a>
     </nav>
     <nav>
