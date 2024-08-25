@@ -28,7 +28,13 @@ export const createPglitePersister = (async (
       channel: string,
       notifyListener: NotifyListener,
     ): Promise<() => Promise<void>> => pglite.listen(channel, notifyListener),
-    async (unlisten: () => Promise<void>) => unlisten(),
+    async (unlisten: () => Promise<void>) => {
+      try {
+        await unlisten();
+      } catch (e) {
+        onIgnoredError?.(e);
+      }
+    },
     onSqlCommand,
     onIgnoredError,
     () => 0,
