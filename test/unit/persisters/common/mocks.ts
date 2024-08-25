@@ -261,7 +261,7 @@ const getMockedDatabase = <Location>(
       await cmd(
         location,
         'CREATE TABLE IF NOT EXISTS tinybase ' +
-          '(_id text PRIMARY KEY, store json);',
+          '(_id text PRIMARY KEY, store text);',
       );
       await cmd(
         location,
