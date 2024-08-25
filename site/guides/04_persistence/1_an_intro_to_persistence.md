@@ -49,6 +49,7 @@ is available.
 | LibSqlPersister       | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)               |
 | PowerSyncPersister    | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                           |
 | PostgresPersister     | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                       |
+| PglitePersister       | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                       |
 
 See the Database Persistence guide for details on how to work with databases.
 

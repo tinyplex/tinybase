@@ -25,6 +25,7 @@
  * |LibSqlPersister|LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)|Yes|No
  * |PowerSyncPersister|PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)|Yes|No
  * |PostgresPersister|PostgreSQL, via [postgres](https://github.com/porsager/postgres)|Yes|No
+ * |PglitePersister|PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)|Yes|No
  * |YjsPersister|Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)|Yes|No
  * |AutomergePersister|Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo)|Yes|No
  * |PartyKitPersister|[PartyKit](https://www.partykit.io/), via the persister-partykit-server module|Yes|No|

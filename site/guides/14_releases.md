@@ -5,12 +5,14 @@ highlighted features.
 
 ## v5.2
 
-This release introduces a new Persister for... PostgreSQL!
+This release introduces new Persisters for... PostgreSQL!
 
 Using TinyBase's new persister-postgres module (and the excellent
-[`postgres`](https://github.com/porsager/postgres) module for connection
-duties), things behave in exactly the same way as they do for SQLite. Simply use
-the createPostgresPersister function:
+[`postgres`](https://github.com/porsager/postgres) and
+[`pglite`](https://github.com/electric-sql/pglite) modules for connection
+duties), things behave in the same way as they do for SQLite. Simply use the
+createPostgresPersister function (or the similar createPglitePersister
+function):
 
 ```js
 import postgres from 'postgres';
@@ -44,8 +46,9 @@ pgPersister.destroy();
 await sql.end();
 ```
 
-This is designed for use on a server, where such a database is more likely to be
-reachable, but any environment that supports the `postgres` module should work.
+The `postgres` module is generally designed for use on a server, where such a
+database is more likely to be reachable, but the new `pglite` can also be
+considered for browser environments.
 
 Note that this Persister supports both the `json` and `tabular` modes for saving
 TinyBase data into the database. See the DatabasePersisterConfig type for more

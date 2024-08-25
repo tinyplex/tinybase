@@ -92,27 +92,32 @@
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/pglite.svg" /> PGlite
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
     <img width="48" src="/sqlite.svg" /> SQLite
   </a>
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/expo.svg" />Expo SQLite
+    <img width="48" src="/expo.svg" /> Expo SQLite
   </a>
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/electric.svg" />ElectricSQL
+    <img width="48" src="/electric.svg" /> ElectricSQL
   </a>
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/turso.svg" />Turso
+    <img width="48" src="/turso.svg" /> Turso
   </a>
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/powersync.svg" />PowerSync
+    <img width="48" src="/powersync.svg" /> PowerSync
   </a>
 </div>
 <div>

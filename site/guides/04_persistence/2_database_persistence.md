@@ -3,7 +3,7 @@
 Since v4.0, there are various options for persisting Store data to and from
 SQLite databases, via a range of third-party modules.
 
-There are currently seven SQLite-based persistence options, and one for
+There are currently seven SQLite-based persistence options, and two for
 PostgreSQL:
 
 | Persister             | Storage                                                                                                |
@@ -16,6 +16,7 @@ PostgreSQL:
 | LibSqlPersister       | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)               |
 | PowerSyncPersister    | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                           |
 | PostgresPersister     | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                       |
+| PglitePersister       | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                       |
 
 (Take a look at the
 [vite-tinybase-ts-react-crsqlite](https://github.com/tinyplex/vite-tinybase-ts-react-crsqlite)
