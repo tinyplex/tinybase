@@ -45,11 +45,12 @@
   const objSize = (obj) => size(objIds(obj));
   const objIsEmpty = (obj) => isObject(obj) && objSize(obj) == 0;
 
+  const jsonString = JSON.stringify;
+  const jsonParse = JSON.parse;
   const jsonStringWithMap = (obj) =>
-    JSON.stringify(obj, (_key, value) =>
+    jsonString(obj, (_key, value) =>
       isInstanceOf(value, Map) ? object.fromEntries([...value]) : value,
     );
-  const jsonParse = JSON.parse;
 
   const collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
   const collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);

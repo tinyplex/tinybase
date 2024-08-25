@@ -315,11 +315,12 @@
       ? store.delValue(valueId)
       : store.setValue(valueId, value);
 
+  const jsonString = JSON.stringify;
+  const jsonParse = JSON.parse;
   const jsonStringWithMap = (obj) =>
-    JSON.stringify(obj, (_key, value) =>
+    jsonString(obj, (_key, value) =>
       isInstanceOf(value, Map) ? object.fromEntries([...value]) : value,
     );
-  const jsonParse = JSON.parse;
 
   const ENCODE =
     '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'.split(

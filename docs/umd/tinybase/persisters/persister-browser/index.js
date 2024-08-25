@@ -44,13 +44,12 @@
   const objSize = (obj) => size(objIds(obj));
   const objIsEmpty = (obj) => isObject(obj) && objSize(obj) == 0;
 
+  const jsonString = JSON.stringify;
   const jsonParse = JSON.parse;
   const jsonStringWithUndefined = (obj) =>
-    JSON.stringify(obj, (_key, value) =>
-      value === void 0 ? UNDEFINED : value,
-    );
+    jsonString(obj, (_key, value) => (value === void 0 ? UNDEFINED : value));
   const jsonParseWithUndefined = (str) =>
-    JSON.parse(str, (_key, value) => (value === UNDEFINED ? void 0 : value));
+    jsonParse(str, (_key, value) => (value === UNDEFINED ? void 0 : value));
 
   const collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
   const collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
