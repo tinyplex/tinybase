@@ -9,8 +9,8 @@ browser or Node-based development environment.
 Note that TinyBase requires a reasonably modern environment, as it makes
 extensive use of contemporary JavaScript features. A regularly-updated browser
 and Node 16 (or above) are recommended. If you find you need older
-compatibility, there are additional transpilations in the `lib/es6` folder of
-the distribution.
+compatibility, there are additional transpilations in the `es6` folder of the
+distribution.
 
 Let's go!
 
