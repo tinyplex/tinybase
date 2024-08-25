@@ -5,14 +5,19 @@ highlighted features.
 
 ## v5.2
 
-This release introduces new Persisters for... PostgreSQL!
+This release introduces new Persisters for... PostgreSQL! TinyBase now has two
+new Persister modules:
 
-Using TinyBase's new persister-postgres module (and the excellent
-[`postgres`](https://github.com/porsager/postgres) and
-[`pglite`](https://github.com/electric-sql/pglite) modules for connection
-duties), things behave in the same way as they do for SQLite. Simply use the
-createPostgresPersister function (or the similar createPglitePersister
-function):
+- The persister-postgres module provides the PostgresPersister, which uses the
+  excellent [`postgres`](https://github.com/porsager/postgres) module to bind to
+  regular PostgreSQL databases, generally on a server.
+- The persister-pglite module provides the PglitePersister, which uses the new
+  and exciting [`pglite`](https://github.com/electric-sql/pglite) module for
+  running PostgreSQL... in a browser!
+
+Conceptually, things behave in the same way as they do for the various SQLite
+persisters. Simply use the createPostgresPersister function (or the similar
+createPglitePersister function) to persist your TinyBase data:
 
 ```js
 import postgres from 'postgres';
@@ -31,7 +36,12 @@ await pgPersister.save();
 
 console.log(await sql`SELECT * FROM my_tinybase;`);
 // -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
+```
 
+And, as per usual, you can update the database and have TinyBase automatically
+reflect those changes:
+
+```js
 // If separately the database gets updated...
 const json = '[{"pets":{"felix":{"species":"cat"}}},{}]';
 await sql`UPDATE my_tinybase SET store = ${json} WHERE _id = '_';`;
@@ -46,14 +56,11 @@ pgPersister.destroy();
 await sql.end();
 ```
 
-The `postgres` module is generally designed for use on a server, where such a
-database is more likely to be reachable, but the new `pglite` can also be
-considered for browser environments.
-
-Note that this Persister supports both the `json` and `tabular` modes for saving
-TinyBase data into the database. See the DatabasePersisterConfig type for more
-details. (Note however that, like the SQLite Persisters, only the `json` mode is
-supported for MergeableStore instances, due to their additional CRDT metadata.)
+Note that these two Persister objects support both the `json` and `tabular`
+modes for saving TinyBase data into the database. See the
+DatabasePersisterConfig type for more details. (Note however that, like the
+SQLite Persisters, only the `json` mode is supported for MergeableStore
+instances, due to their additional CRDT metadata.)
 
 Please provide feedback on this new release on GitHub!
 
