@@ -5192,6 +5192,122 @@ exports[`Persists to/from mockMergeableNoContentListener saves 2`] = `
 ]
 `;
 
+exports[`Persists to/from pglite autoSave & autoLoad: roundtrip 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUF-----7JQY8",
+                1003668370,
+              ],
+              "c2": [
+                undefined,
+                "Nn1JUF----77JQY8",
+                1267840296,
+              ],
+            },
+            "",
+            2533574593,
+          ],
+          "r2": [
+            {
+              "c2": [
+                undefined,
+                "Nn1JUF----67JQY8",
+                2770824445,
+              ],
+            },
+            "",
+            811264265,
+          ],
+        },
+        "",
+        2755269984,
+      ],
+      "t2": [
+        {
+          "r2": [
+            {
+              "c2": [
+                undefined,
+                "Nn1JUF----57JQY8",
+                755827458,
+              ],
+            },
+            "",
+            3087140291,
+          ],
+        },
+        "",
+        1225184002,
+      ],
+    },
+    "",
+    3340350845,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUF----37JQY8",
+        3542219356,
+      ],
+      "v2": [
+        undefined,
+        "Nn1JUF----87JQY8",
+        2233415979,
+      ],
+    },
+    "",
+    2110402117,
+  ],
+]
+`;
+
+exports[`Persists to/from pglite saves 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUF-----7JQY8",
+                1003668370,
+              ],
+            },
+            "",
+            550994372,
+          ],
+        },
+        "",
+        1072852846,
+      ],
+    },
+    "",
+    1771939739,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUF----07JQY8",
+        1130939691,
+      ],
+    },
+    "",
+    3877632732,
+  ],
+]
+`;
+
 exports[`Persists to/from postgres autoLoads 1`] = `
 [
   [

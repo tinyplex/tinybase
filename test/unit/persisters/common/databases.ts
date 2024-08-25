@@ -17,9 +17,11 @@ import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import sqlite3, {Database} from 'sqlite3';
 import {DbSchema} from 'electric-sql/client/model';
 import type {ElectricClient} from 'electric-sql/client/model';
+import {PGlite} from '@electric-sql/pglite';
 import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
 import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
+import {createPglitePersister} from 'tinybase/persisters/persister-pglite';
 import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
@@ -322,6 +324,32 @@ export const POSTGRESQL_VARIANTS: Variants = {
       await adminSql.end();
     },
     20,
+    undefined,
+    true,
+  ],
+  pglite: [
+    async (): Promise<PGlite> => await suppressWarnings(PGlite.create),
+    ['getPglite', (pglite: PGlite) => pglite],
+    async (
+      store: Store,
+      pglite: PGlite,
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
+      onIgnoredError?: (error: any) => void,
+    ) =>
+      await (createPglitePersister as any)(
+        store,
+        pglite,
+        storeTableOrConfig,
+        onSqlCommand,
+        onIgnoredError,
+      ),
+    async (pglite: PGlite, sqlStr: string, args: any[] = []) =>
+      (await pglite.query(sqlStr, args)).rows as any,
+    async (pglite: PGlite) => {
+      await pglite.close();
+    },
+    undefined,
     undefined,
     true,
   ],
