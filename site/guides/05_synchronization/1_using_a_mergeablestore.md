@@ -119,6 +119,7 @@ MergeableStore, but _only_ in the 'JSON-serialization' mode:
 | SqliteWasmPersister | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                         |
 | ExpoSqlitePersister | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite) |
 | PostgresPersister   | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                       |
+| PglitePersister     | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                       |
 
 The following database-oriented Persister types _cannot_ currently be used to
 persist a MergeableStore:
