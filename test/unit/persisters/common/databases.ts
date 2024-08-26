@@ -288,7 +288,7 @@ export const POSTGRESQL_VARIANTS: Variants = {
       const name = 'tinybase_' + getUniqueId();
       const adminSql = postgres('postgres://localhost:5432/');
       await adminSql`CREATE DATABASE ${adminSql(name)}`;
-      await adminSql.end();
+      await adminSql.end({timeout: 0.1});
 
       const sql = postgres('postgres://localhost:5432/' + name, {
         connection: {client_min_messages: 'warning'},
@@ -315,13 +315,13 @@ export const POSTGRESQL_VARIANTS: Variants = {
       await cmdSql.unsafe(sqlStr, args),
     async ([sql, cmdSql, name]: SqlClientsAndName) => {
       cmdSql.release();
-      await sql.end({timeout: 1});
+      await sql.end({timeout: 0.1});
 
       const adminSql = postgres('postgres://localhost:5432/', {
         connection: {client_min_messages: 'warning'},
       });
-      await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)}`;
-      await adminSql.end();
+      await adminSql`DROP DATABASE IF EXISTS ${adminSql(name)} WITH (FORCE)`;
+      await adminSql.end({timeout: 0.1});
     },
     20,
     undefined,
