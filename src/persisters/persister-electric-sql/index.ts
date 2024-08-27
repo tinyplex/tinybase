@@ -4,7 +4,7 @@ import type {
 } from '../../@types/persisters/persister-electric-sql/index.d.ts';
 import {
   UpdateListener,
-  createSqlitePersister,
+  createCustomSqlitePersister,
 } from '../common/database/sqlite.ts';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import type {ElectricClient} from 'electric-sql/client/model';
@@ -20,7 +20,7 @@ export const createElectricSqlPersister = ((
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): ElectricSqlPersister =>
-  createSqlitePersister(
+  createCustomSqlitePersister(
     store,
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>

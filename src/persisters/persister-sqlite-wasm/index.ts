@@ -4,7 +4,7 @@ import type {
 } from '../../@types/persisters/persister-sqlite-wasm/index.d.ts';
 import {
   UpdateListener,
-  createSqlitePersister,
+  createCustomSqlitePersister,
 } from '../common/database/sqlite.ts';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
@@ -19,7 +19,7 @@ export const createSqliteWasmPersister = ((
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): SqliteWasmPersister =>
-  createSqlitePersister(
+  createCustomSqlitePersister(
     store,
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>

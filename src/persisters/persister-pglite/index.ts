@@ -1,6 +1,6 @@
 import {
   NotifyListener,
-  createPostgreSqlPersister,
+  createCustomPostgreSqlPersister,
 } from '../common/database/postgresql.ts';
 import type {
   PglitePersister,
@@ -19,7 +19,7 @@ export const createPglitePersister = (async (
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Promise<PglitePersister> => {
-  return createPostgreSqlPersister(
+  return createCustomPostgreSqlPersister(
     store,
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>

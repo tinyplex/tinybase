@@ -4,7 +4,7 @@ import type {
 } from '../../@types/persisters/persister-cr-sqlite-wasm/index.d.ts';
 import {
   UpdateListener,
-  createSqlitePersister,
+  createCustomSqlitePersister,
 } from '../common/database/sqlite.ts';
 import {DB} from '@vlcn.io/crsqlite-wasm';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
@@ -18,7 +18,7 @@ export const createCrSqliteWasmPersister = ((
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): CrSqliteWasmPersister =>
-  createSqlitePersister(
+  createCustomSqlitePersister(
     store,
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>

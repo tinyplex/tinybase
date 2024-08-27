@@ -27,7 +27,7 @@ import {getConfigStructures} from './config.ts';
 
 export type UpdateListener = (tableName: string) => void;
 
-export const createSqlitePersister = <
+export const createCustomSqlitePersister = <
   UpdateListeningHandle,
   Persist extends Persists = Persists.StoreOnly,
 >(

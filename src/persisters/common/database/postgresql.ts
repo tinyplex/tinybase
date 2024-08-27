@@ -30,7 +30,7 @@ const EVENT_REGEX = /^([cd]:)(.+)/;
 const CHANGE_DATA_TRIGGER = TINYBASE + '_data';
 const CREATE_TABLE_TRIGGER = TINYBASE + '_table';
 
-export const createPostgreSqlPersister = <
+export const createCustomPostgreSqlPersister = <
   NotifyListeningHandle,
   Persist extends Persists = Persists.StoreOnly,
 >(

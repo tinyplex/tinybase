@@ -4,7 +4,7 @@ import type {
 } from '../../@types/persisters/persister-sqlite3/index.d.ts';
 import {
   UpdateListener,
-  createSqlitePersister,
+  createCustomSqlitePersister,
 } from '../common/database/sqlite.ts';
 import {Database} from 'sqlite3';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
@@ -24,7 +24,7 @@ export const createSqlite3Persister = ((
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Sqlite3Persister =>
-  createSqlitePersister(
+  createCustomSqlitePersister(
     store,
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
