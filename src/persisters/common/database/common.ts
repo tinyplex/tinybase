@@ -1,10 +1,9 @@
 import {arrayJoin, arrayMap} from '../../../common/array.ts';
 import {COMMA} from '../../../common/strings.ts';
-import {IdObj} from '../../../common/obj.ts';
+import type {DatabaseExecuteCommand} from '../../../@types/persisters/index.d.ts';
 
-export type Cmd = (sql: string, args?: any[]) => Promise<IdObj<any>[]>;
 export type QuerySchema = (
-  cmd: Cmd,
+  executeCommand: DatabaseExecuteCommand,
   managedTableNames: string[],
 ) => Promise<{tn: string; cn: string}[]>;
 
@@ -23,15 +22,15 @@ export const FROM = 'FROM ';
 export const PRAGMA_TABLE = 'pragma_table_';
 
 export const getWrappedCommand = (
-  rawCmd: Cmd,
+  executeCommand: DatabaseExecuteCommand,
   onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
-): Cmd =>
+): DatabaseExecuteCommand =>
   onSqlCommand
     ? async (sql, args) => {
         onSqlCommand(sql, args);
-        return await rawCmd(sql, args);
+        return await executeCommand(sql, args);
       }
-    : rawCmd;
+    : executeCommand;
 
 export const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 

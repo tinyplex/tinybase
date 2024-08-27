@@ -1,16 +1,16 @@
 import type {
+  DatabaseChangeListener,
+  DatabasePersisterConfig,
+} from '../../@types/persisters/index.d.ts';
+import type {
   Sqlite3Persister,
   createSqlite3Persister as createSqlite3PersisterDecl,
 } from '../../@types/persisters/persister-sqlite3/index.d.ts';
-import {
-  UpdateListener,
-  createCustomSqlitePersister,
-} from '../common/database/sqlite.ts';
 import {Database} from 'sqlite3';
-import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
+import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 import {promiseNew} from '../../common/other.ts';
 
 const CHANGE = 'change';
@@ -33,7 +33,7 @@ export const createSqlite3Persister = ((
           error ? reject(error) : resolve(rows),
         ),
       ),
-    (listener: UpdateListener): Observer => {
+    (listener: DatabaseChangeListener): Observer => {
       const observer = (_: any, _2: any, tableName: string) =>
         listener(tableName);
       db.on(CHANGE, observer);

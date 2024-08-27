@@ -1,16 +1,16 @@
 import type {
+  DatabaseChangeListener,
+  DatabasePersisterConfig,
+} from '../../@types/persisters/index.d.ts';
+import type {
   PowerSyncPersister,
   createPowerSyncPersister as createPowerSyncPersisterDecl,
 } from '../../@types/persisters/persister-powersync/index.d.ts';
-import {
-  UpdateListener,
-  createCustomSqlitePersister,
-} from '../common/database/sqlite.ts';
 import {AbstractPowerSyncDatabase} from '@powersync/common';
-import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
+import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
 export const createPowerSyncPersister = ((
   store: Store,
@@ -25,7 +25,7 @@ export const createPowerSyncPersister = ((
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
       powerSync.execute(sql, args).then((result) => result.rows?._array ?? []),
-    (listener: UpdateListener): AbortController => {
+    (listener: DatabaseChangeListener): AbortController => {
       const abortController = new AbortController();
       const onChange = powerSync.onChange({
         rawTableNames: true,

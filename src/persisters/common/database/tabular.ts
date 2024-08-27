@@ -5,12 +5,12 @@ import type {
   Values,
 } from '../../../@types/store/index.d.ts';
 import {
-  Cmd,
   DEFAULT_ROW_ID_COLUMN_NAME,
   QuerySchema,
   SINGLE_ROW_ID,
 } from './common.ts';
 import type {
+  DatabaseExecuteCommand,
   PersistedChanges,
   PersistedContent,
   PersistedStore,
@@ -32,7 +32,7 @@ export const createTabularPersister = <
   Persist extends Persists = Persists.StoreOnly,
 >(
   store: PersistedStore<Persist>,
-  cmd: Cmd,
+  executeCommand: DatabaseExecuteCommand,
   addPersisterListener: (
     listener: PersisterListener<Persist>,
   ) => ListeningHandle | Promise<ListeningHandle>,
@@ -56,7 +56,7 @@ export const createTabularPersister = <
 ): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(
-      cmd,
+      executeCommand,
       managedTableNames,
       querySchema,
       onIgnoredError,

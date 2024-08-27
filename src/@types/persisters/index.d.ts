@@ -187,3 +187,46 @@ export function createCustomPersister<
   onIgnoredError?: (error: any) => void,
   persist?: Persist,
 ): Persister<Persist>;
+
+// DatabaseExecuteCommand
+export type DatabaseExecuteCommand = (
+  sql: string,
+  args?: any[],
+) => Promise<{[field: string]: any}[]>;
+
+// DatabaseChangeListener
+export type DatabaseChangeListener = (tableName: string) => void;
+
+// createCustomSqlitePersister
+export function createCustomSqlitePersister<
+  ListenerHandle,
+  Persist extends Persists = Persists.StoreOnly,
+>(
+  store: PersistedStore<Persist>,
+  configOrStoreTableName: DatabasePersisterConfig | string | undefined,
+  executeCommand: DatabaseExecuteCommand,
+  addChangeListener: (listener: DatabaseChangeListener) => ListenerHandle,
+  delChangeListener: (listeningHandle: ListenerHandle) => void,
+  onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
+  onIgnoredError: ((error: any) => void) | undefined,
+  persist: Persist,
+): Persister<Persist>;
+
+// createCustomPostgreSqlPersister
+export function createCustomPostgreSqlPersister<
+  ListenerHandle,
+  Persist extends Persists = Persists.StoreOnly,
+>(
+  store: PersistedStore<Persist>,
+  configOrStoreTableName: DatabasePersisterConfig | string | undefined,
+  executeCommand: DatabaseExecuteCommand,
+  addChangeListener: (
+    channel: string,
+    listener: DatabaseChangeListener,
+  ) => Promise<ListenerHandle>,
+  delChangeListener: (changeListenerHandle: ListenerHandle) => void,
+  onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
+  onIgnoredError: ((error: any) => void) | undefined,
+  destroy: () => void,
+  persist: Persist,
+): Persister<Persist>;

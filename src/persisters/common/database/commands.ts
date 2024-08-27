@@ -1,6 +1,5 @@
 import {
   ALTER_TABLE,
-  Cmd,
   DELETE_FROM,
   QuerySchema,
   SELECT_STAR_FROM,
@@ -36,12 +35,13 @@ import {
   objToArray,
   objValues,
 } from '../../../common/obj.ts';
+import type {DatabaseExecuteCommand} from '../../../@types/persisters/index.d.ts';
 import type {Id} from '../../../@types/common/index.d.ts';
 
 export type Schema = IdSet2;
 
 export const getCommandFunctions = (
-  cmd: Cmd,
+  databaseExecuteCommand: DatabaseExecuteCommand,
   managedTableNames: string[],
   querySchema: QuerySchema,
   onIgnoredError: ((error: any) => void) | undefined,
@@ -75,8 +75,9 @@ export const getCommandFunctions = (
 
   const refreshSchema = async (): Promise<void> => {
     collClear(schemaMap);
-    arrayMap(await querySchema(cmd, managedTableNames), ({tn, cn}) =>
-      setAdd(mapEnsure(schemaMap, tn, setNew<Id>), cn),
+    arrayMap(
+      await querySchema(databaseExecuteCommand, managedTableNames),
+      ({tn, cn}) => setAdd(mapEnsure(schemaMap, tn, setNew<Id>), cn),
     );
   };
 
@@ -88,7 +89,9 @@ export const getCommandFunctions = (
       ? objNew(
           arrayFilter(
             arrayMap(
-              await cmd(SELECT_STAR_FROM + escapeId(tableName)),
+              await databaseExecuteCommand(
+                SELECT_STAR_FROM + escapeId(tableName),
+              ),
               (row) => [
                 row[rowIdColumnName],
                 decode
@@ -130,7 +133,7 @@ export const getCommandFunctions = (
       arrayIsEmpty(tableColumnNames) &&
       collHas(schemaMap, tableName)
     ) {
-      await cmd('DROP ' + TABLE + escapeId(tableName));
+      await databaseExecuteCommand('DROP ' + TABLE + escapeId(tableName));
       mapSet(schemaMap, tableName);
       return;
     }
@@ -141,7 +144,7 @@ export const getCommandFunctions = (
 
     if (!arrayIsEmpty(tableColumnNames)) {
       if (!collHas(schemaMap, tableName)) {
-        await cmd(
+        await databaseExecuteCommand(
           'CREATE ' +
             TABLE +
             escapeId(tableName) +
@@ -163,7 +166,7 @@ export const getCommandFunctions = (
             [rowIdColumnName, ...tableColumnNames],
             async (columnName, index) => {
               if (!collDel(currentColumnNames, columnName)) {
-                await cmd(
+                await databaseExecuteCommand(
                   ALTER_TABLE +
                     escapeId(tableName) +
                     'ADD' +
@@ -171,7 +174,7 @@ export const getCommandFunctions = (
                     columnType,
                 );
                 if (index == 0) {
-                  await cmd(
+                  await databaseExecuteCommand(
                     'CREATE UNIQUE INDEX pk ON ' +
                       escapeId(tableName) +
                       `(${escapeId(rowIdColumnName)})`,
@@ -188,7 +191,7 @@ export const getCommandFunctions = (
       ...(!partial && deleteEmptyColumns
         ? arrayMap(collValues(currentColumnNames), async (columnName) => {
             if (columnName != rowIdColumnName) {
-              await cmd(
+              await databaseExecuteCommand(
                 ALTER_TABLE +
                   escapeId(tableName) +
                   'DROP' +
@@ -203,12 +206,14 @@ export const getCommandFunctions = (
     // Insert or update or delete data
     if (partial) {
       if (isUndefined(content)) {
-        await cmd(DELETE_FROM + escapeId(tableName) + WHERE + ' true');
+        await databaseExecuteCommand(
+          DELETE_FROM + escapeId(tableName) + WHERE + ' true',
+        );
       } else {
         await promiseAll(
           objToArray(content, async (row, rowId) => {
             if (isUndefined(row)) {
-              await cmd(
+              await databaseExecuteCommand(
                 DELETE_FROM +
                   escapeId(tableName) +
                   WHERE +
@@ -218,7 +223,7 @@ export const getCommandFunctions = (
               );
             } else if (!arrayIsEmpty(tableColumnNames)) {
               await upsert(
-                cmd,
+                databaseExecuteCommand,
                 tableName,
                 rowIdColumnName,
                 objIds(row),
@@ -253,14 +258,14 @@ export const getCommandFunctions = (
           arrayPush(deleteRowIds, rowId);
         });
         await upsert(
-          cmd,
+          databaseExecuteCommand,
           tableName,
           rowIdColumnName,
           changingColumnNames,
           args,
           orReplace,
         );
-        await cmd(
+        await databaseExecuteCommand(
           DELETE_FROM +
             escapeId(tableName) +
             WHERE +
@@ -269,7 +274,9 @@ export const getCommandFunctions = (
           deleteRowIds,
         );
       } else if (collHas(schemaMap, tableName)) {
-        await cmd(DELETE_FROM + escapeId(tableName) + WHERE + ' true');
+        await databaseExecuteCommand(
+          DELETE_FROM + escapeId(tableName) + WHERE + ' true',
+        );
       }
     }
   };
@@ -278,13 +285,13 @@ export const getCommandFunctions = (
     actions: () => Promise<Return>,
   ): Promise<Return> => {
     let result;
-    await cmd('BEGIN');
+    await databaseExecuteCommand('BEGIN');
     try {
       result = await actions();
     } catch (error) {
       onIgnoredError?.(error);
     }
-    await cmd('END');
+    await databaseExecuteCommand('END');
     return result as Return;
   };
 
@@ -292,14 +299,14 @@ export const getCommandFunctions = (
 };
 
 const upsert = async (
-  cmd: Cmd,
+  executeCommand: DatabaseExecuteCommand,
   tableName: string,
   rowIdColumnName: string,
   changingColumnNames: string[],
   args: any[],
   orReplace: 0 | 1 = 0,
 ) =>
-  await cmd(
+  await executeCommand(
     'INSERT ' +
       (orReplace ? 'OR REPLACE ' : EMPTY_STRING) +
       'INTO' +

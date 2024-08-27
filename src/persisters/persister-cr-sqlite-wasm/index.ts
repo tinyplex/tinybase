@@ -2,14 +2,14 @@ import type {
   CrSqliteWasmPersister,
   createCrSqliteWasmPersister as createCrSqliteWasmPersisterDecl,
 } from '../../@types/persisters/persister-cr-sqlite-wasm/index.d.ts';
-import {
-  UpdateListener,
-  createCustomSqlitePersister,
-} from '../common/database/sqlite.ts';
+import type {
+  DatabaseChangeListener,
+  DatabasePersisterConfig,
+} from '../../@types/persisters/index.d.ts';
 import {DB} from '@vlcn.io/crsqlite-wasm';
-import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {Store} from '../../@types/store/index.d.ts';
+import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
 export const createCrSqliteWasmPersister = ((
   store: Store,
@@ -23,7 +23,7 @@ export const createCrSqliteWasmPersister = ((
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
       await db.execO(sql, args),
-    (listener: UpdateListener): (() => void) =>
+    (listener: DatabaseChangeListener): (() => void) =>
       db.onUpdate((_, _2, tableName) => listener(tableName)),
     (removeListener: () => void): void => removeListener(),
     onSqlCommand,

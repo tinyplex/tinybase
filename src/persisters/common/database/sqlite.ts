@@ -1,5 +1,4 @@
 import {
-  Cmd,
   DATA_VERSION,
   FROM,
   PRAGMA,
@@ -11,6 +10,8 @@ import {
   getWrappedCommand,
 } from './common.ts';
 import type {
+  DatabaseChangeListener,
+  DatabaseExecuteCommand,
   DatabasePersisterConfig,
   PersistedStore,
   Persister,
@@ -25,17 +26,15 @@ import {createJsonPersister} from './json.ts';
 import {createTabularPersister} from './tabular.ts';
 import {getConfigStructures} from './config.ts';
 
-export type UpdateListener = (tableName: string) => void;
-
 export const createCustomSqlitePersister = <
-  UpdateListeningHandle,
+  ListenerHandle,
   Persist extends Persists = Persists.StoreOnly,
 >(
   store: PersistedStore<Persist>,
   configOrStoreTableName: DatabasePersisterConfig | string | undefined,
-  rawCmd: Cmd,
-  addUpdateListener: (listener: UpdateListener) => UpdateListeningHandle,
-  delUpdateListener: (listeningHandle: UpdateListeningHandle) => void,
+  rawExecuteCommand: DatabaseExecuteCommand,
+  addChangeListener: (listener: DatabaseChangeListener) => ListenerHandle,
+  delChangeListener: (changeListenerHandle: ListenerHandle) => void,
   onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   persist: Persist,
@@ -47,7 +46,7 @@ export const createCustomSqlitePersister = <
   let schemaVersion: number | null;
   let totalChanges: number | null;
 
-  const cmd = getWrappedCommand(rawCmd, onSqlCommand);
+  const executeCommand = getWrappedCommand(rawExecuteCommand, onSqlCommand);
 
   const [
     isJson,
@@ -64,7 +63,7 @@ export const createCustomSqlitePersister = <
     const startPolling = () =>
       (interval = startInterval(async () => {
         try {
-          const [{d, s, c}] = (await cmd(
+          const [{d, s, c}] = (await executeCommand(
             // eslint-disable-next-line max-len
             `${SELECT} ${DATA_VERSION} d,${SCHEMA_VERSION} s,TOTAL_CHANGES() c FROM ${PRAGMA}${DATA_VERSION} JOIN ${PRAGMA}${SCHEMA_VERSION}`,
           )) as [IdObj<number>];
@@ -84,7 +83,7 @@ export const createCustomSqlitePersister = <
       stopInterval(interval);
     };
 
-    const listeningHandle = addUpdateListener((tableName: string) => {
+    const listeningHandle = addChangeListener((tableName: string) => {
       if (managedTableNamesSet.has(tableName)) {
         stopPolling();
         listener();
@@ -95,7 +94,7 @@ export const createCustomSqlitePersister = <
     startPolling();
     return () => {
       stopPolling();
-      delUpdateListener(listeningHandle);
+      delChangeListener(listeningHandle);
     };
   };
 
@@ -105,7 +104,7 @@ export const createCustomSqlitePersister = <
 
   return (isJson ? createJsonPersister : createTabularPersister)(
     store,
-    cmd,
+    executeCommand,
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
@@ -113,8 +112,11 @@ export const createCustomSqlitePersister = <
     persist,
     defaultedConfig as any,
     collValues(managedTableNamesSet),
-    async (cmd: Cmd, managedTableNames: string[]): Promise<any[]> =>
-      await cmd(
+    async (
+      executeCommand: DatabaseExecuteCommand,
+      managedTableNames: string[],
+    ): Promise<any[]> =>
+      await executeCommand(
         // eslint-disable-next-line max-len
         `${SELECT} t.name tn,c.name cn ${FROM}${PRAGMA_TABLE}list()t,${PRAGMA_TABLE}info(t.name)c ${WHERE} t.schema='main'AND t.type IN('table','view')AND t.name IN(${getPlaceholders(managedTableNames)})ORDER BY t.name,c.name`,
         managedTableNames,
