@@ -296,7 +296,7 @@ export const POSTGRESQL_VARIANTS: Variants = {
       const cmdSql = await sql.reserve();
       return [sql, cmdSql, name];
     },
-    ['getSql', (sql: SqlClientsAndName) => sql[0]],
+    ['getSql', ([sql]: SqlClientsAndName) => sql],
     async (
       store: Store,
       [sql]: SqlClientsAndName,
