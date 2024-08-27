@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type {Row, Store, Table, Tables, Values} from 'tinybase';
 import {createMergeableStore, createStore} from 'tinybase';
-import {expectChanges, expectNoChanges} from '../common/expect.ts';
-import {StoreListener} from '../common/types.ts';
-import {createStoreListener} from '../common/listeners.ts';
+import {expectChanges, expectNoChanges} from '../../common/expect.ts';
+import {StoreListener} from '../../common/types.ts';
+import {createStoreListener} from '../../common/listeners.ts';
 import {jest} from '@jest/globals';
 
 let store: Store;

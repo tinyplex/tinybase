@@ -10,8 +10,8 @@ import {createMergeableStore} from 'tinybase';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {join} from 'path';
-import {pause} from '../common/other.ts';
-import {resetHlc} from '../common/mergeable.ts';
+import {pause} from '../../common/other.ts';
+import {resetHlc} from '../../common/mergeable.ts';
 import tmp from 'tmp';
 
 beforeEach(() => {

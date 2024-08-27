@@ -33,12 +33,12 @@ import * as sqlite3 from 'sqlite3';
 import * as ws from 'ws';
 import * as yjs from 'yjs';
 import {join, resolve} from 'path';
-import {mockFetchWasm, pause, suppressWarnings} from './common/other.ts';
+import {mockFetchWasm, pause, suppressWarnings} from '../common/other.ts';
 import {readFileSync, readdirSync} from 'fs';
-import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './common/automerge-adaptor.ts';
+import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from '../common/automerge-adaptor.ts';
 import initWasm from '@vlcn.io/crsqlite-wasm';
 import postgres from 'postgres';
-import {resetHlc} from './common/mergeable.ts';
+import {resetHlc} from '../common/mergeable.ts';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {transformSync} from 'esbuild';
 

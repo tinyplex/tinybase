@@ -19,7 +19,7 @@ import {
   expectChanges,
   expectChangesNoJson,
   expectNoChanges,
-} from '../common/expect.ts';
+} from '../../common/expect.ts';
 import {
   useCell,
   useCellIds,
@@ -37,9 +37,9 @@ import {
   useTables,
 } from 'tinybase/ui-react';
 import React from 'react';
-import {StoreListener} from '../common/types.ts';
+import {StoreListener} from '../../common/types.ts';
 import {createLocalPersister} from 'tinybase/persisters/persister-browser';
-import {createStoreListener} from '../common/listeners.ts';
+import {createStoreListener} from '../../common/listeners.ts';
 
 let renderer: ReactTestRenderer;
 
@@ -89,6 +89,11 @@ describe.each([
   ['mergeableStore', () => createMergeableStore('s1')],
 ])('Testing %s', (_name, createStore) => {
   describe('Setting invalid', () => {
+    test.each(INVALID_OBJECTS)('Content; %s', (_name, content: any) => {
+      const store = createStore().setContent(content);
+      expect(store.getTables()).toEqual({});
+    });
+
     test.each(INVALID_OBJECTS)('Tables; %s', (_name, tables: any) => {
       const store = createStore().setTables(tables);
       expect(store.getTables()).toEqual({});
