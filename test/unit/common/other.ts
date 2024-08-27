@@ -19,7 +19,7 @@ const ignorable = (...args: any[]): boolean =>
 
 export const pause = async (ms = 50, alsoNudgeHlc = false): Promise<void> => {
   const promise = new Promise<void>((resolve) =>
-    setTimeout(() => setTimeout(() => setTimeout(resolve, 1), ms), 1),
+    setTimeout(() => setTimeout(() => setTimeout(resolve, 1), ms - 2), 1),
   );
   if (alsoNudgeHlc) {
     nudgeHlc(ms);
