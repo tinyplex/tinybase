@@ -406,10 +406,10 @@
  *
  * ```js
  * import {
- *   createCustomSynchronizer,
  *   createMergeableStore,
  *   getUniqueId,
  * } from 'tinybase';
+ * import {createCustomSynchronizer} from 'tinybase/synchronizers';
  *
  * const bus1 = [];
  * const bus2 = [];

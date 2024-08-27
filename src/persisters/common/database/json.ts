@@ -11,7 +11,7 @@ import {
   jsonStringWithUndefined,
 } from '../../../common/json.ts';
 import type {DefaultedJsonConfig} from './config.ts';
-import {createCustomPersister} from '../../index.ts';
+import {createCustomPersister} from '../create.ts';
 import {getCommandFunctions} from './commands.ts';
 
 export const createJsonPersister = <

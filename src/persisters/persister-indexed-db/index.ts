@@ -15,7 +15,7 @@ import {
 import {arrayMap, arrayPush} from '../../common/array.ts';
 import type {Id} from '../../@types/common/index.d.ts';
 import type {PersisterListener} from '../../@types/persisters/index.d.ts';
-import {createCustomPersister} from '../index.ts';
+import {createCustomPersister} from '../common/create.ts';
 
 const OBJECT_STORE_NAMES = [T, V];
 const KEY_PATH = {keyPath: 'k'};

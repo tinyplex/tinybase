@@ -19,11 +19,6 @@ import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {GetLocationMethod, Persistable} from './other.ts';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
-  createCustomPersister,
-  createCustomSynchronizer,
-  createMergeableStore,
-} from 'tinybase';
-import {
   createLocalPersister,
   createSessionPersister,
 } from 'tinybase/persisters/persister-browser';
@@ -32,9 +27,12 @@ import type {FetchMock} from 'jest-fetch-mock';
 import type {LocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import {Variants} from './databases.ts';
 import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
+import {createCustomPersister} from 'tinybase/persisters';
+import {createCustomSynchronizer} from 'tinybase/synchronizers';
 import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
 import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+import {createMergeableStore} from 'tinybase';
 import {createRemotePersister} from 'tinybase/persisters/persister-remote';
 import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
 import crypto from 'crypto';
@@ -239,6 +237,7 @@ const getMockedDatabase = <Location>(
   autoLoadPause = 2,
   autoLoadIntervalSeconds = 0.001,
   _isPostgres = false,
+  _supportsMergeableStore = false,
 ): Persistable<Location> => {
   const mockDatabase = {
     beforeEach: mockFetchWasm,

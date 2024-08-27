@@ -15,7 +15,7 @@ import {ifNotUndefined, isString} from '../../common/other.ts';
 import {EMPTY_STRING} from '../../common/strings.ts';
 import type {PartySocket} from 'partysocket';
 import type {PersisterListener} from '../../@types/persisters/index.d.ts';
-import {createCustomPersister} from '../index.ts';
+import {createCustomPersister} from '../common/create.ts';
 import {jsonStringWithMap} from '../../common/json.ts';
 
 type MessageListener = (event: MessageEvent) => void;

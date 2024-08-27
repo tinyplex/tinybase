@@ -19,7 +19,7 @@ import {DocHandle} from '@automerge/automerge-repo';
 import type {Id} from '../../@types/common/index.d.ts';
 import type {PersisterListener} from '../../@types/persisters/index.d.ts';
 import {TINYBASE} from '../../common/strings.ts';
-import {createCustomPersister} from '../index.ts';
+import {createCustomPersister} from '../common/create.ts';
 
 type Observer = ({doc}: {doc: any}) => void;
 

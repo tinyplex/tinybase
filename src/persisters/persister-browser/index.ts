@@ -18,7 +18,7 @@ import {
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {WINDOW} from '../../common/other.ts';
-import {createCustomPersister} from '../index.ts';
+import {createCustomPersister} from '../common/create.ts';
 
 type StorageListener = (event: StorageEvent) => void;
 const STORAGE = 'storage';

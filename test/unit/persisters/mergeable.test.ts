@@ -9,12 +9,8 @@ import type {
   Persister,
 } from 'tinybase';
 import {GetLocationMethod, Persistable, nextLoop} from './common/other.ts';
-import {
-  Persists,
-  createCustomPersister,
-  createMergeableStore,
-  createStore,
-} from 'tinybase';
+import {Persists, createCustomPersister} from 'tinybase/persisters';
+import {createMergeableStore, createStore} from 'tinybase';
 import {
   getMockDatabases,
   mockCustomSynchronizer,
