@@ -29,6 +29,9 @@ import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wa
 import postgres from 'postgres';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {suppressWarnings} from '../../common/other.ts';
+import tmp from 'tmp';
+
+tmp.setGracefulCleanup();
 
 export type Variants = {[name: string]: DatabaseVariant<any>};
 export type SqliteWasmDb = [sqlite3: any, db: any];
@@ -48,7 +51,7 @@ type DumpOut = {[table: string]: [{[column: string]: string}, rows: DumpRows]};
 type DumpIn = {[table: string]: [sql: string, rows: DumpRows]};
 
 type DatabaseVariant<Database> = [
-  getOpenDatabase: () => Promise<Database>,
+  getOpenDatabase: (cloneFromDb?: Database) => Promise<Database>,
   getLocationMethod: [string, (database: Database) => unknown],
   getPersister: (
     store: Store,
@@ -284,11 +287,16 @@ export const SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
 
 export const POSTGRESQL_VARIANTS: Variants = {
   postgres: [
-    async (): Promise<SqlClientsAndName> => {
-      const name = 'tinybase_' + getUniqueId();
-      const adminSql = postgres('postgres://localhost:5432/');
-      await adminSql`CREATE DATABASE ${adminSql(name)}`;
-      await adminSql.end({timeout: 0.1});
+    async (
+      sqlClientsAndName?: SqlClientsAndName,
+    ): Promise<SqlClientsAndName> => {
+      const existingName = sqlClientsAndName?.[2];
+      const name = existingName ?? 'tinybase_' + getUniqueId();
+      if (!existingName) {
+        const adminSql = postgres('postgres://localhost:5432/');
+        await adminSql`CREATE DATABASE ${adminSql(name)}`;
+        await adminSql.end({timeout: 0.1});
+      }
 
       const sql = postgres('postgres://localhost:5432/' + name, {
         connection: {client_min_messages: 'warning'},
@@ -328,7 +336,12 @@ export const POSTGRESQL_VARIANTS: Variants = {
     true,
   ],
   pglite: [
-    async (): Promise<PGlite> => await suppressWarnings(PGlite.create),
+    async (pglite?: PGlite): Promise<PGlite> => {
+      return await suppressWarnings(
+        async () =>
+          await PGlite.create({dataDir: pglite?.dataDir ?? tmp.dirSync().name}),
+      );
+    },
     ['getPglite', (pglite: PGlite) => pglite],
     async (
       store: Store,
