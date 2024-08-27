@@ -39,8 +39,6 @@ It includes the following submodules:
 - The queries module
 - The checkpoints module
 - The mergeable-store module
-- The persisters module
-- The synchronizers module
 - The common module
 
 Since many of the submodules above share compiled-in dependencies, the
@@ -60,6 +58,11 @@ import {createMetrics} from 'tinybase/metrics';
 With a good minifier in your application bundler, however, you may find that
 this level of granularity is unnecessary, and that you can just stick with the
 overall `tinybase` module for most things.
+
+The submodules for various Persister and Synchronizer types are _not_ included
+in the main tinybase module, but should be imported separately from inside the
+`persisters` and `synchronizers` folders. See the Persistence and
+Synchronization guides, respectively, for more details.
 
 ## Targets And Formats
 
