@@ -42,7 +42,9 @@ describe.each(Object.entries(ALL_VARIANTS))(
       store = createStore();
     });
 
-    afterEach(async () => await close(db));
+    afterEach(async () => {
+      await close(db);
+    });
 
     describe('Config', () => {
       describe('save', () => {
