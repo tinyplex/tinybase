@@ -1,15 +1,15 @@
 import type {
+  DatabaseChangeListener,
+  DatabasePersisterConfig,
+} from '../../@types/persisters/index.d.ts';
+import type {
   SqliteWasmPersister,
   createSqliteWasmPersister as createSqliteWasmPersisterDecl,
 } from '../../@types/persisters/persister-sqlite-wasm/index.d.ts';
-import {
-  UpdateListener,
-  createCustomSqlitePersister,
-} from '../common/database/sqlite.ts';
-import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
+import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
 export const createSqliteWasmPersister = ((
   store: Store | MergeableStore,
@@ -26,7 +26,7 @@ export const createSqliteWasmPersister = ((
       db
         .exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'})
         .map((row: IdObj<any>) => ({...row})),
-    (listener: UpdateListener): void =>
+    (listener: DatabaseChangeListener): void =>
       sqlite3.capi.sqlite3_update_hook(
         db,
         (_: any, _2: any, _3: any, tableName: string) => listener(tableName),

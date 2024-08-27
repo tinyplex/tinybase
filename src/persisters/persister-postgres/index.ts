@@ -1,15 +1,15 @@
+import type {
+  DatabaseChangeListener,
+  DatabasePersisterConfig,
+} from '../../@types/persisters/index.d.ts';
 import type {ListenMeta, Sql} from 'postgres';
-import {
-  NotifyListener,
-  createCustomPostgreSqlPersister,
-} from '../common/database/postgresql.ts';
 import type {
   PostgresPersister,
   createPostgresPersister as createPostgresPersisterDecl,
 } from '../../@types/persisters/persister-postgres/index.d.ts';
-import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
+import {createCustomPostgreSqlPersister} from '../common/database/postgresql.ts';
 
 export const createPostgresPersister = (async (
   store: Store | MergeableStore,
@@ -18,16 +18,16 @@ export const createPostgresPersister = (async (
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Promise<PostgresPersister> => {
-  const cmdSql = await sql.reserve?.();
+  const commandSql = await sql.reserve?.();
 
   return createCustomPostgreSqlPersister(
     store,
     configOrStoreTableName,
-    cmdSql?.unsafe,
+    commandSql?.unsafe,
     async (
       channel: string,
-      notifyListener: NotifyListener,
-    ): Promise<ListenMeta> => sql.listen(channel, notifyListener),
+      listener: DatabaseChangeListener,
+    ): Promise<ListenMeta> => sql.listen(channel, listener),
     async (notifyListener: ListenMeta) => {
       try {
         await notifyListener.unlisten();
@@ -37,7 +37,7 @@ export const createPostgresPersister = (async (
     },
     onSqlCommand,
     onIgnoredError,
-    () => cmdSql?.release?.(),
+    () => commandSql?.release?.(),
     3, // StoreOrMergeableStore,
     sql,
     'getSql',

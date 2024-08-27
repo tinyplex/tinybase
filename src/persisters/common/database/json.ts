@@ -1,11 +1,12 @@
-import {Cmd, QuerySchema, SINGLE_ROW_ID} from './common.ts';
 import type {
+  DatabaseExecuteCommand,
   PersistedContent,
   PersistedStore,
   Persister,
   PersisterListener,
   Persists,
 } from '../../../@types/persisters/index.d.ts';
+import {QuerySchema, SINGLE_ROW_ID} from './common.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
@@ -19,7 +20,7 @@ export const createJsonPersister = <
   Persist extends Persists = Persists.StoreOnly,
 >(
   store: PersistedStore<Persist>,
-  cmd: Cmd,
+  executeCommand: DatabaseExecuteCommand,
   addPersisterListener: (
     listener: PersisterListener<Persist>,
   ) => ListeningHandle | Promise<ListeningHandle>,
@@ -37,7 +38,7 @@ export const createJsonPersister = <
 ): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(
-      cmd,
+      executeCommand,
       managedTableNames,
       querySchema,
       onIgnoredError,

@@ -1,16 +1,16 @@
-import {
-  NotifyListener,
-  createCustomPostgreSqlPersister,
-} from '../common/database/postgresql.ts';
+import type {
+  DatabaseChangeListener,
+  DatabasePersisterConfig,
+} from '../../@types/persisters/index.d.ts';
 import type {
   PglitePersister,
   createPglitePersister as createPglitePersisterDecl,
 } from '../../@types/persisters/persister-pglite/index.d.ts';
-import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {PGlite} from '@electric-sql/pglite';
 import type {Store} from '../../@types/store/index.d.ts';
+import {createCustomPostgreSqlPersister} from '../common/database/postgresql.ts';
 
 export const createPglitePersister = (async (
   store: Store | MergeableStore,
@@ -26,8 +26,8 @@ export const createPglitePersister = (async (
       (await pglite.query(sql, args)).rows as any,
     async (
       channel: string,
-      notifyListener: NotifyListener,
-    ): Promise<() => Promise<void>> => pglite.listen(channel, notifyListener),
+      listener: DatabaseChangeListener,
+    ): Promise<() => Promise<void>> => pglite.listen(channel, listener),
     async (unlisten: () => Promise<void>) => {
       try {
         await unlisten();
