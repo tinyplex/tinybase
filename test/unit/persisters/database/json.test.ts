@@ -19,6 +19,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
       autoLoadPause = 3,
       autoLoadIntervalSeconds = 0.001,
       isPostgres,
+      supportsMultipleConnections,
     ],
   ) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(cmd, isPostgres);
@@ -564,6 +565,121 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('manual', async () => {
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await persister.save();
+        await persister2.load();
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+      });
+
+      test('autoSave1', async () => {
+        await persister.startAutoSave();
+        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+        await pause();
+        await persister2.load();
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+      });
+
+      test('autoLoad2', async () => {
+        await persister2.startAutoLoad();
+        await pause(autoLoadPause);
+        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+        await persister.save();
+        await pause(autoLoadPause);
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+      });
+
+      test('autoSave1 & autoLoad2', async () => {
+        await persister.startAutoSave();
+        await persister2.startAutoLoad();
+        await pause(autoLoadPause);
+        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+        await nextLoop();
+        await pause(autoLoadPause);
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+      });
+
+      test('autoSave1 & autoLoad2, complex transactions', async () => {
+        await persister.startAutoSave();
+        await persister2.startAutoLoad();
+        await pause(autoLoadPause);
+        store.setContent([
+          {
+            t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
+            t2: {r1: {c1: 1}},
+          },
+          {v1: 1, v2: 2},
+        ]);
+        await nextLoop();
+        await pause(autoLoadPause);
+        expect(store2.getContent()).toEqual([
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+          {v1: 1, v2: 2},
+        ]);
+        store.setCell('t1', 'r1', 'c1', 2);
+        await nextLoop();
+        await pause(autoLoadPause);
+        expect(store2.getContent()).toEqual([
+          {t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+          {v1: 1, v2: 2},
+        ]);
+        store.delCell('t1', 'r1', 'c2');
+        await nextLoop();
+        await pause(autoLoadPause);
+        expect(store2.getContent()).toEqual([
+          {t1: {r1: {c1: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+          {v1: 1, v2: 2},
+        ]);
+        store.delRow('t1', 'r2');
+        await nextLoop();
+        await pause(autoLoadPause);
+        expect(store2.getContent()).toEqual([
+          {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
+          {v1: 1, v2: 2},
+        ]);
+        store.delTable('t2');
+        await nextLoop();
+        await pause(autoLoadPause);
+        expect(store2.getContent()).toEqual([
+          {t1: {r1: {c1: 2}}},
+          {v1: 1, v2: 2},
+        ]);
+        store.delValue('v2');
+        await nextLoop();
+        await pause(autoLoadPause);
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+        store.setValue('v1', 2);
+        await nextLoop();
+        await pause(autoLoadPause);
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+      }, 20000);
+    });
+
+    describe('Two stores, two connections, one database', () => {
+      if (!supportsMultipleConnections) {
+        return;
+      }
+
+      let db2: any;
+      let store2: Store;
+      let persister2: Persister;
+
+      beforeEach(async () => {
+        mockFetchWasm();
+        db2 = await getOpenDatabase(db);
+        store2 = createStore();
+        persister2 = await getPersister(store2, db2, {
+          mode: 'json',
+          autoLoadIntervalSeconds,
+        });
+      });
+
+      afterEach(async () => {
+        persister2.destroy();
+        await close(db2);
+      });
+
+      test('manual', async () => {
+        store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+        await persister.save();
+        await pause(1000);
         await persister2.load();
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });

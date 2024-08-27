@@ -69,6 +69,7 @@ type DatabaseVariant<Database> = [
   autoLoadPause?: number,
   autoLoadIntervalSeconds?: number,
   isPostgres?: boolean,
+  supportsMultipleConnections?: boolean,
 ];
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
@@ -124,11 +125,15 @@ const getPowerSyncDatabase = (
 
 export const SQLITE_MERGEABLE_VARIANTS: Variants = {
   sqlite3: [
-    async (): Promise<Database> => new sqlite3.Database(':memory:'),
-    ['getDb', (db: Database) => db],
+    async (dbAndName?: [Database, string]): Promise<[Database, string]> => {
+      const existingName = dbAndName?.[1];
+      const name = existingName ?? tmp.tmpNameSync();
+      return [new sqlite3.Database(name), name];
+    },
+    ['getDb', ([db]: [Database, string]) => db],
     (
       store: Store,
-      db: Database,
+      [db]: [Database, string],
       storeTableOrConfig?: string | DatabasePersisterConfig,
       onSqlCommand?: (sql: string, args?: any[]) => void,
       onIgnoredError?: (error: any) => void,
@@ -141,7 +146,7 @@ export const SQLITE_MERGEABLE_VARIANTS: Variants = {
         onIgnoredError,
       ),
     (
-      db: Database,
+      [db]: [Database, string],
       sql: string,
       args: any[] = [],
     ): Promise<{[id: string]: any}[]> =>
@@ -152,7 +157,11 @@ export const SQLITE_MERGEABLE_VARIANTS: Variants = {
             : resolve(rows.map((row: {[id: string]: any}) => ({...row}))),
         ),
       ),
-    async (db: Database) => db.close(),
+    async ([db]: [Database, string]) => db.close(),
+    undefined,
+    undefined,
+    undefined,
+    true,
   ],
   sqliteWasm: [
     async (): Promise<SqliteWasmDb> =>
@@ -334,13 +343,11 @@ export const POSTGRESQL_VARIANTS: Variants = {
     20,
     undefined,
     true,
+    true,
   ],
   pglite: [
-    async (pglite?: PGlite): Promise<PGlite> => {
-      return await suppressWarnings(
-        async () =>
-          await PGlite.create({dataDir: pglite?.dataDir ?? tmp.dirSync().name}),
-      );
+    async (): Promise<PGlite> => {
+      return await suppressWarnings(async () => await PGlite.create());
     },
     ['getPglite', (pglite: PGlite) => pglite],
     async (
