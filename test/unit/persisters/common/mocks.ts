@@ -43,6 +43,8 @@ import fs from 'fs';
 import {mockFetchWasm} from '../../common/other.ts';
 import tmp from 'tmp';
 
+tmp.setGracefulCleanup();
+
 const fetchMock = fm as any as FetchMock;
 
 const UNDEFINED_MARKER = '\uFFFC';
@@ -354,7 +356,6 @@ export const mockMergeableChangesListener: Persistable<string> =
 export const mockFile: Persistable = {
   autoLoadPause: 200,
   getLocation: async (): Promise<string> => {
-    tmp.setGracefulCleanup();
     return tmp.fileSync().name;
   },
   getLocationMethod: ['getFilePath', (location) => location],
@@ -534,7 +535,6 @@ export const mockRemote: Persistable = {
     (location) => [GET_HOST + location, SET_HOST + location],
   ],
   getLocation: async (): Promise<string> => {
-    tmp.setGracefulCleanup();
     return tmp.fileSync().name;
   },
   getPersister: (store, location) =>
