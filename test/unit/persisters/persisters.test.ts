@@ -25,6 +25,8 @@ import {join} from 'path';
 import {pause} from '../common/other.ts';
 import tmp from 'tmp';
 
+tmp.setGracefulCleanup();
+
 describe.each([
   ['mockChangesListener', mockChangesListener],
   ['mockNoContentListener', mockNoContentListener],
@@ -45,8 +47,6 @@ describe.each([
   let getLocationMethod: GetLocationMethod<any> | undefined;
   let store: Store;
   let persister: Persister;
-
-  tmp.setGracefulCleanup();
 
   beforeEach(async () => {
     if (persistable.beforeEach != null) {
