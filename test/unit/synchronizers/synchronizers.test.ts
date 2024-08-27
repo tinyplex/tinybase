@@ -9,8 +9,8 @@ import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local
 import {createMergeableStore} from 'tinybase';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
-import {pause} from '../../common/other.ts';
-import {resetHlc} from '../../common/mergeable.ts';
+import {pause} from '../common/other.ts';
+import {resetHlc} from '../common/mergeable.ts';
 
 const messageTypes = [
   'RESPONSE',
