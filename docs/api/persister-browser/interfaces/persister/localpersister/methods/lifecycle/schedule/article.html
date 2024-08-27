@@ -3,7 +3,8 @@
   getDataFromRemoteSystem<span class="punctuation">,</span>
   sendDataToRemoteSystem<span class="punctuation">,</span>
 <span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'custom-remote-handlers'</span><span class="punctuation">;</span>
-<span class="keyword">import</span> <span class="punctuation">{</span>createCustomPersister<span class="punctuation">,</span> createStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>createCustomPersister<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/persisters'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> <span class="punctuation">{</span>createStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
 
 <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/store/functions/creation/createstore/">createStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="keyword">const</span> persister <span class="operator">=</span> <span class="function"><a href="/api/persisters/functions/creation/createcustompersister/">createCustomPersister</a></span><span class="punctuation">(</span>

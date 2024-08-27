@@ -105,6 +105,7 @@
 
   const newStamp = (value, time) => (time ? [value, time] : [value]);
   const getLatestTime = (time1, time2) =>
+    /* istanbul ignore next */
     ((time1 ?? '') > (time2 ?? '') ? time1 : time2) ?? '';
   const stampNewObj = (time = EMPTY_STRING) => newStamp(objNew(), time);
 
