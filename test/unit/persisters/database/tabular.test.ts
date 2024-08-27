@@ -1588,6 +1588,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
         });
       });
 
+      afterEach(async () => {
+        persister1.destroy();
+        persister2.destroy();
+      });
+
       test('manual', async () => {
         store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await persister1.save();
