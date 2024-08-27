@@ -43,7 +43,10 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       });
     });
 
-    afterEach(async () => await close(db));
+    afterEach(async () => {
+      persister.destroy();
+      await close(db);
+    });
 
     describe('Custom table name', () => {
       test('as string', async () => {

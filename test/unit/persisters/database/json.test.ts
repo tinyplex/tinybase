@@ -39,7 +39,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
       });
     });
 
-    afterEach(async () => await close(db));
+    afterEach(async () => {
+      persister.destroy();
+      await close(db);
+    });
 
     describe('Config', () => {
       test('tableName as string', async () => {
