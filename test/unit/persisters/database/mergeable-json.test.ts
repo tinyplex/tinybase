@@ -379,6 +379,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       test('autoSave1 & autoLoad2', async () => {
         await persister.startAutoSave();
         await persister2.startAutoLoad();
+        await pause(autoLoadPause);
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
@@ -387,6 +388,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       test('autoSave1 & autoLoad2, complex transactions', async () => {
         await persister.startAutoSave();
         await persister2.startAutoLoad();
+        await pause(autoLoadPause);
         store
           .setTables({
             t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
@@ -431,7 +433,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       }, 20000);
     });
 
-    describe('Two stores, two connection, one database', () => {
+    describe('Two stores, two connections, one database', () => {
       if (!supportsMultipleConnections) {
         return;
       }
@@ -471,6 +473,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
 
       test('autoLoad2', async () => {
         await persister2.startAutoLoad();
+        await pause(autoLoadPause);
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await persister.save();
         await pause(autoLoadPause);
@@ -480,6 +483,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       test('autoSave1 & autoLoad2', async () => {
         await persister.startAutoSave();
         await persister2.startAutoLoad();
+        await pause(autoLoadPause);
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
@@ -488,6 +492,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       test('autoSave1 & autoLoad2, complex transactions', async () => {
         await persister.startAutoSave();
         await persister2.startAutoLoad();
+        await pause(autoLoadPause);
         store
           .setTables({
             t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}},
