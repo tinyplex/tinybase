@@ -32,10 +32,10 @@ export type Stamp<Thing, Hashed extends boolean = false> = Hashed extends true
   ? [thing: Thing, time: Time, hash: Hash]
   : [thing: Thing, time?: Time];
 
-// ContentHashes
+/// ContentHashes
 export type ContentHashes = [tablesHash: Hash, valuesHash: Hash];
 
-// TablesStamp
+/// TablesStamp
 export type TablesStamp<
   Schema extends OptionalTablesSchema,
   Hashed extends boolean = false,
@@ -50,24 +50,24 @@ export type TablesStamp<
   Hashed
 >;
 
-// TableHashes
+/// TableHashes
 export type TableHashes<Schema extends OptionalTablesSchema> = {
   [TableId in TableIdFromSchema<Schema>]?: Hash;
 };
 
-// TableStamp
+/// TableStamp
 export type TableStamp<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
   Hashed extends boolean = false,
 > = Stamp<{[rowId: Id]: RowStamp<Schema, TableId, Hashed>}, Hashed>;
 
-// RowHashes
+/// RowHashes
 export type RowHashes<Schema extends OptionalTablesSchema> = {
   [TableId in TableIdFromSchema<Schema>]?: {[rowId: Id]: Hash};
 };
 
-// RowStamp
+/// RowStamp
 export type RowStamp<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
@@ -84,14 +84,14 @@ export type RowStamp<
   Hashed
 >;
 
-// CellHashes
+/// CellHashes
 export type CellHashes<Schema extends OptionalTablesSchema> = {
   [TableId in TableIdFromSchema<Schema>]?: {
     [rowId: Id]: {[CellId in CellIdFromSchema<Schema, TableId>]?: Hash};
   };
 };
 
-// CellStamp
+/// CellStamp
 export type CellStamp<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
@@ -99,7 +99,7 @@ export type CellStamp<
   Hashed extends boolean = false,
 > = Stamp<CellOrUndefined<Schema, TableId, CellId>, Hashed>;
 
-// ValuesStamp
+/// ValuesStamp
 export type ValuesStamp<
   Schema extends OptionalValuesSchema,
   Hashed extends boolean = false,
@@ -114,12 +114,12 @@ export type ValuesStamp<
   Hashed
 >;
 
-// ValueHashes
+/// ValueHashes
 export type ValueHashes<Schema extends OptionalValuesSchema> = {
   [ValueId in ValueIdFromSchema<Schema>]?: Hash;
 };
 
-// ValueStamp
+/// ValueStamp
 export type ValueStamp<
   Schema extends OptionalValuesSchema,
   ValueId extends ValueIdFromSchema<Schema>,

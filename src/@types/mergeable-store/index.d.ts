@@ -19,52 +19,52 @@ export type Stamp<Thing, Hashed extends boolean = false> = Hashed extends true
   ? [thing: Thing, time: Time, hash: Hash]
   : [thing: Thing, time?: Time];
 
-// ContentHashes
+/// ContentHashes
 export type ContentHashes = [tablesHash: Hash, valuesHash: Hash];
 
-// TablesStamp
+/// TablesStamp
 export type TablesStamp<Hashed extends boolean = false> = Stamp<
   {[tableId: Id]: TableStamp<Hashed>},
   Hashed
 >;
 
-// TableHashes
+/// TableHashes
 export type TableHashes = {[tableId: Id]: Hash};
 
-// TableStamp
+/// TableStamp
 export type TableStamp<Hashed extends boolean = false> = Stamp<
   {[rowId: Id]: RowStamp<Hashed>},
   Hashed
 >;
 
-// RowHashes
+/// RowHashes
 export type RowHashes = {[tableId: Id]: {[rowId: Id]: Hash}};
 
-// RowStamp
+/// RowStamp
 export type RowStamp<Hashed extends boolean = false> = Stamp<
   {[cellId: Id]: CellStamp<Hashed>},
   Hashed
 >;
 
-// CellHashes
+/// CellHashes
 export type CellHashes = {[tableId: Id]: {[rowId: Id]: {[cellId: Id]: Hash}}};
 
-// CellStamp
+/// CellStamp
 export type CellStamp<Hashed extends boolean = false> = Stamp<
   CellOrUndefined,
   Hashed
 >;
 
-// ValuesStamp
+/// ValuesStamp
 export type ValuesStamp<Hashed extends boolean = false> = Stamp<
   {[valueId: Id]: ValueStamp<Hashed>},
   Hashed
 >;
 
-// ValueHashes
+/// ValueHashes
 export type ValueHashes = {[valueId: Id]: Hash};
 
-// ValueStamp
+/// ValueStamp
 export type ValueStamp<Hashed extends boolean = false> = Stamp<
   ValueOrUndefined,
   Hashed
