@@ -679,7 +679,6 @@ describe.each(Object.entries(ALL_VARIANTS))(
       test('manual', async () => {
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await persister.save();
-        await pause(1000);
         await persister2.load();
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
@@ -764,7 +763,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await nextLoop();
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
-      }, 20000);
+      });
     });
   },
 );
