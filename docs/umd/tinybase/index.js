@@ -43,7 +43,6 @@
   const strStartsWith = (str, prefix) => str.startsWith(prefix);
   const strEndsWith = (str, suffix) => str.endsWith(suffix);
 
-  const promise = Promise;
   const GLOBAL = globalThis;
   const math = Math;
   const mathMax = math.max;
@@ -62,10 +61,6 @@
   const size = (arrayOrString) => arrayOrString.length;
   const test = (regex, subject) => regex.test(subject);
   const getUndefined = () => void 0;
-  const promiseNew = (resolver) => new promise(resolver);
-  const errorNew = (message) => {
-    throw new Error(message);
-  };
 
   const arrayHas = (array, value) => array.includes(value);
   const arrayEvery = (array, cb) => array.every(cb);
@@ -1179,451 +1174,6 @@
     return objFreeze(metrics);
   });
 
-  const Persists = {
-    StoreOnly: 1 /* StoreOnly */,
-    MergeableStoreOnly: 2 /* MergeableStoreOnly */,
-    StoreOrMergeableStore: 3 /* StoreOrMergeableStore */,
-  };
-  const scheduleRunning = mapNew();
-  const scheduleActions = mapNew();
-  const getStoreFunctions = (persist = 1 /* StoreOnly */, store) =>
-    persist != 1 /* StoreOnly */ && store.isMergeable()
-      ? [
-          1,
-          store.getMergeableContent,
-          store.getTransactionMergeableChanges,
-          ([[changedTables], [changedValues]]) =>
-            !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
-          store.setDefaultContent,
-        ]
-      : persist != 2 /* MergeableStoreOnly */
-        ? [
-            0,
-            store.getContent,
-            store.getTransactionChanges,
-            ([changedTables, changedValues]) =>
-              !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
-            store.setContent,
-          ]
-        : errorNew('Store type not supported by this Persister');
-  const createCustomPersister = (
-    store,
-    getPersisted,
-    setPersisted,
-    addPersisterListener,
-    delPersisterListener,
-    onIgnoredError,
-    persist,
-    extra = {},
-    scheduleId = [],
-  ) => {
-    let loadSave = 0;
-    let loads = 0;
-    let saves = 0;
-    let action;
-    let autoLoadHandle;
-    let autoSaveListenerId;
-    mapEnsure(scheduleRunning, scheduleId, () => 0);
-    mapEnsure(scheduleActions, scheduleId, () => []);
-    const [
-      isMergeableStore,
-      getContent,
-      getChanges,
-      hasChanges,
-      setDefaultContent,
-    ] = getStoreFunctions(persist, store);
-    const run = async () => {
-      /* istanbul ignore else */
-      if (!mapGet(scheduleRunning, scheduleId)) {
-        mapSet(scheduleRunning, scheduleId, 1);
-        while (
-          !isUndefined(
-            (action = arrayShift(mapGet(scheduleActions, scheduleId))),
-          )
-        ) {
-          try {
-            await action();
-          } catch (error) {
-            /* istanbul ignore next */
-            onIgnoredError?.(error);
-          }
-        }
-        mapSet(scheduleRunning, scheduleId, 0);
-      }
-    };
-    const setContentOrChanges = (contentOrChanges) => {
-      (isMergeableStore && isArray(contentOrChanges?.[0])
-        ? contentOrChanges?.[2] === 1
-          ? store.applyMergeableChanges
-          : store.setMergeableContent
-        : contentOrChanges?.[2] === 1
-          ? store.applyChanges
-          : store.setContent)(contentOrChanges);
-    };
-    const load = async (initialContent) => {
-      /* istanbul ignore else */
-      if (loadSave != 2) {
-        loadSave = 1;
-        loads++;
-        await schedule(async () => {
-          try {
-            const content = await getPersisted();
-            if (isArray(content)) {
-              setContentOrChanges(content);
-            } else {
-              errorNew(`Content is not an array ${content}`);
-            }
-          } catch (error) {
-            onIgnoredError?.(error);
-            if (initialContent) {
-              setDefaultContent(initialContent);
-            }
-          }
-          loadSave = 0;
-        });
-      }
-      return persister;
-    };
-    const startAutoLoad = async (initialContent) => {
-      await stopAutoLoad().load(initialContent);
-      try {
-        autoLoadHandle = await addPersisterListener(
-          async (content, changes) => {
-            if (changes || content) {
-              /* istanbul ignore else */
-              if (loadSave != 2) {
-                loadSave = 1;
-                loads++;
-                setContentOrChanges(changes ?? content);
-                loadSave = 0;
-              }
-            } else {
-              await load();
-            }
-          },
-        );
-      } catch (error) {
-        /* istanbul ignore next */
-        onIgnoredError?.(error);
-      }
-      return persister;
-    };
-    const stopAutoLoad = () => {
-      if (autoLoadHandle) {
-        delPersisterListener(autoLoadHandle);
-        autoLoadHandle = void 0;
-      }
-      return persister;
-    };
-    const isAutoLoading = () => !isUndefined(autoLoadHandle);
-    const save = async (changes) => {
-      /* istanbul ignore else */
-      if (loadSave != 1) {
-        loadSave = 2;
-        saves++;
-        await schedule(async () => {
-          try {
-            await setPersisted(getContent, changes);
-          } catch (error) {
-            /* istanbul ignore next */
-            onIgnoredError?.(error);
-          }
-          loadSave = 0;
-        });
-      }
-      return persister;
-    };
-    const startAutoSave = async () => {
-      await stopAutoSave().save();
-      autoSaveListenerId = store.addDidFinishTransactionListener(() => {
-        const changes = getChanges();
-        if (hasChanges(changes)) {
-          save(changes);
-        }
-      });
-      return persister;
-    };
-    const stopAutoSave = () => {
-      ifNotUndefined(autoSaveListenerId, store.delListener);
-      autoSaveListenerId = void 0;
-      return persister;
-    };
-    const isAutoSaving = () => !isUndefined(autoSaveListenerId);
-    const schedule = async (...actions) => {
-      arrayPush(mapGet(scheduleActions, scheduleId), ...actions);
-      await run();
-      return persister;
-    };
-    const getStore = () => store;
-    const destroy = () => {
-      arrayClear(mapGet(scheduleActions, scheduleId));
-      return stopAutoLoad().stopAutoSave();
-    };
-    const getStats = () => ({loads, saves});
-    const persister = {
-      load,
-      startAutoLoad,
-      stopAutoLoad,
-      isAutoLoading,
-      save,
-      startAutoSave,
-      stopAutoSave,
-      isAutoSaving,
-      schedule,
-      getStore,
-      destroy,
-      getStats,
-      ...extra,
-    };
-    return objFreeze(persister);
-  };
-
-  const textEncoder = new GLOBAL.TextEncoder();
-  const getHash = (value) => {
-    let hash = 2166136261;
-    arrayForEach(textEncoder.encode(value), (char) => {
-      hash ^= char;
-      hash +=
-        (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
-    });
-    return hash >>> 0;
-  };
-
-  const stampCloneWithHash = ([value, time, hash]) => [value, time, hash];
-  const stampCloneWithoutHash = ([value, time]) => newStamp(value, time);
-  const newStamp = (value, time) => (time ? [value, time] : [value]);
-  const getStampHash = (stamp) => stamp[2];
-  const hashIdAndHash = (id, hash) => getHash(id + ':' + hash);
-  const replaceTimeHash = (oldTime, newTime) =>
-    newTime > oldTime ? (oldTime ? getHash(oldTime) : 0) ^ getHash(newTime) : 0;
-  const getLatestTime = (time1, time2) =>
-    ((time1 ?? '') > (time2 ?? '') ? time1 : time2) ?? '';
-  const stampUpdate = (stamp, hash, time) => {
-    stamp[2] = hash >>> 0;
-    if (time > stamp[1]) {
-      stamp[1] = time;
-    }
-  };
-  const stampNewObj = (time = EMPTY_STRING) => newStamp(objNew(), time);
-  const stampNewMap = (time = EMPTY_STRING) => [mapNew(), time, 0];
-  const stampMapToObjWithHash = (
-    [map, time, hash],
-    mapper = stampCloneWithHash,
-  ) => [mapToObj(map, mapper), time, hash];
-  const stampMapToObjWithoutHash = (
-    [map, time],
-    mapper = stampCloneWithoutHash,
-  ) => newStamp(mapToObj(map, mapper), time);
-  const stampValidate = (stamp, validateThing) =>
-    isArray(stamp) &&
-    size(stamp) == 3 &&
-    isString(stamp[1]) &&
-    getTypeOf(stamp[2]) == NUMBER &&
-    isFiniteNumber(stamp[2]) &&
-    validateThing(stamp[0]);
-
-  const Message = {
-    Response: 0 /* Response */,
-    GetContentHashes: 1 /* GetContentHashes */,
-    ContentHashes: 2 /* ContentHashes */,
-    ContentDiff: 3 /* ContentDiff */,
-    GetTableDiff: 4 /* GetTableDiff */,
-    GetRowDiff: 5 /* GetRowDiff */,
-    GetCellDiff: 6 /* GetCellDiff */,
-    GetValueDiff: 7 /* GetValueDiff */,
-  };
-  const createCustomSynchronizer = (
-    store,
-    send,
-    registerReceive,
-    destroyImpl,
-    requestTimeoutSeconds,
-    onSend,
-    onReceive,
-    onIgnoredError,
-    extra = {},
-  ) => {
-    let persisterListener;
-    let sends = 0;
-    let receives = 0;
-    const pendingRequests = mapNew();
-    const sendImpl = (toClientId, requestId, message, body) => {
-      sends++;
-      onSend?.(toClientId, requestId, message, body);
-      send(toClientId, requestId, message, body);
-    };
-    const request = async (toClientId, message, body = EMPTY_STRING) =>
-      promiseNew((resolve, reject) => {
-        const requestId = getUniqueId();
-        const timeout = setTimeout(() => {
-          collDel(pendingRequests, requestId);
-          reject(
-            `No response from ${toClientId ?? 'anyone'} to ${requestId}, ` +
-              message,
-          );
-        }, requestTimeoutSeconds * 1e3);
-        mapSet(pendingRequests, requestId, [
-          toClientId,
-          (response, fromClientId) => {
-            clearTimeout(timeout);
-            collDel(pendingRequests, requestId);
-            resolve([response, fromClientId]);
-          },
-        ]);
-        sendImpl(toClientId, requestId, message, body);
-      });
-    const mergeTablesStamps = (tablesStamp, [tableStamps2, tablesTime2]) => {
-      objForEach(tableStamps2, ([rowStamps2, tableTime2], tableId) => {
-        const tableStamp = objEnsure(tablesStamp[0], tableId, stampNewObj);
-        objForEach(rowStamps2, ([cellStamps2, rowTime2], rowId) => {
-          const rowStamp = objEnsure(tableStamp[0], rowId, stampNewObj);
-          objForEach(
-            cellStamps2,
-            ([cell2, cellTime2], cellId) =>
-              (rowStamp[0][cellId] = newStamp(cell2, cellTime2)),
-          );
-          rowStamp[1] = getLatestTime(rowStamp[1], rowTime2);
-        });
-        tableStamp[1] = getLatestTime(tableStamp[1], tableTime2);
-      });
-      tablesStamp[1] = getLatestTime(tablesStamp[1], tablesTime2);
-    };
-    const getChangesFromOtherStore = async (
-      otherClientId = null,
-      otherContentHashes,
-    ) => {
-      if (isUndefined(otherContentHashes)) {
-        [otherContentHashes, otherClientId] = await request(
-          otherClientId,
-          1 /* GetContentHashes */,
-        );
-      }
-      const [otherTablesHash, otherValuesHash] = otherContentHashes;
-      const [tablesHash, valuesHash] = store.getMergeableContentHashes();
-      let tablesChanges = stampNewObj();
-      if (tablesHash != otherTablesHash) {
-        const [newTables, differentTableHashes] = (
-          await request(
-            otherClientId,
-            4 /* GetTableDiff */,
-            store.getMergeableTableHashes(),
-          )
-        )[0];
-        tablesChanges = newTables;
-        if (!objIsEmpty(differentTableHashes)) {
-          const [newRows, differentRowHashes] = (
-            await request(
-              otherClientId,
-              5 /* GetRowDiff */,
-              store.getMergeableRowHashes(differentTableHashes),
-            )
-          )[0];
-          mergeTablesStamps(tablesChanges, newRows);
-          if (!objIsEmpty(differentRowHashes)) {
-            const newCells = (
-              await request(
-                otherClientId,
-                6 /* GetCellDiff */,
-                store.getMergeableCellHashes(differentRowHashes),
-              )
-            )[0];
-            mergeTablesStamps(tablesChanges, newCells);
-          }
-        }
-      }
-      return [
-        tablesChanges,
-        valuesHash == otherValuesHash
-          ? stampNewObj()
-          : (
-              await request(
-                otherClientId,
-                7 /* GetValueDiff */,
-                store.getMergeableValueHashes(),
-              )
-            )[0],
-        1,
-      ];
-    };
-    const getPersisted = async () => {
-      const changes = await getChangesFromOtherStore();
-      return !objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0])
-        ? changes
-        : void 0;
-    };
-    const setPersisted = async (_getContent, changes) =>
-      changes
-        ? sendImpl(null, null, 3 /* ContentDiff */, changes)
-        : sendImpl(
-            null,
-            null,
-            2 /* ContentHashes */,
-            store.getMergeableContentHashes(),
-          );
-    const addPersisterListener = (listener) => (persisterListener = listener);
-    const delPersisterListener = () => (persisterListener = void 0);
-    const startSync = async (initialContent) =>
-      await (await persister.startAutoLoad(initialContent)).startAutoSave();
-    const stopSync = () => persister.stopAutoLoad().stopAutoSave();
-    const destroy = () => {
-      destroyImpl();
-      return persister.stopSync();
-    };
-    const getSynchronizerStats = () => ({sends, receives});
-    const persister = createCustomPersister(
-      store,
-      getPersisted,
-      setPersisted,
-      addPersisterListener,
-      delPersisterListener,
-      onIgnoredError,
-      2,
-      // MergeableStoreOnly
-      {startSync, stopSync, destroy, getSynchronizerStats, ...extra},
-    );
-    registerReceive((fromClientId, requestId, message, body) => {
-      receives++;
-      onReceive?.(fromClientId, requestId, message, body);
-      if (message == 0 /* Response */) {
-        ifNotUndefined(
-          mapGet(pendingRequests, requestId),
-          ([toClientId, handleResponse]) =>
-            isUndefined(toClientId) || toClientId == fromClientId
-              ? handleResponse(body, fromClientId)
-              : /* istanbul ignore next */
-                0,
-        );
-      } else if (
-        message == 2 /* ContentHashes */ &&
-        persister.isAutoLoading()
-      ) {
-        getChangesFromOtherStore(fromClientId, body).then((changes) => {
-          persisterListener?.(void 0, changes);
-        });
-      } else if (message == 3 /* ContentDiff */ && persister.isAutoLoading()) {
-        persisterListener?.(void 0, body);
-      } else {
-        ifNotUndefined(
-          message == 1 /* GetContentHashes */ && persister.isAutoSaving()
-            ? store.getMergeableContentHashes()
-            : message == 4 /* GetTableDiff */
-              ? store.getMergeableTableDiff(body)
-              : message == 5 /* GetRowDiff */
-                ? store.getMergeableRowDiff(body)
-                : message == 6 /* GetCellDiff */
-                  ? store.getMergeableCellDiff(body)
-                  : message == 7 /* GetValueDiff */
-                    ? store.getMergeableValueDiff(body)
-                    : void 0,
-          (response) => {
-            sendImpl(fromClientId, requestId, 0 /* Response */, response);
-          },
-        );
-      }
-    });
-    return persister;
-  };
-
   const createQueries = getCreateFunction((store) => {
     const createStore = store.createStore;
     const preStore = createStore();
@@ -2279,6 +1829,51 @@
     };
     return objFreeze(relationships);
   });
+
+  const textEncoder = new GLOBAL.TextEncoder();
+  const getHash = (value) => {
+    let hash = 2166136261;
+    arrayForEach(textEncoder.encode(value), (char) => {
+      hash ^= char;
+      hash +=
+        (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+    });
+    return hash >>> 0;
+  };
+
+  const stampCloneWithHash = ([value, time, hash]) => [value, time, hash];
+  const stampCloneWithoutHash = ([value, time]) => newStamp(value, time);
+  const newStamp = (value, time) => (time ? [value, time] : [value]);
+  const getStampHash = (stamp) => stamp[2];
+  const hashIdAndHash = (id, hash) => getHash(id + ':' + hash);
+  const replaceTimeHash = (oldTime, newTime) =>
+    newTime > oldTime ? (oldTime ? getHash(oldTime) : 0) ^ getHash(newTime) : 0;
+  const getLatestTime = (time1, time2) =>
+    /* istanbul ignore next */
+    ((time1 ?? '') > (time2 ?? '') ? time1 : time2) ?? '';
+  const stampUpdate = (stamp, hash, time) => {
+    stamp[2] = hash >>> 0;
+    if (time > stamp[1]) {
+      stamp[1] = time;
+    }
+  };
+  const stampNewObj = (time = EMPTY_STRING) => newStamp(objNew(), time);
+  const stampNewMap = (time = EMPTY_STRING) => [mapNew(), time, 0];
+  const stampMapToObjWithHash = (
+    [map, time, hash],
+    mapper = stampCloneWithHash,
+  ) => [mapToObj(map, mapper), time, hash];
+  const stampMapToObjWithoutHash = (
+    [map, time],
+    mapper = stampCloneWithoutHash,
+  ) => newStamp(mapToObj(map, mapper), time);
+  const stampValidate = (stamp, validateThing) =>
+    isArray(stamp) &&
+    size(stamp) == 3 &&
+    isString(stamp[1]) &&
+    getTypeOf(stamp[2]) == NUMBER &&
+    isFiniteNumber(stamp[2]) &&
+    validateThing(stamp[0]);
 
   const pairNew = (value) => [value, value];
   const pairCollSize2 = (pair, func = collSize2) =>
@@ -4216,11 +3811,7 @@
     return objFreeze(mergeableStore);
   };
 
-  exports.Message = Message;
-  exports.Persists = Persists;
   exports.createCheckpoints = createCheckpoints;
-  exports.createCustomPersister = createCustomPersister;
-  exports.createCustomSynchronizer = createCustomSynchronizer;
   exports.createIndexes = createIndexes;
   exports.createMergeableStore = createMergeableStore;
   exports.createMetrics = createMetrics;
