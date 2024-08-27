@@ -11,6 +11,7 @@ const TEST_MODULES = [
   'ui-react-dom',
   'ui-react-inspector',
   'tools',
+  'persisters',
   'persisters/persister-automerge',
   'persisters/persister-browser',
   'persisters/persister-cr-sqlite-wasm',
@@ -28,6 +29,7 @@ const TEST_MODULES = [
   'persisters/persister-sqlite-wasm',
   'persisters/persister-sqlite3',
   'persisters/persister-yjs',
+  'synchronizers',
   'synchronizers/synchronizer-local',
   'synchronizers/synchronizer-ws-client',
   'synchronizers/synchronizer-ws-server',
@@ -42,8 +44,6 @@ const ALL_MODULES = [
   'queries',
   'checkpoints',
   'mergeable-store',
-  'persisters',
-  'synchronizers',
   'common',
 ];
 const ALL_DEFINITIONS = [

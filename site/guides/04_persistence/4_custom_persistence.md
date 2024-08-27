@@ -41,7 +41,8 @@ local string called `storeJson` and which would automatically load by polling
 for changes every second:
 
 ```js
-import {createCustomPersister, createStore} from 'tinybase';
+import {createCustomPersister} from 'tinybase/persisters';
+import {createStore} from 'tinybase';
 
 const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
 let storeJson;

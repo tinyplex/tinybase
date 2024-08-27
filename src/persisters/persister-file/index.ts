@@ -16,7 +16,7 @@ import {
 import {readFile, writeFile} from 'fs/promises';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
-import {createCustomPersister} from '../index.ts';
+import {createCustomPersister} from '../common/create.ts';
 
 export const createFilePersister = ((
   store: Store | MergeableStore,

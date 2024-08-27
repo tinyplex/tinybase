@@ -6,7 +6,7 @@ import type {
 import {isUndefined, startInterval, stopInterval} from '../../common/other.ts';
 import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
 import type {PersisterListener} from '../../@types/persisters/index.d.ts';
-import {createCustomPersister} from '../index.ts';
+import {createCustomPersister} from '../common/create.ts';
 
 const getETag = (response: Response) => response.headers.get('ETag');
 

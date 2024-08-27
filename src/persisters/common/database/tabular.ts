@@ -23,7 +23,7 @@ import {objHas, objIsEmpty, objNew} from '../../../common/obj.ts';
 import type {DefaultedTabularConfig} from './config.ts';
 import type {Id} from '../../../@types/common/index.d.ts';
 import {arrayFilter} from '../../../common/array.ts';
-import {createCustomPersister} from '../../index.ts';
+import {createCustomPersister} from '../create.ts';
 import {getCommandFunctions} from './commands.ts';
 import {mapMap} from '../../../common/map.ts';
 

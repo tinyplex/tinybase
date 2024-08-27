@@ -1203,7 +1203,8 @@
    *   getDataFromRemoteSystem,
    *   sendDataToRemoteSystem,
    * } from 'custom-remote-handlers';
-   * import {createCustomPersister, createStore} from 'tinybase';
+   * import {createCustomPersister} from 'tinybase/persisters';
+   * import {createStore} from 'tinybase';
    *
    * const store = createStore();
    * const persister = createCustomPersister(
@@ -1384,7 +1385,8 @@
  * Store.
  *
  * ```js
- * import {createCustomPersister, createStore} from 'tinybase';
+ * import {createCustomPersister} from 'tinybase/persisters';
+ * import {createStore} from 'tinybase';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * let persistedJson;
@@ -1423,9 +1425,8 @@
  * MergeableStore.
  *
  * ```js
+ * import {Persists, createCustomPersister} from 'tinybase/persisters';
  * import {
- *   Persists,
- *   createCustomPersister,
  *   createMergeableStore,
  *   createStore,
  * } from 'tinybase';
