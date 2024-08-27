@@ -7,7 +7,7 @@ import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import type {UnsubscribeFunction} from 'electric-sql/notifiers';
-import {createSqlitePersister} from '../common/database/sqlite.ts';
+import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
 export const createLibSqlPersister = ((
   store: Store,
@@ -16,7 +16,7 @@ export const createLibSqlPersister = ((
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): LibSqlPersister =>
-  createSqlitePersister(
+  createCustomSqlitePersister(
     store,
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>

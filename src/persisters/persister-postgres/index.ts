@@ -1,7 +1,7 @@
 import type {ListenMeta, Sql} from 'postgres';
 import {
   NotifyListener,
-  createPostgreSqlPersister,
+  createCustomPostgreSqlPersister,
 } from '../common/database/postgresql.ts';
 import type {
   PostgresPersister,
@@ -20,7 +20,7 @@ export const createPostgresPersister = (async (
 ): Promise<PostgresPersister> => {
   const cmdSql = await sql.reserve?.();
 
-  return createPostgreSqlPersister(
+  return createCustomPostgreSqlPersister(
     store,
     configOrStoreTableName,
     cmdSql?.unsafe,

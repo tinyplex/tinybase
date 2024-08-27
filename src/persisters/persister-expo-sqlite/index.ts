@@ -4,7 +4,7 @@ import type {
 } from '../../@types/persisters/persister-expo-sqlite/index.d.ts';
 import {
   UpdateListener,
-  createSqlitePersister,
+  createCustomSqlitePersister,
 } from '../common/database/sqlite.ts';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
@@ -22,7 +22,7 @@ export const createExpoSqlitePersister = ((
   onSqlCommand?: (sql: string, args?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): ExpoSqlitePersister =>
-  createSqlitePersister(
+  createCustomSqlitePersister(
     store,
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>

@@ -4,7 +4,7 @@ import type {
 } from '../../@types/persisters/persister-powersync/index.d.ts';
 import {
   UpdateListener,
-  createSqlitePersister,
+  createCustomSqlitePersister,
 } from '../common/database/sqlite.ts';
 import {AbstractPowerSyncDatabase} from '@powersync/common';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
@@ -20,7 +20,7 @@ export const createPowerSyncPersister = ((
   onIgnoredError?: (error: any) => void,
   orReplace: 0 | 1 = 1,
 ): PowerSyncPersister =>
-  createSqlitePersister(
+  createCustomSqlitePersister(
     store,
     configOrStoreTableName,
     async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
