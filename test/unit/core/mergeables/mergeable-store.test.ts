@@ -4,9 +4,9 @@ import type {
   MergeableContent,
   MergeableStore,
 } from 'tinybase';
-import {nullStamped, resetHlc, stamped, time} from '../common/mergeable.ts';
+import {nullStamped, resetHlc, stamped, time} from '../../common/mergeable.ts';
 import {createMergeableStore} from 'tinybase';
-import {pause} from '../common/other.ts';
+import {pause} from '../../common/other.ts';
 
 const permute = (arr: any[]): any[] => {
   if (arr.length == 1) {

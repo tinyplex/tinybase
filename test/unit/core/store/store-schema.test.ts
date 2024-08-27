@@ -12,9 +12,9 @@ import {
   expectChanges,
   expectChangesNoJson,
   expectNoChanges,
-} from '../common/expect.ts';
-import {StoreListener} from '../common/types.ts';
-import {createStoreListener} from '../common/listeners.ts';
+} from '../../common/expect.ts';
+import {StoreListener} from '../../common/types.ts';
+import {createStoreListener} from '../../common/listeners.ts';
 
 type AddMutator = (store: Store<any>) => void;
 
