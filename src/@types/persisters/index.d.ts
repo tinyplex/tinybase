@@ -169,6 +169,15 @@ export interface Persister<Persist extends Persists = Persists.StoreOnly> {
   //
 }
 
+/// DatabaseExecuteCommand
+export type DatabaseExecuteCommand = (
+  sql: string,
+  params?: any[],
+) => Promise<{[field: string]: any}[]>;
+
+/// DatabaseChangeListener
+export type DatabaseChangeListener = (tableName: string) => void;
+
 /// createCustomPersister
 export function createCustomPersister<
   ListeningHandle,
@@ -188,16 +197,7 @@ export function createCustomPersister<
   persist?: Persist,
 ): Persister<Persist>;
 
-// DatabaseExecuteCommand
-export type DatabaseExecuteCommand = (
-  sql: string,
-  args?: any[],
-) => Promise<{[field: string]: any}[]>;
-
-// DatabaseChangeListener
-export type DatabaseChangeListener = (tableName: string) => void;
-
-// createCustomSqlitePersister
+/// createCustomSqlitePersister
 export function createCustomSqlitePersister<
   ListenerHandle,
   Persist extends Persists = Persists.StoreOnly,
@@ -212,7 +212,7 @@ export function createCustomSqlitePersister<
   persist: Persist,
 ): Persister<Persist>;
 
-// createCustomPostgreSqlPersister
+/// createCustomPostgreSqlPersister
 export function createCustomPostgreSqlPersister<
   ListenerHandle,
   Persist extends Persists = Persists.StoreOnly,

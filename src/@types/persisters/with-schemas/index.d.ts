@@ -187,6 +187,15 @@ export interface Persister<
   getStats(): PersisterStats;
 }
 
+/// DatabaseExecuteCommand
+export type DatabaseExecuteCommand = (
+  sql: string,
+  params?: any[],
+) => Promise<{[field: string]: any}[]>;
+
+/// DatabaseChangeListener
+export type DatabaseChangeListener = (tableName: string) => void;
+
 /// createCustomPersister
 export function createCustomPersister<
   Schemas extends OptionalSchemas,
@@ -205,4 +214,40 @@ export function createCustomPersister<
   delPersisterListener: (listeningHandle: ListeningHandle) => void,
   onIgnoredError?: (error: any) => void,
   persist?: Persist,
+): Persister<Schemas, Persist>;
+
+/// createCustomSqlitePersister
+export function createCustomSqlitePersister<
+  Schemas extends OptionalSchemas,
+  ListenerHandle,
+  Persist extends Persists = Persists.StoreOnly,
+>(
+  store: PersistedStore<Schemas, Persist>,
+  configOrStoreTableName: DatabasePersisterConfig<Schemas> | string | undefined,
+  executeCommand: DatabaseExecuteCommand,
+  addChangeListener: (listener: DatabaseChangeListener) => ListenerHandle,
+  delChangeListener: (listeningHandle: ListenerHandle) => void,
+  onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
+  onIgnoredError: ((error: any) => void) | undefined,
+  persist: Persist,
+): Persister<Schemas, Persist>;
+
+/// createCustomPostgreSqlPersister
+export function createCustomPostgreSqlPersister<
+  Schemas extends OptionalSchemas,
+  ListenerHandle,
+  Persist extends Persists = Persists.StoreOnly,
+>(
+  store: PersistedStore<Schemas, Persist>,
+  configOrStoreTableName: DatabasePersisterConfig<Schemas> | string | undefined,
+  executeCommand: DatabaseExecuteCommand,
+  addChangeListener: (
+    channel: string,
+    listener: DatabaseChangeListener,
+  ) => Promise<ListenerHandle>,
+  delChangeListener: (changeListenerHandle: ListenerHandle) => void,
+  onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
+  onIgnoredError: ((error: any) => void) | undefined,
+  destroy: () => void,
+  persist: Persist,
 ): Persister<Schemas, Persist>;
