@@ -35,6 +35,7 @@ export const createSqliteWasmPersister = ((
     (): void => sqlite3.capi.sqlite3_update_hook(db, () => 0, 0),
     onSqlCommand,
     onIgnoredError,
+    () => 0,
     3, // StoreOrMergeableStore,
     db,
   ) as SqliteWasmPersister) as typeof createSqliteWasmPersisterDecl;

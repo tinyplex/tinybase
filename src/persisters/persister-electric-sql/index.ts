@@ -23,8 +23,8 @@ export const createElectricSqlPersister = ((
   createCustomSqlitePersister(
     store,
     configOrStoreTableName,
-    async (sql: string, params: any[] = []): Promise<IdObj<any>[]> =>
-      await electricClient.db.raw({sql, params}),
+    async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
+      await electricClient.db.raw({sql, args}),
     (listener: DatabaseChangeListener): UnsubscribeFunction =>
       electricClient.notifier.subscribeToDataChanges((notification) =>
         arrayForEach(
@@ -35,6 +35,7 @@ export const createElectricSqlPersister = ((
     (unsubscribeFunction: UnsubscribeFunction): any => unsubscribeFunction(),
     onSqlCommand,
     onIgnoredError,
+    () => 0,
     1, // StoreOnly,
     electricClient,
     'getElectricClient',

@@ -229,6 +229,7 @@ export function createCustomSqlitePersister<
   delChangeListener: (listenerHandle: ListenerHandle) => void,
   onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
+  destroy: () => void,
   persist: Persist,
 ): Persister<Schemas, Persist>;
 
