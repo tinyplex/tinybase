@@ -15,6 +15,6 @@ export function createLibSqlPersister(
   store: Store,
   client: Client,
   configOrStoreTableName?: DatabasePersisterConfig | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): LibSqlPersister;

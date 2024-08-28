@@ -41,7 +41,7 @@ export const createCustomPostgreSqlPersister = <
     listener: DatabaseChangeListener,
   ) => Promise<ListenerHandle>,
   delChangeListener: (changeListenerHandle: ListenerHandle) => void,
-  onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
+  onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   destroy: () => void,
   persist: Persist,

@@ -17,6 +17,6 @@ export function createExpoSqlitePersister(
   store: Store | MergeableStore,
   db: SQLiteDatabase,
   configOrStoreTableName?: DatabasePersisterConfig | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): ExpoSqlitePersister;

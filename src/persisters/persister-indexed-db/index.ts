@@ -54,7 +54,7 @@ export const createIndexedDbPersister = ((
 ): IndexedDbPersister => {
   const forObjectStores = async (
     forObjectStore: (objectStore: IDBObjectStore, arg: any) => Promise<any>,
-    args: any[] = [],
+    params: any[] = [],
     create: 0 | 1 = 0,
   ): Promise<[any, any]> =>
     promiseNew((resolve, reject) => {
@@ -81,7 +81,7 @@ export const createIndexedDbPersister = ((
               async (objectStoreName, index) =>
                 await forObjectStore(
                   transaction.objectStore(objectStoreName),
-                  args[index],
+                  params[index],
                 ),
             ),
           );

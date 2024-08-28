@@ -13,14 +13,14 @@ export const createLibSqlPersister = ((
   store: Store,
   client: Client,
   configOrStoreTableName?: DatabasePersisterConfig | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): LibSqlPersister =>
   createCustomSqlitePersister(
     store,
     configOrStoreTableName,
-    async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
-      (await client.execute({sql, args})).rows,
+    async (sql: string, params: any[] = []): Promise<IdObj<any>[]> =>
+      (await client.execute({sql, params})).rows,
     (): UnsubscribeFunction => () => 0,
     (unsubscribeFunction: UnsubscribeFunction): any => unsubscribeFunction(),
     onSqlCommand,

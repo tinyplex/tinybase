@@ -21,15 +21,15 @@ export const createSqlite3Persister = ((
   store: Store | MergeableStore,
   db: Database,
   configOrStoreTableName?: DatabasePersisterConfig | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Sqlite3Persister =>
   createCustomSqlitePersister(
     store,
     configOrStoreTableName,
-    async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
+    async (sql: string, params: any[] = []): Promise<IdObj<any>[]> =>
       await promiseNew((resolve, reject) =>
-        db.all(sql, args, (error, rows: IdObj<any>[]) =>
+        db.all(sql, params, (error, rows: IdObj<any>[]) =>
           error ? reject(error) : resolve(rows),
         ),
       ),

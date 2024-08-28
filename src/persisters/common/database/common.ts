@@ -23,12 +23,12 @@ export const PRAGMA_TABLE = 'pragma_table_';
 
 export const getWrappedCommand = (
   executeCommand: DatabaseExecuteCommand,
-  onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
+  onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
 ): DatabaseExecuteCommand =>
   onSqlCommand
-    ? async (sql, args) => {
-        onSqlCommand(sql, args);
-        return await executeCommand(sql, args);
+    ? async (sql, params) => {
+        onSqlCommand(sql, params);
+        return await executeCommand(sql, params);
       }
     : executeCommand;
 

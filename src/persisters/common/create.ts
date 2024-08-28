@@ -96,7 +96,7 @@ export const createCustomPersister = <
   onIgnoredError?: (error: any) => void,
   persist?: Persist,
   // undocumented:
-  extra: {[methodName: string]: (...args: any[]) => any} = {},
+  extra: {[methodName: string]: (...params: any[]) => any} = {},
   scheduleId = [],
 ): Persister<Persist> => {
   let loadSave = 0;

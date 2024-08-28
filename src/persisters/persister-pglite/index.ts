@@ -16,14 +16,14 @@ export const createPglitePersister = (async (
   store: Store | MergeableStore,
   pglite: PGlite,
   configOrStoreTableName?: DatabasePersisterConfig | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Promise<PglitePersister> => {
   return createCustomPostgreSqlPersister(
     store,
     configOrStoreTableName,
-    async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
-      (await pglite.query(sql, args)).rows as any,
+    async (sql: string, params: any[] = []): Promise<IdObj<any>[]> =>
+      (await pglite.query(sql, params)).rows as any,
     async (
       channel: string,
       listener: DatabaseChangeListener,

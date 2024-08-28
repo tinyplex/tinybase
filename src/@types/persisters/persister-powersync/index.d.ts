@@ -15,6 +15,6 @@ export function createPowerSyncPersister(
   store: Store,
   powerSync: AbstractPowerSyncDatabase,
   configOrStoreTableName?: DatabasePersisterConfig | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): PowerSyncPersister;

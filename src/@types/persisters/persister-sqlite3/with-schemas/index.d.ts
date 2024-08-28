@@ -24,6 +24,6 @@ export function createSqlite3Persister<Schemas extends OptionalSchemas>(
   store: Store<Schemas> | MergeableStore<Schemas>,
   db: Database,
   configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Sqlite3Persister<Schemas>;

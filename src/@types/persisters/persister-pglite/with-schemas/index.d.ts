@@ -24,6 +24,6 @@ export function createPglitePersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas> | MergeableStore<Schemas>,
   pglite: PGlite,
   configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Promise<PglitePersister<Schemas>>;

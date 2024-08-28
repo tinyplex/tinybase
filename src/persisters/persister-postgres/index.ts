@@ -15,7 +15,7 @@ export const createPostgresPersister = (async (
   store: Store | MergeableStore,
   sql: Sql,
   configOrStoreTableName?: DatabasePersisterConfig | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Promise<PostgresPersister> => {
   const commandSql = await sql.reserve?.();
