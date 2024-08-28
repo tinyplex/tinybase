@@ -62,6 +62,20 @@ DatabasePersisterConfig type for more details. (Note however that, like the
 SQLite Persisters, only the `json` mode is supported for MergeableStore
 instances, due to their additional CRDT metadata.)
 
+This release also exposes the new createCustomSqlitePersister function and
+createCustomPostgreSqlPersister function at the top level of the persister
+module. These can be used to build Persister objects against SQLite and
+PostgreSQL SDKs (or forks) that are not already included with TinyBase.
+
+### Minor breaking change
+
+It's very unlikely to affect most apps, but also be aware that the persisters
+module and synchronizers module are no longer bundled in the 'master' tinybase
+module. If you are using them (most likely because you have built a custom
+Persister or Synchronizer), you will need to update your imports accordingly to
+the standalone `tinybase/persisters` and `tinybase/synchronizers` versions of
+them. Apologies.
+
 Please provide feedback on this new release on GitHub!
 
 ## v5.1
