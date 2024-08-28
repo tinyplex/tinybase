@@ -17,6 +17,6 @@ export function createSqlite3Persister(
   store: Store | MergeableStore,
   db: Database,
   configOrStoreTableName?: DatabasePersisterConfig | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Sqlite3Persister;

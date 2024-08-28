@@ -15,14 +15,14 @@ export const createCrSqliteWasmPersister = ((
   store: Store,
   db: DB,
   configOrStoreTableName?: DatabasePersisterConfig | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): CrSqliteWasmPersister =>
   createCustomSqlitePersister(
     store,
     configOrStoreTableName,
-    async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
-      await db.execO(sql, args),
+    async (sql: string, params: any[] = []): Promise<IdObj<any>[]> =>
+      await db.execO(sql, params),
     (listener: DatabaseChangeListener): (() => void) =>
       db.onUpdate((_, _2, tableName) => listener(tableName)),
     (removeListener: () => void): void => removeListener(),

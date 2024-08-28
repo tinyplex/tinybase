@@ -245,11 +245,11 @@ export const getCommandFunctions = (
           collValues(mapGet(schemaMap, tableName)),
           (columnName) => columnName != rowIdColumnName,
         );
-        const args: any[] = [];
+        const params: any[] = [];
         const deleteRowIds: string[] = [];
         objToArray(content ?? {}, (row, rowId) => {
           arrayPush(
-            args,
+            params,
             rowId,
             ...arrayMap(changingColumnNames, (cellId) =>
               encode ? encode(row?.[cellId]) : row?.[cellId],
@@ -262,7 +262,7 @@ export const getCommandFunctions = (
           tableName,
           rowIdColumnName,
           changingColumnNames,
-          args,
+          params,
           orReplace,
         );
         await databaseExecuteCommand(
@@ -303,7 +303,7 @@ const upsert = async (
   tableName: string,
   rowIdColumnName: string,
   changingColumnNames: string[],
-  args: any[],
+  params: any[],
   orReplace: 0 | 1 = 0,
 ) =>
   await executeCommand(
@@ -320,7 +320,7 @@ const upsert = async (
         ),
       ) +
       ')VALUES' +
-      getUpsertPlaceholders(args, size(changingColumnNames) + 1) +
+      getUpsertPlaceholders(params, size(changingColumnNames) + 1) +
       (orReplace
         ? EMPTY_STRING
         : 'ON CONFLICT(' +
@@ -334,7 +334,7 @@ const upsert = async (
             ),
             COMMA,
           )),
-    arrayMap(args, (arg) => arg ?? null),
+    arrayMap(params, (param) => param ?? null),
   );
 
 const getUpsertPlaceholders = (array: any[], columnCount: number) =>

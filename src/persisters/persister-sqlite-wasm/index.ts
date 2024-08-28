@@ -16,15 +16,15 @@ export const createSqliteWasmPersister = ((
   sqlite3: any,
   db: any,
   configOrStoreTableName?: DatabasePersisterConfig | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): SqliteWasmPersister =>
   createCustomSqlitePersister(
     store,
     configOrStoreTableName,
-    async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
+    async (sql: string, params: any[] = []): Promise<IdObj<any>[]> =>
       db
-        .exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'})
+        .exec(sql, {bind: params, rowMode: 'object', returnValue: 'resultRows'})
         .map((row: IdObj<any>) => ({...row})),
     (listener: DatabaseChangeListener): void =>
       sqlite3.capi.sqlite3_update_hook(

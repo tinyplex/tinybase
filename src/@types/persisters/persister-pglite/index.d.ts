@@ -17,6 +17,6 @@ export function createPglitePersister(
   store: Store | MergeableStore,
   pglite: PGlite,
   configOrStoreTableName?: DatabasePersisterConfig | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): Promise<PglitePersister>;

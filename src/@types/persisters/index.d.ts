@@ -207,7 +207,7 @@ export function createCustomSqlitePersister<
   executeCommand: DatabaseExecuteCommand,
   addChangeListener: (listener: DatabaseChangeListener) => ListenerHandle,
   delChangeListener: (listeningHandle: ListenerHandle) => void,
-  onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
+  onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   persist: Persist,
 ): Persister<Persist>;
@@ -225,7 +225,7 @@ export function createCustomPostgreSqlPersister<
     listener: DatabaseChangeListener,
   ) => Promise<ListenerHandle>,
   delChangeListener: (changeListenerHandle: ListenerHandle) => void,
-  onSqlCommand: ((sql: string, args?: any[]) => void) | undefined,
+  onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   destroy: () => void,
   persist: Persist,

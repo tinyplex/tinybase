@@ -16,15 +16,17 @@ export const createPowerSyncPersister = ((
   store: Store,
   powerSync: AbstractPowerSyncDatabase,
   configOrStoreTableName?: DatabasePersisterConfig | string,
-  onSqlCommand?: (sql: string, args?: any[]) => void,
+  onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
   orReplace: 0 | 1 = 1,
 ): PowerSyncPersister =>
   createCustomSqlitePersister(
     store,
     configOrStoreTableName,
-    async (sql: string, args: any[] = []): Promise<IdObj<any>[]> =>
-      powerSync.execute(sql, args).then((result) => result.rows?._array ?? []),
+    async (sql: string, params: any[] = []): Promise<IdObj<any>[]> =>
+      powerSync
+        .execute(sql, params)
+        .then((result) => result.rows?._array ?? []),
     (listener: DatabaseChangeListener): AbortController => {
       const abortController = new AbortController();
       const onChange = powerSync.onChange({
