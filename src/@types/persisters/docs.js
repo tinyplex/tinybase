@@ -1334,6 +1334,16 @@
   /// Persister.getStats
 }
 /**
+ * @category Creation
+ * @since v5.2.0
+ */
+/// DatabaseExecuteCommand
+/**
+ * @category Creation
+ * @since v5.2.0
+ */
+/// DatabaseChangeListener
+/**
  * The createCustomPersister function creates a Persister object that you can
  * configure to persist the Store in any way you wish.
  *
@@ -1489,3 +1499,13 @@
  * @since v1.0.0
  */
 /// createCustomPersister
+/**
+ * @category Creation
+ * @since v5.2.0
+ */
+/// createCustomSqlitePersister
+/**
+ * @category Creation
+ * @since v5.2.0
+ */
+/// createCustomPostgreSqlPersister
