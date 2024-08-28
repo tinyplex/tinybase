@@ -1334,11 +1334,36 @@
   /// Persister.getStats
 }
 /**
+ * The DatabaseExecuteCommand type describes a function that is used to execute
+ * commands against a database.
+ *
+ * This is only used when developing custom database-oriented Persisters, and
+ * most TinyBase users will not need to be particularly aware of it.
+ *
+ * It is modelled around the common pattern of database SDKs being able to
+ * execute commands with parameters, and have those (probably asynchronous)
+ * command executions return an array of objects, where each object represents a
+ * row.
+ * @param sql The SQL string to execute, which may include positional parameter
+ * placeholders.
+ * @param params An array of parameters to pass to the SQL command.
+ * @returns An promise of an array of objects, where each object represents a
+ * database result row (if the command was a query).
  * @category Creation
  * @since v5.2.0
  */
 /// DatabaseExecuteCommand
 /**
+ * The DatabaseChangeListener type describes a function that is used to listen
+ * for changes to the data in a database.
+ *
+ * This is only used when developing custom database-oriented Persisters, and
+ * most TinyBase users will not need to be particularly aware of it.
+ *
+ * This function should be called with the name of a relevant table that has
+ * changed, possible through the use of events, triggers, or notifications,
+ * dependent on the specific database implementation.
+ * @param tableName The name of the table that has changed.
  * @category Creation
  * @since v5.2.0
  */
@@ -1346,6 +1371,9 @@
 /**
  * The createCustomPersister function creates a Persister object that you can
  * configure to persist the Store in any way you wish.
+ *
+ * This is only used when developing custom Persisters, and most TinyBase users
+ * will not need to be particularly aware of it.
  *
  * As well as providing a reference to the Store to persist, you must provide
  * functions that handle how to fetch, write, and listen to, the persistence
@@ -1500,11 +1528,81 @@
  */
 /// createCustomPersister
 /**
+ * The createCustomSqlitePersister function creates a Persister object that you
+ * can configure to persist the Store to a SQLite database.
+ *
+ * This is only used when developing custom database-oriented Persisters, and
+ * most TinyBase users will not need to be particularly aware of it.
+ *
+ * All of the TinyBase SQLite-oriented Persister functions use this function
+ * under the covers, and so you may wish to look at those implementations for
+ * ideas on how to build your own Persister type, and as functional examples.
+ * Examine the implementation of the createSqlite3Persister function as a good
+ * starting point, for example.
+ * @param store The Store to persist.
+ * @param configOrStoreTableName A DatabasePersisterConfig object, or a string
+ * that will be used as the name of the Store's table in the database.
+ * @param executeCommand A function that will execute a command against the
+ * database.
+ * @param addChangeListener A function that will register a listener for changes
+ * to the database.
+ * @param delChangeListener A function that will unregister the listener for
+ * changes to the database.
+ * @param onSqlCommand A function that will be called for each SQL command
+ * executed against the database.
+ * @param onIgnoredError A function that will be called for errors that are
+ * ignored by the Persister.
+ * @param destroy A function that will be called to perform any extra clean up
+ * on the Persister.
+ * @param persist An integer from the Persists enum to indicate which types of
+ * Store are supported by this Persister: `1` indicates only a regular Store is
+ * supported, `2` indicates only a MergeableStore is supported, and `3`
+ * indicates that both Store and MergeableStore are supported.
+ * @param thing A reference to the database or connection that can be returned
+ * with a method, by default called `getDb`.
+ * @param getThing An optional string that will be used to get the reference to
+ * the database or connection from the Persister, defaulting to `getDb`.
+ * @returns A reference to the new SQLite-oriented Persister object.
  * @category Creation
  * @since v5.2.0
  */
 /// createCustomSqlitePersister
 /**
+ * The createCustomSqlitePersister function creates a Persister object that you
+ * can configure to persist the Store to a PostgreSQL database.
+ *
+ * This is only used when developing custom database-oriented Persisters, and
+ * most TinyBase users will not need to be particularly aware of it.
+ *
+ * All of the TinyBase PostgreSQL-oriented Persister functions use this function
+ * under the covers, and so you may wish to look at those implementations for
+ * ideas on how to build your own Persister type, and as functional
+ * examples. Examine the implementation of the createPostgresPersister function
+ * as a good starting point, for example.
+ * @param store The Store to persist.
+ * @param configOrStoreTableName A DatabasePersisterConfig object, or a string
+ * that will be used as the name of the Store's table in the database.
+ * @param executeCommand A function that will execute a command against the
+ * database.
+ * @param addChangeListener A function that will register a listener for changes
+ * to the database.
+ * @param delChangeListener A function that will unregister the listener for
+ * changes to the database.
+ * @param onSqlCommand A function that will be called for each SQL command
+ * executed against the database.
+ * @param onIgnoredError A function that will be called for errors that are
+ * ignored by the Persister.
+ * @param destroy A function that will be called to perform any extra clean up
+ * on the Persister.
+ * @param persist An integer from the Persists enum to indicate which types of
+ * Store are supported by this Persister: `1` indicates only a regular Store is
+ * supported, `2` indicates only a MergeableStore is supported, and `3`
+ * indicates that both Store and MergeableStore are supported.
+ * @param thing A reference to the database or connection that can be returned
+ * with a method, by default called `getDb`.
+ * @param getThing An optional string that will be used to get the reference to
+ * the database or connection from the Persister, defaulting to `getDb`.
+ * @returns A reference to the new Persister object.
  * @category Creation
  * @since v5.2.0
  */
