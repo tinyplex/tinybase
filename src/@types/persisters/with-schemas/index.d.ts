@@ -199,7 +199,7 @@ export type DatabaseChangeListener = (tableName: string) => void;
 /// createCustomPersister
 export function createCustomPersister<
   Schemas extends OptionalSchemas,
-  ListeningHandle,
+  ListenerHandle,
   Persist extends Persists = Persists.StoreOnly,
 >(
   store: PersistedStore<Schemas, Persist>,
@@ -210,8 +210,8 @@ export function createCustomPersister<
   ) => Promise<void>,
   addPersisterListener: (
     listener: PersisterListener<Schemas, Persist>,
-  ) => ListeningHandle | Promise<ListeningHandle>,
-  delPersisterListener: (listeningHandle: ListeningHandle) => void,
+  ) => ListenerHandle | Promise<ListenerHandle>,
+  delPersisterListener: (listenerHandle: ListenerHandle) => void,
   onIgnoredError?: (error: any) => void,
   persist?: Persist,
 ): Persister<Schemas, Persist>;
@@ -226,7 +226,7 @@ export function createCustomSqlitePersister<
   configOrStoreTableName: DatabasePersisterConfig<Schemas> | string | undefined,
   executeCommand: DatabaseExecuteCommand,
   addChangeListener: (listener: DatabaseChangeListener) => ListenerHandle,
-  delChangeListener: (listeningHandle: ListenerHandle) => void,
+  delChangeListener: (listenerHandle: ListenerHandle) => void,
   onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   persist: Persist,
@@ -245,7 +245,7 @@ export function createCustomPostgreSqlPersister<
     channel: string,
     listener: DatabaseChangeListener,
   ) => Promise<ListenerHandle>,
-  delChangeListener: (changeListenerHandle: ListenerHandle) => void,
+  delChangeListener: (listenerHandle: ListenerHandle) => void,
   onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   destroy: () => void,

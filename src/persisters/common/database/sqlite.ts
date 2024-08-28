@@ -34,7 +34,7 @@ export const createCustomSqlitePersister = <
   configOrStoreTableName: DatabasePersisterConfig | string | undefined,
   rawExecuteCommand: DatabaseExecuteCommand,
   addChangeListener: (listener: DatabaseChangeListener) => ListenerHandle,
-  delChangeListener: (changeListenerHandle: ListenerHandle) => void,
+  delChangeListener: (listenerHandle: ListenerHandle) => void,
   onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   persist: Persist,
