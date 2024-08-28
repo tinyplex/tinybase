@@ -80,7 +80,7 @@ const getStoreFunctions = (
       : errorNew('Store type not supported by this Persister');
 
 export const createCustomPersister = <
-  ListeningHandle,
+  ListenerHandle,
   Persist extends PersistsEnum = PersistsEnum.StoreOnly,
 >(
   store: PersistedStore<Persist>,
@@ -91,8 +91,8 @@ export const createCustomPersister = <
   ) => Promise<void>,
   addPersisterListener: (
     listener: PersisterListener<Persist>,
-  ) => ListeningHandle | Promise<ListeningHandle>,
-  delPersisterListener: (listeningHandle: ListeningHandle) => void,
+  ) => ListenerHandle | Promise<ListenerHandle>,
+  delPersisterListener: (listenerHandle: ListenerHandle) => void,
   onIgnoredError?: (error: any) => void,
   persist?: Persist,
   // undocumented:
@@ -103,7 +103,7 @@ export const createCustomPersister = <
   let loads = 0;
   let saves = 0;
   let action;
-  let autoLoadHandle: ListeningHandle | undefined;
+  let autoLoadHandle: ListenerHandle | undefined;
   let autoSaveListenerId: Id | undefined;
 
   mapEnsure(scheduleRunning, scheduleId, () => 0);
