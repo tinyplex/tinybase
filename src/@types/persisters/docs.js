@@ -20,23 +20,28 @@
  * |Sqlite3Persister|SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)|Yes|Yes*
  * |SqliteWasmPersister|SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)|Yes|Yes*
  * |ExpoSqlitePersister|SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)|Yes|Yes*
+ * |PostgresPersister|PostgreSQL, via [postgres](https://github.com/porsager/postgres)|Yes|Yes*
+ * |PglitePersister|PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)|Yes|Yes*
  * |CrSqliteWasmPersister|SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)|Yes|No
  * |ElectricSqlPersister|Electric SQL, via [electric-sql](https://github.com/electric-sql/electric)|Yes|No
  * |LibSqlPersister|LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)|Yes|No
  * |PowerSyncPersister|PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)|Yes|No
- * |PostgresPersister|PostgreSQL, via [postgres](https://github.com/porsager/postgres)|Yes|No
- * |PglitePersister|PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)|Yes|No
  * |YjsPersister|Yjs CRDTs, via [yjs](https://github.com/yjs/yjs)|Yes|No
  * |AutomergePersister|Automerge CRDTs, via [automerge-repo](https://github.com/automerge/automerge-repo)|Yes|No
  * |PartyKitPersister|[PartyKit](https://www.partykit.io/), via the persister-partykit-server module|Yes|No|
  *
- * (*) Note that SQLite-based Persisters can currently only persist
- * MergeableStore data when using the JSON-based DpcJson mode, and not in a
- * tabular fashion.
+ * (*) Note that SQLite- and PostgreSQL-based Persisters can currently only
+ * persist MergeableStore data when used with the JSON-based DpcJson mode, and
+ * not when using the DpcTabular mode.
  *
  * Since persistence requirements can be different for every app, the
  * createCustomPersister function in this module can also be used to easily
  * create a fully customized way to save and load Store data.
+ *
+ * Similarly, the createCustomSqlitePersister function and
+ * createCustomPostgresPersister function can be used to build Persister objects
+ * against SQLite and PostgreSQL SDKs (or forks) that are not already included
+ * with TinyBase.
  * @see Persistence guides
  * @see Countries demo
  * @see Todo App demos
