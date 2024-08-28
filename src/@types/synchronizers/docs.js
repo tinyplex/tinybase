@@ -405,10 +405,7 @@
  * MergeableStore objects together
  *
  * ```js
- * import {
- *   createMergeableStore,
- *   getUniqueId,
- * } from 'tinybase';
+ * import {createMergeableStore, getUniqueId} from 'tinybase';
  * import {createCustomSynchronizer} from 'tinybase/synchronizers';
  *
  * const bus1 = [];

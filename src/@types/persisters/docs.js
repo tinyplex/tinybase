@@ -1464,10 +1464,7 @@
  *
  * ```js
  * import {Persists, createCustomPersister} from 'tinybase/persisters';
- * import {
- *   createMergeableStore,
- *   createStore,
- * } from 'tinybase';
+ * import {createMergeableStore, createStore} from 'tinybase';
  *
  * let persistedJson;
  * const createJsonPersister = (storeOrMergeableStore) =>
