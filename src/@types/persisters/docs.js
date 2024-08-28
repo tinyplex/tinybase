@@ -39,7 +39,7 @@
  * create a fully customized way to save and load Store data.
  *
  * Similarly, the createCustomSqlitePersister function and
- * createCustomPostgresPersister function can be used to build Persister objects
+ * createCustomPostgreSqlPersister function can be used to build Persister objects
  * against SQLite and PostgreSQL SDKs (or forks) that are not already included
  * with TinyBase.
  * @see Persistence guides
