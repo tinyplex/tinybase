@@ -50,7 +50,7 @@
 > TinyBase has [native CRDT](#synchronize-between-devices) support, meaning that
 > you can deterministically [synchronize](/guides/synchronization/) and merge
 > data across multiple sources, clients, and servers. And although TinyBase is
-> an in-memory data store, but you can easily
+> an in-memory data store, you can easily
 > [persist](#persist-to-storage-databases-more) your data to file, [browser
 > storage](/api/persister-browser), [IndexedDB](/api/persister-indexed-db),
 > [SQLite or PostgreSQL databases](/guides/persistence/database-persistence/),
