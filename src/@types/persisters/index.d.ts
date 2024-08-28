@@ -211,6 +211,8 @@ export function createCustomSqlitePersister<
   onIgnoredError: ((error: any) => void) | undefined,
   destroy: () => void,
   persist: Persist,
+  thing: any,
+  getThing?: string,
 ): Persister<Persist>;
 
 /// createCustomPostgreSqlPersister
@@ -230,4 +232,6 @@ export function createCustomPostgreSqlPersister<
   onIgnoredError: ((error: any) => void) | undefined,
   destroy: () => void,
   persist: Persist,
+  thing: any,
+  getThing?: string,
 ): Persister<Persist>;
