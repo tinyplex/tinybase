@@ -28,6 +28,7 @@ export const createCrSqliteWasmPersister = ((
     (removeListener: () => void): void => removeListener(),
     onSqlCommand,
     onIgnoredError,
+    () => 0,
     1, // StoreOnly,
     db,
   ) as CrSqliteWasmPersister) as typeof createCrSqliteWasmPersisterDecl;
