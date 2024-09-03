@@ -145,7 +145,7 @@ export const createTabularPersister = <
       return !objIsEmpty(tables) || !isUndefined(values)
         ? [tables as Tables, values as Values]
         : undefined;
-    })) as any; // TODO
+    })) as any;
 
   const setPersisted = async (
     getContent: () => PersistedContent<Persist>,
@@ -154,10 +154,10 @@ export const createTabularPersister = <
     await transaction(async () => {
       await refreshSchema();
       if (!isUndefined(changes)) {
-        await saveTables(changes[0] as any, true); // TODO
-        await saveValues(changes[1] as any, true); // TODO
+        await saveTables(changes[0] as any, true);
+        await saveValues(changes[1] as any, true);
       } else {
-        const [tables, values] = getContent() as any; // TODO
+        const [tables, values] = getContent() as any;
         await saveTables(tables);
         await saveValues(values);
       }

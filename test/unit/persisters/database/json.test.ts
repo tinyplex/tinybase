@@ -505,9 +505,6 @@ describe.each(Object.entries(ALL_VARIANTS))(
       });
 
       test('autoLoad, table dropped and recreated', async () => {
-        if (name == 'pglite') {
-          return;
-        }
         await setDatabase(db, {
           tinybase: [
             'CREATE TABLE "tinybase" ("_id" ' +
