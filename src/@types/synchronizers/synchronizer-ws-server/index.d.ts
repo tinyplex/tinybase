@@ -32,21 +32,21 @@ export type WsServerStats = {
 /// WsServer
 export interface WsServer {
   /// WsServer.getWebSocketServer
-  getWebSocketServer: () => WebSocketServer;
+  getWebSocketServer(): WebSocketServer;
   /// WsServer.getPathIds
-  getPathIds: () => Ids;
+  getPathIds(): Ids;
   /// WsServer.getClientIds
-  getClientIds: (pathId: Id) => Ids;
+  getClientIds(pathId: Id): Ids;
   /// WsServer.addPathIdsListener
-  addPathIdsListener: (listener: PathIdsListener) => Id;
+  addPathIdsListener(listener: PathIdsListener): Id;
   /// WsServer.addClientIdsListener
-  addClientIdsListener: (pathId: IdOrNull, listener: ClientIdsListener) => Id;
+  addClientIdsListener(pathId: IdOrNull, listener: ClientIdsListener): Id;
   /// WsServer.delListener
   delListener(listenerId: Id): WsServer;
   /// WsServer.getStats
-  getStats: () => WsServerStats;
+  getStats(): WsServerStats;
   /// WsServer.destroy
-  destroy: () => void;
+  destroy(): void;
 }
 
 /// createWsServer
