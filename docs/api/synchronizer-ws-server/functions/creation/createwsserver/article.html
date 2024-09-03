@@ -35,9 +35,9 @@ console<span class="punctuation">.</span><span class="function">log</span><span 
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>clientStore2<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/getter/gettables/">getTables</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}</span>
 
-synchronizer1<span class="punctuation">.</span><span class="function"><a href="/api/metrics/interfaces/metrics/metrics/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
-synchronizer2<span class="punctuation">.</span><span class="function"><a href="/api/metrics/interfaces/metrics/metrics/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
-server<span class="punctuation">.</span><span class="function"><a href="/api/metrics/interfaces/metrics/metrics/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+synchronizer1<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+synchronizer2<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+server<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre><p>This longer example creates a <a href="/api/synchronizer-ws-server/interfaces/server/wsserver/"><code>WsServer</code></a> that persists a <a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a> to file that is synchronized with two clients on a shared path. Later, when a third client connects, it picks up the data the previous two were using.</p><pre><code><span class="keyword">import</span> <span class="punctuation">{</span>WebSocketServer<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'ws'</span><span class="punctuation">;</span>
 <span class="keyword">import</span> <span class="punctuation">{</span>createFilePersister<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/persisters/persister-file'</span><span class="punctuation">;</span>
 <span class="keyword">import</span> <span class="punctuation">{</span>createMergeableStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
@@ -81,8 +81,8 @@ console<span class="punctuation">.</span><span class="function">log</span><span 
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>clientStore2<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/getter/gettables/">getTables</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}</span>
 
-synchronizer1<span class="punctuation">.</span><span class="function"><a href="/api/metrics/interfaces/metrics/metrics/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
-synchronizer2<span class="punctuation">.</span><span class="function"><a href="/api/metrics/interfaces/metrics/metrics/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+synchronizer1<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+synchronizer2<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
 <span class="comment">// ...</span>
 <span class="comment">// Client 3 connects later</span>
@@ -97,8 +97,8 @@ synchronizer2<span class="punctuation">.</span><span class="function"><a href="/
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>clientStore3<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/getter/gettables/">getTables</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}</span>
 
-synchronizer3<span class="punctuation">.</span><span class="function"><a href="/api/metrics/interfaces/metrics/metrics/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
-server<span class="punctuation">.</span><span class="function"><a href="/api/metrics/interfaces/metrics/metrics/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+synchronizer3<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+server<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
 <span class="comment">// Remove file for the purposes of this demo.</span>
 <span class="function">rmSync</span><span class="punctuation">(</span><span class="string">'petShop.json'</span><span class="punctuation">)</span><span class="punctuation">;</span>
@@ -133,8 +133,8 @@ clientStore<span class="punctuation">.</span><span class="function"><a href="/ap
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>clientStore<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/getter/getcontent/">getContent</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> [{pets: {fido: {species: 'dog'}}}, {"pathId": "petShop"}]</span>
 
-synchronizer<span class="punctuation">.</span><span class="function"><a href="/api/metrics/interfaces/metrics/metrics/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
-server<span class="punctuation">.</span><span class="function"><a href="/api/metrics/interfaces/metrics/metrics/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+synchronizer<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+server<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
 <span class="comment">// Remove file for the purposes of this demo.</span>
 <span class="function">rmSync</span><span class="punctuation">(</span><span class="string">'petShop.json'</span><span class="punctuation">)</span><span class="punctuation">;</span>
@@ -157,6 +157,6 @@ webSocketServer<span class="punctuation">.</span><span class="function">on</span
 <span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> 'Client address: ::1'</span>
 
-synchronizer<span class="punctuation">.</span><span class="function"><a href="/api/metrics/interfaces/metrics/metrics/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
-server<span class="punctuation">.</span><span class="function"><a href="/api/metrics/interfaces/metrics/metrics/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+synchronizer<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+server<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre></section><section class="s2"><h2>Since</h2><p>v5.0.0</p></section></section>
