@@ -10,6 +10,7 @@
   'use strict';
 
   const getTypeOf = (thing) => typeof thing;
+  const TINYBASE = 'tinybase';
   const EMPTY_STRING = '';
   const STRING = getTypeOf(EMPTY_STRING);
   const FUNCTION = getTypeOf(getTypeOf);
@@ -33,6 +34,7 @@
   const VALUES = VALUE + 's';
   const VALUE_IDS = VALUE + IDS;
 
+  const GLOBAL = globalThis;
   const isUndefined = (thing) => thing == void 0;
   const ifNotUndefined = (value, then, otherwise) =>
     isUndefined(value) ? otherwise?.() : then(value);
@@ -66,6 +68,7 @@
     );
   const objIds = object.keys;
   const objGet = (obj, id) => ifNotUndefined(obj, (obj2) => obj2[id]);
+  const objHas = (obj, id) => id in obj;
   const objDel = (obj, id) => {
     delete obj[id];
     return obj;
@@ -84,13 +87,21 @@
       )
     );
   };
+  const objEnsure = (obj, id, getDefaultValue) => {
+    if (!objHas(obj, id)) {
+      obj[id] = getDefaultValue();
+    }
+    return obj[id];
+  };
 
   const {
     createContext,
     useContext: useContext$1,
     useEffect: useEffect$1,
   } = React;
-  const Context = createContext([]);
+  const Context = objEnsure(GLOBAL, TINYBASE + '_uirc', () =>
+    createContext([]),
+  );
   const useThing = (id, offset) => {
     const contextValue = useContext$1(Context);
     return isUndefined(id)
