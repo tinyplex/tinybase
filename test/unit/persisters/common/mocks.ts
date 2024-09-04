@@ -1,22 +1,23 @@
 import type {
   Changes,
   Content,
-  DatabasePersisterConfig,
   Id,
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-  Persister,
-  PersisterListener,
-  Persists,
-  Receive,
   Store,
-  Synchronizer,
   Tables,
   Values,
 } from 'tinybase';
+import type {
+  DatabasePersisterConfig,
+  Persister,
+  PersisterListener,
+  Persists,
+} from 'tinybase/persisters';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {GetLocationMethod, Persistable} from './other.ts';
+import type {Receive, Synchronizer} from 'tinybase/synchronizers';
 import {Doc as YDoc, Map as YMap} from 'yjs';
 import {
   createLocalPersister,

@@ -3,7 +3,8 @@ import {
   resetNetwork,
 } from '../common/automerge-adaptor.ts';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
-import type {Persister, Store} from 'tinybase';
+import type {Persister} from 'tinybase/persisters';
+import type {Store} from 'tinybase';
 import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
 import {createStore} from 'tinybase';
 import {pause} from '../common/other.ts';

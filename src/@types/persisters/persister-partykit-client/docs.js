@@ -43,7 +43,7 @@
    * then gets the PartySocket back out again.
    *
    * ```js yolo
-   * import PartySocket from 'partysocket';
+   * import {PartySocket} from 'partysocket';
    * import {createPartyKitPersister} from 'tinybase/persisters/persister-partykit-client';
    * import {createStore} from 'tinybase';
    *
@@ -162,7 +162,7 @@
  * browser's IndexedDB storage.
  *
  * ```js yolo
- * import PartySocket from 'partysocket';
+ * import {PartySocket} from 'partysocket';
  * import {createPartyKitPersister} from 'tinybase/persisters/persister-partykit-client';
  * import {createStore} from 'tinybase';
  *

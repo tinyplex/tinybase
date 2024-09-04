@@ -7,10 +7,8 @@ import type {
   MapCell,
   MapValue,
   MergeableStore,
-  Persister,
   Row,
   Store,
-  Synchronizer,
   Table,
   Tables,
   Value,
@@ -151,6 +149,8 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase';
+import type {Persister} from 'tinybase/persisters';
+import type {Synchronizer} from 'tinybase/synchronizers';
 import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import {jest} from '@jest/globals';

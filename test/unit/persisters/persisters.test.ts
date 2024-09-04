@@ -2,7 +2,6 @@
 
 import 'fake-indexeddb/auto';
 import {GetLocationMethod, Persistable, nextLoop} from './common/other.ts';
-import type {Persister, Store} from 'tinybase';
 import {
   getMockDatabases,
   mockAutomerge,
@@ -20,6 +19,8 @@ import {
   mockYjs,
 } from './common/mocks.ts';
 import {ALL_VARIANTS} from './common/databases.ts';
+import type {Persister} from 'tinybase/persisters';
+import type {Store} from 'tinybase';
 import {createCustomPersister} from 'tinybase/persisters';
 import {createStore} from 'tinybase';
 import {join} from 'path';

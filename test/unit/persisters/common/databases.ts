@@ -1,11 +1,6 @@
 import 'fake-indexeddb/auto';
 import {Client, createClient} from '@libsql/client';
-import {
-  type DatabasePersisterConfig,
-  type Persister,
-  type Store,
-  getUniqueId,
-} from 'tinybase';
+import type {DatabasePersisterConfig, Persister} from 'tinybase/persisters';
 import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
 import type {
   QueryResult,
@@ -13,6 +8,7 @@ import type {
   WatchOnChangeEvent,
 } from '@powersync/common';
 import type {ReservedSql, Sql} from 'postgres';
+import {type Store, getUniqueId} from 'tinybase';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import sqlite3, {Database} from 'sqlite3';
 import {DbSchema} from 'electric-sql/client/model';

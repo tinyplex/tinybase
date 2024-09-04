@@ -1,6 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
 
-import type {Content, MergeableStore, Receive, Synchronizer} from 'tinybase';
+import type {Content, MergeableStore} from 'tinybase';
+import type {Receive, Synchronizer} from 'tinybase/synchronizers';
 import {WebSocket, WebSocketServer} from 'ws';
 import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createBroadcastChannelSynchronizer} from 'tinybase/synchronizers/synchronizer-broadcast-channel';

@@ -6,7 +6,6 @@ import type {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-  Persister,
 } from 'tinybase';
 import {GetLocationMethod, Persistable, nextLoop} from './common/other.ts';
 import {Persists, createCustomPersister} from 'tinybase/persisters';
@@ -23,6 +22,7 @@ import {
   mockSessionStorage,
 } from './common/mocks.ts';
 import {MERGEABLE_VARIANTS} from './common/databases.ts';
+import type {Persister} from 'tinybase/persisters';
 import {pause} from '../common/other.ts';
 import {resetHlc} from '../common/mergeable.ts';
 
