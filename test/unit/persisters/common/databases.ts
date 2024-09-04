@@ -154,7 +154,7 @@ export const SQLITE_MERGEABLE_VARIANTS: Variants = {
         ),
       ),
     async ([db]: [Database, string]) => db.close(),
-    undefined,
+    20,
     undefined,
     undefined,
     true,
