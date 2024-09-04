@@ -12,9 +12,9 @@ import type {
   useRelationships as useRelationshipsDecl,
   useStore as useStoreDecl,
 } from '../@types/ui-react/index.d.ts';
+import {GLOBAL, isString, isUndefined} from '../common/other.ts';
 import type {Id, Ids} from '../@types/common/index.d.ts';
-import {IdObj, objGet, objIds} from '../common/obj.ts';
-import {isString, isUndefined} from '../common/other.ts';
+import {IdObj, objEnsure, objGet, objIds} from '../common/obj.ts';
 import type {Checkpoints} from '../@types/checkpoints/index.d.ts';
 import type {Indexes} from '../@types/indexes/index.d.ts';
 import type {Metrics} from '../@types/metrics/index.d.ts';
@@ -22,6 +22,7 @@ import type {Queries} from '../@types/queries/index.d.ts';
 import React from 'react';
 import type {Relationships} from '../@types/relationships/index.d.ts';
 import type {Store} from '../@types/store/index.d.ts';
+import {TINYBASE} from '../common/strings.ts';
 
 const {createContext, useContext, useEffect} = React;
 
@@ -42,7 +43,11 @@ type ContextValue = [
   delExtraStore?: (id: string) => void,
 ];
 
-export const Context = createContext<ContextValue>([]);
+export const Context: React.Context<ContextValue> = objEnsure(
+  GLOBAL,
+  TINYBASE + '_uirc',
+  () => createContext<ContextValue>([]),
+);
 
 const useThing = <
   Thing extends
