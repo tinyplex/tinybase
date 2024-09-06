@@ -168,7 +168,8 @@
   const OPEN_VALUE = OPEN_CELL;
   const EDITABLE_CELL = 'editable';
   const getUniqueId = (...args) => jsonStringWithMap(args);
-  const sortedIdsMap = (ids, callback) => arrayMap(arraySort(ids), callback);
+  const sortedIdsMap = (ids, callback) =>
+    arrayMap(arraySort([...ids]), callback);
   const useEditable = (uniqueId, s) => [
     !!uiReact.useCell(STATE_TABLE, uniqueId, EDITABLE_CELL, s),
     useCallback$1(
