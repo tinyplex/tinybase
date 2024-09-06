@@ -77,3 +77,9 @@ export const arrayUnshift = <Value>(
 
 export const arrayShift = <Value>(array: Value[]): Value | undefined =>
   array.shift();
+
+export const arrayWith = <Value>(
+  array: Value[],
+  index: number,
+  value: Value,
+): Value[] => array.with(index, value);
