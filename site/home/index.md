@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#v5-2'><em>NEW!</em> v5.2 release</a>
+<a href='/guides/releases/#v5-3'><em>NEW!</em> v5.3 release</a>
 
-<span id="one-with">"The One With PostgreSQL!"</span>
+<span id="one-with">"Adding some missing APIs!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
