@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 
+import * as UiReact from 'tinybase/ui-react/with-schemas';
 import type {
   BackwardCheckpointsProps,
   CellProps,
@@ -65,6 +66,8 @@ import {
   useSetTablesCallback,
   useSliceIds,
   useSliceRowIds,
+  useStore,
+  useStoreIds,
   useTable,
   useTables,
 } from 'tinybase/ui-react';
@@ -87,7 +90,12 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase';
+import type {NoSchemas} from 'tinybase/with-schemas';
+import {createStore as createStore2} from 'tinybase/with-schemas';
 import {jest} from '@jest/globals';
+
+const {Provider: Provider2, useStore: useStore2} =
+  UiReact as UiReact.WithSchemas<NoSchemas>;
 
 let store: Store;
 let renderer: ReactTestRenderer;
@@ -2421,6 +2429,96 @@ describe('Context Provider', () => {
         );
       });
       expect(rendererToString(renderer)).toEqual('[[],"0",[]]');
+    });
+  });
+
+  describe('nested', () => {
+    test('same provider', () => {
+      const store1 = createStore();
+      const store2 = createStore();
+      const Test = () => (
+        <>
+          {JSON.stringify(useStoreIds())}
+          {useStore('a') == store1 ? 1 : 0}
+          {useStore('a') == store2 ? 1 : 0}
+          {useStore('b') == store1 ? 1 : 0}
+          {useStore('b') == store2 ? 1 : 0}
+        </>
+      );
+      act(() => {
+        renderer = create(
+          <Provider storesById={{a: store1}}>
+            <Provider storesById={{b: store2}}>
+              <Test />
+            </Provider>
+          </Provider>,
+        );
+      });
+      expect(renderer.toJSON()).toEqual([
+        JSON.stringify(['a', 'b']),
+        '1',
+        '0',
+        '0',
+        '1',
+      ]);
+    });
+    test('same provider, masked', () => {
+      const store1 = createStore();
+      const store2 = createStore();
+      const Test = () => (
+        <>
+          {JSON.stringify(useStoreIds())}
+          {useStore('a') == store1 ? 1 : 0}
+          {useStore('a') == store2 ? 1 : 0}
+          {useStore('b') == store1 ? 1 : 0}
+          {useStore('b') == store2 ? 1 : 0}
+        </>
+      );
+      act(() => {
+        renderer = create(
+          <Provider storesById={{a: store1, b: store1}}>
+            <Provider storesById={{b: store2}}>
+              <Test />
+            </Provider>
+          </Provider>,
+        );
+      });
+      expect(renderer.toJSON()).toEqual([
+        JSON.stringify(['a', 'b']),
+        '1',
+        '0',
+        '0',
+        '1',
+      ]);
+    });
+    test('different provider', () => {
+      const store1 = createStore();
+      const store2 = createStore2();
+      const Test = () => (
+        <>
+          {JSON.stringify(useStoreIds())}
+          {useStore('a') == store1 ? 1 : 0}
+          {useStore2('a') == store2 ? 1 : 0}
+          {useStore('b') == store1 ? 1 : 0}
+          {useStore2('b') == store2 ? 1 : 0}
+        </>
+      );
+      act(() => {
+        renderer = create(
+          <Provider storesById={{a: store1}}>
+            <Provider2 storesById={{b: store2}}>
+              <Test />
+            </Provider2>
+          </Provider>,
+        );
+      });
+      expect(renderer.toJSON()).toEqual([
+        JSON.stringify(['a', 'b']),
+        '1',
+        '0',
+        '0',
+        '1',
+      ]);
     });
   });
 });
