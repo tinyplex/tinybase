@@ -51,6 +51,7 @@
   const arrayMap = (array, cb) => array.map(cb);
   const arrayIsEmpty = (array) => size(array) == 0;
   const arrayFilter = (array, cb) => array.filter(cb);
+  const arrayWith = (array, index, value) => array.with(index, value);
 
   const object = Object;
   const getPrototypeOf = (obj) => object.getPrototypeOf(obj);
@@ -116,33 +117,46 @@
       ? thing
       : thingOrThingId;
   };
+  const useProvideThing = (thingId, thing, offset) => {
+    const {12: addExtraThingById, 13: delExtraThingById} =
+      useContext$1(Context);
+    useEffect$1(() => {
+      addExtraThingById?.(offset, thingId, thing);
+      return () => delExtraThingById?.(offset, thingId);
+    }, [addExtraThingById, thingId, thing, offset, delExtraThingById]);
+  };
   const useThingIds = (offset) => objIds(useContext$1(Context)[offset] ?? {});
   const useStore = (id) => useThing(id, 0);
   const useStoreOrStoreById = (storeOrStoreId) =>
     useThingOrThingById(storeOrStoreId, 0);
-  const useProvideStore = (storeId, store) => {
-    const {12: addExtraStore, 13: delExtraStore} = useContext$1(Context);
-    useEffect$1(() => {
-      addExtraStore?.(storeId, store);
-      return () => delExtraStore?.(storeId);
-    }, [addExtraStore, storeId, store, delExtraStore]);
-  };
+  const useProvideStore = (storeId, store) =>
+    useProvideThing(storeId, store, 0);
   const useMetrics = (id) => useThing(id, 2);
   const useMetricsOrMetricsById = (metricsOrMetricsId) =>
     useThingOrThingById(metricsOrMetricsId, 2);
+  const useProvideMetrics = (metricsId, metrics) =>
+    useProvideThing(metricsId, metrics, 1);
   const useIndexes = (id) => useThing(id, 4);
   const useIndexesOrIndexesById = (indexesOrIndexesId) =>
     useThingOrThingById(indexesOrIndexesId, 4);
+  const useProvideIndexes = (indexesId, indexes) =>
+    useProvideThing(indexesId, indexes, 2);
   const useRelationships = (id) => useThing(id, 6);
   const useRelationshipsOrRelationshipsById = (
     relationshipsOrRelationshipsId,
   ) => useThingOrThingById(relationshipsOrRelationshipsId, 6);
+  const useProvideRelationships = (relationshipsId, relationships) =>
+    useProvideThing(relationshipsId, relationships, 3);
   const useQueries = (id) => useThing(id, 8);
   const useQueriesOrQueriesById = (queriesOrQueriesId) =>
     useThingOrThingById(queriesOrQueriesId, 8);
+  const useProvideQueries = (queriesId, queries) =>
+    useProvideThing(queriesId, queries, 4);
   const useCheckpoints = (id) => useThing(id, 10);
   const useCheckpointsOrCheckpointsById = (checkpointsOrCheckpointsId) =>
     useThingOrThingById(checkpointsOrCheckpointsId, 10);
+  const useProvideCheckpoints = (checkpointsId, checkpoints) =>
+    useProvideThing(checkpointsId, checkpoints, 5);
 
   const lower = (str) => str.toLowerCase();
   lower(LISTENER);
@@ -1630,21 +1644,37 @@
     children,
   }) => {
     const parentValue = useContext(Context);
-    const [extraStoresById, setExtraStoresById] = useState({});
-    const addExtraStore = useCallback(
-      (id, store2) =>
-        setExtraStoresById((extraStoresById2) =>
-          objGet(extraStoresById2, id) == store2
-            ? extraStoresById2
-            : {...extraStoresById2, [id]: store2},
+    const [extraThingsById, setExtraThingsById] = useState([
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+    ]);
+    const addExtraThingById = useCallback(
+      (thingOffset, id, thing) =>
+        setExtraThingsById((extraThingsById2) =>
+          objGet(extraThingsById2[thingOffset], id) == thing
+            ? extraThingsById2
+            : arrayWith(extraThingsById2, thingOffset, {
+                ...extraThingsById2[thingOffset],
+                [id]: thing,
+              }),
         ),
       [],
     );
-    const delExtraStore = useCallback(
-      (id) =>
-        setExtraStoresById((extraStoresById2) => ({
-          ...objDel(extraStoresById2, id),
-        })),
+    const delExtraThingById = useCallback(
+      (thingOffset, id) =>
+        setExtraThingsById((extraThingsById2) =>
+          !objHas(extraThingsById2[thingOffset], id)
+            ? extraThingsById2
+            : arrayWith(
+                extraThingsById2,
+                thingOffset,
+                objDel(extraThingsById2[thingOffset], id),
+              ),
+        ),
       [],
     );
     return /* @__PURE__ */ createElement(
@@ -1653,24 +1683,24 @@
         value: useMemo(
           () => [
             store ?? parentValue[0],
-            {...parentValue[1], ...storesById, ...extraStoresById},
+            {...parentValue[1], ...storesById, ...extraThingsById[0]},
             metrics ?? parentValue[2],
-            {...parentValue[3], ...metricsById},
+            {...parentValue[3], ...metricsById, ...extraThingsById[1]},
             indexes ?? parentValue[4],
-            {...parentValue[5], ...indexesById},
+            {...parentValue[5], ...indexesById, ...extraThingsById[2]},
             relationships ?? parentValue[6],
-            {...parentValue[7], ...relationshipsById},
+            {...parentValue[7], ...relationshipsById, ...extraThingsById[3]},
             queries ?? parentValue[8],
-            {...parentValue[9], ...queriesById},
+            {...parentValue[9], ...queriesById, ...extraThingsById[4]},
             checkpoints ?? parentValue[10],
-            {...parentValue[11], ...checkpointsById},
-            addExtraStore,
-            delExtraStore,
+            {...parentValue[11], ...checkpointsById, ...extraThingsById[5]},
+            addExtraThingById,
+            delExtraThingById,
           ],
           [
             store,
             storesById,
-            extraStoresById,
+            extraThingsById,
             metrics,
             metricsById,
             indexes,
@@ -1682,8 +1712,8 @@
             checkpoints,
             checkpointsById,
             parentValue,
-            addExtraStore,
-            delExtraStore,
+            addExtraThingById,
+            delExtraThingById,
           ],
         ),
       },
@@ -2046,6 +2076,11 @@
   exports.useMetrics = useMetrics;
   exports.useMetricsIds = useMetricsIds;
   exports.useMetricsOrMetricsById = useMetricsOrMetricsById;
+  exports.useProvideCheckpoints = useProvideCheckpoints;
+  exports.useProvideIndexes = useProvideIndexes;
+  exports.useProvideMetrics = useProvideMetrics;
+  exports.useProvideQueries = useProvideQueries;
+  exports.useProvideRelationships = useProvideRelationships;
   exports.useProvideStore = useProvideStore;
   exports.useQueries = useQueries;
   exports.useQueriesIds = useQueriesIds;
