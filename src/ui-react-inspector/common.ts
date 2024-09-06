@@ -23,7 +23,7 @@ export const getUniqueId = (...args: (Id | undefined)[]) =>
 export const sortedIdsMap = <Return>(
   ids: Ids,
   callback: (id: Id) => Return,
-): Return[] => arrayMap(arraySort(ids), callback);
+): Return[] => arrayMap(arraySort([...ids]), callback);
 
 export const useEditable = (
   uniqueId: Id,
