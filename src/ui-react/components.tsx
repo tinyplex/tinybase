@@ -50,12 +50,15 @@ import type {
 } from '../@types/ui-react/index.d.ts';
 import {
   Context,
+  Offsets,
+  ThingsByOffset,
   useCheckpointsOrCheckpointsById,
   useIndexesOrIndexesById,
   useRelationshipsOrRelationshipsById,
 } from './context.ts';
 import type {Id, Ids} from '../@types/common/index.d.ts';
 import React, {ReactElement} from 'react';
+import {arrayMap, arrayWith} from '../common/array.ts';
 import {
   createElement,
   getIndexStoreTableId,
@@ -63,7 +66,7 @@ import {
   getRelationshipsStoreTableIds,
 } from '../common/react.ts';
 import {isArray, isUndefined} from '../common/other.ts';
-import {objDel, objGet} from '../common/obj.ts';
+import {objDel, objGet, objHas} from '../common/obj.ts';
 import {
   useCell,
   useCellIds,
@@ -87,8 +90,6 @@ import {
 } from './hooks.ts';
 import type {CheckpointIds} from '../@types/checkpoints/index.d.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
-import type {Store} from '../@types/store/index.d.ts';
-import {arrayMap} from '../common/array.ts';
 
 const {useCallback, useContext, useMemo, useState} = React;
 
@@ -237,23 +238,48 @@ export const Provider: typeof ProviderDecl = ({
   checkpointsById,
   children,
 }: ProviderProps & {readonly children: React.ReactNode}): any => {
-  const parentValue = useContext(Context);
+  type ThingsById<ThingsByOffset> = {
+    [Offset in keyof ThingsByOffset]: {[id: Id]: ThingsByOffset[Offset]};
+  };
+  type ExtraThingsById = ThingsById<ThingsByOffset>;
 
-  const [extraStoresById, setExtraStoresById] = useState<{[id: Id]: Store}>({});
-  const addExtraStore = useCallback(
-    (id: Id, store: Store) =>
-      setExtraStoresById((extraStoresById) =>
-        objGet(extraStoresById, id) == store
-          ? extraStoresById
-          : {...extraStoresById, [id]: store},
+  const parentValue = useContext(Context);
+  const [extraThingsById, setExtraThingsById] = useState<ExtraThingsById>([
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+  ]);
+  const addExtraThingById = useCallback(
+    <Offset extends Offsets>(
+      thingOffset: Offset,
+      id: Id,
+      thing: ThingsByOffset[Offset],
+    ) =>
+      setExtraThingsById((extraThingsById) =>
+        objGet(extraThingsById[thingOffset] as any, id) == thing
+          ? extraThingsById
+          : (arrayWith(extraThingsById, thingOffset, {
+              ...extraThingsById[thingOffset],
+              [id]: thing,
+            } as any) as ExtraThingsById),
       ),
     [],
   );
-  const delExtraStore = useCallback(
-    (id: Id) =>
-      setExtraStoresById((extraStoresById) => ({
-        ...objDel(extraStoresById, id),
-      })),
+
+  const delExtraThingById = useCallback(
+    (thingOffset: Offsets, id: Id) =>
+      setExtraThingsById((extraThingsById) =>
+        !objHas(extraThingsById[thingOffset], id)
+          ? extraThingsById
+          : (arrayWith(
+              extraThingsById,
+              thingOffset,
+              objDel(extraThingsById[thingOffset] as any, id),
+            ) as ExtraThingsById),
+      ),
     [],
   );
 
@@ -262,7 +288,7 @@ export const Provider: typeof ProviderDecl = ({
       value={useMemo(
         () => [
           store ?? parentValue[0],
-          {...parentValue[1], ...storesById, ...extraStoresById},
+          {...parentValue[1], ...storesById, ...extraThingsById[0]},
           metrics ?? parentValue[2],
           {...parentValue[3], ...metricsById},
           indexes ?? parentValue[4],
@@ -273,13 +299,13 @@ export const Provider: typeof ProviderDecl = ({
           {...parentValue[9], ...queriesById},
           checkpoints ?? parentValue[10],
           {...parentValue[11], ...checkpointsById},
-          addExtraStore,
-          delExtraStore,
+          addExtraThingById,
+          delExtraThingById,
         ],
         [
           store,
           storesById,
-          extraStoresById,
+          extraThingsById,
           metrics,
           metricsById,
           indexes,
@@ -291,8 +317,8 @@ export const Provider: typeof ProviderDecl = ({
           checkpoints,
           checkpointsById,
           parentValue,
-          addExtraStore,
-          delExtraStore,
+          addExtraThingById,
+          delExtraThingById,
         ],
       )}
     >
