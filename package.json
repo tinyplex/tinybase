@@ -106,6 +106,7 @@
     "preparePackage": "gulp preparePackage",
     "compileForTest": "gulp compileForTest",
     "compileForProd": "gulp compileForProd",
+    "compileForProdFast": "gulp compileForProdFast",
     "testUnit": "gulp testUnit",
     "compileAndTestUnit": "gulp compileAndTestUnit",
     "testUnitFast": "gulp testUnitFast",

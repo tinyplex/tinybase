@@ -720,16 +720,18 @@ export const ts = async () => {
   await tsCheck('site');
 };
 
-export const compileForProd = async () => {
+export const compileForProdFast = async () => await compileForProd(true);
+
+export const compileForProd = async (fast = false) => {
   await clearDir(DIST_DIR);
   await copyPackageFiles(true);
   await copyDefinitions(DIST_DIR);
 
   await allOf(
-    [undefined, 'cjs', 'umd'],
+    [undefined, 'umd', ...(fast ? [] : ['cjs'])],
     async (format) =>
       await allOf(
-        [undefined, 'es6'],
+        [undefined, ...(fast ? [] : ['es6'])],
         async (target) =>
           await allModules(
             async (module) =>
