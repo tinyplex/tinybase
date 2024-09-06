@@ -10138,6 +10138,7 @@
  * @category Checkpoints hooks
  * @since v4.1.0
  */
+/// useCheckpointsOrCheckpointsById
 /**
  * The useProvideCheckpoints hook is used to add a Checkpoints object by Id to a
  * Provider component, but imperatively from a component within it.
@@ -10209,7 +10210,7 @@
  * @category Checkpoints hooks
  * @since v5.3.0
  */
-/// useCheckpointsOrCheckpointsById
+/// useProvideCheckpoints
 /**
  * The useCheckpointIds hook returns an array of the checkpoint Ids being
  * managed by this Checkpoints object, and registers a listener so that any
