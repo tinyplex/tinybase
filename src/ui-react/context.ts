@@ -26,6 +26,23 @@ import {TINYBASE} from '../common/strings.ts';
 
 const {createContext, useContext, useEffect} = React;
 
+export type Thing =
+  | Store
+  | Metrics
+  | Indexes
+  | Relationships
+  | Queries
+  | Checkpoints;
+export type ThingsByOffset = [
+  Store,
+  Metrics,
+  Indexes,
+  Relationships,
+  Queries,
+  Checkpoints,
+];
+export type Offsets = 0 | 1 | 2 | 3 | 4 | 5;
+
 type ContextValue = [
   store?: Store,
   storesById?: {[storeId: Id]: Store},
@@ -39,8 +56,12 @@ type ContextValue = [
   queriesById?: {[queriesId: Id]: Queries},
   checkpoints?: Checkpoints,
   checkpointsById?: {[checkpointsId: Id]: Checkpoints},
-  addExtraStore?: (id: string, store: Store) => void,
-  delExtraStore?: (id: string) => void,
+  addExtraThingById?: <Offset extends Offsets>(
+    offset: Offset,
+    id: string,
+    thing: ThingsByOffset[Offset],
+  ) => void,
+  delExtraThingById?: (offset: Offsets, id: string) => void,
 ];
 
 export const Context: React.Context<ContextValue> = objEnsure(
@@ -49,26 +70,18 @@ export const Context: React.Context<ContextValue> = objEnsure(
   () => createContext<ContextValue>([]),
 );
 
-const useThing = <
-  Thing extends
-    | Store
-    | Metrics
-    | Indexes
-    | Relationships
-    | Queries
-    | Checkpoints,
->(
+const useThing = <UsedThing extends Thing>(
   id: Id | undefined,
   offset: number,
-): Thing | undefined => {
+): UsedThing | undefined => {
   const contextValue = useContext(Context);
   return (
     isUndefined(id)
       ? contextValue[offset]
       : isString(id)
-        ? objGet((contextValue[offset + 1] ?? {}) as IdObj<Thing>, id)
+        ? objGet((contextValue[offset + 1] ?? {}) as IdObj<UsedThing>, id)
         : id
-  ) as Thing;
+  ) as UsedThing;
 };
 
 const useThingOrThingById = <
@@ -89,6 +102,18 @@ const useThingOrThingById = <
     : (thingOrThingId as Thing);
 };
 
+const useProvideThing = <Offset extends Offsets>(
+  thingId: Id,
+  thing: ThingsByOffset[Offset],
+  offset: Offset,
+): void => {
+  const {12: addExtraThingById, 13: delExtraThingById} = useContext(Context);
+  useEffect(() => {
+    addExtraThingById?.(offset, thingId, thing);
+    return () => delExtraThingById?.(offset, thingId);
+  }, [addExtraThingById, thingId, thing, offset, delExtraThingById]);
+};
+
 export const useThingIds = (offset: number): Ids =>
   objIds((useContext(Context)[offset] ?? {}) as IdObj<unknown>);
 
@@ -99,13 +124,8 @@ export const useStoreOrStoreById = (
   storeOrStoreId?: StoreOrStoreId,
 ): Store | undefined => useThingOrThingById(storeOrStoreId, 0);
 
-export const useProvideStore = (storeId: Id, store: Store): void => {
-  const {12: addExtraStore, 13: delExtraStore} = useContext(Context);
-  useEffect(() => {
-    addExtraStore?.(storeId, store);
-    return () => delExtraStore?.(storeId);
-  }, [addExtraStore, storeId, store, delExtraStore]);
-};
+export const useProvideStore = (storeId: Id, store: Store): void =>
+  useProvideThing(storeId, store, 0);
 
 export const useMetrics: typeof useMetricsDecl = (
   id?: Id,
