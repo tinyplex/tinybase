@@ -790,6 +790,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
   ) => Metrics<Schemas> | undefined;
 
+  // useProvideMetrics
+  useProvideMetrics: (metricsId: Id, metrics: Metrics<Schemas>) => void;
+
   /// useMetricIds
   useMetricIds(metricsOrMetricsId?: MetricsOrMetricsId<Schemas>): Ids;
 
@@ -824,6 +827,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useIndexesOrIndexesById: (
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => Indexes<Schemas> | undefined;
+
+  // useProvideIndexes
+  useProvideIndexes: (indexesId: Id, indexes: Indexes<Schemas>) => void;
 
   /// useIndexIds
   useIndexIds(indexesOrIndexesId?: IndexesOrIndexesId<Schemas>): Ids;
@@ -875,6 +881,12 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useRelationshipsOrRelationshipsById: (
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => Relationships<Schemas> | undefined;
+
+  // useProvideRelationships
+  useProvideRelationships: (
+    relationshipsId: Id,
+    relationships: Relationships<Schemas>,
+  ) => void;
 
   /// useRelationshipIds
   useRelationshipIds(
@@ -946,6 +958,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useQueriesOrQueriesById: (
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => Queries<Schemas> | undefined;
+
+  // useProvideQueries
+  useProvideQueries: (queriesId: Id, queries: Queries<Schemas>) => void;
 
   /// useQueryIds
   useQueryIds(queriesOrQueriesId?: QueriesOrQueriesId<Schemas>): Ids;
@@ -1095,6 +1110,12 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useCheckpointsOrCheckpointsById: (
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => Checkpoints<Schemas> | undefined;
+
+  // useProvideCheckpoints
+  useProvideCheckpoints: (
+    checkpointsId: Id,
+    checkpoints: Checkpoints<Schemas>,
+  ) => void;
 
   /// useCheckpointIds
   useCheckpointIds: (

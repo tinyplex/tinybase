@@ -600,6 +600,9 @@ export function useMetricsOrMetricsById(
   metricsOrMetricsId?: MetricsOrMetricsId,
 ): Metrics | undefined;
 
+/// useProvideMetrics
+export function useProvideMetrics(metricsId: Id, metrics: Metrics): void;
+
 /// useMetricIds
 export function useMetricIds(metricsOrMetricsId?: MetricsOrMetricsId): Ids;
 
@@ -634,6 +637,9 @@ export function useIndexes(id?: Id): Indexes | undefined;
 export function useIndexesOrIndexesById(
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): Indexes | undefined;
+
+// useProvideIndexes
+export function useProvideIndexes(indexesId: Id, indexes: Indexes): void;
 
 /// useIndexIds
 export function useIndexIds(indexesOrIndexesId?: IndexesOrIndexesId): Ids;
@@ -685,6 +691,12 @@ export function useRelationships(id?: Id): Relationships | undefined;
 export function useRelationshipsOrRelationshipsById(
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): Relationships | undefined;
+
+// useProvideRelationships
+export function useProvideRelationships(
+  relationshipsId: Id,
+  relationships: Relationships,
+): void;
 
 /// useRelationshipIds
 export function useRelationshipIds(
@@ -756,6 +768,9 @@ export function useQueries(id?: Id): Queries | undefined;
 export function useQueriesOrQueriesById(
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Queries | undefined;
+
+// useProvideQueries
+export function useProvideQueries(queriesId: Id, queries: Queries): void;
 
 /// useQueryIds
 export function useQueryIds(queriesOrQueriesId?: QueriesOrQueriesId): Ids;
@@ -905,6 +920,12 @@ export function useCheckpoints(id?: Id): Checkpoints | undefined;
 export function useCheckpointsOrCheckpointsById(
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
 ): Checkpoints | undefined;
+
+// useProvideCheckpoints
+export function useProvideCheckpoints(
+  checkpointsId: Id,
+  checkpoints: Checkpoints,
+): void;
 
 /// useCheckpointIds
 export function useCheckpointIds(
