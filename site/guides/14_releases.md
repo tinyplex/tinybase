@@ -3,6 +3,25 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+## v5.3
+
+This release is focussed on a few API improvements and quality-of-life changes.
+These include:
+
+## In the ui-react module...
+
+- The new useProvideMetrics hook, which lets you imperatively register Metrics
+  objects into a Provider context, much like the existing useProvideStore hook.
+- The new useProvideIndexes hook, which lets you register Indexes objects,
+  similarly.
+- The new useProvideRelationships hook, which lets you register Relationships
+  objects.
+- The new useProvideQueries hook, which lets you register Queries objects.
+- The new useProvideCheckpoints hook, which lets you register Checkpoints
+  objects.
+
+Please provide feedback on this new release on GitHub!
+
 ## v5.2
 
 This release introduces new Persisters for... PostgreSQL! TinyBase now has two
@@ -75,8 +94,6 @@ module. If you are using them (most likely because you have built a custom
 Persister or Synchronizer), you will need to update your imports accordingly to
 the standalone `tinybase/persisters` and `tinybase/synchronizers` versions of
 them. Apologies.
-
-Please provide feedback on this new release on GitHub!
 
 ## v5.1
 
