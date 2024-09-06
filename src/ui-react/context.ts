@@ -135,6 +135,9 @@ export const useMetricsOrMetricsById = (
   metricsOrMetricsId?: MetricsOrMetricsId,
 ): Metrics | undefined => useThingOrThingById(metricsOrMetricsId, 2);
 
+export const useProvideMetrics = (metricsId: Id, metrics: Metrics): void =>
+  useProvideThing(metricsId, metrics, 1);
+
 export const useIndexes: typeof useIndexesDecl = (
   id?: Id,
 ): Indexes | undefined => useThing(id, 4);
@@ -142,6 +145,9 @@ export const useIndexes: typeof useIndexesDecl = (
 export const useIndexesOrIndexesById = (
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): Indexes | undefined => useThingOrThingById(indexesOrIndexesId, 4);
+
+export const useProvideIndexes = (indexesId: Id, indexes: Indexes): void =>
+  useProvideThing(indexesId, indexes, 2);
 
 export const useRelationships: typeof useRelationshipsDecl = (
   id?: Id,
@@ -152,6 +158,11 @@ export const useRelationshipsOrRelationshipsById = (
 ): Relationships | undefined =>
   useThingOrThingById(relationshipsOrRelationshipsId, 6);
 
+export const useProvideRelationships = (
+  relationshipsId: Id,
+  relationships: Relationships,
+): void => useProvideThing(relationshipsId, relationships, 3);
+
 export const useQueries: typeof useQueriesDecl = (
   id?: Id,
 ): Queries | undefined => useThing(id, 8);
@@ -159,6 +170,9 @@ export const useQueries: typeof useQueriesDecl = (
 export const useQueriesOrQueriesById = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Queries | undefined => useThingOrThingById(queriesOrQueriesId, 8);
+
+export const useProvideQueries = (queriesId: Id, queries: Queries): void =>
+  useProvideThing(queriesId, queries, 4);
 
 export const useCheckpoints: typeof useCheckpointsDecl = (
   id?: Id,
@@ -168,3 +182,8 @@ export const useCheckpointsOrCheckpointsById = (
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
 ): Checkpoints | undefined =>
   useThingOrThingById(checkpointsOrCheckpointsId, 10);
+
+export const useProvideCheckpoints = (
+  checkpointsId: Id,
+  checkpoints: Checkpoints,
+): void => useProvideThing(checkpointsId, checkpoints, 5);

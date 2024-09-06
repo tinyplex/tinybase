@@ -5455,6 +5455,75 @@
  */
 /// useMetricsOrMetricsById
 /**
+ * The useProvideMetrics hook is used to add a Metrics object by Id to a
+ * Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register a Metrics object by Id in a context by using the
+ * `metricsById` prop of the top-level Provider component. This hook, however,
+ * lets you dynamically add a new Metrics object to the context, from within a
+ * descendent component. This is useful for applications where the set of
+ * Metrics objects is not known at the time of the first render of the root
+ * Provider.
+ *
+ * A Metrics object added to the Provider context in this way will be available
+ * to other components within the context (using the useMetrics hook and so on).
+ * If you use the same Id as an existing Metrics object registration, the new
+ * one will take priority over one provided by the `metricsById` prop.
+ *
+ * Note that other components that consume a Metrics object registered like this
+ * should defend against it being undefined at first. On the first render, the
+ * other component will likely not yet have completed the registration. In the
+ * example below, we use the null-safe `useMetrics('petMetrics')?` to do this.
+ * @param metricsId The Id of the Metrics object to be registered with the
+ * Provider.
+ * @param metrics The Metrics object to be registered.
+ * @example
+ * This example creates a Provider context. A child component registers a
+ * Metrics object into it which is then consumable by a peer child component.
+ *
+ * ```jsx
+ * import {
+ *   Provider,
+ *   useCreateMetrics,
+ *   useCreateStore,
+ *   useMetrics,
+ *   useProvideMetrics,
+ * } from 'tinybase/ui-react';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ *
+ * const App = () => (
+ *   <Provider>
+ *     <RegisterMetrics />
+ *     <ConsumeMetrics />
+ *   </Provider>
+ * );
+ * const RegisterMetrics = () => {
+ *   const store = useCreateStore(() =>
+ *     createStore().setCell('pets', 'fido', 'color', 'brown'),
+ *   );
+ *   const metrics = useCreateMetrics(store, (store) =>
+ *     createMetrics(store).setMetricDefinition('petCount', 'pets', 'count'),
+ *   );
+ *   useProvideMetrics('petMetrics', metrics);
+ *   return null;
+ * };
+ * const ConsumeMetrics = () => (
+ *   <span>{useMetrics('petMetrics')?.getMetric('petCount')}</span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>1</span>'
+ * ```
+ * @category Metrics hooks
+ * @since v5.3.0
+ */
+/// useProvideMetrics
+/**
  * The useMetricIds hook gets an array of the Metric Ids registered with a
  * Metrics object, and registers a listener so that any changes to that result
  * will cause a re-render.
@@ -5985,6 +6054,82 @@
  * @since v4.1.0
  */
 /// useIndexesOrIndexesById
+/**
+ * The useProvideIndexes hook is used to add an Indexes object by Id to a
+ * Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register an Indexes object by Id in a context by using
+ * the `indexesById` prop of the top-level Provider component. This hook,
+ * however, lets you dynamically add a new Indexes object to the context, from
+ * within a descendent component. This is useful for applications where the set
+ * of Indexes objects is not known at the time of the first render of the root
+ * Provider.
+ *
+ * A Indexes object added to the Provider context in this way will be available
+ * to other components within the context (using the useIndexes hook and so
+ * on). If you use the same Id as an existing Indexes object registration, the
+ * new one will take priority over one provided by the `indexesById` prop.
+ *
+ * Note that other components that consume an Indexes object registered like
+ * this should defend against it being undefined at first. On the first render,
+ * the other component will likely not yet have completed the registration. In
+ * the example below, we use the null-safe `useIndexes('petIndexes')?` to do
+ * this.
+ * @param indexesId The Id of the Indexes object to be registered with the
+ * Provider.
+ * @param indexes The Indexes object to be registered.
+ * @example
+ * This example creates a Provider context. A child component registers an
+ * Indexes object into it which is then consumable by a peer child component.
+ *
+ * ```jsx
+ * import {
+ *   Provider,
+ *   useCreateIndexes,
+ *   useCreateStore,
+ *   useIndexes,
+ *   useProvideIndexes,
+ * } from 'tinybase/ui-react';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ *
+ * const App = () => (
+ *   <Provider>
+ *     <RegisterIndexes />
+ *     <ConsumeIndexes />
+ *   </Provider>
+ * );
+ * const RegisterIndexes = () => {
+ *   const store = useCreateStore(() =>
+ *     createStore().setCell('pets', 'fido', 'color', 'brown'),
+ *   );
+ *   const indexes = useCreateIndexes(store, (store) =>
+ *     createIndexes(store).setIndexDefinition(
+ *       'petsByColor',
+ *       'pets',
+ *       'color',
+ *     ),
+ *   );
+ *   useProvideIndexes('petIndexes', indexes);
+ *   return null;
+ * };
+ * const ConsumeIndexes = () => (
+ *   <span>
+ *     {JSON.stringify(useIndexes('petIndexes')?.getSliceIds('petsByColor'))}
+ *   </span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["brown"]</span>'
+ * ```
+ * @category Indexes hooks
+ * @since v5.3.0
+ */
+/// useProvideIndexes
 /**
  * The useIndexIds hook gets an array of the Index Ids registered with an
  * Indexes object, and registers a listener so that any changes to that result
@@ -6756,6 +6901,90 @@
  * @since v4.1.0
  */
 /// useRelationshipsOrRelationshipsById
+/**
+ * The useProvideRelationships hook is used to add a Relationships object by Id
+ * to a Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register a Relationships object by Id in a context by using
+ * the `relationshipsById` prop of the top-level Provider component. This hook,
+ * however, lets you dynamically add a new Relationships object to the context,
+ * from within a component. This is useful for applications where the set of
+ * Relationships objects is not known at the time of the first render of the
+ * root Provider.
+ *
+ * A Relationships object added to the Provider context in this way will be
+ * available to other components within the context (using the useRelationships
+ * hook and so on). If you use the same Id as an existing Relationships object
+ * registration, the new one will take priority over one provided by the
+ * `relationshipsById` prop.
+ *
+ * Note that other components that consume a Relationships object registered
+ * like this should defend against it being undefined at first. On the first
+ * render, the other component will likely not yet have completed the
+ * registration. In the example below, we use the null-safe
+ * `useRelationships('petRelationships')?` to do this.
+ * @param relationshipsId The Id of the Relationships object to be registered
+ * with the Provider.
+ * @param relationships The Relationships object to be registered.
+ * @example
+ * This example creates a Provider context. A child component registers a
+ * Relationships object into it which is then consumable by a peer child
+ * component.
+ *
+ * ```jsx
+ * import {
+ *   Provider,
+ *   useCreateRelationships,
+ *   useCreateStore,
+ *   useProvideRelationships,
+ *   useRelationships,
+ * } from 'tinybase/ui-react';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ *
+ * const App = () => (
+ *   <Provider>
+ *     <RegisterRelationships />
+ *     <ConsumeRelationships />
+ *   </Provider>
+ * );
+ * const RegisterRelationships = () => {
+ *   const store = useCreateStore(() =>
+ *     createStore()
+ *       .setTable('pets', {fido: {species: 'dog'}})
+ *       .setTable('species', {dog: {price: 5}}),
+ *   );
+ *   const relationships = useCreateRelationships(store, (store) =>
+ *     createRelationships(store).setRelationshipDefinition(
+ *       'petSpecies',
+ *       'pets',
+ *       'species',
+ *       'species',
+ *     ),
+ *   );
+ *   useProvideRelationships('petRelationships', relationships);
+ *   return null;
+ * };
+ * const ConsumeRelationships = () => (
+ *   <span>
+ *     {useRelationships('petRelationships')?.getRemoteRowId(
+ *       'petSpecies',
+ *       'fido',
+ *     )}
+ *   </span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>dog</span>'
+ * ```
+ * @category Relationships hooks
+ * @since v5.3.0
+ */
+/// useProvideRelationships
 /**
  * The useRelationshipIds hook gets an array of the Relationship Ids registered
  * with a Relationships object, and registers a listener so that any changes to
@@ -7755,6 +7984,84 @@
  * @since v4.1.0
  */
 /// useQueriesOrQueriesById
+/**
+ * The useProvideQueries hook is used to add a Queries object by Id to a
+ * Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register a Queries object by Id in a context by using the
+ * `queriesById` prop of the top-level Provider component. This hook, however,
+ * lets you dynamically add a new Queries object to the context, from within a
+ * component. This is useful for applications where the set of Queries objects
+ * is not known at the time of the first render of the root Provider.
+ *
+ * A Queries object added to the Provider context in this way will be available
+ * to other components within the context (using the useQueries hook and so on).
+ * If you use the same Id as an existing Queries object registration, the new
+ * one will take priority over one provided by the `queriesById` prop.
+ *
+ * Note that other components that consume a Queries object registered like this
+ * should defend against it being undefined at first. On the first render, the
+ * other component will likely not yet have completed the registration. In the
+ * example below, we use the null-safe `useQueries('petQueries')?` to do this.
+ * @param queriesId The Id of the Queries object to be registered with the
+ * Provider.
+ * @param queries The Queries object to be registered.
+ * @example
+ * This example creates a Provider context. A child component registers a
+ * Queries object into it which is then consumable by a peer child component.
+ *
+ * ```jsx
+ * import {
+ *   Provider,
+ *   useCreateQueries,
+ *   useCreateStore,
+ *   useProvideQueries,
+ *   useQueries,
+ * } from 'tinybase/ui-react';
+ * import {createQueries, createStore} from 'tinybase';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ *
+ * const App = () => (
+ *   <Provider>
+ *     <RegisterQueries />
+ *     <ConsumeQueries />
+ *   </Provider>
+ * );
+ * const RegisterQueries = () => {
+ *   const store = useCreateStore(() =>
+ *     createStore().setRow('pets', 'fido', {color: 'brown', legs: 4}),
+ *   );
+ *   const queries = useCreateQueries(store, (store) =>
+ *     createQueries(store).setQueryDefinition(
+ *       'brownLegs',
+ *       'pets',
+ *       ({select, where}) => {
+ *         select('legs');
+ *         where('color', 'brown');
+ *       },
+ *     ),
+ *   );
+ *   useProvideQueries('petQueries', queries);
+ *   return null;
+ * };
+ * const ConsumeQueries = () => (
+ *   <span>
+ *     {JSON.stringify(useQueries('petQueries')?.getResultTable('brownLegs'))}
+ *   </span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>{\"fido\":{\"legs\":4}}</span>'
+ * ```
+ * @category Queries hooks
+ * @since v5.3.0
+ */
+/// useProvideQueries
+
 /**
  * The useQueryIds hook gets an array of the Query Ids registered with a Queries
  * object, and registers a listener so that any changes to that result will
@@ -9830,6 +10137,77 @@
  * ```
  * @category Checkpoints hooks
  * @since v4.1.0
+ */
+/**
+ * The useProvideCheckpoints hook is used to add a Checkpoints object by Id to a
+ * Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register a Checkpoints object by Id in a context by using
+ * the `checkpointsById` prop of the top-level Provider component. This hook,
+ * however, lets you dynamically add a new Checkpoints object to the context,
+ * from within a component. This is useful for applications where the set of
+ * Checkpoints objects is not known at the time of the first render of the root
+ * Provider.
+ *
+ *  A Checkpoints object added to the Provider context in this way will be
+ *  available to other components within the context (using the useCheckpoints
+ *  hook and so on). If you use the same Id as an existing Checkpoints object
+ *  registration, the new one will take priority over one provided by the
+ *  `checkpointsById` prop.
+ *
+ *  Note that other components that consume a Checkpoints object registered like
+ *  this should defend against it being undefined at first. On the first render,
+ *  the other component will likely not yet have completed the registration. In
+ *  the example below, we use the null-safe `useCheckpoints('petCheckpoints')?`
+ *  to do this.
+ * @param checkpointsId The Id of the Checkpoints object to be registered with
+ * the Provider.
+ * @param checkpoints The Checkpoints object to be registered.
+ * @example
+ * This example creates a Provider context. A child component registers a
+ * Checkpoints object into it which is then consumable by a peer child
+ * component.
+ *
+ * ```jsx
+ * import {
+ *   Provider,
+ *   useCheckpoints,
+ *   useCreateCheckpoints,
+ *   useCreateStore,
+ *   useProvideCheckpoints,
+ * } from 'tinybase/ui-react';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ *
+ * const App = () => (
+ *   <Provider>
+ *     <RegisterCheckpoints />
+ *     <ConsumeCheckpoints />
+ *   </Provider>
+ * );
+ * const RegisterCheckpoints = () => {
+ *   const store = useCreateStore(() =>
+ *     createStore().setCell('pets', 'fido', 'color', 'brown'),
+ *   );
+ *   const checkpoints = useCreateCheckpoints(store, createCheckpoints);
+ *   useProvideCheckpoints('petCheckpoints', checkpoints);
+ *   return null;
+ * };
+ * const ConsumeCheckpoints = () => (
+ *   <span>
+ *     {JSON.stringify(useCheckpoints('petCheckpoints')?.getCheckpointIds())}
+ *   </span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>[[],"0",[]]</span>'
+ * ```
+ * @category Checkpoints hooks
+ * @since v5.3.0
  */
 /// useCheckpointsOrCheckpointsById
 /**
