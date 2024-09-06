@@ -639,6 +639,41 @@ const test = async (
   }
 };
 
+const compileModulesForProd = async (fast = false) => {
+  await clearDir(DIST_DIR);
+  await copyPackageFiles(true);
+  await copyDefinitions(DIST_DIR);
+
+  await allOf(
+    [undefined, 'umd', ...(fast ? [] : ['cjs'])],
+    async (format) =>
+      await allOf(
+        [undefined, ...(fast ? [] : ['es6'])],
+        async (target) =>
+          await allModules(
+            async (module) =>
+              await allOf(
+                [undefined, 'min'],
+                async (min) =>
+                  await compileModule(
+                    module,
+                    `${DIST_DIR}/` +
+                      [format, target, min]
+                        .filter((part) => part != null)
+                        .join('/'),
+                    format,
+                    target,
+                    min,
+                  ),
+              ),
+          ),
+      ),
+  );
+
+  await compileModule('cli', DIST_DIR, undefined, undefined, undefined, true);
+  await execute(`chmod +x ${DIST_DIR}/cli/index.js`);
+};
+
 const compileDocsAndAssets = async (api = true, pages = true) => {
   const {default: esbuild} = await import('esbuild');
   const {default: esbuildPlugin} = await import('rollup-plugin-esbuild');
@@ -720,42 +755,9 @@ export const ts = async () => {
   await tsCheck('site');
 };
 
-export const compileForProdFast = async () => await compileForProd(true);
+export const compileForProd = async () => await compileModulesForProd();
 
-export const compileForProd = async (fast = false) => {
-  await clearDir(DIST_DIR);
-  await copyPackageFiles(true);
-  await copyDefinitions(DIST_DIR);
-
-  await allOf(
-    [undefined, 'umd', ...(fast ? [] : ['cjs'])],
-    async (format) =>
-      await allOf(
-        [undefined, ...(fast ? [] : ['es6'])],
-        async (target) =>
-          await allModules(
-            async (module) =>
-              await allOf(
-                [undefined, 'min'],
-                async (min) =>
-                  await compileModule(
-                    module,
-                    `${DIST_DIR}/` +
-                      [format, target, min]
-                        .filter((part) => part != null)
-                        .join('/'),
-                    format,
-                    target,
-                    min,
-                  ),
-              ),
-          ),
-      ),
-  );
-
-  await compileModule('cli', DIST_DIR, undefined, undefined, undefined, true);
-  await execute(`chmod +x ${DIST_DIR}/cli/index.js`);
-};
+export const compileForProdFast = async () => await compileModulesForProd(true);
 
 export const testUnit = async () => {
   await test(['test/unit'], {coverageMode: 1, serialTests: true});
