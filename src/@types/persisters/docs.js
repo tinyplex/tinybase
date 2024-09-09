@@ -52,6 +52,38 @@
  */
 /// persisters
 /**
+ * The Status enum is used to indicate whether a Persister is idle, or loading or
+ * saving data.
+ *
+ * The enum is intended to be used to understand the status of the Persister in
+ * conjunction with the getStatus and addStatusListener methods.
+ *
+ * Note that a Persister cannot be loading and saving data at the same time.
+ * @category Lifecycle
+ * @since v5.3.0
+ */
+/// Status
+{
+  /**
+   * Indicates that the Persister is neither loading or saving data.
+   * @category Enum
+   * @since v5.3.0
+   */
+  /// Status.Idle
+  /**
+   * Indicates that the Persister is loading data.
+   * @category Enum
+   * @since v5.3.0
+   */
+  /// Status.Loading
+  /**
+   * Indicates that the Persister is saving data.
+   * @category Enum
+   * @since v5.3.0
+   */
+  /// Status.Saving
+}
+/**
  * The Persists enum is used to indicate whether a Persister can support a
  * regular Store, a MergeableStore, or both.
  *

@@ -8,6 +8,16 @@ import type {
 } from '../mergeable-store/index.d.ts';
 import type {Id} from '../common/index.d.ts';
 
+/// Status
+export const enum Status {
+  /// Status.Idle
+  Idle = 0,
+  /// Status.Loading
+  Loading = 1,
+  /// Status.Saving
+  Saving = 2,
+}
+
 /// Persists
 export const enum Persists {
   /// Persists.StoreOnly
