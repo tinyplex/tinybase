@@ -165,6 +165,9 @@ export interface Persister<Persist extends Persists = Persists.StoreOnly> {
   /// Persister.isAutoSaving
   isAutoSaving(): boolean;
 
+  /// Persister.getStatus
+  getStatus(): Status;
+
   /// Persister.schedule
   schedule(...actions: (() => Promise<any>)[]): Promise<this>;
 
