@@ -24,6 +24,18 @@ import {mapEnsure, mapGet, mapNew, mapSet} from '../../common/map.ts';
 import {objFreeze, objIsEmpty} from '../../common/obj.ts';
 import type {Id} from '../../@types/common/index.d.ts';
 
+const enum StatusValues {
+  Idle = 0,
+  Loading = 1,
+  Saving = 2,
+}
+
+export const Status = {
+  Idle: StatusValues.Idle,
+  Loading: StatusValues.Loading,
+  Saving: StatusValues.Saving,
+};
+
 const enum PersistsValues {
   StoreOnly = 1,
   MergeableStoreOnly = 2,
@@ -99,7 +111,7 @@ export const createCustomPersister = <
   extra: {[methodName: string]: (...params: any[]) => any} = {},
   scheduleId = [],
 ): Persister<Persist> => {
-  let loadSave = 0;
+  let status: StatusValues = StatusValues.Idle;
   let loads = 0;
   let saves = 0;
   let action;
@@ -163,8 +175,8 @@ export const createCustomPersister = <
 
   const load = async (initialContent?: Content): Promise<Persister> => {
     /*! istanbul ignore else */
-    if (loadSave != 2) {
-      loadSave = 1;
+    if (status != StatusValues.Saving) {
+      status = StatusValues.Loading;
       loads++;
       await schedule(async () => {
         try {
@@ -180,7 +192,7 @@ export const createCustomPersister = <
             setDefaultContent(initialContent as Content);
           }
         }
-        loadSave = 0;
+        status = StatusValues.Idle;
       });
     }
     return persister;
@@ -194,11 +206,11 @@ export const createCustomPersister = <
       autoLoadHandle = await addPersisterListener(async (content, changes) => {
         if (changes || content) {
           /*! istanbul ignore else */
-          if (loadSave != 2) {
-            loadSave = 1;
+          if (status != StatusValues.Saving) {
+            status = StatusValues.Loading;
             loads++;
             setContentOrChanges(changes ?? content);
-            loadSave = 0;
+            status = StatusValues.Idle;
           }
         } else {
           await load();
@@ -225,8 +237,8 @@ export const createCustomPersister = <
     changes?: PersistedChanges<Persist>,
   ): Promise<Persister<Persist>> => {
     /*! istanbul ignore else */
-    if (loadSave != 1) {
-      loadSave = 2;
+    if (status != StatusValues.Loading) {
+      status = StatusValues.Saving;
       saves++;
       await schedule(async () => {
         try {
@@ -235,7 +247,7 @@ export const createCustomPersister = <
           /*! istanbul ignore next */
           onIgnoredError?.(error);
         }
-        loadSave = 0;
+        status = StatusValues.Idle;
       });
     }
     return persister;
