@@ -272,6 +272,8 @@ export const createCustomPersister = <
 
   const isAutoSaving = () => !isUndefined(autoSaveListenerId);
 
+  const getStatus = (): StatusValues => status;
+
   const schedule = async (...actions: Action[]): Promise<Persister> => {
     arrayPush(mapGet(scheduleActions, scheduleId) as Action[], ...actions);
     await run();
@@ -297,6 +299,8 @@ export const createCustomPersister = <
     startAutoSave,
     stopAutoSave,
     isAutoSaving,
+
+    getStatus,
 
     schedule,
     getStore,

@@ -1214,6 +1214,32 @@
    */
   /// Persister.isAutoSaving
   /**
+   * The getStatus method lets you find out if the Persister is currently in the
+   * process of loading or saving content.
+   *
+   * It can only be doing one or the other (or neither) at any given time. The
+   * Status enum is returned, where 0 means idle, 1 means loading, and 2 means
+   * saving.
+   *
+   * @returns A value of type Status indicating whether the Persister is idle,
+   * loading, or saving.
+   * @example
+   * This example creates a Persister and queries its status.
+   *
+   * ```js
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
+   *
+   * const persister = createSessionPersister(createStore(), 'pets');
+   *
+   * console.log(persister.getStatus());
+   * // -> 0
+   * ```
+   * @category Lifecycle
+   * @since v5.3.0
+   */
+  /// Persister.getStatus
+  /**
    * The schedule method allows you to queue up a series of asynchronous actions
    * that must run in sequence during persistence.
    *
