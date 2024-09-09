@@ -129,6 +129,12 @@ export const createCustomPersister = <
     setDefaultContent,
   ] = getStoreFunctions(persist, store);
 
+  const setStatus = (newStatus: StatusValues): void => {
+    if (newStatus != status) {
+      status = newStatus;
+    }
+  };
+
   const run = async (): Promise<void> => {
     /*! istanbul ignore else */
     if (!mapGet(scheduleRunning, scheduleId)) {
@@ -176,7 +182,7 @@ export const createCustomPersister = <
   const load = async (initialContent?: Content): Promise<Persister> => {
     /*! istanbul ignore else */
     if (status != StatusValues.Saving) {
-      status = StatusValues.Loading;
+      setStatus(StatusValues.Loading);
       loads++;
       await schedule(async () => {
         try {
@@ -192,7 +198,7 @@ export const createCustomPersister = <
             setDefaultContent(initialContent as Content);
           }
         }
-        status = StatusValues.Idle;
+        setStatus(StatusValues.Idle);
       });
     }
     return persister;
@@ -207,10 +213,10 @@ export const createCustomPersister = <
         if (changes || content) {
           /*! istanbul ignore else */
           if (status != StatusValues.Saving) {
-            status = StatusValues.Loading;
+            setStatus(StatusValues.Loading);
             loads++;
             setContentOrChanges(changes ?? content);
-            status = StatusValues.Idle;
+            setStatus(StatusValues.Idle);
           }
         } else {
           await load();
@@ -238,7 +244,7 @@ export const createCustomPersister = <
   ): Promise<Persister<Persist>> => {
     /*! istanbul ignore else */
     if (status != StatusValues.Loading) {
-      status = StatusValues.Saving;
+      setStatus(StatusValues.Saving);
       saves++;
       await schedule(async () => {
         try {
@@ -247,7 +253,7 @@ export const createCustomPersister = <
           /*! istanbul ignore next */
           onIgnoredError?.(error);
         }
-        status = StatusValues.Idle;
+        setStatus(StatusValues.Idle);
       });
     }
     return persister;
