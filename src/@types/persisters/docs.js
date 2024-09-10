@@ -183,6 +183,21 @@
  */
 /// PersisterListener
 /**
+ * The StatusListener type describes a function that is used to listen to
+ * changes to the loading and saving status of the Persister.
+ *
+ * A StatusListener is provided when using the addStatusListener method. See
+ * that method for specific examples.
+ *
+ * When called, a StatusListener is given a reference to the Persister and the
+ * new Status: 0 means now idle, 1 means now loading, and 2 means now saving.
+ * @param persister A reference to the Persister that changed.
+ * @param status The new loading or saving Status.
+ * @category Listener
+ * @since v5.3.0
+ */
+/// StatusListener
+/**
  * The PersisterStats type describes the number of times a Persister object has
  * loaded or saved data.
  *
@@ -1243,6 +1258,81 @@
    * @since v5.3.0
    */
   /// Persister.getStatus
+  /**
+   * The addStatusListener method registers a listener function with the
+   * Persister that will be called whenever it starts or stops loading or
+   * saving.
+   *
+   * The provided listener is a StatusListener function, and will be called with
+   * a reference to the Persister and the new Status: 0 means now idle, 1 means
+   * now loading, and 2 means now saving.
+   * @param listener The function that will be called whenever the Persister
+   * starts or stops loading or saving.
+   * @returns A unique Id for the listener that can later be used to remove it.
+   * @example
+   * This example registers a listener that responds to changes in the state of
+   * the Persister.
+   *
+   * ```js
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
+   *
+   * const persister = createSessionPersister(createStore(), 'pets');
+   *
+   * const listenerId = persister.addStatusListener((persister, status) => {
+   *   console.log(
+   *     `${persister.getStorageName()} persister status changed to ${status}`,
+   *   );
+   * });
+   *
+   * await persister.load();
+   * // -> 'pets persister status changed to 1'
+   * // -> 'pets persister status changed to 0'
+   * await persister.save();
+   * // -> 'pets persister status changed to 2'
+   * // -> 'pets persister status changed to 0'
+   *
+   * persister.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v5.3.0
+   */
+  /// Persister.addStatusListener
+  /**
+   * The delListener method removes a listener that was previously added to the
+   * Persister.
+   *
+   * Use the Id returned by whichever method was used to add the listener. Note
+   * that the Persister may re-use this Id for future listeners added to it.
+   * @param listenerId The Id of the listener to remove.
+   * @returns A reference to the Persister.
+   * @example
+   * This example registers a listener and then removes it.
+   *
+   * ```js
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   * import {createStore} from 'tinybase';
+   *
+   * const persister = createSessionPersister(createStore(), 'pets');
+   *
+   * const listenerId = persister.addStatusListener((_persister, status) => {
+   *   console.log(`Status changed to ${status}`);
+   * });
+   *
+   * await persister.load();
+   * // -> `Status changed to 1`
+   * // -> `Status changed to 0`
+   *
+   * persister.delListener(listenerId);
+   *
+   * await persister.load();
+   * // -> undefined
+   * // The listener is not called.
+   * ```
+   * @category Listener
+   * @since v5.3.0
+   */
+  /// Persister.delListener
   /**
    * The schedule method allows you to queue up a series of asynchronous actions
    * that must run in sequence during persistence.

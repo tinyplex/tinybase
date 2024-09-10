@@ -12,6 +12,7 @@ import type {
   MergeableContent,
   MergeableStore,
 } from '../../mergeable-store/with-schemas/index.d.ts';
+import type {Id} from '../../with-schemas/index.d.ts';
 import type {TableIdFromSchema} from '../../_internal/store/with-schemas/index.d.ts';
 
 /// Status
@@ -72,6 +73,12 @@ export type PersisterListener<
   content?: PersistedContent<Schemas, Persist>,
   changes?: PersistedChanges<Schemas, Persist>,
 ) => void;
+
+/// StatusListener
+export type StatusListener<
+  Schemas extends OptionalSchemas,
+  Persist extends Persists = Persists.StoreOnly,
+> = (persister: Persister<Schemas, Persist>, status: Status) => void;
 
 /// PersisterStats
 export type PersisterStats = {
@@ -186,6 +193,12 @@ export interface Persister<
 
   /// Persister.getStatus
   getStatus(): Status;
+
+  /// Persister.addStatusListener
+  addStatusListener(listener: StatusListener<Schemas, Persist>): Id;
+
+  /// Persister.delListener
+  delListener(listenerId: Id): this;
 
   /// Persister.schedule
   schedule(...actions: (() => Promise<any>)[]): Promise<this>;
