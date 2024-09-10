@@ -58,6 +58,11 @@ export type PersisterListener<Persist extends Persists = Persists.StoreOnly> = (
   changes?: PersistedChanges<Persist>,
 ) => void;
 
+/// StatusListener
+export type StatusListener<Persist extends Persists = Persists.StoreOnly> = (
+  persister: Persister<Persist>,
+) => void;
+
 /// PersisterStats
 export type PersisterStats = {
   /// PersisterStats.loads
@@ -167,6 +172,12 @@ export interface Persister<Persist extends Persists = Persists.StoreOnly> {
 
   /// Persister.getStatus
   getStatus(): Status;
+
+  /// Persister.addStatusListener
+  addStatusListener(listener: StatusListener<Persist>): Id;
+
+  /// Persister.delListener
+  delListener(listenerId: Id): this;
 
   /// Persister.schedule
   schedule(...actions: (() => Promise<any>)[]): Promise<this>;
