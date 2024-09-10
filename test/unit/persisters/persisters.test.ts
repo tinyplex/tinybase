@@ -2,6 +2,7 @@
 
 import 'fake-indexeddb/auto';
 import {GetLocationMethod, Persistable, nextLoop} from './common/other.ts';
+import {Status, createCustomPersister} from 'tinybase/persisters';
 import {
   getMockDatabases,
   mockAutomerge,
@@ -21,7 +22,6 @@ import {
 import {ALL_VARIANTS} from './common/databases.ts';
 import type {Persister} from 'tinybase/persisters';
 import type {Store} from 'tinybase';
-import {createCustomPersister} from 'tinybase/persisters';
 import {createStore} from 'tinybase';
 import {join} from 'path';
 import {pause} from '../common/other.ts';
@@ -89,6 +89,21 @@ describe.each([
       {v1: 1},
     ]);
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
+  });
+
+  // eslint-disable-next-line jest/no-done-callback
+  test('saving status', (done) => {
+    expect.assertions(3);
+    store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+    expect(persister.getStatus()).toEqual(Status.Idle);
+    persister
+      .save()
+      .then(() => {
+        expect(persister.getStatus()).toEqual(Status.Idle);
+        done();
+      })
+      .catch(done);
+    expect(persister.getStatus()).toEqual(Status.Saving);
   });
 
   test('autoSaves', async () => {
@@ -180,6 +195,22 @@ describe.each([
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(store.getValues()).toEqual({v1: 1});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
+  });
+
+  // eslint-disable-next-line jest/no-done-callback
+  test('loading status', (done) => {
+    expect.assertions(3);
+    persistable.set(location, [{t1: {r1: {c1: 1}}}, {v1: 1}]).then(() => {
+      expect(persister.getStatus()).toEqual(Status.Idle);
+      persister
+        .load()
+        .then(() => {
+          expect(persister.getStatus()).toEqual(Status.Idle);
+          done();
+        })
+        .catch(done);
+      expect(persister.getStatus()).toEqual(Status.Loading);
+    });
   });
 
   test('loads backwards compatible', async () => {

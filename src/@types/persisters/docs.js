@@ -1221,6 +1221,10 @@
    * Status enum is returned, where 0 means idle, 1 means loading, and 2 means
    * saving.
    *
+   * This method is only likely to be useful for Persister implementations that
+   * have asynchronous load or save operations. The status for synchronous
+   * persister media (such as browser local or session storage) will switch back
+   * to idle before you are able to query it.
    * @returns A value of type Status indicating whether the Persister is idle,
    * loading, or saving.
    * @example
