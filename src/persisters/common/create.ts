@@ -12,6 +12,7 @@ import type {
   PersisterListener,
   PersisterStats,
   Persists as PersistsEnum,
+  StatusListener,
 } from '../../@types/persisters/index.d.ts';
 import {arrayClear, arrayPush, arrayShift} from '../../common/array.ts';
 import {
@@ -23,6 +24,8 @@ import {
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../common/map.ts';
 import {objFreeze, objIsEmpty} from '../../common/obj.ts';
 import type {Id} from '../../@types/common/index.d.ts';
+import {IdSet2} from '../../common/set.ts';
+import {getListenerFunctions} from '../../common/listeners.ts';
 
 const enum StatusValues {
   Idle = 0,
@@ -121,6 +124,8 @@ export const createCustomPersister = <
   mapEnsure(scheduleRunning, scheduleId, () => 0);
   mapEnsure(scheduleActions, scheduleId, () => []);
 
+  const statusListeners: IdSet2 = mapNew();
+
   const [
     isMergeableStore,
     getContent,
@@ -129,9 +134,14 @@ export const createCustomPersister = <
     setDefaultContent,
   ] = getStoreFunctions(persist, store);
 
+  const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
+    () => persister,
+  );
+
   const setStatus = (newStatus: StatusValues): void => {
     if (newStatus != status) {
       status = newStatus;
+      callListeners(statusListeners, undefined, status);
     }
   };
 
@@ -280,6 +290,14 @@ export const createCustomPersister = <
 
   const getStatus = (): StatusValues => status;
 
+  const addStatusListener = (listener: StatusListener): Id =>
+    addListener(listener, statusListeners);
+
+  const delListener = (listenerId: Id): Store => {
+    delListenerImpl(listenerId);
+    return store;
+  };
+
   const schedule = async (...actions: Action[]): Promise<Persister> => {
     arrayPush(mapGet(scheduleActions, scheduleId) as Action[], ...actions);
     await run();
@@ -307,6 +325,8 @@ export const createCustomPersister = <
     isAutoSaving,
 
     getStatus,
+    addStatusListener,
+    delListener,
 
     schedule,
     getStore,
