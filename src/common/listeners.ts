@@ -60,6 +60,7 @@ import {arrayForEach, arrayPush} from './array.ts';
 import {collDel, collForEach, collIsEmpty} from './coll.ts';
 import {ifNotUndefined, isUndefined, size} from './other.ts';
 import {EMPTY_STRING} from './strings.ts';
+import {StatusListener} from '../@types/persisters/index.js';
 import {getPoolFunctions} from './pool.ts';
 
 export type IdSetNode = Node<IdOrNull, IdSet> | IdSet;
@@ -115,7 +116,8 @@ type Listener =
   | ResultCellIdsListener
   | ResultCellListener
   | PathIdsListener
-  | ClientIdsListener;
+  | ClientIdsListener
+  | StatusListener;
 type IdOrBoolean = Id | boolean;
 
 const getWildcardedLeaves = (
