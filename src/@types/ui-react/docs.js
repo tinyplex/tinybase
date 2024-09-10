@@ -52,7 +52,8 @@
  * context.
  *
  * Many hooks and components in this ui-react module take this type as a
- * parameter or a prop, allowing you to pass in either the Store or its Id.
+ * parameter or a prop, allowing you to pass in either the Metrics object or its
+ * Id.
  * @category Identity
  * @since v1.0.0
  */
@@ -70,7 +71,8 @@
  * context.
  *
  * Many hooks and components in this ui-react module take this type as a
- * parameter or a prop, allowing you to pass in either the Store or its Id.
+ * parameter or a prop, allowing you to pass in either the Indexes object or its
+ * Id.
  * @category Identity
  * @since v1.0.0
  */
@@ -88,7 +90,8 @@
  * in that context.
  *
  * Many hooks and components in this ui-react module take this type as a
- * parameter or a prop, allowing you to pass in either the Store or its Id.
+ * parameter or a prop, allowing you to pass in either the Relationships object
+ * or its Id.
  * @category Identity
  * @since v1.0.0
  */
@@ -106,7 +109,8 @@
  * context.
  *
  * Many hooks and components in this ui-react module take this type as a
- * parameter or a prop, allowing you to pass in either the Store or its Id.
+ * parameter or a prop, allowing you to pass in either the Queries object or its
+ * Id.
  * @category Identity
  * @since v2.0.0
  */
@@ -124,7 +128,8 @@
  * that context.
  *
  * Many hooks and components in this ui-react module take this type as a
- * parameter or a prop, allowing you to pass in either the Store or its Id.
+ * parameter or a prop, allowing you to pass in either the Checkpoints object or
+ * its Id.
  * @category Identity
  * @since v1.0.0
  */
