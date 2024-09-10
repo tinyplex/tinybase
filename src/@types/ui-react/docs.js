@@ -147,8 +147,8 @@
  *
  * This type is used in hooks that create callbacks - like the
  * useSetTableCallback hook or useSetRowCallback hook - so that the Id arguments
- * of the object to set can also be dependent on the event or parameter
- * provided (as well as the object itself being set).
+ * of the object to set can also be dependent on the event or parameter provided
+ * (as well as the object itself being set).
  * @category Identity
  * @since v1.0.0
  */
@@ -6058,17 +6058,17 @@
  * The useProvideIndexes hook is used to add an Indexes object by Id to a
  * Provider component, but imperatively from a component within it.
  *
- * Normally you will register an Indexes object by Id in a context by using
- * the `indexesById` prop of the top-level Provider component. This hook,
- * however, lets you dynamically add a new Indexes object to the context, from
- * within a descendent component. This is useful for applications where the set
- * of Indexes objects is not known at the time of the first render of the root
+ * Normally you will register an Indexes object by Id in a context by using the
+ * `indexesById` prop of the top-level Provider component. This hook, however,
+ * lets you dynamically add a new Indexes object to the context, from within a
+ * descendent component. This is useful for applications where the set of
+ * Indexes objects is not known at the time of the first render of the root
  * Provider.
  *
  * A Indexes object added to the Provider context in this way will be available
- * to other components within the context (using the useIndexes hook and so
- * on). If you use the same Id as an existing Indexes object registration, the
- * new one will take priority over one provided by the `indexesById` prop.
+ * to other components within the context (using the useIndexes hook and so on).
+ * If you use the same Id as an existing Indexes object registration, the new
+ * one will take priority over one provided by the `indexesById` prop.
  *
  * Note that other components that consume an Indexes object registered like
  * this should defend against it being undefined at first. On the first render,
@@ -9867,8 +9867,8 @@
  * create it within the app, perhaps inside the top-level component. To prevent
  * a new Checkpoints object being created every time the app renders or
  * re-renders, since v5.0 this hook performs the creation in an effect. As a
- * result it will return `undefined` on the brief first render (or if the
- * Store is not yet defined), which you should defend against.
+ * result it will return `undefined` on the brief first render (or if the Store
+ * is not yet defined), which you should defend against.
  *
  * If your `create` function contains other dependencies, the changing of which
  * should also cause the Checkpoints object to be recreated, you can provide
