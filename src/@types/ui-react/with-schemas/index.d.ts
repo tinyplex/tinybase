@@ -106,6 +106,11 @@ import type {
   Metrics,
 } from '../../metrics/with-schemas/index.d.ts';
 import type {
+  PersistedStore,
+  Persister,
+  Persists,
+} from '../../persisters/with-schemas/index.d.ts';
+import type {
   Queries,
   ResultCell,
   ResultCellIdsListener,
@@ -120,7 +125,6 @@ import type {
   ResultTableListener,
 } from '../../queries/with-schemas/index.d.ts';
 import type {MergeableStore} from '../../mergeable-store/with-schemas/index.d.ts';
-import type {Persister} from '../../persisters/with-schemas/index.d.ts';
 import type {ReactElement} from 'react';
 import type {Synchronizer} from '../../synchronizers/with-schemas/index.d.ts';
 
@@ -1191,14 +1195,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useCreatePersister
   useCreatePersister: <
-    PersisterOrUndefined extends Persister<Schemas> | undefined,
+    Persist extends Persists,
+    PersisterOrUndefined extends Persister<Schemas, Persist> | undefined,
   >(
-    store: Store<Schemas> | undefined,
-    create: (
-      store: Store<Schemas>,
-    ) => PersisterOrUndefined | Promise<PersisterOrUndefined>,
+    store: PersistedStore<Schemas, Persist> | undefined,
+    create: (store: PersistedStore<Schemas, Persist>) => PersisterOrUndefined,
     createDeps?: React.DependencyList,
-    destroy?: (persister: Persister<Schemas>) => void,
+    destroy?: (persister: Persister<Schemas, Persist>) => void,
     destroyDeps?: React.DependencyList,
   ) => PersisterOrUndefined;
 
