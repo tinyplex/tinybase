@@ -135,6 +135,24 @@
  */
 /// CheckpointsOrCheckpointsId
 /**
+ * The PersisterOrPersisterId type is used when you need to refer to a Persister
+ * object in a React hook or component.
+ *
+ * In some simple cases you will already have a direct reference to the
+ * Persister object.
+ *
+ * This module also includes a Provider component that can be used to wrap
+ * multiple Persister objects into a context that can be used throughout the
+ * app. In this case you will want to refer to a Persister object by its Id in
+ * that context.
+ *
+ * Many hooks and components in this ui-react module take this type as a
+ * parameter or a prop, allowing you to pass in either the Persister or its Id.
+ * @category Identity
+ * @since v5.3.0
+ */
+/// PersisterOrPersisterId
+/**
  * The UndoOrRedoInformation type is an array that you can fetch from a
  * Checkpoints object to that indicates if and how you can move the state of the
  * underlying Store forward or backward.
@@ -11122,6 +11140,267 @@
  */
 /// useCreatePersister
 /**
+ * The usePersisterIds hook is used to retrieve the Ids of all the named
+ * Persister objects present in the current Provider component context.
+ * @returns A list of the Ids in the context.
+ * @example
+ * This example adds two named Persister objects to a Provider context and an
+ * inner component accesses their Ids.
+ *
+ * ```jsx
+ * import {
+ *   Provider,
+ *   usePersisterIds,
+ *   useCreatePersister,
+ *   useCreateStore,
+ * } from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {createStore} from 'tinybase';
+ *
+ * const App = () => {
+ *   const store1 = useCreateStore(createStore);
+ *   const persister1 = useCreatePersister(
+ *     store1,
+ *     (store1) => createSessionPersister(store1, 'pets1'),
+ *   );
+ *   const store2 = useCreateStore(createStore);
+ *   const persister2 = useCreatePersister(
+ *     store2,
+ *     (store2) => createSessionPersister(store2, 'pets2'),
+ *   );
+ *   return (
+ *     <Provider persistersById={{persister1, persister2}}>
+ *       <Pane />
+ *     </Provider>
+ *   );
+ * };
+ * const Pane = () => <span>{JSON.stringify(usePersisterIds())}</span>;
+ *
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App />); // !act
+ *
+ * // ... // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["persister1","persister2"]</span>'
+ * ```
+ * @category Persister hooks
+ * @since v5.3.0
+ */
+/// usePersisterIds
+/**
+ * The usePersister hook is used to get a reference to a Persister object from
+ * within a Provider component context.
+ *
+ * A Provider component is used to wrap part of an application in a context. It
+ * can contain a default Persister object (or a set of Persister objects named
+ * by Id) that can be easily accessed without having to be passed down as props
+ * through every component.
+ *
+ * The usePersister hook lets you either get a reference to the default
+ * Persister object (when called without a parameter), or one of the Persister
+ * objects that are named by Id (when called with an Id parameter).
+ * @param id An optional Id for accessing a Persister object that was named with
+ * an Id in the Provider.
+ * @returns A reference to the Persister object (or `undefined` if not within a
+ * Provider context, or if the requested Persister object does not exist).
+ * @example
+ * This example creates a Provider context into which a default Persister
+ * object is provided. A component within it then uses the usePersister hook
+ * to get a reference to the Persister object again, without the need to have
+ * it passed as a prop.
+ *
+ * ```jsx
+ * import {Provider, usePersister} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {createStore} from 'tinybase';
+ *
+ * const App = ({persister}) => (
+ *   <Provider persister={persister}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>{usePersister().getStatus()}</span>
+ * );
+ *
+ * const persister = createSessionPersister(createStore(), 'pets');
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App persister={persister} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Persister object is
+ * provided, named by Id. A component within it then uses the usePersister
+ * hook with that Id to get a reference to the Persister object again, without
+ * the need to have it passed as a prop.
+ *
+ * ```jsx
+ * import {Provider, usePersister} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {createStore} from 'tinybase';
+ *
+ * const App = ({persister}) => (
+ *   <Provider persistersById={{petPersister: persister}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>
+ *     {usePersister('petPersister').getStatus()}
+ *   </span>
+ * );
+ *
+ * const persister = createSessionPersister(createStore(), 'pets');
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App persister={persister} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @category Persister hooks
+ * @since v5.3.0
+ */
+/// usePersister
+/**
+ * The usePersisterOrPersisterById hook is used to get a reference to a
+ * Persister object from within a Provider component context, _or_ have it
+ * passed directly to this hook.
+ *
+ * This is mostly of use when you are developing a component that needs a
+ * Persister object and which might have been passed in explicitly to the
+ * component or is to be picked up from the context by Id (a common pattern for
+ * Persister-based components).
+ *
+ * This is unlikely to be used often. For most situations, you will want to use
+ * the usePersister hook.
+ * @param persisterOrPersisterId Either an Id for accessing a Persister object
+ * that was named with an Id in the Provider, or the Persister object itself.
+ * @returns A reference to the Persister object (or `undefined` if not within a
+ * Provider context, or if the requested Persister object does not exist).
+ * @example
+ * This example creates a Provider context into which a default Persister
+ * object is provided. A component within it then uses the
+ * usePersisterOrPersisterById hook to get a reference to the Persister
+ * object again, without the need to have it passed as a prop. Note however,
+ * that unlike the usePersister hook example, this component would also work
+ * if you were to pass the Persister object directly into it, making it more
+ * portable.
+ *
+ * ```jsx
+ * import {
+ *   Provider,
+ *   usePersisterOrPersisterById,
+ * } from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {createStore} from 'tinybase';
+ *
+ * const App = ({persister}) => (
+ *   <Provider persister={persister}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = ({persister}) => (
+ *   <span>{usePersisterOrPersisterById(persister).getStatus()}</span>
+ * );
+ *
+ * const persister = createSessionPersister(createStore());
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App persister={persister} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @category Persister hooks
+ * @since v5.3.0
+ */
+/// usePersisterOrPersisterById
+/**
+ * The useProvidePersister hook is used to add a Persister object by Id to a
+ * Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register a Persister object by Id in a context by using the
+ * `persistersById` prop of the top-level Provider component. This hook,
+ * however, lets you dynamically add a new Persister object to the context, from
+ * within a component. This is useful for applications where the set of
+ * Persister objects is not known at the time of the first render of the root
+ * Provider.
+ *
+ *  A Persister object added to the Provider context in this way will be
+ *  available to other components within the context (using the usePersister
+ *  hook and so on). If you use the same Id as an existing Persister object
+ *  registration, the new one will take priority over one provided by the
+ *  `persistersById` prop.
+ *
+ *  Note that other components that consume a Persister object registered like
+ *  this should defend against it being undefined at first. On the first render,
+ *  the other component will likely not yet have completed the registration. In
+ *  the example below, we use the null-safe `usePersister('petPersister')?` to
+ *  do this.
+ * @param persisterId The Id of the Persister object to be registered with the
+ * Provider.
+ * @param persister The Persister object to be registered.
+ * @example
+ * This example creates a Provider context. A child component registers a
+ * Persister object into it which is then consumable by a peer child
+ * component.
+ *
+ * ```jsx
+ * import {
+ *   Provider,
+ *   usePersister,
+ *   useCreatePersister,
+ *   useCreateStore,
+ *   useProvidePersister,
+ * } from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {createStore} from 'tinybase';
+ *
+ * const App = () => (
+ *   <Provider>
+ *     <RegisterPersister />
+ *     <ConsumePersister />
+ *   </Provider>
+ * );
+ * const RegisterPersister = () => {
+ *   const store = useCreateStore(() =>
+ *     createStore().setCell('pets', 'fido', 'color', 'brown'),
+ *   );
+ *   const persister = useCreatePersister(
+ *     store,
+ *     async (store) => await createSessionPersister(store, 'pets'),
+ *   );
+ *   useProvidePersister('petPersister', persister);
+ *   return null;
+ * };
+ * const ConsumePersister = () => (
+ *   <span>{usePersister('petPersister')?.getStatus()}</span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ *
+ * // ... // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @category Persister hooks
+ * @since v5.3.0
+ */
+/// useProvidePersister
+/**
  * The useCreateSynchronizer hook is used to create a Synchronizer within a
  * React application along with convenient memoization and callbacks.
  *
@@ -12396,6 +12675,20 @@
    * @since v1.0.0
    */
   /// ProviderProps.checkpointsById
+  /**
+   * A default single Persister object that will be available within the
+   * Provider context.
+   * @category Prop
+   * @since v5.3.0
+   */
+  /// ProviderProps.persister
+  /**
+   * An object containing multiple Persister objects that will be available
+   * within the Provider context by their Id.
+   * @category Prop
+   * @since v5.3.0
+   */
+  /// ProviderProps.persistersById
 }
 /**
  * ComponentReturnType is a simple alias for what a React component can return:
@@ -12408,11 +12701,11 @@
  * The Provider component is used to wrap part of an application in a context
  * that provides default objects to be used by hooks and components within.
  *
- * Store, Metrics, Indexes, Relationships, Queries, and Checkpoints objects can
- * be passed into the context of an application and used throughout. One of each
- * type of object can be provided as a default within the context. Additionally,
- * multiple of each type of object can be provided in an Id-keyed map to the
- * `___ById` props.
+ * Store, Metrics, Indexes, Relationships, Queries, Checkpoints, and Persister
+ * objects can be passed into the context of an application and used throughout.
+ * One of each type of object can be provided as a default within the context.
+ * Additionally, multiple of each type of object can be provided in an Id-keyed
+ * map to the `___ById` props.
  *
  * Provider contexts can be nested and the objects passed in will be merged. For
  * example, if an outer context contains a default Metrics object and an inner
