@@ -7,12 +7,19 @@ import type {
   RelationshipsOrRelationshipsId,
   StoreOrStoreId,
   useCheckpoints as useCheckpointsDecl,
+  useCheckpointsIds as useCheckpointsIdsDecl,
   useIndexes as useIndexesDecl,
+  useIndexesIds as useIndexesIdsDecl,
   useMetrics as useMetricsDecl,
+  useMetricsIds as useMetricsIdsDecl,
   usePersister as usePersisterDecl,
+  usePersisterIds as usePersisterIdsDecl,
   useQueries as useQueriesDecl,
+  useQueriesIds as useQueriesIdsDecl,
   useRelationships as useRelationshipsDecl,
+  useRelationshipsIds as useRelationshipsIdsDecl,
   useStore as useStoreDecl,
+  useStoreIds as useStoreIdsDecl,
 } from '../@types/ui-react/index.d.ts';
 import {GLOBAL, isString, isUndefined} from '../common/other.ts';
 import type {Id, Ids} from '../@types/common/index.d.ts';
@@ -126,6 +133,8 @@ const useProvideThing = <Offset extends Offsets>(
 export const useThingIds = (offset: number): Ids =>
   objIds((useContext(Context)[offset] ?? {}) as IdObj<unknown>);
 
+export const useStoreIds: typeof useStoreIdsDecl = () => useThingIds(1);
+
 export const useStore: typeof useStoreDecl = (id?: Id): Store | undefined =>
   useThing(id, 0);
 
@@ -135,6 +144,8 @@ export const useStoreOrStoreById = (
 
 export const useProvideStore = (storeId: Id, store: Store): void =>
   useProvideThing(storeId, store, 0);
+
+export const useMetricsIds: typeof useMetricsIdsDecl = () => useThingIds(3);
 
 export const useMetrics: typeof useMetricsDecl = (
   id?: Id,
@@ -147,6 +158,8 @@ export const useMetricsOrMetricsById = (
 export const useProvideMetrics = (metricsId: Id, metrics: Metrics): void =>
   useProvideThing(metricsId, metrics, 1);
 
+export const useIndexesIds: typeof useIndexesIdsDecl = () => useThingIds(5);
+
 export const useIndexes: typeof useIndexesDecl = (
   id?: Id,
 ): Indexes | undefined => useThing(id, 4);
@@ -157,6 +170,9 @@ export const useIndexesOrIndexesById = (
 
 export const useProvideIndexes = (indexesId: Id, indexes: Indexes): void =>
   useProvideThing(indexesId, indexes, 2);
+
+export const useRelationshipsIds: typeof useRelationshipsIdsDecl = () =>
+  useThingIds(7);
 
 export const useRelationships: typeof useRelationshipsDecl = (
   id?: Id,
@@ -172,6 +188,8 @@ export const useProvideRelationships = (
   relationships: Relationships,
 ): void => useProvideThing(relationshipsId, relationships, 3);
 
+export const useQueriesIds: typeof useQueriesIdsDecl = () => useThingIds(9);
+
 export const useQueries: typeof useQueriesDecl = (
   id?: Id,
 ): Queries | undefined => useThing(id, 8);
@@ -182,6 +200,9 @@ export const useQueriesOrQueriesById = (
 
 export const useProvideQueries = (queriesId: Id, queries: Queries): void =>
   useProvideThing(queriesId, queries, 4);
+
+export const useCheckpointsIds: typeof useCheckpointsIdsDecl = () =>
+  useThingIds(11);
 
 export const useCheckpoints: typeof useCheckpointsDecl = (
   id?: Id,
@@ -196,6 +217,9 @@ export const useProvideCheckpoints = (
   checkpointsId: Id,
   checkpoints: Checkpoints,
 ): void => useProvideThing(checkpointsId, checkpoints, 5);
+
+export const usePersisterIds: typeof usePersisterIdsDecl = () =>
+  useThingIds(13);
 
 export const usePersister: typeof usePersisterDecl = (
   id?: Id,
