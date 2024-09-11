@@ -153,6 +153,25 @@
  */
 /// PersisterOrPersisterId
 /**
+ * The SynchronizerOrSynchronizerId type is used when you need to refer to a
+ * Synchronizer object in a React hook or component.
+ *
+ * In some simple cases you will already have a direct reference to the
+ * Synchronizer object.
+ *
+ * This module also includes a Provider component that can be used to wrap
+ * multiple Synchronizer objects into a context that can be used throughout the
+ * app. In this case you will want to refer to a Synchronizer object by its Id
+ * in that context.
+ *
+ * Many hooks and components in this ui-react module take this type as a
+ * parameter or a prop, allowing you to pass in either the Synchronizer or its
+ * Id.
+ * @category Identity
+ * @since v5.3.0
+ */
+/// SynchronizerOrSynchronizerId
+/**
  * The UndoOrRedoInformation type is an array that you can fetch from a
  * Checkpoints object to that indicates if and how you can move the state of the
  * underlying Store forward or backward.
@@ -11536,6 +11555,282 @@
  */
 /// useCreateSynchronizer
 /**
+ * The useSynchronizerIds hook is used to retrieve the Ids of all the named
+ * Synchronizer objects present in the current Provider component context.
+ * @returns A list of the Ids in the context.
+ * @example
+ * This example adds two named Synchronizer objects to a Provider context and an
+ * inner component accesses their Ids.
+ *
+ * ```jsx
+ * import {
+ *   Provider,
+ *   useSynchronizerIds,
+ *   useCreateSynchronizer,
+ *   useCreateStore,
+ * } from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ *
+ * const App = () => {
+ *   const store1 = useCreateStore(createStore);
+ *   const synchronizer1 = useCreateSynchronizer(
+ *     store1,
+ *     (store1) =>
+ *       createWsSynchronizer(store1, new WebSocket('ws://localhost:8041/')),
+ *   );
+ *   const store2 = useCreateStore(createStore);
+ *   const synchronizer2 = useCreateSynchronizer(
+ *     store2,
+ *     (store2) =>
+ *       createWsSynchronizer(store2, new WebSocket('ws://localhost:8042/')),
+ *   );
+ *   return (
+ *     <Provider synchronizersById={{synchronizer1, synchronizer2}}>
+ *       <Pane />
+ *     </Provider>
+ *   );
+ * };
+ * const Pane = () => <span>{JSON.stringify(useSynchronizerIds())}</span>;
+ *
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App />); // !act
+ *
+ * // ... // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["synchronizer1","synchronizer2"]</span>'
+ * ```
+ * @category Synchronizer hooks
+ * @since v5.3.0
+ */
+/// useSynchronizerIds
+/**
+ * The useSynchronizer hook is used to get a reference to a Synchronizer object
+ * from within a Provider component context.
+ *
+ * A Provider component is used to wrap part of an application in a context. It
+ * can contain a default Synchronizer object (or a set of Synchronizer objects
+ * named by Id) that can be easily accessed without having to be passed down as
+ * props through every component.
+ *
+ * The useSynchronizer hook lets you either get a reference to the default
+ * Synchronizer object (when called without a parameter), or one of the
+ * Synchronizer objects that are named by Id (when called with an Id parameter).
+ * @param id An optional Id for accessing a Synchronizer object that was named
+ * with an Id in the Provider.
+ * @returns A reference to the Synchronizer object (or `undefined` if not within
+ * a Provider context, or if the requested Synchronizer object does not exist).
+ * @example
+ * This example creates a Provider context into which a default Synchronizer
+ * object is provided. A component within it then uses the useSynchronizer hook
+ * to get a reference to the Synchronizer object again, without the need to have
+ * it passed as a prop.
+ *
+ * ```jsx
+ * import {Provider, useSynchronizer} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ *
+ * const App = ({synchronizer}) => (
+ *   <Provider synchronizer={synchronizer}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>{useSynchronizer().getStatus()}</span>
+ * );
+ *
+ * const synchronizer = createWsSynchronizer(
+ *   createStore(),
+ *   new WebSocket('ws://localhost:8041/'),
+ * );
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App synchronizer={synchronizer} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Synchronizer object is
+ * provided, named by Id. A component within it then uses the useSynchronizer
+ * hook with that Id to get a reference to the Synchronizer object again,
+ * without the need to have it passed as a prop.
+ *
+ * ```jsx
+ * import {Provider, useSynchronizer} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ *
+ * const App = ({synchronizer}) => (
+ *   <Provider synchronizersById={{petSynchronizer: synchronizer}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>
+ *     {useSynchronizer('petSynchronizer').getStatus()}
+ *   </span>
+ * );
+ *
+ * const synchronizer = createWsSynchronizer(
+ *   createStore(),
+ *   new WebSocket('ws://localhost:8041/'),
+ * );
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App synchronizer={synchronizer} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @category Synchronizer hooks
+ * @since v5.3.0
+ */
+/// useSynchronizer
+/**
+ * The useSynchronizerOrSynchronizerById hook is used to get a reference to a
+ * Synchronizer object from within a Provider component context, _or_ have it
+ * passed directly to this hook.
+ *
+ * This is mostly of use when you are developing a component that needs a
+ * Synchronizer object and which might have been passed in explicitly to the
+ * component or is to be picked up from the context by Id (a common pattern for
+ * Synchronizer-based components).
+ *
+ * This is unlikely to be used often. For most situations, you will want to use
+ * the useSynchronizer hook.
+ * @param synchronizerOrSynchronizerId Either an Id for accessing a Synchronizer
+ * object that was named with an Id in the Provider, or the Synchronizer object
+ * itself.
+ * @returns A reference to the Synchronizer object (or `undefined` if not within
+ * a Provider context, or if the requested Synchronizer object does not exist).
+ * @example
+ * This example creates a Provider context into which a default Synchronizer
+ * object is provided. A component within it then uses the
+ * useSynchronizerOrSynchronizerById hook to get a reference to the Synchronizer
+ * object again, without the need to have it passed as a prop. Note however,
+ * that unlike the useSynchronizer hook example, this component would also work
+ * if you were to pass the Synchronizer object directly into it, making it more
+ * portable.
+ *
+ * ```jsx
+ * import {
+ *   Provider,
+ *   useSynchronizerOrSynchronizerById,
+ * } from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ *
+ * const App = ({synchronizer}) => (
+ *   <Provider synchronizer={synchronizer}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = ({synchronizer}) => (
+ *   <span>{useSynchronizerOrSynchronizerById(synchronizer).getStatus()}</span>
+ * );
+ *
+ * const synchronizer = createWsSynchronizer(
+ *   createStore(),
+ *   new WebSocket('ws://localhost:8041/'),
+ * );
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App synchronizer={synchronizer} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @category Synchronizer hooks
+ * @since v5.3.0
+ */
+/// useSynchronizerOrSynchronizerById
+/**
+ * The useProvideSynchronizer hook is used to add a Synchronizer object by Id to
+ * a Provider component, but imperatively from a component within it.
+ *
+ * Normally you will register a Synchronizer object by Id in a context by using
+ * the `synchronizersById` prop of the top-level Provider component. This hook,
+ * however, lets you dynamically add a new Synchronizer object to the context,
+ * from within a component. This is useful for applications where the set of
+ * Synchronizer objects is not known at the time of the first render of the root
+ * Provider.
+ *
+ *  A Synchronizer object added to the Provider context in this way will be
+ *  available to other components within the context (using the useSynchronizer
+ *  hook and so on). If you use the same Id as an existing Synchronizer object
+ *  registration, the new one will take priority over one provided by the
+ *  `synchronizersById` prop.
+ *
+ *  Note that other components that consume a Synchronizer object registered
+ *  like this should defend against it being undefined at first. On the first
+ *  render, the other component will likely not yet have completed the
+ *  registration. In the example below, we use the null-safe
+ *  `useSynchronizer('petSynchronizer')?` to do this.
+ * @param synchronizerId The Id of the Synchronizer object to be registered with
+ * the Provider.
+ * @param synchronizer The Synchronizer object to be registered.
+ * @example
+ * This example creates a Provider context. A child component registers a
+ * Synchronizer object into it which is then consumable by a peer child
+ * component.
+ *
+ * ```jsx
+ * import {
+ *   Provider,
+ *   useSynchronizer,
+ *   useCreateSynchronizer,
+ *   useCreateStore,
+ *   useProvideSynchronizer,
+ * } from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ *
+ * const App = () => (
+ *   <Provider>
+ *     <RegisterSynchronizer />
+ *     <ConsumeSynchronizer />
+ *   </Provider>
+ * );
+ * const RegisterSynchronizer = () => {
+ *   const store = useCreateStore(() =>
+ *     createStore().setCell('pets', 'fido', 'color', 'brown'),
+ *   );
+ *   const synchronizer = useCreateSynchronizer(
+ *     store,
+ *     async (store) => await createWsSynchronizer(
+ *       store,
+ *       new WebSocket('ws://localhost:8041/'),
+ *     ),
+ *   );
+ *   useProvideSynchronizer('petSynchronizer', synchronizer);
+ *   return null;
+ * };
+ * const ConsumeSynchronizer = () => (
+ *   <span>{useSynchronizer('petSynchronizer')?.getStatus()}</span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ *
+ * // ... // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @category Synchronizer hooks
+ * @since v5.3.0
+ */
+/// useProvideSynchronizer
+/**
  * The ExtraProps type represents a set of arbitrary additional props.
  * @category Props
  * @since v1.0.0
@@ -12701,11 +12996,11 @@
  * The Provider component is used to wrap part of an application in a context
  * that provides default objects to be used by hooks and components within.
  *
- * Store, Metrics, Indexes, Relationships, Queries, Checkpoints, and Persister
- * objects can be passed into the context of an application and used throughout.
- * One of each type of object can be provided as a default within the context.
- * Additionally, multiple of each type of object can be provided in an Id-keyed
- * map to the `___ById` props.
+ * Store, Metrics, Indexes, Relationships, Queries, Checkpoints, Persister, and
+ * Synchronizer objects can be passed into the context of an application and
+ * used throughout. One of each type of object can be provided as a default
+ * within the context. Additionally, multiple of each type of object can be
+ * provided in an Id-keyed map to the `___ById` props.
  *
  * Provider contexts can be nested and the objects passed in will be merged. For
  * example, if an outer context contains a default Metrics object and an inner
