@@ -354,7 +354,7 @@ const useListenable = (
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
     [thing, returnType, listenable, ...args],
   );
-  return useSyncExternalStore(subscribe, getResult);
+  return useSyncExternalStore(subscribe, getResult, getResult);
 };
 
 const useListener = (
