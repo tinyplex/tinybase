@@ -60,7 +60,7 @@ import {arrayForEach, arrayPush} from './array.ts';
 import {collDel, collForEach, collIsEmpty} from './coll.ts';
 import {ifNotUndefined, isUndefined, size} from './other.ts';
 import {EMPTY_STRING} from './strings.ts';
-import {StatusListener} from '../@types/persisters/index.js';
+import type {StatusListener} from '../@types/persisters/index.d.ts';
 import {getPoolFunctions} from './pool.ts';
 
 export type IdSetNode = Node<IdOrNull, IdSet> | IdSet;

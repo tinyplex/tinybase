@@ -11169,9 +11169,9 @@
  * ```jsx
  * import {
  *   Provider,
- *   usePersisterIds,
  *   useCreatePersister,
  *   useCreateStore,
+ *   usePersisterIds,
  * } from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
@@ -11180,14 +11180,12 @@
  *
  * const App = () => {
  *   const store1 = useCreateStore(createStore);
- *   const persister1 = useCreatePersister(
- *     store1,
- *     (store1) => createSessionPersister(store1, 'pets1'),
+ *   const persister1 = useCreatePersister(store1, (store1) =>
+ *     createSessionPersister(store1, 'pets1'),
  *   );
  *   const store2 = useCreateStore(createStore);
- *   const persister2 = useCreatePersister(
- *     store2,
- *     (store2) => createSessionPersister(store2, 'pets2'),
+ *   const persister2 = useCreatePersister(store2, (store2) =>
+ *     createSessionPersister(store2, 'pets2'),
  *   );
  *   return (
  *     <Provider persistersById={{persister1, persister2}}>
@@ -11242,9 +11240,7 @@
  *     <Pane />
  *   </Provider>
  * );
- * const Pane = () => (
- *   <span>{usePersister().getStatus()}</span>
- * );
+ * const Pane = () => <span>{usePersister().getStatus()}</span>;
  *
  * const persister = createSessionPersister(createStore(), 'pets');
  * const app = document.createElement('div');
@@ -11271,11 +11267,7 @@
  *     <Pane />
  *   </Provider>
  * );
- * const Pane = () => (
- *   <span>
- *     {usePersister('petPersister').getStatus()}
- *   </span>
- * );
+ * const Pane = () => <span>{usePersister('petPersister').getStatus()}</span>;
  *
  * const persister = createSessionPersister(createStore(), 'pets');
  * const app = document.createElement('div');
@@ -11314,10 +11306,7 @@
  * portable.
  *
  * ```jsx
- * import {
- *   Provider,
- *   usePersisterOrPersisterById,
- * } from 'tinybase/ui-react';
+ * import {Provider, usePersisterOrPersisterById} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
@@ -11376,9 +11365,9 @@
  * ```jsx
  * import {
  *   Provider,
- *   usePersister,
  *   useCreatePersister,
  *   useCreateStore,
+ *   usePersister,
  *   useProvidePersister,
  * } from 'tinybase/ui-react';
  * import React from 'react';
@@ -11565,9 +11554,9 @@
  * ```jsx
  * import {
  *   Provider,
- *   useSynchronizerIds,
- *   useCreateSynchronizer,
  *   useCreateStore,
+ *   useCreateSynchronizer,
+ *   useSynchronizerIds,
  * } from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
@@ -11576,16 +11565,12 @@
  *
  * const App = () => {
  *   const store1 = useCreateStore(createStore);
- *   const synchronizer1 = useCreateSynchronizer(
- *     store1,
- *     (store1) =>
- *       createWsSynchronizer(store1, new WebSocket('ws://localhost:8041/')),
+ *   const synchronizer1 = useCreateSynchronizer(store1, (store1) =>
+ *     createWsSynchronizer(store1, new WebSocket('ws://localhost:8041/')),
  *   );
  *   const store2 = useCreateStore(createStore);
- *   const synchronizer2 = useCreateSynchronizer(
- *     store2,
- *     (store2) =>
- *       createWsSynchronizer(store2, new WebSocket('ws://localhost:8042/')),
+ *   const synchronizer2 = useCreateSynchronizer(store2, (store2) =>
+ *     createWsSynchronizer(store2, new WebSocket('ws://localhost:8042/')),
  *   );
  *   return (
  *     <Provider synchronizersById={{synchronizer1, synchronizer2}}>
@@ -11640,9 +11625,7 @@
  *     <Pane />
  *   </Provider>
  * );
- * const Pane = () => (
- *   <span>{useSynchronizer().getStatus()}</span>
- * );
+ * const Pane = () => <span>{useSynchronizer().getStatus()}</span>;
  *
  * const synchronizer = createWsSynchronizer(
  *   createStore(),
@@ -11673,9 +11656,7 @@
  *   </Provider>
  * );
  * const Pane = () => (
- *   <span>
- *     {useSynchronizer('petSynchronizer').getStatus()}
- *   </span>
+ *   <span>{useSynchronizer('petSynchronizer').getStatus()}</span>
  * );
  *
  * const synchronizer = createWsSynchronizer(
@@ -11734,7 +11715,9 @@
  *   </Provider>
  * );
  * const Pane = ({synchronizer}) => (
- *   <span>{useSynchronizerOrSynchronizerById(synchronizer).getStatus()}</span>
+ *   <span>
+ *     {useSynchronizerOrSynchronizerById(synchronizer).getStatus()}
+ *   </span>
  * );
  *
  * const synchronizer = createWsSynchronizer(
@@ -11784,10 +11767,10 @@
  * ```jsx
  * import {
  *   Provider,
- *   useSynchronizer,
- *   useCreateSynchronizer,
  *   useCreateStore,
+ *   useCreateSynchronizer,
  *   useProvideSynchronizer,
+ *   useSynchronizer,
  * } from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
@@ -11806,10 +11789,11 @@
  *   );
  *   const synchronizer = useCreateSynchronizer(
  *     store,
- *     async (store) => await createWsSynchronizer(
- *       store,
- *       new WebSocket('ws://localhost:8041/'),
- *     ),
+ *     async (store) =>
+ *       await createWsSynchronizer(
+ *         store,
+ *         new WebSocket('ws://localhost:8041/'),
+ *       ),
  *   );
  *   useProvideSynchronizer('petSynchronizer', synchronizer);
  *   return null;
@@ -12984,6 +12968,20 @@
    * @since v5.3.0
    */
   /// ProviderProps.persistersById
+  /**
+   * A default single Synchronizer object that will be available within the
+   * Provider context.
+   * @category Prop
+   * @since v5.3.0
+   */
+  /// ProviderProps.synchronizer
+  /**
+   * An object containing multiple Synchronizer objects that will be available
+   * within the Provider context by their Id.
+   * @category Prop
+   * @since v5.3.0
+   */
+  /// ProviderProps.synchronizersById
 }
 /**
  * ComponentReturnType is a simple alias for what a React component can return:
