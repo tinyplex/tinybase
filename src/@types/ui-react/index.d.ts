@@ -93,6 +93,9 @@ export type QueriesOrQueriesId = Queries | Id;
 /// CheckpointsOrCheckpointsId
 export type CheckpointsOrCheckpointsId = Checkpoints | Id;
 
+/// PersisterOrPersisterId
+export type PersisterOrPersisterId = Persister | Id;
+
 /// UndoOrRedoInformation
 export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
 
@@ -1006,6 +1009,23 @@ export function useCreatePersister<
   destroyDeps?: React.DependencyList,
 ): PersisterOrUndefined;
 
+/// usePersisterIds
+export function usePersisterIds(): Ids;
+
+/// usePersister
+export function usePersister(id?: Id): Persister | undefined;
+
+/// usePersisterOrPersisterById
+export function usePersisterOrPersisterById(
+  persisterOrPersisterId?: PersisterOrPersisterId,
+): Persister | undefined;
+
+// useProvidePersister
+export function useProvidePersister(
+  persisterId: Id,
+  persister: Persister,
+): void;
+
 /// useCreateSynchronizer
 export function useCreateSynchronizer<
   SynchronizerOrUndefined extends Synchronizer | undefined,
@@ -1380,6 +1400,10 @@ export type ProviderProps = {
   readonly checkpoints?: Checkpoints;
   /// ProviderProps.checkpointsById
   readonly checkpointsById?: {[checkpointsId: Id]: Checkpoints};
+  /// ProviderProps.persister
+  readonly persister?: Persister;
+  /// ProviderProps.persistersById
+  readonly persistersById?: {[persisterId: Id]: Persister};
 };
 
 /// ComponentReturnType

@@ -24,6 +24,7 @@ import type {
   LocalRowsProps,
   MetricProps,
   MetricsOrMetricsId,
+  PersisterOrPersisterId,
   ProviderProps,
   QueriesOrQueriesId,
   RelationshipsOrRelationshipsId,
@@ -141,6 +142,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// CheckpointsOrCheckpointsId
   CheckpointsOrCheckpointsId: CheckpointsOrCheckpointsId<Schemas>;
+
+  /// PersisterOrPersisterId
+  PersisterOrPersisterId: PersisterOrPersisterId<Schemas>;
 
   /// UndoOrRedoInformation
   UndoOrRedoInformation: UndoOrRedoInformation;
@@ -1197,6 +1201,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     destroy?: (persister: Persister<Schemas>) => void,
     destroyDeps?: React.DependencyList,
   ) => PersisterOrUndefined;
+
+  /// usePersisterIds
+  usePersisterIds: () => Ids;
+
+  /// usePersister
+  usePersister: (id?: Id) => Persister<Schemas> | undefined;
+
+  /// usePersisterOrPersisterById
+  usePersisterOrPersisterById: (
+    persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
+  ) => Persister<Schemas> | undefined;
+
+  // useProvidePersister
+  useProvidePersister: (persisterId: Id, persister: Persister<Schemas>) => void;
 
   /// useCreateSynchronizer
   useCreateSynchronizer: <

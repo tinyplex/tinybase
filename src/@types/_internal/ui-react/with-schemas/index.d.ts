@@ -12,6 +12,7 @@ import type {
 import type {Checkpoints} from '../../../checkpoints/with-schemas/index.d.ts';
 import type {Indexes} from '../../../indexes/with-schemas/index.d.ts';
 import type {Metrics} from '../../../metrics/with-schemas/index.d.ts';
+import type {Persister} from '../../../persisters/with-schemas/index.d.ts';
 import type {Queries} from '../../../queries/with-schemas/index.d.ts';
 import type {Relationships} from '../../../relationships/with-schemas/index.d.ts';
 
@@ -35,6 +36,10 @@ type QueriesOrQueriesId<Schemas extends OptionalSchemas> =
 
 type CheckpointsOrCheckpointsId<Schemas extends OptionalSchemas> =
   | Checkpoints<Schemas>
+  | Id;
+
+type PersisterOrPersisterId<Schemas extends OptionalSchemas> =
+  | Persister<Schemas>
   | Id;
 
 type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
@@ -430,6 +435,10 @@ export type ProviderProps<Schemas extends OptionalSchemas> = {
   readonly checkpoints?: Checkpoints<Schemas>;
   /// ProviderProps.checkpointsById
   readonly checkpointsById?: {[checkpointsId: Id]: Checkpoints<Schemas>};
+  /// ProviderProps.persister
+  readonly persister?: Persister<Schemas>;
+  /// ProviderProps.persistersById
+  readonly persistersById?: {[persisterId: Id]: Persister<Schemas>};
 };
 
 export type ComponentReturnType = ReactElement<any, any> | null;
