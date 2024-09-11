@@ -236,6 +236,8 @@ export const Provider: typeof ProviderDecl = ({
   queriesById,
   checkpoints,
   checkpointsById,
+  persister,
+  persistersById,
   children,
 }: ProviderProps & {readonly children: React.ReactNode}): any => {
   type ThingsById<ThingsByOffset> = {
@@ -245,6 +247,7 @@ export const Provider: typeof ProviderDecl = ({
 
   const parentValue = useContext(Context);
   const [extraThingsById, setExtraThingsById] = useState<ExtraThingsById>([
+    {},
     {},
     {},
     {},
@@ -299,6 +302,8 @@ export const Provider: typeof ProviderDecl = ({
           {...parentValue[9], ...queriesById, ...extraThingsById[4]},
           checkpoints ?? parentValue[10],
           {...parentValue[11], ...checkpointsById, ...extraThingsById[5]},
+          persister ?? parentValue[12],
+          {...parentValue[13], ...persistersById, ...extraThingsById[6]},
           addExtraThingById,
           delExtraThingById,
         ],
@@ -316,6 +321,8 @@ export const Provider: typeof ProviderDecl = ({
           queriesById,
           checkpoints,
           checkpointsById,
+          persister,
+          persistersById,
           parentValue,
           addExtraThingById,
           delExtraThingById,

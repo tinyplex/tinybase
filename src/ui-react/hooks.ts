@@ -126,6 +126,7 @@ import type {
   useMetricIds as useMetricIdsDecl,
   useMetricListener as useMetricListenerDecl,
   useMetricsIds as useMetricsIdsDecl,
+  usePersisterIds as usePersisterIdsDecl,
   useQueriesIds as useQueriesIdsDecl,
   useQueryIds as useQueryIdsDecl,
   useRedoInformation as useRedoInformationDecl,
@@ -248,9 +249,12 @@ export {
   useIndexesOrIndexesById,
   useMetrics,
   useMetricsOrMetricsById,
+  usePersister,
+  usePersisterOrPersisterById,
   useProvideCheckpoints,
   useProvideIndexes,
   useProvideMetrics,
+  useProvidePersister,
   useProvideQueries,
   useProvideRelationships,
   useProvideStore,
@@ -1908,6 +1912,9 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
   );
   return persister;
 };
+
+export const usePersisterIds: typeof usePersisterIdsDecl = () =>
+  useThingIds(13);
 
 export const useCreateSynchronizer: typeof useCreateSynchronizerDecl = <
   SynchronizerOrUndefined extends Synchronizer | undefined,

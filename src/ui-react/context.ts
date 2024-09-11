@@ -2,12 +2,14 @@ import type {
   CheckpointsOrCheckpointsId,
   IndexesOrIndexesId,
   MetricsOrMetricsId,
+  PersisterOrPersisterId,
   QueriesOrQueriesId,
   RelationshipsOrRelationshipsId,
   StoreOrStoreId,
   useCheckpoints as useCheckpointsDecl,
   useIndexes as useIndexesDecl,
   useMetrics as useMetricsDecl,
+  usePersister as usePersisterDecl,
   useQueries as useQueriesDecl,
   useRelationships as useRelationshipsDecl,
   useStore as useStoreDecl,
@@ -18,6 +20,7 @@ import {IdObj, objEnsure, objGet, objIds} from '../common/obj.ts';
 import type {Checkpoints} from '../@types/checkpoints/index.d.ts';
 import type {Indexes} from '../@types/indexes/index.d.ts';
 import type {Metrics} from '../@types/metrics/index.d.ts';
+import type {Persister} from '../@types/persisters/index.d.ts';
 import type {Queries} from '../@types/queries/index.d.ts';
 import React from 'react';
 import type {Relationships} from '../@types/relationships/index.d.ts';
@@ -32,7 +35,9 @@ export type Thing =
   | Indexes
   | Relationships
   | Queries
-  | Checkpoints;
+  | Checkpoints
+  | Persister;
+
 export type ThingsByOffset = [
   Store,
   Metrics,
@@ -40,8 +45,9 @@ export type ThingsByOffset = [
   Relationships,
   Queries,
   Checkpoints,
+  Persister,
 ];
-export type Offsets = 0 | 1 | 2 | 3 | 4 | 5;
+export type Offsets = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
 type ContextValue = [
   store?: Store,
@@ -56,6 +62,8 @@ type ContextValue = [
   queriesById?: {[queriesId: Id]: Queries},
   checkpoints?: Checkpoints,
   checkpointsById?: {[checkpointsId: Id]: Checkpoints},
+  persister?: Persister,
+  persistersById?: {[persisterId: Id]: Persister},
   addExtraThingById?: <Offset extends Offsets>(
     offset: Offset,
     id: string,
@@ -91,7 +99,8 @@ const useThingOrThingById = <
     | Indexes
     | Relationships
     | Queries
-    | Checkpoints,
+    | Checkpoints
+    | Persister,
 >(
   thingOrThingId: Thing | Id | undefined,
   offset: number,
@@ -107,7 +116,7 @@ const useProvideThing = <Offset extends Offsets>(
   thing: ThingsByOffset[Offset],
   offset: Offset,
 ): void => {
-  const {12: addExtraThingById, 13: delExtraThingById} = useContext(Context);
+  const {14: addExtraThingById, 15: delExtraThingById} = useContext(Context);
   useEffect(() => {
     addExtraThingById?.(offset, thingId, thing);
     return () => delExtraThingById?.(offset, thingId);
@@ -187,3 +196,16 @@ export const useProvideCheckpoints = (
   checkpointsId: Id,
   checkpoints: Checkpoints,
 ): void => useProvideThing(checkpointsId, checkpoints, 5);
+
+export const usePersister: typeof usePersisterDecl = (
+  id?: Id,
+): Persister | undefined => useThing(id, 12);
+
+export const usePersisterOrPersisterById = (
+  persisterOrPersisterId?: PersisterOrPersisterId,
+): Persister | undefined => useThingOrThingById(persisterOrPersisterId, 12);
+
+export const useProvidePersister = (
+  persisterId: Id,
+  persister: Persister,
+): void => useProvideThing(persisterId, persister, 6);
