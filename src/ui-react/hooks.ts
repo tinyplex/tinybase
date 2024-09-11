@@ -254,6 +254,7 @@ export {
   useProvideQueries,
   useProvideRelationships,
   useProvideStore,
+  useProvideSynchronizer,
   useQueries,
   useQueriesIds,
   useQueriesOrQueriesById,
@@ -263,6 +264,9 @@ export {
   useStore,
   useStoreIds,
   useStoreOrStoreById,
+  useSynchronizer,
+  useSynchronizerIds,
+  useSynchronizerOrSynchronizerById,
 } from './context.ts';
 
 const {
