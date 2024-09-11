@@ -37,6 +37,7 @@ import type {
   SliceProps,
   SortedTableProps,
   StoreOrStoreId,
+  SynchronizerOrSynchronizerId,
   TableProps,
   TablesProps,
   UndoOrRedoInformation,
@@ -149,6 +150,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// PersisterOrPersisterId
   PersisterOrPersisterId: PersisterOrPersisterId<Schemas>;
+
+  /// SynchronizerOrSynchronizerId
+  SynchronizerOrSynchronizerId: SynchronizerOrSynchronizerId<Schemas>;
 
   /// UndoOrRedoInformation
   UndoOrRedoInformation: UndoOrRedoInformation;
@@ -1231,6 +1235,23 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     destroy?: (synchronizer: Synchronizer<Schemas>) => void,
     destroyDeps?: React.DependencyList,
   ) => SynchronizerOrUndefined;
+
+  /// useSynchronizerIds
+  useSynchronizerIds: () => Ids;
+
+  /// useSynchronizer
+  useSynchronizer: (id?: Id) => Synchronizer<Schemas> | undefined;
+
+  /// useSynchronizerOrSynchronizerById
+  useSynchronizerOrSynchronizerById: (
+    synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
+  ) => Synchronizer<Schemas> | undefined;
+
+  // useProvideSynchronizer
+  useProvideSynchronizer: (
+    synchronizerId: Id,
+    synchronizer: Synchronizer<Schemas>,
+  ) => void;
 
   /// ExtraProps
   ExtraProps: ExtraProps;

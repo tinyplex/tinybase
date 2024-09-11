@@ -15,6 +15,7 @@ import type {Metrics} from '../../../metrics/with-schemas/index.d.ts';
 import type {Persister} from '../../../persisters/with-schemas/index.d.ts';
 import type {Queries} from '../../../queries/with-schemas/index.d.ts';
 import type {Relationships} from '../../../relationships/with-schemas/index.d.ts';
+import type {Synchronizer} from '../../../synchronizers/with-schemas/index.d.ts';
 
 type StoreOrStoreId<Schemas extends OptionalSchemas> = Store<Schemas> | Id;
 
@@ -40,6 +41,10 @@ type CheckpointsOrCheckpointsId<Schemas extends OptionalSchemas> =
 
 type PersisterOrPersisterId<Schemas extends OptionalSchemas> =
   | Persister<Schemas>
+  | Id;
+
+type SynchronizerOrSynchronizerId<Schemas extends OptionalSchemas> =
+  | Synchronizer<Schemas>
   | Id;
 
 type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
@@ -439,6 +444,10 @@ export type ProviderProps<Schemas extends OptionalSchemas> = {
   readonly persister?: Persister<Schemas>;
   /// ProviderProps.persistersById
   readonly persistersById?: {[persisterId: Id]: Persister<Schemas>};
+  /// ProviderProps.synchronizer
+  readonly synchronizer?: Synchronizer<Schemas>;
+  /// ProviderProps.synchronizersById
+  readonly synchronizersById?: {[synchronizerId: Id]: Synchronizer<Schemas>};
 };
 
 export type ComponentReturnType = ReactElement<any, any> | null;

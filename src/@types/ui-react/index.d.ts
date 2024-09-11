@@ -96,6 +96,9 @@ export type CheckpointsOrCheckpointsId = Checkpoints | Id;
 /// PersisterOrPersisterId
 export type PersisterOrPersisterId = Persister | Id;
 
+/// SynchronizerOrSynchronizerId
+export type SynchronizerOrSynchronizerId = Synchronizer | Id;
+
 /// UndoOrRedoInformation
 export type UndoOrRedoInformation = [boolean, Callback, Id | undefined, string];
 
@@ -1037,6 +1040,23 @@ export function useCreateSynchronizer<
   destroyDeps?: React.DependencyList,
 ): SynchronizerOrUndefined;
 
+/// useSynchronizerIds
+export function useSynchronizerIds(): Ids;
+
+/// useSynchronizer
+export function useSynchronizer(id?: Id): Synchronizer | undefined;
+
+/// useSynchronizerOrSynchronizerById
+export function useSynchronizerOrSynchronizerById(
+  synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
+): Synchronizer | undefined;
+
+// useProvideSynchronizer
+export function useProvideSynchronizer(
+  synchronizerId: Id,
+  synchronizer: Synchronizer,
+): void;
+
 /// ExtraProps
 export type ExtraProps = {[propName: string]: any};
 
@@ -1404,6 +1424,10 @@ export type ProviderProps = {
   readonly persister?: Persister;
   /// ProviderProps.persistersById
   readonly persistersById?: {[persisterId: Id]: Persister};
+  /// ProviderProps.synchronizer
+  readonly synchronizer?: Synchronizer;
+  /// ProviderProps.synchronizersById
+  readonly synchronizersById?: {[synchronizerId: Id]: Synchronizer};
 };
 
 /// ComponentReturnType
