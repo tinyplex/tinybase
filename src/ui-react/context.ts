@@ -6,6 +6,7 @@ import type {
   QueriesOrQueriesId,
   RelationshipsOrRelationshipsId,
   StoreOrStoreId,
+  SynchronizerOrSynchronizerId,
   useCheckpoints as useCheckpointsDecl,
   useCheckpointsIds as useCheckpointsIdsDecl,
   useIndexes as useIndexesDecl,
@@ -20,6 +21,8 @@ import type {
   useRelationshipsIds as useRelationshipsIdsDecl,
   useStore as useStoreDecl,
   useStoreIds as useStoreIdsDecl,
+  useSynchronizer as useSynchronizerDecl,
+  useSynchronizerIds as useSynchronizerIdsDecl,
 } from '../@types/ui-react/index.d.ts';
 import {GLOBAL, isString, isUndefined} from '../common/other.ts';
 import type {Id, Ids} from '../@types/common/index.d.ts';
@@ -32,6 +35,7 @@ import type {Queries} from '../@types/queries/index.d.ts';
 import React from 'react';
 import type {Relationships} from '../@types/relationships/index.d.ts';
 import type {Store} from '../@types/store/index.d.ts';
+import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
 import {TINYBASE} from '../common/strings.ts';
 
 const {createContext, useContext, useEffect} = React;
@@ -43,7 +47,8 @@ export type Thing =
   | Relationships
   | Queries
   | Checkpoints
-  | Persister;
+  | Persister
+  | Synchronizer;
 
 export type ThingsByOffset = [
   Store,
@@ -53,8 +58,9 @@ export type ThingsByOffset = [
   Queries,
   Checkpoints,
   Persister,
+  Synchronizer,
 ];
-export type Offsets = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type Offsets = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 type ContextValue = [
   store?: Store,
@@ -71,6 +77,8 @@ type ContextValue = [
   checkpointsById?: {[checkpointsId: Id]: Checkpoints},
   persister?: Persister,
   persistersById?: {[persisterId: Id]: Persister},
+  synchronizer?: Synchronizer,
+  synchronizersById?: {[synchronizerId: Id]: Synchronizer},
   addExtraThingById?: <Offset extends Offsets>(
     offset: Offset,
     id: string,
@@ -107,7 +115,8 @@ const useThingOrThingById = <
     | Relationships
     | Queries
     | Checkpoints
-    | Persister,
+    | Persister
+    | Synchronizer,
 >(
   thingOrThingId: Thing | Id | undefined,
   offset: number,
@@ -123,7 +132,7 @@ const useProvideThing = <Offset extends Offsets>(
   thing: ThingsByOffset[Offset],
   offset: Offset,
 ): void => {
-  const {14: addExtraThingById, 15: delExtraThingById} = useContext(Context);
+  const {16: addExtraThingById, 17: delExtraThingById} = useContext(Context);
   useEffect(() => {
     addExtraThingById?.(offset, thingId, thing);
     return () => delExtraThingById?.(offset, thingId);
@@ -233,3 +242,20 @@ export const useProvidePersister = (
   persisterId: Id,
   persister: Persister,
 ): void => useProvideThing(persisterId, persister, 6);
+
+export const useSynchronizerIds: typeof useSynchronizerIdsDecl = () =>
+  useThingIds(15);
+
+export const useSynchronizer: typeof useSynchronizerDecl = (
+  id?: Id,
+): Synchronizer | undefined => useThing(id, 14);
+
+export const useSynchronizerOrSynchronizerById = (
+  persisterOrSynchronizerId?: SynchronizerOrSynchronizerId,
+): Synchronizer | undefined =>
+  useThingOrThingById(persisterOrSynchronizerId, 14);
+
+export const useProvideSynchronizer = (
+  persisterId: Id,
+  persister: Synchronizer,
+): void => useProvideThing(persisterId, persister, 7);
