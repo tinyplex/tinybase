@@ -11313,7 +11313,7 @@
  *   <span>{usePersisterOrPersisterById(persister).getStatus()}</span>
  * );
  *
- * const persister = createSessionPersister(createStore());
+ * const persister = createSessionPersister(createStore(), 'pets');
  * const app = document.createElement('div');
  * const root = createRoot(app);
  * root.render(<App persister={persister} />); // !act
