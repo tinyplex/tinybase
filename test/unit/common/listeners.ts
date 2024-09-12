@@ -13,9 +13,11 @@ import {
   MetricsListener,
   QueriesListener,
   RelationshipsListener,
+  StatusListener,
   StoreListener,
 } from './types.ts';
 import type {NoSchemas, Store as StoreWithSchemas} from 'tinybase/with-schemas';
+import type {Persister} from 'tinybase/persisters';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -537,6 +539,20 @@ export const createCheckpointsListener = (
             [checkpointId]: checkpoints.getCheckpoint(checkpointId),
           }),
       );
+    },
+    logs,
+  });
+};
+
+export const createStatusListener = (persister: Persister): StatusListener => {
+  const logs: Logs = {};
+
+  return Object.freeze({
+    listenToStatus: (id) => {
+      logs[id] = [];
+      return persister.addStatusListener((_, status) => {
+        logs[id].push(status);
+      });
     },
     logs,
   });

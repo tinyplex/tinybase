@@ -22,6 +22,7 @@ import {
 import {ALL_VARIANTS} from './common/databases.ts';
 import type {Persister} from 'tinybase/persisters';
 import type {Store} from 'tinybase';
+import {createStatusListener} from '../common/listeners.ts';
 import {createStore} from 'tinybase';
 import {join} from 'path';
 import {pause} from '../common/other.ts';
@@ -104,6 +105,14 @@ describe.each([
       })
       .catch(done);
     expect(persister.getStatus()).toEqual(Status.Saving);
+  });
+
+  test('saving status listener', async () => {
+    store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+    const listener = createStatusListener(persister);
+    listener.listenToStatus('');
+    await persister.save();
+    expect(listener.logs).toEqual({'': [2, 0]});
   });
 
   test('autoSaves', async () => {
@@ -211,6 +220,14 @@ describe.each([
         .catch(done);
       expect(persister.getStatus()).toEqual(Status.Loading);
     });
+  });
+
+  test('loading status listener', async () => {
+    store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
+    const listener = createStatusListener(persister);
+    listener.listenToStatus('');
+    await persister.load();
+    expect(listener.logs).toEqual({'': [1, 0]});
   });
 
   test('loads backwards compatible', async () => {
