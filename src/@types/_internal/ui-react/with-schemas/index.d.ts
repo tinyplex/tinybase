@@ -9,10 +9,13 @@ import type {
   OptionalSchemas,
   Store,
 } from '../../../store/with-schemas/index.d.ts';
+import type {
+  Persister,
+  Persists,
+} from '../../../persisters/with-schemas/index.d.ts';
 import type {Checkpoints} from '../../../checkpoints/with-schemas/index.d.ts';
 import type {Indexes} from '../../../indexes/with-schemas/index.d.ts';
 import type {Metrics} from '../../../metrics/with-schemas/index.d.ts';
-import type {Persister} from '../../../persisters/with-schemas/index.d.ts';
 import type {Queries} from '../../../queries/with-schemas/index.d.ts';
 import type {Relationships} from '../../../relationships/with-schemas/index.d.ts';
 import type {Synchronizer} from '../../../synchronizers/with-schemas/index.d.ts';
@@ -40,7 +43,7 @@ type CheckpointsOrCheckpointsId<Schemas extends OptionalSchemas> =
   | Id;
 
 type PersisterOrPersisterId<Schemas extends OptionalSchemas> =
-  | Persister<Schemas>
+  | Persister<Schemas, Persists.StoreOrMergeableStore>
   | Id;
 
 type SynchronizerOrSynchronizerId<Schemas extends OptionalSchemas> =
@@ -441,9 +444,11 @@ export type ProviderProps<Schemas extends OptionalSchemas> = {
   /// ProviderProps.checkpointsById
   readonly checkpointsById?: {[checkpointsId: Id]: Checkpoints<Schemas>};
   /// ProviderProps.persister
-  readonly persister?: Persister<Schemas>;
+  readonly persister?: Persister<Schemas, Persists.StoreOrMergeableStore>;
   /// ProviderProps.persistersById
-  readonly persistersById?: {[persisterId: Id]: Persister<Schemas>};
+  readonly persistersById?: {
+    [persisterId: Id]: Persister<Schemas, Persists.StoreOrMergeableStore>;
+  };
   /// ProviderProps.synchronizer
   readonly synchronizer?: Synchronizer<Schemas>;
   /// ProviderProps.synchronizersById
