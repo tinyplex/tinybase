@@ -272,9 +272,9 @@ export const useSynchronizer: typeof useSynchronizerDecl = (
 ): Synchronizer | undefined => useThing(id, Offsets.Synchronizer);
 
 export const useSynchronizerOrSynchronizerById = (
-  persisterOrSynchronizerId?: SynchronizerOrSynchronizerId,
+  synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
 ): Synchronizer | undefined =>
-  useThingOrThingById(persisterOrSynchronizerId, Offsets.Synchronizer);
+  useThingOrThingById(synchronizerOrSynchronizerId, Offsets.Synchronizer);
 
 export const useProvideSynchronizer = (
   persisterId: Id,

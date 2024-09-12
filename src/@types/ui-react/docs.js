@@ -12070,7 +12070,7 @@
  * @param listenerDeps An optional array of dependencies for the `listener`
  * function, which, if any change, result in the re-registration of the
  * listener. This parameter defaults to an empty array.
- * @param persisterOrSynchronizerId The Synchronizer to be accessed: omit for
+ * @param synchronizerOrSynchronizerId The Synchronizer to be accessed: omit for
  * the default context Synchronizer, provide an Id for a named context
  * Synchronizer, or provide an explicit reference.
  * @example
