@@ -11985,9 +11985,9 @@
  *
  * ```jsx
  * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {createMergeableStore} from 'tinybase';
+ * import {createRoot} from 'react-dom/client';
  * import {useSynchronizerStatus} from 'tinybase/ui-react';
  *
  * const synchronizer = createLocalSynchronizer(createMergeableStore());
@@ -12006,9 +12006,9 @@
  * ```jsx
  * import {Provider, useSynchronizerStatus} from 'tinybase/ui-react';
  * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {createMergeableStore} from 'tinybase';
+ * import {createRoot} from 'react-dom/client';
  *
  * const App = ({synchronizer}) => (
  *   <Provider synchronizer={synchronizer}>
@@ -12031,9 +12031,9 @@
  * ```jsx
  * import {Provider, useSynchronizerStatus} from 'tinybase/ui-react';
  * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {createMergeableStore} from 'tinybase';
+ * import {createRoot} from 'react-dom/client';
  *
  * const App = ({synchronizer}) => (
  *   <Provider synchronizersById={{petSynchronizer: synchronizer}}>
@@ -12081,9 +12081,9 @@
  * ```jsx
  * import {Provider, useSynchronizerStatusListener} from 'tinybase/ui-react';
  * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {createMergeableStore} from 'tinybase';
+ * import {createRoot} from 'react-dom/client';
  *
  * const App = ({synchronizer}) => (
  *   <Provider synchronizer={synchronizer}>

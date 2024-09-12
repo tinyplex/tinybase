@@ -133,7 +133,7 @@ const forEachDirAndFile = (
   });
 
 const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
-  const name = prefix + ' - ' + block.match(/(?<=^).*?(?=\n)/) ?? '';
+  const name = prefix + ' - ' + (block.match(/(?<=^).*?(?=\n)/) ?? '');
   let count = 1;
   let suffixedName = name;
   while (resultsByName[suffixedName] != null) {
