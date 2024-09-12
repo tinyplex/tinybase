@@ -5,6 +5,7 @@ import type {
   PersistedStore,
   Persister,
   Persists,
+  Status,
 } from '../persisters/index.d.ts';
 import type {
   Callback,
@@ -1035,6 +1036,11 @@ export function useProvidePersister(
   persister: AnyPersister,
 ): void;
 
+/// usePersisterStatus
+export function usePersisterStatus(
+  persisterOrPersisterId?: PersisterOrPersisterId,
+): Status;
+
 /// useCreateSynchronizer
 export function useCreateSynchronizer<
   SynchronizerOrUndefined extends Synchronizer | undefined,
@@ -1062,6 +1068,11 @@ export function useProvideSynchronizer(
   synchronizerId: Id,
   synchronizer: Synchronizer,
 ): void;
+
+/// useSynchronizerStatus
+export function useSynchronizerStatus(
+  synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
+): Status;
 
 /// ExtraProps
 export type ExtraProps = {[propName: string]: any};
