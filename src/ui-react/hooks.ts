@@ -127,6 +127,7 @@ import type {
   useMetricIds as useMetricIdsDecl,
   useMetricListener as useMetricListenerDecl,
   usePersisterStatus as usePersisterStatusDecl,
+  usePersisterStatusListener as usePersisterStatusListenerDecl,
   useQueryIds as useQueryIdsDecl,
   useRedoInformation as useRedoInformationDecl,
   useRelationshipIds as useRelationshipIdsDecl,
@@ -171,6 +172,7 @@ import type {
   useSortedRowIdsListener as useSortedRowIdsListenerDecl,
   useStartTransactionListener as useStartTransactionListenerDecl,
   useSynchronizerStatus as useSynchronizerStatusDecl,
+  useSynchronizerStatusListener as useSynchronizerStatusListenerDecl,
   useTableCellIds as useTableCellIdsDecl,
   useTableCellIdsListener as useTableCellIdsListenerDecl,
   useTable as useTableDecl,
@@ -205,6 +207,7 @@ import type {
   Persister,
   Persists,
   Status,
+  StatusListener,
 } from '../@types/persisters/index.d.ts';
 import type {
   Queries,
@@ -1925,6 +1928,20 @@ export const usePersisterStatus: typeof usePersisterStatusDecl = (
     [],
   );
 
+export const usePersisterStatusListener: typeof usePersisterStatusListenerDecl =
+  (
+    listener: StatusListener<Persists.StoreOrMergeableStore>,
+    listenerDeps?: React.DependencyList,
+    persisterOrPersisterId?: PersisterOrPersisterId,
+  ): void =>
+    useListener(
+      STATUS,
+      usePersisterOrPersisterById(persisterOrPersisterId),
+      listener,
+      listenerDeps,
+      [],
+    );
+
 export const useCreateSynchronizer: typeof useCreateSynchronizerDecl = <
   SynchronizerOrUndefined extends Synchronizer | undefined,
 >(
@@ -1967,3 +1984,17 @@ export const useSynchronizerStatus: typeof useSynchronizerStatusDecl = (
     ReturnType.Number,
     [],
   );
+
+export const useSynchronizerStatusListener: typeof useSynchronizerStatusListenerDecl =
+  (
+    listener: StatusListener<Persists.MergeableStoreOnly>,
+    listenerDeps?: React.DependencyList,
+    synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
+  ): void =>
+    useListener(
+      STATUS,
+      useSynchronizerOrSynchronizerById(synchronizerOrSynchronizerId),
+      listener,
+      listenerDeps,
+      [],
+    );

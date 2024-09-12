@@ -11501,6 +11501,70 @@
  */
 /// usePersisterStatus
 /**
+ * The usePersisterStatusListener hook registers a listener function with the
+ * Persister that will be called when its status changes.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the value (which is
+ * more easily done with the usePersisterStatus hook).
+ *
+ * Unlike the addStatusListener method, which returns a listener Id and requires
+ * you to remove it manually, the usePersisterStatusListener hook manages this
+ * lifecycle for you: when the listener changes (per its `listenerDeps`
+ * dependencies) or the component unmounts, the listener on the underlying
+ * Persister will be deleted.
+ * @param listener The function that will be called whenever the status of the
+ * Persister changes.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param persisterOrPersisterId The Persister to be accessed: omit for the
+ * default context Persister, provide an Id for a named context Persister, or
+ * provide an explicit reference.
+ * @example
+ * This example uses the usePersisterStatusListener hook to create a listener
+ * that is scoped to a single component. When the component is unmounted, the
+ * listener is removed from the Persister.
+ *
+ * ```jsx
+ * import {Provider, usePersisterStatusListener} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {createStore} from 'tinybase';
+ *
+ * const App = ({persister}) => (
+ *   <Provider persister={persister}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   usePersisterStatusListener((persister, status) =>
+ *     console.log('Persister status changed: ' + status),
+ *   );
+ *   return <span>App</span>;
+ * };
+ *
+ * const persister = createSessionPersister(createStore(), 'pets');
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App persister={persister} />); // !act
+ *
+ * persister.load(); // !act
+ * // -> 'Persister status changed: 1'
+ * // ... // !act
+ * // -> 'Persister status changed: 0'
+ *
+ * persister.save(); // !act
+ * // -> 'Persister status changed: 2'
+ * // ... // !act
+ * // -> 'Persister status changed: 0'
+ * ```
+ * @category Persister hooks
+ * @since v5.3.0
+ */
+/// usePersisterStatusListener
+/**
  * The useCreateSynchronizer hook is used to create a Synchronizer within a
  * React application along with convenient memoization and callbacks.
  *
@@ -11988,6 +12052,70 @@
  * @since v5.3.0
  */
 /// useSynchronizerStatus
+/**
+ * The useSynchronizerStatusListener hook registers a listener function with the
+ * Synchronizer that will be called when its status changes.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the value (which is
+ * more easily done with the useSynchronizerStatus hook).
+ *
+ * Unlike the addStatusListener method, which returns a listener Id and requires
+ * you to remove it manually, the useSynchronizerStatusListener hook manages
+ * this lifecycle for you: when the listener changes (per its `listenerDeps`
+ * dependencies) or the component unmounts, the listener on the underlying
+ * Synchronizer will be deleted.
+ * @param listener The function that will be called whenever the status of the
+ * Synchronizer changes.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param persisterOrSynchronizerId The Synchronizer to be accessed: omit for
+ * the default context Synchronizer, provide an Id for a named context
+ * Synchronizer, or provide an explicit reference.
+ * @example
+ * This example uses the useSynchronizerStatusListener hook to create a listener
+ * that is scoped to a single component. When the component is unmounted, the
+ * listener is removed from the Synchronizer.
+ *
+ * ```jsx
+ * import {Provider, useSynchronizerStatusListener} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {createMergeableStore} from 'tinybase';
+ *
+ * const App = ({synchronizer}) => (
+ *   <Provider synchronizer={synchronizer}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useSynchronizerStatusListener((synchronizer, status) =>
+ *     console.log('Synchronizer status changed: ' + status),
+ *   );
+ *   return <span>App</span>;
+ * };
+ *
+ * const synchronizer = createLocalSynchronizer(createMergeableStore());
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App synchronizer={synchronizer} />); // !act
+ *
+ * synchronizer.load(); // !act
+ * // -> 'Synchronizer status changed: 1'
+ * // ... // !act
+ * // -> 'Synchronizer status changed: 0'
+ *
+ * synchronizer.save(); // !act
+ * // -> 'Synchronizer status changed: 2'
+ * // ... // !act
+ * // -> 'Synchronizer status changed: 0'
+ * ```
+ * @category Synchronizer hooks
+ * @since v5.3.0
+ */
+/// useSynchronizerStatusListener
 /**
  * The ExtraProps type represents a set of arbitrary additional props.
  * @category Props
