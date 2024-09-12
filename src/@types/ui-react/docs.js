@@ -11409,6 +11409,98 @@
  */
 /// useProvidePersister
 /**
+ * The usePersisterStatus hook returns a the status of a Persister, and
+ * registers a listener so that any changes to it will cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Persister or a set of Persister objects named by Id.
+ * The usePersisterStatus hook lets you indicate which Persister to get data
+ * for: omit the optional parameter for the default context Persister, provide
+ * an Id for a named context Persister, or provide a Persister explicitly by
+ * reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * Persister status will cause a re-render. When the component containing this
+ * hook is unmounted, the listener will be automatically removed.
+ * @param persisterOrPersisterId The Persister to be accessed: omit for the
+ * default context Persister, provide an Id for a named context Persister, or
+ * provide an explicit reference.
+ * @returns The status of the Persister: 0 means idle, 1 means loading, and 2
+ * means saving.
+ * @example
+ * This example creates a Persister outside the application, which is used in
+ * the usePersisterStatus hook by reference. A change to the status of the
+ * Persister re-renders the component.
+ *
+ * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {createStore} from 'tinybase';
+ * import {usePersisterStatus} from 'tinybase/ui-react';
+ *
+ * const persister = createSessionPersister(createStore(), 'pets');
+ * const App = () => <span>{usePersisterStatus(persister)}</span>;
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Persister is
+ * provided. A component within it then uses the usePersisterStatus hook.
+ *
+ * ```jsx
+ * import {Provider, usePersisterStatus} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {createStore} from 'tinybase';
+ *
+ * const App = ({persister}) => (
+ *   <Provider persister={persister}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{usePersisterStatus()}</span>;
+ *
+ * const persister = createSessionPersister(createStore(), 'pets');
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App persister={persister} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Persister is provided,
+ * named by Id. A component within it then uses the usePersisterStatus hook.
+ *
+ * ```jsx
+ * import {Provider, usePersisterStatus} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {createStore} from 'tinybase';
+ *
+ * const App = ({persister}) => (
+ *   <Provider persistersById={{petPersister: persister}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{usePersisterStatus('petPersister')}</span>;
+ *
+ * const persister = createSessionPersister(createStore(), 'pets');
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App persister={persister} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @category Persister hooks
+ * @since v5.3.0
+ */
+/// usePersisterStatus
+/**
  * The useCreateSynchronizer hook is used to create a Synchronizer within a
  * React application along with convenient memoization and callbacks.
  *
@@ -11803,6 +11895,99 @@
  * @since v5.3.0
  */
 /// useProvideSynchronizer
+/**
+ * The useSynchronizerStatus hook returns a the status of a Synchronizer, and
+ * registers a listener so that any changes to it will cause a re-render.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Synchronizer or a set of Synchronizer objects named
+ * by Id. The useSynchronizerStatus hook lets you indicate which Synchronizer to
+ * get data for: omit the optional parameter for the default context
+ * Synchronizer, provide an Id for a named context Synchronizer, or provide a
+ * Synchronizer explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * Synchronizer status will cause a re-render. When the component containing
+ * this hook is unmounted, the listener will be automatically removed.
+ * @param synchronizerOrSynchronizerId The Synchronizer to be accessed: omit for
+ * the default context Synchronizer, provide an Id for a named context
+ * Synchronizer, or provide an explicit reference.
+ * @returns The status of the Synchronizer: 0 means idle, 1 means loading, and 2
+ * means saving.
+ * @example
+ * This example creates a Synchronizer outside the application, which is used in
+ * the useSynchronizerStatus hook by reference. A change to the status of the
+ * Synchronizer re-renders the component.
+ *
+ * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {createMergeableStore} from 'tinybase';
+ * import {useSynchronizerStatus} from 'tinybase/ui-react';
+ *
+ * const synchronizer = createLocalSynchronizer(createMergeableStore());
+ * const App = () => <span>{useSynchronizerStatus(synchronizer)}</span>;
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Synchronizer is
+ * provided. A component within it then uses the useSynchronizerStatus hook.
+ *
+ * ```jsx
+ * import {Provider, useSynchronizerStatus} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {createMergeableStore} from 'tinybase';
+ *
+ * const App = ({synchronizer}) => (
+ *   <Provider synchronizer={synchronizer}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{useSynchronizerStatus()}</span>;
+ *
+ * const synchronizer = createLocalSynchronizer(createMergeableStore());
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App synchronizer={synchronizer} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Synchronizer is
+ * provided, named by Id. A component within it then uses the
+ * useSynchronizerStatus hook.
+ *
+ * ```jsx
+ * import {Provider, useSynchronizerStatus} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {createMergeableStore} from 'tinybase';
+ *
+ * const App = ({synchronizer}) => (
+ *   <Provider synchronizersById={{petSynchronizer: synchronizer}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => <span>{useSynchronizerStatus('petSynchronizer')}</span>;
+ *
+ * const synchronizer = createLocalSynchronizer(createMergeableStore());
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App synchronizer={synchronizer} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @category Synchronizer hooks
+ * @since v5.3.0
+ */
+/// useSynchronizerStatus
 /**
  * The ExtraProps type represents a set of arbitrary additional props.
  * @category Props
