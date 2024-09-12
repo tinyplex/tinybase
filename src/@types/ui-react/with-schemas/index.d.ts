@@ -1205,6 +1205,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     store: PersistedStore<Schemas, Persist> | undefined,
     create: (store: PersistedStore<Schemas, Persist>) => PersisterOrUndefined,
     createDeps?: React.DependencyList,
+    then?: (persister: Persister<Schemas, Persist>) => Promise<void>,
+    thenDeps?: React.DependencyList,
     destroy?: (persister: Persister<Schemas, Persist>) => void,
     destroyDeps?: React.DependencyList,
   ) => PersisterOrUndefined;
@@ -1213,15 +1215,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   usePersisterIds: () => Ids;
 
   /// usePersister
-  usePersister: (id?: Id) => Persister<Schemas> | undefined;
+  usePersister: (
+    id?: Id,
+  ) => Persister<Schemas, Persists.StoreOrMergeableStore> | undefined;
 
   /// usePersisterOrPersisterById
   usePersisterOrPersisterById: (
     persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
-  ) => Persister<Schemas> | undefined;
+  ) => Persister<Schemas, Persists.StoreOrMergeableStore> | undefined;
 
   // useProvidePersister
-  useProvidePersister: (persisterId: Id, persister: Persister<Schemas>) => void;
+  useProvidePersister: (
+    persisterId: Id,
+    persister: Persister<Schemas, Persists.StoreOrMergeableStore>,
+  ) => void;
 
   /// useCreateSynchronizer
   useCreateSynchronizer: <
