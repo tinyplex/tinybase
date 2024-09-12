@@ -11343,17 +11343,17 @@
  * Persister objects is not known at the time of the first render of the root
  * Provider.
  *
- *  A Persister object added to the Provider context in this way will be
- *  available to other components within the context (using the usePersister
- *  hook and so on). If you use the same Id as an existing Persister object
- *  registration, the new one will take priority over one provided by the
- *  `persistersById` prop.
+ * A Persister object added to the Provider context in this way will be
+ * available to other components within the context (using the usePersister hook
+ * and so on). If you use the same Id as an existing Persister object
+ * registration, the new one will take priority over one provided by the
+ * `persistersById` prop.
  *
- *  Note that other components that consume a Persister object registered like
- *  this should defend against it being undefined at first. On the first render,
- *  the other component will likely not yet have completed the registration. In
- *  the example below, we use the null-safe `usePersister('petPersister')?` to
- *  do this.
+ * Note that other components that consume a Persister object registered like
+ * this should defend against it being undefined at first. On the first render,
+ * the other component will likely not yet have completed the registration. In
+ * the example below, we use the null-safe `usePersister('petPersister')?` to do
+ * this.
  * @param persisterId The Id of the Persister object to be registered with the
  * Provider.
  * @param persister The Persister object to be registered.
@@ -11554,23 +11554,25 @@
  * ```jsx
  * import {
  *   Provider,
- *   useCreateStore,
+ *   useCreateMergeableStore,
  *   useCreateSynchronizer,
  *   useSynchronizerIds,
  * } from 'tinybase/ui-react';
  * import React from 'react';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {createMergeableStore} from 'tinybase';
  * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  *
  * const App = () => {
- *   const store1 = useCreateStore(createStore);
- *   const synchronizer1 = useCreateSynchronizer(store1, (store1) =>
- *     createWsSynchronizer(store1, new WebSocket('ws://localhost:8041/')),
+ *   const store1 = useCreateMergeableStore(createMergeableStore);
+ *   const synchronizer1 = useCreateSynchronizer(
+ *     store1,
+ *     createLocalSynchronizer,
  *   );
- *   const store2 = useCreateStore(createStore);
- *   const synchronizer2 = useCreateSynchronizer(store2, (store2) =>
- *     createWsSynchronizer(store2, new WebSocket('ws://localhost:8042/')),
+ *   const store2 = useCreateMergeableStore(createMergeableStore);
+ *   const synchronizer2 = useCreateSynchronizer(
+ *     store2,
+ *     createLocalSynchronizer,
  *   );
  *   return (
  *     <Provider synchronizersById={{synchronizer1, synchronizer2}}>
@@ -11616,9 +11618,9 @@
  * ```jsx
  * import {Provider, useSynchronizer} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {createMergeableStore} from 'tinybase';
  * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  *
  * const App = ({synchronizer}) => (
  *   <Provider synchronizer={synchronizer}>
@@ -11627,10 +11629,7 @@
  * );
  * const Pane = () => <span>{useSynchronizer().getStatus()}</span>;
  *
- * const synchronizer = createWsSynchronizer(
- *   createStore(),
- *   new WebSocket('ws://localhost:8041/'),
- * );
+ * const synchronizer = createLocalSynchronizer(createMergeableStore());
  * const app = document.createElement('div');
  * const root = createRoot(app);
  * root.render(<App synchronizer={synchronizer} />); // !act
@@ -11646,9 +11645,9 @@
  * ```jsx
  * import {Provider, useSynchronizer} from 'tinybase/ui-react';
  * import React from 'react';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {createMergeableStore} from 'tinybase';
  * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  *
  * const App = ({synchronizer}) => (
  *   <Provider synchronizersById={{petSynchronizer: synchronizer}}>
@@ -11659,10 +11658,7 @@
  *   <span>{useSynchronizer('petSynchronizer').getStatus()}</span>
  * );
  *
- * const synchronizer = createWsSynchronizer(
- *   createStore(),
- *   new WebSocket('ws://localhost:8041/'),
- * );
+ * const synchronizer = createLocalSynchronizer(createMergeableStore());
  * const app = document.createElement('div');
  * const root = createRoot(app);
  * root.render(<App synchronizer={synchronizer} />); // !act
@@ -11705,9 +11701,9 @@
  *   useSynchronizerOrSynchronizerById,
  * } from 'tinybase/ui-react';
  * import React from 'react';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {createMergeableStore} from 'tinybase';
  * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  *
  * const App = ({synchronizer}) => (
  *   <Provider synchronizer={synchronizer}>
@@ -11720,10 +11716,7 @@
  *   </span>
  * );
  *
- * const synchronizer = createWsSynchronizer(
- *   createStore(),
- *   new WebSocket('ws://localhost:8041/'),
- * );
+ * const synchronizer = createLocalSynchronizer(createMergeableStore());
  * const app = document.createElement('div');
  * const root = createRoot(app);
  * root.render(<App synchronizer={synchronizer} />); // !act
@@ -11745,17 +11738,17 @@
  * Synchronizer objects is not known at the time of the first render of the root
  * Provider.
  *
- *  A Synchronizer object added to the Provider context in this way will be
- *  available to other components within the context (using the useSynchronizer
- *  hook and so on). If you use the same Id as an existing Synchronizer object
- *  registration, the new one will take priority over one provided by the
- *  `synchronizersById` prop.
+ * A Synchronizer object added to the Provider context in this way will be
+ * available to other components within the context (using the useSynchronizer
+ * hook and so on). If you use the same Id as an existing Synchronizer object
+ * registration, the new one will take priority over one provided by the
+ * `synchronizersById` prop.
  *
- *  Note that other components that consume a Synchronizer object registered
- *  like this should defend against it being undefined at first. On the first
- *  render, the other component will likely not yet have completed the
- *  registration. In the example below, we use the null-safe
- *  `useSynchronizer('petSynchronizer')?` to do this.
+ * Note that other components that consume a Synchronizer object registered like
+ * this should defend against it being undefined at first. On the first render,
+ * the other component will likely not yet have completed the registration. In
+ * the example below, we use the null-safe `useSynchronizer('petSynchronizer')?`
+ * to do this.
  * @param synchronizerId The Id of the Synchronizer object to be registered with
  * the Provider.
  * @param synchronizer The Synchronizer object to be registered.
@@ -11773,9 +11766,9 @@
  *   useSynchronizer,
  * } from 'tinybase/ui-react';
  * import React from 'react';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {createMergeableStore} from 'tinybase';
  * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  *
  * const App = () => (
  *   <Provider>
@@ -11785,15 +11778,11 @@
  * );
  * const RegisterSynchronizer = () => {
  *   const store = useCreateStore(() =>
- *     createStore().setCell('pets', 'fido', 'color', 'brown'),
+ *     createMergeableStore().setCell('pets', 'fido', 'color', 'brown'),
  *   );
  *   const synchronizer = useCreateSynchronizer(
  *     store,
- *     async (store) =>
- *       await createWsSynchronizer(
- *         store,
- *         new WebSocket('ws://localhost:8041/'),
- *       ),
+ *     createLocalSynchronizer,
  *   );
  *   useProvideSynchronizer('petSynchronizer', synchronizer);
  *   return null;
