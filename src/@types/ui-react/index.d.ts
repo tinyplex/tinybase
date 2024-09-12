@@ -6,6 +6,7 @@ import type {
   Persister,
   Persists,
   Status,
+  StatusListener,
 } from '../persisters/index.d.ts';
 import type {
   Callback,
@@ -1041,6 +1042,13 @@ export function usePersisterStatus(
   persisterOrPersisterId?: PersisterOrPersisterId,
 ): Status;
 
+/// usePersisterStatusListener
+export function usePersisterStatusListener(
+  listener: StatusListener<Persists.StoreOrMergeableStore>,
+  listenerDeps?: React.DependencyList,
+  persisterOrPersisterId?: PersisterOrPersisterId,
+): void;
+
 /// useCreateSynchronizer
 export function useCreateSynchronizer<
   SynchronizerOrUndefined extends Synchronizer | undefined,
@@ -1073,6 +1081,13 @@ export function useProvideSynchronizer(
 export function useSynchronizerStatus(
   synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
 ): Status;
+
+/// useSynchronizerStatusListener
+export function useSynchronizerStatusListener(
+  listener: StatusListener<Persists.MergeableStoreOnly>,
+  listenerDeps?: React.DependencyList,
+  synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
+): void;
 
 /// ExtraProps
 export type ExtraProps = {[propName: string]: any};

@@ -111,6 +111,7 @@ import type {
   Persister,
   Persists,
   Status,
+  StatusListener,
 } from '../../persisters/with-schemas/index.d.ts';
 import type {
   Queries,
@@ -1236,6 +1237,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
   ) => Status;
 
+  /// usePersisterStatusListener
+  usePersisterStatusListener: (
+    listener: StatusListener<Schemas, Persists.StoreOrMergeableStore>,
+    listenerDeps?: React.DependencyList,
+    persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
+  ) => void;
+
   /// useCreateSynchronizer
   useCreateSynchronizer: <
     SynchronizerOrUndefined extends Synchronizer<Schemas> | undefined,
@@ -1270,6 +1278,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useSynchronizerStatus: (
     synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
   ) => Status;
+
+  /// useSynchronizerStatusListener
+  useSynchronizerStatusListener: (
+    listener: StatusListener<Schemas, Persists.StoreOrMergeableStore>,
+    listenerDeps?: React.DependencyList,
+    synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
+  ) => void;
 
   /// ExtraProps
   ExtraProps: ExtraProps;
