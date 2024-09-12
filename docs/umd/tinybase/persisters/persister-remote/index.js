@@ -9,6 +9,8 @@
 })(this, function (exports) {
   'use strict';
 
+  const EMPTY_STRING = '';
+
   const startInterval = (callback, sec, immediate) => {
     return setInterval(callback, sec * 1e3);
   };
@@ -19,10 +21,12 @@
     isUndefined(value) ? otherwise?.() : then(value);
   const isArray = (thing) => Array.isArray(thing);
   const size = (arrayOrString) => arrayOrString.length;
+  const test = (regex, subject) => regex.test(subject);
   const errorNew = (message) => {
     throw new Error(message);
   };
 
+  const arrayForEach = (array, cb) => array.forEach(cb);
   const arrayClear = (array, to) => array.splice(0, to);
   const arrayPush = (array, ...values) => array.push(...values);
   const arrayShift = (array) => array.shift();
@@ -52,7 +56,10 @@
       isInstanceOf(value, Map) ? object.fromEntries([...value]) : value,
     );
 
+  const collSize = (coll) => coll?.size ?? 0;
   const collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
+  const collIsEmpty = (coll) => isUndefined(coll) || collSize(coll) == 0;
+  const collForEach = (coll, cb) => coll?.forEach(cb);
   const collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
 
   const mapNew = (entries) => new Map(entries);
@@ -62,8 +69,127 @@
   const mapEnsure = (map, key, getDefaultValue, hadExistingValue) => {
     if (!collHas(map, key)) {
       mapSet(map, key, getDefaultValue());
+    } else {
+      hadExistingValue?.(mapGet(map, key));
     }
     return mapGet(map, key);
+  };
+  const visitTree = (node, path, ensureLeaf, pruneLeaf, p = 0) =>
+    ifNotUndefined(
+      (ensureLeaf ? mapEnsure : mapGet)(
+        node,
+        path[p],
+        p > size(path) - 2 ? ensureLeaf : mapNew,
+      ),
+      (nodeOrLeaf) => {
+        if (p > size(path) - 2) {
+          if (pruneLeaf?.(nodeOrLeaf)) {
+            mapSet(node, path[p]);
+          }
+          return nodeOrLeaf;
+        }
+        const leaf = visitTree(nodeOrLeaf, path, ensureLeaf, pruneLeaf, p + 1);
+        if (collIsEmpty(nodeOrLeaf)) {
+          mapSet(node, path[p]);
+        }
+        return leaf;
+      },
+    );
+
+  const setNew = (entryOrEntries) =>
+    new Set(
+      isArray(entryOrEntries) || isUndefined(entryOrEntries)
+        ? entryOrEntries
+        : [entryOrEntries],
+    );
+  const setAdd = (set, value) => set?.add(value);
+
+  const INTEGER = /^\d+$/;
+  const getPoolFunctions = () => {
+    const pool = [];
+    let nextId = 0;
+    return [
+      (reuse) => (reuse ? arrayShift(pool) : null) ?? EMPTY_STRING + nextId++,
+      (id) => {
+        if (test(INTEGER, id) && size(pool) < 1e3) {
+          arrayPush(pool, id);
+        }
+      },
+    ];
+  };
+
+  const getWildcardedLeaves = (deepIdSet, path = [EMPTY_STRING]) => {
+    const leaves = [];
+    const deep = (node, p) =>
+      p == size(path)
+        ? arrayPush(leaves, node)
+        : path[p] === null
+          ? collForEach(node, (node2) => deep(node2, p + 1))
+          : arrayForEach([path[p], null], (id) =>
+              deep(mapGet(node, id), p + 1),
+            );
+    deep(deepIdSet, 0);
+    return leaves;
+  };
+  const getListenerFunctions = (getThing) => {
+    let thing;
+    const [getId, releaseId] = getPoolFunctions();
+    const allListeners = mapNew();
+    const addListener = (
+      listener,
+      idSetNode,
+      path,
+      pathGetters = [],
+      extraArgsGetter = () => [],
+    ) => {
+      thing ??= getThing();
+      const id = getId(1);
+      mapSet(allListeners, id, [
+        listener,
+        idSetNode,
+        path,
+        pathGetters,
+        extraArgsGetter,
+      ]);
+      setAdd(visitTree(idSetNode, path ?? [EMPTY_STRING], setNew), id);
+      return id;
+    };
+    const callListeners = (idSetNode, ids, ...extraArgs) =>
+      arrayForEach(getWildcardedLeaves(idSetNode, ids), (set) =>
+        collForEach(set, (id) =>
+          mapGet(allListeners, id)[0](thing, ...(ids ?? []), ...extraArgs),
+        ),
+      );
+    const delListener = (id) =>
+      ifNotUndefined(mapGet(allListeners, id), ([, idSetNode, idOrNulls]) => {
+        visitTree(idSetNode, idOrNulls ?? [EMPTY_STRING], void 0, (idSet) => {
+          collDel(idSet, id);
+          return collIsEmpty(idSet) ? 1 : 0;
+        });
+        mapSet(allListeners, id);
+        releaseId(id);
+        return idOrNulls;
+      });
+    const callListener = (id) =>
+      ifNotUndefined(
+        mapGet(allListeners, id),
+        ([listener, , path = [], pathGetters, extraArgsGetter]) => {
+          const callWithIds = (...ids) => {
+            const index = size(ids);
+            if (index == size(path)) {
+              listener(thing, ...ids, ...extraArgsGetter(ids));
+            } else if (isUndefined(path[index])) {
+              arrayForEach(pathGetters[index]?.(...ids) ?? [], (id2) =>
+                callWithIds(...ids, id2),
+              );
+            } else {
+              callWithIds(...ids, path[index]);
+            }
+          };
+          callWithIds();
+        },
+      );
+    return [addListener, callListeners, delListener, callListener];
   };
 
   const scheduleRunning = mapNew();
@@ -99,7 +225,7 @@
     extra = {},
     scheduleId = [],
   ) => {
-    let loadSave = 0;
+    let status = 0; /* Idle */
     let loads = 0;
     let saves = 0;
     let action;
@@ -107,6 +233,7 @@
     let autoSaveListenerId;
     mapEnsure(scheduleRunning, scheduleId, () => 0);
     mapEnsure(scheduleActions, scheduleId, () => []);
+    const statusListeners = mapNew();
     const [
       isMergeableStore,
       getContent,
@@ -114,6 +241,15 @@
       hasChanges,
       setDefaultContent,
     ] = getStoreFunctions(persist, store);
+    const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
+      () => persister,
+    );
+    const setStatus = (newStatus) => {
+      if (newStatus != status) {
+        status = newStatus;
+        callListeners(statusListeners, void 0, status);
+      }
+    };
     const run = async () => {
       /* istanbul ignore else */
       if (!mapGet(scheduleRunning, scheduleId)) {
@@ -144,8 +280,8 @@
     };
     const load = async (initialContent) => {
       /* istanbul ignore else */
-      if (loadSave != 2) {
-        loadSave = 1;
+      if (status != 2 /* Saving */) {
+        setStatus(1 /* Loading */);
         loads++;
         await schedule(async () => {
           try {
@@ -161,7 +297,7 @@
               setDefaultContent(initialContent);
             }
           }
-          loadSave = 0;
+          setStatus(0 /* Idle */);
         });
       }
       return persister;
@@ -173,11 +309,11 @@
           async (content, changes) => {
             if (changes || content) {
               /* istanbul ignore else */
-              if (loadSave != 2) {
-                loadSave = 1;
+              if (status != 2 /* Saving */) {
+                setStatus(1 /* Loading */);
                 loads++;
                 setContentOrChanges(changes ?? content);
-                loadSave = 0;
+                setStatus(0 /* Idle */);
               }
             } else {
               await load();
@@ -200,8 +336,8 @@
     const isAutoLoading = () => !isUndefined(autoLoadHandle);
     const save = async (changes) => {
       /* istanbul ignore else */
-      if (loadSave != 1) {
-        loadSave = 2;
+      if (status != 1 /* Loading */) {
+        setStatus(2 /* Saving */);
         saves++;
         await schedule(async () => {
           try {
@@ -210,7 +346,7 @@
             /* istanbul ignore next */
             onIgnoredError?.(error);
           }
-          loadSave = 0;
+          setStatus(0 /* Idle */);
         });
       }
       return persister;
@@ -231,6 +367,13 @@
       return persister;
     };
     const isAutoSaving = () => !isUndefined(autoSaveListenerId);
+    const getStatus = () => status;
+    const addStatusListener = (listener) =>
+      addListener(listener, statusListeners);
+    const delListener = (listenerId) => {
+      delListenerImpl(listenerId);
+      return store;
+    };
     const schedule = async (...actions) => {
       arrayPush(mapGet(scheduleActions, scheduleId), ...actions);
       await run();
@@ -251,6 +394,9 @@
       startAutoSave,
       stopAutoSave,
       isAutoSaving,
+      getStatus,
+      addStatusListener,
+      delListener,
       schedule,
       getStore,
       destroy,

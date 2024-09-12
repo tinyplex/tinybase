@@ -3,26 +3,82 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
-## v5.3
+# v5.3
 
 This release is focussed on a few API improvements and quality-of-life changes.
 These include:
 
+## React SSR support
+
+Thanks to contributor [Muhammad Muhajir](https://github.com/muhajirdev) for
+ensuring that TinyBase runs in server-side rendering environments!
+
+## In the persisters module...
+
+All Persister objects now expose information about whether they are loading or
+saving. To access this Status, use:
+
+- The getStatus method, which will return 0 when it is idle, 1 when it is
+  loading, and 2 when it is saving.
+- The addStatusListener method, which lets you add a StatusListener function and
+  which is called whenever the status changes.
+
+These make it possible to track background load and save activities, so that,
+for example, you can show a status-bar spinner of asynchronous persistence
+activity.
+
+## In the synchronizers module...
+
+Synchronizers are a sub-class of Persister, so all Synchronizer objects now also
+have:
+
+- The getStatus method, which will return 0 when it is idle, 1 when it is
+  'loading' (ie inbound syncing), and 2 when it is 'saving' (ie outbound
+  syncing).
+- The addStatusListener method, which lets you add a StatusListener function and
+  which is called whenever the status changes.
+
 ## In the ui-react module...
 
-- The new useProvideMetrics hook, which lets you imperatively register Metrics
-  objects into a Provider context, much like the existing useProvideStore hook.
-- The new useProvideIndexes hook, which lets you register Indexes objects,
-  similarly.
-- The new useProvideRelationships hook, which lets you register Relationships
+There are corresponding hooks so that you can build these status changes into a
+React UI easily:
+
+- The usePersisterStatus hook, which will return the status for an explicitly
+  provided, or context-derived Persister.
+- The usePersisterStatusListener hook, which lets you add your own
+  StatusListener function to a Persister.
+- The usePersister hook, which lets you get direct access to a Persister from
+  within your UI.
+
+And correspondingly for Synchronizers:
+
+- The useSynchronizerStatus hook, which will return the status for an explicitly
+  provided, or context-derived Synchronizer.
+- The useSynchronizerStatusListener hook, which lets you add your own
+  StatusListener function to a Synchronizer.
+- The useSynchronizer hook, which lets you get direct access to a Synchronizer
+  from within your UI.
+
+In addition, this module also now includes hooks for injecting objects into the
+Provider context scope imperatively, much like the existing useProvideStore
+hook:
+
+- The useProvideMetrics hook, which lets you imperatively register Metrics
   objects.
-- The new useProvideQueries hook, which lets you register Queries objects.
-- The new useProvideCheckpoints hook, which lets you register Checkpoints
+- The useProvideIndexes hook, which lets you register Indexes objects.
+- The useProvideRelationships hook, which lets you register Relationships
   objects.
+- The useProvideQueries hook, which lets you register Queries objects.
+- The useProvideCheckpoints hook, which lets you register Checkpoints objects.
+- The useProvidePersister hook, which lets you register Persister objects.
+- The useProvideSynchronizer hook, which lets you register Synchronizer objects.
+
+All of these new methods have extensive documentation, each with examples to
+show how to use them.
 
 Please provide feedback on this new release on GitHub!
 
-## v5.2
+# v5.2
 
 This release introduces new Persisters for... PostgreSQL! TinyBase now has two
 new Persister modules:
@@ -86,7 +142,7 @@ createCustomPostgreSqlPersister function at the top level of the persister
 module. These can be used to build Persister objects against SQLite and
 PostgreSQL SDKs (or forks) that are not already included with TinyBase.
 
-### Minor breaking change
+## Minor breaking change
 
 It's very unlikely to affect most apps, but also be aware that the persisters
 module and synchronizers module are no longer bundled in the 'master' tinybase
@@ -95,7 +151,7 @@ Persister or Synchronizer), you will need to update your imports accordingly to
 the standalone `tinybase/persisters` and `tinybase/synchronizers` versions of
 them. Apologies.
 
-## v5.1
+# v5.1
 
 This release lets you persist data on a server using the createWsServer
 function. This makes it possible for all clients to disconnect from a path, but,
@@ -136,12 +192,12 @@ will fire whenever messages pass through the Synchronizer. See, for example, the
 createWsSynchronizer function. These are suitable for debugging synchronization
 issues in a development environment.
 
-## v5.0
+# v5.0
 
 We're excited to announce this major release for TinyBase! It includes
 important data synchronization functionality and a range of other improvements.
 
-## In Summary
+# In Summary
 
 - [The new MergeableStore type](#the-new-mergeableStore-type) wraps your data as
   a Conflict-Free Replicated Data Type (CRDT).
@@ -158,7 +214,7 @@ affect you (but which should easy to fix if they do).
 
 Let's look at the major functionality in more detail!
 
-### The New MergeableStore Type
+## The New MergeableStore Type
 
 A key part of TinyBase v5.0 is the new mergeable-store module, which contains
 a subtype of Store - called MergeableStore - that can be merged with another
@@ -197,7 +253,7 @@ has had the chance to be synchronized online, for example.
 Which leads us onto the next important feature in v5.0, allowing you to
 synchronize stores between systems...
 
-### The New Synchronizer Framework
+## The New Synchronizer Framework
 
 The v5.0 release also introduces the new concept of synchronization.
 Synchronizer objects implement a negotiation protocol that allows multiple
@@ -256,7 +312,7 @@ createWsServer function that takes a WebSocketServer as also shown above.
 Please read the new Using A Synchronizer guide for more details of how to
 synchronize your data.
 
-### Improved Module Folder Structure
+## Improved Module Folder Structure
 
 We have previously found issues with legacy bundlers and other tools that didn't
 fully support the new `exports` field in the module's package.
@@ -268,9 +324,9 @@ versions, schema support, minification and so on.
 Please read the comprehensive Importing TinyBase guide for more details of how
 to construct the correct import paths in v5.0.
 
-### Breaking Changes in v5.0
+## Breaking Changes in v5.0
 
-#### Module File Structure
+### Module File Structure
 
 If you previously had `/lib/` in your import paths, you should remove it. You
 also do not have to explicitly specify whether you need the `cjs` version of
@@ -282,14 +338,14 @@ when you _want_ minified code. Previously you would add `/debug` to the import
 path to get non-minified code, but now you add `/min` to the import path to get
 _minified_ code.
 
-#### Expo SQLite Persister
+### Expo SQLite Persister
 
 Previously the persister-expo-sqlite module supported expo-sqlite v13 and the
 persister-expo-sqlite-next module supported their modern 'next' package. In
 v5.0, the persister-expo-sqlite module only supports v14 and later, and the
 persister-expo-sqlite-next module has been removed.
 
-#### The TinyBase Inspector
+### The TinyBase Inspector
 
 Previously, the React-based inspector (then known as `StoreInspector`) resided
 in the debug version of the ui-react-dom module. It now lives in its own
@@ -299,7 +355,7 @@ has been renamed to Inspector.
 Please update your imports and rename the component when used, accordingly. See
 the API documentation for details, or the <Inspector /> demo, for example.
 
-#### API Changes
+### API Changes
 
 The following changes have been made to the existing TinyBase API for
 consistency. These are less common parts of the API but should straightforward
@@ -336,7 +392,7 @@ In the persisters module:
 - The broadcastTransactionChanges method in the persister-partykit-server module
   has been renamed to the broadcastChanges method.
 
-## v4.8
+# v4.8
 
 This release includes the new persister-powersync module, which provides a
 Persister for [PowerSync's SQLite](https://www.powersync.com/) database.
@@ -360,7 +416,7 @@ A huge thank you to [Benedikt Mueller](https://bndkt.com/)
 ([@bndkt](https://github.com/bndkt)) for building out this functionality! And
 please provide feedback on how this new Persister works for you.
 
-## v4.7
+# v4.7
 
 This release includes the new persister-libsql module, which provides a
 Persister for [Turso's LibSQL](https://turso.tech/libsql) database.
@@ -383,7 +439,7 @@ const persister = createLibSqlPersister(store, client, {
 This is the first version of this functionality, so please provide feedback on
 how it works for you!
 
-## v4.6
+# v4.6
 
 This release includes the new persister-electric-sql module, which provides a
 Persister for [ElectricSQL](https://electric-sql.com/) client databases.
@@ -407,7 +463,7 @@ This release is accompanied by a [template
 project](https://github.com/tinyplex/tinybase-ts-react-electricsql) to get
 started quickly with this integration. Enjoy!
 
-## v4.5
+# v4.5
 
 This release includes the new persister-expo-sqlite-next module, which provides
 a Persister for the modern version of Expo's
@@ -423,7 +479,7 @@ removed.
 
 Thank you to Expo for providing this functionality!
 
-## v4.4
+# v4.4
 
 This relatively straightforward release adds a selection of new listeners to the
 Store object, and their respective hooks. These are for listening to changes in
@@ -447,7 +503,7 @@ as follows:
 These methods may become particularly important in future versions of TinyBase
 that support `null` as valid Cells and Values.
 
-## v4.3
+# v4.3
 
 We're excited to announce TinyBase 4.3, which provides an integration with
 [PartyKit](https://www.partykit.io/), a cloud-based collaboration provider.
@@ -515,7 +571,7 @@ wins'. However, since the transmitted updates are at single cell (or value)
 granularity, conflicts are minimized. More resilient replication is planned as
 this integration matures.
 
-## v4.2
+# v4.2
 
 This release adds support for persisting TinyBase to a browser's IndexedDB
 storage. You'll need to import the new persister-indexed-db module, and call the
@@ -557,14 +613,14 @@ choose to 'autoLoad' your data into TinyBase.
 This release also upgrades Prettier to v3.0 which has a peer-dependency impact
 on the tools module. Please report any issues!
 
-## v4.1
+# v4.1
 
 This release introduces the new ui-react-dom module. This provides pre-built
 components for tabular display of your data in a web application.
 
 ![A TinyBase DOM Component](/ui-react-dom.webp 'A TinyBase DOM Component')
 
-### New DOM Components
+## New DOM Components
 
 The following is the list of all the components released in v4.1:
 
@@ -624,7 +680,7 @@ input controls for updating Cell and Value content respectively. You can
 generally use them across your table views by adding the `editable` prop to your
 table component.
 
-### The new Inspector
+## The new Inspector
 
 ![Inspector](/store-inspector.webp 'Inspector')
 
@@ -645,7 +701,7 @@ component where appropriate.
 
 (NB: Previous to v5.0, this component was called `StoreInspector`.)
 
-## v4.0
+# v4.0
 
 This major release provides Persister modules that connect TinyBase to SQLite
 databases (in both browser and server contexts), and CRDT frameworks that can
@@ -668,7 +724,7 @@ Take a look at the
 template, for example, which demonstrates Vulcan's cr-sqlite to provide
 persistence and synchronization via this technique.
 
-### SQLite databases
+## SQLite databases
 
 You can persist Store data to a database with either a JSON serialization or
 tabular mapping. (See the DatabasePersisterConfig documentation for more
@@ -702,7 +758,7 @@ console.log(store.getTables());
 sqlitePersister.destroy();
 ```
 
-### CRDT Frameworks
+## CRDT Frameworks
 
 CRDTs allow complex reconciliation and synchronization between clients. Yjs and
 Automerge are two popular examples. The API should be familiar! The following
@@ -746,7 +802,7 @@ automergePersister.destroy();
 store.delTables();
 ```
 
-### New methods
+## New methods
 
 There are three new methods on the Store object. The getContent method lets you
 get the Store's Tables and Values in one call. The corresponding setContent
@@ -759,7 +815,7 @@ to take changes from one Store and apply them to another.
 Persisters now provide a schedule method that lets you queue up asynchronous
 tasks, such as when persisting data that requires complex sequences of actions.
 
-### Breaking changes
+## Breaking changes
 
 The way that data is provided to the DoRollback and TransactionListener
 callbacks at the end of a transaction has changed. Although previously they
@@ -778,7 +834,7 @@ content (or nothing) rather than JSON. `startListeningToPersisted` has been
 renamed `addPersisterListener`, and `stopListeningToPersisted` has been renamed
 `delPersisterListener`.
 
-## v3.3
+# v3.3
 
 This release allows you to track the Cell Ids used across a whole Table,
 regardless of which Row they are in.
@@ -840,7 +896,7 @@ store.delRow('pets', 'felix');
 store.delListener(listenerId).delTables();
 ```
 
-## v3.2
+# v3.2
 
 This release lets you add a listener to the start of a transaction, and detect
 that a set of changes are about to be made to a Store.
@@ -891,7 +947,7 @@ store.delTables();
 This release also fixes a bug where using the explicit startTransaction method
 _inside_ another listener could create infinite recursion.
 
-## v3.1
+# v3.1
 
 This new release adds a powerful schema-based type system to TinyBase.
 
@@ -936,7 +992,7 @@ useAddRowCallback hook. It defaults to `true`, for backwards compatibility, but
 if set to `false`, new Row Ids will not be reused unless the whole Table is
 deleted.
 
-## v3.0
+# v3.0
 
 This major new release adds key/value store functionality to TinyBase. Alongside
 existing tabular data, it allows you to get, set, and listen to, individual
@@ -1035,7 +1091,7 @@ the setTablesSchema method. The setSchema method now takes two arguments, the
 second of which is optional, also aiding backward compatibility. The delSchema
 method removes both types of schema.
 
-## v2.2
+# v2.2
 
 This release includes a new tools module. These tools are not intended for
 production use, but are instead to be used as part of your engineering workflow
@@ -1084,7 +1140,7 @@ Implementation: [...]/api/shop.ts
 Finally, the tools module also provides ways to track the overall size and
 structure of a Store for use while debugging.
 
-## v2.1
+# v2.1
 
 This release allows you to create indexes where a single Row Id can exist in
 multiple slices. You can utilize this to build simple keyword searches, for
@@ -1118,14 +1174,14 @@ console.log(indexes.getSliceRowIds('containsLetter', 'x'));
 This functionality is showcased in the Word Frequencies demo if you would like
 to see it in action.
 
-## v2.0
+# v2.0
 
 **Announcing the next major version of TinyBase 2.0!** This is an exciting
 release that evolves TinyBase towards becoming a reactive, relational data
 store, complete with querying, sorting, and pagination. Here are a few of the
 highlights...
 
-### Query Engine
+## Query Engine
 
 The [flagship feature](/guides/making-queries/using-queries/) of this release is
 the new queries module. This allows you to build expressive queries against your
@@ -1146,7 +1202,7 @@ Database demo showcases the relational query capabilities of TinyBase v2.0,
 joining together information about movies, directors, and actors from across
 multiple source tables. _[Try this demo here](/demos/movie-database/)._
 
-### Sorting and Pagination
+## Sorting and Pagination
 
 To complement the query engine, you can now sort and paginate Row Ids. This
 makes it very easy to build grid-like user interfaces (also shown in the demos
@@ -1159,7 +1215,7 @@ These are also exposed in the optional ui-react module via the useSortedRowIds
 hook, the useResultSortedRowIds hook, the SortedTableView component and the
 ResultSortedTableView component, and so on.
 
-### Queries in the ui-react module
+## Queries in the ui-react module
 
 The v2.0 query functionality is fully supported by the ui-react module (to match
 support for Store, Metrics, Indexes, and Relationship objects). The
@@ -1171,14 +1227,14 @@ This is, of course, supplemented with higher-level components: the
 ResultTableView component, the ResultRowView component, the ResultCellView
 component, and so on. See the Building A UI With Queries guide for more details.
 
-### It's a big release!
+## It's a big release!
 
 Thank you for all your support as we brought this important new release to life,
 and we hope you enjoy using it as much as we did building it. Please provide
 feedback via [Github](https://github.com/tinyplex/tinybase) and
 [Twitter](https://twitter.com/tinybasejs)!
 
-## v1.3
+# v1.3
 
 Adds support for explicit transaction start and finish methods, as well as
 listeners for transactions finishing.
@@ -1214,7 +1270,7 @@ together, which we need for the query engine.
 
 Note: this API was updated to be more comprehensive in v4.0.
 
-## v1.2
+# v1.2
 
 This adds a way to revert transactions if they have not met certain conditions.
 
@@ -1229,7 +1285,7 @@ to decide whether the transaction should be rolled back.
 
 Note: this API was updated to be more comprehensive in v4.0.
 
-## v1.1
+# v1.1
 
 This release allows you to listen to invalid data being added to a Store,
 allowing you to gracefully handle errors, rather than them failing silently.

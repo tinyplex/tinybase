@@ -1630,231 +1630,6 @@
       },
     );
 
-  const scheduleRunning = mapNew();
-  const scheduleActions = mapNew();
-  const getStoreFunctions = (persist = 1 /* StoreOnly */, store) =>
-    persist != 1 /* StoreOnly */ && store.isMergeable()
-      ? [
-          1,
-          store.getMergeableContent,
-          store.getTransactionMergeableChanges,
-          ([[changedTables], [changedValues]]) =>
-            !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
-          store.setDefaultContent,
-        ]
-      : persist != 2 /* MergeableStoreOnly */
-        ? [
-            0,
-            store.getContent,
-            store.getTransactionChanges,
-            ([changedTables, changedValues]) =>
-              !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
-            store.setContent,
-          ]
-        : errorNew('Store type not supported by this Persister');
-  const createCustomPersister = (
-    store,
-    getPersisted,
-    setPersisted,
-    addPersisterListener,
-    delPersisterListener,
-    onIgnoredError,
-    persist,
-    extra = {},
-    scheduleId = [],
-  ) => {
-    let loadSave = 0;
-    let loads = 0;
-    let saves = 0;
-    let action;
-    let autoLoadHandle;
-    let autoSaveListenerId;
-    mapEnsure(scheduleRunning, scheduleId, () => 0);
-    mapEnsure(scheduleActions, scheduleId, () => []);
-    const [
-      isMergeableStore,
-      getContent,
-      getChanges,
-      hasChanges,
-      setDefaultContent,
-    ] = getStoreFunctions(persist, store);
-    const run = async () => {
-      /* istanbul ignore else */
-      if (!mapGet(scheduleRunning, scheduleId)) {
-        mapSet(scheduleRunning, scheduleId, 1);
-        while (
-          !isUndefined(
-            (action = arrayShift(mapGet(scheduleActions, scheduleId))),
-          )
-        ) {
-          try {
-            await action();
-          } catch (error) {}
-        }
-        mapSet(scheduleRunning, scheduleId, 0);
-      }
-    };
-    const setContentOrChanges = (contentOrChanges) => {
-      (isMergeableStore && isArray(contentOrChanges?.[0])
-        ? contentOrChanges?.[2] === 1
-          ? store.applyMergeableChanges
-          : store.setMergeableContent
-        : contentOrChanges?.[2] === 1
-          ? store.applyChanges
-          : store.setContent)(contentOrChanges);
-    };
-    const load = async (initialContent) => {
-      /* istanbul ignore else */
-      if (loadSave != 2) {
-        loadSave = 1;
-        loads++;
-        await schedule(async () => {
-          try {
-            const content = await getPersisted();
-            if (isArray(content)) {
-              setContentOrChanges(content);
-            } else {
-              errorNew(`Content is not an array ${content}`);
-            }
-          } catch (error) {
-            if (initialContent) {
-              setDefaultContent(initialContent);
-            }
-          }
-          loadSave = 0;
-        });
-      }
-      return persister;
-    };
-    const startAutoLoad = async (initialContent) => {
-      await stopAutoLoad().load(initialContent);
-      try {
-        autoLoadHandle = await addPersisterListener(
-          async (content, changes) => {
-            if (changes || content) {
-              /* istanbul ignore else */
-              if (loadSave != 2) {
-                loadSave = 1;
-                loads++;
-                setContentOrChanges(changes ?? content);
-                loadSave = 0;
-              }
-            } else {
-              await load();
-            }
-          },
-        );
-      } catch (error) {}
-      return persister;
-    };
-    const stopAutoLoad = () => {
-      if (autoLoadHandle) {
-        delPersisterListener(autoLoadHandle);
-        autoLoadHandle = void 0;
-      }
-      return persister;
-    };
-    const isAutoLoading = () => !isUndefined(autoLoadHandle);
-    const save = async (changes) => {
-      /* istanbul ignore else */
-      if (loadSave != 1) {
-        loadSave = 2;
-        saves++;
-        await schedule(async () => {
-          try {
-            await setPersisted(getContent, changes);
-          } catch (error) {}
-          loadSave = 0;
-        });
-      }
-      return persister;
-    };
-    const startAutoSave = async () => {
-      await stopAutoSave().save();
-      autoSaveListenerId = store.addDidFinishTransactionListener(() => {
-        const changes = getChanges();
-        if (hasChanges(changes)) {
-          save(changes);
-        }
-      });
-      return persister;
-    };
-    const stopAutoSave = () => {
-      ifNotUndefined(autoSaveListenerId, store.delListener);
-      autoSaveListenerId = void 0;
-      return persister;
-    };
-    const isAutoSaving = () => !isUndefined(autoSaveListenerId);
-    const schedule = async (...actions) => {
-      arrayPush(mapGet(scheduleActions, scheduleId), ...actions);
-      await run();
-      return persister;
-    };
-    const getStore = () => store;
-    const destroy = () => {
-      arrayClear(mapGet(scheduleActions, scheduleId));
-      return stopAutoLoad().stopAutoSave();
-    };
-    const getStats = () => ({loads, saves});
-    const persister = {
-      load,
-      startAutoLoad,
-      stopAutoLoad,
-      isAutoLoading,
-      save,
-      startAutoSave,
-      stopAutoSave,
-      isAutoSaving,
-      schedule,
-      getStore,
-      destroy,
-      getStats,
-      ...extra,
-    };
-    return objFreeze(persister);
-  };
-
-  const STORAGE = 'storage';
-  const createStoragePersister = (
-    store,
-    storageName,
-    storage,
-    onIgnoredError,
-  ) => {
-    const getPersisted = async () =>
-      jsonParseWithUndefined(storage.getItem(storageName));
-    const setPersisted = async (getContent) =>
-      storage.setItem(storageName, jsonStringWithUndefined(getContent()));
-    const addPersisterListener = (listener) => {
-      const storageListener = (event) => {
-        if (event.storageArea === storage && event.key === storageName) {
-          try {
-            listener(jsonParse(event.newValue));
-          } catch {
-            listener();
-          }
-        }
-      };
-      WINDOW.addEventListener(STORAGE, storageListener);
-      return storageListener;
-    };
-    const delPersisterListener = (storageListener) =>
-      WINDOW.removeEventListener(STORAGE, storageListener);
-    return createCustomPersister(
-      store,
-      getPersisted,
-      setPersisted,
-      addPersisterListener,
-      delPersisterListener,
-      onIgnoredError,
-      3,
-      // StoreOrMergeableStore,
-      {getStorageName: () => storageName},
-    );
-  };
-  const createSessionPersister = (store, storageName, onIgnoredError) =>
-    createStoragePersister(store, storageName, sessionStorage, onIgnoredError);
-
   const setNew = (entryOrEntries) =>
     new Set(
       isArray(entryOrEntries) || isUndefined(entryOrEntries)
@@ -1950,6 +1725,251 @@
       );
     return [addListener, callListeners, delListener, callListener];
   };
+
+  const scheduleRunning = mapNew();
+  const scheduleActions = mapNew();
+  const getStoreFunctions = (persist = 1 /* StoreOnly */, store) =>
+    persist != 1 /* StoreOnly */ && store.isMergeable()
+      ? [
+          1,
+          store.getMergeableContent,
+          store.getTransactionMergeableChanges,
+          ([[changedTables], [changedValues]]) =>
+            !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+          store.setDefaultContent,
+        ]
+      : persist != 2 /* MergeableStoreOnly */
+        ? [
+            0,
+            store.getContent,
+            store.getTransactionChanges,
+            ([changedTables, changedValues]) =>
+              !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+            store.setContent,
+          ]
+        : errorNew('Store type not supported by this Persister');
+  const createCustomPersister = (
+    store,
+    getPersisted,
+    setPersisted,
+    addPersisterListener,
+    delPersisterListener,
+    onIgnoredError,
+    persist,
+    extra = {},
+    scheduleId = [],
+  ) => {
+    let status = 0; /* Idle */
+    let loads = 0;
+    let saves = 0;
+    let action;
+    let autoLoadHandle;
+    let autoSaveListenerId;
+    mapEnsure(scheduleRunning, scheduleId, () => 0);
+    mapEnsure(scheduleActions, scheduleId, () => []);
+    const statusListeners = mapNew();
+    const [
+      isMergeableStore,
+      getContent,
+      getChanges,
+      hasChanges,
+      setDefaultContent,
+    ] = getStoreFunctions(persist, store);
+    const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
+      () => persister,
+    );
+    const setStatus = (newStatus) => {
+      if (newStatus != status) {
+        status = newStatus;
+        callListeners(statusListeners, void 0, status);
+      }
+    };
+    const run = async () => {
+      /* istanbul ignore else */
+      if (!mapGet(scheduleRunning, scheduleId)) {
+        mapSet(scheduleRunning, scheduleId, 1);
+        while (
+          !isUndefined(
+            (action = arrayShift(mapGet(scheduleActions, scheduleId))),
+          )
+        ) {
+          try {
+            await action();
+          } catch (error) {}
+        }
+        mapSet(scheduleRunning, scheduleId, 0);
+      }
+    };
+    const setContentOrChanges = (contentOrChanges) => {
+      (isMergeableStore && isArray(contentOrChanges?.[0])
+        ? contentOrChanges?.[2] === 1
+          ? store.applyMergeableChanges
+          : store.setMergeableContent
+        : contentOrChanges?.[2] === 1
+          ? store.applyChanges
+          : store.setContent)(contentOrChanges);
+    };
+    const load = async (initialContent) => {
+      /* istanbul ignore else */
+      if (status != 2 /* Saving */) {
+        setStatus(1 /* Loading */);
+        loads++;
+        await schedule(async () => {
+          try {
+            const content = await getPersisted();
+            if (isArray(content)) {
+              setContentOrChanges(content);
+            } else {
+              errorNew(`Content is not an array ${content}`);
+            }
+          } catch (error) {
+            if (initialContent) {
+              setDefaultContent(initialContent);
+            }
+          }
+          setStatus(0 /* Idle */);
+        });
+      }
+      return persister;
+    };
+    const startAutoLoad = async (initialContent) => {
+      await stopAutoLoad().load(initialContent);
+      try {
+        autoLoadHandle = await addPersisterListener(
+          async (content, changes) => {
+            if (changes || content) {
+              /* istanbul ignore else */
+              if (status != 2 /* Saving */) {
+                setStatus(1 /* Loading */);
+                loads++;
+                setContentOrChanges(changes ?? content);
+                setStatus(0 /* Idle */);
+              }
+            } else {
+              await load();
+            }
+          },
+        );
+      } catch (error) {}
+      return persister;
+    };
+    const stopAutoLoad = () => {
+      if (autoLoadHandle) {
+        delPersisterListener(autoLoadHandle);
+        autoLoadHandle = void 0;
+      }
+      return persister;
+    };
+    const isAutoLoading = () => !isUndefined(autoLoadHandle);
+    const save = async (changes) => {
+      /* istanbul ignore else */
+      if (status != 1 /* Loading */) {
+        setStatus(2 /* Saving */);
+        saves++;
+        await schedule(async () => {
+          try {
+            await setPersisted(getContent, changes);
+          } catch (error) {}
+          setStatus(0 /* Idle */);
+        });
+      }
+      return persister;
+    };
+    const startAutoSave = async () => {
+      await stopAutoSave().save();
+      autoSaveListenerId = store.addDidFinishTransactionListener(() => {
+        const changes = getChanges();
+        if (hasChanges(changes)) {
+          save(changes);
+        }
+      });
+      return persister;
+    };
+    const stopAutoSave = () => {
+      ifNotUndefined(autoSaveListenerId, store.delListener);
+      autoSaveListenerId = void 0;
+      return persister;
+    };
+    const isAutoSaving = () => !isUndefined(autoSaveListenerId);
+    const getStatus = () => status;
+    const addStatusListener = (listener) =>
+      addListener(listener, statusListeners);
+    const delListener = (listenerId) => {
+      delListenerImpl(listenerId);
+      return store;
+    };
+    const schedule = async (...actions) => {
+      arrayPush(mapGet(scheduleActions, scheduleId), ...actions);
+      await run();
+      return persister;
+    };
+    const getStore = () => store;
+    const destroy = () => {
+      arrayClear(mapGet(scheduleActions, scheduleId));
+      return stopAutoLoad().stopAutoSave();
+    };
+    const getStats = () => ({loads, saves});
+    const persister = {
+      load,
+      startAutoLoad,
+      stopAutoLoad,
+      isAutoLoading,
+      save,
+      startAutoSave,
+      stopAutoSave,
+      isAutoSaving,
+      getStatus,
+      addStatusListener,
+      delListener,
+      schedule,
+      getStore,
+      destroy,
+      getStats,
+      ...extra,
+    };
+    return objFreeze(persister);
+  };
+
+  const STORAGE = 'storage';
+  const createStoragePersister = (
+    store,
+    storageName,
+    storage,
+    onIgnoredError,
+  ) => {
+    const getPersisted = async () =>
+      jsonParseWithUndefined(storage.getItem(storageName));
+    const setPersisted = async (getContent) =>
+      storage.setItem(storageName, jsonStringWithUndefined(getContent()));
+    const addPersisterListener = (listener) => {
+      const storageListener = (event) => {
+        if (event.storageArea === storage && event.key === storageName) {
+          try {
+            listener(jsonParse(event.newValue));
+          } catch {
+            listener();
+          }
+        }
+      };
+      WINDOW.addEventListener(STORAGE, storageListener);
+      return storageListener;
+    };
+    const delPersisterListener = (storageListener) =>
+      WINDOW.removeEventListener(STORAGE, storageListener);
+    return createCustomPersister(
+      store,
+      getPersisted,
+      setPersisted,
+      addPersisterListener,
+      delPersisterListener,
+      onIgnoredError,
+      3,
+      // StoreOrMergeableStore,
+      {getStorageName: () => storageName},
+    );
+  };
+  const createSessionPersister = (store, storageName, onIgnoredError) =>
+    createStoragePersister(store, storageName, sessionStorage, onIgnoredError);
 
   const pairNew = (value) => [value, value];
   const pairCollSize2 = (pair, func = collSize2) =>
