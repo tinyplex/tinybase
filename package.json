@@ -21,9 +21,9 @@
   "sideEffects": false,
   "peerDependencies": {
     "@automerge/automerge-repo": "^1.2.0",
-    "@electric-sql/pglite": "^0.2.5",
+    "@electric-sql/pglite": "^0.2.7",
     "@libsql/client": "^0.10.0",
-    "@powersync/common": "^1.16.2",
+    "@powersync/common": "^1.17.0",
     "@sqlite.org/sqlite-wasm": "^3.46.1-build3",
     "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "electric-sql": "^0.12.1",
@@ -37,7 +37,7 @@
     "react-dom": "^18.2.0",
     "sqlite3": "^5.1.7",
     "ws": "^8.17.0",
-    "yjs": "^13.6.18"
+    "yjs": "^13.6.19"
   },
   "peerDependenciesMeta": {
     "@automerge/automerge-repo": {
@@ -129,7 +129,7 @@
     "publishPackage": "gulp publishPackage"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.15.4",
+    "@arethetypeswrong/cli": "^0.16.2",
     "@automerge/automerge-repo": "^1.2.1",
     "@automerge/automerge-repo-network-broadcastchannel": "^1.2.1",
     "@babel/cli": "^7.25.6",
@@ -137,10 +137,10 @@
     "@babel/preset-env": "^7.25.4",
     "@babel/preset-react": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
-    "@electric-sql/pglite": "^0.2.5",
+    "@electric-sql/pglite": "^0.2.7",
     "@libsql/client": "^0.10.0",
-    "@powersync/common": "^1.16.2",
-    "@powersync/react": "^1.4.0",
+    "@powersync/common": "^1.17.0",
+    "@powersync/react": "^1.4.1",
     "@prettier/sync": "^0.5.2",
     "@rollup/plugin-image": "^3.0.3",
     "@rollup/plugin-replace": "^5.0.7",
@@ -149,7 +149,7 @@
     "@types/asciichart": "^1.5.8",
     "@types/expect-puppeteer": "^5.0.6",
     "@types/http-server": "^0.12.4",
-    "@types/jest": "^29.5.12",
+    "@types/jest": "^29.5.13",
     "@types/jest-environment-puppeteer": "^5.0.6",
     "@types/less": "^3.0.6",
     "@types/node": "^22.5.4",
@@ -159,8 +159,8 @@
     "@types/react-test-renderer": "^18.3.0",
     "@types/tmp": "^0.2.6",
     "@types/ws": "^8.5.12",
-    "@typescript-eslint/eslint-plugin": "^8.4.0",
-    "@typescript-eslint/parser": "^8.4.0",
+    "@typescript-eslint/eslint-plugin": "^8.5.0",
+    "@typescript-eslint/parser": "^8.5.0",
     "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "asciichart": "^1.5.25",
     "babel-eslint": "^10.1.0",
@@ -178,7 +178,7 @@
     "eslint-plugin-import": "^2.30.0",
     "eslint-plugin-jest": "^28.8.3",
     "eslint-plugin-jsdoc": "^50.2.2",
-    "eslint-plugin-react": "7.35.2",
+    "eslint-plugin-react": "7.36.1",
     "eslint-plugin-react-hooks": "^4.6.2",
     "expo-sqlite": "14.0.6",
     "fake-indexeddb": "^6.0.0",
@@ -199,7 +199,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-test-renderer": "^18.3.1",
-    "rollup": "^4.21.2",
+    "rollup": "^4.21.3",
     "rollup-plugin-esbuild": "^6.1.1",
     "rollup-plugin-preserve-shebang": "^1.0.1",
     "rollup-plugin-prettier": "^4.1.1",
@@ -208,9 +208,9 @@
     "tinydocs": "^0.1.42",
     "tmp": "^0.2.3",
     "ts-unused-exports": "^10.1.0",
-    "typescript": "5.5.4",
+    "typescript": "5.6.2",
     "wa-sqlite": "github:rhashimoto/wa-sqlite",
     "ws": "^8.18.0",
-    "yjs": "^13.6.18"
+    "yjs": "^13.6.19"
   }
 }
