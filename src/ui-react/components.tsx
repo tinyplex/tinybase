@@ -50,6 +50,7 @@ import type {
 } from '../@types/ui-react/index.d.ts';
 import {
   Context,
+  ContextValue,
   Offsets,
   ThingsByOffset,
   useCheckpointsOrCheckpointsById,
@@ -58,7 +59,7 @@ import {
 } from './context.ts';
 import type {Id, Ids} from '../@types/common/index.d.ts';
 import React, {ReactElement} from 'react';
-import {arrayMap, arrayWith} from '../common/array.ts';
+import {arrayMap, arrayNew, arrayWith} from '../common/array.ts';
 import {
   createElement,
   getIndexStoreTableId,
@@ -92,6 +93,27 @@ import type {CheckpointIds} from '../@types/checkpoints/index.d.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
 
 const {useCallback, useContext, useMemo, useState} = React;
+
+type ThingsById<ThingsByOffset> = {
+  [Offset in keyof ThingsByOffset]: {[id: Id]: ThingsByOffset[Offset]};
+};
+type ExtraThingsById = ThingsById<ThingsByOffset>;
+
+const mergeParentThings = <Offset extends Offsets>(
+  offset: Offset,
+  parentValue: ContextValue,
+  defaultThing: ThingsByOffset[Offset] | undefined,
+  thingsById: ThingsById<ThingsByOffset>[Offset] | undefined,
+  extraThingsById: ExtraThingsById,
+): [ThingsByOffset[Offset] | undefined, ThingsById<ThingsByOffset>[Offset]] => [
+  defaultThing ??
+    (parentValue[offset * 2] as ThingsByOffset[Offset] | undefined),
+  {
+    ...parentValue[offset * 2 + 1],
+    ...thingsById,
+    ...extraThingsById[offset],
+  },
+];
 
 const tableView = (
   {
@@ -242,22 +264,10 @@ export const Provider: typeof ProviderDecl = ({
   synchronizersById,
   children,
 }: ProviderProps & {readonly children: React.ReactNode}): any => {
-  type ThingsById<ThingsByOffset> = {
-    [Offset in keyof ThingsByOffset]: {[id: Id]: ThingsByOffset[Offset]};
-  };
-  type ExtraThingsById = ThingsById<ThingsByOffset>;
-
   const parentValue = useContext(Context);
-  const [extraThingsById, setExtraThingsById] = useState<ExtraThingsById>([
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-  ]);
+  const [extraThingsById, setExtraThingsById] = useState<ExtraThingsById>(
+    () => arrayNew(8, () => ({})) as ExtraThingsById,
+  );
   const addExtraThingById = useCallback(
     <Offset extends Offsets>(
       thingOffset: Offset,
@@ -293,29 +303,69 @@ export const Provider: typeof ProviderDecl = ({
     <Context.Provider
       value={useMemo(
         () => [
-          store ?? parentValue[0],
-          {...parentValue[1], ...storesById, ...extraThingsById[0]},
-          metrics ?? parentValue[2],
-          {...parentValue[3], ...metricsById, ...extraThingsById[1]},
-          indexes ?? parentValue[4],
-          {...parentValue[5], ...indexesById, ...extraThingsById[2]},
-          relationships ?? parentValue[6],
-          {...parentValue[7], ...relationshipsById, ...extraThingsById[3]},
-          queries ?? parentValue[8],
-          {...parentValue[9], ...queriesById, ...extraThingsById[4]},
-          checkpoints ?? parentValue[10],
-          {...parentValue[11], ...checkpointsById, ...extraThingsById[5]},
-          persister ?? parentValue[12],
-          {...parentValue[13], ...persistersById, ...extraThingsById[6]},
-          synchronizer ?? parentValue[14],
-          {...parentValue[15], ...synchronizersById, ...extraThingsById[7]},
+          ...mergeParentThings(
+            Offsets.Store,
+            parentValue,
+            store,
+            storesById,
+            extraThingsById,
+          ),
+          ...mergeParentThings(
+            Offsets.Metrics,
+            parentValue,
+            metrics,
+            metricsById,
+            extraThingsById,
+          ),
+          ...mergeParentThings(
+            Offsets.Indexes,
+            parentValue,
+            indexes,
+            indexesById,
+            extraThingsById,
+          ),
+          ...mergeParentThings(
+            Offsets.Relationships,
+            parentValue,
+            relationships,
+            relationshipsById,
+            extraThingsById,
+          ),
+          ...mergeParentThings(
+            Offsets.Queries,
+            parentValue,
+            queries,
+            queriesById,
+            extraThingsById,
+          ),
+          ...mergeParentThings(
+            Offsets.Checkpoints,
+            parentValue,
+            checkpoints,
+            checkpointsById,
+            extraThingsById,
+          ),
+          ...mergeParentThings(
+            Offsets.Persister,
+            parentValue,
+            persister,
+            persistersById,
+            extraThingsById,
+          ),
+          ...mergeParentThings(
+            Offsets.Synchronizer,
+            parentValue,
+            synchronizer,
+            synchronizersById,
+            extraThingsById,
+          ),
           addExtraThingById,
           delExtraThingById,
         ],
         [
+          extraThingsById,
           store,
           storesById,
-          extraThingsById,
           metrics,
           metricsById,
           indexes,
