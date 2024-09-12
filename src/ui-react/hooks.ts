@@ -196,6 +196,11 @@ import type {
 } from '../@types/relationships/index.d.ts';
 import type {MetricListener, Metrics} from '../@types/metrics/index.d.ts';
 import type {
+  PersistedStore,
+  Persister,
+  Persists,
+} from '../@types/persisters/index.d.ts';
+import type {
   Queries,
   ResultCellIdsListener,
   ResultCellListener,
@@ -228,7 +233,6 @@ import {
 } from './context.ts';
 import {ListenerArgument} from '../common/listeners.ts';
 import type {MergeableStore} from '../@types/mergeable-store/index.d.ts';
-import type {Persister} from '../@types/persisters/index.d.ts';
 import React from 'react';
 import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
 import {TRANSACTION} from '../tools/common/strings.ts';
@@ -1859,16 +1863,17 @@ export const useCheckpointListener: typeof useCheckpointListenerDecl = (
   );
 
 export const useCreatePersister: typeof useCreatePersisterDecl = <
-  PersisterOrUndefined extends Persister | undefined,
+  Persist extends Persists,
+  PersisterOrUndefined extends Persister<Persist> | undefined,
 >(
-  store: Store | undefined,
+  store: PersistedStore<Persist> | undefined,
   create: (
-    store: Store,
+    store: PersistedStore<Persist>,
   ) => PersisterOrUndefined | Promise<PersisterOrUndefined>,
   createDeps: React.DependencyList = EMPTY_ARRAY,
-  then?: (persister: Persister) => Promise<void>,
+  then?: (persister: Persister<Persist>) => Promise<void>,
   thenDeps: React.DependencyList = EMPTY_ARRAY,
-  destroy?: (persister: Persister) => void,
+  destroy?: (persister: Persister<Persist>) => void,
   destroyDeps: React.DependencyList = EMPTY_ARRAY,
 ): PersisterOrUndefined => {
   const [, rerender] = useState<[]>();
