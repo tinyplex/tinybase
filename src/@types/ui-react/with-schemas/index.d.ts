@@ -110,6 +110,7 @@ import type {
   PersistedStore,
   Persister,
   Persists,
+  Status,
 } from '../../persisters/with-schemas/index.d.ts';
 import type {
   Queries,
@@ -1230,6 +1231,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     persister: Persister<Schemas, Persists.StoreOrMergeableStore>,
   ) => void;
 
+  /// usePersisterStatus
+  usePersisterStatus: (
+    persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
+  ) => Status;
+
   /// useCreateSynchronizer
   useCreateSynchronizer: <
     SynchronizerOrUndefined extends Synchronizer<Schemas> | undefined,
@@ -1259,6 +1265,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     synchronizerId: Id,
     synchronizer: Synchronizer<Schemas>,
   ) => void;
+
+  /// useSynchronizerStatus
+  useSynchronizerStatus: (
+    synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
+  ) => Status;
 
   /// ExtraProps
   ExtraProps: ExtraProps;

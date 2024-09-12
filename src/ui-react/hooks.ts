@@ -11,6 +11,7 @@ import {
   ROW_COUNT,
   ROW_IDS,
   SORTED_ROW_IDS,
+  STATUS,
   TABLE,
   TABLES,
   TABLE_IDS,
@@ -69,9 +70,11 @@ import type {
   GetId,
   IndexesOrIndexesId,
   MetricsOrMetricsId,
+  PersisterOrPersisterId,
   QueriesOrQueriesId,
   RelationshipsOrRelationshipsId,
   StoreOrStoreId,
+  SynchronizerOrSynchronizerId,
   UndoOrRedoInformation,
   useAddRowCallback as useAddRowCallbackDecl,
   useCell as useCellDecl,
@@ -123,6 +126,7 @@ import type {
   useMetric as useMetricDecl,
   useMetricIds as useMetricIdsDecl,
   useMetricListener as useMetricListenerDecl,
+  usePersisterStatus as usePersisterStatusDecl,
   useQueryIds as useQueryIdsDecl,
   useRedoInformation as useRedoInformationDecl,
   useRelationshipIds as useRelationshipIdsDecl,
@@ -166,6 +170,7 @@ import type {
   useSortedRowIds as useSortedRowIdsDecl,
   useSortedRowIdsListener as useSortedRowIdsListenerDecl,
   useStartTransactionListener as useStartTransactionListenerDecl,
+  useSynchronizerStatus as useSynchronizerStatusDecl,
   useTableCellIds as useTableCellIdsDecl,
   useTableCellIdsListener as useTableCellIdsListenerDecl,
   useTable as useTableDecl,
@@ -199,6 +204,7 @@ import type {
   PersistedStore,
   Persister,
   Persists,
+  Status,
 } from '../@types/persisters/index.d.ts';
 import type {
   Queries,
@@ -227,9 +233,11 @@ import {
   useCheckpointsOrCheckpointsById,
   useIndexesOrIndexesById,
   useMetricsOrMetricsById,
+  usePersisterOrPersisterById,
   useQueriesOrQueriesById,
   useRelationshipsOrRelationshipsById,
   useStoreOrStoreById,
+  useSynchronizerOrSynchronizerById,
 } from './context.ts';
 import {ListenerArgument} from '../common/listeners.ts';
 import type {MergeableStore} from '../@types/mergeable-store/index.d.ts';
@@ -1907,6 +1915,16 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
   return persister;
 };
 
+export const usePersisterStatus: typeof usePersisterStatusDecl = (
+  persisterOrPersisterId?: PersisterOrPersisterId,
+): Status =>
+  useListenable(
+    STATUS,
+    usePersisterOrPersisterById(persisterOrPersisterId),
+    ReturnType.Number,
+    [],
+  );
+
 export const useCreateSynchronizer: typeof useCreateSynchronizerDecl = <
   SynchronizerOrUndefined extends Synchronizer | undefined,
 >(
@@ -1939,3 +1957,13 @@ export const useCreateSynchronizer: typeof useCreateSynchronizerDecl = <
   );
   return synchronizer;
 };
+
+export const useSynchronizerStatus: typeof useSynchronizerStatusDecl = (
+  synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
+): Status =>
+  useListenable(
+    STATUS,
+    useSynchronizerOrSynchronizerById(synchronizerOrSynchronizerId),
+    ReturnType.Number,
+    [],
+  );

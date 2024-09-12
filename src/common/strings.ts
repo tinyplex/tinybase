@@ -42,6 +42,8 @@ export const VALUE = 'Value';
 export const VALUES = VALUE + 's';
 export const VALUE_IDS = VALUE + IDS;
 
+export const STATUS = 'Status';
+
 export const CURRENT_TARGET = 'currentTarget';
 export const _VALUE = 'value';
 
