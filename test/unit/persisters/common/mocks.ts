@@ -1,4 +1,11 @@
 import type {
+  AnyPersister,
+  DatabasePersisterConfig,
+  Persister,
+  PersisterListener,
+  Persists,
+} from 'tinybase/persisters';
+import type {
   Changes,
   Content,
   Id,
@@ -9,12 +16,6 @@ import type {
   Tables,
   Values,
 } from 'tinybase';
-import type {
-  DatabasePersisterConfig,
-  Persister,
-  PersisterListener,
-  Persists,
-} from 'tinybase/persisters';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
 import {GetLocationMethod, Persistable} from './other.ts';
 import type {Receive, Synchronizer} from 'tinybase/synchronizers';
@@ -179,7 +180,7 @@ const getMockedCustom = (
 
 const getMockedStorage = (
   storage: Storage,
-  getPersister: (store: Store, location: string) => Persister,
+  getPersister: (store: Store, location: string) => AnyPersister,
 ): Persistable => {
   const mockStorage = {
     getLocation: async (): Promise<string> => 'test' + Math.random(),

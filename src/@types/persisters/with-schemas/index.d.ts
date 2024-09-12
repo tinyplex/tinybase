@@ -213,6 +213,12 @@ export interface Persister<
   getStats(): PersisterStats;
 }
 
+/// AnyPersister
+export type AnyPersister = Persister<
+  OptionalSchemas,
+  Persists.StoreOrMergeableStore
+>;
+
 /// DatabaseExecuteCommand
 export type DatabaseExecuteCommand = (
   sql: string,
