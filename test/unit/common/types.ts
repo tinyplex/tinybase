@@ -124,3 +124,6 @@ export type CheckpointsListener = Listener &
     listenToCheckpoints: (id: Id) => Id;
     listenToCheckpoint: (id: Id, checkpointId: IdOrNull) => Id;
   }>;
+
+export type StatusListener = Listener &
+  Readonly<{listenToStatus: (id: Id) => Id}>;
