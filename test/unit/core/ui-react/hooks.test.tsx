@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-useless-fragment */
 
+import type {AnyPersister, Persister} from 'tinybase/persisters';
 import type {
   Cell,
   Checkpoints,
@@ -149,7 +150,6 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase';
-import type {Persister} from 'tinybase/persisters';
 import type {Synchronizer} from 'tinybase/synchronizers';
 import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
@@ -441,7 +441,7 @@ describe('Create Hooks', () => {
   });
 
   test('useCreatePersister, no then', async () => {
-    let _persister: Persister | undefined;
+    let _persister: AnyPersister | undefined;
     tmp.setGracefulCleanup();
     const fileName = tmp.fileSync().name;
     const initStore = jest.fn(createStore);
@@ -488,7 +488,7 @@ describe('Create Hooks', () => {
   });
 
   test('useCreatePersister, then, no destroy', async () => {
-    let _persister: Persister | undefined;
+    let _persister: AnyPersister | undefined;
     tmp.setGracefulCleanup();
     const fileName = tmp.fileSync().name;
     const initStore = jest.fn(createStore);
@@ -542,7 +542,7 @@ describe('Create Hooks', () => {
   });
 
   test('useCreatePersister, then, destroy', async () => {
-    const persisters: Persister[] = [];
+    const persisters: AnyPersister[] = [];
     tmp.setGracefulCleanup();
     const initStore = jest.fn(createStore);
     const createPersister = jest.fn((store: Store, id: number) => {
@@ -551,10 +551,12 @@ describe('Create Hooks', () => {
       persisters[id] = persister;
       return persister;
     });
-    const initPersister = jest.fn(async (persister: Persister, id: number) => {
-      await persister.load([{t1: {r1: {c1: id}}}, {}]);
-    });
-    const destroyPersister = jest.fn((persister: Persister) => {
+    const initPersister = jest.fn(
+      async (persister: AnyPersister, id: number) => {
+        await persister.load([{t1: {r1: {c1: id}}}, {}]);
+      },
+    );
+    const destroyPersister = jest.fn((persister: AnyPersister) => {
       expect(persisters).toContain(persister);
     });
     const Test = ({id}: {id: number}) => {

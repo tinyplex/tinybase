@@ -27,10 +27,10 @@ import type {
 import {GLOBAL, isString, isUndefined} from '../common/other.ts';
 import type {Id, Ids} from '../@types/common/index.d.ts';
 import {IdObj, objEnsure, objGet, objIds} from '../common/obj.ts';
+import type {AnyPersister} from '../@types/persisters/index.d.ts';
 import type {Checkpoints} from '../@types/checkpoints/index.d.ts';
 import type {Indexes} from '../@types/indexes/index.d.ts';
 import type {Metrics} from '../@types/metrics/index.d.ts';
-import type {Persister} from '../@types/persisters/index.d.ts';
 import type {Queries} from '../@types/queries/index.d.ts';
 import React from 'react';
 import type {Relationships} from '../@types/relationships/index.d.ts';
@@ -47,7 +47,7 @@ export type Thing =
   | Relationships
   | Queries
   | Checkpoints
-  | Persister
+  | AnyPersister
   | Synchronizer;
 
 export type ThingsByOffset = [
@@ -57,7 +57,7 @@ export type ThingsByOffset = [
   Relationships,
   Queries,
   Checkpoints,
-  Persister,
+  AnyPersister,
   Synchronizer,
 ];
 export type Offsets = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
@@ -75,8 +75,10 @@ type ContextValue = [
   queriesById?: {[queriesId: Id]: Queries},
   checkpoints?: Checkpoints,
   checkpointsById?: {[checkpointsId: Id]: Checkpoints},
-  persister?: Persister,
-  persistersById?: {[persisterId: Id]: Persister},
+  persister?: AnyPersister,
+  persistersById?: {
+    [persisterId: Id]: AnyPersister;
+  },
   synchronizer?: Synchronizer,
   synchronizersById?: {[synchronizerId: Id]: Synchronizer},
   addExtraThingById?: <Offset extends Offsets>(
@@ -115,7 +117,7 @@ const useThingOrThingById = <
     | Relationships
     | Queries
     | Checkpoints
-    | Persister
+    | AnyPersister
     | Synchronizer,
 >(
   thingOrThingId: Thing | Id | undefined,
@@ -232,15 +234,15 @@ export const usePersisterIds: typeof usePersisterIdsDecl = () =>
 
 export const usePersister: typeof usePersisterDecl = (
   id?: Id,
-): Persister | undefined => useThing(id, 12);
+): AnyPersister | undefined => useThing(id, 12);
 
 export const usePersisterOrPersisterById = (
   persisterOrPersisterId?: PersisterOrPersisterId,
-): Persister | undefined => useThingOrThingById(persisterOrPersisterId, 12);
+): AnyPersister | undefined => useThingOrThingById(persisterOrPersisterId, 12);
 
 export const useProvidePersister = (
   persisterId: Id,
-  persister: Persister,
+  persister: AnyPersister,
 ): void => useProvideThing(persisterId, persister, 6);
 
 export const useSynchronizerIds: typeof useSynchronizerIdsDecl = () =>

@@ -1,6 +1,12 @@
 /// ui-react
 
 import type {
+  AnyPersister,
+  PersistedStore,
+  Persister,
+  Persists,
+} from '../persisters/index.d.ts';
+import type {
   Callback,
   Id,
   IdOrNull,
@@ -61,11 +67,6 @@ import type {
 } from '../relationships/index.d.ts';
 import type {MetricListener, Metrics} from '../metrics/index.d.ts';
 import type {
-  PersistedStore,
-  Persister,
-  Persists,
-} from '../persisters/index.d.ts';
-import type {
   Queries,
   ResultCellIdsListener,
   ResultCellListener,
@@ -98,9 +99,7 @@ export type QueriesOrQueriesId = Queries | Id;
 export type CheckpointsOrCheckpointsId = Checkpoints | Id;
 
 /// PersisterOrPersisterId
-export type PersisterOrPersisterId =
-  | Persister<Persists.StoreOrMergeableStore>
-  | Id;
+export type PersisterOrPersisterId = AnyPersister | Id;
 
 /// SynchronizerOrSynchronizerId
 export type SynchronizerOrSynchronizerId = Synchronizer | Id;
@@ -1023,19 +1022,17 @@ export function useCreatePersister<
 export function usePersisterIds(): Ids;
 
 /// usePersister
-export function usePersister(
-  id?: Id,
-): Persister<Persists.StoreOrMergeableStore> | undefined;
+export function usePersister(id?: Id): AnyPersister | undefined;
 
 /// usePersisterOrPersisterById
 export function usePersisterOrPersisterById(
   persisterOrPersisterId?: PersisterOrPersisterId,
-): Persister<Persists.StoreOrMergeableStore> | undefined;
+): AnyPersister | undefined;
 
 // useProvidePersister
 export function useProvidePersister(
   persisterId: Id,
-  persister: Persister<Persists.StoreOrMergeableStore>,
+  persister: AnyPersister,
 ): void;
 
 /// useCreateSynchronizer
@@ -1430,10 +1427,10 @@ export type ProviderProps = {
   /// ProviderProps.checkpointsById
   readonly checkpointsById?: {[checkpointsId: Id]: Checkpoints};
   /// ProviderProps.persister
-  readonly persister?: Persister<Persists.StoreOrMergeableStore>;
+  readonly persister?: AnyPersister;
   /// ProviderProps.persistersById
   readonly persistersById?: {
-    [persisterId: Id]: Persister<Persists.StoreOrMergeableStore>;
+    [persisterId: Id]: AnyPersister;
   };
   /// ProviderProps.synchronizer
   readonly synchronizer?: Synchronizer;

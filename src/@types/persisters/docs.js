@@ -1491,6 +1491,13 @@
   /// Persister.getStats
 }
 /**
+ * The AnyPersister type is a convenient alias for any type of Persister that
+ * can persist Store or MergeableStore objects.
+ * @category Mergeable
+ * @since v5.3.0
+ */
+/// AnyPersister
+/**
  * The DatabaseExecuteCommand type describes a function that is used to execute
  * commands against a database.
  *
