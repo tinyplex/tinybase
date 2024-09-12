@@ -61,6 +61,7 @@ export type PersisterListener<Persist extends Persists = Persists.StoreOnly> = (
 /// StatusListener
 export type StatusListener<Persist extends Persists = Persists.StoreOnly> = (
   persister: Persister<Persist>,
+  status: Status,
 ) => void;
 
 /// PersisterStats
