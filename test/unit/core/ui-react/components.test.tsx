@@ -53,6 +53,7 @@ import {
   useLinkedRowIds,
   useLocalRowIds,
   useMetric,
+  usePersister,
   useRemoteRowId,
   useResultCell,
   useResultCellIds,
@@ -68,6 +69,7 @@ import {
   useSliceRowIds,
   useStore,
   useStoreIds,
+  useSynchronizer,
   useTable,
   useTables,
 } from 'tinybase/ui-react';
@@ -85,12 +87,15 @@ import {ReactTestRenderer, act, create} from 'react-test-renderer';
 import {
   createCheckpoints,
   createIndexes,
+  createMergeableStore,
   createMetrics,
   createQueries,
   createRelationships,
   createStore,
 } from 'tinybase';
 import type {NoSchemas} from 'tinybase/with-schemas';
+import {createLocalPersister} from 'tinybase/persisters/persister-browser';
+import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import {createStore as createStore2} from 'tinybase/with-schemas';
 import {jest} from '@jest/globals';
 
@@ -2086,6 +2091,32 @@ describe('Context Provider', () => {
       });
       expect(rendererToString(renderer)).toEqual(JSON.stringify([[], '0', []]));
     });
+
+    test('persister', () => {
+      const persister = createLocalPersister(store, '');
+      const Test = () => <>{usePersister()?.getStatus()}</>;
+      act(() => {
+        renderer = create(
+          <Provider persister={persister}>
+            <Test />
+          </Provider>,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('0');
+    });
+
+    test('synchronizer', () => {
+      const synchronizer = createLocalSynchronizer(createMergeableStore());
+      const Test = () => <>{useSynchronizer()?.getStatus()}</>;
+      act(() => {
+        renderer = create(
+          <Provider synchronizer={synchronizer}>
+            <Test />
+          </Provider>,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('0');
+    });
   });
 
   describe('named', () => {
@@ -2429,6 +2460,36 @@ describe('Context Provider', () => {
         );
       });
       expect(rendererToString(renderer)).toEqual('[[],"0",[]]');
+    });
+
+    test('persister', () => {
+      const persister = createLocalPersister(store, '');
+      const Test = () => (
+        <>{JSON.stringify(usePersister('persister1')?.getStatus())}</>
+      );
+      act(() => {
+        renderer = create(
+          <Provider persistersById={{persister1: persister}}>
+            <Test />
+          </Provider>,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('0');
+    });
+
+    test('synchronizer', () => {
+      const synchronizer = createLocalSynchronizer(createMergeableStore());
+      const Test = () => (
+        <>{JSON.stringify(useSynchronizer('synchronizer1')?.getStatus())}</>
+      );
+      act(() => {
+        renderer = create(
+          <Provider synchronizersById={{synchronizer1: synchronizer}}>
+            <Test />
+          </Provider>,
+        );
+      });
+      expect(rendererToString(renderer)).toEqual('0');
     });
   });
 
