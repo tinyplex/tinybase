@@ -9,6 +9,14 @@ import type {
   ValueIdFromSchema,
 } from '../../_internal/store/with-schemas/index.d.ts';
 import type {
+  AnyPersister,
+  PersistedStore,
+  Persister,
+  Persists,
+  Status,
+  StatusListener,
+} from '../../persisters/with-schemas/index.d.ts';
+import type {
   BackwardCheckpointsProps,
   CellProps,
   CheckpointProps,
@@ -106,13 +114,6 @@ import type {
   MetricListener,
   Metrics,
 } from '../../metrics/with-schemas/index.d.ts';
-import type {
-  PersistedStore,
-  Persister,
-  Persists,
-  Status,
-  StatusListener,
-} from '../../persisters/with-schemas/index.d.ts';
 import type {
   Queries,
   ResultCell,
@@ -1229,7 +1230,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   // useProvidePersister
   useProvidePersister: (
     persisterId: Id,
-    persister: Persister<Schemas, Persists.StoreOrMergeableStore>,
+    persister: AnyPersister<Schemas> | undefined,
   ) => void;
 
   /// usePersisterStatus
@@ -1271,7 +1272,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   // useProvideSynchronizer
   useProvideSynchronizer: (
     synchronizerId: Id,
-    synchronizer: Synchronizer<Schemas>,
+    synchronizer: Synchronizer<Schemas> | undefined,
   ) => void;
 
   /// useSynchronizerStatus
