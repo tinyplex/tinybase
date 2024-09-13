@@ -195,7 +195,7 @@ export interface Persister<Persist extends Persists = Persists.StoreOnly> {
 }
 
 /// AnyPersister
-export type AnyPersister = Persister<Persists.StoreOrMergeableStore>;
+export type AnyPersister = Persister<Persists>;
 
 /// DatabaseExecuteCommand
 export type DatabaseExecuteCommand = (

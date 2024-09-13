@@ -214,9 +214,9 @@ export interface Persister<
 }
 
 /// AnyPersister
-export type AnyPersister = Persister<
-  OptionalSchemas,
-  Persists.StoreOrMergeableStore
+export type AnyPersister<Schemas extends OptionalSchemas> = Persister<
+  Schemas,
+  Persists
 >;
 
 /// DatabaseExecuteCommand
