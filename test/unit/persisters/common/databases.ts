@@ -1,3 +1,4 @@
+import 'jest-fetch-mock';
 import 'fake-indexeddb/auto';
 import {Client, createClient} from '@libsql/client';
 import type {DatabasePersisterConfig, Persister} from 'tinybase/persisters';
