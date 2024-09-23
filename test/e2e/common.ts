@@ -6,6 +6,8 @@ import replace from 'buffer-replace';
 
 jest.setTimeout(10000);
 
+let browserWarmed = false;
+
 export const getServerFunctions = (
   port: number,
 ): [() => void, () => void, (path: string) => Promise<void>] => {
@@ -36,6 +38,11 @@ export const getServerFunctions = (
   };
 
   const expectPage = async (path: string): Promise<void> => {
+    if (!browserWarmed) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // ^ needed since Puppeteer 23.4.0
+      browserWarmed = true;
+    }
     await page.goto(`${DOMAIN}${path}`);
   };
 
