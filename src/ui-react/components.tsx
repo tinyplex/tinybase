@@ -51,7 +51,6 @@ import type {
 import {
   Context,
   ContextValue,
-  Offsets,
   ThingsByOffset,
   useCheckpointsOrCheckpointsById,
   useIndexesOrIndexesById,
@@ -95,6 +94,17 @@ import {
 } from './hooks.ts';
 import type {CheckpointIds} from '../@types/checkpoints/index.d.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
+
+enum Offsets {
+  Store = 0,
+  Metrics = 1,
+  Indexes = 2,
+  Relationships = 3,
+  Queries = 4,
+  Checkpoints = 5,
+  Persister = 6,
+  Synchronizer = 7,
+}
 
 type ThingsById<ThingsByOffset> = {
   [Offset in keyof ThingsByOffset]: {[id: Id]: ThingsByOffset[Offset]};

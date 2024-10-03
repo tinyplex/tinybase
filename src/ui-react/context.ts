@@ -60,7 +60,7 @@ export type ThingsByOffset = [
   Synchronizer,
 ];
 
-export enum Offsets {
+enum Offsets {
   Store = 0,
   Metrics = 1,
   Indexes = 2,
