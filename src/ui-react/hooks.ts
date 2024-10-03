@@ -15,6 +15,7 @@ import {
   TABLE,
   TABLES,
   TABLE_IDS,
+  TRANSACTION,
   VALUE,
   VALUES,
   VALUE_IDS,
@@ -255,7 +256,6 @@ import type {DependencyList} from 'react';
 import {ListenerArgument} from '../common/listeners.ts';
 import type {MergeableStore} from '../@types/mergeable-store/index.d.ts';
 import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
-import {TRANSACTION} from '../tools/common/strings.ts';
 import {objIsEqual} from '../common/obj.ts';
 
 export {

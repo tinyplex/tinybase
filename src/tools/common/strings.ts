@@ -8,6 +8,7 @@ import {
   ROW,
   TABLE,
   TABLES,
+  TRANSACTION,
   VALUE,
   VALUES,
 } from '../../common/strings.ts';
@@ -51,7 +52,6 @@ export const SORTED_ARGS =
   ', descending?: boolean, offset?: number, limit?: number';
 export const SQUARE_BRACKETS = '[]';
 export const THE_STORE = 'the Store';
-export const TRANSACTION = 'Transaction';
 export const TRANSACTION_ = lower(TRANSACTION);
 export const TRANSACTION_DOC =
   'Execute a ' + TRANSACTION_ + ' to make multiple mutations';
