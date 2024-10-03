@@ -645,7 +645,7 @@ const compileModulesForProd = async (fast = false) => {
   await copyDefinitions(DIST_DIR);
 
   await allOf(
-    [undefined, 'umd', ...(fast ? [] : ['cjs'])],
+    [undefined, ...(fast ? [] : ['umd', 'cjs'])],
     async (format) =>
       await allOf(
         [undefined, ...(fast ? [] : ['es6'])],
@@ -653,7 +653,7 @@ const compileModulesForProd = async (fast = false) => {
           await allModules(
             async (module) =>
               await allOf(
-                [undefined, 'min'],
+                [undefined, ...(fast ? [] : ['min'])],
                 async (min) =>
                   await compileModule(
                     module,
