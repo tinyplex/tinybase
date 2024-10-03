@@ -1,6 +1,6 @@
 /** @jsx createElement */
 
-import {ErrorInfo, ReactNode} from 'react';
+import type {ErrorInfo, ReactNode} from 'react';
 import {PureComponent, createElement} from '../common/react.ts';
 
 interface Props {

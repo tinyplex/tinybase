@@ -1,7 +1,7 @@
 /** @jsx createElement */
 
 import {OPEN_CELL, STATE_TABLE} from './common.ts';
-import {ReactNode, SyntheticEvent} from 'react';
+import type {ReactNode, SyntheticEvent} from 'react';
 import {useCell, useSetCellCallback} from '../ui-react/index.ts';
 import {CURRENT_TARGET} from '../common/strings.ts';
 import type {Id} from '../@types/common/index.d.ts';
@@ -27,8 +27,7 @@ export const Details = ({
     STATE_TABLE,
     uniqueId,
     OPEN_CELL,
-    (event: React.SyntheticEvent<HTMLDetailsElement>) =>
-      event[CURRENT_TARGET].open,
+    (event: SyntheticEvent<HTMLDetailsElement>) => event[CURRENT_TARGET].open,
     [],
     s,
   );

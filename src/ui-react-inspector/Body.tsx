@@ -29,7 +29,7 @@ import {QueriesView} from './QueriesView.tsx';
 import {RelationshipsView} from './RelationshipsView.tsx';
 import type {StoreProp} from './types.ts';
 import {StoreView} from './StoreView.tsx';
-import {SyntheticEvent} from 'react';
+import type {SyntheticEvent} from 'react';
 
 export const Body = ({s}: StoreProp) => {
   const articleRef = useRef<HTMLElement>(null);

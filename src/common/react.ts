@@ -9,11 +9,16 @@ import {isUndefined} from './other.ts';
 export const {
   PureComponent,
   Fragment,
+  createContext,
   createElement,
   useCallback,
+  useContext,
+  useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } = React;
 
 export const getProps = <Props extends IdObj<any>>(

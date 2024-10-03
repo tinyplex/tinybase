@@ -58,13 +58,17 @@ import {
   useRelationshipsOrRelationshipsById,
 } from './context.ts';
 import type {Id, Ids} from '../@types/common/index.d.ts';
-import React, {ReactElement} from 'react';
+import type {ReactElement, ReactNode} from 'react';
 import {arrayMap, arrayNew, arrayWith} from '../common/array.ts';
 import {
   createElement,
   getIndexStoreTableId,
   getProps,
   getRelationshipsStoreTableIds,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
 } from '../common/react.ts';
 import {isArray, isUndefined} from '../common/other.ts';
 import {objDel, objGet, objHas} from '../common/obj.ts';
@@ -91,8 +95,6 @@ import {
 } from './hooks.ts';
 import type {CheckpointIds} from '../@types/checkpoints/index.d.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
-
-const {useCallback, useContext, useMemo, useState} = React;
 
 type ThingsById<ThingsByOffset> = {
   [Offset in keyof ThingsByOffset]: {[id: Id]: ThingsByOffset[Offset]};
@@ -263,7 +265,7 @@ export const Provider: typeof ProviderDecl = ({
   synchronizer,
   synchronizersById,
   children,
-}: ProviderProps & {readonly children: React.ReactNode}): any => {
+}: ProviderProps & {readonly children: ReactNode}): any => {
   const parentValue = useContext(Context);
   const [extraThingsById, setExtraThingsById] = useState<ExtraThingsById>(
     () => arrayNew(8, () => ({})) as ExtraThingsById,

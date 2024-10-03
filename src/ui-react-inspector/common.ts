@@ -1,6 +1,7 @@
 import type {Id, Ids} from '../@types/common/index.d.ts';
 import {arrayMap, arraySort} from '../common/array.ts';
 import type {Store} from '../@types/store/index.d.ts';
+import type {SyntheticEvent} from 'react';
 import {jsonStringWithMap} from '../common/json.ts';
 import {useCallback} from '../common/react.ts';
 import {useCell} from '../ui-react/index.ts';
@@ -28,10 +29,10 @@ export const sortedIdsMap = <Return>(
 export const useEditable = (
   uniqueId: Id,
   s: Store,
-): [boolean, (event: React.SyntheticEvent<HTMLImageElement>) => void] => [
+): [boolean, (event: SyntheticEvent<HTMLImageElement>) => void] => [
   !!useCell(STATE_TABLE, uniqueId, EDITABLE_CELL, s),
   useCallback(
-    (event: React.SyntheticEvent<HTMLImageElement>) => {
+    (event: SyntheticEvent<HTMLImageElement>) => {
       s.setCell(STATE_TABLE, uniqueId, EDITABLE_CELL, (editable) => !editable);
       event.preventDefault();
     },

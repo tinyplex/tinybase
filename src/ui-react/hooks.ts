@@ -233,6 +233,15 @@ import {
   isUndefined,
 } from '../common/other.ts';
 import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from '../common/react.ts';
+import {
   useCheckpointsOrCheckpointsById,
   useIndexesOrIndexesById,
   useMetricsOrMetricsById,
@@ -242,9 +251,9 @@ import {
   useStoreOrStoreById,
   useSynchronizerOrSynchronizerById,
 } from './context.ts';
+import type {DependencyList} from 'react';
 import {ListenerArgument} from '../common/listeners.ts';
 import type {MergeableStore} from '../@types/mergeable-store/index.d.ts';
-import React from 'react';
 import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
 import {TRANSACTION} from '../tools/common/strings.ts';
 import {objIsEqual} from '../common/obj.ts';
@@ -284,16 +293,6 @@ export {
   useSynchronizerOrSynchronizerById,
 } from './context.ts';
 
-const {
-  useCallback,
-  useEffect,
-  useMemo,
-  useLayoutEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} = React;
-
 const EMPTY_ARRAY: Readonly<[]> = [];
 
 enum ReturnType {
@@ -328,7 +327,7 @@ const isEqual = (thing1: any, thing2: any) => thing1 === thing2;
 const useCreate = (
   store: Store | undefined,
   create: (store: Store) => any,
-  createDeps: React.DependencyList = EMPTY_ARRAY,
+  createDeps: DependencyList = EMPTY_ARRAY,
 ) => {
   const [, rerender] = useState<[]>();
   const [thing, setThing] = useState();
@@ -388,7 +387,7 @@ const useListener = (
   listenable: string,
   thing: any,
   listener: (...args: any[]) => void,
-  listenerDeps: React.DependencyList = EMPTY_ARRAY,
+  listenerDeps: DependencyList = EMPTY_ARRAY,
   preArgs: Readonly<ListenerArgument[]> = EMPTY_ARRAY,
   ...postArgs: ListenerArgument[]
 ): void =>
@@ -403,9 +402,9 @@ const useSetCallback = <Parameter, Thing>(
   storeOrStoreId: StoreOrStoreId | undefined,
   settable: string,
   get: (parameter: Parameter, store: Store) => Thing,
-  getDeps: React.DependencyList = EMPTY_ARRAY,
+  getDeps: DependencyList = EMPTY_ARRAY,
   then: (store: Store, thing: Thing) => void = getUndefined,
-  thenDeps: React.DependencyList = EMPTY_ARRAY,
+  thenDeps: DependencyList = EMPTY_ARRAY,
   ...args: (Id | GetId<Parameter>)[]
 ): ParameterizedCallback<Parameter> => {
   const store = useStoreOrStoreById(storeOrStoreId);
@@ -444,7 +443,7 @@ const useDel = <Parameter>(
   storeOrStoreId: StoreOrStoreId | undefined,
   deletable: string,
   then: (store: Store) => void = getUndefined,
-  thenDeps: React.DependencyList = EMPTY_ARRAY,
+  thenDeps: DependencyList = EMPTY_ARRAY,
   ...args: (Id | GetId<Parameter> | boolean | undefined)[]
 ): ParameterizedCallback<Parameter> => {
   const store: any = useStoreOrStoreById(storeOrStoreId);
@@ -475,13 +474,13 @@ const useCheckpointAction = (
 
 export const useCreateStore: typeof useCreateStoreDecl = (
   create: () => Store,
-  createDeps: React.DependencyList = EMPTY_ARRAY,
+  createDeps: DependencyList = EMPTY_ARRAY,
   // eslint-disable-next-line react-hooks/exhaustive-deps
 ): Store => useMemo(create, createDeps);
 
 export const useCreateMergeableStore: typeof useCreateMergeableStoreDecl = (
   create: () => MergeableStore,
-  createDeps: React.DependencyList = EMPTY_ARRAY,
+  createDeps: DependencyList = EMPTY_ARRAY,
   // eslint-disable-next-line react-hooks/exhaustive-deps
 ): MergeableStore => useMemo(create, createDeps);
 
@@ -695,10 +694,10 @@ export const useSetTablesCallback: typeof useSetTablesCallbackDecl = <
   Parameter,
 >(
   getTables: (parameter: Parameter, store: Store) => Tables,
-  getTablesDeps?: React.DependencyList,
+  getTablesDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, tables: Tables) => void,
-  thenDeps?: React.DependencyList,
+  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
     storeOrStoreId,
@@ -712,10 +711,10 @@ export const useSetTablesCallback: typeof useSetTablesCallbackDecl = <
 export const useSetTableCallback: typeof useSetTableCallbackDecl = <Parameter>(
   tableId: Id | GetId<Parameter>,
   getTable: (parameter: Parameter, store: Store) => Table,
-  getTableDeps?: React.DependencyList,
+  getTableDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, table: Table) => void,
-  thenDeps?: React.DependencyList,
+  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
     storeOrStoreId,
@@ -731,10 +730,10 @@ export const useSetRowCallback: typeof useSetRowCallbackDecl = <Parameter>(
   tableId: Id | GetId<Parameter>,
   rowId: Id | GetId<Parameter>,
   getRow: (parameter: Parameter, store: Store) => Row,
-  getRowDeps?: React.DependencyList,
+  getRowDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, row: Row) => void,
-  thenDeps?: React.DependencyList,
+  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
     storeOrStoreId,
@@ -750,10 +749,10 @@ export const useSetRowCallback: typeof useSetRowCallbackDecl = <Parameter>(
 export const useAddRowCallback: typeof useAddRowCallbackDecl = <Parameter>(
   tableId: Id | GetId<Parameter>,
   getRow: (parameter: Parameter, store: Store) => Row,
-  getRowDeps: React.DependencyList = EMPTY_ARRAY,
+  getRowDeps: DependencyList = EMPTY_ARRAY,
   storeOrStoreId?: StoreOrStoreId,
   then: (rowId: Id | undefined, store: Store, row: Row) => void = getUndefined,
-  thenDeps: React.DependencyList = EMPTY_ARRAY,
+  thenDeps: DependencyList = EMPTY_ARRAY,
   reuseRowIds = true,
 ): ParameterizedCallback<Parameter> => {
   const store = useStoreOrStoreById(storeOrStoreId);
@@ -783,10 +782,10 @@ export const useSetPartialRowCallback: typeof useSetPartialRowCallbackDecl = <
   tableId: Id | GetId<Parameter>,
   rowId: Id | GetId<Parameter>,
   getPartialRow: (parameter: Parameter, store: Store) => Row,
-  getPartialRowDeps?: React.DependencyList,
+  getPartialRowDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, partialRow: Row) => void,
-  thenDeps?: React.DependencyList,
+  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
     storeOrStoreId,
@@ -804,10 +803,10 @@ export const useSetCellCallback: typeof useSetCellCallbackDecl = <Parameter>(
   rowId: Id | GetId<Parameter>,
   cellId: Id | GetId<Parameter>,
   getCell: (parameter: Parameter, store: Store) => Cell | MapCell,
-  getCellDeps?: React.DependencyList,
+  getCellDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, cell: Cell | MapCell) => void,
-  thenDeps?: React.DependencyList,
+  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
     storeOrStoreId,
@@ -825,10 +824,10 @@ export const useSetValuesCallback: typeof useSetValuesCallbackDecl = <
   Parameter,
 >(
   getValues: (parameter: Parameter, store: Store) => Values,
-  getValuesDeps?: React.DependencyList,
+  getValuesDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, values: Values) => void,
-  thenDeps?: React.DependencyList,
+  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
     storeOrStoreId,
@@ -842,10 +841,10 @@ export const useSetValuesCallback: typeof useSetValuesCallbackDecl = <
 export const useSetPartialValuesCallback: typeof useSetPartialValuesCallbackDecl =
   <Parameter>(
     getPartialValues: (parameter: Parameter, store: Store) => Values,
-    getPartialValuesDeps?: React.DependencyList,
+    getPartialValuesDeps?: DependencyList,
     storeOrStoreId?: StoreOrStoreId,
     then?: (store: Store, partialValues: Values) => void,
-    thenDeps?: React.DependencyList,
+    thenDeps?: DependencyList,
   ): ParameterizedCallback<Parameter> =>
     useSetCallback(
       storeOrStoreId,
@@ -859,10 +858,10 @@ export const useSetPartialValuesCallback: typeof useSetPartialValuesCallbackDecl
 export const useSetValueCallback: typeof useSetValueCallbackDecl = <Parameter>(
   valueId: Id | GetId<Parameter>,
   getValue: (parameter: Parameter, store: Store) => Value | MapValue,
-  getValueDeps?: React.DependencyList,
+  getValueDeps?: DependencyList,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store, value: Value | MapValue) => void,
-  thenDeps?: React.DependencyList,
+  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
     storeOrStoreId,
@@ -877,14 +876,14 @@ export const useSetValueCallback: typeof useSetValueCallbackDecl = <Parameter>(
 export const useDelTablesCallback: typeof useDelTablesCallbackDecl = (
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
+  thenDeps?: DependencyList,
 ): Callback => useDel(storeOrStoreId, TABLES, then, thenDeps);
 
 export const useDelTableCallback: typeof useDelTableCallbackDecl = <Parameter>(
   tableId: Id | GetId<Parameter>,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
+  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useDel(storeOrStoreId, TABLE, then, thenDeps, tableId);
 
@@ -893,7 +892,7 @@ export const useDelRowCallback: typeof useDelRowCallbackDecl = <Parameter>(
   rowId: Id | GetId<Parameter>,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
+  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useDel(storeOrStoreId, ROW, then, thenDeps, tableId, rowId);
 
@@ -904,7 +903,7 @@ export const useDelCellCallback: typeof useDelCellCallbackDecl = <Parameter>(
   forceDel?: boolean,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
+  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useDel(
     storeOrStoreId,
@@ -920,20 +919,20 @@ export const useDelCellCallback: typeof useDelCellCallbackDecl = <Parameter>(
 export const useDelValuesCallback: typeof useDelValuesCallbackDecl = (
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
+  thenDeps?: DependencyList,
 ): Callback => useDel(storeOrStoreId, VALUES, then, thenDeps);
 
 export const useDelValueCallback: typeof useDelValueCallbackDecl = <Parameter>(
   valueId: Id | GetId<Parameter>,
   storeOrStoreId?: StoreOrStoreId,
   then?: (store: Store) => void,
-  thenDeps?: React.DependencyList,
+  thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
   useDel(storeOrStoreId, VALUE, then, thenDeps, valueId);
 
 export const useHasTablesListener: typeof useHasTablesListenerDecl = (
   listener: HasTablesListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -948,7 +947,7 @@ export const useHasTablesListener: typeof useHasTablesListenerDecl = (
 
 export const useTablesListener: typeof useTablesListenerDecl = (
   listener: TablesListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -963,7 +962,7 @@ export const useTablesListener: typeof useTablesListenerDecl = (
 
 export const useTableIdsListener: typeof useTableIdsListenerDecl = (
   listener: TableIdsListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -979,7 +978,7 @@ export const useTableIdsListener: typeof useTableIdsListenerDecl = (
 export const useHasTableListener: typeof useHasTableListenerDecl = (
   tableId: IdOrNull,
   listener: HasTableListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -995,7 +994,7 @@ export const useHasTableListener: typeof useHasTableListenerDecl = (
 export const useTableListener: typeof useTableListenerDecl = (
   tableId: IdOrNull,
   listener: TableListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1011,7 +1010,7 @@ export const useTableListener: typeof useTableListenerDecl = (
 export const useTableCellIdsListener: typeof useTableCellIdsListenerDecl = (
   tableId: IdOrNull,
   listener: TableCellIdsListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1028,7 +1027,7 @@ export const useHasTableCellListener: typeof useHasTableCellListenerDecl = (
   tableId: IdOrNull,
   cellId: IdOrNull,
   listener: HasTableCellListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1044,7 +1043,7 @@ export const useHasTableCellListener: typeof useHasTableCellListenerDecl = (
 export const useRowCountListener: typeof useRowCountListenerDecl = (
   tableId: IdOrNull,
   listener: RowCountListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1060,7 +1059,7 @@ export const useRowCountListener: typeof useRowCountListenerDecl = (
 export const useRowIdsListener: typeof useRowIdsListenerDecl = (
   tableId: IdOrNull,
   listener: RowIdsListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1080,7 +1079,7 @@ export const useSortedRowIdsListener: typeof useSortedRowIdsListenerDecl = (
   offset: number,
   limit: number | undefined,
   listener: SortedRowIdsListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1097,7 +1096,7 @@ export const useHasRowListener: typeof useHasRowListenerDecl = (
   tableId: IdOrNull,
   rowId: IdOrNull,
   listener: HasRowListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1114,7 +1113,7 @@ export const useRowListener: typeof useRowListenerDecl = (
   tableId: IdOrNull,
   rowId: IdOrNull,
   listener: RowListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1131,7 +1130,7 @@ export const useCellIdsListener: typeof useCellIdsListenerDecl = (
   tableId: IdOrNull,
   rowId: IdOrNull,
   listener: CellIdsListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1149,7 +1148,7 @@ export const useHasCellListener: typeof useHasCellListenerDecl = (
   rowId: IdOrNull,
   cellId: IdOrNull,
   listener: HasCellListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1167,7 +1166,7 @@ export const useCellListener: typeof useCellListenerDecl = (
   rowId: IdOrNull,
   cellId: IdOrNull,
   listener: CellListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1182,7 +1181,7 @@ export const useCellListener: typeof useCellListenerDecl = (
 
 export const useHasValuesListener: typeof useHasValuesListenerDecl = (
   listener: HasValuesListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1197,7 +1196,7 @@ export const useHasValuesListener: typeof useHasValuesListenerDecl = (
 
 export const useValuesListener: typeof useValuesListenerDecl = (
   listener: ValuesListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1212,7 +1211,7 @@ export const useValuesListener: typeof useValuesListenerDecl = (
 
 export const useValueIdsListener: typeof useValueIdsListenerDecl = (
   listener: ValueIdsListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1228,7 +1227,7 @@ export const useValueIdsListener: typeof useValueIdsListenerDecl = (
 export const useHasValueListener: typeof useHasValueListenerDecl = (
   valueId: IdOrNull,
   listener: HasValueListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1244,7 +1243,7 @@ export const useHasValueListener: typeof useHasValueListenerDecl = (
 export const useValueListener: typeof useValueListenerDecl = (
   valueId: IdOrNull,
   listener: ValueListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
@@ -1260,7 +1259,7 @@ export const useValueListener: typeof useValueListenerDecl = (
 export const useStartTransactionListener: typeof useStartTransactionListenerDecl =
   (
     listener: TransactionListener,
-    listenerDeps?: React.DependencyList,
+    listenerDeps?: DependencyList,
     storeOrStoreId?: StoreOrStoreId,
   ): void =>
     useListener(
@@ -1273,7 +1272,7 @@ export const useStartTransactionListener: typeof useStartTransactionListenerDecl
 export const useWillFinishTransactionListener: typeof useWillFinishTransactionListenerDecl =
   (
     listener: TransactionListener,
-    listenerDeps?: React.DependencyList,
+    listenerDeps?: DependencyList,
     storeOrStoreId?: StoreOrStoreId,
   ): void =>
     useListener(
@@ -1286,7 +1285,7 @@ export const useWillFinishTransactionListener: typeof useWillFinishTransactionLi
 export const useDidFinishTransactionListener: typeof useDidFinishTransactionListenerDecl =
   (
     listener: TransactionListener,
-    listenerDeps?: React.DependencyList,
+    listenerDeps?: DependencyList,
     storeOrStoreId?: StoreOrStoreId,
   ): void =>
     useListener(
@@ -1299,7 +1298,7 @@ export const useDidFinishTransactionListener: typeof useDidFinishTransactionList
 export const useCreateMetrics: typeof useCreateMetricsDecl = (
   store: Store | undefined,
   create: (store: Store) => Metrics,
-  createDeps?: React.DependencyList,
+  createDeps?: DependencyList,
 ): Metrics | undefined => useCreate(store, create, createDeps);
 
 export const useMetricIds: typeof useMetricIdsDecl = (
@@ -1325,7 +1324,7 @@ export const useMetric: typeof useMetricDecl = (
 export const useMetricListener: typeof useMetricListenerDecl = (
   metricId: IdOrNull,
   listener: MetricListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   metricsOrMetricsId?: MetricsOrMetricsId,
 ): void =>
   useListener(
@@ -1339,7 +1338,7 @@ export const useMetricListener: typeof useMetricListenerDecl = (
 export const useCreateIndexes: typeof useCreateIndexesDecl = (
   store: Store | undefined,
   create: (store: Store) => Indexes,
-  createDeps?: React.DependencyList,
+  createDeps?: DependencyList,
 ): Indexes | undefined => useCreate(store, create, createDeps);
 
 export const useSliceIds: typeof useSliceIdsDecl = (
@@ -1377,7 +1376,7 @@ export const useSliceRowIds: typeof useSliceRowIdsDecl = (
 export const useSliceIdsListener: typeof useSliceIdsListenerDecl = (
   indexId: IdOrNull,
   listener: SliceIdsListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): void =>
   useListener(
@@ -1392,7 +1391,7 @@ export const useSliceRowIdsListener: typeof useSliceRowIdsListenerDecl = (
   indexId: IdOrNull,
   sliceId: IdOrNull,
   listener: SliceRowIdsListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): void =>
   useListener(
@@ -1406,7 +1405,7 @@ export const useSliceRowIdsListener: typeof useSliceRowIdsListenerDecl = (
 export const useCreateRelationships: typeof useCreateRelationshipsDecl = (
   store: Store | undefined,
   create: (store: Store) => Relationships,
-  createDeps?: React.DependencyList,
+  createDeps?: DependencyList,
 ): Relationships | undefined => useCreate(store, create, createDeps);
 
 export const useRelationshipIds: typeof useRelationshipIdsDecl = (
@@ -1458,7 +1457,7 @@ export const useRemoteRowIdListener: typeof useRemoteRowIdListenerDecl = (
   relationshipId: IdOrNull,
   localRowId: IdOrNull,
   listener: RemoteRowIdListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): void =>
   useListener(
@@ -1473,7 +1472,7 @@ export const useLocalRowIdsListener: typeof useLocalRowIdsListenerDecl = (
   relationshipId: IdOrNull,
   remoteRowId: IdOrNull,
   listener: LocalRowIdsListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): void =>
   useListener(
@@ -1488,7 +1487,7 @@ export const useLinkedRowIdsListener: typeof useLinkedRowIdsListenerDecl = (
   relationshipId: Id,
   firstRowId: Id,
   listener: LinkedRowIdsListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): void =>
   useListener(
@@ -1502,7 +1501,7 @@ export const useLinkedRowIdsListener: typeof useLinkedRowIdsListenerDecl = (
 export const useCreateQueries: typeof useCreateQueriesDecl = (
   store: Store | undefined,
   create: (store: Store) => Queries,
-  createDeps?: React.DependencyList,
+  createDeps?: DependencyList,
 ): Queries | undefined => useCreate(store, create, createDeps);
 
 export const useQueryIds: typeof useQueryIdsDecl = (
@@ -1613,7 +1612,7 @@ export const useResultCell: typeof useResultCellDecl = (
 export const useResultTableListener: typeof useResultTableListenerDecl = (
   queryId: IdOrNull,
   listener: ResultTableListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void =>
   useListener(
@@ -1628,7 +1627,7 @@ export const useResultTableCellIdsListener: typeof useResultTableCellIdsListener
   (
     queryId: IdOrNull,
     listener: ResultTableCellIdsListener,
-    listenerDeps?: React.DependencyList,
+    listenerDeps?: DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId,
   ): void =>
     useListener(
@@ -1642,7 +1641,7 @@ export const useResultTableCellIdsListener: typeof useResultTableCellIdsListener
 export const useResultRowCountListener: typeof useResultRowCountListenerDecl = (
   queryId: IdOrNull,
   listener: ResultRowCountListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void =>
   useListener(
@@ -1656,7 +1655,7 @@ export const useResultRowCountListener: typeof useResultRowCountListenerDecl = (
 export const useResultRowIdsListener: typeof useResultRowIdsListenerDecl = (
   queryId: IdOrNull,
   listener: ResultRowIdsListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void =>
   useListener(
@@ -1675,7 +1674,7 @@ export const useResultSortedRowIdsListener: typeof useResultSortedRowIdsListener
     offset: number,
     limit: number | undefined,
     listener: ResultSortedRowIdsListener,
-    listenerDeps?: React.DependencyList,
+    listenerDeps?: DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId,
   ): void =>
     useListener(
@@ -1690,7 +1689,7 @@ export const useResultRowListener: typeof useResultRowListenerDecl = (
   queryId: IdOrNull,
   rowId: IdOrNull,
   listener: ResultRowListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void =>
   useListener(
@@ -1705,7 +1704,7 @@ export const useResultCellIdsListener: typeof useResultCellIdsListenerDecl = (
   queryId: IdOrNull,
   rowId: IdOrNull,
   listener: ResultCellIdsListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void =>
   useListener(
@@ -1721,7 +1720,7 @@ export const useResultCellListener: typeof useResultCellListenerDecl = (
   rowId: IdOrNull,
   cellId: IdOrNull,
   listener: ResultCellListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void =>
   useListener(
@@ -1735,7 +1734,7 @@ export const useResultCellListener: typeof useResultCellListenerDecl = (
 export const useCreateCheckpoints: typeof useCreateCheckpointsDecl = (
   store: Store | undefined,
   create: (store: Store) => Checkpoints,
-  createDeps?: React.DependencyList,
+  createDeps?: DependencyList,
 ): Checkpoints | undefined => useCreate(store, create, createDeps);
 
 export const useCheckpointIds: typeof useCheckpointIdsDecl = (
@@ -1762,14 +1761,14 @@ export const useSetCheckpointCallback: typeof useSetCheckpointCallbackDecl = <
   Parameter,
 >(
   getCheckpoint: (parameter: Parameter) => string | undefined = getUndefined,
-  getCheckpointDeps: React.DependencyList = EMPTY_ARRAY,
+  getCheckpointDeps: DependencyList = EMPTY_ARRAY,
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
   then: (
     checkpointId: Id,
     checkpoints: Checkpoints,
     label?: string,
   ) => void = getUndefined,
-  thenDeps: React.DependencyList = EMPTY_ARRAY,
+  thenDeps: DependencyList = EMPTY_ARRAY,
 ): ParameterizedCallback<Parameter> => {
   const checkpoints = useCheckpointsOrCheckpointsById(
     checkpointsOrCheckpointsId,
@@ -1795,10 +1794,10 @@ export const useGoForwardCallback: typeof useGoForwardCallbackDecl = (
 
 export const useGoToCallback: typeof useGoToCallbackDecl = <Parameter>(
   getCheckpointId: (parameter: Parameter) => Id,
-  getCheckpointIdDeps: React.DependencyList = EMPTY_ARRAY,
+  getCheckpointIdDeps: DependencyList = EMPTY_ARRAY,
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
   then: (checkpoints: Checkpoints, checkpointId: Id) => void = getUndefined,
-  thenDeps: React.DependencyList = EMPTY_ARRAY,
+  thenDeps: DependencyList = EMPTY_ARRAY,
 ): ParameterizedCallback<Parameter> => {
   const checkpoints = useCheckpointsOrCheckpointsById(
     checkpointsOrCheckpointsId,
@@ -1849,7 +1848,7 @@ export const useRedoInformation: typeof useRedoInformationDecl = (
 
 export const useCheckpointIdsListener: typeof useCheckpointIdsListenerDecl = (
   listener: CheckpointIdsListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
 ): void =>
   useListener(
@@ -1862,7 +1861,7 @@ export const useCheckpointIdsListener: typeof useCheckpointIdsListenerDecl = (
 export const useCheckpointListener: typeof useCheckpointListenerDecl = (
   checkpointId: IdOrNull,
   listener: CheckpointListener,
-  listenerDeps?: React.DependencyList,
+  listenerDeps?: DependencyList,
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
 ): void =>
   useListener(
@@ -1881,11 +1880,11 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
   create: (
     store: PersistedStore<Persist>,
   ) => PersisterOrUndefined | Promise<PersisterOrUndefined>,
-  createDeps: React.DependencyList = EMPTY_ARRAY,
+  createDeps: DependencyList = EMPTY_ARRAY,
   then?: (persister: Persister<Persist>) => Promise<void>,
-  thenDeps: React.DependencyList = EMPTY_ARRAY,
+  thenDeps: DependencyList = EMPTY_ARRAY,
   destroy?: (persister: Persister<Persist>) => void,
-  destroyDeps: React.DependencyList = EMPTY_ARRAY,
+  destroyDeps: DependencyList = EMPTY_ARRAY,
 ): PersisterOrUndefined => {
   const [, rerender] = useState<[]>();
   const [persister, setPersister] = useState<any>();
@@ -1931,7 +1930,7 @@ export const usePersisterStatus: typeof usePersisterStatusDecl = (
 export const usePersisterStatusListener: typeof usePersisterStatusListenerDecl =
   (
     listener: StatusListener<Persists.StoreOrMergeableStore>,
-    listenerDeps?: React.DependencyList,
+    listenerDeps?: DependencyList,
     persisterOrPersisterId?: PersisterOrPersisterId,
   ): void =>
     useListener(
@@ -1947,9 +1946,9 @@ export const useCreateSynchronizer: typeof useCreateSynchronizerDecl = <
 >(
   store: MergeableStore | undefined,
   create: (store: MergeableStore) => Promise<SynchronizerOrUndefined>,
-  createDeps: React.DependencyList = EMPTY_ARRAY,
+  createDeps: DependencyList = EMPTY_ARRAY,
   destroy?: (synchronizer: Synchronizer) => void,
-  destroyDeps: React.DependencyList = EMPTY_ARRAY,
+  destroyDeps: DependencyList = EMPTY_ARRAY,
 ): SynchronizerOrUndefined => {
   const [synchronizer, setSynchronizer] = useState<any>();
   useEffect(
@@ -1988,7 +1987,7 @@ export const useSynchronizerStatus: typeof useSynchronizerStatusDecl = (
 export const useSynchronizerStatusListener: typeof useSynchronizerStatusListenerDecl =
   (
     listener: StatusListener<Persists.MergeableStoreOnly>,
-    listenerDeps?: React.DependencyList,
+    listenerDeps?: DependencyList,
     synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
   ): void =>
     useListener(

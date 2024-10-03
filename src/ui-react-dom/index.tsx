@@ -1,5 +1,5 @@
 /** @jsx createElement */
-/** @jsxFrag React.Fragment */
+/** @jsxFrag Fragment */
 
 import {
   BOOLEAN,
@@ -48,6 +48,7 @@ import {
   useValue,
   useValueIds,
 } from '../ui-react/index.ts';
+import type {ComponentType, DependencyList, FormEvent, ReactNode} from 'react';
 import type {
   CustomCell,
   CustomResultCell,
@@ -70,20 +71,21 @@ import type {
   ValuesInHtmlTable as ValuesInHtmlTableDecl,
   ValuesInHtmlTableProps,
 } from '../@types/ui-react-dom/index.d.ts';
-import type {Id, Ids} from '../@types/common/index.d.ts';
-import React, {ComponentType} from 'react';
 import {
+  Fragment,
   createElement,
   getIndexStoreTableId,
   getProps,
   getRelationshipsStoreTableIds,
+  useCallback,
+  useMemo,
+  useState,
 } from '../common/react.ts';
+import type {Id, Ids} from '../@types/common/index.d.ts';
 import {isArray, isString, isUndefined, mathMin} from '../common/other.ts';
 import {objMap, objNew, objToArray} from '../common/obj.ts';
 import type {Relationships} from '../@types/relationships/index.d.ts';
 import {arrayMap} from '../common/array.ts';
-
-const {useCallback, useMemo, useState} = React;
 
 type Cells<Props = CellProps> = {
   [cellId: Id]: {
@@ -109,7 +111,7 @@ type HtmlTableParams = [
   rowIds: Ids,
   sortAndOffset?: SortAndOffset,
   handleSort?: HandleSort,
-  paginator?: React.ReactNode,
+  paginator?: ReactNode,
 ];
 type RelationshipInHtmlRowParams = [
   idColumn: boolean,
@@ -136,7 +138,7 @@ const useDottedCellIds = (tableId: Id | undefined, store: Store | undefined) =>
 
 const useCallbackOrUndefined = (
   callback: any,
-  deps: React.DependencyList,
+  deps: DependencyList,
   test: any,
 ) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -174,12 +176,12 @@ const useSortingAndPagination = (
   offset = 0,
   limit: number | undefined,
   total: number,
-  paginator: boolean | React.ComponentType<SortedTablePaginatorProps>,
+  paginator: boolean | ComponentType<SortedTablePaginatorProps>,
   onChange?: (sortAndOffset: SortAndOffset) => void,
 ): [
   sortAndOffset: SortAndOffset,
   handleSort: HandleSort,
-  paginatorComponent: React.ReactNode | undefined,
+  paginatorComponent: ReactNode | undefined,
 ] => {
   const [[currentCellId, currentDescending, currentOffset], setState] =
     useState<SortAndOffset>([cellId, descending, offset]);
@@ -480,7 +482,7 @@ const EditableThing = <Thing extends Cell | Value>({
           key={thingType}
           value={stringThing}
           onChange={useCallback(
-            (event: React.FormEvent<HTMLInputElement>) =>
+            (event: FormEvent<HTMLInputElement>) =>
               handleThingChange(
                 String(event[CURRENT_TARGET][_VALUE]),
                 setStringThing,
@@ -493,7 +495,7 @@ const EditableThing = <Thing extends Cell | Value>({
           type="number"
           value={numberThing}
           onChange={useCallback(
-            (event: React.FormEvent<HTMLInputElement>) =>
+            (event: FormEvent<HTMLInputElement>) =>
               handleThingChange(
                 Number(event[CURRENT_TARGET][_VALUE] || 0),
                 setNumberThing,
@@ -506,7 +508,7 @@ const EditableThing = <Thing extends Cell | Value>({
           type="checkbox"
           checked={booleanThing}
           onChange={useCallback(
-            (event: React.FormEvent<HTMLInputElement>) =>
+            (event: FormEvent<HTMLInputElement>) =>
               handleThingChange(
                 Boolean(event[CURRENT_TARGET].checked),
                 setBooleanThing,
