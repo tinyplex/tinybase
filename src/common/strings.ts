@@ -41,6 +41,7 @@ export const CELL_IDS = CELL + IDS;
 export const VALUE = 'Value';
 export const VALUES = VALUE + 's';
 export const VALUE_IDS = VALUE + IDS;
+export const TRANSACTION = 'Transaction';
 
 export const STATUS = 'Status';
 
@@ -64,3 +65,9 @@ export const strEndsWith = (str: string, suffix: string) =>
 
 export const strMatch = (str: string | undefined, regex: RegExp) =>
   str?.match(regex);
+
+export const strSplit = (
+  str: string,
+  separator: string | RegExp = EMPTY_STRING,
+  limit?: number,
+): string[] => str.split(separator, limit);

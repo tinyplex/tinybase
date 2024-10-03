@@ -1,12 +1,11 @@
 import {mapGet, mapNew} from './map.ts';
-import {EMPTY_STRING} from './strings.ts';
 import {arrayMap} from './array.ts';
+import {strSplit} from './strings.ts';
 
 const MASK6 = 63;
-const ENCODE =
-  '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'.split(
-    EMPTY_STRING,
-  );
+const ENCODE = strSplit(
+  '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz',
+);
 const DECODE = mapNew(arrayMap(ENCODE, (char, index) => [char, index])) as any;
 
 export const encode = (num: number): string => ENCODE[num & MASK6];

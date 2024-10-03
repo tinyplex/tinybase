@@ -1,4 +1,4 @@
-import {COMMA, EMPTY_STRING} from '../../common/strings.ts';
+import {COMMA, EMPTY_STRING, strSplit} from '../../common/strings.ts';
 import {EXPORT, lower, upper} from './strings.ts';
 import {
   IdMap,
@@ -62,7 +62,7 @@ export const flat = (array: any[]) => array.flat(1e3);
 export const camel = (str: string, firstCap = 0) =>
   arrayJoin(
     arrayMap(
-      str.split(NON_ALPHANUMERIC),
+      strSplit(str, NON_ALPHANUMERIC),
       (word, w) =>
         (w > 0 || firstCap ? upper : lower)(slice(word, 0, 1)) + slice(word, 1),
     ),
@@ -71,7 +71,8 @@ export const camel = (str: string, firstCap = 0) =>
 export const snake = (str: string) =>
   upper(
     arrayJoin(
-      (str && !NON_ALPHA.test(str[0]) ? str : ' ' + str).split(
+      strSplit(
+        str && !NON_ALPHA.test(str[0]) ? str : ' ' + str,
         NON_ALPHANUMERIC,
       ),
       '_',

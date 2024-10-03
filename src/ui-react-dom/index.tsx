@@ -10,6 +10,7 @@ import {
   STRING,
   VALUE,
   _VALUE,
+  strSplit,
 } from '../common/strings.ts';
 import type {Cell, Store, Value} from '../@types/store/index.d.ts';
 import {
@@ -382,7 +383,7 @@ const RelationshipInHtmlRow = ({
       {objToArray(
         cells,
         ({component: CellView, getComponentProps}, compoundCellId) => {
-          const [tableId, cellId] = compoundCellId.split(DOT, 2);
+          const [tableId, cellId] = strSplit(compoundCellId, DOT, 2);
           const rowId =
             tableId === localTableId
               ? localRowId
