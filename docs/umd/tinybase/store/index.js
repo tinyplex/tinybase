@@ -322,12 +322,6 @@
       isInstanceOf(value, Map) ? object.fromEntries([...value]) : value,
     );
 
-  const ENCODE =
-    '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'.split(
-      EMPTY_STRING,
-    );
-  mapNew(arrayMap(ENCODE, (char, index) => [char, index]));
-
   const defaultSorter = (sortKey1, sortKey2) =>
     (sortKey1 ?? 0) < (sortKey2 ?? 0) ? -1 : 1;
 

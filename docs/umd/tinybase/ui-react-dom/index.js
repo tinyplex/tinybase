@@ -22,6 +22,8 @@
   const VALUE = 'Value';
   const CURRENT_TARGET = 'currentTarget';
   const _VALUE = 'value';
+  const strSplit = (str, separator = EMPTY_STRING, limit) =>
+    str.split(separator, limit);
 
   const math = Math;
   const mathMin = math.min;
@@ -44,11 +46,16 @@
   const {
     PureComponent,
     Fragment,
+    createContext,
     createElement,
-    useCallback: useCallback$1,
+    useCallback,
+    useContext,
+    useEffect,
     useLayoutEffect,
+    useMemo,
     useRef,
-    useState: useState$1,
+    useState,
+    useSyncExternalStore,
   } = React;
   const getProps = (getProps2, ...ids) =>
     isUndefined(getProps2) ? {} : getProps2(...ids);
@@ -74,7 +81,6 @@
   const objMap = (obj, cb) =>
     objNew(objToArray(obj, (value, id) => [id, cb(value, id)]));
 
-  const {useCallback, useMemo, useState} = React;
   const DOT = '.';
   const EDITABLE = 'editable';
   const LEFT_ARROW = '\u2190';
@@ -295,7 +301,7 @@
       idColumn === false
         ? null
         : /* @__PURE__ */ createElement(
-            React.Fragment,
+            Fragment,
             null,
             /* @__PURE__ */ createElement('th', null, localRowId),
             /* @__PURE__ */ createElement('th', null, remoteRowId),
@@ -303,7 +309,7 @@
       objToArray(
         cells,
         ({component: CellView2, getComponentProps}, compoundCellId) => {
-          const [tableId, cellId] = compoundCellId.split(DOT, 2);
+          const [tableId, cellId] = strSplit(compoundCellId, DOT, 2);
           const rowId =
             tableId === localTableId
               ? localRowId
@@ -607,7 +613,7 @@
               idColumn === false
                 ? null
                 : /* @__PURE__ */ createElement(
-                    React.Fragment,
+                    Fragment,
                     null,
                     /* @__PURE__ */ createElement(
                       'th',
@@ -756,11 +762,11 @@
       offset + limit < total,
     );
     return /* @__PURE__ */ createElement(
-      React.Fragment,
+      Fragment,
       null,
       total > limit &&
         /* @__PURE__ */ createElement(
-          React.Fragment,
+          Fragment,
           null,
           /* @__PURE__ */ createElement(
             'button',

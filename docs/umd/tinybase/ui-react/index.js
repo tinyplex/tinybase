@@ -17,7 +17,9 @@
   const LISTENER = 'Listener';
   const RESULT = 'Result';
   const GET = 'get';
+  const SET = 'set';
   const ADD = 'add';
+  const DEL = 'del';
   const HAS = 'Has';
   const _HAS = 'has';
   const IDS = 'Ids';
@@ -33,7 +35,19 @@
   const VALUE = 'Value';
   const VALUES = VALUE + 's';
   const VALUE_IDS = VALUE + IDS;
+  const TRANSACTION = 'Transaction';
+  const PARTIAL = 'Partial';
+  const FINISH = 'Finish';
   const STATUS = 'Status';
+  const METRIC = 'Metric';
+  const INDEX = 'Index';
+  const SLICE = 'Slice';
+  const RELATIONSHIP = 'Relationship';
+  const REMOTE_ROW_ID = 'Remote' + ROW + 'Id';
+  const LOCAL = 'Local';
+  const LINKED = 'Linked';
+  const QUERY = 'Query';
+  const CHECKPOINT = 'Checkpoint';
 
   const GLOBAL = globalThis;
   const isUndefined = (thing) => thing == void 0;
@@ -55,6 +69,34 @@
   const arrayIsEmpty = (array) => size(array) == 0;
   const arrayFilter = (array, cb) => array.filter(cb);
   const arrayWith = (array, index, value) => array.with(index, value);
+
+  const {
+    PureComponent,
+    Fragment,
+    createContext,
+    createElement,
+    useCallback,
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useMemo,
+    useRef,
+    useState,
+    useSyncExternalStore,
+  } = React;
+  const getProps = (getProps2, ...ids) =>
+    isUndefined(getProps2) ? {} : getProps2(...ids);
+  const getRelationshipsStoreTableIds = (relationships, relationshipId) => [
+    relationships,
+    relationships?.getStore(),
+    relationships?.getLocalTableId(relationshipId),
+    relationships?.getRemoteTableId(relationshipId),
+  ];
+  const getIndexStoreTableId = (indexes, indexId) => [
+    indexes,
+    indexes?.getStore(),
+    indexes?.getTableId(indexId),
+  ];
 
   const object = Object;
   const getPrototypeOf = (obj) => object.getPrototypeOf(obj);
@@ -98,27 +140,11 @@
     return obj[id];
   };
 
-  const {
-    createContext,
-    useContext: useContext$1,
-    useEffect: useEffect$1,
-  } = React;
-  var Offsets = /* @__PURE__ */ ((Offsets2) => {
-    Offsets2[(Offsets2['Store'] = 0)] = 'Store';
-    Offsets2[(Offsets2['Metrics'] = 1)] = 'Metrics';
-    Offsets2[(Offsets2['Indexes'] = 2)] = 'Indexes';
-    Offsets2[(Offsets2['Relationships'] = 3)] = 'Relationships';
-    Offsets2[(Offsets2['Queries'] = 4)] = 'Queries';
-    Offsets2[(Offsets2['Checkpoints'] = 5)] = 'Checkpoints';
-    Offsets2[(Offsets2['Persister'] = 6)] = 'Persister';
-    Offsets2[(Offsets2['Synchronizer'] = 7)] = 'Synchronizer';
-    return Offsets2;
-  })(Offsets || {});
   const Context = objEnsure(GLOBAL, TINYBASE + '_uirc', () =>
     createContext([]),
   );
   const useThing = (id, offset) => {
-    const contextValue = useContext$1(Context);
+    const contextValue = useContext(Context);
     return isUndefined(id)
       ? contextValue[offset * 2]
       : isString(id)
@@ -132,15 +158,14 @@
       : thingOrThingId;
   };
   const useProvideThing = (thingId, thing, offset) => {
-    const {16: addExtraThingById, 17: delExtraThingById} =
-      useContext$1(Context);
-    useEffect$1(() => {
+    const {16: addExtraThingById, 17: delExtraThingById} = useContext(Context);
+    useEffect(() => {
       addExtraThingById?.(offset, thingId, thing);
       return () => delExtraThingById?.(offset, thingId);
     }, [addExtraThingById, thingId, thing, offset, delExtraThingById]);
   };
   const useThingIds = (offset) =>
-    objIds(useContext$1(Context)[offset * 2 + 1] ?? {});
+    objIds(useContext(Context)[offset * 2 + 1] ?? {});
   const useStoreIds = () => useThingIds(0 /* Store */);
   const useStore = (id) => useThing(id, 0 /* Store */);
   const useStoreOrStoreById = (storeOrStoreId) =>
@@ -192,20 +217,6 @@
   const useProvideSynchronizer = (persisterId, persister) =>
     useProvideThing(persisterId, persister, 7 /* Synchronizer */);
 
-  const lower = (str) => str.toLowerCase();
-  lower(LISTENER);
-  const TRANSACTION = 'Transaction';
-  lower(TRANSACTION);
-
-  const {
-    useCallback: useCallback$2,
-    useEffect,
-    useMemo: useMemo$1,
-    useLayoutEffect: useLayoutEffect$1,
-    useRef: useRef$1,
-    useState: useState$2,
-    useSyncExternalStore,
-  } = React;
   const EMPTY_ARRAY = [];
   const DEFAULTS = [
     {},
@@ -228,8 +239,8 @@
   ];
   const isEqual = (thing1, thing2) => thing1 === thing2;
   const useCreate = (store, create, createDeps = EMPTY_ARRAY) => {
-    const [, rerender] = useState$2();
-    const [thing, setThing] = useState$2();
+    const [, rerender] = useState();
+    const [thing, setThing] = useState();
     useEffect(
       () => {
         const newThing = store ? create(store) : void 0;
@@ -247,8 +258,8 @@
     return () => thing?.delListener(listenerId);
   };
   const useListenable = (listenable, thing, returnType, args = EMPTY_ARRAY) => {
-    const lastResult = useRef$1(DEFAULTS[returnType]);
-    const getResult = useCallback$2(
+    const lastResult = useRef(DEFAULTS[returnType]);
+    const getResult = useCallback(
       () => {
         const nextResult =
           thing?.[(returnType == 4 /* Boolean */ ? _HAS : GET) + listenable]?.(
@@ -264,7 +275,7 @@
       /* eslint-disable-next-line react-hooks/exhaustive-deps */
       [thing, returnType, listenable, ...args],
     );
-    const subscribe = useCallback$2(
+    const subscribe = useCallback(
       (listener) =>
         addAndDelListener(
           thing,
@@ -285,7 +296,7 @@
     preArgs = EMPTY_ARRAY,
     ...postArgs
   ) =>
-    useLayoutEffect$1(
+    useLayoutEffect(
       () =>
         addAndDelListener(thing, listenable, ...preArgs, listener, ...postArgs),
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -301,12 +312,12 @@
     ...args
   ) => {
     const store = useStoreOrStoreById(storeOrStoreId);
-    return useCallback$2(
+    return useCallback(
       (parameter) =>
         ifNotUndefined(store, (store2) =>
           ifNotUndefined(get(parameter, store2), (thing) =>
             then(
-              store2['set' + settable](
+              store2[SET + settable](
                 ...argsOrGetArgs(args, store2, parameter),
                 thing,
               ),
@@ -330,10 +341,10 @@
     ...args
   ) => {
     const store = useStoreOrStoreById(storeOrStoreId);
-    return useCallback$2(
+    return useCallback(
       (parameter) =>
         then(
-          store?.['del' + deletable](...argsOrGetArgs(args, store, parameter)),
+          store?.[DEL + deletable](...argsOrGetArgs(args, store, parameter)),
         ),
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [store, deletable, ...thenDeps, ...nonFunctionDeps(args)],
@@ -343,16 +354,16 @@
     const checkpoints = useCheckpointsOrCheckpointsById(
       checkpointsOrCheckpointsId,
     );
-    return useCallback$2(
+    return useCallback(
       () => checkpoints?.[action](arg),
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [checkpoints, action, arg],
     );
   };
   const useCreateStore = (create, createDeps = EMPTY_ARRAY) =>
-    useMemo$1(create, createDeps);
+    useMemo(create, createDeps);
   const useCreateMergeableStore = (create, createDeps = EMPTY_ARRAY) =>
-    useMemo$1(create, createDeps);
+    useMemo(create, createDeps);
   const useHasTables = (storeOrStoreId) =>
     useListenable(
       TABLES,
@@ -532,7 +543,7 @@
     reuseRowIds = true,
   ) => {
     const store = useStoreOrStoreById(storeOrStoreId);
-    return useCallback$2(
+    return useCallback(
       (parameter) =>
         ifNotUndefined(store, (store2) =>
           ifNotUndefined(getRow(parameter, store2), (row) =>
@@ -562,7 +573,7 @@
   ) =>
     useSetCallback(
       storeOrStoreId,
-      'PartialRow',
+      PARTIAL + ROW,
       getPartialRow,
       getPartialRowDeps,
       then,
@@ -615,7 +626,7 @@
   ) =>
     useSetCallback(
       storeOrStoreId,
-      'PartialValues',
+      PARTIAL + VALUES,
       getPartialValues,
       getPartialValuesDeps,
       then,
@@ -980,7 +991,7 @@
     storeOrStoreId,
   ) =>
     useListener(
-      'WillFinish' + TRANSACTION,
+      'Will' + FINISH + TRANSACTION,
       useStoreOrStoreById(storeOrStoreId),
       listener,
       listenerDeps,
@@ -991,7 +1002,7 @@
     storeOrStoreId,
   ) =>
     useListener(
-      'DidFinish' + TRANSACTION,
+      'Did' + FINISH + TRANSACTION,
       useStoreOrStoreById(storeOrStoreId),
       listener,
       listenerDeps,
@@ -1000,13 +1011,13 @@
     useCreate(store, create, createDeps);
   const useMetricIds = (metricsOrMetricsId) =>
     useListenable(
-      'MetricIds',
+      METRIC + IDS,
       useMetricsOrMetricsById(metricsOrMetricsId),
       1 /* Array */,
     );
   const useMetric = (metricId, metricsOrMetricsId) =>
     useListenable(
-      'Metric',
+      METRIC,
       useMetricsOrMetricsById(metricsOrMetricsId),
       3 /* CellOrValue */,
       [metricId],
@@ -1018,7 +1029,7 @@
     metricsOrMetricsId,
   ) =>
     useListener(
-      'Metric',
+      METRIC,
       useMetricsOrMetricsById(metricsOrMetricsId),
       listener,
       listenerDeps,
@@ -1028,20 +1039,20 @@
     useCreate(store, create, createDeps);
   const useSliceIds = (indexId, indexesOrIndexesId) =>
     useListenable(
-      'SliceIds',
+      SLICE + IDS,
       useIndexesOrIndexesById(indexesOrIndexesId),
       1 /* Array */,
       [indexId],
     );
   const useIndexIds = (indexesOrIndexesId) =>
     useListenable(
-      'IndexIds',
+      INDEX + IDS,
       useIndexesOrIndexesById(indexesOrIndexesId),
       1 /* Array */,
     );
   const useSliceRowIds = (indexId, sliceId, indexesOrIndexesId) =>
     useListenable(
-      'Slice' + ROW_IDS,
+      SLICE + ROW_IDS,
       useIndexesOrIndexesById(indexesOrIndexesId),
       1 /* Array */,
       [indexId, sliceId],
@@ -1053,7 +1064,7 @@
     indexesOrIndexesId,
   ) =>
     useListener(
-      'SliceIds',
+      SLICE + IDS,
       useIndexesOrIndexesById(indexesOrIndexesId),
       listener,
       listenerDeps,
@@ -1067,7 +1078,7 @@
     indexesOrIndexesId,
   ) =>
     useListener(
-      'Slice' + ROW_IDS,
+      SLICE + ROW_IDS,
       useIndexesOrIndexesById(indexesOrIndexesId),
       listener,
       listenerDeps,
@@ -1077,7 +1088,7 @@
     useCreate(store, create, createDeps);
   const useRelationshipIds = (relationshipsOrRelationshipsId) =>
     useListenable(
-      'RelationshipIds',
+      RELATIONSHIP + IDS,
       useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
       1 /* Array */,
     );
@@ -1087,7 +1098,7 @@
     relationshipsOrRelationshipsId,
   ) =>
     useListenable(
-      'RemoteRowId',
+      REMOTE_ROW_ID,
       useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
       3 /* CellOrValue */,
       [relationshipId, localRowId],
@@ -1098,7 +1109,7 @@
     relationshipsOrRelationshipsId,
   ) =>
     useListenable(
-      'Local' + ROW_IDS,
+      LOCAL + ROW_IDS,
       useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
       1 /* Array */,
       [relationshipId, remoteRowId],
@@ -1109,7 +1120,7 @@
     relationshipsOrRelationshipsId,
   ) =>
     useListenable(
-      'Linked' + ROW_IDS,
+      LINKED + ROW_IDS,
       useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
       1 /* Array */,
       [relationshipId, firstRowId],
@@ -1122,7 +1133,7 @@
     relationshipsOrRelationshipsId,
   ) =>
     useListener(
-      'RemoteRowId',
+      REMOTE_ROW_ID,
       useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
       listener,
       listenerDeps,
@@ -1136,7 +1147,7 @@
     relationshipsOrRelationshipsId,
   ) =>
     useListener(
-      'Local' + ROW_IDS,
+      LOCAL + ROW_IDS,
       useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
       listener,
       listenerDeps,
@@ -1150,7 +1161,7 @@
     relationshipsOrRelationshipsId,
   ) =>
     useListener(
-      'Linked' + ROW_IDS,
+      LINKED + ROW_IDS,
       useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
       listener,
       listenerDeps,
@@ -1160,7 +1171,7 @@
     useCreate(store, create, createDeps);
   const useQueryIds = (queriesOrQueriesId) =>
     useListenable(
-      'QueryIds',
+      QUERY + IDS,
       useQueriesOrQueriesById(queriesOrQueriesId),
       1 /* Array */,
     );
@@ -1343,13 +1354,13 @@
     useCreate(store, create, createDeps);
   const useCheckpointIds = (checkpointsOrCheckpointsId) =>
     useListenable(
-      'CheckpointIds',
+      CHECKPOINT + IDS,
       useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
       2 /* Checkpoints */,
     );
   const useCheckpoint = (checkpointId, checkpointsOrCheckpointsId) =>
     useListenable(
-      'Checkpoint',
+      CHECKPOINT,
       useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
       3 /* CellOrValue */,
       [checkpointId],
@@ -1364,7 +1375,7 @@
     const checkpoints = useCheckpointsOrCheckpointsById(
       checkpointsOrCheckpointsId,
     );
-    return useCallback$2(
+    return useCallback(
       (parameter) =>
         ifNotUndefined(checkpoints, (checkpoints2) => {
           const label = getCheckpoint(parameter);
@@ -1388,7 +1399,7 @@
     const checkpoints = useCheckpointsOrCheckpointsById(
       checkpointsOrCheckpointsId,
     );
-    return useCallback$2(
+    return useCallback(
       (parameter) =>
         ifNotUndefined(checkpoints, (checkpoints2) =>
           ifNotUndefined(getCheckpointId(parameter), (checkpointId) =>
@@ -1431,7 +1442,7 @@
     checkpointsOrCheckpointsId,
   ) =>
     useListener(
-      'CheckpointIds',
+      CHECKPOINT + IDS,
       useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
       listener,
       listenerDeps,
@@ -1443,7 +1454,7 @@
     checkpointsOrCheckpointsId,
   ) =>
     useListener(
-      'Checkpoint',
+      CHECKPOINT,
       useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
       listener,
       listenerDeps,
@@ -1458,8 +1469,8 @@
     destroy,
     destroyDeps = EMPTY_ARRAY,
   ) => {
-    const [, rerender] = useState$2();
-    const [persister, setPersister] = useState$2();
+    const [, rerender] = useState();
+    const [persister, setPersister] = useState();
     useEffect(
       () => {
         (async () => {
@@ -1514,7 +1525,7 @@
     destroy,
     destroyDeps = EMPTY_ARRAY,
   ) => {
-    const [synchronizer, setSynchronizer] = useState$2();
+    const [synchronizer, setSynchronizer] = useState();
     useEffect(
       () => {
         (async () => {
@@ -1557,30 +1568,6 @@
       [],
     );
 
-  const {
-    PureComponent,
-    Fragment,
-    createElement,
-    useCallback: useCallback$1,
-    useLayoutEffect,
-    useRef,
-    useState: useState$1,
-  } = React;
-  const getProps = (getProps2, ...ids) =>
-    isUndefined(getProps2) ? {} : getProps2(...ids);
-  const getRelationshipsStoreTableIds = (relationships, relationshipId) => [
-    relationships,
-    relationships?.getStore(),
-    relationships?.getLocalTableId(relationshipId),
-    relationships?.getRemoteTableId(relationshipId),
-  ];
-  const getIndexStoreTableId = (indexes, indexId) => [
-    indexes,
-    indexes?.getStore(),
-    indexes?.getTableId(indexId),
-  ];
-
-  const {useCallback, useContext, useMemo, useState} = React;
   const mergeParentThings = (
     offset,
     parentValue,
@@ -1762,56 +1749,56 @@
         value: useMemo(
           () => [
             ...mergeParentThings(
-              Offsets.Store,
+              0 /* Store */,
               parentValue,
               store,
               storesById,
               extraThingsById,
             ),
             ...mergeParentThings(
-              Offsets.Metrics,
+              1 /* Metrics */,
               parentValue,
               metrics,
               metricsById,
               extraThingsById,
             ),
             ...mergeParentThings(
-              Offsets.Indexes,
+              2 /* Indexes */,
               parentValue,
               indexes,
               indexesById,
               extraThingsById,
             ),
             ...mergeParentThings(
-              Offsets.Relationships,
+              3 /* Relationships */,
               parentValue,
               relationships,
               relationshipsById,
               extraThingsById,
             ),
             ...mergeParentThings(
-              Offsets.Queries,
+              4 /* Queries */,
               parentValue,
               queries,
               queriesById,
               extraThingsById,
             ),
             ...mergeParentThings(
-              Offsets.Checkpoints,
+              5 /* Checkpoints */,
               parentValue,
               checkpoints,
               checkpointsById,
               extraThingsById,
             ),
             ...mergeParentThings(
-              Offsets.Persister,
+              6 /* Persister */,
               parentValue,
               persister,
               persistersById,
               extraThingsById,
             ),
             ...mergeParentThings(
-              Offsets.Synchronizer,
+              7 /* Synchronizer */,
               parentValue,
               synchronizer,
               synchronizersById,

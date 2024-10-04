@@ -24,7 +24,9 @@
   const LISTENER = 'Listener';
   const RESULT = 'Result';
   const GET = 'get';
+  const SET = 'set';
   const ADD = 'add';
+  const DEL = 'del';
   const HAS = 'Has';
   const IDS = 'Ids';
   const TABLE = 'Table';
@@ -39,9 +41,12 @@
   const VALUE = 'Value';
   const VALUES = VALUE + 's';
   const VALUE_IDS = VALUE + IDS;
+  const TRANSACTION = 'Transaction';
   const id = (key) => EMPTY_STRING + key;
   const strStartsWith = (str, prefix) => str.startsWith(prefix);
   const strEndsWith = (str, suffix) => str.endsWith(suffix);
+  const strSplit = (str, separator = EMPTY_STRING, limit) =>
+    str.split(separator, limit);
 
   const GLOBAL = globalThis;
   const math = Math;
@@ -768,11 +773,12 @@
   );
 
   const MASK6 = 63;
-  const ENCODE =
-    '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'.split(
-      EMPTY_STRING,
-    );
-  const DECODE = mapNew(arrayMap(ENCODE, (char, index) => [char, index]));
+  const ENCODE = strSplit(
+    '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz',
+  );
+  const DECODE = /* @__PURE__ */ mapNew(
+    /* @__PURE__ */ arrayMap(ENCODE, (char, index) => [char, index]),
+  );
   const encode = (num) => ENCODE[num & MASK6];
   const decode = (str, pos) => mapGet(DECODE, str[pos]) ?? 0;
 
@@ -994,7 +1000,7 @@
     return objFreeze(indexes);
   });
 
-  const numericAggregators = mapNew([
+  const numericAggregators = /* @__PURE__ */ mapNew([
     [
       AVG,
       [
@@ -1830,7 +1836,7 @@
     return objFreeze(relationships);
   });
 
-  const textEncoder = new GLOBAL.TextEncoder();
+  const textEncoder = /* @__PURE__ */ new GLOBAL.TextEncoder();
   const getHash = (value) => {
     let hash = 2166136261;
     arrayForEach(textEncoder.encode(value), (char) => {
@@ -3787,16 +3793,16 @@
       store,
       (method, name) =>
         (mergeableStore[name] = // fluent methods
-          strStartsWith(name, 'set') ||
-          strStartsWith(name, 'del') ||
+          strStartsWith(name, SET) ||
+          strStartsWith(name, DEL) ||
           strStartsWith(name, 'apply') ||
-          strEndsWith(name, 'Transaction') ||
-          name == 'callListener'
+          strEndsWith(name, TRANSACTION) ||
+          name == 'call' + LISTENER
             ? (...args) => {
                 method(...args);
                 return mergeableStore;
               }
-            : strStartsWith(name, 'add') && strEndsWith(name, 'Listener')
+            : strStartsWith(name, ADD) && strEndsWith(name, LISTENER)
               ? (...args) => {
                   const listenerArg = LISTENER_ARGS[slice(name, 3, -8)] ?? 0;
                   const listener = args[listenerArg];

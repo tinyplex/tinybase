@@ -40,6 +40,8 @@
   const _VALUE = 'value';
   const UNDEFINED = '\uFFFC';
   const id = (key) => EMPTY_STRING + key;
+  const strSplit = (str, separator = EMPTY_STRING, limit) =>
+    str.split(separator, limit);
 
   const GLOBAL = globalThis;
   const WINDOW = GLOBAL.window;
@@ -65,11 +67,16 @@
   const {
     PureComponent,
     Fragment,
+    createContext,
     createElement,
-    useCallback: useCallback$1,
+    useCallback,
+    useContext,
+    useEffect,
     useLayoutEffect,
+    useMemo,
     useRef,
-    useState: useState$1,
+    useState,
+    useSyncExternalStore,
   } = React;
   const getProps = (getProps2, ...ids) =>
     isUndefined(getProps2) ? {} : getProps2(...ids);
@@ -172,7 +179,7 @@
     arrayMap(arraySort([...ids]), callback);
   const useEditable = (uniqueId, s) => [
     !!uiReact.useCell(STATE_TABLE, uniqueId, EDITABLE_CELL, s),
-    useCallback$1(
+    useCallback(
       (event) => {
         s.setCell(
           STATE_TABLE,
@@ -368,7 +375,6 @@
   const getTypeCase = (type, stringCase, numberCase, booleanCase) =>
     type == STRING ? stringCase : type == NUMBER ? numberCase : booleanCase;
 
-  const {useCallback, useMemo, useState} = React;
   const DOT = '.';
   const EDITABLE = 'editable';
   const LEFT_ARROW = '\u2190';
@@ -589,7 +595,7 @@
       idColumn === false
         ? null
         : /* @__PURE__ */ createElement(
-            React.Fragment,
+            Fragment,
             null,
             /* @__PURE__ */ createElement('th', null, localRowId),
             /* @__PURE__ */ createElement('th', null, remoteRowId),
@@ -597,7 +603,7 @@
       objToArray(
         cells,
         ({component: CellView2, getComponentProps}, compoundCellId) => {
-          const [tableId, cellId] = compoundCellId.split(DOT, 2);
+          const [tableId, cellId] = strSplit(compoundCellId, DOT, 2);
           const rowId =
             tableId === localTableId
               ? localRowId
@@ -882,7 +888,7 @@
               idColumn === false
                 ? null
                 : /* @__PURE__ */ createElement(
-                    React.Fragment,
+                    Fragment,
                     null,
                     /* @__PURE__ */ createElement(
                       'th',
@@ -1018,11 +1024,11 @@
       offset + limit < total,
     );
     return /* @__PURE__ */ createElement(
-      React.Fragment,
+      Fragment,
       null,
       total > limit &&
         /* @__PURE__ */ createElement(
-          React.Fragment,
+          Fragment,
           null,
           /* @__PURE__ */ createElement(
             'button',
@@ -1359,7 +1365,7 @@
   const Body = ({s}) => {
     const articleRef = useRef(null);
     const idleCallbackRef = useRef(0);
-    const [scrolled, setScrolled] = useState$1(false);
+    const [scrolled, setScrolled] = useState(false);
     const {scrollLeft, scrollTop} = uiReact.useValues(s);
     useLayoutEffect(() => {
       const article = articleRef.current;
@@ -1377,7 +1383,7 @@
         return () => observer.disconnect();
       }
     }, [scrolled, scrollLeft, scrollTop]);
-    const handleScroll = useCallback$1(
+    const handleScroll = useCallback(
       (event) => {
         const {scrollLeft: scrollLeft2, scrollTop: scrollTop2} =
           event[CURRENT_TARGET];
@@ -1978,11 +1984,7 @@
   const pairClone = (array) => [...array];
   const pairIsEqual = ([entry1, entry2]) => entry1 === entry2;
 
-  const ENCODE =
-    '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'.split(
-      EMPTY_STRING,
-    );
-  mapNew(arrayMap(ENCODE, (char, index) => [char, index]));
+  strSplit('-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz');
 
   const defaultSorter = (sortKey1, sortKey2) =>
     (sortKey1 ?? 0) < (sortKey2 ?? 0) ? -1 : 1;

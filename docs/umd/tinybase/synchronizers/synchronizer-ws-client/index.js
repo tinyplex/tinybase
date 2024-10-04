@@ -12,6 +12,8 @@
   const EMPTY_STRING = '';
   const UTF8 = 'utf8';
   const UNDEFINED = '\uFFFC';
+  const strSplit = (str, separator = EMPTY_STRING, limit) =>
+    str.split(separator, limit);
 
   const promise = Promise;
   const GLOBAL = globalThis;
@@ -127,8 +129,6 @@
         return leaf;
       },
     );
-
-  new GLOBAL.TextEncoder();
 
   const newStamp = (value, time) => (time ? [value, time] : [value]);
   const getLatestTime = (time1, time2) =>
@@ -447,11 +447,9 @@
   };
 
   const MASK6 = 63;
-  const ENCODE =
-    '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'.split(
-      EMPTY_STRING,
-    );
-  mapNew(arrayMap(ENCODE, (char, index) => [char, index]));
+  const ENCODE = strSplit(
+    '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz',
+  );
   const encode = (num) => ENCODE[num & MASK6];
 
   const getRandomValues = GLOBAL.crypto
