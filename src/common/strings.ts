@@ -24,7 +24,9 @@ export const MAX = 'max';
 export const LISTENER = 'Listener';
 export const RESULT = 'Result';
 export const GET = 'get';
+export const SET = 'set';
 export const ADD = 'add';
+export const DEL = 'del';
 export const HAS = 'Has';
 export const _HAS = 'has';
 
@@ -43,7 +45,19 @@ export const VALUES = VALUE + 's';
 export const VALUE_IDS = VALUE + IDS;
 export const TRANSACTION = 'Transaction';
 
+export const PARTIAL = 'Partial';
+export const FINISH = 'Finish';
 export const STATUS = 'Status';
+
+export const METRIC = 'Metric';
+export const INDEX = 'Index';
+export const SLICE = 'Slice';
+export const RELATIONSHIP = 'Relationship';
+export const REMOTE_ROW_ID = 'Remote' + ROW + 'Id';
+export const LOCAL = 'Local';
+export const LINKED = 'Linked';
+export const QUERY = 'Query';
+export const CHECKPOINT = 'Checkpoint';
 
 export const CURRENT_TARGET = 'currentTarget';
 export const _VALUE = 'value';

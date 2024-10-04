@@ -40,7 +40,6 @@ export const LISTENER_ = lower(LISTENER);
 export const OPTIONAL_COLON = '?: ';
 export const OR_UNDEFINED = ' | undefined';
 export const NON_NULLABLE = 'NonNullable';
-export const PARTIAL = 'Partial';
 export const PROPS = 'Props';
 export const PROVIDER = 'Provider';
 export const REGISTERS_A_LISTENER = `Registers a ${LISTENER_} that will be called`;

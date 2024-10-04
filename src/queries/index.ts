@@ -269,9 +269,9 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
           selectedCellId,
           isFunction(aggregate)
             ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace]
-            : (mapGet(numericAggregators, aggregate as Id) as Aggregators) ?? [
+            : ((mapGet(numericAggregators, aggregate as Id) as Aggregators) ?? [
                 (_cells, length) => length,
-              ],
+              ]),
         ],
       ];
       arrayPush(groupEntries, groupEntry);

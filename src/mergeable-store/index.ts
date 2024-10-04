@@ -1,3 +1,13 @@
+import {
+  ADD,
+  DEL,
+  EMPTY_STRING,
+  LISTENER,
+  SET,
+  TRANSACTION,
+  strEndsWith,
+  strStartsWith,
+} from '../common/strings.ts';
 import type {
   CellHashes,
   ContentHashes,
@@ -22,7 +32,6 @@ import type {
   Store,
   ValueOrUndefined,
 } from '../@types/store/index.d.ts';
-import {EMPTY_STRING, strEndsWith, strStartsWith} from '../common/strings.ts';
 import {
   IdObj,
   objEnsure,
@@ -616,16 +625,16 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
     (method, name) =>
       (mergeableStore[name] =
         // fluent methods
-        strStartsWith(name, 'set') ||
-        strStartsWith(name, 'del') ||
+        strStartsWith(name, SET) ||
+        strStartsWith(name, DEL) ||
         strStartsWith(name, 'apply') ||
-        strEndsWith(name, 'Transaction') ||
-        name == 'callListener'
+        strEndsWith(name, TRANSACTION) ||
+        name == 'call' + LISTENER
           ? (...args: any[]) => {
               method(...args);
               return mergeableStore;
             }
-          : strStartsWith(name, 'add') && strEndsWith(name, 'Listener')
+          : strStartsWith(name, ADD) && strEndsWith(name, LISTENER)
             ? (...args: any[]) => {
                 const listenerArg = LISTENER_ARGS[slice(name, 3, -8)] ?? 0;
                 const listener = args[listenerArg];
