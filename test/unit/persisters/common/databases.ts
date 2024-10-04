@@ -11,6 +11,7 @@ import type {
 import type {ReservedSql, Sql} from 'postgres';
 import {type Store, getUniqueId} from 'tinybase';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
+import {pause, suppressWarnings} from '../../common/other.ts';
 import sqlite3, {Database} from 'sqlite3';
 import {DbSchema} from 'electric-sql/client/model';
 import type {ElectricClient} from 'electric-sql/client/model';
@@ -25,7 +26,6 @@ import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 import postgres from 'postgres';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
-import {suppressWarnings} from '../../common/other.ts';
 import tmp from 'tmp';
 
 tmp.setGracefulCleanup();
@@ -364,6 +364,7 @@ export const POSTGRESQL_VARIANTS: Variants = {
     async (pglite: PGlite, sqlStr: string, args: any[] = []) =>
       (await pglite.query(sqlStr, args)).rows as any,
     async (pglite: PGlite) => {
+      await pause(10);
       await pglite.close();
     },
     undefined,

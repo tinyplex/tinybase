@@ -27,7 +27,7 @@ export const createPglitePersister = (async (
     async (
       channel: string,
       listener: DatabaseChangeListener,
-    ): Promise<() => Promise<void>> => pglite.listen(channel, listener),
+    ): Promise<() => Promise<void>> => await pglite.listen(channel, listener),
     async (unlisten: () => Promise<void>) => {
       try {
         await unlisten();
