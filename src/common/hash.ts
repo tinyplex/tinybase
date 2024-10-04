@@ -1,7 +1,7 @@
 import {GLOBAL} from './other.ts';
 import {arrayForEach} from './array.ts';
 
-const textEncoder = new GLOBAL.TextEncoder();
+const textEncoder = /* @__PURE__ */ new GLOBAL.TextEncoder();
 
 // fnv1a
 export const getHash = (value: string): number => {

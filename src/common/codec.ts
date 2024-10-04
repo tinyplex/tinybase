@@ -6,7 +6,9 @@ const MASK6 = 63;
 const ENCODE = strSplit(
   '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz',
 );
-const DECODE = mapNew(arrayMap(ENCODE, (char, index) => [char, index])) as any;
+const DECODE = /* @__PURE__ */ mapNew(
+  /* @__PURE__ */ arrayMap(ENCODE, (char, index) => [char, index]),
+) as any;
 
 export const encode = (num: number): string => ENCODE[num & MASK6];
 

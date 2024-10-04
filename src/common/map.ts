@@ -8,8 +8,9 @@ export type IdMap<Value> = Map<Id, Value>;
 export type IdMap2<Value> = IdMap<IdMap<Value>>;
 export type IdMap3<Value> = IdMap<IdMap2<Value>>;
 
-export const mapNew = <Key, Value>(entries?: [Key, Value][]): Map<Key, Value> =>
-  new Map(entries);
+export const mapNew = /* @__PURE__ */ <Key, Value>(
+  entries?: [Key, Value][],
+): Map<Key, Value> => new Map(entries);
 
 export const mapKeys = <Key>(map: Map<Key, unknown> | undefined): Key[] => [
   ...(map?.keys() ?? []),
