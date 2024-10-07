@@ -18,7 +18,6 @@ export const createPowerSyncPersister = ((
   configOrStoreTableName?: DatabasePersisterConfig | string,
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
-  orReplace: 0 | 1 = 1,
 ): PowerSyncPersister =>
   createCustomSqlitePersister(
     store,
@@ -47,5 +46,5 @@ export const createPowerSyncPersister = ((
     1, // StoreOnly,
     powerSync,
     'getPowerSync',
-    orReplace,
+    1,
   ) as PowerSyncPersister) as typeof createPowerSyncPersisterDecl;
