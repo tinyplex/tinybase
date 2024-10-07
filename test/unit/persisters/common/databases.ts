@@ -1,5 +1,6 @@
 import 'jest-fetch-mock';
 import 'fake-indexeddb/auto';
+import * as SQLite from '@journeyapps/wa-sqlite';
 import {Client, createClient} from '@libsql/client';
 import type {DatabasePersisterConfig, Persister} from 'tinybase/persisters';
 import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
@@ -15,7 +16,9 @@ import {pause, suppressWarnings} from '../../common/other.ts';
 import sqlite3, {Database} from 'sqlite3';
 import {DbSchema} from 'electric-sql/client/model';
 import type {ElectricClient} from 'electric-sql/client/model';
+import {Mutex} from 'async-mutex';
 import {PGlite} from '@electric-sql/pglite';
+import SQLiteESMFactory from '@journeyapps/wa-sqlite/dist/wa-sqlite.mjs';
 import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
 import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
@@ -29,6 +32,7 @@ import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import tmp from 'tmp';
 
 tmp.setGracefulCleanup();
+const statementMutex = new Mutex();
 
 export type Variants = {[name: string]: DatabaseVariant<any>};
 export type SqliteWasmDb = [sqlite3: any, db: any];
@@ -67,50 +71,92 @@ type DatabaseVariant<Database> = [
   autoLoadIntervalSeconds?: number,
   isPostgres?: boolean,
   supportsMultipleConnections?: boolean,
+  orReplace?: boolean,
 ];
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 
-const getPowerSyncDatabase = (
+const getPowerSyncDatabase = async (
   dbFilename: string,
-): AbstractPowerSyncDatabase => {
-  const db = new sqlite3.Database(dbFilename);
+): Promise<AbstractPowerSyncDatabase> => {
+  const [sqlite3, db] = await suppressWarnings(async () => {
+    const Module = await SQLiteESMFactory();
+    const sqlite3 = SQLite.Factory(Module);
+    const db = await sqlite3.open_v2(dbFilename);
+    return [sqlite3, db];
+  });
+
+  const executeSingle = async (sql: string, bindings: any[]) => {
+    const results = [];
+    sqlite3.str_new(db);
+    for await (const stmt of sqlite3.statements(db, sql)) {
+      let columns;
+      const wrappedBindings = bindings ? [bindings] : [[]];
+
+      for (const binding of wrappedBindings) {
+        binding.forEach((b, index, arr) => {
+          if (typeof b == 'boolean') {
+            arr[index] = b ? 1 : 0;
+          }
+        });
+        sqlite3.reset(stmt);
+        if (bindings) {
+          sqlite3.bind_collection(stmt, binding);
+        }
+        const rows = [];
+
+        while ((await sqlite3.step(stmt)) === SQLite.SQLITE_ROW) {
+          const row = sqlite3.row(stmt);
+          rows.push(row);
+        }
+
+        columns = columns ?? sqlite3.column_names(stmt);
+        if (columns.length) {
+          results.push({columns, rows});
+        }
+      }
+      if (bindings) {
+        break;
+      }
+    }
+    const rows: any[] = [];
+    for (const resultRows of results) {
+      for (const row of resultRows.rows) {
+        const outRow: any = {};
+        resultRows.columns.forEach((key, index) => (outRow[key] = row[index]));
+        rows.push(outRow);
+      }
+    }
+    const result = {
+      insertId: sqlite3.last_insert_id(db),
+      rowsAffected: sqlite3.changes(db),
+      rows: {
+        _array: rows,
+        length: rows.length,
+        item: (index: number) => rows[index],
+      },
+    };
+    return result;
+  };
+  const _acquireExecuteLock = (callback: any) => {
+    return statementMutex.runExclusive(callback);
+  };
   return {
-    execute: (sql, args) =>
-      new Promise((resolve, reject) => {
-        return db.all(sql, args, (error, rows: {[id: string]: any}[]) =>
-          error
-            ? reject(error)
-            : resolve({
-                rows: {
-                  _array: rows.map((row: {[id: string]: any}) => ({
-                    ...row,
-                  })),
-                  length: rows.length,
-                  item: () => null,
-                },
-                rowsAffected: 0,
-              }),
-        );
-      }),
-    close: () =>
-      new Promise((resolve) => {
-        db.close();
-        resolve();
-      }),
+    execute: async (sql: string, bindings: any[]): Promise<any> =>
+      _acquireExecuteLock(async () => executeSingle(sql, bindings)),
+    close: async () => {
+      await sqlite3.close(db);
+    },
     onChange: ({signal} = {}) => ({
       async *[Symbol.asyncIterator]() {
-        signal?.addEventListener('abort', () =>
-          db.removeAllListeners('change'),
-        );
+        signal?.addEventListener('abort', () => 0);
         while (!signal?.aborted) {
           const nextChange = await new Promise<WatchOnChangeEvent>(
             (resolve) => {
-              const observer = (_: any, _2: any, tableName: string) => {
-                db.removeAllListeners('change');
+              const observer = (_: any, tableName: string) => {
                 resolve({changedTables: [tableName]});
               };
-              db.addListener('change', observer);
+              sqlite3.register_table_onchange_hook(db, observer);
             },
           );
           yield nextChange;
@@ -247,7 +293,7 @@ export const SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
   ],
   powerSync: [
     async (): Promise<AbstractPowerSyncDatabase> =>
-      getPowerSyncDatabase(':memory:'),
+      await getPowerSyncDatabase(':memory:'),
     ['getPowerSync', (powerSync: AbstractPowerSyncDatabase) => powerSync],
     (
       store: Store,
@@ -262,11 +308,15 @@ export const SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
         storeTableOrConfig,
         onSqlCommand,
         onIgnoredError,
-        0,
       ),
-    (ps: AbstractPowerSyncDatabase, sql: string, args: any[] = []) =>
-      ps.execute(sql, args).then((result) => result.rows?._array ?? []),
-    (ps: AbstractPowerSyncDatabase) => ps.close(),
+    (powerSync: AbstractPowerSyncDatabase, sql: string, args: any[] = []) =>
+      powerSync.execute(sql, args).then((result) => result.rows?._array ?? []),
+    (powerSync: AbstractPowerSyncDatabase) => powerSync.close(),
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    true,
   ],
   crSqliteWasm: [
     async (): Promise<DB> =>
@@ -386,6 +436,10 @@ export const MERGEABLE_VARIANTS: Variants = {
 export const ALL_VARIANTS: Variants = {
   ...SQLITE_VARIANTS,
   ...POSTGRESQL_VARIANTS,
+};
+
+export const ADHOC_VARIANT: Variants = {
+  adhoc: SQLITE_NON_MERGEABLE_VARIANTS.powerSync,
 };
 
 export const getDatabaseFunctions = <Database>(
