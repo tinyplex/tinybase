@@ -118,19 +118,19 @@ export const getCommandFunctions = (
     deleteEmptyTable: boolean,
     partial = false,
   ): Promise<void> => {
-    const tableCellOrValueIds = setNew<string>();
+    const targetColumnNameSet = setNew<string>();
     objToArray(content ?? {}, (contentRow) =>
       arrayMap(objIds(contentRow ?? {}), (cellOrValueId) =>
-        setAdd(tableCellOrValueIds, cellOrValueId),
+        setAdd(targetColumnNameSet, cellOrValueId),
       ),
     );
-    const tableColumnNames = collValues(tableCellOrValueIds);
+    const targetColumnNames = collValues(targetColumnNameSet);
 
     // Delete the table
     if (
       !partial &&
       deleteEmptyTable &&
-      arrayIsEmpty(tableColumnNames) &&
+      arrayIsEmpty(targetColumnNames) &&
       collHas(schemaMap, tableName)
     ) {
       await databaseExecuteCommand('DROP ' + TABLE + escapeId(tableName));
@@ -138,39 +138,40 @@ export const getCommandFunctions = (
       return;
     }
 
-    // Create the table or alter or drop columns
-    const tableSchemaColumns = mapGet(schemaMap, tableName);
-    const currentColumnNames = setNew(collValues(tableSchemaColumns));
-
-    if (!arrayIsEmpty(tableColumnNames)) {
+    const currentColumnNames = mapGet(schemaMap, tableName);
+    const unaccountedColumnNames = setNew(collValues(currentColumnNames));
+    if (!arrayIsEmpty(targetColumnNames)) {
       if (!collHas(schemaMap, tableName)) {
+        // Create the table
         await databaseExecuteCommand(
           'CREATE ' +
             TABLE +
             escapeId(tableName) +
             `(${escapeId(rowIdColumnName)}${columnType} PRIMARY KEY${arrayJoin(
               arrayMap(
-                tableColumnNames,
-                (columnName) => COMMA + escapeId(columnName) + columnType,
+                targetColumnNames,
+                (targetColumnName) =>
+                  COMMA + escapeId(targetColumnName) + columnType,
               ),
             )});`,
         );
         mapSet(
           schemaMap,
           tableName,
-          setNew([rowIdColumnName, ...tableColumnNames]),
+          setNew([rowIdColumnName, ...targetColumnNames]),
         );
       } else {
+        // Add columns
         await promiseAll(
           arrayMap(
-            [rowIdColumnName, ...tableColumnNames],
-            async (columnName, index) => {
-              if (!collDel(currentColumnNames, columnName)) {
+            [rowIdColumnName, ...targetColumnNames],
+            async (targetColumnName, index) => {
+              if (!collDel(unaccountedColumnNames, targetColumnName)) {
                 await databaseExecuteCommand(
                   ALTER_TABLE +
                     escapeId(tableName) +
                     'ADD' +
-                    escapeId(columnName) +
+                    escapeId(targetColumnName) +
                     columnType,
                 );
                 if (index == 0) {
@@ -180,32 +181,36 @@ export const getCommandFunctions = (
                       `(${escapeId(rowIdColumnName)})`,
                   );
                 }
-                setAdd(tableSchemaColumns, columnName);
+                setAdd(currentColumnNames, targetColumnName);
               }
             },
           ),
         );
       }
     }
+    // Remove columns
     await promiseAll([
       ...(!partial && deleteEmptyColumns
-        ? arrayMap(collValues(currentColumnNames), async (columnName) => {
-            if (columnName != rowIdColumnName) {
-              await databaseExecuteCommand(
-                ALTER_TABLE +
-                  escapeId(tableName) +
-                  'DROP' +
-                  escapeId(columnName),
-              );
-              collDel(tableSchemaColumns, columnName);
-            }
-          })
+        ? arrayMap(
+            collValues(unaccountedColumnNames),
+            async (unaccountedColumnName) => {
+              if (unaccountedColumnName != rowIdColumnName) {
+                await databaseExecuteCommand(
+                  ALTER_TABLE +
+                    escapeId(tableName) +
+                    'DROP' +
+                    escapeId(unaccountedColumnName),
+                );
+                collDel(currentColumnNames, unaccountedColumnName);
+              }
+            },
+          )
         : []),
     ]);
 
-    // Insert or update or delete data
     if (partial) {
       if (isUndefined(content)) {
+        // Delete all rows (partial)
         await databaseExecuteCommand(
           DELETE_FROM + escapeId(tableName) + WHERE + ' true',
         );
@@ -213,6 +218,7 @@ export const getCommandFunctions = (
         await promiseAll(
           objToArray(content, async (row, rowId) => {
             if (isUndefined(row)) {
+              // Delete row (partial)
               await databaseExecuteCommand(
                 DELETE_FROM +
                   escapeId(tableName) +
@@ -221,12 +227,14 @@ export const getCommandFunctions = (
                   '=$1',
                 [rowId],
               );
-            } else if (!arrayIsEmpty(tableColumnNames)) {
+            } else if (!arrayIsEmpty(targetColumnNames)) {
+              // Upsert row (partial)
               await upsert(
                 databaseExecuteCommand,
                 tableName,
                 rowIdColumnName,
                 objIds(row),
+                targetColumnNames,
                 [
                   rowId,
                   ...(encode
@@ -240,10 +248,10 @@ export const getCommandFunctions = (
         );
       }
     } else {
-      if (!arrayIsEmpty(tableColumnNames)) {
+      if (!arrayIsEmpty(targetColumnNames)) {
         const changingColumnNames = arrayFilter(
           collValues(mapGet(schemaMap, tableName)),
-          (columnName) => columnName != rowIdColumnName,
+          (changingColumnName) => changingColumnName != rowIdColumnName,
         );
         const params: any[] = [];
         const deleteRowIds: string[] = [];
@@ -257,14 +265,17 @@ export const getCommandFunctions = (
           );
           arrayPush(deleteRowIds, rowId);
         });
+        // Upsert row
         await upsert(
           databaseExecuteCommand,
           tableName,
           rowIdColumnName,
           changingColumnNames,
+          targetColumnNames,
           params,
           orReplace,
         );
+        // Delete rows
         await databaseExecuteCommand(
           DELETE_FROM +
             escapeId(tableName) +
@@ -274,6 +285,7 @@ export const getCommandFunctions = (
           deleteRowIds,
         );
       } else if (collHas(schemaMap, tableName)) {
+        // Delete all rows
         await databaseExecuteCommand(
           DELETE_FROM + escapeId(tableName) + WHERE + ' true',
         );
@@ -303,6 +315,7 @@ const upsert = async (
   tableName: string,
   rowIdColumnName: string,
   changingColumnNames: string[],
+  targetColumnNames: string[],
   params: any[],
   orReplace: 0 | 1 = 0,
 ) =>
