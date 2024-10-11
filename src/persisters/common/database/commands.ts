@@ -324,15 +324,8 @@ const upsert = async (
       (orReplace ? 'OR REPLACE ' : EMPTY_STRING) +
       'INTO' +
       escapeId(tableName) +
-      '(' +
-      escapeId(rowIdColumnName) +
-      arrayJoin(
-        arrayMap(
-          changingColumnNames,
-          (columnName) => COMMA + escapeId(columnName),
-        ),
-      ) +
-      ')VALUES' +
+      getColumnNames(rowIdColumnName, changingColumnNames) +
+      'VALUES' +
       getUpsertPlaceholders(params, size(changingColumnNames) + 1) +
       (orReplace
         ? EMPTY_STRING
@@ -349,6 +342,19 @@ const upsert = async (
           )),
     arrayMap(params, (param) => param ?? null),
   );
+
+const getColumnNames = (
+  rowIdColumnName: string,
+  changingColumnNames: string[],
+) =>
+  '(' +
+  arrayJoin(
+    arrayMap([rowIdColumnName, ...changingColumnNames], (columnName) =>
+      escapeId(columnName),
+    ),
+    COMMA,
+  ) +
+  ')';
 
 const getUpsertPlaceholders = (array: any[], columnCount: number) =>
   arrayJoin(
