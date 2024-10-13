@@ -34,8 +34,8 @@ export const getWrappedCommand = (
 
 export const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
 
-export const getPlaceholders = (array: any[]) =>
+export const getPlaceholders = (array: any[], offset = [1]) =>
   arrayJoin(
-    arrayMap(array, (_, index) => '$' + (index + 1)),
+    arrayMap(array, () => '$' + offset[0]++),
     COMMA,
   );

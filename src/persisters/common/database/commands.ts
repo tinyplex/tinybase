@@ -20,11 +20,10 @@ import {
   arrayIsEmpty,
   arrayJoin,
   arrayMap,
-  arrayNew,
   arrayPush,
 } from '../../../common/array.ts';
 import {collClear, collDel, collHas, collValues} from '../../../common/coll.ts';
-import {isUndefined, promiseAll, size} from '../../../common/other.ts';
+import {isUndefined, promiseAll} from '../../../common/other.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
 import {
   objDel,
@@ -235,12 +234,11 @@ export const getCommandFunctions = (
                 rowIdColumnName,
                 objIds(row),
                 targetColumnNames,
-                [
-                  rowId,
-                  ...(encode
+                {
+                  [rowId]: encode
                     ? arrayMap(objValues(row), encode)
-                    : objValues(row)),
-                ],
+                    : objValues(row),
+                },
                 orReplace,
               );
             }
@@ -253,15 +251,11 @@ export const getCommandFunctions = (
           collValues(mapGet(schemaMap, tableName)),
           (changingColumnName) => changingColumnName != rowIdColumnName,
         );
-        const params: any[] = [];
+        const rows: {[id: string]: any[]} = {};
         const deleteRowIds: string[] = [];
         objToArray(content ?? {}, (row, rowId) => {
-          arrayPush(
-            params,
-            rowId,
-            ...arrayMap(changingColumnNames, (cellId) =>
-              encode ? encode(row?.[cellId]) : row?.[cellId],
-            ),
+          rows[rowId] = arrayMap(changingColumnNames, (cellId) =>
+            encode ? encode(row?.[cellId]) : row?.[cellId],
           );
           arrayPush(deleteRowIds, rowId);
         });
@@ -272,7 +266,7 @@ export const getCommandFunctions = (
           rowIdColumnName,
           changingColumnNames,
           targetColumnNames,
-          params,
+          rows,
           orReplace,
         );
         // Delete rows
@@ -316,7 +310,7 @@ const upsert = async (
   rowIdColumnName: string,
   changingColumnNames: string[],
   targetColumnNames: string[],
-  params: any[],
+  rows: {[id: string]: any[]},
   orReplace: 0 | 1 = 0,
 ) =>
   await executeCommand(
@@ -326,7 +320,7 @@ const upsert = async (
       escapeId(tableName) +
       getColumnNames(rowIdColumnName, changingColumnNames) +
       'VALUES' +
-      getUpsertPlaceholders(params, size(changingColumnNames) + 1) +
+      getUpsertPlaceholders(rows) +
       (orReplace
         ? EMPTY_STRING
         : 'ON CONFLICT(' +
@@ -340,7 +334,7 @@ const upsert = async (
             ),
             COMMA,
           )),
-    arrayMap(params, (param) => param ?? null),
+    getUpsertParams(rows),
   );
 
 const getColumnNames = (
@@ -356,20 +350,18 @@ const getColumnNames = (
   ) +
   ')';
 
-const getUpsertPlaceholders = (array: any[], columnCount: number) =>
+const getUpsertPlaceholders = (rows: {[id: string]: any[]}, offset = [1]) =>
   arrayJoin(
-    arrayNew(
-      size(array) / columnCount,
-      (row) =>
-        '(' +
-        arrayJoin(
-          arrayNew(
-            columnCount,
-            (column) => '$' + (row * columnCount + column + 1),
-          ),
-          COMMA,
-        ) +
-        ')',
+    objToArray(
+      rows,
+      (params: any[]) =>
+        '($' + offset[0]++ + ',' + getPlaceholders(params, offset) + ')',
     ),
     COMMA,
   );
+
+const getUpsertParams = (rows: {[id: string]: any[]}) =>
+  objToArray(rows, (params: any[], id: string) => [
+    id,
+    ...arrayMap(params, (param) => param ?? null),
+  ]).flat();
