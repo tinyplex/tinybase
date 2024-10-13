@@ -8,6 +8,7 @@ import {
   DEFAULT_ROW_ID_COLUMN_NAME,
   QuerySchema,
   SINGLE_ROW_ID,
+  Upsert,
 } from './common.ts';
 import type {
   DatabaseExecuteCommand,
@@ -50,7 +51,7 @@ export const createTabularPersister = <
   thing: any,
   getThing: string,
   columnType: string,
-  orReplace?: 0 | 1,
+  upsert?: Upsert,
   encode?: (cellOrValue: any) => string | number,
   decode?: (field: string | number) => any,
 ): Persister<Persist> => {
@@ -61,7 +62,7 @@ export const createTabularPersister = <
       querySchema,
       onIgnoredError,
       columnType,
-      orReplace,
+      upsert,
       encode,
       decode,
     );

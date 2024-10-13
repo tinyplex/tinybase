@@ -4,11 +4,12 @@ import {
   QuerySchema,
   SELECT_STAR_FROM,
   TABLE,
+  Upsert,
   WHERE,
+  escapeColumnNames,
   escapeId,
   getPlaceholders,
 } from './common.ts';
-import {COMMA, EMPTY_STRING} from '../../../common/strings.ts';
 import type {
   CellOrUndefined,
   Table,
@@ -34,6 +35,7 @@ import {
   objToArray,
   objValues,
 } from '../../../common/obj.ts';
+import {COMMA} from '../../../common/strings.ts';
 import type {DatabaseExecuteCommand} from '../../../@types/persisters/index.d.ts';
 import type {Id} from '../../../@types/common/index.d.ts';
 
@@ -45,7 +47,7 @@ export const getCommandFunctions = (
   querySchema: QuerySchema,
   onIgnoredError: ((error: any) => void) | undefined,
   columnType: string,
-  orReplace?: 0 | 1,
+  upsert: Upsert = defaultUpsert,
   encode?: (cellOrValue: any) => string | number,
   decode?: (field: string | number) => any,
 ): [
@@ -233,13 +235,12 @@ export const getCommandFunctions = (
                 tableName,
                 rowIdColumnName,
                 objIds(row),
-                targetColumnNames,
                 {
                   [rowId]: encode
                     ? arrayMap(objValues(row), encode)
                     : objValues(row),
                 },
-                orReplace,
+                targetColumnNames,
               );
             }
           }),
@@ -265,9 +266,8 @@ export const getCommandFunctions = (
           tableName,
           rowIdColumnName,
           changingColumnNames,
-          targetColumnNames,
           rows,
-          orReplace,
+          targetColumnNames,
         );
         // Delete rows
         await databaseExecuteCommand(
@@ -304,64 +304,41 @@ export const getCommandFunctions = (
   return [refreshSchema, loadTable, saveTable, transaction];
 };
 
-const upsert = async (
+const defaultUpsert: Upsert = async (
   executeCommand: DatabaseExecuteCommand,
   tableName: string,
   rowIdColumnName: string,
   changingColumnNames: string[],
-  targetColumnNames: string[],
   rows: {[id: string]: any[]},
-  orReplace: 0 | 1 = 0,
-) =>
+) => {
+  const offset = [1];
   await executeCommand(
-    'INSERT ' +
-      (orReplace ? 'OR REPLACE ' : EMPTY_STRING) +
-      'INTO' +
+    'INSERT INTO' +
       escapeId(tableName) +
-      getColumnNames(rowIdColumnName, changingColumnNames) +
+      escapeColumnNames(rowIdColumnName, ...changingColumnNames) +
       'VALUES' +
-      getUpsertPlaceholders(rows) +
-      (orReplace
-        ? EMPTY_STRING
-        : 'ON CONFLICT(' +
-          escapeId(rowIdColumnName) +
-          ')DO UPDATE SET' +
-          arrayJoin(
-            arrayMap(
-              changingColumnNames,
-              (columnName) =>
-                escapeId(columnName) + '=excluded.' + escapeId(columnName),
-            ),
-            COMMA,
-          )),
-    getUpsertParams(rows),
+      arrayJoin(
+        objToArray(
+          rows,
+          (params: any[]) =>
+            '($' + offset[0]++ + ',' + getPlaceholders(params, offset) + ')',
+        ),
+        COMMA,
+      ) +
+      'ON CONFLICT(' +
+      escapeId(rowIdColumnName) +
+      ')DO UPDATE SET' +
+      arrayJoin(
+        arrayMap(
+          changingColumnNames,
+          (columnName) =>
+            escapeId(columnName) + '=excluded.' + escapeId(columnName),
+        ),
+        COMMA,
+      ),
+    objToArray(rows, (params: any[], id: string) => [
+      id,
+      ...arrayMap(params, (param) => param ?? null),
+    ]).flat(),
   );
-
-const getColumnNames = (
-  rowIdColumnName: string,
-  changingColumnNames: string[],
-) =>
-  '(' +
-  arrayJoin(
-    arrayMap([rowIdColumnName, ...changingColumnNames], (columnName) =>
-      escapeId(columnName),
-    ),
-    COMMA,
-  ) +
-  ')';
-
-const getUpsertPlaceholders = (rows: {[id: string]: any[]}, offset = [1]) =>
-  arrayJoin(
-    objToArray(
-      rows,
-      (params: any[]) =>
-        '($' + offset[0]++ + ',' + getPlaceholders(params, offset) + ')',
-    ),
-    COMMA,
-  );
-
-const getUpsertParams = (rows: {[id: string]: any[]}) =>
-  objToArray(rows, (params: any[], id: string) => [
-    id,
-    ...arrayMap(params, (param) => param ?? null),
-  ]).flat();
+};

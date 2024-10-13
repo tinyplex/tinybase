@@ -1,16 +1,26 @@
 import type {
   DatabaseChangeListener,
+  DatabaseExecuteCommand,
   DatabasePersisterConfig,
 } from '../../@types/persisters/index.d.ts';
+import {IdObj, objToArray} from '../../common/obj.ts';
 import type {
   PowerSyncPersister,
   createPowerSyncPersister as createPowerSyncPersisterDecl,
 } from '../../@types/persisters/persister-powersync/index.d.ts';
+import {
+  Upsert,
+  escapeColumnNames,
+  escapeId,
+  getPlaceholders,
+} from '../common/database/common.ts';
+import {arrayFilter, arrayJoin, arrayMap} from '../../common/array.ts';
 import {AbstractPowerSyncDatabase} from '@powersync/common';
-import {IdObj} from '../../common/obj.ts';
+import {COMMA} from '../../common/strings.ts';
 import type {Store} from '../../@types/store/index.d.ts';
-import {arrayMap} from '../../common/array.ts';
+import {collHas} from '../../common/coll.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
+import {setNew} from '../../common/set.ts';
 
 export const createPowerSyncPersister = ((
   store: Store,
@@ -46,5 +56,40 @@ export const createPowerSyncPersister = ((
     1, // StoreOnly,
     powerSync,
     'getPowerSync',
-    1,
+    viewUpsert,
   ) as PowerSyncPersister) as typeof createPowerSyncPersisterDecl;
+
+const viewUpsert: Upsert = async (
+  executeCommand: DatabaseExecuteCommand,
+  tableName: string,
+  rowIdColumnName: string,
+  changingColumnNames: string[],
+  rows: {[id: string]: any[]},
+  targetColumnNames: string[],
+) => {
+  const offset = [1];
+  const changingColumnNamesSet = setNew(changingColumnNames);
+  const unchangingColumnNames = arrayFilter(
+    targetColumnNames,
+    (columnName) => !collHas(changingColumnNamesSet, columnName),
+  );
+
+  await executeCommand(
+    'INSERT OR REPLACE INTO' +
+      escapeId(tableName) +
+      escapeColumnNames(rowIdColumnName, ...changingColumnNames) +
+      'VALUES' +
+      arrayJoin(
+        objToArray(
+          rows,
+          (params: any[]) =>
+            '($' + offset[0]++ + ',' + getPlaceholders(params, offset) + ')',
+        ),
+        COMMA,
+      ),
+    objToArray(rows, (params: any[], id: string) => [
+      id,
+      ...arrayMap(params, (param) => param ?? null),
+    ]).flat(),
+  );
+};

@@ -5,6 +5,7 @@ import {
   PRAGMA_TABLE,
   SCHEMA_VERSION,
   SELECT,
+  Upsert,
   WHERE,
   getPlaceholders,
   getWrappedCommand,
@@ -41,7 +42,7 @@ export const createCustomSqlitePersister = <
   persist: Persist,
   thing: any,
   getThing = 'getDb',
-  orReplace?: 0 | 1,
+  upsert?: Upsert,
 ): Persister<Persist> => {
   let dataVersion: number | null;
   let schemaVersion: number | null;
@@ -125,7 +126,7 @@ export const createCustomSqlitePersister = <
     thing,
     getThing,
     EMPTY_STRING,
-    orReplace,
+    upsert,
     (cellOrValue: any) =>
       cellOrValue === true ? 1 : cellOrValue === false ? 0 : cellOrValue,
     undefined,

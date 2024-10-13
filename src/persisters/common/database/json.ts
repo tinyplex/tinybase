@@ -6,7 +6,7 @@ import type {
   PersisterListener,
   Persists,
 } from '../../../@types/persisters/index.d.ts';
-import {QuerySchema, SINGLE_ROW_ID} from './common.ts';
+import {QuerySchema, SINGLE_ROW_ID, Upsert} from './common.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
@@ -34,7 +34,7 @@ export const createJsonPersister = <
   thing: any,
   getThing: string,
   columnType: string,
-  orReplace?: 0 | 1,
+  upsert?: Upsert,
 ): Persister<Persist> => {
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(
@@ -43,7 +43,7 @@ export const createJsonPersister = <
       querySchema,
       onIgnoredError,
       columnType,
-      orReplace,
+      upsert,
     );
 
   const getPersisted = async (): Promise<PersistedContent<Persist>> =>

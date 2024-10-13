@@ -7,6 +7,15 @@ export type QuerySchema = (
   managedTableNames: string[],
 ) => Promise<{tn: string; cn: string}[]>;
 
+export type Upsert = (
+  executeCommand: DatabaseExecuteCommand,
+  tableName: string,
+  rowIdColumnName: string,
+  changingColumnNames: string[],
+  rows: {[id: string]: any[]},
+  targetColumnNames: string[],
+) => Promise<void>;
+
 export const SINGLE_ROW_ID = '_';
 export const DEFAULT_ROW_ID_COLUMN_NAME = '_id';
 export const SELECT = 'SELECT';
@@ -33,6 +42,9 @@ export const getWrappedCommand = (
     : executeCommand;
 
 export const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
+
+export const escapeColumnNames = (...columnNames: string[]) =>
+  '(' + arrayJoin(arrayMap(columnNames, escapeId), COMMA) + ')';
 
 export const getPlaceholders = (array: any[], offset = [1]) =>
   arrayJoin(
