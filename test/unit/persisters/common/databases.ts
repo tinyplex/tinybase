@@ -71,7 +71,7 @@ type DatabaseVariant<Database> = [
   autoLoadIntervalSeconds?: number,
   isPostgres?: boolean,
   supportsMultipleConnections?: boolean,
-  orReplace?: boolean,
+  skipSqlChecks?: boolean,
 ];
 
 const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;

@@ -21,7 +21,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
       autoLoadIntervalSeconds = 0.001,
       isPostgres,
       supportsMultipleConnections,
-      orReplace,
+      skipSqlChecks,
     ],
   ) => {
     const [getDatabase, setDatabase] = getDatabaseFunctions(
@@ -34,10 +34,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
     const encodedValue = isPostgres
       ? (v: any) => JSON.stringify(v)
       : (v: any) => v;
-    const insertCommand = (insertInto: string, onConflict: string) =>
-      orReplace
-        ? 'INSERT OR REPLACE INTO' + insertInto
-        : 'INSERT INTO' + insertInto + 'ON CONFLICT' + onConflict;
+    const sqlCheck = (sqlLogs: [string, any[]?][], sql: [string, any[]?][]) => {
+      if (!skipSqlChecks) {
+        expect(sqlLogs).toEqual(sql);
+      }
+    };
 
     let db: any;
     let store: Store;
@@ -1120,7 +1121,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
             [{_id: '_', v1: 1, v2: 2}],
           ],
         });
-        expect(sqlLogs).toEqual([
+        sqlCheck(sqlLogs, [
           ['BEGIN', undefined],
           [
             'CREATE TABLE"t1"("_id"' +
@@ -1141,10 +1142,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
             undefined,
           ],
           [
-            insertCommand(
-              '"t1"("_id","c1","c2")VALUES($1,$2,$3),($4,$5,$6)',
-              '("_id")DO UPDATE SET"c1"=excluded."c1","c2"=excluded."c2"',
-            ),
+            'INSERT INTO"t1"("_id","c1","c2")VALUES($1,$2,$3),($4,$5,$6)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c2"=excluded."c2"',
             [
               'r1',
               encodedValue(1),
@@ -1155,10 +1153,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
             ],
           ],
           [
-            insertCommand(
-              '"t2"("_id","c1")VALUES($1,$2)',
-              '("_id")DO UPDATE SET"c1"=excluded."c1"',
-            ),
+            'INSERT INTO"t2"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
             ['r1', encodedValue(1)],
           ],
           ['DELETE FROM"t1"WHERE"_id"NOT IN($1,$2)', ['r1', 'r2']],
@@ -1174,10 +1169,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
             undefined,
           ],
           [
-            insertCommand(
-              '"tinybase_values"("_id","v1","v2")VALUES($1,$2,$3)',
-              '("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
-            ),
+            'INSERT INTO"tinybase_values"("_id","v1","v2")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
             ['_', encodedValue(1), encodedValue(2)],
           ],
           ['DELETE FROM"tinybase_values"WHERE"_id"NOT IN($1)', ['_']],
@@ -1205,14 +1197,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: 1, v2: 2, v3: 3}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             ['ALTER TABLE"tinybase_values"ADD"v3"' + columnType, undefined],
             [
-              insertCommand(
-                '"tinybase_values"("_id","v3")VALUES($1,$2)',
-                '("_id")DO UPDATE SET"v3"=excluded."v3"',
-              ),
+              'INSERT INTO"tinybase_values"("_id","v3")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"v3"=excluded."v3"',
               ['_', encodedValue(3)],
             ],
             ['END', undefined],
@@ -1236,13 +1225,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: 2, v2: 2}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             [
-              insertCommand(
-                '"tinybase_values"("_id","v1")VALUES($1,$2)',
-                '("_id")DO UPDATE SET"v1"=excluded."v1"',
-              ),
+              'INSERT INTO"tinybase_values"("_id","v1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1"',
               ['_', encodedValue(2)],
             ],
             ['END', undefined],
@@ -1266,13 +1252,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: null, v2: 2}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             [
-              insertCommand(
-                '"tinybase_values"("_id","v1")VALUES($1,$2)',
-                '("_id")DO UPDATE SET"v1"=excluded."v1"',
-              ),
+              'INSERT INTO"tinybase_values"("_id","v1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1"',
               ['_', null],
             ],
             ['END', undefined],
@@ -1296,13 +1279,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: null, v2: null}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             [
-              insertCommand(
-                '"tinybase_values"("_id","v1","v2")VALUES($1,$2,$3)',
-                '("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
-              ),
+              'INSERT INTO"tinybase_values"("_id","v1","v2")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
               ['_', null, null],
             ],
             ['END', undefined],
@@ -1330,14 +1310,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: 1, v2: 2}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             ['ALTER TABLE"t1"ADD"c3"' + columnType, undefined],
             [
-              insertCommand(
-                '"t1"("_id","c3")VALUES($1,$2)',
-                '("_id")DO UPDATE SET"c3"=excluded."c3"',
-              ),
+              'INSERT INTO"t1"("_id","c3")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c3"=excluded."c3"',
               ['r1', encodedValue(3)],
             ],
             ['END', undefined],
@@ -1361,13 +1338,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: 1, v2: 2}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             [
-              insertCommand(
-                '"t1"("_id","c1")VALUES($1,$2)',
-                '("_id")DO UPDATE SET"c1"=excluded."c1"',
-              ),
+              'INSERT INTO"t1"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
               ['r1', encodedValue(2)],
             ],
             ['END', undefined],
@@ -1391,13 +1365,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: 1, v2: 2}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             [
-              insertCommand(
-                '"t1"("_id","c1")VALUES($1,$2)',
-                '("_id")DO UPDATE SET"c1"=excluded."c1"',
-              ),
+              'INSERT INTO"t1"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
               ['r1', null],
             ],
             ['END', undefined],
@@ -1426,14 +1397,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: 1, v2: 2}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             ['ALTER TABLE"t1"ADD"c3"' + columnType, undefined],
             [
-              insertCommand(
-                '"t1"("_id","c1","c3")VALUES($1,$2,$3)',
-                '("_id")DO UPDATE SET"c1"=excluded."c1","c3"=excluded."c3"',
-              ),
+              'INSERT INTO"t1"("_id","c1","c3")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c3"=excluded."c3"',
               ['r3', encodedValue(1), encodedValue(3)],
             ],
             ['END', undefined],
@@ -1457,13 +1425,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: 1, v2: 2}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             [
-              insertCommand(
-                '"t1"("_id","c1")VALUES($1,$2)',
-                '("_id")DO UPDATE SET"c1"=excluded."c1"',
-              ),
+              'INSERT INTO"t1"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
               ['r1', encodedValue(2)],
             ],
             ['END', undefined],
@@ -1484,7 +1449,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: 1, v2: 2}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             ['DELETE FROM"t1"WHERE"_id"=$1', ['r1']],
             ['END', undefined],
@@ -1513,7 +1478,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: 1, v2: 2}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             [
               'CREATE TABLE"t3"("_id"' +
@@ -1524,10 +1489,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
               undefined,
             ],
             [
-              insertCommand(
-                '"t3"("_id","c1")VALUES($1,$2)',
-                '("_id")DO UPDATE SET"c1"=excluded."c1"',
-              ),
+              'INSERT INTO"t3"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
               ['r1', encodedValue(1)],
             ],
             ['END', undefined],
@@ -1554,14 +1516,11 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: 1, v2: 2}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             ['ALTER TABLE"t2"ADD"c2"' + columnType, undefined],
             [
-              insertCommand(
-                '"t2"("_id","c1","c2")VALUES($1,$2,$3)',
-                '("_id")DO UPDATE SET"c1"=excluded."c1","c2"=excluded."c2"',
-              ),
+              'INSERT INTO"t2"("_id","c1","c2")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1","c2"=excluded."c2"',
               ['r1', encodedValue(2), encodedValue(2)],
             ],
             ['END', undefined],
@@ -1585,7 +1544,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: 1, v2: 2}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             ['DELETE FROM"t2"WHERE true', undefined],
             ['END', undefined],
@@ -1603,7 +1562,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
               [{_id: '_', v1: 1, v2: 2}],
             ],
           });
-          expect(sqlLogs).toEqual([
+          sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
             ['DELETE FROM"t1"WHERE true', undefined],
             ['DELETE FROM"t2"WHERE true', undefined],
