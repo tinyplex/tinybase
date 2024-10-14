@@ -3,7 +3,8 @@ import type {
   DatabaseExecuteCommand,
   DatabasePersisterConfig,
 } from '../../@types/persisters/index.d.ts';
-import {IdObj, objToArray} from '../../common/obj.ts';
+import {IdObj, objIds, objNew, objToArray} from '../../common/obj.ts';
+import {IdSet, setNew} from '../../common/set.ts';
 import type {
   PowerSyncPersister,
   createPowerSyncPersister as createPowerSyncPersisterDecl,
@@ -14,13 +15,19 @@ import {
   escapeId,
   getPlaceholders,
 } from '../common/database/common.ts';
-import {arrayFilter, arrayJoin, arrayMap} from '../../common/array.ts';
+import {
+  arrayFilter,
+  arrayForEach,
+  arrayIsEmpty,
+  arrayJoin,
+  arrayMap,
+  arrayPush,
+} from '../../common/array.ts';
 import {AbstractPowerSyncDatabase} from '@powersync/common';
 import {COMMA} from '../../common/strings.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {collHas} from '../../common/coll.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
-import {setNew} from '../../common/set.ts';
 
 export const createPowerSyncPersister = ((
   store: Store,
@@ -65,31 +72,70 @@ const viewUpsert: Upsert = async (
   rowIdColumnName: string,
   changingColumnNames: string[],
   rows: {[id: string]: any[]},
-  targetColumnNames: string[],
+  currentColumnNames?: IdSet | undefined,
 ) => {
   const offset = [1];
   const changingColumnNamesSet = setNew(changingColumnNames);
-  const unchangingColumnNames = arrayFilter(
-    targetColumnNames,
-    (columnName) => !collHas(changingColumnNamesSet, columnName),
-  );
+  const unchangingColumnNames = currentColumnNames
+    ? arrayFilter(
+        [...currentColumnNames],
+        (currentColumnName) =>
+          currentColumnName != rowIdColumnName &&
+          !collHas(changingColumnNamesSet, currentColumnName),
+      )
+    : [];
+  if (!arrayIsEmpty(unchangingColumnNames)) {
+    const ids = objIds(rows);
+    const unchangingData = objNew(
+      arrayMap(
+        await executeCommand(
+          'SELECT ' +
+            escapeColumnNames(rowIdColumnName, ...unchangingColumnNames) +
+            ' FROM' +
+            escapeId(tableName) +
+            'WHERE' +
+            escapeId(rowIdColumnName) +
+            'IN(' +
+            getPlaceholders(ids) +
+            ')',
+          ids,
+        ),
+        (unchangingRow) => [unchangingRow[rowIdColumnName], unchangingRow],
+      ),
+    );
+    arrayForEach(ids, (id: string) =>
+      arrayPush(
+        rows[id],
+        ...arrayMap(
+          unchangingColumnNames,
+          (unchangingColumnName) =>
+            unchangingData?.[id]?.[unchangingColumnName] ?? null,
+        ),
+      ),
+    );
+  }
 
   await executeCommand(
     'INSERT OR REPLACE INTO' +
       escapeId(tableName) +
-      escapeColumnNames(rowIdColumnName, ...changingColumnNames) +
-      'VALUES' +
+      '(' +
+      escapeColumnNames(
+        rowIdColumnName,
+        ...changingColumnNames,
+        ...unchangingColumnNames,
+      ) +
+      ')VALUES' +
       arrayJoin(
         objToArray(
           rows,
-          (params: any[]) =>
-            '($' + offset[0]++ + ',' + getPlaceholders(params, offset) + ')',
+          (row: any[]) =>
+            '($' + offset[0]++ + ',' + getPlaceholders(row, offset) + ')',
         ),
         COMMA,
       ),
-    objToArray(rows, (params: any[], id: string) => [
+    objToArray(rows, (row: any[], id: string) => [
       id,
-      ...arrayMap(params, (param) => param ?? null),
+      ...arrayMap(row, (value) => value ?? null),
     ]).flat(),
   );
 };

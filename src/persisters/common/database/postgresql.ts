@@ -131,7 +131,7 @@ export const createCustomPostgreSqlPersister = <
     thing,
     getThing,
     'text',
-    0,
+    undefined,
     (cellOrValue) => jsonString(cellOrValue),
     (field) => jsonParse(field as string),
   );
