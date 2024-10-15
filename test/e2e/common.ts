@@ -66,6 +66,7 @@ export const expectedElement = async (
   text?: string | RegExp,
   timeout = 2000,
 ): Promise<ElementHandle> =>
+  // @ts-expect-error see #598
   (await expect(page).toMatchElement(selector, {text, timeout})) as any;
 
 export const expectProperty = async (
