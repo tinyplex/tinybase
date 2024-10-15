@@ -132,7 +132,8 @@ const UiReactWithSchemas2 = UiReact as UiReact.WithSchemas<
 >;
 const {useStore: useStore2} = UiReactWithSchemas2;
 
-const _Getters = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Getters = () => {
   const storeWithSchemas = useCreateStore(() =>
     createStore().setSchema(tablesSchema, valuesSchema),
   );
@@ -219,7 +220,8 @@ const _Getters = () => {
   useValue('v2'); // !
 };
 
-const _Setters = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Setters = () => {
   useSetTablesCallback(
     (_e, store) => {
       store.getTables().t1;
@@ -457,7 +459,8 @@ const _Setters = () => {
   );
 };
 
-const _Deleters = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Deleters = () => {
   useDelTablesCallback(undefined, (store) => {
     store.getTables().t1;
     store.getTables().t2; // !
@@ -511,7 +514,8 @@ const _Deleters = () => {
   useDelValueCallback(() => 'v2'); // !
 };
 
-const _Listeners = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Listeners = () => {
   useHasTablesListener((store) => {
     store.getTables().t1;
     store.getTables().t2; // !
@@ -1218,7 +1222,8 @@ const _Listeners = () => {
   useValueListener('v2', () => null); // !
 };
 
-const _Metrics = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Metrics = () => {
   const metricsWithSchema = useCreateMetrics(
     createStore().setSchema(tablesSchema, valuesSchema),
     createMetrics,
@@ -1236,7 +1241,8 @@ const _Metrics = () => {
   });
 };
 
-const _Indexes = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Indexes = () => {
   const indexesWithSchema = useCreateIndexes(
     createStore().setSchema(tablesSchema, valuesSchema),
     createIndexes,
@@ -1259,7 +1265,8 @@ const _Indexes = () => {
   });
 };
 
-const _Relationships = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Relationships = () => {
   const relationshipsWithSchema = useCreateRelationships(
     createStore().setSchema(tablesSchema, valuesSchema),
     createRelationships,
@@ -1287,7 +1294,8 @@ const _Relationships = () => {
   });
 };
 
-const _Queries = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Queries = () => {
   const queriesWithSchema = useCreateQueries(
     createStore().setSchema(tablesSchema, valuesSchema),
     createQueries,
@@ -1330,7 +1338,8 @@ const _Queries = () => {
   });
 };
 
-const _Checkpoints = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Checkpoints = () => {
   const checkpointsWithSchema = useCreateCheckpoints(
     createStore().setSchema(tablesSchema, valuesSchema),
     createCheckpoints,
@@ -1373,7 +1382,8 @@ const _Checkpoints = () => {
   });
 };
 
-const _Persister = () => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Persister = () => {
   const persisterWithSchema = useCreatePersister(
     createStore().setSchema(tablesSchema, valuesSchema),
     (store) => createFilePersister(store, ''),
@@ -1500,7 +1510,8 @@ const PoorValueView = ({valueId}: {readonly valueId: 'v1' | 'v2'}) => (
   <b>{valueId}</b>
 );
 
-const _App = () => (
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const App = () => (
   <>
     <TablesView />
     <TablesView tableComponent={GoodTableView} />
