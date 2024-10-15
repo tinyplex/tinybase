@@ -1984,8 +1984,6 @@
   const pairClone = (array) => [...array];
   const pairIsEqual = ([entry1, entry2]) => entry1 === entry2;
 
-  strSplit('-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz');
-
   const defaultSorter = (sortKey1, sortKey2) =>
     (sortKey1 ?? 0) < (sortKey2 ?? 0) ? -1 : 1;
 
