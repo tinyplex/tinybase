@@ -1,4 +1,5 @@
 import 'expect-puppeteer';
+import 'jest-puppeteer';
 import {ElementHandle} from 'puppeteer';
 import {Server} from 'http';
 import {createServer} from 'http-server';
@@ -66,7 +67,6 @@ export const expectedElement = async (
   text?: string | RegExp,
   timeout = 2000,
 ): Promise<ElementHandle> =>
-  // @ts-expect-error see #598
   (await expect(page).toMatchElement(selector, {text, timeout})) as any;
 
 export const expectProperty = async (
