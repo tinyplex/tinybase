@@ -35,8 +35,9 @@ export const createPowerSyncPersister = ((
   configOrStoreTableName?: DatabasePersisterConfig | string,
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
-): PowerSyncPersister =>
-  createCustomSqlitePersister(
+): PowerSyncPersister => {
+  let tableListener: DatabaseChangeListener | undefined;
+  return createCustomSqlitePersister(
     store,
     configOrStoreTableName,
     async (sql: string, params: any[] = []): Promise<IdObj<any>[]> =>
@@ -51,12 +52,18 @@ export const createPowerSyncPersister = ((
       });
       (async () => {
         for await (const update of onChange) {
-          arrayMap(update.changedTables, listener);
+          if (tableListener) {
+            arrayMap(update.changedTables, tableListener);
+          }
         }
       })();
+      tableListener = listener;
       return abortController;
     },
-    (abortController: AbortController) => abortController.abort(),
+    (abortController: AbortController) => {
+      tableListener = undefined;
+      abortController.abort();
+    },
     onSqlCommand,
     onIgnoredError,
     () => 0,
@@ -64,7 +71,8 @@ export const createPowerSyncPersister = ((
     powerSync,
     'getPowerSync',
     viewUpsert,
-  ) as PowerSyncPersister) as typeof createPowerSyncPersisterDecl;
+  ) as PowerSyncPersister;
+}) as typeof createPowerSyncPersisterDecl;
 
 const viewUpsert: Upsert = async (
   executeCommand: DatabaseExecuteCommand,
@@ -89,9 +97,9 @@ const viewUpsert: Upsert = async (
     const unchangingData = objNew(
       arrayMap(
         await executeCommand(
-          'SELECT ' +
+          'SELECT' +
             escapeColumnNames(rowIdColumnName, ...unchangingColumnNames) +
-            ' FROM' +
+            'FROM' +
             escapeId(tableName) +
             'WHERE' +
             escapeId(rowIdColumnName) +

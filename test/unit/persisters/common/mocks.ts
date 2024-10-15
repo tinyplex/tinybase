@@ -240,6 +240,7 @@ const getMockedDatabase = <Location>(
   autoLoadIntervalSeconds = 0.001,
   _isPostgres = false,
   _supportsMultipleConnections = false,
+  _skipSqlChecks = false,
 ): Persistable<Location> => {
   const mockDatabase = {
     beforeEach: mockFetchWasm,

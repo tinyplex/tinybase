@@ -313,7 +313,7 @@ export const SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
       powerSync.execute(sql, args).then((result) => result.rows?._array ?? []),
     (powerSync: AbstractPowerSyncDatabase) => powerSync.close(),
     undefined,
-    undefined,
+    0.01,
     undefined,
     undefined,
     true,
