@@ -199,6 +199,8 @@ export const createCustomPersister = <
           const content = await getPersisted();
           if (isArray(content)) {
             setContentOrChanges(content);
+          } else if (initialContent) {
+            setDefaultContent(initialContent as Content);
           } else {
             errorNew(`Content is not an array ${content}`);
           }
