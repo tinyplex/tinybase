@@ -328,6 +328,8 @@
             const content = await getPersisted();
             if (isArray(content)) {
               setContentOrChanges(content);
+            } else if (initialContent) {
+              setDefaultContent(initialContent);
             } else {
               errorNew(`Content is not an array ${content}`);
             }
