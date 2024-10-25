@@ -22,6 +22,7 @@ import * as TinyBaseSynchronizerBroadcastChannel from 'tinybase/synchronizers/sy
 import * as TinyBaseSynchronizerLocal from 'tinybase/synchronizers/synchronizer-local';
 import * as TinyBaseSynchronizerWsClient from 'tinybase/synchronizers/synchronizer-ws-client';
 import * as TinyBaseSynchronizerWsServer from 'tinybase/synchronizers/synchronizer-ws-server';
+import * as TinyBaseSynchronizerWsServerSimple from 'tinybase/synchronizers/synchronizer-ws-server-simple';
 import * as TinyBaseSynchronizers from 'tinybase/synchronizers';
 import * as TinyBaseTools from 'tinybase/tools';
 import * as TinyBaseUiReact from 'tinybase/ui-react';
@@ -86,6 +87,8 @@ import {transformSync} from 'esbuild';
   'tinybase/synchronizers/synchronizer-local': TinyBaseSynchronizerLocal,
   'tinybase/synchronizers/synchronizer-ws-client': TinyBaseSynchronizerWsClient,
   'tinybase/synchronizers/synchronizer-ws-server': TinyBaseSynchronizerWsServer,
+  'tinybase/synchronizers/synchronizer-ws-server-simple':
+    TinyBaseSynchronizerWsServerSimple,
   'tinybase/synchronizers/synchronizer-broadcast-channel':
     TinyBaseSynchronizerBroadcastChannel,
   'tinybase/tools': TinyBaseTools,
