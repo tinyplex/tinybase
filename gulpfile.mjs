@@ -33,6 +33,7 @@ const TEST_MODULES = [
   'synchronizers/synchronizer-local',
   'synchronizers/synchronizer-ws-client',
   'synchronizers/synchronizer-ws-server',
+  'synchronizers/synchronizer-ws-server-simple',
   'synchronizers/synchronizer-broadcast-channel',
 ];
 const ALL_MODULES = [
