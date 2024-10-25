@@ -3,6 +3,13 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+# v5.4
+
+This release includes the new synchronizer-ws-server-simple module that contains
+a simple server implementation called WsServerSimple. Without the complications
+of listeners, persistence, or statistics, this is more suitable to be used as a
+reference implementation for other server environments.
+
 # v5.3
 
 This release is focussed on a few API improvements and quality-of-life changes.
