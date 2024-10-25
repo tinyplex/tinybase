@@ -163,6 +163,11 @@ using raw files.
 
 See the createWsServer function documentation for more details.
 
+Also note that there is a synchronizer-ws-server-simple module that contains a
+simple server implementation called WsServerSimple. Without the complications of
+listeners, persistence, or statistics, this is more suitable to be used as a
+reference implementation for other server environments.
+
 ## Synchronizing Over The Browser BroadcastChannel
 
 There may be situations where you need to synchronize data between different
