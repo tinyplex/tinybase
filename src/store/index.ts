@@ -519,11 +519,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const getNewRowId = (tableId: Id, reuse: 0 | 1): Id => {
     const [getId] = mapGet(tablePoolFunctions, tableId) as PoolFunctions;
-    const rowId = getId(reuse);
-    if (!collHas(mapGet(tablesMap, tableId), rowId)) {
-      return rowId;
-    }
-    return getNewRowId(tableId, reuse);
+    let rowId;
+    do {
+      rowId = getId(reuse);
+    } while (collHas(mapGet(tablesMap, tableId), rowId));
+    return rowId;
   };
 
   const getOrCreateTable = (tableId: Id) =>
