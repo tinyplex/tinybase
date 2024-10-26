@@ -1,0 +1,154 @@
+<svg viewBox="0 0 3000 1100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <filter id="shadow" x="-20%" width="140%" y="-20%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="20" flood-opacity="0.7" />
+    </filter>
+
+    <rect id="square" height="100" width="100" stroke="#fff" stroke-width="10" />
+    <circle id="circle" cx="50" cy="50" r="60" stroke="#fff" stroke-width="10" />
+    <polygon id="triangle" points="50,-15 110,100 -10,100" stroke="#fff" stroke-width="10" />
+  </defs>
+
+  <g>
+    <g>
+      <use href="#square" x="-200" y="250" fill="#0943D9">
+        <animate id="blueSquare" attributeName="x" from="100" to="600" begin="0; purpleTriangle.end" dur="1" />
+        <animate attributeName="opacity" from="0" to="1" begin="blueSquare.begin" dur="0.5" />
+      </use>
+      <use href="#circle" x="-200" y="450" fill="#D99D09">
+        <animate id="yellowCircle" attributeName="x" from="100" to="600" begin="blueSquare.end" dur="1" />
+        <animate attributeName="opacity" from="0" to="1" begin="yellowCircle.begin" dur="0.5" />
+      </use>
+      <use href="#triangle" x="-200" y="650" fill="#09D918">
+        <animate id="greenTriangle" attributeName="x" from="100" to="600" begin="yellowCircle.end" dur="1" />
+        <animate attributeName="opacity" from="0" to="1" begin="greenTriangle.begin" dur="0.5" />
+      </use>
+    </g>
+
+    <g>
+      <use href="#square" x="-200" y="250" fill="#7913C1">
+        <animate id="purpleSquare" attributeName="x" from="100" to="600" begin="greenTriangle.end" dur="1" />
+        <animate attributeName="opacity" from="0" to="1" begin="purpleSquare.begin" dur="0.5" />
+      </use>
+      <use href="#circle" x="-200" y="450" fill="#0943D9">
+        <animate id="blueCircle" attributeName="x" from="100" to="600" begin="purpleSquare.end" dur="1" />
+        <animate attributeName="opacity" from="0" to="1" begin="blueCircle.begin" dur="0.5" />
+      </use>
+      <use href="#triangle" x="-200" y="650" fill="#D99D09">
+        <animate id="yellowTriangle" attributeName="x" from="100" to="600" begin="blueCircle.end" dur="1" />
+        <animate attributeName="opacity" from="0" to="1" begin="yellowTriangle.begin" dur="0.5" />
+      </use>
+    </g>
+
+    <g>
+      <use href="#square" x="-200" y="250" fill="#09D918">
+        <animate id="greenSquare" attributeName="x" from="100" to="600" begin="yellowTriangle.end" dur="1" />
+        <animate attributeName="opacity" from="0" to="1" begin="greenSquare.begin" dur="0.5" />
+      </use>
+      <use href="#circle" x="-200" y="450" fill="#7913C1">
+        <animate id="purpleCircle" attributeName="x" from="100" to="600" begin="greenSquare.end" dur="1" />
+        <animate attributeName="opacity" from="0" to="1" begin="purpleCircle.begin" dur="0.5" />
+      </use>
+      <use href="#triangle" x="-200" y="650" fill="#0943D9">
+        <animate id="blueTriangle" attributeName="x" from="100" to="600" begin="purpleCircle.end" dur="1" />
+        <animate attributeName="opacity" from="0" to="1" begin="blueTriangle.begin" dur="0.5" />
+      </use>
+    </g>
+
+    <g>
+      <use href="#square" x="-200" y="250" fill="#D99D09">
+        <animate id="yellowSquare" attributeName="x" from="100" to="600" begin="blueTriangle.end" dur="1" />
+        <animate attributeName="opacity" from="0" to="1" begin="yellowSquare.begin" dur="0.5" />
+      </use>
+      <use href="#circle" x="-200" y="450" fill="#09D918">
+        <animate id="greenCircle" attributeName="x" from="100" to="600" begin="yellowSquare.end" dur="1" />
+        <animate attributeName="opacity" from="0" to="1" begin="greenCircle.begin" dur="0.5" />
+      </use>
+      <use href="#triangle" x="-200" y="650" fill="#7913C1">
+        <animate id="purpleTriangle" attributeName="x" from="100" to="600" begin="greenCircle.end" dur="1" />
+        <animate attributeName="opacity" from="0" to="1" begin="purpleTriangle.begin" dur="0.5" />
+      </use>
+    </g>
+  </g>
+
+  <use xlink:href="common.svg#logo" transform="translate(500,200)" />
+
+  <g transform="translate(1040,210) skewY(-10)">
+    <rect id="content" filter="url(#shadow)" height="740" width="300" stroke="#fff" stroke-width="10" rx="50"
+      fill="#000" class="shadow" />
+    <rect x="100" y="100" height="100" width="100" stroke="#fff" stroke-width="10">
+      <set attributeName="fill" to="#0943D9" begin="blueSquare.end+.05" />
+      <set attributeName="fill" to="#D99D09" begin="yellowSquare.end+.05" />
+      <set attributeName="fill" to="#09D918" begin="greenSquare.end+.05" />
+      <set attributeName="fill" to="#7913C1" begin="purpleSquare.end+.05" />
+      <animate attributeName="stroke-width" values="40;10"
+        begin="blueSquare.end;yellowSquare.end;greenSquare.end;purpleSquare.end+.05" dur=".5" />
+    </rect>
+
+    <circle id="circle2" cx="150" cy="370" r="60" stroke="#fff" stroke-width="10">
+      <set attributeName="fill" to="#0943D9" begin="blueCircle.end+.05" />
+      <set attributeName="fill" to="#D99D09" begin="yellowCircle.end+.05" />
+      <set attributeName="fill" to="#09D918" begin="greenCircle.end+.05" />
+      <set attributeName="fill" to="#7913C1" begin="purpleCircle.end+.05" />
+      <animate attributeName="stroke-width" values="40;10"
+        begin="blueCircle.end;yellowCircle.end;greenCircle.end;purpleCircle.end+.05" dur=".5" />
+    </circle>
+
+    <polygon points="150,525 210,640 90,640" stroke="#fff" stroke-width="10">
+      <set attributeName="fill" to="#0943D9" begin="blueTriangle.end+.05" />
+      <set attributeName="fill" to="#D99D09" begin="yellowTriangle.end+.05" />
+      <set attributeName="fill" to="#09D918" begin="greenTriangle.end+.05" />
+      <set attributeName="fill" to="#7913C1" begin="purpleTriangle.end+.05" />
+      <animate attributeName="stroke-width" values="40;10"
+        begin="blueTriangle.end;yellowTriangle.end;greenTriangle.end;purpleTriangle.end+.05" dur=".5" />
+    </polygon>
+  </g>
+
+  <g>
+    <path d="M1200 340l1000 230" stroke="#d81b60" stroke-width="10" stroke-linecap="round">
+      <animate attributeName="stroke-width" values="40;10"
+        begin="blueSquare.end;yellowSquare.end;greenSquare.end;purpleSquare.end" dur=".5" />
+    </path>
+    <path d="M1200 780l590 -100" stroke="#d81b60" stroke-width="10" stroke-linecap="round">
+      <animate attributeName="stroke-width" values="40;10"
+        begin="blueTriangle.end;yellowTriangle.end;greenTriangle.end;purpleTriangle.end" dur=".5" />
+    </path>
+  </g>
+
+  <g transform="translate(1540,315) skewY(-10)">
+    <use xlink:href="common.svg#screen" />
+
+    <polygon points="250,215 400,515 100,515" stroke="#fff" stroke-width="10">
+      <set attributeName="fill" to="#0943D9" begin="blueTriangle.end" />
+      <set attributeName="fill" to="#D99D09" begin="yellowTriangle.end" />
+      <set attributeName="fill" to="#09D918" begin="greenTriangle.end" />
+      <set attributeName="fill" to="#7913C1" begin="purpleTriangle.end" />
+      <animate attributeName="stroke-width" values="40;10"
+        begin="blueTriangle.end;yellowTriangle.end;greenTriangle.end;purpleTriangle.end" dur=".5" />
+    </polygon>
+
+    <rect x="500" y="210" height="300" width="300" stroke="#fff" stroke-width="10">
+      <set attributeName="fill" to="#0943D9" begin="blueSquare.end" />
+      <set attributeName="fill" to="#D99D09" begin="yellowSquare.end" />
+      <set attributeName="fill" to="#09D918" begin="greenSquare.end" />
+      <set attributeName="fill" to="#7913C1" begin="purpleSquare.end" />
+      <animate attributeName="stroke-width" values="40;10"
+        begin="blueSquare.end;yellowSquare.end;greenSquare.end;purpleSquare.end" dur=".5" />
+    </rect>
+  </g>
+
+  <script>
+    // <![CDATA[
+    const svg = document.querySelector('svg');
+    const update = () => 
+      localStorage.getItem('svg') == 'pause' ? svg.pauseAnimations() : svg.unpauseAnimations()
+    window.addEventListener('storage', (event) => 
+      (event.storageArea == localStorage && event.key == 'svg') ? update() : 0);
+    svg.addEventListener("click", () => { 
+      localStorage.setItem('svg', localStorage.getItem('svg') == 'pause' ? 'play' : 'pause');
+      update();
+    });
+    update();
+    // ]]>
+  </script>
+</svg>
