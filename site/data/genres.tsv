@@ -1,17 +1,17 @@
 id	name
-1	Drama
-2	Comedy
-3	Family
-4	Romance
-5	Animation
-6	Fantasy
-7	Western
-8	Thriller
-9	Adventure
-10	Action
-11	Horror
-12	Crime
-13	Music
-14	History
-15	Science Fiction
-16	Mystery
+g01	Drama
+g02	Comedy
+g03	Family
+g04	Romance
+g05	Animation
+g06	Fantasy
+g07	Western
+g08	Thriller
+g09	Adventure
+g10	Action
+g11	Horror
+g12	Crime
+g13	Music
+g14	History
+g15	Science Fiction
+g16	Mystery
