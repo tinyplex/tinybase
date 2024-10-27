@@ -637,11 +637,11 @@
     };
     const getNewRowId = (tableId, reuse) => {
       const [getId] = mapGet(tablePoolFunctions, tableId);
-      const rowId = getId(reuse);
-      if (!collHas(mapGet(tablesMap, tableId), rowId)) {
-        return rowId;
-      }
-      return getNewRowId(tableId, reuse);
+      let rowId;
+      do {
+        rowId = getId(reuse);
+      } while (collHas(mapGet(tablesMap, tableId), rowId));
+      return rowId;
     };
     const getOrCreateTable = (tableId) =>
       mapGet(tablesMap, tableId) ?? setValidTable(tableId, {});
