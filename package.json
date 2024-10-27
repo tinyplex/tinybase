@@ -30,6 +30,7 @@
     "expo": "^51.0.0",
     "expo-sqlite": "^14.0.5",
     "partykit": "^0.0.111",
+    "partyserver": "^0.0.57",
     "partysocket": "^1.0.2",
     "postgres": "^3.4.5",
     "prettier": "^3.3.2",
@@ -68,6 +69,9 @@
       "optional": true
     },
     "partykit": {
+      "optional": true
+    },
+    "partyserver": {
       "optional": true
     },
     "partysocket": {
@@ -193,6 +197,7 @@
     "jest-puppeteer": "^10.1.4",
     "less": "^4.2.0",
     "partykit": "^0.0.111",
+    "partyserver": "^0.0.57",
     "partysocket": "^1.0.2",
     "postgres": "^3.4.5",
     "prettier": "^3.3.3",
