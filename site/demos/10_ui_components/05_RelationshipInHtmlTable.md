@@ -41,31 +41,30 @@ so that is empty in the table.
    useMemo(async () => {
      await loadTable(store, 'genres');
 +    store.setTable('metadata', {
-+      genre1: {text: 'Dramatic movies to make you think', popularity: 6},
-+      genre2: {text: 'These ones make you laugh', popularity: 7},
-+      genre3: {text: 'Fun for all the family', popularity: 8},
-+      genre4: {text: 'For the romantics at heart', popularity: 5},
-+      genre5: {text: 'From cartoons to CGI', popularity: 5},
-+      genre6: {text: 'Escape to another world', popularity: 4},
-+      genre7: {text: 'Tales of the American West', popularity: 3},
-+      genre8: {text: 'Stay on the edge of your seat', popularity: 6},
-+      genre9: {text: 'For your inner explorer', popularity: 7},
-+      genre10: {text: 'Fast-paced action from start to finish', popularity: 8},
-+      genre11: {text: 'Jump scares to give you nightmares', popularity: 6},
-+      genre12: {text: 'Murders and mysteries', popularity: 5},
-+      genre14: {text: 'Take a step back in time', popularity: 3},
-+      genre15: {text: 'A glimpse of the future', popularity: 8},
-+      genre16: {text: 'Who did it?', popularity: 5},
++      g01_meta: {text: 'Dramatic movies to make you think', popularity: 6},
++      g02_meta: {text: 'These ones make you laugh', popularity: 7},
++      g03_meta: {text: 'Fun for all the family', popularity: 8},
++      g04_meta: {text: 'For the romantics at heart', popularity: 5},
++      g05_meta: {text: 'From cartoons to CGI', popularity: 5},
++      g06_meta: {text: 'Escape to another world', popularity: 4},
++      g07_meta: {text: 'Tales of the American West', popularity: 3},
++      g08_meta: {text: 'Stay on the edge of your seat', popularity: 6},
++      g09_meta: {text: 'For your inner explorer', popularity: 7},
++      g10_meta: {text: 'Fast-paced action from start to finish', popularity: 8},
++      g11_meta: {text: 'Jump scares to give you nightmares', popularity: 6},
++      g12_meta: {text: 'Murders and mysteries', popularity: 5},
++      g14_meta: {text: 'Take a step back in time', popularity: 3},
++      g15_meta: {text: 'A glimpse of the future', popularity: 8},
++      g16_meta: {text: 'Who did it?', popularity: 5},
 +   });
     setIsLoading(false);
   }, []);
 ```
 
-In the main `App`
-component, we can create the memoized Relationships object, and create the
-relationship between the the genres Table and the 'remote' metadata Table. Note
-that we concatenate the word 'genre' and the genre Id to get the remote Row Id
-in the metadata table.
+In the main `App` component, we can create the memoized Relationships object,
+and create the relationship between the the genres Table and the 'remote'
+metadata Table. Note that we concatenate the genre Id and '\_meta' to link the
+rows from the two tables together.
 
 ```diff-js
  const store = useCreateStore(createStore);
@@ -74,7 +73,7 @@ in the metadata table.
 +    'genresMetadata',
 +    'genres',
 +    'metadata',
-+    (_, rowId) => 'genre' + rowId,
++    (_, rowId) => rowId + '_meta',
 +  ),
 +);
 ```

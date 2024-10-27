@@ -28,7 +28,7 @@ original demo to add the control:
 -      <TableInHtmlTable tableId='genres' customCells={customCells} />
 +     <div id='edit'>
 +       Genre 5 name:
-+       <EditableCellView tableId='genres' rowId='5' cellId='name' />
++       <EditableCellView tableId='genres' rowId='g05' cellId='name' />
 +     </div>
      </>
    );
