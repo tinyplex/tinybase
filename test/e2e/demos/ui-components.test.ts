@@ -120,7 +120,7 @@ describe('ui-components', () => {
     await expectPage(`/demos/ui-components/sortedtableinhtmltable`);
     await expectedElement('h1', '<SortedTableInHtmlTable />');
     await expectedFramedElement('table thead th', 'Id');
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '3');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm003');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
       'The Godfather',
@@ -128,7 +128,7 @@ describe('ui-components', () => {
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '1972');
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.7');
     await (await expectedFramedElement('table thead th', 'Rating')).click();
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '177');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm177');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
       'Double Indemnity',
@@ -136,7 +136,7 @@ describe('ui-components', () => {
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '1944');
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.1');
     await (await expectedFramedElement('table thead th', 'Rating')).click();
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '3');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm003');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
       'The Godfather',
@@ -144,12 +144,12 @@ describe('ui-components', () => {
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '1972');
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.7');
     await (await expectedFramedElement('table thead th', 'Year')).click();
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '124');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm124');
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', 'The Kid');
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '1921');
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.2');
     await (await expectedFramedElement('table thead th', 'Id')).click();
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '1');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm001');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
       'The Shawshank Redemption',
@@ -169,18 +169,18 @@ describe('ui-components', () => {
       await expectedFramedElement('table caption button:nth-of-type(2)', '→')
     ).click();
     await expectedFramedElement('table caption', '8 to 14 of 250 rows');
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '105');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm008');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
-      'The Lion King',
+      'Spirited Away',
     );
-    await expectedFramedElement('table tbody tr:nth-of-type(1) td', '1994');
-    await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.3');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) td', '2001');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.5');
     await (
       await expectedFramedElement('table caption button:nth-of-type(1)', '←')
     ).click();
     await expectedFramedElement('table caption', '1 to 7 of 250 rows');
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '1');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm001');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
       'The Shawshank Redemption',
@@ -193,7 +193,7 @@ describe('ui-components', () => {
     await expectPage(`/demos/ui-components/resulttableinhtmltable`);
     await expectedElement('h1', '<ResultTableInHtmlTable />');
     await expectedFramedElement('table thead th', 'Id');
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '5');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'g05');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
       'Animation',
@@ -206,7 +206,7 @@ describe('ui-components', () => {
     await expectPage(`/demos/ui-components/resultsortedtableinhtmltable`);
     await expectedElement('h1', '<ResultSortedTableInHtmlTable />');
     await expectedFramedElement('table thead th', 'Id');
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '6');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm006');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
       'Impossible Things',
@@ -214,7 +214,7 @@ describe('ui-components', () => {
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '2021');
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.6');
     await (await expectedFramedElement('table thead th', 'Rating')).click();
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '182');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm182');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
       `Me Against You: Mr. S's Vendetta`,
@@ -222,7 +222,7 @@ describe('ui-components', () => {
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '2020');
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.1');
     await (await expectedFramedElement('table thead th', 'Rating')).click();
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '6');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm006');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
       'Impossible Things',
@@ -230,7 +230,7 @@ describe('ui-components', () => {
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '2021');
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.6');
     await (await expectedFramedElement('table thead th', 'Year')).click();
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '35');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm035');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
       'Spider-Man: Into the Spider-Verse',
@@ -238,13 +238,13 @@ describe('ui-components', () => {
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '2018');
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.4');
     await (await expectedFramedElement('table thead th', 'Id')).click();
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '101');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm006');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
-      `Zack Snyder's Justice League`,
+      'Impossible Things',
     );
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '2021');
-    await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.3');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.6');
 
     await expectedFramedElement('table caption', '1 to 7 of 69 rows');
     await (
@@ -258,24 +258,24 @@ describe('ui-components', () => {
       await expectedFramedElement('table caption button:nth-of-type(2)', '→')
     ).click();
     await expectedFramedElement('table caption', '8 to 14 of 69 rows');
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '113');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm031');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
-      'Bo Burnham: Inside',
+      'Josee, the Tiger and the Fish',
     );
-    await expectedFramedElement('table tbody tr:nth-of-type(1) td', '2021');
-    await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.2');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) td', '2020');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.4');
     await (
       await expectedFramedElement('table caption button:nth-of-type(1)', '←')
     ).click();
     await expectedFramedElement('table caption', '1 to 7 of 69 rows');
-    await expectedFramedElement('table tbody tr:nth-of-type(1) th', '101');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) th', 'm006');
     await expectedFramedElement(
       'table tbody tr:nth-of-type(1) td',
-      `Zack Snyder's Justice League`,
+      'Impossible Things',
     );
     await expectedFramedElement('table tbody tr:nth-of-type(1) td', '2021');
-    await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.3');
+    await expectedFramedElement('table tbody tr:nth-of-type(1) td', '8.6');
   });
 
   test('EditableValueView', async () => {
