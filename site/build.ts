@@ -184,6 +184,10 @@ const addApi = (docs: Docs): Docs =>
       'dist/@types/synchronizers/synchronizer-ws-server-simple/index.d.ts',
     )
     .addApiFile(
+      // eslint-disable-next-line max-len
+      'dist/@types/synchronizers/synchronizer-ws-server-durable-object/index.d.ts',
+    )
+    .addApiFile(
       'dist/@types/synchronizers/synchronizer-broadcast-channel/index.d.ts',
     )
     .addApiFile('dist/@types/tools/index.d.ts')
