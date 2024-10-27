@@ -34,6 +34,7 @@ const TEST_MODULES = [
   'synchronizers/synchronizer-ws-client',
   'synchronizers/synchronizer-ws-server',
   'synchronizers/synchronizer-ws-server-simple',
+  'synchronizers/synchronizer-ws-server-durable-object',
   'synchronizers/synchronizer-broadcast-channel',
 ];
 const ALL_MODULES = [
@@ -470,6 +471,7 @@ const compileModule = async (
       'expo-sqlite',
       'fs',
       'fs/promises',
+      'partyserver',
       'path',
       'prettier/standalone',
       'prettier/plugins/estree',
