@@ -37,5 +37,5 @@ export const createPayload = (
 ): string =>
   createRawPayload(toClientId ?? EMPTY_STRING, jsonStringWithUndefined(args));
 
-export const createRawPayload = (toClientId: Id, remainder: string): string =>
-  toClientId + MESSAGE_SEPARATOR + remainder;
+export const createRawPayload = (clientId: Id, remainder: string): string =>
+  clientId + MESSAGE_SEPARATOR + remainder;
