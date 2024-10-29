@@ -60,7 +60,10 @@
     ],
     "max-len": [
       2,
-      {"code": 80, "ignorePattern": "^(\\s+\\* )?(im|ex)ports?\\W.*"}
+      {
+        "code": 80,
+        "ignorePattern": "^(\\s+\\* )?(imports?|exports?|} from)\\W.*"
+      }
     ],
     "no-var": 2,
     "no-console": 2,
