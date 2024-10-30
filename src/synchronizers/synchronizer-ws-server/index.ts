@@ -156,10 +156,8 @@ export const createWsServer = (<
           if (clientId !== SERVER_CLIENT_ID) {
             serverClient[Sc.Send]?.(forwardedPayload);
           }
-          mapForEach(clients, (otherClientId, otherWebSocket) =>
-            otherClientId !== clientId
-              ? otherWebSocket.send(forwardedPayload)
-              : 0,
+          mapForEach(clients, (otherClientId, otherClient) =>
+            otherClientId !== clientId ? otherClient.send(forwardedPayload) : 0,
           );
         } else if (toClientId === SERVER_CLIENT_ID) {
           serverClient[Sc.Send]?.(forwardedPayload);
@@ -168,7 +166,7 @@ export const createWsServer = (<
         }
       });
 
-  webSocketServer.on('connection', (webSocket, request) =>
+  webSocketServer.on('connection', (client, request) =>
     ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
       ifNotUndefined(request.headers['sec-websocket-key'], async (clientId) => {
         const clients = mapEnsure(clientsByPath, pathId, mapNew<Id, WebSocket>);
@@ -187,10 +185,10 @@ export const createWsServer = (<
           callListeners(pathIdListeners, undefined, pathId, 1);
           await configureServerClient(serverClient, pathId, clients);
         }
-        mapSet(clients, clientId, webSocket);
+        mapSet(clients, clientId, client);
         callListeners(clientIdListeners, [pathId], clientId, 1);
 
-        webSocket.on('message', (data) => {
+        client.on('message', (data) => {
           const payload = data.toString(UTF8);
           if (serverClient[Sc.State] == ScState.Ready) {
             messageHandler(payload);
@@ -205,7 +203,7 @@ export const createWsServer = (<
           serverClient[Sc.Buffer] = [];
         }
 
-        webSocket.on('close', () => {
+        client.on('close', () => {
           collDel(clients, clientId);
           callListeners(clientIdListeners, [pathId], clientId, -1);
           if (collIsEmpty(clients)) {
