@@ -468,10 +468,10 @@ const compileModule = async (
 
   const inputConfig = {
     external: [
+      'cloudflare:workers',
       'expo-sqlite',
       'fs',
       'fs/promises',
-      'partyserver',
       'path',
       'prettier/standalone',
       'prettier/plugins/estree',

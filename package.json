@@ -21,6 +21,7 @@
   "sideEffects": false,
   "peerDependencies": {
     "@automerge/automerge-repo": "^1.2.1",
+    "@cloudflare/workers-types": "^4.20241022.0",
     "@electric-sql/pglite": "^0.2.13",
     "@libsql/client": "^0.14.0",
     "@powersync/common": "^1.21.0",
@@ -30,7 +31,6 @@
     "expo": "^52.0.4",
     "expo-sqlite": "^15.0.3",
     "partykit": "^0.0.111",
-    "partyserver": "^0.0.57",
     "partysocket": "^1.0.2",
     "postgres": "^3.4.5",
     "prettier": "^3.3.3",
@@ -42,6 +42,9 @@
   },
   "peerDependenciesMeta": {
     "@automerge/automerge-repo": {
+      "optional": true
+    },
+    "@cloudflare/workers-types": {
       "optional": true
     },
     "@electric-sql/pglite": {
@@ -69,9 +72,6 @@
       "optional": true
     },
     "partykit": {
-      "optional": true
-    },
-    "partyserver": {
       "optional": true
     },
     "partysocket": {
