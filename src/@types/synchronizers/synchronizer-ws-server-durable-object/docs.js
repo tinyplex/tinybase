@@ -18,3 +18,12 @@
  * @since v5.4.0
  */
 /// WsServerDurableObject
+
+/**
+ * The getWsServerDurableObjectFetch function returns a fetch handler for a
+ * CloudFlare worker to route requests to a WsServerDurableObject for the given
+ * namespace.
+ * @category Creation
+ * @since v5.4.0
+ */
+/// getWsServerDurableObjectFetch
