@@ -1,9 +1,16 @@
 /// synchronizer-ws-server-durable-object
 
-import {Server} from 'partyserver';
+import {Id, IdAddedOrRemoved} from '../../index.js';
+import {DurableObject} from 'cloudflare:workers';
 
 /// WsServerDurableObject
-export class WsServerDurableObject extends Server {}
+export class WsServerDurableObject<Env = unknown> extends DurableObject<Env> {
+  /// WsServerDurableObject.onPathId
+  onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved): void;
+
+  /// WsServerDurableObject.onClientId
+  onClientId(pathId: Id, clientId: Id, addedOrRemoved: IdAddedOrRemoved): void;
+}
 
 /// getWsServerDurableObjectFetch
 export function getWsServerDurableObjectFetch<Namespace extends string>(
@@ -13,4 +20,4 @@ export function getWsServerDurableObjectFetch<Namespace extends string>(
   env: {
     [namespace in Namespace]: DurableObjectNamespace<WsServerDurableObject>;
   },
-) => Promise<Response>;
+) => Response;

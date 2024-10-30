@@ -1,14 +1,17 @@
 import {EMPTY_STRING, strMatch} from '../../common/strings.ts';
+import {Id, IdAddedOrRemoved} from '../../@types/index.js';
+import {arrayForEach, arrayIsEmpty} from '../../common/array.ts';
 import {createRawPayload, ifPayloadValid} from '../common.ts';
+import {ifNotUndefined, size} from '../../common/other.ts';
 import {DurableObject} from 'cloudflare:workers';
-import {Id} from '../../@types/index.js';
-import {arrayForEach} from '../../common/array.ts';
-import {ifNotUndefined} from '../../common/other.ts';
 import {objValues} from '../../common/obj.ts';
 
 const PATH_REGEX = /\/([^?]*)/;
 
-const getUpgradeClientId = (request: Request): Id | null =>
+const getPathId = (request: Request): Id =>
+  strMatch(new URL(request.url).pathname, PATH_REGEX)?.[1] ?? EMPTY_STRING;
+
+const getClientId = (request: Request): Id | null =>
   request.headers.get('upgrade')?.toLowerCase() == 'websocket'
     ? request.headers.get('sec-websocket-key')
     : null;
@@ -22,17 +25,26 @@ const createResponse = (
 const createUpgradeRequiredResponse = (): Response =>
   createResponse(426, null, 'Upgrade required');
 
-export class WsServerDurableObject<Env = unknown> extends DurableObject<Env> {
+export class WsServerDurableObject<Env = unknown>
+  extends DurableObject<Env>
+  implements DurableObject<Env>
+{
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
   }
 
   fetch(request: Request): Response {
+    const pathId = getPathId(request);
     return ifNotUndefined(
-      getUpgradeClientId(request),
+      getClientId(request),
       (clientId) => {
         const [webSocket, client] = objValues(new WebSocketPair());
+        client.serializeAttachment({pathId});
+        if (arrayIsEmpty(this.ctx.getWebSockets())) {
+          this.onPathId(pathId, 1);
+        }
         this.ctx.acceptWebSocket(client, [clientId]);
+        this.onClientId(pathId, clientId, 1);
         return createResponse(101, webSocket);
       },
       createUpgradeRequiredResponse,
@@ -54,7 +66,19 @@ export class WsServerDurableObject<Env = unknown> extends DurableObject<Env> {
     );
   }
 
-  webSocketClose(client: WebSocket) {}
+  webSocketClose(client: WebSocket) {
+    const {pathId} = client.deserializeAttachment();
+    this.onClientId(pathId, this.ctx.getTags(client)[0], -1);
+    if (size(this.ctx.getWebSockets()) == 1) {
+      this.onPathId(pathId, -1);
+    }
+  }
+
+  // --
+
+  onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved) {}
+
+  onClientId(pathId: Id, clientId: Id, addedOrRemoved: IdAddedOrRemoved) {}
 }
 
 export const getWsServerDurableObjectFetch =
@@ -64,18 +88,9 @@ export const getWsServerDurableObjectFetch =
     env: {
       [namespace in Namespace]: DurableObjectNamespace<WsServerDurableObject>;
     },
-  ) => {
-    return ifNotUndefined(
-      strMatch(new URL(request.url).pathname, PATH_REGEX),
-      ([, pathId]) => {
-        if (getUpgradeClientId(request)) {
-          const id = env[namespace].idFromName(pathId);
-          console.log('DO id', id.toString());
-          return env[namespace].get(id).fetch(request);
-        } else {
-          return createUpgradeRequiredResponse();
-        }
-      },
-      createUpgradeRequiredResponse,
-    );
-  };
+  ) =>
+    getClientId(request)
+      ? env[namespace]
+          .get(env[namespace].idFromName(getPathId(request)))
+          .fetch(request)
+      : createUpgradeRequiredResponse();
