@@ -23,29 +23,28 @@ const PATH_REGEX = /\/([^?]*)/;
 export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
   const clientsByPath: IdMap2<WebSocket> = mapNew();
 
-  webSocketServer.on('connection', (webSocket, request) =>
+  webSocketServer.on('connection', (client, request) =>
     ifNotUndefined(strMatch(request.url, PATH_REGEX), ([, pathId]) =>
       ifNotUndefined(request.headers['sec-websocket-key'], async (clientId) => {
         const clients = mapEnsure(clientsByPath, pathId, mapNew<Id, WebSocket>);
-        mapSet(clients, clientId, webSocket);
+        mapSet(clients, clientId, client);
 
-        webSocket.on('message', (data) => {
-          const payload = data.toString(UTF8);
-          ifPayloadValid(payload, (toClientId, remainder) => {
+        client.on('message', (data) =>
+          ifPayloadValid(data.toString(UTF8), (toClientId, remainder) => {
             const forwardedPayload = createRawPayload(clientId, remainder);
             if (toClientId === EMPTY_STRING) {
-              mapForEach(clients, (otherClientId, otherWebSocket) =>
+              mapForEach(clients, (otherClientId, otherClient) =>
                 otherClientId !== clientId
-                  ? otherWebSocket.send(forwardedPayload)
+                  ? otherClient.send(forwardedPayload)
                   : 0,
               );
             } else {
               mapGet(clients, toClientId)?.send(forwardedPayload);
             }
-          });
-        });
+          }),
+        );
 
-        webSocket.on('close', () => {
+        client.on('close', () => {
           collDel(clients, clientId);
           if (collIsEmpty(clients)) {
             collDel(clientsByPath, pathId);
