@@ -18,6 +18,22 @@
  * @since v5.4.0
  */
 /// WsServerDurableObject
+{
+  /**
+   * The onPathId method is called when the first client connects to, or the
+   * last client disconnects from, the server with a given path Id.
+   * @category Events
+   * @since v5.4.0
+   */
+  /// WsServerDurableObject.onPathId
+  /**
+   * The onClientId method is called when a client connects to, or disconnects
+   * from, the server.
+   * @category Events
+   * @since v5.4.0
+   */
+  /// WsServerDurableObject.onClientId
+}
 
 /**
  * The getWsServerDurableObjectFetch function returns a fetch handler for a
