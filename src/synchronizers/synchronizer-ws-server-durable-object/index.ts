@@ -76,16 +76,16 @@ export class WsServerDurableObject<Env = unknown>
 
   // --
 
-  getClientIds(pathId: Id): Ids {
+  getClientIds(_pathId: Id): Ids {
     return arrayMap(
       this.ctx.getWebSockets(),
       (client) => this.ctx.getTags(client)[0],
     );
   }
 
-  onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved) {}
+  onPathId(_pathId: Id, _addedOrRemoved: IdAddedOrRemoved) {}
 
-  onClientId(pathId: Id, clientId: Id, addedOrRemoved: IdAddedOrRemoved) {}
+  onClientId(_pathId: Id, _clientId: Id, _addedOrRemoved: IdAddedOrRemoved) {}
 }
 
 export const getWsServerDurableObjectFetch =
