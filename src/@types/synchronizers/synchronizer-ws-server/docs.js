@@ -162,6 +162,7 @@
   /**
    * The getClientIds method method returns the active clients that the WsServer
    * is handling for a given path.
+   * @param pathId The path for which to return the list of active clients.
    * @returns An array of the clients connected to the given path.
    * @example
    * This example creates a WsServer, sets some clients up to connect
