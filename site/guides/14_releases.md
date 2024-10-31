@@ -25,7 +25,7 @@ export default {fetch: getWsServerDurableObjectFetch('MyDurableObjects')};
 
 For the above code to work, you'll need to have a Wrangler configuration that
 connects the `MyDurableObject` class to the `MyDurableObjects` namespace. In
-other words, you'll something like this in your `wrangler.toml` file:
+other words, you'll have something like this in your `wrangler.toml` file:
 
 ```toml
 [[durable_objects.bindings]]

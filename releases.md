@@ -12,7 +12,7 @@ export class MyDurableObject extends WsServerDurableObject {}
 export default {fetch: getWsServerDurableObjectFetch('MyDurableObjects')};
 ```
 
-<p>For the above code to work, you&#x27;ll need to have a Wrangler configuration that connects the <code>MyDurableObject</code> class to the <code>MyDurableObjects</code> namespace. In other words, you&#x27;ll something like this in your <code>wrangler.toml</code> file:</p>
+<p>For the above code to work, you&#x27;ll need to have a Wrangler configuration that connects the <code>MyDurableObject</code> class to the <code>MyDurableObjects</code> namespace. In other words, you&#x27;ll have something like this in your <code>wrangler.toml</code> file:</p>
 
 ```toml
 [[durable_objects.bindings]]
