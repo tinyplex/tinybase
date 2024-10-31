@@ -48,7 +48,7 @@ export const createPartyKitPersister = ((
     room +
     storePath;
 
-  const getOrSetStore = async (content?: Content) =>
+  const getOrSetStore = async (content?: Content): Promise<Content> =>
     await (
       await fetch(storeUrl, {
         ...(content ? {method: PUT, body: jsonStringWithMap(content)} : {}),

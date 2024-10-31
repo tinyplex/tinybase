@@ -1,6 +1,6 @@
 /// synchronizer-ws-server-durable-object
 
-import {Id, IdAddedOrRemoved, Ids} from '../../index.js';
+import type {Id, IdAddedOrRemoved, Ids} from '../../index.d.ts';
 import {DurableObject} from 'cloudflare:workers';
 
 /// WsServerDurableObject
