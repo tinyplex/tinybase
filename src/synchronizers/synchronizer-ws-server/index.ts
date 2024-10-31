@@ -221,8 +221,8 @@ export const createWsServer = (<
 
   const getPathIds = (): string[] => mapKeys(clientsByPath);
 
-  const getClientIds = (path: string): Ids =>
-    mapKeys(mapGet(clientsByPath, path));
+  const getClientIds = (pathId: string): Ids =>
+    mapKeys(mapGet(clientsByPath, pathId));
 
   const addPathIdsListener = (listener: PathIdsListener) =>
     addListener(listener, pathIdListeners);
