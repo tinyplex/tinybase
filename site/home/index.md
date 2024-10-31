@@ -8,7 +8,7 @@
 
 <a href='/guides/releases/#v5-4'><em>NEW!</em> v5.4 release</a>
 
-<span id="one-with">"More APIs!"</span>
+<span id="one-with">"The One With Durable Objects!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
@@ -106,6 +106,10 @@
   </a>
 </div>
 <div>
+  <a href='/guides/synchronization/using-a-synchronizer/#synchronizing-with-websockets'>
+    <img width="48" src="/cloudflare.svg" /> Cloudflare
+  </a>
+</div><div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
     <img width="48" src="/electric.svg" /> ElectricSQL
   </a>
