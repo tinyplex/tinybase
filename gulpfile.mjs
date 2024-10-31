@@ -537,6 +537,7 @@ const compileModule = async (
       'expo-sqlite': 'expo-sqlite',
       'fs/promises': 'fs/promises',
       'react-dom': 'ReactDOM',
+      'cloudflare:workers': 'cloudflare:workers',
       fs: 'fs',
       react: 'React',
       yjs: 'yjs',
