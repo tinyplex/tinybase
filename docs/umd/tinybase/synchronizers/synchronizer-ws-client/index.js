@@ -87,8 +87,8 @@
     );
   const createPayload = (toClientId, ...args) =>
     createRawPayload(toClientId ?? EMPTY_STRING, jsonStringWithUndefined(args));
-  const createRawPayload = (toClientId, remainder) =>
-    toClientId + MESSAGE_SEPARATOR + remainder;
+  const createRawPayload = (clientId, remainder) =>
+    clientId + MESSAGE_SEPARATOR + remainder;
 
   const collSize = (coll) => coll?.size ?? 0;
   const collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
