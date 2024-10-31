@@ -5,10 +5,42 @@ highlighted features.
 
 # v5.4
 
-This release includes the new synchronizer-ws-server-simple module that contains
-a simple server implementation called WsServerSimple. Without the complications
-of listeners, persistence, or statistics, this is more suitable to be used as a
-reference implementation for other server environments.
+This release contains an initial implementation of a synchronization server that
+runs on Cloudflare as a Durable Object. It's in the new
+synchronizer-ws-server-durable-object module, and you use it by extending the
+WsServerDurableObject class. You can also use the getWsServerDurableObjectFetch
+function for conveniently binding your Cloudflare Worker to your Durable Object:
+
+```ts
+import {Id, IdAddedOrRemoved} from 'tinybase';
+import {
+  getWsServerDurableObjectFetch,
+  WsServerDurableObject,
+} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
+
+export class MyDurableObject extends WsServerDurableObject {}
+
+export default {fetch: getWsServerDurableObjectFetch('MyDurableObjects')};
+```
+
+For the above code to work, you'll need to have a Wrangler configuration that
+connects the `MyDurableObject` class to the `MyDurableObjects` namespace. In
+other words, you'll something like this in your `wrangler.toml` file:
+
+```toml
+[[durable_objects.bindings]]
+name = "MyDurableObjects"
+class_name = "MyDurableObject"
+```
+
+With this you can now easily connect and synchronize clients using the
+WsSynchronizer synchronizer. This implementation does not currently store the
+data between clients, but will soon!
+
+This release also includes the new synchronizer-ws-server-simple module that
+contains a simple server implementation called WsServerSimple. Without the
+complications of listeners, persistence, or statistics, this is more suitable to
+be used as a reference implementation for other server environments.
 
 # v5.3
 

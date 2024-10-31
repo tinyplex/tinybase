@@ -22,7 +22,7 @@
   /**
    * The getClientIds method is used to access a list of all the connected
    * clients on a given path.
-   * @category Getters
+   * @category Getter
    * @since v5.4.0
    */
   /// WsServerDurableObject.getClientIds
