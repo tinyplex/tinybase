@@ -1,6 +1,6 @@
 import {EMPTY_STRING, strMatch} from '../../common/strings.ts';
-import {Id, IdAddedOrRemoved} from '../../@types/index.js';
-import {arrayForEach, arrayIsEmpty} from '../../common/array.ts';
+import type {Id, IdAddedOrRemoved, Ids} from '../../@types/index.d.ts';
+import {arrayForEach, arrayIsEmpty, arrayMap} from '../../common/array.ts';
 import {createRawPayload, ifPayloadValid} from '../common.ts';
 import {ifNotUndefined, size} from '../../common/other.ts';
 import {DurableObject} from 'cloudflare:workers';
@@ -76,6 +76,13 @@ export class WsServerDurableObject<Env = unknown>
 
   // --
 
+  getClientIds(pathId: Id): Ids {
+    return arrayMap(
+      this.ctx.getWebSockets(),
+      (client) => this.ctx.getTags(client)[0],
+    );
+  }
+
   onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved) {}
 
   onClientId(pathId: Id, clientId: Id, addedOrRemoved: IdAddedOrRemoved) {}
@@ -83,7 +90,7 @@ export class WsServerDurableObject<Env = unknown>
 
 export const getWsServerDurableObjectFetch =
   <Namespace extends string>(namespace: Namespace) =>
-  async (
+  (
     request: Request,
     env: {
       [namespace in Namespace]: DurableObjectNamespace<WsServerDurableObject>;

@@ -20,6 +20,13 @@
 /// WsServerDurableObject
 {
   /**
+   * The getClientIds method is used to access a list of all the connected
+   * clients on a given path.
+   * @category Getters
+   * @since v5.4.0
+   */
+  /// WsServerDurableObject.getClientIds
+  /**
    * The onPathId method is called when the first client connects to, or the
    * last client disconnects from, the server with a given path Id.
    * @category Events
