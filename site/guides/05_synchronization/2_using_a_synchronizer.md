@@ -35,9 +35,20 @@ This can be a relatively 'thin server' - it does not need to store data of its
 own - but is needed to keep a list of clients that are being synchronized
 together, and route and broadcast messages between the clients.
 
-TinyBase includes a simple implementation of such a server. You simply need to
-create it, instantiated with a configured WebSocketServer object from the `ws`
-package:
+TinyBase includes some implementations of WebSocket servers:
+
+- WsServer, created with the createWsServer function in the
+  synchronizer-ws-server module. This includes the option to persist data in the server.
+- WsServerSimple, created with the createWsServerSimple function in the
+  synchronizer-ws-server-simple module. This does not have the complications of
+  listeners, persistence, or statistics, and is suitable to be used as a reference
+  implementation
+- WsServerDurableObject, implemented as Cloudflare Durable Object, created by
+  extending the WsServerDurableObject class, and routed with the
+  getWsServerDurableObjectFetch convenience function.
+
+Here we'll use the regular WsServer. You simply need to create it, instantiated
+with a configured WebSocketServer object from the `ws` package:
 
 ```js
 // On a server machine:

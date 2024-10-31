@@ -1,7 +1,7 @@
 /**
  * The synchronizer-ws-server-durable-object module of the TinyBase project lets
  * you create a server that facilitates synchronization between clients, running
- * as a CloudFlare DurableObject.
+ * as a Cloudflare Durable Object.
  * @see Synchronization guide
  * @see Todo App v6 (collaboration) demo
  * @packageDocumentation
@@ -11,8 +11,8 @@
 /// synchronizer-ws-server-durable-object
 
 /**
- * A WsServerDurableObject is the server component (running as a CloudFlare
- * DurableObject) for synchronization between clients that are using
+ * A WsServerDurableObject is the server component (running as a Cloudflare
+ * Durable Object) for synchronization between clients that are using
  * WsSynchronizer instances.
  * @category Creation
  * @since v5.4.0
@@ -44,7 +44,7 @@
 
 /**
  * The getWsServerDurableObjectFetch function returns a convenient fetch handler
- * for a CloudFlare worker to route requests to a WsServerDurableObject for the
+ * for a Cloudflare worker to route requests to a WsServerDurableObject for the
  * given namespace.
  * @category Creation
  * @since v5.4.0
