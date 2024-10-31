@@ -48,7 +48,8 @@
         "ignore": [
           "^\\./generated/client$",
           "^custom-remote-handlers$",
-          "^electric-sql/(client/model|notifiers|wa-sqlite)$"
+          "^electric-sql/(client/model|notifiers|wa-sqlite)$",
+          "^cloudflare:workers$"
         ]
       }
     ],
