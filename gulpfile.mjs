@@ -413,7 +413,7 @@ const tsCheck = async (dir) => {
         options,
       ),
     )
-    .filter((result) => !result.file.fileName.includes('/node_modules/'));
+    .filter((result) => !result.file?.fileName.includes('/node_modules/'));
   if (results.length > 0) {
     const resultText = results
       .map((result) => {
