@@ -1,10 +1,13 @@
 /// synchronizer-ws-server-durable-object
 
-import {Id, IdAddedOrRemoved} from '../../index.js';
+import {Id, IdAddedOrRemoved, Ids} from '../../index.js';
 import {DurableObject} from 'cloudflare:workers';
 
 /// WsServerDurableObject
 export class WsServerDurableObject<Env = unknown> extends DurableObject<Env> {
+  /// WsServerDurableObject.getClientIds
+  getClientIds(pathId: Id): Ids;
+
   /// WsServerDurableObject.onPathId
   onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved): void;
 
