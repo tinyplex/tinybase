@@ -141,6 +141,7 @@
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.25.9",
     "@babel/preset-typescript": "^7.26.0",
+    "@cloudflare/workers-types": "^4.20241022.0",
     "@electric-sql/pglite": "^0.2.12",
     "@journeyapps/wa-sqlite": "^0.4.1",
     "@libsql/client": "^0.14.0",
