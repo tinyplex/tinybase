@@ -210,7 +210,7 @@ export const createCustomSynchronizer = (
 
   const getPersisted = async (): Promise<MergeableContent | undefined> => {
     const changes = (await getChangesFromOtherStore()) as any;
-    return !objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0])
+    return changes && (!objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0]))
       ? changes
       : undefined;
   };

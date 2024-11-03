@@ -202,7 +202,7 @@ export const createCustomPersister = <
           } else if (initialContent) {
             setDefaultContent(initialContent as Content);
           } else {
-            errorNew(`Content is not an array ${content}`);
+            errorNew(`Content is not an array: ${content}`);
           }
         } catch (error) {
           onIgnoredError?.(error);
