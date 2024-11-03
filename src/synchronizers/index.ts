@@ -145,63 +145,67 @@ export const createCustomSynchronizer = (
   const getChangesFromOtherStore = async (
     otherClientId: IdOrNull = null,
     otherContentHashes?: ContentHashes,
-  ): Promise<MergeableChanges> => {
-    if (isUndefined(otherContentHashes)) {
-      [otherContentHashes, otherClientId] = await request<ContentHashes>(
-        otherClientId,
-        MessageValues.GetContentHashes,
-      );
-    }
-    const [otherTablesHash, otherValuesHash] = otherContentHashes;
-    const [tablesHash, valuesHash] = store.getMergeableContentHashes();
-
-    let tablesChanges: TablesStamp = stampNewObj();
-    if (tablesHash != otherTablesHash) {
-      const [newTables, differentTableHashes] = (
-        await request<[TablesStamp, TableHashes]>(
+  ): Promise<MergeableChanges | void> => {
+    try {
+      if (isUndefined(otherContentHashes)) {
+        [otherContentHashes, otherClientId] = await request<ContentHashes>(
           otherClientId,
-          MessageValues.GetTableDiff,
-          store.getMergeableTableHashes(),
-        )
-      )[0];
-      tablesChanges = newTables;
+          MessageValues.GetContentHashes,
+        );
+      }
+      const [otherTablesHash, otherValuesHash] = otherContentHashes;
+      const [tablesHash, valuesHash] = store.getMergeableContentHashes();
 
-      if (!objIsEmpty(differentTableHashes)) {
-        const [newRows, differentRowHashes] = (
-          await request<[TablesStamp, RowHashes]>(
+      let tablesChanges: TablesStamp = stampNewObj();
+      if (tablesHash != otherTablesHash) {
+        const [newTables, differentTableHashes] = (
+          await request<[TablesStamp, TableHashes]>(
             otherClientId,
-            MessageValues.GetRowDiff,
-            store.getMergeableRowHashes(differentTableHashes),
+            MessageValues.GetTableDiff,
+            store.getMergeableTableHashes(),
           )
         )[0];
-        mergeTablesStamps(tablesChanges, newRows);
+        tablesChanges = newTables;
 
-        if (!objIsEmpty(differentRowHashes)) {
-          const newCells = (
-            await request<TablesStamp>(
+        if (!objIsEmpty(differentTableHashes)) {
+          const [newRows, differentRowHashes] = (
+            await request<[TablesStamp, RowHashes]>(
               otherClientId,
-              MessageValues.GetCellDiff,
-              store.getMergeableCellHashes(differentRowHashes),
+              MessageValues.GetRowDiff,
+              store.getMergeableRowHashes(differentTableHashes),
             )
           )[0];
-          mergeTablesStamps(tablesChanges, newCells);
+          mergeTablesStamps(tablesChanges, newRows);
+
+          if (!objIsEmpty(differentRowHashes)) {
+            const newCells = (
+              await request<TablesStamp>(
+                otherClientId,
+                MessageValues.GetCellDiff,
+                store.getMergeableCellHashes(differentRowHashes),
+              )
+            )[0];
+            mergeTablesStamps(tablesChanges, newCells);
+          }
         }
       }
-    }
 
-    return [
-      tablesChanges,
-      valuesHash == otherValuesHash
-        ? stampNewObj()
-        : (
-            await request<ValuesStamp>(
-              otherClientId,
-              MessageValues.GetValueDiff,
-              store.getMergeableValueHashes(),
-            )
-          )[0],
-      1,
-    ];
+      return [
+        tablesChanges,
+        valuesHash == otherValuesHash
+          ? stampNewObj()
+          : (
+              await request<ValuesStamp>(
+                otherClientId,
+                MessageValues.GetValueDiff,
+                store.getMergeableValueHashes(),
+              )
+            )[0],
+        1,
+      ];
+    } catch (error) {
+      onIgnoredError?.(error);
+    }
   };
 
   const getPersisted = async (): Promise<MergeableContent | undefined> => {
@@ -275,9 +279,11 @@ export const createCustomSynchronizer = (
         message == MessageValues.ContentHashes &&
         persister.isAutoLoading()
       ) {
-        getChangesFromOtherStore(fromClientId, body).then((changes: any) => {
-          persisterListener?.(undefined, changes);
-        });
+        getChangesFromOtherStore(fromClientId, body)
+          .then((changes: any) => {
+            persisterListener?.(undefined, changes);
+          })
+          .catch(onIgnoredError);
       } else if (
         message == MessageValues.ContentDiff &&
         persister.isAutoLoading()
