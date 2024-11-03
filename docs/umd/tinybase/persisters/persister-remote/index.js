@@ -291,7 +291,7 @@
             } else if (initialContent) {
               setDefaultContent(initialContent);
             } else {
-              errorNew(`Content is not an array ${content}`);
+              errorNew(`Content is not an array: ${content}`);
             }
           } catch (error) {
             onIgnoredError?.(error);

@@ -331,7 +331,7 @@
             } else if (initialContent) {
               setDefaultContent(initialContent);
             } else {
-              errorNew(`Content is not an array ${content}`);
+              errorNew(`Content is not an array: ${content}`);
             }
           } catch (error) {
             onIgnoredError?.(error);
@@ -525,62 +525,67 @@
       otherClientId = null,
       otherContentHashes,
     ) => {
-      if (isUndefined(otherContentHashes)) {
-        [otherContentHashes, otherClientId] = await request(
-          otherClientId,
-          1 /* GetContentHashes */,
-        );
-      }
-      const [otherTablesHash, otherValuesHash] = otherContentHashes;
-      const [tablesHash, valuesHash] = store.getMergeableContentHashes();
-      let tablesChanges = stampNewObj();
-      if (tablesHash != otherTablesHash) {
-        const [newTables, differentTableHashes] = (
-          await request(
+      try {
+        if (isUndefined(otherContentHashes)) {
+          [otherContentHashes, otherClientId] = await request(
             otherClientId,
-            4 /* GetTableDiff */,
-            store.getMergeableTableHashes(),
-          )
-        )[0];
-        tablesChanges = newTables;
-        if (!objIsEmpty(differentTableHashes)) {
-          const [newRows, differentRowHashes] = (
+            1 /* GetContentHashes */,
+          );
+        }
+        const [otherTablesHash, otherValuesHash] = otherContentHashes;
+        const [tablesHash, valuesHash] = store.getMergeableContentHashes();
+        let tablesChanges = stampNewObj();
+        if (tablesHash != otherTablesHash) {
+          const [newTables, differentTableHashes] = (
             await request(
               otherClientId,
-              5 /* GetRowDiff */,
-              store.getMergeableRowHashes(differentTableHashes),
+              4 /* GetTableDiff */,
+              store.getMergeableTableHashes(),
             )
           )[0];
-          mergeTablesStamps(tablesChanges, newRows);
-          if (!objIsEmpty(differentRowHashes)) {
-            const newCells = (
+          tablesChanges = newTables;
+          if (!objIsEmpty(differentTableHashes)) {
+            const [newRows, differentRowHashes] = (
               await request(
                 otherClientId,
-                6 /* GetCellDiff */,
-                store.getMergeableCellHashes(differentRowHashes),
+                5 /* GetRowDiff */,
+                store.getMergeableRowHashes(differentTableHashes),
               )
             )[0];
-            mergeTablesStamps(tablesChanges, newCells);
+            mergeTablesStamps(tablesChanges, newRows);
+            if (!objIsEmpty(differentRowHashes)) {
+              const newCells = (
+                await request(
+                  otherClientId,
+                  6 /* GetCellDiff */,
+                  store.getMergeableCellHashes(differentRowHashes),
+                )
+              )[0];
+              mergeTablesStamps(tablesChanges, newCells);
+            }
           }
         }
+        return [
+          tablesChanges,
+          valuesHash == otherValuesHash
+            ? stampNewObj()
+            : (
+                await request(
+                  otherClientId,
+                  7 /* GetValueDiff */,
+                  store.getMergeableValueHashes(),
+                )
+              )[0],
+          1,
+        ];
+      } catch (error) {
+        onIgnoredError?.(error);
       }
-      return [
-        tablesChanges,
-        valuesHash == otherValuesHash
-          ? stampNewObj()
-          : (
-              await request(
-                otherClientId,
-                7 /* GetValueDiff */,
-                store.getMergeableValueHashes(),
-              )
-            )[0],
-        1,
-      ];
     };
     const getPersisted = async () => {
       const changes = await getChangesFromOtherStore();
-      return !objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0])
+      return changes &&
+        (!objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0]))
         ? changes
         : void 0;
     };
@@ -630,9 +635,11 @@
         message == 2 /* ContentHashes */ &&
         persister.isAutoLoading()
       ) {
-        getChangesFromOtherStore(fromClientId, body).then((changes) => {
-          persisterListener?.(void 0, changes);
-        });
+        getChangesFromOtherStore(fromClientId, body)
+          .then((changes) => {
+            persisterListener?.(void 0, changes);
+          })
+          .catch(onIgnoredError);
       } else if (message == 3 /* ContentDiff */ && persister.isAutoLoading()) {
         persisterListener?.(void 0, body);
       } else {
