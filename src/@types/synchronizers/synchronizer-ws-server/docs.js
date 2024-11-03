@@ -508,6 +508,9 @@
  * Persister to synchronize with the clients on a given path (or a two-item
  * array of Persister and callback that lets you handle data after persistence
  * has started).
+ * @param onIgnoredError An optional handler for the errors that the server
+ * would otherwise ignore when trying to sync data. This is suitable for
+ * debugging issues in a development environment.
  * @returns A reference to the new WsServer object.
  * @example
  * This example creates a WsServer that synchronizes two clients on a shared

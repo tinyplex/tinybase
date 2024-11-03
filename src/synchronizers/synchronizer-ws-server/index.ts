@@ -76,6 +76,7 @@ export const createWsServer = (<
     | Promise<PathPersister>
     | Promise<[PathPersister, (store: MergeableStore) => void]>
     | undefined,
+  onIgnoredError?: (error: any) => void,
 ) => {
   type ServerClient = [
     state: ScState,
@@ -121,6 +122,9 @@ export const createWsServer = (<
               receivePayload(payload, receive)),
           () => {},
           1,
+          undefined,
+          undefined,
+          onIgnoredError,
         );
         serverClient[Sc.Buffer] = [];
         serverClient[Sc.Then] = isArray(persisterMaybeThen)
@@ -215,9 +219,17 @@ export const createWsServer = (<
             callListeners(pathIdListeners, undefined, pathId, -1);
           }
         });
+
+        if (onIgnoredError) {
+          webSocket.on('error', onIgnoredError);
+        }
       }),
     ),
   );
+
+  if (onIgnoredError) {
+    webSocketServer.on('error', onIgnoredError);
+  }
 
   const getWebSocketServer = () => webSocketServer;
 
