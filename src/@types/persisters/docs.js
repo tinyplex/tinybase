@@ -1711,8 +1711,9 @@
  * changes to the database.
  * @param onSqlCommand A function that will be called for each SQL command
  * executed against the database.
- * @param onIgnoredError A function that will be called for errors that are
- * ignored by the Persister.
+ * @param onIgnoredError An optional handler for the errors that the Persister
+ * would otherwise ignore when trying to save or load data. This is suitable for
+ * debugging persistence issues in a development environment.
  * @param destroy A function that will be called to perform any extra clean up
  * on the Persister.
  * @param persist An integer from the Persists enum to indicate which types of
@@ -1751,8 +1752,9 @@
  * changes to the database.
  * @param onSqlCommand A function that will be called for each SQL command
  * executed against the database.
- * @param onIgnoredError A function that will be called for errors that are
- * ignored by the Persister.
+ * @param onIgnoredError An optional handler for the errors that the Persister
+ * would otherwise ignore when trying to save or load data. This is suitable for
+ * debugging persistence issues in a development environment.
  * @param destroy A function that will be called to perform any extra clean up
  * on the Persister.
  * @param persist An integer from the Persists enum to indicate which types of
