@@ -219,7 +219,7 @@ export const createWsServer = (<
         });
 
         if (onIgnoredError) {
-          webSocket.on('error', onIgnoredError);
+          client.on('error', onIgnoredError);
         }
       }),
     ),
