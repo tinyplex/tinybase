@@ -1,12 +1,23 @@
 import {EMPTY_STRING, strMatch} from '../../common/strings.ts';
-import type {Id, IdAddedOrRemoved, Ids} from '../../@types/index.d.ts';
+import type {Id, Ids} from '../../@types/common/index.d.ts';
+import type {Persister, Persists} from '../../@types/persisters/index.d.ts';
 import {arrayForEach, arrayIsEmpty, arrayMap} from '../../common/array.ts';
-import {createRawPayload, ifPayloadValid} from '../common.ts';
+import {
+  createPayload,
+  createRawPayload,
+  ifPayloadValid,
+  receivePayload,
+} from '../common.ts';
 import {ifNotUndefined, size} from '../../common/other.ts';
 import {DurableObject} from 'cloudflare:workers';
+import type {IdAddedOrRemoved} from '../../@types/store/index.d.ts';
+import type {Receive} from '../../@types/synchronizers/index.d.ts';
+import {createCustomSynchronizer} from '../index.ts';
+import {getUniqueId} from '../../common/index.ts';
 import {objValues} from '../../common/obj.ts';
 
 const PATH_REGEX = /\/([^?]*)/;
+const SERVER_CLIENT_ID = 'S';
 
 const getPathId = (request: Request): Id =>
   strMatch(new URL(request.url).pathname, PATH_REGEX)?.[1] ?? EMPTY_STRING;
@@ -29,8 +40,34 @@ export class WsServerDurableObject<Env = unknown>
   extends DurableObject<Env>
   implements DurableObject<Env>
 {
+  #serverClient: {send: (payload: string) => void} = {send: () => {}};
+
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
+    this.ctx.blockConcurrencyWhile(
+      async () =>
+        await ifNotUndefined(
+          await this.createPersister(),
+          async (persister) => {
+            const synchronizer = createCustomSynchronizer(
+              persister.getStore(),
+              (toClientId, requestId, message, body) =>
+                this.#handleMessage(
+                  SERVER_CLIENT_ID,
+                  createPayload(toClientId, requestId, message, body),
+                ),
+              (receive: Receive) =>
+                (this.#serverClient.send = (payload: string) =>
+                  receivePayload(payload, receive)),
+              () => {},
+              1,
+            );
+            await persister.load();
+            await persister.startAutoSave();
+            await synchronizer.startSync();
+          },
+        ),
+    );
   }
 
   fetch(request: Request): Response {
@@ -45,6 +82,7 @@ export class WsServerDurableObject<Env = unknown>
         }
         this.ctx.acceptWebSocket(client, [clientId]);
         this.onClientId(pathId, clientId, 1);
+        client.send(createPayload(clientId, getUniqueId(), 1, EMPTY_STRING));
         return createResponse(101, webSocket);
       },
       createUpgradeRequiredResponse,
@@ -53,16 +91,7 @@ export class WsServerDurableObject<Env = unknown>
 
   webSocketMessage(client: WebSocket, message: ArrayBuffer | string) {
     ifNotUndefined(this.ctx.getTags(client)[0], (clientId) =>
-      ifPayloadValid(message.toString(), (toClientId, remainder) => {
-        const forwardedPayload = createRawPayload(clientId, remainder);
-        if (toClientId === EMPTY_STRING) {
-          arrayForEach(this.ctx.getWebSockets(), (otherClient) =>
-            otherClient !== client ? otherClient.send(forwardedPayload) : 0,
-          );
-        } else {
-          this.ctx.getWebSockets(toClientId)[0]?.send(forwardedPayload);
-        }
-      }),
+      this.#handleMessage(clientId, message.toString(), client),
     );
   }
 
@@ -75,6 +104,35 @@ export class WsServerDurableObject<Env = unknown>
   }
 
   // --
+
+  #handleMessage(fromClientId: Id, message: string, fromClient?: WebSocket) {
+    ifPayloadValid(message.toString(), (toClientId, remainder) => {
+      const forwardedPayload = createRawPayload(fromClientId, remainder);
+      if (toClientId == EMPTY_STRING) {
+        if (fromClientId != SERVER_CLIENT_ID) {
+          this.#serverClient.send(forwardedPayload);
+        }
+        arrayForEach(this.ctx.getWebSockets(), (otherClient) => {
+          if (otherClient != fromClient) {
+            otherClient.send(forwardedPayload);
+          }
+        });
+      } else if (toClientId == SERVER_CLIENT_ID) {
+        this.#serverClient.send(forwardedPayload);
+      } else {
+        this.ctx.getWebSockets(toClientId)[0]?.send(forwardedPayload);
+      }
+    });
+  }
+
+  // --
+
+  createPersister():
+    | Persister<Persists.MergeableStoreOnly>
+    | Promise<Persister<Persists.MergeableStoreOnly>>
+    | undefined {
+    return undefined;
+  }
 
   getClientIds(_pathId: Id): Ids {
     return arrayMap(
