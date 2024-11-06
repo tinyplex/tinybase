@@ -19,20 +19,26 @@ export type TableStampMap = StampMap<RowStampMap>;
 export type RowStampMap = StampMap<CellStamp<true>>;
 export type ValuesStampMap = StampMap<ValueStamp<true>>;
 
+export const stampClone = <Value>([value, time]: Stamp<
+  Value,
+  boolean
+>): Stamp<Value> => stampNew(value, time);
+
 const stampCloneWithHash = <Value>([value, time, hash]: Stamp<
   Value,
   true
 >): Stamp<Value, true> => [value, time, hash];
 
-export const stampCloneWithoutHash = <Value>([value, time]: Stamp<
-  Value,
-  boolean
->): Stamp<Value> => newStamp(value, time);
-
-export const newStamp = <Value>(
+export const stampNew = <Value>(
   value: Value,
   time: Time | undefined,
 ): Stamp<Value> => (time ? [value, time] : [value]);
+
+export const stampNewWithHash = <Value>(
+  value: Value,
+  time: Time,
+  hash: Hash,
+): Stamp<Value, true> => [value, time, hash];
 
 export const getStampHash = (stamp: Stamp<unknown, true>): Hash => stamp[2];
 
@@ -60,7 +66,7 @@ export const stampUpdate = (
 };
 
 export const stampNewObj = <Thing>(time = EMPTY_STRING): Stamp<IdObj<Thing>> =>
-  newStamp(objNew<Thing>(), time);
+  stampNew(objNew<Thing>(), time);
 
 export const stampNewMap = <Thing>(time = EMPTY_STRING): StampMap<Thing> => [
   mapNew<Id, Thing>(),
@@ -75,8 +81,8 @@ export const stampMapToObjWithHash = <From, To = From>(
 
 export const stampMapToObjWithoutHash = <From, To = From>(
   [map, time]: Stamp<IdMap<From>, boolean>,
-  mapper: (mapValue: From) => To = stampCloneWithoutHash as any,
-): Stamp<IdObj<To>> => newStamp(mapToObj(map, mapper), time);
+  mapper: (mapValue: From) => To = stampClone as any,
+): Stamp<IdObj<To>> => stampNew(mapToObj(map, mapper), time);
 
 export const stampValidate = (
   stamp: Stamp<any, true>,
