@@ -22,7 +22,7 @@ import type {
   PersisterListener,
   Persists as PersistsEnum,
 } from '../@types/persisters/index.d.ts';
-import {getLatestTime, newStamp, stampNewObj} from '../common/stamps.ts';
+import {getLatestTime, stampNew, stampNewObj} from '../common/stamps.ts';
 import {ifNotUndefined, isUndefined, promiseNew} from '../common/other.ts';
 import {objEnsure, objForEach, objIsEmpty} from '../common/obj.ts';
 import type {Content} from '../@types/store/index.d.ts';
@@ -133,7 +133,7 @@ export const createCustomSynchronizer = (
         objForEach(
           cellStamps2,
           ([cell2, cellTime2], cellId) =>
-            (rowStamp[0][cellId] = newStamp(cell2, cellTime2)),
+            (rowStamp[0][cellId] = stampNew(cell2, cellTime2)),
         );
         rowStamp[1] = getLatestTime(rowStamp[1], rowTime2);
       });

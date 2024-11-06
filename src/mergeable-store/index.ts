@@ -52,11 +52,11 @@ import {
   getLatestTime,
   getStampHash,
   hashIdAndHash,
-  newStamp,
   replaceTimeHash,
-  stampCloneWithoutHash,
+  stampClone,
   stampMapToObjWithHash,
   stampMapToObjWithoutHash,
+  stampNew,
   stampNewMap,
   stampNewObj,
   stampUpdate,
@@ -494,7 +494,7 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
         ),
       ),
     );
-    return newStamp(tablesObj, tablesTime);
+    return stampNew(tablesObj, tablesTime);
   };
 
   const getMergeableValueHashes = (): ValueHashes =>
@@ -506,10 +506,10 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
     const [, [valueStampMaps, valuesTime]] = contentStampMap;
     const values = mapToObj(
       valueStampMaps,
-      stampCloneWithoutHash,
+      stampClone,
       ([, , hash], valueId) => hash == otherValueHashes?.[valueId],
     );
-    return newStamp(values, valuesTime);
+    return stampNew(values, valuesTime);
   };
 
   const setMergeableContent = (
@@ -552,14 +552,14 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
                 collForEach(touchedRow, (cellId) => {
                   ifNotUndefined(
                     mapGet(cellStampMaps, cellId),
-                    ([cell, time]) => (rowObj[cellId] = newStamp(cell, time)),
+                    ([cell, time]) => (rowObj[cellId] = stampNew(cell, time)),
                   );
                 });
-                tableObj[rowId] = newStamp(rowObj, rowTime);
+                tableObj[rowId] = stampNew(rowObj, rowTime);
               },
             ),
           );
-          tablesObj[tableId] = newStamp(tableObj, tableTime);
+          tablesObj[tableId] = stampNew(tableObj, tableTime);
         },
       ),
     );
@@ -568,13 +568,13 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
     collForEach(touchedValues, (valueId) =>
       ifNotUndefined(
         mapGet(valueStampMaps, valueId),
-        ([value, time]) => (valuesObj[valueId] = newStamp(value, time)),
+        ([value, time]) => (valuesObj[valueId] = stampNew(value, time)),
       ),
     );
 
     return [
-      newStamp(tablesObj, tablesTime),
-      newStamp(valuesObj, valuesTime),
+      stampNew(tablesObj, tablesTime),
+      stampNew(valuesObj, valuesTime),
       1,
     ];
   };
