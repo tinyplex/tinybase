@@ -40,7 +40,8 @@ export class WsServerDurableObject<Env = unknown>
   extends DurableObject<Env>
   implements DurableObject<Env>
 {
-  #serverClient: {send: (payload: string) => void} = {send: () => {}};
+  // @ts-expect-error See blockConcurrencyWhile
+  #serverClientSend: (payload: string) => void;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -57,7 +58,7 @@ export class WsServerDurableObject<Env = unknown>
                   createPayload(toClientId, requestId, message, body),
                 ),
               (receive: Receive) =>
-                (this.#serverClient.send = (payload: string) =>
+                (this.#serverClientSend = (payload: string) =>
                   receivePayload(payload, receive)),
               () => {},
               1,
@@ -110,7 +111,7 @@ export class WsServerDurableObject<Env = unknown>
       const forwardedPayload = createRawPayload(fromClientId, remainder);
       if (toClientId == EMPTY_STRING) {
         if (fromClientId != SERVER_CLIENT_ID) {
-          this.#serverClient.send(forwardedPayload);
+          this.#serverClientSend(forwardedPayload);
         }
         arrayForEach(this.ctx.getWebSockets(), (otherClient) => {
           if (otherClient != fromClient) {
@@ -118,7 +119,7 @@ export class WsServerDurableObject<Env = unknown>
           }
         });
       } else if (toClientId == SERVER_CLIENT_ID) {
-        this.#serverClient.send(forwardedPayload);
+        this.#serverClientSend(forwardedPayload);
       } else {
         this.ctx.getWebSockets(toClientId)[0]?.send(forwardedPayload);
       }
