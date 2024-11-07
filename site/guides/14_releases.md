@@ -11,7 +11,7 @@ synchronizer-ws-server-durable-object module, and you use it by extending the
 WsServerDurableObject class. You can also use the getWsServerDurableObjectFetch
 function for conveniently binding your Cloudflare Worker to your Durable Object:
 
-```ts
+```ts yolo
 import {Id, IdAddedOrRemoved} from 'tinybase';
 import {
   getWsServerDurableObjectFetch,
