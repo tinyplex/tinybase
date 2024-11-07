@@ -59,6 +59,7 @@ import {
   stampNew,
   stampNewMap,
   stampNewObj,
+  stampNewWithHash,
   stampUpdate,
   stampValidate,
 } from '../common/stamps.ts';
@@ -534,47 +535,51 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
     return mergeableStore as MergeableStore;
   };
 
-  const getTransactionMergeableChanges = (): MergeableChanges => {
-    const [[tableStampMaps, tablesTime], [valueStampMaps, valuesTime]] =
-      contentStampMap;
+  const getTransactionMergeableChanges = (): MergeableChanges<true> => {
+    const [
+      [tableStampMaps, tablesTime, tablesHash],
+      [valueStampMaps, valuesTime, valuesHash],
+    ] = contentStampMap;
 
-    const tablesObj: TablesStamp[0] = {};
+    const tablesObj: TablesStamp<true>[0] = {};
     collForEach(touchedCells, (touchedTable, tableId) =>
       ifNotUndefined(
         mapGet(tableStampMaps, tableId),
-        ([rowStampMaps, tableTime]) => {
-          const tableObj: TableStamp[0] = {};
+        ([rowStampMaps, tableTime, tableHash]) => {
+          const tableObj: TableStamp<true>[0] = {};
           collForEach(touchedTable, (touchedRow, rowId) =>
             ifNotUndefined(
               mapGet(rowStampMaps, rowId),
-              ([cellStampMaps, rowTime]) => {
-                const rowObj: RowStamp[0] = {};
+              ([cellStampMaps, rowTime, rowHash]) => {
+                const rowObj: RowStamp<true>[0] = {};
                 collForEach(touchedRow, (cellId) => {
                   ifNotUndefined(
                     mapGet(cellStampMaps, cellId),
-                    ([cell, time]) => (rowObj[cellId] = stampNew(cell, time)),
+                    ([cell, time, hash]) =>
+                      (rowObj[cellId] = stampNewWithHash(cell, time, hash)),
                   );
                 });
-                tableObj[rowId] = stampNew(rowObj, rowTime);
+                tableObj[rowId] = stampNewWithHash(rowObj, rowTime, rowHash);
               },
             ),
           );
-          tablesObj[tableId] = stampNew(tableObj, tableTime);
+          tablesObj[tableId] = stampNewWithHash(tableObj, tableTime, tableHash);
         },
       ),
     );
 
-    const valuesObj: ValuesStamp[0] = {};
+    const valuesObj: ValuesStamp<true>[0] = {};
     collForEach(touchedValues, (valueId) =>
       ifNotUndefined(
         mapGet(valueStampMaps, valueId),
-        ([value, time]) => (valuesObj[valueId] = stampNew(value, time)),
+        ([value, time, hash]) =>
+          (valuesObj[valueId] = stampNewWithHash(value, time, hash)),
       ),
     );
 
     return [
-      stampNew(tablesObj, tablesTime),
-      stampNew(valuesObj, valuesTime),
+      stampNewWithHash(tablesObj, tablesTime, tablesHash),
+      stampNewWithHash(valuesObj, valuesTime, valuesHash),
       1,
     ];
   };

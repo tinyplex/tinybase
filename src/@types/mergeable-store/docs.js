@@ -791,7 +791,7 @@
    * The method is generally intended to be used internally within TinyBase
    * itself and the return type is assumed to be opaque to applications that use
    * it.
-   * @returns A MergeableChanges object representing the changes.
+   * @returns A MergeableChanges object representing the changes, with hashes.
    * @example
    * This example makes changes to the MergeableStore. At the end of the
    * transaction, detail about what changed is enumerated.

@@ -133,9 +133,12 @@ export type MergeableContent<Schemas extends OptionalSchemas> = [
 ];
 
 /// MergeableChanges
-export type MergeableChanges<Schemas extends OptionalSchemas> = [
-  mergeableTables: TablesStamp<Schemas[0]>,
-  mergeableValues: ValuesStamp<Schemas[1]>,
+export type MergeableChanges<
+  Schemas extends OptionalSchemas,
+  Hashed extends boolean = false,
+> = [
+  mergeableTables: TablesStamp<Schemas[0], Hashed>,
+  mergeableValues: ValuesStamp<Schemas[1], Hashed>,
   isChanges: 1,
 ];
 
@@ -200,7 +203,7 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   setDefaultContent(content: Content<Schemas>): MergeableStore<Schemas>;
 
   /// MergeableStore.getTransactionMergeableChanges
-  getTransactionMergeableChanges(): MergeableChanges<Schemas>;
+  getTransactionMergeableChanges(): MergeableChanges<Schemas, true>;
 
   /// MergeableStore.applyMergeableChanges
   applyMergeableChanges(

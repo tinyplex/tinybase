@@ -77,9 +77,9 @@ export type MergeableContent = [
 ];
 
 /// MergeableChanges
-export type MergeableChanges = [
-  mergeableTables: TablesStamp,
-  mergeableValues: ValuesStamp,
+export type MergeableChanges<Hashed extends boolean = false> = [
+  mergeableTables: TablesStamp<Hashed>,
+  mergeableValues: ValuesStamp<Hashed>,
   isChanges: 1,
 ];
 
@@ -127,7 +127,7 @@ export interface MergeableStore extends Store {
   setDefaultContent(content: Content): MergeableStore;
 
   /// MergeableStore.getTransactionMergeableChanges
-  getTransactionMergeableChanges(): MergeableChanges;
+  getTransactionMergeableChanges(): MergeableChanges<true>;
 
   /// MergeableStore.applyMergeableChanges
   applyMergeableChanges(
