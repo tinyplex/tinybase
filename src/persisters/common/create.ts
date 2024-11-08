@@ -70,7 +70,7 @@ const getStoreFunctions = (
   | [
       isMergeableStore: 1,
       getContent: () => MergeableContent,
-      getChanges: () => MergeableChanges,
+      getChanges: () => MergeableChanges<boolean>,
       hasChanges: (changes: MergeableChanges) => boolean,
       setDefaultContent: (content: Content) => MergeableStore,
     ] =>
