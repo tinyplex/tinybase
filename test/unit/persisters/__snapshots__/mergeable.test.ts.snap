@@ -3233,15 +3233,24 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delCell change
               "c2": [
                 undefined,
                 "Nn1JUI7----7JQY8",
+                4101631253,
               ],
             },
+            "",
+            3073722700,
           ],
         },
+        "",
+        3510068381,
       ],
     },
+    "",
+    2164838757,
   ],
   [
     {},
+    "",
+    3777115091,
   ],
   1,
 ]
@@ -3300,14 +3309,19 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: delValue chang
 [
   [
     {},
+    "",
+    2164838757,
   ],
   [
     {
       "v2": [
         undefined,
         "Nn1JUJg----7JQY8",
+        1584072660,
       ],
     },
+    "",
+    2277668819,
   ],
   1,
 ]
@@ -3407,15 +3421,24 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: setTables chan
               "c2": [
                 2,
                 "Nn1JUF----17JQY8",
+                1804136345,
               ],
             },
+            "",
+            3439185877,
           ],
         },
+        "",
+        855391547,
       ],
     },
+    "",
+    262414121,
   ],
   [
     {},
+    "",
+    3877632732,
   ],
   1,
 ]
@@ -3474,14 +3497,19 @@ exports[`Persists to/from mockMergeableChangesListener autoSaves: setValues chan
 [
   [
     {},
+    "",
+    262414121,
   ],
   [
     {
       "v2": [
         2,
         "Nn1JUGZ----7JQY8",
+        1485971741,
       ],
     },
+    "",
+    3777115091,
   ],
   1,
 ]
@@ -4027,15 +4055,24 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delCell change
               "c2": [
                 undefined,
                 "Nn1JUI7----7JQY8",
+                4101631253,
               ],
             },
+            "",
+            3073722700,
           ],
         },
+        "",
+        3510068381,
       ],
     },
+    "",
+    2164838757,
   ],
   [
     {},
+    "",
+    3777115091,
   ],
   1,
 ]
@@ -4094,14 +4131,19 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: delValue chang
 [
   [
     {},
+    "",
+    2164838757,
   ],
   [
     {
       "v2": [
         undefined,
         "Nn1JUJg----7JQY8",
+        1584072660,
       ],
     },
+    "",
+    2277668819,
   ],
   1,
 ]
@@ -4201,15 +4243,24 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: setTables chan
               "c2": [
                 2,
                 "Nn1JUF----17JQY8",
+                1804136345,
               ],
             },
+            "",
+            3439185877,
           ],
         },
+        "",
+        855391547,
       ],
     },
+    "",
+    262414121,
   ],
   [
     {},
+    "",
+    3877632732,
   ],
   1,
 ]
@@ -4268,14 +4319,19 @@ exports[`Persists to/from mockMergeableContentListener autoSaves: setValues chan
 [
   [
     {},
+    "",
+    262414121,
   ],
   [
     {
       "v2": [
         2,
         "Nn1JUGZ----7JQY8",
+        1485971741,
       ],
     },
+    "",
+    3777115091,
   ],
   1,
 ]
@@ -4821,15 +4877,24 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delCell chan
               "c2": [
                 undefined,
                 "Nn1JUI7----7JQY8",
+                4101631253,
               ],
             },
+            "",
+            3073722700,
           ],
         },
+        "",
+        3510068381,
       ],
     },
+    "",
+    2164838757,
   ],
   [
     {},
+    "",
+    3777115091,
   ],
   1,
 ]
@@ -4888,14 +4953,19 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: delValue cha
 [
   [
     {},
+    "",
+    2164838757,
   ],
   [
     {
       "v2": [
         undefined,
         "Nn1JUJg----7JQY8",
+        1584072660,
       ],
     },
+    "",
+    2277668819,
   ],
   1,
 ]
@@ -4995,15 +5065,24 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: setTables ch
               "c2": [
                 2,
                 "Nn1JUF----17JQY8",
+                1804136345,
               ],
             },
+            "",
+            3439185877,
           ],
         },
+        "",
+        855391547,
       ],
     },
+    "",
+    262414121,
   ],
   [
     {},
+    "",
+    3877632732,
   ],
   1,
 ]
@@ -5062,14 +5141,19 @@ exports[`Persists to/from mockMergeableNoContentListener autoSaves: setValues ch
 [
   [
     {},
+    "",
+    262414121,
   ],
   [
     {
       "v2": [
         2,
         "Nn1JUGZ----7JQY8",
+        1485971741,
       ],
     },
+    "",
+    3777115091,
   ],
   1,
 ]
@@ -8744,8 +8828,8 @@ exports[`Persists to/from sqliteWasm saves 2`] = `
 
 exports[`Supported, MergeableStore Changes in setPersisted 1`] = `
 [
-  "[[{"t1":[{"r1":[{"c1":[1,"Nn1JUF-----7JQY8"]}]}]}],[{}],1]",
-  "[[{}],[{"v1":[1,"Nn1JUF----07JQY8"]}],1]",
+  "[[{"t1":[{"r1":[{"c1":[1,"Nn1JUF-----7JQY8",1003668370]},"",550994372]},"",1072852846]},"",1771939739],[{},"",0],1]",
+  "[[{},"",1771939739],[{"v1":[1,"Nn1JUF----07JQY8",1130939691]},"",3877632732],1]",
 ]
 `;
 
