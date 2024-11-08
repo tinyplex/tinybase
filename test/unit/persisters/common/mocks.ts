@@ -139,6 +139,7 @@ let customPersisterChanges: Changes | MergeableChanges = [{}, {}, 1];
 const getMockedCustom = (
   write: (location: string, rawContent: any) => Promise<void>,
   supportsMergeableStore = false,
+  isSynchronizer: 0 | 1 = 0,
 ): Persistable => ({
   autoLoadPause: 100,
   getLocation: async (): Promise<string> => '',
@@ -162,6 +163,7 @@ const getMockedCustom = (
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       {getFoo: () => 'foo'},
+      isSynchronizer,
     );
   },
   get: async (): Promise<Content | void> =>
