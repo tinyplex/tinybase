@@ -203,7 +203,9 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   setDefaultContent(content: Content<Schemas>): MergeableStore<Schemas>;
 
   /// MergeableStore.getTransactionMergeableChanges
-  getTransactionMergeableChanges(): MergeableChanges<Schemas, true>;
+  getTransactionMergeableChanges(
+    withHashes?: boolean,
+  ): MergeableChanges<Schemas, true>;
 
   /// MergeableStore.applyMergeableChanges
   applyMergeableChanges(

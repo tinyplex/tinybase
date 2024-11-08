@@ -179,6 +179,7 @@ export const createTabularPersister = <
     onIgnoredError,
     persist,
     {[getThing]: () => thing, destroy},
+    0,
     thing,
   );
 
