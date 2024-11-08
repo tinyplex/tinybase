@@ -255,6 +255,7 @@ export const createCustomSynchronizer = (
     onIgnoredError,
     2, // MergeableStoreOnly
     {startSync, stopSync, destroy, getSynchronizerStats, ...extra},
+    1,
   ) as Synchronizer;
 
   registerReceive(

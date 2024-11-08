@@ -59,6 +59,7 @@ const scheduleActions: Map<any, Action[]> = mapNew();
 const getStoreFunctions = (
   persist: PersistsEnum | any = PersistsValues.StoreOnly,
   store: PersistedStore<typeof persist>,
+  isSynchronizer: 0 | 1,
 ):
   | [
       isMergeableStore: 0,
@@ -78,7 +79,10 @@ const getStoreFunctions = (
     ? [
         1,
         (store as MergeableStore).getMergeableContent,
-        (store as MergeableStore).getTransactionMergeableChanges,
+        () =>
+          (store as MergeableStore).getTransactionMergeableChanges(
+            !isSynchronizer,
+          ),
         ([[changedTables], [changedValues]]: MergeableChanges) =>
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
         (store as MergeableStore).setDefaultContent,
@@ -112,6 +116,7 @@ export const createCustomPersister = <
   persist?: Persist,
   // undocumented:
   extra: {[methodName: string]: (...params: any[]) => any} = {},
+  isSynchronizer: 0 | 1 = 0,
   scheduleId = [],
 ): Persister<Persist> => {
   let status: StatusValues = StatusValues.Idle;
@@ -132,7 +137,7 @@ export const createCustomPersister = <
     getChanges,
     hasChanges,
     setDefaultContent,
-  ] = getStoreFunctions(persist, store);
+  ] = getStoreFunctions(persist, store, isSynchronizer);
 
   const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
     () => persister,

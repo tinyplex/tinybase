@@ -127,7 +127,7 @@ export interface MergeableStore extends Store {
   setDefaultContent(content: Content): MergeableStore;
 
   /// MergeableStore.getTransactionMergeableChanges
-  getTransactionMergeableChanges(): MergeableChanges<true>;
+  getTransactionMergeableChanges(withHashes?: boolean): MergeableChanges<true>;
 
   /// MergeableStore.applyMergeableChanges
   applyMergeableChanges(

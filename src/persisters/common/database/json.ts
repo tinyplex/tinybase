@@ -89,6 +89,7 @@ export const createJsonPersister = <
     onIgnoredError,
     persist,
     {[getThing]: () => thing, destroy},
+    0,
     thing,
   );
 
