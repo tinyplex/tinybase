@@ -4,6 +4,7 @@ const promise = Promise;
 
 export const GLOBAL = globalThis;
 export const WINDOW = GLOBAL.window;
+export const THOUSAND = 1000;
 
 export const startInterval = (
   callback: () => void,
@@ -13,9 +14,13 @@ export const startInterval = (
   if (immediate) {
     callback();
   }
-  return setInterval(callback, sec * 1000);
+  return setInterval(callback, sec * THOUSAND);
 };
 export const stopInterval = clearInterval;
+
+export const startTimeout = (callback: () => void, sec: number = 0) =>
+  setTimeout(callback, sec * THOUSAND);
+export const stopTimeout = clearTimeout;
 
 export const math = Math;
 export const mathMax = math.max;
