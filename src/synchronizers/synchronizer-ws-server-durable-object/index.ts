@@ -8,12 +8,11 @@ import {
   ifPayloadValid,
   receivePayload,
 } from '../common.ts';
-import {ifNotUndefined, size} from '../../common/other.ts';
+import {ifNotUndefined, size, startTimeout} from '../../common/other.ts';
 import {DurableObject} from 'cloudflare:workers';
 import type {IdAddedOrRemoved} from '../../@types/store/index.d.ts';
 import type {Receive} from '../../@types/synchronizers/index.d.ts';
 import {createCustomSynchronizer} from '../index.ts';
-import {getUniqueId} from '../../common/index.ts';
 import {objValues} from '../../common/obj.ts';
 
 const PATH_REGEX = /\/([^?]*)/;
@@ -65,7 +64,8 @@ export class WsServerDurableObject<Env = unknown>
             );
             await persister.load();
             await persister.startAutoSave();
-            await synchronizer.startSync();
+            // startSync needs other events to arrive so execute after block.
+            startTimeout(synchronizer.startSync);
           },
         ),
     );
@@ -83,7 +83,7 @@ export class WsServerDurableObject<Env = unknown>
         }
         this.ctx.acceptWebSocket(client, [clientId]);
         this.onClientId(pathId, clientId, 1);
-        client.send(createPayload(clientId, getUniqueId(), 1, EMPTY_STRING));
+        client.send(createPayload(clientId, null, 1, EMPTY_STRING));
         return createResponse(101, webSocket);
       },
       createUpgradeRequiredResponse,
