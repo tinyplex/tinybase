@@ -18,6 +18,7 @@ const KEY = 'tinybase';
 export const createDurableObjectStoragePersister = ((
   store: MergeableStore,
   storage: DurableObjectStorage,
+  storagePrefix: string,
   onIgnoredError?: (error: any) => void,
 ): DurableObjectStoragePersister => {
   const getPersisted = async (): Promise<

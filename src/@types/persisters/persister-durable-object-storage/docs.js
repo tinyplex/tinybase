@@ -72,6 +72,9 @@
  * persist it to.
  * @param store The MergeableStore to persist.
  * @param storage The Durable Object storage to persist the Store to.
+ * @param storagePrefix An optional prefix to use on the keys in storage, which
+ * is useful if you want to ensure the Persister will not affect unrelated
+ * Durable Object storage. Defaults to an empty string.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment.
