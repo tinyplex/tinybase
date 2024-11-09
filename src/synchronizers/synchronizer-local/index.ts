@@ -4,13 +4,13 @@ import type {
   Receive,
   Send,
 } from '../../@types/synchronizers/index.d.ts';
+import {isUndefined, startTimeout} from '../../common/other.ts';
 import type {IdOrNull} from '../../@types/common/index.d.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import {collDel} from '../../common/coll.ts';
 import {createCustomSynchronizer} from '../index.ts';
 import type {createLocalSynchronizer as createLocalSynchronizerDecl} from '../../@types/synchronizers/synchronizer-local/index.d.ts';
 import {getUniqueId} from '../../common/index.ts';
-import {isUndefined} from '../../common/other.ts';
 
 const clients: IdMap<Receive> = mapNew();
 
@@ -27,19 +27,16 @@ export const createLocalSynchronizer = ((
     requestId: IdOrNull,
     message: Message,
     body: any,
-  ): void => {
-    setTimeout(
-      () =>
-        isUndefined(toClientId)
-          ? mapForEach(clients, (otherClientId, receive) =>
-              otherClientId != clientId
-                ? receive(clientId, requestId, message, body)
-                : 0,
-            )
-          : mapGet(clients, toClientId)?.(clientId, requestId, message, body),
-      0,
+  ): NodeJS.Timeout =>
+    startTimeout(() =>
+      isUndefined(toClientId)
+        ? mapForEach(clients, (otherClientId, receive) =>
+            otherClientId != clientId
+              ? receive(clientId, requestId, message, body)
+              : 0,
+          )
+        : mapGet(clients, toClientId)?.(clientId, requestId, message, body),
     );
-  };
 
   const registerReceive = (receive: Receive): void => {
     mapSet(clients, clientId, receive);
