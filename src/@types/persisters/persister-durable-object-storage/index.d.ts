@@ -14,5 +14,6 @@ export interface DurableObjectStoragePersister
 export function createDurableObjectStoragePersister(
   store: MergeableStore,
   durableObjectStorage: DurableObjectStorage,
+  storagePrefix?: string,
   onIgnoredError?: (error: any) => void,
 ): DurableObjectStoragePersister;

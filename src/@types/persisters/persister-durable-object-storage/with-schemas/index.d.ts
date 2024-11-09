@@ -17,5 +17,6 @@ export function createDurableObjectStoragePersister<
 >(
   store: MergeableStore<Schemas>,
   durableObjectStorage: DurableObjectStorage,
+  storagePrefix?: string,
   onIgnoredError?: (error: any) => void,
 ): DurableObjectStoragePersister<Schemas>;
