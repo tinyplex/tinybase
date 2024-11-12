@@ -64,7 +64,7 @@ export class WsServerDurableObject<Env = unknown>
             );
             await persister.load();
             await persister.startAutoSave();
-            // startSync needs other events to arrive so execute after block.
+            // startSync needs other events to arrive, so execute after block.
             startTimeout(synchronizer.startSync);
           },
         ),
