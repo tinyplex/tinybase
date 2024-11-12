@@ -1,3 +1,4 @@
+import {ERROR, MESSAGE, OPEN, UTF8} from '../../common/strings.ts';
 import type {
   Message,
   Receive,
@@ -5,12 +6,12 @@ import type {
 } from '../../@types/synchronizers/index.d.ts';
 import type {
   WebSocketTypes,
+  WsSynchronizer,
   createWsSynchronizer as createWsSynchronizerDecl,
 } from '../../@types/synchronizers/synchronizer-ws-client/index.d.ts';
 import {createPayload, receivePayload} from '../common.ts';
 import type {IdOrNull} from '../../@types/common/index.d.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
-import {UTF8} from '../../common/strings.ts';
 import {createCustomSynchronizer} from '../index.ts';
 import {promiseNew} from '../../common/other.ts';
 
@@ -24,11 +25,16 @@ export const createWsSynchronizer = (async <
   onReceive?: Receive,
   onIgnoredError?: (error: any) => void,
 ) => {
-  const addEventListener = (event: string, handler: (...args: any[]) => void) =>
-    (webSocket.addEventListener as any)(event, handler);
+  const addEventListener = (
+    event: keyof WebSocketEventMap,
+    handler: (...args: any[]) => void,
+  ) => {
+    webSocket.addEventListener(event, handler);
+    return () => webSocket.removeEventListener(event, handler);
+  };
 
-  const registerReceive = (receive: Receive): void =>
-    addEventListener('message', ({data}) =>
+  const registerReceive = (receive: Receive) =>
+    addEventListener(MESSAGE, ({data}) =>
       receivePayload(data.toString(UTF8), receive),
     );
 
@@ -51,14 +57,22 @@ export const createWsSynchronizer = (async <
     onReceive,
     onIgnoredError,
     {getWebSocket: () => webSocket},
-  );
+  ) as WsSynchronizer<any>;
 
-  return promiseNew((resolve, reject) => {
+  return promiseNew((resolve) => {
     if (webSocket.readyState != webSocket.OPEN) {
-      addEventListener('error', reject);
-      addEventListener('open', () => resolve(synchronizer as any));
+      const onAttempt = (error?: any) => {
+        if (error) {
+          onIgnoredError?.(error);
+        }
+        removeOpenListener();
+        removeErrorListener();
+        resolve(synchronizer);
+      };
+      const removeOpenListener = addEventListener(OPEN, () => onAttempt());
+      const removeErrorListener = addEventListener(ERROR, onAttempt);
     } else {
-      resolve(synchronizer as any);
+      resolve(synchronizer);
     }
   });
 }) as typeof createWsSynchronizerDecl;
