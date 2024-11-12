@@ -1,4 +1,4 @@
-import {EMPTY_STRING, UTF8, strMatch} from '../../common/strings.ts';
+import {EMPTY_STRING, MESSAGE, UTF8, strMatch} from '../../common/strings.ts';
 import {
   IdMap2,
   mapEnsure,
@@ -29,7 +29,7 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
         const clients = mapEnsure(clientsByPath, pathId, mapNew<Id, WebSocket>);
         mapSet(clients, clientId, client);
 
-        client.on('message', (data) =>
+        client.on(MESSAGE, (data) =>
           ifPayloadValid(data.toString(UTF8), (toClientId, remainder) => {
             const forwardedPayload = createRawPayload(clientId, remainder);
             if (toClientId === EMPTY_STRING) {
