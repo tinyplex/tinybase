@@ -62,6 +62,10 @@ export const CHECKPOINT = 'Checkpoint';
 export const CURRENT_TARGET = 'currentTarget';
 export const _VALUE = 'value';
 
+export const OPEN = 'open';
+export const MESSAGE = 'message';
+export const ERROR = 'error';
+
 export const T = 't';
 export const V = 'v';
 

@@ -5,7 +5,13 @@ import type {
   WsServerStats,
   createWsServer as createWsServerDecl,
 } from '../../@types/synchronizers/synchronizer-ws-server/index.d.ts';
-import {EMPTY_STRING, UTF8, strMatch} from '../../common/strings.ts';
+import {
+  EMPTY_STRING,
+  ERROR,
+  MESSAGE,
+  UTF8,
+  strMatch,
+} from '../../common/strings.ts';
 import type {Id, IdOrNull, Ids} from '../../@types/common/index.d.ts';
 import {
   IdMap,
@@ -192,7 +198,7 @@ export const createWsServer = (<
         mapSet(clients, clientId, client);
         callListeners(clientIdListeners, [pathId], clientId, 1);
 
-        client.on('message', (data) => {
+        client.on(MESSAGE, (data) => {
           const payload = data.toString(UTF8);
           if (serverClient[Sc.State] == ScState.Ready) {
             messageHandler(payload);
@@ -219,14 +225,14 @@ export const createWsServer = (<
         });
 
         if (onIgnoredError) {
-          client.on('error', onIgnoredError);
+          client.on(ERROR, onIgnoredError);
         }
       }),
     ),
   );
 
   if (onIgnoredError) {
-    webSocketServer.on('error', onIgnoredError);
+    webSocketServer.on(ERROR, onIgnoredError);
   }
 
   const getWebSocketServer = () => webSocketServer;
