@@ -36,14 +36,13 @@
    * import {createMergeableStore} from 'tinybase';
    *
    * // Within the createPersister method of a WsServerDurableObject instance.
-   * createPersister(): {
-   *   const store = createMergeableStore().setTables();
-   *   const persister = createDurableObjectStoragePersister(
-   *     store,
-   *     this.ctx.storage,
-   *   );
-   *   return persister;
-   * }
+   * const store = createMergeableStore().setTables();
+   * const persister = createDurableObjectStoragePersister(
+   *   store,
+   *   this.ctx.storage,
+   * );
+   *
+   * return persister;
    * ```
    * @category Creation
    * @since v5.4.0
