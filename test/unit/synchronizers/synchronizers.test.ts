@@ -75,8 +75,7 @@ const mockCustomSynchronizer: Synchronizable<
       store,
       (toClientId, requestId, messageType, messageBody): void => {
         setTimeout(() => {
-          const requestKey =
-            requestId == null ? 'push ' + messages.size : requestId;
+          const requestKey = 'push ' + messages.size;
           if (!messages.has(requestKey)) {
             messages.set(requestKey, []);
           }
