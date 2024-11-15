@@ -45,12 +45,14 @@ export type PersistedContent<Persist extends Persists = Persists.StoreOnly> =
       : Content;
 
 /// PersistedChanges
-export type PersistedChanges<Persist extends Persists = Persists.StoreOnly> =
-  Persist extends Persists.StoreOrMergeableStore
-    ? Changes | MergeableChanges
-    : Persist extends Persists.MergeableStoreOnly
-      ? MergeableChanges
-      : Changes;
+export type PersistedChanges<
+  Persist extends Persists = Persists.StoreOnly,
+  Hashed extends boolean = false,
+> = Persist extends Persists.StoreOrMergeableStore
+  ? Changes | MergeableChanges<Hashed>
+  : Persist extends Persists.MergeableStoreOnly
+    ? MergeableChanges<Hashed>
+    : Changes;
 
 /// PersisterListener
 export type PersisterListener<Persist extends Persists = Persists.StoreOnly> = (

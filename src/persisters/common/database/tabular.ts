@@ -150,7 +150,7 @@ export const createTabularPersister = <
 
   const setPersisted = async (
     getContent: () => PersistedContent<Persist>,
-    changes?: PersistedChanges<Persist>,
+    changes?: PersistedChanges<Persist, true>,
   ): Promise<void> =>
     await transaction(async () => {
       await refreshSchema();
