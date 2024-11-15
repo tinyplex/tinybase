@@ -71,7 +71,9 @@ const getStoreFunctions = (
   | [
       isMergeableStore: 1,
       getContent: () => MergeableContent,
-      getChanges: () => MergeableChanges<boolean>,
+      getChanges: () => MergeableChanges<
+        typeof isSynchronizer extends 1 ? false : true
+      >,
       hasChanges: (changes: MergeableChanges) => boolean,
       setDefaultContent: (content: Content) => MergeableStore,
     ] =>
@@ -101,12 +103,16 @@ const getStoreFunctions = (
 export const createCustomPersister = <
   ListenerHandle,
   Persist extends PersistsEnum = PersistsEnum.StoreOnly,
+  IsSynchronizer extends 0 | 1 = 0,
 >(
   store: PersistedStore<Persist>,
   getPersisted: () => Promise<PersistedContent<Persist> | undefined>,
   setPersisted: (
     getContent: () => PersistedContent<Persist>,
-    changes?: PersistedChanges<Persist>,
+    changes?: PersistedChanges<
+      Persist,
+      IsSynchronizer extends 1 ? false : true
+    >,
   ) => Promise<void>,
   addPersisterListener: (
     listener: PersisterListener<Persist>,
@@ -116,7 +122,7 @@ export const createCustomPersister = <
   persist?: Persist,
   // undocumented:
   extra: {[methodName: string]: (...params: any[]) => any} = {},
-  isSynchronizer: 0 | 1 = 0,
+  isSynchronizer: IsSynchronizer = 0 as IsSynchronizer,
   scheduleId = [],
 ): Persister<Persist> => {
   let status: StatusValues = StatusValues.Idle;
@@ -257,7 +263,10 @@ export const createCustomPersister = <
   const isAutoLoading = () => !isUndefined(autoLoadHandle);
 
   const save = async (
-    changes?: PersistedChanges<Persist>,
+    changes?: PersistedChanges<
+      Persist,
+      IsSynchronizer extends 1 ? false : true
+    >,
   ): Promise<Persister<Persist>> => {
     /*! istanbul ignore else */
     if (status != StatusValues.Loading) {

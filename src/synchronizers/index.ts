@@ -233,7 +233,7 @@ export const createCustomSynchronizer = (
 
   const setPersisted = async (
     _getContent: () => MergeableContent,
-    changes?: MergeableChanges,
+    changes?: MergeableChanges<false>,
   ): Promise<void> =>
     changes
       ? sendImpl(null, getTransactionId(), MessageValues.ContentDiff, changes)
