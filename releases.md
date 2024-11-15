@@ -1,6 +1,6 @@
 <p>This is a reverse chronological list of the major <a href="https://beta.tinybase.org/">TinyBase</a> releases, with highlighted features.</p><h1 id="v5-4">v5.4</h1><p>This release contains an initial implementation of a synchronization server that runs on Cloudflare as a Durable Object. It&#x27;s in the new <a href="https://beta.tinybase.org/api/synchronizer-ws-server-durable-object/"><code>synchronizer-ws-server-durable-object</code></a> module, and you use it by extending the <a href="https://beta.tinybase.org/api/synchronizer-ws-server-durable-object/classes/creation/wsserverdurableobject/"><code>WsServerDurableObject</code></a> class. You can also use the <a href="https://beta.tinybase.org/api/synchronizer-ws-server-durable-object/functions/creation/getwsserverdurableobjectfetch/"><code>getWsServerDurableObjectFetch</code></a> function for conveniently binding your Cloudflare Worker to your Durable Object:</p>
 
-```ts
+```ts yolo
 import {Id, IdAddedOrRemoved} from 'tinybase';
 import {
   getWsServerDurableObjectFetch,
