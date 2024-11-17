@@ -230,7 +230,7 @@ export const createCustomPersister = <
   const startAutoLoad = async (
     initialContent?: Content,
   ): Promise<Persister<Persist>> => {
-    await stopAutoLoad().load(initialContent);
+    stopAutoLoad();
     try {
       autoLoadHandle = await addPersisterListener(async (content, changes) => {
         if (changes || content) {
@@ -245,6 +245,7 @@ export const createCustomPersister = <
           await load();
         }
       });
+      await load(initialContent);
     } catch (error) {
       /*! istanbul ignore next */
       onIgnoredError?.(error);
@@ -286,13 +287,14 @@ export const createCustomPersister = <
   };
 
   const startAutoSave = async (): Promise<Persister<Persist>> => {
-    await stopAutoSave().save();
+    stopAutoSave();
     autoSaveListenerId = store.addDidFinishTransactionListener(() => {
       const changes = getChanges() as any;
       if (hasChanges(changes)) {
         save(changes);
       }
     });
+    await save();
     return persister;
   };
 
