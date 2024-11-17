@@ -56,13 +56,13 @@ export const getLatestTime = (
 
 export const stampUpdate = (
   stamp: Stamp<unknown, true>,
-  hash: Hash,
   time: Time,
+  hash: Hash,
 ) => {
-  stamp[2] = hash >>> 0;
   if (time > stamp[1]) {
     stamp[1] = time;
   }
+  stamp[2] = hash >>> 0;
 };
 
 export const stampNewObj = <Thing>(time = EMPTY_STRING): Stamp<IdObj<Thing>> =>

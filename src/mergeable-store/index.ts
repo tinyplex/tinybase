@@ -223,7 +223,7 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
         tableHash ^= isContent
           ? 0
           : replaceTimeHash(oldTableTime, incomingTableTime);
-        stampUpdate(tableStampMap, tableHash, incomingTableTime);
+        stampUpdate(tableStampMap, incomingTableTime, tableHash);
 
         tablesHash ^= isContent
           ? 0
@@ -236,7 +236,7 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
     tablesHash ^= isContent
       ? 0
       : replaceTimeHash(oldTablesTime, incomingTablesTime);
-    stampUpdate(tablesStampMap, tablesHash, incomingTablesTime);
+    stampUpdate(tablesStampMap, incomingTablesTime, tablesHash);
 
     const [valuesTime] = mergeCellsOrValues(
       values,
@@ -280,10 +280,10 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
         if (!oldThingTime || thingTime! > oldThingTime) {
           stampUpdate(
             thingStampMap,
+            thingTime!,
             isContent
               ? incomingThingHash
               : getHash(jsonStringWithMap(thing ?? null) + ':' + thingTime),
-            thingTime!,
           );
           thingStampMap[0] = thing;
           thingsChanges[thingId] = thing;
@@ -299,7 +299,7 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
     thingsHash ^= isContent
       ? 0
       : replaceTimeHash(oldThingsTime, incomingThingsTime);
-    stampUpdate(thingsStampMap, thingsHash, incomingThingsTime);
+    stampUpdate(thingsStampMap, incomingThingsTime, thingsHash);
 
     return [thingsTime, oldThingsHash, thingsStampMap[2]];
   };
