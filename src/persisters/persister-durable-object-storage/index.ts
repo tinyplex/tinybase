@@ -28,6 +28,8 @@ import {jsonStringWithUndefined} from '../../common/json.ts';
 type StorageKeyType = typeof T | typeof V;
 type StoredValue = Stamp<0 | Cell | Value | undefined, true>;
 
+const stampNewObjectWithHash = () => stampNewWithHash({}, EMPTY_STRING, 0);
+
 export const createDurableObjectStoragePersister = ((
   store: MergeableStore,
   storage: DurableObjectStorage,
@@ -54,8 +56,8 @@ export const createDurableObjectStoragePersister = ((
   const getPersisted = async (): Promise<
     PersistedContent<PersistsType.MergeableStoreOnly>
   > => {
-    const tables: TablesStamp<true> = stampNewWithHash();
-    const values: ValuesStamp<true> = stampNewWithHash();
+    const tables: TablesStamp<true> = stampNewObjectWithHash();
+    const values: ValuesStamp<true> = stampNewObjectWithHash();
     (await storage.list<StoredValue>({prefix: storagePrefix})).forEach(
       async ([zeroOrCellOrValue, time, hash], key) =>
         ifNotUndefined(deconstructKey(key), ([type, ...ids]) =>
@@ -66,7 +68,7 @@ export const createDurableObjectStoragePersister = ((
                   const table = objEnsure(
                     tables[0],
                     tableId,
-                    stampNewWithHash,
+                    stampNewObjectWithHash,
                   ) as TableStamp<true>;
                   ifNotUndefined(
                     ids[1],
@@ -74,7 +76,7 @@ export const createDurableObjectStoragePersister = ((
                       const row = objEnsure(
                         table[0],
                         rowId,
-                        stampNewWithHash,
+                        stampNewObjectWithHash,
                       ) as RowStamp<true>;
                       ifNotUndefined(
                         ids[2],
