@@ -82,7 +82,7 @@ export class WsServerDurableObject<Env = unknown>
         }
         this.ctx.acceptWebSocket(client, [clientId, pathId]);
         this.onClientId(pathId, clientId, 1);
-        client.send(createPayload(clientId, null, 1, EMPTY_STRING));
+        client.send(createPayload(SERVER_CLIENT_ID, null, 1, EMPTY_STRING));
         return createResponse(101, webSocket);
       },
       createUpgradeRequiredResponse,
