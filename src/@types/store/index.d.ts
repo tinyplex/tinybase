@@ -785,7 +785,7 @@ export interface Store {
   getListenerStats(): StoreListenerStats;
 
   /// Store.isMergeable
-  isMergeable: () => boolean;
+  isMergeable(): boolean;
   //
 }
 

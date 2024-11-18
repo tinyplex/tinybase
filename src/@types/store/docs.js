@@ -7111,9 +7111,10 @@
    */
   /// Store.getListenerStats
   /**
-   * The isMergeable methods lets you know if the Store is mergeable.
+   * The isMergeable method lets you know if the Store is mergeable.
    *
-   * This will always be false for a Store, and true for a MergeableStore.
+   * This will always return false for a Store, and true for a MergeableStore.
+   * @returns Whether the Store is mergeable.
    * @category Information
    * @since v5.0.0
    */

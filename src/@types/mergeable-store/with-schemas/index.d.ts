@@ -216,7 +216,7 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   merge(mergeableStore: MergeableStore<Schemas>): MergeableStore<Schemas>;
 
   /// Store.isMergeable
-  isMergeable: () => boolean;
+  isMergeable(): boolean;
 
   /// Store.setTablesSchema
   setTablesSchema<TS extends TablesSchema>(
