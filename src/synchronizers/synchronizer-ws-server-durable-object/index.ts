@@ -111,7 +111,7 @@ export class WsServerDurableObject<Env = unknown>
       this.onMessage(fromClientId, toClientId, remainder);
       if (toClientId == EMPTY_STRING) {
         if (fromClientId != SERVER_CLIENT_ID) {
-          this.#serverClientSend(forwardedPayload);
+          this.#serverClientSend?.(forwardedPayload);
         }
         arrayForEach(this.#getClients(), (otherClient) => {
           if (otherClient != fromClient) {
@@ -119,7 +119,7 @@ export class WsServerDurableObject<Env = unknown>
           }
         });
       } else if (toClientId == SERVER_CLIENT_ID) {
-        this.#serverClientSend(forwardedPayload);
+        this.#serverClientSend?.(forwardedPayload);
       } else if (toClientId != fromClientId) {
         this.#getClients(toClientId)[0]?.send(forwardedPayload);
       }
