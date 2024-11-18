@@ -2097,12 +2097,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already 
 exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
 [
   {
-    "receives": 5,
-    "sends": 6,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 6,
-    "sends": 5,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -2143,12 +2143,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already 
 exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 11,
+    "sends": 12,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 12,
+    "sends": 11,
   },
 ]
 `;
@@ -2194,12 +2194,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already 
 exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present different cell: stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 11,
+    "sends": 12,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 12,
+    "sends": 11,
   },
 ]
 `;
@@ -2251,12 +2251,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already 
 exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present different row: stats 1`] = `
 [
   {
-    "receives": 6,
-    "sends": 7,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 7,
-    "sends": 6,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -2314,12 +2314,12 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already 
 exports[`Syncs to/from BroadcastChannelSynchronizer Bidirectional, data already present different table: stats 1`] = `
 [
   {
-    "receives": 4,
-    "sends": 5,
+    "receives": 5,
+    "sends": 6,
   },
   {
-    "receives": 5,
-    "sends": 4,
+    "receives": 6,
+    "sends": 5,
   },
 ]
 `;
@@ -2403,8 +2403,8 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All but fir
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All but first empty: stats 1`] = `
 {
-  "receives": 189,
-  "sends": 21,
+  "receives": 279,
+  "sends": 111,
 }
 `;
 
@@ -2487,8 +2487,8 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All but las
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All but last empty: stats 1`] = `
 {
-  "receives": 189,
-  "sends": 21,
+  "receives": 279,
+  "sends": 111,
 }
 `;
 
@@ -2509,8 +2509,8 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All empty 1
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All empty: stats 1`] = `
 {
-  "receives": 180,
-  "sends": 20,
+  "receives": 270,
+  "sends": 110,
 }
 `;
 
@@ -2593,8 +2593,8 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All match 1
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional All match: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -2681,22 +2681,22 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflic
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting cells: stats 1`] = `
 {
-  "receives": 180,
-  "sends": 20,
+  "receives": 270,
+  "sends": 110,
 }
 `;
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting cells: stats 2`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting cells: stats 3`] = `
 {
-  "receives": 279,
-  "sends": 31,
+  "receives": 369,
+  "sends": 121,
 }
 `;
 
@@ -2744,15 +2744,15 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflic
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting values: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all conflicting values: stats 2`] = `
 {
-  "receives": 279,
-  "sends": 31,
+  "receives": 369,
+  "sends": 121,
 }
 `;
 
@@ -2836,8 +2836,8 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all differe
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all different cells: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -2975,8 +2975,8 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all differe
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all different rows: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -3168,8 +3168,8 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all differe
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all different tables: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -3241,8 +3241,8 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all differe
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional all different values: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -3325,8 +3325,8 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional half tables
 
 exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional half tables, half values: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -6457,12 +6457,12 @@ exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present c
 exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
 [
   {
-    "receives": 5,
-    "sends": 6,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 6,
-    "sends": 5,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -6503,12 +6503,12 @@ exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present c
 exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 11,
+    "sends": 12,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 12,
+    "sends": 11,
   },
 ]
 `;
@@ -6554,12 +6554,12 @@ exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present d
 exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present different cell: stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 11,
+    "sends": 12,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 12,
+    "sends": 11,
   },
 ]
 `;
@@ -6611,12 +6611,12 @@ exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present d
 exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present different row: stats 1`] = `
 [
   {
-    "receives": 6,
-    "sends": 7,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 7,
-    "sends": 6,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -6674,12 +6674,12 @@ exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present d
 exports[`Syncs to/from Custom Synchronizer Bidirectional, data already present different table: stats 1`] = `
 [
   {
-    "receives": 4,
-    "sends": 5,
+    "receives": 5,
+    "sends": 6,
   },
   {
-    "receives": 5,
-    "sends": 4,
+    "receives": 6,
+    "sends": 5,
   },
 ]
 `;
@@ -6763,8 +6763,8 @@ exports[`Syncs to/from Custom Synchronizer Multidirectional All but first empty 
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional All but first empty: stats 1`] = `
 {
-  "receives": 189,
-  "sends": 21,
+  "receives": 279,
+  "sends": 111,
 }
 `;
 
@@ -6847,8 +6847,8 @@ exports[`Syncs to/from Custom Synchronizer Multidirectional All but last empty 1
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional All but last empty: stats 1`] = `
 {
-  "receives": 189,
-  "sends": 21,
+  "receives": 279,
+  "sends": 111,
 }
 `;
 
@@ -6869,8 +6869,8 @@ exports[`Syncs to/from Custom Synchronizer Multidirectional All empty 1`] = `
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional All empty: stats 1`] = `
 {
-  "receives": 180,
-  "sends": 20,
+  "receives": 270,
+  "sends": 110,
 }
 `;
 
@@ -6953,8 +6953,8 @@ exports[`Syncs to/from Custom Synchronizer Multidirectional All match 1`] = `
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional All match: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -7041,22 +7041,22 @@ exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting cell
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting cells: stats 1`] = `
 {
-  "receives": 180,
-  "sends": 20,
+  "receives": 270,
+  "sends": 110,
 }
 `;
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting cells: stats 2`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting cells: stats 3`] = `
 {
-  "receives": 279,
-  "sends": 31,
+  "receives": 369,
+  "sends": 121,
 }
 `;
 
@@ -7104,15 +7104,15 @@ exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting valu
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting values: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional all conflicting values: stats 2`] = `
 {
-  "receives": 279,
-  "sends": 31,
+  "receives": 369,
+  "sends": 121,
 }
 `;
 
@@ -7196,8 +7196,8 @@ exports[`Syncs to/from Custom Synchronizer Multidirectional all different cells 
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional all different cells: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -7335,8 +7335,8 @@ exports[`Syncs to/from Custom Synchronizer Multidirectional all different rows 1
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional all different rows: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -7528,8 +7528,8 @@ exports[`Syncs to/from Custom Synchronizer Multidirectional all different tables
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional all different tables: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -7601,8 +7601,8 @@ exports[`Syncs to/from Custom Synchronizer Multidirectional all different values
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional all different values: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -7685,8 +7685,8 @@ exports[`Syncs to/from Custom Synchronizer Multidirectional half tables, half va
 
 exports[`Syncs to/from Custom Synchronizer Multidirectional half tables, half values: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -10255,12 +10255,12 @@ exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present con
 exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
 [
   {
-    "receives": 5,
-    "sends": 6,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 6,
-    "sends": 5,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -10301,12 +10301,12 @@ exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present con
 exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 11,
+    "sends": 12,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 12,
+    "sends": 11,
   },
 ]
 `;
@@ -10352,12 +10352,12 @@ exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present dif
 exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present different cell: stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 11,
+    "sends": 12,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 12,
+    "sends": 11,
   },
 ]
 `;
@@ -10409,12 +10409,12 @@ exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present dif
 exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present different row: stats 1`] = `
 [
   {
-    "receives": 6,
-    "sends": 7,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 7,
-    "sends": 6,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -10472,12 +10472,12 @@ exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present dif
 exports[`Syncs to/from LocalSynchronizer Bidirectional, data already present different table: stats 1`] = `
 [
   {
-    "receives": 4,
-    "sends": 5,
+    "receives": 5,
+    "sends": 6,
   },
   {
-    "receives": 5,
-    "sends": 4,
+    "receives": 6,
+    "sends": 5,
   },
 ]
 `;
@@ -10561,8 +10561,8 @@ exports[`Syncs to/from LocalSynchronizer Multidirectional All but first empty 1`
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional All but first empty: stats 1`] = `
 {
-  "receives": 189,
-  "sends": 21,
+  "receives": 279,
+  "sends": 111,
 }
 `;
 
@@ -10645,8 +10645,8 @@ exports[`Syncs to/from LocalSynchronizer Multidirectional All but last empty 1`]
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional All but last empty: stats 1`] = `
 {
-  "receives": 189,
-  "sends": 21,
+  "receives": 279,
+  "sends": 111,
 }
 `;
 
@@ -10667,8 +10667,8 @@ exports[`Syncs to/from LocalSynchronizer Multidirectional All empty 1`] = `
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional All empty: stats 1`] = `
 {
-  "receives": 180,
-  "sends": 20,
+  "receives": 270,
+  "sends": 110,
 }
 `;
 
@@ -10751,8 +10751,8 @@ exports[`Syncs to/from LocalSynchronizer Multidirectional All match 1`] = `
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional All match: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -10839,22 +10839,22 @@ exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting cells 
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting cells: stats 1`] = `
 {
-  "receives": 180,
-  "sends": 20,
+  "receives": 270,
+  "sends": 110,
 }
 `;
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting cells: stats 2`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting cells: stats 3`] = `
 {
-  "receives": 279,
-  "sends": 31,
+  "receives": 369,
+  "sends": 121,
 }
 `;
 
@@ -10902,15 +10902,15 @@ exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting values
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting values: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional all conflicting values: stats 2`] = `
 {
-  "receives": 279,
-  "sends": 31,
+  "receives": 369,
+  "sends": 121,
 }
 `;
 
@@ -10994,8 +10994,8 @@ exports[`Syncs to/from LocalSynchronizer Multidirectional all different cells 1`
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional all different cells: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -11133,8 +11133,8 @@ exports[`Syncs to/from LocalSynchronizer Multidirectional all different rows 1`]
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional all different rows: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -11326,8 +11326,8 @@ exports[`Syncs to/from LocalSynchronizer Multidirectional all different tables 1
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional all different tables: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -11399,8 +11399,8 @@ exports[`Syncs to/from LocalSynchronizer Multidirectional all different values 1
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional all different values: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -11483,8 +11483,8 @@ exports[`Syncs to/from LocalSynchronizer Multidirectional half tables, half valu
 
 exports[`Syncs to/from LocalSynchronizer Multidirectional half tables, half values: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -14053,12 +14053,12 @@ exports[`Syncs to/from WsSynchronizer Bidirectional, data already present confli
 exports[`Syncs to/from WsSynchronizer Bidirectional, data already present conflicting cell at same time: stats 1`] = `
 [
   {
-    "receives": 5,
-    "sends": 6,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 6,
-    "sends": 5,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -14099,12 +14099,12 @@ exports[`Syncs to/from WsSynchronizer Bidirectional, data already present confli
 exports[`Syncs to/from WsSynchronizer Bidirectional, data already present conflicting cell later: stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 11,
+    "sends": 12,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 12,
+    "sends": 11,
   },
 ]
 `;
@@ -14150,12 +14150,12 @@ exports[`Syncs to/from WsSynchronizer Bidirectional, data already present differ
 exports[`Syncs to/from WsSynchronizer Bidirectional, data already present different cell: stats 1`] = `
 [
   {
-    "receives": 8,
-    "sends": 9,
+    "receives": 11,
+    "sends": 12,
   },
   {
-    "receives": 9,
-    "sends": 8,
+    "receives": 12,
+    "sends": 11,
   },
 ]
 `;
@@ -14207,12 +14207,12 @@ exports[`Syncs to/from WsSynchronizer Bidirectional, data already present differ
 exports[`Syncs to/from WsSynchronizer Bidirectional, data already present different row: stats 1`] = `
 [
   {
-    "receives": 6,
-    "sends": 7,
+    "receives": 8,
+    "sends": 9,
   },
   {
-    "receives": 7,
-    "sends": 6,
+    "receives": 9,
+    "sends": 8,
   },
 ]
 `;
@@ -14270,12 +14270,12 @@ exports[`Syncs to/from WsSynchronizer Bidirectional, data already present differ
 exports[`Syncs to/from WsSynchronizer Bidirectional, data already present different table: stats 1`] = `
 [
   {
-    "receives": 4,
-    "sends": 5,
+    "receives": 5,
+    "sends": 6,
   },
   {
-    "receives": 5,
-    "sends": 4,
+    "receives": 6,
+    "sends": 5,
   },
 ]
 `;
@@ -14359,8 +14359,8 @@ exports[`Syncs to/from WsSynchronizer Multidirectional All but first empty 1`] =
 
 exports[`Syncs to/from WsSynchronizer Multidirectional All but first empty: stats 1`] = `
 {
-  "receives": 189,
-  "sends": 21,
+  "receives": 279,
+  "sends": 111,
 }
 `;
 
@@ -14443,8 +14443,8 @@ exports[`Syncs to/from WsSynchronizer Multidirectional All but last empty 1`] = 
 
 exports[`Syncs to/from WsSynchronizer Multidirectional All but last empty: stats 1`] = `
 {
-  "receives": 189,
-  "sends": 21,
+  "receives": 279,
+  "sends": 111,
 }
 `;
 
@@ -14465,8 +14465,8 @@ exports[`Syncs to/from WsSynchronizer Multidirectional All empty 1`] = `
 
 exports[`Syncs to/from WsSynchronizer Multidirectional All empty: stats 1`] = `
 {
-  "receives": 180,
-  "sends": 20,
+  "receives": 270,
+  "sends": 110,
 }
 `;
 
@@ -14549,8 +14549,8 @@ exports[`Syncs to/from WsSynchronizer Multidirectional All match 1`] = `
 
 exports[`Syncs to/from WsSynchronizer Multidirectional All match: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -14637,22 +14637,22 @@ exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting cells 3`]
 
 exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting cells: stats 1`] = `
 {
-  "receives": 180,
-  "sends": 20,
+  "receives": 270,
+  "sends": 110,
 }
 `;
 
 exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting cells: stats 2`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
 exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting cells: stats 3`] = `
 {
-  "receives": 279,
-  "sends": 31,
+  "receives": 369,
+  "sends": 121,
 }
 `;
 
@@ -14700,15 +14700,15 @@ exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting values 2`
 
 exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting values: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
 exports[`Syncs to/from WsSynchronizer Multidirectional all conflicting values: stats 2`] = `
 {
-  "receives": 279,
-  "sends": 31,
+  "receives": 369,
+  "sends": 121,
 }
 `;
 
@@ -14792,8 +14792,8 @@ exports[`Syncs to/from WsSynchronizer Multidirectional all different cells 1`] =
 
 exports[`Syncs to/from WsSynchronizer Multidirectional all different cells: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -14931,8 +14931,8 @@ exports[`Syncs to/from WsSynchronizer Multidirectional all different rows 1`] = 
 
 exports[`Syncs to/from WsSynchronizer Multidirectional all different rows: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -15124,8 +15124,8 @@ exports[`Syncs to/from WsSynchronizer Multidirectional all different tables 1`] 
 
 exports[`Syncs to/from WsSynchronizer Multidirectional all different tables: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -15197,8 +15197,8 @@ exports[`Syncs to/from WsSynchronizer Multidirectional all different values 1`] 
 
 exports[`Syncs to/from WsSynchronizer Multidirectional all different values: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
@@ -15281,8 +15281,8 @@ exports[`Syncs to/from WsSynchronizer Multidirectional half tables, half values 
 
 exports[`Syncs to/from WsSynchronizer Multidirectional half tables, half values: stats 1`] = `
 {
-  "receives": 270,
-  "sends": 30,
+  "receives": 360,
+  "sends": 120,
 }
 `;
 
