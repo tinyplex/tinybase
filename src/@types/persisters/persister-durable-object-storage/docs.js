@@ -34,18 +34,23 @@
    * then gets the storage reference back out again.
    *
    * ```js yolo
+   * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
    * import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage';
    * import {createMergeableStore} from 'tinybase';
    *
-   * // Within the createPersister method of a WsServerDurableObject instance.
-   * const store = createMergeableStore().setTables();
-   * const persister = createDurableObjectStoragePersister(
-   *   store,
-   *   this.ctx.storage,
-   * );
+   * export class MyDurableObject extends WsServerDurableObject {
+   *   createPersister() {
+   *     const store = createMergeableStore();
+   *     const persister = createDurableObjectStoragePersister(
+   *       store,
+   *       this.ctx.storage,
+   *     );
+   *     console.log(persister.getStorage() == this.ctx.storage);
+   *     // -> true
    *
-   * console.log(persister.getStorage() == this.ctx.storage);
-   * // -> true
+   *     return persister;
+   *   }
+   * }
    * ```
    * @category Getter
    * @since v5.4.0
@@ -81,17 +86,20 @@
  * instance) and then gets the storage reference back out again.
  *
  * ```js yolo
+ * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
  * import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage';
  * import {createMergeableStore} from 'tinybase';
  *
- * // Within the createPersister method of a WsServerDurableObject instance.
- * const store = createMergeableStore().setTables();
- * const persister = createDurableObjectStoragePersister(
- *   store,
- *   this.ctx.storage,
- * );
- *
- * return persister;
+ * export class MyDurableObject extends WsServerDurableObject {
+ *   createPersister() {
+ *     const store = createMergeableStore();
+ *     const persister = createDurableObjectStoragePersister(
+ *       store,
+ *       this.ctx.storage,
+ *     );
+ *     return persister;
+ *   }
+ * }
  * ```
  * @category Creation
  * @since v5.4.0
