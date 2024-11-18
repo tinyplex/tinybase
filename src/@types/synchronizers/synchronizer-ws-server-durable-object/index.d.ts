@@ -25,7 +25,7 @@ export class WsServerDurableObject<Env = unknown> extends DurableObject<Env> {
   onClientId(pathId: Id, clientId: Id, addedOrRemoved: IdAddedOrRemoved): void;
 
   /// WsServerDurableObject.onMessage
-  onMessage(_fromClientId: Id, _toClientId: Id, _remainder: string): void;
+  onMessage(fromClientId: Id, toClientId: Id, remainder: string): void;
 }
 
 /// getWsServerDurableObjectFetch
