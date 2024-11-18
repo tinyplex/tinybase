@@ -224,9 +224,10 @@
  * Cloudflare worker to route requests to the fetch handler of a
  * WsServerDurableObject for the given namespace.
  *
- * The implementation of this function requires the request to be a WebSocket
- * 'Upgrade' request, and for the client to have provided a `sec-websocket-key`
- * header that the server can use as a unique key for the client.
+ * The implementation of the function that this returns requires the request to
+ * be a WebSocket 'Upgrade' request, and for the client to have provided a
+ * `sec-websocket-key` header that the server can use as a unique key for the
+ * client.
  *
  * It then takes the path of the HTTP request and routes the upgrade request to
  * a Durable Object (in the given namespace) for that path. From then on, the
@@ -242,7 +243,7 @@
  * class_name = "MyDurableObject"
  * ```
  *
- * Not that it is not required to use this function to route TinyBase client
+ * Note that it is not required to use this handler to route TinyBase client
  * requests in your Cloudflare app. If you have your own custom routing logic,
  * path scheme, or authentication, for example, you can easily implement that in
  * the worker's fetch method yourself. See the [Durable Objects
@@ -253,6 +254,10 @@
  * method. For example, you can overwrite the 'path' that the Durable Object
  * thinks it is serving, perhaps to inject a unique authenticated user Id that
  * wasn't actually provided by the client WebSocket.
+ * @param namespace The namespace of the Durable Objects that you want this
+ * worker to route requests to.
+ * @returns A fetch handler that routes WebSocket upgrade requests to a Durable
+ * Object.
  * @example
  * This example sets up default routing of the WebSocket upgrade request to a
  * Durable Object in the `MyDurableObjects` namespace. This would require the
