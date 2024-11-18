@@ -1847,9 +1847,10 @@
     return hash >>> 0;
   };
 
+  const stampClone = ([value, time]) => stampNew(value, time);
   const stampCloneWithHash = ([value, time, hash]) => [value, time, hash];
-  const stampCloneWithoutHash = ([value, time]) => newStamp(value, time);
-  const newStamp = (value, time) => (time ? [value, time] : [value]);
+  const stampNew = (value, time) => (time ? [value, time] : [value]);
+  const stampNewWithHash = (value, time, hash) => [value, time, hash];
   const getStampHash = (stamp) => stamp[2];
   const hashIdAndHash = (id, hash) => getHash(id + ':' + hash);
   const replaceTimeHash = (oldTime, newTime) =>
@@ -1857,22 +1858,20 @@
   const getLatestTime = (time1, time2) =>
     /* istanbul ignore next */
     ((time1 ?? '') > (time2 ?? '') ? time1 : time2) ?? '';
-  const stampUpdate = (stamp, hash, time) => {
-    stamp[2] = hash >>> 0;
+  const stampUpdate = (stamp, time, hash) => {
     if (time > stamp[1]) {
       stamp[1] = time;
     }
+    stamp[2] = hash >>> 0;
   };
-  const stampNewObj = (time = EMPTY_STRING) => newStamp(objNew(), time);
+  const stampNewObj = (time = EMPTY_STRING) => stampNew(objNew(), time);
   const stampNewMap = (time = EMPTY_STRING) => [mapNew(), time, 0];
   const stampMapToObjWithHash = (
     [map, time, hash],
     mapper = stampCloneWithHash,
   ) => [mapToObj(map, mapper), time, hash];
-  const stampMapToObjWithoutHash = (
-    [map, time],
-    mapper = stampCloneWithoutHash,
-  ) => newStamp(mapToObj(map, mapper), time);
+  const stampMapToObjWithoutHash = ([map, time], mapper = stampClone) =>
+    stampNew(mapToObj(map, mapper), time);
   const stampValidate = (stamp, validateThing) =>
     isArray(stamp) &&
     size(stamp) == 3 &&
@@ -3446,7 +3445,7 @@
           tableHash ^= isContent
             ? 0
             : replaceTimeHash(oldTableTime, incomingTableTime);
-          stampUpdate(tableStampMap, tableHash, incomingTableTime);
+          stampUpdate(tableStampMap, incomingTableTime, tableHash);
           tablesHash ^= isContent
             ? 0
             : (oldTableHash ? hashIdAndHash(tableId, oldTableHash) : 0) ^
@@ -3457,7 +3456,7 @@
       tablesHash ^= isContent
         ? 0
         : replaceTimeHash(oldTablesTime, incomingTablesTime);
-      stampUpdate(tablesStampMap, tablesHash, incomingTablesTime);
+      stampUpdate(tablesStampMap, incomingTablesTime, tablesHash);
       const [valuesTime] = mergeCellsOrValues(
         values,
         valuesStampMap,
@@ -3493,10 +3492,10 @@
           if (!oldThingTime || thingTime > oldThingTime) {
             stampUpdate(
               thingStampMap,
+              thingTime,
               isContent
                 ? incomingThingHash
                 : getHash(jsonStringWithMap(thing ?? null) + ':' + thingTime),
-              thingTime,
             );
             thingStampMap[0] = thing;
             thingsChanges[thingId] = thing;
@@ -3511,7 +3510,7 @@
       thingsHash ^= isContent
         ? 0
         : replaceTimeHash(oldThingsTime, incomingThingsTime);
-      stampUpdate(thingsStampMap, thingsHash, incomingThingsTime);
+      stampUpdate(thingsStampMap, incomingThingsTime, thingsHash);
       return [thingsTime, oldThingsHash, thingsStampMap[2]];
     };
     const preStartTransaction = () => {};
@@ -3683,7 +3682,7 @@
           ),
         ),
       );
-      return newStamp(tablesObj, tablesTime);
+      return stampNew(tablesObj, tablesTime);
     };
     const getMergeableValueHashes = () =>
       mapToObj(contentStampMap[1][0], getStampHash);
@@ -3691,10 +3690,10 @@
       const [, [valueStampMaps, valuesTime]] = contentStampMap;
       const values = mapToObj(
         valueStampMaps,
-        stampCloneWithoutHash,
+        stampClone,
         ([, , hash], valueId) => hash == otherValueHashes?.[valueId],
       );
-      return newStamp(values, valuesTime);
+      return stampNew(values, valuesTime);
     };
     const setMergeableContent = (mergeableContent) =>
       disableListeningToRawStoreChanges(() =>
@@ -3714,31 +3713,35 @@
       });
       return mergeableStore;
     };
-    const getTransactionMergeableChanges = () => {
-      const [[tableStampMaps, tablesTime], [valueStampMaps, valuesTime]] =
-        contentStampMap;
+    const getTransactionMergeableChanges = (withHashes = false) => {
+      const [
+        [tableStampMaps, tablesTime, tablesHash],
+        [valueStampMaps, valuesTime, valuesHash],
+      ] = contentStampMap;
+      const newStamp = withHashes ? stampNewWithHash : stampNew;
       const tablesObj = {};
       collForEach(touchedCells, (touchedTable, tableId) =>
         ifNotUndefined(
           mapGet(tableStampMaps, tableId),
-          ([rowStampMaps, tableTime]) => {
+          ([rowStampMaps, tableTime, tableHash]) => {
             const tableObj = {};
             collForEach(touchedTable, (touchedRow, rowId) =>
               ifNotUndefined(
                 mapGet(rowStampMaps, rowId),
-                ([cellStampMaps, rowTime]) => {
+                ([cellStampMaps, rowTime, rowHash]) => {
                   const rowObj = {};
                   collForEach(touchedRow, (cellId) => {
                     ifNotUndefined(
                       mapGet(cellStampMaps, cellId),
-                      ([cell, time]) => (rowObj[cellId] = newStamp(cell, time)),
+                      ([cell, time, hash]) =>
+                        (rowObj[cellId] = newStamp(cell, time, hash)),
                     );
                   });
-                  tableObj[rowId] = newStamp(rowObj, rowTime);
+                  tableObj[rowId] = newStamp(rowObj, rowTime, rowHash);
                 },
               ),
             );
-            tablesObj[tableId] = newStamp(tableObj, tableTime);
+            tablesObj[tableId] = newStamp(tableObj, tableTime, tableHash);
           },
         ),
       );
@@ -3746,12 +3749,13 @@
       collForEach(touchedValues, (valueId) =>
         ifNotUndefined(
           mapGet(valueStampMaps, valueId),
-          ([value, time]) => (valuesObj[valueId] = newStamp(value, time)),
+          ([value, time, hash]) =>
+            (valuesObj[valueId] = newStamp(value, time, hash)),
         ),
       );
       return [
-        newStamp(tablesObj, tablesTime),
-        newStamp(valuesObj, valuesTime),
+        newStamp(tablesObj, tablesTime, tablesHash),
+        newStamp(valuesObj, valuesTime, valuesHash),
         1,
       ];
     };
