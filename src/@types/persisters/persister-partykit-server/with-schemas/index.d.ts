@@ -18,10 +18,13 @@ import type {Id} from '../../../common/with-schemas/index.d.ts';
 export type TinyBasePartyKitServerConfig = {
   /// TinyBasePartyKitServerConfig.storePath
   storePath?: string;
+
   /// TinyBasePartyKitServerConfig.messagePrefix
   messagePrefix?: string;
+
   /// TinyBasePartyKitServerConfig.storagePrefix
   storagePrefix?: string;
+
   /// TinyBasePartyKitServerConfig.responseHeaders
   responseHeaders?: HeadersInit;
 };
@@ -30,20 +33,26 @@ export type TinyBasePartyKitServerConfig = {
 export class TinyBasePartyKitServer implements Server {
   /// TinyBasePartyKitServer.constructor
   constructor(party: Party);
+
   /// TinyBasePartyKitServer.config
   readonly config: TinyBasePartyKitServerConfig;
+
   /// TinyBasePartyKitServer.onRequest
   onRequest(request: Request): Promise<Response>;
+
   /// TinyBasePartyKitServer.onMessage
   onMessage(message: string, connection: Connection): Promise<void>;
+
   /// TinyBasePartyKitServer.canSetTable
   canSetTable(
     tableId: Id,
     initialSave: boolean,
     requestOrConnection: Request | Connection,
   ): Promise<boolean>;
+
   /// TinyBasePartyKitServer.canDelTable
   canDelTable(tableId: Id, connection: Connection): Promise<boolean>;
+
   /// TinyBasePartyKitServer.canSetRow
   canSetRow(
     tableId: Id,
@@ -51,8 +60,10 @@ export class TinyBasePartyKitServer implements Server {
     initialSave: boolean,
     requestOrConnection: Request | Connection,
   ): Promise<boolean>;
+
   /// TinyBasePartyKitServer.canDelRow
   canDelRow(tableId: Id, rowId: Id, connection: Connection): Promise<boolean>;
+
   /// TinyBasePartyKitServer.canSetCell
   canSetCell(
     tableId: Id,
@@ -63,6 +74,7 @@ export class TinyBasePartyKitServer implements Server {
     requestOrConnection: Request | Connection,
     oldCell: CellOrUndefined<NoTablesSchema, Id, Id>,
   ): Promise<boolean>;
+
   /// TinyBasePartyKitServer.canDelCell
   canDelCell(
     tableId: Id,
@@ -70,6 +82,7 @@ export class TinyBasePartyKitServer implements Server {
     cellId: Id,
     connection: Connection,
   ): Promise<boolean>;
+
   /// TinyBasePartyKitServer.canSetValue
   canSetValue(
     valueId: Id,
@@ -78,6 +91,7 @@ export class TinyBasePartyKitServer implements Server {
     requestOrConnection: Request | Connection,
     oldValue: ValueOrUndefined<NoValuesSchema, Id>,
   ): Promise<boolean>;
+
   /// TinyBasePartyKitServer.canDelValue
   canDelValue(valueId: Id, connection: Connection): Promise<boolean>;
 }
