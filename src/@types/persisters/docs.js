@@ -1419,6 +1419,7 @@
    * the underlying Store and storage are removed and it can be correctly
    * garbage collected. It is equivalent to running the stopAutoLoad method and
    * the stopAutoSave method in succession.
+   * @returns A reference to the Persister object.
    * @example
    * This example creates a Store, associates a Persister object with it (that
    * registers a TablesListener with the underlying Store), and then destroys it
