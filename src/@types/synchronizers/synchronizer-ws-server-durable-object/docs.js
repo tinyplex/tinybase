@@ -228,8 +228,8 @@
  *
  * ```js yolo
  * import {
- *   getWsServerDurableObjectFetch,
  *   WsServerDurableObject,
+ *   getWsServerDurableObjectFetch,
  * } from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
  *
  * export class MyDurableObject extends WsServerDurableObject {}
