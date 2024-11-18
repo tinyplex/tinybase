@@ -27,7 +27,7 @@ export class WsServerDurableObject<
   getPathId(): Id;
 
   /// WsServerDurableObject.getClientIds
-  getClientIds(pathId: Id): Ids;
+  getClientIds(): Ids;
 
   /// WsServerDurableObject.onPathId
   onPathId(pathId: Id, addedOrRemoved: IdAddedOrRemoved): void;
