@@ -5,11 +5,13 @@ highlighted features.
 
 # v5.4
 
-This release contains an initial implementation of a synchronization server that
-runs on Cloudflare as a Durable Object. It's in the new
+## Durable Objects synchronization
+
+This release contains a new WebSocket synchronization server that runs on
+Cloudflare as a Durable Object. It's in the new
 synchronizer-ws-server-durable-object module, and you use it by extending the
-WsServerDurableObject class. You can also use the getWsServerDurableObjectFetch
-function for conveniently binding your Cloudflare Worker to your Durable Object:
+WsServerDurableObject class. Use the getWsServerDurableObjectFetch function for
+conveniently binding your Cloudflare Worker to your Durable Object:
 
 ```ts yolo
 import {Id, IdAddedOrRemoved} from 'tinybase';
@@ -33,14 +35,44 @@ name = "MyDurableObjects"
 class_name = "MyDurableObject"
 ```
 
-With this you can now easily connect and synchronize clients using the
-WsSynchronizer synchronizer. This implementation does not currently store the
-data between clients, but will soon!
+With this you can now easily connect and synchronize clients that are using the
+WsSynchronizer synchronizer.
 
-This release also includes the new synchronizer-ws-server-simple module that
-contains a simple server implementation called WsServerSimple. Without the
-complications of listeners, persistence, or statistics, this is more suitable to
-be used as a reference implementation for other server environments.
+## Durable Objects persistence
+
+But wait! there's more. Durable Objects also provide a storage mechanism, and
+sometimes you want TinyBase data to also be stored on the server (in case all
+the current clients disconnect and a new one joins, for example). So this
+release of TinyBase also includes a dedicated persister, the
+DurableObjectStoragePersister, that also synchronizes the data to the Durable
+Object storage layer.
+
+You create it with the createDurableObjectStoragePersister function, and hook it
+into the Durable Object by returning it from the createPersister method of your
+WsServerDurableObject:
+
+```ts yolo
+export class MyDurableObject extends WsServerDurableObject {
+  createPersister() {
+    return createDurableObjectStoragePersister(
+      createMergeableStore(),
+      this.ctx.storage,
+    );
+  }
+}
+```
+
+You can get started quickly with this architecture using the [new Vite
+template](https://github.com/tinyplex/vite-tinybase-ts-react-sync-durable-object)
+that accompanies this release.
+
+## Server reference implementation
+
+Unrelated to Durable Objects, this release also includes the new
+synchronizer-ws-server-simple module that contains a simple server
+implementation called WsServerSimple. Without the complications of listeners,
+persistence, or statistics, this is more suitable to be used as a reference
+implementation for other server environments.
 
 # v5.3
 
