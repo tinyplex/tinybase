@@ -254,8 +254,8 @@
  * method. For example, you can overwrite the 'path' that the Durable Object
  * thinks it is serving, perhaps to inject a unique authenticated user Id that
  * wasn't actually provided by the client WebSocket.
- * @param namespace The namespace of the Durable Objects that you want this
- * worker to route requests to.
+ * @param namespace A string for the namespace of the Durable Objects that you
+ * want this worker to route requests to.
  * @returns A fetch handler that routes WebSocket upgrade requests to a Durable
  * Object.
  * @example

@@ -7115,7 +7115,7 @@
    *
    * This will always return false for a Store, and true for a MergeableStore.
    * @returns Whether the Store is mergeable.
-   * @category Information
+   * @category Getter
    * @since v5.0.0
    */
   /// Store.isMergeable
