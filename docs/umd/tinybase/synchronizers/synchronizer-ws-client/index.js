@@ -11,12 +11,18 @@
 
   const EMPTY_STRING = '';
   const UTF8 = 'utf8';
+  const OPEN = 'open';
+  const MESSAGE = 'message';
+  const ERROR = 'error';
   const UNDEFINED = '\uFFFC';
   const strSplit = (str, separator = EMPTY_STRING, limit) =>
     str.split(separator, limit);
 
   const promise = Promise;
   const GLOBAL = globalThis;
+  const THOUSAND = 1e3;
+  const startTimeout = (callback, sec = 0) =>
+    setTimeout(callback, sec * THOUSAND);
   const math = Math;
   const mathFloor = math.floor;
   const isUndefined = (thing) => thing == void 0;
@@ -130,11 +136,11 @@
       },
     );
 
-  const newStamp = (value, time) => (time ? [value, time] : [value]);
+  const stampNew = (value, time) => (time ? [value, time] : [value]);
   const getLatestTime = (time1, time2) =>
     /* istanbul ignore next */
     ((time1 ?? '') > (time2 ?? '') ? time1 : time2) ?? '';
-  const stampNewObj = (time = EMPTY_STRING) => newStamp(objNew(), time);
+  const stampNewObj = (time = EMPTY_STRING) => stampNew(objNew(), time);
 
   const setNew = (entryOrEntries) =>
     new Set(
@@ -234,12 +240,16 @@
 
   const scheduleRunning = mapNew();
   const scheduleActions = mapNew();
-  const getStoreFunctions = (persist = 1 /* StoreOnly */, store) =>
+  const getStoreFunctions = (
+    persist = 1 /* StoreOnly */,
+    store,
+    isSynchronizer,
+  ) =>
     persist != 1 /* StoreOnly */ && store.isMergeable()
       ? [
           1,
           store.getMergeableContent,
-          store.getTransactionMergeableChanges,
+          () => store.getTransactionMergeableChanges(!isSynchronizer),
           ([[changedTables], [changedValues]]) =>
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setDefaultContent,
@@ -263,6 +273,7 @@
     onIgnoredError,
     persist,
     extra = {},
+    isSynchronizer = 0,
     scheduleId = [],
   ) => {
     let status = 0; /* Idle */
@@ -280,7 +291,7 @@
       getChanges,
       hasChanges,
       setDefaultContent,
-    ] = getStoreFunctions(persist, store);
+    ] = getStoreFunctions(persist, store, isSynchronizer);
     const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
       () => persister,
     );
@@ -345,7 +356,8 @@
       return persister;
     };
     const startAutoLoad = async (initialContent) => {
-      await stopAutoLoad().load(initialContent);
+      stopAutoLoad();
+      await load(initialContent);
       try {
         autoLoadHandle = await addPersisterListener(
           async (content, changes) => {
@@ -394,7 +406,8 @@
       return persister;
     };
     const startAutoSave = async () => {
-      await stopAutoSave().save();
+      stopAutoSave();
+      await save();
       autoSaveListenerId = store.addDidFinishTransactionListener(() => {
         const changes = getChanges();
         if (hasChanges(changes)) {
@@ -404,8 +417,10 @@
       return persister;
     };
     const stopAutoSave = () => {
-      ifNotUndefined(autoSaveListenerId, store.delListener);
-      autoSaveListenerId = void 0;
+      if (autoSaveListenerId) {
+        store.delListener(autoSaveListenerId);
+        autoSaveListenerId = void 0;
+      }
       return persister;
     };
     const isAutoSaving = () => !isUndefined(autoSaveListenerId);
@@ -476,31 +491,33 @@
     onIgnoredError,
     extra = {},
   ) => {
+    let syncing = 0;
     let persisterListener;
     let sends = 0;
     let receives = 0;
     const pendingRequests = mapNew();
+    const getTransactionId = () => getUniqueId(11);
     const sendImpl = (toClientId, requestId, message, body) => {
       sends++;
       onSend?.(toClientId, requestId, message, body);
       send(toClientId, requestId, message, body);
     };
-    const request = async (toClientId, message, body = EMPTY_STRING) =>
+    const request = async (toClientId, message, body, transactionId) =>
       promiseNew((resolve, reject) => {
-        const requestId = getUniqueId();
-        const timeout = setTimeout(() => {
+        const requestId = transactionId + '.' + getUniqueId(4);
+        const timeout = startTimeout(() => {
           collDel(pendingRequests, requestId);
           reject(
             `No response from ${toClientId ?? 'anyone'} to ${requestId}, ` +
               message,
           );
-        }, requestTimeoutSeconds * 1e3);
+        }, requestTimeoutSeconds);
         mapSet(pendingRequests, requestId, [
           toClientId,
           (response, fromClientId) => {
             clearTimeout(timeout);
             collDel(pendingRequests, requestId);
-            resolve([response, fromClientId]);
+            resolve([response, fromClientId, transactionId]);
           },
         ]);
         sendImpl(toClientId, requestId, message, body);
@@ -513,7 +530,7 @@
           objForEach(
             cellStamps2,
             ([cell2, cellTime2], cellId) =>
-              (rowStamp[0][cellId] = newStamp(cell2, cellTime2)),
+              (rowStamp[0][cellId] = stampNew(cell2, cellTime2)),
           );
           rowStamp[1] = getLatestTime(rowStamp[1], rowTime2);
         });
@@ -524,12 +541,15 @@
     const getChangesFromOtherStore = async (
       otherClientId = null,
       otherContentHashes,
+      transactionId = getTransactionId(),
     ) => {
       try {
         if (isUndefined(otherContentHashes)) {
-          [otherContentHashes, otherClientId] = await request(
-            otherClientId,
+          [otherContentHashes, otherClientId, transactionId] = await request(
+            null,
             1 /* GetContentHashes */,
+            EMPTY_STRING,
+            transactionId,
           );
         }
         const [otherTablesHash, otherValuesHash] = otherContentHashes;
@@ -541,6 +561,7 @@
               otherClientId,
               4 /* GetTableDiff */,
               store.getMergeableTableHashes(),
+              transactionId,
             )
           )[0];
           tablesChanges = newTables;
@@ -550,6 +571,7 @@
                 otherClientId,
                 5 /* GetRowDiff */,
                 store.getMergeableRowHashes(differentTableHashes),
+                transactionId,
               )
             )[0];
             mergeTablesStamps(tablesChanges, newRows);
@@ -559,6 +581,7 @@
                   otherClientId,
                   6 /* GetCellDiff */,
                   store.getMergeableCellHashes(differentRowHashes),
+                  transactionId,
                 )
               )[0];
               mergeTablesStamps(tablesChanges, newCells);
@@ -574,6 +597,7 @@
                   otherClientId,
                   7 /* GetValueDiff */,
                   store.getMergeableValueHashes(),
+                  transactionId,
                 )
               )[0],
           1,
@@ -591,18 +615,25 @@
     };
     const setPersisted = async (_getContent, changes) =>
       changes
-        ? sendImpl(null, null, 3 /* ContentDiff */, changes)
+        ? sendImpl(null, getTransactionId(), 3 /* ContentDiff */, changes)
         : sendImpl(
             null,
-            null,
+            getTransactionId(),
             2 /* ContentHashes */,
             store.getMergeableContentHashes(),
           );
     const addPersisterListener = (listener) => (persisterListener = listener);
     const delPersisterListener = () => (persisterListener = void 0);
-    const startSync = async (initialContent) =>
-      await (await persister.startAutoLoad(initialContent)).startAutoSave();
-    const stopSync = () => persister.stopAutoLoad().stopAutoSave();
+    const startSync = async (initialContent) => {
+      syncing = 1;
+      return await (
+        await persister.startAutoLoad(initialContent)
+      ).startAutoSave();
+    };
+    const stopSync = () => {
+      syncing = 0;
+      return persister.stopAutoLoad().stopAutoSave();
+    };
     const destroy = () => {
       destroyImpl();
       return persister.stopSync();
@@ -618,33 +649,37 @@
       2,
       // MergeableStoreOnly
       {startSync, stopSync, destroy, getSynchronizerStats, ...extra},
+      1,
     );
-    registerReceive((fromClientId, requestId, message, body) => {
+    registerReceive((fromClientId, transactionOrRequestId, message, body) => {
+      const isAutoLoading = syncing || persister.isAutoLoading();
       receives++;
-      onReceive?.(fromClientId, requestId, message, body);
+      onReceive?.(fromClientId, transactionOrRequestId, message, body);
       if (message == 0 /* Response */) {
         ifNotUndefined(
-          mapGet(pendingRequests, requestId),
+          mapGet(pendingRequests, transactionOrRequestId),
           ([toClientId, handleResponse]) =>
             isUndefined(toClientId) || toClientId == fromClientId
               ? handleResponse(body, fromClientId)
               : /* istanbul ignore next */
                 0,
         );
-      } else if (
-        message == 2 /* ContentHashes */ &&
-        persister.isAutoLoading()
-      ) {
-        getChangesFromOtherStore(fromClientId, body)
+      } else if (message == 2 /* ContentHashes */ && isAutoLoading) {
+        getChangesFromOtherStore(
+          fromClientId,
+          body,
+          transactionOrRequestId ?? void 0,
+        )
           .then((changes) => {
             persisterListener?.(void 0, changes);
           })
           .catch(onIgnoredError);
-      } else if (message == 3 /* ContentDiff */ && persister.isAutoLoading()) {
+      } else if (message == 3 /* ContentDiff */ && isAutoLoading) {
         persisterListener?.(void 0, body);
       } else {
         ifNotUndefined(
-          message == 1 /* GetContentHashes */ && persister.isAutoSaving()
+          message == 1 /* GetContentHashes */ &&
+            (syncing || persister.isAutoSaving())
             ? store.getMergeableContentHashes()
             : message == 4 /* GetTableDiff */
               ? store.getMergeableTableDiff(body)
@@ -656,7 +691,12 @@
                     ? store.getMergeableValueDiff(body)
                     : void 0,
           (response) => {
-            sendImpl(fromClientId, requestId, 0 /* Response */, response);
+            sendImpl(
+              fromClientId,
+              transactionOrRequestId,
+              0 /* Response */,
+              response,
+            );
           },
         );
       }
@@ -672,10 +712,12 @@
     onReceive,
     onIgnoredError,
   ) => {
-    const addEventListener = (event, handler) =>
+    const addEventListener = (event, handler) => {
       webSocket.addEventListener(event, handler);
+      return () => webSocket.removeEventListener(event, handler);
+    };
     const registerReceive = (receive) =>
-      addEventListener('message', ({data}) =>
+      addEventListener(MESSAGE, ({data}) =>
         receivePayload(data.toString(UTF8), receive),
       );
     const send = (toClientId, ...args) =>
@@ -694,10 +736,18 @@
       onIgnoredError,
       {getWebSocket: () => webSocket},
     );
-    return promiseNew((resolve, reject) => {
+    return promiseNew((resolve) => {
       if (webSocket.readyState != webSocket.OPEN) {
-        addEventListener('error', reject);
-        addEventListener('open', () => resolve(synchronizer));
+        const onAttempt = (error) => {
+          if (error) {
+            onIgnoredError?.(error);
+          }
+          removeOpenListener();
+          removeErrorListener();
+          resolve(synchronizer);
+        };
+        const removeOpenListener = addEventListener(OPEN, () => onAttempt());
+        const removeErrorListener = addEventListener(ERROR, onAttempt);
       } else {
         resolve(synchronizer);
       }

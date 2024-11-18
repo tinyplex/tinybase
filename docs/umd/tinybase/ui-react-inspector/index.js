@@ -1734,12 +1734,16 @@
 
   const scheduleRunning = mapNew();
   const scheduleActions = mapNew();
-  const getStoreFunctions = (persist = 1 /* StoreOnly */, store) =>
+  const getStoreFunctions = (
+    persist = 1 /* StoreOnly */,
+    store,
+    isSynchronizer,
+  ) =>
     persist != 1 /* StoreOnly */ && store.isMergeable()
       ? [
           1,
           store.getMergeableContent,
-          store.getTransactionMergeableChanges,
+          () => store.getTransactionMergeableChanges(!isSynchronizer),
           ([[changedTables], [changedValues]]) =>
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setDefaultContent,
@@ -1763,6 +1767,7 @@
     onIgnoredError,
     persist,
     extra = {},
+    isSynchronizer = 0,
     scheduleId = [],
   ) => {
     let status = 0; /* Idle */
@@ -1780,7 +1785,7 @@
       getChanges,
       hasChanges,
       setDefaultContent,
-    ] = getStoreFunctions(persist, store);
+    ] = getStoreFunctions(persist, store, isSynchronizer);
     const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
       () => persister,
     );
@@ -1841,7 +1846,8 @@
       return persister;
     };
     const startAutoLoad = async (initialContent) => {
-      await stopAutoLoad().load(initialContent);
+      stopAutoLoad();
+      await load(initialContent);
       try {
         autoLoadHandle = await addPersisterListener(
           async (content, changes) => {
@@ -1884,7 +1890,8 @@
       return persister;
     };
     const startAutoSave = async () => {
-      await stopAutoSave().save();
+      stopAutoSave();
+      await save();
       autoSaveListenerId = store.addDidFinishTransactionListener(() => {
         const changes = getChanges();
         if (hasChanges(changes)) {
@@ -1894,8 +1901,10 @@
       return persister;
     };
     const stopAutoSave = () => {
-      ifNotUndefined(autoSaveListenerId, store.delListener);
-      autoSaveListenerId = void 0;
+      if (autoSaveListenerId) {
+        store.delListener(autoSaveListenerId);
+        autoSaveListenerId = void 0;
+      }
       return persister;
     };
     const isAutoSaving = () => !isUndefined(autoSaveListenerId);
