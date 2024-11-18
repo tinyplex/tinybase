@@ -63,7 +63,8 @@
       2,
       {
         "code": 80,
-        "ignorePattern": "^(\\s+\\* )?(imports?|exports?|\\} from|(.+ as .+))\\W.*"
+        "ignorePattern": "^(\\s+\\* )?(imports?|exports?|\\} from|(.+ as .+))\\W.*",
+        "ignoreUrls": true
       }
     ],
     "no-var": 2,
