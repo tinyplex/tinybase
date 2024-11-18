@@ -20,6 +20,16 @@
 /// WsServerDurableObject
 {
   /**
+   * The constructor is used to create the Durable Object that will synchronize
+   * the TinyBase clients.
+   *
+   * For basic TinyBase synchronization and persistence, you don't need to
+   * override this method, but if you do, ensure you call the super constructor.
+   * @category Creation
+   * @since v5.4.0
+   */
+  /// WsServerDurableObject.constructor
+  /**
    * The createPersister method is used to return a persister for the Durable
    * Object to preserve Store data when clients are not connected.
    *

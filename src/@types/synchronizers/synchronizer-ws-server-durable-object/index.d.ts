@@ -6,6 +6,9 @@ import {DurableObject} from 'cloudflare:workers';
 
 /// WsServerDurableObject
 export class WsServerDurableObject<Env = unknown> extends DurableObject<Env> {
+  /// WsServerDurableObject.constructor
+  constructor();
+
   /// WsServerDurableObject.createPersister
   createPersister():
     | Persister<Persists.MergeableStoreOnly>

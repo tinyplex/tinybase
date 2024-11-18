@@ -17,6 +17,9 @@ export class WsServerDurableObject<
   Schemas extends OptionalSchemas,
   Env = unknown,
 > extends DurableObject<Env> {
+  /// WsServerDurableObject.constructor
+  constructor();
+
   /// WsServerDurableObject.createPersister
   createPersister():
     | Persister<Schemas, Persists.MergeableStoreOnly>
