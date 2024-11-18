@@ -143,7 +143,7 @@ export class WsServerDurableObject<Env = unknown>
     return this.ctx.getTags(this.#getClients()[0])?.[1];
   }
 
-  getClientIds(_pathId: Id): Ids {
+  getClientIds(): Ids {
     return arrayMap(
       this.#getClients(),
       (client) => this.ctx.getTags(client)[0],
