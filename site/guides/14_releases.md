@@ -14,7 +14,6 @@ WsServerDurableObject class. Use the getWsServerDurableObjectFetch function for
 conveniently binding your Cloudflare Worker to your Durable Object:
 
 ```ts yolo
-import {Id, IdAddedOrRemoved} from 'tinybase';
 import {
   getWsServerDurableObjectFetch,
   WsServerDurableObject,
