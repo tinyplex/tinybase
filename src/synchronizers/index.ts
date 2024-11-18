@@ -70,6 +70,7 @@ export const createCustomSynchronizer = (
   // undocumented:
   extra: {[methodName: string]: (...args: any[]) => any} = {},
 ): Synchronizer => {
+  let syncing: 0 | 1 = 0;
   let persisterListener:
     | PersisterListener<PersistsEnum.MergeableStoreOnly>
     | undefined;
@@ -250,10 +251,17 @@ export const createCustomSynchronizer = (
 
   const delPersisterListener = () => (persisterListener = undefined);
 
-  const startSync = async (initialContent?: Content) =>
-    await (await persister.startAutoLoad(initialContent)).startAutoSave();
+  const startSync = async (initialContent?: Content) => {
+    syncing = 1;
+    return await (
+      await persister.startAutoLoad(initialContent)
+    ).startAutoSave();
+  };
 
-  const stopSync = () => persister.stopAutoLoad().stopAutoSave();
+  const stopSync = () => {
+    syncing = 0;
+    return persister.stopAutoLoad().stopAutoSave();
+  };
 
   const destroy = () => {
     destroyImpl();
@@ -281,7 +289,7 @@ export const createCustomSynchronizer = (
       message: MessageEnum | any,
       body: any,
     ) => {
-      const isAutoLoading = persister.isAutoLoading();
+      const isAutoLoading = syncing || persister.isAutoLoading();
       receives++;
       onReceive?.(fromClientId, transactionOrRequestId, message, body);
       if (message == MessageValues.Response) {
@@ -307,7 +315,8 @@ export const createCustomSynchronizer = (
         persisterListener?.(undefined, body);
       } else {
         ifNotUndefined(
-          message == MessageValues.GetContentHashes && persister.isAutoSaving()
+          message == MessageValues.GetContentHashes &&
+            (syncing || persister.isAutoSaving())
             ? store.getMergeableContentHashes()
             : message == MessageValues.GetTableDiff
               ? store.getMergeableTableDiff(body)

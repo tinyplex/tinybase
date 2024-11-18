@@ -15,12 +15,7 @@ import type {
   StatusListener,
 } from '../../@types/persisters/index.d.ts';
 import {arrayClear, arrayPush, arrayShift} from '../../common/array.ts';
-import {
-  errorNew,
-  ifNotUndefined,
-  isArray,
-  isUndefined,
-} from '../../common/other.ts';
+import {errorNew, isArray, isUndefined} from '../../common/other.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../common/map.ts';
 import {objFreeze, objIsEmpty} from '../../common/obj.ts';
 import type {Id} from '../../@types/common/index.d.ts';
@@ -231,6 +226,7 @@ export const createCustomPersister = <
     initialContent?: Content,
   ): Promise<Persister<Persist>> => {
     stopAutoLoad();
+    await load(initialContent);
     try {
       autoLoadHandle = await addPersisterListener(async (content, changes) => {
         if (changes || content) {
@@ -245,7 +241,6 @@ export const createCustomPersister = <
           await load();
         }
       });
-      await load(initialContent);
     } catch (error) {
       /*! istanbul ignore next */
       onIgnoredError?.(error);
@@ -288,19 +283,21 @@ export const createCustomPersister = <
 
   const startAutoSave = async (): Promise<Persister<Persist>> => {
     stopAutoSave();
+    await save();
     autoSaveListenerId = store.addDidFinishTransactionListener(() => {
       const changes = getChanges() as any;
       if (hasChanges(changes)) {
         save(changes);
       }
     });
-    await save();
     return persister;
   };
 
   const stopAutoSave = (): Persister<Persist> => {
-    ifNotUndefined(autoSaveListenerId, store.delListener);
-    autoSaveListenerId = undefined;
+    if (autoSaveListenerId) {
+      store.delListener(autoSaveListenerId);
+      autoSaveListenerId = undefined;
+    }
     return persister;
   };
 
