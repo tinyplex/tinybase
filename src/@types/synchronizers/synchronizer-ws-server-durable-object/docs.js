@@ -104,7 +104,7 @@
    * The onPathId method is called when the first client connects to, or the
    * last client disconnects from, the server with a given path Id.
    *
-   * This method is called with the path Id and an AddedOrRemoved boolean
+   * This method is called with the path Id and an IdAddedOrRemoved flag
    * indicating whether it this is being triggered by the first client joining
    * (true) or the last client leaving (false).
    * @example
@@ -132,8 +132,8 @@
    * from, the server.
    *
    * This method is called with the path Id, the client Id, and an
-   * AddedOrRemoved boolean indicating whether it this is being triggered by the
-   * client joining (true) or the client leaving (false).
+   * IdAddedOrRemoved flag indicating whether it this is being triggered by
+   * the client joining (true) or the client leaving (false).
    * @example
    * This example logs every client that joins (the client Id is 'added') or
    * leaves (the client Id is 'removed') on the path being served by the Durable
