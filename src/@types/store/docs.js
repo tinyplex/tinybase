@@ -431,13 +431,14 @@
 /// GetCell
 /**
  * The IdAddedOrRemoved type describes a change made to an Id in either the
- * tabular of keyed-value part of the Store.
+ * tabular or keyed-value part of the Store (or in other TinyBase modules).
  *
  * This type is used in other types like ChangedTableIds, ChangedRowIds,
- * ChangedCellIds, and ChangedValueIds.
+ * ChangedCellIds, and ChangedValueIds, as well as in other events or listeners
+ * where a list of Ids has changed.
  *
- * It is a simple number: a 1 indicates that a given Id was added to the Store
- * during a transaction, and a -1 indicates that it was removed.
+ * It is a simple number: a 1 indicates that a given Id was added to a list of
+ * Ids, and a -1 indicates that it was removed.
  * @category Transaction
  * @since v4.0.0
  */
