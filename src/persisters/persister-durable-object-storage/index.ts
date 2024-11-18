@@ -147,6 +147,6 @@ export const createDurableObjectStoragePersister = ((
     delPersisterListener,
     onIgnoredError,
     2, // MergeableStoreOnly,
-    {getDurableObjectStorage: () => storage},
+    {getStorage: () => storage},
   ) as DurableObjectStoragePersister;
 }) as typeof createDurableObjectStoragePersisterDecl;
