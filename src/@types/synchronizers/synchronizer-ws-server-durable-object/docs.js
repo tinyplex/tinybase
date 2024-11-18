@@ -24,7 +24,10 @@
    * the TinyBase clients.
    *
    * For basic TinyBase synchronization and persistence, you don't need to
-   * override this method, but if you do, ensure you call the super constructor.
+   * override this method, but if you do, ensure you call the super constructor
+   * with the two parameters.
+   * @param ctx The DurableObjectState context.
+   * @param env The DurableObjectState environment.
    * @returns A new instance of the WsServerDurableObject.
    * @category Creation
    * @since v5.4.0
