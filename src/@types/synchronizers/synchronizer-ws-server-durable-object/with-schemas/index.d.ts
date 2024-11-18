@@ -18,7 +18,7 @@ export class WsServerDurableObject<
   Env = unknown,
 > extends DurableObject<Env> {
   /// WsServerDurableObject.constructor
-  constructor();
+  constructor(ctx: DurableObjectState, env: Env);
 
   /// WsServerDurableObject.createPersister
   createPersister():
