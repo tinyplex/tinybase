@@ -148,6 +148,7 @@
 {
   /**
    * The constructor is used to create the server.
+   * @returns A new instance of the TinyBasePartyKitServer.
    * @category Creation
    * @since v4.3.9
    */
