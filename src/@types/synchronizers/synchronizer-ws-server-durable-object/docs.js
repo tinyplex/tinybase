@@ -25,6 +25,7 @@
    *
    * For basic TinyBase synchronization and persistence, you don't need to
    * override this method, but if you do, ensure you call the super constructor.
+   * @returns A new instance of the WsServerDurableObject.
    * @category Creation
    * @since v5.4.0
    */
@@ -39,6 +40,8 @@
    * This should almost certainly return a DurableObjectStoragePersister,
    * created with the createDurableObjectStoragePersister function. This will
    * ensure that the Store is serialized to the Durable Object KV-based storage.
+   *
+   * Returning `undefined` from this method will disable persistence.
    * @example
    * This example enables Durable Object persistence by creating a Persister
    * object within the createPersister method of a WsServerDurableObject.
@@ -59,6 +62,9 @@
    *   }
    * }
    * ```
+   * @returns A new instance of a DurableObjectStoragePersister (or a promise to
+   * resolve one) that will be used to persist data to the Durable Object.
+   * Return `undefined` if that functionality is not required.
    * @category Creation
    * @since v5.4.0
    */
@@ -69,6 +75,7 @@
    *
    * This is useful for when you want to know which path the current Durable
    * Object is serving - for the purposes of logging, for example.
+   * @returns The Id of the path being served by the Durable Object.
    * @example
    * This example logs the path being served by the Durable Object every time a
    * synchronization method is handled.
@@ -88,11 +95,12 @@
   /// WsServerDurableObject.getPathId
   /**
    * The getClientIds method is used to access a list of all the connected
-   * clients on a given path.
+   * clients on the path.
    *
    * Note that if you call this method from within the onClientId method as a
    * client is getting removed, it will still be returned in the list of client
    * Ids.
+   * @returns The Ids of the clients being served by the Durable Object.
    * @example
    * This example logs the list of clients being served by the Durable Object
    * every time a synchronization method is handled.
@@ -116,7 +124,10 @@
    *
    * This method is called with the path Id and an IdAddedOrRemoved flag
    * indicating whether it this is being triggered by the first client joining
-   * (true) or the last client leaving (false).
+   * (`1`) or the last client leaving (`-1`).
+   * @param pathId The Id of the path being served by the Durable Object.
+   * @param addedOrRemoved Whether the path had the first joiner, or the last
+   * leaver.
    * @example
    * This example logs the Id of the path being served by the Durable Object
    * when the first client joins (the path Id is 'added'), and when the last
@@ -143,7 +154,14 @@
    *
    * This method is called with the path Id, the client Id, and an
    * IdAddedOrRemoved flag indicating whether it this is being triggered by
-   * the client joining (true) or the client leaving (false).
+   * the client joining (`1`) or the client leaving (`-1`).
+   *
+   * Note that if you call the getClientIds method from within this method as a
+   * client is getting removed, it will still be returned in the list of client
+   * Ids.
+   * @param pathId The Id of the path being served by the Durable Object.
+   * @param clientId The Id of the client joining or leaving.
+   * @param addedOrRemoved Whether the client is joining or leaving.
    * @example
    * This example logs every client that joins (the client Id is 'added') or
    * leaves (the client Id is 'removed') on the path being served by the Durable
@@ -176,6 +194,10 @@
    * Since this method is called often, it should be performant. The path Id is
    * not passed as an argument, since it has a small cost to provide by default.
    * You can use the getPathId method yourself if that information is needed.
+   * @param fromClientId The Id of the client that send the message.
+   * @param toClientId The Id of the client to receive the message (or empty for
+   * a broadcast).
+   * @param remainder The remainder of the body of the message.
    * @example
    * This example logs every message routed by the Durable Object between
    * clients.
