@@ -1,7 +1,6 @@
 # FAQ
 
-These are some of the feasibly asked questions about TinyBase. We can't assert
-that they're 'frequently asked' yet, since we just launched.
+These are some of the frequently asked questions about TinyBase.
 
 ## When Should I Use TinyBase?
 
@@ -28,13 +27,11 @@ footprint, and functionality that I imagined. TinyBase was born!
 Maybe you share similar thoughts, and TinyBase will click with you. Maybe you
 don't and it won't. That's OK!
 
-If it's _close_ and a few small improvements will help, do provide feedback.
-
 ## When Should I Not Use TinyBase?
 
 While it may be appropriate to use TinyBase in a server environment, it does not
-replace a fully-fledged database system. As it's a young project, it's not
-proven in critical production environments yet.
+replace a fully-fledged database system. But there are plenty of options for
+integrating with databases like SQLite and Postgres.
 
 ## Can I Contribute To TinyBase?
 
@@ -52,5 +49,4 @@ Please see the [demos](/demos/) for ideas!
 ## What If I Have Other Questions?
 
 Please open a pull request or issue on GitHub and ask! Or ping the project on
-[Twitter](https://twitter.com/tinybasejs), [Discord](https://discord.com/invite/mGz3mevwP8), or
-[Facebook](https://facebook.com/tinybasejs).
+[X](https://x.com/tinybasejs) or [Discord](https://discord.com/invite/mGz3mevwP8)
