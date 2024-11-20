@@ -97,5 +97,5 @@ Read more about this approach in the Generating APIs guide.
 TinyBase provides different levels of typed support for your data, depending on
 how prescriptive you want it to be and your personal preferences.
 
-Next we will show how you can quickly build user interfaces on top of a Store,
-and for that, it's time to proceed to the Building UIs guide.
+Next we will run through some of the many ways you can build your app around
+TinyBase in the Architectural Options guide.
