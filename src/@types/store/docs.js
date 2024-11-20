@@ -361,7 +361,7 @@
  * do something based on every Row in a Table. See that method for specific
  * examples.
  * @param rowId The Id of the Row that the callback can operate on.
- * @param forEachRow A function that will let you iterate over the Cell values
+ * @param forEachCell A function that will let you iterate over the Cell values
  * in this Row.
  * @category Callback
  * @since v1.0.0
