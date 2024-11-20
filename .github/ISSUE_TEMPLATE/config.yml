@@ -3,9 +3,12 @@ contact_links:
   - name: 🤔 Feature Requests & Questions 
     url: https://github.com/tinyplex/tinybase/discussions
     about: Please ask and answer questions here.
-  - name: 💬 New Updates (Twitter)
-    url: https://twitter.com/tinybasejs
-    about: Link to our twitter account if you want to follow us and stay up to date with news
+  - name: 💬 New Updates (Bluesky)
+    url: https://bsky.app/profile/tinybase.bsky.social
+    about: Link to our Bluesky account if you want to follow us and stay up to date with news
+  - name: 💬 New Updates (X)
+    url: https://x.com/tinybasejs
+    about: Link to our X account
   - name: 💬 New Updates (Website)
     url: https://tinybase.org
     about: Link to our official website and documentation
