@@ -46,8 +46,8 @@
  * can do something based on every Index in the Indexes object. See that method
  * for specific examples.
  * @param indexId The Id of the Index that the callback can operate on.
- * @param forEachRow A function that will let you iterate over the Slice objects
- * in this Index.
+ * @param forEachSlice A function that will let you iterate over the Slice
+ * objects in this Index.
  * @category Callback
  * @since v1.0.0
  */

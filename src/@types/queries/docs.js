@@ -199,7 +199,7 @@
  * that you can do something based on every ResultRow in a ResultTable. See that
  * method for specific examples.
  * @param rowId The Id of the ResultRow that the callback can operate on.
- * @param forEachRow A function that will let you iterate over the ResultCell
+ * @param forEachCell A function that will let you iterate over the ResultCell
  * values in this ResultRow.
  * @category Callback
  * @since v2.0.0
