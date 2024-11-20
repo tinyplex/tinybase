@@ -154,14 +154,18 @@
     <img src="https://img.shields.io/github/stars/tinyplex/tinybase?style=for-the-badge&logo=GitHub&logoColor=%23fff&label=GitHub&labelColor=%23d81b60&color=%23333">
   </a>
 
+  <a href='https://bsky.app/profile/tinybase.bsky.social'>
+    <img src="https://img.shields.io/badge/Bluesky-Follow-blue?style=for-the-badge&logo=bluesky&logoColor=%23fff&color=%23333&labelColor=%230285FF" />
+  </a>
+  
+  <a href='https://x.com/tinybasejs' target='_blank'>
+    <img src="https://img.shields.io/badge/%2F%20Twitter-Follow-blue?style=for-the-badge&logo=x&logoColor=%23fff&color=%23333&labelColor=%23000" />
+  </a>
+
   <a href='https://discord.com/invite/mGz3mevwP8' target='_blank'>
     <img src="https://img.shields.io/discord/1027918215323590676?style=for-the-badge&logo=discord&logoColor=%23fff&label=Discord&labelColor=%233131e8&color=%23333" />
   </a>
 
-  <a href='https://twitter.com/tinybasejs' target='_blank'>
-    <img src="https://img.shields.io/twitter/follow/tinybasejs?style=for-the-badge&logo=x&logoColor=%23fff&label=Twitter&labelColor=%23333&color=%23333" />
-  </a>
-  
   <br />
 
   <a href='@@EVAL("metadata.repository")/discussions' target='_blank'>

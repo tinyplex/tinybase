@@ -49,4 +49,6 @@ Please see the [demos](/demos/) for ideas!
 ## What If I Have Other Questions?
 
 Please open a pull request or issue on GitHub and ask! Or ping the project on
-[X](https://x.com/tinybasejs) or [Discord](https://discord.com/invite/mGz3mevwP8)
+[Bluesky](https://bsky.app/profile/tinybase.bsky.social),
+[X](https://x.com/tinybasejs), or
+[Discord](https://discord.com/invite/mGz3mevwP8)
