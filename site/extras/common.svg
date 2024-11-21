@@ -20,4 +20,15 @@
     <circle cx="140" cy="60" r="25" fill="#ff0a" />
     <circle cx="220" cy="60" r="25" fill="#0f0a" />
   </g>
+
+  <g id="app" stroke-width="20" stroke="#fff" fill="none">
+    <path d="M90,225 h170" stroke="#333" />
+    <path d="M90,325 h170" stroke="#333" />
+    <path d="M90,425 h170" stroke="#333" />
+    <path d="M320,225 h490" />
+    <path d="M320,325 h490" />
+    <path d="M320,425 h490" />
+    <path d="M320,525 h490" />
+  </g>
+
 </svg>
