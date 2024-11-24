@@ -20,4 +20,27 @@
     <circle cx="140" cy="60" r="25" fill="#ff0a" />
     <circle cx="220" cy="60" r="25" fill="#0f0a" />
   </g>
+
+  <g id="app" stroke-width="20" stroke="#fff" fill="none">
+    <path d="M90,225 h170" stroke="#333" />
+    <path d="M90,325 h170" stroke="#333" />
+    <path d="M90,425 h170" stroke="#333" />
+    <path d="M320,225 h490" />
+    <path d="M320,325 h490" />
+    <path d="M320,425 h490" />
+    <path d="M320,525 h490" />
+  </g>
+
+  <g id="cloud">
+    <path filter="url(#shadow)"
+      d="M0 410q0 210 210 210h560q130 0 130-130q0-130-130-130q0-360-360-360 q-205 0-205 205q-205 0-205 205" fill="#777"
+      stroke="#fff" stroke-width="10" />
+  </g>
+
+
+  <g id="storage">
+    <rect height="180" width="900" rx="50" filter="url(#shadow)" fill="#444" stroke="#fff" stroke-width="10" />
+  </g>
+
+  <path id="arrow" d="M 0 0 L 10 5 L 0 10 z" fill="#d81b60" />
 </svg>
