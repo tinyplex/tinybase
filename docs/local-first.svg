@@ -32,19 +32,15 @@
   <g transform="translate(1000,25) scale(.6)">
     <use xlink:href="common.svg#logo" />
     <g transform="translate(340,215) skewY(-10)">
-      <path filter="url(#shadow)"
-        d="M0 410q0 210 210 210h560q130 0 130-130q0-130-130-130q0-360-360-360 q-205 0-205 205q-205 0-205 205"
-        fill="#777" stroke="#fff" stroke-width="10" />
+      <use xlink:href="common.svg#cloud" />
       <g stroke-width="20" stroke="#fff" fill="none">
-        <g stroke-width="20" stroke="#fff" fill="none">
-          <path d="M220,320 h180" stroke="#333" />
-          <path d="M220,420 h180" stroke="#333" />
-          <path d="M220,520 h180" stroke="#333" />
-          <path d="M480,220 h180" />
-          <path d="M480,320 h180" />
-          <path d="M480,420 h180" />
-          <path d="M480,520 h180" />
-        </g>
+        <path d="M220,320 h180" stroke="#333" />
+        <path d="M220,420 h180" stroke="#333" />
+        <path d="M220,520 h180" stroke="#333" />
+        <path d="M480,220 h180" />
+        <path d="M480,320 h180" />
+        <path d="M480,420 h180" />
+        <path d="M480,520 h180" />
       </g>
     </g>
     <animateMotion path="M25 0q25 0 25 25q0 25 -25 25q-25 0-25-25q0-25 25-25" dur="2" repeatCount="indefinite" />
@@ -78,15 +74,7 @@
     <use xlink:href="common.svg#logo" />
     <g transform="translate(340,215) skewY(-10)">
       <use xlink:href="common.svg#screen" />
-      <g stroke-width="20" stroke="#fff" fill="none">
-        <path d="M90,225 h170" stroke="#333" />
-        <path d="M90,325 h170" stroke="#333" />
-        <path d="M90,425 h170" stroke="#333" />
-        <path d="M320,225 h490" />
-        <path d="M320,325 h490" />
-        <path d="M320,425 h490" />
-        <path d="M320,525 h490" />
-      </g>
+      <use xlink:href="common.svg#app" />
     </g>
     <animateMotion path="M50 25q0 25 -25 25q-25 0-25-25q0-25 25-25q25 0 25 25" dur="2" repeatCount="indefinite" />
   </g>
