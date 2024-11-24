@@ -74,7 +74,7 @@
 ---
 
 <section id="friends">
-<h2>TinyBase works great on its own, but also plays well with friends!</h2>
+<h2>TinyBase works great on its own, but also plays well with friends.</h2>
 <div>
   <a href='/guides/building-uis/getting-started-with-ui-react'>
     <img width="48" src="/react.svg" /> React
@@ -144,6 +144,11 @@
     <img width="48" src="/automerge.svg" /> Automerge
   </a>
 </div>
+<p>
+  (<em>Baffled by all these options?</em> Check out the 
+  <a href='/guides/the-basics/architectural-options'>guide to architectural 
+  options</a> to make sense of it all!)
+</p>
 </section>
 
 ---
