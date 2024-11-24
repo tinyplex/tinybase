@@ -1,20 +1,14 @@
 <svg viewBox="0 0 3000 1100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-
+  <filter id="shadow" x="-20%" width="140%" y="-20%" height="140%">
+    <feDropShadow dx="0" dy="0" stdDeviation="20" flood-opacity="0.7" />
+  </filter>
   <g transform="translate(1111,300) scale(0.6)">
     <use xlink:href="common.svg#logo" />
     <g transform="translate(340,215) skewY(-10)">
       <use xlink:href="common.svg#screen" />
-      <text x="310" y="85" fill="#000" font-size="70px" font-family="Inter" font-weight="400">Simple
+      <use xlink:href="common.svg#app" />
+      <text x="310" y="85" fill="#000" font-size="70px" font-family="Inter,sans-serif" font-weight="400">Transient
         app</text>
-      <g stroke-width="20" stroke="#fff" fill="none">
-        <path d="M90,225 h170" stroke="#333" />
-        <path d="M90,325 h170" stroke="#333" />
-        <path d="M90,425 h170" stroke="#333" />
-        <path d="M320,225 h490" />
-        <path d="M320,325 h490" />
-        <path d="M320,425 h490" />
-        <path d="M320,525 h490" />
-      </g>
     </g>
   </g>
 </svg>

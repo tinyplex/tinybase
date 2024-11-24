@@ -32,9 +32,7 @@
   <g transform="translate(1000,25) scale(.6)">
     <use xlink:href="common.svg#logo" />
     <g transform="translate(340,215) skewY(-10)">
-      <path filter="url(#shadow)"
-        d="M0 410q0 210 210 210h560q130 0 130-130q0-130-130-130q0-360-360-360 q-205 0-205 205q-205 0-205 205"
-        fill="#777" stroke="#fff" stroke-width="10" />
+      <use xlink:href="common.svg#cloud" />
       <g stroke-width="20" stroke="#fff" fill="none">
         <path d="M220,320 h180" stroke="#333" />
         <path d="M220,420 h180" stroke="#333" />
