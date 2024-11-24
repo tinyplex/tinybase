@@ -8,9 +8,19 @@ runs within a JavaScript environment like a browser or a worker. Whilst it can
 theoretically stand alone in a simple app, you'll probably want to preserve,
 share, or sync the data between reloads and sessions.
 
-And so a lot of what we're discussing in the guide is how to integrate TinyBase
-with persistence and synchronization techniques - whether on the client or the
-server, or both.
+Here are the options we'll discuss in this guide:
+
+- [Standalone TinyBase](#0-standalone-tinybase)
+- [Read-Only Cloud Data](#1-read-only-cloud-data)
+- [Browser Storage](#2-browser-storage)
+- [Client Database Storage](#3-client-database-storage)
+- [Client-Only Synchronization](#4-client-only-synchronization)
+- [Server-Client Synchronization](#5-server-client-synchronization)
+- [Third-Party Synchronization](#6-third-party-synchronization)
+
+As you can see lot of what we'll be discussing is how to integrate TinyBase with
+different persistence and synchronization techniques - whether on the client or
+the server, or both. Let's go!
 
 ## 0. Standalone TinyBase
 

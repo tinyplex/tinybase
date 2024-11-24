@@ -61,6 +61,7 @@ addEventListener('load', () => {
       return;
     }
     let target: HTMLElement = event.target as any;
+
     if (
       target.tagName == 'SPAN' &&
       target.innerHTML == '' &&
@@ -89,10 +90,10 @@ addEventListener('load', () => {
   });
 
   window.onpopstate = function (event: PopStateEvent) {
-    // if (!location.href.includes('#')) {
-    go(location.href);
-    event.preventDefault();
-    // }
+    if (!location.href.includes('#')) {
+      go(location.href);
+      event.preventDefault();
+    }
   };
 
   const openClose = (li: HTMLElement) =>
