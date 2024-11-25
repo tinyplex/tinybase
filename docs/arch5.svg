@@ -48,7 +48,7 @@
     <g transform="translate(-560,54) skewY(10)">
       <use xlink:href="common.svg#screen" />
       <use xlink:href="common.svg#app" />
-      <text x="310" y="85" fill="#000" font-size="70px">Synchronized
+      <text x="310" y="85" fill="#000" font-size="70px">Synced
         app</text>
     </g>
   </g>
@@ -61,7 +61,7 @@
     <g transform="translate(340,215) skewY(-10)">
       <use xlink:href="common.svg#screen" />
       <use xlink:href="common.svg#app" />
-      <text x="310" y="85" fill="#000" font-size="70px">Synchronized
+      <text x="310" y="85" fill="#000" font-size="70px">Synced
         app</text>
     </g>
   </g>
