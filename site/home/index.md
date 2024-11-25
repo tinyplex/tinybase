@@ -145,9 +145,9 @@
   </a>
 </div>
 <p>
-  (<em>Baffled by all these options?</em> Check out the 
-  <a href='/guides/the-basics/architectural-options'>guide to architectural 
-  options</a> to make sense of it all!)
+  (Baffled by all these logos? Check out our 
+  <a href='/guides/the-basics/architectural-options'>architectural 
+  options</a> guide to make sense of it all!)
 </p>
 </section>
 
