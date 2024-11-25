@@ -5,13 +5,13 @@
   </filter>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" orient="auto-start-reverse">
-      <use xlink:href="common.svg#arrow" />
+      <use xlink:href="common.svg?a#arrow" />
     </marker>
   </defs>
 
   <g transform="translate(1500,300) scale(0.6)">
     <g transform="translate(-1200,0) skewY(-10)">
-      <use xlink:href="common.svg#cloud" />
+      <use xlink:href="common.svg?a#cloud" />
       <g stroke-width="20" stroke="#fff" fill="none">
         <path d="M220,320 h180" stroke="#333" />
         <path d="M220,420 h180" stroke="#333" />
@@ -21,10 +21,10 @@
       </g>
       <text x="180" y="560" fill="#fff">Reference data</text>
     </g>
-    <use xlink:href="common.svg#logo" />
+    <use xlink:href="common.svg?a#logo" />
     <g transform="translate(340,215) skewY(-10)">
-      <use xlink:href="common.svg#screen" />
-      <use xlink:href="common.svg#app" />
+      <use xlink:href="common.svg?a#screen" />
+      <use xlink:href="common.svg?a#app" />
       <text x="310" y="85" fill="#000" font-size="70px">Read-only
         app</text>
     </g>

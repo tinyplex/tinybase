@@ -30,9 +30,9 @@
   </line>
 
   <g transform="translate(1000,25) scale(.6)">
-    <use xlink:href="common.svg#logo" />
+    <use xlink:href="common.svg?a#logo" />
     <g transform="translate(340,215) skewY(-10)">
-      <use xlink:href="common.svg#cloud" />
+      <use xlink:href="common.svg?a#cloud" />
       <g stroke-width="20" stroke="#fff" fill="none">
         <path d="M220,320 h180" stroke="#333" />
         <path d="M220,420 h180" stroke="#333" />
@@ -71,16 +71,16 @@
   </line>
 
   <g transform="translate(0,300) scale(0.6)">
-    <use xlink:href="common.svg#logo" />
+    <use xlink:href="common.svg?a#logo" />
     <g transform="translate(340,215) skewY(-10)">
-      <use xlink:href="common.svg#screen" />
-      <use xlink:href="common.svg#app" />
+      <use xlink:href="common.svg?a#screen" />
+      <use xlink:href="common.svg?a#app" />
     </g>
     <animateMotion path="M50 25q0 25 -25 25q-25 0-25-25q0-25 25-25q25 0 25 25" dur="2" repeatCount="indefinite" />
   </g>
 
   <g transform="translate(2500,300) scale(0.6)">
-    <use xlink:href="common.svg#logo" />
+    <use xlink:href="common.svg?a#logo" />
     <g transform="translate(340,215) skewY(-10)">
       <rect height="620" width="340" rx="50" filter="url(#shadow)" fill="#777" stroke="#fff" stroke-width="10" />
       <path d="M80 0v40q0,25 25,25h130q25,0 25,-25v-40h-180" stroke="#fff" fill="#000" stroke-width="10" />
@@ -95,7 +95,7 @@
   </g>
 
   <g transform="translate(1500,575) scale(0.6)">
-    <use xlink:href="common.svg#logo" />
+    <use xlink:href="common.svg?a#logo" />
     <g transform="translate(340,215) skewY(-10)">
       <rect height="520" width="640" rx="50" filter="url(#shadow)" fill="#777" stroke="#fff" stroke-width="10" />
       <path d="M0 170h40q25,0 25,25v130q0,25 -25 25h-40v-180" stroke="#fff" fill="#000" stroke-width="10" />
