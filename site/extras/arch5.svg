@@ -5,27 +5,27 @@
   </filter>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" orient="auto-start-reverse">
-      <use xlink:href="common.svg#arrow" />
+      <use xlink:href="common.svg?a#arrow" />
     </marker>
   </defs>
 
   <g transform="translate(1015,70) scale(0.6)">
     <g transform="translate(-560,0) skewY(-10)">
-      <use xlink:href="common.svg#storage" />
+      <use xlink:href="common.svg?a#storage" />
       <text x="50" y="120" fill="#fff">SQLite</text>
     </g>
     <g transform="translate(-560,225) skewY(-10)">
-      <use xlink:href="common.svg#storage" />
+      <use xlink:href="common.svg?a#storage" />
       <text x="50" y="120" fill="#fff">PostgreSQL</text>
     </g>
     <g transform="translate(-560,450) skewY(-10)">
-      <use xlink:href="common.svg#storage" />
+      <use xlink:href="common.svg?a#storage" />
       <text x="50" y="120" fill="#fff">Durable Object</text>
     </g>
 
-    <use xlink:href="common.svg#logo" />
+    <use xlink:href="common.svg?a#logo" />
     <g transform="translate(340,215) skewY(-10)">
-      <use xlink:href="common.svg#cloud" />
+      <use xlink:href="common.svg?a#cloud" />
       <text x="450" y="320" fill="#fff" text-anchor="middle">Synchronizer</text>
       <text x="450" y="420" fill="#fff" text-anchor="middle">&amp; storage</text>
       <text x="450" y="520" fill="#fff" text-anchor="middle">server</text>
@@ -41,26 +41,26 @@
 
   <g transform="translate(560,600) scale(0.6)">
     <g transform="translate(340,64) skewY(10)">
-      <use xlink:href="common.svg#storage" />
+      <use xlink:href="common.svg?a#storage" />
       <text x="850" y="120" fill="#fff" text-anchor="end">Synchronizer</text>
     </g>
-    <use xlink:href="common.svg#logo" />
+    <use xlink:href="common.svg?a#logo" />
     <g transform="translate(-560,54) skewY(10)">
-      <use xlink:href="common.svg#screen" />
-      <use xlink:href="common.svg#app" />
+      <use xlink:href="common.svg?a#screen" />
+      <use xlink:href="common.svg?a#app" />
       <text x="310" y="85" fill="#000" font-size="70px">Synced
         app</text>
     </g>
   </g>
   <g transform="translate(2040,600) scale(0.6)">
     <g transform="translate(-560,225) skewY(-10)">
-      <use xlink:href="common.svg#storage" />
+      <use xlink:href="common.svg?a#storage" />
       <text x="50" y="120" fill="#fff">Synchronizer</text>
     </g>
-    <use xlink:href="common.svg#logo" />
+    <use xlink:href="common.svg?a#logo" />
     <g transform="translate(340,215) skewY(-10)">
-      <use xlink:href="common.svg#screen" />
-      <use xlink:href="common.svg#app" />
+      <use xlink:href="common.svg?a#screen" />
+      <use xlink:href="common.svg?a#app" />
       <text x="310" y="85" fill="#000" font-size="70px">Synced
         app</text>
     </g>

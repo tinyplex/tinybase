@@ -11,7 +11,7 @@
     </g>
   </defs>
 
-  <use xlink:href="common.svg#logo" transform="translate(500,200)" />
+  <use xlink:href="common.svg?a#logo" transform="translate(500,200)" />
 
   <g transform="translate(840,315) skewY(-10)" fill="none">
     <rect id="content" filter="url(#shadow)" height="620" width="900" stroke="#fff" stroke-width="10" rx="50"
@@ -33,7 +33,7 @@
   </g>
 
   <g transform="translate(1540,315) skewY(-10)">
-    <use xlink:href="common.svg#screen" />
+    <use xlink:href="common.svg?a#screen" />
     <g opacity="0" stroke-width="20" stroke="#fff" fill="none">
       <path d="M90,225 h170" stroke="#333" />
       <path d="M90,325 h170" stroke="#333" />

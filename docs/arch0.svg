@@ -3,10 +3,10 @@
     <feDropShadow dx="0" dy="0" stdDeviation="20" flood-opacity="0.7" />
   </filter>
   <g transform="translate(1111,300) scale(0.6)">
-    <use xlink:href="common.svg#logo" />
+    <use xlink:href="common.svg?a#logo" />
     <g transform="translate(340,215) skewY(-10)">
-      <use xlink:href="common.svg#screen" />
-      <use xlink:href="common.svg#app" />
+      <use xlink:href="common.svg?a#screen" />
+      <use xlink:href="common.svg?a#app" />
       <text x="310" y="85" fill="#000" font-size="70px" font-family="Inter,sans-serif" font-weight="400">Transient
         app</text>
     </g>

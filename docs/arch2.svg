@@ -5,21 +5,21 @@
   </filter>
   <g transform="translate(1300,300) scale(0.6)">
     <g transform="translate(-560,0) skewY(-10)">
-      <use xlink:href="common.svg#storage" />
+      <use xlink:href="common.svg?a#storage" />
       <text x="50" y="120" fill="#fff">Session storage</text>
     </g>
     <g transform="translate(-560,225) skewY(-10)">
-      <use xlink:href="common.svg#storage" />
+      <use xlink:href="common.svg?a#storage" />
       <text x="50" y="120" fill="#fff">Local storage</text>
     </g>
     <g transform="translate(-560,450) skewY(-10)">
-      <use xlink:href="common.svg#storage" />
+      <use xlink:href="common.svg?a#storage" />
       <text x="50" y="120" fill="#fff">IndexedDB</text>
     </g>
-    <use xlink:href="common.svg#logo" />
+    <use xlink:href="common.svg?a#logo" />
     <g transform="translate(340,215) skewY(-10)">
-      <use xlink:href="common.svg#screen" />
-      <use xlink:href="common.svg#app" />
+      <use xlink:href="common.svg?a#screen" />
+      <use xlink:href="common.svg?a#app" />
       <text x="310" y="85" fill="#000" font-size="70px">Persistent
         app</text>
     </g>

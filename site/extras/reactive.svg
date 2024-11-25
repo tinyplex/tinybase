@@ -71,7 +71,7 @@
     </g>
   </g>
 
-  <use xlink:href="common.svg#logo" transform="translate(500,200)" />
+  <use xlink:href="common.svg?a#logo" transform="translate(500,200)" />
 
   <g transform="translate(1040,210) skewY(-10)">
     <rect id="content" filter="url(#shadow)" height="740" width="300" stroke="#fff" stroke-width="10" rx="50"
@@ -116,7 +116,7 @@
   </g>
 
   <g transform="translate(1540,315) skewY(-10)">
-    <use xlink:href="common.svg#screen" />
+    <use xlink:href="common.svg?a#screen" />
 
     <polygon points="250,215 400,515 100,515" stroke="#fff" stroke-width="10">
       <set attributeName="fill" to="#0943D9" begin="blueTriangle.end" />
