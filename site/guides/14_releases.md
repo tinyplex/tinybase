@@ -3,6 +3,8 @@
 This is a reverse chronological list of the major TinyBase releases, with
 highlighted features.
 
+---
+
 # v5.4
 
 ## Durable Objects synchronization
@@ -72,6 +74,14 @@ synchronizer-ws-server-simple module that contains a simple server
 implementation called WsServerSimple. Without the complications of listeners,
 persistence, or statistics, this is more suitable to be used as a reference
 implementation for other server environments.
+
+## Architectural Guide
+
+To go with this release, we have added new documentation on ways in which you
+can use TinyBase in an app architecture. Check it out in the new Architectural
+Options guide!
+
+---
 
 # v5.3
 
@@ -148,6 +158,8 @@ show how to use them.
 
 Please provide feedback on this new release on GitHub!
 
+---
+
 # v5.2
 
 This release introduces new Persisters for... PostgreSQL! TinyBase now has two
@@ -221,6 +233,8 @@ Persister or Synchronizer), you will need to update your imports accordingly to
 the standalone `tinybase/persisters` and `tinybase/synchronizers` versions of
 them. Apologies.
 
+---
+
 # v5.1
 
 This release lets you persist data on a server using the createWsServer
@@ -261,6 +275,8 @@ Synchronizer objects can now take optional onSend and onReceive callbacks that
 will fire whenever messages pass through the Synchronizer. See, for example, the
 createWsSynchronizer function. These are suitable for debugging synchronization
 issues in a development environment.
+
+---
 
 # v5.0
 
@@ -462,6 +478,8 @@ In the persisters module:
 - The broadcastTransactionChanges method in the persister-partykit-server module
   has been renamed to the broadcastChanges method.
 
+---
+
 # v4.8
 
 This release includes the new persister-powersync module, which provides a
@@ -486,6 +504,8 @@ A huge thank you to [Benedikt Mueller](https://bndkt.com/)
 ([@bndkt](https://github.com/bndkt)) for building out this functionality! And
 please provide feedback on how this new Persister works for you.
 
+---
+
 # v4.7
 
 This release includes the new persister-libsql module, which provides a
@@ -508,6 +528,8 @@ const persister = createLibSqlPersister(store, client, {
 
 This is the first version of this functionality, so please provide feedback on
 how it works for you!
+
+---
 
 # v4.6
 
@@ -533,6 +555,8 @@ This release is accompanied by a [template
 project](https://github.com/tinyplex/tinybase-ts-react-electricsql) to get
 started quickly with this integration. Enjoy!
 
+---
+
 # v4.5
 
 This release includes the new persister-expo-sqlite-next module, which provides
@@ -548,6 +572,8 @@ NB as of TinyBase v5.0, this is now the default and legacy support has been
 removed.
 
 Thank you to Expo for providing this functionality!
+
+---
 
 # v4.4
 
@@ -572,6 +598,8 @@ as follows:
 
 These methods may become particularly important in future versions of TinyBase
 that support `null` as valid Cells and Values.
+
+---
 
 # v4.3
 
@@ -641,6 +669,8 @@ wins'. However, since the transmitted updates are at single cell (or value)
 granularity, conflicts are minimized. More resilient replication is planned as
 this integration matures.
 
+---
+
 # v4.2
 
 This release adds support for persisting TinyBase to a browser's IndexedDB
@@ -682,6 +712,8 @@ choose to 'autoLoad' your data into TinyBase.
 
 This release also upgrades Prettier to v3.0 which has a peer-dependency impact
 on the tools module. Please report any issues!
+
+---
 
 # v4.1
 
@@ -770,6 +802,8 @@ Demos have been updated to demonstrate the ui-react-dom module and the Inspector
 component where appropriate.
 
 (NB: Previous to v5.0, this component was called `StoreInspector`.)
+
+---
 
 # v4.0
 
@@ -904,6 +938,8 @@ content (or nothing) rather than JSON. `startListeningToPersisted` has been
 renamed `addPersisterListener`, and `stopListeningToPersisted` has been renamed
 `delPersisterListener`.
 
+---
+
 # v3.3
 
 This release allows you to track the Cell Ids used across a whole Table,
@@ -966,6 +1002,8 @@ store.delRow('pets', 'felix');
 store.delListener(listenerId).delTables();
 ```
 
+---
+
 # v3.2
 
 This release lets you add a listener to the start of a transaction, and detect
@@ -1017,6 +1055,8 @@ store.delTables();
 This release also fixes a bug where using the explicit startTransaction method
 _inside_ another listener could create infinite recursion.
 
+---
+
 # v3.1
 
 This new release adds a powerful schema-based type system to TinyBase.
@@ -1061,6 +1101,8 @@ Finally, v3.1.1 adds a `reuseRowIds` parameter to the addRow method and the
 useAddRowCallback hook. It defaults to `true`, for backwards compatibility, but
 if set to `false`, new Row Ids will not be reused unless the whole Table is
 deleted.
+
+---
 
 # v3.0
 
@@ -1161,6 +1203,8 @@ the setTablesSchema method. The setSchema method now takes two arguments, the
 second of which is optional, also aiding backward compatibility. The delSchema
 method removes both types of schema.
 
+---
+
 # v2.2
 
 This release includes a new tools module. These tools are not intended for
@@ -1210,6 +1254,8 @@ Implementation: [...]/api/shop.ts
 Finally, the tools module also provides ways to track the overall size and
 structure of a Store for use while debugging.
 
+---
+
 # v2.1
 
 This release allows you to create indexes where a single Row Id can exist in
@@ -1243,6 +1289,8 @@ console.log(indexes.getSliceRowIds('containsLetter', 'x'));
 
 This functionality is showcased in the Word Frequencies demo if you would like
 to see it in action.
+
+---
 
 # v2.0
 
@@ -1305,6 +1353,8 @@ feedback via [Github](https://github.com/tinyplex/tinybase),
 [Bluesky](https://bsky.app/profile/tinybase.bsky.social), and
 [X](https://x.com/tinybasejs)!
 
+---
+
 # v1.3
 
 Adds support for explicit transaction start and finish methods, as well as
@@ -1341,6 +1391,8 @@ together, which we need for the query engine.
 
 Note: this API was updated to be more comprehensive in v4.0.
 
+---
+
 # v1.2
 
 This adds a way to revert transactions if they have not met certain conditions.
@@ -1355,6 +1407,8 @@ during the transaction. You will most likely use the contents of those objects
 to decide whether the transaction should be rolled back.
 
 Note: this API was updated to be more comprehensive in v4.0.
+
+---
 
 # v1.1
 
