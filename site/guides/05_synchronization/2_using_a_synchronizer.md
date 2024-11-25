@@ -249,6 +249,3 @@ MergeableStores in sync. The WebSocket and BroadcastChannel options above allow
 for numerous interesting and powerful app architectures - and they are not
 sufficient, consider exploring the createCustomSynchronizer function to develop
 your own!
-
-We now move on to ways in which TinyBase can be used like a database, starting
-with the Using Metrics guide.
