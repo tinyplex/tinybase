@@ -26,7 +26,7 @@ export const Footer: NoPropComponent = () => (
       <a href="/">
         TinyBase <span id="version" />
       </a>{' '}
-      © 2022- All Rights Reserved
+      © 2022-
     </nav>
   </footer>
 );
