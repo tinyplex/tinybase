@@ -15,7 +15,7 @@ Here are the options we'll discuss in this guide:
 - [Browser Storage](#2-browser-storage)
 - [Client Database Storage](#3-client-database-storage)
 - [Client-Only Synchronization](#4-client-only-synchronization)
-- [Server-Client Synchronization](#5-server-client-synchronization)
+- [Client-Server Synchronization](#5-client-server-synchronization)
 - [Third-Party Synchronization](#6-third-party-synchronization)
 
 As you can see lot of what we'll be discussing is how to integrate TinyBase with
@@ -137,7 +137,7 @@ how this works. The Todo App v6 (collaboration) demo shows client-to-client
 synchronization for a simple to-do list application. The server is created, in a
 simple Node- or Bun-style environment with the createWsServer function.
 
-## 5. Server-Client Synchronization
+## 5. Client-Server Synchronization
 
 From here it is only a simple step to add server storage into the mix, removing
 the risk of all client devices clearing their data simultaneously and it being
@@ -148,7 +148,7 @@ _also_ acts as a 'client' with an instance of TinyBase itself. This is most
 usefully then persisted to a server storage solution, such as SQLite,
 PostgreSQL, the file system, or a Cloudflare Durable Object.
 
-![Server-Client synchronization](/arch5.svg 'Server-Client synchronization')
+![Client-Server synchronization](/arch5.svg 'Client-Server synchronization')
 
 - **Pros**: The server can now be considered a more permanent 'source of truth'
   than clients. Authentication and data integrity can now be more easily
