@@ -68,6 +68,12 @@
  * A DurableObjectStoragePersister only supports MergeableStore objects, and
  * cannot be used to persist a regular Store.
  *
+ * Durable Objects have limitations on the data that can be stored in each key
+ * of their key-value structure. The DurableObjectStoragePersister uses one key
+ * per TinyBase Value, one key per Cell, one key per Row, and one key per Table.
+ * Mostly this is CRDT metadata, but the main caution is to ensure that each
+ * individual TinyBase Cell and Value data does not exceed the (128 KiB) limit.
+ *
  * As well as providing a reference to the MergeableStore to persist, you must
  * provide a `storage` parameter which identifies the Durable Object storage to
  * persist it to.

@@ -9,19 +9,23 @@
     </marker>
   </defs>
 
-  <g transform="translate(1015,70) scale(0.6)">
-    <g transform="translate(-560,225) skewY(-10)">
+  <g transform="translate(1015,-25) scale(0.6)">
+
+    <g transform="translate(-950,225) skewY(-10)">
       <use xlink:href="common.svg?a#storage" />
       <text x="50" y="120" fill="#fff">Durable Object</text>
     </g>
+    <use xlink:href="common.svg?a#logo" transform="translate(-140,20) scale(0.4)" />
+    <line stroke="#d81b60" stroke-width="40" x1="-240" y1="225" x2="160" y2="450" marker-start="url(#arrow)" />
 
-    <use xlink:href="common.svg?a#logo" />
-    <g transform="translate(340,215) skewY(-10)">
-      <use xlink:href="common.svg?a#cloud" />
-      <use xlink:href="cloudflare.svg" />
-      <text x="450" y="420" fill="#fff" text-anchor="middle">Cloudflare</text>
-      <text x="450" y="520" fill="#fff" text-anchor="middle">Workers</text>
+    <g transform="translate(-400,450) skewY(-10)">
+      <use xlink:href="common.svg?a#storage" />
+      <text x="50" y="120" fill="#fff">Workers</text>
     </g>
+    <line stroke="#d81b60" stroke-width="40" x1="160" y1="450" x2="560" y2="675" stroke-linecap="round" />
+
+    <use xlink:href="cloudflare.svg?a#logo" transform="translate(-700,100) skewY(-10)" />
+
   </g>
 
   <g transform="scale(0.6)">
@@ -36,6 +40,10 @@
       <use xlink:href="common.svg?a#storage" />
       <text x="850" y="120" fill="#fff" text-anchor="end">Synchronizer</text>
     </g>
+    <g transform="translate(340,289) skewY(10)">
+      <use xlink:href="common.svg?a#storage" />
+      <text x="850" y="120" fill="#fff" text-anchor="end">Local storage</text>
+    </g>
     <use xlink:href="common.svg?a#logo" />
     <g transform="translate(-560,54) skewY(10)">
       <use xlink:href="common.svg?a#screen" />
@@ -48,6 +56,10 @@
     <g transform="translate(-560,225) skewY(-10)">
       <use xlink:href="common.svg?a#storage" />
       <text x="50" y="120" fill="#fff">Synchronizer</text>
+    </g>
+    <g transform="translate(-560,450) skewY(-10)">
+      <use xlink:href="common.svg?a#storage" />
+      <text x="50" y="120" fill="#fff">Local storage</text>
     </g>
     <use xlink:href="common.svg?a#logo" />
     <g transform="translate(340,215) skewY(-10)">

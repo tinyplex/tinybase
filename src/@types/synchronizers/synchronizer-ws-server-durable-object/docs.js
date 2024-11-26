@@ -2,6 +2,7 @@
  * The synchronizer-ws-server-durable-object module of the TinyBase project lets
  * you create a server that facilitates synchronization between clients, running
  * as a Cloudflare Durable Object.
+ * @see Cloudflare Durable Objects guide
  * @see Synchronization guide
  * @see Todo App v6 (collaboration) demo
  * @packageDocumentation
@@ -14,6 +15,16 @@
  * A WsServerDurableObject is the server component (running as a Cloudflare
  * Durable Object) for synchronization between clients that are using
  * WsSynchronizer instances.
+ *
+ * The WsServerDurableObject is an overridden implementation of the
+ * DurableObject class, so you can have access to its members as well as the
+ * TinyBase-specific methods. If you are using the storage for other data, you
+ * may want to configure a `prefix` parameter to ensure you don't accidentally
+ * collide with TinyBase data.
+ *
+ * Always remember to call the `super` implementations of the methods that
+ * TinyBase uses (the constructor, `fetch`, `webSocketMessage`, and
+ * `webSocketClose`) if you further override them.
  * @category Creation
  * @since v5.4.0
  */
@@ -24,7 +35,8 @@
    * the TinyBase clients.
    *
    * For basic TinyBase synchronization and persistence, you don't need to
-   * override this method, but if you do, ensure you call the super constructor
+   * override this method, but if you do, ensure you call the `super`
+   * constructor
    * with the two parameters.
    * @param ctx The DurableObjectState context.
    * @param env The DurableObjectState environment.
