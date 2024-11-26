@@ -56,7 +56,7 @@ export class AutomergeTestNetworkAdapter extends NetworkAdapter {
         } else {
           this.emit('message', {
             ...message,
-            data: new Uint8Array(message.data as ArrayBufferLike),
+            data: new Uint8Array(message.data as any),
           });
         }
         break;
