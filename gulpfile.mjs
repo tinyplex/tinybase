@@ -401,9 +401,7 @@ const getTsOptions = async (dir) => {
 const tsCheck = async (dir) => {
   const path = await import('path');
   const {default: tsc} = await import('typescript');
-  const {
-    default: {default: unusedExports},
-  } = await import('ts-unused-exports');
+  const {analyzeTsConfig} = await import('ts-unused-exports');
   const {fileNames, options} = await getTsOptions(dir);
   const results = tsc
     .getPreEmitDiagnostics(
@@ -428,12 +426,12 @@ const tsCheck = async (dir) => {
     throw resultText;
   }
   const unusedResults = Object.entries(
-    unusedExports(`${path.resolve(dir)}/tsconfig.json`, [
+    analyzeTsConfig(`${path.resolve(dir)}/tsconfig.json`, [
       '--excludeDeclarationFiles',
       '--excludePathsFromReport=' +
         'build.ts;ui-react/common.ts;' +
         TEST_MODULES.map((module) => `${module}.ts`).join(';'),
-    ]),
+    ]).unusedExports,
   )
     .map(
       ([file, exps]) =>
