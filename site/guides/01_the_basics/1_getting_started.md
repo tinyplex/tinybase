@@ -35,7 +35,7 @@ npm run dev
 The final step will display a local URL, which should serve up a basic TinyBase
 application for you:
 
-![Thumbnail of Vite app](https://tinybase.org/vite-tinybase.png 'Thumbnail of Vite app')
+![Thumbnail of Vite app](/vite-tinybase.png 'Thumbnail of Vite app')
 
 In fact, there are eleven templates for TinyBase, depending on whether you want
 to use TypeScript or React, and the integrations you want to target.
