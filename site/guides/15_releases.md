@@ -10,10 +10,13 @@ highlighted features.
 ## Durable Objects synchronization
 
 This release contains a new WebSocket synchronization server that runs on
-Cloudflare as a Durable Object. It's in the new
-synchronizer-ws-server-durable-object module, and you use it by extending the
-WsServerDurableObject class. Use the getWsServerDurableObjectFetch function for
-conveniently binding your Cloudflare Worker to your Durable Object:
+Cloudflare as a Durable Object.
+
+![Durable Objects](/durable.svg 'Durable Objects')
+
+It's in the new synchronizer-ws-server-durable-object module, and you use it by
+extending the WsServerDurableObject class. Use the getWsServerDurableObjectFetch
+function for conveniently binding your Cloudflare Worker to your Durable Object:
 
 ```js yolo
 import {
@@ -39,7 +42,7 @@ class_name = "MyDurableObject"
 With this you can now easily connect and synchronize clients that are using the
 WsSynchronizer synchronizer.
 
-## Durable Objects persistence
+## Durable Objects Persistence
 
 But wait! there's more. Durable Objects also provide a storage mechanism, and
 sometimes you want TinyBase data to also be stored on the server (in case all
@@ -67,7 +70,7 @@ You can get started quickly with this architecture using the [new Vite
 template](https://github.com/tinyplex/vite-tinybase-ts-react-sync-durable-object)
 that accompanies this release.
 
-## Server reference implementation
+## Server Reference Implementation
 
 Unrelated to Durable Objects, this release also includes the new
 synchronizer-ws-server-simple module that contains a simple server
@@ -80,6 +83,9 @@ implementation for other server environments.
 To go with this release, we have added new documentation on ways in which you
 can use TinyBase in an app architecture. Check it out in the new Architectural
 Options guide!
+
+We've also started a new section of documentation for describing integrations,
+of which the Cloudflare Durable Objects guide is the first new entry!
 
 ---
 
