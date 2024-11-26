@@ -160,7 +160,7 @@ PostgreSQL, the file system, or a Cloudflare Durable Object.
 See the createWsServer function for details of how to create a persister for the
 synchronization server, such as Sqlite3Persister or PostgresPersister. A
 reliable all-in-one solution is the persister-durable-object module which lets
-you run both synchronization and storage on Cloudflare's Durable Objects
+you run both synchronization and storage on the Cloudflare Durable Objects
 platform. It has a [Vite starter
 template](https://github.com/tinyplex/vite-tinybase-ts-react-sync-durable-object).
 
