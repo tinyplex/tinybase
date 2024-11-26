@@ -44,7 +44,7 @@ WsSynchronizer synchronizer.
 
 ## Durable Objects Persistence
 
-But wait! there's more. Durable Objects also provide a storage mechanism, and
+But wait! There's more. Durable Objects also provide a storage mechanism, and
 sometimes you want TinyBase data to also be stored on the server (in case all
 the current clients disconnect and a new one joins, for example). So this
 release of TinyBase also includes a dedicated persister, the
@@ -82,10 +82,11 @@ implementation for other server environments.
 
 To go with this release, we have added new documentation on ways in which you
 can use TinyBase in an app architecture. Check it out in the new Architectural
-Options guide!
+Options guide.
 
 We've also started a new section of documentation for describing integrations,
-of which the Cloudflare Durable Objects guide is the first new entry!
+of which the Cloudflare Durable Objects guide, of course, is the first new
+entry!
 
 ---
 

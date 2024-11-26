@@ -106,7 +106,7 @@
   </a>
 </div>
 <div>
-  <a href='/guides/synchronization/using-a-synchronizer/#synchronizing-with-websockets'>
+  <a href='/guides/integrations/cloudflare-durable-objects'>
     <img width="48" src="/cloudflare.svg" /> Cloudflare
   </a>
 </div><div>

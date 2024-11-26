@@ -44,8 +44,8 @@ TinyBase includes some implementations of WebSocket servers:
   listeners, persistence, or statistics, and is suitable to be used as a reference
   implementation
 - WsServerDurableObject, implemented as Cloudflare Durable Object, created by
-  extending the WsServerDurableObject class, and routed with the
-  getWsServerDurableObjectFetch convenience function.
+  extending the WsServerDurableObject class, and routed with the convenient
+  getWsServerDurableObjectFetch function.
 
 Here we'll use the regular WsServer. You simply need to create it, instantiated
 with a configured WebSocketServer object from the `ws` package:

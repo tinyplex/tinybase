@@ -143,7 +143,7 @@ From here it is only a simple step to add server storage into the mix, removing
 the risk of all client devices clearing their data simultaneously and it being
 lost.
 
-Here, the synchronizer server (which is co-ordinating messages between clients)
+Here, the synchronizer server (which is coordinating messages between clients)
 _also_ acts as a 'client' with an instance of TinyBase itself. This is most
 usefully then persisted to a server storage solution, such as SQLite,
 PostgreSQL, the file system, or a Cloudflare Durable Object.
