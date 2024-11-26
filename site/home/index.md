@@ -653,7 +653,7 @@ export const createShop: typeof createShopDecl = () => {
 > _@@EVAL("toKb(modulesSizes.get('ui-react').get('gz'))")_, the ui-react-dom
 > components are another
 > _@@EVAL("toKb(modulesSizes.get('ui-react-dom').get('gz'))")_, and everything
-> is super fast. Life's easy when you have zero dependencies!
+> is super fast. Life is easy when you have zero dependencies!
 >
 > Read more about how TinyBase is structured and packaged in the Architecture
 > guide.
