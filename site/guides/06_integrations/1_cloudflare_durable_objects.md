@@ -152,7 +152,7 @@ new_classes = ["TinyBaseDurableObject"]
 (Again, take a look at the contents of the Vite template for the full
 configuration file.)
 
-In the main worked file, probably called `index.js` or `index.ts`, you'll need
+In the main worker file, probably called `index.js` or `index.ts`, you'll need
 to configure the worker as the default export from the file. TinyBase provides a
 convenience getWsServerDurableObjectFetch function that will create a `fetch`
 method that routes WebSocket requests based on the path of the URL:
