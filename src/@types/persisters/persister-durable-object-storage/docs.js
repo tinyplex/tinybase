@@ -2,6 +2,7 @@
  * The persister-durable-object-storage module of the TinyBase project lets you
  * save and load Store data to and from Cloudflare Durable Object storage (in an
  * appropriate environment).
+ * @see Cloudflare Durable Objects guide
  * @see Persistence guides
  * @packageDocumentation
  * @module persister-durable-object-storage
