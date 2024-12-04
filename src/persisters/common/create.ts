@@ -61,7 +61,7 @@ const getStoreFunctions = (
       getContent: () => Content,
       getChanges: () => Changes,
       hasChanges: (changes: Changes) => boolean,
-      setDefaultContent: (content: Content) => Store,
+      setDefaultContent: (content: Content | (() => Content)) => Store,
     ]
   | [
       isMergeableStore: 1,
@@ -70,7 +70,7 @@ const getStoreFunctions = (
         typeof isSynchronizer extends 1 ? false : true
       >,
       hasChanges: (changes: MergeableChanges) => boolean,
-      setDefaultContent: (content: Content) => MergeableStore,
+      setDefaultContent: (content: Content | (() => Content)) => MergeableStore,
     ] =>
   persist != PersistsValues.StoreOnly && store.isMergeable()
     ? [
@@ -195,7 +195,9 @@ export const createCustomPersister = <
     );
   };
 
-  const load = async (initialContent?: Content): Promise<Persister> => {
+  const load = async (
+    initialContent?: Content | (() => Content),
+  ): Promise<Persister> => {
     /*! istanbul ignore else */
     if (status != StatusValues.Saving) {
       setStatus(StatusValues.Loading);
@@ -206,14 +208,14 @@ export const createCustomPersister = <
           if (isArray(content)) {
             setContentOrChanges(content);
           } else if (initialContent) {
-            setDefaultContent(initialContent as Content);
+            setDefaultContent(initialContent);
           } else {
             errorNew(`Content is not an array: ${content}`);
           }
         } catch (error) {
           onIgnoredError?.(error);
           if (initialContent) {
-            setDefaultContent(initialContent as Content);
+            setDefaultContent(initialContent);
           }
         }
         setStatus(StatusValues.Idle);
@@ -223,7 +225,7 @@ export const createCustomPersister = <
   };
 
   const startAutoLoad = async (
-    initialContent?: Content,
+    initialContent?: Content | (() => Content),
   ): Promise<Persister<Persist>> => {
     stopAutoLoad();
     await load(initialContent);

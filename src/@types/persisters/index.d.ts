@@ -150,10 +150,10 @@ export type DpcTabularValues = {
 export interface Persister<Persist extends Persists = Persists.StoreOnly> {
   //
   /// Persister.load
-  load(initialContent?: Content): Promise<this>;
+  load(initialContent?: Content | (() => Content)): Promise<this>;
 
   /// Persister.startAutoLoad
-  startAutoLoad(initialContent?: Content): Promise<this>;
+  startAutoLoad(initialContent?: Content | (() => Content)): Promise<this>;
 
   /// Persister.stopAutoLoad
   stopAutoLoad(): this;

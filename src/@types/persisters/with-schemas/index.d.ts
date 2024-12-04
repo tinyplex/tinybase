@@ -168,10 +168,14 @@ export interface Persister<
   Persist extends Persists = Persists.StoreOnly,
 > {
   /// Persister.load
-  load(initialContent?: Content<Schemas, true>): Promise<this>;
+  load(
+    initialContent?: Content<Schemas, true> | (() => Content<Schemas, true>),
+  ): Promise<this>;
 
   /// Persister.startAutoLoad
-  startAutoLoad(initialContent?: Content<Schemas, true>): Promise<this>;
+  startAutoLoad(
+    initialContent?: Content<Schemas, true> | (() => Content<Schemas, true>),
+  ): Promise<this>;
 
   /// Persister.stopAutoLoad
   stopAutoLoad(): this;

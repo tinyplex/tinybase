@@ -900,6 +900,8 @@
    * fails (for example when the Persister is remote and the environment is
    * offline). This allows you to fallback or instantiate a Store whether it's
    * loading from previously persisted storage or being run for the first time.
+   * Since v5.4.2, this parameter can also be a function that returns the
+   * content.
    *
    * This method is asynchronous because the persisted data may be on a remote
    * machine or a filesystem. Even for those storage types that are synchronous
@@ -966,6 +968,8 @@
    * fails (for example when the Persister is remote and the environment is
    * offline). This allows you to fallback or instantiate a Store whether it's
    * loading from previously persisted storage or being run for the first time.
+   * Since v5.4.2, this parameter can also be a function that returns the
+   * content.
    *
    * This method first runs a single call to the load method to ensure the data
    * is in sync with the persisted storage. It then continues to watch for
