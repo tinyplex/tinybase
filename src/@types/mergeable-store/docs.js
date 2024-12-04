@@ -757,8 +757,11 @@
    * The method is generally intended to be used internally within TinyBase
    * itself and the return type is assumed to be opaque to applications that use
    * it.
+   *
+   * Since v5.4.2, this method can also take a function that returns the
+   * content.
    * @param content An array containing the tabular and keyed-value data to be
-   * set.
+   * set, or a function that returns the array.
    * @returns A reference to the MergeableStore.
    * @example
    * This example creates a new MergeableStore with default data, and

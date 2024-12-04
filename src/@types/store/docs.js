@@ -2603,8 +2603,11 @@
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
+   *
+   * Since v5.4.2, this method can also take a function that returns the
+   * content.
    * @param content An array containing the tabular and keyed-value data of the
-   * Store to be set.
+   * Store to be set, or a function that returns the array.
    * @returns A reference to the Store.
    * @example
    * This example sets the data of a Store.
@@ -2613,6 +2616,21 @@
    * import {createStore} from 'tinybase';
    *
    * const store = createStore().setContent([
+   *   {pets: {fido: {species: 'dog'}}},
+   *   {open: true, employees: 3},
+   * ]);
+   * console.log(store.getTables());
+   * // -> {pets: {fido: {species: 'dog'}}}
+   * console.log(store.getValues());
+   * // -> {open: true, employees: 3}
+   * ```
+   * @example
+   * This example sets the data of a Store with the results of a function.
+   *
+   * ```js
+   * import {createStore} from 'tinybase';
+   *
+   * const store = createStore().setContent(() => [
    *   {pets: {fido: {species: 'dog'}}},
    *   {open: true, employees: 3},
    * ]);

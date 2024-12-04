@@ -200,7 +200,9 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   ): MergeableStore<Schemas>;
 
   /// MergeableStore.setDefaultContent
-  setDefaultContent(content: Content<Schemas>): MergeableStore<Schemas>;
+  setDefaultContent(
+    content: Content<Schemas> | (() => Content<Schemas>),
+  ): MergeableStore<Schemas>;
 
   /// MergeableStore.getTransactionMergeableChanges
   getTransactionMergeableChanges(

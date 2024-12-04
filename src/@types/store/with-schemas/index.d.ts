@@ -1028,7 +1028,9 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   hasValuesSchema(): boolean;
 
   /// Store.setContent
-  setContent(content: Content<Schemas, true>): this;
+  setContent(
+    content: Content<Schemas, true> | (() => Content<Schemas, true>),
+  ): this;
 
   /// Store.setTables
   setTables(tables: Tables<Schemas[0], true>): this;

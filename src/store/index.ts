@@ -1081,10 +1081,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getSchemaJson = (): Json =>
     jsonStringWithMap([tablesSchemaMap, valuesSchemaMap]);
 
-  const setContent = (content: Content): Store =>
-    fluentTransaction(() =>
-      validateContent(content) ? setValidContent(content) : 0,
-    );
+  const setContent = (content: Content | (() => Content)): Store =>
+    fluentTransaction(() => {
+      const content2 = isFunction(content) ? content() : content;
+      if (validateContent(content2)) {
+        setValidContent(content2);
+      }
+    });
 
   const setTables = (tables: Tables): Store =>
     fluentTransaction(() =>

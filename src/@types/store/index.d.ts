@@ -509,7 +509,7 @@ export interface Store {
   hasValuesSchema(): boolean;
 
   /// Store.setContent
-  setContent(content: Content): this;
+  setContent(content: Content | (() => Content)): this;
 
   /// Store.setTables
   setTables(tables: Tables): this;

@@ -526,7 +526,9 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
         : 0,
     );
 
-  const setDefaultContent = (content: Content): MergeableStore => {
+  const setDefaultContent = (
+    content: Content | (() => Content),
+  ): MergeableStore => {
     store.transaction(() => {
       defaultingContent = 1;
       store.setContent(content);
