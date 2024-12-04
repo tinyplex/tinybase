@@ -2635,9 +2635,12 @@
     const getSchemaJson = () =>
       jsonStringWithMap([tablesSchemaMap, valuesSchemaMap]);
     const setContent = (content) =>
-      fluentTransaction(() =>
-        validateContent(content) ? setValidContent(content) : 0,
-      );
+      fluentTransaction(() => {
+        const content2 = isFunction(content) ? content() : content;
+        if (validateContent(content2)) {
+          setValidContent(content2);
+        }
+      });
     const setTables = (tables) =>
       fluentTransaction(() =>
         validateTables(tables) ? setValidTables(tables) : 0,
