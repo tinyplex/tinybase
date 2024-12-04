@@ -147,7 +147,10 @@ server<span class="punctuation">.</span><span class="function"><a href="/api/syn
 <span class="comment">// On the server:</span>
 <span class="keyword">const</span> webSocketServer <span class="operator">=</span> <span class="keyword">new</span> <span class="class-name">WebSocketServer</span><span class="punctuation">(</span><span class="punctuation">{</span><span class="literal-property">port</span><span class="operator">:</span> <span class="number">8047</span><span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 webSocketServer<span class="punctuation">.</span><span class="function">on</span><span class="punctuation">(</span><span class="string">'connection'</span><span class="punctuation">,</span> <span class="punctuation">(</span><span class="parameter">_<span class="punctuation">,</span> request</span><span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
-  console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="string">'Client address: '</span> <span class="operator">+</span> request<span class="punctuation">.</span>socket<span class="punctuation">.</span>remoteAddress<span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="keyword">const</span> clientAddress <span class="operator">=</span> request<span class="punctuation">.</span>socket<span class="punctuation">.</span>remoteAddress<span class="punctuation">;</span>
+  <span class="keyword">if</span> <span class="punctuation">(</span>clientAddress <span class="operator">==</span> <span class="string">'::1'</span> <span class="operator">||</span> clientAddress <span class="operator">==</span> <span class="string">'::ffff:127.0.0.1'</span><span class="punctuation">)</span> <span class="punctuation">{</span>
+    console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="string">'Local client connected'</span><span class="punctuation">)</span><span class="punctuation">;</span>
+  <span class="punctuation">}</span>
 <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="keyword">const</span> server <span class="operator">=</span> <span class="function"><a href="/api/synchronizer-ws-server/functions/creation/createwsserver/">createWsServer</a></span><span class="punctuation">(</span>webSocketServer<span class="punctuation">)</span><span class="punctuation">;</span>
 
@@ -156,7 +159,7 @@ webSocketServer<span class="punctuation">.</span><span class="function">on</span
   <span class="function"><a href="/api/mergeable-store/functions/creation/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
   <span class="keyword">new</span> <span class="class-name">WebSocket</span><span class="punctuation">(</span><span class="string">'ws://localhost:8047'</span><span class="punctuation">)</span><span class="punctuation">,</span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="comment">// -> 'Client address: ::1'</span>
+<span class="comment">// -> 'Local client connected'</span>
 
 synchronizer<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 server<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>

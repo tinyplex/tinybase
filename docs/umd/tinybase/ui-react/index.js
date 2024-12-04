@@ -151,6 +151,7 @@
         ? objGet(contextValue[offset * 2 + 1] ?? {}, id)
         : id;
   };
+  const useThings = (offset) => ({...useContext(Context)[offset * 2 + 1]});
   const useThingOrThingById = (thingOrThingId, offset) => {
     const thing = useThing(thingOrThingId, offset);
     return isUndefined(thingOrThingId) || isString(thingOrThingId)
@@ -168,6 +169,7 @@
     objIds(useContext(Context)[offset * 2 + 1] ?? {});
   const useStoreIds = () => useThingIds(0 /* Store */);
   const useStore = (id) => useThing(id, 0 /* Store */);
+  const useStores = () => useThings(0 /* Store */);
   const useStoreOrStoreById = (storeOrStoreId) =>
     useThingOrThingById(storeOrStoreId, 0 /* Store */);
   const useProvideStore = (storeId, store) =>
@@ -2256,6 +2258,7 @@
   exports.useStore = useStore;
   exports.useStoreIds = useStoreIds;
   exports.useStoreOrStoreById = useStoreOrStoreById;
+  exports.useStores = useStores;
   exports.useSynchronizer = useSynchronizer;
   exports.useSynchronizerIds = useSynchronizerIds;
   exports.useSynchronizerOrSynchronizerById = useSynchronizerOrSynchronizerById;
