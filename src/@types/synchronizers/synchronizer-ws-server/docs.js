@@ -683,7 +683,10 @@
  * // On the server:
  * const webSocketServer = new WebSocketServer({port: 8047});
  * webSocketServer.on('connection', (_, request) => {
- *   console.log('Client address: ' + request.socket.remoteAddress);
+ *   const clientAddress = request.socket.remoteAddress;
+ *   if (clientAddress == '::1' || clientAddress == '::ffff:127.0.0.1') {
+ *     console.log('Local client connected');
+ *   }
  * });
  * const server = createWsServer(webSocketServer);
  *
@@ -692,7 +695,7 @@
  *   createMergeableStore(),
  *   new WebSocket('ws://localhost:8047'),
  * );
- * // -> 'Client address: ::1'
+ * // -> 'Local client connected'
  *
  * synchronizer.destroy();
  * server.destroy();
