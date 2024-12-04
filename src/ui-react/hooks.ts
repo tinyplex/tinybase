@@ -302,6 +302,7 @@ export {
   useStore,
   useStoreIds,
   useStoreOrStoreById,
+  useStores,
   useSynchronizer,
   useSynchronizerIds,
   useSynchronizerOrSynchronizerById,

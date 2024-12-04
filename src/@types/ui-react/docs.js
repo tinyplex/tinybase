@@ -398,6 +398,47 @@
  */
 /// useStore
 /**
+ * The useStores hook is used to get a reference to all the Store objects named
+ * by Id within a Provider component context.
+ *
+ * A Provider component is used to wrap part of an application in a context. It
+ * can contain a default Store (or a set of Store objects named by Id) that can
+ * be easily accessed without having to be passed down as props through every
+ * component.
+ *
+ * The useStores hook lets you get a reference to the latter as an object.
+ * @returns An object containing all the Store objects named by Id.
+ * @example
+ * This example creates a Provider context into which a Store is provided, named
+ * by Id. A component within it then uses the useStores hook to get a reference
+ * to the Store again.
+ *
+ * ```jsx
+ * import {Provider, useStores} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ *
+ * const App = ({store}) => (
+ *   <Provider storesById={{petStore: store}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>{useStores()['petStore'].getListenerStats().tables}</span>
+ * );
+ *
+ * const store = createStore();
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App store={store} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>0</span>'
+ * ```
+ * @category Store hooks
+ * @since v5.4.1
+ */
+/// useStores
+/**
  * The useStoreOrStoreById hook is used to get a reference to a Store object
  * from within a Provider component context, _or_ have it passed directly to
  * this hook.

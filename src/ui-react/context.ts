@@ -21,6 +21,7 @@ import type {
   useRelationshipsIds as useRelationshipsIdsDecl,
   useStore as useStoreDecl,
   useStoreIds as useStoreIdsDecl,
+  useStores as useStoresDecl,
   useSynchronizer as useSynchronizerDecl,
   useSynchronizerIds as useSynchronizerIdsDecl,
 } from '../@types/ui-react/index.d.ts';
@@ -118,6 +119,11 @@ const useThing = <UsedThing extends Thing>(
   ) as UsedThing;
 };
 
+const useThings = <UsedThing extends Thing>(
+  offset: Offsets,
+): IdObj<UsedThing> =>
+  ({...(useContext(Context)[offset * 2 + 1] ?? {})}) as IdObj<UsedThing>;
+
 const useThingOrThingById = <
   Thing extends
     | Store
@@ -158,6 +164,9 @@ export const useStoreIds: typeof useStoreIdsDecl = () =>
 
 export const useStore: typeof useStoreDecl = (id?: Id): Store | undefined =>
   useThing(id, Offsets.Store);
+
+export const useStores: typeof useStoresDecl = (): IdObj<Store> =>
+  useThings(Offsets.Store);
 
 export const useStoreOrStoreById = (
   storeOrStoreId?: StoreOrStoreId,

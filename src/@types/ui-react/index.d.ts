@@ -130,6 +130,9 @@ export function useStoreIds(): Ids;
 /// useStore
 export function useStore(id?: Id): Store | undefined;
 
+/// useStores
+export function useStores(): {[storeId: Id]: Store};
+
 /// useStoreOrStoreById
 export function useStoreOrStoreById(
   storeOrStoreId?: StoreOrStoreId,

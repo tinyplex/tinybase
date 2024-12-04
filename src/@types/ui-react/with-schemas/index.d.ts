@@ -178,6 +178,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useStore
   useStore: (id?: Id) => Store<Schemas> | undefined;
 
+  /// useStores
+  useStores: () => {[storeId: Id]: Store<OptionalSchemas>};
+
   /// useStoreOrStoreById
   useStoreOrStoreById: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,

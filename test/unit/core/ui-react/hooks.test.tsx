@@ -122,6 +122,7 @@ import {
   useStartTransactionListener,
   useStore,
   useStoreIds,
+  useStores,
   useTable,
   useTableCellIds,
   useTableCellIdsListener,
@@ -885,6 +886,22 @@ describe('Context Hooks', () => {
       );
     });
     expect(renderer.toJSON()).toEqual(JSON.stringify([['0'], '1', []]));
+    expect(didRender).toHaveBeenCalledTimes(1);
+  });
+
+  test('useStores', () => {
+    const Test = () =>
+      didRender(<>{JSON.stringify(useStores()?.['store1']?.getTables())}</>);
+    const store1 = createStore().setTables({t1: {r1: {c1: 2}}});
+    const store2 = createStore();
+    act(() => {
+      renderer = create(
+        <Provider storesById={{store1, store2}}>
+          <Test />
+        </Provider>,
+      );
+    });
+    expect(renderer.toJSON()).toEqual('{"t1":{"r1":{"c1":2}}}');
     expect(didRender).toHaveBeenCalledTimes(1);
   });
 
