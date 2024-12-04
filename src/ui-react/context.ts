@@ -122,7 +122,7 @@ const useThing = <UsedThing extends Thing>(
 const useThings = <UsedThing extends Thing>(
   offset: Offsets,
 ): IdObj<UsedThing> =>
-  ({...(useContext(Context)[offset * 2 + 1] ?? {})}) as IdObj<UsedThing>;
+  ({...useContext(Context)[offset * 2 + 1]}) as IdObj<UsedThing>;
 
 const useThingOrThingById = <
   Thing extends
