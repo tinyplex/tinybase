@@ -77,61 +77,61 @@
 <h2>TinyBase works great on its own, but also plays well with friends.</h2>
 <div>
   <a href='/guides/building-uis/getting-started-with-ui-react'>
-    <img width="48" src="/react.svg" /> React
+    <img width="48" src="/react.svg?asImg" /> React
   </a>
 </div>
 <div>
   <a href='/api/persister-indexed-db/functions/creation/createindexeddbpersister'>
-    <img width="48" src="/indexeddb.svg" /> IndexedDB
+    <img width="48" src="/indexeddb.svg?asImg" /> IndexedDB
   </a>
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/postgresql.svg" /> PostgreSQL
+    <img width="48" src="/postgresql.svg?asImg" /> PostgreSQL
   </a>
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/pglite.svg" /> PGlite
+    <img width="48" src="/pglite.svg?asImg" /> PGlite
   </a>
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/sqlite.svg" /> SQLite
+    <img width="48" src="/sqlite.svg?asImg" /> SQLite
   </a>
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/expo.svg" /> Expo SQLite
+    <img width="48" src="/expo.svg?asImg" /> Expo SQLite
   </a>
 </div>
 <div>
   <a href='/guides/integrations/cloudflare-durable-objects'>
-    <img width="48" src="/cloudflare.svg" /> Cloudflare
+    <img width="48" src="/cloudflare.svg?asImg" /> Cloudflare
   </a>
 </div><div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/electric.svg" /> ElectricSQL
+    <img width="48" src="/electric.svg?asImg" /> ElectricSQL
   </a>
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/turso.svg" /> Turso
+    <img width="48" src="/turso.svg?asImg" /> Turso
   </a>
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
-    <img width="48" src="/powersync.svg" /> PowerSync
+    <img width="48" src="/powersync.svg?asImg" /> PowerSync
   </a>
 </div>
 <div>
   <a href='/api/persister-partykit-client'>
-    <img width="48" src="/partykit.svg" /> PartyKit
+    <img width="48" src="/partykit.svg?asImg" /> PartyKit
   </a>
 </div>
 <div>
   <a href='/api/persister-yjs/functions/creation/createyjspersister'>
-    <img width="48" src="/yjs.svg" /> YJS
+    <img width="48" src="/yjs.svg?asImg" /> YJS
   </a>
 </div>
 <div>
@@ -141,7 +141,7 @@
 </div>
 <div>
   <a href='/api/persister-automerge'>
-    <img width="48" src="/automerge.svg" /> Automerge
+    <img width="48" src="/automerge.svg?asImg" /> Automerge
   </a>
 </div>
 <p>
@@ -685,7 +685,8 @@ export const createShop: typeof createShopDecl = () => {
 
 <section id="users">
 <h2>Excited to be used by:</h2>
-@@EVAL("getGitHubAvatar('Apocalypsor')")
+@@EVAL("getGitHubAvatar('behrends')")
+@@EVAL("getGitHubAvatar('betomoedano')")
 @@EVAL("getGitHubAvatar('brentvatne')")
 @@EVAL("getGitHubAvatar('byCedric')")
 @@EVAL("getGitHubAvatar('circadian-risk')")
@@ -694,14 +695,12 @@ export const createShop: typeof createShopDecl = () => {
 @@EVAL("getGitHubAvatar('erwinkn')")
 @@EVAL("getGitHubAvatar('expo')")
 @@EVAL("getGitHubAvatar('ezra-en')")
-@@EVAL("getGitHubAvatar('fdfontes')")
 @@EVAL("getGitHubAvatar('feychenie')")
 @@EVAL("getGitHubAvatar('flaming-codes')")
 @@EVAL("getGitHubAvatar('fostertheweb')")
-@@EVAL("getGitHubAvatar('generates')")
 @@EVAL("getGitHubAvatar('Giulio987')")
+@@EVAL("getGitHubAvatar('hi-ogawa')")
 @@EVAL("getGitHubAvatar('itsdevcoffee')")
-@@EVAL("getGitHubAvatar('jaysc')")
 @@EVAL("getGitHubAvatar('jbolda')")
 @@EVAL("getGitHubAvatar('Kayoo-asso')")
 @@EVAL("getGitHubAvatar('kotofurumiya')")
@@ -724,6 +723,7 @@ export const createShop: typeof createShopDecl = () => {
 @@EVAL("getGitHubAvatar('threepointone')")
 @@EVAL("getGitHubAvatar('uptonking')")
 @@EVAL("getGitHubAvatar('ViktorZhurbin')")
+@@EVAL("getGitHubAvatar('wilkerlucio')")
 @@EVAL("getGitHubAvatar('WonderPanda')")
 </section>
 
