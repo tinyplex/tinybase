@@ -55,7 +55,7 @@
   const mathFloor = math.floor;
   const isFiniteNumber = isFinite;
   const isInstanceOf = (thing, cls) => thing instanceof cls;
-  const isUndefined = (thing) => thing == void 0;
+  const isUndefined = (thing) => thing == undefined;
   const ifNotUndefined = (value, then, otherwise) =>
     isUndefined(value) ? otherwise?.() : then(value);
   const isTypeStringOrBoolean = (type) => type == STRING || type == BOOLEAN;
@@ -65,7 +65,7 @@
   const slice = (arrayOrString, start, end) => arrayOrString.slice(start, end);
   const size = (arrayOrString) => arrayOrString.length;
   const test = (regex, subject) => regex.test(subject);
-  const getUndefined = () => void 0;
+  const getUndefined = () => undefined;
 
   const arrayHas = (array, value) => array.includes(value);
   const arrayEvery = (array, cb) => array.every(cb);
@@ -241,7 +241,7 @@
     return isTypeStringOrBoolean(type) ||
       (type == NUMBER && isFiniteNumber(cellOrValue))
       ? type
-      : void 0;
+      : undefined;
   };
   const isCellOrValueOrNullOrUndefined = (cellOrValue) =>
     isUndefined(cellOrValue) || !isUndefined(getCellOrValueType(cellOrValue));
@@ -331,7 +331,7 @@
         const oldRowValue = mapGet(rowValues, rowId);
         const newRowValue = hasRow(tableId, rowId)
           ? validateRowValue(getRowValue(getCell, rowId))
-          : void 0;
+          : undefined;
         if (
           !(
             oldRowValue === newRowValue ||
@@ -346,7 +346,7 @@
           const oldSortKey = mapGet(sortKeys, rowId);
           const newSortKey = hasRow(tableId, rowId)
             ? getSortKey(getCell, rowId)
-            : void 0;
+            : undefined;
           if (oldSortKey != newSortKey) {
             mapSet(changedSortKeys, rowId, newSortKey);
           }
@@ -492,10 +492,15 @@
       );
     const delListener = (id) =>
       ifNotUndefined(mapGet(allListeners, id), ([, idSetNode, idOrNulls]) => {
-        visitTree(idSetNode, idOrNulls ?? [EMPTY_STRING], void 0, (idSet) => {
-          collDel(idSet, id);
-          return collIsEmpty(idSet) ? 1 : 0;
-        });
+        visitTree(
+          idSetNode,
+          idOrNulls ?? [EMPTY_STRING],
+          undefined,
+          (idSet) => {
+            collDel(idSet, id);
+            return collIsEmpty(idSet) ? 1 : 0;
+          },
+        );
         mapSet(allListeners, id);
         releaseId(id);
         return idOrNulls;
@@ -573,7 +578,7 @@
           arrayPush(backwardIds, currentId);
           trimBackwardsIds();
           clearCheckpointIds(forwardIds);
-          currentId = void 0;
+          currentId = undefined;
           checkpointsChanged = 1;
         });
       const storeUnchanged = () => {
@@ -681,7 +686,7 @@
         if (!isUndefined(currentId)) {
           clearCheckpointId(currentId);
         }
-        currentId = void 0;
+        currentId = undefined;
         nextCheckpointId = 0;
         addCheckpoint();
         return checkpoints;
@@ -711,7 +716,7 @@
               storeChanged();
               const table = mapEnsure(cellsDelta, tableId, mapNew);
               const row = mapEnsure(table, rowId, mapNew);
-              const oldNew = mapEnsure(row, cellId, () => [oldCell, void 0]);
+              const oldNew = mapEnsure(row, cellId, () => [oldCell, undefined]);
               oldNew[1] = newCell;
               if (
                 oldNew[0] === newCell &&
@@ -732,7 +737,7 @@
               storeChanged();
               const oldNew = mapEnsure(valuesDelta, valueId, () => [
                 oldValue,
-                void 0,
+                undefined,
               ]);
               oldNew[1] = newValue;
               if (
@@ -836,7 +841,7 @@
       rowIdSorter = defaultSorter,
     ) => {
       const sliceIdArraySorter = isUndefined(sliceIdSorter)
-        ? void 0
+        ? undefined
         : ([id1], [id2]) => sliceIdSorter(id1, id2);
       setDefinitionAndListen(
         indexId,
@@ -1015,9 +1020,9 @@
       [
         (numbers) => mathMax(...numbers),
         (metric, add) => mathMax(add, metric),
-        (metric, remove) => (remove == metric ? void 0 : metric),
+        (metric, remove) => (remove == metric ? undefined : metric),
         (metric, add, remove) =>
-          remove == metric ? void 0 : mathMax(add, metric),
+          remove == metric ? undefined : mathMax(add, metric),
       ],
     ],
     [
@@ -1025,9 +1030,9 @@
       [
         (numbers) => mathMin(...numbers),
         (metric, add) => mathMin(add, metric),
-        (metric, remove) => (remove == metric ? void 0 : metric),
+        (metric, remove) => (remove == metric ? undefined : metric),
         (metric, add, remove) =>
-          remove == metric ? void 0 : mathMin(add, metric),
+          remove == metric ? undefined : mathMin(add, metric),
       ],
     ],
     [
@@ -1049,7 +1054,7 @@
     force = false,
   ) => {
     if (collIsEmpty(newValues)) {
-      return void 0;
+      return undefined;
     }
     const [aggregate, aggregateAdd, aggregateRemove, aggregateReplace] =
       aggregators;
@@ -1096,7 +1101,7 @@
         value === true ||
         value === false ||
         value === EMPTY_STRING
-          ? void 0
+          ? undefined
           : value * 1,
       addListener,
       callListeners,
@@ -1138,7 +1143,7 @@
             force,
           );
           if (!isFiniteNumber(newMetric)) {
-            newMetric = void 0;
+            newMetric = undefined;
           }
           if (newMetric != oldMetric) {
             setMetric(metricId, newMetric);
@@ -1370,7 +1375,7 @@
                     mapNew,
                   );
                   const oldLeafCell = mapGet(selectedCell, selectedRowId);
-                  const newLeafCell = forceRemove ? void 0 : newCell;
+                  const newLeafCell = forceRemove ? undefined : newCell;
                   if (oldLeafCell !== newLeafCell) {
                     const oldNewSet = setNew([[oldLeafCell, newLeafCell]]);
                     const oldLength = collSize(selectedCell);
@@ -1448,7 +1453,7 @@
               });
               if (changedLeaf) {
                 writeGroupRow(
-                  visitTree(tree, oldPath, void 0, ([, selectedRowIds]) => {
+                  visitTree(tree, oldPath, undefined, ([, selectedRowIds]) => {
                     collDel(selectedRowIds, selectedRowId);
                     return collIsEmpty(selectedRowIds);
                   }),
@@ -1474,7 +1479,7 @@
                               selectedCellId,
                             )),
                       );
-                      return [mapNew(), setNew(), void 0, groupRow];
+                      return [mapNew(), setNew(), undefined, groupRow];
                     },
                     ([, selectedRowIds]) => {
                       setAdd(selectedRowIds, selectedRowId);
@@ -1665,7 +1670,7 @@
     ] = getDefinableFunctions(
       store,
       () => [mapNew(), mapNew(), mapNew(), mapNew()],
-      (value) => (isUndefined(value) ? void 0 : value + EMPTY_STRING),
+      (value) => (isUndefined(value) ? undefined : value + EMPTY_STRING),
       addListener,
       callListeners,
     );
@@ -1898,7 +1903,7 @@
     mapSet(
       changedIds,
       id2,
-      mapGet(changedIds, id2) == -addedOrRemoved ? void 0 : addedOrRemoved,
+      mapGet(changedIds, id2) == -addedOrRemoved ? undefined : addedOrRemoved,
     );
   const createStore = () => {
     let hasTablesSchema;
@@ -2394,7 +2399,7 @@
     const callTabularListenersForChanges = (mutator) => {
       const hasTablesNow = hasTables();
       if (hasTablesNow != hadTables) {
-        callListeners(hasTablesListeners[mutator], void 0, hasTablesNow);
+        callListeners(hasTablesListeners[mutator], undefined, hasTablesNow);
       }
       const emptySortedRowIdListeners = collIsEmpty(
         sortedRowIdsListeners[mutator],
@@ -2533,7 +2538,7 @@
             }
           });
           if (tablesChanged) {
-            callListeners(tablesListeners[mutator], void 0, getCellChange);
+            callListeners(tablesListeners[mutator], undefined, getCellChange);
           }
         }
       }
@@ -2541,7 +2546,7 @@
     const callValuesListenersForChanges = (mutator) => {
       const hasValuesNow = hasValues();
       if (hasValuesNow != hadValues) {
-        callListeners(hasValuesListeners[mutator], void 0, hasValuesNow);
+        callListeners(hasValuesListeners[mutator], undefined, hasValuesNow);
       }
       const emptyIdAndHasListeners =
         collIsEmpty(valueIdsListeners[mutator]) &&
@@ -2575,7 +2580,7 @@
             }
           });
           if (valuesChanged) {
-            callListeners(valuesListeners[mutator], void 0, getValueChange);
+            callListeners(valuesListeners[mutator], undefined, getValueChange);
           }
         }
       }
@@ -2662,7 +2667,7 @@
       );
     const addRow = (tableId, row, reuseRowIds = true) =>
       transaction(() => {
-        let rowId = void 0;
+        let rowId = undefined;
         if (validateRow(tableId, rowId, row)) {
           tableId = id(tableId);
           setValidRow(
@@ -2886,12 +2891,12 @@
         changedCells,
         (table, tableId) =>
           mapGet(changedTableIds, tableId) === -1
-            ? void 0
+            ? undefined
             : mapToObj(
                 table,
                 (row, rowId) =>
                   mapGet(mapGet(changedRowIds, tableId), rowId) === -1
-                    ? void 0
+                    ? undefined
                     : mapToObj(
                         row,
                         ([, newCell]) => newCell,
@@ -2949,7 +2954,7 @@
             );
             collClear(changedValues);
           }
-          callListeners(finishTransactionListeners[0], void 0);
+          callListeners(finishTransactionListeners[0], undefined);
           transactions = -1;
           callInvalidCellListeners(0);
           if (!collIsEmpty(changedCells)) {
@@ -2960,7 +2965,7 @@
             callValuesListenersForChanges(0);
           }
           internalListeners[1]?.();
-          callListeners(finishTransactionListeners[1], void 0);
+          callListeners(finishTransactionListeners[1], undefined);
           internalListeners[2]?.();
           transactions = 0;
           hadTables = hasTables();
@@ -3252,7 +3257,7 @@
           addListener(
             args[argumentCount],
             idSetNode[args[argumentCount + 1] ? 1 : 0],
-            argumentCount > 0 ? slice(args, 0, argumentCount) : void 0,
+            argumentCount > 0 ? slice(args, 0, argumentCount) : undefined,
             pathGetters,
             extraArgsGetter,
           );
@@ -3372,15 +3377,15 @@
                     cellStamps,
                     (cellStamp) =>
                       stampValidate(cellStamp, isCellOrValueOrNullOrUndefined),
-                    void 0,
+                    undefined,
                     1,
                   ),
                 ),
-              void 0,
+              undefined,
               1,
             ),
           ),
-        void 0,
+        undefined,
         1,
       ),
     ) &&
@@ -3388,7 +3393,7 @@
       objValidate(
         values,
         (value) => stampValidate(value, isCellOrValueOrNullOrUndefined),
-        void 0,
+        undefined,
         1,
       ),
     );
@@ -3487,7 +3492,7 @@
         thingsObj,
         ([thing, thingTime, incomingThingHash = 0], thingId) => {
           const thingStampMap = mapEnsure(thingStampMaps, thingId, () => [
-            void 0,
+            undefined,
             EMPTY_STRING,
             0,
           ]);

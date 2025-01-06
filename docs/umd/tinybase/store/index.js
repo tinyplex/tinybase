@@ -36,7 +36,7 @@
 
   const isFiniteNumber = isFinite;
   const isInstanceOf = (thing, cls) => thing instanceof cls;
-  const isUndefined = (thing) => thing == void 0;
+  const isUndefined = (thing) => thing == undefined;
   const ifNotUndefined = (value, then, otherwise) =>
     isUndefined(value) ? otherwise?.() : then(value);
   const isTypeStringOrBoolean = (type) => type == STRING || type == BOOLEAN;
@@ -262,10 +262,15 @@
       );
     const delListener = (id) =>
       ifNotUndefined(mapGet(allListeners, id), ([, idSetNode, idOrNulls]) => {
-        visitTree(idSetNode, idOrNulls ?? [EMPTY_STRING], void 0, (idSet) => {
-          collDel(idSet, id);
-          return collIsEmpty(idSet) ? 1 : 0;
-        });
+        visitTree(
+          idSetNode,
+          idOrNulls ?? [EMPTY_STRING],
+          undefined,
+          (idSet) => {
+            collDel(idSet, id);
+            return collIsEmpty(idSet) ? 1 : 0;
+          },
+        );
         mapSet(allListeners, id);
         releaseId(id);
         return idOrNulls;
@@ -304,7 +309,7 @@
     return isTypeStringOrBoolean(type) ||
       (type == NUMBER && isFiniteNumber(cellOrValue))
       ? type
-      : void 0;
+      : undefined;
   };
   const setOrDelCell = (store, tableId, rowId, cellId, cell) =>
     isUndefined(cell)
@@ -329,7 +334,7 @@
     mapSet(
       changedIds,
       id2,
-      mapGet(changedIds, id2) == -addedOrRemoved ? void 0 : addedOrRemoved,
+      mapGet(changedIds, id2) == -addedOrRemoved ? undefined : addedOrRemoved,
     );
   const createStore = () => {
     let hasTablesSchema;
@@ -825,7 +830,7 @@
     const callTabularListenersForChanges = (mutator) => {
       const hasTablesNow = hasTables();
       if (hasTablesNow != hadTables) {
-        callListeners(hasTablesListeners[mutator], void 0, hasTablesNow);
+        callListeners(hasTablesListeners[mutator], undefined, hasTablesNow);
       }
       const emptySortedRowIdListeners = collIsEmpty(
         sortedRowIdsListeners[mutator],
@@ -964,7 +969,7 @@
             }
           });
           if (tablesChanged) {
-            callListeners(tablesListeners[mutator], void 0, getCellChange);
+            callListeners(tablesListeners[mutator], undefined, getCellChange);
           }
         }
       }
@@ -972,7 +977,7 @@
     const callValuesListenersForChanges = (mutator) => {
       const hasValuesNow = hasValues();
       if (hasValuesNow != hadValues) {
-        callListeners(hasValuesListeners[mutator], void 0, hasValuesNow);
+        callListeners(hasValuesListeners[mutator], undefined, hasValuesNow);
       }
       const emptyIdAndHasListeners =
         collIsEmpty(valueIdsListeners[mutator]) &&
@@ -1006,7 +1011,7 @@
             }
           });
           if (valuesChanged) {
-            callListeners(valuesListeners[mutator], void 0, getValueChange);
+            callListeners(valuesListeners[mutator], undefined, getValueChange);
           }
         }
       }
@@ -1093,7 +1098,7 @@
       );
     const addRow = (tableId, row, reuseRowIds = true) =>
       transaction(() => {
-        let rowId = void 0;
+        let rowId = undefined;
         if (validateRow(tableId, rowId, row)) {
           tableId = id(tableId);
           setValidRow(
@@ -1317,12 +1322,12 @@
         changedCells,
         (table, tableId) =>
           mapGet(changedTableIds, tableId) === -1
-            ? void 0
+            ? undefined
             : mapToObj(
                 table,
                 (row, rowId) =>
                   mapGet(mapGet(changedRowIds, tableId), rowId) === -1
-                    ? void 0
+                    ? undefined
                     : mapToObj(
                         row,
                         ([, newCell]) => newCell,
@@ -1380,7 +1385,7 @@
             );
             collClear(changedValues);
           }
-          callListeners(finishTransactionListeners[0], void 0);
+          callListeners(finishTransactionListeners[0], undefined);
           transactions = -1;
           callInvalidCellListeners(0);
           if (!collIsEmpty(changedCells)) {
@@ -1391,7 +1396,7 @@
             callValuesListenersForChanges(0);
           }
           internalListeners[1]?.();
-          callListeners(finishTransactionListeners[1], void 0);
+          callListeners(finishTransactionListeners[1], undefined);
           internalListeners[2]?.();
           transactions = 0;
           hadTables = hasTables();
@@ -1683,7 +1688,7 @@
           addListener(
             args[argumentCount],
             idSetNode[args[argumentCount + 1] ? 1 : 0],
-            argumentCount > 0 ? slice(args, 0, argumentCount) : void 0,
+            argumentCount > 0 ? slice(args, 0, argumentCount) : undefined,
             pathGetters,
             extraArgsGetter,
           );

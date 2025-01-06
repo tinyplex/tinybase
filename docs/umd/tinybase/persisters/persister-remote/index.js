@@ -17,7 +17,7 @@
   };
   const stopInterval = clearInterval;
   const isInstanceOf = (thing, cls) => thing instanceof cls;
-  const isUndefined = (thing) => thing == void 0;
+  const isUndefined = (thing) => thing == undefined;
   const ifNotUndefined = (value, then, otherwise) =>
     isUndefined(value) ? otherwise?.() : then(value);
   const isArray = (thing) => Array.isArray(thing);
@@ -163,10 +163,15 @@
       );
     const delListener = (id) =>
       ifNotUndefined(mapGet(allListeners, id), ([, idSetNode, idOrNulls]) => {
-        visitTree(idSetNode, idOrNulls ?? [EMPTY_STRING], void 0, (idSet) => {
-          collDel(idSet, id);
-          return collIsEmpty(idSet) ? 1 : 0;
-        });
+        visitTree(
+          idSetNode,
+          idOrNulls ?? [EMPTY_STRING],
+          undefined,
+          (idSet) => {
+            collDel(idSet, id);
+            return collIsEmpty(idSet) ? 1 : 0;
+          },
+        );
         mapSet(allListeners, id);
         releaseId(id);
         return idOrNulls;
@@ -253,7 +258,7 @@
     const setStatus = (newStatus) => {
       if (newStatus != status) {
         status = newStatus;
-        callListeners(statusListeners, void 0, status);
+        callListeners(statusListeners, undefined, status);
       }
     };
     const run = async () => {
@@ -338,7 +343,7 @@
     const stopAutoLoad = () => {
       if (autoLoadHandle) {
         delPersisterListener(autoLoadHandle);
-        autoLoadHandle = void 0;
+        autoLoadHandle = undefined;
       }
       return persister;
     };
@@ -374,7 +379,7 @@
     const stopAutoSave = () => {
       if (autoSaveListenerId) {
         store.delListener(autoSaveListenerId);
-        autoSaveListenerId = void 0;
+        autoSaveListenerId = undefined;
       }
       return persister;
     };

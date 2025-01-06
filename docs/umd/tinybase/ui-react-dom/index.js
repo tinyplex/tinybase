@@ -28,7 +28,7 @@
   const math = Math;
   const mathMin = math.min;
   const isFiniteNumber = isFinite;
-  const isUndefined = (thing) => thing == void 0;
+  const isUndefined = (thing) => thing == undefined;
   const isTypeStringOrBoolean = (type) => type == STRING || type == BOOLEAN;
   const isString = (thing) => getTypeOf(thing) == STRING;
   const isArray = (thing) => Array.isArray(thing);
@@ -38,7 +38,7 @@
     return isTypeStringOrBoolean(type) ||
       (type == NUMBER && isFiniteNumber(cellOrValue))
       ? type
-      : void 0;
+      : undefined;
   };
   const getTypeCase = (type, stringCase, numberCase, booleanCase) =>
     type == STRING ? stringCase : type == NUMBER ? numberCase : booleanCase;
@@ -94,7 +94,7 @@
     );
   const useCallbackOrUndefined = (callback, deps, test) => {
     const returnCallback = useCallback(callback, deps);
-    return test ? returnCallback : void 0;
+    return test ? returnCallback : undefined;
   };
   const useParams = (...args) =>
     useMemo(
@@ -270,7 +270,7 @@
         ),
         className:
           isUndefined(sortDescending) || sortCellId != cellId
-            ? void 0
+            ? undefined
             : `sorted ${sortDescending ? 'de' : 'a'}scending`,
       },
       isUndefined(sortDescending) || sortCellId != cellId

@@ -50,14 +50,14 @@
   const CHECKPOINT = 'Checkpoint';
 
   const GLOBAL = globalThis;
-  const isUndefined = (thing) => thing == void 0;
+  const isUndefined = (thing) => thing == undefined;
   const ifNotUndefined = (value, then, otherwise) =>
     isUndefined(value) ? otherwise?.() : then(value);
   const isString = (thing) => getTypeOf(thing) == STRING;
   const isFunction = (thing) => getTypeOf(thing) == FUNCTION;
   const isArray = (thing) => Array.isArray(thing);
   const size = (arrayOrString) => arrayOrString.length;
-  const getUndefined = () => void 0;
+  const getUndefined = () => undefined;
 
   const arrayNew = (size2, cb) =>
     arrayMap(new Array(size2).fill(0), (_, index) => cb(index));
@@ -223,8 +223,8 @@
   const DEFAULTS = [
     {},
     [],
-    [EMPTY_ARRAY, void 0, EMPTY_ARRAY],
-    void 0,
+    [EMPTY_ARRAY, undefined, EMPTY_ARRAY],
+    undefined,
     false,
     0,
   ];
@@ -245,7 +245,7 @@
     const [thing, setThing] = useState();
     useEffect(
       () => {
-        const newThing = store ? create(store) : void 0;
+        const newThing = store ? create(store) : undefined;
         setThing(newThing);
         rerender([]);
         return newThing?.destroy;
@@ -1476,7 +1476,7 @@
     useEffect(
       () => {
         (async () => {
-          const persister2 = store ? await create(store) : void 0;
+          const persister2 = store ? await create(store) : undefined;
           setPersister(persister2);
           if (persister2 && then) {
             (async () => {
@@ -1531,7 +1531,7 @@
     useEffect(
       () => {
         (async () => {
-          const synchronizer2 = store ? await create(store) : void 0;
+          const synchronizer2 = store ? await create(store) : undefined;
           setSynchronizer(synchronizer2);
         })();
       },
@@ -1852,7 +1852,7 @@
   const CellView = ({tableId, rowId, cellId, store, debugIds}) =>
     wrap(
       EMPTY_STRING + (useCell(tableId, rowId, cellId, store) ?? EMPTY_STRING),
-      void 0,
+      undefined,
       debugIds,
       cellId,
     );
@@ -1920,7 +1920,7 @@
   const ValueView = ({valueId, store, debugIds}) =>
     wrap(
       EMPTY_STRING + (useValue(valueId, store) ?? EMPTY_STRING),
-      void 0,
+      undefined,
       debugIds,
       valueId,
     );
@@ -1946,7 +1946,7 @@
   const MetricView = ({metricId, metrics, debugIds}) =>
     wrap(
       useMetric(metricId, metrics) ?? EMPTY_STRING,
-      void 0,
+      undefined,
       debugIds,
       metricId,
     );
@@ -2032,7 +2032,7 @@
             store,
             debugIds,
           }),
-      void 0,
+      undefined,
       debugIds,
       localRowId,
     );
@@ -2045,7 +2045,7 @@
     wrap(
       EMPTY_STRING +
         (useResultCell(queryId, rowId, cellId, queries) ?? EMPTY_STRING),
-      void 0,
+      undefined,
       debugIds,
       cellId,
     );
@@ -2097,7 +2097,7 @@
   const CheckpointView = ({checkpoints, checkpointId, debugIds}) =>
     wrap(
       useCheckpoint(checkpointId, checkpoints) ?? EMPTY_STRING,
-      void 0,
+      undefined,
       debugIds,
       checkpointId,
     );
