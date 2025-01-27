@@ -130,6 +130,8 @@
     delete obj[id];
     return obj;
   };
+  const objForEach = (obj, cb) =>
+    arrayForEach(objEntries(obj), ([id, value]) => cb(value, id));
   const objToArray = (obj, cb) =>
     arrayMap(objEntries(obj), ([id, value]) => cb(value, id));
   const objMap = (obj, cb) =>
@@ -146,7 +148,7 @@
       onInvalidObj?.();
       return false;
     }
-    objToArray(obj, (child, id) => {
+    objForEach(obj, (child, id) => {
       if (!validateChild(child, id)) {
         objDel(obj, id);
       }
@@ -1577,7 +1579,7 @@
     return mapGet(map, key);
   };
   const mapMatch = (map, obj, set, del = mapSet) => {
-    objToArray(obj, (value, id) => set(map, id, value));
+    objMap(obj, (value, id) => set(map, id, value));
     mapForEach(map, (id) => (objHas(obj, id) ? 0 : del(map, id)));
     return map;
   };
@@ -2788,7 +2790,7 @@
         (tableId2, rowId2) => {
           if (validateRow(tableId2, rowId2, partialRow, 1)) {
             const table = getOrCreateTable(tableId2);
-            objToArray(partialRow, (cell, cellId) =>
+            objMap(partialRow, (cell, cellId) =>
               setCellIntoDefaultRow(tableId2, table, rowId2, cellId, cell),
             );
           }
@@ -2828,7 +2830,7 @@
     const setPartialValues = (partialValues) =>
       fluentTransaction(() =>
         validateValues(partialValues, 1)
-          ? objToArray(partialValues, (value, valueId) =>
+          ? objMap(partialValues, (value, valueId) =>
               setValidValue(valueId, value),
             )
           : 0,
@@ -2847,18 +2849,18 @@
       );
     const applyChanges = (changes) =>
       fluentTransaction(() => {
-        objToArray(changes[0], (table, tableId) =>
+        objMap(changes[0], (table, tableId) =>
           isUndefined(table)
             ? delTable(tableId)
-            : objToArray(table, (row, rowId) =>
+            : objMap(table, (row, rowId) =>
                 isUndefined(row)
                   ? delRow(tableId, rowId)
-                  : objToArray(row, (cell, cellId) =>
+                  : objMap(row, (cell, cellId) =>
                       setOrDelCell(store, tableId, rowId, cellId, cell),
                     ),
               ),
         );
-        objToArray(changes[1], (value, valueId) =>
+        objMap(changes[1], (value, valueId) =>
           setOrDelValue(store, valueId, value),
         );
       });
@@ -3294,7 +3296,7 @@
       callListeners,
       setInternalListeners,
     };
-    objToArray(
+    objMap(
       {
         [HAS + TABLES]: [0, hasTablesListeners, [], () => [hasTables()]],
         [TABLES]: [0, tablesListeners],
