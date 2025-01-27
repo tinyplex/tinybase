@@ -110,7 +110,7 @@ export const objValidate = (
     onInvalidObj?.();
     return false;
   }
-  objToArray(obj, (child, id) => {
+  objForEach(obj, (child, id) => {
     if (!validateChild(child, id)) {
       objDel(obj, id);
     }

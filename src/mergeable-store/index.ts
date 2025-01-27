@@ -38,8 +38,8 @@ import {
   objForEach,
   objFreeze,
   objHas,
+  objMap,
   objNew,
-  objToArray,
   objValidate,
 } from '../common/obj.ts';
 import {IdSet, IdSet3, setAdd, setNew} from '../common/set.ts';
@@ -631,7 +631,7 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
     valueChanged,
   );
 
-  objToArray(
+  objMap(
     store as IdObj<any>,
     (method, name) =>
       (mergeableStore[name] =

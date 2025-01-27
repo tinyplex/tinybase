@@ -120,7 +120,7 @@ export const getCommandFunctions = (
     partial = false,
   ): Promise<void> => {
     const settingColumnNameSet = setNew<string>();
-    objToArray(content ?? {}, (contentRow) =>
+    objMap(content ?? {}, (contentRow) =>
       arrayMap(objIds(contentRow ?? {}), (cellOrValueId) =>
         setAdd(settingColumnNameSet, cellOrValueId),
       ),
@@ -254,7 +254,7 @@ export const getCommandFunctions = (
         );
         const rows: {[id: string]: any[]} = {};
         const deleteRowIds: string[] = [];
-        objToArray(content ?? {}, (row, rowId) => {
+        objMap(content ?? {}, (row, rowId) => {
           rows[rowId] = arrayMap(changingColumnNames, (cellId) =>
             encode ? encode(row?.[cellId]) : row?.[cellId],
           );

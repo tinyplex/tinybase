@@ -1,9 +1,9 @@
 import {IdMap, mapNew, mapSet} from '../../../common/map.ts';
 import {
   IdObj,
+  objMap,
   objMerge,
   objSize,
-  objToArray,
   objValues,
 } from '../../../common/obj.ts';
 import {isString, isUndefined, slice} from '../../../common/other.ts';
@@ -77,7 +77,7 @@ const getDefaultedTabularConfigMap = (
   then: (id: string, firstValue: string) => void,
 ): IdMap<any[]> => {
   const configMap = mapNew<Id, any[]>();
-  objToArray(configsObj, (configObj, id) => {
+  objMap(configsObj, (configObj, id) => {
     const defaultedConfig = slice(
       objValues(
         objMerge(

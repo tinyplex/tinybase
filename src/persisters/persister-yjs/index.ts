@@ -6,13 +6,7 @@ import type {
   Tables,
   Values,
 } from '../../@types/store/index.d.ts';
-import {
-  IdObj,
-  objEnsure,
-  objHas,
-  objNew,
-  objToArray,
-} from '../../common/obj.ts';
+import {IdObj, objEnsure, objHas, objMap, objNew} from '../../common/obj.ts';
 import {T, TINYBASE, V} from '../../common/strings.ts';
 import {Doc as YDoc, type YEvent, Map as YMap} from 'yjs';
 import type {
@@ -102,7 +96,7 @@ const applyChangesToYDoc = (
   let changesFailed = 1;
   ifNotUndefined(changes, ([cellChanges, valueChanges]) => {
     changesFailed = 0;
-    objToArray(cellChanges, (table, tableId) =>
+    objMap(cellChanges, (table, tableId) =>
       changesFailed
         ? 0
         : isUndefined(table)
@@ -110,7 +104,7 @@ const applyChangesToYDoc = (
           : ifNotUndefined(
               yTables.get(tableId),
               (yTable) =>
-                objToArray(table, (row, rowId) =>
+                objMap(table, (row, rowId) =>
                   changesFailed
                     ? 0
                     : isUndefined(row)
@@ -118,7 +112,7 @@ const applyChangesToYDoc = (
                       : ifNotUndefined(
                           yTable.get(rowId),
                           (yRow) =>
-                            objToArray(row, (cell, cellId) =>
+                            objMap(row, (cell, cellId) =>
                               isUndefined(cell)
                                 ? yRow.delete(cellId)
                                 : yRow.set(cellId, cell),
@@ -129,7 +123,7 @@ const applyChangesToYDoc = (
               changesDidFail,
             ),
     );
-    objToArray(valueChanges, (value, valueId) =>
+    objMap(valueChanges, (value, valueId) =>
       changesFailed
         ? 0
         : isUndefined(value)
@@ -168,7 +162,7 @@ const yMapMatch = (
     : (yMapOrParent.get(idInParent) ??
       yMapOrParent.set(idInParent, new YMap()));
   let changed: 1 | undefined;
-  objToArray(obj, (value, id) => {
+  objMap(obj, (value, id) => {
     if (set(yMap, id, value)) {
       changed = 1;
     }

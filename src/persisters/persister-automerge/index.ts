@@ -10,9 +10,9 @@ import {
   objGet,
   objHas,
   objIsEmpty,
+  objMap,
   objNew,
   objSize,
-  objToArray,
 } from '../../common/obj.ts';
 import {ifNotUndefined, isUndefined} from '../../common/other.ts';
 import {DocHandle} from '@automerge/automerge-repo';
@@ -48,7 +48,7 @@ const applyChangesToDoc = (
   let changesFailed = 1;
   ifNotUndefined(changes, ([cellChanges, valueChanges]) => {
     changesFailed = 0;
-    objToArray(cellChanges, (table, tableId) =>
+    objMap(cellChanges, (table, tableId) =>
       changesFailed
         ? 0
         : isUndefined(table)
@@ -56,7 +56,7 @@ const applyChangesToDoc = (
           : ifNotUndefined(
               docTables[tableId],
               (docTable) =>
-                objToArray(table, (row, rowId) =>
+                objMap(table, (row, rowId) =>
                   changesFailed
                     ? 0
                     : isUndefined(row)
@@ -64,7 +64,7 @@ const applyChangesToDoc = (
                       : ifNotUndefined(
                           objGet(docTable, rowId),
                           (docRow: any) =>
-                            objToArray(row, (cell, cellId) =>
+                            objMap(row, (cell, cellId) =>
                               isUndefined(cell)
                                 ? objDel(docRow, cellId)
                                 : (docRow[cellId] = cell),
@@ -75,7 +75,7 @@ const applyChangesToDoc = (
               changesDidFail,
             ),
     );
-    objToArray(valueChanges, (value, valueId) =>
+    objMap(valueChanges, (value, valueId) =>
       changesFailed
         ? 0
         : isUndefined(value)
@@ -113,12 +113,12 @@ const docObjMatch = (
     ? docObjOrParent
     : objEnsure(docObjOrParent, idInParent, () => ({}));
   let changed: 1 | undefined;
-  objToArray(obj, (value, id) => {
+  objMap(obj, (value, id) => {
     if (set(docObj, id, value)) {
       changed = 1;
     }
   });
-  objToArray(docObj, (_: any, id: Id) => {
+  objMap(docObj, (_: any, id: Id) => {
     if (!objHas(obj, id)) {
       objDel(docObj, id);
       changed = 1;

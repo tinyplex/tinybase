@@ -40,13 +40,13 @@ export const getSchemaFunctions = (
   const mapTablesSchema = <Return>(
     callback: (tableId: Id, tableName: string, TABLE_ID: string) => Return,
   ) =>
-    objToArray(tablesSchema, (_, tableId) => {
-      return callback(
+    objToArray(tablesSchema, (_, tableId) =>
+      callback(
         tableId,
         camel(tableId, 1),
         addConstant(snake(tableId), `'${tableId}'`),
-      );
-    });
+      ),
+    );
 
   const mapCellSchema = <Return>(
     tableId: Id,
