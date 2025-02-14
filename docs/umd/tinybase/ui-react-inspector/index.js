@@ -50,7 +50,7 @@
   const mathFloor = math.floor;
   const isFiniteNumber = isFinite;
   const isInstanceOf = (thing, cls) => thing instanceof cls;
-  const isUndefined = (thing) => thing == undefined;
+  const isUndefined = (thing) => thing == void 0;
   const ifNotUndefined = (value, then, otherwise) =>
     isUndefined(value) ? otherwise?.() : then(value);
   const isTypeStringOrBoolean = (type) => type == STRING || type == BOOLEAN;
@@ -163,9 +163,9 @@
       isInstanceOf(value, Map) ? object.fromEntries([...value]) : value,
     );
   const jsonStringWithUndefined = (obj) =>
-    jsonString(obj, (_key, value) => (value === undefined ? UNDEFINED : value));
+    jsonString(obj, (_key, value) => (value === void 0 ? UNDEFINED : value));
   const jsonParseWithUndefined = (str) =>
-    jsonParse(str, (_key, value) => (value === UNDEFINED ? undefined : value));
+    jsonParse(str, (_key, value) => (value === UNDEFINED ? void 0 : value));
 
   const UNIQUE_ID = 'tinybaseInspector';
   const TITLE = 'TinyBase Inspector';
@@ -364,7 +364,7 @@
     return isTypeStringOrBoolean(type) ||
       (type == NUMBER && isFiniteNumber(cellOrValue))
       ? type
-      : undefined;
+      : void 0;
   };
   const setOrDelCell = (store, tableId, rowId, cellId, cell) =>
     isUndefined(cell)
@@ -390,7 +390,7 @@
     );
   const useCallbackOrUndefined = (callback, deps, test) => {
     const returnCallback = useCallback(callback, deps);
-    return test ? returnCallback : undefined;
+    return test ? returnCallback : void 0;
   };
   const useParams = (...args) =>
     useMemo(
@@ -566,7 +566,7 @@
         ),
         className:
           isUndefined(sortDescending) || sortCellId != cellId
-            ? undefined
+            ? void 0
             : `sorted ${sortDescending ? 'de' : 'a'}scending`,
       },
       isUndefined(sortDescending) || sortCellId != cellId
@@ -1704,15 +1704,10 @@
       );
     const delListener = (id) =>
       ifNotUndefined(mapGet(allListeners, id), ([, idSetNode, idOrNulls]) => {
-        visitTree(
-          idSetNode,
-          idOrNulls ?? [EMPTY_STRING],
-          undefined,
-          (idSet) => {
-            collDel(idSet, id);
-            return collIsEmpty(idSet) ? 1 : 0;
-          },
-        );
+        visitTree(idSetNode, idOrNulls ?? [EMPTY_STRING], void 0, (idSet) => {
+          collDel(idSet, id);
+          return collIsEmpty(idSet) ? 1 : 0;
+        });
         mapSet(allListeners, id);
         releaseId(id);
         return idOrNulls;
@@ -1799,7 +1794,7 @@
     const setStatus = (newStatus) => {
       if (newStatus != status) {
         status = newStatus;
-        callListeners(statusListeners, undefined, status);
+        callListeners(statusListeners, void 0, status);
       }
     };
     const run = async () => {
@@ -1877,7 +1872,7 @@
     const stopAutoLoad = () => {
       if (autoLoadHandle) {
         delPersisterListener(autoLoadHandle);
-        autoLoadHandle = undefined;
+        autoLoadHandle = void 0;
       }
       return persister;
     };
@@ -1910,7 +1905,7 @@
     const stopAutoSave = () => {
       if (autoSaveListenerId) {
         store.delListener(autoSaveListenerId);
-        autoSaveListenerId = undefined;
+        autoSaveListenerId = void 0;
       }
       return persister;
     };
@@ -2009,7 +2004,7 @@
     mapSet(
       changedIds,
       id2,
-      mapGet(changedIds, id2) == -addedOrRemoved ? undefined : addedOrRemoved,
+      mapGet(changedIds, id2) == -addedOrRemoved ? void 0 : addedOrRemoved,
     );
   const createStore = () => {
     let hasTablesSchema;
@@ -2505,7 +2500,7 @@
     const callTabularListenersForChanges = (mutator) => {
       const hasTablesNow = hasTables();
       if (hasTablesNow != hadTables) {
-        callListeners(hasTablesListeners[mutator], undefined, hasTablesNow);
+        callListeners(hasTablesListeners[mutator], void 0, hasTablesNow);
       }
       const emptySortedRowIdListeners = collIsEmpty(
         sortedRowIdsListeners[mutator],
@@ -2644,7 +2639,7 @@
             }
           });
           if (tablesChanged) {
-            callListeners(tablesListeners[mutator], undefined, getCellChange);
+            callListeners(tablesListeners[mutator], void 0, getCellChange);
           }
         }
       }
@@ -2652,7 +2647,7 @@
     const callValuesListenersForChanges = (mutator) => {
       const hasValuesNow = hasValues();
       if (hasValuesNow != hadValues) {
-        callListeners(hasValuesListeners[mutator], undefined, hasValuesNow);
+        callListeners(hasValuesListeners[mutator], void 0, hasValuesNow);
       }
       const emptyIdAndHasListeners =
         collIsEmpty(valueIdsListeners[mutator]) &&
@@ -2686,7 +2681,7 @@
             }
           });
           if (valuesChanged) {
-            callListeners(valuesListeners[mutator], undefined, getValueChange);
+            callListeners(valuesListeners[mutator], void 0, getValueChange);
           }
         }
       }
@@ -2773,7 +2768,7 @@
       );
     const addRow = (tableId, row, reuseRowIds = true) =>
       transaction(() => {
-        let rowId = undefined;
+        let rowId = void 0;
         if (validateRow(tableId, rowId, row)) {
           tableId = id(tableId);
           setValidRow(
@@ -2997,12 +2992,12 @@
         changedCells,
         (table, tableId) =>
           mapGet(changedTableIds, tableId) === -1
-            ? undefined
+            ? void 0
             : mapToObj(
                 table,
                 (row, rowId) =>
                   mapGet(mapGet(changedRowIds, tableId), rowId) === -1
-                    ? undefined
+                    ? void 0
                     : mapToObj(
                         row,
                         ([, newCell]) => newCell,
@@ -3060,7 +3055,7 @@
             );
             collClear(changedValues);
           }
-          callListeners(finishTransactionListeners[0], undefined);
+          callListeners(finishTransactionListeners[0], void 0);
           transactions = -1;
           callInvalidCellListeners(0);
           if (!collIsEmpty(changedCells)) {
@@ -3071,7 +3066,7 @@
             callValuesListenersForChanges(0);
           }
           internalListeners[1]?.();
-          callListeners(finishTransactionListeners[1], undefined);
+          callListeners(finishTransactionListeners[1], void 0);
           internalListeners[2]?.();
           transactions = 0;
           hadTables = hasTables();
@@ -3363,7 +3358,7 @@
           addListener(
             args[argumentCount],
             idSetNode[args[argumentCount + 1] ? 1 : 0],
-            argumentCount > 0 ? slice(args, 0, argumentCount) : undefined,
+            argumentCount > 0 ? slice(args, 0, argumentCount) : void 0,
             pathGetters,
             extraArgsGetter,
           );
@@ -3378,7 +3373,7 @@
     uiReact.useCreatePersister(
       s,
       (s2) => createSessionPersister(s2, UNIQUE_ID),
-      undefined,
+      void 0,
       async (persister) => {
         await persister.load([
           {},

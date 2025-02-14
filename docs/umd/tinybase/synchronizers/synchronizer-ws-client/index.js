@@ -25,7 +25,7 @@
     setTimeout(callback, sec * THOUSAND);
   const math = Math;
   const mathFloor = math.floor;
-  const isUndefined = (thing) => thing == undefined;
+  const isUndefined = (thing) => thing == void 0;
   const ifNotUndefined = (value, then, otherwise) =>
     isUndefined(value) ? otherwise?.() : then(value);
   const isArray = (thing) => Array.isArray(thing);
@@ -76,9 +76,9 @@
   const jsonString = JSON.stringify;
   const jsonParse = JSON.parse;
   const jsonStringWithUndefined = (obj) =>
-    jsonString(obj, (_key, value) => (value === undefined ? UNDEFINED : value));
+    jsonString(obj, (_key, value) => (value === void 0 ? UNDEFINED : value));
   const jsonParseWithUndefined = (str) =>
-    jsonParse(str, (_key, value) => (value === UNDEFINED ? undefined : value));
+    jsonParse(str, (_key, value) => (value === UNDEFINED ? void 0 : value));
 
   const MESSAGE_SEPARATOR = '\n';
   const ifPayloadValid = (payload, then) => {
@@ -208,15 +208,10 @@
       );
     const delListener = (id) =>
       ifNotUndefined(mapGet(allListeners, id), ([, idSetNode, idOrNulls]) => {
-        visitTree(
-          idSetNode,
-          idOrNulls ?? [EMPTY_STRING],
-          undefined,
-          (idSet) => {
-            collDel(idSet, id);
-            return collIsEmpty(idSet) ? 1 : 0;
-          },
-        );
+        visitTree(idSetNode, idOrNulls ?? [EMPTY_STRING], void 0, (idSet) => {
+          collDel(idSet, id);
+          return collIsEmpty(idSet) ? 1 : 0;
+        });
         mapSet(allListeners, id);
         releaseId(id);
         return idOrNulls;
@@ -303,7 +298,7 @@
     const setStatus = (newStatus) => {
       if (newStatus != status) {
         status = newStatus;
-        callListeners(statusListeners, undefined, status);
+        callListeners(statusListeners, void 0, status);
       }
     };
     const run = async () => {
@@ -388,7 +383,7 @@
     const stopAutoLoad = () => {
       if (autoLoadHandle) {
         delPersisterListener(autoLoadHandle);
-        autoLoadHandle = undefined;
+        autoLoadHandle = void 0;
       }
       return persister;
     };
@@ -424,7 +419,7 @@
     const stopAutoSave = () => {
       if (autoSaveListenerId) {
         store.delListener(autoSaveListenerId);
-        autoSaveListenerId = undefined;
+        autoSaveListenerId = void 0;
       }
       return persister;
     };
@@ -616,7 +611,7 @@
       return changes &&
         (!objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0]))
         ? changes
-        : undefined;
+        : void 0;
     };
     const setPersisted = async (_getContent, changes) =>
       changes
@@ -628,7 +623,7 @@
             store.getMergeableContentHashes(),
           );
     const addPersisterListener = (listener) => (persisterListener = listener);
-    const delPersisterListener = () => (persisterListener = undefined);
+    const delPersisterListener = () => (persisterListener = void 0);
     const startSync = async (initialContent) => {
       syncing = 1;
       return await (
@@ -673,14 +668,14 @@
         getChangesFromOtherStore(
           fromClientId,
           body,
-          transactionOrRequestId ?? undefined,
+          transactionOrRequestId ?? void 0,
         )
           .then((changes) => {
-            persisterListener?.(undefined, changes);
+            persisterListener?.(void 0, changes);
           })
           .catch(onIgnoredError);
       } else if (message == 3 /* ContentDiff */ && isAutoLoading) {
-        persisterListener?.(undefined, body);
+        persisterListener?.(void 0, body);
       } else {
         ifNotUndefined(
           message == 1 /* GetContentHashes */ &&
@@ -694,7 +689,7 @@
                   ? store.getMergeableCellDiff(body)
                   : message == 7 /* GetValueDiff */
                     ? store.getMergeableValueDiff(body)
-                    : undefined,
+                    : void 0,
           (response) => {
             sendImpl(
               fromClientId,
