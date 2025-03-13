@@ -737,6 +737,38 @@ export const createShop: typeof createShopDecl = () => {
 
 ---
 
+<section id="family">
+  <h2>Meet the family</h2>
+  <p>TinyBase is part of a group of small libraries designed to help make rich client and local-first apps easier to build. Check out the others!</p>
+
+  <p>
+    <img width="48" src="https://tinybase.org/favicon.svg?asImg" />
+    <br/>
+    <b>TinyBase</b>
+    <br />The reactive data store for local-first apps.
+  </p>
+
+  <p>
+    <a href='https://tinywidgets.org' target='_blank'>
+      <img width="48" src="https://tinywidgets.org/favicon.svg?asImg" />
+      <br/>
+      <b>TinyWidgets</b>
+    </a>
+    <br />A collection of tiny, reusable, UI components.
+  </p>
+
+  <p>
+    <a href='https://tinytick.org' target='_blank'>
+      <img width="48" src="https://tinytick.org/favicon.svg?asImg" />
+      <br />
+      <b>TinyTick</b>
+    </a>
+    <br />A tiny but very useful task orchestrator.
+  </p>
+</section>
+
+---
+
 <section id="about">
   <h2>About</h2>
   <p>Modern apps deserve better. Why trade reactive user experiences to be able

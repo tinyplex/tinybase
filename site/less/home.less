@@ -108,27 +108,43 @@ body > main > article#home {
   > section#story,
   > section#follow,
   > section#friends,
+  > section#family,
   > section#users,
   > section#sponsors,
   > section#about {
     text-align: center;
   }
-  > section#friends {
-    div {
-      display: inline-block;
-      margin: 1rem;
-      width: 6rem;
-      a {
-        text-decoration: none;
-      }
-      img,
-      embed {
-        margin: 0.5rem auto 0;
-        height: 6rem;
-        max-width: 6rem;
-        display: block;
-        width: unset;
-      }
+  > section#friends div {
+    display: inline-block;
+    margin: 1rem;
+    width: 6rem;
+    a {
+      text-decoration: none;
+    }
+    img,
+    embed {
+      margin: 0.5rem auto 0;
+      height: 6rem;
+      max-width: 6rem;
+      display: block;
+      width: unset;
+    }
+  }
+  > section#family p:nth-child(1n + 3) {
+    display: inline-block;
+    vertical-align: top;
+    margin: 2rem;
+    width: 12rem;
+    a {
+      text-decoration: none;
+    }
+    img,
+    embed {
+      margin: 0.5rem auto 0;
+      height: 6rem;
+      max-width: 6rem;
+      display: block;
+      width: unset;
     }
   }
   > section#follow {
@@ -213,6 +229,7 @@ body > main > article#home {
       column-gap: 4rem;
     }
     > section#friends,
+    > section#family,
     > section#follow {
       grid-column: 1/7;
     }
