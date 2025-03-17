@@ -1,5 +1,3 @@
-/** @jsx createElement */
-
 import type {
   BackwardCheckpointsProps,
   BackwardCheckpointsView as BackwardCheckpointsViewDecl,
@@ -60,7 +58,6 @@ import type {Id, Ids} from '../@types/common/index.d.ts';
 import type {ReactElement, ReactNode} from 'react';
 import {arrayMap, arrayNew, arrayWith} from '../common/array.ts';
 import {
-  createElement,
   getIndexStoreTableId,
   getProps,
   getRelationshipsStoreTableIds,
@@ -94,6 +91,7 @@ import {
 } from './hooks.ts';
 import type {CheckpointIds} from '../@types/checkpoints/index.d.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
+import React from 'react';
 
 enum Offsets {
   Store = 0,

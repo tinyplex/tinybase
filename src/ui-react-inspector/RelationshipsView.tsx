@@ -1,15 +1,13 @@
-/** @jsx createElement */
-
 import {getUniqueId, sortedIdsMap, useEditable} from './common.ts';
 import {useRelationshipIds, useRelationships} from '../ui-react/index.ts';
 import {DEFAULT} from '../common/strings.ts';
 import {Details} from './Details.tsx';
 import type {Id} from '../@types/common/index.d.ts';
+import React from 'react';
 import {RelationshipInHtmlTable} from '../ui-react-dom/index.tsx';
 import type {Relationships} from '../@types/relationships/index.d.ts';
 import type {StoreProp} from './types.ts';
 import {arrayIsEmpty} from '../common/array.ts';
-import {createElement} from '../common/react.ts';
 import {isUndefined} from '../common/other.ts';
 
 const RelationshipView = ({

@@ -1,5 +1,3 @@
-/** @jsx createElement */
-
 import {arrayIsEmpty, arrayMap} from '../common/array.ts';
 import {useMetric, useMetricIds, useMetrics} from '../ui-react/index.ts';
 import {DEFAULT} from '../common/strings.ts';
@@ -7,8 +5,8 @@ import {Details} from './Details.tsx';
 import type {Id} from '../@types/common/index.d.ts';
 import type {MetricProps} from '../@types/ui-react/index.d.ts';
 import type {Metrics} from '../@types/metrics/index.d.ts';
+import React from 'react';
 import type {StoreProp} from './types.ts';
-import {createElement} from '../common/react.ts';
 import {getUniqueId} from './common.ts';
 import {isUndefined} from '../common/other.ts';
 
