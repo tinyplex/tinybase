@@ -1,6 +1,3 @@
-/** @jsx createElement */
-/** @jsxFrag Fragment */
-
 import {
   BOOLEAN,
   CELL,
@@ -72,9 +69,8 @@ import type {
   ValuesInHtmlTable as ValuesInHtmlTableDecl,
   ValuesInHtmlTableProps,
 } from '../@types/ui-react-dom/index.d.ts';
+import type {Id, Ids} from '../@types/common/index.d.ts';
 import {
-  Fragment,
-  createElement,
   getIndexStoreTableId,
   getProps,
   getRelationshipsStoreTableIds,
@@ -82,9 +78,9 @@ import {
   useMemo,
   useState,
 } from '../common/react.ts';
-import type {Id, Ids} from '../@types/common/index.d.ts';
 import {isArray, isString, isUndefined, mathMin} from '../common/other.ts';
 import {objMap, objNew, objToArray} from '../common/obj.ts';
+import React from 'react';
 import type {Relationships} from '../@types/relationships/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 

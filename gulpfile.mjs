@@ -477,17 +477,20 @@ const compileModule = async (
       'prettier/plugins/typescript',
       'react',
       'react-dom',
+      'react/jsx-runtime',
       'url',
       'yjs',
       'tinybase/store',
       'tinybase/tools',
       '../ui-react',
     ],
+    jsx: 'react-jsx',
     input: inputFile,
     plugins: [
       esbuild({
         target,
         legalComments: 'inline',
+        jsx: 'automatic',
       }),
       replace({
         '/*!': '\n/*',
@@ -504,18 +507,16 @@ const compileModule = async (
       shebang(),
       image(),
       min
-        ? [
-            terser({
-              toplevel: true,
-              compress: {
-                unsafe: true,
-                passes: 3,
-                ...(module == 'tools'
-                  ? {reduce_vars: false, reduce_funcs: false}
-                  : {}),
-              },
-            }),
-          ]
+        ? terser({
+            toplevel: true,
+            compress: {
+              unsafe: true,
+              passes: 3,
+              ...(module == 'tools'
+                ? {reduce_vars: false, reduce_funcs: false}
+                : {}),
+            },
+          })
         : prettierPlugin(await getPrettierConfig()),
     ],
     onwarn: (warning, warn) => {

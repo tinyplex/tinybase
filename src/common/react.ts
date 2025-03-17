@@ -8,9 +8,7 @@ import {isUndefined} from './other.ts';
 
 export const {
   PureComponent,
-  Fragment,
   createContext,
-  createElement,
   useCallback,
   useContext,
   useEffect,
