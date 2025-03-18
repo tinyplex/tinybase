@@ -997,9 +997,7 @@ describe('Read Hooks', () => {
     rerender(<Test />);
     expect(changed).toEqual(1);
     expect(didRender).toHaveBeenCalledTimes(2);
-    act(() => {
-      store.setTables({t1: {r1: {c1: 2}}});
-    });
+    act(() => store.setTables({t1: {r1: {c1: 2}}}));
     expect(changed).toEqual(2);
     expect(didRender).toHaveBeenCalledTimes(3);
     rerender(<Test />);
@@ -1015,9 +1013,7 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().hasTables).toEqual(1);
     expect(baseElement.textContent).toEqual('true');
 
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual('false');
 
     rerender(<button />);
@@ -1036,16 +1032,14 @@ describe('Read Hooks', () => {
       JSON.stringify({t1: {r1: {c1: 1}}}),
     );
 
-    act(() => {
-      store.setTables({t1: {r1: {c1: 2}}}).setTables({t1: {r1: {c1: 2}}});
-    });
+    act(() =>
+      store.setTables({t1: {r1: {c1: 2}}}).setTables({t1: {r1: {c1: 2}}}),
+    );
     expect(baseElement.textContent).toEqual(
       JSON.stringify({t1: {r1: {c1: 2}}}),
     );
 
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual(JSON.stringify({}));
     rerender(<button />);
     expect(store.getListenerStats().tables).toEqual(0);
@@ -1060,16 +1054,14 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().tableIds).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify(['t1']));
 
-    act(() => {
+    act(() =>
       store
         .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}})
-        .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}});
-    });
+        .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}}),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify(['t1', 't2']));
 
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual('[]');
     rerender(<button />);
     expect(store.getListenerStats().tableIds).toEqual(0);
@@ -1095,9 +1087,7 @@ describe('Read Hooks', () => {
 
     expect(store.getListenerStats().hasTable).toEqual(1);
     expect(baseElement.textContent).toEqual('true');
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual('false');
     rerender(<button />);
     expect(store.getListenerStats().table).toEqual(0);
@@ -1116,20 +1106,18 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().table).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify({r1: {c1: 1}}));
 
-    act(() => {
+    act(() =>
       store
         .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}})
-        .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}});
-    });
+        .setTables({t1: {r1: {c1: 2}}, t2: {r1: {c1: 3}}}),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify({r1: {c1: 2}}));
 
     rerender(<Test tableId="t2" />);
     expect(store.getListenerStats().table).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify({r1: {c1: 3}}));
 
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual(JSON.stringify({}));
     rerender(<button />);
     expect(store.getListenerStats().table).toEqual(0);
@@ -1150,11 +1138,11 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().tableCellIds).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify(['c1']));
 
-    act(() => {
+    act(() =>
       store
         .setTables({t1: {r2: {c2: 2}}, t2: {r1: {c3: 1}, r2: {c4: 4}}})
-        .setTables({t1: {r2: {c2: 2}}, t2: {r1: {c3: 1}, r2: {c4: 4}}});
-    });
+        .setTables({t1: {r2: {c2: 2}}, t2: {r1: {c3: 1}, r2: {c4: 4}}}),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify(['c2']));
 
     rerender(<Test tableId="t2" />);
@@ -1162,9 +1150,7 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().tableCellIds).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify(['c3', 'c4']));
 
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual(JSON.stringify([]));
     rerender(<button />);
     expect(store.getListenerStats().tableCellIds).toEqual(0);
@@ -1183,20 +1169,18 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().hasTableCell).toEqual(1);
     expect(baseElement.textContent).toEqual('true');
 
-    act(() => {
+    act(() =>
       store
         .setTable('t1', {r1: {c1: 2}, r2: {c2: 3}})
-        .setTable('t1', {r1: {c1: 2}, r2: {c2: 3}});
-    });
+        .setTable('t1', {r1: {c1: 2}, r2: {c2: 3}}),
+    );
     expect(baseElement.textContent).toEqual('true');
 
     rerender(<Test tableId="t1" cellId="c2" />);
     expect(store.getListenerStats().hasTableCell).toEqual(1);
     expect(baseElement.textContent).toEqual('true');
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual('false');
     rerender(<button />);
     expect(store.getListenerStats().hasTableCell).toEqual(0);
@@ -1215,20 +1199,18 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().rowCount).toEqual(1);
     expect(baseElement.textContent).toEqual('1');
 
-    act(() => {
+    act(() =>
       store
         .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}})
-        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}});
-    });
+        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}}),
+    );
     expect(baseElement.textContent).toEqual('1');
 
     rerender(<Test tableId="t2" />);
     expect(store.getListenerStats().rowCount).toEqual(1);
     expect(baseElement.textContent).toEqual('2');
 
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual('0');
     rerender(<button />);
     expect(store.getListenerStats().rowCount).toEqual(0);
@@ -1248,20 +1230,18 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().rowIds).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify(['r1']));
 
-    act(() => {
+    act(() =>
       store
         .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}})
-        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}});
-    });
+        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}}),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify(['r2']));
 
     rerender(<Test tableId="t2" />);
     expect(store.getListenerStats().rowIds).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify(['r3', 'r4']));
 
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual(JSON.stringify([]));
     rerender(<button />);
     expect(store.getListenerStats().rowIds).toEqual(0);
@@ -1316,11 +1296,11 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().sortedRowIds).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify(['r1']));
 
-    act(() => {
+    act(() =>
       store
         .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}})
-        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}});
-    });
+        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}}),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify(['r2']));
 
     rerender(
@@ -1330,14 +1310,10 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().sortedRowIds).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify(['r4', 'r3']));
 
-    act(() => {
-      store.setRow('t2', 'r5', {c1: 5});
-    });
+    act(() => store.setRow('t2', 'r5', {c1: 5}));
     expect(baseElement.textContent).toEqual(JSON.stringify(['r5', 'r4']));
 
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual(JSON.stringify([]));
     rerender(<button />);
 
@@ -1359,11 +1335,11 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().hasRow).toEqual(1);
     expect(baseElement.textContent).toEqual('true');
 
-    act(() => {
+    act(() =>
       store
         .setTable('t1', {r1: {c1: 2}, r2: {c1: 3}})
-        .setTable('t1', {r1: {c1: 2}, r2: {c1: 3}});
-    });
+        .setTable('t1', {r1: {c1: 2}, r2: {c1: 3}}),
+    );
     expect(baseElement.textContent).toEqual('true');
 
     rerender(<Test tableId="t1" rowId="r2" />);
@@ -1371,9 +1347,7 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().hasRow).toEqual(1);
     expect(baseElement.textContent).toEqual('true');
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual('false');
     rerender(<button />);
 
@@ -1395,11 +1369,11 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().row).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify({c1: 1}));
 
-    act(() => {
+    act(() =>
       store
         .setTable('t1', {r1: {c1: 2}, r2: {c1: 3}})
-        .setTable('t1', {r1: {c1: 2}, r2: {c1: 3}});
-    });
+        .setTable('t1', {r1: {c1: 2}, r2: {c1: 3}}),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify({c1: 2}));
 
     rerender(<Test tableId="t1" rowId="r2" />);
@@ -1407,9 +1381,7 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().row).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify({c1: 3}));
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual(JSON.stringify({}));
     rerender(<button />);
 
@@ -1431,11 +1403,11 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().cellIds).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify(['c1']));
 
-    act(() => {
+    act(() =>
       store
         .setTable('t1', {r1: {c2: 2}, r2: {c3: 3, c4: 4}})
-        .setTable('t1', {r1: {c2: 2}, r2: {c3: 3, c4: 4}});
-    });
+        .setTable('t1', {r1: {c2: 2}, r2: {c3: 3, c4: 4}}),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify(['c2']));
 
     rerender(<Test tableId="t1" rowId="r2" />);
@@ -1443,9 +1415,7 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().cellIds).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify(['c3', 'c4']));
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual(JSON.stringify([]));
     rerender(<button />);
 
@@ -1479,11 +1449,11 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().hasCell).toEqual(1);
     expect(baseElement.textContent).toEqual('true');
 
-    act(() => {
+    act(() =>
       store
         .setTable('t1', {r1: {c1: 2, c2: 2}})
-        .setTable('t1', {r1: {c1: 2, c2: 2}});
-    });
+        .setTable('t1', {r1: {c1: 2, c2: 2}}),
+    );
     expect(baseElement.textContent).toEqual('true');
 
     rerender(<Test tableId="t1" rowId="r1" cellId="c2" />);
@@ -1491,9 +1461,7 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().hasCell).toEqual(1);
     expect(baseElement.textContent).toEqual('true');
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual('false');
     rerender(<button />);
 
@@ -1524,11 +1492,11 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().cell).toEqual(1);
     expect(baseElement.textContent).toEqual('1');
 
-    act(() => {
+    act(() =>
       store
         .setTable('t1', {r1: {c1: 2, c2: 2}})
-        .setTable('t1', {r1: {c1: 2, c2: 2}});
-    });
+        .setTable('t1', {r1: {c1: 2, c2: 2}}),
+    );
     expect(baseElement.textContent).toEqual('2');
 
     rerender(<Test tableId="t1" rowId="r1" cellId="c2" />);
@@ -1536,9 +1504,7 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().cell).toEqual(1);
     expect(baseElement.textContent).toEqual('2');
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual('');
     rerender(<button />);
 
@@ -1554,14 +1520,10 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().hasValues).toEqual(1);
     expect(baseElement.textContent).toEqual('true');
 
-    act(() => {
-      store.setValues({v1: 2}).setValues({v1: 2});
-    });
+    act(() => store.setValues({v1: 2}).setValues({v1: 2}));
     expect(baseElement.textContent).toEqual('true');
 
-    act(() => {
-      store.delValues();
-    });
+    act(() => store.delValues());
     expect(baseElement.textContent).toEqual('false');
     rerender(<button />);
 
@@ -1577,14 +1539,10 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().values).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify({v1: 1}));
 
-    act(() => {
-      store.setValues({v1: 2}).setValues({v1: 2});
-    });
+    act(() => store.setValues({v1: 2}).setValues({v1: 2}));
     expect(baseElement.textContent).toEqual(JSON.stringify({v1: 2}));
 
-    act(() => {
-      store.delValues();
-    });
+    act(() => store.delValues());
     expect(baseElement.textContent).toEqual(JSON.stringify({}));
     rerender(<button />);
 
@@ -1600,14 +1558,10 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().valueIds).toEqual(1);
     expect(baseElement.textContent).toEqual(JSON.stringify(['v1']));
 
-    act(() => {
-      store.setValues({v1: 1, v2: 2}).setValues({v1: 1, v2: 2});
-    });
+    act(() => store.setValues({v1: 1, v2: 2}).setValues({v1: 1, v2: 2}));
     expect(baseElement.textContent).toEqual(JSON.stringify(['v1', 'v2']));
 
-    act(() => {
-      store.delValues();
-    });
+    act(() => store.delValues());
     expect(baseElement.textContent).toEqual('[]');
     rerender(<button />);
 
@@ -1629,9 +1583,7 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().hasValue).toEqual(1);
     expect(baseElement.textContent).toEqual('true');
 
-    act(() => {
-      store.setValues({v1: 2, v2: 3}).setValues({v1: 2, v2: 3});
-    });
+    act(() => store.setValues({v1: 2, v2: 3}).setValues({v1: 2, v2: 3}));
     expect(baseElement.textContent).toEqual('true');
 
     rerender(<Test valueId="v2" />);
@@ -1639,9 +1591,7 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().hasValue).toEqual(1);
     expect(baseElement.textContent).toEqual('true');
 
-    act(() => {
-      store.delValues();
-    });
+    act(() => store.delValues());
     expect(baseElement.textContent).toEqual('false');
     rerender(<button />);
 
@@ -1663,9 +1613,7 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().value).toEqual(1);
     expect(baseElement.textContent).toEqual('1');
 
-    act(() => {
-      store.setValues({v1: 2, v2: 3}).setValues({v1: 2, v2: 3});
-    });
+    act(() => store.setValues({v1: 2, v2: 3}).setValues({v1: 2, v2: 3}));
     expect(baseElement.textContent).toEqual('2');
 
     rerender(<Test valueId="v2" />);
@@ -1673,9 +1621,7 @@ describe('Read Hooks', () => {
     expect(store.getListenerStats().value).toEqual(1);
     expect(baseElement.textContent).toEqual('3');
 
-    act(() => {
-      store.delValues();
-    });
+    act(() => store.delValues());
     expect(baseElement.textContent).toEqual('');
     rerender(<button />);
 
@@ -1690,15 +1636,12 @@ describe('Read Hooks', () => {
     const {baseElement} = render(<Test />);
     expect(baseElement.textContent).toEqual('');
 
-    act(() => {
-      metrics.setMetricDefinition('m1', 't1');
-      metrics.setMetricDefinition('m2', 't2');
-    });
+    act(() =>
+      metrics.setMetricDefinition('m1', 't1').setMetricDefinition('m2', 't2'),
+    );
     expect(baseElement.textContent).toEqual('m1m2');
 
-    act(() => {
-      metrics.delMetricDefinition('m1');
-    });
+    act(() => metrics.delMetricDefinition('m1'));
     expect(baseElement.textContent).toEqual('m2');
     expect(didRender).toHaveBeenCalledTimes(3);
   });
@@ -1719,18 +1662,14 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual('1');
 
-    act(() => {
-      store.setCell('t1', 'r2', 'c1', 3).setCell('t1', 'r2', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r2', 'c1', 3).setCell('t1', 'r2', 'c1', 3));
     expect(baseElement.textContent).toEqual('2');
 
     rerender(<Test metricId="m2" />);
 
     expect(baseElement.textContent).toEqual('3');
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual('');
 
     rerender(<Test metricId="m3" />);
@@ -1746,15 +1685,12 @@ describe('Read Hooks', () => {
     const {baseElement} = render(<Test />);
     expect(baseElement.textContent).toEqual('');
 
-    act(() => {
-      indexes.setIndexDefinition('i1', 't1');
-      indexes.setIndexDefinition('i2', 't2');
-    });
+    act(() =>
+      indexes.setIndexDefinition('i1', 't1').setIndexDefinition('i2', 't2'),
+    );
     expect(baseElement.textContent).toEqual('i1i2');
 
-    act(() => {
-      indexes.delIndexDefinition('i1');
-    });
+    act(() => indexes.delIndexDefinition('i1'));
     expect(baseElement.textContent).toEqual('i2');
     expect(didRender).toHaveBeenCalledTimes(3);
   });
@@ -1774,21 +1710,19 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual(JSON.stringify(['1']));
 
-    act(() => {
+    act(() =>
       store
         .setCell('t1', 'r2', 'c1', 2)
         .setCell('t1', 'r2', 'c1', 2)
-        .setCell('t1', 'r2', 'c2', 3);
-    });
+        .setCell('t1', 'r2', 'c2', 3),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify(['1', '2']));
 
     rerender(<Test indexId="i2" />);
 
     expect(baseElement.textContent).toEqual(JSON.stringify(['', '3']));
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual(JSON.stringify([]));
 
     rerender(<Test indexId="i3" />);
@@ -1813,21 +1747,19 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual(JSON.stringify(['r1']));
 
-    act(() => {
+    act(() =>
       store
         .setCell('t1', 'r2', 'c1', 1)
         .setCell('t1', 'r2', 'c1', 1)
-        .setCell('t1', 'r3', 'c1', 2);
-    });
+        .setCell('t1', 'r3', 'c1', 2),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify(['r1', 'r2']));
 
     rerender(<Test indexId="i1" sliceId="2" />);
 
     expect(baseElement.textContent).toEqual(JSON.stringify(['r3']));
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual(JSON.stringify([]));
 
     rerender(<Test indexId="i2" sliceId="2" />);
@@ -1843,15 +1775,14 @@ describe('Read Hooks', () => {
     const {baseElement} = render(<Test />);
     expect(baseElement.textContent).toEqual('');
 
-    act(() => {
-      relationships.setRelationshipDefinition('r1', 't1', 't2', 'c1');
-      relationships.setRelationshipDefinition('r2', 't2', 't2', 'c1');
-    });
+    act(() =>
+      relationships
+        .setRelationshipDefinition('r1', 't1', 't2', 'c1')
+        .setRelationshipDefinition('r2', 't2', 't2', 'c1'),
+    );
     expect(baseElement.textContent).toEqual('r1r2');
 
-    act(() => {
-      relationships.delRelationshipDefinition('r1');
-    });
+    act(() => relationships.delRelationshipDefinition('r1'));
     expect(baseElement.textContent).toEqual('r2');
     expect(didRender).toHaveBeenCalledTimes(3);
   });
@@ -1885,21 +1816,19 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual(JSON.stringify('1'));
 
-    act(() => {
+    act(() =>
       store.setTables({
         t1: {r1: {c1: 'R1'}, r2: {c1: 'R2'}},
         T1: {R1: {C1: 1}, R2: {C1: 2}},
-      });
-    });
+      }),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify('R1'));
 
     rerender(<Test relationshipId="r1" localRowId="r2" />);
 
     expect(baseElement.textContent).toEqual(JSON.stringify('R2'));
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual('');
 
     rerender(<Test relationshipId="r2" localRowId="r2" />);
@@ -1936,21 +1865,19 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual(JSON.stringify([]));
 
-    act(() => {
+    act(() =>
       store.setTables({
         t1: {r1: {c1: 'R1'}, r2: {c1: 'R1'}, r3: {c1: 'R2'}},
         T1: {R1: {C1: 1}, R2: {C1: 2}},
-      });
-    });
+      }),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify(['r1', 'r2']));
 
     rerender(<Test relationshipId="r1" remoteRowId="R2" />);
 
     expect(baseElement.textContent).toEqual(JSON.stringify(['r3']));
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual(JSON.stringify([]));
 
     rerender(<Test relationshipId="r2" remoteRowId="R2" />);
@@ -1987,11 +1914,11 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual(JSON.stringify(['r1', '1']));
 
-    act(() => {
+    act(() =>
       store.setTables({
         t1: {r1: {c1: 'r2'}, r2: {c1: 'r3'}, r3: {c1: 'r4'}},
-      });
-    });
+      }),
+    );
     expect(baseElement.textContent).toEqual(
       JSON.stringify(['r1', 'r2', 'r3', 'r4']),
     );
@@ -2000,9 +1927,7 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual(JSON.stringify(['r2', 'r3', 'r4']));
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual(JSON.stringify(['r2']));
 
     rerender(<Test relationshipId="r2" firstRowId="r2" />);
@@ -2018,15 +1943,14 @@ describe('Read Hooks', () => {
     const {baseElement} = render(<Test />);
     expect(baseElement.textContent).toEqual('');
 
-    act(() => {
-      queries.setQueryDefinition('q1', 't1', () => 0);
-      queries.setQueryDefinition('q2', 't2', () => 0);
-    });
+    act(() =>
+      queries
+        .setQueryDefinition('q1', 't1', () => 0)
+        .setQueryDefinition('q2', 't2', () => 0),
+    );
     expect(baseElement.textContent).toEqual('q1q2');
 
-    act(() => {
-      queries.delQueryDefinition('q1');
-    });
+    act(() => queries.delQueryDefinition('q1'));
     expect(baseElement.textContent).toEqual('q2');
     expect(didRender).toHaveBeenCalledTimes(3);
   });
@@ -2048,11 +1972,11 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual(JSON.stringify({r1: {c1: 1}}));
 
-    act(() => {
+    act(() =>
       store
         .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}})
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}});
-    });
+        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}}),
+    );
     expect(baseElement.textContent).toEqual(
       JSON.stringify({r1: {c1: 2}, r2: {c1: 3}}),
     );
@@ -2061,9 +1985,7 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual(JSON.stringify({r2: {c1: 3}}));
 
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual(JSON.stringify({}));
     rerender(<button />);
 
@@ -2087,20 +2009,18 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual(JSON.stringify(['c1']));
 
-    act(() => {
+    act(() =>
       store
         .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}})
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}});
-    });
+        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}}),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify(['c1']));
 
     rerender(<Test queryId="q2" />);
 
     expect(baseElement.textContent).toEqual(JSON.stringify(['c1']));
 
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual(JSON.stringify([]));
     rerender(<button />);
 
@@ -2125,24 +2045,22 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual('1');
 
-    act(() => {
+    act(() =>
       store
         .setTables({
           t1: {r1: {c1: 2}, r2: {c1: 3, c2: 1}, r3: {c1: 3, c2: 2}},
         })
         .setTables({
           t1: {r1: {c1: 2}, r2: {c1: 3, c2: 1}, r3: {c1: 3, c2: 2}},
-        });
-    });
+        }),
+    );
     expect(baseElement.textContent).toEqual('3');
 
     rerender(<Test queryId="q2" />);
 
     expect(baseElement.textContent).toEqual('2');
 
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual('0');
     rerender(<button />);
 
@@ -2167,24 +2085,22 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual(JSON.stringify(['r1']));
 
-    act(() => {
+    act(() =>
       store
         .setTables({
           t1: {r1: {c1: 2}, r2: {c1: 3, c2: 1}, r3: {c1: 3, c2: 2}},
         })
         .setTables({
           t1: {r1: {c1: 2}, r2: {c1: 3, c2: 1}, r3: {c1: 3, c2: 2}},
-        });
-    });
+        }),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify(['r1', 'r2', 'r3']));
 
     rerender(<Test queryId="q2" />);
 
     expect(baseElement.textContent).toEqual(JSON.stringify(['r2', 'r3']));
 
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual(JSON.stringify([]));
     rerender(<button />);
 
@@ -2248,7 +2164,7 @@ describe('Read Hooks', () => {
     );
     expect(baseElement.textContent).toEqual(JSON.stringify(['r1']));
 
-    act(() => {
+    act(() =>
       store
         .setTables({
           t1: {
@@ -2265,8 +2181,8 @@ describe('Read Hooks', () => {
             r3: {c1: 3, c2: 1},
             r4: {c1: 3, c2: 2},
           },
-        });
-    });
+        }),
+    );
     expect(baseElement.textContent).toEqual(
       JSON.stringify(['r2', 'r1', 'r3', 'r4']),
     );
@@ -2276,14 +2192,10 @@ describe('Read Hooks', () => {
     );
     expect(baseElement.textContent).toEqual(JSON.stringify(['r4', 'r3']));
 
-    act(() => {
-      store.setRow('t1', 'r5', {c1: 3, c2: 3});
-    });
+    act(() => store.setRow('t1', 'r5', {c1: 3, c2: 3}));
     expect(baseElement.textContent).toEqual(JSON.stringify(['r5', 'r4']));
 
-    act(() => {
-      store.delTables();
-    });
+    act(() => store.delTables());
     expect(baseElement.textContent).toEqual(JSON.stringify([]));
     rerender(<button />);
 
@@ -2307,20 +2219,18 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual(JSON.stringify({c1: 1}));
 
-    act(() => {
+    act(() =>
       store
         .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}})
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}});
-    });
+        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}}),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify({c1: 2}));
 
     rerender(<Test queryId="q2" rowId="r2" />);
 
     expect(baseElement.textContent).toEqual(JSON.stringify({c1: 3}));
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual(JSON.stringify({}));
     rerender(<button />);
 
@@ -2348,37 +2258,35 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual(JSON.stringify(['c1']));
 
-    act(() => {
+    act(() =>
       store
         .setTables({t1: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}})
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}});
-    });
+        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}}),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify(['c1']));
 
     rerender(<Test queryId="q2" rowId="r2" />);
 
     expect(baseElement.textContent).toEqual(JSON.stringify(['c1', 'c2']));
 
-    act(() => {
+    act(() =>
       store.transaction(() =>
         store.delRow('t1', 'r2').setRow('t1', 'r2', {c2: 4, c1: 3, c3: 5}),
-      );
-    });
+      ),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify(['c1', 'c2', 'c3']));
 
-    act(() => {
+    act(() =>
       queries.setQueryDefinition('q2', 't1', ({select, where}) => {
         select('c3');
         select('c2');
         select('c1');
         where('c1', 3);
-      });
-    });
+      }),
+    );
     expect(baseElement.textContent).toEqual(JSON.stringify(['c3', 'c2', 'c1']));
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual(JSON.stringify([]));
     rerender(<button />);
 
@@ -2412,20 +2320,18 @@ describe('Read Hooks', () => {
 
     expect(baseElement.textContent).toEqual('1');
 
-    act(() => {
+    act(() =>
       store
         .setTables({t1: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}})
-        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}});
-    });
+        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}}),
+    );
     expect(baseElement.textContent).toEqual('2');
 
     rerender(<Test queryId="q2" rowId="r2" cellId="c2" />);
 
     expect(baseElement.textContent).toEqual('4');
 
-    act(() => {
-      store.delTable('t1');
-    });
+    act(() => store.delTable('t1'));
     expect(baseElement.textContent).toEqual('');
     rerender(<button />);
 
@@ -2440,16 +2346,12 @@ describe('Read Hooks', () => {
     const {baseElement} = render(<Test />);
     expect(baseElement.textContent).toEqual(JSON.stringify([[], '0', []]));
 
-    act(() => {
-      store.setTables({t1: {r1: {c1: 2}}});
-    });
+    act(() => store.setTables({t1: {r1: {c1: 2}}}));
     expect(baseElement.textContent).toEqual(
       JSON.stringify([['0'], undefined, []]),
     );
 
-    act(() => {
-      checkpoints.addCheckpoint();
-    });
+    act(() => checkpoints.addCheckpoint());
     expect(baseElement.textContent).toEqual(JSON.stringify([['0'], '1', []]));
     expect(didRender).toHaveBeenCalledTimes(3);
   });
@@ -3420,15 +3322,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().hasTables).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().hasTables).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().hasTables).toEqual(0);
@@ -3449,15 +3347,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().tables).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().tables).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().tables).toEqual(0);
@@ -3478,17 +3372,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().tableIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-      store.setCell('t2', 'r1', 'c1', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2).setCell('t2', 'r1', 'c1', 0));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().tableIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-      store.setCell('t3', 'r1', 'c1', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3).setCell('t3', 'r1', 'c1', 0));
     rerender(<button />);
 
     expect(store.getListenerStats().tableIds).toEqual(0);
@@ -3510,15 +3398,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().hasTable).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().hasTable).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().hasTable).toEqual(0);
@@ -3540,15 +3424,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().table).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().table).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().table).toEqual(0);
@@ -3570,17 +3450,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().tableCellIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-      store.setCell('t1', 'r1', 'c2', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2).setCell('t1', 'r1', 'c2', 0));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().tableCellIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-      store.setCell('t1', 'r1', 'c3', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3).setCell('t1', 'r1', 'c3', 0));
     rerender(<button />);
 
     expect(store.getListenerStats().tableCellIds).toEqual(0);
@@ -3603,15 +3477,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().hasTableCell).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().hasTableCell).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().hasTableCell).toEqual(0);
@@ -3633,17 +3503,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().rowCount).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-      store.setCell('t1', 'r2', 'c1', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2).setCell('t1', 'r2', 'c1', 0));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().rowCount).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-      store.setCell('t1', 'r3', 'c1', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3).setCell('t1', 'r3', 'c1', 0));
     rerender(<button />);
 
     expect(store.getListenerStats().rowCount).toEqual(0);
@@ -3665,17 +3529,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().rowIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-      store.setCell('t1', 'r2', 'c1', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2).setCell('t1', 'r2', 'c1', 0));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().rowIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-      store.setCell('t1', 'r3', 'c1', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3).setCell('t1', 'r3', 'c1', 0));
     rerender(<button />);
 
     expect(store.getListenerStats().rowIds).toEqual(0);
@@ -3701,17 +3559,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().sortedRowIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-      store.setCell('t1', 'r2', 'c1', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2).setCell('t1', 'r2', 'c1', 0));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().sortedRowIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-      store.setCell('t1', 'r3', 'c1', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3).setCell('t1', 'r3', 'c1', 0));
     rerender(<button />);
 
     expect(store.getListenerStats().sortedRowIds).toEqual(0);
@@ -3734,15 +3586,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().hasRow).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().hasRow).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().hasRow).toEqual(0);
@@ -3765,15 +3613,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().row).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().row).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().row).toEqual(0);
@@ -3796,17 +3640,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().cellIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-      store.setCell('t1', 'r1', 'c2', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2).setCell('t1', 'r1', 'c2', 0));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().cellIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-      store.setCell('t1', 'r1', 'c3', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3).setCell('t1', 'r1', 'c3', 0));
     rerender(<button />);
 
     expect(store.getListenerStats().cellIds).toEqual(0);
@@ -3830,15 +3668,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().hasCell).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().hasCell).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().hasCell).toEqual(0);
@@ -3862,15 +3696,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().cell).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().cell).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().cell).toEqual(0);
@@ -3891,15 +3721,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().hasValues).toEqual(1);
-    act(() => {
-      store.setValue('v1', 2);
-    });
+    act(() => store.setValue('v1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().hasValues).toEqual(1);
-    act(() => {
-      store.setValue('v1', 3);
-    });
+    act(() => store.setValue('v1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().hasValues).toEqual(0);
@@ -3920,15 +3746,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().values).toEqual(1);
-    act(() => {
-      store.setValue('v1', 2);
-    });
+    act(() => store.setValue('v1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().values).toEqual(1);
-    act(() => {
-      store.setValue('v1', 3);
-    });
+    act(() => store.setValue('v1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().values).toEqual(0);
@@ -3949,17 +3771,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().valueIds).toEqual(1);
-    act(() => {
-      store.setValue('v1', 2);
-      store.setValue('v2', 0);
-    });
+    act(() => store.setValue('v1', 2).setValue('v2', 0));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().valueIds).toEqual(1);
-    act(() => {
-      store.setValue('v1', 3);
-      store.setValue('v3', 0);
-    });
+    act(() => store.setValue('v1', 3).setValue('v3', 0));
     rerender(<button />);
 
     expect(store.getListenerStats().valueIds).toEqual(0);
@@ -3981,15 +3797,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().hasValue).toEqual(1);
-    act(() => {
-      store.setValue('v1', 2);
-    });
+    act(() => store.setValue('v1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().hasValue).toEqual(1);
-    act(() => {
-      store.setValue('v1', 3);
-    });
+    act(() => store.setValue('v1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().hasValue).toEqual(0);
@@ -4011,15 +3823,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().value).toEqual(1);
-    act(() => {
-      store.setValue('v1', 2);
-    });
+    act(() => store.setValue('v1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().value).toEqual(1);
-    act(() => {
-      store.setValue('v1', 3);
-    });
+    act(() => store.setValue('v1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().value).toEqual(0);
@@ -4039,15 +3847,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={1} />);
 
     expect(store.getListenerStats().transaction).toEqual(1);
-    act(() => {
-      store.setValue('v1', 2);
-    });
+    act(() => store.setValue('v1', 2));
     rerender(<Test value={2} />);
 
     expect(store.getListenerStats().transaction).toEqual(1);
-    act(() => {
-      store.setValue('v1', 3);
-    });
+    act(() => store.setValue('v1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().transaction).toEqual(0);
@@ -4067,15 +3871,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().transaction).toEqual(1);
-    act(() => {
-      store.setValue('v1', 2);
-    });
+    act(() => store.setValue('v1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().transaction).toEqual(1);
-    act(() => {
-      store.setValue('v1', 3);
-    });
+    act(() => store.setValue('v1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().transaction).toEqual(0);
@@ -4095,15 +3895,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(store.getListenerStats().transaction).toEqual(1);
-    act(() => {
-      store.setValue('v1', 2);
-    });
+    act(() => store.setValue('v1', 2));
     rerender(<Test value={3} />);
 
     expect(store.getListenerStats().transaction).toEqual(1);
-    act(() => {
-      store.setValue('v1', 3);
-    });
+    act(() => store.setValue('v1', 3));
     rerender(<button />);
 
     expect(store.getListenerStats().transaction).toEqual(0);
@@ -4130,15 +3926,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(metrics.getListenerStats().metric).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value={3} />);
 
     expect(metrics.getListenerStats().metric).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3));
     rerender(<button />);
 
     expect(metrics.getListenerStats().metric).toEqual(0);
@@ -4165,9 +3957,7 @@ describe('Listener Hooks', () => {
 
     const {rerender} = render(<Test />);
     expect(metrics.getListenerStats().metric).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 1);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 1));
     expect(metrics?.getMetric('m1')).toEqual(1);
     rerender(<button />);
 
@@ -4190,15 +3980,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value="a" />);
 
     expect(indexes.getListenerStats().sliceIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 'a');
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 'a'));
     rerender(<Test value="b" />);
 
     expect(indexes.getListenerStats().sliceIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 'b');
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 'b'));
     rerender(<button />);
 
     expect(indexes.getListenerStats().sliceIds).toEqual(0);
@@ -4221,15 +4007,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value="a" />);
 
     expect(indexes.getListenerStats().sliceRowIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 'a');
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 'a'));
     rerender(<Test value="b" />);
 
     expect(indexes.getListenerStats().sliceRowIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 'b');
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 'b'));
     rerender(<button />);
 
     expect(indexes.getListenerStats().sliceRowIds).toEqual(0);
@@ -4258,15 +4040,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value="R1" />);
 
     expect(relationships.getListenerStats().remoteRowId).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 'R1');
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 'R1'));
     rerender(<Test value="R2" />);
 
     expect(relationships.getListenerStats().remoteRowId).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 'R2');
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 'R2'));
     rerender(<button />);
 
     expect(relationships.getListenerStats().remoteRowId).toEqual(0);
@@ -4295,15 +4073,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value="r1" />);
 
     expect(relationships.getListenerStats().localRowIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 'R1');
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 'R1'));
     rerender(<Test value="r2" />);
 
     expect(relationships.getListenerStats().localRowIds).toEqual(1);
-    act(() => {
-      store.setTable('t1', {r1: {c1: 'R2'}, r2: {c1: 'R1'}});
-    });
+    act(() => store.setTable('t1', {r1: {c1: 'R2'}, r2: {c1: 'R1'}}));
     rerender(<button />);
 
     expect(relationships.getListenerStats().localRowIds).toEqual(0);
@@ -4334,19 +4108,19 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value="r3" />);
 
     expect(relationships.getListenerStats().linkedRowIds).toEqual(1);
-    act(() => {
+    act(() =>
       store.setTables({
         t1: {r1: {c1: 'r2'}, r2: {c1: 'r3'}},
-      });
-    });
+      }),
+    );
     rerender(<Test value="r4" />);
 
     expect(relationships.getListenerStats().linkedRowIds).toEqual(1);
-    act(() => {
+    act(() =>
       store.setTables({
         t1: {r1: {c1: 'r2'}, r2: {c1: 'r3'}, r3: {c1: 'r4'}},
-      });
-    });
+      }),
+    );
     rerender(<button />);
 
     expect(relationships.getListenerStats().linkedRowIds).toEqual(0);
@@ -4373,15 +4147,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(queries.getListenerStats().table).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value={3} />);
 
     expect(queries.getListenerStats().table).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3));
     rerender(<button />);
 
     expect(queries.getListenerStats().table).toEqual(0);
@@ -4411,20 +4181,12 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(queries.getListenerStats().tableCellIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-      store.setCell('t1', 'r2', 'c1', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2).setCell('t1', 'r2', 'c1', 0));
     rerender(<Test value={3} />);
 
     expect(queries.getListenerStats().tableCellIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-      store.setCell('t1', 'r3', 'c1', 0);
-    });
-    act(() => {
-      store.setCell('t1', 'r2', 'c2', 1);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3).setCell('t1', 'r3', 'c1', 0));
+    act(() => store.setCell('t1', 'r2', 'c2', 1));
     rerender(<button />);
 
     expect(queries.getListenerStats().tableCellIds).toEqual(0);
@@ -4454,20 +4216,12 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(queries.getListenerStats().rowCount).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-      store.setCell('t1', 'r2', 'c1', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2).setCell('t1', 'r2', 'c1', 0));
     rerender(<Test value={3} />);
 
     expect(queries.getListenerStats().rowCount).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-      store.setCell('t1', 'r3', 'c1', 0);
-    });
-    act(() => {
-      store.setCell('t1', 'r2', 'c2', 1);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3).setCell('t1', 'r3', 'c1', 0));
+    act(() => store.setCell('t1', 'r2', 'c2', 1));
     rerender(<button />);
 
     expect(queries.getListenerStats().rowCount).toEqual(0);
@@ -4497,20 +4251,12 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(queries.getListenerStats().rowIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-      store.setCell('t1', 'r2', 'c1', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2).setCell('t1', 'r2', 'c1', 0));
     rerender(<Test value={3} />);
 
     expect(queries.getListenerStats().rowIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-      store.setCell('t1', 'r3', 'c1', 0);
-    });
-    act(() => {
-      store.setCell('t1', 'r2', 'c2', 1);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3).setCell('t1', 'r3', 'c1', 0));
+    act(() => store.setCell('t1', 'r2', 'c2', 1));
     rerender(<button />);
 
     expect(queries.getListenerStats().rowIds).toEqual(0);
@@ -4544,20 +4290,12 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(queries.getListenerStats().sortedRowIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-      store.setCell('t1', 'r2', 'c1', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2).setCell('t1', 'r2', 'c1', 0));
     rerender(<Test value={3} />);
 
     expect(queries.getListenerStats().sortedRowIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-      store.setCell('t1', 'r3', 'c1', 0);
-    });
-    act(() => {
-      store.setCell('t1', 'r2', 'c2', 1);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3).setCell('t1', 'r3', 'c1', 0));
+    act(() => store.setCell('t1', 'r2', 'c2', 1));
     rerender(<button />);
 
     expect(queries.getListenerStats().sortedRowIds).toEqual(0);
@@ -4585,15 +4323,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(queries.getListenerStats().row).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value={3} />);
 
     expect(queries.getListenerStats().row).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3));
     rerender(<button />);
 
     expect(queries.getListenerStats().row).toEqual(0);
@@ -4625,17 +4359,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(queries.getListenerStats().cellIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-      store.setCell('t1', 'r1', 'c2', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2).setCell('t1', 'r1', 'c2', 0));
     rerender(<Test value={3} />);
 
     expect(queries.getListenerStats().cellIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-      store.setCell('t1', 'r1', 'c3', 0);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3).setCell('t1', 'r1', 'c3', 0));
     rerender(<button />);
 
     expect(queries.getListenerStats().cellIds).toEqual(0);
@@ -4664,15 +4392,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={2} />);
 
     expect(queries.getListenerStats().cell).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value={3} />);
 
     expect(queries.getListenerStats().cell).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 3);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 3));
     rerender(<button />);
 
     expect(queries.getListenerStats().cell).toEqual(0);
@@ -4694,15 +4418,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value={undefined} />);
 
     expect(checkpoints.getListenerStats().checkpointIds).toEqual(1);
-    act(() => {
-      store.setCell('t1', 'r1', 'c1', 2);
-    });
+    act(() => store.setCell('t1', 'r1', 'c1', 2));
     rerender(<Test value="1" />);
 
     expect(checkpoints.getListenerStats().checkpointIds).toEqual(1);
-    act(() => {
-      checkpoints.addCheckpoint();
-    });
+    act(() => checkpoints.addCheckpoint());
     rerender(<button />);
 
     expect(checkpoints.getListenerStats().checkpointIds).toEqual(0);
@@ -4724,15 +4444,11 @@ describe('Listener Hooks', () => {
     const {rerender} = render(<Test value="c1" />);
 
     expect(checkpoints.getListenerStats().checkpoint).toEqual(1);
-    act(() => {
-      checkpoints.setCheckpoint('0', 'c1');
-    });
+    act(() => checkpoints.setCheckpoint('0', 'c1'));
     rerender(<Test value="c2" />);
 
     expect(checkpoints.getListenerStats().checkpoint).toEqual(1);
-    act(() => {
-      checkpoints.setCheckpoint('0', 'c2');
-    });
+    act(() => checkpoints.setCheckpoint('0', 'c2'));
     rerender(<button />);
 
     expect(checkpoints.getListenerStats().checkpoint).toEqual(0);
