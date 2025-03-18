@@ -153,6 +153,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@sqlite.org/sqlite-wasm": "^3.49.1-build2",
     "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/asciichart": "^1.5.8",
