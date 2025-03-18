@@ -82,8 +82,7 @@ import type {
   Relationships,
   Store,
 } from 'tinybase';
-import React, {useCallback} from 'react';
-import {ReactTestRenderer, act, create} from 'react-test-renderer';
+import React, {act, useCallback} from 'react';
 import {
   createCheckpoints,
   createIndexes,
@@ -93,6 +92,7 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase';
+import {fireEvent, render} from '@testing-library/react';
 import type {NoSchemas} from 'tinybase/with-schemas';
 import {createLocalPersister} from 'tinybase/persisters/persister-browser';
 import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
@@ -103,15 +103,6 @@ const {Provider: Provider2, useStore: useStore2} =
   UiReact as UiReact.WithSchemas<NoSchemas>;
 
 let store: Store;
-let renderer: ReactTestRenderer;
-
-const rendererToString = (renderer: ReactTestRenderer): string => {
-  const result = renderer.toJSON() as any;
-  if (Array.isArray(result)) {
-    return result.join('');
-  }
-  return result;
-};
 
 beforeEach(() => {
   store = createStore()
@@ -374,82 +365,62 @@ describe('Read Components', () => {
 
   describe('TablesView', () => {
     test('Basic', () => {
-      act(() => {
-        renderer = create(<TablesView store={store} />);
-      });
-      expect(rendererToString(renderer)).toEqual('1234');
+      const {baseElement} = render(<TablesView store={store} />);
+      expect(baseElement.textContent).toEqual('1234');
     });
 
     test('Separator', () => {
-      act(() => {
-        renderer = create(<TablesView store={store} separator="/" />);
-      });
-      expect(rendererToString(renderer)).toEqual('1/234');
+      const {baseElement} = render(<TablesView store={store} separator="/" />);
+      expect(baseElement.textContent).toEqual('1/234');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(<TablesView store={store} debugIds={true} />);
-      });
-      expect(rendererToString(renderer)).toEqual(
+      const {baseElement} = render(
+        <TablesView store={store} debugIds={true} />,
+      );
+      expect(baseElement.textContent).toEqual(
         't1:{r1:{c1:{1}}}t2:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
       );
     });
 
     test('Custom', () => {
       const Test = () => <TestTablesView store={store} cellPrefix=":" />;
-      act(() => {
-        renderer = create(<Test />);
-      });
-      expect(rendererToString(renderer)).toEqual(
+      const {baseElement} = render(<Test />);
+      expect(baseElement.textContent).toEqual(
         't1:r1:c1:1t2:r1:c1:2r2:c1:3c2:4',
       );
 
-      act(() => {
-        store.setCell('t1', 'r1', 'c1', 2);
-      });
-      expect(rendererToString(renderer)).toEqual(
+      act(() => store.setCell('t1', 'r1', 'c1', 2));
+      expect(baseElement.textContent).toEqual(
         't1:r1:c1:2t2:r1:c1:2r2:c1:3c2:4',
       );
 
-      act(() => {
-        store.delTables();
-      });
-      expect(renderer.toJSON()).toBeNull();
+      act(() => store.delTables());
+      expect(baseElement.textContent).toEqual('');
     });
   });
 
   describe('TableView', () => {
     test('Basic', () => {
-      act(() => {
-        renderer = create(<TableView store={store} tableId="t2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('234');
+      const {baseElement} = render(<TableView store={store} tableId="t2" />);
+      expect(baseElement.textContent).toEqual('234');
     });
 
     test('Separator', () => {
-      act(() => {
-        renderer = create(
-          <TableView store={store} tableId="t2" separator="/" />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('2/34');
+      const {baseElement} = render(
+        <TableView store={store} tableId="t2" separator="/" />,
+      );
+      expect(baseElement.textContent).toEqual('2/34');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <TableView store={store} tableId="t2" separator="/" />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('2/34');
+      const {baseElement, rerender} = render(
+        <TableView store={store} tableId="t2" separator="/" />,
+      );
+      expect(baseElement.textContent).toEqual('2/34');
 
-      act(() => {
-        renderer = create(
-          <TableView store={store} tableId="t2" debugIds={true} />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual(
+      rerender(<TableView store={store} tableId="t2" debugIds={true} />);
+      expect(baseElement.textContent).toEqual(
         't2:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
       );
     });
@@ -458,100 +429,82 @@ describe('Read Components', () => {
       const Test = ({tableId}: {readonly tableId: Id}) => (
         <TestTableView store={store} tableId={tableId} cellPrefix=":" />
       );
-      act(() => {
-        renderer = create(<Test tableId="t0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('t0:');
+      const {baseElement, rerender} = render(<Test tableId="t0" />);
+      expect(baseElement.textContent).toEqual('t0:');
 
-      act(() => {
-        renderer.update(<Test tableId="t2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('t2:r1:c1:2r2:c1:3c2:4');
+      rerender(<Test tableId="t2" />);
+      expect(baseElement.textContent).toEqual('t2:r1:c1:2r2:c1:3c2:4');
 
-      act(() => {
-        store.setCell('t2', 'r1', 'c1', 3);
-      });
-      expect(rendererToString(renderer)).toEqual('t2:r1:c1:3r2:c1:3c2:4');
+      act(() => store.setCell('t2', 'r1', 'c1', 3));
+      expect(baseElement.textContent).toEqual('t2:r1:c1:3r2:c1:3c2:4');
 
-      act(() => {
-        store.delTables();
-      });
-      expect(rendererToString(renderer)).toEqual('t2:');
+      act(() => store.delTables());
+      expect(baseElement.textContent).toEqual('t2:');
     });
   });
 
   describe('SortedTableView', () => {
     test('Basic', () => {
-      act(() => {
-        renderer = create(
-          <SortedTableView
-            store={store}
-            tableId="t2"
-            cellId="c1"
-            descending={true}
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('342');
+      const {baseElement} = render(
+        <SortedTableView
+          store={store}
+          tableId="t2"
+          cellId="c1"
+          descending={true}
+        />,
+      );
+      expect(baseElement.textContent).toEqual('342');
     });
 
     test('Separator', () => {
-      act(() => {
-        renderer = create(
-          <SortedTableView
-            store={store}
-            tableId="t2"
-            cellId="c1"
-            descending={true}
-            separator="/"
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('34/2');
+      const {baseElement} = render(
+        <SortedTableView
+          store={store}
+          tableId="t2"
+          cellId="c1"
+          descending={true}
+          separator="/"
+        />,
+      );
+      expect(baseElement.textContent).toEqual('34/2');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <SortedTableView
-            store={store}
-            tableId="t2"
-            cellId="c1"
-            descending={true}
-            separator="/"
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('34/2');
+      const {baseElement, rerender} = render(
+        <SortedTableView
+          store={store}
+          tableId="t2"
+          cellId="c1"
+          descending={true}
+          separator="/"
+        />,
+      );
+      expect(baseElement.textContent).toEqual('34/2');
 
-      act(() => {
-        renderer = create(
-          <SortedTableView
-            store={store}
-            tableId="t2"
-            cellId="c1"
-            descending={true}
-            debugIds={true}
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual(
+      rerender(
+        <SortedTableView
+          store={store}
+          tableId="t2"
+          cellId="c1"
+          descending={true}
+          debugIds={true}
+        />,
+      );
+      expect(baseElement.textContent).toEqual(
         't2:{r2:{c1:{3}c2:{4}}r1:{c1:{2}}}',
       );
 
-      act(() => {
-        renderer = create(
-          <SortedTableView
-            store={store}
-            tableId="t2"
-            cellId="c1"
-            offset={1}
-            limit={1}
-            debugIds={true}
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('t2:{r2:{c1:{3}c2:{4}}}');
+      rerender(
+        <SortedTableView
+          store={store}
+          tableId="t2"
+          cellId="c1"
+          offset={1}
+          limit={1}
+          debugIds={true}
+        />,
+      );
+      expect(baseElement.textContent).toEqual('t2:{r2:{c1:{3}c2:{4}}}');
     });
 
     test('Custom', () => {
@@ -570,52 +523,40 @@ describe('Read Components', () => {
           cellPrefix=":"
         />
       );
-      act(() => {
-        renderer = create(<Test tableId="t0" cellId="c0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('t0,c0:');
+      const {baseElement, rerender} = render(<Test tableId="t0" cellId="c0" />);
+      expect(baseElement.textContent).toEqual('t0,c0:');
 
-      act(() => {
-        renderer.update(<Test tableId="t2" cellId="c1" />);
-      });
-      expect(rendererToString(renderer)).toEqual('t2,c1:r2:c1:3c2:4r1:c1:2');
+      rerender(<Test tableId="t2" cellId="c1" />);
+      expect(baseElement.textContent).toEqual('t2,c1:r2:c1:3c2:4r1:c1:2');
 
-      act(() => {
-        store.setCell('t2', 'r1', 'c1', 3);
-      });
-      expect(rendererToString(renderer)).toEqual('t2,c1:r2:c1:3c2:4r1:c1:3');
+      act(() => store.setCell('t2', 'r1', 'c1', 3));
+      expect(baseElement.textContent).toEqual('t2,c1:r2:c1:3c2:4r1:c1:3');
 
-      act(() => {
-        store.delTables();
-      });
-      expect(rendererToString(renderer)).toEqual('t2,c1:');
+      act(() => store.delTables());
+      expect(baseElement.textContent).toEqual('t2,c1:');
     });
   });
 
   describe('RowView', () => {
     test('Basic', () => {
-      act(() => {
-        renderer = create(<RowView store={store} tableId="t2" rowId="r2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('34');
+      const {baseElement} = render(
+        <RowView store={store} tableId="t2" rowId="r2" />,
+      );
+      expect(baseElement.textContent).toEqual('34');
     });
 
     test('Separator', () => {
-      act(() => {
-        renderer = create(
-          <RowView store={store} tableId="t2" rowId="r2" separator="/" />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('3/4');
+      const {baseElement} = render(
+        <RowView store={store} tableId="t2" rowId="r2" separator="/" />,
+      );
+      expect(baseElement.textContent).toEqual('3/4');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <RowView store={store} tableId="t2" rowId="r2" debugIds={true} />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('r2:{c1:{3}c2:{4}}');
+      const {baseElement} = render(
+        <RowView store={store} tableId="t2" rowId="r2" debugIds={true} />,
+      );
+      expect(baseElement.textContent).toEqual('r2:{c1:{3}c2:{4}}');
     });
 
     test('Custom', () => {
@@ -633,51 +574,39 @@ describe('Read Components', () => {
           cellPrefix=":"
         />
       );
-      act(() => {
-        renderer = create(<Test tableId="t0" rowId="r0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('r0:');
+      const {baseElement, rerender} = render(<Test tableId="t0" rowId="r0" />);
+      expect(baseElement.textContent).toEqual('r0:');
 
-      act(() => {
-        renderer.update(<Test tableId="t2" rowId="r2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('r2:c1:3c2:4');
+      act(() => rerender(<Test tableId="t2" rowId="r2" />));
+      expect(baseElement.textContent).toEqual('r2:c1:3c2:4');
 
-      act(() => {
-        store.setCell('t2', 'r2', 'c1', 4);
-      });
-      expect(rendererToString(renderer)).toEqual('r2:c1:4c2:4');
+      act(() => store.setCell('t2', 'r2', 'c1', 4));
+      expect(baseElement.textContent).toEqual('r2:c1:4c2:4');
 
-      act(() => {
-        store.delTables();
-      });
-      expect(rendererToString(renderer)).toEqual('r2:');
+      act(() => store.delTables());
+      expect(baseElement.textContent).toEqual('r2:');
     });
   });
 
   describe('CellView', () => {
     test('Basic', () => {
-      act(() => {
-        renderer = create(
-          <CellView store={store} tableId="t2" rowId="r2" cellId="c2" />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('4');
+      const {baseElement} = render(
+        <CellView store={store} tableId="t2" rowId="r2" cellId="c2" />,
+      );
+      expect(baseElement.textContent).toEqual('4');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <CellView
-            store={store}
-            tableId="t2"
-            rowId="r2"
-            cellId="c2"
-            debugIds={true}
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('c2:{4}');
+      const {baseElement} = render(
+        <CellView
+          store={store}
+          tableId="t2"
+          rowId="r2"
+          cellId="c2"
+          debugIds={true}
+        />,
+      );
+      expect(baseElement.textContent).toEqual('c2:{4}');
     });
 
     test('Custom', () => {
@@ -698,109 +627,81 @@ describe('Read Components', () => {
           cellPrefix=":"
         />
       );
-      act(() => {
-        renderer = create(<Test tableId="t0" rowId="r0" cellId="c0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('c0:');
+      const {baseElement, rerender} = render(
+        <Test tableId="t0" rowId="r0" cellId="c0" />,
+      );
+      expect(baseElement.textContent).toEqual('c0:');
 
-      act(() => {
-        renderer.update(<Test tableId="t2" rowId="r2" cellId="c2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('c2:4');
+      rerender(<Test tableId="t2" rowId="r2" cellId="c2" />);
+      expect(baseElement.textContent).toEqual('c2:4');
 
-      act(() => {
-        store.setCell('t2', 'r2', 'c2', 5);
-      });
-      expect(rendererToString(renderer)).toEqual('c2:5');
+      act(() => store.setCell('t2', 'r2', 'c2', 5));
+      expect(baseElement.textContent).toEqual('c2:5');
 
-      act(() => {
-        store.delTables();
-      });
-      expect(rendererToString(renderer)).toEqual('c2:');
+      act(() => store.delTables());
+      expect(baseElement.textContent).toEqual('c2:');
     });
   });
 
   describe('ValuesView', () => {
     test('Basic', () => {
-      act(() => {
-        renderer = create(<ValuesView store={store} />);
-      });
-      expect(rendererToString(renderer)).toEqual('34');
+      const {baseElement} = render(<ValuesView store={store} />);
+      expect(baseElement.textContent).toEqual('34');
     });
 
     test('Separator', () => {
-      act(() => {
-        renderer = create(<ValuesView store={store} separator="/" />);
-      });
-      expect(rendererToString(renderer)).toEqual('3/4');
+      const {baseElement} = render(<ValuesView store={store} separator="/" />);
+      expect(baseElement.textContent).toEqual('3/4');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(<ValuesView store={store} debugIds={true} />);
-      });
-      expect(rendererToString(renderer)).toEqual('v1:{3}v2:{4}');
+      const {baseElement} = render(
+        <ValuesView store={store} debugIds={true} />,
+      );
+      expect(baseElement.textContent).toEqual('v1:{3}v2:{4}');
     });
 
     test('Custom', () => {
       const Test = () => <TestValuesView store={store} valuePrefix=":" />;
-      act(() => {
-        renderer.update(<Test />);
-      });
-      expect(rendererToString(renderer)).toEqual('v1:3v2:4');
+      const {baseElement} = render(<Test />);
+      expect(baseElement.textContent).toEqual('v1:3v2:4');
 
-      act(() => {
-        store.setValue('v1', 4);
-      });
-      expect(rendererToString(renderer)).toEqual('v1:4v2:4');
+      act(() => store.setValue('v1', 4));
+      expect(baseElement.textContent).toEqual('v1:4v2:4');
 
-      act(() => {
-        store.delValues();
-      });
-      expect(renderer.toJSON()).toBeNull();
+      act(() => store.delValues());
+      expect(baseElement.textContent).toEqual('');
     });
   });
 
   describe('ValueView', () => {
     test('Basic', () => {
-      act(() => {
-        renderer = create(<ValueView store={store} valueId="v2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('4');
+      const {baseElement} = render(<ValueView store={store} valueId="v2" />);
+      expect(baseElement.textContent).toEqual('4');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <ValueView store={store} valueId="v2" debugIds={true} />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('v2:{4}');
+      const {baseElement} = render(
+        <ValueView store={store} valueId="v2" debugIds={true} />,
+      );
+      expect(baseElement.textContent).toEqual('v2:{4}');
     });
 
     test('Custom', () => {
       const Test = ({valueId}: {readonly valueId: Id}) => (
         <TestValueView store={store} valueId={valueId} valuePrefix=":" />
       );
-      act(() => {
-        renderer = create(<Test valueId="v0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('v0:');
+      const {baseElement, rerender} = render(<Test valueId="v0" />);
+      expect(baseElement.textContent).toEqual('v0:');
 
-      act(() => {
-        renderer.update(<Test valueId="v2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('v2:4');
+      rerender(<Test valueId="v2" />);
+      expect(baseElement.textContent).toEqual('v2:4');
 
-      act(() => {
-        store.setValue('v2', 5);
-      });
-      expect(rendererToString(renderer)).toEqual('v2:5');
+      act(() => store.setValue('v2', 5));
+      expect(baseElement.textContent).toEqual('v2:5');
 
-      act(() => {
-        store.delValues();
-      });
-      expect(rendererToString(renderer)).toEqual('v2:');
+      act(() => store.delValues());
+      expect(baseElement.textContent).toEqual('v2:');
     });
   });
 
@@ -814,49 +715,37 @@ describe('Read Components', () => {
     });
 
     test('Basic', () => {
-      act(() => {
-        renderer = create(<MetricView metrics={metrics} metricId="m1" />);
-      });
-      expect(rendererToString(renderer)).toEqual('1');
+      const {baseElement} = render(
+        <MetricView metrics={metrics} metricId="m1" />,
+      );
+      expect(baseElement.textContent).toEqual('1');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <MetricView metrics={metrics} metricId="m1" debugIds={true} />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('m1:{1}');
+      const {baseElement} = render(
+        <MetricView metrics={metrics} metricId="m1" debugIds={true} />,
+      );
+      expect(baseElement.textContent).toEqual('m1:{1}');
     });
 
     test('Custom', () => {
       const Test = ({metricId}: {readonly metricId: Id}) => (
         <TestMetricView metrics={metrics} metricId={metricId} />
       );
-      act(() => {
-        renderer = create(<Test metricId="m0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('m0:');
+      const {baseElement, rerender} = render(<Test metricId="m0" />);
+      expect(baseElement.textContent).toEqual('m0:');
 
-      act(() => {
-        renderer.update(<Test metricId="m1" />);
-      });
-      expect(rendererToString(renderer)).toEqual('m1:1');
+      rerender(<Test metricId="m1" />);
+      expect(baseElement.textContent).toEqual('m1:1');
 
-      act(() => {
-        store.setCell('t1', 'r2', 'c1', 2);
-      });
-      expect(rendererToString(renderer)).toEqual('m1:2');
+      act(() => store.setCell('t1', 'r2', 'c1', 2));
+      expect(baseElement.textContent).toEqual('m1:2');
 
-      act(() => {
-        renderer.update(<Test metricId="m2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('m2:2');
+      rerender(<Test metricId="m2" />);
+      expect(baseElement.textContent).toEqual('m2:2');
 
-      act(() => {
-        store.delTables();
-      });
-      expect(rendererToString(renderer)).toEqual('m2:');
+      act(() => store.delTables());
+      expect(baseElement.textContent).toEqual('m2:');
     });
   });
 
@@ -870,59 +759,45 @@ describe('Read Components', () => {
     });
 
     test('Basic', () => {
-      act(() => {
-        renderer = create(<IndexView indexes={indexes} indexId="i1" />);
-      });
-      expect(rendererToString(renderer)).toEqual('1');
+      const {baseElement} = render(
+        <IndexView indexes={indexes} indexId="i1" />,
+      );
+      expect(baseElement.textContent).toEqual('1');
     });
 
     test('Separator', () => {
-      act(() => {
-        store.setCell('t1', 'r2', 'c1', 2);
-        renderer = create(
-          <IndexView indexes={indexes} indexId="i1" separator="/" />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('1/2');
+      store.setCell('t1', 'r2', 'c1', 2);
+      const {baseElement} = render(
+        <IndexView indexes={indexes} indexId="i1" separator="/" />,
+      );
+      expect(baseElement.textContent).toEqual('1/2');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <IndexView indexes={indexes} indexId="i1" debugIds={true} />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('i1:{1:{r1:{c1:{1}}}}');
+      const {baseElement} = render(
+        <IndexView indexes={indexes} indexId="i1" debugIds={true} />,
+      );
+      expect(baseElement.textContent).toEqual('i1:{1:{r1:{c1:{1}}}}');
     });
 
     test('Custom', () => {
       const Test = ({indexId}: {readonly indexId: Id}) => (
         <TestIndexView indexes={indexes} indexId={indexId} cellPrefix=":" />
       );
-      act(() => {
-        renderer = create(<Test indexId="i0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('i0:');
+      const {baseElement, rerender} = render(<Test indexId="i0" />);
+      expect(baseElement.textContent).toEqual('i0:');
 
-      act(() => {
-        renderer.update(<Test indexId="i1" />);
-      });
-      expect(rendererToString(renderer)).toEqual('i1:1:r1:c1:1');
+      rerender(<Test indexId="i1" />);
+      expect(baseElement.textContent).toEqual('i1:1:r1:c1:1');
 
-      act(() => {
-        store.setCell('t1', 'r2', 'c1', 1);
-      });
-      expect(rendererToString(renderer)).toEqual('i1:1:r1:c1:1r2:c1:1');
+      act(() => store.setCell('t1', 'r2', 'c1', 1));
+      expect(baseElement.textContent).toEqual('i1:1:r1:c1:1r2:c1:1');
 
-      act(() => {
-        renderer = create(<Test indexId="i2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('i2:2:r1:c1:23:r2:c1:3c2:4');
+      rerender(<Test indexId="i2" />);
+      expect(baseElement.textContent).toEqual('i2:2:r1:c1:23:r2:c1:3c2:4');
 
-      act(() => {
-        store.delTables();
-      });
-      expect(rendererToString(renderer)).toEqual('i2:');
+      act(() => store.delTables());
+      expect(baseElement.textContent).toEqual('i2:');
     });
   });
 
@@ -936,41 +811,30 @@ describe('Read Components', () => {
     });
 
     test('Basic', () => {
-      act(() => {
-        renderer = create(
-          <SliceView indexes={indexes} indexId="i1" sliceId="1" />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('1');
+      const {baseElement} = render(
+        <SliceView indexes={indexes} indexId="i1" sliceId="1" />,
+      );
+      expect(baseElement.textContent).toEqual('1');
     });
 
     test('Separator', () => {
-      act(() => {
-        store.setCell('t1', 'r2', 'c1', 1);
-        renderer = create(
-          <SliceView
-            indexes={indexes}
-            indexId="i1"
-            sliceId="1"
-            separator="/"
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('1/1');
+      store.setCell('t1', 'r2', 'c1', 1);
+      const {baseElement} = render(
+        <SliceView indexes={indexes} indexId="i1" sliceId="1" separator="/" />,
+      );
+      expect(baseElement.textContent).toEqual('1/1');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <SliceView
-            indexes={indexes}
-            indexId="i1"
-            sliceId="1"
-            debugIds={true}
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('1:{r1:{c1:{1}}}');
+      const {baseElement} = render(
+        <SliceView
+          indexes={indexes}
+          indexId="i1"
+          sliceId="1"
+          debugIds={true}
+        />,
+      );
+      expect(baseElement.textContent).toEqual('1:{r1:{c1:{1}}}');
     });
 
     test('Custom', () => {
@@ -989,35 +853,23 @@ describe('Read Components', () => {
         />
       );
 
-      act(() => {
-        renderer = create(<Test indexId="i0" sliceId="0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('0:');
+      const {baseElement, rerender} = render(<Test indexId="i0" sliceId="0" />);
+      expect(baseElement.textContent).toEqual('0:');
 
-      act(() => {
-        renderer.update(<Test indexId="i1" sliceId="0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('0:');
+      rerender(<Test indexId="i1" sliceId="0" />);
+      expect(baseElement.textContent).toEqual('0:');
 
-      act(() => {
-        renderer.update(<Test indexId="i1" sliceId="1" />);
-      });
-      expect(rendererToString(renderer)).toEqual('1:r1:c1:1');
+      rerender(<Test indexId="i1" sliceId="1" />);
+      expect(baseElement.textContent).toEqual('1:r1:c1:1');
 
-      act(() => {
-        store.setCell('t1', 'r2', 'c1', 1);
-      });
-      expect(rendererToString(renderer)).toEqual('1:r1:c1:1r2:c1:1');
+      act(() => store.setCell('t1', 'r2', 'c1', 1));
+      expect(baseElement.textContent).toEqual('1:r1:c1:1r2:c1:1');
 
-      act(() => {
-        renderer.update(<Test indexId="i2" sliceId="2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('2:r1:c1:2');
+      rerender(<Test indexId="i2" sliceId="2" />);
+      expect(baseElement.textContent).toEqual('2:r1:c1:2');
 
-      act(() => {
-        store.delTables();
-      });
-      expect(rendererToString(renderer)).toEqual('2:');
+      act(() => store.delTables());
+      expect(baseElement.textContent).toEqual('2:');
     });
   });
 
@@ -1035,30 +887,26 @@ describe('Read Components', () => {
     });
 
     test('Basic', () => {
-      act(() => {
-        renderer = create(
-          <RemoteRowView
-            relationships={relationships}
-            relationshipId="r1"
-            localRowId="r1"
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('1');
+      const {baseElement} = render(
+        <RemoteRowView
+          relationships={relationships}
+          relationshipId="r1"
+          localRowId="r1"
+        />,
+      );
+      expect(baseElement.textContent).toEqual('1');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <RemoteRowView
-            relationships={relationships}
-            relationshipId="r1"
-            localRowId="r1"
-            debugIds={true}
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('r1:{R1:{C1:{1}}}');
+      const {baseElement} = render(
+        <RemoteRowView
+          relationships={relationships}
+          relationshipId="r1"
+          localRowId="r1"
+          debugIds={true}
+        />,
+      );
+      expect(baseElement.textContent).toEqual('r1:{R1:{C1:{1}}}');
     });
 
     test('Custom', () => {
@@ -1076,31 +924,23 @@ describe('Read Components', () => {
           cellPrefix=":"
         />
       );
-      act(() => {
-        renderer = create(<Test relationshipId="r0" localRowId="r0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('r0:');
+      const {baseElement, rerender} = render(
+        <Test relationshipId="r0" localRowId="r0" />,
+      );
+      expect(baseElement.textContent).toEqual('r0:');
 
-      act(() => {
-        renderer.update(<Test relationshipId="r1" localRowId="r1" />);
-      });
-      expect(rendererToString(renderer)).toEqual('r1:R1:C1:1');
+      rerender(<Test relationshipId="r1" localRowId="r1" />);
+      expect(baseElement.textContent).toEqual('r1:R1:C1:1');
 
-      act(() => {
-        renderer.update(<Test relationshipId="r1" localRowId="r2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('r2:R1:C1:1');
+      rerender(<Test relationshipId="r1" localRowId="r2" />);
+      expect(baseElement.textContent).toEqual('r2:R1:C1:1');
 
-      act(() => {
-        renderer.update(<Test relationshipId="r1" localRowId="r1" />);
-        store.delTable('t1');
-      });
-      expect(rendererToString(renderer)).toEqual('r1:');
+      rerender(<Test relationshipId="r1" localRowId="r1" />);
+      act(() => store.delTable('t1'));
+      expect(baseElement.textContent).toEqual('r1:');
 
-      act(() => {
-        renderer.update(<Test relationshipId="r2" localRowId="r2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('r2:');
+      rerender(<Test relationshipId="r2" localRowId="r2" />);
+      expect(baseElement.textContent).toEqual('r2:');
     });
   });
 
@@ -1118,46 +958,38 @@ describe('Read Components', () => {
     });
 
     test('Basic', () => {
-      act(() => {
-        renderer = create(
-          <LocalRowsView
-            relationships={relationships}
-            relationshipId="r1"
-            remoteRowId="R1"
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('R1R1');
+      const {baseElement} = render(
+        <LocalRowsView
+          relationships={relationships}
+          relationshipId="r1"
+          remoteRowId="R1"
+        />,
+      );
+      expect(baseElement.textContent).toEqual('R1R1');
     });
 
     test('Separator', () => {
-      act(() => {
-        renderer = create(
-          <LocalRowsView
-            relationships={relationships}
-            relationshipId="r1"
-            remoteRowId="R1"
-            separator="/"
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('R1/R1');
+      const {baseElement} = render(
+        <LocalRowsView
+          relationships={relationships}
+          relationshipId="r1"
+          remoteRowId="R1"
+          separator="/"
+        />,
+      );
+      expect(baseElement.textContent).toEqual('R1/R1');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <LocalRowsView
-            relationships={relationships}
-            relationshipId="r1"
-            remoteRowId="R1"
-            debugIds={true}
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual(
-        'R1:{r1:{c1:{R1}}r2:{c1:{R1}}}',
+      const {baseElement} = render(
+        <LocalRowsView
+          relationships={relationships}
+          relationshipId="r1"
+          remoteRowId="R1"
+          debugIds={true}
+        />,
       );
+      expect(baseElement.textContent).toEqual('R1:{r1:{c1:{R1}}r2:{c1:{R1}}}');
     });
 
     test('Custom', () => {
@@ -1176,30 +1008,22 @@ describe('Read Components', () => {
         />
       );
 
-      act(() => {
-        renderer = create(<Test relationshipId="r0" remoteRowId="R0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('R0:');
+      const {baseElement, rerender} = render(
+        <Test relationshipId="r0" remoteRowId="R0" />,
+      );
+      expect(baseElement.textContent).toEqual('R0:');
 
-      act(() => {
-        renderer.update(<Test relationshipId="r1" remoteRowId="R1" />);
-      });
-      expect(rendererToString(renderer)).toEqual('R1:r1:c1:R1r2:c1:R1');
+      rerender(<Test relationshipId="r1" remoteRowId="R1" />);
+      expect(baseElement.textContent).toEqual('R1:r1:c1:R1r2:c1:R1');
 
-      act(() => {
-        renderer.update(<Test relationshipId="r1" remoteRowId="R2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('R2:');
+      rerender(<Test relationshipId="r1" remoteRowId="R2" />);
+      expect(baseElement.textContent).toEqual('R2:');
 
-      act(() => {
-        store.delTable('t1');
-      });
-      expect(rendererToString(renderer)).toEqual('R2:');
+      store.delTable('t1');
+      expect(baseElement.textContent).toEqual('R2:');
 
-      act(() => {
-        renderer.update(<Test relationshipId="r2" remoteRowId="R2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('R2:');
+      rerender(<Test relationshipId="r2" remoteRowId="R2" />);
+      expect(baseElement.textContent).toEqual('R2:');
     });
   });
 
@@ -1216,44 +1040,38 @@ describe('Read Components', () => {
     });
 
     test('Basic', () => {
-      act(() => {
-        renderer = create(
-          <LinkedRowsView
-            relationships={relationships}
-            relationshipId="r1"
-            firstRowId="r1"
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('r2r3r4');
+      const {baseElement} = render(
+        <LinkedRowsView
+          relationships={relationships}
+          relationshipId="r1"
+          firstRowId="r1"
+        />,
+      );
+      expect(baseElement.textContent).toEqual('r2r3r4');
     });
 
     test('Separator', () => {
-      act(() => {
-        renderer = create(
-          <LinkedRowsView
-            relationships={relationships}
-            relationshipId="r1"
-            firstRowId="r1"
-            separator="/"
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('r2/r3/r4/');
+      const {baseElement} = render(
+        <LinkedRowsView
+          relationships={relationships}
+          relationshipId="r1"
+          firstRowId="r1"
+          separator="/"
+        />,
+      );
+      expect(baseElement.textContent).toEqual('r2/r3/r4/');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <LinkedRowsView
-            relationships={relationships}
-            relationshipId="r1"
-            firstRowId="r1"
-            debugIds={true}
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual(
+      const {baseElement} = render(
+        <LinkedRowsView
+          relationships={relationships}
+          relationshipId="r1"
+          firstRowId="r1"
+          debugIds={true}
+        />,
+      );
+      expect(baseElement.textContent).toEqual(
         'r1:{r1:{c1:{r2}}r2:{c1:{r3}}r3:{c1:{r4}}r4:{}}',
       );
     });
@@ -1274,32 +1092,22 @@ describe('Read Components', () => {
         />
       );
 
-      act(() => {
-        renderer = create(<Test relationshipId="r0" firstRowId="r0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('r0:r0:');
-
-      act(() => {
-        renderer.update(<Test relationshipId="r1" firstRowId="r1" />);
-      });
-      expect(rendererToString(renderer)).toEqual(
-        'r1:r1:c1:r2r2:c1:r3r3:c1:r4r4:',
+      const {baseElement, rerender} = render(
+        <Test relationshipId="r0" firstRowId="r0" />,
       );
+      expect(baseElement.textContent).toEqual('r0:r0:');
 
-      act(() => {
-        renderer.update(<Test relationshipId="r1" firstRowId="r2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('r2:r2:c1:r3r3:c1:r4r4:');
+      rerender(<Test relationshipId="r1" firstRowId="r1" />);
+      expect(baseElement.textContent).toEqual('r1:r1:c1:r2r2:c1:r3r3:c1:r4r4:');
 
-      act(() => {
-        store.delTable('t1');
-      });
-      expect(rendererToString(renderer)).toEqual('r2:r2:');
+      rerender(<Test relationshipId="r1" firstRowId="r2" />);
+      expect(baseElement.textContent).toEqual('r2:r2:c1:r3r3:c1:r4r4:');
 
-      act(() => {
-        renderer.update(<Test relationshipId="r2" firstRowId="r2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('r2:r2:');
+      act(() => store.delTable('t1'));
+      expect(baseElement.textContent).toEqual('r2:r2:');
+
+      rerender(<Test relationshipId="r2" firstRowId="r2" />);
+      expect(baseElement.textContent).toEqual('r2:r2:');
     });
   });
 
@@ -1318,40 +1126,32 @@ describe('Read Components', () => {
     });
 
     test('Basic', () => {
-      act(() => {
-        renderer = create(<ResultTableView queries={queries} queryId="q1" />);
-      });
-      expect(rendererToString(renderer)).toEqual('234');
+      const {baseElement} = render(
+        <ResultTableView queries={queries} queryId="q1" />,
+      );
+      expect(baseElement.textContent).toEqual('234');
 
-      act(() => {
-        store.setCell('t2', 'r1', 'c2', 5);
-      });
-      expect(rendererToString(renderer)).toEqual('2534');
+      act(() => store.setCell('t2', 'r1', 'c2', 5));
+      expect(baseElement.textContent).toEqual('2534');
     });
 
     test('Separator', () => {
-      act(() => {
-        renderer = create(
-          <ResultTableView queries={queries} queryId="q1" separator="/" />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('2/34');
+      const {baseElement} = render(
+        <ResultTableView queries={queries} queryId="q1" separator="/" />,
+      );
+      expect(baseElement.textContent).toEqual('2/34');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <ResultTableView queries={queries} queryId="q1" separator="/" />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('2/34');
+      const {baseElement, rerender} = render(
+        <ResultTableView queries={queries} queryId="q1" separator="/" />,
+      );
+      expect(baseElement.textContent).toEqual('2/34');
 
-      act(() => {
-        renderer = create(
-          <ResultTableView queries={queries} queryId="q1" debugIds={true} />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual(
+      rerender(
+        <ResultTableView queries={queries} queryId="q1" debugIds={true} />,
+      );
+      expect(baseElement.textContent).toEqual(
         'q1:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
       );
     });
@@ -1364,25 +1164,17 @@ describe('Read Components', () => {
           cellPrefix=":"
         />
       );
-      act(() => {
-        renderer = create(<Test queryId="q0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('q0:');
+      const {baseElement, rerender} = render(<Test queryId="q0" />);
+      expect(baseElement.textContent).toEqual('q0:');
 
-      act(() => {
-        renderer.update(<Test queryId="q1" />);
-      });
-      expect(rendererToString(renderer)).toEqual('q1:r1:c1:2r2:c1:3c2:4');
+      rerender(<Test queryId="q1" />);
+      expect(baseElement.textContent).toEqual('q1:r1:c1:2r2:c1:3c2:4');
 
-      act(() => {
-        store.setCell('t2', 'r1', 'c1', 3);
-      });
-      expect(rendererToString(renderer)).toEqual('q1:r1:c1:3r2:c1:3c2:4');
+      act(() => store.setCell('t2', 'r1', 'c1', 3));
+      expect(baseElement.textContent).toEqual('q1:r1:c1:3r2:c1:3c2:4');
 
-      act(() => {
-        store.delTables();
-      });
-      expect(rendererToString(renderer)).toEqual('q1:');
+      act(() => store.delTables());
+      expect(baseElement.textContent).toEqual('q1:');
     });
   });
 
@@ -1401,73 +1193,61 @@ describe('Read Components', () => {
     });
 
     test('Basic', () => {
-      act(() => {
-        renderer = create(
-          <ResultSortedTableView queries={queries} queryId="q1" cellId="c2" />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('234');
+      const {baseElement} = render(
+        <ResultSortedTableView queries={queries} queryId="q1" cellId="c2" />,
+      );
+      expect(baseElement.textContent).toEqual('234');
 
-      act(() => {
-        store.setCell('t2', 'r1', 'c2', 5);
-      });
-      expect(rendererToString(renderer)).toEqual('3425');
+      act(() => store.setCell('t2', 'r1', 'c2', 5));
+      expect(baseElement.textContent).toEqual('3425');
     });
 
     test('Separator', () => {
-      act(() => {
-        renderer = create(
-          <ResultSortedTableView
-            queries={queries}
-            queryId="q1"
-            cellId="c2"
-            separator="/"
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('2/34');
+      const {baseElement} = render(
+        <ResultSortedTableView
+          queries={queries}
+          queryId="q1"
+          cellId="c2"
+          separator="/"
+        />,
+      );
+      expect(baseElement.textContent).toEqual('2/34');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <ResultSortedTableView
-            queries={queries}
-            queryId="q1"
-            cellId="c2"
-            separator="/"
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('2/34');
+      const {baseElement, rerender} = render(
+        <ResultSortedTableView
+          queries={queries}
+          queryId="q1"
+          cellId="c2"
+          separator="/"
+        />,
+      );
+      expect(baseElement.textContent).toEqual('2/34');
 
-      act(() => {
-        renderer = create(
-          <ResultSortedTableView
-            queries={queries}
-            queryId="q1"
-            cellId="c2"
-            debugIds={true}
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual(
+      rerender(
+        <ResultSortedTableView
+          queries={queries}
+          queryId="q1"
+          cellId="c2"
+          debugIds={true}
+        />,
+      );
+      expect(baseElement.textContent).toEqual(
         'q1:{r1:{c1:{2}}r2:{c1:{3}c2:{4}}}',
       );
 
-      act(() => {
-        renderer = create(
-          <ResultSortedTableView
-            queries={queries}
-            queryId="q1"
-            cellId="c2"
-            offset={1}
-            limit={1}
-            debugIds={true}
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('q1:{r2:{c1:{3}c2:{4}}}');
+      rerender(
+        <ResultSortedTableView
+          queries={queries}
+          queryId="q1"
+          cellId="c2"
+          offset={1}
+          limit={1}
+          debugIds={true}
+        />,
+      );
+      expect(baseElement.textContent).toEqual('q1:{r2:{c1:{3}c2:{4}}}');
     });
 
     test('Custom', () => {
@@ -1485,25 +1265,17 @@ describe('Read Components', () => {
           cellPrefix=":"
         />
       );
-      act(() => {
-        renderer = create(<Test queryId="q0" cellId="c0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('q0,c0:');
+      const {baseElement, rerender} = render(<Test queryId="q0" cellId="c0" />);
+      expect(baseElement.textContent).toEqual('q0,c0:');
 
-      act(() => {
-        renderer.update(<Test queryId="q1" cellId="c2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('q1,c2:r1:c1:2r2:c1:3c2:4');
+      rerender(<Test queryId="q1" cellId="c2" />);
+      expect(baseElement.textContent).toEqual('q1,c2:r1:c1:2r2:c1:3c2:4');
 
-      act(() => {
-        store.setCell('t2', 'r1', 'c1', 3);
-      });
-      expect(rendererToString(renderer)).toEqual('q1,c2:r1:c1:3r2:c1:3c2:4');
+      act(() => store.setCell('t2', 'r1', 'c1', 3));
+      expect(baseElement.textContent).toEqual('q1,c2:r1:c1:3r2:c1:3c2:4');
 
-      act(() => {
-        store.delTables();
-      });
-      expect(rendererToString(renderer)).toEqual('q1,c2:');
+      act(() => store.delTables());
+      expect(baseElement.textContent).toEqual('q1,c2:');
     });
   });
 
@@ -1522,40 +1294,34 @@ describe('Read Components', () => {
     });
 
     test('Basic', () => {
-      act(() => {
-        renderer = create(
-          <ResultRowView queries={queries} queryId="q1" rowId="r2" />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('34');
+      const {baseElement} = render(
+        <ResultRowView queries={queries} queryId="q1" rowId="r2" />,
+      );
+      expect(baseElement.textContent).toEqual('34');
     });
 
     test('Separator', () => {
-      act(() => {
-        renderer = create(
-          <ResultRowView
-            queries={queries}
-            queryId="q1"
-            rowId="r2"
-            separator="/"
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('3/4');
+      const {baseElement} = render(
+        <ResultRowView
+          queries={queries}
+          queryId="q1"
+          rowId="r2"
+          separator="/"
+        />,
+      );
+      expect(baseElement.textContent).toEqual('3/4');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <ResultRowView
-            queries={queries}
-            queryId="q1"
-            rowId="r2"
-            debugIds={true}
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('r2:{c1:{3}c2:{4}}');
+      const {baseElement} = render(
+        <ResultRowView
+          queries={queries}
+          queryId="q1"
+          rowId="r2"
+          debugIds={true}
+        />,
+      );
+      expect(baseElement.textContent).toEqual('r2:{c1:{3}c2:{4}}');
     });
 
     test('Custom', () => {
@@ -1573,25 +1339,17 @@ describe('Read Components', () => {
           cellPrefix=":"
         />
       );
-      act(() => {
-        renderer = create(<Test queryId="q0" rowId="r0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('r0:');
+      const {baseElement, rerender} = render(<Test queryId="q0" rowId="r0" />);
+      expect(baseElement.textContent).toEqual('r0:');
 
-      act(() => {
-        renderer.update(<Test queryId="q1" rowId="r2" />);
-      });
-      expect(rendererToString(renderer)).toEqual('r2:c1:3c2:4');
+      rerender(<Test queryId="q1" rowId="r2" />);
+      expect(baseElement.textContent).toEqual('r2:c1:3c2:4');
 
-      act(() => {
-        store.setCell('t2', 'r2', 'c1', 4);
-      });
-      expect(rendererToString(renderer)).toEqual('r2:c1:4c2:4');
+      act(() => store.setCell('t2', 'r2', 'c1', 4));
+      expect(baseElement.textContent).toEqual('r2:c1:4c2:4');
 
-      act(() => {
-        store.delTables();
-      });
-      expect(rendererToString(renderer)).toEqual('r2:');
+      act(() => store.delTables());
+      expect(baseElement.textContent).toEqual('r2:');
     });
   });
 
@@ -1607,32 +1365,28 @@ describe('Read Components', () => {
     });
 
     test('Basic', () => {
-      act(() => {
-        renderer = create(
-          <ResultCellView
-            queries={queries}
-            queryId="q1"
-            rowId="r2"
-            cellId="c1"
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('3');
+      const {baseElement} = render(
+        <ResultCellView
+          queries={queries}
+          queryId="q1"
+          rowId="r2"
+          cellId="c1"
+        />,
+      );
+      expect(baseElement.textContent).toEqual('3');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <ResultCellView
-            queries={queries}
-            queryId="q1"
-            rowId="r2"
-            cellId="c1"
-            debugIds={true}
-          />,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('c1:{3}');
+      const {baseElement} = render(
+        <ResultCellView
+          queries={queries}
+          queryId="q1"
+          rowId="r2"
+          cellId="c1"
+          debugIds={true}
+        />,
+      );
+      expect(baseElement.textContent).toEqual('c1:{3}');
     });
 
     test('Custom', () => {
@@ -1653,25 +1407,19 @@ describe('Read Components', () => {
           cellPrefix=":"
         />
       );
-      act(() => {
-        renderer = create(<Test queryId="q0" rowId="r0" cellId="c0" />);
-      });
-      expect(rendererToString(renderer)).toEqual('c0:');
+      const {baseElement, rerender} = render(
+        <Test queryId="q0" rowId="r0" cellId="c0" />,
+      );
+      expect(baseElement.textContent).toEqual('c0:');
 
-      act(() => {
-        renderer.update(<Test queryId="q1" rowId="r2" cellId="c1" />);
-      });
-      expect(rendererToString(renderer)).toEqual('c1:3');
+      rerender(<Test queryId="q1" rowId="r2" cellId="c1" />);
+      expect(baseElement.textContent).toEqual('c1:3');
 
-      act(() => {
-        store.setCell('t2', 'r2', 'c1', 4);
-      });
-      expect(rendererToString(renderer)).toEqual('c1:4');
+      act(() => store.setCell('t2', 'r2', 'c1', 4));
+      expect(baseElement.textContent).toEqual('c1:4');
 
-      act(() => {
-        store.delTables();
-      });
-      expect(rendererToString(renderer)).toEqual('c1:');
+      act(() => store.delTables());
+      expect(baseElement.textContent).toEqual('c1:');
     });
   });
 
@@ -1693,91 +1441,66 @@ describe('Read Components', () => {
     });
 
     test('Basic', () => {
-      act(() => {
-        renderer = create(
-          <>
-            <BackwardCheckpointsView checkpoints={checkpoints} />
-            |
-            <CurrentCheckpointView checkpoints={checkpoints} />
-            |
-            <ForwardCheckpointsView checkpoints={checkpoints} />
-          </>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('c1|c2|c3');
+      const {baseElement} = render(
+        <>
+          <BackwardCheckpointsView checkpoints={checkpoints} />
+          |
+          <CurrentCheckpointView checkpoints={checkpoints} />
+          |
+          <ForwardCheckpointsView checkpoints={checkpoints} />
+        </>,
+      );
+      expect(baseElement.textContent).toEqual('c1|c2|c3');
     });
 
     test('Separator', () => {
-      act(() => {
-        renderer = create(
-          <>
-            <BackwardCheckpointsView checkpoints={checkpoints} separator="/" />
-            |
-            <ForwardCheckpointsView checkpoints={checkpoints} separator="/" />
-          </>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('c1/|c3/');
+      const {baseElement} = render(
+        <>
+          <BackwardCheckpointsView checkpoints={checkpoints} separator="/" />
+          |
+          <ForwardCheckpointsView checkpoints={checkpoints} separator="/" />
+        </>,
+      );
+      expect(baseElement.textContent).toEqual('c1/|c3/');
     });
 
     test('Debug Ids', () => {
-      act(() => {
-        renderer = create(
-          <>
-            <BackwardCheckpointsView
-              checkpoints={checkpoints}
-              debugIds={true}
-            />
-            |
-            <CurrentCheckpointView checkpoints={checkpoints} debugIds={true} />
-            |
-            <ForwardCheckpointsView checkpoints={checkpoints} debugIds={true} />
-          </>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual(
-        '0:{c1}1:{}|2:{c2}|3:{c3}4:{}',
+      const {baseElement} = render(
+        <>
+          <BackwardCheckpointsView checkpoints={checkpoints} debugIds={true} />
+          |
+          <CurrentCheckpointView checkpoints={checkpoints} debugIds={true} />
+          |
+          <ForwardCheckpointsView checkpoints={checkpoints} debugIds={true} />
+        </>,
       );
+      expect(baseElement.textContent).toEqual('0:{c1}1:{}|2:{c2}|3:{c3}4:{}');
     });
 
     test('Custom', () => {
       const Test = () => <TestAllCheckpointsView checkpoints={checkpoints} />;
 
-      act(() => {
-        renderer = create(<Test />);
-        checkpoints.clear();
-      });
-      expect(rendererToString(renderer)).toEqual('||||');
+      const {baseElement} = render(<Test />);
+      act(() => checkpoints.clear());
+      expect(baseElement.textContent).toEqual('||||');
 
-      act(() => {
-        checkpoints.setCheckpoint('0', 'c1');
-      });
-      expect(rendererToString(renderer)).toEqual('|c1|||');
+      act(() => checkpoints.setCheckpoint('0', 'c1'));
+      expect(baseElement.textContent).toEqual('|c1|||');
 
-      act(() => {
-        store.setTables({t1: {r1: {c1: 2}}});
-      });
-      expect(rendererToString(renderer)).toEqual('c1||||');
+      act(() => store.setTables({t1: {r1: {c1: 2}}}));
+      expect(baseElement.textContent).toEqual('c1||||');
 
-      act(() => {
-        checkpoints.addCheckpoint();
-      });
-      expect(rendererToString(renderer)).toEqual('c1||||');
+      act(() => checkpoints.addCheckpoint());
+      expect(baseElement.textContent).toEqual('c1||||');
 
-      act(() => {
-        store.setTables({t1: {r1: {c1: 3}}});
-      });
-      expect(rendererToString(renderer)).toEqual('c1||||');
+      act(() => store.setTables({t1: {r1: {c1: 3}}}));
+      expect(baseElement.textContent).toEqual('c1||||');
 
-      act(() => {
-        checkpoints.addCheckpoint('c2');
-      });
-      expect(rendererToString(renderer)).toEqual('c1|c2|||');
+      act(() => checkpoints.addCheckpoint('c2'));
+      expect(baseElement.textContent).toEqual('c1|c2|||');
 
-      act(() => {
-        checkpoints.goTo('0');
-      });
-      expect(rendererToString(renderer)).toEqual('|c1|c2||');
+      act(() => checkpoints.goTo('0'));
+      expect(baseElement.textContent).toEqual('|c1|c2||');
     });
   });
 });
@@ -1793,45 +1516,27 @@ describe('Context Provider', () => {
               <TablesView />
             </span>
             <span>{JSON.stringify(useTables())}</span>
-            <h1 onClick={useSetTablesCallback(() => ({t1: {r1: {c1: 2}}}))} />
-            <h2 onClick={useDelTablesCallback(undefined, then)} />
+            <button
+              onClick={useSetTablesCallback(() => ({t1: {r1: {c1: 2}}}))}
+            />
+            <button onClick={useDelTablesCallback(undefined, then)} />
           </>
         );
-        act(() => {
-          renderer = create(
-            <Provider store={store}>
-              <Test />
-            </Provider>,
-          );
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual([
-          '1',
-          '2',
-          '3',
-          '4',
-        ]);
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({
-            t1: {r1: {c1: 1}},
-            t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}},
-          }),
-        ]);
+        const {baseElement, getAllByRole} = render(
+          <Provider store={store}>
+            <Test />
+          </Provider>,
+        );
+        expect(baseElement.textContent).toEqual(
+          '1234' +
+            '{"t1":{"r1":{"c1":1}},"t2":{"r1":{"c1":2},"r2":{"c1":3,"c2":4}}}',
+        );
 
-        act(() => {
-          renderer.root.findByType('h1').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['2']);
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({t1: {r1: {c1: 2}}}),
-        ]);
+        fireEvent.click(getAllByRole('button')[0]);
+        expect(baseElement.textContent).toEqual('2' + '{"t1":{"r1":{"c1":2}}}');
 
-        act(() => {
-          renderer.root.findByType('h2').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toBeNull();
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({}),
-        ]);
+        fireEvent.click(getAllByRole('button')[1]);
+        expect(baseElement.textContent).toEqual('{}');
         expect(then).toHaveBeenCalledTimes(1);
       });
 
@@ -1843,37 +1548,24 @@ describe('Context Provider', () => {
               <TableView tableId="t1" />
             </span>
             <span>{JSON.stringify(useTable('t1'))}</span>
-            <h1 onClick={useSetTableCallback('t1', () => ({r1: {c1: 2}}))} />
-            <h2 onClick={useDelTableCallback('t1', undefined, then)} />
+            <button
+              onClick={useSetTableCallback('t1', () => ({r1: {c1: 2}}))}
+            />
+            <button onClick={useDelTableCallback('t1', undefined, then)} />
           </>
         );
-        act(() => {
-          renderer = create(
-            <Provider store={store}>
-              <Test />
-            </Provider>,
-          );
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['1']);
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({r1: {c1: 1}}),
-        ]);
+        const {baseElement, getAllByRole} = render(
+          <Provider store={store}>
+            <Test />
+          </Provider>,
+        );
+        expect(baseElement.textContent).toEqual('1{"r1":{"c1":1}}');
 
-        act(() => {
-          renderer.root.findByType('h1').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['2']);
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({r1: {c1: 2}}),
-        ]);
+        fireEvent.click(getAllByRole('button')[0]);
+        expect(baseElement.textContent).toEqual('2{"r1":{"c1":2}}');
 
-        act(() => {
-          renderer.root.findByType('h2').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toBeNull();
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({}),
-        ]);
+        fireEvent.click(getAllByRole('button')[1]);
+        expect(baseElement.textContent).toEqual('{}');
         expect(then).toHaveBeenCalledTimes(1);
       });
 
@@ -1885,37 +1577,22 @@ describe('Context Provider', () => {
               <RowView tableId="t1" rowId="r1" />
             </span>
             <span>{JSON.stringify(useRow('t1', 'r1'))}</span>
-            <h1 onClick={useSetRowCallback('t1', 'r1', () => ({c1: 2}))} />
-            <h2 onClick={useDelRowCallback('t1', 'r1', undefined, then)} />
+            <button onClick={useSetRowCallback('t1', 'r1', () => ({c1: 2}))} />
+            <button onClick={useDelRowCallback('t1', 'r1', undefined, then)} />
           </>
         );
-        act(() => {
-          renderer = create(
-            <Provider store={store}>
-              <Test />
-            </Provider>,
-          );
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['1']);
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({c1: 1}),
-        ]);
+        const {baseElement, getAllByRole} = render(
+          <Provider store={store}>
+            <Test />
+          </Provider>,
+        );
+        expect(baseElement.textContent).toEqual('1{"c1":1}');
 
-        act(() => {
-          renderer.root.findByType('h1').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['2']);
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({c1: 2}),
-        ]);
+        fireEvent.click(getAllByRole('button')[0]);
+        expect(baseElement.textContent).toEqual('2{"c1":2}');
 
-        act(() => {
-          renderer.root.findByType('h2').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toBeNull();
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({}),
-        ]);
+        fireEvent.click(getAllByRole('button')[1]);
+        expect(baseElement.textContent).toEqual('{}');
         expect(then).toHaveBeenCalledTimes(1);
       });
 
@@ -1927,8 +1604,8 @@ describe('Context Provider', () => {
               <CellView tableId="t1" rowId="r1" cellId="c1" />
             </span>
             <span>{JSON.stringify(useCell('t1', 'r1', 'c1'))}</span>
-            <h1 onClick={useSetCellCallback('t1', 'r1', 'c1', () => 2)} />
-            <h2
+            <button onClick={useSetCellCallback('t1', 'r1', 'c1', () => 2)} />
+            <button
               onClick={useSetCellCallback(
                 't1',
                 'r1',
@@ -1937,7 +1614,7 @@ describe('Context Provider', () => {
                 [],
               )}
             />
-            <h3
+            <button
               onClick={useDelCellCallback(
                 't1',
                 'r1',
@@ -1949,33 +1626,21 @@ describe('Context Provider', () => {
             />
           </>
         );
-        act(() => {
-          renderer = create(
-            <Provider store={store}>
-              <Test />
-            </Provider>,
-          );
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['1']);
-        expect((renderer.toJSON() as any)[1].children).toEqual(['1']);
+        const {baseElement, getAllByRole} = render(
+          <Provider store={store}>
+            <Test />
+          </Provider>,
+        );
+        expect(baseElement.textContent).toEqual('11');
 
-        act(() => {
-          renderer.root.findByType('h1').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['2']);
-        expect((renderer.toJSON() as any)[1].children).toEqual(['2']);
+        fireEvent.click(getAllByRole('button')[0]);
+        expect(baseElement.textContent).toEqual('22');
 
-        act(() => {
-          renderer.root.findByType('h2').props.onClick({screenX: 3});
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['3']);
-        expect((renderer.toJSON() as any)[1].children).toEqual(['3']);
+        fireEvent.click(getAllByRole('button')[1], {screenX: 3});
+        expect(baseElement.textContent).toEqual('33');
 
-        act(() => {
-          renderer.root.findByType('h3').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toBeNull();
-        expect((renderer.toJSON() as any)[1].children).toBeNull();
+        fireEvent.click(getAllByRole('button')[2]);
+        expect(baseElement.textContent).toEqual('');
         expect(then).toHaveBeenCalledTimes(1);
       });
     });
@@ -1988,14 +1653,12 @@ describe('Context Provider', () => {
           {useMetric('m1')}
         </>
       );
-      act(() => {
-        renderer = create(
-          <Provider metrics={metrics}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('11');
+      const {baseElement} = render(
+        <Provider metrics={metrics}>
+          <Test />
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual('11');
     });
 
     test('indexes', () => {
@@ -2008,14 +1671,12 @@ describe('Context Provider', () => {
           {JSON.stringify(useSliceRowIds('i1', '1'))}
         </>
       );
-      act(() => {
-        renderer = create(
-          <Provider indexes={indexes}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('1["1"]1["r1"]');
+      const {baseElement} = render(
+        <Provider indexes={indexes}>
+          <Test />
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual('1["1"]1["r1"]');
     });
 
     test('relationships', () => {
@@ -2037,16 +1698,12 @@ describe('Context Provider', () => {
           {JSON.stringify(useLinkedRowIds('r1', 'r1'))}
         </>
       );
-      act(() => {
-        renderer = create(
-          <Provider relationships={relationships}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual(
-        '1"R1"R1R1["r1","r2"]R1["r1"]',
+      const {baseElement} = render(
+        <Provider relationships={relationships}>
+          <Test />
+        </Provider>,
       );
+      expect(baseElement.textContent).toEqual('1"R1"R1R1["r1","r2"]R1["r1"]');
     });
 
     test('queries', () => {
@@ -2067,14 +1724,12 @@ describe('Context Provider', () => {
           {JSON.stringify(useResultCell('q1', 'r1', 'c1'))}
         </>
       );
-      act(() => {
-        renderer = create(
-          <Provider queries={queries}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual(
+      const {baseElement} = render(
+        <Provider queries={queries}>
+          <Test />
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual(
         '1{"r1":{"c1":1}}["r1"]1{"c1":1}["c1"]11',
       );
     });
@@ -2082,40 +1737,34 @@ describe('Context Provider', () => {
     test('checkpoints', () => {
       const checkpoints = createCheckpoints(store);
       const Test = () => <>{JSON.stringify(useCheckpointIds())}</>;
-      act(() => {
-        renderer = create(
-          <Provider checkpoints={checkpoints}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual(JSON.stringify([[], '0', []]));
+      const {baseElement} = render(
+        <Provider checkpoints={checkpoints}>
+          <Test />
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual(JSON.stringify([[], '0', []]));
     });
 
     test('persister', () => {
       const persister = createLocalPersister(store, '');
       const Test = () => <>{usePersister()?.getStatus()}</>;
-      act(() => {
-        renderer = create(
-          <Provider persister={persister}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('0');
+      const {baseElement} = render(
+        <Provider persister={persister}>
+          <Test />
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual('0');
     });
 
     test('synchronizer', () => {
       const synchronizer = createLocalSynchronizer(createMergeableStore());
       const Test = () => <>{useSynchronizer()?.getStatus()}</>;
-      act(() => {
-        renderer = create(
-          <Provider synchronizer={synchronizer}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('0');
+      const {baseElement} = render(
+        <Provider synchronizer={synchronizer}>
+          <Test />
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual('0');
     });
   });
 
@@ -2128,51 +1777,31 @@ describe('Context Provider', () => {
               <TablesView store="store1" />
             </span>
             <span>{JSON.stringify(useTables('store1'))}</span>
-            <h1
+            <button
               onClick={useSetTablesCallback(
                 () => ({t1: {r1: {c1: 2}}}),
                 [],
                 'store1',
               )}
             />
-            <h2 onClick={useDelTablesCallback('store1')} />
+            <button onClick={useDelTablesCallback('store1')} />
           </>
         );
-        act(() => {
-          renderer = create(
-            <Provider storesById={{store1: store}}>
-              <Test />
-            </Provider>,
-          );
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual([
-          '1',
-          '2',
-          '3',
-          '4',
-        ]);
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({
-            t1: {r1: {c1: 1}},
-            t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}},
-          }),
-        ]);
+        const {baseElement, getAllByRole} = render(
+          <Provider storesById={{store1: store}}>
+            <Test />
+          </Provider>,
+        );
+        expect(baseElement.textContent).toEqual(
+          '1234' +
+            '{"t1":{"r1":{"c1":1}},"t2":{"r1":{"c1":2},"r2":{"c1":3,"c2":4}}}',
+        );
 
-        act(() => {
-          renderer.root.findByType('h1').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['2']);
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({t1: {r1: {c1: 2}}}),
-        ]);
+        fireEvent.click(getAllByRole('button')[0]);
+        expect(baseElement.textContent).toEqual('2{"t1":{"r1":{"c1":2}}}');
 
-        act(() => {
-          renderer.root.findByType('h2').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toBeNull();
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({}),
-        ]);
+        fireEvent.click(getAllByRole('button')[1]);
+        expect(baseElement.textContent).toEqual('{}');
       });
 
       test('for table', () => {
@@ -2182,7 +1811,7 @@ describe('Context Provider', () => {
               <TableView store="store1" tableId="t1" />
             </span>
             <span>{JSON.stringify(useTable('t1', 'store1'))}</span>
-            <h1
+            <button
               onClick={useSetTableCallback(
                 't1',
                 () => ({r1: {c1: 2}}),
@@ -2190,36 +1819,21 @@ describe('Context Provider', () => {
                 'store1',
               )}
             />
-            <h2 onClick={useDelTableCallback('t1', 'store1')} />
+            <button onClick={useDelTableCallback('t1', 'store1')} />
           </>
         );
-        act(() => {
-          renderer = create(
-            <Provider storesById={{store1: store}}>
-              <Test />
-            </Provider>,
-          );
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['1']);
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({r1: {c1: 1}}),
-        ]);
+        const {baseElement, getAllByRole} = render(
+          <Provider storesById={{store1: store}}>
+            <Test />
+          </Provider>,
+        );
+        expect(baseElement.textContent).toEqual('1{"r1":{"c1":1}}');
 
-        act(() => {
-          renderer.root.findByType('h1').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['2']);
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({r1: {c1: 2}}),
-        ]);
+        fireEvent.click(getAllByRole('button')[0]);
+        expect(baseElement.textContent).toEqual('2{"r1":{"c1":2}}');
 
-        act(() => {
-          renderer.root.findByType('h2').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toBeNull();
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({}),
-        ]);
+        fireEvent.click(getAllByRole('button')[1]);
+        expect(baseElement.textContent).toEqual('{}');
       });
 
       test('for row', () => {
@@ -2229,7 +1843,7 @@ describe('Context Provider', () => {
               <RowView store="store1" tableId="t1" rowId="r1" />
             </span>
             <span>{JSON.stringify(useRow('t1', 'r1', 'store1'))}</span>
-            <h1
+            <button
               onClick={useSetRowCallback(
                 't1',
                 'r1',
@@ -2238,36 +1852,21 @@ describe('Context Provider', () => {
                 'store1',
               )}
             />
-            <h2 onClick={useDelRowCallback('t1', 'r1', 'store1')} />
+            <button onClick={useDelRowCallback('t1', 'r1', 'store1')} />
           </>
         );
-        act(() => {
-          renderer = create(
-            <Provider storesById={{store1: store}}>
-              <Test />
-            </Provider>,
-          );
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['1']);
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({c1: 1}),
-        ]);
+        const {baseElement, getAllByRole} = render(
+          <Provider storesById={{store1: store}}>
+            <Test />
+          </Provider>,
+        );
+        expect(baseElement.textContent).toEqual('1{"c1":1}');
 
-        act(() => {
-          renderer.root.findByType('h1').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['2']);
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({c1: 2}),
-        ]);
+        fireEvent.click(getAllByRole('button')[0]);
+        expect(baseElement.textContent).toEqual('2{"c1":2}');
 
-        act(() => {
-          renderer.root.findByType('h2').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toBeNull();
-        expect((renderer.toJSON() as any)[1].children).toEqual([
-          JSON.stringify({}),
-        ]);
+        fireEvent.click(getAllByRole('button')[1]);
+        expect(baseElement.textContent).toEqual('{}');
       });
 
       test('for cell', () => {
@@ -2277,7 +1876,7 @@ describe('Context Provider', () => {
               <CellView store="store1" tableId="t1" rowId="r1" cellId="c1" />
             </span>
             <span>{JSON.stringify(useCell('t1', 'r1', 'c1', 'store1'))}</span>
-            <h1
+            <button
               onClick={useSetCellCallback(
                 't1',
                 'r1',
@@ -2287,7 +1886,7 @@ describe('Context Provider', () => {
                 'store1',
               )}
             />
-            <h2
+            <button
               onClick={useSetCellCallback(
                 't1',
                 'r1',
@@ -2297,38 +1896,26 @@ describe('Context Provider', () => {
                 'store1',
               )}
             />
-            <h3
+            <button
               onClick={useDelCellCallback('t1', 'r1', 'c1', false, 'store1')}
             />
           </>
         );
-        act(() => {
-          renderer = create(
-            <Provider storesById={{store1: store}}>
-              <Test />
-            </Provider>,
-          );
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['1']);
-        expect((renderer.toJSON() as any)[1].children).toEqual(['1']);
+        const {baseElement, getAllByRole} = render(
+          <Provider storesById={{store1: store}}>
+            <Test />
+          </Provider>,
+        );
+        expect(baseElement.textContent).toEqual('11');
 
-        act(() => {
-          renderer.root.findByType('h1').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['2']);
-        expect((renderer.toJSON() as any)[1].children).toEqual(['2']);
+        fireEvent.click(getAllByRole('button')[0]);
+        expect(baseElement.textContent).toEqual('22');
 
-        act(() => {
-          renderer.root.findByType('h2').props.onClick({screenX: 3});
-        });
-        expect((renderer.toJSON() as any)[0].children).toEqual(['3']);
-        expect((renderer.toJSON() as any)[1].children).toEqual(['3']);
+        fireEvent.click(getAllByRole('button')[1], {screenX: 3});
+        expect(baseElement.textContent).toEqual('33');
 
-        act(() => {
-          renderer.root.findByType('h3').props.onClick();
-        });
-        expect((renderer.toJSON() as any)[0].children).toBeNull();
-        expect((renderer.toJSON() as any)[1].children).toBeNull();
+        fireEvent.click(getAllByRole('button')[2]);
+        expect(baseElement.textContent).toEqual('');
       });
     });
 
@@ -2340,14 +1927,12 @@ describe('Context Provider', () => {
           {useMetric('m1', 'metrics1')}
         </>
       );
-      act(() => {
-        renderer = create(
-          <Provider metricsById={{metrics1: metrics}}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('11');
+      const {baseElement} = render(
+        <Provider metricsById={{metrics1: metrics}}>
+          <Test />
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual('11');
     });
 
     test('indexes', () => {
@@ -2360,14 +1945,12 @@ describe('Context Provider', () => {
           {JSON.stringify(useSliceRowIds('i1', '1', 'indexes1'))}
         </>
       );
-      act(() => {
-        renderer = create(
-          <Provider indexesById={{indexes1: indexes}}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('1["1"]1["r1"]');
+      const {baseElement} = render(
+        <Provider indexesById={{indexes1: indexes}}>
+          <Test />
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual('1["1"]1["r1"]');
     });
 
     test('relationships', () => {
@@ -2400,16 +1983,12 @@ describe('Context Provider', () => {
           {JSON.stringify(useLinkedRowIds('r1', 'r1', 'relationships1'))}
         </>
       );
-      act(() => {
-        renderer = create(
-          <Provider relationshipsById={{relationships1: relationships}}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual(
-        '1"R1"R1R1["r1","r2"]R1["r1"]',
+      const {baseElement} = render(
+        <Provider relationshipsById={{relationships1: relationships}}>
+          <Test />
+        </Provider>,
       );
+      expect(baseElement.textContent).toEqual('1"R1"R1R1["r1","r2"]R1["r1"]');
     });
 
     test('queries', () => {
@@ -2435,14 +2014,12 @@ describe('Context Provider', () => {
           {JSON.stringify(useResultCell('q1', 'r1', 'c1', 'queries1'))}
         </>
       );
-      act(() => {
-        renderer = create(
-          <Provider queriesById={{queries1: queries}}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual(
+      const {baseElement} = render(
+        <Provider queriesById={{queries1: queries}}>
+          <Test />
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual(
         '1{"r1":{"c1":1}}["r1"]1{"c1":1}["c1"]11',
       );
     });
@@ -2452,14 +2029,12 @@ describe('Context Provider', () => {
       const Test = () => (
         <>{JSON.stringify(useCheckpointIds('checkpoints1'))}</>
       );
-      act(() => {
-        renderer = create(
-          <Provider checkpointsById={{checkpoints1: checkpoints}}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('[[],"0",[]]');
+      const {baseElement} = render(
+        <Provider checkpointsById={{checkpoints1: checkpoints}}>
+          <Test />
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual('[[],"0",[]]');
     });
 
     test('persister', () => {
@@ -2467,14 +2042,12 @@ describe('Context Provider', () => {
       const Test = () => (
         <>{JSON.stringify(usePersister('persister1')?.getStatus())}</>
       );
-      act(() => {
-        renderer = create(
-          <Provider persistersById={{persister1: persister}}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('0');
+      const {baseElement} = render(
+        <Provider persistersById={{persister1: persister}}>
+          <Test />
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual('0');
     });
 
     test('synchronizer', () => {
@@ -2482,14 +2055,12 @@ describe('Context Provider', () => {
       const Test = () => (
         <>{JSON.stringify(useSynchronizer('synchronizer1')?.getStatus())}</>
       );
-      act(() => {
-        renderer = create(
-          <Provider synchronizersById={{synchronizer1: synchronizer}}>
-            <Test />
-          </Provider>,
-        );
-      });
-      expect(rendererToString(renderer)).toEqual('0');
+      const {baseElement} = render(
+        <Provider synchronizersById={{synchronizer1: synchronizer}}>
+          <Test />
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual('0');
     });
   });
 
@@ -2506,22 +2077,14 @@ describe('Context Provider', () => {
           {useStore('b') == store2 ? 1 : 0}
         </>
       );
-      act(() => {
-        renderer = create(
-          <Provider storesById={{a: store1}}>
-            <Provider storesById={{b: store2}}>
-              <Test />
-            </Provider>
-          </Provider>,
-        );
-      });
-      expect(renderer.toJSON()).toEqual([
-        JSON.stringify(['a', 'b']),
-        '1',
-        '0',
-        '0',
-        '1',
-      ]);
+      const {baseElement} = render(
+        <Provider storesById={{a: store1}}>
+          <Provider storesById={{b: store2}}>
+            <Test />
+          </Provider>
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual('["a","b"]1001');
     });
     test('same provider, masked', () => {
       const store1 = createStore();
@@ -2535,22 +2098,14 @@ describe('Context Provider', () => {
           {useStore('b') == store2 ? 1 : 0}
         </>
       );
-      act(() => {
-        renderer = create(
-          <Provider storesById={{a: store1, b: store1}}>
-            <Provider storesById={{b: store2}}>
-              <Test />
-            </Provider>
-          </Provider>,
-        );
-      });
-      expect(renderer.toJSON()).toEqual([
-        JSON.stringify(['a', 'b']),
-        '1',
-        '0',
-        '0',
-        '1',
-      ]);
+      const {baseElement} = render(
+        <Provider storesById={{a: store1, b: store1}}>
+          <Provider storesById={{b: store2}}>
+            <Test />
+          </Provider>
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual('["a","b"]1001');
     });
     test('different provider', () => {
       const store1 = createStore();
@@ -2564,22 +2119,14 @@ describe('Context Provider', () => {
           {useStore2('b') == store2 ? 1 : 0}
         </>
       );
-      act(() => {
-        renderer = create(
-          <Provider storesById={{a: store1}}>
-            <Provider2 storesById={{b: store2}}>
-              <Test />
-            </Provider2>
-          </Provider>,
-        );
-      });
-      expect(renderer.toJSON()).toEqual([
-        JSON.stringify(['a', 'b']),
-        '1',
-        '0',
-        '0',
-        '1',
-      ]);
+      const {baseElement} = render(
+        <Provider storesById={{a: store1}}>
+          <Provider2 storesById={{b: store2}}>
+            <Test />
+          </Provider2>
+        </Provider>,
+      );
+      expect(baseElement.textContent).toEqual('["a","b"]1001');
     });
   });
 });
