@@ -1,56 +1,40 @@
-/* eslint-disable max-len */
-/* eslint-disable react/jsx-no-useless-fragment */
-
-import {
-  ReactTestRenderer,
-  ReactTestRendererJSON,
-  act,
-  create,
-} from 'react-test-renderer';
+import '@testing-library/jest-dom';
+import {render, screen, waitFor} from '@testing-library/react';
 import {Inspector} from 'tinybase/ui-react-inspector';
 import React from 'react';
-import {pause} from '../../common/other.ts';
-
-let renderer: ReactTestRenderer;
 
 describe('Inspector', () => {
-  test('basic', async () => {
+  beforeEach(() => {
     sessionStorage.clear();
-    act(() => {
-      renderer = create(<Inspector />);
+  });
+
+  test('basic', async () => {
+    render(<Inspector />);
+
+    await waitFor(() => {
+      const inspector = screen.getByTitle('TinyBase Inspector');
+      expect(inspector).toBeInTheDocument();
+
+      const aside = inspector.closest('aside');
+      expect(aside).toHaveAttribute('id', 'tinybaseInspector');
+
+      const image = screen.getByTitle('TinyBase Inspector');
+      expect(image).toHaveAttribute('data-position', '3');
     });
-    await act(pause);
-    expect((renderer.toJSON() as ReactTestRendererJSON[])[0])
-      .toMatchInlineSnapshot(`
-      <aside
-        id="tinybaseInspector"
-      >
-        <img
-          data-position={3}
-          onClick={[Function]}
-          title="TinyBase Inspector"
-        />
-      </aside>
-    `);
   });
 
   test('position', async () => {
-    sessionStorage.clear();
-    act(() => {
-      renderer = create(<Inspector position="left" />);
+    render(<Inspector position="left" />);
+
+    await waitFor(() => {
+      const inspector = screen.getByTitle('TinyBase Inspector');
+      expect(inspector).toBeInTheDocument();
+
+      const aside = inspector.closest('aside');
+      expect(aside).toHaveAttribute('id', 'tinybaseInspector');
+
+      const image = screen.getByTitle('TinyBase Inspector');
+      expect(image).toHaveAttribute('data-position', '0');
     });
-    await act(pause);
-    expect((renderer.toJSON() as ReactTestRendererJSON[])[0])
-      .toMatchInlineSnapshot(`
-      <aside
-        id="tinybaseInspector"
-      >
-        <img
-          data-position={0}
-          onClick={[Function]}
-          title="TinyBase Inspector"
-        />
-      </aside>
-    `);
   });
 });
