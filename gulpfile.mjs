@@ -446,12 +446,9 @@ const tsCheck = async (dir) => {
 const compileModule = async (
   module,
   dir = DIST_DIR,
-  format = 'esm',
-  target = 'esnext',
-  min = '',
+  min = false,
   cli = false,
 ) => {
-  const path = await import('path');
   const {default: esbuild} = await import('rollup-plugin-esbuild');
   const {rollup} = await import('rollup');
   const {default: replace} = await import('@rollup/plugin-replace');
@@ -488,7 +485,7 @@ const compileModule = async (
     input: inputFile,
     plugins: [
       esbuild({
-        target,
+        target: 'esnext',
         legalComments: 'inline',
         jsx: 'automatic',
       }),
@@ -528,21 +525,11 @@ const compileModule = async (
 
   const moduleDir = dirname(await ensureDir(dir + '/' + module + '/-'));
 
-  const index = 'index.' + (format == 'cjs' ? 'c' : '') + 'js';
+  const index = 'index.js';
   const outputConfig = {
     dir: moduleDir,
     entryFileNames: index,
-    format,
-    globals: {
-      'expo-sqlite': 'expo-sqlite',
-      'fs/promises': 'fs/promises',
-      'react-dom': 'ReactDOM',
-      'cloudflare:workers': 'cloudflare:workers',
-      fs: 'fs',
-      react: 'React',
-      yjs: 'yjs',
-      [path.resolve('src/ui-react')]: getGlobalName('ui-react'),
-    },
+    format: 'esm',
     interop: 'default',
     name: getGlobalName(module),
   };
@@ -643,38 +630,17 @@ const test = async (
   }
 };
 
-const compileModulesForProd = async (fast = false) => {
+const compileModulesForProd = async () => {
   await clearDir(DIST_DIR);
   await copyPackageFiles(true);
   await copyDefinitions(DIST_DIR);
 
-  await allOf(
-    [undefined, ...(fast ? [] : ['umd', 'cjs'])],
-    async (format) =>
-      await allOf(
-        [undefined, ...(fast ? [] : ['es6'])],
-        async (target) =>
-          await allModules(
-            async (module) =>
-              await allOf(
-                [undefined, ...(fast ? [] : ['min'])],
-                async (min) =>
-                  await compileModule(
-                    module,
-                    `${DIST_DIR}/` +
-                      [format, target, min]
-                        .filter((part) => part != null)
-                        .join('/'),
-                    format,
-                    target,
-                    min,
-                  ),
-              ),
-          ),
-      ),
-  );
+  await allModules(async (module) => {
+    await compileModule(module, `${DIST_DIR}/`);
+    await compileModule(module, `${DIST_DIR}/min`, true);
+  });
 
-  await compileModule('cli', DIST_DIR, undefined, undefined, undefined, true);
+  await compileModule('cli', DIST_DIR, false, true);
   await execute(`chmod +x ${DIST_DIR}/cli/index.js`);
 };
 
@@ -760,8 +726,6 @@ export const ts = async () => {
 };
 
 export const compileForProd = async () => await compileModulesForProd();
-
-export const compileForProdFast = async () => await compileModulesForProd(true);
 
 export const testUnit = async () => {
   await test(['test/unit'], {coverageMode: 1, serialTests: true});
