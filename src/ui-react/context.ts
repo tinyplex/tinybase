@@ -114,7 +114,7 @@ const useThing = <UsedThing extends Thing>(
     isUndefined(id)
       ? contextValue[offset * 2]
       : isString(id)
-        ? objGet((contextValue[offset * 2 + 1] ?? {}) as IdObj<UsedThing>, id)
+        ? objGet(contextValue[offset * 2 + 1] as IdObj<UsedThing>, id)
         : id
   ) as UsedThing;
 };
