@@ -21,6 +21,7 @@ import {
 } from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
 import type {Id} from '../@types/common/index.d.ts';
+import React from 'react';
 import type {StoreProp} from './types.ts';
 import {arrayIsEmpty} from '../common/array.ts';
 import {isUndefined} from '../common/other.ts';
