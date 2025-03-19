@@ -2,7 +2,6 @@ import 'fake-indexeddb/auto';
 import * as AutomergeRepo from '@automerge/automerge-repo';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
-import * as ReactDOMTestUtils from 'react-dom/test-utils';
 import * as TinyBase from 'tinybase';
 import * as TinyBasePersisterAutomerge from 'tinybase/persisters/persister-automerge';
 import * as TinyBasePersisterBrowser from 'tinybase/persisters/persister-browser';
@@ -42,13 +41,6 @@ import postgres from 'postgres';
 import {resetHlc} from '../common/mergeable.ts';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import {transformSync} from 'esbuild';
-
-// globally present; do not need to be imported in examples
-[ReactDOMTestUtils].forEach((module) =>
-  Object.entries(module).forEach(([key, value]) => {
-    (globalThis as any)[key] = value;
-  }),
-);
 
 // need to be imported in examples
 (globalThis as any).modules = {
@@ -101,6 +93,7 @@ Object.assign(globalThis as any, {
   IS_REACT_ACT_ENVIRONMENT: true,
   pause,
   resetHlc,
+  act: React.act,
 });
 
 type Results = [any, any][];
