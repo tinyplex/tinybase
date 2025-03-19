@@ -164,7 +164,7 @@
     "@types/less": "^3.0.8",
     "@types/node": "^22.13.10",
     "@types/puppeteer": "^7.0.4",
-    "@types/react": "^19.0.10",
+    "@types/react": "^19.0.11",
     "@types/react-dom": "^19.0.4",
     "@types/tmp": "^0.2.6",
     "@types/ws": "^8.18.0",
