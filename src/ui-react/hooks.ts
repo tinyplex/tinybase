@@ -361,7 +361,7 @@ const useCreate = (
 
 const addAndDelListener = (thing: any, listenable: string, ...args: any[]) => {
   const listenerId = thing?.[ADD + listenable + LISTENER]?.(...args);
-  return () => thing?.delListener(listenerId);
+  return () => thing?.delListener?.(listenerId);
 };
 
 const useListenable = (
