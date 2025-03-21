@@ -481,7 +481,6 @@ const compileModule = async (
       'tinybase/tools',
       '../ui-react',
     ],
-    jsx: 'react-jsx',
     input: inputFile,
     plugins: [
       esbuild({

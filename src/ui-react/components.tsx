@@ -140,8 +140,8 @@ const tableView = (
   wrap(
     arrayMap(rowIds, (rowId) => (
       <Row
-        {...getProps(getRowComponentProps, rowId)}
         key={rowId}
+        {...getProps(getRowComponentProps, rowId)}
         tableId={tableId}
         rowId={rowId}
         customCellIds={customCellIds}
@@ -168,8 +168,8 @@ const resultTableView = (
   wrap(
     arrayMap(rowIds, (rowId) => (
       <ResultRow
-        {...getProps(getResultRowComponentProps, rowId)}
         key={rowId}
+        {...getProps(getResultRowComponentProps, rowId)}
         queryId={queryId}
         rowId={rowId}
         queries={queries}
@@ -208,8 +208,8 @@ const useComponentPerRow = (
   return wrap(
     arrayMap(rowIds, (rowId) => (
       <Row
-        {...getProps(getRowComponentProps, rowId)}
         key={rowId}
+        {...getProps(getRowComponentProps, rowId)}
         tableId={localTableId as Id}
         rowId={rowId}
         store={store}
@@ -243,8 +243,8 @@ const getUseCheckpointView =
         getCheckpoints(useCheckpointIds(resolvedCheckpoints)),
         (checkpointId: Id) => (
           <Checkpoint
-            {...getProps(getCheckpointComponentProps, checkpointId as Id)}
             key={checkpointId}
+            {...getProps(getCheckpointComponentProps, checkpointId as Id)}
             checkpoints={resolvedCheckpoints}
             checkpointId={checkpointId}
             debugIds={debugIds}
@@ -453,8 +453,8 @@ export const RowView: typeof RowViewDecl = ({
       useCustomOrDefaultCellIds(customCellIds, tableId, rowId, store),
       (cellId) => (
         <Cell
-          {...getProps(getCellComponentProps, cellId)}
           key={cellId}
+          {...getProps(getCellComponentProps, cellId)}
           tableId={tableId}
           rowId={rowId}
           cellId={cellId}
@@ -500,8 +500,8 @@ export const TablesView: typeof TablesViewDecl = ({
   wrap(
     arrayMap(useTableIds(store), (tableId) => (
       <Table
-        {...getProps(getTableComponentProps, tableId)}
         key={tableId}
+        {...getProps(getTableComponentProps, tableId)}
         tableId={tableId}
         store={store}
         debugIds={debugIds}
@@ -532,8 +532,8 @@ export const ValuesView: typeof ValuesViewDecl = ({
   wrap(
     arrayMap(useValueIds(store), (valueId) => (
       <Value
-        {...getProps(getValueComponentProps, valueId)}
         key={valueId}
+        {...getProps(getValueComponentProps, valueId)}
         valueId={valueId}
         store={store}
         debugIds={debugIds}
@@ -571,8 +571,8 @@ export const SliceView: typeof SliceViewDecl = ({
   return wrap(
     arrayMap(rowIds, (rowId) => (
       <Row
-        {...getProps(getRowComponentProps, rowId)}
         key={rowId}
+        {...getProps(getRowComponentProps, rowId)}
         tableId={tableId as Id}
         rowId={rowId}
         store={store}
@@ -596,8 +596,8 @@ export const IndexView: typeof IndexViewDecl = ({
   wrap(
     arrayMap(useSliceIds(indexId, indexes), (sliceId) => (
       <Slice
-        {...getProps(getSliceComponentProps, sliceId)}
         key={sliceId}
+        {...getProps(getSliceComponentProps, sliceId)}
         indexId={indexId}
         sliceId={sliceId}
         indexes={indexes}
@@ -630,8 +630,8 @@ export const RemoteRowView: typeof RemoteRowViewDecl = ({
   return wrap(
     isUndefined(remoteTableId) || isUndefined(rowId) ? null : (
       <Row
-        {...getProps(getRowComponentProps, rowId as Id)}
         key={rowId}
+        {...getProps(getRowComponentProps, rowId as Id)}
         tableId={remoteTableId}
         rowId={rowId}
         store={store}
@@ -679,8 +679,8 @@ export const ResultRowView: typeof ResultRowViewDecl = ({
   wrap(
     arrayMap(useResultCellIds(queryId, rowId, queries), (cellId) => (
       <ResultCell
-        {...getProps(getResultCellComponentProps, cellId)}
         key={cellId}
+        {...getProps(getResultCellComponentProps, cellId)}
         queryId={queryId}
         rowId={rowId}
         cellId={cellId}
