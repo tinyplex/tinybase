@@ -7,6 +7,13 @@ import {NavJson} from './ui/NavJson.tsx';
 import {Page} from './ui/Page.tsx';
 import {Readme} from './ui/Readme.tsx';
 
+const tinyBaseEsm = [
+  'tinybase',
+  'tinybase/ui-react',
+  'tinybase/ui-react-inspector',
+];
+const externalEsm = ['react', 'react-dom/client', 'react/jsx-runtime'];
+
 const GROUPS = ['Interfaces', '*', 'Type aliases'];
 const CATEGORIES = [
   /hooks$/,
@@ -77,6 +84,7 @@ const REFLECTIONS = [
 ];
 
 export const build = async (
+  esbuild: any,
   outDir: string,
   api = true,
   pages = true,
@@ -145,7 +153,46 @@ export const build = async (
       .addMarkdownForNode('/', Readme, '../readme.md')
       .addMarkdownForNode('/guides/releases/', Readme, '../../../releases.md');
   }
+
+  tinyBaseEsm.forEach((module) => {
+    const [mainModule, ...subModules] = module.split('/');
+    subModules.unshift('');
+    docs.addReplacer(
+      new RegExp(`esm\\.sh/${module}@`, 'g'),
+      `esm.sh/${mainModule}@${version}${subModules.join('/')}`,
+    );
+  });
+  externalEsm.forEach((module) => {
+    const [mainModule, ...subModules] = module.split('/');
+    subModules.unshift('');
+    const {version} = JSON.parse(
+      readFileSync(`node_modules/${mainModule}/package.json`, 'utf-8'),
+    );
+    docs.addReplacer(
+      new RegExp(`esm\\.sh/${module}@`, 'g'),
+      `esm.sh/${mainModule}@${version}${subModules.join('/')}`,
+    );
+  });
+
   docs.publish();
+
+  await Promise.all(
+    tinyBaseEsm.map(async (module) => {
+      const [mainModule, ...subModules] = module.split('/');
+      subModules.unshift('');
+      await esbuild.build({
+        entryPoints: [import.meta.resolve(module).replace('file://', '')],
+        external: externalEsm,
+        target: 'esnext',
+        bundle: true,
+        jsx: 'transform',
+        outfile:
+          `${outDir}/pseudo.esm.sh/` +
+          `${mainModule}@${version}${subModules.join('/')}/index.js`,
+        format: 'esm',
+      });
+    }),
+  );
 };
 
 const addApi = (docs: Docs): Docs =>
