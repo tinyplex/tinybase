@@ -37,7 +37,7 @@ itself:
 ```js
 import {createQueries, createStore} from 'tinybase';
 import {Provider, useCreateStore} from 'tinybase/ui-react';
-import {createElement, useMemo, useState} from 'react';
+import {useMemo, useState} from 'react';
 import {Inspector} from 'tinybase/ui-react-inspector';
 import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 import {createRoot} from 'react-dom/client';

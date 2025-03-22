@@ -32,7 +32,7 @@ itself:
 import {createStore} from 'tinybase';
 import {Provider, useCreateStore} from 'tinybase/ui-react';
 import {ValuesInHtmlTable} from 'tinybase/ui-react-dom';
-import {createElement, useMemo, useState} from 'react';
+import {useMemo, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 ```
 
