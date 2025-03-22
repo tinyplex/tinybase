@@ -1,6 +1,6 @@
 // All other imports are lazy so that single tasks start up fast.
 import {basename, dirname, join, resolve} from 'path';
-import {existsSync, promises, readdirSync} from 'fs';
+import {existsSync, promises, readFileSync, readdirSync} from 'fs';
 import gulp from 'gulp';
 import {gzipSync} from 'zlib';
 
@@ -645,9 +645,6 @@ const compileModulesForProd = async () => {
 
 const compileDocsAndAssets = async (api = true, pages = true) => {
   const {default: esbuild} = await import('esbuild');
-  const {default: esbuildPlugin} = await import('rollup-plugin-esbuild');
-  const {default: terser} = await import('@rollup/plugin-terser');
-  const {rollup} = await import('rollup');
 
   await makeDir(TMP_DIR);
   await esbuild.build({
@@ -660,23 +657,9 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
     platform: 'node',
   });
 
-  await (
-    await rollup({
-      input: 'node_modules/partysocket/dist/index.mjs',
-      plugins: [esbuildPlugin(), terser({toplevel: true, compress: true})],
-    })
-  ).write({
-    dir: 'tmp',
-    entryFileNames: 'partysocket.js',
-    format: 'umd',
-    interop: 'default',
-    name: 'PartySocketModule',
-    exports: 'named',
-  });
-
   // eslint-disable-next-line import/no-unresolved
   const {build} = await import('./tmp/build.js');
-  await build(DOCS_DIR, api, pages);
+  await build(esbuild, DOCS_DIR, api, pages);
   await removeDir(TMP_DIR);
 };
 
@@ -774,19 +757,32 @@ export const compileAndTestProd = series(compileForProdAndDocs, testProd);
 export const serveDocs = async () => {
   const {createServer} = await import('http-server');
   const {default: replace} = await import('buffer-replace');
-  const removeDomain = (_, res) => {
-    res._write = res.write;
-    res.write = (buffer) =>
-      res._write(replace(buffer, 'https://tinybase.org/', '/'.padStart(21)));
-    res.emit('next');
-  };
   createServer({
     root: DOCS_DIR,
     cache: -1,
     gzip: true,
     // eslint-disable-next-line no-console
     logFn: (req) => console.log(req.url),
-    before: [removeDomain],
+    before: [
+      (req, res) => {
+        if (req.url.startsWith('/pseudo.esm.sh/')) {
+          res.setHeader('Content-Type', 'application/javascript');
+          res.write(readFileSync(DOCS_DIR + req.url + '/index.js', UTF8));
+          return res.end();
+        }
+        res._write = res.write;
+        res.write = (buffer) => {
+          res._write(
+            replace(
+              replace(buffer, 'https://tinybase.org/', '                    /'),
+              'https://esm.sh/tinybase',
+              '/pseudo.esm.sh/tinybase',
+            ),
+          );
+        };
+        res.emit('next');
+      },
+    ],
   }).listen('8080', '0.0.0.0');
 };
 
