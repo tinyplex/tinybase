@@ -65,14 +65,7 @@ import {
   useResultSortedRowIds,
   useResultTable,
 } from 'tinybase/ui-react';
-import {
-  createElement,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {Inspector} from 'tinybase/ui-react-inspector';
 import {ResultSortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 import {createRoot} from 'react-dom/client';
