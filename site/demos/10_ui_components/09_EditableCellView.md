@@ -13,8 +13,8 @@ changes to the <TableInHtmlTable /> demo to show this new component.
 We start off by simply adding the component to the imports:
 
 ```diff-js
--const {TableInHtmlTable} = TinyBaseUiReactDom;
-+const {EditableCellView, TableInHtmlTable} = TinyBaseUiReactDom;
+-import {TableInHtmlTable} from 'tinybase/ui-react-dom';
++import {EditableCellView, TableInHtmlTable} from 'tinybase/ui-react-dom';
 ```
 
 ## Using the EditableCellView Component

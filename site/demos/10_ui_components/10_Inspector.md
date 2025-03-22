@@ -13,22 +13,29 @@ well-populated Store to inspect.
 Let's import the Inspector component:
 
 ```diff-html
- <script src="/umd/react.production.min.js"></script>
- <script src="/umd/react-dom.production.min.js"></script>
- <script src="/umd/tinybase/index.js"></script>
- <script src="/umd/tinybase/ui-react/index.js"></script>
--<script src="/umd/tinybase/ui-react-dom/index.js"></script>
-+<script src="/umd/tinybase/ui-react-inspector/index.js"></script>
+ <script type="importmap">
+   {
+     "imports": {
+       "tinybase": "https://esm.sh/tinybase@",
+       "tinybase/ui-react": "https://esm.sh/tinybase/ui-react@",
+-       "tinybase/ui-react-dom": "https://esm.sh/tinybase/ui-react-dom@",
++       "tinybase/ui-react-inspector": "https://esm.sh/tinybase/ui-react-inspector@",
+       "react": "https://esm.sh/react@",
+       "react/jsx-runtime": "https://esm.sh/react/jsx-runtime@",
+       "react-dom/client": "https://esm.sh/react-dom/client@"
+     }
+   }
+ </script>
 ```
 
 We're going to use the useTableIds hook briefly, and the Inspector from the
 ui-react-inspector module:
 
 ```diff-js
--const {Provider, useCell, useCreateStore} = TinyBaseUiReact;
-+const {Provider, useCreateStore, useTableIds} = TinyBaseUiReact;
--const {TableInHtmlTable} = TinyBaseUiReactDom;
-+const {Inspector} = TinyBaseUiReactInspector;
+-import {Provider, useCell, useCreateStore} from 'tinybase/ui-react';
++import {Provider, useCreateStore, useTableIds} from 'tinybase/ui-react';
+-import {TableInHtmlTable} from 'tinybase/ui-react-dom';
++import {Inspector} from 'tinybase/ui-react-inspector';
 ```
 
 The inspector component is best showcased with a larger data set, so we load up

@@ -4,14 +4,21 @@ In this demo, we use a Metrics object to keep a count (and a rolling average) of
 the values in each Cell in a Store. We roll a dice 48 times and keep track of
 the average.
 
-First, we pull in React, ReactDOM, and TinyBase:
+First, we create the import aliases for TinyBase and React modules we'll need:
 
 ```html
-<script src="/umd/react.production.min.js"></script>
-<script src="/umd/react-dom.production.min.js"></script>
-<script src="/umd/tinybase/index.js"></script>
-<script src="/umd/tinybase/ui-react/index.js"></script>
-<script src="/umd/tinybase/ui-react-inspector/index.js"></script>
+<script type="importmap">
+  {
+    "imports": {
+      "tinybase": "https://esm.sh/tinybase@",
+      "tinybase/ui-react": "https://esm.sh/tinybase/ui-react@",
+      "tinybase/ui-react-inspector": "https://esm.sh/tinybase/ui-react-inspector@",
+      "react": "https://esm.sh/react@",
+      "react/jsx-runtime": "https://esm.sh/react/jsx-runtime@",
+      "react-dom/client": "https://esm.sh/react-dom/client@"
+    }
+  }
+</script>
 ```
 
 We're using the Inspector component for the purposes of seeing how the data is
@@ -20,9 +27,10 @@ structured.
 We import the functions and components we need, and create the Store object:
 
 ```js
-const {MetricView, Provider, TableView, useCell} = TinyBaseUiReact;
-const {createMetrics, createStore} = TinyBase;
-const {Inspector} = TinyBaseUiReactInspector;
+import {createMetrics, createStore} from 'tinybase';
+import {MetricView, Provider, TableView, useCell} from 'tinybase/ui-react';
+import {Inspector} from 'tinybase/ui-react-inspector';
+import {createRoot} from 'react-dom/client';
 
 const store = createStore();
 ```
@@ -61,7 +69,7 @@ We then create a React app comprising two MetricView components and a TableView
 component which will render the `Roll` components:
 
 ```jsx
-ReactDOM.createRoot(document.body).render(
+createRoot(document.body).render(
   <Provider store={store} metrics={metrics}>
     <p>
       Count: <MetricView metricId="count" />

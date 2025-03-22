@@ -8,22 +8,29 @@ use of drag and drop. Preferably try it out on a desktop browser.
 
 ## Boilerplate
 
-First, we pull in React, ReactDOM, and TinyBase:
+First, we create the import aliases for TinyBase and React modules we'll need:
 
 ```html
-<script src="/umd/react.production.min.js"></script>
-<script src="/umd/react-dom.production.min.js"></script>
-<script src="/umd/tinybase/index.js"></script>
-<script src="/umd/tinybase/persisters/persister-browser/index.js"></script>
-<script src="/umd/tinybase/ui-react/index.js"></script>
-<script src="/umd/tinybase/ui-react-inspector/index.js"></script>
+<script type="importmap">
+  {
+    "imports": {
+      "tinybase": "https://esm.sh/tinybase@",
+      "tinybase/persisters/persister-browser": "https://esm.sh/tinybase/persisters/persister-browser@",
+      "tinybase/ui-react": "https://esm.sh/tinybase/ui-react@",
+      "tinybase/ui-react-inspector": "https://esm.sh/tinybase/ui-react-inspector@",
+      "react": "https://esm.sh/react@",
+      "react/jsx-runtime": "https://esm.sh/react/jsx-runtime@",
+      "react-dom/client": "https://esm.sh/react-dom/client@"
+    }
+  }
+</script>
 ```
 
 We'll use a good selection of the TinyBase API and the ui-react module:
 
 ```js
-const {createCheckpoints, createRelationships, createStore} = TinyBase;
-const {
+import {createCheckpoints, createRelationships, createStore} from 'tinybase';
+import {
   LinkedRowsView,
   Provider,
   useAddRowCallback,
@@ -43,8 +50,8 @@ const {
   useSetPartialRowCallback,
   useStore,
   useUndoInformation,
-} = TinyBaseUiReact;
-const {
+} from 'tinybase/ui-react';
+import {
   createContext,
   useCallback,
   useContext,
@@ -52,9 +59,10 @@ const {
   useLayoutEffect,
   useRef,
   useState,
-} = React;
-const {createLocalPersister} = TinyBasePersisterBrowser;
-const {Inspector} = TinyBaseUiReactInspector;
+} from 'react';
+import {createLocalPersister} from 'tinybase/persisters/persister-browser';
+import {Inspector} from 'tinybase/ui-react-inspector';
+import {createRoot} from 'react-dom/client';
 ```
 
 The drawing app relies heavily on being able to drag and drop shapes and their
@@ -268,9 +276,7 @@ the corner.
 Anyway, let's mount it into the DOM...
 
 ```jsx
-addEventListener('load', () =>
-  ReactDOM.createRoot(document.body).render(<App />),
-);
+addEventListener('load', () => createRoot(document.body).render(<App />));
 ```
 
 ...and off we go.

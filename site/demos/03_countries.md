@@ -5,16 +5,23 @@ load and display country data.
 
 ## Initialization
 
-First, we pull in React, ReactDOM, and TinyBase:
+First, we create the import aliases for TinyBase and React modules we'll need:
 
 ```html
-<script src="/umd/react.production.min.js"></script>
-<script src="/umd/react-dom.production.min.js"></script>
-<script src="/umd/tinybase/index.js"></script>
-<script src="/umd/tinybase/persisters/persister-browser/index.js"></script>
-<script src="/umd/tinybase/persisters/persister-remote/index.js"></script>
-<script src="/umd/tinybase/ui-react/index.js"></script>
-<script src="/umd/tinybase/ui-react-inspector/index.js"></script>
+<script type="importmap">
+  {
+    "imports": {
+      "tinybase": "https://esm.sh/tinybase@",
+      "tinybase/persisters/persister-browser": "https://esm.sh/tinybase/persisters/persister-browser@",
+      "tinybase/persisters/persister-remote": "https://esm.sh/tinybase/persisters/persister-remote@",
+      "tinybase/ui-react": "https://esm.sh/tinybase/ui-react@",
+      "tinybase/ui-react-inspector": "https://esm.sh/tinybase/ui-react-inspector@",
+      "react": "https://esm.sh/react@",
+      "react/jsx-runtime": "https://esm.sh/react/jsx-runtime@",
+      "react-dom/client": "https://esm.sh/react-dom/client@"
+    }
+  }
+</script>
 ```
 
 We're using the Inspector component for the purposes of seeing how the data is
@@ -23,9 +30,12 @@ structured.
 We import the functions and components we need:
 
 ```js
-const {createIndexes, createStore, defaultSorter} = TinyBase;
-const {createLocalPersister, createSessionPersister} = TinyBasePersisterBrowser;
-const {
+import {createIndexes, createStore, defaultSorter} from 'tinybase';
+import {
+  createLocalPersister,
+  createSessionPersister,
+} from 'tinybase/persisters/persister-browser';
+import {
   CellView,
   IndexView,
   Provider,
@@ -40,10 +50,11 @@ const {
   useSetValuesCallback,
   useSliceRowIds,
   useValues,
-} = TinyBaseUiReact;
-const {Inspector} = TinyBaseUiReactInspector;
-const {createRemotePersister} = TinyBasePersisterRemote;
-const {useCallback} = React;
+} from 'tinybase/ui-react';
+import {Inspector} from 'tinybase/ui-react-inspector';
+import {createRemotePersister} from 'tinybase/persisters/persister-remote';
+import {useCallback} from 'react';
+import {createRoot} from 'react-dom/client';
 ```
 
 We also set up some string constants for showing star emojis:
@@ -205,7 +216,7 @@ Finally, when the window loads, we render the `App` component into the demo
 
 ```js
 window.addEventListener('load', () =>
-  ReactDOM.createRoot(document.body).render(<App />),
+  createRoot(document.body).render(<App />),
 );
 ```
 

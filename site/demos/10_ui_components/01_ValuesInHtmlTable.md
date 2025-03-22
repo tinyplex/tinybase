@@ -8,25 +8,32 @@ desktop browser.
 
 ## Boilerplate
 
-First, we pull in React, ReactDOM, and TinyBase. We add the ui-react and
-ui-react-dom modules too.
+First, we create the import aliases for TinyBase and React modules we'll need:
 
 ```html
-<script src="/umd/react.production.min.js"></script>
-<script src="/umd/react-dom.production.min.js"></script>
-<script src="/umd/tinybase/index.js"></script>
-<script src="/umd/tinybase/ui-react/index.js"></script>
-<script src="/umd/tinybase/ui-react-dom/index.js"></script>
+<script type="importmap">
+  {
+    "imports": {
+      "tinybase": "https://esm.sh/tinybase@",
+      "tinybase/ui-react": "https://esm.sh/tinybase/ui-react@",
+      "tinybase/ui-react-dom": "https://esm.sh/tinybase/ui-react-dom@",
+      "react": "https://esm.sh/react@",
+      "react/jsx-runtime": "https://esm.sh/react/jsx-runtime@",
+      "react-dom/client": "https://esm.sh/react-dom/client@"
+    }
+  }
+</script>
 ```
 
 We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
 
 ```js
-const {createStore} = TinyBase;
-const {Provider, useCreateStore} = TinyBaseUiReact;
-const {ValuesInHtmlTable} = TinyBaseUiReactDom;
-const {createElement, useMemo, useState} = React;
+import {createStore} from 'tinybase';
+import {Provider, useCreateStore} from 'tinybase/ui-react';
+import {ValuesInHtmlTable} from 'tinybase/ui-react-dom';
+import {createElement, useMemo, useState} from 'react';
+import {createRoot} from 'react-dom/client';
 ```
 
 This is the main container of the demo, in a React component called `App`. It
@@ -47,9 +54,7 @@ const App = () => {
   );
 };
 
-addEventListener('load', () =>
-  ReactDOM.createRoot(document.body).render(<App />),
-);
+addEventListener('load', () => createRoot(document.body).render(<App />));
 ```
 
 ## Loading Data

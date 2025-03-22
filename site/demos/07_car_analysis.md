@@ -30,15 +30,22 @@ results (either in graphical or tabular form) reactively update immediately.
 
 ## Boilerplate
 
-As per usual, we first pull in React, ReactDOM, and TinyBase:
+First, we create the import aliases for TinyBase and React modules we'll need:
 
 ```html
-<script src="/umd/react.production.min.js"></script>
-<script src="/umd/react-dom.production.min.js"></script>
-<script src="/umd/tinybase/index.js"></script>
-<script src="/umd/tinybase/ui-react/index.js"></script>
-<script src="/umd/tinybase/ui-react-dom/index.js"></script>
-<script src="/umd/tinybase/ui-react-inspector/index.js"></script>
+<script type="importmap">
+  {
+    "imports": {
+      "tinybase": "https://esm.sh/tinybase@",
+      "tinybase/ui-react": "https://esm.sh/tinybase/ui-react@",
+      "tinybase/ui-react-dom": "https://esm.sh/tinybase/ui-react-dom@",
+      "tinybase/ui-react-inspector": "https://esm.sh/tinybase/ui-react-inspector@",
+      "react": "https://esm.sh/react@",
+      "react/jsx-runtime": "https://esm.sh/react/jsx-runtime@",
+      "react-dom/client": "https://esm.sh/react-dom/client@"
+    }
+  }
+</script>
 ```
 
 We're using the Inspector component for the purposes of seeing how the data is
@@ -48,8 +55,8 @@ We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
 
 ```js
-const {createQueries, createStore} = TinyBase;
-const {
+import {createQueries, createStore} from 'tinybase';
+import {
   Provider,
   useCreateQueries,
   useCreateStore,
@@ -57,11 +64,18 @@ const {
   useResultCell,
   useResultSortedRowIds,
   useResultTable,
-} = TinyBaseUiReact;
-const {createElement, useCallback, useEffect, useMemo, useRef, useState} =
-  React;
-const {Inspector} = TinyBaseUiReactInspector;
-const {ResultSortedTableInHtmlTable} = TinyBaseUiReactDom;
+} from 'tinybase/ui-react';
+import {
+  createElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import {Inspector} from 'tinybase/ui-react-inspector';
+import {ResultSortedTableInHtmlTable} from 'tinybase/ui-react-dom';
+import {createRoot} from 'react-dom/client';
 ```
 
 For simplicity, we set up a few convenience arrays that distinguish the columns
@@ -186,9 +200,7 @@ And finally this simple boilerplate code loads the main `App` component to start
 things off:
 
 ```jsx
-addEventListener('load', () =>
-  ReactDOM.createRoot(document.body).render(<App />),
-);
+addEventListener('load', () => createRoot(document.body).render(<App />));
 ```
 
 ## Loading The Data
