@@ -14,8 +14,8 @@ We switch out the TableInHtmlTable component and import the
 SortedTableInHtmlTable component instead.
 
 ```diff-js
--const {TableInHtmlTable} = TinyBaseUiReactDom;
-+const {SortedTableInHtmlTable} = TinyBaseUiReactDom;
+-import {TableInHtmlTable} from 'tinybase/ui-react-dom';
++import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 ```
 
 This component is best showcased with a larger data set, so we load up movies

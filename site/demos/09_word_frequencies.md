@@ -11,23 +11,36 @@ you!
 
 ## Boilerplate
 
-As per usual, we first pull in React, ReactDOM, and TinyBase:
+First, we create the import aliases for TinyBase and React modules we'll need:
 
 ```html
-<script src="/umd/react.production.min.js"></script>
-<script src="/umd/react-dom.production.min.js"></script>
-<script src="/umd/tinybase/index.js"></script>
-<script src="/umd/tinybase/ui-react/index.js"></script>
+<script type="importmap">
+  {
+    "imports": {
+      "tinybase": "https://esm.sh/tinybase@",
+      "tinybase/ui-react": "https://esm.sh/tinybase/ui-react@",
+      "react": "https://esm.sh/react@",
+      "react/jsx-runtime": "https://esm.sh/react/jsx-runtime@",
+      "react-dom/client": "https://esm.sh/react-dom/client@"
+    }
+  }
+</script>
 ```
 
 We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
 
 ```js
-const {Provider, useCreateIndexes, useCreateStore, useRow, useSliceRowIds} =
-  TinyBaseUiReact;
-const {createIndexes, createStore} = TinyBase;
-const {useCallback, useMemo, useState} = React;
+import {
+  Provider,
+  useCreateIndexes,
+  useCreateStore,
+  useRow,
+  useSliceRowIds,
+} from 'tinybase/ui-react';
+import {createIndexes, createStore} from 'tinybase';
+import {useCallback, useMemo, useState} from 'react';
+import {createRoot} from 'react-dom/client';
 ```
 
 ## Loading The Data
@@ -154,9 +167,7 @@ which contains the text that the user has entered into the search box.
 Let's go!
 
 ```jsx
-addEventListener('load', () =>
-  ReactDOM.createRoot(document.body).render(<App />),
-);
+addEventListener('load', () => createRoot(document.body).render(<App />));
 ```
 
 ## The `Input` Component

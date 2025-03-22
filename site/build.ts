@@ -7,10 +7,14 @@ import {NavJson} from './ui/NavJson.tsx';
 import {Page} from './ui/Page.tsx';
 import {Readme} from './ui/Readme.tsx';
 
-const tinyBaseEsm = [
+const tinybaseEsm = [
   'tinybase',
   'tinybase/ui-react',
+  'tinybase/ui-react-dom',
   'tinybase/ui-react-inspector',
+  'tinybase/persisters/persister-browser',
+  'tinybase/persisters/persister-remote',
+  'tinybase/synchronizers/synchronizer-ws-client',
 ];
 const externalEsm = ['react', 'react-dom/client', 'react/jsx-runtime'];
 
@@ -154,7 +158,7 @@ export const build = async (
       .addMarkdownForNode('/guides/releases/', Readme, '../../../releases.md');
   }
 
-  tinyBaseEsm.forEach((module) => {
+  tinybaseEsm.forEach((module) => {
     const [mainModule, ...subModules] = module.split('/');
     subModules.unshift('');
     docs.addReplacer(
@@ -177,7 +181,7 @@ export const build = async (
   docs.publish();
 
   await Promise.all(
-    tinyBaseEsm.map(async (module) => {
+    tinybaseEsm.map(async (module) => {
       const [mainModule, ...subModules] = module.split('/');
       subModules.unshift('');
       await esbuild.build({

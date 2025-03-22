@@ -16,12 +16,12 @@ We switch out the TableInHtmlTable component and import the
 SortedTableInHtmlTable component instead.
 
 ```diff-js
--const {createStore} = TinyBase;
-+const {createQueries, createStore} = TinyBase;
--const {Provider, useCell, useCreateStore} = TinyBaseUiReact;
-+const {Provider, useCell, useCreateQueries, useCreateStore} = TinyBaseUiReact;
--const {SortedTableInHtmlTable} = TinyBaseUiReactDom;
-+const {ResultSortedTableInHtmlTable} = TinyBaseUiReactDom;
+-import {createStore} from 'tinybase';
++import {createQueries, createStore} from 'tinybase';
+-import {Provider, useCell, useCreateStore} from 'tinybase/ui-react';
++import {Provider, useCell, useCreateQueries, useCreateStore} from 'tinybase/ui-react';
+-import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
++import {ResultSortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 ```
 
 We need to register the query we are going to use. In the main `App` component,

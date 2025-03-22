@@ -17,12 +17,12 @@ ResultTableInHtmlTable component instead. We'll also need the createQueries
 function and useCreateQueries hook:
 
 ```diff-js
--const {createStore} = TinyBase;
-+const {createQueries, createStore} = TinyBase;
--const {Provider, useCell, useCreateStore} = TinyBaseUiReact;
-+const {Provider, useCell, useCreateQueries, useCreateStore} = TinyBaseUiReact;
--const {TableInHtmlTable} = TinyBaseUiReactDom;
-+const {ResultTableInHtmlTable} = TinyBaseUiReactDom;
+-import {createStore} from 'tinybase';
++import {createQueries, createStore} from 'tinybase';
+-import {Provider, useCell, useCreateStore} from 'tinybase/ui-react';
++import {Provider, useCell, useCreateQueries, useCreateStore} from 'tinybase/ui-react';
+-import {TableInHtmlTable} from 'tinybase/ui-react-dom';
++import {ResultTableInHtmlTable} from 'tinybase/ui-react-dom';
 ```
 
 We need to define the query we are going to use. In the main `App` component, we

@@ -18,18 +18,18 @@ RelationshipInHtmlTable component instead. We'll also need the
 createRelationships function and useCreateRelationships hook:
 
 ```diff-js
--const {createStore} = TinyBase;
-+const {createRelationships, createStore} = TinyBase;
--const {Provider, useCell, useCreateStore} = TinyBaseUiReact;
-+const {
+-import {createStore} from 'tinybase';
++import {createRelationships, createStore} from 'tinybase';
+-import {Provider, useCell, useCreateStore} from 'tinybase/ui-react';
++import {
 +  CellView,
 +  Provider,
 +  useCell,
 +  useCreateRelationships,
 +  useCreateStore,
-+} = TinyBaseUiReact;
--const {TableInHtmlTable} = TinyBaseUiReactDom;
-+const {RelationshipInHtmlTable} = TinyBaseUiReactDom;
++} from 'tinybase/ui-react';
+-import {TableInHtmlTable} from 'tinybase/ui-react-dom';
++import {RelationshipInHtmlTable} from 'tinybase/ui-react-dom';
 ```
 
 We need to define the Relationship we are going to use. For the sake of this

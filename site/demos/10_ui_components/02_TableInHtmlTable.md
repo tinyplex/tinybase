@@ -13,8 +13,8 @@ We switch out the ValuesInHtmlTable component and import the TableInHtmlTable
 component instead.
 
 ```diff-js
--const {ValuesInHtmlTable} = TinyBaseUiReactDom;
-+const {TableInHtmlTable} = TinyBaseUiReactDom;
+-import {ValuesInHtmlTable} from 'tinybase/ui-react-dom';
++import {TableInHtmlTable} from 'tinybase/ui-react-dom';
 ```
 
 This component renders Table content rather than Values, so we change the load
@@ -117,8 +117,8 @@ const DictionaryCell = ({tableId, rowId, cellId, store}) => {
 Also we need to update the imports to get access to the useCell hook:
 
 ```diff-js
--const {Provider, useCreateStore} = TinyBaseUiReact;
-+const {Provider, useCell, useCreateStore} = TinyBaseUiReact;
+-import {Provider, useCreateStore} from 'tinybase/ui-react';
++import {Provider, useCell, useCreateStore} from 'tinybase/ui-react';
 ```
 
 Then we configure this component to be used for the `name` Cell in the table,

@@ -13,8 +13,8 @@ changes to the <ValuesInHtmlTable /> demo to show this new component.
 We start off by simply adding the component to the imports:
 
 ```diff-js
--const {ValuesInHtmlTable} = TinyBaseUiReactDom;
-+const {EditableValueView, ValuesInHtmlTable} = TinyBaseUiReactDom;
+-import {ValuesInHtmlTable} from 'tinybase/ui-react-dom';
++import {EditableValueView, ValuesInHtmlTable} from 'tinybase/ui-react-dom';
 ```
 
 ## Using the EditableValueView Component

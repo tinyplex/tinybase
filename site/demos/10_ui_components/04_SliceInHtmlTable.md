@@ -17,12 +17,12 @@ component instead. We'll also need the createIndexes function and
 useCreateIndexes hook:
 
 ```diff-js
--const {createStore} = TinyBase;
-+const {createIndexes, createStore} = TinyBase;
--const {Provider, useCell, useCreateStore} = TinyBaseUiReact;
-+const {Provider, useCell, useCreateIndexes, useCreateStore} = TinyBaseUiReact;
--const {TableInHtmlTable} = TinyBaseUiReactDom;
-+const {SliceInHtmlTable} = TinyBaseUiReactDom;
+-import {createStore} from 'tinybase';
++import {createIndexes, createStore} from 'tinybase';
+-import {Provider, useCell, useCreateStore} from 'tinybase/ui-react';
++import {Provider, useCell, useCreateIndexes, useCreateStore} from 'tinybase/ui-react';
+-import {TableInHtmlTable} from 'tinybase/ui-react-dom';
++import {SliceInHtmlTable} from 'tinybase/ui-react-dom';
 ```
 
 We need to define the Index we are going to use. In the main `App` component, we
