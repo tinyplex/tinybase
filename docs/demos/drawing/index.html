@@ -55,6 +55,7 @@
 <span class="keyword">import</span> <span class="punctuation">{</span>createLocalPersister<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/persisters/persister-browser'</span><span class="punctuation">;</span>
 <span class="keyword">import</span> <span class="punctuation">{</span>Inspector<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/ui-react-inspector'</span><span class="punctuation">;</span>
 <span class="keyword">import</span> <span class="punctuation">{</span>createRoot<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'react-dom/client'</span><span class="punctuation">;</span>
+<span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span><span class="punctuation">;</span>
 </code></pre><p>The drawing app relies heavily on being able to drag and drop shapes and their resizing handles. We&#x27;ll create a React hook called <code>useDraggableObject</code> that returns a <code>ref</code> that can be used to attach this behavior to component. Nothing about this is TinyBase-specific, so let&#x27;s get it out of the way first.</p><pre><code><span class="keyword">const</span> <span class="function-variable">useDraggableObject</span> <span class="operator">=</span> <span class="punctuation">(</span>
   <span class="parameter">getInitial<span class="punctuation">,</span>
   onDrag<span class="punctuation">,</span>

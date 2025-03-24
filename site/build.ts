@@ -107,9 +107,6 @@ export const build = async (
     .addJsFile('site/js/home.ts')
     .addJsFile('site/js/app.ts')
     .addJsFile('site/js/single.ts')
-    .addFile('node_modules/react/umd/react.production.min.js', 'umd')
-    .addFile('node_modules/react-dom/umd/react-dom.production.min.js', 'umd')
-    .addFile('tmp/partysocket.js', 'umd')
     .addLessFile('site/less/index.less')
     .addDir('site/fonts', 'fonts')
     .addDir('site/extras')
@@ -121,19 +118,6 @@ export const build = async (
       )}}, {}]`,
       'assets/countries.json',
     );
-
-  [
-    '',
-    '/store',
-    '/persisters/persister-browser',
-    '/persisters/persister-remote',
-    '/synchronizers/synchronizer-ws-client',
-    '/ui-react',
-    '/ui-react-dom',
-    '/ui-react-inspector',
-  ].forEach((module) =>
-    docs.addFile('dist/umd' + module + '/index.js', 'umd/tinybase/' + module),
-  );
 
   if (api) {
     addApi(docs);
