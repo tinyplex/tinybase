@@ -63,6 +63,7 @@ import {
 import {createLocalPersister} from 'tinybase/persisters/persister-browser';
 import {Inspector} from 'tinybase/ui-react-inspector';
 import {createRoot} from 'react-dom/client';
+import React from 'react';
 ```
 
 The drawing app relies heavily on being able to drag and drop shapes and their

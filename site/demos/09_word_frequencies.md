@@ -41,6 +41,7 @@ import {
 import {createIndexes, createStore} from 'tinybase';
 import {useCallback, useMemo, useState} from 'react';
 import {createRoot} from 'react-dom/client';
+import React from 'react';
 ```
 
 ## Loading The Data
