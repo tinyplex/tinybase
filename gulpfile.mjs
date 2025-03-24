@@ -135,7 +135,6 @@ const gzipFile = async (fileName) =>
   );
 
 const copyPackageFiles = async (forProd = false) => {
-  const targets = forProd ? [null, 'es6'] : [null];
   const mins = forProd ? [null, 'min'] : [null];
   const modules = forProd ? ALL_MODULES : TEST_MODULES;
   const schemas = [null, 'with-schemas'];
@@ -151,35 +150,25 @@ const copyPackageFiles = async (forProd = false) => {
 
   json.typesVersions = {'*': {}};
   json.exports = {};
-  targets.forEach((target) => {
-    mins.forEach((min) => {
-      modules.forEach((module) => {
-        schemas.forEach((withSchemas) => {
-          const path = [target, min, module, withSchemas]
-            .filter((part) => part)
-            .join('/');
-          const typesPath = ['.', '@types', module, withSchemas, 'index.d.']
-            .filter((part) => part)
-            .join('/');
-          const codePath = (path ? '/' : '') + path;
+  mins.forEach((min) => {
+    modules.forEach((module) => {
+      schemas.forEach((withSchemas) => {
+        const path = [min, module, withSchemas]
+          .filter((part) => part)
+          .join('/');
+        const typesPath = ['.', '@types', module, withSchemas, 'index.d.']
+          .filter((part) => part)
+          .join('/');
+        const codePath = (path ? '/' : '') + path;
 
-          json.typesVersions['*'][path ? path : '.'] = [typesPath + 'ts'];
+        json.typesVersions['*'][path ? path : '.'] = [typesPath + 'ts'];
 
-          json.exports['.' + codePath] = {
-            ...(forProd
-              ? {
-                  require: {
-                    types: typesPath + 'cts',
-                    default: './cjs' + codePath + '/index.cjs',
-                  },
-                }
-              : {}),
-            default: {
-              types: typesPath + 'ts',
-              default: '.' + codePath + '/index.js',
-            },
-          };
-        });
+        json.exports['.' + codePath] = {
+          default: {
+            types: typesPath + 'ts',
+            default: '.' + codePath + '/index.js',
+          },
+        };
       });
     });
   });
@@ -749,7 +738,7 @@ export const testE2e = async () => {
 export const compileAndTestE2e = series(compileForProdAndDocs, testE2e);
 
 export const testProd = async () => {
-  await execute('attw --pack dist --format table-flipped');
+  await execute('attw --pack dist --format table-flipped --profile esm-only');
   await test(['test/prod']);
 };
 export const compileAndTestProd = series(compileForProdAndDocs, testProd);
