@@ -5,6 +5,25 @@ highlighted features.
 
 ---
 
+# v6.0
+
+This major release is about updating dependencies and infrastructure rather than
+adding new features.
+
+The most notable changes for users are:
+
+- The package distribution only includes ESM packages.
+- React 19 is now expected as a peer dependency for UI components.
+
+As a result of these, there have been some knock-on effects to the project as a
+whole. For example, React 19 is used as a developer dependency for the project
+and so the test suite has been updated to use `react-testing-library` instead
+of `react-test-renderer`. The React `jsx-runtime` is used for JSX
+transformations. And the demos (and CodePen examples) have been updated to use
+an `importmap` mapping the modules to the [esm.sh](https://esm.sh/) CDN.
+
+Please let us know how these changes find you!
+
 # v5.4
 
 ## Durable Objects synchronization
