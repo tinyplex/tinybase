@@ -55,6 +55,7 @@ import {Inspector} from 'tinybase/ui-react-inspector';
 import {createRemotePersister} from 'tinybase/persisters/persister-remote';
 import {useCallback} from 'react';
 import {createRoot} from 'react-dom/client';
+import React from 'react';
 ```
 
 We also set up some string constants for showing star emojis:

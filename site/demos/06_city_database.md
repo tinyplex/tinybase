@@ -41,6 +41,7 @@ import {useMemo, useState} from 'react';
 import {Inspector} from 'tinybase/ui-react-inspector';
 import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 import {createRoot} from 'react-dom/client';
+import React from 'react';
 ```
 
 ## Initializing The Application
