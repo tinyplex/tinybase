@@ -66,49 +66,19 @@ Synchronization guides, respectively, for more details.
 
 ## Targets And Formats
 
-The complete TinyBase NPM package includes a number of different versions of
-each module, transpiled for different targets and formats. You'll find them all
-directly under the top-level of the package:
+Prior to TinyBase v6.0, the NPM package included a number of different versions of
+each module, transpiled for different targets and formats. From v6.0 onwards,
+only ESNext, ESM modules are included in the main package.
 
-- The default target is ESNext, but ES6 versions are available in `es6`
-  sub-folders.
-- The default is non-minified code, but minified versions are available in the
-  `min` folders.
-
-These options are added to the path (after `tinybase`) when you import. So for
-example, the default ESNext, non-minified ESM import of the main `tinybase` module
-would be:
+However, both non-minified and minified versions are available: the default is
+non-minified code, but minified versions are available in the top-level `min`
+folder:
 
 ```js yolo
-import {createStore} from 'tinybase';
+import {createStore} from 'tinybase'; // non-minified
+// or
+import {createStore} from 'tinybase/min'; // minified
 ```
-
-Conversely, the ES6, _minified_ ESM import of the main `tinybase` module would
-be:
-
-```js yolo
-import {createStore} from 'tinybase/es6/min';
-```
-
-...and of course `tinybase/es6` and `tinybase/min` specify non-minified ES6, and
-minified ESNext, respectively.
-
-As seen above, the default format is ESM, but CJS versions are available in
-`cjs` sub-folders. These are automatically used when you use `require` in a CJS
-environment, rather than `import` in ESM:
-
-```js yolo
-const {createStore} = require('tinybase'); // will load tinybase/cjs/index.cjs
-```
-
-You can combine target paths with this too. This will load the ES6, minified
-CJS module, for example:
-
-```js yolo
-const {createStore} = require('tinybase/es6/min');
-```
-
-...and so on.
 
 ## Indicating Schema-based Typing
 
@@ -123,31 +93,29 @@ import {createStore} from 'tinybase/with-schemas'; // NB the 'with-schemas'
 ## Putting It All Together
 
 As long as you put the optional parts of the path in the right order, you can
-access all the valid combinations of target, format, minification, sub-module
+access all the valid combinations of minification, sub-module
 and schema support. The syntax for the import (split onto different lines for
 clarity) is:
 
 ```sh yolo
 tinybase
-  [ /es6 ]
-    [ /min ]
-      [ /store | /metrics | /queries | ... ]
-        [ /with-schemas ]
+  [ /min ]
+    [ /store | /metrics | /queries | ... ]
+      [ /with-schemas ]
 ```
 
 For example, this is a non-exhaustive list of options that are all valid:
 
-| Import                                                   | Format | Target | Minified | Sub-module | With schemas |
-| -------------------------------------------------------- | ------ | ------ | -------- | ---------- | ------------ |
-| `import {...} from 'tinybase';`                          | esm    | esnext | no       |            | no           |
-| `import {...} from 'tinybase/with-schemas';`             | esm    | esnext | no       |            | yes          |
-| `import {...} from 'tinybase/min';`                      | esm    | esnext | yes      |            | no           |
-| `import {...} from 'tinybase/es6';`                      | esm    | es6    | no       |            | no           |
-| `import {...} from 'tinybase/es6/store'`                 | esm    | es6    | no       | store      | no           |
-| `import {...} from 'tinybase/es6/metrics/with-schemas';` | esm    | es6    | no       | metrics    | yes          |
-| `const {...} = require('tinybase');`                     | cjs    | esnext | no       |            | no           |
-| `const {...} = require('tinybase/min/ui-react');`        | cjs    | esnext | yes      | ui-react   | no           |
-| ...                                                      |        |        |          |            |              |
+| Import                                                | Minified | Sub-module | With schemas |
+| ----------------------------------------------------- | -------- | ---------- | ------------ |
+| `import {...} from 'tinybase';`                       | no       |            | no           |
+| `import {...} from 'tinybase/with-schemas';`          | no       |            | yes          |
+| `import {...} from 'tinybase/min';`                   | yes      |            | no           |
+| `import {...} from 'tinybase/store/with-schemas'`     | no       | store      | no           |
+| `import {...} from 'tinybase/min/store/with-schemas'` | yes      | store      | yes          |
+| ...                                                   |          |            |              |
+
+If all else fails, take a look into the package folder and see what's what!
 
 ## React Native
 
@@ -176,36 +144,6 @@ issue](https://github.com/import-js/eslint-plugin-import/issues/1810) with the
 `no-unresolved` ESlint rule whereby it does not understand the `exports` section
 of the TinyBase `package.json`. You may wish to disable that rule if you are
 getting false positives using TinyBase submodules.
-
-## UMD Modules
-
-Finally, UMD versions are available in `umd` sub-folders. The `umd` files are
-designed to be linked to in classic-style web pages, rather than `import`ed or
-`require`d.
-
-It will be typical to use the minified versions of these in production:
-
-```html
-<script src="https://unpkg.com/tinybase/umd/min/index.js"></script>
-```
-
-But again, there are ES6 and non-minified versions of those too, such as:
-
-```html
-<script src="https://unpkg.com/tinybase/umd/es6/index.js"></script>
-```
-
-When using UMD, you can access the members of these modules using global
-constants that start with the name TinyBase. For example:
-
-```js yolo
-const {createStore} = TinyBase;
-const {Provider, useCell, useCreateStore} = TinyBaseUiReact;
-const {TableInHtmlTable} = TinyBaseUiReactDom;
-const {Inspector} = TinyBaseUiReactInspector;
-```
-
-If all else fails, take a look into the package folder and see what's what!
 
 ## Enough!
 

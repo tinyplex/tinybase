@@ -11,19 +11,10 @@ the data during development.
 
 ## Usage
 
-The component is available in the ui-react-inspector module. Since it depends on
-it, this should be loaded after the ui-react module in your web app.
-
-```html
-<!-- ... -->
-<script src="/umd/tinybase/ui-react/index.js"></script>
-<script src="/umd/tinybase/ui-react-inspector/index.js"></script>
-<!-- ... -->
-```
-
-Simply add the component inside a Provider component (which is providing the
-Store context for the app that you want to be inspected). In total, the
-boilerplate will look something like this:
+The component is available in the ui-react-inspector module. Simply add the
+component inside a Provider component (which is providing the Store context for
+the app that you want to be inspected). In total, the boilerplate will look
+something like this:
 
 ```jsx yolo
 const {Provider, useCreateStore} = TinyBaseUiReact;
