@@ -2,7 +2,7 @@
 
 <section id="hero">
   <h2>
-    The <em>reactive</em> data store for <span>local-first apps</span>.
+    A <em>reactive</em> data store <span>& <em>sync</em> engine</span>.
   </h2>
 </section>
 
