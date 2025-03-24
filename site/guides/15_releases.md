@@ -14,6 +14,7 @@ The most notable changes for users are:
 
 - The package distribution only includes ESM packages.
 - React 19 is now expected as a peer dependency for UI components.
+- The tools module and TinyBase CLI have been removed.
 
 As a result of these, there have been some knock-on effects to the project as a
 whole. For example, React 19 is used as a developer dependency for the project
@@ -1232,6 +1233,8 @@ method removes both types of schema.
 ---
 
 # v2.2
+
+Note: The tools module has been removed in TinyBase v6.0.
 
 This release includes a new tools module. These tools are not intended for
 production use, but are instead to be used as part of your engineering workflow
