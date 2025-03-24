@@ -141,6 +141,7 @@ const copyPackageFiles = async (forProd = false) => {
   const json = JSON.parse(await promises.readFile('package.json', UTF8));
   delete json.private;
   delete json.scripts;
+  delete json.devEngines;
   delete json.devDependencies;
 
   json.main = './index.js';

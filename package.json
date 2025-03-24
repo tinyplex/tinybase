@@ -132,6 +132,18 @@
     "prePublishPackage": "gulp prePublishPackage",
     "publishPackage": "gulp publishPackage"
   },
+  "devEngines": {
+    "runtime": {
+      "name": "bun",
+      "version": ">=1.2.5",
+      "onFail": "warn"
+    },
+    "packageManager": {
+      "name": "bun",
+      "version": ">=1.2.5",
+      "onFail": "warn"
+    }
+  },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.4",
     "@automerge/automerge-repo": "^1.2.1",
