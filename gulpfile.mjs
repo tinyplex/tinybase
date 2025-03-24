@@ -1,6 +1,6 @@
 // All other imports are lazy so that single tasks start up fast.
 import {basename, dirname, join, resolve} from 'path';
-import {existsSync, promises, readFileSync, readdirSync} from 'fs';
+import {existsSync, promises, readdirSync} from 'fs';
 import gulp from 'gulp';
 import {gzipSync} from 'zlib';
 
@@ -744,35 +744,8 @@ export const testProd = async () => {
 export const compileAndTestProd = series(compileForProdAndDocs, testProd);
 
 export const serveDocs = async () => {
-  const {createServer} = await import('http-server');
-  const {default: replace} = await import('buffer-replace');
-  createServer({
-    root: DOCS_DIR,
-    cache: -1,
-    gzip: true,
-    // eslint-disable-next-line no-console
-    logFn: (req) => console.log(req.url),
-    before: [
-      (req, res) => {
-        if (req.url.startsWith('/pseudo.esm.sh/')) {
-          res.setHeader('Content-Type', 'application/javascript');
-          res.write(readFileSync(DOCS_DIR + req.url + '/index.js', UTF8));
-          return res.end();
-        }
-        res._write = res.write;
-        res.write = (buffer) => {
-          res._write(
-            replace(
-              replace(buffer, 'https://tinybase.org/', '                    /'),
-              'https://esm.sh/tinybase',
-              '/pseudo.esm.sh/tinybase',
-            ),
-          );
-        };
-        res.emit('next');
-      },
-    ],
-  }).listen('8080', '0.0.0.0');
+  const {createTestServer} = await import('./test/server.mjs');
+  createTestServer(DOCS_DIR, '8080');
 };
 
 export const preCommit = series(
