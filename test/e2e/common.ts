@@ -2,8 +2,8 @@ import 'expect-puppeteer';
 import 'jest-puppeteer';
 import {ElementHandle} from 'puppeteer';
 import {Server} from 'http';
-import {createServer} from 'http-server';
-import replace from 'buffer-replace';
+// @ts-expect-error - no types for shared server
+import {createTestServer} from '../server.mjs';
 
 jest.setTimeout(10000);
 
@@ -12,26 +12,12 @@ let browserWarmed = false;
 export const getServerFunctions = (
   port: number,
 ): [() => void, () => void, (path: string) => Promise<void>] => {
-  const ADDRESS = '0.0.0.0';
-  const DOMAIN = `http://${ADDRESS}:${port}`;
+  const DOMAIN = `http://0.0.0.0:${port}`;
 
   let server: Server;
 
-  const removeDomain = (_: any, res: any) => {
-    res._write = res.write;
-    res.write = (buffer: any) =>
-      res._write(replace(buffer, 'https://tinybase.org/', '/'.padStart(21)));
-    res.emit('next');
-  };
-
   const startServer = () => {
-    server = createServer({
-      root: 'docs',
-      cache: -1,
-      gzip: true,
-      before: [removeDomain],
-    });
-    server.listen(port, ADDRESS);
+    server = createTestServer('docs', port, false);
   };
 
   const stopServer = () => {
