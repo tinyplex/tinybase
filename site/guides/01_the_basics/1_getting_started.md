@@ -57,19 +57,20 @@ Instructions are available in the README of each:
 
 ## TinyBase in a browser
 
-Another simple way to get started with TinyBase is to include it as a minified
-UMD script from a CDN in a web page. Create a file called `index.html`, for
-example:
+Another simple way to get started with TinyBase is to include it from a CDN in a
+web page. Create a file called `index.html`, for example:
 
 ```html
 <html>
   <head>
     <title>My First TinyBase App</title>
-    <script src="https://unpkg.com/tinybase/umd/min/index.js"></script>
-    <script>
-      addEventListener('load', () => {
-        const {createStore} = TinyBase;
+    <script type="importmap">
+      {"imports": {"tinybase": "https://esm.sh/tinybase@"}}
+    </script>
+    <script type="module">
+      import {createStore} from 'tinybase';
 
+      addEventListener('load', () => {
         const store = createStore();
         store.setValue('v1', 'Hello');
         store.setCell('t1', 'r1', 'c1', 'World');
@@ -86,9 +87,8 @@ example:
 Open this file in your browser and you should see the words 'Hello World' on the
 screen, each having been written to, and read from, a Store.
 
-Note that the UMD script is pulled from NPM by the [unpkg](https://unpkg.com)
-service. The script provides a global object from which you can destructure the
-top-level functions of the API.
+Note that the TinyBase module is pulled in from esm.sh, and the `importmap`
+allows you to use a regular import statement in the main script section.
 
 ## TinyBase in a Node application
 
