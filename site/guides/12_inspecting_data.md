@@ -1,9 +1,8 @@
 # Inspecting Data
 
-TinyBase v4.1 includes the ui-react-dom module, with a collection of user
-interface components for rendering Store data in your app. It also contains a
-web-based inspector, the Inspector component, that allows you to reason about
-the data during development.
+If you are using TinyBase with React, you can use its web-based inspector, the
+Inspector component, that allows you to reason about the data during
+development.
 
 ![Inspector](/store-inspector.webp 'Inspector')
 

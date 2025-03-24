@@ -10,7 +10,6 @@ const TEST_MODULES = [
   'ui-react',
   'ui-react-dom',
   'ui-react-inspector',
-  'tools',
   'persisters',
   'persisters/persister-automerge',
   'persisters/persister-browser',
@@ -144,7 +143,6 @@ const copyPackageFiles = async (forProd = false) => {
   delete json.scripts;
   delete json.devDependencies;
 
-  json.bin = {tinybase: './cli/index.js'};
   json.main = './index.js';
   json.types = './@types/index.d.ts';
 
@@ -432,12 +430,7 @@ const tsCheck = async (dir) => {
   }
 };
 
-const compileModule = async (
-  module,
-  dir = DIST_DIR,
-  min = false,
-  cli = false,
-) => {
+const compileModule = async (module, dir = DIST_DIR, min = false) => {
   const {default: esbuild} = await import('rollup-plugin-esbuild');
   const {rollup} = await import('rollup');
   const {default: replace} = await import('@rollup/plugin-replace');
@@ -467,7 +460,6 @@ const compileModule = async (
       'url',
       'yjs',
       'tinybase/store',
-      'tinybase/tools',
       '../ui-react',
     ],
     input: inputFile,
@@ -481,12 +473,6 @@ const compileModule = async (
         '/*!': '\n/*',
         delimiters: ['', ''],
         preventAssignment: true,
-        ...(cli
-          ? {
-              '../store/index.ts': 'tinybase/store',
-              '../tools/index.ts': 'tinybase/tools',
-            }
-          : {}),
         '../ui-react/index.ts': '../ui-react',
       }),
       shebang(),
@@ -497,9 +483,6 @@ const compileModule = async (
             compress: {
               unsafe: true,
               passes: 3,
-              ...(module == 'tools'
-                ? {reduce_vars: false, reduce_funcs: false}
-                : {}),
             },
           })
         : prettierPlugin(await getPrettierConfig()),
@@ -527,17 +510,17 @@ const compileModule = async (
   // kill me now
   const outputFile = join(moduleDir, index);
   const outputFiles = [outputFile];
-  if (!cli) {
-    const outputFileWithSchemas = await ensureDir(
-      join(moduleDir, 'with-schemas', index),
-    );
-    outputFiles.push(outputFileWithSchemas);
-    await copyWithReplace(
-      outputFile,
-      ['../ui-react', '../../ui-react/with-schemas/' + index],
-      outputFileWithSchemas,
-    );
-  }
+
+  const outputFileWithSchemas = await ensureDir(
+    join(moduleDir, 'with-schemas', index),
+  );
+  outputFiles.push(outputFileWithSchemas);
+  await copyWithReplace(
+    outputFile,
+    ['../ui-react', '../../ui-react/with-schemas/' + index],
+    outputFileWithSchemas,
+  );
+
   await copyWithReplace(
     outputFile,
     ['../ui-react', '../ui-react/' + index],
@@ -627,9 +610,6 @@ const compileModulesForProd = async () => {
     await compileModule(module, `${DIST_DIR}/`);
     await compileModule(module, `${DIST_DIR}/min`, true);
   });
-
-  await compileModule('cli', DIST_DIR, false, true);
-  await execute(`chmod +x ${DIST_DIR}/cli/index.js`);
 };
 
 const compileDocsAndAssets = async (api = true, pages = true) => {

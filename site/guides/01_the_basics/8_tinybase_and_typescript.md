@@ -1,6 +1,6 @@
 # TinyBase And TypeScript
 
-This guide summarizes the three different levels of TypeScript coverage you can
+This guide summarizes the two different levels of TypeScript coverage you can
 use with TinyBase.
 
 ## 1. Basic Type Support
@@ -50,47 +50,6 @@ errors can be fairly verbose and confusing when you only need the basic type
 support.)
 
 Read more about this technique in the Schema-Based Typing guide.
-
-## 3. ORM-like type definitions
-
-If you prefer a more descriptive way to manage your API, you can build
-definitions from a schema ahead of time, in an ORM-like fashion. In this
-example, a schema is inferred from the data, and TypeScript (`.d.ts`)
-definitions and (`.ts`) implementations are emitted that you can check in to
-your application's code base:
-
-```js
-import {createStore} from 'tinybase';
-import {createTools} from 'tinybase/tools';
-
-const store = createStore().setTable('pets', {
-  fido: {species: 'dog'},
-  felix: {species: 'cat'},
-  cujo: {species: 'dog'},
-});
-
-const tools = createTools(store);
-const [dTs, ts, uiReactDTs, uiReactTsx] = tools.getStoreApi('shop');
-```
-
-This will produce a file containing the types for your wrapped Store, for
-example, which are all typed according to the schema:
-
-```ts yolo
-//...
-/**
- * Represents the 'pets' Table.
- */
-export type PetsTable = {[rowId: Id]: PetsRow};
-
-/**
- * Represents a Row when getting the content of the 'pets' Table.
- */
-export type PetsRow = {species: string};
-//...
-```
-
-Read more about this approach in the Generating APIs guide.
 
 ## Summary
 

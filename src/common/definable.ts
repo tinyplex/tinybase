@@ -28,7 +28,6 @@ import type {Indexes} from '../@types/indexes/index.d.ts';
 import type {Metrics} from '../@types/metrics/index.d.ts';
 import type {Queries} from '../@types/queries/index.d.ts';
 import type {Relationships} from '../@types/relationships/index.d.ts';
-import type {Tools} from '../@types/tools/index.d.ts';
 
 type OnChangedDecl<RowValue> = (
   change: () => void,
@@ -252,17 +251,11 @@ export const getRowCellFunction = <RowValue>(
 ): ((getCell: GetCell, rowId: Id) => RowValue) =>
   isString(getRowCell)
     ? (getCell: GetCell): RowValue => getCell(getRowCell) as any as RowValue
-    : getRowCell ??
-      ((): RowValue => defaultCellValue ?? (EMPTY_STRING as any as RowValue));
+    : (getRowCell ??
+      ((): RowValue => defaultCellValue ?? (EMPTY_STRING as any as RowValue)));
 
 export const getCreateFunction = <
-  Thing extends
-    | Metrics
-    | Indexes
-    | Relationships
-    | Checkpoints
-    | Queries
-    | Tools,
+  Thing extends Metrics | Indexes | Relationships | Checkpoints | Queries,
 >(
   getFunction: (store: Store) => Thing,
   initFunction?: (thing: Thing) => void,

@@ -23,7 +23,6 @@ import * as TinyBaseSynchronizerWsClient from 'tinybase/synchronizers/synchroniz
 import * as TinyBaseSynchronizerWsServer from 'tinybase/synchronizers/synchronizer-ws-server';
 import * as TinyBaseSynchronizerWsServerSimple from 'tinybase/synchronizers/synchronizer-ws-server-simple';
 import * as TinyBaseSynchronizers from 'tinybase/synchronizers';
-import * as TinyBaseTools from 'tinybase/tools';
 import * as TinyBaseUiReact from 'tinybase/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
 import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
@@ -83,7 +82,6 @@ import {transformSync} from 'esbuild';
     TinyBaseSynchronizerWsServerSimple,
   'tinybase/synchronizers/synchronizer-broadcast-channel':
     TinyBaseSynchronizerBroadcastChannel,
-  'tinybase/tools': TinyBaseTools,
   'tinybase/ui-react-inspector': TinyBaseUiReactInspector,
   ws,
   yjs,

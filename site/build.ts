@@ -46,7 +46,6 @@ const REFLECTIONS = [
   /^persister/,
   'synchronizers',
   /^synchronizer/,
-  'tools',
   '/^ui-react/',
   /^TablesProps/,
   /^TableProps/,
@@ -228,7 +227,6 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile(
       'dist/@types/synchronizers/synchronizer-broadcast-channel/index.d.ts',
     )
-    .addApiFile('dist/@types/tools/index.d.ts')
     .addApiFile('dist/@types/ui-react/index.d.ts')
     .addApiFile('dist/@types/ui-react-dom/index.d.ts')
     .addApiFile('dist/@types/ui-react-inspector/index.d.ts');

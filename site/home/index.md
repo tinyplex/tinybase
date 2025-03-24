@@ -315,7 +315,8 @@ root.unmount(); // !act
 > By default, a Store can contain any arbitrary Value, and a Row can contain any
 > arbitrary Cell. But you can add a ValuesSchema or a TablesSchema to a Store to
 > ensure that the values are always what you expect: constraining their types,
-> and providing defaults.
+> and providing defaults. There are even TypeScript definitions that infer API
+> types from the data schemas you apply.
 >
 > In this example, we set a new Row without the `sold` Cell in it. The schema
 > ensures it's present with default of `false`.
@@ -612,34 +613,6 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 checkpoints.goBackward();
 console.log(store.getCell('pets', 'felix', 'sold'));
 // -> false
-```
-
-> ## Type definitions &amp; ORM-like APIs
->
-> TinyBase has comprehensive type definitions, and even offers definitions that
-> infer API types from the data schemas you apply.
->
-> Furthermore, you can easily create TypeScript `.d.ts` definitions that model
-> your data and encourage type-safety when reading and writing data - as well as
-> `.ts` implementations that provide ORM-like methods for your named tables.
->
-> Read more about type support in the TinyBase And TypeScript guide.
-
-```js yolo
-const tools = createTools(store);
-const [dTs, ts] = tools.getStoreApi('shop');
-
-// -- shop.d.ts --
-/* Represents the 'pets' Table. */
-export type PetsTable = {[rowId: Id]: PetsRow};
-/* Represents a Row when getting the content of the 'pets' Table. */
-export type PetsRow = {species: string /* ... */};
-//...
-
-// -- shop.ts --
-export const createShop: typeof createShopDecl = () => {
-  //...
-};
 ```
 
 > ## Did we say tiny?
