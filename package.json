@@ -1,13 +1,14 @@
 {
   "name": "tinybase",
-  "version": "6.0.0-beta.0",
+  "version": "6.0.0-beta.1",
   "author": "jamesgpearce",
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
   "homepage": "https://tinybase.org",
-  "description": "The reactive data store for local-first apps.",
+  "description": "A reactive data store and sync engine.",
   "keywords": [
     "tiny",
+    "sync engine",
     "local-first",
     "reactive",
     "state",
