@@ -87,7 +87,6 @@
     "quotes": [2, "single", {"allowTemplateLiterals": true}],
     "semi": [2, "always"],
     "sort-keys": 0,
-    "sort-imports": 2,
     "jest/expect-expect": [2, {"assertFunctionNames": ["expect*"]}],
     "no-multiple-empty-lines": [2, {"max": 1}],
     "react/function-component-definition": [

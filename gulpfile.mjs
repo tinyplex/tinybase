@@ -1,7 +1,7 @@
 // All other imports are lazy so that single tasks start up fast.
-import {basename, dirname, join, resolve} from 'path';
 import {existsSync, promises, readdirSync} from 'fs';
 import gulp from 'gulp';
+import {basename, dirname, join, resolve} from 'path';
 import {gzipSync} from 'zlib';
 
 const UTF8 = 'utf-8';
@@ -295,6 +295,22 @@ const execute = async (cmd) => {
 };
 
 const lintCheckFiles = async (dir) => {
+  const {default: prettier} = await import('prettier');
+  const prettierConfig = await getPrettierConfig();
+
+  const filePaths = [];
+  ['.js', '.d.ts'].forEach((extension) =>
+    forEachDeepFile(dir, (filePath) => filePaths.push(filePath), extension),
+  );
+  await allOf(filePaths, async (filePath) => {
+    const code = await promises.readFile(filePath, UTF8);
+    if (
+      !(await prettier.check(code, {...prettierConfig, filepath: filePath}))
+    ) {
+      throw `${filePath} not pretty`;
+    }
+  });
+
   const {
     default: {ESLint},
   } = await import('eslint');
@@ -660,7 +676,11 @@ export const compileForTest = async () => {
   });
 };
 
-export const lintFiles = async () => await lintCheckFiles('.');
+export const lintFiles = async () => {
+  await lintCheckFiles('src');
+  await lintCheckFiles('test');
+  await lintCheckFiles('site');
+};
 export const lintDocs = async () => await lintCheckDocs('src');
 export const lint = parallel(lintFiles, lintDocs);
 

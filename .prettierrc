@@ -1,5 +1,9 @@
 {
   "bracketSpacing": false,
   "singleQuote": true,
-  "trailingComma": "all"
+  "trailingComma": "all",
+  "plugins": [
+    "@trivago/prettier-plugin-sort-imports"
+  ],
+  "importOrderSortSpecifiers": true
 }

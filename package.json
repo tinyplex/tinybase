@@ -167,6 +167,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
     "@types/asciichart": "^1.5.8",
     "@types/expect-puppeteer": "^5.0.6",
     "@types/http-server": "^0.12.4",
