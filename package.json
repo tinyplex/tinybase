@@ -216,6 +216,7 @@
     "partysocket": "^1.1.2",
     "postgres": "^3.4.5",
     "prettier": "^3.5.3",
+    "prettier-plugin-organize-imports": "^4.1.0",
     "puppeteer": "^24.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
