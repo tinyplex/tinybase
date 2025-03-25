@@ -3,7 +3,6 @@ import {createQueries, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
 import {QueriesListener} from '../../common/types.ts';
 import {createQueriesListener} from '../../common/listeners.ts';
-import {jest} from '@jest/globals';
 
 let store: Store;
 let queries: Queries;
