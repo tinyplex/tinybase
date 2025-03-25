@@ -62,64 +62,78 @@ beforeEach(() => {
 
 describe('TableInHtmlTable', () => {
   test('basic', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <TableInHtmlTable store={store} tableId="t2" />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('editable', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <TableInHtmlTable store={store} tableId="t2" editable={true} />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('className', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <TableInHtmlTable store={store} tableId="t2" className="table" />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('idColumn', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <TableInHtmlTable store={store} tableId="t2" idColumn={false} />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('headerRow', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <TableInHtmlTable store={store} tableId="t2" headerRow={false} />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells array', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <TableInHtmlTable
         store={store}
         tableId="t2"
         customCells={['c3', 'c2']}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells labels', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <TableInHtmlTable
         store={store}
         tableId="t2"
         customCells={{c3: 'C3', c2: 'C2'}}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells objects', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <TableInHtmlTable
         store={store}
         tableId="t2"
@@ -136,13 +150,15 @@ describe('TableInHtmlTable', () => {
         }}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 });
 
 describe('SortedTableInHtmlTable', () => {
   test('basic', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTableInHtmlTable
         store={store}
         tableId="t2"
@@ -150,11 +166,13 @@ describe('SortedTableInHtmlTable', () => {
         descending={true}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('editable', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTableInHtmlTable
         store={store}
         tableId="t2"
@@ -163,11 +181,13 @@ describe('SortedTableInHtmlTable', () => {
         editable={true}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('paginator, larger', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTableInHtmlTable
         store={store}
         tableId="t2"
@@ -176,11 +196,13 @@ describe('SortedTableInHtmlTable', () => {
         paginator={true}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('paginator, smaller', () => {
-    const {baseElement, getAllByRole} = render(
+    const {container, getAllByRole, unmount} = render(
       <SortedTableInHtmlTable
         store={store}
         tableId="t2"
@@ -190,13 +212,15 @@ describe('SortedTableInHtmlTable', () => {
         paginator={true}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('button')[0]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('paginator, custom', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTableInHtmlTable
         store={store}
         tableId="t2"
@@ -206,18 +230,22 @@ describe('SortedTableInHtmlTable', () => {
         paginator={Custom}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('no sorting specified', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTableInHtmlTable store={store} tableId="t2" />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('className', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTableInHtmlTable
         store={store}
         tableId="t2"
@@ -226,11 +254,13 @@ describe('SortedTableInHtmlTable', () => {
         className="table"
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('idColumn', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTableInHtmlTable
         store={store}
         tableId="t2"
@@ -239,11 +269,13 @@ describe('SortedTableInHtmlTable', () => {
         idColumn={false}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('headerRow', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTableInHtmlTable
         store={store}
         tableId="t2"
@@ -252,11 +284,13 @@ describe('SortedTableInHtmlTable', () => {
         headerRow={false}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells array', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTableInHtmlTable
         store={store}
         tableId="t2"
@@ -265,11 +299,13 @@ describe('SortedTableInHtmlTable', () => {
         customCells={['c3', 'c2']}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells labels', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTableInHtmlTable
         store={store}
         tableId="t2"
@@ -278,11 +314,13 @@ describe('SortedTableInHtmlTable', () => {
         customCells={{c3: 'C3', c2: 'C2'}}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells objects', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTableInHtmlTable
         store={store}
         tableId="t2"
@@ -301,11 +339,13 @@ describe('SortedTableInHtmlTable', () => {
         }}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('sortOnClick', () => {
-    const {baseElement, getAllByRole} = render(
+    const {container, getAllByRole, unmount} = render(
       <SortedTableInHtmlTable
         store={store}
         tableId="t2"
@@ -314,69 +354,83 @@ describe('SortedTableInHtmlTable', () => {
         sortOnClick={true}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('columnheader')[1]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('columnheader')[2]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('columnheader')[2]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('columnheader')[0]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('columnheader')[0]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 });
 
 describe('ValuesInHtmlTable', () => {
   test('basic', () => {
-    const {baseElement} = render(<ValuesInHtmlTable store={store} />);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    const {container, unmount} = render(<ValuesInHtmlTable store={store} />);
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('editable', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ValuesInHtmlTable store={store} editable={true} />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('custom', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ValuesInHtmlTable
         store={store}
         valueComponent={Custom}
         getValueComponentProps={getIdsAsProp}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('className', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ValuesInHtmlTable store={store} className="values" />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('idColumn', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ValuesInHtmlTable store={store} idColumn={false} />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 });
 
 describe('SliceInHtmlTable', () => {
   test('basic', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SliceInHtmlTable indexes={indexes} indexId="i1" sliceId="2" />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('editable', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SliceInHtmlTable
         indexes={indexes}
         indexId="i1"
@@ -384,11 +438,13 @@ describe('SliceInHtmlTable', () => {
         editable={true}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('className', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SliceInHtmlTable
         indexes={indexes}
         indexId="i1"
@@ -396,11 +452,13 @@ describe('SliceInHtmlTable', () => {
         className="slice"
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('idColumn', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SliceInHtmlTable
         indexes={indexes}
         indexId="i1"
@@ -408,11 +466,13 @@ describe('SliceInHtmlTable', () => {
         idColumn={false}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('headerRow', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SliceInHtmlTable
         indexes={indexes}
         indexId="i1"
@@ -420,11 +480,13 @@ describe('SliceInHtmlTable', () => {
         headerRow={false}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells array', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SliceInHtmlTable
         indexes={indexes}
         indexId="i1"
@@ -432,11 +494,13 @@ describe('SliceInHtmlTable', () => {
         customCells={['c3', 'c1']}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells labels', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SliceInHtmlTable
         indexes={indexes}
         indexId="i1"
@@ -444,11 +508,13 @@ describe('SliceInHtmlTable', () => {
         customCells={{c3: 'C3', c1: 'C1'}}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells objects', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SliceInHtmlTable
         indexes={indexes}
         indexId="i1"
@@ -466,78 +532,92 @@ describe('SliceInHtmlTable', () => {
         }}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 });
 
 describe('RelationshipInHtmlTable', () => {
   test('basic', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <RelationshipInHtmlTable
         relationships={relationships}
         relationshipId="r1"
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('editable', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <RelationshipInHtmlTable
         relationships={relationships}
         relationshipId="r1"
         editable={true}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('className', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <RelationshipInHtmlTable
         relationships={relationships}
         relationshipId="r1"
         className="slice"
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('idColumn', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <RelationshipInHtmlTable
         relationships={relationships}
         relationshipId="r1"
         idColumn={false}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('headerRow', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <RelationshipInHtmlTable
         relationships={relationships}
         relationshipId="r1"
         headerRow={false}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells array', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <RelationshipInHtmlTable
         relationships={relationships}
         relationshipId="r1"
         customCells={['t1.c1', 't1.c3', 't2.c2', 't2.c1']}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells labels', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <RelationshipInHtmlTable
         relationships={relationships}
         relationshipId="r1"
@@ -549,11 +629,13 @@ describe('RelationshipInHtmlTable', () => {
         }}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells objects', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <RelationshipInHtmlTable
         relationships={relationships}
         relationshipId="r1"
@@ -570,75 +652,89 @@ describe('RelationshipInHtmlTable', () => {
         }}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 });
 
 describe('ResultTableInHtmlTable', () => {
   test('basic', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultTableInHtmlTable queries={queries} queryId="q1" />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('className', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultTableInHtmlTable
         queries={queries}
         queryId="q1"
         className="table"
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('idColumn', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultTableInHtmlTable
         queries={queries}
         queryId="q1"
         idColumn={false}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('headerRow', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultTableInHtmlTable
         queries={queries}
         queryId="q1"
         headerRow={false}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells array', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultTableInHtmlTable
         queries={queries}
         queryId="q1"
         customCells={['c3', 'c2']}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells labels', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultTableInHtmlTable
         queries={queries}
         queryId="q1"
         customCells={{c3: 'C3', c2: 'C2'}}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells objects', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultTableInHtmlTable
         queries={queries}
         queryId="q1"
@@ -655,13 +751,15 @@ describe('ResultTableInHtmlTable', () => {
         }}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 });
 
 describe('ResultSortedTableInHtmlTable', () => {
   test('basic', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultSortedTableInHtmlTable
         queries={queries}
         queryId="q1"
@@ -669,11 +767,13 @@ describe('ResultSortedTableInHtmlTable', () => {
         descending={true}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('paginator, larger', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultSortedTableInHtmlTable
         queries={queries}
         queryId="q1"
@@ -682,11 +782,13 @@ describe('ResultSortedTableInHtmlTable', () => {
         paginator={true}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('paginator, smaller', () => {
-    const {baseElement, getAllByRole} = render(
+    const {container, getAllByRole, unmount} = render(
       <ResultSortedTableInHtmlTable
         queries={queries}
         queryId="q1"
@@ -696,13 +798,15 @@ describe('ResultSortedTableInHtmlTable', () => {
         paginator={true}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('button')[0]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('paginator, custom', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultSortedTableInHtmlTable
         queries={queries}
         queryId="q1"
@@ -712,18 +816,22 @@ describe('ResultSortedTableInHtmlTable', () => {
         paginator={Custom}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('no sorting specified', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultSortedTableInHtmlTable queries={queries} queryId="q1" />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('className', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultSortedTableInHtmlTable
         queries={queries}
         queryId="q1"
@@ -732,11 +840,13 @@ describe('ResultSortedTableInHtmlTable', () => {
         className="table"
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('idColumn', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultSortedTableInHtmlTable
         queries={queries}
         queryId="q1"
@@ -745,11 +855,13 @@ describe('ResultSortedTableInHtmlTable', () => {
         idColumn={false}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('headerRow', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultSortedTableInHtmlTable
         queries={queries}
         queryId="q1"
@@ -758,11 +870,13 @@ describe('ResultSortedTableInHtmlTable', () => {
         headerRow={false}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells array', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultSortedTableInHtmlTable
         queries={queries}
         queryId="q1"
@@ -771,11 +885,13 @@ describe('ResultSortedTableInHtmlTable', () => {
         customCells={['c3', 'c2']}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells labels', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultSortedTableInHtmlTable
         queries={queries}
         queryId="q1"
@@ -784,11 +900,13 @@ describe('ResultSortedTableInHtmlTable', () => {
         customCells={{c3: 'C3', c2: 'C2'}}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('customCells objects', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <ResultSortedTableInHtmlTable
         queries={queries}
         queryId="q1"
@@ -807,11 +925,13 @@ describe('ResultSortedTableInHtmlTable', () => {
         }}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('sortOnClick', () => {
-    const {baseElement, getAllByRole} = render(
+    const {container, getAllByRole, unmount} = render(
       <ResultSortedTableInHtmlTable
         queries={queries}
         queryId="q1"
@@ -820,30 +940,34 @@ describe('ResultSortedTableInHtmlTable', () => {
         sortOnClick={true}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('columnheader')[1]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('columnheader')[2]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('columnheader')[2]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('columnheader')[0]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('columnheader')[0]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 });
 
 describe('EditableCellView', () => {
   test('basic', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <EditableCellView store={store} tableId="t1" rowId="r1" cellId="c1" />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('className', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <EditableCellView
         store={store}
         tableId="t1"
@@ -852,11 +976,13 @@ describe('EditableCellView', () => {
         className="e"
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('showType', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <EditableCellView
         store={store}
         tableId="t1"
@@ -865,181 +991,197 @@ describe('EditableCellView', () => {
         showType={false}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('change type and Cell', () => {
-    const {baseElement, getAllByRole} = render(
+    const {container, getAllByRole, unmount} = render(
       <EditableCellView store={store} tableId="t1" rowId="r1" cellId="c1" />,
     );
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.change(getAllByRole('spinbutton')[0], {target: {value: '2'}});
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 2}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('button')[0]);
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: true}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
 
     fireEvent.click(getAllByRole('checkbox')[0]);
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: false}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('button')[0]);
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: '1'}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.change(getAllByRole('textbox')[0], {target: {value: 'two'}});
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 'two'}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('button')[0]);
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 2}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     act(() => store.setCell('t1', 'r1', 'c1', 3));
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 3}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     act(() => store.setCell('t1', 'r1', 'c1', true));
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: true}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     act(() => store.setCell('t1', 'r1', 'c1', 'three'));
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 'three'}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 });
 
 describe('EditableValueView', () => {
   test('basic', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <EditableValueView store={store} valueId="v1" />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('className', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <EditableValueView valueId="v1" className="e" />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('showType', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <EditableValueView valueId="v1" showType={false} />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('change type and Value', () => {
-    const {baseElement, getAllByRole} = render(
+    const {container, getAllByRole, unmount} = render(
       <EditableValueView store={store} valueId="v1" />,
     );
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.change(getAllByRole('spinbutton')[0], {target: {value: 2}});
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 2, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('button')[0]);
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: true, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('checkbox')[0]);
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: false, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('button')[0]);
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: '1', v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.change(getAllByRole('textbox')[0], {target: {value: 'two'}});
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 'two', v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('button')[0]);
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 2, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     act(() => store.setValue('v1', 3));
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 3, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     act(() => store.setValue('v1', true));
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: true, v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
     act(() => store.setValue('v1', 'three'));
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 'three', v2: 2},
     ]);
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 });
 
 describe('SortedTablePaginator', () => {
   test('basic', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTablePaginator onChange={nullEvent} total={100} />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('limit', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTablePaginator onChange={nullEvent} total={100} limit={10} />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('limit & offset', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTablePaginator
         onChange={nullEvent}
         total={100}
@@ -1047,18 +1189,22 @@ describe('SortedTablePaginator', () => {
         offset={5}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('limit larger than size', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTablePaginator onChange={nullEvent} total={100} limit={120} />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('offset larger than size', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTablePaginator
         onChange={nullEvent}
         total={100}
@@ -1066,11 +1212,13 @@ describe('SortedTablePaginator', () => {
         limit={10}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 
   test('offset smaller than 0', () => {
-    const {baseElement} = render(
+    const {container, unmount} = render(
       <SortedTablePaginator
         onChange={nullEvent}
         total={100}
@@ -1078,6 +1226,8 @@ describe('SortedTablePaginator', () => {
         limit={10}
       />,
     );
-    expect(baseElement.outerHTML).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
+
+    unmount();
   });
 });
