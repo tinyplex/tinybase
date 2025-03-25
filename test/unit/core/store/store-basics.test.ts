@@ -2,10 +2,8 @@
 import {createMergeableStore, createStore} from 'tinybase';
 import type {Store} from 'tinybase';
 
-let store: Store;
-
 test('isMergeable', () => {
-  store = createStore();
+  const store = createStore();
   expect(store.isMergeable()).toEqual(false);
 });
 
@@ -16,6 +14,8 @@ describe.each([
   ['mergeableStore', () => createMergeableStore('s1')],
 ])('Testing %s', (_name, createStore) => {
   describe('Change tabular state', () => {
+    let store: Store;
+
     beforeAll(() => {
       store = createStore();
     });
@@ -275,6 +275,8 @@ describe.each([
   });
 
   describe('Change keyed value state', () => {
+    let store: Store;
+
     beforeAll(() => {
       store = createStore();
     });
@@ -362,7 +364,7 @@ describe.each([
   });
 
   test('setTables and setValues', () => {
-    store = createStore()
+    const store = createStore()
       .setTables({t1: {r1: {c1: 1}}})
       .setValues({v1: 1});
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
@@ -375,7 +377,7 @@ describe.each([
   });
 
   test('setContent & getContent', () => {
-    store = createStore().setContent([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    const store = createStore().setContent([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(store.getValues()).toEqual({v1: 1});
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);

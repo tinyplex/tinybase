@@ -6,13 +6,13 @@ import {StoreListener} from '../../common/types.ts';
 import {createStoreListener} from '../../common/listeners.ts';
 import {jest} from '@jest/globals';
 
-let store: Store;
-let listener: StoreListener;
-
 describe.each([
   ['store', createStore],
   ['mergeableStore', () => createMergeableStore('s1')],
 ])('Testing %s', (_name, createStore) => {
+  let store: Store;
+  let listener: StoreListener;
+
   beforeEach(() => {
     store = createStore();
     listener = createStoreListener(store);
