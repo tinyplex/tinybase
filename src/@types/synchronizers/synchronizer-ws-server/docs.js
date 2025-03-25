@@ -683,8 +683,7 @@
  * // On the server:
  * const webSocketServer = new WebSocketServer({port: 8047});
  * webSocketServer.on('connection', (_, request) => {
- *   const clientAddress = request.socket.remoteAddress;
- *   if (clientAddress == '::1' || clientAddress == '::ffff:127.0.0.1') {
+ *   if (request.headers.connection == 'Upgrade') {
  *     console.log('Local client connected');
  *   }
  * });
