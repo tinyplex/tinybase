@@ -611,8 +611,6 @@ const compileModulesForProd = async () => {
     await compileModule(module, `${DIST_DIR}/`);
     await compileModule(module, `${DIST_DIR}/min`, true);
   });
-
-  await promises.cp(DIST_DIR, 'node_modules/tinybase', {recursive: true});
 };
 
 const compileDocsAndAssets = async (api = true, pages = true) => {
@@ -660,8 +658,6 @@ export const compileForTest = async () => {
   await testModules(async (module) => {
     await compileModule(module, DIST_DIR);
   });
-
-  await promises.cp(DIST_DIR, 'node_modules/tinybase', {recursive: true});
 };
 
 export const lintFiles = async () => await lintCheckFiles('.');

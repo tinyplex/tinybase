@@ -133,13 +133,13 @@
   },
   "devEngines": {
     "runtime": {
-      "name": "bun",
-      "version": ">=1.2.5",
+      "name": "node",
+      "version": ">=23.10.0",
       "onFail": "warn"
     },
     "packageManager": {
-      "name": "bun",
-      "version": ">=1.2.5",
+      "name": "npm",
+      "version": ">=10.9.2",
       "onFail": "warn"
     }
   },
@@ -154,7 +154,6 @@
     "@babel/preset-typescript": "^7.27.0",
     "@cloudflare/workers-types": "^4.20250321.0",
     "@electric-sql/pglite": "^0.2.17",
-    "@happy-dom/global-registrator": "^17.4.4",
     "@journeyapps/wa-sqlite": "^0.4.2",
     "@libsql/client": "^0.15.1",
     "@powersync/common": "^1.25.0",
