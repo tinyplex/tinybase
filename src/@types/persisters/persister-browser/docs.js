@@ -39,8 +39,8 @@
    * then gets the unique key of the storage location back out again.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createSessionPersister(store, 'pets');
@@ -79,8 +79,8 @@
    * then gets the unique key of the storage location back out again.
    *
    * ```js
-   * import {createLocalPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createLocalPersister} from 'tinybase/persisters/persister-browser';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createLocalPersister(store, 'pets');
@@ -115,8 +115,8 @@
  * browser's session storage.
  *
  * ```js
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createSessionPersister(store, 'pets');
@@ -152,8 +152,8 @@
  * browser's local storage.
  *
  * ```js
- * import {createLocalPersister} from 'tinybase/persisters/persister-browser';
  * import {createStore} from 'tinybase';
+ * import {createLocalPersister} from 'tinybase/persisters/persister-browser';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createLocalPersister(store, 'pets');

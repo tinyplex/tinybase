@@ -52,11 +52,11 @@
  * tool.
  *
  * ```jsx
- * import {Inspector} from 'tinybase/ui-react-inspector';
- * import {Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider} from 'tinybase/ui-react';
+ * import {Inspector} from 'tinybase/ui-react-inspector';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>

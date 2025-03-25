@@ -94,8 +94,8 @@
    * reference back out again.
    *
    * ```js
-   * import {WebSocketServer} from 'ws';
    * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+   * import {WebSocketServer} from 'ws';
    *
    * const webSocketServer = new WebSocketServer({port: 8047});
    * const server = createWsServer(webSocketServer);
@@ -121,10 +121,10 @@
    * to it, and then enumerates the paths being used.
    *
    * ```js
-   * import {WebSocket, WebSocketServer} from 'ws';
    * import {createMergeableStore} from 'tinybase';
-   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
    * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+   * import {WebSocket, WebSocketServer} from 'ws';
    *
    * const server = createWsServer(new WebSocketServer({port: 8047}));
    * console.log(server.getPathIds());
@@ -170,10 +170,10 @@
    * Ids themselves are unique, based on the `sec-websocket-key` header.)
    *
    * ```js
-   * import {WebSocket, WebSocketServer} from 'ws';
    * import {createMergeableStore} from 'tinybase';
-   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
    * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+   * import {WebSocket, WebSocketServer} from 'ws';
    *
    * const server = createWsServer(new WebSocketServer({port: 8047}));
    *
@@ -224,10 +224,10 @@
    * when clients connect to and disconnect from it.
    *
    * ```js
-   * import {WebSocket, WebSocketServer} from 'ws';
    * import {createMergeableStore} from 'tinybase';
-   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
    * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+   * import {WebSocket, WebSocketServer} from 'ws';
    *
    * const server = createWsServer(new WebSocketServer({port: 8047}));
    * const listenerId = server.addPathIdsListener(
@@ -289,10 +289,10 @@
    * connecting to and disconnecting from a specific path.
    *
    * ```js
-   * import {WebSocket, WebSocketServer} from 'ws';
    * import {createMergeableStore} from 'tinybase';
-   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
    * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+   * import {WebSocket, WebSocketServer} from 'ws';
    *
    * const server = createWsServer(new WebSocketServer({port: 8047}));
    * const listenerId = server.addClientIdsListener(
@@ -330,10 +330,10 @@
    * connecting to and disconnecting from any path.
    *
    * ```js
-   * import {WebSocket, WebSocketServer} from 'ws';
    * import {createMergeableStore} from 'tinybase';
-   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
    * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+   * import {WebSocket, WebSocketServer} from 'ws';
    *
    * const server = createWsServer(new WebSocketServer({port: 8047}));
    * const listenerId = server.addClientIdsListener(null, (server, pathId) => {
@@ -381,10 +381,10 @@
    * This example registers a listener to a WsServer and then removes it.
    *
    * ```js
-   * import {WebSocket, WebSocketServer} from 'ws';
    * import {createMergeableStore} from 'tinybase';
-   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
    * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+   * import {WebSocket, WebSocketServer} from 'ws';
    *
    * const server = createWsServer(new WebSocketServer({port: 8047}));
    * const listenerId = server.addPathIdsListener(() => {
@@ -421,10 +421,10 @@
    * demonstrating the statistics of the paths and clients handled as a result.
    *
    * ```js
-   * import {WebSocket, WebSocketServer} from 'ws';
    * import {createMergeableStore} from 'tinybase';
-   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
    * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+   * import {WebSocket, WebSocketServer} from 'ws';
    *
    * const server = createWsServer(new WebSocketServer({port: 8047}));
    *
@@ -459,8 +459,8 @@
    * underlying WebSocketServer.
    *
    * ```js
-   * import {WebSocketServer} from 'ws';
    * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+   * import {WebSocketServer} from 'ws';
    *
    * const webSocketServer = new WebSocketServer({port: 8047});
    * webSocketServer.on('close', () => {
@@ -518,10 +518,10 @@
  * path.
  *
  * ```js
- * import {WebSocketServer} from 'ws';
  * import {createMergeableStore} from 'tinybase';
- * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+ * import {WebSocketServer} from 'ws';
  *
  * // Server
  * const server = createWsServer(new WebSocketServer({port: 8047}));
@@ -562,12 +562,12 @@
  * client connects, it picks up the data the previous two were using.
  *
  * ```js
- * import {WebSocketServer} from 'ws';
- * import {createFilePersister} from 'tinybase/persisters/persister-file';
- * import {createMergeableStore} from 'tinybase';
- * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
- * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  * import {rmSync} from 'fs';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createFilePersister} from 'tinybase/persisters/persister-file';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+ * import {WebSocketServer} from 'ws';
  *
  * // Server
  * const server = createWsServer(
@@ -633,12 +633,12 @@
  * data once synchronization has started.
  *
  * ```js
- * import {WebSocketServer} from 'ws';
- * import {createFilePersister} from 'tinybase/persisters/persister-file';
- * import {createMergeableStore} from 'tinybase';
- * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
- * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  * import {rmSync} from 'fs';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createFilePersister} from 'tinybase/persisters/persister-file';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+ * import {WebSocketServer} from 'ws';
  *
  * // Server
  * const server = createWsServer(
@@ -675,10 +675,10 @@
  * information about the address of the client that connects to it.
  *
  * ```js
- * import {WebSocket, WebSocketServer} from 'ws';
  * import {createMergeableStore} from 'tinybase';
- * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+ * import {WebSocket, WebSocketServer} from 'ws';
  *
  * // On the server:
  * const webSocketServer = new WebSocketServer({port: 8047});

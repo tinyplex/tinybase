@@ -33,8 +33,8 @@
    *
    * ```js yolo
    * import {createClient} from '@libsql/client';
-   * import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
    * import {createStore} from 'tinybase';
+   * import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
    *
    * const client = createClient({url: 'file:my.db'});
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -91,8 +91,8 @@
  *
  * ```js yolo
  * import {createClient} from '@libsql/client';
- * import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
  * import {createStore} from 'tinybase';
+ * import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
  *
  * const client = createClient({url: 'file:my.db'});
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -120,8 +120,8 @@
  *
  * ```js yolo
  * import {createClient} from '@libsql/client';
- * import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
  * import {createStore} from 'tinybase';
+ * import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
  *
  * const client = createClient({url: 'file:my.db'});
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});

@@ -31,9 +31,9 @@
    * then gets the database connection back out again.
    *
    * ```js
-   * import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
-   * import {createStore} from 'tinybase';
    * import postgres from 'postgres';
+   * import {createStore} from 'tinybase';
+   * import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
    *
    * const sql = postgres('postgres://localhost:5432/tinybase');
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -95,9 +95,9 @@
  * into the Store.
  *
  * ```js
- * import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
- * import {createStore} from 'tinybase';
  * import postgres from 'postgres';
+ * import {createStore} from 'tinybase';
+ * import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
  *
  * const sql = postgres('postgres://localhost:5432/tinybase');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -124,9 +124,9 @@
  * local PostgreSQL database with tabular mapping.
  *
  * ```js
- * import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
- * import {createStore} from 'tinybase';
  * import postgres from 'postgres';
+ * import {createStore} from 'tinybase';
+ * import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
  *
  * const sql = postgres('postgres://localhost:5432/tinybase');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});

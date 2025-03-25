@@ -837,8 +837,8 @@
  * finally destroys the Persister again.
  *
  * ```js
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createSessionPersister(store, 'pets');
@@ -861,8 +861,8 @@
  * persisted data (implicitly firing a StorageEvent), are reflected accordingly.
  *
  * ```js
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  *
  * const store = createStore();
  * const persister = createSessionPersister(store, 'pets');
@@ -916,8 +916,8 @@
    * previously populated.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * sessionStorage.setItem('pets', '[{"pets":{"fido":{"species":"dog"}}},{}]');
    *
@@ -937,8 +937,8 @@
    * previously been persisted and instead, that is loaded.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const store = createStore();
    * const persister = createSessionPersister(store, 'pets');
@@ -991,8 +991,8 @@
    * from session storage changes made in another browser tab).
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const store = createStore();
    * const persister = createSessionPersister(store, 'pets');
@@ -1029,8 +1029,8 @@
    * stopped, subsequent changes are not reflected in the Store.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const store = createStore();
    * const persister = createSessionPersister(store, 'pets');
@@ -1072,8 +1072,8 @@
    * This example creates a Persister and queries whether it is autoLoading.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const persister = createSessionPersister(createStore(), 'pets');
    *
@@ -1106,8 +1106,8 @@
    * session storage.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createSessionPersister(store, 'pets');
@@ -1142,8 +1142,8 @@
    * saved to the underlying storage.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createSessionPersister(store, 'pets');
@@ -1177,8 +1177,8 @@
    * stopped, subsequent changes are not reflected.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createSessionPersister(store, 'pets');
@@ -1212,8 +1212,8 @@
    * This example creates a Persister and queries whether it is autoSaving.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const persister = createSessionPersister(createStore(), 'pets');
    *
@@ -1250,8 +1250,8 @@
    * This example creates a Persister and queries its status.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const persister = createSessionPersister(createStore(), 'pets');
    *
@@ -1278,8 +1278,8 @@
    * the Persister.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const persister = createSessionPersister(createStore(), 'pets');
    *
@@ -1314,8 +1314,8 @@
    * This example registers a listener and then removes it.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const persister = createSessionPersister(createStore(), 'pets');
    *
@@ -1364,8 +1364,8 @@
    *   getDataFromRemoteSystem,
    *   sendDataToRemoteSystem,
    * } from 'custom-remote-handlers';
-   * import {createCustomPersister} from 'tinybase/persisters';
    * import {createStore} from 'tinybase';
+   * import {createCustomPersister} from 'tinybase/persisters';
    *
    * const store = createStore();
    * const persister = createCustomPersister(
@@ -1398,8 +1398,8 @@
    * then gets its reference in order to update its data.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const persister = createSessionPersister(createStore(), 'pets');
    * await persister.startAutoSave();
@@ -1430,8 +1430,8 @@
    * again, removing the listener.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const store = createStore();
    * const persister = createSessionPersister(store, 'pets');
@@ -1468,8 +1468,8 @@
    * invoked by changes to the Store and to the underlying storage.
    *
    * ```js
-   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
    *
    * const store = createStore();
    * const persister = createSessionPersister(store, 'pets');
@@ -1592,8 +1592,8 @@
  * Store.
  *
  * ```js
- * import {createCustomPersister} from 'tinybase/persisters';
  * import {createStore} from 'tinybase';
+ * import {createCustomPersister} from 'tinybase/persisters';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * let persistedJson;
@@ -1632,8 +1632,8 @@
  * MergeableStore.
  *
  * ```js
- * import {Persists, createCustomPersister} from 'tinybase/persisters';
  * import {createMergeableStore, createStore} from 'tinybase';
+ * import {Persists, createCustomPersister} from 'tinybase/persisters';
  *
  * let persistedJson;
  * const createJsonPersister = (storeOrMergeableStore) =>

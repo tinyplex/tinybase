@@ -31,8 +31,8 @@
    * then gets the unique key of the IndexedDB back out again.
    *
    * ```js
-   * import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
    * import {createStore} from 'tinybase';
+   * import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createIndexedDbPersister(store, 'petStore');
@@ -81,8 +81,8 @@
  * the browser's IndexedDB storage.
  *
  * ```js
- * import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
  * import {createStore} from 'tinybase';
+ * import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
  *
  * const store = createStore()
  *   .setTable('pets', {fido: {species: 'dog'}})

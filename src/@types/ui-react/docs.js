@@ -302,10 +302,10 @@
  * component accesses their Ids.
  *
  * ```jsx
- * import {Provider, useCreateStore, useStoreIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useCreateStore, useStoreIds} from 'tinybase/ui-react';
  *
  * const App = () => {
  *   const store1 = useCreateStore(createStore);
@@ -349,10 +349,10 @@
  * reference to the Store again, without the need to have it passed as a prop.
  *
  * ```jsx
- * import {Provider, useStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useStore} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -373,10 +373,10 @@
  * a reference to the Store again, without the need to have it passed as a prop.
  *
  * ```jsx
- * import {Provider, useStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useStore} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -414,10 +414,10 @@
  * to the Store again.
  *
  * ```jsx
- * import {Provider, useStores} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useStores} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -463,10 +463,10 @@
  * it more portable.
  *
  * ```jsx
- * import {Provider, useStoreOrStoreById} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useStoreOrStoreById} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -513,15 +513,15 @@
  * This example creates a Provider context. A child component registers a Store
  * into it which is then consumable by a peer child component.
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useCreateStore,
  *   useProvideStore,
  *   useStore,
  * } from 'tinybase/ui-react';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
  *
  * const App = () => (
  *   <Provider>
@@ -597,10 +597,10 @@
  * provided. A component within it then uses the useHasTables hook.
  *
  * ```jsx
- * import {Provider, useHasTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasTables} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -620,10 +620,10 @@
  * by Id. A component within it then uses the useHasTables hook.
  *
  * ```jsx
- * import {Provider, useHasTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasTables} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -689,10 +689,10 @@
  * provided. A component within it then uses the useTables hook.
  *
  * ```jsx
- * import {Provider, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useTables} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -712,10 +712,10 @@
  * by Id. A component within it then uses the useTables hook.
  *
  * ```jsx
- * import {Provider, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useTables} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -779,10 +779,10 @@
  * provided. A component within it then uses the useTableIds hook.
  *
  * ```jsx
- * import {Provider, useTableIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useTableIds} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -802,10 +802,10 @@
  * by Id. A component within it then uses the useTableIds hook.
  *
  * ```jsx
- * import {Provider, useTableIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useTableIds} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -874,10 +874,10 @@
  * provided. A component within it then uses the useHasTable hook.
  *
  * ```jsx
- * import {Provider, useHasTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasTable} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -897,10 +897,10 @@
  * by Id. A component within it then uses the useHasTable hook.
  *
  * ```jsx
- * import {Provider, useHasTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasTable} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -968,10 +968,10 @@
  * provided. A component within it then uses the useTable hook.
  *
  * ```jsx
- * import {Provider, useTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useTable} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -991,10 +991,10 @@
  * by Id. A component within it then uses the useTable hook.
  *
  * ```jsx
- * import {Provider, useTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useTable} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -1064,10 +1064,10 @@
  * provided. A component within it then uses the useTableCellIds hook.
  *
  * ```jsx
- * import {Provider, useTableCellIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useTableCellIds} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -1087,10 +1087,10 @@
  * by Id. A component within it then uses the useTableCellIds hook.
  *
  * ```jsx
- * import {Provider, useTableCellIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useTableCellIds} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -1162,10 +1162,10 @@
  * provided. A component within it then uses the useHasTableCell hook.
  *
  * ```jsx
- * import {Provider, useHasTableCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasTableCell} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -1187,10 +1187,10 @@
  * by Id. A component within it then uses the useHasTableCell hook.
  *
  * ```jsx
- * import {Provider, useHasTableCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasTableCell} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -1260,10 +1260,10 @@
  * provided. A component within it then uses the useRowCount hook.
  *
  * ```jsx
- * import {Provider, useRowCount} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useRowCount} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -1283,10 +1283,10 @@
  * by Id. A component within it then uses the useRowCount hook.
  *
  * ```jsx
- * import {Provider, useRowCount} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useRowCount} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -1352,10 +1352,10 @@
  * provided. A component within it then uses the useRowIds hook.
  *
  * ```jsx
- * import {Provider, useRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useRowIds} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -1375,10 +1375,10 @@
  * by Id. A component within it then uses the useRowIds hook.
  *
  * ```jsx
- * import {Provider, useRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useRowIds} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -1462,10 +1462,10 @@
  * provided. A component within it then uses the useSortedRowIds hook.
  *
  * ```jsx
- * import {Provider, useSortedRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useSortedRowIds} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -1490,10 +1490,10 @@
  * by Id. A component within it then uses the useSortedRowIds hook.
  *
  * ```jsx
- * import {Provider, useSortedRowIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useSortedRowIds} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -1574,10 +1574,10 @@
  * provided. A component within it then uses the useHasRow hook.
  *
  * ```jsx
- * import {Provider, useHasRow} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasRow} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -1599,10 +1599,10 @@
  * by Id. A component within it then uses the useHasRow hook.
  *
  * ```jsx
- * import {Provider, useHasRow} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasRow} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -1673,10 +1673,10 @@
  * provided. A component within it then uses the useRow hook.
  *
  * ```jsx
- * import {Provider, useRow} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useRow} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -1696,10 +1696,10 @@
  * by Id. A component within it then uses the useRow hook.
  *
  * ```jsx
- * import {Provider, useRow} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useRow} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -1770,10 +1770,10 @@
  * provided. A component within it then uses the useCellIds hook.
  *
  * ```jsx
- * import {Provider, useCellIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useCellIds} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -1795,10 +1795,10 @@
  * by Id. A component within it then uses the useCellIds hook.
  *
  * ```jsx
- * import {Provider, useCellIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useCellIds} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -1871,10 +1871,10 @@
  * provided. A component within it then uses the useHasCell hook.
  *
  * ```jsx
- * import {Provider, useHasCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasCell} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -1896,10 +1896,10 @@
  * by Id. A component within it then uses the useHasCell hook.
  *
  * ```jsx
- * import {Provider, useHasCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasCell} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -1971,10 +1971,10 @@
  * provided. A component within it then uses the useCell hook.
  *
  * ```jsx
- * import {Provider, useCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useCell} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -1994,10 +1994,10 @@
  * by Id. A component within it then uses the useCell hook.
  *
  * ```jsx
- * import {Provider, useCell} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useCell} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -2065,10 +2065,10 @@
  * provided. A component within it then uses the useHasValues hook.
  *
  * ```jsx
- * import {Provider, useHasValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasValues} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -2088,10 +2088,10 @@
  * by Id. A component within it then uses the useHasValues hook.
  *
  * ```jsx
- * import {Provider, useHasValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasValues} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -2156,10 +2156,10 @@
  * provided. A component within it then uses the useValues hook.
  *
  * ```jsx
- * import {Provider, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useValues} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -2179,10 +2179,10 @@
  * by Id. A component within it then uses the useValues hook.
  *
  * ```jsx
- * import {Provider, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useValues} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -2246,10 +2246,10 @@
  * provided. A component within it then uses the useValueIds hook.
  *
  * ```jsx
- * import {Provider, useValueIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useValueIds} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -2269,10 +2269,10 @@
  * by Id. A component within it then uses the useValueIds hook.
  *
  * ```jsx
- * import {Provider, useValueIds} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useValueIds} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -2341,10 +2341,10 @@
  * provided. A component within it then uses the useHasValue hook.
  *
  * ```jsx
- * import {Provider, useHasValue} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasValue} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -2364,10 +2364,10 @@
  * by Id. A component within it then uses the useHasValue hook.
  *
  * ```jsx
- * import {Provider, useHasValue} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasValue} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -2435,10 +2435,10 @@
  * provided. A component within it then uses the useValue hook.
  *
  * ```jsx
- * import {Provider, useValue} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useValue} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -2458,10 +2458,10 @@
  * by Id. A component within it then uses the useValue hook.
  *
  * ```jsx
- * import {Provider, useValue} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useValue} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider storesById={{petStore: store}}>
@@ -2526,10 +2526,10 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useSetTablesCallback, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useSetTablesCallback, useTables} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const App = () => {
@@ -2610,10 +2610,10 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useSetTableCallback, useTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useSetTableCallback, useTable} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {nemo: {species: 'fish'}});
  * const App = () => {
@@ -2698,10 +2698,10 @@
  * updates the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useRow, useSetRowCallback} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useRow, useSetRowCallback} from 'tinybase/ui-react';
  *
  * const store = createStore().setRow('pets', 'nemo', {species: 'fish'});
  * const App = () => {
@@ -2793,10 +2793,10 @@
  * updates the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useAddRowCallback, useTable} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useAddRowCallback, useTable} from 'tinybase/ui-react';
  *
  * const store = createStore().setRow('pets', 'nemo', {species: 'fish'});
  * const App = () => {
@@ -2882,10 +2882,10 @@
  * handler which updates the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useRow, useSetPartialRowCallback} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useRow, useSetPartialRowCallback} from 'tinybase/ui-react';
  *
  * const store = createStore().setRow('pets', 'nemo', {species: 'fish'});
  * const App = () => {
@@ -2974,10 +2974,10 @@
  * which updates the Store with a Cell value when the `span` element is clicked.
  *
  * ```jsx
- * import {useRow, useSetCellCallback} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useRow, useSetCellCallback} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'nemo', 'species', 'fish');
  * const App = () => {
@@ -3016,10 +3016,10 @@
  * clicked.
  *
  * ```jsx
- * import {useRow, useSetCellCallback} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useRow, useSetCellCallback} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'nemo', 'visits', 1);
  * const App = () => {
@@ -3100,10 +3100,10 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useSetValuesCallback, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useSetValuesCallback, useValues} from 'tinybase/ui-react';
  *
  * const store = createStore().setValues({open: true});
  * const App = () => {
@@ -3182,10 +3182,10 @@
  * handler which updates the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useSetPartialValuesCallback, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useSetPartialValuesCallback, useValues} from 'tinybase/ui-react';
  *
  * const store = createStore().setValues({open: true});
  * const App = () => {
@@ -3267,10 +3267,10 @@
  * which updates the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useSetValueCallback, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useSetValueCallback, useValues} from 'tinybase/ui-react';
  *
  * const store = createStore().setValue('open', true);
  * const App = () => {
@@ -3334,10 +3334,10 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useDelTablesCallback, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useDelTablesCallback, useTables} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const App = () => {
@@ -3401,10 +3401,10 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useDelTableCallback, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useDelTableCallback, useTables} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const App = () => {
@@ -3471,10 +3471,10 @@
  * deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useDelRowCallback, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useDelRowCallback, useTables} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const App = () => {
@@ -3546,10 +3546,10 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useDelCellCallback, useTables} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useDelCellCallback, useTables} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
  * const App = () => {
@@ -3614,10 +3614,10 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useDelValuesCallback, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useDelValuesCallback, useValues} from 'tinybase/ui-react';
  *
  * const store = createStore().setValues({open: true});
  * const App = () => {
@@ -3681,10 +3681,10 @@
  * which deletes from the Store when the `span` element is clicked.
  *
  * ```jsx
- * import {useDelValueCallback, useValues} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {useDelValueCallback, useValues} from 'tinybase/ui-react';
  *
  * const store = createStore().setValues({open: true, employees: 3});
  * const App = () => {
@@ -3745,10 +3745,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useHasTablesListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasTablesListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -3806,10 +3806,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useTablesListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useTablesListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -3868,10 +3868,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useTableIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useTableIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -3934,10 +3934,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useHasTableListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasTableListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4001,10 +4001,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useTableListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useTableListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4068,10 +4068,10 @@
  * listener is removed from the Store.
  *
  * ```jsx
- * import {Provider, useTableCellIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useTableCellIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4137,10 +4137,10 @@
  * listener is removed from the Store.
  *
  * ```jsx
- * import {Provider, useHasTableCellListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasTableCellListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4205,10 +4205,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useRowCountListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useRowCountListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4270,10 +4270,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useRowIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useRowIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4339,10 +4339,10 @@
  * listener is removed from the Store.
  *
  * ```jsx
- * import {Provider, useSortedRowIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useSortedRowIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4418,10 +4418,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useHasRowListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasRowListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4492,10 +4492,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useRowListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useRowListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4565,10 +4565,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useCellIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useCellIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4641,10 +4641,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useHasCellListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasCellListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4716,10 +4716,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useCellListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useCellListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4781,10 +4781,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useHasValuesListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasValuesListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4842,10 +4842,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useValuesListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useValuesListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4904,10 +4904,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useValueIdsListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useValueIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -4971,10 +4971,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useHasValueListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useHasValueListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -5038,10 +5038,10 @@
  * is removed from the Store.
  *
  * ```jsx
- * import {Provider, useValueListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useValueListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -5094,10 +5094,10 @@
  * listener is removed from the Store.
  *
  * ```jsx
- * import {Provider, useStartTransactionListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, useStartTransactionListener} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -5151,13 +5151,13 @@
  * unmounted, the listener is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useWillFinishTransactionListener,
  * } from 'tinybase/ui-react';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -5213,13 +5213,13 @@
  * unmounted, the listener is removed from the Store.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useDidFinishTransactionListener,
  * } from 'tinybase/ui-react';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -5285,10 +5285,10 @@
  * object creation only occurs once by default.
  *
  * ```jsx
- * import {createMetrics, createStore} from 'tinybase';
- * import {useCreateMetrics, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import {useCreateMetrics, useCreateStore} from 'tinybase/ui-react';
  *
  * const App = () => {
  *   const store = useCreateStore(() =>
@@ -5322,10 +5322,10 @@
  * dependency, and so the Metrics object is created again on the second render.
  *
  * ```jsx
- * import {createMetrics, createStore} from 'tinybase';
- * import {useCreateMetrics, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import {useCreateMetrics, useCreateStore} from 'tinybase/ui-react';
  *
  * const App = ({tableToCount}) => {
  *   const store = useCreateStore(() =>
@@ -5374,15 +5374,15 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useCreateMetrics,
  *   useCreateStore,
  *   useMetricsIds,
  * } from 'tinybase/ui-react';
- * import {createMetrics, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
  *   const store1 = useCreateStore(createStore);
@@ -5429,10 +5429,10 @@
  * as a prop.
  *
  * ```jsx
- * import {Provider, useMetrics} from 'tinybase/ui-react';
- * import {createMetrics, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import {Provider, useMetrics} from 'tinybase/ui-react';
  *
  * const App = ({metrics}) => (
  *   <Provider metrics={metrics}>
@@ -5454,10 +5454,10 @@
  * to have it passed as a prop.
  *
  * ```jsx
- * import {Provider, useMetrics} from 'tinybase/ui-react';
- * import {createMetrics, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import {Provider, useMetrics} from 'tinybase/ui-react';
  *
  * const App = ({metrics}) => (
  *   <Provider metricsById={{petStore: metrics}}>
@@ -5503,10 +5503,10 @@
  * into it, making it more portable.
  *
  * ```jsx
- * import {Provider, useMetricsOrMetricsById} from 'tinybase/ui-react';
- * import {createMetrics, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import {Provider, useMetricsOrMetricsById} from 'tinybase/ui-react';
  *
  * const App = ({metrics}) => (
  *   <Provider metrics={metrics}>
@@ -5565,6 +5565,9 @@
  * Metrics object into it which is then consumable by a peer child component.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useCreateMetrics,
@@ -5572,9 +5575,6 @@
  *   useMetrics,
  *   useProvideMetrics,
  * } from 'tinybase/ui-react';
- * import {createMetrics, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = () => (
  *   <Provider>
@@ -5632,9 +5632,9 @@
  * the component.
  *
  * ```jsx
- * import {createMetrics, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
  * import {useMetricIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -5685,9 +5685,9 @@
  * component.
  *
  * ```jsx
- * import {createMetrics, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
  * import {useMetric} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('species', {
@@ -5713,10 +5713,10 @@
  * is provided. A component within it then uses the useMetric hook.
  *
  * ```jsx
- * import {Provider, useMetric} from 'tinybase/ui-react';
- * import {createMetrics, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import {Provider, useMetric} from 'tinybase/ui-react';
  *
  * const App = ({metrics}) => (
  *   <Provider metrics={metrics}>
@@ -5743,10 +5743,10 @@
  * is provided. A component within it then uses the useMetric hook.
  *
  * ```jsx
- * import {Provider, useMetric} from 'tinybase/ui-react';
- * import {createMetrics, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import {Provider, useMetric} from 'tinybase/ui-react';
  *
  * const App = ({metrics}) => (
  *   <Provider metricsById={{petMetrics: metrics}}>
@@ -5803,10 +5803,10 @@
  * is removed from the Metrics object.
  *
  * ```jsx
- * import {Provider, useMetricListener} from 'tinybase/ui-react';
- * import {createMetrics, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import {Provider, useMetricListener} from 'tinybase/ui-react';
  *
  * const App = ({metrics}) => (
  *   <Provider metrics={metrics}>
@@ -5877,10 +5877,10 @@
  * object creation only occurs once by default.
  *
  * ```jsx
- * import {createIndexes, createStore} from 'tinybase';
- * import {useCreateIndexes, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {useCreateIndexes, useCreateStore} from 'tinybase/ui-react';
  *
  * const App = () => {
  *   const store = useCreateStore(() =>
@@ -5919,10 +5919,10 @@
  * dependency, and so the Indexes object is created again on the second render.
  *
  * ```jsx
- * import {createIndexes, createStore} from 'tinybase';
- * import {useCreateIndexes, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {useCreateIndexes, useCreateStore} from 'tinybase/ui-react';
  *
  * const App = ({cellToIndex}) => {
  *   const store = useCreateStore(() =>
@@ -5974,15 +5974,15 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useCreateIndexes,
  *   useCreateStore,
  *   useIndexesIds,
  * } from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
  *   const store1 = useCreateStore(createStore);
@@ -6029,10 +6029,10 @@
  * as a prop.
  *
  * ```jsx
- * import {Provider, useIndexes} from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {Provider, useIndexes} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
@@ -6054,10 +6054,10 @@
  * to have it passed as a prop.
  *
  * ```jsx
- * import {Provider, useIndexes} from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {Provider, useIndexes} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexesById={{petStore: indexes}}>
@@ -6103,10 +6103,10 @@
  * into it, making it more portable.
  *
  * ```jsx
- * import {Provider, useIndexesOrIndexesById} from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {Provider, useIndexesOrIndexesById} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
@@ -6166,6 +6166,9 @@
  * Indexes object into it which is then consumable by a peer child component.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useCreateIndexes,
@@ -6173,9 +6176,6 @@
  *   useIndexes,
  *   useProvideIndexes,
  * } from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = () => (
  *   <Provider>
@@ -6239,9 +6239,9 @@
  * component.
  *
  * ```jsx
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
  * import {useIndexIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -6290,9 +6290,9 @@
  * the component.
  *
  * ```jsx
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
  * import {useSliceIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -6320,10 +6320,10 @@
  * is provided. A component within it then uses the useSliceIds hook.
  *
  * ```jsx
- * import {Provider, useSliceIds} from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {Provider, useSliceIds} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
@@ -6350,10 +6350,10 @@
  * is provided. A component within it then uses the useSliceIds hook.
  *
  * ```jsx
- * import {Provider, useSliceIds} from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {Provider, useSliceIds} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexesById={{petIndexes: indexes}}>
@@ -6408,9 +6408,9 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
  * import {useSliceRowIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -6440,10 +6440,10 @@
  * is provided. A component within it then uses the useSliceRowIds hook.
  *
  * ```jsx
- * import {Provider, useSliceRowIds} from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {Provider, useSliceRowIds} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
@@ -6472,10 +6472,10 @@
  * is provided. A component within it then uses the useSliceRowIds hook.
  *
  * ```jsx
- * import {Provider, useSliceRowIds} from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {Provider, useSliceRowIds} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexesById={{petIndexes: indexes}}>
@@ -6537,10 +6537,10 @@
  * is removed from the Indexes object.
  *
  * ```jsx
- * import {Provider, useSliceIdsListener} from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {Provider, useSliceIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
@@ -6615,10 +6615,10 @@
  * listener is removed from the Indexes object.
  *
  * ```jsx
- * import {Provider, useSliceRowIdsListener} from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {Provider, useSliceRowIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
@@ -6690,10 +6690,10 @@
  * Relationships object creation only occurs once by default.
  *
  * ```jsx
- * import {createRelationships, createStore} from 'tinybase';
- * import {useCreateRelationships, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {useCreateRelationships, useCreateStore} from 'tinybase/ui-react';
  *
  * const App = () => {
  *   const store = useCreateStore(() =>
@@ -6738,10 +6738,10 @@
  * object is created again on the second render.
  *
  * ```jsx
- * import {createRelationships, createStore} from 'tinybase';
- * import {useCreateRelationships, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {useCreateRelationships, useCreateStore} from 'tinybase/ui-react';
  *
  * const App = ({remoteTableAndCellToLink}) => {
  *   const store = useCreateStore(() =>
@@ -6799,15 +6799,15 @@
  * an inner component accesses their Ids.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useCreateRelationships,
  *   useCreateStore,
  *   useRelationshipsIds,
  * } from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
  *   const store1 = useCreateStore(createStore);
@@ -6862,10 +6862,10 @@
  * have it passed as a prop.
  *
  * ```jsx
- * import {Provider, useRelationships} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {Provider, useRelationships} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -6890,10 +6890,10 @@
  * without the need to have it passed as a prop.
  *
  * ```jsx
- * import {Provider, useRelationships} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {Provider, useRelationships} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationshipsById={{petStore: relationships}}>
@@ -6945,13 +6945,13 @@
  * it, making it more portable.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useRelationshipsOrRelationshipsById,
  * } from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -7015,6 +7015,9 @@
  * component.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useCreateRelationships,
@@ -7022,9 +7025,6 @@
  *   useProvideRelationships,
  *   useRelationships,
  * } from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = () => (
  *   <Provider>
@@ -7095,9 +7095,9 @@
  * Relationship re-renders the component.
  *
  * ```jsx
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
  * import {useRelationshipIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -7158,9 +7158,9 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
  * import {useRemoteRowId} from 'tinybase/ui-react';
  *
  * const store = createStore()
@@ -7190,10 +7190,10 @@
  * object is provided. A component within it then uses the useRemoteRowId hook.
  *
  * ```jsx
- * import {Provider, useRemoteRowId} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {Provider, useRemoteRowId} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -7219,10 +7219,10 @@
  * object is provided. A component within it then uses the useRemoteRowId hook.
  *
  * ```jsx
- * import {Provider, useRemoteRowId} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {Provider, useRemoteRowId} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationshipsById={{petRelationships: relationships}}>
@@ -7277,9 +7277,9 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
  * import {useLocalRowIds} from 'tinybase/ui-react';
  *
  * const store = createStore()
@@ -7311,10 +7311,10 @@
  * object is provided. A component within it then uses the useLocalRowIds hook.
  *
  * ```jsx
- * import {Provider, useLocalRowIds} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {Provider, useLocalRowIds} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -7342,10 +7342,10 @@
  * object is provided. A component within it then uses the useLocalRowIds hook.
  *
  * ```jsx
- * import {Provider, useLocalRowIds} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {Provider, useLocalRowIds} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationshipsById={{petRelationships: relationships}}>
@@ -7404,9 +7404,9 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
  * import {useLinkedRowIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -7441,10 +7441,10 @@
  * object is provided. A component within it then uses the useLinkedRowIds hook.
  *
  * ```jsx
- * import {Provider, useLinkedRowIds} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {Provider, useLinkedRowIds} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -7474,10 +7474,10 @@
  * object is provided. A component within it then uses the useLinkedRowIds hook.
  *
  * ```jsx
- * import {Provider, useLinkedRowIds} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {Provider, useLinkedRowIds} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationshipsById={{petRelationships: relationships}}>
@@ -7552,10 +7552,10 @@
  * listener is removed from the Relationships object.
  *
  * ```jsx
- * import {Provider, useRemoteRowIdListener} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {Provider, useRemoteRowIdListener} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -7639,10 +7639,10 @@
  * listener is removed from the Relationships object.
  *
  * ```jsx
- * import {Provider, useLocalRowIdsListener} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {Provider, useLocalRowIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -7720,10 +7720,10 @@
  * listener is removed from the Relationships object.
  *
  * ```jsx
- * import {Provider, useLinkedRowIdsListener} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {Provider, useLinkedRowIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -7801,10 +7801,10 @@
  * object creation only occurs once by default.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
- * import {useCreateQueries, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {useCreateQueries, useCreateStore} from 'tinybase/ui-react';
  *
  * const App = () => {
  *   const store = useCreateStore(() =>
@@ -7848,10 +7848,10 @@
  * dependency, and so the Queries object is created again on the second render.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
- * import {useCreateQueries, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {useCreateQueries, useCreateStore} from 'tinybase/ui-react';
  *
  * const App = () => {
  *   const store = useCreateStore(() =>
@@ -7901,15 +7901,15 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useCreateQueries,
  *   useCreateStore,
  *   useQueriesIds,
  * } from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
  *   const store1 = useCreateStore(createStore);
@@ -7956,10 +7956,10 @@
  * a prop.
  *
  * ```jsx
- * import {Provider, useQueries} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useQueries} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -7981,10 +7981,10 @@
  * to have it passed as a prop.
  *
  * ```jsx
- * import {Provider, useQueries} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useQueries} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
@@ -8030,10 +8030,10 @@
  * into it, making it more portable.
  *
  * ```jsx
- * import {Provider, useQueriesOrQueriesById} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useQueriesOrQueriesById} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -8094,6 +8094,9 @@
  * Queries object into it which is then consumable by a peer child component.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useCreateQueries,
@@ -8101,9 +8104,6 @@
  *   useProvideQueries,
  *   useQueries,
  * } from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = () => (
  *   <Provider>
@@ -8171,9 +8171,9 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
  * import {useQueryIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -8228,9 +8228,9 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
  * import {useResultTable} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -8264,10 +8264,10 @@
  * is provided. A component within it then uses the useResultTable hook.
  *
  * ```jsx
- * import {Provider, useResultTable} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultTable} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -8300,10 +8300,10 @@
  * hook.
  *
  * ```jsx
- * import {Provider, useResultTable} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultTable} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
@@ -8360,9 +8360,9 @@
  * query re-renders the component.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
  * import {useResultTableCellIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -8399,10 +8399,10 @@
  * is provided. A component within it then uses the useResultTableCellIds hook.
  *
  * ```jsx
- * import {Provider, useResultTableCellIds} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultTableCellIds} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -8435,10 +8435,10 @@
  * useResultTableCellIds hook.
  *
  * ```jsx
- * import {Provider, useResultTableCellIds} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultTableCellIds} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
@@ -8501,9 +8501,9 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
  * import {useResultRowCount} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -8535,10 +8535,10 @@
  * is provided. A component within it then uses the useResultRowCount hook.
  *
  * ```jsx
- * import {Provider, useResultRowCount} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultRowCount} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -8568,10 +8568,10 @@
  * hook.
  *
  * ```jsx
- * import {Provider, useResultRowCount} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultRowCount} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
@@ -8628,9 +8628,9 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
  * import {useResultRowIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -8664,10 +8664,10 @@
  * is provided. A component within it then uses the useResultRowIds hook.
  *
  * ```jsx
- * import {Provider, useResultRowIds} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultRowIds} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -8699,10 +8699,10 @@
  * hook.
  *
  * ```jsx
- * import {Provider, useResultRowIds} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultRowIds} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
@@ -8763,9 +8763,9 @@
  * query re-renders the component.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
  * import {useResultSortedRowIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -8810,10 +8810,10 @@
  * is provided. A component within it then uses the useResultSortedRowIds hook.
  *
  * ```jsx
- * import {Provider, useResultSortedRowIds} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultSortedRowIds} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -8847,10 +8847,10 @@
  * useResultSortedRowIds hook.
  *
  * ```jsx
- * import {Provider, useResultSortedRowIds} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultSortedRowIds} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
@@ -8919,9 +8919,9 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
  * import {useResultRow} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -8955,10 +8955,10 @@
  * is provided. A component within it then uses the useResultRow hook.
  *
  * ```jsx
- * import {Provider, useResultRow} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultRow} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -8990,10 +8990,10 @@
  * hook.
  *
  * ```jsx
- * import {Provider, useResultRow} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultRow} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
@@ -9053,9 +9053,9 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
  * import {useResultCellIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -9093,10 +9093,10 @@
  * is provided. A component within it then uses the useResultCellIds hook.
  *
  * ```jsx
- * import {Provider, useResultCellIds} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultCellIds} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -9129,10 +9129,10 @@
  * hook.
  *
  * ```jsx
- * import {Provider, useResultCellIds} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultCellIds} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
@@ -9193,9 +9193,9 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
  * import {useResultCell} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -9231,10 +9231,10 @@
  * is provided. A component within it then uses the useResultCell hook.
  *
  * ```jsx
- * import {Provider, useResultCell} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultCell} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -9267,10 +9267,10 @@
  * hook.
  *
  * ```jsx
- * import {Provider, useResultCell} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultCell} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queriesById={{petQueries: queries}}>
@@ -9333,10 +9333,10 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
- * import {Provider, useResultTableListener} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultTableListener} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -9410,10 +9410,10 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
- * import {Provider, useResultTableCellIdsListener} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultTableCellIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -9490,10 +9490,10 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
- * import {Provider, useResultRowCountListener} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultRowCountListener} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -9566,10 +9566,10 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
- * import {Provider, useResultRowIdsListener} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultRowIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -9644,10 +9644,10 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
- * import {Provider, useResultSortedRowIdsListener} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultSortedRowIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -9731,10 +9731,10 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
- * import {Provider, useResultRowListener} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultRowListener} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -9810,10 +9810,10 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
- * import {Provider, useResultCellIdsListener} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultCellIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -9897,10 +9897,10 @@
  * listener is removed from the Queries object.
  *
  * ```jsx
- * import {Provider, useResultCellListener} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useResultCellListener} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -9975,10 +9975,10 @@
  * Checkpoints object creation only occurs once by default.
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
- * import {useCreateCheckpoints, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {useCreateCheckpoints, useCreateStore} from 'tinybase/ui-react';
  *
  * const App = () => {
  *   const store = useCreateStore(createStore);
@@ -10008,10 +10008,10 @@
  * render.
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
- * import {useCreateCheckpoints, useCreateStore} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {useCreateCheckpoints, useCreateStore} from 'tinybase/ui-react';
  *
  * const App = ({size}) => {
  *   const store = useCreateStore(createStore);
@@ -10053,15 +10053,15 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useCheckpointsIds,
  *   useCreateCheckpoints,
  *   useCreateStore,
  * } from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
  *   const store1 = useCreateStore(createStore);
@@ -10108,10 +10108,10 @@
  * it passed as a prop.
  *
  * ```jsx
- * import {Provider, useCheckpoints} from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {Provider, useCheckpoints} from 'tinybase/ui-react';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
@@ -10136,10 +10136,10 @@
  * the need to have it passed as a prop.
  *
  * ```jsx
- * import {Provider, useCheckpoints} from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {Provider, useCheckpoints} from 'tinybase/ui-react';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpointsById={{petStore: checkpoints}}>
@@ -10190,13 +10190,13 @@
  * portable.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useCheckpointsOrCheckpointsById,
  * } from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
@@ -10253,6 +10253,9 @@
  * component.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {
  *   Provider,
  *   useCheckpoints,
@@ -10260,9 +10263,6 @@
  *   useCreateStore,
  *   useProvideCheckpoints,
  * } from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = () => (
  *   <Provider>
@@ -10320,9 +10320,9 @@
  * Ids re-renders the component.
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {useCheckpointIds} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
@@ -10350,10 +10350,10 @@
  * hook.
  *
  * ```jsx
- * import {Provider, useCheckpointIds} from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {Provider, useCheckpointIds} from 'tinybase/ui-react';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
@@ -10378,10 +10378,10 @@
  * hook.
  *
  * ```jsx
- * import {Provider, useCheckpointIds} from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {Provider, useCheckpointIds} from 'tinybase/ui-react';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpointsById={{petCheckpoints: checkpoints}}>
@@ -10432,9 +10432,9 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {useCheckpoint} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
@@ -10457,10 +10457,10 @@
  * hook.
  *
  * ```jsx
- * import {Provider, useCheckpoint} from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {Provider, useCheckpoint} from 'tinybase/ui-react';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
@@ -10485,10 +10485,10 @@
  * hook.
  *
  * ```jsx
- * import {Provider, useCheckpoint} from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {Provider, useCheckpoint} from 'tinybase/ui-react';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpointsById={{petCheckpoints: checkpoints}}>
@@ -10556,9 +10556,9 @@
  * handler which sets a checkpoint when the `span` element is clicked.
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {useSetCheckpointCallback} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -10611,9 +10611,9 @@
  * clicked.
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {useGoBackwardCallback} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -10661,9 +10661,9 @@
  * clicked.
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {useGoForwardCallback} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -10740,9 +10740,9 @@
  * moves to a checkpoint when the `span` element is clicked.
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {useGoToCallback} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -10792,9 +10792,9 @@
  * This example uses the useUndoInformation hook to create an undo button.
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {useUndoInformation} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -10841,9 +10841,9 @@
  * This example uses the useUndoInformation hook to create a redo button.
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {useRedoInformation} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {nemo: {species: 'fish'}}});
@@ -10901,10 +10901,10 @@
  * listener is removed from the Store.
  *
  * ```jsx
- * import {Provider, useCheckpointIdsListener} from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {Provider, useCheckpointIdsListener} from 'tinybase/ui-react';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
@@ -10972,10 +10972,10 @@
  * listener is removed from the Store.
  *
  * ```jsx
- * import {Provider, useCheckpointListener} from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {Provider, useCheckpointListener} from 'tinybase/ui-react';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
@@ -11081,15 +11081,15 @@
  * occurs once by default.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {
  *   useCreatePersister,
  *   useCreateStore,
  *   useTables,
  * } from 'tinybase/ui-react';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
- * import {createStore} from 'tinybase';
  *
  * const App = () => {
  *   const store = useCreateStore(createStore);
@@ -11135,15 +11135,15 @@
  * destroyed and the `destroy` parameter is called for it.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {
  *   useCreatePersister,
  *   useCreateStore,
  *   useTables,
  * } from 'tinybase/ui-react';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
- * import {createStore} from 'tinybase';
  *
  * const App = ({sessionKey}) => {
  *   const store = useCreateStore(createStore);
@@ -11208,16 +11208,16 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {
  *   Provider,
  *   useCreatePersister,
  *   useCreateStore,
  *   usePersisterIds,
  * } from 'tinybase/ui-react';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
- * import {createStore} from 'tinybase';
  *
  * const App = () => {
  *   const store1 = useCreateStore(createStore);
@@ -11270,11 +11270,11 @@
  * it passed as a prop.
  *
  * ```jsx
- * import {Provider, usePersister} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {Provider, usePersister} from 'tinybase/ui-react';
  *
  * const App = ({persister}) => (
  *   <Provider persister={persister}>
@@ -11297,11 +11297,11 @@
  * the need to have it passed as a prop.
  *
  * ```jsx
- * import {Provider, usePersister} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {Provider, usePersister} from 'tinybase/ui-react';
  *
  * const App = ({persister}) => (
  *   <Provider persistersById={{petPersister: persister}}>
@@ -11347,11 +11347,11 @@
  * portable.
  *
  * ```jsx
- * import {Provider, usePersisterOrPersisterById} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {Provider, usePersisterOrPersisterById} from 'tinybase/ui-react';
  *
  * const App = ({persister}) => (
  *   <Provider persister={persister}>
@@ -11404,6 +11404,10 @@
  * component.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {
  *   Provider,
  *   useCreatePersister,
@@ -11411,10 +11415,6 @@
  *   usePersister,
  *   useProvidePersister,
  * } from 'tinybase/ui-react';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
- * import {createStore} from 'tinybase';
  *
  * const App = () => (
  *   <Provider>
@@ -11476,8 +11476,8 @@
  * ```jsx
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {usePersisterStatus} from 'tinybase/ui-react';
  *
  * const persister = createSessionPersister(createStore(), 'pets');
@@ -11494,11 +11494,11 @@
  * provided. A component within it then uses the usePersisterStatus hook.
  *
  * ```jsx
- * import {Provider, usePersisterStatus} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {Provider, usePersisterStatus} from 'tinybase/ui-react';
  *
  * const App = ({persister}) => (
  *   <Provider persister={persister}>
@@ -11518,11 +11518,11 @@
  * named by Id. A component within it then uses the usePersisterStatus hook.
  *
  * ```jsx
- * import {Provider, usePersisterStatus} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {Provider, usePersisterStatus} from 'tinybase/ui-react';
  *
  * const App = ({persister}) => (
  *   <Provider persistersById={{petPersister: persister}}>
@@ -11568,11 +11568,11 @@
  * listener is removed from the Persister.
  *
  * ```jsx
- * import {Provider, usePersisterStatusListener} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
- * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
  * import {createStore} from 'tinybase';
+ * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+ * import {Provider, usePersisterStatusListener} from 'tinybase/ui-react';
  *
  * const App = ({persister}) => (
  *   <Provider persister={persister}>
@@ -11647,15 +11647,15 @@
  * only occurs once by default.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {
  *   useCreateMergeableStore,
  *   useCreateSynchronizer,
  *   useTables,
  * } from 'tinybase/ui-react';
- * import React from 'react';
- * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
- * import {createMergeableStore} from 'tinybase';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
  *   const store = useCreateMergeableStore(() => createMergeableStore('s1'));
@@ -11686,17 +11686,17 @@
  * is provided to start both Synchronizers' synchronization.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
  * import {
  *   useCreateMergeableStore,
  *   useCreateSynchronizer,
  *   useTables,
  * } from 'tinybase/ui-react';
- * import React from 'react';
  * import {WebSocketServer} from 'ws';
- * import {createMergeableStore} from 'tinybase';
- * import {createRoot} from 'react-dom/client';
- * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
- * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  *
  * const server1 = createWsServer(new WebSocketServer({port: 8044}));
  * const server2 = createWsServer(new WebSocketServer({port: 8045}));
@@ -11749,16 +11749,16 @@
  * inner component accesses their Ids.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {
  *   Provider,
  *   useCreateMergeableStore,
  *   useCreateSynchronizer,
  *   useSynchronizerIds,
  * } from 'tinybase/ui-react';
- * import React from 'react';
- * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
- * import {createMergeableStore} from 'tinybase';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = () => {
  *   const store1 = useCreateMergeableStore(createMergeableStore);
@@ -11813,11 +11813,11 @@
  * it passed as a prop.
  *
  * ```jsx
- * import {Provider, useSynchronizer} from 'tinybase/ui-react';
  * import React from 'react';
- * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
- * import {createMergeableStore} from 'tinybase';
  * import {createRoot} from 'react-dom/client';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {Provider, useSynchronizer} from 'tinybase/ui-react';
  *
  * const App = ({synchronizer}) => (
  *   <Provider synchronizer={synchronizer}>
@@ -11840,11 +11840,11 @@
  * without the need to have it passed as a prop.
  *
  * ```jsx
- * import {Provider, useSynchronizer} from 'tinybase/ui-react';
  * import React from 'react';
- * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
- * import {createMergeableStore} from 'tinybase';
  * import {createRoot} from 'react-dom/client';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {Provider, useSynchronizer} from 'tinybase/ui-react';
  *
  * const App = ({synchronizer}) => (
  *   <Provider synchronizersById={{petSynchronizer: synchronizer}}>
@@ -11893,14 +11893,14 @@
  * portable.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {
  *   Provider,
  *   useSynchronizerOrSynchronizerById,
  * } from 'tinybase/ui-react';
- * import React from 'react';
- * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
- * import {createMergeableStore} from 'tinybase';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = ({synchronizer}) => (
  *   <Provider synchronizer={synchronizer}>
@@ -11955,6 +11955,10 @@
  * component.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {
  *   Provider,
  *   useCreateStore,
@@ -11962,10 +11966,6 @@
  *   useProvideSynchronizer,
  *   useSynchronizer,
  * } from 'tinybase/ui-react';
- * import React from 'react';
- * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
- * import {createMergeableStore} from 'tinybase';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = () => (
  *   <Provider>
@@ -12026,9 +12026,9 @@
  *
  * ```jsx
  * import React from 'react';
- * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
- * import {createMergeableStore} from 'tinybase';
  * import {createRoot} from 'react-dom/client';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {useSynchronizerStatus} from 'tinybase/ui-react';
  *
  * const synchronizer = createLocalSynchronizer(createMergeableStore());
@@ -12045,11 +12045,11 @@
  * provided. A component within it then uses the useSynchronizerStatus hook.
  *
  * ```jsx
- * import {Provider, useSynchronizerStatus} from 'tinybase/ui-react';
  * import React from 'react';
- * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
- * import {createMergeableStore} from 'tinybase';
  * import {createRoot} from 'react-dom/client';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {Provider, useSynchronizerStatus} from 'tinybase/ui-react';
  *
  * const App = ({synchronizer}) => (
  *   <Provider synchronizer={synchronizer}>
@@ -12070,11 +12070,11 @@
  * useSynchronizerStatus hook.
  *
  * ```jsx
- * import {Provider, useSynchronizerStatus} from 'tinybase/ui-react';
  * import React from 'react';
- * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
- * import {createMergeableStore} from 'tinybase';
  * import {createRoot} from 'react-dom/client';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {Provider, useSynchronizerStatus} from 'tinybase/ui-react';
  *
  * const App = ({synchronizer}) => (
  *   <Provider synchronizersById={{petSynchronizer: synchronizer}}>
@@ -12120,11 +12120,11 @@
  * listener is removed from the Synchronizer.
  *
  * ```jsx
- * import {Provider, useSynchronizerStatusListener} from 'tinybase/ui-react';
  * import React from 'react';
- * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
- * import {createMergeableStore} from 'tinybase';
  * import {createRoot} from 'react-dom/client';
+ * import {createMergeableStore} from 'tinybase';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+ * import {Provider, useSynchronizerStatusListener} from 'tinybase/ui-react';
  *
  * const App = ({synchronizer}) => (
  *   <Provider synchronizer={synchronizer}>
@@ -13358,10 +13358,10 @@
  * props.
  *
  * ```jsx
- * import {CellView, Provider, useMetric} from 'tinybase/ui-react';
- * import {createMetrics, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import {CellView, Provider, useMetric} from 'tinybase/ui-react';
  *
  * const App = ({store, metrics}) => (
  *   <Provider store={store} metricsById={{petStore: metrics}}>
@@ -13392,15 +13392,15 @@
  * objects are provided, showing how visibility is merged.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
  * import {
  *   CellView,
  *   Provider,
  *   useCreateStore,
  *   useMetric,
  * } from 'tinybase/ui-react';
- * import {createMetrics, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = ({petStore, metrics}) => (
  *   <Provider storesById={{pet: petStore}} metrics={metrics}>
@@ -13469,10 +13469,10 @@
  * the component.
  *
  * ```jsx
- * import {CellView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {CellView} from 'tinybase/ui-react';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
  * const App = () => (
@@ -13496,10 +13496,10 @@
  * for readability).
  *
  * ```jsx
- * import {CellView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {CellView, Provider} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -13524,10 +13524,10 @@
  * non-existent Cell.
  *
  * ```jsx
- * import {CellView, Provider} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {CellView, Provider} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -13582,9 +13582,9 @@
  *
  * ```jsx
  * import React from 'react';
- * import {RowView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {RowView} from 'tinybase/ui-react';
  *
  * const store = createStore().setRow('pets', 'fido', {species: 'dog'});
  * const App = () => (
@@ -13608,10 +13608,10 @@
  * set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
- * import {Provider, RowView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, RowView} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -13646,10 +13646,10 @@
  * Cell component and a custom props callback.
  *
  * ```jsx
- * import {CellView, Provider, RowView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {CellView, Provider, RowView} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -13722,9 +13722,9 @@
  *
  * ```jsx
  * import React from 'react';
- * import {SortedTableView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {SortedTableView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({
  *   pets: {
@@ -13758,10 +13758,10 @@
  * a custom set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
- * import {Provider, SortedTableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, SortedTableView} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -13797,10 +13797,10 @@
  * a custom Row component and a custom props callback.
  *
  * ```jsx
- * import {Provider, RowView, SortedTableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, RowView, SortedTableView} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -13873,9 +13873,9 @@
  *
  * ```jsx
  * import React from 'react';
- * import {TableView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {TableView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
  * const App = () => (
@@ -13899,10 +13899,10 @@
  * custom set of Cell Ids (and rendered with Ids for readability).
  *
  * ```jsx
- * import {Provider, TableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, TableView} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -13935,10 +13935,10 @@
  * custom Row component and a custom props callback.
  *
  * ```jsx
- * import {Provider, RowView, TableView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, RowView, TableView} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -14002,9 +14002,9 @@
  *
  * ```jsx
  * import React from 'react';
- * import {TablesView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {TablesView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const App = () => (
@@ -14028,10 +14028,10 @@
  * for readability).
  *
  * ```jsx
- * import {Provider, TablesView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, TablesView} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -14059,10 +14059,10 @@
  * custom Table component and a custom props callback.
  *
  * ```jsx
- * import {Provider, TableView, TablesView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, TableView, TablesView} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -14123,9 +14123,9 @@
  *
  * ```jsx
  * import React from 'react';
- * import {ValueView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {ValueView} from 'tinybase/ui-react';
  *
  * const store = createStore().setValue('open', true);
  * const App = () => (
@@ -14149,10 +14149,10 @@
  * Id for readability).
  *
  * ```jsx
- * import {Provider, ValueView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, ValueView} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -14177,10 +14177,10 @@
  * non-existent Value.
  *
  * ```jsx
- * import {Provider, ValueView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, ValueView} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -14232,9 +14232,9 @@
  *
  * ```jsx
  * import React from 'react';
- * import {ValuesView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {ValuesView} from 'tinybase/ui-react';
  *
  * const store = createStore().setValue('open', true);
  * const App = () => (
@@ -14258,10 +14258,10 @@
  * Ids for readability).
  *
  * ```jsx
- * import {Provider, ValuesView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, ValuesView} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -14286,10 +14286,10 @@
  * custom Value component and a custom props callback.
  *
  * ```jsx
- * import {Provider, ValueView, ValuesView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createStore} from 'tinybase';
+ * import {Provider, ValueView, ValuesView} from 'tinybase/ui-react';
  *
  * const App = ({store}) => (
  *   <Provider store={store}>
@@ -14341,10 +14341,10 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createMetrics, createStore} from 'tinybase';
- * import {MetricView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import {MetricView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('species', {
  *   dog: {price: 5},
@@ -14374,10 +14374,10 @@
  * its Id for readability).
  *
  * ```jsx
- * import {MetricView, Provider} from 'tinybase/ui-react';
- * import {createMetrics, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import {MetricView, Provider} from 'tinybase/ui-react';
  *
  * const App = ({metrics}) => (
  *   <Provider metrics={metrics}>
@@ -14409,10 +14409,10 @@
  * non-existent Metric.
  *
  * ```jsx
- * import {MetricView, Provider} from 'tinybase/ui-react';
- * import {createMetrics, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createMetrics, createStore} from 'tinybase';
+ * import {MetricView, Provider} from 'tinybase/ui-react';
  *
  * const App = ({metrics}) => (
  *   <Provider metrics={metrics}>
@@ -14466,10 +14466,10 @@
  * the component.
  *
  * ```jsx
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
- * import {SliceView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {SliceView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
@@ -14503,10 +14503,10 @@
  * Ids for readability).
  *
  * ```jsx
- * import {Provider, SliceView} from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {Provider, SliceView} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
@@ -14538,10 +14538,10 @@
  * custom Row component and a custom props callback.
  *
  * ```jsx
- * import {Provider, RowView, SliceView} from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {Provider, RowView, SliceView} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
@@ -14609,10 +14609,10 @@
  * the component.
  *
  * ```jsx
- * import {createIndexes, createStore} from 'tinybase';
- * import {IndexView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {IndexView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
@@ -14641,10 +14641,10 @@
  * Ids for readability).
  *
  * ```jsx
- * import {IndexView, Provider} from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {IndexView, Provider} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
@@ -14675,10 +14675,10 @@
  * custom Slice component and a custom props callback.
  *
  * ```jsx
- * import {IndexView, Provider, SliceView} from 'tinybase/ui-react';
- * import {createIndexes, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import {IndexView, Provider, SliceView} from 'tinybase/ui-react';
  *
  * const App = ({indexes}) => (
  *   <Provider indexes={indexes}>
@@ -14747,10 +14747,10 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
- * import {RemoteRowView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {RemoteRowView} from 'tinybase/ui-react';
  *
  * const store = createStore()
  *   .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
@@ -14786,10 +14786,10 @@
  * remote Row (with Ids for readability).
  *
  * ```jsx
- * import {Provider, RemoteRowView} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {Provider, RemoteRowView} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -14824,10 +14824,10 @@
  * remote Row with a custom Row component and a custom props callback.
  *
  * ```jsx
- * import {Provider, RemoteRowView, RowView} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {Provider, RemoteRowView, RowView} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -14896,10 +14896,10 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createRelationships, createStore} from 'tinybase';
- * import {LocalRowsView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {LocalRowsView} from 'tinybase/ui-react';
  *
  * const store = createStore()
  *   .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
@@ -14936,10 +14936,10 @@
  * local Row objects (with Ids for readability).
  *
  * ```jsx
- * import {LocalRowsView, Provider} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {LocalRowsView, Provider} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -14974,10 +14974,10 @@
  * local Row objects with a custom Row component and a custom props callback.
  *
  * ```jsx
- * import {LocalRowsView, Provider, RowView} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {LocalRowsView, Provider, RowView} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -15046,10 +15046,10 @@
  * re-renders the component.
  *
  * ```jsx
- * import {createRelationships, createStore} from 'tinybase';
- * import {LinkedRowsView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {LinkedRowsView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {next: 'felix'},
@@ -15089,10 +15089,10 @@
  * local Row objects (with Ids for readability).
  *
  * ```jsx
- * import {LinkedRowsView, Provider} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {LinkedRowsView, Provider} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -15128,10 +15128,10 @@
  * local Row objects with a custom Row component and a custom props callback.
  *
  * ```jsx
- * import {LinkedRowsView, Provider, RowView} from 'tinybase/ui-react';
- * import {createRelationships, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import {LinkedRowsView, Provider, RowView} from 'tinybase/ui-react';
  *
  * const App = ({relationships}) => (
  *   <Provider relationships={relationships}>
@@ -15198,10 +15198,10 @@
  * Store re-renders the component.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
- * import {ResultCellView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {ResultCellView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
@@ -15239,10 +15239,10 @@
  * (with its Id for readability).
  *
  * ```jsx
- * import {Provider, ResultCellView} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, ResultCellView} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -15278,10 +15278,10 @@
  * non-existent Cell.
  *
  * ```jsx
- * import {Provider, ResultCellView} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, ResultCellView} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -15340,10 +15340,10 @@
  * Store re-renders the component.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
- * import {ResultRowView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {ResultRowView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
@@ -15384,10 +15384,10 @@
  * Ids for readability).
  *
  * ```jsx
- * import {Provider, ResultRowView} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, ResultRowView} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -15421,10 +15421,10 @@
  * a custom Cell component and a custom props callback.
  *
  * ```jsx
- * import {Provider, ResultCellView, ResultRowView} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, ResultCellView, ResultRowView} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -15500,10 +15500,10 @@
  * the Store re-renders the component.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
- * import {ResultSortedTableView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {ResultSortedTableView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
@@ -15540,10 +15540,10 @@
  * Table (with Ids for readability).
  *
  * ```jsx
- * import {Provider, ResultSortedTableView} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, ResultSortedTableView} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -15577,14 +15577,14 @@
  * Table with a custom Row component and a custom props callback.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
  * import {
  *   Provider,
  *   ResultRowView,
  *   ResultSortedTableView,
  * } from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -15651,10 +15651,10 @@
  * Store re-renders the component.
  *
  * ```jsx
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
- * import {ResultTableView} from 'tinybase/ui-react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {ResultTableView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
@@ -15686,10 +15686,10 @@
  * (with Ids for readability).
  *
  * ```jsx
- * import {Provider, ResultTableView} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, ResultTableView} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -15719,10 +15719,10 @@
  * with a custom Row component and a custom props callback.
  *
  * ```jsx
- * import {Provider, ResultRowView, ResultTableView} from 'tinybase/ui-react';
- * import {createQueries, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, ResultRowView, ResultTableView} from 'tinybase/ui-react';
  *
  * const App = ({queries}) => (
  *   <Provider queries={queries}>
@@ -15782,10 +15782,10 @@
  * a label (with its Id for readability).
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
- * import {CheckpointView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {CheckpointView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
  * const checkpoints = createCheckpoints(store);
@@ -15843,10 +15843,10 @@
  * of previous checkpoints.
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
- * import {BackwardCheckpointsView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {BackwardCheckpointsView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {fido: {color: 'brown'}});
  * const checkpoints = createCheckpoints(store);
@@ -15878,10 +15878,10 @@
  * renders the list of previous checkpoints (with Ids for readability).
  *
  * ```jsx
- * import {BackwardCheckpointsView, Provider} from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {BackwardCheckpointsView, Provider} from 'tinybase/ui-react';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
@@ -15916,14 +15916,14 @@
  * custom props callback.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {
  *   BackwardCheckpointsView,
  *   CheckpointView,
  *   Provider,
  * } from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
@@ -15994,10 +15994,10 @@
  * current checkpoints.
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
- * import {CurrentCheckpointView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {CurrentCheckpointView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {fido: {color: 'brown'}});
  * const checkpoints = createCheckpoints(store);
@@ -16031,10 +16031,10 @@
  * renders current checkpoint (with its Id for readability).
  *
  * ```jsx
- * import {CurrentCheckpointView, Provider} from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {CurrentCheckpointView, Provider} from 'tinybase/ui-react';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
@@ -16066,14 +16066,14 @@
  * custom props callback.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {
  *   CheckpointView,
  *   CurrentCheckpointView,
  *   Provider,
  * } from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
@@ -16147,10 +16147,10 @@
  * of future checkpoints.
  *
  * ```jsx
- * import {createCheckpoints, createStore} from 'tinybase';
- * import {ForwardCheckpointsView} from 'tinybase/ui-react';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {ForwardCheckpointsView} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {fido: {color: 'brown'}});
  * const checkpoints = createCheckpoints(store);
@@ -16183,10 +16183,10 @@
  * renders the list of future checkpoints (with Ids for readability).
  *
  * ```jsx
- * import {ForwardCheckpointsView, Provider} from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
+ * import {ForwardCheckpointsView, Provider} from 'tinybase/ui-react';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>
@@ -16221,14 +16221,14 @@
  * custom props callback.
  *
  * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createCheckpoints, createStore} from 'tinybase';
  * import {
  *   CheckpointView,
  *   ForwardCheckpointsView,
  *   Provider,
  * } from 'tinybase/ui-react';
- * import {createCheckpoints, createStore} from 'tinybase';
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
  *
  * const App = ({checkpoints}) => (
  *   <Provider checkpoints={checkpoints}>

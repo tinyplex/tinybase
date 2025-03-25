@@ -35,9 +35,9 @@
    * then gets the storage reference back out again.
    *
    * ```js yolo
-   * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
-   * import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage';
    * import {createMergeableStore} from 'tinybase';
+   * import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage';
+   * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
    *
    * export class MyDurableObject extends WsServerDurableObject {
    *   createPersister() {
@@ -93,9 +93,9 @@
  * instance) and then gets the storage reference back out again.
  *
  * ```js yolo
- * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
- * import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage';
  * import {createMergeableStore} from 'tinybase';
+ * import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage';
+ * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
  *
  * export class MyDurableObject extends WsServerDurableObject {
  *   createPersister() {

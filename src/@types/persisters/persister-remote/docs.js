@@ -29,8 +29,8 @@
    * and then gets the URLs back out again.
    *
    * ```js
-   * import {createRemotePersister} from 'tinybase/persisters/persister-remote';
    * import {createStore} from 'tinybase';
+   * import {createRemotePersister} from 'tinybase/persisters/persister-remote';
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    * const persister = createRemotePersister(
@@ -84,8 +84,8 @@
  * remote server.
  *
  * ```js yolo
- * import {createRemotePersister} from 'tinybase/persisters/persister-remote';
  * import {createStore} from 'tinybase';
+ * import {createRemotePersister} from 'tinybase/persisters/persister-remote';
  *
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createRemotePersister(

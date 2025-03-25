@@ -39,9 +39,9 @@
    * then gets the database instance back out again.
    *
    * ```js yolo
-   * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
-   * import {createStore} from 'tinybase';
    * import {openDatabaseSync} from 'expo-sqlite';
+   * import {createStore} from 'tinybase';
+   * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
    *
    * const db = openDatabaseSync('my.db');
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -102,9 +102,9 @@
  * into the Store.
  *
  * ```js yolo
- * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
- * import {createStore} from 'tinybase';
  * import {openDatabaseSync} from 'expo-sqlite';
+ * import {createStore} from 'tinybase';
+ * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
  *
  * const db = openDatabaseSync('my.db');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -139,9 +139,9 @@
  * to a local SQLite database with tabular mapping.
  *
  * ```js yolo
- * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
- * import {createStore} from 'tinybase';
  * import {openDatabaseSync} from 'expo-sqlite';
+ * import {createStore} from 'tinybase';
+ * import {createExpoSqlitePersister} from 'tinybase/persisters/persister-expo-sqlite';
  *
  * const db = openDatabaseSync('my.db');
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
