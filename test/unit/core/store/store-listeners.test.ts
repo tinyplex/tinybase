@@ -8,17 +8,13 @@ import {
 } from '../../common/expect.ts';
 import {StoreListener} from '../../common/types.ts';
 import {createStoreListener} from '../../common/listeners.ts';
-import {jest} from '@jest/globals';
 
 const EMPTY_CHANGES_AND_LOG = [
   [{}, {}, 1],
   [false, false, {}, {}, {}, {}, {}, {}, {}, {}],
 ];
 
-let store: Store;
-let listener: StoreListener;
-
-const getTablesMutator = (cell: Cell) => () =>
+const getTablesMutator = (store: Store, cell: Cell) => () =>
   store.setCell('t0', 'r0', 'c0', cell);
 
 const getTableMutator =
@@ -59,6 +55,9 @@ describe.each([
   // Note that these tests run in order to mutate the store in a sequence.
   describe('Listeners', () => {
     describe('json', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -122,6 +121,9 @@ describe.each([
     });
 
     describe('hasTables', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -337,6 +339,9 @@ describe.each([
     });
 
     describe('tables', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -614,6 +619,9 @@ describe.each([
     });
 
     describe('tableIds', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -840,6 +848,9 @@ describe.each([
     });
 
     describe('hasTable', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -1087,6 +1098,9 @@ describe.each([
     });
 
     describe('table', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -1379,6 +1393,9 @@ describe.each([
     });
 
     describe('tableCellId', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -1662,6 +1679,9 @@ describe.each([
     });
 
     describe('hasTableCell', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -1963,6 +1983,9 @@ describe.each([
     });
 
     describe('rowCount', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -2222,6 +2245,9 @@ describe.each([
     });
 
     describe('rowIds', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -2509,6 +2535,9 @@ describe.each([
     });
 
     describe('sortedRowIds', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -2755,6 +2784,9 @@ describe.each([
     });
 
     describe('hasRow', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -3044,6 +3076,9 @@ describe.each([
     });
 
     describe('row', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -3390,6 +3425,9 @@ describe.each([
     });
 
     describe('cellIds', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -3782,6 +3820,9 @@ describe.each([
     });
 
     describe('hasCell', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -4341,6 +4382,9 @@ describe.each([
     });
 
     describe('cell', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -4957,6 +5001,9 @@ describe.each([
     });
 
     describe('invalid cell', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -5113,6 +5160,9 @@ describe.each([
     });
 
     describe('hasValues', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -5201,6 +5251,9 @@ describe.each([
     });
 
     describe('values', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -5297,6 +5350,9 @@ describe.each([
     });
 
     describe('valueIds', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -5390,6 +5446,9 @@ describe.each([
     });
 
     describe('hasValue', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -5495,6 +5554,9 @@ describe.each([
     });
 
     describe('value', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeAll(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -5608,6 +5670,9 @@ describe.each([
     });
 
     describe('invalid value', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -5661,6 +5726,9 @@ describe.each([
     });
 
     describe('transaction', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -6038,6 +6106,9 @@ describe.each([
 
   describe('Mutating listeners', () => {
     describe('hasTables', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -6045,7 +6116,7 @@ describe.each([
       });
 
       const setMutatorListener = () => {
-        store.addTablesListener(getTablesMutator(2), true);
+        store.addTablesListener(getTablesMutator(store, 2), true);
       };
 
       test('setTables', () => {
@@ -6094,6 +6165,9 @@ describe.each([
     });
 
     describe('tables', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -6101,7 +6175,7 @@ describe.each([
       });
 
       const setMutatorListener = () => {
-        store.addTablesListener(getTablesMutator(2), true);
+        store.addTablesListener(getTablesMutator(store, 2), true);
       };
 
       test('setTables', () => {
@@ -6154,6 +6228,9 @@ describe.each([
     });
 
     describe('tableIds', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -6161,7 +6238,7 @@ describe.each([
       });
 
       const setMutatorListener = () => {
-        store.addTableIdsListener(getTablesMutator(2), true);
+        store.addTableIdsListener(getTablesMutator(store, 2), true);
       };
 
       test('setTables', () => {
@@ -6210,6 +6287,9 @@ describe.each([
     });
 
     describe('table', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -6306,6 +6386,9 @@ describe.each([
     });
 
     describe('hasTable', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -6371,6 +6454,9 @@ describe.each([
     });
 
     describe('tableCellIds', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -6462,6 +6548,9 @@ describe.each([
     });
 
     describe('hasTableCell', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -6580,6 +6669,9 @@ describe.each([
     });
 
     describe('rowIds', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -6669,6 +6761,9 @@ describe.each([
     });
 
     describe('sortedRowIds', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -6733,6 +6828,9 @@ describe.each([
     });
 
     describe('hasRow', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -6854,6 +6952,9 @@ describe.each([
     });
 
     describe('row', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -7032,6 +7133,9 @@ describe.each([
     });
 
     describe('cellIds', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -7230,6 +7334,9 @@ describe.each([
     });
 
     describe('hasCell', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -7616,6 +7723,9 @@ describe.each([
     });
 
     describe('cell', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -8002,6 +8112,9 @@ describe.each([
     });
 
     describe('invalid cell', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -8405,6 +8518,9 @@ describe.each([
     });
 
     describe('hasValues', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -8454,6 +8570,9 @@ describe.each([
     });
 
     describe('values', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -8490,6 +8609,9 @@ describe.each([
     });
 
     describe('valueIds', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -8526,6 +8648,9 @@ describe.each([
     });
 
     describe('hasValue', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -8570,6 +8695,9 @@ describe.each([
     });
 
     describe('value', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -8614,6 +8742,9 @@ describe.each([
     });
 
     describe('invalid value', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -8678,6 +8809,8 @@ describe.each([
     });
 
     describe('transaction', () => {
+      let store: Store;
+
       beforeEach(() => {
         store = createStore();
       });
@@ -8717,6 +8850,9 @@ describe.each([
     });
 
     describe('Miscellaneous', () => {
+      let store: Store;
+      let listener: StoreListener;
+
       beforeEach(() => {
         store = createStore();
         listener = createStoreListener(store);
@@ -9091,6 +9227,7 @@ describe.each([
   describe('callListener', () => {
     let store: Store;
     let listener: () => null;
+
     beforeEach(() => {
       store = createStore()
         .setTables({

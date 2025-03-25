@@ -4,7 +4,6 @@ import {createMergeableStore, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
 import {StoreListener} from '../../common/types.ts';
 import {createStoreListener} from '../../common/listeners.ts';
-import {jest} from '@jest/globals';
 
 describe.each([
   ['store', createStore],

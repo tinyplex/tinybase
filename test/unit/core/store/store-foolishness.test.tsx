@@ -818,100 +818,114 @@ describe.each([
     (_name, container: any) => {
       test('useTables', async () => {
         const Test = () => <>{JSON.stringify(useTables(container))}</>;
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual('{}');
+        unmount();
       });
 
       test('useTableIds', () => {
         const Test = () => <>{JSON.stringify(useTableIds(container))}</>;
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual('[]');
+        unmount();
       });
 
       test('useTable', () => {
         const Test = () => <>{JSON.stringify(useTable('t1', container))}</>;
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual('{}');
+        unmount();
       });
 
       test('useRowIds', () => {
         const Test = () => <>{JSON.stringify(useRowIds('t1', container))}</>;
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual('[]');
+        unmount();
       });
 
       test('useRow', () => {
         const Test = () => <>{JSON.stringify(useRow('t1', 'r1', container))}</>;
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual('{}');
+        unmount();
       });
 
       test('useCellIds', () => {
         const Test = () => (
           <>{JSON.stringify(useCellIds('t1', 'r1', container))}</>
         );
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual('[]');
+        unmount();
       });
 
       test('useCell', () => {
         const Test = () => (
           <>{JSON.stringify(useCell('t1', 'r1', 'c1', container))}</>
         );
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual('');
+        unmount();
       });
 
       test('useMetric', () => {
         const Test = () => <>{JSON.stringify(useMetric('m1', container))}</>;
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual('');
+        unmount();
       });
 
       test('useSliceIds', () => {
         const Test = () => <>{JSON.stringify(useSliceIds('i1', container))}</>;
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual('[]');
+        unmount();
       });
 
       test('useSliceRowIds', () => {
         const Test = () => (
           <>{JSON.stringify(useSliceRowIds('i1', 's1', container))}</>
         );
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual('[]');
+        unmount();
       });
 
       test('useRemoteRowId', () => {
         const Test = () => (
           <>{JSON.stringify(useRemoteRowId('r1', 'r1', container))}</>
         );
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual('');
+        unmount();
       });
 
       test('useLocalRowIds', () => {
         const Test = () => (
           <>{JSON.stringify(useLocalRowIds('r1', 'r1', container))}</>
         );
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual('[]');
+        unmount();
       });
 
       test('useLinkedRowIds', () => {
         const Test = () => (
           <>{JSON.stringify(useLinkedRowIds('r1', 'r1', container))}</>
         );
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual('[]');
+        unmount();
       });
 
       test('useCheckpointIds', () => {
         const Test = () => <>{JSON.stringify(useCheckpointIds(container))}</>;
-        const {baseElement} = render(<Test />);
+        const {baseElement, unmount} = render(<Test />);
         expect(baseElement.textContent).toEqual(
           JSON.stringify([[], undefined, []]),
         );
+        unmount();
       });
     },
   );
