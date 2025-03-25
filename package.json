@@ -34,7 +34,6 @@
     "partykit": "^0.0.112",
     "partysocket": "^1.1.2",
     "postgres": "^3.4.5",
-    "prettier": "^3.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sqlite3": "^5.1.7",
