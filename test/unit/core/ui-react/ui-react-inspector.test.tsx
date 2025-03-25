@@ -9,7 +9,7 @@ describe('Inspector', () => {
   });
 
   test('basic', async () => {
-    render(<Inspector />);
+    const {unmount} = render(<Inspector />);
 
     await waitFor(() => {
       const inspector = screen.getByTitle('TinyBase Inspector');
@@ -21,10 +21,12 @@ describe('Inspector', () => {
       const image = screen.getByTitle('TinyBase Inspector');
       expect(image).toHaveAttribute('data-position', '3');
     });
+
+    unmount();
   });
 
   test('position', async () => {
-    render(<Inspector position="left" />);
+    const {unmount} = render(<Inspector position="left" />);
 
     await waitFor(() => {
       const inspector = screen.getByTitle('TinyBase Inspector');
@@ -36,5 +38,7 @@ describe('Inspector', () => {
       const image = screen.getByTitle('TinyBase Inspector');
       expect(image).toHaveAttribute('data-position', '0');
     });
+
+    unmount();
   });
 });
