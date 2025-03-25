@@ -1,6 +1,6 @@
-import {createServer} from 'http-server';
-import {readFileSync} from 'fs';
 import replace from 'buffer-replace';
+import {readFileSync} from 'fs';
+import {createServer} from 'http-server';
 
 export const createTestServer = (dir, port, log = false) => {
   const server = createServer({

@@ -1,4 +1,5 @@
-import {ERROR, MESSAGE, OPEN, UTF8} from '../../common/strings.ts';
+import type {IdOrNull} from '../../@types/common/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   Message,
   Receive,
@@ -9,11 +10,10 @@ import type {
   WsSynchronizer,
   createWsSynchronizer as createWsSynchronizerDecl,
 } from '../../@types/synchronizers/synchronizer-ws-client/index.d.ts';
-import {createPayload, receivePayload} from '../common.ts';
-import type {IdOrNull} from '../../@types/common/index.d.ts';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
-import {createCustomSynchronizer} from '../index.ts';
 import {promiseNew} from '../../common/other.ts';
+import {ERROR, MESSAGE, OPEN, UTF8} from '../../common/strings.ts';
+import {createPayload, receivePayload} from '../common.ts';
+import {createCustomSynchronizer} from '../index.ts';
 
 export const createWsSynchronizer = (async <
   WebSocketType extends WebSocketTypes,

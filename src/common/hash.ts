@@ -1,5 +1,5 @@
-import {GLOBAL} from './other.ts';
 import {arrayForEach} from './array.ts';
+import {GLOBAL} from './other.ts';
 
 const textEncoder = /* @__PURE__ */ new GLOBAL.TextEncoder();
 

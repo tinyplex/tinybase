@@ -1,7 +1,7 @@
-import {GLOBAL, math, mathFloor} from './other.ts';
 import type {Id, SortKey} from '../@types/common/index.d.ts';
 import {arrayMap, arrayReduce} from './array.ts';
 import {encode} from './codec.ts';
+import {GLOBAL, math, mathFloor} from './other.ts';
 
 // Fallback is not cryptographically secure but tolerable for ReactNative UUIDs.
 const getRandomValues = GLOBAL.crypto

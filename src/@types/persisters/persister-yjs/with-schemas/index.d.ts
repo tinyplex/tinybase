@@ -1,5 +1,4 @@
 /// persister-yjs
-
 import type {
   OptionalSchemas,
   Store,

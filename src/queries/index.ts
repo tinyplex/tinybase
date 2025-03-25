@@ -1,18 +1,4 @@
-import {
-  ADD,
-  CELL,
-  CELL_IDS,
-  EMPTY_STRING,
-  GET,
-  LISTENER,
-  RESULT,
-  ROW,
-  ROW_COUNT,
-  ROW_IDS,
-  SORTED_ROW_IDS,
-  TABLE,
-} from '../common/strings.ts';
-import {AddListener, CallListeners} from '../common/listeners.ts';
+import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
 import type {
   Aggregate,
   AggregateAdd,
@@ -38,7 +24,24 @@ import type {
   Row,
   Store,
 } from '../@types/store/index.d.ts';
-import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
+import {getAggregateValue, numericAggregators} from '../common/aggregators.ts';
+import {
+  arrayEvery,
+  arrayForEach,
+  arrayIsEmpty,
+  arrayPush,
+} from '../common/array.ts';
+import {getCellOrValueType, setOrDelCell} from '../common/cell.ts';
+import {
+  collClear,
+  collDel,
+  collForEach,
+  collHas,
+  collIsEmpty,
+  collSize,
+} from '../common/coll.ts';
+import {getCreateFunction, getDefinableFunctions} from '../common/definable.ts';
+import {AddListener, CallListeners} from '../common/listeners.ts';
 import {
   IdMap,
   IdMap2,
@@ -49,24 +52,7 @@ import {
   mapSet,
   visitTree,
 } from '../common/map.ts';
-import {IdSet, setAdd, setNew} from '../common/set.ts';
-import {
-  arrayEvery,
-  arrayForEach,
-  arrayIsEmpty,
-  arrayPush,
-} from '../common/array.ts';
-import {
-  collClear,
-  collDel,
-  collForEach,
-  collHas,
-  collIsEmpty,
-  collSize,
-} from '../common/coll.ts';
-import {getAggregateValue, numericAggregators} from '../common/aggregators.ts';
-import {getCellOrValueType, setOrDelCell} from '../common/cell.ts';
-import {getCreateFunction, getDefinableFunctions} from '../common/definable.ts';
+import {objFreeze, objMap} from '../common/obj.ts';
 import {
   getUndefined,
   ifNotUndefined,
@@ -75,7 +61,21 @@ import {
   size,
   slice,
 } from '../common/other.ts';
-import {objFreeze, objMap} from '../common/obj.ts';
+import {IdSet, setAdd, setNew} from '../common/set.ts';
+import {
+  ADD,
+  CELL,
+  CELL_IDS,
+  EMPTY_STRING,
+  GET,
+  LISTENER,
+  RESULT,
+  ROW,
+  ROW_COUNT,
+  ROW_IDS,
+  SORTED_ROW_IDS,
+  TABLE,
+} from '../common/strings.ts';
 
 type StoreWithPrivateMethods = Store & {
   createStore: () => Store;

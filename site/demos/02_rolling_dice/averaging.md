@@ -27,11 +27,11 @@ structured.
 We import the functions and components we need, and create the Store object:
 
 ```js
+import React from 'react';
+import {createRoot} from 'react-dom/client';
 import {createMetrics, createStore} from 'tinybase';
 import {MetricView, Provider, TableView, useCell} from 'tinybase/ui-react';
 import {Inspector} from 'tinybase/ui-react-inspector';
-import {createRoot} from 'react-dom/client';
-import React from 'react';
 
 const store = createStore();
 ```

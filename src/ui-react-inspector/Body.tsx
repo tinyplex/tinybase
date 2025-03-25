@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
 } from '../common/react.ts';
+import {CURRENT_TARGET} from '../common/strings.ts';
 import {
   useIndexes,
   useIndexesIds,
@@ -19,14 +20,13 @@ import {
   useStoreIds,
   useValues,
 } from '../ui-react/index.ts';
-import {CURRENT_TARGET} from '../common/strings.ts';
 import {IndexesView} from './IndexesView.tsx';
 import {MetricsView} from './MetricsView.tsx';
 import {QueriesView} from './QueriesView.tsx';
-import React from 'react';
 import {RelationshipsView} from './RelationshipsView.tsx';
-import type {StoreProp} from './types.ts';
 import {StoreView} from './StoreView.tsx';
+import type {StoreProp} from './types.ts';
+import React from 'react';
 import type {SyntheticEvent} from 'react';
 
 export const Body = ({s}: StoreProp) => {

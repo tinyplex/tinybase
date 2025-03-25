@@ -1,10 +1,12 @@
-import type {
-  AnyPersister,
-  DatabasePersisterConfig,
-  Persister,
-  PersisterListener,
-  Persists,
-} from 'tinybase/persisters';
+import {mockFetchWasm} from '../../common/other.ts';
+import {Variants} from './databases.ts';
+import {GetLocationMethod, Persistable} from './other.ts';
+import {DocHandle, Repo} from '@automerge/automerge-repo';
+import crypto from 'crypto';
+import fs from 'fs';
+import {deleteDB, openDB} from 'idb';
+import type {FetchMock} from 'jest-fetch-mock';
+import fm from 'jest-fetch-mock';
 import type {
   Changes,
   Content,
@@ -16,32 +18,30 @@ import type {
   Tables,
   Values,
 } from 'tinybase';
-import {DocHandle, Repo} from '@automerge/automerge-repo';
-import {GetLocationMethod, Persistable} from './other.ts';
-import type {Receive, Synchronizer} from 'tinybase/synchronizers';
-import {Doc as YDoc, Map as YMap} from 'yjs';
+import {createMergeableStore} from 'tinybase';
+import type {
+  AnyPersister,
+  DatabasePersisterConfig,
+  Persister,
+  PersisterListener,
+  Persists,
+} from 'tinybase/persisters';
+import {createCustomPersister} from 'tinybase/persisters';
+import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
 import {
   createLocalPersister,
   createSessionPersister,
 } from 'tinybase/persisters/persister-browser';
-import {deleteDB, openDB} from 'idb';
-import type {FetchMock} from 'jest-fetch-mock';
-import type {LocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
-import {Variants} from './databases.ts';
-import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
-import {createCustomPersister} from 'tinybase/persisters';
-import {createCustomSynchronizer} from 'tinybase/synchronizers';
 import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
-import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
-import {createMergeableStore} from 'tinybase';
 import {createRemotePersister} from 'tinybase/persisters/persister-remote';
 import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
-import crypto from 'crypto';
-import fm from 'jest-fetch-mock';
-import fs from 'fs';
-import {mockFetchWasm} from '../../common/other.ts';
+import type {Receive, Synchronizer} from 'tinybase/synchronizers';
+import {createCustomSynchronizer} from 'tinybase/synchronizers';
+import type {LocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import tmp from 'tmp';
+import {Doc as YDoc, Map as YMap} from 'yjs';
 
 tmp.setGracefulCleanup();
 

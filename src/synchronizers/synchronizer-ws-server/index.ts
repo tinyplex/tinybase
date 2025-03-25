@@ -1,3 +1,10 @@
+import type {Id, IdOrNull, Ids} from '../../@types/common/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {Persister, Persists} from '../../@types/persisters/index.d.ts';
+import type {
+  Receive,
+  Synchronizer,
+} from '../../@types/synchronizers/index.d.ts';
 import type {
   ClientIdsListener,
   PathIdsListener,
@@ -5,14 +12,16 @@ import type {
   WsServerStats,
   createWsServer as createWsServerDecl,
 } from '../../@types/synchronizers/synchronizer-ws-server/index.d.ts';
+import {arrayForEach, arrayPush} from '../../common/array.ts';
 import {
-  EMPTY_STRING,
-  ERROR,
-  MESSAGE,
-  UTF8,
-  strMatch,
-} from '../../common/strings.ts';
-import type {Id, IdOrNull, Ids} from '../../@types/common/index.d.ts';
+  collClear,
+  collDel,
+  collForEach,
+  collIsEmpty,
+  collSize,
+  collSize2,
+} from '../../common/coll.ts';
+import {getListenerFunctions} from '../../common/listeners.ts';
 import {
   IdMap,
   IdMap2,
@@ -23,33 +32,24 @@ import {
   mapNew,
   mapSet,
 } from '../../common/map.ts';
-import type {Persister, Persists} from '../../@types/persisters/index.d.ts';
-import type {
-  Receive,
-  Synchronizer,
-} from '../../@types/synchronizers/index.d.ts';
-import {WebSocket, WebSocketServer} from 'ws';
-import {arrayForEach, arrayPush} from '../../common/array.ts';
+import {objFreeze} from '../../common/obj.ts';
+import {ifNotUndefined, isArray} from '../../common/other.ts';
+import {IdSet2} from '../../common/set.ts';
 import {
-  collClear,
-  collDel,
-  collForEach,
-  collIsEmpty,
-  collSize,
-  collSize2,
-} from '../../common/coll.ts';
+  EMPTY_STRING,
+  ERROR,
+  MESSAGE,
+  UTF8,
+  strMatch,
+} from '../../common/strings.ts';
 import {
   createPayload,
   createRawPayload,
   ifPayloadValid,
   receivePayload,
 } from '../common.ts';
-import {ifNotUndefined, isArray} from '../../common/other.ts';
-import {IdSet2} from '../../common/set.ts';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import {createCustomSynchronizer} from '../index.ts';
-import {getListenerFunctions} from '../../common/listeners.ts';
-import {objFreeze} from '../../common/obj.ts';
+import {WebSocket, WebSocketServer} from 'ws';
 
 enum Sc {
   State = 0,

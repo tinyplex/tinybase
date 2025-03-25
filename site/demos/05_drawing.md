@@ -29,7 +29,19 @@ First, we create the import aliases for TinyBase and React modules we'll need:
 We'll use a good selection of the TinyBase API and the ui-react module:
 
 ```js
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+import React from 'react';
+import {createRoot} from 'react-dom/client';
 import {createCheckpoints, createRelationships, createStore} from 'tinybase';
+import {createLocalPersister} from 'tinybase/persisters/persister-browser';
 import {
   LinkedRowsView,
   Provider,
@@ -51,19 +63,7 @@ import {
   useStore,
   useUndoInformation,
 } from 'tinybase/ui-react';
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
-import {createLocalPersister} from 'tinybase/persisters/persister-browser';
 import {Inspector} from 'tinybase/ui-react-inspector';
-import {createRoot} from 'react-dom/client';
-import React from 'react';
 ```
 
 The drawing app relies heavily on being able to drag and drop shapes and their

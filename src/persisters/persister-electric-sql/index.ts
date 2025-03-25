@@ -6,12 +6,12 @@ import type {
   ElectricSqlPersister,
   createElectricSqlPersister as createElectricSqlPersisterDecl,
 } from '../../@types/persisters/persister-electric-sql/index.d.ts';
-import type {ElectricClient} from 'electric-sql/client/model';
-import {IdObj} from '../../common/obj.ts';
 import type {Store} from '../../@types/store/index.d.ts';
-import type {UnsubscribeFunction} from 'electric-sql/notifiers';
 import {arrayForEach} from '../../common/array.ts';
+import {IdObj} from '../../common/obj.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
+import type {ElectricClient} from 'electric-sql/client/model';
+import type {UnsubscribeFunction} from 'electric-sql/notifiers';
 
 export const createElectricSqlPersister = ((
   store: Store,

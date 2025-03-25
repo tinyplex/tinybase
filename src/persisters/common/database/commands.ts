@@ -1,3 +1,31 @@
+import type {Id} from '../../../@types/common/index.d.ts';
+import type {DatabaseExecuteCommand} from '../../../@types/persisters/index.d.ts';
+import type {
+  CellOrUndefined,
+  Table,
+  ValueOrUndefined,
+} from '../../../@types/store/index.d.ts';
+import {
+  arrayFilter,
+  arrayIsEmpty,
+  arrayJoin,
+  arrayMap,
+  arrayPush,
+} from '../../../common/array.ts';
+import {collClear, collDel, collHas, collValues} from '../../../common/coll.ts';
+import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
+import {
+  objDel,
+  objIds,
+  objIsEmpty,
+  objMap,
+  objNew,
+  objToArray,
+  objValues,
+} from '../../../common/obj.ts';
+import {isUndefined, promiseAll} from '../../../common/other.ts';
+import {IdSet2, setAdd, setNew} from '../../../common/set.ts';
+import {COMMA} from '../../../common/strings.ts';
 import {
   ALTER_TABLE,
   DELETE_FROM,
@@ -10,34 +38,6 @@ import {
   escapeId,
   getPlaceholders,
 } from './common.ts';
-import type {
-  CellOrUndefined,
-  Table,
-  ValueOrUndefined,
-} from '../../../@types/store/index.d.ts';
-import {IdSet2, setAdd, setNew} from '../../../common/set.ts';
-import {
-  arrayFilter,
-  arrayIsEmpty,
-  arrayJoin,
-  arrayMap,
-  arrayPush,
-} from '../../../common/array.ts';
-import {collClear, collDel, collHas, collValues} from '../../../common/coll.ts';
-import {isUndefined, promiseAll} from '../../../common/other.ts';
-import {mapEnsure, mapGet, mapNew, mapSet} from '../../../common/map.ts';
-import {
-  objDel,
-  objIds,
-  objIsEmpty,
-  objMap,
-  objNew,
-  objToArray,
-  objValues,
-} from '../../../common/obj.ts';
-import {COMMA} from '../../../common/strings.ts';
-import type {DatabaseExecuteCommand} from '../../../@types/persisters/index.d.ts';
-import type {Id} from '../../../@types/common/index.d.ts';
 
 export type Schema = IdSet2;
 

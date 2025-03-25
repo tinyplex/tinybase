@@ -1,3 +1,12 @@
+import type {Checkpoints} from '../@types/checkpoints/index.d.ts';
+import type {Id, Ids} from '../@types/common/index.d.ts';
+import type {Indexes} from '../@types/indexes/index.d.ts';
+import type {Metrics} from '../@types/metrics/index.d.ts';
+import type {AnyPersister} from '../@types/persisters/index.d.ts';
+import type {Queries} from '../@types/queries/index.d.ts';
+import type {Relationships} from '../@types/relationships/index.d.ts';
+import type {Store} from '../@types/store/index.d.ts';
+import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
 import type {
   CheckpointsOrCheckpointsId,
   IndexesOrIndexesId,
@@ -25,20 +34,11 @@ import type {
   useSynchronizer as useSynchronizerDecl,
   useSynchronizerIds as useSynchronizerIdsDecl,
 } from '../@types/ui-react/index.d.ts';
-import {GLOBAL, isString, isUndefined} from '../common/other.ts';
-import type {Id, Ids} from '../@types/common/index.d.ts';
 import {IdObj, objEnsure, objGet, objIds} from '../common/obj.ts';
+import {GLOBAL, isString, isUndefined} from '../common/other.ts';
 import {createContext, useContext, useEffect} from '../common/react.ts';
-import type {AnyPersister} from '../@types/persisters/index.d.ts';
-import type {Checkpoints} from '../@types/checkpoints/index.d.ts';
-import type {Indexes} from '../@types/indexes/index.d.ts';
-import type {Metrics} from '../@types/metrics/index.d.ts';
-import type {Queries} from '../@types/queries/index.d.ts';
-import type React from 'react';
-import type {Relationships} from '../@types/relationships/index.d.ts';
-import type {Store} from '../@types/store/index.d.ts';
-import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
 import {TINYBASE} from '../common/strings.ts';
+import type React from 'react';
 
 export type Thing =
   | Store

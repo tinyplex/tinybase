@@ -1,5 +1,4 @@
 /// ui-react-dom
-
 import type {
   CellIdFromSchema,
   TableIdFromSchema,
@@ -17,9 +16,9 @@ import type {
   ValueProps,
 } from '../../_internal/ui-react/with-schemas/index.d.ts';
 import type {Id, Ids} from '../../common/with-schemas/index.d.ts';
-import type {ComponentType} from 'react';
 import type {NoSchemas} from '../../store/index.d.ts';
 import type {OptionalSchemas} from '../../store/with-schemas/index.d.ts';
+import type {ComponentType} from 'react';
 
 /// CustomCell
 export type CustomCell<

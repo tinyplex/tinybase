@@ -1,11 +1,10 @@
 /* eslint-disable jest/no-conditional-expect */
-
-import {WebSocket, WebSocketServer} from 'ws';
-import {createMergeableStore} from 'tinybase';
-import {createWsServerSimple} from 'tinybase/synchronizers/synchronizer-ws-server-simple';
-import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
-import {pause} from '../common/other.ts';
 import {resetHlc} from '../common/mergeable.ts';
+import {pause} from '../common/other.ts';
+import {createMergeableStore} from 'tinybase';
+import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+import {createWsServerSimple} from 'tinybase/synchronizers/synchronizer-ws-server-simple';
+import {WebSocket, WebSocketServer} from 'ws';
 
 beforeEach(() => {
   resetHlc();

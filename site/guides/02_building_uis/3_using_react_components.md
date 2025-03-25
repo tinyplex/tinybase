@@ -15,10 +15,10 @@ In this simple example, the CellView component is used to render the color Cell
 in a `<span>`:
 
 ```jsx
-import {CellView} from 'tinybase/ui-react';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {createStore} from 'tinybase';
+import {CellView} from 'tinybase/ui-react';
 
 const store = createStore().setCell('pets', 'fido', 'color', 'brown');
 const App = () => (

@@ -1,9 +1,9 @@
-import 'expect-puppeteer';
-import 'jest-puppeteer';
-import {ElementHandle} from 'puppeteer';
-import {Server} from 'http';
 // @ts-expect-error - no types for shared server
 import {createTestServer} from '../server.mjs';
+import 'expect-puppeteer';
+import {Server} from 'http';
+import 'jest-puppeteer';
+import {ElementHandle} from 'puppeteer';
 
 jest.setTimeout(10000);
 

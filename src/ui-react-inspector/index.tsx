@@ -1,12 +1,12 @@
-import {POSITIONS, UNIQUE_ID} from './common.ts';
-import {useCreatePersister, useCreateStore} from '../ui-react/index.ts';
-import {APP_STYLESHEET} from './style.ts';
 import type {InspectorProps} from '../@types/ui-react-inspector/index.d.ts';
-import {Nub} from './Nub.tsx';
-import {Panel} from './Panel.tsx';
-import React from 'react';
 import {createSessionPersister} from '../persisters/persister-browser/index.ts';
 import {createStore} from '../store/index.ts';
+import {useCreatePersister, useCreateStore} from '../ui-react/index.ts';
+import {Nub} from './Nub.tsx';
+import {Panel} from './Panel.tsx';
+import {POSITIONS, UNIQUE_ID} from './common.ts';
+import {APP_STYLESHEET} from './style.ts';
+import React from 'react';
 
 export const Inspector = ({
   position = 'right',

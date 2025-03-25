@@ -1,10 +1,4 @@
 import {
-  createIndexes,
-  createMetrics,
-  createQueries,
-  createStore,
-} from 'tinybase';
-import {
   getNCells,
   getNRows,
   getNTables,
@@ -12,6 +6,12 @@ import {
   repeat,
   µs,
 } from './common.ts';
+import {
+  createIndexes,
+  createMetrics,
+  createQueries,
+  createStore,
+} from 'tinybase';
 import type {Table} from 'tinybase';
 
 repeat(

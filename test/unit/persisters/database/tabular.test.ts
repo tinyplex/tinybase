@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable max-len */
-import 'fake-indexeddb/auto';
-import {ALL_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 import {mockFetchWasm, pause} from '../../common/other.ts';
-import type {Persister} from 'tinybase/persisters';
+import {ALL_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
+import 'fake-indexeddb/auto';
 import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
+import type {Persister} from 'tinybase/persisters';
 
 describe.each(Object.entries(ALL_VARIANTS))(
   '%s',

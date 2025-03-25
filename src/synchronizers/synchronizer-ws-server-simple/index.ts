@@ -1,4 +1,9 @@
-import {EMPTY_STRING, MESSAGE, UTF8, strMatch} from '../../common/strings.ts';
+import type {Id} from '../../@types/common/index.js';
+import type {
+  WsServerSimple,
+  createWsServerSimple as createWsServerSimpleDecl,
+} from '../../@types/synchronizers/synchronizer-ws-server-simple/index.js';
+import {collClear, collDel, collIsEmpty} from '../../common/coll.ts';
 import {
   IdMap2,
   mapEnsure,
@@ -7,16 +12,11 @@ import {
   mapNew,
   mapSet,
 } from '../../common/map.ts';
-import {WebSocket, WebSocketServer} from 'ws';
-import type {
-  WsServerSimple,
-  createWsServerSimple as createWsServerSimpleDecl,
-} from '../../@types/synchronizers/synchronizer-ws-server-simple/index.js';
-import {collClear, collDel, collIsEmpty} from '../../common/coll.ts';
-import {createRawPayload, ifPayloadValid} from '../common.ts';
-import type {Id} from '../../@types/common/index.js';
-import {ifNotUndefined} from '../../common/other.ts';
 import {objFreeze} from '../../common/obj.ts';
+import {ifNotUndefined} from '../../common/other.ts';
+import {EMPTY_STRING, MESSAGE, UTF8, strMatch} from '../../common/strings.ts';
+import {createRawPayload, ifPayloadValid} from '../common.ts';
+import {WebSocket, WebSocketServer} from 'ws';
 
 const PATH_REGEX = /\/([^?]*)/;
 

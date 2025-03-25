@@ -1,7 +1,4 @@
-import type {GetCell, Store} from '../@types/store/index.d.ts';
 import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
-import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../common/map.ts';
-import {IdSet, IdSet3, setAdd, setNew} from '../common/set.ts';
 import type {
   LinkedRowIdsListener,
   LocalRowIdsListener,
@@ -11,6 +8,7 @@ import type {
   RemoteRowIdListener,
   createRelationships as createRelationshipsDecl,
 } from '../@types/relationships/index.d.ts';
+import type {GetCell, Store} from '../@types/store/index.d.ts';
 import {
   collDel,
   collForEach,
@@ -24,10 +22,12 @@ import {
   getDefinableFunctions,
   getRowCellFunction,
 } from '../common/definable.ts';
-import {ifNotUndefined, isUndefined} from '../common/other.ts';
-import {EMPTY_STRING} from '../common/strings.ts';
 import {getListenerFunctions} from '../common/listeners.ts';
+import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../common/map.ts';
 import {objFreeze} from '../common/obj.ts';
+import {ifNotUndefined, isUndefined} from '../common/other.ts';
+import {IdSet, IdSet3, setAdd, setNew} from '../common/set.ts';
+import {EMPTY_STRING} from '../common/strings.ts';
 
 type Relationship = [IdMap<Id>, IdMap<IdSet>, IdMap<IdSet>, IdMap<number>];
 

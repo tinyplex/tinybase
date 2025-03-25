@@ -1,8 +1,7 @@
 /// persister-electric-sql
-
+import type {Store} from '../../store/index.d.ts';
 import type {DatabasePersisterConfig, Persister} from '../index.d.ts';
 import type {ElectricClient} from 'electric-sql/client/model';
-import type {Store} from '../../store/index.d.ts';
 
 /// ElectricSqlPersister
 export interface ElectricSqlPersister extends Persister {

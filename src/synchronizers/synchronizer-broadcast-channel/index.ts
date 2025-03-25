@@ -1,14 +1,14 @@
+import type {IdOrNull} from '../../@types/common/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   Message,
   Receive,
   Send,
 } from '../../@types/synchronizers/index.d.ts';
-import type {IdOrNull} from '../../@types/common/index.d.ts';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {createBroadcastChannelSynchronizer as createBroadcastChannelSynchronizerDecl} from '../../@types/synchronizers/synchronizer-broadcast-channel/index.d.ts';
-import {createCustomSynchronizer} from '../index.ts';
 import {getUniqueId} from '../../common/index.ts';
 import {isUndefined} from '../../common/other.ts';
+import {createCustomSynchronizer} from '../index.ts';
 
 export const createBroadcastChannelSynchronizer = ((
   store: MergeableStore,

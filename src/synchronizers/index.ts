@@ -1,3 +1,4 @@
+import type {Id, IdOrNull} from '../@types/common/index.d.ts';
 import type {
   CellStamp,
   ContentHashes,
@@ -10,31 +11,30 @@ import type {
   TablesStamp,
   ValuesStamp,
 } from '../@types/mergeable-store/index.d.ts';
-import type {Id, IdOrNull} from '../@types/common/index.d.ts';
-import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
+import type {
+  PersisterListener,
+  Persists as PersistsEnum,
+} from '../@types/persisters/index.d.ts';
+import type {Content} from '../@types/store/index.d.ts';
 import type {
   Message as MessageEnum,
   Receive,
   Send,
   Synchronizer,
 } from '../@types/synchronizers/index.d.ts';
-import type {
-  PersisterListener,
-  Persists as PersistsEnum,
-} from '../@types/persisters/index.d.ts';
-import {getLatestTime, stampNew, stampNewObj} from '../common/stamps.ts';
+import {collDel} from '../common/coll.ts';
+import {getUniqueId} from '../common/index.ts';
+import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
+import {objEnsure, objForEach, objIsEmpty} from '../common/obj.ts';
 import {
   ifNotUndefined,
   isUndefined,
   promiseNew,
   startTimeout,
 } from '../common/other.ts';
-import {objEnsure, objForEach, objIsEmpty} from '../common/obj.ts';
-import type {Content} from '../@types/store/index.d.ts';
+import {getLatestTime, stampNew, stampNewObj} from '../common/stamps.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
-import {collDel} from '../common/coll.ts';
 import {createCustomPersister} from '../persisters/index.ts';
-import {getUniqueId} from '../common/index.ts';
 
 const enum MessageValues {
   Response = 0,

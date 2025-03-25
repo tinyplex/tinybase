@@ -1,8 +1,7 @@
 /// persister-automerge
-
-import type {DocHandle} from '@automerge/automerge-repo';
-import type {Persister} from '../index.d.ts';
 import type {Store} from '../../store/index.d.ts';
+import type {Persister} from '../index.d.ts';
+import type {DocHandle} from '@automerge/automerge-repo';
 
 /// AutomergePersister
 export interface AutomergePersister extends Persister {

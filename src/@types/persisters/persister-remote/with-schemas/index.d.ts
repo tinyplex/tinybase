@@ -1,5 +1,4 @@
 /// persister-remote
-
 import type {
   OptionalSchemas,
   Store,

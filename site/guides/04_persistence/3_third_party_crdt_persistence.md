@@ -25,9 +25,9 @@ In this case, we have two Yjs documents that are each bound to their respective
 Store objects by a Persister with auto-load and auto-save:
 
 ```js
-import {Doc} from 'yjs';
 import {createStore} from 'tinybase';
 import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
+import {Doc} from 'yjs';
 
 const doc1 = new Doc();
 const store1 = createStore();

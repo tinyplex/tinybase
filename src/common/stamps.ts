@@ -1,3 +1,4 @@
+import type {Id} from '../@types/common/index.d.ts';
 import type {
   CellStamp,
   Hash,
@@ -5,12 +6,11 @@ import type {
   Time,
   ValueStamp,
 } from '../@types/mergeable-store/index.d.ts';
-import {EMPTY_STRING, NUMBER, getTypeOf} from './strings.ts';
+import {getHash} from './hash.ts';
 import {IdMap, mapNew, mapToObj} from './map.ts';
 import {IdObj, objNew} from './obj.ts';
 import {isArray, isFiniteNumber, isString, size} from './other.ts';
-import type {Id} from '../@types/common/index.d.ts';
-import {getHash} from './hash.ts';
+import {EMPTY_STRING, NUMBER, getTypeOf} from './strings.ts';
 
 export type StampMap<Thing> = Stamp<IdMap<Thing>, true>;
 

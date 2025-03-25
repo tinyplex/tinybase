@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 // NB: an exclamation mark after a line visually indicates an expected TS error
-
 import {createFilePersister} from 'tinybase/persisters/persister-file/with-schemas';
 import {createStore} from 'tinybase/with-schemas';
 

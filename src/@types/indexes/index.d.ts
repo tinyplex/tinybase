@@ -1,7 +1,6 @@
 /// indexes
-
-import type {GetCell, RowCallback, Store} from '../store/index.d.ts';
 import type {Id, IdOrNull, Ids, SortKey} from '../common/index.d.ts';
+import type {GetCell, RowCallback, Store} from '../store/index.d.ts';
 
 /// Index
 export type Index = {[sliceId: Id]: Slice};

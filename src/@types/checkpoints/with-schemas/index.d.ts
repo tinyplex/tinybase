@@ -1,5 +1,4 @@
 /// checkpoints
-
 import type {Id, IdOrNull, Ids} from '../../common/with-schemas/index.d.ts';
 import type {OptionalSchemas, Store} from '../../store/with-schemas/index.d.ts';
 

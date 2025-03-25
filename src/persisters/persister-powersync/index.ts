@@ -3,18 +3,11 @@ import type {
   DatabaseExecuteCommand,
   DatabasePersisterConfig,
 } from '../../@types/persisters/index.d.ts';
-import {IdObj, objIds, objNew, objToArray} from '../../common/obj.ts';
-import {IdSet, setNew} from '../../common/set.ts';
 import type {
   PowerSyncPersister,
   createPowerSyncPersister as createPowerSyncPersisterDecl,
 } from '../../@types/persisters/persister-powersync/index.d.ts';
-import {
-  Upsert,
-  escapeColumnNames,
-  escapeId,
-  getPlaceholders,
-} from '../common/database/common.ts';
+import type {Store} from '../../@types/store/index.d.ts';
 import {
   arrayFilter,
   arrayForEach,
@@ -23,11 +16,18 @@ import {
   arrayMap,
   arrayPush,
 } from '../../common/array.ts';
-import {AbstractPowerSyncDatabase} from '@powersync/common';
-import {COMMA} from '../../common/strings.ts';
-import type {Store} from '../../@types/store/index.d.ts';
 import {collHas} from '../../common/coll.ts';
+import {IdObj, objIds, objNew, objToArray} from '../../common/obj.ts';
+import {IdSet, setNew} from '../../common/set.ts';
+import {COMMA} from '../../common/strings.ts';
+import {
+  Upsert,
+  escapeColumnNames,
+  escapeId,
+  getPlaceholders,
+} from '../common/database/common.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
+import {AbstractPowerSyncDatabase} from '@powersync/common';
 
 export const createPowerSyncPersister = ((
   store: Store,

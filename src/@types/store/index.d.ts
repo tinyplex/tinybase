@@ -1,7 +1,6 @@
 /// store
-
-import type {Id, IdOrNull, Ids, Json} from '../common/index.d.ts';
 import type {StoreAlias} from '../_internal/store/index.d.ts';
+import type {Id, IdOrNull, Ids, Json} from '../common/index.d.ts';
 
 /// TablesSchema
 export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};

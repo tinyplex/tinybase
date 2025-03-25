@@ -1,15 +1,14 @@
 /// synchronizer-ws-server-durable-object
-
+import type {
+  Persister,
+  Persists,
+} from '../../../persisters/with-schemas/index.d.ts';
 import type {
   Id,
   IdAddedOrRemoved,
   Ids,
   OptionalSchemas,
 } from '../../../with-schemas/index.d.ts';
-import type {
-  Persister,
-  Persists,
-} from '../../../persisters/with-schemas/index.d.ts';
 import {DurableObject} from 'cloudflare:workers';
 
 /// WsServerDurableObject

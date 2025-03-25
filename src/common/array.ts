@@ -1,5 +1,5 @@
-import {EMPTY_STRING} from './strings.ts';
 import {size} from './other.ts';
+import {EMPTY_STRING} from './strings.ts';
 
 export const arrayNew = <Value>(
   size: number,

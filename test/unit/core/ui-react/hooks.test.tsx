@@ -1,6 +1,8 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-
-import type {AnyPersister, Persister} from 'tinybase/persisters';
+import {pause} from '../../common/other.ts';
+import {fireEvent, render} from '@testing-library/react';
+import {userEvent} from '@testing-library/user-event';
+import React, {MouseEvent, MouseEventHandler, act} from 'react';
 import type {
   Cell,
   Checkpoints,
@@ -15,6 +17,19 @@ import type {
   Value,
   Values,
 } from 'tinybase';
+import {
+  createCheckpoints,
+  createIndexes,
+  createMergeableStore,
+  createMetrics,
+  createQueries,
+  createRelationships,
+  createStore,
+} from 'tinybase';
+import type {AnyPersister, Persister} from 'tinybase/persisters';
+import {createFilePersister} from 'tinybase/persisters/persister-file';
+import type {Synchronizer} from 'tinybase/synchronizers';
+import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import {
   Provider,
   useAddRowCallback,
@@ -140,23 +155,7 @@ import {
   useValuesListener,
   useWillFinishTransactionListener,
 } from 'tinybase/ui-react';
-import React, {MouseEvent, MouseEventHandler, act} from 'react';
-import {
-  createCheckpoints,
-  createIndexes,
-  createMergeableStore,
-  createMetrics,
-  createQueries,
-  createRelationships,
-  createStore,
-} from 'tinybase';
-import {fireEvent, render} from '@testing-library/react';
-import type {Synchronizer} from 'tinybase/synchronizers';
-import {createFilePersister} from 'tinybase/persisters/persister-file';
-import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
-import {pause} from '../../common/other.ts';
 import tmp from 'tmp';
-import {userEvent} from '@testing-library/user-event';
 
 let store: Store;
 let didRender: jest.Mock;

@@ -1,9 +1,9 @@
-import {Doc as YDoc, Map as YMap, applyUpdate, encodeStateAsUpdate} from 'yjs';
-import type {Persister} from 'tinybase/persisters';
+import {pause} from '../common/other.ts';
 import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
+import type {Persister} from 'tinybase/persisters';
 import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
-import {pause} from '../common/other.ts';
+import {Doc as YDoc, Map as YMap, applyUpdate, encodeStateAsUpdate} from 'yjs';
 
 let doc1: YDoc;
 let store1: Store;

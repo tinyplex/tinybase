@@ -33,7 +33,9 @@ Since v3.1, TinyBase can provide typing that adapts according to the schema when
 you import the `with-schemas` version of the library. For example:
 
 ```ts yolo
-import {createStore} from 'tinybase/with-schemas'; // NB the 'with-schemas'
+import {createStore} from 'tinybase/with-schemas';
+
+// NB the 'with-schemas'
 
 const store = createStore().setValuesSchema({
   employees: {type: 'number'},

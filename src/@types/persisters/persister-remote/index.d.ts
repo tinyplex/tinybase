@@ -1,7 +1,6 @@
 /// persister-remote
-
-import type {Persister} from '../index.d.ts';
 import type {Store} from '../../store/index.d.ts';
+import type {Persister} from '../index.d.ts';
 
 /// RemotePersister
 export interface RemotePersister extends Persister {

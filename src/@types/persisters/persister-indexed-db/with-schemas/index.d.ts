@@ -1,5 +1,4 @@
 /// persister-indexed-db
-
 import type {
   OptionalSchemas,
   Store,

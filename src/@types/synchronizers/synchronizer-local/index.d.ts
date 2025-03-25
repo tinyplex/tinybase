@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
 /// synchronizer-local
-
-import type {Receive, Send, Synchronizer} from '../index.d.ts';
 import type {MergeableStore} from '../../mergeable-store/index.d.ts';
+import type {Receive, Send, Synchronizer} from '../index.d.ts';
 
 /// LocalSynchronizer
 export interface LocalSynchronizer extends Synchronizer {}

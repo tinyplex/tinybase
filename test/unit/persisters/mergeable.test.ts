@@ -1,15 +1,7 @@
 /* eslint-disable jest/no-conditional-expect */
-
-import type {
-  Changes,
-  Content,
-  MergeableChanges,
-  MergeableContent,
-  MergeableStore,
-} from 'tinybase';
-import {GetLocationMethod, Persistable, nextLoop} from './common/other.ts';
-import {Persists, createCustomPersister} from 'tinybase/persisters';
-import {createMergeableStore, createStore} from 'tinybase';
+import {resetHlc} from '../common/mergeable.ts';
+import {pause} from '../common/other.ts';
+import {MERGEABLE_VARIANTS} from './common/databases.ts';
 import {
   getMockDatabases,
   mockCustomSynchronizer,
@@ -21,10 +13,17 @@ import {
   mockMergeableNoContentListener,
   mockSessionStorage,
 } from './common/mocks.ts';
-import {MERGEABLE_VARIANTS} from './common/databases.ts';
+import {GetLocationMethod, Persistable, nextLoop} from './common/other.ts';
+import type {
+  Changes,
+  Content,
+  MergeableChanges,
+  MergeableContent,
+  MergeableStore,
+} from 'tinybase';
+import {createMergeableStore, createStore} from 'tinybase';
+import {Persists, createCustomPersister} from 'tinybase/persisters';
 import type {Persister} from 'tinybase/persisters';
-import {pause} from '../common/other.ts';
-import {resetHlc} from '../common/mergeable.ts';
 
 beforeEach(() => {
   resetHlc();

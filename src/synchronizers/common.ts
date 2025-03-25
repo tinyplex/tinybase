@@ -4,8 +4,8 @@ import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../common/json.ts';
-import {EMPTY_STRING} from '../common/strings.ts';
 import {slice} from '../common/other.ts';
+import {EMPTY_STRING} from '../common/strings.ts';
 
 const MESSAGE_SEPARATOR = '\n';
 

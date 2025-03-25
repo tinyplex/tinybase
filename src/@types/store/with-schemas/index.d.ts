@@ -1,5 +1,4 @@
 /// store
-
 import type {
   AllCellIdFromSchema,
   CellIdFromSchema,

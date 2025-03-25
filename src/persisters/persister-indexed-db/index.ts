@@ -1,10 +1,12 @@
-import type {Content, Store, Table} from '../../@types/store/index.d.ts';
-import {IdObj, objHas, objNew, objToArray} from '../../common/obj.ts';
+import type {Id} from '../../@types/common/index.d.ts';
+import type {PersisterListener} from '../../@types/persisters/index.d.ts';
 import type {
   IndexedDbPersister,
   createIndexedDbPersister as createIndexedDbPersisterDecl,
 } from '../../@types/persisters/persister-indexed-db/index.d.ts';
-import {T, V} from '../../common/strings.ts';
+import type {Content, Store, Table} from '../../@types/store/index.d.ts';
+import {arrayMap, arrayPush} from '../../common/array.ts';
+import {IdObj, objHas, objNew, objToArray} from '../../common/obj.ts';
 import {
   WINDOW,
   promiseAll,
@@ -12,9 +14,7 @@ import {
   startInterval,
   stopInterval,
 } from '../../common/other.ts';
-import {arrayMap, arrayPush} from '../../common/array.ts';
-import type {Id} from '../../@types/common/index.d.ts';
-import type {PersisterListener} from '../../@types/persisters/index.d.ts';
+import {T, V} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 
 const OBJECT_STORE_NAMES = [T, V];

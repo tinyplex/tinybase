@@ -1,16 +1,15 @@
 /// persister-sqlite3
-
+import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
+import type {
+  OptionalSchemas,
+  Store,
+} from '../../../store/with-schemas/index.d.ts';
 import type {
   DatabasePersisterConfig,
   Persister,
   Persists,
 } from '../../with-schemas/index.d.ts';
-import type {
-  OptionalSchemas,
-  Store,
-} from '../../../store/with-schemas/index.d.ts';
 import type {Database} from 'sqlite3';
-import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
 
 /// Sqlite3Persister
 export interface Sqlite3Persister<Schemas extends OptionalSchemas>

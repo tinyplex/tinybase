@@ -1,3 +1,4 @@
+import type {NavNode} from '../ui/NavJson.tsx';
 import {
   addClass,
   commonLoad,
@@ -9,7 +10,6 @@ import {
   queryElement,
   toggleClass,
 } from './common.ts';
-import type {NavNode} from '../ui/NavJson.tsx';
 
 commonLoad();
 

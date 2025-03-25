@@ -1,11 +1,4 @@
 import type {
-  CellOrUndefined,
-  ChangedCell,
-  ChangedValue,
-  Store,
-  ValueOrUndefined,
-} from '../@types/store/index.d.ts';
-import type {
   CheckpointCallback,
   CheckpointIds,
   CheckpointIdsListener,
@@ -15,16 +8,13 @@ import type {
   createCheckpoints as createCheckpointsDecl,
 } from '../@types/checkpoints/index.d.ts';
 import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
-import {
-  IdMap,
-  IdMap2,
-  IdMap3,
-  mapEnsure,
-  mapForEach,
-  mapGet,
-  mapNew,
-  mapSet,
-} from '../common/map.ts';
+import type {
+  CellOrUndefined,
+  ChangedCell,
+  ChangedValue,
+  Store,
+  ValueOrUndefined,
+} from '../@types/store/index.d.ts';
 import {
   arrayClear,
   arrayForEach,
@@ -35,14 +25,24 @@ import {
   arrayShift,
   arrayUnshift,
 } from '../common/array.ts';
-import {collForEach, collHas, collIsEmpty, collSize2} from '../common/coll.ts';
-import {ifNotUndefined, isUndefined, size} from '../common/other.ts';
 import {setOrDelCell, setOrDelValue} from '../common/cell.ts';
-import {EMPTY_STRING} from '../common/strings.ts';
-import {IdSet2} from '../common/set.ts';
+import {collForEach, collHas, collIsEmpty, collSize2} from '../common/coll.ts';
 import {getCreateFunction} from '../common/definable.ts';
 import {getListenerFunctions} from '../common/listeners.ts';
+import {
+  IdMap,
+  IdMap2,
+  IdMap3,
+  mapEnsure,
+  mapForEach,
+  mapGet,
+  mapNew,
+  mapSet,
+} from '../common/map.ts';
 import {objFreeze} from '../common/obj.ts';
+import {ifNotUndefined, isUndefined, size} from '../common/other.ts';
+import {IdSet2} from '../common/set.ts';
+import {EMPTY_STRING} from '../common/strings.ts';
 
 type CellsDelta = IdMap3<ChangedCell>;
 type ValuesDelta = IdMap<ChangedValue>;

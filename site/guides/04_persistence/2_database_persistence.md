@@ -51,9 +51,9 @@ memory, but typically you would use the origin private file system (OPFS) as a
 storage back-end.
 
 ```js
-import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
-import {createStore} from 'tinybase';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
+import {createStore} from 'tinybase';
+import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 
 const sqlite3 = await sqlite3InitModule();
 let db = new sqlite3.oo1.DB(':memory:', 'c');

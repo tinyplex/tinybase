@@ -1,24 +1,26 @@
-import 'jest-fetch-mock';
-import 'fake-indexeddb/auto';
+import {pause, suppressWarnings} from '../../common/other.ts';
+import {PGlite} from '@electric-sql/pglite';
 import * as SQLite from '@journeyapps/wa-sqlite';
+import SQLiteESMFactory from '@journeyapps/wa-sqlite/dist/wa-sqlite.mjs';
 import {Client, createClient} from '@libsql/client';
-import type {DatabasePersisterConfig, Persister} from 'tinybase/persisters';
-import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
 import type {
   QueryResult,
   SQLWatchOptions,
   WatchOnChangeEvent,
 } from '@powersync/common';
-import type {ReservedSql, Sql} from 'postgres';
-import {type Store, getUniqueId} from 'tinybase';
+import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
-import {pause, suppressWarnings} from '../../common/other.ts';
-import sqlite3, {Database} from 'sqlite3';
+import {Mutex} from 'async-mutex';
 import {DbSchema} from 'electric-sql/client/model';
 import type {ElectricClient} from 'electric-sql/client/model';
-import {Mutex} from 'async-mutex';
-import {PGlite} from '@electric-sql/pglite';
-import SQLiteESMFactory from '@journeyapps/wa-sqlite/dist/wa-sqlite.mjs';
+import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
+import 'fake-indexeddb/auto';
+import 'jest-fetch-mock';
+import type {ReservedSql, Sql} from 'postgres';
+import postgres from 'postgres';
+import sqlite3, {Database} from 'sqlite3';
+import {type Store, getUniqueId} from 'tinybase';
+import type {DatabasePersisterConfig, Persister} from 'tinybase/persisters';
 import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
 import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
@@ -27,8 +29,6 @@ import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
-import postgres from 'postgres';
-import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import tmp from 'tmp';
 
 tmp.setGracefulCleanup();

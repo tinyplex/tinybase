@@ -1,5 +1,4 @@
 /// synchronizer-ws-server-simple
-
 import type {WebSocketServer} from 'ws';
 
 /// WsServerSimple

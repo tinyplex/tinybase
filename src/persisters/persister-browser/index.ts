@@ -1,22 +1,22 @@
-import type {
-  LocalPersister,
-  SessionPersister,
-  createLocalPersister as createLocalPersisterDecl,
-  createSessionPersister as createSessionPersisterDecl,
-} from '../../@types/persisters/persister-browser/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   PersistedContent,
   Persister,
   PersisterListener,
   Persists as PersistsType,
 } from '../../@types/persisters/index.d.ts';
+import type {
+  LocalPersister,
+  SessionPersister,
+  createLocalPersister as createLocalPersisterDecl,
+  createSessionPersister as createSessionPersisterDecl,
+} from '../../@types/persisters/persister-browser/index.d.ts';
+import type {Store} from '../../@types/store/index.d.ts';
 import {
   jsonParse,
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../../common/json.ts';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
-import type {Store} from '../../@types/store/index.d.ts';
 import {WINDOW} from '../../common/other.ts';
 import {createCustomPersister} from '../common/create.ts';
 
