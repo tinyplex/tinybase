@@ -36,8 +36,8 @@
    * reference back out again.
    *
    * ```js
-   * import {WebSocketServer} from 'ws';
    * import {createWsServerSimple} from 'tinybase/synchronizers/synchronizer-ws-server-simple';
+   * import {WebSocketServer} from 'ws';
    *
    * const webSocketServer = new WebSocketServer({port: 8053});
    * const server = createWsServerSimple(webSocketServer);
@@ -62,8 +62,8 @@
    * the underlying WebSocketServer.
    *
    * ```js
-   * import {WebSocketServer} from 'ws';
    * import {createWsServerSimple} from 'tinybase/synchronizers/synchronizer-ws-server-simple';
+   * import {WebSocketServer} from 'ws';
    *
    * const webSocketServer = new WebSocketServer({port: 8053});
    * webSocketServer.on('close', () => {
@@ -98,10 +98,10 @@
  * shared path.
  *
  * ```js
- * import {WebSocketServer} from 'ws';
  * import {createMergeableStore} from 'tinybase';
- * import {createWsServerSimple} from 'tinybase/synchronizers/synchronizer-ws-server-simple';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ * import {createWsServerSimple} from 'tinybase/synchronizers/synchronizer-ws-server-simple';
+ * import {WebSocketServer} from 'ws';
  *
  * // Server
  * const server = createWsServerSimple(new WebSocketServer({port: 8053}));

@@ -1,5 +1,11 @@
 // All other imports are lazy so that single tasks start up fast.
-import {existsSync, promises, readdirSync} from 'fs';
+import {
+  existsSync,
+  promises,
+  readFileSync,
+  readdirSync,
+  writeFileSync,
+} from 'fs';
 import gulp from 'gulp';
 import {basename, dirname, join, resolve} from 'path';
 import {gzipSync} from 'zlib';
@@ -372,8 +378,21 @@ const lintCheckDocs = async (dir) => {
         if (!(await prettier.check(code, docConfig))) {
           const pretty = (await prettier.format(code, docConfig))
             .trim()
-            .replace(/^|\n/g, '\n * ');
-          throw `${filePath} not pretty:\n${code}\n\nShould be:\n${pretty}\n`;
+            .split('\n')
+            .map((line) => (line == '' ? ' *' : ' * ' + line))
+            .join('\n');
+          // eslint-disable-next-line no-console
+          console.log(
+            `${filePath} not pretty:\n${code}\n\nShould be:\n${pretty}\n`,
+          );
+          writeFileSync(
+            filePath,
+            readFileSync(filePath, UTF8).replace(
+              docBlock,
+              '\n' + pretty + '\n * ',
+            ),
+            UTF8,
+          );
         }
         const results = await esLint.lintText(code);
         if (

@@ -172,6 +172,7 @@
  *
  * ```js
  * import {createRelationships, createStore} from 'tinybase';
+ *
  * const store = createStore()
  *   .setTable('pets', {
  *     fido: {species: 'dog', next: 'felix'},
@@ -280,6 +281,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -311,6 +313,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', next: 'felix'},
    *   felix: {species: 'cat', next: 'cujo'},
@@ -343,6 +346,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -382,6 +386,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const relationships = createRelationships(createStore());
    * relationships.setRelationshipDefinition(
    *   'petSpecies',
@@ -407,6 +412,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const relationships = createRelationships(createStore())
    *   .setRelationshipDefinition('petSpecies', 'pets', 'species', 'species')
    *   .setRelationshipDefinition('petSequence', 'pets', 'pets', 'next');
@@ -434,6 +440,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', next: 'felix'},
    *   felix: {species: 'cat', next: 'cujo'},
@@ -471,6 +478,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const relationships = createRelationships(
    *   createStore(),
    * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
@@ -498,6 +506,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const relationships = createRelationships(createStore());
    * relationships.setRelationshipDefinition(
    *   'petSpecies',
@@ -530,6 +539,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const relationships = createRelationships(createStore());
    * relationships.setRelationshipDefinition(
    *   'petSpecies',
@@ -564,6 +574,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -611,6 +622,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -663,6 +675,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', next: 'felix'},
    *   felix: {species: 'cat', next: 'cujo'},
@@ -706,6 +719,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -772,6 +786,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -815,6 +830,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog', color: 'brown'},
@@ -901,6 +917,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -943,6 +960,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog', color: 'brown'},
@@ -1025,6 +1043,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore().setTable('pets', {
    *   fido: {species: 'dog', next: 'felix'},
    *   felix: {species: 'cat', next: 'cujo'},
@@ -1074,6 +1093,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -1128,6 +1148,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore()
    *   .setTable('pets', {
    *     fido: {species: 'dog'},
@@ -1176,6 +1197,7 @@
    *
    * ```js
    * import {createRelationships, createStore} from 'tinybase';
+   *
    * const store = createStore();
    * const relationships = createRelationships(store);
    * relationships.addRemoteRowIdListener(null, null, () => {
@@ -1210,6 +1232,7 @@
  *
  * ```js
  * import {createRelationships, createStore} from 'tinybase';
+ *
  * const store = createStore();
  * const relationships = createRelationships(store);
  * console.log(relationships.getRelationshipIds());
@@ -1221,6 +1244,7 @@
  *
  * ```js
  * import {createRelationships, createStore} from 'tinybase';
+ *
  * const store = createStore();
  * const relationships1 = createRelationships(store);
  * const relationships2 = createRelationships(store);

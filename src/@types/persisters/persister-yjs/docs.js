@@ -35,9 +35,9 @@
    * then gets the Yjs document back out again.
    *
    * ```js
-   * import {Doc} from 'yjs';
    * import {createStore} from 'tinybase';
    * import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
+   * import {Doc} from 'yjs';
    *
    * const doc = new Doc();
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -75,9 +75,9 @@
  * document.
  *
  * ```js
- * import {Doc} from 'yjs';
  * import {createStore} from 'tinybase';
  * import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
+ * import {Doc} from 'yjs';
  *
  * const doc = new Doc();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -102,9 +102,9 @@
  * function.
  *
  * ```js
- * import {Doc, applyUpdate, encodeStateAsUpdate} from 'yjs';
  * import {createStore} from 'tinybase';
  * import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
+ * import {Doc, applyUpdate, encodeStateAsUpdate} from 'yjs';
  *
  * const doc1 = new Doc();
  * const doc2 = new Doc();

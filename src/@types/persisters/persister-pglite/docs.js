@@ -32,8 +32,8 @@
    *
    * ```js
    * import {PGlite} from '@electric-sql/pglite';
-   * import {createPglitePersister} from 'tinybase/persisters/persister-pglite';
    * import {createStore} from 'tinybase';
+   * import {createPglitePersister} from 'tinybase/persisters/persister-pglite';
    *
    * const pglite = await PGlite.create();
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -101,8 +101,8 @@
  *
  * ```js
  * import {PGlite} from '@electric-sql/pglite';
- * import {createPglitePersister} from 'tinybase/persisters/persister-pglite';
  * import {createStore} from 'tinybase';
+ * import {createPglitePersister} from 'tinybase/persisters/persister-pglite';
  *
  * const pglite = await PGlite.create();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -134,8 +134,8 @@
  *
  * ```js
  * import {PGlite} from '@electric-sql/pglite';
- * import {createPglitePersister} from 'tinybase/persisters/persister-pglite';
  * import {createStore} from 'tinybase';
+ * import {createPglitePersister} from 'tinybase/persisters/persister-pglite';
  *
  * const pglite = await PGlite.create();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});

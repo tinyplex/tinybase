@@ -32,9 +32,9 @@
    * then gets the database instance back out again.
    *
    * ```js
-   * import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
-   * import {createStore} from 'tinybase';
    * import initWasm from '@vlcn.io/crsqlite-wasm';
+   * import {createStore} from 'tinybase';
+   * import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
    *
    * const crSqlite3 = await initWasm();
    * const db = await crSqlite3.open();
@@ -91,9 +91,9 @@
  * into the Store.
  *
  * ```js
- * import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
- * import {createStore} from 'tinybase';
  * import initWasm from '@vlcn.io/crsqlite-wasm';
+ * import {createStore} from 'tinybase';
+ * import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
  *
  * const crSqlite3 = await initWasm();
  * const db = await crSqlite3.open();
@@ -121,9 +121,9 @@
  * a local SQLite database with tabular mapping.
  *
  * ```js
- * import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
- * import {createStore} from 'tinybase';
  * import initWasm from '@vlcn.io/crsqlite-wasm';
+ * import {createStore} from 'tinybase';
+ * import {createCrSqliteWasmPersister} from 'tinybase/persisters/persister-cr-sqlite-wasm';
  *
  * const crSqlite3 = await initWasm();
  * const db = await crSqlite3.open();

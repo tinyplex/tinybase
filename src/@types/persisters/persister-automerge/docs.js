@@ -36,8 +36,8 @@
    *
    * ```js
    * import {Repo} from '@automerge/automerge-repo';
-   * import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
    * import {createStore} from 'tinybase';
+   * import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
    *
    * const docHandler = new Repo({network: []}).create();
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -76,8 +76,8 @@
  *
  * ```js
  * import {Repo} from '@automerge/automerge-repo';
- * import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
  * import {createStore} from 'tinybase';
+ * import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
  *
  * const docHandler = new Repo({network: []}).create();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -97,10 +97,10 @@
  * each other using a network.
  *
  * ```js
- * import {BroadcastChannelNetworkAdapter} from '@automerge/automerge-repo-network-broadcastchannel';
  * import {Repo} from '@automerge/automerge-repo';
- * import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
+ * import {BroadcastChannelNetworkAdapter} from '@automerge/automerge-repo-network-broadcastchannel';
  * import {createStore} from 'tinybase';
+ * import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
  *
  * // Bind the first Store to a network-enabled automerge-repo
  * const repo1 = new Repo({

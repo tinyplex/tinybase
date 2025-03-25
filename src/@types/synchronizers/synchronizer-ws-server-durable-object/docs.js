@@ -62,9 +62,9 @@
    * object within the createPersister method of a WsServerDurableObject.
    *
    * ```js yolo
-   * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
-   * import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage';
    * import {createMergeableStore} from 'tinybase';
+   * import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage';
+   * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
    *
    * export class MyDurableObject extends WsServerDurableObject {
    *   createPersister() {

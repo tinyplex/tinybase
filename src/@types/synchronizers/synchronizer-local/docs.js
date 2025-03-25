@@ -56,8 +56,8 @@
  * MergeableStore to another.
  *
  * ```js
- * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {createMergeableStore} from 'tinybase';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  *
  * const store1 = createMergeableStore();
  * const store2 = createMergeableStore();

@@ -156,8 +156,8 @@
  * becomes evident in the other.
  *
  * ```js
- * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  * import {createMergeableStore} from 'tinybase';
+ * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
  *
  * const store1 = createMergeableStore();
  * const store2 = createMergeableStore();
@@ -206,8 +206,8 @@
    * becomes evident in the other.
    *
    * ```js
-   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
    * import {createMergeableStore} from 'tinybase';
+   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
    *
    * const store1 = createMergeableStore();
    * const store2 = createMergeableStore();
@@ -240,8 +240,8 @@
    * not needed.
    *
    * ```js
-   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
    * import {createMergeableStore} from 'tinybase';
+   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
    *
    * const store1 = createMergeableStore();
    * const store2 = createMergeableStore();
@@ -281,8 +281,8 @@
    * Subsequent changes are not merged.
    *
    * ```js
-   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
    * import {createMergeableStore} from 'tinybase';
+   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
    *
    * const store1 = createMergeableStore();
    * const synchronizer1 = createLocalSynchronizer(store1);
@@ -332,8 +332,8 @@
    * Synchronizer instances.
    *
    * ```js
-   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
    * import {createMergeableStore} from 'tinybase';
+   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
    *
    * const store1 = createMergeableStore();
    * const store2 = createMergeableStore();

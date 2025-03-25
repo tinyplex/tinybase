@@ -45,10 +45,10 @@
    * MergeableStore and then gets the WebSocket reference back out again.
    *
    * ```js
-   * import {WebSocket, WebSocketServer} from 'ws';
    * import {createMergeableStore} from 'tinybase';
-   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
    * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+   * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+   * import {WebSocket, WebSocketServer} from 'ws';
    *
    * const server = createWsServer(new WebSocketServer({port: 8046}));
    *
@@ -107,10 +107,10 @@
  * MergeableStore to another via a server.
  *
  * ```js
- * import {WebSocket, WebSocketServer} from 'ws';
  * import {createMergeableStore} from 'tinybase';
- * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+ * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+ * import {WebSocket, WebSocketServer} from 'ws';
  *
  * const server = createWsServer(new WebSocketServer({port: 8047}));
  *
