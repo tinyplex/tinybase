@@ -1,7 +1,4 @@
-import {EMPTY_STRING, SUM} from '../common/strings.ts';
-import type {GetCell, Store} from '../@types/store/index.d.ts';
 import type {Id, IdOrNull} from '../@types/common/index.d.ts';
-import {IdMap, mapGet, mapNew} from '../common/map.ts';
 import type {
   MetricAggregate,
   MetricAggregateAdd,
@@ -12,13 +9,17 @@ import type {
   MetricsListenerStats,
   createMetrics as createMetricsDecl,
 } from '../@types/metrics/index.d.ts';
-import {collSize, collSize2} from '../common/coll.ts';
+import type {GetCell, Store} from '../@types/store/index.d.ts';
 import {getAggregateValue, numericAggregators} from '../common/aggregators.ts';
+import {collSize, collSize2} from '../common/coll.ts';
 import {
   getCreateFunction,
   getDefinableFunctions,
   getRowCellFunction,
 } from '../common/definable.ts';
+import {getListenerFunctions} from '../common/listeners.ts';
+import {IdMap, mapGet, mapNew} from '../common/map.ts';
+import {objFreeze} from '../common/obj.ts';
 import {
   getUndefined,
   isFiniteNumber,
@@ -26,8 +27,7 @@ import {
   isUndefined,
 } from '../common/other.ts';
 import {IdSet2} from '../common/set.ts';
-import {getListenerFunctions} from '../common/listeners.ts';
-import {objFreeze} from '../common/obj.ts';
+import {EMPTY_STRING, SUM} from '../common/strings.ts';
 
 type Aggregators = [
   MetricAggregate,
@@ -81,8 +81,8 @@ export const createMetrics = getCreateFunction((store: Store): Metrics => {
   ): Metrics => {
     const aggregators: Aggregators = isFunction(aggregate)
       ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace]
-      : mapGet(numericAggregators, aggregate as Id) ??
-        (mapGet(numericAggregators, SUM) as Aggregators);
+      : (mapGet(numericAggregators, aggregate as Id) ??
+        (mapGet(numericAggregators, SUM) as Aggregators));
 
     setDefinitionAndListen(
       metricId,

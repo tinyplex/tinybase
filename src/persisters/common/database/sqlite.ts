@@ -1,3 +1,16 @@
+import type {
+  DatabaseChangeListener,
+  DatabaseExecuteCommand,
+  DatabasePersisterConfig,
+  PersistedStore,
+  Persister,
+  PersisterListener,
+  Persists,
+} from '../../../@types/persisters/index.d.ts';
+import {collValues} from '../../../common/coll.ts';
+import {IdObj} from '../../../common/obj.ts';
+import {startInterval, stopInterval} from '../../../common/other.ts';
+import {EMPTY_STRING} from '../../../common/strings.ts';
 import {
   DATA_VERSION,
   FROM,
@@ -10,22 +23,9 @@ import {
   getPlaceholders,
   getWrappedCommand,
 } from './common.ts';
-import type {
-  DatabaseChangeListener,
-  DatabaseExecuteCommand,
-  DatabasePersisterConfig,
-  PersistedStore,
-  Persister,
-  PersisterListener,
-  Persists,
-} from '../../../@types/persisters/index.d.ts';
-import {startInterval, stopInterval} from '../../../common/other.ts';
-import {EMPTY_STRING} from '../../../common/strings.ts';
-import {IdObj} from '../../../common/obj.ts';
-import {collValues} from '../../../common/coll.ts';
+import {getConfigStructures} from './config.ts';
 import {createJsonPersister} from './json.ts';
 import {createTabularPersister} from './tabular.ts';
-import {getConfigStructures} from './config.ts';
 
 export const createCustomSqlitePersister = <
   ListenerHandle,

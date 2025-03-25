@@ -1,11 +1,11 @@
-import {createDocs, getSorter} from 'tinydocs';
-import {readFileSync, writeFileSync} from 'fs';
 import {ArticleInner} from './ui/ArticleInner.tsx';
-import type {Docs} from 'tinydocs';
 import {ExecutablePen} from './ui/ExecutablePen.tsx';
 import {NavJson} from './ui/NavJson.tsx';
 import {Page} from './ui/Page.tsx';
 import {Readme} from './ui/Readme.tsx';
+import {readFileSync, writeFileSync} from 'fs';
+import {createDocs, getSorter} from 'tinydocs';
+import type {Docs} from 'tinydocs';
 
 const tinybaseEsm = [
   'tinybase',

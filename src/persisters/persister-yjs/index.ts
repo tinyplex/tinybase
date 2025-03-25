@@ -1,3 +1,9 @@
+import type {Id} from '../../@types/common/index.d.ts';
+import type {PersisterListener} from '../../@types/persisters/index.d.ts';
+import type {
+  YjsPersister,
+  createYjsPersister as createYjsPersisterDecl,
+} from '../../@types/persisters/persister-yjs/index.d.ts';
 import type {
   Cell,
   Changes,
@@ -6,19 +12,13 @@ import type {
   Tables,
   Values,
 } from '../../@types/store/index.d.ts';
-import {IdObj, objEnsure, objHas, objMap, objNew} from '../../common/obj.ts';
-import {T, TINYBASE, V} from '../../common/strings.ts';
-import {Doc as YDoc, type YEvent, Map as YMap} from 'yjs';
-import type {
-  YjsPersister,
-  createYjsPersister as createYjsPersisterDecl,
-} from '../../@types/persisters/persister-yjs/index.d.ts';
 import {arrayForEach, arrayIsEmpty, arrayShift} from '../../common/array.ts';
-import {ifNotUndefined, isUndefined, size} from '../../common/other.ts';
-import type {Id} from '../../@types/common/index.d.ts';
-import type {PersisterListener} from '../../@types/persisters/index.d.ts';
-import {createCustomPersister} from '../common/create.ts';
 import {mapForEach} from '../../common/map.ts';
+import {IdObj, objEnsure, objHas, objMap, objNew} from '../../common/obj.ts';
+import {ifNotUndefined, isUndefined, size} from '../../common/other.ts';
+import {T, TINYBASE, V} from '../../common/strings.ts';
+import {createCustomPersister} from '../common/create.ts';
+import {Doc as YDoc, type YEvent, Map as YMap} from 'yjs';
 
 type Observer = (events: YEvent<any>[]) => void;
 

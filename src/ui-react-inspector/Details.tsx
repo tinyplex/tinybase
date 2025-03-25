@@ -1,10 +1,10 @@
-import {OPEN_CELL, STATE_TABLE} from './common.ts';
-import type {ReactNode, SyntheticEvent} from 'react';
-import {useCell, useSetCellCallback} from '../ui-react/index.ts';
-import {CURRENT_TARGET} from '../common/strings.ts';
 import type {Id} from '../@types/common/index.d.ts';
-import React from 'react';
+import {CURRENT_TARGET} from '../common/strings.ts';
+import {useCell, useSetCellCallback} from '../ui-react/index.ts';
+import {OPEN_CELL, STATE_TABLE} from './common.ts';
 import type {StoreProp} from './types.ts';
+import type {ReactNode, SyntheticEvent} from 'react';
+import React from 'react';
 
 export const Details = ({
   uniqueId,

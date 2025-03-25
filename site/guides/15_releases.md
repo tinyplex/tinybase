@@ -205,8 +205,8 @@ createPglitePersister function) to persist your TinyBase data:
 
 ```js
 import postgres from 'postgres';
-import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 import {createStore} from 'tinybase';
+import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 
 // Create a TinyBase Store.
 const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -273,10 +273,10 @@ creates a Persister instance (for which also need to create or provide a
 MergeableStore) for a given path:
 
 ```js
-import {WebSocketServer} from 'ws';
-import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createMergeableStore} from 'tinybase';
+import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+import {WebSocketServer} from 'ws';
 
 const persistingServer = createWsServer(
   new WebSocketServer({port: 8051}),
@@ -374,8 +374,8 @@ MergeableStore objects to be merged together. This can be across a network,
 using WebSockets, for example:
 
 ```js
-import {WebSocket} from 'ws';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+import {WebSocket} from 'ws';
 
 // On a server machine:
 const server = createWsServer(new WebSocketServer({port: 8043}));
@@ -651,6 +651,7 @@ A TinyBase server implementation on PartyKit can be as simple as this:
 
 ```js yolo
 import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
+
 export default class extends TinyBasePartyKitServer {}
 ```
 
@@ -770,8 +771,8 @@ should be very familiar if you have used the more abstract ui-react module:
 
 ```jsx
 import React from 'react';
-import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 import {createRoot} from 'react-dom/client';
+import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 
 const App = ({store}) => (
   <SortedTableInHtmlTable tableId="pets" cellId="species" store={store} />
@@ -866,8 +867,8 @@ and from a local SQLite database. It uses an explicit tabular one-to-one mapping
 for the 'pets' table:
 
 ```js
-import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
+import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 
 const sqlite3 = await sqlite3InitModule();
 const db = new sqlite3.oo1.DB(':memory:', 'c');
@@ -896,8 +897,8 @@ Automerge are two popular examples. The API should be familiar! The following
 will persist a TinyBase Store to a Yjs document:
 
 ```js
-import {Doc} from 'yjs';
 import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
+import {Doc} from 'yjs';
 
 store.setTables({pets: {fido: {species: 'dog'}}});
 
@@ -915,8 +916,8 @@ The following is the equivalent for an Automerge document that will sync over
 the broadcast channel:
 
 ```js
-import {BroadcastChannelNetworkAdapter} from '@automerge/automerge-repo-network-broadcastchannel';
 import {Repo} from '@automerge/automerge-repo';
+import {BroadcastChannelNetworkAdapter} from '@automerge/automerge-repo-network-broadcastchannel';
 import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
 
 const docHandler = new Repo({

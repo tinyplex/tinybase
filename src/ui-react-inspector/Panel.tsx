@@ -1,10 +1,10 @@
-import {OPEN_VALUE, POSITION_VALUE} from './common.ts';
+import {useValue} from '../ui-react/index.ts';
 import {Body} from './Body.tsx';
 import {ErrorBoundary} from './ErrorBoundary.tsx';
 import {Header} from './Header.tsx';
-import React from 'react';
+import {OPEN_VALUE, POSITION_VALUE} from './common.ts';
 import type {StoreProp} from './types.ts';
-import {useValue} from '../ui-react/index.ts';
+import React from 'react';
 
 export const Panel = ({s}: StoreProp) => {
   const position = useValue(POSITION_VALUE, s) ?? 1;

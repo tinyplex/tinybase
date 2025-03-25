@@ -1,9 +1,9 @@
 import type {Store, Store as StoreDebug} from 'tinybase';
+import {createStore, createStore as createStoreDebug} from 'tinybase';
 import type {
   Store as StoreDebugWithSchemas,
   Store as StoreWithSchemas,
 } from 'tinybase/with-schemas';
-import {createStore, createStore as createStoreDebug} from 'tinybase';
 import {
   createStore as createStoreDebugWithSchemas,
   createStore as createStoreWithSchemas,

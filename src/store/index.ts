@@ -1,23 +1,4 @@
-import {
-  ADD,
-  CELL,
-  CELL_IDS,
-  DEFAULT,
-  HAS,
-  LISTENER,
-  NUMBER,
-  ROW,
-  ROW_COUNT,
-  ROW_IDS,
-  TABLE,
-  TABLES,
-  TABLE_IDS,
-  TYPE,
-  VALUE,
-  VALUES,
-  VALUE_IDS,
-  id,
-} from '../common/strings.ts';
+import type {Id, Ids, Json} from '../@types/common/index.d.ts';
 import type {
   Cell,
   CellCallback,
@@ -55,12 +36,37 @@ import type {
   createStore as createStoreDecl,
 } from '../@types/store/index.d.ts';
 import {
+  arrayForEach,
+  arrayHas,
+  arrayIsEqual,
+  arrayMap,
+  arrayPush,
+  arraySort,
+} from '../common/array.ts';
+import {
+  getCellOrValueType,
+  setOrDelCell,
+  setOrDelValue,
+} from '../common/cell.ts';
+import {
+  collClear,
+  collDel,
+  collForEach,
+  collHas,
+  collIsEmpty,
+  collSize,
+  collSize2,
+  collSize3,
+  collSize4,
+} from '../common/coll.ts';
+import {defaultSorter} from '../common/index.ts';
+import {jsonParse, jsonStringWithMap} from '../common/json.ts';
+import {
   ExtraArgsGetter,
   IdSetNode,
   PathGetters,
   getListenerFunctions,
 } from '../common/listeners.ts';
-import type {Id, Ids, Json} from '../@types/common/index.d.ts';
 import {
   IdMap,
   IdMap2,
@@ -80,7 +86,22 @@ import {
   mapToObj2,
   mapToObj3,
 } from '../common/map.ts';
-import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from '../common/set.ts';
+import {
+  objDel,
+  objFreeze,
+  objHas,
+  objIsEmpty,
+  objMap,
+  objValidate,
+} from '../common/obj.ts';
+import {
+  ifNotUndefined,
+  isArray,
+  isFunction,
+  isTypeStringOrBoolean,
+  isUndefined,
+  slice,
+} from '../common/other.ts';
 import {
   Pair,
   pairClone,
@@ -90,48 +111,27 @@ import {
   pairNewMap,
 } from '../common/pairs.ts';
 import {PoolFunctions, getPoolFunctions} from '../common/pool.ts';
+import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from '../common/set.ts';
 import {
-  arrayForEach,
-  arrayHas,
-  arrayIsEqual,
-  arrayMap,
-  arrayPush,
-  arraySort,
-} from '../common/array.ts';
-import {
-  collClear,
-  collDel,
-  collForEach,
-  collHas,
-  collIsEmpty,
-  collSize,
-  collSize2,
-  collSize3,
-  collSize4,
-} from '../common/coll.ts';
-import {
-  getCellOrValueType,
-  setOrDelCell,
-  setOrDelValue,
-} from '../common/cell.ts';
-import {
-  ifNotUndefined,
-  isArray,
-  isFunction,
-  isTypeStringOrBoolean,
-  isUndefined,
-  slice,
-} from '../common/other.ts';
-import {jsonParse, jsonStringWithMap} from '../common/json.ts';
-import {
-  objDel,
-  objFreeze,
-  objHas,
-  objIsEmpty,
-  objMap,
-  objValidate,
-} from '../common/obj.ts';
-import {defaultSorter} from '../common/index.ts';
+  ADD,
+  CELL,
+  CELL_IDS,
+  DEFAULT,
+  HAS,
+  LISTENER,
+  NUMBER,
+  ROW,
+  ROW_COUNT,
+  ROW_IDS,
+  TABLE,
+  TABLES,
+  TABLE_IDS,
+  TYPE,
+  VALUE,
+  VALUES,
+  VALUE_IDS,
+  id,
+} from '../common/strings.ts';
 
 type TablesSchemaMap = IdMap2<CellSchema>;
 type ValuesSchemaMap = IdMap<ValueSchema>;

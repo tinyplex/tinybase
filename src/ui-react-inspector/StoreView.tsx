@@ -1,17 +1,13 @@
+import type {Id} from '../@types/common/index.d.ts';
+import type {TableProps, ValuesProps} from '../@types/ui-react/index.d.ts';
+import {arrayIsEmpty} from '../common/array.ts';
+import {jsonParse, jsonStringWithMap} from '../common/json.ts';
+import {isUndefined} from '../common/other.ts';
 import {DEFAULT, TABLE, VALUES} from '../common/strings.ts';
-import {
-  SORT_CELL,
-  STATE_TABLE,
-  getUniqueId,
-  sortedIdsMap,
-  useEditable,
-} from './common.ts';
 import {
   SortedTableInHtmlTable,
   ValuesInHtmlTable,
 } from '../ui-react-dom/index.tsx';
-import type {TableProps, ValuesProps} from '../@types/ui-react/index.d.ts';
-import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {
   useCell,
   useSetCellCallback,
@@ -20,11 +16,15 @@ import {
   useValueIds,
 } from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
-import type {Id} from '../@types/common/index.d.ts';
-import React from 'react';
+import {
+  SORT_CELL,
+  STATE_TABLE,
+  getUniqueId,
+  sortedIdsMap,
+  useEditable,
+} from './common.ts';
 import type {StoreProp} from './types.ts';
-import {arrayIsEmpty} from '../common/array.ts';
-import {isUndefined} from '../common/other.ts';
+import React from 'react';
 
 const TableView = ({
   tableId,

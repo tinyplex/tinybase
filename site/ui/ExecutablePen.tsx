@@ -1,6 +1,6 @@
-import type {NoPropComponent} from 'tinydocs';
-import React from 'react';
 import prettier from '@prettier/sync';
+import React from 'react';
+import type {NoPropComponent} from 'tinydocs';
 import {usePageNode} from 'tinydocs';
 
 export const ExecutablePen: NoPropComponent = (): any => {

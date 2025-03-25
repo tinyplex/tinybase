@@ -1,3 +1,52 @@
+import type {Id, Ids} from '../@types/common/index.d.ts';
+import type {Relationships} from '../@types/relationships/index.d.ts';
+import type {Cell, Store, Value} from '../@types/store/index.d.ts';
+import type {
+  CustomCell,
+  CustomResultCell,
+  EditableCellView as EditableCellViewDecl,
+  EditableValueView as EditableValueViewDecl,
+  HtmlTableProps,
+  RelationshipInHtmlTableProps,
+  ResultSortedTableInHtmlTable as ResultSortedTableInHtmlTableDecl,
+  ResultSortedTableInHtmlTableProps,
+  ResultTableInHtmlTable as ResultTableInHtmlTableDecl,
+  ResultTableInHtmlTableProps,
+  SliceInHtmlTable as SliceInHtmlTableDecl,
+  SliceInHtmlTableProps,
+  SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
+  SortedTableInHtmlTableProps,
+  SortedTablePaginator as SortedTablePaginatorDecl,
+  SortedTablePaginatorProps,
+  TableInHtmlTable as TableInHtmlTableDecl,
+  TableInHtmlTableProps,
+  ValuesInHtmlTable as ValuesInHtmlTableDecl,
+  ValuesInHtmlTableProps,
+} from '../@types/ui-react-dom/index.d.ts';
+import type {
+  CellProps,
+  ExtraProps,
+  QueriesOrQueriesId,
+  ResultCellProps,
+  StoreOrStoreId,
+  ValueProps,
+} from '../@types/ui-react/index.d.ts';
+import {arrayMap} from '../common/array.ts';
+import {
+  CellOrValueType,
+  getCellOrValueType,
+  getTypeCase,
+} from '../common/cell.ts';
+import {objMap, objNew, objToArray} from '../common/obj.ts';
+import {isArray, isString, isUndefined, mathMin} from '../common/other.ts';
+import {
+  getIndexStoreTableId,
+  getProps,
+  getRelationshipsStoreTableIds,
+  useCallback,
+  useMemo,
+  useState,
+} from '../common/react.ts';
 import {
   BOOLEAN,
   CELL,
@@ -9,20 +58,6 @@ import {
   _VALUE,
   strSplit,
 } from '../common/strings.ts';
-import type {Cell, Store, Value} from '../@types/store/index.d.ts';
-import {
-  CellOrValueType,
-  getCellOrValueType,
-  getTypeCase,
-} from '../common/cell.ts';
-import type {
-  CellProps,
-  ExtraProps,
-  QueriesOrQueriesId,
-  ResultCellProps,
-  StoreOrStoreId,
-  ValueProps,
-} from '../@types/ui-react/index.d.ts';
 import {
   CellView,
   ResultCellView,
@@ -47,42 +82,7 @@ import {
   useValueIds,
 } from '../ui-react/index.ts';
 import type {ComponentType, DependencyList, FormEvent, ReactNode} from 'react';
-import type {
-  CustomCell,
-  CustomResultCell,
-  EditableCellView as EditableCellViewDecl,
-  EditableValueView as EditableValueViewDecl,
-  HtmlTableProps,
-  RelationshipInHtmlTableProps,
-  ResultSortedTableInHtmlTable as ResultSortedTableInHtmlTableDecl,
-  ResultSortedTableInHtmlTableProps,
-  ResultTableInHtmlTable as ResultTableInHtmlTableDecl,
-  ResultTableInHtmlTableProps,
-  SliceInHtmlTable as SliceInHtmlTableDecl,
-  SliceInHtmlTableProps,
-  SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
-  SortedTableInHtmlTableProps,
-  SortedTablePaginator as SortedTablePaginatorDecl,
-  SortedTablePaginatorProps,
-  TableInHtmlTable as TableInHtmlTableDecl,
-  TableInHtmlTableProps,
-  ValuesInHtmlTable as ValuesInHtmlTableDecl,
-  ValuesInHtmlTableProps,
-} from '../@types/ui-react-dom/index.d.ts';
-import type {Id, Ids} from '../@types/common/index.d.ts';
-import {
-  getIndexStoreTableId,
-  getProps,
-  getRelationshipsStoreTableIds,
-  useCallback,
-  useMemo,
-  useState,
-} from '../common/react.ts';
-import {isArray, isString, isUndefined, mathMin} from '../common/other.ts';
-import {objMap, objNew, objToArray} from '../common/obj.ts';
 import React from 'react';
-import type {Relationships} from '../@types/relationships/index.d.ts';
-import {arrayMap} from '../common/array.ts';
 
 type Cells<Props = CellProps> = {
   [cellId: Id]: {

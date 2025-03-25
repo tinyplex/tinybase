@@ -1,6 +1,15 @@
 /* eslint-disable max-len */
 /* eslint-disable react/jsx-no-useless-fragment */
-
+import {fireEvent, render} from '@testing-library/react';
+import React, {act} from 'react';
+import type {Ids, Indexes, Queries, Relationships, Store} from 'tinybase';
+import {
+  createIndexes,
+  createQueries,
+  createRelationships,
+  createStore,
+} from 'tinybase';
+import type {ExtraProps} from 'tinybase/ui-react';
 import {
   EditableCellView,
   EditableValueView,
@@ -13,16 +22,6 @@ import {
   TableInHtmlTable,
   ValuesInHtmlTable,
 } from 'tinybase/ui-react-dom';
-import type {Ids, Indexes, Queries, Relationships, Store} from 'tinybase';
-import React, {act} from 'react';
-import {
-  createIndexes,
-  createQueries,
-  createRelationships,
-  createStore,
-} from 'tinybase';
-import {fireEvent, render} from '@testing-library/react';
-import type {ExtraProps} from 'tinybase/ui-react';
 
 let store: Store;
 let indexes: Indexes;

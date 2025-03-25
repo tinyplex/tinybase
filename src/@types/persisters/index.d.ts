@@ -1,12 +1,11 @@
 /// persisters
-
-import type {Changes, Content, Store} from '../store/index.d.ts';
+import type {Id} from '../common/index.d.ts';
 import type {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
 } from '../mergeable-store/index.d.ts';
-import type {Id} from '../common/index.d.ts';
+import type {Changes, Content, Store} from '../store/index.d.ts';
 
 /// Status
 export const enum Status {

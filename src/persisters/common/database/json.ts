@@ -6,14 +6,14 @@ import type {
   PersisterListener,
   Persists,
 } from '../../../@types/persisters/index.d.ts';
-import {QuerySchema, SINGLE_ROW_ID, Upsert} from './common.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../../../common/json.ts';
-import type {DefaultedJsonConfig} from './config.ts';
 import {createCustomPersister} from '../create.ts';
 import {getCommandFunctions} from './commands.ts';
+import {QuerySchema, SINGLE_ROW_ID, Upsert} from './common.ts';
+import type {DefaultedJsonConfig} from './config.ts';
 
 export const createJsonPersister = <
   ListeningHandle,

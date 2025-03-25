@@ -1,3 +1,4 @@
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   DatabaseChangeListener,
   DatabasePersisterConfig,
@@ -6,9 +7,8 @@ import type {
   SqliteWasmPersister,
   createSqliteWasmPersister as createSqliteWasmPersisterDecl,
 } from '../../@types/persisters/persister-sqlite-wasm/index.d.ts';
-import {IdObj} from '../../common/obj.ts';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
+import {IdObj} from '../../common/obj.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
 export const createSqliteWasmPersister = ((

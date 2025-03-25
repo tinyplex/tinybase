@@ -1,7 +1,7 @@
-import {arrayJoin, arrayMap} from '../../../common/array.ts';
-import {COMMA} from '../../../common/strings.ts';
 import type {DatabaseExecuteCommand} from '../../../@types/persisters/index.d.ts';
+import {arrayJoin, arrayMap} from '../../../common/array.ts';
 import {IdSet} from '../../../common/set.ts';
+import {COMMA} from '../../../common/strings.ts';
 
 export type QuerySchema = (
   executeCommand: DatabaseExecuteCommand,

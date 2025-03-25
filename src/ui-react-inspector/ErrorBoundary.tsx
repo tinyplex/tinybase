@@ -1,5 +1,5 @@
-import type {ErrorInfo, ReactNode} from 'react';
 import {PureComponent} from '../common/react.ts';
+import type {ErrorInfo, ReactNode} from 'react';
 import React from 'react';
 
 interface Props {

@@ -1,5 +1,5 @@
-import {mapGet, mapNew} from './map.ts';
 import {arrayMap} from './array.ts';
+import {mapGet, mapNew} from './map.ts';
 import {strSplit} from './strings.ts';
 
 const MASK6 = 63;

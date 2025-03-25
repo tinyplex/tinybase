@@ -1,16 +1,16 @@
-import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../../common/map.ts';
+import type {IdOrNull} from '../../@types/common/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   Message,
   Receive,
   Send,
 } from '../../@types/synchronizers/index.d.ts';
-import {isUndefined, startTimeout} from '../../common/other.ts';
-import type {IdOrNull} from '../../@types/common/index.d.ts';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
-import {collDel} from '../../common/coll.ts';
-import {createCustomSynchronizer} from '../index.ts';
 import type {createLocalSynchronizer as createLocalSynchronizerDecl} from '../../@types/synchronizers/synchronizer-local/index.d.ts';
+import {collDel} from '../../common/coll.ts';
 import {getUniqueId} from '../../common/index.ts';
+import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../../common/map.ts';
+import {isUndefined, startTimeout} from '../../common/other.ts';
+import {createCustomSynchronizer} from '../index.ts';
 
 const clients: IdMap<Receive> = mapNew();
 

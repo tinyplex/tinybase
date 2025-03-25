@@ -29,12 +29,12 @@ We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
 
 ```js
+import {useMemo, useState} from 'react';
+import React from 'react';
+import {createRoot} from 'react-dom/client';
 import {createStore} from 'tinybase';
 import {Provider, useCreateStore} from 'tinybase/ui-react';
 import {ValuesInHtmlTable} from 'tinybase/ui-react-dom';
-import {useMemo, useState} from 'react';
-import {createRoot} from 'react-dom/client';
-import React from 'react';
 ```
 
 This is the main container of the demo, in a React component called `App`. It

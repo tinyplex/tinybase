@@ -1,10 +1,10 @@
 /// mergeable-store
-
 import type {
   CellIdFromSchema,
   TableIdFromSchema,
   ValueIdFromSchema,
 } from '../../_internal/store/with-schemas/index.d.ts';
+import type {Id} from '../../common/with-schemas/index.d.ts';
 import type {
   CellOrUndefined,
   Content,
@@ -19,7 +19,6 @@ import type {
   ValueOrUndefined,
   ValuesSchema,
 } from '../../store/with-schemas/index.d.ts';
-import type {Id} from '../../common/with-schemas/index.d.ts';
 
 /// Hash
 export type Hash = number;

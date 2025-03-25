@@ -1,5 +1,5 @@
 /// queries
-
+import type {Id, IdOrNull, Ids} from '../common/index.d.ts';
 import type {
   Cell,
   CellOrUndefined,
@@ -7,7 +7,6 @@ import type {
   GetIdChanges,
   Store,
 } from '../store/index.d.ts';
-import type {Id, IdOrNull, Ids} from '../common/index.d.ts';
 
 /// ResultTable
 export type ResultTable = {[rowId: Id]: ResultRow};

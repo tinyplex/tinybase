@@ -106,6 +106,7 @@ Create a file in this directory called `index.mjs`:
 
 ```js yolo
 import {createStore} from 'tinybase';
+
 const store = createStore();
 store.setValue('v1', 'Hello');
 store.setCell('t1', 'r1', 'c1', 'World');

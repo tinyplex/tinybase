@@ -11,10 +11,10 @@ The useMetric hook is very simple. It gets the current value of a Metric, and
 registers a listener so that any changes to that result will cause a re-render:
 
 ```jsx
-import {createMetrics, createStore} from 'tinybase';
-import {useMetric} from 'tinybase/ui-react';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import {createMetrics, createStore} from 'tinybase';
+import {useMetric} from 'tinybase/ui-react';
 
 const store = createStore().setTable('species', {
   dog: {price: 5},

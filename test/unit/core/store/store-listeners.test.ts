@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import type {Cell, Id, IdOrNull, Store, Value} from 'tinybase';
-import {createMergeableStore, createStore} from 'tinybase';
 import {
   expectChanges,
   expectChangesNoJson,
   expectNoChanges,
 } from '../../common/expect.ts';
-import {StoreListener} from '../../common/types.ts';
 import {createStoreListener} from '../../common/listeners.ts';
+import {StoreListener} from '../../common/types.ts';
+import type {Cell, Id, IdOrNull, Store, Value} from 'tinybase';
+import {createMergeableStore, createStore} from 'tinybase';
 
 const EMPTY_CHANGES_AND_LOG = [
   [{}, {}, 1],

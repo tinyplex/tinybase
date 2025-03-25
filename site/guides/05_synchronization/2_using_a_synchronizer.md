@@ -52,8 +52,9 @@ with a configured WebSocketServer object from the `ws` package:
 
 ```js
 // On a server machine:
-import {WebSocketServer} from 'ws';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+import {WebSocketServer} from 'ws';
+
 const server = createWsServer(new WebSocketServer({port: 8048}));
 ```
 
@@ -65,9 +66,9 @@ aforementioned server:
 
 ```js
 // On the first client machine:
-import {WebSocket} from 'ws';
 import {createMergeableStore} from 'tinybase';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+import {WebSocket} from 'ws';
 
 const clientStore1 = createMergeableStore();
 const clientSynchronizer1 = await createWsSynchronizer(

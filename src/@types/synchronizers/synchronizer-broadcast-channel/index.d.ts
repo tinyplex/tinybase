@@ -1,7 +1,6 @@
 /// synchronizer-broadcast-channel
-
-import type {Receive, Send, Synchronizer} from '../index.d.ts';
 import type {MergeableStore} from '../../mergeable-store/index.d.ts';
+import type {Receive, Send, Synchronizer} from '../index.d.ts';
 
 /// BroadcastChannelSynchronizer
 export interface BroadcastChannelSynchronizer extends Synchronizer {

@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 // NB: an exclamation mark after a line visually indicates an expected TS error
-
 import {createStore} from 'tinybase/with-schemas';
 
 const tablesSchema = {

@@ -1,22 +1,22 @@
-import {EMPTY_STRING, UTF8} from '../../common/strings.ts';
-import {FSWatcher, existsSync, watch, writeFileSync} from 'fs';
-import type {
-  FilePersister,
-  createFilePersister as createFilePersisterDecl,
-} from '../../@types/persisters/persister-file/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   PersistedContent,
   PersisterListener,
   Persists as PersistsType,
 } from '../../@types/persisters/index.d.ts';
+import type {
+  FilePersister,
+  createFilePersister as createFilePersisterDecl,
+} from '../../@types/persisters/persister-file/index.d.ts';
+import type {Store} from '../../@types/store/index.d.ts';
 import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../../common/json.ts';
-import {readFile, writeFile} from 'fs/promises';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
-import type {Store} from '../../@types/store/index.d.ts';
+import {EMPTY_STRING, UTF8} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
+import {FSWatcher, existsSync, watch, writeFileSync} from 'fs';
+import {readFile, writeFile} from 'fs/promises';
 
 export const createFilePersister = ((
   store: Store | MergeableStore,

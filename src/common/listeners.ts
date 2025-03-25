@@ -1,4 +1,38 @@
 import type {
+  CheckpointIdsListener,
+  CheckpointListener,
+  Checkpoints,
+} from '../@types/checkpoints/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
+import type {
+  IndexIdsListener,
+  Indexes,
+  SliceIdsListener,
+  SliceRowIdsListener,
+} from '../@types/indexes/index.d.ts';
+import type {
+  MetricIdsListener,
+  MetricListener,
+  Metrics,
+} from '../@types/metrics/index.d.ts';
+import type {StatusListener} from '../@types/persisters/index.d.ts';
+import type {
+  QueryIdsListener,
+  ResultCellIdsListener,
+  ResultCellListener,
+  ResultRowCountListener,
+  ResultRowIdsListener,
+  ResultRowListener,
+  ResultTableCellIdsListener,
+  ResultTableListener,
+} from '../@types/queries/index.d.ts';
+import type {
+  LocalRowIdsListener,
+  RelationshipIdsListener,
+  Relationships,
+  RemoteRowIdListener,
+} from '../@types/relationships/index.d.ts';
+import type {
   CellIdsListener,
   CellListener,
   InvalidCellListener,
@@ -17,51 +51,17 @@ import type {
   ValuesListener,
 } from '../@types/store/index.d.ts';
 import type {
-  CheckpointIdsListener,
-  CheckpointListener,
-  Checkpoints,
-} from '../@types/checkpoints/index.d.ts';
-import type {
   ClientIdsListener,
   PathIdsListener,
   WsServer,
 } from '../@types/synchronizers/synchronizer-ws-server/index.d.ts';
-import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
-import {IdMap, Node, mapGet, mapNew, mapSet, visitTree} from './map.ts';
-import {IdSet, setAdd, setNew} from './set.ts';
-import type {
-  IndexIdsListener,
-  Indexes,
-  SliceIdsListener,
-  SliceRowIdsListener,
-} from '../@types/indexes/index.d.ts';
-import type {
-  LocalRowIdsListener,
-  RelationshipIdsListener,
-  Relationships,
-  RemoteRowIdListener,
-} from '../@types/relationships/index.d.ts';
-import type {
-  MetricIdsListener,
-  MetricListener,
-  Metrics,
-} from '../@types/metrics/index.d.ts';
-import type {
-  QueryIdsListener,
-  ResultCellIdsListener,
-  ResultCellListener,
-  ResultRowCountListener,
-  ResultRowIdsListener,
-  ResultRowListener,
-  ResultTableCellIdsListener,
-  ResultTableListener,
-} from '../@types/queries/index.d.ts';
 import {arrayForEach, arrayPush} from './array.ts';
 import {collDel, collForEach, collIsEmpty} from './coll.ts';
+import {IdMap, Node, mapGet, mapNew, mapSet, visitTree} from './map.ts';
 import {ifNotUndefined, isUndefined, size} from './other.ts';
-import {EMPTY_STRING} from './strings.ts';
-import type {StatusListener} from '../@types/persisters/index.d.ts';
 import {getPoolFunctions} from './pool.ts';
+import {IdSet, setAdd, setNew} from './set.ts';
+import {EMPTY_STRING} from './strings.ts';
 
 export type IdSetNode = Node<IdOrNull, IdSet> | IdSet;
 export type ListenerArgument = IdOrNull | boolean | number | undefined;

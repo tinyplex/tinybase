@@ -1,9 +1,9 @@
 /// relationships
-
 import type {
   CellIdFromSchema,
   TableIdFromSchema,
 } from '../../_internal/store/with-schemas/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../../common/with-schemas/index.d.ts';
 import type {
   GetCell,
   OptionalSchemas,
@@ -11,7 +11,6 @@ import type {
   RowCallback,
   Store,
 } from '../../store/with-schemas/index.d.ts';
-import type {Id, IdOrNull, Ids} from '../../common/with-schemas/index.d.ts';
 
 /// Relationship
 export type Relationship = {

@@ -8,7 +8,9 @@ The schema-based definitions can be accessed by adding the `with-schemas` suffix
 to your imports. For example:
 
 ```ts yolo
-import {createStore} from 'tinybase/with-schemas'; // NB the 'with-schemas'
+import {createStore} from 'tinybase/with-schemas';
+
+// NB the 'with-schemas'
 
 const store = createStore().setValuesSchema({
   employees: {type: 'number'},
@@ -112,8 +114,8 @@ types to the whole module en masse, and then you can select the hooks and
 components you want to use:
 
 ```tsx yolo
-import * as UiReact from 'tinybase/ui-react/with-schemas';
 import React from 'react';
+import * as UiReact from 'tinybase/ui-react/with-schemas';
 import {createStore} from 'tinybase/with-schemas';
 
 const tablesSchema = {
@@ -146,10 +148,12 @@ compatible with Node and TypeScript. You may need to try something like the
 following to explicitly load code and types from different folders:
 
 ```tsx yolo
-import * as UiReact from 'tinybase/ui-react'; // code
+// code
 import React from 'react';
-import type {WithSchemas} from 'tinybase/ui-react/with-schemas'; // types
-import {createStore, TablesSchema, ValuesSchema} from 'tinybase/with-schemas';
+import * as UiReact from 'tinybase/ui-react';
+import type {WithSchemas} from 'tinybase/ui-react/with-schemas';
+// types
+import {TablesSchema, ValuesSchema, createStore} from 'tinybase/with-schemas';
 
 const tablesSchema = {
   pets: {species: {type: 'string'}},

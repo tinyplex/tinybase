@@ -31,6 +31,10 @@ We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
 
 ```js
+import {useCallback, useMemo, useState} from 'react';
+import React from 'react';
+import {createRoot} from 'react-dom/client';
+import {createIndexes, createStore} from 'tinybase';
 import {
   Provider,
   useCreateIndexes,
@@ -38,10 +42,6 @@ import {
   useRow,
   useSliceRowIds,
 } from 'tinybase/ui-react';
-import {createIndexes, createStore} from 'tinybase';
-import {useCallback, useMemo, useState} from 'react';
-import {createRoot} from 'react-dom/client';
-import React from 'react';
 ```
 
 ## Loading The Data

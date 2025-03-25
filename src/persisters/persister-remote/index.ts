@@ -1,11 +1,11 @@
-import type {Content, Store} from '../../@types/store/index.d.ts';
+import type {PersisterListener} from '../../@types/persisters/index.d.ts';
 import type {
   RemotePersister,
   createRemotePersister as createRemotePersisterDecl,
 } from '../../@types/persisters/persister-remote/index.d.ts';
-import {isUndefined, startInterval, stopInterval} from '../../common/other.ts';
+import type {Content, Store} from '../../@types/store/index.d.ts';
 import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
-import type {PersisterListener} from '../../@types/persisters/index.d.ts';
+import {isUndefined, startInterval, stopInterval} from '../../common/other.ts';
 import {createCustomPersister} from '../common/create.ts';
 
 const getETag = (response: Response) => response.headers.get('ETag');

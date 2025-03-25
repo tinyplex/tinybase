@@ -1,8 +1,8 @@
-import {IdObj, objHas, objIsEmpty, objMap} from './obj.ts';
-import {collDel, collForEach, collHas, collIsEmpty} from './coll.ts';
-import {ifNotUndefined, isUndefined, size} from './other.ts';
 import type {Id} from '../@types/common/index.d.ts';
 import {arrayMap} from './array.ts';
+import {collDel, collForEach, collHas, collIsEmpty} from './coll.ts';
+import {IdObj, objHas, objIsEmpty, objMap} from './obj.ts';
+import {ifNotUndefined, isUndefined, size} from './other.ts';
 
 export type IdMap<Value> = Map<Id, Value>;
 export type IdMap2<Value> = IdMap<IdMap<Value>>;

@@ -1,3 +1,8 @@
+import {BuildContext} from './BuildContext.tsx';
+import {Footer} from './Footer.tsx';
+import {Header} from './Header.tsx';
+import {Main} from './Main.tsx';
+import React from 'react';
 import {
   NodeSummary,
   useBaseUrl,
@@ -5,12 +10,7 @@ import {
   usePageNode,
   useRootNode,
 } from 'tinydocs';
-import {BuildContext} from './BuildContext.tsx';
-import {Footer} from './Footer.tsx';
-import {Header} from './Header.tsx';
-import {Main} from './Main.tsx';
 import type {NoPropComponent} from 'tinydocs';
-import React from 'react';
 
 const GTM_ID = 'G-D1MGR8VRWJ';
 

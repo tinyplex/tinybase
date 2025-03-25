@@ -1,11 +1,10 @@
 /// persister-automerge
-
 import type {
   OptionalSchemas,
   Store,
 } from '../../../store/with-schemas/index.d.ts';
-import type {DocHandle} from '@automerge/automerge-repo';
 import type {Persister} from '../../with-schemas/index.d.ts';
+import type {DocHandle} from '@automerge/automerge-repo';
 
 /// AutomergePersister
 export interface AutomergePersister<Schemas extends OptionalSchemas>

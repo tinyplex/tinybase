@@ -1,3 +1,4 @@
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   DatabaseChangeListener,
   DatabasePersisterConfig,
@@ -6,12 +7,11 @@ import type {
   ExpoSqlitePersister,
   createExpoSqlitePersister as createExpoSqlitePersisterDecl,
 } from '../../@types/persisters/persister-expo-sqlite/index.d.ts';
-import {IdObj} from '../../common/obj.ts';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
-import type {SQLiteDatabase} from 'expo-sqlite';
 import type {Store} from '../../@types/store/index.d.ts';
-import {addDatabaseChangeListener} from 'expo-sqlite';
+import {IdObj} from '../../common/obj.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
+import type {SQLiteDatabase} from 'expo-sqlite';
+import {addDatabaseChangeListener} from 'expo-sqlite';
 
 type Subscription = {remove: () => void};
 

@@ -1,5 +1,10 @@
 /// persisters
-
+import type {TableIdFromSchema} from '../../_internal/store/with-schemas/index.d.ts';
+import type {
+  MergeableChanges,
+  MergeableContent,
+  MergeableStore,
+} from '../../mergeable-store/with-schemas/index.d.ts';
 import type {
   Changes,
   Content,
@@ -7,13 +12,7 @@ import type {
   OptionalTablesSchema,
   Store,
 } from '../../store/with-schemas/index.d.ts';
-import type {
-  MergeableChanges,
-  MergeableContent,
-  MergeableStore,
-} from '../../mergeable-store/with-schemas/index.d.ts';
 import type {Id} from '../../with-schemas/index.d.ts';
-import type {TableIdFromSchema} from '../../_internal/store/with-schemas/index.d.ts';
 
 /// Status
 export const enum Status {

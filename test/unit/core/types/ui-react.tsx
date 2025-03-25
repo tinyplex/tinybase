@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 // NB: an exclamation mark after a line visually indicates an expected TS error
-
+import React from 'react';
+import {createFilePersister} from 'tinybase/persisters/persister-file/with-schemas';
 import * as UiReact from 'tinybase/ui-react/with-schemas';
 import type {Id, NoValuesSchema} from 'tinybase/with-schemas';
 import {
@@ -12,8 +13,6 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase/with-schemas';
-import React from 'react';
-import {createFilePersister} from 'tinybase/persisters/persister-file/with-schemas';
 
 const tablesSchema = {
   t0: {c0: {type: 'number'}},

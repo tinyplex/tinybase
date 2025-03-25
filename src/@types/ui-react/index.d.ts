@@ -1,5 +1,24 @@
 /// ui-react
-
+import type {
+  CheckpointIds,
+  CheckpointIdsListener,
+  CheckpointListener,
+  Checkpoints,
+} from '../checkpoints/index.d.ts';
+import type {
+  Callback,
+  Id,
+  IdOrNull,
+  Ids,
+  ParameterizedCallback,
+} from '../common/index.d.ts';
+import type {
+  Indexes,
+  SliceIdsListener,
+  SliceRowIdsListener,
+} from '../indexes/index.d.ts';
+import type {MergeableStore} from '../mergeable-store/index.d.ts';
+import type {MetricListener, Metrics} from '../metrics/index.d.ts';
 import type {
   AnyPersister,
   PersistedStore,
@@ -9,12 +28,22 @@ import type {
   StatusListener,
 } from '../persisters/index.d.ts';
 import type {
-  Callback,
-  Id,
-  IdOrNull,
-  Ids,
-  ParameterizedCallback,
-} from '../common/index.d.ts';
+  Queries,
+  ResultCellIdsListener,
+  ResultCellListener,
+  ResultRowCountListener,
+  ResultRowIdsListener,
+  ResultRowListener,
+  ResultSortedRowIdsListener,
+  ResultTableCellIdsListener,
+  ResultTableListener,
+} from '../queries/index.d.ts';
+import type {
+  LinkedRowIdsListener,
+  LocalRowIdsListener,
+  Relationships,
+  RemoteRowIdListener,
+} from '../relationships/index.d.ts';
 import type {
   Cell,
   CellIdsListener,
@@ -49,38 +78,8 @@ import type {
   Values,
   ValuesListener,
 } from '../store/index.d.ts';
-import type {
-  CheckpointIds,
-  CheckpointIdsListener,
-  CheckpointListener,
-  Checkpoints,
-} from '../checkpoints/index.d.ts';
-import type {ComponentType, ReactElement} from 'react';
-import type {
-  Indexes,
-  SliceIdsListener,
-  SliceRowIdsListener,
-} from '../indexes/index.d.ts';
-import type {
-  LinkedRowIdsListener,
-  LocalRowIdsListener,
-  Relationships,
-  RemoteRowIdListener,
-} from '../relationships/index.d.ts';
-import type {MetricListener, Metrics} from '../metrics/index.d.ts';
-import type {
-  Queries,
-  ResultCellIdsListener,
-  ResultCellListener,
-  ResultRowCountListener,
-  ResultRowIdsListener,
-  ResultRowListener,
-  ResultSortedRowIdsListener,
-  ResultTableCellIdsListener,
-  ResultTableListener,
-} from '../queries/index.d.ts';
-import type {MergeableStore} from '../mergeable-store/index.d.ts';
 import type {Synchronizer} from '../synchronizers/index.d.ts';
+import type {ComponentType, ReactElement} from 'react';
 
 /// StoreOrStoreId
 export type StoreOrStoreId = Store | Id;

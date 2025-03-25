@@ -1,6 +1,26 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-
-import * as UiReact from 'tinybase/ui-react/with-schemas';
+import {fireEvent, render} from '@testing-library/react';
+import React, {act, useCallback} from 'react';
+import type {
+  Checkpoints,
+  Id,
+  Indexes,
+  Metrics,
+  Queries,
+  Relationships,
+  Store,
+} from 'tinybase';
+import {
+  createCheckpoints,
+  createIndexes,
+  createMergeableStore,
+  createMetrics,
+  createQueries,
+  createRelationships,
+  createStore,
+} from 'tinybase';
+import {createLocalPersister} from 'tinybase/persisters/persister-browser';
+import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import type {
   BackwardCheckpointsProps,
   CellProps,
@@ -73,29 +93,8 @@ import {
   useTable,
   useTables,
 } from 'tinybase/ui-react';
-import type {
-  Checkpoints,
-  Id,
-  Indexes,
-  Metrics,
-  Queries,
-  Relationships,
-  Store,
-} from 'tinybase';
-import React, {act, useCallback} from 'react';
-import {
-  createCheckpoints,
-  createIndexes,
-  createMergeableStore,
-  createMetrics,
-  createQueries,
-  createRelationships,
-  createStore,
-} from 'tinybase';
-import {fireEvent, render} from '@testing-library/react';
+import * as UiReact from 'tinybase/ui-react/with-schemas';
 import type {NoSchemas} from 'tinybase/with-schemas';
-import {createLocalPersister} from 'tinybase/persisters/persister-browser';
-import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import {createStore as createStore2} from 'tinybase/with-schemas';
 
 const {Provider: Provider2, useStore: useStore2} =

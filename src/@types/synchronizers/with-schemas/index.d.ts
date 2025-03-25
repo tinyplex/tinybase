@@ -1,15 +1,14 @@
 /// synchronizers
-
-import type {
-  Content,
-  OptionalSchemas,
-} from '../../store/with-schemas/index.d.ts';
 import type {Id, IdOrNull} from '../../common/with-schemas/index.d.ts';
+import type {MergeableStore} from '../../mergeable-store/with-schemas/index.d.ts';
 import type {
   Persister,
   Persists,
 } from '../../persisters/with-schemas/index.d.ts';
-import type {MergeableStore} from '../../mergeable-store/with-schemas/index.d.ts';
+import type {
+  Content,
+  OptionalSchemas,
+} from '../../store/with-schemas/index.d.ts';
 
 /// Message
 export const enum Message {

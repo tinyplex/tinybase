@@ -1,4 +1,4 @@
-import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
+import type {Id} from '../../@types/common/index.d.ts';
 import type {
   MergeableChanges,
   MergeableContent,
@@ -14,13 +14,13 @@ import type {
   Persists as PersistsEnum,
   StatusListener,
 } from '../../@types/persisters/index.d.ts';
+import type {Changes, Content, Store} from '../../@types/store/index.d.ts';
 import {arrayClear, arrayPush, arrayShift} from '../../common/array.ts';
-import {errorNew, isArray, isUndefined} from '../../common/other.ts';
+import {getListenerFunctions} from '../../common/listeners.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../common/map.ts';
 import {objFreeze, objIsEmpty} from '../../common/obj.ts';
-import type {Id} from '../../@types/common/index.d.ts';
+import {errorNew, isArray, isUndefined} from '../../common/other.ts';
 import {IdSet2} from '../../common/set.ts';
-import {getListenerFunctions} from '../../common/listeners.ts';
 
 const enum StatusValues {
   Idle = 0,

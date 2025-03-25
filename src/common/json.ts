@@ -1,6 +1,6 @@
-import {UNDEFINED} from './strings.ts';
-import {isInstanceOf} from './other.ts';
 import {object} from './obj.ts';
+import {isInstanceOf} from './other.ts';
+import {UNDEFINED} from './strings.ts';
 
 export const jsonString = JSON.stringify;
 export const jsonParse = JSON.parse;

@@ -7,7 +7,7 @@ This guide provides an aside about importing TinyBase into your application.
 The simplest import of TinyBase is:
 
 ```js
-import {createStore, createMetrics} from 'tinybase';
+import {createMetrics, createStore} from 'tinybase';
 ```
 
 This will get you an ESNext, ESM, non-minified import of the main `tinybase`
@@ -20,6 +20,7 @@ import {createSessionPersister} from 'tinybase/persisters/persister-browser';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {useCell} from 'tinybase/ui-react';
 import {TableInHtmlTable} from 'tinybase/ui-react-dom';
+
 // ... etc
 ```
 
@@ -50,8 +51,9 @@ them piecemeal. If you only wanted a Store and a Metrics object, for example,
 you could import them alone like this:
 
 ```js yolo
-import {createStore} from 'tinybase/store';
 import {createMetrics} from 'tinybase/metrics';
+import {createStore} from 'tinybase/store';
+
 // ...
 ```
 
@@ -87,7 +89,9 @@ it is possible to use schema-aware type definitions by appending `with-schemas`
 to the very end of the path like this:
 
 ```js yolo
-import {createStore} from 'tinybase/with-schemas'; // NB the 'with-schemas'
+import {createStore} from 'tinybase/with-schemas';
+
+// NB the 'with-schemas'
 ```
 
 ## Putting It All Together

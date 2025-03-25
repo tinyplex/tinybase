@@ -1,3 +1,4 @@
+import type {Id} from '../../../common/with-schemas/index.d.ts';
 import type {
   Cell,
   OptionalSchemas,
@@ -6,7 +7,6 @@ import type {
   Store,
   Value,
 } from '../../../store/with-schemas/index.d.ts';
-import type {Id} from '../../../common/with-schemas/index.d.ts';
 
 export type TableIdFromSchema<Schema extends OptionalTablesSchema> = AsId<
   keyof Schema

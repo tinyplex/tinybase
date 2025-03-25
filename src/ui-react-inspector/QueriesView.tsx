@@ -1,20 +1,20 @@
-import {SORT_CELL, STATE_TABLE, getUniqueId, sortedIdsMap} from './common.ts';
+import type {Id} from '../@types/common/index.d.ts';
+import type {Queries} from '../@types/queries/index.d.ts';
+import {arrayIsEmpty} from '../common/array.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
+import {isUndefined} from '../common/other.ts';
+import {DEFAULT} from '../common/strings.ts';
+import {ResultSortedTableInHtmlTable} from '../ui-react-dom/index.tsx';
 import {
   useCell,
   useQueries,
   useQueryIds,
   useSetCellCallback,
 } from '../ui-react/index.ts';
-import {DEFAULT} from '../common/strings.ts';
 import {Details} from './Details.tsx';
-import type {Id} from '../@types/common/index.d.ts';
-import type {Queries} from '../@types/queries/index.d.ts';
-import React from 'react';
-import {ResultSortedTableInHtmlTable} from '../ui-react-dom/index.tsx';
+import {SORT_CELL, STATE_TABLE, getUniqueId, sortedIdsMap} from './common.ts';
 import type {StoreProp} from './types.ts';
-import {arrayIsEmpty} from '../common/array.ts';
-import {isUndefined} from '../common/other.ts';
+import React from 'react';
 
 const QueryView = ({
   queries,

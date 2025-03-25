@@ -55,6 +55,9 @@ We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
 
 ```js
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React from 'react';
+import {createRoot} from 'react-dom/client';
 import {createQueries, createStore} from 'tinybase';
 import {
   Provider,
@@ -65,11 +68,8 @@ import {
   useResultSortedRowIds,
   useResultTable,
 } from 'tinybase/ui-react';
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Inspector} from 'tinybase/ui-react-inspector';
 import {ResultSortedTableInHtmlTable} from 'tinybase/ui-react-dom';
-import {createRoot} from 'react-dom/client';
-import React from 'react';
+import {Inspector} from 'tinybase/ui-react-inspector';
 ```
 
 For simplicity, we set up a few convenience arrays that distinguish the columns

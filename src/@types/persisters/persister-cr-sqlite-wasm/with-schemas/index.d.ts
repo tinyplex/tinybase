@@ -1,13 +1,12 @@
 /// persister-cr-sqlite-wasm
-
-import type {
-  DatabasePersisterConfig,
-  Persister,
-} from '../../with-schemas/index.d.ts';
 import type {
   OptionalSchemas,
   Store,
 } from '../../../store/with-schemas/index.d.ts';
+import type {
+  DatabasePersisterConfig,
+  Persister,
+} from '../../with-schemas/index.d.ts';
 import type {DB} from '@vlcn.io/crsqlite-wasm';
 
 /// CrSqliteWasmPersister

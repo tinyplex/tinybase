@@ -7,6 +7,11 @@ import type {
   PersisterListener,
   Persists,
 } from '../../../@types/persisters/index.d.ts';
+import {arrayMap} from '../../../common/array.ts';
+import {collHas, collValues} from '../../../common/coll.ts';
+import {jsonParse, jsonString} from '../../../common/json.ts';
+import {ifNotUndefined, promiseAll} from '../../../common/other.ts';
+import {TINYBASE, strMatch} from '../../../common/strings.ts';
 import {
   SELECT,
   WHERE,
@@ -14,14 +19,9 @@ import {
   getPlaceholders,
   getWrappedCommand,
 } from './common.ts';
-import {TINYBASE, strMatch} from '../../../common/strings.ts';
-import {collHas, collValues} from '../../../common/coll.ts';
-import {ifNotUndefined, promiseAll} from '../../../common/other.ts';
-import {jsonParse, jsonString} from '../../../common/json.ts';
-import {arrayMap} from '../../../common/array.ts';
+import {getConfigStructures} from './config.ts';
 import {createJsonPersister} from './json.ts';
 import {createTabularPersister} from './tabular.ts';
-import {getConfigStructures} from './config.ts';
 
 const EVENT_CHANNEL = TINYBASE;
 const EVENT_REGEX = /^([cd]:)(.+)/;

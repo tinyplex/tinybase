@@ -1,11 +1,10 @@
 /// persister-browser
-
+import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
 import type {
   OptionalSchemas,
   Store,
 } from '../../../store/with-schemas/index.d.ts';
 import type {Persister, Persists} from '../../with-schemas/index.d.ts';
-import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
 
 /// SessionPersister
 export interface SessionPersister<Schemas extends OptionalSchemas>

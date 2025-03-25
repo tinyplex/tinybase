@@ -1,5 +1,4 @@
 /// checkpoints
-
 import type {Id, IdOrNull, Ids} from '../common/index.d.ts';
 import type {Store} from '../store/index.d.ts';
 

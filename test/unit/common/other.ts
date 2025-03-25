@@ -1,10 +1,10 @@
-import type {Id, Ids, Indexes, Metrics, Relationships} from 'tinybase';
+import {nudgeHlc} from './mergeable.ts';
 import {IdObj, IdObj2} from './types.ts';
-import {TextDecoder, TextEncoder} from 'util';
+import fs from 'fs';
 import type {FetchMock} from 'jest-fetch-mock';
 import fm from 'jest-fetch-mock';
-import fs from 'fs';
-import {nudgeHlc} from './mergeable.ts';
+import type {Id, Ids, Indexes, Metrics, Relationships} from 'tinybase';
+import {TextDecoder, TextEncoder} from 'util';
 
 const fetchMock = fm as any as FetchMock;
 

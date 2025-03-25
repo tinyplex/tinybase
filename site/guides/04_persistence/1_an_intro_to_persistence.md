@@ -82,8 +82,8 @@ In this example, a Persister saves data to, and loads it from, the browser's
 session storage:
 
 ```js
-import {createSessionPersister} from 'tinybase/persisters/persister-browser';
 import {createStore} from 'tinybase';
+import {createSessionPersister} from 'tinybase/persisters/persister-browser';
 
 const store = createStore()
   .setValues({employees: 3})

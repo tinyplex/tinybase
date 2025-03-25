@@ -1,3 +1,4 @@
+import React from 'react';
 import type {NoPropComponent, Node} from 'tinydocs';
 import {
   getSkippedChildren,
@@ -6,7 +7,6 @@ import {
   usePageNode,
   useRootNode,
 } from 'tinydocs';
-import React from 'react';
 
 export type NavNode = {
   i: string; // id

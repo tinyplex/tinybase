@@ -1,9 +1,9 @@
+import {useCoverage, useMetadata, useModulesSizes} from './BuildContext.tsx';
+import type {ModulesSizes} from './BuildContext.tsx';
+import {MODULES} from './common.ts';
+import React from 'react';
 import {Markdown, usePageNode} from 'tinydocs';
 import type {NoPropComponent, Node} from 'tinydocs';
-import {useCoverage, useMetadata, useModulesSizes} from './BuildContext.tsx';
-import {MODULES} from './common.ts';
-import type {ModulesSizes} from './BuildContext.tsx';
-import React from 'react';
 
 export const Readme: NoPropComponent = (): any => {
   const [summary, body] = useReadme(usePageNode());

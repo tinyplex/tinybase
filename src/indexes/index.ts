@@ -1,15 +1,4 @@
-import {EMPTY_STRING, id} from '../common/strings.ts';
-import type {GetCell, Store} from '../@types/store/index.d.ts';
 import type {Id, IdOrNull, Ids, SortKey} from '../@types/common/index.d.ts';
-import {
-  IdMap,
-  mapForEach,
-  mapGet,
-  mapKeys,
-  mapNew,
-  mapSet,
-} from '../common/map.ts';
-import {IdSet, IdSet2, IdSet3, setAdd, setNew} from '../common/set.ts';
 import type {
   IndexCallback,
   Indexes,
@@ -19,6 +8,7 @@ import type {
   SliceRowIdsListener,
   createIndexes as createIndexesDecl,
 } from '../@types/indexes/index.d.ts';
+import type {GetCell, Store} from '../@types/store/index.d.ts';
 import {arrayIsSorted, arrayMap, arraySort} from '../common/array.ts';
 import {
   collDel,
@@ -34,10 +24,20 @@ import {
   getDefinableFunctions,
   getRowCellFunction,
 } from '../common/definable.ts';
-import {ifNotUndefined, isArray, isUndefined} from '../common/other.ts';
 import {defaultSorter} from '../common/index.ts';
 import {getListenerFunctions} from '../common/listeners.ts';
+import {
+  IdMap,
+  mapForEach,
+  mapGet,
+  mapKeys,
+  mapNew,
+  mapSet,
+} from '../common/map.ts';
 import {objFreeze} from '../common/obj.ts';
+import {ifNotUndefined, isArray, isUndefined} from '../common/other.ts';
+import {IdSet, IdSet2, IdSet3, setAdd, setNew} from '../common/set.ts';
+import {EMPTY_STRING, id} from '../common/strings.ts';
 
 export const createIndexes = getCreateFunction((store: Store): Indexes => {
   const sliceIdsListeners: IdSet2 = mapNew();

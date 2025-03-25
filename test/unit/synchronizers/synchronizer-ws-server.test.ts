@@ -1,18 +1,17 @@
 /* eslint-disable jest/no-conditional-expect */
-
-import type {Id, MergeableStore} from 'tinybase';
-import {WebSocket, WebSocketServer} from 'ws';
-import {readFileSync, writeFileSync} from 'fs';
-import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
-import type {WsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
-import {createFilePersister} from 'tinybase/persisters/persister-file';
-import {createMergeableStore} from 'tinybase';
-import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
-import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
-import {join} from 'path';
-import {pause} from '../common/other.ts';
 import {resetHlc} from '../common/mergeable.ts';
+import {pause} from '../common/other.ts';
+import {readFileSync, writeFileSync} from 'fs';
+import {join} from 'path';
+import type {Id, MergeableStore} from 'tinybase';
+import {createMergeableStore} from 'tinybase';
+import {createFilePersister} from 'tinybase/persisters/persister-file';
+import type {WsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import tmp from 'tmp';
+import {WebSocket, WebSocketServer} from 'ws';
 
 beforeEach(() => {
   resetHlc();

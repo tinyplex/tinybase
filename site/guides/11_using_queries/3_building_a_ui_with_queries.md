@@ -29,9 +29,9 @@ Each hook registers a listener so that any relevant changes will cause a
 re-render. As an example:
 
 ```jsx
-import {createQueries, createStore} from 'tinybase';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
+import {createQueries, createStore} from 'tinybase';
 import {useResultRowIds} from 'tinybase/ui-react';
 
 const store = createStore().setTable('pets', {

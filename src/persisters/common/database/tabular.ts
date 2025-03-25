@@ -1,15 +1,4 @@
-import type {
-  CellOrUndefined,
-  Tables,
-  ValueOrUndefined,
-  Values,
-} from '../../../@types/store/index.d.ts';
-import {
-  DEFAULT_ROW_ID_COLUMN_NAME,
-  QuerySchema,
-  SINGLE_ROW_ID,
-  Upsert,
-} from './common.ts';
+import type {Id} from '../../../@types/common/index.d.ts';
 import type {
   DatabaseExecuteCommand,
   PersistedChanges,
@@ -19,14 +8,25 @@ import type {
   PersisterListener,
   Persists,
 } from '../../../@types/persisters/index.d.ts';
-import {isUndefined, promiseAll} from '../../../common/other.ts';
-import {objHas, objIsEmpty, objNew} from '../../../common/obj.ts';
-import type {DefaultedTabularConfig} from './config.ts';
-import type {Id} from '../../../@types/common/index.d.ts';
+import type {
+  CellOrUndefined,
+  Tables,
+  ValueOrUndefined,
+  Values,
+} from '../../../@types/store/index.d.ts';
 import {arrayFilter} from '../../../common/array.ts';
+import {mapMap} from '../../../common/map.ts';
+import {objHas, objIsEmpty, objNew} from '../../../common/obj.ts';
+import {isUndefined, promiseAll} from '../../../common/other.ts';
 import {createCustomPersister} from '../create.ts';
 import {getCommandFunctions} from './commands.ts';
-import {mapMap} from '../../../common/map.ts';
+import {
+  DEFAULT_ROW_ID_COLUMN_NAME,
+  QuerySchema,
+  SINGLE_ROW_ID,
+  Upsert,
+} from './common.ts';
+import type {DefaultedTabularConfig} from './config.ts';
 
 export const createTabularPersister = <
   ListeningHandle,

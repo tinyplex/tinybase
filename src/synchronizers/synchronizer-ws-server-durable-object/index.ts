@@ -1,19 +1,19 @@
-import {EMPTY_STRING, strMatch} from '../../common/strings.ts';
 import type {Id, Ids} from '../../@types/common/index.d.ts';
 import type {Persister, Persists} from '../../@types/persisters/index.d.ts';
+import type {IdAddedOrRemoved} from '../../@types/store/index.d.ts';
+import type {Receive} from '../../@types/synchronizers/index.d.ts';
 import {arrayForEach, arrayIsEmpty, arrayMap} from '../../common/array.ts';
+import {objValues} from '../../common/obj.ts';
+import {ifNotUndefined, size, startTimeout} from '../../common/other.ts';
+import {EMPTY_STRING, strMatch} from '../../common/strings.ts';
 import {
   createPayload,
   createRawPayload,
   ifPayloadValid,
   receivePayload,
 } from '../common.ts';
-import {ifNotUndefined, size, startTimeout} from '../../common/other.ts';
-import {DurableObject} from 'cloudflare:workers';
-import type {IdAddedOrRemoved} from '../../@types/store/index.d.ts';
-import type {Receive} from '../../@types/synchronizers/index.d.ts';
 import {createCustomSynchronizer} from '../index.ts';
-import {objValues} from '../../common/obj.ts';
+import {DurableObject} from 'cloudflare:workers';
 
 const PATH_REGEX = /\/([^?]*)/;
 const SERVER_CLIENT_ID = 'S';

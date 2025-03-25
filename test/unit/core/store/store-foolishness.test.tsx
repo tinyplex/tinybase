@@ -4,7 +4,15 @@
     react/jsx-no-useless-fragment,
     jest/no-conditional-expect
 */
-
+import {
+  expectChanges,
+  expectChangesNoJson,
+  expectNoChanges,
+} from '../../common/expect.ts';
+import {createStoreListener} from '../../common/listeners.ts';
+import {StoreListener} from '../../common/types.ts';
+import {render} from '@testing-library/react';
+import React from 'react';
 import type {Relationships, Store} from 'tinybase';
 import {
   createCheckpoints,
@@ -14,11 +22,7 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase';
-import {
-  expectChanges,
-  expectChangesNoJson,
-  expectNoChanges,
-} from '../../common/expect.ts';
+import {createLocalPersister} from 'tinybase/persisters/persister-browser';
 import {
   useCell,
   useCellIds,
@@ -35,11 +39,6 @@ import {
   useTableIds,
   useTables,
 } from 'tinybase/ui-react';
-import React from 'react';
-import {StoreListener} from '../../common/types.ts';
-import {createLocalPersister} from 'tinybase/persisters/persister-browser';
-import {createStoreListener} from '../../common/listeners.ts';
-import {render} from '@testing-library/react';
 
 const validCell = 1;
 const validRow = {c1: validCell};
