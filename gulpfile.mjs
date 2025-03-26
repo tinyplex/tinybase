@@ -320,9 +320,7 @@ const lintCheckFiles = async (dir) => {
   const {
     default: {ESLint},
   } = await import('eslint');
-  const esLint = new ESLint({
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
-  });
+  const esLint = new ESLint({});
   const results = await esLint.lintFiles([dir]);
   if (
     results.filter((result) => result.errorCount > 0 || result.warningCount > 0)
@@ -339,7 +337,6 @@ const lintCheckDocs = async (dir) => {
     default: {ESLint},
   } = await import('eslint');
   const esLint = new ESLint({
-    extensions: [],
     overrideConfig: {
       rules: {
         'no-console': 0,
