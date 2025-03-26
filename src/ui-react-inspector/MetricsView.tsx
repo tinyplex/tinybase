@@ -8,7 +8,6 @@ import {useMetric, useMetricIds, useMetrics} from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
 import {getUniqueId} from './common.ts';
 import type {StoreProp} from './types.ts';
-import React from 'react';
 
 const MetricRow = ({metrics, metricId}: MetricProps) => (
   <tr>

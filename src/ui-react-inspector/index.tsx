@@ -6,7 +6,6 @@ import {Nub} from './Nub.tsx';
 import {Panel} from './Panel.tsx';
 import {POSITIONS, UNIQUE_ID} from './common.ts';
 import {APP_STYLESHEET} from './style.ts';
-import React from 'react';
 
 export const Inspector = ({
   position = 'right',

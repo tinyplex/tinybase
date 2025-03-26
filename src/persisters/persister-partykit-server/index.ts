@@ -92,7 +92,11 @@ export const broadcastChanges = async (
   without?: string[],
 ): Promise<void> =>
   server.party.broadcast(
-    construct(server.config.messagePrefix!, SET_CHANGES, changes),
+    construct(
+      server.config.messagePrefix ?? EMPTY_STRING,
+      SET_CHANGES,
+      changes,
+    ),
     without,
   );
 
@@ -103,7 +107,7 @@ const saveStore = async (
   requestOrConnection: Request | Connection,
 ) => {
   const storage = that.party.storage;
-  const storagePrefix = that.config.storagePrefix!;
+  const storagePrefix = that.config.storagePrefix ?? EMPTY_STRING;
 
   const keysToSet: {[key: string]: Cell | Value} = {
     [storagePrefix + HAS_STORE]: 1,
@@ -243,9 +247,9 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
   async onRequest(request: Request): Promise<Response> {
     const {
       party: {storage},
-      config: {storePath, storagePrefix},
+      config: {storePath = STORE_PATH, storagePrefix},
     } = this;
-    if (new URL(request.url).pathname.endsWith(storePath!)) {
+    if (new URL(request.url).pathname.endsWith(storePath)) {
       const hasExistingStore = await hasStoreInStorage(storage, storagePrefix);
       const text = await request.text();
       if (request.method == PUT) {
@@ -270,10 +274,10 @@ export class TinyBasePartyKitServer implements TinyBasePartyKitServerDecl {
 
   async onMessage(message: string, connection: Connection) {
     const {
-      config: {messagePrefix, storagePrefix},
+      config: {messagePrefix = EMPTY_STRING, storagePrefix},
     } = this;
     await ifNotUndefined(
-      deconstruct(messagePrefix!, message, 1),
+      deconstruct(messagePrefix, message, 1),
       async ([type, payload]) => {
         if (
           type == SET_CHANGES &&

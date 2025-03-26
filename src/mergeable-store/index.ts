@@ -269,7 +269,7 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
 
     objForEach(
       thingsObj,
-      ([thing, thingTime, incomingThingHash = 0], thingId) => {
+      ([thing, thingTime = EMPTY_STRING, incomingThingHash = 0], thingId) => {
         const thingStampMap = mapEnsure<Id, Stamp<Thing, true>>(
           thingStampMaps,
           thingId,
@@ -277,10 +277,10 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
         );
         const [, oldThingTime, oldThingHash] = thingStampMap;
 
-        if (!oldThingTime || thingTime! > oldThingTime) {
+        if (!oldThingTime || thingTime > oldThingTime) {
           stampUpdate(
             thingStampMap,
-            thingTime!,
+            thingTime,
             isContent
               ? incomingThingHash
               : getHash(jsonStringWithMap(thing ?? null) + ':' + thingTime),
@@ -291,7 +291,7 @@ export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
             ? 0
             : hashIdAndHash(thingId, oldThingHash) ^
               hashIdAndHash(thingId, thingStampMap[2]);
-          thingsTime = getLatestTime(thingsTime, thingTime!);
+          thingsTime = getLatestTime(thingsTime, thingTime);
         }
       },
     );

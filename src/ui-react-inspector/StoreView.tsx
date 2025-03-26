@@ -24,7 +24,6 @@ import {
   useEditable,
 } from './common.ts';
 import type {StoreProp} from './types.ts';
-import React from 'react';
 
 const TableView = ({
   tableId,

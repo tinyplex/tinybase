@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import {pause} from '../../common/other.ts';
 import {fireEvent, render} from '@testing-library/react';
 import {userEvent} from '@testing-library/user-event';

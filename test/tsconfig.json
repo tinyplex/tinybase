@@ -20,6 +20,7 @@
       "http-server"
     ],
     "typeRoots": ["../node_modules/@types", "./modules"],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "allowJs": true
   }
 }

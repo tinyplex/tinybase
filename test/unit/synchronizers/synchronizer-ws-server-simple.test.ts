@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
 import {resetHlc} from '../common/mergeable.ts';
 import {pause} from '../common/other.ts';
 import {createMergeableStore} from 'tinybase';

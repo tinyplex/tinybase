@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {mockFetchWasm, pause} from '../../common/other.ts';
 import {ALL_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 import 'fake-indexeddb/auto';

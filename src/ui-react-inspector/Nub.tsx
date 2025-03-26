@@ -1,7 +1,6 @@
 import {useSetValueCallback, useValue} from '../ui-react/index.ts';
 import {OPEN_VALUE, POSITION_VALUE, TITLE} from './common.ts';
 import type {StoreProp} from './types.ts';
-import React from 'react';
 
 export const Nub = ({s}: StoreProp) => {
   const position = useValue(POSITION_VALUE, s) ?? 1;

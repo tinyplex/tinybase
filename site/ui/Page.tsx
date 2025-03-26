@@ -3,6 +3,7 @@ import {Footer} from './Footer.tsx';
 import {Header} from './Header.tsx';
 import {Main} from './Main.tsx';
 import React from 'react';
+import type {NoPropComponent} from 'tinydocs';
 import {
   NodeSummary,
   useBaseUrl,
@@ -10,7 +11,6 @@ import {
   usePageNode,
   useRootNode,
 } from 'tinydocs';
-import type {NoPropComponent} from 'tinydocs';
 
 const GTM_ID = 'G-D1MGR8VRWJ';
 
@@ -97,7 +97,6 @@ export const Page: NoPropComponent = () => {
           src={`https://www.googletagmanager.com/gtag/js?id=${GTM_ID}`}
         />
         <script
-          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
             __html:
               `window.dataLayer=window.dataLayer||[];` +

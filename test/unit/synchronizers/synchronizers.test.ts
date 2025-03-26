@@ -79,8 +79,8 @@ const mockCustomSynchronizer: Synchronizable<
             messages.set(requestKey, []);
           }
           messages
-            .get(requestKey)!
-            .push(
+            .get(requestKey)
+            ?.push(
               `${clientId}→${toClientId ?? 'all'} ` +
                 messageTypes[messageType] +
                 ' ' +

@@ -91,7 +91,6 @@ import {
   useValueIds,
 } from './hooks.ts';
 import type {ReactElement, ReactNode} from 'react';
-import React from 'react';
 
 enum Offsets {
   Store = 0,
