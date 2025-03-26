@@ -14,7 +14,6 @@ import {
 import {Details} from './Details.tsx';
 import {SORT_CELL, STATE_TABLE, getUniqueId, sortedIdsMap} from './common.ts';
 import type {StoreProp} from './types.ts';
-import React from 'react';
 
 const QueryView = ({
   queries,

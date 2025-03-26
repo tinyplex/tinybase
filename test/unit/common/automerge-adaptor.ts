@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import type {Message, PeerId, PeerMetadata} from '@automerge/automerge-repo';
 import {NetworkAdapter} from '@automerge/automerge-repo';
 

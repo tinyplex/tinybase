@@ -1,9 +1,4 @@
-/*
-  eslint-disable
-    @typescript-eslint/ban-ts-comment,
-    react/jsx-no-useless-fragment,
-    jest/no-conditional-expect
-*/
+/*  eslint-disable @typescript-eslint/ban-ts-comment */
 import {
   expectChanges,
   expectChangesNoJson,

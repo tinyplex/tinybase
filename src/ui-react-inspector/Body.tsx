@@ -26,7 +26,6 @@ import {QueriesView} from './QueriesView.tsx';
 import {RelationshipsView} from './RelationshipsView.tsx';
 import {StoreView} from './StoreView.tsx';
 import type {StoreProp} from './types.ts';
-import React from 'react';
 import type {SyntheticEvent} from 'react';
 
 export const Body = ({s}: StoreProp) => {

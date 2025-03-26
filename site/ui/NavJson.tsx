@@ -26,7 +26,6 @@ export const NavJson: NoPropComponent = (): any => {
 
   return (
     <code
-      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{
         __html: JSON.stringify(getNav(rootNode, pageNode, isSingle)),
       }}

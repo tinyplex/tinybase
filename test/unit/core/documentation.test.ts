@@ -216,7 +216,6 @@ describe('Documentation tests', () => {
     mockFetchWasm();
     const results = await suppressWarnings(getResults);
     results.forEach(([expectedResult, actualResult]) => {
-      // eslint-disable-next-line jest/no-conditional-expect
       expect(actualResult).toEqual(expectedResult);
     });
   });

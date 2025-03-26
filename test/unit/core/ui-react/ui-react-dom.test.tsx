@@ -1,5 +1,3 @@
-/* eslint-disable max-len */
-/* eslint-disable react/jsx-no-useless-fragment */
 import {fireEvent, render} from '@testing-library/react';
 import React, {act} from 'react';
 import type {Ids, Indexes, Queries, Relationships, Store} from 'tinybase';

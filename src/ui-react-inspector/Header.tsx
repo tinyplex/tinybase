@@ -4,7 +4,6 @@ import {useSetValueCallback, useValue} from '../ui-react/index.ts';
 import {OPEN_VALUE, POSITIONS, POSITION_VALUE, TITLE} from './common.ts';
 import type {StoreProp} from './types.ts';
 import type {MouseEvent} from 'react';
-import React from 'react';
 
 export const Header = ({s}: StoreProp) => {
   const position = useValue(POSITION_VALUE, s) ?? 1;

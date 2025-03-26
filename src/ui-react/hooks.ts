@@ -480,7 +480,6 @@ const useCheckpointAction = (
   );
   return useCallback(
     () => checkpoints?.[action](arg),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [checkpoints, action, arg],
   );
 };

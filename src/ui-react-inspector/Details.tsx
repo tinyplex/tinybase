@@ -4,7 +4,6 @@ import {useCell, useSetCellCallback} from '../ui-react/index.ts';
 import {OPEN_CELL, STATE_TABLE} from './common.ts';
 import type {StoreProp} from './types.ts';
 import type {ReactNode, SyntheticEvent} from 'react';
-import React from 'react';
 
 export const Details = ({
   uniqueId,

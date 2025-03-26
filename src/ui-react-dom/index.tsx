@@ -82,7 +82,6 @@ import {
   useValueIds,
 } from '../ui-react/index.ts';
 import type {ComponentType, DependencyList, FormEvent, ReactNode} from 'react';
-import React from 'react';
 
 type Cells<Props = CellProps> = {
   [cellId: Id]: {
