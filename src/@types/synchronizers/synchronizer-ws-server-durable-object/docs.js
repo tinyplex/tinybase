@@ -154,7 +154,7 @@
    * export class MyDurableObject extends WsServerDurableObject {
    *   onPathId(pathId, addedOrRemoved) {
    *     console.info(
-   *       (addedOrRemoved ? 'Added' : 'Removed') + ` path ${pathId}`,
+   *       (addedOrRemoved == 1 ? 'Added' : 'Removed') + ` path ${pathId}`,
    *     );
    *   }
    * }
@@ -188,7 +188,7 @@
    * export class MyDurableObject extends WsServerDurableObject {
    *   onClientId(pathId, clientId, addedOrRemoved) {
    *     console.info(
-   *       (addedOrRemoved ? 'Added' : 'Removed') +
+   *       (addedOrRemoved == 1 ? 'Added' : 'Removed') +
    *         ` client ${clientId} on path ${pathId}`,
    *     );
    *   }
