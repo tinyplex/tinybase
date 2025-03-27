@@ -36,8 +36,8 @@ export class MyDurableObject extends WsServerDurableObject {
 
 ```js
 import postgres from 'postgres';
-import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 import {createStore} from 'tinybase';
+import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 
 // Create a TinyBase Store.
 const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -73,10 +73,10 @@ await sql.end();
 <p>Note that these two <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> objects support both the <code>json</code> and <code>tabular</code> modes for saving TinyBase data into the database. See the <a href="https://beta.tinybase.org/api/persisters/type-aliases/configuration/databasepersisterconfig/"><code>DatabasePersisterConfig</code></a> type for more details. (Note however that, like the SQLite Persisters, only the <code>json</code> mode is supported for <a href="https://beta.tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a> instances, due to their additional CRDT metadata.)</p><p>This release also exposes the new <a href="https://beta.tinybase.org/api/persisters/functions/creation/createcustomsqlitepersister/"><code>createCustomSqlitePersister</code></a> function and <a href="https://beta.tinybase.org/api/persisters/functions/creation/createcustompostgresqlpersister/"><code>createCustomPostgreSqlPersister</code></a> function at the top level of the persister module. These can be used to build <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> objects against SQLite and PostgreSQL SDKs (or forks) that are not already included with TinyBase.</p><h2 id="minor-breaking-change">Minor breaking change</h2><p>It&#x27;s very unlikely to affect most apps, but also be aware that the <a href="https://beta.tinybase.org/api/persisters/"><code>persisters</code></a> module and <a href="https://beta.tinybase.org/api/synchronizers/"><code>synchronizers</code></a> module are no longer bundled in the &#x27;master&#x27; tinybase module. If you are using them (most likely because you have built a custom <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> or <a href="https://beta.tinybase.org/api/synchronizers/interfaces/synchronizer/synchronizer/"><code>Synchronizer</code></a>), you will need to update your imports accordingly to the standalone <code>tinybase/persisters</code> and <code>tinybase/synchronizers</code> versions of them. Apologies.</p><hr><h1 id="v5-1">v5.1</h1><p>This release lets you persist data on a server using the <a href="https://beta.tinybase.org/api/synchronizer-ws-server/functions/creation/createwsserver/"><code>createWsServer</code></a> function. This makes it possible for all clients to disconnect from a path, but, when they reconnect, for the data to still be present for them to sync with.</p><p>This is done by passing in a second argument to the <a href="https://beta.tinybase.org/api/synchronizer-ws-server/functions/creation/createwsserver/"><code>createWsServer</code></a> function that creates a <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> instance (for which also need to create or provide a <a href="https://beta.tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a>) for a given path:</p>
 
 ```js
-import {WebSocketServer} from 'ws';
-import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createMergeableStore} from 'tinybase';
+import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+import {WebSocketServer} from 'ws';
 
 const persistingServer = createWsServer(
   new WebSocketServer({port: 8051}),
@@ -111,8 +111,8 @@ console.log(localStore2.getContent());
 <p>Please read the new <a href="https://beta.tinybase.org/guides/synchronization/using-a-mergeablestore/">Using A MergeableStore</a> guide for more details of how to use this important new API.</p><p>A <a href="https://beta.tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a> can be persisted locally, just like a regular <a href="https://beta.tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> into file, local and session storage, and simple SQLite environments such as Expo and SQLite3. These allow you to save the state of a <a href="https://beta.tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a> locally before it has had the chance to be synchronized online, for example.</p><p>Which leads us onto the next important feature in v5.0, allowing you to synchronize stores between systems...</p><h2 id="the-new-synchronizer-framework">The New <a href="https://beta.tinybase.org/api/synchronizers/interfaces/synchronizer/synchronizer/"><code>Synchronizer</code></a> Framework</h2><p>The v5.0 release also introduces the new concept of synchronization. <a href="https://beta.tinybase.org/api/synchronizers/interfaces/synchronizer/synchronizer/"><code>Synchronizer</code></a> objects implement a negotiation protocol that allows multiple <a href="https://beta.tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a> objects to be merged together. This can be across a network, using WebSockets, for example:</p>
 
 ```js
-import {WebSocket} from 'ws';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
+import {WebSocket} from 'ws';
 
 // On a server machine:
 const server = createWsServer(new WebSocketServer({port: 8043}));
@@ -192,6 +192,7 @@ const persister = createElectricSqlPersister(store, electric, {
 
 ```js yolo
 import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
+
 export default class extends TinyBasePartyKitServer {}
 ```
 
@@ -244,8 +245,8 @@ indexedDbPersister.destroy();
 
 ```jsx
 import React from 'react';
-import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 import {createRoot} from 'react-dom/client';
+import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 
 const App = ({store}) => (
   <SortedTableInHtmlTable tableId="pets" cellId="species" store={store} />
@@ -281,8 +282,8 @@ root.unmount();
 <p>The <a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/editablecellview/"><code>EditableCellView</code></a> component and <a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/editablevalueview/"><code>EditableValueView</code></a> component are interactive input controls for updating <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> and <a href="https://beta.tinybase.org/api/store/type-aliases/store/value/"><code>Value</code></a> content respectively. You can generally use them across your table views by adding the <code>editable</code> prop to your table component.</p><h2 id="the-new-inspector">The new Inspector</h2><p><img src="https://beta.tinybase.org/store-inspector.webp" alt="Inspector" title="Inspector"></p><p>The new <a href="https://beta.tinybase.org/api/ui-react-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component allows you to view, understand, and edit the content of a <a href="https://beta.tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> in a debug web environment. Try it out in most of the demos on the site, including the <a href="https://beta.tinybase.org/demos/movie-database/">Movie Database</a> demo, pictured. This requires a debug build of the new <a href="https://beta.tinybase.org/api/ui-react-dom/"><code>ui-react-dom</code></a> module, which is now also included in the UMD distribution.</p><p>Also in this release, the <a href="https://beta.tinybase.org/api/queries/interfaces/queries/queries/methods/result/getresulttablecellids/"><code>getResultTableCellIds</code></a> method and <a href="https://beta.tinybase.org/api/queries/interfaces/queries/queries/methods/listener/addresulttablecellidslistener/"><code>addResultTableCellIdsListener</code></a> method have been added to the <a href="https://beta.tinybase.org/api/queries/interfaces/queries/queries/"><code>Queries</code></a> object. The equivalent <a href="https://beta.tinybase.org/api/ui-react/functions/queries-hooks/useresulttablecellids/"><code>useResultTableCellIds</code></a> hook and <a href="https://beta.tinybase.org/api/ui-react/functions/queries-hooks/useresulttablecellidslistener/"><code>useResultTableCellIdsListener</code></a> hook have also been added to <a href="https://beta.tinybase.org/api/ui-react/"><code>ui-react</code></a> module. A number of other minor React hooks have been added to support the components above.</p><p><a href="https://beta.tinybase.org/demos/">Demos</a> have been updated to demonstrate the <a href="https://beta.tinybase.org/api/ui-react-dom/"><code>ui-react-dom</code></a> module and the <a href="https://beta.tinybase.org/api/ui-react-inspector/functions/development-components/inspector/"><code>Inspector</code></a> component where appropriate.</p><p>(NB: Previous to v5.0, this component was called <code>StoreInspector</code>.)</p><hr><h1 id="v4-0">v4.0</h1><p>This major release provides <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> modules that connect TinyBase to SQLite databases (in both browser and server contexts), and CRDT frameworks that can provide synchronization and local-first reconciliation:</p><div class="table"><table><thead><tr><th>Module</th><th>Function</th><th>Storage</th></tr></thead><tbody><tr><td><a href="https://beta.tinybase.org/api/persister-sqlite3/"><code>persister-sqlite3</code></a></td><td><a href="https://beta.tinybase.org/api/persister-sqlite3/functions/creation/createsqlite3persister/"><code>createSqlite3Persister</code></a></td><td>SQLite in Node, via <a href="https://github.com/TryGhost/node-sqlite3">sqlite3</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-sqlite-wasm/"><code>persister-sqlite-wasm</code></a></td><td><a href="https://beta.tinybase.org/api/persister-sqlite-wasm/functions/creation/createsqlitewasmpersister/"><code>createSqliteWasmPersister</code></a></td><td>SQLite in a browser, via <a href="https://github.com/tomayac/sqlite-wasm">sqlite-wasm</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-cr-sqlite-wasm/"><code>persister-cr-sqlite-wasm</code></a></td><td><a href="https://beta.tinybase.org/api/persister-cr-sqlite-wasm/functions/creation/createcrsqlitewasmpersister/"><code>createCrSqliteWasmPersister</code></a></td><td>SQLite CRDTs, via <a href="https://github.com/vlcn-io/cr-sqlite">cr-sqlite-wasm</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-yjs/"><code>persister-yjs</code></a></td><td><a href="https://beta.tinybase.org/api/persister-yjs/functions/creation/createyjspersister/"><code>createYjsPersister</code></a></td><td>Yjs CRDTs, via <a href="https://github.com/yjs/yjs">yjs</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-automerge/"><code>persister-automerge</code></a></td><td><a href="https://beta.tinybase.org/api/persister-sqlite-wasm/functions/creation/createsqlitewasmpersister/"><code>createSqliteWasmPersister</code></a></td><td>Automerge CRDTs, via <a href="https://github.com/automerge/automerge-repo">automerge-repo</a></td></tr></tbody></table></div><p>See the <a href="https://beta.tinybase.org/guides/persistence/database-persistence/">Database Persistence</a> guide for details on how to work with SQLite databases, and the <a href="https://beta.tinybase.org/guides/schemas-and-persistence/synchronizing-data/">Synchronizing Data</a> guide for more complex synchronization with the CRDT frameworks.</p><p>Take a look at the <a href="https://github.com/tinyplex/vite-tinybase-ts-react-crsqlite">vite-tinybase-ts-react-crsqlite</a> template, for example, which demonstrates Vulcan&#x27;s cr-sqlite to provide persistence and synchronization via this technique.</p><h2 id="sqlite-databases">SQLite databases</h2><p>You can persist <a href="https://beta.tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> data to a database with either a JSON serialization or tabular mapping. (See the <a href="https://beta.tinybase.org/api/persisters/type-aliases/configuration/databasepersisterconfig/"><code>DatabasePersisterConfig</code></a> documentation for more details).</p><p>For example, this creates a <a href="https://beta.tinybase.org/api/persisters/interfaces/persister/persister/"><code>Persister</code></a> object and saves and loads the <a href="https://beta.tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> to and from a local SQLite database. It uses an explicit tabular one-to-one mapping for the &#x27;pets&#x27; table:</p>
 
 ```js
-import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
+import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 
 const sqlite3 = await sqlite3InitModule();
 const db = new sqlite3.oo1.DB(':memory:', 'c');
@@ -307,8 +308,8 @@ sqlitePersister.destroy();
 <h2 id="crdt-frameworks">CRDT Frameworks</h2><p>CRDTs allow complex reconciliation and synchronization between clients. Yjs and Automerge are two popular examples. The API should be familiar! The following will persist a TinyBase <a href="https://beta.tinybase.org/api/store/interfaces/store/store/"><code>Store</code></a> to a Yjs document:</p>
 
 ```js
-import {Doc} from 'yjs';
 import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
+import {Doc} from 'yjs';
 
 store.setTables({pets: {fido: {species: 'dog'}}});
 
@@ -325,8 +326,8 @@ yJsPersister.destroy();
 <p>The following is the equivalent for an Automerge document that will sync over the broadcast channel:</p>
 
 ```js
-import {BroadcastChannelNetworkAdapter} from '@automerge/automerge-repo-network-broadcastchannel';
 import {Repo} from '@automerge/automerge-repo';
+import {BroadcastChannelNetworkAdapter} from '@automerge/automerge-repo-network-broadcastchannel';
 import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
 
 const docHandler = new Repo({

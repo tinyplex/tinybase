@@ -71,6 +71,24 @@ var arrayPush = (array, ...values) => array.push(...values);
 var arrayPop = (array) => array.pop();
 var arrayUnshift = (array, ...values) => array.unshift(...values);
 var arrayShift = (array) => array.shift();
+var getCellOrValueType = (cellOrValue) => {
+  const type = getTypeOf(cellOrValue);
+  return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;
+};
+var isCellOrValueOrNullOrUndefined = (cellOrValue) => isUndefined(cellOrValue) || !isUndefined(getCellOrValueType(cellOrValue));
+var setOrDelCell = (store, tableId, rowId, cellId, cell) => isUndefined(cell) ? store.delCell(tableId, rowId, cellId, true) : store.setCell(tableId, rowId, cellId, cell);
+var setOrDelValue = (store, valueId, value) => isUndefined(value) ? store.delValue(valueId) : store.setValue(valueId, value);
+var collSizeN = (collSizer) => (coll) => arrayReduce(collValues(coll), (total, coll2) => total + collSizer(coll2), 0);
+var collSize = (coll) => coll?.size ?? 0;
+var collSize2 = collSizeN(collSize);
+var collSize3 = collSizeN(collSize2);
+var collSize4 = collSizeN(collSize3);
+var collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
+var collIsEmpty = (coll) => isUndefined(coll) || collSize(coll) == 0;
+var collValues = (coll) => [...coll?.values() ?? []];
+var collClear = (coll) => coll.clear();
+var collForEach = (coll, cb) => coll?.forEach(cb);
+var collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
 var object = Object;
 var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
 var objEntries = object.entries;
@@ -112,17 +130,6 @@ var objValidate = (obj, validateChild, onInvalidObj, emptyIsValid = 0) => {
   });
   return emptyIsValid ? true : !objIsEmpty(obj);
 };
-var collSizeN = (collSizer) => (coll) => arrayReduce(collValues(coll), (total, coll2) => total + collSizer(coll2), 0);
-var collSize = (coll) => coll?.size ?? 0;
-var collSize2 = collSizeN(collSize);
-var collSize3 = collSizeN(collSize2);
-var collSize4 = collSizeN(collSize3);
-var collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
-var collIsEmpty = (coll) => isUndefined(coll) || collSize(coll) == 0;
-var collValues = (coll) => [...coll?.values() ?? []];
-var collClear = (coll) => coll.clear();
-var collForEach = (coll, cb) => coll?.forEach(cb);
-var collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
 var mapNew = (entries) => new Map(entries);
 var mapKeys = (map) => [...map?.keys() ?? []];
 var mapGet = (map, key) => map?.get(key);
@@ -193,13 +200,6 @@ var visitTree = (node, path, ensureLeaf, pruneLeaf, p = 0) => ifNotUndefined(
     return leaf;
   }
 );
-var getCellOrValueType = (cellOrValue) => {
-  const type = getTypeOf(cellOrValue);
-  return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;
-};
-var isCellOrValueOrNullOrUndefined = (cellOrValue) => isUndefined(cellOrValue) || !isUndefined(getCellOrValueType(cellOrValue));
-var setOrDelCell = (store, tableId, rowId, cellId, cell) => isUndefined(cell) ? store.delCell(tableId, rowId, cellId, true) : store.setCell(tableId, rowId, cellId, cell);
-var setOrDelValue = (store, valueId, value) => isUndefined(value) ? store.delValue(valueId) : store.setValue(valueId, value);
 var setNew = (entryOrEntries) => new Set(
   isArray(entryOrEntries) || isUndefined(entryOrEntries) ? entryOrEntries : [entryOrEntries]
 );
@@ -1593,6 +1593,50 @@ var getHash = (value) => {
   });
   return hash >>> 0;
 };
+var SHIFT36 = 2 ** 36;
+var SHIFT30 = 2 ** 30;
+var SHIFT24 = 2 ** 24;
+var SHIFT18 = 2 ** 18;
+var SHIFT12 = 2 ** 12;
+var SHIFT6 = 2 ** 6;
+var encodeTimeAndCounter = (logicalTime42, counter24) => encode(logicalTime42 / SHIFT36) + encode(logicalTime42 / SHIFT30) + encode(logicalTime42 / SHIFT24) + encode(logicalTime42 / SHIFT18) + encode(logicalTime42 / SHIFT12) + encode(logicalTime42 / SHIFT6) + encode(logicalTime42) + encode(counter24 / SHIFT18) + encode(counter24 / SHIFT12) + encode(counter24 / SHIFT6) + encode(counter24);
+var decodeTimeAndCounter = (hlc16) => [
+  decode(hlc16, 0) * SHIFT36 + decode(hlc16, 1) * SHIFT30 + decode(hlc16, 2) * SHIFT24 + decode(hlc16, 3) * SHIFT18 + decode(hlc16, 4) * SHIFT12 + decode(hlc16, 5) * SHIFT6 + decode(hlc16, 6),
+  decode(hlc16, 7) * SHIFT18 + decode(hlc16, 8) * SHIFT12 + decode(hlc16, 9) * SHIFT6 + decode(hlc16, 10)
+];
+var getHlcFunctions = (uniqueId) => {
+  let logicalTime = 0;
+  let lastCounter = -1;
+  const clientPart = ifNotUndefined(
+    uniqueId,
+    (uniqueId2) => {
+      const clientHash30 = getHash(uniqueId2);
+      return encode(clientHash30 / SHIFT24) + encode(clientHash30 / SHIFT18) + encode(clientHash30 / SHIFT12) + encode(clientHash30 / SHIFT6) + encode(clientHash30);
+    },
+    () => getUniqueId(5)
+  );
+  const getHlc = () => {
+    seenHlc();
+    return encodeTimeAndCounter(logicalTime, ++lastCounter) + clientPart;
+  };
+  const seenHlc = (hlc) => {
+    const previousLogicalTime = logicalTime;
+    const [remoteLogicalTime, remoteCounter] = isUndefined(hlc) || hlc == "" ? [0, 0] : decodeTimeAndCounter(hlc);
+    logicalTime = mathMax(
+      previousLogicalTime,
+      remoteLogicalTime,
+      GLOBAL.HLC_TIME ?? Date.now()
+    );
+    lastCounter = logicalTime == previousLogicalTime ? logicalTime == remoteLogicalTime ? mathMax(lastCounter, remoteCounter) : lastCounter : logicalTime == remoteLogicalTime ? remoteCounter : -1;
+  };
+  return [getHlc, seenHlc];
+};
+var jsonString = JSON.stringify;
+var jsonParse = JSON.parse;
+var jsonStringWithMap = (obj) => jsonString(
+  obj,
+  (_key, value) => isInstanceOf(value, Map) ? object.fromEntries([...value]) : value
+);
 var stampClone = ([value, time]) => stampNew(value, time);
 var stampCloneWithHash = ([value, time, hash]) => [value, time, hash];
 var stampNew = (value, time) => time ? [value, time] : [value];
@@ -1620,12 +1664,6 @@ var pairCollSize2 = (pair, func = collSize2) => func(pair[0]) + func(pair[1]);
 var pairNewMap = () => [mapNew(), mapNew()];
 var pairClone = (array) => [...array];
 var pairIsEqual = ([entry1, entry2]) => entry1 === entry2;
-var jsonString = JSON.stringify;
-var jsonParse = JSON.parse;
-var jsonStringWithMap = (obj) => jsonString(
-  obj,
-  (_key, value) => isInstanceOf(value, Map) ? object.fromEntries([...value]) : value
-);
 var idsChanged = (changedIds, id2, addedOrRemoved) => mapSet(
   changedIds,
   id2,
@@ -2816,44 +2854,6 @@ var createStore = () => {
   );
   return objFreeze(store);
 };
-var SHIFT36 = 2 ** 36;
-var SHIFT30 = 2 ** 30;
-var SHIFT24 = 2 ** 24;
-var SHIFT18 = 2 ** 18;
-var SHIFT12 = 2 ** 12;
-var SHIFT6 = 2 ** 6;
-var encodeTimeAndCounter = (logicalTime42, counter24) => encode(logicalTime42 / SHIFT36) + encode(logicalTime42 / SHIFT30) + encode(logicalTime42 / SHIFT24) + encode(logicalTime42 / SHIFT18) + encode(logicalTime42 / SHIFT12) + encode(logicalTime42 / SHIFT6) + encode(logicalTime42) + encode(counter24 / SHIFT18) + encode(counter24 / SHIFT12) + encode(counter24 / SHIFT6) + encode(counter24);
-var decodeTimeAndCounter = (hlc16) => [
-  decode(hlc16, 0) * SHIFT36 + decode(hlc16, 1) * SHIFT30 + decode(hlc16, 2) * SHIFT24 + decode(hlc16, 3) * SHIFT18 + decode(hlc16, 4) * SHIFT12 + decode(hlc16, 5) * SHIFT6 + decode(hlc16, 6),
-  decode(hlc16, 7) * SHIFT18 + decode(hlc16, 8) * SHIFT12 + decode(hlc16, 9) * SHIFT6 + decode(hlc16, 10)
-];
-var getHlcFunctions = (uniqueId) => {
-  let logicalTime = 0;
-  let lastCounter = -1;
-  const clientPart = ifNotUndefined(
-    uniqueId,
-    (uniqueId2) => {
-      const clientHash30 = getHash(uniqueId2);
-      return encode(clientHash30 / SHIFT24) + encode(clientHash30 / SHIFT18) + encode(clientHash30 / SHIFT12) + encode(clientHash30 / SHIFT6) + encode(clientHash30);
-    },
-    () => getUniqueId(5)
-  );
-  const getHlc = () => {
-    seenHlc();
-    return encodeTimeAndCounter(logicalTime, ++lastCounter) + clientPart;
-  };
-  const seenHlc = (hlc) => {
-    const previousLogicalTime = logicalTime;
-    const [remoteLogicalTime, remoteCounter] = isUndefined(hlc) || hlc == "" ? [0, 0] : decodeTimeAndCounter(hlc);
-    logicalTime = mathMax(
-      previousLogicalTime,
-      remoteLogicalTime,
-      GLOBAL.HLC_TIME ?? Date.now()
-    );
-    lastCounter = logicalTime == previousLogicalTime ? logicalTime == remoteLogicalTime ? mathMax(lastCounter, remoteCounter) : lastCounter : logicalTime == remoteLogicalTime ? remoteCounter : -1;
-  };
-  return [getHlc, seenHlc];
-};
 var LISTENER_ARGS = {
   HasTable: 1,
   Table: 1,
@@ -2980,7 +2980,7 @@ var createMergeableStore = (uniqueId) => {
     let thingsHash = isContent ? incomingThingsHash : oldThingsHash;
     objForEach(
       thingsObj,
-      ([thing, thingTime, incomingThingHash = 0], thingId) => {
+      ([thing, thingTime = EMPTY_STRING, incomingThingHash = 0], thingId) => {
         const thingStampMap = mapEnsure(thingStampMaps, thingId, () => [
           void 0,
           EMPTY_STRING,

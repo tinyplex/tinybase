@@ -72,10 +72,6 @@ var visitTree = (node, path, ensureLeaf, pruneLeaf, p = 0) => ifNotUndefined(
     return leaf;
   }
 );
-var setNew = (entryOrEntries) => new Set(
-  isArray(entryOrEntries) || isUndefined(entryOrEntries) ? entryOrEntries : [entryOrEntries]
-);
-var setAdd = (set, value) => set?.add(value);
 var INTEGER = /^\d+$/;
 var getPoolFunctions = () => {
   const pool = [];
@@ -89,6 +85,10 @@ var getPoolFunctions = () => {
     }
   ];
 };
+var setNew = (entryOrEntries) => new Set(
+  isArray(entryOrEntries) || isUndefined(entryOrEntries) ? entryOrEntries : [entryOrEntries]
+);
+var setAdd = (set, value) => set?.add(value);
 var getWildcardedLeaves = (deepIdSet, path = [EMPTY_STRING]) => {
   const leaves = [];
   const deep = (node, p) => p == size(path) ? arrayPush(leaves, node) : path[p] === null ? collForEach(node, (node2) => deep(node2, p + 1)) : arrayForEach([path[p], null], (id) => deep(mapGet(node, id), p + 1));

@@ -1,6 +1,3 @@
-// dist/ui-react-dom/index.js
-import { jsx as jsx2, jsxs, Fragment } from "react/jsx-runtime";
-
 // dist/ui-react/index.js
 import React from "react";
 import { jsx } from "react/jsx-runtime";
@@ -44,6 +41,25 @@ var arrayEvery = (array, cb) => array.every(cb);
 var arrayIsEqual = (array1, array2) => size(array1) === size(array2) && arrayEvery(array1, (value1, index) => array2[index] === value1);
 var arrayMap = (array, cb) => array.map(cb);
 var arrayFilter = (array, cb) => array.filter(cb);
+var object = Object;
+var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
+var objEntries = object.entries;
+var isObject = (obj) => !isUndefined(obj) && ifNotUndefined(
+  getPrototypeOf(obj),
+  (objPrototype) => objPrototype == object.prototype || isUndefined(getPrototypeOf(objPrototype)),
+  /* istanbul ignore next */
+  () => true
+);
+var objIds = object.keys;
+var objGet = (obj, id) => ifNotUndefined(obj, (obj2) => obj2[id]);
+var objSize = (obj) => size(objIds(obj));
+var objIsEqual = (obj1, obj2) => {
+  const entries1 = objEntries(obj1);
+  return size(entries1) === objSize(obj2) && arrayEvery(
+    entries1,
+    ([index, value1]) => isObject(value1) ? isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false : obj2[index] === value1
+  );
+};
 var {
   PureComponent,
   createContext,
@@ -57,33 +73,11 @@ var {
   useSyncExternalStore
 } = React;
 var getProps = (getProps22, ...ids) => isUndefined(getProps22) ? {} : getProps22(...ids);
-var object = Object;
-var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
-var objEntries = object.entries;
-var isObject = (obj) => !isUndefined(obj) && ifNotUndefined(
-  getPrototypeOf(obj),
-  (objPrototype) => objPrototype == object.prototype || isUndefined(getPrototypeOf(objPrototype)),
+var TINYBASE_CONTEXT = TINYBASE + "_uirc";
+var Context = GLOBAL[TINYBASE_CONTEXT] ? (
   /* istanbul ignore next */
-  () => true
-);
-var objIds = object.keys;
-var objGet = (obj, id) => ifNotUndefined(obj, (obj2) => obj2[id]);
-var objHas = (obj, id) => id in obj;
-var objSize = (obj) => size(objIds(obj));
-var objIsEqual = (obj1, obj2) => {
-  const entries1 = objEntries(obj1);
-  return size(entries1) === objSize(obj2) && arrayEvery(
-    entries1,
-    ([index, value1]) => isObject(value1) ? isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false : obj2[index] === value1
-  );
-};
-var objEnsure = (obj, id, getDefaultValue) => {
-  if (!objHas(obj, id)) {
-    obj[id] = getDefaultValue();
-  }
-  return obj[id];
-};
-var Context = objEnsure(GLOBAL, TINYBASE + "_uirc", () => createContext([]));
+  GLOBAL[TINYBASE_CONTEXT]
+) : GLOBAL[TINYBASE_CONTEXT] = createContext([]);
 var useThing = (id, offset) => {
   const contextValue = useContext(Context);
   return isUndefined(id) ? contextValue[offset * 2] : isString(id) ? objGet(contextValue[offset * 2 + 1], id) : id;
@@ -352,6 +346,7 @@ var ForwardCheckpointsView = getUseCheckpointView(
 
 // dist/ui-react-dom/index.js
 import React2 from "react";
+import { Fragment, jsx as jsx2, jsxs } from "react/jsx-runtime";
 var getTypeOf2 = (thing) => typeof thing;
 var EMPTY_STRING2 = "";
 var STRING2 = getTypeOf2(EMPTY_STRING2);
@@ -369,11 +364,17 @@ var isUndefined2 = (thing) => thing == void 0;
 var isTypeStringOrBoolean = (type) => type == STRING2 || type == BOOLEAN;
 var isString2 = (thing) => getTypeOf2(thing) == STRING2;
 var isArray2 = (thing) => Array.isArray(thing);
+var arrayMap2 = (array, cb) => array.map(cb);
 var getCellOrValueType = (cellOrValue) => {
   const type = getTypeOf2(cellOrValue);
   return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;
 };
 var getTypeCase = (type, stringCase, numberCase, booleanCase) => type == STRING2 ? stringCase : type == NUMBER ? numberCase : booleanCase;
+var object2 = Object;
+var objEntries2 = object2.entries;
+var objNew = (entries = []) => object2.fromEntries(entries);
+var objToArray = (obj, cb) => arrayMap2(objEntries2(obj), ([id, value]) => cb(value, id));
+var objMap = (obj, cb) => objNew(objToArray(obj, (value, id) => [id, cb(value, id)]));
 var {
   PureComponent: PureComponent2,
   createContext: createContext2,
@@ -398,12 +399,6 @@ var getIndexStoreTableId = (indexes, indexId) => [
   indexes?.getStore(),
   indexes?.getTableId(indexId)
 ];
-var arrayMap2 = (array, cb) => array.map(cb);
-var object2 = Object;
-var objEntries2 = object2.entries;
-var objNew = (entries = []) => object2.fromEntries(entries);
-var objToArray = (obj, cb) => arrayMap2(objEntries2(obj), ([id, value]) => cb(value, id));
-var objMap = (obj, cb) => objNew(objToArray(obj, (value, id) => [id, cb(value, id)]));
 var DOT = ".";
 var EDITABLE = "editable";
 var LEFT_ARROW = "\u2190";
