@@ -55,30 +55,6 @@ var arrayMap = (array, cb) => array.map(cb);
 var arrayIsEmpty = (array) => size(array) == 0;
 var arrayFilter = (array, cb) => array.filter(cb);
 var arrayWith = (array, index, value) => array.with(index, value);
-var {
-  PureComponent,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-  useSyncExternalStore
-} = React;
-var getProps = (getProps2, ...ids) => isUndefined(getProps2) ? {} : getProps2(...ids);
-var getRelationshipsStoreTableIds = (relationships, relationshipId) => [
-  relationships,
-  relationships?.getStore(),
-  relationships?.getLocalTableId(relationshipId),
-  relationships?.getRemoteTableId(relationshipId)
-];
-var getIndexStoreTableId = (indexes, indexId) => [
-  indexes,
-  indexes?.getStore(),
-  indexes?.getTableId(indexId)
-];
 var object = Object;
 var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
 var objEntries = object.entries;
@@ -103,13 +79,35 @@ var objIsEqual = (obj1, obj2) => {
     ([index, value1]) => isObject(value1) ? isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false : obj2[index] === value1
   );
 };
-var objEnsure = (obj, id, getDefaultValue) => {
-  if (!objHas(obj, id)) {
-    obj[id] = getDefaultValue();
-  }
-  return obj[id];
-};
-var Context = objEnsure(GLOBAL, TINYBASE + "_uirc", () => createContext([]));
+var {
+  PureComponent,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore
+} = React;
+var getProps = (getProps2, ...ids) => isUndefined(getProps2) ? {} : getProps2(...ids);
+var getRelationshipsStoreTableIds = (relationships, relationshipId) => [
+  relationships,
+  relationships?.getStore(),
+  relationships?.getLocalTableId(relationshipId),
+  relationships?.getRemoteTableId(relationshipId)
+];
+var getIndexStoreTableId = (indexes, indexId) => [
+  indexes,
+  indexes?.getStore(),
+  indexes?.getTableId(indexId)
+];
+var TINYBASE_CONTEXT = TINYBASE + "_uirc";
+var Context = GLOBAL[TINYBASE_CONTEXT] ? (
+  /* istanbul ignore next */
+  GLOBAL[TINYBASE_CONTEXT]
+) : GLOBAL[TINYBASE_CONTEXT] = createContext([]);
 var useThing = (id, offset) => {
   const contextValue = useContext(Context);
   return isUndefined(id) ? contextValue[offset * 2] : isString(id) ? objGet(contextValue[offset * 2 + 1], id) : id;
@@ -383,7 +381,6 @@ var useCheckpointAction = (checkpointsOrCheckpointsId, action, arg) => {
   );
   return useCallback(
     () => checkpoints?.[action](arg),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [checkpoints, action, arg]
   );
 };
