@@ -1,4 +1,3 @@
-// @ts-expect-error - no types for shared server
 import {createTestServer} from '../server.mjs';
 import 'expect-puppeteer';
 import {Server} from 'http';
