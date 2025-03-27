@@ -34,7 +34,7 @@ import type {
   useSynchronizer as useSynchronizerDecl,
   useSynchronizerIds as useSynchronizerIdsDecl,
 } from '../@types/ui-react/index.d.ts';
-import {IdObj, objEnsure, objGet, objIds} from '../common/obj.ts';
+import {IdObj, objGet, objIds} from '../common/obj.ts';
 import {GLOBAL, isString, isUndefined} from '../common/other.ts';
 import {createContext, useContext, useEffect} from '../common/react.ts';
 import {TINYBASE} from '../common/strings.ts';
@@ -99,11 +99,14 @@ export type ContextValue = [
   delExtraThingById?: (offset: Offsets, id: string) => void,
 ];
 
-export const Context: React.Context<ContextValue> = objEnsure(
-  GLOBAL,
-  TINYBASE + '_uirc',
-  () => createContext<ContextValue>([]),
-);
+const TINYBASE_CONTEXT = TINYBASE + '_uirc';
+
+export const Context: React.Context<ContextValue> = (GLOBAL as any)[
+  TINYBASE_CONTEXT
+]
+  ? /*! istanbul ignore next */
+    (GLOBAL as any)[TINYBASE_CONTEXT]
+  : ((GLOBAL as any)[TINYBASE_CONTEXT] = createContext<ContextValue>([]));
 
 const useThing = <UsedThing extends Thing>(
   id: Id | undefined,
