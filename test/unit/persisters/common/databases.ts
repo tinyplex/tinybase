@@ -11,8 +11,8 @@ import type {
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import initWasm, {DB} from '@vlcn.io/crsqlite-wasm';
 import {Mutex} from 'async-mutex';
-import {DbSchema} from 'electric-sql/client/model';
 import type {ElectricClient} from 'electric-sql/client/model';
+import {DbSchema} from 'electric-sql/client/model';
 import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
 import 'fake-indexeddb/auto';
 import 'jest-fetch-mock';
@@ -88,7 +88,7 @@ const getPowerSyncDatabase = async (
 
   const executeSingle = async (sql: string, bindings: any[]) => {
     const results = [];
-    sqlite3.str_new(db);
+
     for await (const stmt of sqlite3.statements(db, sql)) {
       let columns;
       const wrappedBindings = bindings ? [bindings] : [[]];
@@ -153,10 +153,10 @@ const getPowerSyncDatabase = async (
         while (!signal?.aborted) {
           const nextChange = await new Promise<WatchOnChangeEvent>(
             (resolve) => {
-              const observer = (_: any, tableName: string) => {
+              const observer = (_1: any, _2: any, tableName: string) => {
                 resolve({changedTables: [tableName]});
               };
-              sqlite3.register_table_onchange_hook(db, observer);
+              sqlite3.update_hook(db, observer);
             },
           );
           yield nextChange;
