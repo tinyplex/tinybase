@@ -12,18 +12,35 @@ adding new features.
 
 The most notable changes for users are:
 
-- The package distribution only includes ESM packages.
-- React 19 is now expected as a peer dependency for UI components.
+- The package distribution only includes modern ESM packages (both minified and
+  non-minified).
+- React 19 is now compatible as an optional peer dependency.
 - The tools module and TinyBase CLI have been removed.
 
-As a result of these, there have been some knock-on effects to the project as a
-whole. For example, React 19 is used as a developer dependency for the project
-and so the test suite has been updated to use `react-testing-library` instead
-of `react-test-renderer`. The React `jsx-runtime` is used for JSX
-transformations. And the demos (and CodePen examples) have been updated to use
-an `importmap` mapping the modules to the [esm.sh](https://esm.sh/) CDN.
+If you have been using CJS or UMD packages, you will need to update your
+bundling strategy for TinyBase (in the same way that you will have had to have
+done for React 19, for example) but this change should be compatible with most
+packaging tools. If you had been using the library directly a browser, you
+should consider the [esm.sh](https://esm.sh/) CDN, as we have for our demos.
 
-Please let us know how these changes find you!
+As a result of these changes, there have been some additional knock-on effects
+to the project and developer infrastructure as a whole. For example:
+
+- The test suite has been updated to use `react-testing-library` instead of
+`react-test-renderer`.
+- The React `jsx-runtime` is used for JSX transformations. 
+- Demos (and CodePen examples) have been updated to use an `importmap` mapping
+the modules to the [esm.sh](https://esm.sh/) CDN.
+- ESLint has finally been upgraded to v9.
+
+Note that TinyBase v6.0 adds no new functionality, so you can afford to stay on
+v5.4.x for a while if these changes are somehow incompatible for you. However,
+all future functionality changes and bug fixes _will_ take effect as v6.x
+releases (and probably won't be back-ported to v5.4.x), so you should endeavor
+to upgrade as soon as you can.
+
+Please let us know how these changes find you, and please file an issue on
+GitHub if you need help adapting to any of them.
 
 # v5.4
 
@@ -307,8 +324,8 @@ issues in a development environment.
 
 # v5.0
 
-We're excited to announce this major release for TinyBase! It includes
-important data synchronization functionality and a range of other improvements.
+We're excited to announce this major release for TinyBase! It includes important
+data synchronization functionality and a range of other improvements.
 
 # In Summary
 
@@ -329,10 +346,10 @@ Let's look at the major functionality in more detail!
 
 ## The New MergeableStore Type
 
-A key part of TinyBase v5.0 is the new mergeable-store module, which contains
-a subtype of Store - called MergeableStore - that can be merged with another
-with deterministic results. The implementation uses an encoded hybrid logical
-clock (HLC) to timestamp the changes made so that they can be cleanly merged.
+A key part of TinyBase v5.0 is the new mergeable-store module, which contains a
+subtype of Store - called MergeableStore - that can be merged with another with
+deterministic results. The implementation uses an encoded hybrid logical clock
+(HLC) to timestamp the changes made so that they can be cleanly merged.
 
 The getMergeableContent method on a MergeableStore is used to get the state of a
 store that can be merged into another. The applyMergeableChanges method will let
@@ -355,8 +372,8 @@ console.log(localStore2.getContent());
 // -> [{pets: {felix: {species: 'cat'}, fido: {species: 'dog'}}}, {}]
 ```
 
-Please read the new Using A MergeableStore guide for more details of how to
-use this important new API.
+Please read the new Using A MergeableStore guide for more details of how to use
+this important new API.
 
 A MergeableStore can be persisted locally, just like a regular Store into file,
 local and session storage, and simple SQLite environments such as Expo and
