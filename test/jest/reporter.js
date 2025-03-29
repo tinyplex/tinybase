@@ -1,17 +1,15 @@
-import env from './environment.js';
-import {writeFileSync} from 'fs';
+import {readFileSync} from 'fs';
 
 export default class {
-  onRunComplete(_contexts, results) {
-    writeFileSync(
-      './tmp/assertion-summary.json',
-      JSON.stringify({
-        tests: results.numTotalTests,
-        assertions: env.assertionCalls,
-      }),
-      'utf-8',
-    );
+  onRunComplete() {
+    const counts = JSON.parse(readFileSync('./tmp/counts.json', 'utf-8'));
     // eslint-disable-next-line no-console
-    console.log('Assertions:', env.assertionCalls, '\n');
+    console.log(
+      'Tests:',
+      counts.tests,
+      '\nAssertions:',
+      counts.assertions,
+      '\n',
+    );
   }
 }

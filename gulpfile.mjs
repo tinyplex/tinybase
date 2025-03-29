@@ -621,7 +621,7 @@ const test = async (
       'coverage.json',
       JSON.stringify({
         ...(countAsserts
-          ? JSON.parse(await promises.readFile('./tmp/assertion-summary.json'))
+          ? JSON.parse(await promises.readFile('./tmp/counts.json'))
           : {}),
         ...JSON.parse(await promises.readFile('./tmp/coverage-summary.json'))
           .total,

@@ -1,9 +1,12 @@
+import {writeFileSync} from 'fs';
 import {TestEnvironment} from 'jest-environment-jsdom';
 import {TextDecoder, TextEncoder} from 'util';
 import {BroadcastChannel} from 'worker_threads';
 
-export default class extends TestEnvironment {
-  static assertionCalls = 0;
+export default class TinyBaseEnvironment extends TestEnvironment {
+  static tests = 0;
+  static assertions = 0;
+
   async setup() {
     Object.assign(this.global, {
       TextDecoder,
@@ -17,5 +20,17 @@ export default class extends TestEnvironment {
       clearImmediate,
     });
     await super.setup();
+  }
+
+  async teardown() {
+    writeFileSync(
+      './tmp/counts.json',
+      JSON.stringify({
+        tests: TinyBaseEnvironment.tests,
+        assertions: TinyBaseEnvironment.assertions,
+      }),
+      'utf-8',
+    );
+    await super.teardown();
   }
 }
