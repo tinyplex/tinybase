@@ -7,7 +7,7 @@ import {readFileSync, writeFileSync} from 'fs';
 import {createDocs, getSorter} from 'tinydocs';
 import type {Docs} from 'tinydocs';
 
-const tinybaseEsm = [
+const internalEsm = [
   'tinybase',
   'tinybase/ui-react',
   'tinybase/ui-react-dom',
@@ -144,7 +144,7 @@ export const build = async (
       .addMarkdownForNode('/guides/releases/', Readme, '../../../releases.md');
   }
 
-  tinybaseEsm.forEach((module) => {
+  internalEsm.forEach((module) => {
     const [mainModule, ...subModules] = module.split('/');
     subModules.unshift('');
     docs.addReplacer(
@@ -165,7 +165,7 @@ export const build = async (
   docs.publish();
 
   await Promise.all(
-    tinybaseEsm.map(async (module) => {
+    internalEsm.map(async (module) => {
       const [mainModule, ...subModules] = module.split('/');
       subModules.unshift('');
       await esbuild.build({
