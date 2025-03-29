@@ -92,7 +92,10 @@ export const build = async (
   api = true,
   pages = true,
 ): Promise<void> => {
-  const {version} = JSON.parse(readFileSync('./package.json', 'utf-8'));
+  const {version, peerDependencies} = JSON.parse(
+    readFileSync('./package.json', 'utf-8'),
+  );
+
   const baseUrl = version.includes('beta')
     ? 'https://beta.tinybase.org'
     : 'https://tinybase.org';
@@ -152,9 +155,7 @@ export const build = async (
   externalEsm.forEach((module) => {
     const [mainModule, ...subModules] = module.split('/');
     subModules.unshift('');
-    const {version} = JSON.parse(
-      readFileSync(`node_modules/${mainModule}/package.json`, 'utf-8'),
-    );
+    const version = peerDependencies[mainModule];
     docs.addReplacer(
       new RegExp(`esm\\.sh/${module}@`, 'g'),
       `esm.sh/${mainModule}@${version}${subModules.join('/')}`,
