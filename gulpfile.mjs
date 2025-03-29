@@ -75,8 +75,7 @@ const getGlobalName = (module) =>
     : basename(module)
         .split('-')
         .map((part) => part[0].toUpperCase() + part.slice(1).toLowerCase())
-        .join('')
-        .replace('Partykit', 'PartyKit')); // lol
+        .join(''));
 
 const getPrettierConfig = async () => ({
   ...JSON.parse(await promises.readFile('.prettierrc', UTF8)),
@@ -511,13 +510,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       shebang(),
       image(),
       min
-        ? terser({
-            toplevel: true,
-            compress: {
-              unsafe: true,
-              passes: 3,
-            },
-          })
+        ? [terser({toplevel: true, compress: {unsafe: true, passes: 3}})]
         : prettierPlugin(await getPrettierConfig()),
     ],
     onwarn: (warning, warn) => {
