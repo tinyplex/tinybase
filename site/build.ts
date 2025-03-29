@@ -7,7 +7,7 @@ import {readFileSync, writeFileSync} from 'fs';
 import {createDocs, getSorter} from 'tinydocs';
 import type {Docs} from 'tinydocs';
 
-const internalEsm = [
+const internalEsm: string[] = [
   'tinybase',
   'tinybase/ui-react',
   'tinybase/ui-react-dom',
@@ -16,7 +16,11 @@ const internalEsm = [
   'tinybase/persisters/persister-remote',
   'tinybase/synchronizers/synchronizer-ws-client',
 ];
-const externalEsm = ['react', 'react-dom/client', 'react/jsx-runtime'];
+const externalEsm: string[] = [
+  'react',
+  'react-dom/client',
+  'react/jsx-runtime',
+];
 
 const GROUPS = ['Interfaces', '*', 'Type aliases'];
 const CATEGORIES = [
