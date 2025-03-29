@@ -1,5 +1,7 @@
 jest.retryTimes(10);
 
-afterEach(
-  () => (global.env.assertionCalls += expect.getState().assertionCalls),
-);
+afterEach(() => {
+  const {assertionCalls} = expect.getState();
+  global.env.tests += 1;
+  global.env.assertions += assertionCalls;
+});
