@@ -304,7 +304,7 @@ const lintCheckFiles = async (dir) => {
   const prettierConfig = await getPrettierConfig();
 
   const filePaths = [];
-  ['.js', '.d.ts'].forEach((extension) =>
+  ['.ts', '.tsx', '.js', '.d.ts'].forEach((extension) =>
     forEachDeepFile(dir, (filePath) => filePaths.push(filePath), extension),
   );
   await allOf(filePaths, async (filePath) => {
@@ -312,7 +312,14 @@ const lintCheckFiles = async (dir) => {
     if (
       !(await prettier.check(code, {...prettierConfig, filepath: filePath}))
     ) {
-      throw `${filePath} not pretty`;
+      writeFileSync(
+        filePath,
+        await prettier.format(
+          code,
+          {...prettierConfig, filepath: filePath},
+          UTF8,
+        ),
+      );
     }
   });
 
@@ -359,11 +366,6 @@ const lintCheckDocs = async (dir) => {
   );
   await allOf(filePaths, async (filePath) => {
     const code = await promises.readFile(filePath, UTF8);
-    if (
-      !(await prettier.check(code, {...prettierConfig, filepath: filePath}))
-    ) {
-      throw `${filePath} not pretty`;
-    }
     await allOf(
       [...(code.matchAll(LINT_BLOCKS) ?? [])],
       async ([_, hint, docBlock]) => {
@@ -371,21 +373,20 @@ const lintCheckDocs = async (dir) => {
           return; // can't lint orphaned TS methods
         }
         const code = docBlock.replace(/\n +\* ?/g, '\n').trimStart();
+        let pretty = code;
         if (!(await prettier.check(code, docConfig))) {
-          const pretty = (await prettier.format(code, docConfig))
-            .trim()
-            .split('\n')
-            .map((line) => (line == '' ? ' *' : ' * ' + line))
-            .join('\n');
-          // eslint-disable-next-line no-console
-          console.log(
-            `${filePath} not pretty:\n${code}\n\nShould be:\n${pretty}\n`,
-          );
+          pretty = await prettier.format(code, docConfig);
           writeFileSync(
             filePath,
             readFileSync(filePath, UTF8).replace(
               docBlock,
-              '\n' + pretty + '\n * ',
+              '\n' +
+                pretty
+                  .trim()
+                  .split('\n')
+                  .map((line) => (line == '' ? ' *' : ' * ' + line))
+                  .join('\n') +
+                '\n * ',
             ),
             UTF8,
           );
@@ -691,7 +692,7 @@ export const lintFiles = async () => {
   await lintCheckFiles('site');
 };
 export const lintDocs = async () => await lintCheckDocs('src');
-export const lint = parallel(lintFiles, lintDocs);
+export const lint = series(lintDocs, lintFiles);
 
 export const spell = async () => {
   await spellCheck('.');
