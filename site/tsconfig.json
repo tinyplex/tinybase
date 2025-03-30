@@ -7,7 +7,7 @@
     "removeComments": true,
     "target": "ESNext",
     "module": "NodeNext",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "moduleResolution": "NodeNext",
     "allowSyntheticDefaultImports": true,
     "types": ["node"],

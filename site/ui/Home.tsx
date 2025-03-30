@@ -1,4 +1,3 @@
-import React from 'react';
 import type {NoPropComponent} from 'tinydocs';
 import {Markdown, usePageNode} from 'tinydocs';
 import {useReadme} from './Readme.tsx';
