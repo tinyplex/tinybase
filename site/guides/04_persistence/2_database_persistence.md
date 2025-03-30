@@ -18,11 +18,6 @@ PostgreSQL:
 | PostgresPersister     | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                       |
 | PglitePersister       | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                       |
 
-(Take a look at the
-[vite-tinybase-ts-react-crsqlite](https://github.com/tinyplex/vite-tinybase-ts-react-crsqlite)
-template, for example, which demonstrates Vulcan's cr-sqlite to provide
-persistence and synchronization via the third of these.)
-
 Each creation function takes a database reference, and a DatabasePersisterConfig
 object to describe its configuration. There are two modes for persisting a Store
 with a database:
