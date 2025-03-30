@@ -1,4 +1,3 @@
-import React from 'react';
 import type {NoPropComponent} from 'tinydocs';
 import {NodeNavigation, useIsSingle, usePageNode, useRootNode} from 'tinydocs';
 import {ArticleInner} from './ArticleInner.tsx';
