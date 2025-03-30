@@ -1,5 +1,4 @@
 import prettier from '@prettier/sync';
-import React from 'react';
 import type {NoPropComponent} from 'tinydocs';
 import {usePageNode} from 'tinydocs';
 

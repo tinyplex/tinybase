@@ -1,4 +1,3 @@
-import React from 'react';
 import type {NoPropComponent} from 'tinydocs';
 import {NodeBreadcrumbs, NodeSection, usePageNode, useRootNode} from 'tinydocs';
 

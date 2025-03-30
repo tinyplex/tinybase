@@ -1,4 +1,3 @@
-import React from 'react';
 import type {NoPropComponent, Node} from 'tinydocs';
 import {Markdown, usePageNode} from 'tinydocs';
 import type {ModulesSizes} from './BuildContext.tsx';
