@@ -1,11 +1,4 @@
 /*  eslint-disable @typescript-eslint/ban-ts-comment */
-import {
-  expectChanges,
-  expectChangesNoJson,
-  expectNoChanges,
-} from '../../common/expect.ts';
-import {createStoreListener} from '../../common/listeners.ts';
-import {StoreListener} from '../../common/types.ts';
 import {render} from '@testing-library/react';
 import React from 'react';
 import type {Relationships, Store} from 'tinybase';
@@ -34,6 +27,13 @@ import {
   useTableIds,
   useTables,
 } from 'tinybase/ui-react';
+import {
+  expectChanges,
+  expectChangesNoJson,
+  expectNoChanges,
+} from '../../common/expect.ts';
+import {createStoreListener} from '../../common/listeners.ts';
+import {StoreListener} from '../../common/types.ts';
 
 const validCell = 1;
 const validRow = {c1: validCell};

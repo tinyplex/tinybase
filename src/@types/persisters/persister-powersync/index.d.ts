@@ -1,7 +1,7 @@
 /// persister-powersync
+import type {AbstractPowerSyncDatabase} from '@powersync/common';
 import type {Store} from '../../store/index.d.ts';
 import type {DatabasePersisterConfig, Persister} from '../index.d.ts';
-import type {AbstractPowerSyncDatabase} from '@powersync/common';
 
 /// PowerSyncPersister
 export interface PowerSyncPersister extends Persister {

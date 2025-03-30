@@ -1,4 +1,5 @@
 /// persister-libsql
+import type {Client} from '@libsql/client';
 import type {
   OptionalSchemas,
   Store,
@@ -7,7 +8,6 @@ import type {
   DatabasePersisterConfig,
   Persister,
 } from '../../with-schemas/index.d.ts';
-import type {Client} from '@libsql/client';
 
 /// LibSqlPersister
 export interface LibSqlPersister<Schemas extends OptionalSchemas>

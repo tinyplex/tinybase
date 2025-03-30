@@ -1,4 +1,3 @@
-import {pause, suppressWarnings} from '../../common/other.ts';
 import {PGlite} from '@electric-sql/pglite';
 import * as SQLite from '@journeyapps/wa-sqlite';
 import SQLiteESMFactory from '@journeyapps/wa-sqlite/dist/wa-sqlite.mjs';
@@ -27,9 +26,10 @@ import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
 import {createPglitePersister} from 'tinybase/persisters/persister-pglite';
 import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
-import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
+import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import tmp from 'tmp';
+import {pause, suppressWarnings} from '../../common/other.ts';
 
 tmp.setGracefulCleanup();
 const statementMutex = new Mutex();

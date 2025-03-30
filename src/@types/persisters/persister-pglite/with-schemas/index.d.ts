@@ -1,4 +1,5 @@
 /// persister-pglite
+import type {PGlite} from '@electric-sql/pglite';
 import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
 import type {
   OptionalSchemas,
@@ -9,7 +10,6 @@ import type {
   Persister,
   Persists,
 } from '../../with-schemas/index.d.ts';
-import type {PGlite} from '@electric-sql/pglite';
 
 /// PglitePersister
 export interface PglitePersister<Schemas extends OptionalSchemas>

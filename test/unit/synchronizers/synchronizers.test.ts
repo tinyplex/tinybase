@@ -1,6 +1,4 @@
 /* eslint-disable jest/no-conditional-expect */
-import {resetHlc} from '../common/mergeable.ts';
-import {pause} from '../common/other.ts';
 import type {Content, MergeableStore} from 'tinybase';
 import {createMergeableStore} from 'tinybase';
 import type {Receive, Synchronizer} from 'tinybase/synchronizers';
@@ -11,6 +9,8 @@ import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-clien
 import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {WebSocket, WebSocketServer} from 'ws';
+import {resetHlc} from '../common/mergeable.ts';
+import {pause} from '../common/other.ts';
 
 const messageTypes = [
   'RESPONSE',

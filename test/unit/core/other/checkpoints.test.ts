@@ -1,8 +1,8 @@
+import type {Checkpoints, Id, Store, Tables, Values} from 'tinybase';
+import {createCheckpoints, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
 import {createCheckpointsListener} from '../../common/listeners.ts';
 import {CheckpointsListener} from '../../common/types.ts';
-import type {Checkpoints, Id, Store, Tables, Values} from 'tinybase';
-import {createCheckpoints, createStore} from 'tinybase';
 
 let store: Store;
 let checkpoints: Checkpoints;

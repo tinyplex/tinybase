@@ -1,3 +1,4 @@
+import type React from 'react';
 import type {Checkpoints} from '../@types/checkpoints/index.d.ts';
 import type {Id, Ids} from '../@types/common/index.d.ts';
 import type {Indexes} from '../@types/indexes/index.d.ts';
@@ -38,7 +39,6 @@ import {IdObj, objGet, objIds} from '../common/obj.ts';
 import {GLOBAL, isString, isUndefined} from '../common/other.ts';
 import {createContext, useContext, useEffect} from '../common/react.ts';
 import {TINYBASE} from '../common/strings.ts';
-import type React from 'react';
 
 export type Thing =
   | Store

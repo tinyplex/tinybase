@@ -1,4 +1,5 @@
 /// ui-react
+import type {ReactElement} from 'react';
 import type {
   AllCellIdFromSchema,
   CellIdFromSchema,
@@ -129,7 +130,6 @@ import type {
   ValuesListener,
 } from '../../store/with-schemas/index.d.ts';
 import type {Synchronizer} from '../../synchronizers/with-schemas/index.d.ts';
-import type {ReactElement} from 'react';
 
 export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// StoreOrStoreId

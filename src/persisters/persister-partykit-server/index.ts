@@ -1,3 +1,4 @@
+import type {Connection, Party, Request, Storage} from 'partykit/server';
 import type {Id, Ids} from '../../@types/common/index.d.ts';
 import type {
   TinyBasePartyKitServerConfig,
@@ -39,7 +40,6 @@ import {
   construct,
   deconstruct,
 } from '../common/partykit.ts';
-import type {Connection, Party, Request, Storage} from 'partykit/server';
 
 /**
  * DurableStorage:

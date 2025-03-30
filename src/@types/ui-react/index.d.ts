@@ -1,4 +1,5 @@
 /// ui-react
+import type {ComponentType, ReactElement} from 'react';
 import type {
   CheckpointIds,
   CheckpointIdsListener,
@@ -79,7 +80,6 @@ import type {
   ValuesListener,
 } from '../store/index.d.ts';
 import type {Synchronizer} from '../synchronizers/index.d.ts';
-import type {ComponentType, ReactElement} from 'react';
 
 /// StoreOrStoreId
 export type StoreOrStoreId = Store | Id;

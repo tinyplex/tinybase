@@ -1,4 +1,5 @@
 /// persister-electric-sql
+import type {ElectricClient} from 'electric-sql/client/model';
 import type {
   OptionalSchemas,
   Store,
@@ -7,7 +8,6 @@ import type {
   DatabasePersisterConfig,
   Persister,
 } from '../../with-schemas/index.d.ts';
-import type {ElectricClient} from 'electric-sql/client/model';
 
 /// ElectricSqlPersister
 export interface ElectricSqlPersister<Schemas extends OptionalSchemas>

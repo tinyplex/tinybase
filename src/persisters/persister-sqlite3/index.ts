@@ -1,3 +1,4 @@
+import {Database} from 'sqlite3';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   DatabaseChangeListener,
@@ -11,7 +12,6 @@ import type {Store} from '../../@types/store/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import {promiseNew} from '../../common/other.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
-import {Database} from 'sqlite3';
 
 const CHANGE = 'change';
 

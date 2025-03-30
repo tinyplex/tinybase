@@ -1,4 +1,5 @@
 /// persister-expo-sqlite
+import type {SQLiteDatabase} from 'expo-sqlite';
 import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
 import type {
   OptionalSchemas,
@@ -9,7 +10,6 @@ import type {
   Persister,
   Persists,
 } from '../../with-schemas/index.d.ts';
-import type {SQLiteDatabase} from 'expo-sqlite';
 
 /// ExpoSqlitePersister
 export interface ExpoSqlitePersister<Schemas extends OptionalSchemas>

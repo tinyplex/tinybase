@@ -1,9 +1,9 @@
+import type {GetCell, Id, Indexes, SortKey, Store} from 'tinybase';
+import {createIndexes, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
 import {createIndexesListener} from '../../common/listeners.ts';
 import {getIndexesObject} from '../../common/other.ts';
 import {IndexesListener} from '../../common/types.ts';
-import type {GetCell, Id, Indexes, SortKey, Store} from 'tinybase';
-import {createIndexes, createStore} from 'tinybase';
 
 let store: Store;
 let indexes: Indexes;

@@ -1,9 +1,9 @@
-import {mockFetchWasm, pause} from '../../common/other.ts';
-import {ALL_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 import 'fake-indexeddb/auto';
 import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
+import {mockFetchWasm, pause} from '../../common/other.ts';
+import {ALL_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 
 describe.each(Object.entries(ALL_VARIANTS))(
   '%s',

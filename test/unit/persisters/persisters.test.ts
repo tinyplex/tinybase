@@ -1,4 +1,11 @@
 /* eslint-disable jest/no-conditional-expect */
+import 'fake-indexeddb/auto';
+import {join} from 'path';
+import type {Store} from 'tinybase';
+import {createStore} from 'tinybase';
+import type {Persister} from 'tinybase/persisters';
+import {Status, createCustomPersister} from 'tinybase/persisters';
+import tmp from 'tmp';
 import {createStatusListener} from '../common/listeners.ts';
 import {pause} from '../common/other.ts';
 import {ALL_VARIANTS} from './common/databases.ts';
@@ -19,13 +26,6 @@ import {
   mockYjs,
 } from './common/mocks.ts';
 import {GetLocationMethod, Persistable, nextLoop} from './common/other.ts';
-import 'fake-indexeddb/auto';
-import {join} from 'path';
-import type {Store} from 'tinybase';
-import {createStore} from 'tinybase';
-import {Status, createCustomPersister} from 'tinybase/persisters';
-import type {Persister} from 'tinybase/persisters';
-import tmp from 'tmp';
 
 tmp.setGracefulCleanup();
 

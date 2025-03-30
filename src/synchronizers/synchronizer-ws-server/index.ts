@@ -1,3 +1,4 @@
+import {WebSocket, WebSocketServer} from 'ws';
 import type {Id, IdOrNull, Ids} from '../../@types/common/index.d.ts';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {Persister, Persists} from '../../@types/persisters/index.d.ts';
@@ -49,7 +50,6 @@ import {
   receivePayload,
 } from '../common.ts';
 import {createCustomSynchronizer} from '../index.ts';
-import {WebSocket, WebSocketServer} from 'ws';
 
 enum Sc {
   State = 0,
