@@ -1,4 +1,5 @@
 /// persister-powersync
+import type {AbstractPowerSyncDatabase} from '@powersync/common';
 import type {
   OptionalSchemas,
   Store,
@@ -7,7 +8,6 @@ import type {
   DatabasePersisterConfig,
   Persister,
 } from '../../with-schemas/index.d.ts';
-import type {AbstractPowerSyncDatabase} from '@powersync/common';
 
 /// PowerSyncPersister
 export interface PowerSyncPersister<Schemas extends OptionalSchemas>

@@ -1,8 +1,8 @@
 /// persister-postgres
+import type {Sql} from 'postgres';
 import type {MergeableStore} from '../../mergeable-store/index.d.ts';
 import type {Store} from '../../store/index.d.ts';
 import type {DatabasePersisterConfig, Persister, Persists} from '../index.d.ts';
-import type {Sql} from 'postgres';
 
 /// PostgresPersister
 export interface PostgresPersister

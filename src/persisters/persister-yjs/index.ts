@@ -1,3 +1,4 @@
+import {Doc as YDoc, type YEvent, Map as YMap} from 'yjs';
 import type {Id} from '../../@types/common/index.d.ts';
 import type {PersisterListener} from '../../@types/persisters/index.d.ts';
 import type {
@@ -18,7 +19,6 @@ import {IdObj, objEnsure, objHas, objMap, objNew} from '../../common/obj.ts';
 import {ifNotUndefined, isUndefined, size} from '../../common/other.ts';
 import {T, TINYBASE, V} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
-import {Doc as YDoc, type YEvent, Map as YMap} from 'yjs';
 
 type Observer = (events: YEvent<any>[]) => void;
 

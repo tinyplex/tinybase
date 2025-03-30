@@ -1,11 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {
-  expectChanges,
-  expectChangesNoJson,
-  expectNoChanges,
-} from '../../common/expect.ts';
-import {createStoreListener} from '../../common/listeners.ts';
-import {StoreListener} from '../../common/types.ts';
 import type {
   Cell,
   Id,
@@ -15,6 +8,13 @@ import type {
   Value,
 } from 'tinybase/with-schemas';
 import {createMergeableStore, createStore} from 'tinybase/with-schemas';
+import {
+  expectChanges,
+  expectChangesNoJson,
+  expectNoChanges,
+} from '../../common/expect.ts';
+import {createStoreListener} from '../../common/listeners.ts';
+import {StoreListener} from '../../common/types.ts';
 
 type AddMutator = (store: Store<any>) => void;
 

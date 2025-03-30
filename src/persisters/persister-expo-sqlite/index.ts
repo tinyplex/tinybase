@@ -1,3 +1,5 @@
+import type {SQLiteDatabase} from 'expo-sqlite';
+import {addDatabaseChangeListener} from 'expo-sqlite';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   DatabaseChangeListener,
@@ -10,8 +12,6 @@ import type {
 import type {Store} from '../../@types/store/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
-import type {SQLiteDatabase} from 'expo-sqlite';
-import {addDatabaseChangeListener} from 'expo-sqlite';
 
 type Subscription = {remove: () => void};
 

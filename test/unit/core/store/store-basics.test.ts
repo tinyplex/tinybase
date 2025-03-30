@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import {createMergeableStore, createStore} from 'tinybase';
 import type {Store} from 'tinybase';
+import {createMergeableStore, createStore} from 'tinybase';
 
 test('isMergeable', () => {
   const store = createStore();

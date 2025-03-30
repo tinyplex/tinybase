@@ -1,3 +1,4 @@
+import {createMergeableStore} from 'tinybase';
 import {
   getNCells,
   getNRows,
@@ -6,7 +7,6 @@ import {
   repeat,
   µs,
 } from './common.ts';
-import {createMergeableStore} from 'tinybase';
 
 repeat(
   'Create mergeable store without schema',

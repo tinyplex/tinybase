@@ -1,3 +1,4 @@
+import type {DependencyList} from 'react';
 import type {
   CheckpointIds,
   CheckpointIdsListener,
@@ -270,7 +271,6 @@ import {
   useStoreOrStoreById,
   useSynchronizerOrSynchronizerById,
 } from './context.ts';
-import type {DependencyList} from 'react';
 
 export {
   useCheckpoints,

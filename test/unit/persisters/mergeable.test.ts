@@ -1,4 +1,14 @@
 /* eslint-disable jest/no-conditional-expect */
+import type {
+  Changes,
+  Content,
+  MergeableChanges,
+  MergeableContent,
+  MergeableStore,
+} from 'tinybase';
+import {createMergeableStore, createStore} from 'tinybase';
+import type {Persister} from 'tinybase/persisters';
+import {Persists, createCustomPersister} from 'tinybase/persisters';
 import {resetHlc} from '../common/mergeable.ts';
 import {pause} from '../common/other.ts';
 import {MERGEABLE_VARIANTS} from './common/databases.ts';
@@ -14,16 +24,6 @@ import {
   mockSessionStorage,
 } from './common/mocks.ts';
 import {GetLocationMethod, Persistable, nextLoop} from './common/other.ts';
-import type {
-  Changes,
-  Content,
-  MergeableChanges,
-  MergeableContent,
-  MergeableStore,
-} from 'tinybase';
-import {createMergeableStore, createStore} from 'tinybase';
-import {Persists, createCustomPersister} from 'tinybase/persisters';
-import type {Persister} from 'tinybase/persisters';
 
 beforeEach(() => {
   resetHlc();

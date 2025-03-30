@@ -1,6 +1,6 @@
-import {repeatRows} from './common.ts';
-import {createMetrics, createStore} from 'tinybase';
 import type {Store} from 'tinybase';
+import {createMetrics, createStore} from 'tinybase';
+import {repeatRows} from './common.ts';
 
 let store: Store;
 beforeEach(() => {

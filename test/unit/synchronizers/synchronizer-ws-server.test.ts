@@ -1,5 +1,3 @@
-import {resetHlc} from '../common/mergeable.ts';
-import {pause} from '../common/other.ts';
 import {readFileSync, writeFileSync} from 'fs';
 import {join} from 'path';
 import type {Id, MergeableStore} from 'tinybase';
@@ -11,6 +9,8 @@ import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import tmp from 'tmp';
 import {WebSocket, WebSocketServer} from 'ws';
+import {resetHlc} from '../common/mergeable.ts';
+import {pause} from '../common/other.ts';
 
 beforeEach(() => {
   resetHlc();

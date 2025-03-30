@@ -1,4 +1,3 @@
-import {pause} from '../../common/other.ts';
 import {fireEvent, render} from '@testing-library/react';
 import {userEvent} from '@testing-library/user-event';
 import React, {MouseEvent, MouseEventHandler, act} from 'react';
@@ -155,6 +154,7 @@ import {
   useWillFinishTransactionListener,
 } from 'tinybase/ui-react';
 import tmp from 'tmp';
+import {pause} from '../../common/other.ts';
 
 let store: Store;
 let didRender: jest.Mock;

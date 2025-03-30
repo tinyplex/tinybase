@@ -1,6 +1,6 @@
-import {repeatRows} from './common.ts';
-import {createRelationships, createStore} from 'tinybase';
 import type {Store} from 'tinybase';
+import {createRelationships, createStore} from 'tinybase';
+import {repeatRows} from './common.ts';
 
 let store: Store;
 beforeEach(() => {

@@ -1,6 +1,3 @@
-import {mockFetchWasm} from '../../common/other.ts';
-import {Variants} from './databases.ts';
-import {GetLocationMethod, Persistable} from './other.ts';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
 import crypto from 'crypto';
 import fs from 'fs';
@@ -42,6 +39,9 @@ import type {LocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local'
 import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import tmp from 'tmp';
 import {Doc as YDoc, Map as YMap} from 'yjs';
+import {mockFetchWasm} from '../../common/other.ts';
+import {Variants} from './databases.ts';
+import {GetLocationMethod, Persistable} from './other.ts';
 
 tmp.setGracefulCleanup();
 

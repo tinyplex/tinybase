@@ -1,3 +1,4 @@
+import {DurableObject} from 'cloudflare:workers';
 import type {Id, Ids} from '../../@types/common/index.d.ts';
 import type {Persister, Persists} from '../../@types/persisters/index.d.ts';
 import type {IdAddedOrRemoved} from '../../@types/store/index.d.ts';
@@ -13,7 +14,6 @@ import {
   receivePayload,
 } from '../common.ts';
 import {createCustomSynchronizer} from '../index.ts';
-import {DurableObject} from 'cloudflare:workers';
 
 const PATH_REGEX = /\/([^?]*)/;
 const SERVER_CLIENT_ID = 'S';

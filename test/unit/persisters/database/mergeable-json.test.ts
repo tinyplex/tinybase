@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
-import {resetHlc} from '../../common/mergeable.ts';
-import {mockFetchWasm, pause} from '../../common/other.ts';
-import {MERGEABLE_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 import 'fake-indexeddb/auto';
 import type {MergeableStore} from 'tinybase';
 import {createMergeableStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
+import {resetHlc} from '../../common/mergeable.ts';
+import {mockFetchWasm, pause} from '../../common/other.ts';
+import {MERGEABLE_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 
 beforeEach(() => {
   resetHlc();

@@ -1,8 +1,8 @@
-import {createTestServer} from '../server.mjs';
 import 'expect-puppeteer';
 import {Server} from 'http';
 import 'jest-puppeteer';
 import {ElementHandle} from 'puppeteer';
+import {createTestServer} from '../server.mjs';
 
 jest.setTimeout(10000);
 

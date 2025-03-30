@@ -1,3 +1,5 @@
+import type {ElectricClient} from 'electric-sql/client/model';
+import type {UnsubscribeFunction} from 'electric-sql/notifiers';
 import type {
   DatabaseChangeListener,
   DatabasePersisterConfig,
@@ -10,8 +12,6 @@ import type {Store} from '../../@types/store/index.d.ts';
 import {arrayForEach} from '../../common/array.ts';
 import {IdObj} from '../../common/obj.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
-import type {ElectricClient} from 'electric-sql/client/model';
-import type {UnsubscribeFunction} from 'electric-sql/notifiers';
 
 export const createElectricSqlPersister = ((
   store: Store,

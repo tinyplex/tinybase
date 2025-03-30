@@ -1,6 +1,6 @@
-import {repeatRows} from './common.ts';
 import type {Store} from 'tinybase';
 import {createMergeableStore} from 'tinybase';
+import {repeatRows} from './common.ts';
 
 let store: Store;
 beforeEach(() => {

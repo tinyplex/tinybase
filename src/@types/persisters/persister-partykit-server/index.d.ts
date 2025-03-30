@@ -1,4 +1,11 @@
 /// persister-partykit-server
+import type {
+  Connection,
+  Party,
+  Request,
+  Server,
+  Storage,
+} from 'partykit/server';
 import type {Id} from '../../common/index.d.ts';
 import type {
   Cell,
@@ -8,13 +15,6 @@ import type {
   Value,
   ValueOrUndefined,
 } from '../../store/index.d.ts';
-import type {
-  Connection,
-  Party,
-  Request,
-  Server,
-  Storage,
-} from 'partykit/server';
 
 /// TinyBasePartyKitServerConfig
 export type TinyBasePartyKitServerConfig = {

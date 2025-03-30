@@ -1,4 +1,5 @@
 /// ui-react-dom
+import type {ComponentType} from 'react';
 import type {Id, Ids} from '../common/index.d.ts';
 import type {
   CellProps,
@@ -11,7 +12,6 @@ import type {
   StoreOrStoreId,
   ValueProps,
 } from '../ui-react/index.d.ts';
-import type {ComponentType} from 'react';
 
 /// CustomCell
 export type CustomCell = {

@@ -1,10 +1,10 @@
+import type {SyntheticEvent} from 'react';
 import type {Id, Ids} from '../@types/common/index.d.ts';
 import type {Store} from '../@types/store/index.d.ts';
 import {arrayMap, arraySort} from '../common/array.ts';
 import {jsonStringWithMap} from '../common/json.ts';
 import {useCallback} from '../common/react.ts';
 import {useCell} from '../ui-react/index.ts';
-import type {SyntheticEvent} from 'react';
 
 export const UNIQUE_ID = 'tinybaseInspector';
 export const TITLE = 'TinyBase Inspector';
