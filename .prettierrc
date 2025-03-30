@@ -3,7 +3,6 @@
   "singleQuote": true,
   "trailingComma": "all",
   "plugins": [
-    "@trivago/prettier-plugin-sort-imports"
-  ],
-  "importOrderSortSpecifiers": true
+    "prettier-plugin-organize-imports"
+  ]
 }
