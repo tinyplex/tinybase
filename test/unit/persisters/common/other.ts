@@ -1,4 +1,3 @@
-import {pause} from '../../common/other.ts';
 import type {
   Changes,
   Content,
@@ -8,6 +7,7 @@ import type {
   Store,
 } from 'tinybase';
 import type {Persister, Persists} from 'tinybase/persisters';
+import {pause} from '../../common/other.ts';
 
 export type GetLocationMethod<Location = string> = [
   string,

@@ -1,3 +1,4 @@
+import {WebSocket, WebSocketServer} from 'ws';
 import type {Id} from '../../@types/common/index.js';
 import type {
   WsServerSimple,
@@ -16,7 +17,6 @@ import {objFreeze} from '../../common/obj.ts';
 import {ifNotUndefined} from '../../common/other.ts';
 import {EMPTY_STRING, MESSAGE, UTF8, strMatch} from '../../common/strings.ts';
 import {createRawPayload, ifPayloadValid} from '../common.ts';
-import {WebSocket, WebSocketServer} from 'ws';
 
 const PATH_REGEX = /\/([^?]*)/;
 

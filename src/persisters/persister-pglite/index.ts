@@ -1,3 +1,4 @@
+import type {PGlite} from '@electric-sql/pglite';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   DatabaseChangeListener,
@@ -10,7 +11,6 @@ import type {
 import type {Store} from '../../@types/store/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import {createCustomPostgreSqlPersister} from '../common/database/postgresql.ts';
-import type {PGlite} from '@electric-sql/pglite';
 
 export const createPglitePersister = (async (
   store: Store | MergeableStore,

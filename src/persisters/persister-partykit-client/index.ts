@@ -1,3 +1,4 @@
+import type {PartySocket} from 'partysocket';
 import type {PersisterListener} from '../../@types/persisters/index.d.ts';
 import type {
   PartyKitPersister,
@@ -16,7 +17,6 @@ import {
   construct,
   deconstruct,
 } from '../common/partykit.ts';
-import type {PartySocket} from 'partysocket';
 
 type MessageListener = (event: MessageEvent) => void;
 

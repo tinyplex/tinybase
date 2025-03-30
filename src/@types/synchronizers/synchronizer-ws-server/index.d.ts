@@ -1,9 +1,9 @@
 /// synchronizer-ws-server
+import type {WebSocketServer} from 'ws';
 import type {Id, IdOrNull, Ids} from '../../common/index.d.ts';
 import type {MergeableStore} from '../../mergeable-store/index.d.ts';
 import type {Persister, Persists} from '../../persisters/index.d.ts';
 import type {IdAddedOrRemoved} from '../../store/index.d.ts';
-import type {WebSocketServer} from 'ws';
 
 /// PathIdsListener
 export type PathIdsListener = (

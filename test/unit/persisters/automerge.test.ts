@@ -1,13 +1,13 @@
-import {
-  AutomergeTestNetworkAdapter,
-  resetNetwork,
-} from '../common/automerge-adaptor.ts';
-import {pause} from '../common/other.ts';
 import {DocHandle, Repo} from '@automerge/automerge-repo';
 import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
 import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
+import {
+  AutomergeTestNetworkAdapter,
+  resetNetwork,
+} from '../common/automerge-adaptor.ts';
+import {pause} from '../common/other.ts';
 
 let repo1: Repo;
 let docHandler1: DocHandle<any>;

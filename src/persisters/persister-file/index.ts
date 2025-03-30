@@ -1,3 +1,5 @@
+import {FSWatcher, existsSync, watch, writeFileSync} from 'fs';
+import {readFile, writeFile} from 'fs/promises';
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   PersistedContent,
@@ -15,8 +17,6 @@ import {
 } from '../../common/json.ts';
 import {EMPTY_STRING, UTF8} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
-import {FSWatcher, existsSync, watch, writeFileSync} from 'fs';
-import {readFile, writeFile} from 'fs/promises';
 
 export const createFilePersister = ((
   store: Store | MergeableStore,

@@ -1,4 +1,5 @@
 /// persister-postgres
+import type {Sql} from 'postgres';
 import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
 import type {
   OptionalSchemas,
@@ -9,7 +10,6 @@ import type {
   Persister,
   Persists,
 } from '../../with-schemas/index.d.ts';
-import type {Sql} from 'postgres';
 
 /// PostgresPersister
 export interface PostgresPersister<Schemas extends OptionalSchemas>

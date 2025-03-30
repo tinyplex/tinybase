@@ -1,5 +1,5 @@
-import {PureComponent} from '../common/react.ts';
 import type {ErrorInfo, ReactNode} from 'react';
+import {PureComponent} from '../common/react.ts';
 
 interface Props {
   readonly children: ReactNode;

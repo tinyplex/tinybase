@@ -1,3 +1,4 @@
+import {DB} from '@vlcn.io/crsqlite-wasm';
 import type {
   DatabaseChangeListener,
   DatabasePersisterConfig,
@@ -9,7 +10,6 @@ import type {
 import type {Store} from '../../@types/store/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
-import {DB} from '@vlcn.io/crsqlite-wasm';
 
 export const createCrSqliteWasmPersister = ((
   store: Store,

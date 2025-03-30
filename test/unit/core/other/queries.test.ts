@@ -1,8 +1,8 @@
+import type {Id, Queries, Store} from 'tinybase';
+import {createQueries, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
 import {createQueriesListener} from '../../common/listeners.ts';
 import {QueriesListener} from '../../common/types.ts';
-import type {Id, Queries, Store} from 'tinybase';
-import {createQueries, createStore} from 'tinybase';
 
 let store: Store;
 let queries: Queries;

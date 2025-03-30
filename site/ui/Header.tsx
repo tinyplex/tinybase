@@ -1,7 +1,7 @@
-import {useMetadata} from './BuildContext.tsx';
 import React from 'react';
-import {NodeChildren, useRootNode} from 'tinydocs';
 import type {NoPropComponent} from 'tinydocs';
+import {NodeChildren, useRootNode} from 'tinydocs';
+import {useMetadata} from './BuildContext.tsx';
 
 export const Header: NoPropComponent = () => {
   const {version} = useMetadata();

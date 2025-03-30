@@ -1,6 +1,3 @@
-import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from '../common/automerge-adaptor.ts';
-import {resetHlc} from '../common/mergeable.ts';
-import {mockFetchWasm, pause, suppressWarnings} from '../common/other.ts';
 import * as AutomergeRepo from '@automerge/automerge-repo';
 import * as pglite from '@electric-sql/pglite';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
@@ -26,8 +23,8 @@ import * as TinyBasePersisterPartyKitServer from 'tinybase/persisters/persister-
 import * as TinyBasePersisterPglite from 'tinybase/persisters/persister-pglite';
 import * as TinyBasePersisterPostgres from 'tinybase/persisters/persister-postgres';
 import * as TinyBasePersisterRemote from 'tinybase/persisters/persister-remote';
-import * as TinyBasePersisterSqlite3 from 'tinybase/persisters/persister-sqlite3';
 import * as TinyBasePersisterSqliteWasm from 'tinybase/persisters/persister-sqlite-wasm';
+import * as TinyBasePersisterSqlite3 from 'tinybase/persisters/persister-sqlite3';
 import * as TinyBasePersisterYjs from 'tinybase/persisters/persister-yjs';
 import * as TinyBaseSynchronizers from 'tinybase/synchronizers';
 import * as TinyBaseSynchronizerBroadcastChannel from 'tinybase/synchronizers/synchronizer-broadcast-channel';
@@ -40,6 +37,9 @@ import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
 import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
 import * as ws from 'ws';
 import * as yjs from 'yjs';
+import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from '../common/automerge-adaptor.ts';
+import {resetHlc} from '../common/mergeable.ts';
+import {mockFetchWasm, pause, suppressWarnings} from '../common/other.ts';
 
 // need to be imported in examples
 (globalThis as any).modules = {

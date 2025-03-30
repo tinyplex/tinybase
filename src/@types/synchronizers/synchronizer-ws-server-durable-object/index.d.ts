@@ -1,7 +1,7 @@
 /// synchronizer-ws-server-durable-object
+import {DurableObject} from 'cloudflare:workers';
 import type {Id, IdAddedOrRemoved, Ids} from '../../index.d.ts';
 import type {Persister, Persists} from '../../persisters/index.d.ts';
-import {DurableObject} from 'cloudflare:workers';
 
 /// WsServerDurableObject
 export class WsServerDurableObject<Env = unknown> extends DurableObject<Env> {

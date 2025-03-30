@@ -1,13 +1,3 @@
-import {
-  CheckpointsListener,
-  IndexesListener,
-  Logs,
-  MetricsListener,
-  QueriesListener,
-  RelationshipsListener,
-  StatusListener,
-  StoreListener,
-} from './types.ts';
 import type {
   Checkpoints,
   Indexes,
@@ -18,6 +8,16 @@ import type {
 } from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
 import type {NoSchemas, Store as StoreWithSchemas} from 'tinybase/with-schemas';
+import {
+  CheckpointsListener,
+  IndexesListener,
+  Logs,
+  MetricsListener,
+  QueriesListener,
+  RelationshipsListener,
+  StatusListener,
+  StoreListener,
+} from './types.ts';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

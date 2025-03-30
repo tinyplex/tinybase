@@ -1,3 +1,4 @@
+import type {SyntheticEvent} from 'react';
 import {arrayIsEmpty, arrayMap} from '../common/array.ts';
 import {isUndefined, mathFloor} from '../common/other.ts';
 import {
@@ -26,7 +27,6 @@ import {QueriesView} from './QueriesView.tsx';
 import {RelationshipsView} from './RelationshipsView.tsx';
 import {StoreView} from './StoreView.tsx';
 import type {StoreProp} from './types.ts';
-import type {SyntheticEvent} from 'react';
 
 export const Body = ({s}: StoreProp) => {
   const articleRef = useRef<HTMLElement>(null);

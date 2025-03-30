@@ -1,3 +1,4 @@
+import type {ComponentType, ReactElement} from 'react';
 import type {Checkpoints} from '../../../checkpoints/with-schemas/index.d.ts';
 import type {Callback, Id} from '../../../common/with-schemas/index.d.ts';
 import type {Indexes} from '../../../indexes/with-schemas/index.d.ts';
@@ -18,7 +19,6 @@ import type {
   TableIdFromSchema,
   ValueIdFromSchema,
 } from '../../store/with-schemas/index.d.ts';
-import type {ComponentType, ReactElement} from 'react';
 
 type StoreOrStoreId<Schemas extends OptionalSchemas> = Store<Schemas> | Id;
 

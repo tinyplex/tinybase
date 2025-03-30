@@ -1,3 +1,4 @@
+import {AbstractPowerSyncDatabase} from '@powersync/common';
 import type {
   DatabaseChangeListener,
   DatabaseExecuteCommand,
@@ -27,7 +28,6 @@ import {
   getPlaceholders,
 } from '../common/database/common.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
-import {AbstractPowerSyncDatabase} from '@powersync/common';
 
 export const createPowerSyncPersister = ((
   store: Store,
