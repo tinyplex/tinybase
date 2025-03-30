@@ -718,7 +718,7 @@ console.log(store.getCell('pets', 'felix', 'sold'));
     <img width="48" src="https://tinybase.org/favicon.svg?asImg" />
     <br/>
     <b>TinyBase</b>
-    <br />The reactive data store for local-first apps.
+    <br />A reactive data store and sync engine.
   </p>
 
   <p>
