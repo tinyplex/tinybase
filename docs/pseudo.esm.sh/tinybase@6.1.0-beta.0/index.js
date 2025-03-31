@@ -859,731 +859,6 @@ var createIndexes = getCreateFunction((store) => {
   };
   return objFreeze(indexes);
 });
-var numericAggregators = /* @__PURE__ */ mapNew([
-  [
-    AVG,
-    [
-      (numbers, length) => arraySum(numbers) / length,
-      (metric, add, length) => metric + (add - metric) / (length + 1),
-      (metric, remove, length) => metric + (metric - remove) / (length - 1),
-      (metric, add, remove, length) => metric + (add - remove) / length
-    ]
-  ],
-  [
-    MAX,
-    [
-      (numbers) => mathMax(...numbers),
-      (metric, add) => mathMax(add, metric),
-      (metric, remove) => remove == metric ? void 0 : metric,
-      (metric, add, remove) => remove == metric ? void 0 : mathMax(add, metric)
-    ]
-  ],
-  [
-    MIN,
-    [
-      (numbers) => mathMin(...numbers),
-      (metric, add) => mathMin(add, metric),
-      (metric, remove) => remove == metric ? void 0 : metric,
-      (metric, add, remove) => remove == metric ? void 0 : mathMin(add, metric)
-    ]
-  ],
-  [
-    SUM,
-    [
-      (numbers) => arraySum(numbers),
-      (metric, add) => metric + add,
-      (metric, remove) => metric - remove,
-      (metric, add, remove) => metric - remove + add
-    ]
-  ]
-]);
-var getAggregateValue = (aggregateValue, oldLength, newValues, changedValues, aggregators, force = false) => {
-  if (collIsEmpty(newValues)) {
-    return void 0;
-  }
-  const [aggregate, aggregateAdd, aggregateRemove, aggregateReplace] = aggregators;
-  force ||= isUndefined(aggregateValue);
-  collForEach(changedValues, ([oldValue, newValue]) => {
-    if (!force) {
-      aggregateValue = isUndefined(oldValue) ? aggregateAdd?.(aggregateValue, newValue, oldLength++) : isUndefined(newValue) ? aggregateRemove?.(aggregateValue, oldValue, oldLength--) : aggregateReplace?.(aggregateValue, newValue, oldValue, oldLength);
-      force ||= isUndefined(aggregateValue);
-    }
-  });
-  return force ? aggregate(collValues(newValues), collSize(newValues)) : aggregateValue;
-};
-var createMetrics = getCreateFunction((store) => {
-  const metricListeners = mapNew();
-  const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
-    () => metrics
-  );
-  const [
-    getStore,
-    getMetricIds,
-    forEachMetric,
-    hasMetric,
-    getTableId,
-    getMetric,
-    setMetric,
-    ,
-    setDefinitionAndListen,
-    delDefinition,
-    addMetricIdsListener,
-    destroy
-  ] = getDefinableFunctions(
-    store,
-    getUndefined,
-    (value) => isNaN(value) || isUndefined(value) || value === true || value === false || value === EMPTY_STRING ? void 0 : value * 1,
-    addListener,
-    callListeners
-  );
-  const setMetricDefinition = (metricId, tableId, aggregate, getNumber, aggregateAdd, aggregateRemove, aggregateReplace) => {
-    const aggregators = isFunction(aggregate) ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace] : mapGet(numericAggregators, aggregate) ?? mapGet(numericAggregators, SUM);
-    setDefinitionAndListen(
-      metricId,
-      tableId,
-      (change, changedNumbers, _changedSortKeys, numbers, _sortKeys, force) => {
-        const oldMetric = getMetric(metricId);
-        const oldLength = collSize(numbers);
-        force ||= isUndefined(oldMetric);
-        change();
-        let newMetric = getAggregateValue(
-          oldMetric,
-          oldLength,
-          numbers,
-          changedNumbers,
-          aggregators,
-          force
-        );
-        if (!isFiniteNumber(newMetric)) {
-          newMetric = void 0;
-        }
-        if (newMetric != oldMetric) {
-          setMetric(metricId, newMetric);
-          callListeners(metricListeners, [metricId], newMetric, oldMetric);
-        }
-      },
-      getRowCellFunction(getNumber, 1)
-    );
-    return metrics;
-  };
-  const delMetricDefinition = (metricId) => {
-    delDefinition(metricId);
-    return metrics;
-  };
-  const addMetricListener = (metricId, listener) => addListener(listener, metricListeners, [metricId]);
-  const delListener = (listenerId) => {
-    delListenerImpl(listenerId);
-    return metrics;
-  };
-  const getListenerStats = () => ({
-    metric: collSize2(metricListeners)
-  });
-  const metrics = {
-    setMetricDefinition,
-    delMetricDefinition,
-    getStore,
-    getMetricIds,
-    forEachMetric,
-    hasMetric,
-    getTableId,
-    getMetric,
-    addMetricIdsListener,
-    addMetricListener,
-    delListener,
-    destroy,
-    getListenerStats
-  };
-  return objFreeze(metrics);
-});
-var createQueries = getCreateFunction((store) => {
-  const createStore2 = store.createStore;
-  const preStore = createStore2();
-  const resultStore = createStore2();
-  const preStoreListenerIds = mapNew();
-  const {
-    addListener,
-    callListeners,
-    delListener: delListenerImpl
-  } = resultStore;
-  const [
-    getStore,
-    getQueryIds,
-    forEachQuery,
-    hasQuery,
-    getTableId,
-    ,
-    ,
-    setDefinition,
-    ,
-    delDefinition,
-    addQueryIdsListenerImpl,
-    destroy,
-    addStoreListeners,
-    delStoreListeners
-  ] = getDefinableFunctions(
-    store,
-    () => true,
-    getUndefined,
-    addListener,
-    callListeners
-  );
-  const addPreStoreListener = (preStore2, queryId, ...listenerIds) => arrayForEach(
-    listenerIds,
-    (listenerId) => setAdd(
-      mapEnsure(
-        mapEnsure(preStoreListenerIds, queryId, mapNew),
-        preStore2,
-        setNew
-      ),
-      listenerId
-    )
-  );
-  const resetPreStores = (queryId) => {
-    ifNotUndefined(
-      mapGet(preStoreListenerIds, queryId),
-      (queryPreStoreListenerIds) => {
-        mapForEach(
-          queryPreStoreListenerIds,
-          (preStore2, listenerIds) => collForEach(
-            listenerIds,
-            (listenerId) => preStore2.delListener(listenerId)
-          )
-        );
-        collClear(queryPreStoreListenerIds);
-      }
-    );
-    arrayForEach([resultStore, preStore], (store2) => store2.delTable(queryId));
-  };
-  const synchronizeTransactions = (queryId, fromStore, toStore) => addPreStoreListener(
-    fromStore,
-    queryId,
-    fromStore.addStartTransactionListener(toStore.startTransaction),
-    fromStore.addDidFinishTransactionListener(
-      () => toStore.finishTransaction()
-    )
-  );
-  const setQueryDefinition = (queryId, tableId, build) => {
-    setDefinition(queryId, tableId);
-    resetPreStores(queryId);
-    const selectEntries = [];
-    const joinEntries = [[null, [tableId, null, null, [], mapNew()]]];
-    const wheres = [];
-    const groupEntries = [];
-    const havings = [];
-    const select = (arg1, arg2) => {
-      const selectEntry = isFunction(arg1) ? [size(selectEntries) + EMPTY_STRING, arg1] : [
-        isUndefined(arg2) ? arg1 : arg2,
-        (getTableCell) => getTableCell(arg1, arg2)
-      ];
-      arrayPush(selectEntries, selectEntry);
-      return { as: (selectedCellId) => selectEntry[0] = selectedCellId };
-    };
-    const join = (joinedTableId, arg1, arg2) => {
-      const fromIntermediateJoinedTableId = isUndefined(arg2) || isFunction(arg1) ? null : arg1;
-      const onArg = isUndefined(fromIntermediateJoinedTableId) ? arg1 : arg2;
-      const joinEntry = [
-        joinedTableId,
-        [
-          joinedTableId,
-          fromIntermediateJoinedTableId,
-          isFunction(onArg) ? onArg : (getCell) => getCell(onArg),
-          [],
-          mapNew()
-        ]
-      ];
-      arrayPush(joinEntries, joinEntry);
-      return { as: (joinedTableId2) => joinEntry[0] = joinedTableId2 };
-    };
-    const where = (arg1, arg2, arg3) => arrayPush(
-      wheres,
-      isFunction(arg1) ? arg1 : isUndefined(arg3) ? (getTableCell) => getTableCell(arg1) === arg2 : (getTableCell) => getTableCell(arg1, arg2) === arg3
-    );
-    const group = (selectedCellId, aggregate, aggregateAdd, aggregateRemove, aggregateReplace) => {
-      const groupEntry = [
-        selectedCellId,
-        [
-          selectedCellId,
-          isFunction(aggregate) ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace] : mapGet(numericAggregators, aggregate) ?? [
-            (_cells, length) => length
-          ]
-        ]
-      ];
-      arrayPush(groupEntries, groupEntry);
-      return { as: (groupedCellId) => groupEntry[0] = groupedCellId };
-    };
-    const having = (arg1, arg2) => arrayPush(
-      havings,
-      isFunction(arg1) ? arg1 : (getSelectedOrGroupedCell) => getSelectedOrGroupedCell(arg1) === arg2
-    );
-    build({ select, join, where, group, having });
-    const selects = mapNew(selectEntries);
-    if (collIsEmpty(selects)) {
-      return queries;
-    }
-    const joins = mapNew(joinEntries);
-    mapForEach(
-      joins,
-      (asTableId, [, fromAsTableId]) => ifNotUndefined(
-        mapGet(joins, fromAsTableId),
-        ({ 3: toAsTableIds }) => isUndefined(asTableId) ? 0 : arrayPush(toAsTableIds, asTableId)
-      )
-    );
-    const groups = mapNew(groupEntries);
-    let selectJoinWhereStore = preStore;
-    if (collIsEmpty(groups) && arrayIsEmpty(havings)) {
-      selectJoinWhereStore = resultStore;
-    } else {
-      synchronizeTransactions(queryId, selectJoinWhereStore, resultStore);
-      const groupedSelectedCellIds = mapNew();
-      mapForEach(
-        groups,
-        (groupedCellId, [selectedCellId, aggregators]) => setAdd(mapEnsure(groupedSelectedCellIds, selectedCellId, setNew), [
-          groupedCellId,
-          aggregators
-        ])
-      );
-      const groupBySelectedCellIds = setNew();
-      mapForEach(
-        selects,
-        (selectedCellId) => collHas(groupedSelectedCellIds, selectedCellId) ? 0 : setAdd(groupBySelectedCellIds, selectedCellId)
-      );
-      const tree = mapNew();
-      const writeGroupRow = (leaf, changedGroupedSelectedCells, selectedRowId, forceRemove) => ifNotUndefined(
-        leaf,
-        ([selectedCells, selectedRowIds, groupRowId, groupRow]) => {
-          mapForEach(
-            changedGroupedSelectedCells,
-            (selectedCellId, [newCell]) => {
-              const selectedCell = mapEnsure(
-                selectedCells,
-                selectedCellId,
-                mapNew
-              );
-              const oldLeafCell = mapGet(selectedCell, selectedRowId);
-              const newLeafCell = forceRemove ? void 0 : newCell;
-              if (oldLeafCell !== newLeafCell) {
-                const oldNewSet = setNew([[oldLeafCell, newLeafCell]]);
-                const oldLength = collSize(selectedCell);
-                mapSet(selectedCell, selectedRowId, newLeafCell);
-                collForEach(
-                  mapGet(groupedSelectedCellIds, selectedCellId),
-                  ([groupedCellId, aggregators]) => {
-                    const aggregateValue = getAggregateValue(
-                      groupRow[groupedCellId],
-                      oldLength,
-                      selectedCell,
-                      oldNewSet,
-                      aggregators
-                    );
-                    groupRow[groupedCellId] = isUndefined(
-                      getCellOrValueType(aggregateValue)
-                    ) ? null : aggregateValue;
-                  }
-                );
-              }
-            }
-          );
-          if (collIsEmpty(selectedRowIds) || !arrayEvery(
-            havings,
-            (having2) => having2((cellId) => groupRow[cellId])
-          )) {
-            resultStore.delRow(queryId, groupRowId);
-          } else if (isUndefined(groupRowId)) {
-            leaf[2] = resultStore.addRow(queryId, groupRow);
-          } else {
-            resultStore.setRow(queryId, groupRowId, groupRow);
-          }
-        }
-      );
-      addPreStoreListener(
-        selectJoinWhereStore,
-        queryId,
-        selectJoinWhereStore.addRowListener(
-          queryId,
-          null,
-          (_store, _tableId, selectedRowId, getCellChange) => {
-            const oldPath = [];
-            const newPath = [];
-            const changedGroupedSelectedCells = mapNew();
-            const rowExists = selectJoinWhereStore.hasRow(
-              queryId,
-              selectedRowId
-            );
-            let changedLeaf = !rowExists;
-            collForEach(groupBySelectedCellIds, (selectedCellId) => {
-              const [changed, oldCell, newCell] = getCellChange(
-                queryId,
-                selectedRowId,
-                selectedCellId
-              );
-              arrayPush(oldPath, oldCell);
-              arrayPush(newPath, newCell);
-              changedLeaf ||= changed;
-            });
-            mapForEach(groupedSelectedCellIds, (selectedCellId) => {
-              const [changed, , newCell] = getCellChange(
-                queryId,
-                selectedRowId,
-                selectedCellId
-              );
-              if (changedLeaf || changed) {
-                mapSet(changedGroupedSelectedCells, selectedCellId, [newCell]);
-              }
-            });
-            if (changedLeaf) {
-              writeGroupRow(
-                visitTree(tree, oldPath, void 0, ([, selectedRowIds]) => {
-                  collDel(selectedRowIds, selectedRowId);
-                  return collIsEmpty(selectedRowIds);
-                }),
-                changedGroupedSelectedCells,
-                selectedRowId,
-                1
-              );
-            }
-            if (rowExists) {
-              writeGroupRow(
-                visitTree(
-                  tree,
-                  newPath,
-                  () => {
-                    const groupRow = {};
-                    collForEach(
-                      groupBySelectedCellIds,
-                      (selectedCellId) => groupRow[selectedCellId] = selectJoinWhereStore.getCell(
-                        queryId,
-                        selectedRowId,
-                        selectedCellId
-                      )
-                    );
-                    return [mapNew(), setNew(), void 0, groupRow];
-                  },
-                  ([, selectedRowIds]) => {
-                    setAdd(selectedRowIds, selectedRowId);
-                  }
-                ),
-                changedGroupedSelectedCells,
-                selectedRowId
-              );
-            }
-          }
-        )
-      );
-    }
-    synchronizeTransactions(queryId, store, selectJoinWhereStore);
-    const writeSelectRow = (rootRowId) => {
-      const getTableCell = (arg1, arg2) => store.getCell(
-        ...isUndefined(arg2) ? [tableId, rootRowId, arg1] : arg1 === tableId ? [tableId, rootRowId, arg2] : [
-          mapGet(joins, arg1)?.[0],
-          mapGet(mapGet(joins, arg1)?.[4], rootRowId)?.[0],
-          arg2
-        ]
-      );
-      selectJoinWhereStore.transaction(
-        () => arrayEvery(wheres, (where2) => where2(getTableCell)) ? mapForEach(
-          selects,
-          (asCellId, tableCellGetter) => setOrDelCell(
-            selectJoinWhereStore,
-            queryId,
-            rootRowId,
-            asCellId,
-            tableCellGetter(getTableCell, rootRowId)
-          )
-        ) : selectJoinWhereStore.delRow(queryId, rootRowId)
-      );
-    };
-    const listenToTable = (rootRowId, tableId2, rowId, joinedTableIds2) => {
-      const getCell = (cellId) => store.getCell(tableId2, rowId, cellId);
-      arrayForEach(joinedTableIds2, (remoteAsTableId) => {
-        const [realJoinedTableId, , on, nextJoinedTableIds, remoteIdPair] = mapGet(joins, remoteAsTableId);
-        const remoteRowId = on?.(getCell, rootRowId);
-        const [previousRemoteRowId, previousRemoteListenerId] = mapGet(remoteIdPair, rootRowId) ?? [];
-        if (remoteRowId != previousRemoteRowId) {
-          if (!isUndefined(previousRemoteListenerId)) {
-            delStoreListeners(queryId, previousRemoteListenerId);
-          }
-          mapSet(
-            remoteIdPair,
-            rootRowId,
-            isUndefined(remoteRowId) ? null : [
-              remoteRowId,
-              ...addStoreListeners(
-                queryId,
-                1,
-                store.addRowListener(
-                  realJoinedTableId,
-                  remoteRowId,
-                  () => listenToTable(
-                    rootRowId,
-                    realJoinedTableId,
-                    remoteRowId,
-                    nextJoinedTableIds
-                  )
-                )
-              )
-            ]
-          );
-        }
-      });
-      writeSelectRow(rootRowId);
-    };
-    const { 3: joinedTableIds } = mapGet(joins, null);
-    selectJoinWhereStore.transaction(
-      () => addStoreListeners(
-        queryId,
-        1,
-        store.addRowListener(tableId, null, (_store, _tableId, rootRowId) => {
-          if (store.hasRow(tableId, rootRowId)) {
-            listenToTable(rootRowId, tableId, rootRowId, joinedTableIds);
-          } else {
-            selectJoinWhereStore.delRow(queryId, rootRowId);
-            collForEach(
-              joins,
-              ({ 4: idsByRootRowId }) => ifNotUndefined(
-                mapGet(idsByRootRowId, rootRowId),
-                ([, listenerId]) => {
-                  delStoreListeners(queryId, listenerId);
-                  mapSet(idsByRootRowId, rootRowId);
-                }
-              )
-            );
-          }
-        })
-      )
-    );
-    return queries;
-  };
-  const delQueryDefinition = (queryId) => {
-    resetPreStores(queryId);
-    delDefinition(queryId);
-    return queries;
-  };
-  const addQueryIdsListener = (listener) => addQueryIdsListenerImpl(() => listener(queries));
-  const delListener = (listenerId) => {
-    delListenerImpl(listenerId);
-    return queries;
-  };
-  const getListenerStats = () => {
-    const {
-      tables: _1,
-      tableIds: _2,
-      transaction: _3,
-      ...stats
-    } = resultStore.getListenerStats();
-    return stats;
-  };
-  const queries = {
-    setQueryDefinition,
-    delQueryDefinition,
-    getStore,
-    getQueryIds,
-    forEachQuery,
-    hasQuery,
-    getTableId,
-    addQueryIdsListener,
-    delListener,
-    destroy,
-    getListenerStats
-  };
-  objMap(
-    {
-      [TABLE]: [1, 1],
-      [TABLE + CELL_IDS]: [0, 1],
-      [ROW_COUNT]: [0, 1],
-      [ROW_IDS]: [0, 1],
-      [SORTED_ROW_IDS]: [0, 5],
-      [ROW]: [1, 2],
-      [CELL_IDS]: [0, 2],
-      [CELL]: [1, 3]
-    },
-    ([hasAndForEach, argumentCount], gettable) => {
-      arrayForEach(
-        hasAndForEach ? [GET, "has", "forEach"] : [GET],
-        (prefix) => queries[prefix + RESULT + gettable] = (...args) => resultStore[prefix + gettable](...args)
-      );
-      queries[ADD + RESULT + gettable + LISTENER] = (...args) => resultStore[ADD + gettable + LISTENER](
-        ...slice(args, 0, argumentCount),
-        (_store, ...listenerArgs) => args[argumentCount](queries, ...listenerArgs),
-        true
-      );
-    }
-  );
-  return objFreeze(queries);
-});
-var createRelationships = getCreateFunction((store) => {
-  const remoteTableIds = mapNew();
-  const remoteRowIdListeners = mapNew();
-  const localRowIdsListeners = mapNew();
-  const linkedRowIdsListeners = mapNew();
-  const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
-    () => relationships
-  );
-  const [
-    getStore,
-    getRelationshipIds,
-    forEachRelationshipImpl,
-    hasRelationship,
-    getLocalTableId,
-    getRelationship,
-    ,
-    ,
-    setDefinitionAndListen,
-    delDefinition,
-    addRelationshipIdsListener,
-    destroy
-  ] = getDefinableFunctions(
-    store,
-    () => [mapNew(), mapNew(), mapNew(), mapNew()],
-    (value) => isUndefined(value) ? void 0 : value + EMPTY_STRING,
-    addListener,
-    callListeners
-  );
-  const getLinkedRowIdsCache = (relationshipId, firstRowId, skipCache) => ifNotUndefined(
-    getRelationship(relationshipId),
-    ([remoteRows, , linkedRowsCache]) => {
-      if (!collHas(linkedRowsCache, firstRowId)) {
-        const linkedRows = setNew();
-        if (getLocalTableId(relationshipId) != getRemoteTableId(relationshipId)) {
-          setAdd(linkedRows, firstRowId);
-        } else {
-          let rowId = firstRowId;
-          while (!isUndefined(rowId) && !collHas(linkedRows, rowId)) {
-            setAdd(linkedRows, rowId);
-            rowId = mapGet(remoteRows, rowId);
-          }
-        }
-        if (skipCache) {
-          return linkedRows;
-        }
-        mapSet(linkedRowsCache, firstRowId, linkedRows);
-      }
-      return mapGet(linkedRowsCache, firstRowId);
-    }
-  );
-  const delLinkedRowIdsCache = (relationshipId, firstRowId) => ifNotUndefined(
-    getRelationship(relationshipId),
-    ([, , linkedRowsCache]) => mapSet(linkedRowsCache, firstRowId)
-  );
-  const setRelationshipDefinition = (relationshipId, localTableId, remoteTableId, getRemoteRowId2) => {
-    mapSet(remoteTableIds, relationshipId, remoteTableId);
-    setDefinitionAndListen(
-      relationshipId,
-      localTableId,
-      (change, changedRemoteRowIds) => {
-        const changedLocalRows = setNew();
-        const changedRemoteRows = setNew();
-        const changedLinkedRows = setNew();
-        const [localRows, remoteRows] = getRelationship(relationshipId);
-        collForEach(
-          changedRemoteRowIds,
-          ([oldRemoteRowId, newRemoteRowId], localRowId) => {
-            if (!isUndefined(oldRemoteRowId)) {
-              setAdd(changedRemoteRows, oldRemoteRowId);
-              ifNotUndefined(
-                mapGet(remoteRows, oldRemoteRowId),
-                (oldRemoteRow) => {
-                  collDel(oldRemoteRow, localRowId);
-                  if (collIsEmpty(oldRemoteRow)) {
-                    mapSet(remoteRows, oldRemoteRowId);
-                  }
-                }
-              );
-            }
-            if (!isUndefined(newRemoteRowId)) {
-              setAdd(changedRemoteRows, newRemoteRowId);
-              if (!collHas(remoteRows, newRemoteRowId)) {
-                mapSet(remoteRows, newRemoteRowId, setNew());
-              }
-              setAdd(mapGet(remoteRows, newRemoteRowId), localRowId);
-            }
-            setAdd(changedLocalRows, localRowId);
-            mapSet(localRows, localRowId, newRemoteRowId);
-            mapForEach(
-              mapGet(linkedRowIdsListeners, relationshipId),
-              (firstRowId) => {
-                if (collHas(
-                  getLinkedRowIdsCache(relationshipId, firstRowId),
-                  localRowId
-                )) {
-                  setAdd(changedLinkedRows, firstRowId);
-                }
-              }
-            );
-          }
-        );
-        change();
-        collForEach(
-          changedLocalRows,
-          (localRowId) => callListeners(remoteRowIdListeners, [relationshipId, localRowId])
-        );
-        collForEach(
-          changedRemoteRows,
-          (remoteRowId) => callListeners(localRowIdsListeners, [relationshipId, remoteRowId])
-        );
-        collForEach(changedLinkedRows, (firstRowId) => {
-          delLinkedRowIdsCache(relationshipId, firstRowId);
-          callListeners(linkedRowIdsListeners, [relationshipId, firstRowId]);
-        });
-      },
-      getRowCellFunction(getRemoteRowId2)
-    );
-    return relationships;
-  };
-  const forEachRelationship = (relationshipCallback) => forEachRelationshipImpl(
-    (relationshipId) => relationshipCallback(
-      relationshipId,
-      (rowCallback) => store.forEachRow(getLocalTableId(relationshipId), rowCallback)
-    )
-  );
-  const delRelationshipDefinition = (relationshipId) => {
-    mapSet(remoteTableIds, relationshipId);
-    delDefinition(relationshipId);
-    return relationships;
-  };
-  const getRemoteTableId = (relationshipId) => mapGet(remoteTableIds, relationshipId);
-  const getRemoteRowId = (relationshipId, localRowId) => mapGet(getRelationship(relationshipId)?.[0], localRowId);
-  const getLocalRowIds = (relationshipId, remoteRowId) => collValues(mapGet(getRelationship(relationshipId)?.[1], remoteRowId));
-  const getLinkedRowIds = (relationshipId, firstRowId) => isUndefined(getRelationship(relationshipId)) ? [firstRowId] : collValues(getLinkedRowIdsCache(relationshipId, firstRowId, true));
-  const addRemoteRowIdListener = (relationshipId, localRowId, listener) => addListener(listener, remoteRowIdListeners, [relationshipId, localRowId]);
-  const addLocalRowIdsListener = (relationshipId, remoteRowId, listener) => addListener(listener, localRowIdsListeners, [relationshipId, remoteRowId]);
-  const addLinkedRowIdsListener = (relationshipId, firstRowId, listener) => {
-    getLinkedRowIdsCache(relationshipId, firstRowId);
-    return addListener(listener, linkedRowIdsListeners, [
-      relationshipId,
-      firstRowId
-    ]);
-  };
-  const delListener = (listenerId) => {
-    delLinkedRowIdsCache(...delListenerImpl(listenerId) ?? []);
-    return relationships;
-  };
-  const getListenerStats = () => ({
-    remoteRowId: collSize3(remoteRowIdListeners),
-    localRowIds: collSize3(localRowIdsListeners),
-    linkedRowIds: collSize3(linkedRowIdsListeners)
-  });
-  const relationships = {
-    setRelationshipDefinition,
-    delRelationshipDefinition,
-    getStore,
-    getRelationshipIds,
-    forEachRelationship,
-    hasRelationship,
-    getLocalTableId,
-    getRemoteTableId,
-    getRemoteRowId,
-    getLocalRowIds,
-    getLinkedRowIds,
-    addRelationshipIdsListener,
-    addRemoteRowIdListener,
-    addLocalRowIdsListener,
-    addLinkedRowIdsListener,
-    delListener,
-    destroy,
-    getListenerStats
-  };
-  return objFreeze(relationships);
-});
 var textEncoder = /* @__PURE__ */ new GLOBAL.TextEncoder();
 var getHash = (value) => {
   let hash = 2166136261;
@@ -3276,6 +2551,731 @@ var createMergeableStore = (uniqueId) => {
   );
   return objFreeze(mergeableStore);
 };
+var numericAggregators = /* @__PURE__ */ mapNew([
+  [
+    AVG,
+    [
+      (numbers, length) => arraySum(numbers) / length,
+      (metric, add, length) => metric + (add - metric) / (length + 1),
+      (metric, remove, length) => metric + (metric - remove) / (length - 1),
+      (metric, add, remove, length) => metric + (add - remove) / length
+    ]
+  ],
+  [
+    MAX,
+    [
+      (numbers) => mathMax(...numbers),
+      (metric, add) => mathMax(add, metric),
+      (metric, remove) => remove == metric ? void 0 : metric,
+      (metric, add, remove) => remove == metric ? void 0 : mathMax(add, metric)
+    ]
+  ],
+  [
+    MIN,
+    [
+      (numbers) => mathMin(...numbers),
+      (metric, add) => mathMin(add, metric),
+      (metric, remove) => remove == metric ? void 0 : metric,
+      (metric, add, remove) => remove == metric ? void 0 : mathMin(add, metric)
+    ]
+  ],
+  [
+    SUM,
+    [
+      (numbers) => arraySum(numbers),
+      (metric, add) => metric + add,
+      (metric, remove) => metric - remove,
+      (metric, add, remove) => metric - remove + add
+    ]
+  ]
+]);
+var getAggregateValue = (aggregateValue, oldLength, newValues, changedValues, aggregators, force = false) => {
+  if (collIsEmpty(newValues)) {
+    return void 0;
+  }
+  const [aggregate, aggregateAdd, aggregateRemove, aggregateReplace] = aggregators;
+  force ||= isUndefined(aggregateValue);
+  collForEach(changedValues, ([oldValue, newValue]) => {
+    if (!force) {
+      aggregateValue = isUndefined(oldValue) ? aggregateAdd?.(aggregateValue, newValue, oldLength++) : isUndefined(newValue) ? aggregateRemove?.(aggregateValue, oldValue, oldLength--) : aggregateReplace?.(aggregateValue, newValue, oldValue, oldLength);
+      force ||= isUndefined(aggregateValue);
+    }
+  });
+  return force ? aggregate(collValues(newValues), collSize(newValues)) : aggregateValue;
+};
+var createMetrics = getCreateFunction((store) => {
+  const metricListeners = mapNew();
+  const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
+    () => metrics
+  );
+  const [
+    getStore,
+    getMetricIds,
+    forEachMetric,
+    hasMetric,
+    getTableId,
+    getMetric,
+    setMetric,
+    ,
+    setDefinitionAndListen,
+    delDefinition,
+    addMetricIdsListener,
+    destroy
+  ] = getDefinableFunctions(
+    store,
+    getUndefined,
+    (value) => isNaN(value) || isUndefined(value) || value === true || value === false || value === EMPTY_STRING ? void 0 : value * 1,
+    addListener,
+    callListeners
+  );
+  const setMetricDefinition = (metricId, tableId, aggregate, getNumber, aggregateAdd, aggregateRemove, aggregateReplace) => {
+    const aggregators = isFunction(aggregate) ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace] : mapGet(numericAggregators, aggregate) ?? mapGet(numericAggregators, SUM);
+    setDefinitionAndListen(
+      metricId,
+      tableId,
+      (change, changedNumbers, _changedSortKeys, numbers, _sortKeys, force) => {
+        const oldMetric = getMetric(metricId);
+        const oldLength = collSize(numbers);
+        force ||= isUndefined(oldMetric);
+        change();
+        let newMetric = getAggregateValue(
+          oldMetric,
+          oldLength,
+          numbers,
+          changedNumbers,
+          aggregators,
+          force
+        );
+        if (!isFiniteNumber(newMetric)) {
+          newMetric = void 0;
+        }
+        if (newMetric != oldMetric) {
+          setMetric(metricId, newMetric);
+          callListeners(metricListeners, [metricId], newMetric, oldMetric);
+        }
+      },
+      getRowCellFunction(getNumber, 1)
+    );
+    return metrics;
+  };
+  const delMetricDefinition = (metricId) => {
+    delDefinition(metricId);
+    return metrics;
+  };
+  const addMetricListener = (metricId, listener) => addListener(listener, metricListeners, [metricId]);
+  const delListener = (listenerId) => {
+    delListenerImpl(listenerId);
+    return metrics;
+  };
+  const getListenerStats = () => ({
+    metric: collSize2(metricListeners)
+  });
+  const metrics = {
+    setMetricDefinition,
+    delMetricDefinition,
+    getStore,
+    getMetricIds,
+    forEachMetric,
+    hasMetric,
+    getTableId,
+    getMetric,
+    addMetricIdsListener,
+    addMetricListener,
+    delListener,
+    destroy,
+    getListenerStats
+  };
+  return objFreeze(metrics);
+});
+var createQueries = getCreateFunction((store) => {
+  const createStore2 = store.createStore;
+  const preStore = createStore2();
+  const resultStore = createStore2();
+  const preStoreListenerIds = mapNew();
+  const {
+    addListener,
+    callListeners,
+    delListener: delListenerImpl
+  } = resultStore;
+  const [
+    getStore,
+    getQueryIds,
+    forEachQuery,
+    hasQuery,
+    getTableId,
+    ,
+    ,
+    setDefinition,
+    ,
+    delDefinition,
+    addQueryIdsListenerImpl,
+    destroy,
+    addStoreListeners,
+    delStoreListeners
+  ] = getDefinableFunctions(
+    store,
+    () => true,
+    getUndefined,
+    addListener,
+    callListeners
+  );
+  const addPreStoreListener = (preStore2, queryId, ...listenerIds) => arrayForEach(
+    listenerIds,
+    (listenerId) => setAdd(
+      mapEnsure(
+        mapEnsure(preStoreListenerIds, queryId, mapNew),
+        preStore2,
+        setNew
+      ),
+      listenerId
+    )
+  );
+  const resetPreStores = (queryId) => {
+    ifNotUndefined(
+      mapGet(preStoreListenerIds, queryId),
+      (queryPreStoreListenerIds) => {
+        mapForEach(
+          queryPreStoreListenerIds,
+          (preStore2, listenerIds) => collForEach(
+            listenerIds,
+            (listenerId) => preStore2.delListener(listenerId)
+          )
+        );
+        collClear(queryPreStoreListenerIds);
+      }
+    );
+    arrayForEach([resultStore, preStore], (store2) => store2.delTable(queryId));
+  };
+  const synchronizeTransactions = (queryId, fromStore, toStore) => addPreStoreListener(
+    fromStore,
+    queryId,
+    fromStore.addStartTransactionListener(toStore.startTransaction),
+    fromStore.addDidFinishTransactionListener(
+      () => toStore.finishTransaction()
+    )
+  );
+  const setQueryDefinition = (queryId, tableId, build) => {
+    setDefinition(queryId, tableId);
+    resetPreStores(queryId);
+    const selectEntries = [];
+    const joinEntries = [[null, [tableId, null, null, [], mapNew()]]];
+    const wheres = [];
+    const groupEntries = [];
+    const havings = [];
+    const select = (arg1, arg2) => {
+      const selectEntry = isFunction(arg1) ? [size(selectEntries) + EMPTY_STRING, arg1] : [
+        isUndefined(arg2) ? arg1 : arg2,
+        (getTableCell) => getTableCell(arg1, arg2)
+      ];
+      arrayPush(selectEntries, selectEntry);
+      return { as: (selectedCellId) => selectEntry[0] = selectedCellId };
+    };
+    const join = (joinedTableId, arg1, arg2) => {
+      const fromIntermediateJoinedTableId = isUndefined(arg2) || isFunction(arg1) ? null : arg1;
+      const onArg = isUndefined(fromIntermediateJoinedTableId) ? arg1 : arg2;
+      const joinEntry = [
+        joinedTableId,
+        [
+          joinedTableId,
+          fromIntermediateJoinedTableId,
+          isFunction(onArg) ? onArg : (getCell) => getCell(onArg),
+          [],
+          mapNew()
+        ]
+      ];
+      arrayPush(joinEntries, joinEntry);
+      return { as: (joinedTableId2) => joinEntry[0] = joinedTableId2 };
+    };
+    const where = (arg1, arg2, arg3) => arrayPush(
+      wheres,
+      isFunction(arg1) ? arg1 : isUndefined(arg3) ? (getTableCell) => getTableCell(arg1) === arg2 : (getTableCell) => getTableCell(arg1, arg2) === arg3
+    );
+    const group = (selectedCellId, aggregate, aggregateAdd, aggregateRemove, aggregateReplace) => {
+      const groupEntry = [
+        selectedCellId,
+        [
+          selectedCellId,
+          isFunction(aggregate) ? [aggregate, aggregateAdd, aggregateRemove, aggregateReplace] : mapGet(numericAggregators, aggregate) ?? [
+            (_cells, length) => length
+          ]
+        ]
+      ];
+      arrayPush(groupEntries, groupEntry);
+      return { as: (groupedCellId) => groupEntry[0] = groupedCellId };
+    };
+    const having = (arg1, arg2) => arrayPush(
+      havings,
+      isFunction(arg1) ? arg1 : (getSelectedOrGroupedCell) => getSelectedOrGroupedCell(arg1) === arg2
+    );
+    build({ select, join, where, group, having });
+    const selects = mapNew(selectEntries);
+    if (collIsEmpty(selects)) {
+      return queries;
+    }
+    const joins = mapNew(joinEntries);
+    mapForEach(
+      joins,
+      (asTableId, [, fromAsTableId]) => ifNotUndefined(
+        mapGet(joins, fromAsTableId),
+        ({ 3: toAsTableIds }) => isUndefined(asTableId) ? 0 : arrayPush(toAsTableIds, asTableId)
+      )
+    );
+    const groups = mapNew(groupEntries);
+    let selectJoinWhereStore = preStore;
+    if (collIsEmpty(groups) && arrayIsEmpty(havings)) {
+      selectJoinWhereStore = resultStore;
+    } else {
+      synchronizeTransactions(queryId, selectJoinWhereStore, resultStore);
+      const groupedSelectedCellIds = mapNew();
+      mapForEach(
+        groups,
+        (groupedCellId, [selectedCellId, aggregators]) => setAdd(mapEnsure(groupedSelectedCellIds, selectedCellId, setNew), [
+          groupedCellId,
+          aggregators
+        ])
+      );
+      const groupBySelectedCellIds = setNew();
+      mapForEach(
+        selects,
+        (selectedCellId) => collHas(groupedSelectedCellIds, selectedCellId) ? 0 : setAdd(groupBySelectedCellIds, selectedCellId)
+      );
+      const tree = mapNew();
+      const writeGroupRow = (leaf, changedGroupedSelectedCells, selectedRowId, forceRemove) => ifNotUndefined(
+        leaf,
+        ([selectedCells, selectedRowIds, groupRowId, groupRow]) => {
+          mapForEach(
+            changedGroupedSelectedCells,
+            (selectedCellId, [newCell]) => {
+              const selectedCell = mapEnsure(
+                selectedCells,
+                selectedCellId,
+                mapNew
+              );
+              const oldLeafCell = mapGet(selectedCell, selectedRowId);
+              const newLeafCell = forceRemove ? void 0 : newCell;
+              if (oldLeafCell !== newLeafCell) {
+                const oldNewSet = setNew([[oldLeafCell, newLeafCell]]);
+                const oldLength = collSize(selectedCell);
+                mapSet(selectedCell, selectedRowId, newLeafCell);
+                collForEach(
+                  mapGet(groupedSelectedCellIds, selectedCellId),
+                  ([groupedCellId, aggregators]) => {
+                    const aggregateValue = getAggregateValue(
+                      groupRow[groupedCellId],
+                      oldLength,
+                      selectedCell,
+                      oldNewSet,
+                      aggregators
+                    );
+                    groupRow[groupedCellId] = isUndefined(
+                      getCellOrValueType(aggregateValue)
+                    ) ? null : aggregateValue;
+                  }
+                );
+              }
+            }
+          );
+          if (collIsEmpty(selectedRowIds) || !arrayEvery(
+            havings,
+            (having2) => having2((cellId) => groupRow[cellId])
+          )) {
+            resultStore.delRow(queryId, groupRowId);
+          } else if (isUndefined(groupRowId)) {
+            leaf[2] = resultStore.addRow(queryId, groupRow);
+          } else {
+            resultStore.setRow(queryId, groupRowId, groupRow);
+          }
+        }
+      );
+      addPreStoreListener(
+        selectJoinWhereStore,
+        queryId,
+        selectJoinWhereStore.addRowListener(
+          queryId,
+          null,
+          (_store, _tableId, selectedRowId, getCellChange) => {
+            const oldPath = [];
+            const newPath = [];
+            const changedGroupedSelectedCells = mapNew();
+            const rowExists = selectJoinWhereStore.hasRow(
+              queryId,
+              selectedRowId
+            );
+            let changedLeaf = !rowExists;
+            collForEach(groupBySelectedCellIds, (selectedCellId) => {
+              const [changed, oldCell, newCell] = getCellChange(
+                queryId,
+                selectedRowId,
+                selectedCellId
+              );
+              arrayPush(oldPath, oldCell);
+              arrayPush(newPath, newCell);
+              changedLeaf ||= changed;
+            });
+            mapForEach(groupedSelectedCellIds, (selectedCellId) => {
+              const [changed, , newCell] = getCellChange(
+                queryId,
+                selectedRowId,
+                selectedCellId
+              );
+              if (changedLeaf || changed) {
+                mapSet(changedGroupedSelectedCells, selectedCellId, [newCell]);
+              }
+            });
+            if (changedLeaf) {
+              writeGroupRow(
+                visitTree(tree, oldPath, void 0, ([, selectedRowIds]) => {
+                  collDel(selectedRowIds, selectedRowId);
+                  return collIsEmpty(selectedRowIds);
+                }),
+                changedGroupedSelectedCells,
+                selectedRowId,
+                1
+              );
+            }
+            if (rowExists) {
+              writeGroupRow(
+                visitTree(
+                  tree,
+                  newPath,
+                  () => {
+                    const groupRow = {};
+                    collForEach(
+                      groupBySelectedCellIds,
+                      (selectedCellId) => groupRow[selectedCellId] = selectJoinWhereStore.getCell(
+                        queryId,
+                        selectedRowId,
+                        selectedCellId
+                      )
+                    );
+                    return [mapNew(), setNew(), void 0, groupRow];
+                  },
+                  ([, selectedRowIds]) => {
+                    setAdd(selectedRowIds, selectedRowId);
+                  }
+                ),
+                changedGroupedSelectedCells,
+                selectedRowId
+              );
+            }
+          }
+        )
+      );
+    }
+    synchronizeTransactions(queryId, store, selectJoinWhereStore);
+    const writeSelectRow = (rootRowId) => {
+      const getTableCell = (arg1, arg2) => store.getCell(
+        ...isUndefined(arg2) ? [tableId, rootRowId, arg1] : arg1 === tableId ? [tableId, rootRowId, arg2] : [
+          mapGet(joins, arg1)?.[0],
+          mapGet(mapGet(joins, arg1)?.[4], rootRowId)?.[0],
+          arg2
+        ]
+      );
+      selectJoinWhereStore.transaction(
+        () => arrayEvery(wheres, (where2) => where2(getTableCell)) ? mapForEach(
+          selects,
+          (asCellId, tableCellGetter) => setOrDelCell(
+            selectJoinWhereStore,
+            queryId,
+            rootRowId,
+            asCellId,
+            tableCellGetter(getTableCell, rootRowId)
+          )
+        ) : selectJoinWhereStore.delRow(queryId, rootRowId)
+      );
+    };
+    const listenToTable = (rootRowId, tableId2, rowId, joinedTableIds2) => {
+      const getCell = (cellId) => store.getCell(tableId2, rowId, cellId);
+      arrayForEach(joinedTableIds2, (remoteAsTableId) => {
+        const [realJoinedTableId, , on, nextJoinedTableIds, remoteIdPair] = mapGet(joins, remoteAsTableId);
+        const remoteRowId = on?.(getCell, rootRowId);
+        const [previousRemoteRowId, previousRemoteListenerId] = mapGet(remoteIdPair, rootRowId) ?? [];
+        if (remoteRowId != previousRemoteRowId) {
+          if (!isUndefined(previousRemoteListenerId)) {
+            delStoreListeners(queryId, previousRemoteListenerId);
+          }
+          mapSet(
+            remoteIdPair,
+            rootRowId,
+            isUndefined(remoteRowId) ? null : [
+              remoteRowId,
+              ...addStoreListeners(
+                queryId,
+                1,
+                store.addRowListener(
+                  realJoinedTableId,
+                  remoteRowId,
+                  () => listenToTable(
+                    rootRowId,
+                    realJoinedTableId,
+                    remoteRowId,
+                    nextJoinedTableIds
+                  )
+                )
+              )
+            ]
+          );
+        }
+      });
+      writeSelectRow(rootRowId);
+    };
+    const { 3: joinedTableIds } = mapGet(joins, null);
+    selectJoinWhereStore.transaction(
+      () => addStoreListeners(
+        queryId,
+        1,
+        store.addRowListener(tableId, null, (_store, _tableId, rootRowId) => {
+          if (store.hasRow(tableId, rootRowId)) {
+            listenToTable(rootRowId, tableId, rootRowId, joinedTableIds);
+          } else {
+            selectJoinWhereStore.delRow(queryId, rootRowId);
+            collForEach(
+              joins,
+              ({ 4: idsByRootRowId }) => ifNotUndefined(
+                mapGet(idsByRootRowId, rootRowId),
+                ([, listenerId]) => {
+                  delStoreListeners(queryId, listenerId);
+                  mapSet(idsByRootRowId, rootRowId);
+                }
+              )
+            );
+          }
+        })
+      )
+    );
+    return queries;
+  };
+  const delQueryDefinition = (queryId) => {
+    resetPreStores(queryId);
+    delDefinition(queryId);
+    return queries;
+  };
+  const addQueryIdsListener = (listener) => addQueryIdsListenerImpl(() => listener(queries));
+  const delListener = (listenerId) => {
+    delListenerImpl(listenerId);
+    return queries;
+  };
+  const getListenerStats = () => {
+    const {
+      tables: _1,
+      tableIds: _2,
+      transaction: _3,
+      ...stats
+    } = resultStore.getListenerStats();
+    return stats;
+  };
+  const queries = {
+    setQueryDefinition,
+    delQueryDefinition,
+    getStore,
+    getQueryIds,
+    forEachQuery,
+    hasQuery,
+    getTableId,
+    addQueryIdsListener,
+    delListener,
+    destroy,
+    getListenerStats
+  };
+  objMap(
+    {
+      [TABLE]: [1, 1],
+      [TABLE + CELL_IDS]: [0, 1],
+      [ROW_COUNT]: [0, 1],
+      [ROW_IDS]: [0, 1],
+      [SORTED_ROW_IDS]: [0, 5],
+      [ROW]: [1, 2],
+      [CELL_IDS]: [0, 2],
+      [CELL]: [1, 3]
+    },
+    ([hasAndForEach, argumentCount], gettable) => {
+      arrayForEach(
+        hasAndForEach ? [GET, "has", "forEach"] : [GET],
+        (prefix) => queries[prefix + RESULT + gettable] = (...args) => resultStore[prefix + gettable](...args)
+      );
+      queries[ADD + RESULT + gettable + LISTENER] = (...args) => resultStore[ADD + gettable + LISTENER](
+        ...slice(args, 0, argumentCount),
+        (_store, ...listenerArgs) => args[argumentCount](queries, ...listenerArgs),
+        true
+      );
+    }
+  );
+  return objFreeze(queries);
+});
+var createRelationships = getCreateFunction((store) => {
+  const remoteTableIds = mapNew();
+  const remoteRowIdListeners = mapNew();
+  const localRowIdsListeners = mapNew();
+  const linkedRowIdsListeners = mapNew();
+  const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
+    () => relationships
+  );
+  const [
+    getStore,
+    getRelationshipIds,
+    forEachRelationshipImpl,
+    hasRelationship,
+    getLocalTableId,
+    getRelationship,
+    ,
+    ,
+    setDefinitionAndListen,
+    delDefinition,
+    addRelationshipIdsListener,
+    destroy
+  ] = getDefinableFunctions(
+    store,
+    () => [mapNew(), mapNew(), mapNew(), mapNew()],
+    (value) => isUndefined(value) ? void 0 : value + EMPTY_STRING,
+    addListener,
+    callListeners
+  );
+  const getLinkedRowIdsCache = (relationshipId, firstRowId, skipCache) => ifNotUndefined(
+    getRelationship(relationshipId),
+    ([remoteRows, , linkedRowsCache]) => {
+      if (!collHas(linkedRowsCache, firstRowId)) {
+        const linkedRows = setNew();
+        if (getLocalTableId(relationshipId) != getRemoteTableId(relationshipId)) {
+          setAdd(linkedRows, firstRowId);
+        } else {
+          let rowId = firstRowId;
+          while (!isUndefined(rowId) && !collHas(linkedRows, rowId)) {
+            setAdd(linkedRows, rowId);
+            rowId = mapGet(remoteRows, rowId);
+          }
+        }
+        if (skipCache) {
+          return linkedRows;
+        }
+        mapSet(linkedRowsCache, firstRowId, linkedRows);
+      }
+      return mapGet(linkedRowsCache, firstRowId);
+    }
+  );
+  const delLinkedRowIdsCache = (relationshipId, firstRowId) => ifNotUndefined(
+    getRelationship(relationshipId),
+    ([, , linkedRowsCache]) => mapSet(linkedRowsCache, firstRowId)
+  );
+  const setRelationshipDefinition = (relationshipId, localTableId, remoteTableId, getRemoteRowId2) => {
+    mapSet(remoteTableIds, relationshipId, remoteTableId);
+    setDefinitionAndListen(
+      relationshipId,
+      localTableId,
+      (change, changedRemoteRowIds) => {
+        const changedLocalRows = setNew();
+        const changedRemoteRows = setNew();
+        const changedLinkedRows = setNew();
+        const [localRows, remoteRows] = getRelationship(relationshipId);
+        collForEach(
+          changedRemoteRowIds,
+          ([oldRemoteRowId, newRemoteRowId], localRowId) => {
+            if (!isUndefined(oldRemoteRowId)) {
+              setAdd(changedRemoteRows, oldRemoteRowId);
+              ifNotUndefined(
+                mapGet(remoteRows, oldRemoteRowId),
+                (oldRemoteRow) => {
+                  collDel(oldRemoteRow, localRowId);
+                  if (collIsEmpty(oldRemoteRow)) {
+                    mapSet(remoteRows, oldRemoteRowId);
+                  }
+                }
+              );
+            }
+            if (!isUndefined(newRemoteRowId)) {
+              setAdd(changedRemoteRows, newRemoteRowId);
+              if (!collHas(remoteRows, newRemoteRowId)) {
+                mapSet(remoteRows, newRemoteRowId, setNew());
+              }
+              setAdd(mapGet(remoteRows, newRemoteRowId), localRowId);
+            }
+            setAdd(changedLocalRows, localRowId);
+            mapSet(localRows, localRowId, newRemoteRowId);
+            mapForEach(
+              mapGet(linkedRowIdsListeners, relationshipId),
+              (firstRowId) => {
+                if (collHas(
+                  getLinkedRowIdsCache(relationshipId, firstRowId),
+                  localRowId
+                )) {
+                  setAdd(changedLinkedRows, firstRowId);
+                }
+              }
+            );
+          }
+        );
+        change();
+        collForEach(
+          changedLocalRows,
+          (localRowId) => callListeners(remoteRowIdListeners, [relationshipId, localRowId])
+        );
+        collForEach(
+          changedRemoteRows,
+          (remoteRowId) => callListeners(localRowIdsListeners, [relationshipId, remoteRowId])
+        );
+        collForEach(changedLinkedRows, (firstRowId) => {
+          delLinkedRowIdsCache(relationshipId, firstRowId);
+          callListeners(linkedRowIdsListeners, [relationshipId, firstRowId]);
+        });
+      },
+      getRowCellFunction(getRemoteRowId2)
+    );
+    return relationships;
+  };
+  const forEachRelationship = (relationshipCallback) => forEachRelationshipImpl(
+    (relationshipId) => relationshipCallback(
+      relationshipId,
+      (rowCallback) => store.forEachRow(getLocalTableId(relationshipId), rowCallback)
+    )
+  );
+  const delRelationshipDefinition = (relationshipId) => {
+    mapSet(remoteTableIds, relationshipId);
+    delDefinition(relationshipId);
+    return relationships;
+  };
+  const getRemoteTableId = (relationshipId) => mapGet(remoteTableIds, relationshipId);
+  const getRemoteRowId = (relationshipId, localRowId) => mapGet(getRelationship(relationshipId)?.[0], localRowId);
+  const getLocalRowIds = (relationshipId, remoteRowId) => collValues(mapGet(getRelationship(relationshipId)?.[1], remoteRowId));
+  const getLinkedRowIds = (relationshipId, firstRowId) => isUndefined(getRelationship(relationshipId)) ? [firstRowId] : collValues(getLinkedRowIdsCache(relationshipId, firstRowId, true));
+  const addRemoteRowIdListener = (relationshipId, localRowId, listener) => addListener(listener, remoteRowIdListeners, [relationshipId, localRowId]);
+  const addLocalRowIdsListener = (relationshipId, remoteRowId, listener) => addListener(listener, localRowIdsListeners, [relationshipId, remoteRowId]);
+  const addLinkedRowIdsListener = (relationshipId, firstRowId, listener) => {
+    getLinkedRowIdsCache(relationshipId, firstRowId);
+    return addListener(listener, linkedRowIdsListeners, [
+      relationshipId,
+      firstRowId
+    ]);
+  };
+  const delListener = (listenerId) => {
+    delLinkedRowIdsCache(...delListenerImpl(listenerId) ?? []);
+    return relationships;
+  };
+  const getListenerStats = () => ({
+    remoteRowId: collSize3(remoteRowIdListeners),
+    localRowIds: collSize3(localRowIdsListeners),
+    linkedRowIds: collSize3(linkedRowIdsListeners)
+  });
+  const relationships = {
+    setRelationshipDefinition,
+    delRelationshipDefinition,
+    getStore,
+    getRelationshipIds,
+    forEachRelationship,
+    hasRelationship,
+    getLocalTableId,
+    getRemoteTableId,
+    getRemoteRowId,
+    getLocalRowIds,
+    getLinkedRowIds,
+    addRelationshipIdsListener,
+    addRemoteRowIdListener,
+    addLocalRowIdsListener,
+    addLinkedRowIdsListener,
+    delListener,
+    destroy,
+    getListenerStats
+  };
+  return objFreeze(relationships);
+});
 export {
   createCheckpoints,
   createIndexes,
