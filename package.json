@@ -80,9 +80,6 @@
     "postgres": {
       "optional": true
     },
-    "prettier": {
-      "optional": true
-    },
     "react": {
       "optional": true
     },
@@ -189,7 +186,7 @@
     "country-flag-emoji-json": "^2.0.0",
     "cspell": "^8.18.1",
     "electric-sql": "^0.12.1",
-    "esbuild": "^0.25.1",
+    "esbuild": "^0.25.2",
     "eslint": "^9.23.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.11.0",
