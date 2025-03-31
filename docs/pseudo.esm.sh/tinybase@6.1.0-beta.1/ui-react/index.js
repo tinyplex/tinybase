@@ -103,6 +103,17 @@ var getIndexStoreTableId = (indexes, indexId) => [
   indexes?.getStore(),
   indexes?.getTableId(indexId)
 ];
+var Offsets = /* @__PURE__ */ ((Offsets2) => {
+  Offsets2[Offsets2["Store"] = 0] = "Store";
+  Offsets2[Offsets2["Metrics"] = 1] = "Metrics";
+  Offsets2[Offsets2["Indexes"] = 2] = "Indexes";
+  Offsets2[Offsets2["Relationships"] = 3] = "Relationships";
+  Offsets2[Offsets2["Queries"] = 4] = "Queries";
+  Offsets2[Offsets2["Checkpoints"] = 5] = "Checkpoints";
+  Offsets2[Offsets2["Persister"] = 6] = "Persister";
+  Offsets2[Offsets2["Synchronizer"] = 7] = "Synchronizer";
+  return Offsets2;
+})(Offsets || {});
 var TINYBASE_CONTEXT = TINYBASE + "_uirc";
 var Context = GLOBAL[TINYBASE_CONTEXT] ? (
   /* istanbul ignore next */
@@ -125,170 +136,6 @@ var useProvideThing = (thingId, thing, offset) => {
   }, [addExtraThingById, thingId, thing, offset, delExtraThingById]);
 };
 var useThingIds = (offset) => objIds(useContext(Context)[offset * 2 + 1] ?? {});
-var useStoreIds = () => useThingIds(
-  0
-  /* Store */
-);
-var useStore = (id) => useThing(
-  id,
-  0
-  /* Store */
-);
-var useStores = () => useThings(
-  0
-  /* Store */
-);
-var useStoreOrStoreById = (storeOrStoreId) => useThingOrThingById(
-  storeOrStoreId,
-  0
-  /* Store */
-);
-var useProvideStore = (storeId, store) => useProvideThing(
-  storeId,
-  store,
-  0
-  /* Store */
-);
-var useMetricsIds = () => useThingIds(
-  1
-  /* Metrics */
-);
-var useMetrics = (id) => useThing(
-  id,
-  1
-  /* Metrics */
-);
-var useMetricsOrMetricsById = (metricsOrMetricsId) => useThingOrThingById(
-  metricsOrMetricsId,
-  1
-  /* Metrics */
-);
-var useProvideMetrics = (metricsId, metrics) => useProvideThing(
-  metricsId,
-  metrics,
-  1
-  /* Metrics */
-);
-var useIndexesIds = () => useThingIds(
-  2
-  /* Indexes */
-);
-var useIndexes = (id) => useThing(
-  id,
-  2
-  /* Indexes */
-);
-var useIndexesOrIndexesById = (indexesOrIndexesId) => useThingOrThingById(
-  indexesOrIndexesId,
-  2
-  /* Indexes */
-);
-var useProvideIndexes = (indexesId, indexes) => useProvideThing(
-  indexesId,
-  indexes,
-  2
-  /* Indexes */
-);
-var useRelationshipsIds = () => useThingIds(
-  3
-  /* Relationships */
-);
-var useRelationships = (id) => useThing(
-  id,
-  3
-  /* Relationships */
-);
-var useRelationshipsOrRelationshipsById = (relationshipsOrRelationshipsId) => useThingOrThingById(
-  relationshipsOrRelationshipsId,
-  3
-  /* Relationships */
-);
-var useProvideRelationships = (relationshipsId, relationships) => useProvideThing(
-  relationshipsId,
-  relationships,
-  3
-  /* Relationships */
-);
-var useQueriesIds = () => useThingIds(
-  4
-  /* Queries */
-);
-var useQueries = (id) => useThing(
-  id,
-  4
-  /* Queries */
-);
-var useQueriesOrQueriesById = (queriesOrQueriesId) => useThingOrThingById(
-  queriesOrQueriesId,
-  4
-  /* Queries */
-);
-var useProvideQueries = (queriesId, queries) => useProvideThing(
-  queriesId,
-  queries,
-  4
-  /* Queries */
-);
-var useCheckpointsIds = () => useThingIds(
-  5
-  /* Checkpoints */
-);
-var useCheckpoints = (id) => useThing(
-  id,
-  5
-  /* Checkpoints */
-);
-var useCheckpointsOrCheckpointsById = (checkpointsOrCheckpointsId) => useThingOrThingById(
-  checkpointsOrCheckpointsId,
-  5
-  /* Checkpoints */
-);
-var useProvideCheckpoints = (checkpointsId, checkpoints) => useProvideThing(
-  checkpointsId,
-  checkpoints,
-  5
-  /* Checkpoints */
-);
-var usePersisterIds = () => useThingIds(
-  6
-  /* Persister */
-);
-var usePersister = (id) => useThing(
-  id,
-  6
-  /* Persister */
-);
-var usePersisterOrPersisterById = (persisterOrPersisterId) => useThingOrThingById(
-  persisterOrPersisterId,
-  6
-  /* Persister */
-);
-var useProvidePersister = (persisterId, persister) => useProvideThing(
-  persisterId,
-  persister,
-  6
-  /* Persister */
-);
-var useSynchronizerIds = () => useThingIds(
-  7
-  /* Synchronizer */
-);
-var useSynchronizer = (id) => useThing(
-  id,
-  7
-  /* Synchronizer */
-);
-var useSynchronizerOrSynchronizerById = (synchronizerOrSynchronizerId) => useThingOrThingById(
-  synchronizerOrSynchronizerId,
-  7
-  /* Synchronizer */
-);
-var useProvideSynchronizer = (persisterId, persister) => useProvideThing(
-  persisterId,
-  persister,
-  7
-  /* Synchronizer */
-);
 var EMPTY_ARRAY = [];
 var DEFAULTS = [{}, [], [EMPTY_ARRAY, void 0, EMPTY_ARRAY], void 0, false, 0];
 var IS_EQUALS = [
@@ -385,6 +232,11 @@ var useCheckpointAction = (checkpointsOrCheckpointsId, action, arg) => {
   );
 };
 var useCreateStore = (create, createDeps = EMPTY_ARRAY) => useMemo(create, createDeps);
+var useStoreIds = () => useThingIds(Offsets.Store);
+var useStore = (id) => useThing(id, Offsets.Store);
+var useStores = () => useThings(Offsets.Store);
+var useStoreOrStoreById = (storeOrStoreId) => useThingOrThingById(storeOrStoreId, Offsets.Store);
+var useProvideStore = (storeId, store) => useProvideThing(storeId, store, Offsets.Store);
 var useCreateMergeableStore = (create, createDeps = EMPTY_ARRAY) => useMemo(create, createDeps);
 var useHasTables = (storeOrStoreId) => useListenable(
   TABLES,
@@ -776,6 +628,10 @@ var useDidFinishTransactionListener = (listener, listenerDeps, storeOrStoreId) =
   listenerDeps
 );
 var useCreateMetrics = (store, create, createDeps) => useCreate(store, create, createDeps);
+var useMetricsIds = () => useThingIds(Offsets.Metrics);
+var useMetrics = (id) => useThing(id, Offsets.Metrics);
+var useMetricsOrMetricsById = (metricsOrMetricsId) => useThingOrThingById(metricsOrMetricsId, Offsets.Metrics);
+var useProvideMetrics = (metricsId, metrics) => useProvideThing(metricsId, metrics, Offsets.Metrics);
 var useMetricIds = (metricsOrMetricsId) => useListenable(
   METRIC + IDS,
   useMetricsOrMetricsById(metricsOrMetricsId),
@@ -795,6 +651,10 @@ var useMetricListener = (metricId, listener, listenerDeps, metricsOrMetricsId) =
   [metricId]
 );
 var useCreateIndexes = (store, create, createDeps) => useCreate(store, create, createDeps);
+var useIndexesIds = () => useThingIds(Offsets.Indexes);
+var useIndexes = (id) => useThing(id, Offsets.Indexes);
+var useIndexesOrIndexesById = (indexesOrIndexesId) => useThingOrThingById(indexesOrIndexesId, Offsets.Indexes);
+var useProvideIndexes = (indexesId, indexes) => useProvideThing(indexesId, indexes, Offsets.Indexes);
 var useSliceIds = (indexId, indexesOrIndexesId) => useListenable(
   SLICE + IDS,
   useIndexesOrIndexesById(indexesOrIndexesId),
@@ -827,6 +687,10 @@ var useSliceRowIdsListener = (indexId, sliceId, listener, listenerDeps, indexesO
   [indexId, sliceId]
 );
 var useCreateRelationships = (store, create, createDeps) => useCreate(store, create, createDeps);
+var useRelationshipsIds = () => useThingIds(Offsets.Relationships);
+var useRelationships = (id) => useThing(id, Offsets.Relationships);
+var useRelationshipsOrRelationshipsById = (relationshipsOrRelationshipsId) => useThingOrThingById(relationshipsOrRelationshipsId, Offsets.Relationships);
+var useProvideRelationships = (relationshipsId, relationships) => useProvideThing(relationshipsId, relationships, Offsets.Relationships);
 var useRelationshipIds = (relationshipsOrRelationshipsId) => useListenable(
   RELATIONSHIP + IDS,
   useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
@@ -872,6 +736,10 @@ var useLinkedRowIdsListener = (relationshipId, firstRowId, listener, listenerDep
   [relationshipId, firstRowId]
 );
 var useCreateQueries = (store, create, createDeps) => useCreate(store, create, createDeps);
+var useQueriesIds = () => useThingIds(Offsets.Queries);
+var useQueries = (id) => useThing(id, Offsets.Queries);
+var useQueriesOrQueriesById = (queriesOrQueriesId) => useThingOrThingById(queriesOrQueriesId, Offsets.Queries);
+var useProvideQueries = (queriesId, queries) => useProvideThing(queriesId, queries, Offsets.Queries);
 var useQueryIds = (queriesOrQueriesId) => useListenable(
   QUERY + IDS,
   useQueriesOrQueriesById(queriesOrQueriesId),
@@ -982,6 +850,10 @@ var useResultCellListener = (queryId, rowId, cellId, listener, listenerDeps, que
   [queryId, rowId, cellId]
 );
 var useCreateCheckpoints = (store, create, createDeps) => useCreate(store, create, createDeps);
+var useCheckpointsIds = () => useThingIds(Offsets.Checkpoints);
+var useCheckpoints = (id) => useThing(id, Offsets.Checkpoints);
+var useCheckpointsOrCheckpointsById = (checkpointsOrCheckpointsId) => useThingOrThingById(checkpointsOrCheckpointsId, Offsets.Checkpoints);
+var useProvideCheckpoints = (checkpointsId, checkpoints) => useProvideThing(checkpointsId, checkpoints, Offsets.Checkpoints);
 var useCheckpointIds = (checkpointsOrCheckpointsId) => useListenable(
   CHECKPOINT + IDS,
   useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
@@ -1092,6 +964,10 @@ var useCreatePersister = (store, create, createDeps = EMPTY_ARRAY, then, thenDep
   );
   return persister;
 };
+var usePersisterIds = () => useThingIds(Offsets.Persister);
+var usePersister = (id) => useThing(id, Offsets.Persister);
+var usePersisterOrPersisterById = (persisterOrPersisterId) => useThingOrThingById(persisterOrPersisterId, Offsets.Persister);
+var useProvidePersister = (persisterId, persister) => useProvideThing(persisterId, persister, Offsets.Persister);
 var usePersisterStatus = (persisterOrPersisterId) => useListenable(
   STATUS,
   usePersisterOrPersisterById(persisterOrPersisterId),
@@ -1129,6 +1005,10 @@ var useCreateSynchronizer = (store, create, createDeps = EMPTY_ARRAY, destroy, d
   );
   return synchronizer;
 };
+var useSynchronizerIds = () => useThingIds(Offsets.Synchronizer);
+var useSynchronizer = (id) => useThing(id, Offsets.Synchronizer);
+var useSynchronizerOrSynchronizerById = (synchronizerOrSynchronizerId) => useThingOrThingById(synchronizerOrSynchronizerId, Offsets.Synchronizer);
+var useProvideSynchronizer = (persisterId, persister) => useProvideThing(persisterId, persister, Offsets.Synchronizer);
 var useSynchronizerStatus = (synchronizerOrSynchronizerId) => useListenable(
   STATUS,
   useSynchronizerOrSynchronizerById(synchronizerOrSynchronizerId),

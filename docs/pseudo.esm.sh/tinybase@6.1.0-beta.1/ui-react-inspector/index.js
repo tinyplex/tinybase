@@ -81,6 +81,17 @@ var {
   useSyncExternalStore
 } = React;
 var getProps = (getProps22, ...ids) => isUndefined(getProps22) ? {} : getProps22(...ids);
+var Offsets = /* @__PURE__ */ ((Offsets2) => {
+  Offsets2[Offsets2["Store"] = 0] = "Store";
+  Offsets2[Offsets2["Metrics"] = 1] = "Metrics";
+  Offsets2[Offsets2["Indexes"] = 2] = "Indexes";
+  Offsets2[Offsets2["Relationships"] = 3] = "Relationships";
+  Offsets2[Offsets2["Queries"] = 4] = "Queries";
+  Offsets2[Offsets2["Checkpoints"] = 5] = "Checkpoints";
+  Offsets2[Offsets2["Persister"] = 6] = "Persister";
+  Offsets2[Offsets2["Synchronizer"] = 7] = "Synchronizer";
+  return Offsets2;
+})(Offsets || {});
 var TINYBASE_CONTEXT = TINYBASE + "_uirc";
 var Context = GLOBAL[TINYBASE_CONTEXT] ? (
   /* istanbul ignore next */
@@ -95,81 +106,6 @@ var useThingOrThingById = (thingOrThingId, offset) => {
   return isUndefined(thingOrThingId) || isString(thingOrThingId) ? thing : thingOrThingId;
 };
 var useThingIds = (offset) => objIds(useContext(Context)[offset * 2 + 1] ?? {});
-var useStoreIds = () => useThingIds(
-  0
-  /* Store */
-);
-var useStore = (id2) => useThing(
-  id2,
-  0
-  /* Store */
-);
-var useStoreOrStoreById = (storeOrStoreId) => useThingOrThingById(
-  storeOrStoreId,
-  0
-  /* Store */
-);
-var useMetricsIds = () => useThingIds(
-  1
-  /* Metrics */
-);
-var useMetrics = (id2) => useThing(
-  id2,
-  1
-  /* Metrics */
-);
-var useMetricsOrMetricsById = (metricsOrMetricsId) => useThingOrThingById(
-  metricsOrMetricsId,
-  1
-  /* Metrics */
-);
-var useIndexesIds = () => useThingIds(
-  2
-  /* Indexes */
-);
-var useIndexes = (id2) => useThing(
-  id2,
-  2
-  /* Indexes */
-);
-var useIndexesOrIndexesById = (indexesOrIndexesId) => useThingOrThingById(
-  indexesOrIndexesId,
-  2
-  /* Indexes */
-);
-var useRelationshipsIds = () => useThingIds(
-  3
-  /* Relationships */
-);
-var useRelationships = (id2) => useThing(
-  id2,
-  3
-  /* Relationships */
-);
-var useRelationshipsOrRelationshipsById = (relationshipsOrRelationshipsId) => useThingOrThingById(
-  relationshipsOrRelationshipsId,
-  3
-  /* Relationships */
-);
-var useQueriesIds = () => useThingIds(
-  4
-  /* Queries */
-);
-var useQueries = (id2) => useThing(
-  id2,
-  4
-  /* Queries */
-);
-var useQueriesOrQueriesById = (queriesOrQueriesId) => useThingOrThingById(
-  queriesOrQueriesId,
-  4
-  /* Queries */
-);
-var useCheckpointsOrCheckpointsById = (checkpointsOrCheckpointsId) => useThingOrThingById(
-  checkpointsOrCheckpointsId,
-  5
-  /* Checkpoints */
-);
 var EMPTY_ARRAY = [];
 var DEFAULTS = [{}, [], [EMPTY_ARRAY, void 0, EMPTY_ARRAY], void 0, false, 0];
 var IS_EQUALS = [
@@ -229,6 +165,9 @@ var useSetCallback = (storeOrStoreId, settable, get, getDeps = EMPTY_ARRAY, then
 var argsOrGetArgs = (args, store, parameter) => arrayMap(args, (arg) => isFunction(arg) ? arg(parameter, store) : arg);
 var nonFunctionDeps = (args) => arrayFilter(args, (arg) => !isFunction(arg));
 var useCreateStore = (create, createDeps = EMPTY_ARRAY) => useMemo(create, createDeps);
+var useStoreIds = () => useThingIds(Offsets.Store);
+var useStore = (id2) => useThing(id2, Offsets.Store);
+var useStoreOrStoreById = (storeOrStoreId) => useThingOrThingById(storeOrStoreId, Offsets.Store);
 var useTableIds = (storeOrStoreId) => useListenable(
   TABLE_IDS,
   useStoreOrStoreById(storeOrStoreId),
@@ -300,6 +239,9 @@ var useSetValueCallback = (valueId, getValue, getValueDeps, storeOrStoreId, then
   thenDeps,
   valueId
 );
+var useMetricsIds = () => useThingIds(Offsets.Metrics);
+var useMetrics = (id2) => useThing(id2, Offsets.Metrics);
+var useMetricsOrMetricsById = (metricsOrMetricsId) => useThingOrThingById(metricsOrMetricsId, Offsets.Metrics);
 var useMetricIds = (metricsOrMetricsId) => useListenable(
   METRIC + IDS,
   useMetricsOrMetricsById(metricsOrMetricsId),
@@ -311,6 +253,9 @@ var useMetric = (metricId, metricsOrMetricsId) => useListenable(
   3,
   [metricId]
 );
+var useIndexesIds = () => useThingIds(Offsets.Indexes);
+var useIndexes = (id2) => useThing(id2, Offsets.Indexes);
+var useIndexesOrIndexesById = (indexesOrIndexesId) => useThingOrThingById(indexesOrIndexesId, Offsets.Indexes);
 var useSliceIds = (indexId, indexesOrIndexesId) => useListenable(
   SLICE + IDS,
   useIndexesOrIndexesById(indexesOrIndexesId),
@@ -328,6 +273,9 @@ var useSliceRowIds = (indexId, sliceId, indexesOrIndexesId) => useListenable(
   1,
   [indexId, sliceId]
 );
+var useRelationshipsIds = () => useThingIds(Offsets.Relationships);
+var useRelationships = (id2) => useThing(id2, Offsets.Relationships);
+var useRelationshipsOrRelationshipsById = (relationshipsOrRelationshipsId) => useThingOrThingById(relationshipsOrRelationshipsId, Offsets.Relationships);
 var useRelationshipIds = (relationshipsOrRelationshipsId) => useListenable(
   RELATIONSHIP + IDS,
   useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
@@ -339,6 +287,9 @@ var useRemoteRowId = (relationshipId, localRowId, relationshipsOrRelationshipsId
   3,
   [relationshipId, localRowId]
 );
+var useQueriesIds = () => useThingIds(Offsets.Queries);
+var useQueries = (id2) => useThing(id2, Offsets.Queries);
+var useQueriesOrQueriesById = (queriesOrQueriesId) => useThingOrThingById(queriesOrQueriesId, Offsets.Queries);
 var useQueryIds = (queriesOrQueriesId) => useListenable(
   QUERY + IDS,
   useQueriesOrQueriesById(queriesOrQueriesId),
@@ -368,6 +319,7 @@ var useResultCell = (queryId, rowId, cellId, queriesOrQueriesId) => useListenabl
   3,
   [queryId, rowId, cellId]
 );
+var useCheckpointsOrCheckpointsById = (checkpointsOrCheckpointsId) => useThingOrThingById(checkpointsOrCheckpointsId, Offsets.Checkpoints);
 var useCheckpointIds = (checkpointsOrCheckpointsId) => useListenable(
   CHECKPOINT + IDS,
   useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
