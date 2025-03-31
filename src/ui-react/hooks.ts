@@ -99,6 +99,7 @@ import type {
   useCheckpointListener as useCheckpointListenerDecl,
   useCheckpoints as useCheckpointsDecl,
   useCheckpointsIds as useCheckpointsIdsDecl,
+  useCheckpointsOrCheckpointsById as useCheckpointsOrCheckpointsByIdDecl,
   useCreateCheckpoints as useCreateCheckpointsDecl,
   useCreateIndexes as useCreateIndexesDecl,
   useCreateMergeableStore as useCreateMergeableStoreDecl,
@@ -135,6 +136,7 @@ import type {
   useIndexIds as useIndexIdsDecl,
   useIndexes as useIndexesDecl,
   useIndexesIds as useIndexesIdsDecl,
+  useIndexesOrIndexesById as useIndexesOrIndexesByIdDecl,
   useLinkedRowIds as useLinkedRowIdsDecl,
   useLinkedRowIdsListener as useLinkedRowIdsListenerDecl,
   useLocalRowIds as useLocalRowIdsDecl,
@@ -144,17 +146,29 @@ import type {
   useMetricListener as useMetricListenerDecl,
   useMetrics as useMetricsDecl,
   useMetricsIds as useMetricsIdsDecl,
+  useMetricsOrMetricsById as useMetricsOrMetricsByIdDecl,
   usePersister as usePersisterDecl,
   usePersisterIds as usePersisterIdsDecl,
+  usePersisterOrPersisterById as usePersisterOrPersisterByIdDecl,
   usePersisterStatus as usePersisterStatusDecl,
   usePersisterStatusListener as usePersisterStatusListenerDecl,
+  useProvideCheckpoints as useProvideCheckpointsDecl,
+  useProvideIndexes as useProvideIndexesDecl,
+  useProvideMetrics as useProvideMetricsDecl,
+  useProvidePersister as useProvidePersisterDecl,
+  useProvideQueries as useProvideQueriesDecl,
+  useProvideRelationships as useProvideRelationshipsDecl,
+  useProvideStore as useProvideStoreDecl,
+  useProvideSynchronizer as useProvideSynchronizerDecl,
   useQueries as useQueriesDecl,
   useQueriesIds as useQueriesIdsDecl,
+  useQueriesOrQueriesById as useQueriesOrQueriesByIdDecl,
   useQueryIds as useQueryIdsDecl,
   useRedoInformation as useRedoInformationDecl,
   useRelationshipIds as useRelationshipIdsDecl,
   useRelationships as useRelationshipsDecl,
   useRelationshipsIds as useRelationshipsIdsDecl,
+  useRelationshipsOrRelationshipsById as useRelationshipsOrRelationshipsByIdDecl,
   useRemoteRowId as useRemoteRowIdDecl,
   useRemoteRowIdListener as useRemoteRowIdListenerDecl,
   useResultCell as useResultCellDecl,
@@ -197,9 +211,11 @@ import type {
   useStartTransactionListener as useStartTransactionListenerDecl,
   useStore as useStoreDecl,
   useStoreIds as useStoreIdsDecl,
+  useStoreOrStoreById as useStoreOrStoreByIdDecl,
   useStores as useStoresDecl,
   useSynchronizer as useSynchronizerDecl,
   useSynchronizerIds as useSynchronizerIdsDecl,
+  useSynchronizerOrSynchronizerById as useSynchronizerOrSynchronizerByIdDecl,
   useSynchronizerStatus as useSynchronizerStatusDecl,
   useSynchronizerStatusListener as useSynchronizerStatusListenerDecl,
   useTableCellIds as useTableCellIdsDecl,
@@ -479,12 +495,14 @@ export const useStore: typeof useStoreDecl = (id?: Id): Store | undefined =>
 export const useStores: typeof useStoresDecl = (): IdObj<Store> =>
   useThings(Offsets.Store);
 
-export const useStoreOrStoreById = (
+export const useStoreOrStoreById: typeof useStoreOrStoreByIdDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): Store | undefined => useThingOrThingById(storeOrStoreId, Offsets.Store);
 
-export const useProvideStore = (storeId: Id, store: Store): void =>
-  useProvideThing(storeId, store, Offsets.Store);
+export const useProvideStore: typeof useProvideStoreDecl = (
+  storeId: Id,
+  store: Store,
+): void => useProvideThing(storeId, store, Offsets.Store);
 
 export const useCreateMergeableStore: typeof useCreateMergeableStoreDecl = (
   create: () => MergeableStore,
@@ -1316,13 +1334,15 @@ export const useMetrics: typeof useMetricsDecl = (
   id?: Id,
 ): Metrics | undefined => useThing(id, Offsets.Metrics);
 
-export const useMetricsOrMetricsById = (
+export const useMetricsOrMetricsById: typeof useMetricsOrMetricsByIdDecl = (
   metricsOrMetricsId?: MetricsOrMetricsId,
 ): Metrics | undefined =>
   useThingOrThingById(metricsOrMetricsId, Offsets.Metrics);
 
-export const useProvideMetrics = (metricsId: Id, metrics: Metrics): void =>
-  useProvideThing(metricsId, metrics, Offsets.Metrics);
+export const useProvideMetrics: typeof useProvideMetricsDecl = (
+  metricsId: Id,
+  metrics: Metrics,
+): void => useProvideThing(metricsId, metrics, Offsets.Metrics);
 
 export const useMetricIds: typeof useMetricIdsDecl = (
   metricsOrMetricsId?: MetricsOrMetricsId,
@@ -1371,13 +1391,15 @@ export const useIndexes: typeof useIndexesDecl = (
   id?: Id,
 ): Indexes | undefined => useThing(id, Offsets.Indexes);
 
-export const useIndexesOrIndexesById = (
+export const useIndexesOrIndexesById: typeof useIndexesOrIndexesByIdDecl = (
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): Indexes | undefined =>
   useThingOrThingById(indexesOrIndexesId, Offsets.Indexes);
 
-export const useProvideIndexes = (indexesId: Id, indexes: Indexes): void =>
-  useProvideThing(indexesId, indexes, Offsets.Indexes);
+export const useProvideIndexes: typeof useProvideIndexesDecl = (
+  indexesId: Id,
+  indexes: Indexes,
+): void => useProvideThing(indexesId, indexes, Offsets.Indexes);
 
 export const useSliceIds: typeof useSliceIdsDecl = (
   indexId: Id,
@@ -1453,12 +1475,13 @@ export const useRelationships: typeof useRelationshipsDecl = (
   id?: Id,
 ): Relationships | undefined => useThing(id, Offsets.Relationships);
 
-export const useRelationshipsOrRelationshipsById = (
-  relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): Relationships | undefined =>
-  useThingOrThingById(relationshipsOrRelationshipsId, Offsets.Relationships);
+export const useRelationshipsOrRelationshipsById: typeof useRelationshipsOrRelationshipsByIdDecl =
+  (
+    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
+  ): Relationships | undefined =>
+    useThingOrThingById(relationshipsOrRelationshipsId, Offsets.Relationships);
 
-export const useProvideRelationships = (
+export const useProvideRelationships: typeof useProvideRelationshipsDecl = (
   relationshipsId: Id,
   relationships: Relationships,
 ): void =>
@@ -1567,13 +1590,15 @@ export const useQueries: typeof useQueriesDecl = (
   id?: Id,
 ): Queries | undefined => useThing(id, Offsets.Queries);
 
-export const useQueriesOrQueriesById = (
+export const useQueriesOrQueriesById: typeof useQueriesOrQueriesByIdDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Queries | undefined =>
   useThingOrThingById(queriesOrQueriesId, Offsets.Queries);
 
-export const useProvideQueries = (queriesId: Id, queries: Queries): void =>
-  useProvideThing(queriesId, queries, Offsets.Queries);
+export const useProvideQueries: typeof useProvideQueriesDecl = (
+  queriesId: Id,
+  queries: Queries,
+): void => useProvideThing(queriesId, queries, Offsets.Queries);
 
 export const useQueryIds: typeof useQueryIdsDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
@@ -1815,12 +1840,13 @@ export const useCheckpoints: typeof useCheckpointsDecl = (
   id?: Id,
 ): Checkpoints | undefined => useThing(id, Offsets.Checkpoints);
 
-export const useCheckpointsOrCheckpointsById = (
-  checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): Checkpoints | undefined =>
-  useThingOrThingById(checkpointsOrCheckpointsId, Offsets.Checkpoints);
+export const useCheckpointsOrCheckpointsById: typeof useCheckpointsOrCheckpointsByIdDecl =
+  (
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
+  ): Checkpoints | undefined =>
+    useThingOrThingById(checkpointsOrCheckpointsId, Offsets.Checkpoints);
 
-export const useProvideCheckpoints = (
+export const useProvideCheckpoints: typeof useProvideCheckpointsDecl = (
   checkpointsId: Id,
   checkpoints: Checkpoints,
 ): void => useProvideThing(checkpointsId, checkpoints, Offsets.Checkpoints);
@@ -2012,12 +2038,11 @@ export const usePersister: typeof usePersisterDecl = (
   id?: Id,
 ): AnyPersister | undefined => useThing(id, Offsets.Persister);
 
-export const usePersisterOrPersisterById = (
-  persisterOrPersisterId?: PersisterOrPersisterId,
-): AnyPersister | undefined =>
-  useThingOrThingById(persisterOrPersisterId, Offsets.Persister);
+export const usePersisterOrPersisterById: typeof usePersisterOrPersisterByIdDecl =
+  (persisterOrPersisterId?: PersisterOrPersisterId): AnyPersister | undefined =>
+    useThingOrThingById(persisterOrPersisterId, Offsets.Persister);
 
-export const useProvidePersister = (
+export const useProvidePersister: typeof useProvidePersisterDecl = (
   persisterId: Id,
   persister: AnyPersister,
 ): void => useProvideThing(persisterId, persister, Offsets.Persister);
@@ -2086,12 +2111,13 @@ export const useSynchronizer: typeof useSynchronizerDecl = (
   id?: Id,
 ): Synchronizer | undefined => useThing(id, Offsets.Synchronizer);
 
-export const useSynchronizerOrSynchronizerById = (
-  synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
-): Synchronizer | undefined =>
-  useThingOrThingById(synchronizerOrSynchronizerId, Offsets.Synchronizer);
+export const useSynchronizerOrSynchronizerById: typeof useSynchronizerOrSynchronizerByIdDecl =
+  (
+    synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
+  ): Synchronizer | undefined =>
+    useThingOrThingById(synchronizerOrSynchronizerId, Offsets.Synchronizer);
 
-export const useProvideSynchronizer = (
+export const useProvideSynchronizer: typeof useProvideSynchronizerDecl = (
   persisterId: Id,
   persister: Synchronizer,
 ): void => useProvideThing(persisterId, persister, Offsets.Synchronizer);

@@ -1036,7 +1036,7 @@ export function usePersisterOrPersisterById(
 // useProvidePersister
 export function useProvidePersister(
   persisterId: Id,
-  persister: AnyPersister | undefined,
+  persister: AnyPersister,
 ): void;
 
 /// usePersisterStatus
@@ -1076,7 +1076,7 @@ export function useSynchronizerOrSynchronizerById(
 // useProvideSynchronizer
 export function useProvideSynchronizer(
   synchronizerId: Id,
-  synchronizer: Synchronizer | undefined,
+  synchronizer: Synchronizer,
 ): void;
 
 /// useSynchronizerStatus
