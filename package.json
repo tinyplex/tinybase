@@ -80,9 +80,6 @@
     "postgres": {
       "optional": true
     },
-    "prettier": {
-      "optional": true
-    },
     "react": {
       "optional": true
     },
