@@ -391,7 +391,7 @@ const lintCheckDocs = async (dir) => {
             UTF8,
           );
         }
-        const results = await esLint.lintText(code);
+        const results = await esLint.lintText(pretty);
         if (
           results.filter(
             (result) => result.errorCount > 0 || result.warningCount > 0,
@@ -399,7 +399,7 @@ const lintCheckDocs = async (dir) => {
         ) {
           const formatter = await esLint.loadFormatter();
           const errors = await formatter.format(results);
-          throw `${filePath} does not lint:\n${code}\n\n${errors}`;
+          throw `${filePath} does not lint:\n${pretty}\n\n${errors}`;
         }
       },
     );
