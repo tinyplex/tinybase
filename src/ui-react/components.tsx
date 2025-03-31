@@ -62,22 +62,18 @@ import {
   useState,
 } from '../common/react.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
-import {
-  Context,
-  ContextValue,
-  ThingsByOffset,
-  useCheckpointsOrCheckpointsById,
-  useIndexesOrIndexesById,
-  useRelationshipsOrRelationshipsById,
-} from './context.ts';
+import {Context, ContextValue, ThingsByOffset} from './context.ts';
 import {
   useCell,
   useCellIds,
   useCheckpoint,
   useCheckpointIds,
+  useCheckpointsOrCheckpointsById,
+  useIndexesOrIndexesById,
   useLinkedRowIds,
   useLocalRowIds,
   useMetric,
+  useRelationshipsOrRelationshipsById,
   useRemoteRowId,
   useResultCell,
   useResultCellIds,
