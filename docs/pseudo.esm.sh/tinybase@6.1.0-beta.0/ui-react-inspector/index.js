@@ -1,3 +1,7 @@
+// dist/ui-react-inspector/index.js
+import React2 from "react";
+import { Fragment, jsx as jsx2, jsxs } from "react/jsx-runtime";
+
 // dist/ui-react/index.js
 import React from "react";
 import { jsx } from "react/jsx-runtime";
@@ -470,8 +474,6 @@ var ForwardCheckpointsView = getUseCheckpointView(
 );
 
 // dist/ui-react-inspector/index.js
-import React2 from "react";
-import { Fragment, jsx as jsx2, jsxs } from "react/jsx-runtime";
 var getTypeOf2 = (thing) => typeof thing;
 var EMPTY_STRING2 = "";
 var STRING2 = getTypeOf2(EMPTY_STRING2);
