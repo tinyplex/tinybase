@@ -275,11 +275,6 @@ const copyDefinition = async (dir, module) => {
       ),
       UTF8,
     );
-    await copyWithReplace(
-      definitionFile,
-      [/\.d\.ts/g, '.d.cts'],
-      definitionFile.replace(/index.d.ts$/, 'index.d.cts'),
-    );
   });
 };
 
