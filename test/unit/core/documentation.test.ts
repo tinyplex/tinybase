@@ -163,7 +163,7 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
         ?.replace(/\/\/ -> (.*?)$/gm, '_expected.push($1);\n')
         ?.replace(
           /\/\/ \.\.\. \/\/ !act$/gm,
-          'await act(async () => {await pause();});\n',
+          'await act(async () => await pause());\n',
         )
         ?.replace(/\/\/ \.\.\.$/gm, 'await pause();\n')
         ?.replace(/^(.*?) \/\/ !act$/gm, 'act(() => {$1});')
