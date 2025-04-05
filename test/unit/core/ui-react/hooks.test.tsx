@@ -456,23 +456,17 @@ describe('Create Hooks', () => {
     };
 
     const {container, rerender, unmount} = render(<Test id={1} />);
-    await act(async () => {
-      await pause();
-    });
+    await act(async () => await pause());
     expect(container.textContent).toEqual(
       JSON.stringify([1, {loads: 0, saves: 0}, null]),
     );
-    await act(async () => {
-      await _persister?.load([{t1: {r1: {c1: 1}}}, {}]);
-    });
+    await act(async () => await _persister?.load([{t1: {r1: {c1: 1}}}, {}]));
     expect(container.textContent).toEqual(
       JSON.stringify([1, {loads: 1, saves: 0}, 1]),
     );
 
     rerender(<Test id={2} />);
-    await act(async () => {
-      await pause();
-    });
+    await act(async () => await pause());
     expect(container.textContent).toEqual(
       JSON.stringify([2, {loads: 0, saves: 0}, 1]),
     );
@@ -514,17 +508,13 @@ describe('Create Hooks', () => {
     expect(container.textContent).toEqual(JSON.stringify([0, null]));
 
     rerender(<Test id={1} />);
-    await act(async () => {
-      await pause();
-    });
+    await act(async () => await pause());
     expect(container.textContent).toEqual(
       JSON.stringify([1, {loads: 1, saves: 0}]),
     );
 
     rerender(<Test id={2} />);
-    await act(async () => {
-      await pause();
-    });
+    await act(async () => await pause());
     expect(container.textContent).toEqual(
       JSON.stringify([2, {loads: 1, saves: 0}]),
     );
@@ -569,17 +559,13 @@ describe('Create Hooks', () => {
     };
 
     const {container, rerender, unmount} = render(<Test id={1} />);
-    await act(async () => {
-      await pause();
-    });
+    await act(async () => await pause());
     expect(container.textContent).toEqual(
       JSON.stringify([1, {loads: 1, saves: 0}]),
     );
 
     rerender(<Test id={2} />);
-    await act(async () => {
-      await pause();
-    });
+    await act(async () => await pause());
     expect(container.textContent).toEqual(
       JSON.stringify([2, {loads: 1, saves: 0}]),
     );
