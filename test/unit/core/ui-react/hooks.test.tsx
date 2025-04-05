@@ -173,7 +173,7 @@ describe('Create Hooks', () => {
     );
     const Test = ({count}: {count: number}) => {
       const store = useCreateStore(() => initStore(count));
-      return didRender(<>{JSON.stringify([count, store.getTables()])}</>);
+      return didRender(JSON.stringify([count, store.getTables()]));
     };
 
     const {container, rerender, unmount} = render(<Test count={1} />);
@@ -198,7 +198,7 @@ describe('Create Hooks', () => {
     );
     const Test = ({count}: {count: number}) => {
       const store = useCreateMergeableStore(() => initStore(count));
-      return didRender(<>{JSON.stringify([count, store.getTables()])}</>);
+      return didRender(JSON.stringify([count, store.getTables()]));
     };
 
     const {container, rerender, unmount} = render(<Test count={1} />);
@@ -233,9 +233,7 @@ describe('Create Hooks', () => {
         (store) => initMetrics(store, count),
         [count],
       );
-      return didRender(
-        <>{JSON.stringify([count, metrics?.getMetric('m1')])}</>,
-      );
+      return didRender(JSON.stringify([count, metrics?.getMetric('m1')]));
     };
 
     const {container, rerender, unmount} = render(<Test count={1} />);
@@ -260,9 +258,7 @@ describe('Create Hooks', () => {
     const Test = ({count}: {count: number}) => {
       const store = useCreateStore(() => initStore());
       const metrics = useCreateMetrics(store, (store) => initMetrics(store));
-      return didRender(
-        <>{JSON.stringify([count, metrics?.getMetric('m1')])}</>,
-      );
+      return didRender(JSON.stringify([count, metrics?.getMetric('m1')]));
     };
 
     const {container, rerender, unmount} = render(<Test count={1} />);
@@ -285,7 +281,7 @@ describe('Create Hooks', () => {
       const metrics = useCreateMetrics(undefined, (store) =>
         initMetrics(store),
       );
-      return didRender(<>{JSON.stringify(metrics?.getMetric('m1'))}</>);
+      return didRender(JSON.stringify(metrics?.getMetric('m1')));
     };
 
     const {container, unmount} = render(<Test />);
@@ -309,7 +305,7 @@ describe('Create Hooks', () => {
         [count],
       );
       return didRender(
-        <>{JSON.stringify([count, indexes?.getSliceRowIds('i1', '1')])}</>,
+        JSON.stringify([count, indexes?.getSliceRowIds('i1', '1')]),
       );
     };
 
@@ -383,9 +379,7 @@ describe('Create Hooks', () => {
         (store) => initQueries(store, count),
         [count],
       );
-      return didRender(
-        <>{JSON.stringify([count, queries?.getResultTable('q1')])}</>,
-      );
+      return didRender(JSON.stringify([count, queries?.getResultTable('q1')]));
     };
 
     const {container, rerender, unmount} = render(<Test count={1} />);
@@ -458,9 +452,7 @@ describe('Create Hooks', () => {
       const store = useCreateStore(initStore);
       const persister = useCreatePersister(store, createPersister, [id]);
       const cell = useCell('t1', 'r1', 'c1', store);
-      return didRender(
-        <>{JSON.stringify([id, persister?.getStats(), cell])}</>,
-      );
+      return didRender(JSON.stringify([id, persister?.getStats(), cell]));
     };
 
     const {container, rerender, unmount} = render(<Test id={1} />);
@@ -515,7 +507,7 @@ describe('Create Hooks', () => {
         async (persister) => await initPersister(persister, id),
         [id],
       );
-      return didRender(<>{JSON.stringify([id, persister?.getStats()])}</>);
+      return didRender(JSON.stringify([id, persister?.getStats()]));
     };
 
     const {container, rerender, unmount} = render(<Test id={0} />);
@@ -573,7 +565,7 @@ describe('Create Hooks', () => {
         [id],
         destroyPersister,
       );
-      return didRender(<>{JSON.stringify([id, persister?.getStats()])}</>);
+      return didRender(JSON.stringify([id, persister?.getStats()]));
     };
 
     const {container, rerender, unmount} = render(<Test id={1} />);
@@ -607,7 +599,7 @@ describe('Create Hooks', () => {
       const persister = useCreatePersister(undefined, (store: Store) =>
         createFilePersister(store, ''),
       );
-      return didRender(<>{JSON.stringify(persister?.getStats())}</>);
+      return didRender(JSON.stringify(persister?.getStats()));
     };
 
     const {container, unmount} = render(<Test />);
@@ -630,9 +622,7 @@ describe('Create Hooks', () => {
         id,
       ]);
       const cell = useCell('t1', 'r1', 'c1', store);
-      return didRender(
-        <>{JSON.stringify([id, synchronizer?.getStats(), cell])}</>,
-      );
+      return didRender(JSON.stringify([id, synchronizer?.getStats(), cell]));
     };
 
     const {container, rerender, unmount} = render(<Test id={1} />);
@@ -676,7 +666,7 @@ describe('Create Hooks', () => {
         [id],
         destroySynchronizer,
       );
-      return didRender(<>{JSON.stringify([id, synchronizer?.getStats()])}</>);
+      return didRender(JSON.stringify([id, synchronizer?.getStats()]));
     };
 
     const {container, rerender, unmount} = render(<Test id={1} />);
@@ -708,7 +698,7 @@ describe('Create Hooks', () => {
         undefined,
         async (store: MergeableStore) => createLocalSynchronizer(store),
       );
-      return didRender(<>{JSON.stringify(synchronizer?.getStats())}</>);
+      return didRender(JSON.stringify(synchronizer?.getStats()));
     };
 
     const {container, unmount} = render(<Test />);
@@ -720,8 +710,7 @@ describe('Create Hooks', () => {
 
 describe('Context Hooks', () => {
   test('useStore', () => {
-    const Test = () =>
-      didRender(<>{JSON.stringify(useStore()?.getTables())}</>);
+    const Test = () => didRender(JSON.stringify(useStore()?.getTables()));
 
     const {container, unmount} = render(
       <Provider store={store}>
@@ -735,8 +724,7 @@ describe('Context Hooks', () => {
   });
 
   test('useProvideStore', () => {
-    const Test = () =>
-      didRender(<>{JSON.stringify(useStore('s')?.getTables())}</>);
+    const Test = () => didRender(JSON.stringify(useStore('s')?.getTables()));
     const ProvideStore1 = () => {
       useProvideStore('s', store);
       return null;
@@ -797,8 +785,7 @@ describe('Context Hooks', () => {
   });
 
   test('useMetrics', () => {
-    const Test = () =>
-      didRender(<>{JSON.stringify(useMetrics()?.getMetric('m1'))}</>);
+    const Test = () => didRender(JSON.stringify(useMetrics()?.getMetric('m1')));
     const metrics = createMetrics(store).setMetricDefinition('m1', 't1');
     const {container, unmount} = render(
       <Provider metrics={metrics}>
@@ -815,7 +802,7 @@ describe('Context Hooks', () => {
 
   test('useIndexes', () => {
     const Test = () =>
-      didRender(<>{JSON.stringify(useIndexes()?.getSliceRowIds('i1', '1'))}</>);
+      didRender(JSON.stringify(useIndexes()?.getSliceRowIds('i1', '1')));
     const indexes = createIndexes(store).setIndexDefinition('i1', 't1', 'c1');
     const {container, unmount} = render(
       <Provider indexes={indexes}>
@@ -834,9 +821,7 @@ describe('Context Hooks', () => {
       T1: {R1: {C1: 1}, R2: {C1: 2}},
     });
     const Test = () =>
-      didRender(
-        <>{JSON.stringify(useRelationships()?.getRemoteRowId('r1', 'r1'))}</>,
-      );
+      didRender(JSON.stringify(useRelationships()?.getRemoteRowId('r1', 'r1')));
     const relationships = createRelationships(store).setRelationshipDefinition(
       'r1',
       't1',
@@ -856,7 +841,7 @@ describe('Context Hooks', () => {
 
   test('useQueries', () => {
     const Test = () =>
-      didRender(<>{JSON.stringify(useQueries()?.getResultTable('q1'))}</>);
+      didRender(JSON.stringify(useQueries()?.getResultTable('q1')));
     const queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -875,7 +860,7 @@ describe('Context Hooks', () => {
 
   test('useCheckpoints', () => {
     const Test = () =>
-      didRender(<>{JSON.stringify(useCheckpoints()?.getCheckpointIds())}</>);
+      didRender(JSON.stringify(useCheckpoints()?.getCheckpointIds()));
     const checkpoints = createCheckpoints(store);
     store.setTables({t1: {r1: {c1: 2}}});
     checkpoints.addCheckpoint();
@@ -919,7 +904,7 @@ describe('Context Hooks', () => {
   });
 
   test('useStoreIds', () => {
-    const Test = () => didRender(<>{JSON.stringify(useStoreIds())}</>);
+    const Test = () => didRender(JSON.stringify(useStoreIds()));
     const store1 = createStore();
     const store2 = createStore();
     const {container, unmount} = render(
@@ -934,7 +919,7 @@ describe('Context Hooks', () => {
   });
 
   test('useMetricsIds', () => {
-    const Test = () => didRender(<>{JSON.stringify(useMetricsIds())}</>);
+    const Test = () => didRender(JSON.stringify(useMetricsIds()));
     const metrics1 = createMetrics(createStore());
     const metrics2 = createMetrics(createStore());
     const {container, unmount} = render(
@@ -949,7 +934,7 @@ describe('Context Hooks', () => {
   });
 
   test('useIndexesIds', () => {
-    const Test = () => didRender(<>{JSON.stringify(useIndexesIds())}</>);
+    const Test = () => didRender(JSON.stringify(useIndexesIds()));
     const indexes1 = createIndexes(createStore());
     const indexes2 = createIndexes(createStore());
     const {container, unmount} = render(
@@ -964,7 +949,7 @@ describe('Context Hooks', () => {
   });
 
   test('useRelationshipsIds', () => {
-    const Test = () => didRender(<>{JSON.stringify(useRelationshipsIds())}</>);
+    const Test = () => didRender(JSON.stringify(useRelationshipsIds()));
     const relationships1 = createRelationships(createStore());
     const relationships2 = createRelationships(createStore());
     const {container, unmount} = render(
@@ -981,7 +966,7 @@ describe('Context Hooks', () => {
   });
 
   test('useQueriesIds', () => {
-    const Test = () => didRender(<>{JSON.stringify(useQueriesIds())}</>);
+    const Test = () => didRender(JSON.stringify(useQueriesIds()));
     const queries1 = createQueries(createStore());
     const queries2 = createQueries(createStore());
     const {container, unmount} = render(
@@ -996,7 +981,7 @@ describe('Context Hooks', () => {
   });
 
   test('useCheckpointsIds', () => {
-    const Test = () => didRender(<>{JSON.stringify(useCheckpointsIds())}</>);
+    const Test = () => didRender(JSON.stringify(useCheckpointsIds()));
     const checkpoints1 = createCheckpoints(createStore());
     const checkpoints2 = createCheckpoints(createStore());
     const {container, unmount} = render(
@@ -1060,7 +1045,7 @@ describe('Read Hooks', () => {
   });
 
   test('useHasTables', () => {
-    const Test = () => didRender(<>{JSON.stringify(useHasTables(store))}</>);
+    const Test = () => didRender(JSON.stringify(useHasTables(store)));
     expect(store.getListenerStats().hasTables).toEqual(0);
 
     const {container, rerender, unmount} = render(<Test />);
@@ -1079,7 +1064,7 @@ describe('Read Hooks', () => {
   });
 
   test('useTables', () => {
-    const Test = () => didRender(<>{JSON.stringify(useTables(store))}</>);
+    const Test = () => didRender(JSON.stringify(useTables(store)));
     expect(store.getListenerStats().tables).toEqual(0);
 
     const {container, rerender, unmount} = render(<Test />);
@@ -1101,7 +1086,7 @@ describe('Read Hooks', () => {
   });
 
   test('useTableIds', () => {
-    const Test = () => didRender(<>{JSON.stringify(useTableIds(store))}</>);
+    const Test = () => didRender(JSON.stringify(useTableIds(store)));
     expect(store.getListenerStats().tableIds).toEqual(0);
 
     const {container, rerender, unmount} = render(<Test />);
@@ -1126,7 +1111,7 @@ describe('Read Hooks', () => {
 
   test('useHasTable', () => {
     const Test = ({tableId}: {tableId: Id}) =>
-      didRender(<>{JSON.stringify(useHasTable(tableId, store))}</>);
+      didRender(JSON.stringify(useHasTable(tableId, store)));
     expect(store.getListenerStats().hasTable).toEqual(0);
     const {container, rerender, unmount} = render(<Test tableId="t0" />);
     expect(store.getListenerStats().hasTable).toEqual(1);
@@ -1154,7 +1139,7 @@ describe('Read Hooks', () => {
 
   test('useTable', () => {
     const Test = ({tableId}: {tableId: Id}) =>
-      didRender(<>{JSON.stringify(useTable(tableId, store))}</>);
+      didRender(JSON.stringify(useTable(tableId, store)));
     expect(store.getListenerStats().table).toEqual(0);
     const {container, rerender, unmount} = render(<Test tableId="t0" />);
     expect(store.getListenerStats().table).toEqual(1);
@@ -1186,7 +1171,7 @@ describe('Read Hooks', () => {
 
   test('useTableCellIds', () => {
     const Test = ({tableId}: {tableId: Id}) =>
-      didRender(<>{JSON.stringify(useTableCellIds(tableId, store))}</>);
+      didRender(JSON.stringify(useTableCellIds(tableId, store)));
     expect(store.getListenerStats().rowIds).toEqual(0);
     const {container, rerender, unmount} = render(<Test tableId="t0" />);
 
@@ -1221,7 +1206,7 @@ describe('Read Hooks', () => {
 
   test('useHasTableCell', () => {
     const Test = ({tableId, cellId}: {tableId: Id; cellId: Id}) =>
-      didRender(<>{JSON.stringify(useHasTableCell(tableId, cellId, store))}</>);
+      didRender(JSON.stringify(useHasTableCell(tableId, cellId, store)));
     expect(store.getListenerStats().hasTableCell).toEqual(0);
     const {container, rerender, unmount} = render(
       <Test tableId="t0" cellId="c0" />,
@@ -1255,7 +1240,7 @@ describe('Read Hooks', () => {
 
   test('useRowCount', () => {
     const Test = ({tableId}: {tableId: Id}) =>
-      didRender(<>{useRowCount(tableId, store)}</>);
+      didRender(useRowCount(tableId, store));
     expect(store.getListenerStats().rowCount).toEqual(0);
     const {container, rerender, unmount} = render(<Test tableId="t0" />);
     expect(store.getListenerStats().rowCount).toEqual(1);
@@ -1287,7 +1272,7 @@ describe('Read Hooks', () => {
 
   test('useRowIds', () => {
     const Test = ({tableId}: {tableId: Id}) =>
-      didRender(<>{JSON.stringify(useRowIds(tableId, store))}</>);
+      didRender(JSON.stringify(useRowIds(tableId, store)));
     expect(store.getListenerStats().rowIds).toEqual(0);
     const {container, rerender, unmount} = render(<Test tableId="t0" />);
 
@@ -1395,7 +1380,7 @@ describe('Read Hooks', () => {
 
   test('useHasRow', () => {
     const Test = ({tableId, rowId}: {tableId: Id; rowId: Id}) =>
-      didRender(<>{JSON.stringify(useHasRow(tableId, rowId, store))}</>);
+      didRender(JSON.stringify(useHasRow(tableId, rowId, store)));
     expect(store.getListenerStats().hasRow).toEqual(0);
     const {container, rerender, unmount} = render(
       <Test tableId="t0" rowId="r0" />,
@@ -1433,7 +1418,7 @@ describe('Read Hooks', () => {
 
   test('useRow', () => {
     const Test = ({tableId, rowId}: {tableId: Id; rowId: Id}) =>
-      didRender(<>{JSON.stringify(useRow(tableId, rowId, store))}</>);
+      didRender(JSON.stringify(useRow(tableId, rowId, store)));
     expect(store.getListenerStats().row).toEqual(0);
     const {container, rerender, unmount} = render(
       <Test tableId="t0" rowId="r0" />,
@@ -1471,7 +1456,7 @@ describe('Read Hooks', () => {
 
   test('useCellIds', () => {
     const Test = ({tableId, rowId}: {tableId: Id; rowId: Id}) =>
-      didRender(<>{JSON.stringify(useCellIds(tableId, rowId, store))}</>);
+      didRender(JSON.stringify(useCellIds(tableId, rowId, store)));
     expect(store.getListenerStats().cellIds).toEqual(0);
     const {container, rerender, unmount} = render(
       <Test tableId="t0" rowId="r0" />,
@@ -1516,10 +1501,7 @@ describe('Read Hooks', () => {
       tableId: Id;
       rowId: Id;
       cellId: Id;
-    }) =>
-      didRender(
-        <>{JSON.stringify(useHasCell(tableId, rowId, cellId, store))}</>,
-      );
+    }) => didRender(JSON.stringify(useHasCell(tableId, rowId, cellId, store)));
     expect(store.getListenerStats().hasCell).toEqual(0);
     const {container, rerender, unmount} = render(
       <Test tableId="t0" rowId="r0" cellId="c0" />,
@@ -1564,7 +1546,7 @@ describe('Read Hooks', () => {
       tableId: Id;
       rowId: Id;
       cellId: Id;
-    }) => didRender(<>{useCell(tableId, rowId, cellId, store)}</>);
+    }) => didRender(useCell(tableId, rowId, cellId, store));
     expect(store.getListenerStats().cell).toEqual(0);
     const {container, rerender, unmount} = render(
       <Test tableId="t0" rowId="r0" cellId="c0" />,
@@ -1601,7 +1583,7 @@ describe('Read Hooks', () => {
   });
 
   test('useHasValues', () => {
-    const Test = () => didRender(<>{JSON.stringify(useHasValues(store))}</>);
+    const Test = () => didRender(JSON.stringify(useHasValues(store)));
     expect(store.getListenerStats().hasValues).toEqual(0);
 
     const {container, rerender, unmount} = render(<Test />);
@@ -1622,7 +1604,7 @@ describe('Read Hooks', () => {
   });
 
   test('useValues', () => {
-    const Test = () => didRender(<>{JSON.stringify(useValues(store))}</>);
+    const Test = () => didRender(JSON.stringify(useValues(store)));
     expect(store.getListenerStats().values).toEqual(0);
 
     const {container, rerender, unmount} = render(<Test />);
@@ -1643,7 +1625,7 @@ describe('Read Hooks', () => {
   });
 
   test('useValueIds', () => {
-    const Test = () => didRender(<>{JSON.stringify(useValueIds(store))}</>);
+    const Test = () => didRender(JSON.stringify(useValueIds(store)));
     expect(store.getListenerStats().valueIds).toEqual(0);
 
     const {container, rerender, unmount} = render(<Test />);
@@ -1665,7 +1647,7 @@ describe('Read Hooks', () => {
 
   test('useHasValue', () => {
     const Test = ({valueId}: {valueId: Id}) =>
-      didRender(<>{JSON.stringify(useHasValue(valueId, store))}</>);
+      didRender(JSON.stringify(useHasValue(valueId, store)));
     expect(store.getListenerStats().hasValue).toEqual(0);
     const {container, rerender, unmount} = render(<Test valueId="v0" />);
 
@@ -1697,7 +1679,7 @@ describe('Read Hooks', () => {
 
   test('useValue', () => {
     const Test = ({valueId}: {valueId: Id}) =>
-      didRender(<>{JSON.stringify(useValue(valueId, store))}</>);
+      didRender(JSON.stringify(useValue(valueId, store)));
     expect(store.getListenerStats().value).toEqual(0);
     const {container, rerender, unmount} = render(<Test valueId="v0" />);
 
@@ -1729,7 +1711,7 @@ describe('Read Hooks', () => {
 
   test('useMetricIds', () => {
     const metrics = createMetrics(store);
-    const Test = () => didRender(<>{useMetricIds(metrics)}</>);
+    const Test = () => didRender(useMetricIds(metrics));
 
     const {container, unmount} = render(<Test />);
     expect(container.textContent).toEqual('');
@@ -1752,7 +1734,7 @@ describe('Read Hooks', () => {
       .setMetricDefinition('m2', 't1', 'max', 'c1')
       .setMetricDefinition('m3', 't3');
     const Test = ({metricId}: {metricId: Id}) =>
-      didRender(<>{useMetric(metricId, metrics)}</>);
+      didRender(useMetric(metricId, metrics));
 
     const {container, rerender, unmount} = render(<Test metricId="m0" />);
 
@@ -1782,7 +1764,7 @@ describe('Read Hooks', () => {
 
   test('useIndexIds', () => {
     const indexes = createIndexes(store);
-    const Test = () => didRender(<>{useIndexIds(indexes)}</>);
+    const Test = () => didRender(useIndexIds(indexes));
 
     const {container, unmount} = render(<Test />);
     expect(container.textContent).toEqual('');
@@ -1805,7 +1787,7 @@ describe('Read Hooks', () => {
       .setIndexDefinition('i2', 't1', 'c2')
       .setIndexDefinition('i3', 't3', 'c3');
     const Test = ({indexId}: {indexId: Id}) =>
-      didRender(<>{JSON.stringify(useSliceIds(indexId, indexes))}</>);
+      didRender(JSON.stringify(useSliceIds(indexId, indexes)));
     const {container, rerender, unmount} = render(<Test indexId="i0" />);
 
     expect(container.textContent).toEqual(JSON.stringify([]));
@@ -1842,9 +1824,7 @@ describe('Read Hooks', () => {
       .setIndexDefinition('i1', 't1', 'c1')
       .setIndexDefinition('i2', 't2', 'c2');
     const Test = ({indexId, sliceId}: {indexId: Id; sliceId: Id}) =>
-      didRender(
-        <>{JSON.stringify(useSliceRowIds(indexId, sliceId, indexes))}</>,
-      );
+      didRender(JSON.stringify(useSliceRowIds(indexId, sliceId, indexes)));
     const {container, rerender, unmount} = render(
       <Test indexId="i0" sliceId="0" />,
     );
@@ -1880,7 +1860,7 @@ describe('Read Hooks', () => {
 
   test('useRelationshipIds', () => {
     const relationships = createRelationships(store);
-    const Test = () => didRender(<>{useRelationshipIds(relationships)}</>);
+    const Test = () => didRender(useRelationshipIds(relationships));
 
     const {container, unmount} = render(<Test />);
     expect(container.textContent).toEqual('');
@@ -2056,7 +2036,7 @@ describe('Read Hooks', () => {
 
   test('useQueryIds', () => {
     const queries = createQueries(store);
-    const Test = () => didRender(<>{useQueryIds(queries)}</>);
+    const Test = () => didRender(useQueryIds(queries));
 
     const {container, unmount} = render(<Test />);
     expect(container.textContent).toEqual('');
@@ -2083,7 +2063,7 @@ describe('Read Hooks', () => {
         where('c1', 3);
       });
     const Test = ({queryId}: {queryId: Id}) =>
-      didRender(<>{JSON.stringify(useResultTable(queryId, queries))}</>);
+      didRender(JSON.stringify(useResultTable(queryId, queries)));
     const {container, rerender, unmount} = render(<Test queryId="q0" />);
 
     expect(container.textContent).toEqual(JSON.stringify({}));
@@ -2122,7 +2102,7 @@ describe('Read Hooks', () => {
         where('c1', 3);
       });
     const Test = ({queryId}: {queryId: Id}) =>
-      didRender(<>{JSON.stringify(useResultTableCellIds(queryId, queries))}</>);
+      didRender(JSON.stringify(useResultTableCellIds(queryId, queries)));
     const {container, rerender, unmount} = render(<Test queryId="q0" />);
 
     expect(container.textContent).toEqual(JSON.stringify([]));
@@ -2160,7 +2140,7 @@ describe('Read Hooks', () => {
         where('c1', 3);
       });
     const Test = ({queryId}: {queryId: Id}) =>
-      didRender(<>{useResultRowCount(queryId, queries)}</>);
+      didRender(useResultRowCount(queryId, queries));
     const {container, rerender, unmount} = render(<Test queryId="q0" />);
 
     expect(container.textContent).toEqual('0');
@@ -2202,7 +2182,7 @@ describe('Read Hooks', () => {
         where('c1', 3);
       });
     const Test = ({queryId}: {queryId: Id}) =>
-      didRender(<>{JSON.stringify(useResultRowIds(queryId, queries))}</>);
+      didRender(JSON.stringify(useResultRowIds(queryId, queries)));
     const {container, rerender, unmount} = render(<Test queryId="q0" />);
 
     expect(container.textContent).toEqual(JSON.stringify([]));
@@ -2340,7 +2320,7 @@ describe('Read Hooks', () => {
         where('c1', 3);
       });
     const Test = ({queryId, rowId}: {queryId: Id; rowId: Id}) =>
-      didRender(<>{JSON.stringify(useResultRow(queryId, rowId, queries))}</>);
+      didRender(JSON.stringify(useResultRow(queryId, rowId, queries)));
     const {container, rerender, unmount} = render(
       <Test queryId="q0" rowId="r0" />,
     );
@@ -2381,9 +2361,7 @@ describe('Read Hooks', () => {
         where('c1', 3);
       });
     const Test = ({queryId, rowId}: {queryId: Id; rowId: Id}) =>
-      didRender(
-        <>{JSON.stringify(useResultCellIds(queryId, rowId, queries))}</>,
-      );
+      didRender(JSON.stringify(useResultCellIds(queryId, rowId, queries)));
     const {container, rerender, unmount} = render(
       <Test queryId="q0" rowId="r0" />,
     );
@@ -2447,7 +2425,7 @@ describe('Read Hooks', () => {
       queryId: Id;
       rowId: Id;
       cellId: Id;
-    }) => didRender(<>{useResultCell(queryId, rowId, cellId, queries)}</>);
+    }) => didRender(useResultCell(queryId, rowId, cellId, queries));
     const {container, rerender, unmount} = render(
       <Test queryId="q0" rowId="r0" cellId="c0" />,
     );
@@ -2480,8 +2458,7 @@ describe('Read Hooks', () => {
 
   test('useCheckpointIds', () => {
     const checkpoints = createCheckpoints(store);
-    const Test = () =>
-      didRender(<>{JSON.stringify(useCheckpointIds(checkpoints))}</>);
+    const Test = () => didRender(JSON.stringify(useCheckpointIds(checkpoints)));
 
     const {container, unmount} = render(<Test />);
     expect(container.textContent).toEqual(JSON.stringify([[], '0', []]));
