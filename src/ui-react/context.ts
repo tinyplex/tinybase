@@ -134,5 +134,3 @@ export const useProvideThing = <Offset extends Offsets>(
 
 export const useThingIds = (offset: Offsets): Ids =>
   objIds((useContext(Context)[offset * 2 + 1] ?? {}) as IdObj<unknown>);
-
-// -
