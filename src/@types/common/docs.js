@@ -30,10 +30,10 @@
  */
 /// Id
 /**
- * The Id type is a simple alias for the union of a string or `null` value,
- * where the string should be considered to be the key of an objects (such as a
- * Row Id string used in a Table), and typically `null` indicates a wildcard -
- * such as when used in the Store addRowListener method.
+ * The IdOrNull type is a simple alias for the union of a string or `null`
+ * value, where the string should be considered to be the key of an objects
+ * (such as a Row Id string used in a Table), and typically `null` indicates a
+ * wildcard - such as when used in the Store addRowListener method.
  * @category Identity
  * @since v1.0.0
  */
