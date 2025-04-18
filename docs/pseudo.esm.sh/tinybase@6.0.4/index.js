@@ -707,7 +707,7 @@ var createIndexes = getCreateFunction((store) => {
     setDefinitionAndListen(
       indexId,
       tableId,
-      (change, changedSliceIds, changedSortKeys, sliceIds, sortKeys, force) => {
+      (change, changedSliceIds, changedSortKeys, sliceIdOrIdsByRowId, sortKeys, force) => {
         let sliceIdsChanged = 0;
         const changedSlices = setNew();
         const unsortedSlices = setNew();
@@ -752,8 +752,11 @@ var createIndexes = getCreateFunction((store) => {
             mapForEach(
               changedSortKeys,
               (rowId) => ifNotUndefined(
-                mapGet(sliceIds, rowId),
-                (sliceId) => setAdd(unsortedSlices, sliceId)
+                mapGet(sliceIdOrIdsByRowId, rowId),
+                (sliceIdOrIds) => arrayForEach(
+                  isArray(sliceIdOrIds) ? sliceIdOrIds : [sliceIdOrIds],
+                  (sliceId) => setAdd(unsortedSlices, sliceId)
+                )
               )
             );
           }
