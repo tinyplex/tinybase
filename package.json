@@ -38,7 +38,7 @@
     "react-dom": "^19.0.0",
     "sqlite3": "^5.1.7",
     "ws": "^8.18.1",
-    "yjs": "^13.6.24"
+    "yjs": "^13.6.26"
   },
   "peerDependenciesMeta": {
     "@automerge/automerge-repo": {
@@ -154,7 +154,7 @@
     "@babel/preset-typescript": "^7.27.0",
     "@cloudflare/workers-types": "^4.20250418.0",
     "@electric-sql/pglite": "^0.2.17",
-    "@eslint/js": "^9.24.0",
+    "@eslint/js": "^9.25.0",
     "@journeyapps/wa-sqlite": "^1.2.2",
     "@libsql/client": "^0.15.4",
     "@powersync/common": "^1.27.1",
@@ -188,10 +188,10 @@
     "babel-plugin-transform-vite-meta-env": "^1.0.3",
     "buffer-replace": "^1.0.0",
     "country-flag-emoji-json": "^2.0.0",
-    "cspell": "^8.19.0",
+    "cspell": "^8.19.1",
     "electric-sql": "^0.12.1",
     "esbuild": "^0.25.2",
-    "eslint": "^9.24.0",
+    "eslint": "^9.25.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.11.0",
     "eslint-plugin-jsdoc": "^50.6.9",
@@ -228,6 +228,6 @@
     "typescript-eslint": "^8.30.1",
     "wa-sqlite": "github:rhashimoto/wa-sqlite",
     "ws": "^8.18.1",
-    "yjs": "^13.6.24"
+    "yjs": "^13.6.26"
   }
 }
