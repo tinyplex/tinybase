@@ -212,6 +212,94 @@ const App = () => (
 );
 ```
 
+## Defining Schema-Based Stores in React Components
+
+One final pattern to be aware of is that you can use the `WithSchemas` type to
+create a schema-based Store in a non-rendering React component. This allows you
+to create a Store with a schema, define its persistence behavior, publish it
+into the context, and even expose domain-specific hooks - all in a single
+self-contained file.
+
+There are good examples of this in the [TinyHub](https://tinyhub.org/) project
+(see the store components [this
+folder](https://github.com/tinyplex/tinyhub/tree/main/client/src/stores)).
+
+If you want to use this pattern your app's top-level will look something like this:
+
+```tsx yolo
+export const App = () => {
+  return (
+    <Provider>
+      <MyStore /> {/* This is a schema-based Store component */}
+      <ActualApp /> {/* This is the actual rendered app */}
+    </Provider>
+  );
+};
+```
+
+The `MyStore` component renders `null` so it doesn't appear visually, but it is
+responsible for creating the Store and making it available to the rest of the
+app via the Provider context that wraps them both.
+
+The `MyStore.tsx` file might look something like this. (In this simplified case,
+we are just typing key values in our Store but of course this would work for a
+tabular Store too.)
+
+```tsx yolo
+// A unique Id for this Store.
+const STORE_ID = 'myStore';
+
+// The schema for this Store.
+const VALUES_SCHEMA = {
+  myStringValue: {type: 'string', default: 'foo'},
+  myNumericValue: {type: 'number', default: 42},
+} as const;
+type Schemas = [NoTablesSchema, typeof VALUES_SCHEMA];
+
+// Destructure the ui-react module with the schema applied.
+const {useCreateStore, useProvideStore, useCreatePersister, useValue} =
+  UiReact as UiReact.WithSchemas<Schemas>;
+
+export const MyStore = () => {
+  // Create the Store and set its schema
+  const myStore = useCreateStore(() =>
+    createStore().setValuesSchema(VALUES_SCHEMA),
+  );
+
+  // Create a local storage persister for the Store and start it
+  useCreatePersister(
+    settingsStore,
+    (settingsStore) => createLocalPersister(settingsStore, STORE_ID),
+    [],
+    async (persister) => {
+      await persister.startAutoLoad();
+      await persister.startAutoSave();
+    },
+  );
+
+  // Provide the Store for the rest of the app.
+  useProvideStore(STORE_ID, settingsStore);
+
+  // Don't render anything.
+  return null;
+};
+```
+
+In that same file, you can also define domain-specific hooks that use an expose
+the schema. For example, this hook will be typed to return a string if passed
+'myStringValue', and a number if passed 'myNumericValue'.
+
+```tsx yolo
+type ValueIds = keyof typeof VALUES_SCHEMA;
+export const useSettingsValue = <ValueId extends ValueIds>(valueId: ValueId) =>
+  useValue<ValueId>(valueId, STORE_ID);
+```
+
+This means that the rest of the app can use Values from the Store with correct
+types, _and_ the implementation details of the Store are encapsulated in the
+single file. For more complex applications, it really helps to keep everything
+about the Store in one place.
+
 ## Summary
 
 Schema-based typing provides a powerful developer-time experience for checking
