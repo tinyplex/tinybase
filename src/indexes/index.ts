@@ -9,7 +9,12 @@ import type {
   createIndexes as createIndexesDecl,
 } from '../@types/indexes/index.d.ts';
 import type {GetCell, Store} from '../@types/store/index.d.ts';
-import {arrayIsSorted, arrayMap, arraySort} from '../common/array.ts';
+import {
+  arrayForEach,
+  arrayIsSorted,
+  arrayMap,
+  arraySort,
+} from '../common/array.ts';
 import {
   collDel,
   collForEach,
@@ -99,7 +104,7 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
         change: () => void,
         changedSliceIds: IdMap<[Id | Ids | undefined, Id | Ids | undefined]>,
         changedSortKeys: IdMap<SortKey>,
-        sliceIds?: IdMap<Id | Ids>,
+        sliceIdOrIdsByRowId?: IdMap<Id | Ids>,
         sortKeys?: IdMap<SortKey>,
         force?: boolean,
       ) => {
@@ -150,8 +155,13 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
             mapForEach(index, (sliceId) => setAdd(unsortedSlices, sliceId));
           } else {
             mapForEach(changedSortKeys, (rowId) =>
-              ifNotUndefined(mapGet(sliceIds, rowId), (sliceId) =>
-                setAdd(unsortedSlices, sliceId),
+              ifNotUndefined(
+                mapGet(sliceIdOrIdsByRowId, rowId),
+                (sliceIdOrIds) =>
+                  arrayForEach(
+                    isArray(sliceIdOrIds) ? sliceIdOrIds : [sliceIdOrIds],
+                    (sliceId) => setAdd(unsortedSlices, sliceId),
+                  ),
               ),
             );
           }

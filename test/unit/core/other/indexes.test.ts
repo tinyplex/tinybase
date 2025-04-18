@@ -1771,6 +1771,26 @@ describe('Miscellaneous', () => {
     expect(store.getValues()).toEqual({});
   });
 
+  test('Sorted multi-slice index does not error', () => {
+    const store = createStore();
+    const indexes = createIndexes(store);
+
+    indexes.setIndexDefinition(
+      'i1',
+      't1',
+      (getCell) => (getCell('c1') + '').split(''),
+      (getCell) => (getCell('c1') + '').split('')[0],
+    );
+
+    store.setCell('t1', 'r1', 'c1', 'abc');
+    store.setCell('t1', 'r2', 'c1', 'abc');
+    store.setCell('t1', 'r1', 'c1', 'ab');
+    expect(store.getTables()).toEqual({t1: {r1: {c1: 'ab'}, r2: {c1: 'abc'}}});
+    expect(getIndexesObject(indexes)).toEqual({
+      i1: {a: ['r1', 'r2'], b: ['r1', 'r2'], c: ['r2']},
+    });
+  });
+
   test('bad sort key', () => {
     indexes.setIndexDefinition('i1', 't1', 'c2', 'c0');
     setCells();
