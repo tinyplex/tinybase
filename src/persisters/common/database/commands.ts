@@ -37,6 +37,7 @@ import {
   escapeColumnNames,
   escapeId,
   getPlaceholders,
+  getWhereCondition,
 } from './common.ts';
 
 export type Schema = IdSet2;
@@ -52,7 +53,11 @@ export const getCommandFunctions = (
   decode?: (field: string | number) => any,
 ): [
   refreshSchema: () => Promise<void>,
-  loadTable: (tableName: string, rowIdColumnName: string) => Promise<Table>,
+  loadTable: (
+    tableName: string,
+    rowIdColumnName: string,
+    whereCondition?: string | null,
+  ) => Promise<Table>,
   saveTable: (
     tableName: string,
     rowIdColumnName: string,
@@ -65,6 +70,7 @@ export const getCommandFunctions = (
       | undefined,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
+    whereCondition: string | null,
     partial?: boolean,
   ) => Promise<void>,
   transaction: <Return>(actions: () => Promise<Return>) => Promise<Return>,
@@ -85,13 +91,17 @@ export const getCommandFunctions = (
   const loadTable = async (
     tableName: string,
     rowIdColumnName: string,
+    whereCondition: string | null = null,
   ): Promise<Table> =>
     canSelect(tableName, rowIdColumnName)
       ? objNew(
           arrayFilter(
             arrayMap(
               await databaseExecuteCommand(
-                SELECT_STAR_FROM + escapeId(tableName),
+                SELECT_STAR_FROM +
+                  escapeId(tableName) +
+                  WHERE +
+                  getWhereCondition(whereCondition),
               ),
               (row) => [
                 row[rowIdColumnName],
@@ -117,6 +127,7 @@ export const getCommandFunctions = (
       | undefined,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
+    whereCondition: string | null = null,
     partial = false,
   ): Promise<void> => {
     const settingColumnNameSet = setNew<string>();
@@ -131,6 +142,7 @@ export const getCommandFunctions = (
     if (
       !partial &&
       deleteEmptyTable &&
+      !whereCondition &&
       arrayIsEmpty(settingColumnNames) &&
       collHas(schemaMap, tableName)
     ) {
@@ -213,7 +225,10 @@ export const getCommandFunctions = (
       if (isUndefined(content)) {
         // Delete all rows (partial)
         await databaseExecuteCommand(
-          DELETE_FROM + escapeId(tableName) + WHERE + ' true',
+          DELETE_FROM +
+            escapeId(tableName) +
+            WHERE +
+            getWhereCondition(whereCondition),
         );
       } else {
         await promiseAll(
@@ -274,13 +289,17 @@ export const getCommandFunctions = (
             escapeId(tableName) +
             WHERE +
             escapeId(rowIdColumnName) +
-            `NOT IN(${getPlaceholders(deleteRowIds)})`,
+            `NOT IN(${getPlaceholders(deleteRowIds)}) ` +
+            `AND${getWhereCondition(whereCondition)}`,
           deleteRowIds,
         );
       } else if (collHas(schemaMap, tableName)) {
         // Delete all rows
         await databaseExecuteCommand(
-          DELETE_FROM + escapeId(tableName) + WHERE + ' true',
+          DELETE_FROM +
+            escapeId(tableName) +
+            WHERE +
+            getWhereCondition(whereCondition),
         );
       }
     }

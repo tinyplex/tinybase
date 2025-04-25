@@ -497,7 +497,8 @@
  * |-|-|-|
  * |`tableId`|Id|The Id of the Store Table into which data from this database table should be loaded.|
  * |`rowIdColumnName?`|string|The optional name of the column in the database table that will be used as the Row Ids in the Store Table, defaulting to '_id'.|
- *
+ * |`whereCondition?`|string|The optional SQL WHERE clause that will be used to filter the rows that are loaded into the Store Table.
+ * 
  * As a shortcut, if you do not need to specify a custom `rowIdColumnName`, you
  * can simply provide the Id of the Store Table instead of the whole object.
  *
@@ -585,6 +586,13 @@
          * @since v4.0.0
          */
         /// DpcTabularLoad.rowIdColumnName
+        /**
+         * The optional SQL WHERE clause that will be used to filter the rows
+         * that are loaded into the Store Table.
+         * @category Configuration
+         * @since v6.1.0
+         */
+        /// DpcTabularLoad.whereCondition
       }
     }
   }
@@ -603,6 +611,7 @@
  * |`rowIdColumnName?`|string|The optional name of the column in the database table that will be used to save the Row Ids from the Store Table, defaulting to '_id'.|
  * |`deleteEmptyColumns?`|boolean|Whether columns in the database table will be removed if they are empty in the Store Table, defaulting to false.|
  * |`deleteEmptyTable?`|boolean|Whether tables in the database will be removed if the Store Table is empty, defaulting to false.|
+ * |`whereCondition?`|string|The optional SQL WHERE clause that will be used to scope cleanup operations to the Store Table. Defaults to same as `DpcTabularLoad.whereCondition`.
  *
  * As a shortcut, if you do not need to specify a custom `rowIdColumnName`, or
  * enable the `deleteEmptyColumns` or `deleteEmptyTable` settings, you can
@@ -718,6 +727,13 @@
          * @since v4.0.0
          */
         /// DpcTabularSave.deleteEmptyTable
+        /**
+         * The optional SQL WHERE clause that will be used to scope cleanup operations
+         * to the Store Table. Defaults to same as `DpcTabularLoad.whereCondition`.
+         * @category Configuration
+         * @since v6.1.0
+         */
+        /// DpcTabularSave.whereCondition
       }
     }
   }

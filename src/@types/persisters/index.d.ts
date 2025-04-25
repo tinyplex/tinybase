@@ -115,6 +115,8 @@ export type DpcTabularLoad = {
         tableId: Id;
         /// DpcTabularLoad.rowIdColumnName
         rowIdColumnName?: string;
+        /// DpcTabularLoad.whereCondition
+        whereCondition?: string;
       }
     | Id;
 };
@@ -131,6 +133,8 @@ export type DpcTabularSave = {
         deleteEmptyColumns?: boolean;
         /// DpcTabularSave.deleteEmptyTable
         deleteEmptyTable?: boolean;
+        /// DpcTabularLoad.whereCondition
+        whereCondition?: string;
       }
     | string;
 };

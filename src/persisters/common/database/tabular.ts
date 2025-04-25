@@ -81,7 +81,13 @@ export const createTabularPersister = <
       mapMap(
         tablesSaveConfig,
         async (
-          [tableName, rowIdColumnName, deleteEmptyColumns, deleteEmptyTable],
+          [
+            tableName,
+            rowIdColumnName,
+            deleteEmptyColumns,
+            deleteEmptyTable,
+            whereCondition,
+          ],
           tableId,
         ) => {
           if (!partial || objHas(tables, tableId)) {
@@ -91,6 +97,7 @@ export const createTabularPersister = <
               tables[tableId],
               deleteEmptyColumns,
               deleteEmptyTable,
+              whereCondition,
               partial,
             );
           }
@@ -109,6 +116,7 @@ export const createTabularPersister = <
           {[SINGLE_ROW_ID]: values},
           true,
           true,
+          null,
           partial,
         )
       : null;
@@ -119,9 +127,9 @@ export const createTabularPersister = <
         await promiseAll(
           mapMap(
             tablesLoadConfig,
-            async ([tableId, rowIdColumnName], tableName) => [
+            async ([tableId, rowIdColumnName, whereCondition], tableName) => [
               tableId,
-              await loadTable(tableName, rowIdColumnName),
+              await loadTable(tableName, rowIdColumnName, whereCondition),
             ],
           ),
         ),

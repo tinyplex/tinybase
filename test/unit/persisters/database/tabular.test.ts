@@ -102,11 +102,12 @@ describe.each(Object.entries(ALL_VARIANTS))(
               ],
             });
           });
-          test('mix of one to one, mapped, custom ids, broken', async () => {
+          test('mix of one to one, mapped, custom ids, where condition, broken', async () => {
             store
               .setTable('t3', {r3: {c3: 3}})
               .setTable('t4', {r4: {c4: 4}})
-              .setTable('t5', {r5: {c5: 5}});
+              .setTable('t5', {r5: {c5: 5}})
+              .setTable('t6', {'r6-1': {c6: 1}, 'r6-2': {c6: 0}});
             await (
               await getPersister(store, db, {
                 mode: 'tabular',
@@ -117,6 +118,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
                     t3: {tableName: 'test "t3"', rowIdColumnName: 'id "3"'},
                     t4: {tableName: 'tinybase_values'}, // @ts-ignore
                     t5: false,
+                    t6: {
+                      tableName: 't6',
+                      whereCondition: isPostgres ? 'c6 = \'1\'' : 'c6 = 1',
+                    },
                   },
                   autoLoadIntervalSeconds,
                 },
@@ -129,6 +134,13 @@ describe.each(Object.entries(ALL_VARIANTS))(
               'test "t3"': [
                 {'id "3"': columnType, c3: columnType},
                 [{'id "3"': 'r3', c3: 3}],
+              ],
+              t6: [
+                {_id: columnType, c6: columnType},
+                [
+                  {_id: 'r6-1', c6: 1},
+                  {_id: 'r6-2', c6: 0},
+                ],
               ],
             });
           });
@@ -270,7 +282,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
             ).load();
             expect(store.getContent()).toEqual([{test_t1: {r1: {c1: 1}}}, {}]);
           });
-          test('mix of one to one, mapped, custom ids, broken', async () => {
+          test('mix of one to one, mapped, custom ids, where condition, broken', async () => {
             const db = await getOpenDatabase();
             await setDatabase(db, {
               t1: [
@@ -313,6 +325,17 @@ describe.each(Object.entries(ALL_VARIANTS))(
                   ')',
                 [{_id: 'r5', c5: 5}],
               ],
+              t6: [
+                'CREATE TABLE "t6" ("_id" ' +
+                  columnType +
+                  ' PRIMARY KEY, "c6" ' +
+                  columnType +
+                  ')',
+                [
+                  {_id: 'r6-1', c6: 1},
+                  {_id: 'r6-2', c6: 0},
+                ],
+              ],
               tinybase_values: [
                 'CREATE TABLE "tinybase_values" ("_id" ' +
                   columnType +
@@ -334,6 +357,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
                     t3: {tableId: 'test "t3"', rowIdColumnName: 'id "3"'},
                     t4: {tableId: 'tinybase_values'}, // @ts-ignore
                     t5: false,
+                    t6: {
+                      tableId: 't6',
+                      whereCondition: isPostgres ? 'c6 = \'1\'' : 'c6 = 1',
+                    },
                     tinybase_values: {tableId: 'values'},
                   },
                 },
@@ -345,6 +372,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
                 t1: {r1: {c1: 1}},
                 t2: {r2: {c2: 2}},
                 'test "t3"': {r3: {c3: 3}},
+                t6: {'r6-1': {c6: 1}},
                 tinybase_values: {r4: {c4: 4}},
               },
               {},
@@ -446,7 +474,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
           mode: 'tabular',
           tables: {
             load: {t1: 't1', t2: 't2', t3: 't3'},
-            save: {t1: 't1', t2: 't2', t3: 't3'},
+            save: {t1: 't1', t2: 't2', t3: 't3'}, // todo
           },
           values: {load: true, save: true},
           autoLoadIntervalSeconds,
@@ -558,6 +586,54 @@ describe.each(Object.entries(ALL_VARIANTS))(
                 [
                   {_id: 'r1', c1: 1, c2: null, c3: null},
                   {_id: 'r2', c1: null, c2: 2, c3: null},
+                ],
+              ],
+            });
+          });
+
+          test('rows (with where condition)', async () => {
+            store
+              .setCell('t1', 'r2', 'c0', 1)
+              .setCell('t1', 'r2', 'c2', 2)
+              .setCell('t1', 'r3', 'c0', 0)
+              .setCell('t1', 'r3', 'c3', 3);
+            const persister = await getPersister(store, db, {
+              mode: 'tabular',
+              tables: {save: {t1: {tableName: 't1', whereCondition: isPostgres ? 'c0 = \'1\'' : 'c0 = 1'}}},
+              values: {save: true},
+              autoLoadIntervalSeconds,
+            });
+            await persister.save();
+            expect(await getDatabase(db)).toEqual({
+              t1: [
+                {
+                  _id: columnType,
+                  c1: columnType,
+                  c2: columnType,
+                  c3: columnType,
+                  c0: columnType,
+                },
+                [
+                  {_id: 'r1', c1: 1, c2: null, c3: null, c0: null},
+                  {_id: 'r2', c1: null, c2: 2, c3: null, c0: 1},
+                  {_id: 'r3', c1: null, c2: null, c3: 3, c0: 0},
+                ],
+              ],
+            });
+            store.delRow('t1', 'r2').delRow('t1', 'r3');
+            await persister.save();
+            expect(await getDatabase(db)).toEqual({
+              t1: [
+                {
+                  _id: columnType,
+                  c1: columnType,
+                  c2: columnType,
+                  c3: columnType,
+                  c0: columnType,
+                },
+                [
+                  {_id: 'r1', c1: 1, c2: null, c3: null, c0: null},
+                  {_id: 'r3', c1: null, c2: null, c3: 3, c0: 0},
                 ],
               ],
             });
@@ -1156,8 +1232,8 @@ describe.each(Object.entries(ALL_VARIANTS))(
             'INSERT INTO"t2"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
             ['r1', encodedValue(1)],
           ],
-          ['DELETE FROM"t1"WHERE"_id"NOT IN($1,$2)', ['r1', 'r2']],
-          ['DELETE FROM"t2"WHERE"_id"NOT IN($1)', ['r1']],
+          ['DELETE FROM"t1"WHERE"_id"NOT IN($1,$2) AND true', ['r1', 'r2']], //todo
+          ['DELETE FROM"t2"WHERE"_id"NOT IN($1) AND true', ['r1']],
           [
             'CREATE TABLE"tinybase_values"("_id"' +
               columnType +
@@ -1172,7 +1248,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
             'INSERT INTO"tinybase_values"("_id","v1","v2")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
             ['_', encodedValue(1), encodedValue(2)],
           ],
-          ['DELETE FROM"tinybase_values"WHERE"_id"NOT IN($1)', ['_']],
+          ['DELETE FROM"tinybase_values"WHERE"_id"NOT IN($1) AND true', ['_']],
           ['END', undefined],
         ]);
       });
