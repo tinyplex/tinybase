@@ -52,3 +52,6 @@ export const getPlaceholders = (array: any[], offset = [1]) =>
     arrayMap(array, () => '$' + offset[0]++),
     COMMA,
   );
+
+export const getWhereCondition = (whereCondition: string | null) =>
+  whereCondition ? ' ' + whereCondition : ' true';
