@@ -9,6 +9,7 @@ import type {
 } from '../../../@types/persisters/index.d.ts';
 import {arrayMap} from '../../../common/array.ts';
 import {collHas, collValues} from '../../../common/coll.ts';
+import {getUniqueId} from '../../../common/index.ts';
 import {jsonParse, jsonString} from '../../../common/json.ts';
 import {ifNotUndefined, promiseAll} from '../../../common/other.ts';
 import {TINYBASE, strMatch} from '../../../common/strings.ts';
@@ -28,6 +29,8 @@ const EVENT_REGEX = /^([cd]:)(.+)/;
 
 const CHANGE_DATA_TRIGGER = TINYBASE + '_data';
 const CREATE_TABLE_TRIGGER = TINYBASE + '_table';
+
+const DEFAULT_WHEN_CONDITION = 'true';
 
 export const createCustomPostgreSqlPersister = <
   ListenerHandle,
@@ -49,15 +52,26 @@ export const createCustomPostgreSqlPersister = <
   getThing = 'getDb',
 ): Persister<Persist> => {
   const executeCommand = getWrappedCommand(rawExecuteCommand, onSqlCommand);
+  const persisterId = getUniqueId(5);
 
   const [isJson, , defaultedConfig, managedTableNamesSet] = getConfigStructures(
     configOrStoreTableName,
   );
 
+  const getWhenCondition = (tableName: string) => {
+    const tablesLoadConfig = defaultedConfig[0];
+    if(!tablesLoadConfig || typeof tablesLoadConfig === 'string') {
+      return DEFAULT_WHEN_CONDITION;
+    }
+    const [,,whereCondition] = tablesLoadConfig.get(tableName) ?? [];
+    // todo this will need to be different condition as WHEN has different syntax
+    return whereCondition ?? DEFAULT_WHEN_CONDITION;
+  };
+
   const addDataTrigger = async (tableName: string) => {
     await executeCommand(
       // eslint-disable-next-line max-len
-      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_' + tableName)} AFTER INSERT OR UPDATE OR DELETE ON ${escapeId(tableName)} EXECUTE FUNCTION ${CHANGE_DATA_TRIGGER}()`,
+      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId + '_' + tableName)} AFTER INSERT OR UPDATE OR DELETE ON ${escapeId(tableName)} FOR EACH ROW WHEN (${getWhenCondition(tableName)}) EXECUTE FUNCTION ${CHANGE_DATA_TRIGGER + '_' + persisterId}()`,
     );
   };
 
@@ -66,19 +80,19 @@ export const createCustomPostgreSqlPersister = <
   ): Promise<ListenerHandle> => {
     await executeCommand(
       // eslint-disable-next-line max-len
-      `CREATE OR REPLACE FUNCTION ${CREATE_TABLE_TRIGGER}()RETURNS event_trigger AS $t2$ DECLARE row record; BEGIN FOR row IN SELECT object_identity FROM pg_event_trigger_ddl_commands()WHERE command_tag='CREATE TABLE' LOOP PERFORM pg_notify('${EVENT_CHANNEL}','c:'||SPLIT_PART(row.object_identity,'.',2));END LOOP;END;$t2$ LANGUAGE plpgsql;`,
+      `CREATE OR REPLACE FUNCTION ${CREATE_TABLE_TRIGGER + '_' + persisterId}()RETURNS event_trigger AS $t2$ DECLARE row record; BEGIN FOR row IN SELECT object_identity FROM pg_event_trigger_ddl_commands()WHERE command_tag='CREATE TABLE' LOOP PERFORM pg_notify('${EVENT_CHANNEL + '_' + persisterId}','c:'||SPLIT_PART(row.object_identity,'.',2));END LOOP;END;$t2$ LANGUAGE plpgsql;`,
     );
 
     try {
       await executeCommand(
         // eslint-disable-next-line max-len
-        `CREATE EVENT TRIGGER ${CREATE_TABLE_TRIGGER} ON ddl_command_end WHEN TAG IN('CREATE TABLE')EXECUTE FUNCTION ${CREATE_TABLE_TRIGGER}();`,
+        `CREATE EVENT TRIGGER ${CREATE_TABLE_TRIGGER + '_' + persisterId} ON ddl_command_end WHEN TAG IN('CREATE TABLE')EXECUTE FUNCTION ${CREATE_TABLE_TRIGGER + '_' + persisterId}();`,
       );
     } catch {}
 
     await executeCommand(
       // eslint-disable-next-line max-len
-      `CREATE OR REPLACE FUNCTION ${CHANGE_DATA_TRIGGER}()RETURNS trigger AS $t1$ BEGIN PERFORM pg_notify('${EVENT_CHANNEL}','d:'||TG_TABLE_NAME);RETURN NULL;END;$t1$ LANGUAGE plpgsql;`,
+      `CREATE OR REPLACE FUNCTION ${CHANGE_DATA_TRIGGER + '_' + persisterId}()RETURNS trigger AS $t1$ BEGIN PERFORM pg_notify('${EVENT_CHANNEL + '_' + persisterId}','d:'||TG_TABLE_NAME);RETURN NULL;END;$t1$ LANGUAGE plpgsql;`,
     );
     await promiseAll(
       arrayMap(collValues(managedTableNamesSet), async (tableName) => {
@@ -91,7 +105,7 @@ export const createCustomPostgreSqlPersister = <
     );
 
     return await addChangeListener(
-      EVENT_CHANNEL,
+      EVENT_CHANNEL + '_' + persisterId,
       async (prefixAndTableName) =>
         await ifNotUndefined(
           strMatch(prefixAndTableName, EVENT_REGEX),
