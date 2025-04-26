@@ -117,6 +117,8 @@ export type DpcTabularLoad = {
         rowIdColumnName?: string;
         /// DpcTabularLoad.whereCondition
         whereCondition?: string;
+        /// DpcTabularLoad.whenCondition
+        whenCondition?: string;
       }
     | Id;
 };

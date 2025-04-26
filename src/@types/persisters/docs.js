@@ -498,6 +498,7 @@
  * |`tableId`|Id|The Id of the Store Table into which data from this database table should be loaded.|
  * |`rowIdColumnName?`|string|The optional name of the column in the database table that will be used as the Row Ids in the Store Table, defaulting to '_id'.|
  * |`whereCondition?`|string|The optional SQL WHERE clause that will be used to filter the rows that are loaded into the Store Table.
+ * |`whenCondition?`|string|Postgres only: Optional SQL WHEN clause that is used by trigger to sync changes from the database table to the Store Table.
  * 
  * As a shortcut, if you do not need to specify a custom `rowIdColumnName`, you
  * can simply provide the Id of the Store Table instead of the whole object.
@@ -593,6 +594,12 @@
          * @since v6.1.0
          */
         /// DpcTabularLoad.whereCondition
+        /**
+         * Postgres only: Optional SQL WHEN clause that is used by trigger to sync changes from the database table to the Store Table.
+         * @category Configuration
+         * @since v6.1.0
+         */
+        /// DpcTabularLoad.whenCondition
       }
     }
   }
