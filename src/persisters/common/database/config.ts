@@ -21,7 +21,12 @@ export type DefaultedJsonConfig = [
 ];
 export type DefaultedTabularConfig = [
   tablesLoadConfig: IdMap<
-    [tableId: Id, rowIdColumnName: string, whereCondition: string | null]
+    [
+      tableId: Id,
+      rowIdColumnName: string,
+      whereCondition: string | null,
+      whenCondition: string | null,
+    ]
   >,
   tablesSaveConfig: IdMap<
     [
@@ -51,7 +56,7 @@ const TABLE_NAME = 'tableName';
 const DELETE_EMPTY_COLUMNS = 'deleteEmptyColumns';
 const DELETE_EMPTY_TABLE = 'deleteEmptyTable';
 const WHERE_CONDITION = 'whereCondition';
-
+const WHEN_CONDITION = 'whenCondition';
 const DEFAULT_CONFIG: DatabasePersisterConfig = {
   mode: JSON,
   [AUTO_LOAD_INTERVAL_SECONDS]: 1,
@@ -146,6 +151,7 @@ export const getConfigStructures = (
         [TABLE_ID]: null,
         [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME,
         [WHERE_CONDITION]: null,
+        [WHEN_CONDITION]: null,
       },
       TABLE_ID,
       (tableName) => collHas(excludedTableNames, tableName),

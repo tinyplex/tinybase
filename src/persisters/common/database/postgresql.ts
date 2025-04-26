@@ -63,9 +63,8 @@ export const createCustomPostgreSqlPersister = <
     if(!tablesLoadConfig || typeof tablesLoadConfig === 'string') {
       return DEFAULT_WHEN_CONDITION;
     }
-    const [,,whereCondition] = tablesLoadConfig.get(tableName) ?? [];
-    // todo this will need to be different condition as WHEN has different syntax
-    return whereCondition ?? DEFAULT_WHEN_CONDITION;
+    const [,,,whenCondition] = tablesLoadConfig.get(tableName) ?? [];
+    return whenCondition ?? DEFAULT_WHEN_CONDITION;
   };
 
   const addDataTrigger = async (tableName: string) => {
