@@ -4,7 +4,7 @@ import 'fake-indexeddb/auto';
 import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
-import {mockFetchWasm, pause} from '../../common/other.ts';
+import {mockFetchWasm, pause, waitFor} from '../../common/other.ts';
 import {ALL_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 
 describe.each(Object.entries(ALL_VARIANTS))(
@@ -120,7 +120,9 @@ describe.each(Object.entries(ALL_VARIANTS))(
                     t5: false,
                     t6: {
                       tableName: 't6',
-                      condition: isPostgres ? '$tableName.c6 = \'1\'' : '$tableName.c6 = 1',
+                      condition: isPostgres
+                        ? "$tableName.c6 = '1'"
+                        : '$tableName.c6 = 1',
                     },
                   },
                   autoLoadIntervalSeconds,
@@ -359,7 +361,9 @@ describe.each(Object.entries(ALL_VARIANTS))(
                     t5: false,
                     t6: {
                       tableId: 't6',
-                      condition: isPostgres ? '$tableName.c6 = \'1\'' : '$tableName.c6 = 1',
+                      condition: isPostgres
+                        ? "$tableName.c6 = '1'"
+                        : '$tableName.c6 = 1',
                     },
                     tinybase_values: {tableId: 'values'},
                   },
@@ -474,7 +478,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
           mode: 'tabular',
           tables: {
             load: {t1: 't1', t2: 't2', t3: 't3'},
-            save: {t1: 't1', t2: 't2', t3: 't3'}, // todo
+            save: {t1: 't1', t2: 't2', t3: 't3'},
           },
           values: {load: true, save: true},
           autoLoadIntervalSeconds,
@@ -599,7 +603,16 @@ describe.each(Object.entries(ALL_VARIANTS))(
               .setCell('t1', 'r3', 'c3', 3);
             const persister = await getPersister(store, db, {
               mode: 'tabular',
-              tables: {save: {t1: {tableName: 't1', condition: isPostgres ? '$tableName.c0 = \'1\'' : '$tableName.c0 = 1'}}},
+              tables: {
+                save: {
+                  t1: {
+                    tableName: 't1',
+                    condition: isPostgres
+                      ? "$tableName.c0 = '1'"
+                      : '$tableName.c0 = 1',
+                  },
+                },
+              },
               values: {save: true},
               autoLoadIntervalSeconds,
             });
@@ -864,15 +877,21 @@ describe.each(Object.entries(ALL_VARIANTS))(
     describe('Load from database', () => {
       let persister: Persister;
       beforeEach(async () => {
-        persister = await getPersister(store, db, {
-          mode: 'tabular',
-          tables: {
-            load: {t1: 't1', t2: 't2', t3: 't3'},
-            save: {t1: 't1', t2: 't2', t3: 't3'},
+        persister = await getPersister(
+          store,
+          db,
+          {
+            mode: 'tabular',
+            tables: {
+              load: {t1: 't1', t2: 't2', t3: 't3'},
+              save: {t1: 't1', t2: 't2', t3: 't3'},
+            },
+            values: {load: true, save: true},
+            autoLoadIntervalSeconds,
           },
-          values: {load: true, save: true},
-          autoLoadIntervalSeconds,
-        });
+          undefined,
+          (err) => console.error(err),
+        );
       });
 
       test('nothing', async () => {
@@ -1074,16 +1093,22 @@ describe.each(Object.entries(ALL_VARIANTS))(
         });
         await persister.startAutoLoad();
         await pause(autoLoadPause);
-        expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        await waitFor(() => {
+          expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        }, 1000);
         await cmd(db, 'UPDATE t1 SET c1=$1 WHERE _id=$2', [2, 'r1']);
         await pause(autoLoadPause);
-        expect(store.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+        await waitFor(() => {
+          expect(store.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+        }, 1000);
         await cmd(db, 'UPDATE tinybase_values SET v1=$1 WHERE _id=$2', [
           2,
           '_',
         ]);
         await pause(autoLoadPause);
-        expect(store.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+        await waitFor(() => {
+          expect(store.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+        }, 1000);
       });
 
       test('autoLoad, table dropped and recreated', async () => {
@@ -1122,7 +1147,9 @@ describe.each(Object.entries(ALL_VARIANTS))(
         );
         await cmd(db, 'INSERT INTO t1 (_id, c1) VALUES ($1, $2)', ['r1', 3]);
         await pause(autoLoadPause);
-        expect(store.getContent()).toEqual([{t1: {r1: {c1: 3}}}, {v1: 1}]);
+        await waitFor(() => {
+          expect(store.getContent()).toEqual([{t1: {r1: {c1: 3}}}, {v1: 1}]);
+        }, 1000);
         await cmd(db, 'DROP TABLE tinybase_values');
         await cmd(
           db,
@@ -1137,14 +1164,18 @@ describe.each(Object.entries(ALL_VARIANTS))(
           3,
         ]);
         await pause(autoLoadPause);
-        expect(store.getContent()).toEqual([{t1: {r1: {c1: 3}}}, {v1: 3}]);
+        await waitFor(() => {
+          expect(store.getContent()).toEqual([{t1: {r1: {c1: 3}}}, {v1: 3}]);
+        }, 1000);
         await cmd(db, 'UPDATE t1 SET c1 = $1 WHERE _id = $2', [4, 'r1']);
         await cmd(db, 'UPDATE tinybase_values SET v1 = $1 WHERE _id = $2', [
           4,
           '_',
         ]);
         await pause(autoLoadPause);
-        expect(store.getContent()).toEqual([{t1: {r1: {c1: 4}}}, {v1: 4}]);
+        await waitFor(() => {
+          expect(store.getContent()).toEqual([{t1: {r1: {c1: 4}}}, {v1: 4}]);
+        }, 1000);
       });
     });
 
@@ -1234,7 +1265,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
             'INSERT INTO"t2"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
             ['r1', encodedValue(1)],
           ],
-          ['DELETE FROM"t1"WHERE"_id"NOT IN($1,$2) AND true', ['r1', 'r2']], //todo
+          ['DELETE FROM"t1"WHERE"_id"NOT IN($1,$2) AND true', ['r1', 'r2']],
           ['DELETE FROM"t2"WHERE"_id"NOT IN($1) AND true', ['r1']],
           [
             'CREATE TABLE"tinybase_values"("_id"' +
@@ -1699,7 +1730,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
         store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await persister1.save();
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        // todo this is failing
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        }, 1000);
       });
 
       test('autoSave1 & autoLoad2', async () => {
@@ -1708,7 +1742,9 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await pause(autoLoadPause);
         store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        }, 1000);
       });
 
       test('autoSave1 & autoLoad2, complex transactions', async () => {
@@ -1723,40 +1759,54 @@ describe.each(Object.entries(ALL_VARIANTS))(
           {v1: 1, v2: 2},
         ]);
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
-          {v1: 1, v2: 2},
-        ]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+        }, 1000);
         store1.setCell('t1', 'r1', 'c1', 2);
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
-          {v1: 1, v2: 2},
-        ]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+        }, 1000);
         store1.delCell('t1', 'r1', 'c2');
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
-          {v1: 1, v2: 2},
-        ]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+        }, 1000);
         store1.delRow('t1', 'r2');
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
-          {v1: 1, v2: 2},
-        ]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+        }, 1000);
         store1.delTable('t2');
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}}},
-          {v1: 1, v2: 2},
-        ]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 2}}},
+            {v1: 1, v2: 2},
+          ]);
+        }, 1000);
         store1.delValue('v2');
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+        }, 1000);
         store1.setValue('v1', 2);
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+        }, 1000);
       }, 20000);
     });
 

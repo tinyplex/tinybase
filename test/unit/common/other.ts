@@ -23,6 +23,20 @@ export const pause = async (ms = 50): Promise<void> =>
     setTimeout(() => setTimeout(() => setTimeout(resolve, 1), ms - 2), 1),
   );
 
+export const waitFor = async (assert: () => any, timeoutMs = 50) => {
+  const startTime = Date.now();
+  while (Date.now() - startTime < timeoutMs) {
+    try {
+      await assert();
+      return;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err) {
+      await pause(10, true);
+    }
+  }
+  return assert();
+};
+
 export const mockFetchWasm = (): void => {
   fetchMock.enableMocks();
   fetchMock.resetMocks();
