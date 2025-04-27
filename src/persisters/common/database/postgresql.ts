@@ -51,7 +51,7 @@ export const createCustomPostgreSqlPersister = <
   getThing = 'getDb',
 ): Persister<Persist> => {
   const executeCommand = getWrappedCommand(rawExecuteCommand, onSqlCommand);
-  const persisterId = getUniqueId(5);
+  const persisterId = getUniqueId(5).replace(/-/g, '_');
 
   const [isJson, , defaultedConfig, managedTableNamesSet] = getConfigStructures(
     configOrStoreTableName,
