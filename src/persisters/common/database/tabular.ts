@@ -86,7 +86,7 @@ export const createTabularPersister = <
             rowIdColumnName,
             deleteEmptyColumns,
             deleteEmptyTable,
-            whereCondition,
+            condition,
           ],
           tableId,
         ) => {
@@ -97,7 +97,7 @@ export const createTabularPersister = <
               tables[tableId],
               deleteEmptyColumns,
               deleteEmptyTable,
-              whereCondition,
+              condition,
               partial,
             );
           }
@@ -127,9 +127,9 @@ export const createTabularPersister = <
         await promiseAll(
           mapMap(
             tablesLoadConfig,
-            async ([tableId, rowIdColumnName, whereCondition], tableName) => [
+            async ([tableId, rowIdColumnName, condition], tableName) => [
               tableId,
-              await loadTable(tableName, rowIdColumnName, whereCondition),
+              await loadTable(tableName, rowIdColumnName, condition),
             ],
           ),
         ),

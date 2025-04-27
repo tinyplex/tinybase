@@ -30,6 +30,7 @@ export const DATA_VERSION = 'data_version';
 export const SCHEMA_VERSION = 'schema_version';
 export const FROM = 'FROM ';
 export const PRAGMA_TABLE = 'pragma_table_';
+export const TABLE_NAME_PLACEHOLDER = '$tableName';
 
 export const getWrappedCommand = (
   executeCommand: DatabaseExecuteCommand,
@@ -53,5 +54,7 @@ export const getPlaceholders = (array: any[], offset = [1]) =>
     COMMA,
   );
 
-export const getWhereCondition = (whereCondition: string | null) =>
-  whereCondition ? ' ' + whereCondition : ' true';
+export const getWhereCondition = (tableName: string, condition?: string | null) =>
+  condition
+    ? ' ' + condition.replace(TABLE_NAME_PLACEHOLDER, escapeId(tableName))
+    : ' true';

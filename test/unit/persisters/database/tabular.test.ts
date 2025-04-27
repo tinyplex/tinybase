@@ -120,7 +120,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
                     t5: false,
                     t6: {
                       tableName: 't6',
-                      whereCondition: isPostgres ? 'c6 = \'1\'' : 'c6 = 1',
+                      condition: isPostgres ? '$tableName.c6 = \'1\'' : '$tableName.c6 = 1',
                     },
                   },
                   autoLoadIntervalSeconds,
@@ -359,7 +359,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
                     t5: false,
                     t6: {
                       tableId: 't6',
-                      whereCondition: isPostgres ? 'c6 = \'1\'' : 'c6 = 1',
+                      condition: isPostgres ? '$tableName.c6 = \'1\'' : '$tableName.c6 = 1',
                     },
                     tinybase_values: {tableId: 'values'},
                   },
@@ -599,7 +599,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
               .setCell('t1', 'r3', 'c3', 3);
             const persister = await getPersister(store, db, {
               mode: 'tabular',
-              tables: {save: {t1: {tableName: 't1', whereCondition: isPostgres ? 'c0 = \'1\'' : 'c0 = 1'}}},
+              tables: {save: {t1: {tableName: 't1', condition: isPostgres ? '$tableName.c0 = \'1\'' : '$tableName.c0 = 1'}}},
               values: {save: true},
               autoLoadIntervalSeconds,
             });
