@@ -15,6 +15,7 @@ import {ifNotUndefined, promiseAll} from '../../../common/other.ts';
 import {TINYBASE, strMatch} from '../../../common/strings.ts';
 import {
   SELECT,
+  TABLE_NAME_PLACEHOLDER,
   WHERE,
   escapeId,
   getPlaceholders,
@@ -29,8 +30,6 @@ const EVENT_REGEX = /^([cd]:)(.+)/;
 
 const CHANGE_DATA_TRIGGER = TINYBASE + '_data';
 const CREATE_TABLE_TRIGGER = TINYBASE + '_table';
-
-const DEFAULT_WHEN_CONDITION = 'true';
 
 export const createCustomPostgreSqlPersister = <
   ListenerHandle,
@@ -61,16 +60,18 @@ export const createCustomPostgreSqlPersister = <
   const getWhenCondition = (tableName: string) => {
     const tablesLoadConfig = defaultedConfig[0];
     if(!tablesLoadConfig || typeof tablesLoadConfig === 'string') {
-      return DEFAULT_WHEN_CONDITION;
+      return '';
     }
-    const [,,,whenCondition] = tablesLoadConfig.get(tableName) ?? [];
-    return whenCondition ?? DEFAULT_WHEN_CONDITION;
+    const [,,condition] = tablesLoadConfig.get(tableName) ?? [];
+    return condition 
+      ? 'WHEN ' + condition.replace(TABLE_NAME_PLACEHOLDER, escapeId(tableName))
+      : '';
   };
 
   const addDataTrigger = async (tableName: string) => {
     await executeCommand(
       // eslint-disable-next-line max-len
-      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId + '_' + tableName)} AFTER INSERT OR UPDATE OR DELETE ON ${escapeId(tableName)} FOR EACH ROW WHEN (${getWhenCondition(tableName)}) EXECUTE FUNCTION ${CHANGE_DATA_TRIGGER + '_' + persisterId}()`,
+      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId + '_' + tableName)} AFTER INSERT OR UPDATE OR DELETE ON ${escapeId(tableName)} FOR EACH ROW ${getWhenCondition(tableName)} EXECUTE FUNCTION ${CHANGE_DATA_TRIGGER + '_' + persisterId}()`,
     );
   };
 
