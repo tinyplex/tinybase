@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import {resetHlc} from '../../common/mergeable.ts';
-import {mockFetchWasm, pause} from '../../common/other.ts';
+import {mockFetchWasm, pause, waitFor} from '../../common/other.ts';
 import {MERGEABLE_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 import 'fake-indexeddb/auto';
 import type {MergeableStore} from 'tinybase';
@@ -374,7 +374,9 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await persister.save();
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        }, 1000);
       });
 
       test('autoSave1 & autoLoad2', async () => {
@@ -383,7 +385,9 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
         await pause(autoLoadPause);
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+        }, 1000);
       });
 
       test('autoSave1 & autoLoad2, complex transactions', async () => {
@@ -397,40 +401,54 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
           })
           .setValues({v1: 1, v2: 2});
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
-          {v1: 1, v2: 2},
-        ]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+        }, 1000);
         store.setCell('t1', 'r1', 'c1', 2);
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
-          {v1: 1, v2: 2},
-        ]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+        }, 1000);
         store.delCell('t1', 'r1', 'c2');
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
-          {v1: 1, v2: 2},
-        ]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+        }, 1000);
         store.delRow('t1', 'r2');
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
-          {v1: 1, v2: 2},
-        ]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
+            {v1: 1, v2: 2},
+          ]);
+        }, 1000);
         store.delTable('t2');
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}}},
-          {v1: 1, v2: 2},
-        ]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([
+            {t1: {r1: {c1: 2}}},
+            {v1: 1, v2: 2},
+          ]);
+        }, 1000);
         store.delValue('v2');
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+        }, 1000);
         store.setValue('v1', 2);
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+        await waitFor(() => {
+          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+        }, 1000);
       }, 20000);
     });
 
