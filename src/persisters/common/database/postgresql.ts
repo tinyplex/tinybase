@@ -57,21 +57,28 @@ export const createCustomPostgreSqlPersister = <
     configOrStoreTableName,
   );
 
-  const getWhenCondition = (tableName: string) => {
+  const getWhenCondition = (tableName: string, newOrOld: 'NEW' | 'OLD') => {
     const tablesLoadConfig = defaultedConfig[0];
-    if(!tablesLoadConfig || typeof tablesLoadConfig === 'string') {
-      return '';
-    }
+    if(!tablesLoadConfig || typeof tablesLoadConfig === 'string') return 'true';
+
     const [,,condition] = tablesLoadConfig.get(tableName) ?? [];
-    return condition 
-      ? 'WHEN ' + condition.replace(TABLE_NAME_PLACEHOLDER, escapeId(tableName))
-      : '';
+    if(!condition) return 'true';
+
+    return condition.replace(TABLE_NAME_PLACEHOLDER, newOrOld);
   };
 
-  const addDataTrigger = async (tableName: string) => {
+  const addDataTriggers = async (tableName: string) => {
     await executeCommand(
       // eslint-disable-next-line max-len
-      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId + '_' + tableName)} AFTER INSERT OR UPDATE OR DELETE ON ${escapeId(tableName)} FOR EACH ROW ${getWhenCondition(tableName)} EXECUTE FUNCTION ${CHANGE_DATA_TRIGGER + '_' + persisterId}()`,
+      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_insert_' + persisterId + '_' + tableName)} AFTER INSERT ON ${escapeId(tableName)} FOR EACH ROW WHEN (${getWhenCondition(tableName, 'NEW')}) EXECUTE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()`,
+    );
+    await executeCommand(
+      // eslint-disable-next-line max-len
+      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_update_' + persisterId + '_' + tableName)} AFTER UPDATE ON ${escapeId(tableName)} FOR EACH ROW WHEN ((${getWhenCondition(tableName, 'NEW')}) OR (${getWhenCondition(tableName, 'OLD')})) EXECUTE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()`,
+    );
+    await executeCommand(
+      // eslint-disable-next-line max-len
+      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_delete_' + persisterId + '_' + tableName)} AFTER DELETE ON ${escapeId(tableName)} FOR EACH ROW WHEN (${getWhenCondition(tableName, 'OLD')}) EXECUTE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()`,
     );
   };
 
@@ -80,19 +87,19 @@ export const createCustomPostgreSqlPersister = <
   ): Promise<ListenerHandle> => {
     await executeCommand(
       // eslint-disable-next-line max-len
-      `CREATE OR REPLACE FUNCTION ${CREATE_TABLE_TRIGGER + '_' + persisterId}()RETURNS event_trigger AS $t2$ DECLARE row record; BEGIN FOR row IN SELECT object_identity FROM pg_event_trigger_ddl_commands()WHERE command_tag='CREATE TABLE' LOOP PERFORM pg_notify('${EVENT_CHANNEL + '_' + persisterId}','c:'||SPLIT_PART(row.object_identity,'.',2));END LOOP;END;$t2$ LANGUAGE plpgsql;`,
+      `CREATE OR REPLACE FUNCTION ${escapeId(CREATE_TABLE_TRIGGER + '_' + persisterId)}()RETURNS event_trigger AS $t2$ DECLARE row record; BEGIN FOR row IN SELECT object_identity FROM pg_event_trigger_ddl_commands()WHERE command_tag='CREATE TABLE' LOOP PERFORM pg_notify('${EVENT_CHANNEL + '_' + persisterId}','c:'||SPLIT_PART(row.object_identity,'.',2));END LOOP;END;$t2$ LANGUAGE plpgsql;`,
     );
 
     try {
       await executeCommand(
         // eslint-disable-next-line max-len
-        `CREATE EVENT TRIGGER ${CREATE_TABLE_TRIGGER + '_' + persisterId} ON ddl_command_end WHEN TAG IN('CREATE TABLE')EXECUTE FUNCTION ${CREATE_TABLE_TRIGGER + '_' + persisterId}();`,
+        `CREATE EVENT TRIGGER ${escapeId(CREATE_TABLE_TRIGGER + '_' + persisterId)} ON ddl_command_end WHEN TAG IN('CREATE TABLE')EXECUTE FUNCTION ${escapeId(CREATE_TABLE_TRIGGER + '_' + persisterId)}();`,
       );
     } catch {}
 
     await executeCommand(
       // eslint-disable-next-line max-len
-      `CREATE OR REPLACE FUNCTION ${CHANGE_DATA_TRIGGER + '_' + persisterId}()RETURNS trigger AS $t1$ BEGIN PERFORM pg_notify('${EVENT_CHANNEL + '_' + persisterId}','d:'||TG_TABLE_NAME);RETURN NULL;END;$t1$ LANGUAGE plpgsql;`,
+      `CREATE OR REPLACE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()RETURNS trigger AS $t1$ BEGIN PERFORM pg_notify('${EVENT_CHANNEL + '_' + persisterId}','d:'||TG_TABLE_NAME);RETURN NULL;END;$t1$ LANGUAGE plpgsql;`,
     );
     await promiseAll(
       arrayMap(collValues(managedTableNamesSet), async (tableName) => {
@@ -100,7 +107,7 @@ export const createCustomPostgreSqlPersister = <
           // eslint-disable-next-line max-len
           `CREATE TABLE IF NOT EXISTS ${escapeId(tableName)}("_id"text PRIMARY KEY)`,
         );
-        await addDataTrigger(tableName);
+        await addDataTriggers(tableName);
       }),
     );
 
@@ -112,7 +119,7 @@ export const createCustomPostgreSqlPersister = <
           async ([, eventType, tableName]) => {
             if (collHas(managedTableNamesSet, tableName)) {
               if (eventType == 'c:') {
-                await addDataTrigger(tableName);
+                await addDataTriggers(tableName);
               }
               listener();
             }
