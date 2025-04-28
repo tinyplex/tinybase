@@ -1265,8 +1265,8 @@ describe.each(Object.entries(ALL_VARIANTS))(
             'INSERT INTO"t2"("_id","c1")VALUES($1,$2)ON CONFLICT("_id")DO UPDATE SET"c1"=excluded."c1"',
             ['r1', encodedValue(1)],
           ],
-          ['DELETE FROM"t1"WHERE"_id"NOT IN($1,$2) AND true', ['r1', 'r2']],
-          ['DELETE FROM"t2"WHERE"_id"NOT IN($1) AND true', ['r1']],
+          ['DELETE FROM"t1"WHERE"_id"NOT IN($1,$2) AND ( true)', ['r1', 'r2']],
+          ['DELETE FROM"t2"WHERE"_id"NOT IN($1) AND ( true)', ['r1']],
           [
             'CREATE TABLE"tinybase_values"("_id"' +
               columnType +
@@ -1281,7 +1281,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
             'INSERT INTO"tinybase_values"("_id","v1","v2")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
             ['_', encodedValue(1), encodedValue(2)],
           ],
-          ['DELETE FROM"tinybase_values"WHERE"_id"NOT IN($1) AND true', ['_']],
+          ['DELETE FROM"tinybase_values"WHERE"_id"NOT IN($1) AND ( true)', ['_']],
           ['END', undefined],
         ]);
       });
@@ -1560,7 +1560,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
           });
           sqlCheck(sqlLogs, [
             ['BEGIN', undefined],
-            ['DELETE FROM"t1"WHERE"_id"=$1', ['r1']],
+            ['DELETE FROM"t1"WHERE ("_id"=$1) AND ( true)', ['r1']],
             ['END', undefined],
           ]);
         });
