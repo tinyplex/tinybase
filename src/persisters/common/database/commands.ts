@@ -239,8 +239,11 @@ export const getCommandFunctions = (
                 DELETE_FROM +
                   escapeId(tableName) +
                   WHERE +
+                  ' (' +
                   escapeId(rowIdColumnName) +
-                  '=$1',
+                  '=$1) AND (' +
+                  getWhereCondition(tableName, condition) +
+                  ')',
                 [rowId],
               );
             } else if (!arrayIsEmpty(settingColumnNames)) {
@@ -290,7 +293,7 @@ export const getCommandFunctions = (
             WHERE +
             escapeId(rowIdColumnName) +
             `NOT IN(${getPlaceholders(deleteRowIds)}) ` +
-            `AND${getWhereCondition(tableName, condition)}`,
+            `AND (${getWhereCondition(tableName, condition)})`,
           deleteRowIds,
         );
       } else if (collHas(schemaMap, tableName)) {
