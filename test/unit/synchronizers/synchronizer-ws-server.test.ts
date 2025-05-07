@@ -9,17 +9,18 @@ import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import tmp from 'tmp';
 import {WebSocket, WebSocketServer} from 'ws';
-import {resetHlc} from '../common/mergeable.ts';
-import {pause} from '../common/other.ts';
+import {getTimeFunctions} from '../common/mergeable.ts';
+
+const [reset, getNow, pause] = getTimeFunctions();
 
 beforeEach(() => {
-  resetHlc();
+  reset();
 });
 
 test('Basics', async () => {
   const wsServer = createWsServer(new WebSocketServer({port: 8049}));
 
-  const s1 = createMergeableStore('s1');
+  const s1 = createMergeableStore('s1', getNow);
   const synchronizer1 = await createWsSynchronizer(
     s1,
     new WebSocket('ws://localhost:8049'),
@@ -27,7 +28,7 @@ test('Basics', async () => {
   await synchronizer1.startSync();
   s1.setCell('t1', 'r1', 'c1', 4);
 
-  const s2 = createMergeableStore('s2');
+  const s2 = createMergeableStore('s2', getNow);
   const synchronizer2 = await createWsSynchronizer(
     s2,
     new WebSocket('ws://localhost:8049'),
@@ -71,19 +72,19 @@ describe('Multiple connections', () => {
   test('Accessors', async () => {
     synchronizer1 = await (
       await createWsSynchronizer(
-        createMergeableStore('s1'),
+        createMergeableStore('s1', getNow),
         new WebSocket('ws://localhost:8049/p1'),
       )
     ).startSync();
     synchronizer2 = await (
       await createWsSynchronizer(
-        createMergeableStore('s2'),
+        createMergeableStore('s2', getNow),
         new WebSocket('ws://localhost:8049/p1'),
       )
     ).startSync();
     synchronizer3 = await (
       await createWsSynchronizer(
-        createMergeableStore('s3'),
+        createMergeableStore('s3', getNow),
         new WebSocket('ws://localhost:8049/p2'),
       )
     ).startSync();
@@ -134,19 +135,19 @@ describe('Multiple connections', () => {
 
     synchronizer1 = await (
       await createWsSynchronizer(
-        createMergeableStore('s1'),
+        createMergeableStore('s1', getNow),
         new WebSocket('ws://localhost:8049/p1'),
       )
     ).startSync();
     synchronizer2 = await (
       await createWsSynchronizer(
-        createMergeableStore('s2'),
+        createMergeableStore('s2', getNow),
         new WebSocket('ws://localhost:8049/p1'),
       )
     ).startSync();
     synchronizer3 = await (
       await createWsSynchronizer(
-        createMergeableStore('s3'),
+        createMergeableStore('s3', getNow),
         new WebSocket('ws://localhost:8049/p2'),
       )
     ).startSync();
@@ -197,13 +198,13 @@ describe('Persistence', () => {
     );
 
   test('single client', async () => {
-    const serverStore = createMergeableStore('ss');
+    const serverStore = createMergeableStore('ss', getNow);
     const wsServer = createWsServer(
       new WebSocketServer({port: 8049}),
       (pathId) => createPersister(serverStore, pathId),
     );
 
-    const clientStore = createMergeableStore('s1');
+    const clientStore = createMergeableStore('s1', getNow);
     const synchronizer = await createWsSynchronizer(
       clientStore,
       new WebSocket('ws://localhost:8049/p1'),
@@ -241,14 +242,14 @@ describe('Persistence', () => {
           t1: [
             {
               r1: [{c1: [1, 'Nn1JUF-----7JQY8', 1003668370]}, '', 550994372],
-              r2: [{c2: [2, 'Nn1JUF----05JWdY', 2495711874]}, '', 698565442],
+              r2: [{c2: [2, 'Nn1JUFm----5JWdY', 1501220271]}, '', 574407067],
             },
             '',
-            970894102,
+            2000894385,
           ],
         },
         '',
-        3701807090,
+        644548619,
       ],
       [{}, '', 0],
     ]);
@@ -261,7 +262,7 @@ describe('Persistence', () => {
     let serverStore: MergeableStore;
 
     beforeEach(() => {
-      serverStore = createMergeableStore('ss');
+      serverStore = createMergeableStore('ss', getNow);
       writeFileSync(
         join(tmpDir, 'p1.json'),
         JSON.stringify([
@@ -297,7 +298,7 @@ describe('Persistence', () => {
         },
       );
 
-      const clientStore = createMergeableStore('s1');
+      const clientStore = createMergeableStore('s1', getNow);
       const synchronizer = await createWsSynchronizer(
         clientStore,
         new WebSocket('ws://localhost:8049/p1'),
@@ -323,7 +324,7 @@ describe('Persistence', () => {
         },
       );
 
-      const clientStore = createMergeableStore('s1');
+      const clientStore = createMergeableStore('s1', getNow);
       const synchronizer = await createWsSynchronizer(
         clientStore,
         new WebSocket('ws://localhost:8049/p1'),
@@ -349,7 +350,7 @@ describe('Persistence', () => {
           '',
           1771939739,
         ],
-        [{p: ['p1', 'Nn1JUF----05JWdY', 328213929]}, '', 1622699135],
+        [{p: ['p1', 'Nn1JUFm----5JWdY', 592098772]}, '', 891798799],
       ]);
 
       synchronizer.destroy();
@@ -358,13 +359,13 @@ describe('Persistence', () => {
   });
 
   test('multiple clients, one path', async () => {
-    const serverStore = createMergeableStore('ss');
+    const serverStore = createMergeableStore('ss', getNow);
     const wsServer = createWsServer(
       new WebSocketServer({port: 8049}),
       (pathId) => createPersister(serverStore, pathId),
     );
 
-    const clientStore1 = createMergeableStore('s1');
+    const clientStore1 = createMergeableStore('s1', getNow);
     const synchronizer1 = await createWsSynchronizer(
       clientStore1,
       new WebSocket('ws://localhost:8049/p1'),
@@ -372,7 +373,7 @@ describe('Persistence', () => {
     await synchronizer1.startSync();
     clientStore1.setCell('t1', 'r1', 'c1', 1);
 
-    const clientStore2 = createMergeableStore('s2');
+    const clientStore2 = createMergeableStore('s2', getNow);
     const synchronizer2 = await createWsSynchronizer(
       clientStore2,
       new WebSocket('ws://localhost:8049/p1'),
@@ -400,15 +401,15 @@ describe('Persistence', () => {
   });
 
   test('multiple clients, multiple paths', async () => {
-    const serverStore1 = createMergeableStore('ss1');
-    const serverStore2 = createMergeableStore('ss2');
+    const serverStore1 = createMergeableStore('ss1', getNow);
+    const serverStore2 = createMergeableStore('ss2', getNow);
     const wsServer = createWsServer(
       new WebSocketServer({port: 8049}),
       (pathId) =>
         createPersister(pathId == 'p1' ? serverStore1 : serverStore2, pathId),
     );
 
-    const clientStore1 = createMergeableStore('s1');
+    const clientStore1 = createMergeableStore('s1', getNow);
     const synchronizer1 = await createWsSynchronizer(
       clientStore1,
       new WebSocket('ws://localhost:8049/p1'),
@@ -416,7 +417,7 @@ describe('Persistence', () => {
     await synchronizer1.startSync();
     clientStore1.setCell('t1', 'r1', 'c1', 1);
 
-    const clientStore2 = createMergeableStore('s2');
+    const clientStore2 = createMergeableStore('s2', getNow);
     const synchronizer2 = await createWsSynchronizer(
       clientStore2,
       new WebSocket('ws://localhost:8049/p1'),
@@ -424,7 +425,7 @@ describe('Persistence', () => {
     await synchronizer2.startSync();
     clientStore1.setCell('t2', 'r2', 'c2', 2);
 
-    const clientStore3 = createMergeableStore('s3');
+    const clientStore3 = createMergeableStore('s3', getNow);
     const synchronizer3 = await createWsSynchronizer(
       clientStore3,
       new WebSocket('ws://localhost:8049/p2'),
@@ -432,7 +433,7 @@ describe('Persistence', () => {
     await synchronizer3.startSync();
     clientStore3.setCell('t3', 'r3', 'c3', 3);
 
-    const clientStore4 = createMergeableStore('s4');
+    const clientStore4 = createMergeableStore('s4', getNow);
     const synchronizer4 = await createWsSynchronizer(
       clientStore4,
       new WebSocket('ws://localhost:8049/p2'),
@@ -482,10 +483,10 @@ describe('Persistence', () => {
   test('two clients, connecting in turn', async () => {
     const wsServer = createWsServer(
       new WebSocketServer({port: 8049}),
-      (pathId) => createPersister(createMergeableStore('ss'), pathId),
+      (pathId) => createPersister(createMergeableStore('ss', getNow), pathId),
     );
 
-    const clientStore1 = createMergeableStore('s1');
+    const clientStore1 = createMergeableStore('s1', getNow);
     clientStore1.setCell('t1', 'r1', 'c1', 1);
     const synchronizer1 = await createWsSynchronizer(
       clientStore1,
@@ -496,7 +497,7 @@ describe('Persistence', () => {
     await pause();
     synchronizer1.destroy();
 
-    const clientStore2 = createMergeableStore('s2');
+    const clientStore2 = createMergeableStore('s2', getNow);
     const synchronizer2 = await createWsSynchronizer(
       clientStore2,
       new WebSocket('ws://localhost:8049/p'),

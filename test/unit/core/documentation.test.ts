@@ -12,6 +12,7 @@ import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import * as sqlite3 from 'sqlite3';
 import * as TinyBase from 'tinybase';
+import {Id} from 'tinybase';
 import * as TinyBasePersisters from 'tinybase/persisters';
 import * as TinyBasePersisterAutomerge from 'tinybase/persisters/persister-automerge';
 import * as TinyBasePersisterBrowser from 'tinybase/persisters/persister-browser';
@@ -38,8 +39,15 @@ import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
 import * as ws from 'ws';
 import * as yjs from 'yjs';
 import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from '../common/automerge-adaptor.ts';
-import {resetHlc} from '../common/mergeable.ts';
+import {getTimeFunctions} from '../common/mergeable.ts';
 import {mockFetchWasm, pause, suppressWarnings} from '../common/other.ts';
+
+const [reset, getNow] = getTimeFunctions();
+
+const originalCreateMergeableStore = TinyBase.createMergeableStore;
+// @ts-expect-error swizzling
+TinyBase.createMergeableStore = (uniqueId?: Id) =>
+  originalCreateMergeableStore(uniqueId, getNow);
 
 // need to be imported in examples
 (globalThis as any).modules = {
@@ -89,8 +97,8 @@ import {mockFetchWasm, pause, suppressWarnings} from '../common/other.ts';
 
 Object.assign(globalThis as any, {
   IS_REACT_ACT_ENVIRONMENT: true,
+  reset,
   pause,
-  resetHlc,
   act: React.act,
 });
 
@@ -168,7 +176,7 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
         ?.replace(/\/\/ \.\.\.$/gm, 'await pause();\n')
         ?.replace(/^(.*?) \/\/ !act$/gm, 'act(() => {$1});')
         ?.replace(/^(.*?) \/\/ !yolo$/gm, '')
-        ?.replace(/\/\/ !resetHlc$/gm, 'resetHlc();')
+        ?.replace(/\/\/ !reset$/gm, 'reset();')
         ?.replace(/\n+/g, '\n')
         ?.replace(
           /import (type )?(.*?) from '(.*?)';/gms,

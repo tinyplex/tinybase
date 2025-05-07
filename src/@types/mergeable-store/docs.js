@@ -291,7 +291,7 @@
    * ```js
    * import {createMergeableStore} from 'tinybase';
    *
-   * const store = createMergeableStore('store1'); // !resetHlc
+   * const store = createMergeableStore('store1'); // !reset
    *
    * store.setCell('pets', 'fido', 'color', 'brown');
    *
@@ -342,7 +342,7 @@
    * ```js
    * import {createMergeableStore} from 'tinybase';
    *
-   * const store = createMergeableStore('store1'); // !resetHlc
+   * const store = createMergeableStore('store1'); // !reset
    *
    * store.setCell('pets', 'fido', 'color', 'brown');
    * console.log(store.getMergeableContentHashes());
@@ -375,7 +375,7 @@
    * ```js
    * import {createMergeableStore} from 'tinybase';
    *
-   * const store = createMergeableStore('store1'); // !resetHlc
+   * const store = createMergeableStore('store1'); // !reset
    *
    * store.setCell('pets', 'fido', 'color', 'brown');
    * console.log(store.getMergeableTableHashes());
@@ -407,7 +407,7 @@
    * ```js
    * import {createMergeableStore} from 'tinybase';
    *
-   * const store1 = createMergeableStore('store1'); // !resetHlc
+   * const store1 = createMergeableStore('store1'); // !reset
    * store1.setTables({pets: {fido: {color: 'brown'}}});
    *
    * const store2 = createMergeableStore('store2');
@@ -457,7 +457,7 @@
    * ```js
    * import {createMergeableStore} from 'tinybase';
    *
-   * const store1 = createMergeableStore('store1'); // !resetHlc
+   * const store1 = createMergeableStore('store1'); // !reset
    * store1.setTables({pets: {fido: {color: 'brown'}, felix: {color: 'tan'}}});
    *
    * const store2 = createMergeableStore('store2');
@@ -492,7 +492,7 @@
    * ```js
    * import {createMergeableStore} from 'tinybase';
    *
-   * const store1 = createMergeableStore('store1'); // !resetHlc
+   * const store1 = createMergeableStore('store1'); // !reset
    * store1.setTables({pets: {fido: {color: 'brown'}}});
    *
    * const store2 = createMergeableStore('store2');
@@ -547,7 +547,7 @@
    * ```js
    * import {createMergeableStore} from 'tinybase';
    *
-   * const store1 = createMergeableStore('store1'); // !resetHlc
+   * const store1 = createMergeableStore('store1'); // !reset
    * store1.setTables({pets: {fido: {color: 'brown', species: 'dog'}}});
    *
    * const store2 = createMergeableStore('store2');
@@ -586,7 +586,7 @@
    * ```js
    * import {createMergeableStore} from 'tinybase';
    *
-   * const store1 = createMergeableStore('store1'); // !resetHlc
+   * const store1 = createMergeableStore('store1'); // !reset
    * store1.setTables({pets: {fido: {color: 'brown'}}});
    *
    * const store2 = createMergeableStore('store2');
@@ -661,7 +661,7 @@
    * ```js
    * import {createMergeableStore} from 'tinybase';
    *
-   * const store = createMergeableStore('store1'); // !resetHlc
+   * const store = createMergeableStore('store1'); // !reset
    *
    * store.setValue('employees', 3);
    * console.log(store.getMergeableValueHashes());
@@ -693,7 +693,7 @@
    * ```js
    * import {createMergeableStore} from 'tinybase';
    *
-   * const store1 = createMergeableStore('store1'); // !resetHlc
+   * const store1 = createMergeableStore('store1'); // !reset
    * store1.setValues({employees: 3});
    *
    * const store2 = createMergeableStore('store2');
@@ -737,7 +737,7 @@
    * ```js
    * import {createMergeableStore} from 'tinybase';
    *
-   * const store1 = createMergeableStore('store1'); // !resetHlc
+   * const store1 = createMergeableStore('store1'); // !reset
    * store1.setValues({employees: 3});
    * console.log(store1.getMergeableContent());
    * // ->
@@ -784,7 +784,7 @@
    * ```js
    * import {createMergeableStore} from 'tinybase';
    *
-   * const store1 = createMergeableStore('store1'); // !resetHlc
+   * const store1 = createMergeableStore('store1'); // !reset
    * store1.setValues({employees: 3});
    *
    * const store2 = createMergeableStore('store2');
@@ -817,7 +817,7 @@
    * ```js
    * import {createMergeableStore} from 'tinybase';
    *
-   * const store = createMergeableStore('store1'); // !resetHlc
+   * const store = createMergeableStore('store1'); // !reset
    * store.setTables({pets: {fido: {species: 'dog', color: 'brown'}}});
    * store.setValues({open: true});
    *

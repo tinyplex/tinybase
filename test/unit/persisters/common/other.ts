@@ -7,7 +7,6 @@ import type {
   Store,
 } from 'tinybase';
 import type {Persister, Persists} from 'tinybase/persisters';
-import {pause} from '../../common/other.ts';
 
 export type GetLocationMethod<Location = string> = [
   string,
@@ -35,7 +34,3 @@ export type Persistable<Location = string> = {
   testMissing: boolean;
   extraLoad?: 0 | 1;
 };
-
-export const nextLoop = async (alsoNudgeHlc = false): Promise<void> =>
-  await pause(0, alsoNudgeHlc);
-// fs.watch misses changes made in the same loop, seemingly

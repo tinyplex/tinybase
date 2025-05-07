@@ -3,7 +3,6 @@ import type {FetchMock} from 'jest-fetch-mock';
 import fm from 'jest-fetch-mock';
 import type {Id, Ids, Indexes, Metrics, Relationships} from 'tinybase';
 import {TextDecoder, TextEncoder} from 'util';
-import {nudgeHlc} from './mergeable.ts';
 import {IdObj, IdObj2} from './types.ts';
 
 const fetchMock = fm as any as FetchMock;
@@ -17,15 +16,10 @@ const ignorable = (...args: any[]): boolean =>
       .match(/wasm|OPFS|ArrayBuffer|ReactDOMTestUtils|C-web|onCustomMessage/),
   );
 
-export const pause = async (ms = 50, alsoNudgeHlc = false): Promise<void> => {
-  const promise = new Promise<void>((resolve) =>
+export const pause = async (ms = 50): Promise<void> =>
+  new Promise<void>((resolve) =>
     setTimeout(() => setTimeout(() => setTimeout(resolve, 1), ms - 2), 1),
   );
-  if (alsoNudgeHlc) {
-    nudgeHlc(ms);
-  }
-  return promise;
-};
 
 export const mockFetchWasm = (): void => {
   fetchMock.enableMocks();

@@ -2,11 +2,12 @@ import {createMergeableStore} from 'tinybase';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {createWsServerSimple} from 'tinybase/synchronizers/synchronizer-ws-server-simple';
 import {WebSocket, WebSocketServer} from 'ws';
-import {resetHlc} from '../common/mergeable.ts';
-import {pause} from '../common/other.ts';
+import {getTimeFunctions} from '../common/mergeable.ts';
+
+const [reset, getNow, pause] = getTimeFunctions();
 
 beforeEach(() => {
-  resetHlc();
+  reset();
 });
 
 test('Basics', async () => {
@@ -14,7 +15,7 @@ test('Basics', async () => {
     new WebSocketServer({port: 8054}),
   );
 
-  const s1 = createMergeableStore('s1');
+  const s1 = createMergeableStore('s1', getNow);
   const synchronizer1 = await createWsSynchronizer(
     s1,
     new WebSocket('ws://localhost:8054'),
@@ -22,7 +23,7 @@ test('Basics', async () => {
   await synchronizer1.startSync();
   s1.setCell('t1', 'r1', 'c1', 4);
 
-  const s2 = createMergeableStore('s2');
+  const s2 = createMergeableStore('s2', getNow);
   const synchronizer2 = await createWsSynchronizer(
     s2,
     new WebSocket('ws://localhost:8054'),

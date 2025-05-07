@@ -1661,7 +1661,7 @@
  * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
  * storePersister.destroy();
  *
- * const mergeableStore = createMergeableStore('mergeableStore1'); // !resetHlc
+ * const mergeableStore = createMergeableStore('mergeableStore1'); // !reset
  * mergeableStore.setTables({pets: {fido: {species: 'dog'}}});
  * const mergeableStorePersister = createJsonPersister(mergeableStore);
  * await mergeableStorePersister.save();

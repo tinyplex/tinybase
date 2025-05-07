@@ -5,8 +5,14 @@ import type {
   MergeableStore,
 } from 'tinybase';
 import {createMergeableStore} from 'tinybase';
-import {nullStamped, resetHlc, stamped, time} from '../../common/mergeable.ts';
-import {pause} from '../../common/other.ts';
+import {
+  getTimeFunctions,
+  nullStamped,
+  stamped,
+  time,
+} from '../../common/mergeable.ts';
+
+const [reset, getNow, pause] = getTimeFunctions();
 
 const permute = (arr: any[]): any[] => {
   if (arr.length == 1) {
@@ -22,7 +28,7 @@ const permute = (arr: any[]): any[] => {
 };
 
 beforeEach(() => {
-  resetHlc();
+  reset();
 });
 
 test('isMergeable', () => {
@@ -31,11 +37,11 @@ test('isMergeable', () => {
 });
 
 test('Protocol basics', () => {
-  const store1 = createMergeableStore('s1').setContent([
+  const store1 = createMergeableStore('s1', getNow).setContent([
     {t1: {r1: {c1: 1}}},
     {},
   ]);
-  const store2 = createMergeableStore('s2').setContent([
+  const store2 = createMergeableStore('s2', getNow).setContent([
     {t1: {r1: {c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
     {},
   ]);
@@ -95,7 +101,7 @@ test('Protocol basics', () => {
 });
 
 test('Create, with uniqueId', () => {
-  const store = createMergeableStore('s1');
+  const store = createMergeableStore('s1', getNow);
   expect(store.getJson()).toEqual(JSON.stringify([{}, {}]));
   store.setCell('t1', 'r1', 'c1', 1);
   expect(store.getMergeableContent()).toEqual([
@@ -115,7 +121,7 @@ test('Create, with uniqueId', () => {
 });
 
 test('Create, no uniqueId', () => {
-  const store = createMergeableStore();
+  const store = createMergeableStore(undefined, getNow);
   expect(store.getJson()).toEqual(JSON.stringify([{}, {}]));
   store.setCell('t1', 'r1', 'c1', 1);
   const hlc = store.getMergeableContent()[0][0].t1[0].r1[0].c1[1];
@@ -126,7 +132,7 @@ test('Create, no uniqueId', () => {
 describe('Fluency of inherited methods', () => {
   let store: MergeableStore;
   beforeEach(() => {
-    store = createMergeableStore('s1');
+    store = createMergeableStore('s1', getNow);
   });
   test('Setters', () => {
     expect(store.setContent([{}, {}])).toEqual(store);
@@ -169,7 +175,7 @@ describe('getMergeableContent', () => {
   let store: MergeableStore;
 
   beforeEach(() => {
-    store = createMergeableStore('s1');
+    store = createMergeableStore('s1', getNow);
   });
 
   test('Initialize', () => {
@@ -251,8 +257,8 @@ describe('Deltas & Hashes', () => {
   let store2: MergeableStore;
 
   beforeEach(() => {
-    store1 = createMergeableStore('s1');
-    store2 = createMergeableStore('s2');
+    store1 = createMergeableStore('s1', getNow);
+    store2 = createMergeableStore('s2', getNow);
   });
 
   describe('getMergeableContentHashes', () => {
@@ -499,7 +505,7 @@ describe('getTransactionMergeableChanges', () => {
   let store: MergeableStore;
 
   beforeEach(() => {
-    store = createMergeableStore('s1');
+    store = createMergeableStore('s1', getNow);
   });
 
   test('Outside transaction', () => {
@@ -571,7 +577,7 @@ describe('applyMergeableChanges/setMergeableContent', () => {
   let store: MergeableStore;
 
   beforeEach(() => {
-    store = createMergeableStore('s1');
+    store = createMergeableStore('s1', getNow);
   });
 
   test('apply into empty store', () => {
@@ -703,8 +709,8 @@ describe('Merge', () => {
   let store2: MergeableStore;
 
   test('Nothing', () => {
-    store1 = createMergeableStore('s1');
-    store2 = createMergeableStore('s2');
+    store1 = createMergeableStore('s1', getNow);
+    store2 = createMergeableStore('s2', getNow);
     const noChanges: MergeableChanges = [nullStamped({}), nullStamped({}), 1];
 
     expect(store1.getContent()).toEqual([{}, {}]);
@@ -721,8 +727,8 @@ describe('Merge', () => {
   describe('One way', () => {
     // Note that these tests run in order to mutate the store in a sequence.
     beforeAll(() => {
-      store1 = createMergeableStore('s1');
-      store2 = createMergeableStore('s2');
+      store1 = createMergeableStore('s1', getNow);
+      store2 = createMergeableStore('s2', getNow);
     });
 
     test('setTables', () => {
@@ -852,15 +858,15 @@ describe('Merge', () => {
 
   describe('Two way', () => {
     beforeEach(() => {
-      store1 = createMergeableStore('s1');
-      store2 = createMergeableStore('s2');
+      store1 = createMergeableStore('s1', getNow);
+      store2 = createMergeableStore('s2', getNow);
     });
 
     test('Mutually exclusive tables vs values', () => {
       store1.setTables({t1: {r1: {c1: 0}}});
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      pause(1, true);
+      pause(1);
       store2.setValues({v1: 0});
       expect(store2.getMergeableContent()).toMatchSnapshot();
 
@@ -879,7 +885,7 @@ describe('Merge', () => {
       store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      pause(1, true);
+      pause(1);
       store2
         .setTables({t1: {r1: {c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}})
         .setValues({v2: 2});
@@ -903,7 +909,7 @@ describe('Merge', () => {
       store1.setTables({t1: {r1: {c1: 1}}}).setValues({v0: 0, v1: 1});
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      pause(1, true);
+      pause(1);
       store2.setTables({t1: {r1: {c1: 2}}}).setValues({v1: 2});
       expect(store2.getMergeableContent()).toMatchSnapshot();
 
@@ -1074,9 +1080,9 @@ describe('Merge', () => {
 
     test('Interleaving', () => {
       store1.setCell('t1', 'r1', 'c1', 1);
-      pause(1, true);
+      pause(1);
       store2.setCell('t1', 'r1', 'c2', 2);
-      pause(1, true);
+      pause(1);
       store1.delCell('t1', 'r1', 'c1');
 
       expect(store1.getMergeableContent()).toMatchSnapshot();

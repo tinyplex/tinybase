@@ -16,7 +16,7 @@ createStore function.
 ```js
 import {createMergeableStore} from 'tinybase';
 
-const store1 = createMergeableStore('store1'); // !resetHlc
+const store1 = createMergeableStore('store1'); // !reset
 store1.setCell('pets', 'fido', 'species', 'dog');
 
 console.log(store1.getContent());

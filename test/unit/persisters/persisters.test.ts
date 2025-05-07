@@ -25,7 +25,7 @@ import {
   mockSessionStorage,
   mockYjs,
 } from './common/mocks.ts';
-import {GetLocationMethod, Persistable, nextLoop} from './common/other.ts';
+import {GetLocationMethod, Persistable} from './common/other.ts';
 
 tmp.setGracefulCleanup();
 
@@ -264,7 +264,7 @@ describe.each([
     expect(persister.isAutoLoading()).toEqual(false);
     await persister.startAutoLoad();
     expect(persister.isAutoLoading()).toEqual(true);
-    await nextLoop();
+    await pause(0);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
     expect(persister.getStats()).toEqual({loads: 1, saves: 0});
 
@@ -309,7 +309,7 @@ describe.each([
       {v1: 1},
     ]);
     await persister.startAutoLoad();
-    await nextLoop();
+    await pause(0);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
   });
 
@@ -317,10 +317,10 @@ describe.each([
     if (name == 'file') {
       await persister.startAutoLoad([{t1: {r1: {c1: 1}}}, {}]);
       await persister.startAutoSave();
-      await nextLoop();
+      await pause(0);
       expect(persister.getStats()).toEqual({loads: 1, saves: 1});
       store.setTables({t1: {r1: {c1: 2}}});
-      await nextLoop();
+      await pause(0);
       expect(persister.getStats()).toEqual({loads: 1, saves: 2});
     }
   });
@@ -329,10 +329,10 @@ describe.each([
     if (name == 'file') {
       await persister.startAutoLoad([{t1: {r1: {c1: 1}}}, {}]);
       await persister.startAutoSave();
-      await nextLoop();
+      await pause(0);
       expect(persister.getStats()).toEqual({loads: 1, saves: 1});
       await persistable.set(location, [{t1: {r1: {c1: 2}}}, {}]);
-      await nextLoop();
+      await pause(0);
       expect(persister.getStats()).toEqual({loads: 2, saves: 1});
     }
   });

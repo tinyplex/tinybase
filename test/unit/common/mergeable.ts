@@ -1,4 +1,5 @@
 import type {Stamp} from 'tinybase';
+import {pause} from './other.ts';
 
 const MASK6 = 63;
 const SHIFT36 = 2 ** 36;
@@ -35,9 +36,21 @@ const encodeHlc = (
 const STORE_ID_HASHES: {[id: string]: number} = {s1: 139573449, s2: 89240592};
 const START_TIME = new Date('2024-01-01 00:00:00 UTC').valueOf();
 
-export const resetHlc = () => ((globalThis as any).HLC_TIME = START_TIME);
-
-export const nudgeHlc = (ms: number) => ((globalThis as any).HLC_TIME += ms);
+export const getTimeFunctions = (): [
+  reset: () => void,
+  getNow: () => number,
+  pause: (ms?: number) => Promise<void>,
+] => {
+  let time = 0;
+  return [
+    () => (time = START_TIME),
+    () => time,
+    async (ms = 50): Promise<void> => {
+      time += ms;
+      return pause(ms);
+    },
+  ];
+};
 
 export const time = (offset: number, counter: number, storeId: string = 's1') =>
   encodeHlc(START_TIME + offset, counter, STORE_ID_HASHES[storeId]);

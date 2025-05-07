@@ -3,12 +3,14 @@ import 'fake-indexeddb/auto';
 import type {MergeableStore} from 'tinybase';
 import {createMergeableStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
-import {resetHlc} from '../../common/mergeable.ts';
-import {mockFetchWasm, pause} from '../../common/other.ts';
+import {getTimeFunctions} from '../../common/mergeable.ts';
+import {mockFetchWasm} from '../../common/other.ts';
 import {MERGEABLE_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 
+const [reset, getNow, pause] = getTimeFunctions();
+
 beforeEach(() => {
-  resetHlc();
+  reset();
 });
 
 describe.each(Object.entries(MERGEABLE_VARIANTS))(
@@ -38,7 +40,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
     beforeEach(async () => {
       mockFetchWasm();
       db = await getOpenDatabase();
-      store = createMergeableStore('s1');
+      store = createMergeableStore('s1', getNow);
       persister = await getPersister(store, db, {
         mode: 'json',
         autoLoadIntervalSeconds,
@@ -343,7 +345,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
       let persister2: Persister;
 
       beforeEach(async () => {
-        store2 = createMergeableStore('s2');
+        store2 = createMergeableStore('s2', getNow);
         persister2 = await getPersister(store2, db, {
           mode: 'json',
           autoLoadIntervalSeconds,
@@ -445,7 +447,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
 
       beforeEach(async () => {
         db2 = await getOpenDatabase(db);
-        store2 = createMergeableStore('s2');
+        store2 = createMergeableStore('s2', getNow);
         persister2 = await getPersister(store2, db2, {
           mode: 'json',
           autoLoadIntervalSeconds,
