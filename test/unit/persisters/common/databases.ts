@@ -166,7 +166,7 @@ const getPowerSyncDatabase = async (
   };
 };
 
-export const SQLITE_MERGEABLE_VARIANTS: Variants = {
+export const NODE_SQLITE_MERGEABLE_VARIANTS: Variants = {
   sqlite3: [
     async (dbAndName?: [Database, string]): Promise<[Database, string]> => {
       const existingName = dbAndName?.[1];
@@ -237,7 +237,7 @@ export const SQLITE_MERGEABLE_VARIANTS: Variants = {
   ],
 };
 
-export const SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
+export const NODE_SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
   libSql: [
     async (): Promise<Client> => createClient({url: 'file::memory:'}),
     ['getClient', (client: Client) => client],
@@ -341,7 +341,7 @@ export const SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
   ],
 };
 
-export const POSTGRESQL_VARIANTS: Variants = {
+export const NODE_POSTGRESQL_VARIANTS: Variants = {
   postgres: [
     async (
       sqlClientsAndName?: SqlClientsAndName,
@@ -423,23 +423,39 @@ export const POSTGRESQL_VARIANTS: Variants = {
   ],
 };
 
-export const SQLITE_VARIANTS: Variants = {
-  ...SQLITE_MERGEABLE_VARIANTS,
-  ...SQLITE_NON_MERGEABLE_VARIANTS,
+export const NODE_SQLITE_VARIANTS: Variants = {
+  ...NODE_SQLITE_MERGEABLE_VARIANTS,
+  ...NODE_SQLITE_NON_MERGEABLE_VARIANTS,
 };
 
-export const MERGEABLE_VARIANTS: Variants = {
-  ...SQLITE_MERGEABLE_VARIANTS,
-  ...POSTGRESQL_VARIANTS,
+export const NODE_MERGEABLE_VARIANTS: Variants = {
+  ...NODE_SQLITE_MERGEABLE_VARIANTS,
+  ...NODE_POSTGRESQL_VARIANTS,
 };
 
-export const ALL_VARIANTS: Variants = {
-  ...SQLITE_VARIANTS,
-  ...POSTGRESQL_VARIANTS,
+export const ALL_NODE_VARIANTS: Variants = {
+  ...NODE_SQLITE_VARIANTS,
+  ...NODE_POSTGRESQL_VARIANTS,
 };
+
+export const BUN_MERGEABLE_VARIANTS: Variants = {
+  //sqlite3: NODE_SQLITE_MERGEABLE_VARIANTS.sqlite3,
+};
+
+export const ALL_BUN_VARIANTS: Variants = {
+  ...BUN_MERGEABLE_VARIANTS,
+};
+
+export const MERGEABLE_VARIANTS = process.versions.bun
+  ? BUN_MERGEABLE_VARIANTS
+  : NODE_MERGEABLE_VARIANTS;
+
+export const ALL_VARIANTS = process.versions.bun
+  ? ALL_BUN_VARIANTS
+  : ALL_NODE_VARIANTS;
 
 export const ADHOC_VARIANT: Variants = {
-  adhoc: SQLITE_NON_MERGEABLE_VARIANTS.powerSync,
+  adhoc: NODE_SQLITE_NON_MERGEABLE_VARIANTS.powerSync,
 };
 
 export const getDatabaseFunctions = <Database>(
