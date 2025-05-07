@@ -5,6 +5,13 @@ highlighted features.
 
 ---
 
+# v6.1
+
+This release has various improvements and fixes, across the board, including:
+
+- The createMergeableStore function now takes an optional `getNow` argument that
+  lets you override the clock used to generate HLC timestamps.
+
 # v6.0
 
 This major release is about updating dependencies and infrastructure rather than
@@ -27,10 +34,10 @@ As a result of these changes, there have been some additional knock-on effects
 to the project and developer infrastructure as a whole. For example:
 
 - The test suite has been updated to use `react-testing-library` instead of
-`react-test-renderer`.
-- The React `jsx-runtime` is used for JSX transformations. 
+  `react-test-renderer`.
+- The React `jsx-runtime` is used for JSX transformations.
 - Demos (and CodePen examples) have been updated to use an `importmap` mapping
-the modules to the [esm.sh](https://esm.sh/) CDN.
+  the modules to the [esm.sh](https://esm.sh/) CDN.
 - ESLint has finally been upgraded to v9.
 
 Note that TinyBase v6.0 adds no new functionality, so you can afford to stay on
