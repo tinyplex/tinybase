@@ -7,6 +7,9 @@ import type {
   ValueOrUndefined,
 } from '../store/index.d.ts';
 
+/// GetNow
+export type GetNow = () => number;
+
 /// Hash
 export type Hash = number;
 
@@ -141,4 +144,7 @@ export interface MergeableStore extends Store {
 }
 
 /// createMergeableStore
-export function createMergeableStore(uniqueId?: Id): MergeableStore;
+export function createMergeableStore(
+  uniqueId?: Id,
+  getNow?: GetNow,
+): MergeableStore;

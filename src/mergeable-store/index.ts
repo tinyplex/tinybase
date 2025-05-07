@@ -2,6 +2,7 @@ import type {Id} from '../@types/common/index.d.ts';
 import type {
   CellHashes,
   ContentHashes,
+  GetNow,
   MergeableChanges,
   MergeableContent,
   MergeableStore,
@@ -147,13 +148,16 @@ const validateMergeableContent = (
     ),
   );
 
-export const createMergeableStore = ((uniqueId?: Id): MergeableStore => {
+export const createMergeableStore = ((
+  uniqueId?: Id,
+  getNow?: GetNow,
+): MergeableStore => {
   let listeningToRawStoreChanges = 1;
   let contentStampMap = newContentStampMap();
   let defaultingContent: 0 | 1 = 0;
   const touchedCells: IdSet3 = mapNew();
   const touchedValues: IdSet = setNew();
-  const [getHlc, seenHlc] = getHlcFunctions(uniqueId);
+  const [getHlc, seenHlc] = getHlcFunctions(uniqueId, getNow);
   const store = createStore();
 
   const disableListeningToRawStoreChanges = (

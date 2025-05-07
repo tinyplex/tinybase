@@ -1,4 +1,5 @@
 import type {Id} from '../@types/common/index.d.ts';
+import type {GetNow} from '../@types/mergeable-store/index.d.ts';
 import {decode, encode} from './codec.ts';
 import {getHash} from './hash.ts';
 import {getUniqueId} from './index.ts';
@@ -48,6 +49,7 @@ const decodeTimeAndCounter = (
 
 export const getHlcFunctions = (
   uniqueId?: Id,
+  getNow: GetNow = Date.now,
 ): [getHlc: () => Hlc, seenHlc: (remoteHlc: Hlc) => void] => {
   let logicalTime = 0;
   let lastCounter = -1;
@@ -79,7 +81,7 @@ export const getHlcFunctions = (
     logicalTime = mathMax(
       previousLogicalTime,
       remoteLogicalTime,
-      (GLOBAL as any).HLC_TIME ?? Date.now(),
+      (GLOBAL as any).HLC_TIME ?? getNow(),
     );
     lastCounter =
       logicalTime == previousLogicalTime

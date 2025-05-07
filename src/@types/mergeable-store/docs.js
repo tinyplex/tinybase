@@ -20,6 +20,19 @@
  * @since v5.0.0
  */
 /// mergeable-store
+
+/**
+ * The GetNow type is used to represent a function that returns the current time
+ * in milliseconds.
+ *
+ * This is used internally within the mergeable-store module, but is used for
+ * the createMergeableStore function's second optional argument to allow
+ * applications to override the clock used to generate timestamps.
+ * @category Stamps
+ * @since v6.1.0
+ */
+/// GetNow
+
 /**
  * The Hash type is used within the mergeable-store module to quickly compare
  * the content of two objects.
@@ -953,12 +966,21 @@
  * The createMergeableStore function creates a MergeableStore, and is the main
  * entry point into the mergeable-store module.
  *
- * There is one optional parameter which is a uniqueId for the MergeableStore.
- * This is used to distinguish conflicting changes made in the same millisecond
- * by two different MergeableStore objects as its hash is added to the end of
- * the HLC timestamps. Generally this can be omitted unless you have a need for
- * deterministic HLCs, such as in a testing scenario. Otherwise, TinyBase will
- * assign a unique Id to the Store at the time of creation.
+ * There are two optional parameters which are only for testing and advanced
+ * usage.
+ *
+ * The first is a uniqueId for the MergeableStore, used to distinguish
+ * conflicting changes made in the same millisecond by two different
+ * MergeableStore objects as its hash is added to the end of the HLC timestamps.
+ * Generally this can be omitted unless you have a need for deterministic HLCs,
+ * such as in a testing scenario. Otherwise, TinyBase will assign a unique Id to
+ * the Store at the time of creation.
+ *
+ * Since v6.1.0, the second is a function that can be used to replace the way
+ * the timestamp is generated for HLCs (by default JavaScript's `Date.now()`
+ * method).
+ * @param uniqueId An optional unique Id for the MergeableStore.
+ * @param getNow An optional function that generates millisecond timestamps.
  * @returns A reference to the new MergeableStore.
  * @example
  * This example creates a MergeableStore.

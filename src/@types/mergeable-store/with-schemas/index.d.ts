@@ -20,6 +20,9 @@ import type {
   ValuesSchema,
 } from '../../store/with-schemas/index.d.ts';
 
+/// GetNow
+export type GetNow = () => number;
+
 /// Hash
 export type Hash = number;
 
@@ -257,4 +260,7 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
 }
 
 /// createMergeableStore
-export function createMergeableStore(uniqueId?: Id): MergeableStore<NoSchemas>;
+export function createMergeableStore(
+  uniqueId?: Id,
+  getNow?: GetNow,
+): MergeableStore<NoSchemas>;
