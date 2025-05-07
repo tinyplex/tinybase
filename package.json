@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "6.0.4",
+  "version": "6.0.5",
   "author": "jamesgpearce",
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
@@ -23,7 +23,7 @@
   "peerDependencies": {
     "@automerge/automerge-repo": "^1.2.1",
     "@cloudflare/workers-types": "^4.20250506.0",
-    "@electric-sql/pglite": "^0.3.0",
+    "@electric-sql/pglite": "^0.2.17",
     "@libsql/client": "^0.15.4",
     "@powersync/common": "^1.29.0",
     "@sqlite.org/sqlite-wasm": "^3.49.1-build4",
@@ -153,7 +153,7 @@
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@cloudflare/workers-types": "^4.20250506.0",
-    "@electric-sql/pglite": "^0.3.0",
+    "@electric-sql/pglite": "^0.2.17",
     "@eslint/js": "^9.26.0",
     "@journeyapps/wa-sqlite": "^1.2.4",
     "@libsql/client": "^0.15.4",
