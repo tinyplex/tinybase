@@ -11,8 +11,8 @@ import postgres from 'postgres';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import * as sqlite3 from 'sqlite3';
+import type {Id} from 'tinybase';
 import * as TinyBase from 'tinybase';
-import {Id} from 'tinybase';
 import * as TinyBasePersisters from 'tinybase/persisters';
 import * as TinyBasePersisterAutomerge from 'tinybase/persisters/persister-automerge';
 import * as TinyBasePersisterBrowser from 'tinybase/persisters/persister-browser';
@@ -46,6 +46,7 @@ const [reset, getNow] = getTimeFunctions();
 
 const originalCreateMergeableStore = TinyBase.createMergeableStore;
 // @ts-expect-error swizzling
+// eslint-disable-next-line import/namespace
 TinyBase.createMergeableStore = (uniqueId?: Id) =>
   originalCreateMergeableStore(uniqueId, getNow);
 
