@@ -10,7 +10,7 @@
     "jsx": "react-jsx",
     "moduleResolution": "NodeNext",
     "allowSyntheticDefaultImports": true,
-    "types": ["node", "@cloudflare/workers-types"],
+    "types": ["node", "@cloudflare/workers-types", "bun-types"],
     "composite": true,
     "allowImportingTsExtensions": true,
     "noEmit": true

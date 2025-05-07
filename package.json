@@ -167,6 +167,7 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/asciichart": "^1.5.8",
+    "@types/bun": "^1.2.12",
     "@types/expect-puppeteer": "^5.0.6",
     "@types/http-server": "^0.12.4",
     "@types/jest": "^29.5.14",

@@ -78,6 +78,7 @@ export default tsLint.config(
             '^cloudflare:workers$',
             'eslint/config',
             'typescript-eslint',
+            'bun:sqlite',
           ],
         },
       ],
