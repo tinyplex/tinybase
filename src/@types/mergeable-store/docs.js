@@ -980,7 +980,8 @@
  * the timestamp is generated for HLCs (by default JavaScript's `Date.now()`
  * method).
  * @param uniqueId An optional unique Id for the MergeableStore.
- * @param getNow An optional function that generates millisecond timestamps.
+ * @param getNow An optional function that generates millisecond timestamps,
+ * since v6.1.0.
  * @returns A reference to the new MergeableStore.
  * @example
  * This example creates a MergeableStore.
