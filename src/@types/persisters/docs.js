@@ -18,6 +18,7 @@
  * |IndexedDbPersister|Browser IndexedDB|Yes|No
  * |RemotePersister|Remote server|Yes|No
  * |Sqlite3Persister|SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)|Yes|Yes*
+ * |SqliteBunPersister| SQLite in Bun, via [bun:sqlite](https://bun.sh/docs/api/sqlite)|Yes|Yes*
  * |SqliteWasmPersister|SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)|Yes|Yes*
  * |ExpoSqlitePersister|SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)|Yes|Yes*
  * |PostgresPersister|PostgreSQL, via [postgres](https://github.com/porsager/postgres)|Yes|Yes*

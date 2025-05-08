@@ -7,10 +7,47 @@ highlighted features.
 
 # v6.1
 
-This release has various improvements and fixes, across the board, including:
+## Bun SQLite
 
-- The createMergeableStore function now takes an optional `getNow` argument that
-  lets you override the clock used to generate HLC timestamps.
+This release includes a new Persister for the [embedded SQLite
+database](https://bun.sh/docs/api/sqlite) available in the Bun runtime.
+
+You use it by passing a reference to a Bun Database object into the
+createSqliteBunPersister function:
+
+```js bun
+import {Database} from 'bun:sqlite';
+import {createStore} from 'tinybase';
+import {createSqliteBunPersister} from 'tinybase/persisters/persister-sqlite-bun';
+
+const db = new Database(':memory:');
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createSqliteBunPersister(store, db, 'my_tinybase');
+
+await persister.save();
+// Store will be saved to the database.
+
+console.log(db.query('SELECT * FROM my_tinybase;').all());
+// -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
+
+db.query(
+  'UPDATE my_tinybase SET store = ' +
+    `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`,
+).run();
+await persister.load();
+console.log(store.getTables());
+// -> {pets: {felix: {species: 'cat'}}}
+
+persister.destroy();
+```
+
+There's more information the documentation for the new persister-sqlite-bun
+module.
+
+## createMergeableStore getNow
+
+The createMergeableStore function now takes an optional `getNow` argument that
+lets you override the clock used to generate HLC timestamps.
 
 # v6.0
 
