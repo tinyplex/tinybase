@@ -102,20 +102,13 @@
  * await persister.save();
  * // Store will be saved to the database.
  *
- * console.log(
- *   await new Promise((resolve) =>
- *     db.all('SELECT * FROM my_tinybase;', (_, rows) => resolve(rows)),
- *   ),
- * );
+ * console.log(db.query('SELECT * FROM my_tinybase;').all());
  * // -> [{_id: '_', store: '[{"pets":{"fido":{"species":"dog"}}},{}]'}]
  *
- * await new Promise((resolve) =>
- *   db.all(
- *     'UPDATE my_tinybase SET store = ' +
- *       `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`,
- *     resolve,
- *   ),
- * );
+ * db.query(
+ *   'UPDATE my_tinybase SET store = ' +
+ *     `'[{"pets":{"felix":{"species":"cat"}}},{}]' WHERE _id = '_';`,
+ * ).run();
  * await persister.load();
  * console.log(store.getTables());
  * // -> {pets: {felix: {species: 'cat'}}}
@@ -139,19 +132,10 @@
  * });
  *
  * await persister.save();
- * console.log(
- *   await new Promise((resolve) =>
- *     db.all('SELECT * FROM pets;', (_, rows) => resolve(rows)),
- *   ),
- * );
+ * console.log(db.query('SELECT * FROM pets;').all());
  * // -> [{_id: 'fido', species: 'dog'}]
  *
- * await new Promise((resolve) =>
- *   db.all(
- *     `INSERT INTO pets (_id, species) VALUES ('felix', 'cat')`,
- *     resolve,
- *   ),
- * );
+ * db.query(`INSERT INTO pets (_id, species) VALUES ('felix', 'cat')`).run();
  * await persister.load();
  * console.log(store.getTables());
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
