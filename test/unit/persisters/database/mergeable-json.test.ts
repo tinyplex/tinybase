@@ -373,6 +373,7 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
 
       test('autoLoad2', async () => {
         await persister2.startAutoLoad();
+        await pause(autoLoadPause);
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await persister.save();
         await pause(autoLoadPause);

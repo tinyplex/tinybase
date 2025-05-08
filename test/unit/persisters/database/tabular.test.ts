@@ -1076,6 +1076,8 @@ describe.each(Object.entries(ALL_VARIANTS))(
       let persister: Persister;
       const sqlLogs: [string, any[]?][] = [];
       beforeEach(async () => {
+        sqlLogs.splice(0);
+
         persister = await getPersister(
           store,
           db,

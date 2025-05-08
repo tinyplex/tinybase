@@ -451,10 +451,6 @@ export const BUN_MERGEABLE_VARIANTS: Variants = {
       args: any[] = [],
     ): Promise<{[id: string]: any}[]> => db.query(sql).all(args),
     async (db: any) => db.close(),
-    20,
-    undefined,
-    undefined,
-    true,
   ],
 };
 
