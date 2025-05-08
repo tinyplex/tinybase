@@ -24,6 +24,7 @@ import * as TinyBasePersisterPartyKitServer from 'tinybase/persisters/persister-
 import * as TinyBasePersisterPglite from 'tinybase/persisters/persister-pglite';
 import * as TinyBasePersisterPostgres from 'tinybase/persisters/persister-postgres';
 import * as TinyBasePersisterRemote from 'tinybase/persisters/persister-remote';
+import * as TinyBasePersisterBun from 'tinybase/persisters/persister-sqlite-bun';
 import * as TinyBasePersisterSqliteWasm from 'tinybase/persisters/persister-sqlite-wasm';
 import * as TinyBasePersisterSqlite3 from 'tinybase/persisters/persister-sqlite3';
 import * as TinyBasePersisterYjs from 'tinybase/persisters/persister-yjs';
@@ -87,6 +88,7 @@ const TinyBaseForTest = {
   'tinybase/persisters/persister-postgres': TinyBasePersisterPostgres,
   'tinybase/persisters/persister-remote': TinyBasePersisterRemote,
   'tinybase/persisters/persister-sqlite3': TinyBasePersisterSqlite3,
+  'tinybase/persisters/persister-sqlite-bun': TinyBasePersisterBun,
   'tinybase/persisters/persister-sqlite-wasm': TinyBasePersisterSqliteWasm,
   'tinybase/persisters/persister-yjs': TinyBasePersisterYjs,
   'tinybase/synchronizers': TinyBaseSynchronizers,
@@ -150,7 +152,12 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
   }
 
   const tsx = block
-    .match(/(?<=```[tj]sx?\n).*?(?=```)/gms)
+    .match(
+      new RegExp(
+        '(?<=```[tj]sx?' + (isBun ? ' bun' : '') + '\\n).*?(?=```)',
+        'gms',
+      ),
+    )
     ?.join('\n')
     ?.trim();
   if (tsx == null) {
