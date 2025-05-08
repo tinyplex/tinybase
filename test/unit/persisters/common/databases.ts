@@ -26,10 +26,11 @@ import {createLibSqlPersister} from 'tinybase/persisters/persister-libsql';
 import {createPglitePersister} from 'tinybase/persisters/persister-pglite';
 import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
+import {createSqliteBunPersister} from 'tinybase/persisters/persister-sqlite-bun';
 import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import tmp from 'tmp';
-import {pause, suppressWarnings} from '../../common/other.ts';
+import {isBun, pause, suppressWarnings} from '../../common/other.ts';
 
 tmp.setGracefulCleanup();
 const statementMutex = new Mutex();
@@ -423,6 +424,40 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
   ],
 };
 
+export const BUN_MERGEABLE_VARIANTS: Variants = {
+  sqlite3: [
+    async () => {
+      const {Database} = await import('bun:sqlite');
+      return new Database(':memory:');
+    },
+    ['getDb', (db: typeof Database) => db],
+    (
+      store: Store,
+      db: typeof Database,
+      storeTableOrConfig?: string | DatabasePersisterConfig,
+      onSqlCommand?: (sql: string, args?: any[]) => void,
+      onIgnoredError?: (error: any) => void,
+    ) =>
+      (createSqliteBunPersister as any)(
+        store,
+        db,
+        storeTableOrConfig,
+        onSqlCommand,
+        onIgnoredError,
+      ),
+    async (
+      db: any,
+      sql: string,
+      args: any[] = [],
+    ): Promise<{[id: string]: any}[]> => db.query(sql).all(args),
+    async (db: any) => db.close(),
+    20,
+    undefined,
+    undefined,
+    true,
+  ],
+};
+
 export const NODE_SQLITE_VARIANTS: Variants = {
   ...NODE_SQLITE_MERGEABLE_VARIANTS,
   ...NODE_SQLITE_NON_MERGEABLE_VARIANTS,
@@ -438,21 +473,15 @@ export const ALL_NODE_VARIANTS: Variants = {
   ...NODE_POSTGRESQL_VARIANTS,
 };
 
-export const BUN_MERGEABLE_VARIANTS: Variants = {
-  //sqlite3: NODE_SQLITE_MERGEABLE_VARIANTS.sqlite3,
-};
-
 export const ALL_BUN_VARIANTS: Variants = {
   ...BUN_MERGEABLE_VARIANTS,
 };
 
-export const MERGEABLE_VARIANTS = process.versions.bun
+export const MERGEABLE_VARIANTS = isBun
   ? BUN_MERGEABLE_VARIANTS
   : NODE_MERGEABLE_VARIANTS;
 
-export const ALL_VARIANTS = process.versions.bun
-  ? ALL_BUN_VARIANTS
-  : ALL_NODE_VARIANTS;
+export const ALL_VARIANTS = isBun ? ALL_BUN_VARIANTS : ALL_NODE_VARIANTS;
 
 export const ADHOC_VARIANT: Variants = {
   adhoc: NODE_SQLITE_NON_MERGEABLE_VARIANTS.powerSync,

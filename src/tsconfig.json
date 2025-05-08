@@ -10,9 +10,9 @@
     "jsx": "react-jsx",
     "moduleResolution": "NodeNext",
     "allowSyntheticDefaultImports": true,
-    "types": ["node", "@cloudflare/workers-types", "bun-types"],
-    "composite": true,
+    "noEmit": true,
     "allowImportingTsExtensions": true,
-    "noEmit": true
+    "types": ["node", "@cloudflare/workers-types", "bun-types"],
+    "composite": true
   }
 }

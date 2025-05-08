@@ -40,7 +40,12 @@ import * as ws from 'ws';
 import * as yjs from 'yjs';
 import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from '../common/automerge-adaptor.ts';
 import {getTimeFunctions} from '../common/mergeable.ts';
-import {mockFetchWasm, pause, suppressWarnings} from '../common/other.ts';
+import {
+  isBun,
+  mockFetchWasm,
+  pause,
+  suppressWarnings,
+} from '../common/other.ts';
 
 const [reset, getNow] = getTimeFunctions();
 
@@ -204,6 +209,12 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
 };
 
 describe('Documentation tests', () => {
+  beforeAll(async () => {
+    if (isBun) {
+      (globalThis as any).modules['bun:sqlite'] = await import('bun:sqlite');
+    }
+  });
+
   forEachDeepFile(
     'src/@types',
     (file) =>

@@ -17,9 +17,10 @@
       "jest",
       "node",
       "jest-environment-puppeteer",
-      "http-server"
+      "http-server",
+      "bun-types"
     ],
-    "typeRoots": ["../node_modules/@types", "./modules"],
+    "composite": true,
     "skipLibCheck": true,
     "allowJs": true
   }

@@ -16,6 +16,8 @@ const ignorable = (...args: any[]): boolean =>
       .match(/wasm|OPFS|ArrayBuffer|ReactDOMTestUtils|C-web|onCustomMessage/),
   );
 
+export const isBun = process.versions.bun != null;
+
 export const pause = async (ms = 50): Promise<void> =>
   new Promise<void>((resolve) =>
     setTimeout(() => setTimeout(() => setTimeout(resolve, 1), ms - 2), 1),
