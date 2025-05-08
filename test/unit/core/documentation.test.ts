@@ -50,10 +50,11 @@ import {
 const [reset, getNow] = getTimeFunctions();
 
 const originalCreateMergeableStore = TinyBase.createMergeableStore;
-// @ts-expect-error swizzling
-// eslint-disable-next-line import/namespace
-TinyBase.createMergeableStore = (uniqueId?: Id) =>
-  originalCreateMergeableStore(uniqueId, getNow);
+const TinyBaseForTest = {
+  ...TinyBase,
+  createMergeableStore: (uniqueId?: Id) =>
+    originalCreateMergeableStore(uniqueId, getNow),
+};
 
 // need to be imported in examples
 (globalThis as any).modules = {
@@ -69,7 +70,7 @@ TinyBase.createMergeableStore = (uniqueId?: Id) =>
   react: React,
   'react-dom/client': ReactDOMClient,
   sqlite3,
-  tinybase: TinyBase,
+  tinybase: TinyBaseForTest,
   'tinybase/ui-react': TinyBaseUiReact,
   'tinybase/ui-react-dom': TinyBaseUiReactDom,
   'tinybase/persisters': TinyBasePersisters,

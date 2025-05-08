@@ -108,7 +108,7 @@
     "compileForTest": "gulp compileForTest",
     "compileForProd": "gulp compileForProd",
     "testUnit": "gulp testUnit",
-    "testBun": "bun test test/unit/persisters/database",
+    "testBun": "bun test test/unit/persisters/database test/unit/core/documentation.test.ts",
     "compileAndTestUnit": "gulp compileAndTestUnit",
     "testUnitFast": "gulp testUnitFast",
     "compileAndTestUnitFast": "gulp compileAndTestUnitFast",
