@@ -1,8 +1,8 @@
 /// persister-sqlite-bun
 import type {Database} from 'bun:sqlite';
-import type {MergeableStore} from '../../mergeable-store/index.js';
-import type {Store} from '../../store/index.js';
-import type {DatabasePersisterConfig, Persister, Persists} from '../index.js';
+import type {MergeableStore} from '../../mergeable-store/index.d.ts';
+import type {Store} from '../../store/index.d.ts';
+import type {DatabasePersisterConfig, Persister, Persists} from '../index.d.ts';
 
 /// SqliteBunPersister
 export interface SqliteBunPersister

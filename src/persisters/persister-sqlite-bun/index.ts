@@ -1,11 +1,11 @@
 import {Database} from 'bun:sqlite';
-import type {MergeableStore} from '../../@types/mergeable-store/index.js';
-import type {DatabasePersisterConfig} from '../../@types/persisters/index.js';
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import type {
   SqliteBunPersister,
   createSqliteBunPersister as createSqliteBunPersisterDecl,
 } from '../../@types/persisters/persister-sqlite-bun/index.d.ts';
-import type {Store} from '../../@types/store/index.js';
+import type {Store} from '../../@types/store/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 

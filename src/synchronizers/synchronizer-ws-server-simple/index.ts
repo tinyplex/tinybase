@@ -1,9 +1,9 @@
 import {WebSocket, WebSocketServer} from 'ws';
-import type {Id} from '../../@types/common/index.js';
+import type {Id} from '../../@types/common/index.d.ts';
 import type {
   WsServerSimple,
   createWsServerSimple as createWsServerSimpleDecl,
-} from '../../@types/synchronizers/synchronizer-ws-server-simple/index.js';
+} from '../../@types/synchronizers/synchronizer-ws-server-simple/index.d.ts';
 import {collClear, collDel, collIsEmpty} from '../../common/coll.ts';
 import {
   IdMap2,

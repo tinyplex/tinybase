@@ -15,7 +15,7 @@ import type {
 import type {
   DurableObjectStoragePersister,
   createDurableObjectStoragePersister as createDurableObjectStoragePersisterDecl,
-} from '../../@types/persisters/persister-durable-object-storage/index.js';
+} from '../../@types/persisters/persister-durable-object-storage/index.d.ts';
 import type {Cell, Value} from '../../@types/store/index.d.ts';
 import {jsonStringWithUndefined} from '../../common/json.ts';
 import {IdMap, mapNew, mapSet, mapToObj} from '../../common/map.ts';

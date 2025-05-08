@@ -1,15 +1,15 @@
 /// persister-sqlite-bun
 import type {Database} from 'bun:sqlite';
-import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.js';
+import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
 import type {
   OptionalSchemas,
   Store,
-} from '../../../store/with-schemas/index.js';
+} from '../../../store/with-schemas/index.d.ts';
 import type {
   DatabasePersisterConfig,
   Persister,
   Persists,
-} from '../../with-schemas/index.js';
+} from '../../with-schemas/index.d.ts';
 
 /// SqliteBunPersister
 export interface SqliteBunPersister<Schemas extends OptionalSchemas>
