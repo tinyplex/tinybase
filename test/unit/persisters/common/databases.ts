@@ -425,7 +425,7 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
 };
 
 export const BUN_MERGEABLE_VARIANTS: Variants = {
-  sqlite3: [
+  bunSqlite: [
     async () => {
       const {Database} = await import('bun:sqlite');
       return new Database(':memory:');
