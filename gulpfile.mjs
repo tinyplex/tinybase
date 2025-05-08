@@ -34,6 +34,7 @@ const TEST_MODULES = [
   'persisters/persister-remote',
   'persisters/persister-sqlite-wasm',
   'persisters/persister-sqlite3',
+  'persisters/persister-sqlite-bun',
   'persisters/persister-yjs',
   'synchronizers',
   'synchronizers/synchronizer-local',

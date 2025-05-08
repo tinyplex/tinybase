@@ -217,6 +217,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/persisters/persister-remote/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-sqlite-wasm/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-sqlite3/index.d.ts')
+    .addApiFile('dist/@types/persisters/persister-sqlite-bun/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-yjs/index.d.ts')
     .addApiFile('dist/@types/synchronizers/index.d.ts')
     .addApiFile('dist/@types/synchronizers/synchronizer-local/index.d.ts')
