@@ -8,7 +8,7 @@
 
 <a href='/guides/releases/#v6-1'><em>NEW!</em> v6.1 release</a>
 
-<span id="one-with">"The One With Various Improvements!"</span>
+<span id="one-with">"The One With Bun SQLite!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
@@ -86,6 +86,11 @@
   </a>
 </div>
 <div>
+  <a href='/guides/integrations/cloudflare-durable-objects'>
+    <img width="48" src="/cloudflare.svg?asImg" /> Cloudflare
+  </a>
+</div>
+<div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
     <img width="48" src="/postgresql.svg?asImg" /> PostgreSQL
   </a>
@@ -102,14 +107,15 @@
 </div>
 <div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
+    <img width="48" src="/bun.svg?asImg" /> Bun SQLite
+  </a>
+</div>
+<div>
+  <a href='/guides/schemas-and-persistence/database-persistence'>
     <img width="48" src="/expo.svg?asImg" /> Expo SQLite
   </a>
 </div>
 <div>
-  <a href='/guides/integrations/cloudflare-durable-objects'>
-    <img width="48" src="/cloudflare.svg?asImg" /> Cloudflare
-  </a>
-</div><div>
   <a href='/guides/schemas-and-persistence/database-persistence'>
     <img width="48" src="/electric.svg?asImg" /> ElectricSQL
   </a>

@@ -1,10 +1,10 @@
 <nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/todo-app/">Todo App</a></li><li><a href="/demos/todo-app/todo-app-v6-collaboration/">Todo App v6 (collaboration)</a></li></ul></nav><section class="s1" id="/demos/todo-app/todo-app-v6-collaboration/" data-id="TA7"><h1>Todo App v6 (collaboration)</h1><iframe srcdoc="&lt;html&gt;&lt;head&gt;&lt;script type=&quot;importmap&quot;&gt;{
     &quot;imports&quot;: {
-      &quot;tinybase&quot;: &quot;https://esm.sh/tinybase@6.1.0-beta.3&quot;,
-      &quot;tinybase/persisters/persister-browser&quot;: &quot;https://esm.sh/tinybase@6.1.0-beta.3/persisters/persister-browser&quot;,
-      &quot;tinybase/synchronizers/synchronizer-ws-client&quot;: &quot;https://esm.sh/tinybase@6.1.0-beta.3/synchronizers/synchronizer-ws-client&quot;,
-      &quot;tinybase/ui-react&quot;: &quot;https://esm.sh/tinybase@6.1.0-beta.3/ui-react&quot;,
-      &quot;tinybase/ui-react-inspector&quot;: &quot;https://esm.sh/tinybase@6.1.0-beta.3/ui-react-inspector&quot;,
+      &quot;tinybase&quot;: &quot;https://esm.sh/tinybase@6.1.0-beta.4&quot;,
+      &quot;tinybase/persisters/persister-browser&quot;: &quot;https://esm.sh/tinybase@6.1.0-beta.4/persisters/persister-browser&quot;,
+      &quot;tinybase/synchronizers/synchronizer-ws-client&quot;: &quot;https://esm.sh/tinybase@6.1.0-beta.4/synchronizers/synchronizer-ws-client&quot;,
+      &quot;tinybase/ui-react&quot;: &quot;https://esm.sh/tinybase@6.1.0-beta.4/ui-react&quot;,
+      &quot;tinybase/ui-react-inspector&quot;: &quot;https://esm.sh/tinybase@6.1.0-beta.4/ui-react-inspector&quot;,
       &quot;react&quot;: &quot;https://esm.sh/react@^19.0.0&quot;,
       &quot;react/jsx-runtime&quot;: &quot;https://esm.sh/react@^19.0.0/jsx-runtime&quot;,
       &quot;react-dom/client&quot;: &quot;https://esm.sh/react-dom@^19.0.0/client&quot;
@@ -20,11 +20,11 @@
 </span></code></pre><p>Since a <a href="/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a> is fully compatible with the <a href="/api/store/interfaces/store/store/"><code>Store</code></a> API, there are no other changes required within the app to accommodate this upgrade.</p><h3 id="additional-imports">Additional Imports</h3><p>To communicate with the server, we use a <a href="/api/synchronizer-ws-client/interfaces/synchronizer/wssynchronizer/"><code>WsSynchronizer</code></a>. This is in the <a href="/api/synchronizer-ws-client/"><code>synchronizer-ws-client</code></a> module, and so we need to add that to our app:</p><pre><code><span class="unchanged"><span class="prefix"> </span><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span>
 <span class="prefix"> </span>  {
 <span class="prefix"> </span>    "imports": {
-<span class="prefix"> </span>      "tinybase": "https://esm.sh/tinybase@6.1.0-beta.3",
-<span class="prefix"> </span>      "tinybase/persisters/persister-browser": "https://esm.sh/tinybase@6.1.0-beta.3/persisters/persister-browser",
-</span><span class="inserted-sign"><span class="prefix">+</span>      "tinybase/synchronizers/synchronizer-ws-client": "https://esm.sh/tinybase@6.1.0-beta.3/synchronizers/synchronizer-ws-client",
-</span><span class="unchanged"><span class="prefix"> </span>      "tinybase/ui-react": "https://esm.sh/tinybase@6.1.0-beta.3/ui-react",
-<span class="prefix"> </span>      "tinybase/ui-react-inspector": "https://esm.sh/tinybase@6.1.0-beta.3/ui-react-inspector",
+<span class="prefix"> </span>      "tinybase": "https://esm.sh/tinybase@6.1.0-beta.4",
+<span class="prefix"> </span>      "tinybase/persisters/persister-browser": "https://esm.sh/tinybase@6.1.0-beta.4/persisters/persister-browser",
+</span><span class="inserted-sign"><span class="prefix">+</span>      "tinybase/synchronizers/synchronizer-ws-client": "https://esm.sh/tinybase@6.1.0-beta.4/synchronizers/synchronizer-ws-client",
+</span><span class="unchanged"><span class="prefix"> </span>      "tinybase/ui-react": "https://esm.sh/tinybase@6.1.0-beta.4/ui-react",
+<span class="prefix"> </span>      "tinybase/ui-react-inspector": "https://esm.sh/tinybase@6.1.0-beta.4/ui-react-inspector",
 <span class="prefix"> </span>      "react": "https://esm.sh/react@^19.0.0",
 <span class="prefix"> </span>      "react/jsx-runtime": "https://esm.sh/react@^19.0.0/jsx-runtime",
 <span class="prefix"> </span>      "react-dom/client": "https://esm.sh/react-dom@^19.0.0/client"
