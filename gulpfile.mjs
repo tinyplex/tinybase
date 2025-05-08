@@ -655,17 +655,9 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
   await removeDir(TMP_DIR);
 };
 
-const npmInstall = async () => {
-  const {exec} = await import('child_process');
-  const {promisify} = await import('util');
-  return await promisify(exec)('npm install --legacy-peer-deps');
-};
+const npmInstall = async () => await execute('npm install --legacy-peer-deps');
 
-const npmPublish = async () => {
-  const {exec} = await import('child_process');
-  const {promisify} = await import('util');
-  return await promisify(exec)('npm publish');
-};
+const npmPublish = async () => await execute('npm publish');
 
 const {parallel, series} = gulp;
 
@@ -708,6 +700,14 @@ export const compileForProd = async () => await compileModulesForProd();
 export const testUnit = async () => {
   await test(['test/unit'], {coverageMode: 1, serialTests: true});
 };
+
+export const testBun = async () =>
+  await execute(
+    'bun test ' +
+      'test/unit/persisters/database ' +
+      'test/unit/core/documentation.test.ts',
+  );
+
 export const testUnitFast = async () => {
   await test(['test/unit/core'], {coverageMode: 1});
 };
@@ -758,6 +758,7 @@ export const serveDocs = async () => {
 export const preCommit = series(
   parallel(lint, spell, ts),
   compileForTest,
+  testBun,
   testUnit,
   compileForProd,
 );
@@ -766,6 +767,7 @@ export const prePublishPackage = series(
   npmInstall,
   compileForTest,
   parallel(lint, spell, ts),
+  testBun,
   testUnitCountAsserts,
   testPerf,
   compileForProd,
