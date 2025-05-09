@@ -123,6 +123,9 @@ export type DpcTabular<Schema extends OptionalTablesSchema> = {
   autoLoadIntervalSeconds?: number;
 };
 
+/// DpcTabularCondition
+export type DpcTabularCondition = `${string}$tableName${string}`;
+
 /// DpcTabularLoad
 export type DpcTabularLoad<Schema extends OptionalTablesSchema> = {
   [tableName: string]:
@@ -132,7 +135,7 @@ export type DpcTabularLoad<Schema extends OptionalTablesSchema> = {
         /// DpcTabularLoad.rowIdColumnName
         rowIdColumnName?: string;
         /// DpcTabularLoad.condition
-        condition?: `${string}$tableName${string}`;
+        condition?: DpcTabularCondition;
       }
     | TableIdFromSchema<Schema>;
 };
@@ -150,7 +153,7 @@ export type DpcTabularSave<Schema extends OptionalTablesSchema> = {
         /// DpcTabularSave.deleteEmptyTable
         deleteEmptyTable?: boolean;
         /// DpcTabularSave.condition
-        condition?: `${string}$tableName${string}`;
+        condition?: DpcTabularCondition;
       }
     | string;
 };

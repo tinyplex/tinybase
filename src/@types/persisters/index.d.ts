@@ -107,6 +107,9 @@ export type DpcTabular = {
   autoLoadIntervalSeconds?: number;
 };
 
+/// DpcTabularCondition
+export type DpcTabularCondition = `${string}$tableName${string}`;
+
 /// DpcTabularLoad
 export type DpcTabularLoad = {
   [tableName: string]:
@@ -116,7 +119,7 @@ export type DpcTabularLoad = {
         /// DpcTabularLoad.rowIdColumnName
         rowIdColumnName?: string;
         /// DpcTabularLoad.condition
-        condition?: `${string}$tableName${string}`;
+        condition?: DpcTabularCondition;
       }
     | Id;
 };
@@ -134,7 +137,7 @@ export type DpcTabularSave = {
         /// DpcTabularSave.deleteEmptyTable
         deleteEmptyTable?: boolean;
         /// DpcTabularSave.condition
-        condition?: `${string}$tableName${string}`;
+        condition?: DpcTabularCondition;
       }
     | string;
 };
