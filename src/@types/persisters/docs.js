@@ -40,9 +40,9 @@
  * create a fully customized way to save and load Store data.
  *
  * Similarly, the createCustomSqlitePersister function and
- * createCustomPostgreSqlPersister function can be used to build Persister objects
- * against SQLite and PostgreSQL SDKs (or forks) that are not already included
- * with TinyBase.
+ * createCustomPostgreSqlPersister function can be used to build Persister
+ * objects against SQLite and PostgreSQL SDKs (or forks) that are not already
+ * included with TinyBase.
  * @see Persistence guides
  * @see Countries demo
  * @see Todo App demos
@@ -53,8 +53,8 @@
  */
 /// persisters
 /**
- * The Status enum is used to indicate whether a Persister is idle, or loading or
- * saving data.
+ * The Status enum is used to indicate whether a Persister is idle, or loading
+ * or saving data.
  *
  * The enum is intended to be used to understand the status of the Persister in
  * conjunction with the getStatus and addStatusListener methods.
@@ -499,7 +499,7 @@
  * |`tableId`|Id|The Id of the Store Table into which data from this database table should be loaded.|
  * |`rowIdColumnName?`|string|The optional name of the column in the database table that will be used as the Row Ids in the Store Table, defaulting to '_id'.|
  * |`condition?`|string|The optional SQL WHERE clause that will be used to filter the rows that are loaded into the Store Table. When set it must include the `$tableName` placeholder for the table name.|
- * 
+ *
  * As a shortcut, if you do not need to specify a custom `rowIdColumnName`, you
  * can simply provide the Id of the Store Table instead of the whole object.
  *
@@ -730,9 +730,10 @@
          */
         /// DpcTabularSave.deleteEmptyTable
         /**
-         * The optional SQL WHERE clause that will be used to scope cleanup operations
-         * to the Store Table. When set it must include the `$tableName` placeholder for
-         * the table name. Defaults to `DpcTabularLoad.condition`.
+         * The optional SQL WHERE clause that will be used to scope cleanup
+         * operations to the Store Table. When set it must include the
+         * `$tableName` placeholder for the table name. Defaults to
+         * `DpcTabularLoad.condition`.
          * @category Configuration
          * @since v6.1.0
          */
@@ -1762,9 +1763,9 @@
  *
  * All of the TinyBase PostgreSQL-oriented Persister functions use this function
  * under the covers, and so you may wish to look at those implementations for
- * ideas on how to build your own Persister type, and as functional
- * examples. Examine the implementation of the createPostgresPersister function
- * as a good starting point, for example.
+ * ideas on how to build your own Persister type, and as functional examples.
+ * Examine the implementation of the createPostgresPersister function as a good
+ * starting point, for example.
  * @param store The Store to persist.
  * @param configOrStoreTableName A DatabasePersisterConfig object, or a string
  * that will be used as the name of the Store's table in the database.
