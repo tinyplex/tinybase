@@ -131,6 +131,8 @@ export type DpcTabularLoad<Schema extends OptionalTablesSchema> = {
         tableId: TableIdFromSchema<Schema>;
         /// DpcTabularLoad.rowIdColumnName
         rowIdColumnName?: string;
+        /// DpcTabularLoad.condition
+        condition?: `${string}$tableName${string}`;
       }
     | TableIdFromSchema<Schema>;
 };
@@ -147,6 +149,8 @@ export type DpcTabularSave<Schema extends OptionalTablesSchema> = {
         deleteEmptyColumns?: boolean;
         /// DpcTabularSave.deleteEmptyTable
         deleteEmptyTable?: boolean;
+        /// DpcTabularSave.condition
+        condition?: `${string}$tableName${string}`;
       }
     | string;
 };
