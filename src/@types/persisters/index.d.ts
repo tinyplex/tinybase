@@ -133,7 +133,7 @@ export type DpcTabularSave = {
         deleteEmptyColumns?: boolean;
         /// DpcTabularSave.deleteEmptyTable
         deleteEmptyTable?: boolean;
-        /// DpcTabularLoad.condition
+        /// DpcTabularSave.condition
         condition?: `${string}$tableName${string}`;
       }
     | string;
