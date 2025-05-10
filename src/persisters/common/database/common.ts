@@ -1,3 +1,4 @@
+import type {Ids} from '../../../@types/index.d.ts';
 import type {DatabaseExecuteCommand} from '../../../@types/persisters/index.d.ts';
 import {arrayJoin, arrayMap} from '../../../common/array.ts';
 import {IdSet} from '../../../common/set.ts';
@@ -30,6 +31,10 @@ export const DATA_VERSION = 'data_version';
 export const SCHEMA_VERSION = 'schema_version';
 export const FROM = 'FROM ';
 export const PRAGMA_TABLE = 'pragma_table_';
+export const CREATE = 'CREATE ';
+export const CREATE_TABLE = CREATE + TABLE;
+export const OR_REPLACE = 'OR REPLACE ';
+export const FUNCTION = 'FUNCTION';
 export const TABLE_NAME_PLACEHOLDER = '$tableName';
 
 export const getWrappedCommand = (
@@ -44,6 +49,8 @@ export const getWrappedCommand = (
     : executeCommand;
 
 export const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
+
+export const escapeIds = (...ids: Ids) => escapeId(arrayJoin(ids, '_'));
 
 export const escapeColumnNames = (...columnNames: string[]) =>
   arrayJoin(arrayMap(columnNames, escapeId), COMMA);

@@ -14,10 +14,15 @@ import {jsonParse, jsonString} from '../../../common/json.ts';
 import {ifNotUndefined, promiseAll} from '../../../common/other.ts';
 import {TINYBASE, TRUE, strMatch} from '../../../common/strings.ts';
 import {
+  CREATE,
+  CREATE_TABLE,
+  FUNCTION,
+  OR_REPLACE,
   SELECT,
   TABLE_NAME_PLACEHOLDER,
   WHERE,
   escapeId,
+  escapeIds,
   getPlaceholders,
   getWrappedCommand,
 } from './common.ts';
@@ -25,11 +30,9 @@ import {getConfigStructures} from './config.ts';
 import {createJsonPersister} from './json.ts';
 import {createTabularPersister} from './tabular.ts';
 
-const EVENT_CHANNEL = TINYBASE;
+const TABLE_CREATED = 'c';
+const DATA_CHANGED = 'd';
 const EVENT_REGEX = /^([cd]:)(.+)/;
-
-const CHANGE_DATA_TRIGGER = TINYBASE + '_data';
-const CREATE_TABLE_TRIGGER = TINYBASE + '_table';
 
 export const createCustomPostgreSqlPersister = <
   ListenerHandle,
@@ -52,12 +55,55 @@ export const createCustomPostgreSqlPersister = <
 ): Persister<Persist> => {
   const executeCommand = getWrappedCommand(rawExecuteCommand, onSqlCommand);
   const persisterId = getUniqueId(5).replace(/-/g, '_').toLowerCase();
+  const persisterChannel = TINYBASE + '_' + persisterId;
 
   const [isJson, , defaultedConfig, managedTableNamesSet] = getConfigStructures(
     configOrStoreTableName,
   );
 
-  const getWhenCondition = (tableName: string, newOrOld: 0 | 1) => {
+  const createFunction = async (
+    name: string,
+    body: string,
+    returnPrefix = '',
+    declarations = '',
+  ) => {
+    const escapedFunctionName = escapeIds(TINYBASE, name, persisterId);
+    await executeCommand(
+      CREATE +
+        OR_REPLACE +
+        FUNCTION +
+        escapedFunctionName +
+        `()RETURNS ${returnPrefix}trigger ` +
+        `AS $$ ${declarations}BEGIN ${body}END;$$ LANGUAGE plpgsql;`,
+    );
+    return escapedFunctionName;
+  };
+
+  const createTrigger = async (
+    prefix: string,
+    escapedName: string,
+    body: string,
+    escapedFunctionName: string,
+  ) =>
+    await executeCommand(
+      CREATE +
+        prefix +
+        'TRIGGER' +
+        escapedName +
+        body +
+        'EXECUTE ' +
+        FUNCTION +
+        escapedFunctionName +
+        `()`,
+    );
+
+  const notifySql = (message: string) =>
+    `PERFORM pg_notify('${persisterChannel}',${message});`;
+
+  const getWhenCondition = (
+    tableName: string,
+    newOrOldOrBoth: 0 | 1 | 2,
+  ): string => {
     const tablesLoadConfig = defaultedConfig[0];
     if (!tablesLoadConfig || typeof tablesLoadConfig === 'string') {
       return TRUE;
@@ -68,62 +114,86 @@ export const createCustomPostgreSqlPersister = <
       return TRUE;
     }
 
-    return condition.replace(TABLE_NAME_PLACEHOLDER, newOrOld ? 'NEW' : 'OLD');
+    if (newOrOldOrBoth === 2) {
+      return (
+        getWhenCondition(tableName, 0) + ' OR ' + getWhenCondition(tableName, 1)
+      );
+    }
+    return condition.replace(
+      TABLE_NAME_PLACEHOLDER,
+      newOrOldOrBoth == 0 ? 'NEW' : 'OLD',
+    );
   };
 
-  const addDataTriggers = async (tableName: string) => {
-    await executeCommand(
-      // eslint-disable-next-line max-len
-      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_insert_' + persisterId + '_' + tableName)} AFTER INSERT ON ${escapeId(tableName)} FOR EACH ROW WHEN (${getWhenCondition(tableName, 0)}) EXECUTE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()`,
+  const addDataChangedTriggers = async (
+    tableName: string,
+    dataChangedFunction: string,
+  ) =>
+    await promiseAll(
+      arrayMap(
+        ['INSERT', 'DELETE', 'UPDATE'],
+        async (operation, newOrOldOrBoth) =>
+          await createTrigger(
+            OR_REPLACE,
+            escapeIds(
+              TINYBASE,
+              DATA_CHANGED,
+              persisterId,
+              tableName,
+              operation,
+            ),
+            // eslint-disable-next-line max-len
+            `AFTER ${operation} ON${escapeId(tableName)}FOR EACH ROW WHEN(${getWhenCondition(
+              tableName,
+              newOrOldOrBoth as 0 | 1 | 2,
+            )})`,
+            dataChangedFunction,
+          ),
+      ),
     );
-    await executeCommand(
-      // eslint-disable-next-line max-len
-      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_update_' + persisterId + '_' + tableName)} AFTER UPDATE ON ${escapeId(tableName)} FOR EACH ROW WHEN ((${getWhenCondition(tableName, 0)}) OR (${getWhenCondition(tableName, 1)})) EXECUTE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()`,
-    );
-    await executeCommand(
-      // eslint-disable-next-line max-len
-      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_delete_' + persisterId + '_' + tableName)} AFTER DELETE ON ${escapeId(tableName)} FOR EACH ROW WHEN (${getWhenCondition(tableName, 1)}) EXECUTE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()`,
-    );
-  };
 
   const addPersisterListener = async (
     listener: PersisterListener<Persist>,
   ): Promise<ListenerHandle> => {
-    await executeCommand(
+    const tableCreatedFunction = await createFunction(
+      TABLE_CREATED,
       // eslint-disable-next-line max-len
-      `CREATE OR REPLACE FUNCTION ${escapeId(CREATE_TABLE_TRIGGER + '_' + persisterId)}()RETURNS event_trigger AS $t2$ DECLARE row record; BEGIN FOR row IN SELECT object_identity FROM pg_event_trigger_ddl_commands()WHERE command_tag='CREATE TABLE' LOOP PERFORM pg_notify('${EVENT_CHANNEL + '_' + persisterId}','c:'||SPLIT_PART(row.object_identity,'.',2));END LOOP;END;$t2$ LANGUAGE plpgsql;`,
+      `FOR row IN SELECT object_identity FROM pg_event_trigger_ddl_commands()${WHERE} command_tag='${CREATE_TABLE}' LOOP ${notifySql(`'c:'||SPLIT_PART(row.object_identity,'.',2)`)}END LOOP;`,
+      'event_',
+      'DECLARE row record;',
     );
-
     try {
-      await executeCommand(
-        // eslint-disable-next-line max-len
-        `CREATE EVENT TRIGGER ${escapeId(CREATE_TABLE_TRIGGER + '_' + persisterId)} ON ddl_command_end WHEN TAG IN('CREATE TABLE')EXECUTE FUNCTION ${escapeId(CREATE_TABLE_TRIGGER + '_' + persisterId)}();`,
+      await createTrigger(
+        'EVENT ',
+        escapeIds(TINYBASE, TABLE_CREATED, persisterId),
+        `ON ddl_command_end WHEN TAG IN('${CREATE_TABLE}')`,
+        tableCreatedFunction,
       );
     } catch {}
 
-    await executeCommand(
-      // eslint-disable-next-line max-len
-      `CREATE OR REPLACE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()RETURNS trigger AS $t1$ BEGIN PERFORM pg_notify('${EVENT_CHANNEL + '_' + persisterId}','d:'||TG_TABLE_NAME);RETURN NULL;END;$t1$ LANGUAGE plpgsql;`,
+    const dataChangedFunction = await createFunction(
+      DATA_CHANGED,
+      notifySql(`'d:'||TG_TABLE_NAME`) + `RETURN NULL;`,
     );
     await promiseAll(
       arrayMap(collValues(managedTableNamesSet), async (tableName) => {
         await executeCommand(
-          // eslint-disable-next-line max-len
-          `CREATE TABLE IF NOT EXISTS ${escapeId(tableName)}("_id"text PRIMARY KEY)`,
+          CREATE_TABLE +
+            ` IF NOT EXISTS ${escapeId(tableName)}("_id"text PRIMARY KEY)`,
         );
-        await addDataTriggers(tableName);
+        await addDataChangedTriggers(tableName, dataChangedFunction);
       }),
     );
 
     return await addChangeListener(
-      EVENT_CHANNEL + '_' + persisterId,
+      persisterChannel,
       async (prefixAndTableName) =>
         await ifNotUndefined(
           strMatch(prefixAndTableName, EVENT_REGEX),
           async ([, eventType, tableName]) => {
             if (collHas(managedTableNamesSet, tableName)) {
               if (eventType == 'c:') {
-                await addDataTriggers(tableName);
+                await addDataChangedTriggers(tableName, dataChangedFunction);
               }
               listener();
             }
