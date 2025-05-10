@@ -11,6 +11,7 @@ export const BOOLEAN = getTypeOf(true);
 export const NUMBER = getTypeOf(0);
 export const FUNCTION = getTypeOf(getTypeOf);
 
+export const TRUE = 'true';
 export const TYPE = 'type';
 export const DEFAULT = 'default';
 

@@ -1,7 +1,7 @@
 import type {DatabaseExecuteCommand} from '../../../@types/persisters/index.d.ts';
 import {arrayJoin, arrayMap} from '../../../common/array.ts';
 import {IdSet} from '../../../common/set.ts';
-import {COMMA} from '../../../common/strings.ts';
+import {COMMA, TRUE} from '../../../common/strings.ts';
 
 export type QuerySchema = (
   executeCommand: DatabaseExecuteCommand,
@@ -58,6 +58,7 @@ export const getWhereCondition = (
   tableName: string,
   condition?: string | null,
 ) =>
-  condition
-    ? ' ' + condition.replace(TABLE_NAME_PLACEHOLDER, escapeId(tableName))
-    : ' true';
+  ' ' +
+  (condition
+    ? condition.replace(TABLE_NAME_PLACEHOLDER, escapeId(tableName))
+    : TRUE);

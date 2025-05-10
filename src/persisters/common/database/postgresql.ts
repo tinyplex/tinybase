@@ -12,7 +12,7 @@ import {collHas, collValues} from '../../../common/coll.ts';
 import {getUniqueId} from '../../../common/index.ts';
 import {jsonParse, jsonString} from '../../../common/json.ts';
 import {ifNotUndefined, promiseAll} from '../../../common/other.ts';
-import {TINYBASE, strMatch} from '../../../common/strings.ts';
+import {TINYBASE, TRUE, strMatch} from '../../../common/strings.ts';
 import {
   SELECT,
   TABLE_NAME_PLACEHOLDER,
@@ -60,12 +60,12 @@ export const createCustomPostgreSqlPersister = <
   const getWhenCondition = (tableName: string, newOrOld: 'NEW' | 'OLD') => {
     const tablesLoadConfig = defaultedConfig[0];
     if (!tablesLoadConfig || typeof tablesLoadConfig === 'string') {
-      return 'true';
+      return TRUE;
     }
 
     const [, , condition] = tablesLoadConfig.get(tableName) ?? [];
     if (!condition) {
-      return 'true';
+      return TRUE;
     }
 
     return condition.replace(TABLE_NAME_PLACEHOLDER, newOrOld);
