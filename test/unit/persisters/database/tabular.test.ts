@@ -121,7 +121,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
                     t6: {
                       tableName: 't6',
                       condition: isPostgres
-                        ? "$tableName.c6 = '1'"
+                        ? `$tableName.c6 = '1'`
                         : '$tableName.c6 = 1',
                     },
                   },
@@ -362,7 +362,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
                     t6: {
                       tableId: 't6',
                       condition: isPostgres
-                        ? "$tableName.c6 = '1'"
+                        ? `$tableName.c6 = '1'`
                         : '$tableName.c6 = 1',
                     },
                     tinybase_values: {tableId: 'values'},
@@ -608,7 +608,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
                   t1: {
                     tableName: 't1',
                     condition: isPostgres
-                      ? "$tableName.c0 = '1'"
+                      ? `$tableName.c0 = '1'`
                       : '$tableName.c0 = 1',
                   },
                 },
@@ -877,21 +877,15 @@ describe.each(Object.entries(ALL_VARIANTS))(
     describe('Load from database', () => {
       let persister: Persister;
       beforeEach(async () => {
-        persister = await getPersister(
-          store,
-          db,
-          {
-            mode: 'tabular',
-            tables: {
-              load: {t1: 't1', t2: 't2', t3: 't3'},
-              save: {t1: 't1', t2: 't2', t3: 't3'},
-            },
-            values: {load: true, save: true},
-            autoLoadIntervalSeconds,
+        persister = await getPersister(store, db, {
+          mode: 'tabular',
+          tables: {
+            load: {t1: 't1', t2: 't2', t3: 't3'},
+            save: {t1: 't1', t2: 't2', t3: 't3'},
           },
-          undefined,
-          (err) => console.error(err),
-        );
+          values: {load: true, save: true},
+          autoLoadIntervalSeconds,
+        });
       });
 
       test('nothing', async () => {
@@ -1281,7 +1275,10 @@ describe.each(Object.entries(ALL_VARIANTS))(
             'INSERT INTO"tinybase_values"("_id","v1","v2")VALUES($1,$2,$3)ON CONFLICT("_id")DO UPDATE SET"v1"=excluded."v1","v2"=excluded."v2"',
             ['_', encodedValue(1), encodedValue(2)],
           ],
-          ['DELETE FROM"tinybase_values"WHERE"_id"NOT IN($1) AND ( true)', ['_']],
+          [
+            'DELETE FROM"tinybase_values"WHERE"_id"NOT IN($1) AND ( true)',
+            ['_'],
+          ],
           ['END', undefined],
         ]);
       });

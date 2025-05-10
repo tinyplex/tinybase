@@ -54,7 +54,10 @@ export const getPlaceholders = (array: any[], offset = [1]) =>
     COMMA,
   );
 
-export const getWhereCondition = (tableName: string, condition?: string | null) =>
+export const getWhereCondition = (
+  tableName: string,
+  condition?: string | null,
+) =>
   condition
     ? ' ' + condition.replace(TABLE_NAME_PLACEHOLDER, escapeId(tableName))
     : ' true';
