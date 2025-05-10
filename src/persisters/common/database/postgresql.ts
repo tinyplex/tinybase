@@ -57,7 +57,7 @@ export const createCustomPostgreSqlPersister = <
     configOrStoreTableName,
   );
 
-  const getWhenCondition = (tableName: string, newOrOld: 'NEW' | 'OLD') => {
+  const getWhenCondition = (tableName: string, newOrOld: 0 | 1) => {
     const tablesLoadConfig = defaultedConfig[0];
     if (!tablesLoadConfig || typeof tablesLoadConfig === 'string') {
       return TRUE;
@@ -68,21 +68,21 @@ export const createCustomPostgreSqlPersister = <
       return TRUE;
     }
 
-    return condition.replace(TABLE_NAME_PLACEHOLDER, newOrOld);
+    return condition.replace(TABLE_NAME_PLACEHOLDER, newOrOld ? 'NEW' : 'OLD');
   };
 
   const addDataTriggers = async (tableName: string) => {
     await executeCommand(
       // eslint-disable-next-line max-len
-      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_insert_' + persisterId + '_' + tableName)} AFTER INSERT ON ${escapeId(tableName)} FOR EACH ROW WHEN (${getWhenCondition(tableName, 'NEW')}) EXECUTE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()`,
+      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_insert_' + persisterId + '_' + tableName)} AFTER INSERT ON ${escapeId(tableName)} FOR EACH ROW WHEN (${getWhenCondition(tableName, 0)}) EXECUTE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()`,
     );
     await executeCommand(
       // eslint-disable-next-line max-len
-      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_update_' + persisterId + '_' + tableName)} AFTER UPDATE ON ${escapeId(tableName)} FOR EACH ROW WHEN ((${getWhenCondition(tableName, 'NEW')}) OR (${getWhenCondition(tableName, 'OLD')})) EXECUTE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()`,
+      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_update_' + persisterId + '_' + tableName)} AFTER UPDATE ON ${escapeId(tableName)} FOR EACH ROW WHEN ((${getWhenCondition(tableName, 0)}) OR (${getWhenCondition(tableName, 1)})) EXECUTE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()`,
     );
     await executeCommand(
       // eslint-disable-next-line max-len
-      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_delete_' + persisterId + '_' + tableName)} AFTER DELETE ON ${escapeId(tableName)} FOR EACH ROW WHEN (${getWhenCondition(tableName, 'OLD')}) EXECUTE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()`,
+      `CREATE OR REPLACE TRIGGER ${escapeId(CHANGE_DATA_TRIGGER + '_delete_' + persisterId + '_' + tableName)} AFTER DELETE ON ${escapeId(tableName)} FOR EACH ROW WHEN (${getWhenCondition(tableName, 1)}) EXECUTE FUNCTION ${escapeId(CHANGE_DATA_TRIGGER + '_' + persisterId)}()`,
     );
   };
 
