@@ -59,10 +59,14 @@ export const createCustomPostgreSqlPersister = <
 
   const getWhenCondition = (tableName: string, newOrOld: 'NEW' | 'OLD') => {
     const tablesLoadConfig = defaultedConfig[0];
-    if(!tablesLoadConfig || typeof tablesLoadConfig === 'string') return 'true';
+    if (!tablesLoadConfig || typeof tablesLoadConfig === 'string') {
+      return 'true';
+    }
 
-    const [,,condition] = tablesLoadConfig.get(tableName) ?? [];
-    if(!condition) return 'true';
+    const [, , condition] = tablesLoadConfig.get(tableName) ?? [];
+    if (!condition) {
+      return 'true';
+    }
 
     return condition.replace(TABLE_NAME_PLACEHOLDER, newOrOld);
   };
