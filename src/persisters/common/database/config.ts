@@ -1,7 +1,13 @@
 import type {Id} from '../../../@types/common/index.d.ts';
 import type {DatabasePersisterConfig} from '../../../@types/persisters/index.d.ts';
 import {collHas} from '../../../common/coll.ts';
-import {IdMap, mapNew, mapSet} from '../../../common/map.ts';
+import {
+  IdMap,
+  mapForEach,
+  mapGet,
+  mapNew,
+  mapSet,
+} from '../../../common/map.ts';
 import {
   IdObj,
   objMap,
@@ -137,38 +143,48 @@ export const getConfigStructures = (
     objValues(objMerge(DEFAULT_TABULAR_VALUES_CONFIG, values)),
     0,
     objSize(DEFAULT_TABULAR_VALUES_CONFIG),
-  );
-  const valuesTable = valuesConfig[2] as string;
+  ) as DefaultedTabularConfig[2];
+  const valuesTable = valuesConfig[2];
   const managedTableNames = setNew(valuesTable);
   const excludedTableNames = setNew(valuesTable);
 
-  const tabularConfig = [
-    getDefaultedTabularConfigMap(
-      load,
-      {
-        [TABLE_ID]: null,
-        [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME,
-        [CONDITION]: null,
-      },
-      TABLE_ID,
-      (tableName) => collHas(excludedTableNames, tableName),
-      (tableName) => setAdd(managedTableNames, tableName),
-    ),
-    getDefaultedTabularConfigMap(
-      save,
-      {
-        [TABLE_NAME]: null,
-        [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME,
-        [DELETE_EMPTY_COLUMNS]: 0,
-        [DELETE_EMPTY_TABLE]: 0,
-        [CONDITION]: load[CONDITION] ?? null,
-      },
-      TABLE_NAME,
-      (_, tableName) => collHas(excludedTableNames, tableName),
-      (_, tableName) => setAdd(managedTableNames, tableName),
-    ),
-    valuesConfig,
-  ] as any;
+  const tablesLoadConfig = getDefaultedTabularConfigMap(
+    load,
+    {
+      [TABLE_ID]: null,
+      [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME,
+      [CONDITION]: null,
+    },
+    TABLE_ID,
+    (tableName) => collHas(excludedTableNames, tableName),
+    (tableName) => setAdd(managedTableNames, tableName),
+  ) as DefaultedTabularConfig[0];
 
-  return [0, autoLoadIntervalSeconds, tabularConfig, managedTableNames];
+  const tablesSaveConfig = getDefaultedTabularConfigMap(
+    save,
+    {
+      [TABLE_NAME]: null,
+      [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME,
+      [DELETE_EMPTY_COLUMNS]: 0,
+      [DELETE_EMPTY_TABLE]: 0,
+      [CONDITION]: null,
+    },
+    TABLE_NAME,
+    (_, tableName) => collHas(excludedTableNames, tableName),
+    (_, tableName) => setAdd(managedTableNames, tableName),
+  ) as DefaultedTabularConfig[1];
+
+  mapForEach(
+    tablesSaveConfig,
+    (_, tableSaveConfig) =>
+      (tableSaveConfig[4] ??=
+        mapGet(tablesLoadConfig, tableSaveConfig[0])?.[2] ?? null),
+  );
+
+  return [
+    0,
+    autoLoadIntervalSeconds,
+    [tablesLoadConfig, tablesSaveConfig, valuesConfig],
+    managedTableNames,
+  ];
 };
