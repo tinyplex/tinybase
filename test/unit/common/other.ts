@@ -29,9 +29,8 @@ export const waitFor = async (assert: () => any, timeoutMs = 50) => {
     try {
       await assert();
       return;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
-      await pause(10, true);
+    } catch {
+      await pause(10);
     }
   }
   return assert();
