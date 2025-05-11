@@ -108,7 +108,7 @@ export type DpcTabular = {
 };
 
 /// DpcTabularCondition
-export type DpcTabularCondition = `${string}$tableName${string}`;
+export type DpcTabularCondition = `${string}$tableName${string}` | 'true';
 
 /// DpcTabularLoad
 export type DpcTabularLoad = {

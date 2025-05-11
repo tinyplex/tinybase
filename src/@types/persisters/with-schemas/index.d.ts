@@ -124,7 +124,7 @@ export type DpcTabular<Schema extends OptionalTablesSchema> = {
 };
 
 /// DpcTabularCondition
-export type DpcTabularCondition = `${string}$tableName${string}`;
+export type DpcTabularCondition = `${string}$tableName${string}` | 'true';
 
 /// DpcTabularLoad
 export type DpcTabularLoad<Schema extends OptionalTablesSchema> = {
