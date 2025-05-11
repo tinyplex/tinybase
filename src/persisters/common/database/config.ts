@@ -1,5 +1,8 @@
 import type {Id} from '../../../@types/common/index.d.ts';
-import type {DatabasePersisterConfig} from '../../../@types/persisters/index.d.ts';
+import type {
+  DatabasePersisterConfig,
+  DpcTabularCondition,
+} from '../../../@types/persisters/index.d.ts';
 import {collHas} from '../../../common/coll.ts';
 import {
   IdMap,
@@ -30,7 +33,7 @@ export type DefaultedTabularConfig = [
     [
       tableId: Id,
       rowIdColumnName: string,
-      condition: `${string}$tableName${string}` | null,
+      condition: DpcTabularCondition | null,
     ]
   >,
   tablesSaveConfig: IdMap<
@@ -39,7 +42,7 @@ export type DefaultedTabularConfig = [
       rowIdColumnName: string,
       deleteEmptyColumns: boolean,
       deleteEmptyTable: boolean,
-      condition: `${string}$tableName${string}` | null,
+      condition: DpcTabularCondition | null,
     ]
   >,
   valuesConfig: [load: boolean, save: boolean, tableName: string],

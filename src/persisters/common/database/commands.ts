@@ -1,5 +1,8 @@
 import type {Id} from '../../../@types/common/index.d.ts';
-import type {DatabaseExecuteCommand} from '../../../@types/persisters/index.d.ts';
+import type {
+  DatabaseExecuteCommand,
+  DpcTabularCondition,
+} from '../../../@types/persisters/index.d.ts';
 import type {
   CellOrUndefined,
   Table,
@@ -58,7 +61,7 @@ export const getCommandFunctions = (
   loadTable: (
     tableName: string,
     rowIdColumnName: string,
-    condition?: `${string}$tableName${string}` | null,
+    condition?: DpcTabularCondition | null,
   ) => Promise<Table>,
   saveTable: (
     tableName: string,
@@ -72,7 +75,7 @@ export const getCommandFunctions = (
       | undefined,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
-    condition: `${string}$tableName${string}` | null,
+    condition: DpcTabularCondition | null,
     partial?: boolean,
   ) => Promise<void>,
   transaction: <Return>(actions: () => Promise<Return>) => Promise<Return>,
@@ -93,7 +96,7 @@ export const getCommandFunctions = (
   const loadTable = async (
     tableName: string,
     rowIdColumnName: string,
-    condition: `${string}$tableName${string}` | null = null,
+    condition: DpcTabularCondition | null = null,
   ): Promise<Table> =>
     canSelect(tableName, rowIdColumnName)
       ? objNew(
@@ -129,7 +132,7 @@ export const getCommandFunctions = (
       | undefined,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
-    condition: `${string}$tableName${string}` | null = null,
+    condition: DpcTabularCondition | null = null,
     partial = false,
   ): Promise<void> => {
     const settingColumnNameSet = setNew<string>();
