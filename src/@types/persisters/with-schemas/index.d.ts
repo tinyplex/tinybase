@@ -184,7 +184,7 @@ export interface Persister<
   ): Promise<this>;
 
   /// Persister.stopAutoLoad
-  stopAutoLoad(): this;
+  stopAutoLoad(): Promise<this>;
 
   /// Persister.isAutoLoading
   isAutoLoading(): boolean;
@@ -196,7 +196,7 @@ export interface Persister<
   startAutoSave(): Promise<this>;
 
   /// Persister.stopAutoSave
-  stopAutoSave(): this;
+  stopAutoSave(): Promise<this>;
 
   /// Persister.isAutoSaving
   isAutoSaving(): boolean;
@@ -217,7 +217,7 @@ export interface Persister<
   getStore(): PersistedStore<Schemas, Persist>;
 
   /// Persister.destroy
-  destroy(): this;
+  destroy(): Promise<this>;
 
   /// Persister.getStats
   getStats(): PersisterStats;

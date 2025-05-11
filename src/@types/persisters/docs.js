@@ -1059,8 +1059,8 @@
    * previously started with the startAutoLoad method.
    *
    * If the Persister is not currently set to automatically load, this method
-   * has no effect.
-   * @returns A reference to the Persister object.
+   * has no effect. This method is asynchronous.
+   * @returns A Promise containing a reference to the Persister object.
    * @example
    * This example creates an empty Store, and starts automatically loading data
    * into it from the browser's session storage. Once the automatic loading is
@@ -1206,8 +1206,8 @@
    * previously started with the startAutoSave method.
    *
    * If the Persister is not currently set to automatically save, this method
-   * has no effect.
-   * @returns A reference to the Persister object.
+   * has no effect. This method is asynchronous.
+   * @returns A Promise containing a reference to the Persister object.
    * @example
    * This example creates a Store with some data, and saves into the browser's
    * session storage. Subsequent changes to the Store are then automatically
@@ -1460,8 +1460,8 @@
    * This guarantees that all of the listeners that the object registered with
    * the underlying Store and storage are removed and it can be correctly
    * garbage collected. It is equivalent to running the stopAutoLoad method and
-   * the stopAutoSave method in succession.
-   * @returns A reference to the Persister object.
+   * the stopAutoSave method in succession. This method is asynchronous.
+   * @returns A Promise containing a reference to the Persister object.
    * @example
    * This example creates a Store, associates a Persister object with it (that
    * registers a TablesListener with the underlying Store), and then destroys it

@@ -162,7 +162,7 @@ export interface Persister<Persist extends Persists = Persists.StoreOnly> {
   startAutoLoad(initialContent?: Content | (() => Content)): Promise<this>;
 
   /// Persister.stopAutoLoad
-  stopAutoLoad(): this;
+  stopAutoLoad(): Promise<this>;
 
   /// Persister.isAutoLoading
   isAutoLoading(): boolean;
@@ -174,7 +174,7 @@ export interface Persister<Persist extends Persists = Persists.StoreOnly> {
   startAutoSave(): Promise<this>;
 
   /// Persister.stopAutoSave
-  stopAutoSave(): this;
+  stopAutoSave(): Promise<this>;
 
   /// Persister.isAutoSaving
   isAutoSaving(): boolean;
@@ -195,7 +195,7 @@ export interface Persister<Persist extends Persists = Persists.StoreOnly> {
   getStore(): PersistedStore<Persist>;
 
   /// Persister.destroy
-  destroy(): this;
+  destroy(): Promise<this>;
 
   /// Persister.getStats
   getStats(): PersisterStats;
