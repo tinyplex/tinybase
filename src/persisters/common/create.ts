@@ -252,7 +252,7 @@ export const createCustomPersister = <
     return persister;
   };
 
-  const stopAutoLoad = (): Persister<Persist> => {
+  const stopAutoLoad = async (): Promise<Persister<Persist>> => {
     if (autoLoadHandle) {
       delPersisterListener(autoLoadHandle);
       autoLoadHandle = undefined;
@@ -297,7 +297,7 @@ export const createCustomPersister = <
     return persister;
   };
 
-  const stopAutoSave = (): Persister<Persist> => {
+  const stopAutoSave = async (): Promise<Persister<Persist>> => {
     if (autoSaveListenerId) {
       store.delListener(autoSaveListenerId);
       autoSaveListenerId = undefined;
@@ -325,9 +325,10 @@ export const createCustomPersister = <
 
   const getStore = (): Store => store;
 
-  const destroy = (): Persister<Persist> => {
+  const destroy = async (): Promise<Persister<Persist>> => {
     arrayClear(mapGet(scheduleActions, scheduleId) as Action[]);
-    return stopAutoLoad().stopAutoSave();
+    await persister.stopAutoLoad();
+    return await persister.stopAutoSave();
   };
 
   const getStats = (): PersisterStats => ({loads, saves});
