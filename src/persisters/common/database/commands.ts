@@ -28,7 +28,7 @@ import {
 } from '../../../common/obj.ts';
 import {isUndefined, promiseAll} from '../../../common/other.ts';
 import {IdSet2, setAdd, setNew} from '../../../common/set.ts';
-import {COMMA} from '../../../common/strings.ts';
+import {COMMA, TRUE} from '../../../common/strings.ts';
 import {
   ALTER_TABLE,
   DELETE_FROM,
@@ -61,7 +61,7 @@ export const getCommandFunctions = (
   loadTable: (
     tableName: string,
     rowIdColumnName: string,
-    condition?: DpcTabularCondition | null,
+    condition?: DpcTabularCondition,
   ) => Promise<Table>,
   saveTable: (
     tableName: string,
@@ -75,8 +75,8 @@ export const getCommandFunctions = (
       | undefined,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
-    condition: DpcTabularCondition | null,
     partial?: boolean,
+    condition?: DpcTabularCondition,
   ) => Promise<void>,
   transaction: <Return>(actions: () => Promise<Return>) => Promise<Return>,
 ] => {
@@ -96,7 +96,7 @@ export const getCommandFunctions = (
   const loadTable = async (
     tableName: string,
     rowIdColumnName: string,
-    condition: DpcTabularCondition | null = null,
+    condition?: DpcTabularCondition,
   ): Promise<Table> =>
     canSelect(tableName, rowIdColumnName)
       ? objNew(
@@ -132,8 +132,8 @@ export const getCommandFunctions = (
       | undefined,
     deleteEmptyColumns: boolean,
     deleteEmptyTable: boolean,
-    condition: DpcTabularCondition | null = null,
     partial = false,
+    condition: DpcTabularCondition = TRUE,
   ): Promise<void> => {
     const settingColumnNameSet = setNew<string>();
     objMap(content ?? {}, (contentRow) =>
@@ -147,7 +147,7 @@ export const getCommandFunctions = (
     if (
       !partial &&
       deleteEmptyTable &&
-      !condition &&
+      condition == TRUE &&
       arrayIsEmpty(settingColumnNames) &&
       collHas(schemaMap, tableName)
     ) {

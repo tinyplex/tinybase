@@ -20,7 +20,7 @@ import {
 } from '../../../common/obj.ts';
 import {isString, isUndefined, slice} from '../../../common/other.ts';
 import {setAdd, setNew} from '../../../common/set.ts';
-import {TINYBASE} from '../../../common/strings.ts';
+import {TINYBASE, TRUE} from '../../../common/strings.ts';
 import {DEFAULT_ROW_ID_COLUMN_NAME} from './common.ts';
 
 export type DefaultedJsonConfig = [
@@ -30,11 +30,7 @@ export type DefaultedJsonConfig = [
 ];
 export type DefaultedTabularConfig = [
   tablesLoadConfig: IdMap<
-    [
-      tableId: Id,
-      rowIdColumnName: string,
-      condition: DpcTabularCondition | null,
-    ]
+    [tableId: Id, rowIdColumnName: string, condition: DpcTabularCondition]
   >,
   tablesSaveConfig: IdMap<
     [
@@ -42,7 +38,7 @@ export type DefaultedTabularConfig = [
       rowIdColumnName: string,
       deleteEmptyColumns: boolean,
       deleteEmptyTable: boolean,
-      condition: DpcTabularCondition | null,
+      condition: DpcTabularCondition,
     ]
   >,
   valuesConfig: [load: boolean, save: boolean, tableName: string],
@@ -156,7 +152,7 @@ export const getConfigStructures = (
     {
       [TABLE_ID]: null,
       [ROW_ID_COLUMN_NAME]: DEFAULT_ROW_ID_COLUMN_NAME,
-      [CONDITION]: null,
+      [CONDITION]: TRUE,
     },
     TABLE_ID,
     (tableName) => collHas(excludedTableNames, tableName),
@@ -181,7 +177,7 @@ export const getConfigStructures = (
     tablesSaveConfig,
     (_, tableSaveConfig) =>
       (tableSaveConfig[4] ??=
-        mapGet(tablesLoadConfig, tableSaveConfig[0])?.[2] ?? null),
+        mapGet(tablesLoadConfig, tableSaveConfig[0])?.[2] ?? TRUE),
   );
 
   return [

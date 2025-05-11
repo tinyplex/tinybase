@@ -71,7 +71,6 @@ export const createJsonPersister = <
         },
         true,
         true,
-        null,
       );
     });
 

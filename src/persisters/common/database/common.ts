@@ -1,5 +1,8 @@
 import type {Ids} from '../../../@types/index.d.ts';
-import type {DatabaseExecuteCommand} from '../../../@types/persisters/index.d.ts';
+import type {
+  DatabaseExecuteCommand,
+  DpcTabularCondition,
+} from '../../../@types/persisters/index.d.ts';
 import {arrayJoin, arrayMap} from '../../../common/array.ts';
 import {IdSet} from '../../../common/set.ts';
 import {COMMA, strReplace, TRUE} from '../../../common/strings.ts';
@@ -67,9 +70,5 @@ export const getPlaceholders = (array: any[], offset = [1]) =>
 
 export const getWhereCondition = (
   tableName: string,
-  condition?: string | null,
-) =>
-  ' ' +
-  (condition
-    ? strReplace(condition, TABLE_NAME_PLACEHOLDER, escapeId(tableName))
-    : TRUE);
+  condition: DpcTabularCondition = TRUE,
+) => ' ' + strReplace(condition, TABLE_NAME_PLACEHOLDER, escapeId(tableName));

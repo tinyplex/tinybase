@@ -97,8 +97,8 @@ export const createTabularPersister = <
               tables[tableId],
               deleteEmptyColumns,
               deleteEmptyTable,
-              condition,
               partial,
+              condition,
             );
           }
         },
@@ -116,7 +116,6 @@ export const createTabularPersister = <
           {[SINGLE_ROW_ID]: values},
           true,
           true,
-          null,
           partial,
         )
       : null;
