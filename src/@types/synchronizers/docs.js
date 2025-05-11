@@ -274,7 +274,9 @@
    * Persister framework, and so this startSync method is equivalent to stopping
    * both auto-loading (listening to sync messages from other active
    * Synchronizer instances) and auto-saving (sending sync messages to them).
-   * @returns A reference to the Synchronizer object.
+   *
+   * This method is asynchronous.
+   * @returns A Promise containing a reference to the Synchronizer object.
    * @example
    * This example creates two empty MergeableStore objects, creates a
    * LocalSynchronizer for each, and starts - then stops - synchronizing them.

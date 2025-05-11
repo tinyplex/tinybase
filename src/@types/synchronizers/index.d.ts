@@ -53,7 +53,7 @@ export interface Synchronizer extends Persister<Persists.MergeableStoreOnly> {
   /// Synchronizer.startSync
   startSync(initialContent?: Content): Promise<this>;
   /// Synchronizer.stopSync
-  stopSync(): this;
+  stopSync(): Promise<this>;
   /// Synchronizer.getSynchronizerStats
   getSynchronizerStats(): SynchronizerStats;
 }
