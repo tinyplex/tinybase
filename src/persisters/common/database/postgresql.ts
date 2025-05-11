@@ -179,7 +179,7 @@ export const createCustomPostgreSqlPersister = <
       arrayMap(collValues(managedTableNamesSet), async (tableName) => {
         await executeCommand(
           CREATE_TABLE +
-            ` IF NOT EXISTS ${escapeId(tableName)}("_id"text PRIMARY KEY)`,
+            ` IF NOT EXISTS${escapeId(tableName)}("_id"text PRIMARY KEY)`,
         );
         await addDataChangedTriggers(tableName, dataChangedFunction);
       }),
@@ -219,8 +219,9 @@ export const createCustomPostgreSqlPersister = <
       managedTableNames: string[],
     ): Promise<any[]> =>
       await executeCommand(
-        // eslint-disable-next-line max-len
-        `${SELECT} table_name tn,column_name cn FROM information_schema.columns ${WHERE} table_schema='public'AND table_name IN(${getPlaceholders(managedTableNames)})`,
+        SELECT +
+          // eslint-disable-next-line max-len
+          ` table_name tn,column_name cn FROM information_schema.columns ${WHERE} table_schema='public'AND table_name IN(${getPlaceholders(managedTableNames)})`,
         managedTableNames,
       ),
     thing,
