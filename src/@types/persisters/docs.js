@@ -1613,7 +1613,8 @@
  * called. This function can be asynchronous.
  * @param delPersisterListener A function that will unregister the listener from
  * the underlying changes to the persistence layer. It receives whatever was
- * returned from your `addPersisterListener` implementation.
+ * returned from your `addPersisterListener` implementation. This function can
+ * be asynchronous.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment, since v4.0.4.
@@ -1773,8 +1774,8 @@
  */
 /// createCustomSqlitePersister
 /**
- * The createCustomSqlitePersister function creates a Persister object that you
- * can configure to persist the Store to a PostgreSQL database.
+ * The createCustomPostgreSqlPersister function creates a Persister object that
+ * you can configure to persist the Store to a PostgreSQL database.
  *
  * This is only used when developing custom database-oriented Persisters, and
  * most TinyBase users will not need to be particularly aware of it.
@@ -1789,10 +1790,10 @@
  * that will be used as the name of the Store's table in the database.
  * @param executeCommand A function that will execute a command against the
  * database.
- * @param addChangeListener A function that will register a listener for changes
- * to the database.
- * @param delChangeListener A function that will unregister the listener for
- * changes to the database.
+ * @param addChangeListener An asynchronous function that will register a
+ * listener for changes to the database.
+ * @param delChangeListener An asynchronous function that will unregister the
+ * listener for changes to the database.
  * @param onSqlCommand A function that will be called for each SQL command
  * executed against the database.
  * @param onIgnoredError An optional handler for the errors that the Persister

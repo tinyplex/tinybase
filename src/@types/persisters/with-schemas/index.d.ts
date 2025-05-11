@@ -253,7 +253,9 @@ export function createCustomPersister<
   addPersisterListener: (
     listener: PersisterListener<Schemas, Persist>,
   ) => ListenerHandle | Promise<ListenerHandle>,
-  delPersisterListener: (listenerHandle: ListenerHandle) => void,
+  delPersisterListener: (
+    listenerHandle: ListenerHandle,
+  ) => void | Promise<void>,
   onIgnoredError?: (error: any) => void,
   persist?: Persist,
 ): Persister<Schemas, Persist>;
@@ -290,7 +292,7 @@ export function createCustomPostgreSqlPersister<
     channel: string,
     listener: DatabaseChangeListener,
   ) => Promise<ListenerHandle>,
-  delChangeListener: (listenerHandle: ListenerHandle) => void,
+  delChangeListener: (listenerHandle: ListenerHandle) => void | Promise<void>,
   onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   destroy: () => void,

@@ -59,7 +59,7 @@ export const createCustomPostgreSqlPersister = <
     channel: string,
     listener: DatabaseChangeListener,
   ) => Promise<ListenerHandle>,
-  delChangeListener: (listenerHandle: ListenerHandle) => void,
+  delChangeListener: (listenerHandle: ListenerHandle) => Promise<void>,
   onSqlCommand: ((sql: string, params?: any[]) => void) | undefined,
   onIgnoredError: ((error: any) => void) | undefined,
   destroy: () => void,
