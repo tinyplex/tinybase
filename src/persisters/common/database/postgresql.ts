@@ -7,7 +7,7 @@ import type {
   PersisterListener,
   Persists,
 } from '../../../@types/persisters/index.d.ts';
-import {arrayMap} from '../../../common/array.ts';
+import {arrayJoin, arrayMap} from '../../../common/array.ts';
 import {collHas, collValues} from '../../../common/coll.ts';
 import {getUniqueId} from '../../../common/index.ts';
 import {jsonParse, jsonString} from '../../../common/json.ts';
@@ -57,6 +57,8 @@ export const createCustomPostgreSqlPersister = <
   thing: any,
   getThing = 'getDb',
 ): Persister<Persist> => {
+  type Handles = [listenerHandle: ListenerHandle, functionNames: string[]];
+
   const executeCommand = getWrappedCommand(rawExecuteCommand, onSqlCommand);
   const persisterId = strReplace(getUniqueId(5), /-/g, '_').toLowerCase();
   const persisterChannel = TINYBASE + '_' + persisterId;
@@ -70,7 +72,7 @@ export const createCustomPostgreSqlPersister = <
     body: string,
     returnPrefix = '',
     declarations = '',
-  ) => {
+  ): Promise<string> => {
     const escapedFunctionName = escapeIds(TINYBASE, name, persisterId);
     await executeCommand(
       CREATE +
@@ -85,21 +87,23 @@ export const createCustomPostgreSqlPersister = <
 
   const createTrigger = async (
     prefix: string,
-    escapedName: string,
+    escapedTriggerName: string,
     body: string,
     escapedFunctionName: string,
-  ) =>
+  ): Promise<string> => {
     await executeCommand(
       CREATE +
         prefix +
         'TRIGGER' +
-        escapedName +
+        escapedTriggerName +
         body +
         'EXECUTE ' +
         FUNCTION +
         escapedFunctionName +
         `()`,
     );
+    return escapedTriggerName;
+  };
 
   const notify = (message: string) =>
     `PERFORM pg_notify('${persisterChannel}',${message});`;
@@ -121,7 +125,7 @@ export const createCustomPostgreSqlPersister = <
   const addDataChangedTriggers = async (
     tableName: string,
     dataChangedFunction: string,
-  ) =>
+  ): Promise<string[]> =>
     await promiseAll(
       arrayMap(
         [INSERT, DELETE, UPDATE],
@@ -140,36 +144,38 @@ export const createCustomPostgreSqlPersister = <
 
   const addPersisterListener = async (
     listener: PersisterListener<Persist>,
-  ): Promise<ListenerHandle> => {
-    const tableCreatedFunction = await createFunction(
+  ): Promise<Handles> => {
+    const tableCreatedFunctionName = await createFunction(
       TABLE_CREATED,
       // eslint-disable-next-line max-len
       `FOR row IN SELECT object_identity FROM pg_event_trigger_ddl_commands()${WHERE} command_tag='${CREATE_TABLE}' LOOP ${notify(`'c:'||SPLIT_PART(row.object_identity,'.',2)`)}END LOOP;`,
       'event_',
       'DECLARE row record;',
     );
+
     await createTrigger(
       'EVENT ',
       escapeIds(TINYBASE, TABLE_CREATED, persisterId),
       `ON ddl_command_end WHEN TAG IN('${CREATE_TABLE}')`,
-      tableCreatedFunction,
+      tableCreatedFunctionName,
     );
 
-    const dataChangedFunction = await createFunction(
+    const dataChangedFunctionName = await createFunction(
       DATA_CHANGED,
       notify(`'d:'||TG_TABLE_NAME`) + `RETURN NULL;`,
     );
+
     await promiseAll(
       arrayMap(collValues(managedTableNamesSet), async (tableName) => {
         await executeCommand(
           CREATE_TABLE +
             ` IF NOT EXISTS${escapeId(tableName)}("_id"text PRIMARY KEY)`,
         );
-        await addDataChangedTriggers(tableName, dataChangedFunction);
+        return await addDataChangedTriggers(tableName, dataChangedFunctionName);
       }),
     );
 
-    return await addChangeListener(
+    const listenerHandle = await addChangeListener(
       persisterChannel,
       async (prefixAndTableName) =>
         await ifNotUndefined(
@@ -177,16 +183,32 @@ export const createCustomPostgreSqlPersister = <
           async ([, eventType, tableName]) => {
             if (collHas(managedTableNamesSet, tableName)) {
               if (eventType == 'c:') {
-                await addDataChangedTriggers(tableName, dataChangedFunction);
+                await addDataChangedTriggers(
+                  tableName,
+                  dataChangedFunctionName,
+                );
               }
               listener();
             }
           },
         ),
     );
+
+    return [
+      listenerHandle,
+      [tableCreatedFunctionName, dataChangedFunctionName],
+    ];
   };
 
-  const delPersisterListener = delChangeListener;
+  const delPersisterListener = async ([
+    listenerHandle,
+    functionNames,
+  ]: Handles) => {
+    delChangeListener(listenerHandle);
+    await executeCommand(
+      `DROP FUNCTION IF EXISTS${arrayJoin(functionNames, ',')}CASCADE`,
+    );
+  };
 
   return (isJson ? createJsonPersister : createTabularPersister)(
     store,
