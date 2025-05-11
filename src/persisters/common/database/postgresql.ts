@@ -9,11 +9,21 @@ import type {
 } from '../../../@types/persisters/index.d.ts';
 import {arrayJoin, arrayMap} from '../../../common/array.ts';
 import {collHas, collValues} from '../../../common/coll.ts';
-import {getUniqueId} from '../../../common/index.ts';
-import {jsonParse, jsonString} from '../../../common/json.ts';
+import {getHash} from '../../../common/hash.ts';
+import {
+  jsonParse,
+  jsonString,
+  jsonStringWithUndefined,
+} from '../../../common/json.ts';
 import {mapGet} from '../../../common/map.ts';
 import {ifNotUndefined, promiseAll} from '../../../common/other.ts';
-import {TINYBASE, TRUE, strMatch, strReplace} from '../../../common/strings.ts';
+import {
+  EMPTY_STRING,
+  TINYBASE,
+  TRUE,
+  strMatch,
+  strReplace,
+} from '../../../common/strings.ts';
 import {
   CREATE,
   CREATE_TABLE,
@@ -60,12 +70,13 @@ export const createCustomPostgreSqlPersister = <
   type Handles = [listenerHandle: ListenerHandle, functionNames: string[]];
 
   const executeCommand = getWrappedCommand(rawExecuteCommand, onSqlCommand);
-  const persisterId = strReplace(getUniqueId(5), /-/g, '_').toLowerCase();
-  const persisterChannel = TINYBASE + '_' + persisterId;
 
   const [isJson, , defaultedConfig, managedTableNamesSet] = getConfigStructures(
     configOrStoreTableName,
   );
+  const configHash =
+    EMPTY_STRING + getHash(jsonStringWithUndefined(defaultedConfig));
+  const channel = TINYBASE + '_' + configHash;
 
   const createFunction = async (
     name: string,
@@ -73,7 +84,7 @@ export const createCustomPostgreSqlPersister = <
     returnPrefix = '',
     declarations = '',
   ): Promise<string> => {
-    const escapedFunctionName = escapeIds(TINYBASE, name, persisterId);
+    const escapedFunctionName = escapeIds(TINYBASE, name, configHash);
     await executeCommand(
       CREATE +
         OR_REPLACE +
@@ -106,7 +117,7 @@ export const createCustomPostgreSqlPersister = <
   };
 
   const notify = (message: string) =>
-    `PERFORM pg_notify('${persisterChannel}',${message});`;
+    `PERFORM pg_notify('${channel}',${message});`;
 
   const when = (tableName: string, newOrOldOrBoth: 0 | 1 | 2): string =>
     isJson
@@ -125,14 +136,14 @@ export const createCustomPostgreSqlPersister = <
   const addDataChangedTriggers = async (
     tableName: string,
     dataChangedFunction: string,
-  ): Promise<string[]> =>
+  ) =>
     await promiseAll(
       arrayMap(
         [INSERT, DELETE, UPDATE],
         async (action, newOrOldOrBoth) =>
           await createTrigger(
             OR_REPLACE,
-            escapeIds(TINYBASE, DATA_CHANGED, persisterId, tableName, action),
+            escapeIds(TINYBASE, DATA_CHANGED, configHash, tableName, action),
             `AFTER ${action} ON${escapeId(tableName)}FOR EACH ROW WHEN(${when(
               tableName,
               newOrOldOrBoth as 0 | 1 | 2,
@@ -155,7 +166,7 @@ export const createCustomPostgreSqlPersister = <
 
     await createTrigger(
       'EVENT ',
-      escapeIds(TINYBASE, TABLE_CREATED, persisterId),
+      escapeIds(TINYBASE, TABLE_CREATED, configHash),
       `ON ddl_command_end WHEN TAG IN('${CREATE_TABLE}')`,
       tableCreatedFunctionName,
     );
@@ -176,7 +187,7 @@ export const createCustomPostgreSqlPersister = <
     );
 
     const listenerHandle = await addChangeListener(
-      persisterChannel,
+      channel,
       async (prefixAndTableName) =>
         await ifNotUndefined(
           strMatch(prefixAndTableName, EVENT_REGEX),
