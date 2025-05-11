@@ -11,22 +11,26 @@ import {arrayMap} from '../../../common/array.ts';
 import {collHas, collValues} from '../../../common/coll.ts';
 import {getUniqueId} from '../../../common/index.ts';
 import {jsonParse, jsonString} from '../../../common/json.ts';
+import {mapGet} from '../../../common/map.ts';
 import {ifNotUndefined, promiseAll} from '../../../common/other.ts';
 import {TINYBASE, TRUE, strMatch} from '../../../common/strings.ts';
 import {
   CREATE,
   CREATE_TABLE,
+  DELETE,
   FUNCTION,
+  INSERT,
   OR_REPLACE,
   SELECT,
   TABLE_NAME_PLACEHOLDER,
+  UPDATE,
   WHERE,
   escapeId,
   escapeIds,
   getPlaceholders,
   getWrappedCommand,
 } from './common.ts';
-import {getConfigStructures} from './config.ts';
+import {DefaultedTabularConfig, getConfigStructures} from './config.ts';
 import {createJsonPersister} from './json.ts';
 import {createTabularPersister} from './tabular.ts';
 
@@ -97,33 +101,23 @@ export const createCustomPostgreSqlPersister = <
         `()`,
     );
 
-  const notifySql = (message: string) =>
+  const notify = (message: string) =>
     `PERFORM pg_notify('${persisterChannel}',${message});`;
 
-  const getWhenCondition = (
-    tableName: string,
-    newOrOldOrBoth: 0 | 1 | 2,
-  ): string => {
-    const tablesLoadConfig = defaultedConfig[0];
-    if (!tablesLoadConfig || typeof tablesLoadConfig === 'string') {
-      return TRUE;
-    }
-
-    const [, , condition] = tablesLoadConfig.get(tableName) ?? [];
-    if (!condition) {
-      return TRUE;
-    }
-
-    if (newOrOldOrBoth === 2) {
-      return (
-        getWhenCondition(tableName, 0) + ' OR ' + getWhenCondition(tableName, 1)
-      );
-    }
-    return condition.replace(
-      TABLE_NAME_PLACEHOLDER,
-      newOrOldOrBoth == 0 ? 'NEW' : 'OLD',
-    );
-  };
+  const when = (tableName: string, newOrOldOrBoth: 0 | 1 | 2): string =>
+    isJson
+      ? TRUE
+      : newOrOldOrBoth === 2
+        ? when(tableName, 0) + ' OR ' + when(tableName, 1)
+        : (
+            mapGet(
+              (defaultedConfig as DefaultedTabularConfig)[0],
+              tableName,
+            )?.[2] ?? TRUE
+          ).replace(
+            TABLE_NAME_PLACEHOLDER,
+            newOrOldOrBoth == 0 ? 'NEW' : 'OLD',
+          );
 
   const addDataChangedTriggers = async (
     tableName: string,
@@ -131,19 +125,12 @@ export const createCustomPostgreSqlPersister = <
   ) =>
     await promiseAll(
       arrayMap(
-        ['INSERT', 'DELETE', 'UPDATE'],
-        async (operation, newOrOldOrBoth) =>
+        [INSERT, DELETE, UPDATE],
+        async (action, newOrOldOrBoth) =>
           await createTrigger(
             OR_REPLACE,
-            escapeIds(
-              TINYBASE,
-              DATA_CHANGED,
-              persisterId,
-              tableName,
-              operation,
-            ),
-            // eslint-disable-next-line max-len
-            `AFTER ${operation} ON${escapeId(tableName)}FOR EACH ROW WHEN(${getWhenCondition(
+            escapeIds(TINYBASE, DATA_CHANGED, persisterId, tableName, action),
+            `AFTER ${action} ON${escapeId(tableName)}FOR EACH ROW WHEN(${when(
               tableName,
               newOrOldOrBoth as 0 | 1 | 2,
             )})`,
@@ -158,7 +145,7 @@ export const createCustomPostgreSqlPersister = <
     const tableCreatedFunction = await createFunction(
       TABLE_CREATED,
       // eslint-disable-next-line max-len
-      `FOR row IN SELECT object_identity FROM pg_event_trigger_ddl_commands()${WHERE} command_tag='${CREATE_TABLE}' LOOP ${notifySql(`'c:'||SPLIT_PART(row.object_identity,'.',2)`)}END LOOP;`,
+      `FOR row IN SELECT object_identity FROM pg_event_trigger_ddl_commands()${WHERE} command_tag='${CREATE_TABLE}' LOOP ${notify(`'c:'||SPLIT_PART(row.object_identity,'.',2)`)}END LOOP;`,
       'event_',
       'DECLARE row record;',
     );
@@ -173,7 +160,7 @@ export const createCustomPostgreSqlPersister = <
 
     const dataChangedFunction = await createFunction(
       DATA_CHANGED,
-      notifySql(`'d:'||TG_TABLE_NAME`) + `RETURN NULL;`,
+      notify(`'d:'||TG_TABLE_NAME`) + `RETURN NULL;`,
     );
     await promiseAll(
       arrayMap(collValues(managedTableNamesSet), async (tableName) => {

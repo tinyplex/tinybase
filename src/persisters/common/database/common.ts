@@ -23,6 +23,10 @@ export const DEFAULT_ROW_ID_COLUMN_NAME = '_id';
 export const SELECT = 'SELECT';
 export const WHERE = 'WHERE';
 export const TABLE = 'TABLE';
+export const INSERT = 'INSERT';
+export const DELETE = 'DELETE';
+export const UPDATE = 'UPDATE';
+
 export const ALTER_TABLE = 'ALTER ' + TABLE;
 export const DELETE_FROM = 'DELETE FROM';
 export const SELECT_STAR_FROM = SELECT + '*FROM';
