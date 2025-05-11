@@ -37,7 +37,6 @@ import {
   SELECT_STAR_FROM,
   TABLE,
   UPDATE,
-  WHERE,
   escapeColumnNames,
   escapeId,
   getPlaceholders,
@@ -105,7 +104,6 @@ export const getCommandFunctions = (
               await databaseExecuteCommand(
                 SELECT_STAR_FROM +
                   escapeId(tableName) +
-                  WHERE +
                   getWhereCondition(tableName, condition),
               ),
               (row) => [
@@ -232,7 +230,6 @@ export const getCommandFunctions = (
         await databaseExecuteCommand(
           DELETE_FROM +
             escapeId(tableName) +
-            WHERE +
             getWhereCondition(tableName, condition),
         );
       } else {
@@ -243,12 +240,8 @@ export const getCommandFunctions = (
               await databaseExecuteCommand(
                 DELETE_FROM +
                   escapeId(tableName) +
-                  WHERE +
-                  ' (' +
-                  escapeId(rowIdColumnName) +
-                  '=$1) AND (' +
                   getWhereCondition(tableName, condition) +
-                  ')',
+                  `AND(${escapeId(rowIdColumnName)}=$1)`,
                 [rowId],
               );
             } else if (!arrayIsEmpty(settingColumnNames)) {
@@ -295,10 +288,9 @@ export const getCommandFunctions = (
         await databaseExecuteCommand(
           DELETE_FROM +
             escapeId(tableName) +
-            WHERE +
-            escapeId(rowIdColumnName) +
-            `NOT IN(${getPlaceholders(deleteRowIds)}) ` +
-            `AND (${getWhereCondition(tableName, condition)})`,
+            getWhereCondition(tableName, condition) +
+            // eslint-disable-next-line max-len
+            `AND${escapeId(rowIdColumnName)}NOT IN(${getPlaceholders(deleteRowIds)})`,
           deleteRowIds,
         );
       } else if (collHas(schemaMap, tableName)) {
@@ -306,7 +298,6 @@ export const getCommandFunctions = (
         await databaseExecuteCommand(
           DELETE_FROM +
             escapeId(tableName) +
-            WHERE +
             getWhereCondition(tableName, condition),
         );
       }

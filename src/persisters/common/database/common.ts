@@ -71,4 +71,6 @@ export const getPlaceholders = (array: any[], offset = [1]) =>
 export const getWhereCondition = (
   tableName: string,
   condition: DpcTabularCondition = TRUE,
-) => ' ' + strReplace(condition, TABLE_NAME_PLACEHOLDER, escapeId(tableName));
+) =>
+  WHERE +
+  `(${strReplace(condition, TABLE_NAME_PLACEHOLDER, escapeId(tableName))})`;
