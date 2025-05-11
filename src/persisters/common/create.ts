@@ -112,7 +112,9 @@ export const createCustomPersister = <
   addPersisterListener: (
     listener: PersisterListener<Persist>,
   ) => ListenerHandle | Promise<ListenerHandle>,
-  delPersisterListener: (listenerHandle: ListenerHandle) => void,
+  delPersisterListener: (
+    listenerHandle: ListenerHandle,
+  ) => void | Promise<void>,
   onIgnoredError?: (error: any) => void,
   persist?: Persist,
   // undocumented:

@@ -37,7 +37,9 @@ export const createTabularPersister = <
   addPersisterListener: (
     listener: PersisterListener<Persist>,
   ) => ListeningHandle | Promise<ListeningHandle>,
-  delPersisterListener: (listeningHandle: ListeningHandle) => void,
+  delPersisterListener: (
+    listeningHandle: ListeningHandle,
+  ) => void | Promise<void>,
   onIgnoredError: ((error: any) => void) | undefined,
   destroyImpl: () => void,
   persist: Persist,
