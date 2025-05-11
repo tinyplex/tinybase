@@ -90,3 +90,9 @@ export const strSplit = (
   separator: string | RegExp = EMPTY_STRING,
   limit?: number,
 ): string[] => str.split(separator, limit);
+
+export const strReplace = (
+  str: string,
+  searchValue: string | RegExp,
+  replaceValue: string,
+): string => str.replace(searchValue, replaceValue);

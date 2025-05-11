@@ -13,7 +13,7 @@ import {getUniqueId} from '../../../common/index.ts';
 import {jsonParse, jsonString} from '../../../common/json.ts';
 import {mapGet} from '../../../common/map.ts';
 import {ifNotUndefined, promiseAll} from '../../../common/other.ts';
-import {TINYBASE, TRUE, strMatch} from '../../../common/strings.ts';
+import {TINYBASE, TRUE, strMatch, strReplace} from '../../../common/strings.ts';
 import {
   CREATE,
   CREATE_TABLE,
@@ -58,7 +58,7 @@ export const createCustomPostgreSqlPersister = <
   getThing = 'getDb',
 ): Persister<Persist> => {
   const executeCommand = getWrappedCommand(rawExecuteCommand, onSqlCommand);
-  const persisterId = getUniqueId(5).replace(/-/g, '_').toLowerCase();
+  const persisterId = strReplace(getUniqueId(5), /-/g, '_').toLowerCase();
   const persisterChannel = TINYBASE + '_' + persisterId;
 
   const [isJson, , defaultedConfig, managedTableNamesSet] = getConfigStructures(
@@ -109,12 +109,11 @@ export const createCustomPostgreSqlPersister = <
       ? TRUE
       : newOrOldOrBoth === 2
         ? when(tableName, 0) + ' OR ' + when(tableName, 1)
-        : (
+        : strReplace(
             mapGet(
               (defaultedConfig as DefaultedTabularConfig)[0],
               tableName,
-            )?.[2] ?? TRUE
-          ).replace(
+            )?.[2] ?? TRUE,
             TABLE_NAME_PLACEHOLDER,
             newOrOldOrBoth == 0 ? 'NEW' : 'OLD',
           );

@@ -2,7 +2,7 @@ import type {Ids} from '../../../@types/index.d.ts';
 import type {DatabaseExecuteCommand} from '../../../@types/persisters/index.d.ts';
 import {arrayJoin, arrayMap} from '../../../common/array.ts';
 import {IdSet} from '../../../common/set.ts';
-import {COMMA, TRUE} from '../../../common/strings.ts';
+import {COMMA, strReplace, TRUE} from '../../../common/strings.ts';
 
 export type QuerySchema = (
   executeCommand: DatabaseExecuteCommand,
@@ -52,7 +52,7 @@ export const getWrappedCommand = (
       }
     : executeCommand;
 
-export const escapeId = (str: string) => `"${str.replace(/"/g, '""')}"`;
+export const escapeId = (str: string) => `"${strReplace(str, /"/g, '""')}"`;
 
 export const escapeIds = (...ids: Ids) => escapeId(arrayJoin(ids, '_'));
 
@@ -71,5 +71,5 @@ export const getWhereCondition = (
 ) =>
   ' ' +
   (condition
-    ? condition.replace(TABLE_NAME_PLACEHOLDER, escapeId(tableName))
+    ? strReplace(condition, TABLE_NAME_PLACEHOLDER, escapeId(tableName))
     : TRUE);
