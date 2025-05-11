@@ -13,7 +13,6 @@ import {startInterval, stopInterval} from '../../../common/other.ts';
 import {EMPTY_STRING} from '../../../common/strings.ts';
 import {
   DATA_VERSION,
-  FROM,
   PRAGMA,
   PRAGMA_TABLE,
   SCHEMA_VERSION,
@@ -66,8 +65,9 @@ export const createCustomSqlitePersister = <
       (interval = startInterval(async () => {
         try {
           const [{d, s, c}] = (await executeCommand(
-            // eslint-disable-next-line max-len
-            `${SELECT} ${DATA_VERSION} d,${SCHEMA_VERSION} s,TOTAL_CHANGES() c FROM ${PRAGMA}${DATA_VERSION} JOIN ${PRAGMA}${SCHEMA_VERSION}`,
+            SELECT +
+              // eslint-disable-next-line max-len
+              ` ${DATA_VERSION} d,${SCHEMA_VERSION} s,TOTAL_CHANGES() c FROM ${PRAGMA}${DATA_VERSION} JOIN ${PRAGMA}${SCHEMA_VERSION}`,
           )) as [IdObj<number>];
           if (d != dataVersion || s != schemaVersion || c != totalChanges) {
             if (dataVersion != null) {
@@ -119,8 +119,9 @@ export const createCustomSqlitePersister = <
       managedTableNames: string[],
     ): Promise<any[]> =>
       await executeCommand(
-        // eslint-disable-next-line max-len
-        `${SELECT} t.name tn,c.name cn ${FROM}${PRAGMA_TABLE}list()t,${PRAGMA_TABLE}info(t.name)c ${WHERE} t.schema='main'AND t.type IN('table','view')AND t.name IN(${getPlaceholders(managedTableNames)})ORDER BY t.name,c.name`,
+        SELECT +
+          // eslint-disable-next-line max-len
+          ` t.name tn,c.name cn FROM ${PRAGMA_TABLE}list()t,${PRAGMA_TABLE}info(t.name)c ${WHERE} t.schema='main'AND t.type IN('table','view')AND t.name IN(${getPlaceholders(managedTableNames)})ORDER BY t.name,c.name`,
         managedTableNames,
       ),
     thing,

@@ -29,15 +29,17 @@ import {COMMA} from '../../../common/strings.ts';
 import {
   ALTER_TABLE,
   DELETE_FROM,
+  INSERT,
   QuerySchema,
   SELECT_STAR_FROM,
   TABLE,
-  Upsert,
+  UPDATE,
   WHERE,
   escapeColumnNames,
   escapeId,
   getPlaceholders,
   getWhereCondition,
+  type Upsert,
 } from './common.ts';
 
 export type Schema = IdSet2;
@@ -334,7 +336,8 @@ const defaultUpsert: Upsert = async (
 ) => {
   const offset = [1];
   await executeCommand(
-    'INSERT INTO' +
+    INSERT +
+      ' INTO' +
       escapeId(tableName) +
       '(' +
       escapeColumnNames(rowIdColumnName, ...changingColumnNames) +
@@ -349,7 +352,7 @@ const defaultUpsert: Upsert = async (
       ) +
       'ON CONFLICT(' +
       escapeId(rowIdColumnName) +
-      ')DO UPDATE SET' +
+      `)DO ${UPDATE} SET` +
       arrayJoin(
         arrayMap(
           changingColumnNames,

@@ -149,14 +149,12 @@ export const createCustomPostgreSqlPersister = <
       'event_',
       'DECLARE row record;',
     );
-    try {
-      await createTrigger(
-        'EVENT ',
-        escapeIds(TINYBASE, TABLE_CREATED, persisterId),
-        `ON ddl_command_end WHEN TAG IN('${CREATE_TABLE}')`,
-        tableCreatedFunction,
-      );
-    } catch {}
+    await createTrigger(
+      'EVENT ',
+      escapeIds(TINYBASE, TABLE_CREATED, persisterId),
+      `ON ddl_command_end WHEN TAG IN('${CREATE_TABLE}')`,
+      tableCreatedFunction,
+    );
 
     const dataChangedFunction = await createFunction(
       DATA_CHANGED,

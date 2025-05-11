@@ -22,7 +22,12 @@ import {IdObj, objIds, objNew, objToArray} from '../../common/obj.ts';
 import {IdSet, setNew} from '../../common/set.ts';
 import {COMMA} from '../../common/strings.ts';
 import {
+  FROM,
+  INSERT,
+  OR_REPLACE,
+  SELECT,
   Upsert,
+  WHERE,
   escapeColumnNames,
   escapeId,
   getPlaceholders,
@@ -97,11 +102,11 @@ const viewUpsert: Upsert = async (
     const unchangingData = objNew(
       arrayMap(
         await executeCommand(
-          'SELECT' +
+          SELECT +
             escapeColumnNames(rowIdColumnName, ...unchangingColumnNames) +
-            'FROM' +
+            FROM +
             escapeId(tableName) +
-            'WHERE' +
+            WHERE +
             escapeId(rowIdColumnName) +
             'IN(' +
             getPlaceholders(ids) +
@@ -124,7 +129,10 @@ const viewUpsert: Upsert = async (
   }
 
   await executeCommand(
-    'INSERT OR REPLACE INTO' +
+    INSERT +
+      ' ' +
+      OR_REPLACE +
+      'INTO' +
       escapeId(tableName) +
       '(' +
       escapeColumnNames(
