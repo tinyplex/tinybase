@@ -479,8 +479,8 @@ export const MERGEABLE_VARIANTS = isBun
 
 export const ALL_VARIANTS = isBun ? ALL_BUN_VARIANTS : ALL_NODE_VARIANTS;
 
-export const ADHOC_VARIANT: Variants = {
-  adhoc: NODE_SQLITE_NON_MERGEABLE_VARIANTS.powerSync,
+export const ADHOC_VARIANTS: Variants = {
+  adhoc: NODE_POSTGRESQL_VARIANTS.postgres,
 };
 
 export const getDatabaseFunctions = <Database>(
