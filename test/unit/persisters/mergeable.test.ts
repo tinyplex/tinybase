@@ -61,8 +61,8 @@ describe.each([
     persister = await persistable.getPersister(store, location);
   });
 
-  afterEach(() => {
-    persister.destroy();
+  afterEach(async () => {
+    await persister.destroy();
     if (persistable.afterEach != null) {
       persistable.afterEach(location);
     }
@@ -414,7 +414,7 @@ test('Supported, Store', async () => {
   );
   await persister.load();
   await persister.save();
-  persister.destroy();
+  await persister.destroy();
   expect(persisted).toEqual('[{"t1":{"r1":{"c1":1}}},{"v1":1}]');
 });
 
@@ -432,7 +432,7 @@ test('Not supported, MergeableStore', async () => {
   );
   await persister.load();
   await persister.save();
-  persister.destroy();
+  await persister.destroy();
   expect(persisted).toEqual('[{"t1":{"r1":{"c1":1}}},{"v1":1}]');
 });
 
@@ -467,7 +467,7 @@ describe('Supported, MergeableStore', () => {
     );
     await persister.load();
     await persister.save();
-    persister.destroy();
+    await persister.destroy();
     expect(persisted).toMatchSnapshot();
   });
 
@@ -494,7 +494,7 @@ describe('Supported, MergeableStore', () => {
     store.setCell('t1', 'r1', 'c1', 1);
     store.setValue('v1', 1);
     await pause(1);
-    persister.destroy();
+    await persister.destroy();
     expect(persisted).toMatchSnapshot();
   });
 
@@ -514,7 +514,7 @@ describe('Supported, MergeableStore', () => {
     );
     await persister.load();
     await persister.save();
-    persister.destroy();
+    await persister.destroy();
     expect(persisted).toMatchSnapshot();
   });
 });

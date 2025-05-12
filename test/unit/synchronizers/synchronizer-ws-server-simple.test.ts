@@ -40,14 +40,14 @@ test('Basics', async () => {
     t1: {r2: {price: 5}, r1: {c1: 4}},
   });
 
-  synchronizer1.destroy();
-  synchronizer2.destroy();
-  wsServerSimple.destroy();
+  await synchronizer1.destroy();
+  await synchronizer2.destroy();
+  await wsServerSimple.destroy();
 });
 
 test('Accessors', async () => {
   const wssServer = new WebSocketServer({port: 8054});
   const wsServerSimple = createWsServerSimple(wssServer);
   expect(wsServerSimple.getWebSocketServer()).toEqual(wssServer);
-  wsServerSimple.destroy();
+  await wsServerSimple.destroy();
 });

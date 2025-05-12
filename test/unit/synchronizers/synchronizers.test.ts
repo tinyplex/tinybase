@@ -30,7 +30,7 @@ beforeEach(() => {
 
 type Synchronizable<Environment> = {
   createEnvironment?: () => Environment;
-  destroyEnvironment?: (environment: Environment) => void;
+  destroyEnvironment?: (environment: Environment) => Promise<void>;
   getSynchronizer: (
     store: MergeableStore,
     environment: Environment,
@@ -46,8 +46,8 @@ const mockLocalSynchronizer: Synchronizable<undefined> = {
 
 const mockWsSynchronizer: Synchronizable<WsServer> = {
   createEnvironment: () => createWsServer(new WebSocketServer({port: 8042})),
-  destroyEnvironment: (wsServer: WsServer) => {
-    wsServer.destroy();
+  destroyEnvironment: async (wsServer: WsServer) => {
+    await wsServer.destroy();
   },
   getSynchronizer: async (store: MergeableStore) => {
     const webSocket = new WebSocket('ws://localhost:8042');
@@ -151,8 +151,8 @@ describe.each([
       environment = synchronizable.createEnvironment?.();
     });
 
-    afterEach(() => {
-      synchronizable.destroyEnvironment?.(environment);
+    afterEach(async () => {
+      await synchronizable.destroyEnvironment?.(environment);
     });
 
     describe('Unidirectional', () => {
@@ -169,9 +169,9 @@ describe.each([
         );
       });
 
-      afterEach(() => {
-        synchronizer1.destroy();
-        synchronizer2.destroy();
+      afterEach(async () => {
+        await synchronizer1.destroy();
+        await synchronizer2.destroy();
       });
 
       test('save1 but not autoLoad2', async () => {
@@ -259,9 +259,9 @@ describe.each([
         store2 = createMergeableStore('s2', getNow);
       });
 
-      afterEach(() => {
-        synchronizer1.destroy();
-        synchronizer2.destroy();
+      afterEach(async () => {
+        await synchronizer1.destroy();
+        await synchronizer2.destroy();
       });
 
       test('conflicting cell at same time', async () => {
@@ -318,9 +318,9 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds);
       });
 
-      afterEach(() => {
-        synchronizer1.destroy();
-        synchronizer2.destroy();
+      afterEach(async () => {
+        await synchronizer1.destroy();
+        await synchronizer2.destroy();
       });
 
       // ---
@@ -799,8 +799,10 @@ describe.each([
         await pause(synchronizable.pauseMilliseconds);
       });
 
-      afterEach(() => {
-        synchronizers.forEach((synchronizer) => synchronizer.destroy());
+      afterEach(async () => {
+        await Promise.all(
+          synchronizers.map((synchronizer) => synchronizer.destroy()),
+        );
       });
 
       // ---

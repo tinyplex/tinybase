@@ -40,7 +40,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
     });
 
     afterEach(async () => {
-      persister.destroy();
+      await persister.destroy();
       await close(db);
     });
 
@@ -555,7 +555,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
       });
 
       afterEach(async () => {
-        persister2.destroy();
+        await persister2.destroy();
       });
 
       test('manual', async () => {
@@ -665,7 +665,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
       });
 
       afterEach(async () => {
-        persister2.destroy();
+        await persister2.destroy();
         await close(db2);
       });
 

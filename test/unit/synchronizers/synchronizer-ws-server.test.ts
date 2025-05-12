@@ -45,9 +45,9 @@ test('Basics', async () => {
     t1: {r2: {price: 5}, r1: {c1: 4}},
   });
 
-  synchronizer1.destroy();
-  synchronizer2.destroy();
-  wsServer.destroy();
+  await synchronizer1.destroy();
+  await synchronizer2.destroy();
+  await wsServer.destroy();
 });
 
 describe('Multiple connections', () => {
@@ -62,11 +62,11 @@ describe('Multiple connections', () => {
     wsServer = createWsServer(wssServer);
   });
 
-  afterEach(() => {
-    synchronizer1.destroy();
-    synchronizer2.destroy();
-    synchronizer3.destroy();
-    wsServer.destroy();
+  afterEach(async () => {
+    await synchronizer1.destroy();
+    await synchronizer2.destroy();
+    await synchronizer3.destroy();
+    await wsServer.destroy();
   });
 
   test('Accessors', async () => {
@@ -254,8 +254,8 @@ describe('Persistence', () => {
       [{}, '', 0],
     ]);
 
-    synchronizer.destroy();
-    wsServer.destroy();
+    await synchronizer.destroy();
+    await wsServer.destroy();
   });
 
   describe('single client to existing path', () => {
@@ -308,8 +308,8 @@ describe('Persistence', () => {
       await pause();
       expect(serverStore.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
 
-      synchronizer.destroy();
-      wsServer.destroy();
+      await synchronizer.destroy();
+      await wsServer.destroy();
     });
 
     test('alters data after path first persisted', async () => {
@@ -353,8 +353,8 @@ describe('Persistence', () => {
         [{p: ['p1', 'Nn1JUFm----5JWdY', 592098772]}, '', 891798799],
       ]);
 
-      synchronizer.destroy();
-      wsServer.destroy();
+      await synchronizer.destroy();
+      await wsServer.destroy();
     });
   });
 
@@ -395,9 +395,9 @@ describe('Persistence', () => {
       t1: {r1: {c1: 1}, r2: {c2: 2}, r3: {c3: 3}},
     });
 
-    synchronizer1.destroy();
-    synchronizer2.destroy();
-    wsServer.destroy();
+    await synchronizer1.destroy();
+    await synchronizer2.destroy();
+    await wsServer.destroy();
   });
 
   test('multiple clients, multiple paths', async () => {
@@ -473,11 +473,11 @@ describe('Persistence', () => {
       t4: {r4: {c4: 4}},
     });
 
-    synchronizer1.destroy();
-    synchronizer2.destroy();
-    synchronizer3.destroy();
-    synchronizer4.destroy();
-    wsServer.destroy();
+    await synchronizer1.destroy();
+    await synchronizer2.destroy();
+    await synchronizer3.destroy();
+    await synchronizer4.destroy();
+    await wsServer.destroy();
   });
 
   test('two clients, connecting in turn', async () => {
@@ -495,7 +495,7 @@ describe('Persistence', () => {
     );
     await synchronizer1.startSync();
     await pause();
-    synchronizer1.destroy();
+    await synchronizer1.destroy();
 
     const clientStore2 = createMergeableStore('s2', getNow);
     const synchronizer2 = await createWsSynchronizer(
@@ -505,9 +505,9 @@ describe('Persistence', () => {
     );
     await synchronizer2.startSync();
     await pause();
-    synchronizer2.destroy();
+    await synchronizer2.destroy();
 
     expect(clientStore2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {}]);
-    wsServer.destroy();
+    await wsServer.destroy();
   });
 });

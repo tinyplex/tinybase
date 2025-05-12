@@ -485,7 +485,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         });
       });
 
-      afterEach(async () => persister.destroy());
+      afterEach(async () => await persister.destroy());
 
       test('nothing', async () => {
         await persister.save();
@@ -890,7 +890,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         });
       });
 
-      afterEach(async () => persister.destroy());
+      afterEach(async () => await persister.destroy());
 
       test('nothing', async () => {
         await persister.load();
@@ -1213,7 +1213,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await persister.startAutoSave();
       });
 
-      afterEach(async () => persister.destroy());
+      afterEach(async () => await persister.destroy());
 
       test('initial conditions', async () => {
         expect(await getDatabase(db)).toEqual({
@@ -1705,8 +1705,8 @@ describe.each(Object.entries(ALL_VARIANTS))(
       });
 
       afterEach(async () => {
-        persister1.destroy();
-        persister2.destroy();
+        await persister1.destroy();
+        await persister2.destroy();
       });
 
       test('manual', async () => {
@@ -1840,8 +1840,8 @@ describe.each(Object.entries(ALL_VARIANTS))(
       });
 
       afterEach(async () => {
-        persister1.destroy();
-        persister2.destroy();
+        await persister1.destroy();
+        await persister2.destroy();
         await close(db2);
       });
 

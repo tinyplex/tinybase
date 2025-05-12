@@ -66,7 +66,7 @@ describe.each([
   });
 
   afterEach(async () => {
-    persister.destroy();
+    await persister.destroy();
     if (persistable.afterEach != null) {
       await persistable.afterEach(location);
     }
@@ -375,7 +375,7 @@ describe.each([
         await persistable.getPersister(store, join(tmp.dirSync().name, '_'))
       ).startAutoLoad();
       expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-      persister.destroy();
+      await persister.destroy();
     }
   });
 

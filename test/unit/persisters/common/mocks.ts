@@ -413,7 +413,7 @@ export const mockLocalSynchronizer: Persistable<
   },
   testMissing: false,
   afterEach: async (location: [LocalSynchronizer, MergeableStore]) => {
-    location[0].destroy();
+    await location[0].destroy();
   },
 };
 
@@ -495,7 +495,7 @@ export const mockCustomSynchronizer: Persistable<
   afterEach: async (
     location: [Map<string, Receive>, Synchronizer, MergeableStore],
   ) => {
-    location[1].destroy();
+    await location[1].destroy();
   },
 };
 
