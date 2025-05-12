@@ -59,8 +59,8 @@
    * console.log(synchronizer.getWebSocket() == webSocket);
    * // -> true
    *
-   * synchronizer.destroy();
-   * server.destroy();
+   * await synchronizer.destroy();
+   * await server.destroy();
    * ```
    * @category Getter
    * @since v5.0.0
@@ -138,9 +138,9 @@
  * console.log(store2.getTables());
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
- * synchronizer1.destroy();
- * synchronizer2.destroy();
- * server.destroy();
+ * await synchronizer1.destroy();
+ * await synchronizer2.destroy();
+ * await server.destroy();
  * ```
  * @category Creation
  * @since v5.0.0

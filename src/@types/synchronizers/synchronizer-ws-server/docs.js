@@ -103,7 +103,7 @@
    * console.log(server.getWebSocketServer() == webSocketServer);
    * // -> true
    *
-   * server.destroy();
+   * await server.destroy();
    * ```
    * @category Getter
    * @since v5.0.0
@@ -146,14 +146,14 @@
    * console.log(server.getPathIds());
    * // -> ['roomA', 'roomB']
    *
-   * synchronizer3.destroy();
+   * await synchronizer3.destroy();
    * // ...
    * console.log(server.getPathIds());
    * // -> ['roomA']
    *
-   * synchronizer1.destroy();
-   * synchronizer2.destroy();
-   * server.destroy();
+   * await synchronizer1.destroy();
+   * await synchronizer2.destroy();
+   * await server.destroy();
    * ```
    * @category Getter
    * @since v5.0.0
@@ -195,14 +195,14 @@
    * console.log(server.getClientIds('roomB').length);
    * // -> 1
    *
-   * synchronizer3.destroy();
+   * await synchronizer3.destroy();
    * // ...
    * console.log(server.getClientIds('roomB').length);
    * // -> 0
    *
-   * synchronizer1.destroy();
-   * synchronizer2.destroy();
-   * server.destroy();
+   * await synchronizer1.destroy();
+   * await synchronizer2.destroy();
+   * await server.destroy();
    * ```
    * @category Getter
    * @since v5.0.0
@@ -251,18 +251,18 @@
    * // -> 'roomB added'
    * // -> ['roomA', 'roomB']
    *
-   * synchronizer1.destroy();
+   * await synchronizer1.destroy();
    * // ...
    * // -> 'roomA removed'
    * // -> ['roomB']
    *
-   * synchronizer2.destroy();
+   * await synchronizer2.destroy();
    * // ...
    * // -> 'roomB removed'
    * // -> []
    *
    * server.delListener(listenerId);
-   * server.destroy();
+   * await server.destroy();
    * ```
    * @category Listener
    * @since v5.0.0
@@ -316,14 +316,14 @@
    * );
    * // The listener is not called.
    *
-   * synchronizer1.destroy();
+   * await synchronizer1.destroy();
    * // ...
    * // -> '0 client(s) in roomA'
    *
-   * synchronizer2.destroy();
+   * await synchronizer2.destroy();
    *
    * server.delListener(listenerId);
-   * server.destroy();
+   * await server.destroy();
    * ```
    * @example
    * This example creates a WsServer, and listens to changes to the clients
@@ -354,16 +354,16 @@
    * );
    * // -> '1 client(s) in roomB'
    *
-   * synchronizer1.destroy();
+   * await synchronizer1.destroy();
    * // ...
    * // -> '0 client(s) in roomA'
    *
-   * synchronizer2.destroy();
+   * await synchronizer2.destroy();
    * // ...
    * // -> '0 client(s) in roomB'
    *
    * server.delListener(listenerId);
-   * server.destroy();
+   * await server.destroy();
    * ```
    * @category Listener
    * @since v5.0.0
@@ -399,11 +399,11 @@
    *
    * server.delListener(listenerId);
    *
-   * synchronizer.destroy();
+   * await synchronizer.destroy();
    * // -> undefined
    * // The listener is not called.
    *
-   * server.destroy();
+   * await server.destroy();
    * ```
    * @category Listener
    * @since v5.0.0
@@ -440,9 +440,9 @@
    * console.log(server.getStats());
    * // -> {paths: 1, clients: 2}
    *
-   * synchronizer1.destroy();
-   * synchronizer2.destroy();
-   * server.destroy();
+   * await synchronizer1.destroy();
+   * await synchronizer2.destroy();
+   * await server.destroy();
    * ```
    * @category Development
    * @since v5.0.0
@@ -468,7 +468,7 @@
    * });
    * const server = createWsServer(webSocketServer);
    *
-   * server.destroy();
+   * await server.destroy();
    * // ...
    * // -> 'WebSocketServer closed'
    * ```
@@ -552,9 +552,9 @@
  * console.log(clientStore2.getTables());
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
- * synchronizer1.destroy();
- * synchronizer2.destroy();
- * server.destroy();
+ * await synchronizer1.destroy();
+ * await synchronizer2.destroy();
+ * await server.destroy();
  * ```
  * @example
  * This longer example creates a WsServer that persists a MergeableStore to file
@@ -605,8 +605,8 @@
  * console.log(clientStore2.getTables());
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
- * synchronizer1.destroy();
- * synchronizer2.destroy();
+ * await synchronizer1.destroy();
+ * await synchronizer2.destroy();
  *
  * // ...
  * // Client 3 connects later
@@ -621,8 +621,8 @@
  * console.log(clientStore3.getTables());
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
- * synchronizer3.destroy();
- * server.destroy();
+ * await synchronizer3.destroy();
+ * await server.destroy();
  *
  * // Remove file for the purposes of this demo.
  * rmSync('petShop.json');
@@ -664,8 +664,8 @@
  * console.log(clientStore.getContent());
  * // -> [{pets: {fido: {species: 'dog'}}}, {"pathId": "petShop"}]
  *
- * synchronizer.destroy();
- * server.destroy();
+ * await synchronizer.destroy();
+ * await server.destroy();
  *
  * // Remove file for the purposes of this demo.
  * rmSync('petShop.json');
@@ -696,8 +696,8 @@
  * );
  * // -> 'Local client connected'
  *
- * synchronizer.destroy();
- * server.destroy();
+ * await synchronizer.destroy();
+ * await server.destroy();
  * ```
  * @category Creation
  * @since v5.0.0

@@ -41,7 +41,7 @@
    * console.log(synchronizer.getChannelName());
    * // -> 'channelA'
    *
-   * synchronizer.destroy();
+   * await synchronizer.destroy();
    * ```
    * @category Getter
    * @since v5.0.0
@@ -104,8 +104,8 @@
  * console.log(store2.getTables());
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
- * synchronizer1.destroy();
- * synchronizer2.destroy();
+ * await synchronizer1.destroy();
+ * await synchronizer2.destroy();
  * ```
  * @category Creation
  * @since v5.0.0

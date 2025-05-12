@@ -178,8 +178,8 @@
  * console.log(store1.getTables());
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
- * synchronizer1.destroy();
- * synchronizer2.destroy();
+ * await synchronizer1.destroy();
+ * await synchronizer2.destroy();
  * ```
  * @category Synchronizer
  * @since v5.0.0
@@ -228,8 +228,8 @@
    * console.log(store1.getTables());
    * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
    *
-   * synchronizer1.destroy();
-   * synchronizer2.destroy();
+   * await synchronizer1.destroy();
+   * await synchronizer2.destroy();
    * ```
    * @example
    * This example creates two empty MergeableStore objects, creates a
@@ -259,8 +259,8 @@
    * console.log(store2.getTables());
    * // -> {pets: {fido: {species: 'dog'}}}
    *
-   * synchronizer1.destroy();
-   * synchronizer2.destroy();
+   * await synchronizer1.destroy();
+   * await synchronizer2.destroy();
    * ```
    * @category Synchronization
    * @since v5.0.0
@@ -301,8 +301,8 @@
    * console.log(store2.getTables());
    * // -> {pets: {fido: {species: 'dog'}}}
    *
-   * synchronizer1.stopSync();
-   * synchronizer2.stopSync();
+   * await synchronizer1.stopSync();
+   * await synchronizer2.stopSync();
    *
    * store1.setCell('pets', 'fido', 'color', 'brown');
    * // ...
@@ -311,8 +311,8 @@
    * console.log(store2.getTables());
    * // -> {pets: {fido: {species: 'dog'}}}
    *
-   * synchronizer1.destroy();
-   * synchronizer2.destroy();
+   * await synchronizer1.destroy();
+   * await synchronizer2.destroy();
    * ```
    * @category Synchronization
    * @since v5.0.0
@@ -356,8 +356,8 @@
    * console.log(synchronizer2.getSynchronizerStats());
    * // -> {receives: 5, sends: 4}
    *
-   * synchronizer1.destroy();
-   * synchronizer2.destroy();
+   * await synchronizer1.destroy();
+   * await synchronizer2.destroy();
    * ```
    * @category Synchronization
    * @since v5.0.0
@@ -453,8 +453,8 @@
  * console.log(store2.getTables());
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
- * synchronizer1.destroy();
- * synchronizer2.destroy();
+ * await synchronizer1.destroy();
+ * await synchronizer2.destroy();
  * ```
  * @category Creation
  * @since v5.0.0

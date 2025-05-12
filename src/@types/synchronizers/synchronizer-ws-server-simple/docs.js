@@ -45,7 +45,7 @@
    * console.log(server.getWebSocketServer() == webSocketServer);
    * // -> true
    *
-   * server.destroy();
+   * await server.destroy();
    * ```
    * @category Getter
    * @since v5.4.0
@@ -71,7 +71,7 @@
    * });
    * const server = createWsServerSimple(webSocketServer);
    *
-   * server.destroy();
+   * await server.destroy();
    * // ...
    * // -> 'WebSocketServer closed'
    * ```
@@ -132,9 +132,9 @@
  * console.log(clientStore2.getTables());
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
- * synchronizer1.destroy();
- * synchronizer2.destroy();
- * server.destroy();
+ * await synchronizer1.destroy();
+ * await synchronizer2.destroy();
+ * await server.destroy();
  * ```
  * @category Creation
  * @since v5.4.0
