@@ -19,7 +19,7 @@ import {arrayClear, arrayPush, arrayShift} from '../../common/array.ts';
 import {getListenerFunctions} from '../../common/listeners.ts';
 import {mapEnsure, mapGet, mapNew, mapSet} from '../../common/map.ts';
 import {objFreeze, objIsEmpty} from '../../common/obj.ts';
-import {errorNew, isArray, isUndefined} from '../../common/other.ts';
+import {errorNew, isArray, isUndefined, tryCatch} from '../../common/other.ts';
 import {IdSet2} from '../../common/set.ts';
 
 const enum StatusValues {
@@ -164,12 +164,7 @@ export const createCustomPersister = <
           )),
         )
       ) {
-        try {
-          await action();
-        } catch (error) {
-          /*! istanbul ignore next */
-          onIgnoredError?.(error);
-        }
+        await tryCatch(action, onIgnoredError);
       }
       mapSet(scheduleRunning, scheduleId, 0);
     }
@@ -205,21 +200,23 @@ export const createCustomPersister = <
       setStatus(StatusValues.Loading);
       loads++;
       await schedule(async () => {
-        try {
-          const content = await getPersisted();
-          if (isArray(content)) {
-            setContentOrChanges(content);
-          } else if (initialContent) {
-            setDefaultContent(initialContent);
-          } else {
-            errorNew(`Content is not an array: ${content}`);
-          }
-        } catch (error) {
-          onIgnoredError?.(error);
-          if (initialContent) {
-            setDefaultContent(initialContent);
-          }
-        }
+        await tryCatch(
+          async () => {
+            const content = await getPersisted();
+            if (isArray(content)) {
+              setContentOrChanges(content);
+            } else if (initialContent) {
+              setDefaultContent(initialContent);
+            } else {
+              errorNew(`Content is not an array: ${content}`);
+            }
+          },
+          () => {
+            if (initialContent) {
+              setDefaultContent(initialContent);
+            }
+          },
+        );
         setStatus(StatusValues.Idle);
       });
     }
@@ -231,35 +228,34 @@ export const createCustomPersister = <
   ): Promise<Persister<Persist>> => {
     stopAutoLoad();
     await load(initialContent);
-    try {
-      autoLoadHandle = await addPersisterListener(async (content, changes) => {
-        if (changes || content) {
-          /*! istanbul ignore else */
-          if (status != StatusValues.Saving) {
-            setStatus(StatusValues.Loading);
-            loads++;
-            setContentOrChanges(changes ?? content);
-            setStatus(StatusValues.Idle);
-          }
-        } else {
-          await load();
-        }
-      });
-    } catch (error) {
-      /*! istanbul ignore next */
-      onIgnoredError?.(error);
-    }
+    await tryCatch(
+      async () =>
+        (autoLoadHandle = await addPersisterListener(
+          async (content, changes) => {
+            if (changes || content) {
+              /*! istanbul ignore else */
+              if (status != StatusValues.Saving) {
+                setStatus(StatusValues.Loading);
+                loads++;
+                setContentOrChanges(changes ?? content);
+                setStatus(StatusValues.Idle);
+              }
+            } else {
+              await load();
+            }
+          },
+        )),
+      onIgnoredError,
+    );
     return persister;
   };
 
   const stopAutoLoad = async (): Promise<Persister<Persist>> => {
     if (autoLoadHandle) {
-      try {
-        await delPersisterListener(autoLoadHandle);
-      } catch (error) {
-        /*! istanbul ignore next */
-        onIgnoredError?.(error);
-      }
+      await tryCatch(
+        () => delPersisterListener(autoLoadHandle!),
+        onIgnoredError,
+      );
       autoLoadHandle = undefined;
     }
     return persister;
@@ -278,12 +274,10 @@ export const createCustomPersister = <
       setStatus(StatusValues.Saving);
       saves++;
       await schedule(async () => {
-        try {
-          await setPersisted(getContent as any, changes);
-        } catch (error) {
-          /*! istanbul ignore next */
-          onIgnoredError?.(error);
-        }
+        await tryCatch(
+          () => setPersisted(getContent as any, changes),
+          onIgnoredError,
+        );
         setStatus(StatusValues.Idle);
       });
     }

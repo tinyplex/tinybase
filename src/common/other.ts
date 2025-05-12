@@ -84,3 +84,17 @@ export const promiseAll = async (promises: Promise<any>[]) =>
 export const errorNew = (message: string) => {
   throw new Error(message);
 };
+
+export const tryCatch = async (
+  action: () => unknown | Promise<unknown>,
+  onIgnoredError?: (error: any) => void,
+  then?: () => unknown,
+): Promise<void> => {
+  try {
+    await action();
+  } catch (error) {
+    /*! istanbul ignore next */
+    onIgnoredError?.(error);
+    then?.();
+  }
+};
