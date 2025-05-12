@@ -69,7 +69,7 @@ export const createTabularPersister = <
       decode,
     );
 
-  const saveTables = async (
+  const saveTables = (
     tables:
       | Tables
       | {
@@ -79,7 +79,7 @@ export const createTabularPersister = <
         },
     partial?: boolean,
   ) =>
-    await promiseAll(
+    promiseAll(
       mapMap(
         tablesSaveConfig,
         async (
@@ -145,23 +145,21 @@ export const createTabularPersister = <
         ]
       : {};
 
-  const getPersisted = async (): Promise<
-    PersistedContent<Persist> | undefined
-  > =>
-    (await transaction(async () => {
+  const getPersisted = (): Promise<PersistedContent<Persist> | undefined> =>
+    transaction(async () => {
       await refreshSchema();
       const tables = await loadTables();
       const values = await loadValues();
       return !objIsEmpty(tables) || !isUndefined(values)
         ? [tables as Tables, values as Values]
         : undefined;
-    })) as any;
+    }) as any;
 
-  const setPersisted = async (
+  const setPersisted = (
     getContent: () => PersistedContent<Persist>,
     changes?: PersistedChanges<Persist, true>,
   ): Promise<void> =>
-    await transaction(async () => {
+    transaction(async () => {
       await refreshSchema();
       if (!isUndefined(changes)) {
         await saveTables(changes[0] as any, true);

@@ -48,8 +48,8 @@ export const createJsonPersister = <
       upsert,
     );
 
-  const getPersisted = async (): Promise<PersistedContent<Persist>> =>
-    await transaction(async () => {
+  const getPersisted = (): Promise<PersistedContent<Persist>> =>
+    transaction(async () => {
       await refreshSchema();
       return jsonParseWithUndefined(
         ((await loadTable(storeTableName, storeIdColumnName))[SINGLE_ROW_ID]?.[
@@ -58,10 +58,10 @@ export const createJsonPersister = <
       );
     });
 
-  const setPersisted = async (
+  const setPersisted = (
     getContent: () => PersistedContent<Persist>,
   ): Promise<void> =>
-    await transaction(async () => {
+    transaction(async () => {
       await refreshSchema();
       await saveTable(
         storeTableName,

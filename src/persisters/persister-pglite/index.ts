@@ -25,10 +25,10 @@ export const createPglitePersister = (async (
     configOrStoreTableName,
     async (sql: string, params: any[] = []): Promise<IdObj<any>[]> =>
       (await pglite.query(sql, params)).rows as any,
-    async (
+    (
       channel: string,
       listener: DatabaseChangeListener,
-    ): Promise<() => Promise<void>> => await pglite.listen(channel, listener),
+    ): Promise<() => Promise<void>> => pglite.listen(channel, listener),
     (unlisten: () => Promise<void>) => tryCatch(unlisten, onIgnoredError),
     onSqlCommand,
     onIgnoredError,

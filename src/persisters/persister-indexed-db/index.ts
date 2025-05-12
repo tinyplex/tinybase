@@ -78,13 +78,11 @@ export const createIndexedDbPersister = ((
               'readwrite',
             );
             const result = await promiseAll(
-              arrayMap(
-                OBJECT_STORE_NAMES,
-                async (objectStoreName, index) =>
-                  await forObjectStore(
-                    transaction.objectStore(objectStoreName),
-                    params[index],
-                  ),
+              arrayMap(OBJECT_STORE_NAMES, (objectStoreName, index) =>
+                forObjectStore(
+                  transaction.objectStore(objectStoreName),
+                  params[index],
+                ),
               ),
             );
             request.result.close();
@@ -108,13 +106,12 @@ export const createIndexedDbPersister = ((
       ),
     );
 
-  const setPersisted = async (getContent: () => Content): Promise<void> =>
-    (await forObjectStores(
-      async (objectStore, content) =>
-        await objectStoreMatch(objectStore, content),
+  const setPersisted = (getContent: () => Content): Promise<void> =>
+    forObjectStores(
+      (objectStore, content) => objectStoreMatch(objectStore, content),
       getContent(),
       1,
-    )) as any;
+    ) as any;
 
   const addPersisterListener = (listener: PersisterListener): NodeJS.Timeout =>
     startInterval(listener, autoLoadIntervalSeconds);

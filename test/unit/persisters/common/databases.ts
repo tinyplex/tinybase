@@ -266,8 +266,8 @@ export const NODE_SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
     async (client: Client) => client.close(),
   ],
   electricSql: [
-    async (): Promise<Electric> =>
-      await suppressWarnings(
+    (): Promise<Electric> =>
+      suppressWarnings(
         async () =>
           await electrify(
             await ElectricDatabase.init(':memory:'),
@@ -321,8 +321,8 @@ export const NODE_SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
     true,
   ],
   crSqliteWasm: [
-    async (): Promise<DB> =>
-      await suppressWarnings(async () => await (await initWasm()).open()),
+    (): Promise<DB> =>
+      suppressWarnings(async () => await (await initWasm()).open()),
     ['getDb', (db: DB) => db],
     (
       store: Store,
@@ -363,22 +363,22 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
       return [sql, cmdSql, name];
     },
     ['getSql', ([sql]: SqlClientsAndName) => sql],
-    async (
+    (
       store: Store,
       [sql]: SqlClientsAndName,
       storeTableOrConfig?: string | DatabasePersisterConfig,
       onSqlCommand?: (sql: string, args?: any[]) => void,
       onIgnoredError?: (error: any) => void,
     ) =>
-      await (createPostgresPersister as any)(
+      (createPostgresPersister as any)(
         store,
         sql,
         storeTableOrConfig,
         onSqlCommand,
         onIgnoredError,
       ),
-    async ([, cmdSql]: SqlClientsAndName, sqlStr: string, args: any[] = []) =>
-      await cmdSql.unsafe(sqlStr, args),
+    ([, cmdSql]: SqlClientsAndName, sqlStr: string, args: any[] = []) =>
+      cmdSql.unsafe(sqlStr, args),
     async ([sql, cmdSql, name]: SqlClientsAndName) => {
       cmdSql.release();
       await sql.end({timeout: 0.1});

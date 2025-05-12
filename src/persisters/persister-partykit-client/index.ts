@@ -55,7 +55,7 @@ export const createPartyKitPersister = ((
       })
     ).json();
 
-  const getPersisted = async (): Promise<Content> => await getOrSetStore();
+  const getPersisted = getOrSetStore;
 
   const setPersisted = async (
     getContent: () => Content,

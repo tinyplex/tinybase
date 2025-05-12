@@ -402,8 +402,8 @@ const lintCheckDocs = async (dir) => {
   });
 };
 
-const spellCheck = async (dir, deep = false) =>
-  await execute(`cspell "${dir}/*${deep ? '*' : ''}"`);
+const spellCheck = (dir, deep = false) =>
+  execute(`cspell "${dir}/*${deep ? '*' : ''}"`);
 
 const getTsOptions = async (dir) => {
   const {default: tsc} = await import('typescript');
@@ -701,8 +701,8 @@ export const testUnit = async () => {
   await test(['test/unit'], {coverageMode: 1, serialTests: true});
 };
 
-export const testBun = async () =>
-  await execute(
+export const testBun = () =>
+  execute(
     'bun test ' +
       'test/unit/persisters/database ' +
       'test/unit/core/documentation.test.ts',
@@ -729,19 +729,16 @@ export const testPerf = async () => {
 };
 export const compileAndTestPerf = series(compileForTest, testPerf);
 
-export const compileDocsPagesOnly = async () =>
-  await compileDocsAndAssets(false);
+export const compileDocsPagesOnly = () => compileDocsAndAssets(false);
 
-export const compileDocsAssetsOnly = async () =>
-  await compileDocsAndAssets(false, false);
+export const compileDocsAssetsOnly = () => compileDocsAndAssets(false, false);
 
 export const compileDocs = () => compileDocsAndAssets();
 
 export const compileForProdAndDocs = series(compileForProd, compileDocs);
 
-export const testE2e = async () => {
-  await test(['test/e2e'], {puppeteer: true});
-};
+export const testE2e = () => test(['test/e2e'], {puppeteer: true});
+
 export const compileAndTestE2e = series(compileForProdAndDocs, testE2e);
 
 export const testProd = async () => {

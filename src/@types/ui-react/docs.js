@@ -11426,9 +11426,8 @@
  *   const store = useCreateStore(() =>
  *     createStore().setCell('pets', 'fido', 'color', 'brown'),
  *   );
- *   const persister = useCreatePersister(
- *     store,
- *     (store) => createSessionPersister(store, 'pets'),
+ *   const persister = useCreatePersister(store, (store) =>
+ *     createSessionPersister(store, 'pets'),
  *   );
  *   useProvidePersister('petPersister', persister);
  *   return null;

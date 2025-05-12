@@ -168,10 +168,8 @@ const getMockedCustom = (
   },
   get: async (): Promise<Content | void> =>
     jsonParseWithUndefined(customPersister),
-  set: async (
-    location: string,
-    content: Content | MergeableContent,
-  ): Promise<void> => await write(location, jsonStringWithUndefined(content)),
+  set: (location: string, content: Content | MergeableContent): Promise<void> =>
+    write(location, jsonStringWithUndefined(content)),
   write,
   del: async (): Promise<void> => {
     customPersister = '';
@@ -248,8 +246,8 @@ const getMockedDatabase = <Location>(
     beforeEach: mockFetchWasm,
     getLocation,
     getLocationMethod,
-    getPersister: async (store: Store, location: Location) =>
-      await getPersister(store, location, {
+    getPersister: (store: Store, location: Location) =>
+      getPersister(store, location, {
         mode: 'json',
         autoLoadIntervalSeconds,
       }),
@@ -369,10 +367,8 @@ export const mockFile: Persistable = {
       return JSON.parse(fs.readFileSync(location, 'utf-8'));
     } catch {}
   },
-  set: async (
-    location: string,
-    content: Content | MergeableContent,
-  ): Promise<void> => await mockFile.write(location, JSON.stringify(content)),
+  set: (location: string, content: Content | MergeableContent): Promise<void> =>
+    mockFile.write(location, JSON.stringify(content)),
   write: async (location: string, rawContent: any): Promise<void> =>
     fs.writeFileSync(location, rawContent, 'utf-8'),
   del: async (location: string): Promise<void> => fs.unlinkSync(location),
@@ -395,10 +391,10 @@ export const mockLocalSynchronizer: Persistable<
     location: [LocalSynchronizer, MergeableStore],
   ): Promise<Content | MergeableContent | void> =>
     location[1].getMergeableContent(),
-  set: async (
+  set: (
     location: [LocalSynchronizer, MergeableStore],
     content: Content | MergeableContent,
-  ): Promise<void> => await mockLocalSynchronizer.write(location, content),
+  ): Promise<void> => mockLocalSynchronizer.write(location, content),
   write: async (
     location: [LocalSynchronizer, MergeableStore],
     rawContent: any,
@@ -473,10 +469,10 @@ export const mockCustomSynchronizer: Persistable<
     location: [Map<string, Receive>, Synchronizer, MergeableStore],
   ): Promise<Content | MergeableContent | void> =>
     location[2].getMergeableContent(),
-  set: async (
+  set: (
     location: [Map<string, Receive>, Synchronizer, MergeableStore],
     content: Content | MergeableContent,
-  ): Promise<void> => await mockCustomSynchronizer.write(location, content),
+  ): Promise<void> => mockCustomSynchronizer.write(location, content),
   write: async (
     location: [Map<string, Receive>, Synchronizer, MergeableStore],
     rawContent: any,
@@ -548,10 +544,8 @@ export const mockRemote: Persistable = {
       return JSON.parse(fs.readFileSync(location, 'utf-8'));
     } catch {}
   },
-  set: async (
-    location: string,
-    content: Content | MergeableContent,
-  ): Promise<void> => await mockRemote.write(location, JSON.stringify(content)),
+  set: (location: string, content: Content | MergeableContent): Promise<void> =>
+    mockRemote.write(location, JSON.stringify(content)),
   write: async (location: string, rawContent: any): Promise<void> =>
     fs.writeFileSync(location, rawContent, 'utf-8'),
   del: async (location: string): Promise<void> => fs.unlinkSync(location),
@@ -612,7 +606,7 @@ export const mockIndexedDb = {
       db.close();
     }
   },
-  del: async (dbName: string): Promise<void> => await deleteDB(dbName),
+  del: (dbName: string): Promise<void> => deleteDB(dbName),
   testMissing: true,
 };
 

@@ -133,23 +133,21 @@ export const createCustomPostgreSqlPersister = <
             newOrOldOrBoth == 0 ? 'NEW' : 'OLD',
           );
 
-  const addDataChangedTriggers = async (
+  const addDataChangedTriggers = (
     tableName: string,
     dataChangedFunction: string,
   ) =>
-    await promiseAll(
-      arrayMap(
-        [INSERT, DELETE, UPDATE],
-        async (action, newOrOldOrBoth) =>
-          await createTrigger(
-            OR_REPLACE,
-            escapeIds(TINYBASE, DATA_CHANGED, configHash, tableName, action),
-            `AFTER ${action} ON${escapeId(tableName)}FOR EACH ROW WHEN(${when(
-              tableName,
-              newOrOldOrBoth as 0 | 1 | 2,
-            )})`,
-            dataChangedFunction,
-          ),
+    promiseAll(
+      arrayMap([INSERT, DELETE, UPDATE], (action, newOrOldOrBoth) =>
+        createTrigger(
+          OR_REPLACE,
+          escapeIds(TINYBASE, DATA_CHANGED, configHash, tableName, action),
+          `AFTER ${action} ON${escapeId(tableName)}FOR EACH ROW WHEN(${when(
+            tableName,
+            newOrOldOrBoth as 0 | 1 | 2,
+          )})`,
+          dataChangedFunction,
+        ),
       ),
     );
 
@@ -188,8 +186,8 @@ export const createCustomPostgreSqlPersister = <
 
     const listenerHandle = await addChangeListener(
       channel,
-      async (prefixAndTableName) =>
-        await ifNotUndefined(
+      (prefixAndTableName) =>
+        ifNotUndefined(
           strMatch(prefixAndTableName, EVENT_REGEX),
           async ([, eventType, tableName]) => {
             if (collHas(managedTableNamesSet, tableName)) {
