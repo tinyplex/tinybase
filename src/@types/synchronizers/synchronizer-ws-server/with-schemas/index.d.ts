@@ -51,7 +51,7 @@ export interface WsServer {
   /// WsServer.getStats
   getStats(): WsServerStats;
   /// WsServer.destroy
-  destroy(): void;
+  destroy(): Promise<void>;
 }
 
 /// createWsServer

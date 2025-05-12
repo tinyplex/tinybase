@@ -17,7 +17,6 @@ import {arrayForEach, arrayPush} from '../../common/array.ts';
 import {
   collClear,
   collDel,
-  collForEach,
   collIsEmpty,
   collSize,
   collSize2,
@@ -30,11 +29,12 @@ import {
   mapForEach,
   mapGet,
   mapKeys,
+  mapMap,
   mapNew,
   mapSet,
 } from '../../common/map.ts';
 import {objFreeze} from '../../common/obj.ts';
-import {ifNotUndefined, isArray, noop} from '../../common/other.ts';
+import {ifNotUndefined, isArray, noop, promiseAll} from '../../common/other.ts';
 import {IdSet2} from '../../common/set.ts';
 import {
   EMPTY_STRING,
@@ -152,9 +152,9 @@ export const createWsServer = (<
     serverClient[Sc.State] = ScState.Ready;
   };
 
-  const stopServerClient = (serverClient: ServerClient) => {
-    serverClient[Sc.Persister]?.destroy();
-    serverClient[Sc.Synchronizer]?.destroy();
+  const stopServerClient = async (serverClient: ServerClient) => {
+    await serverClient[Sc.Persister]?.destroy();
+    await serverClient[Sc.Synchronizer]?.destroy();
   };
 
   const getMessageHandler =
@@ -213,11 +213,11 @@ export const createWsServer = (<
           serverClient[Sc.Buffer] = [];
         }
 
-        client.on('close', () => {
+        client.on('close', async () => {
           collDel(clients, clientId);
           callListeners(clientIdListeners, [pathId], clientId, -1);
           if (collIsEmpty(clients)) {
-            stopServerClient(serverClient);
+            await stopServerClient(serverClient);
             collDel(serverClientsByPath, pathId);
             collDel(clientsByPath, pathId);
             callListeners(pathIdListeners, undefined, pathId, -1);
@@ -260,9 +260,9 @@ export const createWsServer = (<
     clients: collSize2(clientsByPath),
   });
 
-  const destroy = () => {
+  const destroy = async () => {
     collClear(clientsByPath);
-    collForEach(serverClientsByPath, stopServerClient);
+    await promiseAll(mapMap(serverClientsByPath, stopServerClient));
     webSocketServer.close();
   };
 

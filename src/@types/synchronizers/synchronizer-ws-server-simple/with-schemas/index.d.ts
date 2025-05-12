@@ -6,7 +6,7 @@ export interface WsServerSimple {
   /// WsServerSimple.getWebSocketServer
   getWebSocketServer(): WebSocketServer;
   /// WsServerSimple.destroy
-  destroy(): void;
+  destroy(): Promise<void>;
 }
 
 /// createWsServerSimple

@@ -453,7 +453,7 @@
    * use.
    *
    * This closes the underlying WebSocketServer that was provided when the
-   * WsServer was created.
+   * WsServer was created. This method is asynchronous.
    * @example
    * This example creates a WsServer and then destroys it again, closing the
    * underlying WebSocketServer.

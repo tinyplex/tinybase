@@ -56,7 +56,7 @@ export const createWsServerSimple = ((webSocketServer: WebSocketServer) => {
 
   const getWebSocketServer = () => webSocketServer;
 
-  const destroy = () => {
+  const destroy = async () => {
     collClear(clientsByPath);
     webSocketServer.close();
   };
