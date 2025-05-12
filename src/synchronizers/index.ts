@@ -258,9 +258,11 @@ export const createCustomSynchronizer = (
     ).startAutoSave();
   };
 
-  const stopSync = () => {
+  const stopSync = async () => {
     syncing = 0;
-    return persister.stopAutoLoad().stopAutoSave();
+    persister.stopAutoLoad();
+    persister.stopAutoSave();
+    return persister;
   };
 
   const destroy = () => {
