@@ -96,7 +96,7 @@ const App = () => {
         'https://tinybase.org/assets/countries.json',
       ),
     [],
-    async (persister) => await persister.load(),
+    (persister) => persister.load(),
   );
 
   const starStore = useCreateStore(() =>

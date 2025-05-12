@@ -281,7 +281,7 @@ const getMockedDatabase = <Location>(
         await close(location);
       } catch {}
     },
-    afterEach: async (location: Location) => await mockDatabase.del(location),
+    afterEach: (location: Location) => mockDatabase.del(location),
     testMissing: true,
     autoLoadPause,
   };

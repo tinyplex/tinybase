@@ -235,7 +235,7 @@ export const NODE_SQLITE_MERGEABLE_VARIANTS: Variants = {
       db
         .exec(sql, {bind: args, rowMode: 'object', returnValue: 'resultRows'})
         .map((row: {[id: string]: any}) => ({...row})),
-    async ([_, db]: SqliteWasmDb) => await db.close(),
+    ([_, db]: SqliteWasmDb) => db.close(),
   ],
 };
 
@@ -289,9 +289,9 @@ export const NODE_SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
         onSqlCommand,
         onIgnoredError,
       ),
-    async (electricClient: Electric, sql: string, args: any[] = []) =>
-      await electricClient.db.raw({sql, args}),
-    async (electricClient: Electric) => await electricClient.close(),
+    (electricClient: Electric, sql: string, args: any[] = []) =>
+      electricClient.db.raw({sql, args}),
+    (electricClient: Electric) => electricClient.close(),
   ],
   powerSync: [
     async (): Promise<AbstractPowerSyncDatabase> =>
@@ -338,8 +338,8 @@ export const NODE_SQLITE_NON_MERGEABLE_VARIANTS: Variants = {
         onSqlCommand,
         onIgnoredError,
       ),
-    async (db: DB, sql: string, args: any[] = []) => await db.execO(sql, args),
-    async (db: DB) => await db.close(),
+    (db: DB, sql: string, args: any[] = []) => db.execO(sql, args),
+    (db: DB) => db.close(),
   ],
 };
 
@@ -395,18 +395,16 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
     true,
   ],
   pglite: [
-    async (): Promise<PGlite> => {
-      return await suppressWarnings(async () => await PGlite.create());
-    },
+    (): Promise<PGlite> => suppressWarnings(() => PGlite.create()),
     ['getPglite', (pglite: PGlite) => pglite],
-    async (
+    (
       store: Store,
       pglite: PGlite,
       storeTableOrConfig?: string | DatabasePersisterConfig,
       onSqlCommand?: (sql: string, args?: any[]) => void,
       onIgnoredError?: (error: any) => void,
     ) =>
-      await (createPglitePersister as any)(
+      (createPglitePersister as any)(
         store,
         pglite,
         storeTableOrConfig,
@@ -446,12 +444,9 @@ export const BUN_MERGEABLE_VARIANTS: Variants = {
         onSqlCommand,
         onIgnoredError,
       ),
-    async (
-      db: any,
-      sql: string,
-      args: any[] = [],
-    ): Promise<{[id: string]: any}[]> => db.query(sql).all(args),
-    async (db: any) => db.close(),
+    (db: any, sql: string, args: any[] = []): Promise<{[id: string]: any}[]> =>
+      db.query(sql).all(args),
+    (db: any) => db.close(),
   ],
 };
 

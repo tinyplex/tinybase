@@ -457,17 +457,17 @@ describe('Create Hooks', () => {
     };
 
     const {container, rerender, unmount} = render(<Test id={1} />);
-    await act(async () => await pause());
+    await act(pause);
     expect(container.textContent).toEqual(
       JSON.stringify([1, {loads: 0, saves: 0}, null]),
     );
-    await act(async () => await _persister?.load([{t1: {r1: {c1: 1}}}, {}]));
+    await act(() => _persister?.load([{t1: {r1: {c1: 1}}}, {}]));
     expect(container.textContent).toEqual(
       JSON.stringify([1, {loads: 1, saves: 0}, 1]),
     );
 
     rerender(<Test id={2} />);
-    await act(async () => await pause());
+    await act(pause);
     expect(container.textContent).toEqual(
       JSON.stringify([2, {loads: 0, saves: 0}, 1]),
     );
@@ -500,7 +500,7 @@ describe('Create Hooks', () => {
         store,
         (store) => createPersister(store, id),
         [id],
-        async (persister) => await initPersister(persister, id),
+        (persister) => initPersister(persister, id),
         [id],
       );
       return didRender(JSON.stringify([id, persister?.getStats()]));
@@ -510,13 +510,13 @@ describe('Create Hooks', () => {
     expect(container.textContent).toEqual(JSON.stringify([0, null]));
 
     rerender(<Test id={1} />);
-    await act(async () => await pause());
+    await act(pause);
     expect(container.textContent).toEqual(
       JSON.stringify([1, {loads: 1, saves: 0}]),
     );
 
     rerender(<Test id={2} />);
-    await act(async () => await pause());
+    await act(pause);
     expect(container.textContent).toEqual(
       JSON.stringify([2, {loads: 1, saves: 0}]),
     );
@@ -554,7 +554,7 @@ describe('Create Hooks', () => {
         store,
         (store) => createPersister(store, id),
         [id],
-        async (persister) => await initPersister(persister, id),
+        (persister) => initPersister(persister, id),
         [id],
         destroyPersister,
       );
@@ -562,13 +562,13 @@ describe('Create Hooks', () => {
     };
 
     const {container, rerender, unmount} = render(<Test id={1} />);
-    await act(async () => await pause());
+    await act(pause);
     expect(container.textContent).toEqual(
       JSON.stringify([1, {loads: 1, saves: 0}]),
     );
 
     rerender(<Test id={2} />);
-    await act(async () => await pause());
+    await act(pause);
     expect(container.textContent).toEqual(
       JSON.stringify([2, {loads: 1, saves: 0}]),
     );
@@ -2495,7 +2495,7 @@ describe('Read Hooks', () => {
       JSON.stringify([true, null, '']),
     );
 
-    await act(async () => await userEvent.click(getByRole('button')));
+    await act(() => userEvent.click(getByRole('button')));
     expect(getByRole('button').textContent).toEqual(
       JSON.stringify([false, '0', '']),
     );
@@ -2508,7 +2508,7 @@ describe('Read Hooks', () => {
       JSON.stringify([true, '2', 'one']),
     );
 
-    await act(async () => await userEvent.click(getByRole('button')));
+    await act(() => userEvent.click(getByRole('button')));
     expect(getByRole('button').textContent).toEqual(
       JSON.stringify([false, '0', '']),
     );
@@ -2534,7 +2534,7 @@ describe('Read Hooks', () => {
       JSON.stringify([false, null, '']),
     );
 
-    await act(async () => await userEvent.click(getByRole('button')));
+    await act(() => userEvent.click(getByRole('button')));
     expect(getByRole('button').textContent).toEqual(
       JSON.stringify([false, null, '']),
     );
@@ -2548,7 +2548,7 @@ describe('Read Hooks', () => {
       JSON.stringify([true, '1', 'one']),
     );
 
-    await act(async () => await userEvent.click(getByRole('button')));
+    await act(() => userEvent.click(getByRole('button')));
     expect(getByRole('button').textContent).toEqual(
       JSON.stringify([false, null, '']),
     );

@@ -11428,7 +11428,7 @@
  *   );
  *   const persister = useCreatePersister(
  *     store,
- *     async (store) => await createSessionPersister(store, 'pets'),
+ *     (store) => createSessionPersister(store, 'pets'),
  *   );
  *   useProvidePersister('petPersister', persister);
  *   return null;

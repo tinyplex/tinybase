@@ -1415,8 +1415,8 @@
    *   async (getContent) => {
    *     // setPersisted
    *     await persister.schedule(
-   *       async () => await checkRemoteSystemIsReady(),
-   *       async () => await sendDataToRemoteSystem(getContent()),
+   *       () => checkRemoteSystemIsReady(),
+   *       () => sendDataToRemoteSystem(getContent()),
    *     );
    *   },
    *   (listener) => setInterval(listener, 1000),

@@ -792,9 +792,7 @@ describe.each([
           }),
         );
         await Promise.all(
-          synchronizers.map(
-            async (synchronizer) => await synchronizer.startSync(),
-          ),
+          synchronizers.map((synchronizer) => synchronizer.startSync()),
         );
         await pause(synchronizable.pauseMilliseconds);
       });

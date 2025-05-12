@@ -83,10 +83,10 @@ const getPrettierConfig = async () => ({
   parser: 'typescript',
 });
 
-const allOf = async (array, cb) => await Promise.all(array.map(cb));
-const testModules = async (cb) => await allOf(TEST_MODULES, cb);
-const allModules = async (cb) => await allOf(ALL_MODULES, cb);
-const allDefinitions = async (cb) => await allOf(ALL_DEFINITIONS, cb);
+const allOf = (array, cb) => Promise.all(array.map(cb));
+const testModules = (cb) => allOf(TEST_MODULES, cb);
+const allModules = (cb) => allOf(ALL_MODULES, cb);
+const allDefinitions = (cb) => allOf(ALL_DEFINITIONS, cb);
 
 const clearDir = async (dir = DIST_DIR) => {
   try {
@@ -551,7 +551,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   );
 
   if (min) {
-    allOf(outputFiles, async (outputFile) => await gzipFile(outputFile));
+    allOf(outputFiles, (outputFile) => gzipFile(outputFile));
   }
 };
 
@@ -655,9 +655,9 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
   await removeDir(TMP_DIR);
 };
 
-const npmInstall = async () => await execute('npm install --legacy-peer-deps');
+const npmInstall = () => execute('npm install --legacy-peer-deps');
 
-const npmPublish = async () => await execute('npm publish');
+const npmPublish = () => execute('npm publish');
 
 const {parallel, series} = gulp;
 
@@ -679,7 +679,7 @@ export const lintFiles = async () => {
   await lintCheckFiles('test');
   await lintCheckFiles('site');
 };
-export const lintDocs = async () => await lintCheckDocs('src');
+export const lintDocs = () => lintCheckDocs('src');
 export const lint = series(lintDocs, lintFiles);
 
 export const spell = async () => {
@@ -695,7 +695,7 @@ export const ts = async () => {
   await tsCheck('site');
 };
 
-export const compileForProd = async () => await compileModulesForProd();
+export const compileForProd = () => compileModulesForProd();
 
 export const testUnit = async () => {
   await test(['test/unit'], {coverageMode: 1, serialTests: true});
@@ -735,7 +735,7 @@ export const compileDocsPagesOnly = async () =>
 export const compileDocsAssetsOnly = async () =>
   await compileDocsAndAssets(false, false);
 
-export const compileDocs = async () => await compileDocsAndAssets();
+export const compileDocs = () => compileDocsAndAssets();
 
 export const compileForProdAndDocs = series(compileForProd, compileDocs);
 
