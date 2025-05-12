@@ -31,6 +31,7 @@ import {
   isUndefined,
   promiseNew,
   startTimeout,
+  tryCatch,
 } from '../common/other.ts';
 import {getLatestTime, stampNew, stampNewObj} from '../common/stamps.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
@@ -151,12 +152,12 @@ export const createCustomSynchronizer = (
     tablesStamp[1] = getLatestTime(tablesStamp[1], tablesTime2);
   };
 
-  const getChangesFromOtherStore = async (
+  const getChangesFromOtherStore = (
     otherClientId: IdOrNull = null,
     otherContentHashes?: ContentHashes,
     transactionId: Id = getTransactionId(),
-  ): Promise<MergeableChanges | void> => {
-    try {
+  ): Promise<MergeableChanges | void> =>
+    tryCatch(async () => {
       if (isUndefined(otherContentHashes)) {
         [otherContentHashes, otherClientId, transactionId] =
           await request<ContentHashes>(
@@ -220,10 +221,7 @@ export const createCustomSynchronizer = (
             )[0],
         1,
       ];
-    } catch (error) {
-      onIgnoredError?.(error);
-    }
-  };
+    }, onIgnoredError);
 
   const getPersisted = async (): Promise<MergeableContent | undefined> => {
     const changes = (await getChangesFromOtherStore()) as any;

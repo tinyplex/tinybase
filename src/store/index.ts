@@ -101,6 +101,7 @@ import {
   isTypeStringOrBoolean,
   isUndefined,
   slice,
+  tryCatch,
 } from '../common/other.ts';
 import {
   Pair,
@@ -1221,29 +1222,26 @@ export const createStore: typeof createStoreDecl = (): Store => {
     });
 
   const setTablesJson = (tablesJson: Json): Store => {
-    try {
-      setOrDelTables(jsonParse(tablesJson));
-    } catch {}
+    tryCatch(() => setOrDelTables(jsonParse(tablesJson)));
     return store;
   };
 
   const setValuesJson = (valuesJson: Json): Store => {
-    try {
-      setOrDelValues(jsonParse(valuesJson));
-    } catch {}
+    tryCatch(() => setOrDelValues(jsonParse(valuesJson)));
     return store;
   };
 
   const setJson = (tablesAndValuesJson: Json): Store =>
-    fluentTransaction(() => {
-      try {
-        const [tables, values] = jsonParse(tablesAndValuesJson);
-        setOrDelTables(tables);
-        setOrDelValues(values);
-      } catch {
-        setTablesJson(tablesAndValuesJson);
-      }
-    });
+    fluentTransaction(() =>
+      tryCatch(
+        () => {
+          const [tables, values] = jsonParse(tablesAndValuesJson);
+          setOrDelTables(tables);
+          setOrDelValues(values);
+        },
+        () => setTablesJson(tablesAndValuesJson),
+      ),
+    );
 
   const setTablesSchema = (tablesSchema: TablesSchema): Store =>
     fluentTransaction(() => {

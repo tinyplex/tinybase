@@ -26,7 +26,7 @@ import {
   objToArray,
   objValues,
 } from '../../../common/obj.ts';
-import {isUndefined, promiseAll} from '../../../common/other.ts';
+import {isUndefined, promiseAll, tryCatch} from '../../../common/other.ts';
 import {IdSet2, setAdd, setNew} from '../../../common/set.ts';
 import {COMMA, TRUE} from '../../../common/strings.ts';
 import {
@@ -309,11 +309,7 @@ export const getCommandFunctions = (
   ): Promise<Return> => {
     let result;
     await databaseExecuteCommand('BEGIN');
-    try {
-      result = await actions();
-    } catch (error) {
-      onIgnoredError?.(error);
-    }
+    await tryCatch(async () => (result = await actions()), onIgnoredError);
     await databaseExecuteCommand('END');
     return result as Return;
   };

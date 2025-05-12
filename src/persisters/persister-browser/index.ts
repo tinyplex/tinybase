@@ -6,10 +6,10 @@ import type {
   Persists as PersistsType,
 } from '../../@types/persisters/index.d.ts';
 import type {
-  LocalPersister,
-  SessionPersister,
   createLocalPersister as createLocalPersisterDecl,
   createSessionPersister as createSessionPersisterDecl,
+  LocalPersister,
+  SessionPersister,
 } from '../../@types/persisters/persister-browser/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {
@@ -17,7 +17,7 @@ import {
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../../common/json.ts';
-import {WINDOW} from '../../common/other.ts';
+import {tryCatch, WINDOW} from '../../common/other.ts';
 import {createCustomPersister} from '../common/create.ts';
 
 type StorageListener = (event: StorageEvent) => void;
@@ -43,11 +43,7 @@ const createStoragePersister = (
   ): StorageListener => {
     const storageListener = (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
-        try {
-          listener(jsonParse(event.newValue as string));
-        } catch {
-          listener();
-        }
+        tryCatch(() => listener(jsonParse(event.newValue as string)), listener);
       }
     };
     WINDOW.addEventListener(STORAGE, storageListener);

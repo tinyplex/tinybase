@@ -9,6 +9,7 @@ import type {
   createPostgresPersister as createPostgresPersisterDecl,
 } from '../../@types/persisters/persister-postgres/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
+import {tryCatch} from '../../common/other.ts';
 import {createCustomPostgreSqlPersister} from '../common/database/postgresql.ts';
 
 export const createPostgresPersister = (async (
@@ -28,13 +29,8 @@ export const createPostgresPersister = (async (
       channel: string,
       listener: DatabaseChangeListener,
     ): Promise<ListenMeta> => sql.listen(channel, listener),
-    async (notifyListener: ListenMeta) => {
-      try {
-        await notifyListener.unlisten();
-      } catch (e) {
-        onIgnoredError?.(e);
-      }
-    },
+    (notifyListener: ListenMeta) =>
+      tryCatch(notifyListener.unlisten, onIgnoredError),
     onSqlCommand,
     onIgnoredError,
     () => commandSql?.release?.(),

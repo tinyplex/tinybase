@@ -9,7 +9,7 @@ import type {
 } from '../../../@types/persisters/index.d.ts';
 import {collValues} from '../../../common/coll.ts';
 import {IdObj} from '../../../common/obj.ts';
-import {startInterval, stopInterval} from '../../../common/other.ts';
+import {startInterval, stopInterval, tryCatch} from '../../../common/other.ts';
 import {EMPTY_STRING} from '../../../common/strings.ts';
 import {
   DATA_VERSION,
@@ -62,23 +62,25 @@ export const createCustomSqlitePersister = <
     let interval: NodeJS.Timeout;
 
     const startPolling = () =>
-      (interval = startInterval(async () => {
-        try {
-          const [{d, s, c}] = (await executeCommand(
-            SELECT +
-              // eslint-disable-next-line max-len
-              ` ${DATA_VERSION} d,${SCHEMA_VERSION} s,TOTAL_CHANGES() c FROM ${PRAGMA}${DATA_VERSION} JOIN ${PRAGMA}${SCHEMA_VERSION}`,
-          )) as [IdObj<number>];
-          if (d != dataVersion || s != schemaVersion || c != totalChanges) {
-            if (dataVersion != null) {
-              listener();
+      (interval = startInterval(
+        () =>
+          tryCatch(async () => {
+            const [{d, s, c}] = (await executeCommand(
+              SELECT +
+                // eslint-disable-next-line max-len
+                ` ${DATA_VERSION} d,${SCHEMA_VERSION} s,TOTAL_CHANGES() c FROM ${PRAGMA}${DATA_VERSION} JOIN ${PRAGMA}${SCHEMA_VERSION}`,
+            )) as [IdObj<number>];
+            if (d != dataVersion || s != schemaVersion || c != totalChanges) {
+              if (dataVersion != null) {
+                listener();
+              }
+              dataVersion = d;
+              schemaVersion = s;
+              totalChanges = c;
             }
-            dataVersion = d;
-            schemaVersion = s;
-            totalChanges = c;
-          }
-        } catch {}
-      }, autoLoadIntervalSeconds as number));
+          }),
+        autoLoadIntervalSeconds as number,
+      ));
 
     const stopPolling = () => {
       dataVersion = schemaVersion = totalChanges = null;

@@ -13,6 +13,7 @@ import {
   promiseNew,
   startInterval,
   stopInterval,
+  tryCatch,
 } from '../../common/other.ts';
 import {T, V} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
@@ -64,34 +65,36 @@ export const createIndexedDbPersister = ((
       );
       request.onupgradeneeded = () =>
         create &&
-        arrayMap(OBJECT_STORE_NAMES, (objectStoreName) => {
-          try {
-            request.result.createObjectStore(objectStoreName, KEY_PATH);
-          } catch {}
-        });
-      request.onsuccess = async () => {
-        try {
-          const transaction = request.result.transaction(
-            OBJECT_STORE_NAMES,
-            'readwrite',
-          );
-          const result = await promiseAll(
-            arrayMap(
+        arrayMap(OBJECT_STORE_NAMES, (objectStoreName) =>
+          tryCatch(() =>
+            request.result.createObjectStore(objectStoreName, KEY_PATH),
+          ),
+        );
+      request.onsuccess = () =>
+        tryCatch(
+          async () => {
+            const transaction = request.result.transaction(
               OBJECT_STORE_NAMES,
-              async (objectStoreName, index) =>
-                await forObjectStore(
-                  transaction.objectStore(objectStoreName),
-                  params[index],
-                ),
-            ),
-          );
-          request.result.close();
-          resolve(result as [any, any]);
-        } catch (e) {
-          request.result.close();
-          reject(e);
-        }
-      };
+              'readwrite',
+            );
+            const result = await promiseAll(
+              arrayMap(
+                OBJECT_STORE_NAMES,
+                async (objectStoreName, index) =>
+                  await forObjectStore(
+                    transaction.objectStore(objectStoreName),
+                    params[index],
+                  ),
+              ),
+            );
+            request.result.close();
+            resolve(result as [any, any]);
+          },
+          (error) => {
+            request.result.close();
+            reject(error);
+          },
+        );
       request.onerror = () => reject('indexedDB.open error');
     });
 

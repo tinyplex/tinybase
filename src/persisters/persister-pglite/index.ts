@@ -10,7 +10,7 @@ import type {
 } from '../../@types/persisters/persister-pglite/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
-import {noop} from '../../common/other.ts';
+import {noop, tryCatch} from '../../common/other.ts';
 import {createCustomPostgreSqlPersister} from '../common/database/postgresql.ts';
 
 export const createPglitePersister = (async (
@@ -29,13 +29,7 @@ export const createPglitePersister = (async (
       channel: string,
       listener: DatabaseChangeListener,
     ): Promise<() => Promise<void>> => await pglite.listen(channel, listener),
-    async (unlisten: () => Promise<void>) => {
-      try {
-        await unlisten();
-      } catch (e) {
-        onIgnoredError?.(e);
-      }
-    },
+    (unlisten: () => Promise<void>) => tryCatch(unlisten, onIgnoredError),
     onSqlCommand,
     onIgnoredError,
     noop,

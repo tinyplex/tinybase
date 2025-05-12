@@ -85,16 +85,16 @@ export const errorNew = (message: string) => {
   throw new Error(message);
 };
 
-export const tryCatch = async (
-  action: () => unknown | Promise<unknown>,
-  onIgnoredError?: (error: any) => void,
-  then?: () => unknown,
-): Promise<void> => {
+export const tryCatch = async <Return>(
+  action: () => Return | Promise<Return>,
+  then1?: (error: any) => void,
+  then2?: (error: any) => void,
+): Promise<Return | void> => {
   try {
-    await action();
+    return await action();
   } catch (error) {
     /*! istanbul ignore next */
-    onIgnoredError?.(error);
-    then?.();
+    then1?.(error);
+    then2?.(error);
   }
 };
