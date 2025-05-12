@@ -28,7 +28,7 @@ export const createJsonPersister = <
     listeningHandle: ListeningHandle,
   ) => void | Promise<void>,
   onIgnoredError: ((error: any) => void) | undefined,
-  destroyImpl: () => void,
+  extraDestroy: () => void,
   persist: Persist,
   [storeTableName, storeIdColumnName, storeColumnName]: DefaultedJsonConfig,
   managedTableNames: string[],
@@ -78,7 +78,7 @@ export const createJsonPersister = <
 
   const destroy = () => {
     persister.stopAutoLoad().stopAutoSave();
-    destroyImpl();
+    extraDestroy();
     return persister;
   };
 

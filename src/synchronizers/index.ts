@@ -62,7 +62,7 @@ export const createCustomSynchronizer = (
   store: MergeableStore,
   send: Send,
   registerReceive: (receive: Receive) => void,
-  destroyImpl: () => void,
+  extraDestroy: () => void,
   requestTimeoutSeconds: number,
   onSend?: Send,
   onReceive?: Receive,
@@ -266,7 +266,7 @@ export const createCustomSynchronizer = (
   };
 
   const destroy = () => {
-    destroyImpl();
+    extraDestroy();
     return persister.stopSync();
   };
 

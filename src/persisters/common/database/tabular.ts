@@ -41,7 +41,7 @@ export const createTabularPersister = <
     listeningHandle: ListeningHandle,
   ) => void | Promise<void>,
   onIgnoredError: ((error: any) => void) | undefined,
-  destroyImpl: () => void,
+  extraDestroy: () => void,
   persist: Persist,
   [
     tablesLoadConfig,
@@ -175,7 +175,7 @@ export const createTabularPersister = <
 
   const destroy = () => {
     persister.stopAutoLoad().stopAutoSave();
-    destroyImpl();
+    extraDestroy();
     return persister;
   };
 
