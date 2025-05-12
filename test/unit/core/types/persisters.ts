@@ -42,8 +42,8 @@ persisterWithSchema.getStore().getTables().t2; // !
 (await persisterWithSchema.stopAutoSave()).getStore().getTables().t1;
 (await persisterWithSchema.stopAutoSave()).getStore().getTables().t2; // !
 
-persisterWithSchema.destroy().getStore().getTables().t1;
-persisterWithSchema.destroy().getStore().getTables().t2; // !
+(await persisterWithSchema.destroy()).getStore().getTables().t1;
+(await persisterWithSchema.destroy()).getStore().getTables().t2; // !
 
 const _testPromises = async () => {
   (await persisterWithSchema.save()).getStore().getTables().t1;
