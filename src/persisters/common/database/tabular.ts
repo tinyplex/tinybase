@@ -179,7 +179,7 @@ export const createTabularPersister = <
     return persister;
   };
 
-  const persister: any = createCustomPersister(
+  const persister = createCustomPersister(
     store,
     getPersisted,
     setPersisted,
