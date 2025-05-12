@@ -76,8 +76,9 @@ export const createJsonPersister = <
       );
     });
 
-  const destroy = () => {
-    persister.stopAutoLoad().stopAutoSave();
+  const destroy = async () => {
+    await persister.stopAutoLoad();
+    await persister.stopAutoSave();
     extraDestroy();
     return persister;
   };

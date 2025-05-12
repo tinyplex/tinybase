@@ -260,14 +260,15 @@ export const createCustomSynchronizer = (
 
   const stopSync = async () => {
     syncing = 0;
-    persister.stopAutoLoad();
-    persister.stopAutoSave();
+    await persister.stopAutoLoad();
+    await persister.stopAutoSave();
     return persister;
   };
 
-  const destroy = () => {
+  const destroy = async () => {
+    await persister.stopSync();
     extraDestroy();
-    return persister.stopSync();
+    return persister;
   };
 
   const getSynchronizerStats = () => ({sends, receives});
