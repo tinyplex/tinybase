@@ -216,9 +216,11 @@ export const createCustomPostgreSqlPersister = <
     functionNames,
   ]: Handles) => {
     delChangeListener(listenerHandle);
-    await executeCommand(
-      `DROP FUNCTION IF EXISTS${arrayJoin(functionNames, ',')}CASCADE`,
-    );
+    try {
+      await executeCommand(
+        `DROP FUNCTION IF EXISTS${arrayJoin(functionNames, ',')}CASCADE`,
+      );
+    } catch {}
   };
 
   return (isJson ? createJsonPersister : createTabularPersister)(

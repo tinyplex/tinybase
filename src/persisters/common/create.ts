@@ -254,7 +254,7 @@ export const createCustomPersister = <
 
   const stopAutoLoad = async (): Promise<Persister<Persist>> => {
     if (autoLoadHandle) {
-      delPersisterListener(autoLoadHandle);
+      await delPersisterListener(autoLoadHandle);
       autoLoadHandle = undefined;
     }
     return persister;
