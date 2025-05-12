@@ -57,7 +57,7 @@
    * console.log(persister.getConnection() == partySocket);
    * // -> true
    *
-   * persister.destroy();
+   * await persister.destroy();
    * ```
    * @category Getter
    * @since v4.3.14
@@ -179,7 +179,7 @@
  * await persister.startAutoSave();
  * // Store will now be synchronized with the room.
  *
- * persister.destroy();
+ * await persister.destroy();
  * ```
  * @category Creation
  * @since v4.3.0

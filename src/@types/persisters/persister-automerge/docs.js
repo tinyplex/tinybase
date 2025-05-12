@@ -46,7 +46,7 @@
    * console.log(persister.getDocHandle() == docHandler);
    * // -> true
    *
-   * persister.destroy();
+   * await persister.destroy();
    * ```
    * @category Getter
    * @since v4.3.14
@@ -89,7 +89,7 @@
  * console.log(await docHandler.doc());
  * // -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}
  *
- * persister.destroy();
+ * await persister.destroy();
  * ```
  * @example
  * This more complex example uses Automerge networking to keep two Store objects
@@ -148,8 +148,8 @@
  * console.log(store2.getContent());
  * // -> [{pets: {fido: {species: 'dog'}}}, {open: true}]
  *
- * persister1.destroy();
- * persister2.destroy();
+ * await persister1.destroy();
+ * await persister2.destroy();
  * ```
  * @category Creation
  * @since v4.0.0

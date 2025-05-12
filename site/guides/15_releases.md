@@ -38,7 +38,7 @@ await persister.load();
 console.log(store.getTables());
 // -> {pets: {felix: {species: 'cat'}}}
 
-persister.destroy();
+await persister.destroy();
 ```
 
 There's more information the documentation for the new persister-sqlite-bun
@@ -297,7 +297,7 @@ console.log(store.getTables());
 // -> {pets: {felix: {species: 'cat'}}}
 
 // As always, don't forget to tidy up.
-pgPersister.destroy();
+await pgPersister.destroy();
 await sql.end();
 ```
 
@@ -348,7 +348,7 @@ const persistingServer = createWsServer(
     ),
 );
 
-persistingServer.destroy();
+await persistingServer.destroy();
 ```
 
 This is a very crude (and not production-safe!) example, but demonstrates a
@@ -465,9 +465,9 @@ console.log(store1.getTables());
 console.log(store2.getTables());
 // -> {pets: {felix: {price: 5}, fido: {legs: 4}}}
 
-synchronizer1.destroy();
-synchronizer2.destroy();
-server.destroy();
+await synchronizer1.destroy();
+await synchronizer2.destroy();
+await server.destroy();
 ```
 
 This release includes three types of Synchronizer:
@@ -792,7 +792,7 @@ await indexedDbPersister.save();
 //         k: "open"
 //         v: true
 
-indexedDbPersister.destroy();
+await indexedDbPersister.destroy();
 ```
 
 Note that it is not possible to reactively detect changes to a browser's
@@ -943,7 +943,7 @@ await sqlitePersister.load();
 console.log(store.getTables());
 // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
 
-sqlitePersister.destroy();
+await sqlitePersister.destroy();
 ```
 
 ## CRDT Frameworks
@@ -965,7 +965,7 @@ await yJsPersister.save();
 // Store will be saved to the document.
 console.log(doc.toJSON());
 // -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}
-yJsPersister.destroy();
+await yJsPersister.destroy();
 ```
 
 The following is the equivalent for an Automerge document that will sync over
@@ -985,7 +985,7 @@ await automergePersister.save();
 // Store will be saved to the document.
 console.log(await docHandler.doc());
 // -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}
-automergePersister.destroy();
+await automergePersister.destroy();
 
 store.delTables();
 ```

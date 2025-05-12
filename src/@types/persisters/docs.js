@@ -890,7 +890,7 @@
  * console.log(store.getTables());
  * // -> {pets: {toto: {species: 'dog'}}}
  *
- * persister.destroy();
+ * await persister.destroy();
  * sessionStorage.clear();
  * ```
  * @example
@@ -921,7 +921,7 @@
  * console.log(store.getTables());
  * // -> {pets: {toto: {species: 'dog'}}}
  *
- * persister.destroy();
+ * await persister.destroy();
  * sessionStorage.clear();
  * ```
  * @category Persister
@@ -1047,7 +1047,7 @@
    * console.log(store.getTables());
    * // -> {pets: {toto: {species: 'dog'}}}
    *
-   * persister.destroy();
+   * await persister.destroy();
    * sessionStorage.clear();
    * ```
    * @category Load
@@ -1081,7 +1081,7 @@
    * console.log(store.getTables());
    * // -> {pets: {toto: {species: 'dog'}}}
    *
-   * persister.stopAutoLoad();
+   * await persister.stopAutoLoad();
    *
    * // In another browser tab:
    * sessionStorage.setItem(
@@ -1094,7 +1094,7 @@
    * // -> {pets: {toto: {species: 'dog'}}}
    * // Storage change has not been automatically loaded.
    *
-   * persister.destroy();
+   * await persister.destroy();
    * sessionStorage.clear();
    * ```
    * @category Load
@@ -1154,7 +1154,7 @@
    * console.log(sessionStorage.getItem('pets'));
    * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
    *
-   * persister.destroy();
+   * await persister.destroy();
    * sessionStorage.clear();
    * ```
    * @category Save
@@ -1227,7 +1227,7 @@
    * console.log(sessionStorage.getItem('pets'));
    * // -> '[{"pets":{"toto":{"species":"dog"}}},{}]'
    *
-   * persister.stopAutoSave();
+   * await persister.stopAutoSave();
    *
    * store.setTables({pets: {felix: {species: 'cat'}}});
    * // ...
@@ -1478,7 +1478,7 @@
    * console.log(store.getListenerStats().transaction);
    * // -> 1
    *
-   * persister.destroy();
+   * await persister.destroy();
    *
    * console.log(store.getListenerStats().transaction);
    * // -> 0
@@ -1525,7 +1525,7 @@
    * console.log(persister.getStats());
    * // -> {loads: 2, saves: 2}
    *
-   * persister.destroy();
+   * await persister.destroy();
    * sessionStorage.clear();
    * ```
    * @category Development
@@ -1661,7 +1661,7 @@
  * console.log(store.getTables());
  * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
  *
- * persister.destroy();
+ * await persister.destroy();
  * ```
  * @example
  * This example demonstrates a Persister creation function which returns a
@@ -1698,7 +1698,7 @@
  * await storePersister.save();
  * console.log(persistedJson);
  * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
- * storePersister.destroy();
+ * await storePersister.destroy();
  *
  * const mergeableStore = createMergeableStore('mergeableStore1'); // !reset
  * mergeableStore.setTables({pets: {fido: {species: 'dog'}}});
@@ -1726,7 +1726,7 @@
  *   ],
  *   [{}, '', 0],
  * ];
- * mergeableStorePersister.destroy();
+ * await mergeableStorePersister.destroy();
  * ```
  * @category Creation
  * @since v1.0.0

@@ -375,8 +375,8 @@ await synchronizer1.startSync();
 
 // ...
 
-synchronizer1.destroy();
-server.destroy();
+await synchronizer1.destroy();
+await server.destroy();
 ```
 
 > ## Persist to storage, databases, & more.
@@ -411,8 +411,8 @@ console.log(sessionStorage.getItem('demo'));
 ]
 `;
 
-persister.destroy();
-sessionStorage.clear();
+await persister.destroy();
+await sessionStorage.clear();
 ```
 
 > ## Build complex queries with TinyQL.

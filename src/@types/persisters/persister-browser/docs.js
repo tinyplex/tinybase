@@ -48,7 +48,7 @@
    * console.log(persister.getStorageName());
    * // -> 'pets'
    *
-   * persister.destroy();
+   * await persister.destroy();
    * ```
    * @category Getter
    * @since v4.3.14
@@ -88,7 +88,7 @@
    * console.log(persister.getStorageName());
    * // -> 'pets'
    *
-   * persister.destroy();
+   * await persister.destroy();
    * ```
    * @category Getter
    * @since v4.3.14
@@ -125,7 +125,7 @@
  * console.log(sessionStorage.getItem('pets'));
  * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
  *
- * persister.destroy();
+ * await persister.destroy();
  * sessionStorage.clear();
  * ```
  * @category Creation
@@ -162,7 +162,7 @@
  * console.log(localStorage.getItem('pets'));
  * // -> '[{"pets":{"fido":{"species":"dog"}}},{}]'
  *
- * persister.destroy();
+ * await persister.destroy();
  * localStorage.clear();
  * ```
  * @category Creation

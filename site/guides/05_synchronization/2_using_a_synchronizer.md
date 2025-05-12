@@ -127,18 +127,18 @@ When done, it's important to destroy a WsSynchronizer to close and tidy up the
 client WebSockets:
 
 ```js
-clientSynchronizer1.destroy();
+await clientSynchronizer1.destroy();
 ```
 
 ```js
-clientSynchronizer2.destroy();
+await clientSynchronizer2.destroy();
 ```
 
 And, if shut down, the WsServer should also be explicitly destroyed to close its
 listeners:
 
 ```js
-server.destroy();
+await server.destroy();
 ```
 
 ### Persisting Data On The Server
@@ -164,7 +164,7 @@ const persistingServer = createWsServer(
     ),
 );
 
-persistingServer.destroy();
+await persistingServer.destroy();
 ```
 
 This is a very crude example, but demonstrates a server that will create a file,
@@ -236,11 +236,11 @@ When finished, these synchronizers should also be explicitly destroyed to ensure
 the channel listeners are cleaned up:
 
 ```js
-frontSynchronizer.destroy();
+await frontSynchronizer.destroy();
 ```
 
 ```js
-backSynchronizer.destroy();
+await backSynchronizer.destroy();
 ```
 
 ## Wrapping Up

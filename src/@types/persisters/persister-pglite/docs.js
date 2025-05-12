@@ -46,7 +46,7 @@
    * console.log(persister.getPglite() == pglite);
    * // -> true
    *
-   * persister.destroy();
+   * await persister.destroy();
    * await pglite.close();
    * ```
    * @category Getter
@@ -125,7 +125,7 @@
  * console.log(store.getTables());
  * // -> {pets: {felix: {species: 'cat'}}}
  *
- * persister.destroy();
+ * await persister.destroy();
  * await pglite.close();
  * ```
  * @example
@@ -156,7 +156,7 @@
  * console.log(store.getTables());
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
- * persister.destroy();
+ * await persister.destroy();
  * await pglite.query('DROP TABLE IF EXISTS pets');
  * await pglite.close();
  * ```

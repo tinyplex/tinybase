@@ -139,7 +139,7 @@ sessionStorage.setItem('petStore', '[{"pets":{"toto":{"species":"dog"}}},{}]');
 console.log(store.getTables());
 // -> {pets: {toto: {species: "dog"}}}
 
-persister.destroy();
+await persister.destroy();
 sessionStorage.clear();
 ```
 

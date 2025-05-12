@@ -43,7 +43,7 @@
    * console.log(persister.getUrls());
    * // -> ['https://example.com/load', 'https://example.com/save']
    *
-   * persister.destroy();
+   * await persister.destroy();
    * ```
    * @category Getter
    * @since v4.3.14
@@ -101,7 +101,7 @@
  * await persister.load();
  * // Store JSON will be fetched from server with a GET request.
  *
- * persister.destroy();
+ * await persister.destroy();
  * ```
  * @category Creation
  * @since v1.0.0

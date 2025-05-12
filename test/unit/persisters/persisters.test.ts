@@ -178,7 +178,7 @@ describe.each([
     }
     expect(persister.getStats()).toEqual({loads: 0, saves: 5});
 
-    persister.stopAutoSave();
+    await persister.stopAutoSave();
     expect(persister.isAutoSaving()).toEqual(false);
   });
 
@@ -282,7 +282,7 @@ describe.each([
     await pause(persistable.autoLoadPause);
     expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
     expect(persister.getStats()).toEqual({loads: 3, saves: 0});
-    persister.stopAutoLoad();
+    await persister.stopAutoLoad();
     expect(persister.isAutoLoading()).toEqual(false);
 
     await persistable.set(location, [{t1: {r1: {c1: 4}}}, {}]);
@@ -305,7 +305,7 @@ describe.each([
       {t1: {r1: {c1: 1}}},
       {v1: 1},
     ]);
-    persister.stopAutoSave();
+    await persister.stopAutoSave();
     store.delTables().delValues();
     await pause();
     expect(store.getContent()).toEqual([{}, {}]);

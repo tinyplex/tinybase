@@ -43,7 +43,7 @@
    * console.log(persister.getDb() == db);
    * // -> true
    *
-   * persister.destroy();
+   * await persister.destroy();
    * ```
    * @category Getter
    * @since v6.1.0
@@ -113,7 +113,7 @@
  * console.log(store.getTables());
  * // -> {pets: {felix: {species: 'cat'}}}
  *
- * persister.destroy();
+ * await persister.destroy();
  * ```
  * @example
  * This example creates a SqliteBunPersister object and persists the Store to a
@@ -140,7 +140,7 @@
  * console.log(store.getTables());
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
- * persister.destroy();
+ * await persister.destroy();
  * ```
  * @category Creation
  * @since v6.1.0

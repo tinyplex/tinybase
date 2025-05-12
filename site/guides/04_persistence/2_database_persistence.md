@@ -100,7 +100,7 @@ await jsonPersister.load();
 console.log(store.getTables());
 // -> {pets: {felix: {species: 'cat'}}}
 
-jsonPersister.destroy();
+await jsonPersister.destroy();
 ```
 
 Please see the DpcJson documentation for more detail on configuring this type of
@@ -176,7 +176,7 @@ await tabularPersister.load();
 console.log(store.getTable('pets'));
 // -> {felix: {species: 'cat'}, fido: {species: 'dog'}, cujo: {species: 'wolf'}}
 
-tabularPersister.destroy();
+await tabularPersister.destroy();
 ```
 
 Store Values are saved into a separate table, normally called `tinybase_values`.

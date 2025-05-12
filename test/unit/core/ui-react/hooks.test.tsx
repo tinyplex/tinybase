@@ -474,7 +474,8 @@ describe('Create Hooks', () => {
     expect(initStore).toHaveBeenCalledTimes(1);
     expect(createPersister).toHaveBeenCalledTimes(2);
     expect(didRender).toHaveBeenCalledTimes(5);
-    _persister?.stopAutoLoad()?.stopAutoSave();
+    await _persister?.stopAutoLoad();
+    await _persister?.stopAutoSave();
 
     unmount();
   });
@@ -523,7 +524,8 @@ describe('Create Hooks', () => {
     expect(createPersister).toHaveBeenCalledTimes(3);
     expect(initPersister).toHaveBeenCalledTimes(2);
     expect(didRender).toHaveBeenCalledTimes(5);
-    _persister?.stopAutoLoad()?.stopAutoSave();
+    await _persister?.stopAutoLoad();
+    await _persister?.stopAutoSave();
 
     unmount();
   });
@@ -576,7 +578,12 @@ describe('Create Hooks', () => {
     expect(destroyPersister).toHaveBeenCalledTimes(1);
     expect(destroyPersister).toHaveBeenCalledWith(persisters[1]);
     expect(didRender).toHaveBeenCalledTimes(4);
-    persisters.forEach((persister) => persister.stopAutoLoad().stopAutoSave());
+    await Promise.all(
+      persisters.map(async (persister) => {
+        await persister.stopAutoLoad();
+        await persister.stopAutoSave();
+      }),
+    );
 
     unmount();
   });
@@ -626,7 +633,8 @@ describe('Create Hooks', () => {
     expect(initStore).toHaveBeenCalledTimes(1);
     expect(createSynchronizer).toHaveBeenCalledTimes(2);
     expect(didRender).toHaveBeenCalledTimes(5);
-    _synchronizer?.stopAutoLoad()?.stopAutoSave();
+    await _synchronizer?.stopAutoLoad();
+    await _synchronizer?.stopAutoSave();
 
     unmount();
   });
@@ -672,8 +680,11 @@ describe('Create Hooks', () => {
     expect(destroySynchronizer).toHaveBeenCalledTimes(1);
     expect(destroySynchronizer).toHaveBeenCalledWith(synchronizers[1]);
     expect(didRender).toHaveBeenCalledTimes(4);
-    synchronizers.forEach((synchronizer) =>
-      synchronizer.stopAutoLoad().stopAutoSave(),
+    await Promise.all(
+      synchronizers.map(async (synchronizer) => {
+        await synchronizer.stopAutoLoad();
+        await synchronizer.stopAutoSave();
+      }),
     );
 
     unmount();

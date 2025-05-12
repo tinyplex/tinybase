@@ -39,8 +39,8 @@ persisterWithSchema.startAutoLoad([{t1: {r1: {c1: 1}}}, {v2: 1}]); // !
 persisterWithSchema.getStore().getTables().t1;
 persisterWithSchema.getStore().getTables().t2; // !
 
-persisterWithSchema.stopAutoSave().getStore().getTables().t1;
-persisterWithSchema.stopAutoSave().getStore().getTables().t2; // !
+(await persisterWithSchema.stopAutoSave()).getStore().getTables().t1;
+(await persisterWithSchema.stopAutoSave()).getStore().getTables().t2; // !
 
 persisterWithSchema.destroy().getStore().getTables().t1;
 persisterWithSchema.destroy().getStore().getTables().t2; // !

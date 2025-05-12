@@ -11733,8 +11733,8 @@
  * root.unmount(); // !act
  * // -> 'Synchronizer destroyed for ws://localhost:8045/'
  *
- * server1.destroy();
- * server2.destroy();
+ * await server1.destroy();
+ * await server2.destroy();
  * ```
  * @category Synchronizer hooks
  * @since v5.0.0

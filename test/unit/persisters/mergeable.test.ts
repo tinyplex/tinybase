@@ -130,7 +130,7 @@ describe.each([
     }
     expect(persister.getStats()).toEqual({loads: 0, saves: 5});
 
-    persister.stopAutoSave();
+    await persister.stopAutoSave();
     expect(persister.isAutoSaving()).toEqual(false);
   });
 
@@ -255,7 +255,7 @@ describe.each([
     expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
     expect(store.getMergeableContent()).toMatchSnapshot();
     expect(persister.getStats()).toEqual({loads: 3, saves: 0});
-    persister.stopAutoLoad();
+    await persister.stopAutoLoad();
     expect(persister.isAutoLoading()).toEqual(false);
 
     await persistable.set(location, [
@@ -291,7 +291,7 @@ describe.each([
     const was = store.getMergeableContent();
     expect(was).toMatchSnapshot();
     expect(await persistable.get(location)).toMatchSnapshot();
-    persister.stopAutoSave();
+    await persister.stopAutoSave();
     store.setMergeableContent([
       [{}, '', 0],
       [{}, '', 0],

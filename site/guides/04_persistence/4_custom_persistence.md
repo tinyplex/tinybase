@@ -70,7 +70,7 @@ await persister.load();
 console.log(store.getTables());
 // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
 
-persister.destroy();
+await persister.destroy();
 ```
 
 Note that the other creation functions (such as the createSessionPersister

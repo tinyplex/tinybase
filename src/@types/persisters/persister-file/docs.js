@@ -40,7 +40,7 @@
    * console.log(persister.getFilePath());
    * // -> '/app/persisted.json'
    *
-   * persister.destroy();
+   * await persister.destroy();
    * ```
    * @category Getter
    * @since v4.3.14
@@ -78,7 +78,7 @@
  * await persister.load();
  * // Store JSON will be loaded from the file.
  *
- * persister.destroy();
+ * await persister.destroy();
  * ```
  * @category Creation
  * @since v1.0.0

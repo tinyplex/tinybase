@@ -42,7 +42,7 @@
    * console.log(persister.getSql() == sql);
    * // -> true
    *
-   * persister.destroy();
+   * await persister.destroy();
    * await sql.end();
    * ```
    * @category Getter
@@ -116,7 +116,7 @@
  * console.log(store.getTables());
  * // -> {pets: {felix: {species: 'cat'}}}
  *
- * persister.destroy();
+ * await persister.destroy();
  * await sql.end();
  * ```
  * @example
@@ -145,7 +145,7 @@
  * console.log(store.getTables());
  * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
  *
- * persister.destroy();
+ * await persister.destroy();
  * await sql`DROP TABLE IF EXISTS pets`;
  * await sql.end();
  * ```

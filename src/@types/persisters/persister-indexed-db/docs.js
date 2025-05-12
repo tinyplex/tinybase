@@ -40,7 +40,7 @@
    * console.log(persister.getDbName());
    * // -> 'petStore'
    *
-   * persister.destroy();
+   * await persister.destroy();
    * ```
    * @category Getter
    * @since v4.3.14
@@ -105,7 +105,7 @@
  * //         k: "open"
  * //         v: true
  *
- * persister.destroy();
+ * await persister.destroy();
  * ```
  * @category Creation
  * @since v4.2.0
