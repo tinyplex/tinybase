@@ -34,7 +34,7 @@ import {
   mapSet,
 } from '../../common/map.ts';
 import {objFreeze} from '../../common/obj.ts';
-import {ifNotUndefined, isArray} from '../../common/other.ts';
+import {ifNotUndefined, isArray, noop} from '../../common/other.ts';
 import {IdSet2} from '../../common/set.ts';
 import {
   EMPTY_STRING,
@@ -126,7 +126,7 @@ export const createWsServer = (<
           (receive: Receive) =>
             (serverClient[Sc.Send] = (payload: string) =>
               receivePayload(payload, receive)),
-          () => {},
+          noop,
           1,
           undefined,
           undefined,

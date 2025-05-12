@@ -8,7 +8,7 @@ import type {
 } from 'tinybase';
 import {createMergeableStore, createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
-import {Persists, createCustomPersister} from 'tinybase/persisters';
+import {createCustomPersister, Persists} from 'tinybase/persisters';
 import {getTimeFunctions} from '../common/mergeable.ts';
 import {MERGEABLE_VARIANTS} from './common/databases.ts';
 import {
@@ -22,7 +22,12 @@ import {
   mockMergeableNoContentListener,
   mockSessionStorage,
 } from './common/mocks.ts';
-import {GetLocationMethod, Persistable} from './common/other.ts';
+import {
+  asyncNoop,
+  GetLocationMethod,
+  noop,
+  Persistable,
+} from './common/other.ts';
 
 const [reset, getNow, pause] = getTimeFunctions();
 
@@ -402,9 +407,9 @@ test('Supported, Store', async () => {
     async (getContent: () => any) => {
       persisted = JSON.stringify(getContent());
     },
-    () => null,
-    () => null,
-    () => null,
+    noop,
+    noop,
+    noop,
     3,
   );
   await persister.load();
@@ -422,8 +427,8 @@ test('Not supported, MergeableStore', async () => {
     async (getContent: () => any) => {
       persisted = JSON.stringify(getContent());
     },
-    () => null,
-    () => null,
+    noop,
+    noop,
   );
   await persister.load();
   await persister.save();
@@ -455,9 +460,9 @@ describe('Supported, MergeableStore', () => {
       async (getContent: () => MergeableContent) => {
         persisted = JSON.stringify(getContent());
       },
-      () => null,
-      () => null,
-      () => null,
+      noop,
+      noop,
+      noop,
       Persists.MergeableStoreOnly,
     );
     await persister.load();
@@ -480,9 +485,9 @@ describe('Supported, MergeableStore', () => {
           persisted.push(JSON.stringify(changes));
         }
       },
-      () => null,
-      () => null,
-      () => null,
+      noop,
+      noop,
+      noop,
       3,
     );
     await persister.startAutoSave();
@@ -502,9 +507,9 @@ describe('Supported, MergeableStore', () => {
       async (getContent: () => any) => {
         persisted = JSON.stringify(getContent());
       },
-      () => null,
-      () => null,
-      () => null,
+      noop,
+      noop,
+      noop,
       3,
     );
     await persister.load();
@@ -523,10 +528,10 @@ test('Not supported, Store', async () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       async () => [{t1: {r1: {c1: 1}}}, {v1: 1}],
-      async () => 0,
-      () => null,
-      () => null,
-      () => null,
+      asyncNoop,
+      noop,
+      noop,
+      noop,
       Persists.MergeableStoreOnly,
     ),
   ).toThrow();

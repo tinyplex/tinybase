@@ -31,6 +31,7 @@ import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wa
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import tmp from 'tmp';
 import {isBun, pause, suppressWarnings} from '../../common/other.ts';
+import {noop} from './other.ts';
 
 tmp.setGracefulCleanup();
 const statementMutex = new Mutex();
@@ -150,7 +151,7 @@ const getPowerSyncDatabase = async (
     },
     onChange: ({signal} = {}) => ({
       async *[Symbol.asyncIterator]() {
-        signal?.addEventListener('abort', () => 0);
+        signal?.addEventListener('abort', noop);
         while (!signal?.aborted) {
           const nextChange = await new Promise<WatchOnChangeEvent>(
             (resolve) => {

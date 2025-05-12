@@ -4,7 +4,7 @@ import {join} from 'path';
 import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
-import {Status, createCustomPersister} from 'tinybase/persisters';
+import {createCustomPersister, Status} from 'tinybase/persisters';
 import tmp from 'tmp';
 import {createStatusListener} from '../common/listeners.ts';
 import {pause} from '../common/other.ts';
@@ -25,7 +25,12 @@ import {
   mockSessionStorage,
   mockYjs,
 } from './common/mocks.ts';
-import {GetLocationMethod, Persistable} from './common/other.ts';
+import {
+  asyncNoop,
+  GetLocationMethod,
+  noop,
+  Persistable,
+} from './common/other.ts';
 
 tmp.setGracefulCleanup();
 
@@ -396,10 +401,10 @@ test('does not error on getPersister returning undefined', async () => {
   store.setTables({t1: {r1: {c1: 1}}});
   const persister = createCustomPersister(
     store,
-    async () => undefined,
-    async () => {},
-    () => 0,
-    () => 0,
+    asyncNoop,
+    asyncNoop,
+    noop,
+    noop,
   );
   await persister.load();
   expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
@@ -410,10 +415,10 @@ test('does not error on getPersister returning invalid', async () => {
   store.setTables({t1: {r1: {c1: 1}}});
   const persister = createCustomPersister(
     store,
-    async () => 1 as any,
-    async () => {},
-    () => 0,
-    () => 0,
+    asyncNoop,
+    asyncNoop,
+    noop,
+    noop,
   );
   await persister.load();
   expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
@@ -425,10 +430,10 @@ test('does not error on persister listener returning undefined', async () => {
   store.setTables({t1: {r1: {c1: 1}}});
   const persister = createCustomPersister(
     store,
-    async () => undefined,
-    async () => {},
+    asyncNoop,
+    asyncNoop,
     (listener) => (triggerListener = listener),
-    () => 0,
+    noop,
   );
   await persister.startAutoLoad();
   triggerListener(undefined);
@@ -441,10 +446,10 @@ test('does not error on persister listener returning invalid', async () => {
   store.setTables({t1: {r1: {c1: 1}}});
   const persister = createCustomPersister(
     store,
-    async () => 1 as any,
-    async () => {},
+    asyncNoop,
+    asyncNoop,
     (listener) => (triggerListener = listener),
-    () => 0,
+    noop,
   );
   await persister.startAutoLoad();
   triggerListener(1);

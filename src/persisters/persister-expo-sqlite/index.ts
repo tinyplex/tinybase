@@ -11,6 +11,7 @@ import type {
 } from '../../@types/persisters/persister-expo-sqlite/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
+import {noop} from '../../common/other.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
 type Subscription = {remove: () => void};
@@ -32,7 +33,7 @@ export const createExpoSqlitePersister = ((
     (subscription: Subscription) => subscription.remove(),
     onSqlCommand,
     onIgnoredError,
-    () => 0,
+    noop,
     3, // StoreOrMergeableStore,
     db,
   ) as ExpoSqlitePersister) as typeof createExpoSqlitePersisterDecl;

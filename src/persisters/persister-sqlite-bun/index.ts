@@ -7,9 +7,10 @@ import type {
 } from '../../@types/persisters/persister-sqlite-bun/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
+import {noop} from '../../common/other.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
-type UnsubscribeFunction = () => 0;
+type UnsubscribeFunction = () => void;
 
 export const createSqliteBunPersister = ((
   store: Store | MergeableStore,
@@ -23,11 +24,11 @@ export const createSqliteBunPersister = ((
     configOrStoreTableName,
     async (sql: string, params: any[] = []): Promise<IdObj<any>[]> =>
       db.query<IdObj<any>, any[]>(sql).all(...params),
-    (): UnsubscribeFunction => () => 0,
+    (): UnsubscribeFunction => noop,
     (unsubscribeFunction: UnsubscribeFunction): any => unsubscribeFunction(),
     onSqlCommand,
     onIgnoredError,
-    () => 0,
+    noop,
     3, // StoreOrMergeableStore,
     db,
   ) as SqliteBunPersister) as typeof createSqliteBunPersisterDecl;

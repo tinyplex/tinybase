@@ -4,6 +4,7 @@ import {createMergeableStore, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
 import {createStoreListener} from '../../common/listeners.ts';
 import {StoreListener} from '../../common/types.ts';
+import {noop} from '../../persisters/common/other.ts';
 
 describe.each([
   ['store', createStore],
@@ -598,23 +599,23 @@ describe.each([
 
     test('fills listenerId pool', () => {
       for (let i = 0; i < 1100; i++) {
-        store.addTablesListener(() => 0);
+        store.addTablesListener(noop);
       }
-      expect(store.addTablesListener(() => 0)).toEqual('1100');
+      expect(store.addTablesListener(noop)).toEqual('1100');
       for (let i = 0; i < 1100; i++) {
         store.delListener(i.toString());
       }
-      expect(store.addTablesListener(() => 0)).toEqual('0');
-      expect(store.addTablesListener(() => 0)).toEqual('1');
+      expect(store.addTablesListener(noop)).toEqual('0');
+      expect(store.addTablesListener(noop)).toEqual('1');
       for (let i = 0; i < 998; i++) {
-        store.addTablesListener(() => 0);
+        store.addTablesListener(noop);
       }
-      expect(store.addTablesListener(() => 0)).toEqual('1101');
+      expect(store.addTablesListener(noop)).toEqual('1101');
 
       store.delListener('555');
       store.delListener('666');
-      expect(store.addTablesListener(() => 0)).toEqual('555');
-      expect(store.addTablesListener(() => 0)).toEqual('666');
+      expect(store.addTablesListener(noop)).toEqual('555');
+      expect(store.addTablesListener(noop)).toEqual('666');
     });
 
     describe('re-uses rowIds', () => {

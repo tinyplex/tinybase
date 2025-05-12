@@ -11,6 +11,7 @@ import type {
 import type {Store} from '../../@types/store/index.d.ts';
 import {arrayForEach} from '../../common/array.ts';
 import {IdObj} from '../../common/obj.ts';
+import {noop} from '../../common/other.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
 export const createElectricSqlPersister = ((
@@ -35,7 +36,7 @@ export const createElectricSqlPersister = ((
     (unsubscribeFunction: UnsubscribeFunction): any => unsubscribeFunction(),
     onSqlCommand,
     onIgnoredError,
-    () => 0,
+    noop,
     1, // StoreOnly,
     electricClient,
     'getElectricClient',

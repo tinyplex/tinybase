@@ -9,6 +9,7 @@ import type {
 } from '../../@types/persisters/persister-cr-sqlite-wasm/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
+import {noop} from '../../common/other.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
 export const createCrSqliteWasmPersister = ((
@@ -28,7 +29,7 @@ export const createCrSqliteWasmPersister = ((
     (removeListener: () => void): void => removeListener(),
     onSqlCommand,
     onIgnoredError,
-    () => 0,
+    noop,
     1, // StoreOnly,
     db,
   ) as CrSqliteWasmPersister) as typeof createCrSqliteWasmPersisterDecl;

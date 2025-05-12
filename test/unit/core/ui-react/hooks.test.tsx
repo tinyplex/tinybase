@@ -155,6 +155,7 @@ import {
 } from 'tinybase/ui-react';
 import tmp from 'tmp';
 import {pause} from '../../common/other.ts';
+import {noop} from '../../persisters/common/other.ts';
 
 let store: Store;
 let didRender: jest.Mock;
@@ -2029,8 +2030,8 @@ describe('Read Hooks', () => {
 
     act(() =>
       queries
-        .setQueryDefinition('q1', 't1', () => 0)
-        .setQueryDefinition('q2', 't2', () => 0),
+        .setQueryDefinition('q1', 't1', noop)
+        .setQueryDefinition('q2', 't2', noop),
     );
     expect(container.textContent).toEqual('q1q2');
 

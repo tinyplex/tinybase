@@ -19,6 +19,7 @@ import {
 } from '../../common/array.ts';
 import {collHas} from '../../common/coll.ts';
 import {IdObj, objIds, objNew, objToArray} from '../../common/obj.ts';
+import {noop} from '../../common/other.ts';
 import {IdSet, setNew} from '../../common/set.ts';
 import {COMMA} from '../../common/strings.ts';
 import {
@@ -71,7 +72,7 @@ export const createPowerSyncPersister = ((
     },
     onSqlCommand,
     onIgnoredError,
-    () => 0,
+    noop,
     1, // StoreOnly,
     powerSync,
     'getPowerSync',

@@ -20,7 +20,7 @@ import type {Cell, Value} from '../../@types/store/index.d.ts';
 import {jsonStringWithUndefined} from '../../common/json.ts';
 import {IdMap, mapNew, mapSet, mapToObj} from '../../common/map.ts';
 import {objEnsure, objForEach} from '../../common/obj.ts';
-import {ifNotUndefined, slice} from '../../common/other.ts';
+import {ifNotUndefined, noop, slice} from '../../common/other.ts';
 import {stampNewWithHash, stampUpdate} from '../../common/stamps.ts';
 import {EMPTY_STRING, T, V, strStartsWith} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
@@ -135,16 +135,12 @@ export const createDurableObjectStoragePersister = ((
     await storage.put(mapToObj(keysToSet));
   };
 
-  const addPersisterListener = (): void => {};
-
-  const delPersisterListener = (): void => {};
-
   return createCustomPersister(
     store,
     getPersisted,
     setPersisted,
-    addPersisterListener,
-    delPersisterListener,
+    noop,
+    noop,
     onIgnoredError,
     2, // MergeableStoreOnly,
     {getStorage: () => storage},

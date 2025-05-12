@@ -3,6 +3,7 @@ import {createQueries, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
 import {createQueriesListener} from '../../common/listeners.ts';
 import {QueriesListener} from '../../common/types.ts';
+import {noop} from '../../persisters/common/other.ts';
 
 let store: Store;
 let queries: Queries;
@@ -845,8 +846,8 @@ describe('Sets', () => {
 test('Listens to QueryIds', () => {
   const listener = createQueriesListener(queries);
   const listenerId = listener.listenToQueryIds('/q');
-  queries.setQueryDefinition('q1', 't1', () => 0);
-  queries.setQueryDefinition('q2', 't2', () => 0);
+  queries.setQueryDefinition('q1', 't1', noop);
+  queries.setQueryDefinition('q2', 't2', noop);
   queries.delQueryDefinition('q1');
   expectChanges(listener, '/q', ['q1'], ['q1', 'q2'], ['q2']);
   expectNoChanges(listener);

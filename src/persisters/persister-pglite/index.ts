@@ -10,6 +10,7 @@ import type {
 } from '../../@types/persisters/persister-pglite/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
+import {noop} from '../../common/other.ts';
 import {createCustomPostgreSqlPersister} from '../common/database/postgresql.ts';
 
 export const createPglitePersister = (async (
@@ -37,7 +38,7 @@ export const createPglitePersister = (async (
     },
     onSqlCommand,
     onIgnoredError,
-    () => 0,
+    noop,
     3, // StoreOrMergeableStore,
     pglite,
     'getPglite',

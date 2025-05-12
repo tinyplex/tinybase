@@ -5,7 +5,7 @@ import type {IdAddedOrRemoved} from '../../@types/store/index.d.ts';
 import type {Receive} from '../../@types/synchronizers/index.d.ts';
 import {arrayForEach, arrayIsEmpty, arrayMap} from '../../common/array.ts';
 import {objValues} from '../../common/obj.ts';
-import {ifNotUndefined, size, startTimeout} from '../../common/other.ts';
+import {ifNotUndefined, noop, size, startTimeout} from '../../common/other.ts';
 import {EMPTY_STRING, strMatch} from '../../common/strings.ts';
 import {
   createPayload,
@@ -59,7 +59,7 @@ export class WsServerDurableObject<Env = unknown>
               (receive: Receive) =>
                 (this.#serverClientSend = (payload: string) =>
                   receivePayload(payload, receive)),
-              () => {},
+              noop,
               1,
             );
             await persister.load();

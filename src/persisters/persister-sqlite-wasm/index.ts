@@ -9,6 +9,7 @@ import type {
 } from '../../@types/persisters/persister-sqlite-wasm/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
+import {noop} from '../../common/other.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
 export const createSqliteWasmPersister = ((
@@ -32,10 +33,10 @@ export const createSqliteWasmPersister = ((
         (_: any, _2: any, _3: any, tableName: string) => listener(tableName),
         0,
       ),
-    (): void => sqlite3.capi.sqlite3_update_hook(db, () => 0, 0),
+    (): void => sqlite3.capi.sqlite3_update_hook(db, noop, 0),
     onSqlCommand,
     onIgnoredError,
-    () => 0,
+    noop,
     3, // StoreOrMergeableStore,
     db,
   ) as SqliteWasmPersister) as typeof createSqliteWasmPersisterDecl;

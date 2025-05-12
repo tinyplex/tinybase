@@ -46,7 +46,7 @@ import {
   objNew,
   objValidate,
 } from '../common/obj.ts';
-import {ifNotUndefined, isArray, size, slice} from '../common/other.ts';
+import {ifNotUndefined, isArray, noop, size, slice} from '../common/other.ts';
 import {IdSet, IdSet3, setAdd, setNew} from '../common/set.ts';
 import {
   RowStampMap,
@@ -308,9 +308,9 @@ export const createMergeableStore = ((
     return [thingsTime, oldThingsHash, thingsStampMap[2]];
   };
 
-  const preStartTransaction = () => {};
+  const preStartTransaction = noop;
 
-  const preFinishTransaction = () => {};
+  const preFinishTransaction = noop;
 
   const postFinishTransaction = () => {
     collClear(touchedCells);

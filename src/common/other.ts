@@ -69,6 +69,8 @@ export const test = (regex: RegExp, subject: string): boolean =>
 
 export const getUndefined = (): undefined => undefined;
 
+export const noop = () => {};
+
 export const promiseNew = <Value>(
   resolver: (
     resolve: (value: Value) => void,
