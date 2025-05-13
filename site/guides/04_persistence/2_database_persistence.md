@@ -259,10 +259,10 @@ this:
 
 ## Loading subsets of database tables
 
-If you are using the tabular mapping, you can specify that only a subset of
-the data in the database table should be loaded or saved into TinyBase. This is
-useful for reducing the amount of data that is loaded into memory, or for
-working with a subset of data that is relevant to the current user.
+If you are using the tabular mapping, you can specify that only a subset of the
+data in the database table should be loaded into TinyBase. This is useful for
+reducing the amount of data that is loaded into memory, or for working with a
+subset of data that is relevant to the current user.
 
 Do this by specifying a `condition` in the Persister configuration. This is a
 single string argument which is used as a SQL `WHERE` clause when reading and
