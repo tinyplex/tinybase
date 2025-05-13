@@ -2,7 +2,7 @@ import 'fake-indexeddb/auto';
 import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
-import {mockFetchWasm, pause, waitFor} from '../../common/other.ts';
+import {mockFetchWasm, pause} from '../../common/other.ts';
 import {ALL_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 
 describe.each(Object.entries(ALL_VARIANTS))(
@@ -579,9 +579,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await persister.save();
         await pause(autoLoadPause);
-        await waitFor(() => {
-          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-        }, 1000);
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 
       test('autoSave1 & autoLoad2', async () => {
@@ -590,10 +588,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await pause(autoLoadPause);
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await pause(autoLoadPause);
-        await waitFor(() => {
-          // todo this is failing
-          expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-        }, 1000);
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
       });
 
       test('autoSave1 & autoLoad2, complex transactions', async () => {
