@@ -608,7 +608,9 @@
         /**
          * The optional SQL WHERE clause that will be used to filter the rows
          * that are loaded into the Store Table. When set it must include the
-         * `$tableName` placeholder for the table name.
+         * `$tableName` placeholder for the table name. See the 'Syncing with
+         * subsets of database tables' section of the Database Persistence guide
+         * for more details.
          * @category Configuration
          * @since v6.1.0
          */
@@ -751,7 +753,8 @@
          * The optional SQL WHERE clause that will be used to scope cleanup
          * operations to the Store Table. When set it must include the
          * `$tableName` placeholder for the table name. Defaults to
-         * `DpcTabularLoad.condition`.
+         * `DpcTabularLoad.condition`.See the 'Syncing with subsets of database
+         * tables' section of the Database Persistence guide for more details.
          * @category Configuration
          * @since v6.1.0
          */

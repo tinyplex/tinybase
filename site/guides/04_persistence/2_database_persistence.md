@@ -234,8 +234,8 @@ const databasePersisterConfig: DatabasePersisterConfig = {
       the_species_table: {tableId: 'species', rowIdColumnName: 'species_id'},
     },
     save: {
-      pets: {tableId: 'the_pets_table', rowIdColumnName: 'pet_id'},
-      species: {tableId: 'the_species_table', rowIdColumnName: 'species_id'},
+      pets: {tableName: 'the_pets_table', rowIdColumnName: 'pet_id'},
+      species: {tableName: 'the_species_table', rowIdColumnName: 'species_id'},
     },
   },
 };
@@ -255,6 +255,114 @@ this:
     "cat": {"price": 4}
   }
 }
+```
+
+## Syncing with subsets of database tables
+
+If you are using the tabular mapping, you can specify that only a subset of
+the data in the database table should be loaded or saved into TinyBase. This is
+useful for reducing the amount of data that is loaded into memory, or for
+working with a subset of data that is relevant to the current user.
+
+Do this by specifying a `condition` in the Persister configuration. This is a
+single string argument which is used as a SQL `WHERE` clause when reading and
+observing data in the table. The string must include the placeholder
+`$tableName` which will be replaced with the name of the table being loaded or
+saved.
+
+For example, imagine we have a database table of pets with a flag that indicates
+if they have been sold or not. Only Felix has:
+
+```js
+db = new sqlite3.oo1.DB(':memory:', 'c');
+db.exec(`CREATE TABLE pets (_id PRIMARY KEY, species, sold);`);
+db.exec(
+  `INSERT INTO pets (_id, species, sold) VALUES ` +
+    `('fido', 'dog', 0),` +
+    `('felix', 'cat', 1),` +
+    `('cujo', 'wolf', 0);`,
+);
+console.log(db.exec('SELECT * FROM pets;', {rowMode: 'object'}));
+// -> [{_id: 'fido', species: 'dog', sold: 0}, {_id: 'felix', species: 'cat', sold: 1}, {_id: 'cujo', species: 'wolf', sold: 0}]
+```
+
+We can configure the Persister to only load and save pets that have not been sold:
+
+```js
+const subsetPersister = createSqliteWasmPersister(store, sqlite3, db, {
+  mode: 'tabular',
+  tables: {
+    load: {pets: {tableId: 'pets', condition: '$tableName.sold = 0'}},
+    save: {pets: {tableName: 'pets', condition: '$tableName.sold = 0'}},
+  },
+});
+```
+
+Then when we load the following data into the Store, notice that only Fido and
+Cujo are present:
+
+```js
+await subsetPersister.load();
+console.log(store.getTable('pets'));
+// -> {fido: {species: 'dog', sold: 0}, cujo: {species: 'wolf', sold: 0}}
+```
+
+And when we change the Store and save it back to the database, only Fido and Cujo are touched:
+
+```js
+store.setCell('pets', 'fido', 'species', 'corgi');
+store.setCell('pets', 'cujo', 'species', 'husky');
+await subsetPersister.save();
+```
+
+Don't worry, Felix is still in the database!
+
+```js
+console.log(db.exec('SELECT * FROM pets;', {rowMode: 'object'}));
+// -> [{_id: 'fido', species: 'corgi', sold: 0}, {_id: 'felix', species: 'cat', sold: 1}, {_id: 'cujo', species: 'husky', sold: 0}]
+```
+
+An important note, of course, is that if you update the data in the Store such
+that the resulting data does not match the subset condition, saving it back to
+the database will succeed, and it will stay in the Store:
+
+```js
+store.setCell('pets', 'fido', 'sold', 1);
+await subsetPersister.save();
+
+console.log(store.getTable('pets'));
+// -> {fido: {species: 'corgi', sold: 1}, cujo: {species: 'husky', sold: 0}}
+
+console.log(db.exec('SELECT * FROM pets;', {rowMode: 'object'}));
+// -> [{_id: 'fido', species: 'corgi', sold: 1}, {_id: 'felix', species: 'cat', sold: 1}, {_id: 'cujo', species: 'husky', sold: 0}]
+```
+
+But it _will_ be lost from the Store on the next load, even though it is still
+in the database:
+
+```js
+await subsetPersister.load();
+console.log(store.getTable('pets'));
+// -> {cujo: {species: 'husky', sold: 0}}
+```
+
+Finally it's worth confirming that when this subset configuration is used, the
+underlying database table will not be cleared or removed if the Store Table is
+emptied (since there may be other data in the table that is not relevant to this
+Store). In this example, we remove `cujo`, but `fido` and `felix` (not in the
+subset) are still in the database:
+
+```js
+store.delTable('pets');
+await subsetPersister.save();
+
+console.log(store.getTable('pets'));
+// -> {}
+
+console.log(db.exec('SELECT * FROM pets;', {rowMode: 'object'}));
+// -> [{_id: 'fido', species: 'corgi', sold: 1}, {_id: 'felix', species: 'cat', sold: 1}]
+
+await subsetPersister.destroy();
 ```
 
 ## Summary
