@@ -31,6 +31,7 @@ import {IdSet2, setAdd, setNew} from '../../../common/set.ts';
 import {COMMA, TRUE} from '../../../common/strings.ts';
 import {
   ALTER_TABLE,
+  CREATE_TABLE,
   DELETE_FROM,
   INSERT,
   QuerySchema,
@@ -160,8 +161,7 @@ export const getCommandFunctions = (
       if (!collHas(schemaMap, tableName)) {
         // Create the table
         await databaseExecuteCommand(
-          'CREATE ' +
-            TABLE +
+          CREATE_TABLE +
             escapeId(tableName) +
             `(${escapeId(rowIdColumnName)}${columnType} PRIMARY KEY${arrayJoin(
               arrayMap(
