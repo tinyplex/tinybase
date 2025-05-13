@@ -120,6 +120,8 @@ export type DpcTabularLoad = {
         rowIdColumnName?: string;
         /// DpcTabularLoad.condition
         condition?: DpcTabularCondition;
+        /// DpcTabularLoad.timestampColumnName
+        timestampColumnName?: string;
       }
     | Id;
 };
@@ -138,6 +140,8 @@ export type DpcTabularSave = {
         deleteEmptyTable?: boolean;
         /// DpcTabularSave.condition
         condition?: DpcTabularCondition;
+        /// DpcTabularSave.timestampColumnName
+        timestampColumnName?: string;
       }
     | string;
 };
@@ -150,6 +154,8 @@ export type DpcTabularValues = {
   save?: boolean;
   /// DpcTabularValues.tableName
   tableName?: string;
+  /// DpcTabularValues.timestampColumnName
+  timestampColumnName?: string;
 };
 
 /// Persister

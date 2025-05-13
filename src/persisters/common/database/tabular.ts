@@ -1,4 +1,5 @@
 import type {Id} from '../../../@types/common/index.d.ts';
+import type {TablesStamp} from '../../../@types/index.js';
 import type {
   DatabaseExecuteCommand,
   PersistedChanges,
@@ -15,9 +16,14 @@ import type {
   Values,
 } from '../../../@types/store/index.d.ts';
 import {arrayFilter} from '../../../common/array.ts';
+import {getHash} from '../../../common/hash.ts';
+import {getHlcFunctions} from '../../../common/hlc.ts';
+import {getUniqueId} from '../../../common/index.ts';
+import {jsonStringWithMap} from '../../../common/json.ts';
 import {mapMap} from '../../../common/map.ts';
-import {objHas, objIsEmpty, objNew} from '../../../common/obj.ts';
-import {isUndefined, promiseAll} from '../../../common/other.ts';
+import {objHas, objIsEmpty, objMap, objNew} from '../../../common/obj.ts';
+import {isString, isUndefined, promiseAll} from '../../../common/other.ts';
+import {getLatestTime, stampNewWithHash} from '../../../common/stamps.ts';
 import {createCustomPersister} from '../create.ts';
 import {getCommandFunctions} from './commands.ts';
 import {
@@ -46,7 +52,7 @@ export const createTabularPersister = <
   [
     tablesLoadConfig,
     tablesSaveConfig,
-    [valuesLoad, valuesSave, valuesTableName],
+    [valuesLoad, valuesSave, valuesTableName, valuesTimestampColumnName],
   ]: DefaultedTabularConfig,
   managedTableNames: string[],
   querySchema: QuerySchema,
@@ -57,6 +63,7 @@ export const createTabularPersister = <
   encode?: (cellOrValue: any) => string | number,
   decode?: (field: string | number) => any,
 ): Persister<Persist> => {
+  const uniqueId = getUniqueId(5);
   const [refreshSchema, loadTable, saveTable, transaction] =
     getCommandFunctions(
       executeCommand,
@@ -89,6 +96,7 @@ export const createTabularPersister = <
             deleteEmptyColumns,
             deleteEmptyTable,
             condition,
+            timestampColumnName,
           ],
           tableId,
         ) => {
@@ -101,6 +109,7 @@ export const createTabularPersister = <
               deleteEmptyTable,
               partial,
               condition,
+              timestampColumnName,
             );
           }
         },
@@ -119,6 +128,8 @@ export const createTabularPersister = <
           true,
           true,
           partial,
+          undefined,
+          valuesTimestampColumnName,
         )
       : null;
 
@@ -138,6 +149,53 @@ export const createTabularPersister = <
       ),
     );
 
+  const loadMergeableTables = async (): Promise<TablesStamp<true>> => {
+    let tablesTime: string | undefined = undefined;
+    return stampNewWithHash(objNew(
+      arrayFilter(
+        await promiseAll(
+          mapMap(
+            tablesLoadConfig,
+            async (
+              [tableId, rowIdColumnName, condition, updatedAtColumnName],
+              tableName,
+            ) => [
+              tableId,
+              await loadTable(tableName, rowIdColumnName, condition).then(
+                (table) => {
+                  let tableTime: string | undefined = undefined;
+                  return stampNewWithHash(objMap(table, (row) => {
+                    const [getHlc] = getHlcFunctions(uniqueId, () => {
+                        if(!updatedAtColumnName) return 0;
+                        const value = row[updatedAtColumnName];
+                        if(typeof value === 'number') return value;
+                        if(isString(value)) return Date.parse(value);
+                        return 0;
+                      });
+
+                    const rowTime = getHlc();
+                    tableTime = getLatestTime(tableTime, rowTime);
+                    tablesTime = getLatestTime(tablesTime, tableTime);
+                    return stampNewWithHash(objMap(row, (cell) => {
+                      const cellHash = getHash(
+                        jsonStringWithMap(cell ?? null) + ':' + rowTime,
+                      );
+                      return stampNewWithHash(cell, rowTime, cellHash);
+                    }), rowTime, 0); 
+                  }), tableTime ?? '', 0);
+                }),
+            ],
+          ),
+        ),
+        (pair) => !objIsEmpty(pair[1]),
+      ),
+    ), tablesTime ?? '', 0);
+  };
+
+  // current values structure in the database is one big row 
+  // with columns for values. To make it mergeable, we need to 
+  // convert it to a key/value structure which would then
+  // enable timestamp for each row.
   const loadValues = async (): Promise<Values | null> =>
     valuesLoad
       ? (await loadTable(valuesTableName, DEFAULT_ROW_ID_COLUMN_NAME))[
@@ -148,11 +206,25 @@ export const createTabularPersister = <
   const getPersisted = (): Promise<PersistedContent<Persist> | undefined> =>
     transaction(async () => {
       await refreshSchema();
-      const tables = await loadTables();
-      const values = await loadValues();
-      return !objIsEmpty(tables) || !isUndefined(values)
-        ? [tables as Tables, values as Values]
-        : undefined;
+      if(store.isMergeable() && persist > 1 /* > Persists.StoreOnly*/) {
+        const tables = await loadMergeableTables();
+        const values = await loadValues();
+
+        if(objIsEmpty(tables) && isUndefined(values)) {
+          return undefined;
+        }
+
+        return [tables, values];
+      } else {
+        const tables = await loadTables();
+        const values = await loadValues();
+        
+        if(objIsEmpty(tables) && isUndefined(values)) {
+          return undefined;
+        }
+        
+        return [tables as Tables, values as Values];
+      }
     }) as any;
 
   const setPersisted = (
