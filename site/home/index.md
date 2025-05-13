@@ -8,7 +8,7 @@
 
 <a href='/guides/releases/#v6-1'><em>NEW!</em> v6.1 release</a>
 
-<span id="one-with">"The One With Bun SQLite & subset syncing!"</span>
+<span id="one-with">"The One With Bun SQLite & subset persistence!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 

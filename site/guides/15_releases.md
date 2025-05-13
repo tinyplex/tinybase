@@ -44,13 +44,14 @@ await persister.destroy();
 There's more information the documentation for the new persister-sqlite-bun
 module.
 
-## Subset syncing
+## Subset persistence
 
-Persisters that synchronize data to database tables can now be configured to
-only load and save to a subset of the tables to a Store.
+Persisters that load and save data to an underlying database can now be
+configured to only load a _subset_ of the rows in a table into a Store.
 
 This is useful for reducing the amount of data that is loaded into memory, or
-for working with a subset of data that is relevant to the current user.
+for working with a subset of data that is relevant to the current user, for
+example.
 
 Do this by specifying a `condition` in the Persister configuration. This is a
 single string argument which is used as a SQL `WHERE` clause when reading and
@@ -69,7 +70,7 @@ const subsetPersister = createSqliteWasmPersister(store, sqlite3, db, {
 });
 ```
 
-See the 'Syncing with subsets of database tables' section of the Database
+See the '[Loading subsets of database tables](/guides/persistence/database-persistence/#loading-subsets-of-database-tables)' section of the Database
 Persistence guide for more details. And a huge thank you to Jakub Riedl
 ([@jakubriedl](https://github.com/jakubriedl)) for landing this functionality!
 

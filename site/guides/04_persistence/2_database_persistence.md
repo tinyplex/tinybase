@@ -257,7 +257,7 @@ this:
 }
 ```
 
-## Syncing with subsets of database tables
+## Loading subsets of database tables
 
 If you are using the tabular mapping, you can specify that only a subset of
 the data in the database table should be loaded or saved into TinyBase. This is
