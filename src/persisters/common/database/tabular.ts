@@ -157,7 +157,7 @@ export const createTabularPersister = <
           mapMap(
             tablesLoadConfig,
             async (
-              [tableId, rowIdColumnName, condition, updatedAtColumnName],
+              [tableId, rowIdColumnName, condition, timestampColumnName],
               tableName,
             ) => [
               tableId,
@@ -166,8 +166,8 @@ export const createTabularPersister = <
                   let tableTime: string | undefined = undefined;
                   return stampNewWithHash(objMap(table, (row) => {
                     const [getHlc] = getHlcFunctions(uniqueId, () => {
-                        if(!updatedAtColumnName) return 0;
-                        const value = row[updatedAtColumnName];
+                        if(!timestampColumnName) return 0;
+                        const value = row[timestampColumnName];
                         if(typeof value === 'number') return value;
                         if(isString(value)) return Date.parse(value);
                         return 0;
