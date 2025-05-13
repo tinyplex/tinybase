@@ -23,9 +23,9 @@ Each creation function takes a database reference, and a DatabasePersisterConfig
 object to describe its configuration. There are two modes for persisting a Store
 with a database:
 
-- A JSON serialization of the whole Store, which is stored in a single row of
-  a table (normally called `tinybase`) within the database. This is
-  configured by providing a DpcJson object.
+- A JSON serialization of the whole Store, which is stored in a single row of a
+  table (normally called `tinybase`) within the database. This is configured by
+  providing a DpcJson object.
 - A tabular mapping of Table Ids to database table names (and vice-versa).
   Values are stored in a separate special table (normally called
   `tinybase_values`). This is configured by providing a DpcTabular object.
@@ -191,8 +191,8 @@ section of the configuration.
 Do be aware that TinyBase is an in-memory data structure, and so you will not
 want to do this if your database tables are particularly large and complex.
 
-Also be very careful when setting the `save` configuration, since it will mean that
-TinyBase writes its version of the data back to the database (optionally
+Also be very careful when setting the `save` configuration, since it will mean
+that TinyBase writes its version of the data back to the database (optionally
 removing empty columns). If there is data that does not survive the round trip
 (because of schema constraints or data typing), it will be lost.
 
@@ -286,7 +286,8 @@ console.log(db.exec('SELECT * FROM pets;', {rowMode: 'object'}));
 // -> [{_id: 'fido', species: 'dog', sold: 0}, {_id: 'felix', species: 'cat', sold: 1}, {_id: 'cujo', species: 'wolf', sold: 0}]
 ```
 
-We can configure the Persister to only load and save pets that have not been sold:
+We can configure the Persister to only load and save pets that have not been
+sold:
 
 ```js
 const subsetPersister = createSqliteWasmPersister(store, sqlite3, db, {
@@ -307,7 +308,8 @@ console.log(store.getTable('pets'));
 // -> {fido: {species: 'dog', sold: 0}, cujo: {species: 'wolf', sold: 0}}
 ```
 
-And when we change the Store and save it back to the database, only Fido and Cujo are touched:
+And when we change the Store and save it back to the database, only Fido and
+Cujo are touched:
 
 ```js
 store.setCell('pets', 'fido', 'species', 'corgi');
