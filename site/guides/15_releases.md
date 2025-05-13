@@ -44,6 +44,35 @@ await persister.destroy();
 There's more information the documentation for the new persister-sqlite-bun
 module.
 
+## Subset syncing
+
+Persister that synchronize data to database tables can now be configured to
+only load and save to a subset of the tables to a Store.
+
+This is useful for reducing the amount of data that is loaded into memory, or
+for working with a subset of data that is relevant to the current user.
+
+Do this by specifying a `condition` in the Persister configuration. This is a
+single string argument which is used as a SQL `WHERE` clause when reading and
+observing data in the table.
+
+For example, the following code will only load rows from the `pets` database
+table where the `sold` column is set to `0`:
+
+```js yolo
+const subsetPersister = createSqliteWasmPersister(store, sqlite3, db, {
+  mode: 'tabular',
+  tables: {
+    load: {pets: {tableId: 'pets', condition: '$tableName.sold = 0'}},
+    save: {pets: {tableName: 'pets', condition: '$tableName.sold = 0'}},
+  },
+});
+```
+
+See the 'Syncing with subsets of database tables' section of the Database
+Persistence guide for more details. And a huge thank you to Jakub Riedl
+([@jakubriedl](https://github.com/jakubriedl)) for landing this functionality!
+
 ## createMergeableStore getNow
 
 The createMergeableStore function now takes an optional `getNow` argument that
