@@ -13,6 +13,6 @@
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-pglite/interfaces/persister/pglitepersister/methods/getter/getpglite/">getPglite</a></span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">==</span> pglite<span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> true</span>
 
-persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-pglite/interfaces/persister/pglitepersister/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-pglite/interfaces/persister/pglitepersister/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="keyword">await</span> pglite<span class="punctuation">.</span><span class="function">close</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre></section><section class="s2"><h2>Since</h2><p>5.2.0</p></section></section>

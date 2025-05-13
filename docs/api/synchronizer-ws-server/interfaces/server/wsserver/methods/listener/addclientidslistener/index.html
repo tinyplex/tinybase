@@ -28,14 +28,14 @@
 <span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// The listener is not called.</span>
 
-synchronizer1<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> synchronizer1<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// ...</span>
 <span class="comment">// -> '0 client(s) in roomA'</span>
 
-synchronizer2<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> synchronizer2<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
 server<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/listener/dellistener/">delListener</a></span><span class="punctuation">(</span>listenerId<span class="punctuation">)</span><span class="punctuation">;</span>
-server<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> server<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre><p>This example creates a <a href="/api/synchronizer-ws-server/interfaces/server/wsserver/"><code>WsServer</code></a>, and listens to changes to the clients connecting to and disconnecting from any path.</p><pre><code><span class="keyword">import</span> <span class="punctuation">{</span>createMergeableStore<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase'</span><span class="punctuation">;</span>
 <span class="keyword">import</span> <span class="punctuation">{</span>createWsSynchronizer<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/synchronizers/synchronizer-ws-client'</span><span class="punctuation">;</span>
 <span class="keyword">import</span> <span class="punctuation">{</span>createWsServer<span class="punctuation">}</span> <span class="keyword">from</span> <span class="string">'tinybase/synchronizers/synchronizer-ws-server'</span><span class="punctuation">;</span>
@@ -60,14 +60,14 @@ server<span class="punctuation">.</span><span class="function"><a href="/api/syn
 <span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> '1 client(s) in roomB'</span>
 
-synchronizer1<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> synchronizer1<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// ...</span>
 <span class="comment">// -> '0 client(s) in roomA'</span>
 
-synchronizer2<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> synchronizer2<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// ...</span>
 <span class="comment">// -> '0 client(s) in roomB'</span>
 
 server<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/listener/dellistener/">delListener</a></span><span class="punctuation">(</span>listenerId<span class="punctuation">)</span><span class="punctuation">;</span>
-server<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> server<span class="punctuation">.</span><span class="function"><a href="/api/synchronizer-ws-server/interfaces/server/wsserver/methods/getter/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre></section><section class="s2"><h2>Since</h2><p>v5.0.0</p></section></section></article><aside></aside></main><footer><nav><a id="gh" href="https://github.com/tinyplex/tinybase" target="_blank">GitHub</a><a id="bs" href="https://bsky.app/profile/tinybase.bsky.social" target="_blank">Bluesky</a><a id="tw" href="https://x.com/tinybasejs" target="_blank">X / Twitter</a><a id="dc" href="https://discord.com/invite/mGz3mevwP8" target="_blank">Discord</a></nav><nav><a href="/">TinyBase <span id="version"></span></a> © 2022-</nav></footer><script>window.dataLayer=window.dataLayer||[];function g(){dataLayer.push(arguments);}g('js',new Date());g('config','G-D1MGR8VRWJ');</script></body></html>

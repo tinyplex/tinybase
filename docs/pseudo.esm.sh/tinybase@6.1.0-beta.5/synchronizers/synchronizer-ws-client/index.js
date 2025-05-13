@@ -22,6 +22,13 @@ var promiseNew = (resolver) => new promise(resolver);
 var errorNew = (message) => {
   throw new Error(message);
 };
+var tryCatch = async (action, then1, then2) => {
+  try {
+    return await action();
+  } catch (error) {
+    then1?.(error);
+  }
+};
 var arrayForEach = (array, cb) => array.forEach(cb);
 var arrayMap = (array, cb) => array.map(cb);
 var arrayReduce = (array, cb, initial) => array.reduce(cb, initial);
@@ -245,11 +252,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     if (!mapGet(scheduleRunning, scheduleId)) {
       mapSet(scheduleRunning, scheduleId, 1);
       while (!isUndefined(action = arrayShift(mapGet(scheduleActions, scheduleId)))) {
-        try {
-          await action();
-        } catch (error) {
-          onIgnoredError?.(error);
-        }
+        await tryCatch(action, onIgnoredError);
       }
       mapSet(scheduleRunning, scheduleId, 0);
     }
@@ -265,21 +268,23 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
       );
       loads++;
       await schedule(async () => {
-        try {
-          const content = await getPersisted();
-          if (isArray(content)) {
-            setContentOrChanges(content);
-          } else if (initialContent) {
-            setDefaultContent(initialContent);
-          } else {
-            errorNew(`Content is not an array: ${content}`);
+        await tryCatch(
+          async () => {
+            const content = await getPersisted();
+            if (isArray(content)) {
+              setContentOrChanges(content);
+            } else if (initialContent) {
+              setDefaultContent(initialContent);
+            } else {
+              errorNew(`Content is not an array: ${content}`);
+            }
+          },
+          () => {
+            if (initialContent) {
+              setDefaultContent(initialContent);
+            }
           }
-        } catch (error) {
-          onIgnoredError?.(error);
-          if (initialContent) {
-            setDefaultContent(initialContent);
-          }
-        }
+        );
         setStatus(
           0
           /* Idle */
@@ -291,33 +296,37 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   const startAutoLoad = async (initialContent) => {
     stopAutoLoad();
     await load(initialContent);
-    try {
-      autoLoadHandle = await addPersisterListener(async (content, changes) => {
-        if (changes || content) {
-          if (status != 2) {
-            setStatus(
-              1
-              /* Loading */
-            );
-            loads++;
-            setContentOrChanges(changes ?? content);
-            setStatus(
-              0
-              /* Idle */
-            );
+    await tryCatch(
+      async () => autoLoadHandle = await addPersisterListener(
+        async (content, changes) => {
+          if (changes || content) {
+            if (status != 2) {
+              setStatus(
+                1
+                /* Loading */
+              );
+              loads++;
+              setContentOrChanges(changes ?? content);
+              setStatus(
+                0
+                /* Idle */
+              );
+            }
+          } else {
+            await load();
           }
-        } else {
-          await load();
         }
-      });
-    } catch (error) {
-      onIgnoredError?.(error);
-    }
+      ),
+      onIgnoredError
+    );
     return persister;
   };
-  const stopAutoLoad = () => {
+  const stopAutoLoad = async () => {
     if (autoLoadHandle) {
-      delPersisterListener(autoLoadHandle);
+      await tryCatch(
+        () => delPersisterListener(autoLoadHandle),
+        onIgnoredError
+      );
       autoLoadHandle = void 0;
     }
     return persister;
@@ -331,11 +340,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
       );
       saves++;
       await schedule(async () => {
-        try {
-          await setPersisted(getContent, changes);
-        } catch (error) {
-          onIgnoredError?.(error);
-        }
+        await tryCatch(() => setPersisted(getContent, changes), onIgnoredError);
         setStatus(
           0
           /* Idle */
@@ -355,7 +360,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     });
     return persister;
   };
-  const stopAutoSave = () => {
+  const stopAutoSave = async () => {
     if (autoSaveListenerId) {
       store.delListener(autoSaveListenerId);
       autoSaveListenerId = void 0;
@@ -375,9 +380,10 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     return persister;
   };
   const getStore = () => store;
-  const destroy = () => {
+  const destroy = async () => {
     arrayClear(mapGet(scheduleActions, scheduleId));
-    return stopAutoLoad().stopAutoSave();
+    await persister.stopAutoLoad();
+    return await persister.stopAutoSave();
   };
   const getStats = () => ({ loads, saves });
   const persister = {
@@ -400,7 +406,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   };
   return objFreeze(persister);
 };
-var createCustomSynchronizer = (store, send, registerReceive, destroyImpl, requestTimeoutSeconds, onSend, onReceive, onIgnoredError, extra = {}) => {
+var createCustomSynchronizer = (store, send, registerReceive, extraDestroy, requestTimeoutSeconds, onSend, onReceive, onIgnoredError, extra = {}) => {
   let syncing = 0;
   let persisterListener;
   let sends = 0;
@@ -445,60 +451,56 @@ var createCustomSynchronizer = (store, send, registerReceive, destroyImpl, reque
     });
     tablesStamp[1] = getLatestTime(tablesStamp[1], tablesTime2);
   };
-  const getChangesFromOtherStore = async (otherClientId = null, otherContentHashes, transactionId = getTransactionId()) => {
-    try {
-      if (isUndefined(otherContentHashes)) {
-        [otherContentHashes, otherClientId, transactionId] = await request(
-          null,
-          1,
-          EMPTY_STRING,
-          transactionId
-        );
-      }
-      const [otherTablesHash, otherValuesHash] = otherContentHashes;
-      const [tablesHash, valuesHash] = store.getMergeableContentHashes();
-      let tablesChanges = stampNewObj();
-      if (tablesHash != otherTablesHash) {
-        const [newTables, differentTableHashes] = (await request(
+  const getChangesFromOtherStore = (otherClientId = null, otherContentHashes, transactionId = getTransactionId()) => tryCatch(async () => {
+    if (isUndefined(otherContentHashes)) {
+      [otherContentHashes, otherClientId, transactionId] = await request(
+        null,
+        1,
+        EMPTY_STRING,
+        transactionId
+      );
+    }
+    const [otherTablesHash, otherValuesHash] = otherContentHashes;
+    const [tablesHash, valuesHash] = store.getMergeableContentHashes();
+    let tablesChanges = stampNewObj();
+    if (tablesHash != otherTablesHash) {
+      const [newTables, differentTableHashes] = (await request(
+        otherClientId,
+        4,
+        store.getMergeableTableHashes(),
+        transactionId
+      ))[0];
+      tablesChanges = newTables;
+      if (!objIsEmpty(differentTableHashes)) {
+        const [newRows, differentRowHashes] = (await request(
           otherClientId,
-          4,
-          store.getMergeableTableHashes(),
+          5,
+          store.getMergeableRowHashes(differentTableHashes),
           transactionId
         ))[0];
-        tablesChanges = newTables;
-        if (!objIsEmpty(differentTableHashes)) {
-          const [newRows, differentRowHashes] = (await request(
+        mergeTablesStamps(tablesChanges, newRows);
+        if (!objIsEmpty(differentRowHashes)) {
+          const newCells = (await request(
             otherClientId,
-            5,
-            store.getMergeableRowHashes(differentTableHashes),
+            6,
+            store.getMergeableCellHashes(differentRowHashes),
             transactionId
           ))[0];
-          mergeTablesStamps(tablesChanges, newRows);
-          if (!objIsEmpty(differentRowHashes)) {
-            const newCells = (await request(
-              otherClientId,
-              6,
-              store.getMergeableCellHashes(differentRowHashes),
-              transactionId
-            ))[0];
-            mergeTablesStamps(tablesChanges, newCells);
-          }
+          mergeTablesStamps(tablesChanges, newCells);
         }
       }
-      return [
-        tablesChanges,
-        valuesHash == otherValuesHash ? stampNewObj() : (await request(
-          otherClientId,
-          7,
-          store.getMergeableValueHashes(),
-          transactionId
-        ))[0],
-        1
-      ];
-    } catch (error) {
-      onIgnoredError?.(error);
     }
-  };
+    return [
+      tablesChanges,
+      valuesHash == otherValuesHash ? stampNewObj() : (await request(
+        otherClientId,
+        7,
+        store.getMergeableValueHashes(),
+        transactionId
+      ))[0],
+      1
+    ];
+  }, onIgnoredError);
   const getPersisted = async () => {
     const changes = await getChangesFromOtherStore();
     return changes && (!objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0])) ? changes : void 0;
@@ -515,13 +517,16 @@ var createCustomSynchronizer = (store, send, registerReceive, destroyImpl, reque
     syncing = 1;
     return await (await persister.startAutoLoad(initialContent)).startAutoSave();
   };
-  const stopSync = () => {
+  const stopSync = async () => {
     syncing = 0;
-    return persister.stopAutoLoad().stopAutoSave();
+    await persister.stopAutoLoad();
+    await persister.stopAutoSave();
+    return persister;
   };
-  const destroy = () => {
-    destroyImpl();
-    return persister.stopSync();
+  const destroy = async () => {
+    await persister.stopSync();
+    extraDestroy();
+    return persister;
   };
   const getSynchronizerStats = () => ({ sends, receives });
   const persister = createCustomPersister(

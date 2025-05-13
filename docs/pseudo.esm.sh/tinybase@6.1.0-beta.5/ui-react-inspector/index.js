@@ -473,6 +473,13 @@ var test = (regex, subject) => regex.test(subject);
 var errorNew = (message) => {
   throw new Error(message);
 };
+var tryCatch = async (action, then1, then2) => {
+  try {
+    return await action();
+  } catch (error) {
+    then1?.(error);
+  }
+};
 var arrayHas = (array, value) => array.includes(value);
 var arrayEvery2 = (array, cb) => array.every(cb);
 var arrayIsEqual2 = (array1, array2) => size2(array1) === size2(array2) && arrayEvery2(array1, (value1, index) => array2[index] === value1);
@@ -731,10 +738,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     if (!mapGet(scheduleRunning, scheduleId)) {
       mapSet(scheduleRunning, scheduleId, 1);
       while (!isUndefined2(action = arrayShift(mapGet(scheduleActions, scheduleId)))) {
-        try {
-          await action();
-        } catch (error) {
-        }
+        await tryCatch(action, onIgnoredError);
       }
       mapSet(scheduleRunning, scheduleId, 0);
     }
@@ -750,20 +754,23 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
       );
       loads++;
       await schedule(async () => {
-        try {
-          const content = await getPersisted();
-          if (isArray2(content)) {
-            setContentOrChanges(content);
-          } else if (initialContent) {
-            setDefaultContent(initialContent);
-          } else {
-            errorNew(`Content is not an array: ${content}`);
+        await tryCatch(
+          async () => {
+            const content = await getPersisted();
+            if (isArray2(content)) {
+              setContentOrChanges(content);
+            } else if (initialContent) {
+              setDefaultContent(initialContent);
+            } else {
+              errorNew(`Content is not an array: ${content}`);
+            }
+          },
+          () => {
+            if (initialContent) {
+              setDefaultContent(initialContent);
+            }
           }
-        } catch (error) {
-          if (initialContent) {
-            setDefaultContent(initialContent);
-          }
-        }
+        );
         setStatus(
           0
           /* Idle */
@@ -775,32 +782,37 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   const startAutoLoad = async (initialContent) => {
     stopAutoLoad();
     await load(initialContent);
-    try {
-      autoLoadHandle = await addPersisterListener(async (content, changes) => {
-        if (changes || content) {
-          if (status != 2) {
-            setStatus(
-              1
-              /* Loading */
-            );
-            loads++;
-            setContentOrChanges(changes ?? content);
-            setStatus(
-              0
-              /* Idle */
-            );
+    await tryCatch(
+      async () => autoLoadHandle = await addPersisterListener(
+        async (content, changes) => {
+          if (changes || content) {
+            if (status != 2) {
+              setStatus(
+                1
+                /* Loading */
+              );
+              loads++;
+              setContentOrChanges(changes ?? content);
+              setStatus(
+                0
+                /* Idle */
+              );
+            }
+          } else {
+            await load();
           }
-        } else {
-          await load();
         }
-      });
-    } catch (error) {
-    }
+      ),
+      onIgnoredError
+    );
     return persister;
   };
-  const stopAutoLoad = () => {
+  const stopAutoLoad = async () => {
     if (autoLoadHandle) {
-      delPersisterListener(autoLoadHandle);
+      await tryCatch(
+        () => delPersisterListener(autoLoadHandle),
+        onIgnoredError
+      );
       autoLoadHandle = void 0;
     }
     return persister;
@@ -814,10 +826,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
       );
       saves++;
       await schedule(async () => {
-        try {
-          await setPersisted(getContent, changes);
-        } catch (error) {
-        }
+        await tryCatch(() => setPersisted(getContent, changes), onIgnoredError);
         setStatus(
           0
           /* Idle */
@@ -837,7 +846,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     });
     return persister;
   };
-  const stopAutoSave = () => {
+  const stopAutoSave = async () => {
     if (autoSaveListenerId) {
       store.delListener(autoSaveListenerId);
       autoSaveListenerId = void 0;
@@ -857,9 +866,10 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     return persister;
   };
   const getStore = () => store;
-  const destroy = () => {
+  const destroy = async () => {
     arrayClear(mapGet(scheduleActions, scheduleId));
-    return stopAutoLoad().stopAutoSave();
+    await persister.stopAutoLoad();
+    return await persister.stopAutoSave();
   };
   const getStats = () => ({ loads, saves });
   const persister = {
@@ -889,11 +899,7 @@ var createStoragePersister = (store, storageName, storage, onIgnoredError) => {
   const addPersisterListener = (listener) => {
     const storageListener = (event) => {
       if (event.storageArea === storage && event.key === storageName) {
-        try {
-          listener(jsonParse(event.newValue));
-        } catch {
-          listener();
-        }
+        tryCatch(() => listener(jsonParse(event.newValue)), listener);
       }
     };
     WINDOW.addEventListener(STORAGE, storageListener);
@@ -1653,28 +1659,23 @@ var createStore = () => {
     );
   });
   const setTablesJson = (tablesJson) => {
-    try {
-      setOrDelTables(jsonParse(tablesJson));
-    } catch {
-    }
+    tryCatch(() => setOrDelTables(jsonParse(tablesJson)));
     return store;
   };
   const setValuesJson = (valuesJson) => {
-    try {
-      setOrDelValues(jsonParse(valuesJson));
-    } catch {
-    }
+    tryCatch(() => setOrDelValues(jsonParse(valuesJson)));
     return store;
   };
-  const setJson = (tablesAndValuesJson) => fluentTransaction(() => {
-    try {
-      const [tables, values] = jsonParse(tablesAndValuesJson);
-      setOrDelTables(tables);
-      setOrDelValues(values);
-    } catch {
-      setTablesJson(tablesAndValuesJson);
-    }
-  });
+  const setJson = (tablesAndValuesJson) => fluentTransaction(
+    () => tryCatch(
+      () => {
+        const [tables, values] = jsonParse(tablesAndValuesJson);
+        setOrDelTables(tables);
+        setOrDelValues(values);
+      },
+      () => setTablesJson(tablesAndValuesJson)
+    )
+  );
   const setTablesSchema = (tablesSchema) => fluentTransaction(() => {
     if (hasTablesSchema = validateTablesSchema(tablesSchema)) {
       setValidTablesSchema(tablesSchema);

@@ -80,6 +80,6 @@ root<span class="punctuation">.</span><span class="function">render</span><span 
 root<span class="punctuation">.</span><span class="function">unmount</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> 'Synchronizer destroyed for ws://localhost:8045/'</span>
 
-server1<span class="punctuation">.</span><span class="function"><a href="/api/synchronizers/interfaces/synchronizer/synchronizer/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
-server2<span class="punctuation">.</span><span class="function"><a href="/api/synchronizers/interfaces/synchronizer/synchronizer/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> server1<span class="punctuation">.</span><span class="function"><a href="/api/synchronizers/interfaces/synchronizer/synchronizer/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> server2<span class="punctuation">.</span><span class="function"><a href="/api/synchronizers/interfaces/synchronizer/synchronizer/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre></section><section class="s2"><h2>Since</h2><p>v5.0.0</p></section></section>

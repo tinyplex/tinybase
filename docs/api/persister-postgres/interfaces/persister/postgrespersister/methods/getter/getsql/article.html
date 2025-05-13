@@ -9,6 +9,6 @@
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-postgres/interfaces/persister/postgrespersister/methods/getter/getsql/">getSql</a></span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="operator">==</span> sql<span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> true</span>
 
-persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-postgres/interfaces/persister/postgrespersister/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-postgres/interfaces/persister/postgrespersister/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="keyword">await</span> sql<span class="punctuation">.</span><span class="function">end</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre></section><section class="s2"><h2>Since</h2><p>5.2.0</p></section></section>

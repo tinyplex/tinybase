@@ -1,11 +1,8 @@
-// dist/persisters/persister-remote/index.js
+// dist/persisters/persister-browser/index.js
 var EMPTY_STRING = "";
-var THOUSAND = 1e3;
-var startInterval = (callback, sec, immediate) => {
-  return setInterval(callback, sec * THOUSAND);
-};
-var stopInterval = clearInterval;
-var isInstanceOf = (thing, cls) => thing instanceof cls;
+var UNDEFINED = "\uFFFC";
+var GLOBAL = globalThis;
+var WINDOW = GLOBAL.window;
 var isUndefined = (thing) => thing == void 0;
 var ifNotUndefined = (value, then, otherwise) => isUndefined(value) ? otherwise?.() : then(value);
 var isArray = (thing) => Array.isArray(thing);
@@ -13,6 +10,13 @@ var size = (arrayOrString) => arrayOrString.length;
 var test = (regex, subject) => regex.test(subject);
 var errorNew = (message) => {
   throw new Error(message);
+};
+var tryCatch = async (action, then1, then2) => {
+  try {
+    return await action();
+  } catch (error) {
+    then1?.(error);
+  }
 };
 var arrayForEach = (array, cb) => array.forEach(cb);
 var arrayClear = (array, to) => array.splice(0, to);
@@ -32,10 +36,8 @@ var objSize = (obj) => size(objIds(obj));
 var objIsEmpty = (obj) => isObject(obj) && objSize(obj) == 0;
 var jsonString = JSON.stringify;
 var jsonParse = JSON.parse;
-var jsonStringWithMap = (obj) => jsonString(
-  obj,
-  (_key, value) => isInstanceOf(value, Map) ? object.fromEntries([...value]) : value
-);
+var jsonStringWithUndefined = (obj) => jsonString(obj, (_key, value) => value === void 0 ? UNDEFINED : value);
+var jsonParseWithUndefined = (str) => jsonParse(str, (_key, value) => value === UNDEFINED ? void 0 : value);
 var collSize = (coll) => coll?.size ?? 0;
 var collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
 var collIsEmpty = (coll) => isUndefined(coll) || collSize(coll) == 0;
@@ -194,11 +196,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     if (!mapGet(scheduleRunning, scheduleId)) {
       mapSet(scheduleRunning, scheduleId, 1);
       while (!isUndefined(action = arrayShift(mapGet(scheduleActions, scheduleId)))) {
-        try {
-          await action();
-        } catch (error) {
-          onIgnoredError?.(error);
-        }
+        await tryCatch(action, onIgnoredError);
       }
       mapSet(scheduleRunning, scheduleId, 0);
     }
@@ -214,21 +212,23 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
       );
       loads++;
       await schedule(async () => {
-        try {
-          const content = await getPersisted();
-          if (isArray(content)) {
-            setContentOrChanges(content);
-          } else if (initialContent) {
-            setDefaultContent(initialContent);
-          } else {
-            errorNew(`Content is not an array: ${content}`);
+        await tryCatch(
+          async () => {
+            const content = await getPersisted();
+            if (isArray(content)) {
+              setContentOrChanges(content);
+            } else if (initialContent) {
+              setDefaultContent(initialContent);
+            } else {
+              errorNew(`Content is not an array: ${content}`);
+            }
+          },
+          () => {
+            if (initialContent) {
+              setDefaultContent(initialContent);
+            }
           }
-        } catch (error) {
-          onIgnoredError?.(error);
-          if (initialContent) {
-            setDefaultContent(initialContent);
-          }
-        }
+        );
         setStatus(
           0
           /* Idle */
@@ -240,33 +240,37 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   const startAutoLoad = async (initialContent) => {
     stopAutoLoad();
     await load(initialContent);
-    try {
-      autoLoadHandle = await addPersisterListener(async (content, changes) => {
-        if (changes || content) {
-          if (status != 2) {
-            setStatus(
-              1
-              /* Loading */
-            );
-            loads++;
-            setContentOrChanges(changes ?? content);
-            setStatus(
-              0
-              /* Idle */
-            );
+    await tryCatch(
+      async () => autoLoadHandle = await addPersisterListener(
+        async (content, changes) => {
+          if (changes || content) {
+            if (status != 2) {
+              setStatus(
+                1
+                /* Loading */
+              );
+              loads++;
+              setContentOrChanges(changes ?? content);
+              setStatus(
+                0
+                /* Idle */
+              );
+            }
+          } else {
+            await load();
           }
-        } else {
-          await load();
         }
-      });
-    } catch (error) {
-      onIgnoredError?.(error);
-    }
+      ),
+      onIgnoredError
+    );
     return persister;
   };
-  const stopAutoLoad = () => {
+  const stopAutoLoad = async () => {
     if (autoLoadHandle) {
-      delPersisterListener(autoLoadHandle);
+      await tryCatch(
+        () => delPersisterListener(autoLoadHandle),
+        onIgnoredError
+      );
       autoLoadHandle = void 0;
     }
     return persister;
@@ -280,11 +284,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
       );
       saves++;
       await schedule(async () => {
-        try {
-          await setPersisted(getContent, changes);
-        } catch (error) {
-          onIgnoredError?.(error);
-        }
+        await tryCatch(() => setPersisted(getContent, changes), onIgnoredError);
         setStatus(
           0
           /* Idle */
@@ -304,7 +304,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     });
     return persister;
   };
-  const stopAutoSave = () => {
+  const stopAutoSave = async () => {
     if (autoSaveListenerId) {
       store.delListener(autoSaveListenerId);
       autoSaveListenerId = void 0;
@@ -324,9 +324,10 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     return persister;
   };
   const getStore = () => store;
-  const destroy = () => {
+  const destroy = async () => {
     arrayClear(mapGet(scheduleActions, scheduleId));
-    return stopAutoLoad().stopAutoSave();
+    await persister.stopAutoLoad();
+    return await persister.stopAutoSave();
   };
   const getStats = () => ({ loads, saves });
   const persister = {
@@ -349,28 +350,20 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   };
   return objFreeze(persister);
 };
-var getETag = (response) => response.headers.get("ETag");
-var createRemotePersister = (store, loadUrl, saveUrl, autoLoadIntervalSeconds = 5, onIgnoredError) => {
-  let lastEtag;
-  const getPersisted = async () => {
-    const response = await fetch(loadUrl);
-    lastEtag = getETag(response);
-    return jsonParse(await response.text());
+var STORAGE = "storage";
+var createStoragePersister = (store, storageName, storage, onIgnoredError) => {
+  const getPersisted = async () => jsonParseWithUndefined(storage.getItem(storageName));
+  const setPersisted = async (getContent) => storage.setItem(storageName, jsonStringWithUndefined(getContent()));
+  const addPersisterListener = (listener) => {
+    const storageListener = (event) => {
+      if (event.storageArea === storage && event.key === storageName) {
+        tryCatch(() => listener(jsonParse(event.newValue)), listener);
+      }
+    };
+    WINDOW.addEventListener(STORAGE, storageListener);
+    return storageListener;
   };
-  const setPersisted = async (getContent) => await fetch(saveUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: jsonStringWithMap(getContent())
-  });
-  const addPersisterListener = (listener) => startInterval(async () => {
-    const response = await fetch(loadUrl, { method: "HEAD" });
-    const currentEtag = getETag(response);
-    if (!isUndefined(lastEtag) && !isUndefined(currentEtag) && currentEtag != lastEtag) {
-      lastEtag = currentEtag;
-      listener();
-    }
-  }, autoLoadIntervalSeconds);
-  const delPersisterListener = (interval) => stopInterval(interval);
+  const delPersisterListener = (storageListener) => WINDOW.removeEventListener(STORAGE, storageListener);
   return createCustomPersister(
     store,
     getPersisted,
@@ -378,11 +371,14 @@ var createRemotePersister = (store, loadUrl, saveUrl, autoLoadIntervalSeconds = 
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    1,
-    // StoreOnly,
-    { getUrls: () => [loadUrl, saveUrl] }
+    3,
+    // StoreOrMergeableStore,
+    { getStorageName: () => storageName }
   );
 };
+var createLocalPersister = (store, storageName, onIgnoredError) => createStoragePersister(store, storageName, localStorage, onIgnoredError);
+var createSessionPersister = (store, storageName, onIgnoredError) => createStoragePersister(store, storageName, sessionStorage, onIgnoredError);
 export {
-  createRemotePersister
+  createLocalPersister,
+  createSessionPersister
 };

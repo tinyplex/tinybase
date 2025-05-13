@@ -53,6 +53,15 @@ var slice = (arrayOrString, start, end) => arrayOrString.slice(start, end);
 var size = (arrayOrString) => arrayOrString.length;
 var test = (regex, subject) => regex.test(subject);
 var getUndefined = () => void 0;
+var noop = () => {
+};
+var tryCatch = async (action, then1, then2) => {
+  try {
+    return await action();
+  } catch (error) {
+    then1?.(error);
+  }
+};
 var arrayHas = (array, value) => array.includes(value);
 var arrayEvery = (array, cb) => array.every(cb);
 var arrayIsEqual = (array1, array2) => size(array1) === size(array2) && arrayEvery(array1, (value1, index) => array2[index] === value1);
@@ -1665,28 +1674,23 @@ var createStore = () => {
     );
   });
   const setTablesJson = (tablesJson) => {
-    try {
-      setOrDelTables(jsonParse(tablesJson));
-    } catch {
-    }
+    tryCatch(() => setOrDelTables(jsonParse(tablesJson)));
     return store;
   };
   const setValuesJson = (valuesJson) => {
-    try {
-      setOrDelValues(jsonParse(valuesJson));
-    } catch {
-    }
+    tryCatch(() => setOrDelValues(jsonParse(valuesJson)));
     return store;
   };
-  const setJson = (tablesAndValuesJson) => fluentTransaction(() => {
-    try {
-      const [tables, values] = jsonParse(tablesAndValuesJson);
-      setOrDelTables(tables);
-      setOrDelValues(values);
-    } catch {
-      setTablesJson(tablesAndValuesJson);
-    }
-  });
+  const setJson = (tablesAndValuesJson) => fluentTransaction(
+    () => tryCatch(
+      () => {
+        const [tables, values] = jsonParse(tablesAndValuesJson);
+        setOrDelTables(tables);
+        setOrDelValues(values);
+      },
+      () => setTablesJson(tablesAndValuesJson)
+    )
+  );
   const setTablesSchema = (tablesSchema) => fluentTransaction(() => {
     if (hasTablesSchema = validateTablesSchema(tablesSchema)) {
       setValidTablesSchema(tablesSchema);
@@ -2278,10 +2282,8 @@ var createMergeableStore = (uniqueId, getNow) => {
     stampUpdate(thingsStampMap, incomingThingsTime, thingsHash);
     return [thingsTime, oldThingsHash, thingsStampMap[2]];
   };
-  const preStartTransaction = () => {
-  };
-  const preFinishTransaction = () => {
-  };
+  const preStartTransaction = noop;
+  const preFinishTransaction = noop;
   const postFinishTransaction = () => {
     collClear(touchedCells);
     collClear(touchedValues);

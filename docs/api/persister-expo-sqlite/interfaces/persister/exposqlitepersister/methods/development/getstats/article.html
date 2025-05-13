@@ -17,6 +17,6 @@ sessionStorage<span class="punctuation">.</span><span class="function">setItem</
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-expo-sqlite/interfaces/persister/exposqlitepersister/methods/development/getstats/">getStats</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> {loads: 2, saves: 2}</span>
 
-persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-expo-sqlite/interfaces/persister/exposqlitepersister/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-expo-sqlite/interfaces/persister/exposqlitepersister/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 sessionStorage<span class="punctuation">.</span><span class="function"><a href="/api/checkpoints/interfaces/checkpoints/checkpoints/methods/lifecycle/clear/">clear</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 </code></pre></section><section class="s2"><h2>Since</h2><p>v1.0.0</p></section></section>
