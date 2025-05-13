@@ -46,7 +46,7 @@ module.
 
 ## Subset syncing
 
-Persister that synchronize data to database tables can now be configured to
+Persisters that synchronize data to database tables can now be configured to
 only load and save to a subset of the tables to a Store.
 
 This is useful for reducing the amount of data that is loaded into memory, or
