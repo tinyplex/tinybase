@@ -68,6 +68,10 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
   storeWithSchemas.getSortedRowIds('t1', 'c2'); // !
   storeWithSchemas.getSortedRowIds('t2', 'r2'); // !
 
+  storeWithSchemas.getSortedRowIds({tableId: 't1', cellId: 'c1'});
+  storeWithSchemas.getSortedRowIds({tableId: 't1', cellId: 'c2'}); // !
+  storeWithSchemas.getSortedRowIds({tableId: 't2', cellId: 'c2'}); // !
+
   storeWithSchemas.hasRow('t1', 'r1');
   storeWithSchemas.hasRow('t2', 'r2'); // !
 
