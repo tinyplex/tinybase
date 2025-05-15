@@ -87,6 +87,7 @@ import {
   mapToObj3,
 } from '../common/map.ts';
 import {
+  isObject,
   objDel,
   objFreeze,
   objHas,
@@ -1011,30 +1012,48 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapKeys(mapGet(tablesMap, id(tableId)));
 
   const getSortedRowIds = (
-    tableId: Id,
+    tableId:
+      | Id
+      | {
+          tableId: Id;
+          cellId?: Id;
+          descending?: boolean;
+          offset?: number;
+          limit?: number;
+        },
     cellId?: Id,
     descending?: boolean,
     offset = 0,
     limit?: number,
   ): Ids =>
-    arrayMap(
-      slice(
-        arraySort(
-          mapMap<Id, RowMap, [Cell, Id]>(
-            mapGet(tablesMap, id(tableId)),
-            (row, rowId) => [
-              isUndefined(cellId) ? rowId : (mapGet(row, id(cellId)) as Cell),
-              rowId,
-            ],
+    isObject(tableId)
+      ? getSortedRowIds(
+          tableId.tableId,
+          tableId.cellId,
+          tableId.descending,
+          tableId.offset,
+          tableId.limit,
+        )
+      : arrayMap(
+          slice(
+            arraySort(
+              mapMap<Id, RowMap, [Cell, Id]>(
+                mapGet(tablesMap, id(tableId)),
+                (row, rowId) => [
+                  isUndefined(cellId)
+                    ? rowId
+                    : (mapGet(row, id(cellId)) as Cell),
+                  rowId,
+                ],
+              ),
+              ([cell1], [cell2]) =>
+                defaultSorter(cell1, cell2) * (descending ? -1 : 1),
+            ),
+            offset,
+            isUndefined(limit) ? limit : offset + limit,
           ),
-          ([cell1], [cell2]) =>
-            defaultSorter(cell1, cell2) * (descending ? -1 : 1),
-        ),
-        offset,
-        isUndefined(limit) ? limit : offset + limit,
-      ),
-      ([, rowId]) => rowId,
-    );
+          ([, rowId]) => rowId,
+        );
 
   const getRow = (tableId: Id, rowId: Id): Row =>
     mapToObj(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));

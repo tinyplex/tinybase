@@ -1,5 +1,12 @@
 {
-  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.snap", "*.json", "*.test.ts"],
+  "ignorePaths": [
+    "*.tsv",
+    "*.webp",
+    "*.svg",
+    "*.snap",
+    "*.json",
+    "*.test.ts"
+  ],
   "words": [
     "Abad",
     "Adrien",
@@ -47,6 +54,7 @@
     "deletable",
     "deleter",
     "deleters",
+    "destructures",
     "didn",
     "editablecellview",
     "editablevalueview",
@@ -61,8 +69,8 @@
     "fostertheweb",
     "Friggeri",
     "fullfat",
-    "Giulio",
     "getnow",
+    "Giulio",
     "granularities",
     "gulpfile",
     "gzipped",

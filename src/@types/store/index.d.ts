@@ -444,6 +444,15 @@ export interface Store {
     limit?: number,
   ): Ids;
 
+  /// Store.getSortedRowIds.2
+  getSortedRowIds(args: {
+    tableId: Id;
+    cellId?: Id;
+    descending?: boolean;
+    offset?: number;
+    limit?: number;
+  }): Ids;
+
   /// Store.getRow
   getRow(tableId: Id, rowId: Id): Row;
 

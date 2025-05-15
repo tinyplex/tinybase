@@ -276,6 +276,12 @@ describe.each([
       ]);
     });
 
+    test('Cell sort, limit, object arg', () => {
+      expect(
+        store.getSortedRowIds({tableId: 't1', cellId: 'c2', limit: 3}),
+      ).toEqual(['r5', 'r4', 'r1']);
+    });
+
     test('Cell sort, offset', () => {
       expect(store.getSortedRowIds('t1', 'c2', false, 3)).toEqual([
         'r6',

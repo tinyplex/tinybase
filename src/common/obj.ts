@@ -9,7 +9,8 @@ export const object = Object;
 const getPrototypeOf = (obj: any) => object.getPrototypeOf(obj);
 const objEntries = object.entries;
 const objFrozen = object.isFrozen;
-const isObject = (obj: unknown): boolean =>
+
+export const isObject = (obj: unknown): obj is IdObj<unknown> =>
   !isUndefined(obj) &&
   (ifNotUndefined(
     getPrototypeOf(obj),

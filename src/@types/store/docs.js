@@ -1889,7 +1889,7 @@
    * any.
    * @param limit The maximum number of Row Ids to return, or `undefined` for
    * all.
-   * @returns An array of the sorted Ids of every Row in the Table.
+   * @returns An array of the sorted Ids of appropriate Rows in the Table.
    * @example
    * This example retrieves sorted Row Ids in a Table.
    *
@@ -1974,6 +1974,32 @@
    * @since v2.0.0
    */
   /// Store.getSortedRowIds
+  /**
+   * When called with one object argument, the getSortedRowIds method
+   * destructures it to make it easier to skip optional parameters.
+   * @param args An object containing the Id of the Table in the Store, and
+   * optional `cellId`, `descending`, `offset`, and `limit` parameters.
+   * @returns An array of the sorted Ids of appropriate Rows in the Table.
+   * @example
+   * This example retrieves the first sorted Row Id in a Table.
+   *
+   * ```js
+   * import {createStore} from 'tinybase';
+   *
+   * const store = createStore().setTables({
+   *   pets: {
+   *     fido: {species: 'dog'},
+   *     felix: {species: 'cat'},
+   *     cujo: {species: 'wolf'},
+   *   },
+   * });
+   * console.log(store.getSortedRowIds({tableId: 'pets', limit: 1}));
+   * // -> ['cujo']
+   * ```
+   * @category Getter
+   * @since v6.1.0
+   */
+  /// Store.getSortedRowIds.2
   /**
    * The getRow method returns an object containing the entire data of a single
    * Row in a given Table.
