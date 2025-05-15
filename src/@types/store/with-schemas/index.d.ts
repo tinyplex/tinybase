@@ -295,6 +295,23 @@ export type DoRollback<Schemas extends OptionalSchemas> = (
   store: Store<Schemas>,
 ) => boolean;
 
+/// SortedRowIdsArgs
+export type SortedRowIdsArgs<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+> = {
+  /// SortedRowIdsArgs.tableId
+  tableId: TableId;
+  /// SortedRowIdsArgs.cellId
+  cellId?: CellIdFromSchema<Schema, TableId>;
+  /// SortedRowIdsArgs.descending
+  descending?: boolean;
+  /// SortedRowIdsArgs.offset
+  offset?: number;
+  /// SortedRowIdsArgs.limit
+  limit?: number;
+};
+
 /// TransactionListener
 export type TransactionListener<
   Schemas extends OptionalSchemas,
@@ -942,13 +959,9 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   ): Ids;
 
   /// Store.getSortedRowIds.2
-  getSortedRowIds<TableId extends TableIdFromSchema<Schemas[0]>>(args: {
-    tableId: TableId;
-    cellId?: CellIdFromSchema<Schemas[0], TableId>;
-    descending?: boolean;
-    offset?: number;
-    limit?: number;
-  }): Ids;
+  getSortedRowIds<TableId extends TableIdFromSchema<Schemas[0]>>(
+    args: SortedRowIdsArgs<Schemas[0], TableId>,
+  ): Ids;
 
   /// Store.getRow
   getRow<TableId extends TableIdFromSchema<Schemas[0]>>(

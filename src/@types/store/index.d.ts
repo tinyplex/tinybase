@@ -115,6 +115,20 @@ export type ChangedValueIds = {[valueId: Id]: IdAddedOrRemoved};
 /// DoRollback
 export type DoRollback = (store: Store) => boolean;
 
+/// SortedRowIdsArgs
+export type SortedRowIdsArgs = {
+  /// SortedRowIdsArgs.tableId
+  tableId: Id;
+  /// SortedRowIdsArgs.cellId
+  cellId?: Id;
+  /// SortedRowIdsArgs.descending
+  descending?: boolean;
+  /// SortedRowIdsArgs.offset
+  offset?: number;
+  /// SortedRowIdsArgs.limit
+  limit?: number;
+};
+
 /// TransactionListener
 export type TransactionListener<Store extends StoreAlias = StoreAlias> = (
   store: Store,
@@ -445,13 +459,7 @@ export interface Store {
   ): Ids;
 
   /// Store.getSortedRowIds.2
-  getSortedRowIds(args: {
-    tableId: Id;
-    cellId?: Id;
-    descending?: boolean;
-    offset?: number;
-    limit?: number;
-  }): Ids;
+  getSortedRowIds(args: SortedRowIdsArgs): Ids;
 
   /// Store.getRow
   getRow(tableId: Id, rowId: Id): Row;

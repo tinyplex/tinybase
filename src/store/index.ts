@@ -16,6 +16,7 @@ import type {
   MapCell,
   Row,
   RowCallback,
+  SortedRowIdsArgs,
   SortedRowIdsListener,
   Store,
   StoreListenerStats,
@@ -1012,15 +1013,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapKeys(mapGet(tablesMap, id(tableId)));
 
   const getSortedRowIds = (
-    tableId:
-      | Id
-      | {
-          tableId: Id;
-          cellId?: Id;
-          descending?: boolean;
-          offset?: number;
-          limit?: number;
-        },
+    tableId: Id | SortedRowIdsArgs,
     cellId?: Id,
     descending?: boolean,
     offset = 0,

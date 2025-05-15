@@ -527,6 +527,50 @@
  */
 /// DoRollback
 /**
+ * The SortedRowIdsArgs type describes the arguments used to sort Row Ids using
+ * the getSortedRowIds method.
+ *
+ * It's an object containing the Id of the Table in the Store, and optional
+ * `cellId`, `descending`, `offset`, and `limit` parameters. See the
+ * getSortedRowIds method for specific examples.
+ * @category Store
+ * @since v6.1.0
+ */
+/// SortedRowIdsArgs
+{
+  /**
+   * The Id of the Table in the Store, required.
+   * @category Argument
+   * @since v6.1.0
+   */
+  /// SortedRowIdsArgs.tableId
+  /**
+   * The optional Id of the Cell whose values are used for the sorting, defaults
+   * to sorting by the Row Id itself.
+   * @category Argument
+   * @since v6.1.0
+   */
+  /// SortedRowIdsArgs.cellId
+  /**
+   * Whether the sorting should be in descending order, defaulting to false.
+   * @category Argument
+   * @since v6.1.0
+   */
+  /// SortedRowIdsArgs.descending
+  /**
+   * The number of Row Ids to skip for pagination purposes, defaulting to 0.
+   * @category Argument
+   * @since v6.1.0
+   */
+  /// SortedRowIdsArgs.offset
+  /**
+   * The maximum number of Row Ids to return, defaulting to all.
+   * @category Argument
+   * @since v6.1.0
+   */
+  /// SortedRowIdsArgs.limit
+}
+/**
  * The TransactionListener type describes a function that is used to listen to
  * the completion of a transaction for the Store.
  *
@@ -1977,8 +2021,9 @@
   /**
    * When called with one object argument, the getSortedRowIds method
    * destructures it to make it easier to skip optional parameters.
-   * @param args An object containing the Id of the Table in the Store, and
-   * optional `cellId`, `descending`, `offset`, and `limit` parameters.
+   * @param args A SortedRowIdsArgs object containing the Id of the Table in the
+   * Store, and optional `cellId`, `descending`, `offset`, and `limit`
+   * parameters.
    * @returns An array of the sorted Ids of appropriate Rows in the Table.
    * @example
    * This example retrieves the first sorted Row Id in a Table.
