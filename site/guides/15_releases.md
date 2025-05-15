@@ -79,6 +79,18 @@ Persistence guide for more details. And a huge thank you to Jakub Riedl
 The createMergeableStore function now takes an optional `getNow` argument that
 lets you override the clock used to generate HLC timestamps.
 
+## Asynchronous Persister & Synchronizer methods
+
+Please note that some methods in the Persister and Synchronizer APIs are now
+asynchronous. Although most implementations of these methods are synchronous,
+some (particularly for Postgres-based databases) are no longer so and you are
+recommended to await them all.
+
+The stopAutoLoad method, the stopAutoSave method, and the destroy method in the
+base Persister interface have been marked asynchronous and return Promises. The
+stopSync method in the Synchronizer interface and the destroy method in the
+Synchronizer server interfaces should also be considered asynchronous.
+
 # v6.0
 
 This major release is about updating dependencies and infrastructure rather than
