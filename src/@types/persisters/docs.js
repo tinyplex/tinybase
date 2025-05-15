@@ -517,6 +517,7 @@
  * |`tableId`|Id|The Id of the Store Table into which data from this database table should be loaded.|
  * |`rowIdColumnName?`|string|The optional name of the column in the database table that will be used as the Row Ids in the Store Table, defaulting to '_id'.|
  * |`condition?`|string|The optional SQL WHERE clause that will be used to filter the rows that are loaded into the Store Table. When set it must include the `$tableName` placeholder for the table name, since v6.1.0.|
+ * |`timestampColumnName?`|string|The optional name of the column in the database to save timestamp when the row was last updated. It's used for merging data during full load from the database.|
  *
  * As a shortcut, if you do not need to specify a custom `rowIdColumnName`, you
  * can simply provide the Id of the Store Table instead of the whole object.
@@ -615,6 +616,13 @@
          * @since v6.1.0
          */
         /// DpcTabularLoad.condition
+        /**
+         * The optional name of the column in the database to load timestamp when the row was last updated.
+         * It's used for merging data during full load from the database.
+         * @category Configuration
+         * @since v6.1.0
+         */
+        /// DpcTabularLoad.timestampColumnName
       }
     }
   }
@@ -634,6 +642,7 @@
  * |`deleteEmptyColumns?`|boolean|Whether columns in the database table will be removed if they are empty in the Store Table, defaulting to false.|
  * |`deleteEmptyTable?`|boolean|Whether tables in the database will be removed if the Store Table is empty, defaulting to false.|
  * |`condition?`|string|The optional SQL WHERE clause that will be used to scope cleanup operations to the Store Table. When set it must include the `$tableName` placeholder for the table name, since v6.1.0. Defaults to `DpcTabularLoad.condition`.|
+ * |`timestampColumnName?`|string|The optional name of the column in the database to save timestamp when the row was last updated. It's used for merging data during full load from the database.|
  *
  * As a shortcut, if you do not need to specify a custom `rowIdColumnName`, or
  * enable the `deleteEmptyColumns` or `deleteEmptyTable` settings, you can
@@ -759,6 +768,13 @@
          * @since v6.1.0
          */
         /// DpcTabularSave.condition
+        /**
+         * The optional name of the column in the database to save timestamp when the row was last updated.
+         * It's used for merging data during full load from the database.
+         * @category Configuration
+         * @since v6.1.0
+         */
+        /// DpcTabularSave.timestampColumnName
       }
     }
   }
@@ -813,6 +829,13 @@
    * @since v4.0.0
    */
   /// DpcTabularValues.tableName
+  /**
+   * The optional name of the column in the database to save timestamp when the row was last updated.
+   * It's used for merging data during full load from the database.
+   * @category Configuration
+   * @since v6.1.0
+   */
+  /// DpcTabularValues.timestampColumnName
 }
 /**
  * A Persister object lets you save and load Store data to and from different
