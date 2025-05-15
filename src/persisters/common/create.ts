@@ -347,10 +347,9 @@ export const createCustomPersister = <
 
   const getStore = (): Store => store;
 
-  const destroy = async (): Promise<Persister<Persist>> => {
+  const destroy = (): Promise<Persister<Persist>> => {
     arrayClear(mapGet(scheduleActions, scheduleId) as Action[]);
-    await persister.stopAutoLoad();
-    return await persister.stopAutoSave();
+    return stopAutoPersisting();
   };
 
   const getStats = (): PersisterStats => ({loads, saves});

@@ -77,8 +77,7 @@ export const createJsonPersister = <
     });
 
   const destroy = async () => {
-    await persister.stopAutoLoad();
-    await persister.stopAutoSave();
+    await persister.stopAutoPersisting();
     extraDestroy();
     return persister;
   };

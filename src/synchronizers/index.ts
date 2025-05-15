@@ -251,15 +251,12 @@ export const createCustomSynchronizer = (
 
   const startSync = async (initialContent?: Content) => {
     syncing = 1;
-    return await (
-      await persister.startAutoLoad(initialContent)
-    ).startAutoSave();
+    return await persister.startAutoPersisting(initialContent);
   };
 
   const stopSync = async () => {
     syncing = 0;
-    await persister.stopAutoLoad();
-    await persister.stopAutoSave();
+    await persister.stopAutoPersisting();
     return persister;
   };
 
