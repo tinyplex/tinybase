@@ -5404,6 +5404,51 @@
    */
   /// Store.addSortedRowIdsListener
   /**
+   * When called with an object as the first argument, the
+   * addSortedRowIdsListener method destructures it to make it easier to skip
+   * optional parameters.
+   * @param args A SortedRowIdsArgs object containing the Id of the Table in the
+   * Store, and optional `cellId`, `descending`, `offset`, and `limit`
+   * parameters.
+   * @param listener The function that will be called whenever the sorted Row
+   * Ids in the Table change.
+   * @param mutator An optional boolean that indicates that the listener mutates
+   * Store data.
+   * @returns A unique Id for the listener that can later be used to call it
+   * explicitly, or to remove it.
+   * @example
+   * This example registers a listener that responds to any change to the first
+   * of the sorted Row Ids of a specific Table.
+   *
+   * ```js
+   * import {createStore} from 'tinybase';
+   *
+   * const store = createStore().setTables({
+   *   pets: {fido: {price: 6}, felix: {price: 5}},
+   * });
+   *
+   * const listenerId = store.addSortedRowIdsListener(
+   *   {tableId: 'pets', limit: 1},
+   *   (store, tableId, cellId, descending, offset, limit, sortedRowIds) => {
+   *     console.log(`First sorted Row Id for ${tableId} table changed`);
+   *     console.log(sortedRowIds);
+   *     // ^ cheaper than calling getSortedRowIds again
+   *   },
+   * );
+   * console.log(store.getSortedRowIds({tableId: 'pets', limit: 1}));
+   * // -> ['felix']
+   *
+   * store.setRow('pets', 'carnaby', {price: 4.5});
+   * // -> 'First sorted Row Id for pets table changed'
+   * // -> ['carnaby']
+   *
+   * store.delListener(listenerId);
+   * ```
+   * @category Listener
+   * @since v6.1.0
+   */
+  /// Store.addSortedRowIdsListener.2
+  /**
    * The addHasRowListener method registers a listener function with the Store
    * that will be called when a Row is added to or removed from the Store.
    *

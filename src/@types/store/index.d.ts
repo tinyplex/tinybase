@@ -698,6 +698,13 @@ export interface Store {
     mutator?: boolean,
   ): Id;
 
+  /// Store.addSortedRowIdsListener.2
+  addSortedRowIdsListener(
+    args: SortedRowIdsArgs,
+    listener: SortedRowIdsListener<this>,
+    mutator?: boolean,
+  ): Id;
+
   /// Store.addHasRowListener
   addHasRowListener(
     tableId: IdOrNull,

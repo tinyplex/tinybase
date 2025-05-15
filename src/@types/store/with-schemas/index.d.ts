@@ -1321,6 +1321,27 @@ export interface Store<in out Schemas extends OptionalSchemas> {
     mutator?: boolean,
   ): Id;
 
+  /// Store.addSortedRowIdsListener.2
+  addSortedRowIdsListener<
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellIdOrUndefined extends CellIdFromSchema<Schemas[0], TableId> | undefined,
+    Descending extends boolean,
+    Offset extends number,
+    Limit extends number | undefined,
+  >(
+    args: SortedRowIdsArgs<Schemas[0], TableId>,
+    listener: SortedRowIdsListener<
+      Schemas,
+      TableId,
+      CellIdOrUndefined,
+      Descending,
+      Offset,
+      Limit,
+      this
+    >,
+    mutator?: boolean,
+  ): Id;
+
   /// Store.addHasRowListener
   addHasRowListener<
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,

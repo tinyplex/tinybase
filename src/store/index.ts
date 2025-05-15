@@ -992,6 +992,28 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return store;
   };
 
+  const addSortedRowIdsListenerImpl = (
+    tableId: Id,
+    cellId: Id | undefined,
+    otherArgs: [descending: boolean, offset: number, limit: number | undefined],
+    listener: SortedRowIdsListener,
+    mutator?: boolean,
+  ): Id => {
+    let sortedRowIds = getSortedRowIds(tableId, cellId, ...otherArgs);
+    return addListener(
+      () => {
+        const newSortedRowIds = getSortedRowIds(tableId, cellId, ...otherArgs);
+        if (!arrayIsEqual(newSortedRowIds, sortedRowIds)) {
+          sortedRowIds = newSortedRowIds;
+          listener(store, tableId, cellId, ...otherArgs, sortedRowIds);
+        }
+      },
+      sortedRowIdsListeners[mutator ? 1 : 0],
+      [tableId, cellId],
+      [getTableIds],
+    );
+  };
+
   // --
 
   const getContent = (): Content => [getTables(), getValues()];
@@ -1013,25 +1035,25 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapKeys(mapGet(tablesMap, id(tableId)));
 
   const getSortedRowIds = (
-    tableId: Id | SortedRowIdsArgs,
+    tableIdOrArgs: Id | SortedRowIdsArgs,
     cellId?: Id,
     descending?: boolean,
     offset = 0,
     limit?: number,
   ): Ids =>
-    isObject(tableId)
+    isObject(tableIdOrArgs)
       ? getSortedRowIds(
-          tableId.tableId,
-          tableId.cellId,
-          tableId.descending,
-          tableId.offset,
-          tableId.limit,
+          tableIdOrArgs.tableId,
+          tableIdOrArgs.cellId,
+          tableIdOrArgs.descending,
+          tableIdOrArgs.offset,
+          tableIdOrArgs.limit,
         )
       : arrayMap(
           slice(
             arraySort(
               mapMap<Id, RowMap, [Cell, Id]>(
-                mapGet(tablesMap, id(tableId)),
+                mapGet(tablesMap, id(tableIdOrArgs)),
                 (row, rowId) => [
                   isUndefined(cellId)
                     ? rowId
@@ -1520,48 +1542,33 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapForEach(valuesMap, valueCallback);
 
   const addSortedRowIdsListener = (
-    tableId: Id,
-    cellId: Id | undefined,
-    descending: boolean,
-    offset: number,
-    limit: number | undefined,
-    listener: SortedRowIdsListener,
+    tableIdOrArgs: Id | SortedRowIdsArgs,
+    cellIdOrListener: Id | undefined | SortedRowIdsListener,
+    descendingOrMutator?: boolean,
+    offset?: number,
+    limit?: number | undefined,
+    listener?: SortedRowIdsListener,
     mutator?: boolean,
-  ): Id => {
-    let sortedRowIds = getSortedRowIds(
-      tableId,
-      cellId,
-      descending,
-      offset,
-      limit,
-    );
-    return addListener(
-      () => {
-        const newSortedRowIds = getSortedRowIds(
-          tableId,
-          cellId,
-          descending,
-          offset,
-          limit,
+  ): Id =>
+    isObject(tableIdOrArgs)
+      ? addSortedRowIdsListenerImpl(
+          tableIdOrArgs.tableId,
+          tableIdOrArgs.cellId,
+          [
+            tableIdOrArgs.descending ?? false,
+            tableIdOrArgs.offset ?? 0,
+            tableIdOrArgs.limit,
+          ],
+          cellIdOrListener as SortedRowIdsListener,
+          descendingOrMutator,
+        )
+      : addSortedRowIdsListenerImpl(
+          tableIdOrArgs,
+          cellIdOrListener as Id | undefined,
+          [descendingOrMutator as boolean, offset as number, limit],
+          listener as SortedRowIdsListener,
+          mutator,
         );
-        if (!arrayIsEqual(newSortedRowIds, sortedRowIds)) {
-          sortedRowIds = newSortedRowIds;
-          listener(
-            store,
-            tableId,
-            cellId,
-            descending,
-            offset,
-            limit,
-            sortedRowIds,
-          );
-        }
-      },
-      sortedRowIdsListeners[mutator ? 1 : 0],
-      [tableId, cellId],
-      [getTableIds],
-    );
-  };
 
   const addStartTransactionListener = (listener: TransactionListener): Id =>
     addListener(listener, startTransactionListeners);

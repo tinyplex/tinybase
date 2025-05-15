@@ -356,6 +356,39 @@ describe.each([
       store.setRow('t1', 'r7', {c1: 7, c2: 'seven'});
     });
 
+    test('Cell sort listener, add row with relevant cell, object arg', () => {
+      expect.assertions(7);
+      store.addSortedRowIdsListener(
+        {tableId: 't1', cellId: 'c2', limit: 8},
+        (_store, tableId, cellId, descending, offset, limit, sortedRowIds) => {
+          expect(tableId).toEqual('t1');
+          expect(cellId).toEqual('c2');
+          expect(descending).toEqual(false);
+          expect(offset).toEqual(0);
+          expect(limit).toEqual(8);
+          expect(sortedRowIds).toEqual([
+            'r5',
+            'r4',
+            'r1',
+            'r7',
+            'r6',
+            'r3',
+            'r2',
+          ]);
+          expect(store.getSortedRowIds('t1', 'c2')).toEqual([
+            'r5',
+            'r4',
+            'r1',
+            'r7',
+            'r6',
+            'r3',
+            'r2',
+          ]);
+        },
+      );
+      store.setRow('t1', 'r7', {c1: 7, c2: 'seven'});
+    });
+
     test('Cell sort listener, add row without relevant cell', () => {
       expect.assertions(1);
       store.addSortedRowIdsListener(
