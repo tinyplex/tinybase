@@ -299,14 +299,14 @@ export type DoRollback<Schemas extends OptionalSchemas> = (
 export type SortedRowIdsArgs<
   Schema extends OptionalTablesSchema,
   TableId extends TableIdFromSchema<Schema>,
-  CellId extends CellIdFromSchema<Schema, TableId> | undefined =
+  CellIdOrUndefined extends CellIdFromSchema<Schema, TableId> | undefined =
     | CellIdFromSchema<Schema, TableId>
     | undefined,
 > = {
   /// SortedRowIdsArgs.tableId
   tableId: TableId;
   /// SortedRowIdsArgs.cellId
-  cellId?: CellId;
+  cellId?: CellIdOrUndefined;
   /// SortedRowIdsArgs.descending
   descending?: boolean;
   /// SortedRowIdsArgs.offset
@@ -469,12 +469,12 @@ export type RowIdsListener<
 export type SortedRowIdsListener<
   Schemas extends OptionalSchemas,
   TableId extends TableIdFromSchema<Schemas[0]>,
-  CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined,
+  CellIdOrUndefined extends CellIdFromSchema<Schemas[0], TableId> | undefined,
   Store extends StoreAlias<Schemas> = StoreAlias<Schemas>,
 > = (
   store: Store,
   tableId: TableId,
-  cellId: CellId,
+  cellId: CellIdOrUndefined,
   descending: boolean,
   offset: number,
   limit: number | undefined,
