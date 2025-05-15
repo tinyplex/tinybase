@@ -307,8 +307,7 @@ describe.each([
 
   test('autoSave & autoLoad: no load when saving', async () => {
     if (name == 'file') {
-      await persister.startAutoLoad([{t1: {r1: {c1: 1}}}, {}]);
-      await persister.startAutoSave();
+      await persister.startAutoPersisting([{t1: {r1: {c1: 1}}}, {}]);
       await pause(0);
       expect(persister.getStats()).toEqual({loads: 1, saves: 1});
       store.setTables({t1: {r1: {c1: 2}}});
@@ -319,8 +318,7 @@ describe.each([
 
   test('autoSave & autoLoad: no save when loading', async () => {
     if (name == 'file') {
-      await persister.startAutoLoad([{t1: {r1: {c1: 1}}}, {}]);
-      await persister.startAutoSave();
+      await persister.startAutoPersisting([{t1: {r1: {c1: 1}}}, {}]);
       await pause(0);
       expect(persister.getStats()).toEqual({loads: 1, saves: 1});
       await persistable.set(location, [{t1: {r1: {c1: 2}}}, {}]);

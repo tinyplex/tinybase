@@ -134,10 +134,7 @@ const App = () => {
     viewStore,
     (store) => createSessionPersister(store, 'countries/viewStore'),
     [],
-    async (persister) => {
-      await persister.startAutoLoad();
-      await persister.startAutoSave();
-    },
+    (persister) =>  persister.startAutoPersisting()
   );
   // ...
 ```

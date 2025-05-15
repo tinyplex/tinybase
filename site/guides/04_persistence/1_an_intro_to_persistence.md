@@ -117,16 +117,16 @@ listens (or polls) for changes to the persisted data and reflects those changes
 in the Store.
 
 You can start automatic saving or loading with the startAutoSave method and
-startAutoLoad method. Both are asynchronous since they will do an immediate save
-and load before starting to listen for subsequent changes. You can stop the
-behavior with the stopAutoSave method and stopAutoLoad method (which are
-synchronous).
+startAutoLoad method. The startAutoPersisting method is a convenience wrapper to
+do both in one command. These methods are asynchronous since they will do an
+immediate save and load before starting to listen for subsequent changes. You
+can stop the behavior with the stopAutoSave method, stopAutoLoad method, the
+stopAutoPersisting method, and/or the destroy method.
 
 In this example, both automatic loading and saving are configured:
 
 ```js
-await persister.startAutoLoad([{pets: {fido: {species: 'dog'}}}, {}]);
-await persister.startAutoSave();
+await persister.startAutoPersisting([{pets: {fido: {species: 'dog'}}}, {}]);
 
 store.delValues().setTables({pets: {felix: {species: 'cat'}}});
 // ...

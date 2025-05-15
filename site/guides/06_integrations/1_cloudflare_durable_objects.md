@@ -102,10 +102,7 @@ useCreatePersister(
   store,
   (store) => createLocalPersister(store, 'foo'),
   [],
-  async (persister) => {
-    await persister.startAutoLoad(/* any initial contents */);
-    await persister.startAutoSave();
-  },
+  (persister) => persister.startAutoPersisting(/* any initial contents */),
 );
 // ...
 ```

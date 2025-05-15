@@ -271,10 +271,7 @@ export const MyStore = () => {
     settingsStore,
     (settingsStore) => createLocalPersister(settingsStore, STORE_ID),
     [],
-    async (persister) => {
-      await persister.startAutoLoad();
-      await persister.startAutoSave();
-    },
+    (persister) => persister.startAutoPersisting(),
   );
 
   // Provide the Store for the rest of the app.
