@@ -1274,6 +1274,83 @@
    */
   /// Persister.isAutoSaving
   /**
+   * The startAutoPersist method is a convenience method that starts both
+   * automatic loading and saving of the Store data.
+   *
+   * This simply runs the startAutoLoad and startAutoSave methods in sequence,
+   * and returns a Promise that resolves when both have completed.
+   *
+   * This method can take `initialContent` to pass to the startAutoLoad method.
+   * See its documentation for more details.
+   *
+   * If for some reason you want to start saving _before_ you start loading,
+   * pass true as the second parameter.
+   * @param initialContent An optional Content object used when the underlying
+   * storage has not previously been populated.
+   * @param startSaveFirst Whether to start saving before loading, defaulting to
+   * false.
+   * @returns A Promise containing a reference to the Persister object.
+   * @example This example creates a Persister and starts automatically loading
+   * and saving.
+   *
+   * ```js
+   * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   *
+   * const persister = createSessionPersister(createStore(), 'pets');
+   *
+   * await persister.startAutoPersisting();
+   * console.log(persister.isAutoSaving());
+   * // -> true
+   * console.log(persister.isAutoLoading());
+   * // -> true
+   *
+   * persister.destroy();
+   * ```
+   * @category Lifecycle
+   * @since v6.1.0
+   */
+  /// Persister.startAutoPersisting
+  /**
+   * The stopAutoPersist method is a convenience method that stops both
+   * automatic loading and saving of the Store data.
+   *
+   * This simply runs the stopAutoLoad and stopAutoSave methods in sequence, and
+   * returns a Promise that resolves when both have completed.
+   *
+   * If for some reason you want to stop saving _before_ you stop loading, pass
+   * true as the second parameter.
+   * @param stopSaveFirst Whether to stop saving before loading, defaulting to
+   * false.
+   * @returns A Promise containing a reference to the Persister object.
+   * @example This example creates a Persister and starts, then stops,
+   * automatically loading and saving.
+   *
+   * ```js
+   * import {createStore} from 'tinybase';
+   * import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+   *
+   * const persister = createSessionPersister(createStore(), 'pets');
+   *
+   * await persister.startAutoPersisting();
+   * console.log(persister.isAutoSaving());
+   * // -> true
+   * console.log(persister.isAutoLoading());
+   * // -> true
+   *
+   * await persister.stopAutoPersisting();
+   * console.log(persister.isAutoSaving());
+   * // -> false
+   * console.log(persister.isAutoLoading());
+   * // -> false
+   *
+   * persister.destroy();
+   * ```
+   * @category Lifecycle
+   * @since v6.1.0
+   */
+  /// Persister.stopAutoPersisting
+  /**
    * The getStatus method lets you find out if the Persister is currently in the
    * process of loading or saving content.
    *

@@ -201,6 +201,15 @@ export interface Persister<
   /// Persister.isAutoSaving
   isAutoSaving(): boolean;
 
+  /// Persister.startAutoPersisting
+  startAutoPersisting(
+    initialContent?: Content<Schemas, true> | (() => Content<Schemas, true>),
+    startSaveFirst?: boolean,
+  ): Promise<this>;
+
+  /// Persister.stopAutoPersisting
+  stopAutoPersisting(stopSaveFirst?: boolean): Promise<this>;
+
   /// Persister.getStatus
   getStatus(): Status;
 

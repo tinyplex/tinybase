@@ -179,6 +179,15 @@ export interface Persister<Persist extends Persists = Persists.StoreOnly> {
   /// Persister.isAutoSaving
   isAutoSaving(): boolean;
 
+  /// Persister.startAutoPersisting
+  startAutoPersisting(
+    initialContent?: Content | (() => Content),
+    startSaveFirst?: boolean,
+  ): Promise<this>;
+
+  /// Persister.stopAutoPersisting
+  stopAutoPersisting(stopSaveFirst?: boolean): Promise<this>;
+
   /// Persister.getStatus
   getStatus(): Status;
 

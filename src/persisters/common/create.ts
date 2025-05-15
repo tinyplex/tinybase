@@ -306,6 +306,29 @@ export const createCustomPersister = <
 
   const isAutoSaving = () => !isUndefined(autoSaveListenerId);
 
+  const startAutoPersisting = async (
+    initialContent?: Content | (() => Content),
+    startSaveFirst = false,
+  ): Promise<Persister<Persist>> => {
+    const [call1, call2] = startSaveFirst
+      ? [startAutoSave, startAutoLoad]
+      : [startAutoLoad, startAutoSave];
+    await call1(initialContent);
+    await call2(initialContent);
+    return persister;
+  };
+
+  const stopAutoPersisting = async (
+    stopSaveFirst = false,
+  ): Promise<Persister<Persist>> => {
+    const [call1, call2] = stopSaveFirst
+      ? [stopAutoSave, stopAutoLoad]
+      : [stopAutoLoad, stopAutoSave];
+    await call1();
+    await call2();
+    return persister;
+  };
+
   const getStatus = (): StatusValues => status;
 
   const addStatusListener = (listener: StatusListener): Id =>
@@ -342,6 +365,9 @@ export const createCustomPersister = <
     startAutoSave,
     stopAutoSave,
     isAutoSaving,
+
+    startAutoPersisting,
+    stopAutoPersisting,
 
     getStatus,
     addStatusListener,
