@@ -298,12 +298,15 @@ export type DoRollback<Schemas extends OptionalSchemas> = (
 /// SortedRowIdsArgs
 export type SortedRowIdsArgs<
   Schema extends OptionalTablesSchema,
-  TableId extends TableIdFromSchema<Schema> = TableIdFromSchema<Schema>,
+  TableId extends TableIdFromSchema<Schema>,
+  CellId extends CellIdFromSchema<Schema, TableId> | undefined =
+    | CellIdFromSchema<Schema, TableId>
+    | undefined,
 > = {
   /// SortedRowIdsArgs.tableId
   tableId: TableId;
   /// SortedRowIdsArgs.cellId
-  cellId?: CellIdFromSchema<Schema, TableId>;
+  cellId?: CellId;
   /// SortedRowIdsArgs.descending
   descending?: boolean;
   /// SortedRowIdsArgs.offset
@@ -467,17 +470,14 @@ export type SortedRowIdsListener<
   Schemas extends OptionalSchemas,
   TableId extends TableIdFromSchema<Schemas[0]>,
   CellId extends CellIdFromSchema<Schemas[0], TableId> | undefined,
-  Descending extends boolean,
-  Offset extends number,
-  Limit extends number | undefined,
   Store extends StoreAlias<Schemas> = StoreAlias<Schemas>,
 > = (
   store: Store,
   tableId: TableId,
   cellId: CellId,
-  descending: Descending,
-  offset: Offset,
-  limit: Limit,
+  descending: boolean,
+  offset: number,
+  limit: number | undefined,
   sortedRowIds: Ids,
 ) => void;
 
@@ -1300,24 +1300,13 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   addSortedRowIdsListener<
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellIdOrUndefined extends CellIdFromSchema<Schemas[0], TableId> | undefined,
-    Descending extends boolean,
-    Offset extends number,
-    Limit extends number | undefined,
   >(
     tableId: TableId,
     cellId: CellIdOrUndefined,
-    descending: Descending,
-    offset: Offset,
-    limit: Limit,
-    listener: SortedRowIdsListener<
-      Schemas,
-      TableId,
-      CellIdOrUndefined,
-      Descending,
-      Offset,
-      Limit,
-      this
-    >,
+    descending: boolean,
+    offset: number,
+    limit: number | undefined,
+    listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined, this>,
     mutator?: boolean,
   ): Id;
 
@@ -1325,20 +1314,9 @@ export interface Store<in out Schemas extends OptionalSchemas> {
   addSortedRowIdsListener<
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellIdOrUndefined extends CellIdFromSchema<Schemas[0], TableId> | undefined,
-    Descending extends boolean,
-    Offset extends number,
-    Limit extends number | undefined,
   >(
-    args: SortedRowIdsArgs<Schemas[0], TableId>,
-    listener: SortedRowIdsListener<
-      Schemas,
-      TableId,
-      CellIdOrUndefined,
-      Descending,
-      Offset,
-      Limit,
-      this
-    >,
+    args: SortedRowIdsArgs<Schemas[0], TableId, CellIdOrUndefined>,
+    listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined, this>,
     mutator?: boolean,
   ): Id;
 

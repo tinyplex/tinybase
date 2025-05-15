@@ -671,12 +671,15 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     true,
     0,
     10,
-    (store, tableId) => {
+    (store, tableId, cellId) => {
       store.getTables().t1;
       tableId == 't1';
+      cellId == 'c1';
       store.getTables().t2; // !
       tableId == 't0'; // !
       tableId == 't2'; // !
+      cellId == 'c1d'; // !
+      cellId == 'c2'; // !
     },
   );
   storeWithSchemas.addSortedRowIdsListener(
@@ -688,7 +691,7 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     (store, tableId) => {
       store.getTables().t1;
       tableId == 't1';
-      tableId == 't0';
+      tableId == 't0'; // !
       store.getTables().t2; // !
       tableId == 't2'; // !
     },
@@ -704,6 +707,52 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
     true,
     0,
     10,
+    () => null,
+  );
+
+  storeWithSchemas.addSortedRowIdsListener(
+    {tableId: 't1', cellId: 'c1', descending: true, offset: 0, limit: 10},
+    (store, tableId, cellId) => {
+      store.getTables().t1;
+      tableId == 't1';
+      cellId == 'c1';
+      store.getTables().t2; // !
+      tableId == 't0'; // !
+      tableId == 't2'; // !
+      cellId == 'c1d'; // !
+      cellId == 'c2'; // !
+    },
+  );
+  storeWithSchemas.addSortedRowIdsListener(
+    {
+      tableId: 't1',
+      cellId: 'c2', // !
+      descending: true,
+      offset: 0,
+      limit: 10,
+    },
+    (store, tableId) => {
+      // !
+      store.getTables().t1;
+      tableId == 't1';
+      tableId == 't0';
+      store.getTables().t2;
+      tableId == 't2';
+    },
+  );
+  storeWithSchemas.addSortedRowIdsListener(
+    {tableId: 't1', cellId: 'c1', descending: true, offset: 0, limit: 10},
+    (store) => {
+      store.getTables().t1;
+      store.getTables().t2; // !
+    },
+  );
+  storeWithSchemas.addSortedRowIdsListener(
+    {tableId: 't1', cellId: 'c1', descending: true, offset: 0, limit: 10},
+    () => null,
+  );
+  storeWithSchemas.addSortedRowIdsListener(
+    {tableId: 't2', descending: true, offset: 0, limit: 10}, // !
     () => null,
   );
 
