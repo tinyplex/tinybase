@@ -61,6 +61,7 @@ import type {
   RowCountListener,
   RowIdsListener,
   RowListener,
+  SortedRowIdsArgs,
   SortedRowIdsListener,
   Store,
   Table,
@@ -242,7 +243,7 @@ import {
   arrayMap,
 } from '../common/array.ts';
 import {ListenerArgument} from '../common/listeners.ts';
-import {IdObj, objIsEqual} from '../common/obj.ts';
+import {IdObj, isObject, objIsEqual} from '../common/obj.ts';
 import {
   getUndefined,
   ifNotUndefined,
@@ -480,6 +481,23 @@ const useCheckpointAction = (
   );
 };
 
+const useSortedRowIdsImpl = (
+  tableId: Id,
+  cellId?: Id,
+  descending?: boolean,
+  offset?: number,
+  limit?: number | undefined,
+  storeOrStoreId?: StoreOrStoreId,
+): Ids =>
+  useListenable(
+    SORTED_ROW_IDS,
+    useStoreOrStoreById(storeOrStoreId),
+    ReturnType.Array,
+    [tableId, cellId, descending, offset, limit],
+  );
+
+// ---
+
 export const useCreateStore: typeof useCreateStoreDecl = (
   create: () => Store,
   createDeps: DependencyList = EMPTY_ARRAY,
@@ -599,18 +617,31 @@ export const useRowIds: typeof useRowIdsDecl = (
   );
 
 export const useSortedRowIds: typeof useSortedRowIdsDecl = (
-  tableId: Id,
-  cellId?: Id,
+  tableIdOrArgs: Id | SortedRowIdsArgs,
+  cellIdOrStoreOrStoreId?: Id | StoreOrStoreId,
   descending?: boolean,
-  offset = 0,
-  limit?: number,
+  offset?: number,
+  limit?: number | undefined,
   storeOrStoreId?: StoreOrStoreId,
 ): Ids =>
-  useListenable(
-    SORTED_ROW_IDS,
-    useStoreOrStoreById(storeOrStoreId),
-    ReturnType.Array,
-    [tableId, cellId, descending, offset, limit],
+  (useSortedRowIdsImpl as any)(
+    ...(isObject(tableIdOrArgs)
+      ? [
+          tableIdOrArgs.tableId,
+          tableIdOrArgs.cellId,
+          tableIdOrArgs.descending ?? false,
+          tableIdOrArgs.offset ?? 0,
+          tableIdOrArgs.limit,
+          cellIdOrStoreOrStoreId,
+        ]
+      : [
+          tableIdOrArgs,
+          cellIdOrStoreOrStoreId,
+          descending,
+          offset,
+          limit,
+          storeOrStoreId,
+        ]),
   );
 
 export const useHasRow: typeof useHasRowDecl = (

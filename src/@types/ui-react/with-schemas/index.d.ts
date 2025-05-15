@@ -114,6 +114,7 @@ import type {
   RowCountListener,
   RowIdsListener,
   RowListener,
+  SortedRowIdsArgs,
   SortedRowIdsListener,
   Store,
   Table,
@@ -236,18 +237,26 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Ids;
 
-  /// useSortedRowIds
-  useSortedRowIds: <
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
-  >(
-    tableId: TableId,
-    cellId?: CellId,
-    descending?: boolean,
-    offset?: number,
-    limit?: number,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => Ids;
+  useSortedRowIds: {
+    /// useSortedRowIds
+    <
+      TableId extends TableIdFromSchema<Schemas[0]>,
+      CellId extends CellIdFromSchema<Schemas[0], TableId>,
+    >(
+      tableId: TableId,
+      cellId?: CellId,
+      descending?: boolean,
+      offset?: number,
+      limit?: number,
+      storeOrStoreId?: StoreOrStoreId<Schemas>,
+    ): Ids;
+
+    /// useSortedRowIds.2
+    <TableId extends TableIdFromSchema<Schemas[0]>>(
+      args: SortedRowIdsArgs<Schemas[0], TableId>,
+      storeOrStoreId?: StoreOrStoreId<Schemas>,
+    ): Ids;
+  };
 
   /// useHasRow
   useHasRow: <TableId extends TableIdFromSchema<Schemas[0]>>(
@@ -627,14 +636,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     descending: Descending,
     offset: Offset,
     limit: Limit,
-    listener: SortedRowIdsListener<
-      Schemas,
-      TableId,
-      CellIdOrUndefined,
-      Descending,
-      Offset,
-      Limit
-    >,
+    listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined>,
     listenerDeps?: React.DependencyList,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,

@@ -1376,6 +1376,84 @@ describe('Read Hooks', () => {
     unmount();
   });
 
+  test('useSortedRowIds, object arg', () => {
+    const Test = ({
+      tableId,
+      cellId,
+      descending,
+      offset,
+      limit,
+    }: {
+      tableId: Id;
+      cellId: Id;
+      descending: boolean;
+      offset: number;
+      limit: number | undefined;
+    }) =>
+      didRender(
+        <>
+          {JSON.stringify(
+            useSortedRowIds(
+              {tableId, cellId, descending, offset, limit},
+              store,
+            ),
+          )}
+        </>,
+      );
+    expect(store.getListenerStats().sortedRowIds).toEqual(0);
+    const {container, rerender, unmount} = render(
+      <Test
+        tableId="t0"
+        cellId="c0"
+        descending={false}
+        offset={0}
+        limit={undefined}
+      />,
+    );
+
+    expect(store.getListenerStats().sortedRowIds).toEqual(1);
+    expect(container.textContent).toEqual(JSON.stringify([]));
+
+    rerender(
+      <Test
+        tableId="t1"
+        cellId="c1"
+        descending={false}
+        offset={0}
+        limit={undefined}
+      />,
+    );
+
+    expect(store.getListenerStats().sortedRowIds).toEqual(1);
+    expect(container.textContent).toEqual(JSON.stringify(['r1']));
+
+    act(() =>
+      store
+        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}})
+        .setTables({t1: {r2: {c1: 2}}, t2: {r3: {c1: 3}, r4: {c1: 4}}}),
+    );
+    expect(container.textContent).toEqual(JSON.stringify(['r2']));
+
+    rerender(
+      <Test tableId="t2" cellId="c1" descending={true} offset={0} limit={2} />,
+    );
+
+    expect(store.getListenerStats().sortedRowIds).toEqual(1);
+    expect(container.textContent).toEqual(JSON.stringify(['r4', 'r3']));
+
+    act(() => store.setRow('t2', 'r5', {c1: 5}));
+    expect(container.textContent).toEqual(JSON.stringify(['r5', 'r4']));
+
+    act(() => store.delTables());
+    expect(container.textContent).toEqual(JSON.stringify([]));
+    rerender(<button />);
+
+    expect(store.getListenerStats().sortedRowIds).toEqual(0);
+    expect(didRender).toHaveBeenCalledTimes(6);
+
+    unmount();
+  });
+
   test('useHasRow', () => {
     const Test = ({tableId, rowId}: {tableId: Id; rowId: Id}) =>
       didRender(JSON.stringify(useHasRow(tableId, rowId, store)));

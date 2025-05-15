@@ -63,6 +63,7 @@ import type {
   RowCountListener,
   RowIdsListener,
   RowListener,
+  SortedRowIdsArgs,
   SortedRowIdsListener,
   Store,
   Table,
@@ -187,6 +188,12 @@ export function useSortedRowIds(
   descending?: boolean,
   offset?: number,
   limit?: number,
+  storeOrStoreId?: StoreOrStoreId,
+): Ids;
+
+/// useSortedRowIds.2
+export function useSortedRowIds(
+  args: SortedRowIdsArgs,
   storeOrStoreId?: StoreOrStoreId,
 ): Ids;
 

@@ -178,6 +178,10 @@ const Getters = () => {
   useSortedRowIds('t1', 'c2'); // !
   useSortedRowIds('t2', 'r2'); // !
 
+  useSortedRowIds({tableId: 't1', cellId: 'c1'});
+  useSortedRowIds({tableId: 't1', cellId: 'c2'}); // !
+  useSortedRowIds({tableId: 't2', cellId: 'c1'}); // !
+
   useHasRow('t1', 'r1');
   useHasRow('t1', 'r2');
   useHasRow('t2', 'r1'); // !

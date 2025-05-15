@@ -1523,6 +1523,55 @@
  * @since v2.0.0
  */
 /// useSortedRowIds
+
+/**
+ * When called with an object as the first argument, the useSortedRowIds method
+ * destructures it to make it easier to skip optional parameters.
+ * @param args A SortedRowIdsArgs object containing the Id of the Table in the
+ * Store, and optional `cellId`, `descending`, `offset`, and `limit` parameters.
+ * @param storeOrStoreId The Store to be accessed: omit for the default context
+ * Store, provide an Id for a named context Store, or provide an explicit
+ * reference.
+ * @returns An array of the sorted Ids of every Row in the Table.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useSortedRowIds hook by reference. A change to the data in the Store
+ * re-renders the component.
+ *
+ * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import {useSortedRowIds} from 'tinybase/ui-react';
+ *
+ * const store = createStore().setTables({
+ *   pets: {
+ *     fido: {species: 'dog'},
+ *     felix: {species: 'cat'},
+ *   },
+ * });
+ * const App = () => (
+ *   <span>
+ *     {JSON.stringify(
+ *       useSortedRowIds({tableId: 'pets', cellId: 'species'}, store),
+ *     )}
+ *   </span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["felix","fido"]</span>'
+ *
+ * store.setRow('pets', 'cujo', {species: 'wolf'}); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>["felix","fido","cujo"]</span>'
+ * ```
+ * @category Store hooks
+ * @since v6.1.0
+ */
+/// useSortedRowIds.2
+
 /**
  * The useHasRow hook returns a boolean indicating whether a given Row exists in
  * the Store, and registers a listener so that any changes to that result will
