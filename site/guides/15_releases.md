@@ -74,7 +74,13 @@ See the '[Loading subsets of database tables](/guides/persistence/database-persi
 Persistence guide for more details. And a huge thank you to Jakub Riedl
 ([@jakubriedl](https://github.com/jakubriedl)) for landing this functionality!
 
-## createMergeableStore getNow
+## New Persister startAutoPersisting method
+
+The new startAutoPersisting method and stopAutoPersisting method on the
+Persister interface act as convenience methods for starting (and stopping) both
+the automatic loading and saving of data.
+
+## New createMergeableStore getNow parameter
 
 The createMergeableStore function now takes an optional `getNow` argument that
 lets you override the clock used to generate HLC timestamps.
