@@ -2,13 +2,13 @@
 
 <section id="hero">
   <h2>
-    A <em>reactive</em> data store <span>& <em>sync</em> engine</span>.
+    A <em>reactive</em> data store & <span><em>sync</em> engine</span>.
   </h2>
 </section>
 
 <a href='/guides/releases/#v6-1'><em>NEW!</em> v6.1 release</a>
 
-<span id="one-with">"The One With Bun SQLite & subset persistence!"</span>
+<span id="one-with">Bun SQLite & subset persistence!</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
