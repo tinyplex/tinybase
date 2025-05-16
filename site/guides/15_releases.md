@@ -12,8 +12,9 @@ highlighted features.
 - [A new Persister for Bun](#bun-sqlite)'s embedded SQLite database.
 - [Subset persistence](#subset-persistence) to load subsets of tables into a
   Store.
-- [Destructed object arguments](#destructed-object-arguments-for-sorted-row-ids)
-  for sorted Row Id methods and hooks.
+- [Destructured object
+  arguments](#destructured-object-arguments-for-sorted-row-ids) for sorted Row
+  Id methods and hooks.
 - [A new startAutoPersisting
   method](#new-startautopersisting-method).
 
@@ -88,7 +89,7 @@ section of the Database Persistence guide for more details. And a huge thank you
 to Jakub Riedl ([@jakubriedl](https://github.com/jakubriedl)) for landing this
 functionality!
 
-## Destructed object arguments for sorted Row Ids
+## Destructured object arguments for sorted Row Ids
 
 The getSortedRowIds method on the Store interface has a number of optional
 parameters and it can be tiresome to fill in the defaults if you only want to
