@@ -1523,7 +1523,6 @@
  * @since v2.0.0
  */
 /// useSortedRowIds
-
 /**
  * When called with an object as the first argument, the useSortedRowIds method
  * destructures it to make it easier to skip optional parameters.
@@ -1571,7 +1570,6 @@
  * @since v6.1.0
  */
 /// useSortedRowIds.2
-
 /**
  * The useHasRow hook returns a boolean indicating whether a given Row exists in
  * the Store, and registers a listener so that any changes to that result will
@@ -4428,6 +4426,67 @@
  * @since v2.0.0
  */
 /// useSortedRowIdsListener
+/**
+ * When called with an object as the first argument, the useSortedRowIds method
+ * destructures it to make it easier to skip optional parameters.
+ * @param args A SortedRowIdsArgs object containing the Id of the Table in the
+ * Store, and optional `cellId`, `descending`, `offset`, and `limit` parameters.
+ * @param listener The function that will be called whenever the sorted Row Ids
+ * in the Table change.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param mutator An optional boolean that indicates that the listener mutates
+ * Store data.
+ * @param storeOrStoreId The Store to register the listener with: omit for the
+ * default context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @example
+ * This example uses the useSortedRowIdsListener hook to create a listener that
+ * is scoped to a single component. When the component is unmounted, the
+ * listener is removed from the Store.
+ *
+ * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import {Provider, useSortedRowIdsListener} from 'tinybase/ui-react';
+ *
+ * const App = ({store}) => (
+ *   <Provider store={store}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useSortedRowIdsListener({tableId: 'pets', cellId: 'species'}, () =>
+ *     console.log('Sorted Row Ids changed'),
+ *   );
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore().setTables({
+ *   pets: {
+ *     fido: {species: 'dog'},
+ *     felix: {species: 'cat'},
+ *   },
+ * });
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App store={store} />); // !act
+ * console.log(store.getListenerStats().sortedRowIds);
+ * // -> 1
+ *
+ * store.setRow('pets', 'cujo', {species: 'wolf'}); // !act
+ * // -> 'Sorted Row Ids changed'
+ *
+ * root.unmount(); // !act
+ * console.log(store.getListenerStats().sortedRowIds);
+ * // -> 0
+ * ```
+ * @category Store hooks
+ * @since v6.1.0
+ */
+/// useSortedRowIdsListener.2
 /**
  * The useHasRowListener hook registers a listener function with the Store that
  * will be called when a Row is added to or removed from the Store.

@@ -3876,6 +3876,34 @@ describe('Listener Hooks', () => {
     unmount();
   });
 
+  test('useSortedRowIdsListener, object arg', () => {
+    expect.assertions(6);
+    const Test = ({value}: {readonly value: number}) => {
+      useSortedRowIdsListener(
+        {tableId: 't1', cellId: 'c1'},
+        (store) => expect(store?.getCell('t1', 'r1', 'c1')).toEqual(value),
+        [value],
+        false,
+        store,
+      );
+      return <button />;
+    };
+    expect(store.getListenerStats().sortedRowIds).toEqual(0);
+    const {rerender, unmount} = render(<Test value={2} />);
+
+    expect(store.getListenerStats().sortedRowIds).toEqual(1);
+    store.setCell('t1', 'r1', 'c1', 2).setCell('t1', 'r2', 'c1', 0);
+    rerender(<Test value={3} />);
+
+    expect(store.getListenerStats().sortedRowIds).toEqual(1);
+    store.setCell('t1', 'r1', 'c1', 3).setCell('t1', 'r3', 'c1', 0);
+    rerender(<button />);
+
+    expect(store.getListenerStats().sortedRowIds).toEqual(0);
+
+    unmount();
+  });
+
   test('useHasRowListener', () => {
     expect.assertions(4);
     const Test = ({value}: {readonly value: number}) => {

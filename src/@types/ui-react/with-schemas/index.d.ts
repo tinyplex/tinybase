@@ -623,24 +623,39 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// useSortedRowIdsListener
-  useSortedRowIdsListener: <
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellIdOrUndefined extends CellIdFromSchema<Schemas[0], TableId> | undefined,
-    Descending extends boolean,
-    Offset extends number,
-    Limit extends number | undefined,
-  >(
-    tableId: TableId,
-    cellId: CellIdOrUndefined,
-    descending: Descending,
-    offset: Offset,
-    limit: Limit,
-    listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined>,
-    listenerDeps?: React.DependencyList,
-    mutator?: boolean,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => void;
+  useSortedRowIdsListener: {
+    /// useSortedRowIdsListener
+    <
+      TableId extends TableIdFromSchema<Schemas[0]>,
+      CellIdOrUndefined extends
+        | CellIdFromSchema<Schemas[0], TableId>
+        | undefined,
+    >(
+      tableId: TableId,
+      cellId: CellIdOrUndefined,
+      descending: boolean,
+      offset: number,
+      limit: number | undefined,
+      listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined>,
+      listenerDeps?: React.DependencyList,
+      mutator?: boolean,
+      storeOrStoreId?: StoreOrStoreId<Schemas>,
+    ): void;
+
+    /// useSortedRowIdsListener.2
+    <
+      TableId extends TableIdFromSchema<Schemas[0]>,
+      CellIdOrUndefined extends
+        | CellIdFromSchema<Schemas[0], TableId>
+        | undefined,
+    >(
+      args: SortedRowIdsArgs<Schemas[0], TableId>,
+      listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined>,
+      listenerDeps?: React.DependencyList,
+      mutator?: boolean,
+      storeOrStoreId?: StoreOrStoreId<Schemas>,
+    ): void;
+  };
 
   /// useHasRowListener
   useHasRowListener: <

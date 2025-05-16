@@ -731,14 +731,7 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
       offset: 0,
       limit: 10,
     },
-    (store, tableId) => {
-      // !
-      store.getTables().t1;
-      tableId == 't1';
-      tableId == 't0';
-      store.getTables().t2;
-      tableId == 't2';
-    },
+    (_store, _tableId) => {}, // !
   );
   storeWithSchemas.addSortedRowIdsListener(
     {tableId: 't1', cellId: 'c1', descending: true, offset: 0, limit: 10},

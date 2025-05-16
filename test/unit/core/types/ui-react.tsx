@@ -697,6 +697,35 @@ const Listeners = () => {
     () => null,
   );
 
+  useSortedRowIdsListener(
+    {tableId: 't1', cellId: 'c1', descending: true, offset: 0, limit: 10},
+    (store, tableId, cellId) => {
+      store.getTables().t1;
+      tableId == 't1';
+      cellId == 'c1';
+      store.getTables().t2; // !
+      tableId == 't0'; // !
+      tableId == 't2'; // !
+      cellId == 'c2'; // !
+    },
+  );
+  useSortedRowIdsListener(
+    {tableId: 't1', cellId: 'c2', descending: true, offset: 0, limit: 10}, // !
+    (_store, _tableId) => {}, // !
+  );
+  useSortedRowIdsListener(
+    {tableId: 't1', cellId: 'c1', descending: true, offset: 0, limit: 10},
+    (store) => {
+      store.getTables().t1;
+      store.getTables().t2; // !
+    },
+  );
+  useSortedRowIdsListener(
+    {tableId: 't1', cellId: 'c1', descending: true, offset: 0, limit: 10},
+    () => null,
+  );
+  useSortedRowIdsListener({tableId: 't2'}, () => null); // !
+
   useHasRowListener('t1', null, (store, tableId, rowId) => {
     store.getTables().t1;
     tableId == 't1';

@@ -489,6 +489,15 @@ export function useSortedRowIdsListener(
   storeOrStoreId?: StoreOrStoreId,
 ): void;
 
+/// useSortedRowIdsListener.2
+export function useSortedRowIdsListener(
+  args: SortedRowIdsArgs,
+  listener: SortedRowIdsListener,
+  listenerDeps?: React.DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void;
+
 /// useHasRowListener
 export function useHasRowListener(
   tableId: IdOrNull,

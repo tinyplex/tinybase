@@ -496,6 +496,26 @@ const useSortedRowIdsImpl = (
     [tableId, cellId, descending, offset, limit],
   );
 
+export const useSortedRowIdsListenerImpl = (
+  tableId: Id,
+  cellId: Id | undefined,
+  descending: boolean,
+  offset: number,
+  limit: number | undefined,
+  listener: SortedRowIdsListener,
+  listenerDeps?: DependencyList,
+  mutator?: boolean,
+  storeOrStoreId?: StoreOrStoreId,
+): void =>
+  useListener(
+    SORTED_ROW_IDS,
+    useStoreOrStoreById(storeOrStoreId),
+    listener,
+    listenerDeps,
+    [tableId, cellId, descending, offset, limit],
+    mutator,
+  );
+
 // ---
 
 export const useCreateStore: typeof useCreateStoreDecl = (
@@ -1130,23 +1150,40 @@ export const useRowIdsListener: typeof useRowIdsListenerDecl = (
   );
 
 export const useSortedRowIdsListener: typeof useSortedRowIdsListenerDecl = (
-  tableId: Id,
-  cellId: Id | undefined,
-  descending: boolean,
-  offset: number,
-  limit: number | undefined,
-  listener: SortedRowIdsListener,
+  tableIdOrArgs: Id | SortedRowIdsArgs,
+  cellIdOrListener: Id | undefined | SortedRowIdsListener,
+  descendingOrListenerDeps: boolean | DependencyList | undefined,
+  offsetOrMutator: number | boolean | undefined,
+  limitOrStoreOrStoreId: number | undefined | StoreOrStoreId,
+  listener?: SortedRowIdsListener,
   listenerDeps?: DependencyList,
   mutator?: boolean,
   storeOrStoreId?: StoreOrStoreId,
 ): void =>
-  useListener(
-    SORTED_ROW_IDS,
-    useStoreOrStoreById(storeOrStoreId),
-    listener,
-    listenerDeps,
-    [tableId, cellId, descending, offset, limit],
-    mutator,
+  (useSortedRowIdsListenerImpl as any)(
+    ...(isObject(tableIdOrArgs)
+      ? [
+          tableIdOrArgs.tableId,
+          tableIdOrArgs.cellId,
+          tableIdOrArgs.descending ?? false,
+          tableIdOrArgs.offset ?? 0,
+          tableIdOrArgs.limit,
+          cellIdOrListener,
+          descendingOrListenerDeps,
+          offsetOrMutator,
+          limitOrStoreOrStoreId,
+        ]
+      : [
+          tableIdOrArgs,
+          cellIdOrListener,
+          descendingOrListenerDeps,
+          offsetOrMutator,
+          limitOrStoreOrStoreId,
+          listener,
+          listenerDeps,
+          mutator,
+          storeOrStoreId,
+        ]),
   );
 
 export const useHasRowListener: typeof useHasRowListenerDecl = (
