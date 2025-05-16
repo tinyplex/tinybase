@@ -5,6 +5,7 @@ export const getTypeOf = (thing: unknown): string => typeof thing;
 export const TINYBASE = 'tinybase';
 export const EMPTY_STRING = '';
 export const COMMA = ',';
+export const DOT = '.';
 
 export const STRING = getTypeOf(EMPTY_STRING);
 export const BOOLEAN = getTypeOf(true);

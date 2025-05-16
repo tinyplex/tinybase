@@ -5,7 +5,13 @@ import type {
 } from '../../../@types/persisters/index.d.ts';
 import {arrayJoin, arrayMap} from '../../../common/array.ts';
 import {IdSet} from '../../../common/set.ts';
-import {COMMA, strReplace, strSplit, TRUE} from '../../../common/strings.ts';
+import {
+  COMMA,
+  DOT,
+  strReplace,
+  strSplit,
+  TRUE,
+} from '../../../common/strings.ts';
 
 export type QuerySchema = (
   executeCommand: DatabaseExecuteCommand,
@@ -57,8 +63,8 @@ export const getWrappedCommand = (
 
 export const escapeId = (str: string) =>
   arrayJoin(
-    arrayMap(strSplit(str, '.'), (part) => `"${strReplace(part, /"/g, '""')}"`),
-    '.',
+    arrayMap(strSplit(str, DOT), (part) => `"${strReplace(part, /"/g, '""')}"`),
+    DOT,
   );
 
 export const escapeIds = (...ids: Ids) => escapeId(arrayJoin(ids, '_'));

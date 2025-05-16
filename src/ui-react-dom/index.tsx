@@ -52,6 +52,7 @@ import {
   BOOLEAN,
   CELL,
   CURRENT_TARGET,
+  DOT,
   EMPTY_STRING,
   NUMBER,
   STRING,
@@ -119,7 +120,6 @@ type RelationshipInHtmlRowParams = [
   store: Store | undefined,
 ];
 
-const DOT = '.';
 const EDITABLE = 'editable';
 const LEFT_ARROW = '\u2190';
 const UP_ARROW = '\u2191';

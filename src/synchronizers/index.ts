@@ -34,7 +34,7 @@ import {
   tryCatch,
 } from '../common/other.ts';
 import {getLatestTime, stampNew, stampNewObj} from '../common/stamps.ts';
-import {EMPTY_STRING} from '../common/strings.ts';
+import {DOT, EMPTY_STRING} from '../common/strings.ts';
 import {createCustomPersister} from '../persisters/index.ts';
 
 const enum MessageValues {
@@ -105,7 +105,7 @@ export const createCustomSynchronizer = (
     transactionId: Id,
   ): Promise<[response: Response, fromClientId: Id, transactionId: Id]> =>
     promiseNew((resolve, reject) => {
-      const requestId = transactionId + '.' + getUniqueId(4);
+      const requestId = transactionId + DOT + getUniqueId(4);
       const timeout = startTimeout(() => {
         collDel(pendingRequests, requestId);
         reject(
