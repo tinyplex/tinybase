@@ -7,6 +7,18 @@ highlighted features.
 
 # v6.1
 
+# In Summary
+
+- [A new Persister for Bun](#bun-sqlite)'s embedded SQLite database.
+- [Subset persistence](#subset-persistence) to load subsets of tables into a
+  Store.
+- [Destructed object arguments](#destructed-object-arguments-for-sorted-row-ids)
+  for sorted Row Id methods and hooks.
+- [A new startAutoPersisting
+  method](#new-startautopersisting-method).
+
+And more!
+
 ## Bun SQLite
 
 This release includes a new Persister for the [embedded SQLite
@@ -70,11 +82,35 @@ const subsetPersister = createSqliteWasmPersister(store, sqlite3, db, {
 });
 ```
 
-See the '[Loading subsets of database tables](/guides/persistence/database-persistence/#loading-subsets-of-database-tables)' section of the Database
-Persistence guide for more details. And a huge thank you to Jakub Riedl
-([@jakubriedl](https://github.com/jakubriedl)) for landing this functionality!
+See the '[Loading subsets of database
+tables](/guides/persistence/database-persistence/#loading-subsets-of-database-tables)'
+section of the Database Persistence guide for more details. And a huge thank you
+to Jakub Riedl ([@jakubriedl](https://github.com/jakubriedl)) for landing this
+functionality!
 
-## New Persister startAutoPersisting method
+## Destructed object arguments for sorted Row Ids
+
+The getSortedRowIds method on the Store interface has a number of optional
+parameters and it can be tiresome to fill in the defaults if you only want to
+change the last one, for example. So this release introduces an override such
+that you can pass an object with the parameters as properties.
+
+So instead of:
+
+```js yolo
+store.getSortedRowIds('pets', undefined, undefined, undefined, 10);
+```
+
+You can now do:
+
+```js yolo
+store.getSortedRowIds({tableId: 'pets', limit: 10});
+```
+
+This pattern is also made available to the addSortedRowIdsListener method, the
+useSortedRowIds hook, and the useSortedRowIdsListener hook.
+
+## New startAutoPersisting method
 
 The new startAutoPersisting method and stopAutoPersisting method on the
 Persister interface act as convenience methods for starting (and stopping) both

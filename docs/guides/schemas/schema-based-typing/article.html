@@ -170,10 +170,7 @@ store<span class="punctuation">.</span><span class="function"><a href="/api/stor
     settingsStore<span class="punctuation">,</span>
     <span class="punctuation">(</span>settingsStore<span class="punctuation">)</span> <span class="operator">=></span> <span class="function"><a href="/api/persister-browser/functions/creation/createlocalpersister/">createLocalPersister</a></span><span class="punctuation">(</span>settingsStore<span class="punctuation">,</span> <span class="constant">STORE_ID</span><span class="punctuation">)</span><span class="punctuation">,</span>
     <span class="punctuation">[</span><span class="punctuation">]</span><span class="punctuation">,</span>
-    <span class="keyword">async</span> <span class="punctuation">(</span>persister<span class="punctuation">)</span> <span class="operator">=></span> <span class="punctuation">{</span>
-      <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/load/startautoload/">startAutoLoad</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
-      <span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/save/startautosave/">startAutoSave</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
-    <span class="punctuation">}</span><span class="punctuation">,</span>
+    <span class="punctuation">(</span>persister<span class="punctuation">)</span> <span class="operator">=></span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/lifecycle/startautopersisting/">startAutoPersisting</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
   <span class="punctuation">)</span><span class="punctuation">;</span>
 
   <span class="comment">// Provide the Store for the rest of the app.</span>
