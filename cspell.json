@@ -1,12 +1,5 @@
 {
-  "ignorePaths": [
-    "*.tsv",
-    "*.webp",
-    "*.svg",
-    "*.snap",
-    "*.json",
-    "*.test.ts"
-  ],
+  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.snap", "*.json", "*.test.ts"],
   "words": [
     "Abad",
     "Adrien",
@@ -156,6 +149,7 @@
     "socio",
     "sortedtableinhtmltable",
     "srcdoc",
+    "startautopersisting",
     "storeinspector",
     "Synchronizable",
     "tableinhtmltable",
