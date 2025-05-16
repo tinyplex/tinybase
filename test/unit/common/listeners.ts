@@ -112,7 +112,7 @@ export const createStoreListener = (
 
     listenToSortedRowIds: (id, tableId, cellId, descending, offset, limit) => {
       logs[id] = [];
-      return store.addSortedRowIdsListener(
+      return (store as Store).addSortedRowIdsListener(
         tableId,
         cellId,
         descending,
