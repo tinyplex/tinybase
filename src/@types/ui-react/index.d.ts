@@ -669,7 +669,7 @@ export function useIndexesOrIndexesById(
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): Indexes | undefined;
 
-// useProvideIndexes
+/// useProvideIndexes
 export function useProvideIndexes(indexesId: Id, indexes: Indexes): void;
 
 /// useIndexIds
@@ -723,7 +723,7 @@ export function useRelationshipsOrRelationshipsById(
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
 ): Relationships | undefined;
 
-// useProvideRelationships
+/// useProvideRelationships
 export function useProvideRelationships(
   relationshipsId: Id,
   relationships: Relationships,
@@ -800,7 +800,7 @@ export function useQueriesOrQueriesById(
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Queries | undefined;
 
-// useProvideQueries
+/// useProvideQueries
 export function useProvideQueries(queriesId: Id, queries: Queries): void;
 
 /// useQueryIds
@@ -952,7 +952,7 @@ export function useCheckpointsOrCheckpointsById(
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
 ): Checkpoints | undefined;
 
-// useProvideCheckpoints
+/// useProvideCheckpoints
 export function useProvideCheckpoints(
   checkpointsId: Id,
   checkpoints: Checkpoints,
@@ -1032,7 +1032,7 @@ export function useCreatePersister<
     store: PersistedStore<Persist>,
   ) => PersisterOrUndefined | Promise<PersisterOrUndefined>,
   createDeps?: React.DependencyList,
-  then?: (persister: Persister<Persist>) => Promise<void>,
+  then?: (persister: Persister<Persist>) => Promise<any>,
   thenDeps?: React.DependencyList,
   destroy?: (persister: Persister<Persist>) => void,
   destroyDeps?: React.DependencyList,
@@ -1049,7 +1049,7 @@ export function usePersisterOrPersisterById(
   persisterOrPersisterId?: PersisterOrPersisterId,
 ): AnyPersister | undefined;
 
-// useProvidePersister
+/// useProvidePersister
 export function useProvidePersister(
   persisterId: Id,
   persister: AnyPersister,
@@ -1089,7 +1089,7 @@ export function useSynchronizerOrSynchronizerById(
   synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
 ): Synchronizer | undefined;
 
-// useProvideSynchronizer
+/// useProvideSynchronizer
 export function useProvideSynchronizer(
   synchronizerId: Id,
   synchronizer: Synchronizer,
