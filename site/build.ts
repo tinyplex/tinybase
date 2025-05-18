@@ -3,6 +3,7 @@ import type {Docs} from 'tinydocs';
 import {createDocs, getSorter} from 'tinydocs';
 import {ArticleInner} from './ui/ArticleInner.tsx';
 import {ExecutablePen} from './ui/ExecutablePen.tsx';
+import {MarkdownPage} from './ui/MarkdownPage.tsx';
 import {NavJson} from './ui/NavJson.tsx';
 import {Page} from './ui/Page.tsx';
 import {Readme} from './ui/Readme.tsx';
@@ -145,7 +146,11 @@ export const build = async (
       .addTextForEachNode('/demos/', ExecutablePen, 'pen.json')
       .addPageForNode('/api/', Page, 'all.html', true)
       .addMarkdownForNode('/', Readme, '../readme.md')
-      .addMarkdownForNode('/guides/releases/', Readme, '../../../releases.md');
+      .addMarkdownForNode(
+        '/guides/releases/',
+        MarkdownPage,
+        '../../../releases.md',
+      );
   }
 
   internalEsm.forEach((module) => {
