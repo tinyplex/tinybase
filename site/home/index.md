@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#v6-1'><em>NEW!</em> v6.1 release</a>
+<a href='/guides/releases/#v6-2'><em>NEW!</em> v6.2 release</a>
 
-<span id="one-with">"The One With More New Stuff"!</span>
+<span id="one-with">"The One With New Stuff. TBA!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
