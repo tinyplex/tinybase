@@ -5,9 +5,18 @@ highlighted features.
 
 ---
 
+# v6.2
+
+## with-schema exports
+
+This release changes the `package.json` exports slightly so that imports of both
+`/with-schema` and non-schema'd versions of the modules resolve to the same
+JavaScript file. This reduces bundle size for apps that use both schema and
+non-schema imports.
+
 # v6.1
 
-# In Summary
+## In Summary
 
 - [A new Persister for Bun](#bun-sqlite)'s embedded SQLite database.
 - [Subset persistence](#subset-persistence) to load subsets of tables into a
