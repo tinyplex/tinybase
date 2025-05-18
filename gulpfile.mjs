@@ -153,20 +153,29 @@ const copyPackageFiles = async (forProd = false) => {
   mins.forEach((min) => {
     ALL_MODULES.forEach((module) => {
       schemas.forEach((withSchemas) => {
-        const path = [min, module, withSchemas]
+        const pathWithoutSchemas = [min, module]
           .filter((part) => part)
           .join('/');
+        const codePathWithoutSchemas =
+          (pathWithoutSchemas ? '/' : '') + pathWithoutSchemas;
+
+        const pathWithSchemas = [min, module, withSchemas]
+          .filter((part) => part)
+          .join('/');
+        const codePathWithSchemas =
+          (pathWithSchemas ? '/' : '') + pathWithSchemas;
+
         const typesPath = ['.', '@types', module, withSchemas, 'index.d.']
           .filter((part) => part)
           .join('/');
-        const codePath = (path ? '/' : '') + path;
+        json.typesVersions['*'][pathWithSchemas ? pathWithSchemas : '.'] = [
+          typesPath + 'ts',
+        ];
 
-        json.typesVersions['*'][path ? path : '.'] = [typesPath + 'ts'];
-
-        json.exports['.' + codePath] = {
+        json.exports['.' + codePathWithSchemas] = {
           default: {
             types: typesPath + 'ts',
-            default: '.' + codePath + '/index.js',
+            default: '.' + codePathWithoutSchemas + '/index.js',
           },
         };
       });
