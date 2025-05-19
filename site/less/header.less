@@ -16,17 +16,72 @@ body > header {
       line-height: 1em;
       color: @text2Color;
       em {
-        color: #d81b60;
+        color: @accentColor;
       }
     }
   }
   > nav {
     justify-content: flex-end;
+    align-items: center;
     ul {
       display: inline-block;
       li {
         display: inline;
         margin-right: 2rem;
+      }
+    }
+    > #search {
+      margin-right: 2rem;
+      position: relative;
+      input {
+        width: 10rem;
+        color: @textColor;
+        background-color: @back2Color;
+        border: 1px solid @borderColor;
+        padding: 0.5rem;
+        font-size: 1rem;
+        border-radius: 0.25rem;
+      }
+      ol {
+        display: none;
+        list-style: none;
+        position: absolute;
+        top: 2.2rem;
+        max-width: 20rem;
+        width: 20rem;
+        margin: 0;
+        padding: 0.25rem;
+        line-height: 1.2rem;
+        overflow-y: auto;
+        max-height: calc(100vh - 6rem);
+        background: @back2Color;
+        border: 1px solid @borderColor;
+        box-shadow: @shadow;
+        border-radius: 0.25rem;
+        &.show {
+          display: block;
+        }
+        li {
+          padding: 0.25rem;
+          cursor: pointer;
+          &:nth-child(n + 2) {
+            border-top: 1px solid @borderColor;
+          }
+          &.hover {
+            background-color: @back3Color;
+          }
+        }
+        b,
+        span {
+          display: block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        em {
+          color: @accentColor;
+          font-style: normal;
+        }
       }
     }
   }
