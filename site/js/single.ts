@@ -1,14 +1,16 @@
-import {addClass, commonLoad, delClass, query, queryById} from './common.ts';
+import {
+  addClass,
+  delClass,
+  getArticle,
+  queryById,
+  versionLoad,
+} from './common/common.ts';
+import {darkLoad} from './common/dark.ts';
 
-commonLoad();
+versionLoad();
+darkLoad();
 
 addEventListener('load', () => {
-  const nav: HTMLElement = query('body > main > nav');
-  const article: HTMLElement = query('body > main > article');
-  if (nav == null || article == null) {
-    return;
-  }
-
   const visibleElementsByLevel = new Map<number, Set<HTMLElement>>();
 
   const titleObserver = new IntersectionObserver((entries) => {
@@ -49,7 +51,7 @@ addEventListener('load', () => {
     );
   });
 
-  article
+  getArticle()
     .querySelectorAll('section[data-id]')
     .forEach((title) => titleObserver.observe(title));
 });

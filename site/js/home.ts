@@ -1,3 +1,7 @@
-import {commonLoad} from './common.ts';
+import {versionLoad} from './common/common.ts';
+import {darkLoad} from './common/dark.ts';
+import {searchLoad} from './common/search.ts';
 
-commonLoad();
+versionLoad();
+darkLoad();
+searchLoad(true);
