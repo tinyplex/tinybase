@@ -118,11 +118,13 @@ export const searchLoad = (isHome = false) => {
             case 'Escape':
               return input.blur();
             case 'ArrowDown':
+              event.preventDefault();
               return moveHover(
                 hovered,
                 hovered?.nextSibling ?? results.firstChild,
               );
             case 'ArrowUp':
+              event.preventDefault();
               return moveHover(
                 hovered,
                 hovered?.previousSibling ?? results.lastChild,
