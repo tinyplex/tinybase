@@ -23,21 +23,9 @@ export const searchLoad = (isHome = false) => {
       type: 'text',
       placeholder:
         (navigator.platform.startsWith('Mac') ? '⌘' : 'cmd-') + 'K Search',
-      disabled: 'true',
     }) as HTMLInputElement;
     const results = createElement('ol', search);
     const noResults = createElement('li', results, {}, 'No results found');
-    nav.prepend(search);
-
-    // UI behavior
-    const showResults = () =>
-      (input.value ? addClass : delClass)(results, 'show');
-    input.addEventListener('focus', showResults);
-    input.addEventListener('input', () => {
-      showResults();
-      populateResults();
-    });
-    input.addEventListener('blur', () => delClass(results, 'show'));
 
     // Create search store
     const store = createStore();
@@ -60,10 +48,9 @@ export const searchLoad = (isHome = false) => {
       // Rank will be based on content
       (getCell, path) => getWords(getCell, path).join(' '),
       undefined,
-      // Rank by the earliest location of the slice in the text
+      // Rank by the density of early location of the slice in the text
       (words1, words2, sliceId) =>
-        (words1 as string).indexOf(sliceId) -
-        (words2 as string).indexOf(sliceId),
+        getWeighting(words2, sliceId) - getWeighting(words1, sliceId),
     );
 
     // Tokenize text for each path
@@ -79,8 +66,22 @@ export const searchLoad = (isHome = false) => {
       .then((response) => response.json())
       .then((json) => {
         store.setContent(json);
-        input.disabled = false;
+        bindUI();
       });
+
+    // UI behavior
+    const bindUI = () => {
+      nav.prepend(search);
+      const showResults = () =>
+        (input.value ? addClass : delClass)(results, 'show');
+      input.addEventListener('focus', showResults);
+      input.addEventListener('input', () => {
+        showResults();
+        populateResults();
+      });
+      input.addEventListener('blur', () => delClass(results, 'show'));
+      bindKeyboard();
+    };
 
     // Populate results
     const populateResults = () => {
@@ -109,29 +110,30 @@ export const searchLoad = (isHome = false) => {
     };
 
     // Keyboard navigation
-    addEventListener('keydown', (event: KeyboardEvent) => {
-      if (doc.activeElement == input) {
-        const hovered = queryElement(results, '.hover');
-        switch (event.code) {
-          case 'Escape':
-            return input.blur();
-          case 'ArrowDown':
-            return moveHover(
-              hovered,
-              hovered?.nextSibling ?? results.firstChild,
-            );
-          case 'ArrowUp':
-            return moveHover(
-              hovered,
-              hovered?.previousSibling ?? results.lastChild,
-            );
-          case 'Enter':
-            return hovered?.dispatchEvent(new MouseEvent('mousedown'));
+    const bindKeyboard = () =>
+      addEventListener('keydown', (event: KeyboardEvent) => {
+        if (doc.activeElement == input) {
+          const hovered = queryElement(results, '.hover');
+          switch (event.code) {
+            case 'Escape':
+              return input.blur();
+            case 'ArrowDown':
+              return moveHover(
+                hovered,
+                hovered?.nextSibling ?? results.firstChild,
+              );
+            case 'ArrowUp':
+              return moveHover(
+                hovered,
+                hovered?.previousSibling ?? results.lastChild,
+              );
+            case 'Enter':
+              return hovered?.dispatchEvent(new MouseEvent('mousedown'));
+          }
+        } else if (event.code == 'KeyK' && event.metaKey) {
+          input.focus();
         }
-      } else if (event.code == 'KeyK' && event.metaKey) {
-        input.focus();
-      }
-    });
+      });
   });
 };
 
@@ -162,4 +164,15 @@ const moveHover = (current: any, next: any) => {
       });
     }
   }
+};
+
+const getWeighting = (str: string, substr: string) => {
+  const length = str.length;
+  let weight = 0;
+  let position = str.indexOf(substr);
+  while (position !== -1) {
+    weight += (length - position) / length;
+    position = str.indexOf(substr, position + 1);
+  }
+  return weight;
 };
