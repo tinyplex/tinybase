@@ -185,6 +185,26 @@ export const build = async (
       });
     }),
   );
+
+  const pagesTable: {[url: string]: {n: string; s: string}} = {};
+  docs.forEachNode((node) => {
+    const summary =
+      node.summary
+        ?.replaceAll(/<[^>]*>/g, '')
+        .replaceAll(/\s+/g, ' ')
+        .trim() ?? '';
+    if (node?.url != '/' && summary) {
+      pagesTable[node.url] = {
+        n: node.name,
+        s: summary,
+      };
+    }
+  });
+  writeFileSync(
+    `${outDir}/pages.json`,
+    JSON.stringify([{p: pagesTable}, {}]),
+    'utf-8',
+  );
 };
 
 const addApi = (docs: Docs): Docs =>
