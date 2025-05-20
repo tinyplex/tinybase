@@ -103,10 +103,10 @@
  *
  * When called, a LinkedRowIdsListener is given a reference to the Relationships
  * object, the Id of the Relationship that changed, and the Id of the first Row
- * of the the linked list whose members changed.
+ * of the linked list whose members changed.
  * @param relationships A reference to the Relationships object that changed.
  * @param relationshipId The Id of the Relationship that changed.
- * @param firstRowId The Id of the first Row of the the linked list whose
+ * @param firstRowId The Id of the first Row of the linked list whose
  * members changed.
  * @category Listener
  * @since v1.0.0

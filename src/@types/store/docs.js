@@ -1191,7 +1191,7 @@
  * transaction, primarily used so that you can indicate whether the transaction
  * should be rolled back.
  *
- * It provides both the the old and new Values in a two-part array. These
+ * It provides both the old and new Values in a two-part array. These
  * describe the state of the changed Value in the Store at the _start_ of the
  * transaction, and by the _end_ of the transaction.
  *

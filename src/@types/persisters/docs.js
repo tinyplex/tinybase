@@ -174,9 +174,9 @@
  * neither are present, the content will be loaded using the Persister's load
  * method. Prior to v5.0, these parameters were callbacks and the overall type
  * was non-generic.
- * @param content If provided, this is a Content object from the the Persister
+ * @param content If provided, this is a Content object from the Persister
  * that will be used to immediately wholesale update the Store.
- * @param changes If provided, this is a Changes object from the the Persister
+ * @param changes If provided, this is a Changes object from the Persister
  * that will be used to immediately incrementally update the Store. This takes
  * priority over the content argument above if present.
  * @category Creation
