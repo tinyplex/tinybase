@@ -32,4 +32,4 @@ There are also editable components for individual Cells and Values:
 | EditableValueView | Renders a Value and lets you change its type and value. | [demo](/demos/ui-components/editablevalueview/) |
 
 We finish off this section with a best practice to avoid passing the global
-Store down into components. Please proceed to to the Using Context guide!
+Store down into components. Please proceed to the Using Context guide!
