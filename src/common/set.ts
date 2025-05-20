@@ -17,4 +17,4 @@ export const setNew = <Value>(entryOrEntries?: Value | Value[]): Set<Value> =>
 export const setAdd = <Value>(
   set: Set<Value> | undefined,
   value: Value,
-): Set<Value> | undefined => set?.add(value);
+): 0 | 1 => (set ? (set.has(value) ? 0 : (set.add(value), 1)) : 0);
