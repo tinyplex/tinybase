@@ -203,7 +203,7 @@
    *
    * This is useful if you want to debug the synchronization process, though be
    * aware that this method is called very frequently. It is called with the Id
-   * of the client the message came _from_, the the Id of the client the message
+   * of the client the message came _from_, the Id of the client the message
    * is to be forwarded _to_, and the remainder of the message itself.
    *
    * Since this method is called often, it should be performant. The path Id is
