@@ -1520,7 +1520,7 @@ component, and so on. See the Building A UI With Queries guide for more details.
 
 Thank you for all your support as we brought this important new release to life,
 and we hope you enjoy using it as much as we did building it. Please provide
-feedback via [Github](https://github.com/tinyplex/tinybase),
+feedback via [GitHub](https://github.com/tinyplex/tinybase),
 [Bluesky](https://bsky.app/profile/tinybase.bsky.social), and
 [X](https://x.com/tinybasejs)!
 
