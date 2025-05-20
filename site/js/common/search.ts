@@ -53,12 +53,11 @@ export const searchLoad = (isHome = false) => {
         getWeighting(words2, sliceId) - getWeighting(words1, sliceId),
     );
 
-    // Tokenize text for each path
+    // Tokenize text for each path, name, and summary
     const getWords = (getCell: GetCell, path: string): string[] =>
       [
-        ...path.split(/\/|-|_/), // path
-        ...(getCell('n') as string).split(' '), // name
-        ...(getCell('s') as string).split(' '), // summary
+        ...path.split(/\/|-|_/),
+        ...(getCell('n') + ' ' + getCell('s')).toLowerCase().split(' '),
       ].filter((word) => word.length > 3);
 
     // Load search store and enable input
