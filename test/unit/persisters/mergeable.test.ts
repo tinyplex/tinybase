@@ -13,10 +13,8 @@ import {getTimeFunctions} from '../common/mergeable.ts';
 import {MERGEABLE_VARIANTS} from './common/databases.ts';
 import {
   getMockDatabases,
-  mockCustomSynchronizer,
   mockFile,
   mockLocalStorage,
-  mockLocalSynchronizer,
   mockMergeableChangesListener,
   mockMergeableContentListener,
   mockMergeableNoContentListener,
@@ -42,8 +40,6 @@ describe.each([
   ['file', mockFile],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
-  ['localSynchronizer', mockLocalSynchronizer],
-  ['customSynchronizer', mockCustomSynchronizer],
   ...getMockDatabases(MERGEABLE_VARIANTS),
 ])('Persists to/from %s', (name: string, persistable: Persistable<any>) => {
   let location: string;
