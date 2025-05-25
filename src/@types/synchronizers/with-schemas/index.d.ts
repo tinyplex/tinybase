@@ -2,10 +2,6 @@
 import type {Id, IdOrNull} from '../../common/with-schemas/index.d.ts';
 import type {MergeableStore} from '../../mergeables/mergeable-store/with-schemas/index.d.ts';
 import type {
-  Persister,
-  Persists,
-} from '../../persisters/with-schemas/index.d.ts';
-import type {
   Content,
   OptionalSchemas,
 } from '../../store/with-schemas/index.d.ts';
@@ -53,8 +49,7 @@ export type SynchronizerStats = {
 };
 
 /// Synchronizer
-export interface Synchronizer<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persists.MergeableStoreOnly> {
+export interface Synchronizer<Schemas extends OptionalSchemas> {
   /// Synchronizer.startSync
   startSync(initialContent?: Content<Schemas, true>): Promise<this>;
   /// Synchronizer.stopSync

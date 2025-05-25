@@ -146,10 +146,6 @@
  * MergeableStore objects in memory on one system). The createCustomSynchronizer
  * function can also be used to easily create a fully customized way to send and
  * receive the messages of the synchronization protocol.
- *
- * Note that, as an interface, it is an extension to the Persister interface,
- * since they share underlying implementations. Think of a Synchronizer as
- * 'persisting' your MergeableStore to another client (and vice-versa).
  * @example
  * This example creates two empty MergeableStore objects, creates a
  * LocalSynchronizer for each, and starts synchronizing them. A change in one
@@ -189,11 +185,6 @@
   /**
    * The startSync method is used to start the process of synchronization
    * between this instance and another matching Synchronizer.
-   *
-   * The underlying implementation of a Synchronizer is shared with the
-   * Persister framework, and so this startSync method is equivalent to starting
-   * both auto-loading (listening to sync messages from other active
-   * Synchronizer instances) and auto-saving (sending sync messages to it).
    *
    * This method is asynchronous so you should you `await` calls to this method
    * or handle the return type natively as a Promise.
@@ -269,11 +260,6 @@
   /**
    * The stopSync method is used to stop the process of synchronization between
    * this instance and another matching Synchronizer.
-   *
-   * The underlying implementation of a Synchronizer is shared with the
-   * Persister framework, and so this startSync method is equivalent to stopping
-   * both auto-loading (listening to sync messages from other active
-   * Synchronizer instances) and auto-saving (sending sync messages to them).
    *
    * This method is asynchronous.
    * @returns A Promise containing a reference to the Synchronizer object.
@@ -366,7 +352,7 @@
 }
 /**
  * The createCustomSynchronizer function creates a Synchronizer object that can
- * persist one MergeableStore to another.
+ * synchronize a MergeableStore with others.
  *
  * As well as providing a reference to the MergeableStore to synchronize, you
  * must provide parameters which identify how to send and receive changes to and
