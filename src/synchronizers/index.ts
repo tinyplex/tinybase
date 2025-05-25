@@ -481,8 +481,6 @@ export const createCustomSynchronizer = (
     return synchronizer;
   };
 
-  const getStore = (): MergeableStore => store;
-
   const getStats = (): PersisterStats => ({loads, saves});
 
   registerReceive(
@@ -547,22 +545,15 @@ export const createCustomSynchronizer = (
     load,
     startAutoLoad,
     stopAutoLoad,
-    // isAutoLoading,
 
     save,
     startAutoSave,
     stopAutoSave,
-    // isAutoSaving,
-
-    // startAutoPersisting,
-    // stopAutoPersisting,
 
     getStatus,
     addStatusListener,
     delListener,
 
-    // schedule,
-    // getStore,
     getStats,
 
     startSync,
