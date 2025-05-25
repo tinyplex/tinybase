@@ -1,6 +1,10 @@
 /// mergeables
 import type {Id} from '../common/index.d.ts';
-import type {CellOrUndefined, ValueOrUndefined} from '../store/index.d.ts';
+import type {
+  CellOrUndefined,
+  Content,
+  ValueOrUndefined,
+} from '../store/index.d.ts';
 
 /// GetNow
 export type GetNow = () => number;
@@ -69,7 +73,9 @@ export type ValueStamp<Hashed extends boolean = false> = Stamp<
 
 /// Mergeable
 export interface Mergeable {
-  //
+  /// Mergeable.setDefaultContent
+  setDefaultContent(content: Content | (() => Content)): this;
+
   /// Mergeable.getMergeableContentHashes
   getMergeableContentHashes(): ContentHashes;
 

@@ -2,6 +2,7 @@ import type {Id, IdOrNull} from '../@types/common/index.d.ts';
 import type {
   CellStamp,
   ContentHashes,
+  Mergeable,
   RowHashes,
   RowStamp,
   TableHashes,
@@ -79,7 +80,7 @@ export const Message = {
 const getTransactionId = () => getUniqueId(11);
 
 export const createCustomSynchronizer = (
-  store: MergeableStore,
+  mergeable: Mergeable,
   send: Send,
   registerReceive: (receive: Receive) => void,
   extraDestroy: () => void,
@@ -190,7 +191,7 @@ export const createCustomSynchronizer = (
           );
       }
       const [otherTablesHash, otherValuesHash] = otherContentHashes;
-      const [tablesHash, valuesHash] = store.getMergeableContentHashes();
+      const [tablesHash, valuesHash] = mergeable.getMergeableContentHashes();
 
       let tablesChanges: TablesStamp = stampNewObj();
       if (tablesHash != otherTablesHash) {
@@ -198,7 +199,7 @@ export const createCustomSynchronizer = (
           await request<[TablesStamp, TableHashes]>(
             otherClientId,
             MessageValues.GetTableDiff,
-            store.getMergeableTableHashes(),
+            mergeable.getMergeableTableHashes(),
             transactionId,
           )
         )[0];
@@ -209,7 +210,7 @@ export const createCustomSynchronizer = (
             await request<[TablesStamp, RowHashes]>(
               otherClientId,
               MessageValues.GetRowDiff,
-              store.getMergeableRowHashes(differentTableHashes),
+              mergeable.getMergeableRowHashes(differentTableHashes),
               transactionId,
             )
           )[0];
@@ -220,7 +221,7 @@ export const createCustomSynchronizer = (
               await request<TablesStamp>(
                 otherClientId,
                 MessageValues.GetCellDiff,
-                store.getMergeableCellHashes(differentRowHashes),
+                mergeable.getMergeableCellHashes(differentRowHashes),
                 transactionId,
               )
             )[0];
@@ -237,7 +238,7 @@ export const createCustomSynchronizer = (
               await request<ValuesStamp>(
                 otherClientId,
                 MessageValues.GetValueDiff,
-                store.getMergeableValueHashes(),
+                mergeable.getMergeableValueHashes(),
                 transactionId,
               )
             )[0],
@@ -261,7 +262,7 @@ export const createCustomSynchronizer = (
           null,
           getTransactionId(),
           MessageValues.ContentHashes,
-          store.getMergeableContentHashes(),
+          mergeable.getMergeableContentHashes(),
         );
 
   const addPersisterListener = (listener: MergeableListener) =>
@@ -320,8 +321,8 @@ export const createCustomSynchronizer = (
     contentOrChanges: MergeableContent | MergeableChanges | undefined,
   ): void => {
     (contentOrChanges?.[2] === 1
-      ? store.applyMergeableChanges
-      : store.setMergeableContent)(
+      ? mergeable.applyMergeableChanges
+      : mergeable.setMergeableContent)(
       contentOrChanges as MergeableContent & MergeableChanges,
     );
   };
@@ -339,14 +340,14 @@ export const createCustomSynchronizer = (
             if (isArray(changes)) {
               setContentOrChanges(changes);
             } else if (initialContent) {
-              store.setDefaultContent(initialContent);
+              mergeable.setDefaultContent(initialContent);
             } else {
               errorNew(`Changes is not an array: ${changes}`);
             }
           },
           () => {
             if (initialContent) {
-              store.setDefaultContent(initialContent);
+              mergeable.setDefaultContent(initialContent);
             }
           },
         );
@@ -407,8 +408,8 @@ export const createCustomSynchronizer = (
   const startAutoPush = async (): Promise<Synchronizer> => {
     stopAutoPush();
     await push();
-    autoPushListenerId = store.addDidFinishTransactionListener(() => {
-      const changes = store.getTransactionMergeableChanges(false) as any;
+    autoPushListenerId = mergeable.addDidFinishTransactionListener(() => {
+      const changes = mergeable.getTransactionMergeableChanges(false) as any;
       if (hasChanges(changes)) {
         push(changes);
       }
@@ -418,7 +419,7 @@ export const createCustomSynchronizer = (
 
   const stopAutoPush = async (): Promise<Synchronizer> => {
     if (autoPushListenerId) {
-      store.delListener(autoPushListenerId);
+      mergeable.delListener(autoPushListenerId);
       autoPushListenerId = undefined;
     }
     return synchronizer;
@@ -456,7 +457,7 @@ export const createCustomSynchronizer = (
 
   const delListener = (listenerId: Id): MergeableStore => {
     delListenerImpl(listenerId);
-    return store;
+    return mergeable;
   };
 
   const schedule = async (...actions: Action[]): Promise<Synchronizer> => {
@@ -500,15 +501,15 @@ export const createCustomSynchronizer = (
         ifNotUndefined(
           message == MessageValues.GetContentHashes &&
             (syncing || isAutoPushing())
-            ? store.getMergeableContentHashes()
+            ? mergeable.getMergeableContentHashes()
             : message == MessageValues.GetTableDiff
-              ? store.getMergeableTableDiff(body)
+              ? mergeable.getMergeableTableDiff(body)
               : message == MessageValues.GetRowDiff
-                ? store.getMergeableRowDiff(body)
+                ? mergeable.getMergeableRowDiff(body)
                 : message == MessageValues.GetCellDiff
-                  ? store.getMergeableCellDiff(body)
+                  ? mergeable.getMergeableCellDiff(body)
                   : message == MessageValues.GetValueDiff
-                    ? store.getMergeableValueDiff(body)
+                    ? mergeable.getMergeableValueDiff(body)
                     : undefined,
           (response) => {
             sendImpl(

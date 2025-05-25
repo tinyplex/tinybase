@@ -1,7 +1,6 @@
 /// mergeable-store
 import type {Id} from '../../../common/with-schemas/index.d.ts';
 import type {
-  Content,
   NoSchemas,
   NoTablesSchema,
   NoValuesSchema,
@@ -46,11 +45,6 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
   /// MergeableStore.setMergeableContent
   setMergeableContent(
     mergeableContent: MergeableContent<Schemas>,
-  ): MergeableStore<Schemas>;
-
-  /// MergeableStore.setDefaultContent
-  setDefaultContent(
-    content: Content<Schemas> | (() => Content<Schemas>),
   ): MergeableStore<Schemas>;
 
   /// MergeableStore.getTransactionMergeableChanges
