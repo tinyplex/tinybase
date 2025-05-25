@@ -280,7 +280,6 @@ export const createCustomSynchronizer = (
   let autoLoadHandle: MergeableListener | undefined;
   let autoSaveListenerId: Id | undefined;
 
-  mapEnsure(scheduleRunning, scheduleId, () => 0);
   mapEnsure(scheduleActions, scheduleId, () => []);
 
   const statusListeners: IdSet2 = mapNew();
@@ -303,10 +302,12 @@ export const createCustomSynchronizer = (
     }
   };
 
+  let running: 0 | 1 = 0;
+
   const run = async (): Promise<void> => {
     /*! istanbul ignore else */
-    if (!mapGet(scheduleRunning, scheduleId)) {
-      mapSet(scheduleRunning, scheduleId, 1);
+    if (!running) {
+      running = 1;
       while (
         !isUndefined(
           (action = arrayShift(
@@ -316,7 +317,7 @@ export const createCustomSynchronizer = (
       ) {
         await tryCatch(action, onIgnoredError);
       }
-      mapSet(scheduleRunning, scheduleId, 0);
+      running = 0;
     }
   };
 
@@ -562,5 +563,4 @@ const enum StatusValues {
 
 type Action = () => Promise<any>;
 
-const scheduleRunning: Map<any, 0 | 1> = mapNew();
 const scheduleActions: Map<any, Action[]> = mapNew();
