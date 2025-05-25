@@ -327,7 +327,12 @@
    * const store2 = createMergeableStore();
    *
    * const synchronizer1 = createLocalSynchronizer(store1);
+   * console.log(synchronizer1.getSynchronizerStats());
+   * // -> {receives: 0, sends: 0}
+   *
    * const synchronizer2 = createLocalSynchronizer(store2);
+   * console.log(synchronizer2.getSynchronizerStats());
+   * // -> {receives: 0, sends: 0}
    *
    * await synchronizer1.startSync();
    * await synchronizer2.startSync();
