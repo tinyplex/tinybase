@@ -56,8 +56,8 @@ export interface Synchronizer<Schemas extends OptionalSchemas> {
   stopSync(): Promise<this>;
   /// Synchronizer.destroy
   destroy(): Promise<this>;
-  /// Synchronizer.getSynchronizerStats
-  getSynchronizerStats(): SynchronizerStats;
+  /// Synchronizer.getStats
+  getStats(): SynchronizerStats;
 }
 
 /// createCustomSynchronizer

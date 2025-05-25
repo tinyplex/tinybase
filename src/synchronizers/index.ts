@@ -13,11 +13,7 @@ import type {
   MergeableContent,
   MergeableStore,
 } from '../@types/mergeables/mergeable-store/index.d.ts';
-import type {
-  PersisterStats,
-  Status,
-  StatusListener,
-} from '../@types/persisters/index.d.ts';
+import type {Status, StatusListener} from '../@types/persisters/index.d.ts';
 import type {Content} from '../@types/store/index.d.ts';
 import type {
   Message as MessageEnum,
@@ -277,11 +273,9 @@ export const createCustomSynchronizer = (
     return synchronizer;
   };
 
-  const getSynchronizerStats = () => ({sends, receives});
+  const getStats = () => ({sends, receives});
 
   let status: StatusValues = StatusValues.Idle;
-  let loads = 0;
-  let saves = 0;
   let action;
   let autoLoadHandle: MergeableListener | undefined;
   let autoSaveListenerId: Id | undefined;
@@ -342,7 +336,6 @@ export const createCustomSynchronizer = (
     /*! istanbul ignore else */
     if (status != StatusValues.Saving) {
       setStatus(StatusValues.Loading);
-      loads++;
       await schedule(async () => {
         await tryCatch(
           async () => {
@@ -380,7 +373,6 @@ export const createCustomSynchronizer = (
               /*! istanbul ignore else */
               if (status != StatusValues.Saving) {
                 setStatus(StatusValues.Loading);
-                loads++;
                 setContentOrChanges(changes ?? content);
                 setStatus(StatusValues.Idle);
               }
@@ -408,7 +400,6 @@ export const createCustomSynchronizer = (
     /*! istanbul ignore else */
     if (status != StatusValues.Loading) {
       setStatus(StatusValues.Saving);
-      saves++;
       await schedule(async () => {
         await tryCatch(
           () => setPersisted(store.getMergeableContent, changes),
@@ -480,8 +471,6 @@ export const createCustomSynchronizer = (
     await run();
     return synchronizer;
   };
-
-  const getStats = (): PersisterStats => ({loads, saves});
 
   registerReceive(
     (
@@ -559,7 +548,6 @@ export const createCustomSynchronizer = (
     startSync,
     stopSync,
     destroy,
-    getSynchronizerStats,
 
     ...extra,
   });

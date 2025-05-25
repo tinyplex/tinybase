@@ -142,8 +142,8 @@ describe.each([
         );
       }
       expect([
-        synchronizer1.getSynchronizerStats(),
-        synchronizer2.getSynchronizerStats(),
+        synchronizer1.getStats(),
+        synchronizer2.getStats(),
       ]).toMatchSnapshot('stats');
     };
 
@@ -771,7 +771,7 @@ describe.each([
         expect(
           synchronizers.reduce(
             (total, synchronizer) => {
-              const stats = synchronizer.getSynchronizerStats();
+              const stats = synchronizer.getStats();
               total.sends += stats.sends ?? 0;
               total.receives += stats.receives ?? 0;
               return total;

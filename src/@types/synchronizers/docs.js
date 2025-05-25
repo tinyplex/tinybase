@@ -110,7 +110,7 @@
  * The SynchronizerStats type describes the number of times a Synchronizer
  * object has sent or received data.
  *
- * A SynchronizerStats object is returned from the getSynchronizerStats method.
+ * A SynchronizerStats object is returned from the getStats method.
  * @category Development
  * @since v5.0.0
  */
@@ -339,7 +339,7 @@
    */
   /// Synchronizer.destroy
   /**
-   * The getSynchronizerStats method provides a set of statistics about the
+   * The getStats method provides a set of statistics about the
    * Synchronizer, and is used for debugging purposes.
    *
    * The SynchronizerStats object contains a count of the number of times the
@@ -347,6 +347,10 @@
    *
    * The method is intended to be used during development to ensure your
    * synchronization layer is acting as expected, for example.
+   *
+   * Prior to v5.0, this method was called getSynchronizerStats, but it was
+   * renamed to getStats to be consistent with the naming of other methods in
+   * TinyBase.
    * @returns A SynchronizerStats object containing Synchronizer send and
    * receive statistics.
    * @example
@@ -361,11 +365,11 @@
    * const store2 = createMergeableStore();
    *
    * const synchronizer1 = createLocalSynchronizer(store1);
-   * console.log(synchronizer1.getSynchronizerStats());
+   * console.log(synchronizer1.getStats());
    * // -> {receives: 0, sends: 0}
    *
    * const synchronizer2 = createLocalSynchronizer(store2);
-   * console.log(synchronizer2.getSynchronizerStats());
+   * console.log(synchronizer2.getStats());
    * // -> {receives: 0, sends: 0}
    *
    * await synchronizer1.startSync();
@@ -376,9 +380,9 @@
    * store2.setRow('pets', 'felix', {species: 'cat'});
    * // ...
    *
-   * console.log(synchronizer1.getSynchronizerStats());
+   * console.log(synchronizer1.getStats());
    * // -> {receives: 4, sends: 5}
-   * console.log(synchronizer2.getSynchronizerStats());
+   * console.log(synchronizer2.getStats());
    * // -> {receives: 5, sends: 4}
    *
    * await synchronizer1.destroy();
@@ -387,7 +391,7 @@
    * @category Synchronization
    * @since v5.0.0
    */
-  /// Synchronizer.getSynchronizerStats
+  /// Synchronizer.getStats
 }
 /**
  * The createCustomSynchronizer function creates a Synchronizer object that can

@@ -622,19 +622,18 @@ describe('Create Hooks', () => {
     const {container, rerender, unmount} = render(<Test id={1} />);
     await act(pause);
     expect(container.textContent).toEqual(
-      JSON.stringify([1, {loads: 1, saves: 0}, 1]),
+      JSON.stringify([1, {sends: 1, receives: 0}, 1]),
     );
 
     rerender(<Test id={2} />);
     await act(pause);
     expect(container.textContent).toEqual(
-      JSON.stringify([2, {loads: 1, saves: 0}, 1]),
+      JSON.stringify([2, {sends: 1, receives: 0}, 1]),
     );
     expect(initStore).toHaveBeenCalledTimes(1);
     expect(createSynchronizer).toHaveBeenCalledTimes(2);
     expect(didRender).toHaveBeenCalledTimes(5);
-    await _synchronizer?.stopAutoLoad();
-    await _synchronizer?.stopAutoSave();
+    await _synchronizer?.stopSync();
 
     unmount();
   });
@@ -667,13 +666,13 @@ describe('Create Hooks', () => {
     const {container, rerender, unmount} = render(<Test id={1} />);
     await act(pause);
     expect(container.textContent).toEqual(
-      JSON.stringify([1, {loads: 1, saves: 0}]),
+      JSON.stringify([1, {sends: 1, receives: 0}]),
     );
 
     rerender(<Test id={2} />);
     await act(pause);
     expect(container.textContent).toEqual(
-      JSON.stringify([2, {loads: 1, saves: 0}]),
+      JSON.stringify([2, {sends: 1, receives: 0}]),
     );
     expect(initStore).toHaveBeenCalledTimes(1);
     expect(createSynchronizer).toHaveBeenCalledTimes(2);
@@ -681,10 +680,7 @@ describe('Create Hooks', () => {
     expect(destroySynchronizer).toHaveBeenCalledWith(synchronizers[1]);
     expect(didRender).toHaveBeenCalledTimes(4);
     await Promise.all(
-      synchronizers.map(async (synchronizer) => {
-        await synchronizer.stopAutoLoad();
-        await synchronizer.stopAutoSave();
-      }),
+      synchronizers.map((synchronizer) => synchronizer.stopSync()),
     );
 
     unmount();
