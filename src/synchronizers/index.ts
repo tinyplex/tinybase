@@ -14,9 +14,8 @@ import type {
   MergeableStore,
 } from '../@types/mergeables/mergeable-store/index.d.ts';
 import type {
-  PersisterListener,
   PersisterStats,
-  Persists as PersistsEnum,
+  Status,
   StatusListener,
 } from '../@types/persisters/index.d.ts';
 import type {Content} from '../@types/store/index.d.ts';
@@ -44,6 +43,11 @@ import {
 import {IdSet2} from '../common/set.ts';
 import {getLatestTime, stampNew, stampNewObj} from '../common/stamps.ts';
 import {DOT, EMPTY_STRING} from '../common/strings.ts';
+
+type MergeableListener = (
+  content?: MergeableContent,
+  changes?: MergeableChanges,
+) => void;
 
 const enum MessageValues {
   Response = 0,
@@ -78,11 +82,10 @@ export const createCustomSynchronizer = (
   onIgnoredError?: (error: any) => void,
   // undocumented:
   extra: {[methodName: string]: (...args: any[]) => any} = {},
+  scheduleId = [],
 ): Synchronizer => {
   let syncing: 0 | 1 = 0;
-  let persisterListener:
-    | PersisterListener<PersistsEnum.MergeableStoreOnly>
-    | undefined;
+  let synchronizerListener: MergeableListener | undefined;
   let sends = 0;
   let receives = 0;
 
@@ -251,136 +254,36 @@ export const createCustomSynchronizer = (
           store.getMergeableContentHashes(),
         );
 
-  const addPersisterListener = (
-    listener: PersisterListener<PersistsEnum.MergeableStoreOnly>,
-  ) => (persisterListener = listener);
+  const addPersisterListener = (listener: MergeableListener) =>
+    (synchronizerListener = listener);
 
-  const delPersisterListener = () => (persisterListener = undefined);
+  const delPersisterListener = () => (synchronizerListener = undefined);
 
   const startSync = async (initialContent?: Content) => {
     syncing = 1;
-    return await persister.startAutoPersisting(initialContent);
+    return await synchronizer.startAutoPersisting(initialContent);
   };
 
   const stopSync = async () => {
     syncing = 0;
-    await persister.stopAutoPersisting();
-    return persister;
+    await synchronizer.stopAutoPersisting();
+    return synchronizer;
   };
 
   const destroy = async () => {
-    await persister.stopSync();
+    arrayClear(mapGet(scheduleActions, scheduleId) as Action[]);
+    await synchronizer.stopSync();
     extraDestroy();
-    return persister;
+    return synchronizer;
   };
 
   const getSynchronizerStats = () => ({sends, receives});
 
-  const persister = createCustomPersister(
-    store,
-    getPersisted,
-    setPersisted,
-    addPersisterListener,
-    delPersisterListener,
-    onIgnoredError,
-    {startSync, stopSync, destroy, getSynchronizerStats, ...extra},
-  );
-
-  registerReceive(
-    (
-      fromClientId: Id,
-      transactionOrRequestId: IdOrNull,
-      message: MessageEnum | any,
-      body: any,
-    ) => {
-      const isAutoLoading = syncing || persister.isAutoLoading();
-      receives++;
-      onReceive?.(fromClientId, transactionOrRequestId, message, body);
-      if (message == MessageValues.Response) {
-        ifNotUndefined(
-          mapGet(pendingRequests, transactionOrRequestId),
-          ([toClientId, handleResponse]) =>
-            isUndefined(toClientId) || toClientId == fromClientId
-              ? handleResponse(body, fromClientId)
-              : /*! istanbul ignore next */
-                0,
-        );
-      } else if (message == MessageValues.ContentHashes && isAutoLoading) {
-        getChangesFromOtherStore(
-          fromClientId,
-          body,
-          transactionOrRequestId ?? undefined,
-        )
-          .then((changes: any) => {
-            persisterListener?.(undefined, changes);
-          })
-          .catch(onIgnoredError);
-      } else if (message == MessageValues.ContentDiff && isAutoLoading) {
-        persisterListener?.(undefined, body);
-      } else {
-        ifNotUndefined(
-          message == MessageValues.GetContentHashes &&
-            (syncing || persister.isAutoSaving())
-            ? store.getMergeableContentHashes()
-            : message == MessageValues.GetTableDiff
-              ? store.getMergeableTableDiff(body)
-              : message == MessageValues.GetRowDiff
-                ? store.getMergeableRowDiff(body)
-                : message == MessageValues.GetCellDiff
-                  ? store.getMergeableCellDiff(body)
-                  : message == MessageValues.GetValueDiff
-                    ? store.getMergeableValueDiff(body)
-                    : undefined,
-          (response) => {
-            sendImpl(
-              fromClientId,
-              transactionOrRequestId,
-              MessageValues.Response,
-              response,
-            );
-          },
-        );
-      }
-    },
-  );
-
-  return persister;
-};
-
-const enum StatusValues {
-  Idle = 0,
-  Loading = 1,
-  Saving = 2,
-}
-
-type Action = () => Promise<any>;
-
-const scheduleRunning: Map<any, 0 | 1> = mapNew();
-const scheduleActions: Map<any, Action[]> = mapNew();
-
-const createCustomPersister = <ListenerHandle>(
-  store: MergeableStore,
-  getPersisted: () => Promise<MergeableContent | undefined>,
-  setPersisted: (
-    getContent: () => MergeableContent,
-    changes?: MergeableChanges,
-  ) => Promise<void>,
-  addPersisterListener: (
-    listener: (content?: MergeableContent, changes?: MergeableChanges) => void,
-  ) => ListenerHandle | Promise<ListenerHandle>,
-  delPersisterListener: (
-    listenerHandle: ListenerHandle,
-  ) => void | Promise<void>,
-  onIgnoredError?: (error: any) => void,
-  // undocumented:
-  extra: {[methodName: string]: (...params: any[]) => any} = {},
-  scheduleId = [],
-): Synchronizer => {
   let status: StatusValues = StatusValues.Idle;
   let loads = 0;
   let saves = 0;
   let action;
-  let autoLoadHandle: ListenerHandle | undefined;
+  let autoLoadHandle: MergeableListener | undefined;
   let autoSaveListenerId: Id | undefined;
 
   mapEnsure(scheduleRunning, scheduleId, () => 0);
@@ -493,10 +396,7 @@ const createCustomPersister = <ListenerHandle>(
 
   const stopAutoLoad = async (): Promise<Synchronizer> => {
     if (autoLoadHandle) {
-      await tryCatch(
-        () => delPersisterListener(autoLoadHandle!),
-        onIgnoredError,
-      );
+      await tryCatch(() => delPersisterListener(), onIgnoredError);
       autoLoadHandle = undefined;
     }
     return synchronizer;
@@ -565,7 +465,7 @@ const createCustomPersister = <ListenerHandle>(
     return synchronizer;
   };
 
-  const getStatus = (): StatusValues => status;
+  const getStatus = (): Status => status as any;
 
   const addStatusListener = (listener: StatusListener): Id =>
     addListener(listener, statusListeners);
@@ -583,14 +483,9 @@ const createCustomPersister = <ListenerHandle>(
 
   const getStore = (): MergeableStore => store;
 
-  const destroy = (): Promise<Synchronizer> => {
-    arrayClear(mapGet(scheduleActions, scheduleId) as Action[]);
-    return stopAutoPersisting();
-  };
-
   const getStats = (): PersisterStats => ({loads, saves});
 
-  const synchronizer: any = {
+  const synchronizer = objFreeze({
     load,
     startAutoLoad,
     stopAutoLoad,
@@ -612,8 +507,82 @@ const createCustomPersister = <ListenerHandle>(
     getStore,
     destroy,
     getStats,
-    ...extra,
-  };
 
-  return objFreeze(synchronizer as Synchronizer);
+    startSync,
+    stopSync,
+    getSynchronizerStats,
+
+    ...extra,
+  });
+
+  registerReceive(
+    (
+      fromClientId: Id,
+      transactionOrRequestId: IdOrNull,
+      message: MessageEnum | any,
+      body: any,
+    ) => {
+      const isAutoLoading = syncing || synchronizer.isAutoLoading();
+      receives++;
+      onReceive?.(fromClientId, transactionOrRequestId, message, body);
+      if (message == MessageValues.Response) {
+        ifNotUndefined(
+          mapGet(pendingRequests, transactionOrRequestId),
+          ([toClientId, handleResponse]) =>
+            isUndefined(toClientId) || toClientId == fromClientId
+              ? handleResponse(body, fromClientId)
+              : /*! istanbul ignore next */
+                0,
+        );
+      } else if (message == MessageValues.ContentHashes && isAutoLoading) {
+        getChangesFromOtherStore(
+          fromClientId,
+          body,
+          transactionOrRequestId ?? undefined,
+        )
+          .then((changes: any) => {
+            synchronizerListener?.(undefined, changes);
+          })
+          .catch(onIgnoredError);
+      } else if (message == MessageValues.ContentDiff && isAutoLoading) {
+        synchronizerListener?.(undefined, body);
+      } else {
+        ifNotUndefined(
+          message == MessageValues.GetContentHashes &&
+            (syncing || synchronizer.isAutoSaving())
+            ? store.getMergeableContentHashes()
+            : message == MessageValues.GetTableDiff
+              ? store.getMergeableTableDiff(body)
+              : message == MessageValues.GetRowDiff
+                ? store.getMergeableRowDiff(body)
+                : message == MessageValues.GetCellDiff
+                  ? store.getMergeableCellDiff(body)
+                  : message == MessageValues.GetValueDiff
+                    ? store.getMergeableValueDiff(body)
+                    : undefined,
+          (response) => {
+            sendImpl(
+              fromClientId,
+              transactionOrRequestId,
+              MessageValues.Response,
+              response,
+            );
+          },
+        );
+      }
+    },
+  );
+
+  return synchronizer as Synchronizer;
 };
+
+const enum StatusValues {
+  Idle = 0,
+  Loading = 1,
+  Saving = 2,
+}
+
+type Action = () => Promise<any>;
+
+const scheduleRunning: Map<any, 0 | 1> = mapNew();
+const scheduleActions: Map<any, Action[]> = mapNew();
