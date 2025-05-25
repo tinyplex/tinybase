@@ -174,7 +174,7 @@ export const createCustomSynchronizer = (
     tablesStamp[1] = getLatestTime(tablesStamp[1], tablesTime2);
   };
 
-  const getChangesFromOtherStore = (
+  const pullChangesFromOtherClient = (
     otherClientId: IdOrNull = null,
     otherContentHashes?: ContentHashes,
     transactionId: Id = getTransactionId(),
@@ -245,15 +245,14 @@ export const createCustomSynchronizer = (
       ];
     }, onIgnoredError);
 
-  const getPersisted = async (): Promise<MergeableContent | undefined> => {
-    const changes = (await getChangesFromOtherStore()) as any;
+  const pullChanges = async (): Promise<MergeableChanges | undefined> => {
+    const changes = await pullChangesFromOtherClient();
     return changes && (!objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0]))
       ? changes
       : undefined;
   };
 
-  const setPersisted = async (
-    _getContent: () => MergeableContent,
+  const pushChanges = async (
     changes?: MergeableChanges<false>,
   ): Promise<void> =>
     changes
@@ -292,12 +291,8 @@ export const createCustomSynchronizer = (
 
   const statusListeners: IdSet2 = mapNew();
 
-  const [_getChanges, hasChanges, setDefaultContent] = [
-    () => store.getTransactionMergeableChanges(false),
-    ([[changedTables], [changedValues]]: MergeableChanges) =>
-      !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
-    store.setDefaultContent,
-  ];
+  const hasChanges = ([[changedTables], [changedValues]]: MergeableChanges) =>
+    !objIsEmpty(changedTables) || !objIsEmpty(changedValues);
 
   const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
     () => synchronizer,
@@ -340,18 +335,18 @@ export const createCustomSynchronizer = (
       await schedule(async () => {
         await tryCatch(
           async () => {
-            const content = await getPersisted();
-            if (isArray(content)) {
-              setContentOrChanges(content);
+            const changes = await pullChanges();
+            if (isArray(changes)) {
+              setContentOrChanges(changes);
             } else if (initialContent) {
-              setDefaultContent(initialContent);
+              store.setDefaultContent(initialContent);
             } else {
-              errorNew(`Content is not an array: ${content}`);
+              errorNew(`Changes is not an array: ${changes}`);
             }
           },
           () => {
             if (initialContent) {
-              setDefaultContent(initialContent);
+              store.setDefaultContent(initialContent);
             }
           },
         );
@@ -402,10 +397,7 @@ export const createCustomSynchronizer = (
     if (status != StatusValues.Pulling) {
       setStatus(StatusValues.Pushing);
       await schedule(async () => {
-        await tryCatch(
-          () => setPersisted(store.getMergeableContent, changes),
-          onIgnoredError,
-        );
+        await tryCatch(() => pushChanges(changes), onIgnoredError);
         setStatus(StatusValues.Idle);
       });
     }
@@ -493,7 +485,7 @@ export const createCustomSynchronizer = (
                 0,
         );
       } else if (message == MessageValues.ContentHashes && isPulling) {
-        getChangesFromOtherStore(
+        pullChangesFromOtherClient(
           fromClientId,
           body,
           transactionOrRequestId ?? undefined,
