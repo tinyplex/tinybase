@@ -15,7 +15,9 @@ import type {
 } from '../@types/mergeables/mergeable-store/index.d.ts';
 import type {
   PersisterListener,
+  PersisterStats,
   Persists as PersistsEnum,
+  StatusListener,
 } from '../@types/persisters/index.d.ts';
 import type {Content} from '../@types/store/index.d.ts';
 import type {
@@ -24,20 +26,24 @@ import type {
   Send,
   Synchronizer,
 } from '../@types/synchronizers/index.d.ts';
+import {arrayClear, arrayPush, arrayShift} from '../common/array.ts';
 import {collDel} from '../common/coll.ts';
 import {getUniqueId} from '../common/index.ts';
-import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
-import {objEnsure, objForEach, objIsEmpty} from '../common/obj.ts';
+import {getListenerFunctions} from '../common/listeners.ts';
+import {IdMap, mapEnsure, mapGet, mapNew, mapSet} from '../common/map.ts';
+import {objEnsure, objForEach, objFreeze, objIsEmpty} from '../common/obj.ts';
 import {
+  errorNew,
   ifNotUndefined,
+  isArray,
   isUndefined,
   promiseNew,
   startTimeout,
   tryCatch,
 } from '../common/other.ts';
+import {IdSet2} from '../common/set.ts';
 import {getLatestTime, stampNew, stampNewObj} from '../common/stamps.ts';
 import {DOT, EMPTY_STRING} from '../common/strings.ts';
-import {createCustomPersister} from '../persisters/index.ts';
 
 const enum MessageValues {
   Response = 0,
@@ -277,10 +283,8 @@ export const createCustomSynchronizer = (
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    2, // MergeableStoreOnly
     {startSync, stopSync, destroy, getSynchronizerStats, ...extra},
-    1,
-  ) as Synchronizer;
+  );
 
   registerReceive(
     (
@@ -341,4 +345,275 @@ export const createCustomSynchronizer = (
   );
 
   return persister;
+};
+
+const enum StatusValues {
+  Idle = 0,
+  Loading = 1,
+  Saving = 2,
+}
+
+type Action = () => Promise<any>;
+
+const scheduleRunning: Map<any, 0 | 1> = mapNew();
+const scheduleActions: Map<any, Action[]> = mapNew();
+
+const createCustomPersister = <ListenerHandle>(
+  store: MergeableStore,
+  getPersisted: () => Promise<MergeableContent | undefined>,
+  setPersisted: (
+    getContent: () => MergeableContent,
+    changes?: MergeableChanges,
+  ) => Promise<void>,
+  addPersisterListener: (
+    listener: (content?: MergeableContent, changes?: MergeableChanges) => void,
+  ) => ListenerHandle | Promise<ListenerHandle>,
+  delPersisterListener: (
+    listenerHandle: ListenerHandle,
+  ) => void | Promise<void>,
+  onIgnoredError?: (error: any) => void,
+  // undocumented:
+  extra: {[methodName: string]: (...params: any[]) => any} = {},
+  scheduleId = [],
+): Synchronizer => {
+  let status: StatusValues = StatusValues.Idle;
+  let loads = 0;
+  let saves = 0;
+  let action;
+  let autoLoadHandle: ListenerHandle | undefined;
+  let autoSaveListenerId: Id | undefined;
+
+  mapEnsure(scheduleRunning, scheduleId, () => 0);
+  mapEnsure(scheduleActions, scheduleId, () => []);
+
+  const statusListeners: IdSet2 = mapNew();
+
+  const [_getChanges, hasChanges, setDefaultContent] = [
+    () => store.getTransactionMergeableChanges(false),
+    ([[changedTables], [changedValues]]: MergeableChanges) =>
+      !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
+    store.setDefaultContent,
+  ];
+
+  const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
+    () => synchronizer,
+  );
+
+  const setStatus = (newStatus: StatusValues): void => {
+    if (newStatus != status) {
+      status = newStatus;
+      callListeners(statusListeners, undefined, status);
+    }
+  };
+
+  const run = async (): Promise<void> => {
+    /*! istanbul ignore else */
+    if (!mapGet(scheduleRunning, scheduleId)) {
+      mapSet(scheduleRunning, scheduleId, 1);
+      while (
+        !isUndefined(
+          (action = arrayShift(
+            mapGet(scheduleActions, scheduleId) as Action[],
+          )),
+        )
+      ) {
+        await tryCatch(action, onIgnoredError);
+      }
+      mapSet(scheduleRunning, scheduleId, 0);
+    }
+  };
+
+  const setContentOrChanges = (
+    contentOrChanges: MergeableContent | MergeableChanges | undefined,
+  ): void => {
+    (contentOrChanges?.[2] === 1
+      ? store.applyMergeableChanges
+      : store.setMergeableContent)(
+      contentOrChanges as MergeableContent & MergeableChanges,
+    );
+  };
+
+  const load = async (
+    initialContent?: Content | (() => Content),
+  ): Promise<Synchronizer> => {
+    /*! istanbul ignore else */
+    if (status != StatusValues.Saving) {
+      setStatus(StatusValues.Loading);
+      loads++;
+      await schedule(async () => {
+        await tryCatch(
+          async () => {
+            const content = await getPersisted();
+            if (isArray(content)) {
+              setContentOrChanges(content);
+            } else if (initialContent) {
+              setDefaultContent(initialContent);
+            } else {
+              errorNew(`Content is not an array: ${content}`);
+            }
+          },
+          () => {
+            if (initialContent) {
+              setDefaultContent(initialContent);
+            }
+          },
+        );
+        setStatus(StatusValues.Idle);
+      });
+    }
+    return synchronizer;
+  };
+
+  const startAutoLoad = async (
+    initialContent?: Content | (() => Content),
+  ): Promise<Synchronizer> => {
+    stopAutoLoad();
+    await load(initialContent);
+    await tryCatch(
+      async () =>
+        (autoLoadHandle = await addPersisterListener(
+          async (content, changes) => {
+            if (changes || content) {
+              /*! istanbul ignore else */
+              if (status != StatusValues.Saving) {
+                setStatus(StatusValues.Loading);
+                loads++;
+                setContentOrChanges(changes ?? content);
+                setStatus(StatusValues.Idle);
+              }
+            } else {
+              await load();
+            }
+          },
+        )),
+      onIgnoredError,
+    );
+    return synchronizer;
+  };
+
+  const stopAutoLoad = async (): Promise<Synchronizer> => {
+    if (autoLoadHandle) {
+      await tryCatch(
+        () => delPersisterListener(autoLoadHandle!),
+        onIgnoredError,
+      );
+      autoLoadHandle = undefined;
+    }
+    return synchronizer;
+  };
+
+  const isAutoLoading = () => !isUndefined(autoLoadHandle);
+
+  const save = async (changes?: MergeableChanges): Promise<Synchronizer> => {
+    /*! istanbul ignore else */
+    if (status != StatusValues.Loading) {
+      setStatus(StatusValues.Saving);
+      saves++;
+      await schedule(async () => {
+        await tryCatch(
+          () => setPersisted(store.getMergeableContent, changes),
+          onIgnoredError,
+        );
+        setStatus(StatusValues.Idle);
+      });
+    }
+    return synchronizer;
+  };
+
+  const startAutoSave = async (): Promise<Synchronizer> => {
+    stopAutoSave();
+    await save();
+    autoSaveListenerId = store.addDidFinishTransactionListener(() => {
+      const changes = store.getTransactionMergeableChanges(false) as any;
+      if (hasChanges(changes)) {
+        save(changes);
+      }
+    });
+    return synchronizer;
+  };
+
+  const stopAutoSave = async (): Promise<Synchronizer> => {
+    if (autoSaveListenerId) {
+      store.delListener(autoSaveListenerId);
+      autoSaveListenerId = undefined;
+    }
+    return synchronizer;
+  };
+
+  const isAutoSaving = () => !isUndefined(autoSaveListenerId);
+
+  const startAutoPersisting = async (
+    initialContent?: Content | (() => Content),
+    startSaveFirst = false,
+  ): Promise<Synchronizer> => {
+    const [call1, call2] = startSaveFirst
+      ? [startAutoSave, startAutoLoad]
+      : [startAutoLoad, startAutoSave];
+    await call1(initialContent);
+    await call2(initialContent);
+    return synchronizer;
+  };
+
+  const stopAutoPersisting = async (
+    stopSaveFirst = false,
+  ): Promise<Synchronizer> => {
+    const [call1, call2] = stopSaveFirst
+      ? [stopAutoSave, stopAutoLoad]
+      : [stopAutoLoad, stopAutoSave];
+    await call1();
+    await call2();
+    return synchronizer;
+  };
+
+  const getStatus = (): StatusValues => status;
+
+  const addStatusListener = (listener: StatusListener): Id =>
+    addListener(listener, statusListeners);
+
+  const delListener = (listenerId: Id): MergeableStore => {
+    delListenerImpl(listenerId);
+    return store;
+  };
+
+  const schedule = async (...actions: Action[]): Promise<Synchronizer> => {
+    arrayPush(mapGet(scheduleActions, scheduleId) as Action[], ...actions);
+    await run();
+    return synchronizer;
+  };
+
+  const getStore = (): MergeableStore => store;
+
+  const destroy = (): Promise<Synchronizer> => {
+    arrayClear(mapGet(scheduleActions, scheduleId) as Action[]);
+    return stopAutoPersisting();
+  };
+
+  const getStats = (): PersisterStats => ({loads, saves});
+
+  const synchronizer: any = {
+    load,
+    startAutoLoad,
+    stopAutoLoad,
+    isAutoLoading,
+
+    save,
+    startAutoSave,
+    stopAutoSave,
+    isAutoSaving,
+
+    startAutoPersisting,
+    stopAutoPersisting,
+
+    getStatus,
+    addStatusListener,
+    delListener,
+
+    schedule,
+    getStore,
+    destroy,
+    getStats,
+    ...extra,
+  };
+
+  return objFreeze(synchronizer as Synchronizer);
 };

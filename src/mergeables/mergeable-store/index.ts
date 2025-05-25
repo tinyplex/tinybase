@@ -620,6 +620,11 @@ export const createMergeableStore = ((
 
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
+    setMergeableContent,
+    setDefaultContent,
+    getTransactionMergeableChanges,
+    applyMergeableChanges,
+    merge,
 
     getMergeableContentHashes,
     getMergeableTableHashes,
@@ -630,11 +635,6 @@ export const createMergeableStore = ((
     getMergeableCellDiff,
     getMergeableValueHashes,
     getMergeableValueDiff,
-    setMergeableContent,
-    setDefaultContent,
-    getTransactionMergeableChanges,
-    applyMergeableChanges,
-    merge,
   };
 
   (store as any).setInternalListeners(
