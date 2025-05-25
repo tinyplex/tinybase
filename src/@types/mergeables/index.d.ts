@@ -71,8 +71,12 @@ export type ValueStamp<Hashed extends boolean = false> = Stamp<
   Hashed
 >;
 
+export type ChangesListener = (changes: MergeableChanges<false>) => void;
+
 /// Mergeable
 export interface Mergeable {
+  addChangesListener(changesListener: ChangesListener): () => void;
+
   /// Mergeable.setDefaultContent
   setDefaultContent(content: Content | (() => Content)): this;
 

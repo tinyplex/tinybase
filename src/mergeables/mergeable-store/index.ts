@@ -44,6 +44,7 @@ import {
   objForEach,
   objFreeze,
   objHas,
+  objIsEmpty,
   objMap,
   objNew,
   objValidate,
@@ -618,14 +619,28 @@ export const createMergeableStore = ((
     return stampNew(values, valuesTime);
   };
 
+  const addChangesListener = (
+    changesListener: (changes: MergeableChanges<false>) => void,
+  ): (() => void) => {
+    const listenerId = store.addDidFinishTransactionListener(() => {
+      const changes =
+        getTransactionMergeableChanges() as MergeableChanges<false>;
+      if (!objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0])) {
+        changesListener(changes);
+      }
+    });
+    return () => store.delListener(listenerId);
+  };
+
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
     setMergeableContent,
-    setDefaultContent,
     getTransactionMergeableChanges,
     applyMergeableChanges,
     merge,
 
+    addChangesListener,
+    setDefaultContent,
     getMergeableContentHashes,
     getMergeableTableHashes,
     getMergeableTableDiff,

@@ -98,7 +98,7 @@ export const createCustomSynchronizer = (
   let status: StatusValues = StatusValues.Idle;
   let action;
   let autoPullHandle: MergeableListener | undefined;
-  let autoPushListenerId: Id | undefined;
+  let delChangesListener: (() => void) | undefined;
 
   const scheduledActions: Action[] = [];
 
@@ -252,18 +252,6 @@ export const createCustomSynchronizer = (
       : undefined;
   };
 
-  const pushChanges = async (
-    changes?: MergeableChanges<false>,
-  ): Promise<void> =>
-    changes
-      ? sendImpl(null, getTransactionId(), MessageValues.ContentDiff, changes)
-      : sendImpl(
-          null,
-          getTransactionId(),
-          MessageValues.ContentHashes,
-          mergeable.getMergeableContentHashes(),
-        );
-
   const addPersisterListener = (listener: MergeableListener) =>
     (synchronizerListener = listener);
 
@@ -291,9 +279,6 @@ export const createCustomSynchronizer = (
   const getStats = () => ({sends, receives});
 
   const statusListeners: IdSet2 = mapNew();
-
-  const hasChanges = ([[changedTables], [changedValues]]: MergeableChanges) =>
-    !objIsEmpty(changedTables) || !objIsEmpty(changedValues);
 
   const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
     () => synchronizer,
@@ -393,12 +378,30 @@ export const createCustomSynchronizer = (
 
   const isAutoPulling = () => !isUndefined(autoPullHandle);
 
-  const push = async (changes?: MergeableChanges): Promise<Synchronizer> => {
+  const push = async (
+    changes?: MergeableChanges<false>,
+  ): Promise<Synchronizer> => {
     /*! istanbul ignore else */
     if (status != StatusValues.Pulling) {
       setStatus(StatusValues.Pushing);
       await schedule(async () => {
-        await tryCatch(() => pushChanges(changes), onIgnoredError);
+        await tryCatch(
+          () =>
+            changes
+              ? sendImpl(
+                  null,
+                  getTransactionId(),
+                  MessageValues.ContentDiff,
+                  changes,
+                )
+              : sendImpl(
+                  null,
+                  getTransactionId(),
+                  MessageValues.ContentHashes,
+                  mergeable.getMergeableContentHashes(),
+                ),
+          onIgnoredError,
+        );
         setStatus(StatusValues.Idle);
       });
     }
@@ -408,24 +411,19 @@ export const createCustomSynchronizer = (
   const startAutoPush = async (): Promise<Synchronizer> => {
     stopAutoPush();
     await push();
-    autoPushListenerId = mergeable.addDidFinishTransactionListener(() => {
-      const changes = mergeable.getTransactionMergeableChanges(false) as any;
-      if (hasChanges(changes)) {
-        push(changes);
-      }
-    });
+    delChangesListener = mergeable.addChangesListener(push);
     return synchronizer;
   };
 
   const stopAutoPush = async (): Promise<Synchronizer> => {
-    if (autoPushListenerId) {
-      mergeable.delListener(autoPushListenerId);
-      autoPushListenerId = undefined;
+    if (delChangesListener) {
+      delChangesListener();
+      delChangesListener = undefined;
     }
     return synchronizer;
   };
 
-  const isAutoPushing = () => !isUndefined(autoPushListenerId);
+  const isAutoPushing = () => !isUndefined(delChangesListener);
 
   const getStatus = (): Status => status as any;
 
