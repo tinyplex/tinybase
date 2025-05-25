@@ -7,6 +7,39 @@
  * @since v5.0.0
  */
 /// synchronizers
+
+/**
+ * The Status enum is used to indicate whether a Synchronizer is idle, or
+ * pulling or pushing data.
+ *
+ * The enum is intended to be used to understand the status of the Synchronizer
+ * in conjunction with the getStatus and addStatusListener methods.
+ *
+ * Note that a Synchronizer cannot be pulling and pushing data at the same time.
+ * @category Lifecycle
+ * @since v7.0.0
+ */
+/// synchronizers.Status
+{
+  /**
+   * Indicates that the Synchronizer is neither pulling nor pushing data.
+   * @category Enum
+   * @since v7.0.0
+   */
+  /// synchronizers.Status.Idle
+  /**
+   * Indicates that the Synchronizer is pulling data.
+   * @category Enum
+   * @since v7.0.0
+   */
+  /// synchronizers.Status.Pulling
+  /**
+   * Indicates that the Synchronizer is pushing data.
+   * @category Enum
+   * @since v7.0.0
+   */
+  /// synchronizers.Status.Pushing
+}
 /**
  * The Message enum is used to indicate the type of the message being passed
  * between Synchronizer instances.
@@ -304,6 +337,45 @@
    * @since v5.0.0
    */
   /// Synchronizer.stopSync
+  /**
+   * The addStatusListener method registers a listener function with the
+   * Synchronizer that will be called whenever it starts or stops pulling or
+   * pushing data.
+   *
+   * The provided listener is a StatusListener function, and will be called with
+   * a reference to the Synchronizer and the new Status: 0 means now idle, 1
+   * means now pulling, and 2 means now pushing.
+   * @param listener The function that will be called whenever the Synchronizer
+   * starts or stops pulling or pushing.
+   * @returns A unique Id for the listener that can later be used to remove it.
+   * @example
+   * This example registers a listener that responds to changes in the state of
+   * the Synchronizer.
+   *
+   * ```js
+   * import {createMergeableStore} from 'tinybase';
+   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+   *
+   * const store = createMergeableStore();
+   * const synchronizer = createLocalSynchronizer(store);
+   * const listenerId = synchronizer.addStatusListener((_, status) => {
+   *   console.log(`Status changed to ${status}`);
+   * });
+   *
+   * await synchronizer.pull();
+   * // -> 'Status changed to 1'
+   * // -> 'Status changed to 0'
+   * await synchronizer.push();
+   * // -> 'Status changed to 2'
+   * // -> 'Status changed to 0'
+   *
+   * synchronizer.delListener(listenerId);
+   * await synchronizer.destroy();
+   * ```
+   * @category Listener
+   * @since v5.3.0
+   */
+  /// Synchronizer.addStatusListener
   /**
    * The destroy method should be called when this Synchronizer object is no
    * longer used.

@@ -7,13 +7,13 @@ import type {
 } from '../mergeables/mergeable-store/index.d.ts';
 import type {Changes, Content, Store} from '../store/index.d.ts';
 
-/// Status
+/// persisters.Status
 export const enum Status {
-  /// Status.Idle
+  /// persisters.Status.Idle
   Idle = 0,
-  /// Status.Loading
+  /// persisters.Status.Loading
   Loading = 1,
-  /// Status.Saving
+  /// persisters.Status.Saving
   Saving = 2,
 }
 

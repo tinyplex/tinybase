@@ -13,12 +13,13 @@ import type {
   MergeableContent,
   MergeableStore,
 } from '../@types/mergeables/mergeable-store/index.d.ts';
-import type {Status, StatusListener} from '../@types/persisters/index.d.ts';
 import type {Content} from '../@types/store/index.d.ts';
 import type {
   Message as MessageEnum,
   Receive,
   Send,
+  Status,
+  StatusListener,
   Synchronizer,
 } from '../@types/synchronizers/index.d.ts';
 import {arrayClear, arrayPush, arrayShift} from '../common/array.ts';

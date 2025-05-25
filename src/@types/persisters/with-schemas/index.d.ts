@@ -14,13 +14,13 @@ import type {
 } from '../../store/with-schemas/index.d.ts';
 import type {Id} from '../../with-schemas/index.d.ts';
 
-/// Status
+/// persisters.Status
 export const enum Status {
-  /// Status.Idle
+  /// persisters.Status.Idle
   Idle = 0,
-  /// Status.Loading
+  /// persisters.Status.Loading
   Loading = 1,
-  /// Status.Saving
+  /// persisters.Status.Saving
   Saving = 2,
 }
 

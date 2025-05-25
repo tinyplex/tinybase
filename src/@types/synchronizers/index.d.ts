@@ -3,6 +3,16 @@ import type {Id, IdOrNull} from '../common/index.d.ts';
 import type {MergeableStore} from '../mergeables/mergeable-store/index.d.ts';
 import type {Content} from '../store/index.d.ts';
 
+/// synchronizers.Status
+export const enum Status {
+  /// synchronizers.Status.Idle
+  Idle = 0,
+  /// synchronizers.Status.Pulling
+  Pulling = 1,
+  /// synchronizers.Status.Pushing
+  Pushing = 2,
+}
+
 /// Message
 export const enum Message {
   /// Message.Response
@@ -37,6 +47,12 @@ export type Receive = (
   requestId: IdOrNull,
   message: Message,
   body: any,
+) => void;
+
+/// StatusListener
+export type StatusListener = (
+  synchronizer: Synchronizer,
+  status: Status,
 ) => void;
 
 /// SynchronizerStats

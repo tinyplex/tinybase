@@ -63,26 +63,26 @@
  * @category Lifecycle
  * @since v5.3.0
  */
-/// Status
+/// persisters.Status
 {
   /**
-   * Indicates that the Persister is neither loading or saving data.
+   * Indicates that the Persister is neither loading nor saving data.
    * @category Enum
    * @since v5.3.0
    */
-  /// Status.Idle
+  /// persisters.Status.Idle
   /**
    * Indicates that the Persister is loading data.
    * @category Enum
    * @since v5.3.0
    */
-  /// Status.Loading
+  /// persisters.Status.Loading
   /**
    * Indicates that the Persister is saving data.
    * @category Enum
    * @since v5.3.0
    */
-  /// Status.Saving
+  /// persisters.Status.Saving
 }
 /**
  * The Persists enum is used to indicate whether a Persister can support a

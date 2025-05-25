@@ -6,6 +6,16 @@ import type {
   OptionalSchemas,
 } from '../../store/with-schemas/index.d.ts';
 
+/// synchronizers.Status
+export const enum Status {
+  /// synchronizers.Status.Idle
+  Idle = 0,
+  /// synchronizers.Status.Pulling
+  Pulling = 1,
+  /// synchronizers.Status.Pushing
+  Pushing = 2,
+}
+
 /// Message
 export const enum Message {
   /// Message.Response
@@ -40,6 +50,12 @@ export type Receive = (
   requestId: Id,
   message: Message,
   body: any,
+) => void;
+
+/// StatusListener
+export type StatusListener<Schemas extends OptionalSchemas> = (
+  synchronizer: Synchronizer<Schemas>,
+  status: Status,
 ) => void;
 
 /// SynchronizerStats
