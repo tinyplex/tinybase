@@ -15,7 +15,10 @@ import type {
   MetricListener,
   Metrics,
 } from '../@types/metrics/index.d.ts';
-import type {Persister, StatusListener} from '../@types/persisters/index.d.ts';
+import type {
+  Persister,
+  StatusListener as PersisterStatusListener,
+} from '../@types/persisters/index.d.ts';
 import type {
   QueryIdsListener,
   ResultCellIdsListener,
@@ -50,7 +53,10 @@ import type {
   ValueListener,
   ValuesListener,
 } from '../@types/store/index.d.ts';
-import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
+import type {
+  Synchronizer,
+  StatusListener as SynchronizerStatusListener,
+} from '../@types/synchronizers/index.d.ts';
 import type {
   ClientIdsListener,
   PathIdsListener,
@@ -127,7 +133,8 @@ type Listener =
   | ResultCellListener
   | PathIdsListener
   | ClientIdsListener
-  | StatusListener;
+  | PersisterStatusListener
+  | SynchronizerStatusListener;
 type IdOrBoolean = Id | boolean;
 
 const getWildcardedLeaves = (
