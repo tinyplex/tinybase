@@ -25,7 +25,7 @@ import {arrayClear, arrayPush, arrayShift} from '../common/array.ts';
 import {collDel} from '../common/coll.ts';
 import {getUniqueId} from '../common/index.ts';
 import {getListenerFunctions} from '../common/listeners.ts';
-import {IdMap, mapEnsure, mapGet, mapNew, mapSet} from '../common/map.ts';
+import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
 import {objEnsure, objForEach, objFreeze, objIsEmpty} from '../common/obj.ts';
 import {
   errorNew,
@@ -45,6 +45,8 @@ type MergeableListener = (
   changes?: MergeableChanges,
 ) => void;
 
+type Action = () => Promise<any>;
+
 const enum MessageValues {
   Response = 0,
   GetContentHashes = 1,
@@ -54,6 +56,12 @@ const enum MessageValues {
   GetRowDiff = 5,
   GetCellDiff = 6,
   GetValueDiff = 7,
+}
+
+const enum StatusValues {
+  Idle = 0,
+  Loading = 1,
+  Saving = 2,
 }
 
 export const Message = {
@@ -78,12 +86,13 @@ export const createCustomSynchronizer = (
   onIgnoredError?: (error: any) => void,
   // undocumented:
   extra: {[methodName: string]: (...args: any[]) => any} = {},
-  scheduleId = [],
 ): Synchronizer => {
   let syncing: 0 | 1 = 0;
   let synchronizerListener: MergeableListener | undefined;
   let sends = 0;
   let receives = 0;
+
+  const scheduledActions: Action[] = [];
 
   const pendingRequests: IdMap<
     [
@@ -267,7 +276,7 @@ export const createCustomSynchronizer = (
   };
 
   const destroy = async () => {
-    arrayClear(mapGet(scheduleActions, scheduleId) as Action[]);
+    arrayClear(scheduledActions);
     await synchronizer.stopSync();
     extraDestroy();
     return synchronizer;
@@ -279,8 +288,6 @@ export const createCustomSynchronizer = (
   let action;
   let autoLoadHandle: MergeableListener | undefined;
   let autoSaveListenerId: Id | undefined;
-
-  mapEnsure(scheduleActions, scheduleId, () => []);
 
   const statusListeners: IdSet2 = mapNew();
 
@@ -308,13 +315,7 @@ export const createCustomSynchronizer = (
     /*! istanbul ignore else */
     if (!running) {
       running = 1;
-      while (
-        !isUndefined(
-          (action = arrayShift(
-            mapGet(scheduleActions, scheduleId) as Action[],
-          )),
-        )
-      ) {
+      while (!isUndefined((action = arrayShift(scheduledActions)))) {
         await tryCatch(action, onIgnoredError);
       }
       running = 0;
@@ -468,7 +469,7 @@ export const createCustomSynchronizer = (
   };
 
   const schedule = async (...actions: Action[]): Promise<Synchronizer> => {
-    arrayPush(mapGet(scheduleActions, scheduleId) as Action[], ...actions);
+    arrayPush(scheduledActions, ...actions);
     await run();
     return synchronizer;
   };
@@ -554,13 +555,3 @@ export const createCustomSynchronizer = (
   });
   return synchronizer;
 };
-
-const enum StatusValues {
-  Idle = 0,
-  Loading = 1,
-  Saving = 2,
-}
-
-type Action = () => Promise<any>;
-
-const scheduleActions: Map<any, Action[]> = mapNew();
