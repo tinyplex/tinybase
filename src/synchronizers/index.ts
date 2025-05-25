@@ -75,6 +75,8 @@ export const Message = {
   GetValueDiff: MessageValues.GetValueDiff,
 };
 
+const getTransactionId = () => getUniqueId(11);
+
 export const createCustomSynchronizer = (
   store: MergeableStore,
   send: Send,
@@ -87,10 +89,15 @@ export const createCustomSynchronizer = (
   // undocumented:
   extra: {[methodName: string]: (...args: any[]) => any} = {},
 ): Synchronizer => {
+  let running: 0 | 1 = 0;
   let syncing: 0 | 1 = 0;
   let synchronizerListener: MergeableListener | undefined;
   let sends = 0;
   let receives = 0;
+  let status: StatusValues = StatusValues.Idle;
+  let action;
+  let autoLoadHandle: MergeableListener | undefined;
+  let autoSaveListenerId: Id | undefined;
 
   const scheduledActions: Action[] = [];
 
@@ -100,8 +107,6 @@ export const createCustomSynchronizer = (
       handleResponse: (response: any, fromClientId: Id) => void,
     ]
   > = mapNew();
-
-  const getTransactionId = () => getUniqueId(11);
 
   const sendImpl = (
     toClientId: IdOrNull,
@@ -284,11 +289,6 @@ export const createCustomSynchronizer = (
 
   const getStats = () => ({sends, receives});
 
-  let status: StatusValues = StatusValues.Idle;
-  let action;
-  let autoLoadHandle: MergeableListener | undefined;
-  let autoSaveListenerId: Id | undefined;
-
   const statusListeners: IdSet2 = mapNew();
 
   const [_getChanges, hasChanges, setDefaultContent] = [
@@ -308,8 +308,6 @@ export const createCustomSynchronizer = (
       callListeners(statusListeners, undefined, status);
     }
   };
-
-  let running: 0 | 1 = 0;
 
   const run = async (): Promise<void> => {
     /*! istanbul ignore else */
