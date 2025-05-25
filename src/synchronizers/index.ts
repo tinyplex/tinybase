@@ -12,7 +12,6 @@ import type {
 import type {
   MergeableChanges,
   MergeableContent,
-  MergeableStore,
 } from '../@types/mergeables/mergeable-store/index.d.ts';
 import type {Content} from '../@types/store/index.d.ts';
 import type {
@@ -272,13 +271,14 @@ export const createCustomSynchronizer = (
 
   const startSync = async (initialContent?: Content) => {
     syncing = 1;
-    return await startAutoPersisting(initialContent);
+    await startAutoPull(initialContent);
+    return await startAutoPush();
   };
 
   const stopSync = async () => {
     syncing = 0;
-    await stopAutoPersisting();
-    return synchronizer;
+    await stopAutoPull();
+    return await stopAutoPush();
   };
 
   const destroy = async () => {
@@ -427,35 +427,12 @@ export const createCustomSynchronizer = (
 
   const isAutoPushing = () => !isUndefined(autoPushListenerId);
 
-  const startAutoPersisting = async (
-    initialContent?: Content | (() => Content),
-    startPushFirst = false,
-  ): Promise<Synchronizer> => {
-    const [call1, call2] = startPushFirst
-      ? [startAutoPush, startAutoPull]
-      : [startAutoPull, startAutoPush];
-    await call1(initialContent);
-    await call2(initialContent);
-    return synchronizer;
-  };
-
-  const stopAutoPersisting = async (
-    stopPushFirst = false,
-  ): Promise<Synchronizer> => {
-    const [call1, call2] = stopPushFirst
-      ? [stopAutoPush, stopAutoPull]
-      : [stopAutoPull, stopAutoPush];
-    await call1();
-    await call2();
-    return synchronizer;
-  };
-
   const getStatus = (): Status => status as any;
 
   const addStatusListener = (listener: StatusListener): Id =>
     addListener(listener, statusListeners);
 
-  const delListener = (listenerId: Id): MergeableStore => {
+  const delListener = (listenerId: Id): Mergeable => {
     delListenerImpl(listenerId);
     return mergeable;
   };
