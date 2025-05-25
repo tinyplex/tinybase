@@ -3330,7 +3330,7 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Multidirectional half tables
 }
 `;
 
-exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoPull1 but not autoPush2, defaults 1`] = `
 [
   [
     {
@@ -3369,7 +3369,7 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoLoad1 but
 ]
 `;
 
-exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoPull1 but not autoPush2, defaults 2`] = `
 [
   [
     {
@@ -3446,7 +3446,7 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoLoad1 but
 ]
 `;
 
-exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoPull1 but not autoPush2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -3459,7 +3459,7 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoLoad1 but
 ]
 `;
 
-exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoPush1 but not autoPull2 1`] = `
 [
   [
     {
@@ -3536,7 +3536,7 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoSave1 but
 ]
 `;
 
-exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoPush1 but not autoPull2 2`] = `
 [
   [
     {},
@@ -3551,7 +3551,7 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoSave1 but
 ]
 `;
 
-exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoPush1 but not autoPull2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -3564,7 +3564,7 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoSave1 but
 ]
 `;
 
-exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional pull1 but not autoPush2, defaults 1`] = `
 [
   [
     {
@@ -3603,7 +3603,7 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional load1 but not
 ]
 `;
 
-exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional pull1 but not autoPush2, defaults 2`] = `
 [
   [
     {
@@ -3680,7 +3680,7 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional load1 but not
 ]
 `;
 
-exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional pull1 but not autoPush2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -3693,7 +3693,7 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional load1 but not
 ]
 `;
 
-exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional save1 but not autoLoad2 1`] = `
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional push1 but not autoPull2 1`] = `
 [
   [
     {
@@ -3770,7 +3770,7 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional save1 but not
 ]
 `;
 
-exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional save1 but not autoLoad2 2`] = `
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional push1 but not autoPull2 2`] = `
 [
   [
     {},
@@ -3785,7 +3785,7 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional save1 but not
 ]
 `;
 
-exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional push1 but not autoPull2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -7690,7 +7690,7 @@ exports[`Syncs to/from Custom Synchronizer Multidirectional half tables, half va
 }
 `;
 
-exports[`Syncs to/from Custom Synchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional autoPull1 but not autoPush2, defaults 1`] = `
 [
   [
     {
@@ -7729,7 +7729,7 @@ exports[`Syncs to/from Custom Synchronizer Unidirectional autoLoad1 but not auto
 ]
 `;
 
-exports[`Syncs to/from Custom Synchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional autoPull1 but not autoPush2, defaults 2`] = `
 [
   [
     {
@@ -7806,7 +7806,7 @@ exports[`Syncs to/from Custom Synchronizer Unidirectional autoLoad1 but not auto
 ]
 `;
 
-exports[`Syncs to/from Custom Synchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional autoPull1 but not autoPush2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -7819,7 +7819,7 @@ exports[`Syncs to/from Custom Synchronizer Unidirectional autoLoad1 but not auto
 ]
 `;
 
-exports[`Syncs to/from Custom Synchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional autoPush1 but not autoPull2 1`] = `
 [
   [
     {
@@ -7896,7 +7896,7 @@ exports[`Syncs to/from Custom Synchronizer Unidirectional autoSave1 but not auto
 ]
 `;
 
-exports[`Syncs to/from Custom Synchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional autoPush1 but not autoPull2 2`] = `
 [
   [
     {},
@@ -7911,7 +7911,7 @@ exports[`Syncs to/from Custom Synchronizer Unidirectional autoSave1 but not auto
 ]
 `;
 
-exports[`Syncs to/from Custom Synchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional autoPush1 but not autoPull2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -7924,7 +7924,7 @@ exports[`Syncs to/from Custom Synchronizer Unidirectional autoSave1 but not auto
 ]
 `;
 
-exports[`Syncs to/from Custom Synchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional pull1 but not autoPush2, defaults 1`] = `
 [
   [
     {
@@ -7963,7 +7963,7 @@ exports[`Syncs to/from Custom Synchronizer Unidirectional load1 but not autoSave
 ]
 `;
 
-exports[`Syncs to/from Custom Synchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional pull1 but not autoPush2, defaults 2`] = `
 [
   [
     {
@@ -8040,7 +8040,7 @@ exports[`Syncs to/from Custom Synchronizer Unidirectional load1 but not autoSave
 ]
 `;
 
-exports[`Syncs to/from Custom Synchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional pull1 but not autoPush2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -8053,7 +8053,7 @@ exports[`Syncs to/from Custom Synchronizer Unidirectional load1 but not autoSave
 ]
 `;
 
-exports[`Syncs to/from Custom Synchronizer Unidirectional save1 but not autoLoad2 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional push1 but not autoPull2 1`] = `
 [
   [
     {
@@ -8130,7 +8130,7 @@ exports[`Syncs to/from Custom Synchronizer Unidirectional save1 but not autoLoad
 ]
 `;
 
-exports[`Syncs to/from Custom Synchronizer Unidirectional save1 but not autoLoad2 2`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional push1 but not autoPull2 2`] = `
 [
   [
     {},
@@ -8145,7 +8145,7 @@ exports[`Syncs to/from Custom Synchronizer Unidirectional save1 but not autoLoad
 ]
 `;
 
-exports[`Syncs to/from Custom Synchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from Custom Synchronizer Unidirectional push1 but not autoPull2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -11488,7 +11488,7 @@ exports[`Syncs to/from LocalSynchronizer Multidirectional half tables, half valu
 }
 `;
 
-exports[`Syncs to/from LocalSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional autoPull1 but not autoPush2, defaults 1`] = `
 [
   [
     {
@@ -11527,7 +11527,7 @@ exports[`Syncs to/from LocalSynchronizer Unidirectional autoLoad1 but not autoSa
 ]
 `;
 
-exports[`Syncs to/from LocalSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional autoPull1 but not autoPush2, defaults 2`] = `
 [
   [
     {
@@ -11604,7 +11604,7 @@ exports[`Syncs to/from LocalSynchronizer Unidirectional autoLoad1 but not autoSa
 ]
 `;
 
-exports[`Syncs to/from LocalSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional autoPull1 but not autoPush2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -11617,7 +11617,7 @@ exports[`Syncs to/from LocalSynchronizer Unidirectional autoLoad1 but not autoSa
 ]
 `;
 
-exports[`Syncs to/from LocalSynchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional autoPush1 but not autoPull2 1`] = `
 [
   [
     {
@@ -11694,7 +11694,7 @@ exports[`Syncs to/from LocalSynchronizer Unidirectional autoSave1 but not autoLo
 ]
 `;
 
-exports[`Syncs to/from LocalSynchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional autoPush1 but not autoPull2 2`] = `
 [
   [
     {},
@@ -11709,7 +11709,7 @@ exports[`Syncs to/from LocalSynchronizer Unidirectional autoSave1 but not autoLo
 ]
 `;
 
-exports[`Syncs to/from LocalSynchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional autoPush1 but not autoPull2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -11722,7 +11722,7 @@ exports[`Syncs to/from LocalSynchronizer Unidirectional autoSave1 but not autoLo
 ]
 `;
 
-exports[`Syncs to/from LocalSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional pull1 but not autoPush2, defaults 1`] = `
 [
   [
     {
@@ -11761,7 +11761,7 @@ exports[`Syncs to/from LocalSynchronizer Unidirectional load1 but not autoSave2,
 ]
 `;
 
-exports[`Syncs to/from LocalSynchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional pull1 but not autoPush2, defaults 2`] = `
 [
   [
     {
@@ -11838,7 +11838,7 @@ exports[`Syncs to/from LocalSynchronizer Unidirectional load1 but not autoSave2,
 ]
 `;
 
-exports[`Syncs to/from LocalSynchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional pull1 but not autoPush2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -11851,7 +11851,7 @@ exports[`Syncs to/from LocalSynchronizer Unidirectional load1 but not autoSave2,
 ]
 `;
 
-exports[`Syncs to/from LocalSynchronizer Unidirectional save1 but not autoLoad2 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional push1 but not autoPull2 1`] = `
 [
   [
     {
@@ -11928,7 +11928,7 @@ exports[`Syncs to/from LocalSynchronizer Unidirectional save1 but not autoLoad2 
 ]
 `;
 
-exports[`Syncs to/from LocalSynchronizer Unidirectional save1 but not autoLoad2 2`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional push1 but not autoPull2 2`] = `
 [
   [
     {},
@@ -11943,7 +11943,7 @@ exports[`Syncs to/from LocalSynchronizer Unidirectional save1 but not autoLoad2 
 ]
 `;
 
-exports[`Syncs to/from LocalSynchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from LocalSynchronizer Unidirectional push1 but not autoPull2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -15286,7 +15286,7 @@ exports[`Syncs to/from WsSynchronizer Multidirectional half tables, half values:
 }
 `;
 
-exports[`Syncs to/from WsSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional autoPull1 but not autoPush2, defaults 1`] = `
 [
   [
     {
@@ -15325,7 +15325,7 @@ exports[`Syncs to/from WsSynchronizer Unidirectional autoLoad1 but not autoSave2
 ]
 `;
 
-exports[`Syncs to/from WsSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional autoPull1 but not autoPush2, defaults 2`] = `
 [
   [
     {
@@ -15402,7 +15402,7 @@ exports[`Syncs to/from WsSynchronizer Unidirectional autoLoad1 but not autoSave2
 ]
 `;
 
-exports[`Syncs to/from WsSynchronizer Unidirectional autoLoad1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional autoPull1 but not autoPush2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -15415,7 +15415,7 @@ exports[`Syncs to/from WsSynchronizer Unidirectional autoLoad1 but not autoSave2
 ]
 `;
 
-exports[`Syncs to/from WsSynchronizer Unidirectional autoSave1 but not autoLoad2 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional autoPush1 but not autoPull2 1`] = `
 [
   [
     {
@@ -15492,7 +15492,7 @@ exports[`Syncs to/from WsSynchronizer Unidirectional autoSave1 but not autoLoad2
 ]
 `;
 
-exports[`Syncs to/from WsSynchronizer Unidirectional autoSave1 but not autoLoad2 2`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional autoPush1 but not autoPull2 2`] = `
 [
   [
     {},
@@ -15507,7 +15507,7 @@ exports[`Syncs to/from WsSynchronizer Unidirectional autoSave1 but not autoLoad2
 ]
 `;
 
-exports[`Syncs to/from WsSynchronizer Unidirectional autoSave1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional autoPush1 but not autoPull2: stats 1`] = `
 [
   {
     "receives": 0,
@@ -15520,7 +15520,7 @@ exports[`Syncs to/from WsSynchronizer Unidirectional autoSave1 but not autoLoad2
 ]
 `;
 
-exports[`Syncs to/from WsSynchronizer Unidirectional load1 but not autoSave2, defaults 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional pull1 but not autoPush2, defaults 1`] = `
 [
   [
     {
@@ -15559,7 +15559,7 @@ exports[`Syncs to/from WsSynchronizer Unidirectional load1 but not autoSave2, de
 ]
 `;
 
-exports[`Syncs to/from WsSynchronizer Unidirectional load1 but not autoSave2, defaults 2`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional pull1 but not autoPush2, defaults 2`] = `
 [
   [
     {
@@ -15636,7 +15636,7 @@ exports[`Syncs to/from WsSynchronizer Unidirectional load1 but not autoSave2, de
 ]
 `;
 
-exports[`Syncs to/from WsSynchronizer Unidirectional load1 but not autoSave2, defaults: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional pull1 but not autoPush2, defaults: stats 1`] = `
 [
   {
     "receives": 0,
@@ -15649,7 +15649,7 @@ exports[`Syncs to/from WsSynchronizer Unidirectional load1 but not autoSave2, de
 ]
 `;
 
-exports[`Syncs to/from WsSynchronizer Unidirectional save1 but not autoLoad2 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional push1 but not autoPull2 1`] = `
 [
   [
     {
@@ -15726,7 +15726,7 @@ exports[`Syncs to/from WsSynchronizer Unidirectional save1 but not autoLoad2 1`]
 ]
 `;
 
-exports[`Syncs to/from WsSynchronizer Unidirectional save1 but not autoLoad2 2`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional push1 but not autoPull2 2`] = `
 [
   [
     {},
@@ -15741,7 +15741,7 @@ exports[`Syncs to/from WsSynchronizer Unidirectional save1 but not autoLoad2 2`]
 ]
 `;
 
-exports[`Syncs to/from WsSynchronizer Unidirectional save1 but not autoLoad2: stats 1`] = `
+exports[`Syncs to/from WsSynchronizer Unidirectional push1 but not autoPull2: stats 1`] = `
 [
   {
     "receives": 0,

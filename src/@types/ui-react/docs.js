@@ -12250,12 +12250,12 @@
  * const root = createRoot(app);
  * root.render(<App synchronizer={synchronizer} />); // !act
  *
- * synchronizer.load(); // !act
+ * synchronizer.pull(); // !act
  * // -> 'Synchronizer status changed: 1'
  * // ... // !act
  * // -> 'Synchronizer status changed: 0'
  *
- * synchronizer.save(); // !act
+ * synchronizer.push(); // !act
  * // -> 'Synchronizer status changed: 2'
  * // ... // !act
  * // -> 'Synchronizer status changed: 0'

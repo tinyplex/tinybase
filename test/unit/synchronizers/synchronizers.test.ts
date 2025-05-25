@@ -174,12 +174,12 @@ describe.each([
         await synchronizer2.destroy();
       });
 
-      test('save1 but not autoLoad2', async () => {
+      test('push1 but not autoPull2', async () => {
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await synchronizer1.save();
+        await synchronizer1.push();
         await pause(synchronizable.pauseMilliseconds);
         expectEachToHaveContent(
           [
@@ -190,8 +190,8 @@ describe.each([
         );
       });
 
-      test('autoSave1 but not autoLoad2', async () => {
-        await synchronizer1.startAutoSave();
+      test('autoPush1 but not autoPull2', async () => {
+        await synchronizer1.startAutoPush();
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
@@ -206,12 +206,12 @@ describe.each([
         );
       });
 
-      test('load1 but not autoSave2, defaults', async () => {
+      test('pull1 but not autoPush2, defaults', async () => {
         store2.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await synchronizer1.load([{t0: {r0: {c0: 0}}}, {v0: 0}]);
+        await synchronizer1.pull([{t0: {r0: {c0: 0}}}, {v0: 0}]);
         await pause(synchronizable.pauseMilliseconds);
         expectEachToHaveContent(
           [{t0: {r0: {c0: 0}}}, {v0: 0}],
@@ -222,8 +222,8 @@ describe.each([
         );
       });
 
-      test('autoLoad1 but not autoSave2, defaults', async () => {
-        await synchronizer1.startAutoLoad([{t0: {r0: {c0: 0}}}, {v0: 0}]);
+      test('autoPull1 but not autoPush2, defaults', async () => {
+        await synchronizer1.startAutoPull([{t0: {r0: {c0: 0}}}, {v0: 0}]);
         store2.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},

@@ -60,8 +60,8 @@ const enum MessageValues {
 
 const enum StatusValues {
   Idle = 0,
-  Loading = 1,
-  Saving = 2,
+  Pulling = 1,
+  Pushing = 2,
 }
 
 export const Message = {
@@ -96,8 +96,8 @@ export const createCustomSynchronizer = (
   let receives = 0;
   let status: StatusValues = StatusValues.Idle;
   let action;
-  let autoLoadHandle: MergeableListener | undefined;
-  let autoSaveListenerId: Id | undefined;
+  let autoPullHandle: MergeableListener | undefined;
+  let autoPushListenerId: Id | undefined;
 
   const scheduledActions: Action[] = [];
 
@@ -330,12 +330,12 @@ export const createCustomSynchronizer = (
     );
   };
 
-  const load = async (
+  const pull = async (
     initialContent?: Content | (() => Content),
   ): Promise<Synchronizer> => {
     /*! istanbul ignore else */
-    if (status != StatusValues.Saving) {
-      setStatus(StatusValues.Loading);
+    if (status != StatusValues.Pushing) {
+      setStatus(StatusValues.Pulling);
       await schedule(async () => {
         await tryCatch(
           async () => {
@@ -360,24 +360,24 @@ export const createCustomSynchronizer = (
     return synchronizer;
   };
 
-  const startAutoLoad = async (
+  const startAutoPull = async (
     initialContent?: Content | (() => Content),
   ): Promise<Synchronizer> => {
-    stopAutoLoad();
-    await load(initialContent);
+    stopAutoPull();
+    await pull(initialContent);
     await tryCatch(
       async () =>
-        (autoLoadHandle = await addPersisterListener(
+        (autoPullHandle = await addPersisterListener(
           async (content, changes) => {
             if (changes || content) {
               /*! istanbul ignore else */
-              if (status != StatusValues.Saving) {
-                setStatus(StatusValues.Loading);
+              if (status != StatusValues.Pushing) {
+                setStatus(StatusValues.Pulling);
                 setContentOrChanges(changes ?? content);
                 setStatus(StatusValues.Idle);
               }
             } else {
-              await load();
+              await pull();
             }
           },
         )),
@@ -386,20 +386,20 @@ export const createCustomSynchronizer = (
     return synchronizer;
   };
 
-  const stopAutoLoad = async (): Promise<Synchronizer> => {
-    if (autoLoadHandle) {
+  const stopAutoPull = async (): Promise<Synchronizer> => {
+    if (autoPullHandle) {
       await tryCatch(() => delPersisterListener(), onIgnoredError);
-      autoLoadHandle = undefined;
+      autoPullHandle = undefined;
     }
     return synchronizer;
   };
 
-  const isAutoLoading = () => !isUndefined(autoLoadHandle);
+  const isAutoPulling = () => !isUndefined(autoPullHandle);
 
-  const save = async (changes?: MergeableChanges): Promise<Synchronizer> => {
+  const push = async (changes?: MergeableChanges): Promise<Synchronizer> => {
     /*! istanbul ignore else */
-    if (status != StatusValues.Loading) {
-      setStatus(StatusValues.Saving);
+    if (status != StatusValues.Pulling) {
+      setStatus(StatusValues.Pushing);
       await schedule(async () => {
         await tryCatch(
           () => setPersisted(store.getMergeableContent, changes),
@@ -411,46 +411,46 @@ export const createCustomSynchronizer = (
     return synchronizer;
   };
 
-  const startAutoSave = async (): Promise<Synchronizer> => {
-    stopAutoSave();
-    await save();
-    autoSaveListenerId = store.addDidFinishTransactionListener(() => {
+  const startAutoPush = async (): Promise<Synchronizer> => {
+    stopAutoPush();
+    await push();
+    autoPushListenerId = store.addDidFinishTransactionListener(() => {
       const changes = store.getTransactionMergeableChanges(false) as any;
       if (hasChanges(changes)) {
-        save(changes);
+        push(changes);
       }
     });
     return synchronizer;
   };
 
-  const stopAutoSave = async (): Promise<Synchronizer> => {
-    if (autoSaveListenerId) {
-      store.delListener(autoSaveListenerId);
-      autoSaveListenerId = undefined;
+  const stopAutoPush = async (): Promise<Synchronizer> => {
+    if (autoPushListenerId) {
+      store.delListener(autoPushListenerId);
+      autoPushListenerId = undefined;
     }
     return synchronizer;
   };
 
-  const isAutoSaving = () => !isUndefined(autoSaveListenerId);
+  const isAutoPushing = () => !isUndefined(autoPushListenerId);
 
   const startAutoPersisting = async (
     initialContent?: Content | (() => Content),
-    startSaveFirst = false,
+    startPushFirst = false,
   ): Promise<Synchronizer> => {
-    const [call1, call2] = startSaveFirst
-      ? [startAutoSave, startAutoLoad]
-      : [startAutoLoad, startAutoSave];
+    const [call1, call2] = startPushFirst
+      ? [startAutoPush, startAutoPull]
+      : [startAutoPull, startAutoPush];
     await call1(initialContent);
     await call2(initialContent);
     return synchronizer;
   };
 
   const stopAutoPersisting = async (
-    stopSaveFirst = false,
+    stopPushFirst = false,
   ): Promise<Synchronizer> => {
-    const [call1, call2] = stopSaveFirst
-      ? [stopAutoSave, stopAutoLoad]
-      : [stopAutoLoad, stopAutoSave];
+    const [call1, call2] = stopPushFirst
+      ? [stopAutoPush, stopAutoPull]
+      : [stopAutoPull, stopAutoPush];
     await call1();
     await call2();
     return synchronizer;
@@ -479,7 +479,7 @@ export const createCustomSynchronizer = (
       message: MessageEnum | any,
       body: any,
     ) => {
-      const isLoading = syncing || isAutoLoading();
+      const isPulling = syncing || isAutoPulling();
       receives++;
       onReceive?.(fromClientId, transactionOrRequestId, message, body);
       if (message == MessageValues.Response) {
@@ -491,7 +491,7 @@ export const createCustomSynchronizer = (
               : /*! istanbul ignore next */
                 0,
         );
-      } else if (message == MessageValues.ContentHashes && isLoading) {
+      } else if (message == MessageValues.ContentHashes && isPulling) {
         getChangesFromOtherStore(
           fromClientId,
           body,
@@ -501,12 +501,12 @@ export const createCustomSynchronizer = (
             synchronizerListener?.(undefined, changes);
           })
           .catch(onIgnoredError);
-      } else if (message == MessageValues.ContentDiff && isLoading) {
+      } else if (message == MessageValues.ContentDiff && isPulling) {
         synchronizerListener?.(undefined, body);
       } else {
         ifNotUndefined(
           message == MessageValues.GetContentHashes &&
-            (syncing || isAutoSaving())
+            (syncing || isAutoPushing())
             ? store.getMergeableContentHashes()
             : message == MessageValues.GetTableDiff
               ? store.getMergeableTableDiff(body)
@@ -531,13 +531,13 @@ export const createCustomSynchronizer = (
   );
 
   const synchronizer = objFreeze({
-    load,
-    startAutoLoad,
-    stopAutoLoad,
+    pull,
+    startAutoPull,
+    stopAutoPull,
 
-    save,
-    startAutoSave,
-    stopAutoSave,
+    push,
+    startAutoPush,
+    stopAutoPush,
 
     getStatus,
     addStatusListener,
