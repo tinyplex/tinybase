@@ -50,7 +50,8 @@ export const searchLoad = (isHome = false) => {
       undefined,
       // Rank by the density of early location of the slice in the text
       (words1, words2, sliceId) =>
-        getWeighting(words2, sliceId) - getWeighting(words1, sliceId),
+        getWeighting(words2 as string, sliceId) -
+        getWeighting(words1 as string, sliceId),
     );
 
     // Tokenize text for each path, name, and summary

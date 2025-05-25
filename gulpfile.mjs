@@ -11,8 +11,16 @@ import {basename, dirname, join, resolve} from 'path';
 import {gzipSync} from 'zlib';
 
 const UTF8 = 'utf-8';
-const TEST_MODULES = [
+const ALL_MODULES = [
   '',
+  'store',
+  'indexes',
+  'metrics',
+  'relationships',
+  'queries',
+  'checkpoints',
+  'mergeable-store',
+  'common',
   'ui-react',
   'ui-react-dom',
   'ui-react-inspector',
@@ -44,17 +52,6 @@ const TEST_MODULES = [
   'synchronizers/synchronizer-ws-server-durable-object',
   'synchronizers/synchronizer-broadcast-channel',
 ];
-const ALL_MODULES = [
-  ...TEST_MODULES,
-  'store',
-  'metrics',
-  'indexes',
-  'relationships',
-  'queries',
-  'checkpoints',
-  'mergeable-store',
-  'common',
-];
 const ALL_DEFINITIONS = [
   ...ALL_MODULES,
   '_internal/store',
@@ -84,7 +81,6 @@ const getPrettierConfig = async () => ({
 });
 
 const allOf = (array, cb) => Promise.all(array.map(cb));
-const testModules = (cb) => allOf(TEST_MODULES, cb);
 const allModules = (cb) => allOf(ALL_MODULES, cb);
 const allDefinitions = (cb) => allOf(ALL_DEFINITIONS, cb);
 
@@ -141,7 +137,6 @@ const gzipFile = async (fileName) =>
 
 const copyPackageFiles = async (forProd = false) => {
   const mins = forProd ? [null, 'min'] : [null];
-  const modules = forProd ? ALL_MODULES : TEST_MODULES;
   const schemas = [null, 'with-schemas'];
 
   const json = JSON.parse(await promises.readFile('package.json', UTF8));
@@ -156,7 +151,7 @@ const copyPackageFiles = async (forProd = false) => {
   json.typesVersions = {'*': {}};
   json.exports = {};
   mins.forEach((min) => {
-    modules.forEach((module) => {
+    ALL_MODULES.forEach((module) => {
       schemas.forEach((withSchemas) => {
         const path = [min, module, withSchemas]
           .filter((part) => part)
@@ -446,7 +441,7 @@ const tsCheck = async (dir) => {
       '--excludeDeclarationFiles',
       '--excludePathsFromReport=' +
         'jest/reporter.js;jest/environment.js;build.ts;ui-react/common.ts;' +
-        TEST_MODULES.map((module) => `${module}.ts`).join(';'),
+        ALL_MODULES.map((module) => `${module}.ts`).join(';'),
     ]).unusedExports,
   )
     .map(
@@ -669,7 +664,7 @@ export const compileForTest = async () => {
   await clearDir(DIST_DIR);
   await copyPackageFiles();
   await copyDefinitions(DIST_DIR);
-  await testModules(async (module) => {
+  await allModules(async (module) => {
     await compileModule(module, DIST_DIR);
   });
 };
