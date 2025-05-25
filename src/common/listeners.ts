@@ -15,7 +15,7 @@ import type {
   MetricListener,
   Metrics,
 } from '../@types/metrics/index.d.ts';
-import type {StatusListener} from '../@types/persisters/index.d.ts';
+import type {Persister, StatusListener} from '../@types/persisters/index.d.ts';
 import type {
   QueryIdsListener,
   ResultCellIdsListener,
@@ -50,6 +50,7 @@ import type {
   ValueListener,
   ValuesListener,
 } from '../@types/store/index.d.ts';
+import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
 import type {
   ClientIdsListener,
   PathIdsListener,
@@ -81,6 +82,15 @@ export type CallListeners = (
 ) => void;
 
 type DelListener = (id: Id) => Ids;
+type Thing =
+  | Store
+  | Metrics
+  | Indexes
+  | Relationships
+  | Checkpoints
+  | Persister
+  | Synchronizer
+  | WsServer;
 type Listener =
   | TablesListener
   | TableIdsListener
@@ -140,20 +150,14 @@ const getWildcardedLeaves = (
 };
 
 export const getListenerFunctions = (
-  getThing: () =>
-    | Store
-    | Metrics
-    | Indexes
-    | Relationships
-    | Checkpoints
-    | WsServer,
+  getThing: () => Thing,
 ): [
   addListener: AddListener,
   callListeners: CallListeners,
   delListener: DelListener,
   callListener: (id: Id) => void,
 ] => {
-  let thing: Store | Metrics | Indexes | Relationships | Checkpoints | WsServer;
+  let thing: Thing;
 
   const [getId, releaseId] = getPoolFunctions();
   const allListeners: IdMap<
