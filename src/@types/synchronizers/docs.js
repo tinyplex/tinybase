@@ -305,6 +305,40 @@
    */
   /// Synchronizer.stopSync
   /**
+   * The destroy method should be called when this Synchronizer object is no
+   * longer used.
+   *
+   * This guarantees that all of the listeners that the object registered with
+   * the underlying Store and storage are removed and it can be correctly
+   * garbage collected. It is equivalent to running the stopAutoLoad method and
+   * the stopAutoSave method in succession. This method is asynchronous.
+   * @returns A Promise containing a reference to the Synchronizer object.
+   * @example
+   * This example creates a Store, associates a Synchronizer object with it
+   * (that registers a listener with the underlying Store when started), and
+   * then destroys it again, removing the listener.
+   *
+   * ```js
+   * import {createMergeableStore} from 'tinybase';
+   * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+   *
+   * const store = createMergeableStore();
+   * const synchronizer = createLocalSynchronizer(store);
+   * await synchronizer.startSync();
+   *
+   * console.log(store.getListenerStats().transaction);
+   * // -> 1
+   *
+   * await synchronizer.destroy();
+   *
+   * console.log(store.getListenerStats().transaction);
+   * // -> 0
+   * ```
+   * @category Lifecycle
+   * @since v7.0.0
+   */
+  /// Synchronizer.destroy
+  /**
    * The getSynchronizerStats method provides a set of statistics about the
    * Synchronizer, and is used for debugging purposes.
    *

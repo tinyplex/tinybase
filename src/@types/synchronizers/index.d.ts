@@ -53,6 +53,8 @@ export interface Synchronizer {
   startSync(initialContent?: Content): Promise<this>;
   /// Synchronizer.stopSync
   stopSync(): Promise<this>;
+  /// Synchronizer.destroy
+  destroy(): Promise<this>;
   /// Synchronizer.getSynchronizerStats
   getSynchronizerStats(): SynchronizerStats;
 }
