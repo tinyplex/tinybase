@@ -5,7 +5,7 @@ import type {
   Stamp,
   Time,
   ValueStamp,
-} from '../@types/mergeable-store/index.d.ts';
+} from '../@types/mergeables/index.d.ts';
 import {getHash} from './hash.ts';
 import {IdMap, mapNew, mapToObj} from './map.ts';
 import {IdObj, objNew} from './obj.ts';

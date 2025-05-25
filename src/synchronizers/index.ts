@@ -2,15 +2,17 @@ import type {Id, IdOrNull} from '../@types/common/index.d.ts';
 import type {
   CellStamp,
   ContentHashes,
-  MergeableChanges,
-  MergeableContent,
-  MergeableStore,
   RowHashes,
   RowStamp,
   TableHashes,
   TablesStamp,
   ValuesStamp,
-} from '../@types/mergeable-store/index.d.ts';
+} from '../@types/mergeables/index.d.ts';
+import type {
+  MergeableChanges,
+  MergeableContent,
+  MergeableStore,
+} from '../@types/mergeables/mergeable-store/index.d.ts';
 import type {
   PersisterListener,
   Persists as PersistsEnum,

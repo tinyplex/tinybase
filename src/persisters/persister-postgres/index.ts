@@ -1,5 +1,5 @@
 import type {ListenMeta, Sql} from 'postgres';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeables/mergeable-store/index.d.ts';
 import type {
   DatabaseChangeListener,
   DatabasePersisterConfig,

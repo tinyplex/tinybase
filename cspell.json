@@ -1,5 +1,12 @@
 {
-  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.snap", "*.json", "*.test.ts"],
+  "ignorePaths": [
+    "*.tsv",
+    "*.webp",
+    "*.svg",
+    "*.snap",
+    "*.json",
+    "*.test.ts"
+  ],
   "words": [
     "Abad",
     "Adrien",
@@ -92,6 +99,7 @@
     "Lumet",
     "marksteve",
     "mergeable",
+    "mergeables",
     "mergeablestore",
     "minifier",
     "minmax",

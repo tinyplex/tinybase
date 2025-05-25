@@ -1,6 +1,6 @@
 import {WebSocket, WebSocketServer} from 'ws';
 import type {Id, IdOrNull, Ids} from '../../@types/common/index.d.ts';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeables/mergeable-store/index.d.ts';
 import type {Persister, Persists} from '../../@types/persisters/index.d.ts';
 import type {
   Receive,

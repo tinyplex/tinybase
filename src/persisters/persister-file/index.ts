@@ -1,6 +1,6 @@
 import {FSWatcher, existsSync, watch, writeFileSync} from 'fs';
 import {readFile, writeFile} from 'fs/promises';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeables/mergeable-store/index.d.ts';
 import type {
   PersistedContent,
   PersisterListener,

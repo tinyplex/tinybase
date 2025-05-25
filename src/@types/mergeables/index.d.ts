@@ -1,11 +1,6 @@
-/// mergeable-store
+/// mergeables
 import type {Id} from '../common/index.d.ts';
-import type {
-  CellOrUndefined,
-  Content,
-  Store,
-  ValueOrUndefined,
-} from '../store/index.d.ts';
+import type {CellOrUndefined, ValueOrUndefined} from '../store/index.d.ts';
 
 /// GetNow
 export type GetNow = () => number;
@@ -72,79 +67,37 @@ export type ValueStamp<Hashed extends boolean = false> = Stamp<
   Hashed
 >;
 
-/// MergeableContent
-export type MergeableContent = [
-  mergeableTables: TablesStamp<true>,
-  mergeableValues: ValuesStamp<true>,
-];
-
-/// MergeableChanges
-export type MergeableChanges<Hashed extends boolean = false> = [
-  mergeableTables: TablesStamp<Hashed>,
-  mergeableValues: ValuesStamp<Hashed>,
-  isChanges: 1,
-];
-
-/// MergeableStore
-export interface MergeableStore extends Store {
+/// Mergeable
+export interface Mergeable {
   //
-  /// MergeableStore.getMergeableContent
-  getMergeableContent(): MergeableContent;
-
-  /// MergeableStore.getMergeableContentHashes
+  /// Mergeable.getMergeableContentHashes
   getMergeableContentHashes(): ContentHashes;
 
-  /// MergeableStore.getMergeableTableHashes
+  /// Mergeable.getMergeableTableHashes
   getMergeableTableHashes(): TableHashes;
 
-  /// MergeableStore.getMergeableTableDiff
+  /// Mergeable.getMergeableTableDiff
   getMergeableTableDiff(
     otherTableHashes: TableHashes,
   ): [newTables: TablesStamp, differingTableHashes: TableHashes];
 
-  /// MergeableStore.getMergeableRowHashes
+  /// Mergeable.getMergeableRowHashes
   getMergeableRowHashes(otherTableHashes: TableHashes): RowHashes;
 
-  /// MergeableStore.getMergeableRowDiff
+  /// Mergeable.getMergeableRowDiff
   getMergeableRowDiff(
     otherTableRowHashes: RowHashes,
   ): [newRows: TablesStamp, differingRowHashes: RowHashes];
 
-  /// MergeableStore.getMergeableCellHashes
+  /// Mergeable.getMergeableCellHashes
   getMergeableCellHashes(otherTableRowHashes: RowHashes): CellHashes;
 
-  /// MergeableStore.getMergeableCellDiff
+  /// Mergeable.getMergeableCellDiff
   getMergeableCellDiff(otherTableRowCellHashes: CellHashes): TablesStamp;
 
-  /// MergeableStore.getMergeableValueHashes
+  /// Mergeable.getMergeableValueHashes
   getMergeableValueHashes(): ValueHashes;
 
-  /// MergeableStore.getMergeableValueDiff
+  /// Mergeable.getMergeableValueDiff
   getMergeableValueDiff(otherValueHashes: ValueHashes): ValuesStamp;
-
-  /// MergeableStore.setMergeableContent
-  setMergeableContent(mergeableContent: MergeableContent): MergeableStore;
-
-  /// MergeableStore.setDefaultContent
-  setDefaultContent(content: Content | (() => Content)): MergeableStore;
-
-  /// MergeableStore.getTransactionMergeableChanges
-  getTransactionMergeableChanges(withHashes?: boolean): MergeableChanges<true>;
-
-  /// MergeableStore.applyMergeableChanges
-  applyMergeableChanges(
-    mergeableChanges: MergeableChanges | MergeableContent,
-  ): MergeableStore;
-
-  /// MergeableStore.merge
-  merge(mergeableStore: MergeableStore): MergeableStore;
-
-  /// Store.isMergeable
-  isMergeable(): boolean;
 }
-
-/// createMergeableStore
-export function createMergeableStore(
-  uniqueId?: Id,
-  getNow?: GetNow,
-): MergeableStore;

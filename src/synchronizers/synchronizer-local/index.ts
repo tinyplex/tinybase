@@ -1,5 +1,5 @@
 import type {IdOrNull} from '../../@types/common/index.d.ts';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeables/mergeable-store/index.d.ts';
 import type {
   Message,
   Receive,

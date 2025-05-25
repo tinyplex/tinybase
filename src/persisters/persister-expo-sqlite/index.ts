@@ -1,6 +1,6 @@
 import type {SQLiteDatabase} from 'expo-sqlite';
 import {addDatabaseChangeListener} from 'expo-sqlite';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeables/mergeable-store/index.d.ts';
 import type {
   DatabaseChangeListener,
   DatabasePersisterConfig,

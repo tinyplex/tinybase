@@ -1,6 +1,6 @@
 /// persister-postgres
 import type {Sql} from 'postgres';
-import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
+import type {MergeableStore} from '../../../mergeables/mergeable-store/with-schemas/index.d.ts';
 import type {
   OptionalSchemas,
   Store,

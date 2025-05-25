@@ -1,6 +1,6 @@
 /// persister-sqlite3
 import type {Database} from 'sqlite3';
-import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
+import type {MergeableStore} from '../../../mergeables/mergeable-store/with-schemas/index.d.ts';
 import type {
   OptionalSchemas,
   Store,

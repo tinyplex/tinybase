@@ -1,6 +1,6 @@
 /// persister-expo-sqlite
 import type {SQLiteDatabase} from 'expo-sqlite';
-import type {MergeableStore} from '../../mergeable-store/index.d.ts';
+import type {MergeableStore} from '../../mergeables/mergeable-store/index.d.ts';
 import type {Store} from '../../store/index.d.ts';
 import type {DatabasePersisterConfig, Persister, Persists} from '../index.d.ts';
 

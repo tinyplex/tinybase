@@ -1,12 +1,12 @@
 import type {Ids} from '../../@types/common/index.d.ts';
 import type {
-  MergeableStore,
   RowStamp,
   Stamp,
   TableStamp,
   TablesStamp,
   ValuesStamp,
-} from '../../@types/mergeable-store/index.d.ts';
+} from '../../@types/mergeables/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeables/mergeable-store/index.d.ts';
 import type {
   PersistedChanges,
   PersistedContent,

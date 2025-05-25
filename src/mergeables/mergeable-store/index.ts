@@ -1,11 +1,8 @@
-import type {Id} from '../@types/common/index.d.ts';
+import type {Id} from '../../@types/common/index.d.ts';
 import type {
   CellHashes,
   ContentHashes,
   GetNow,
-  MergeableChanges,
-  MergeableContent,
-  MergeableStore,
   RowHashes,
   RowStamp,
   Stamp,
@@ -15,27 +12,32 @@ import type {
   Time,
   ValueHashes,
   ValuesStamp,
+} from '../../@types/mergeables/index.d.ts';
+import type {
+  MergeableChanges,
+  MergeableContent,
+  MergeableStore,
   createMergeableStore as createMergeableStoreDecl,
-} from '../@types/mergeable-store/index.d.ts';
+} from '../../@types/mergeables/mergeable-store/index.d.ts';
 import type {
   CellOrUndefined,
   Changes,
   Content,
   Store,
   ValueOrUndefined,
-} from '../@types/store/index.d.ts';
-import {isCellOrValueOrNullOrUndefined} from '../common/cell.ts';
-import {collClear, collForEach} from '../common/coll.ts';
-import {getHash} from '../common/hash.ts';
-import {getHlcFunctions} from '../common/hlc.ts';
-import {jsonStringWithMap} from '../common/json.ts';
+} from '../../@types/store/index.d.ts';
+import {isCellOrValueOrNullOrUndefined} from '../../common/cell.ts';
+import {collClear, collForEach} from '../../common/coll.ts';
+import {getHash} from '../../common/hash.ts';
+import {getHlcFunctions} from '../../common/hlc.ts';
+import {jsonStringWithMap} from '../../common/json.ts';
 import {
   mapEnsure,
   mapForEach,
   mapGet,
   mapNew,
   mapToObj,
-} from '../common/map.ts';
+} from '../../common/map.ts';
 import {
   IdObj,
   objEnsure,
@@ -45,9 +47,15 @@ import {
   objMap,
   objNew,
   objValidate,
-} from '../common/obj.ts';
-import {ifNotUndefined, isArray, noop, size, slice} from '../common/other.ts';
-import {IdSet, IdSet3, setAdd, setNew} from '../common/set.ts';
+} from '../../common/obj.ts';
+import {
+  ifNotUndefined,
+  isArray,
+  noop,
+  size,
+  slice,
+} from '../../common/other.ts';
+import {IdSet, IdSet3, setAdd, setNew} from '../../common/set.ts';
 import {
   RowStampMap,
   StampMap,
@@ -67,7 +75,7 @@ import {
   stampNewWithHash,
   stampUpdate,
   stampValidate,
-} from '../common/stamps.ts';
+} from '../../common/stamps.ts';
 import {
   ADD,
   DEL,
@@ -77,8 +85,8 @@ import {
   TRANSACTION,
   strEndsWith,
   strStartsWith,
-} from '../common/strings.ts';
-import {createStore} from '../store/index.ts';
+} from '../../common/strings.ts';
+import {createStore} from '../../store/index.ts';
 
 const LISTENER_ARGS: IdObj<number> = {
   HasTable: 1,

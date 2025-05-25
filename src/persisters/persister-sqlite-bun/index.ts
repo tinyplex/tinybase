@@ -1,5 +1,5 @@
 import {Database} from 'bun:sqlite';
-import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeables/mergeable-store/index.d.ts';
 import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import type {
   SqliteBunPersister,

@@ -1,6 +1,6 @@
 /// synchronizers
 import type {Id, IdOrNull} from '../common/index.d.ts';
-import type {MergeableStore} from '../mergeable-store/index.d.ts';
+import type {MergeableStore} from '../mergeables/mergeable-store/index.d.ts';
 import type {Persister, Persists} from '../persisters/index.d.ts';
 import type {Content} from '../store/index.d.ts';
 

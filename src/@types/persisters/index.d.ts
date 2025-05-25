@@ -4,7 +4,7 @@ import type {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-} from '../mergeable-store/index.d.ts';
+} from '../mergeables/mergeable-store/index.d.ts';
 import type {Changes, Content, Store} from '../store/index.d.ts';
 
 /// Status

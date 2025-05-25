@@ -18,7 +18,7 @@ import type {
   SliceIdsListener,
   SliceRowIdsListener,
 } from '../indexes/index.d.ts';
-import type {MergeableStore} from '../mergeable-store/index.d.ts';
+import type {MergeableStore} from '../mergeables/mergeable-store/index.d.ts';
 import type {MetricListener, Metrics} from '../metrics/index.d.ts';
 import type {
   AnyPersister,

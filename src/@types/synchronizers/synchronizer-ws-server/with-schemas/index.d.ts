@@ -1,7 +1,7 @@
 /// synchronizer-ws-server
 import type {WebSocketServer} from 'ws';
 import type {Id, IdOrNull, Ids} from '../../../common/with-schemas/index.d.ts';
-import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
+import type {MergeableStore} from '../../../mergeables/mergeable-store/with-schemas/index.d.ts';
 import type {
   Persister,
   Persists,

@@ -7,17 +7,10 @@ import type {
 import type {Id} from '../../common/with-schemas/index.d.ts';
 import type {
   CellOrUndefined,
-  Content,
-  NoSchemas,
-  NoTablesSchema,
-  NoValuesSchema,
   OptionalSchemas,
   OptionalTablesSchema,
   OptionalValuesSchema,
-  Store,
-  TablesSchema,
   ValueOrUndefined,
-  ValuesSchema,
 } from '../../store/with-schemas/index.d.ts';
 
 /// GetNow
@@ -128,36 +121,16 @@ export type ValueStamp<
   Hashed extends boolean = false,
 > = Stamp<ValueOrUndefined<Schema, ValueId>, Hashed>;
 
-/// MergeableContent
-export type MergeableContent<Schemas extends OptionalSchemas> = [
-  mergeableTables: TablesStamp<Schemas[0], true>,
-  mergeableValues: ValuesStamp<Schemas[1], true>,
-];
-
-/// MergeableChanges
-export type MergeableChanges<
-  Schemas extends OptionalSchemas,
-  Hashed extends boolean = false,
-> = [
-  mergeableTables: TablesStamp<Schemas[0], Hashed>,
-  mergeableValues: ValuesStamp<Schemas[1], Hashed>,
-  isChanges: 1,
-];
-
-/// MergeableStore
-export interface MergeableStore<Schemas extends OptionalSchemas>
-  extends Store<Schemas> {
+/// Mergeable
+export interface Mergeable<Schemas extends OptionalSchemas> {
   //
-  /// MergeableStore.getMergeableContent
-  getMergeableContent(): MergeableContent<Schemas>;
-
-  /// MergeableStore.getMergeableContentHashes
+  /// Mergeable.getMergeableContentHashes
   getMergeableContentHashes(): ContentHashes;
 
-  /// MergeableStore.getMergeableTableHashes
+  /// Mergeable.getMergeableTableHashes
   getMergeableTableHashes(): TableHashes<Schemas[0]>;
 
-  /// MergeableStore.getMergeableTableDiff
+  /// Mergeable.getMergeableTableDiff
   getMergeableTableDiff(
     otherTableHashes: TableHashes<Schemas[0]>,
   ): [
@@ -165,12 +138,12 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
     differingTableHashes: TableHashes<Schemas[0]>,
   ];
 
-  /// MergeableStore.getMergeableRowHashes
+  /// Mergeable.getMergeableRowHashes
   getMergeableRowHashes(
     otherTableHashes: TableHashes<Schemas[0]>,
   ): RowHashes<Schemas[0]>;
 
-  /// MergeableStore.getMergeableRowDiff
+  /// Mergeable.getMergeableRowDiff
   getMergeableRowDiff(
     otherTableRowHashes: RowHashes<Schemas[0]>,
   ): [
@@ -178,89 +151,21 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
     differingRowHashes: RowHashes<Schemas[0]>,
   ];
 
-  /// MergeableStore.getMergeableCellHashes
+  /// Mergeable.getMergeableCellHashes
   getMergeableCellHashes(
     otherTableRowHashes: RowHashes<Schemas[0]>,
   ): CellHashes<Schemas[0]>;
 
-  /// MergeableStore.getMergeableCellDiff
+  /// Mergeable.getMergeableCellDiff
   getMergeableCellDiff(
     otherTableRowCellHashes: CellHashes<Schemas[0]>,
   ): TablesStamp<Schemas[0]>;
 
-  /// MergeableStore.getMergeableValueHashes
+  /// Mergeable.getMergeableValueHashes
   getMergeableValueHashes(): ValueHashes<Schemas[1]>;
 
-  /// MergeableStore.getMergeableValueDiff
+  /// Mergeable.getMergeableValueDiff
   getMergeableValueDiff(
     otherValueHashes: ValueHashes<Schemas[1]>,
   ): ValuesStamp<Schemas[1]>;
-
-  /// MergeableStore.setMergeableContent
-  setMergeableContent(
-    mergeableContent: MergeableContent<Schemas>,
-  ): MergeableStore<Schemas>;
-
-  /// MergeableStore.setDefaultContent
-  setDefaultContent(
-    content: Content<Schemas> | (() => Content<Schemas>),
-  ): MergeableStore<Schemas>;
-
-  /// MergeableStore.getTransactionMergeableChanges
-  getTransactionMergeableChanges(
-    withHashes?: boolean,
-  ): MergeableChanges<Schemas, true>;
-
-  /// MergeableStore.applyMergeableChanges
-  applyMergeableChanges(
-    mergeableChanges: MergeableChanges<Schemas> | MergeableContent<Schemas>,
-  ): MergeableStore<Schemas>;
-
-  /// MergeableStore.merge
-  merge(mergeableStore: MergeableStore<Schemas>): MergeableStore<Schemas>;
-
-  /// Store.isMergeable
-  isMergeable(): boolean;
-
-  /// Store.setTablesSchema
-  setTablesSchema<TS extends TablesSchema>(
-    tablesSchema: TS,
-  ): MergeableStore<[typeof tablesSchema, Schemas[1]]>;
-
-  /// Store.setValuesSchema
-  setValuesSchema<VS extends ValuesSchema>(
-    valuesSchema: VS,
-  ): MergeableStore<[Schemas[0], typeof valuesSchema]>;
-
-  /// Store.setSchema
-  setSchema<TS extends TablesSchema, VS extends ValuesSchema>(
-    tablesSchema: TS,
-    valuesSchema?: VS,
-  ): MergeableStore<
-    [
-      typeof tablesSchema,
-      Exclude<ValuesSchema, typeof valuesSchema> extends never
-        ? NoValuesSchema
-        : NonNullable<typeof valuesSchema>,
-    ]
-  >;
-
-  /// Store.delTablesSchema
-  delTablesSchema<
-    ValuesSchema extends OptionalValuesSchema = Schemas[1],
-  >(): MergeableStore<[NoTablesSchema, ValuesSchema]>;
-
-  /// Store.delValuesSchema
-  delValuesSchema<
-    TablesSchema extends OptionalTablesSchema = Schemas[0],
-  >(): MergeableStore<[TablesSchema, NoValuesSchema]>;
-
-  /// Store.delSchema
-  delSchema(): MergeableStore<NoSchemas>;
 }
-
-/// createMergeableStore
-export function createMergeableStore(
-  uniqueId?: Id,
-  getNow?: GetNow,
-): MergeableStore<NoSchemas>;

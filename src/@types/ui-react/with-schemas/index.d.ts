@@ -62,7 +62,7 @@ import type {
   SliceIdsListener,
   SliceRowIdsListener,
 } from '../../indexes/with-schemas/index.d.ts';
-import type {MergeableStore} from '../../mergeable-store/with-schemas/index.d.ts';
+import type {MergeableStore} from '../../mergeables/mergeable-store/with-schemas/index.d.ts';
 import type {
   MetricListener,
   Metrics,

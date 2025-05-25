@@ -3,7 +3,7 @@ import type {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-} from '../../@types/mergeable-store/index.d.ts';
+} from '../../@types/mergeables/mergeable-store/index.d.ts';
 import type {
   PersistedChanges,
   PersistedContent,

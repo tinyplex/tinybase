@@ -4,7 +4,7 @@ import type {
   MergeableChanges,
   MergeableContent,
   MergeableStore,
-} from '../../mergeable-store/with-schemas/index.d.ts';
+} from '../../mergeables/mergeable-store/with-schemas/index.d.ts';
 import type {
   Changes,
   Content,
