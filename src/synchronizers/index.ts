@@ -261,12 +261,12 @@ export const createCustomSynchronizer = (
 
   const startSync = async (initialContent?: Content) => {
     syncing = 1;
-    return await synchronizer.startAutoPersisting(initialContent);
+    return await startAutoPersisting(initialContent);
   };
 
   const stopSync = async () => {
     syncing = 0;
-    await synchronizer.stopAutoPersisting();
+    await stopAutoPersisting();
     return synchronizer;
   };
 
@@ -485,36 +485,6 @@ export const createCustomSynchronizer = (
 
   const getStats = (): PersisterStats => ({loads, saves});
 
-  const synchronizer = objFreeze({
-    load,
-    startAutoLoad,
-    stopAutoLoad,
-    isAutoLoading,
-
-    save,
-    startAutoSave,
-    stopAutoSave,
-    isAutoSaving,
-
-    startAutoPersisting,
-    stopAutoPersisting,
-
-    getStatus,
-    addStatusListener,
-    delListener,
-
-    schedule,
-    getStore,
-    destroy,
-    getStats,
-
-    startSync,
-    stopSync,
-    getSynchronizerStats,
-
-    ...extra,
-  });
-
   registerReceive(
     (
       fromClientId: Id,
@@ -522,7 +492,7 @@ export const createCustomSynchronizer = (
       message: MessageEnum | any,
       body: any,
     ) => {
-      const isAutoLoading = syncing || synchronizer.isAutoLoading();
+      const isLoading = syncing || isAutoLoading();
       receives++;
       onReceive?.(fromClientId, transactionOrRequestId, message, body);
       if (message == MessageValues.Response) {
@@ -534,7 +504,7 @@ export const createCustomSynchronizer = (
               : /*! istanbul ignore next */
                 0,
         );
-      } else if (message == MessageValues.ContentHashes && isAutoLoading) {
+      } else if (message == MessageValues.ContentHashes && isLoading) {
         getChangesFromOtherStore(
           fromClientId,
           body,
@@ -544,12 +514,12 @@ export const createCustomSynchronizer = (
             synchronizerListener?.(undefined, changes);
           })
           .catch(onIgnoredError);
-      } else if (message == MessageValues.ContentDiff && isAutoLoading) {
+      } else if (message == MessageValues.ContentDiff && isLoading) {
         synchronizerListener?.(undefined, body);
       } else {
         ifNotUndefined(
           message == MessageValues.GetContentHashes &&
-            (syncing || synchronizer.isAutoSaving())
+            (syncing || isAutoSaving())
             ? store.getMergeableContentHashes()
             : message == MessageValues.GetTableDiff
               ? store.getMergeableTableDiff(body)
@@ -573,7 +543,36 @@ export const createCustomSynchronizer = (
     },
   );
 
-  return synchronizer as Synchronizer;
+  const synchronizer = objFreeze({
+    load,
+    startAutoLoad,
+    stopAutoLoad,
+    // isAutoLoading,
+
+    save,
+    startAutoSave,
+    stopAutoSave,
+    // isAutoSaving,
+
+    // startAutoPersisting,
+    // stopAutoPersisting,
+
+    getStatus,
+    addStatusListener,
+    delListener,
+
+    // schedule,
+    // getStore,
+    getStats,
+
+    startSync,
+    stopSync,
+    destroy,
+    getSynchronizerStats,
+
+    ...extra,
+  });
+  return synchronizer;
 };
 
 const enum StatusValues {
