@@ -1,4 +1,5 @@
 /// mergeables
+import {Hlc} from '../../common/hlc.ts';
 import type {Id} from '../common/index.d.ts';
 import type {CellOrUndefined, ValueOrUndefined} from '../store/index.d.ts';
 
@@ -93,34 +94,17 @@ export interface Mergeable {
   /// Mergeable.applyMergeableChanges
   applyMergeableChanges(mergeableChanges: MergeableChanges): this;
 
-  /// Mergeable.getMergeableContentHashes
-  getMergeableContentHashes(): ContentHashes;
+  loadMyTablesStamp(
+    relevants?: MergeableChanges[0] | MergeableContent[0],
+  ): TablesStamp<true>;
 
-  /// Mergeable.getMergeableTableHashes
-  getMergeableTableHashes(): TableHashes;
+  loadMyValuesStamp(
+    relevants?: MergeableChanges[1] | MergeableContent[1],
+  ): ValuesStamp<true>;
 
-  /// Mergeable.getMergeableTableDiff
-  getMergeableTableDiff(
-    otherTableHashes: TableHashes,
-  ): [newTables: TablesStamp, differingTableHashes: TableHashes];
+  saveMyTablesStamp(myTablesStamp: TablesStamp<true>): void;
 
-  /// Mergeable.getMergeableRowHashes
-  getMergeableRowHashes(otherTableHashes: TableHashes): RowHashes;
+  saveMyValuesStamp(myValuesStamp: ValuesStamp<true>): void;
 
-  /// Mergeable.getMergeableRowDiff
-  getMergeableRowDiff(
-    otherTableRowHashes: RowHashes,
-  ): [newRows: TablesStamp, differingRowHashes: RowHashes];
-
-  /// Mergeable.getMergeableCellHashes
-  getMergeableCellHashes(otherTableRowHashes: RowHashes): CellHashes;
-
-  /// Mergeable.getMergeableCellDiff
-  getMergeableCellDiff(otherTableRowCellHashes: CellHashes): TablesStamp;
-
-  /// Mergeable.getMergeableValueHashes
-  getMergeableValueHashes(): ValueHashes;
-
-  /// Mergeable.getMergeableValueDiff
-  getMergeableValueDiff(otherValueHashes: ValueHashes): ValuesStamp;
+  seenHlc(remoteHlc: Hlc): void;
 }

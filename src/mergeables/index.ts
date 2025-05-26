@@ -2,6 +2,7 @@ import type {Id} from '../@types/common/index.d.ts';
 import type {
   CellHashes,
   ContentHashes,
+  Mergeable,
   MergeableChanges,
   MergeableContent,
   RowHashes,
@@ -19,7 +20,6 @@ import type {
   ValueOrUndefined,
 } from '../@types/store/index.d.ts';
 import {getHash} from '../common/hash.ts';
-import type {Hlc} from '../common/hlc.ts';
 import {jsonString} from '../common/json.ts';
 import {
   IdObj,
@@ -47,15 +47,7 @@ import {
 import {EMPTY_STRING} from '../common/strings.ts';
 
 export const getMergeableFunctions = (
-  loadMyTablesStamp: (
-    relevants?: MergeableChanges[0] | MergeableContent[0],
-  ) => TablesStamp<true>,
-  loadMyValuesStamp: (
-    relevants?: MergeableChanges[1] | MergeableContent[1],
-  ) => ValuesStamp<true>,
-  saveMyTablesStamp: (myTablesStamp: TablesStamp<true>) => void,
-  saveMyValuesStamp: (myValuesStamp: ValuesStamp<true>) => void,
-  seenHlc: (remoteHlc: Hlc) => void,
+  mergeable: Mergeable,
 ): [
   getMergeableContentHashes: () => ContentHashes,
   getMergeableTableHashes: () => TableHashes,
@@ -75,6 +67,14 @@ export const getMergeableFunctions = (
     isContent?: 0 | 1,
   ) => Changes,
 ] => {
+  const {
+    loadMyTablesStamp,
+    loadMyValuesStamp,
+    saveMyTablesStamp,
+    saveMyValuesStamp,
+    seenHlc,
+  } = mergeable;
+
   const getMergeableContentHashes = (): ContentHashes => [
     loadMyTablesStamp()[2],
     loadMyValuesStamp()[2],

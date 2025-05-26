@@ -1,6 +1,7 @@
 import type {Id} from '../../@types/common/index.d.ts';
 import type {
   GetNow,
+  Mergeable,
   MergeableChanges,
   MergeableContent,
   RowStamp,
@@ -285,25 +286,6 @@ export const createMergeableStore = ((
 
   // --
 
-  const [
-    getMergeableContentHashes,
-    getMergeableTableHashes,
-    getMergeableTableDiff,
-    getMergeableRowHashes,
-    getMergeableRowDiff,
-    getMergeableCellHashes,
-    getMergeableCellDiff,
-    getMergeableValueHashes,
-    getMergeableValueDiff,
-    mergeContentOrChanges,
-  ] = getMergeableFunctions(
-    loadMyTablesStamp,
-    loadMyValuesStamp,
-    saveMyTablesStamp,
-    saveMyValuesStamp,
-    seenHlc,
-  );
-
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
     setMergeableContent,
@@ -313,16 +295,26 @@ export const createMergeableStore = ((
 
     addMergeableChangesListener,
     applyMergeableChanges,
-    getMergeableContentHashes,
-    getMergeableTableHashes,
-    getMergeableTableDiff,
-    getMergeableRowHashes,
-    getMergeableRowDiff,
-    getMergeableCellHashes,
-    getMergeableCellDiff,
-    getMergeableValueHashes,
-    getMergeableValueDiff,
+
+    loadMyTablesStamp,
+    loadMyValuesStamp,
+    saveMyTablesStamp,
+    saveMyValuesStamp,
+    seenHlc,
   };
+
+  const [
+    _getMergeableContentHashes,
+    _getMergeableTableHashes,
+    _getMergeableTableDiff,
+    _getMergeableRowHashes,
+    _getMergeableRowDiff,
+    _getMergeableCellHashes,
+    _getMergeableCellDiff,
+    _getMergeableValueHashes,
+    _getMergeableValueDiff,
+    mergeContentOrChanges,
+  ] = getMergeableFunctions(mergeableStore as Mergeable);
 
   (store as any).setInternalListeners(
     noop,

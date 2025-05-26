@@ -35,6 +35,7 @@ import {
 import {IdSet2} from '../common/set.ts';
 import {getLatestTime, stampNew, stampObjNew} from '../common/stamps.ts';
 import {DOT, EMPTY_STRING} from '../common/strings.ts';
+import {getMergeableFunctions} from '../mergeables/index.ts';
 
 type Action = () => Promise<any>;
 
@@ -97,6 +98,18 @@ export const createCustomSynchronizer = (
       handleResponse: (response: any, fromMergeableId: Id) => void,
     ]
   > = mapNew();
+
+  const [
+    getMergeableContentHashes,
+    getMergeableTableHashes,
+    getMergeableTableDiff,
+    getMergeableRowHashes,
+    getMergeableRowDiff,
+    getMergeableCellHashes,
+    getMergeableCellDiff,
+    getMergeableValueHashes,
+    getMergeableValueDiff,
+  ] = getMergeableFunctions(mergeable);
 
   const sendImpl = (
     toMergeableId: IdOrNull,
@@ -179,7 +192,7 @@ export const createCustomSynchronizer = (
           );
       }
       const [otherTablesHash, otherValuesHash] = otherContentHashes;
-      const [tablesHash, valuesHash] = mergeable.getMergeableContentHashes();
+      const [tablesHash, valuesHash] = getMergeableContentHashes();
 
       let tablesChanges: TablesStamp = stampObjNew();
       if (tablesHash != otherTablesHash) {
@@ -187,7 +200,7 @@ export const createCustomSynchronizer = (
           await request<[TablesStamp, TableHashes]>(
             otherMergeableId,
             MessageValues.GetTableDiff,
-            mergeable.getMergeableTableHashes(),
+            getMergeableTableHashes(),
             transactionId,
           )
         )[0];
@@ -198,7 +211,7 @@ export const createCustomSynchronizer = (
             await request<[TablesStamp, RowHashes]>(
               otherMergeableId,
               MessageValues.GetRowDiff,
-              mergeable.getMergeableRowHashes(differentTableHashes),
+              getMergeableRowHashes(differentTableHashes),
               transactionId,
             )
           )[0];
@@ -209,7 +222,7 @@ export const createCustomSynchronizer = (
               await request<TablesStamp>(
                 otherMergeableId,
                 MessageValues.GetCellDiff,
-                mergeable.getMergeableCellHashes(differentRowHashes),
+                getMergeableCellHashes(differentRowHashes),
                 transactionId,
               )
             )[0];
@@ -226,7 +239,7 @@ export const createCustomSynchronizer = (
               await request<ValuesStamp>(
                 otherMergeableId,
                 MessageValues.GetValueDiff,
-                mergeable.getMergeableValueHashes(),
+                getMergeableValueHashes(),
                 transactionId,
               )
             )[0],
@@ -341,7 +354,7 @@ export const createCustomSynchronizer = (
                   null,
                   getTransactionId(),
                   MessageValues.ContentHashes,
-                  mergeable.getMergeableContentHashes(),
+                  getMergeableContentHashes(),
                 ),
           onIgnoredError,
         );
@@ -419,15 +432,15 @@ export const createCustomSynchronizer = (
         ifNotUndefined(
           message == MessageValues.GetContentHashes &&
             (syncing || isAutoPushing())
-            ? mergeable.getMergeableContentHashes()
+            ? getMergeableContentHashes()
             : message == MessageValues.GetTableDiff
-              ? mergeable.getMergeableTableDiff(body)
+              ? getMergeableTableDiff(body)
               : message == MessageValues.GetRowDiff
-                ? mergeable.getMergeableRowDiff(body)
+                ? getMergeableRowDiff(body)
                 : message == MessageValues.GetCellDiff
-                  ? mergeable.getMergeableCellDiff(body)
+                  ? getMergeableCellDiff(body)
                   : message == MessageValues.GetValueDiff
-                    ? mergeable.getMergeableValueDiff(body)
+                    ? getMergeableValueDiff(body)
                     : undefined,
           (response) => {
             sendImpl(
