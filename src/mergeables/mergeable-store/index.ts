@@ -52,8 +52,7 @@ import {
 } from '../../common/other.ts';
 import {IdSet, IdSet3, setAdd, setNew} from '../../common/set.ts';
 import {
-  TablesStampMap,
-  ValuesStampMap,
+  ContentStampMap,
   getStampHash,
   stampClone,
   stampMapToObjWithHash,
@@ -95,11 +94,6 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidCell: 3,
   InvalidValue: 1,
 };
-
-type ContentStampMap = [
-  tablesStampMap: TablesStampMap,
-  valuesStampMap: ValuesStampMap,
-];
 
 const newContentStampMap = (time = EMPTY_STRING): ContentStampMap => [
   stampNewMap(time),
