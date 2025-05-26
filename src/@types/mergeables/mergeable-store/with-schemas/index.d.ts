@@ -14,25 +14,9 @@ import type {
 import type {
   GetNow,
   Mergeable,
-  TablesStamp,
-  ValuesStamp,
+  MergeableChanges,
+  MergeableContent,
 } from '../../with-schemas/index.d.ts';
-
-/// MergeableContent
-export type MergeableContent<Schemas extends OptionalSchemas> = [
-  mergeableTables: TablesStamp<Schemas[0], true>,
-  mergeableValues: ValuesStamp<Schemas[1], true>,
-];
-
-/// MergeableChanges
-export type MergeableChanges<
-  Schemas extends OptionalSchemas,
-  Hashed extends boolean = false,
-> = [
-  mergeableTables: TablesStamp<Schemas[0], Hashed>,
-  mergeableValues: ValuesStamp<Schemas[1], Hashed>,
-  isChanges: 1,
-];
 
 /// MergeableStore
 export interface MergeableStore<Schemas extends OptionalSchemas>

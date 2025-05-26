@@ -3,6 +3,8 @@ import type {
   CellHashes,
   ContentHashes,
   GetNow,
+  MergeableChanges,
+  MergeableContent,
   RowHashes,
   RowStamp,
   Stamp,
@@ -14,8 +16,6 @@ import type {
   ValuesStamp,
 } from '../../@types/mergeables/index.d.ts';
 import type {
-  MergeableChanges,
-  MergeableContent,
   MergeableStore,
   createMergeableStore as createMergeableStoreDecl,
 } from '../../@types/mergeables/mergeable-store/index.d.ts';

@@ -122,11 +122,29 @@ export type ValueStamp<
   Hashed extends boolean = false,
 > = Stamp<ValueOrUndefined<Schema, ValueId>, Hashed>;
 
-export type ChangesListener = (changes: MergeableChanges<false>) => void;
+/// MergeableContent
+export type MergeableContent<Schemas extends OptionalSchemas> = [
+  mergeableTables: TablesStamp<Schemas[0], true>,
+  mergeableValues: ValuesStamp<Schemas[1], true>,
+];
+
+/// MergeableChanges
+export type MergeableChanges<
+  Schemas extends OptionalSchemas,
+  Hashed extends boolean = false,
+> = [
+  mergeableTables: TablesStamp<Schemas[0], Hashed>,
+  mergeableValues: ValuesStamp<Schemas[1], Hashed>,
+  isChanges: 1,
+];
+
+export type ChangesListener<Schemas extends OptionalSchemas> = (
+  changes: MergeableChanges<Schemas, false>,
+) => void;
 
 /// Mergeable
 export interface Mergeable<Schemas extends OptionalSchemas> {
-  addChangesListener(changesListener: ChangesListener): () => void;
+  addChangesListener(changesListener: ChangesListener<Schemas>): () => void;
 
   /// Mergeable.setDefaultContent
   setDefaultContent(content: Content<Schemas> | (() => Content<Schemas>)): this;

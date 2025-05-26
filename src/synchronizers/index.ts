@@ -3,16 +3,14 @@ import type {
   CellStamp,
   ContentHashes,
   Mergeable,
+  MergeableChanges,
+  MergeableContent,
   RowHashes,
   RowStamp,
   TableHashes,
   TablesStamp,
   ValuesStamp,
 } from '../@types/mergeables/index.d.ts';
-import type {
-  MergeableChanges,
-  MergeableContent,
-} from '../@types/mergeables/mergeable-store/index.d.ts';
 import type {Content} from '../@types/store/index.d.ts';
 import type {
   Message as MessageEnum,

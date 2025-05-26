@@ -71,6 +71,19 @@ export type ValueStamp<Hashed extends boolean = false> = Stamp<
   Hashed
 >;
 
+/// MergeableContent
+export type MergeableContent = [
+  mergeableTables: TablesStamp<true>,
+  mergeableValues: ValuesStamp<true>,
+];
+
+/// MergeableChanges
+export type MergeableChanges<Hashed extends boolean = false> = [
+  mergeableTables: TablesStamp<Hashed>,
+  mergeableValues: ValuesStamp<Hashed>,
+  isChanges: 1,
+];
+
 export type ChangesListener = (changes: MergeableChanges<false>) => void;
 
 /// Mergeable
