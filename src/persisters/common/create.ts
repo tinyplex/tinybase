@@ -2,8 +2,8 @@ import type {Id} from '../../@types/common/index.d.ts';
 import type {
   MergeableChanges,
   MergeableContent,
-  MergeableStore,
-} from '../../@types/mergeables/mergeable-store/index.d.ts';
+} from '../../@types/mergeables/index.d.ts';
+import type {MergeableStore} from '../../@types/mergeables/mergeable-store/index.d.ts';
 import type {
   PersistedChanges,
   PersistedContent,

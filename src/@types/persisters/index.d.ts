@@ -3,8 +3,8 @@ import type {Id} from '../common/index.d.ts';
 import type {
   MergeableChanges,
   MergeableContent,
-  MergeableStore,
-} from '../mergeables/mergeable-store/index.d.ts';
+} from '../mergeables/index.d.ts';
+import type {MergeableStore} from '../mergeables/mergeable-store/index.d.ts';
 import type {Changes, Content, Store} from '../store/index.d.ts';
 
 /// persisters.Status

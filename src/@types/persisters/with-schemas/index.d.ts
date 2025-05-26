@@ -1,10 +1,10 @@
 /// persisters
 import type {TableIdFromSchema} from '../../_internal/store/with-schemas/index.d.ts';
+import type {MergeableStore} from '../../mergeables/mergeable-store/with-schemas/index.d.ts';
 import type {
   MergeableChanges,
   MergeableContent,
-  MergeableStore,
-} from '../../mergeables/mergeable-store/with-schemas/index.d.ts';
+} from '../../mergeables/with-schemas/index.d.ts';
 import type {
   Changes,
   Content,
