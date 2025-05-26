@@ -21,6 +21,7 @@ import {
   getLatestTime,
   hashIdAndHash,
   replaceTimeHash,
+  stampNewWithHash,
   StampObj,
   stampObjNewWithHash,
   stampUpdate,
@@ -28,29 +29,29 @@ import {
 import {EMPTY_STRING} from '../common/strings.ts';
 
 export const getMergeableFunctions = (
-  loadTablesStamp: (
-    relevantTablesMask: MergeableChanges[0] | MergeableContent[0],
+  loadMyTablesStamp: (
+    relevants: MergeableChanges[0] | MergeableContent[0],
   ) => TablesStamp<true>,
-  loadValuesStamp: (
-    relevantValuesMask: MergeableChanges[1] | MergeableContent[1],
+  loadMyValuesStamp: (
+    relevants: MergeableChanges[1] | MergeableContent[1],
   ) => ValuesStamp<true>,
-  saveTablesStamp: (tablesStamp: TablesStamp<true>) => void,
-  saveValuesStamp: (valuesStamp: ValuesStamp<true>) => void,
+  saveMyTablesStamp: (myTablesStamp: TablesStamp<true>) => void,
+  saveMyValuesStamp: (myValuesStamp: ValuesStamp<true>) => void,
   seenHlc: (remoteHlc: Hlc) => void,
 ) => {
   const mergeContentOrChanges = (
-    inContentOrChanges: MergeableChanges | MergeableContent,
+    otherContentOrChanges: MergeableChanges | MergeableContent,
     isContent: 0 | 1 = 0,
   ): Changes => {
     // Current content with metadata
-    const tablesStamp = loadTablesStamp(inContentOrChanges[0]);
-    const valuesStamp = loadValuesStamp(inContentOrChanges[1]);
+    const myTablesStamp = loadMyTablesStamp(otherContentOrChanges[0]);
+    const myValuesStamp = loadMyValuesStamp(otherContentOrChanges[1]);
 
     // Incoming changes with metadata
     const [
-      [inTables, inTablesTime = EMPTY_STRING, inTablesHash = 0],
-      inValues,
-    ] = inContentOrChanges as typeof isContent extends 1
+      [otherTables, otherTablesTime = EMPTY_STRING, otherTablesHash = 0],
+      otherValues,
+    ] = otherContentOrChanges as typeof isContent extends 1
       ? MergeableContent
       : MergeableChanges;
 
@@ -59,24 +60,27 @@ export const getMergeableFunctions = (
     const valuesChanges = {};
 
     // --
-    const [tables, oldTablesTime, oldTablesHash] = tablesStamp;
-    let newTablesHash = isContent ? inTablesHash : oldTablesHash;
-    let newTablesTime = inTablesTime;
+    const [myTables, myTablesTime, myTablesHash] = myTablesStamp;
+    let newTablesHash = isContent ? otherTablesHash : myTablesHash;
+    let newTablesTime = otherTablesTime;
     objForEach(
-      inTables,
-      ([inTable, inTableTime = EMPTY_STRING, inTableHash = 0], tableId) => {
-        const tableStamp = objEnsure<TableStamp<true>>(
-          tables,
+      otherTables,
+      (
+        [otherTable, otherTableTime = EMPTY_STRING, otherTableHash = 0],
+        tableId,
+      ) => {
+        const myTableStamp = objEnsure<TableStamp<true>>(
+          myTables,
           tableId,
           stampObjNewWithHash,
         );
-        const [rows, oldTableTime, oldTableHash] = tableStamp;
-        let newTableHash = isContent ? inTableHash : oldTableHash;
-        let newTableTime = inTableTime;
-        objForEach(inTable, (inRow, rowId) => {
-          const [newRowTime, oldRowHash, rowHash] = mergeCellsOrValues(
-            inRow,
-            objEnsure(rows, rowId, stampObjNewWithHash<any>),
+        const [myTable, myTableTime, myTableHash] = myTableStamp;
+        let newTableHash = isContent ? otherTableHash : myTableHash;
+        let newTableTime = otherTableTime;
+        objForEach(otherTable, (otherRow, rowId) => {
+          const [newRowTime, myOldRowHash, myNewRowHash] = mergeCellsOrValues(
+            otherRow,
+            objEnsure(myTable, rowId, stampObjNewWithHash<any>),
             objEnsure(
               objEnsure(tablesChanges, tableId, objNew<any>),
               rowId,
@@ -87,39 +91,39 @@ export const getMergeableFunctions = (
 
           newTableHash ^= isContent
             ? 0
-            : (oldRowHash ? hashIdAndHash(rowId, oldRowHash) : 0) ^
-              hashIdAndHash(rowId, rowHash);
+            : (myOldRowHash ? hashIdAndHash(rowId, myOldRowHash) : 0) ^
+              hashIdAndHash(rowId, myNewRowHash);
           newTableTime = getLatestTime(newTableTime, newRowTime);
         });
 
         newTableHash ^= isContent
           ? 0
-          : replaceTimeHash(oldTableTime, inTableTime);
-        stampUpdate(tableStamp, inTableTime, newTableHash);
+          : replaceTimeHash(myTableTime, otherTableTime);
+        stampUpdate(myTableStamp, otherTableTime, newTableHash);
 
         newTablesHash ^= isContent
           ? 0
-          : (oldTableHash ? hashIdAndHash(tableId, oldTableHash) : 0) ^
-            hashIdAndHash(tableId, tableStamp[2]);
+          : (myTableHash ? hashIdAndHash(tableId, myTableHash) : 0) ^
+            hashIdAndHash(tableId, myTableStamp[2]);
         newTablesTime = getLatestTime(newTablesTime, newTableTime);
       },
     );
 
     newTablesHash ^= isContent
       ? 0
-      : replaceTimeHash(oldTablesTime, inTablesTime);
-    stampUpdate(tablesStamp, inTablesTime, newTablesHash);
+      : replaceTimeHash(myTablesTime, otherTablesTime);
+    stampUpdate(myTablesStamp, otherTablesTime, newTablesHash);
 
-    const [valuesTime] = mergeCellsOrValues(
-      inValues,
-      valuesStamp,
+    const [newValuesTime] = mergeCellsOrValues(
+      otherValues,
+      myValuesStamp,
       valuesChanges,
       isContent,
     );
 
-    seenHlc(getLatestTime(newTablesTime, valuesTime));
-    saveTablesStamp(tablesStamp);
-    saveValuesStamp(valuesStamp);
+    seenHlc(getLatestTime(newTablesTime, newValuesTime));
+    saveMyTablesStamp(myTablesStamp);
+    saveMyValuesStamp(myValuesStamp);
     return [tablesChanges, valuesChanges, 1];
   };
 
@@ -127,51 +131,56 @@ export const getMergeableFunctions = (
 };
 
 const mergeCellsOrValues = <Thing extends CellOrUndefined | ValueOrUndefined>(
-  inParentStamp: typeof isContent extends 1
+  otherParentStamp: typeof isContent extends 1
     ? Stamp<IdObj<Stamp<Thing, true>>, true>
     : Stamp<IdObj<Stamp<Thing>>>,
-  parentStamp: StampObj<Stamp<Thing, true>>,
+  myParentStamp: StampObj<Stamp<Thing, true>>,
   resultingChanges: {[thingId: Id]: Thing},
   isContent: 0 | 1,
-): [thingsTime: Time, oldThingsHash: number, newThingsHash: number] => {
-  const [inParent, inParentTime = EMPTY_STRING, inParentHash = 0] =
-    inParentStamp;
-  const [parent, oldParentTime, oldParentHash] = parentStamp;
+): [newParentTime: Time, oldParentHash: number, newParentHash: number] => {
+  const [otherParent, otherParentTime = EMPTY_STRING, otherParentHash = 0] =
+    otherParentStamp;
+  const [myParent, myParentTime, myParentHash] = myParentStamp;
 
-  let parentTime = inParentTime;
-  let newParentHash = isContent ? inParentHash : oldParentHash;
+  let newParentTime = otherParentTime;
+  let newParentHash = isContent ? otherParentHash : myParentHash;
 
   objForEach(
-    inParent,
-    ([thing, thingTime = EMPTY_STRING, inThingHash = 0], thingId) => {
-      const thingStamp = objEnsure<Stamp<Thing, true>>(parent, thingId, () => [
-        undefined as any,
-        EMPTY_STRING,
-        0,
-      ]);
-      const [, oldThingTime, oldThingHash] = thingStamp;
+    otherParent,
+    (
+      [otherThing, otherThingTime = EMPTY_STRING, otherThingHash = 0],
+      thingId,
+    ) => {
+      const myThingStamp = objEnsure<Stamp<Thing, true>>(
+        myParent,
+        thingId,
+        () => stampNewWithHash(undefined as any),
+      );
+      const [, myThingTime, myThingHash] = myThingStamp;
 
-      if (!oldThingTime || thingTime > oldThingTime) {
+      if (!myThingTime || otherThingTime > myThingTime) {
         stampUpdate(
-          thingStamp,
-          thingTime,
+          myThingStamp,
+          otherThingTime,
           isContent
-            ? inThingHash
-            : getHash(jsonString(thing ?? null) + ':' + thingTime),
+            ? otherThingHash
+            : getHash(jsonString(otherThing ?? null) + ':' + otherThingTime),
         );
-        thingStamp[0] = thing;
-        resultingChanges[thingId] = thing;
+        myThingStamp[0] = otherThing;
+        resultingChanges[thingId] = otherThing;
         newParentHash ^= isContent
           ? 0
-          : hashIdAndHash(thingId, oldThingHash) ^
-            hashIdAndHash(thingId, thingStamp[2]);
-        parentTime = getLatestTime(parentTime, thingTime);
+          : hashIdAndHash(thingId, myThingHash) ^
+            hashIdAndHash(thingId, myThingStamp[2]);
+        newParentTime = getLatestTime(newParentTime, otherThingTime);
       }
     },
   );
 
-  newParentHash ^= isContent ? 0 : replaceTimeHash(oldParentTime, inParentTime);
-  stampUpdate(parentStamp, inParentTime, newParentHash);
+  newParentHash ^= isContent
+    ? 0
+    : replaceTimeHash(myParentTime, otherParentTime);
+  stampUpdate(myParentStamp, otherParentTime, newParentHash);
 
-  return [parentTime, oldParentHash, parentStamp[2]];
+  return [newParentTime, myParentHash, myParentStamp[2]];
 };
