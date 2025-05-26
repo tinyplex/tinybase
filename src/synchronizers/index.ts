@@ -33,7 +33,7 @@ import {
   tryCatch,
 } from '../common/other.ts';
 import {IdSet2} from '../common/set.ts';
-import {getLatestTime, stampNew, stampNewObj} from '../common/stamps.ts';
+import {getLatestTime, stampNew, stampObjNew} from '../common/stamps.ts';
 import {DOT, EMPTY_STRING} from '../common/strings.ts';
 
 type Action = () => Promise<any>;
@@ -143,13 +143,13 @@ export const createCustomSynchronizer = (
       const tableStamp = objEnsure(
         tablesStamp[0],
         tableId,
-        stampNewObj<RowStamp>,
+        stampObjNew<RowStamp>,
       );
       objForEach(rowStamps2, ([cellStamps2, rowTime2], rowId) => {
         const rowStamp = objEnsure(
           tableStamp[0],
           rowId,
-          stampNewObj<CellStamp>,
+          stampObjNew<CellStamp>,
         );
         objForEach(
           cellStamps2,
@@ -181,7 +181,7 @@ export const createCustomSynchronizer = (
       const [otherTablesHash, otherValuesHash] = otherContentHashes;
       const [tablesHash, valuesHash] = mergeable.getMergeableContentHashes();
 
-      let tablesChanges: TablesStamp = stampNewObj();
+      let tablesChanges: TablesStamp = stampObjNew();
       if (tablesHash != otherTablesHash) {
         const [newTables, differentTableHashes] = (
           await request<[TablesStamp, TableHashes]>(
@@ -221,7 +221,7 @@ export const createCustomSynchronizer = (
       return [
         tablesChanges,
         valuesHash == otherValuesHash
-          ? stampNewObj()
+          ? stampObjNew()
           : (
               await request<ValuesStamp>(
                 otherMergeableId,

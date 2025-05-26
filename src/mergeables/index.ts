@@ -23,7 +23,7 @@ import {
   getLatestTime,
   hashIdAndHash,
   replaceTimeHash,
-  stampNewObj2,
+  stampObjNewWithHash,
   stampUpdate,
 } from '../common/stamps.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
@@ -80,7 +80,7 @@ export const getMergeableFunctions = (
         const tableStampMap = objEnsure<TableStampObj>(
           tableStampMaps,
           tableId,
-          stampNewObj2,
+          stampObjNewWithHash,
         );
         const [rowStampMaps, oldTableTime, oldTableHash] = tableStampMap;
         let tableHash = isContent ? incomingTableHash : oldTableHash;
@@ -88,7 +88,7 @@ export const getMergeableFunctions = (
         objForEach(incomingTable, (incomingRow, rowId) => {
           const [rowTime, oldRowHash, rowHash] = mergeCellsOrValues(
             incomingRow,
-            objEnsure<RowStampObj>(rowStampMaps, rowId, stampNewObj2),
+            objEnsure<RowStampObj>(rowStampMaps, rowId, stampObjNewWithHash),
             objEnsure<IdObj<CellOrUndefined>>(
               objEnsure<IdObj<IdObj<CellOrUndefined>>>(
                 tablesChanges,

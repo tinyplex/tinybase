@@ -43,12 +43,12 @@ import {
   TablesStampObj,
   ValuesStampObj,
   getStampHash,
-  stampMapToObjWithHash,
-  stampMapToObjWithoutHash,
   stampNew,
-  stampNewObj,
-  stampNewObj2,
   stampNewWithHash,
+  stampObjClone,
+  stampObjCloneWithHash,
+  stampObjNew,
+  stampObjNewWithHash,
 } from '../../common/stamps.ts';
 import {
   ADD,
@@ -85,8 +85,8 @@ const LISTENER_ARGS: IdObj<number> = {
 const newContentStampObj = (
   time = EMPTY_STRING,
 ): [tablesStampObj: TablesStampObj, valuesStampObj: ValuesStampObj] => [
-  stampNewObj2(time),
-  stampNewObj2(time),
+  stampObjNewWithHash(time),
+  stampObjNewWithHash(time),
 ];
 
 export const createMergeableStore = ((
@@ -168,12 +168,12 @@ export const createMergeableStore = ((
   // ---
 
   const getMergeableContent = (): MergeableContent => [
-    stampMapToObjWithHash(contentStampMap[0], (tableStampMap) =>
-      stampMapToObjWithHash(tableStampMap, (rowStampMap) =>
-        stampMapToObjWithHash(rowStampMap),
+    stampObjCloneWithHash(contentStampMap[0], (tableStampMap) =>
+      stampObjCloneWithHash(tableStampMap, (rowStampMap) =>
+        stampObjCloneWithHash(rowStampMap),
       ),
     ),
-    stampMapToObjWithHash(contentStampMap[1]),
+    stampObjCloneWithHash(contentStampMap[1]),
   ];
 
   const setMergeableContent = (
@@ -303,7 +303,7 @@ export const createMergeableStore = ((
   const getMergeableTableDiff = (
     otherTableHashes: TableHashes,
   ): [newTables: TablesStamp, differingTableHashes: TableHashes] => {
-    const newTables: TablesStamp = stampNewObj(contentStampMap[0][1]);
+    const newTables: TablesStamp = stampObjNew(contentStampMap[0][1]);
     const differingTableHashes: TableHashes = {};
     objForEach(
       contentStampMap[0][0],
@@ -312,9 +312,9 @@ export const createMergeableStore = ((
           ? hash != otherTableHashes[tableId]
             ? (differingTableHashes[tableId] = hash)
             : 0
-          : (newTables[0][tableId] = stampMapToObjWithoutHash(
+          : (newTables[0][tableId] = stampObjClone(
               [tableStampMap, tableTime],
-              (rowStampMap) => stampMapToObjWithoutHash(rowStampMap),
+              (rowStampMap) => stampObjClone(rowStampMap),
             )),
     );
     return [newTables, differingTableHashes];
@@ -341,7 +341,7 @@ export const createMergeableStore = ((
   const getMergeableRowDiff = (
     otherTableRowHashes: RowHashes,
   ): [newRows: TablesStamp, differingRowHashes: RowHashes] => {
-    const newRows: TablesStamp = stampNewObj(contentStampMap[0][1]);
+    const newRows: TablesStamp = stampObjNew(contentStampMap[0][1]);
     const differingRowHashes: RowHashes = {};
     objForEach(otherTableRowHashes, (otherRowHashes, tableId) =>
       objForEach(
@@ -351,8 +351,8 @@ export const createMergeableStore = ((
             ? hash !== otherRowHashes[rowId]
               ? (objEnsure(differingRowHashes, tableId, objNew)[rowId] = hash)
               : 0
-            : (objEnsure(newRows[0], tableId, stampNewObj)[0][rowId] =
-                stampMapToObjWithoutHash([rowStampMap, rowTime])),
+            : (objEnsure(newRows[0], tableId, stampObjNew)[0][rowId] =
+                stampObjClone([rowStampMap, rowTime])),
       ),
     );
     return [newRows, differingRowHashes];
@@ -403,10 +403,10 @@ export const createMergeableStore = ((
                   hash !== otherCellHashes?.[cellId]
                     ? (objEnsure(
                         objEnsure(tablesObj, tableId, () =>
-                          stampNewObj(tableTime),
+                          stampObjNew(tableTime),
                         )[0],
                         rowId,
-                        () => stampNewObj(rowTime),
+                        () => stampObjNew(rowTime),
                       )[0][cellId] = [cell, cellTime])
                     : 0,
                 ),
