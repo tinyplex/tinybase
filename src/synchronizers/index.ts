@@ -10,7 +10,6 @@ import type {
   TablesStamp,
   ValuesStamp,
 } from '../@types/mergeables/index.d.ts';
-import type {Content} from '../@types/store/index.d.ts';
 import type {
   Message as MessageEnum,
   Receive,
@@ -236,9 +235,9 @@ export const createCustomSynchronizer = (
       ];
     }, onIgnoredError);
 
-  const startSync = async (initialContent?: Content) => {
+  const startSync = async () => {
     syncing = 1;
-    await startAutoPull(initialContent);
+    await startAutoPull();
     return await startAutoPush();
   };
 
@@ -279,41 +278,28 @@ export const createCustomSynchronizer = (
     }
   };
 
-  const pull = async (
-    initialContent?: Content | (() => Content),
-  ): Promise<Synchronizer> => {
+  const pull = async (): Promise<Synchronizer> => {
     /*! istanbul ignore else */
     if (status != StatusValues.Pushing) {
       setStatus(StatusValues.Pulling);
       await schedule(async () => {
-        await tryCatch(
-          async () => {
-            const changes = await pullChangesFromOtherClient();
-            if (changesAreNotEmpty(changes)) {
-              mergeable.applyMergeableChanges(changes);
-            } else if (initialContent) {
-              mergeable.setDefaultContent(initialContent);
-            } else {
-              errorNew(`Changes is not an array: ${changes}`);
-            }
-          },
-          () => {
-            if (initialContent) {
-              mergeable.setDefaultContent(initialContent);
-            }
-          },
-        );
+        await tryCatch(async () => {
+          const changes = await pullChangesFromOtherClient();
+          if (changesAreNotEmpty(changes)) {
+            mergeable.applyMergeableChanges(changes);
+          } else {
+            errorNew(`Changes is not an array: ${changes}`);
+          }
+        });
         setStatus(StatusValues.Idle);
       });
     }
     return synchronizer;
   };
 
-  const startAutoPull = async (
-    initialContent?: Content | (() => Content),
-  ): Promise<Synchronizer> => {
+  const startAutoPull = async (): Promise<Synchronizer> => {
     stopAutoPull();
-    await pull(initialContent);
+    await pull();
     await tryCatch(
       async () =>
         (pullListener = async (changes) => {

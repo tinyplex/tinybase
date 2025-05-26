@@ -607,7 +607,8 @@ describe('Create Hooks', () => {
     const initStore = jest.fn(() => createMergeableStore('s1'));
     const createSynchronizer = jest.fn(async (store: MergeableStore) => {
       _synchronizer = createLocalSynchronizer(store);
-      await _synchronizer.pull([{t1: {r1: {c1: 1}}}, {}]);
+      store.setDefaultContent([{t1: {r1: {c1: 1}}}, {}]);
+      await _synchronizer.pull();
       return _synchronizer;
     });
     const Test = ({id}: {id: number}) => {
@@ -644,7 +645,8 @@ describe('Create Hooks', () => {
     const createSynchronizer = jest.fn(
       async (store: MergeableStore, id: number) => {
         const synchronizer = createLocalSynchronizer(store);
-        await synchronizer.pull([{t1: {r1: {c1: id}}}, {}]);
+        store.setDefaultContent([{t1: {r1: {c1: id}}}, {}]);
+        await synchronizer.pull();
         synchronizers[id] = synchronizer;
         return synchronizer;
       },

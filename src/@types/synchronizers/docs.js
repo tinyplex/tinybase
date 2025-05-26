@@ -221,8 +221,11 @@
    *
    * This method is asynchronous so you should you `await` calls to this method
    * or handle the return type natively as a Promise.
-   * @param initialContent An optional Content object used when no content is
-   * available from another other peer Synchronizer instances.
+   *
+   * Prior to v7.0.0, this method took an optional Content object used when no
+   * content is available from another other peer Synchronizer instances.
+   * Instead now, you should use the setDefaultContent method beforehand on the
+   * MergeableStore you are syncing.
    * @returns A Promise containing a reference to the Synchronizer object.
    * @example
    * This example creates two empty MergeableStore objects, creates a
@@ -267,14 +270,16 @@
    * import {createMergeableStore} from 'tinybase';
    * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
    *
-   * const store1 = createMergeableStore();
-   * const store2 = createMergeableStore();
+   * const store1 = createMergeableStore()
+   *   .setDefaultContent([{pets: {fido: {species: 'dog'}}}, {}]);
+   * const store2 = createMergeableStore()
+   *   .setDefaultContent([{pets: {fido: {species: 'unknown'}}}, {}]);
    *
    * const synchronizer1 = createLocalSynchronizer(store1);
    * const synchronizer2 = createLocalSynchronizer(store2);
    *
-   * await synchronizer1.startSync([{pets: {fido: {species: 'dog'}}}, {}]);
-   * await synchronizer2.startSync([{pets: {felix: {species: 'cat'}}}, {}]);
+   * await synchronizer1.startSync();
+   * await synchronizer2.startSync();
    *
    * // ...
    *

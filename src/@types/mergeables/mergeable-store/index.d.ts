@@ -1,6 +1,6 @@
 /// mergeable-store
 import type {Id} from '../../common/index.d.ts';
-import type {Store} from '../../store/index.d.ts';
+import type {Content, Store} from '../../store/index.d.ts';
 import type {
   GetNow,
   Mergeable,
@@ -16,6 +16,9 @@ export interface MergeableStore extends Mergeable, Store {
 
   /// MergeableStore.setMergeableContent
   setMergeableContent(mergeableContent: MergeableContent): MergeableStore;
+
+  /// MergeableStore.setDefaultContent
+  setDefaultContent(content: Content | (() => Content)): this;
 
   /// MergeableStore.getTransactionMergeableChanges
   getTransactionMergeableChanges(withHashes?: boolean): MergeableChanges<true>;

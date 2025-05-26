@@ -7,7 +7,6 @@ import type {
 import type {Id} from '../../common/with-schemas/index.d.ts';
 import type {
   CellOrUndefined,
-  Content,
   OptionalSchemas,
   OptionalTablesSchema,
   OptionalValuesSchema,
@@ -148,9 +147,6 @@ export interface Mergeable<Schemas extends OptionalSchemas> {
 
   /// Mergeable.applyMergeableChanges
   applyMergeableChanges(mergeableChanges: MergeableChanges<Schemas>): this;
-
-  /// Mergeable.setDefaultContent
-  setDefaultContent(content: Content<Schemas> | (() => Content<Schemas>)): this;
 
   /// Mergeable.getMergeableContentHashes
   getMergeableContentHashes(): ContentHashes;

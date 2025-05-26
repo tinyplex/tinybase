@@ -1,10 +1,6 @@
 /// mergeables
 import type {Id} from '../common/index.d.ts';
-import type {
-  CellOrUndefined,
-  Content,
-  ValueOrUndefined,
-} from '../store/index.d.ts';
+import type {CellOrUndefined, ValueOrUndefined} from '../store/index.d.ts';
 
 /// GetNow
 export type GetNow = () => number;
@@ -92,9 +88,6 @@ export interface Mergeable {
 
   /// Mergeable.applyMergeableChanges
   applyMergeableChanges(mergeableChanges: MergeableChanges): this;
-
-  /// Mergeable.setDefaultContent
-  setDefaultContent(content: Content | (() => Content)): this;
 
   /// Mergeable.getMergeableContentHashes
   getMergeableContentHashes(): ContentHashes;

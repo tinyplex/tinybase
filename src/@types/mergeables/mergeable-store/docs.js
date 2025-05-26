@@ -179,6 +179,42 @@
    */
   /// MergeableStore.setMergeableContent
   /**
+   * The setDefaultContent method sets initial content of a MergeableStore.
+   *
+   * This differs from the setMergeableContent method in that all of the
+   * metadata is initialized with a empty HLC timestamp - meaning that any
+   * changes applied to it will 'win', yet ensuring that at least default,
+   * initial data exists.
+   *
+   * This method can also take a function that returns the content.
+   * @param content An array containing the tabular and keyed-value data to be
+   * set, or a function that returns the array.
+   * @returns A reference to the MergeableStore.
+   * @example
+   * This example creates a new MergeableStore with default data, and
+   * demonstrates that it is overwritten with another MergeableStore's data on
+   * merge, even if the other MergeableStore was provisioned earlier.
+   *
+   * ```js
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store1 = createMergeableStore('store1'); // !reset
+   * store1.setValues({employees: 3});
+   *
+   * const store2 = createMergeableStore('store2');
+   * store2.setDefaultContent([{}, {employees: 4}]);
+   * console.log(store2.getMergeableContent());
+   * // -> [[{}, "", 0], [{"employees": [4, "", 2414055963]}, "", 3035768673]]
+   *
+   * store2.merge(store1);
+   * console.log(store2.getContent());
+   * // -> [{}, {employees: 3}]
+   * ```
+   * @category Setter
+   * @since v5.0.0
+   */
+  /// MergeableStore.setDefaultContent
+  /**
    * The getTransactionMergeableChanges method returns the net meaningful
    * changes that have been made to a MergeableStore during a transaction.
    *
