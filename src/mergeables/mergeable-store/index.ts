@@ -274,7 +274,7 @@ export const createMergeableStore = ((
       ? Stamp<IdObj<Stamp<Thing, true>>, true>
       : Stamp<IdObj<Stamp<Thing>>>,
     thingsStampMap: StampMap<Stamp<Thing, true>>,
-    thingsChanges: {[thingId: Id]: Thing},
+    resultingChanges: {[thingId: Id]: Thing},
     isContent: 0 | 1,
   ): [thingsTime: Time, oldThingsHash: number, newThingsHash: number] => {
     const [
@@ -306,7 +306,7 @@ export const createMergeableStore = ((
               : getHash(jsonStringWithMap(thing ?? null) + ':' + thingTime),
           );
           thingStampMap[0] = thing;
-          thingsChanges[thingId] = thing;
+          resultingChanges[thingId] = thing;
           thingsHash ^= isContent
             ? 0
             : hashIdAndHash(thingId, oldThingHash) ^
