@@ -21,7 +21,7 @@ export const createLocalSynchronizer = ((
   onReceive?: Receive,
   onIgnoredError?: (error: any) => void,
 ) => {
-  const sendHandles: Set<number> = setNew();
+  const sendHandles: Set<NodeJS.Timeout> = setNew();
 
   const clientId = getUniqueId();
 
