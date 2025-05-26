@@ -13,18 +13,17 @@ import type {
 import {getHash} from '../common/hash.ts';
 import type {Hlc} from '../common/hlc.ts';
 import {jsonStringWithMap} from '../common/json.ts';
-import {mapEnsure} from '../common/map.ts';
 import {IdObj, objEnsure, objForEach, objNew} from '../common/obj.ts';
 import {
-  RowStampMap,
-  StampMap,
-  TableStampMap,
-  TablesStampMap,
-  ValuesStampMap,
+  RowStampObj,
+  StampObj,
+  TableStampObj,
+  TablesStampObj,
+  ValuesStampObj,
   getLatestTime,
   hashIdAndHash,
   replaceTimeHash,
-  stampNewMap,
+  stampNewObj2,
   stampUpdate,
 } from '../common/stamps.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
@@ -32,12 +31,12 @@ import {EMPTY_STRING} from '../common/strings.ts';
 export const getMergeableFunctions = (
   loadTablesStampMap: (
     relevantTablesMask: MergeableChanges[0] | MergeableContent[0],
-  ) => TablesStampMap,
+  ) => TablesStampObj,
   loadValuesStampMap: (
     relevantValuesMask: MergeableChanges[1] | MergeableContent[1],
-  ) => ValuesStampMap,
-  saveTablesStampMap: (tablesStampMap: TablesStampMap) => void,
-  saveValuesStampMap: (valuesStampMap: ValuesStampMap) => void,
+  ) => ValuesStampObj,
+  saveTablesStampMap: (tablesStampMap: TablesStampObj) => void,
+  saveValuesStampMap: (valuesStampMap: ValuesStampObj) => void,
   seenHlc: (remoteHlc: Hlc) => void,
 ) => {
   const mergeContentOrChanges = (
@@ -78,10 +77,10 @@ export const getMergeableFunctions = (
         ],
         tableId,
       ) => {
-        const tableStampMap = mapEnsure<Id, TableStampMap>(
+        const tableStampMap = objEnsure<TableStampObj>(
           tableStampMaps,
           tableId,
-          stampNewMap,
+          stampNewObj2,
         );
         const [rowStampMaps, oldTableTime, oldTableHash] = tableStampMap;
         let tableHash = isContent ? incomingTableHash : oldTableHash;
@@ -89,7 +88,7 @@ export const getMergeableFunctions = (
         objForEach(incomingTable, (incomingRow, rowId) => {
           const [rowTime, oldRowHash, rowHash] = mergeCellsOrValues(
             incomingRow,
-            mapEnsure<Id, RowStampMap>(rowStampMaps, rowId, stampNewMap),
+            objEnsure<RowStampObj>(rowStampMaps, rowId, stampNewObj2),
             objEnsure<IdObj<CellOrUndefined>>(
               objEnsure<IdObj<IdObj<CellOrUndefined>>>(
                 tablesChanges,
@@ -147,7 +146,7 @@ const mergeCellsOrValues = <Thing extends CellOrUndefined | ValueOrUndefined>(
   things: typeof isContent extends 1
     ? Stamp<IdObj<Stamp<Thing, true>>, true>
     : Stamp<IdObj<Stamp<Thing>>>,
-  thingsStampMap: StampMap<Stamp<Thing, true>>,
+  thingsStampMap: StampObj<Stamp<Thing, true>>,
   resultingChanges: {[thingId: Id]: Thing},
   isContent: 0 | 1,
 ): [thingsTime: Time, oldThingsHash: number, newThingsHash: number] => {
@@ -164,7 +163,7 @@ const mergeCellsOrValues = <Thing extends CellOrUndefined | ValueOrUndefined>(
   objForEach(
     incomingThings,
     ([thing, thingTime = EMPTY_STRING, incomingThingHash = 0], thingId) => {
-      const thingStampMap = mapEnsure<Id, Stamp<Thing, true>>(
+      const thingStampMap = objEnsure<Stamp<Thing, true>>(
         thingStampMaps,
         thingId,
         () => [undefined as any, EMPTY_STRING, 0],

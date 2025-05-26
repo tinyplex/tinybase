@@ -45,9 +45,9 @@ export const objDel = <Value>(obj: IdObj<Value>, id: Id): IdObj<Value> => {
 };
 
 export const objForEach = <Value>(
-  obj: IdObj<Value>,
+  obj: IdObj<Value> | undefined,
   cb: (value: Value, id: string) => void,
-): void => arrayForEach(objEntries(obj), ([id, value]) => cb(value, id));
+): void => arrayForEach(objEntries(obj ?? {}), ([id, value]) => cb(value, id));
 
 export const objToArray = <FromValue, ToValue>(
   obj: IdObj<FromValue>,
