@@ -4,7 +4,6 @@ import type {
   ContentHashes,
   Mergeable,
   MergeableChanges,
-  MergeableContent,
   RowHashes,
   RowStamp,
   TableHashes,
@@ -38,11 +37,6 @@ import {
 import {IdSet2} from '../common/set.ts';
 import {getLatestTime, stampNew, stampNewObj} from '../common/stamps.ts';
 import {DOT, EMPTY_STRING} from '../common/strings.ts';
-
-type MergeableListener = (
-  content?: MergeableContent,
-  changes?: MergeableChanges,
-) => void;
 
 type Action = () => Promise<any>;
 
@@ -90,16 +84,15 @@ export const createCustomSynchronizer = (
 ): Synchronizer => {
   let running: 0 | 1 = 0;
   let syncing: 0 | 1 = 0;
-  let synchronizerListener: MergeableListener | undefined;
   let sends = 0;
   let receives = 0;
   let status: StatusValues = StatusValues.Idle;
   let action;
-  let autoPullHandle: MergeableListener | undefined;
+  let pullListener: ((changes: MergeableChanges) => void) | undefined;
   let delPushListener: (() => void) | undefined;
 
   const scheduledActions: Action[] = [];
-
+  const statusListeners: IdSet2 = mapNew();
   const pendingRequests: IdMap<
     [
       toClientId: IdOrNull,
@@ -243,11 +236,6 @@ export const createCustomSynchronizer = (
       ];
     }, onIgnoredError);
 
-  const addPersisterListener = (listener: MergeableListener) =>
-    (synchronizerListener = listener);
-
-  const delPersisterListener = () => (synchronizerListener = undefined);
-
   const startSync = async (initialContent?: Content) => {
     syncing = 1;
     await startAutoPull(initialContent);
@@ -268,8 +256,6 @@ export const createCustomSynchronizer = (
   };
 
   const getStats = () => ({sends, receives});
-
-  const statusListeners: IdSet2 = mapNew();
 
   const [addListener, callListeners, delListenerImpl] = getListenerFunctions(
     () => synchronizer,
@@ -293,16 +279,6 @@ export const createCustomSynchronizer = (
     }
   };
 
-  const setContentOrChanges = (
-    contentOrChanges: MergeableContent | MergeableChanges | undefined,
-  ): void => {
-    (contentOrChanges?.[2] === 1
-      ? mergeable.applyMergeableChanges
-      : mergeable.setMergeableContent)(
-      contentOrChanges as MergeableContent & MergeableChanges,
-    );
-  };
-
   const pull = async (
     initialContent?: Content | (() => Content),
   ): Promise<Synchronizer> => {
@@ -314,7 +290,7 @@ export const createCustomSynchronizer = (
           async () => {
             const changes = await pullChangesFromOtherClient();
             if (changesAreNotEmpty(changes)) {
-              setContentOrChanges(changes);
+              mergeable.applyMergeableChanges(changes);
             } else if (initialContent) {
               mergeable.setDefaultContent(initialContent);
             } else {
@@ -340,34 +316,25 @@ export const createCustomSynchronizer = (
     await pull(initialContent);
     await tryCatch(
       async () =>
-        (autoPullHandle = await addPersisterListener(
-          async (content, changes) => {
-            if (changes || content) {
-              /*! istanbul ignore else */
-              if (status != StatusValues.Pushing) {
-                setStatus(StatusValues.Pulling);
-                setContentOrChanges(changes ?? content);
-                setStatus(StatusValues.Idle);
-              }
-            } else {
-              await pull();
-            }
-          },
-        )),
+        (pullListener = async (changes) => {
+          /*! istanbul ignore else */
+          if (changesAreNotEmpty(changes) && status != StatusValues.Pushing) {
+            setStatus(StatusValues.Pulling);
+            mergeable.applyMergeableChanges(changes);
+            setStatus(StatusValues.Idle);
+          }
+        }),
       onIgnoredError,
     );
     return synchronizer;
   };
 
   const stopAutoPull = async (): Promise<Synchronizer> => {
-    if (autoPullHandle) {
-      await tryCatch(() => delPersisterListener(), onIgnoredError);
-      autoPullHandle = undefined;
-    }
+    pullListener = undefined;
     return synchronizer;
   };
 
-  const isAutoPulling = () => !isUndefined(autoPullHandle);
+  const isAutoPulling = () => !isUndefined(pullListener);
 
   const push = async (
     changes?: MergeableChanges<false>,
@@ -458,11 +425,11 @@ export const createCustomSynchronizer = (
           transactionOrRequestId ?? undefined,
         )
           .then((changes: any) => {
-            synchronizerListener?.(undefined, changes);
+            pullListener?.(changes);
           })
           .catch(onIgnoredError);
       } else if (message == MessageValues.ContentDiff && isPulling) {
-        synchronizerListener?.(undefined, body);
+        pullListener?.(body);
       } else {
         ifNotUndefined(
           message == MessageValues.GetContentHashes &&
@@ -499,14 +466,14 @@ export const createCustomSynchronizer = (
     startAutoPush,
     stopAutoPush,
 
+    startSync,
+    stopSync,
+
     getStatus,
     addStatusListener,
     delListener,
 
     getStats,
-
-    startSync,
-    stopSync,
     destroy,
 
     ...extra,
