@@ -178,12 +178,23 @@ export const createMergeableStore = ((
     return mergeableStore as MergeableStore;
   };
 
+  const loadCurrentContentStampMap = (
+    _incomingContentOrChanges: MergeableChanges,
+  ): ContentStampMap => contentStampMap;
+  const saveCurrentContentStampMap = (_contentStampMap: ContentStampMap) => 0;
+
   const mergeContentOrChanges = (
     incomingContentOrChanges: MergeableChanges | MergeableContent,
     isContent: 0 | 1 = 0,
   ): Changes => {
-    const tablesChanges = {};
-    const valuesChanges = {};
+    // Current content with metadata
+    const contentStampMap = loadCurrentContentStampMap(
+      incomingContentOrChanges,
+    );
+    const [tablesStampMap, valuesStampMap] = contentStampMap;
+    const [tableStampMaps, oldTablesTime, oldTablesHash] = tablesStampMap;
+
+    // Incoming changes with metadata
     const [
       [
         incomingTables,
@@ -194,9 +205,12 @@ export const createMergeableStore = ((
     ] = incomingContentOrChanges as typeof isContent extends 1
       ? MergeableContent
       : MergeableChanges;
-    const [tablesStampMap, valuesStampMap] = contentStampMap;
-    const [tableStampMaps, oldTablesTime, oldTablesHash] = tablesStampMap;
 
+    // Changes to be returned, with no metadata
+    const tablesChanges = {};
+    const valuesChanges = {};
+
+    // --
     let tablesHash = isContent ? incomingTablesHash : oldTablesHash;
     let tablesTime = incomingTablesTime;
     objForEach(
@@ -266,6 +280,7 @@ export const createMergeableStore = ((
     );
 
     seenHlc(getLatestTime(tablesTime, valuesTime));
+    saveCurrentContentStampMap(contentStampMap);
     return [tablesChanges, valuesChanges, 1];
   };
 
