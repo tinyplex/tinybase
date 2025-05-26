@@ -94,46 +94,46 @@ export const createCustomSynchronizer = (
   const statusListeners: IdSet2 = mapNew();
   const pendingRequests: IdMap<
     [
-      toClientId: IdOrNull,
-      handleResponse: (response: any, fromClientId: Id) => void,
+      toMergeableId: IdOrNull,
+      handleResponse: (response: any, fromMergeableId: Id) => void,
     ]
   > = mapNew();
 
   const sendImpl = (
-    toClientId: IdOrNull,
+    toMergeableId: IdOrNull,
     requestId: IdOrNull,
     message: MessageEnum | any,
     body: any,
   ) => {
     sends++;
-    onSend?.(toClientId, requestId, message, body);
-    send(toClientId, requestId, message, body);
+    onSend?.(toMergeableId, requestId, message, body);
+    send(toMergeableId, requestId, message, body);
   };
 
   const request = async <Response>(
-    toClientId: IdOrNull,
+    toMergeableId: IdOrNull,
     message: MessageEnum | any,
     body: any,
     transactionId: Id,
-  ): Promise<[response: Response, fromClientId: Id, transactionId: Id]> =>
+  ): Promise<[response: Response, fromMergeableId: Id, transactionId: Id]> =>
     promiseNew((resolve, reject) => {
       const requestId = transactionId + DOT + getUniqueId(4);
       const timeout = startTimeout(() => {
         collDel(pendingRequests, requestId);
         reject(
-          `No response from ${toClientId ?? 'anyone'} to ${requestId}, ` +
+          `No response from ${toMergeableId ?? 'anyone'} to ${requestId}, ` +
             message,
         );
       }, requestTimeoutSeconds);
       mapSet(pendingRequests, requestId, [
-        toClientId,
-        (response: Response, fromClientId: Id) => {
+        toMergeableId,
+        (response: Response, fromMergeableId: Id) => {
           clearTimeout(timeout);
           collDel(pendingRequests, requestId);
-          resolve([response, fromClientId, transactionId]);
+          resolve([response, fromMergeableId, transactionId]);
         },
       ]);
-      sendImpl(toClientId, requestId, message, body);
+      sendImpl(toMergeableId, requestId, message, body);
     });
 
   const mergeTablesStamps = (
@@ -164,14 +164,14 @@ export const createCustomSynchronizer = (
     tablesStamp[1] = getLatestTime(tablesStamp[1], tablesTime2);
   };
 
-  const pullChangesFromOtherClient = (
-    otherClientId: IdOrNull = null,
+  const pullChangesFromOtherMergeable = (
+    otherMergeableId: IdOrNull = null,
     otherContentHashes?: ContentHashes,
     transactionId: Id = getTransactionId(),
   ): Promise<MergeableChanges | void> =>
     tryCatch(async () => {
       if (isUndefined(otherContentHashes)) {
-        [otherContentHashes, otherClientId, transactionId] =
+        [otherContentHashes, otherMergeableId, transactionId] =
           await request<ContentHashes>(
             null,
             MessageValues.GetContentHashes,
@@ -186,7 +186,7 @@ export const createCustomSynchronizer = (
       if (tablesHash != otherTablesHash) {
         const [newTables, differentTableHashes] = (
           await request<[TablesStamp, TableHashes]>(
-            otherClientId,
+            otherMergeableId,
             MessageValues.GetTableDiff,
             mergeable.getMergeableTableHashes(),
             transactionId,
@@ -197,7 +197,7 @@ export const createCustomSynchronizer = (
         if (!objIsEmpty(differentTableHashes)) {
           const [newRows, differentRowHashes] = (
             await request<[TablesStamp, RowHashes]>(
-              otherClientId,
+              otherMergeableId,
               MessageValues.GetRowDiff,
               mergeable.getMergeableRowHashes(differentTableHashes),
               transactionId,
@@ -208,7 +208,7 @@ export const createCustomSynchronizer = (
           if (!objIsEmpty(differentRowHashes)) {
             const newCells = (
               await request<TablesStamp>(
-                otherClientId,
+                otherMergeableId,
                 MessageValues.GetCellDiff,
                 mergeable.getMergeableCellHashes(differentRowHashes),
                 transactionId,
@@ -225,7 +225,7 @@ export const createCustomSynchronizer = (
           ? stampNewObj()
           : (
               await request<ValuesStamp>(
-                otherClientId,
+                otherMergeableId,
                 MessageValues.GetValueDiff,
                 mergeable.getMergeableValueHashes(),
                 transactionId,
@@ -284,7 +284,7 @@ export const createCustomSynchronizer = (
       setStatus(StatusValues.Pulling);
       await schedule(async () => {
         await tryCatch(async () => {
-          const changes = await pullChangesFromOtherClient();
+          const changes = await pullChangesFromOtherMergeable();
           if (changesAreNotEmpty(changes)) {
             mergeable.applyMergeableChanges(changes);
           } else {
@@ -389,26 +389,26 @@ export const createCustomSynchronizer = (
 
   registerReceive(
     (
-      fromClientId: Id,
+      fromMergeableId: Id,
       transactionOrRequestId: IdOrNull,
       message: MessageEnum | any,
       body: any,
     ) => {
       const isPulling = syncing || isAutoPulling();
       receives++;
-      onReceive?.(fromClientId, transactionOrRequestId, message, body);
+      onReceive?.(fromMergeableId, transactionOrRequestId, message, body);
       if (message == MessageValues.Response) {
         ifNotUndefined(
           mapGet(pendingRequests, transactionOrRequestId),
-          ([toClientId, handleResponse]) =>
-            isUndefined(toClientId) || toClientId == fromClientId
-              ? handleResponse(body, fromClientId)
+          ([toMergeableId, handleResponse]) =>
+            isUndefined(toMergeableId) || toMergeableId == fromMergeableId
+              ? handleResponse(body, fromMergeableId)
               : /*! istanbul ignore next */
                 0,
         );
       } else if (message == MessageValues.ContentHashes && isPulling) {
-        pullChangesFromOtherClient(
-          fromClientId,
+        pullChangesFromOtherMergeable(
+          fromMergeableId,
           body,
           transactionOrRequestId ?? undefined,
         )
@@ -434,7 +434,7 @@ export const createCustomSynchronizer = (
                     : undefined,
           (response) => {
             sendImpl(
-              fromClientId,
+              fromMergeableId,
               transactionOrRequestId,
               MessageValues.Response,
               response,
