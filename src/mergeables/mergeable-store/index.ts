@@ -38,7 +38,6 @@ import {
   mapNew,
   mapToObj,
 } from '../../common/map.ts';
-import {changesAreNotEmpty} from '../../common/mergeable.ts';
 import {
   IdObj,
   objEnsure,
@@ -471,14 +470,11 @@ export const createMergeableStore = ((
   const addMergeableChangesListener = (
     changesListener: (changes: MergeableChanges<false>) => void,
   ): (() => void) => {
-    const listenerId = store.addDidFinishTransactionListener(() => {
-      const changes =
-        getTransactionMergeableChanges() as MergeableChanges<false>;
-      /*! istanbul ignore else */
-      if (changesAreNotEmpty(changes)) {
-        changesListener(changes);
-      }
-    });
+    const listenerId = store.addDidFinishTransactionListener(() =>
+      changesListener(
+        getTransactionMergeableChanges() as MergeableChanges<false>,
+      ),
+    );
     return () => store.delListener(listenerId);
   };
 

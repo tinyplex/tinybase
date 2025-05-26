@@ -332,12 +332,14 @@ export const createCustomSynchronizer = (
         await tryCatch(
           () =>
             changes
-              ? sendImpl(
-                  null,
-                  getTransactionId(),
-                  MessageValues.ContentDiff,
-                  changes,
-                )
+              ? changesAreNotEmpty(changes)
+                ? sendImpl(
+                    null,
+                    getTransactionId(),
+                    MessageValues.ContentDiff,
+                    changes,
+                  )
+                : 0
               : sendImpl(
                   null,
                   getTransactionId(),
