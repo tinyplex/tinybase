@@ -625,6 +625,7 @@ export const createMergeableStore = ((
     const listenerId = store.addDidFinishTransactionListener(() => {
       const changes =
         getTransactionMergeableChanges() as MergeableChanges<false>;
+      /*! istanbul ignore else */
       if (changesAreNotEmpty(changes)) {
         changesListener(changes);
       }
