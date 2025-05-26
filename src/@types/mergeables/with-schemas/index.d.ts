@@ -137,13 +137,15 @@ export type MergeableChanges<
   isChanges: 1,
 ];
 
-export type ChangesListener<Schemas extends OptionalSchemas> = (
+export type MergeableChangesListener<Schemas extends OptionalSchemas> = (
   changes: MergeableChanges<Schemas, false>,
 ) => void;
 
 /// Mergeable
 export interface Mergeable<Schemas extends OptionalSchemas> {
-  addChangesListener(changesListener: ChangesListener<Schemas>): () => void;
+  addMergeableChangesListener(
+    changesListener: MergeableChangesListener<Schemas>,
+  ): () => void;
 
   /// Mergeable.applyMergeableChanges
   applyMergeableChanges(mergeableChanges: MergeableChanges<Schemas>): this;

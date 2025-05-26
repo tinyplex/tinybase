@@ -80,11 +80,15 @@ export type MergeableChanges<Hashed extends boolean = false> = [
   isChanges: 1,
 ];
 
-export type ChangesListener = (changes: MergeableChanges<false>) => void;
+export type MergeableChangesListener = (
+  changes: MergeableChanges<false>,
+) => void;
 
 /// Mergeable
 export interface Mergeable {
-  addChangesListener(changesListener: ChangesListener): () => void;
+  addMergeableChangesListener(
+    changesListener: MergeableChangesListener,
+  ): () => void;
 
   /// Mergeable.applyMergeableChanges
   applyMergeableChanges(mergeableChanges: MergeableChanges): this;

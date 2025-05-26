@@ -355,7 +355,7 @@ export const createCustomSynchronizer = (
   const startAutoPush = async (): Promise<Synchronizer> => {
     stopAutoPush();
     await push();
-    delPushListener = mergeable.addChangesListener(push);
+    delPushListener = mergeable.addMergeableChangesListener(push);
     return synchronizer;
   };
 

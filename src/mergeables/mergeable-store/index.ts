@@ -619,7 +619,7 @@ export const createMergeableStore = ((
     return stampNew(values, valuesTime);
   };
 
-  const addChangesListener = (
+  const addMergeableChangesListener = (
     changesListener: (changes: MergeableChanges<false>) => void,
   ): (() => void) => {
     const listenerId = store.addDidFinishTransactionListener(() => {
@@ -636,12 +636,12 @@ export const createMergeableStore = ((
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
     setMergeableContent,
+    setDefaultContent,
     getTransactionMergeableChanges,
-    applyMergeableChanges,
     merge,
 
-    addChangesListener,
-    setDefaultContent,
+    addMergeableChangesListener,
+    applyMergeableChanges,
     getMergeableContentHashes,
     getMergeableTableHashes,
     getMergeableTableDiff,
