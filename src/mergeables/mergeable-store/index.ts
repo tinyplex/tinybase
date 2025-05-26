@@ -459,13 +459,6 @@ export const createMergeableStore = ((
     ];
   };
 
-  const applyMergeableChanges = (
-    mergeableChanges: MergeableChanges,
-  ): MergeableStore =>
-    disableListeningToRawStoreChanges(() =>
-      store.applyChanges(mergeContentOrChanges(mergeableChanges)),
-    );
-
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableChanges = getMergeableContent();
     const mergeableChanges2 = mergeableStore2.getMergeableContent();
@@ -474,6 +467,27 @@ export const createMergeableStore = ((
   };
 
   // --- Mergeable Interface
+
+  const addMergeableChangesListener = (
+    changesListener: (changes: MergeableChanges<false>) => void,
+  ): (() => void) => {
+    const listenerId = store.addDidFinishTransactionListener(() => {
+      const changes =
+        getTransactionMergeableChanges() as MergeableChanges<false>;
+      /*! istanbul ignore else */
+      if (changesAreNotEmpty(changes)) {
+        changesListener(changes);
+      }
+    });
+    return () => store.delListener(listenerId);
+  };
+
+  const applyMergeableChanges = (
+    mergeableChanges: MergeableChanges,
+  ): MergeableStore =>
+    disableListeningToRawStoreChanges(() =>
+      store.applyChanges(mergeContentOrChanges(mergeableChanges)),
+    );
 
   const getMergeableContentHashes = (): ContentHashes => [
     contentStampMap[0][2],
@@ -613,20 +627,6 @@ export const createMergeableStore = ((
       ([, , hash], valueId) => hash == otherValueHashes?.[valueId],
     );
     return stampNew(values, valuesTime);
-  };
-
-  const addMergeableChangesListener = (
-    changesListener: (changes: MergeableChanges<false>) => void,
-  ): (() => void) => {
-    const listenerId = store.addDidFinishTransactionListener(() => {
-      const changes =
-        getTransactionMergeableChanges() as MergeableChanges<false>;
-      /*! istanbul ignore else */
-      if (changesAreNotEmpty(changes)) {
-        changesListener(changes);
-      }
-    });
-    return () => store.delListener(listenerId);
   };
 
   const mergeableStore: IdObj<any> = {
