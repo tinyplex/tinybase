@@ -6,7 +6,7 @@ import {
 } from '../@types/mergeable-store/index.js';
 import {getHlcFunctions} from '../common/hlc.ts';
 
-type Config<TableIds extends string> = {
+export type Config<TableIds extends string> = {
   sql: Sql;
   tables: Record<TableIds, TableConfig>;
   outboxTable?: {
@@ -17,8 +17,7 @@ type Config<TableIds extends string> = {
     // persister will store last db timestamp during load in store values so it can always continue from there
     schema?: string; // defaults to public
     tableName: string;
-    sequenceColumnName: string;
-    dataColumnName: string;
+    metaTableName: string;
   };
   // kv store for persister metadata, is used for things like sync timestamps, can be used for continuing sync from where other instance left off
   // it's separate from store so it's not synced to other instances
@@ -37,6 +36,7 @@ type TableConfig = {
     tableName: string;
     condition?: string; // defaults to TRUE
     idColumnName?: string; // defaults to id
+    timestampColumnName?: string; // defaults to updatedAt
   };
   // ... possibly things like autoLoadInterval and others, but not sure if these are needed
 };
@@ -44,7 +44,7 @@ type TableConfig = {
 const LOG_LEVELS = ['debug', 'info', 'warn', 'error'] as const;
 const NOOP = () => {};
 
-function createLogger(
+export function createLogger(
   logger: Config<any>['logger'] = console,
   level: (typeof LOG_LEVELS)[number] = 'error',
   prefix: string = '[PgPersister] ',
@@ -57,10 +57,10 @@ function createLogger(
   };
 
   return {
-    debug: logLevelIndex >= 0 ? prefixLog(logger.debug) : NOOP,
-    info: logLevelIndex >= 1 ? prefixLog(logger.info) : NOOP,
-    warn: logLevelIndex >= 2 ? prefixLog(logger.warn) : NOOP,
-    error: logLevelIndex >= 3 ? prefixLog(logger.error) : NOOP,
+    debug: logLevelIndex <= 0 ? prefixLog(logger.debug) : NOOP,
+    info: logLevelIndex <= 1 ? prefixLog(logger.info) : NOOP,
+    warn: logLevelIndex <= 2 ? prefixLog(logger.warn) : NOOP,
+    error: logLevelIndex <= 3 ? prefixLog(logger.error) : NOOP,
   };
 }
 
@@ -70,18 +70,18 @@ CREATE TABLE IF NOT EXISTS outbox (
   rowId UUID NOT NULL,
   tableName VARCHAR(255) NOT NULL,
   timestamp TIMESTAMP NOT NULL,
-  data JSONB NOT NULL,
+  payload JSONB NOT NULL,
   persisterId VARCHAR(12) NOT NULL
 );
  */
 
 type OutboxRow = {
   id: number;
-  rowId: string;
-  persisterId: string;
-  tableName: string;
+  row_id: string;
+  persister_id: string;
+  table_name: string;
   timestamp: string;
-  data: string;
+  payload: string;
 };
 
 export class PgPersister<TableIds extends string> {
@@ -142,40 +142,58 @@ export class PgPersister<TableIds extends string> {
   // do load and return promise when everything is done
   // if since is passed in it'll do 2 sql queries, 1) select * where timestamp > date, 2) `SELECT FROM (values $1) LEFT JOIN table on id=id where table.id = null` to find ids that were deleted since the date
   async load(): Promise<void> {
+    this.logger.info('Loading tables');
+    const startTimestamp = await this.getDatabaseTimestamp();
     for (const tableId of this.tableIds) {
-      this.tablesStatus[tableId].load = this.loadTable(tableId);
+      this.tablesStatus[tableId].load = this.loadTable(tableId).then(() => {
+        this.tablesStatus[tableId].load = startTimestamp;
+      });
     }
 
     await Promise.all(
       this.tableIds.map((tableId) => this.tablesStatus[tableId].load),
     );
+    this.metaStore.set('lastLoadTimestamp', startTimestamp);
   }
 
   // this currently works as pg is source of truth and it fully overwrites store, with now stamps
   // which may be good for initial load but not for merging
   protected async loadTable(tableId: TableIds): Promise<void> {
     this.logger.info('Loading table', tableId);
-    const {schema, tableName, condition, idColumnName} =
+    const {schema, tableName, condition, idColumnName, timestampColumnName} =
       this.config.tables[tableId].postgres;
     const sql = this.sql;
 
-    const table = sql`${sql(schema ?? 'public')}.${sql(tableName)}`;
-    const where = condition ? sql`WHERE ${sql.unsafe(condition)}` : sql``;
+    const table = sql(`${schema ?? 'public'}.${tableName}`);
+    const where = condition
+      ? sql.unsafe(
+          `WHERE ${condition.replaceAll('$tableName', `"${schema ?? 'public'}"."${tableName}"`)}`,
+        )
+      : sql``;
+
+    this.logger.debug('Resetting table', tableId);
+    this.store.setTable(tableId, {});
 
     // todo we should do some logging here when the query is executed
-
-    let startTimestamp: Date | null = null;
-
-    await sql.begin(async (sql) => {
-      startTimestamp = await this.getDatabaseTimestamp();
-
-      const changesQuery = sql`SELECT * FROM ${table} ${where}`;
-      await changesQuery.forEach((row) => {
-        this.store.setRow(tableId, row[idColumnName ?? 'id'], row);
-      });
+    await sql`SELECT * FROM ${table} ${where}`.forEach((row) => {
+      const rowId: string = row[idColumnName ?? 'id'];
+      const timestamp: string =
+        row[timestampColumnName ?? 'updatedAt'] ?? new Date().toISOString();
+      const time = this.getHlc(timestamp);
+      const cells = Object.entries(row).reduce(
+        (acc, [cellId, value]) => {
+          acc[cellId] = [value, time, 0];
+          return acc;
+        },
+        {} as {[cellId: string]: CellStamp<true>},
+      );
+      const content: MergeableContent = [
+        [{[tableId]: [{[rowId]: [cells, time, 0]}, time, 0]}, time, 0],
+        [{}, time, 0],
+      ];
+      this.store.applyMergeableChanges(content);
     });
 
-    this.tablesStatus[tableId].load = startTimestamp;
     this.logger.debug('Finished loading table', tableId);
   }
 
@@ -197,6 +215,7 @@ export class PgPersister<TableIds extends string> {
 
   // do insert on conflict update + delete where id not in
   async save(): Promise<void> {
+    this.logger.info('Saving tables');
     for (const tableId of this.tableIds) {
       this.tablesStatus[tableId].save = this.saveTable(tableId);
     }
@@ -257,51 +276,69 @@ export class PgPersister<TableIds extends string> {
     return new Date(row?.ts);
   }
 
+  private hlcGetters = new Map<string, () => string>();
+  private getHlc(timestamp: string): string {
+    const existing = this.hlcGetters.get(timestamp);
+    if (existing) return existing();
+
+    const [getter] = getHlcFunctions(this.id, () =>
+      new Date(timestamp).getTime(),
+    );
+    this.hlcGetters.set(timestamp, getter);
+    return getter();
+  }
+
   // add triggers and listen to them
   async startAutoLoad() {
+    this.logger.info('Starting auto load');
     this.ensureSyncAllowed();
     const sql = this.sql;
     const {schema, tableName} = this.config.outboxTable!;
 
-    const outboxTable = sql`${sql(schema ?? 'public')}.${sql(tableName)}`;
-    const triggerName = sql`${sql(schema ?? 'public')}.${tableName}_notify_trigger`;
-    const functionName = sql`${sql(schema ?? 'public')}.${tableName}_notify_function`;
+    const outboxTable = sql(`${schema ?? 'public'}.${tableName}`);
+    const triggerName = sql(`${tableName}_notify_trigger`);
+    const functionName = sql(
+      `${schema ?? 'public'}.${tableName}_notify_function`,
+    );
     const channelName = `${schema}_${tableName}_notify`;
 
     // create outbox trigger if it doesn't exist
-    const fn = await sql`
+    // or replace it if it does, we're doing replace instead of ignore to update if there was some previous deploy
+    await sql`
         CREATE OR REPLACE FUNCTION ${functionName}()
         RETURNS trigger AS $$
         BEGIN 
-            PERFORM pg_notify(${channelName});
+            NOTIFY ${sql(channelName)};
             RETURN NULL;
         END;
         $$ LANGUAGE plpgsql;
     `;
-
-    const trigger = await sql`
+    await sql`
         CREATE OR REPLACE TRIGGER ${triggerName}
         AFTER INSERT ON ${outboxTable}
-        EXECUTE FUNCTION ${functionName}()
-      `;
+        EXECUTE FUNCTION ${functionName}();
+    `;
 
     // start listening on the channel
     this.autoLoadListener = await sql.listen(channelName, () =>
       sql.begin(async (sql) => {
-        const currentTimestamp = await this.getDatabaseTimestamp();
-        const lastLoadTimestamp: Date | undefined =
-          this.metaStore.get('lastLoadTimestamp');
+        const outboxCursor: number = this.metaStore.get('outboxCursor') ?? 0;
+        this.logger.debug('AutoLoading', this.id, outboxCursor);
 
         // we are using notify + select to get changes because that gives us at-least-once delivery
         // if we'd send payload through notify we may miss some changes when persister is hibernated
 
         await sql`
           SELECT * FROM ${outboxTable} 
-          WHERE persisterId = ${this.id}
-          ${lastLoadTimestamp ? sql`AND timestamp > ${lastLoadTimestamp}` : sql``}
-        `.forEach((row) => this.applyAutoLoadedRow(row as OutboxRow));
-
-        this.metaStore.set('lastLoadTimestamp', currentTimestamp);
+          WHERE persister_id = ${this.id} AND id > ${outboxCursor}
+        `.forEach((row) => {
+          try {
+            this.applyAutoLoadedRow(row as OutboxRow);
+          } catch (e) {
+            this.logger.error('Error applying auto loaded row', e);
+          }
+          this.metaStore.set('outboxCursor', row.id);
+        });
       }),
     );
   }
@@ -309,21 +346,16 @@ export class PgPersister<TableIds extends string> {
   private applyAutoLoadedRow(change: OutboxRow) {
     const tableId = Object.entries(this.config.tables).find(
       ([_, tableConfig]) =>
-        (tableConfig as TableConfig).postgres.tableName === change.tableName,
+        (tableConfig as TableConfig).postgres.tableName === change.table_name,
     )?.[0] as TableIds;
     if (!tableId) {
-      this.logger.error('Table not found', change.tableName);
+      this.logger.error('Table not found', change.table_name);
       return;
     }
-    const rowId: string = change.rowId;
-
-    const [getHlc] = getHlcFunctions(this.id, () =>
-      new Date(change.timestamp).getTime(),
-    );
-
-    const time = getHlc();
-    const data = JSON.parse(change.data) as Record<string, any>;
-    const cells = Object.entries(data).reduce(
+    const rowId: string = change.row_id;
+    const time = this.getHlc(change.timestamp);
+    this.logger.debug('apply auto load', change.payload, change.timestamp);
+    const cells = Object.entries(change.payload).reduce(
       (acc, [cellId, value]) => {
         acc[cellId] = [value, time];
         return acc;
@@ -335,10 +367,36 @@ export class PgPersister<TableIds extends string> {
       [{}, time],
       1,
     ];
+    this.logger.debug('AutoLoaded', changes);
     this.store.applyMergeableChanges(changes);
   }
 
+  private async updateLastSeenLogicalTimestamp(timestamp: Date) {
+    if (!this.config.outboxTable) return;
+
+    const sql = this.sql;
+    const {schema, metaTableName} = this.config.outboxTable;
+    const outboxMetaTable = sql(`${schema ?? 'public'}.${metaTableName}`);
+
+    try {
+      await sql`
+      INSERT INTO ${outboxMetaTable} ("persister_id", "last_logical_timestamp") 
+      SELECT ${this.id}, MAX("last_logical_timestamp")
+      FROM (
+        (SELECT "last_logical_timestamp" FROM ${outboxMetaTable} WHERE "persister_id" = ${this.id} LIMIT 1)
+        UNION 
+        (SELECT ${timestamp.toISOString()})
+        ) meta 
+        ON CONFLICT ("persister_id") DO UPDATE SET "last_logical_timestamp" = EXCLUDED."last_logical_timestamp"`;
+    } catch (error) {
+      this.logger.error('Error updating last seen logical timestamp', error);
+    }
+  }
+
+  // todo all tables should have updatedAt column otherwise we're risking to lose updates
+  // when there are multiple updates before the transaction is committed
   startAutoSave(): this {
+    this.logger.info('Starting auto save');
     this.ensureSyncAllowed();
     if (this.autoSaveListener) {
       this.logger.warn('Auto save is already running');
@@ -352,13 +410,17 @@ export class PgPersister<TableIds extends string> {
         const [, , changedCells, , , , , changedRowIds, , ,] =
           store.getTransactionLog();
 
-        const promises = [];
+        // todo lastSeenLogicalTimestamp should be loaded from store or transaction log
+        // it is awaited before all saves so triggers are based on the right timestamp
+        await this.updateLastSeenLogicalTimestamp(new Date());
+
+        const promises: Promise<unknown>[] = [];
 
         for (const [tableId, config] of Object.entries(this.config.tables)) {
           const {schema, tableName, idColumnName, condition} = (
             config as TableConfig
           ).postgres;
-          const table = sql`${sql(schema ?? 'public')}.${sql(tableName)}`;
+          const table = sql(`${schema ?? 'public'}.${tableName}`);
           const idColumn = sql(idColumnName ?? 'id');
 
           const rowIdsChanges = changedRowIds[tableId] ?? {};
@@ -403,7 +465,7 @@ export class PgPersister<TableIds extends string> {
               );
               return {...cells, [idColumnName ?? 'id']: rowId};
             })
-            .filter((v) => v !== null);
+            .filter(Boolean);
 
           if (data.length) {
             promises.push(sql`INSERT INTO ${table} VALUES ${sql(data)}`);
@@ -423,13 +485,19 @@ export class PgPersister<TableIds extends string> {
               ]),
             );
 
+            this.logger.debug('AutoSaving', tableId, rowId, cells);
             promises.push(
               sql`UPDATE ${table} SET ${sql(cells)} WHERE ${idColumn} = ${rowId}`,
             );
           }
 
           // todo we should rollback changes of failed promises
-          await Promise.allSettled(promises);
+          const results = await Promise.allSettled(promises);
+          results
+            .filter((result) => result.status === 'rejected')
+            .forEach(({reason}) =>
+              this.logger.error('AutoSave failed', reason),
+            );
         }
       },
     );
@@ -438,6 +506,7 @@ export class PgPersister<TableIds extends string> {
   }
 
   async stopAutoLoad() {
+    this.logger.info('Stopping auto load');
     if (this.autoLoadListener) {
       await this.autoLoadListener.unlisten();
       this.autoLoadListener = undefined;
@@ -447,6 +516,7 @@ export class PgPersister<TableIds extends string> {
   }
 
   stopAutoSave(): this {
+    this.logger.info('Stopping auto save');
     if (this.autoSaveListener) {
       this.store.delListener(this.autoSaveListener);
       this.autoSaveListener = undefined;
@@ -458,6 +528,7 @@ export class PgPersister<TableIds extends string> {
 
   // add a trigger on all tables to insert into outbox table
   async startOutbox() {
+    this.logger.info('Starting outbox');
     this.ensureSyncAllowed();
 
     await Promise.all(
@@ -466,6 +537,7 @@ export class PgPersister<TableIds extends string> {
   }
 
   async stopOutbox() {
+    this.logger.info('Stopping outbox');
     await Promise.all(
       this.tableIds.map((tableId) => this.stopOutboxOnTable(tableId)),
     );
@@ -476,24 +548,33 @@ export class PgPersister<TableIds extends string> {
     const outbox = this.config.outboxTable!;
     const {schema, tableName, condition} = this.config.tables[tableId].postgres;
 
-    const table = sql`${sql(schema ?? 'public')}.${sql(tableName)}`;
-    const outboxTable = sql`${sql(outbox.schema ?? 'public')}.${sql(outbox.tableName)}`;
+    const table = `"${schema ?? 'public'}"."${tableName}"`;
+    const outboxTable = `"${outbox.schema ?? 'public'}"."${outbox.tableName}"`;
+    const outboxMetaTable = `"${outbox.schema ?? 'public'}"."${outbox.metaTableName}"`;
     // trigger and function names must contain persister id so we can safely clean them up even if there are multiple persisters on same table
-    const triggerName = sql`${sql(schema ?? 'public')}.${tableName}_${this.id}_trigger`;
-    const functionName = sql`${sql(schema ?? 'public')}.${tableName}_${this.id}_function`;
+    const triggerName = `"${tableName}_${this.id}_trigger"`;
+    const functionName = `"${schema ?? 'public'}"."${tableName}_${this.id}_function"`;
 
-    const fn = await sql`
+    this.logger.debug('Creating outbox function & trigger');
+    // this is marked as unsafe because I haven't figured out how to make the unsafe condition work within safe query
+    await sql.unsafe(`
         CREATE OR REPLACE FUNCTION ${functionName}()
         RETURNS TRIGGER AS $$
+        DECLARE
+          logical_time timestamp;
+          payload jsonb;
         BEGIN
-            ${condition ? sql`IF (${sql.unsafe(condition.replace('$tableName', 'NEW'))}) OR (${sql.unsafe(condition.replace('$tableName', 'OLD'))}) THEN` : sql``}
-                INSERT INTO ${outboxTable} (rowId, tableName, timestamp, data, persisterId)
-                SELECT
-                    COALESCE(OLD.id, NEW.id),
-                    ${tableName},
-                    NOW(),
-                    json_object_agg(COALESCE(o.key, n.key), n.value),
-                    ${this.id}
+            IF (${condition ? condition.replace('$tableName', 'NEW') : 'TRUE'}) OR (${condition ? condition.replace('$tableName', 'OLD') : 'TRUE'}) THEN
+                SELECT COALESCE((row_to_json(NEW)->>'updatedAt')::timestamp, MAX("last_logical_timestamp"))
+                INTO logical_time
+                FROM (
+                  (SELECT "last_logical_timestamp" FROM ${outboxMetaTable} WHERE persister_id = '${this.id}' LIMIT 1)
+                UNION 
+                  (SELECT NOW())
+                ) meta;
+            
+                SELECT json_object_agg(COALESCE(o.key, n.key), n.value)
+                INTO payload
                 FROM 
                     json_each_text(row_to_json(OLD)) o
                 FULL OUTER JOIN 
@@ -501,18 +582,24 @@ export class PgPersister<TableIds extends string> {
                 ON n.key = o.key
                 WHERE 
                     n.value IS DISTINCT FROM o.value;
-            ${condition ? sql`END IF;` : sql``}
+
+                IF payload IS NOT NULL THEN
+                  INSERT INTO ${outboxTable} (row_id, table_name, timestamp, payload, persister_id)
+                  VALUES (COALESCE(OLD.id, NEW.id), '${tableName}', logical_time, payload, '${this.id}');
+                END IF;
+                
+            END IF;
 
             RETURN NULL;
         END;
         $$ LANGUAGE plpgsql;
-    `;
 
-    const trigger = await sql`
         CREATE OR REPLACE TRIGGER ${triggerName}
         AFTER INSERT OR UPDATE OR DELETE ON ${table}
-        FOR EACH ROW EXECUTE FUNCTION ${functionName}()
-      `;
+        FOR EACH ROW EXECUTE FUNCTION ${functionName}();
+    `);
+
+    this.logger.debug('Outbox function & trigger created');
   }
 
   private async stopOutboxOnTable(tableId: TableIds) {
