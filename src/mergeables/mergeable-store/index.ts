@@ -23,7 +23,6 @@ import type {
   Store,
   ValueOrUndefined,
 } from '../../@types/store/index.d.ts';
-import {isCellOrValueOrNullOrUndefined} from '../../common/cell.ts';
 import {collClear, collForEach} from '../../common/coll.ts';
 import {getHlcFunctions} from '../../common/hlc.ts';
 import {
@@ -33,6 +32,7 @@ import {
   mapNew,
   mapToObj,
 } from '../../common/map.ts';
+import {validateMergeableContent} from '../../common/mergeable.ts';
 import {
   IdObj,
   objEnsure,
@@ -41,15 +41,8 @@ import {
   objHas,
   objMap,
   objNew,
-  objValidate,
 } from '../../common/obj.ts';
-import {
-  ifNotUndefined,
-  isArray,
-  noop,
-  size,
-  slice,
-} from '../../common/other.ts';
+import {ifNotUndefined, noop, slice} from '../../common/other.ts';
 import {IdSet, IdSet3, setAdd, setNew} from '../../common/set.ts';
 import {
   TablesStampMap,
@@ -62,7 +55,6 @@ import {
   stampNewMap,
   stampNewObj,
   stampNewWithHash,
-  stampValidate,
 } from '../../common/stamps.ts';
 import {
   ADD,
@@ -102,45 +94,6 @@ const newContentStampMap = (
   stampNewMap(time),
   stampNewMap(time),
 ];
-
-const validateMergeableContent = (
-  mergeableContent: MergeableContent,
-): boolean =>
-  isArray(mergeableContent) &&
-  size(mergeableContent) == 2 &&
-  stampValidate(mergeableContent[0], (tableStamps) =>
-    objValidate(
-      tableStamps,
-      (tableStamp) =>
-        stampValidate(tableStamp, (rowStamps) =>
-          objValidate(
-            rowStamps,
-            (rowStamp) =>
-              stampValidate(rowStamp, (cellStamps) =>
-                objValidate(
-                  cellStamps,
-                  (cellStamp) =>
-                    stampValidate(cellStamp, isCellOrValueOrNullOrUndefined),
-                  undefined,
-                  1,
-                ),
-              ),
-            undefined,
-            1,
-          ),
-        ),
-      undefined,
-      1,
-    ),
-  ) &&
-  stampValidate(mergeableContent[1], (values) =>
-    objValidate(
-      values,
-      (value) => stampValidate(value, isCellOrValueOrNullOrUndefined),
-      undefined,
-      1,
-    ),
-  );
 
 export const createMergeableStore = ((
   uniqueId?: Id,
