@@ -179,15 +179,19 @@ export const createMergeableStore = ((
   };
 
   const mergeContentOrChanges = (
-    contentOrChanges: MergeableChanges | MergeableContent,
+    incomingContentOrChanges: MergeableChanges | MergeableContent,
     isContent: 0 | 1 = 0,
   ): Changes => {
     const tablesChanges = {};
     const valuesChanges = {};
     const [
-      [tablesObj, incomingTablesTime = EMPTY_STRING, incomingTablesHash = 0],
-      values,
-    ] = contentOrChanges as typeof isContent extends 1
+      [
+        incomingTables,
+        incomingTablesTime = EMPTY_STRING,
+        incomingTablesHash = 0,
+      ],
+      incomingValues,
+    ] = incomingContentOrChanges as typeof isContent extends 1
       ? MergeableContent
       : MergeableChanges;
     const [tablesStampMap, valuesStampMap] = contentStampMap;
@@ -196,9 +200,13 @@ export const createMergeableStore = ((
     let tablesHash = isContent ? incomingTablesHash : oldTablesHash;
     let tablesTime = incomingTablesTime;
     objForEach(
-      tablesObj,
+      incomingTables,
       (
-        [rowsObj, incomingTableTime = EMPTY_STRING, incomingTableHash = 0],
+        [
+          incomingTable,
+          incomingTableTime = EMPTY_STRING,
+          incomingTableHash = 0,
+        ],
         tableId,
       ) => {
         const tableStampMap = mapEnsure<Id, TableStampMap>(
@@ -209,9 +217,9 @@ export const createMergeableStore = ((
         const [rowStampMaps, oldTableTime, oldTableHash] = tableStampMap;
         let tableHash = isContent ? incomingTableHash : oldTableHash;
         let tableTime = incomingTableTime;
-        objForEach(rowsObj, (row, rowId) => {
+        objForEach(incomingTable, (incomingRow, rowId) => {
           const [rowTime, oldRowHash, rowHash] = mergeCellsOrValues(
-            row,
+            incomingRow,
             mapEnsure<Id, RowStampMap>(rowStampMaps, rowId, stampNewMap),
             objEnsure<IdObj<CellOrUndefined>>(
               objEnsure<IdObj<IdObj<CellOrUndefined>>>(
@@ -251,7 +259,7 @@ export const createMergeableStore = ((
     stampUpdate(tablesStampMap, incomingTablesTime, tablesHash);
 
     const [valuesTime] = mergeCellsOrValues(
-      values,
+      incomingValues,
       valuesStampMap,
       valuesChanges,
       isContent,
@@ -270,7 +278,7 @@ export const createMergeableStore = ((
     isContent: 0 | 1,
   ): [thingsTime: Time, oldThingsHash: number, newThingsHash: number] => {
     const [
-      thingsObj,
+      incomingThings,
       incomingThingsTime = EMPTY_STRING,
       incomingThingsHash = 0,
     ] = things;
@@ -280,7 +288,7 @@ export const createMergeableStore = ((
     let thingsHash = isContent ? incomingThingsHash : oldThingsHash;
 
     objForEach(
-      thingsObj,
+      incomingThings,
       ([thing, thingTime = EMPTY_STRING, incomingThingHash = 0], thingId) => {
         const thingStampMap = mapEnsure<Id, Stamp<Thing, true>>(
           thingStampMaps,
