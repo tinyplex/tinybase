@@ -38,13 +38,13 @@ import {
   mapNew,
   mapToObj,
 } from '../../common/map.ts';
+import {changesAreNotEmpty} from '../../common/mergeable.ts';
 import {
   IdObj,
   objEnsure,
   objForEach,
   objFreeze,
   objHas,
-  objIsEmpty,
   objMap,
   objNew,
   objValidate,
@@ -625,7 +625,7 @@ export const createMergeableStore = ((
     const listenerId = store.addDidFinishTransactionListener(() => {
       const changes =
         getTransactionMergeableChanges() as MergeableChanges<false>;
-      if (!objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0])) {
+      if (changesAreNotEmpty(changes)) {
         changesListener(changes);
       }
     });

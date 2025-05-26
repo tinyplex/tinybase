@@ -25,11 +25,11 @@ import {collDel} from '../common/coll.ts';
 import {getUniqueId} from '../common/index.ts';
 import {getListenerFunctions} from '../common/listeners.ts';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
+import {changesAreNotEmpty} from '../common/mergeable.ts';
 import {objEnsure, objForEach, objFreeze, objIsEmpty} from '../common/obj.ts';
 import {
   errorNew,
   ifNotUndefined,
-  isArray,
   isUndefined,
   promiseNew,
   startTimeout,
@@ -96,7 +96,7 @@ export const createCustomSynchronizer = (
   let status: StatusValues = StatusValues.Idle;
   let action;
   let autoPullHandle: MergeableListener | undefined;
-  let delChangesListener: (() => void) | undefined;
+  let delPushListener: (() => void) | undefined;
 
   const scheduledActions: Action[] = [];
 
@@ -243,13 +243,6 @@ export const createCustomSynchronizer = (
       ];
     }, onIgnoredError);
 
-  const pullChanges = async (): Promise<MergeableChanges | undefined> => {
-    const changes = await pullChangesFromOtherClient();
-    return changes && (!objIsEmpty(changes[0][0]) || !objIsEmpty(changes[1][0]))
-      ? changes
-      : undefined;
-  };
-
   const addPersisterListener = (listener: MergeableListener) =>
     (synchronizerListener = listener);
 
@@ -319,8 +312,8 @@ export const createCustomSynchronizer = (
       await schedule(async () => {
         await tryCatch(
           async () => {
-            const changes = await pullChanges();
-            if (isArray(changes)) {
+            const changes = await pullChangesFromOtherClient();
+            if (changesAreNotEmpty(changes)) {
               setContentOrChanges(changes);
             } else if (initialContent) {
               mergeable.setDefaultContent(initialContent);
@@ -409,19 +402,19 @@ export const createCustomSynchronizer = (
   const startAutoPush = async (): Promise<Synchronizer> => {
     stopAutoPush();
     await push();
-    delChangesListener = mergeable.addChangesListener(push);
+    delPushListener = mergeable.addChangesListener(push);
     return synchronizer;
   };
 
   const stopAutoPush = async (): Promise<Synchronizer> => {
-    if (delChangesListener) {
-      delChangesListener();
-      delChangesListener = undefined;
+    if (delPushListener) {
+      delPushListener();
+      delPushListener = undefined;
     }
     return synchronizer;
   };
 
-  const isAutoPushing = () => !isUndefined(delChangesListener);
+  const isAutoPushing = () => !isUndefined(delPushListener);
 
   const getStatus = (): Status => status as any;
 
