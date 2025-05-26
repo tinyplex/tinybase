@@ -317,10 +317,6 @@ export const createMergeableStore = ((
     return [thingsTime, oldThingsHash, thingsStampMap[2]];
   };
 
-  const preStartTransaction = noop;
-
-  const preFinishTransaction = noop;
-
   const postFinishTransaction = () => {
     collClear(touchedCells);
     collClear(touchedValues);
@@ -654,8 +650,8 @@ export const createMergeableStore = ((
   };
 
   (store as any).setInternalListeners(
-    preStartTransaction,
-    preFinishTransaction,
+    noop,
+    noop,
     postFinishTransaction,
     cellChanged,
     valueChanged,
