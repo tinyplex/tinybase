@@ -270,10 +270,14 @@
    * import {createMergeableStore} from 'tinybase';
    * import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
    *
-   * const store1 = createMergeableStore()
-   *   .setDefaultContent([{pets: {fido: {species: 'dog'}}}, {}]);
-   * const store2 = createMergeableStore()
-   *   .setDefaultContent([{pets: {fido: {species: 'unknown'}}}, {}]);
+   * const store1 = createMergeableStore().setDefaultContent([
+   *   {pets: {fido: {species: 'dog'}}},
+   *   {},
+   * ]);
+   * const store2 = createMergeableStore().setDefaultContent([
+   *   {pets: {fido: {species: 'unknown'}}},
+   *   {},
+   * ]);
    *
    * const synchronizer1 = createLocalSynchronizer(store1);
    * const synchronizer2 = createLocalSynchronizer(store2);
