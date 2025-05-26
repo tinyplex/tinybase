@@ -36,11 +36,6 @@ export interface MergeableStore<Schemas extends OptionalSchemas>
     withHashes?: boolean,
   ): MergeableChanges<Schemas, true>;
 
-  /// MergeableStore.applyMergeableChanges
-  applyMergeableChanges(
-    mergeableChanges: MergeableChanges<Schemas> | MergeableContent<Schemas>,
-  ): MergeableStore<Schemas>;
-
   /// MergeableStore.merge
   merge(mergeableStore: MergeableStore<Schemas>): MergeableStore<Schemas>;
 

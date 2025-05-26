@@ -90,6 +90,9 @@ export type ChangesListener = (changes: MergeableChanges<false>) => void;
 export interface Mergeable {
   addChangesListener(changesListener: ChangesListener): () => void;
 
+  /// Mergeable.applyMergeableChanges
+  applyMergeableChanges(mergeableChanges: MergeableChanges): this;
+
   /// Mergeable.setDefaultContent
   setDefaultContent(content: Content | (() => Content)): this;
 

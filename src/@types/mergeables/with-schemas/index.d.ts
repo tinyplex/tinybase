@@ -146,6 +146,9 @@ export type ChangesListener<Schemas extends OptionalSchemas> = (
 export interface Mergeable<Schemas extends OptionalSchemas> {
   addChangesListener(changesListener: ChangesListener<Schemas>): () => void;
 
+  /// Mergeable.applyMergeableChanges
+  applyMergeableChanges(mergeableChanges: MergeableChanges<Schemas>): this;
+
   /// Mergeable.setDefaultContent
   setDefaultContent(content: Content<Schemas> | (() => Content<Schemas>)): this;
 

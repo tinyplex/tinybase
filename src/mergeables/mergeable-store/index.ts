@@ -464,7 +464,7 @@ export const createMergeableStore = ((
   };
 
   const applyMergeableChanges = (
-    mergeableChanges: MergeableChanges | MergeableContent,
+    mergeableChanges: MergeableChanges,
   ): MergeableStore =>
     disableListeningToRawStoreChanges(() =>
       store.applyChanges(mergeContentOrChanges(mergeableChanges)),
@@ -473,8 +473,8 @@ export const createMergeableStore = ((
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableChanges = getMergeableContent();
     const mergeableChanges2 = mergeableStore2.getMergeableContent();
-    mergeableStore2.applyMergeableChanges(mergeableChanges);
-    return applyMergeableChanges(mergeableChanges2);
+    mergeableStore2.applyMergeableChanges(mergeableChanges as any);
+    return applyMergeableChanges(mergeableChanges2 as any);
   };
 
   // --- Mergeable Interface

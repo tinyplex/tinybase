@@ -218,41 +218,6 @@
    */
   /// MergeableStore.getTransactionMergeableChanges
   /**
-   * The applyMergeableChanges method applies a set of mergeable changes or
-   * content to the MergeableStore.
-   *
-   * The method is generally intended to be used internally within TinyBase
-   * itself and the return type is assumed to be opaque to applications that use
-   * it.
-   * @param mergeableChanges The MergeableChanges or MergeableContent to apply
-   * to the MergeableStore.
-   * @returns A reference to the MergeableStore.
-   * @example
-   * This example applies a MergeableChanges object that sets a Cell and removes
-   * a Value.
-   *
-   * ```js
-   * import {createMergeableStore} from 'tinybase';
-   *
-   * const store = createMergeableStore('store1')
-   *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
-   *   .setValues({open: true});
-   *
-   * store.applyMergeableChanges([
-   *   [{pets: [{fido: [{color: ['black', 'Nn1JUF----2FnHIC']}]}]}],
-   *   [{open: [null, 'Nn1JUF----3FnHIC']}],
-   *   1,
-   * ]);
-   * console.log(store.getTables());
-   * // -> {pets: {fido: {species: 'dog', color: 'black'}}}
-   * console.log(store.getValues());
-   * // -> {}
-   * ```
-   * @category Setter
-   * @since v5.0.0
-   */
-  /// MergeableStore.applyMergeableChanges
-  /**
    * The merge method is a convenience method that applies the mergeable content
    * from two MergeableStores to each other in order to bring them to the same
    * state.

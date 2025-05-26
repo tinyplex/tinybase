@@ -20,11 +20,6 @@ export interface MergeableStore extends Mergeable, Store {
   /// MergeableStore.getTransactionMergeableChanges
   getTransactionMergeableChanges(withHashes?: boolean): MergeableChanges<true>;
 
-  /// MergeableStore.applyMergeableChanges
-  applyMergeableChanges(
-    mergeableChanges: MergeableChanges | MergeableContent,
-  ): MergeableStore;
-
   /// MergeableStore.merge
   merge(mergeableStore: MergeableStore): MergeableStore;
 

@@ -242,6 +242,40 @@
 /// Mergeable
 {
   /**
+   * The applyMergeableChanges method applies a set of mergeable changes to the
+   * Mergeable.
+   *
+   * The method is generally intended to be used internally within TinyBase
+   * itself and the return type is assumed to be opaque to applications that use
+   * it.
+   * @param mergeableChanges The MergeableChanges to apply to the Mergeable.
+   * @returns A reference to the Mergeable.
+   * @example
+   * This example applies a MergeableChanges object that sets a Cell and removes
+   * a Value.
+   *
+   * ```js
+   * import {createMergeableStore} from 'tinybase';
+   *
+   * const store = createMergeableStore('store1')
+   *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
+   *   .setValues({open: true});
+   *
+   * store.applyMergeableChanges([
+   *   [{pets: [{fido: [{color: ['black', 'Nn1JUF----2FnHIC']}]}]}],
+   *   [{open: [null, 'Nn1JUF----3FnHIC']}],
+   *   1,
+   * ]);
+   * console.log(store.getTables());
+   * // -> {pets: {fido: {species: 'dog', color: 'black'}}}
+   * console.log(store.getValues());
+   * // -> {}
+   * ```
+   * @category Setter
+   * @since v7.0.0
+   */
+  /// Mergeable.applyMergeableChanges
+  /**
    * The setDefaultContent method sets initial content of a Mergeable.
    *
    * This differs from the setMergeableContent method in that all of the
