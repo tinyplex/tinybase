@@ -2,8 +2,12 @@ import type {Id} from '../@types/common/index.d.ts';
 import type {
   MergeableChanges,
   MergeableContent,
+  RowStamp,
   Stamp,
+  TablesStamp,
+  TableStamp,
   Time,
+  ValuesStamp,
 } from '../@types/mergeables/index.d.ts';
 import type {
   CellOrUndefined,
@@ -15,14 +19,10 @@ import type {Hlc} from '../common/hlc.ts';
 import {jsonStringWithMap} from '../common/json.ts';
 import {IdObj, objEnsure, objForEach, objNew} from '../common/obj.ts';
 import {
-  RowStampObj,
-  StampObj,
-  TableStampObj,
-  TablesStampObj,
-  ValuesStampObj,
   getLatestTime,
   hashIdAndHash,
   replaceTimeHash,
+  StampObj,
   stampObjNewWithHash,
   stampUpdate,
 } from '../common/stamps.ts';
@@ -31,12 +31,12 @@ import {EMPTY_STRING} from '../common/strings.ts';
 export const getMergeableFunctions = (
   loadTablesStampMap: (
     relevantTablesMask: MergeableChanges[0] | MergeableContent[0],
-  ) => TablesStampObj,
+  ) => TablesStamp<true>,
   loadValuesStampMap: (
     relevantValuesMask: MergeableChanges[1] | MergeableContent[1],
-  ) => ValuesStampObj,
-  saveTablesStampMap: (tablesStampMap: TablesStampObj) => void,
-  saveValuesStampMap: (valuesStampMap: ValuesStampObj) => void,
+  ) => ValuesStamp<true>,
+  saveTablesStampMap: (tablesStampMap: TablesStamp<true>) => void,
+  saveValuesStampMap: (valuesStampMap: ValuesStamp<true>) => void,
   seenHlc: (remoteHlc: Hlc) => void,
 ) => {
   const mergeContentOrChanges = (
@@ -77,7 +77,7 @@ export const getMergeableFunctions = (
         ],
         tableId,
       ) => {
-        const tableStampMap = objEnsure<TableStampObj>(
+        const tableStampMap = objEnsure<TableStamp<true>>(
           tableStampMaps,
           tableId,
           stampObjNewWithHash,
@@ -88,7 +88,7 @@ export const getMergeableFunctions = (
         objForEach(incomingTable, (incomingRow, rowId) => {
           const [rowTime, oldRowHash, rowHash] = mergeCellsOrValues(
             incomingRow,
-            objEnsure<RowStampObj>(rowStampMaps, rowId, stampObjNewWithHash),
+            objEnsure<RowStamp<true>>(rowStampMaps, rowId, stampObjNewWithHash),
             objEnsure<IdObj<CellOrUndefined>>(
               objEnsure<IdObj<IdObj<CellOrUndefined>>>(
                 tablesChanges,

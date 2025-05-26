@@ -1,22 +1,11 @@
 import type {Id} from '../@types/common/index.d.ts';
-import type {
-  CellStamp,
-  Hash,
-  Stamp,
-  Time,
-  ValueStamp,
-} from '../@types/mergeables/index.d.ts';
+import type {Hash, Stamp, Time} from '../@types/mergeables/index.d.ts';
 import {getHash} from './hash.ts';
 import {IdObj, objMap} from './obj.ts';
 import {isArray, isFiniteNumber, isString, size} from './other.ts';
 import {EMPTY_STRING, NUMBER, getTypeOf} from './strings.ts';
 
 export type StampObj<Thing> = Stamp<IdObj<Thing>, true>;
-
-export type TablesStampObj = StampObj<TableStampObj>;
-export type TableStampObj = StampObj<RowStampObj>;
-export type RowStampObj = StampObj<CellStamp<true>>;
-export type ValuesStampObj = StampObj<ValueStamp<true>>;
 
 export const stampNew = <Value>(
   value: Value,

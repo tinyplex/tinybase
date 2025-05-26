@@ -40,8 +40,6 @@ import {
 import {ifNotUndefined, noop, slice} from '../../common/other.ts';
 import {IdSet, IdSet3, setAdd, setNew} from '../../common/set.ts';
 import {
-  TablesStampObj,
-  ValuesStampObj,
   getStampHash,
   stampNew,
   stampNewWithHash,
@@ -84,7 +82,7 @@ const LISTENER_ARGS: IdObj<number> = {
 
 const newContentStampObj = (
   time = EMPTY_STRING,
-): [tablesStampObj: TablesStampObj, valuesStampObj: ValuesStampObj] => [
+): [tablesStampObj: TablesStamp<true>, valuesStampObj: ValuesStamp<true>] => [
   stampObjNewWithHash(time),
   stampObjNewWithHash(time),
 ];
@@ -264,11 +262,11 @@ export const createMergeableStore = ((
 
   const loadTablesStampMap = (
     _relevantTablesMask: MergeableChanges[0] | MergeableContent[0],
-  ): TablesStampObj => contentStampMap[0];
+  ): TablesStamp<true> => contentStampMap[0];
 
   const loadValuesStampMap = (
     _relevantValuesMask: MergeableChanges[1] | MergeableContent[1],
-  ): ValuesStampObj => contentStampMap[1];
+  ): ValuesStamp<true> => contentStampMap[1];
 
   const saveTablesStampMap = (): void => {};
 
