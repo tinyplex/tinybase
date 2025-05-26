@@ -26,7 +26,6 @@ import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
 import {changesAreNotEmpty} from '../common/mergeable.ts';
 import {objEnsure, objForEach, objFreeze, objIsEmpty} from '../common/obj.ts';
 import {
-  errorNew,
   ifNotUndefined,
   isUndefined,
   promiseNew,
@@ -287,8 +286,6 @@ export const createCustomSynchronizer = (
           const changes = await pullChangesFromOtherMergeable();
           if (changesAreNotEmpty(changes)) {
             mergeable.applyMergeableChanges(changes);
-          } else {
-            errorNew(`Changes is not an array: ${changes}`);
           }
         });
         setStatus(StatusValues.Idle);
