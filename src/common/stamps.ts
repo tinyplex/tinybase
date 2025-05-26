@@ -14,11 +14,6 @@ import {EMPTY_STRING, NUMBER, getTypeOf} from './strings.ts';
 
 export type StampMap<Thing> = Stamp<IdMap<Thing>, true>;
 
-export type ContentStampMap = [
-  tablesStampMap: TablesStampMap,
-  valuesStampMap: ValuesStampMap,
-];
-
 export type TablesStampMap = StampMap<TableStampMap>;
 export type TableStampMap = StampMap<RowStampMap>;
 export type RowStampMap = StampMap<CellStamp<true>>;

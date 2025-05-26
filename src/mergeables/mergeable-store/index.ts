@@ -52,7 +52,8 @@ import {
 } from '../../common/other.ts';
 import {IdSet, IdSet3, setAdd, setNew} from '../../common/set.ts';
 import {
-  ContentStampMap,
+  TablesStampMap,
+  ValuesStampMap,
   getStampHash,
   stampClone,
   stampMapToObjWithHash,
@@ -95,7 +96,9 @@ const LISTENER_ARGS: IdObj<number> = {
   InvalidValue: 1,
 };
 
-const newContentStampMap = (time = EMPTY_STRING): ContentStampMap => [
+const newContentStampMap = (
+  time = EMPTY_STRING,
+): [tablesStampMap: TablesStampMap, valuesStampMap: ValuesStampMap] => [
   stampNewMap(time),
   stampNewMap(time),
 ];
@@ -160,20 +163,6 @@ export const createMergeableStore = ((
     listeningToRawStoreChanges = wasListening;
     return mergeableStore as MergeableStore;
   };
-
-  const loadCurrentContentStampMap = (
-    _incomingContentOrChanges: MergeableChanges | MergeableContent,
-  ): ContentStampMap => contentStampMap;
-
-  const saveCurrentContentStampMap = (
-    _contentStampMap: ContentStampMap,
-  ): void => {};
-
-  const [mergeContentOrChanges] = getMergeableFunctions(
-    loadCurrentContentStampMap,
-    saveCurrentContentStampMap,
-    seenHlc,
-  );
 
   const postFinishTransaction = () => {
     collClear(touchedCells);
@@ -325,6 +314,18 @@ export const createMergeableStore = ((
   };
 
   // --- Mergeable Interface
+
+  const loadTablesStampMap = (
+    _relevantTablesMask: MergeableChanges[0] | MergeableContent[0],
+  ): TablesStampMap => contentStampMap[0];
+
+  const loadValuesStampMap = (
+    _relevantValuesMask: MergeableChanges[1] | MergeableContent[1],
+  ): ValuesStampMap => contentStampMap[1];
+
+  const saveTablesStampMap = (): void => {};
+
+  const saveValuesStampMap = (): void => {};
 
   const addMergeableChangesListener = (
     changesListener: (changes: MergeableChanges<false>) => void,
@@ -483,6 +484,16 @@ export const createMergeableStore = ((
     );
     return stampNew(values, valuesTime);
   };
+
+  // --
+
+  const [mergeContentOrChanges] = getMergeableFunctions(
+    loadTablesStampMap,
+    loadValuesStampMap,
+    saveTablesStampMap,
+    saveValuesStampMap,
+    seenHlc,
+  );
 
   const mergeableStore: IdObj<any> = {
     getMergeableContent,

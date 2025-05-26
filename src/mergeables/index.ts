@@ -16,10 +16,11 @@ import {jsonStringWithMap} from '../common/json.ts';
 import {mapEnsure} from '../common/map.ts';
 import {IdObj, objEnsure, objForEach, objNew} from '../common/obj.ts';
 import {
-  ContentStampMap,
   RowStampMap,
   StampMap,
   TableStampMap,
+  TablesStampMap,
+  ValuesStampMap,
   getLatestTime,
   hashIdAndHash,
   replaceTimeHash,
@@ -29,10 +30,14 @@ import {
 import {EMPTY_STRING} from '../common/strings.ts';
 
 export const getMergeableFunctions = (
-  loadCurrentContentStampMap: (
-    incomingContentOrChanges: MergeableChanges | MergeableContent,
-  ) => ContentStampMap,
-  saveCurrentContentStampMap: (contentStampMap: ContentStampMap) => void,
+  loadTablesStampMap: (
+    relevantTablesMask: MergeableChanges[0] | MergeableContent[0],
+  ) => TablesStampMap,
+  loadValuesStampMap: (
+    relevantValuesMask: MergeableChanges[1] | MergeableContent[1],
+  ) => ValuesStampMap,
+  saveTablesStampMap: (tablesStampMap: TablesStampMap) => void,
+  saveValuesStampMap: (valuesStampMap: ValuesStampMap) => void,
   seenHlc: (remoteHlc: Hlc) => void,
 ) => {
   const mergeContentOrChanges = (
@@ -40,10 +45,8 @@ export const getMergeableFunctions = (
     isContent: 0 | 1 = 0,
   ): Changes => {
     // Current content with metadata
-    const contentStampMap = loadCurrentContentStampMap(
-      incomingContentOrChanges,
-    );
-    const [tablesStampMap, valuesStampMap] = contentStampMap;
+    const tablesStampMap = loadTablesStampMap(incomingContentOrChanges[0]);
+    const valuesStampMap = loadValuesStampMap(incomingContentOrChanges[1]);
     const [tableStampMaps, oldTablesTime, oldTablesHash] = tablesStampMap;
 
     // Incoming changes with metadata
@@ -132,7 +135,8 @@ export const getMergeableFunctions = (
     );
 
     seenHlc(getLatestTime(tablesTime, valuesTime));
-    saveCurrentContentStampMap(contentStampMap);
+    saveTablesStampMap(tablesStampMap);
+    saveValuesStampMap(valuesStampMap);
     return [tablesChanges, valuesChanges, 1];
   };
 
