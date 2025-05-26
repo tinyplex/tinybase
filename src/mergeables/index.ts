@@ -6,6 +6,7 @@ import type {
   TablesStamp,
   TableStamp,
   Time,
+  ValueHashes,
   ValuesStamp,
 } from '../@types/mergeables/index.d.ts';
 import type {
@@ -21,6 +22,7 @@ import {
   getLatestTime,
   hashIdAndHash,
   replaceTimeHash,
+  stampNew,
   stampNewWithHash,
   StampObj,
   stampObjNewWithHash,
@@ -30,15 +32,28 @@ import {EMPTY_STRING} from '../common/strings.ts';
 
 export const getMergeableFunctions = (
   loadMyTablesStamp: (
-    relevants: MergeableChanges[0] | MergeableContent[0],
+    relevants?: MergeableChanges[0] | MergeableContent[0],
   ) => TablesStamp<true>,
   loadMyValuesStamp: (
-    relevants: MergeableChanges[1] | MergeableContent[1],
+    relevants?: MergeableChanges[1] | MergeableContent[1],
   ) => ValuesStamp<true>,
   saveMyTablesStamp: (myTablesStamp: TablesStamp<true>) => void,
   saveMyValuesStamp: (myValuesStamp: ValuesStamp<true>) => void,
   seenHlc: (remoteHlc: Hlc) => void,
-) => {
+): [getMergeableValueDiff: any, mergeContentOrChanges: any] => {
+  const getMergeableValueDiff = (
+    otherValueHashes: ValueHashes,
+  ): ValuesStamp => {
+    const [myValues, myValuesTime] = loadMyValuesStamp();
+    const newValues: ValuesStamp[0] = {};
+    objForEach(myValues, ([myValue, myValueTime, myValueHash], valueId) =>
+      myValueHash !== otherValueHashes?.[valueId]
+        ? (newValues[valueId] = [myValue, myValueTime])
+        : 0,
+    );
+    return stampNew(newValues, myValuesTime);
+  };
+
   const mergeContentOrChanges = (
     otherContentOrChanges: MergeableChanges | MergeableContent,
     isContent: 0 | 1 = 0,
@@ -127,7 +142,7 @@ export const getMergeableFunctions = (
     return [tablesChanges, valuesChanges, 1];
   };
 
-  return [mergeContentOrChanges];
+  return [getMergeableValueDiff, mergeContentOrChanges];
 };
 
 const mergeCellsOrValues = <Thing extends CellOrUndefined | ValueOrUndefined>(

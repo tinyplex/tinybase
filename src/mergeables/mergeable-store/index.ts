@@ -423,22 +423,9 @@ export const createMergeableStore = ((
   const getMergeableValueHashes = (): ValueHashes =>
     objMap(myContent[1][0], getStampHash);
 
-  const getMergeableValueDiff = (
-    otherValueHashes: ValueHashes,
-  ): ValuesStamp => {
-    const [, [myValues, myValuesTime]] = myContent;
-    const newValues: ValuesStamp[0] = {};
-    objForEach(myValues, ([myValue, myValueTime, myValueHash], valueId) =>
-      myValueHash !== otherValueHashes?.[valueId]
-        ? (newValues[valueId] = [myValue, myValueTime])
-        : 0,
-    );
-    return stampNew(newValues, myValuesTime);
-  };
-
   // --
 
-  const [mergeContentOrChanges] = getMergeableFunctions(
+  const [getMergeableValueDiff, mergeContentOrChanges] = getMergeableFunctions(
     loadMyTablesStamp,
     loadMyValuesStamp,
     saveMyTablesStamp,
