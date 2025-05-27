@@ -425,7 +425,9 @@ describe('Merge', () => {
       });
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      store2.applyMergeableChanges(store1.getMergeableContent());
+      store2.applyMergeableChanges(
+        store1.getMergeableContent() as MergeableChanges,
+      );
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
@@ -436,7 +438,9 @@ describe('Merge', () => {
       store1.setCell('t1', 'r1', 'c1', 1);
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      store2.applyMergeableChanges(store1.getMergeableContent());
+      store2.applyMergeableChanges(
+        store1.getMergeableContent() as MergeableChanges,
+      );
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
@@ -447,7 +451,9 @@ describe('Merge', () => {
       store1.delCell('t1', 'r1', 'c2');
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      store2.applyMergeableChanges(store1.getMergeableContent());
+      store2.applyMergeableChanges(
+        store1.getMergeableContent() as MergeableChanges,
+      );
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
@@ -458,7 +464,9 @@ describe('Merge', () => {
       store1.delRow('t1', 'r2');
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      store2.applyMergeableChanges(store1.getMergeableContent());
+      store2.applyMergeableChanges(
+        store1.getMergeableContent() as MergeableChanges,
+      );
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
@@ -469,7 +477,9 @@ describe('Merge', () => {
       store1.delTable('t2');
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      store2.applyMergeableChanges(store1.getMergeableContent());
+      store2.applyMergeableChanges(
+        store1.getMergeableContent() as MergeableChanges,
+      );
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
@@ -480,7 +490,9 @@ describe('Merge', () => {
       store1.setCell('t2', 'r2', 'c2', 2);
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      store2.applyMergeableChanges(store1.getMergeableContent());
+      store2.applyMergeableChanges(
+        store1.getMergeableContent() as MergeableChanges,
+      );
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
@@ -491,7 +503,9 @@ describe('Merge', () => {
       store1.delTables();
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      store2.applyMergeableChanges(store1.getMergeableContent());
+      store2.applyMergeableChanges(
+        store1.getMergeableContent() as MergeableChanges,
+      );
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
@@ -502,7 +516,9 @@ describe('Merge', () => {
       store1.setValues({v1: 0, v2: 0});
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      store2.applyMergeableChanges(store1.getMergeableContent());
+      store2.applyMergeableChanges(
+        store1.getMergeableContent() as MergeableChanges,
+      );
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
@@ -513,7 +529,9 @@ describe('Merge', () => {
       store1.setValue('v1', 1);
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      store2.applyMergeableChanges(store1.getMergeableContent());
+      store2.applyMergeableChanges(
+        store1.getMergeableContent() as MergeableChanges,
+      );
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
@@ -524,7 +542,9 @@ describe('Merge', () => {
       store1.delValue('v2');
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      store2.applyMergeableChanges(store1.getMergeableContent());
+      store2.applyMergeableChanges(
+        store1.getMergeableContent() as MergeableChanges,
+      );
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
@@ -535,7 +555,9 @@ describe('Merge', () => {
       store1.delValues();
       expect(store1.getMergeableContent()).toMatchSnapshot();
 
-      store2.applyMergeableChanges(store1.getMergeableContent());
+      store2.applyMergeableChanges(
+        store1.getMergeableContent() as MergeableChanges,
+      );
       expect(store2.getContent()).toEqual(store1.getContent());
       expect(store2.getMergeableContent()).toEqual(
         store1.getMergeableContent(),
@@ -736,7 +758,9 @@ describe('Merge', () => {
 
     test('Causality', () => {
       store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
-      store2.applyMergeableChanges(store1.getMergeableContent());
+      store2.applyMergeableChanges(
+        store1.getMergeableContent() as MergeableChanges,
+      );
 
       store2
         .setCell('t1', 'r1', 'c1', (cell) => (cell as number) + 1)
