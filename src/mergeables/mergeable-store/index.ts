@@ -22,7 +22,10 @@ import type {
 import {collClear, collForEach} from '../../common/coll.ts';
 import {getHlcFunctions} from '../../common/hlc.ts';
 import {mapEnsure, mapNew} from '../../common/map.ts';
-import {validateMergeableContent} from '../../common/mergeable.ts';
+import {
+  getMergeableFunctions,
+  validateMergeableContent,
+} from '../../common/mergeable.ts';
 import {IdObj, objFreeze, objGet, objMap} from '../../common/obj.ts';
 import {ifNotUndefined, noop, slice} from '../../common/other.ts';
 import {IdSet, IdSet3, setAdd, setNew} from '../../common/set.ts';
@@ -43,7 +46,6 @@ import {
   strStartsWith,
 } from '../../common/strings.ts';
 import {createStore} from '../../store/index.ts';
-import {getMergeableFunctions} from '../index.ts';
 
 const LISTENER_ARGS: IdObj<number> = {
   HasTable: 1,

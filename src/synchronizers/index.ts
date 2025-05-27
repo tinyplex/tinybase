@@ -23,7 +23,10 @@ import {collDel} from '../common/coll.ts';
 import {getUniqueId} from '../common/index.ts';
 import {getListenerFunctions} from '../common/listeners.ts';
 import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
-import {changesAreNotEmpty} from '../common/mergeable.ts';
+import {
+  changesAreNotEmpty,
+  getMergeableFunctions,
+} from '../common/mergeable.ts';
 import {objEnsure, objForEach, objFreeze, objIsEmpty} from '../common/obj.ts';
 import {
   ifNotUndefined,
@@ -35,7 +38,6 @@ import {
 import {IdSet2} from '../common/set.ts';
 import {getLatestTime, stampNew, stampObjNew} from '../common/stamps.ts';
 import {DOT, EMPTY_STRING} from '../common/strings.ts';
-import {getMergeableFunctions} from '../mergeables/index.ts';
 
 type Action = () => Promise<any>;
 
