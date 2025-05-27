@@ -102,6 +102,7 @@ export const createCustomSynchronizer = (
   > = mapNew();
 
   const [
+    mergeContentOrChanges,
     getMergeableContentHashes,
     getMergeableTableHashes,
     getMergeableTableDiff,
@@ -300,7 +301,7 @@ export const createCustomSynchronizer = (
         await tryCatch(async () => {
           const changes = await pullChangesFromOtherMergeable();
           if (changesAreNotEmpty(changes)) {
-            mergeable.applyMergeableChanges(changes);
+            mergeContentOrChanges(changes);
           }
         });
         setStatus(StatusValues.Idle);
@@ -318,7 +319,7 @@ export const createCustomSynchronizer = (
           /*! istanbul ignore else */
           if (changesAreNotEmpty(changes) && status != StatusValues.Pushing) {
             setStatus(StatusValues.Pulling);
-            mergeable.applyMergeableChanges(changes);
+            mergeContentOrChanges(changes);
             setStatus(StatusValues.Idle);
           }
         }),

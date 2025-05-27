@@ -195,68 +195,94 @@ describe('getTransactionMergeableChanges', () => {
     store = createMergeableStore('s1', getNow);
   });
 
-  test('Outside transaction', () => {
-    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
-  });
-
-  test('Inside noop transaction', () => {
-    store.startTransaction();
-    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
+  test('changes during transaction', () => {
+    store.startTransaction().setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
+    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(store.getTransactionChanges()).toEqual([
+      {t1: {r1: {c1: 1}}},
+      {v1: 1},
+      1,
+    ]);
+    expect(store.getTransactionMergeableChanges()).toEqual([[{}], [{}], 1]);
+    expect(store.getMergeableContent()).toEqual([
+      [{}, '', 0],
+      [{}, '', 0],
+    ]);
     store.finishTransaction();
+    expect(store.getMergeableContent()).toEqual([
+      [
+        {
+          t1: [
+            {r1: [{c1: [1, 'Nn1JUF-----7JQY8', 1003668370]}, '', 550994372]},
+            '',
+            1072852846,
+          ],
+        },
+        '',
+        1771939739,
+      ],
+      [{v1: [1, 'Nn1JUF----07JQY8', 1130939691]}, '', 3877632732],
+    ]);
   });
 
-  test('Inside net noop transaction', () => {
-    store.startTransaction();
-    store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
-    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
-    store.delCell('t1', 'r1', 'c1').delValue('v1');
-    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
-    store.finishTransaction();
-    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
-  });
-
-  test('After net noop transaction', () => {
+  test('changes at end of transaction', () => {
     store.addDidFinishTransactionListener(() => {
-      expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
+      expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+      expect(store.getTransactionChanges()).toEqual([
+        {t1: {r1: {c1: 1}}},
+        {v1: 1},
+        1,
+      ]);
+      expect(store.getTransactionMergeableChanges()).toEqual([
+        [{t1: [{r1: [{c1: [1, 'Nn1JUF-----7JQY8']}]}]}],
+        [{v1: [1, 'Nn1JUF----07JQY8']}],
+        1,
+      ]);
+      expect(store.getMergeableContent()).toEqual([
+        [
+          {
+            t1: [
+              {r1: [{c1: [1, 'Nn1JUF-----7JQY8', 1003668370]}, '', 550994372]},
+              '',
+              1072852846,
+            ],
+          },
+          '',
+          1771939739,
+        ],
+        [{v1: [1, 'Nn1JUF----07JQY8', 1130939691]}, '', 3877632732],
+      ]);
     });
-    store.startTransaction();
-    store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
-    store.delCell('t1', 'r1', 'c1').delValue('v1');
-    store.finishTransaction();
-    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
+    store
+      .startTransaction()
+      .setCell('t1', 'r1', 'c1', 1)
+      .setValue('v1', 1)
+      .finishTransaction();
   });
 
-  test('After transaction', () => {
-    store.addDidFinishTransactionListener(() => {
-      expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
-    });
-    store.startTransaction();
-    store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
-    store.finishTransaction();
-    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
-  });
-
-  test('During and after transaction', () => {
-    store.addDidFinishTransactionListener(() => {
-      expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
-    });
-    store.startTransaction();
-    store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
-    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
-    store.finishTransaction();
-    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
-  });
-
-  test('After multiple transactions', () => {
-    store.addDidFinishTransactionListener(() => {
-      expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
-      expect(store.getMergeableContent()).toMatchSnapshot();
-    });
-    store.setCell('t0', 'r0', 'c0', 0);
-    store.setCell('t1', 'r1', 'c1', 1);
-    store.setValue('v0', 0);
-    store.setValue('v1', 1);
-    expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
+  test('changes after transaction', () => {
+    store
+      .startTransaction()
+      .setCell('t1', 'r1', 'c1', 1)
+      .setValue('v1', 1)
+      .finishTransaction();
+    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    expect(store.getTransactionChanges()).toEqual([{}, {}, 1]);
+    expect(store.getTransactionMergeableChanges()).toEqual([[{}], [{}], 1]);
+    expect(store.getMergeableContent()).toEqual([
+      [
+        {
+          t1: [
+            {r1: [{c1: [1, 'Nn1JUF-----7JQY8', 1003668370]}, '', 550994372]},
+            '',
+            1072852846,
+          ],
+        },
+        '',
+        1771939739,
+      ],
+      [{v1: [1, 'Nn1JUF----07JQY8', 1130939691]}, '', 3877632732],
+    ]);
   });
 });
 

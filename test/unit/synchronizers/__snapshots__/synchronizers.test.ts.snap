@@ -3446,6 +3446,19 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoPull1 but
 ]
 `;
 
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoPull1 but not autoPush2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
+`;
+
 exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional autoPush1 but not autoPull2 1`] = `
 [
   [
@@ -3664,6 +3677,19 @@ exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional pull1 but not
     "",
     1331128504,
   ],
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer Unidirectional pull1 but not autoPush2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
 ]
 `;
 
@@ -7780,6 +7806,19 @@ exports[`Syncs to/from Custom Synchronizer Unidirectional autoPull1 but not auto
 ]
 `;
 
+exports[`Syncs to/from Custom Synchronizer Unidirectional autoPull1 but not autoPush2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
+`;
+
 exports[`Syncs to/from Custom Synchronizer Unidirectional autoPush1 but not autoPull2 1`] = `
 [
   [
@@ -7998,6 +8037,19 @@ exports[`Syncs to/from Custom Synchronizer Unidirectional pull1 but not autoPush
     "",
     1331128504,
   ],
+]
+`;
+
+exports[`Syncs to/from Custom Synchronizer Unidirectional pull1 but not autoPush2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
 ]
 `;
 
@@ -11552,6 +11604,19 @@ exports[`Syncs to/from LocalSynchronizer Unidirectional autoPull1 but not autoPu
 ]
 `;
 
+exports[`Syncs to/from LocalSynchronizer Unidirectional autoPull1 but not autoPush2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
+`;
+
 exports[`Syncs to/from LocalSynchronizer Unidirectional autoPush1 but not autoPull2 1`] = `
 [
   [
@@ -11770,6 +11835,19 @@ exports[`Syncs to/from LocalSynchronizer Unidirectional pull1 but not autoPush2,
     "",
     1331128504,
   ],
+]
+`;
+
+exports[`Syncs to/from LocalSynchronizer Unidirectional pull1 but not autoPush2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
 ]
 `;
 
@@ -15324,6 +15402,19 @@ exports[`Syncs to/from WsSynchronizer Unidirectional autoPull1 but not autoPush2
 ]
 `;
 
+exports[`Syncs to/from WsSynchronizer Unidirectional autoPull1 but not autoPush2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
+]
+`;
+
 exports[`Syncs to/from WsSynchronizer Unidirectional autoPush1 but not autoPull2 1`] = `
 [
   [
@@ -15542,6 +15633,19 @@ exports[`Syncs to/from WsSynchronizer Unidirectional pull1 but not autoPush2, de
     "",
     1331128504,
   ],
+]
+`;
+
+exports[`Syncs to/from WsSynchronizer Unidirectional pull1 but not autoPush2, defaults: stats 1`] = `
+[
+  {
+    "receives": 0,
+    "sends": 1,
+  },
+  {
+    "receives": 1,
+    "sends": 0,
+  },
 ]
 `;
 

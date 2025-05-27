@@ -350,7 +350,7 @@ describe('Persistence', () => {
           '',
           1771939739,
         ],
-        [{p: ['p1', 'Nn1JUFm----5JWdY', 592098772]}, '', 891798799],
+        [{p: ['p1', 'Nn1JUFm---05JWdY', 3491171177]}, '', 2033766935],
       ]);
 
       await synchronizer.destroy();

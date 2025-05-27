@@ -211,7 +211,8 @@ describe.each([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},
         ]);
-        await synchronizer1.pull([{t0: {r0: {c0: 0}}}, {v0: 0}]);
+        store1.setDefaultContent([{t0: {r0: {c0: 0}}}, {v0: 0}]);
+        await synchronizer1.pull();
         await pause(synchronizable.pauseMilliseconds);
         expectEachToHaveContent(
           [{t0: {r0: {c0: 0}}}, {v0: 0}],
@@ -223,7 +224,8 @@ describe.each([
       });
 
       test('autoPull1 but not autoPush2, defaults', async () => {
-        await synchronizer1.startAutoPull([{t0: {r0: {c0: 0}}}, {v0: 0}]);
+        store1.setDefaultContent([{t0: {r0: {c0: 0}}}, {v0: 0}]);
+        await synchronizer1.startAutoPull();
         store2.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
           {v1: 1, v2: 2},

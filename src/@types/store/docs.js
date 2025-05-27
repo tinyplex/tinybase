@@ -6969,16 +6969,10 @@
    * together.
    *
    * The provided TransactionListener will receive a reference to the Store and
-   * two booleans to indicate whether Cell or Value data has been touched during
-   * the transaction. The two flags is intended as a hint about whether
-   * non-mutating listeners might have been called at the end of the
+   * the getTransactionLog method can be used to find out whether Cell or Value
+   * data has been touched during the transaction. This intended as a hint about
+   * whether non-mutating listeners might have been called at the end of the
    * transaction.
-   *
-   * Here, 'touched' means that Cell or Value data has either been changed, or
-   * changed and then changed back to its original value during the transaction.
-   * The exception is a transaction that has been rolled back, for which the
-   * value of `cellsTouched` and `valuesTouched` in the listener will be `false`
-   * because all changes have been reverted.
    *
    * Note that a TransactionListener added to the Store with this method
    * _cannot_ mutate the Store itself, and attempts to do so will fail silently.
