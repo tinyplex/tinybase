@@ -14,6 +14,7 @@ import type {
 } from '../../@types/persisters/index.d.ts';
 import type {
   createDurableObjectSqlStoragePersister as createDurableObjectSqlStoragePersisterDecl,
+  DpcFragmented,
   DurableObjectSqlStoragePersister,
 } from '../../@types/persisters/persister-durable-object-sql-storage/index.d.ts';
 import {IdObj, objEnsure, objForEach} from '../../common/obj.ts';
@@ -24,12 +25,8 @@ import {createCustomPersister} from '../common/create.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';
 
 type UnsubscribeFunction = () => void;
-export type DpcKeyValue = {
-  /// DpcJson.mode
-  mode: 'key-value';
-  storagePrefix?: string;
-};
-export type DurableObjectSqlDatabasePersisterConfig = DpcJson | DpcKeyValue;
+
+export type DurableObjectSqlDatabasePersisterConfig = DpcJson | DpcFragmented;
 
 export const createDurableObjectSqlStoragePersister = (
   store: MergeableStore,
@@ -39,14 +36,13 @@ export const createDurableObjectSqlStoragePersister = (
   onIgnoredError?: (error: any) => void,
 ): DurableObjectSqlStoragePersister => {
   if (
-    configOrStoreTableName === 'key-value' ||
-    (typeof configOrStoreTableName === 'object' &&
-      configOrStoreTableName.mode === 'key-value')
+    typeof configOrStoreTableName === 'object' &&
+    configOrStoreTableName.mode === 'fragmented'
   ) {
-    return createDurableObjectKeyValueSqlStoragePersister(
+    return createDurableObjectFragmentedSqlStoragePersister(
       store,
       sqlStorage,
-      (configOrStoreTableName as DpcKeyValue)?.storagePrefix ?? EMPTY_STRING,
+      (configOrStoreTableName as DpcFragmented)?.storagePrefix ?? EMPTY_STRING,
       onIgnoredError,
     );
   }
@@ -74,7 +70,7 @@ export const createDurableObjectSqlStoragePersister = (
 
 const stampNewObjectWithHash = () => stampNewWithHash({}, EMPTY_STRING, 0);
 
-const createDurableObjectKeyValueSqlStoragePersister = ((
+const createDurableObjectFragmentedSqlStoragePersister = ((
   store: MergeableStore,
   sqlStorage: SqlStorage,
   storagePrefix: string = EMPTY_STRING,

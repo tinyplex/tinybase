@@ -18,7 +18,7 @@
 /// persister-durable-object-sql-storage
 
 /**
- * The DpcKeyValue type represents the configuration for key-value persistence mode
+ * The DpcFragmented type represents the configuration for fragmented persistence mode
  * in a DurableObjectSqlStoragePersister.
  *
  * This mode stores each table, row, cell, and value as separate database rows,
@@ -28,11 +28,11 @@
  *
  * @example
  * This example shows how to configure a DurableObjectSqlStoragePersister to use
- * key-value mode with a custom storage prefix:
+ * fragmented mode with a custom storage prefix:
  *
  * ```js
  * const config = {
- *   mode: 'key-value',
+ *   mode: 'fragmented',
  *   storagePrefix: 'my_app_'
  * };
  *
@@ -46,16 +46,16 @@
  * @category Configuration
  * @since v6.2.0
  */
-/// DpcKeyValue
+/// DpcFragmented
 {
   /**
-   * The mode property must be set to 'key-value' to enable key-value persistence mode.
+   * The mode property must be set to 'fragmented' to enable fragmented persistence mode.
    * @since v6.2.0
    */
-  /// DpcKeyValue.mode
+  /// DpcFragmented.mode
   /**
    * The storagePrefix property lets you specify an optional prefix for the database
-   * table names used in key-value mode.
+   * table names used in fragmented mode.
    *
    * This is useful when you have multiple stores or applications sharing the same
    * Durable Object SQL storage and want to avoid table name conflicts.
@@ -71,14 +71,14 @@
    * // Creates tables: user_data_tinybase_tables, user_data_tinybase_values
    *
    * const config = {
-   *   mode: 'key-value',
+   *   mode: 'fragmented',
    *   storagePrefix: 'user_data_'
    * };
    * ```
    *
    * @since v6.2.0
    */
-  /// DpcKeyValue.storagePrefix
+  /// DpcFragmented.storagePrefix
 }
 
 /**
@@ -87,8 +87,7 @@
  *
  * This allows the persister to support multiple persistence modes:
  * - JSON mode (via DpcJson): Stores the entire Store as JSON in a single row
- * - Key-value mode (via DpcKeyValue): Stores each piece of data as separate rows
- * - Tabular mode (via DpcTabular): Maps TinyBase tables to database tables
+ * - Fragmented mode (via DpcFragmented): Stores each piece of data as separate rows
  *
  * @example
  * This example shows the different configuration options:
@@ -100,20 +99,12 @@
  *   storeTableName: 'my_store'
  * };
  *
- * // Key-value mode
- * const kvConfig = {
- *   mode: 'key-value',
+ * // Fragmented mode
+ * const fragmentedConfig = {
+ *   mode: 'fragmented',
  *   storagePrefix: 'app_'
  * };
  *
- * // Tabular mode
- * const tabularConfig = {
- *   mode: 'tabular',
- *   tables: {
- *     load: {pets: 'pets_table'},
- *     save: {pets: 'pets_table'}
- *   }
- * };
  * ```
  *
  * @category Configuration
@@ -208,33 +199,26 @@
  * For more details on Durable Object migrations, see the
  * {@link https://developers.cloudflare.com/durable-objects/reference/durable-objects-migrations/ | Cloudflare documentation}.
  *
- * A DurableObjectSqlStoragePersister supports both regular Store objects and
- * MergeableStore objects. When used with a MergeableStore, it can persist the
- * complete CRDT metadata required for proper merging operations.
- *
- * A database Persister uses one of three modes: either a JSON serialization of
- * the whole Store stored in a single row of a table (the default), a key-value
+ * A database Persister uses one of two modes: either a JSON serialization of
+ * the whole Store stored in a single row of a table (the default), a fragmented
  * mode that stores each piece of data separately to avoid Cloudflare's 2MB row
- * limit, or a tabular mapping of Table Ids to database table names and vice-versa).
+ * limit.
  *
  * **JSON Mode (Default)**: Stores the entire Store as JSON in a single database
  * row. This is efficient for smaller stores but may hit Cloudflare's 2MB row
  * limit for very large stores. Uses fewer database writes.
  *
- * **Key-Value Mode**: Stores each table, row, cell, and value as separate database
+ * **Fragmented Mode**: Stores each table, row, cell, and value as separate database
  * rows. Use this mode if you're concerned about hitting Cloudflare's 2MB row
  * limit with large stores in JSON mode. This mode creates more database writes
  * but avoids row size limitations.
  *
- * **Tabular Mode**: Maps TinyBase tables directly to database tables for
- * traditional relational database usage.
- *
  * The third argument is a DatabasePersisterConfig object that configures which
  * of those modes to use, and settings for each. If the third argument is simply
  * a string, it is used as the `storeTableName` property of the JSON
- * serialization. If it is the string 'key-value', it enables key-value mode.
+ * serialization. If it is the string 'fragmented', it enables fragmented mode.
  *
- * See the documentation for the DpcJson, DpcKeyValue, and DpcTabular types for more
+ * See the documentation for the DpcJson, DpcFragmented, and DpcTabular types for more
  * information on how all of those modes can be configured.
  *
  * As well as providing a reference to the Store or MergeableStore to persist, you must
@@ -244,7 +228,7 @@
  * @param sqlStorage The Durable Object SQL storage to persist the Store to.
  * @param configOrStoreTableName A DatabasePersisterConfig to configure the
  * persistence mode (or a string to set the `storeTableName` property of the
- * JSON serialization, or 'key-value' to enable key-value mode).
+ * JSON serialization).
  * @param onSqlCommand An optional handler called every time the Persister
  * executes a SQL command or query. This is suitable for logging persistence
  * behavior in a development environment.
@@ -298,7 +282,7 @@
  * }
  * ```
  * @example
- * This example creates a DurableObjectSqlStoragePersister object using key-value
+ * This example creates a DurableObjectSqlStoragePersister object using fragmented
  * mode to avoid Cloudflare's 2MB row limit for large stores.
  *
  * ```js yolo
@@ -312,14 +296,14 @@
  *     const persister = createDurableObjectSqlStoragePersister(
  *       store,
  *       this.ctx.storage.sql,
- *       'key-value',
+ *       {mode: 'fragmented'},
  *     );
  *     return persister;
  *   }
  * }
  * ```
  * @example
- * This example creates a DurableObjectSqlStoragePersister object using key-value
+ * This example creates a DurableObjectSqlStoragePersister object using fragmented
  * mode with a custom storage prefix.
  *
  * ```js yolo
@@ -333,31 +317,7 @@
  *     const persister = createDurableObjectSqlStoragePersister(
  *       store,
  *       this.ctx.storage.sql,
- *       {mode: 'key-value', storagePrefix: 'my_app_'},
- *     );
- *     return persister;
- *   }
- * }
- * ```
- * @example
- * This example creates a DurableObjectSqlStoragePersister object with tabular
- * mapping configuration for direct table-to-table persistence.
- *
- * ```js yolo
- * import {createMergeableStore} from 'tinybase';
- * import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
- * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
- *
- * export class MyDurableObject extends WsServerDurableObject {
- *   createPersister() {
- *     const store = createMergeableStore();
- *     const persister = createDurableObjectSqlStoragePersister(
- *       store,
- *       this.ctx.storage.sql,
- *       {
- *         mode: 'tabular',
- *         tables: {load: {pets: 'pets'}, save: {pets: 'pets'}},
- *       },
+ *       {mode: 'fragmented', storagePrefix: 'my_app_'},
  *     );
  *     return persister;
  *   }

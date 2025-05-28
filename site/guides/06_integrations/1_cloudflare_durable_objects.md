@@ -208,7 +208,7 @@ createPersister() {
 // ...
 ```
 
-**Key-Value Mode**: Stores each table, row, cell, and value as separate database
+**Fragmented Mode**: Stores each table, row, cell, and value as separate database
 rows. Use this mode if you're concerned about hitting Cloudflare's 2MB row
 limit with large stores in JSON mode. This mode creates more database writes
 but avoids row size limitations:
@@ -219,7 +219,7 @@ createPersister() {
   return createDurableObjectSqlStoragePersister(
     createMergeableStore(),
     this.ctx.storage.sql,
-    'key-value',
+    {mode: 'fragmented'},
   );
 }
 // ...
@@ -243,7 +243,7 @@ createPersister() {
 // ...
 ```
 
-- **Key-value mode with custom prefix**: You can use key-value mode with a
+- **Fragmented mode with custom prefix**: You can use fragmented mode with a
   custom storage prefix:
 
 ```js yolo
@@ -252,28 +252,7 @@ createPersister() {
   return createDurableObjectSqlStoragePersister(
     createMergeableStore(),
     this.ctx.storage.sql,
-    {mode: 'key-value', storagePrefix: 'my_app_'},
-  );
-}
-// ...
-```
-
-- **Tabular mode**: For direct table-to-table mapping instead of JSON
-  serialization:
-
-```js yolo
-// ...
-createPersister() {
-  return createDurableObjectSqlStoragePersister(
-    createMergeableStore(),
-    this.ctx.storage.sql,
-    {
-      mode: 'tabular',
-      tables: {
-        load: {users: 'users', posts: 'posts'},
-        save: {users: 'users', posts: 'posts'},
-      },
-    },
+    {mode: 'fragmented', storagePrefix: 'my_app_'},
   );
 }
 // ...
@@ -331,9 +310,7 @@ configuration options:
 - **SQLite storage** (recommended): Uses SQL tables to store TinyBase data with
   structured tables for tables and values, including proper CRDT metadata. This
   provides better performance and pricing. The SQLite persister supports JSON
-  serialization mode (default), key-value mode for avoiding the 2MB row limit,
-  and tabular mode for direct table mapping. It also supports both regular Store
-  and MergeableStore objects.
+  serialization mode (default), fragmented mode for avoiding the 2MB row limit.
 
 - **Key-value storage** (legacy): Has limitations on the data that can be stored
   in each key. The DurableObjectStoragePersister uses one key per TinyBase
@@ -341,10 +318,10 @@ configuration options:
   caution is to ensure that each individual TinyBase Cell and Value data does
   not exceed the 128 KiB limit.
 
-**When to use Key-Value Mode**: If you have a large TinyBase Store that might
-approach or exceed Cloudflare's 2MB row limit when serialized as JSON, use
-key-value mode. JSON mode uses significantly fewer database writes and is more
-efficient for smaller stores, but key-value mode provides better scalability
+**When to use SQLite Fragmented Mode**: If you have a large TinyBase Store that might
+approach or exceed Cloudflare's 2MB row limit when serialized as JSON, use SQLite storage in
+fragmented mode. JSON mode uses significantly fewer database writes and is more
+efficient for smaller stores, but fragmented mode provides better scalability
 for very large datasets by storing each piece of data in separate rows.
 
 The WsServerDurableObject is an overridden implementation of the DurableObject
