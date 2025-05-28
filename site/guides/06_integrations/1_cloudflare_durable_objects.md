@@ -190,7 +190,12 @@ tag = "v1"
 new_sqlite_classes = ["TinyBaseDurableObject"]
 ```
 
-Then create the persister using the recommended SQL storage:
+Then create the persister using the recommended SQL storage. The
+`createDurableObjectSqlStoragePersister` supports several persistence modes:
+
+**JSON Mode (Default)**: Stores the entire Store as JSON in a single database
+row. This is efficient for smaller stores and uses fewer database writes, but
+may hit Cloudflare's 2MB row limit for very large stores.
 
 ```js yolo
 // ...
@@ -198,6 +203,23 @@ createPersister() {
   return createDurableObjectSqlStoragePersister(
     createMergeableStore(),
     this.ctx.storage.sql,
+  );
+}
+// ...
+```
+
+**Key-Value Mode**: Stores each table, row, cell, and value as separate database
+rows. Use this mode if you're concerned about hitting Cloudflare's 2MB row
+limit with large stores in JSON mode. This mode creates more database writes
+but avoids row size limitations:
+
+```js yolo
+// ...
+createPersister() {
+  return createDurableObjectSqlStoragePersister(
+    createMergeableStore(),
+    this.ctx.storage.sql,
+    'key-value',
   );
 }
 // ...
@@ -216,6 +238,21 @@ createPersister() {
     createMergeableStore(),
     this.ctx.storage.sql,
     'my_app_data', // Custom table name
+  );
+}
+// ...
+```
+
+- **Key-value mode with custom prefix**: You can use key-value mode with a
+  custom storage prefix:
+
+```js yolo
+// ...
+createPersister() {
+  return createDurableObjectSqlStoragePersister(
+    createMergeableStore(),
+    this.ctx.storage.sql,
+    {mode: 'key-value', storagePrefix: 'my_app_'},
   );
 }
 // ...
@@ -293,15 +330,22 @@ configuration options:
 
 - **SQLite storage** (recommended): Uses SQL tables to store TinyBase data with
   structured tables for tables and values, including proper CRDT metadata. This
-  provides better performance and pricing. The SQLite persister supports both
-  JSON serialization mode (default) and tabular mode for direct table mapping.
-  It also supports both regular Store and MergeableStore objects.
+  provides better performance and pricing. The SQLite persister supports JSON
+  serialization mode (default), key-value mode for avoiding the 2MB row limit,
+  and tabular mode for direct table mapping. It also supports both regular Store
+  and MergeableStore objects.
 
 - **Key-value storage** (legacy): Has limitations on the data that can be stored
   in each key. The DurableObjectStoragePersister uses one key per TinyBase
   Value, one key per Cell, one key per Row, and one key per Table. The main
   caution is to ensure that each individual TinyBase Cell and Value data does
   not exceed the 128 KiB limit.
+
+**When to use Key-Value Mode**: If you have a large TinyBase Store that might
+approach or exceed Cloudflare's 2MB row limit when serialized as JSON, use
+key-value mode. JSON mode uses significantly fewer database writes and is more
+efficient for smaller stores, but key-value mode provides better scalability
+for very large datasets by storing each piece of data in separate rows.
 
 The WsServerDurableObject is an overridden implementation of the DurableObject
 class, so you can have access to its members as well as the TinyBase-specific
