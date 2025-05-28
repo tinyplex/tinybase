@@ -16,6 +16,111 @@
  * @since v6.2.0
  */
 /// persister-durable-object-sql-storage
+
+/**
+ * The DpcKeyValue type represents the configuration for key-value persistence mode
+ * in a DurableObjectSqlStoragePersister.
+ *
+ * This mode stores each table, row, cell, and value as separate database rows,
+ * avoiding Cloudflare's 2MB row limit that can be hit with large stores in JSON mode.
+ * While this creates more database writes, it provides better scalability for
+ * larger datasets.
+ *
+ * @example
+ * This example shows how to configure a DurableObjectSqlStoragePersister to use
+ * key-value mode with a custom storage prefix:
+ *
+ * ```js
+ * const config = {
+ *   mode: 'key-value',
+ *   storagePrefix: 'my_app_'
+ * };
+ *
+ * const persister = createDurableObjectSqlStoragePersister(
+ *   store,
+ *   ctx.storage.sql,
+ *   config
+ * );
+ * ```
+ *
+ * @category Configuration
+ * @since v6.2.0
+ */
+/// DpcKeyValue
+{
+  /**
+   * The mode property must be set to 'key-value' to enable key-value persistence mode.
+   * @since v6.2.0
+   */
+  /// DpcKeyValue.mode
+  /**
+   * The storagePrefix property lets you specify an optional prefix for the database
+   * table names used in key-value mode.
+   *
+   * This is useful when you have multiple stores or applications sharing the same
+   * Durable Object SQL storage and want to avoid table name conflicts.
+   *
+   * The prefix will be sanitized to only include alphanumeric characters and underscores.
+   * For example, a prefix of 'my-app!' becomes 'my_app_'.
+   *
+   * @example
+   * This example shows how the storagePrefix affects table names:
+   *
+   * ```js
+   * // With storagePrefix: 'user_data_'
+   * // Creates tables: user_data_tinybase_tables, user_data_tinybase_values
+   *
+   * const config = {
+   *   mode: 'key-value',
+   *   storagePrefix: 'user_data_'
+   * };
+   * ```
+   *
+   * @since v6.2.0
+   */
+  /// DpcKeyValue.storagePrefix
+}
+
+/**
+ * The DurableObjectSqlDatabasePersisterConfig type represents the union of all
+ * possible configuration types for a DurableObjectSqlStoragePersister.
+ *
+ * This allows the persister to support multiple persistence modes:
+ * - JSON mode (via DpcJson): Stores the entire Store as JSON in a single row
+ * - Key-value mode (via DpcKeyValue): Stores each piece of data as separate rows
+ * - Tabular mode (via DpcTabular): Maps TinyBase tables to database tables
+ *
+ * @example
+ * This example shows the different configuration options:
+ *
+ * ```js
+ * // JSON mode (default)
+ * const jsonConfig = {
+ *   mode: 'json',
+ *   storeTableName: 'my_store'
+ * };
+ *
+ * // Key-value mode
+ * const kvConfig = {
+ *   mode: 'key-value',
+ *   storagePrefix: 'app_'
+ * };
+ *
+ * // Tabular mode
+ * const tabularConfig = {
+ *   mode: 'tabular',
+ *   tables: {
+ *     load: {pets: 'pets_table'},
+ *     save: {pets: 'pets_table'}
+ *   }
+ * };
+ * ```
+ *
+ * @category Configuration
+ * @since v6.2.0
+ */
+/// DurableObjectSqlDatabasePersisterConfig
+
 /**
  * The DurableObjectSqlStoragePersister interface represents a Persister that lets
  * you save and load Store data to and from Cloudflare Durable Object SQL storage.
