@@ -10,6 +10,19 @@ import type {
   Persists,
 } from '../../with-schemas/index.d.ts';
 
+/// DpcKeyValue
+export type DpcKeyValue = {
+  /// DpcKeyValue.mode
+  mode: 'key-value';
+  /// DpcKeyValue.storagePrefix
+  storagePrefix?: string;
+};
+
+/// DurableObjectSqlDatabasePersisterConfig
+export type DurableObjectSqlDatabasePersisterConfig<
+  Schemas extends OptionalSchemas,
+> = DatabasePersisterConfig<Schemas> | DpcKeyValue;
+
 /// DurableObjectSqlStoragePersister
 export interface DurableObjectSqlStoragePersister<
   Schemas extends OptionalSchemas,
@@ -24,7 +37,9 @@ export function createDurableObjectSqlStoragePersister<
 >(
   store: Store<Schemas> | MergeableStore<Schemas>,
   sqlStorage: SqlStorage,
-  configOrStoreTableName?: DatabasePersisterConfig<Schemas> | string,
+  configOrStoreTableName?:
+    | DurableObjectSqlDatabasePersisterConfig<Schemas>
+    | string,
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): DurableObjectSqlStoragePersister<Schemas>;

@@ -1,6 +1,17 @@
 /// persister-durable-object-sql-storage
 import type {MergeableStore} from '../../mergeable-store/index.d.ts';
-import type {DatabasePersisterConfig, Persister, Persists} from '../index.d.ts';
+import type {DpcJson, Persister, Persists} from '../index.d.ts';
+
+/// DpcKeyValue
+export type DpcKeyValue = {
+  /// DpcKeyValue.mode
+  mode: 'key-value';
+  /// DpcKeyValue.storagePrefix
+  storagePrefix?: string;
+};
+
+/// DurableObjectSqlDatabasePersisterConfig
+export type DurableObjectSqlDatabasePersisterConfig = DpcJson | DpcKeyValue;
 
 /// DurableObjectSqlStoragePersister
 export interface DurableObjectSqlStoragePersister
@@ -13,7 +24,7 @@ export interface DurableObjectSqlStoragePersister
 export function createDurableObjectSqlStoragePersister(
   store: MergeableStore,
   sqlStorage: SqlStorage,
-  configOrStoreTableName?: DatabasePersisterConfig | string,
+  configOrStoreTableName?: DurableObjectSqlDatabasePersisterConfig | string,
   onSqlCommand?: (sql: string, params?: any[]) => void,
   onIgnoredError?: (error: any) => void,
 ): DurableObjectSqlStoragePersister;
