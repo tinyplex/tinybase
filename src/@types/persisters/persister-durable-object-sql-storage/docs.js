@@ -103,29 +103,46 @@
  * For more details on Durable Object migrations, see the
  * {@link https://developers.cloudflare.com/durable-objects/reference/durable-objects-migrations/ | Cloudflare documentation}.
  *
- * A DurableObjectSqlStoragePersister only supports MergeableStore objects, and
- * cannot be used to persist a regular Store.
+ * A DurableObjectSqlStoragePersister supports both regular Store objects and
+ * MergeableStore objects. When used with a MergeableStore, it can persist the
+ * complete CRDT metadata required for proper merging operations.
  *
  * The DurableObjectSqlStoragePersister uses SQL tables to store TinyBase data,
  * creating structured tables for tables and values with proper CRDT metadata
  * including timestamps and hashes for merging operations.
  *
- * As well as providing a reference to the MergeableStore to persist, you must
+ * A database Persister uses one of two modes: either a JSON serialization of
+ * the whole Store stored in a single row of a table (the default), or a tabular
+ * mapping of Table Ids to database table names and vice-versa).
+ *
+ * The third argument is a DatabasePersisterConfig object that configures which
+ * of those modes to use, and settings for each. If the third argument is simply
+ * a string, it is used as the `storeTableName` property of the JSON
+ * serialization.
+ *
+ * See the documentation for the DpcJson and DpcTabular types for more
+ * information on how both of those modes can be configured.
+ *
+ * As well as providing a reference to the Store or MergeableStore to persist, you must
  * provide a `sqlStorage` parameter which identifies the Durable Object SQLite storage to
  * persist it to.
- * @param store The MergeableStore to persist.
+ * @param store The Store or MergeableStore to persist.
  * @param sqlStorage The Durable Object SQL storage to persist the Store to.
- * @param storagePrefix An optional prefix to use on the table names in SQL storage, which
- * is useful if you want to ensure the Persister will not affect unrelated
- * SQL tables. Defaults to an empty string.
+ * @param configOrStoreTableName A DatabasePersisterConfig to configure the
+ * persistence mode (or a string to set the `storeTableName` property of the
+ * JSON serialization).
+ * @param onSqlCommand An optional handler called every time the Persister
+ * executes a SQL command or query. This is suitable for logging persistence
+ * behavior in a development environment.
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment.
  * @returns A reference to the new DurableObjectSqlStoragePersister object.
  * @example
- * This example creates a Persister object against a newly-created
- * MergeableStore (within the createPersister method of a WsServerDurableObject
- * instance) and then gets the SQL storage reference back out again.
+ * This example creates a DurableObjectSqlStoragePersister object and persists the
+ * Store to Durable Object SQLite storage as a JSON serialization into the default
+ * `tinybase` table. It uses this within the createPersister method of a
+ * WsServerDurableObject instance.
  *
  * ```js yolo
  * import {createMergeableStore} from 'tinybase';
@@ -138,6 +155,53 @@
  *     const persister = createDurableObjectSqlStoragePersister(
  *       store,
  *       this.ctx.storage.sql,
+ *     );
+ *     return persister;
+ *   }
+ * }
+ * ```
+ * @example
+ * This example creates a DurableObjectSqlStoragePersister object with a custom
+ * table name and SQL command logging for debugging.
+ *
+ * ```js yolo
+ * import {createMergeableStore} from 'tinybase';
+ * import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
+ * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
+ *
+ * export class MyDurableObject extends WsServerDurableObject {
+ *   createPersister() {
+ *     const store = createMergeableStore();
+ *     const persister = createDurableObjectSqlStoragePersister(
+ *       store,
+ *       this.ctx.storage.sql,
+ *       'my_app_store',
+ *       (sql, params) => console.log('SQL:', sql, params),
+ *       (error) => console.error('Persistence error:', error),
+ *     );
+ *     return persister;
+ *   }
+ * }
+ * ```
+ * @example
+ * This example creates a DurableObjectSqlStoragePersister object with tabular
+ * mapping configuration for direct table-to-table persistence.
+ *
+ * ```js yolo
+ * import {createMergeableStore} from 'tinybase';
+ * import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
+ * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
+ *
+ * export class MyDurableObject extends WsServerDurableObject {
+ *   createPersister() {
+ *     const store = createMergeableStore();
+ *     const persister = createDurableObjectSqlStoragePersister(
+ *       store,
+ *       this.ctx.storage.sql,
+ *       {
+ *         mode: 'tabular',
+ *         tables: {load: {pets: 'pets'}, save: {pets: 'pets'}},
+ *       },
  *     );
  *     return persister;
  *   }

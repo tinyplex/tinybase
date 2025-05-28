@@ -203,6 +203,62 @@ createPersister() {
 // ...
 ```
 
+The `createDurableObjectSqlStoragePersister` function supports several optional
+parameters for more advanced use cases:
+
+- **Custom table name**: You can specify a custom table name for JSON
+  serialization mode:
+
+```js yolo
+// ...
+createPersister() {
+  return createDurableObjectSqlStoragePersister(
+    createMergeableStore(),
+    this.ctx.storage.sql,
+    'my_app_data', // Custom table name
+  );
+}
+// ...
+```
+
+- **Tabular mode**: For direct table-to-table mapping instead of JSON
+  serialization:
+
+```js yolo
+// ...
+createPersister() {
+  return createDurableObjectSqlStoragePersister(
+    createMergeableStore(),
+    this.ctx.storage.sql,
+    {
+      mode: 'tabular',
+      tables: {
+        load: {users: 'users', posts: 'posts'},
+        save: {users: 'users', posts: 'posts'},
+      },
+    },
+  );
+}
+// ...
+```
+
+- **Debugging and logging**: You can add SQL command logging and error handling
+  for development:
+
+```js yolo
+// ...
+createPersister() {
+  return createDurableObjectSqlStoragePersister(
+    createMergeableStore(),
+    this.ctx.storage.sql,
+    'my_app_data',
+    (sql, params) => console.log('SQL:', sql, params), // Log SQL commands
+    (error) => console.error('Persistence error:', error), // Handle errors
+  );
+}
+// ...
+```
+
 Alternatively, if you're using an existing Durable Object namespace with
 key-value storage, you can use the legacy persister:
 
@@ -232,11 +288,14 @@ between them all keeps them each up-to-date!
 
 ## Final Notes
 
-The choice between SQLite and key-value storage affects the data limitations:
+The choice between SQLite and key-value storage affects the data limitations and
+configuration options:
 
 - **SQLite storage** (recommended): Uses SQL tables to store TinyBase data with
   structured tables for tables and values, including proper CRDT metadata. This
-  provides better performance and pricing.
+  provides better performance and pricing. The SQLite persister supports both
+  JSON serialization mode (default) and tabular mode for direct table mapping.
+  It also supports both regular Store and MergeableStore objects.
 
 - **Key-value storage** (legacy): Has limitations on the data that can be stored
   in each key. The DurableObjectStoragePersister uses one key per TinyBase
@@ -247,8 +306,8 @@ The choice between SQLite and key-value storage affects the data limitations:
 The WsServerDurableObject is an overridden implementation of the DurableObject
 class, so you can have access to its members as well as the TinyBase-specific
 methods. If you are using the storage for other data, you may want to configure
-a `storagePrefix` parameter to ensure you don't accidentally collide with TinyBase
-data.
+a custom table name or use tabular mode to ensure you don't accidentally collide
+with other data.
 
 Also, always remember to call the `super` implementations of the methods that
 TinyBase uses (the constructor, `fetch`, `webSocketMessage`, and
