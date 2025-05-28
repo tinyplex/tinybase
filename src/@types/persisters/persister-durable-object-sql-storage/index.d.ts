@@ -2,16 +2,16 @@
 import type {MergeableStore} from '../../mergeable-store/index.d.ts';
 import type {DpcJson, Persister, Persists} from '../index.d.ts';
 
-/// DpcKeyValue
-export type DpcKeyValue = {
-  /// DpcKeyValue.mode
-  mode: 'key-value';
-  /// DpcKeyValue.storagePrefix
+/// DpcFragmented
+export type DpcFragmented = {
+  /// DpcFragmented.mode
+  mode: 'fragmented';
+  /// DpcFragmented.storagePrefix
   storagePrefix?: string;
 };
 
 /// DurableObjectSqlDatabasePersisterConfig
-export type DurableObjectSqlDatabasePersisterConfig = DpcJson | DpcKeyValue;
+export type DurableObjectSqlDatabasePersisterConfig = DpcJson | DpcFragmented;
 
 /// DurableObjectSqlStoragePersister
 export interface DurableObjectSqlStoragePersister

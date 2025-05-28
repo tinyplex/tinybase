@@ -10,18 +10,18 @@ import type {
   Persists,
 } from '../../with-schemas/index.d.ts';
 
-/// DpcKeyValue
-export type DpcKeyValue = {
-  /// DpcKeyValue.mode
-  mode: 'key-value';
-  /// DpcKeyValue.storagePrefix
+/// DpcFragmented
+export type DpcFragmented = {
+  /// DpcFragmented.mode
+  mode: 'fragmented';
+  /// DpcFragmented.storagePrefix
   storagePrefix?: string;
 };
 
 /// DurableObjectSqlDatabasePersisterConfig
 export type DurableObjectSqlDatabasePersisterConfig<
   Schemas extends OptionalSchemas,
-> = DatabasePersisterConfig<Schemas> | DpcKeyValue;
+> = DatabasePersisterConfig<Schemas> | DpcFragmented;
 
 /// DurableObjectSqlStoragePersister
 export interface DurableObjectSqlStoragePersister<
