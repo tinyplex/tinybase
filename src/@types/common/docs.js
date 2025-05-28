@@ -59,6 +59,17 @@
  */
 /// SortKey
 /**
+ * The GetNow type is used to represent a function that returns the current time
+ * in milliseconds.
+ *
+ * This is used internally within the mergeable-store module, but is used for
+ * the createMergeableStore function's second optional argument to allow
+ * applications to override the clock used to generate timestamps.
+ * @category Stamps
+ * @since v6.2.0
+ */
+/// GetNow
+/**
  * The defaultSorter function is provided as a convenience to sort keys
  * alphanumerically, and can be provided to the `sliceIdSorter` and
  * `rowIdSorter` parameters of the setIndexDefinition method in the indexes

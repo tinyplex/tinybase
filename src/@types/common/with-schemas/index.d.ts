@@ -21,6 +21,9 @@ export type Callback = () => void;
 /// SortKey
 export type SortKey = string | number | boolean;
 
+/// GetNow
+export type GetNow = () => number;
+
 /// defaultSorter
 export function defaultSorter(sortKey1: SortKey, sortKey2: SortKey): number;
 

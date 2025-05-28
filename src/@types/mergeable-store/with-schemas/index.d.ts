@@ -4,7 +4,7 @@ import type {
   TableIdFromSchema,
   ValueIdFromSchema,
 } from '../../_internal/store/with-schemas/index.d.ts';
-import type {Id} from '../../common/with-schemas/index.d.ts';
+import type {GetNow, Id} from '../../common/with-schemas/index.d.ts';
 import type {
   CellOrUndefined,
   Content,
@@ -19,9 +19,6 @@ import type {
   ValueOrUndefined,
   ValuesSchema,
 } from '../../store/with-schemas/index.d.ts';
-
-/// GetNow
-export type GetNow = () => number;
 
 /// Hash
 export type Hash = number;

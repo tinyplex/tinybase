@@ -1,5 +1,4 @@
-import type {Id} from '../@types/common/index.d.ts';
-import type {GetNow} from '../@types/mergeable-store/index.d.ts';
+import type {GetNow, Id} from '../@types/common/index.d.ts';
 import {decode, encode} from './codec.ts';
 import {getHash} from './hash.ts';
 import {getUniqueId} from './index.ts';

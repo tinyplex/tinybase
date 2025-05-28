@@ -20,19 +20,6 @@
  * @since v5.0.0
  */
 /// mergeable-store
-
-/**
- * The GetNow type is used to represent a function that returns the current time
- * in milliseconds.
- *
- * This is used internally within the mergeable-store module, but is used for
- * the createMergeableStore function's second optional argument to allow
- * applications to override the clock used to generate timestamps.
- * @category Stamps
- * @since v6.1.0
- */
-/// GetNow
-
 /**
  * The Hash type is used within the mergeable-store module to quickly compare
  * the content of two objects.

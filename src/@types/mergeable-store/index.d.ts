@@ -1,14 +1,11 @@
 /// mergeable-store
-import type {Id} from '../common/index.d.ts';
+import type {GetNow, Id} from '../common/index.d.ts';
 import type {
   CellOrUndefined,
   Content,
   Store,
   ValueOrUndefined,
 } from '../store/index.d.ts';
-
-/// GetNow
-export type GetNow = () => number;
 
 /// Hash
 export type Hash = number;
