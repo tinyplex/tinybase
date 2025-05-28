@@ -177,7 +177,34 @@ This sets up synchronization between any clients that connect to this common
 But if all your clients disconnect and flush their locally-stored data, it is
 technically possible to lose it all! So it's also a good idea to have the
 Durable Object store a synchronized copy too. We do this by overriding the
-createPersister method:
+createPersister method.
+
+For new Durable Object namespaces, Cloudflare recommends using SQLite storage,
+which offers better pricing and performance compared to the legacy key-value
+storage. To use SQLite storage, you'll need to configure your Durable Object
+class in your `wrangler.toml` file:
+
+```toml
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["TinyBaseDurableObject"]
+```
+
+Then create the persister using the recommended SQL storage:
+
+```js yolo
+// ...
+createPersister() {
+  return createDurableObjectSqlStoragePersister(
+    createMergeableStore(),
+    this.ctx.storage.sql,
+  );
+}
+// ...
+```
+
+Alternatively, if you're using an existing Durable Object namespace with
+key-value storage, you can use the legacy persister:
 
 ```js yolo
 // ...
@@ -192,10 +219,9 @@ createPersister() {
 
 In this method, all we need to do is create a MergeableStore (that will reside
 in the Durable Object memory whenever it is running and not hibernated), and
-indicate how it will be persisted. Almost always you will want to return a
-DurableObjectStoragePersister object, which is dedicated to storing a TinyBase
-Store in Durable Object storage - as indicated by the `this.ctx.storage`
-argument.
+indicate how it will be persisted. The DurableObjectSqlStoragePersister is
+dedicated to storing a TinyBase Store in Durable Object SQLite storage, while
+the DurableObjectStoragePersister uses the legacy key-value storage.
 
 With this in place you now have the full set up! The clients are storing a local
 copy of the TinyBase data so they can go offline and reload without loss of
@@ -206,16 +232,22 @@ between them all keeps them each up-to-date!
 
 ## Final Notes
 
-Durable Objects have limitations on the data that can be stored in each key of
-their key-value structure. The DurableObjectStoragePersister uses one key per
-TinyBase Value, one key per Cell, one key per Row, and one key per Table. Mostly
-this is CRDT metadata, but the main caution is to ensure that each individual
-TinyBase Cell and Value data does not exceed the (128 KiB) limit.
+The choice between SQLite and key-value storage affects the data limitations:
+
+- **SQLite storage** (recommended): Uses SQL tables to store TinyBase data with
+  structured tables for tables and values, including proper CRDT metadata. This
+  provides better performance and pricing.
+
+- **Key-value storage** (legacy): Has limitations on the data that can be stored
+  in each key. The DurableObjectStoragePersister uses one key per TinyBase
+  Value, one key per Cell, one key per Row, and one key per Table. The main
+  caution is to ensure that each individual TinyBase Cell and Value data does
+  not exceed the 128 KiB limit.
 
 The WsServerDurableObject is an overridden implementation of the DurableObject
 class, so you can have access to its members as well as the TinyBase-specific
 methods. If you are using the storage for other data, you may want to configure
-a `prefix` parameter to ensure you don't accidentally collide with TinyBase
+a `storagePrefix` parameter to ensure you don't accidentally collide with TinyBase
 data.
 
 Also, always remember to call the `super` implementations of the methods that
