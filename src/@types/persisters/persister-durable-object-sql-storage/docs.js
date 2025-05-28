@@ -107,21 +107,30 @@
  * MergeableStore objects. When used with a MergeableStore, it can persist the
  * complete CRDT metadata required for proper merging operations.
  *
- * The DurableObjectSqlStoragePersister uses SQL tables to store TinyBase data,
- * creating structured tables for tables and values with proper CRDT metadata
- * including timestamps and hashes for merging operations.
+ * A database Persister uses one of three modes: either a JSON serialization of
+ * the whole Store stored in a single row of a table (the default), a key-value
+ * mode that stores each piece of data separately to avoid Cloudflare's 2MB row
+ * limit, or a tabular mapping of Table Ids to database table names and vice-versa).
  *
- * A database Persister uses one of two modes: either a JSON serialization of
- * the whole Store stored in a single row of a table (the default), or a tabular
- * mapping of Table Ids to database table names and vice-versa).
+ * **JSON Mode (Default)**: Stores the entire Store as JSON in a single database
+ * row. This is efficient for smaller stores but may hit Cloudflare's 2MB row
+ * limit for very large stores. Uses fewer database writes.
+ *
+ * **Key-Value Mode**: Stores each table, row, cell, and value as separate database
+ * rows. Use this mode if you're concerned about hitting Cloudflare's 2MB row
+ * limit with large stores in JSON mode. This mode creates more database writes
+ * but avoids row size limitations.
+ *
+ * **Tabular Mode**: Maps TinyBase tables directly to database tables for
+ * traditional relational database usage.
  *
  * The third argument is a DatabasePersisterConfig object that configures which
  * of those modes to use, and settings for each. If the third argument is simply
  * a string, it is used as the `storeTableName` property of the JSON
- * serialization.
+ * serialization. If it is the string 'key-value', it enables key-value mode.
  *
- * See the documentation for the DpcJson and DpcTabular types for more
- * information on how both of those modes can be configured.
+ * See the documentation for the DpcJson, DpcKeyValue, and DpcTabular types for more
+ * information on how all of those modes can be configured.
  *
  * As well as providing a reference to the Store or MergeableStore to persist, you must
  * provide a `sqlStorage` parameter which identifies the Durable Object SQLite storage to
@@ -130,7 +139,7 @@
  * @param sqlStorage The Durable Object SQL storage to persist the Store to.
  * @param configOrStoreTableName A DatabasePersisterConfig to configure the
  * persistence mode (or a string to set the `storeTableName` property of the
- * JSON serialization).
+ * JSON serialization, or 'key-value' to enable key-value mode).
  * @param onSqlCommand An optional handler called every time the Persister
  * executes a SQL command or query. This is suitable for logging persistence
  * behavior in a development environment.
@@ -178,6 +187,48 @@
  *       'my_app_store',
  *       (sql, params) => console.log('SQL:', sql, params),
  *       (error) => console.error('Persistence error:', error),
+ *     );
+ *     return persister;
+ *   }
+ * }
+ * ```
+ * @example
+ * This example creates a DurableObjectSqlStoragePersister object using key-value
+ * mode to avoid Cloudflare's 2MB row limit for large stores.
+ *
+ * ```js yolo
+ * import {createMergeableStore} from 'tinybase';
+ * import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
+ * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
+ *
+ * export class MyDurableObject extends WsServerDurableObject {
+ *   createPersister() {
+ *     const store = createMergeableStore();
+ *     const persister = createDurableObjectSqlStoragePersister(
+ *       store,
+ *       this.ctx.storage.sql,
+ *       'key-value',
+ *     );
+ *     return persister;
+ *   }
+ * }
+ * ```
+ * @example
+ * This example creates a DurableObjectSqlStoragePersister object using key-value
+ * mode with a custom storage prefix.
+ *
+ * ```js yolo
+ * import {createMergeableStore} from 'tinybase';
+ * import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
+ * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
+ *
+ * export class MyDurableObject extends WsServerDurableObject {
+ *   createPersister() {
+ *     const store = createMergeableStore();
+ *     const persister = createDurableObjectSqlStoragePersister(
+ *       store,
+ *       this.ctx.storage.sql,
+ *       {mode: 'key-value', storagePrefix: 'my_app_'},
  *     );
  *     return persister;
  *   }
