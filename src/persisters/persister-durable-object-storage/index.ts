@@ -21,7 +21,7 @@ import {jsonStringWithUndefined} from '../../common/json.ts';
 import {IdMap, mapNew, mapSet, mapToObj} from '../../common/map.ts';
 import {objEnsure, objForEach} from '../../common/obj.ts';
 import {ifNotUndefined, noop, slice} from '../../common/other.ts';
-import {stampNewWithHash, stampUpdateTimeAndHash} from '../../common/stamps.ts';
+import {stampNewWithHash, stampUpdate} from '../../common/stamps.ts';
 import {EMPTY_STRING, T, V, strStartsWith} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
 
@@ -82,20 +82,20 @@ export const createDurableObjectStoragePersister = ((
                         ids[2],
                         (cellId) =>
                           (row[0][cellId] = [zeroOrCellOrValue, time, hash]),
-                        () => stampUpdateTimeAndHash(row, time, hash),
+                        () => stampUpdate(row, time, hash),
                       );
                     },
-                    () => stampUpdateTimeAndHash(table, time, hash),
+                    () => stampUpdate(table, time, hash),
                   );
                 },
-                () => stampUpdateTimeAndHash(tables, time, hash),
+                () => stampUpdate(tables, time, hash),
               )
             : type == V
               ? ifNotUndefined(
                   ids[0],
                   (valueId) =>
                     (values[0][valueId] = [zeroOrCellOrValue, time, hash]),
-                  () => stampUpdateTimeAndHash(values, time, hash),
+                  () => stampUpdate(values, time, hash),
                 )
               : 0,
         ),

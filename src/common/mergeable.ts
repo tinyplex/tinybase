@@ -45,7 +45,7 @@ import {
   stampObjClone,
   stampObjNew,
   stampObjNewWithHash,
-  stampUpdateTimeAndHash,
+  stampUpdate,
   stampValidate,
 } from './stamps.ts';
 import {EMPTY_STRING} from './strings.ts';
@@ -98,10 +98,6 @@ export const validateMergeableContent = (
 export const getMergeableFunctions = (
   mergeable: Mergeable,
 ): [
-  mergeContentOrChanges: (
-    otherContentOrChanges: MergeableChanges | MergeableContent,
-    isContent?: 0 | 1,
-  ) => Changes,
   getMergeableContentHashes: () => ContentHashes,
   getMergeableTableHashes: () => TableHashes,
   getMergeableTableDiff: (
@@ -115,9 +111,18 @@ export const getMergeableFunctions = (
   getMergeableCellDiff: (otherTableRowCellHashes: CellHashes) => TablesStamp,
   getMergeableValueHashes: () => ValueHashes,
   getMergeableValueDiff: (otherValueHashes: ValueHashes) => ValuesStamp,
+  mergeContentOrChanges: (
+    otherContentOrChanges: MergeableChanges | MergeableContent,
+    isContent?: 0 | 1,
+  ) => Changes,
 ] => {
-  const {loadMyTablesStamp, loadMyValuesStamp, saveMyContentStamp, seenHlc} =
-    mergeable;
+  const {
+    loadMyTablesStamp,
+    loadMyValuesStamp,
+    saveMyTablesStamp,
+    saveMyValuesStamp,
+    seenHlc,
+  } = mergeable;
 
   const getMergeableContentHashes = (): ContentHashes => [
     loadMyTablesStamp()[2],
@@ -314,7 +319,7 @@ export const getMergeableFunctions = (
         newTableHash ^= isContent
           ? 0
           : replaceTimeHash(myTableTime, otherTableTime);
-        stampUpdateTimeAndHash(myTableStamp, otherTableTime, newTableHash);
+        stampUpdate(myTableStamp, otherTableTime, newTableHash);
 
         newTablesHash ^= isContent
           ? 0
@@ -327,7 +332,7 @@ export const getMergeableFunctions = (
     newTablesHash ^= isContent
       ? 0
       : replaceTimeHash(myTablesTime, otherTablesTime);
-    stampUpdateTimeAndHash(myTablesStamp, otherTablesTime, newTablesHash);
+    stampUpdate(myTablesStamp, otherTablesTime, newTablesHash);
 
     const [newValuesTime] = mergeCellsOrValues(
       otherValues,
@@ -337,17 +342,12 @@ export const getMergeableFunctions = (
     );
 
     seenHlc(getLatestTime(newTablesTime, newValuesTime));
-    saveMyContentStamp(
-      myTablesStamp,
-      myValuesStamp,
-      tablesChanges,
-      valuesChanges,
-    );
+    saveMyTablesStamp(myTablesStamp);
+    saveMyValuesStamp(myValuesStamp);
     return [tablesChanges, valuesChanges, 1];
   };
 
   return [
-    mergeContentOrChanges,
     getMergeableContentHashes,
     getMergeableTableHashes,
     getMergeableTableDiff,
@@ -357,6 +357,7 @@ export const getMergeableFunctions = (
     getMergeableCellDiff,
     getMergeableValueHashes,
     getMergeableValueDiff,
+    mergeContentOrChanges,
   ];
 };
 
@@ -389,7 +390,7 @@ const mergeCellsOrValues = <Thing extends CellOrUndefined | ValueOrUndefined>(
       const [, myThingTime, myThingHash] = myThingStamp;
 
       if (!myThingTime || otherThingTime > myThingTime) {
-        stampUpdateTimeAndHash(
+        stampUpdate(
           myThingStamp,
           otherThingTime,
           isContent
@@ -410,7 +411,7 @@ const mergeCellsOrValues = <Thing extends CellOrUndefined | ValueOrUndefined>(
   newParentHash ^= isContent
     ? 0
     : replaceTimeHash(myParentTime, otherParentTime);
-  stampUpdateTimeAndHash(myParentStamp, otherParentTime, newParentHash);
+  stampUpdate(myParentStamp, otherParentTime, newParentHash);
 
   return [newParentTime, myParentHash, myParentStamp[2]];
 };

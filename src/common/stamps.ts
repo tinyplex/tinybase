@@ -7,11 +7,9 @@ import {EMPTY_STRING, NUMBER, getTypeOf} from './strings.ts';
 
 export type StampObj<Thing> = Stamp<IdObj<Thing>, true>;
 
-export const stampEmpty = (): Stamp<undefined> => [undefined, EMPTY_STRING];
-
 export const stampNew = <Value>(
   value: Value,
-  time?: Time | undefined,
+  time: Time | undefined,
 ): Stamp<Value> => (time ? [value, time] : [value]);
 
 export const stampNewWithHash = <Value>(
@@ -60,16 +58,7 @@ export const getLatestTime = (
   /*! istanbul ignore next */
   ((time1 ?? '') > (time2 ?? '') ? time1 : time2) ?? '';
 
-export const stampUpdateValueAndTime = <Value>(
-  stamp: [Value, Time],
-  value: Value,
-  time: Time,
-) => {
-  stamp[0] = value;
-  stamp[1] = time;
-};
-
-export const stampUpdateTimeAndHash = (
+export const stampUpdate = (
   stamp: Stamp<unknown, true>,
   time: Time,
   hash: Hash,

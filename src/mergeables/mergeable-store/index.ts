@@ -4,6 +4,8 @@ import type {
   Mergeable,
   MergeableChanges,
   MergeableContent,
+  RowStamp,
+  TableStamp,
   TablesStamp,
   ValuesStamp,
 } from '../../@types/mergeables/index.d.ts';
@@ -13,24 +15,25 @@ import type {
 } from '../../@types/mergeables/mergeable-store/index.d.ts';
 import type {
   CellOrUndefined,
-  Changes,
   Content,
   Store,
   ValueOrUndefined,
 } from '../../@types/store/index.d.ts';
+import {collClear, collForEach} from '../../common/coll.ts';
 import {getHlcFunctions} from '../../common/hlc.ts';
+import {mapEnsure, mapNew} from '../../common/map.ts';
 import {
   getMergeableFunctions,
   validateMergeableContent,
 } from '../../common/mergeable.ts';
-import {IdObj, objEnsure, objFreeze, objMap} from '../../common/obj.ts';
-import {slice} from '../../common/other.ts';
+import {IdObj, objFreeze, objGet, objMap} from '../../common/obj.ts';
+import {ifNotUndefined, noop, slice} from '../../common/other.ts';
+import {IdSet, IdSet3, setAdd, setNew} from '../../common/set.ts';
 import {
-  stampEmpty,
+  stampNew,
+  stampNewWithHash,
   stampObjCloneWithHash,
-  stampObjNew,
   stampObjNewWithHash,
-  stampUpdateValueAndTime,
 } from '../../common/stamps.ts';
 import {
   ADD,
@@ -75,76 +78,76 @@ export const createMergeableStore = ((
   getNow?: GetNow,
 ): MergeableStore => {
   let myContent = newMyContent();
-  let isSavingToStore = 1;
+  let listeningToRawStoreChanges = 1;
   let defaultingContent: 0 | 1 = 0;
-  let finishingTransaction: 0 | 1 = 0;
-  let transactionMergeableChanges: MergeableChanges;
-
+  const touchedCells: IdSet3 = mapNew();
+  const touchedValues: IdSet = setNew();
   const [getHlc, seenHlc] = getHlcFunctions(uniqueId, getNow);
   const store = createStore();
 
-  const fluent = (actions: () => unknown): MergeableStore => {
+  const disableListeningToRawStoreChanges = (
+    actions: () => void,
+  ): MergeableStore => {
+    const wasListening = listeningToRawStoreChanges;
+    listeningToRawStoreChanges = 0;
     actions();
+    listeningToRawStoreChanges = wasListening;
     return mergeableStore as MergeableStore;
   };
 
-  const curtailSavingToStore = (actions: () => void): MergeableStore =>
-    fluent(() => {
-      if (isSavingToStore) {
-        isSavingToStore = 0;
-        actions();
-        isSavingToStore = 1;
-      }
-    });
-
-  const preStartTransaction = () =>
-    (transactionMergeableChanges = getTransactionMergeableChanges());
-
-  const preFinishTransaction = () => {
-    mergeContentOrChanges(transactionMergeableChanges);
-    finishingTransaction = 1;
+  const postFinishTransaction = () => {
+    collClear(touchedCells);
+    collClear(touchedValues);
   };
-
-  const postFinishTransaction = () => (finishingTransaction = 0);
 
   const cellChanged = (
     tableId: Id,
     rowId: Id,
     cellId: Id,
     newCell: CellOrUndefined,
-  ) =>
-    !isSavingToStore
-      ? 0
-      : stampUpdateValueAndTime(
-          objEnsure<any>(
-            objEnsure<any>(
-              objEnsure(
-                transactionMergeableChanges[0][0],
-                tableId,
-                stampObjNew,
-              )[0],
-              rowId,
-              stampObjNew,
-            )[0],
-            cellId,
-            stampEmpty,
-          ),
-          newCell,
-          defaultingContent ? EMPTY_STRING : getHlc(),
-        );
+  ) => {
+    setAdd(
+      mapEnsure(
+        mapEnsure(touchedCells, tableId, mapNew<Id, IdSet>),
+        rowId,
+        setNew<Id>,
+      ),
+      cellId,
+    );
+    if (listeningToRawStoreChanges) {
+      mergeContentOrChanges([
+        [
+          {
+            [tableId]: [
+              {
+                [rowId]: [
+                  {
+                    [cellId]: [
+                      newCell,
+                      defaultingContent ? EMPTY_STRING : getHlc(),
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+        [{}],
+        1,
+      ]);
+    }
+  };
 
-  const valueChanged = (valueId: Id, newValue: ValueOrUndefined) =>
-    !isSavingToStore
-      ? 0
-      : stampUpdateValueAndTime(
-          objEnsure<any>(
-            transactionMergeableChanges[1][0],
-            valueId,
-            stampEmpty,
-          ),
-          newValue,
-          defaultingContent ? EMPTY_STRING : getHlc(),
-        );
+  const valueChanged = (valueId: Id, newValue: ValueOrUndefined) => {
+    setAdd(touchedValues, valueId);
+    if (listeningToRawStoreChanges) {
+      mergeContentOrChanges([
+        [{}],
+        [{[valueId]: [newValue, defaultingContent ? EMPTY_STRING : getHlc()]}],
+        1,
+      ]);
+    }
+  };
 
   // ---
 
@@ -158,35 +161,94 @@ export const createMergeableStore = ((
   const setMergeableContent = (
     mergeableContent: MergeableContent,
   ): MergeableStore =>
-    curtailSavingToStore(() =>
+    disableListeningToRawStoreChanges(() =>
       validateMergeableContent(mergeableContent)
         ? store.transaction(() => {
             store.delTables().delValues();
             myContent = newMyContent();
-            mergeContentOrChanges(mergeableContent, 1);
+            store.applyChanges(mergeContentOrChanges(mergeableContent, 1));
           })
         : 0,
     );
 
-  const applyMergeableChanges = (
-    mergeableChanges: MergeableChanges,
-  ): MergeableStore => fluent(() => mergeContentOrChanges(mergeableChanges));
-
   const setDefaultContent = (
     content: Content | (() => Content),
-  ): MergeableStore =>
-    fluent(() =>
-      store.transaction(() => {
-        defaultingContent = 1;
-        store.setContent(content);
-        defaultingContent = 0;
-      }),
+  ): MergeableStore => {
+    store.transaction(() => {
+      defaultingContent = 1;
+      store.setContent(content);
+      defaultingContent = 0;
+    });
+    return mergeableStore as MergeableStore;
+  };
+
+  const getTransactionMergeableChanges = (
+    withHashes = false,
+  ): MergeableChanges<typeof withHashes> => {
+    const [
+      [myTables, myTablesTime, myTablesHash],
+      [myValues, myValuesTime, myValuesHash],
+    ] = myContent;
+
+    const newStamp = withHashes ? stampNewWithHash : stampNew;
+
+    const tablesChanges: TablesStamp<typeof withHashes>[0] = {};
+    collForEach(touchedCells, (touchedTable, tableId) =>
+      ifNotUndefined(
+        objGet(myTables, tableId),
+        ([myTable, myTableTime, myTableHash]) => {
+          const tableChanges: TableStamp<typeof withHashes>[0] = {};
+          collForEach(touchedTable, (touchedRow, rowId) =>
+            ifNotUndefined(
+              objGet(myTable, rowId),
+              ([myRow, myRowTime, myRowHash]) => {
+                const rowChanges: RowStamp<typeof withHashes>[0] = {};
+                collForEach(touchedRow, (cellId) => {
+                  ifNotUndefined(
+                    objGet(myRow, cellId),
+                    ([myCell, myCellTime, myCellHash]) =>
+                      (rowChanges[cellId] = newStamp(
+                        myCell,
+                        myCellTime,
+                        myCellHash,
+                      )),
+                  );
+                });
+                tableChanges[rowId] = newStamp(
+                  rowChanges,
+                  myRowTime,
+                  myRowHash,
+                );
+              },
+            ),
+          );
+          tablesChanges[tableId] = newStamp(
+            tableChanges,
+            myTableTime,
+            myTableHash,
+          );
+        },
+      ),
     );
 
-  const nullChanges = (): MergeableChanges => [[{}], [{}], 1];
+    const valuesChanges: ValuesStamp<typeof withHashes>[0] = {};
+    collForEach(touchedValues, (valueId) =>
+      ifNotUndefined(
+        objGet(myValues, valueId),
+        ([myValue, myValueTime, myValueHash]) =>
+          (valuesChanges[valueId] = newStamp(
+            myValue,
+            myValueTime,
+            myValueHash,
+          )),
+      ),
+    );
 
-  const getTransactionMergeableChanges = (): MergeableChanges => {
-    return finishingTransaction ? transactionMergeableChanges : nullChanges();
+    return [
+      newStamp(tablesChanges, myTablesTime, myTablesHash),
+      newStamp(valuesChanges, myValuesTime, myValuesHash),
+      1,
+    ];
   };
 
   const merge = (mergeableStore2: MergeableStore) => {
@@ -202,51 +264,63 @@ export const createMergeableStore = ((
 
   const loadMyValuesStamp = (): ValuesStamp<true> => myContent[1];
 
-  const saveMyContentStamp = (
-    _myTablesStamp: TablesStamp<true>,
-    _myValuesStamp: ValuesStamp<true>,
-    myTablesChanges: Changes[0],
-    myValuesChanges: Changes[1],
-  ): void => {
-    curtailSavingToStore(() =>
-      store.applyChanges([myTablesChanges, myValuesChanges, 1]),
-    );
-  };
+  const saveMyTablesStamp = (): void => {};
+
+  const saveMyValuesStamp = (): void => {};
 
   const addMergeableChangesListener = (
-    changesListener: (changes: MergeableChanges) => void,
+    changesListener: (changes: MergeableChanges<false>) => void,
   ): (() => void) => {
     const listenerId = store.addDidFinishTransactionListener(() =>
-      changesListener(getTransactionMergeableChanges() as MergeableChanges),
+      changesListener(
+        getTransactionMergeableChanges() as MergeableChanges<false>,
+      ),
     );
     return () => store.delListener(listenerId);
   };
+
+  const applyMergeableChanges = (
+    mergeableChanges: MergeableChanges,
+  ): MergeableStore =>
+    disableListeningToRawStoreChanges(() =>
+      store.applyChanges(mergeContentOrChanges(mergeableChanges)),
+    );
 
   // --
 
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
     setMergeableContent,
-    applyMergeableChanges,
     setDefaultContent,
     getTransactionMergeableChanges,
     merge,
 
     addMergeableChangesListener,
+    applyMergeableChanges,
 
     loadMyTablesStamp,
     loadMyValuesStamp,
-    saveMyContentStamp,
+    saveMyTablesStamp,
+    saveMyValuesStamp,
     seenHlc,
   };
 
-  const [mergeContentOrChanges] = getMergeableFunctions(
-    mergeableStore as Mergeable,
-  );
+  const [
+    _getMergeableContentHashes,
+    _getMergeableTableHashes,
+    _getMergeableTableDiff,
+    _getMergeableRowHashes,
+    _getMergeableRowDiff,
+    _getMergeableCellHashes,
+    _getMergeableCellDiff,
+    _getMergeableValueHashes,
+    _getMergeableValueDiff,
+    mergeContentOrChanges,
+  ] = getMergeableFunctions(mergeableStore as Mergeable);
 
   (store as any).setInternalListeners(
-    preStartTransaction,
-    preFinishTransaction,
+    noop,
+    noop,
     postFinishTransaction,
     cellChanged,
     valueChanged,
@@ -262,7 +336,10 @@ export const createMergeableStore = ((
         strStartsWith(name, 'apply') ||
         strEndsWith(name, TRANSACTION) ||
         name == 'call' + LISTENER
-          ? (...args: any[]) => fluent(() => method(...args))
+          ? (...args: any[]) => {
+              method(...args);
+              return mergeableStore;
+            }
           : strStartsWith(name, ADD) && strEndsWith(name, LISTENER)
             ? (...args: any[]) => {
                 const listenerArg = LISTENER_ARGS[slice(name, 3, -8)] ?? 0;
