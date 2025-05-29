@@ -50,8 +50,8 @@ const ALL_MODULES = [
   'synchronizers/synchronizer-ws-server-durable-object',
   'synchronizers/synchronizer-ws-server-simple',
   'synchronizers/synchronizer-ws-server',
-  'ui-react-dom/',
-  'ui-react-inspector/',
+  'ui-react-dom',
+  'ui-react-inspector',
   'ui-react',
 ];
 const ALL_DEFINITIONS = [
