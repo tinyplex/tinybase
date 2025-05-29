@@ -157,7 +157,7 @@ export const createMergeableStore = ((
   let defaultingContent: 0 | 1 = 0;
   const touchedCells: IdSet3 = mapNew();
   const touchedValues: IdSet = setNew();
-  const [getHlc, seenHlc] = getHlcFunctions(uniqueId, getNow);
+  const [getNextHlc, seenHlc] = getHlcFunctions(uniqueId, getNow);
   const store = createStore();
 
   const disableListeningToRawStoreChanges = (
@@ -341,7 +341,7 @@ export const createMergeableStore = ((
                   {
                     [cellId]: [
                       newCell,
-                      defaultingContent ? EMPTY_STRING : getHlc(),
+                      defaultingContent ? EMPTY_STRING : getNextHlc(),
                     ],
                   },
                 ],
@@ -360,7 +360,14 @@ export const createMergeableStore = ((
     if (listeningToRawStoreChanges) {
       mergeContentOrChanges([
         [{}],
-        [{[valueId]: [newValue, defaultingContent ? EMPTY_STRING : getHlc()]}],
+        [
+          {
+            [valueId]: [
+              newValue,
+              defaultingContent ? EMPTY_STRING : getNextHlc(),
+            ],
+          },
+        ],
         1,
       ]);
     }
