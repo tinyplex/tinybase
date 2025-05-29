@@ -33,26 +33,11 @@
  */
 /// Hash
 /**
- * The Time type is used within the mergeable-store module to store the value of
- * a hybrid logical clock (HLC).
- *
- * It is simply an alias for a JavaScript `string`, but it comprises three HLC
- * parts: a logical timestamp, a sequence counter, and a client Id. It is
- * designed to be string-sortable and unique across all of the systems involved
- * in synchronizing a MergeableStore.
- *
- * This type is mostly utilized internally within TinyBase itself and is
- * generally assumed to be opaque to applications that use it.
- * @category Stamps
- * @since v5.0.0
- */
-/// Time
-/**
  * The Stamp type is used as metadata to decide how to merge two different
  * MergeableStore objects together.
  *
- * It describes a combination of a value (or object), a Time, and optionally a
- * Hash, all in an array.
+ * It describes a combination of a value (or object), an Hlc timestamp, and
+ * optionally a Hash, all in an array.
  *
  * This type is mostly utilized internally within TinyBase itself and is
  * generally assumed to be opaque to applications that use it.

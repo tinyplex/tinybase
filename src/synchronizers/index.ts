@@ -33,7 +33,7 @@ import {
   startTimeout,
   tryCatch,
 } from '../common/other.ts';
-import {getLatestTime, stampNew, stampNewObj} from '../common/stamps.ts';
+import {getLatestHlc, stampNew, stampNewObj} from '../common/stamps.ts';
 import {DOT, EMPTY_STRING} from '../common/strings.ts';
 import {createCustomPersister} from '../persisters/index.ts';
 
@@ -145,11 +145,11 @@ export const createCustomSynchronizer = (
           ([cell2, cellTime2], cellId) =>
             (rowStamp[0][cellId] = stampNew(cell2, cellTime2)),
         );
-        rowStamp[1] = getLatestTime(rowStamp[1], rowTime2);
+        rowStamp[1] = getLatestHlc(rowStamp[1], rowTime2);
       });
-      tableStamp[1] = getLatestTime(tableStamp[1], tableTime2);
+      tableStamp[1] = getLatestHlc(tableStamp[1], tableTime2);
     });
-    tablesStamp[1] = getLatestTime(tablesStamp[1], tablesTime2);
+    tablesStamp[1] = getLatestHlc(tablesStamp[1], tablesTime2);
   };
 
   const getChangesFromOtherStore = (

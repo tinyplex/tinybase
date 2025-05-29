@@ -1,4 +1,4 @@
-import type {Id} from '../@types/index.js';
+import type {Id} from '../@types/index.d.ts';
 import {arrayMap, arrayReduce} from './array.ts';
 import {mapGet, mapNew} from './map.ts';
 import {GLOBAL, math, mathFloor} from './other.ts';
