@@ -494,8 +494,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       'react/jsx-runtime',
       'url',
       'yjs',
-      'tinybase/store',
-      '../ui-react',
+      ...(module == 'omni' ? [] : ['tinybase/store', '../ui-react']),
     ],
     input: inputFile,
     plugins: [
@@ -508,7 +507,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
         '/*!': '\n/*',
         delimiters: ['', ''],
         preventAssignment: true,
-        '../ui-react/index.ts': '../ui-react',
+        ...(module == 'omni' ? {} : {'../ui-react/index.ts': '../ui-react'}),
       }),
       shebang(),
       image(),
