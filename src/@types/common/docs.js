@@ -85,6 +85,18 @@
  */
 /// Hlc
 /**
+ * The Hash type is used within TinyBase (for example in the mergeable-store
+ * module) to quickly compare the content of two objects.
+ *
+ * This is simply an alias for a JavaScript `number`.
+ *
+ * This type is mostly utilized internally within TinyBase itself and is
+ * generally assumed to be opaque to applications that use it.
+ * @category Stamps
+ * @since v6.2.0
+ */
+/// Hash
+/**
  * The defaultSorter function is provided as a convenience to sort keys
  * alphanumerically, and can be provided to the `sliceIdSorter` and
  * `rowIdSorter` parameters of the setIndexDefinition method in the indexes

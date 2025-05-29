@@ -27,6 +27,9 @@ export type GetNow = () => number;
 /// Hlc
 export type Hlc = string;
 
+/// Hash
+export type Hash = number;
+
 /// defaultSorter
 export function defaultSorter(sortKey1: SortKey, sortKey2: SortKey): number;
 

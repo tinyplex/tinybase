@@ -49,10 +49,10 @@ This release changes the `package.json` exports slightly so that imports of both
 JavaScript file. This reduces bundle size for apps that use both schema and
 non-schema imports.
 
-## Moving the GetNow type
+## Moving types
 
-The rarely-used GetNow type has been moved from the mergeable-store module into
-the common module.
+The rarely-used GetNow and Hash types have been moved from the mergeable-store
+module into the common module.
 
 # v6.1
 

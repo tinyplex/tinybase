@@ -1,7 +1,6 @@
-import type {Hlc, Id} from '../@types/common/index.d.ts';
+import type {Hash, Hlc, Id} from '../@types/common/index.d.ts';
 import type {
   CellStamp,
-  Hash,
   Stamp,
   ValueStamp,
 } from '../@types/mergeable-store/index.d.ts';

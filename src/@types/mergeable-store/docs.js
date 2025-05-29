@@ -21,18 +21,6 @@
  */
 /// mergeable-store
 /**
- * The Hash type is used within the mergeable-store module to quickly compare
- * the content of two objects.
- *
- * This is simply an alias for a JavaScript `number`.
- *
- * This type is mostly utilized internally within TinyBase itself and is
- * generally assumed to be opaque to applications that use it.
- * @category Stamps
- * @since v5.0.0
- */
-/// Hash
-/**
  * The Stamp type is used as metadata to decide how to merge two different
  * MergeableStore objects together.
  *

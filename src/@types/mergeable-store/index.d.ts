@@ -1,14 +1,11 @@
 /// mergeable-store
-import type {GetNow, Hlc, Id} from '../common/index.d.ts';
+import type {GetNow, Hash, Hlc, Id} from '../common/index.d.ts';
 import type {
   CellOrUndefined,
   Content,
   Store,
   ValueOrUndefined,
 } from '../store/index.d.ts';
-
-/// Hash
-export type Hash = number;
 
 /// Stamp
 export type Stamp<Thing, Hashed extends boolean = false> = Hashed extends true
