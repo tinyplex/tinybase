@@ -8,7 +8,7 @@
 
 <a href='/guides/releases/#v6-2'><em>NEW!</em> v6.2 release</a>
 
-<span id="one-with">"The One With New Stuff. TBA!"</span>
+<span id="one-with">"The One With HLCs and `omni`!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 

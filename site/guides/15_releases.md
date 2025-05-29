@@ -7,6 +7,40 @@ highlighted features.
 
 # v6.2
 
+This release contains various packaging improvements and exposes some internal
+HLC functions that are useful for people building their own persisters or
+synchronizers.
+
+## HLC functions
+
+The common module (and hence tinybase module) now export the getHlcFunction
+function. This returns set of seven functions that can be used to create and
+manipulate HLC (Hybrid Logical Clock) timestamps.
+
+```js
+const [getNextHlc, seenHlc, encodeHlc] = getHlcFunctions();
+```
+
+If needed, you can use these in your own systems to ensure the timestamps are
+compatible with the ones generated in TinyBase MergeableStore objects.
+
+## New `omni` module
+
+There is a new `omni` module that is an explicit superset of everything in the
+TinyBase ecosystem. It exports the features and functionality of every
+`tinybase/*` module, including every persister, every synchronizer, and every UI
+component. This is useful for applications that want to use multiple facets of
+the overall TinyBase ecosystem and also benefit from the fact they share a lot
+of code internally.
+
+```js yolo
+import {createStore, createSqliteBunPersister} from 'tinybase/omni';
+```
+
+However, it should go without saying that you should only use the `omni` module
+if you have a good tree-shaking bundler that can remove all the persisters,
+synchronizers, and so on, that you do _not_ use.
+
 ## with-schema exports
 
 This release changes the `package.json` exports slightly so that imports of both
@@ -14,27 +48,7 @@ This release changes the `package.json` exports slightly so that imports of both
 JavaScript file. This reduces bundle size for apps that use both schema and
 non-schema imports.
 
-## New `omni` module
-
-The new `omni` module is an explicit superset of everything in the TinyBase
-ecosystem. It includes all the features and functionality of the existing
-modules, including every persister, every UI component, and every synchronizer.
-This is useful for applications that want to use multiple facets of the overall
-TinyBase ecosystem and also benefit from the shared code they use internally.
-
-However, it should go without saying that you should only use the `omni` module
-if you have a good tree-shaking bundler that can remove all the persisters,
-synchronizers, and so on, that you do NOT use.
-
-## HLC functions
-
-The common module (and hence tinybase module) now export the getHlcFunction
-function. This returns set of seven functions that can be used to create and
-manipulate HLC (Hybrid Logical Clock) timestamps. If needed, you can use these
-in your own systems to ensure the timestamps are compatible with the ones
-generated in TinyBase MergeableStore objects.
-
-## Move of the GetNow type
+## Moving the GetNow type
 
 The rarely-used GetNow type has been moved from the mergeable-store module into
 the common module.
@@ -49,8 +63,7 @@ the common module.
 - [Destructured object
   arguments](#destructured-object-arguments-for-sorted-row-ids) for sorted Row
   Id methods and hooks.
-- [A new startAutoPersisting
-  method](#new-startautopersisting-method).
+- [A new startAutoPersisting method](#new-startautopersisting-method).
 
 And more!
 
