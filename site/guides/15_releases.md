@@ -18,6 +18,7 @@ function. This returns set of seven functions that can be used to create and
 manipulate HLC (Hybrid Logical Clock) timestamps.
 
 ```js
+import {getHlcFunctions} from 'tinybase';
 const [getNextHlc, seenHlc, encodeHlc] = getHlcFunctions();
 ```
 
