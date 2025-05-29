@@ -70,6 +70,21 @@
  */
 /// GetNow
 /**
+ * The Hlc type is a string that represents a Hybrid Logical Clock (HLC) value.
+ *
+ * HLCs are used to provide a globally unique timestamp that can be used to
+ * order events across distributed systems. The Hlc type in TinyBase is a
+ * sortable 16 character string that encodes a timestamp, a counter, and the
+ * hash of a unique client identifier.
+ *
+ * - 42 bits (7 chars) for the time in milliseconds (~139 years).
+ * - 24 bits (4 chars) for the counter (~16 million).
+ * - 30 bits (5 chars) for the hash of unique client id (~1 billion).
+ * @category Stamps
+ * @since v6.2.0
+ */
+/// Hlc
+/**
  * The defaultSorter function is provided as a convenience to sort keys
  * alphanumerically, and can be provided to the `sliceIdSorter` and
  * `rowIdSorter` parameters of the setIndexDefinition method in the indexes
@@ -159,3 +174,87 @@
  * @since v5.0.0
  */
 /// getUniqueId
+/**
+ * The getHlcFunctions function returns a set of utility functions for working
+ * with the TinyBase Hybrid Logical Clock (HLC).
+ *
+ * An HLC is a sortable 16 character string that encodes a timestamp, a counter,
+ * and the hash of a unique client identifier. You should provide that unique
+ * client identifier as the `uniqueId` parameter to the function. Otherwise it
+ * will be defaulted and the client suffix of the HLCs the `getNextHlc` function
+ * generates will be non-deterministic.
+ *
+ * You can also provide a `getNow` function that returns the current time in
+ * milliseconds, which is useful for testing purposes where fully deterministic
+ * HLCs are required, rather than the current time.
+ *
+ * The stateful functions returned by this function are as follows.
+ *
+ * - `getNextHlc`: a function that returns the next HLC for this client based on
+ *   the time and any other HLC values from other clients that have been seen.
+ * - `seenHlc`: a function that takes an HLC and updates the internal state of
+ *   the functions to ensure that the next HLC returned by `getNextHlc` is
+ *   greater than the given seen HLC.
+ * - `encodeHlc`: a function that takes a timestamp, a counter (and optionally a
+ *   different `clientId`) and encodes the them into an HLC string.
+ * - `decodeHlc`: a function that takes an HLC and returns an array containing
+ *   the logical time, counter, and client Id parts.
+ * - `getLastLogicalTime`: a function that returns the last logical time either
+ *   generated or seen by this client.
+ * - `getLastCounter`: a function that returns the last counter either generated
+ *   or seen by this client.
+ * - `getClientId`: a function that returns the client Id for this client;
+ *   either uniquely generated or derived from the `uniqueId` parameter.
+ * @param uniqueId An optional unique Id for the client.
+ * @param getNow An optional function that generates millisecond timestamps,
+ * defaulting to `Date.now`.
+ * @returns An array of five stateful functions as described above.
+ * @category Stamps
+ * @since v6.2.0
+ * @example
+ * This example gets the HLC functions (for a given client Id and a fixed time;
+ * both for illustrative purposes), and then uses them:
+ *
+ * ```js
+ * import {getHlcFunctions} from 'tinybase';
+ *
+ * const [
+ *   getNextHlc,
+ *   seenHlc,
+ *   encodeHlc,
+ *   decodeHlc,
+ *   getLastLogicalTime,
+ *   getLastCounter,
+ *   getClientId,
+ * ] = getHlcFunctions('client1', () => 73267200000); // This client is in 1972.
+ *
+ * // Generate an HLC based on the fixed time and the client Id.
+ * console.log(getNextHlc());
+ * // -> '03E3B------mmxrx'
+ *
+ * // Generate the next HLC. The time has not changed, so the counter does.
+ * console.log(getNextHlc());
+ * // -> '03E3B-----0mmxrx'
+ *
+ * // Another client thinks it is 1973.
+ * seenHlc('0WakTk-----jmx_3');
+ * // Generate the next HLC.
+ *
+ * // What is the state for the current client?
+ * console.log(getLastLogicalTime());
+ * // -> 104803200000
+ * console.log(getLastCounter());
+ * // -> 0
+ * console.log(getClientId());
+ * // -> 'mmxrx'
+ *
+ * // Encode an arbitrary HLC.
+ * console.log(encodeHlc(73267203600, 7, 'client3'));
+ * // -> '03E3BsF---6kmxfM'
+ *
+ * // Decode it again.
+ * console.log(decodeHlc('03E3BsF---6kmxfM'));
+ * // -> [73267203600, 7, 'kmxfM']
+ * ```
+ */
+/// getHlcFunctions
