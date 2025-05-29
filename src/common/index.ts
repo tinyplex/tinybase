@@ -7,6 +7,8 @@ export {getRandomValues, getUniqueId} from './codec.ts';
 
 export {getHlcFunctions} from './hlc.ts';
 
+export * from './hash.ts';
+
 export const defaultSorter: typeof defaultSorterDecl = (
   sortKey1: SortKey,
   sortKey2: SortKey,
