@@ -208,7 +208,7 @@
  * @param uniqueId An optional unique Id for the client.
  * @param getNow An optional function that generates millisecond timestamps,
  * defaulting to `Date.now`.
- * @returns An array of five stateful functions as described above.
+ * @returns An array of seven stateful functions as described above.
  * @category Stamps
  * @since v6.2.0
  * @example
