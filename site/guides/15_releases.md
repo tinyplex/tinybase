@@ -14,9 +14,30 @@ This release changes the `package.json` exports slightly so that imports of both
 JavaScript file. This reduces bundle size for apps that use both schema and
 non-schema imports.
 
+## New `omni` module
+
+The new `omni` module is an explicit superset of everything in the TinyBase
+ecosystem. It includes all the features and functionality of the existing
+modules, including every persister, every UI component, and every synchronizer.
+This is useful for applications that want to use multiple facets of the overall
+TinyBase ecosystem and also benefit from the shared code they use internally.
+
+However, it should go without saying that you should only use the `omni` module
+if you have a good tree-shaking bundler that can remove all the persisters,
+synchronizers, and so on, that you do NOT use.
+
+## HLC functions
+
+The common module (and hence tinybase module) now export the getHlcFunction
+function. This returns set of seven functions that can be used to create and
+manipulate HLC (Hybrid Logical Clock) timestamps. If needed, you can use these
+in your own systems to ensure the timestamps are compatible with the ones
+generated in TinyBase MergeableStore objects.
+
 ## Move of the GetNow type
 
-The rarely-used GetNow type has been moved from the mergeable-store module into the common module.
+The rarely-used GetNow type has been moved from the mergeable-store module into
+the common module.
 
 # v6.1
 
