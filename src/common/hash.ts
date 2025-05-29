@@ -34,7 +34,7 @@ export const getHash: typeof getHashDecl = (string: string): Hash => {
 export const addOrRemoveHash: typeof addOrRemoveHashDecl = (
   hash1: Hash,
   hash2: Hash,
-): Hash => hash1 ^ hash2;
+): Hash => (hash1 ^ hash2) >>> 0;
 
 export const getValuesHash: typeof getValuesHashDecl = (
   valueHashes: {[valueId: Id]: Hash},

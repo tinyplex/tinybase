@@ -286,6 +286,15 @@
  * for most purposes.
  * @param string The string to hash.
  * @returns A hash of the string.
+ * @example
+ * This example gets the hash of two similar strings.
+ * ```js
+ * import {getHash} from 'tinybase';
+ * console.log(getHash('Hello, world!'));
+ * // -> 3985698964
+ * console.log(getHash('Hello, world?'));
+ * // -> 3549480870
+ * ```
  * @category Hash
  * @since v6.2.0
  */
@@ -302,6 +311,21 @@
  * @param hash2 A second hash to add or remove from the first.
  * @returns The resulting hash of the two hashes added to or removed from each
  * other.
+ * @example
+ * This example adds two hashes together.
+ * ```js
+ * import {addOrRemoveHash} from 'tinybase';
+ *
+ * const hash1 = 123456789;
+ * const hash2 = 987654321;
+ * console.log(addOrRemoveHash(hash1, hash2));
+ * // -> 1032168868
+ *
+ * console.log(addOrRemoveHash(1032168868, hash1));
+ * // -> 987654321
+ * console.log(addOrRemoveHash(1032168868, hash2));
+ * // -> 123456789
+ * ```
  * @category Hash
  * @since v6.2.0
  */
@@ -313,6 +337,19 @@
  * @param tableHashes An object containing each Table Id and its hash.
  * @param tablesHlc The top-level HLC of the tabular part of the Store.
  * @returns A hash of the Tables.
+ * @example
+ * This example gets the hash of the tabular part of a Store.
+ * ```js
+ * import {getTablesHash} from 'tinybase';
+ *
+ * const tableHashes = {
+ *   pets: 2544679909, // hash of its contents
+ * };
+ * const tablesHlc = '03E3B------mmxrx';
+ *
+ * console.log(getTablesHash(tableHashes, tablesHlc));
+ * // -> 1835775460
+ * ```
  * @category Hash
  * @since v6.2.0
  */
@@ -324,6 +361,17 @@
  * @param tableId The Id of the Table.
  * @param tableHash The hash of the Table.
  * @returns A hash of the Table based on its content and Id.
+ * @example
+ * This example gets the hash of a Table and its Id.
+ * ```js
+ * import {getTableInTablesHash} from 'tinybase';
+ *
+ * const tableId = 'pets';
+ * const tableHash = 2544679909; // hash of its contents
+ *
+ * console.log(getTableInTablesHash(tableId, tableHash));
+ * // -> 2778789628
+ * ```
  * @category Hash
  * @since v6.2.0
  */
@@ -335,6 +383,19 @@
  * @param rowHashes An object containing each Row Id and its hash.
  * @param tableHlc The HLC of the Table.
  * @returns A hash of the Table.
+ * @example
+ * This example gets the hash of a Table.
+ * ```js
+ * import {getTableHash} from 'tinybase';
+ *
+ * const rowHashes = {
+ *   fido: 703486916, // hash of its contents
+ * };
+ * const tableHlc = '03E3B------mmxrx';
+ *
+ * console.log(getTableHash(rowHashes, tableHlc));
+ * // -> 2544679909
+ * ```
  * @category Hash
  * @since v6.2.0
  */
@@ -346,6 +407,17 @@
  * @param rowId The Id of the Row.
  * @param rowHash The hash of the Row.
  * @returns A hash of the Row based on its content and Id.
+ * @example
+ * This example gets the hash of a Row and its Id.
+ * ```js
+ * import {getRowInTableHash} from 'tinybase';
+ *
+ * const rowId = 'fido';
+ * const rowHash = 703486916; // hash of its contents
+ *
+ * console.log(getRowInTableHash(rowId, rowHash));
+ * // -> 1600649469
+ * ```
  * @category Hash
  * @since v6.2.0
  */
@@ -357,6 +429,19 @@
  * @param cellHashes An object containing each Cell Id and its hash.
  * @param rowHlc The HLC of the Row.
  * @returns A hash of the Row.
+ * @example
+ * This example gets the hash of a Row.
+ * ```js
+ * import {getRowHash} from 'tinybase';
+ *
+ * const cellHashes = {
+ *   'species': 3002200796, // hash of 'dog' and '03E3B------mmxrx'
+ * };
+ * const rowHlc = '03E3B------mmxrx';
+ *
+ * console.log(getRowHash(cellHashes, rowHlc));
+ * // -> 703486916
+ * ```
  * @category Hash
  * @since v6.2.0
  */
@@ -368,6 +453,17 @@
  * @param cellId The Id of the Cell.
  * @param cellHash The hash of the Cell.
  * @returns A hash of the Cell based on its content and Id.
+ * @example
+ * This example gets the hash of a Cell and its Id.
+ * ```js
+ * import {getCellInRowHash} from 'tinybase';
+ *
+ * const cellId = 'species';
+ * const cellHash = '3002200796'; // hash of 'dog' and '03E3B------mmxrx'
+ *
+ * console.log(getCellInRowHash(cellId, cellHash));
+ * // -> 3777304796
+ * ```
  * @category Hash
  * @since v6.2.0
  */
@@ -379,6 +475,17 @@
  * @param cell The Cell's value (or `undefined`).
  * @param cellHlc The HLC of the Cell.
  * @returns A hash of the Cell.
+ * @example
+ * This example gets the hash of a Cell and its HLC.
+ * ```js
+ * import {getCellHash} from 'tinybase';
+ *
+ * const cell = 'dog';
+ * const cellHlc = '03E3B------mmxrx';
+ *
+ * console.log(getCellHash(cell, cellHlc));
+ * // -> 3002200796
+ * ```
  * @category Hash
  * @since v6.2.0
  */
@@ -390,6 +497,19 @@
  * @param valueHashes An object containing each Value Id and its hash.
  * @param valuesHlc The HLC of the Values.
  * @returns A hash of the Values.
+ * @example
+ * This example gets the hash of a Values object.
+ * ```js
+ * import {getValuesHash} from 'tinybase';
+ *
+ * const valueHashes = {
+ *   meaningOfLife: 312420374, // hash of 42 and '03E3B------mmxrx'
+ * };
+ * const valuesHlc = '03E3B------mmxrx';
+ *
+ * console.log(getValuesHash(valueHashes, valuesHlc));
+ * // -> 3680840875
+ * ```
  * @category Hash
  * @since v6.2.0
  */
@@ -401,6 +521,17 @@
  * @param valueId The Id of the Value.
  * @param valueHash The hash of the Value.
  * @returns A hash of the Value based on its content and Id.
+ * @example
+ * This example gets the hash of a Value and its Id.
+ * ```js
+ * import {getValueInValuesHash} from 'tinybase';
+ *
+ * const valueId = 'meaningOfLife';
+ * const valueHash = 312420374; // hash of 42 and '03E3B------mmxrx'
+ *
+ * console.log(getValueInValuesHash(valueId, valueHash));
+ * // -> 330198963
+ * ```
  * @category Hash
  * @since v6.2.0
  */
@@ -412,6 +543,17 @@
  * @param value The Value (or `undefined`).
  * @param valueHlc The HLC of the Value.
  * @returns A hash of the Value.
+ * @example
+ * This example gets the hash of a Value and its HLC.
+ * ```js
+ * import {getValueHash} from 'tinybase';
+ *
+ * const value = 42;
+ * const valueHlc = '03E3B------mmxrx';
+ *
+ * console.log(getValueHash(value, valueHlc));
+ * // -> 312420374
+ * ```
  * @category Hash
  * @since v6.2.0
  */
