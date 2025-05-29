@@ -6,6 +6,7 @@ import {
   delClass,
   doc,
   go,
+  preventDefault,
   query,
   queryElement,
 } from './common.ts';
@@ -118,13 +119,13 @@ export const searchLoad = (isHome = false) => {
             case 'Escape':
               return input.blur();
             case 'ArrowDown':
-              event.preventDefault();
+              preventDefault(event);
               return moveHover(
                 hovered,
                 hovered?.nextSibling ?? results.firstChild,
               );
             case 'ArrowUp':
-              event.preventDefault();
+              preventDefault(event);
               return moveHover(
                 hovered,
                 hovered?.previousSibling ?? results.lastChild,
@@ -134,6 +135,7 @@ export const searchLoad = (isHome = false) => {
           }
         } else if (event.code == 'KeyK' && event.metaKey) {
           input.focus();
+          preventDefault(event);
         }
       });
   });

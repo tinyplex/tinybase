@@ -20,6 +20,8 @@ let article: HTMLElement | null = null;
 export const getArticle = (): HTMLElement =>
   (article ??= query('body > main > article'));
 
+export const preventDefault = (event: Event): void => event.preventDefault();
+
 export const query = (query: string): HTMLElement =>
   doc.querySelector(query) as HTMLElement;
 export const queryElement = (

@@ -2,6 +2,7 @@ import {
   addPen,
   doc,
   go,
+  preventDefault,
   queryElement,
   toggleClass,
   versionLoad,
@@ -44,14 +45,14 @@ addEventListener('load', () => {
       !href.includes('#')
     ) {
       go(href);
-      event.preventDefault();
+      preventDefault(event);
     }
   });
 
   window.onpopstate = function (event: PopStateEvent) {
     if (!location.href.includes('#')) {
       go(location.href, false);
-      event.preventDefault();
+      preventDefault(event);
     }
   };
 
