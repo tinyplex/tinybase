@@ -1,7 +1,7 @@
 import type {Id} from '../@types/index.js';
 import {arrayMap, arrayReduce} from './array.ts';
 import {mapGet, mapNew} from './map.ts';
-import {GLOBAL, mathFloor} from './other.ts';
+import {GLOBAL, math, mathFloor} from './other.ts';
 import {strSplit} from './strings.ts';
 
 const MASK6 = 63;

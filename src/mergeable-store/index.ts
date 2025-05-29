@@ -1,8 +1,7 @@
-import type {Id} from '../@types/common/index.d.ts';
+import type {GetNow, Id} from '../@types/common/index.d.ts';
 import type {
   CellHashes,
   ContentHashes,
-  GetNow,
   MergeableChanges,
   MergeableContent,
   MergeableStore,
