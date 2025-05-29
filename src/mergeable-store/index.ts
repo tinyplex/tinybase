@@ -26,7 +26,7 @@ import {isCellOrValueOrNullOrUndefined} from '../common/cell.ts';
 import {collClear, collForEach} from '../common/coll.ts';
 import {getHash} from '../common/hash.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
-import {jsonStringWithMap} from '../common/json.ts';
+import {jsonStringWithUndefined} from '../common/json.ts';
 import {
   mapEnsure,
   mapForEach,
@@ -285,7 +285,7 @@ export const createMergeableStore = ((
             thingHlc,
             isContent
               ? incomingThingHash
-              : getHash(jsonStringWithMap(thing ?? null) + ':' + thingHlc),
+              : getHash(jsonStringWithUndefined(thing) + ':' + thingHlc),
           );
           thingStampMap[0] = thing;
           thingsChanges[thingId] = thing;
