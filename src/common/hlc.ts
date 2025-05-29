@@ -1,4 +1,9 @@
-import type {GetNow, Hlc, Id} from '../@types/common/index.d.ts';
+import type {
+  GetNow,
+  Hlc,
+  Id,
+  getHlcFunctions as getHlcFunctionsDecl,
+} from '../@types/common/index.d.ts';
 import {decode, encode, getUniqueId} from './codec.ts';
 import {getHash} from './hash.ts';
 import {ifNotUndefined, isUndefined, mathMax} from './other.ts';
@@ -21,7 +26,7 @@ const getClientIdFromUniqueId = (uniqueId: Id): Id => {
   );
 };
 
-export const getHlcFunctions = (
+export const getHlcFunctions: typeof getHlcFunctionsDecl = (
   uniqueId?: Id,
   getNow: GetNow = Date.now,
 ): [

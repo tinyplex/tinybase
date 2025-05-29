@@ -1,3 +1,4 @@
+import type {getUniqueId as getUniqueIdDecl} from '../@types/common/index.d.ts';
 import type {Id} from '../@types/index.d.ts';
 import {arrayMap, arrayReduce} from './array.ts';
 import {mapGet, mapNew} from './map.ts';
@@ -24,7 +25,7 @@ export const getRandomValues = GLOBAL.crypto
     (array: Uint8Array): Uint8Array =>
       arrayMap(array as any, () => mathFloor(math.random() * 256)) as any;
 
-export const getUniqueId = (length = 16): Id =>
+export const getUniqueId: typeof getUniqueIdDecl = (length = 16): Id =>
   arrayReduce<number, Id>(
     getRandomValues(new Uint8Array(length)) as any,
     (uniqueId, number) => uniqueId + encode(number),

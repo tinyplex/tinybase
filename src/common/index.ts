@@ -3,7 +3,7 @@ import type {
   defaultSorter as defaultSorterDecl,
 } from '../@types/common/index.d.ts';
 
-export {getRandomValues, getUniqueId} from './codec.ts';
+export {getUniqueId} from './codec.ts';
 
 export {getHlcFunctions} from './hlc.ts';
 
