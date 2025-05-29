@@ -1,5 +1,7 @@
 ///common
 
+import type {CellOrUndefined, ValueOrUndefined} from '../store/index.d.ts';
+
 /// Json
 export type Json = string;
 
@@ -49,3 +51,48 @@ export function getHlcFunctions(
   getLastCounter: () => number,
   getClientId: () => Id,
 ];
+
+/// getHash
+export function getHash(string: string): Hash;
+
+/// addOrRemoveHash
+export function addOrRemoveHash(hash1: Hash, hash2: Hash): Hash;
+
+/// getTablesHash
+export function getTablesHash(
+  tableHashes: {[tableId: Id]: Hash},
+  tablesHlc: Hlc,
+): Hash;
+
+/// getTableInTablesHash
+export function getTableInTablesHash(tableId: Id, tableHash: Hash): Hash;
+
+/// getTableHash
+export function getTableHash(
+  rowHashes: {[rowId: Id]: Hash},
+  tableHlc: Hlc,
+): Hash;
+
+/// getRowInTableHash
+export function getRowInTableHash(rowId: Id, rowHash: Hash): Hash;
+
+/// getRowHash
+export function getRowHash(cellHashes: {[cellId: Id]: Hash}, rowHlc: Hlc): Hash;
+
+/// getCellInRowHash
+export function getCellInRowHash(cellId: Id, cellHash: Hash): Hash;
+
+/// getCellHash
+export function getCellHash(cell: CellOrUndefined, cellHlc: Hlc): Hash;
+
+/// getValuesHash
+export function getValuesHash(
+  valueHashes: {[valueId: Id]: Hash},
+  valuesHlc: Hlc,
+): Hash;
+
+/// getValueInValuesHash
+export function getValueInValuesHash(valueId: Id, valueHash: Hash): Hash;
+
+/// getValueHash
+export function getValueHash(value: ValueOrUndefined, valueHlc: Hlc): Hash;

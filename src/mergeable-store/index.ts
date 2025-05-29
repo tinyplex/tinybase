@@ -27,7 +27,7 @@ import {collClear, collForEach} from '../common/coll.ts';
 import {
   addOrRemoveHash,
   getValueHash,
-  getValueHashInValues,
+  getValueInValuesHash,
 } from '../common/hash.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
 import {
@@ -220,8 +220,8 @@ export const createMergeableStore = ((
           tableHash ^= isContent
             ? 0
             : addOrRemoveHash(
-                oldRowHash ? getValueHashInValues(rowId, oldRowHash) : 0,
-                getValueHashInValues(rowId, rowHash),
+                oldRowHash ? getValueInValuesHash(rowId, oldRowHash) : 0,
+                getValueInValuesHash(rowId, rowHash),
               );
           tableHlc = getLatestHlc(tableHlc, rowHlc);
         });
@@ -234,8 +234,8 @@ export const createMergeableStore = ((
         tablesHash ^= isContent
           ? 0
           : addOrRemoveHash(
-              oldTableHash ? getValueHashInValues(tableId, oldTableHash) : 0,
-              getValueHashInValues(tableId, tableStampMap[2]),
+              oldTableHash ? getValueInValuesHash(tableId, oldTableHash) : 0,
+              getValueInValuesHash(tableId, tableStampMap[2]),
             );
         tablesHlc = getLatestHlc(tablesHlc, tableHlc);
       },
@@ -296,8 +296,8 @@ export const createMergeableStore = ((
           thingsHash ^= isContent
             ? 0
             : addOrRemoveHash(
-                getValueHashInValues(thingId, oldThingHash),
-                getValueHashInValues(thingId, thingStampMap[2]),
+                getValueInValuesHash(thingId, oldThingHash),
+                getValueInValuesHash(thingId, thingStampMap[2]),
               );
           thingsHlc = getLatestHlc(thingsHlc, thingHlc);
         }

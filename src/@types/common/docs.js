@@ -270,3 +270,149 @@
  * ```
  */
 /// getHlcFunctions
+
+/**
+ * The getHash function returns a deterministic hash of a string, which can be
+ * used to quickly compare the content of two entities.
+ *
+ * This is used internally within TinyBase (for example in the mergeable-store
+ * module) to quickly compare the content of two objects, but is also useful for
+ * applications that need to represent strings in a deterministic (though not
+ * cryptographically safe) way.
+ *
+ * The hash uses the Fowler–Noll–Vo hash approach, producing a JavaScript
+ * number. It is not guaranteed to be unique by any means, but small changes in
+ * input generally produce large changes in output, so it should be sufficient
+ * for most purposes.
+ * @param string The string to hash.
+ * @returns A hash of the string.
+ * @category Hash
+ * @since v6.2.0
+ */
+/// getHash
+
+/**
+ * The addOrRemoveHash function combines two hashes together, which, because it
+ * is a simple alias for bitwise XOR, serves both as addition and removal of one
+ * hash from the other.
+ *
+ * This is used internally within TinyBase to collate hashes of objects, such as
+ * producing a hash for a Table which is composed of the hashes of its Rows.
+ * @param hash1 A first hash.
+ * @param hash2 A second hash to add or remove from the first.
+ * @returns The resulting hash of the two hashes added to or removed from each
+ * other.
+ * @category Hash
+ * @since v6.2.0
+ */
+/// addOrRemoveHash
+
+/**
+ * The getTablesHash function returns a hash for the tabular part of a Store,
+ * based on each Table and a top-level tabular HLC.
+ * @param tableHashes An object containing each Table Id and its hash.
+ * @param tablesHlc The top-level HLC of the tabular part of the Store.
+ * @returns A hash of the Tables.
+ * @category Hash
+ * @since v6.2.0
+ */
+/// getTablesHash
+
+/**
+ * The getTableInTablesHash function returns a hash for a single Table in a
+ * Store, based on its Id and hash (in turn produced from its Rows).
+ * @param tableId The Id of the Table.
+ * @param tableHash The hash of the Table.
+ * @returns A hash of the Table based on its content and Id.
+ * @category Hash
+ * @since v6.2.0
+ */
+/// getTableInTablesHash
+
+/**
+ * The getTableHash function returns a hash for a single Table in a Store, based
+ * on each Row and the HLC of the Table.
+ * @param rowHashes An object containing each Row Id and its hash.
+ * @param tableHlc The HLC of the Table.
+ * @returns A hash of the Table.
+ * @category Hash
+ * @since v6.2.0
+ */
+/// getTableHash
+
+/**
+ * The getRowInTableHash function returns a hash for a single Row in a Table,
+ * based on its Id and hash (in turn produced from its Cells).
+ * @param rowId The Id of the Row.
+ * @param rowHash The hash of the Row.
+ * @returns A hash of the Row based on its content and Id.
+ * @category Hash
+ * @since v6.2.0
+ */
+/// getRowInTableHash
+
+/**
+ * The getRowHash function returns a hash for a single Row in a Table, based on
+ * each Cell and the HLC of the Row.
+ * @param cellHashes An object containing each Cell Id and its hash.
+ * @param rowHlc The HLC of the Row.
+ * @returns A hash of the Row.
+ * @category Hash
+ * @since v6.2.0
+ */
+/// getRowHash
+
+/**
+ * The getCellInRowHash function returns a hash for a single Cell in a Row,
+ * based on its Id and hash (in turn produced from its value).
+ * @param cellId The Id of the Cell.
+ * @param cellHash The hash of the Cell.
+ * @returns A hash of the Cell based on its content and Id.
+ * @category Hash
+ * @since v6.2.0
+ */
+/// getCellInRowHash
+
+/**
+ * The getCellHash function returns a hash for a single Cell, based on its value
+ * and the HLC of the Cell.
+ * @param cell The Cell's value (or `undefined`).
+ * @param cellHlc The HLC of the Cell.
+ * @returns A hash of the Cell.
+ * @category Hash
+ * @since v6.2.0
+ */
+/// getCellHash
+
+/**
+ * The getValuesHash function returns a hash for a Values object, based on each
+ * value and the HLC of the Values.
+ * @param valueHashes An object containing each Value Id and its hash.
+ * @param valuesHlc The HLC of the Values.
+ * @returns A hash of the Values.
+ * @category Hash
+ * @since v6.2.0
+ */
+/// getValuesHash
+
+/**
+ * The getValueInValuesHash function returns a hash for a single Value in a
+ * Values object, based on its Id and hash (in turn produced from its value).
+ * @param valueId The Id of the Value.
+ * @param valueHash The hash of the Value.
+ * @returns A hash of the Value based on its content and Id.
+ * @category Hash
+ * @since v6.2.0
+ */
+/// getValueInValuesHash
+
+/**
+ * The getValueHash function returns a hash for a single Value, based on its
+ * value and the HLC of the Value.
+ * @param value The Value (or `undefined`).
+ * @param valueHlc The HLC of the Value.
+ * @returns A hash of the Value.
+ * @category Hash
+ * @since v6.2.0
+ */
+/// getValueHash
