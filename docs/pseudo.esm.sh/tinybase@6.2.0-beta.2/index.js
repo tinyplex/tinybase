@@ -678,12 +678,68 @@ var getRandomValues = GLOBAL.crypto ? (array) => GLOBAL.crypto.getRandomValues(a
   /* istanbul ignore next */
   (array) => arrayMap(array, () => mathFloor(math.random() * 256))
 );
-var defaultSorter = (sortKey1, sortKey2) => (sortKey1 ?? 0) < (sortKey2 ?? 0) ? -1 : 1;
 var getUniqueId = (length = 16) => arrayReduce(
   getRandomValues(new Uint8Array(length)),
   (uniqueId, number) => uniqueId + encode(number),
   ""
 );
+var textEncoder = /* @__PURE__ */ new GLOBAL.TextEncoder();
+var getHash = (value) => {
+  let hash = 2166136261;
+  arrayForEach(textEncoder.encode(value), (char) => {
+    hash ^= char;
+    hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+  });
+  return hash >>> 0;
+};
+var SHIFT36 = 2 ** 36;
+var SHIFT30 = 2 ** 30;
+var SHIFT24 = 2 ** 24;
+var SHIFT18 = 2 ** 18;
+var SHIFT12 = 2 ** 12;
+var SHIFT6 = 2 ** 6;
+var getClientIdFromUniqueId = (uniqueId) => {
+  const clientHash30 = getHash(uniqueId);
+  return encode(clientHash30 / SHIFT24) + encode(clientHash30 / SHIFT18) + encode(clientHash30 / SHIFT12) + encode(clientHash30 / SHIFT6) + encode(clientHash30);
+};
+var getHlcFunctions = (uniqueId, getNow = Date.now) => {
+  let lastLogicalTime = 0;
+  let lastCounter = -1;
+  const thisClientId = ifNotUndefined(
+    uniqueId,
+    getClientIdFromUniqueId,
+    () => getUniqueId(5)
+  );
+  const getNextHlc = () => {
+    seenHlc();
+    return encodeHlc(lastLogicalTime, ++lastCounter);
+  };
+  const seenHlc = (hlc) => {
+    const previousLogicalTime = lastLogicalTime;
+    const [remoteLogicalTime, remoteCounter] = isUndefined(hlc) || hlc == "" ? [0, 0] : decodeHlc(hlc);
+    lastLogicalTime = mathMax(previousLogicalTime, remoteLogicalTime, getNow());
+    lastCounter = lastLogicalTime == previousLogicalTime ? lastLogicalTime == remoteLogicalTime ? mathMax(lastCounter, remoteCounter) : lastCounter : lastLogicalTime == remoteLogicalTime ? remoteCounter : -1;
+  };
+  const encodeHlc = (logicalTime42, counter24, clientId) => encode(logicalTime42 / SHIFT36) + encode(logicalTime42 / SHIFT30) + encode(logicalTime42 / SHIFT24) + encode(logicalTime42 / SHIFT18) + encode(logicalTime42 / SHIFT12) + encode(logicalTime42 / SHIFT6) + encode(logicalTime42) + encode(counter24 / SHIFT18) + encode(counter24 / SHIFT12) + encode(counter24 / SHIFT6) + encode(counter24) + (isUndefined(clientId) ? thisClientId : getClientIdFromUniqueId(clientId));
+  const decodeHlc = (hlc16) => [
+    decode(hlc16, 0) * SHIFT36 + decode(hlc16, 1) * SHIFT30 + decode(hlc16, 2) * SHIFT24 + decode(hlc16, 3) * SHIFT18 + decode(hlc16, 4) * SHIFT12 + decode(hlc16, 5) * SHIFT6 + decode(hlc16, 6),
+    decode(hlc16, 7) * SHIFT18 + decode(hlc16, 8) * SHIFT12 + decode(hlc16, 9) * SHIFT6 + decode(hlc16, 10),
+    hlc16.slice(11)
+  ];
+  const getLastLogicalTime = () => lastLogicalTime;
+  const getLastCounter = () => lastCounter;
+  const getClientId = () => thisClientId;
+  return [
+    getNextHlc,
+    seenHlc,
+    encodeHlc,
+    decodeHlc,
+    getLastLogicalTime,
+    getLastCounter,
+    getClientId
+  ];
+};
+var defaultSorter = (sortKey1, sortKey2) => (sortKey1 ?? 0) < (sortKey2 ?? 0) ? -1 : 1;
 var createIndexes = getCreateFunction((store) => {
   const sliceIdsListeners = mapNew();
   const sliceRowIdsListeners = mapNew();
@@ -871,49 +927,6 @@ var createIndexes = getCreateFunction((store) => {
   };
   return objFreeze(indexes);
 });
-var textEncoder = /* @__PURE__ */ new GLOBAL.TextEncoder();
-var getHash = (value) => {
-  let hash = 2166136261;
-  arrayForEach(textEncoder.encode(value), (char) => {
-    hash ^= char;
-    hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
-  });
-  return hash >>> 0;
-};
-var SHIFT36 = 2 ** 36;
-var SHIFT30 = 2 ** 30;
-var SHIFT24 = 2 ** 24;
-var SHIFT18 = 2 ** 18;
-var SHIFT12 = 2 ** 12;
-var SHIFT6 = 2 ** 6;
-var encodeTimeAndCounter = (logicalTime42, counter24) => encode(logicalTime42 / SHIFT36) + encode(logicalTime42 / SHIFT30) + encode(logicalTime42 / SHIFT24) + encode(logicalTime42 / SHIFT18) + encode(logicalTime42 / SHIFT12) + encode(logicalTime42 / SHIFT6) + encode(logicalTime42) + encode(counter24 / SHIFT18) + encode(counter24 / SHIFT12) + encode(counter24 / SHIFT6) + encode(counter24);
-var decodeTimeAndCounter = (hlc16) => [
-  decode(hlc16, 0) * SHIFT36 + decode(hlc16, 1) * SHIFT30 + decode(hlc16, 2) * SHIFT24 + decode(hlc16, 3) * SHIFT18 + decode(hlc16, 4) * SHIFT12 + decode(hlc16, 5) * SHIFT6 + decode(hlc16, 6),
-  decode(hlc16, 7) * SHIFT18 + decode(hlc16, 8) * SHIFT12 + decode(hlc16, 9) * SHIFT6 + decode(hlc16, 10)
-];
-var getHlcFunctions = (uniqueId, getNow = Date.now) => {
-  let logicalTime = 0;
-  let lastCounter = -1;
-  const clientPart = ifNotUndefined(
-    uniqueId,
-    (uniqueId2) => {
-      const clientHash30 = getHash(uniqueId2);
-      return encode(clientHash30 / SHIFT24) + encode(clientHash30 / SHIFT18) + encode(clientHash30 / SHIFT12) + encode(clientHash30 / SHIFT6) + encode(clientHash30);
-    },
-    () => getUniqueId(5)
-  );
-  const getHlc = () => {
-    seenHlc();
-    return encodeTimeAndCounter(logicalTime, ++lastCounter) + clientPart;
-  };
-  const seenHlc = (hlc) => {
-    const previousLogicalTime = logicalTime;
-    const [remoteLogicalTime, remoteCounter] = isUndefined(hlc) || hlc == "" ? [0, 0] : decodeTimeAndCounter(hlc);
-    logicalTime = mathMax(previousLogicalTime, remoteLogicalTime, getNow());
-    lastCounter = logicalTime == previousLogicalTime ? logicalTime == remoteLogicalTime ? mathMax(lastCounter, remoteCounter) : lastCounter : logicalTime == remoteLogicalTime ? remoteCounter : -1;
-  };
-  return [getHlc, seenHlc];
-};
 var jsonString = JSON.stringify;
 var jsonParse = JSON.parse;
 var jsonStringWithMap = (obj) => jsonString(
@@ -2196,7 +2209,7 @@ var createMergeableStore = (uniqueId, getNow) => {
   let defaultingContent = 0;
   const touchedCells = mapNew();
   const touchedValues = setNew();
-  const [getHlc, seenHlc] = getHlcFunctions(uniqueId, getNow);
+  const [getNextHlc, seenHlc] = getHlcFunctions(uniqueId, getNow);
   const store = createStore();
   const disableListeningToRawStoreChanges = (actions) => {
     const wasListening = listeningToRawStoreChanges;
@@ -2306,7 +2319,7 @@ var createMergeableStore = (uniqueId, getNow) => {
                   {
                     [cellId]: [
                       newCell,
-                      defaultingContent ? EMPTY_STRING : getHlc()
+                      defaultingContent ? EMPTY_STRING : getNextHlc()
                     ]
                   }
                 ]
@@ -2324,7 +2337,14 @@ var createMergeableStore = (uniqueId, getNow) => {
     if (listeningToRawStoreChanges) {
       mergeContentOrChanges([
         [{}],
-        [{ [valueId]: [newValue, defaultingContent ? EMPTY_STRING : getHlc()] }],
+        [
+          {
+            [valueId]: [
+              newValue,
+              defaultingContent ? EMPTY_STRING : getNextHlc()
+            ]
+          }
+        ],
         1
       ]);
     }
@@ -3289,5 +3309,7 @@ export {
   createRelationships,
   createStore,
   defaultSorter,
+  getHlcFunctions,
+  getRandomValues,
   getUniqueId
 };
