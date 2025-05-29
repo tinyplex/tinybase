@@ -38,6 +38,6 @@ export * from '../../synchronizers/synchronizer-ws-server-durable-object/with-sc
 export * from '../../synchronizers/synchronizer-ws-server-simple/with-schemas/index.d.ts';
 export * from '../../synchronizers/synchronizer-ws-server/with-schemas/index.d.ts';
 export * from '../../synchronizers/with-schemas/index.d.ts';
-export * from '../../ui-react-dom/with-schemas/index.d.ts';
-export * from '../../ui-react-inspector/with-schemas/index.d.ts';
-export * from '../../ui-react/with-schemas/index.d.ts';
+export {WithSchemas as UiReactDomWithSchemas} from '../../ui-react-dom/with-schemas/index.d.ts';
+export {WithSchemas as UiReactInspectorWithSchemas} from '../../ui-react-inspector/with-schemas/index.d.ts';
+export {WithSchemas as UiReactWithSchemas} from '../../ui-react/with-schemas/index.d.ts';
