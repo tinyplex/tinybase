@@ -41,8 +41,6 @@ export const stampNewWithHash = <Value>(
 
 export const getStampHash = (stamp: Stamp<unknown, true>): Hash => stamp[2];
 
-export const hashIdAndHash = (id: Id, hash: Hash) => getHash(id + ':' + hash);
-
 export const replaceHlcHash = (oldHlc: Hlc, newHlc: Hlc) =>
   newHlc > oldHlc ? (oldHlc ? getHash(oldHlc) : 0) ^ getHash(newHlc) : 0;
 

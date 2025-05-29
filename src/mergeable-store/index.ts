@@ -24,9 +24,8 @@ import type {
 } from '../@types/store/index.d.ts';
 import {isCellOrValueOrNullOrUndefined} from '../common/cell.ts';
 import {collClear, collForEach} from '../common/coll.ts';
-import {getHash} from '../common/hash.ts';
+import {addOrRemoveHash, getCellHash, getHashOfChild} from '../common/hash.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
-import {jsonStringWithUndefined} from '../common/json.ts';
 import {
   mapEnsure,
   mapForEach,
@@ -54,7 +53,6 @@ import {
   ValuesStampMap,
   getLatestHlc,
   getStampHash,
-  hashIdAndHash,
   replaceHlcHash,
   stampClone,
   stampMapToObjWithHash,
@@ -217,8 +215,10 @@ export const createMergeableStore = ((
 
           tableHash ^= isContent
             ? 0
-            : (oldRowHash ? hashIdAndHash(rowId, oldRowHash) : 0) ^
-              hashIdAndHash(rowId, rowHash);
+            : addOrRemoveHash(
+                oldRowHash ? getHashOfChild(rowId, oldRowHash) : 0,
+                getHashOfChild(rowId, rowHash),
+              );
           tableHlc = getLatestHlc(tableHlc, rowHlc);
         });
 
@@ -229,8 +229,10 @@ export const createMergeableStore = ((
 
         tablesHash ^= isContent
           ? 0
-          : (oldTableHash ? hashIdAndHash(tableId, oldTableHash) : 0) ^
-            hashIdAndHash(tableId, tableStampMap[2]);
+          : addOrRemoveHash(
+              oldTableHash ? getHashOfChild(tableId, oldTableHash) : 0,
+              getHashOfChild(tableId, tableStampMap[2]),
+            );
         tablesHlc = getLatestHlc(tablesHlc, tableHlc);
       },
     );
@@ -283,16 +285,16 @@ export const createMergeableStore = ((
           stampUpdate(
             thingStampMap,
             thingHlc,
-            isContent
-              ? incomingThingHash
-              : getHash(jsonStringWithUndefined(thing) + ':' + thingHlc),
+            isContent ? incomingThingHash : getCellHash(thing, thingHlc),
           );
           thingStampMap[0] = thing;
           thingsChanges[thingId] = thing;
           thingsHash ^= isContent
             ? 0
-            : hashIdAndHash(thingId, oldThingHash) ^
-              hashIdAndHash(thingId, thingStampMap[2]);
+            : addOrRemoveHash(
+                getHashOfChild(thingId, oldThingHash),
+                getHashOfChild(thingId, thingStampMap[2]),
+              );
           thingsHlc = getLatestHlc(thingsHlc, thingHlc);
         }
       },
