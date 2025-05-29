@@ -24,7 +24,11 @@ import type {
 } from '../@types/store/index.d.ts';
 import {isCellOrValueOrNullOrUndefined} from '../common/cell.ts';
 import {collClear, collForEach} from '../common/coll.ts';
-import {addOrRemoveHash, getCellHash, getHashOfChild} from '../common/hash.ts';
+import {
+  addOrRemoveHash,
+  getValueHash,
+  getValueHashInValues,
+} from '../common/hash.ts';
 import {getHlcFunctions} from '../common/hlc.ts';
 import {
   mapEnsure,
@@ -216,8 +220,8 @@ export const createMergeableStore = ((
           tableHash ^= isContent
             ? 0
             : addOrRemoveHash(
-                oldRowHash ? getHashOfChild(rowId, oldRowHash) : 0,
-                getHashOfChild(rowId, rowHash),
+                oldRowHash ? getValueHashInValues(rowId, oldRowHash) : 0,
+                getValueHashInValues(rowId, rowHash),
               );
           tableHlc = getLatestHlc(tableHlc, rowHlc);
         });
@@ -230,8 +234,8 @@ export const createMergeableStore = ((
         tablesHash ^= isContent
           ? 0
           : addOrRemoveHash(
-              oldTableHash ? getHashOfChild(tableId, oldTableHash) : 0,
-              getHashOfChild(tableId, tableStampMap[2]),
+              oldTableHash ? getValueHashInValues(tableId, oldTableHash) : 0,
+              getValueHashInValues(tableId, tableStampMap[2]),
             );
         tablesHlc = getLatestHlc(tablesHlc, tableHlc);
       },
@@ -285,15 +289,15 @@ export const createMergeableStore = ((
           stampUpdate(
             thingStampMap,
             thingHlc,
-            isContent ? incomingThingHash : getCellHash(thing, thingHlc),
+            isContent ? incomingThingHash : getValueHash(thing, thingHlc),
           );
           thingStampMap[0] = thing;
           thingsChanges[thingId] = thing;
           thingsHash ^= isContent
             ? 0
             : addOrRemoveHash(
-                getHashOfChild(thingId, oldThingHash),
-                getHashOfChild(thingId, thingStampMap[2]),
+                getValueHashInValues(thingId, oldThingHash),
+                getValueHashInValues(thingId, thingStampMap[2]),
               );
           thingsHlc = getLatestHlc(thingsHlc, thingHlc);
         }

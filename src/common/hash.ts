@@ -26,16 +26,16 @@ export const getHash = (value: string): number => {
 export const addOrRemoveHash = (hash1: Hash, hash2: Hash): Hash =>
   hash1 ^ hash2;
 
-export const getHashOfChild = (id: Id, hash: Hash): Hash =>
-  getHash(id + ':' + hash);
-
 export const getValuesHash = (children: {[id: Id]: Hash}, hlc: Hlc): Hash =>
   arrayReduce(
     objEntries(children),
     (hash, [childId, childHash]) =>
-      addOrRemoveHash(hash, getHashOfChild(childId, childHash)),
+      addOrRemoveHash(hash, getValueHashInValues(childId, childHash)),
     getHash(hlc),
   );
+
+export const getValueHashInValues = (id: Id, hash: Hash): Hash =>
+  getHash(id + ':' + hash);
 
 export const getValueHash = (
   cellOrValue: CellOrUndefined | ValueOrUndefined,
@@ -43,6 +43,9 @@ export const getValueHash = (
 ): Hash => getHash(jsonStringWithUndefined(cellOrValue) + ':' + hlc);
 
 export const getCellHash = getValueHash;
+export const getCellHashInRow = getValueHashInValues;
 export const getRowHash = getValuesHash;
+export const getRowHashInTable = getValueHashInValues;
 export const getTableHash = getValuesHash;
+export const getTableHashInTables = getValueHashInValues;
 export const getTablesHash = getTableHash;
