@@ -968,7 +968,7 @@
  * method).
  * @param uniqueId An optional unique Id for the MergeableStore.
  * @param getNow An optional function that generates millisecond timestamps,
- * since v6.1.0.
+ * since v6.1.0, defaulting to `Date.now`.
  * @returns A reference to the new MergeableStore.
  * @example
  * This example creates a MergeableStore.
