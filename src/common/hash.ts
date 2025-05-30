@@ -14,9 +14,10 @@ import type {
 } from '../@types/common/index.d.ts';
 import type {Hash, Hlc, Id, ValueOrUndefined} from '../@types/index.d.ts';
 import {arrayForEach, arrayReduce} from './array.ts';
-import {jsonStringWithUndefined} from './json.ts';
+import {jsonStringWithMap} from './json.ts';
 import {objEntries} from './obj.ts';
 import {GLOBAL} from './other.ts';
+import {EMPTY_STRING} from './strings.ts';
 
 const textEncoder = /* @__PURE__ */ new GLOBAL.TextEncoder();
 
@@ -55,7 +56,7 @@ export const getValueInValuesHash: typeof getValueHashInValuesDecl = (
 export const getValueHash: typeof getValueHashDecl = (
   value: ValueOrUndefined,
   valueHlc: Hlc,
-): Hash => getHash(jsonStringWithUndefined(value) + ':' + valueHlc);
+): Hash => getHash(jsonStringWithMap(value ?? null) + ':' + valueHlc);
 
 export const getCellHash: typeof getCellHashDecl = getValueHash;
 
