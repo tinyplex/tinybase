@@ -11,20 +11,6 @@ This release contains various packaging improvements and exposes some internal
 HLC functions that are useful for people building their own persisters or
 synchronizers.
 
-## HLC functions
-
-The common module (and hence tinybase module) now export the getHlcFunction
-function. This returns set of seven functions that can be used to create and
-manipulate HLC (Hybrid Logical Clock) timestamps.
-
-```js
-import {getHlcFunctions} from 'tinybase';
-const [getNextHlc, seenHlc, encodeHlc] = getHlcFunctions();
-```
-
-If needed, you can use these in your own systems to ensure the timestamps are
-compatible with the ones generated in TinyBase MergeableStore objects.
-
 ## New `omni` module
 
 There is a new `omni` module that is an explicit superset of everything in the
@@ -49,7 +35,26 @@ This release changes the `package.json` exports slightly so that imports of both
 JavaScript file. This reduces bundle size for apps that use both schema and
 non-schema imports.
 
-## Moving types
+## HLC & hash functions
+
+The common module (and hence tinybase module) now export the getHlcFunction
+function. This returns set of seven functions that can be used to create and
+manipulate HLC (Hybrid Logical Clock) timestamps.
+
+```js
+import {getHlcFunctions} from 'tinybase';
+const [getNextHlc, seenHlc, encodeHlc] = getHlcFunctions();
+```
+
+There are also several functions to help hash tabular and key-value data in a
+way that is compatible with the internal MergeableStore implementation. These
+include the getHash function and the getCellHash function, for example.
+
+These are for pretty advanced use-cases! But you can use these in your own
+systems to ensure the timestamps and hashes are compatible with the ones
+generated in TinyBase MergeableStore objects.
+
+## Moved types
 
 The rarely-used GetNow and Hash types have been moved from the mergeable-store
 module into the common module.
