@@ -37,7 +37,7 @@ non-schema imports.
 
 ## HLC & hash functions
 
-The common module (and hence tinybase module) now export the getHlcFunction
+The common module (and hence tinybase module) now export the getHlcFunctions
 function. This returns set of seven functions that can be used to create and
 manipulate HLC (Hybrid Logical Clock) timestamps.
 
