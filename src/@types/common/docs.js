@@ -430,7 +430,7 @@
  * import {getRowHash} from 'tinybase';
  *
  * const cellHashes = {
- *   'species': 3002200796, // hash of 'dog' and '03E3B------mmxrx'
+ *   species: 3002200796, // hash of 'dog' and '03E3B------mmxrx'
  * };
  *
  * console.log(getRowHash(cellHashes));

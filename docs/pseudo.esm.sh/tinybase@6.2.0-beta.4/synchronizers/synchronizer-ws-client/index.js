@@ -125,12 +125,12 @@ var getUniqueId = (length = 16) => arrayReduce(
   (uniqueId, number) => uniqueId + encode(number),
   ""
 );
-var stampNew = (value, time) => time ? [value, time] : [value];
-var getLatestTime = (time1, time2) => (
+var stampNew = (value, hlc) => hlc ? [value, hlc] : [value];
+var getLatestHlc = (hlc1, hlc2) => (
   /* istanbul ignore next */
-  ((time1 ?? "") > (time2 ?? "") ? time1 : time2) ?? ""
+  ((hlc1 ?? "") > (hlc2 ?? "") ? hlc1 : hlc2) ?? ""
 );
-var stampNewObj = (time = EMPTY_STRING) => stampNew(objNew(), time);
+var stampNewObj = (hlc = EMPTY_STRING) => stampNew(objNew(), hlc);
 var INTEGER = /^\d+$/;
 var getPoolFunctions = () => {
   const pool = [];
@@ -459,11 +459,11 @@ var createCustomSynchronizer = (store, send, registerReceive, extraDestroy, requ
           cellStamps2,
           ([cell2, cellTime2], cellId) => rowStamp[0][cellId] = stampNew(cell2, cellTime2)
         );
-        rowStamp[1] = getLatestTime(rowStamp[1], rowTime2);
+        rowStamp[1] = getLatestHlc(rowStamp[1], rowTime2);
       });
-      tableStamp[1] = getLatestTime(tableStamp[1], tableTime2);
+      tableStamp[1] = getLatestHlc(tableStamp[1], tableTime2);
     });
-    tablesStamp[1] = getLatestTime(tablesStamp[1], tablesTime2);
+    tablesStamp[1] = getLatestHlc(tablesStamp[1], tablesTime2);
   };
   const getChangesFromOtherStore = (otherClientId = null, otherContentHashes, transactionId = getTransactionId()) => tryCatch(async () => {
     if (isUndefined(otherContentHashes)) {

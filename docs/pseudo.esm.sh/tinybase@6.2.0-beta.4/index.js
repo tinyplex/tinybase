@@ -100,8 +100,8 @@ var collForEach = (coll, cb) => coll?.forEach(cb);
 var collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
 var object = Object;
 var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
-var objEntries = object.entries;
 var objFrozen = object.isFrozen;
+var objEntries = object.entries;
 var isObject = (obj) => !isUndefined(obj) && ifNotUndefined(
   getPrototypeOf(obj),
   (objPrototype) => objPrototype == object.prototype || isUndefined(getPrototypeOf(objPrototype)),
@@ -683,15 +683,49 @@ var getUniqueId = (length = 16) => arrayReduce(
   (uniqueId, number) => uniqueId + encode(number),
   ""
 );
+var jsonString = JSON.stringify;
+var jsonParse = JSON.parse;
+var jsonStringWithMap = (obj) => jsonString(
+  obj,
+  (_key, value) => isInstanceOf(value, Map) ? object.fromEntries([...value]) : value
+);
 var textEncoder = /* @__PURE__ */ new GLOBAL.TextEncoder();
-var getHash = (value) => {
+var getHash = (string) => {
   let hash = 2166136261;
-  arrayForEach(textEncoder.encode(value), (char) => {
+  arrayForEach(textEncoder.encode(string), (char) => {
     hash ^= char;
     hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
   });
   return hash >>> 0;
 };
+var addOrRemoveHash = (hash1, hash2) => (hash1 ^ hash2) >>> 0;
+var getValuesHash = (valueHashes) => arrayReduce(
+  objEntries(valueHashes),
+  (valuesHash, [valueId, valueHash]) => addOrRemoveHash(
+    valuesHash,
+    getValueInValuesHash(valueId, valueHash) ^ getValueInValuesHash(valueId, 0)
+    // legacy v5; remove in v7
+  ),
+  0
+  // legacy v5; valuesHlc in v7?
+);
+var getValueInValuesHash = (valueId, valueHash) => getHash(valueId + ":" + valueHash);
+var getValueHash = (value, valueHlc) => getHash(jsonStringWithMap(value ?? null) + ":" + valueHlc);
+var getCellHash = getValueHash;
+var getCellInRowHash = getValueInValuesHash;
+var getRowHash = getValuesHash;
+var getRowInTableHash = getValueInValuesHash;
+var getTableHash = (rowHashes) => (
+  // alias to getValuesHash in v7
+  arrayReduce(
+    objEntries(rowHashes),
+    (valuesHash, [rowId, rowHash]) => addOrRemoveHash(valuesHash, getValueInValuesHash(rowId, rowHash)),
+    0
+    // legacy v5; rowHlc in v7?
+  )
+);
+var getTableInTablesHash = getValueInValuesHash;
+var getTablesHash = getTableHash;
 var SHIFT36 = 2 ** 36;
 var SHIFT30 = 2 ** 30;
 var SHIFT24 = 2 ** 24;
@@ -927,33 +961,26 @@ var createIndexes = getCreateFunction((store) => {
   };
   return objFreeze(indexes);
 });
-var jsonString = JSON.stringify;
-var jsonParse = JSON.parse;
-var jsonStringWithMap = (obj) => jsonString(
-  obj,
-  (_key, value) => isInstanceOf(value, Map) ? object.fromEntries([...value]) : value
-);
-var stampClone = ([value, time]) => stampNew(value, time);
-var stampCloneWithHash = ([value, time, hash]) => [value, time, hash];
-var stampNew = (value, time) => time ? [value, time] : [value];
-var stampNewWithHash = (value, time, hash) => [value, time, hash];
+var stampClone = ([value, hlc]) => stampNew(value, hlc);
+var stampCloneWithHash = ([value, hlc, hash]) => [value, hlc, hash];
+var stampNew = (value, hlc) => hlc ? [value, hlc] : [value];
+var stampNewWithHash = (value, hlc, hash) => [value, hlc, hash];
 var getStampHash = (stamp) => stamp[2];
-var hashIdAndHash = (id2, hash) => getHash(id2 + ":" + hash);
-var replaceTimeHash = (oldTime, newTime) => newTime > oldTime ? (oldTime ? getHash(oldTime) : 0) ^ getHash(newTime) : 0;
-var getLatestTime = (time1, time2) => (
+var replaceHlcHash = (oldHlc, newHlc) => newHlc > oldHlc ? (oldHlc ? getHash(oldHlc) : 0) ^ getHash(newHlc) : 0;
+var getLatestHlc = (hlc1, hlc2) => (
   /* istanbul ignore next */
-  ((time1 ?? "") > (time2 ?? "") ? time1 : time2) ?? ""
+  ((hlc1 ?? "") > (hlc2 ?? "") ? hlc1 : hlc2) ?? ""
 );
-var stampUpdate = (stamp, time, hash) => {
-  if (time > stamp[1]) {
-    stamp[1] = time;
+var stampUpdate = (stamp, hlc, hash) => {
+  if (hlc > stamp[1]) {
+    stamp[1] = hlc;
   }
   stamp[2] = hash >>> 0;
 };
-var stampNewObj = (time = EMPTY_STRING) => stampNew(objNew(), time);
-var stampNewMap = (time = EMPTY_STRING) => [mapNew(), time, 0];
-var stampMapToObjWithHash = ([map, time, hash], mapper = stampCloneWithHash) => [mapToObj(map, mapper), time, hash];
-var stampMapToObjWithoutHash = ([map, time], mapper = stampClone) => stampNew(mapToObj(map, mapper), time);
+var stampNewObj = (hlc = EMPTY_STRING) => stampNew(objNew(), hlc);
+var stampNewMap = (hlc = EMPTY_STRING) => [mapNew(), hlc, 0];
+var stampMapToObjWithHash = ([map, hlc, hash], mapper = stampCloneWithHash) => [mapToObj(map, mapper), hlc, hash];
+var stampMapToObjWithoutHash = ([map, hlc], mapper = stampClone) => stampNew(mapToObj(map, mapper), hlc);
 var stampValidate = (stamp, validateThing) => isArray(stamp) && size(stamp) == 3 && isString(stamp[1]) && getTypeOf(stamp[2]) == NUMBER && isFiniteNumber(stamp[2]) && validateThing(stamp[0]);
 var pairNew = (value) => [value, value];
 var pairCollSize2 = (pair, func = collSize2) => func(pair[0]) + func(pair[1]);
@@ -2222,81 +2249,90 @@ var createMergeableStore = (uniqueId, getNow) => {
     const tablesChanges = {};
     const valuesChanges = {};
     const [
-      [tablesObj, incomingTablesTime = EMPTY_STRING, incomingTablesHash = 0],
+      [tablesObj, incomingTablesHlc = EMPTY_STRING, incomingTablesHash = 0],
       values
     ] = contentOrChanges;
     const [tablesStampMap, valuesStampMap] = contentStampMap;
-    const [tableStampMaps, oldTablesTime, oldTablesHash] = tablesStampMap;
+    const [tableStampMaps, oldTablesHlc, oldTablesHash] = tablesStampMap;
     let tablesHash = isContent ? incomingTablesHash : oldTablesHash;
-    let tablesTime = incomingTablesTime;
+    let tablesHlc = incomingTablesHlc;
     objForEach(
       tablesObj,
-      ([rowsObj, incomingTableTime = EMPTY_STRING, incomingTableHash = 0], tableId) => {
+      ([rowsObj, incomingTableHlc = EMPTY_STRING, incomingTableHash = 0], tableId) => {
         const tableStampMap = mapEnsure(tableStampMaps, tableId, stampNewMap);
-        const [rowStampMaps, oldTableTime, oldTableHash] = tableStampMap;
+        const [rowStampMaps, oldTableHlc, oldTableHash] = tableStampMap;
         let tableHash = isContent ? incomingTableHash : oldTableHash;
-        let tableTime = incomingTableTime;
+        let tableHlc = incomingTableHlc;
         objForEach(rowsObj, (row, rowId) => {
-          const [rowTime, oldRowHash, rowHash] = mergeCellsOrValues(
+          const [rowHlc, oldRowHash, rowHash] = mergeCellsOrValues(
             row,
             mapEnsure(rowStampMaps, rowId, stampNewMap),
             objEnsure(objEnsure(tablesChanges, tableId, objNew), rowId, objNew),
             isContent
           );
-          tableHash ^= isContent ? 0 : (oldRowHash ? hashIdAndHash(rowId, oldRowHash) : 0) ^ hashIdAndHash(rowId, rowHash);
-          tableTime = getLatestTime(tableTime, rowTime);
+          tableHash ^= isContent ? 0 : addOrRemoveHash(
+            oldRowHash ? getValueInValuesHash(rowId, oldRowHash) : 0,
+            getValueInValuesHash(rowId, rowHash)
+          );
+          tableHlc = getLatestHlc(tableHlc, rowHlc);
         });
-        tableHash ^= isContent ? 0 : replaceTimeHash(oldTableTime, incomingTableTime);
-        stampUpdate(tableStampMap, incomingTableTime, tableHash);
-        tablesHash ^= isContent ? 0 : (oldTableHash ? hashIdAndHash(tableId, oldTableHash) : 0) ^ hashIdAndHash(tableId, tableStampMap[2]);
-        tablesTime = getLatestTime(tablesTime, tableTime);
+        tableHash ^= isContent ? 0 : replaceHlcHash(oldTableHlc, incomingTableHlc);
+        stampUpdate(tableStampMap, incomingTableHlc, tableHash);
+        tablesHash ^= isContent ? 0 : addOrRemoveHash(
+          oldTableHash ? getValueInValuesHash(tableId, oldTableHash) : 0,
+          getValueInValuesHash(tableId, tableStampMap[2])
+        );
+        tablesHlc = getLatestHlc(tablesHlc, tableHlc);
       }
     );
-    tablesHash ^= isContent ? 0 : replaceTimeHash(oldTablesTime, incomingTablesTime);
-    stampUpdate(tablesStampMap, incomingTablesTime, tablesHash);
-    const [valuesTime] = mergeCellsOrValues(
+    tablesHash ^= isContent ? 0 : replaceHlcHash(oldTablesHlc, incomingTablesHlc);
+    stampUpdate(tablesStampMap, incomingTablesHlc, tablesHash);
+    const [valuesHlc] = mergeCellsOrValues(
       values,
       valuesStampMap,
       valuesChanges,
       isContent
     );
-    seenHlc(getLatestTime(tablesTime, valuesTime));
+    seenHlc(getLatestHlc(tablesHlc, valuesHlc));
     return [tablesChanges, valuesChanges, 1];
   };
   const mergeCellsOrValues = (things, thingsStampMap, thingsChanges, isContent) => {
     const [
       thingsObj,
-      incomingThingsTime = EMPTY_STRING,
+      incomingThingsHlc = EMPTY_STRING,
       incomingThingsHash = 0
     ] = things;
-    const [thingStampMaps, oldThingsTime, oldThingsHash] = thingsStampMap;
-    let thingsTime = incomingThingsTime;
+    const [thingStampMaps, oldThingsHlc, oldThingsHash] = thingsStampMap;
+    let thingsHlc = incomingThingsHlc;
     let thingsHash = isContent ? incomingThingsHash : oldThingsHash;
     objForEach(
       thingsObj,
-      ([thing, thingTime = EMPTY_STRING, incomingThingHash = 0], thingId) => {
+      ([thing, thingHlc = EMPTY_STRING, incomingThingHash = 0], thingId) => {
         const thingStampMap = mapEnsure(thingStampMaps, thingId, () => [
           void 0,
           EMPTY_STRING,
           0
         ]);
-        const [, oldThingTime, oldThingHash] = thingStampMap;
-        if (!oldThingTime || thingTime > oldThingTime) {
+        const [, oldThingHlc, oldThingHash] = thingStampMap;
+        if (!oldThingHlc || thingHlc > oldThingHlc) {
           stampUpdate(
             thingStampMap,
-            thingTime,
-            isContent ? incomingThingHash : getHash(jsonStringWithMap(thing ?? null) + ":" + thingTime)
+            thingHlc,
+            isContent ? incomingThingHash : getValueHash(thing, thingHlc)
           );
           thingStampMap[0] = thing;
           thingsChanges[thingId] = thing;
-          thingsHash ^= isContent ? 0 : hashIdAndHash(thingId, oldThingHash) ^ hashIdAndHash(thingId, thingStampMap[2]);
-          thingsTime = getLatestTime(thingsTime, thingTime);
+          thingsHash ^= isContent ? 0 : addOrRemoveHash(
+            getValueInValuesHash(thingId, oldThingHash),
+            getValueInValuesHash(thingId, thingStampMap[2])
+          );
+          thingsHlc = getLatestHlc(thingsHlc, thingHlc);
         }
       }
     );
-    thingsHash ^= isContent ? 0 : replaceTimeHash(oldThingsTime, incomingThingsTime);
-    stampUpdate(thingsStampMap, incomingThingsTime, thingsHash);
-    return [thingsTime, oldThingsHash, thingsStampMap[2]];
+    thingsHash ^= isContent ? 0 : replaceHlcHash(oldThingsHlc, incomingThingsHlc);
+    stampUpdate(thingsStampMap, incomingThingsHlc, thingsHash);
+    return [thingsHlc, oldThingsHash, thingsStampMap[2]];
   };
   const preStartTransaction = noop;
   const preFinishTransaction = noop;
@@ -2369,8 +2405,8 @@ var createMergeableStore = (uniqueId, getNow) => {
     const differingTableHashes = {};
     mapForEach(
       contentStampMap[0][0],
-      (tableId, [tableStampMap, tableTime, hash]) => objHas(otherTableHashes, tableId) ? hash != otherTableHashes[tableId] ? differingTableHashes[tableId] = hash : 0 : newTables[0][tableId] = stampMapToObjWithoutHash(
-        [tableStampMap, tableTime],
+      (tableId, [tableStampMap, tableHlc, hash]) => objHas(otherTableHashes, tableId) ? hash != otherTableHashes[tableId] ? differingTableHashes[tableId] = hash : 0 : newTables[0][tableId] = stampMapToObjWithoutHash(
+        [tableStampMap, tableHlc],
         (rowStampMap) => stampMapToObjWithoutHash(rowStampMap)
       )
     );
@@ -2397,7 +2433,7 @@ var createMergeableStore = (uniqueId, getNow) => {
       otherTableRowHashes,
       (otherRowHashes, tableId) => mapForEach(
         mapGet(contentStampMap[0][0], tableId)?.[0],
-        (rowId, [rowStampMap, rowTime, hash]) => objHas(otherRowHashes, rowId) ? hash !== otherRowHashes[rowId] ? objEnsure(differingRowHashes, tableId, objNew)[rowId] = hash : 0 : objEnsure(newRows[0], tableId, stampNewObj)[0][rowId] = stampMapToObjWithoutHash([rowStampMap, rowTime])
+        (rowId, [rowStampMap, rowHlc, hash]) => objHas(otherRowHashes, rowId) ? hash !== otherRowHashes[rowId] ? objEnsure(differingRowHashes, tableId, objNew)[rowId] = hash : 0 : objEnsure(newRows[0], tableId, stampNewObj)[0][rowId] = stampMapToObjWithoutHash([rowStampMap, rowHlc])
       )
     );
     return [newRows, differingRowHashes];
@@ -2427,7 +2463,7 @@ var createMergeableStore = (uniqueId, getNow) => {
     return cellHashes;
   };
   const getMergeableCellDiff = (otherTableRowCellHashes) => {
-    const [[tableStampMaps, tablesTime]] = contentStampMap;
+    const [[tableStampMaps, tablesHlc]] = contentStampMap;
     const tablesObj = {};
     objForEach(
       otherTableRowCellHashes,
@@ -2435,35 +2471,35 @@ var createMergeableStore = (uniqueId, getNow) => {
         otherRowCellHashes,
         (otherCellHashes, rowId) => ifNotUndefined(
           mapGet(tableStampMaps, tableId),
-          ([rowStampMaps, tableTime]) => ifNotUndefined(
+          ([rowStampMaps, tableHlc]) => ifNotUndefined(
             mapGet(rowStampMaps, rowId),
-            ([cellStampMaps, rowTime]) => mapForEach(
+            ([cellStampMaps, rowHlc]) => mapForEach(
               cellStampMaps,
-              (cellId, [cell, cellTime, hash]) => hash !== otherCellHashes[cellId] ? objEnsure(
+              (cellId, [cell, cellHlc, hash]) => hash !== otherCellHashes[cellId] ? objEnsure(
                 objEnsure(
                   tablesObj,
                   tableId,
-                  () => stampNewObj(tableTime)
+                  () => stampNewObj(tableHlc)
                 )[0],
                 rowId,
-                () => stampNewObj(rowTime)
-              )[0][cellId] = [cell, cellTime] : 0
+                () => stampNewObj(rowHlc)
+              )[0][cellId] = [cell, cellHlc] : 0
             )
           )
         )
       )
     );
-    return stampNew(tablesObj, tablesTime);
+    return stampNew(tablesObj, tablesHlc);
   };
   const getMergeableValueHashes = () => mapToObj(contentStampMap[1][0], getStampHash);
   const getMergeableValueDiff = (otherValueHashes) => {
-    const [, [valueStampMaps, valuesTime]] = contentStampMap;
+    const [, [valueStampMaps, valuesHlc]] = contentStampMap;
     const values = mapToObj(
       valueStampMaps,
       stampClone,
       ([, , hash], valueId) => hash == otherValueHashes?.[valueId]
     );
-    return stampNew(values, valuesTime);
+    return stampNew(values, valuesHlc);
   };
   const setMergeableContent = (mergeableContent) => disableListeningToRawStoreChanges(
     () => validateMergeableContent(mergeableContent) ? store.transaction(() => {
@@ -2482,8 +2518,8 @@ var createMergeableStore = (uniqueId, getNow) => {
   };
   const getTransactionMergeableChanges = (withHashes = false) => {
     const [
-      [tableStampMaps, tablesTime, tablesHash],
-      [valueStampMaps, valuesTime, valuesHash]
+      [tableStampMaps, tablesHlc, tablesHash],
+      [valueStampMaps, valuesHlc, valuesHash]
     ] = contentStampMap;
     const newStamp = withHashes ? stampNewWithHash : stampNew;
     const tablesObj = {};
@@ -2491,13 +2527,13 @@ var createMergeableStore = (uniqueId, getNow) => {
       touchedCells,
       (touchedTable, tableId) => ifNotUndefined(
         mapGet(tableStampMaps, tableId),
-        ([rowStampMaps, tableTime, tableHash]) => {
+        ([rowStampMaps, tableHlc, tableHash]) => {
           const tableObj = {};
           collForEach(
             touchedTable,
             (touchedRow, rowId) => ifNotUndefined(
               mapGet(rowStampMaps, rowId),
-              ([cellStampMaps, rowTime, rowHash]) => {
+              ([cellStampMaps, rowHlc, rowHash]) => {
                 const rowObj = {};
                 collForEach(touchedRow, (cellId) => {
                   ifNotUndefined(
@@ -2505,11 +2541,11 @@ var createMergeableStore = (uniqueId, getNow) => {
                     ([cell, time, hash]) => rowObj[cellId] = newStamp(cell, time, hash)
                   );
                 });
-                tableObj[rowId] = newStamp(rowObj, rowTime, rowHash);
+                tableObj[rowId] = newStamp(rowObj, rowHlc, rowHash);
               }
             )
           );
-          tablesObj[tableId] = newStamp(tableObj, tableTime, tableHash);
+          tablesObj[tableId] = newStamp(tableObj, tableHlc, tableHash);
         }
       )
     );
@@ -2522,8 +2558,8 @@ var createMergeableStore = (uniqueId, getNow) => {
       )
     );
     return [
-      newStamp(tablesObj, tablesTime, tablesHash),
-      newStamp(valuesObj, valuesTime, valuesHash),
+      newStamp(tablesObj, tablesHlc, tablesHash),
+      newStamp(valuesObj, valuesHlc, valuesHash),
       1
     ];
   };
@@ -3301,6 +3337,7 @@ var createRelationships = getCreateFunction((store) => {
   return objFreeze(relationships);
 });
 export {
+  addOrRemoveHash,
   createCheckpoints,
   createIndexes,
   createMergeableStore,
@@ -3309,7 +3346,17 @@ export {
   createRelationships,
   createStore,
   defaultSorter,
+  getCellHash,
+  getCellInRowHash,
+  getHash,
   getHlcFunctions,
-  getRandomValues,
-  getUniqueId
+  getRowHash,
+  getRowInTableHash,
+  getTableHash,
+  getTableInTablesHash,
+  getTablesHash,
+  getUniqueId,
+  getValueHash,
+  getValueInValuesHash,
+  getValuesHash
 };

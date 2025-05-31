@@ -512,8 +512,8 @@ var arrayPush = (array, ...values) => array.push(...values);
 var arrayShift = (array) => array.shift();
 var object2 = Object;
 var getPrototypeOf2 = (obj) => object2.getPrototypeOf(obj);
-var objEntries2 = object2.entries;
 var objFrozen = object2.isFrozen;
+var objEntries2 = object2.entries;
 var isObject2 = (obj) => !isUndefined2(obj) && ifNotUndefined2(
   getPrototypeOf2(obj),
   (objPrototype) => objPrototype == object2.prototype || isUndefined2(getPrototypeOf2(objPrototype)),
