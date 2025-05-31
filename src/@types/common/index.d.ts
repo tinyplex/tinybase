@@ -59,25 +59,19 @@ export function getHash(string: string): Hash;
 export function addOrRemoveHash(hash1: Hash, hash2: Hash): Hash;
 
 /// getTablesHash
-export function getTablesHash(
-  tableHashes: {[tableId: Id]: Hash},
-  tablesHlc: Hlc,
-): Hash;
+export function getTablesHash(tableHashes: {[tableId: Id]: Hash}): Hash;
 
 /// getTableInTablesHash
 export function getTableInTablesHash(tableId: Id, tableHash: Hash): Hash;
 
 /// getTableHash
-export function getTableHash(
-  rowHashes: {[rowId: Id]: Hash},
-  tableHlc: Hlc,
-): Hash;
+export function getTableHash(rowHashes: {[rowId: Id]: Hash}): Hash;
 
 /// getRowInTableHash
 export function getRowInTableHash(rowId: Id, rowHash: Hash): Hash;
 
 /// getRowHash
-export function getRowHash(cellHashes: {[cellId: Id]: Hash}, rowHlc: Hlc): Hash;
+export function getRowHash(cellHashes: {[cellId: Id]: Hash}): Hash;
 
 /// getCellInRowHash
 export function getCellInRowHash(cellId: Id, cellHash: Hash): Hash;
@@ -86,10 +80,7 @@ export function getCellInRowHash(cellId: Id, cellHash: Hash): Hash;
 export function getCellHash(cell: CellOrUndefined, cellHlc: Hlc): Hash;
 
 /// getValuesHash
-export function getValuesHash(
-  valueHashes: {[valueId: Id]: Hash},
-  valuesHlc: Hlc,
-): Hash;
+export function getValuesHash(valueHashes: {[valueId: Id]: Hash}): Hash;
 
 /// getValueInValuesHash
 export function getValueInValuesHash(valueId: Id, valueHash: Hash): Hash;

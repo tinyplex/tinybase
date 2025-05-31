@@ -103,7 +103,7 @@ test('Protocol basics', () => {
 test('Create, with uniqueId', () => {
   const store = createMergeableStore('s1', getNow);
   expect(store.getJson()).toEqual(JSON.stringify([{}, {}]));
-  store.setCell('t1', 'r1', 'c1', 1);
+  store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
   expect(store.getMergeableContent()).toEqual([
     [
       {
@@ -116,7 +116,7 @@ test('Create, with uniqueId', () => {
       '',
       1771939739,
     ],
-    [{}, '', 0],
+    [{v1: [1, 'Nn1JUF----07JQY8', 1130939691]}, '', 3877632732],
   ]);
 });
 

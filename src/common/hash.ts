@@ -17,7 +17,6 @@ import {arrayForEach, arrayReduce} from './array.ts';
 import {jsonStringWithMap} from './json.ts';
 import {objEntries} from './obj.ts';
 import {GLOBAL} from './other.ts';
-import {EMPTY_STRING} from './strings.ts';
 
 const textEncoder = /* @__PURE__ */ new GLOBAL.TextEncoder();
 
@@ -37,15 +36,18 @@ export const addOrRemoveHash: typeof addOrRemoveHashDecl = (
   hash2: Hash,
 ): Hash => (hash1 ^ hash2) >>> 0;
 
-export const getValuesHash: typeof getValuesHashDecl = (
-  valueHashes: {[valueId: Id]: Hash},
-  valuesHlc: Hlc,
-): Hash =>
+export const getValuesHash: typeof getValuesHashDecl = (valueHashes: {
+  [valueId: Id]: Hash;
+}): Hash =>
   arrayReduce(
     objEntries(valueHashes),
     (valuesHash, [valueId, valueHash]) =>
-      addOrRemoveHash(valuesHash, getValueInValuesHash(valueId, valueHash)),
-    getHash(valuesHlc),
+      addOrRemoveHash(
+        valuesHash,
+        getValueInValuesHash(valueId, valueHash) ^
+          getValueInValuesHash(valueId, 0), // legacy v5; remove in v7
+      ),
+    0, // legacy v5; valuesHlc in v7?
   );
 
 export const getValueInValuesHash: typeof getValueHashInValuesDecl = (
@@ -56,6 +58,7 @@ export const getValueInValuesHash: typeof getValueHashInValuesDecl = (
 export const getValueHash: typeof getValueHashDecl = (
   value: ValueOrUndefined,
   valueHlc: Hlc,
+  // legacy v5; jsonStringWithUndefined in v7
 ): Hash => getHash(jsonStringWithMap(value ?? null) + ':' + valueHlc);
 
 export const getCellHash: typeof getCellHashDecl = getValueHash;
@@ -68,7 +71,15 @@ export const getRowHash: typeof getRowHashDecl = getValuesHash;
 export const getRowInTableHash: typeof getRowHashInTableDecl =
   getValueInValuesHash;
 
-export const getTableHash: typeof getTableHashDecl = getValuesHash;
+export const getTableHash: typeof getTableHashDecl = (rowHashes: {
+  [rowId: Id]: Hash;
+}): Hash => // alias to getValuesHash in v7
+  arrayReduce(
+    objEntries(rowHashes),
+    (valuesHash, [rowId, rowHash]) =>
+      addOrRemoveHash(valuesHash, getValueInValuesHash(rowId, rowHash)),
+    0, // legacy v5; rowHlc in v7?
+  );
 
 export const getTableInTablesHash: typeof getTableHashInTablesDecl =
   getValueInValuesHash;

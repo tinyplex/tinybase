@@ -73,10 +73,7 @@ export function addOrRemoveHash(hash1: Hash, hash2: Hash): Hash;
 /// getTablesHash
 export function getTablesHash<
   Schema extends OptionalTablesSchema = NoTablesSchema,
->(
-  tableHashes: {[TableId in TableIdFromSchema<Schema>]: Hash},
-  tablesHlc: Hlc,
-): Hash;
+>(tableHashes: {[TableId in TableIdFromSchema<Schema>]: Hash}): Hash;
 
 /// getTableInTablesHash
 export function getTableInTablesHash<
@@ -84,10 +81,7 @@ export function getTableInTablesHash<
 >(tableId: TableIdFromSchema<Schema>, tableHash: Hash): Hash;
 
 /// getTableHash
-export function getTableHash(
-  rowHashes: {[rowId: Id]: Hash},
-  tableHlc: Hlc,
-): Hash;
+export function getTableHash(rowHashes: {[rowId: Id]: Hash}): Hash;
 
 /// getRowInTableHash
 export function getRowInTableHash(rowId: Id, rowHash: Hash): Hash;
@@ -96,10 +90,7 @@ export function getRowInTableHash(rowId: Id, rowHash: Hash): Hash;
 export function getRowHash<
   Schema extends OptionalTablesSchema = NoTablesSchema,
   TableId extends TableIdFromSchema<Schema> = Id,
->(
-  cellHashes: {[CellId in CellIdFromSchema<Schema, TableId>]?: Hash},
-  rowHlc: Hlc,
-): Hash;
+>(cellHashes: {[CellId in CellIdFromSchema<Schema, TableId>]?: Hash}): Hash;
 
 /// getCellInRowHash
 export function getCellInRowHash<
@@ -117,10 +108,7 @@ export function getCellHash<
 /// getValuesHash
 export function getValuesHash<
   Schema extends OptionalValuesSchema = NoValuesSchema,
->(
-  valueHashes: {[ValueId in ValueIdFromSchema<Schema>]?: Hash},
-  valuesHlc: Hlc,
-): Hash;
+>(valueHashes: {[ValueId in ValueIdFromSchema<Schema>]?: Hash}): Hash;
 
 /// getValueInValuesHash
 export function getValueInValuesHash<

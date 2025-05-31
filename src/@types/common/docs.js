@@ -333,9 +333,8 @@
 
 /**
  * The getTablesHash function returns a hash for the tabular part of a Store,
- * based on each Table and a top-level tabular HLC.
+ * based on each Table Id and hash.
  * @param tableHashes An object containing each Table Id and its hash.
- * @param tablesHlc The top-level HLC of the tabular part of the Store.
  * @returns A hash of the Tables.
  * @example
  * This example gets the hash of the tabular part of a Store.
@@ -343,12 +342,11 @@
  * import {getTablesHash} from 'tinybase';
  *
  * const tableHashes = {
- *   pets: 2544679909, // hash of its contents
+ *   pets: 4262151841, // hash of its contents
  * };
- * const tablesHlc = '03E3B------mmxrx';
  *
- * console.log(getTablesHash(tableHashes, tablesHlc));
- * // -> 1835775460
+ * console.log(getTablesHash(tableHashes));
+ * // -> 278115833
  * ```
  * @category Hash
  * @since v6.2.0
@@ -367,10 +365,10 @@
  * import {getTableInTablesHash} from 'tinybase';
  *
  * const tableId = 'pets';
- * const tableHash = 2544679909; // hash of its contents
+ * const tableHash = 4262151841; // hash of its contents
  *
  * console.log(getTableInTablesHash(tableId, tableHash));
- * // -> 2778789628
+ * // -> 278115833
  * ```
  * @category Hash
  * @since v6.2.0
@@ -379,9 +377,8 @@
 
 /**
  * The getTableHash function returns a hash for a single Table in a Store, based
- * on each Row and the HLC of the Table.
+ * on each Row Id and hash.
  * @param rowHashes An object containing each Row Id and its hash.
- * @param tableHlc The HLC of the Table.
  * @returns A hash of the Table.
  * @example
  * This example gets the hash of a Table.
@@ -389,12 +386,11 @@
  * import {getTableHash} from 'tinybase';
  *
  * const rowHashes = {
- *   fido: 703486916, // hash of its contents
+ *   fido: 1810444343, // hash of its contents
  * };
- * const tableHlc = '03E3B------mmxrx';
  *
- * console.log(getTableHash(rowHashes, tableHlc));
- * // -> 2544679909
+ * console.log(getTableHash(rowHashes));
+ * // -> 4262151841
  * ```
  * @category Hash
  * @since v6.2.0
@@ -413,10 +409,10 @@
  * import {getRowInTableHash} from 'tinybase';
  *
  * const rowId = 'fido';
- * const rowHash = 703486916; // hash of its contents
+ * const rowHash = 1810444343; // hash of its contents
  *
  * console.log(getRowInTableHash(rowId, rowHash));
- * // -> 1600649469
+ * // -> 4262151841
  * ```
  * @category Hash
  * @since v6.2.0
@@ -425,9 +421,8 @@
 
 /**
  * The getRowHash function returns a hash for a single Row in a Table, based on
- * each Cell and the HLC of the Row.
+ * each Cell Id and hash.
  * @param cellHashes An object containing each Cell Id and its hash.
- * @param rowHlc The HLC of the Row.
  * @returns A hash of the Row.
  * @example
  * This example gets the hash of a Row.
@@ -437,10 +432,9 @@
  * const cellHashes = {
  *   'species': 3002200796, // hash of 'dog' and '03E3B------mmxrx'
  * };
- * const rowHlc = '03E3B------mmxrx';
  *
- * console.log(getRowHash(cellHashes, rowHlc));
- * // -> 703486916
+ * console.log(getRowHash(cellHashes));
+ * // -> 1810444343
  * ```
  * @category Hash
  * @since v6.2.0
@@ -493,9 +487,8 @@
 
 /**
  * The getValuesHash function returns a hash for a Values object, based on each
- * value and the HLC of the Values.
+ * Value Id and hash.
  * @param valueHashes An object containing each Value Id and its hash.
- * @param valuesHlc The HLC of the Values.
  * @returns A hash of the Values.
  * @example
  * This example gets the hash of a Values object.
@@ -505,10 +498,9 @@
  * const valueHashes = {
  *   meaningOfLife: 312420374, // hash of 42 and '03E3B------mmxrx'
  * };
- * const valuesHlc = '03E3B------mmxrx';
  *
- * console.log(getValuesHash(valueHashes, valuesHlc));
- * // -> 3680840875
+ * console.log(getValuesHash(valueHashes));
+ * // -> 4229195646
  * ```
  * @category Hash
  * @since v6.2.0
