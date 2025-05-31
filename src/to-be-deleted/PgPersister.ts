@@ -2,6 +2,7 @@ import {Sql} from 'postgres';
 import {
   CellStamp,
   MergeableChanges,
+  MergeableContent,
   MergeableStore,
 } from '../@types/mergeable-store/index.js';
 import {getHlcFunctions} from '../common/hlc.ts';
@@ -36,7 +37,7 @@ type TableConfig = {
     tableName: string;
     condition?: string; // defaults to TRUE
     idColumnName?: string; // defaults to id
-    timestampColumnName?: string; // defaults to updatedAt
+    timestampColumnName?: string; // defaults to updated_at
   };
   // ... possibly things like autoLoadInterval and others, but not sure if these are needed
 };
@@ -77,11 +78,11 @@ CREATE TABLE IF NOT EXISTS outbox (
 
 type OutboxRow = {
   id: number;
-  row_id: string;
-  persister_id: string;
-  table_name: string;
+  rowId: string;
+  persisterId: string;
+  tableName: string;
   timestamp: string;
-  payload: string;
+  payload: object;
 };
 
 export class PgPersister<TableIds extends string> {
@@ -94,6 +95,17 @@ export class PgPersister<TableIds extends string> {
   };
   private autoLoadListener: {unlisten: () => Promise<void>} | undefined;
   private autoSaveListener: string | undefined;
+  private autoLoadLastLogicalTime: number = 0;
+  private hlcCounters = new Map<number, number>();
+  private hlcIdHash: string;
+  private encodeHlc: (
+    logicalTime: number,
+    counter: number,
+    clientId?: string,
+  ) => string;
+  private decodeHlc: (
+    hlc: string,
+  ) => [logicalTime: number, counter: number, clientId: string];
 
   private readonly tablesStatus: Record<
     TableIds,
@@ -110,6 +122,13 @@ export class PgPersister<TableIds extends string> {
     this.metaStore = config.metaStore ?? new Map();
     this.id = this.metaStore.get('id') ?? crypto.randomUUID().split('-').at(-1); // last part of uuid is unique enough for our use case, we don't expect to have that many persisters on same table
     this.metaStore.set('id', this.id);
+
+    const [, , encodeHlc, decodeHlc, , , getClientId] = getHlcFunctions(
+      this.id,
+    );
+    this.encodeHlc = encodeHlc;
+    this.decodeHlc = decodeHlc;
+    this.hlcIdHash = getClientId();
 
     this.tablesStatus = Object.keys(config.tables).reduce(
       (acc, tableId) => {
@@ -172,14 +191,15 @@ export class PgPersister<TableIds extends string> {
       : sql``;
 
     this.logger.debug('Resetting table', tableId);
+    // todo remove this, it's too dangerous as it triggers delete of all rows
     this.store.setTable(tableId, {});
 
     // todo we should do some logging here when the query is executed
     await sql`SELECT * FROM ${table} ${where}`.forEach((row) => {
       const rowId: string = row[idColumnName ?? 'id'];
       const timestamp: string =
-        row[timestampColumnName ?? 'updatedAt'] ?? new Date().toISOString();
-      const time = this.getHlc(timestamp);
+        row[timestampColumnName ?? 'updated_at'] ?? new Date().toISOString();
+      const time = this.getHlc(new Date(timestamp).getTime());
       const cells = Object.entries(row).reduce(
         (acc, [cellId, value]) => {
           acc[cellId] = [value, time, 0];
@@ -245,11 +265,9 @@ export class PgPersister<TableIds extends string> {
 
       const upsertsQuery = data.length
         ? sql`
-            INSERT INTO ${table}
-            VALUES ${sql(this.store.getTable(tableId))}
-            ON CONFLICT (${idColumn})
-            DO UPDATE SET 
-                ${columnNames.map((column) => sql`${sql(column)}=EXCLUDED.${sql(column)}`)}
+            INSERT INTO ${table} ${sql(data, ...columnNames)}
+            ON CONFLICT (${idColumn}) 
+            DO UPDATE SET ${columnNames.map((column, i, arr) => sql`${sql(column)}=EXCLUDED.${sql(column)}${i < arr.length - 1 ? sql`,` : sql``}`)}
         `
         : null;
 
@@ -276,16 +294,10 @@ export class PgPersister<TableIds extends string> {
     return new Date(row?.ts);
   }
 
-  private hlcGetters = new Map<string, () => string>();
-  private getHlc(timestamp: string): string {
-    const existing = this.hlcGetters.get(timestamp);
-    if (existing) return existing();
-
-    const [getter] = getHlcFunctions(this.id, () =>
-      new Date(timestamp).getTime(),
-    );
-    this.hlcGetters.set(timestamp, getter);
-    return getter();
+  private getHlc(timestamp: number): string {
+    const counter = (this.hlcCounters.get(timestamp) ?? -1) + 1;
+    this.hlcCounters.set(timestamp, counter);
+    return this.encodeHlc(timestamp, counter, this.id);
   }
 
   // add triggers and listen to them
@@ -331,13 +343,17 @@ export class PgPersister<TableIds extends string> {
         await sql`
           SELECT * FROM ${outboxTable} 
           WHERE persister_id = ${this.id} AND id > ${outboxCursor}
+          ORDER BY id ASC
         `.forEach((row) => {
+          // check if this row was already applied in parallel, if so skip it
+          if (this.metaStore.get('outboxCursor') >= row.id) return;
+
+          this.metaStore.set('outboxCursor', row.id);
           try {
             this.applyAutoLoadedRow(row as OutboxRow);
           } catch (e) {
             this.logger.error('Error applying auto loaded row', e);
           }
-          this.metaStore.set('outboxCursor', row.id);
         });
       }),
     );
@@ -346,15 +362,22 @@ export class PgPersister<TableIds extends string> {
   private applyAutoLoadedRow(change: OutboxRow) {
     const tableId = Object.entries(this.config.tables).find(
       ([_, tableConfig]) =>
-        (tableConfig as TableConfig).postgres.tableName === change.table_name,
+        (tableConfig as TableConfig).postgres.tableName === change.tableName,
     )?.[0] as TableIds;
     if (!tableId) {
-      this.logger.error('Table not found', change.table_name);
+      this.logger.error('Table not found', change.tableName);
       return;
     }
-    const rowId: string = change.row_id;
-    const time = this.getHlc(change.timestamp);
-    this.logger.debug('apply auto load', change.payload, change.timestamp);
+    const rowId: string = change.rowId;
+
+    // in autoload we know that records in outbox are ordered, so they never can go back in time
+    this.autoLoadLastLogicalTime = Math.max(
+      this.autoLoadLastLogicalTime,
+      new Date(change.timestamp).getTime(),
+    );
+    const time = this.getHlc(this.autoLoadLastLogicalTime);
+
+    this.logger.debug('apply auto load', this.autoLoadLastLogicalTime, change);
     const cells = Object.entries(change.payload).reduce(
       (acc, [cellId, value]) => {
         acc[cellId] = [value, time];
@@ -393,7 +416,6 @@ export class PgPersister<TableIds extends string> {
     }
   }
 
-  // todo all tables should have updatedAt column otherwise we're risking to lose updates
   // when there are multiple updates before the transaction is committed
   startAutoSave(): this {
     this.logger.info('Starting auto save');
@@ -410,11 +432,31 @@ export class PgPersister<TableIds extends string> {
         const [, , changedCells, , , , , changedRowIds, , ,] =
           store.getTransactionLog();
 
-        // todo lastSeenLogicalTimestamp should be loaded from store or transaction log
-        // it is awaited before all saves so triggers are based on the right timestamp
-        await this.updateLastSeenLogicalTimestamp(new Date());
+        const [tableChanges, valueChanges, isChanges] =
+          store.getTransactionMergeableChanges();
 
-        const promises: Promise<unknown>[] = [];
+        const isFromOutside = Object.values(tableChanges[0]).some(
+          ([rows, hlc]) =>
+            this.decodeHlc(hlc)[2] !== this.hlcIdHash ||
+            Object.values(rows).some(
+              ([cells, hlc]) =>
+                this.decodeHlc(hlc)[2] !== this.hlcIdHash ||
+                Object.values(cells).some(
+                  ([, hlc]) => this.decodeHlc(hlc)[2] !== this.hlcIdHash,
+                ),
+            ),
+        );
+        if (!isFromOutside) {
+          this.logger.debug(
+            'AutoSave transaction originates from autoLoad, skipping',
+          );
+          return;
+        }
+
+        const transactionHlc = this.decodeHlc(tableChanges[1]);
+        const promises: Promise<unknown>[] = [
+          this.updateLastSeenLogicalTimestamp(new Date(transactionHlc[0])),
+        ];
 
         for (const [tableId, config] of Object.entries(this.config.tables)) {
           const {schema, tableName, idColumnName, condition} = (
@@ -432,6 +474,7 @@ export class PgPersister<TableIds extends string> {
             .map(([rowId]) => rowId);
 
           if (idsToDelete.length) {
+            this.logger.debug('AutoSaving delete', tableId, idsToDelete);
             promises.push(
               sql`DELETE FROM ${table} 
             WHERE 
@@ -464,11 +507,19 @@ export class PgPersister<TableIds extends string> {
                 ]),
               );
               return {...cells, [idColumnName ?? 'id']: rowId};
+              // todo automatically update updated_at column from row hlc
             })
             .filter(Boolean);
 
           if (data.length) {
-            promises.push(sql`INSERT INTO ${table} VALUES ${sql(data)}`);
+            const columnNames = Object.keys(data[0] ?? {});
+
+            this.logger.debug('AutoSaving insert', tableId, data);
+            promises.push(
+              sql`
+                INSERT INTO ${table} ${sql(data, ...columnNames)} 
+                ON CONFLICT DO NOTHING`,
+            );
           }
 
           // updates
@@ -485,9 +536,15 @@ export class PgPersister<TableIds extends string> {
               ]),
             );
 
-            this.logger.debug('AutoSaving', tableId, rowId, cells);
+            this.logger.debug('AutoSaving update', tableId, rowId, cells);
             promises.push(
-              sql`UPDATE ${table} SET ${sql(cells)} WHERE ${idColumn} = ${rowId}`,
+              sql`
+                UPDATE ${table} 
+                SET ${sql(cells)} 
+                WHERE 
+                  ${idColumn} = ${rowId}
+                  ${condition ? sql`AND ${sql.unsafe(condition.replace('$tableName', tableName))}` : sql``}
+              `,
             );
           }
 
@@ -546,9 +603,11 @@ export class PgPersister<TableIds extends string> {
   private async startOutboxOnTable(tableId: TableIds) {
     const sql = this.sql;
     const outbox = this.config.outboxTable!;
-    const {schema, tableName, condition} = this.config.tables[tableId].postgres;
+    const {schema, tableName, condition, timestampColumnName} =
+      this.config.tables[tableId].postgres;
 
     const table = `"${schema ?? 'public'}"."${tableName}"`;
+    const timestampColumn = `${timestampColumnName ?? 'updated_at'}`;
     const outboxTable = `"${outbox.schema ?? 'public'}"."${outbox.tableName}"`;
     const outboxMetaTable = `"${outbox.schema ?? 'public'}"."${outbox.metaTableName}"`;
     // trigger and function names must contain persister id so we can safely clean them up even if there are multiple persisters on same table
@@ -565,7 +624,7 @@ export class PgPersister<TableIds extends string> {
           payload jsonb;
         BEGIN
             IF (${condition ? condition.replace('$tableName', 'NEW') : 'TRUE'}) OR (${condition ? condition.replace('$tableName', 'OLD') : 'TRUE'}) THEN
-                SELECT COALESCE((row_to_json(NEW)->>'updatedAt')::timestamp, MAX("last_logical_timestamp"))
+                SELECT COALESCE((to_jsonb(NEW)->>'${timestampColumn}')::timestamp, MAX("last_logical_timestamp"))
                 INTO logical_time
                 FROM (
                   (SELECT "last_logical_timestamp" FROM ${outboxMetaTable} WHERE persister_id = '${this.id}' LIMIT 1)
@@ -573,15 +632,15 @@ export class PgPersister<TableIds extends string> {
                   (SELECT NOW())
                 ) meta;
             
-                SELECT json_object_agg(COALESCE(o.key, n.key), n.value)
+                SELECT jsonb_object_agg(COALESCE(o.key, n.key), n.value)
                 INTO payload
                 FROM 
-                    json_each_text(row_to_json(OLD)) o
+                  jsonb_each(to_jsonb(OLD)) o
                 FULL OUTER JOIN 
-                    json_each_text(row_to_json(NEW)) n
+                  jsonb_each(to_jsonb(NEW)) n
                 ON n.key = o.key
                 WHERE 
-                    n.value IS DISTINCT FROM o.value;
+                  n.value::text IS DISTINCT FROM o.value::text;
 
                 IF payload IS NOT NULL THEN
                   INSERT INTO ${outboxTable} (row_id, table_name, timestamp, payload, persister_id)
