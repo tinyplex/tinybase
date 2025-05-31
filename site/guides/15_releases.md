@@ -25,8 +25,9 @@ import {createStore, createSqliteBunPersister} from 'tinybase/omni';
 ```
 
 However, it should go without saying that you should only use the `omni` module
-if you have a good tree-shaking bundler that can remove all the persisters,
-synchronizers, and so on, that you do _not_ use.
+if you have an aggressive tree-shaking bundler that can remove all the
+persisters, synchronizers, and so on, that you do _not_ use. Experiment with
+different bundler configurations to see what works best for your usage.
 
 ## with-schema exports
 
