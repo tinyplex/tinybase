@@ -77,6 +77,7 @@ export const getCommandFunctions = (
     deleteEmptyTable: boolean,
     partial?: boolean,
     condition?: DpcTabularCondition,
+    timestampColumnName?: string | null,
   ) => Promise<void>,
   transaction: <Return>(actions: () => Promise<Return>) => Promise<Return>,
 ] => {
@@ -133,8 +134,11 @@ export const getCommandFunctions = (
     deleteEmptyTable: boolean,
     partial = false,
     condition: DpcTabularCondition = TRUE,
+    timestampColumnName?: string | null,
   ): Promise<void> => {
-    const settingColumnNameSet = setNew<string>();
+    const settingColumnNameSet = setNew<string>(
+      timestampColumnName ?? undefined,
+    );
     objMap(content ?? {}, (contentRow) =>
       arrayMap(objIds(contentRow ?? {}), (cellOrValueId) =>
         setAdd(settingColumnNameSet, cellOrValueId),
