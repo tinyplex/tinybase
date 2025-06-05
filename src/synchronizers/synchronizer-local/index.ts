@@ -6,8 +6,8 @@ import type {
   Send,
 } from '../../@types/synchronizers/index.d.ts';
 import type {createLocalSynchronizer as createLocalSynchronizerDecl} from '../../@types/synchronizers/synchronizer-local/index.d.ts';
+import {getUniqueId} from '../../common/codec.ts';
 import {collDel} from '../../common/coll.ts';
-import {getUniqueId} from '../../common/index.ts';
 import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../../common/map.ts';
 import {isUndefined, startTimeout} from '../../common/other.ts';
 import {createCustomSynchronizer} from '../index.ts';

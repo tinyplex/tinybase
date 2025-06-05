@@ -118,13 +118,8 @@ import React from 'react';
 import * as UiReact from 'tinybase/ui-react/with-schemas';
 import {createStore} from 'tinybase/with-schemas';
 
-const tablesSchema = {
-  pets: {species: {type: 'string'}},
-} as const;
-const valuesSchema = {
-  employees: {type: 'number'},
-  open: {type: 'boolean', default: false},
-} as const;
+const tablesSchema = {pets: {species: {type: 'string'}}} as const;
+const valuesSchema = {employees: {type: 'number'}} as const;
 
 // Cast the whole module to be schema-based with WithSchemas:
 const UiReactWithSchemas = UiReact as UiReact.WithSchemas<
@@ -151,21 +146,43 @@ following to explicitly load code and types from different folders:
 // code
 import React from 'react';
 import * as UiReact from 'tinybase/ui-react';
-import type {WithSchemas} from 'tinybase/ui-react/with-schemas';
 // types
-import {TablesSchema, ValuesSchema, createStore} from 'tinybase/with-schemas';
+import type {WithSchemas} from 'tinybase/ui-react/with-schemas';
+import type {
+  TablesSchema,
+  ValuesSchema,
+  createStore,
+} from 'tinybase/with-schemas';
 
-const tablesSchema = {
-  pets: {species: {type: 'string'}},
-} as const;
-const valuesSchema = {
-  employees: {type: 'number'},
-  open: {type: 'boolean', default: false},
-} as const;
+const tablesSchema = {pets: {species: {type: 'string'}}} as const;
+const valuesSchema = {employees: {type: 'number'}} as const;
 
 const UiReactWithSchemas = UiReact as unknown as WithSchemas<
   [typeof tablesSchema, typeof valuesSchema]
 >;
+
+//...
+```
+
+## Using the `omni` module
+
+You may also need to use the `unknown as` cast when using the `omni` module,
+since it exports both the ui-react module and ui-react-dom module, and you will
+need to distinguish them:
+
+```tsx yolo
+import * as Omni from 'tinybase/omni';
+import type {
+  UiReactDomWithSchemas,
+  UiReactWithSchemas,
+} from 'tinybase/omni/with-schemas';
+
+const tablesSchema = {pets: {species: {type: 'string'}}} as const;
+const valuesSchema = {employees: {type: 'number'}} as const;
+type Schemas = [typeof tablesSchema, typeof valuesSchema];
+
+const {useCell, useValue} = Omni as unknown as UiReactWithSchemas<Schemas>;
+const {EditableCellView} = Omni as unknown as UiReactDomWithSchemas<Schemas>;
 
 //...
 ```

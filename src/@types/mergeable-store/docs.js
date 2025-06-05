@@ -20,52 +20,12 @@
  * @since v5.0.0
  */
 /// mergeable-store
-
-/**
- * The GetNow type is used to represent a function that returns the current time
- * in milliseconds.
- *
- * This is used internally within the mergeable-store module, but is used for
- * the createMergeableStore function's second optional argument to allow
- * applications to override the clock used to generate timestamps.
- * @category Stamps
- * @since v6.1.0
- */
-/// GetNow
-
-/**
- * The Hash type is used within the mergeable-store module to quickly compare
- * the content of two objects.
- *
- * This is simply an alias for a JavaScript `number`.
- *
- * This type is mostly utilized internally within TinyBase itself and is
- * generally assumed to be opaque to applications that use it.
- * @category Stamps
- * @since v5.0.0
- */
-/// Hash
-/**
- * The Time type is used within the mergeable-store module to store the value of
- * a hybrid logical clock (HLC).
- *
- * It is simply an alias for a JavaScript `string`, but it comprises three HLC
- * parts: a logical timestamp, a sequence counter, and a client Id. It is
- * designed to be string-sortable and unique across all of the systems involved
- * in synchronizing a MergeableStore.
- *
- * This type is mostly utilized internally within TinyBase itself and is
- * generally assumed to be opaque to applications that use it.
- * @category Stamps
- * @since v5.0.0
- */
-/// Time
 /**
  * The Stamp type is used as metadata to decide how to merge two different
  * MergeableStore objects together.
  *
- * It describes a combination of a value (or object), a Time, and optionally a
- * Hash, all in an array.
+ * It describes a combination of a value (or object), an Hlc timestamp, and
+ * optionally a Hash, all in an array.
  *
  * This type is mostly utilized internally within TinyBase itself and is
  * generally assumed to be opaque to applications that use it.
@@ -981,7 +941,7 @@
  * method).
  * @param uniqueId An optional unique Id for the MergeableStore.
  * @param getNow An optional function that generates millisecond timestamps,
- * since v6.1.0.
+ * since v6.1.0, defaulting to `Date.now`.
  * @returns A reference to the new MergeableStore.
  * @example
  * This example creates a MergeableStore.

@@ -1,5 +1,5 @@
 /// mergeable-store
-import type {Id} from '../common/index.d.ts';
+import type {GetNow, Hash, Hlc, Id} from '../common/index.d.ts';
 import type {
   CellOrUndefined,
   Content,
@@ -7,19 +7,10 @@ import type {
   ValueOrUndefined,
 } from '../store/index.d.ts';
 
-/// GetNow
-export type GetNow = () => number;
-
-/// Hash
-export type Hash = number;
-
-/// Time
-export type Time = string;
-
 /// Stamp
 export type Stamp<Thing, Hashed extends boolean = false> = Hashed extends true
-  ? [thing: Thing, time: Time, hash: Hash]
-  : [thing: Thing, time?: Time];
+  ? [thing: Thing, hlc: Hlc, hash: Hash]
+  : [thing: Thing, hlc?: Hlc];
 
 /// ContentHashes
 export type ContentHashes = [tablesHash: Hash, valuesHash: Hash];

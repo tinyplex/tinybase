@@ -5,9 +5,9 @@ applications.
 
 ## TinyHub
 
-[TinyHub](https://github.com/tinyplex/tinyhub) is a local-first GitHub client,
-built in public, using TinyBase, React, and GitHub OAuth. You can try it out
-[here](https://tinyhub.org).
+[TinyHub](https://github.com/tinyplex/tinyhub) is a blazingly fast local-first
+GitHub client, built in public, using TinyBase, React, and GitHub OAuth. You can
+try it out [here](https://tinyhub.org).
 
 ## TinyRooms
 
@@ -15,10 +15,18 @@ built in public, using TinyBase, React, and GitHub OAuth. You can try it out
 using TinyBase, PartyKit, and optional GitHub OAuth. You can try it out
 [here](https://tinyrooms.jamesgpearce.partykit.dev).
 
+## Docs Search
+
+Even the search feature on this site is powered by TinyBase! The summaries of
+all the API documents and guides are loaded into a local Store, indexed in your
+browser, and bound to the UI with vanilla JavaScript. The code, if you're
+curious, is
+[here](https://github.com/tinyplex/tinybase/blob/main/site/js/common/search.ts).
+
 ## Vite Templates
 
-You can also use Vite to start simple demo apps of your own. We provide the
-following templates to get started with:
+You can also use Vite to start simple demo apps of your own and then build your
+full app from them. We provide the following templates to get started with:
 
 | Template                                                                                                             | Language   | React | Plus                   |
 | -------------------------------------------------------------------------------------------------------------------- | ---------- | ----- | ---------------------- |

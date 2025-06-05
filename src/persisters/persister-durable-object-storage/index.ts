@@ -106,21 +106,21 @@ export const createDurableObjectStoragePersister = ((
   const setPersisted = async (
     getContent: () => PersistedContent<PersistsType.MergeableStoreOnly>,
     [
-      [tablesObj, tablesTime, tablesHash],
-      [valuesObj, valuesTime, valuesHash],
+      [tablesObj, tablesHlc, tablesHash],
+      [valuesObj, valuesHlc, valuesHash],
     ]: PersistedChanges<
       PersistsType.MergeableStoreOnly,
       true
     > = getContent() as any,
   ): Promise<void> => {
     const keysToSet: IdMap<StoredValue> = mapNew();
-    mapSet(keysToSet, constructKey(T), [0, tablesTime, tablesHash]);
-    objForEach(tablesObj, ([tableObj, tableTime, tableHash], tableId) => {
-      mapSet(keysToSet, constructKey(T, tableId), [0, tableTime, tableHash]);
-      objForEach(tableObj, ([rowObj, rowTime, rowHash], rowId) => {
+    mapSet(keysToSet, constructKey(T), [0, tablesHlc, tablesHash]);
+    objForEach(tablesObj, ([tableObj, tableHlc, tableHash], tableId) => {
+      mapSet(keysToSet, constructKey(T, tableId), [0, tableHlc, tableHash]);
+      objForEach(tableObj, ([rowObj, rowHlc, rowHash], rowId) => {
         mapSet(keysToSet, constructKey(T, tableId, rowId), [
           0,
-          rowTime,
+          rowHlc,
           rowHash,
         ]);
         objForEach(rowObj, (cellStamp, cellId) =>
@@ -128,7 +128,7 @@ export const createDurableObjectStoragePersister = ((
         );
       });
     });
-    mapSet(keysToSet, constructKey(V), [0, valuesTime, valuesHash]);
+    mapSet(keysToSet, constructKey(V), [0, valuesHlc, valuesHash]);
     objForEach(valuesObj, (valueStamp, valueId) =>
       mapSet(keysToSet, constructKey(V, valueId), valueStamp),
     );

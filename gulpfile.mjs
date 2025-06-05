@@ -12,18 +12,14 @@ import {gzipSync} from 'zlib';
 
 const UTF8 = 'utf-8';
 const ALL_MODULES = [
-  '',
-  'store',
-  'indexes',
-  'metrics',
-  'relationships',
-  'queries',
+  '', // 'tinybase'; store and core modules
+  'omni', // everything
+
   'checkpoints',
-  'mergeable-store',
   'common',
-  'ui-react',
-  'ui-react-dom',
-  'ui-react-inspector',
+  'indexes',
+  'mergeable-store',
+  'metrics',
   'persisters',
   'persisters/persister-automerge',
   'persisters/persister-browser',
@@ -41,17 +37,23 @@ const ALL_MODULES = [
   'persisters/persister-postgres',
   'persisters/persister-powersync',
   'persisters/persister-remote',
+  'persisters/persister-sqlite-bun',
   'persisters/persister-sqlite-wasm',
   'persisters/persister-sqlite3',
-  'persisters/persister-sqlite-bun',
   'persisters/persister-yjs',
+  'queries',
+  'relationships',
+  'store',
   'synchronizers',
+  'synchronizers/synchronizer-broadcast-channel',
   'synchronizers/synchronizer-local',
   'synchronizers/synchronizer-ws-client',
-  'synchronizers/synchronizer-ws-server',
-  'synchronizers/synchronizer-ws-server-simple',
   'synchronizers/synchronizer-ws-server-durable-object',
-  'synchronizers/synchronizer-broadcast-channel',
+  'synchronizers/synchronizer-ws-server-simple',
+  'synchronizers/synchronizer-ws-server',
+  'ui-react-dom',
+  'ui-react-inspector',
+  'ui-react',
 ];
 const ALL_DEFINITIONS = [
   ...ALL_MODULES,
@@ -154,20 +156,29 @@ const copyPackageFiles = async (forProd = false) => {
   mins.forEach((min) => {
     ALL_MODULES.forEach((module) => {
       schemas.forEach((withSchemas) => {
-        const path = [min, module, withSchemas]
+        const pathWithoutSchemas = [min, module]
           .filter((part) => part)
           .join('/');
+        const codePathWithoutSchemas =
+          (pathWithoutSchemas ? '/' : '') + pathWithoutSchemas;
+
+        const pathWithSchemas = [min, module, withSchemas]
+          .filter((part) => part)
+          .join('/');
+        const codePathWithSchemas =
+          (pathWithSchemas ? '/' : '') + pathWithSchemas;
+
         const typesPath = ['.', '@types', module, withSchemas, 'index.d.']
           .filter((part) => part)
           .join('/');
-        const codePath = (path ? '/' : '') + path;
+        json.typesVersions['*'][pathWithSchemas ? pathWithSchemas : '.'] = [
+          typesPath + 'ts',
+        ];
 
-        json.typesVersions['*'][path ? path : '.'] = [typesPath + 'ts'];
-
-        json.exports['.' + codePath] = {
+        json.exports['.' + codePathWithSchemas] = {
           default: {
             types: typesPath + 'ts',
-            default: '.' + codePath + '/index.js',
+            default: '.' + codePathWithoutSchemas + '/index.js',
           },
         };
       });
@@ -484,8 +495,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       'react/jsx-runtime',
       'url',
       'yjs',
-      'tinybase/store',
-      '../ui-react',
+      ...(module == 'omni' ? [] : ['tinybase/store', '../ui-react']),
     ],
     input: inputFile,
     plugins: [
@@ -498,7 +508,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
         '/*!': '\n/*',
         delimiters: ['', ''],
         preventAssignment: true,
-        '../ui-react/index.ts': '../ui-react',
+        ...(module == 'omni' ? {} : {'../ui-react/index.ts': '../ui-react'}),
       }),
       shebang(),
       image(),

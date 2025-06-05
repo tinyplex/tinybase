@@ -6,7 +6,7 @@ import type {
   Send,
 } from '../../@types/synchronizers/index.d.ts';
 import type {createBroadcastChannelSynchronizer as createBroadcastChannelSynchronizerDecl} from '../../@types/synchronizers/synchronizer-broadcast-channel/index.d.ts';
-import {getUniqueId} from '../../common/index.ts';
+import {getUniqueId} from '../../common/codec.ts';
 import {isUndefined} from '../../common/other.ts';
 import {createCustomSynchronizer} from '../index.ts';
 

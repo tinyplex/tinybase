@@ -5,9 +5,64 @@ highlighted features.
 
 ---
 
+# v6.2
+
+This release contains various packaging improvements and exposes some internal
+HLC functions that are useful for people building their own persisters or
+synchronizers.
+
+## New `omni` module
+
+There is a new `omni` module that is an explicit superset of everything in the
+TinyBase ecosystem. It exports the features and functionality of every
+`tinybase/*` module, including every persister, every synchronizer, and every UI
+component. This is useful for applications that want to use multiple facets of
+the overall TinyBase ecosystem and also benefit from the fact they share a lot
+of code internally.
+
+```js yolo
+import {createStore, createSqliteBunPersister} from 'tinybase/omni';
+```
+
+However, it should go without saying that you should only use the `omni` module
+if you have an aggressive tree-shaking bundler that can remove all the
+persisters, synchronizers, and so on, that you do _not_ use. Experiment with
+different bundler configurations to see what works best for your usage.
+
+## with-schema exports
+
+This release changes the `package.json` exports slightly so that imports of both
+`/with-schema` and non-schema'd versions of the modules resolve to the same
+JavaScript file. This reduces bundle size for apps that use both schema and
+non-schema imports.
+
+## HLC & hash functions
+
+The common module (and hence tinybase module) now export the getHlcFunctions
+function. This returns set of seven functions that can be used to create and
+manipulate HLC (Hybrid Logical Clock) timestamps.
+
+```js
+import {getHlcFunctions} from 'tinybase';
+const [getNextHlc, seenHlc, encodeHlc] = getHlcFunctions();
+```
+
+There are also several functions to help hash tabular and key-value data in a
+way that is compatible with the internal MergeableStore implementation. These
+include the getHash function and the getCellHash function, for example.
+
+These are for pretty advanced use-cases! But you can use these in your own
+systems to ensure the timestamps and hashes are compatible with the ones
+generated in TinyBase MergeableStore objects.
+
+## Moved types
+
+The rarely-used GetNow and Hash types have been moved from the mergeable-store
+module into the common module.
+
 # v6.1
 
-# In Summary
+## In Summary
 
 - [A new Persister for Bun](#bun-sqlite)'s embedded SQLite database.
 - [Subset persistence](#subset-persistence) to load subsets of tables into a
@@ -15,8 +70,7 @@ highlighted features.
 - [Destructured object
   arguments](#destructured-object-arguments-for-sorted-row-ids) for sorted Row
   Id methods and hooks.
-- [A new startAutoPersisting
-  method](#new-startautopersisting-method).
+- [A new startAutoPersisting method](#new-startautopersisting-method).
 
 And more!
 

@@ -4,7 +4,7 @@ import type {
   TableIdFromSchema,
   ValueIdFromSchema,
 } from '../../_internal/store/with-schemas/index.d.ts';
-import type {Id} from '../../common/with-schemas/index.d.ts';
+import type {GetNow, Hash, Hlc, Id} from '../../common/with-schemas/index.d.ts';
 import type {
   CellOrUndefined,
   Content,
@@ -20,19 +20,10 @@ import type {
   ValuesSchema,
 } from '../../store/with-schemas/index.d.ts';
 
-/// GetNow
-export type GetNow = () => number;
-
-/// Hash
-export type Hash = number;
-
-/// Time
-export type Time = string;
-
 /// Stamp
 export type Stamp<Thing, Hashed extends boolean = false> = Hashed extends true
-  ? [thing: Thing, time: Time, hash: Hash]
-  : [thing: Thing, time?: Time];
+  ? [thing: Thing, hlc: Hlc, hash: Hash]
+  : [thing: Thing, hlc?: Hlc];
 
 /// ContentHashes
 export type ContentHashes = [tablesHash: Hash, valuesHash: Hash];

@@ -42,9 +42,8 @@ It includes the following submodules:
 - The mergeable-store module
 - The common module
 
-Since many of the submodules above share compiled-in dependencies, the
-master package is smaller to include than including all of the submodules
-separately.
+Since many of the submodules above share compiled-in dependencies, the master
+package is smaller to include than including all of the submodules separately.
 
 However, for a very minimal set of submodules, you may save size by including
 them piecemeal. If you only wanted a Store and a Metrics object, for example,
@@ -66,10 +65,28 @@ in the main tinybase module, but should be imported separately from inside the
 `persisters` and `synchronizers` folders. See the Persistence and
 Synchronization guides, respectively, for more details.
 
+## The `omni` Module
+
+There is also an `omni` module that is an explicit superset of everything in the
+TinyBase ecosystem. It exports the features and functionality of every
+`tinybase/*` module, including every persister, every synchronizer, and every UI
+component. This is useful for applications that want to use multiple facets of
+the overall TinyBase ecosystem and also benefit from the fact they share a lot
+of code internally.
+
+```js yolo
+import {createStore, createSqliteBunPersister} from 'tinybase/omni';
+```
+
+However, it should go without saying that you should only use the `omni` module
+if you have an aggressive tree-shaking bundler that can remove all the
+persisters, synchronizers, and so on, that you do _not_ use. Experiment with
+different bundler configurations to see what works best for your usage.
+
 ## Targets And Formats
 
-Prior to TinyBase v6.0, the NPM package included a number of different versions of
-each module, transpiled for different targets and formats. From v6.0 onwards,
+Prior to TinyBase v6.0, the NPM package included a number of different versions
+of each module, transpiled for different targets and formats. From v6.0 onwards,
 only ESNext, ESM modules are included in the main package.
 
 However, both non-minified and minified versions are available: the default is
@@ -97,9 +114,8 @@ import {createStore} from 'tinybase/with-schemas';
 ## Putting It All Together
 
 As long as you put the optional parts of the path in the right order, you can
-access all the valid combinations of minification, sub-module
-and schema support. The syntax for the import (split onto different lines for
-clarity) is:
+access all the valid combinations of minification, sub-module and schema
+support. The syntax for the import (split onto different lines for clarity) is:
 
 ```sh yolo
 tinybase
