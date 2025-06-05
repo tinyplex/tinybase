@@ -114,10 +114,18 @@ export const createDurableObjectStoragePersister = ((
     > = getContent() as any,
   ): Promise<void> => {
     const keysToSet: IdMap<StoredValue> = mapNew();
+
+    // Store the root tables metadata (timestamp and hash)
     mapSet(keysToSet, constructKey(T), [0, tablesHlc, tablesHash]);
+
+    // Process each table in the store
     objForEach(tablesObj, ([tableObj, tableHlc, tableHash], tableId) => {
+      // Store table-level metadata
       mapSet(keysToSet, constructKey(T, tableId), [0, tableHlc, tableHash]);
+
+      // Process each row within the table
       objForEach(tableObj, ([rowObj, rowHlc, rowHash], rowId) => {
+        // Store row-level metadata
         mapSet(keysToSet, constructKey(T, tableId, rowId), [
           0,
           rowHlc,
@@ -128,7 +136,11 @@ export const createDurableObjectStoragePersister = ((
         );
       });
     });
+
+    // Store the root values metadata (timestamp and hash)
     mapSet(keysToSet, constructKey(V), [0, valuesHlc, valuesHash]);
+
+    // Process each value in the store
     objForEach(valuesObj, (valueStamp, valueId) =>
       mapSet(keysToSet, constructKey(V, valueId), valueStamp),
     );
