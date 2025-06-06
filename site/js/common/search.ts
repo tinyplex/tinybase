@@ -92,7 +92,12 @@ export const searchLoad = (isHome = false) => {
             tokenize(path, tokens, true);
             tokenize(n, tokens);
             tokenize(s, tokens);
-            store.setCell('p', path, 't', [...tokens.values()].join(' '));
+            store.setCell(
+              'p',
+              path,
+              't',
+              Array.from(tokens.values()).join(' '),
+            );
           });
         });
         bindUI();
@@ -115,23 +120,27 @@ export const searchLoad = (isHome = false) => {
     // Populate results
     const populateResults = () => {
       const queryWords = input.value.toLowerCase().split(/[^a-z0-9]+/);
-      const pathWeights: {[path: string]: number} = {};
+      const pathWeights: Map<string, number> = new Map();
       queryWords.forEach((queryWord) =>
         indexes
           .getSliceRowIds('p', queryWord)
-          .slice(0, 10)
-          .forEach(
-            (path) =>
-              (pathWeights[path] =
-                (pathWeights[path] ?? 0) +
+          .slice(0, 50)
+          .forEach((path) =>
+            pathWeights.set(
+              path,
+              (pathWeights.get(path) ?? 0) +
                 getWeighting(
                   store.getCell('p', path, 't') as string,
                   queryWord,
-                )),
+                ),
+            ),
           ),
       );
-      const paths = Object.keys(pathWeights)
-        .sort((a, b) => pathWeights[b] - pathWeights[a])
+
+      const paths = Array.from(pathWeights.keys())
+        .sort(
+          (path1, path2) => pathWeights.get(path2)! - pathWeights.get(path1)!,
+        )
         .slice(0, 10);
 
       const newResults =
