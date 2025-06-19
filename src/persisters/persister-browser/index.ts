@@ -13,7 +13,6 @@ import type {
 } from '../../@types/persisters/persister-browser/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
 import {
-  jsonParse,
   jsonParseWithUndefined,
   jsonStringWithUndefined,
 } from '../../common/json.ts';
@@ -43,7 +42,10 @@ const createStoragePersister = (
   ): StorageListener => {
     const storageListener = (event: StorageEvent): void => {
       if (event.storageArea === storage && event.key === storageName) {
-        tryCatch(() => listener(jsonParse(event.newValue as string)), listener);
+        tryCatch(
+          () => listener(jsonParseWithUndefined(event.newValue as string)),
+          listener,
+        );
       }
     };
     WINDOW.addEventListener(STORAGE, storageListener);
