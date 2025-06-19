@@ -1217,7 +1217,7 @@
  * If you provide a Group for every Select, the result will be a single Row with
  * every Cell having been aggregated. If you provide a Group for only one, or
  * some, of the Select clauses, the _others_ will be automatically used as
- * dimensional values (analogous to the 'group by` semantics in SQL), within
+ * dimensional values (analogous to the `group by` semantics in SQL), within
  * which the aggregations of Group Cells will be performed.
  *
  * You can join the same underlying Cell multiple times, but in that case you
