@@ -216,14 +216,14 @@
  * mode that stores each piece of data separately to avoid Cloudflare's 2MB row
  * limit.
  *
- * **JSON Mode (Default)**: Stores the entire Store as JSON in a single database
- * row. This is efficient for smaller stores but may hit Cloudflare's 2MB row
- * limit for very large stores and uses fewer database writes.
+ * - **JSON Mode (Default)**: Stores the entire Store as JSON in a single
+ *   database row. This is efficient for smaller stores but may hit Cloudflare's
+ *   2MB row limit for very large stores and uses fewer database writes.
  *
- * **Fragmented Mode**: Stores each table, row, cell, and value as separate
- * database rows. Use this mode if you're concerned about hitting Cloudflare's
- * 2MB row limit with large stores in JSON mode. This mode creates more database
- * writes but avoids row size limitations.
+ * - **Fragmented Mode**: Stores each table, row, cell, and value as separate
+ *   database rows. Use this mode if you're concerned about hitting Cloudflare's
+ *   2MB row limit with large stores in JSON mode. This mode creates more
+ *   database writes but avoids row size limitations.
  *
  * The third argument is a DatabasePersisterConfig object that configures which
  * of those modes to use, and settings for each. If the third argument is simply

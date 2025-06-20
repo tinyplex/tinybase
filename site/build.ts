@@ -231,6 +231,9 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile(
       'dist/@types/persisters/persister-durable-object-storage/index.d.ts',
     )
+    .addApiFile(
+      'dist/@types/persisters/persister-durable-object-sql-storage/index.d.ts',
+    )
     .addApiFile('dist/@types/persisters/persister-electric-sql/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-expo-sqlite/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-file/index.d.ts')

@@ -193,9 +193,11 @@ new_sqlite_classes = ["TinyBaseDurableObject"]
 Then create the persister using the recommended SQL storage. The
 `createDurableObjectSqlStoragePersister` supports several persistence modes:
 
-**JSON Mode (Default)**: Stores the entire Store as JSON in a single database
-row. This is efficient for smaller stores and uses fewer database writes, but
-may hit Cloudflare's 2MB row limit for very large stores.
+#### JSON Mode (Default)
+
+Stores the entire Store as JSON in a single database row. This is efficient for
+smaller stores and uses fewer database writes, but may hit Cloudflare's 2MB row
+limit for very large stores.
 
 ```js yolo
 // ...
@@ -208,10 +210,12 @@ createPersister() {
 // ...
 ```
 
-**Fragmented Mode**: Stores each table, row, cell, and value as separate database
-rows. Use this mode if you're concerned about hitting Cloudflare's 2MB row
-limit with large stores in JSON mode. This mode creates more database writes
-but avoids row size limitations:
+#### Fragmented Mode
+
+Stores each table, row, cell, and value as separate database rows. Use this mode
+if you're concerned about hitting Cloudflare's 2MB row limit with large stores
+in JSON mode. This mode creates more database writes but avoids row size
+limitations:
 
 ```js yolo
 // ...
@@ -226,10 +230,10 @@ createPersister() {
 ```
 
 The `createDurableObjectSqlStoragePersister` function supports several optional
-parameters for more advanced use cases:
+parameters for more advanced use cases.
 
-- **Custom table name**: You can specify a custom table name for JSON
-  serialization mode:
+If you need a custom table name, you can specify a custom table name for the
+JSON serialization mode:
 
 ```js yolo
 // ...
@@ -243,8 +247,7 @@ createPersister() {
 // ...
 ```
 
-- **Fragmented mode with custom prefix**: You can use fragmented mode with a
-  custom storage prefix:
+You can use fragmented mode with a custom storage prefix:
 
 ```js yolo
 // ...
@@ -258,8 +261,8 @@ createPersister() {
 // ...
 ```
 
-- **Debugging and logging**: You can add SQL command logging and error handling
-  for development:
+And for debugging and logging, you can add SQL command logging and error
+handling. This is useful for development:
 
 ```js yolo
 // ...

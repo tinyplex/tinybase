@@ -11,6 +11,7 @@ export * from '../../metrics/with-schemas/index.d.ts';
 export * from '../../persisters/persister-automerge/with-schemas/index.d.ts';
 export * from '../../persisters/persister-browser/with-schemas/index.d.ts';
 export * from '../../persisters/persister-cr-sqlite-wasm/with-schemas/index.d.ts';
+export * from '../../persisters/persister-durable-object-sql-storage/with-schemas/index.d.ts';
 export * from '../../persisters/persister-durable-object-storage/with-schemas/index.d.ts';
 export * from '../../persisters/persister-electric-sql/with-schemas/index.d.ts';
 export * from '../../persisters/persister-expo-sqlite/with-schemas/index.d.ts';
