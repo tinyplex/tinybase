@@ -12,6 +12,9 @@ allows you to persist data in a Cloudflare Durable Object's SQLite-based storage
 in conjunction with websocket-based synchronization (using the
 WsServerDurableObject class).
 
+Huge thanks to [Corey Jepperson](https://github.com/acoreyj) for implementing
+the entirety of this functionality!
+
 ```js yolo
 import {createMergeableStore} from 'tinybase';
 import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
