@@ -1,0 +1,12 @@
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/api/">API</a></li><li><a href="/api/persister-durable-object-sql-storage/"><code>persister-durable-object-sql-storage</code></a></li><li><a href="/api/persister-durable-object-sql-storage/type-aliases/">Type Aliases</a></li><li><a href="/api/persister-durable-object-sql-storage/type-aliases/configuration/durableobjectsqldatabasepersisterconfig/"><code>DurableObjectSqlDatabasePersisterConfig</code></a></li></ul></nav><section class="s1" id="/api/persister-durable-object-sql-storage/type-aliases/configuration/durableobjectsqldatabasepersisterconfig/" data-id="DOSDPC"><h1><code>DurableObjectSqlDatabasePersisterConfig</code></h1><p>The <code>DurableObjectSqlDatabasePersisterConfig</code> type represents the union of all possible configuration types for a <a href="/api/persister-durable-object-sql-storage/interfaces/persister/durableobjectsqlstoragepersister/"><code>DurableObjectSqlStoragePersister</code></a>.</p><pre><code><span class="type"><a href="/api/persisters/type-aliases/configuration/dpcjson/">DpcJson</a></span> <span class="operator">|</span> <span class="type"><a href="/api/persister-durable-object-sql-storage/type-aliases/configuration/dpcfragmented/">DpcFragmented</a></span></code></pre><p>This allows the persister to support multiple persistence modes.</p><ul><li>JSON mode (via <a href="/api/persisters/type-aliases/configuration/dpcjson/"><code>DpcJson</code></a>): Stores the entire <a href="/api/store/interfaces/store/store/"><code>Store</code></a> as JSON in a single row.</li><li>Fragmented mode (via <a href="/api/persister-durable-object-sql-storage/type-aliases/configuration/dpcfragmented/"><code>DpcFragmented</code></a>): Stores each piece of data as separate rows.</li></ul><section class="s2"><h2>Example</h2><p>These examples show some different configuration options.</p><pre><code><span class="comment">// JSON mode (default)</span>
+<span class="punctuation">{</span>
+  mode<span class="operator">:</span> 'json'<span class="punctuation">,</span>
+  storeTableName<span class="operator">:</span> 'my_store'<span class="punctuation">,</span>
+<span class="punctuation">}</span>;
+
+<span class="comment">// Fragmented mode</span>
+<span class="punctuation">{</span>
+  mode<span class="operator">:</span> 'fragmented'<span class="punctuation">,</span>
+  storagePrefix<span class="operator">:</span> 'app_'<span class="punctuation">,</span>
+<span class="punctuation">}</span>;
+</code></pre></section><section class="s2"><h2>Since</h2><p>v6.3.0</p></section></section>

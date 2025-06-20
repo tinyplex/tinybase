@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#v6-2'><em>NEW!</em> v6.2 release</a>
+<a href='/guides/releases/#v6-3'><em>NEW!</em> v6.3 release</a>
 
-<span id="one-with">"The One With HLCs and `omni`!"</span>
+<span id="one-with">"The One With Durable Object SQLite!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 

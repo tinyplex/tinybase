@@ -370,7 +370,10 @@ var createStoragePersister = (store, storageName, storage, onIgnoredError) => {
   const addPersisterListener = (listener) => {
     const storageListener = (event) => {
       if (event.storageArea === storage && event.key === storageName) {
-        tryCatch(() => listener(jsonParse(event.newValue)), listener);
+        tryCatch(
+          () => listener(jsonParseWithUndefined(event.newValue)),
+          listener
+        );
       }
     };
     WINDOW.addEventListener(STORAGE, storageListener);
