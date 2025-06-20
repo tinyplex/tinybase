@@ -54,6 +54,19 @@ is available.
 
 See the Database Persistence guide for details on how to work with databases.
 
+### Durable Object Persisters
+
+These Persisters are designed to work with Durable Objects, which are a
+specialized type of server-side storage provided by CloudFlare. In conjunction
+with a WsServerDurableObject, they allow you to synchronize clients and then
+also persist data in a Durable Object, either in its key-value, or SQlite
+storage form.
+
+| Persister                        | Storage                                     |
+| -------------------------------- | ------------------------------------------- |
+| DurableObjectStoragePersister    | Cloudflare Durable Object key-value storage |
+| DurableObjectSqlStoragePersister | Cloudflare Durable Object SQLite storage    |
+
 ### Third-Party CRDT & Socket Persisters
 
 These Persisters can bind your Store into third-party CRDT frameworks, or

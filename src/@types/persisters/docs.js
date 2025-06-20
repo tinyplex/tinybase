@@ -7,8 +7,8 @@
  * Many entry points are provided (in separately installed modules), each of
  * which returns different types of Persister that can load and save a Store.
  * Between them, these allow you to store your TinyBase data locally, remotely,
- * to SQLite and PostgreSQL databases, and across synchronization boundaries
- * with CRDT frameworks.
+ * to a Durable Object, to SQLite and PostgreSQL databases, and across
+ * synchronization boundaries with CRDT frameworks.
  *
  * |Persister|Storage|Store|MergeableStore
  * |-|-|-|-|
@@ -17,6 +17,8 @@
  * |FilePersister|Local file (where possible)|Yes|Yes
  * |IndexedDbPersister|Browser IndexedDB|Yes|No
  * |RemotePersister|Remote server|Yes|No
+ * |DurableObjectStoragePersister|Cloudflare Durable Object (KV)|No|Yes
+ * |DurableObjectSqlStoragePersister|Cloudflare Durable Object (SQLite)|No|Yes
  * |Sqlite3Persister|SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)|Yes|Yes*
  * |SqliteBunPersister| SQLite in Bun, via [bun:sqlite](https://bun.sh/docs/api/sqlite)|Yes|Yes*
  * |SqliteWasmPersister|SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)|Yes|Yes*

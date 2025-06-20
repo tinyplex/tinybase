@@ -5,6 +5,55 @@ highlighted features.
 
 ---
 
+# v6.3
+
+This release includes the new persister-durable-object-sql-storage module, which
+allows you to persist data in a Cloudflare Durable Object's SQLite-based storage
+in conjunction with websocket-based synchronization (using the
+WsServerDurableObject class).
+
+```js yolo
+import {createMergeableStore} from 'tinybase';
+import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
+import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
+
+const config = {
+  mode: 'fragmented',
+  storagePrefix: 'my_app_',
+};
+
+export class MyDurableObject extends WsServerDurableObject {
+  createPersister() {
+    const store = createMergeableStore();
+    const persister = createDurableObjectSqlStoragePersister(
+      store,
+      this.ctx.storage.sql,
+      config,
+    );
+    return persister;
+  }
+}
+```
+
+Prior to this release, the only way to persist data in a Durable Object was to
+use the persister-durable-object-storage module, which uses CloudFlare's
+key-value storage backend behind the scenes.
+
+However, Cloudflare's SQLite storage backend for Durable Objects offers
+significantly better pricing compared to the key-value storage backend. The
+SQLite storage backend is Cloudflare's recommended storage option for new
+Durable Object namespaces.
+
+Note that, before using this persister, you must configure your Durable Object
+class to use SQLite storage by adding a migration to your `wrangler.toml` or
+`wrangler.json` configuration file. Use `new_sqlite_classes` in your migration
+configuration to enable SQLite storage for your Durable Object class. See the
+module documentation for more information.
+
+This release also addresses a local-storage persistence issue, #[257](https://github.com/tinyplex/tinybase/issues/257).
+
+---
+
 # v6.2
 
 This release contains various packaging improvements and exposes some internal
@@ -59,6 +108,8 @@ generated in TinyBase MergeableStore objects.
 
 The rarely-used GetNow and Hash types have been moved from the mergeable-store
 module into the common module.
+
+---
 
 # v6.1
 
@@ -188,6 +239,8 @@ base Persister interface have been marked asynchronous and return Promises. The
 stopSync method in the Synchronizer interface and the destroy method in the
 Synchronizer server interfaces should also be considered asynchronous.
 
+---
+
 # v6.0
 
 This major release is about updating dependencies and infrastructure rather than
@@ -224,6 +277,8 @@ to upgrade as soon as you can.
 
 Please let us know how these changes find you, and please file an issue on
 GitHub if you need help adapting to any of them.
+
+---
 
 # v5.4
 
