@@ -143,6 +143,7 @@
  * await server.destroy();
  * ```
  * @category Creation
+ * @essential Synchronizing stores
  * @since v5.0.0
  */
 /// createWsSynchronizer

@@ -26,6 +26,7 @@
  * TinyBase uses (the constructor, `fetch`, `webSocketMessage`, and
  * `webSocketClose`) if you further override them.
  * @category Creation
+ * @essential Synchronizing stores
  * @since v5.4.0
  */
 /// WsServerDurableObject

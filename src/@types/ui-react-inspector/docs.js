@@ -73,6 +73,7 @@
  * // -> '<aside id="tinybaseInspector">'
  * ```
  * @category Development components
+ * @essential Using React
  * @since v5.0.0
  */
 /// Inspector

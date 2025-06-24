@@ -161,6 +161,7 @@
  * await pglite.close();
  * ```
  * @category Creation
+ * @essential Persisting stores
  * @since 5.2.0
  */
 /// createPglitePersister

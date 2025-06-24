@@ -182,6 +182,7 @@
  * await synchronizer2.destroy();
  * ```
  * @category Synchronizer
+ * @essential Synchronizing stores
  * @since v5.0.0
  */
 /// Synchronizer

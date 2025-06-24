@@ -284,6 +284,7 @@
  * // -> '<span>cat</span>'
  * ```
  * @category Store hooks
+ * @essential Using React
  * @since v1.0.0
  */
 /// useCreateStore
@@ -1764,6 +1765,7 @@
  * // -> '<span>{"color":"brown"}</span>'
  * ```
  * @category Store hooks
+ * @essential Using React
  * @since v1.0.0
  */
 /// useRow
@@ -2062,6 +2064,7 @@
  * // -> '<span>brown</span>'
  * ```
  * @category Store hooks
+ * @essential Using React
  * @since v1.0.0
  */
 /// useCell
@@ -2526,6 +2529,7 @@
  * // -> '<span>true</span>'
  * ```
  * @category Store hooks
+ * @essential Using React
  * @since v3.0.0
  */
 /// useValue
@@ -13549,6 +13553,7 @@
  * // -> '<span>5,5,2</span>'
  * ```
  * @category Context components
+ * @essential Using React
  * @since v1.0.0
  */
 /// Provider

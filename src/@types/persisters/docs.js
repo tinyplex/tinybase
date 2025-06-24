@@ -930,6 +930,7 @@
  * sessionStorage.clear();
  * ```
  * @category Persister
+ * @essential Persisting stores
  * @since v1.0.0
  */
 /// Persister

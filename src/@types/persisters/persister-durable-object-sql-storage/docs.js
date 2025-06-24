@@ -336,6 +336,7 @@
  * }
  * ```
  * @category Creation
+ * @essential Persisting stores
  * @since v6.3.0
  */
 /// createDurableObjectSqlStoragePersister

@@ -1648,6 +1648,7 @@
  * @see Hello World demos
  * @see Todo App demos
  * @category Store
+ * @essential Creating stores
  * @since v1.0.0
  */
 /// Store
@@ -2082,6 +2083,7 @@
    * // -> {}
    * ```
    * @category Getter
+   * @essential Getting data
    * @since v1.0.0
    */
   /// Store.getRow
@@ -2153,6 +2155,7 @@
    * // -> undefined
    * ```
    * @category Getter
+   * @essential Getting data
    * @since v1.0.0
    */
   /// Store.getCell
@@ -2245,6 +2248,7 @@
    * // -> undefined
    * ```
    * @category Getter
+   * @essential Getting data
    * @since v3.0.0
    */
   /// Store.getValue
@@ -2894,6 +2898,7 @@
    * // -> {pets: {fido: {color: 'brown'}}}
    * ```
    * @category Setter
+   * @essential Setting data
    * @since v1.0.0
    */
   /// Store.setRow
@@ -2959,6 +2964,7 @@
    * // -> {pets: {'0': {species: 'dog'}, '1': {species: 'cat'}}}
    * ```
    * @category Setter
+   * @essential Setting data
    * @since v1.0.0
    */
   /// Store.addRow
@@ -3077,6 +3083,7 @@
    * // -> {pets: {fido: {species: 'dog'}}}
    * ```
    * @category Setter
+   * @essential Setting data
    * @since v1.0.0
    */
   /// Store.setCell
@@ -3237,6 +3244,7 @@
    * // -> {employees: 3}
    * ```
    * @category Setter
+   * @essential Setting data
    * @since v3.0.0
    */
   /// Store.setValue
@@ -3977,6 +3985,7 @@
    * // -> {open: true}
    * ```
    * @category Transaction
+   * @essential Setting data
    * @since v1.0.0
    */
   /// Store.transaction
@@ -5672,6 +5681,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @essential Listening for changes
    * @since v1.0.0
    */
   /// Store.addRowListener
@@ -6020,6 +6030,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @essential Listening for changes
    * @since v1.0.0
    */
   /// Store.addCellListener
@@ -6404,6 +6415,7 @@
    * store.delListener(listenerId);
    * ```
    * @category Listener
+   * @essential Listening for changes
    * @since v3.0.0
    */
   /// Store.addValueListener
@@ -7300,6 +7312,7 @@
  * ```
  * @see The Basics guides
  * @category Creation
+ * @essential Creating stores
  * @since v1.0.0
  */
 /// createStore

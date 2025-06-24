@@ -1036,6 +1036,7 @@
  * ];
  * ```
  * @category Creation
+ * @essential Creating stores
  * @since v5.0.0
  */
 /// createMergeableStore

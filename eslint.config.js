@@ -154,7 +154,7 @@ export default tsLint.config(
     rules: {
       'jsdoc/check-tag-names': [
         2,
-        {definedTags: ['category', 'packageDocumentation']},
+        {definedTags: ['category', 'packageDocumentation', 'essential']},
       ],
       'jsdoc/no-restricted-syntax': [
         2,

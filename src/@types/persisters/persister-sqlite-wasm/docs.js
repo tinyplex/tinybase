@@ -159,6 +159,7 @@
  * await persister.destroy();
  * ```
  * @category Creation
+ * @essential Persisting stores
  * @since v4.0.0
  */
 /// createSqliteWasmPersister

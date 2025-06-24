@@ -129,6 +129,7 @@
  * sessionStorage.clear();
  * ```
  * @category Creation
+ * @essential Persisting stores
  * @since v1.0.0
  */
 /// createSessionPersister
@@ -166,6 +167,7 @@
  * localStorage.clear();
  * ```
  * @category Creation
+ * @essential Persisting stores
  * @since v1.0.0
  */
 /// createLocalPersister
