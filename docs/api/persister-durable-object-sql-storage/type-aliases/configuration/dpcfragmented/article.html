@@ -10,9 +10,9 @@
   <span class="literal-property">storagePrefix</span><span class="operator">:</span> <span class="string">'my_app_'</span><span class="punctuation">,</span>
 <span class="punctuation">}</span><span class="punctuation">;</span>
 
-<span class="keyword">export</span> <span class="keyword">class</span> <span class="class-name">MyDurableObject</span> <span class="keyword">extends</span> <span class="class-name"><a href="/api/synchronizer-ws-server-durable-object/classes/creation/wsserverdurableobject/">WsServerDurableObject</a></span> <span class="punctuation">{</span>
+<span class="keyword">export</span> <span class="keyword">class</span> <span class="class-name">MyDurableObject</span> <span class="keyword">extends</span> <span class="class-name"><a href="/api/the-essentials/synchronizing-stores/wsserverdurableobject/">WsServerDurableObject</a></span> <span class="punctuation">{</span>
   <span class="function"><a href="/api/synchronizer-ws-server-durable-object/classes/creation/wsserverdurableobject/methods/creation/createpersister/">createPersister</a></span><span class="punctuation">(</span><span class="punctuation">)</span> <span class="punctuation">{</span>
-    <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/mergeable-store/functions/creation/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+    <span class="keyword">const</span> store <span class="operator">=</span> <span class="function"><a href="/api/the-essentials/creating-stores/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
     <span class="keyword">const</span> persister <span class="operator">=</span> <span class="function"><a href="/api/persister-durable-object-sql-storage/functions/creation/createdurableobjectsqlstoragepersister/">createDurableObjectSqlStoragePersister</a></span><span class="punctuation">(</span>
       store<span class="punctuation">,</span>
       <span class="keyword">this</span><span class="punctuation">.</span>ctx<span class="punctuation">.</span>storage<span class="punctuation">.</span>sql<span class="punctuation">,</span>

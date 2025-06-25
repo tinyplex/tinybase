@@ -8,8 +8,8 @@
   console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="string">'Paths changed'</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
-<span class="keyword">const</span> synchronizer <span class="operator">=</span> <span class="keyword">await</span> <span class="function"><a href="/api/synchronizer-ws-client/functions/creation/createwssynchronizer/">createWsSynchronizer</a></span><span class="punctuation">(</span>
-  <span class="function"><a href="/api/mergeable-store/functions/creation/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
+<span class="keyword">const</span> synchronizer <span class="operator">=</span> <span class="keyword">await</span> <span class="function"><a href="/api/the-essentials/synchronizing-stores/createwssynchronizer/">createWsSynchronizer</a></span><span class="punctuation">(</span>
+  <span class="function"><a href="/api/the-essentials/creating-stores/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
   <span class="keyword">new</span> <span class="class-name">WebSocket</span><span class="punctuation">(</span><span class="string">'ws://localhost:8047/roomA'</span><span class="punctuation">)</span><span class="punctuation">,</span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> 'Paths changed'</span>

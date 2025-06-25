@@ -225,7 +225,7 @@
     "rollup-plugin-prettier": "^4.1.2",
     "sqlite3": "^5.1.7",
     "tinybase": "file:./dist",
-    "tinydocs": "^0.1.58",
+    "tinydocs": "^0.1.59",
     "tmp": "^0.2.3",
     "ts-unused-exports": "^11.0.1",
     "typescript": "^5.8.3",

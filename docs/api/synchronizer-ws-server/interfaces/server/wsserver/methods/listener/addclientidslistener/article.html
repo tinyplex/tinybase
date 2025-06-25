@@ -16,14 +16,14 @@
   <span class="punctuation">}</span><span class="punctuation">,</span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
 
-<span class="keyword">const</span> synchronizer1 <span class="operator">=</span> <span class="keyword">await</span> <span class="function"><a href="/api/synchronizer-ws-client/functions/creation/createwssynchronizer/">createWsSynchronizer</a></span><span class="punctuation">(</span>
-  <span class="function"><a href="/api/mergeable-store/functions/creation/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
+<span class="keyword">const</span> synchronizer1 <span class="operator">=</span> <span class="keyword">await</span> <span class="function"><a href="/api/the-essentials/synchronizing-stores/createwssynchronizer/">createWsSynchronizer</a></span><span class="punctuation">(</span>
+  <span class="function"><a href="/api/the-essentials/creating-stores/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
   <span class="keyword">new</span> <span class="class-name">WebSocket</span><span class="punctuation">(</span><span class="string">'ws://localhost:8047/roomA'</span><span class="punctuation">)</span><span class="punctuation">,</span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> '1 client(s) in roomA'</span>
 
-<span class="keyword">const</span> synchronizer2 <span class="operator">=</span> <span class="keyword">await</span> <span class="function"><a href="/api/synchronizer-ws-client/functions/creation/createwssynchronizer/">createWsSynchronizer</a></span><span class="punctuation">(</span>
-  <span class="function"><a href="/api/mergeable-store/functions/creation/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
+<span class="keyword">const</span> synchronizer2 <span class="operator">=</span> <span class="keyword">await</span> <span class="function"><a href="/api/the-essentials/synchronizing-stores/createwssynchronizer/">createWsSynchronizer</a></span><span class="punctuation">(</span>
+  <span class="function"><a href="/api/the-essentials/creating-stores/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
   <span class="keyword">new</span> <span class="class-name">WebSocket</span><span class="punctuation">(</span><span class="string">'ws://localhost:8047/roomB'</span><span class="punctuation">)</span><span class="punctuation">,</span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// The listener is not called.</span>
@@ -48,14 +48,14 @@ server<span class="punctuation">.</span><span class="function"><a href="/api/syn
   <span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
-<span class="keyword">const</span> synchronizer1 <span class="operator">=</span> <span class="keyword">await</span> <span class="function"><a href="/api/synchronizer-ws-client/functions/creation/createwssynchronizer/">createWsSynchronizer</a></span><span class="punctuation">(</span>
-  <span class="function"><a href="/api/mergeable-store/functions/creation/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
+<span class="keyword">const</span> synchronizer1 <span class="operator">=</span> <span class="keyword">await</span> <span class="function"><a href="/api/the-essentials/synchronizing-stores/createwssynchronizer/">createWsSynchronizer</a></span><span class="punctuation">(</span>
+  <span class="function"><a href="/api/the-essentials/creating-stores/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
   <span class="keyword">new</span> <span class="class-name">WebSocket</span><span class="punctuation">(</span><span class="string">'ws://localhost:8047/roomA'</span><span class="punctuation">)</span><span class="punctuation">,</span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> '1 client(s) in roomA'</span>
 
-<span class="keyword">const</span> synchronizer2 <span class="operator">=</span> <span class="keyword">await</span> <span class="function"><a href="/api/synchronizer-ws-client/functions/creation/createwssynchronizer/">createWsSynchronizer</a></span><span class="punctuation">(</span>
-  <span class="function"><a href="/api/mergeable-store/functions/creation/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
+<span class="keyword">const</span> synchronizer2 <span class="operator">=</span> <span class="keyword">await</span> <span class="function"><a href="/api/the-essentials/synchronizing-stores/createwssynchronizer/">createWsSynchronizer</a></span><span class="punctuation">(</span>
+  <span class="function"><a href="/api/the-essentials/creating-stores/createmergeablestore/">createMergeableStore</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">,</span>
   <span class="keyword">new</span> <span class="class-name">WebSocket</span><span class="punctuation">(</span><span class="string">'ws://localhost:8047/roomB'</span><span class="punctuation">)</span><span class="punctuation">,</span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> '1 client(s) in roomB'</span>
