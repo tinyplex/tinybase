@@ -14,7 +14,7 @@
 
 <a href='/demos/'>Try the demos</a>
 
-<a href='/api/store/interfaces/store/store/'>Read the docs</a>
+<a href='/api/the-essentials/creating-stores/store/'>Read the docs</a>
 
 ---
 
@@ -712,7 +712,7 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 
 <a href='/demos/'>Try the demos</a>
 
-<a href='/api/store/interfaces/store/store/'>Read the docs</a>
+<a href='/api/the-essentials/creating-stores/store/'>Read the docs</a>
 
 ---
 
