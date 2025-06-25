@@ -25,6 +25,14 @@ const externalEsm: string[] = [
 
 const GROUPS = ['Interfaces', '*', 'Type aliases'];
 const CATEGORIES = [
+  'Creating stores',
+  'Getting data',
+  'Setting data',
+  'Listening for changes',
+  'Persisting stores',
+  'Synchronizing stores',
+  'Using React',
+
   /hooks$/,
   /components$/,
   'Definition',
