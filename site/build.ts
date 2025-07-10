@@ -252,6 +252,9 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/persisters/persister-pglite/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-postgres/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-powersync/index.d.ts')
+    .addApiFile(
+      'dist/@types/persisters/persister-react-native-sqlite/index.d.ts',
+    )
     .addApiFile('dist/@types/persisters/persister-remote/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-sqlite-wasm/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-sqlite3/index.d.ts')
