@@ -23,6 +23,7 @@
  * |SqliteBunPersister| SQLite in Bun, via [bun:sqlite](https://bun.sh/docs/api/sqlite)|Yes|Yes*
  * |SqliteWasmPersister|SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)|Yes|Yes*
  * |ExpoSqlitePersister|SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)|Yes|Yes*
+ * |ReactNativeSqlitePersister|SQLite in React Native, via [react-native-sqlite-storage](https://github.com/andpor/react-native-sqlite-storage)|Yes|Yes*
  * |PostgresPersister|PostgreSQL, via [postgres](https://github.com/porsager/postgres)|Yes|Yes*
  * |PglitePersister|PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)|Yes|Yes*
  * |CrSqliteWasmPersister|SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)|Yes|No
