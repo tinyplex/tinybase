@@ -3,21 +3,22 @@
 Since v4.0, there are various options for persisting Store data to and from
 SQLite databases, via a range of third-party modules.
 
-There are currently seven SQLite-based persistence options, and two for
+There are currently nine SQLite-based persistence options, and two for
 PostgreSQL:
 
-| Persister             | Storage                                                                                                |
-| --------------------- | ------------------------------------------------------------------------------------------------------ |
-| Sqlite3Persister      | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                |
-| SqliteBunPersister    | SQLite in Bun, via [bun:sqlite](https://bun.sh/docs/api/sqlite)                                        |
-| SqliteWasmPersister   | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                         |
-| ExpoSqlitePersister   | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite) |
-| CrSqliteWasmPersister | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                               |
-| ElectricSqlPersister  | Electric SQL, via [electric](https://github.com/electric-sql/electric)                                 |
-| LibSqlPersister       | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)               |
-| PowerSyncPersister    | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                           |
-| PostgresPersister     | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                       |
-| PglitePersister       | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                       |
+| Persister                  | Storage                                                                                                          |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Sqlite3Persister           | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                          |
+| SqliteBunPersister         | SQLite in Bun, via [bun:sqlite](https://bun.sh/docs/api/sqlite)                                                  |
+| SqliteWasmPersister        | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                                   |
+| ExpoSqlitePersister        | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)           |
+| ReactNativeSqlitePersister | SQLite in React Native, via [react-native-sqlite-storage](https://github.com/andpor/react-native-sqlite-storage) |
+| CrSqliteWasmPersister      | SQLite CRDTs, via [cr-sqlite-wasm](https://github.com/vlcn-io/cr-sqlite)                                         |
+| ElectricSqlPersister       | Electric SQL, via [electric](https://github.com/electric-sql/electric)                                           |
+| LibSqlPersister            | LibSQL for Turso, via [libsql-client](https://github.com/tursodatabase/libsql-client-ts)                         |
+| PowerSyncPersister         | PowerSync, via [powersync-sdk](https://github.com/powersync-ja/powersync-js)                                     |
+| PostgresPersister          | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                                 |
+| PglitePersister            | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                                 |
 
 Each creation function takes a database reference, and a DatabasePersisterConfig
 object to describe its configuration. There are two modes for persisting a Store

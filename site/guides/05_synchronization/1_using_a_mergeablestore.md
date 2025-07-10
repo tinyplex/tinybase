@@ -113,14 +113,15 @@ The following Persister types _can_ be used to persist a MergeableStore:
 The following database-oriented Persister types can be used to persist a
 MergeableStore, but _only_ in the 'JSON-serialization' mode:
 
-| Persister           | Storage                                                                                                |
-| ------------------- | ------------------------------------------------------------------------------------------------------ |
-| Sqlite3Persister    | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                |
-| SqliteBunPersister  | SQLite in Bun, via [bun:sqlite](https://bun.sh/docs/api/sqlite)                                        |
-| SqliteWasmPersister | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                         |
-| ExpoSqlitePersister | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite) |
-| PostgresPersister   | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                       |
-| PglitePersister     | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                       |
+| Persister                  | Storage                                                                                                          |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Sqlite3Persister           | SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)                                          |
+| SqliteBunPersister         | SQLite in Bun, via [bun:sqlite](https://bun.sh/docs/api/sqlite)                                                  |
+| SqliteWasmPersister        | SQLite in a browser, via [sqlite-wasm](https://github.com/tomayac/sqlite-wasm)                                   |
+| ExpoSqlitePersister        | SQLite in React Native, via [expo-sqlite](https://github.com/expo/expo/tree/main/packages/expo-sqlite)           |
+| ReactNativeSqlitePersister | SQLite in React Native, via [react-native-sqlite-storage](https://github.com/andpor/react-native-sqlite-storage) |
+| PostgresPersister          | PostgreSQL, via [postgres](https://github.com/porsager/postgres)                                                 |
+| PglitePersister            | PostgreSQL, via [PGlite](https://github.com/electric-sql/pglite)                                                 |
 
 The following database-oriented Persister types _cannot_ currently be used to
 persist a MergeableStore:
