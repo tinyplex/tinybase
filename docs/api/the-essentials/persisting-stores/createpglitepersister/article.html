@@ -15,7 +15,7 @@
   pglite<span class="punctuation">,</span>
   <span class="string">'my_tinybase'</span><span class="punctuation">,</span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-pglite/interfaces/persister/pglitepersister/methods/save/save/">save</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-react-native-sqlite/interfaces/persister/reactnativesqlitepersister/methods/save/save/">save</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// Store will be saved to the database.</span>
 
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="punctuation">(</span><span class="keyword">await</span> pglite<span class="punctuation">.</span><span class="function">query</span><span class="punctuation">(</span><span class="string">'SELECT * FROM my_tinybase;'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">.</span>rows<span class="punctuation">)</span><span class="punctuation">;</span>
@@ -25,7 +25,7 @@ console<span class="punctuation">.</span><span class="function">log</span><span 
   <span class="string">'[{"pets":{"felix":{"species":"cat"}}},{}]'</span><span class="punctuation">,</span>
 <span class="punctuation">]</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
-<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-pglite/interfaces/persister/pglitepersister/methods/load/load/">load</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-react-native-sqlite/interfaces/persister/reactnativesqlitepersister/methods/load/load/">load</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/getter/gettables/">getTables</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> {pets: {felix: {species: 'cat'}}}</span>
 
@@ -42,7 +42,7 @@ console<span class="punctuation">.</span><span class="function">log</span><span 
   <span class="literal-property">tables</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">load</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">pets</span><span class="operator">:</span> <span class="string">'pets'</span><span class="punctuation">}</span><span class="punctuation">,</span> <span class="literal-property">save</span><span class="operator">:</span> <span class="punctuation">{</span><span class="literal-property">pets</span><span class="operator">:</span> <span class="string">'pets'</span><span class="punctuation">}</span><span class="punctuation">}</span><span class="punctuation">,</span>
 <span class="punctuation">}</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
-<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-pglite/interfaces/persister/pglitepersister/methods/save/save/">save</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-react-native-sqlite/interfaces/persister/reactnativesqlitepersister/methods/save/save/">save</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="punctuation">(</span><span class="keyword">await</span> pglite<span class="punctuation">.</span><span class="function">query</span><span class="punctuation">(</span><span class="string">'SELECT * FROM pets;'</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">.</span>rows<span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> [{_id: 'fido', species: '"dog"'}]</span>
 <span class="comment">// Note that Cells and Values are JSON-encoded in PostgreSQL databases.</span>
@@ -50,7 +50,7 @@ console<span class="punctuation">.</span><span class="function">log</span><span 
 <span class="keyword">await</span> pglite<span class="punctuation">.</span><span class="function">query</span><span class="punctuation">(</span>
   <span class="template-string"><span class="template-punctuation">`</span><span class="string">INSERT INTO pets (_id, species) VALUES ('felix', '"cat"')</span><span class="template-punctuation">`</span></span><span class="punctuation">,</span>
 <span class="punctuation">)</span><span class="punctuation">;</span>
-<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-pglite/interfaces/persister/pglitepersister/methods/load/load/">load</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
+<span class="keyword">await</span> persister<span class="punctuation">.</span><span class="function"><a href="/api/persister-react-native-sqlite/interfaces/persister/reactnativesqlitepersister/methods/load/load/">load</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>store<span class="punctuation">.</span><span class="function"><a href="/api/store/interfaces/store/store/methods/getter/gettables/">getTables</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}</span>
 

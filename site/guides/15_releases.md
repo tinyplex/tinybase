@@ -5,6 +5,33 @@ highlighted features.
 
 ---
 
+# v6.4
+
+This release includes the new persister-react-native-sqlite module, which
+allows you to persist data in a React Native SQLite database via the
+[react-native-sqlite-storage](https://github.com/andpor/react-native-sqlite-storage)
+library.
+
+Usage should be as simple as this:
+
+```js yolo
+import {enablePromise, openDatabase} from 'react-native-sqlite-storage';
+import {createStore} from 'tinybase';
+import {createReactNativeSqlitePersister} from 'tinybase/persisters/persister-react-native-sqlite';
+
+enablePromise(true);
+const db = await openDatabase({name: 'my.db', location: 'default'});
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createReactNativeSqlitePersister(store, db);
+
+await persister.save();
+// Store will be saved to the database.
+```
+
+Please let us know how you get on with this new Persister, and if you have any feedback or suggestions.
+
+---
+
 # v6.3
 
 This release includes the new persister-durable-object-sql-storage module, which

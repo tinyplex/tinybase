@@ -1,4 +1,20 @@
-<link rel="preload" as="image" href="https://tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v6-3">v6.3</h1><p>This release includes the new <a href="https://tinybase.org/api/persister-durable-object-sql-storage/"><code>persister-durable-object-sql-storage</code></a> module, which allows you to persist data in a Cloudflare Durable Object&#x27;s SQLite-based storage in conjunction with websocket-based synchronization (using the <a href="https://tinybase.org/api/the-essentials/synchronizing-stores/wsserverdurableobject/"><code>WsServerDurableObject</code></a> class).</p><p>Huge thanks to <a href="https://github.com/acoreyj">Corey Jepperson</a> for implementing the entirety of this functionality!</p>
+<link rel="preload" as="image" href="https://tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v6-4">v6.4</h1><p>This release includes the new <a href="https://tinybase.org/api/persister-react-native-sqlite/"><code>persister-react-native-sqlite</code></a> module, which allows you to persist data in a React Native SQLite database via the <a href="https://github.com/andpor/react-native-sqlite-storage">react-native-sqlite-storage</a> library.</p><p>Usage should be as simple as this:</p>
+
+```js yolo
+import {enablePromise, openDatabase} from 'react-native-sqlite-storage';
+import {createStore} from 'tinybase';
+import {createReactNativeSqlitePersister} from 'tinybase/persisters/persister-react-native-sqlite';
+
+enablePromise(true);
+const db = await openDatabase({name: 'my.db', location: 'default'});
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createReactNativeSqlitePersister(store, db);
+
+await persister.save();
+// Store will be saved to the database.
+```
+
+<p>Please let us know how you get on with this new <a href="https://tinybase.org/api/the-essentials/persisting-stores/persister/"><code>Persister</code></a>, and if you have any feedback or suggestions.</p><hr><h1 id="v6-3">v6.3</h1><p>This release includes the new <a href="https://tinybase.org/api/persister-durable-object-sql-storage/"><code>persister-durable-object-sql-storage</code></a> module, which allows you to persist data in a Cloudflare Durable Object&#x27;s SQLite-based storage in conjunction with websocket-based synchronization (using the <a href="https://tinybase.org/api/the-essentials/synchronizing-stores/wsserverdurableobject/"><code>WsServerDurableObject</code></a> class).</p><p>Huge thanks to <a href="https://github.com/acoreyj">Corey Jepperson</a> for implementing the entirety of this functionality!</p>
 
 ```js yolo
 import {createMergeableStore} from 'tinybase';
