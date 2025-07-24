@@ -23,6 +23,7 @@ export * from '../../persisters/persister-partykit-server/with-schemas/index.d.t
 export * from '../../persisters/persister-pglite/with-schemas/index.d.ts';
 export * from '../../persisters/persister-postgres/with-schemas/index.d.ts';
 export * from '../../persisters/persister-powersync/with-schemas/index.d.ts';
+export * from '../../persisters/persister-react-native-mmkv/with-schemas/index.d.ts';
 export * from '../../persisters/persister-react-native-sqlite/with-schemas/index.d.ts';
 export * from '../../persisters/persister-remote/with-schemas/index.d.ts';
 export * from '../../persisters/persister-sqlite-bun/with-schemas/index.d.ts';

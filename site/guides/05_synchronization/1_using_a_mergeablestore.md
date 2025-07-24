@@ -104,11 +104,12 @@ database.
 
 The following Persister types _can_ be used to persist a MergeableStore:
 
-| Persister        | Storage                     |
-| ---------------- | --------------------------- |
-| SessionPersister | Browser session storage     |
-| LocalPersister   | Browser local storage       |
-| FilePersister    | Local file (where possible) |
+| Persister                | Storage                                                                                      |
+| ------------------------ | -------------------------------------------------------------------------------------------- |
+| SessionPersister         | Browser session storage                                                                      |
+| LocalPersister           | Browser local storage                                                                        |
+| FilePersister            | Local file (where possible)                                                                  |
+| ReactNativeMMKVPersister | MMKV in React Native, via [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv) |
 
 The following database-oriented Persister types can be used to persist a
 MergeableStore, but _only_ in the 'JSON-serialization' mode:

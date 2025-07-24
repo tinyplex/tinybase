@@ -37,6 +37,7 @@
     "postgres": "^3.4.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-native-mmkv": "3.3.0",
     "react-native-sqlite-storage": "^6.0.1",
     "sqlite3": "^5.1.7",
     "ws": "^8.18.3",
@@ -89,6 +90,9 @@
       "optional": true
     },
     "react-dom": {
+      "optional": true
+    },
+    "react-native-mmkv": {
       "optional": true
     },
     "sqlite3": {
@@ -221,6 +225,7 @@
     "puppeteer": "^24.12.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-native-mmkv": "3.3.0",
     "react-native-sqlite-storage": "^6.0.1",
     "rollup": "^4.44.2",
     "rollup-plugin-esbuild": "^6.2.1",

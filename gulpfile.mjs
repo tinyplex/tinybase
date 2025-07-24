@@ -36,6 +36,7 @@ const ALL_MODULES = [
   'persisters/persister-pglite',
   'persisters/persister-postgres',
   'persisters/persister-powersync',
+  'persisters/persister-react-native-mmkv',
   'persisters/persister-react-native-sqlite',
   'persisters/persister-remote',
   'persisters/persister-sqlite-bun',
