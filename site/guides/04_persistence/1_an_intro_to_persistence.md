@@ -24,13 +24,14 @@ These are reasonably simple Persisters that generally load and save a
 JSON-serialized version of your Store. They are good for smaller data sets and
 where you need to have something saved in a basic browser or server environment.
 
-| Persister          | Storage                 |
-| ------------------ | ----------------------- |
-| SessionPersister   | Browser session storage |
-| LocalPersister     | Browser local storage   |
-| FilePersister      | Local file              |
-| IndexedDbPersister | Browser IndexedDB       |
-| RemotePersister    | Remote server           |
+| Persister                | Storage                                                                                      |
+| ------------------------ | -------------------------------------------------------------------------------------------- |
+| SessionPersister         | Browser session storage                                                                      |
+| LocalPersister           | Browser local storage                                                                        |
+| FilePersister            | Local file                                                                                   |
+| IndexedDbPersister       | Browser IndexedDB                                                                            |
+| RemotePersister          | Remote server                                                                                |
+| ReactNativeMMKVPersister | MMKV in React Native, via [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv) |
 
 ### Database Persisters
 
