@@ -91,6 +91,9 @@
     "react-dom": {
       "optional": true
     },
+    "react-native-sqlite-storage": {
+      "optional": true
+    },
     "sqlite3": {
       "optional": true
     },
