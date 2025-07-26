@@ -35,14 +35,12 @@ export const createReactNativeMmkvPersister = (
     if (content !== undefined) {
       storage.set(storageName, JSON.stringify(content));
     }
-
-    await Promise.resolve();
   };
 
   const addPersisterListener = (
     listener: PersisterListener<PersistsType.StoreOrMergeableStore>,
-  ): Listener => {
-    const mmkvListener = storage.addOnValueChangedListener((key) => {
+  ): Listener =>
+    storage.addOnValueChangedListener((key) => {
       if (key === storageName) {
         const value = storage.getString(storageName);
 
@@ -51,9 +49,6 @@ export const createReactNativeMmkvPersister = (
         }
       }
     });
-
-    return mmkvListener;
-  };
 
   const delPersisterListener = (storageListener: Listener): void => {
     storageListener.remove();
