@@ -1,39 +1,38 @@
 /**
- * The persister-react-native-mmkv module of the TinyBase project lets you
- * save and load Store data to and from a MMKV storage using the
- * [`react-native-mmkv`](https://github.com/mrousavy/react-native-mmkv) module (in an appropriate React Native
- * environment).
+ * The persister-react-native-mmkv module of the TinyBase project lets you save
+ * and load Store data to and from a MMKV storage using the
+ * [`react-native-mmkv`](https://github.com/mrousavy/react-native-mmkv) module
+ * (in an appropriate React Native environment).
  * @see Database Persistence guide
  * @packageDocumentation
  * @module persister-react-native-mmkv
- * @since v6.4.0
+ * @since v6.5.0
  */
 /// persister-react-native-mmkv
 /**
  * The ReactNativeMmkvPersister interface represents a Persister that lets you
- * save and load Store data to and from a `react-native-mmkv`
- * storage.
+ * save and load Store data to and from a `react-native-mmkv` storage.
  *
- * You should use the createReactNativeMmkvPersister function to create an
+ * You should use the createReactNativeMmkvPersister function to create a
  * ReactNativeMmkvPersister object.
  *
  * It is a minor extension to the Persister interface and simply provides an
  * extra getStorageName method for accessing the unique key of the storage
  * location the Store is being persisted to.
  * @category Persister
- * @since v6.4.0
+ * @since v6.5.0
  */
 /// ReactNativeMmkvPersister
 
 /**
- * The getStorageName method returns the unique key of the storage location
- * the Store is being persisted to.
+ * The getStorageName method returns the unique key of the storage location the
+ * Store is being persisted to.
  * @returns The unique key of the storage location.
  * @example
  * This example creates a Persister object against a newly-created Store and
  * then gets the unique key of the storage location back out again.
  *
- * ```js
+ * ```js yolo
  * import {MMKV} from 'react-native-mmkv';
  * import {createStore} from 'tinybase';
  * import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
@@ -51,12 +50,12 @@
  * await persister.destroy();
  * ```
  * @category Getter
- * @since v6.4.0
+ * @since v6.5.0
  */
 /// ReactNativeMmkvPersister.getStorageName
 
 /**
- * The createReactNativeMmkvPersister function creates an
+ * The createReactNativeMmkvPersister function creates a
  * ReactNativeMmkvPersister object that can persist the Store to a local
  * `react-native-mmkv` storage.
  *
@@ -81,7 +80,7 @@
  * `my_tinybase` key. It makes a change to the storage directly and then
  * reloads it back into the Store.
  *
- * ```js
+ * ```js yolo
  * import {MMKV} from 'react-native-mmkv';
  * import {createStore} from 'tinybase';
  * import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
@@ -104,6 +103,6 @@
  * storage.delete('my_tinybase');
  * ```
  * @category Creation
- * @since v6.4.0
+ * @since v6.5.0
  */
 /// createReactNativeMmkvPersister

@@ -1,5 +1,5 @@
 /// persister-react-native-mmkv
-import {MMKV} from 'react-native-mmkv';
+import type {MMKV} from 'react-native-mmkv';
 import type {MergeableStore} from '../../../mergeable-store/with-schemas/index.d.ts';
 import type {
   OptionalSchemas,
