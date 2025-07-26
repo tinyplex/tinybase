@@ -4,17 +4,17 @@ import type {MergeableStore} from '../../mergeable-store/index.d.ts';
 import type {Store} from '../../store/index.d.ts';
 import type {Persister, Persists} from '../index.d.ts';
 
-/// ReactNativeMMKVPersister
-export interface ReactNativeMMKVPersister
+/// ReactNativeMmkvPersister
+export interface ReactNativeMmkvPersister
   extends Persister<Persists.StoreOrMergeableStore> {
-  /// ReactNativeMMKVPersister.getStorageName
+  /// ReactNativeMmkvPersister.getStorageName
   getStorageName(): string;
 }
 
-/// createReactNativeMMKVPersister
-export function createReactNativeMMKVPersister(
+/// createReactNativeMmkvPersister
+export function createReactNativeMmkvPersister(
   store: Store | MergeableStore,
   storage: MMKV,
   storageName?: string,
   onIgnoredError?: (error: any) => void,
-): ReactNativeMMKVPersister;
+): ReactNativeMmkvPersister;
