@@ -10,12 +10,12 @@
  */
 /// persister-react-native-mmkv
 /**
- * The ReactNativeMMKVPersister interface represents a Persister that lets you
+ * The ReactNativeMmkvPersister interface represents a Persister that lets you
  * save and load Store data to and from a `react-native-mmkv`
  * storage.
  *
- * You should use the createReactNativeMMKVPersister function to create an
- * ReactNativeMMKVPersister object.
+ * You should use the createReactNativeMmkvPersister function to create an
+ * ReactNativeMmkvPersister object.
  *
  * It is a minor extension to the Persister interface and simply provides an
  * extra getStorageName method for accessing the unique key of the storage
@@ -23,7 +23,7 @@
  * @category Persister
  * @since v6.4.0
  */
-/// ReactNativeMMKVPersister
+/// ReactNativeMmkvPersister
 
 /**
  * The getStorageName method returns the unique key of the storage location
@@ -36,11 +36,11 @@
  * ```js
  * import {MMKV} from 'react-native-mmkv';
  * import {createStore} from 'tinybase';
- * import {createReactNativeMMKVPersister} from 'tinybase/persisters/persister-react-native-mmkv';
+ * import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
  *
  * const storage = new MMKV();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * const persister = createReactNativeMMKVPersister(
+ * const persister = createReactNativeMmkvPersister(
  *   store,
  *   storage,
  *   'my_tinybase',
@@ -53,14 +53,14 @@
  * @category Getter
  * @since v6.4.0
  */
-/// ReactNativeMMKVPersister.getStorageName
+/// ReactNativeMmkvPersister.getStorageName
 
 /**
- * The createReactNativeMMKVPersister function creates an
- * ReactNativeMMKVPersister object that can persist the Store to a local
+ * The createReactNativeMmkvPersister function creates an
+ * ReactNativeMmkvPersister object that can persist the Store to a local
  * `react-native-mmkv` storage.
  *
- * A ReactNativeMMKVPersister supports both regular Store and MergeableStore
+ * A ReactNativeMmkvPersister supports both regular Store and MergeableStore
  * objects.
  *
  * As well as providing a reference to the Store to persist, you must provide a
@@ -74,9 +74,9 @@
  * @param onIgnoredError An optional handler for the errors that the Persister
  * would otherwise ignore when trying to save or load data. This is suitable for
  * debugging persistence issues in a development environment.
- * @returns A reference to the new ReactNativeMMKVPersister object.
+ * @returns A reference to the new ReactNativeMmkvPersister object.
  * @example
- * This example creates a ReactNativeMMKVPersister object and persists the
+ * This example creates a ReactNativeMmkvPersister object and persists the
  * Store to a MMKV storage instance as a JSON serialization into the
  * `my_tinybase` key. It makes a change to the storage directly and then
  * reloads it back into the Store.
@@ -84,11 +84,11 @@
  * ```js
  * import {MMKV} from 'react-native-mmkv';
  * import {createStore} from 'tinybase';
- * import {createReactNativeMMKVPersister} from 'tinybase/persisters/persister-react-native-mmkv';
+ * import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
  *
  * const storage = new MMKV();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
- * const persister = createReactNativeMMKVPersister(
+ * const persister = createReactNativeMmkvPersister(
  *   store,
  *   storage,
  *   'my_tinybase',
@@ -106,4 +106,4 @@
  * @category Creation
  * @since v6.4.0
  */
-/// createReactNativeMMKVPersister
+/// createReactNativeMmkvPersister

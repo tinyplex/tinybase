@@ -17,7 +17,7 @@
  * |FilePersister|Local file (where possible)|Yes|Yes
  * |IndexedDbPersister|Browser IndexedDB|Yes|No
  * |RemotePersister|Remote server|Yes|No
- * |ReactNativeMMKVPersister|MMKV in React Native, via [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv)|Yes|Yes
+ * |ReactNativeMmkvPersister|MMKV in React Native, via [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv)|Yes|Yes
  * |DurableObjectStoragePersister|Cloudflare Durable Object (KV)|No|Yes
  * |DurableObjectSqlStoragePersister|Cloudflare Durable Object (SQLite)|No|Yes
  * |Sqlite3Persister|SQLite in Node, via [sqlite3](https://github.com/TryGhost/node-sqlite3)|Yes|Yes*

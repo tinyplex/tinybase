@@ -12,7 +12,7 @@ import {createCustomPersister} from '../common/create.ts';
 
 const STORAGE = 'storage';
 
-export const createReactNativeMMKVPersister = (
+export const createReactNativeMmkvPersister = (
   store: Store | MergeableStore,
   storage: MMKV,
   storageName: string = STORAGE,
