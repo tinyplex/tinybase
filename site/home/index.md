@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#v6-4'><em>NEW!</em> v6.4 release</a>
+<a href='/guides/releases/#v6-5'><em>NEW!</em> v6.5 release</a>
 
-<span id="one-with">"The One With React Native SQLite!"</span>
+<span id="one-with">"The One With MMKV!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 

@@ -5,10 +5,36 @@ highlighted features.
 
 ---
 
+# v6.5
+
+This release includes the new persister-react-native-mmkv module, which allows
+you to persist data in a React Native MMKV store via the
+[react-native-mmkv](https://github.com/mrousavy/react-native-mmkv) library.
+
+Usage should be as simple as this:
+
+```js yolo
+import {MMKV} from 'react-native-mmkv';
+import {createStore} from 'tinybase';
+import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
+
+const storage = new MMKV();
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createReactNativeMmkvPersister(store, storage);
+
+await persister.save();
+// Store will be saved to the MMKV store.
+```
+
+A huge shout out to [Jérémy Barbet](https://github.com/JeremyBarbet) for this
+new persister!
+
+---
+
 # v6.4
 
-This release includes the new persister-react-native-sqlite module, which
-allows you to persist data in a React Native SQLite database via the
+This release includes the new persister-react-native-sqlite module, which allows
+you to persist data in a React Native SQLite database via the
 [react-native-sqlite-storage](https://github.com/andpor/react-native-sqlite-storage)
 library.
 
@@ -28,7 +54,8 @@ await persister.save();
 // Store will be saved to the database.
 ```
 
-Please let us know how you get on with this new Persister, and if you have any feedback or suggestions.
+Please let us know how you get on with this new Persister, and if you have any
+feedback or suggestions.
 
 ---
 
