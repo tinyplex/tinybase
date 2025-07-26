@@ -1,4 +1,19 @@
-<link rel="preload" as="image" href="https://tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v6-4">v6.4</h1><p>This release includes the new <a href="https://tinybase.org/api/persister-react-native-sqlite/"><code>persister-react-native-sqlite</code></a> module, which allows you to persist data in a React Native SQLite database via the <a href="https://github.com/andpor/react-native-sqlite-storage">react-native-sqlite-storage</a> library.</p><p>Usage should be as simple as this:</p>
+<link rel="preload" as="image" href="https://tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v6-5">v6.5</h1><p>This release includes the new <a href="https://tinybase.org/api/persister-react-native-mmkv/"><code>persister-react-native-mmkv</code></a> module, which allows you to persist data in a React Native MMKV store via the <a href="https://github.com/mrousavy/react-native-mmkv">react-native-mmkv</a> library.</p><p>Usage should be as simple as this:</p>
+
+```js yolo
+import {MMKV} from 'react-native-mmkv';
+import {createStore} from 'tinybase';
+import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
+
+const storage = new MMKV();
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createReactNativeMmkvPersister(store, storage);
+
+await persister.save();
+// Store will be saved to the MMKV store.
+```
+
+<p>A huge shout out to <a href="https://github.com/JeremyBarbet">Jérémy Barbet</a> for this new persister!</p><hr><h1 id="v6-4">v6.4</h1><p>This release includes the new <a href="https://tinybase.org/api/persister-react-native-sqlite/"><code>persister-react-native-sqlite</code></a> module, which allows you to persist data in a React Native SQLite database via the <a href="https://github.com/andpor/react-native-sqlite-storage">react-native-sqlite-storage</a> library.</p><p>Usage should be as simple as this:</p>
 
 ```js yolo
 import {enablePromise, openDatabase} from 'react-native-sqlite-storage';

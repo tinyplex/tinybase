@@ -1,5 +1,12 @@
 {
-  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.snap", "*.json", "*.test.ts"],
+  "ignorePaths": [
+    "*.tsv",
+    "*.webp",
+    "*.svg",
+    "*.snap",
+    "*.json",
+    "*.test.ts"
+  ],
   "words": [
     "Abad",
     "Adrien",
@@ -81,6 +88,7 @@
     "jaysc",
     "jbolda",
     "Jepperson",
+    "Jérémy",
     "journeyapps",
     "Kayoo",
     "keyframes",
@@ -95,11 +103,11 @@
     "marksteve",
     "mergeable",
     "mergeablestore",
-    "MMKV",
     "minifier",
     "minmax",
     "mjamesderocher",
     "mkdir",
+    "MMKV",
     "mmxrx",
     "Montsant",
     "Morera",
