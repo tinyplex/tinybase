@@ -92,6 +92,9 @@
     "react-dom": {
       "optional": true
     },
+    "react-native-mmkv": {
+      "optional": true
+    },
     "react-native-sqlite-storage": {
       "optional": true
     },
