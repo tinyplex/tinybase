@@ -3,7 +3,7 @@ import type {Id} from '../@types/index.d.ts';
 import {arrayMap, arrayReduce} from './array.ts';
 import {mapGet, mapNew} from './map.ts';
 import {GLOBAL, math, mathFloor} from './other.ts';
-import {strSplit} from './strings.ts';
+import {EMPTY_STRING, strSplit} from './strings.ts';
 
 const MASK6 = 63;
 const ENCODE = /* @__PURE__ */ strSplit(
@@ -29,5 +29,5 @@ export const getUniqueId: typeof getUniqueIdDecl = (length = 16): Id =>
   arrayReduce<number, Id>(
     getRandomValues(new Uint8Array(length)) as any,
     (uniqueId, number) => uniqueId + encode(number),
-    '',
+    EMPTY_STRING,
   );
