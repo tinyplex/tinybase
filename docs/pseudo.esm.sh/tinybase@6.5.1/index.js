@@ -681,7 +681,7 @@ var getRandomValues = GLOBAL.crypto ? (array) => GLOBAL.crypto.getRandomValues(a
 var getUniqueId = (length = 16) => arrayReduce(
   getRandomValues(new Uint8Array(length)),
   (uniqueId, number) => uniqueId + encode(number),
-  ""
+  EMPTY_STRING
 );
 var jsonString = JSON.stringify;
 var jsonParse = JSON.parse;
