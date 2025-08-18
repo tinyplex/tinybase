@@ -18,7 +18,7 @@ export const APP_STYLESHEET = arrayJoin(
       [SCROLLBAR + '-thumb']: 'background:#999;border:1px solid #111',
       [SCROLLBAR + '-thumb:hover']: 'background:#fff',
       [SCROLLBAR + '-corner']: 'background:#111',
-      img: 'width:1rem;height:1rem;background:#111;border:0;vertical-align:text-bottom',
+      img: 'width:1rem;height:1rem;background:#111;border:0;vertical-align:text-bottom;cursor:pointer',
 
       // Nub
       '>img': 'padding:0.25rem;bottom:0;right:0;position:fixed;' + LOGO_SVG,
@@ -80,7 +80,8 @@ export const APP_STYLESHEET = arrayJoin(
       'th:nth-of-type(1)': 'min-width:2rem;',
       'th.sorted': 'background:#000',
       'table caption': 'text-align:left;white-space:nowrap;line-height:1.25rem',
-      button: 'width:1.5rem;border:none;background:none;color:#fff;padding:0',
+      button:
+        'width:1.5rem;border:none;background:none;color:#fff;padding:0;cursor:pointer',
       'button[disabled]': 'color:#777',
       'button.next': 'margin-right:0.5rem',
       [`th,#${UNIQUE_ID} td`]:

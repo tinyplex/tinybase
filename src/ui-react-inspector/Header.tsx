@@ -7,6 +7,7 @@ import type {StoreProp} from './types.ts';
 
 export const Header = ({s}: StoreProp) => {
   const position = useValue(POSITION_VALUE, s) ?? 1;
+  const handleClick = () => open('https://tinybase.org', '_blank');
   const handleClose = useSetValueCallback(OPEN_VALUE, () => false, [], s);
   const handleDock = useSetValueCallback(
     POSITION_VALUE,
@@ -18,7 +19,7 @@ export const Header = ({s}: StoreProp) => {
 
   return (
     <header>
-      <img title={TITLE} />
+      <img title={TITLE} onClick={handleClick} />
       <span>{TITLE}</span>
       {arrayMap(POSITIONS, (name, p) =>
         p == position ? null : (

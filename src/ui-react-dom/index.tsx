@@ -468,7 +468,11 @@ const EditableThing = <Thing extends Cell | Value>({
   return (
     <div className={className}>
       {showType ? (
-        <button className={thingType} onClick={handleTypeChange}>
+        <button
+          title={thingType}
+          className={thingType}
+          onClick={handleTypeChange}
+        >
           {thingType}
         </button>
       ) : null}
