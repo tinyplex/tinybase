@@ -118,6 +118,7 @@
     "test": "gulp --series testUnit testPerf",
     "preparePackage": "gulp preparePackage",
     "compileForTest": "gulp compileForTest",
+    "compileForTestInspectorOnly": "gulp compileForTestInspectorOnly",
     "compileForProd": "gulp compileForProd",
     "testUnit": "gulp testUnit",
     "testBun": "gulp testBun",

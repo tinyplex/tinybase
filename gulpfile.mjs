@@ -682,6 +682,10 @@ export const compileForTest = async () => {
   });
 };
 
+export const compileForTestInspectorOnly = async () => {
+  await compileModule('ui-react-inspector', DIST_DIR);
+};
+
 export const lintFiles = async () => {
   await lintCheckFiles('src');
   await lintCheckFiles('test');
