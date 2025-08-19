@@ -8,6 +8,7 @@ import type {
   EditableCellView as EditableCellViewDecl,
   EditableValueView as EditableValueViewDecl,
   ExtraRowCell,
+  ExtraValueCell,
   HtmlTableProps,
   RelationshipInHtmlTableProps,
   ResultSortedTableInHtmlTable as ResultSortedTableInHtmlTableDecl,
@@ -30,6 +31,7 @@ import type {
   ExtraProps,
   QueriesOrQueriesId,
   ResultCellProps,
+  RowProps,
   StoreOrStoreId,
   ValueProps,
 } from '../@types/ui-react/index.d.ts';
@@ -260,6 +262,38 @@ const useCells = (
     );
   }, [customCells, defaultCellComponent, defaultCellIds]);
 
+const extraKey = (index: number, after: 0 | 1) => (after ? '>' : '<') + index;
+
+const extraHeaders = (
+  extraCells: (ExtraRowCell | ExtraValueCell)[] | undefined,
+  after: 0 | 1 = 0,
+) =>
+  arrayMap(extraCells, ({label}, index) => (
+    <th key={extraKey(index, after)}>{label}</th>
+  ));
+
+const extraRowCells = (
+  extraRowCells: ExtraRowCell[] | undefined,
+  extraRowCellProps: RowProps,
+  after: 0 | 1 = 0,
+) =>
+  arrayMap(extraRowCells, ({component: Component}, index) => (
+    <td key={extraKey(index, after)}>
+      <Component {...extraRowCellProps} />
+    </td>
+  ));
+
+const extraValueCells = (
+  extraValueCells: ExtraValueCell[] | undefined,
+  extraValueCellProps: ValueProps,
+  after: 0 | 1 = 0,
+) =>
+  arrayMap(extraValueCells, ({component: Component}, index) => (
+    <td key={extraKey(index, after)}>
+      <Component {...extraValueCellProps} />
+    </td>
+  ));
+
 const HtmlTable = ({
   className,
   headerRow,
@@ -282,6 +316,7 @@ const HtmlTable = ({
     {headerRow === false ? null : (
       <thead>
         <tr>
+          {extraHeaders(extraCellsBefore)}
           {idColumn === false ? null : (
             <HtmlHeaderCell
               sort={sortAndOffset ?? []}
@@ -298,28 +333,33 @@ const HtmlTable = ({
               onClick={handleSort}
             />
           ))}
+          {extraHeaders(extraCellsAfter, 1)}
         </tr>
       </thead>
     )}
     <tbody>
-      {arrayMap(rowIds, (rowId) => (
-        <tr key={rowId}>
-          {idColumn === false ? null : <th>{rowId}</th>}
-          {objToArray(
-            cells,
-            ({component: CellView, getComponentProps}, cellId) => (
-              <td key={cellId}>
-                <CellView
-                  {...getProps(getComponentProps, rowId, cellId)}
-                  {...(cellComponentProps as any)}
-                  rowId={rowId}
-                  cellId={cellId}
-                />
-              </td>
-            ),
-          )}
-        </tr>
-      ))}
+      {arrayMap(rowIds, (rowId) => {
+        const rowProps = {...(cellComponentProps as any), rowId};
+        return (
+          <tr key={rowId}>
+            {extraRowCells(extraCellsBefore, rowProps)}
+            {idColumn === false ? null : <th>{rowId}</th>}
+            {objToArray(
+              cells,
+              ({component: CellView, getComponentProps}, cellId) => (
+                <td key={cellId}>
+                  <CellView
+                    {...getProps(getComponentProps, rowId, cellId)}
+                    {...rowProps}
+                    cellId={cellId}
+                  />
+                </td>
+              ),
+            )}
+            {extraRowCells(extraCellsAfter, rowProps, 1)}
+          </tr>
+        );
+      })}
     </tbody>
   </table>
 );
@@ -376,8 +416,14 @@ const RelationshipInHtmlRow = ({
     localRowId,
     relationships,
   ) as Id;
+  const rowProps: RowProps = {
+    tableId: localTableId ?? '',
+    rowId: localRowId,
+    store,
+  };
   return (
     <tr>
+      {extraRowCells(extraCellsBefore, rowProps)}
       {idColumn === false ? null : (
         <>
           <th>{localRowId}</th>
@@ -398,15 +444,15 @@ const RelationshipInHtmlRow = ({
             <td key={compoundCellId}>
               <CellView
                 {...getProps(getComponentProps, rowId, cellId)}
-                store={store}
+                {...rowProps}
                 tableId={tableId}
-                rowId={rowId}
                 cellId={cellId}
               />
             </td>
           );
         },
       )}
+      {extraRowCells(extraCellsAfter, rowProps, 1)}
     </tr>
   );
 };
@@ -618,24 +664,30 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
     {headerRow === false ? null : (
       <thead>
         <tr>
+          {extraHeaders(extraCellsBefore)}
           {idColumn === false ? null : <th>Id</th>}
           <th>{VALUE}</th>
+          {extraHeaders(extraCellsAfter, 1)}
         </tr>
       </thead>
     )}
     <tbody>
-      {arrayMap(useValueIds(store), (valueId) => (
-        <tr key={valueId}>
-          {idColumn === false ? null : <th>{valueId}</th>}
-          <td>
-            <Value
-              {...getProps(getValueComponentProps, valueId)}
-              valueId={valueId}
-              store={store}
-            />
-          </td>
-        </tr>
-      ))}
+      {arrayMap(useValueIds(store), (valueId) => {
+        const valueProps = {valueId, store};
+        return (
+          <tr key={valueId}>
+            {extraValueCells(extraCellsBefore, valueProps)}
+            {idColumn === false ? null : <th>{valueId}</th>}
+            <td>
+              <Value
+                {...getProps(getValueComponentProps, valueId)}
+                {...valueProps}
+              />
+            </td>
+            {extraValueCells(extraCellsAfter, valueProps, 1)}
+          </tr>
+        );
+      })}
     </tbody>
   </table>
 );
@@ -712,6 +764,7 @@ export const RelationshipInHtmlTable = ({
       {headerRow === false ? null : (
         <thead>
           <tr>
+            {extraHeaders(extraCellsBefore)}
             {idColumn === false ? null : (
               <>
                 <th>{localTableId}.Id</th>
@@ -721,6 +774,7 @@ export const RelationshipInHtmlTable = ({
             {objToArray(cells, ({label}, cellId) => (
               <th key={cellId}>{label}</th>
             ))}
+            {extraHeaders(extraCellsAfter, 1)}
           </tr>
         </thead>
       )}
