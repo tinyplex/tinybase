@@ -122,6 +122,10 @@ export type ValuesInHtmlTableProps = {
   readonly valueComponent?: ComponentType<ValueProps>;
   /// ValuesInHtmlTableProps.getValueComponentProps
   readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
+  /// ValuesInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraValueCell[];
+  /// ValuesInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraValueCell[];
 };
 
 /// SliceInHtmlTableProps

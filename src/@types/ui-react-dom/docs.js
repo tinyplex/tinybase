@@ -337,6 +337,18 @@
    * @since v4.1.0
    */
   /// ValuesInHtmlTableProps.getValueComponentProps
+  /**
+   * An optional list of extra Cells to render before the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// ValuesInHtmlTableProps.extraCellsBefore
+  /**
+   * An optional list of extra Cells to render after the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// ValuesInHtmlTableProps.extraCellsAfter
 }
 /**
  * SliceInHtmlTableProps props are used for components that will render an Index
