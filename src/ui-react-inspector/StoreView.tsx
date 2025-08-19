@@ -1,5 +1,6 @@
 import type {Id} from '../@types/common/index.d.ts';
 import type {
+  RowProps,
   TableProps,
   ValueProps,
   ValuesProps,
@@ -14,6 +15,7 @@ import {
 } from '../ui-react-dom/index.tsx';
 import {
   useCell,
+  useDelRowCallback,
   useDelValueCallback,
   useSetCellCallback,
   useStore,
@@ -29,6 +31,26 @@ import {
   useEditable,
 } from './common.ts';
 import type {StoreProp} from './types.ts';
+
+const DeleteRow = ({tableId, rowId, store}: RowProps) => (
+  <img
+    onClick={useDelRowCallback(tableId, rowId, store)}
+    title="Delete Row"
+    className="delete"
+  />
+);
+
+const extraRowCells = [{label: '', component: DeleteRow}];
+
+const DeleteValue = ({valueId, store}: ValueProps) => (
+  <img
+    onClick={useDelValueCallback(valueId, store)}
+    title="Delete Value"
+    className="delete"
+  />
+);
+
+const extraValueCells = [{label: '', component: DeleteValue}];
 
 const TableView = ({
   tableId,
@@ -68,20 +90,11 @@ const TableView = ({
         sortOnClick={true}
         onChange={handleChange}
         editable={editable}
+        extraCellsAfter={editable ? extraRowCells : []}
       />
     </Details>
   );
 };
-
-const DeleteValue = ({valueId, store}: ValueProps) => (
-  <img
-    onClick={useDelValueCallback(valueId, store)}
-    title="Delete"
-    className="delete"
-  />
-);
-
-const extraValueCells = [{label: '', component: DeleteValue}];
 
 const ValuesView = ({
   store,
