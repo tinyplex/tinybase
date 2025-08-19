@@ -36,6 +36,7 @@ export const Details = ({
           <img
             onClick={handleEditable}
             className={editable ? 'done' : 'edit'}
+            title={editable ? 'Done editing' : 'Edit'}
           />
         ) : null}
       </summary>

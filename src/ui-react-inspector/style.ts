@@ -12,6 +12,7 @@ import {
 } from './svg.ts';
 
 const SCROLLBAR = '*::-webkit-scrollbar';
+const BLACK_BORDER = '1px solid #000';
 
 export const APP_STYLESHEET = arrayJoin(
   objToArray(
@@ -22,7 +23,7 @@ export const APP_STYLESHEET = arrayJoin(
       '*::after': 'all:revert',
       [SCROLLBAR]: 'width:0.5rem;height:0.5rem;',
       [SCROLLBAR + '-track']: 'background:#111',
-      [SCROLLBAR + '-thumb']: 'background:#999;border:1px solid #111',
+      [SCROLLBAR + '-thumb']: 'background:#999;border:' + BLACK_BORDER,
       [SCROLLBAR + '-thumb:hover']: 'background:#fff',
       [SCROLLBAR + '-corner']: 'background:#111',
       img: 'width:1rem;height:1rem;border:0;vertical-align:text-bottom;cursor:pointer',
@@ -37,14 +38,17 @@ export const APP_STYLESHEET = arrayJoin(
       ),
 
       // Panel
-      main: 'display:flex;flex-direction:column;background:#111d;color:#fff;position:fixed;',
+      main: 'display:flex;flex-direction:column;background:#111e;backdrop-filter:blur(4px);color:#fff;position:fixed;',
       ...objNew(
         arrayMap(
           [
-            'bottom:0;left:0;width:35vw;height:100vh',
-            'top:0;right:0;width:100vw;height:30vh',
-            'bottom:0;left:0;width:100vw;height:30vh',
-            'top:0;right:0;width:35vw;height:100vh',
+            'bottom:0;left:0;width:35vw;height:100vh;border-right:' +
+              BLACK_BORDER,
+            'top:0;right:0;width:100vw;height:30vh;border-bottom:' +
+              BLACK_BORDER,
+            'bottom:0;left:0;width:100vw;height:30vh;border-top:' +
+              BLACK_BORDER,
+            'top:0;right:0;width:35vw;height:100vh;border-left:' + BLACK_BORDER,
             'top:0;right:0;width:100vw;height:100vh',
           ],
           (css, p) => [`main[data-position='${p}']`, css],
@@ -62,17 +66,16 @@ export const APP_STYLESHEET = arrayJoin(
         ]),
       ),
       'header>span':
-        'flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-left:0.25rem',
+        'font-weight:700;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-left:0.25rem',
 
       // Body
       article: 'padding:0.25rem 0.25rem 0.25rem 0.5rem;overflow:auto;flex:1',
       details: 'margin-left:0.75rem;width:fit-content;',
-      'details img': 'display:none',
-      'details[open]>summary img':
-        'display:unset;background:none;margin-left:0.25rem',
-      'details[open]>summary img.edit': EDIT_SVG,
-      'details[open]>summary img.done': DONE_SVG,
-      'img.delete': DELETE_SVG,
+      'details img': 'background:none',
+      'details>summary img': 'display:none',
+      'details[open]>summary img': 'display:unset;margin-left:0.25rem',
+      'img.edit': EDIT_SVG,
+      'img.done': DONE_SVG,
       summary:
         'margin-left:-0.75rem;line-height:1.25rem;user-select:none;width:fit-content',
 
@@ -94,6 +97,8 @@ export const APP_STYLESHEET = arrayJoin(
       'button.next': 'margin-right:0.5rem',
       [`th,#${UNIQUE_ID} td`]:
         'overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:12rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left',
+      [`th img,#${UNIQUE_ID} td img`]: 'height:0.8rem',
+      'img.delete': DELETE_SVG,
 
       'span.warn': 'margin:0.25rem;color:#d81b60',
     },

@@ -1,5 +1,9 @@
 import type {Id} from '../@types/common/index.d.ts';
-import type {TableProps, ValuesProps} from '../@types/ui-react/index.d.ts';
+import type {
+  TableProps,
+  ValueProps,
+  ValuesProps,
+} from '../@types/ui-react/index.d.ts';
 import {arrayIsEmpty} from '../common/array.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {isUndefined} from '../common/other.ts';
@@ -10,6 +14,7 @@ import {
 } from '../ui-react-dom/index.tsx';
 import {
   useCell,
+  useDelValueCallback,
   useSetCellCallback,
   useStore,
   useTableIds,
@@ -68,6 +73,16 @@ const TableView = ({
   );
 };
 
+const DeleteValue = ({valueId, store}: ValueProps) => (
+  <img
+    onClick={useDelValueCallback(valueId, store)}
+    title="Delete"
+    className="delete"
+  />
+);
+
+const extraValueCells = [{label: '', component: DeleteValue}];
+
 const ValuesView = ({
   store,
   storeId,
@@ -83,7 +98,11 @@ const ValuesView = ({
       handleEditable={handleEditable}
       s={s}
     >
-      <ValuesInHtmlTable store={store} editable={editable} />
+      <ValuesInHtmlTable
+        store={store}
+        editable={editable}
+        extraCellsAfter={editable ? extraValueCells : []}
+      />
     </Details>
   );
 };
