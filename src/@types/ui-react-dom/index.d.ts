@@ -9,6 +9,7 @@ import type {
   QueriesOrQueriesId,
   RelationshipsOrRelationshipsId,
   ResultCellProps,
+  RowProps,
   StoreOrStoreId,
   ValueProps,
 } from '../ui-react/index.d.ts';
@@ -31,6 +32,14 @@ export type CustomResultCell = {
   component?: ComponentType<ResultCellProps>;
   /// CustomResultCell.getComponentProps
   getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
+};
+
+/// ExtraCell
+export type ExtraCell = {
+  /// ExtraCell.label
+  label: string;
+  /// ExtraCell.component
+  component: ComponentType<RowProps>;
 };
 
 /// HtmlTableProps

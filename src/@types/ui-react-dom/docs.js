@@ -72,6 +72,29 @@
   /// CustomResultCell.getComponentProps
 }
 /**
+ * The ExtraCell object is used to configure the rendering of extra cells in an
+ * HTML table, to the left or right of the regular data cells.
+ * @category Configuration
+ * @since v6.6.0
+ */
+/// ExtraCell
+{
+  /**
+   * A string that will be used as the label at the top of the table
+   * column for this Cell.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// ExtraCell.label
+  /**
+   * An custom component for rendering each extra Cell in the table, and which
+   * will be passed props for the Row in which it is placed.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// ExtraCell.component
+}
+/**
  * HtmlTableProps props are used for components that will render in an HTML
  * table, such as the TableInHtmlTable component or SortedTableInHtmlTable
  * component.

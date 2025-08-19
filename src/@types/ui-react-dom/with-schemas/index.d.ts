@@ -13,6 +13,7 @@ import type {
   QueriesOrQueriesId,
   RelationshipsOrRelationshipsId,
   ResultCellProps,
+  RowProps,
   StoreOrStoreId,
   ValueProps,
 } from '../../_internal/ui-react/with-schemas/index.d.ts';
@@ -44,6 +45,17 @@ export type CustomResultCell<Schemas extends OptionalSchemas> = {
   component?: ComponentType<ResultCellProps<Schemas>>;
   /// CustomResultCell.getComponentProps
   getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
+};
+
+/// ExtraCell
+export type ExtraCell<
+  Schemas extends OptionalSchemas,
+  TableId extends TableIdFromSchema<Schemas[0]>,
+> = {
+  /// ExtraCell.label
+  label: string;
+  /// ExtraCell.component
+  component: ComponentType<RowProps<Schemas, TableId>>;
 };
 
 /// HtmlTableProps
