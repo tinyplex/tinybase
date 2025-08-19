@@ -72,27 +72,52 @@
   /// CustomResultCell.getComponentProps
 }
 /**
- * The ExtraCell object is used to configure the rendering of extra cells in an
- * HTML table, to the left or right of the regular data cells.
+ * The ExtraRowCell object is used to configure the rendering of extra cells in
+ * an HTML table that's displaying a ResultTable or Table - before or after the
+ * regular data cells.
  * @category Configuration
  * @since v6.6.0
  */
-/// ExtraCell
+/// ExtraRowCell
 {
   /**
-   * A string that will be used as the label at the top of the table
-   * column for this Cell.
+   * A string that will be used as the label at the top of the column for this
+   * Cell.
    * @category Prop
    * @since v6.6.0
    */
-  /// ExtraCell.label
+  /// ExtraRowCell.label
   /**
-   * An custom component for rendering each extra Cell in the table, and which
-   * will be passed props for the Row in which it is placed.
+   * A custom component for rendering each extra Cell in the table, and which
+   * will be passed props for the Row with which it is placed.
    * @category Prop
    * @since v6.6.0
    */
-  /// ExtraCell.component
+  /// ExtraRowCell.component
+}
+/**
+ * The ExtraValueCell object is used to configure the rendering of extra cells
+ * in an HTML table that's displaying Values - before or after the regular data
+ * cells.
+ * @category Configuration
+ * @since v6.6.0
+ */
+/// ExtraValueCell
+{
+  /**
+   * A string that will be used as the label at the top of the column for this
+   * Cell.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// ExtraValueCell.label
+  /**
+   * A custom component for rendering each extra Cell in the table, and which
+   * will be passed props for the Value with which it is placed.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// ExtraValueCell.component
 }
 /**
  * HtmlTableProps props are used for components that will render in an HTML

@@ -34,12 +34,20 @@ export type CustomResultCell = {
   getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
 };
 
-/// ExtraCell
-export type ExtraCell = {
-  /// ExtraCell.label
+/// ExtraRowCell
+export type ExtraRowCell = {
+  /// ExtraRowCell.label
   label: string;
-  /// ExtraCell.component
+  /// ExtraRowCell.component
   component: ComponentType<RowProps>;
+};
+
+/// ExtraValueCell
+export type ExtraValueCell = {
+  /// ExtraValueCell.label
+  label: string;
+  /// ExtraValueCell.component
+  component: ComponentType<ValueProps>;
 };
 
 /// HtmlTableProps
@@ -62,6 +70,10 @@ export type TableInHtmlTableProps = {
   readonly editable?: boolean;
   /// TableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
+  /// TableInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell[];
+  /// TableInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell[];
 };
 
 /// SortedTableInHtmlTableProps
@@ -82,6 +94,10 @@ export type SortedTableInHtmlTableProps = {
   readonly editable?: boolean;
   /// SortedTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
+  /// TableInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell[];
+  /// TableInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell[];
   /// SortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
   /// SortedTableInHtmlTableProps.paginator
@@ -120,6 +136,10 @@ export type SliceInHtmlTableProps = {
   readonly editable?: boolean;
   /// SliceInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
+  /// TableInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell[];
+  /// TableInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell[];
 };
 
 /// RelationshipInHtmlTableProps
@@ -132,6 +152,10 @@ export type RelationshipInHtmlTableProps = {
   readonly editable?: boolean;
   /// RelationshipInHtmlTable.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomCell};
+  /// TableInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell[];
+  /// TableInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell[];
 };
 
 /// ResultTableInHtmlTableProps
@@ -142,6 +166,10 @@ export type ResultTableInHtmlTableProps = {
   readonly queries?: QueriesOrQueriesId;
   /// ResultTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomResultCell};
+  /// TableInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell[];
+  /// TableInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell[];
 };
 
 /// ResultSortedTableInHtmlTableProps
@@ -160,6 +188,10 @@ export type ResultSortedTableInHtmlTableProps = {
   readonly queries?: QueriesOrQueriesId;
   /// ResultSortedTableInHtmlTableProps.customCells
   readonly customCells?: Ids | {[cellId: Id]: string | CustomResultCell};
+  /// TableInHtmlTableProps.extraCellsBefore
+  readonly extraCellsBefore?: ExtraRowCell[];
+  /// TableInHtmlTableProps.extraCellsAfter
+  readonly extraCellsAfter?: ExtraRowCell[];
   /// ResultSortedTableInHtmlTableProps.sortOnClick
   readonly sortOnClick?: boolean;
   /// ResultSortedTableInHtmlTableProps.paginator

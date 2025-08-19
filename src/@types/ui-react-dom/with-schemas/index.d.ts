@@ -47,15 +47,23 @@ export type CustomResultCell<Schemas extends OptionalSchemas> = {
   getComponentProps?: (rowId: Id, cellId: Id) => ExtraProps;
 };
 
-/// ExtraCell
-export type ExtraCell<
+/// ExtraRowCell
+export type ExtraRowCell<
   Schemas extends OptionalSchemas,
   TableId extends TableIdFromSchema<Schemas[0]>,
 > = {
-  /// ExtraCell.label
+  /// ExtraRowCell.label
   label: string;
-  /// ExtraCell.component
+  /// ExtraRowCell.component
   component: ComponentType<RowProps<Schemas, TableId>>;
+};
+
+/// ExtraValueCell
+export type ExtraValueCell<Schemas extends OptionalSchemas> = {
+  /// ExtraValueCell.label
+  label: string;
+  /// ExtraValueCell.component
+  component: ComponentType<ValueProps<Schemas>>;
 };
 
 /// HtmlTableProps
