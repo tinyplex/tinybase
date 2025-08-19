@@ -3,6 +3,7 @@ import {arrayJoin, arrayMap} from '../common/array.ts';
 import {objNew, objToArray} from '../common/obj.ts';
 import {UNIQUE_ID} from './common.ts';
 import {
+  CLONE_SVG,
   CLOSE_SVG,
   DELETE_SVG,
   DONE_SVG,
@@ -26,10 +27,12 @@ export const APP_STYLESHEET = arrayJoin(
       [SCROLLBAR + '-thumb']: 'background:#999;border:' + BLACK_BORDER,
       [SCROLLBAR + '-thumb:hover']: 'background:#fff',
       [SCROLLBAR + '-corner']: 'background:#111',
-      img: 'width:1rem;height:1rem;border:0;vertical-align:text-bottom;cursor:pointer',
+      img: 'width:0.8rem;height:0.8rem;border:0;vertical-align:text-bottom;cursor:pointer',
 
       // Nub
-      '>img': 'padding:0.25rem;bottom:0;right:0;position:fixed;' + LOGO_SVG,
+      '>img':
+        'padding:0.25rem;bottom:0;right:0;position:fixed;height:unset;' +
+        LOGO_SVG,
       ...objNew(
         arrayMap(['bottom:0;left:0', 'top:0;right:0'], (css, p) => [
           `>img[data-position='${p}']`,
@@ -97,7 +100,7 @@ export const APP_STYLESHEET = arrayJoin(
       'button.next': 'margin-right:0.5rem',
       [`th,#${UNIQUE_ID} td`]:
         'overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:12rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left',
-      [`th img,#${UNIQUE_ID} td img`]: 'height:0.8rem',
+      'img.clone': CLONE_SVG,
       'img.delete': DELETE_SVG,
 
       'span.warn': 'margin:0.25rem;color:#d81b60',

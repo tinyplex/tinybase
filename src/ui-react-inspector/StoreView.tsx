@@ -18,6 +18,8 @@ import {
   useDelRowCallback,
   useDelValueCallback,
   useSetCellCallback,
+  useSetRowCallback,
+  useSetValueCallback,
   useStore,
   useTableIds,
   useValueIds,
@@ -32,25 +34,48 @@ import {
 } from './common.ts';
 import type {StoreProp} from './types.ts';
 
-const DeleteRow = ({tableId, rowId, store}: RowProps) => (
-  <img
-    onClick={useDelRowCallback(tableId, rowId, store)}
-    title="Delete Row"
-    className="delete"
-  />
-);
+const clonedId = (oldId: Id, exists: (newId: Id) => boolean) => {
+  let newId;
+  let suffix = 1;
+  while (
+    exists((newId = oldId + ' (copy' + (suffix > 1 ? ' ' + suffix : '') + ')'))
+  ) {
+    suffix++;
+  }
+  return newId;
+};
 
-const extraRowCells = [{label: '', component: DeleteRow}];
+const RowActions = ({tableId, rowId, store}: RowProps) => {
+  const handleClone = useSetRowCallback(
+    tableId,
+    (_, store) => clonedId(rowId, (rowId) => store.hasRow(tableId, rowId)),
+    (_, store) => store.getRow(tableId, rowId)!,
+  );
+  const handleDelete = useDelRowCallback(tableId, rowId, store);
+  return (
+    <>
+      <img onClick={handleClone} title="Clone Row" className="clone" />
+      <img onClick={handleDelete} title="Delete Row" className="delete" />
+    </>
+  );
+};
 
-const DeleteValue = ({valueId, store}: ValueProps) => (
-  <img
-    onClick={useDelValueCallback(valueId, store)}
-    title="Delete Value"
-    className="delete"
-  />
-);
+const rowActions = [{label: '', component: RowActions}];
 
-const extraValueCells = [{label: '', component: DeleteValue}];
+const ValueActions = ({valueId, store}: ValueProps) => {
+  const handleClone = useSetValueCallback(
+    (_, store) => clonedId(valueId, store.hasValue),
+    (_, store) => store.getValue(valueId)!,
+  );
+  const handleDelete = useDelValueCallback(valueId, store);
+  return (
+    <>
+      <img onClick={handleClone} title="Clone Value" className="clone" />
+      <img onClick={handleDelete} title="Delete Value" className="delete" />
+    </>
+  );
+};
+const valueActions = [{label: '', component: ValueActions}];
 
 const TableView = ({
   tableId,
@@ -90,7 +115,7 @@ const TableView = ({
         sortOnClick={true}
         onChange={handleChange}
         editable={editable}
-        extraCellsAfter={editable ? extraRowCells : []}
+        extraCellsAfter={editable ? rowActions : []}
       />
     </Details>
   );
@@ -114,7 +139,7 @@ const ValuesView = ({
       <ValuesInHtmlTable
         store={store}
         editable={editable}
-        extraCellsAfter={editable ? extraValueCells : []}
+        extraCellsAfter={editable ? valueActions : []}
       />
     </Details>
   );
