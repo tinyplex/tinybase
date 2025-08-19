@@ -188,6 +188,18 @@
    * @since v4.1.0
    */
   /// TableInHtmlTableProps.customCells
+  /**
+   * An optional list of extra Cells to render before the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// TableInHtmlTableProps.extraCellsBefore
+  /**
+   * An optional list of extra Cells to render after the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// TableInHtmlTableProps.extraCellsAfter
 }
 /**
  * SortedTableInHtmlTableProps props are used for components that will render a
@@ -253,6 +265,18 @@
    * @since v4.1.0
    */
   /// SortedTableInHtmlTableProps.customCells
+  /**
+   * An optional list of extra Cells to render before the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// SortedTableInHtmlTableProps.extraCellsBefore
+  /**
+   * An optional list of extra Cells to render after the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// SortedTableInHtmlTableProps.extraCellsAfter
   /**
    * Whether the table should be interactive such that clicking a header changes
    * the sorting and/or direction.
@@ -360,6 +384,18 @@
    * @since v4.1.0
    */
   /// SliceInHtmlTableProps.customCells
+  /**
+   * An optional list of extra Cells to render before the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// SliceInHtmlTableProps.extraCellsBefore
+  /**
+   * An optional list of extra Cells to render after the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// SliceInHtmlTableProps.extraCellsAfter
 }
 /**
  * RelationshipInHtmlTableProps props are used for components that will render
@@ -409,6 +445,18 @@
    * @since v4.1.0
    */
   /// RelationshipInHtmlTable.customCells
+  /**
+   * An optional list of extra Cells to render before the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// RelationshipInHtmlTable.extraCellsBefore
+  /**
+   * An optional list of extra Cells to render after the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// RelationshipInHtmlTable.extraCellsAfter
 }
 /**
  * ResultTableInHtmlTableProps props are used for components that will render a
@@ -443,6 +491,18 @@
    * @since v4.1.0
    */
   /// ResultTableInHtmlTableProps.customCells
+  /**
+   * An optional list of extra Cells to render before the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// ResultTableInHtmlTableProps.extraCellsBefore
+  /**
+   * An optional list of extra Cells to render after the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// ResultTableInHtmlTableProps.extraCellsAfter
 }
 /**
  * ResultSortedTableInHtmlTableProps props are used for components that will
@@ -503,6 +563,18 @@
    * @since v4.1.0
    */
   /// ResultSortedTableInHtmlTableProps.customCells
+  /**
+   * An optional list of extra Cells to render before the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// ResultSortedTableInHtmlTableProps.extraCellsBefore
+  /**
+   * An optional list of extra Cells to render after the main table Cells.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// ResultSortedTableInHtmlTableProps.extraCellsAfter
   /**
    * Whether the table should be interactive such that clicking a header changes
    * the sorting and/or direction.
