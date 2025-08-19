@@ -2,34 +2,51 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import LOGO from '../../site/extras/favicon.svg';
-import {arrayMap} from '../common/array.ts';
+import {arrayMap, arrayPush} from '../common/array.ts';
 
-const PENCIL = 'M20 80l5-15l40-40l10 10l-40 40l-15 5m5-15l10 10';
 const PRE_CSS = 'content:url("';
 const POST_CSS = '")';
 
 const PRE =
   PRE_CSS +
-  `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' stroke-width='4' stroke='white' fill='none'>`;
-const POST = `</svg>` + POST_CSS;
+  `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960' fill='white'><path d='`;
+const POST = `' /></svg>` + POST_CSS;
+const VERTICAL_THIN = 'v560h120v-560h-120Z';
+const VERTICAL_THICK = 'v560h360v-560h-360Z';
+const HORIZONTAL_THIN = 'v120h560v-120h-560Z';
+const HORIZONTAL_THICK = 'v360h560v-360h-560Z';
 
 export const LOGO_SVG = PRE_CSS + LOGO + POST_CSS;
 
 export const POSITIONS_SVG = arrayMap(
   [
-    [20, 20, 20, 60],
-    [20, 20, 60, 20],
-    [20, 60, 60, 20],
-    [60, 20, 20, 60],
-    [30, 30, 40, 40],
+    `M200-760${VERTICAL_THIN} M400-760${VERTICAL_THICK}`,
+    `M200-760${HORIZONTAL_THIN} M200-560${HORIZONTAL_THICK}`,
+    `M200-760${HORIZONTAL_THICK} M200-320${HORIZONTAL_THIN}`,
+    `M200-760${VERTICAL_THICK} M640-760${VERTICAL_THIN}`,
   ],
-  ([x, y, w, h]) =>
+  (path) =>
     PRE +
-    `<rect x='20' y='20' width='60' height='60' fill='grey'/><rect x='${x}' y='${y}' width='${w}' height='${h}' fill='white'/>` +
+    'M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Z' +
+    path +
+    POST,
+);
+arrayPush(
+  POSITIONS_SVG,
+  PRE +
+    'M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z' +
     POST,
 );
 
-export const CLOSE_SVG = PRE + `<path d='M20 20l60 60M20 80l60-60' />` + POST;
-
-export const EDIT_SVG = PRE + `<path d='${PENCIL}' />` + POST;
-export const DONE_SVG = PRE + `<path d='${PENCIL}M20 20l60 60' />` + POST;
+export const CLOSE_SVG =
+  PRE +
+  'm336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z' +
+  POST;
+export const EDIT_SVG =
+  PRE +
+  'M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z' +
+  POST;
+export const DONE_SVG =
+  PRE +
+  'm622-453-56-56 82-82-57-57-82 82-56-56 195-195q12-12 26.5-17.5T705-840q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L622-453ZM200-200h57l195-195-28-29-29-28-195 195v57ZM792-56 509-338 290-120H120v-169l219-219L56-792l57-57 736 736-57 57Zm-32-648-56-56 56 56Zm-169 56 57 57-57-57ZM424-424l-29-28 57 57-28-29Z' +
+  POST;

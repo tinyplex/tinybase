@@ -2,7 +2,14 @@
 import {arrayJoin, arrayMap} from '../common/array.ts';
 import {objNew, objToArray} from '../common/obj.ts';
 import {UNIQUE_ID} from './common.ts';
-import {CLOSE_SVG, DONE_SVG, EDIT_SVG, LOGO_SVG, POSITIONS_SVG} from './svg.ts';
+import {
+  CLOSE_SVG,
+  DELETE_SVG,
+  DONE_SVG,
+  EDIT_SVG,
+  LOGO_SVG,
+  POSITIONS_SVG,
+} from './svg.ts';
 
 const SCROLLBAR = '*::-webkit-scrollbar';
 
@@ -18,7 +25,7 @@ export const APP_STYLESHEET = arrayJoin(
       [SCROLLBAR + '-thumb']: 'background:#999;border:1px solid #111',
       [SCROLLBAR + '-thumb:hover']: 'background:#fff',
       [SCROLLBAR + '-corner']: 'background:#111',
-      img: 'width:1rem;height:1rem;background:#111;border:0;vertical-align:text-bottom;cursor:pointer',
+      img: 'width:1rem;height:1rem;border:0;vertical-align:text-bottom;cursor:pointer',
 
       // Nub
       '>img': 'padding:0.25rem;bottom:0;right:0;position:fixed;' + LOGO_SVG,
@@ -65,6 +72,7 @@ export const APP_STYLESHEET = arrayJoin(
         'display:unset;background:none;margin-left:0.25rem',
       'details[open]>summary img.edit': EDIT_SVG,
       'details[open]>summary img.done': DONE_SVG,
+      'img.delete': DELETE_SVG,
       summary:
         'margin-left:-0.75rem;line-height:1.25rem;user-select:none;width:fit-content',
 
