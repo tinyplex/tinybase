@@ -13,7 +13,7 @@ import {
 } from './svg.ts';
 
 const SCROLLBAR = '*::-webkit-scrollbar';
-const BLACK_BORDER = '1px solid #000';
+const WHITE_BORDER = '1px solid #fff';
 
 export const APP_STYLESHEET = arrayJoin(
   objToArray(
@@ -24,7 +24,7 @@ export const APP_STYLESHEET = arrayJoin(
       '*::after': 'all:revert',
       [SCROLLBAR]: 'width:0.5rem;height:0.5rem;',
       [SCROLLBAR + '-track']: 'background:#111',
-      [SCROLLBAR + '-thumb']: 'background:#999;border:' + BLACK_BORDER,
+      [SCROLLBAR + '-thumb']: 'background:#999;border:1px solid #111',
       [SCROLLBAR + '-thumb:hover']: 'background:#fff',
       [SCROLLBAR + '-corner']: 'background:#111',
       img: 'width:0.8rem;height:0.8rem;border:0;vertical-align:text-bottom;cursor:pointer',
@@ -41,17 +41,17 @@ export const APP_STYLESHEET = arrayJoin(
       ),
 
       // Panel
-      main: 'display:flex;flex-direction:column;background:#111e;backdrop-filter:blur(4px);color:#fff;position:fixed;',
+      main: 'display:flex;flex-direction:column;background:#111d;backdrop-filter:blur(4px);color:#fff;position:fixed;',
       ...objNew(
         arrayMap(
           [
             'bottom:0;left:0;width:35vw;height:100vh;border-right:' +
-              BLACK_BORDER,
+              WHITE_BORDER,
             'top:0;right:0;width:100vw;height:30vh;border-bottom:' +
-              BLACK_BORDER,
+              WHITE_BORDER,
             'bottom:0;left:0;width:100vw;height:30vh;border-top:' +
-              BLACK_BORDER,
-            'top:0;right:0;width:35vw;height:100vh;border-left:' + BLACK_BORDER,
+              WHITE_BORDER,
+            'top:0;right:0;width:35vw;height:100vh;border-left:' + WHITE_BORDER,
             'top:0;right:0;width:100vw;height:100vh',
           ],
           (css, p) => [`main[data-position='${p}']`, css],
