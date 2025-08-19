@@ -7,6 +7,7 @@ import type {
   CustomResultCell,
   EditableCellView as EditableCellViewDecl,
   EditableValueView as EditableValueViewDecl,
+  ExtraRowCell,
   HtmlTableProps,
   RelationshipInHtmlTableProps,
   ResultSortedTableInHtmlTable as ResultSortedTableInHtmlTableDecl,
@@ -106,6 +107,8 @@ type HtmlTableParams = [
   cells: Cells,
   cellComponentProps: CellComponentProps,
   rowIds: Ids,
+  extraCellsBefore?: ExtraRowCell[],
+  extraCellsAfter?: ExtraRowCell[],
   sortAndOffset?: SortAndOffset,
   handleSort?: HandleSort,
   paginator?: ReactNode,
@@ -118,6 +121,8 @@ type RelationshipInHtmlRowParams = [
   relationshipId: Id,
   relationships: Relationships | undefined,
   store: Store | undefined,
+  extraCellsBefore?: ExtraRowCell[],
+  extraCellsAfter?: ExtraRowCell[],
 ];
 
 const EDITABLE = 'editable';
@@ -263,6 +268,8 @@ const HtmlTable = ({
     cells,
     cellComponentProps,
     rowIds,
+    extraCellsBefore,
+    extraCellsAfter,
     sortAndOffset,
     handleSort,
     paginatorComponent,
@@ -357,6 +364,8 @@ const RelationshipInHtmlRow = ({
     relationshipId,
     relationships,
     store,
+    extraCellsBefore,
+    extraCellsAfter,
   ],
 }: {
   readonly localRowId: Id;
@@ -526,6 +535,8 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
   store,
   editable,
   customCells,
+  extraCellsBefore,
+  extraCellsAfter,
   ...props
 }: TableInHtmlTableProps & HtmlTableProps): any => (
   <HtmlTable
@@ -538,6 +549,8 @@ export const TableInHtmlTable: typeof TableInHtmlTableDecl = ({
       ),
       useStoreCellComponentProps(store, tableId),
       useRowIds(tableId, store),
+      extraCellsBefore,
+      extraCellsAfter,
     )}
   />
 );
@@ -554,6 +567,8 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   paginator = false,
   onChange,
   customCells,
+  extraCellsBefore,
+  extraCellsAfter,
   ...props
 }: SortedTableInHtmlTableProps & HtmlTableProps): any => {
   const [sortAndOffset, handleSort, paginatorComponent] =
@@ -578,6 +593,8 @@ export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
         ),
         useStoreCellComponentProps(store, tableId),
         useSortedRowIds(tableId, ...sortAndOffset, limit, store),
+        extraCellsBefore,
+        extraCellsAfter,
         sortAndOffset,
         handleSort,
         paginatorComponent,
@@ -591,6 +608,8 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
   editable = false,
   valueComponent: Value = editable ? EditableValueView : ValueView,
   getValueComponentProps,
+  extraCellsBefore,
+  extraCellsAfter,
   className,
   headerRow,
   idColumn,
@@ -627,6 +646,8 @@ export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = ({
   indexes,
   editable,
   customCells,
+  extraCellsBefore,
+  extraCellsAfter,
   ...props
 }: SliceInHtmlTableProps & HtmlTableProps): any => {
   const [resolvedIndexes, store, tableId] = getIndexStoreTableId(
@@ -644,6 +665,8 @@ export const SliceInHtmlTable: typeof SliceInHtmlTableDecl = ({
         ),
         useStoreCellComponentProps(store, tableId as Id),
         useSliceRowIds(indexId, sliceId, resolvedIndexes),
+        extraCellsBefore,
+        extraCellsAfter,
       )}
     />
   );
@@ -654,6 +677,8 @@ export const RelationshipInHtmlTable = ({
   relationships,
   editable,
   customCells,
+  extraCellsBefore,
+  extraCellsAfter,
   className,
   headerRow,
   idColumn = true,
@@ -679,6 +704,8 @@ export const RelationshipInHtmlTable = ({
     relationshipId,
     resolvedRelationships,
     store,
+    extraCellsBefore,
+    extraCellsAfter,
   );
   return (
     <table className={className}>
@@ -714,6 +741,8 @@ export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = ({
   queryId,
   queries,
   customCells,
+  extraCellsBefore,
+  extraCellsAfter,
   ...props
 }: ResultTableInHtmlTableProps & HtmlTableProps): any => (
   <HtmlTable
@@ -726,6 +755,8 @@ export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = ({
       ),
       useQueriesCellComponentProps(queries, queryId),
       useResultRowIds(queryId, queries),
+      extraCellsBefore,
+      extraCellsAfter,
     )}
   />
 );
@@ -741,6 +772,8 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
     sortOnClick,
     paginator = false,
     customCells,
+    extraCellsBefore,
+    extraCellsAfter,
     onChange,
     ...props
   }: ResultSortedTableInHtmlTableProps & HtmlTableProps): any => {
@@ -766,6 +799,8 @@ export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDe
           ),
           useQueriesCellComponentProps(queries, queryId),
           useResultSortedRowIds(queryId, ...sortAndOffset, limit, queries),
+          extraCellsBefore,
+          extraCellsAfter,
           sortAndOffset,
           handleSort,
           paginatorComponent,
