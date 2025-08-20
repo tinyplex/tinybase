@@ -32,8 +32,8 @@ const ValueDelete = ({
 const ValueActions = ({valueId, store}: ValueProps) => (
   <ConfirmableActions
     actions={[
-      ['clone', ValueClone],
-      ['delete', ValueDelete],
+      ['clone', 'Clone Value', ValueClone],
+      ['delete', 'Delete Value', ValueDelete],
     ]}
     store={store}
     valueId={valueId}

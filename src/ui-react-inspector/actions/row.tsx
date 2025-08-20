@@ -34,8 +34,8 @@ const RowDelete = ({
 const RowActions = ({tableId, rowId, store}: RowProps) => (
   <ConfirmableActions
     actions={[
-      ['clone', RowClone],
-      ['delete', RowDelete],
+      ['clone', 'Clone Row', RowClone],
+      ['delete', 'Delete Row', RowDelete],
     ]}
     store={store}
     tableId={tableId}

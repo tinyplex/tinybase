@@ -20,6 +20,7 @@ export const ConfirmableActions = <Props extends RowProps | ValueProps>({
 }: {
   actions: [
     icon: string,
+    title: string,
     component: ComponentType<{onDone: () => void} & Props>,
   ][];
 } & Props) => {
@@ -34,8 +35,13 @@ export const ConfirmableActions = <Props extends RowProps | ValueProps>({
       </>
     );
   } else {
-    return actions.map(([icon], index) => (
-      <img key={index} className={icon} onClick={() => setConfirming(index)} />
+    return actions.map(([icon, title], index) => (
+      <img
+        key={index}
+        title={title}
+        className={icon}
+        onClick={() => setConfirming(index)}
+      />
     ));
   }
 };
