@@ -1,13 +1,13 @@
 import {MMKV} from 'react-native-mmkv';
 import type {Listener} from 'react-native-mmkv/lib/typescript/src/Types.d.ts';
-import type {MergeableStore} from '../../@types/mergeable-store/index.js';
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   PersistedContent,
   Persister,
   PersisterListener,
   Persists as PersistsType,
 } from '../../@types/persisters/index.d.ts';
-import type {Store} from '../../@types/store/index.js';
+import type {Store} from '../../@types/store/index.d.ts';
 import {createCustomPersister} from '../common/create.ts';
 
 const STORAGE = 'storage';

@@ -1,10 +1,10 @@
-import type {MergeableStore} from '../../@types/mergeable-store/index.js';
-import type {DatabasePersisterConfig} from '../../@types/persisters/index.js';
+import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
+import type {DatabasePersisterConfig} from '../../@types/persisters/index.d.ts';
 import type {
   ReactNativeSqlitePersister,
   createReactNativeSqlitePersister as createReactNativeSqlitePersisterDecl,
-} from '../../@types/persisters/persister-react-native-sqlite/index.js';
-import type {Store} from '../../@types/store/index.js';
+} from '../../@types/persisters/persister-react-native-sqlite/index.d.ts';
+import type {Store} from '../../@types/store/index.d.ts';
 import {IdObj} from '../../common/obj.ts';
 import {noop} from '../../common/other.ts';
 import {createCustomSqlitePersister} from '../common/database/sqlite.ts';

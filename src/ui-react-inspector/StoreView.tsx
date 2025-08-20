@@ -16,7 +16,8 @@ import {
   useValueIds,
 } from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
-import {rowActions, valueActions} from './actions.tsx';
+import {rowActions} from './actions/row.tsx';
+import {valueActions} from './actions/value.tsx';
 import {
   SORT_CELL,
   STATE_TABLE,

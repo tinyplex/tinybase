@@ -1,11 +1,11 @@
 /* eslint-disable max-len */
 import type {
+  MergeableStore,
   RowStamp,
   TablesStamp,
   TableStamp,
   ValuesStamp,
 } from '../../@types/mergeable-store/index.d.ts';
-import type {MergeableStore} from '../../@types/mergeable-store/index.js';
 import type {
   DpcJson,
   PersistedChanges,
