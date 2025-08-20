@@ -3,12 +3,15 @@ import {arrayJoin, arrayMap} from '../common/array.ts';
 import {objNew, objToArray} from '../common/obj.ts';
 import {UNIQUE_ID} from './common.ts';
 import {
+  CANCEL_SVG,
   CLONE_SVG,
   CLOSE_SVG,
   DELETE_SVG,
   DONE_SVG,
   EDIT_SVG,
   LOGO_SVG,
+  OK_SVG,
+  OK_SVG_DISABLED,
   POSITIONS_SVG,
 } from './svg.ts';
 
@@ -85,11 +88,12 @@ export const APP_STYLESHEET = arrayJoin(
       // tables
       table: 'border-collapse:collapse;table-layout:fixed;margin-bottom:0.5rem',
       'table input':
-        'background:#111;color:unset;padding:0 0.25rem;border:0;font-size:unset;vertical-align:top;margin:0',
+        'background:#000;color:unset;padding:0 0.25rem;border:1px solid #444;font-size:unset;vertical-align:top;margin:-1px',
       'table input[type="number"]': 'width:4rem',
+      'table input[type="checkbox"]': 'margin-top:1px',
       'table tbody button':
-        'font-size:0;background:#fff;border-radius:50%;margin:0 0.125rem 0 0;width:0.85rem;color:#111',
-      'table button:first-letter': 'font-size:0.75rem',
+        'font-size:0;width:0.8rem;line-height:0.8rem;height:0.8rem;color:#777;margin:0 0.125rem 0 0',
+      'table button:first-letter': 'font-size:0.8rem',
       thead: 'background:#222',
       'th:nth-of-type(1)': 'min-width:2rem;',
       'th.sorted': 'background:#000',
@@ -99,9 +103,12 @@ export const APP_STYLESHEET = arrayJoin(
       'button[disabled]': 'color:#777',
       'button.next': 'margin-right:0.5rem',
       [`th,#${UNIQUE_ID} td`]:
-        'overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:12rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left',
+        'overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:15rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left',
       'img.clone': CLONE_SVG,
       'img.delete': DELETE_SVG,
+      'img.ok': OK_SVG,
+      'img.ok-dis': OK_SVG_DISABLED,
+      'img.cancel': CANCEL_SVG,
 
       'span.warn': 'margin:0.25rem;color:#d81b60',
     },

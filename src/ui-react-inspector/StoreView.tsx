@@ -1,10 +1,5 @@
 import type {Id} from '../@types/common/index.d.ts';
-import type {
-  RowProps,
-  TableProps,
-  ValueProps,
-  ValuesProps,
-} from '../@types/ui-react/index.d.ts';
+import type {TableProps, ValuesProps} from '../@types/ui-react/index.d.ts';
 import {arrayIsEmpty} from '../common/array.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {isUndefined} from '../common/other.ts';
@@ -15,16 +10,13 @@ import {
 } from '../ui-react-dom/index.tsx';
 import {
   useCell,
-  useDelRowCallback,
-  useDelValueCallback,
   useSetCellCallback,
-  useSetRowCallback,
-  useSetValueCallback,
   useStore,
   useTableIds,
   useValueIds,
 } from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
+import {rowActions, valueActions} from './actions.tsx';
 import {
   SORT_CELL,
   STATE_TABLE,
@@ -33,49 +25,6 @@ import {
   useEditable,
 } from './common.ts';
 import type {StoreProp} from './types.ts';
-
-const clonedId = (oldId: Id, exists: (newId: Id) => boolean) => {
-  let newId;
-  let suffix = 1;
-  while (
-    exists((newId = oldId + ' (copy' + (suffix > 1 ? ' ' + suffix : '') + ')'))
-  ) {
-    suffix++;
-  }
-  return newId;
-};
-
-const RowActions = ({tableId, rowId, store}: RowProps) => {
-  const handleClone = useSetRowCallback(
-    tableId,
-    (_, store) => clonedId(rowId, (rowId) => store.hasRow(tableId, rowId)),
-    (_, store) => store.getRow(tableId, rowId)!,
-  );
-  const handleDelete = useDelRowCallback(tableId, rowId, store);
-  return (
-    <>
-      <img onClick={handleClone} title="Clone Row" className="clone" />
-      <img onClick={handleDelete} title="Delete Row" className="delete" />
-    </>
-  );
-};
-
-const rowActions = [{label: '', component: RowActions}];
-
-const ValueActions = ({valueId, store}: ValueProps) => {
-  const handleClone = useSetValueCallback(
-    (_, store) => clonedId(valueId, store.hasValue),
-    (_, store) => store.getValue(valueId)!,
-  );
-  const handleDelete = useDelValueCallback(valueId, store);
-  return (
-    <>
-      <img onClick={handleClone} title="Clone Value" className="clone" />
-      <img onClick={handleDelete} title="Delete Value" className="delete" />
-    </>
-  );
-};
-const valueActions = [{label: '', component: ValueActions}];
 
 const TableView = ({
   tableId,
