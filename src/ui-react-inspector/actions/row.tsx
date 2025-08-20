@@ -1,8 +1,55 @@
 import type {Id} from '../../@types/index.d.ts';
 import type {RowProps} from '../../@types/ui-react/index.d.ts';
-import {useCallback} from '../../common/react.ts';
+import {useCallback, useState} from '../../common/react.ts';
 import {useDelRowCallback, useStoreOrStoreById} from '../../ui-react/index.ts';
-import {Clone, ConfirmableActions, Delete} from './common.tsx';
+import {Clone, clonedId, ConfirmableActions, Delete} from './common.tsx';
+
+const RowAddCell = ({
+  onDone,
+  tableId,
+  rowId,
+  store: storeOrId,
+}: {onDone: () => void} & RowProps) => {
+  const store = useStoreOrStoreById(storeOrId)!;
+  const has = useCallback(
+    (cellId: Id) => store.hasCell(tableId, rowId, cellId),
+    [store, tableId, rowId],
+  );
+  const cloneId = useCallback(
+    () => clonedId(store.getCellIds(tableId, rowId)[0], has),
+    [store, tableId, rowId, has],
+  );
+  const [newId, setNewId] = useState<Id>(cloneId);
+  const [newIdOk, setNewIdOk] = useState<boolean>(true);
+  const [previousClone, setPreviousClone] = useState<() => Id>(() => cloneId);
+  const handleNewIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewId(e.target.value);
+    setNewIdOk(!has(e.target.value));
+  };
+  const handleAddCell = useCallback(() => {
+    if (has(newId)) {
+      setNewIdOk(false);
+    } else {
+      store.setCell(tableId, rowId, newId, '');
+      onDone();
+    }
+  }, [onDone, setNewIdOk, has, store, newId, tableId, rowId]);
+  if (cloneId != previousClone) {
+    setNewId(cloneId);
+    setPreviousClone(cloneId);
+  }
+  return (
+    <>
+      {'New Cell Id: '}
+      <input type="text" value={newId} onChange={handleNewIdChange} />{' '}
+      <img
+        onClick={handleAddCell}
+        title={newIdOk ? 'Add Cell' : 'Id already exists'}
+        className={newIdOk ? 'ok' : 'okDis'}
+      />
+    </>
+  );
+};
 
 const RowClone = ({
   onDone,
@@ -34,6 +81,7 @@ const RowDelete = ({
 const RowActions = ({tableId, rowId, store}: RowProps) => (
   <ConfirmableActions
     actions={[
+      ['addCell', 'Add Cell', RowAddCell],
       ['clone', 'Clone Row', RowClone],
       ['delete', 'Delete Row', RowDelete],
     ]}

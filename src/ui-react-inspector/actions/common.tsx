@@ -3,11 +3,11 @@ import type {Id} from '../../@types/common/index.d.ts';
 import type {RowProps, ValueProps} from '../../@types/ui-react/index.d.ts';
 import {useCallback, useState} from '../../common/react.ts';
 
-export const clonedId = (oldId: Id, exists: (newId: Id) => boolean) => {
+export const clonedId = (oldId: Id, has: (newId: Id) => boolean) => {
   let newId;
   let suffix = 1;
   while (
-    exists((newId = oldId + ' (copy' + (suffix > 1 ? ' ' + suffix : '') + ')'))
+    has((newId = oldId + ' (copy' + (suffix > 1 ? ' ' + suffix : '') + ')'))
   ) {
     suffix++;
   }
@@ -27,7 +27,7 @@ export const ConfirmableActions = <Props extends RowProps | ValueProps>({
   const [confirming, setConfirming] = useState<number | null>();
   const handleDone = useCallback(() => setConfirming(null), []);
   if (confirming != null) {
-    const [, Component] = actions[confirming];
+    const [, , Component] = actions[confirming];
     return (
       <>
         <Component onDone={handleDone} {...(props as any)} />
@@ -57,10 +57,12 @@ export const Clone = ({
   has: (id: Id) => boolean;
   set: (newId: Id) => void;
 }) => {
-  const clone = useCallback(() => clonedId(id, has), [id, has]);
-  const [newId, setNewId] = useState<Id>(clone);
+  const cloneId = useCallback(() => clonedId(id, has), [id, has]);
+  const [newId, setNewId] = useState<Id>(cloneId);
   const [newIdOk, setNewIdOk] = useState<boolean>(true);
-  const [previousClone, setPreviousClone] = useState<() => Id>(() => clone);
+  const [previousCloneId, setPreviousCloneId] = useState<() => Id>(
+    () => cloneId,
+  );
   const handleNewIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewId(e.target.value);
     setNewIdOk(!has(e.target.value));
@@ -73,9 +75,9 @@ export const Clone = ({
       onDone();
     }
   }, [onDone, setNewIdOk, has, set, newId]);
-  if (clone != previousClone) {
-    setNewId(clone);
-    setPreviousClone(clone);
+  if (cloneId != previousCloneId) {
+    setNewId(cloneId);
+    setPreviousCloneId(cloneId);
   }
   return (
     <>
@@ -84,7 +86,7 @@ export const Clone = ({
       <img
         onClick={handleClone}
         title={newIdOk ? 'Clone' : 'Id already exists'}
-        className={newIdOk ? 'ok' : 'ok-dis'}
+        className={newIdOk ? 'ok' : 'okDis'}
       />
     </>
   );

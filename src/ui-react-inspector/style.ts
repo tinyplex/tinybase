@@ -3,6 +3,7 @@ import {arrayJoin, arrayMap} from '../common/array.ts';
 import {objNew, objToArray} from '../common/obj.ts';
 import {UNIQUE_ID} from './common.ts';
 import {
+  ADD_CELL_SVG,
   CANCEL_SVG,
   CLONE_SVG,
   CLOSE_SVG,
@@ -30,7 +31,7 @@ export const APP_STYLESHEET = arrayJoin(
       [SCROLLBAR + '-thumb']: 'background:#999;border:1px solid #111',
       [SCROLLBAR + '-thumb:hover']: 'background:#fff',
       [SCROLLBAR + '-corner']: 'background:#111',
-      img: 'width:0.8rem;height:0.8rem;border:0;vertical-align:text-bottom;cursor:pointer',
+      img: 'width:0.8rem;height:0.8rem;border:0;vertical-align:text-bottom;cursor:pointer;margin:0 0.125rem',
 
       // Nub
       '>img':
@@ -104,10 +105,11 @@ export const APP_STYLESHEET = arrayJoin(
       'button.next': 'margin-right:0.5rem',
       [`th,#${UNIQUE_ID} td`]:
         'overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:15rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left',
+      'img.addCell': ADD_CELL_SVG,
       'img.clone': CLONE_SVG,
       'img.delete': DELETE_SVG,
       'img.ok': OK_SVG,
-      'img.ok-dis': OK_SVG_DISABLED,
+      'img.okDis': OK_SVG_DISABLED,
       'img.cancel': CANCEL_SVG,
 
       'span.warn': 'margin:0.25rem;color:#d81b60',
