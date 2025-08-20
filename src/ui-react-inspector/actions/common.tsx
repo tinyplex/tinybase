@@ -54,7 +54,7 @@ export const Clone = ({
   const clone = useCallback(() => clonedId(id, has), [id, has]);
   const [newId, setNewId] = useState<Id>(clone);
   const [newIdOk, setNewIdOk] = useState<boolean>(true);
-  const [previousClone, setPreviousClone] = useState<() => Id>(clone);
+  const [previousClone, setPreviousClone] = useState<() => Id>(() => clone);
   const handleNewIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewId(e.target.value);
     setNewIdOk(!has(e.target.value));
