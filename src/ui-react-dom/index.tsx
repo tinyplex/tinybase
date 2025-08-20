@@ -471,7 +471,9 @@ const EditableThing = <Thing extends Cell | Value>({
   readonly showType?: boolean;
 }) => {
   const [thingType, setThingType] = useState<CellOrValueType>();
-  const [currentThing, setCurrentThing] = useState<string | number | boolean>();
+  const [currentThing, setCurrentThing] = useState<
+    string | number | boolean | null
+  >();
   const [stringThing, setStringThing] = useState<string>();
   const [numberThing, setNumberThing] = useState<number>();
   const [booleanThing, setBooleanThing] = useState<boolean>();
@@ -520,9 +522,51 @@ const EditableThing = <Thing extends Cell | Value>({
     thingType,
   ]);
 
+  const widget = getTypeCase(
+    thingType,
+    <input
+      key={thingType}
+      value={stringThing}
+      onChange={useCallback(
+        (event: FormEvent<HTMLInputElement>) =>
+          handleThingChange(
+            String(event[CURRENT_TARGET][_VALUE]),
+            setStringThing,
+          ),
+        [handleThingChange],
+      )}
+    />,
+    <input
+      key={thingType}
+      type="number"
+      value={numberThing}
+      onChange={useCallback(
+        (event: FormEvent<HTMLInputElement>) =>
+          handleThingChange(
+            Number(event[CURRENT_TARGET][_VALUE] || 0),
+            setNumberThing,
+          ),
+        [handleThingChange],
+      )}
+    />,
+    <input
+      key={thingType}
+      type="checkbox"
+      checked={booleanThing}
+      onChange={useCallback(
+        (event: FormEvent<HTMLInputElement>) =>
+          handleThingChange(
+            Boolean(event[CURRENT_TARGET].checked),
+            setBooleanThing,
+          ),
+        [handleThingChange],
+      )}
+    />,
+  );
+
   return (
     <div className={className}>
-      {showType ? (
+      {showType && widget ? (
         <button
           title={thingType}
           className={thingType}
@@ -531,47 +575,7 @@ const EditableThing = <Thing extends Cell | Value>({
           {thingType}
         </button>
       ) : null}
-      {getTypeCase(
-        thingType,
-        <input
-          key={thingType}
-          value={stringThing}
-          onChange={useCallback(
-            (event: FormEvent<HTMLInputElement>) =>
-              handleThingChange(
-                String(event[CURRENT_TARGET][_VALUE]),
-                setStringThing,
-              ),
-            [handleThingChange],
-          )}
-        />,
-        <input
-          key={thingType}
-          type="number"
-          value={numberThing}
-          onChange={useCallback(
-            (event: FormEvent<HTMLInputElement>) =>
-              handleThingChange(
-                Number(event[CURRENT_TARGET][_VALUE] || 0),
-                setNumberThing,
-              ),
-            [handleThingChange],
-          )}
-        />,
-        <input
-          key={thingType}
-          type="checkbox"
-          checked={booleanThing}
-          onChange={useCallback(
-            (event: FormEvent<HTMLInputElement>) =>
-              handleThingChange(
-                Boolean(event[CURRENT_TARGET].checked),
-                setBooleanThing,
-              ),
-            [handleThingChange],
-          )}
-        />,
-      )}
+      {widget}
     </div>
   );
 };

@@ -5,7 +5,7 @@ import type {
   ValueOrUndefined,
 } from '../@types/store/index.d.ts';
 import {isFiniteNumber, isTypeStringOrBoolean, isUndefined} from './other.ts';
-import {NUMBER, STRING, getTypeOf} from './strings.ts';
+import {BOOLEAN, NUMBER, STRING, getTypeOf} from './strings.ts';
 
 export type CellOrValueType = 'string' | 'number' | 'boolean';
 
@@ -45,5 +45,11 @@ export const getTypeCase = <IfStringReturn, IfNumberReturn, IfBooleanReturn>(
   stringCase: IfStringReturn,
   numberCase: IfNumberReturn,
   booleanCase: IfBooleanReturn,
-): IfStringReturn | IfNumberReturn | IfBooleanReturn =>
-  type == STRING ? stringCase : type == NUMBER ? numberCase : booleanCase;
+): IfStringReturn | IfNumberReturn | IfBooleanReturn | null =>
+  type == STRING
+    ? stringCase
+    : type == NUMBER
+      ? numberCase
+      : type == BOOLEAN
+        ? booleanCase
+        : null;
