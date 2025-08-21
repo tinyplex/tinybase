@@ -38,7 +38,7 @@ export const Inspector = ({
         <Panel s={s} />
       </aside>
       <style>
-        {`#${UNIQUE_ID}{--inspectorHue:${hue}}`}
+        {`#${UNIQUE_ID}{--hue:${hue}}`}
         {APP_STYLESHEET}
       </style>
     </>

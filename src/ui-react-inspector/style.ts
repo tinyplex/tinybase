@@ -22,36 +22,48 @@ export const APP_STYLESHEET = arrayJoin(
     {
       '': {
         all: 'initial',
-        'font-family': 'sans-serif',
-        'font-size': '0.75rem',
+        'font-family': 'inter,sans-serif',
+        'font-size': '.75rem',
         position: 'fixed',
         'z-index': 999999,
-        '--accent': 'oklch(50% .11 var(--inspectorHue))',
+        '--bgHue': 'calc(var(--hue) + 180)',
+        '--accent': 'oklch(50% .11 var(--hue))',
+        '--background': 'oklch(20% .01 var(--bgHue))',
+        '--background2': 'oklch(15% .01 var(--bgHue))',
+        '--background3': 'oklch(25% .01 var(--bgHue))',
+        '--foreground': 'oklch(85% .01 var(--hue))',
+        '--border': '1px solid oklch(30% .01 var(--bgHue))',
       },
       '*': {all: 'revert'},
       '*::before': {all: 'revert'},
       '*::after': {all: 'revert'},
-      [SCROLLBAR]: {width: '0.5rem', height: '0.5rem'},
-      [SCROLLBAR + '-track']: {background: '#111'},
-      [SCROLLBAR + '-thumb']: {background: '#999', border: '1px solid #111'},
-      [SCROLLBAR + '-thumb:hover']: {background: '#fff'},
-      [SCROLLBAR + '-corner']: {background: '#111'},
+
+      [SCROLLBAR]: {width: '.5rem', height: '.5rem'},
+      [SCROLLBAR + '-thumb']: {background: 'var(--background2)'},
+      [SCROLLBAR + '-thumb:hover']: {background: 'var(--background3)'},
+      [SCROLLBAR + '-corner']: {background: 'none'},
+
       img: {
-        width: '0.8rem',
-        height: '0.8rem',
+        width: '.8rem',
+        height: '.8rem',
         'vertical-align': 'text-bottom',
         cursor: 'pointer',
         margin: '0 2px',
         padding: '2px',
-        border: '1px solid #292f32',
-        background: '#12171add',
+        border: 'var(--border)',
+        background: 'var(--border)',
         'box-shadow': '0 1px 4px 0 #000',
         'border-radius': '3px',
+      },
+      'img.flat': {
+        border: 'none',
+        background: 'none',
+        'box-shadow': 'none',
       },
 
       // Nub
       '>img': {
-        padding: '0.25rem',
+        padding: '.25rem',
         bottom: '0',
         right: '0',
         position: 'fixed',
@@ -73,19 +85,49 @@ export const APP_STYLESHEET = arrayJoin(
       main: {
         display: 'flex',
         'flex-direction': 'column',
-        background: '#12171add',
-        'backdrop-filter': 'blur(4px)',
-        color: '#fff',
+        color: 'var(--foreground)',
+        overflow: 'hidden',
+        background: 'oklch(21% 0% var(--bgHue) / .5)',
+        'backdrop-filter': 'blur(8px)',
         position: 'fixed',
       },
       ...objNew(
         arrayMap(
           [
-            {bottom: 0, left: 0, width: '35vw', height: '100vh'},
-            {top: 0, right: 0, width: '100vw', height: '30vh'},
-            {bottom: 0, left: 0, width: '100vw', height: '30vh'},
-            {top: 0, right: 0, width: '35vw', height: '100vh'},
-            {top: 0, right: 0, width: '100vw', height: '100vh'},
+            {
+              bottom: 0,
+              left: 0,
+              width: '35vw',
+              height: '100vh',
+              'border-right': 'var(--border)',
+            },
+            {
+              top: 0,
+              right: 0,
+              width: '100vw',
+              height: '30vh',
+              'border-bottom': 'var(--border)',
+            },
+            {
+              bottom: 0,
+              left: 0,
+              width: '100vw',
+              height: '30vh',
+              'border-top': 'var(--border)',
+            },
+            {
+              top: 0,
+              right: 0,
+              width: '35vw',
+              height: '100vh',
+              'border-left': 'var(--border)',
+            },
+            {
+              top: 0,
+              right: 0,
+              width: '100vw',
+              height: '100vh',
+            },
           ],
           (css, p) => [`main[data-position='${p}']`, css],
         ),
@@ -94,9 +136,11 @@ export const APP_STYLESHEET = arrayJoin(
       // Header
       header: {
         display: 'flex',
-        padding: '0.25rem',
+        padding: '.25rem .125rem',
         'align-items': 'center',
         'box-shadow': '0 1px 4px 0 #000',
+        'border-bottom': 'var(--border)',
+        background: 'var(--background)',
       },
       'header>img:nth-of-type(1)': LOGO_SVG,
       'header>img:nth-of-type(6)': CLOSE_SVG,
@@ -107,22 +151,21 @@ export const APP_STYLESHEET = arrayJoin(
         ]),
       ),
       'header>span': {
-        'font-weight': 700,
+        'font-weight': 800,
         flex: 1,
         overflow: 'hidden',
         'white-space': 'nowrap',
         'text-overflow': 'ellipsis',
-        'margin-left': '0.25rem',
       },
 
       // Body
       article: {
-        padding: '0.25rem 0.25rem 0.25rem 0.5rem',
+        padding: '.25rem .25rem .25rem .5rem',
         overflow: 'auto',
         flex: 1,
       },
       details: {
-        'margin-left': '0.75rem',
+        'margin-left': '.75rem',
         width: 'fit-content',
       },
       'details img': {
@@ -133,12 +176,12 @@ export const APP_STYLESHEET = arrayJoin(
       },
       'details[open]>summary img': {
         display: 'unset',
-        'margin-left': '0.25rem',
+        'margin-left': '.25rem',
       },
       'img.edit': EDIT_SVG,
       'img.done': DONE_SVG,
       summary: {
-        'margin-left': '-0.75rem',
+        'margin-left': '-.75rem',
         'line-height': '1.25rem',
         'user-select': 'none',
         width: 'fit-content',
@@ -148,12 +191,12 @@ export const APP_STYLESHEET = arrayJoin(
       table: {
         'border-collapse': 'collapse',
         'table-layout': 'fixed',
-        'margin-bottom': '0.5rem',
+        'margin-bottom': '.5rem',
       },
       'table input': {
         background: '#000',
         color: 'unset',
-        padding: '0 0.25rem',
+        padding: '0 .25rem',
         border: '1px solid #444',
         'font-size': 'unset',
         'vertical-align': 'top',
@@ -167,14 +210,14 @@ export const APP_STYLESHEET = arrayJoin(
       },
       'table tbody button': {
         'font-size': '0',
-        width: '0.8rem',
-        'line-height': '0.8rem',
-        height: '0.8rem',
+        width: '.8rem',
+        'line-height': '.8rem',
+        height: '.8rem',
         color: '#777',
-        margin: '0 0.125rem 0 0',
+        margin: '0 .125rem 0 0',
       },
       'table button:first-letter': {
-        'font-size': '0.8rem',
+        'font-size': '.8rem',
       },
       thead: {
         background: '#222',
@@ -202,12 +245,12 @@ export const APP_STYLESHEET = arrayJoin(
         color: '#777',
       },
       'button.next': {
-        'margin-right': '0.5rem',
+        'margin-right': '.5rem',
       },
       [`th,#${UNIQUE_ID} td`]: {
         overflow: 'hidden',
         'text-overflow': 'ellipsis',
-        padding: '0.25rem 0.5rem',
+        padding: '.25rem .5rem',
         'max-width': '15rem',
         'white-space': 'nowrap',
         'border-width': '1px 0',
@@ -223,7 +266,7 @@ export const APP_STYLESHEET = arrayJoin(
       'img.cancel': CANCEL_SVG,
 
       'span.warn': {
-        margin: '0.25rem',
+        margin: '.25rem',
         color: '#d81b60',
       },
     } as {[selector: string]: {[property: string]: string | number}},

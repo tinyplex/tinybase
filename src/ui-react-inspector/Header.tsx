@@ -19,7 +19,7 @@ export const Header = ({s}: StoreProp) => {
 
   return (
     <header>
-      <img title={TITLE} onClick={handleClick} />
+      <img className="flat" title={TITLE} onClick={handleClick} />
       <span>{TITLE}</span>
       {arrayMap(POSITIONS, (name, p) =>
         p == position ? null : (
@@ -31,7 +31,7 @@ export const Header = ({s}: StoreProp) => {
           />
         ),
       )}
-      <img onClick={handleClose} title="Close" />
+      <img className="flat" onClick={handleClose} title="Close" />
     </header>
   );
 };
