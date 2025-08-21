@@ -7,6 +7,8 @@ export type InspectorProps = {
   readonly position?: 'top' | 'right' | 'bottom' | 'left' | 'full';
   /// InspectorProps.open
   readonly open?: boolean;
+  /// InspectorProps.hue
+  readonly hue?: number;
 };
 
 /// Inspector

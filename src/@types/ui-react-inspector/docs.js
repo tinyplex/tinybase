@@ -31,6 +31,13 @@
    * @since v5.0.0
    */
   /// InspectorProps.open
+  /**
+   * An optional number to indicate the hue of the inspector's UI, defaulting to
+   * 8.
+   * @category Prop
+   * @since v6.6.0
+   */
+  /// InspectorProps.hue
 }
 /**
  * The Inspector component renders a tool which allows you to view and edit the

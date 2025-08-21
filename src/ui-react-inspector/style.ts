@@ -22,7 +22,7 @@ const WHITE_BORDER = '1px solid #fff';
 export const APP_STYLESHEET = arrayJoin(
   objToArray(
     {
-      '': 'all:initial;font-family:sans-serif;font-size:0.75rem;position:fixed;z-index:999999',
+      '': 'all:initial;font-family:sans-serif;font-size:0.75rem;position:fixed;z-index:999999;--accent:oklch(50% .11 var(--inspectorHue))',
       '*': 'all:revert',
       '*::before': 'all:revert',
       '*::after': 'all:revert',

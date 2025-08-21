@@ -10,6 +10,7 @@ import {APP_STYLESHEET} from './style.ts';
 export const Inspector = ({
   position = 'right',
   open = false,
+  hue = 8,
 }: InspectorProps) => {
   const s = useCreateStore(createStore); // The inspector's Store throughout.
   const index = POSITIONS.indexOf(position);
@@ -36,7 +37,10 @@ export const Inspector = ({
         <Nub s={s} />
         <Panel s={s} />
       </aside>
-      <style>{APP_STYLESHEET}</style>
+      <style>
+        {`#${UNIQUE_ID}{--inspectorHue:${hue}}`}
+        {APP_STYLESHEET}
+      </style>
     </>
   );
 };
