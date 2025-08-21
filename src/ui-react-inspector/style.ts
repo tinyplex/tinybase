@@ -53,7 +53,7 @@ export const APP_STYLESHEET = arrayJoin(
         border: 'var(--border)',
         background: 'var(--border)',
         'box-shadow': '0 1px 4px 0 #000',
-        'border-radius': '3px',
+        'border-radius': '.25rem',
       },
       'img.flat': {
         border: 'none',
@@ -86,9 +86,8 @@ export const APP_STYLESHEET = arrayJoin(
         display: 'flex',
         'flex-direction': 'column',
         color: 'var(--foreground)',
+        background: 'var(--background)',
         overflow: 'hidden',
-        background: 'oklch(21% 0% var(--bgHue) / .5)',
-        'backdrop-filter': 'blur(8px)',
         position: 'fixed',
       },
       ...objNew(
@@ -136,11 +135,14 @@ export const APP_STYLESHEET = arrayJoin(
       // Header
       header: {
         display: 'flex',
-        padding: '.25rem .125rem',
+        padding: '.25rem',
         'align-items': 'center',
         'box-shadow': '0 1px 4px 0 #000',
         'border-bottom': 'var(--border)',
-        background: 'var(--background)',
+        background: 'oklch(21% 0% var(--bgHue) / .5)',
+        'backdrop-filter': 'blur(4px)',
+        position: 'absolute',
+        width: 'calc(100% - .5rem)',
       },
       'header>img:nth-of-type(1)': LOGO_SVG,
       'header>img:nth-of-type(6)': CLOSE_SVG,
@@ -160,14 +162,30 @@ export const APP_STYLESHEET = arrayJoin(
 
       // Body
       article: {
-        padding: '.25rem .25rem .25rem .5rem',
+        'padding-top': '1.75rem',
         overflow: 'auto',
         flex: 1,
       },
+
       details: {
-        'margin-left': '.75rem',
-        width: 'fit-content',
+        border: 'var(--border)',
+        'border-radius': '.25rem',
+        margin: '.5rem',
       },
+      summary: {
+        background: 'var(--background3)',
+        'border-radius': '.25rem',
+        'user-select': 'none',
+        margin: '-1px',
+        border: 'var(--border)',
+        padding: '.25rem .5rem',
+      },
+      'details[open]>summary': {
+        'border-bottom-left-radius': 0,
+        'border-bottom-right-radius': 0,
+        'margin-bottom': 'calc(0.5rem + 1px)',
+      },
+
       'details img': {
         background: 'none',
       },
@@ -180,13 +198,6 @@ export const APP_STYLESHEET = arrayJoin(
       },
       'img.edit': EDIT_SVG,
       'img.done': DONE_SVG,
-      summary: {
-        'margin-left': '-.75rem',
-        'line-height': '1.25rem',
-        'user-select': 'none',
-        width: 'fit-content',
-      },
-
       // tables
       table: {
         'border-collapse': 'collapse',
