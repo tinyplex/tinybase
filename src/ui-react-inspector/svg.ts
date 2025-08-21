@@ -4,19 +4,21 @@
 import LOGO from '../../site/extras/favicon.svg';
 import {arrayMap, arrayPush} from '../common/array.ts';
 
-const PRE_CSS = 'content:url("';
+const PRE_CSS = 'url("';
 const POST_CSS = '")';
 
-const getCssSvg = (path: string, color = 'white') =>
-  PRE_CSS +
-  `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960' fill='${color}'><path d='${path}' /></svg>` +
-  POST_CSS;
+const getCssSvg = (path: string, color = 'white') => ({
+  content:
+    PRE_CSS +
+    `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960' fill='${color}'><path d='${path}' /></svg>` +
+    POST_CSS,
+});
 const VERTICAL_THIN = 'v560h120v-560h-120Z';
 const VERTICAL_THICK = 'v560h360v-560h-360Z';
 const HORIZONTAL_THIN = 'v120h560v-120h-560Z';
 const HORIZONTAL_THICK = 'v360h560v-360h-560Z';
 
-export const LOGO_SVG = PRE_CSS + LOGO + POST_CSS;
+export const LOGO_SVG = {content: PRE_CSS + LOGO + POST_CSS};
 
 export const POSITIONS_SVG = arrayMap(
   [

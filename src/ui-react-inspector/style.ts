@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {arrayJoin, arrayMap} from '../common/array.ts';
 import {objNew, objToArray} from '../common/obj.ts';
 import {UNIQUE_ID} from './common.ts';
@@ -17,54 +16,88 @@ import {
 } from './svg.ts';
 
 const SCROLLBAR = '*::-webkit-scrollbar';
-const WHITE_BORDER = '1px solid #fff';
 
 export const APP_STYLESHEET = arrayJoin(
   objToArray(
     {
-      '': 'all:initial;font-family:sans-serif;font-size:0.75rem;position:fixed;z-index:999999;--accent:oklch(50% .11 var(--inspectorHue))',
-      '*': 'all:revert',
-      '*::before': 'all:revert',
-      '*::after': 'all:revert',
-      [SCROLLBAR]: 'width:0.5rem;height:0.5rem;',
-      [SCROLLBAR + '-track']: 'background:#111',
-      [SCROLLBAR + '-thumb']: 'background:#999;border:1px solid #111',
-      [SCROLLBAR + '-thumb:hover']: 'background:#fff',
-      [SCROLLBAR + '-corner']: 'background:#111',
-      img: 'width:0.8rem;height:0.8rem;vertical-align:text-bottom;cursor:pointer;margin:0 2px;padding:2px;border:1px solid #292f32;background:#12171add;box-shadow:0 1px 4px 0 #000;border-radius:3px',
+      '': {
+        all: 'initial',
+        'font-family': 'sans-serif',
+        'font-size': '0.75rem',
+        position: 'fixed',
+        'z-index': 999999,
+        '--accent': 'oklch(50% .11 var(--inspectorHue))',
+      },
+      '*': {all: 'revert'},
+      '*::before': {all: 'revert'},
+      '*::after': {all: 'revert'},
+      [SCROLLBAR]: {width: '0.5rem', height: '0.5rem'},
+      [SCROLLBAR + '-track']: {background: '#111'},
+      [SCROLLBAR + '-thumb']: {background: '#999', border: '1px solid #111'},
+      [SCROLLBAR + '-thumb:hover']: {background: '#fff'},
+      [SCROLLBAR + '-corner']: {background: '#111'},
+      img: {
+        width: '0.8rem',
+        height: '0.8rem',
+        'vertical-align': 'text-bottom',
+        cursor: 'pointer',
+        margin: '0 2px',
+        padding: '2px',
+        border: '1px solid #292f32',
+        background: '#12171add',
+        'box-shadow': '0 1px 4px 0 #000',
+        'border-radius': '3px',
+      },
 
       // Nub
-      '>img':
-        'padding:0.25rem;bottom:0;right:0;position:fixed;height:unset;margin:0;' +
-        LOGO_SVG,
-      ...objNew(
-        arrayMap(['bottom:0;left:0', 'top:0;right:0'], (css, p) => [
-          `>img[data-position='${p}']`,
-          css,
-        ]),
-      ),
-
-      // Panel
-      main: 'display:flex;flex-direction:column;background:#12171add;backdrop-filter:blur(4px);color:#fff;position:fixed;',
+      '>img': {
+        padding: '0.25rem',
+        bottom: '0',
+        right: '0',
+        position: 'fixed',
+        height: 'unset',
+        margin: '0',
+        ...LOGO_SVG,
+      },
       ...objNew(
         arrayMap(
           [
-            'bottom:0;left:0;width:35vw;height:100vh;border-right:' +
-              WHITE_BORDER,
-            'top:0;right:0;width:100vw;height:30vh;border-bottom:' +
-              WHITE_BORDER,
-            'bottom:0;left:0;width:100vw;height:30vh;border-top:' +
-              WHITE_BORDER,
-            'top:0;right:0;width:35vw;height:100vh;border-left:' + WHITE_BORDER,
-            'top:0;right:0;width:100vw;height:100vh',
+            {bottom: 0, left: 0},
+            {top: 0, right: 0},
+          ],
+          (css, p) => [`>img[data-position='${p}']`, css],
+        ),
+      ),
+
+      // Panel
+      main: {
+        display: 'flex',
+        'flex-direction': 'column',
+        background: '#12171add',
+        'backdrop-filter': 'blur(4px)',
+        color: '#fff',
+        position: 'fixed',
+      },
+      ...objNew(
+        arrayMap(
+          [
+            {bottom: 0, left: 0, width: '35vw', height: '100vh'},
+            {top: 0, right: 0, width: '100vw', height: '30vh'},
+            {bottom: 0, left: 0, width: '100vw', height: '30vh'},
+            {top: 0, right: 0, width: '35vw', height: '100vh'},
+            {top: 0, right: 0, width: '100vw', height: '100vh'},
           ],
           (css, p) => [`main[data-position='${p}']`, css],
         ),
       ),
 
       // Header
-      header:
-        'display:flex;padding:0.25rem;align-items:center;box-shadow:0 1px 4px 0 #000',
+      header: {
+        display: 'flex',
+        padding: '0.25rem',
+        'align-items': 'center',
+        'box-shadow': '0 1px 4px 0 #000',
+      },
       'header>img:nth-of-type(1)': LOGO_SVG,
       'header>img:nth-of-type(6)': CLOSE_SVG,
       ...objNew(
@@ -73,39 +106,115 @@ export const APP_STYLESHEET = arrayJoin(
           SVG,
         ]),
       ),
-      'header>span':
-        'font-weight:700;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-left:0.25rem',
+      'header>span': {
+        'font-weight': 700,
+        flex: 1,
+        overflow: 'hidden',
+        'white-space': 'nowrap',
+        'text-overflow': 'ellipsis',
+        'margin-left': '0.25rem',
+      },
 
       // Body
-      article: 'padding:0.25rem 0.25rem 0.25rem 0.5rem;overflow:auto;flex:1',
-      details: 'margin-left:0.75rem;width:fit-content;',
-      'details img': 'background:none',
-      'details>summary img': 'display:none',
-      'details[open]>summary img': 'display:unset;margin-left:0.25rem',
+      article: {
+        padding: '0.25rem 0.25rem 0.25rem 0.5rem',
+        overflow: 'auto',
+        flex: 1,
+      },
+      details: {
+        'margin-left': '0.75rem',
+        width: 'fit-content',
+      },
+      'details img': {
+        background: 'none',
+      },
+      'details>summary img': {
+        display: 'none',
+      },
+      'details[open]>summary img': {
+        display: 'unset',
+        'margin-left': '0.25rem',
+      },
       'img.edit': EDIT_SVG,
       'img.done': DONE_SVG,
-      summary:
-        'margin-left:-0.75rem;line-height:1.25rem;user-select:none;width:fit-content',
+      summary: {
+        'margin-left': '-0.75rem',
+        'line-height': '1.25rem',
+        'user-select': 'none',
+        width: 'fit-content',
+      },
 
       // tables
-      table: 'border-collapse:collapse;table-layout:fixed;margin-bottom:0.5rem',
-      'table input':
-        'background:#000;color:unset;padding:0 0.25rem;border:1px solid #444;font-size:unset;vertical-align:top;margin:-1px',
-      'table input[type="number"]': 'width:4rem',
-      'table input[type="checkbox"]': 'margin-top:1px',
-      'table tbody button':
-        'font-size:0;width:0.8rem;line-height:0.8rem;height:0.8rem;color:#777;margin:0 0.125rem 0 0',
-      'table button:first-letter': 'font-size:0.8rem',
-      thead: 'background:#222',
-      'th:nth-of-type(1)': 'min-width:2rem;',
-      'th.sorted': 'background:#000',
-      'table caption': 'text-align:left;white-space:nowrap;line-height:1.25rem',
-      button:
-        'width:1.5rem;border:none;background:none;color:#fff;padding:0;cursor:pointer',
-      'button[disabled]': 'color:#777',
-      'button.next': 'margin-right:0.5rem',
-      [`th,#${UNIQUE_ID} td`]:
-        'overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:15rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left',
+      table: {
+        'border-collapse': 'collapse',
+        'table-layout': 'fixed',
+        'margin-bottom': '0.5rem',
+      },
+      'table input': {
+        background: '#000',
+        color: 'unset',
+        padding: '0 0.25rem',
+        border: '1px solid #444',
+        'font-size': 'unset',
+        'vertical-align': 'top',
+        margin: '-1px',
+      },
+      'table input[type="number"]': {
+        width: '4rem',
+      },
+      'table input[type="checkbox"]': {
+        'margin-top': '1px',
+      },
+      'table tbody button': {
+        'font-size': '0',
+        width: '0.8rem',
+        'line-height': '0.8rem',
+        height: '0.8rem',
+        color: '#777',
+        margin: '0 0.125rem 0 0',
+      },
+      'table button:first-letter': {
+        'font-size': '0.8rem',
+      },
+      thead: {
+        background: '#222',
+      },
+      'th:nth-of-type(1)': {
+        'min-width': '2rem',
+      },
+      'th.sorted': {
+        background: '#000',
+      },
+      'table caption': {
+        'text-align': 'left',
+        'white-space': 'nowrap',
+        'line-height': '1.25rem',
+      },
+      button: {
+        width: '1.5rem',
+        border: 'none',
+        background: 'none',
+        color: '#fff',
+        padding: 0,
+        cursor: 'pointer',
+      },
+      'button[disabled]': {
+        color: '#777',
+      },
+      'button.next': {
+        'margin-right': '0.5rem',
+      },
+      [`th,#${UNIQUE_ID} td`]: {
+        overflow: 'hidden',
+        'text-overflow': 'ellipsis',
+        padding: '0.25rem 0.5rem',
+        'max-width': '15rem',
+        'white-space': 'nowrap',
+        'border-width': '1px 0',
+        'border-style': 'solid',
+        'border-color': '#777',
+        'text-align': 'left',
+      },
       'img.addCell': ADD_CELL_SVG,
       'img.clone': CLONE_SVG,
       'img.delete': DELETE_SVG,
@@ -113,8 +222,14 @@ export const APP_STYLESHEET = arrayJoin(
       'img.okDis': OK_SVG_DISABLED,
       'img.cancel': CANCEL_SVG,
 
-      'span.warn': 'margin:0.25rem;color:#d81b60',
-    },
-    (style, selector) => (style ? `#${UNIQUE_ID} ${selector}{${style}}` : ''),
+      'span.warn': {
+        margin: '0.25rem',
+        color: '#d81b60',
+      },
+    } as {[selector: string]: {[property: string]: string | number}},
+    (style, selector) =>
+      `#${UNIQUE_ID} ${selector}{${arrayJoin(
+        objToArray(style, (value, property) => `${property}:${value};`),
+      )}}`,
   ),
 );
