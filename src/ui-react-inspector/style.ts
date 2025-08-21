@@ -31,11 +31,11 @@ export const APP_STYLESHEET = arrayJoin(
       [SCROLLBAR + '-thumb']: 'background:#999;border:1px solid #111',
       [SCROLLBAR + '-thumb:hover']: 'background:#fff',
       [SCROLLBAR + '-corner']: 'background:#111',
-      img: 'width:0.8rem;height:0.8rem;border:0;vertical-align:text-bottom;cursor:pointer;margin:0 0.125rem',
+      img: 'width:0.8rem;height:0.8rem;vertical-align:text-bottom;cursor:pointer;margin:0 2px;padding:2px;border:1px solid #292f32;background:#12171add;box-shadow:0 1px 4px 0 #000;border-radius:3px',
 
       // Nub
       '>img':
-        'padding:0.25rem;bottom:0;right:0;position:fixed;height:unset;' +
+        'padding:0.25rem;bottom:0;right:0;position:fixed;height:unset;margin:0;' +
         LOGO_SVG,
       ...objNew(
         arrayMap(['bottom:0;left:0', 'top:0;right:0'], (css, p) => [
@@ -45,7 +45,7 @@ export const APP_STYLESHEET = arrayJoin(
       ),
 
       // Panel
-      main: 'display:flex;flex-direction:column;background:#111d;backdrop-filter:blur(4px);color:#fff;position:fixed;',
+      main: 'display:flex;flex-direction:column;background:#12171add;backdrop-filter:blur(4px);color:#fff;position:fixed;',
       ...objNew(
         arrayMap(
           [
@@ -63,7 +63,8 @@ export const APP_STYLESHEET = arrayJoin(
       ),
 
       // Header
-      header: 'display:flex;padding:0.25rem;background:#000;align-items:center',
+      header:
+        'display:flex;padding:0.25rem;align-items:center;box-shadow:0 1px 4px 0 #000',
       'header>img:nth-of-type(1)': LOGO_SVG,
       'header>img:nth-of-type(6)': CLOSE_SVG,
       ...objNew(
