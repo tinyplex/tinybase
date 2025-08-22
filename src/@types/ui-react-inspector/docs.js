@@ -33,7 +33,7 @@
   /// InspectorProps.open
   /**
    * An optional number to indicate the hue of the inspector's UI, defaulting to
-   * 8.
+   * 270.
    * @category Prop
    * @since v6.6.0
    */
