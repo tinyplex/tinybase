@@ -1,6 +1,7 @@
 import type {ComponentType} from 'react';
 import type {Id} from '../../@types/common/index.d.ts';
 import type {
+  CellProps,
   RowProps,
   StoreOrStoreId,
   ValueProps,
@@ -28,6 +29,7 @@ export const getNewIdFromSuggestedId = (
 export const ConfirmableActions = <
   Props extends
     | RowProps
+    | CellProps
     | ValueProps
     | {readonly store?: StoreOrStoreId | undefined},
 >({

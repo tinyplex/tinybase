@@ -1,13 +1,34 @@
 import type {Id} from '../@types/common/index.d.ts';
-import type {TableProps} from '../@types/ui-react/index.d.ts';
+import type {CellProps, TableProps} from '../@types/ui-react/index.d.ts';
+import {arrayMap} from '../common/array.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
+import {objNew} from '../common/obj.ts';
 import {TABLE} from '../common/strings.ts';
-import {SortedTableInHtmlTable} from '../ui-react-dom/index.tsx';
-import {useCell, useSetCellCallback} from '../ui-react/index.ts';
+import {
+  EditableCellView,
+  SortedTableInHtmlTable,
+} from '../ui-react-dom/index.tsx';
+import {
+  CellView,
+  useCell,
+  useHasCell,
+  useSetCellCallback,
+  useTableCellIds,
+} from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
+import {CellActions} from './actions/cell.tsx';
 import {rowActions} from './actions/row.tsx';
 import {SORT_CELL, STATE_TABLE, getUniqueId, useEditable} from './common.ts';
 import type {StoreProp} from './types.ts';
+
+const EditableCellViewWithActions = (props: CellProps) => (
+  <>
+    <EditableCellView {...props} />
+    {useHasCell(props.tableId, props.rowId, props.cellId, props.store) && (
+      <CellActions {...props} />
+    )}
+  </>
+);
 
 export const TableView = ({
   tableId,
@@ -28,6 +49,7 @@ export const TableView = ({
     s,
   );
   const [editable, handleEditable] = useEditable(uniqueId, s);
+  const CellComponent = editable ? EditableCellViewWithActions : CellView;
   return (
     <Details
       uniqueId={uniqueId}
@@ -48,6 +70,12 @@ export const TableView = ({
         onChange={handleChange}
         editable={editable}
         extraCellsAfter={editable ? rowActions : []}
+        customCells={objNew(
+          arrayMap(useTableCellIds(tableId, store), (cellId) => [
+            cellId,
+            {label: cellId, component: CellComponent},
+          ]),
+        )}
       />
     </Details>
   );

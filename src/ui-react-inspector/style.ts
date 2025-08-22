@@ -31,18 +31,20 @@ export const APP_STYLESHEET = arrayJoin(
         '--background': 'oklch(20% .01 var(--hue))',
         '--background2': 'oklch(15% .01 var(--hue))',
         '--background3': 'oklch(25% .01 var(--hue))',
+        '--background4': 'oklch(30% .01 var(--hue))',
         '--foreground': 'oklch(85% .01 var(--hue))',
         '--foreground2': 'oklch(60% .01 var(--hue))',
-        '--border': '1px solid oklch(30% .01 var(--hue))',
+        '--border': '1px solid var(--background4)',
       },
       '*': {all: 'revert'},
       '*::before': {all: 'revert'},
       '*::after': {all: 'revert'},
 
       [SCROLLBAR]: {width: '.5rem', height: '.5rem'},
-      [SCROLLBAR + '-thumb']: {background: 'var(--background2)'},
-      [SCROLLBAR + '-thumb:hover']: {background: 'var(--background3)'},
+      [SCROLLBAR + '-thumb']: {background: 'var(--background4)'},
+      [SCROLLBAR + '-thumb:hover']: {background: 'var(--background4)'},
       [SCROLLBAR + '-corner']: {background: 'none'},
+      [SCROLLBAR + '-track']: {background: 'none'},
 
       img: {
         width: '.8rem',
@@ -250,14 +252,17 @@ export const APP_STYLESHEET = arrayJoin(
       input: {
         background: 'var(--background2)',
         color: 'unset',
-        padding: '0 .25rem',
-        border: '1px solid #444',
+        padding: '4px',
+        border: 0,
+        margin: '-4px 0',
         'font-size': 'unset',
-        margin: '-1px',
-        'max-width': '8rem',
+        'max-width': '6rem',
       },
+      'input:focus': {'outline-width': '0'},
       'input[type="number"]': {width: '3rem'},
-      'input[type="checkbox"]': {'margin-top': '1px'},
+      'input[type="checkbox"]': {'vertical-align': '-2px'},
+
+      '.editableCell': {display: 'inline-block', 'margin-right': '2px'},
 
       'button.next': {'margin-right': '.5rem'},
       'img.add': ADD_SVG,
@@ -267,7 +272,7 @@ export const APP_STYLESHEET = arrayJoin(
       'img.okDis': OK_SVG_DISABLED,
       'img.cancel': CANCEL_SVG,
 
-      'span.warn': {margin: '.25rem', color: '#d81b60'},
+      'span.warn': {margin: '2rem .25rem', color: '#d81b60'},
     } as {[selector: string]: {[property: string]: string | number}},
     (style, selector) =>
       `#${UNIQUE_ID} ${selector}{${arrayJoin(
