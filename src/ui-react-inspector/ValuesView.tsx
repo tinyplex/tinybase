@@ -5,7 +5,8 @@ import {VALUES} from '../common/strings.ts';
 import {ValuesInHtmlTable} from '../ui-react-dom/index.tsx';
 import {useValueIds} from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
-import {valueActions} from './actions/value.tsx';
+import {ConfirmableActions} from './actions/common.tsx';
+import {valueActions, ValueAdd} from './actions/value.tsx';
 import {getUniqueId, useEditable} from './common.ts';
 import type {StoreProp} from './types.ts';
 
@@ -25,7 +26,18 @@ export const ValuesView = ({
       s={s}
     >
       {arrayIsEmpty(useValueIds(store)) ? (
-        <caption>No Values.</caption>
+        <p>
+          0 values.
+          {editable ? (
+            <>
+              {' '}
+              <ConfirmableActions
+                actions={[['add', 'Add Value', ValueAdd]]}
+                store={store}
+              />
+            </>
+          ) : null}
+        </p>
       ) : (
         <ValuesInHtmlTable
           store={store}

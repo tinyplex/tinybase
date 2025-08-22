@@ -1,20 +1,36 @@
 import type {ComponentType} from 'react';
 import type {Id} from '../../@types/common/index.d.ts';
-import type {RowProps, ValueProps} from '../../@types/ui-react/index.d.ts';
+import type {
+  RowProps,
+  StoreOrStoreId,
+  ValueProps,
+} from '../../@types/ui-react/index.d.ts';
 import {useCallback, useState} from '../../common/react.ts';
 
-export const clonedId = (oldId: Id, has: (newId: Id) => boolean) => {
+export const getNewIdFromSuggestedId = (
+  suggestedId: Id,
+  has: (newId: Id) => boolean,
+) => {
   let newId;
-  let suffix = 1;
+  let suffix = 0;
   while (
-    has((newId = oldId + ' (copy' + (suffix > 1 ? ' ' + suffix : '') + ')'))
+    has(
+      (newId =
+        suggestedId +
+        (suffix > 0 ? ' (copy' + (suffix > 1 ? ' ' + suffix : '') + ')' : '')),
+    )
   ) {
     suffix++;
   }
   return newId;
 };
 
-export const ConfirmableActions = <Props extends RowProps | ValueProps>({
+export const ConfirmableActions = <
+  Props extends
+    | RowProps
+    | ValueProps
+    | {readonly store?: StoreOrStoreId | undefined},
+>({
   actions,
   ...props
 }: {
@@ -46,28 +62,26 @@ export const ConfirmableActions = <Props extends RowProps | ValueProps>({
   }
 };
 
-export const Clone = ({
+export const NewId = ({
   onDone,
-  id,
+  suggestedId,
   has,
   set,
 }: {
   onDone: () => void;
-  id: Id;
+  suggestedId: Id;
   has: (id: Id) => boolean;
   set: (newId: Id) => void;
 }) => {
-  const cloneId = useCallback(() => clonedId(id, has), [id, has]);
-  const [newId, setNewId] = useState<Id>(cloneId);
+  const [newId, setNewId] = useState<Id>(suggestedId);
   const [newIdOk, setNewIdOk] = useState<boolean>(true);
-  const [previousCloneId, setPreviousCloneId] = useState<() => Id>(
-    () => cloneId,
-  );
+  const [previousSuggestedId, setPreviousSuggestedNewId] =
+    useState<Id>(suggestedId);
   const handleNewIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewId(e.target.value);
     setNewIdOk(!has(e.target.value));
   };
-  const handleClone = useCallback(() => {
+  const handleClick = useCallback(() => {
     if (has(newId)) {
       setNewIdOk(false);
     } else {
@@ -75,17 +89,17 @@ export const Clone = ({
       onDone();
     }
   }, [onDone, setNewIdOk, has, set, newId]);
-  if (cloneId != previousCloneId) {
-    setNewId(cloneId);
-    setPreviousCloneId(cloneId);
+  if (suggestedId != previousSuggestedId) {
+    setNewId(suggestedId);
+    setPreviousSuggestedNewId(suggestedId);
   }
   return (
     <>
       {'New Id: '}
       <input type="text" value={newId} onChange={handleNewIdChange} />{' '}
       <img
-        onClick={handleClone}
-        title={newIdOk ? 'Clone' : 'Id already exists'}
+        onClick={handleClick}
+        title={newIdOk ? 'Confirm' : 'Id already exists'}
         className={newIdOk ? 'ok' : 'okDis'}
       />
     </>

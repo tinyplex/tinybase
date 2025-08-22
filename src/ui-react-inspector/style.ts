@@ -2,7 +2,7 @@ import {arrayJoin, arrayMap} from '../common/array.ts';
 import {objNew, objToArray} from '../common/obj.ts';
 import {UNIQUE_ID} from './common.ts';
 import {
-  ADD_CELL_SVG,
+  ADD_SVG,
   CANCEL_SVG,
   CLONE_SVG,
   CLOSE_SVG,
@@ -193,19 +193,30 @@ export const APP_STYLESHEET = arrayJoin(
       'img.edit': EDIT_SVG,
       'img.done': DONE_SVG,
 
+      p: {padding: '.25rem .5rem', margin: 0},
+      caption: {
+        color: 'var(--foreground2)',
+        'text-align': 'left',
+        'white-space': 'nowrap',
+        padding: '.25rem .5rem',
+      },
+      'caption button': {
+        width: '1.5rem',
+        border: 'none',
+        background: 'none',
+        color: 'var(--foreground)',
+        padding: 0,
+        cursor: 'pointer',
+      },
+      'caption button[disabled]': {color: 'var(--foreground2)'},
+
       // tables
       table: {
         'border-collapse': 'collapse',
         'table-layout': 'fixed',
         'min-width': '100%',
       },
-      caption: {
-        color: 'var(--foreground2)',
-        'text-align': 'left',
-        'white-space': 'nowrap',
-        'line-height': '1.25rem',
-        padding: '.25rem .5rem',
-      },
+
       thead: {background: 'var(--background)'},
       [`th,#${UNIQUE_ID} td`]: {
         overflow: 'hidden',
@@ -224,40 +235,32 @@ export const APP_STYLESHEET = arrayJoin(
       },
       'th.sorted': {background: 'var(--background3)'},
       'td.extra': {'text-align': 'right'},
+      'tbody button': {
+        background: 'none',
+        border: 'none',
+        'font-size': '0',
+        width: '.8rem',
+        height: '.8rem',
+        'line-height': '.8rem',
+        color: 'var(--foreground2)',
+        margin: '0 .25rem 0 -.25rem',
+      },
+      'tbody button:first-letter': {'font-size': '.8rem'},
 
-      'table input': {
+      input: {
         background: 'var(--background2)',
         color: 'unset',
         padding: '0 .25rem',
         border: '1px solid #444',
         'font-size': 'unset',
-        'vertical-align': 'top',
         margin: '-1px',
         'max-width': '8rem',
       },
-      'table input[type="number"]': {width: '3rem'},
-      'table input[type="checkbox"]': {'margin-top': '1px'},
-      'table tbody button': {
-        'font-size': '0',
-        width: '.8rem',
-        'line-height': '.8rem',
-        height: '.8rem',
-        color: 'var(--foreground2)',
-        margin: '0 .125rem 0 0',
-      },
+      'input[type="number"]': {width: '3rem'},
+      'input[type="checkbox"]': {'margin-top': '1px'},
 
-      button: {
-        width: '1.5rem',
-        border: 'none',
-        background: 'none',
-        color: '#fff',
-        padding: 0,
-        cursor: 'pointer',
-      },
-      'table button:first-letter': {'font-size': '.8rem'},
-      'button[disabled]': {color: 'var(--foreground2)'},
       'button.next': {'margin-right': '.5rem'},
-      'img.addCell': ADD_CELL_SVG,
+      'img.add': ADD_SVG,
       'img.clone': CLONE_SVG,
       'img.delete': DELETE_SVG,
       'img.ok': OK_SVG,
