@@ -16,7 +16,7 @@ export const ValuesView = ({
 }: ValuesProps & {readonly storeId?: Id} & StoreProp) => {
   const uniqueId = getUniqueId('v', storeId);
   const [editable, handleEditable] = useEditable(uniqueId, s);
-  return arrayIsEmpty(useValueIds(store)) ? null : (
+  return (
     <Details
       uniqueId={uniqueId}
       title={VALUES}
@@ -24,11 +24,15 @@ export const ValuesView = ({
       handleEditable={handleEditable}
       s={s}
     >
-      <ValuesInHtmlTable
-        store={store}
-        editable={editable}
-        extraCellsAfter={editable ? valueActions : []}
-      />
+      {arrayIsEmpty(useValueIds(store)) ? (
+        <caption>No Values.</caption>
+      ) : (
+        <ValuesInHtmlTable
+          store={store}
+          editable={editable}
+          extraCellsAfter={editable ? valueActions : []}
+        />
+      )}
     </Details>
   );
 };
