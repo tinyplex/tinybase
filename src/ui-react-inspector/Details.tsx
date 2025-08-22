@@ -40,7 +40,7 @@ export const Details = ({
           />
         ) : null}
       </summary>
-      {children}
+      <div>{children}</div>
     </details>
   );
 };

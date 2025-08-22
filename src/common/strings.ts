@@ -67,6 +67,7 @@ export const _VALUE = 'value';
 export const OPEN = 'open';
 export const MESSAGE = 'message';
 export const ERROR = 'error';
+export const EXTRA = 'extra';
 
 export const T = 't';
 export const V = 'v';

@@ -1,99 +1,12 @@
 import type {Id} from '../@types/common/index.d.ts';
-import type {TableProps, ValuesProps} from '../@types/ui-react/index.d.ts';
-import {arrayIsEmpty} from '../common/array.ts';
-import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {isUndefined} from '../common/other.ts';
-import {DEFAULT, TABLE, VALUES} from '../common/strings.ts';
-import {
-  SortedTableInHtmlTable,
-  ValuesInHtmlTable,
-} from '../ui-react-dom/index.tsx';
-import {
-  useCell,
-  useSetCellCallback,
-  useStore,
-  useTableIds,
-  useValueIds,
-} from '../ui-react/index.ts';
+import {DEFAULT} from '../common/strings.ts';
+import {useStore, useTableIds} from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
-import {rowActions} from './actions/row.tsx';
-import {valueActions} from './actions/value.tsx';
-import {
-  SORT_CELL,
-  STATE_TABLE,
-  getUniqueId,
-  sortedIdsMap,
-  useEditable,
-} from './common.ts';
+import {TableView} from './TableView.tsx';
+import {ValuesView} from './ValuesView.tsx';
+import {getUniqueId, sortedIdsMap} from './common.ts';
 import type {StoreProp} from './types.ts';
-
-const TableView = ({
-  tableId,
-  store,
-  storeId,
-  s,
-}: TableProps & {readonly storeId?: Id} & StoreProp) => {
-  const uniqueId = getUniqueId('t', storeId, tableId);
-  const [cellId, descending, offset] = jsonParse(
-    (useCell(STATE_TABLE, uniqueId, SORT_CELL, s) as string) ?? '[]',
-  );
-  const handleChange = useSetCellCallback(
-    STATE_TABLE,
-    uniqueId,
-    SORT_CELL,
-    jsonStringWithMap,
-    [],
-    s,
-  );
-  const [editable, handleEditable] = useEditable(uniqueId, s);
-  return (
-    <Details
-      uniqueId={uniqueId}
-      title={TABLE + ': ' + tableId}
-      editable={editable}
-      handleEditable={handleEditable}
-      s={s}
-    >
-      <SortedTableInHtmlTable
-        tableId={tableId}
-        store={store}
-        cellId={cellId}
-        descending={descending}
-        offset={offset}
-        limit={10}
-        paginator={true}
-        sortOnClick={true}
-        onChange={handleChange}
-        editable={editable}
-        extraCellsAfter={editable ? rowActions : []}
-      />
-    </Details>
-  );
-};
-
-const ValuesView = ({
-  store,
-  storeId,
-  s,
-}: ValuesProps & {readonly storeId?: Id} & StoreProp) => {
-  const uniqueId = getUniqueId('v', storeId);
-  const [editable, handleEditable] = useEditable(uniqueId, s);
-  return arrayIsEmpty(useValueIds(store)) ? null : (
-    <Details
-      uniqueId={uniqueId}
-      title={VALUES}
-      editable={editable}
-      handleEditable={handleEditable}
-      s={s}
-    >
-      <ValuesInHtmlTable
-        store={store}
-        editable={editable}
-        extraCellsAfter={editable ? valueActions : []}
-      />
-    </Details>
-  );
-};
 
 export const StoreView = ({
   storeId,

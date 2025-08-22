@@ -57,6 +57,7 @@ import {
   CURRENT_TARGET,
   DOT,
   EMPTY_STRING,
+  EXTRA,
   NUMBER,
   STRING,
   VALUE,
@@ -269,7 +270,9 @@ const extraHeaders = (
   after: 0 | 1 = 0,
 ) =>
   arrayMap(extraCells, ({label}, index) => (
-    <th key={extraKey(index, after)}>{label}</th>
+    <th className={EXTRA} key={extraKey(index, after)}>
+      {label}
+    </th>
   ));
 
 const extraRowCells = (
@@ -278,7 +281,7 @@ const extraRowCells = (
   after: 0 | 1 = 0,
 ) =>
   arrayMap(extraRowCells, ({component: Component}, index) => (
-    <td key={extraKey(index, after)}>
+    <td className={EXTRA} key={extraKey(index, after)}>
       <Component {...extraRowCellProps} />
     </td>
   ));
@@ -289,7 +292,7 @@ const extraValueCells = (
   after: 0 | 1 = 0,
 ) =>
   arrayMap(extraValueCells, ({component: Component}, index) => (
-    <td key={extraKey(index, after)}>
+    <td className={EXTRA} key={extraKey(index, after)}>
       <Component {...extraValueCellProps} />
     </td>
   ));

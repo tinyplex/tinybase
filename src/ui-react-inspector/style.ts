@@ -50,18 +50,14 @@ export const APP_STYLESHEET = arrayJoin(
         height: '.8rem',
         'vertical-align': 'text-bottom',
         cursor: 'pointer',
-        margin: '0 2px',
+        margin: '-2.5px 2px -2.5px 0',
         padding: '2px',
         border: 'var(--border)',
-        background: 'var(--border)',
+        background: 'var(--background3)',
         'box-shadow': '0 1px 4px 0 #000',
         'border-radius': '.25rem',
       },
-      'img.flat': {
-        border: 'none',
-        background: 'none',
-        'box-shadow': 'none',
-      },
+      'img.flat': {border: 'none', background: 'none', 'box-shadow': 'none'},
 
       // Nub
       '>img': {
@@ -123,12 +119,7 @@ export const APP_STYLESHEET = arrayJoin(
               height: '100vh',
               'border-left': 'var(--border)',
             },
-            {
-              top: 0,
-              right: 0,
-              width: '100vw',
-              height: '100vh',
-            },
+            {top: 0, right: 0, width: '100vw', height: '100vh'},
           ],
           (css, p) => [`main[data-position='${p}']`, css],
         ),
@@ -163,11 +154,7 @@ export const APP_STYLESHEET = arrayJoin(
       },
 
       // Body
-      article: {
-        'padding-top': '1.75rem',
-        overflow: 'auto',
-        flex: 1,
-      },
+      article: {'padding-top': '1.75rem', overflow: 'auto', flex: 1},
 
       details: {
         border: 'var(--border)',
@@ -196,27 +183,22 @@ export const APP_STYLESHEET = arrayJoin(
       'details[open]>summary': {
         'border-bottom-left-radius': 0,
         'border-bottom-right-radius': 0,
-        'margin-bottom': 'calc(0.5rem + 1px)',
+        'margin-bottom': 0,
       },
       'details[open]>summary>span::before': DOWN_SVG,
+      'details>summary img': {display: 'none'},
+      'details[open]>summary img': {display: 'unset', 'margin-left': '.25rem'},
+      'details>div': {overflow: 'auto'},
 
-      'details img': {
-        background: 'none',
-      },
-      'details>summary img': {
-        display: 'none',
-      },
-      'details[open]>summary img': {
-        display: 'unset',
-        'margin-left': '.25rem',
-      },
       'img.edit': EDIT_SVG,
       'img.done': DONE_SVG,
       // tables
       table: {
+        'overflow-x': 'auto',
         'border-collapse': 'collapse',
         'table-layout': 'fixed',
-        'margin-bottom': '.5rem',
+        margin: '.5rem',
+        'min-width': 'calc(100% - 1rem)',
       },
       'table input': {
         background: '#000',
@@ -227,12 +209,8 @@ export const APP_STYLESHEET = arrayJoin(
         'vertical-align': 'top',
         margin: '-1px',
       },
-      'table input[type="number"]': {
-        width: '4rem',
-      },
-      'table input[type="checkbox"]': {
-        'margin-top': '1px',
-      },
+      'table input[type="number"]': {width: '4rem'},
+      'table input[type="checkbox"]': {'margin-top': '1px'},
       'table tbody button': {
         'font-size': '0',
         width: '.8rem',
@@ -241,18 +219,15 @@ export const APP_STYLESHEET = arrayJoin(
         color: '#777',
         margin: '0 .125rem 0 0',
       },
-      'table button:first-letter': {
-        'font-size': '.8rem',
+      'table button:first-letter': {'font-size': '.8rem'},
+      thead: {background: '#222'},
+      'th:first-child': {
+        width: '4rem',
+        'min-width': '4rem',
+        'max-width': '4rem',
       },
-      thead: {
-        background: '#222',
-      },
-      'th:nth-of-type(1)': {
-        'min-width': '2rem',
-      },
-      'th.sorted': {
-        background: '#000',
-      },
+      '.extra': {'text-align': 'right'},
+      'th.sorted': {background: '#000'},
       'table caption': {
         'text-align': 'left',
         'white-space': 'nowrap',
@@ -266,17 +241,13 @@ export const APP_STYLESHEET = arrayJoin(
         padding: 0,
         cursor: 'pointer',
       },
-      'button[disabled]': {
-        color: '#777',
-      },
-      'button.next': {
-        'margin-right': '.5rem',
-      },
+      'button[disabled]': {color: '#777'},
+      'button.next': {'margin-right': '.5rem'},
       [`th,#${UNIQUE_ID} td`]: {
         overflow: 'hidden',
         'text-overflow': 'ellipsis',
         padding: '.25rem .5rem',
-        'max-width': '15rem',
+        'max-width': '30rem',
         'white-space': 'nowrap',
         'border-width': '1px 0',
         'border-style': 'solid',
@@ -290,10 +261,7 @@ export const APP_STYLESHEET = arrayJoin(
       'img.okDis': OK_SVG_DISABLED,
       'img.cancel': CANCEL_SVG,
 
-      'span.warn': {
-        margin: '.25rem',
-        color: '#d81b60',
-      },
+      'span.warn': {margin: '.25rem', color: '#d81b60'},
     } as {[selector: string]: {[property: string]: string | number}},
     (style, selector) =>
       `#${UNIQUE_ID} ${selector}{${arrayJoin(
