@@ -81,7 +81,7 @@ export const Clone = ({
   }
   return (
     <>
-      {'Clone to Id: '}
+      {'New Id: '}
       <input type="text" value={newId} onChange={handleNewIdChange} />{' '}
       <img
         onClick={handleClone}

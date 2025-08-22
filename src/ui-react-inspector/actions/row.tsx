@@ -40,7 +40,7 @@ const RowAddCell = ({
   }
   return (
     <>
-      {'New Cell Id: '}
+      {'New Id: '}
       <input type="text" value={newId} onChange={handleNewIdChange} />{' '}
       <img
         onClick={handleAddCell}
