@@ -14,7 +14,7 @@ import {
   OK_SVG,
   OK_SVG_DISABLED,
   POSITIONS_SVG,
-  UP_SVG,
+  RIGHT_SVG,
 } from './svg.ts';
 
 const SCROLLBAR = '*::-webkit-scrollbar';
@@ -54,7 +54,7 @@ export const APP_STYLESHEET = arrayJoin(
         padding: '2px',
         border: 'var(--border)',
         background: 'var(--background3)',
-        'box-shadow': '0 1px 4px 0 #000',
+        'box-shadow': '0 1px 2px 0 #0007',
         'border-radius': '.25rem',
       },
       'img.flat': {border: 'none', background: 'none', 'box-shadow': 'none'},
@@ -87,6 +87,7 @@ export const APP_STYLESHEET = arrayJoin(
         background: 'var(--background)',
         overflow: 'hidden',
         position: 'fixed',
+        'box-shadow': '0 1px 2px 0 #0007',
       },
       ...objNew(
         arrayMap(
@@ -128,7 +129,7 @@ export const APP_STYLESHEET = arrayJoin(
       // Header
       header: {
         display: 'flex',
-        padding: '.25rem',
+        padding: '.5rem',
         'align-items': 'center',
         'box-shadow': '0 1px 4px 0 #000',
         'border-bottom': 'var(--border)',
@@ -137,7 +138,7 @@ export const APP_STYLESHEET = arrayJoin(
         position: 'absolute',
         width: 'calc(100% - .5rem)',
       },
-      'header>img:nth-of-type(1)': LOGO_SVG,
+      'header>img:nth-of-type(1)': {height: '1rem', width: '1rem', ...LOGO_SVG},
       'header>img:nth-of-type(6)': CLOSE_SVG,
       ...objNew(
         arrayMap(POSITIONS_SVG, (SVG, p) => [
@@ -154,7 +155,7 @@ export const APP_STYLESHEET = arrayJoin(
       },
 
       // Body
-      article: {'padding-top': '1.75rem', overflow: 'auto', flex: 1},
+      article: {'padding-top': '2rem', overflow: 'auto', flex: 1},
 
       details: {
         border: 'var(--border)',
@@ -178,7 +179,7 @@ export const APP_STYLESHEET = arrayJoin(
         margin: '2px',
         width: '1rem',
         height: '1rem',
-        ...UP_SVG,
+        ...RIGHT_SVG,
       },
       'details[open]>summary': {
         'border-bottom-left-radius': 0,
@@ -208,8 +209,9 @@ export const APP_STYLESHEET = arrayJoin(
         'font-size': 'unset',
         'vertical-align': 'top',
         margin: '-1px',
+        width: '6rem',
       },
-      'table input[type="number"]': {width: '4rem'},
+      'table input[type="number"]': {width: '3rem'},
       'table input[type="checkbox"]': {'margin-top': '1px'},
       'table tbody button': {
         'font-size': '0',
