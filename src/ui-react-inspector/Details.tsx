@@ -7,14 +7,14 @@ import type {StoreProp} from './types.ts';
 
 export const Details = ({
   uniqueId,
-  summary,
+  title,
   editable,
   handleEditable,
   children,
   s,
 }: {
   readonly uniqueId: Id;
-  readonly summary: ReactNode;
+  readonly title: ReactNode;
   readonly editable?: boolean;
   readonly handleEditable?: (event: SyntheticEvent<HTMLImageElement>) => void;
   readonly children: ReactNode;
@@ -31,7 +31,7 @@ export const Details = ({
   return (
     <details open={open} onToggle={handleToggle}>
       <summary>
-        {summary}
+        <span>{title}</span>
         {handleEditable ? (
           <img
             onClick={handleEditable}

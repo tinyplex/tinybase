@@ -17,7 +17,7 @@ const IndexView = ({
 }: IndexProps & {readonly indexesId?: Id} & StoreProp) => (
   <Details
     uniqueId={getUniqueId('i', indexesId, indexId)}
-    summary={'Index: ' + indexId}
+    title={'Index: ' + indexId}
     s={s}
   >
     {arrayMap(useSliceIds(indexId, indexes), (sliceId) => (
@@ -45,7 +45,7 @@ const SliceView = ({
   return (
     <Details
       uniqueId={uniqueId}
-      summary={'Slice: ' + sliceId}
+      title={'Slice: ' + sliceId}
       editable={editable}
       handleEditable={handleEditable}
       s={s}
@@ -69,7 +69,7 @@ export const IndexesView = ({
   return isUndefined(indexes) ? null : (
     <Details
       uniqueId={getUniqueId('i', indexesId)}
-      summary={'Indexes: ' + (indexesId ?? DEFAULT)}
+      title={'Indexes: ' + (indexesId ?? DEFAULT)}
       s={s}
     >
       {arrayIsEmpty(indexIds)

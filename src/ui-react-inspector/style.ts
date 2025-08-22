@@ -8,11 +8,13 @@ import {
   CLOSE_SVG,
   DELETE_SVG,
   DONE_SVG,
+  DOWN_SVG,
   EDIT_SVG,
   LOGO_SVG,
   OK_SVG,
   OK_SVG_DISABLED,
   POSITIONS_SVG,
+  UP_SVG,
 } from './svg.ts';
 
 const SCROLLBAR = '*::-webkit-scrollbar';
@@ -178,13 +180,25 @@ export const APP_STYLESHEET = arrayJoin(
         'user-select': 'none',
         margin: '-1px',
         border: 'var(--border)',
-        padding: '.25rem .5rem',
+        padding: '0.25rem 0.125rem',
+        display: 'flex',
+        'justify-content': 'space-between',
+        'align-items': 'center',
+      },
+      'summary>span::before': {
+        display: 'inline-block',
+        'vertical-align': 'sub',
+        margin: '2px',
+        width: '1rem',
+        height: '1rem',
+        ...UP_SVG,
       },
       'details[open]>summary': {
         'border-bottom-left-radius': 0,
         'border-bottom-right-radius': 0,
         'margin-bottom': 'calc(0.5rem + 1px)',
       },
+      'details[open]>summary>span::before': DOWN_SVG,
 
       'details img': {
         background: 'none',

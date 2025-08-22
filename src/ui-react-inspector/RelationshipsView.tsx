@@ -24,7 +24,7 @@ const RelationshipView = ({
   return (
     <Details
       uniqueId={uniqueId}
-      summary={'Relationship: ' + relationshipId}
+      title={'Relationship: ' + relationshipId}
       editable={editable}
       handleEditable={handleEditable}
       s={s}
@@ -47,7 +47,7 @@ export const RelationshipsView = ({
   return isUndefined(relationships) ? null : (
     <Details
       uniqueId={getUniqueId('r', relationshipsId)}
-      summary={'Relationships: ' + (relationshipsId ?? DEFAULT)}
+      title={'Relationships: ' + (relationshipsId ?? DEFAULT)}
       s={s}
     >
       {arrayIsEmpty(relationshipIds)

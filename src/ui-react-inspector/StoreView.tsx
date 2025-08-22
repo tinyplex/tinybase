@@ -49,7 +49,7 @@ const TableView = ({
   return (
     <Details
       uniqueId={uniqueId}
-      summary={TABLE + ': ' + tableId}
+      title={TABLE + ': ' + tableId}
       editable={editable}
       handleEditable={handleEditable}
       s={s}
@@ -81,7 +81,7 @@ const ValuesView = ({
   return arrayIsEmpty(useValueIds(store)) ? null : (
     <Details
       uniqueId={uniqueId}
-      summary={VALUES}
+      title={VALUES}
       editable={editable}
       handleEditable={handleEditable}
       s={s}
@@ -104,7 +104,7 @@ export const StoreView = ({
   return isUndefined(store) ? null : (
     <Details
       uniqueId={getUniqueId('s', storeId)}
-      summary={
+      title={
         (store.isMergeable() ? 'Mergeable' : '') +
         'Store: ' +
         (storeId ?? DEFAULT)

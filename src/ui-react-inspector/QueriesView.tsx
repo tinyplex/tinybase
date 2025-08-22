@@ -38,7 +38,7 @@ const QueryView = ({
     s,
   );
   return (
-    <Details uniqueId={uniqueId} summary={'Query: ' + queryId} s={s}>
+    <Details uniqueId={uniqueId} title={'Query: ' + queryId} s={s}>
       <ResultSortedTableInHtmlTable
         queryId={queryId}
         queries={queries}
@@ -63,7 +63,7 @@ export const QueriesView = ({
   return isUndefined(queries) ? null : (
     <Details
       uniqueId={getUniqueId('q', queriesId)}
-      summary={'Queries: ' + (queriesId ?? DEFAULT)}
+      title={'Queries: ' + (queriesId ?? DEFAULT)}
       s={s}
     >
       {arrayIsEmpty(queryIds)

@@ -26,7 +26,7 @@ export const MetricsView = ({
   return isUndefined(metrics) ? null : (
     <Details
       uniqueId={getUniqueId('m', metricsId)}
-      summary={'Metrics: ' + (metricsId ?? DEFAULT)}
+      title={'Metrics: ' + (metricsId ?? DEFAULT)}
       s={s}
     >
       {arrayIsEmpty(metricIds) ? (
