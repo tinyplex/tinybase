@@ -3,8 +3,9 @@ import type {Id} from '../../@types/common/index.d.ts';
 import type {
   CellProps,
   RowProps,
-  StoreOrStoreId,
+  TableProps,
   ValueProps,
+  ValuesProps,
 } from '../../@types/ui-react/index.d.ts';
 import {useCallback, useState} from '../../common/react.ts';
 
@@ -27,11 +28,7 @@ export const getNewIdFromSuggestedId = (
 };
 
 export const ConfirmableActions = <
-  Props extends
-    | RowProps
-    | CellProps
-    | ValueProps
-    | {readonly store?: StoreOrStoreId | undefined},
+  Props extends TableProps | RowProps | CellProps | ValuesProps | ValueProps,
 >({
   actions,
   ...props

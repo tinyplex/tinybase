@@ -17,8 +17,9 @@ import {
 } from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
 import {CellActions} from './actions/cell.tsx';
-import {rowActions} from './actions/row.tsx';
-import {SORT_CELL, STATE_TABLE, getUniqueId, useEditable} from './common.ts';
+import {ConfirmableActions} from './actions/common.tsx';
+import {rowActions, RowAdd} from './actions/row.tsx';
+import {getUniqueId, SORT_CELL, STATE_TABLE, useEditable} from './common.ts';
 import type {StoreProp} from './types.ts';
 
 const EditableCellViewWithActions = (props: CellProps) => (
@@ -77,6 +78,15 @@ export const TableView = ({
           ]),
         )}
       />
+      {editable ? (
+        <p>
+          <ConfirmableActions
+            actions={[['add', 'Add Row', RowAdd]]}
+            store={store}
+            tableId={tableId}
+          />
+        </p>
+      ) : null}
     </Details>
   );
 };

@@ -2,6 +2,7 @@ import type {Id} from '../../@types/index.d.ts';
 import type {
   StoreOrStoreId,
   ValueProps,
+  ValuesProps,
 } from '../../@types/ui-react/index.d.ts';
 import {useCallback} from '../../common/react.ts';
 import {
@@ -27,19 +28,22 @@ const useHasValueCallback = (storeOrStoreId: StoreOrStoreId | undefined) => {
 export const ValueAdd = ({
   onDone,
   store,
-}: {onDone: () => void} & {readonly store?: StoreOrStoreId | undefined}) => (
-  <NewId
-    onDone={onDone}
-    suggestedId="value"
-    has={useHasValueCallback(store)}
-    set={useSetValueCallback(
-      (newId: Id) => newId,
-      () => '',
-      [],
-      store,
-    )}
-  />
-);
+}: {onDone: () => void} & ValuesProps) => {
+  const has = useHasValueCallback(store);
+  return (
+    <NewId
+      onDone={onDone}
+      suggestedId={getNewIdFromSuggestedId('value', has)}
+      has={has}
+      set={useSetValueCallback(
+        (newId: Id) => newId,
+        () => '',
+        [],
+        store,
+      )}
+    />
+  );
+};
 
 const ValueClone = ({
   onDone,

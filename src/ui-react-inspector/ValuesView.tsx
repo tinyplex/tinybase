@@ -25,26 +25,21 @@ export const ValuesView = ({
       handleEditable={handleEditable}
       s={s}
     >
-      {arrayIsEmpty(useValueIds(store)) ? (
-        <p>
-          0 values.
-          {editable ? (
-            <>
-              {' '}
-              <ConfirmableActions
-                actions={[['add', 'Add Value', ValueAdd]]}
-                store={store}
-              />
-            </>
-          ) : null}
-        </p>
-      ) : (
+      {arrayIsEmpty(useValueIds(store)) ? null : (
         <ValuesInHtmlTable
           store={store}
           editable={editable}
           extraCellsAfter={editable ? valueActions : []}
         />
       )}
+      {editable ? (
+        <p>
+          <ConfirmableActions
+            actions={[['add', 'Add Value', ValueAdd]]}
+            store={store}
+          />
+        </p>
+      ) : null}
     </Details>
   );
 };

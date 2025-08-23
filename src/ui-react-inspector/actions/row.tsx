@@ -1,5 +1,11 @@
 import type {Id} from '../../@types/index.d.ts';
-import type {RowProps} from '../../@types/ui-react/index.d.ts';
+import type {
+  RowProps,
+  StoreOrStoreId,
+  TableProps,
+} from '../../@types/ui-react/index.d.ts';
+import {arrayMap} from '../../common/array.ts';
+import {objNew} from '../../common/obj.ts';
 import {useCallback} from '../../common/react.ts';
 import {
   useDelRowCallback,
@@ -13,6 +19,17 @@ import {
   getNewIdFromSuggestedId,
   NewId,
 } from './common.tsx';
+
+const useHasRowCallback = (
+  storeOrStoreId: StoreOrStoreId | undefined,
+  tableId: Id,
+) => {
+  const store = useStoreOrStoreById(storeOrStoreId);
+  return useCallback(
+    (rowId: Id) => store?.hasRow(tableId, rowId) ?? false,
+    [store, tableId],
+  );
+};
 
 const RowAddCell = ({
   onDone,
@@ -42,6 +59,29 @@ const RowAddCell = ({
   );
 };
 
+export const RowAdd = ({
+  onDone,
+  tableId,
+  store,
+}: {onDone: () => void} & TableProps) => {
+  const has = useHasRowCallback(store, tableId);
+  return (
+    <NewId
+      onDone={onDone}
+      suggestedId={getNewIdFromSuggestedId('row', has)}
+      has={has}
+      set={useSetRowCallback(
+        tableId,
+        (newId) => newId,
+        (_, store) =>
+          objNew(
+            arrayMap(store.getTableCellIds(tableId), (cellId) => [cellId, '']),
+          ),
+      )}
+    />
+  );
+};
+
 const RowClone = ({
   onDone,
   tableId,
@@ -49,10 +89,7 @@ const RowClone = ({
   store: storeOrStoreId,
 }: {onDone: () => void} & RowProps) => {
   const store = useStoreOrStoreById(storeOrStoreId)!;
-  const has = useCallback(
-    (rowId: Id) => store.hasRow(tableId, rowId),
-    [store, tableId],
-  );
+  const has = useHasRowCallback(store, tableId);
   return (
     <NewId
       onDone={onDone}
