@@ -1,9 +1,9 @@
-import type {Id} from '../../@types/index.d.ts';
+import type {Id} from '../../@types/index.js';
 import type {
   StoreOrStoreId,
   ValueProps,
   ValuesProps,
-} from '../../@types/ui-react/index.d.ts';
+} from '../../@types/ui-react/index.js';
 import {useCallback} from '../../common/react.ts';
 import {
   useDelValueCallback,
@@ -25,7 +25,7 @@ const useHasValueCallback = (storeOrStoreId: StoreOrStoreId | undefined) => {
   );
 };
 
-export const ValueAdd = ({
+export const AddValue = ({
   onDone,
   store,
 }: {onDone: () => void} & ValuesProps) => {
@@ -45,7 +45,7 @@ export const ValueAdd = ({
   );
 };
 
-const ValueClone = ({
+const CloneValue = ({
   onDone,
   valueId,
   store,
@@ -66,7 +66,7 @@ const ValueClone = ({
   );
 };
 
-const ValueDelete = ({
+const DeleteValue = ({
   onDone,
   valueId,
   store,
@@ -77,8 +77,8 @@ const ValueDelete = ({
 const ValueActions = ({valueId, store}: ValueProps) => (
   <ConfirmableActions
     actions={[
-      ['clone', 'Clone Value', ValueClone],
-      ['delete', 'Delete Value', ValueDelete],
+      ['clone', 'Clone Value', CloneValue],
+      ['delete', 'Delete Value', DeleteValue],
     ]}
     store={store}
     valueId={valueId}

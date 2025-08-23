@@ -6,7 +6,7 @@ import {ValuesInHtmlTable} from '../ui-react-dom/index.tsx';
 import {useValueIds} from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
 import {ConfirmableActions} from './actions/common.tsx';
-import {valueActions, ValueAdd} from './actions/value.tsx';
+import {AddValue, valueActions} from './actions/values.tsx';
 import {getUniqueId, useEditable} from './common.ts';
 import type {StoreProp} from './types.ts';
 
@@ -35,7 +35,7 @@ export const ValuesView = ({
       {editable ? (
         <p>
           <ConfirmableActions
-            actions={[['add', 'Add Value', ValueAdd]]}
+            actions={[['add', 'Add Value', AddValue]]}
             store={store}
           />
         </p>

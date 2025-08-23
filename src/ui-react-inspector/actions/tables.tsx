@@ -31,7 +31,7 @@ const useHasRowCallback = (
   );
 };
 
-const RowAddCell = ({
+const AddCell = ({
   onDone,
   tableId,
   rowId,
@@ -59,7 +59,7 @@ const RowAddCell = ({
   );
 };
 
-export const RowAdd = ({
+export const AddRow = ({
   onDone,
   tableId,
   store,
@@ -82,7 +82,7 @@ export const RowAdd = ({
   );
 };
 
-const RowClone = ({
+const CloneRow = ({
   onDone,
   tableId,
   rowId,
@@ -105,7 +105,7 @@ const RowClone = ({
   );
 };
 
-const RowDelete = ({
+const DeleteRow = ({
   onDone,
   tableId,
   rowId,
@@ -117,9 +117,9 @@ const RowDelete = ({
 const RowActions = ({tableId, rowId, store}: RowProps) => (
   <ConfirmableActions
     actions={[
-      ['add', 'Add Cell', RowAddCell],
-      ['clone', 'Clone Row', RowClone],
-      ['delete', 'Delete Row', RowDelete],
+      ['add', 'Add Cell', AddCell],
+      ['clone', 'Clone Row', CloneRow],
+      ['delete', 'Delete Row', DeleteRow],
     ]}
     store={store}
     tableId={tableId}
