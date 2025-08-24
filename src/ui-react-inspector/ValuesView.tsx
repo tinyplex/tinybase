@@ -25,7 +25,9 @@ export const ValuesView = ({
       handleEditable={handleEditable}
       s={s}
     >
-      {arrayIsEmpty(useValueIds(store)) ? null : (
+      {arrayIsEmpty(useValueIds(store)) ? (
+        <caption>No values.</caption>
+      ) : (
         <ValuesInHtmlTable
           store={store}
           editable={editable}
@@ -34,10 +36,12 @@ export const ValuesView = ({
       )}
       {editable ? (
         <div className="actions">
-          <ConfirmableActions
-            actions={[['add', 'Add Value', AddValue]]}
-            store={store}
-          />
+          <div>
+            <ConfirmableActions
+              actions={[['add', 'Add Value', AddValue]]}
+              store={store}
+            />
+          </div>
         </div>
       ) : null}
     </Details>
