@@ -9,8 +9,10 @@ import {objNew} from '../../common/obj.ts';
 import {useCallback} from '../../common/react.ts';
 import {
   useDelRowCallback,
+  useDelTableCallback,
   useSetCellCallback,
   useSetRowCallback,
+  useSetTableCallback,
   useStoreOrStoreById,
 } from '../../ui-react/index.ts';
 import {
@@ -19,6 +21,83 @@ import {
   getNewIdFromSuggestedId,
   NewId,
 } from './common.tsx';
+
+const useHasTableCallback = (storeOrStoreId: StoreOrStoreId | undefined) => {
+  const store = useStoreOrStoreById(storeOrStoreId);
+  return useCallback(
+    (tableId: Id) => store?.hasTable(tableId) ?? false,
+    [store],
+  );
+};
+
+const AddRow = ({
+  onDone,
+  tableId,
+  store,
+}: {onDone: () => void} & TableProps) => {
+  const has = useHasRowCallback(store, tableId);
+  return (
+    <NewId
+      onDone={onDone}
+      suggestedId={getNewIdFromSuggestedId('row', has)}
+      has={has}
+      set={useSetRowCallback(
+        tableId,
+        (newId) => newId,
+        (_, store) =>
+          objNew(
+            arrayMap(store.getTableCellIds(tableId), (cellId) => [cellId, '']),
+          ),
+      )}
+    />
+  );
+};
+
+export const CloneTable = ({
+  onDone,
+  tableId,
+  store: storeOrStoreId,
+}: {onDone: () => void} & TableProps) => {
+  const store = useStoreOrStoreById(storeOrStoreId)!;
+  const has = useHasTableCallback(store);
+  return (
+    <NewId
+      onDone={onDone}
+      suggestedId={getNewIdFromSuggestedId(tableId, has)}
+      has={has}
+      set={useSetTableCallback(
+        (tableId) => tableId,
+        (_, store) => store.getTable(tableId),
+      )}
+    />
+  );
+};
+
+const DeleteTable = ({
+  onDone,
+  tableId,
+  store,
+}: {onDone: () => void} & TableProps) => (
+  <Delete onClick={useDelTableCallback(tableId, store, onDone)} />
+);
+
+export const TableActions1 = ({tableId, store}: TableProps) => (
+  <ConfirmableActions
+    actions={[['add', 'Add Row', AddRow]]}
+    store={store}
+    tableId={tableId}
+  />
+);
+export const TableActions2 = ({tableId, store}: TableProps) => (
+  <ConfirmableActions
+    actions={[
+      ['clone', 'Clone Table', CloneTable],
+      ['delete', 'Delete Table', DeleteTable],
+    ]}
+    store={store}
+    tableId={tableId}
+  />
+);
 
 const useHasRowCallback = (
   storeOrStoreId: StoreOrStoreId | undefined,
@@ -54,29 +133,6 @@ const AddCell = ({
         () => '',
         [],
         store,
-      )}
-    />
-  );
-};
-
-export const AddRow = ({
-  onDone,
-  tableId,
-  store,
-}: {onDone: () => void} & TableProps) => {
-  const has = useHasRowCallback(store, tableId);
-  return (
-    <NewId
-      onDone={onDone}
-      suggestedId={getNewIdFromSuggestedId('row', has)}
-      has={has}
-      set={useSetRowCallback(
-        tableId,
-        (newId) => newId,
-        (_, store) =>
-          objNew(
-            arrayMap(store.getTableCellIds(tableId), (cellId) => [cellId, '']),
-          ),
       )}
     />
   );

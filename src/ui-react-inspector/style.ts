@@ -195,7 +195,6 @@ export const APP_STYLESHEET = arrayJoin(
       'img.edit': EDIT_SVG,
       'img.done': DONE_SVG,
 
-      p: {padding: '.25rem .5rem', margin: 0},
       caption: {
         color: 'var(--foreground2)',
         'text-align': 'left',
@@ -211,6 +210,12 @@ export const APP_STYLESHEET = arrayJoin(
         cursor: 'pointer',
       },
       'caption button[disabled]': {color: 'var(--foreground2)'},
+      '.actions': {
+        padding: '.75rem .5rem',
+        margin: 0,
+        display: 'flex',
+        'justify-content': 'space-between',
+      },
 
       // tables
       table: {

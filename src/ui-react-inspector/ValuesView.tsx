@@ -33,12 +33,12 @@ export const ValuesView = ({
         />
       )}
       {editable ? (
-        <p>
+        <div className="actions">
           <ConfirmableActions
             actions={[['add', 'Add Value', AddValue]]}
             store={store}
           />
-        </p>
+        </div>
       ) : null}
     </Details>
   );
