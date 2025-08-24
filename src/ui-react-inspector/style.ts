@@ -213,6 +213,7 @@ export const APP_STYLESHEET = arrayJoin(
       '.actions': {
         padding: '.75rem .5rem',
         margin: 0,
+        'border-top': 'var(--border)',
         display: 'flex',
         'justify-content': 'space-between',
       },

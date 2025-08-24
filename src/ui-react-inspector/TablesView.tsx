@@ -1,9 +1,13 @@
-import type {Id} from '../@types/common/index.d.ts';
-import type {CellProps, TableProps} from '../@types/ui-react/index.d.ts';
-import {arrayMap} from '../common/array.ts';
+import type {Id} from '../@types/common/index.js';
+import type {
+  CellProps,
+  TableProps,
+  TablesProps,
+} from '../@types/ui-react/index.js';
+import {arrayIsEmpty, arrayMap} from '../common/array.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {objNew} from '../common/obj.ts';
-import {TABLE} from '../common/strings.ts';
+import {TABLE, TABLES} from '../common/strings.ts';
 import {
   EditableCellView,
   SortedTableInHtmlTable,
@@ -14,11 +18,18 @@ import {
   useHasCell,
   useSetCellCallback,
   useTableCellIds,
+  useTableIds,
 } from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
 import {CellActions} from './actions/cell.tsx';
 import {rowActions, TableActions1, TableActions2} from './actions/tables.tsx';
-import {getUniqueId, SORT_CELL, STATE_TABLE, useEditable} from './common.ts';
+import {
+  getUniqueId,
+  SORT_CELL,
+  sortedIdsMap,
+  STATE_TABLE,
+  useEditable,
+} from './common.ts';
 import type {StoreProp} from './types.ts';
 
 const EditableCellViewWithActions = (props: CellProps) => (
@@ -30,7 +41,7 @@ const EditableCellViewWithActions = (props: CellProps) => (
   </>
 );
 
-export const TableView = ({
+const TableView = ({
   tableId,
   store,
   storeId,
@@ -87,6 +98,39 @@ export const TableView = ({
           </div>
         </div>
       ) : null}
+    </Details>
+  );
+};
+
+export const TablesView = ({
+  store,
+  storeId,
+  s,
+}: TablesProps & {readonly storeId?: Id} & StoreProp) => {
+  const uniqueId = getUniqueId('ts', storeId);
+  const [editable, handleEditable] = useEditable(uniqueId, s);
+  const tableIds = useTableIds(store);
+  return (
+    <Details
+      uniqueId={uniqueId}
+      title={TABLES}
+      editable={editable}
+      handleEditable={handleEditable}
+      s={s}
+    >
+      {arrayIsEmpty(tableIds) ? (
+        <caption>No tables.</caption>
+      ) : (
+        sortedIdsMap(tableIds, (tableId) => (
+          <TableView
+            store={store}
+            storeId={storeId}
+            tableId={tableId}
+            s={s}
+            key={tableId}
+          />
+        ))
+      )}
     </Details>
   );
 };
