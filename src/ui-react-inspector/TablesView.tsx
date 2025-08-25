@@ -1,9 +1,9 @@
-import type {Id} from '../@types/common/index.js';
+import type {Id} from '../@types/common/index.d.ts';
 import type {
   CellProps,
   TableProps,
   TablesProps,
-} from '../@types/ui-react/index.js';
+} from '../@types/ui-react/index.d.ts';
 import {arrayIsEmpty, arrayMap} from '../common/array.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {objNew} from '../common/obj.ts';

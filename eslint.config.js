@@ -116,6 +116,7 @@ export default tsLint.config(
       'react/jsx-props-no-spreading': 0,
       'react/jsx-sort-props': 0,
       'react/no-arrow-function-lifecycle': 2,
+      'react/prefer-read-only-props': 2,
       'react/no-find-dom-node': 0,
       'react/no-multi-comp': [2, {ignoreStateless: true}],
       'react/no-set-state': 0,

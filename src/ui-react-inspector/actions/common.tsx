@@ -9,6 +9,8 @@ import type {
 } from '../../@types/ui-react/index.d.ts';
 import {useCallback, useEffect, useState} from '../../common/react.ts';
 
+export type OnDoneProp = {readonly onDone: () => void};
+
 export const getNewIdFromSuggestedId = (
   suggestedId: Id,
   has: (newId: Id) => boolean,
@@ -33,10 +35,10 @@ export const ConfirmableActions = <
   actions,
   ...props
 }: {
-  actions: [
+  readonly actions: [
     icon: string,
     title: string,
-    component: ComponentType<{onDone: () => void} & Props>,
+    component: ComponentType<OnDoneProp & Props>,
   ][];
 } & Props) => {
   const [confirming, setConfirming] = useState<number | null>();
@@ -81,12 +83,11 @@ export const NewId = ({
   has,
   set,
   prompt = 'New Id',
-}: {
-  onDone: () => void;
-  suggestedId: Id;
-  has: (id: Id) => boolean;
-  set: (newId: Id) => void;
-  prompt?: string;
+}: OnDoneProp & {
+  readonly suggestedId: Id;
+  readonly has: (id: Id) => boolean;
+  readonly set: (newId: Id) => void;
+  readonly prompt?: string;
 }) => {
   const [newId, setNewId] = useState<Id>(suggestedId);
   const [newIdOk, setNewIdOk] = useState<boolean>(true);
@@ -142,8 +143,8 @@ export const Delete = ({
   onClick,
   prompt = 'Delete',
 }: {
-  onClick: () => void;
-  prompt?: string;
+  readonly onClick: () => void;
+  readonly prompt?: string;
 }) => {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -171,8 +172,8 @@ export const Actions = ({
   left,
   right,
 }: {
-  left?: ReactNode;
-  right?: ReactNode;
+  readonly left?: ReactNode;
+  readonly right?: ReactNode;
 }) => (
   <div className="actions">
     <div>{left}</div>

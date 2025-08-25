@@ -1,4 +1,4 @@
-import type {Id} from '../../@types/index.js';
+import type {Id} from '../../@types/index.d.ts';
 import type {
   StoreOrStoreId,
   ValueProps,
@@ -18,6 +18,7 @@ import {
   Delete,
   getNewIdFromSuggestedId,
   NewId,
+  type OnDoneProp,
 } from './common.tsx';
 
 const useHasValueCallback = (storeOrStoreId: StoreOrStoreId | undefined) => {
@@ -28,7 +29,7 @@ const useHasValueCallback = (storeOrStoreId: StoreOrStoreId | undefined) => {
   );
 };
 
-const AddValue = ({onDone, store}: {onDone: () => void} & ValuesProps) => {
+const AddValue = ({onDone, store}: OnDoneProp & ValuesProps) => {
   const has = useHasValueCallback(store);
   return (
     <NewId
@@ -46,7 +47,7 @@ const AddValue = ({onDone, store}: {onDone: () => void} & ValuesProps) => {
   );
 };
 
-const DeleteValues = ({onDone, store}: {onDone: () => void} & ValuesProps) => (
+const DeleteValues = ({onDone, store}: OnDoneProp & ValuesProps) => (
   <Delete
     onClick={useDelValuesCallback(store, onDone)}
     prompt="Delete all values"
@@ -74,11 +75,7 @@ export const ValuesActions = ({store}: ValuesProps) => (
 
 // --
 
-const CloneValue = ({
-  onDone,
-  valueId,
-  store,
-}: {onDone: () => void} & ValueProps) => {
+const CloneValue = ({onDone, valueId, store}: OnDoneProp & ValueProps) => {
   const has = useHasValueCallback(store);
   return (
     <NewId
@@ -96,11 +93,7 @@ const CloneValue = ({
   );
 };
 
-const DeleteValue = ({
-  onDone,
-  valueId,
-  store,
-}: {onDone: () => void} & ValueProps) => (
+const DeleteValue = ({onDone, valueId, store}: OnDoneProp & ValueProps) => (
   <Delete
     onClick={useDelValueCallback(valueId, store, onDone)}
     prompt="Delete value"

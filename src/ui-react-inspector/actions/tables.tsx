@@ -26,6 +26,7 @@ import {
   Delete,
   getNewIdFromSuggestedId,
   NewId,
+  type OnDoneProp,
 } from './common.tsx';
 
 const useHasTableCallback = (storeOrStoreId: StoreOrStoreId | undefined) => {
@@ -36,7 +37,7 @@ const useHasTableCallback = (storeOrStoreId: StoreOrStoreId | undefined) => {
   );
 };
 
-const AddTable = ({onDone, store}: {onDone: () => void} & TablesProps) => {
+const AddTable = ({onDone, store}: OnDoneProp & TablesProps) => {
   const has = useHasTableCallback(store);
   return (
     <NewId
@@ -54,7 +55,7 @@ const AddTable = ({onDone, store}: {onDone: () => void} & TablesProps) => {
   );
 };
 
-const DeleteTables = ({onDone, store}: {onDone: () => void} & TablesProps) => (
+const DeleteTables = ({onDone, store}: OnDoneProp & TablesProps) => (
   <Delete
     onClick={useDelTablesCallback(store, onDone)}
     prompt="Delete all tables"
@@ -82,11 +83,7 @@ export const TablesActions = ({store}: TablesProps) => (
 
 // --
 
-const AddRow = ({
-  onDone,
-  tableId,
-  store,
-}: {onDone: () => void} & TableProps) => {
+const AddRow = ({onDone, tableId, store}: OnDoneProp & TableProps) => {
   const has = useHasRowCallback(store, tableId);
   return (
     <NewId
@@ -110,7 +107,7 @@ const CloneTable = ({
   onDone,
   tableId,
   store: storeOrStoreId,
-}: {onDone: () => void} & TableProps) => {
+}: OnDoneProp & TableProps) => {
   const store = useStoreOrStoreById(storeOrStoreId)!;
   const has = useHasTableCallback(store);
   return (
@@ -127,11 +124,7 @@ const CloneTable = ({
   );
 };
 
-const DeleteTable = ({
-  onDone,
-  tableId,
-  store,
-}: {onDone: () => void} & TableProps) => (
+const DeleteTable = ({onDone, tableId, store}: OnDoneProp & TableProps) => (
   <Delete
     onClick={useDelTableCallback(tableId, store, onDone)}
     prompt="Delete table"
@@ -172,7 +165,7 @@ const AddCell = ({
   tableId,
   rowId,
   store: storeOrStoreId,
-}: {onDone: () => void} & RowProps) => {
+}: OnDoneProp & RowProps) => {
   const store = useStoreOrStoreById(storeOrStoreId)!;
   const has = useCallback(
     (cellId: Id) => store.hasCell(tableId, rowId, cellId),
@@ -201,7 +194,7 @@ const CloneRow = ({
   tableId,
   rowId,
   store: storeOrStoreId,
-}: {onDone: () => void} & RowProps) => {
+}: OnDoneProp & RowProps) => {
   const store = useStoreOrStoreById(storeOrStoreId)!;
   const has = useHasRowCallback(store, tableId);
   return (
@@ -220,12 +213,7 @@ const CloneRow = ({
   );
 };
 
-const DeleteRow = ({
-  onDone,
-  tableId,
-  rowId,
-  store,
-}: {onDone: () => void} & RowProps) => (
+const DeleteRow = ({onDone, tableId, rowId, store}: OnDoneProp & RowProps) => (
   <Delete
     onClick={useDelRowCallback(tableId, rowId, store, onDone)}
     prompt="Delete row"
@@ -253,7 +241,7 @@ const CellDelete = ({
   rowId,
   cellId,
   store,
-}: {onDone: () => void} & CellProps) => (
+}: OnDoneProp & CellProps) => (
   <Delete
     onClick={useDelCellCallback(tableId, rowId, cellId, true, store, onDone)}
     prompt="Delete cell"
