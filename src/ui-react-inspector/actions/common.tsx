@@ -7,7 +7,7 @@ import type {
   ValueProps,
   ValuesProps,
 } from '../../@types/ui-react/index.d.ts';
-import {useCallback, useState} from '../../common/react.ts';
+import {useCallback, useEffect, useState} from '../../common/react.ts';
 
 export const getNewIdFromSuggestedId = (
   suggestedId: Id,
@@ -41,6 +41,20 @@ export const ConfirmableActions = <
 } & Props) => {
   const [confirming, setConfirming] = useState<number | null>();
   const handleDone = useCallback(() => setConfirming(null), []);
+
+  useEffect(() => {
+    if (confirming != null) {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (confirming != null && e.key === 'Escape') {
+          e.preventDefault();
+          handleDone();
+        }
+      };
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [confirming, handleDone]);
+
   if (confirming != null) {
     const [, , Component] = actions[confirming];
     return (
@@ -90,6 +104,17 @@ export const NewId = ({
       onDone();
     }
   }, [onDone, setNewIdOk, has, set, newId]);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleClick();
+      }
+    },
+    [handleClick],
+  );
+
   if (suggestedId != previousSuggestedId) {
     setNewId(suggestedId);
     setPreviousSuggestedNewId(suggestedId);
@@ -97,7 +122,13 @@ export const NewId = ({
   return (
     <>
       {prompt + ': '}
-      <input type="text" value={newId} onChange={handleNewIdChange} />{' '}
+      <input
+        type="text"
+        value={newId}
+        onChange={handleNewIdChange}
+        onKeyDown={handleKeyDown}
+        autoFocus
+      />{' '}
       <img
         onClick={handleClick}
         title={newIdOk ? 'Confirm' : 'Id already exists'}
@@ -113,11 +144,28 @@ export const Delete = ({
 }: {
   onClick: () => void;
   prompt?: string;
-}) => (
-  <>
-    {prompt}? <img onClick={onClick} title="Confirm" className="ok" />
-  </>
-);
+}) => {
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        onClick();
+      }
+    },
+    [onClick],
+  );
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleKeyDown]);
+
+  return (
+    <>
+      {prompt}? <img onClick={onClick} title="Confirm" className="ok" />
+    </>
+  );
+};
 
 export const Actions = ({
   left,
