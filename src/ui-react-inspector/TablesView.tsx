@@ -21,8 +21,8 @@ import {
   useTableIds,
 } from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
-import {CellActions} from './actions/cell.tsx';
 import {
+  CellActions,
   RowActions,
   TableActions1,
   TableActions2,

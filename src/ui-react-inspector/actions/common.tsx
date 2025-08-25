@@ -66,11 +66,13 @@ export const NewId = ({
   suggestedId,
   has,
   set,
+  prompt = 'New Id',
 }: {
   onDone: () => void;
   suggestedId: Id;
   has: (id: Id) => boolean;
   set: (newId: Id) => void;
+  prompt?: string;
 }) => {
   const [newId, setNewId] = useState<Id>(suggestedId);
   const [newIdOk, setNewIdOk] = useState<boolean>(true);
@@ -94,7 +96,7 @@ export const NewId = ({
   }
   return (
     <>
-      {'New Id: '}
+      {prompt + ': '}
       <input type="text" value={newId} onChange={handleNewIdChange} />{' '}
       <img
         onClick={handleClick}
@@ -105,9 +107,15 @@ export const NewId = ({
   );
 };
 
-export const Delete = ({onClick}: {onClick: () => void}) => (
+export const Delete = ({
+  onClick,
+  prompt = 'Delete',
+}: {
+  onClick: () => void;
+  prompt?: string;
+}) => (
   <>
-    Delete? <img onClick={onClick} title="Confirm" className="ok" />
+    {prompt}? <img onClick={onClick} title="Confirm" className="ok" />
   </>
 );
 

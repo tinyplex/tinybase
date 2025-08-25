@@ -1,5 +1,6 @@
 import type {Id} from '../../@types/index.d.ts';
 import type {
+  CellProps,
   RowProps,
   StoreOrStoreId,
   TableProps,
@@ -9,6 +10,7 @@ import {arrayMap} from '../../common/array.ts';
 import {objNew} from '../../common/obj.ts';
 import {useCallback} from '../../common/react.ts';
 import {
+  useDelCellCallback,
   useDelRowCallback,
   useDelTableCallback,
   useDelTablesCallback,
@@ -47,26 +49,30 @@ const AddTable = ({onDone, store}: {onDone: () => void} & TablesProps) => {
         [],
         store,
       )}
+      prompt="Add table"
     />
   );
 };
 
 const DeleteTables = ({onDone, store}: {onDone: () => void} & TablesProps) => (
-  <Delete onClick={useDelTablesCallback(store, onDone)} />
+  <Delete
+    onClick={useDelTablesCallback(store, onDone)}
+    prompt="Delete all tables"
+  />
 );
 
 export const TablesActions = ({store}: TablesProps) => (
   <Actions
     left={
       <ConfirmableActions
-        actions={[['add', 'Add Table', AddTable]]}
+        actions={[['add', 'Add table', AddTable]]}
         store={store}
       />
     }
     right={
       useHasTables(store) ? (
         <ConfirmableActions
-          actions={[['delete', 'Delete all Tables', DeleteTables]]}
+          actions={[['delete', 'Delete all tables', DeleteTables]]}
           store={store}
         />
       ) : null
@@ -95,6 +101,7 @@ const AddRow = ({
             arrayMap(store.getTableCellIds(tableId), (cellId) => [cellId, '']),
           ),
       )}
+      prompt="Add row"
     />
   );
 };
@@ -115,6 +122,7 @@ const CloneTable = ({
         (tableId) => tableId,
         (_, store) => store.getTable(tableId),
       )}
+      prompt="Clone table to"
     />
   );
 };
@@ -124,12 +132,15 @@ const DeleteTable = ({
   tableId,
   store,
 }: {onDone: () => void} & TableProps) => (
-  <Delete onClick={useDelTableCallback(tableId, store, onDone)} />
+  <Delete
+    onClick={useDelTableCallback(tableId, store, onDone)}
+    prompt="Delete table"
+  />
 );
 
 export const TableActions1 = ({tableId, store}: TableProps) => (
   <ConfirmableActions
-    actions={[['add', 'Add Row', AddRow]]}
+    actions={[['add', 'Add row', AddRow]]}
     store={store}
     tableId={tableId}
   />
@@ -137,8 +148,8 @@ export const TableActions1 = ({tableId, store}: TableProps) => (
 export const TableActions2 = ({tableId, store}: TableProps) => (
   <ConfirmableActions
     actions={[
-      ['clone', 'Clone Table', CloneTable],
-      ['delete', 'Delete Table', DeleteTable],
+      ['clone', 'Clone table', CloneTable],
+      ['delete', 'Delete table', DeleteTable],
     ]}
     store={store}
     tableId={tableId}
@@ -180,6 +191,7 @@ const AddCell = ({
         [],
         store,
       )}
+      prompt="Add cell"
     />
   );
 };
@@ -203,6 +215,7 @@ const CloneRow = ({
         (_, store) => store.getRow(tableId, rowId),
         [rowId],
       )}
+      prompt="Clone row to"
     />
   );
 };
@@ -213,18 +226,46 @@ const DeleteRow = ({
   rowId,
   store,
 }: {onDone: () => void} & RowProps) => (
-  <Delete onClick={useDelRowCallback(tableId, rowId, store, onDone)} />
+  <Delete
+    onClick={useDelRowCallback(tableId, rowId, store, onDone)}
+    prompt="Delete row"
+  />
 );
 
 export const RowActions = ({tableId, rowId, store}: RowProps) => (
   <ConfirmableActions
     actions={[
-      ['add', 'Add Cell', AddCell],
-      ['clone', 'Clone Row', CloneRow],
-      ['delete', 'Delete Row', DeleteRow],
+      ['add', 'Add cell', AddCell],
+      ['clone', 'Clone row', CloneRow],
+      ['delete', 'Delete row', DeleteRow],
     ]}
     store={store}
     tableId={tableId}
     rowId={rowId}
+  />
+);
+
+// --
+
+const CellDelete = ({
+  onDone,
+  tableId,
+  rowId,
+  cellId,
+  store,
+}: {onDone: () => void} & CellProps) => (
+  <Delete
+    onClick={useDelCellCallback(tableId, rowId, cellId, true, store, onDone)}
+    prompt="Delete cell"
+  />
+);
+
+export const CellActions = ({tableId, rowId, cellId, store}: CellProps) => (
+  <ConfirmableActions
+    actions={[['delete', 'Delete cell', CellDelete]]}
+    store={store}
+    tableId={tableId}
+    rowId={rowId}
+    cellId={cellId}
   />
 );

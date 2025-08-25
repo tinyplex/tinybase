@@ -41,26 +41,30 @@ const AddValue = ({onDone, store}: {onDone: () => void} & ValuesProps) => {
         [],
         store,
       )}
+      prompt="Add value"
     />
   );
 };
 
 const DeleteValues = ({onDone, store}: {onDone: () => void} & ValuesProps) => (
-  <Delete onClick={useDelValuesCallback(store, onDone)} />
+  <Delete
+    onClick={useDelValuesCallback(store, onDone)}
+    prompt="Delete all values"
+  />
 );
 
 export const ValuesActions = ({store}: ValuesProps) => (
   <Actions
     left={
       <ConfirmableActions
-        actions={[['add', 'Add Value', AddValue]]}
+        actions={[['add', 'Add value', AddValue]]}
         store={store}
       />
     }
     right={
       useHasValues(store) ? (
         <ConfirmableActions
-          actions={[['delete', 'Delete all Values', DeleteValues]]}
+          actions={[['delete', 'Delete all values', DeleteValues]]}
           store={store}
         />
       ) : null
@@ -87,6 +91,7 @@ const CloneValue = ({
         [valueId],
         store,
       )}
+      prompt="Clone value to"
     />
   );
 };
@@ -96,14 +101,17 @@ const DeleteValue = ({
   valueId,
   store,
 }: {onDone: () => void} & ValueProps) => (
-  <Delete onClick={useDelValueCallback(valueId, store, onDone)} />
+  <Delete
+    onClick={useDelValueCallback(valueId, store, onDone)}
+    prompt="Delete value"
+  />
 );
 
 export const ValueActions = ({valueId, store}: ValueProps) => (
   <ConfirmableActions
     actions={[
-      ['clone', 'Clone Value', CloneValue],
-      ['delete', 'Delete Value', DeleteValue],
+      ['clone', 'Clone value', CloneValue],
+      ['delete', 'Delete value', DeleteValue],
     ]}
     store={store}
     valueId={valueId}
