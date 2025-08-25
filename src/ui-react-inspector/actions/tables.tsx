@@ -3,6 +3,7 @@ import type {
   RowProps,
   StoreOrStoreId,
   TableProps,
+  TablesProps,
 } from '../../@types/ui-react/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
 import {objNew} from '../../common/obj.ts';
@@ -10,12 +11,15 @@ import {useCallback} from '../../common/react.ts';
 import {
   useDelRowCallback,
   useDelTableCallback,
+  useDelTablesCallback,
+  useHasTables,
   useSetCellCallback,
   useSetRowCallback,
   useSetTableCallback,
   useStoreOrStoreById,
 } from '../../ui-react/index.ts';
 import {
+  Actions,
   ConfirmableActions,
   Delete,
   getNewIdFromSuggestedId,
@@ -29,6 +33,48 @@ const useHasTableCallback = (storeOrStoreId: StoreOrStoreId | undefined) => {
     [store],
   );
 };
+
+const AddTable = ({onDone, store}: {onDone: () => void} & TablesProps) => {
+  const has = useHasTableCallback(store);
+  return (
+    <NewId
+      onDone={onDone}
+      suggestedId={getNewIdFromSuggestedId('table', has)}
+      has={has}
+      set={useSetTableCallback(
+        (newId: Id) => newId,
+        () => ({row: {cell: ''}}),
+        [],
+        store,
+      )}
+    />
+  );
+};
+
+const DeleteTables = ({onDone, store}: {onDone: () => void} & TablesProps) => (
+  <Delete onClick={useDelTablesCallback(store, onDone)} />
+);
+
+export const TablesActions = ({store}: TablesProps) => (
+  <Actions
+    left={
+      <ConfirmableActions
+        actions={[['add', 'Add Table', AddTable]]}
+        store={store}
+      />
+    }
+    right={
+      useHasTables(store) ? (
+        <ConfirmableActions
+          actions={[['delete', 'Delete all Tables', DeleteTables]]}
+          store={store}
+        />
+      ) : null
+    }
+  />
+);
+
+// --
 
 const AddRow = ({
   onDone,
@@ -53,7 +99,7 @@ const AddRow = ({
   );
 };
 
-export const CloneTable = ({
+const CloneTable = ({
   onDone,
   tableId,
   store: storeOrStoreId,
@@ -170,7 +216,7 @@ const DeleteRow = ({
   <Delete onClick={useDelRowCallback(tableId, rowId, store, onDone)} />
 );
 
-const RowActions = ({tableId, rowId, store}: RowProps) => (
+export const RowActions = ({tableId, rowId, store}: RowProps) => (
   <ConfirmableActions
     actions={[
       ['add', 'Add Cell', AddCell],
@@ -182,4 +228,3 @@ const RowActions = ({tableId, rowId, store}: RowProps) => (
     rowId={rowId}
   />
 );
-export const rowActions = [{label: '', component: RowActions}];

@@ -22,7 +22,12 @@ import {
 } from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
 import {CellActions} from './actions/cell.tsx';
-import {rowActions, TableActions1, TableActions2} from './actions/tables.tsx';
+import {
+  RowActions,
+  TableActions1,
+  TableActions2,
+  TablesActions,
+} from './actions/tables.tsx';
 import {
   getUniqueId,
   SORT_CELL,
@@ -31,6 +36,8 @@ import {
   useEditable,
 } from './common.ts';
 import type {StoreProp} from './types.ts';
+
+const rowActions = [{label: '', component: RowActions}];
 
 const EditableCellViewWithActions = (props: CellProps) => (
   <>
@@ -131,6 +138,7 @@ export const TablesView = ({
           />
         ))
       )}
+      {editable ? <TablesActions store={store} /> : null}
     </Details>
   );
 };

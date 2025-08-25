@@ -5,10 +5,11 @@ import {VALUES} from '../common/strings.ts';
 import {ValuesInHtmlTable} from '../ui-react-dom/index.tsx';
 import {useValueIds} from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
-import {ConfirmableActions} from './actions/common.tsx';
-import {AddValue, valueActions} from './actions/values.tsx';
+import {ValueActions, ValuesActions} from './actions/values.tsx';
 import {getUniqueId, useEditable} from './common.ts';
 import type {StoreProp} from './types.ts';
+
+const valueActions = [{label: '', component: ValueActions}];
 
 export const ValuesView = ({
   store,
@@ -34,16 +35,7 @@ export const ValuesView = ({
           extraCellsAfter={editable ? valueActions : []}
         />
       )}
-      {editable ? (
-        <div className="actions">
-          <div>
-            <ConfirmableActions
-              actions={[['add', 'Add Value', AddValue]]}
-              store={store}
-            />
-          </div>
-        </div>
-      ) : null}
+      {editable ? <ValuesActions store={store} /> : null}
     </Details>
   );
 };

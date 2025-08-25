@@ -3,14 +3,17 @@ import type {
   StoreOrStoreId,
   ValueProps,
   ValuesProps,
-} from '../../@types/ui-react/index.js';
+} from '../../@types/ui-react/index.d.ts';
 import {useCallback} from '../../common/react.ts';
 import {
   useDelValueCallback,
+  useDelValuesCallback,
+  useHasValues,
   useSetValueCallback,
   useStoreOrStoreById,
 } from '../../ui-react/index.ts';
 import {
+  Actions,
   ConfirmableActions,
   Delete,
   getNewIdFromSuggestedId,
@@ -25,10 +28,7 @@ const useHasValueCallback = (storeOrStoreId: StoreOrStoreId | undefined) => {
   );
 };
 
-export const AddValue = ({
-  onDone,
-  store,
-}: {onDone: () => void} & ValuesProps) => {
+const AddValue = ({onDone, store}: {onDone: () => void} & ValuesProps) => {
   const has = useHasValueCallback(store);
   return (
     <NewId
@@ -44,6 +44,31 @@ export const AddValue = ({
     />
   );
 };
+
+const DeleteValues = ({onDone, store}: {onDone: () => void} & ValuesProps) => (
+  <Delete onClick={useDelValuesCallback(store, onDone)} />
+);
+
+export const ValuesActions = ({store}: ValuesProps) => (
+  <Actions
+    left={
+      <ConfirmableActions
+        actions={[['add', 'Add Value', AddValue]]}
+        store={store}
+      />
+    }
+    right={
+      useHasValues(store) ? (
+        <ConfirmableActions
+          actions={[['delete', 'Delete all Values', DeleteValues]]}
+          store={store}
+        />
+      ) : null
+    }
+  />
+);
+
+// --
 
 const CloneValue = ({
   onDone,
@@ -74,7 +99,7 @@ const DeleteValue = ({
   <Delete onClick={useDelValueCallback(valueId, store, onDone)} />
 );
 
-const ValueActions = ({valueId, store}: ValueProps) => (
+export const ValueActions = ({valueId, store}: ValueProps) => (
   <ConfirmableActions
     actions={[
       ['clone', 'Clone Value', CloneValue],
@@ -84,5 +109,3 @@ const ValueActions = ({valueId, store}: ValueProps) => (
     valueId={valueId}
   />
 );
-
-export const valueActions = [{label: '', component: ValueActions}];

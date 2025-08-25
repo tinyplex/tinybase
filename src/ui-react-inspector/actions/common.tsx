@@ -1,4 +1,4 @@
-import type {ComponentType} from 'react';
+import type {ComponentType, ReactNode} from 'react';
 import type {Id} from '../../@types/common/index.d.ts';
 import type {
   CellProps,
@@ -109,4 +109,17 @@ export const Delete = ({onClick}: {onClick: () => void}) => (
   <>
     Delete? <img onClick={onClick} title="Confirm" className="ok" />
   </>
+);
+
+export const Actions = ({
+  left,
+  right,
+}: {
+  left?: ReactNode;
+  right?: ReactNode;
+}) => (
+  <div className="actions">
+    <div>{left}</div>
+    <div>{right}</div>
+  </div>
 );
