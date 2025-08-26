@@ -7,8 +7,27 @@ import type {
 import {arrayNew, arrayWith} from '../common/array.ts';
 import {objDel, objGet, objHas} from '../common/obj.ts';
 import {useCallback, useContext, useMemo, useState} from '../common/react.ts';
-import {ExtraThingsById, Offsets, mergeParentThings} from './common.tsx';
+import {ExtraThingsById, mergeParentThings} from './common.tsx';
 import {Context, ThingsByOffset} from './context.ts';
+
+export type Offsets =
+  | typeof OFFSET_STORE
+  | typeof OFFSET_METRICS
+  | typeof OFFSET_INDEXES
+  | typeof OFFSET_RELATIONSHIPS
+  | typeof OFFSET_QUERIES
+  | typeof OFFSET_CHECKPOINTS
+  | typeof OFFSET_PERSISTER
+  | typeof OFFSET_SYNCHRONIZER;
+
+export const OFFSET_STORE = 0;
+export const OFFSET_METRICS = 1;
+export const OFFSET_INDEXES = 2;
+export const OFFSET_RELATIONSHIPS = 3;
+export const OFFSET_QUERIES = 4;
+export const OFFSET_CHECKPOINTS = 5;
+export const OFFSET_PERSISTER = 6;
+export const OFFSET_SYNCHRONIZER = 7;
 
 export const Provider: typeof ProviderDecl = ({
   store,
@@ -69,56 +88,56 @@ export const Provider: typeof ProviderDecl = ({
       value={useMemo(
         () => [
           ...mergeParentThings(
-            Offsets.Store,
+            OFFSET_STORE,
             parentValue,
             store,
             storesById,
             extraThingsById,
           ),
           ...mergeParentThings(
-            Offsets.Metrics,
+            OFFSET_METRICS,
             parentValue,
             metrics,
             metricsById,
             extraThingsById,
           ),
           ...mergeParentThings(
-            Offsets.Indexes,
+            OFFSET_INDEXES,
             parentValue,
             indexes,
             indexesById,
             extraThingsById,
           ),
           ...mergeParentThings(
-            Offsets.Relationships,
+            OFFSET_RELATIONSHIPS,
             parentValue,
             relationships,
             relationshipsById,
             extraThingsById,
           ),
           ...mergeParentThings(
-            Offsets.Queries,
+            OFFSET_QUERIES,
             parentValue,
             queries,
             queriesById,
             extraThingsById,
           ),
           ...mergeParentThings(
-            Offsets.Checkpoints,
+            OFFSET_CHECKPOINTS,
             parentValue,
             checkpoints,
             checkpointsById,
             extraThingsById,
           ),
           ...mergeParentThings(
-            Offsets.Persister,
+            OFFSET_PERSISTER,
             parentValue,
             persister,
             persistersById,
             extraThingsById,
           ),
           ...mergeParentThings(
-            Offsets.Synchronizer,
+            OFFSET_SYNCHRONIZER,
             parentValue,
             synchronizer,
             synchronizersById,

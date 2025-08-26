@@ -297,13 +297,22 @@ import {
   _HAS,
 } from '../common/strings.ts';
 import {
-  Offsets,
   useProvideThing,
   useThing,
   useThingIds,
   useThingOrThingById,
   useThings,
 } from './context.ts';
+import {
+  OFFSET_CHECKPOINTS,
+  OFFSET_INDEXES,
+  OFFSET_METRICS,
+  OFFSET_PERSISTER,
+  OFFSET_QUERIES,
+  OFFSET_RELATIONSHIPS,
+  OFFSET_STORE,
+  OFFSET_SYNCHRONIZER,
+} from './Provider.tsx';
 
 const EMPTY_ARRAY: Readonly<[]> = [];
 
@@ -525,22 +534,22 @@ export const useCreateStore: typeof useCreateStoreDecl = (
 ): Store => useMemo(create, createDeps);
 
 export const useStoreIds: typeof useStoreIdsDecl = () =>
-  useThingIds(Offsets.Store);
+  useThingIds(OFFSET_STORE);
 
 export const useStore: typeof useStoreDecl = (id?: Id): Store | undefined =>
-  useThing(id, Offsets.Store);
+  useThing(id, OFFSET_STORE);
 
 export const useStores: typeof useStoresDecl = (): IdObj<Store> =>
-  useThings(Offsets.Store);
+  useThings(OFFSET_STORE);
 
 export const useStoreOrStoreById: typeof useStoreOrStoreByIdDecl = (
   storeOrStoreId?: StoreOrStoreId,
-): Store | undefined => useThingOrThingById(storeOrStoreId, Offsets.Store);
+): Store | undefined => useThingOrThingById(storeOrStoreId, OFFSET_STORE);
 
 export const useProvideStore: typeof useProvideStoreDecl = (
   storeId: Id,
   store: Store,
-): void => useProvideThing(storeId, store, Offsets.Store);
+): void => useProvideThing(storeId, store, OFFSET_STORE);
 
 export const useCreateMergeableStore: typeof useCreateMergeableStoreDecl = (
   create: () => MergeableStore,
@@ -1396,21 +1405,21 @@ export const useCreateMetrics: typeof useCreateMetricsDecl = (
 ): Metrics | undefined => useCreate(store, create, createDeps);
 
 export const useMetricsIds: typeof useMetricsIdsDecl = () =>
-  useThingIds(Offsets.Metrics);
+  useThingIds(OFFSET_METRICS);
 
 export const useMetrics: typeof useMetricsDecl = (
   id?: Id,
-): Metrics | undefined => useThing(id, Offsets.Metrics);
+): Metrics | undefined => useThing(id, OFFSET_METRICS);
 
 export const useMetricsOrMetricsById: typeof useMetricsOrMetricsByIdDecl = (
   metricsOrMetricsId?: MetricsOrMetricsId,
 ): Metrics | undefined =>
-  useThingOrThingById(metricsOrMetricsId, Offsets.Metrics);
+  useThingOrThingById(metricsOrMetricsId, OFFSET_METRICS);
 
 export const useProvideMetrics: typeof useProvideMetricsDecl = (
   metricsId: Id,
   metrics: Metrics,
-): void => useProvideThing(metricsId, metrics, Offsets.Metrics);
+): void => useProvideThing(metricsId, metrics, OFFSET_METRICS);
 
 export const useMetricIds: typeof useMetricIdsDecl = (
   metricsOrMetricsId?: MetricsOrMetricsId,
@@ -1453,21 +1462,21 @@ export const useCreateIndexes: typeof useCreateIndexesDecl = (
 ): Indexes | undefined => useCreate(store, create, createDeps);
 
 export const useIndexesIds: typeof useIndexesIdsDecl = () =>
-  useThingIds(Offsets.Indexes);
+  useThingIds(OFFSET_INDEXES);
 
 export const useIndexes: typeof useIndexesDecl = (
   id?: Id,
-): Indexes | undefined => useThing(id, Offsets.Indexes);
+): Indexes | undefined => useThing(id, OFFSET_INDEXES);
 
 export const useIndexesOrIndexesById: typeof useIndexesOrIndexesByIdDecl = (
   indexesOrIndexesId?: IndexesOrIndexesId,
 ): Indexes | undefined =>
-  useThingOrThingById(indexesOrIndexesId, Offsets.Indexes);
+  useThingOrThingById(indexesOrIndexesId, OFFSET_INDEXES);
 
 export const useProvideIndexes: typeof useProvideIndexesDecl = (
   indexesId: Id,
   indexes: Indexes,
-): void => useProvideThing(indexesId, indexes, Offsets.Indexes);
+): void => useProvideThing(indexesId, indexes, OFFSET_INDEXES);
 
 export const useSliceIds: typeof useSliceIdsDecl = (
   indexId: Id,
@@ -1537,23 +1546,23 @@ export const useCreateRelationships: typeof useCreateRelationshipsDecl = (
 ): Relationships | undefined => useCreate(store, create, createDeps);
 
 export const useRelationshipsIds: typeof useRelationshipsIdsDecl = () =>
-  useThingIds(Offsets.Relationships);
+  useThingIds(OFFSET_RELATIONSHIPS);
 
 export const useRelationships: typeof useRelationshipsDecl = (
   id?: Id,
-): Relationships | undefined => useThing(id, Offsets.Relationships);
+): Relationships | undefined => useThing(id, OFFSET_RELATIONSHIPS);
 
 export const useRelationshipsOrRelationshipsById: typeof useRelationshipsOrRelationshipsByIdDecl =
   (
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
   ): Relationships | undefined =>
-    useThingOrThingById(relationshipsOrRelationshipsId, Offsets.Relationships);
+    useThingOrThingById(relationshipsOrRelationshipsId, OFFSET_RELATIONSHIPS);
 
 export const useProvideRelationships: typeof useProvideRelationshipsDecl = (
   relationshipsId: Id,
   relationships: Relationships,
 ): void =>
-  useProvideThing(relationshipsId, relationships, Offsets.Relationships);
+  useProvideThing(relationshipsId, relationships, OFFSET_RELATIONSHIPS);
 
 export const useRelationshipIds: typeof useRelationshipIdsDecl = (
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
@@ -1652,21 +1661,21 @@ export const useCreateQueries: typeof useCreateQueriesDecl = (
 ): Queries | undefined => useCreate(store, create, createDeps);
 
 export const useQueriesIds: typeof useQueriesIdsDecl = () =>
-  useThingIds(Offsets.Queries);
+  useThingIds(OFFSET_QUERIES);
 
 export const useQueries: typeof useQueriesDecl = (
   id?: Id,
-): Queries | undefined => useThing(id, Offsets.Queries);
+): Queries | undefined => useThing(id, OFFSET_QUERIES);
 
 export const useQueriesOrQueriesById: typeof useQueriesOrQueriesByIdDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): Queries | undefined =>
-  useThingOrThingById(queriesOrQueriesId, Offsets.Queries);
+  useThingOrThingById(queriesOrQueriesId, OFFSET_QUERIES);
 
 export const useProvideQueries: typeof useProvideQueriesDecl = (
   queriesId: Id,
   queries: Queries,
-): void => useProvideThing(queriesId, queries, Offsets.Queries);
+): void => useProvideThing(queriesId, queries, OFFSET_QUERIES);
 
 export const useQueryIds: typeof useQueryIdsDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
@@ -1902,22 +1911,22 @@ export const useCreateCheckpoints: typeof useCreateCheckpointsDecl = (
 ): Checkpoints | undefined => useCreate(store, create, createDeps);
 
 export const useCheckpointsIds: typeof useCheckpointsIdsDecl = () =>
-  useThingIds(Offsets.Checkpoints);
+  useThingIds(OFFSET_CHECKPOINTS);
 
 export const useCheckpoints: typeof useCheckpointsDecl = (
   id?: Id,
-): Checkpoints | undefined => useThing(id, Offsets.Checkpoints);
+): Checkpoints | undefined => useThing(id, OFFSET_CHECKPOINTS);
 
 export const useCheckpointsOrCheckpointsById: typeof useCheckpointsOrCheckpointsByIdDecl =
   (
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
   ): Checkpoints | undefined =>
-    useThingOrThingById(checkpointsOrCheckpointsId, Offsets.Checkpoints);
+    useThingOrThingById(checkpointsOrCheckpointsId, OFFSET_CHECKPOINTS);
 
 export const useProvideCheckpoints: typeof useProvideCheckpointsDecl = (
   checkpointsId: Id,
   checkpoints: Checkpoints,
-): void => useProvideThing(checkpointsId, checkpoints, Offsets.Checkpoints);
+): void => useProvideThing(checkpointsId, checkpoints, OFFSET_CHECKPOINTS);
 
 export const useCheckpointIds: typeof useCheckpointIdsDecl = (
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
@@ -2100,20 +2109,20 @@ export const useCreatePersister: typeof useCreatePersisterDecl = <
 };
 
 export const usePersisterIds: typeof usePersisterIdsDecl = () =>
-  useThingIds(Offsets.Persister);
+  useThingIds(OFFSET_PERSISTER);
 
 export const usePersister: typeof usePersisterDecl = (
   id?: Id,
-): AnyPersister | undefined => useThing(id, Offsets.Persister);
+): AnyPersister | undefined => useThing(id, OFFSET_PERSISTER);
 
 export const usePersisterOrPersisterById: typeof usePersisterOrPersisterByIdDecl =
   (persisterOrPersisterId?: PersisterOrPersisterId): AnyPersister | undefined =>
-    useThingOrThingById(persisterOrPersisterId, Offsets.Persister);
+    useThingOrThingById(persisterOrPersisterId, OFFSET_PERSISTER);
 
 export const useProvidePersister: typeof useProvidePersisterDecl = (
   persisterId: Id,
   persister: AnyPersister,
-): void => useProvideThing(persisterId, persister, Offsets.Persister);
+): void => useProvideThing(persisterId, persister, OFFSET_PERSISTER);
 
 export const usePersisterStatus: typeof usePersisterStatusDecl = (
   persisterOrPersisterId?: PersisterOrPersisterId,
@@ -2173,22 +2182,22 @@ export const useCreateSynchronizer: typeof useCreateSynchronizerDecl = <
 };
 
 export const useSynchronizerIds: typeof useSynchronizerIdsDecl = () =>
-  useThingIds(Offsets.Synchronizer);
+  useThingIds(OFFSET_SYNCHRONIZER);
 
 export const useSynchronizer: typeof useSynchronizerDecl = (
   id?: Id,
-): Synchronizer | undefined => useThing(id, Offsets.Synchronizer);
+): Synchronizer | undefined => useThing(id, OFFSET_SYNCHRONIZER);
 
 export const useSynchronizerOrSynchronizerById: typeof useSynchronizerOrSynchronizerByIdDecl =
   (
     synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
   ): Synchronizer | undefined =>
-    useThingOrThingById(synchronizerOrSynchronizerId, Offsets.Synchronizer);
+    useThingOrThingById(synchronizerOrSynchronizerId, OFFSET_SYNCHRONIZER);
 
 export const useProvideSynchronizer: typeof useProvideSynchronizerDecl = (
   persisterId: Id,
   persister: Synchronizer,
-): void => useProvideThing(persisterId, persister, Offsets.Synchronizer);
+): void => useProvideThing(persisterId, persister, OFFSET_SYNCHRONIZER);
 
 export const useSynchronizerStatus: typeof useSynchronizerStatusDecl = (
   synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,

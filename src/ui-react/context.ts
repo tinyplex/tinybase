@@ -12,6 +12,7 @@ import {IdObj, objGet, objIds} from '../common/obj.ts';
 import {GLOBAL, isString, isUndefined} from '../common/other.ts';
 import {createContext, useContext, useEffect} from '../common/react.ts';
 import {TINYBASE} from '../common/strings.ts';
+import type {Offsets} from './Provider.tsx';
 
 export type Thing =
   | Store
@@ -33,17 +34,6 @@ export type ThingsByOffset = [
   AnyPersister,
   Synchronizer,
 ];
-
-export enum Offsets {
-  Store = 0,
-  Metrics = 1,
-  Indexes = 2,
-  Relationships = 3,
-  Queries = 4,
-  Checkpoints = 5,
-  Persister = 6,
-  Synchronizer = 7,
-}
 
 export type ContextValue = [
   store?: Store,
