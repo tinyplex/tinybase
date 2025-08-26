@@ -266,7 +266,7 @@ const useCells = (
 const extraKey = (index: number, after: 0 | 1) => (after ? '>' : '<') + index;
 
 const extraHeaders = (
-  extraCells: (ExtraRowCell | ExtraValueCell)[] | undefined,
+  extraCells: (ExtraRowCell | ExtraValueCell)[] = [],
   after: 0 | 1 = 0,
 ) =>
   arrayMap(extraCells, ({label}, index) => (
@@ -276,7 +276,7 @@ const extraHeaders = (
   ));
 
 const extraRowCells = (
-  extraRowCells: ExtraRowCell[] | undefined,
+  extraRowCells: ExtraRowCell[] = [],
   extraRowCellProps: RowProps,
   after: 0 | 1 = 0,
 ) =>
@@ -287,7 +287,7 @@ const extraRowCells = (
   ));
 
 const extraValueCells = (
-  extraValueCells: ExtraValueCell[] | undefined,
+  extraValueCells: ExtraValueCell[] = [],
   extraValueCellProps: ValueProps,
   after: 0 | 1 = 0,
 ) =>

@@ -41,9 +41,9 @@ export const arrayJoin = (array: string[], sep = EMPTY_STRING) =>
   array.join(sep);
 
 export const arrayMap = <Value, Return>(
-  array: Value[] | undefined,
+  array: Value[],
   cb: (value: Value, index: number, array: Value[]) => Return,
-): Return[] => array?.map(cb) ?? [];
+): Return[] => array.map(cb);
 
 export const arraySum = (array: number[]): number =>
   arrayReduce<number, number>(array, (i, j) => i + j, 0);
