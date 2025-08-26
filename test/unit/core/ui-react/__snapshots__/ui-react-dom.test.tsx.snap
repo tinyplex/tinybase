@@ -1,56 +1,56 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`EditableCellView basic 1`] = `"<div class="editableCell"><button class="number">number</button><input type="number" value="1"></div>"`;
+exports[`EditableCellView basic 1`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
 
-exports[`EditableCellView change type and Cell 1`] = `"<div class="editableCell"><button class="number">number</button><input type="number" value="1"></div>"`;
+exports[`EditableCellView change type and Cell 1`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
 
-exports[`EditableCellView change type and Cell 2`] = `"<div class="editableCell"><button class="number">number</button><input type="number" value="2"></div>"`;
+exports[`EditableCellView change type and Cell 2`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="2"></div>"`;
 
-exports[`EditableCellView change type and Cell 3`] = `"<div class="editableCell"><button class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+exports[`EditableCellView change type and Cell 3`] = `"<div class="editableCell"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
 
-exports[`EditableCellView change type and Cell 4`] = `"<div class="editableCell"><button class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+exports[`EditableCellView change type and Cell 4`] = `"<div class="editableCell"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
 
-exports[`EditableCellView change type and Cell 5`] = `"<div class="editableCell"><button class="string">string</button><input value="1"></div>"`;
+exports[`EditableCellView change type and Cell 5`] = `"<div class="editableCell"><button title="string" class="string">string</button><input value="1"></div>"`;
 
-exports[`EditableCellView change type and Cell 6`] = `"<div class="editableCell"><button class="string">string</button><input value="two"></div>"`;
+exports[`EditableCellView change type and Cell 6`] = `"<div class="editableCell"><button title="string" class="string">string</button><input value="two"></div>"`;
 
-exports[`EditableCellView change type and Cell 7`] = `"<div class="editableCell"><button class="number">number</button><input type="number" value="2"></div>"`;
+exports[`EditableCellView change type and Cell 7`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="2"></div>"`;
 
-exports[`EditableCellView change type and Cell 8`] = `"<div class="editableCell"><button class="number">number</button><input type="number" value="3"></div>"`;
+exports[`EditableCellView change type and Cell 8`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="3"></div>"`;
 
-exports[`EditableCellView change type and Cell 9`] = `"<div class="editableCell"><button class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+exports[`EditableCellView change type and Cell 9`] = `"<div class="editableCell"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
 
-exports[`EditableCellView change type and Cell 10`] = `"<div class="editableCell"><button class="string">string</button><input value="three"></div>"`;
+exports[`EditableCellView change type and Cell 10`] = `"<div class="editableCell"><button title="string" class="string">string</button><input value="three"></div>"`;
 
-exports[`EditableCellView className 1`] = `"<div class="e"><button class="number">number</button><input type="number" value="1"></div>"`;
+exports[`EditableCellView className 1`] = `"<div class="e"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
 
 exports[`EditableCellView showType 1`] = `"<div class="editableCell"><input type="number" value="1"></div>"`;
 
-exports[`EditableValueView basic 1`] = `"<div class="editableValue"><button class="number">number</button><input type="number" value="1"></div>"`;
+exports[`EditableValueView basic 1`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
 
-exports[`EditableValueView change type and Value 1`] = `"<div class="editableValue"><button class="number">number</button><input type="number" value="1"></div>"`;
+exports[`EditableValueView change type and Value 1`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
 
-exports[`EditableValueView change type and Value 2`] = `"<div class="editableValue"><button class="number">number</button><input type="number" value="2"></div>"`;
+exports[`EditableValueView change type and Value 2`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="2"></div>"`;
 
-exports[`EditableValueView change type and Value 3`] = `"<div class="editableValue"><button class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+exports[`EditableValueView change type and Value 3`] = `"<div class="editableValue"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
 
-exports[`EditableValueView change type and Value 4`] = `"<div class="editableValue"><button class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+exports[`EditableValueView change type and Value 4`] = `"<div class="editableValue"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
 
-exports[`EditableValueView change type and Value 5`] = `"<div class="editableValue"><button class="string">string</button><input value="1"></div>"`;
+exports[`EditableValueView change type and Value 5`] = `"<div class="editableValue"><button title="string" class="string">string</button><input value="1"></div>"`;
 
-exports[`EditableValueView change type and Value 6`] = `"<div class="editableValue"><button class="string">string</button><input value="two"></div>"`;
+exports[`EditableValueView change type and Value 6`] = `"<div class="editableValue"><button title="string" class="string">string</button><input value="two"></div>"`;
 
-exports[`EditableValueView change type and Value 7`] = `"<div class="editableValue"><button class="number">number</button><input type="number" value="2"></div>"`;
+exports[`EditableValueView change type and Value 7`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="2"></div>"`;
 
-exports[`EditableValueView change type and Value 8`] = `"<div class="editableValue"><button class="number">number</button><input type="number" value="3"></div>"`;
+exports[`EditableValueView change type and Value 8`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="3"></div>"`;
 
-exports[`EditableValueView change type and Value 9`] = `"<div class="editableValue"><button class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+exports[`EditableValueView change type and Value 9`] = `"<div class="editableValue"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
 
-exports[`EditableValueView change type and Value 10`] = `"<div class="editableValue"><button class="string">string</button><input value="three"></div>"`;
+exports[`EditableValueView change type and Value 10`] = `"<div class="editableValue"><button title="string" class="string">string</button><input value="three"></div>"`;
 
-exports[`EditableValueView className 1`] = `"<div class="e"><button></button><input type="checkbox"></div>"`;
+exports[`EditableValueView className 1`] = `"<div class="e"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
 
-exports[`EditableValueView showType 1`] = `"<div class="editableValue"><input type="checkbox"></div>"`;
+exports[`EditableValueView showType 1`] = `"<div class="editableValue"><input type="number" value="1"></div>"`;
 
 exports[`RelationshipInHtmlTable basic 1`] = `"<table><thead><tr><th>t1.Id</th><th>t2.Id</th><th>t1.c1</th><th>t2.c1</th><th>t2.c2</th></tr></thead><tbody><tr><th>r1</th><th>r2</th><td>1</td><td>3</td><td>4</td></tr></tbody></table>"`;
 
@@ -62,7 +62,7 @@ exports[`RelationshipInHtmlTable customCells labels 1`] = `"<table><thead><tr><t
 
 exports[`RelationshipInHtmlTable customCells objects 1`] = `"<table><thead><tr><th>t1.Id</th><th>t2.Id</th><th>T1C1</th><th>t2.c2</th></tr></thead><tbody><tr><th>r1</th><th>r2</th><td><b>{"0":"r1","1":"c1","tableId":"t1","rowId":"r1","cellId":"c1"}</b></td><td><b>{"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}</b></td></tr></tbody></table>"`;
 
-exports[`RelationshipInHtmlTable editable 1`] = `"<table><thead><tr><th>t1.Id</th><th>t2.Id</th><th>t1.c1</th><th>t2.c1</th><th>t2.c2</th></tr></thead><tbody><tr><th>r1</th><th>r2</th><td><div class="editableCell"><button class="number">number</button><input type="number" value="1"></div></td><td><div class="editableCell"><button class="number">number</button><input type="number" value="3"></div></td><td><div class="editableCell"><button class="number">number</button><input type="number" value="4"></div></td></tr></tbody></table>"`;
+exports[`RelationshipInHtmlTable editable 1`] = `"<table><thead><tr><th>t1.Id</th><th>t2.Id</th><th>t1.c1</th><th>t2.c1</th><th>t2.c2</th></tr></thead><tbody><tr><th>r1</th><th>r2</th><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="1"></div></td><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="3"></div></td><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="4"></div></td></tr></tbody></table>"`;
 
 exports[`RelationshipInHtmlTable headerRow 1`] = `"<table><tbody><tr><th>r1</th><th>r2</th><td>1</td><td>3</td><td>4</td></tr></tbody></table>"`;
 
@@ -128,7 +128,7 @@ exports[`SliceInHtmlTable customCells labels 1`] = `"<table><thead><tr><th>Id</t
 
 exports[`SliceInHtmlTable customCells objects 1`] = `"<table><thead><tr><th>Id</th><th>C1</th><th>c2</th></tr></thead><tbody><tr><th>r1</th><td><b>{"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}</b></td><td><b>{"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}</b></td></tr></tbody></table>"`;
 
-exports[`SliceInHtmlTable editable 1`] = `"<table><thead><tr><th>Id</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th>r1</th><td><div class="editableCell"><button class="number">number</button><input type="number" value="2"></div></td><td><div class="editableCell"><button></button><input type="checkbox"></div></td></tr></tbody></table>"`;
+exports[`SliceInHtmlTable editable 1`] = `"<table><thead><tr><th>Id</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th>r1</th><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="2"></div></td><td><div class="editableCell"></div></td></tr></tbody></table>"`;
 
 exports[`SliceInHtmlTable headerRow 1`] = `"<table><tbody><tr><th>r1</th><td>2</td><td></td></tr></tbody></table>"`;
 
@@ -144,7 +144,7 @@ exports[`SortedTableInHtmlTable customCells labels 1`] = `"<table><thead><tr><th
 
 exports[`SortedTableInHtmlTable customCells objects 1`] = `"<table><thead><tr><th>Id</th><th class="sorted descending">↓ C1</th><th>c2</th></tr></thead><tbody><tr><th>r2</th><td><b>{"0":"r2","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}</b></td><td><b>{"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}</b></td></tr><tr><th>r1</th><td><b>{"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}</b></td><td><b>{"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}</b></td></tr></tbody></table>"`;
 
-exports[`SortedTableInHtmlTable editable 1`] = `"<table><thead><tr><th>Id</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th>r2</th><td><div class="editableCell"><button class="number">number</button><input type="number" value="3"></div></td><td><div class="editableCell"><button class="number">number</button><input type="number" value="4"></div></td></tr><tr><th>r1</th><td><div class="editableCell"><button class="number">number</button><input type="number" value="2"></div></td><td><div class="editableCell"><button></button><input type="checkbox"></div></td></tr></tbody></table>"`;
+exports[`SortedTableInHtmlTable editable 1`] = `"<table><thead><tr><th>Id</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th>r2</th><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="3"></div></td><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="4"></div></td></tr><tr><th>r1</th><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="2"></div></td><td><div class="editableCell"></div></td></tr></tbody></table>"`;
 
 exports[`SortedTableInHtmlTable headerRow 1`] = `"<table><tbody><tr><th>r2</th><td>3</td><td>4</td></tr><tr><th>r1</th><td>2</td><td></td></tr></tbody></table>"`;
 
@@ -194,7 +194,7 @@ exports[`TableInHtmlTable customCells labels 1`] = `"<table><thead><tr><th>Id</t
 
 exports[`TableInHtmlTable customCells objects 1`] = `"<table><thead><tr><th>Id</th><th>C1</th><th>c2</th></tr></thead><tbody><tr><th>r1</th><td><b>{"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}</b></td><td><b>{"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}</b></td></tr><tr><th>r2</th><td><b>{"0":"r2","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}</b></td><td><b>{"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}</b></td></tr></tbody></table>"`;
 
-exports[`TableInHtmlTable editable 1`] = `"<table><thead><tr><th>Id</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th>r1</th><td><div class="editableCell"><button class="number">number</button><input type="number" value="2"></div></td><td><div class="editableCell"><button></button><input type="checkbox"></div></td></tr><tr><th>r2</th><td><div class="editableCell"><button class="number">number</button><input type="number" value="3"></div></td><td><div class="editableCell"><button class="number">number</button><input type="number" value="4"></div></td></tr></tbody></table>"`;
+exports[`TableInHtmlTable editable 1`] = `"<table><thead><tr><th>Id</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th>r1</th><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="2"></div></td><td><div class="editableCell"></div></td></tr><tr><th>r2</th><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="3"></div></td><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="4"></div></td></tr></tbody></table>"`;
 
 exports[`TableInHtmlTable headerRow 1`] = `"<table><tbody><tr><th>r1</th><td>2</td><td></td></tr><tr><th>r2</th><td>3</td><td>4</td></tr></tbody></table>"`;
 
@@ -206,6 +206,6 @@ exports[`ValuesInHtmlTable className 1`] = `"<table class="values"><thead><tr><t
 
 exports[`ValuesInHtmlTable custom 1`] = `"<table><thead><tr><th>Id</th><th>Value</th></tr></thead><tbody><tr><th>v1</th><td><b>{"0":"v1","valueId":"v1"}</b></td></tr><tr><th>v2</th><td><b>{"0":"v2","valueId":"v2"}</b></td></tr></tbody></table>"`;
 
-exports[`ValuesInHtmlTable editable 1`] = `"<table><thead><tr><th>Id</th><th>Value</th></tr></thead><tbody><tr><th>v1</th><td><div class="editableValue"><button class="number">number</button><input type="number" value="1"></div></td></tr><tr><th>v2</th><td><div class="editableValue"><button class="number">number</button><input type="number" value="2"></div></td></tr></tbody></table>"`;
+exports[`ValuesInHtmlTable editable 1`] = `"<table><thead><tr><th>Id</th><th>Value</th></tr></thead><tbody><tr><th>v1</th><td><div class="editableValue"><button title="number" class="number">number</button><input type="number" value="1"></div></td></tr><tr><th>v2</th><td><div class="editableValue"><button title="number" class="number">number</button><input type="number" value="2"></div></td></tr></tbody></table>"`;
 
 exports[`ValuesInHtmlTable idColumn 1`] = `"<table><thead><tr><th>Value</th></tr></thead><tbody><tr><td>1</td></tr><tr><td>2</td></tr></tbody></table>"`;

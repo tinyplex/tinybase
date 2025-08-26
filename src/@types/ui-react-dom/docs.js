@@ -1781,7 +1781,7 @@
  * // ->
  * `
  * <div class="editableCell">
- *   <button class="string">string</button>
+ *   <button title="string" class="string">string</button>
  *   <input value="brown">
  * </div>
  * `;
@@ -1843,7 +1843,7 @@
  * // ->
  * `
  * <div class="editableValue">
- *   <button class="number">number</button>
+ *   <button title="number" class="number">number</button>
  *   <input type="number" value="3">
  * </div>
  * `;

@@ -447,8 +447,9 @@ const RelationshipInHtmlRow = ({
             <td key={compoundCellId}>
               <CellView
                 {...getProps(getComponentProps, rowId, cellId)}
-                {...rowProps}
+                store={store}
                 tableId={tableId}
+                rowId={rowId}
                 cellId={cellId}
               />
             </td>

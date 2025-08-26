@@ -1074,7 +1074,7 @@ describe('EditableValueView', () => {
 
   test('className', () => {
     const {container, unmount} = render(
-      <EditableValueView valueId="v1" className="e" />,
+      <EditableValueView store={store} valueId="v1" className="e" />,
     );
     expect(container.innerHTML).toMatchSnapshot();
 
@@ -1083,7 +1083,7 @@ describe('EditableValueView', () => {
 
   test('showType', () => {
     const {container, unmount} = render(
-      <EditableValueView valueId="v1" showType={false} />,
+      <EditableValueView store={store} valueId="v1" showType={false} />,
     );
     expect(container.innerHTML).toMatchSnapshot();
 
