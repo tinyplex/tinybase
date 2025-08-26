@@ -3,8 +3,8 @@ import type {
   TableInHtmlTable as TableInHtmlTableDecl,
   TableInHtmlTableProps,
 } from '../@types/ui-react-dom/index.js';
-import {CellView} from '../ui-react/components.tsx';
 import {useRowIds, useTableCellIds} from '../ui-react/hooks.ts';
+import {CellView} from '../ui-react/index.ts';
 import {EditableCellView} from './EditableCellView.tsx';
 import {
   HtmlTable,

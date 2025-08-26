@@ -8,8 +8,8 @@ import type {ValueProps} from '../@types/ui-react/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getProps} from '../common/react.ts';
 import {EXTRA, VALUE} from '../common/strings.ts';
-import {ValueView} from '../ui-react/components.tsx';
 import {useValueIds} from '../ui-react/hooks.ts';
+import {ValueView} from '../ui-react/index.ts';
 import {EditableValueView} from './EditableValueView.tsx';
 import {extraHeaders, extraKey} from './common.tsx';
 

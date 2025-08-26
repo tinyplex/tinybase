@@ -3,8 +3,8 @@ import type {
   ResultTableInHtmlTable as ResultTableInHtmlTableDecl,
   ResultTableInHtmlTableProps,
 } from '../@types/ui-react-dom/index.js';
-import {ResultCellView} from '../ui-react/components.tsx';
 import {useResultRowIds, useResultTableCellIds} from '../ui-react/hooks.ts';
+import {ResultCellView} from '../ui-react/index.ts';
 import {
   HtmlTable,
   useCells,

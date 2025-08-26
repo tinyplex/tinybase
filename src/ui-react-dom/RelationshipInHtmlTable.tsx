@@ -9,13 +9,13 @@ import {objToArray} from '../common/obj.ts';
 import {isUndefined} from '../common/other.ts';
 import {getProps, getRelationshipsStoreTableIds} from '../common/react.ts';
 import {DOT, strSplit} from '../common/strings.ts';
-import {CellView} from '../ui-react/components.tsx';
 import {
   useRelationshipsOrRelationshipsById,
   useRemoteRowId,
   useRowIds,
   useTableCellIds,
 } from '../ui-react/hooks.ts';
+import {CellView} from '../ui-react/index.ts';
 import {EditableCellView} from './EditableCellView.tsx';
 import {
   extraHeaders,

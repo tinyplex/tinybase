@@ -3,12 +3,12 @@ import type {
   SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
   SortedTableInHtmlTableProps,
 } from '../@types/ui-react-dom/index.js';
-import {CellView} from '../ui-react/components.tsx';
 import {
   useRowCount,
   useSortedRowIds,
   useTableCellIds,
 } from '../ui-react/hooks.ts';
+import {CellView} from '../ui-react/index.ts';
 import {EditableCellView} from './EditableCellView.tsx';
 import {
   HtmlTable,

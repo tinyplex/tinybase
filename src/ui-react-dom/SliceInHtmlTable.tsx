@@ -5,12 +5,12 @@ import type {
   SliceInHtmlTableProps,
 } from '../@types/ui-react-dom/index.js';
 import {getIndexStoreTableId} from '../common/react.ts';
-import {CellView} from '../ui-react/components.tsx';
 import {
   useIndexesOrIndexesById,
   useSliceRowIds,
   useTableCellIds,
 } from '../ui-react/hooks.ts';
+import {CellView} from '../ui-react/index.ts';
 import {EditableCellView} from './EditableCellView.tsx';
 import {
   HtmlTable,

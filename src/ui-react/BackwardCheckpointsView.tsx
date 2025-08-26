@@ -1,0 +1,5 @@
+import type {BackwardCheckpointsView as BackwardCheckpointsViewDecl} from '../@types/ui-react/index.js';
+import {getUseCheckpointView} from './common.tsx';
+
+export const BackwardCheckpointsView: typeof BackwardCheckpointsViewDecl =
+  getUseCheckpointView((checkpointIds) => checkpointIds[0]);
