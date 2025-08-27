@@ -2,7 +2,7 @@ import type {
   SortedTableProps,
   SortedTableView as SortedTableViewDecl,
 } from '../@types/ui-react/index.js';
-import {tableView} from './common.tsx';
+import {tableView} from './common/index.tsx';
 import {useSortedRowIds} from './hooks.ts';
 
 export const SortedTableView: typeof SortedTableViewDecl = ({

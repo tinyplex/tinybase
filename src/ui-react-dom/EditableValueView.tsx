@@ -7,7 +7,8 @@ import {
   useStoreOrStoreById,
   useValue,
 } from '../ui-react/hooks.ts';
-import {EDITABLE, EditableThing} from './common.tsx';
+import {EditableThing} from './common/components.tsx';
+import {EDITABLE} from './common/index.tsx';
 
 export const EditableValueView: typeof EditableValueViewDecl = ({
   valueId,

@@ -3,10 +3,82 @@ import type {
   SortedTablePaginatorProps,
 } from '../@types/ui-react-dom/index.js';
 import {mathMin} from '../common/other.ts';
-import {useCallbackOrUndefined} from './common.tsx';
+import {useCallbackOrUndefined} from './common/hooks.tsx';
+
+import type {ComponentType, ReactNode} from 'react';
+import type {Id} from '../@types/index.js';
+import {useCallback, useMemo, useState} from '../common/react.ts';
+import {HandleSort, SortAndOffset} from './common/index.tsx';
 
 const LEFT_ARROW = '\u2190';
 const RIGHT_ARROW = '\u2192';
+
+export const useSortingAndPagination = (
+  cellId: Id | undefined,
+  descending = false,
+  sortOnClick: boolean | undefined,
+  offset = 0,
+  limit: number | undefined,
+  total: number,
+  paginator: boolean | ComponentType<SortedTablePaginatorProps>,
+  onChange?: (sortAndOffset: SortAndOffset) => void,
+): [
+  sortAndOffset: SortAndOffset,
+  handleSort: HandleSort,
+  paginatorComponent: ReactNode | undefined,
+] => {
+  const [[currentCellId, currentDescending, currentOffset], setState] =
+    useState<SortAndOffset>([cellId, descending, offset]);
+  const setStateAndChange = useCallback(
+    (sortAndOffset: SortAndOffset) => {
+      setState(sortAndOffset);
+      onChange?.(sortAndOffset);
+    },
+    [onChange],
+  );
+  const handleSort = useCallbackOrUndefined(
+    (cellId: Id | undefined) =>
+      setStateAndChange([
+        cellId,
+        cellId == currentCellId ? !currentDescending : false,
+        currentOffset,
+      ]),
+    [setStateAndChange, currentCellId, currentDescending, currentOffset],
+    sortOnClick,
+  );
+  const handleChangeOffset = useCallback(
+    (offset: number) =>
+      setStateAndChange([currentCellId, currentDescending, offset]),
+    [setStateAndChange, currentCellId, currentDescending],
+  );
+  const PaginatorComponent =
+    paginator === true
+      ? SortedTablePaginator
+      : (paginator as ComponentType<SortedTablePaginatorProps>);
+  return [
+    [currentCellId, currentDescending, currentOffset],
+    handleSort,
+    useMemo(
+      () =>
+        paginator === false ? null : (
+          <PaginatorComponent
+            offset={currentOffset}
+            limit={limit}
+            total={total}
+            onChange={handleChangeOffset}
+          />
+        ),
+      [
+        paginator,
+        PaginatorComponent,
+        currentOffset,
+        limit,
+        total,
+        handleChangeOffset,
+      ],
+    ),
+  ];
+};
 
 export const SortedTablePaginator: typeof SortedTablePaginatorDecl = ({
   onChange,

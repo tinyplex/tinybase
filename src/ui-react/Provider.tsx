@@ -7,8 +7,8 @@ import type {
 import {arrayNew, arrayWith} from '../common/array.ts';
 import {objDel, objGet, objHas} from '../common/obj.ts';
 import {useCallback, useContext, useMemo, useState} from '../common/react.ts';
-import {ExtraThingsById, mergeParentThings} from './common.tsx';
-import {Context, ThingsByOffset} from './context.ts';
+import {ExtraThingsById, ThingsById} from './common/index.tsx';
+import {Context, ContextValue, ThingsByOffset} from './context.ts';
 
 export type Offsets =
   | typeof OFFSET_STORE
@@ -28,6 +28,22 @@ export const OFFSET_QUERIES = 4;
 export const OFFSET_CHECKPOINTS = 5;
 export const OFFSET_PERSISTER = 6;
 export const OFFSET_SYNCHRONIZER = 7;
+
+const mergeParentThings = <Offset extends Offsets>(
+  offset: Offset,
+  parentValue: ContextValue,
+  defaultThing: ThingsByOffset[Offset] | undefined,
+  thingsById: ThingsById<ThingsByOffset>[Offset] | undefined,
+  extraThingsById: ExtraThingsById,
+): [ThingsByOffset[Offset] | undefined, ThingsById<ThingsByOffset>[Offset]] => [
+  defaultThing ??
+    (parentValue[offset * 2] as ThingsByOffset[Offset] | undefined),
+  {
+    ...parentValue[offset * 2 + 1],
+    ...thingsById,
+    ...extraThingsById[offset],
+  },
+];
 
 export const Provider: typeof ProviderDecl = ({
   store,

@@ -17,13 +17,12 @@ import {
 } from '../ui-react/hooks.ts';
 import {CellView} from '../ui-react/index.ts';
 import {EditableCellView} from './EditableCellView.tsx';
+import {useCells, useParams} from './common/hooks.tsx';
 import {
   extraHeaders,
   extraRowCells,
   RelationshipInHtmlRowParams,
-  useCells,
-  useParams,
-} from './common.tsx';
+} from './common/index.tsx';
 
 const useDottedCellIds = (tableId: Id | undefined, store: Store | undefined) =>
   arrayMap(

@@ -5,7 +5,7 @@ import type {
 } from '../@types/ui-react/index.js';
 import {arrayMap} from '../common/array.ts';
 import {getIndexStoreTableId, getProps} from '../common/react.ts';
-import {wrap} from './common.tsx';
+import {wrap} from './common/wrap.tsx';
 import {useIndexesOrIndexesById, useSliceRowIds} from './hooks.ts';
 import {RowView} from './RowView.tsx';
 

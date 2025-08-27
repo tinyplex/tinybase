@@ -2,7 +2,7 @@ import type {
   ResultSortedTableProps,
   ResultSortedTableView as ResultSortedTableViewDecl,
 } from '../@types/ui-react/index.js';
-import {resultTableView} from './common.tsx';
+import {resultTableView} from './common/index.tsx';
 import {useResultSortedRowIds} from './hooks.ts';
 
 export const ResultSortedTableView: typeof ResultSortedTableViewDecl = ({

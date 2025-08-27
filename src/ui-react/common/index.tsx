@@ -1,6 +1,6 @@
 import type {ReactElement} from 'react';
-import type {CheckpointIds} from '../@types/checkpoints/index.js';
-import type {Id, Ids} from '../@types/common/index.js';
+import type {CheckpointIds} from '../../@types/checkpoints/index.js';
+import type {Id, Ids} from '../../@types/common/index.js';
 import type {
   BackwardCheckpointsProps,
   CurrentCheckpointProps,
@@ -10,44 +10,25 @@ import type {
   RelationshipsOrRelationshipsId,
   RemoteRowProps,
   ResultTableProps,
-  StoreOrStoreId,
   TableProps,
-} from '../@types/ui-react/index.js';
-import {arrayMap} from '../common/array.ts';
-import {isArray, isUndefined} from '../common/other.ts';
-import {getProps, getRelationshipsStoreTableIds} from '../common/react.ts';
-import {CheckpointView} from './CheckpointView.tsx';
-import {ContextValue, ThingsByOffset} from './context.ts';
+} from '../../@types/ui-react/index.js';
+import {arrayMap} from '../../common/array.ts';
+import {getProps, getRelationshipsStoreTableIds} from '../../common/react.ts';
+import {CheckpointView} from '../CheckpointView.tsx';
+import {ThingsByOffset} from '../context.ts';
 import {
-  useCellIds,
   useCheckpointIds,
   useCheckpointsOrCheckpointsById,
   useRelationshipsOrRelationshipsById,
-} from './hooks.ts';
-import type {Offsets} from './Provider.tsx';
-import {ResultRowView} from './ResultRowView.tsx';
-import {RowView} from './RowView.tsx';
+} from '../hooks.ts';
+import {ResultRowView} from '../ResultRowView.tsx';
+import {RowView} from '../RowView.tsx';
+import {wrap} from './wrap.tsx';
 
-type ThingsById<ThingsByOffset> = {
+export type ThingsById<ThingsByOffset> = {
   [Offset in keyof ThingsByOffset]: {[id: Id]: ThingsByOffset[Offset]};
 };
 export type ExtraThingsById = ThingsById<ThingsByOffset>;
-
-export const mergeParentThings = <Offset extends Offsets>(
-  offset: Offset,
-  parentValue: ContextValue,
-  defaultThing: ThingsByOffset[Offset] | undefined,
-  thingsById: ThingsById<ThingsByOffset>[Offset] | undefined,
-  extraThingsById: ExtraThingsById,
-): [ThingsByOffset[Offset] | undefined, ThingsById<ThingsByOffset>[Offset]] => [
-  defaultThing ??
-    (parentValue[offset * 2] as ThingsByOffset[Offset] | undefined),
-  {
-    ...parentValue[offset * 2 + 1],
-    ...thingsById,
-    ...extraThingsById[offset],
-  },
-];
 
 export const tableView = (
   {
@@ -178,26 +159,3 @@ export const getUseCheckpointView =
       separator,
     );
   };
-
-export const wrap = (
-  children: any,
-  separator?: any,
-  encloseWithId?: boolean,
-  id?: Id,
-) => {
-  const separated =
-    isUndefined(separator) || !isArray(children)
-      ? children
-      : arrayMap(children, (child, c) => (c > 0 ? [separator, child] : child));
-  return encloseWithId ? [id, ':{', separated, '}'] : separated;
-};
-
-export const useCustomOrDefaultCellIds = (
-  customCellIds: Ids | undefined,
-  tableId: Id,
-  rowId: Id,
-  store?: StoreOrStoreId,
-): Ids => {
-  const defaultCellIds = useCellIds(tableId, rowId, store);
-  return customCellIds ?? defaultCellIds;
-};

@@ -5,7 +5,8 @@ import type {
 import {arrayMap} from '../common/array.ts';
 import {getProps} from '../common/react.ts';
 import {CellView} from './CellView.tsx';
-import {useCustomOrDefaultCellIds, wrap} from './common.tsx';
+import {useCustomOrDefaultCellIds} from './common/hooks.tsx';
+import {wrap} from './common/wrap.tsx';
 
 export const RowView: typeof RowViewDecl = ({
   tableId,

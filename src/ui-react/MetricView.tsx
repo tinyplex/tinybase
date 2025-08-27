@@ -3,7 +3,7 @@ import type {
   MetricView as MetricViewDecl,
 } from '../@types/ui-react/index.js';
 import {EMPTY_STRING} from '../common/strings.ts';
-import {wrap} from './common.tsx';
+import {wrap} from './common/wrap.tsx';
 import {useMetric} from './hooks.ts';
 
 export const MetricView: typeof MetricViewDecl = ({

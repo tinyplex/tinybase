@@ -5,12 +5,12 @@ import type {
 } from '../@types/ui-react-dom/index.js';
 import {useResultRowIds, useResultTableCellIds} from '../ui-react/hooks.ts';
 import {ResultCellView} from '../ui-react/index.ts';
+import {HtmlTable} from './common/components.tsx';
 import {
-  HtmlTable,
   useCells,
   useParams,
   useQueriesCellComponentProps,
-} from './common.tsx';
+} from './common/hooks.tsx';
 
 export const ResultTableInHtmlTable: typeof ResultTableInHtmlTableDecl = ({
   queryId,

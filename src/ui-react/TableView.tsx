@@ -2,7 +2,7 @@ import type {
   TableProps,
   TableView as TableViewDecl,
 } from '../@types/ui-react/index.js';
-import {tableView} from './common.tsx';
+import {tableView} from './common/index.tsx';
 import {useRowIds} from './hooks.ts';
 
 export const TableView: typeof TableViewDecl = (props: TableProps): any =>

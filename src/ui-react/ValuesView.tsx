@@ -4,7 +4,7 @@ import type {
 } from '../@types/ui-react/index.js';
 import {arrayMap} from '../common/array.ts';
 import {getProps} from '../common/react.ts';
-import {wrap} from './common.tsx';
+import {wrap} from './common/wrap.tsx';
 import {useValueIds} from './hooks.ts';
 import {ValueView} from './ValueView.tsx';
 

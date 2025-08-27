@@ -5,7 +5,7 @@ import type {
 } from '../@types/ui-react/index.js';
 import {isUndefined} from '../common/other.ts';
 import {getProps, getRelationshipsStoreTableIds} from '../common/react.ts';
-import {wrap} from './common.tsx';
+import {wrap} from './common/wrap.tsx';
 import {useRelationshipsOrRelationshipsById, useRemoteRowId} from './hooks.ts';
 import {RowView} from './RowView.tsx';
 

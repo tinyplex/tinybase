@@ -3,7 +3,7 @@ import type {
   ValueView as ValueViewDecl,
 } from '../@types/ui-react/index.js';
 import {EMPTY_STRING} from '../common/strings.ts';
-import {wrap} from './common.tsx';
+import {wrap} from './common/wrap.tsx';
 import {useValue} from './hooks.ts';
 
 export const ValueView: typeof ValueViewDecl = ({

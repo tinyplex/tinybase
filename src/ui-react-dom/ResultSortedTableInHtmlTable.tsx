@@ -9,13 +9,13 @@ import {
   useResultTableCellIds,
 } from '../ui-react/hooks.ts';
 import {ResultCellView} from '../ui-react/index.ts';
+import {HtmlTable} from './common/components.tsx';
 import {
-  HtmlTable,
   useCells,
   useParams,
   useQueriesCellComponentProps,
-  useSortingAndPagination,
-} from './common.tsx';
+} from './common/hooks.tsx';
+import {useSortingAndPagination} from './SortedTablePaginator.tsx';
 
 export const ResultSortedTableInHtmlTable: typeof ResultSortedTableInHtmlTableDecl =
   ({

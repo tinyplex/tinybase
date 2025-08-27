@@ -3,7 +3,7 @@ import type {
   CellView as CellViewDecl,
 } from '../@types/ui-react/index.js';
 import {EMPTY_STRING} from '../common/strings.ts';
-import {wrap} from './common.tsx';
+import {wrap} from './common/wrap.tsx';
 import {useCell} from './hooks.ts';
 
 export const CellView: typeof CellViewDecl = ({

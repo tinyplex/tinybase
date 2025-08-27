@@ -9,14 +9,14 @@ import {
   useTableCellIds,
 } from '../ui-react/hooks.ts';
 import {CellView} from '../ui-react/index.ts';
-import {EditableCellView} from './EditableCellView.tsx';
+import {HtmlTable} from './common/components.tsx';
 import {
-  HtmlTable,
   useCells,
   useParams,
-  useSortingAndPagination,
   useStoreCellComponentProps,
-} from './common.tsx';
+} from './common/hooks.tsx';
+import {EditableCellView} from './EditableCellView.tsx';
+import {useSortingAndPagination} from './SortedTablePaginator.tsx';
 
 export const SortedTableInHtmlTable: typeof SortedTableInHtmlTableDecl = ({
   tableId,

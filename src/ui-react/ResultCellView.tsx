@@ -3,7 +3,7 @@ import type {
   ResultCellView as ResultCellViewDecl,
 } from '../@types/ui-react/index.js';
 import {EMPTY_STRING} from '../common/strings.ts';
-import {wrap} from './common.tsx';
+import {wrap} from './common/wrap.tsx';
 import {useResultCell} from './hooks.ts';
 
 export const ResultCellView: typeof ResultCellViewDecl = ({

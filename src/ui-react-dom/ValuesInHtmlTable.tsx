@@ -11,7 +11,7 @@ import {EXTRA, VALUE} from '../common/strings.ts';
 import {useValueIds} from '../ui-react/hooks.ts';
 import {ValueView} from '../ui-react/index.ts';
 import {EditableValueView} from './EditableValueView.tsx';
-import {extraHeaders, extraKey} from './common.tsx';
+import {extraHeaders, extraKey} from './common/index.tsx';
 
 const extraValueCells = (
   extraValueCells: ExtraValueCell[] = [],
