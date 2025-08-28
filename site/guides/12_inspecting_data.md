@@ -62,3 +62,6 @@ It is hoped that each section is quite self-explanatory. If not, please try it
 out in the <Inspector /> demo, or indeed in most of the TinyBase demos
 themselves! The Movie Database demo and Countries demo are quite good examples
 of the inspector in use.
+
+Note that, as of TinyBase v6.6, you can also create, duplicate, and delete
+tables, rows, values, and cells - all directly within the Inspector.

@@ -5,6 +5,19 @@ highlighted features.
 
 ---
 
+# v6.6
+
+This release improves the Inspector tool, making it easier to debug, inspect,
+and mutate your TinyBase stores.
+
+As well as a modernized UI, new in this release is the ability to create,
+duplicate, or delete tables, rows, values and cells directly within the
+Inspector. Press the 'pencil' icon to start editing items, and then hover over
+the new icons to see how to manipulate the data.
+
+See the Inspecting Data guide for more information about how to use the
+Inspector in your application during development.
+
 # v6.5
 
 This release includes the new persister-react-native-mmkv module, which allows
