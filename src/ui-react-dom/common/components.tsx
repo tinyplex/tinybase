@@ -107,7 +107,7 @@ export const HtmlTable = ({
         return (
           <tr key={rowId}>
             {extraRowCells(extraCellsBefore, rowProps)}
-            {idColumn === false ? null : <th>{rowId}</th>}
+            {idColumn === false ? null : <th title={rowId}>{rowId}</th>}
             {objToArray(
               cells,
               ({component: CellView, getComponentProps}, cellId) => (

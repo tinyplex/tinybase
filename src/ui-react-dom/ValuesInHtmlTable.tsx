@@ -52,7 +52,7 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
         return (
           <tr key={valueId}>
             {extraValueCells(extraCellsBefore, valueProps)}
-            {idColumn === false ? null : <th>{valueId}</th>}
+            {idColumn === false ? null : <th title={valueId}>{valueId}</th>}
             <td>
               <Value
                 {...getProps(getValueComponentProps, valueId)}

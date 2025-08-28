@@ -62,8 +62,8 @@ export const RelationshipInHtmlRow = ({
       {extraRowCells(extraCellsBefore, rowProps)}
       {idColumn === false ? null : (
         <>
-          <th>{localRowId}</th>
-          <th>{remoteRowId}</th>
+          <th title={localRowId}>{localRowId}</th>
+          <th title={remoteRowId}>{remoteRowId}</th>
         </>
       )}
       {objToArray(

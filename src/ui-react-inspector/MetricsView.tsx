@@ -11,7 +11,7 @@ import type {StoreProp} from './types.ts';
 
 const MetricRow = ({metrics, metricId}: MetricProps) => (
   <tr>
-    <th>{metricId}</th>
+    <th title={metricId}>{metricId}</th>
     <td>{(metrics as Metrics)?.getTableId(metricId)}</td>
     <td>{useMetric(metricId, metrics)}</td>
   </tr>
