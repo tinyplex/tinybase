@@ -314,7 +314,7 @@ root.unmount(); // !act
 >
 > Read more about this powerful new tool in the Inspecting Data guide.
 
-<img src='/store-inspector.webp' />
+<img src='/inspector.webp' />
 
 > ## Apply schemas to tables & values.
 >

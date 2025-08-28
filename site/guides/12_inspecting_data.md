@@ -4,7 +4,7 @@ If you are using TinyBase with React, you can use its web-based inspector, the
 Inspector component, that allows you to reason about the data during
 development.
 
-![Inspector](/store-inspector.webp 'Inspector')
+![Inspector](/inspector.webp 'Inspector')
 
 (NB: Previous to v5.0, this component was called `StoreInspector`.)
 

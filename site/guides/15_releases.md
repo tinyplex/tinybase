@@ -10,6 +10,8 @@ highlighted features.
 This release improves the Inspector tool, making it easier to debug, inspect,
 and mutate your TinyBase stores.
 
+![Inspector](/inspector.webp 'Inspector')
+
 As well as a modernized UI, new in this release is the ability to create,
 duplicate, or delete tables, rows, values and cells directly within the
 Inspector. Press the 'pencil' icon to start editing items, and then hover over
