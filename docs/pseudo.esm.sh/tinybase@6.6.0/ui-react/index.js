@@ -103,17 +103,6 @@ var getIndexStoreTableId = (indexes, indexId) => [
   indexes?.getStore(),
   indexes?.getTableId(indexId)
 ];
-var Offsets = /* @__PURE__ */ ((Offsets2) => {
-  Offsets2[Offsets2["Store"] = 0] = "Store";
-  Offsets2[Offsets2["Metrics"] = 1] = "Metrics";
-  Offsets2[Offsets2["Indexes"] = 2] = "Indexes";
-  Offsets2[Offsets2["Relationships"] = 3] = "Relationships";
-  Offsets2[Offsets2["Queries"] = 4] = "Queries";
-  Offsets2[Offsets2["Checkpoints"] = 5] = "Checkpoints";
-  Offsets2[Offsets2["Persister"] = 6] = "Persister";
-  Offsets2[Offsets2["Synchronizer"] = 7] = "Synchronizer";
-  return Offsets2;
-})(Offsets || {});
 var TINYBASE_CONTEXT = TINYBASE + "_uirc";
 var Context = GLOBAL[TINYBASE_CONTEXT] ? (
   /* istanbul ignore next */
@@ -136,6 +125,152 @@ var useProvideThing = (thingId, thing, offset) => {
   }, [addExtraThingById, thingId, thing, offset, delExtraThingById]);
 };
 var useThingIds = (offset) => objIds(useContext(Context)[offset * 2 + 1] ?? {});
+var OFFSET_STORE = 0;
+var OFFSET_METRICS = 1;
+var OFFSET_INDEXES = 2;
+var OFFSET_RELATIONSHIPS = 3;
+var OFFSET_QUERIES = 4;
+var OFFSET_CHECKPOINTS = 5;
+var OFFSET_PERSISTER = 6;
+var OFFSET_SYNCHRONIZER = 7;
+var mergeParentThings = (offset, parentValue, defaultThing, thingsById, extraThingsById) => [
+  defaultThing ?? parentValue[offset * 2],
+  {
+    ...parentValue[offset * 2 + 1],
+    ...thingsById,
+    ...extraThingsById[offset]
+  }
+];
+var Provider = ({
+  store,
+  storesById,
+  metrics,
+  metricsById,
+  indexes,
+  indexesById,
+  relationships,
+  relationshipsById,
+  queries,
+  queriesById,
+  checkpoints,
+  checkpointsById,
+  persister,
+  persistersById,
+  synchronizer,
+  synchronizersById,
+  children
+}) => {
+  const parentValue = useContext(Context);
+  const [extraThingsById, setExtraThingsById] = useState(
+    () => arrayNew(8, () => ({}))
+  );
+  const addExtraThingById = useCallback(
+    (thingOffset, id, thing) => setExtraThingsById(
+      (extraThingsById2) => objGet(extraThingsById2[thingOffset], id) == thing ? extraThingsById2 : arrayWith(extraThingsById2, thingOffset, {
+        ...extraThingsById2[thingOffset],
+        [id]: thing
+      })
+    ),
+    []
+  );
+  const delExtraThingById = useCallback(
+    (thingOffset, id) => setExtraThingsById(
+      (extraThingsById2) => !objHas(extraThingsById2[thingOffset], id) ? extraThingsById2 : arrayWith(
+        extraThingsById2,
+        thingOffset,
+        objDel(extraThingsById2[thingOffset], id)
+      )
+    ),
+    []
+  );
+  return /* @__PURE__ */ jsx(Context.Provider, {
+    value: useMemo(
+      () => [
+        ...mergeParentThings(
+          OFFSET_STORE,
+          parentValue,
+          store,
+          storesById,
+          extraThingsById
+        ),
+        ...mergeParentThings(
+          OFFSET_METRICS,
+          parentValue,
+          metrics,
+          metricsById,
+          extraThingsById
+        ),
+        ...mergeParentThings(
+          OFFSET_INDEXES,
+          parentValue,
+          indexes,
+          indexesById,
+          extraThingsById
+        ),
+        ...mergeParentThings(
+          OFFSET_RELATIONSHIPS,
+          parentValue,
+          relationships,
+          relationshipsById,
+          extraThingsById
+        ),
+        ...mergeParentThings(
+          OFFSET_QUERIES,
+          parentValue,
+          queries,
+          queriesById,
+          extraThingsById
+        ),
+        ...mergeParentThings(
+          OFFSET_CHECKPOINTS,
+          parentValue,
+          checkpoints,
+          checkpointsById,
+          extraThingsById
+        ),
+        ...mergeParentThings(
+          OFFSET_PERSISTER,
+          parentValue,
+          persister,
+          persistersById,
+          extraThingsById
+        ),
+        ...mergeParentThings(
+          OFFSET_SYNCHRONIZER,
+          parentValue,
+          synchronizer,
+          synchronizersById,
+          extraThingsById
+        ),
+        addExtraThingById,
+        delExtraThingById
+      ],
+      [
+        extraThingsById,
+        store,
+        storesById,
+        metrics,
+        metricsById,
+        indexes,
+        indexesById,
+        relationships,
+        relationshipsById,
+        queries,
+        queriesById,
+        checkpoints,
+        checkpointsById,
+        persister,
+        persistersById,
+        synchronizer,
+        synchronizersById,
+        parentValue,
+        addExtraThingById,
+        delExtraThingById
+      ]
+    ),
+    children
+  });
+};
 var EMPTY_ARRAY = [];
 var DEFAULTS = [{}, [], [EMPTY_ARRAY, void 0, EMPTY_ARRAY], void 0, false, 0];
 var IS_EQUALS = [
@@ -246,11 +381,11 @@ var useSortedRowIdsListenerImpl = (tableId, cellId, descending, offset, limit, l
   mutator
 );
 var useCreateStore = (create, createDeps = EMPTY_ARRAY) => useMemo(create, createDeps);
-var useStoreIds = () => useThingIds(Offsets.Store);
-var useStore = (id) => useThing(id, Offsets.Store);
-var useStores = () => useThings(Offsets.Store);
-var useStoreOrStoreById = (storeOrStoreId) => useThingOrThingById(storeOrStoreId, Offsets.Store);
-var useProvideStore = (storeId, store) => useProvideThing(storeId, store, Offsets.Store);
+var useStoreIds = () => useThingIds(OFFSET_STORE);
+var useStore = (id) => useThing(id, OFFSET_STORE);
+var useStores = () => useThings(OFFSET_STORE);
+var useStoreOrStoreById = (storeOrStoreId) => useThingOrThingById(storeOrStoreId, OFFSET_STORE);
+var useProvideStore = (storeId, store) => useProvideThing(storeId, store, OFFSET_STORE);
 var useCreateMergeableStore = (create, createDeps = EMPTY_ARRAY) => useMemo(create, createDeps);
 var useHasTables = (storeOrStoreId) => useListenable(
   TABLES,
@@ -668,10 +803,10 @@ var useDidFinishTransactionListener = (listener, listenerDeps, storeOrStoreId) =
   listenerDeps
 );
 var useCreateMetrics = (store, create, createDeps) => useCreate(store, create, createDeps);
-var useMetricsIds = () => useThingIds(Offsets.Metrics);
-var useMetrics = (id) => useThing(id, Offsets.Metrics);
-var useMetricsOrMetricsById = (metricsOrMetricsId) => useThingOrThingById(metricsOrMetricsId, Offsets.Metrics);
-var useProvideMetrics = (metricsId, metrics) => useProvideThing(metricsId, metrics, Offsets.Metrics);
+var useMetricsIds = () => useThingIds(OFFSET_METRICS);
+var useMetrics = (id) => useThing(id, OFFSET_METRICS);
+var useMetricsOrMetricsById = (metricsOrMetricsId) => useThingOrThingById(metricsOrMetricsId, OFFSET_METRICS);
+var useProvideMetrics = (metricsId, metrics) => useProvideThing(metricsId, metrics, OFFSET_METRICS);
 var useMetricIds = (metricsOrMetricsId) => useListenable(
   METRIC + IDS,
   useMetricsOrMetricsById(metricsOrMetricsId),
@@ -691,10 +826,10 @@ var useMetricListener = (metricId, listener, listenerDeps, metricsOrMetricsId) =
   [metricId]
 );
 var useCreateIndexes = (store, create, createDeps) => useCreate(store, create, createDeps);
-var useIndexesIds = () => useThingIds(Offsets.Indexes);
-var useIndexes = (id) => useThing(id, Offsets.Indexes);
-var useIndexesOrIndexesById = (indexesOrIndexesId) => useThingOrThingById(indexesOrIndexesId, Offsets.Indexes);
-var useProvideIndexes = (indexesId, indexes) => useProvideThing(indexesId, indexes, Offsets.Indexes);
+var useIndexesIds = () => useThingIds(OFFSET_INDEXES);
+var useIndexes = (id) => useThing(id, OFFSET_INDEXES);
+var useIndexesOrIndexesById = (indexesOrIndexesId) => useThingOrThingById(indexesOrIndexesId, OFFSET_INDEXES);
+var useProvideIndexes = (indexesId, indexes) => useProvideThing(indexesId, indexes, OFFSET_INDEXES);
 var useSliceIds = (indexId, indexesOrIndexesId) => useListenable(
   SLICE + IDS,
   useIndexesOrIndexesById(indexesOrIndexesId),
@@ -727,10 +862,10 @@ var useSliceRowIdsListener = (indexId, sliceId, listener, listenerDeps, indexesO
   [indexId, sliceId]
 );
 var useCreateRelationships = (store, create, createDeps) => useCreate(store, create, createDeps);
-var useRelationshipsIds = () => useThingIds(Offsets.Relationships);
-var useRelationships = (id) => useThing(id, Offsets.Relationships);
-var useRelationshipsOrRelationshipsById = (relationshipsOrRelationshipsId) => useThingOrThingById(relationshipsOrRelationshipsId, Offsets.Relationships);
-var useProvideRelationships = (relationshipsId, relationships) => useProvideThing(relationshipsId, relationships, Offsets.Relationships);
+var useRelationshipsIds = () => useThingIds(OFFSET_RELATIONSHIPS);
+var useRelationships = (id) => useThing(id, OFFSET_RELATIONSHIPS);
+var useRelationshipsOrRelationshipsById = (relationshipsOrRelationshipsId) => useThingOrThingById(relationshipsOrRelationshipsId, OFFSET_RELATIONSHIPS);
+var useProvideRelationships = (relationshipsId, relationships) => useProvideThing(relationshipsId, relationships, OFFSET_RELATIONSHIPS);
 var useRelationshipIds = (relationshipsOrRelationshipsId) => useListenable(
   RELATIONSHIP + IDS,
   useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
@@ -776,10 +911,10 @@ var useLinkedRowIdsListener = (relationshipId, firstRowId, listener, listenerDep
   [relationshipId, firstRowId]
 );
 var useCreateQueries = (store, create, createDeps) => useCreate(store, create, createDeps);
-var useQueriesIds = () => useThingIds(Offsets.Queries);
-var useQueries = (id) => useThing(id, Offsets.Queries);
-var useQueriesOrQueriesById = (queriesOrQueriesId) => useThingOrThingById(queriesOrQueriesId, Offsets.Queries);
-var useProvideQueries = (queriesId, queries) => useProvideThing(queriesId, queries, Offsets.Queries);
+var useQueriesIds = () => useThingIds(OFFSET_QUERIES);
+var useQueries = (id) => useThing(id, OFFSET_QUERIES);
+var useQueriesOrQueriesById = (queriesOrQueriesId) => useThingOrThingById(queriesOrQueriesId, OFFSET_QUERIES);
+var useProvideQueries = (queriesId, queries) => useProvideThing(queriesId, queries, OFFSET_QUERIES);
 var useQueryIds = (queriesOrQueriesId) => useListenable(
   QUERY + IDS,
   useQueriesOrQueriesById(queriesOrQueriesId),
@@ -890,10 +1025,10 @@ var useResultCellListener = (queryId, rowId, cellId, listener, listenerDeps, que
   [queryId, rowId, cellId]
 );
 var useCreateCheckpoints = (store, create, createDeps) => useCreate(store, create, createDeps);
-var useCheckpointsIds = () => useThingIds(Offsets.Checkpoints);
-var useCheckpoints = (id) => useThing(id, Offsets.Checkpoints);
-var useCheckpointsOrCheckpointsById = (checkpointsOrCheckpointsId) => useThingOrThingById(checkpointsOrCheckpointsId, Offsets.Checkpoints);
-var useProvideCheckpoints = (checkpointsId, checkpoints) => useProvideThing(checkpointsId, checkpoints, Offsets.Checkpoints);
+var useCheckpointsIds = () => useThingIds(OFFSET_CHECKPOINTS);
+var useCheckpoints = (id) => useThing(id, OFFSET_CHECKPOINTS);
+var useCheckpointsOrCheckpointsById = (checkpointsOrCheckpointsId) => useThingOrThingById(checkpointsOrCheckpointsId, OFFSET_CHECKPOINTS);
+var useProvideCheckpoints = (checkpointsId, checkpoints) => useProvideThing(checkpointsId, checkpoints, OFFSET_CHECKPOINTS);
 var useCheckpointIds = (checkpointsOrCheckpointsId) => useListenable(
   CHECKPOINT + IDS,
   useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
@@ -1004,10 +1139,10 @@ var useCreatePersister = (store, create, createDeps = EMPTY_ARRAY, then, thenDep
   );
   return persister;
 };
-var usePersisterIds = () => useThingIds(Offsets.Persister);
-var usePersister = (id) => useThing(id, Offsets.Persister);
-var usePersisterOrPersisterById = (persisterOrPersisterId) => useThingOrThingById(persisterOrPersisterId, Offsets.Persister);
-var useProvidePersister = (persisterId, persister) => useProvideThing(persisterId, persister, Offsets.Persister);
+var usePersisterIds = () => useThingIds(OFFSET_PERSISTER);
+var usePersister = (id) => useThing(id, OFFSET_PERSISTER);
+var usePersisterOrPersisterById = (persisterOrPersisterId) => useThingOrThingById(persisterOrPersisterId, OFFSET_PERSISTER);
+var useProvidePersister = (persisterId, persister) => useProvideThing(persisterId, persister, OFFSET_PERSISTER);
 var usePersisterStatus = (persisterOrPersisterId) => useListenable(
   STATUS,
   usePersisterOrPersisterById(persisterOrPersisterId),
@@ -1045,10 +1180,10 @@ var useCreateSynchronizer = (store, create, createDeps = EMPTY_ARRAY, destroy, d
   );
   return synchronizer;
 };
-var useSynchronizerIds = () => useThingIds(Offsets.Synchronizer);
-var useSynchronizer = (id) => useThing(id, Offsets.Synchronizer);
-var useSynchronizerOrSynchronizerById = (synchronizerOrSynchronizerId) => useThingOrThingById(synchronizerOrSynchronizerId, Offsets.Synchronizer);
-var useProvideSynchronizer = (persisterId, persister) => useProvideThing(persisterId, persister, Offsets.Synchronizer);
+var useSynchronizerIds = () => useThingIds(OFFSET_SYNCHRONIZER);
+var useSynchronizer = (id) => useThing(id, OFFSET_SYNCHRONIZER);
+var useSynchronizerOrSynchronizerById = (synchronizerOrSynchronizerId) => useThingOrThingById(synchronizerOrSynchronizerId, OFFSET_SYNCHRONIZER);
+var useProvideSynchronizer = (persisterId, persister) => useProvideThing(persisterId, persister, OFFSET_SYNCHRONIZER);
 var useSynchronizerStatus = (synchronizerOrSynchronizerId) => useListenable(
   STATUS,
   useSynchronizerOrSynchronizerById(synchronizerOrSynchronizerId),
@@ -1062,14 +1197,89 @@ var useSynchronizerStatusListener = (listener, listenerDeps, synchronizerOrSynch
   listenerDeps,
   []
 );
-var mergeParentThings = (offset, parentValue, defaultThing, thingsById, extraThingsById) => [
-  defaultThing ?? parentValue[offset * 2],
-  {
-    ...parentValue[offset * 2 + 1],
-    ...thingsById,
-    ...extraThingsById[offset]
-  }
-];
+var wrap = (children, separator, encloseWithId, id) => {
+  const separated = isUndefined(separator) || !isArray(children) ? children : arrayMap(children, (child, c) => c > 0 ? [separator, child] : child);
+  return encloseWithId ? [id, ":{", separated, "}"] : separated;
+};
+var CheckpointView = ({ checkpoints, checkpointId, debugIds }) => wrap(
+  useCheckpoint(checkpointId, checkpoints) ?? EMPTY_STRING,
+  void 0,
+  debugIds,
+  checkpointId
+);
+var ResultCellView = ({ queryId, rowId, cellId, queries, debugIds }) => wrap(
+  EMPTY_STRING + (useResultCell(queryId, rowId, cellId, queries) ?? EMPTY_STRING),
+  void 0,
+  debugIds,
+  cellId
+);
+var ResultRowView = ({
+  queryId,
+  rowId,
+  queries,
+  resultCellComponent: ResultCell = ResultCellView,
+  getResultCellComponentProps,
+  separator,
+  debugIds
+}) => wrap(
+  arrayMap(
+    useResultCellIds(queryId, rowId, queries),
+    (cellId) => /* @__PURE__ */ jsx(
+      ResultCell,
+      {
+        ...getProps(getResultCellComponentProps, cellId),
+        queryId,
+        rowId,
+        cellId,
+        queries,
+        debugIds
+      },
+      cellId
+    )
+  ),
+  separator,
+  debugIds,
+  rowId
+);
+var CellView = ({ tableId, rowId, cellId, store, debugIds }) => wrap(
+  EMPTY_STRING + (useCell(tableId, rowId, cellId, store) ?? EMPTY_STRING),
+  void 0,
+  debugIds,
+  cellId
+);
+var useCustomOrDefaultCellIds = (customCellIds, tableId, rowId, store) => {
+  const defaultCellIds = useCellIds(tableId, rowId, store);
+  return customCellIds ?? defaultCellIds;
+};
+var RowView = ({
+  tableId,
+  rowId,
+  store,
+  cellComponent: Cell = CellView,
+  getCellComponentProps,
+  customCellIds,
+  separator,
+  debugIds
+}) => wrap(
+  arrayMap(
+    useCustomOrDefaultCellIds(customCellIds, tableId, rowId, store),
+    (cellId) => /* @__PURE__ */ jsx(
+      Cell,
+      {
+        ...getProps(getCellComponentProps, cellId),
+        tableId,
+        rowId,
+        cellId,
+        store,
+        debugIds
+      },
+      cellId
+    )
+  ),
+  separator,
+  debugIds,
+  rowId
+);
 var tableView = ({
   tableId,
   store,
@@ -1182,246 +1392,14 @@ var getUseCheckpointView = (getCheckpoints) => ({
     separator
   );
 };
-var Provider = ({
-  store,
-  storesById,
-  metrics,
-  metricsById,
-  indexes,
-  indexesById,
-  relationships,
-  relationshipsById,
-  queries,
-  queriesById,
-  checkpoints,
-  checkpointsById,
-  persister,
-  persistersById,
-  synchronizer,
-  synchronizersById,
-  children
-}) => {
-  const parentValue = useContext(Context);
-  const [extraThingsById, setExtraThingsById] = useState(
-    () => arrayNew(8, () => ({}))
-  );
-  const addExtraThingById = useCallback(
-    (thingOffset, id, thing) => setExtraThingsById(
-      (extraThingsById2) => objGet(extraThingsById2[thingOffset], id) == thing ? extraThingsById2 : arrayWith(extraThingsById2, thingOffset, {
-        ...extraThingsById2[thingOffset],
-        [id]: thing
-      })
-    ),
-    []
-  );
-  const delExtraThingById = useCallback(
-    (thingOffset, id) => setExtraThingsById(
-      (extraThingsById2) => !objHas(extraThingsById2[thingOffset], id) ? extraThingsById2 : arrayWith(
-        extraThingsById2,
-        thingOffset,
-        objDel(extraThingsById2[thingOffset], id)
-      )
-    ),
-    []
-  );
-  return /* @__PURE__ */ jsx(Context.Provider, {
-    value: useMemo(
-      () => [
-        ...mergeParentThings(
-          0,
-          parentValue,
-          store,
-          storesById,
-          extraThingsById
-        ),
-        ...mergeParentThings(
-          1,
-          parentValue,
-          metrics,
-          metricsById,
-          extraThingsById
-        ),
-        ...mergeParentThings(
-          2,
-          parentValue,
-          indexes,
-          indexesById,
-          extraThingsById
-        ),
-        ...mergeParentThings(
-          3,
-          parentValue,
-          relationships,
-          relationshipsById,
-          extraThingsById
-        ),
-        ...mergeParentThings(
-          4,
-          parentValue,
-          queries,
-          queriesById,
-          extraThingsById
-        ),
-        ...mergeParentThings(
-          5,
-          parentValue,
-          checkpoints,
-          checkpointsById,
-          extraThingsById
-        ),
-        ...mergeParentThings(
-          6,
-          parentValue,
-          persister,
-          persistersById,
-          extraThingsById
-        ),
-        ...mergeParentThings(
-          7,
-          parentValue,
-          synchronizer,
-          synchronizersById,
-          extraThingsById
-        ),
-        addExtraThingById,
-        delExtraThingById
-      ],
-      [
-        extraThingsById,
-        store,
-        storesById,
-        metrics,
-        metricsById,
-        indexes,
-        indexesById,
-        relationships,
-        relationshipsById,
-        queries,
-        queriesById,
-        checkpoints,
-        checkpointsById,
-        persister,
-        persistersById,
-        synchronizer,
-        synchronizersById,
-        parentValue,
-        addExtraThingById,
-        delExtraThingById
-      ]
-    ),
-    children
-  });
-};
-var wrap = (children, separator, encloseWithId, id) => {
-  const separated = isUndefined(separator) || !isArray(children) ? children : arrayMap(children, (child, c) => c > 0 ? [separator, child] : child);
-  return encloseWithId ? [id, ":{", separated, "}"] : separated;
-};
-var useCustomOrDefaultCellIds = (customCellIds, tableId, rowId, store) => {
-  const defaultCellIds = useCellIds(tableId, rowId, store);
-  return customCellIds ?? defaultCellIds;
-};
-var CellView = ({ tableId, rowId, cellId, store, debugIds }) => wrap(
-  EMPTY_STRING + (useCell(tableId, rowId, cellId, store) ?? EMPTY_STRING),
-  void 0,
-  debugIds,
-  cellId
+var BackwardCheckpointsView = getUseCheckpointView(
+  (checkpointIds) => checkpointIds[0]
 );
-var RowView = ({
-  tableId,
-  rowId,
-  store,
-  cellComponent: Cell = CellView,
-  getCellComponentProps,
-  customCellIds,
-  separator,
-  debugIds
-}) => wrap(
-  arrayMap(
-    useCustomOrDefaultCellIds(customCellIds, tableId, rowId, store),
-    (cellId) => /* @__PURE__ */ jsx(
-      Cell,
-      {
-        ...getProps(getCellComponentProps, cellId),
-        tableId,
-        rowId,
-        cellId,
-        store,
-        debugIds
-      },
-      cellId
-    )
-  ),
-  separator,
-  debugIds,
-  rowId
+var CurrentCheckpointView = getUseCheckpointView(
+  (checkpointIds) => isUndefined(checkpointIds[1]) ? [] : [checkpointIds[1]]
 );
-var TableView = (props) => tableView(props, useRowIds(props.tableId, props.store));
-var SortedTableView = ({ cellId, descending, offset, limit, ...props }) => tableView(
-  props,
-  useSortedRowIds(
-    props.tableId,
-    cellId,
-    descending,
-    offset,
-    limit,
-    props.store
-  )
-);
-var TablesView = ({
-  store,
-  tableComponent: Table = TableView,
-  getTableComponentProps,
-  separator,
-  debugIds
-}) => wrap(
-  arrayMap(
-    useTableIds(store),
-    (tableId) => /* @__PURE__ */ jsx(
-      Table,
-      {
-        ...getProps(getTableComponentProps, tableId),
-        tableId,
-        store,
-        debugIds
-      },
-      tableId
-    )
-  ),
-  separator
-);
-var ValueView = ({ valueId, store, debugIds }) => wrap(
-  EMPTY_STRING + (useValue(valueId, store) ?? EMPTY_STRING),
-  void 0,
-  debugIds,
-  valueId
-);
-var ValuesView = ({
-  store,
-  valueComponent: Value = ValueView,
-  getValueComponentProps,
-  separator,
-  debugIds
-}) => wrap(
-  arrayMap(
-    useValueIds(store),
-    (valueId) => /* @__PURE__ */ jsx(
-      Value,
-      {
-        ...getProps(getValueComponentProps, valueId),
-        valueId,
-        store,
-        debugIds
-      },
-      valueId
-    )
-  ),
-  separator
-);
-var MetricView = ({ metricId, metrics, debugIds }) => wrap(
-  useMetric(metricId, metrics) ?? EMPTY_STRING,
-  void 0,
-  debugIds,
-  metricId
+var ForwardCheckpointsView = getUseCheckpointView(
+  (checkpointIds) => checkpointIds[2]
 );
 var SliceView = ({
   indexId,
@@ -1483,6 +1461,14 @@ var IndexView = ({
   debugIds,
   indexId
 );
+var LinkedRowsView = (props) => useComponentPerRow(props, useLinkedRowIds, props.firstRowId);
+var LocalRowsView = (props) => useComponentPerRow(props, useLocalRowIds, props.remoteRowId);
+var MetricView = ({ metricId, metrics, debugIds }) => wrap(
+  useMetric(metricId, metrics) ?? EMPTY_STRING,
+  void 0,
+  debugIds,
+  metricId
+);
 var RemoteRowView = ({
   relationshipId,
   localRowId,
@@ -1517,43 +1503,6 @@ var RemoteRowView = ({
     localRowId
   );
 };
-var LocalRowsView = (props) => useComponentPerRow(props, useLocalRowIds, props.remoteRowId);
-var LinkedRowsView = (props) => useComponentPerRow(props, useLinkedRowIds, props.firstRowId);
-var ResultCellView = ({ queryId, rowId, cellId, queries, debugIds }) => wrap(
-  EMPTY_STRING + (useResultCell(queryId, rowId, cellId, queries) ?? EMPTY_STRING),
-  void 0,
-  debugIds,
-  cellId
-);
-var ResultRowView = ({
-  queryId,
-  rowId,
-  queries,
-  resultCellComponent: ResultCell = ResultCellView,
-  getResultCellComponentProps,
-  separator,
-  debugIds
-}) => wrap(
-  arrayMap(
-    useResultCellIds(queryId, rowId, queries),
-    (cellId) => /* @__PURE__ */ jsx(
-      ResultCell,
-      {
-        ...getProps(getResultCellComponentProps, cellId),
-        queryId,
-        rowId,
-        cellId,
-        queries,
-        debugIds
-      },
-      cellId
-    )
-  ),
-  separator,
-  debugIds,
-  rowId
-);
-var ResultTableView = (props) => resultTableView(props, useResultRowIds(props.queryId, props.queries));
 var ResultSortedTableView = ({ cellId, descending, offset, limit, ...props }) => resultTableView(
   props,
   useResultSortedRowIds(
@@ -1565,20 +1514,68 @@ var ResultSortedTableView = ({ cellId, descending, offset, limit, ...props }) =>
     props.queries
   )
 );
-var CheckpointView = ({ checkpoints, checkpointId, debugIds }) => wrap(
-  useCheckpoint(checkpointId, checkpoints) ?? EMPTY_STRING,
+var ResultTableView = (props) => resultTableView(props, useResultRowIds(props.queryId, props.queries));
+var SortedTableView = ({ cellId, descending, offset, limit, ...props }) => tableView(
+  props,
+  useSortedRowIds(
+    props.tableId,
+    cellId,
+    descending,
+    offset,
+    limit,
+    props.store
+  )
+);
+var TableView = (props) => tableView(props, useRowIds(props.tableId, props.store));
+var TablesView = ({
+  store,
+  tableComponent: Table = TableView,
+  getTableComponentProps,
+  separator,
+  debugIds
+}) => wrap(
+  arrayMap(
+    useTableIds(store),
+    (tableId) => /* @__PURE__ */ jsx(
+      Table,
+      {
+        ...getProps(getTableComponentProps, tableId),
+        tableId,
+        store,
+        debugIds
+      },
+      tableId
+    )
+  ),
+  separator
+);
+var ValueView = ({ valueId, store, debugIds }) => wrap(
+  EMPTY_STRING + (useValue(valueId, store) ?? EMPTY_STRING),
   void 0,
   debugIds,
-  checkpointId
+  valueId
 );
-var BackwardCheckpointsView = getUseCheckpointView(
-  (checkpointIds) => checkpointIds[0]
-);
-var CurrentCheckpointView = getUseCheckpointView(
-  (checkpointIds) => isUndefined(checkpointIds[1]) ? [] : [checkpointIds[1]]
-);
-var ForwardCheckpointsView = getUseCheckpointView(
-  (checkpointIds) => checkpointIds[2]
+var ValuesView = ({
+  store,
+  valueComponent: Value = ValueView,
+  getValueComponentProps,
+  separator,
+  debugIds
+}) => wrap(
+  arrayMap(
+    useValueIds(store),
+    (valueId) => /* @__PURE__ */ jsx(
+      Value,
+      {
+        ...getProps(getValueComponentProps, valueId),
+        valueId,
+        store,
+        debugIds
+      },
+      valueId
+    )
+  ),
+  separator
 );
 export {
   BackwardCheckpointsView,
@@ -1590,6 +1587,14 @@ export {
   LinkedRowsView,
   LocalRowsView,
   MetricView,
+  OFFSET_CHECKPOINTS,
+  OFFSET_INDEXES,
+  OFFSET_METRICS,
+  OFFSET_PERSISTER,
+  OFFSET_QUERIES,
+  OFFSET_RELATIONSHIPS,
+  OFFSET_STORE,
+  OFFSET_SYNCHRONIZER,
   Provider,
   RemoteRowView,
   ResultCellView,

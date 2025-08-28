@@ -81,17 +81,6 @@ var {
   useSyncExternalStore
 } = React;
 var getProps = (getProps22, ...ids) => isUndefined(getProps22) ? {} : getProps22(...ids);
-var Offsets = /* @__PURE__ */ ((Offsets2) => {
-  Offsets2[Offsets2["Store"] = 0] = "Store";
-  Offsets2[Offsets2["Metrics"] = 1] = "Metrics";
-  Offsets2[Offsets2["Indexes"] = 2] = "Indexes";
-  Offsets2[Offsets2["Relationships"] = 3] = "Relationships";
-  Offsets2[Offsets2["Queries"] = 4] = "Queries";
-  Offsets2[Offsets2["Checkpoints"] = 5] = "Checkpoints";
-  Offsets2[Offsets2["Persister"] = 6] = "Persister";
-  Offsets2[Offsets2["Synchronizer"] = 7] = "Synchronizer";
-  return Offsets2;
-})(Offsets || {});
 var TINYBASE_CONTEXT = TINYBASE + "_uirc";
 var Context = GLOBAL[TINYBASE_CONTEXT] ? (
   /* istanbul ignore next */
@@ -106,6 +95,12 @@ var useThingOrThingById = (thingOrThingId, offset) => {
   return isUndefined(thingOrThingId) || isString(thingOrThingId) ? thing : thingOrThingId;
 };
 var useThingIds = (offset) => objIds(useContext(Context)[offset * 2 + 1] ?? {});
+var OFFSET_STORE = 0;
+var OFFSET_METRICS = 1;
+var OFFSET_INDEXES = 2;
+var OFFSET_RELATIONSHIPS = 3;
+var OFFSET_QUERIES = 4;
+var OFFSET_CHECKPOINTS = 5;
 var EMPTY_ARRAY = [];
 var DEFAULTS = [{}, [], [EMPTY_ARRAY, void 0, EMPTY_ARRAY], void 0, false, 0];
 var IS_EQUALS = [
@@ -164,16 +159,10 @@ var useSetCallback = (storeOrStoreId, settable, get, getDeps = EMPTY_ARRAY, then
 };
 var argsOrGetArgs = (args, store, parameter) => arrayMap(args, (arg) => isFunction(arg) ? arg(parameter, store) : arg);
 var nonFunctionDeps = (args) => arrayFilter(args, (arg) => !isFunction(arg));
-var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, storeOrStoreId) => useListenable(
-  SORTED_ROW_IDS,
-  useStoreOrStoreById(storeOrStoreId),
-  1,
-  [tableId, cellId, descending, offset, limit]
-);
 var useCreateStore = (create, createDeps = EMPTY_ARRAY) => useMemo(create, createDeps);
-var useStoreIds = () => useThingIds(Offsets.Store);
-var useStore = (id2) => useThing(id2, Offsets.Store);
-var useStoreOrStoreById = (storeOrStoreId) => useThingOrThingById(storeOrStoreId, Offsets.Store);
+var useStoreIds = () => useThingIds(OFFSET_STORE);
+var useStore = (id2) => useThing(id2, OFFSET_STORE);
+var useStoreOrStoreById = (storeOrStoreId) => useThingOrThingById(storeOrStoreId, OFFSET_STORE);
 var useTableIds = (storeOrStoreId) => useListenable(
   TABLE_IDS,
   useStoreOrStoreById(storeOrStoreId),
@@ -186,32 +175,11 @@ var useTableCellIds = (tableId, storeOrStoreId) => useListenable(
   1,
   [tableId]
 );
-var useRowCount = (tableId, storeOrStoreId) => useListenable(
-  ROW_COUNT,
-  useStoreOrStoreById(storeOrStoreId),
-  5,
-  [tableId]
-);
-var useRowIds = (tableId, storeOrStoreId) => useListenable(ROW_IDS, useStoreOrStoreById(storeOrStoreId), 1, [
-  tableId
+var useHasCell = (tableId, rowId, cellId, storeOrStoreId) => useListenable(CELL, useStoreOrStoreById(storeOrStoreId), 4, [
+  tableId,
+  rowId,
+  cellId
 ]);
-var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, storeOrStoreId) => useSortedRowIdsImpl(
-  ...isObject(tableIdOrArgs) ? [
-    tableIdOrArgs.tableId,
-    tableIdOrArgs.cellId,
-    tableIdOrArgs.descending ?? false,
-    tableIdOrArgs.offset ?? 0,
-    tableIdOrArgs.limit,
-    cellIdOrStoreOrStoreId
-  ] : [
-    tableIdOrArgs,
-    cellIdOrStoreOrStoreId,
-    descending,
-    offset,
-    limit,
-    storeOrStoreId
-  ]
-);
 var useCell = (tableId, rowId, cellId, storeOrStoreId) => useListenable(
   CELL,
   useStoreOrStoreById(storeOrStoreId),
@@ -256,9 +224,9 @@ var useSetValueCallback = (valueId, getValue, getValueDeps, storeOrStoreId, then
   thenDeps,
   valueId
 );
-var useMetricsIds = () => useThingIds(Offsets.Metrics);
-var useMetrics = (id2) => useThing(id2, Offsets.Metrics);
-var useMetricsOrMetricsById = (metricsOrMetricsId) => useThingOrThingById(metricsOrMetricsId, Offsets.Metrics);
+var useMetricsIds = () => useThingIds(OFFSET_METRICS);
+var useMetrics = (id2) => useThing(id2, OFFSET_METRICS);
+var useMetricsOrMetricsById = (metricsOrMetricsId) => useThingOrThingById(metricsOrMetricsId, OFFSET_METRICS);
 var useMetricIds = (metricsOrMetricsId) => useListenable(
   METRIC + IDS,
   useMetricsOrMetricsById(metricsOrMetricsId),
@@ -270,9 +238,9 @@ var useMetric = (metricId, metricsOrMetricsId) => useListenable(
   3,
   [metricId]
 );
-var useIndexesIds = () => useThingIds(Offsets.Indexes);
-var useIndexes = (id2) => useThing(id2, Offsets.Indexes);
-var useIndexesOrIndexesById = (indexesOrIndexesId) => useThingOrThingById(indexesOrIndexesId, Offsets.Indexes);
+var useIndexesIds = () => useThingIds(OFFSET_INDEXES);
+var useIndexes = (id2) => useThing(id2, OFFSET_INDEXES);
+var useIndexesOrIndexesById = (indexesOrIndexesId) => useThingOrThingById(indexesOrIndexesId, OFFSET_INDEXES);
 var useSliceIds = (indexId, indexesOrIndexesId) => useListenable(
   SLICE + IDS,
   useIndexesOrIndexesById(indexesOrIndexesId),
@@ -284,51 +252,21 @@ var useIndexIds = (indexesOrIndexesId) => useListenable(
   useIndexesOrIndexesById(indexesOrIndexesId),
   1
 );
-var useSliceRowIds = (indexId, sliceId, indexesOrIndexesId) => useListenable(
-  SLICE + ROW_IDS,
-  useIndexesOrIndexesById(indexesOrIndexesId),
-  1,
-  [indexId, sliceId]
-);
-var useRelationshipsIds = () => useThingIds(Offsets.Relationships);
-var useRelationships = (id2) => useThing(id2, Offsets.Relationships);
-var useRelationshipsOrRelationshipsById = (relationshipsOrRelationshipsId) => useThingOrThingById(relationshipsOrRelationshipsId, Offsets.Relationships);
+var useRelationshipsIds = () => useThingIds(OFFSET_RELATIONSHIPS);
+var useRelationships = (id2) => useThing(id2, OFFSET_RELATIONSHIPS);
+var useRelationshipsOrRelationshipsById = (relationshipsOrRelationshipsId) => useThingOrThingById(relationshipsOrRelationshipsId, OFFSET_RELATIONSHIPS);
 var useRelationshipIds = (relationshipsOrRelationshipsId) => useListenable(
   RELATIONSHIP + IDS,
   useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
   1
 );
-var useRemoteRowId = (relationshipId, localRowId, relationshipsOrRelationshipsId) => useListenable(
-  REMOTE_ROW_ID,
-  useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
-  3,
-  [relationshipId, localRowId]
-);
-var useQueriesIds = () => useThingIds(Offsets.Queries);
-var useQueries = (id2) => useThing(id2, Offsets.Queries);
-var useQueriesOrQueriesById = (queriesOrQueriesId) => useThingOrThingById(queriesOrQueriesId, Offsets.Queries);
+var useQueriesIds = () => useThingIds(OFFSET_QUERIES);
+var useQueries = (id2) => useThing(id2, OFFSET_QUERIES);
+var useQueriesOrQueriesById = (queriesOrQueriesId) => useThingOrThingById(queriesOrQueriesId, OFFSET_QUERIES);
 var useQueryIds = (queriesOrQueriesId) => useListenable(
   QUERY + IDS,
   useQueriesOrQueriesById(queriesOrQueriesId),
   1
-);
-var useResultTableCellIds = (queryId, queriesOrQueriesId) => useListenable(
-  RESULT + TABLE + CELL_IDS,
-  useQueriesOrQueriesById(queriesOrQueriesId),
-  1,
-  [queryId]
-);
-var useResultRowCount = (queryId, queriesOrQueriesId) => useListenable(
-  RESULT + ROW_COUNT,
-  useQueriesOrQueriesById(queriesOrQueriesId),
-  5,
-  [queryId]
-);
-var useResultSortedRowIds = (queryId, cellId, descending, offset = 0, limit, queriesOrQueriesId) => useListenable(
-  RESULT + SORTED_ROW_IDS,
-  useQueriesOrQueriesById(queriesOrQueriesId),
-  1,
-  [queryId, cellId, descending, offset, limit]
 );
 var useResultCell = (queryId, rowId, cellId, queriesOrQueriesId) => useListenable(
   RESULT + CELL,
@@ -336,7 +274,7 @@ var useResultCell = (queryId, rowId, cellId, queriesOrQueriesId) => useListenabl
   3,
   [queryId, rowId, cellId]
 );
-var useCheckpointsOrCheckpointsById = (checkpointsOrCheckpointsId) => useThingOrThingById(checkpointsOrCheckpointsId, Offsets.Checkpoints);
+var useCheckpointsOrCheckpointsById = (checkpointsOrCheckpointsId) => useThingOrThingById(checkpointsOrCheckpointsId, OFFSET_CHECKPOINTS);
 var useCheckpointIds = (checkpointsOrCheckpointsId) => useListenable(
   CHECKPOINT + IDS,
   useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
@@ -379,6 +317,28 @@ var useCreatePersister = (store, create, createDeps = EMPTY_ARRAY, then, thenDep
   );
   return persister;
 };
+var wrap = (children, separator, encloseWithId, id2) => {
+  const separated = isUndefined(separator) || !isArray(children) ? children : arrayMap(children, (child, c) => c > 0 ? [separator, child] : child);
+  return encloseWithId ? [id2, ":{", separated, "}"] : separated;
+};
+var CheckpointView = ({ checkpoints, checkpointId, debugIds }) => wrap(
+  useCheckpoint(checkpointId, checkpoints) ?? EMPTY_STRING,
+  void 0,
+  debugIds,
+  checkpointId
+);
+var ResultCellView = ({ queryId, rowId, cellId, queries, debugIds }) => wrap(
+  EMPTY_STRING + (useResultCell(queryId, rowId, cellId, queries) ?? EMPTY_STRING),
+  void 0,
+  debugIds,
+  cellId
+);
+var CellView = ({ tableId, rowId, cellId, store, debugIds }) => wrap(
+  EMPTY_STRING + (useCell(tableId, rowId, cellId, store) ?? EMPTY_STRING),
+  void 0,
+  debugIds,
+  cellId
+);
 var getUseCheckpointView = (getCheckpoints) => ({
   checkpoints,
   checkpointComponent: Checkpoint = CheckpointView,
@@ -404,34 +364,6 @@ var getUseCheckpointView = (getCheckpoints) => ({
     separator
   );
 };
-var wrap = (children, separator, encloseWithId, id2) => {
-  const separated = isUndefined(separator) || !isArray(children) ? children : arrayMap(children, (child, c) => c > 0 ? [separator, child] : child);
-  return encloseWithId ? [id2, ":{", separated, "}"] : separated;
-};
-var CellView = ({ tableId, rowId, cellId, store, debugIds }) => wrap(
-  EMPTY_STRING + (useCell(tableId, rowId, cellId, store) ?? EMPTY_STRING),
-  void 0,
-  debugIds,
-  cellId
-);
-var ValueView = ({ valueId, store, debugIds }) => wrap(
-  EMPTY_STRING + (useValue(valueId, store) ?? EMPTY_STRING),
-  void 0,
-  debugIds,
-  valueId
-);
-var ResultCellView = ({ queryId, rowId, cellId, queries, debugIds }) => wrap(
-  EMPTY_STRING + (useResultCell(queryId, rowId, cellId, queries) ?? EMPTY_STRING),
-  void 0,
-  debugIds,
-  cellId
-);
-var CheckpointView = ({ checkpoints, checkpointId, debugIds }) => wrap(
-  useCheckpoint(checkpointId, checkpoints) ?? EMPTY_STRING,
-  void 0,
-  debugIds,
-  checkpointId
-);
 var BackwardCheckpointsView = getUseCheckpointView(
   (checkpointIds) => checkpointIds[0]
 );
@@ -441,9 +373,16 @@ var CurrentCheckpointView = getUseCheckpointView(
 var ForwardCheckpointsView = getUseCheckpointView(
   (checkpointIds) => checkpointIds[2]
 );
+var ValueView = ({ valueId, store, debugIds }) => wrap(
+  EMPTY_STRING + (useValue(valueId, store) ?? EMPTY_STRING),
+  void 0,
+  debugIds,
+  valueId
+);
 
 // dist/ui-react-inspector/index.js
 var getTypeOf2 = (thing) => typeof thing;
+var TINYBASE2 = "tinybase";
 var EMPTY_STRING2 = "";
 var DOT = ".";
 var STRING2 = getTypeOf2(EMPTY_STRING2);
@@ -453,8 +392,13 @@ var FUNCTION2 = getTypeOf2(getTypeOf2);
 var TYPE = "type";
 var DEFAULT = "default";
 var LISTENER2 = "Listener";
+var RESULT2 = "Result";
+var GET2 = "get";
+var SET2 = "set";
 var ADD2 = "add";
+var DEL = "del";
 var HAS2 = "Has";
+var _HAS2 = "has";
 var IDS2 = "Ids";
 var TABLE2 = "Table";
 var TABLES2 = TABLE2 + "s";
@@ -462,13 +406,17 @@ var TABLE_IDS2 = TABLE2 + IDS2;
 var ROW2 = "Row";
 var ROW_COUNT2 = ROW2 + "Count";
 var ROW_IDS2 = ROW2 + IDS2;
+var SORTED_ROW_IDS2 = "Sorted" + ROW2 + IDS2;
 var CELL2 = "Cell";
 var CELL_IDS2 = CELL2 + IDS2;
 var VALUE2 = "Value";
 var VALUES2 = VALUE2 + "s";
 var VALUE_IDS2 = VALUE2 + IDS2;
+var SLICE2 = "Slice";
+var REMOTE_ROW_ID2 = "Remote" + ROW2 + "Id";
 var CURRENT_TARGET = "currentTarget";
 var _VALUE = "value";
+var EXTRA = "extra";
 var UNDEFINED = "\uFFFC";
 var id = (key) => EMPTY_STRING2 + key;
 var strSplit = (str, separator = EMPTY_STRING2, limit) => str.split(separator, limit);
@@ -488,6 +436,7 @@ var isArray2 = (thing) => Array.isArray(thing);
 var slice = (arrayOrString, start, end) => arrayOrString.slice(start, end);
 var size2 = (arrayOrString) => arrayOrString.length;
 var test = (regex, subject) => regex.test(subject);
+var getUndefined2 = () => void 0;
 var errorNew = (message) => {
   throw new Error(message);
 };
@@ -507,6 +456,7 @@ var arrayJoin = (array, sep = EMPTY_STRING2) => array.join(sep);
 var arrayMap2 = (array, cb) => array.map(cb);
 var arrayIsEmpty = (array) => size2(array) == 0;
 var arrayReduce = (array, cb, initial) => array.reduce(cb, initial);
+var arrayFilter2 = (array, cb) => array.filter(cb);
 var arrayClear = (array, to) => array.splice(0, to);
 var arrayPush = (array, ...values) => array.push(...values);
 var arrayShift = (array) => array.shift();
@@ -523,6 +473,7 @@ var isObject2 = (obj) => !isUndefined2(obj) && ifNotUndefined2(
 var objIds2 = object2.keys;
 var objFreeze = object2.freeze;
 var objNew = (entries = []) => object2.fromEntries(entries);
+var objGet2 = (obj, id2) => ifNotUndefined2(obj, (obj2) => obj2[id2]);
 var objHas = (obj, id2) => id2 in obj;
 var objDel = (obj, id2) => {
   delete obj[id2];
@@ -533,6 +484,13 @@ var objToArray = (obj, cb) => arrayMap2(objEntries2(obj), ([id2, value]) => cb(v
 var objMap = (obj, cb) => objNew(objToArray(obj, (value, id2) => [id2, cb(value, id2)]));
 var objSize2 = (obj) => size2(objIds2(obj));
 var objIsEmpty = (obj) => isObject2(obj) && objSize2(obj) == 0;
+var objIsEqual2 = (obj1, obj2) => {
+  const entries1 = objEntries2(obj1);
+  return size2(entries1) === objSize2(obj2) && arrayEvery2(
+    entries1,
+    ([index, value1]) => isObject2(value1) ? isObject2(obj2[index]) ? objIsEqual2(obj2[index], value1) : false : obj2[index] === value1
+  );
+};
 var objValidate = (obj, validateChild, onInvalidObj, emptyIsValid = 0) => {
   if (isUndefined2(obj) || !isObject2(obj) || !emptyIsValid && objIsEmpty(obj) || objFrozen(obj)) {
     onInvalidObj?.();
@@ -959,7 +917,7 @@ var getCellOrValueType = (cellOrValue) => {
 };
 var setOrDelCell = (store, tableId, rowId, cellId, cell) => isUndefined2(cell) ? store.delCell(tableId, rowId, cellId, true) : store.setCell(tableId, rowId, cellId, cell);
 var setOrDelValue = (store, valueId, value) => isUndefined2(value) ? store.delValue(valueId) : store.setValue(valueId, value);
-var getTypeCase = (type, stringCase, numberCase, booleanCase) => type == STRING2 ? stringCase : type == NUMBER ? numberCase : booleanCase;
+var getTypeCase = (type, stringCase, numberCase, booleanCase) => type == STRING2 ? stringCase : type == NUMBER ? numberCase : type == BOOLEAN ? booleanCase : null;
 var defaultSorter = (sortKey1, sortKey2) => (sortKey1 ?? 0) < (sortKey2 ?? 0) ? -1 : 1;
 var pairNew = (value) => [value, value];
 var pairCollSize2 = (pair, func = collSize2) => func(pair[0]) + func(pair[1]);
@@ -2208,12 +2166,247 @@ var Nub = ({ s }) => {
     "data-position": position
   });
 };
-var EDITABLE = "editable";
-var LEFT_ARROW = "\u2190";
-var UP_ARROW = "\u2191";
-var RIGHT_ARROW = "\u2192";
-var DOWN_ARROW = "\u2193";
-var useDottedCellIds = (tableId, store) => arrayMap2(useTableCellIds(tableId, store), (cellId) => tableId + DOT + cellId);
+var TINYBASE_CONTEXT2 = TINYBASE2 + "_uirc";
+var Context2 = GLOBAL2[TINYBASE_CONTEXT2] ? (
+  /* istanbul ignore next */
+  GLOBAL2[TINYBASE_CONTEXT2]
+) : GLOBAL2[TINYBASE_CONTEXT2] = createContext2([]);
+var useThing2 = (id2, offset) => {
+  const contextValue = useContext2(Context2);
+  return isUndefined2(id2) ? contextValue[offset * 2] : isString2(id2) ? objGet2(contextValue[offset * 2 + 1], id2) : id2;
+};
+var useThingOrThingById2 = (thingOrThingId, offset) => {
+  const thing = useThing2(thingOrThingId, offset);
+  return isUndefined2(thingOrThingId) || isString2(thingOrThingId) ? thing : thingOrThingId;
+};
+var OFFSET_STORE2 = 0;
+var OFFSET_INDEXES2 = 2;
+var OFFSET_RELATIONSHIPS2 = 3;
+var OFFSET_QUERIES2 = 4;
+var EMPTY_ARRAY2 = [];
+var DEFAULTS2 = [{}, [], [EMPTY_ARRAY2, void 0, EMPTY_ARRAY2], void 0, false, 0];
+var IS_EQUALS2 = [
+  objIsEqual2,
+  arrayIsEqual2,
+  ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual2(backwardIds1, backwardIds2) && arrayIsEqual2(forwardIds1, forwardIds2)
+];
+var isEqual2 = (thing1, thing2) => thing1 === thing2;
+var addAndDelListener2 = (thing, listenable, ...args) => {
+  const listenerId = thing?.[ADD2 + listenable + LISTENER2]?.(...args);
+  return () => thing?.delListener?.(listenerId);
+};
+var useListenable2 = (listenable, thing, returnType, args = EMPTY_ARRAY2) => {
+  const lastResult = useRef2(DEFAULTS2[returnType]);
+  const getResult = useCallback2(
+    () => {
+      const nextResult = thing?.[(returnType == 4 ? _HAS2 : GET2) + listenable]?.(
+        ...args
+      ) ?? DEFAULTS2[returnType];
+      return !(IS_EQUALS2[returnType] ?? isEqual2)(nextResult, lastResult.current) ? lastResult.current = nextResult : lastResult.current;
+    },
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+    [thing, returnType, listenable, ...args]
+  );
+  const subscribe = useCallback2(
+    (listener) => addAndDelListener2(
+      thing,
+      (returnType == 4 ? HAS2 : EMPTY_STRING2) + listenable,
+      ...args,
+      listener
+    ),
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+    [thing, returnType, listenable, ...args]
+  );
+  return useSyncExternalStore2(subscribe, getResult, getResult);
+};
+var useSetCallback2 = (storeOrStoreId, settable, get, getDeps = EMPTY_ARRAY2, then = getUndefined2, thenDeps = EMPTY_ARRAY2, ...args) => {
+  const store = useStoreOrStoreById2(storeOrStoreId);
+  return useCallback2(
+    (parameter) => ifNotUndefined2(
+      store,
+      (store2) => ifNotUndefined2(
+        get(parameter, store2),
+        (thing) => then(
+          store2[SET2 + settable](
+            ...argsOrGetArgs2(args, store2, parameter),
+            thing
+          ),
+          thing
+        )
+      )
+    ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [store, settable, ...getDeps, ...thenDeps, ...nonFunctionDeps2(args)]
+  );
+};
+var argsOrGetArgs2 = (args, store, parameter) => arrayMap2(args, (arg) => isFunction2(arg) ? arg(parameter, store) : arg);
+var nonFunctionDeps2 = (args) => arrayFilter2(args, (arg) => !isFunction2(arg));
+var useDel = (storeOrStoreId, deletable, then = getUndefined2, thenDeps = EMPTY_ARRAY2, ...args) => {
+  const store = useStoreOrStoreById2(storeOrStoreId);
+  return useCallback2(
+    (parameter) => then(store?.[DEL + deletable](...argsOrGetArgs2(args, store, parameter))),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [store, deletable, ...thenDeps, ...nonFunctionDeps2(args)]
+  );
+};
+var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, storeOrStoreId) => useListenable2(
+  SORTED_ROW_IDS2,
+  useStoreOrStoreById2(storeOrStoreId),
+  1,
+  [tableId, cellId, descending, offset, limit]
+);
+var useStoreOrStoreById2 = (storeOrStoreId) => useThingOrThingById2(storeOrStoreId, OFFSET_STORE2);
+var useHasTables = (storeOrStoreId) => useListenable2(
+  TABLES2,
+  useStoreOrStoreById2(storeOrStoreId),
+  4,
+  []
+);
+var useTableCellIds2 = (tableId, storeOrStoreId) => useListenable2(
+  TABLE2 + CELL_IDS2,
+  useStoreOrStoreById2(storeOrStoreId),
+  1,
+  [tableId]
+);
+var useRowCount = (tableId, storeOrStoreId) => useListenable2(
+  ROW_COUNT2,
+  useStoreOrStoreById2(storeOrStoreId),
+  5,
+  [tableId]
+);
+var useRowIds = (tableId, storeOrStoreId) => useListenable2(ROW_IDS2, useStoreOrStoreById2(storeOrStoreId), 1, [
+  tableId
+]);
+var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset, limit, storeOrStoreId) => useSortedRowIdsImpl(
+  ...isObject2(tableIdOrArgs) ? [
+    tableIdOrArgs.tableId,
+    tableIdOrArgs.cellId,
+    tableIdOrArgs.descending ?? false,
+    tableIdOrArgs.offset ?? 0,
+    tableIdOrArgs.limit,
+    cellIdOrStoreOrStoreId
+  ] : [
+    tableIdOrArgs,
+    cellIdOrStoreOrStoreId,
+    descending,
+    offset,
+    limit,
+    storeOrStoreId
+  ]
+);
+var useCell2 = (tableId, rowId, cellId, storeOrStoreId) => useListenable2(
+  CELL2,
+  useStoreOrStoreById2(storeOrStoreId),
+  3,
+  [tableId, rowId, cellId]
+);
+var useHasValues = (storeOrStoreId) => useListenable2(
+  VALUES2,
+  useStoreOrStoreById2(storeOrStoreId),
+  4,
+  []
+);
+var useValueIds2 = (storeOrStoreId) => useListenable2(
+  VALUE_IDS2,
+  useStoreOrStoreById2(storeOrStoreId),
+  1
+  /* Array */
+);
+var useValue2 = (valueId, storeOrStoreId) => useListenable2(
+  VALUE2,
+  useStoreOrStoreById2(storeOrStoreId),
+  3,
+  [valueId]
+);
+var useSetTableCallback = (tableId, getTable, getTableDeps, storeOrStoreId, then, thenDeps) => useSetCallback2(
+  storeOrStoreId,
+  TABLE2,
+  getTable,
+  getTableDeps,
+  then,
+  thenDeps,
+  tableId
+);
+var useSetRowCallback = (tableId, rowId, getRow, getRowDeps, storeOrStoreId, then, thenDeps) => useSetCallback2(
+  storeOrStoreId,
+  ROW2,
+  getRow,
+  getRowDeps,
+  then,
+  thenDeps,
+  tableId,
+  rowId
+);
+var useSetCellCallback2 = (tableId, rowId, cellId, getCell, getCellDeps, storeOrStoreId, then, thenDeps) => useSetCallback2(
+  storeOrStoreId,
+  CELL2,
+  getCell,
+  getCellDeps,
+  then,
+  thenDeps,
+  tableId,
+  rowId,
+  cellId
+);
+var useSetValueCallback2 = (valueId, getValue, getValueDeps, storeOrStoreId, then, thenDeps) => useSetCallback2(
+  storeOrStoreId,
+  VALUE2,
+  getValue,
+  getValueDeps,
+  then,
+  thenDeps,
+  valueId
+);
+var useDelTablesCallback = (storeOrStoreId, then, thenDeps) => useDel(storeOrStoreId, TABLES2, then, thenDeps);
+var useDelTableCallback = (tableId, storeOrStoreId, then, thenDeps) => useDel(storeOrStoreId, TABLE2, then, thenDeps, tableId);
+var useDelRowCallback = (tableId, rowId, storeOrStoreId, then, thenDeps) => useDel(storeOrStoreId, ROW2, then, thenDeps, tableId, rowId);
+var useDelCellCallback = (tableId, rowId, cellId, forceDel, storeOrStoreId, then, thenDeps) => useDel(
+  storeOrStoreId,
+  CELL2,
+  then,
+  thenDeps,
+  tableId,
+  rowId,
+  cellId,
+  forceDel
+);
+var useDelValuesCallback = (storeOrStoreId, then, thenDeps) => useDel(storeOrStoreId, VALUES2, then, thenDeps);
+var useDelValueCallback = (valueId, storeOrStoreId, then, thenDeps) => useDel(storeOrStoreId, VALUE2, then, thenDeps, valueId);
+var useIndexesOrIndexesById2 = (indexesOrIndexesId) => useThingOrThingById2(indexesOrIndexesId, OFFSET_INDEXES2);
+var useSliceRowIds = (indexId, sliceId, indexesOrIndexesId) => useListenable2(
+  SLICE2 + ROW_IDS2,
+  useIndexesOrIndexesById2(indexesOrIndexesId),
+  1,
+  [indexId, sliceId]
+);
+var useRelationshipsOrRelationshipsById2 = (relationshipsOrRelationshipsId) => useThingOrThingById2(relationshipsOrRelationshipsId, OFFSET_RELATIONSHIPS2);
+var useRemoteRowId = (relationshipId, localRowId, relationshipsOrRelationshipsId) => useListenable2(
+  REMOTE_ROW_ID2,
+  useRelationshipsOrRelationshipsById2(relationshipsOrRelationshipsId),
+  3,
+  [relationshipId, localRowId]
+);
+var useQueriesOrQueriesById2 = (queriesOrQueriesId) => useThingOrThingById2(queriesOrQueriesId, OFFSET_QUERIES2);
+var useResultTableCellIds = (queryId, queriesOrQueriesId) => useListenable2(
+  RESULT2 + TABLE2 + CELL_IDS2,
+  useQueriesOrQueriesById2(queriesOrQueriesId),
+  1,
+  [queryId]
+);
+var useResultRowCount = (queryId, queriesOrQueriesId) => useListenable2(
+  RESULT2 + ROW_COUNT2,
+  useQueriesOrQueriesById2(queriesOrQueriesId),
+  5,
+  [queryId]
+);
+var useResultSortedRowIds = (queryId, cellId, descending, offset = 0, limit, queriesOrQueriesId) => useListenable2(
+  RESULT2 + SORTED_ROW_IDS2,
+  useQueriesOrQueriesById2(queriesOrQueriesId),
+  1,
+  [queryId, cellId, descending, offset, limit]
+);
+var useStoreCellComponentProps = (store, tableId) => useMemo2(() => ({ store, tableId }), [store, tableId]);
+var useQueriesCellComponentProps = (queries, queryId) => useMemo2(() => ({ queries, queryId }), [queries, queryId]);
 var useCallbackOrUndefined = (callback, deps, test2) => {
   const returnCallback = useCallback2(callback, deps);
   return test2 ? returnCallback : void 0;
@@ -2223,52 +2416,6 @@ var useParams = (...args) => useMemo2(
   // eslint-disable-next-line react-hooks/exhaustive-deps
   args
 );
-var useStoreCellComponentProps = (store, tableId) => useMemo2(() => ({ store, tableId }), [store, tableId]);
-var useQueriesCellComponentProps = (queries, queryId) => useMemo2(() => ({ queries, queryId }), [queries, queryId]);
-var useSortingAndPagination = (cellId, descending = false, sortOnClick, offset = 0, limit, total, paginator, onChange) => {
-  const [[currentCellId, currentDescending, currentOffset], setState] = useState2([cellId, descending, offset]);
-  const setStateAndChange = useCallback2(
-    (sortAndOffset) => {
-      setState(sortAndOffset);
-      onChange?.(sortAndOffset);
-    },
-    [onChange]
-  );
-  const handleSort = useCallbackOrUndefined(
-    (cellId2) => setStateAndChange([
-      cellId2,
-      cellId2 == currentCellId ? !currentDescending : false,
-      currentOffset
-    ]),
-    [setStateAndChange, currentCellId, currentDescending, currentOffset],
-    sortOnClick
-  );
-  const handleChangeOffset = useCallback2(
-    (offset2) => setStateAndChange([currentCellId, currentDescending, offset2]),
-    [setStateAndChange, currentCellId, currentDescending]
-  );
-  const PaginatorComponent = paginator === true ? SortedTablePaginator : paginator;
-  return [
-    [currentCellId, currentDescending, currentOffset],
-    handleSort,
-    useMemo2(
-      () => paginator === false ? null : /* @__PURE__ */ jsx2(PaginatorComponent, {
-        offset: currentOffset,
-        limit,
-        total,
-        onChange: handleChangeOffset
-      }),
-      [
-        paginator,
-        PaginatorComponent,
-        currentOffset,
-        limit,
-        total,
-        handleChangeOffset
-      ]
-    )
-  ];
-};
 var useCells = (defaultCellIds, customCells, defaultCellComponent) => useMemo2(() => {
   const cellIds = customCells ?? defaultCellIds;
   return objMap(
@@ -2279,77 +2426,29 @@ var useCells = (defaultCellIds, customCells, defaultCellComponent) => useMemo2((
     })
   );
 }, [customCells, defaultCellComponent, defaultCellIds]);
-var HtmlTable = ({
-  className,
-  headerRow,
-  idColumn,
-  params: [
-    cells,
-    cellComponentProps,
-    rowIds,
-    sortAndOffset,
-    handleSort,
-    paginatorComponent
-  ]
-}) => /* @__PURE__ */ jsxs("table", {
-  className,
-  children: [
-    paginatorComponent ? /* @__PURE__ */ jsx2("caption", { children: paginatorComponent }) : null,
-    headerRow === false ? null : /* @__PURE__ */ jsx2("thead", {
-      children: /* @__PURE__ */ jsxs("tr", {
-        children: [
-          idColumn === false ? null : /* @__PURE__ */ jsx2(HtmlHeaderCell, {
-            sort: sortAndOffset ?? [],
-            label: "Id",
-            onClick: handleSort
-          }),
-          objToArray(
-            cells,
-            ({ label }, cellId) => /* @__PURE__ */ jsx2(
-              HtmlHeaderCell,
-              {
-                cellId,
-                label,
-                sort: sortAndOffset ?? [],
-                onClick: handleSort
-              },
-              cellId
-            )
-          )
-        ]
-      })
-    }),
-    /* @__PURE__ */ jsx2("tbody", {
-      children: arrayMap2(
-        rowIds,
-        (rowId) => /* @__PURE__ */ jsxs(
-          "tr",
-          {
-            children: [
-              idColumn === false ? null : /* @__PURE__ */ jsx2("th", { children: rowId }),
-              objToArray(
-                cells,
-                ({ component: CellView2, getComponentProps }, cellId) => /* @__PURE__ */ jsx2(
-                  "td",
-                  {
-                    children: /* @__PURE__ */ jsx2(CellView2, {
-                      ...getProps2(getComponentProps, rowId, cellId),
-                      ...cellComponentProps,
-                      rowId,
-                      cellId
-                    })
-                  },
-                  cellId
-                )
-              )
-            ]
-          },
-          rowId
-        )
-      )
-    })
-  ]
-});
+var UP_ARROW = "\u2191";
+var DOWN_ARROW = "\u2193";
+var EDITABLE = "editable";
+var extraRowCells = (extraRowCells2 = [], extraRowCellProps, after = 0) => arrayMap2(
+  extraRowCells2,
+  ({ component: Component }, index) => /* @__PURE__ */ jsx2(
+    "td",
+    {
+      className: EXTRA,
+      children: /* @__PURE__ */ jsx2(Component, { ...extraRowCellProps })
+    },
+    extraKey(index, after)
+  )
+);
+var extraKey = (index, after) => (after ? ">" : "<") + index;
+var extraHeaders = (extraCells = [], after = 0) => arrayMap2(
+  extraCells,
+  ({ label }, index) => /* @__PURE__ */ jsx2(
+    "th",
+    { className: EXTRA, children: label },
+    extraKey(index, after)
+  )
+);
 var HtmlHeaderCell = ({
   cellId,
   sort: [sortCellId, sortDescending],
@@ -2367,50 +2466,82 @@ var HtmlHeaderCell = ({
     label
   ]
 });
-var RelationshipInHtmlRow = ({
-  localRowId,
+var HtmlTable = ({
+  className,
+  headerRow,
+  idColumn,
   params: [
-    idColumn,
     cells,
-    localTableId,
-    remoteTableId,
-    relationshipId,
-    relationships,
-    store
+    cellComponentProps,
+    rowIds,
+    extraCellsBefore,
+    extraCellsAfter,
+    sortAndOffset,
+    handleSort,
+    paginatorComponent
   ]
-}) => {
-  const remoteRowId = useRemoteRowId(relationshipId, localRowId, relationships);
-  return /* @__PURE__ */ jsxs("tr", {
-    children: [
-      idColumn === false ? null : /* @__PURE__ */ jsxs(Fragment, {
+}) => /* @__PURE__ */ jsxs("table", {
+  className,
+  children: [
+    paginatorComponent ? /* @__PURE__ */ jsx2("caption", { children: paginatorComponent }) : null,
+    headerRow === false ? null : /* @__PURE__ */ jsx2("thead", {
+      children: /* @__PURE__ */ jsxs("tr", {
         children: [
-          /* @__PURE__ */ jsx2("th", { children: localRowId }),
-          /* @__PURE__ */ jsx2("th", { children: remoteRowId })
+          extraHeaders(extraCellsBefore),
+          idColumn === false ? null : /* @__PURE__ */ jsx2(HtmlHeaderCell, {
+            sort: sortAndOffset ?? [],
+            label: "Id",
+            onClick: handleSort
+          }),
+          objToArray(
+            cells,
+            ({ label }, cellId) => /* @__PURE__ */ jsx2(
+              HtmlHeaderCell,
+              {
+                cellId,
+                label,
+                sort: sortAndOffset ?? [],
+                onClick: handleSort
+              },
+              cellId
+            )
+          ),
+          extraHeaders(extraCellsAfter, 1)
         ]
-      }),
-      objToArray(
-        cells,
-        ({ component: CellView2, getComponentProps }, compoundCellId) => {
-          const [tableId, cellId] = strSplit(compoundCellId, DOT, 2);
-          const rowId = tableId === localTableId ? localRowId : tableId === remoteTableId ? remoteRowId : null;
-          return isUndefined2(rowId) ? null : /* @__PURE__ */ jsx2(
-            "td",
-            {
-              children: /* @__PURE__ */ jsx2(CellView2, {
-                ...getProps2(getComponentProps, rowId, cellId),
-                store,
-                tableId,
-                rowId,
-                cellId
-              })
-            },
-            compoundCellId
-          );
-        }
-      )
-    ]
-  });
-};
+      })
+    }),
+    /* @__PURE__ */ jsx2("tbody", {
+      children: arrayMap2(rowIds, (rowId) => {
+        const rowProps = { ...cellComponentProps, rowId };
+        return /* @__PURE__ */ jsxs(
+          "tr",
+          {
+            children: [
+              extraRowCells(extraCellsBefore, rowProps),
+              idColumn === false ? null : /* @__PURE__ */ jsx2("th", { title: rowId, children: rowId }),
+              objToArray(
+                cells,
+                ({ component: CellView2, getComponentProps }, cellId) => /* @__PURE__ */ jsx2(
+                  "td",
+                  {
+                    children: /* @__PURE__ */ jsx2(CellView2, {
+                      ...getProps2(getComponentProps, rowId, cellId),
+                      ...rowProps,
+                      cellId
+                    })
+                  },
+                  cellId
+                )
+              ),
+              extraRowCells(extraCellsAfter, rowProps, 1)
+            ]
+          },
+          rowId
+        );
+      })
+    })
+  ]
+});
 var EditableThing = ({
   thing,
   onThingChange,
@@ -2459,169 +2590,152 @@ var EditableThing = ({
     booleanThing,
     thingType
   ]);
+  const widget = getTypeCase(
+    thingType,
+    /* @__PURE__ */ jsx2(
+      "input",
+      {
+        value: stringThing,
+        onChange: useCallback2(
+          (event) => handleThingChange(
+            String(event[CURRENT_TARGET][_VALUE]),
+            setStringThing
+          ),
+          [handleThingChange]
+        )
+      },
+      thingType
+    ),
+    /* @__PURE__ */ jsx2(
+      "input",
+      {
+        type: "number",
+        value: numberThing,
+        onChange: useCallback2(
+          (event) => handleThingChange(
+            Number(event[CURRENT_TARGET][_VALUE] || 0),
+            setNumberThing
+          ),
+          [handleThingChange]
+        )
+      },
+      thingType
+    ),
+    /* @__PURE__ */ jsx2(
+      "input",
+      {
+        type: "checkbox",
+        checked: booleanThing,
+        onChange: useCallback2(
+          (event) => handleThingChange(
+            Boolean(event[CURRENT_TARGET].checked),
+            setBooleanThing
+          ),
+          [handleThingChange]
+        )
+      },
+      thingType
+    )
+  );
   return /* @__PURE__ */ jsxs("div", {
     className,
     children: [
-      showType ? /* @__PURE__ */ jsx2("button", {
+      showType && widget ? /* @__PURE__ */ jsx2("button", {
+        title: thingType,
         className: thingType,
         onClick: handleTypeChange,
         children: thingType
       }) : null,
-      getTypeCase(
-        thingType,
-        /* @__PURE__ */ jsx2(
-          "input",
-          {
-            value: stringThing,
-            onChange: useCallback2(
-              (event) => handleThingChange(
-                String(event[CURRENT_TARGET][_VALUE]),
-                setStringThing
-              ),
-              [handleThingChange]
-            )
-          },
-          thingType
-        ),
-        /* @__PURE__ */ jsx2(
-          "input",
-          {
-            type: "number",
-            value: numberThing,
-            onChange: useCallback2(
-              (event) => handleThingChange(
-                Number(event[CURRENT_TARGET][_VALUE] || 0),
-                setNumberThing
-              ),
-              [handleThingChange]
-            )
-          },
-          thingType
-        ),
-        /* @__PURE__ */ jsx2(
-          "input",
-          {
-            type: "checkbox",
-            checked: booleanThing,
-            onChange: useCallback2(
-              (event) => handleThingChange(
-                Boolean(event[CURRENT_TARGET].checked),
-                setBooleanThing
-              ),
-              [handleThingChange]
-            )
-          },
-          thingType
-        )
-      )
+      widget
     ]
   });
 };
-var SortedTableInHtmlTable = ({
+var EditableCellView = ({
   tableId,
+  rowId,
   cellId,
-  descending,
-  offset,
-  limit,
   store,
-  editable,
-  sortOnClick,
-  paginator = false,
-  onChange,
-  customCells,
-  ...props
-}) => {
-  const [sortAndOffset, handleSort, paginatorComponent] = useSortingAndPagination(
+  className,
+  showType
+}) => /* @__PURE__ */ jsx2(EditableThing, {
+  thing: useCell2(tableId, rowId, cellId, store),
+  onThingChange: useSetCellCallback2(
+    tableId,
+    rowId,
     cellId,
-    descending,
-    sortOnClick,
-    offset,
-    limit,
-    useRowCount(tableId, store),
-    paginator,
-    onChange
-  );
-  return /* @__PURE__ */ jsx2(HtmlTable, {
-    ...props,
-    params: useParams(
-      useCells(
-        useTableCellIds(tableId, store),
-        customCells,
-        editable ? EditableCellView : CellView
-      ),
-      useStoreCellComponentProps(store, tableId),
-      useSortedRowIds(tableId, ...sortAndOffset, limit, store),
-      sortAndOffset,
-      handleSort,
-      paginatorComponent
-    )
-  });
-};
-var ValuesInHtmlTable = ({
-  store,
-  editable = false,
-  valueComponent: Value = editable ? EditableValueView : ValueView,
-  getValueComponentProps,
-  className,
-  headerRow,
-  idColumn
-}) => /* @__PURE__ */ jsxs("table", {
-  className,
-  children: [
-    headerRow === false ? null : /* @__PURE__ */ jsx2("thead", {
-      children: /* @__PURE__ */ jsxs("tr", {
-        children: [
-          idColumn === false ? null : /* @__PURE__ */ jsx2("th", { children: "Id" }),
-          /* @__PURE__ */ jsx2("th", { children: VALUE2 })
-        ]
-      })
-    }),
-    /* @__PURE__ */ jsx2("tbody", {
-      children: arrayMap2(
-        useValueIds(store),
-        (valueId) => /* @__PURE__ */ jsxs(
-          "tr",
-          {
-            children: [
-              idColumn === false ? null : /* @__PURE__ */ jsx2("th", { children: valueId }),
-              /* @__PURE__ */ jsx2("td", {
-                children: /* @__PURE__ */ jsx2(Value, {
-                  ...getProps2(getValueComponentProps, valueId),
-                  valueId,
-                  store
-                })
-              })
-            ]
-          },
-          valueId
-        )
-      )
-    })
-  ]
+    (cell) => cell,
+    [],
+    store
+  ),
+  className: className ?? EDITABLE + CELL2,
+  showType,
+  hasSchema: useStoreOrStoreById2(store)?.hasTablesSchema
 });
-var SliceInHtmlTable = ({
-  indexId,
-  sliceId,
-  indexes,
-  editable,
-  customCells,
-  ...props
+var EditableValueView = ({ valueId, store, className, showType }) => /* @__PURE__ */ jsx2(EditableThing, {
+  thing: useValue2(valueId, store),
+  onThingChange: useSetValueCallback2(valueId, (value) => value, [], store),
+  className: className ?? EDITABLE + VALUE2,
+  showType,
+  hasSchema: useStoreOrStoreById2(store)?.hasValuesSchema
+});
+var useDottedCellIds = (tableId, store) => arrayMap2(useTableCellIds2(tableId, store), (cellId) => tableId + DOT + cellId);
+var RelationshipInHtmlRow = ({
+  localRowId,
+  params: [
+    idColumn,
+    cells,
+    localTableId,
+    remoteTableId,
+    relationshipId,
+    relationships,
+    store,
+    extraCellsBefore,
+    extraCellsAfter
+  ]
 }) => {
-  const [resolvedIndexes, store, tableId] = getIndexStoreTableId(
-    useIndexesOrIndexesById(indexes),
-    indexId
-  );
-  return /* @__PURE__ */ jsx2(HtmlTable, {
-    ...props,
-    params: useParams(
-      useCells(
-        useTableCellIds(tableId, store),
-        customCells,
-        editable ? EditableCellView : CellView
+  const remoteRowId = useRemoteRowId(relationshipId, localRowId, relationships);
+  const rowProps = {
+    tableId: localTableId ?? "",
+    rowId: localRowId,
+    store
+  };
+  return /* @__PURE__ */ jsxs("tr", {
+    children: [
+      extraRowCells(extraCellsBefore, rowProps),
+      idColumn === false ? null : /* @__PURE__ */ jsxs(Fragment, {
+        children: [
+          /* @__PURE__ */ jsx2("th", {
+            title: localRowId,
+            children: localRowId
+          }),
+          /* @__PURE__ */ jsx2("th", {
+            title: remoteRowId,
+            children: remoteRowId
+          })
+        ]
+      }),
+      objToArray(
+        cells,
+        ({ component: CellView2, getComponentProps }, compoundCellId) => {
+          const [tableId, cellId] = strSplit(compoundCellId, DOT, 2);
+          const rowId = tableId === localTableId ? localRowId : tableId === remoteTableId ? remoteRowId : null;
+          return isUndefined2(rowId) ? null : /* @__PURE__ */ jsx2(
+            "td",
+            {
+              children: /* @__PURE__ */ jsx2(CellView2, {
+                ...getProps2(getComponentProps, rowId, cellId),
+                store,
+                tableId,
+                rowId,
+                cellId
+              })
+            },
+            compoundCellId
+          );
+        }
       ),
-      useStoreCellComponentProps(store, tableId),
-      useSliceRowIds(indexId, sliceId, resolvedIndexes)
-    )
+      extraRowCells(extraCellsAfter, rowProps, 1)
+    ]
   });
 };
 var RelationshipInHtmlTable = ({
@@ -2629,12 +2743,14 @@ var RelationshipInHtmlTable = ({
   relationships,
   editable,
   customCells,
+  extraCellsBefore,
+  extraCellsAfter,
   className,
   headerRow,
   idColumn = true
 }) => {
   const [resolvedRelationships, store, localTableId, remoteTableId] = getRelationshipsStoreTableIds(
-    useRelationshipsOrRelationshipsById(relationships),
+    useRelationshipsOrRelationshipsById2(relationships),
     relationshipId
   );
   const cells = useCells(
@@ -2652,7 +2768,9 @@ var RelationshipInHtmlTable = ({
     remoteTableId,
     relationshipId,
     resolvedRelationships,
-    store
+    store,
+    extraCellsBefore,
+    extraCellsAfter
   );
   return /* @__PURE__ */ jsxs("table", {
     className,
@@ -2660,6 +2778,7 @@ var RelationshipInHtmlTable = ({
       headerRow === false ? null : /* @__PURE__ */ jsx2("thead", {
         children: /* @__PURE__ */ jsxs("tr", {
           children: [
+            extraHeaders(extraCellsBefore),
             idColumn === false ? null : /* @__PURE__ */ jsxs(Fragment, {
               children: [
                 /* @__PURE__ */ jsxs("th", {
@@ -2673,7 +2792,8 @@ var RelationshipInHtmlTable = ({
             objToArray(
               cells,
               ({ label }, cellId) => /* @__PURE__ */ jsx2("th", { children: label }, cellId)
-            )
+            ),
+            extraHeaders(extraCellsAfter, 1)
           ]
         })
       }),
@@ -2693,73 +2813,52 @@ var RelationshipInHtmlTable = ({
     ]
   });
 };
-var ResultSortedTableInHtmlTable = ({
-  queryId,
-  cellId,
-  descending,
-  offset,
-  limit,
-  queries,
-  sortOnClick,
-  paginator = false,
-  customCells,
-  onChange,
-  ...props
-}) => {
-  const [sortAndOffset, handleSort, paginatorComponent] = useSortingAndPagination(
-    cellId,
-    descending,
-    sortOnClick,
-    offset,
-    limit,
-    useResultRowCount(queryId, queries),
-    paginator,
-    onChange
+var LEFT_ARROW = "\u2190";
+var RIGHT_ARROW = "\u2192";
+var useSortingAndPagination = (cellId, descending = false, sortOnClick, offset = 0, limit, total, paginator, onChange) => {
+  const [[currentCellId, currentDescending, currentOffset], setState] = useState2([cellId, descending, offset]);
+  const setStateAndChange = useCallback2(
+    (sortAndOffset) => {
+      setState(sortAndOffset);
+      onChange?.(sortAndOffset);
+    },
+    [onChange]
   );
-  return /* @__PURE__ */ jsx2(HtmlTable, {
-    ...props,
-    params: useParams(
-      useCells(
-        useResultTableCellIds(queryId, queries),
-        customCells,
-        ResultCellView
-      ),
-      useQueriesCellComponentProps(queries, queryId),
-      useResultSortedRowIds(queryId, ...sortAndOffset, limit, queries),
-      sortAndOffset,
-      handleSort,
-      paginatorComponent
+  const handleSort = useCallbackOrUndefined(
+    (cellId2) => setStateAndChange([
+      cellId2,
+      cellId2 == currentCellId ? !currentDescending : false,
+      currentOffset
+    ]),
+    [setStateAndChange, currentCellId, currentDescending, currentOffset],
+    sortOnClick
+  );
+  const handleChangeOffset = useCallback2(
+    (offset2) => setStateAndChange([currentCellId, currentDescending, offset2]),
+    [setStateAndChange, currentCellId, currentDescending]
+  );
+  const PaginatorComponent = paginator === true ? SortedTablePaginator : paginator;
+  return [
+    [currentCellId, currentDescending, currentOffset],
+    handleSort,
+    useMemo2(
+      () => paginator === false ? null : /* @__PURE__ */ jsx2(PaginatorComponent, {
+        offset: currentOffset,
+        limit,
+        total,
+        onChange: handleChangeOffset
+      }),
+      [
+        paginator,
+        PaginatorComponent,
+        currentOffset,
+        limit,
+        total,
+        handleChangeOffset
+      ]
     )
-  });
+  ];
 };
-var EditableCellView = ({
-  tableId,
-  rowId,
-  cellId,
-  store,
-  className,
-  showType
-}) => /* @__PURE__ */ jsx2(EditableThing, {
-  thing: useCell(tableId, rowId, cellId, store),
-  onThingChange: useSetCellCallback(
-    tableId,
-    rowId,
-    cellId,
-    (cell) => cell,
-    [],
-    store
-  ),
-  className: className ?? EDITABLE + CELL2,
-  showType,
-  hasSchema: useStoreOrStoreById(store)?.hasTablesSchema
-});
-var EditableValueView = ({ valueId, store, className, showType }) => /* @__PURE__ */ jsx2(EditableThing, {
-  thing: useValue(valueId, store),
-  onThingChange: useSetValueCallback(valueId, (value) => value, [], store),
-  className: className ?? EDITABLE + VALUE2,
-  showType,
-  hasSchema: useStoreOrStoreById(store)?.hasValuesSchema
-});
 var SortedTablePaginator = ({
   onChange,
   total,
@@ -2810,15 +2909,185 @@ var SortedTablePaginator = ({
     ]
   });
 };
-var Details = ({
-  uniqueId,
-  summary,
-  editable,
-  handleEditable,
-  children,
-  s
+var ResultSortedTableInHtmlTable = ({
+  queryId,
+  cellId,
+  descending,
+  offset,
+  limit,
+  queries,
+  sortOnClick,
+  paginator = false,
+  customCells,
+  extraCellsBefore,
+  extraCellsAfter,
+  onChange,
+  ...props
 }) => {
-  const open = !!useCell(STATE_TABLE, uniqueId, OPEN_CELL, s);
+  const [sortAndOffset, handleSort, paginatorComponent] = useSortingAndPagination(
+    cellId,
+    descending,
+    sortOnClick,
+    offset,
+    limit,
+    useResultRowCount(queryId, queries),
+    paginator,
+    onChange
+  );
+  return /* @__PURE__ */ jsx2(HtmlTable, {
+    ...props,
+    params: useParams(
+      useCells(
+        useResultTableCellIds(queryId, queries),
+        customCells,
+        ResultCellView
+      ),
+      useQueriesCellComponentProps(queries, queryId),
+      useResultSortedRowIds(queryId, ...sortAndOffset, limit, queries),
+      extraCellsBefore,
+      extraCellsAfter,
+      sortAndOffset,
+      handleSort,
+      paginatorComponent
+    )
+  });
+};
+var SliceInHtmlTable = ({
+  indexId,
+  sliceId,
+  indexes,
+  editable,
+  customCells,
+  extraCellsBefore,
+  extraCellsAfter,
+  ...props
+}) => {
+  const [resolvedIndexes, store, tableId] = getIndexStoreTableId(
+    useIndexesOrIndexesById2(indexes),
+    indexId
+  );
+  return /* @__PURE__ */ jsx2(HtmlTable, {
+    ...props,
+    params: useParams(
+      useCells(
+        useTableCellIds2(tableId, store),
+        customCells,
+        editable ? EditableCellView : CellView
+      ),
+      useStoreCellComponentProps(store, tableId),
+      useSliceRowIds(indexId, sliceId, resolvedIndexes),
+      extraCellsBefore,
+      extraCellsAfter
+    )
+  });
+};
+var SortedTableInHtmlTable = ({
+  tableId,
+  cellId,
+  descending,
+  offset,
+  limit,
+  store,
+  editable,
+  sortOnClick,
+  paginator = false,
+  onChange,
+  customCells,
+  extraCellsBefore,
+  extraCellsAfter,
+  ...props
+}) => {
+  const [sortAndOffset, handleSort, paginatorComponent] = useSortingAndPagination(
+    cellId,
+    descending,
+    sortOnClick,
+    offset,
+    limit,
+    useRowCount(tableId, store),
+    paginator,
+    onChange
+  );
+  return /* @__PURE__ */ jsx2(HtmlTable, {
+    ...props,
+    params: useParams(
+      useCells(
+        useTableCellIds2(tableId, store),
+        customCells,
+        editable ? EditableCellView : CellView
+      ),
+      useStoreCellComponentProps(store, tableId),
+      useSortedRowIds(tableId, ...sortAndOffset, limit, store),
+      extraCellsBefore,
+      extraCellsAfter,
+      sortAndOffset,
+      handleSort,
+      paginatorComponent
+    )
+  });
+};
+var extraValueCells = (extraValueCells2 = [], extraValueCellProps, after = 0) => arrayMap2(
+  extraValueCells2,
+  ({ component: Component }, index) => /* @__PURE__ */ jsx2(
+    "td",
+    {
+      className: EXTRA,
+      children: /* @__PURE__ */ jsx2(Component, { ...extraValueCellProps })
+    },
+    extraKey(index, after)
+  )
+);
+var ValuesInHtmlTable = ({
+  store,
+  editable = false,
+  valueComponent: Value = editable ? EditableValueView : ValueView,
+  getValueComponentProps,
+  extraCellsBefore,
+  extraCellsAfter,
+  className,
+  headerRow,
+  idColumn
+}) => /* @__PURE__ */ jsxs("table", {
+  className,
+  children: [
+    headerRow === false ? null : /* @__PURE__ */ jsx2("thead", {
+      children: /* @__PURE__ */ jsxs("tr", {
+        children: [
+          extraHeaders(extraCellsBefore),
+          idColumn === false ? null : /* @__PURE__ */ jsx2("th", { children: "Id" }),
+          /* @__PURE__ */ jsx2("th", { children: VALUE2 }),
+          extraHeaders(extraCellsAfter, 1)
+        ]
+      })
+    }),
+    /* @__PURE__ */ jsx2("tbody", {
+      children: arrayMap2(useValueIds2(store), (valueId) => {
+        const valueProps = { valueId, store };
+        return /* @__PURE__ */ jsxs(
+          "tr",
+          {
+            children: [
+              extraValueCells(extraCellsBefore, valueProps),
+              idColumn === false ? null : /* @__PURE__ */ jsx2("th", {
+                title: valueId,
+                children: valueId
+              }),
+              /* @__PURE__ */ jsx2("td", {
+                children: /* @__PURE__ */ jsx2(Value, {
+                  ...getProps2(getValueComponentProps, valueId),
+                  ...valueProps
+                })
+              }),
+              extraValueCells(extraCellsAfter, valueProps, 1)
+            ]
+          },
+          valueId
+        );
+      })
+    })
+  ]
+});
+var Details = ({ uniqueId, title, editable, handleEditable, children, s }) => {
+  const open2 = !!useCell(STATE_TABLE, uniqueId, OPEN_CELL, s);
   const handleToggle = useSetCellCallback(
     STATE_TABLE,
     uniqueId,
@@ -2828,25 +3097,26 @@ var Details = ({
     s
   );
   return /* @__PURE__ */ jsxs("details", {
-    open,
+    open: open2,
     onToggle: handleToggle,
     children: [
       /* @__PURE__ */ jsxs("summary", {
         children: [
-          summary,
+          /* @__PURE__ */ jsx2("span", { children: title }),
           handleEditable ? /* @__PURE__ */ jsx2("img", {
             onClick: handleEditable,
-            className: editable ? "done" : "edit"
+            className: editable ? "done" : "edit",
+            title: editable ? "Done editing" : "Edit"
           }) : null
         ]
       }),
-      children
+      /* @__PURE__ */ jsx2("div", { children })
     ]
   });
 };
 var IndexView = ({ indexes, indexesId, indexId, s }) => /* @__PURE__ */ jsx2(Details, {
   uniqueId: getUniqueId("i", indexesId, indexId),
-  summary: "Index: " + indexId,
+  title: "Index: " + indexId,
   s,
   children: arrayMap2(
     useSliceIds(indexId, indexes),
@@ -2868,7 +3138,7 @@ var SliceView = ({ indexes, indexesId, indexId, sliceId, s }) => {
   const [editable, handleEditable] = useEditable(uniqueId, s);
   return /* @__PURE__ */ jsx2(Details, {
     uniqueId,
-    summary: "Slice: " + sliceId,
+    title: "Slice: " + sliceId,
     editable,
     handleEditable,
     s,
@@ -2885,7 +3155,7 @@ var IndexesView = ({ indexesId, s }) => {
   const indexIds = useIndexIds(indexes);
   return isUndefined2(indexes) ? null : /* @__PURE__ */ jsx2(Details, {
     uniqueId: getUniqueId("i", indexesId),
-    summary: "Indexes: " + (indexesId ?? DEFAULT),
+    title: "Indexes: " + (indexesId ?? DEFAULT),
     s,
     children: arrayIsEmpty(indexIds) ? "No indexes defined" : sortedIdsMap(
       indexIds,
@@ -2904,7 +3174,7 @@ var IndexesView = ({ indexesId, s }) => {
 };
 var MetricRow = ({ metrics, metricId }) => /* @__PURE__ */ jsxs("tr", {
   children: [
-    /* @__PURE__ */ jsx2("th", { children: metricId }),
+    /* @__PURE__ */ jsx2("th", { title: metricId, children: metricId }),
     /* @__PURE__ */ jsx2("td", { children: metrics?.getTableId(metricId) }),
     /* @__PURE__ */ jsx2("td", { children: useMetric(metricId, metrics) })
   ]
@@ -2914,7 +3184,7 @@ var MetricsView = ({ metricsId, s }) => {
   const metricIds = useMetricIds(metrics);
   return isUndefined2(metrics) ? null : /* @__PURE__ */ jsx2(Details, {
     uniqueId: getUniqueId("m", metricsId),
-    summary: "Metrics: " + (metricsId ?? DEFAULT),
+    title: "Metrics: " + (metricsId ?? DEFAULT),
     s,
     children: arrayIsEmpty(metricIds) ? "No metrics defined" : /* @__PURE__ */ jsxs("table", {
       children: [
@@ -2954,7 +3224,7 @@ var QueryView = ({ queries, queriesId, queryId, s }) => {
   );
   return /* @__PURE__ */ jsx2(Details, {
     uniqueId,
-    summary: "Query: " + queryId,
+    title: "Query: " + queryId,
     s,
     children: /* @__PURE__ */ jsx2(ResultSortedTableInHtmlTable, {
       queryId,
@@ -2974,7 +3244,7 @@ var QueriesView = ({ queriesId, s }) => {
   const queryIds = useQueryIds(queries);
   return isUndefined2(queries) ? null : /* @__PURE__ */ jsx2(Details, {
     uniqueId: getUniqueId("q", queriesId),
-    summary: "Queries: " + (queriesId ?? DEFAULT),
+    title: "Queries: " + (queriesId ?? DEFAULT),
     s,
     children: arrayIsEmpty(queryIds) ? "No queries defined" : sortedIdsMap(
       queryIds,
@@ -3001,7 +3271,7 @@ var RelationshipView = ({
   const [editable, handleEditable] = useEditable(uniqueId, s);
   return /* @__PURE__ */ jsx2(Details, {
     uniqueId,
-    summary: "Relationship: " + relationshipId,
+    title: "Relationship: " + relationshipId,
     editable,
     handleEditable,
     s,
@@ -3017,7 +3287,7 @@ var RelationshipsView = ({ relationshipsId, s }) => {
   const relationshipIds = useRelationshipIds(relationships);
   return isUndefined2(relationships) ? null : /* @__PURE__ */ jsx2(Details, {
     uniqueId: getUniqueId("r", relationshipsId),
-    summary: "Relationships: " + (relationshipsId ?? DEFAULT),
+    title: "Relationships: " + (relationshipsId ?? DEFAULT),
     s,
     children: arrayIsEmpty(relationshipIds) ? "No relationships defined" : sortedIdsMap(
       relationshipIds,
@@ -3034,6 +3304,290 @@ var RelationshipsView = ({ relationshipsId, s }) => {
     )
   });
 };
+var getNewIdFromSuggestedId = (suggestedId, has) => {
+  let newId;
+  let suffix = 0;
+  while (has(
+    newId = suggestedId + (suffix > 0 ? " (copy" + (suffix > 1 ? " " + suffix : "") + ")" : "")
+  )) {
+    suffix++;
+  }
+  return newId;
+};
+var ConfirmableActions = ({ actions, ...props }) => {
+  const [confirming, setConfirming] = useState2();
+  const handleDone = useCallback2(() => setConfirming(null), []);
+  useEffect2(() => {
+    if (confirming != null) {
+      const handleKeyDown = (e) => {
+        if (confirming != null && e.key === "Escape") {
+          e.preventDefault();
+          handleDone();
+        }
+      };
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }
+  }, [confirming, handleDone]);
+  if (confirming != null) {
+    const [, , Component] = actions[confirming];
+    return /* @__PURE__ */ jsxs(Fragment, {
+      children: [
+        /* @__PURE__ */ jsx2(Component, { onDone: handleDone, ...props }),
+        /* @__PURE__ */ jsx2("img", {
+          onClick: handleDone,
+          title: "Cancel",
+          className: "cancel"
+        })
+      ]
+    });
+  } else {
+    return actions.map(
+      ([icon, title], index) => /* @__PURE__ */ jsx2(
+        "img",
+        {
+          title,
+          className: icon,
+          onClick: () => setConfirming(index)
+        },
+        index
+      )
+    );
+  }
+};
+var NewId = ({ onDone, suggestedId, has, set, prompt = "New Id" }) => {
+  const [newId, setNewId] = useState2(suggestedId);
+  const [newIdOk, setNewIdOk] = useState2(true);
+  const [previousSuggestedId, setPreviousSuggestedNewId] = useState2(suggestedId);
+  const handleNewIdChange = (e) => {
+    setNewId(e.target.value);
+    setNewIdOk(!has(e.target.value));
+  };
+  const handleClick = useCallback2(() => {
+    if (has(newId)) {
+      setNewIdOk(false);
+    } else {
+      set(newId);
+      onDone();
+    }
+  }, [onDone, setNewIdOk, has, set, newId]);
+  const handleKeyDown = useCallback2(
+    (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleClick();
+      }
+    },
+    [handleClick]
+  );
+  if (suggestedId != previousSuggestedId) {
+    setNewId(suggestedId);
+    setPreviousSuggestedNewId(suggestedId);
+  }
+  return /* @__PURE__ */ jsxs(Fragment, {
+    children: [
+      prompt + ": ",
+      /* @__PURE__ */ jsx2("input", {
+        type: "text",
+        value: newId,
+        onChange: handleNewIdChange,
+        onKeyDown: handleKeyDown,
+        autoFocus: true
+      }),
+      " ",
+      /* @__PURE__ */ jsx2("img", {
+        onClick: handleClick,
+        title: newIdOk ? "Confirm" : "Id already exists",
+        className: newIdOk ? "ok" : "okDis"
+      })
+    ]
+  });
+};
+var Delete = ({ onClick, prompt = "Delete" }) => {
+  const handleKeyDown = useCallback2(
+    (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        onClick();
+      }
+    },
+    [onClick]
+  );
+  useEffect2(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
+  return /* @__PURE__ */ jsxs(Fragment, {
+    children: [
+      prompt,
+      "? ",
+      /* @__PURE__ */ jsx2("img", { onClick, title: "Confirm", className: "ok" })
+    ]
+  });
+};
+var Actions = ({ left, right }) => /* @__PURE__ */ jsxs("div", {
+  className: "actions",
+  children: [
+    /* @__PURE__ */ jsx2("div", { children: left }),
+    /* @__PURE__ */ jsx2("div", { children: right })
+  ]
+});
+var useHasTableCallback = (storeOrStoreId) => {
+  const store = useStoreOrStoreById2(storeOrStoreId);
+  return useCallback2((tableId) => store?.hasTable(tableId) ?? false, [store]);
+};
+var AddTable = ({ onDone, store }) => {
+  const has = useHasTableCallback(store);
+  return /* @__PURE__ */ jsx2(NewId, {
+    onDone,
+    suggestedId: getNewIdFromSuggestedId("table", has),
+    has,
+    set: useSetTableCallback(
+      (newId) => newId,
+      () => ({ row: { cell: "" } }),
+      [],
+      store
+    ),
+    prompt: "Add table"
+  });
+};
+var DeleteTables = ({ onDone, store }) => /* @__PURE__ */ jsx2(Delete, {
+  onClick: useDelTablesCallback(store, onDone),
+  prompt: "Delete all tables"
+});
+var TablesActions = ({ store }) => /* @__PURE__ */ jsx2(Actions, {
+  left: /* @__PURE__ */ jsx2(ConfirmableActions, {
+    actions: [["add", "Add table", AddTable]],
+    store
+  }),
+  right: useHasTables(store) ? /* @__PURE__ */ jsx2(ConfirmableActions, {
+    actions: [["delete", "Delete all tables", DeleteTables]],
+    store
+  }) : null
+});
+var AddRow = ({ onDone, tableId, store }) => {
+  const has = useHasRowCallback(store, tableId);
+  return /* @__PURE__ */ jsx2(NewId, {
+    onDone,
+    suggestedId: getNewIdFromSuggestedId("row", has),
+    has,
+    set: useSetRowCallback(
+      tableId,
+      (newId) => newId,
+      (_, store2) => objNew(
+        arrayMap2(store2.getTableCellIds(tableId), (cellId) => [cellId, ""])
+      )
+    ),
+    prompt: "Add row"
+  });
+};
+var CloneTable = ({ onDone, tableId, store: storeOrStoreId }) => {
+  const store = useStoreOrStoreById2(storeOrStoreId);
+  const has = useHasTableCallback(store);
+  return /* @__PURE__ */ jsx2(NewId, {
+    onDone,
+    suggestedId: getNewIdFromSuggestedId(tableId, has),
+    has,
+    set: useSetTableCallback(
+      (tableId2) => tableId2,
+      (_, store2) => store2.getTable(tableId)
+    ),
+    prompt: "Clone table to"
+  });
+};
+var DeleteTable = ({ onDone, tableId, store }) => /* @__PURE__ */ jsx2(Delete, {
+  onClick: useDelTableCallback(tableId, store, onDone),
+  prompt: "Delete table"
+});
+var TableActions1 = ({ tableId, store }) => /* @__PURE__ */ jsx2(ConfirmableActions, {
+  actions: [["add", "Add row", AddRow]],
+  store,
+  tableId
+});
+var TableActions2 = ({ tableId, store }) => /* @__PURE__ */ jsx2(ConfirmableActions, {
+  actions: [
+    ["clone", "Clone table", CloneTable],
+    ["delete", "Delete table", DeleteTable]
+  ],
+  store,
+  tableId
+});
+var useHasRowCallback = (storeOrStoreId, tableId) => {
+  const store = useStoreOrStoreById2(storeOrStoreId);
+  return useCallback2(
+    (rowId) => store?.hasRow(tableId, rowId) ?? false,
+    [store, tableId]
+  );
+};
+var AddCell = ({ onDone, tableId, rowId, store: storeOrStoreId }) => {
+  const store = useStoreOrStoreById2(storeOrStoreId);
+  const has = useCallback2(
+    (cellId) => store.hasCell(tableId, rowId, cellId),
+    [store, tableId, rowId]
+  );
+  return /* @__PURE__ */ jsx2(NewId, {
+    onDone,
+    suggestedId: getNewIdFromSuggestedId("cell", has),
+    has,
+    set: useSetCellCallback2(
+      tableId,
+      rowId,
+      (newId) => newId,
+      () => "",
+      [],
+      store
+    ),
+    prompt: "Add cell"
+  });
+};
+var CloneRow = ({ onDone, tableId, rowId, store: storeOrStoreId }) => {
+  const store = useStoreOrStoreById2(storeOrStoreId);
+  const has = useHasRowCallback(store, tableId);
+  return /* @__PURE__ */ jsx2(NewId, {
+    onDone,
+    suggestedId: getNewIdFromSuggestedId(rowId, has),
+    has,
+    set: useSetRowCallback(
+      tableId,
+      (newId) => newId,
+      (_, store2) => store2.getRow(tableId, rowId),
+      [rowId]
+    ),
+    prompt: "Clone row to"
+  });
+};
+var DeleteRow = ({ onDone, tableId, rowId, store }) => /* @__PURE__ */ jsx2(Delete, {
+  onClick: useDelRowCallback(tableId, rowId, store, onDone),
+  prompt: "Delete row"
+});
+var RowActions = ({ tableId, rowId, store }) => /* @__PURE__ */ jsx2(ConfirmableActions, {
+  actions: [
+    ["add", "Add cell", AddCell],
+    ["clone", "Clone row", CloneRow],
+    ["delete", "Delete row", DeleteRow]
+  ],
+  store,
+  tableId,
+  rowId
+});
+var CellDelete = ({ onDone, tableId, rowId, cellId, store }) => /* @__PURE__ */ jsx2(Delete, {
+  onClick: useDelCellCallback(tableId, rowId, cellId, true, store, onDone),
+  prompt: "Delete cell"
+});
+var CellActions = ({ tableId, rowId, cellId, store }) => /* @__PURE__ */ jsx2(ConfirmableActions, {
+  actions: [["delete", "Delete cell", CellDelete]],
+  store,
+  tableId,
+  rowId,
+  cellId
+});
+var rowActions = [{ label: "", component: RowActions }];
+var EditableCellViewWithActions = (props) => /* @__PURE__ */ jsxs(Fragment, {
+  children: [
+    /* @__PURE__ */ jsx2(EditableCellView, { ...props }),
+    useHasCell(props.tableId, props.rowId, props.cellId, props.store) && /* @__PURE__ */ jsx2(CellActions, { ...props })
+  ]
+});
 var TableView = ({ tableId, store, storeId, s }) => {
   const uniqueId = getUniqueId("t", storeId, tableId);
   const [cellId, descending, offset] = jsonParse(
@@ -3048,48 +3602,59 @@ var TableView = ({ tableId, store, storeId, s }) => {
     s
   );
   const [editable, handleEditable] = useEditable(uniqueId, s);
-  return /* @__PURE__ */ jsx2(Details, {
+  const CellComponent = editable ? EditableCellViewWithActions : CellView;
+  return /* @__PURE__ */ jsxs(Details, {
     uniqueId,
-    summary: TABLE2 + ": " + tableId,
+    title: TABLE2 + ": " + tableId,
     editable,
     handleEditable,
-    s,
-    children: /* @__PURE__ */ jsx2(SortedTableInHtmlTable, {
-      tableId,
-      store,
-      cellId,
-      descending,
-      offset,
-      limit: 10,
-      paginator: true,
-      sortOnClick: true,
-      onChange: handleChange,
-      editable
-    })
-  });
-};
-var ValuesView = ({ store, storeId, s }) => {
-  const uniqueId = getUniqueId("v", storeId);
-  const [editable, handleEditable] = useEditable(uniqueId, s);
-  return arrayIsEmpty(useValueIds(store)) ? null : /* @__PURE__ */ jsx2(Details, {
-    uniqueId,
-    summary: VALUES2,
-    editable,
-    handleEditable,
-    s,
-    children: /* @__PURE__ */ jsx2(ValuesInHtmlTable, { store, editable })
-  });
-};
-var StoreView = ({ storeId, s }) => {
-  const store = useStore(storeId);
-  const tableIds = useTableIds(store);
-  return isUndefined2(store) ? null : /* @__PURE__ */ jsxs(Details, {
-    uniqueId: getUniqueId("s", storeId),
-    summary: (store.isMergeable() ? "Mergeable" : "") + "Store: " + (storeId ?? DEFAULT),
     s,
     children: [
-      /* @__PURE__ */ jsx2(ValuesView, { storeId, store, s }),
-      sortedIdsMap(
+      /* @__PURE__ */ jsx2(SortedTableInHtmlTable, {
+        tableId,
+        store,
+        cellId,
+        descending,
+        offset,
+        limit: 10,
+        paginator: true,
+        sortOnClick: true,
+        onChange: handleChange,
+        editable,
+        extraCellsAfter: editable ? rowActions : [],
+        customCells: objNew(
+          arrayMap2(useTableCellIds(tableId, store), (cellId2) => [
+            cellId2,
+            { label: cellId2, component: CellComponent }
+          ])
+        )
+      }),
+      editable ? /* @__PURE__ */ jsxs("div", {
+        className: "actions",
+        children: [
+          /* @__PURE__ */ jsx2("div", {
+            children: /* @__PURE__ */ jsx2(TableActions1, { tableId, store })
+          }),
+          /* @__PURE__ */ jsx2("div", {
+            children: /* @__PURE__ */ jsx2(TableActions2, { tableId, store })
+          })
+        ]
+      }) : null
+    ]
+  });
+};
+var TablesView = ({ store, storeId, s }) => {
+  const uniqueId = getUniqueId("ts", storeId);
+  const [editable, handleEditable] = useEditable(uniqueId, s);
+  const tableIds = useTableIds(store);
+  return /* @__PURE__ */ jsxs(Details, {
+    uniqueId,
+    title: TABLES2,
+    editable,
+    handleEditable,
+    s,
+    children: [
+      arrayIsEmpty(tableIds) ? /* @__PURE__ */ jsx2("caption", { children: "No tables." }) : sortedIdsMap(
         tableIds,
         (tableId) => /* @__PURE__ */ jsx2(
           TableView,
@@ -3101,7 +3666,100 @@ var StoreView = ({ storeId, s }) => {
           },
           tableId
         )
-      )
+      ),
+      editable ? /* @__PURE__ */ jsx2(TablesActions, { store }) : null
+    ]
+  });
+};
+var useHasValueCallback = (storeOrStoreId) => {
+  const store = useStoreOrStoreById2(storeOrStoreId);
+  return useCallback2((valueId) => store?.hasValue(valueId) ?? false, [store]);
+};
+var AddValue = ({ onDone, store }) => {
+  const has = useHasValueCallback(store);
+  return /* @__PURE__ */ jsx2(NewId, {
+    onDone,
+    suggestedId: getNewIdFromSuggestedId("value", has),
+    has,
+    set: useSetValueCallback2(
+      (newId) => newId,
+      () => "",
+      [],
+      store
+    ),
+    prompt: "Add value"
+  });
+};
+var DeleteValues = ({ onDone, store }) => /* @__PURE__ */ jsx2(Delete, {
+  onClick: useDelValuesCallback(store, onDone),
+  prompt: "Delete all values"
+});
+var ValuesActions = ({ store }) => /* @__PURE__ */ jsx2(Actions, {
+  left: /* @__PURE__ */ jsx2(ConfirmableActions, {
+    actions: [["add", "Add value", AddValue]],
+    store
+  }),
+  right: useHasValues(store) ? /* @__PURE__ */ jsx2(ConfirmableActions, {
+    actions: [["delete", "Delete all values", DeleteValues]],
+    store
+  }) : null
+});
+var CloneValue = ({ onDone, valueId, store }) => {
+  const has = useHasValueCallback(store);
+  return /* @__PURE__ */ jsx2(NewId, {
+    onDone,
+    suggestedId: getNewIdFromSuggestedId(valueId, has),
+    has,
+    set: useSetValueCallback2(
+      (newId) => newId,
+      (_, store2) => store2.getValue(valueId) ?? "",
+      [valueId],
+      store
+    ),
+    prompt: "Clone value to"
+  });
+};
+var DeleteValue = ({ onDone, valueId, store }) => /* @__PURE__ */ jsx2(Delete, {
+  onClick: useDelValueCallback(valueId, store, onDone),
+  prompt: "Delete value"
+});
+var ValueActions = ({ valueId, store }) => /* @__PURE__ */ jsx2(ConfirmableActions, {
+  actions: [
+    ["clone", "Clone value", CloneValue],
+    ["delete", "Delete value", DeleteValue]
+  ],
+  store,
+  valueId
+});
+var valueActions = [{ label: "", component: ValueActions }];
+var ValuesView = ({ store, storeId, s }) => {
+  const uniqueId = getUniqueId("v", storeId);
+  const [editable, handleEditable] = useEditable(uniqueId, s);
+  return /* @__PURE__ */ jsxs(Details, {
+    uniqueId,
+    title: VALUES2,
+    editable,
+    handleEditable,
+    s,
+    children: [
+      arrayIsEmpty(useValueIds(store)) ? /* @__PURE__ */ jsx2("caption", { children: "No values." }) : /* @__PURE__ */ jsx2(ValuesInHtmlTable, {
+        store,
+        editable,
+        extraCellsAfter: editable ? valueActions : []
+      }),
+      editable ? /* @__PURE__ */ jsx2(ValuesActions, { store }) : null
+    ]
+  });
+};
+var StoreView = ({ storeId, s }) => {
+  const store = useStore(storeId);
+  return isUndefined2(store) ? null : /* @__PURE__ */ jsxs(Details, {
+    uniqueId: getUniqueId("s", storeId),
+    title: (store.isMergeable() ? "Mergeable" : "") + "Store: " + (storeId ?? DEFAULT),
+    s,
+    children: [
+      /* @__PURE__ */ jsx2(ValuesView, { storeId, store, s }),
+      /* @__PURE__ */ jsx2(TablesView, { storeId, store, s })
     ]
   });
 };
@@ -3207,6 +3865,7 @@ var ErrorBoundary = class extends PureComponent2 {
 };
 var Header = ({ s }) => {
   const position = useValue(POSITION_VALUE, s) ?? 1;
+  const handleClick = () => open("https://tinybase.org", "_blank");
   const handleClose = useSetValueCallback(OPEN_VALUE, () => false, [], s);
   const handleDock = useSetValueCallback(
     POSITION_VALUE,
@@ -3216,7 +3875,11 @@ var Header = ({ s }) => {
   );
   return /* @__PURE__ */ jsxs("header", {
     children: [
-      /* @__PURE__ */ jsx2("img", { title: TITLE }),
+      /* @__PURE__ */ jsx2("img", {
+        className: "flat",
+        title: TITLE,
+        onClick: handleClick
+      }),
       /* @__PURE__ */ jsx2("span", { children: TITLE }),
       arrayMap2(
         POSITIONS,
@@ -3230,7 +3893,11 @@ var Header = ({ s }) => {
           p
         )
       ),
-      /* @__PURE__ */ jsx2("img", { onClick: handleClose, title: "Close" })
+      /* @__PURE__ */ jsx2("img", {
+        className: "flat",
+        onClick: handleClose,
+        title: "Close"
+      })
     ]
   });
 };
@@ -3247,64 +3914,230 @@ var Panel = ({ s }) => {
   }) : null;
 };
 var img = "data:image/svg+xml,%3csvg viewBox='0 0 680 680' xmlns='http://www.w3.org/2000/svg' style='width:680px%3bheight:680px'%3e %3cpath stroke='white' stroke-width='80' fill='none' d='M340 617a84 241 90 11.01 0zM131 475a94 254 70 10428-124 114 286 70 01-428 124zm0-140a94 254 70 10428-124 114 286 70 01-428 124zm-12-127a94 254 70 00306 38 90 260 90 01-306-38zm221 3a74 241 90 11.01 0z' /%3e %3cpath fill='%23d81b60' d='M131 475a94 254 70 10428-124 114 286 70 01-428 124zm0-140a94 254 70 10428-124 114 286 70 01-428 124z' /%3e %3cpath d='M249 619a94 240 90 00308-128 114 289 70 01-308 128zM119 208a94 254 70 00306 38 90 260 90 01-306-38zm221 3a74 241 90 11.01 0z' /%3e%3c/svg%3e";
-var PENCIL = "M20 80l5-15l40-40l10 10l-40 40l-15 5m5-15l10 10";
-var PRE_CSS = 'content:url("';
+var PRE_CSS = 'url("';
 var POST_CSS = '")';
-var PRE = PRE_CSS + `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' stroke-width='4' stroke='white' fill='none'>`;
-var POST = `</svg>` + POST_CSS;
-var LOGO_SVG = PRE_CSS + img + POST_CSS;
+var getCssSvg = (path, color = "white") => ({
+  content: PRE_CSS + `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960' fill='${color}'><path d='${path}' /></svg>` + POST_CSS
+});
+var VERTICAL_THIN = "v560h120v-560h-120Z";
+var VERTICAL_THICK = "v560h360v-560h-360Z";
+var HORIZONTAL_THIN = "v120h560v-120h-560Z";
+var HORIZONTAL_THICK = "v360h560v-360h-560Z";
+var LOGO_SVG = { content: PRE_CSS + img + POST_CSS };
 var POSITIONS_SVG = arrayMap2(
   [
-    [20, 20, 20, 60],
-    [20, 20, 60, 20],
-    [20, 60, 60, 20],
-    [60, 20, 20, 60],
-    [30, 30, 40, 40]
+    `M200-760${VERTICAL_THIN} M400-760${VERTICAL_THICK}`,
+    `M200-760${HORIZONTAL_THIN} M200-560${HORIZONTAL_THICK}`,
+    `M200-760${HORIZONTAL_THICK} M200-320${HORIZONTAL_THIN}`,
+    `M200-760${VERTICAL_THICK} M640-760${VERTICAL_THIN}`
   ],
-  ([x, y, w, h]) => PRE + `<rect x='20' y='20' width='60' height='60' fill='grey'/><rect x='${x}' y='${y}' width='${w}' height='${h}' fill='white'/>` + POST
+  (path) => getCssSvg(
+    "M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Z" + path
+  )
 );
-var CLOSE_SVG = PRE + `<path d='M20 20l60 60M20 80l60-60' />` + POST;
-var EDIT_SVG = PRE + `<path d='${PENCIL}' />` + POST;
-var DONE_SVG = PRE + `<path d='${PENCIL}M20 20l60 60' />` + POST;
+arrayPush(
+  POSITIONS_SVG,
+  getCssSvg(
+    "M120-120v-200h80v120h120v80H120Zm520 0v-80h120v-120h80v200H640ZM120-640v-200h200v80H200v120h-80Zm640 0v-120H640v-80h200v200h-80Z"
+  )
+);
+var CLOSE_SVG = getCssSvg(
+  "m336-280-56-56 144-144-144-143 56-56 144 144 143-144 56 56-144 143 144 144-56 56-143-144-144 144Z"
+);
+var EDIT_SVG = getCssSvg(
+  "M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"
+);
+var DONE_SVG = getCssSvg(
+  "m622-453-56-56 82-82-57-57-82 82-56-56 195-195q12-12 26.5-17.5T705-840q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L622-453ZM200-200h57l195-195-28-29-29-28-195 195v57ZM792-56 509-338 290-120H120v-169l219-219L56-792l57-57 736 736-57 57Zm-32-648-56-56 56 56Zm-169 56 57 57-57-57ZM424-424l-29-28 57 57-28-29Z"
+);
+var ADD_SVG = getCssSvg(
+  "M440-280h80v-160h160v-80H520v-160h-80v160H280v80h160v160ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z"
+);
+var CLONE_SVG = getCssSvg(
+  "M520-400h80v-120h120v-80H600v-120h-80v120H400v80h120v120ZM320-240q-33 0-56.5-23.5T240-320v-480q0-33 23.5-56.5T320-880h480q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H320Zm0-80h480v-480H320v480ZM160-80q-33 0-56.5-23.5T80-160v-560h80v560h560v80H160Zm160-720v480-480Z"
+);
+var DELETE_SVG = getCssSvg(
+  "M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"
+);
+var OK_SVG = getCssSvg(
+  "m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z",
+  "rgb(127,255,127)"
+);
+var OK_SVG_DISABLED = getCssSvg(
+  "m40-120 440-760 440 760H40Zm138-80h604L480-720 178-200Zm302-40q17 0 28.5-11.5T520-280q0-17-11.5-28.5T480-320q-17 0-28.5 11.5T440-280q0 17 11.5 28.5T480-240Zm-40-120h80v-200h-80v200Zm40-100Z",
+  "rgb(255,255,127)"
+);
+var CANCEL_SVG = getCssSvg(
+  "m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z",
+  "rgb(255,127,127)"
+);
+var DOWN_SVG = getCssSvg(
+  "M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z"
+);
+var RIGHT_SVG = getCssSvg(
+  "M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"
+);
 var SCROLLBAR = "*::-webkit-scrollbar";
+var BACKGROUND = "background";
+var WIDTH = "width";
+var MAX_WIDTH = "max-" + WIDTH;
+var MIN_WIDTH = "min-" + WIDTH;
+var HEIGHT = "height";
+var BORDER = "border";
+var BORDER_RADIUS = BORDER + "-radius";
+var PADDING = "padding";
+var MARGIN = "margin";
+var MARGIN_RIGHT = MARGIN + "-right";
+var TOP = "top";
+var BOTTOM = "bottom";
+var LEFT = "left";
+var RIGHT = "right";
+var COLOR = "color";
+var POSITION = "position";
+var BOX_SHADOW = "box-shadow";
+var FONT_SIZE = "font-size";
+var DISPLAY = "display";
+var OVERFLOW = "overflow";
+var CURSOR = "cursor";
+var VERTICAL_ALIGN = "vertical-align";
+var TEXT_ALIGN = "text-align";
+var JUSTIFY_CONTENT = "justify-content";
+var FIXED = "fixed";
+var REVERT = "revert";
+var UNSET = "unset";
+var NONE = "none";
+var FLEX = "flex";
+var POINTER = "pointer";
+var AUTO = "auto";
+var HIDDEN = "hidden";
+var NOWRAP = "nowrap";
+var oklch = (lPercent, remainder = "% 0.01 " + cssVar("hue")) => `oklch(${lPercent}${remainder})`;
+var cssVar = (name) => `var(--${name})`;
+var rem = (...rems) => `${rems.join("rem ")}rem`;
+var px = (...pxs) => `${pxs.join("px ")}px`;
+var vw = (vw2 = 100) => `${vw2}vw`;
+var vh = (vh2 = 100) => `${vh2}vh`;
 var APP_STYLESHEET = arrayJoin(
   objToArray(
     {
-      "": "all:initial;font-family:sans-serif;font-size:0.75rem;position:fixed;z-index:999999",
-      "*": "all:revert",
-      "*::before": "all:revert",
-      "*::after": "all:revert",
-      [SCROLLBAR]: "width:0.5rem;height:0.5rem;",
-      [SCROLLBAR + "-track"]: "background:#111",
-      [SCROLLBAR + "-thumb"]: "background:#999;border:1px solid #111",
-      [SCROLLBAR + "-thumb:hover"]: "background:#fff",
-      [SCROLLBAR + "-corner"]: "background:#111",
-      img: "width:1rem;height:1rem;background:#111;border:0;vertical-align:text-bottom",
+      "": {
+        all: "initial",
+        [FONT_SIZE]: rem(0.75),
+        [POSITION]: FIXED,
+        "font-family": "inter,sans-serif",
+        "z-index": 999999,
+        "--bg": oklch(20),
+        "--bg2": oklch(15),
+        "--bg3": oklch(25),
+        "--bg4": oklch(30),
+        "--fg": oklch(85),
+        "--fg2": oklch(60),
+        ["--" + BORDER]: px(1) + " solid " + cssVar("bg4"),
+        ["--" + BOX_SHADOW]: px(0, 1, 2, 0) + " #0007"
+      },
+      "*": { all: REVERT },
+      "*::before": { all: REVERT },
+      "*::after": { all: REVERT },
+      [SCROLLBAR]: { [WIDTH]: rem(0.5), [HEIGHT]: rem(0.5) },
+      [SCROLLBAR + "-thumb"]: { [BACKGROUND]: cssVar("bg4") },
+      [SCROLLBAR + "-thumb:hover"]: { [BACKGROUND]: cssVar("bg4") },
+      [SCROLLBAR + "-corner"]: { [BACKGROUND]: NONE },
+      [SCROLLBAR + "-track"]: { [BACKGROUND]: NONE },
+      img: {
+        [WIDTH]: rem(0.8),
+        [HEIGHT]: rem(0.8),
+        [VERTICAL_ALIGN]: "text-" + BOTTOM,
+        [CURSOR]: POINTER,
+        [MARGIN]: px(-2.5, 2, -2.5, 0),
+        [PADDING]: px(2),
+        [BORDER]: cssVar(BORDER),
+        [BACKGROUND]: cssVar("bg3"),
+        [BOX_SHADOW]: cssVar(BOX_SHADOW),
+        [BORDER_RADIUS]: rem(0.25)
+      },
+      "img.flat": { [BORDER]: NONE, [BACKGROUND]: NONE, [BOX_SHADOW]: NONE },
       // Nub
-      ">img": "padding:0.25rem;bottom:0;right:0;position:fixed;" + LOGO_SVG,
-      ...objNew(
-        arrayMap2(["bottom:0;left:0", "top:0;right:0"], (css, p) => [
-          `>img[data-position='${p}']`,
-          css
-        ])
-      ),
-      // Panel
-      main: "display:flex;flex-direction:column;background:#111d;color:#fff;position:fixed;",
+      ">img": {
+        [PADDING]: rem(0.25),
+        [BOTTOM]: 0,
+        [RIGHT]: 0,
+        [POSITION]: FIXED,
+        [HEIGHT]: UNSET,
+        [MARGIN]: 0,
+        ...LOGO_SVG
+      },
       ...objNew(
         arrayMap2(
           [
-            "bottom:0;left:0;width:35vw;height:100vh",
-            "top:0;right:0;width:100vw;height:30vh",
-            "bottom:0;left:0;width:100vw;height:30vh",
-            "top:0;right:0;width:35vw;height:100vh",
-            "top:0;right:0;width:100vw;height:100vh"
+            { [BOTTOM]: 0, [LEFT]: 0 },
+            { [TOP]: 0, [RIGHT]: 0 }
+          ],
+          (css, p) => [`>img[data-position='${p}']`, css]
+        )
+      ),
+      // Panel
+      main: {
+        [DISPLAY]: FLEX,
+        [COLOR]: cssVar("fg"),
+        [BACKGROUND]: cssVar("bg"),
+        [OVERFLOW]: HIDDEN,
+        [POSITION]: FIXED,
+        [BOX_SHADOW]: cssVar(BOX_SHADOW),
+        "flex-direction": "column"
+      },
+      ...objNew(
+        arrayMap2(
+          [
+            {
+              [BOTTOM]: 0,
+              [LEFT]: 0,
+              [WIDTH]: vw(35),
+              [HEIGHT]: vh(),
+              [BORDER + "-" + RIGHT]: cssVar(BORDER)
+            },
+            {
+              [TOP]: 0,
+              [RIGHT]: 0,
+              [WIDTH]: vw(),
+              [HEIGHT]: vh(30),
+              [BORDER + "-" + BOTTOM]: cssVar(BORDER)
+            },
+            {
+              [BOTTOM]: 0,
+              [LEFT]: 0,
+              [WIDTH]: vw(),
+              [HEIGHT]: vh(30),
+              [BORDER + "-" + TOP]: cssVar(BORDER)
+            },
+            {
+              [TOP]: 0,
+              [RIGHT]: 0,
+              [WIDTH]: vw(35),
+              [HEIGHT]: vh(),
+              [BORDER + "-" + LEFT]: cssVar(BORDER)
+            },
+            { [TOP]: 0, [RIGHT]: 0, [WIDTH]: vw(), [HEIGHT]: vh() }
           ],
           (css, p) => [`main[data-position='${p}']`, css]
         )
       ),
       // Header
-      header: "display:flex;padding:0.25rem;background:#000;align-items:center",
-      "header>img:nth-of-type(1)": LOGO_SVG,
+      header: {
+        [DISPLAY]: FLEX,
+        [PADDING]: rem(0.5),
+        [BOX_SHADOW]: cssVar(BOX_SHADOW),
+        [BACKGROUND]: oklch(30, "% 0.008 var(--hue) / .5"),
+        [WIDTH]: "calc(100% - .5rem)",
+        [POSITION]: "absolute",
+        [BORDER + "-" + BOTTOM]: cssVar(BORDER),
+        "align-items": "center",
+        "backdrop-filter": "blur(4px)"
+      },
+      "header>img:nth-of-type(1)": {
+        [HEIGHT]: rem(1),
+        [WIDTH]: rem(1),
+        ...LOGO_SVG
+      },
       "header>img:nth-of-type(6)": CLOSE_SVG,
       ...objNew(
         arrayMap2(POSITIONS_SVG, (SVG, p) => [
@@ -3312,35 +4145,138 @@ var APP_STYLESHEET = arrayJoin(
           SVG
         ])
       ),
-      "header>span": "flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin-left:0.25rem",
+      "header>span": {
+        [OVERFLOW]: HIDDEN,
+        [FLEX]: 1,
+        "font-weight": 800,
+        "white-space": NOWRAP,
+        "text-overflow": "ellipsis"
+      },
       // Body
-      article: "padding:0.25rem 0.25rem 0.25rem 0.5rem;overflow:auto;flex:1",
-      details: "margin-left:0.75rem;width:fit-content;",
-      "details img": "display:none",
-      "details[open]>summary img": "display:unset;background:none;margin-left:0.25rem",
-      "details[open]>summary img.edit": EDIT_SVG,
-      "details[open]>summary img.done": DONE_SVG,
-      summary: "margin-left:-0.75rem;line-height:1.25rem;user-select:none;width:fit-content",
+      article: { [OVERFLOW]: AUTO, [FLEX]: 1, [PADDING + "-" + TOP]: rem(2) },
+      details: {
+        [MARGIN]: rem(0.5),
+        [BORDER]: cssVar(BORDER),
+        [BORDER_RADIUS]: rem(0.25)
+      },
+      summary: {
+        [BACKGROUND]: cssVar("bg3"),
+        [MARGIN]: px(-1),
+        [BORDER]: cssVar(BORDER),
+        [PADDING]: rem(0.25, 0.125),
+        [DISPLAY]: FLEX,
+        [BORDER_RADIUS]: rem(0.25),
+        "user-select": NONE,
+        [JUSTIFY_CONTENT]: "space-between",
+        "align-items": "center"
+      },
+      "summary>span::before": {
+        [DISPLAY]: "inline-block",
+        [VERTICAL_ALIGN]: "sub",
+        [MARGIN]: px(2),
+        [WIDTH]: rem(1),
+        [HEIGHT]: rem(1),
+        ...RIGHT_SVG
+      },
+      "details[open]>summary": {
+        "border-bottom-left-radius": 0,
+        "border-bottom-right-radius": 0,
+        [MARGIN + "-" + BOTTOM]: 0
+      },
+      "details[open]>summary>span::before": DOWN_SVG,
+      "details>summary img": { [DISPLAY]: NONE },
+      "details[open]>summary img": {
+        [DISPLAY]: UNSET,
+        [MARGIN + "-" + LEFT]: rem(0.25)
+      },
+      "details>div": { [OVERFLOW]: AUTO },
+      caption: {
+        [COLOR]: cssVar("fg2"),
+        [PADDING]: rem(0.25, 0.5),
+        [TEXT_ALIGN]: LEFT,
+        "white-space": NOWRAP
+      },
+      "caption button": {
+        [WIDTH]: rem(1.5),
+        [BORDER]: NONE,
+        [BACKGROUND]: NONE,
+        [COLOR]: cssVar("fg"),
+        [PADDING]: 0,
+        [CURSOR]: POINTER
+      },
+      "caption button[disabled]": { [COLOR]: cssVar("fg2") },
+      ".actions": {
+        [PADDING]: rem(0.75, 0.5),
+        [MARGIN]: 0,
+        [DISPLAY]: FLEX,
+        [BORDER + "-" + TOP]: cssVar(BORDER),
+        [JUSTIFY_CONTENT]: "space-between"
+      },
       // tables
-      table: "border-collapse:collapse;table-layout:fixed;margin-bottom:0.5rem",
-      "table input": "background:#111;color:unset;padding:0 0.25rem;border:0;font-size:unset;vertical-align:top;margin:0",
-      'table input[type="number"]': "width:4rem",
-      "table tbody button": "font-size:0;background:#fff;border-radius:50%;margin:0 0.125rem 0 0;width:0.85rem;color:#111",
-      "table button:first-letter": "font-size:0.75rem",
-      thead: "background:#222",
-      "th:nth-of-type(1)": "min-width:2rem;",
-      "th.sorted": "background:#000",
-      "table caption": "text-align:left;white-space:nowrap;line-height:1.25rem",
-      button: "width:1.5rem;border:none;background:none;color:#fff;padding:0",
-      "button[disabled]": "color:#777",
-      "button.next": "margin-right:0.5rem",
-      [`th,#${UNIQUE_ID} td`]: "overflow:hidden;text-overflow:ellipsis;padding:0.25rem 0.5rem;max-width:12rem;white-space:nowrap;border-width:1px 0;border-style:solid;border-color:#777;text-align:left",
-      "span.warn": "margin:0.25rem;color:#d81b60"
+      table: {
+        [MIN_WIDTH]: "100%",
+        "border-collapse": "collapse",
+        "table-layout": FIXED
+      },
+      thead: { [BACKGROUND]: cssVar("bg") },
+      [`th,#${UNIQUE_ID} td`]: {
+        [OVERFLOW]: HIDDEN,
+        [PADDING]: rem(0.25, 0.5),
+        [MAX_WIDTH]: rem(20),
+        [BORDER]: cssVar(BORDER),
+        "text-overflow": "ellipsis",
+        "white-space": NOWRAP,
+        "border-width": px(1, 0, 0),
+        [TEXT_ALIGN]: LEFT
+      },
+      "th:first-child": {
+        [WIDTH]: rem(3),
+        [MIN_WIDTH]: rem(3),
+        [MAX_WIDTH]: rem(3)
+      },
+      "th.sorted": { [BACKGROUND]: cssVar("bg3") },
+      "td.extra": { [TEXT_ALIGN]: RIGHT },
+      "tbody button": {
+        [BACKGROUND]: NONE,
+        [BORDER]: NONE,
+        [FONT_SIZE]: 0,
+        [WIDTH]: rem(0.8),
+        [HEIGHT]: rem(0.8),
+        [COLOR]: cssVar("fg2"),
+        [MARGIN]: rem(0, 0.25, 0, -0.25),
+        "line-height": rem(0.8)
+      },
+      "tbody button:first-letter": { [FONT_SIZE]: rem(0.8) },
+      input: {
+        [BACKGROUND]: cssVar("bg2"),
+        [COLOR]: UNSET,
+        [PADDING]: px(4),
+        [BORDER]: 0,
+        [MARGIN]: px(-4, 0),
+        [FONT_SIZE]: UNSET,
+        [MAX_WIDTH]: rem(6)
+      },
+      "input:focus": { "outline-width": 0 },
+      'input[type="number"]': { [WIDTH]: rem(3) },
+      'input[type="checkbox"]': { [VERTICAL_ALIGN]: px(-2) },
+      ".editableCell": { [DISPLAY]: "inline-block", [MARGIN_RIGHT]: px(2) },
+      "button.next": { [MARGIN_RIGHT]: rem(0.5) },
+      "img.edit": EDIT_SVG,
+      "img.done": DONE_SVG,
+      "img.add": ADD_SVG,
+      "img.clone": CLONE_SVG,
+      "img.delete": DELETE_SVG,
+      "img.ok": OK_SVG,
+      "img.okDis": OK_SVG_DISABLED,
+      "img.cancel": CANCEL_SVG,
+      "span.warn": { [MARGIN]: rem(2, 0.25), [COLOR]: "#d81b60" }
     },
-    (style, selector) => style ? `#${UNIQUE_ID} ${selector}{${style}}` : ""
+    (style, selector) => `#${UNIQUE_ID} ${selector}{${arrayJoin(
+      objToArray(style, (value, property) => `${property}:${value};`)
+    )}}`
   )
 );
-var Inspector = ({ position = "right", open = false }) => {
+var Inspector = ({ position = "right", open: open2 = false, hue = 270 }) => {
   const s = useCreateStore(createStore);
   const index = POSITIONS.indexOf(position);
   useCreatePersister(
@@ -3352,7 +4288,7 @@ var Inspector = ({ position = "right", open = false }) => {
         {},
         {
           position: index == -1 ? 1 : index,
-          open: !!open
+          open: !!open2
         }
       ]);
       await persister.startAutoSave();
@@ -3367,7 +4303,9 @@ var Inspector = ({ position = "right", open = false }) => {
           /* @__PURE__ */ jsx2(Panel, { s })
         ]
       }),
-      /* @__PURE__ */ jsx2("style", { children: APP_STYLESHEET })
+      /* @__PURE__ */ jsxs("style", {
+        children: [`#${UNIQUE_ID}{--hue:${hue}}`, APP_STYLESHEET]
+      })
     ]
   });
 };
