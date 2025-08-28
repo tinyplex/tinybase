@@ -37,7 +37,7 @@ export const arrayForEach = <Value>(
   cb: (value: Value, index: number) => void,
 ): void => array.forEach(cb);
 
-export const arrayJoin = (array: string[], sep = EMPTY_STRING) =>
+export const arrayJoin = (array: (string | number)[], sep = EMPTY_STRING) =>
   array.join(sep);
 
 export const arrayMap = <Value, Return>(
