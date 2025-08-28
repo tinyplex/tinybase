@@ -111,7 +111,7 @@ export const APP_STYLESHEET = arrayJoin(
         [RIGHT]: 0,
         [POSITION]: FIXED,
         [HEIGHT]: UNSET,
-        [MARGIN]: px(1),
+        [MARGIN]: 0,
         ...LOGO_SVG,
       },
       ...objNew(
