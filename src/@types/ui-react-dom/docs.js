@@ -721,11 +721,11 @@
  *   </thead>
  *   <tbody>
  *     <tr>
- *       <th>fido</th>
+ *       <th title="fido">fido</th>
  *       <td>dog</td>
  *     </tr>
  *     <tr>
- *       <th>felix</th>
+ *       <th title="felix">felix</th>
  *       <td>cat</td>
  *     </tr>
  *   </tbody>
@@ -884,11 +884,11 @@
  *   </thead>
  *   <tbody>
  *     <tr>
- *       <th>felix</th>
+ *       <th title="felix">felix</th>
  *       <td>cat</td>
  *     </tr>
  *     <tr>
- *       <th>fido</th>
+ *       <th title="fido">fido</th>
  *       <td>dog</td>
  *     </tr>
  *   </tbody>
@@ -1026,11 +1026,11 @@
  *   </thead>
  *   <tbody>
  *     <tr>
- *       <th>open</th>
+ *       <th title="open">open</th>
  *       <td>true</td>
  *     </tr>
  *     <tr>
- *       <th>employees</th>
+ *       <th title="employees">employees</th>
  *       <td>3</td>
  *     </tr>
  *   </tbody>
@@ -1159,11 +1159,11 @@
  *   </thead>
  *   <tbody>
  *     <tr>
- *       <th>fido</th>
+ *       <th title="fido">fido</th>
  *       <td>dog</td>
  *     </tr>
  *     <tr>
- *       <th>cujo</th>
+ *       <th title="cujo">cujo</th>
  *       <td>dog</td>
  *     </tr>
  *   </tbody>
@@ -1323,14 +1323,14 @@
  *   </thead>
  *   <tbody>
  *     <tr>
- *       <th>fido</th>
- *       <th>dog</th>
+ *       <th title="fido">fido</th>
+ *       <th title="dog">dog</th>
  *       <td>dog</td>
  *       <td>5</td>
  *     </tr>
  *     <tr>
- *       <th>cujo</th>
- *       <th>dog</th>
+ *       <th title="cujo">cujo</th>
+ *       <th title="dog">dog</th>
  *       <td>dog</td>
  *       <td>5</td>
  *     </tr>
@@ -1478,11 +1478,11 @@
  *   </thead>
  *   <tbody>
  *     <tr>
- *       <th>fido</th>
+ *       <th title="fido">fido</th>
  *       <td>brown</td>
  *     </tr>
  *     <tr>
- *       <th>felix</th>
+ *       <th title="felix">felix</th>
  *       <td>black</td>
  *     </tr>
  *   </tbody>
@@ -1645,11 +1645,11 @@
  *   </thead>
  *   <tbody>
  *     <tr>
- *       <th>felix</th>
+ *       <th title="felix">felix</th>
  *       <td>black</td>
  *     </tr>
  *     <tr>
- *       <th>fido</th>
+ *       <th title="fido">fido</th>
  *       <td>brown</td>
  *     </tr>
  *   </tbody>
@@ -1920,11 +1920,11 @@
  *   </thead>
  *   <tbody>
  *     <tr>
- *       <th>felix</th>
+ *       <th title="felix">felix</th>
  *       <td>cat</td>
  *     </tr>
  *     <tr>
- *       <th>fido</th>
+ *       <th title="fido">fido</th>
  *       <td>dog</td>
  *     </tr>
  *   </tbody>

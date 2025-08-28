@@ -1108,8 +1108,8 @@ console.log(app.innerHTML);
    <tr><th>Id</th><th class="sorted ascending">↑ species</th></tr>
  </thead>
  <tbody>
-   <tr><th>felix</th><td>cat</td></tr>
-   <tr><th>fido</th><td>dog</td></tr>
+   <tr><th title="felix">felix</th><td>cat</td></tr>
+   <tr><th title="fido">fido</th><td>dog</td></tr>
  </tbody>
 </table>
 `;
