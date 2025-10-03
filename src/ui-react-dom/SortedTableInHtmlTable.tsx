@@ -2,7 +2,7 @@ import type {
   HtmlTableProps,
   SortedTableInHtmlTable as SortedTableInHtmlTableDecl,
   SortedTableInHtmlTableProps,
-} from '../@types/ui-react-dom/index.js';
+} from '../@types/ui-react-dom/index.d.ts';
 import {
   useRowCount,
   useSortedRowIds,

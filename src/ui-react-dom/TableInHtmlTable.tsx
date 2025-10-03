@@ -2,7 +2,7 @@ import type {
   HtmlTableProps,
   TableInHtmlTable as TableInHtmlTableDecl,
   TableInHtmlTableProps,
-} from '../@types/ui-react-dom/index.js';
+} from '../@types/ui-react-dom/index.d.ts';
 import {useRowIds, useTableCellIds} from '../ui-react/hooks.ts';
 import {CellView} from '../ui-react/index.ts';
 import {HtmlTable} from './common/components.tsx';

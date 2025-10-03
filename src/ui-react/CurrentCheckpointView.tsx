@@ -1,4 +1,4 @@
-import type {CurrentCheckpointView as CurrentCheckpointViewDecl} from '../@types/ui-react/index.js';
+import type {CurrentCheckpointView as CurrentCheckpointViewDecl} from '../@types/ui-react/index.d.ts';
 import {isUndefined} from '../common/other.ts';
 import {getUseCheckpointView} from './common/index.tsx';
 

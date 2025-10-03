@@ -1,6 +1,6 @@
-import type {Value} from '../@types/index.js';
-import type {EditableValueView as EditableValueViewDecl} from '../@types/ui-react-dom/index.js';
-import type {ValueProps} from '../@types/ui-react/index.js';
+import type {Value} from '../@types/index.d.ts';
+import type {EditableValueView as EditableValueViewDecl} from '../@types/ui-react-dom/index.d.ts';
+import type {ValueProps} from '../@types/ui-react/index.d.ts';
 import {VALUE} from '../common/strings.ts';
 import {
   useSetValueCallback,

@@ -1,7 +1,7 @@
 import type {
   MetricProps,
   MetricView as MetricViewDecl,
-} from '../@types/ui-react/index.js';
+} from '../@types/ui-react/index.d.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
 import {wrap} from './common/wrap.tsx';
 import {useMetric} from './hooks.ts';

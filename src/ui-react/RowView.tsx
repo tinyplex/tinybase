@@ -1,7 +1,7 @@
 import type {
   RowProps,
   RowView as RowViewDecl,
-} from '../@types/ui-react/index.js';
+} from '../@types/ui-react/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getProps} from '../common/react.ts';
 import {CellView} from './CellView.tsx';

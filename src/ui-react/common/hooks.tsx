@@ -1,5 +1,5 @@
-import type {Id, Ids} from '../../@types/index.js';
-import type {StoreOrStoreId} from '../../@types/ui-react/index.js';
+import type {Id, Ids} from '../../@types/index.d.ts';
+import type {StoreOrStoreId} from '../../@types/ui-react/index.d.ts';
 import {useCellIds} from '../hooks.ts';
 
 export const useCustomOrDefaultCellIds = (

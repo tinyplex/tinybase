@@ -1,8 +1,8 @@
-import type {Id} from '../@types/index.js';
+import type {Id} from '../@types/index.d.ts';
 import type {
   RemoteRowProps,
   RemoteRowView as RemoteRowViewDecl,
-} from '../@types/ui-react/index.js';
+} from '../@types/ui-react/index.d.ts';
 import {isUndefined} from '../common/other.ts';
 import {getProps, getRelationshipsStoreTableIds} from '../common/react.ts';
 import {wrap} from './common/wrap.tsx';

@@ -1,8 +1,8 @@
-import type {Id, Store} from '../@types/index.js';
+import type {Id, Store} from '../@types/index.d.ts';
 import type {
   HtmlTableProps,
   RelationshipInHtmlTableProps,
-} from '../@types/ui-react-dom/index.js';
+} from '../@types/ui-react-dom/index.d.ts';
 import type {RowProps} from '../@types/ui-react/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {objToArray} from '../common/obj.ts';

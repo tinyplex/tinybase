@@ -1,12 +1,12 @@
 import type {
   SortedTablePaginator as SortedTablePaginatorDecl,
   SortedTablePaginatorProps,
-} from '../@types/ui-react-dom/index.js';
+} from '../@types/ui-react-dom/index.d.ts';
 import {mathMin} from '../common/other.ts';
 import {useCallbackOrUndefined} from './common/hooks.tsx';
 
 import type {ComponentType, ReactNode} from 'react';
-import type {Id} from '../@types/index.js';
+import type {Id} from '../@types/index.d.ts';
 import {useCallback, useMemo, useState} from '../common/react.ts';
 import {HandleSort, SortAndOffset} from './common/index.tsx';
 

@@ -1,11 +1,11 @@
 import type {ComponentType, ReactNode} from 'react';
-import type {Id, Ids} from '../../@types/common/index.js';
-import type {Relationships} from '../../@types/index.js';
-import type {Store} from '../../@types/store/index.js';
+import type {Id, Ids} from '../../@types/common/index.d.ts';
+import type {Relationships} from '../../@types/index.d.ts';
+import type {Store} from '../../@types/store/index.d.ts';
 import type {
   ExtraRowCell,
   ExtraValueCell,
-} from '../../@types/ui-react-dom/index.js';
+} from '../../@types/ui-react-dom/index.d.ts';
 import type {
   CellProps,
   ExtraProps,
@@ -13,7 +13,7 @@ import type {
   ResultCellProps,
   RowProps,
   StoreOrStoreId,
-} from '../../@types/ui-react/index.js';
+} from '../../@types/ui-react/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
 import {EXTRA} from '../../common/strings.ts';
 

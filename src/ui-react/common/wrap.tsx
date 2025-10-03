@@ -1,4 +1,4 @@
-import type {Id} from '../../@types/index.js';
+import type {Id} from '../../@types/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
 import {isArray, isUndefined} from '../../common/other.ts';
 

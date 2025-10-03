@@ -1,6 +1,6 @@
 import type {ReactElement} from 'react';
-import type {CheckpointIds} from '../../@types/checkpoints/index.js';
-import type {Id, Ids} from '../../@types/common/index.js';
+import type {CheckpointIds} from '../../@types/checkpoints/index.d.ts';
+import type {Id, Ids} from '../../@types/common/index.d.ts';
 import type {
   BackwardCheckpointsProps,
   CurrentCheckpointProps,
@@ -11,7 +11,7 @@ import type {
   RemoteRowProps,
   ResultTableProps,
   TableProps,
-} from '../../@types/ui-react/index.js';
+} from '../../@types/ui-react/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
 import {getProps, getRelationshipsStoreTableIds} from '../../common/react.ts';
 import {CheckpointView} from '../CheckpointView.tsx';

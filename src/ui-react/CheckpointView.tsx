@@ -1,7 +1,7 @@
 import type {
   CheckpointProps,
   CheckpointView as CheckpointViewDecl,
-} from '../@types/ui-react/index.js';
+} from '../@types/ui-react/index.d.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
 import {wrap} from './common/wrap.tsx';
 import {useCheckpoint} from './hooks.ts';

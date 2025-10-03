@@ -1,7 +1,7 @@
 import type {
   LocalRowsProps,
   LocalRowsView as LocalRowsViewDecl,
-} from '../@types/ui-react/index.js';
+} from '../@types/ui-react/index.d.ts';
 import {useComponentPerRow} from './common/index.tsx';
 import {useLocalRowIds} from './hooks.ts';
 

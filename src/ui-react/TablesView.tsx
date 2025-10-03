@@ -1,7 +1,7 @@
 import type {
   TablesProps,
   TablesView as TablesViewDecl,
-} from '../@types/ui-react/index.js';
+} from '../@types/ui-react/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getProps} from '../common/react.ts';
 import {wrap} from './common/wrap.tsx';

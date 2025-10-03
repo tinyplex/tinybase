@@ -2,7 +2,7 @@ import type {
   HtmlTableProps,
   ResultSortedTableInHtmlTable as ResultSortedTableInHtmlTableDecl,
   ResultSortedTableInHtmlTableProps,
-} from '../@types/ui-react-dom/index.js';
+} from '../@types/ui-react-dom/index.d.ts';
 import {
   useResultRowCount,
   useResultSortedRowIds,

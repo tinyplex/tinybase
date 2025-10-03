@@ -1,6 +1,6 @@
 import type {FormEvent} from 'react';
-import type {Cell, Id, Value} from '../../@types/index.js';
-import type {HtmlTableProps} from '../../@types/ui-react-dom/index.js';
+import type {Cell, Id, Value} from '../../@types/index.d.ts';
+import type {HtmlTableProps} from '../../@types/ui-react-dom/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
 import {
   CellOrValueType,

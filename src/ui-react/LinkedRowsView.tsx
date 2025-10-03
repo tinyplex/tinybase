@@ -1,7 +1,7 @@
 import type {
   LinkedRowsProps,
   LinkedRowsView as LinkedRowsViewDecl,
-} from '../@types/ui-react/index.js';
+} from '../@types/ui-react/index.d.ts';
 import {useComponentPerRow} from './common/index.tsx';
 import {useLinkedRowIds} from './hooks.ts';
 

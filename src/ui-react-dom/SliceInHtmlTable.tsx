@@ -1,9 +1,9 @@
-import type {Id} from '../@types/index.js';
+import type {Id} from '../@types/index.d.ts';
 import type {
   HtmlTableProps,
   SliceInHtmlTable as SliceInHtmlTableDecl,
   SliceInHtmlTableProps,
-} from '../@types/ui-react-dom/index.js';
+} from '../@types/ui-react-dom/index.d.ts';
 import {getIndexStoreTableId} from '../common/react.ts';
 import {
   useIndexesOrIndexesById,

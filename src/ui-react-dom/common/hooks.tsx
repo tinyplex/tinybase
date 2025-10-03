@@ -1,13 +1,13 @@
 import type {DependencyList} from 'react';
-import type {Id, Ids} from '../../@types/index.js';
+import type {Id, Ids} from '../../@types/index.d.ts';
 import type {
   CustomCell,
   CustomResultCell,
-} from '../../@types/ui-react-dom/index.js';
+} from '../../@types/ui-react-dom/index.d.ts';
 import type {
   QueriesOrQueriesId,
   StoreOrStoreId,
-} from '../../@types/ui-react/index.js';
+} from '../../@types/ui-react/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
 import {objMap, objNew} from '../../common/obj.ts';
 import {isArray, isString} from '../../common/other.ts';

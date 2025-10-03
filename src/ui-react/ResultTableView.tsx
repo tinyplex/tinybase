@@ -1,7 +1,7 @@
 import type {
   ResultTableProps,
   ResultTableView as ResultTableViewDecl,
-} from '../@types/ui-react/index.js';
+} from '../@types/ui-react/index.d.ts';
 import {resultTableView} from './common/index.tsx';
 import {useResultRowIds} from './hooks.ts';
 

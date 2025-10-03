@@ -1,9 +1,9 @@
 import type {ReactNode} from 'react';
-import type {Id} from '../@types/index.js';
+import type {Id} from '../@types/index.d.ts';
 import type {
   Provider as ProviderDecl,
   ProviderProps,
-} from '../@types/ui-react/index.js';
+} from '../@types/ui-react/index.d.ts';
 import {arrayNew, arrayWith} from '../common/array.ts';
 import {objDel, objGet, objHas} from '../common/obj.ts';
 import {useCallback, useContext, useMemo, useState} from '../common/react.ts';

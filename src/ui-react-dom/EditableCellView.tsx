@@ -1,6 +1,6 @@
-import type {Cell} from '../@types/index.js';
-import type {EditableCellView as EditableCellViewDecl} from '../@types/ui-react-dom/index.js';
-import type {CellProps} from '../@types/ui-react/index.js';
+import type {Cell} from '../@types/index.d.ts';
+import type {EditableCellView as EditableCellViewDecl} from '../@types/ui-react-dom/index.d.ts';
+import type {CellProps} from '../@types/ui-react/index.d.ts';
 import {CELL} from '../common/strings.ts';
 import {
   useCell,

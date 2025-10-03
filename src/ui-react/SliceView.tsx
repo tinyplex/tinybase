@@ -1,8 +1,8 @@
-import type {Id} from '../@types/index.js';
+import type {Id} from '../@types/index.d.ts';
 import type {
   SliceProps,
   SliceView as SliceViewDecl,
-} from '../@types/ui-react/index.js';
+} from '../@types/ui-react/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getIndexStoreTableId, getProps} from '../common/react.ts';
 import {wrap} from './common/wrap.tsx';
