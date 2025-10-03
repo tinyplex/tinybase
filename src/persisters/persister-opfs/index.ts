@@ -25,10 +25,11 @@ export const createOpfsPersister = ((
 
   const setPersisted = async (
     getContent: () => PersistedContent<PersistsType.StoreOrMergeableStore>,
-  ): Promise<void> =>
-    await (
-      await handle.createWritable()
-    ).write(jsonStringWithUndefined(getContent()));
+  ): Promise<void> => {
+    const writable = await handle.createWritable();
+    await writable.write(jsonStringWithUndefined(getContent()));
+    await writable.close();
+  };
 
   const addPersisterListener = () => {};
 
