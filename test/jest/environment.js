@@ -1,5 +1,6 @@
 import {writeFileSync} from 'fs';
 import {TestEnvironment} from 'jest-environment-jsdom';
+import {fsa} from 'memfs/lib/fsa/index.js';
 import {TextDecoder, TextEncoder} from 'util';
 import {BroadcastChannel} from 'worker_threads';
 
@@ -19,6 +20,9 @@ export default class TinyBaseEnvironment extends TestEnvironment {
       setImmediate,
       clearImmediate,
     });
+    this.global.navigator.storage = {
+      getDirectory: () => fsa({mode: 'readwrite'}).dir,
+    };
     await super.setup();
   }
 

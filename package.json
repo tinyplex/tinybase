@@ -221,6 +221,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "jest-fetch-mock": "^3.0.3",
     "jest-puppeteer": "^11.0.0",
+    "memfs": "^4.48.1",
     "partykit": "^0.0.115",
     "partysocket": "^1.1.5",
     "postgres": "^3.4.7",
