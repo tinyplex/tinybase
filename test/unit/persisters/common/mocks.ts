@@ -31,6 +31,7 @@ import {
 } from 'tinybase/persisters/persister-browser';
 import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
+import {createOpfsPersister} from 'tinybase/persisters/persister-opfs';
 import {createRemotePersister} from 'tinybase/persisters/persister-remote';
 import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
 import type {Receive, Synchronizer} from 'tinybase/synchronizers';
@@ -504,6 +505,52 @@ export const mockSessionStorage = getMockedStorage(
   window.sessionStorage,
   createSessionPersister,
 );
+
+export const mockOpfs: Persistable<
+  [FileSystemDirectoryHandle, FileSystemFileHandle]
+> = {
+  autoLoadPause: 200,
+  getLocation: async (): Promise<
+    [FileSystemDirectoryHandle, FileSystemFileHandle]
+  > => {
+    const opfs = await navigator.storage.getDirectory();
+    return [opfs, await opfs.getFileHandle('tinybase.json', {create: true})];
+  },
+  getLocationMethod: ['getHandle', ([, handle]) => handle],
+  getPersister: (
+    store: Store | MergeableStore,
+    [, handle]: [FileSystemDirectoryHandle, FileSystemFileHandle],
+  ) => createOpfsPersister(store, handle, console.log),
+  get: async ([, handle]: [
+    FileSystemDirectoryHandle,
+    FileSystemFileHandle,
+  ]): Promise<Content | MergeableContent | void> => {
+    try {
+      const file = await handle.getFile();
+      console.log(file.name);
+      return JSON.parse(await file.text());
+    } catch {}
+  },
+  set: (
+    location: [FileSystemDirectoryHandle, FileSystemFileHandle],
+    content: Content | MergeableContent,
+  ): Promise<void> => mockOpfs.write(location, JSON.stringify(content)),
+  write: async (
+    [, handle]: [FileSystemDirectoryHandle, FileSystemFileHandle],
+    rawContent: any,
+  ): Promise<void> => {
+    const writable = await handle.createWritable();
+    await writable.write(rawContent);
+    await writable.close();
+  },
+  del: async ([opfs, handle]: [
+    FileSystemDirectoryHandle,
+    FileSystemFileHandle,
+  ]): Promise<void> => {
+    await opfs.removeEntry(handle.name);
+  },
+  testMissing: true,
+};
 
 export const mockRemote: Persistable = {
   beforeEach: (): void => {
