@@ -150,6 +150,11 @@
     <img width="48" src="/automerge.svg?asImg" /> Automerge
   </a>
 </div>
+<div>
+  <a href='/api/persister-browser'>
+    <img width="48" src="/browser.svg?asImg" /> OPFS
+  </a>
+</div>
 <p>
   (Baffled by all these logos? Check out our 
   <a href='/guides/the-basics/architectural-options'>architectural 
