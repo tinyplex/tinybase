@@ -108,6 +108,7 @@ The following Persister types _can_ be used to persist a MergeableStore:
 | ------------------------ | -------------------------------------------------------------------------------------------- |
 | SessionPersister         | Browser session storage                                                                      |
 | LocalPersister           | Browser local storage                                                                        |
+| OpfsPersister            | Browser origin private file system (OPFS)                                                    |
 | FilePersister            | Local file (where possible)                                                                  |
 | ReactNativeMmkvPersister | MMKV in React Native, via [react-native-mmkv](https://github.com/mrousavy/react-native-mmkv) |
 

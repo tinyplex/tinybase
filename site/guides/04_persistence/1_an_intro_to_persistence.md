@@ -28,6 +28,7 @@ where you need to have something saved in a basic browser or server environment.
 | ------------------------ | -------------------------------------------------------------------------------------------- |
 | SessionPersister         | Browser session storage                                                                      |
 | LocalPersister           | Browser local storage                                                                        |
+| OpfsPersister            | Browser origin private file system (OPFS)                                                    |
 | FilePersister            | Local file                                                                                   |
 | IndexedDbPersister       | Browser IndexedDB                                                                            |
 | RemotePersister          | Remote server                                                                                |

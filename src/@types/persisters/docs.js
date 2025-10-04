@@ -14,6 +14,7 @@
  * |-|-|-|-|
  * |SessionPersister|Browser session storage|Yes|Yes
  * |LocalPersister|Browser local storage|Yes|Yes
+ * |OpfsPersister|Browser origin private file system (OPFS)|Yes|Yes
  * |FilePersister|Local file (where possible)|Yes|Yes
  * |IndexedDbPersister|Browser IndexedDB|Yes|No
  * |RemotePersister|Remote server|Yes|No

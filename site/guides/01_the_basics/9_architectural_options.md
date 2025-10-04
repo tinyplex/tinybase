@@ -83,7 +83,8 @@ a basic 'local-only' approach.
 
 The Todo App v1 (the basics) and the Todo App v3 (persistence) demo are good
 examples of how to get started with an app like this. Also see the
-SessionPersister and LocalPersister documentation for more details.
+SessionPersister and LocalPersister documentation for more details. Since v6.7,
+OPFS support is also available via the OpfsPersister interface.
 
 ## 3. Client Database Storage
 
