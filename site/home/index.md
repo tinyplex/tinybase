@@ -86,6 +86,11 @@
   </a>
 </div>
 <div>
+  <a href='/api/persister-browser'>
+    <img width="48" src="/browser.svg?asImg" /> OPFS
+  </a>
+</div>
+<div>
   <a href='/guides/integrations/cloudflare-durable-objects'>
     <img width="48" src="/cloudflare.svg?asImg" /> Cloudflare
   </a>
@@ -148,11 +153,6 @@
 <div>
   <a href='/api/persister-automerge'>
     <img width="48" src="/automerge.svg?asImg" /> Automerge
-  </a>
-</div>
-<div>
-  <a href='/api/persister-browser'>
-    <img width="48" src="/browser.svg?asImg" /> OPFS
   </a>
 </div>
 <p>
