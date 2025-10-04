@@ -1,6 +1,7 @@
 import type {MergeableStore} from '../../@types/mergeable-store/index.d.ts';
 import type {
   PersistedContent,
+  PersisterListener,
   Persists as PersistsType,
 } from '../../@types/persisters/index.d.ts';
 import type {
@@ -13,6 +14,11 @@ import {
   jsonStringWithUndefined,
 } from '../../common/json.ts';
 import {createCustomPersister} from '../common/create.ts';
+
+type FileSystemObserver = {
+  observe: (handle: FileSystemFileHandle) => Promise<void>;
+  disconnect: () => void;
+};
 
 export const createOpfsPersister = ((
   store: Store | MergeableStore,
@@ -31,9 +37,17 @@ export const createOpfsPersister = ((
     await writable.close();
   };
 
-  const addPersisterListener = () => {};
+  const addPersisterListener = async (
+    listener: PersisterListener<PersistsType.StoreOrMergeableStore>,
+  ): Promise<FileSystemObserver> => {
+    // @ts-expect-error FileSystemObserver is not yet typed
+    const observer = new FileSystemObserver(() => listener());
+    await observer.observe(handle);
+    return observer;
+  };
 
-  const delPersisterListener = () => {};
+  const delPersisterListener = (observer: FileSystemObserver) =>
+    observer?.disconnect();
 
   return createCustomPersister(
     store,

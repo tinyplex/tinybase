@@ -20,9 +20,12 @@ export default class TinyBaseEnvironment extends TestEnvironment {
       setImmediate,
       clearImmediate,
     });
-    this.global.navigator.storage = {
-      getDirectory: () => fsa({mode: 'readwrite'}).dir,
-    };
+
+    // OPFS mocks
+    const opfs = fsa({mode: 'readwrite'});
+    this.global.navigator.storage = {getDirectory: () => opfs.dir};
+    this.global.FileSystemObserver = opfs.FileSystemObserver;
+
     await super.setup();
   }
 
