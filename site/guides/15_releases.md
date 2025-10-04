@@ -65,7 +65,6 @@ Usage should be as simple as this:
 
 ```js yolo
 import {MMKV} from 'react-native-mmkv';
-import {createStore} from 'tinybase';
 import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
 
 const storage = new MMKV();
@@ -567,11 +566,10 @@ createPglitePersister function) to persist your TinyBase data:
 
 ```js
 import postgres from 'postgres';
-import {createStore} from 'tinybase';
 import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 
 // Create a TinyBase Store.
-const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+store.setTables({pets: {fido: {species: 'dog'}}});
 
 // Create a postgres connection and Persister.
 const sql = postgres('postgres://localhost:5432/tinybase');

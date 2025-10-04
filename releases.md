@@ -1,8 +1,28 @@
-<link rel="preload" as="image" href="https://tinybase.org/inspector.webp"><link rel="preload" as="image" href="https://tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v6-6">v6.6</h1><p>This release improves the Inspector tool, making it easier to debug, inspect, and mutate your TinyBase stores.</p><p><img src="https://tinybase.org/inspector.webp" alt="Inspector" title="Inspector"></p><p>As well as a modernized UI, new in this release is the ability to create, duplicate, or delete tables, rows, values and cells directly within the Inspector. Press the &#x27;pencil&#x27; icon to start editing items, and then hover over the new icons to see how to manipulate the data.</p><p>See the <a href="https://tinybase.org/guides/inspecting-data/">Inspecting Data</a> guide for more information about how to use the Inspector in your application during development.</p><h1 id="v6-5">v6.5</h1><p>This release includes the new <a href="https://tinybase.org/api/persister-react-native-mmkv/"><code>persister-react-native-mmkv</code></a> module, which allows you to persist data in a React Native MMKV store via the <a href="https://github.com/mrousavy/react-native-mmkv">react-native-mmkv</a> library.</p><p>Usage should be as simple as this:</p>
+<link rel="preload" as="image" href="https://tinybase.org/inspector.webp"><link rel="preload" as="image" href="https://tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v6-7">v6.7</h1><p>This release includes support for the Origin Private File System (OPFS) in a browser. The createOpfsPersister entry point is available in the existing <a href="https://tinybase.org/api/persister-browser/"><code>persister-browser</code></a> module:</p>
+
+```js
+import {createStore} from 'tinybase';
+import {createOpfsPersister} from 'tinybase/persisters/persister-browser';
+
+const opfs = await navigator.storage.getDirectory();
+const handle = await opfs.getFileHandle('tinybase.json', {create: true});
+
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createOpfsPersister(store, handle);
+
+await persister.save();
+// Store JSON will be saved to the OPFS file.
+
+await persister.load();
+// Store JSON will be loaded from the OPFS file.
+
+await persister.destroy();
+```
+
+<p>That&#x27;s it! If you&#x27;ve used other TinyBase persisters, this API should be easy and familiar to use.</p><p>One caveat: observability in OPFS is not yet standardized in browsers. This means that the auto-load functionality of the persister may not work as expected, although a best effort is made using the experimental FileSystemObserverAPI, so please let us know how that works!</p><hr><h1 id="v6-6">v6.6</h1><p>This release improves the Inspector tool, making it easier to debug, inspect, and mutate your TinyBase stores.</p><p><img src="https://tinybase.org/inspector.webp" alt="Inspector" title="Inspector"></p><p>As well as a modernized UI, new in this release is the ability to create, duplicate, or delete tables, rows, values and cells directly within the Inspector. Press the &#x27;pencil&#x27; icon to start editing items, and then hover over the new icons to see how to manipulate the data.</p><p>See the <a href="https://tinybase.org/guides/inspecting-data/">Inspecting Data</a> guide for more information about how to use the Inspector in your application during development.</p><h1 id="v6-5">v6.5</h1><p>This release includes the new <a href="https://tinybase.org/api/persister-react-native-mmkv/"><code>persister-react-native-mmkv</code></a> module, which allows you to persist data in a React Native MMKV store via the <a href="https://github.com/mrousavy/react-native-mmkv">react-native-mmkv</a> library.</p><p>Usage should be as simple as this:</p>
 
 ```js yolo
 import {MMKV} from 'react-native-mmkv';
-import {createStore} from 'tinybase';
 import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
 
 const storage = new MMKV();
@@ -157,11 +177,10 @@ export class MyDurableObject extends WsServerDurableObject {
 
 ```js
 import postgres from 'postgres';
-import {createStore} from 'tinybase';
 import {createPostgresPersister} from 'tinybase/persisters/persister-postgres';
 
 // Create a TinyBase Store.
-const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+store.setTables({pets: {fido: {species: 'dog'}}});
 
 // Create a postgres connection and Persister.
 const sql = postgres('postgres://localhost:5432/tinybase');

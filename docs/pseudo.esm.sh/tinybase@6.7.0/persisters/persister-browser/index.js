@@ -394,7 +394,33 @@ var createStoragePersister = (store, storageName, storage, onIgnoredError) => {
 };
 var createLocalPersister = (store, storageName, onIgnoredError) => createStoragePersister(store, storageName, localStorage, onIgnoredError);
 var createSessionPersister = (store, storageName, onIgnoredError) => createStoragePersister(store, storageName, sessionStorage, onIgnoredError);
+var createOpfsPersister = (store, handle, onIgnoredError) => {
+  const getPersisted = async () => jsonParseWithUndefined(await (await handle.getFile()).text());
+  const setPersisted = async (getContent) => {
+    const writable = await handle.createWritable();
+    await writable.write(jsonStringWithUndefined(getContent()));
+    await writable.close();
+  };
+  const addPersisterListener = async (listener) => {
+    const observer = new FileSystemObserver(() => listener());
+    await observer.observe(handle);
+    return observer;
+  };
+  const delPersisterListener = (observer) => observer?.disconnect();
+  return createCustomPersister(
+    store,
+    getPersisted,
+    setPersisted,
+    addPersisterListener,
+    delPersisterListener,
+    onIgnoredError,
+    3,
+    // StoreOrMergeableStore,
+    { getHandle: () => handle }
+  );
+};
 export {
   createLocalPersister,
+  createOpfsPersister,
   createSessionPersister
 };
