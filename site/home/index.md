@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#v6-6'><em>NEW!</em> v6.6 release</a>
+<a href='/guides/releases/#v6-7'><em>NEW!</em> v6.7 release</a>
 
-<span id="one-with">"Shiny New Inspector Tools!"</span>
+<span id="one-with">"The one with OPFS!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 

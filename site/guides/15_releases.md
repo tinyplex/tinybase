@@ -5,6 +5,41 @@ highlighted features.
 
 ---
 
+# v6.7
+
+This release includes support for the Origin Private File System (OPFS) in a
+browser. The createOpfsPersister entry point is available in the existing
+persister-browser module:
+
+```js
+import {createStore} from 'tinybase';
+import {createOpfsPersister} from 'tinybase/persisters/persister-browser';
+
+const opfs = await navigator.storage.getDirectory();
+const handle = await opfs.getFileHandle('tinybase.json', {create: true});
+
+const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+const persister = createOpfsPersister(store, handle);
+
+await persister.save();
+// Store JSON will be saved to the OPFS file.
+
+await persister.load();
+// Store JSON will be loaded from the OPFS file.
+
+await persister.destroy();
+```
+
+That's it! If you've used other TinyBase persisters, this API should be easy and
+familiar to use.
+
+One caveat: observability in OPFS is not yet standardized in browsers. This
+means that the auto-load functionality of the persister may not work as
+expected, although a best effort is made using the experimental
+FileSystemObserverAPI, so please let us know how that works!
+
+---
+
 # v6.6
 
 This release improves the Inspector tool, making it easier to debug, inspect,
