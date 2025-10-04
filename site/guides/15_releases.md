@@ -8,8 +8,8 @@ highlighted features.
 # v6.7
 
 This release includes support for the Origin Private File System (OPFS) in a
-browser. The createOpfsPersister entry point is available in the existing
-persister-browser module:
+browser. The createOpfsPersister function is the main entry point, and is
+available in the existing persister-browser module:
 
 ```js
 import {createStore} from 'tinybase';
