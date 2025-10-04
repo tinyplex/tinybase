@@ -21,6 +21,7 @@ import {
   mockMergeableContentListener,
   mockMergeableNoContentListener,
   mockNoContentListener,
+  mockOpfs,
   mockRemote,
   mockSessionStorage,
   mockYjs,
@@ -42,6 +43,7 @@ describe.each([
   ['mockMergeableContentListener', mockMergeableContentListener],
   ['mockMergeableChangesListener', mockMergeableChangesListener],
   ['file', mockFile],
+  ['opfs', mockOpfs],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
   ['remote', mockRemote],
@@ -265,57 +267,64 @@ describe.each([
   });
 
   test('autoLoads', async () => {
-    await persistable.set(location, [{t1: {r1: {c1: 1}}}, {}]);
-    expect(persister.isAutoLoading()).toEqual(false);
-    await persister.startAutoLoad();
-    expect(persister.isAutoLoading()).toEqual(true);
-    await pause(0);
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    expect(persister.getStats()).toEqual({loads: 1, saves: 0});
+    if (persistable.testAutoLoad) {
+      await persistable.set(location, [{t1: {r1: {c1: 1}}}, {}]);
+      expect(persister.isAutoLoading()).toEqual(false);
+      await persister.startAutoLoad();
+      expect(persister.isAutoLoading()).toEqual(true);
+      await pause(0);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+      expect(persister.getStats()).toEqual({loads: 1, saves: 0});
 
-    await persistable.set(location, [{t1: {r1: {c1: 2}}}, {}]);
-    await pause(persistable.autoLoadPause);
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
-    expect(persister.getStats()).toEqual({loads: 2, saves: 0});
+      await persistable.set(location, [{t1: {r1: {c1: 2}}}, {}]);
+      await pause(persistable.autoLoadPause);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+      expect(persister.getStats()).toEqual({loads: 2, saves: 0});
 
-    await persistable.set(location, [{t1: {r1: {c1: 3}}}, {}]);
-    await pause(persistable.autoLoadPause);
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
-    expect(persister.getStats()).toEqual({loads: 3, saves: 0});
-    await persister.stopAutoLoad();
-    expect(persister.isAutoLoading()).toEqual(false);
+      await persistable.set(location, [{t1: {r1: {c1: 3}}}, {}]);
+      await pause(persistable.autoLoadPause);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
+      expect(persister.getStats()).toEqual({loads: 3, saves: 0});
+      await persister.stopAutoLoad();
+      expect(persister.isAutoLoading()).toEqual(false);
 
-    await persistable.set(location, [{t1: {r1: {c1: 4}}}, {}]);
-    await pause(persistable.autoLoadPause);
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
-    expect(persister.getStats()).toEqual({loads: 3, saves: 0});
+      await persistable.set(location, [{t1: {r1: {c1: 4}}}, {}]);
+      await pause(persistable.autoLoadPause);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
+      expect(persister.getStats()).toEqual({loads: 3, saves: 0});
+    }
   });
 
   test('autoSave & autoLoad: roundtrip', async () => {
-    await persister.startAutoSave();
-    store.setTables({t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}});
-    store.setValues({v1: 1, v2: 2});
-    store.delTable('t2');
-    store.delRow('t1', 'r2');
-    store.delCell('t1', 'r1', 'c2');
-    store.delValue('v2');
-    await pause();
-    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-    expect(await persistable.get(location)).toEqual([
-      {t1: {r1: {c1: 1}}},
-      {v1: 1},
-    ]);
-    await persister.stopAutoSave();
-    store.delTables().delValues();
-    await pause();
-    expect(store.getContent()).toEqual([{}, {}]);
-    expect(await persistable.get(location)).toEqual([
-      {t1: {r1: {c1: 1}}},
-      {v1: 1},
-    ]);
-    await persister.startAutoLoad();
-    await pause(0);
-    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    if (persistable.testAutoLoad) {
+      await persister.startAutoSave();
+      store.setTables({
+        t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
+        t2: {r2: {c2: 2}},
+      });
+      store.setValues({v1: 1, v2: 2});
+      store.delTable('t2');
+      store.delRow('t1', 'r2');
+      store.delCell('t1', 'r1', 'c2');
+      store.delValue('v2');
+      await pause();
+      expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+      expect(await persistable.get(location)).toEqual([
+        {t1: {r1: {c1: 1}}},
+        {v1: 1},
+      ]);
+      await persister.stopAutoSave();
+      store.delTables().delValues();
+      await pause();
+      expect(store.getContent()).toEqual([{}, {}]);
+      expect(await persistable.get(location)).toEqual([
+        {t1: {r1: {c1: 1}}},
+        {v1: 1},
+      ]);
+      await persister.startAutoLoad();
+      await pause(0);
+      expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+    }
   });
 
   test('autoSave & autoLoad: no load when saving', async () => {
@@ -341,21 +350,25 @@ describe.each([
   });
 
   test('does not delete when autoLoaded is deleted', async () => {
-    await persistable.set(location, [{t1: {r1: {c1: 1}}}, {}]);
-    await persister.startAutoLoad();
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    await persistable.del(location);
-    await pause(persistable.autoLoadPause);
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    if (persistable.testAutoLoad) {
+      await persistable.set(location, [{t1: {r1: {c1: 1}}}, {}]);
+      await persister.startAutoLoad();
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+      await persistable.del(location);
+      await pause(persistable.autoLoadPause);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    }
   });
 
   test('does not delete when autoLoaded is corrupted', async () => {
-    await persistable.set(location, [{t1: {r1: {c1: 1}}}, {}]);
-    await persister.startAutoLoad();
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    await persistable.write(location, '{');
-    await pause(persistable.autoLoadPause);
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    if (persistable.testAutoLoad) {
+      await persistable.set(location, [{t1: {r1: {c1: 1}}}, {}]);
+      await persister.startAutoLoad();
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+      await persistable.write(location, '{');
+      await pause(persistable.autoLoadPause);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    }
   });
 
   test('does not load from non-existent', async () => {
@@ -367,7 +380,7 @@ describe.each([
   });
 
   test('does not autoLoad from non-existent', async () => {
-    if (persistable.testMissing) {
+    if (persistable.testMissing && persistable.testAutoLoad) {
       store.setTables({t1: {r1: {c1: 1}}});
       const persister = await (
         await persistable.getPersister(store, join(tmp.dirSync().name, '_'))

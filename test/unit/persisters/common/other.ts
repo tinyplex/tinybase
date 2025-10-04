@@ -35,5 +35,5 @@ export type Persistable<Location = string> = {
   afterEach?: (location: Location) => Promise<void>;
   getChanges?: () => Changes | MergeableChanges;
   testMissing: boolean;
-  extraLoad?: 0 | 1;
+  testAutoLoad: boolean;
 };

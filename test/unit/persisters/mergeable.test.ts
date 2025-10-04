@@ -20,6 +20,7 @@ import {
   mockMergeableChangesListener,
   mockMergeableContentListener,
   mockMergeableNoContentListener,
+  mockOpfs,
   mockSessionStorage,
 } from './common/mocks.ts';
 import {
@@ -40,6 +41,7 @@ describe.each([
   ['mockMergeableContentListener', mockMergeableContentListener],
   ['mockMergeableChangesListener', mockMergeableChangesListener],
   ['file', mockFile],
+  ['opfs', mockOpfs],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
   ['localSynchronizer', mockLocalSynchronizer],
@@ -195,114 +197,121 @@ describe.each([
   });
 
   test('autoLoads', async () => {
-    await persistable.set(location, [
-      [
-        {
-          t1: [
-            {r1: [{c1: [1, '1', 4065945599]}, '', 1279994494]},
-            '',
-            1293085726,
-          ],
-        },
-        '',
-        4033596827,
-      ],
-      [{}, '', 0],
-    ]);
-    expect(persister.isAutoLoading()).toEqual(false);
-    await persister.startAutoLoad();
-    expect(persister.isAutoLoading()).toEqual(true);
-    await pause(0);
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    expect(store.getMergeableContent()).toMatchSnapshot();
-    expect(persister.getStats()).toEqual({loads: 1, saves: 0});
+    if (persistable.testAutoLoad) {
+      await persistable.set(location, [
+        [
+          {
+            t1: [
+              {r1: [{c1: [1, '1', 4065945599]}, '', 1279994494]},
+              '',
+              1293085726,
+            ],
+          },
+          '',
+          4033596827,
+        ],
+        [{}, '', 0],
+      ]);
+      expect(persister.isAutoLoading()).toEqual(false);
+      await persister.startAutoLoad();
+      expect(persister.isAutoLoading()).toEqual(true);
+      await pause(0);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+      expect(store.getMergeableContent()).toMatchSnapshot();
+      expect(persister.getStats()).toEqual({loads: 1, saves: 0});
 
-    await persistable.set(location, [
-      [
-        {
-          t1: [
-            {r1: [{c1: [2, '2', 2669080357]}, '', 274319047]},
-            '',
-            4089057354,
-          ],
-        },
-        '',
-        3386696034,
-      ],
-      [{}, '', 0],
-    ]);
+      await persistable.set(location, [
+        [
+          {
+            t1: [
+              {r1: [{c1: [2, '2', 2669080357]}, '', 274319047]},
+              '',
+              4089057354,
+            ],
+          },
+          '',
+          3386696034,
+        ],
+        [{}, '', 0],
+      ]);
 
-    await pause(persistable.autoLoadPause);
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
-    expect(store.getMergeableContent()).toMatchSnapshot();
-    expect(persister.getStats()).toEqual({loads: 2, saves: 0});
+      await pause(persistable.autoLoadPause);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 2}}});
+      expect(store.getMergeableContent()).toMatchSnapshot();
+      expect(persister.getStats()).toEqual({loads: 2, saves: 0});
 
-    await persistable.set(location, [
-      [
-        {
-          t1: [
-            {r1: [{c1: [3, '3', 3252714811]}, '', 1416411412]},
-            '',
-            3704904231,
-          ],
-        },
-        '',
-        4008152259,
-      ],
-      [{}, '', 0],
-    ]);
-    await pause(persistable.autoLoadPause);
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
-    expect(store.getMergeableContent()).toMatchSnapshot();
-    expect(persister.getStats()).toEqual({loads: 3, saves: 0});
-    await persister.stopAutoLoad();
-    expect(persister.isAutoLoading()).toEqual(false);
+      await persistable.set(location, [
+        [
+          {
+            t1: [
+              {r1: [{c1: [3, '3', 3252714811]}, '', 1416411412]},
+              '',
+              3704904231,
+            ],
+          },
+          '',
+          4008152259,
+        ],
+        [{}, '', 0],
+      ]);
+      await pause(persistable.autoLoadPause);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
+      expect(store.getMergeableContent()).toMatchSnapshot();
+      expect(persister.getStats()).toEqual({loads: 3, saves: 0});
+      await persister.stopAutoLoad();
+      expect(persister.isAutoLoading()).toEqual(false);
 
-    await persistable.set(location, [
-      [
-        {
-          t1: [
-            {r1: [{c1: [3, '4', 3252714811]}, '', 1416411412]},
-            '',
-            3704904231,
-          ],
-        },
-        '',
-        4008152259,
-      ],
-      [{}, '', 0],
-    ]);
-    await pause(persistable.autoLoadPause);
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
-    expect(store.getMergeableContent()).toMatchSnapshot();
-    expect(persister.getStats()).toEqual({loads: 3, saves: 0});
+      await persistable.set(location, [
+        [
+          {
+            t1: [
+              {r1: [{c1: [3, '4', 3252714811]}, '', 1416411412]},
+              '',
+              3704904231,
+            ],
+          },
+          '',
+          4008152259,
+        ],
+        [{}, '', 0],
+      ]);
+      await pause(persistable.autoLoadPause);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 3}}});
+      expect(store.getMergeableContent()).toMatchSnapshot();
+      expect(persister.getStats()).toEqual({loads: 3, saves: 0});
+    }
   });
 
   test('autoSave & autoLoad: roundtrip', async () => {
-    await persister.startAutoSave();
-    store.setTables({t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}});
-    store.setValues({v1: 1, v2: 2});
-    store.delTable('t2');
-    store.delRow('t1', 'r2');
-    store.delCell('t1', 'r1', 'c2');
-    store.delValue('v2');
-    await pause();
-    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-    const was = store.getMergeableContent();
-    expect(was).toMatchSnapshot();
-    expect(await persistable.get(location)).toMatchSnapshot();
-    await persister.stopAutoSave();
-    store.setMergeableContent([
-      [{}, '', 0],
-      [{}, '', 0],
-    ]);
-    await pause();
-    expect(store.getContent()).toEqual([{}, {}]);
-    expect(await persistable.get(location)).toMatchSnapshot();
-    await persister.startAutoLoad();
-    await pause(0);
-    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
-    expect(store.getMergeableContent()).toEqual(was);
+    if (persistable.testAutoLoad) {
+      await persister.startAutoSave();
+      store.setTables({
+        t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}},
+        t2: {r2: {c2: 2}},
+      });
+      store.setValues({v1: 1, v2: 2});
+      store.delTable('t2');
+      store.delRow('t1', 'r2');
+      store.delCell('t1', 'r1', 'c2');
+      store.delValue('v2');
+      await pause();
+      expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+      const was = store.getMergeableContent();
+      expect(was).toMatchSnapshot();
+      expect(await persistable.get(location)).toMatchSnapshot();
+      await persister.stopAutoSave();
+      store.setMergeableContent([
+        [{}, '', 0],
+        [{}, '', 0],
+      ]);
+      await pause();
+      expect(store.getContent()).toEqual([{}, {}]);
+      expect(await persistable.get(location)).toMatchSnapshot();
+      await persister.startAutoLoad();
+      await pause(0);
+      expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
+      expect(store.getMergeableContent()).toEqual(was);
+    }
   });
 
   test('autoSave & autoLoad: no load when saving', async () => {
@@ -328,47 +337,51 @@ describe.each([
   });
 
   test('does not delete when autoLoaded is deleted', async () => {
-    await persistable.set(location, [
-      [
-        {
-          t1: [
-            {r1: [{c1: [1, '_', 4065945599]}, '', 1279994494]},
-            '',
-            1293085726,
-          ],
-        },
-        '',
-        4033596827,
-      ],
-      [{}, '', 0],
-    ]);
-    await persister.startAutoLoad();
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    await persistable.del(location);
-    await pause(persistable.autoLoadPause);
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    if (persistable.testAutoLoad) {
+      await persistable.set(location, [
+        [
+          {
+            t1: [
+              {r1: [{c1: [1, '_', 4065945599]}, '', 1279994494]},
+              '',
+              1293085726,
+            ],
+          },
+          '',
+          4033596827,
+        ],
+        [{}, '', 0],
+      ]);
+      await persister.startAutoLoad();
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+      await persistable.del(location);
+      await pause(persistable.autoLoadPause);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    }
   });
 
   test('does not delete when autoLoaded is corrupted', async () => {
-    await persistable.set(location, [
-      [
-        {
-          t1: [
-            {r1: [{c1: [1, '_', 4065945599]}, '', 1279994494]},
-            '',
-            1293085726,
-          ],
-        },
-        '',
-        4033596827,
-      ],
-      [{}, '', 0],
-    ]);
-    await persister.startAutoLoad();
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
-    persistable.write(location, '{');
-    await pause(persistable.autoLoadPause);
-    expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    if (persistable.testAutoLoad) {
+      await persistable.set(location, [
+        [
+          {
+            t1: [
+              {r1: [{c1: [1, '_', 4065945599]}, '', 1279994494]},
+              '',
+              1293085726,
+            ],
+          },
+          '',
+          4033596827,
+        ],
+        [{}, '', 0],
+      ]);
+      await persister.startAutoLoad();
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+      persistable.write(location, '{');
+      await pause(persistable.autoLoadPause);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 1}}});
+    }
   });
 
   test('does not load from non-existent', async () => {

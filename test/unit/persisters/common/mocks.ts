@@ -15,7 +15,7 @@ import type {
   Tables,
   Values,
 } from 'tinybase';
-import {createMergeableStore} from 'tinybase';
+import {createMergeableStore, getUniqueId} from 'tinybase';
 import type {
   AnyPersister,
   DatabasePersisterConfig,
@@ -177,6 +177,7 @@ const getMockedCustom = (
   },
   getChanges: () => customPersisterChanges,
   testMissing: true,
+  testAutoLoad: true,
 });
 
 const getMockedStorage = (
@@ -219,6 +220,7 @@ const getMockedStorage = (
     del: async (location: string): Promise<void> =>
       storage.removeItem(location),
     testMissing: true,
+    testAutoLoad: true,
   };
   return mockStorage;
 };
@@ -281,8 +283,9 @@ const getMockedDatabase = <Location>(
       } catch {}
     },
     afterEach: (location: Location) => mockDatabase.del(location),
-    testMissing: true,
     autoLoadPause,
+    testMissing: true,
+    testAutoLoad: true,
   };
   return mockDatabase;
 };
@@ -374,6 +377,7 @@ export const mockFile: Persistable = {
     fs.writeFileSync(location, rawContent, 'utf-8'),
   del: async (location: string): Promise<void> => fs.unlinkSync(location),
   testMissing: true,
+  testAutoLoad: true,
 };
 
 export const mockLocalSynchronizer: Persistable<
@@ -409,6 +413,7 @@ export const mockLocalSynchronizer: Persistable<
     ]);
   },
   testMissing: false,
+  testAutoLoad: true,
   afterEach: async (location: [LocalSynchronizer, MergeableStore]) => {
     await location[0].destroy();
   },
@@ -489,6 +494,7 @@ export const mockCustomSynchronizer: Persistable<
     ]);
   },
   testMissing: false,
+  testAutoLoad: true,
   afterEach: async (
     location: [Map<string, Receive>, Synchronizer, MergeableStore],
   ) => {
@@ -514,20 +520,19 @@ export const mockOpfs: Persistable<
     [FileSystemDirectoryHandle, FileSystemFileHandle]
   > => {
     const opfs = await navigator.storage.getDirectory();
-    return [opfs, await opfs.getFileHandle('tinybase.json', {create: true})];
+    return [opfs, await opfs.getFileHandle(getUniqueId(), {create: true})];
   },
   getLocationMethod: ['getHandle', ([, handle]) => handle],
   getPersister: (
     store: Store | MergeableStore,
     [, handle]: [FileSystemDirectoryHandle, FileSystemFileHandle],
-  ) => createOpfsPersister(store, handle, console.log),
+  ) => createOpfsPersister(store, handle),
   get: async ([, handle]: [
     FileSystemDirectoryHandle,
     FileSystemFileHandle,
   ]): Promise<Content | MergeableContent | void> => {
     try {
       const file = await handle.getFile();
-      console.log(file.name);
       return JSON.parse(await file.text());
     } catch {}
   },
@@ -550,6 +555,7 @@ export const mockOpfs: Persistable<
     await opfs.removeEntry(handle.name);
   },
   testMissing: true,
+  testAutoLoad: false,
 };
 
 export const mockRemote: Persistable = {
@@ -597,9 +603,10 @@ export const mockRemote: Persistable = {
     fs.writeFileSync(location, rawContent, 'utf-8'),
   del: async (location: string): Promise<void> => fs.unlinkSync(location),
   testMissing: true,
+  testAutoLoad: true,
 };
 
-export const mockIndexedDb = {
+export const mockIndexedDb: Persistable = {
   autoLoadPause: 11,
   getLocation: async (): Promise<string> => 'test' + Math.random(),
   getLocationMethod: [
@@ -655,6 +662,7 @@ export const mockIndexedDb = {
   },
   del: (dbName: string): Promise<void> => deleteDB(dbName),
   testMissing: true,
+  testAutoLoad: true,
 };
 
 export const getMockDatabases = (variants: Variants) =>
@@ -724,6 +732,7 @@ export const mockYjs: Persistable<YDoc> = {
   },
   del: async (location: YDoc): Promise<void> => location.destroy(),
   testMissing: false,
+  testAutoLoad: true,
 };
 
 export const mockAutomerge: Persistable<DocHandle<any>> = {
@@ -775,4 +784,5 @@ export const mockAutomerge: Persistable<DocHandle<any>> = {
   },
   del: async (docHandle: DocHandle<any>): Promise<void> => docHandle.delete(),
   testMissing: false,
+  testAutoLoad: true,
 };
