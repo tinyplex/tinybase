@@ -19,7 +19,6 @@ import * as TinyBasePersisterBrowser from 'tinybase/persisters/persister-browser
 import * as TinyBasePersisterCrSqliteWasm from 'tinybase/persisters/persister-cr-sqlite-wasm';
 import * as TinyBasePersisterFile from 'tinybase/persisters/persister-file';
 import * as TinyBasePersisterIndexedDb from 'tinybase/persisters/persister-indexed-db';
-import * as TinyBasePersisterOpfs from 'tinybase/persisters/persister-opfs';
 import * as TinyBasePersisterPartyKitClient from 'tinybase/persisters/persister-partykit-client';
 import * as TinyBasePersisterPartyKitServer from 'tinybase/persisters/persister-partykit-server';
 import * as TinyBasePersisterPglite from 'tinybase/persisters/persister-pglite';
@@ -81,7 +80,6 @@ const TinyBaseForTest = {
   'tinybase/persisters/persister-cr-sqlite-wasm': TinyBasePersisterCrSqliteWasm,
   'tinybase/persisters/persister-file': TinyBasePersisterFile,
   'tinybase/persisters/persister-indexed-db': TinyBasePersisterIndexedDb,
-  'tinybase/persisters/persister-opfs': TinyBasePersisterOpfs,
   'tinybase/persisters/persister-partykit-client':
     TinyBasePersisterPartyKitClient,
   'tinybase/persisters/persister-partykit-server':

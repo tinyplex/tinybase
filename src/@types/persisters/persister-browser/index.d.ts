@@ -30,3 +30,17 @@ export function createLocalPersister(
   storageName: string,
   onIgnoredError?: (error: any) => void,
 ): LocalPersister;
+
+/// OpfsPersister
+export interface OpfsPersister
+  extends Persister<Persists.StoreOrMergeableStore> {
+  /// OpfsPersister.getHandle
+  getHandle(): FileSystemFileHandle;
+}
+
+/// createOpfsPersister
+export function createOpfsPersister(
+  store: Store | MergeableStore,
+  handle: FileSystemFileHandle,
+  onIgnoredError?: (error: any) => void,
+): OpfsPersister;

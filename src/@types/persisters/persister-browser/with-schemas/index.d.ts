@@ -20,6 +20,13 @@ export interface LocalPersister<Schemas extends OptionalSchemas>
   getStorageName(): string;
 }
 
+/// OpfsPersister
+export interface OpfsPersister<Schemas extends OptionalSchemas>
+  extends Persister<Schemas, Persists.StoreOrMergeableStore> {
+  /// OpfsPersister.getHandle
+  getHandle(): string;
+}
+
 /// createSessionPersister
 export function createSessionPersister<Schemas extends OptionalSchemas>(
   store: Store<Schemas> | MergeableStore<Schemas>,
@@ -33,3 +40,10 @@ export function createLocalPersister<Schemas extends OptionalSchemas>(
   storageName: string,
   onIgnoredError?: (error: any) => void,
 ): LocalPersister<Schemas>;
+
+/// createOpfsPersister
+export function createOpfsPersister<Schemas extends OptionalSchemas>(
+  store: Store<Schemas> | MergeableStore<Schemas>,
+  handle: FileSystemFileHandle,
+  onIgnoredError?: (error: any) => void,
+): OpfsPersister<Schemas>;

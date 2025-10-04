@@ -27,11 +27,11 @@ import {createCustomPersister} from 'tinybase/persisters';
 import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
 import {
   createLocalPersister,
+  createOpfsPersister,
   createSessionPersister,
 } from 'tinybase/persisters/persister-browser';
 import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
-import {createOpfsPersister} from 'tinybase/persisters/persister-opfs';
 import {createRemotePersister} from 'tinybase/persisters/persister-remote';
 import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
 import type {Receive, Synchronizer} from 'tinybase/synchronizers';
