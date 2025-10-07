@@ -32,6 +32,7 @@ export const useReadme = (node: Node): [string, string] => {
   });
 
   const substituteEval = (markdown: string): string =>
+    // eslint-disable-next-line react-hooks/unsupported-syntax
     markdown.replace(/@@EVAL\("(.*?)"\)/gms, (_, script) => (0, eval)(script));
 
   return [substituteEval(node.summary ?? ''), substituteEval(node.body ?? '')];
