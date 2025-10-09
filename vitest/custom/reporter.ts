@@ -1,12 +1,14 @@
 import {TestCase} from 'vitest/node';
-import {DotReporter} from 'vitest/reporters';
+import {DefaultReporter} from 'vitest/reporters';
 
-export default class extends DotReporter {
+export default class extends DefaultReporter {
   assertions: number = 0;
   async onTestCaseResult(testCase: TestCase) {
     this.assertions += (testCase.meta() as any).assertions || 0;
     super.onTestCaseResult(testCase);
   }
+
+  // onTestModuleEnd(testModule: TestModule): void {}
 
   async onFinished() {
     super.onFinished();
