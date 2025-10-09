@@ -79,6 +79,7 @@ export default tsLint.config(
             'eslint/config',
             'typescript-eslint',
             'bun:sqlite',
+            'vitest/*',
           ],
         },
       ],

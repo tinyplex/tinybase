@@ -192,6 +192,7 @@
     "@types/react-native-sqlite-storage": "^6.0.5",
     "@types/tmp": "^0.2.6",
     "@types/ws": "^8.18.1",
+    "@vitest/coverage-istanbul": "^3.2.4",
     "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "asciichart": "^1.5.25",
     "async-mutex": "^0.5.0",
@@ -243,6 +244,7 @@
     "ts-unused-exports": "^11.0.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.0",
+    "vitest": "^3.2.4",
     "wa-sqlite": "github:rhashimoto/wa-sqlite",
     "ws": "^8.18.3",
     "yjs": "^13.6.27"
