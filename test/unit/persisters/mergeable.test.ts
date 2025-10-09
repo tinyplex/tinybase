@@ -10,6 +10,7 @@ import {createMergeableStore, createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
 import {createCustomPersister, Persists} from 'tinybase/persisters';
 import {getTimeFunctions} from '../common/mergeable.ts';
+import {noop} from '../common/other.ts';
 import {MERGEABLE_VARIANTS} from './common/databases.ts';
 import {
   getMockDatabases,
@@ -23,12 +24,7 @@ import {
   mockOpfs,
   mockSessionStorage,
 } from './common/mocks.ts';
-import {
-  asyncNoop,
-  GetLocationMethod,
-  noop,
-  Persistable,
-} from './common/other.ts';
+import {asyncNoop, GetLocationMethod, Persistable} from './common/other.ts';
 
 const [reset, getNow, pause] = getTimeFunctions();
 

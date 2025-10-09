@@ -3,8 +3,8 @@ import type {Row, Store, Table, Tables, Values} from 'tinybase';
 import {createMergeableStore, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
 import {createStoreListener} from '../../common/listeners.ts';
+import {noop} from '../../common/other.ts';
 import {StoreListener} from '../../common/types.ts';
-import {noop} from '../../persisters/common/other.ts';
 
 describe.each([
   ['store', createStore],

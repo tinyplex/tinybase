@@ -119,3 +119,4 @@ export const getRelationshipsObject = (
   });
   return relationshipsObject;
 };
+export const noop = () => undefined;

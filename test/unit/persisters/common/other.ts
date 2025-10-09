@@ -8,7 +8,6 @@ import type {
 } from 'tinybase';
 import type {Persister, Persists} from 'tinybase/persisters';
 
-export const noop = () => undefined;
 export const asyncNoop = async () => undefined;
 
 export type GetLocationMethod<Location = string> = [

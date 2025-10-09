@@ -30,8 +30,7 @@ import {createSqliteBunPersister} from 'tinybase/persisters/persister-sqlite-bun
 import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import tmp from 'tmp';
-import {isBun, pause, suppressWarnings} from '../../common/other.ts';
-import {noop} from './other.ts';
+import {isBun, noop, pause, suppressWarnings} from '../../common/other.ts';
 
 tmp.setGracefulCleanup();
 const statementMutex = new Mutex();

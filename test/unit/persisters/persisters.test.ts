@@ -7,7 +7,7 @@ import type {Persister} from 'tinybase/persisters';
 import {createCustomPersister, Status} from 'tinybase/persisters';
 import tmp from 'tmp';
 import {createStatusListener} from '../common/listeners.ts';
-import {pause} from '../common/other.ts';
+import {noop, pause} from '../common/other.ts';
 import {ALL_VARIANTS} from './common/databases.ts';
 import {
   getMockDatabases,
@@ -26,12 +26,7 @@ import {
   mockSessionStorage,
   mockYjs,
 } from './common/mocks.ts';
-import {
-  asyncNoop,
-  GetLocationMethod,
-  noop,
-  Persistable,
-} from './common/other.ts';
+import {asyncNoop, GetLocationMethod, Persistable} from './common/other.ts';
 
 tmp.setGracefulCleanup();
 

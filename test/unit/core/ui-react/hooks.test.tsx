@@ -155,8 +155,7 @@ import {
   useWillFinishTransactionListener,
 } from 'tinybase/ui-react';
 import tmp from 'tmp';
-import {pause} from '../../common/other.ts';
-import {noop} from '../../persisters/common/other.ts';
+import {noop, pause} from '../../common/other.ts';
 
 let store: Store;
 let didRender: jest.Mock;
