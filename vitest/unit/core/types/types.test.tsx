@@ -17,7 +17,7 @@ const testFiles = readdirSync(dir).filter(
   (file) => !file.includes('.test.') && !file.includes('__snapshots__'),
 );
 
-test.each(testFiles)('Types', (testFile) => {
+test.each(testFiles)('Types in %s', (testFile) => {
   const program = createProgram([resolve(dir, testFile)], options);
   const results = getPreEmitDiagnostics(program);
 
@@ -27,6 +27,6 @@ test.each(testFiles)('Types', (testFile) => {
       file?.getLineAndCharacterOfPosition(start ?? 0) ?? {};
     expect(
       typeof messageText == 'string' ? messageText : messageText.messageText,
-    ).toMatchSnapshot(`${testFile}:${line}:${character}`);
+    ).toMatchSnapshot(`${line}:${character}`);
   });
 });
