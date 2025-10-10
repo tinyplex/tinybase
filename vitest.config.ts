@@ -2,7 +2,7 @@ import {coverageConfigDefaults, defineConfig} from 'vitest/config';
 
 export default defineConfig({
   test: {
-    environment: 'jsdom',
+    environment: 'happy-dom',
     setupFiles: ['vitest/custom/setup.ts'],
     reporters: [['vitest/custom/reporter.ts']],
     coverage: {
