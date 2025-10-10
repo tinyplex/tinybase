@@ -4,7 +4,9 @@ export default defineConfig({
   test: {
     environment: 'happy-dom',
     setupFiles: ['vitest/custom/setup.ts'],
-    reporters: [['vitest/custom/reporter.ts']],
+    reporters: [['vitest/custom/reporter.ts', {hideSkipped: true}]],
+    slowTestThreshold: 3000,
+    maxWorkers: 10,
     coverage: {
       enabled: false,
       provider: 'istanbul',
