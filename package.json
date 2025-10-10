@@ -246,6 +246,7 @@
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.0",
     "vitest": "^3.2.4",
+    "vitest-fetch-mock": "^0.4.5",
     "wa-sqlite": "github:rhashimoto/wa-sqlite",
     "ws": "^8.18.3",
     "yjs": "^13.6.27"

@@ -1,6 +1,8 @@
 import type {Id, Ids, Indexes, Metrics, Relationships} from 'tinybase';
 import {IdObj, IdObj2} from './types.ts';
 
+export const isBun = process.versions.bun != null;
+
 export const pause = async (ms = 50): Promise<void> =>
   new Promise<void>((resolve) =>
     setTimeout(
@@ -67,3 +69,27 @@ export const getRelationshipsObject = (
   });
   return relationshipsObject;
 };
+
+export const suppressWarnings = async <Return>(
+  actions: () => Promise<Return>,
+) => {
+  /* eslint-disable no-console */
+  const log = console.log;
+  const warn = console.warn;
+  const error = console.error;
+  console.log = (...args: any[]) => (ignorable(...args) ? 0 : log(...args));
+  console.warn = (...args: any[]) => (ignorable(...args) ? 0 : warn(...args));
+  console.error = (...args: any[]) => (ignorable(...args) ? 0 : error(...args));
+  const result = await actions();
+  console.log = log;
+  console.warn = warn;
+  console.error = error;
+  /* eslint-enable no-console */
+  return result;
+};
+const ignorable = (...args: any[]): boolean =>
+  args.some((arg) =>
+    arg
+      .toString()
+      .match(/wasm|OPFS|ArrayBuffer|ReactDOMTestUtils|C-web|onCustomMessage/),
+  );
