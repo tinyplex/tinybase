@@ -521,7 +521,7 @@
  * import {createMergeableStore} from 'tinybase';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
- * import {WebSocketServer} from 'ws';
+ * import {WebSocket, WebSocketServer} from 'ws';
  *
  * // Server
  * const server = createWsServer(new WebSocketServer({port: 8047}));
@@ -567,7 +567,7 @@
  * import {createFilePersister} from 'tinybase/persisters/persister-file';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
- * import {WebSocketServer} from 'ws';
+ * import {WebSocket, WebSocketServer} from 'ws';
  *
  * // Server
  * const server = createWsServer(
@@ -638,7 +638,7 @@
  * import {createFilePersister} from 'tinybase/persisters/persister-file';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  * import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
- * import {WebSocketServer} from 'ws';
+ * import {WebSocket, WebSocketServer} from 'ws';
  *
  * // Server
  * const server = createWsServer(

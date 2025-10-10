@@ -101,7 +101,7 @@
  * import {createMergeableStore} from 'tinybase';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
  * import {createWsServerSimple} from 'tinybase/synchronizers/synchronizer-ws-server-simple';
- * import {WebSocketServer} from 'ws';
+ * import {WebSocket, WebSocketServer} from 'ws';
  *
  * // Server
  * const server = createWsServerSimple(new WebSocketServer({port: 8053}));

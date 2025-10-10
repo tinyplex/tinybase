@@ -11798,6 +11798,7 @@
  *
  * ```jsx
  * import React from 'react';
+ * import {WebSocket, WebSocketServer} from 'ws';
  * import {createRoot} from 'react-dom/client';
  * import {createMergeableStore} from 'tinybase';
  * import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
@@ -11807,7 +11808,6 @@
  *   useCreateSynchronizer,
  *   useTables,
  * } from 'tinybase/ui-react';
- * import {WebSocketServer} from 'ws';
  *
  * const server1 = createWsServer(new WebSocketServer({port: 8044}));
  * const server2 = createWsServer(new WebSocketServer({port: 8045}));
