@@ -1,0 +1,211 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`EditableCellView > basic 1`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
+
+exports[`EditableCellView > change type and Cell 1`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
+
+exports[`EditableCellView > change type and Cell 2`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="2"></div>"`;
+
+exports[`EditableCellView > change type and Cell 3`] = `"<div class="editableCell"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+
+exports[`EditableCellView > change type and Cell 4`] = `"<div class="editableCell"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+
+exports[`EditableCellView > change type and Cell 5`] = `"<div class="editableCell"><button title="string" class="string">string</button><input value="1"></div>"`;
+
+exports[`EditableCellView > change type and Cell 6`] = `"<div class="editableCell"><button title="string" class="string">string</button><input value="two"></div>"`;
+
+exports[`EditableCellView > change type and Cell 7`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="2"></div>"`;
+
+exports[`EditableCellView > change type and Cell 8`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="3"></div>"`;
+
+exports[`EditableCellView > change type and Cell 9`] = `"<div class="editableCell"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+
+exports[`EditableCellView > change type and Cell 10`] = `"<div class="editableCell"><button title="string" class="string">string</button><input value="three"></div>"`;
+
+exports[`EditableCellView > className 1`] = `"<div class="e"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
+
+exports[`EditableCellView > showType 1`] = `"<div class="editableCell"><input type="number" value="1"></div>"`;
+
+exports[`EditableValueView > basic 1`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
+
+exports[`EditableValueView > change type and Value 1`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
+
+exports[`EditableValueView > change type and Value 2`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="2"></div>"`;
+
+exports[`EditableValueView > change type and Value 3`] = `"<div class="editableValue"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+
+exports[`EditableValueView > change type and Value 4`] = `"<div class="editableValue"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+
+exports[`EditableValueView > change type and Value 5`] = `"<div class="editableValue"><button title="string" class="string">string</button><input value="1"></div>"`;
+
+exports[`EditableValueView > change type and Value 6`] = `"<div class="editableValue"><button title="string" class="string">string</button><input value="two"></div>"`;
+
+exports[`EditableValueView > change type and Value 7`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="2"></div>"`;
+
+exports[`EditableValueView > change type and Value 8`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="3"></div>"`;
+
+exports[`EditableValueView > change type and Value 9`] = `"<div class="editableValue"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+
+exports[`EditableValueView > change type and Value 10`] = `"<div class="editableValue"><button title="string" class="string">string</button><input value="three"></div>"`;
+
+exports[`EditableValueView > className 1`] = `"<div class="e"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
+
+exports[`EditableValueView > showType 1`] = `"<div class="editableValue"><input type="number" value="1"></div>"`;
+
+exports[`RelationshipInHtmlTable > basic 1`] = `"<table><thead><tr><th>t1.Id</th><th>t2.Id</th><th>t1.c1</th><th>t2.c1</th><th>t2.c2</th></tr></thead><tbody><tr><th title="r1">r1</th><th title="r2">r2</th><td>1</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`RelationshipInHtmlTable > className 1`] = `"<table class="slice"><thead><tr><th>t1.Id</th><th>t2.Id</th><th>t1.c1</th><th>t2.c1</th><th>t2.c2</th></tr></thead><tbody><tr><th title="r1">r1</th><th title="r2">r2</th><td>1</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`RelationshipInHtmlTable > customCells array 1`] = `"<table><thead><tr><th>t1.Id</th><th>t2.Id</th><th>t1.c1</th><th>t1.c3</th><th>t2.c2</th><th>t2.c1</th></tr></thead><tbody><tr><th title="r1">r1</th><th title="r2">r2</th><td>1</td><td></td><td>4</td><td>3</td></tr></tbody></table>"`;
+
+exports[`RelationshipInHtmlTable > customCells labels 1`] = `"<table><thead><tr><th>t1.Id</th><th>t2.Id</th><th>T1C1</th><th>T1C3</th><th>T2C2</th><th>T2C1</th></tr></thead><tbody><tr><th title="r1">r1</th><th title="r2">r2</th><td>1</td><td></td><td>4</td><td>3</td></tr></tbody></table>"`;
+
+exports[`RelationshipInHtmlTable > customCells objects 1`] = `"<table><thead><tr><th>t1.Id</th><th>t2.Id</th><th>T1C1</th><th>t2.c2</th></tr></thead><tbody><tr><th title="r1">r1</th><th title="r2">r2</th><td><b>{"0":"r1","1":"c1","tableId":"t1","rowId":"r1","cellId":"c1"}</b></td><td><b>{"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}</b></td></tr></tbody></table>"`;
+
+exports[`RelationshipInHtmlTable > editable 1`] = `"<table><thead><tr><th>t1.Id</th><th>t2.Id</th><th>t1.c1</th><th>t2.c1</th><th>t2.c2</th></tr></thead><tbody><tr><th title="r1">r1</th><th title="r2">r2</th><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="1"></div></td><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="3"></div></td><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="4"></div></td></tr></tbody></table>"`;
+
+exports[`RelationshipInHtmlTable > headerRow 1`] = `"<table><tbody><tr><th title="r1">r1</th><th title="r2">r2</th><td>1</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`RelationshipInHtmlTable > idColumn 1`] = `"<table><thead><tr><th>t1.c1</th><th>t2.c1</th><th>t2.c2</th></tr></thead><tbody><tr><td>1</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > basic 1`] = `"<table><thead><tr><th>Id</th><th>c0</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > className 1`] = `"<table class="table"><thead><tr><th>Id</th><th>c0</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > customCells array 1`] = `"<table><thead><tr><th>Id</th><th>c3</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td></td><td>4</td></tr><tr><th title="r1">r1</th><td></td><td></td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > customCells labels 1`] = `"<table><thead><tr><th>Id</th><th>C3</th><th>C2</th></tr></thead><tbody><tr><th title="r2">r2</th><td></td><td>4</td></tr><tr><th title="r1">r1</th><td></td><td></td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > customCells objects 1`] = `"<table><thead><tr><th>Id</th><th class="sorted descending">↓ C1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td><b>{"0":"r2","1":"c1","queryId":"q1","rowId":"r2","cellId":"c1"}</b></td><td><b>{"0":"r2","1":"c2","queryId":"q1","rowId":"r2","cellId":"c2"}</b></td></tr><tr><th title="r1">r1</th><td><b>{"0":"r1","1":"c1","queryId":"q1","rowId":"r1","cellId":"c1"}</b></td><td><b>{"0":"r1","1":"c2","queryId":"q1","rowId":"r1","cellId":"c2"}</b></td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > headerRow 1`] = `"<table><tbody><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > idColumn 1`] = `"<table><thead><tr><th>c0</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><td>34</td><td>3</td><td>4</td></tr><tr><td>2_</td><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > no sorting specified 1`] = `"<table><thead><tr><th class="sorted ascending">↑ Id</th><th>c0</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > paginator, custom 1`] = `"<table><caption><b>{"offset":0,"limit":1,"total":2}</b></caption><thead><tr><th>Id</th><th>c0</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > paginator, larger 1`] = `"<table><caption>2 rows</caption><thead><tr><th>Id</th><th>c0</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > paginator, smaller 1`] = `"<table><caption><button class="previous" disabled="">←</button><button class="next">→</button>1 to 1 of 2 rows</caption><thead><tr><th>Id</th><th>c0</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > paginator, smaller 2`] = `"<table><caption><button class="previous" disabled="">←</button><button class="next">→</button>1 to 1 of 2 rows</caption><thead><tr><th>Id</th><th>c0</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > sortOnClick 1`] = `"<table><thead><tr><th>Id</th><th>c0</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > sortOnClick 2`] = `"<table><thead><tr><th>Id</th><th class="sorted ascending">↑ c0</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > sortOnClick 3`] = `"<table><thead><tr><th>Id</th><th>c0</th><th class="sorted ascending">↑ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > sortOnClick 4`] = `"<table><thead><tr><th>Id</th><th>c0</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > sortOnClick 5`] = `"<table><thead><tr><th class="sorted ascending">↑ Id</th><th>c0</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > sortOnClick 6`] = `"<table><thead><tr><th class="sorted descending">↓ Id</th><th>c0</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`ResultTableInHtmlTable > basic 1`] = `"<table><thead><tr><th>Id</th><th>c0</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`ResultTableInHtmlTable > className 1`] = `"<table class="table"><thead><tr><th>Id</th><th>c0</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`ResultTableInHtmlTable > customCells array 1`] = `"<table><thead><tr><th>Id</th><th>c3</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td></td><td></td></tr><tr><th title="r2">r2</th><td></td><td>4</td></tr></tbody></table>"`;
+
+exports[`ResultTableInHtmlTable > customCells labels 1`] = `"<table><thead><tr><th>Id</th><th>C3</th><th>C2</th></tr></thead><tbody><tr><th title="r1">r1</th><td></td><td></td></tr><tr><th title="r2">r2</th><td></td><td>4</td></tr></tbody></table>"`;
+
+exports[`ResultTableInHtmlTable > customCells objects 1`] = `"<table><thead><tr><th>Id</th><th>C1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td><b>{"0":"r1","1":"c1","queryId":"q1","rowId":"r1","cellId":"c1"}</b></td><td><b>{"0":"r1","1":"c2","queryId":"q1","rowId":"r1","cellId":"c2"}</b></td></tr><tr><th title="r2">r2</th><td><b>{"0":"r2","1":"c1","queryId":"q1","rowId":"r2","cellId":"c1"}</b></td><td><b>{"0":"r2","1":"c2","queryId":"q1","rowId":"r2","cellId":"c2"}</b></td></tr></tbody></table>"`;
+
+exports[`ResultTableInHtmlTable > headerRow 1`] = `"<table><tbody><tr><th title="r1">r1</th><td>2_</td><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>34</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`ResultTableInHtmlTable > idColumn 1`] = `"<table><thead><tr><th>c0</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><td>2_</td><td>2</td><td></td></tr><tr><td>34</td><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`SliceInHtmlTable > basic 1`] = `"<table><thead><tr><th>Id</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`SliceInHtmlTable > className 1`] = `"<table class="slice"><thead><tr><th>Id</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`SliceInHtmlTable > customCells array 1`] = `"<table><thead><tr><th>Id</th><th>c3</th><th>c1</th></tr></thead><tbody><tr><th title="r1">r1</th><td></td><td>2</td></tr></tbody></table>"`;
+
+exports[`SliceInHtmlTable > customCells labels 1`] = `"<table><thead><tr><th>Id</th><th>C3</th><th>C1</th></tr></thead><tbody><tr><th title="r1">r1</th><td></td><td>2</td></tr></tbody></table>"`;
+
+exports[`SliceInHtmlTable > customCells objects 1`] = `"<table><thead><tr><th>Id</th><th>C1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td><b>{"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}</b></td><td><b>{"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}</b></td></tr></tbody></table>"`;
+
+exports[`SliceInHtmlTable > editable 1`] = `"<table><thead><tr><th>Id</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="2"></div></td><td><div class="editableCell"></div></td></tr></tbody></table>"`;
+
+exports[`SliceInHtmlTable > headerRow 1`] = `"<table><tbody><tr><th title="r1">r1</th><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`SliceInHtmlTable > idColumn 1`] = `"<table><thead><tr><th>c1</th><th>c2</th></tr></thead><tbody><tr><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > basic 1`] = `"<table><thead><tr><th>Id</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > className 1`] = `"<table class="table"><thead><tr><th>Id</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > customCells array 1`] = `"<table><thead><tr><th>Id</th><th>c3</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td></td><td>4</td></tr><tr><th title="r1">r1</th><td></td><td></td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > customCells labels 1`] = `"<table><thead><tr><th>Id</th><th>C3</th><th>C2</th></tr></thead><tbody><tr><th title="r2">r2</th><td></td><td>4</td></tr><tr><th title="r1">r1</th><td></td><td></td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > customCells objects 1`] = `"<table><thead><tr><th>Id</th><th class="sorted descending">↓ C1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td><b>{"0":"r2","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}</b></td><td><b>{"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}</b></td></tr><tr><th title="r1">r1</th><td><b>{"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}</b></td><td><b>{"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}</b></td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > editable 1`] = `"<table><thead><tr><th>Id</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="3"></div></td><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="4"></div></td></tr><tr><th title="r1">r1</th><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="2"></div></td><td><div class="editableCell"></div></td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > headerRow 1`] = `"<table><tbody><tr><th title="r2">r2</th><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > idColumn 1`] = `"<table><thead><tr><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><td>3</td><td>4</td></tr><tr><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > no sorting specified 1`] = `"<table><thead><tr><th class="sorted ascending">↑ Id</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > paginator, custom 1`] = `"<table><caption><b>{"offset":0,"limit":1,"total":2}</b></caption><thead><tr><th>Id</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > paginator, larger 1`] = `"<table><caption>2 rows</caption><thead><tr><th>Id</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > paginator, smaller 1`] = `"<table><caption><button class="previous" disabled="">←</button><button class="next">→</button>1 to 1 of 2 rows</caption><thead><tr><th>Id</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > paginator, smaller 2`] = `"<table><caption><button class="previous" disabled="">←</button><button class="next">→</button>1 to 1 of 2 rows</caption><thead><tr><th>Id</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > sortOnClick 1`] = `"<table><thead><tr><th>Id</th><th class="sorted descending">↓ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > sortOnClick 2`] = `"<table><thead><tr><th>Id</th><th class="sorted ascending">↑ c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > sortOnClick 3`] = `"<table><thead><tr><th>Id</th><th>c1</th><th class="sorted ascending">↑ c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > sortOnClick 4`] = `"<table><thead><tr><th>Id</th><th>c1</th><th class="sorted descending">↓ c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > sortOnClick 5`] = `"<table><thead><tr><th class="sorted ascending">↑ Id</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > sortOnClick 6`] = `"<table><thead><tr><th class="sorted descending">↓ Id</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r2">r2</th><td>3</td><td>4</td></tr><tr><th title="r1">r1</th><td>2</td><td></td></tr></tbody></table>"`;
+
+exports[`SortedTablePaginator > basic 1`] = `"100 rows"`;
+
+exports[`SortedTablePaginator > limit & offset 1`] = `"<button class="previous">←</button><button class="next">→</button>6 to 15 of 100 rows"`;
+
+exports[`SortedTablePaginator > limit 1`] = `"<button class="previous" disabled="">←</button><button class="next">→</button>1 to 10 of 100 rows"`;
+
+exports[`SortedTablePaginator > limit larger than size 1`] = `"100 rows"`;
+
+exports[`SortedTablePaginator > offset larger than size 1`] = `"<button class="previous" disabled="">←</button><button class="next">→</button>1 to 10 of 100 rows"`;
+
+exports[`SortedTablePaginator > offset smaller than 0 1`] = `"<button class="previous" disabled="">←</button><button class="next">→</button>1 to 10 of 100 rows"`;
+
+exports[`TableInHtmlTable > basic 1`] = `"<table><thead><tr><th>Id</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`TableInHtmlTable > className 1`] = `"<table class="table"><thead><tr><th>Id</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`TableInHtmlTable > customCells array 1`] = `"<table><thead><tr><th>Id</th><th>c3</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td></td><td></td></tr><tr><th title="r2">r2</th><td></td><td>4</td></tr></tbody></table>"`;
+
+exports[`TableInHtmlTable > customCells labels 1`] = `"<table><thead><tr><th>Id</th><th>C3</th><th>C2</th></tr></thead><tbody><tr><th title="r1">r1</th><td></td><td></td></tr><tr><th title="r2">r2</th><td></td><td>4</td></tr></tbody></table>"`;
+
+exports[`TableInHtmlTable > customCells objects 1`] = `"<table><thead><tr><th>Id</th><th>C1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td><b>{"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}</b></td><td><b>{"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}</b></td></tr><tr><th title="r2">r2</th><td><b>{"0":"r2","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}</b></td><td><b>{"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}</b></td></tr></tbody></table>"`;
+
+exports[`TableInHtmlTable > editable 1`] = `"<table><thead><tr><th>Id</th><th>c1</th><th>c2</th></tr></thead><tbody><tr><th title="r1">r1</th><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="2"></div></td><td><div class="editableCell"></div></td></tr><tr><th title="r2">r2</th><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="3"></div></td><td><div class="editableCell"><button title="number" class="number">number</button><input type="number" value="4"></div></td></tr></tbody></table>"`;
+
+exports[`TableInHtmlTable > headerRow 1`] = `"<table><tbody><tr><th title="r1">r1</th><td>2</td><td></td></tr><tr><th title="r2">r2</th><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`TableInHtmlTable > idColumn 1`] = `"<table><thead><tr><th>c1</th><th>c2</th></tr></thead><tbody><tr><td>2</td><td></td></tr><tr><td>3</td><td>4</td></tr></tbody></table>"`;
+
+exports[`ValuesInHtmlTable > basic 1`] = `"<table><thead><tr><th>Id</th><th>Value</th></tr></thead><tbody><tr><th title="v1">v1</th><td>1</td></tr><tr><th title="v2">v2</th><td>2</td></tr></tbody></table>"`;
+
+exports[`ValuesInHtmlTable > className 1`] = `"<table class="values"><thead><tr><th>Id</th><th>Value</th></tr></thead><tbody><tr><th title="v1">v1</th><td>1</td></tr><tr><th title="v2">v2</th><td>2</td></tr></tbody></table>"`;
+
+exports[`ValuesInHtmlTable > custom 1`] = `"<table><thead><tr><th>Id</th><th>Value</th></tr></thead><tbody><tr><th title="v1">v1</th><td><b>{"0":"v1","valueId":"v1"}</b></td></tr><tr><th title="v2">v2</th><td><b>{"0":"v2","valueId":"v2"}</b></td></tr></tbody></table>"`;
+
+exports[`ValuesInHtmlTable > editable 1`] = `"<table><thead><tr><th>Id</th><th>Value</th></tr></thead><tbody><tr><th title="v1">v1</th><td><div class="editableValue"><button title="number" class="number">number</button><input type="number" value="1"></div></td></tr><tr><th title="v2">v2</th><td><div class="editableValue"><button title="number" class="number">number</button><input type="number" value="2"></div></td></tr></tbody></table>"`;
+
+exports[`ValuesInHtmlTable > idColumn 1`] = `"<table><thead><tr><th>Value</th></tr></thead><tbody><tr><td>1</td></tr><tr><td>2</td></tr></tbody></table>"`;

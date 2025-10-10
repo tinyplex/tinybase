@@ -8,8 +8,6 @@ export default class extends DefaultReporter {
     super.onTestCaseResult(testCase);
   }
 
-  // onTestModuleEnd(testModule: TestModule): void {}
-
   async onFinished() {
     super.onFinished();
     this.ctx.logger.log(`\nTotal Assertions: ${this.assertions}`);
