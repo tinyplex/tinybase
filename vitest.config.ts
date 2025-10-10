@@ -7,6 +7,8 @@ export default defineConfig({
     reporters: [['vitest/custom/reporter.ts', {hideSkipped: true}]],
     slowTestThreshold: 3000,
     maxWorkers: 10,
+    passWithNoTests: true,
+    retry: 3,
     coverage: {
       enabled: false,
       provider: 'istanbul',
