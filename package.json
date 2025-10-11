@@ -1,6 +1,6 @@
 {
   "name": "tinybase",
-  "version": "6.7.0",
+  "version": "6.7.1",
   "author": "jamesgpearce",
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
@@ -203,7 +203,7 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsdoc": "^61.1.0",
     "eslint-plugin-react": "7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.0",
+    "eslint-plugin-react-hooks": "^6.1.1",
     "expect-puppeteer": "^11.0.0",
     "expo-sqlite": "16.0.8",
     "fake-indexeddb": "^6.2.3",
