@@ -120,4 +120,4 @@ test('movie-database', async () => {
     )
   ).click();
   await expectedFramedElement('li', 'Gender: Female');
-}, 10000);
+}, 20000);

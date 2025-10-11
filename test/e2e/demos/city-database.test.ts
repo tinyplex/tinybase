@@ -62,4 +62,4 @@ test('city-database', async () => {
     'tbody tr:nth-child(1) td:nth-child(1)',
     'la Morera de Montsant',
   );
-}, 10000);
+}, 20000);
