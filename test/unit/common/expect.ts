@@ -3,6 +3,15 @@ import {expect} from 'vitest';
 import type {Id} from 'tinybase';
 import {Listener} from './types.ts';
 
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace jest {
+    interface Matchers<R> {
+      toEqualWithOrder(expected: any): R;
+    }
+  }
+}
+
 export const expectChanges = (
   listener: Listener,
   id: Id,
