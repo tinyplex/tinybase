@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 // NB: an exclamation mark after a line visually indicates an expected TS error
-import React from 'react';
 import {createFilePersister} from 'tinybase/persisters/persister-file/with-schemas';
 import * as UiReact from 'tinybase/ui-react/with-schemas';
 import type {Id, NoValuesSchema} from 'tinybase/with-schemas';

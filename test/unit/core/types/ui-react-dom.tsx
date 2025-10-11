@@ -1,5 +1,4 @@
 // NB: an exclamation mark after a line visually indicates an expected TS error
-import React from 'react';
 import * as UiReactDom from 'tinybase/ui-react-dom/with-schemas';
 import type {Id} from 'tinybase/with-schemas';
 
