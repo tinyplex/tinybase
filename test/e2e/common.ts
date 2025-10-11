@@ -1,10 +1,9 @@
-import 'expect-puppeteer';
+import {expect as puppeteerExpect} from 'expect-puppeteer';
 import {Server} from 'http';
-import 'jest-puppeteer';
 import {ElementHandle} from 'puppeteer';
+import {expect} from 'vitest';
+import 'vitest-puppeteer';
 import {createTestServer} from '../server.mjs';
-
-jest.setTimeout(10000);
 
 let browserWarmed = false;
 
@@ -38,9 +37,9 @@ export const getServerFunctions = (
 export const expectedFramedElement = async (
   selector: string,
   text?: string | RegExp,
-  timeout = 2000,
+  timeout = 5000,
 ): Promise<ElementHandle> =>
-  (await expect(
+  (await puppeteerExpect(
     await (await expectedElement('iframe')).contentFrame(),
   ).toMatchElement(selector, {
     text,
@@ -50,9 +49,12 @@ export const expectedFramedElement = async (
 export const expectedElement = async (
   selector: string,
   text?: string | RegExp,
-  timeout = 2000,
+  timeout = 5000,
 ): Promise<ElementHandle> =>
-  (await expect(page).toMatchElement(selector, {text, timeout})) as any;
+  (await puppeteerExpect(page).toMatchElement(selector, {
+    text,
+    timeout,
+  })) as any;
 
 export const expectProperty = async (
   element: ElementHandle,
@@ -66,9 +68,9 @@ export const expectProperty = async (
 export const expectNoFramedElement = async (
   selector: string,
   text?: string | RegExp,
-  timeout = 2000,
+  timeout = 5000,
 ): Promise<void> => {
-  await expect(
+  await puppeteerExpect(
     await (await expectedElement('iframe')).contentFrame(),
   ).not.toMatchElement(selector, {text, timeout});
 };

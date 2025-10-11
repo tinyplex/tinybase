@@ -19,15 +19,6 @@ import {
   StoreListener,
 } from './types.ts';
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface Matchers<R> {
-      toEqualWithOrder(expected: any): R;
-    }
-  }
-}
-
 export const createStoreListener = (
   store: Store | StoreWithSchemas<NoSchemas>,
 ): StoreListener => {

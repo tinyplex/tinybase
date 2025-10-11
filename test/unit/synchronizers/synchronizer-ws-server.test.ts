@@ -8,6 +8,7 @@ import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-clien
 import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import tmp from 'tmp';
+import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {getTimeFunctions} from '../common/mergeable.ts';
 

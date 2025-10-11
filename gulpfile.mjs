@@ -454,7 +454,7 @@ const tsCheck = async (dir) => {
     analyzeTsConfig(`${path.resolve(dir)}/tsconfig.json`, [
       '--excludeDeclarationFiles',
       '--excludePathsFromReport=' +
-        'jest/reporter.js;jest/environment.js;build.ts;ui-react/common.ts;' +
+        'build.ts;ui-react/common.ts;' +
         ALL_MODULES.map((module) => `${module}.ts`).join(';'),
     ]).unusedExports,
   )
@@ -563,72 +563,33 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   }
 };
 
-// coverageMode = 0: none; 1: screen; 2: json; 3: html
-const test = async (
-  dirs,
-  {coverageMode, countAsserts, puppeteer, serialTests} = {},
-) => {
-  const {default: jest} = await import('jest');
-  await makeDir(TMP_DIR);
-  const {
-    results: {success},
-  } = await jest.runCLI(
-    {
-      roots: dirs,
-      setupFilesAfterEnv: ['./test/jest/setup'],
-      ...(puppeteer
-        ? {
-            setupFilesAfterEnv: ['expect-puppeteer'],
-            preset: 'jest-puppeteer',
-            detectOpenHandles: true,
-            maxWorkers: 2,
-          }
-        : {testEnvironment: './test/jest/environment'}),
-      ...(coverageMode > 0
-        ? {
-            collectCoverage: true,
-            coverageProvider: 'babel',
-            collectCoverageFrom: [
-              `${DIST_DIR}/index.js`,
-              `${DIST_DIR}/ui-react/index.js`,
-              // Other modules cannot be fully exercised in isolation.
-            ],
-            coverageReporters: ['text-summary']
-              .concat(coverageMode > 1 ? ['json-summary'] : [])
-              .concat(coverageMode > 2 ? ['lcov'] : []),
-            coverageDirectory: 'tmp',
-          }
-        : {}),
-      ...(countAsserts
-        ? {
-            testEnvironment: './test/jest/environment',
-            reporters: ['default', './test/jest/reporter'],
-            runInBand: true,
-          }
-        : {}),
-      ...(serialTests ? {runInBand: true} : {}),
-    },
-    [''],
-  );
-  if (!success) {
+const test = async (dirs, coverage) => {
+  await clearDir(TMP_DIR);
+
+  const {startVitest} = await import('vitest/node');
+  const vitest = await startVitest('test', [...dirs], {
+    watch: false,
+    retry: 3,
+    coverage: {enabled: coverage},
+  });
+  await vitest.close();
+
+  if (vitest.state.getCountOfFailedTests() > 0) {
     await removeDir(TMP_DIR);
     throw 'Test failed';
   }
-  if (coverageMode == 2) {
+
+  if (coverage) {
     await promises.writeFile(
       'coverage.json',
       JSON.stringify({
-        ...(countAsserts
-          ? JSON.parse(await promises.readFile('./tmp/counts.json'))
-          : {}),
-        ...JSON.parse(await promises.readFile('./tmp/coverage-summary.json'))
-          .total,
+        ...JSON.parse(await promises.readFile('./tmp/counts.json')),
+        ...JSON.parse(
+          await promises.readFile('./tmp/coverage/coverage-summary.json'),
+        ).total,
       }),
       UTF8,
     );
-  }
-  if (coverageMode < 3) {
-    await removeDir(TMP_DIR);
   }
 };
 
@@ -710,7 +671,7 @@ export const ts = async () => {
 export const compileForProd = () => compileModulesForProd();
 
 export const testUnit = async () => {
-  await test(['test/unit'], {coverageMode: 1, serialTests: true});
+  await test(['test/unit'], true);
 };
 
 export const testBun = () =>
@@ -721,23 +682,14 @@ export const testBun = () =>
   );
 
 export const testUnitFast = async () => {
-  await test(['test/unit/core'], {coverageMode: 1});
+  await test(['test/unit/core']);
 };
-export const testUnitCountAsserts = async () => {
-  await test(['test/unit'], {coverageMode: 2, countAsserts: true});
-};
-export const testUnitSaveCoverage = async () => {
-  await test(['test/unit/core'], {coverageMode: 3});
-};
+
 export const compileAndTestUnit = series(compileForTest, testUnit);
 export const compileAndTestUnitFast = series(compileForTest, testUnitFast);
-export const compileAndTestUnitSaveCoverage = series(
-  compileForTest,
-  testUnitSaveCoverage,
-);
 
 export const testPerf = async () => {
-  await test(['test/perf'], {serialTests: true});
+  await test(['test/perf']);
 };
 export const compileAndTestPerf = series(compileForTest, testPerf);
 
@@ -749,7 +701,7 @@ export const compileDocs = () => compileDocsAndAssets();
 
 export const compileForProdAndDocs = series(compileForProd, compileDocs);
 
-export const testE2e = () => test(['test/e2e'], {puppeteer: true});
+export const testE2e = () => test(['test/e2e']);
 
 export const compileAndTestE2e = series(compileForProdAndDocs, testE2e);
 
@@ -777,7 +729,7 @@ export const prePublishPackage = series(
   compileForTest,
   parallel(lint, spell, ts),
   testBun,
-  testUnitCountAsserts,
+  testUnit,
   testPerf,
   compileForProd,
   testProd,

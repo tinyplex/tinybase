@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
 import type {Content, MergeableStore} from 'tinybase';
 import {createMergeableStore} from 'tinybase';
 import type {Receive, Synchronizer} from 'tinybase/synchronizers';
@@ -8,6 +7,7 @@ import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import type {WsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
 import {createWsServer} from 'tinybase/synchronizers/synchronizer-ws-server';
+import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {getTimeFunctions} from '../common/mergeable.ts';
 

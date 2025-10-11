@@ -1,6 +1,7 @@
 import {readdirSync} from 'fs';
 import {resolve} from 'path';
 import tsc from 'typescript';
+import {expect, test} from 'vitest';
 
 const {createProgram, getPreEmitDiagnostics, readJsonConfigFile, sys} = tsc;
 

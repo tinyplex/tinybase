@@ -40,9 +40,9 @@ import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
 import {beforeAll, describe, expect, test} from 'vitest';
 import * as ws from 'ws';
 import * as yjs from 'yjs';
-import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from '../common/automerge-adaptor.ts';
-import {getTimeFunctions} from '../common/mergeable.ts';
-import {isBun, pause, suppressWarnings} from '../common/other.ts';
+import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './common/automerge-adaptor.ts';
+import {getTimeFunctions} from './common/mergeable.ts';
+import {isBun, pause, suppressWarnings} from './common/other.ts';
 
 const [reset, getNow] = getTimeFunctions();
 

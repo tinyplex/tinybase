@@ -1,6 +1,5 @@
 import jsLint from '@eslint/js';
 import importLint from 'eslint-plugin-import';
-import jestLint from 'eslint-plugin-jest';
 import jsdocLint from 'eslint-plugin-jsdoc';
 import reactLint from 'eslint-plugin-react';
 import hooksLint from 'eslint-plugin-react-hooks';
@@ -20,7 +19,6 @@ export default tsLint.config(
 
   jsLint.configs.recommended,
   importLint.flatConfigs.recommended,
-  jestLint.configs['flat/recommended'],
   jsdocLint.configs['flat/recommended'],
   reactLint.configs.flat.recommended,
   reactLint.configs.flat['jsx-runtime'],
@@ -142,11 +140,6 @@ export default tsLint.config(
 
       'react-hooks/exhaustive-deps': 2,
       'react-hooks/rules-of-hooks': 2,
-
-      // --
-
-      'jest/expect-expect': [2, {assertFunctionNames: ['expect*']}],
-      'jest/no-conditional-expect': 2,
     },
   },
 

@@ -575,7 +575,7 @@
  *   (pathId) =>
  *     createFilePersister(
  *       createMergeableStore(),
- *       pathId.replace(/[^a-zA-Z0-9]/g, '-') + '.json',
+ *       './tmp/' + pathId.replace(/[^a-zA-Z0-9]/g, '-') + '.json',
  *     ),
  * );
  *
@@ -625,7 +625,7 @@
  * await server.destroy();
  *
  * // Remove file for the purposes of this demo.
- * rmSync('petShop.json');
+ * rmSync('./tmp/petShop.json');
  * ```
  * @example
  * This example creates a WsServer that persists a MergeableStore to file that
@@ -646,7 +646,7 @@
  *   (pathId) => [
  *     createFilePersister(
  *       createMergeableStore(),
- *       pathId.replace(/[^a-zA-Z0-9]/g, '-') + '.json',
+ *       './tmp/' + pathId.replace(/[^a-zA-Z0-9]/g, '-') + '.json',
  *     ),
  *     (store) => store.setValue('pathId', pathId),
  *   ],
@@ -668,7 +668,7 @@
  * await server.destroy();
  *
  * // Remove file for the purposes of this demo.
- * rmSync('petShop.json');
+ * rmSync('./tmp/petShop.json');
  * ```
  * @example
  * This example creates a WsServer with a custom listener that displays

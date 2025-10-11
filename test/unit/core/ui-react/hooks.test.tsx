@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/immutability */
+import '@testing-library/jest-dom/vitest';
 import {fireEvent, render} from '@testing-library/react';
 import {userEvent} from '@testing-library/user-event';
-import React, {MouseEvent, MouseEventHandler, act} from 'react';
+import {MouseEvent, MouseEventHandler, act} from 'react';
 import type {
   Cell,
   Checkpoints,
@@ -155,21 +156,22 @@ import {
   useWillFinishTransactionListener,
 } from 'tinybase/ui-react';
 import tmp from 'tmp';
+import {type Mock, beforeEach, describe, expect, test, vi} from 'vitest';
 import {noop, pause} from '../../common/other.ts';
 
 let store: Store;
-let didRender: jest.Mock;
+let didRender: Mock;
 
 beforeEach(() => {
   store = createStore()
     .setTables({t1: {r1: {c1: 1}}})
     .setValues({v1: 1});
-  didRender = jest.fn((rendered) => rendered);
+  didRender = vi.fn((rendered) => rendered);
 });
 
 describe('Create Hooks', () => {
   test('useCreateStore', () => {
-    const initStore = jest.fn((count: any) =>
+    const initStore = vi.fn((count: any) =>
       createStore().setTables({t1: {r1: {c1: count}}}),
     );
     const Test = ({count}: {count: number}) => {
@@ -194,7 +196,7 @@ describe('Create Hooks', () => {
   });
 
   test('useCreateMergeableStore', () => {
-    const initStore = jest.fn((count: any) =>
+    const initStore = vi.fn((count: any) =>
       createMergeableStore('s1').setTables({t1: {r1: {c1: count}}}),
     );
     const Test = ({count}: {count: number}) => {
@@ -218,13 +220,13 @@ describe('Create Hooks', () => {
   });
 
   test('useCreateMetrics', () => {
-    const initStore = jest.fn(() =>
+    const initStore = vi.fn(() =>
       createStore().setTables({
         t1: {r1: {c1: 1}},
         t2: {r1: {c2: 2}, r2: {c2: 2}},
       }),
     );
-    const initMetrics = jest.fn((store: Store, count) =>
+    const initMetrics = vi.fn((store: Store, count) =>
       createMetrics(store).setMetricDefinition('m1', `t${count}`),
     );
     const Test = ({count}: {count: number}) => {
@@ -250,10 +252,10 @@ describe('Create Hooks', () => {
   });
 
   test('useCreateMetrics (no deps, and destroy)', () => {
-    const initStore = jest.fn(() =>
+    const initStore = vi.fn(() =>
       createStore().setTables({t1: {r1: {c1: 1}}, t2: {r1: {c2: 2}}}),
     );
-    const initMetrics = jest.fn((store: Store) =>
+    const initMetrics = vi.fn((store: Store) =>
       createMetrics(store).setMetricDefinition('m1', `t1`),
     );
     const Test = ({count}: {count: number}) => {
@@ -275,7 +277,7 @@ describe('Create Hooks', () => {
   });
 
   test('useCreateMetrics (undefined store)', () => {
-    const initMetrics = jest.fn((store: Store) =>
+    const initMetrics = vi.fn((store: Store) =>
       createMetrics(store).setMetricDefinition('m1', `t1`),
     );
     const Test = () => {
@@ -292,10 +294,10 @@ describe('Create Hooks', () => {
   });
 
   test('useCreateIndexes', async () => {
-    const initStore = jest.fn(() =>
+    const initStore = vi.fn(() =>
       createStore().setTables({t1: {r1: {c1: 1}, r2: {c2: 1}}}),
     );
-    const initIndexes = jest.fn((store: Store, count) => {
+    const initIndexes = vi.fn((store: Store, count) => {
       return createIndexes(store).setIndexDefinition('i1', 't1', `c${count}`);
     });
     const Test = ({count}: {count: number}) => {
@@ -323,14 +325,14 @@ describe('Create Hooks', () => {
   });
 
   test('useCreateRelationships', () => {
-    const initStore = jest.fn(() =>
+    const initStore = vi.fn(() =>
       createStore().setTables({
         t1: {r1: {c1: `R1`}},
         t2: {r1: {c1: 'R2'}},
         T1: {R1: {C1: 1}, R2: {C1: 2}},
       }),
     );
-    const initRelationships = jest.fn((store: Store, count) =>
+    const initRelationships = vi.fn((store: Store, count) =>
       createRelationships(store).setRelationshipDefinition(
         'r1',
         `t${count}`,
@@ -365,10 +367,10 @@ describe('Create Hooks', () => {
   });
 
   test('useCreateQueries', () => {
-    const initStore = jest.fn(() =>
+    const initStore = vi.fn(() =>
       createStore().setTables({t1: {r1: {c1: 1}, r2: {c2: 2}}}),
     );
-    const initQueries = jest.fn((store: Store, count) =>
+    const initQueries = vi.fn((store: Store, count) =>
       createQueries(store).setQueryDefinition('q1', 't1', ({select}) =>
         select(`c${count}`),
       ),
@@ -396,10 +398,8 @@ describe('Create Hooks', () => {
   });
 
   test('useCreateCheckpoints', () => {
-    const initStore = jest.fn(() =>
-      createStore().setTables({t1: {r1: {c1: 1}}}),
-    );
-    const initCheckpoints = jest.fn((store: Store, count: number) => {
+    const initStore = vi.fn(() => createStore().setTables({t1: {r1: {c1: 1}}}));
+    const initCheckpoints = vi.fn((store: Store, count: number) => {
       const checkpoints = createCheckpoints(store);
       checkpoints.getStore().setCell('t1', 'r1', 'c1', count + 1);
       checkpoints.addCheckpoint(`checkpoint${count}`);
@@ -444,8 +444,8 @@ describe('Create Hooks', () => {
     let _persister: AnyPersister | undefined;
     tmp.setGracefulCleanup();
     const fileName = tmp.fileSync().name;
-    const initStore = jest.fn(createStore);
-    const createPersister = jest.fn((store: Store) => {
+    const initStore = vi.fn(createStore);
+    const createPersister = vi.fn((store: Store) => {
       _persister = createFilePersister(store, fileName);
       return _persister;
     });
@@ -484,14 +484,14 @@ describe('Create Hooks', () => {
     let _persister: AnyPersister | undefined;
     tmp.setGracefulCleanup();
     const fileName = tmp.fileSync().name;
-    const initStore = jest.fn(createStore);
-    const createPersister = jest.fn((store: Store, id: number) => {
+    const initStore = vi.fn(createStore);
+    const createPersister = vi.fn((store: Store, id: number) => {
       if (id != 0) {
         _persister = createFilePersister(store, fileName);
         return _persister;
       }
     });
-    const initPersister = jest.fn(async (persister: Persister, id: number) => {
+    const initPersister = vi.fn(async (persister: Persister, id: number) => {
       await persister.load([{t1: {r1: {c1: id}}}, {}]);
     });
     const Test = ({id}: {id: number}) => {
@@ -533,19 +533,17 @@ describe('Create Hooks', () => {
   test('useCreatePersister, then, destroy', async () => {
     const persisters: AnyPersister[] = [];
     tmp.setGracefulCleanup();
-    const initStore = jest.fn(createStore);
-    const createPersister = jest.fn((store: Store, id: number) => {
+    const initStore = vi.fn(createStore);
+    const createPersister = vi.fn((store: Store, id: number) => {
       const fileName = tmp.fileSync().name;
       const persister = createFilePersister(store, fileName);
       persisters[id] = persister;
       return persister;
     });
-    const initPersister = jest.fn(
-      async (persister: AnyPersister, id: number) => {
-        await persister.load([{t1: {r1: {c1: id}}}, {}]);
-      },
-    );
-    const destroyPersister = jest.fn((persister: AnyPersister) => {
+    const initPersister = vi.fn(async (persister: AnyPersister, id: number) => {
+      await persister.load([{t1: {r1: {c1: id}}}, {}]);
+    });
+    const destroyPersister = vi.fn((persister: AnyPersister) => {
       expect(persisters).toContain(persister);
     });
     const Test = ({id}: {id: number}) => {
@@ -604,8 +602,8 @@ describe('Create Hooks', () => {
 
   test('useCreateSynchronizer, no destroy', async () => {
     let _synchronizer: Synchronizer | undefined;
-    const initStore = jest.fn(() => createMergeableStore('s1'));
-    const createSynchronizer = jest.fn(async (store: MergeableStore) => {
+    const initStore = vi.fn(() => createMergeableStore('s1'));
+    const createSynchronizer = vi.fn(async (store: MergeableStore) => {
       _synchronizer = createLocalSynchronizer(store);
       await _synchronizer.load([{t1: {r1: {c1: 1}}}, {}]);
       return _synchronizer;
@@ -641,8 +639,8 @@ describe('Create Hooks', () => {
 
   test('useCreateSynchronizer, destroy', async () => {
     const synchronizers: Synchronizer[] = [];
-    const initStore = jest.fn(() => createMergeableStore('s1'));
-    const createSynchronizer = jest.fn(
+    const initStore = vi.fn(() => createMergeableStore('s1'));
+    const createSynchronizer = vi.fn(
       async (store: MergeableStore, id: number) => {
         const synchronizer = createLocalSynchronizer(store);
         await synchronizer.load([{t1: {r1: {c1: id}}}, {}]);
@@ -650,7 +648,7 @@ describe('Create Hooks', () => {
         return synchronizer;
       },
     );
-    const destroySynchronizer = jest.fn((synchronizer: Synchronizer) => {
+    const destroySynchronizer = vi.fn((synchronizer: Synchronizer) => {
       expect(synchronizers).toContain(synchronizer);
     });
     const Test = ({id}: {id: number}) => {
@@ -2638,7 +2636,7 @@ describe('Read Hooks', () => {
 
 describe('Write Hooks', () => {
   test('useSetTablesCallback', () => {
-    const then = jest.fn((_store?: Store, _tables?: Tables) => null);
+    const then = vi.fn((_store?: Store, _tables?: Tables) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
     const Test = ({
       value,
@@ -2671,7 +2669,7 @@ describe('Write Hooks', () => {
   });
 
   test('useSetTableCallback (including handler memo)', () => {
-    const then = jest.fn((_store?: Store, _table?: Table) => null);
+    const then = vi.fn((_store?: Store, _table?: Table) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
     let previousHandler: any;
     let handlerChanged = 0;
@@ -2717,7 +2715,7 @@ describe('Write Hooks', () => {
   });
 
   test('useSetTableCallback, parameterized Id (incl handler memo)', () => {
-    const then = jest.fn((_store?: Store, _table?: Table) => null);
+    const then = vi.fn((_store?: Store, _table?: Table) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
     let previousHandler: any;
     let handlerChanged = 0;
@@ -2767,7 +2765,7 @@ describe('Write Hooks', () => {
   });
 
   test('useSetRowCallback', () => {
-    const then = jest.fn((_store: Store, _row: Row) => null);
+    const then = vi.fn((_store: Store, _row: Row) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
     const Test = ({
       value,
@@ -2802,7 +2800,7 @@ describe('Write Hooks', () => {
   });
 
   test('useSetRowCallback, parameterized Ids', () => {
-    const then = jest.fn((_store: Store, _row: Row) => null);
+    const then = vi.fn((_store: Store, _row: Row) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
     const Test = ({
       value,
@@ -2841,7 +2839,7 @@ describe('Write Hooks', () => {
   });
 
   test('useAddRowCallback', () => {
-    const then = jest.fn(
+    const then = vi.fn(
       (_rowId: Id | undefined, _store: Store, _row: Row) => null,
     );
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
@@ -2921,7 +2919,7 @@ describe('Write Hooks', () => {
   });
 
   test('useAddRowCallback, parameterized Id', () => {
-    const then = jest.fn(
+    const then = vi.fn(
       (_rowId: Id | undefined, _store: Store, _row: Row) => null,
     );
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
@@ -2964,7 +2962,7 @@ describe('Write Hooks', () => {
   });
 
   test('useSetPartialRowCallback', () => {
-    const then = jest.fn((_store: Store, _row: Row) => null);
+    const then = vi.fn((_store: Store, _row: Row) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
     const Test = ({
       value,
@@ -2999,7 +2997,7 @@ describe('Write Hooks', () => {
   });
 
   test('useSetPartialRowCallback, parameterized Ids', () => {
-    const then = jest.fn((_store: Store, _row: Row) => null);
+    const then = vi.fn((_store: Store, _row: Row) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
     const Test = ({
       value,
@@ -3041,7 +3039,7 @@ describe('Write Hooks', () => {
   });
 
   test('useSetCellCallback', () => {
-    const then = jest.fn((_store: Store, _cell: Cell | MapCell) => null);
+    const then = vi.fn((_store: Store, _cell: Cell | MapCell) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
     const Test = ({
       value,
@@ -3077,7 +3075,7 @@ describe('Write Hooks', () => {
   });
 
   test('useSetCellCallback, parameterized Ids', () => {
-    const then = jest.fn((_store: Store, _cell: Cell | MapCell) => null);
+    const then = vi.fn((_store: Store, _cell: Cell | MapCell) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
     const Test = ({
       value,
@@ -3117,7 +3115,7 @@ describe('Write Hooks', () => {
   });
 
   test('useSetValuesCallback', () => {
-    const then = jest.fn((_store?: Store, _values?: Values) => null);
+    const then = vi.fn((_store?: Store, _values?: Values) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
     const Test = ({
       value,
@@ -3151,7 +3149,7 @@ describe('Write Hooks', () => {
   });
 
   test('useSetPartialValuesCallback', () => {
-    const then = jest.fn((_store: Store, _values: Values) => null);
+    const then = vi.fn((_store: Store, _values: Values) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
     const Test = ({
       value,
@@ -3186,7 +3184,7 @@ describe('Write Hooks', () => {
   });
 
   test('useSetValueCallback', () => {
-    const then = jest.fn((_store?: Store, _value?: Value | MapValue) => null);
+    const then = vi.fn((_store?: Store, _value?: Value | MapValue) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
     const Test = ({
       value,
@@ -3220,7 +3218,7 @@ describe('Write Hooks', () => {
   });
 
   test('useSetValueCallback, parameterized Id', () => {
-    const then = jest.fn((_store?: Store, _value?: Value | MapValue) => null);
+    const then = vi.fn((_store?: Store, _value?: Value | MapValue) => null);
     const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
     const Test = ({
       value,
@@ -3431,7 +3429,7 @@ describe('Write Hooks', () => {
     });
 
     test('useSetCheckpointCallback without label', () => {
-      const then = jest.fn(
+      const then = vi.fn(
         (_checkpointId: Id, _checkpoints: Checkpoints, _label?: string) => null,
       );
       const Test = ({
@@ -3469,7 +3467,7 @@ describe('Write Hooks', () => {
     });
 
     test('useSetCheckpointCallback with label', () => {
-      const then = jest.fn(
+      const then = vi.fn(
         (_checkpointId: Id, _checkpoints: Checkpoints, _label?: string) => null,
       );
       const handlers: {[suffix: string]: MouseEventHandler<HTMLButtonElement>} =
@@ -3545,7 +3543,7 @@ describe('Write Hooks', () => {
     });
 
     test('useGoToCallback', () => {
-      const then = jest.fn(
+      const then = vi.fn(
         (_checkpoints: Checkpoints, _checkpointId: Id) => null,
       );
       const Test = ({

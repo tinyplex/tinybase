@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-no-useless-fragment */
+import '@testing-library/jest-dom/vitest';
 import {fireEvent, render} from '@testing-library/react';
-import React, {act, useCallback} from 'react';
+import {act, useCallback} from 'react';
 import type {
   Checkpoints,
   Id,
@@ -96,6 +97,7 @@ import {
 import * as UiReact from 'tinybase/ui-react/with-schemas';
 import type {NoSchemas} from 'tinybase/with-schemas';
 import {createStore as createStore2} from 'tinybase/with-schemas';
+import {beforeEach, describe, expect, test, vi} from 'vitest';
 
 const {Provider: Provider2, useStore: useStore2} =
   UiReact as UiReact.WithSchemas<NoSchemas>;
@@ -1655,7 +1657,7 @@ describe('Context Provider', () => {
   describe('default', () => {
     describe('store', () => {
       test('for tables', () => {
-        const then = jest.fn((store1: Store) => expect(store1).toEqual(store));
+        const then = vi.fn((store1: Store) => expect(store1).toEqual(store));
         const Test = () => (
           <>
             <span>
@@ -1689,7 +1691,7 @@ describe('Context Provider', () => {
       });
 
       test('for table', () => {
-        const then = jest.fn((store1: Store) => expect(store1).toEqual(store));
+        const then = vi.fn((store1: Store) => expect(store1).toEqual(store));
         const Test = () => (
           <>
             <span>
@@ -1720,7 +1722,7 @@ describe('Context Provider', () => {
       });
 
       test('for row', () => {
-        const then = jest.fn((store1: Store) => expect(store1).toEqual(store));
+        const then = vi.fn((store1: Store) => expect(store1).toEqual(store));
         const Test = () => (
           <>
             <span>
@@ -1749,7 +1751,7 @@ describe('Context Provider', () => {
       });
 
       test('for cell', () => {
-        const then = jest.fn((store1: Store) => expect(store1).toEqual(store));
+        const then = vi.fn((store1: Store) => expect(store1).toEqual(store));
         const Test = () => (
           <>
             <span>

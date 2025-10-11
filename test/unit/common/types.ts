@@ -1,14 +1,5 @@
 import type {Id, IdOrNull} from 'tinybase';
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface Matchers<R> {
-      toEqualWithOrder(expected: any): R;
-    }
-  }
-}
-
 export type IdObj<Value> = {[id: string]: Value};
 export type IdObj2<Value> = IdObj<IdObj<Value>>;
 export type Logs = IdObj<any[]>;

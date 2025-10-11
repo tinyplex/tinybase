@@ -1,3 +1,5 @@
+import {beforeEach, describe, expect, test} from 'vitest';
+
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type {
   Cell,

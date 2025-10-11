@@ -1,3 +1,5 @@
+import {expect} from 'vitest';
+
 import type {Id} from 'tinybase';
 import {Listener} from './types.ts';
 

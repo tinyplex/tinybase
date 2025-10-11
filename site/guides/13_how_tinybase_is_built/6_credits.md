@@ -24,7 +24,7 @@ easier by the following (non-exhaustive list) of awesome projects:
 - [LESS](https://lesscss.org/) for styling
 - [Rollup](https://rollupjs.org/) for bundling
 - [Gulp](https://gulpjs.com/) for build orchestration
-- [Jest](https://jestjs.io/) for testing
+- [Vitest](https://vitest.dev/) for testing
 - [TypeDoc](https://typedoc.org/) for documentation
 - [asciichart](https://github.com/kroitor/asciichart) for performance charting
 - [Puppeteer](https://pptr.dev/) for browser automation

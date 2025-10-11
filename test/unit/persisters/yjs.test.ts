@@ -2,6 +2,7 @@ import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
 import {createYjsPersister} from 'tinybase/persisters/persister-yjs';
+import {beforeEach, describe, expect, test} from 'vitest';
 import {Doc as YDoc, Map as YMap, applyUpdate, encodeStateAsUpdate} from 'yjs';
 import {pause} from '../common/other.ts';
 

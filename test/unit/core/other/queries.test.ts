@@ -1,3 +1,5 @@
+import {beforeEach, describe, expect, test, vi} from 'vitest';
+
 import type {Id, Queries, Store} from 'tinybase';
 import {createQueries, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
@@ -864,7 +866,7 @@ describe('Listens to Queries when sets', () => {
   test('and callback with ids', () => {
     expect.assertions(3);
     queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
-    const listener = jest.fn((queries2, queryId) => {
+    const listener = vi.fn((queries2, queryId) => {
       expect(queries2).toEqual(queries);
       expect(queryId).toEqual('q1');
     });
@@ -4270,7 +4272,7 @@ describe('Sorted Row Ids', () => {
   });
 
   test('Cell sort listener, alter relevant cell, no change', () => {
-    const listener = jest.fn();
+    const listener = vi.fn();
     queries.addResultSortedRowIdsListener(
       'q1',
       'c2',
@@ -4284,14 +4286,14 @@ describe('Sorted Row Ids', () => {
   });
 
   test('Cell sort listener, alter relevant cell, after page', () => {
-    const listener = jest.fn();
+    const listener = vi.fn();
     queries.addResultSortedRowIdsListener('q1', 'c2', false, 0, 2, listener);
     store.setRow('t1', 'r7', {c1: 7, c2: 'seven'});
     expect(listener).toHaveBeenCalledTimes(0);
   });
 
   test('Cell sort listener, alter non-relevant cell', () => {
-    const listener = jest.fn();
+    const listener = vi.fn();
     queries.addResultSortedRowIdsListener(
       'q1',
       'c2',
@@ -4307,7 +4309,7 @@ describe('Sorted Row Ids', () => {
 
 describe('Miscellaneous', () => {
   test('Listener cannot mutate original store', () => {
-    const listener = jest.fn(() => {
+    const listener = vi.fn(() => {
       store.setValue('mutated', true);
     });
     queries.setQueryDefinition('q1', 't1', ({select}) => select('c1'));
@@ -4320,7 +4322,7 @@ describe('Miscellaneous', () => {
   });
 
   test('Listener can create new query, immediately available', () => {
-    const listener = jest.fn(() => {
+    const listener = vi.fn(() => {
       queries.setQueryDefinition('q2', 't1', ({select}) => select('c2'));
       expect(queries.getResultTable('q2')).toEqual({r1: {c2: 2}});
     });

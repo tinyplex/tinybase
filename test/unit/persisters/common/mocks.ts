@@ -2,8 +2,6 @@ import {DocHandle, Repo} from '@automerge/automerge-repo';
 import crypto from 'crypto';
 import fs from 'fs';
 import {deleteDB, openDB} from 'idb';
-import type {FetchMock} from 'jest-fetch-mock';
-import fm from 'jest-fetch-mock';
 import type {
   Changes,
   Content,
@@ -40,13 +38,10 @@ import type {LocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local'
 import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import tmp from 'tmp';
 import {Doc as YDoc, Map as YMap} from 'yjs';
-import {mockFetchWasm} from '../../common/other.ts';
 import {Variants} from './databases.ts';
 import {GetLocationMethod, Persistable} from './other.ts';
 
 tmp.setGracefulCleanup();
-
-const fetchMock = fm as any as FetchMock;
 
 const UNDEFINED_MARKER = '\uFFFC';
 
@@ -246,7 +241,6 @@ const getMockedDatabase = <Location>(
   _skipSqlChecks = false,
 ): Persistable<Location> => {
   const mockDatabase = {
-    beforeEach: mockFetchWasm,
     getLocation,
     getLocationMethod,
     getPersister: (store: Store, location: Location) =>
@@ -560,8 +554,6 @@ export const mockOpfs: Persistable<
 
 export const mockRemote: Persistable = {
   beforeEach: (): void => {
-    fetchMock.enableMocks();
-    fetchMock.resetMocks();
     fetchMock.doMock(async (req) => {
       if (req.url.startsWith(GET_HOST)) {
         const rawBody = await mockRemote.get(req.url.substr(GET_HOST.length));

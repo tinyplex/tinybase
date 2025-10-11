@@ -1,3 +1,5 @@
+import {beforeEach, describe, expect, test, vi} from 'vitest';
+
 import type {GetCell, Id, Relationships, Store} from 'tinybase';
 import {createRelationships, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
@@ -131,7 +133,7 @@ describe('Listens to RemoteRowIds when sets', () => {
   test('and callback with ids', () => {
     expect.assertions(4);
     relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c1');
-    const listener = jest.fn((relationships2, relationshipId, localRowId) => {
+    const listener = vi.fn((relationships2, relationshipId, localRowId) => {
       expect(relationships2).toEqual(relationships);
       expect(relationshipId).toEqual('r1');
       expect(localRowId).toEqual('r1');
@@ -391,7 +393,7 @@ describe('Listens to LocalRowIds when sets', () => {
   test('and callback with ids', () => {
     expect.assertions(4);
     relationships.setRelationshipDefinition('r1', 't1', 'T1', 'c1');
-    const listener = jest.fn((relationships2, relationshipId, remoteRowId) => {
+    const listener = vi.fn((relationships2, relationshipId, remoteRowId) => {
       expect(relationships2).toEqual(relationships);
       expect(relationshipId).toEqual('r1');
       expect(remoteRowId).toEqual('R1');
@@ -727,7 +729,7 @@ describe('Linked lists', () => {
 
 describe('Miscellaneous', () => {
   test('Listener cannot mutate original store', () => {
-    const listener = jest.fn(() => {
+    const listener = vi.fn(() => {
       store.setValue('mutated', true);
     });
     relationships.setRelationshipDefinition('r1', 't1', 't1', 'c1');

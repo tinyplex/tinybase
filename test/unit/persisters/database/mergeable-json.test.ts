@@ -3,8 +3,8 @@ import 'fake-indexeddb/auto';
 import type {MergeableStore} from 'tinybase';
 import {createMergeableStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
+import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {getTimeFunctions} from '../../common/mergeable.ts';
-import {mockFetchWasm} from '../../common/other.ts';
 import {MERGEABLE_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 
 const [reset, getNow, pause] = getTimeFunctions();
@@ -38,7 +38,6 @@ describe.each(Object.entries(MERGEABLE_VARIANTS))(
     let persister: Persister;
 
     beforeEach(async () => {
-      mockFetchWasm();
       db = await getOpenDatabase();
       store = createMergeableStore('s1', getNow);
       persister = await getPersister(store, db, {

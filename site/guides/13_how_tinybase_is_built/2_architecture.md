@@ -4,8 +4,8 @@ The architecture of TinyBase is pretty straightforward. This guide runs through
 the main file structure and principles.
 
 The top level directory contains lots of configuration files: for the package as
-a whole (`package.json`), for Jest (`jest.config.js`), for Prettier
-(`.prettierrc`) and for ESLint (`.eslintrc.json`). TypeScript configuration is
+a whole (`package.json`), for Vitest (`vitest.config.js`), for Prettier
+(`.prettierrc`) and for ESLint (`eslint.config.js`). TypeScript configuration is
 _not_ in the top-level directory, but is co-located with the `src` and `test`
 files independently.
 
@@ -33,12 +33,9 @@ together into a single convenient package: these contain just imports.
 
 ## test
 
-There are Jest unit tests for all modules in the `unit` subdirectory. The `perf`
-subdirectory contains the performance tests. The `e2e` subdirectory contains
-Puppeteer tests for checking all the demos on the website work.
-
-The `jest` subdirectory contains some extensions that allow TinyBase to do
-things like count and report the total number of assertions.
+There are Vitest unit tests for all modules in the `unit` subdirectory. The
+`perf` subdirectory contains the performance tests. The `e2e` subdirectory
+contains Puppeteer tests for checking all the demos on the website work.
 
 There is more about TinyBase's testing in the following Testing guide.
 

@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment, jest/no-export */
 import {blue, plot, red, yellow} from 'asciichart';
 import {performance} from 'perf_hooks';
 import type {Row, Table, Tables, Values} from 'tinybase';
+import {expect, test} from 'vitest';
 
 export const repeat = (
   name: string,
@@ -56,7 +56,6 @@ export const repeat = (
         `  Min: ${Math.min(...results)} ${unit}\n` +
         `  Max: ${Math.max(...results)} ${unit}\n` +
         `  Avg: ${average} ${unit}\n\n` +
-        // @ts-ignore
         `${plot([maxes, averages, results], {
           height: 15,
           min: 0,

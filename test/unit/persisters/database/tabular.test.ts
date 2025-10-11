@@ -4,7 +4,8 @@ import 'fake-indexeddb/auto';
 import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
-import {mockFetchWasm, pause} from '../../common/other.ts';
+import {afterEach, beforeEach, describe, expect, test} from 'vitest';
+import {pause} from '../../common/other.ts';
 import {ALL_VARIANTS, getDatabaseFunctions} from '../common/databases.ts';
 
 describe.each(Object.entries(ALL_VARIANTS))(
@@ -44,7 +45,6 @@ describe.each(Object.entries(ALL_VARIANTS))(
     let store: Store;
 
     beforeEach(async () => {
-      mockFetchWasm();
       db = await getOpenDatabase();
       store = createStore();
     });

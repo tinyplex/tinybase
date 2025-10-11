@@ -3,6 +3,7 @@ import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
 import {createAutomergePersister} from 'tinybase/persisters/persister-automerge';
+import {beforeEach, describe, expect, test} from 'vitest';
 import {
   AutomergeTestNetworkAdapter,
   resetNetwork,

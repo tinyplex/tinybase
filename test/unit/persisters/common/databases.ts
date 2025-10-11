@@ -14,7 +14,6 @@ import type {ElectricClient} from 'electric-sql/client/model';
 import {DbSchema} from 'electric-sql/client/model';
 import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
 import 'fake-indexeddb/auto';
-import 'jest-fetch-mock';
 import type {ReservedSql, Sql} from 'postgres';
 import postgres from 'postgres';
 import sqlite3, {Database} from 'sqlite3';
@@ -475,7 +474,7 @@ export const MERGEABLE_VARIANTS = isBun
 export const ALL_VARIANTS = isBun ? ALL_BUN_VARIANTS : ALL_NODE_VARIANTS;
 
 export const ADHOC_VARIANTS: Variants = {
-  adhoc: NODE_POSTGRESQL_VARIANTS.postgres,
+  adhoc: NODE_SQLITE_NON_MERGEABLE_VARIANTS.crSqliteWasm,
 };
 
 export const getDatabaseFunctions = <Database>(

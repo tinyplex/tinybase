@@ -1,3 +1,5 @@
+import {beforeEach, describe, expect, test} from 'vitest';
+
 import type {Checkpoints, Id, Store, Tables, Values} from 'tinybase';
 import {createCheckpoints, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';

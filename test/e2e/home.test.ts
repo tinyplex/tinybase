@@ -1,3 +1,4 @@
+import {afterAll, beforeAll, describe, test} from 'vitest';
 import {expectedElement, getServerFunctions} from './common.ts';
 
 const [startServer, stopServer, expectPage] = getServerFunctions(8800);

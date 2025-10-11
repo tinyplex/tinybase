@@ -1,4 +1,3 @@
-/* eslint-disable jest/no-conditional-expect */
 import type {
   Changes,
   Content,
@@ -9,6 +8,7 @@ import type {
 import {createMergeableStore, createStore} from 'tinybase';
 import type {Persister} from 'tinybase/persisters';
 import {createCustomPersister, Persists} from 'tinybase/persisters';
+import {afterEach, beforeEach, describe, expect, test} from 'vitest';
 import {getTimeFunctions} from '../common/mergeable.ts';
 import {noop} from '../common/other.ts';
 import {MERGEABLE_VARIANTS} from './common/databases.ts';

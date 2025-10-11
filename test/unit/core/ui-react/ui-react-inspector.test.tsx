@@ -1,7 +1,7 @@
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 import {render, screen, waitFor} from '@testing-library/react';
-import React from 'react';
 import {Inspector} from 'tinybase/ui-react-inspector';
+import {beforeEach, describe, expect, test} from 'vitest';
 
 describe('Inspector', () => {
   beforeEach(() => {

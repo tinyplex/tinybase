@@ -1,5 +1,6 @@
 import type {TablesSchema} from 'tinybase';
 import {createStore} from 'tinybase';
+import {test} from 'vitest';
 import {µs} from './common.ts';
 
 const SIZE = 50;
@@ -42,6 +43,4 @@ test(`${Math.pow(SIZE, 3)} cells benchmark`, () => {
   });
   // eslint-disable-next-line no-console
   console.log(`${cells} cells changed in ${Math.round(time / 10000) / 100}s`);
-
-  expect(1).toEqual(1);
 });

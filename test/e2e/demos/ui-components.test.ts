@@ -1,3 +1,4 @@
+import {afterAll, beforeAll, describe, test} from 'vitest';
 import {
   expectNoFramedElement,
   expectedElement,
@@ -5,7 +6,7 @@ import {
   getServerFunctions,
 } from '../common.ts';
 
-const [startServer, stopServer, expectPage] = getServerFunctions(8801);
+const [startServer, stopServer, expectPage] = getServerFunctions(8809);
 
 beforeAll(startServer);
 afterAll(stopServer);

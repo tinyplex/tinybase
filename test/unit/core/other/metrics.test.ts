@@ -1,3 +1,5 @@
+import {beforeEach, describe, expect, test, vi} from 'vitest';
+
 import type {Metrics, Store} from 'tinybase';
 import {createMetrics, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
@@ -202,7 +204,7 @@ describe('Listens to Metrics when sets', () => {
     expect.assertions(5);
     store.setTables({t1: {r1: {c1: 1}}});
     metrics.setMetricDefinition('m1', 't1');
-    const listener = jest.fn((metrics2, metricId, newMetric, oldMetric) => {
+    const listener = vi.fn((metrics2, metricId, newMetric, oldMetric) => {
       expect(metrics2).toEqual(metrics);
       expect(metricId).toEqual('m1');
       expect(oldMetric).toEqual(1);
@@ -589,7 +591,7 @@ describe('Listens to Metrics when sets', () => {
 
 describe('Miscellaneous', () => {
   test('Listener cannot mutate original store', () => {
-    const listener = jest.fn(() => {
+    const listener = vi.fn(() => {
       store.setValue('mutated', true);
     });
     metrics.setMetricDefinition('m1', 't1');

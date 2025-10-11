@@ -1,6 +1,7 @@
+import {beforeEach, describe, expect, test} from 'vitest';
+
 /*  eslint-disable @typescript-eslint/ban-ts-comment */
 import {render} from '@testing-library/react';
-import React from 'react';
 import type {Relationships, Store} from 'tinybase';
 import {
   createCheckpoints,

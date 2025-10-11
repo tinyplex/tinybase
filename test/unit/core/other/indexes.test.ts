@@ -1,3 +1,5 @@
+import {beforeEach, describe, expect, test, vi} from 'vitest';
+
 import type {GetCell, Id, Indexes, SortKey, Store} from 'tinybase';
 import {createIndexes, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
@@ -231,7 +233,7 @@ describe('Listens to SliceIds when sets', () => {
   test('and callback with ids', () => {
     expect.assertions(3);
     indexes.setIndexDefinition('i1', 't1');
-    const listener = jest.fn((indexes2, indexId) => {
+    const listener = vi.fn((indexes2, indexId) => {
       expect(indexes2).toEqual(indexes);
       expect(indexId).toEqual('i1');
     });
@@ -588,7 +590,7 @@ describe('Listens to SliceRowIds when sets', () => {
   test('and callback with ids', () => {
     expect.assertions(4);
     indexes.setIndexDefinition('i1', 't1');
-    const listener = jest.fn((indexes2, indexId, sliceId) => {
+    const listener = vi.fn((indexes2, indexId, sliceId) => {
       expect(indexes2).toEqual(indexes);
       expect(indexId).toEqual('i1');
       expect(sliceId).toEqual('');
@@ -1759,7 +1761,7 @@ describe('Listens to SliceRowIds when sets', () => {
 
 describe('Miscellaneous', () => {
   test('Listener cannot mutate original store', () => {
-    const listener = jest.fn(() => {
+    const listener = vi.fn(() => {
       store.setValue('mutated', true);
     });
     indexes.setIndexDefinition('i1', 't1', 'c1');

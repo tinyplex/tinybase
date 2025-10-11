@@ -1,3 +1,5 @@
+import {beforeEach, describe, expect, test, vi} from 'vitest';
+
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type {Row, Store, Table, Tables, Values} from 'tinybase';
 import {createMergeableStore, createStore} from 'tinybase';
@@ -444,21 +446,21 @@ describe.each([
     });
 
     test('Cell sort listener, alter relevant cell, no change', () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       store.addSortedRowIdsListener('t1', 'c2', false, 0, undefined, listener);
       store.setCell('t1', 'r5', 'c2', 'cinq');
       expect(listener).toHaveBeenCalledTimes(0);
     });
 
     test('Cell sort listener, alter relevant cell, after page', () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       store.addSortedRowIdsListener('t1', 'c2', false, 0, 3, listener);
       store.setRow('t1', 'r7', {c1: 7, c2: 'seven'});
       expect(listener).toHaveBeenCalledTimes(0);
     });
 
     test('Cell sort listener, alter non-relevant cell', () => {
-      const listener = jest.fn();
+      const listener = vi.fn();
       store.addSortedRowIdsListener('t1', 'c2', false, 0, undefined, listener);
       store.setCell('t1', 'r1', 'c1', '1.0');
       expect(listener).toHaveBeenCalledTimes(0);
@@ -724,7 +726,7 @@ describe.each([
     test('cell listener with new and old value', () => {
       expect.assertions(11);
       store = createStore().setTables({t1: {r1: {c1: 1}}});
-      const listener = jest.fn(
+      const listener = vi.fn(
         (store2, tableId, rowId, cellId, newCell, oldCell) => {
           expect(store2).toEqual(store);
           expect(tableId).toEqual('t1');
@@ -741,14 +743,12 @@ describe.each([
     test('row listener with cell changes function', () => {
       expect.assertions(5);
       store = createStore().setTables({t1: {r1: {c1: 1, c2: 2, c3: 3}}});
-      const listener = jest.fn(
-        (_store, _tableId, _rowId, getCellChange: any) => {
-          expect(getCellChange('t1', 'r1', 'c1')).toEqual([false, 1, 1]);
-          expect(getCellChange('t1', 'r1', 'c2')).toEqual([true, 2, 3]);
-          expect(getCellChange('t1', 'r1', 'c3')).toEqual([true, 3, undefined]);
-          expect(getCellChange('t1', 'r1', 'c4')).toEqual([true, undefined, 4]);
-        },
-      );
+      const listener = vi.fn((_store, _tableId, _rowId, getCellChange: any) => {
+        expect(getCellChange('t1', 'r1', 'c1')).toEqual([false, 1, 1]);
+        expect(getCellChange('t1', 'r1', 'c2')).toEqual([true, 2, 3]);
+        expect(getCellChange('t1', 'r1', 'c3')).toEqual([true, 3, undefined]);
+        expect(getCellChange('t1', 'r1', 'c4')).toEqual([true, undefined, 4]);
+      });
       store.addRowListener('t1', 'r1', listener);
       store.setTables({t1: {r1: {c1: 1, c2: 3, c4: 4}}});
       expect(listener).toHaveBeenCalled();
@@ -757,7 +757,7 @@ describe.each([
     test('value listener with new and old value', () => {
       expect.assertions(7);
       store = createStore().setValues({v1: 1});
-      const listener = jest.fn((store2, valueId, newValue, oldValue) => {
+      const listener = vi.fn((store2, valueId, newValue, oldValue) => {
         expect(store2).toEqual(store);
         expect(newValue).toEqual(2);
         expect(oldValue).toEqual(valueId == 'v1' ? 1 : undefined);
@@ -770,7 +770,7 @@ describe.each([
     test('values listener with value changes function', () => {
       expect.assertions(5);
       store = createStore().setValues({v1: 1, v2: 2, v3: 3});
-      const listener = jest.fn((_store, getValueChange: any) => {
+      const listener = vi.fn((_store, getValueChange: any) => {
         expect(getValueChange('v1')).toEqual([false, 1, 1]);
         expect(getValueChange('v2')).toEqual([true, 2, 3]);
         expect(getValueChange('v3')).toEqual([true, 3, undefined]);
@@ -790,13 +790,13 @@ describe.each([
     });
 
     test('Empty', () => {
-      const actions = jest.fn(() => null);
+      const actions = vi.fn(() => null);
       store.transaction(actions);
       expect(actions).toHaveBeenCalledTimes(1);
     });
 
     test('Empty, nested', () => {
-      const actions = jest.fn(() => null);
+      const actions = vi.fn(() => null);
       store.transaction(() => store.transaction(actions));
       expect(actions).toHaveBeenCalledTimes(1);
     });
@@ -880,7 +880,7 @@ describe.each([
 
     test('Transaction in a listener ignored 1', () => {
       listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
-      const listenerTransaction = jest.fn(() => {
+      const listenerTransaction = vi.fn(() => {
         store.setTables({t1: {r1: {c1: 3}}});
       });
       store.addCellListener('t1', 'r1', 'c1', () => {
@@ -894,7 +894,7 @@ describe.each([
 
     test('Transaction in a listener ignored 2', () => {
       listener.listenToCell('/t1/r1/c1', 't1', 'r1', 'c1');
-      const listenerTransaction = jest.fn(() => {
+      const listenerTransaction = vi.fn(() => {
         store.setTables({t1: {r1: {c1: 3}}});
       });
       store.addCellListener('t1', 'r1', 'c1', () => {
@@ -909,7 +909,7 @@ describe.each([
     });
 
     test('Adding a peer listener in a listener', () => {
-      const listener = jest.fn(() => null);
+      const listener = vi.fn(() => null);
       store.addCellListener('t1', 'r1', 'c1', () => {
         store.addCellListener('t1', 'r1', 'c1', listener);
       });
@@ -918,7 +918,7 @@ describe.each([
     });
 
     test('Adding a higher listener in a listener', () => {
-      const listener = jest.fn(() => null);
+      const listener = vi.fn(() => null);
       store.addCellListener('t1', 'r1', 'c1', () => {
         store.addRowListener('t1', 'r1', listener);
       });
@@ -927,7 +927,7 @@ describe.each([
     });
 
     test('Adding a lower listener in a listener', () => {
-      const listener = jest.fn(() => null);
+      const listener = vi.fn(() => null);
       store.addRowListener('t1', 'r1', () => {
         store.addCellListener('t1', 'r1', 'c1', listener);
       });
@@ -936,7 +936,7 @@ describe.each([
     });
 
     test('Removing an earlier peer listener in a listener', () => {
-      const listener = jest.fn(() => null);
+      const listener = vi.fn(() => null);
       const listenerId = store.addCellListener('t1', 'r1', 'c1', listener);
       store.addCellListener('t1', 'r1', 'c1', () => {
         store.delListener(listenerId);
@@ -946,7 +946,7 @@ describe.each([
     });
 
     test('Removing a later peer listener in a listener', () => {
-      const listener = jest.fn(() => null);
+      const listener = vi.fn(() => null);
       store.addCellListener('t1', 'r1', 'c1', () => {
         store.delListener(listenerId);
       });
@@ -956,7 +956,7 @@ describe.each([
     });
 
     test('Removing a lower listener in a listener', () => {
-      const listener = jest.fn(() => null);
+      const listener = vi.fn(() => null);
       const listenerId = store.addCellListener('t1', 'r1', 'c1', listener);
       store.addRowListener('t1', 'r1', () => {
         store.delListener(listenerId);
@@ -966,7 +966,7 @@ describe.each([
     });
 
     test('Removing a higher listener in a listener', () => {
-      const listener = jest.fn(() => null);
+      const listener = vi.fn(() => null);
       const listenerId = store.addRowListener('t1', 'r1', listener);
       store.addCellListener('t1', 'r1', 'c1', () => {
         store.delListener(listenerId);
@@ -1295,7 +1295,7 @@ describe.each([
 
     describe('Transactions with explicit start & finish', () => {
       test('Finishing without starting does nothing', () => {
-        const doRollback = jest.fn(() => true);
+        const doRollback = vi.fn(() => true);
         store.finishTransaction(doRollback);
         expect(doRollback).toHaveBeenCalledTimes(0);
       });

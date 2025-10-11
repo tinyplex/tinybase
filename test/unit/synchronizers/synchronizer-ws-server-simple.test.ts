@@ -1,6 +1,7 @@
 import {createMergeableStore} from 'tinybase';
 import {createWsSynchronizer} from 'tinybase/synchronizers/synchronizer-ws-client';
 import {createWsServerSimple} from 'tinybase/synchronizers/synchronizer-ws-server-simple';
+import {beforeEach, expect, test} from 'vitest';
 import {WebSocket, WebSocketServer} from 'ws';
 import {getTimeFunctions} from '../common/mergeable.ts';
 

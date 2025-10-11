@@ -1,3 +1,13 @@
+import {
+  type Mock,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  test,
+  vi,
+} from 'vitest';
+
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type {Cell, Id, IdOrNull, Store, Value} from 'tinybase';
 import {createMergeableStore, createStore} from 'tinybase';
@@ -8816,7 +8826,7 @@ describe.each([
       });
 
       test('start can mutate', () => {
-        const listener = jest.fn(() => {
+        const listener = vi.fn(() => {
           store.setValue('mutated', true);
         });
         store.addStartTransactionListener(listener);
@@ -8827,7 +8837,7 @@ describe.each([
       });
 
       test('willFinish can mutate', () => {
-        const listener = jest.fn(() => {
+        const listener = vi.fn(() => {
           store.setValue('mutated', true);
         });
         store.addWillFinishTransactionListener(listener);
@@ -8838,7 +8848,7 @@ describe.each([
       });
 
       test('didFinish cannot mutate', () => {
-        const listener = jest.fn(() => {
+        const listener = vi.fn(() => {
           store.setValue('mutated', true);
         });
         store.addDidFinishTransactionListener(listener);
@@ -8939,13 +8949,13 @@ describe.each([
       });
 
       describe('mutation does not fire', () => {
-        let secondMutator: jest.Mock;
-        let secondListener: jest.Mock;
+        let secondMutator: Mock;
+        let secondListener: Mock;
 
         beforeEach(() => {
           store = createStore();
-          secondMutator = jest.fn(() => null);
-          secondListener = jest.fn(() => null);
+          secondMutator = vi.fn(() => null);
+          secondListener = vi.fn(() => null);
         });
 
         test('cell mutation, new cell', () => {
@@ -9150,7 +9160,7 @@ describe.each([
 
       test('cell mutation cancels listeners', () => {
         const store = createStore().setTables({t1: {r1: {c1: 1}}});
-        const second = jest.fn(() => null);
+        const second = vi.fn(() => null);
         store.addCellListener(
           't1',
           'r1',
@@ -9171,7 +9181,7 @@ describe.each([
 
       test('cell self-mutation does not stack overflow', () => {
         const store = createStore().setTables({t1: {r1: {c1: 1}}});
-        const second = jest.fn(() => null);
+        const second = vi.fn(() => null);
         store.addCellListener(
           't1',
           'r1',
@@ -9198,7 +9208,7 @@ describe.each([
 
       test('value mutation cancels listeners', () => {
         const store = createStore().setValues({v1: 1});
-        const second = jest.fn(() => null);
+        const second = vi.fn(() => null);
         store.addValueListener('v1', () => store.setValue('v1', 1), true);
         store.addValueListener(null, second);
         store.addValueIdsListener(second);
@@ -9209,7 +9219,7 @@ describe.each([
 
       test('value self-mutation does not stack overflow', () => {
         const store = createStore().setValues({v1: 1});
-        const second = jest.fn(() => null);
+        const second = vi.fn(() => null);
         store.addValueListener(
           'v1',
           () => store.setValue('v1', (value): Value => (value as number) - 1),
@@ -9235,7 +9245,7 @@ describe.each([
           t2: {r1: {c1: 5, c2: 6}, r2: {c1: 7, c2: 8}},
         })
         .setValues({v1: 1, v2: 2});
-      listener = jest.fn(() => null);
+      listener = vi.fn(() => null);
     });
 
     test('non-existent', () => {

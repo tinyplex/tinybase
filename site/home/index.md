@@ -193,7 +193,7 @@
   </a>
 
   <a href='#well-tested-and-documented'>
-    <img src="https://img.shields.io/badge/Tests-100%25-green?style=for-the-badge&logo=jest&logoColor=%23fff&color=%23333&labelColor=%2387c305" />
+    <img src="https://img.shields.io/badge/Tests-100%25-green?style=for-the-badge&logo=Vitest&logoColor=%23fff&color=%23333&labelColor=%2387c305" />
   </a>
 
   <a href='@@EVAL("metadata.package")' target='_blank'>

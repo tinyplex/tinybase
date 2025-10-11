@@ -1,3 +1,5 @@
+import {beforeAll, describe, expect, test} from 'vitest';
+
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type {Store} from 'tinybase';
 import {createMergeableStore, createStore} from 'tinybase';
@@ -20,9 +22,10 @@ describe.each([
       store = createStore();
     });
 
-    test('reset 1', () => {
+    test('reset 1!', () => {
       store.delTables();
       expect(store.getTables()).toEqual({});
+      expect(1).toEqual(1);
     });
 
     test('setTables', () => {

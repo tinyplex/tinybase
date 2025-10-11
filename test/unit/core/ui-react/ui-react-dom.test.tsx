@@ -1,5 +1,6 @@
+import '@testing-library/jest-dom/vitest';
 import {fireEvent, render} from '@testing-library/react';
-import React, {act} from 'react';
+import {act} from 'react';
 import type {Ids, Indexes, Queries, Relationships, Store} from 'tinybase';
 import {
   createIndexes,
@@ -20,6 +21,7 @@ import {
   TableInHtmlTable,
   ValuesInHtmlTable,
 } from 'tinybase/ui-react-dom';
+import {beforeEach, describe, expect, test} from 'vitest';
 
 let store: Store;
 let indexes: Indexes;
