@@ -567,11 +567,13 @@ const test = async (dirs, coverage) => {
   await clearDir(TMP_DIR);
 
   const {startVitest} = await import('vitest/node');
-  const vitest = await startVitest('test', [...dirs], {
-    watch: false,
-    retry: 3,
-    coverage: {enabled: coverage},
-  });
+  const vitest = await startVitest(
+    'test',
+    [...dirs],
+    {watch: false, coverage: {enabled: coverage}},
+    {},
+    {watch: false},
+  );
   await vitest.close();
 
   if (vitest.state.getCountOfFailedTests() > 0) {

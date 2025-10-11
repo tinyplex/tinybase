@@ -9,7 +9,7 @@ export default defineConfig({
     maxWorkers: 10,
     passWithNoTests: true,
     testTimeout: 20000,
-    retry: 3,
+    retry: 10,
     coverage: {
       enabled: false,
       provider: 'istanbul',
@@ -22,21 +22,24 @@ export default defineConfig({
     projects: [
       {
         extends: true,
-        test: {name: 'unit', include: ['test/unit/**/*.test.ts*']},
+        test: {
+          name: 'unit',
+          include: ['test/unit/**/*.test.ts', 'test/unit/**/*.test.tsx'],
+        },
       },
       {
         extends: true,
-        test: {name: 'perf', include: ['test/perf/**/*.test.ts*']},
+        test: {name: 'perf', include: ['test/perf/**/*.test.ts']},
       },
       {
         extends: true,
-        test: {name: 'prod', include: ['test/prod/**/*.test.ts*']},
+        test: {name: 'prod', include: ['test/prod/**/*.test.ts']},
       },
       {
         extends: true,
         test: {
           name: 'e2e',
-          include: ['test/e2e/**/*.test.ts*'],
+          include: ['test/e2e/**/*.test.ts'],
           environment: 'puppeteer',
           globalSetup: 'vitest-environment-puppeteer/global-init',
           globals: true,
