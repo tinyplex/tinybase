@@ -564,9 +564,9 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
 };
 
 const test = async (dirs, coverage) => {
-  await clearDir(TMP_DIR);
-
   const {startVitest} = await import('vitest/node');
+
+  await clearDir(TMP_DIR);
   const vitest = await startVitest(
     'test',
     [...dirs],
@@ -578,6 +578,7 @@ const test = async (dirs, coverage) => {
 
   if (vitest.state.getCountOfFailedTests() > 0) {
     await removeDir(TMP_DIR);
+
     throw 'Test failed';
   }
 
