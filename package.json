@@ -37,7 +37,7 @@
     "postgres": "^3.4.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-native-mmkv": "3.3.0",
+    "react-native-mmkv": "4.0.0",
     "react-native-sqlite-storage": "^6.0.1",
     "sqlite3": "^5.1.7",
     "ws": "^8.18.3",
