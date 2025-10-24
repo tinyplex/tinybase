@@ -42,7 +42,13 @@ import * as ws from 'ws';
 import * as yjs from 'yjs';
 import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './common/automerge-adaptor.ts';
 import {getTimeFunctions} from './common/mergeable.ts';
-import {isBun, pause, suppressWarnings} from './common/other.ts';
+import {
+  AsyncFunction,
+  importBunSqlite,
+  isBun,
+  pause,
+  suppressWarnings,
+} from './common/other.ts';
 
 const [reset, getNow] = getTimeFunctions();
 
@@ -110,7 +116,6 @@ type Results = [any, any][];
 
 const resultsByName: {[name: string]: () => Promise<Results>} = {};
 
-const AsyncFunction = Object.getPrototypeOf(async () => null).constructor;
 const forEachDeepFile = (
   dir: string,
   callback: (file: string) => void,
@@ -211,7 +216,7 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
 describe('Documentation tests', () => {
   beforeAll(async () => {
     if (isBun) {
-      (globalThis as any).modules['bun:sqlite'] = await import('bun:sqlite');
+      (globalThis as any).modules['bun:sqlite'] = await importBunSqlite();
     }
   });
 

@@ -1,7 +1,16 @@
+import type {Database} from 'bun:sqlite';
 import type {Id, Ids, Indexes, Metrics, Relationships} from 'tinybase';
 import {IdObj, IdObj2} from './types.ts';
 
 export const isBun = process.versions.bun != null;
+
+export const AsyncFunction = Object.getPrototypeOf(
+  async () => null,
+).constructor;
+
+export const importBunSqlite = new AsyncFunction(
+  `return await import('bun:sqlite')`, // hide from Vitest static analysis
+) as () => Promise<{Database: typeof Database}>;
 
 export const pause = async (ms = 50): Promise<void> =>
   new Promise<void>((resolve) =>

@@ -29,7 +29,13 @@ import {createSqliteBunPersister} from 'tinybase/persisters/persister-sqlite-bun
 import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
 import {createSqlite3Persister} from 'tinybase/persisters/persister-sqlite3';
 import tmp from 'tmp';
-import {isBun, noop, pause, suppressWarnings} from '../../common/other.ts';
+import {
+  importBunSqlite,
+  isBun,
+  noop,
+  pause,
+  suppressWarnings,
+} from '../../common/other.ts';
 
 tmp.setGracefulCleanup();
 const statementMutex = new Mutex();
@@ -424,7 +430,7 @@ export const NODE_POSTGRESQL_VARIANTS: Variants = {
 export const BUN_MERGEABLE_VARIANTS: Variants = {
   bunSqlite: [
     async () => {
-      const {Database} = await import('bun:sqlite');
+      const {Database} = await importBunSqlite();
       return new Database(':memory:');
     },
     ['getDb', (db: typeof Database) => db],
