@@ -1,5 +1,10 @@
 import {writeFile} from 'fs/promises';
-import {TestCase} from 'vitest/node';
+import {
+  SerializedError,
+  TestCase,
+  TestModule,
+  TestRunEndReason,
+} from 'vitest/node';
 import {DefaultReporter} from 'vitest/reporters';
 
 export default class extends DefaultReporter {
@@ -11,8 +16,12 @@ export default class extends DefaultReporter {
     super.onTestCaseResult(testCase);
   }
 
-  async onFinished() {
-    super.onFinished();
+  async onTestRunEnd(
+    testModules: ReadonlyArray<TestModule>,
+    unhandledErrors: ReadonlyArray<SerializedError>,
+    reason: TestRunEndReason,
+  ) {
+    super.onTestRunEnd(testModules, unhandledErrors, reason);
     this.ctx.logger.log(`\nTotal Assertions: ${this.assertions}`);
     await writeFile(
       './tmp/counts.json',
