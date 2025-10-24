@@ -64,10 +64,10 @@ you to persist data in a React Native MMKV store via the
 Usage should be as simple as this:
 
 ```js yolo
-import {MMKV} from 'react-native-mmkv';
+import {createMMKV} from 'react-native-mmkv';
 import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
 
-const storage = new MMKV();
+const storage = createMMKV();
 const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
 const persister = createReactNativeMmkvPersister(store, storage);
 

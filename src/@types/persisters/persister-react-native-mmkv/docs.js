@@ -33,11 +33,11 @@
  * then gets the unique key of the storage location back out again.
  *
  * ```js yolo
- * import {MMKV} from 'react-native-mmkv';
+ * import {createMMKV} from 'react-native-mmkv';
  * import {createStore} from 'tinybase';
  * import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
  *
- * const storage = new MMKV();
+ * const storage = createMMKV();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createReactNativeMmkvPersister(
  *   store,
@@ -81,11 +81,11 @@
  * reloads it back into the Store.
  *
  * ```js yolo
- * import {MMKV} from 'react-native-mmkv';
+ * import {createMMKV} from 'react-native-mmkv';
  * import {createStore} from 'tinybase';
  * import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
  *
- * const storage = new MMKV();
+ * const storage = createMMKV();
  * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
  * const persister = createReactNativeMmkvPersister(
  *   store,
