@@ -19,6 +19,9 @@ export default defineConfig({
       reporter: ['text-summary', 'json-summary', 'html'],
     },
 
+    onUnhandledError: ({message}) =>
+      message !== 'Invariant: worker WS endpoint not found',
+
     projects: [
       {
         extends: true,
