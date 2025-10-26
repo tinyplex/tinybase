@@ -196,7 +196,7 @@
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsdoc": "^61.1.8",
     "eslint-plugin-react": "7.37.5",
-    "eslint-plugin-react-hooks": "^6.1.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "expect-puppeteer": "^11.0.0",
     "expo-sqlite": "16.0.8",
     "fake-indexeddb": "^6.2.4",

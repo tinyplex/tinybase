@@ -21,8 +21,8 @@ export default tsLint.config(
   importLint.flatConfigs.recommended,
   jsdocLint.configs['flat/recommended'],
   reactLint.configs.flat.recommended,
+  hooksLint.configs.flat.recommended,
   reactLint.configs.flat['jsx-runtime'],
-  hooksLint.configs['recommended-latest'],
   tsLint.configs.recommended,
 
   {
