@@ -726,10 +726,12 @@ console.log(store.getCell('pets', 'felix', 'sold'));
   <p>TinyBase is part of a group of small libraries designed to help make rich client and local-first apps easier to build. Check out the others!</p>
 
   <p>
-    <img width="48" src="https://tinybase.org/favicon.svg?asImg" />
-    <br/>
-    <b>TinyBase</b>
-    <br />A reactive data store and sync engine.
+    <a href='https://synclets.org' target='_blank'>
+      <img width="48" src="https://synclets.org/favicon.svg?asImg" />
+      <br/>
+      <b>Synclets</b>
+    </a>
+    <br />An open, storage-agnostic, sync engine development kit.
   </p>
 
   <p>
