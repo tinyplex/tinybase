@@ -1,12 +1,5 @@
 {
-  "ignorePaths": [
-    "*.tsv",
-    "*.webp",
-    "*.svg",
-    "*.snap",
-    "*.json",
-    "*.test.ts"
-  ],
+  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.snap", "*.json", "*.test.ts"],
   "words": [
     "Abad",
     "Adrien",
@@ -157,6 +150,7 @@
     "shaneosullivan",
     "Shantell",
     "Shawshank",
+    "Synclets",
     "signifiers",
     "sliceinhtmltable",
     "smaug",
