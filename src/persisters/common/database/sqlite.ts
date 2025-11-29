@@ -9,7 +9,12 @@ import type {
 } from '../../../@types/persisters/index.d.ts';
 import {collValues} from '../../../common/coll.ts';
 import {IdObj} from '../../../common/obj.ts';
-import {startInterval, stopInterval, tryCatch} from '../../../common/other.ts';
+import {
+  isNull,
+  startInterval,
+  stopInterval,
+  tryCatch,
+} from '../../../common/other.ts';
 import {EMPTY_STRING} from '../../../common/strings.ts';
 import {
   DATA_VERSION,
@@ -59,7 +64,7 @@ export const createCustomSqlitePersister = <
   const addPersisterListener = (
     listener: PersisterListener<Persist>,
   ): (() => void) => {
-    let interval: NodeJS.Timeout;
+    let interval: number;
 
     const startPolling = () =>
       (interval = startInterval(
@@ -71,7 +76,7 @@ export const createCustomSqlitePersister = <
                 ` ${DATA_VERSION} d,${SCHEMA_VERSION} s,TOTAL_CHANGES() c FROM ${PRAGMA}${DATA_VERSION} JOIN ${PRAGMA}${SCHEMA_VERSION}`,
             )) as [IdObj<number>];
             if (d != dataVersion || s != schemaVersion || c != totalChanges) {
-              if (dataVersion != null) {
+              if (!isNull(dataVersion)) {
                 listener();
               }
               dataVersion = d;

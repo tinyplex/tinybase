@@ -8,6 +8,10 @@ import type {
   ValuesProps,
 } from '../../@types/ui-react/index.d.ts';
 import {useCallback, useEffect, useState} from '../../common/react.ts';
+import {  isUndefined 
+
+  
+} from '../../common/other.ts';
 
 export type OnDoneProp = {readonly onDone: () => void};
 
@@ -31,6 +35,8 @@ export const getNewIdFromSuggestedId = (
 
 export const ConfirmableActions = <
   Props extends TableProps | RowProps | CellProps | ValuesProps | ValueProps,
+
+  
 >({
   actions,
   ...props
@@ -41,13 +47,13 @@ export const ConfirmableActions = <
     component: ComponentType<OnDoneProp & Props>,
   ][];
 } & Props) => {
-  const [confirming, setConfirming] = useState<number | null>();
-  const handleDone = useCallback(() => setConfirming(null), []);
+  const [confirming, setConfirming] = useState<number | undefined>();
+  const handleDone = useCallback(() => setConfirming(undefined), []);
 
   useEffect(() => {
-    if (confirming != null) {
+    if (!isUndefined(confirming)) {
       const handleKeyDown = (e: KeyboardEvent) => {
-        if (confirming != null && e.key === 'Escape') {
+        if (!isUndefined(confirming) && e.key === 'Escape') {
           e.preventDefault();
           handleDone();
         }
@@ -57,7 +63,7 @@ export const ConfirmableActions = <
     }
   }, [confirming, handleDone]);
 
-  if (confirming != null) {
+  if (!isUndefined(confirming)) {
     const [, , Component] = actions[confirming];
     return (
       <>
