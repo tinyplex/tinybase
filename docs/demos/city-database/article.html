@@ -1,9 +1,9 @@
 <nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/city-database/">City Database</a></li></ul></nav><section class="s1" id="/demos/city-database/" data-id="CD"><h1>City Database</h1><iframe srcdoc="&lt;html&gt;&lt;head&gt;&lt;script type=&quot;importmap&quot;&gt;{
     &quot;imports&quot;: {
-      &quot;tinybase&quot;: &quot;https://esm.sh/tinybase@7.0.0-beta.1&quot;,
-      &quot;tinybase/ui-react&quot;: &quot;https://esm.sh/tinybase@7.0.0-beta.1/ui-react&quot;,
-      &quot;tinybase/ui-react-dom&quot;: &quot;https://esm.sh/tinybase@7.0.0-beta.1/ui-react-dom&quot;,
-      &quot;tinybase/ui-react-inspector&quot;: &quot;https://esm.sh/tinybase@7.0.0-beta.1/ui-react-inspector&quot;,
+      &quot;tinybase&quot;: &quot;https://esm.sh/tinybase@7.0.0-beta.2&quot;,
+      &quot;tinybase/ui-react&quot;: &quot;https://esm.sh/tinybase@7.0.0-beta.2/ui-react&quot;,
+      &quot;tinybase/ui-react-dom&quot;: &quot;https://esm.sh/tinybase@7.0.0-beta.2/ui-react-dom&quot;,
+      &quot;tinybase/ui-react-inspector&quot;: &quot;https://esm.sh/tinybase@7.0.0-beta.2/ui-react-inspector&quot;,
       &quot;react&quot;: &quot;https://esm.sh/react@^19.0.0&quot;,
       &quot;react/jsx-runtime&quot;: &quot;https://esm.sh/react@^19.0.0/jsx-runtime&quot;,
       &quot;react-dom/client&quot;: &quot;https://esm.sh/react-dom@^19.0.0/client&quot;
@@ -12,10 +12,10 @@
 `),i=e.shift().split(&quot;	&quot;);o.transaction(()=&gt;e.forEach((r,a)=&gt;r.split(&quot;	&quot;).forEach((s,n)=&gt;o.setCell(&quot;cities&quot;,a,i[n],I.test(s)?parseFloat(s):s))))},v=[&quot;Name&quot;,&quot;Country&quot;,&quot;Population&quot;,&quot;Latitude&quot;,&quot;Longitude&quot;,&quot;Elevation&quot;],E=()=&gt;t(f,{tableId:&quot;cities&quot;,cellId:&quot;Population&quot;,descending:!0,limit:10,sortOnClick:!0,paginator:!0,customCells:v,idColumn:!1});&lt;/script&gt;&lt;/html&gt;"></iframe><p>In this demo, we build an app that loads over 140,000 records to push the size and performance limits of TinyBase.</p><p>We use <a href="https://public.opendatasoft.com/explore/dataset/geonames-all-cities-with-a-population-1000">Opendatasoft GeoNames</a> as the source of the information in this app. Thank you for a great data set to demonstrate TinyBase!</p><h3 id="boilerplate">Boilerplate</h3><p>First, we create the import aliases for TinyBase and React modules we&#x27;ll need:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@7.0.0-beta.1"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@7.0.0-beta.1/ui-react"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-dom"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@7.0.0-beta.1/ui-react-dom"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@7.0.0-beta.1/ui-react-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@7.0.0-beta.2"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@7.0.0-beta.2/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-dom"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@7.0.0-beta.2/ui-react-dom"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@7.0.0-beta.2/ui-react-inspector"</span><span class="punctuation">,</span>
       <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.0.0"</span><span class="punctuation">,</span>
       <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.0.0/jsx-runtime"</span><span class="punctuation">,</span>
       <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.0.0/client"</span>
