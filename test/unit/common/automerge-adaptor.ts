@@ -23,8 +23,25 @@ const broadcast = (message: BroadcastChannelMessage): void =>
 export const resetNetwork = () => adaptors.clear();
 
 export class AutomergeTestNetworkAdapter extends NetworkAdapter {
-  whenReady() {
-    return Promise.resolve();
+  #ready = false;
+  #readyResolver?: () => void;
+  #readyPromise: Promise<void> = new Promise<void>((resolve) => {
+    this.#readyResolver = resolve;
+  });
+
+  isReady(): boolean {
+    return this.#ready;
+  }
+
+  whenReady(): Promise<void> {
+    return this.#readyPromise;
+  }
+
+  #forceReady(): void {
+    if (!this.#ready) {
+      this.#ready = true;
+      this.#readyResolver?.();
+    }
   }
 
   connect(peerId: PeerId, peerMetadata?: PeerMetadata) {
@@ -32,7 +49,7 @@ export class AutomergeTestNetworkAdapter extends NetworkAdapter {
     this.peerMetadata = peerMetadata;
     adaptors.add(this);
     broadcast({type: 'arrive', senderId: peerId} as ArriveMessage);
-    this.emit('ready', {network: this});
+    this.#forceReady();
   }
 
   receiveMessage(message: BroadcastChannelMessage) {
