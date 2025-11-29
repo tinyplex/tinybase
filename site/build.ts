@@ -158,6 +158,11 @@ export const build = async (
         '/guides/releases/',
         MarkdownPage,
         '../../../releases.md',
+      )
+      .addMarkdownForNode(
+        '/guides/agents/',
+        MarkdownPage,
+        '../../../agents.md',
       );
   }
 

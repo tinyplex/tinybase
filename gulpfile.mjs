@@ -196,6 +196,7 @@ const copyPackageFiles = async (forProd = false) => {
   await promises.copyFile('LICENSE', join(DIST_DIR, 'LICENSE'));
   await promises.copyFile('readme.md', join(DIST_DIR, 'readme.md'));
   await promises.copyFile('releases.md', join(DIST_DIR, 'releases.md'));
+  await promises.copyFile('agents.md', join(DIST_DIR, 'agents.md'));
 };
 
 let labelBlocks;
