@@ -733,7 +733,7 @@ export const mockAutomerge: Persistable<DocHandle<any>> = {
   getLocationMethod: ['getDocHandle', (location) => location],
   getPersister: createAutomergePersister,
   get: async (docHandle: DocHandle<any>): Promise<Content | void> => {
-    const docContent = (await docHandle.doc())?.['tinybase'];
+    const docContent = docHandle.doc()?.['tinybase'];
     if (Object.keys(docContent).length > 0) {
       return [docContent['t'], docContent['v']] as Content;
     }

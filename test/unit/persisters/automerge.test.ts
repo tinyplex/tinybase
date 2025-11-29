@@ -27,19 +27,19 @@ test('custom name', async () => {
   const docHandler = repo1.create();
   const persister = createAutomergePersister(store1, docHandler, 'test');
   await persister.save();
-  expect(await docHandler.doc()).toEqual({test: {t: {}, v: {}}});
+  expect(docHandler.doc()).toEqual({test: {t: {}, v: {}}});
 });
 
 describe('Save to empty doc', () => {
   test('nothing', async () => {
     await persister1.save();
-    expect(await docHandler1.doc()).toEqual({tinybase: {t: {}, v: {}}});
+    expect(docHandler1.doc()).toEqual({tinybase: {t: {}, v: {}}});
   });
 
   test('tables', async () => {
     store1.setTables({t1: {r1: {c1: 1}}});
     await persister1.save();
-    expect(await docHandler1.doc()).toEqual({
+    expect(docHandler1.doc()).toEqual({
       tinybase: {t: {t1: {r1: {c1: 1}}}, v: {}},
     });
   });
@@ -47,13 +47,13 @@ describe('Save to empty doc', () => {
   test('values', async () => {
     store1.setValues({v1: 1});
     await persister1.save();
-    expect(await docHandler1.doc()).toEqual({tinybase: {t: {}, v: {v1: 1}}});
+    expect(docHandler1.doc()).toEqual({tinybase: {t: {}, v: {v1: 1}}});
   });
 
   test('both', async () => {
     store1.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
     await persister1.save();
-    expect(await docHandler1.doc()).toEqual({
+    expect(docHandler1.doc()).toEqual({
       tinybase: {t: {t1: {r1: {c1: 1}}}, v: {v1: 1}},
     });
   });
@@ -198,14 +198,14 @@ describe('Two stores, two docs', () => {
 
   const syncDocs = async () => {
     await pause();
-    await docHandler1.doc();
-    await docHandler2.doc();
+    docHandler1.doc();
+    docHandler2.doc();
     await pause();
   };
 
   beforeEach(async () => {
     const repo2 = new Repo({network: [new AutomergeTestNetworkAdapter()]});
-    docHandler2 = repo2.find(docHandler1.documentId);
+    docHandler2 = await repo2.find(docHandler1.documentId);
     await syncDocs();
     store2 = createStore();
     persister2 = createAutomergePersister(store2, docHandler2);

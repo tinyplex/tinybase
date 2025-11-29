@@ -139,7 +139,7 @@ export const createAutomergePersister = ((
   docHandle.change((doc: any) => objEnsure(doc, docObjName, objNew));
 
   const getPersisted = async (): Promise<Content | undefined> => {
-    const doc = await docHandle.doc();
+    const doc = docHandle.doc();
     return objSize(doc?.[docObjName]) == 2
       ? getDocContent(doc, docObjName)
       : undefined;

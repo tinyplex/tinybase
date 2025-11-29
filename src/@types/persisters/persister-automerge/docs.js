@@ -86,7 +86,7 @@
  * await persister.save();
  * // Store will be saved to the document.
  *
- * console.log(await docHandler.doc());
+ * console.log(docHandler.doc());
  * // -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}
  *
  * await persister.destroy();
@@ -107,7 +107,6 @@
  *   network: [new BroadcastChannelNetworkAdapter()],
  * });
  * const docHandler1 = repo1.create();
- * await docHandler1.doc();
  * const store1 = createStore();
  * const persister1 = createAutomergePersister(store1, docHandler1);
  * await persister1.startAutoLoad();
@@ -117,8 +116,7 @@
  * const repo2 = new Repo({
  *   network: [new BroadcastChannelNetworkAdapter()],
  * });
- * const docHandler2 = repo2.find(docHandler1.documentId);
- * await docHandler2.doc();
+ * const docHandler2 = await repo2.find(docHandler1.documentId);
  * const store2 = createStore();
  * const persister2 = createAutomergePersister(store2, docHandler2);
  * await persister2.startAutoLoad();
@@ -128,8 +126,8 @@
  * // with each other, merely for the purposes of sequentiality in this example.
  * const syncDocsWait = async () => {
  *   await new Promise((resolve) => setTimeout(() => resolve(0), 100));
- *   await docHandler1.doc();
- *   await docHandler2.doc();
+ *   docHandler1.doc();
+ *   docHandler2.doc();
  * };
  *
  * // Wait for the documents to synchronize in their initial state.

@@ -23,6 +23,10 @@ const broadcast = (message: BroadcastChannelMessage): void =>
 export const resetNetwork = () => adaptors.clear();
 
 export class AutomergeTestNetworkAdapter extends NetworkAdapter {
+  whenReady() {
+    return Promise.resolve();
+  }
+
   connect(peerId: PeerId, peerMetadata?: PeerMetadata) {
     this.peerId = peerId;
     this.peerMetadata = peerMetadata;

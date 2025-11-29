@@ -153,8 +153,8 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
-    "@automerge/automerge-repo": "^1.2.1",
-    "@automerge/automerge-repo-network-broadcastchannel": "^1.2.1",
+    "@automerge/automerge-repo": "^2.5.0",
+    "@automerge/automerge-repo-network-broadcastchannel": "^2.5.0",
     "@cloudflare/workers-types": "^4.20251128.0",
     "@electric-sql/pglite": "^0.3.14",
     "@eslint/js": "^9.39.1",
