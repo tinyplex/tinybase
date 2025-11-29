@@ -10,8 +10,9 @@ import type {
 } from '../../with-schemas/index.d.ts';
 
 /// ElectricSqlPersister
-export interface ElectricSqlPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas> {
+export interface ElectricSqlPersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas> {
   /// ElectricSqlPersister.getElectricClient
   getElectricClient(): ElectricClient<any>;
 }

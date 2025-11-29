@@ -4,8 +4,9 @@ import type {OptionalSchemas} from '../../../store/with-schemas/index.d.ts';
 import type {Persister, Persists} from '../../with-schemas/index.d.ts';
 
 /// DurableObjectStoragePersister
-export interface DurableObjectStoragePersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persists.MergeableStoreOnly> {
+export interface DurableObjectStoragePersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas, Persists.MergeableStoreOnly> {
   /// DurableObjectStoragePersister.getStorage
   getStorage(): DurableObjectStorage;
 }

@@ -11,8 +11,9 @@ import type {
 } from '../../with-schemas/index.d.ts';
 
 /// SqliteWasmPersister
-export interface SqliteWasmPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persists.StoreOrMergeableStore> {
+export interface SqliteWasmPersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas, Persists.StoreOrMergeableStore> {
   /// SqliteWasmPersister.getDb
   getDb(): any;
 }

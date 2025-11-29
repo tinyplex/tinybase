@@ -12,8 +12,9 @@ import type {
 } from '../../with-schemas/index.d.ts';
 
 /// Sqlite3Persister
-export interface Sqlite3Persister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persists.StoreOrMergeableStore> {
+export interface Sqlite3Persister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas, Persists.StoreOrMergeableStore> {
   /// Sqlite3Persister.getDb
   getDb(): Database;
 }

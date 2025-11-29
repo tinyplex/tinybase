@@ -10,8 +10,9 @@ import type {
 } from '../../with-schemas/index.d.ts';
 
 /// PowerSyncPersister
-export interface PowerSyncPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas> {
+export interface PowerSyncPersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas> {
   /// PowerSyncPersister.getPowerSync
   getPowerSync(): AbstractPowerSyncDatabase;
 }

@@ -5,8 +5,7 @@ import type {Store} from '../../store/index.d.ts';
 import type {Persister, Persists} from '../index.d.ts';
 
 /// ReactNativeMmkvPersister
-export interface ReactNativeMmkvPersister
-  extends Persister<Persists.StoreOrMergeableStore> {
+export interface ReactNativeMmkvPersister extends Persister<Persists.StoreOrMergeableStore> {
   /// ReactNativeMmkvPersister.getStorageName
   getStorageName(): string;
 }

@@ -53,8 +53,9 @@ export type SynchronizerStats = {
 };
 
 /// Synchronizer
-export interface Synchronizer<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persists.MergeableStoreOnly> {
+export interface Synchronizer<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas, Persists.MergeableStoreOnly> {
   /// Synchronizer.startSync
   startSync(initialContent?: Content<Schemas, true>): Promise<this>;
   /// Synchronizer.stopSync

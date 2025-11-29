@@ -5,8 +5,7 @@ import type {Store} from '../../store/index.d.ts';
 import type {DatabasePersisterConfig, Persister, Persists} from '../index.d.ts';
 
 /// ReactNativeSqlitePersister
-export interface ReactNativeSqlitePersister
-  extends Persister<Persists.StoreOrMergeableStore> {
+export interface ReactNativeSqlitePersister extends Persister<Persists.StoreOrMergeableStore> {
   /// ReactNativeSqlitePersister.getDb
   getDb(): SQLiteDatabase;
 }

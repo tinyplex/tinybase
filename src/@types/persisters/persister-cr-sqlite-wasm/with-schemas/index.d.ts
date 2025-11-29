@@ -10,8 +10,9 @@ import type {
 } from '../../with-schemas/index.d.ts';
 
 /// CrSqliteWasmPersister
-export interface CrSqliteWasmPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas> {
+export interface CrSqliteWasmPersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas> {
   /// CrSqliteWasmPersister.getDb
   getDb(): DB;
 }

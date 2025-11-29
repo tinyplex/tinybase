@@ -7,8 +7,9 @@ import type {
 import type {Persister} from '../../with-schemas/index.d.ts';
 
 /// AutomergePersister
-export interface AutomergePersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas> {
+export interface AutomergePersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas> {
   /// AutomergePersister.getDocHandle
   getDocHandle(): DocHandle<any>;
 }

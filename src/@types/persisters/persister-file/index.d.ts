@@ -4,8 +4,7 @@ import type {Store} from '../../store/index.d.ts';
 import type {Persister, Persists} from '../index.d.ts';
 
 /// FilePersister
-export interface FilePersister
-  extends Persister<Persists.StoreOrMergeableStore> {
+export interface FilePersister extends Persister<Persists.StoreOrMergeableStore> {
   /// FilePersister.getFilePath
   getFilePath(): string;
 }

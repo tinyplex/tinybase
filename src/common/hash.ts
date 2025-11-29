@@ -73,7 +73,8 @@ export const getRowInTableHash: typeof getRowHashInTableDecl =
 
 export const getTableHash: typeof getTableHashDecl = (rowHashes: {
   [rowId: Id]: Hash;
-}): Hash => // alias to getValuesHash in v7
+}): Hash =>
+  // alias to getValuesHash in v7
   arrayReduce(
     objEntries(rowHashes),
     (valuesHash, [rowId, rowHash]) =>

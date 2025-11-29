@@ -191,10 +191,8 @@ export type GetTableCell<
   /// GetTableCell.2
   <
     JoinedTableId extends TableIdFromSchema<Schema> | Id,
-    JoinedCellId extends JoinedCellIdOrId<
-      Schema,
-      JoinedTableId
-    > = JoinedCellIdOrId<Schema, JoinedTableId>,
+    JoinedCellId extends JoinedCellIdOrId<Schema, JoinedTableId> =
+      JoinedCellIdOrId<Schema, JoinedTableId>,
   >(
     joinedTableId: JoinedTableId,
     joinedCellId: JoinedCellId,
@@ -301,10 +299,8 @@ export type Where<
   /// Where.2
   <
     JoinedTableId extends TableIdFromSchema<Schema> | Id,
-    JoinedCellId extends JoinedCellIdOrId<
-      Schema,
-      JoinedTableId
-    > = JoinedCellIdOrId<Schema, JoinedTableId>,
+    JoinedCellId extends JoinedCellIdOrId<Schema, JoinedTableId> =
+      JoinedCellIdOrId<Schema, JoinedTableId>,
     JoinedCell extends Cell<Schema, JoinedTableId, JoinedCellId> = Cell<
       Schema,
       JoinedTableId,

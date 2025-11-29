@@ -12,8 +12,9 @@ import type {
 } from '../../with-schemas/index.d.ts';
 
 /// SqliteBunPersister
-export interface SqliteBunPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persists.StoreOrMergeableStore> {
+export interface SqliteBunPersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas, Persists.StoreOrMergeableStore> {
   /// SqliteBunPersister.getDb
   getDb(): Database;
 }

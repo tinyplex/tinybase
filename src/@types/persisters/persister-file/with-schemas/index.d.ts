@@ -7,8 +7,9 @@ import type {
 import type {Persister, Persists} from '../../with-schemas/index.d.ts';
 
 /// FilePersister
-export interface FilePersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persists.StoreOrMergeableStore> {
+export interface FilePersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas, Persists.StoreOrMergeableStore> {
   /// FilePersister.getFilePath
   getFilePath(): string;
 }

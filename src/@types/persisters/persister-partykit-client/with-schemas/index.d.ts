@@ -7,8 +7,9 @@ import type {
 import type {Persister} from '../../with-schemas/index.d.ts';
 
 /// PartyKitPersister
-export interface PartyKitPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas> {
+export interface PartyKitPersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas> {
   /// PartyKitPersister.getConnection
   getConnection(): PartySocket;
 }

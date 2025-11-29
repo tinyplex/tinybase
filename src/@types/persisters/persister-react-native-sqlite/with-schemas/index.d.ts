@@ -12,8 +12,9 @@ import type {
 } from '../../with-schemas/index.d.ts';
 
 /// ReactNativeSqlitePersister
-export interface ReactNativeSqlitePersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persists.StoreOrMergeableStore> {
+export interface ReactNativeSqlitePersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas, Persists.StoreOrMergeableStore> {
   /// ReactNativeSqlitePersister.getDb
   getDb(): SQLiteDatabase;
 }

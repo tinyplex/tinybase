@@ -5,8 +5,7 @@ import type {Store} from '../../store/index.d.ts';
 import type {DatabasePersisterConfig, Persister, Persists} from '../index.d.ts';
 
 /// SqliteBunPersister
-export interface SqliteBunPersister
-  extends Persister<Persists.StoreOrMergeableStore> {
+export interface SqliteBunPersister extends Persister<Persists.StoreOrMergeableStore> {
   /// SqliteBunPersister.getDb
   getDb(): Database;
 }

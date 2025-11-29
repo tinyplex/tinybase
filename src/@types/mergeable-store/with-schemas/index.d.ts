@@ -136,8 +136,9 @@ export type MergeableChanges<
 ];
 
 /// MergeableStore
-export interface MergeableStore<Schemas extends OptionalSchemas>
-  extends Store<Schemas> {
+export interface MergeableStore<
+  Schemas extends OptionalSchemas,
+> extends Store<Schemas> {
   //
   /// MergeableStore.getMergeableContent
   getMergeableContent(): MergeableContent<Schemas>;

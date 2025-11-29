@@ -6,8 +6,9 @@ import type {
 import type {Persister} from '../../with-schemas/index.d.ts';
 
 /// IndexedDbPersister
-export interface IndexedDbPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas> {
+export interface IndexedDbPersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas> {
   /// IndexedDbPersister.getDbName
   getDbName(): string;
 }

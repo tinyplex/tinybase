@@ -7,8 +7,9 @@ import type {
 import type {Persister} from '../../with-schemas/index.d.ts';
 
 /// YjsPersister
-export interface YjsPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas> {
+export interface YjsPersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas> {
   /// YjsPersister.getYDoc
   getYDoc(): YDoc;
 }

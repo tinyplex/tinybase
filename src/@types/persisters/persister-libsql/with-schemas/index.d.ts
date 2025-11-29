@@ -10,8 +10,9 @@ import type {
 } from '../../with-schemas/index.d.ts';
 
 /// LibSqlPersister
-export interface LibSqlPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas> {
+export interface LibSqlPersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas> {
   /// LibSqlPersister.getClient
   getClient(): Client;
 }

@@ -12,8 +12,9 @@ import type {
 } from '../../with-schemas/index.d.ts';
 
 /// ExpoSqlitePersister
-export interface ExpoSqlitePersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persists.StoreOrMergeableStore> {
+export interface ExpoSqlitePersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas, Persists.StoreOrMergeableStore> {
   /// ExpoSqlitePersister.getDb
   getDb(): SQLiteDatabase;
 }

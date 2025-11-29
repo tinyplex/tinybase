@@ -8,8 +8,9 @@ import type {
 import type {Persister, Persists} from '../../with-schemas/index.d.ts';
 
 /// ReactNativeMmkvPersister
-export interface ReactNativeMmkvPersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persists.StoreOrMergeableStore> {
+export interface ReactNativeMmkvPersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas, Persists.StoreOrMergeableStore> {
   /// ReactNativeMmkvPersister.getStorageName
   getStorageName(): string;
 }

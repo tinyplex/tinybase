@@ -5,8 +5,7 @@ import type {Store} from '../../store/index.d.ts';
 import type {DatabasePersisterConfig, Persister, Persists} from '../index.d.ts';
 
 /// PostgresPersister
-export interface PostgresPersister
-  extends Persister<Persists.StoreOrMergeableStore> {
+export interface PostgresPersister extends Persister<Persists.StoreOrMergeableStore> {
   /// PostgresPersister.getSql
   getSql(): Sql;
 }

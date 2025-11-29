@@ -12,8 +12,9 @@ import type {
 } from '../../with-schemas/index.d.ts';
 
 /// PglitePersister
-export interface PglitePersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas, Persists.StoreOrMergeableStore> {
+export interface PglitePersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas, Persists.StoreOrMergeableStore> {
   /// PglitePersister.getPglite
   getPglite(): PGlite;
 }

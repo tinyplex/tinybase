@@ -6,8 +6,9 @@ import type {
 import type {Persister} from '../../with-schemas/index.d.ts';
 
 /// RemotePersister
-export interface RemotePersister<Schemas extends OptionalSchemas>
-  extends Persister<Schemas> {
+export interface RemotePersister<
+  Schemas extends OptionalSchemas,
+> extends Persister<Schemas> {
   /// RemotePersister.getUrls
   getUrls(): [string, string];
 }

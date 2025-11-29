@@ -5,8 +5,9 @@ import type {OptionalSchemas} from '../../../store/with-schemas/index.d.ts';
 import type {Receive, Send, Synchronizer} from '../../with-schemas/index.d.ts';
 
 /// LocalSynchronizer
-export interface LocalSynchronizer<Schemas extends OptionalSchemas>
-  extends Synchronizer<Schemas> {}
+export interface LocalSynchronizer<
+  Schemas extends OptionalSchemas,
+> extends Synchronizer<Schemas> {}
 
 /// createLocalSynchronizer
 export function createLocalSynchronizer<Schemas extends OptionalSchemas>(

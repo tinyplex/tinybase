@@ -7,8 +7,9 @@ import type {Receive, Send, Synchronizer} from '../index.d.ts';
 export type WebSocketTypes = WebSocket | WsWebSocket;
 
 /// WsSynchronizer
-export interface WsSynchronizer<WebSocketType extends WebSocketTypes>
-  extends Synchronizer {
+export interface WsSynchronizer<
+  WebSocketType extends WebSocketTypes,
+> extends Synchronizer {
   /// WsSynchronizer.getWebSocket
   getWebSocket(): WebSocketType;
 }

@@ -14,8 +14,7 @@ export type DpcFragmented = {
 export type DurableObjectSqlDatabasePersisterConfig = DpcJson | DpcFragmented;
 
 /// DurableObjectSqlStoragePersister
-export interface DurableObjectSqlStoragePersister
-  extends Persister<Persists.MergeableStoreOnly> {
+export interface DurableObjectSqlStoragePersister extends Persister<Persists.MergeableStoreOnly> {
   /// DurableObjectSqlStoragePersister.getSqlStorage
   getSqlStorage(): SqlStorage;
 }

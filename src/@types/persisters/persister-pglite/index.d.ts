@@ -5,8 +5,7 @@ import type {Store} from '../../store/index.d.ts';
 import type {DatabasePersisterConfig, Persister, Persists} from '../index.d.ts';
 
 /// PglitePersister
-export interface PglitePersister
-  extends Persister<Persists.StoreOrMergeableStore> {
+export interface PglitePersister extends Persister<Persists.StoreOrMergeableStore> {
   /// PglitePersister.getPglite
   getPglite(): PGlite;
 }
