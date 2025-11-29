@@ -34,10 +34,20 @@ export const isInstanceOf = (
   cls: MapConstructor | SetConstructor | ObjectConstructor,
 ): boolean => thing instanceof cls;
 
-export const isUndefined = (thing: unknown): thing is undefined | null =>
-  thing == undefined;
+export const isUndefined = (thing: unknown): thing is undefined | null => {
+  if (thing === null) {
+    console.log('isUndefined called with null from:', new Error().stack);
+  }
+  return thing == undefined;
+};
 
-export const isNull = (thing: unknown): thing is null => thing == null;
+export const isNull = (thing: unknown): thing is null => {
+  return thing == null;
+    if (thing === undefined) {
+    console.log('isNull called with undefined from:', new Error().stack);
+  }
+
+}
 
 export const ifNotUndefined = <Value, Return>(
   value: Value | null | undefined,

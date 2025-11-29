@@ -1,6 +1,6 @@
 import type {Id} from '../@types/common/index.d.ts';
 import {arrayEvery, arrayForEach, arrayMap} from './array.ts';
-import {ifNotUndefined, isUndefined, size} from './other.ts';
+import {ifNotUndefined, isNull, isUndefined, size} from './other.ts';
 
 export type IdObj<Value> = {[id: string]: Value};
 export type IdObj2<Value> = IdObj<IdObj<Value>>;
@@ -104,6 +104,7 @@ export const objValidate = (
   emptyIsValid: 0 | 1 = 0,
 ): boolean => {
   if (
+    isNull(obj) ||
     isUndefined(obj) ||
     !isObject(obj) ||
     (!emptyIsValid && objIsEmpty(obj)) ||

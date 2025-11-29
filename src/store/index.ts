@@ -628,7 +628,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapSet(
       cellIds,
       cellId,
-      count != -addedOrRemoved ? count + addedOrRemoved : null,
+      count != -addedOrRemoved ? count + addedOrRemoved : undefined,
     );
 
     idsChanged(

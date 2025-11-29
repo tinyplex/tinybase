@@ -199,8 +199,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     resetPreStores(queryId);
 
     const selectEntries: [Id, SelectClause][] = [];
-    const joinEntries: [IdOrNull, JoinClause][] = [
-      [null, [tableId, null, null, [], mapNew()]],
+    const joinEntries: [Id | undefined, JoinClause][] = [
+      [undefined, [tableId, null, null, [], mapNew()]],
     ];
     const wheres: WhereClause[] = [];
     const groupEntries: [Id, GroupClause][] = [];
@@ -226,7 +226,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       arg2?: Id | ((getCell: GetCell, rowId: Id) => Id | undefined),
     ) => {
       const fromIntermediateJoinedTableId =
-        isUndefined(arg2) || isFunction(arg1) ? null : arg1;
+        isUndefined(arg2) || isFunction(arg1) ? undefined : arg1;
       const onArg = isUndefined(fromIntermediateJoinedTableId) ? arg1 : arg2;
       const joinEntry: [Id, JoinClause] = [
         joinedTableId,
@@ -296,7 +296,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     if (collIsEmpty(selects)) {
       return queries;
     }
-    const joins: Map<IdOrNull, JoinClause> = mapNew(joinEntries);
+    const joins: Map<Id | undefined, JoinClause> = mapNew(joinEntries);
     mapForEach(joins, (asTableId, [, fromAsTableId]) =>
       ifNotUndefined(mapGet(joins, fromAsTableId), ({3: toAsTableIds}) =>
         isUndefined(asTableId) ? 0 : arrayPush(toAsTableIds, asTableId),
@@ -542,7 +542,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       writeSelectRow(rootRowId);
     };
 
-    const {3: joinedTableIds} = mapGet(joins, null) as JoinClause;
+    const {3: joinedTableIds} = mapGet(joins, undefined) as JoinClause;
     selectJoinWhereStore.transaction(() =>
       addStoreListeners(
         queryId,

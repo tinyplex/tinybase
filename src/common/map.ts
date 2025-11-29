@@ -37,7 +37,7 @@ export const mapSet = <Key, Value>(
   key: Key,
   value?: Value,
 ): Map<Key, Value> | undefined =>
-  isUndefined(value) ? (collDel(map, key), map) : map?.set(key, value);
+  value === undefined ? (collDel(map, key), map) : map?.set(key, value);
 
 export const mapEnsure = <Key, Value>(
   map: Map<Key, Value>,

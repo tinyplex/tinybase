@@ -58,7 +58,7 @@ import type {
 import {arrayForEach, arrayPush} from './array.ts';
 import {collDel, collForEach, collIsEmpty} from './coll.ts';
 import {IdMap, Node, mapGet, mapNew, mapSet, visitTree} from './map.ts';
-import {ifNotUndefined, isUndefined, size} from './other.ts';
+import {ifNotUndefined, isNull, size} from './other.ts';
 import {getPoolFunctions} from './pool.ts';
 import {IdSet, setAdd, setNew} from './set.ts';
 import {EMPTY_STRING} from './strings.ts';
@@ -226,7 +226,7 @@ export const getListenerFunctions = (
           const index = size(ids);
           if (index == size(path)) {
             (listener as any)(thing, ...ids, ...extraArgsGetter(ids));
-          } else if (isUndefined(path[index])) {
+          } else if (isNull(path[index])) {
             arrayForEach(pathGetters[index]?.(...ids) ?? [], (id) =>
               callWithIds(...ids, id),
             );
