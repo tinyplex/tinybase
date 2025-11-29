@@ -339,7 +339,7 @@ console<span class="punctuation">.</span><span class="function">log</span><span 
 
 <span class="keyword">await</span> automergePersister<span class="punctuation">.</span><span class="function"><a href="/api/persisters/interfaces/persister/persister/methods/save/save/">save</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// Store will be saved to the document.</span>
-console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span><span class="keyword">await</span> docHandler<span class="punctuation">.</span><span class="function">doc</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
+console<span class="punctuation">.</span><span class="function">log</span><span class="punctuation">(</span>docHandler<span class="punctuation">.</span><span class="function">doc</span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="comment">// -> {tinybase: {t: {pets: {fido: {species: 'dog'}}}, v: {}}}</span>
 <span class="keyword">await</span> automergePersister<span class="punctuation">.</span><span class="function"><a href="/api/metrics/interfaces/metrics/metrics/methods/lifecycle/destroy/">destroy</a></span><span class="punctuation">(</span><span class="punctuation">)</span><span class="punctuation">;</span>
 
