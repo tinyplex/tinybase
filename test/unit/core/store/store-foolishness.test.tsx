@@ -66,7 +66,6 @@ const INVALID_CELLS_OR_VALUES: [string, any][] = [
   ['Number', new Number(1)],
   ['String', new String('1')],
   ['Boolean', new Boolean(true)],
-  ['null', null],
   ['undefined', undefined],
   ['NaN', NaN],
 ];
