@@ -15,6 +15,7 @@ export const FUNCTION = getTypeOf(getTypeOf);
 export const TRUE = 'true';
 export const TYPE = 'type';
 export const DEFAULT = 'default';
+export const ALLOW_NULL = 'allowNull';
 
 export const UTF8 = 'utf8';
 

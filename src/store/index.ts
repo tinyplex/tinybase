@@ -120,6 +120,7 @@ import {
   CELL,
   CELL_IDS,
   DEFAULT,
+  ALLOW_NULL,
   HAS,
   LISTENER,
   NUMBER,
@@ -235,7 +236,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const validateCellOrValueSchema = (schema: CellSchema | ValueSchema) => {
     if (
-      !objValidate(schema, (_child, id: Id) => arrayHas([TYPE, DEFAULT], id))
+      !objValidate(schema, (_child, id: Id) =>
+        arrayHas([TYPE, DEFAULT, ALLOW_NULL], id),
+      )
     ) {
       return false;
     }
@@ -243,7 +246,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
     if (!isTypeStringOrBoolean(type) && type != NUMBER) {
       return false;
     }
-    if (getCellOrValueType(schema[DEFAULT]) != type) {
+    const defaultValue = schema[DEFAULT];
+    // If default is null, allowNull must be true
+    if (defaultValue === null && !schema[ALLOW_NULL]) {
+      return false;
+    }
+    // If default is provided and not null, check type matches
+    if (defaultValue !== null && getCellOrValueType(defaultValue) != type) {
       objDel(schema as any, DEFAULT);
     }
     return true;
