@@ -7,18 +7,18 @@ export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
 
 /// CellSchema
 export type CellSchema =
-  | {type: 'string'; default?: string}
-  | {type: 'number'; default?: number}
-  | {type: 'boolean'; default?: boolean};
+  | {type: 'string'; default?: string | null; allowNull?: boolean}
+  | {type: 'number'; default?: number | null; allowNull?: boolean}
+  | {type: 'boolean'; default?: boolean | null; allowNull?: boolean};
 
 /// ValuesSchema
 export type ValuesSchema = {[valueId: Id]: ValueSchema};
 
 /// ValueSchema
 export type ValueSchema =
-  | {type: 'string'; default?: string}
-  | {type: 'number'; default?: number}
-  | {type: 'boolean'; default?: boolean};
+  | {type: 'string'; default?: string | null; allowNull?: boolean}
+  | {type: 'number'; default?: number | null; allowNull?: boolean}
+  | {type: 'boolean'; default?: boolean | null; allowNull?: boolean};
 
 /// NoTablesSchema
 export type NoTablesSchema = {[tableId: Id]: {[cellId: Id]: {type: 'any'}}};
