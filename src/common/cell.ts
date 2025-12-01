@@ -4,7 +4,12 @@ import type {
   Store,
   ValueOrUndefined,
 } from '../@types/store/index.d.ts';
-import {isFiniteNumber, isTypeStringOrBoolean, isUndefined} from './other.ts';
+import {
+  isFiniteNumber,
+  isNullish,
+  isTypeStringOrBoolean,
+  isUndefined,
+} from './other.ts';
 import {BOOLEAN, NUMBER, STRING, getTypeOf} from './strings.ts';
 
 export type CellOrValueType = 'string' | 'number' | 'boolean';
@@ -12,6 +17,9 @@ export type CellOrValueType = 'string' | 'number' | 'boolean';
 export const getCellOrValueType = (
   cellOrValue: any,
 ): CellOrValueType | undefined => {
+  if (isNullish(cellOrValue)) {
+    return undefined;
+  }
   const type = getTypeOf(cellOrValue);
   return isTypeStringOrBoolean(type) ||
     (type == NUMBER && isFiniteNumber(cellOrValue as any))
@@ -20,7 +28,7 @@ export const getCellOrValueType = (
 };
 
 export const isCellOrValueOrNullOrUndefined = (cellOrValue: any): boolean =>
-  isUndefined(cellOrValue) || !isUndefined(getCellOrValueType(cellOrValue));
+  isNullish(cellOrValue) || !isUndefined(getCellOrValueType(cellOrValue));
 
 export const setOrDelCell = (
   store: Store,
