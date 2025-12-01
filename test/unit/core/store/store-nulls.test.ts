@@ -187,3 +187,153 @@ describe('Null with schemas', () => {
     expect(store.getCell('t1', 'r1', 'name')).toBe('Alice');
   });
 });
+
+describe('Null listeners and events', () => {
+  let store: Store;
+
+  beforeEach(() => {
+    store = createStore();
+  });
+
+  test('Cell listener fires when setting to null', () => {
+    expect.assertions(2);
+    store.addCellListener('t1', 'r1', 'c1', (_store, _table, _row, _cell, newCell, oldCell) => {
+      expect(newCell).toBe(null);
+      expect(oldCell).toBeUndefined();
+    });
+
+    store.setCell('t1', 'r1', 'c1', null);
+  });
+
+  test('Cell listener fires when changing from null', () => {
+    store.setCell('t1', 'r1', 'c1', null);
+    expect.assertions(2);
+    store.addCellListener('t1', 'r1', 'c1', (_store, _table, _row, _cell, newCell, oldCell) => {
+      expect(newCell).toBe('hello');
+      expect(oldCell).toBe(null);
+    });
+
+    store.setCell('t1', 'r1', 'c1', 'hello');
+  });
+
+  test('Value listener fires when setting to null', () => {
+    expect.assertions(2);
+    store.addValueListener('v1', (_store, _valueId, newValue, oldValue) => {
+      expect(newValue).toBe(null);
+      expect(oldValue).toBeUndefined();
+    });
+
+    store.setValue('v1', null);
+  });
+
+  test('HasCell listener distinguishes null from deleted', () => {
+    expect.assertions(2);
+    let callCount = 0;
+    store.addHasCellListener('t1', 'r1', 'c1', (_store, _table, _row, _cell, hasCell) => {
+      if (callCount === 0) {
+        expect(hasCell).toBe(true);
+      } else if (callCount === 1) {
+        expect(hasCell).toBe(false);
+      }
+      callCount++;
+    });
+
+    store.setCell('t1', 'r1', 'c1', null);
+    store.delCell('t1', 'r1', 'c1');
+  });
+});
+
+describe('Null vs Delete semantics', () => {
+  let store: Store;
+
+  beforeEach(() => {
+    store = createStore();
+  });
+
+  test('setCell(null) creates a cell, delCell removes it', () => {
+    store.setCell('t1', 'r1', 'c1', null);
+    expect(store.hasCell('t1', 'r1', 'c1')).toBe(true);
+    expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
+    expect(store.getCellIds('t1', 'r1')).toEqual(['c1']);
+
+    store.delCell('t1', 'r1', 'c1');
+    expect(store.hasCell('t1', 'r1', 'c1')).toBe(false);
+    expect(store.getCell('t1', 'r1', 'c1')).toBeUndefined();
+    expect(store.getCellIds('t1', 'r1')).toEqual([]);
+  });
+
+  test('setValue(null) creates a value, delValue removes it', () => {
+    store.setValue('v1', null);
+    expect(store.hasValue('v1')).toBe(true);
+    expect(store.getValue('v1')).toBe(null);
+    expect(store.getValueIds()).toEqual(['v1']);
+
+    store.delValue('v1');
+    expect(store.hasValue('v1')).toBe(false);
+    expect(store.getValue('v1')).toBeUndefined();
+    expect(store.getValueIds()).toEqual([]);
+  });
+
+  test('Null cells appear in iteration', () => {
+    store.setTables({
+      t1: {
+        r1: {c1: 'hello', c2: null, c3: 42},
+      },
+    });
+
+    const cells: [string, any][] = [];
+    store.forEachCell('t1', 'r1', (cellId, cell) => {
+      cells.push([cellId, cell]);
+    });
+
+    expect(cells).toEqual([
+      ['c1', 'hello'],
+      ['c2', null],
+      ['c3', 42],
+    ]);
+  });
+
+  test('Null values appear in iteration', () => {
+    store.setValues({v1: 'test', v2: null, v3: 123});
+
+    const values: [string, any][] = [];
+    store.forEachValue((valueId, value) => {
+      values.push([valueId, value]);
+    });
+
+    expect(values).toEqual([
+      ['v1', 'test'],
+      ['v2', null],
+      ['v3', 123],
+    ]);
+  });
+});
+
+describe('Transactions with null', () => {
+  let store: Store;
+
+  beforeEach(() => {
+    store = createStore();
+  });
+
+  test('Transaction can handle null values', () => {
+    store.setCell('t1', 'r1', 'c1', 'initial');
+
+    store.startTransaction();
+    store.setCell('t1', 'r1', 'c1', null);
+    expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
+    store.finishTransaction();
+
+    expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
+  });
+
+  test('Transaction can commit null values', () => {
+    store.transaction(() => {
+      store.setCell('t1', 'r1', 'c1', null);
+      store.setValue('v1', null);
+    });
+
+    expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
+    expect(store.getValue('v1')).toBe(null);
+  });
+});
