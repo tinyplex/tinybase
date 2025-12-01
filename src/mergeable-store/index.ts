@@ -22,7 +22,7 @@ import type {
   Store,
   ValueOrUndefined,
 } from '../@types/store/index.d.ts';
-import {isCellOrValueOrNullOrUndefined} from '../common/cell.ts';
+import {isCellOrValueOrUndefined} from '../common/cell.ts';
 import {collClear, collForEach} from '../common/coll.ts';
 import {
   addOrRemoveHash,
@@ -126,7 +126,7 @@ const validateMergeableContent = (
                 objValidate(
                   cellStamps,
                   (cellStamp) =>
-                    stampValidate(cellStamp, isCellOrValueOrNullOrUndefined),
+                    stampValidate(cellStamp, isCellOrValueOrUndefined),
                   undefined,
                   1,
                 ),
@@ -142,7 +142,7 @@ const validateMergeableContent = (
   stampValidate(mergeableContent[1], (values) =>
     objValidate(
       values,
-      (value) => stampValidate(value, isCellOrValueOrNullOrUndefined),
+      (value) => stampValidate(value, isCellOrValueOrUndefined),
       undefined,
       1,
     ),

@@ -75,7 +75,7 @@ export const RelationshipInHtmlRow = ({
               ? localRowId
               : tableId === remoteTableId
                 ? remoteRowId
-                : null;
+                : undefined;
           return isUndefined(rowId) ? null : (
             <td key={compoundCellId}>
               <CellView

@@ -21,7 +21,7 @@ export type ParameterizedCallback<Parameter> = (parameter?: Parameter) => void;
 export type Callback = () => void;
 
 /// SortKey
-export type SortKey = string | number | boolean;
+export type SortKey = string | number | boolean | null;
 
 /// GetNow
 export type GetNow = () => number;

@@ -6,19 +6,19 @@ import type {
 } from '../@types/store/index.d.ts';
 import {
   isFiniteNumber,
-  isNullish,
+  isNull,
   isTypeStringOrBoolean,
   isUndefined,
 } from './other.ts';
 import {BOOLEAN, NUMBER, STRING, getTypeOf} from './strings.ts';
 
-export type CellOrValueType = 'string' | 'number' | 'boolean';
+export type CellOrValueType = 'string' | 'number' | 'boolean' | 'null';
 
 export const getCellOrValueType = (
   cellOrValue: any,
 ): CellOrValueType | undefined => {
-  if (isNullish(cellOrValue)) {
-    return undefined;
+  if (isNull(cellOrValue)) {
+    return 'null';
   }
   const type = getTypeOf(cellOrValue);
   return isTypeStringOrBoolean(type) ||
@@ -27,8 +27,8 @@ export const getCellOrValueType = (
     : undefined;
 };
 
-export const isCellOrValueOrNullOrUndefined = (cellOrValue: any): boolean =>
-  isNullish(cellOrValue) || !isUndefined(getCellOrValueType(cellOrValue));
+export const isCellOrValueOrUndefined = (cellOrValue: any): boolean =>
+  isUndefined(cellOrValue) || !isUndefined(getCellOrValueType(cellOrValue));
 
 export const setOrDelCell = (
   store: Store,

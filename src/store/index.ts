@@ -303,9 +303,19 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ? ifNotUndefined(
           mapGet(mapGet(tablesSchemaMap, tableId), cellId),
           (cellSchema) =>
-            getCellOrValueType(cell) != cellSchema[TYPE]
-              ? cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
-              : cell,
+            isNull(cell)
+              ? cellSchema[ALLOW_NULL]
+                ? cell
+                : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
+              : getCellOrValueType(cell) == cellSchema[TYPE]
+                ? cell
+                : cellInvalid(
+                    tableId,
+                    rowId,
+                    cellId,
+                    cell,
+                    cellSchema[DEFAULT],
+                  ),
           () => cellInvalid(tableId, rowId, cellId, cell),
         )
       : isUndefined(getCellOrValueType(cell))
@@ -332,9 +342,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ? ifNotUndefined(
           mapGet(valuesSchemaMap, valueId),
           (valueSchema) =>
-            getCellOrValueType(value) != valueSchema[TYPE]
-              ? valueInvalid(valueId, value, valueSchema[DEFAULT])
-              : value,
+            isNull(value)
+              ? valueSchema[ALLOW_NULL]
+                ? value
+                : valueInvalid(valueId, value, valueSchema[DEFAULT])
+              : getCellOrValueType(value) == valueSchema[TYPE]
+                ? value
+                : valueInvalid(valueId, value, valueSchema[DEFAULT]),
           () => valueInvalid(valueId, value),
         )
       : isUndefined(getCellOrValueType(value))
