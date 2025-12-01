@@ -51,7 +51,7 @@ export type Table = {[rowId: Id]: Row};
 export type Row = {[cellId: Id]: Cell};
 
 /// Cell
-export type Cell = string | number | boolean;
+export type Cell = string | number | boolean | null;
 
 /// CellOrUndefined
 export type CellOrUndefined = Cell | undefined;
@@ -60,7 +60,7 @@ export type CellOrUndefined = Cell | undefined;
 export type Values = {[valueId: Id]: Value};
 
 /// Value
-export type Value = string | number | boolean;
+export type Value = string | number | boolean | null;
 
 /// ValueOrUndefined
 export type ValueOrUndefined = Value | undefined;
