@@ -100,6 +100,7 @@ import {
   ifNotUndefined,
   isArray,
   isFunction,
+  isNull,
   isTypeStringOrBoolean,
   isUndefined,
   slice,
@@ -247,10 +248,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
       return false;
     }
     const defaultValue = schema[DEFAULT];
-    if (defaultValue === null && !schema[ALLOW_NULL]) {
+    if (isNull(defaultValue) && !schema[ALLOW_NULL]) {
       return false;
     }
-    if (defaultValue !== null && getCellOrValueType(defaultValue) != type) {
+    if (!isNull(defaultValue) && getCellOrValueType(defaultValue) != type) {
       objDel(schema as any, DEFAULT);
     }
     return true;
