@@ -15,7 +15,7 @@ export type ResultTable = {[rowId: Id]: ResultRow};
 export type ResultRow = {[cellId: Id]: ResultCell};
 
 /// ResultCell
-export type ResultCell = string | number | boolean;
+export type ResultCell = string | number | boolean | null;
 
 /// ResultCellOrUndefined
 export type ResultCellOrUndefined = ResultCell | undefined;

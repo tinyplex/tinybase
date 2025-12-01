@@ -365,7 +365,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
                       );
                       groupRow[groupedCellId] = (
                         isUndefined(getCellOrValueType(aggregateValue))
-                          ? null
+                          ? undefined
                           : aggregateValue
                       ) as Cell;
                     },
