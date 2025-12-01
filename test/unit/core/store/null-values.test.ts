@@ -1,6 +1,6 @@
-import {beforeEach, describe, expect, test} from 'vitest';
 import type {Store} from 'tinybase';
 import {createStore} from 'tinybase';
+import {beforeEach, describe, expect, test} from 'vitest';
 
 describe('Null values', () => {
   let store: Store;
@@ -12,7 +12,7 @@ describe('Null values', () => {
   test('Setting and getting null', () => {
     store.setCell('t1', 'r1', 'c1', null);
     expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
-    expect(store.hasCell('t1', 'r1', 'c1')).toBe(true); // Cell EXISTS
+    expect(store.hasCell('t1', 'r1', 'c1')).toBe(true);
   });
 
   test('Null vs undefined', () => {
@@ -22,7 +22,7 @@ describe('Null values', () => {
 
     store.delCell('t1', 'r1', 'c1');
     expect(store.getCell('t1', 'r1', 'c1')).toBeUndefined();
-    expect(store.hasCell('t1', 'r1', 'c1')).toBe(false); // Doesn't exist
+    expect(store.hasCell('t1', 'r1', 'c1')).toBe(false);
   });
 
   test('Setting null value', () => {
@@ -103,21 +103,21 @@ describe('Null with schemas', () => {
       },
     });
 
-    store.setCell('t1', 'r1', 'c1', null); // ✓ Allowed
+    store.setCell('t1', 'r1', 'c1', null);
     expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
 
-    store.setCell('t1', 'r1', 'c1', 'hello'); // ✓ Also allowed
+    store.setCell('t1', 'r1', 'c1', 'hello');
     expect(store.getCell('t1', 'r1', 'c1')).toBe('hello');
   });
 
   test('Schema with allowNull: false (default)', () => {
     store.setTablesSchema({
       t1: {
-        c1: {type: 'string'}, // allowNull defaults to false
+        c1: {type: 'string'},
       },
     });
 
-    store.setCell('t1', 'r1', 'c1', null); // ✗ Rejected
+    store.setCell('t1', 'r1', 'c1', null);
     expect(store.hasCell('t1', 'r1', 'c1')).toBe(false);
   });
 
@@ -128,21 +128,18 @@ describe('Null with schemas', () => {
       },
     });
 
-    store.setRow('t1', 'r1', {}); // c1 gets default null
+    store.setRow('t1', 'r1', {});
     expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
   });
 
   test('Schema with default: null requires allowNull: true', () => {
-    // This should fail schema validation
     const result = store.setTablesSchema({
       t1: {
-        c1: {type: 'string', default: null}, // Missing allowNull: true
+        c1: {type: 'string', default: null},
       },
     });
 
-    // Schema validation should fail
     expect(result).toBe(store);
-    // The schema should not be set
     expect(store.getTablesSchemaJson()).toBe('{}');
   });
 
@@ -151,34 +148,34 @@ describe('Null with schemas', () => {
       v1: {type: 'number', allowNull: true},
     });
 
-    store.setValue('v1', null); // ✓ Allowed
+    store.setValue('v1', null);
     expect(store.getValue('v1')).toBe(null);
 
-    store.setValue('v1', 42); // ✓ Also allowed
+    store.setValue('v1', 42);
     expect(store.getValue('v1')).toBe(42);
   });
 
   test('Values schema with allowNull: false (default)', () => {
     store.setValuesSchema({
-      v1: {type: 'number'}, // allowNull defaults to false
+      v1: {type: 'number'},
     });
 
-    store.setValue('v1', null); // ✗ Rejected
+    store.setValue('v1', null);
     expect(store.hasValue('v1')).toBe(false);
   });
 
   test('Multiple types with different null settings', () => {
     store.setTablesSchema({
       t1: {
-        name: {type: 'string'}, // null not allowed
-        age: {type: 'number', allowNull: true}, // null allowed
-        active: {type: 'boolean', default: true}, // null not allowed
+        name: {type: 'string'},
+        age: {type: 'number', allowNull: true},
+        active: {type: 'boolean', default: true},
       },
     });
 
     store.setRow('t1', 'r1', {
       name: 'Alice',
-      age: null, // ✓
+      age: null,
       active: true,
     });
 
@@ -186,8 +183,7 @@ describe('Null with schemas', () => {
     expect(store.getCell('t1', 'r1', 'age')).toBe(null);
     expect(store.getCell('t1', 'r1', 'active')).toBe(true);
 
-    // Try to set null on non-nullable field
-    store.setCell('t1', 'r1', 'name', null); // ✗ Rejected
-    expect(store.getCell('t1', 'r1', 'name')).toBe('Alice'); // Unchanged
+    store.setCell('t1', 'r1', 'name', null);
+    expect(store.getCell('t1', 'r1', 'name')).toBe('Alice');
   });
 });

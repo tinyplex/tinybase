@@ -117,10 +117,10 @@ import {PoolFunctions, getPoolFunctions} from '../common/pool.ts';
 import {IdSet, IdSet2, IdSet3, IdSet4, setAdd, setNew} from '../common/set.ts';
 import {
   ADD,
+  ALLOW_NULL,
   CELL,
   CELL_IDS,
   DEFAULT,
-  ALLOW_NULL,
   HAS,
   LISTENER,
   NUMBER,
@@ -247,11 +247,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
       return false;
     }
     const defaultValue = schema[DEFAULT];
-    // If default is null, allowNull must be true
     if (defaultValue === null && !schema[ALLOW_NULL]) {
       return false;
     }
-    // If default is provided and not null, check type matches
     if (defaultValue !== null && getCellOrValueType(defaultValue) != type) {
       objDel(schema as any, DEFAULT);
     }
