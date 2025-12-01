@@ -3277,7 +3277,7 @@
    *   .setTables({pets: {fido: {species: 'dog', color: 'brown'}}})
    *   .setValues({open: true});
    *
-   * store.applyChanges([{pets: {fido: {color: 'black'}}}, {open: null}]);
+   * store.applyChanges([{pets: {fido: {color: 'black'}}}, {open: undefined}]);
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog', color: 'black'}}}
    * console.log(store.getValues());

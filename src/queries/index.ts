@@ -1,4 +1,4 @@
-import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
+import type {Id, Ids} from '../@types/common/index.d.ts';
 import type {
   Aggregate,
   AggregateAdd,
@@ -84,11 +84,11 @@ type StoreWithPrivateMethods = Store & {
 };
 type SelectClause = (getTableCell: GetTableCell, rowId: Id) => CellOrUndefined;
 type JoinClause = [
-  Id,
-  IdOrNull,
-  ((getCell: GetCell, rowId: Id) => Id) | null,
-  Ids,
-  IdMap<[Id, Id]>,
+  realTableId: Id,
+  alias: Id | undefined,
+  on: ((getCell: GetCell, rowId: Id) => Id) | undefined,
+  nextTableIds: Ids,
+  remoteIdPairs: IdMap<[Id, Id]>,
 ];
 type WhereClause = (getTableCell: GetTableCell) => boolean;
 type GroupClause = [Id, Aggregators];
@@ -200,7 +200,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
 
     const selectEntries: [Id, SelectClause][] = [];
     const joinEntries: [Id | undefined, JoinClause][] = [
-      [undefined, [tableId, null, null, [], mapNew()]],
+      [undefined, [tableId, undefined, undefined, [], mapNew()]],
     ];
     const wheres: WhereClause[] = [];
     const groupEntries: [Id, GroupClause][] = [];
@@ -507,20 +507,20 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     ) => {
       const getCell = (cellId: Id) => store.getCell(tableId, rowId, cellId);
       arrayForEach(joinedTableIds, (remoteAsTableId) => {
-        const [realJoinedTableId, , on, nextJoinedTableIds, remoteIdPair] =
+        const [realJoinedTableId, , on, nextJoinedTableIds, remoteIdPairs] =
           mapGet(joins, remoteAsTableId) as JoinClause;
         const remoteRowId = on?.(getCell as any, rootRowId);
         const [previousRemoteRowId, previousRemoteListenerId] =
-          mapGet(remoteIdPair, rootRowId) ?? [];
+          mapGet(remoteIdPairs, rootRowId) ?? [];
         if (remoteRowId != previousRemoteRowId) {
           if (!isUndefined(previousRemoteListenerId)) {
             delStoreListeners(queryId, previousRemoteListenerId);
           }
           mapSet(
-            remoteIdPair,
+            remoteIdPairs,
             rootRowId,
             isUndefined(remoteRowId)
-              ? null
+              ? undefined
               : [
                   remoteRowId,
                   ...addStoreListeners(

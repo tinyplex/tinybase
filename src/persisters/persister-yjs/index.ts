@@ -51,7 +51,8 @@ const getChangesFromYDoc = (
                 mapForEach(
                   keys,
                   (cellId, {action}) =>
-                    (row[cellId] = action == DELETE ? null : yRow.get(cellId)),
+                    (row[cellId] =
+                      action == DELETE ? undefined : yRow.get(cellId)),
                 );
               },
               () =>
@@ -59,7 +60,9 @@ const getChangesFromYDoc = (
                   keys,
                   (rowId, {action}) =>
                     (table[rowId] =
-                      action == DELETE ? null : yTable.get(rowId)?.toJSON()),
+                      action == DELETE
+                        ? undefined
+                        : yTable.get(rowId)?.toJSON()),
                 ),
             );
           },
@@ -68,13 +71,16 @@ const getChangesFromYDoc = (
               keys,
               (tableId, {action}) =>
                 (tables[tableId] =
-                  action == DELETE ? null : yTables.get(tableId)?.toJSON()),
+                  action == DELETE
+                    ? undefined
+                    : yTables.get(tableId)?.toJSON()),
             ),
         )
       : mapForEach(
           keys,
           (valueId, {action}) =>
-            (values[valueId] = action == DELETE ? null : yValues.get(valueId)),
+            (values[valueId] =
+              action == DELETE ? undefined : yValues.get(valueId)),
         ),
   );
   return [tables, values, 1];

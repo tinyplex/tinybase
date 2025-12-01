@@ -7,11 +7,8 @@ import type {
   ValueProps,
   ValuesProps,
 } from '../../@types/ui-react/index.d.ts';
+import {isUndefined} from '../../common/other.ts';
 import {useCallback, useEffect, useState} from '../../common/react.ts';
-import {  isUndefined 
-
-  
-} from '../../common/other.ts';
 
 export type OnDoneProp = {readonly onDone: () => void};
 
@@ -35,8 +32,6 @@ export const getNewIdFromSuggestedId = (
 
 export const ConfirmableActions = <
   Props extends TableProps | RowProps | CellProps | ValuesProps | ValueProps,
-
-  
 >({
   actions,
   ...props

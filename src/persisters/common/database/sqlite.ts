@@ -10,7 +10,7 @@ import type {
 import {collValues} from '../../../common/coll.ts';
 import {IdObj} from '../../../common/obj.ts';
 import {
-  isNull,
+  isNullish,
   startInterval,
   stopInterval,
   tryCatch,
@@ -76,7 +76,7 @@ export const createCustomSqlitePersister = <
                 ` ${DATA_VERSION} d,${SCHEMA_VERSION} s,TOTAL_CHANGES() c FROM ${PRAGMA}${DATA_VERSION} JOIN ${PRAGMA}${SCHEMA_VERSION}`,
             )) as [IdObj<number>];
             if (d != dataVersion || s != schemaVersion || c != totalChanges) {
-              if (!isNull(dataVersion)) {
+              if (!isNullish(dataVersion)) {
                 listener();
               }
               dataVersion = d;

@@ -7,7 +7,7 @@ import type {
 } from '../../@types/synchronizers/index.d.ts';
 import type {createBroadcastChannelSynchronizer as createBroadcastChannelSynchronizerDecl} from '../../@types/synchronizers/synchronizer-broadcast-channel/index.d.ts';
 import {getUniqueId} from '../../common/codec.ts';
-import {isUndefined} from '../../common/other.ts';
+import {isNull} from '../../common/other.ts';
 import {createCustomSynchronizer} from '../index.ts';
 
 export const createBroadcastChannelSynchronizer = ((
@@ -32,7 +32,7 @@ export const createBroadcastChannelSynchronizer = ((
     channel.onmessage = ({
       data: [fromClientId, toClientId, requestId, message, body],
     }) =>
-      isUndefined(toClientId) || toClientId == clientId
+      isNull(toClientId) || toClientId == clientId
         ? receive(fromClientId, requestId, message, body)
         : 0;
   };

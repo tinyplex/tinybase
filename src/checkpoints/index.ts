@@ -218,7 +218,7 @@ export const createCheckpoints = getCreateFunction(
         ? goBackwardImpl
         : arrayHas(forwardIds, checkpointId)
           ? goForwardImpl
-          : null;
+          : undefined;
       while (!isUndefined(action) && checkpointId != currentId) {
         action();
       }

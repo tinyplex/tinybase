@@ -9,7 +9,7 @@ import type {createLocalSynchronizer as createLocalSynchronizerDecl} from '../..
 import {getUniqueId} from '../../common/codec.ts';
 import {collDel} from '../../common/coll.ts';
 import {IdMap, mapForEach, mapGet, mapNew, mapSet} from '../../common/map.ts';
-import {isUndefined, startTimeout} from '../../common/other.ts';
+import {isNull, startTimeout} from '../../common/other.ts';
 import {createCustomSynchronizer} from '../index.ts';
 
 const clients: IdMap<Receive> = mapNew();
@@ -27,9 +27,9 @@ export const createLocalSynchronizer = ((
     requestId: IdOrNull,
     message: Message,
     body: any,
-  ): NodeJS.Timeout =>
+  ): number =>
     startTimeout(() =>
-      isUndefined(toClientId)
+      isNull(toClientId)
         ? mapForEach(clients, (otherClientId, receive) =>
             otherClientId != clientId
               ? receive(clientId, requestId, message, body)

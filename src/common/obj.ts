@@ -1,6 +1,6 @@
 import type {Id} from '../@types/common/index.d.ts';
 import {arrayEvery, arrayForEach, arrayMap} from './array.ts';
-import {ifNotUndefined, isNull, isUndefined, size} from './other.ts';
+import {ifNotNullish, ifNotUndefined, isNullish, size} from './other.ts';
 
 export type IdObj<Value> = {[id: string]: Value};
 export type IdObj2<Value> = IdObj<IdObj<Value>>;
@@ -12,12 +12,12 @@ const objFrozen = object.isFrozen;
 export const objEntries = object.entries;
 
 export const isObject = (obj: unknown): obj is IdObj<unknown> =>
-  !isUndefined(obj) &&
-  (ifNotUndefined(
+  !isNullish(obj) &&
+  (ifNotNullish(
     getPrototypeOf(obj),
     (objPrototype) =>
       objPrototype == object.prototype ||
-      isUndefined(getPrototypeOf(objPrototype)),
+      isNullish(getPrototypeOf(objPrototype)),
     /*! istanbul ignore next */
     () => true,
   ) as boolean);
@@ -104,8 +104,7 @@ export const objValidate = (
   emptyIsValid: 0 | 1 = 0,
 ): boolean => {
   if (
-    isNull(obj) ||
-    isUndefined(obj) ||
+    isNullish(obj) ||
     !isObject(obj) ||
     (!emptyIsValid && objIsEmpty(obj)) ||
     objFrozen(obj)

@@ -18,7 +18,7 @@ import {
   objSize,
   objValues,
 } from '../../../common/obj.ts';
-import {isString, isUndefined, slice} from '../../../common/other.ts';
+import {isNull, isString, slice} from '../../../common/other.ts';
 import {setAdd, setNew} from '../../../common/set.ts';
 import {TINYBASE, TRUE} from '../../../common/strings.ts';
 import {DEFAULT_ROW_ID_COLUMN_NAME} from './common.ts';
@@ -101,7 +101,7 @@ const getDefaultedTabularConfigMap = (
       objSize(defaultObj),
     );
     if (
-      !isUndefined(defaultedConfig[0]) &&
+      !isNull(defaultedConfig[0]) &&
       !exclude(id, defaultedConfig[0] as string)
     ) {
       then(id, defaultedConfig[0] as string);

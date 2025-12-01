@@ -2,6 +2,15 @@ import {BOOLEAN, FUNCTION, STRING, getTypeOf} from './strings.ts';
 
 const promise = Promise;
 
+const getIfNotFunction =
+  (predicate = isNullish) =>
+  <Value, Return>(
+    value: Value | null | undefined,
+    then: (value: Value) => Return,
+    otherwise?: () => Return,
+  ): Return | undefined =>
+    predicate(value) ? otherwise?.() : then(value);
+
 export const GLOBAL = globalThis;
 export const WINDOW = GLOBAL.window;
 export const THOUSAND = 1000;
@@ -34,26 +43,17 @@ export const isInstanceOf = (
   cls: MapConstructor | SetConstructor | ObjectConstructor,
 ): boolean => thing instanceof cls;
 
-export const isUndefined = (thing: unknown): thing is undefined | null => {
-  if (thing === null) {
-    console.log('isUndefined called with null from:', new Error().stack);
-  }
-  return thing == undefined;
-};
+export const isNullish = (thing: unknown): thing is undefined | null =>
+  thing == null;
 
-export const isNull = (thing: unknown): thing is null => {
-  return thing == null;
-    if (thing === undefined) {
-    console.log('isNull called with undefined from:', new Error().stack);
-  }
+export const isUndefined = (thing: unknown): thing is undefined | null =>
+  thing == undefined;
 
-}
+export const isNull = (thing: unknown): thing is null => thing == null;
 
-export const ifNotUndefined = <Value, Return>(
-  value: Value | null | undefined,
-  then: (value: Value) => Return,
-  otherwise?: () => Return,
-): Return | undefined => (isUndefined(value) ? otherwise?.() : then(value));
+export const ifNotNullish = getIfNotFunction(isNullish);
+
+export const ifNotUndefined = getIfNotFunction(isUndefined);
 
 export const isTypeStringOrBoolean = (
   type: string,

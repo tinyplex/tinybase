@@ -822,7 +822,7 @@
    *
    * store.applyMergeableChanges([
    *   [{pets: [{fido: [{color: ['black', 'Nn1JUF----2FnHIC']}]}]}],
-   *   [{open: [null, 'Nn1JUF----3FnHIC']}],
+   *   [{open: [undefined, 'Nn1JUF----3FnHIC']}],
    *   1,
    * ]);
    * console.log(store.getTables());

@@ -28,6 +28,7 @@ import {IdMap, mapGet, mapNew, mapSet} from '../common/map.ts';
 import {objEnsure, objForEach, objIsEmpty} from '../common/obj.ts';
 import {
   ifNotUndefined,
+  isNull,
   isUndefined,
   promiseNew,
   startTimeout,
@@ -294,7 +295,7 @@ export const createCustomSynchronizer = (
         ifNotUndefined(
           mapGet(pendingRequests, transactionOrRequestId),
           ([toClientId, handleResponse]) =>
-            isUndefined(toClientId) || toClientId == fromClientId
+            isNull(toClientId) || toClientId == fromClientId
               ? handleResponse(body, fromClientId)
               : /*! istanbul ignore next */
                 0,
