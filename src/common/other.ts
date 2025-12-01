@@ -46,10 +46,10 @@ export const isInstanceOf = (
 export const isNullish = (thing: unknown): thing is undefined | null =>
   thing == null;
 
-export const isUndefined = (thing: unknown): thing is undefined | null =>
-  thing == undefined;
+export const isUndefined = (thing: unknown): thing is undefined =>
+  thing === undefined;
 
-export const isNull = (thing: unknown): thing is null => thing == null;
+export const isNull = (thing: unknown): thing is null => thing === null;
 
 export const ifNotNullish = getIfNotFunction(isNullish);
 
