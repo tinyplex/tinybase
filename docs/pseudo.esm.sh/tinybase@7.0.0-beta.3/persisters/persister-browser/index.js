@@ -1,10 +1,14 @@
 // dist/persisters/persister-browser/index.js
 var EMPTY_STRING = "";
 var UNDEFINED = "\uFFFC";
+var getIfNotFunction = (predicate = isNullish) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
 var GLOBAL = globalThis;
 var WINDOW = GLOBAL.window;
-var isUndefined = (thing) => thing == void 0;
-var ifNotUndefined = (value, then, otherwise) => isUndefined(value) ? otherwise?.() : then(value);
+var isNullish = (thing) => thing == null;
+var isUndefined = (thing) => thing === void 0;
+var isNull = (thing) => thing === null;
+var ifNotNullish = getIfNotFunction(isNullish);
+var ifNotUndefined = getIfNotFunction(isUndefined);
 var isArray = (thing) => Array.isArray(thing);
 var size = (arrayOrString) => arrayOrString.length;
 var test = (regex, subject) => regex.test(subject);
@@ -24,9 +28,9 @@ var arrayPush = (array, ...values) => array.push(...values);
 var arrayShift = (array) => array.shift();
 var object = Object;
 var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
-var isObject = (obj) => !isUndefined(obj) && ifNotUndefined(
+var isObject = (obj) => !isNullish(obj) && ifNotNullish(
   getPrototypeOf(obj),
-  (objPrototype) => objPrototype == object.prototype || isUndefined(getPrototypeOf(objPrototype)),
+  (objPrototype) => objPrototype == object.prototype || isNullish(getPrototypeOf(objPrototype)),
   /* istanbul ignore next */
   () => true
 );
@@ -45,7 +49,7 @@ var collForEach = (coll, cb) => coll?.forEach(cb);
 var collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
 var mapNew = (entries) => new Map(entries);
 var mapGet = (map, key) => map?.get(key);
-var mapSet = (map, key, value) => isUndefined(value) ? (collDel(map, key), map) : map?.set(key, value);
+var mapSet = (map, key, value) => value === void 0 ? (collDel(map, key), map) : map?.set(key, value);
 var mapEnsure = (map, key, getDefaultValue, hadExistingValue) => {
   if (!collHas(map, key)) {
     mapSet(map, key, getDefaultValue());
@@ -137,7 +141,7 @@ var getListenerFunctions = (getThing) => {
         const index = size(ids);
         if (index == size(path)) {
           listener(thing, ...ids, ...extraArgsGetter(ids));
-        } else if (isUndefined(path[index])) {
+        } else if (isNull(path[index])) {
           arrayForEach(
             pathGetters[index]?.(...ids) ?? [],
             (id2) => callWithIds(...ids, id2)

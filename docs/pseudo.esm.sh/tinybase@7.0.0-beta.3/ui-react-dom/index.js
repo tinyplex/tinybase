@@ -31,9 +31,12 @@ var VALUES = VALUE + "s";
 var VALUE_IDS = VALUE + IDS;
 var REMOTE_ROW_ID = "Remote" + ROW + "Id";
 var CHECKPOINT = "Checkpoint";
+var getIfNotFunction = (predicate = isNullish) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
 var GLOBAL = globalThis;
-var isUndefined = (thing) => thing == void 0;
-var ifNotUndefined = (value, then, otherwise) => isUndefined(value) ? otherwise?.() : then(value);
+var isNullish = (thing) => thing == null;
+var isUndefined = (thing) => thing === void 0;
+var ifNotNullish = getIfNotFunction(isNullish);
+var ifNotUndefined = getIfNotFunction(isUndefined);
 var isString = (thing) => getTypeOf(thing) == STRING;
 var isArray = (thing) => Array.isArray(thing);
 var size = (arrayOrString) => arrayOrString.length;
@@ -43,9 +46,9 @@ var arrayMap = (array, cb) => array.map(cb);
 var object = Object;
 var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
 var objEntries = object.entries;
-var isObject = (obj) => !isUndefined(obj) && ifNotUndefined(
+var isObject = (obj) => !isNullish(obj) && ifNotNullish(
   getPrototypeOf(obj),
-  (objPrototype) => objPrototype == object.prototype || isUndefined(getPrototypeOf(objPrototype)),
+  (objPrototype) => objPrototype == object.prototype || isNullish(getPrototypeOf(objPrototype)),
   /* istanbul ignore next */
   () => true
 );
@@ -251,12 +254,16 @@ var CURRENT_TARGET = "currentTarget";
 var _VALUE = "value";
 var EXTRA = "extra";
 var strSplit = (str, separator = EMPTY_STRING2, limit) => str.split(separator, limit);
+var getIfNotFunction2 = (predicate = isNullish2) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
 var GLOBAL2 = globalThis;
 var math = Math;
 var mathMin = math.min;
 var isFiniteNumber = isFinite;
-var isUndefined2 = (thing) => thing == void 0;
-var ifNotUndefined2 = (value, then, otherwise) => isUndefined2(value) ? otherwise?.() : then(value);
+var isNullish2 = (thing) => thing == null;
+var isUndefined2 = (thing) => thing === void 0;
+var isNull = (thing) => thing === null;
+var ifNotNullish2 = getIfNotFunction2(isNullish2);
+var ifNotUndefined2 = getIfNotFunction2(isUndefined2);
 var isTypeStringOrBoolean = (type) => type == STRING2 || type == BOOLEAN;
 var isString2 = (thing) => getTypeOf2(thing) == STRING2;
 var isFunction = (thing) => getTypeOf2(thing) == FUNCTION2;
@@ -270,9 +277,9 @@ var arrayFilter = (array, cb) => array.filter(cb);
 var object2 = Object;
 var getPrototypeOf2 = (obj) => object2.getPrototypeOf(obj);
 var objEntries2 = object2.entries;
-var isObject2 = (obj) => !isUndefined2(obj) && ifNotUndefined2(
+var isObject2 = (obj) => !isNullish2(obj) && ifNotNullish2(
   getPrototypeOf2(obj),
-  (objPrototype) => objPrototype == object2.prototype || isUndefined2(getPrototypeOf2(objPrototype)),
+  (objPrototype) => objPrototype == object2.prototype || isNullish2(getPrototypeOf2(objPrototype)),
   /* istanbul ignore next */
   () => true
 );
@@ -505,6 +512,9 @@ var useResultSortedRowIds = (queryId, cellId, descending, offset = 0, limit, que
   [queryId, cellId, descending, offset, limit]
 );
 var getCellOrValueType = (cellOrValue) => {
+  if (isNull(cellOrValue)) {
+    return "null";
+  }
   const type = getTypeOf2(cellOrValue);
   return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;
 };
@@ -822,7 +832,7 @@ var RelationshipInHtmlRow = ({
         cells,
         ({ component: CellView2, getComponentProps }, compoundCellId) => {
           const [tableId, cellId] = strSplit(compoundCellId, DOT, 2);
-          const rowId = tableId === localTableId ? localRowId : tableId === remoteTableId ? remoteRowId : null;
+          const rowId = tableId === localTableId ? localRowId : tableId === remoteTableId ? remoteRowId : void 0;
           return isUndefined2(rowId) ? null : /* @__PURE__ */ jsx2(
             "td",
             {

@@ -37,9 +37,12 @@ var RELATIONSHIP = "Relationship";
 var REMOTE_ROW_ID = "Remote" + ROW + "Id";
 var QUERY = "Query";
 var CHECKPOINT = "Checkpoint";
+var getIfNotFunction = (predicate = isNullish) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
 var GLOBAL = globalThis;
-var isUndefined = (thing) => thing == void 0;
-var ifNotUndefined = (value, then, otherwise) => isUndefined(value) ? otherwise?.() : then(value);
+var isNullish = (thing) => thing == null;
+var isUndefined = (thing) => thing === void 0;
+var ifNotNullish = getIfNotFunction(isNullish);
+var ifNotUndefined = getIfNotFunction(isUndefined);
 var isString = (thing) => getTypeOf(thing) == STRING;
 var isFunction = (thing) => getTypeOf(thing) == FUNCTION;
 var isArray = (thing) => Array.isArray(thing);
@@ -52,9 +55,9 @@ var arrayFilter = (array, cb) => array.filter(cb);
 var object = Object;
 var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
 var objEntries = object.entries;
-var isObject = (obj) => !isUndefined(obj) && ifNotUndefined(
+var isObject = (obj) => !isNullish(obj) && ifNotNullish(
   getPrototypeOf(obj),
-  (objPrototype) => objPrototype == object.prototype || isUndefined(getPrototypeOf(objPrototype)),
+  (objPrototype) => objPrototype == object.prototype || isNullish(getPrototypeOf(objPrototype)),
   /* istanbul ignore next */
   () => true
 );
@@ -391,6 +394,7 @@ var NUMBER = getTypeOf2(0);
 var FUNCTION2 = getTypeOf2(getTypeOf2);
 var TYPE = "type";
 var DEFAULT = "default";
+var ALLOW_NULL = "allowNull";
 var LISTENER2 = "Listener";
 var RESULT2 = "Result";
 var GET2 = "get";
@@ -420,6 +424,7 @@ var EXTRA = "extra";
 var UNDEFINED = "\uFFFC";
 var id = (key) => EMPTY_STRING2 + key;
 var strSplit = (str, separator = EMPTY_STRING2, limit) => str.split(separator, limit);
+var getIfNotFunction2 = (predicate = isNullish2) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
 var GLOBAL2 = globalThis;
 var WINDOW = GLOBAL2.window;
 var math = Math;
@@ -427,8 +432,11 @@ var mathMin = math.min;
 var mathFloor = math.floor;
 var isFiniteNumber = isFinite;
 var isInstanceOf = (thing, cls) => thing instanceof cls;
-var isUndefined2 = (thing) => thing == void 0;
-var ifNotUndefined2 = (value, then, otherwise) => isUndefined2(value) ? otherwise?.() : then(value);
+var isNullish2 = (thing) => thing == null;
+var isUndefined2 = (thing) => thing === void 0;
+var isNull = (thing) => thing === null;
+var ifNotNullish2 = getIfNotFunction2(isNullish2);
+var ifNotUndefined2 = getIfNotFunction2(isUndefined2);
 var isTypeStringOrBoolean = (type) => type == STRING2 || type == BOOLEAN;
 var isString2 = (thing) => getTypeOf2(thing) == STRING2;
 var isFunction2 = (thing) => getTypeOf2(thing) == FUNCTION2;
@@ -464,9 +472,9 @@ var object2 = Object;
 var getPrototypeOf2 = (obj) => object2.getPrototypeOf(obj);
 var objFrozen = object2.isFrozen;
 var objEntries2 = object2.entries;
-var isObject2 = (obj) => !isUndefined2(obj) && ifNotUndefined2(
+var isObject2 = (obj) => !isNullish2(obj) && ifNotNullish2(
   getPrototypeOf2(obj),
-  (objPrototype) => objPrototype == object2.prototype || isUndefined2(getPrototypeOf2(objPrototype)),
+  (objPrototype) => objPrototype == object2.prototype || isNullish2(getPrototypeOf2(objPrototype)),
   /* istanbul ignore next */
   () => true
 );
@@ -492,7 +500,7 @@ var objIsEqual2 = (obj1, obj2) => {
   );
 };
 var objValidate = (obj, validateChild, onInvalidObj, emptyIsValid = 0) => {
-  if (isUndefined2(obj) || !isObject2(obj) || !emptyIsValid && objIsEmpty(obj) || objFrozen(obj)) {
+  if (isNullish2(obj) || !isObject2(obj) || !emptyIsValid && objIsEmpty(obj) || objFrozen(obj)) {
     onInvalidObj?.();
     return false;
   }
@@ -527,7 +535,7 @@ var mapKeys = (map) => [...map?.keys() ?? []];
 var mapGet = (map, key) => map?.get(key);
 var mapForEach = (map, cb) => collForEach(map, (value, key) => cb(key, value));
 var mapMap = (coll, cb) => arrayMap2([...coll?.entries() ?? []], ([key, value]) => cb(value, key));
-var mapSet = (map, key, value) => isUndefined2(value) ? (collDel(map, key), map) : map?.set(key, value);
+var mapSet = (map, key, value) => value === void 0 ? (collDel(map, key), map) : map?.set(key, value);
 var mapEnsure = (map, key, getDefaultValue, hadExistingValue) => {
   if (!collHas(map, key)) {
     mapSet(map, key, getDefaultValue());
@@ -655,7 +663,7 @@ var getListenerFunctions = (getThing) => {
         const index = size2(ids);
         if (index == size2(path)) {
           listener(thing, ...ids, ...extraArgsGetter(ids));
-        } else if (isUndefined2(path[index])) {
+        } else if (isNull(path[index])) {
           arrayForEach(
             pathGetters[index]?.(...ids) ?? [],
             (id22) => callWithIds(...ids, id22)
@@ -912,6 +920,9 @@ var createStoragePersister = (store, storageName, storage, onIgnoredError) => {
 };
 var createSessionPersister = (store, storageName, onIgnoredError) => createStoragePersister(store, storageName, sessionStorage, onIgnoredError);
 var getCellOrValueType = (cellOrValue) => {
+  if (isNull(cellOrValue)) {
+    return "null";
+  }
   const type = getTypeOf2(cellOrValue);
   return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;
 };
@@ -986,14 +997,21 @@ var createStore = () => {
   );
   const validateValuesSchema = (valuesSchema) => objValidate(valuesSchema, validateCellOrValueSchema);
   const validateCellOrValueSchema = (schema) => {
-    if (!objValidate(schema, (_child, id2) => arrayHas([TYPE, DEFAULT], id2))) {
+    if (!objValidate(
+      schema,
+      (_child, id2) => arrayHas([TYPE, DEFAULT, ALLOW_NULL], id2)
+    )) {
       return false;
     }
     const type = schema[TYPE];
     if (!isTypeStringOrBoolean(type) && type != NUMBER) {
       return false;
     }
-    if (getCellOrValueType(schema[DEFAULT]) != type) {
+    const defaultValue = schema[DEFAULT];
+    if (isNull(defaultValue) && !schema[ALLOW_NULL]) {
+      return false;
+    }
+    if (!isNull(defaultValue) && getCellOrValueType(defaultValue) != type) {
       objDel(schema, DEFAULT);
     }
     return true;
@@ -1020,7 +1038,13 @@ var createStore = () => {
   );
   const getValidatedCell = (tableId, rowId, cellId, cell) => hasTablesSchema ? ifNotUndefined2(
     mapGet(mapGet(tablesSchemaMap, tableId), cellId),
-    (cellSchema) => getCellOrValueType(cell) != cellSchema[TYPE] ? cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT]) : cell,
+    (cellSchema) => isNull(cell) ? cellSchema[ALLOW_NULL] ? cell : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT]) : getCellOrValueType(cell) == cellSchema[TYPE] ? cell : cellInvalid(
+      tableId,
+      rowId,
+      cellId,
+      cell,
+      cellSchema[DEFAULT]
+    ),
     () => cellInvalid(tableId, rowId, cellId, cell)
   ) : isUndefined2(getCellOrValueType(cell)) ? cellInvalid(tableId, rowId, cellId, cell) : cell;
   const validateValues = (values, skipDefaults) => objValidate(
@@ -1037,7 +1061,7 @@ var createStore = () => {
   );
   const getValidatedValue = (valueId, value) => hasValuesSchema ? ifNotUndefined2(
     mapGet(valuesSchemaMap, valueId),
-    (valueSchema) => getCellOrValueType(value) != valueSchema[TYPE] ? valueInvalid(valueId, value, valueSchema[DEFAULT]) : value,
+    (valueSchema) => isNull(value) ? valueSchema[ALLOW_NULL] ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]) : getCellOrValueType(value) == valueSchema[TYPE] ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]),
     () => valueInvalid(valueId, value)
   ) : isUndefined2(getCellOrValueType(value)) ? valueInvalid(valueId, value) : value;
   const addDefaultsToRow = (row, tableId, rowId) => {
@@ -1258,7 +1282,7 @@ var createStore = () => {
     mapSet(
       cellIds,
       cellId,
-      count != -addedOrRemoved ? count + addedOrRemoved : null
+      count != -addedOrRemoved ? count + addedOrRemoved : void 0
     );
     idsChanged(
       mapEnsure(mapEnsure(changedCellIds, tableId, mapNew), rowId, mapNew),
@@ -2718,7 +2742,7 @@ var RelationshipInHtmlRow = ({
         cells,
         ({ component: CellView2, getComponentProps }, compoundCellId) => {
           const [tableId, cellId] = strSplit(compoundCellId, DOT, 2);
-          const rowId = tableId === localTableId ? localRowId : tableId === remoteTableId ? remoteRowId : null;
+          const rowId = tableId === localTableId ? localRowId : tableId === remoteTableId ? remoteRowId : void 0;
           return isUndefined2(rowId) ? null : /* @__PURE__ */ jsx2(
             "td",
             {
@@ -3316,11 +3340,11 @@ var getNewIdFromSuggestedId = (suggestedId, has) => {
 };
 var ConfirmableActions = ({ actions, ...props }) => {
   const [confirming, setConfirming] = useState2();
-  const handleDone = useCallback2(() => setConfirming(null), []);
+  const handleDone = useCallback2(() => setConfirming(void 0), []);
   useEffect2(() => {
-    if (confirming != null) {
+    if (!isUndefined2(confirming)) {
       const handleKeyDown = (e) => {
-        if (confirming != null && e.key === "Escape") {
+        if (!isUndefined2(confirming) && e.key === "Escape") {
           e.preventDefault();
           handleDone();
         }
@@ -3329,7 +3353,7 @@ var ConfirmableActions = ({ actions, ...props }) => {
       return () => document.removeEventListener("keydown", handleKeyDown);
     }
   }, [confirming, handleDone]);
-  if (confirming != null) {
+  if (!isUndefined2(confirming)) {
     const [, , Component] = actions[confirming];
     return /* @__PURE__ */ jsxs(Fragment, {
       children: [

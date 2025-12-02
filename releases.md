@@ -1,22 +1,113 @@
-<link rel="preload" as="image" href="https://beta.tinybase.org/inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://beta.tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v6-7">v6.7</h1><p>This release includes support for the Origin Private File System (OPFS) in a browser. The <a href="https://beta.tinybase.org/api/persister-browser/functions/creation/createopfspersister/"><code>createOpfsPersister</code></a> function is the main entry point, and is available in the existing <a href="https://beta.tinybase.org/api/persister-browser/"><code>persister-browser</code></a> module:</p>
+<link rel="preload" as="image" href="https://beta.tinybase.org/inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://beta.tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v7-0">v7.0</h1><p>This important (and slightly breaking!) release adds support for <code>null</code> as a valid <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> and <a href="https://beta.tinybase.org/api/store/type-aliases/store/value/"><code>Value</code></a> type, alongside <code>string</code>, <code>number</code>, and <code>boolean</code>.</p><h2 id="null-type-support">Null Type Support</h2><p>You can now set Cells and <a href="https://beta.tinybase.org/api/store/type-aliases/store/values/"><code>Values</code></a> to <code>null</code>:</p>
 
 ```js
 import {createStore} from 'tinybase';
+
+const store = createStore();
+store.setCell('pets', 'fido', 'species', 'dog');
+store.setCell('pets', 'fido', 'color', null);
+
+console.log(store.getCell('pets', 'fido', 'color'));
+// -> null
+
+console.log(store.hasCell('pets', 'fido', 'color'));
+// -> true
+```
+
+<p>To allow <code>null</code> values in your schema, use the new <code>allowNull</code> property:</p>
+
+```js
+store.setTablesSchema({
+  pets: {
+    species: {type: 'string'},
+    color: {type: 'string', allowNull: true},
+  },
+});
+
+store.setCell('pets', 'fido', 'color', null);
+// Valid because allowNull is true
+
+store.setCell('pets', 'fido', 'species', null);
+// Invalid - species does not allow null
+
+store.delSchema();
+```
+
+<h2 id="important-distinction-null-vs-undefined">Important Distinction: <code>null</code> vs <code>undefined</code></h2><p>It&#x27;s crucial to understand the difference between <code>null</code> and <code>undefined</code> in TinyBase:</p><ul><li><code>null</code> is an explicit value. A <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> set to <code>null</code> exists in the <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a>.</li><li><code>undefined</code> means the <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> does not exist in the <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a>.</li></ul><p>This means that the <a href="https://beta.tinybase.org/api/store/interfaces/store/store/methods/getter/hascell/"><code>hasCell</code></a> method will return <code>true</code> for a <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> with a <code>null</code> value:</p>
+
+```js
+store.setCell('pets', 'fido', 'color', null);
+console.log(store.hasCell('pets', 'fido', 'color'));
+// -> true
+
+store.delCell('pets', 'fido', 'color');
+console.log(store.hasCell('pets', 'fido', 'color'));
+// -> false
+
+store.delTables();
+```
+
+<h2 id="breaking-change-database-persistence">Breaking Change: <a href="https://beta.tinybase.org/guides/persistence/database-persistence/">Database Persistence</a></h2><p><strong>Important:</strong> This release includes a breaking change for applications using database persisters (the <a href="https://beta.tinybase.org/api/persister-sqlite3/interfaces/persister/sqlite3persister/"><code>Sqlite3Persister</code></a>, <a href="https://beta.tinybase.org/api/persister-postgres/interfaces/persister/postgrespersister/"><code>PostgresPersister</code></a>, or <a href="https://beta.tinybase.org/api/persister-pglite/interfaces/persister/pglitepersister/"><code>PglitePersister</code></a> interfaces, for example).</p><p>SQL <code>NULL</code> values are now loaded as TinyBase <code>null</code> values. Previously, SQL <code>NULL</code> would result in Cells being absent from the <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a>. Now, SQL <code>NULL</code> maps directly to TinyBase <code>null</code>, which means:</p><ul><li><a href="https://beta.tinybase.org/api/store/type-aliases/store/tables/"><code>Tables</code></a> loaded from SQL databases will be <strong>dense</strong> rather than <strong>sparse</strong></li><li>Every <a href="https://beta.tinybase.org/api/store/type-aliases/store/row/"><code>Row</code></a> will have every <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> <a href="https://beta.tinybase.org/api/common/type-aliases/identity/id/"><code>Id</code></a> present in the table schema</li><li>Cells that were SQL <code>NULL</code> will have the value <code>null</code></li></ul><p>Example of the roundtrip transformation via a SQLite database:</p>
+
+```js
+import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
+import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
+
+const sqlite3 = await sqlite3InitModule();
+let db = new sqlite3.oo1.DB(':memory:', 'c');
+
+store.setTable('pets', {
+  fido: {species: 'dog'},
+  felix: {species: 'cat', color: 'black'},
+});
+
+const tabularPersister = createSqliteWasmPersister(store, sqlite3, db, {
+  mode: 'tabular',
+  tables: {save: {pets: 'pets'}, load: {pets: 'pets'}},
+});
+
+await tabularPersister.save();
+// After saving the the SQL database:
+// SQL table: fido (species: 'dog', color: NULL)
+//           felix (species: 'cat', color: 'black')
+
+await tabularPersister.load();
+// After loading again, the Store now has a dense table with an explicit null:
+
+console.log(store.getRow('pets', 'fido'));
+// -> {species: 'dog', color: null}
+```
+
+<p>This is the correct semantic mapping since SQL databases have fixed schemas where every row must account for every column. See the <a href="https://beta.tinybase.org/guides/persistence/database-persistence/">Database Persistence</a> guide for more details.</p><h2 id="migration-guide">Migration Guide</h2><p>If you are using database persisters, you should:</p><ol><li><p><strong>Review your data access patterns</strong>: If you were checking <code>hasCell(...) === false</code> to detect missing data, you now need to check <code>getCell(...) === null</code> for null values.</p></li><li><p><strong>Update your schemas</strong>: Add <code>allowNull: true</code> to <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> definitions that should permit null values:</p></li></ol>
+
+```js yolo
+store.setTablesSchema({
+  pets: {
+    species: {type: 'string'},
+    color: {type: 'string', allowNull: true},
+    age: {type: 'number', allowNull: true},
+  },
+});
+```
+
+<ol start="3"><li><strong>Consider memory implications</strong>: Dense tables consume more memory than sparse tables. If you have large tables with many optional Cells, this could be significant.</li></ol><hr><h1 id="v6-7">v6.7</h1><p>This release includes support for the Origin Private File System (OPFS) in a browser. The <a href="https://beta.tinybase.org/api/persister-browser/functions/creation/createopfspersister/"><code>createOpfsPersister</code></a> function is the main entry point, and is available in the existing <a href="https://beta.tinybase.org/api/persister-browser/"><code>persister-browser</code></a> module:</p>
+
+```js
 import {createOpfsPersister} from 'tinybase/persisters/persister-browser';
 
 const opfs = await navigator.storage.getDirectory();
 const handle = await opfs.getFileHandle('tinybase.json', {create: true});
 
-const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
-const persister = createOpfsPersister(store, handle);
+store.delTables().setTables({pets: {fido: {species: 'dog'}}});
+const opfsPersister = createOpfsPersister(store, handle);
 
-await persister.save();
+await opfsPersister.save();
 // Store JSON will be saved to the OPFS file.
 
-await persister.load();
+await opfsPersister.load();
 // Store JSON will be loaded from the OPFS file.
 
-await persister.destroy();
+await opfsPersister.destroy();
 ```
 
 <p>That&#x27;s it! If you&#x27;ve used other TinyBase persisters, this API should be easy and familiar to use.</p><p>One caveat: observability in OPFS is not yet standardized in browsers. This means that the auto-load functionality of the persister may not work as expected, although a best effort is made using the experimental FileSystemObserverAPI, so please let us know how that works!</p><hr><h1 id="v6-6">v6.6</h1><p>This release improves the Inspector tool, making it easier to debug, inspect, and mutate your TinyBase stores.</p><p><img src="https://beta.tinybase.org/inspector.webp" alt="Inspector" title="Inspector"></p><p>As well as a modernized UI, new in this release is the ability to create, duplicate, or delete tables, rows, values and cells directly within the Inspector. Press the &#x27;pencil&#x27; icon to start editing items, and then hover over the new icons to see how to manipulate the data.</p><p>See the <a href="https://beta.tinybase.org/guides/inspecting-data/">Inspecting Data</a> guide for more information about how to use the Inspector in your application during development.</p><h1 id="v6-5">v6.5</h1><p>This release includes the new <a href="https://beta.tinybase.org/api/persister-react-native-mmkv/"><code>persister-react-native-mmkv</code></a> module, which allows you to persist data in a React Native MMKV store via the <a href="https://github.com/mrousavy/react-native-mmkv">react-native-mmkv</a> library.</p><p>Usage should be as simple as this:</p>
@@ -26,7 +117,7 @@ import {createMMKV} from 'react-native-mmkv';
 import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
 
 const storage = createMMKV();
-const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+store.setTables({pets: {fido: {species: 'dog'}}});
 const persister = createReactNativeMmkvPersister(store, storage);
 
 await persister.save();
@@ -422,12 +513,9 @@ root.unmount();
 <p>The <a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/editablecellview/"><code>EditableCellView</code></a> component and <a href="https://beta.tinybase.org/api/ui-react-dom/functions/store-components/editablevalueview/"><code>EditableValueView</code></a> component are interactive input controls for updating <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> and <a href="https://beta.tinybase.org/api/store/type-aliases/store/value/"><code>Value</code></a> content respectively. You can generally use them across your table views by adding the <code>editable</code> prop to your table component.</p><h2 id="the-new-inspector">The new Inspector</h2><p><img src="https://beta.tinybase.org/store-inspector.webp" alt="Inspector" title="Inspector"></p><p>The new <a href="https://beta.tinybase.org/api/the-essentials/using-react/inspector/"><code>Inspector</code></a> component allows you to view, understand, and edit the content of a <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a> in a debug web environment. Try it out in most of the demos on the site, including the <a href="https://beta.tinybase.org/demos/movie-database/">Movie Database</a> demo, pictured. This requires a debug build of the new <a href="https://beta.tinybase.org/api/ui-react-dom/"><code>ui-react-dom</code></a> module, which is now also included in the UMD distribution.</p><p>Also in this release, the <a href="https://beta.tinybase.org/api/queries/interfaces/queries/queries/methods/result/getresulttablecellids/"><code>getResultTableCellIds</code></a> method and <a href="https://beta.tinybase.org/api/queries/interfaces/queries/queries/methods/listener/addresulttablecellidslistener/"><code>addResultTableCellIdsListener</code></a> method have been added to the <a href="https://beta.tinybase.org/api/queries/interfaces/queries/queries/"><code>Queries</code></a> object. The equivalent <a href="https://beta.tinybase.org/api/ui-react/functions/queries-hooks/useresulttablecellids/"><code>useResultTableCellIds</code></a> hook and <a href="https://beta.tinybase.org/api/ui-react/functions/queries-hooks/useresulttablecellidslistener/"><code>useResultTableCellIdsListener</code></a> hook have also been added to <a href="https://beta.tinybase.org/api/ui-react/"><code>ui-react</code></a> module. A number of other minor React hooks have been added to support the components above.</p><p><a href="https://beta.tinybase.org/demos/">Demos</a> have been updated to demonstrate the <a href="https://beta.tinybase.org/api/ui-react-dom/"><code>ui-react-dom</code></a> module and the <a href="https://beta.tinybase.org/api/the-essentials/using-react/inspector/"><code>Inspector</code></a> component where appropriate.</p><p>(NB: Previous to v5.0, this component was called <code>StoreInspector</code>.)</p><hr><h1 id="v4-0">v4.0</h1><p>This major release provides <a href="https://beta.tinybase.org/api/the-essentials/persisting-stores/persister/"><code>Persister</code></a> modules that connect TinyBase to SQLite databases (in both browser and server contexts), and CRDT frameworks that can provide synchronization and local-first reconciliation:</p><div class="table"><table><thead><tr><th>Module</th><th>Function</th><th>Storage</th></tr></thead><tbody><tr><td><a href="https://beta.tinybase.org/api/persister-sqlite3/"><code>persister-sqlite3</code></a></td><td><a href="https://beta.tinybase.org/api/persister-sqlite3/functions/creation/createsqlite3persister/"><code>createSqlite3Persister</code></a></td><td>SQLite in Node, via <a href="https://github.com/TryGhost/node-sqlite3">sqlite3</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-sqlite-wasm/"><code>persister-sqlite-wasm</code></a></td><td><a href="https://beta.tinybase.org/api/the-essentials/persisting-stores/createsqlitewasmpersister/"><code>createSqliteWasmPersister</code></a></td><td>SQLite in a browser, via <a href="https://github.com/tomayac/sqlite-wasm">sqlite-wasm</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-cr-sqlite-wasm/"><code>persister-cr-sqlite-wasm</code></a></td><td><a href="https://beta.tinybase.org/api/persister-cr-sqlite-wasm/functions/creation/createcrsqlitewasmpersister/"><code>createCrSqliteWasmPersister</code></a></td><td>SQLite CRDTs, via <a href="https://github.com/vlcn-io/cr-sqlite">cr-sqlite-wasm</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-yjs/"><code>persister-yjs</code></a></td><td><a href="https://beta.tinybase.org/api/persister-yjs/functions/creation/createyjspersister/"><code>createYjsPersister</code></a></td><td>Yjs CRDTs, via <a href="https://github.com/yjs/yjs">yjs</a></td></tr><tr><td><a href="https://beta.tinybase.org/api/persister-automerge/"><code>persister-automerge</code></a></td><td><a href="https://beta.tinybase.org/api/the-essentials/persisting-stores/createsqlitewasmpersister/"><code>createSqliteWasmPersister</code></a></td><td>Automerge CRDTs, via <a href="https://github.com/automerge/automerge-repo">automerge-repo</a></td></tr></tbody></table></div><p>See the <a href="https://beta.tinybase.org/guides/persistence/database-persistence/">Database Persistence</a> guide for details on how to work with SQLite databases, and the <a href="https://beta.tinybase.org/guides/schemas-and-persistence/synchronizing-data/">Synchronizing Data</a> guide for more complex synchronization with the CRDT frameworks.</p><h2 id="sqlite-databases">SQLite databases</h2><p>You can persist <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a> data to a database with either a JSON serialization or tabular mapping. (See the <a href="https://beta.tinybase.org/api/persisters/type-aliases/configuration/databasepersisterconfig/"><code>DatabasePersisterConfig</code></a> documentation for more details).</p><p>For example, this creates a <a href="https://beta.tinybase.org/api/the-essentials/persisting-stores/persister/"><code>Persister</code></a> object and saves and loads the <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a> to and from a local SQLite database. It uses an explicit tabular one-to-one mapping for the &#x27;pets&#x27; table:</p>
 
 ```js
-import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
-import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
-
-const sqlite3 = await sqlite3InitModule();
-const db = new sqlite3.oo1.DB(':memory:', 'c');
 store.setTables({pets: {fido: {species: 'dog'}}});
+
+db = new sqlite3.oo1.DB(':memory:', 'c');
 const sqlitePersister = createSqliteWasmPersister(store, sqlite3, db, {
   mode: 'tabular',
   tables: {load: {pets: 'pets'}, save: {pets: 'pets'}},

@@ -40,9 +40,12 @@ var LOCAL = "Local";
 var LINKED = "Linked";
 var QUERY = "Query";
 var CHECKPOINT = "Checkpoint";
+var getIfNotFunction = (predicate = isNullish) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
 var GLOBAL = globalThis;
-var isUndefined = (thing) => thing == void 0;
-var ifNotUndefined = (value, then, otherwise) => isUndefined(value) ? otherwise?.() : then(value);
+var isNullish = (thing) => thing == null;
+var isUndefined = (thing) => thing === void 0;
+var ifNotNullish = getIfNotFunction(isNullish);
+var ifNotUndefined = getIfNotFunction(isUndefined);
 var isString = (thing) => getTypeOf(thing) == STRING;
 var isFunction = (thing) => getTypeOf(thing) == FUNCTION;
 var isArray = (thing) => Array.isArray(thing);
@@ -58,9 +61,9 @@ var arrayWith = (array, index, value) => array.with(index, value);
 var object = Object;
 var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
 var objEntries = object.entries;
-var isObject = (obj) => !isUndefined(obj) && ifNotUndefined(
+var isObject = (obj) => !isNullish(obj) && ifNotNullish(
   getPrototypeOf(obj),
-  (objPrototype) => objPrototype == object.prototype || isUndefined(getPrototypeOf(objPrototype)),
+  (objPrototype) => objPrototype == object.prototype || isNullish(getPrototypeOf(objPrototype)),
   /* istanbul ignore next */
   () => true
 );
