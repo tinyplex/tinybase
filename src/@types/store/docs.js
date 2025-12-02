@@ -41,9 +41,9 @@
  * The CellSchema type describes what values are allowed for each Cell in a
  * Table.
  *
- * A CellSchema specifies the type of the Cell (`string`, `boolean`, or
- * `number`), and what the default value can be when an explicit value is not
- * specified.
+ * A CellSchema specifies the type of the Cell (`string`, `boolean`, `number`;
+ * or `null`, since v7.0), and what the default value can be when an explicit
+ * value is not specified.
  *
  * If a default value is provided (and its type is correct), you can be certain
  * that that Cell will always be present in a Row.
@@ -92,9 +92,9 @@
  * The ValueSchema type describes what values are allowed for keyed Values in a
  * Store.
  *
- * A ValueSchema specifies the type of the Value (`string`, `boolean`, or
- * `number`), and what the default value can be when an explicit value is not
- * specified.
+ * A ValueSchema specifies the type of the Value (`string`, `boolean`, `number`;
+ * or `null` since v7.0), and what the default value can be when an explicit
+ * value is not specified.
  *
  * If a default value is provided (and its type is correct), you can be certain
  * that the Value will always be present in a Store.
@@ -258,7 +258,7 @@
  *
  * A Cell is used when setting a cell with the setCell method, and when getting
  * it back out again with the getCell method. A Cell is a JavaScript string,
- * number, or boolean.
+ * number, boolean; or null since v7.0.
  * @example
  * ```js
  * import type {Cell} from 'tinybase';
@@ -304,7 +304,7 @@
  *
  * A Value is used when setting a value with the setValue method, and when
  * getting it back out again with the getValue method. A Value is a JavaScript
- * string, number, or boolean.
+ * string, number, boolean; or null since v7.0.
  * @example
  * ```js
  * import type {Value} from 'tinybase';
@@ -1480,13 +1480,14 @@
  *
  * The keyed value support is best thought of as a flat JavaScript object. The
  * Store contains a number of Value objects, each with a unique ID, and which is
- * a string, boolean, or number.
+ * a string, boolean, number; or null since v7.0.
  *
  * ```json
  * {                  // Store
  *   "value1": "one",   // Value (string)
  *   "value2": true,    // Value (boolean)
  *   "value3": 3,       // Value (number)
+ *   "value4": null,    // Value (null since v7.0)
  *   ...
  * }
  * ```
@@ -1503,7 +1504,7 @@
  * - Each Table contains a number of Row objects.
  * - Each Row contains a number of Cell objects.
  *
- * A Cell is a string, boolean, or number value.
+ * A Cell is a string, boolean, number; or null since v7.0.
  *
  * The members of each level of this hierarchy are identified with a unique Id
  * (which is a string). In other words you can naively think of a Store as a
@@ -1516,6 +1517,7 @@
  *       "cell1": "one",       // Cell (string)
  *       "cell2": true,        // Cell (boolean)
  *       "cell3": 3,           // Cell (number)
+ *       "cell4": null,        // Cell (null since v7.0)
  *       ...
  *     },
  *     ...

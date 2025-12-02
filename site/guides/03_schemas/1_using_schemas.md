@@ -32,6 +32,28 @@ As you can see, when a Values object is used that doesn't quite match those
 constraints, the data is corrected. The `website` Value is ignored, and the
 missing `open` Value gets defaulted to `false`.
 
+TinyBase supports four primitive types: `string`, `number`, `boolean`, and
+`null`. You can also allow `null` values for a specific Cell or Value by adding
+the `allowNull` property:
+
+```js
+const store2 = createStore().setValuesSchema({
+  nickname: {type: 'string', allowNull: true, default: null},
+  verified: {type: 'boolean'},
+});
+store2.setValues({nickname: null, verified: true});
+console.log(store2.getValues());
+// -> {nickname: null, verified: true}
+
+store2.setValue('nickname', 'Buddy');
+console.log(store2.getValue('nickname'));
+// -> 'Buddy'
+```
+
+When `allowNull` is `true`, the Cell or Value can be set to either its defined
+type or `null`. Without `allowNull`, attempting to set a `null` value will be
+rejected by the schema.
+
 ## Adding A TablesSchema
 
 Tabular schemas are similar. Set a TablesSchema prior to loading data into your

@@ -233,6 +233,10 @@
  * See the documentation for the DpcJson, DpcFragmented, and DpcTabular types
  * for more information on how all of those modes can be configured.
  *
+ * Note: When using tabular mode, SQL NULL values are loaded as TinyBase null
+ * values, making tables dense (every Row has every Cell). See the Database
+ * Persistence guide for details.
+ *
  * As well as providing a reference to the Store or MergeableStore to persist,
  * you must provide a `sqlStorage` parameter which identifies the Durable Object
  * SQLite storage to persist it to.

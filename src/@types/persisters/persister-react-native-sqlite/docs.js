@@ -83,6 +83,10 @@
  *
  * See the documentation for the DpcJson and DpcTabular types for more
  * information on how both of those modes can be configured.
+ *
+ * Note: When using tabular mode, SQL NULL values are loaded as TinyBase null
+ * values, making tables dense (every Row has every Cell). See the Database
+ * Persistence guide for details.
  * @param store The Store or MergeableStore to persist.
  * @param db The database instance that was returned from
  * `await SQLite.openDatabase(...)`.

@@ -368,6 +368,121 @@ console.log(db.exec('SELECT * FROM pets;', {rowMode: 'object'}));
 await subsetPersister.destroy();
 ```
 
+## Null Values and Dense Tables
+
+When working with database persisters, it's important to understand how SQL
+`NULL` values map to TinyBase values. This has significant implications for the
+structure of your Store.
+
+### SQL NULL is TinyBase null
+
+In TinyBase v7.0, `null` became a valid Cell and Value type alongside `string`,
+`number`, and `boolean`. When a database persister loads data from a SQL table,
+any SQL `NULL` values are loaded as TinyBase `null` values.
+
+This is the natural and correct behavior: SQL `NULL` represents an explicit null
+value, which maps directly to TinyBase's `null` type.
+
+### Sparse vs Dense Tables
+
+TinyBase tables can be either **sparse** or **dense**:
+
+- A **sparse table** has rows where some Cells may be missing entirely. The Row
+  object simply doesn't have that Cell Id as a property.
+- A **dense table** has rows where every Cell is present, though some may have
+  `null` values.
+
+Here's an example showing the difference:
+
+```js
+// Sparse table - some Cells are missing
+store.setTable('pets', {
+  fido: {species: 'dog'},
+  felix: {species: 'cat', color: 'black'},
+});
+
+console.log(store.getRow('pets', 'fido'));
+// -> {species: 'dog'}
+// Note: no 'color' property
+
+console.log(store.hasCell('pets', 'fido', 'color'));
+// -> false
+
+// Dense table - all Cells present, some are null
+store.setTable('pets', {
+  fido: {species: 'dog', color: null},
+  felix: {species: 'cat', color: 'black'},
+});
+
+console.log(store.getRow('pets', 'fido'));
+// -> {species: 'dog', color: null}
+// Note: 'color' property exists with null value
+
+console.log(store.hasCell('pets', 'fido', 'color'));
+// -> true
+```
+
+### Why Database Tables Become Dense
+
+SQL databases have a fixed schema: every table has a defined set of columns, and
+every row must account for all columns. When a Cell has no value, SQL represents
+this as `NULL`.
+
+When a database persister loads data from SQL into TinyBase:
+
+- Every SQL column becomes a Cell Id in the TinyBase table
+- Every SQL `NULL` becomes a TinyBase `null` value
+- The resulting TinyBase table is **dense** - every Row has every Cell Id
+
+This means that if you save a sparse TinyBase table to a database and load it
+back, it will become dense. For example, the roundtrip transformation via a
+SQLite database looks something like:
+
+```js
+store.setTables({
+  pets: {
+    fido: {species: 'dog'},
+    felix: {species: 'cat', color: 'black'},
+  },
+});
+
+await tabularPersister.save();
+// After saving the the SQL database:
+// SQL table: fido (species: 'dog', color: NULL)
+//           felix (species: 'cat', color: 'black')
+
+await tabularPersister.load();
+// After loading again, the Store now has a dense table with an explicit null:
+console.log(store.getRow('pets', 'fido'));
+// -> {species: 'dog', color: null}
+```
+
+### Important Implications
+
+1. **Round-trip behavior**: A sparse table that goes through a save/load cycle
+   with a database persister will become dense. This is a breaking change from
+   TinyBase v6.x and earlier.
+
+2. **The `hasCell` method**: After loading from a database, `hasCell` will
+   return `true` for all Cells in the table schema, even those that were
+   originally missing. Use `getCell(tableId, rowId, cellId) === null` to check
+   if a Cell has a null value.
+
+3. **Schemas**: When using database persisters, you may want to use the
+   `allowNull` schema property to explicitly allow `null` values:
+
+   ```js
+   store.setTablesSchema({
+     pets: {
+       species: {type: 'string'},
+       color: {type: 'string', allowNull: true},
+     },
+   });
+   ```
+
+4. **Memory usage**: Dense tables consume more memory than sparse tables. If you
+   have large tables with many optional Cells, this could be significant.
+
 ## Summary
 
 With care, you can load and save Store data from and to a SQLite database in a

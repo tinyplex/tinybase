@@ -73,6 +73,10 @@
  * See the documentation for the DpcJson and DpcTabular types for more
  * information on how both of those modes can be configured.
  *
+ * Note: When using tabular mode, SQL NULL values are loaded as TinyBase null
+ * values, making tables dense (every Row has every Cell). See the Database
+ * Persistence guide for details.
+ *
  * This method is asynchronous because it will await the creation of dedicated
  * new connections to the database. You will need to `await` a call to this
  * function or handle the return type natively as a Promise.

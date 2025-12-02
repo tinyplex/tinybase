@@ -5,6 +5,147 @@ highlighted features.
 
 ---
 
+# v7.0
+
+This important (and slightly breaking!) release adds support for `null` as a
+valid Cell and Value type, alongside `string`, `number`, and `boolean`.
+
+## Null Type Support
+
+You can now set Cells and Values to `null`:
+
+```js
+import {createStore} from 'tinybase';
+
+const store = createStore();
+store.setCell('pets', 'fido', 'species', 'dog');
+store.setCell('pets', 'fido', 'color', null);
+
+console.log(store.getCell('pets', 'fido', 'color'));
+// -> null
+
+console.log(store.hasCell('pets', 'fido', 'color'));
+// -> true
+```
+
+To allow `null` values in your schema, use the new `allowNull` property:
+
+```js
+store.setTablesSchema({
+  pets: {
+    species: {type: 'string'},
+    color: {type: 'string', allowNull: true},
+  },
+});
+
+store.setCell('pets', 'fido', 'color', null);
+// Valid because allowNull is true
+
+store.setCell('pets', 'fido', 'species', null);
+// Invalid - species does not allow null
+
+store.delSchema();
+```
+
+## Important Distinction: `null` vs `undefined`
+
+It's crucial to understand the difference between `null` and `undefined` in
+TinyBase:
+
+- `null` is an explicit value. A Cell set to `null` exists in the Store.
+- `undefined` means the Cell does not exist in the Store.
+
+This means that the hasCell method will return `true` for a Cell with a `null`
+value:
+
+```js
+store.setCell('pets', 'fido', 'color', null);
+console.log(store.hasCell('pets', 'fido', 'color'));
+// -> true
+
+store.delCell('pets', 'fido', 'color');
+console.log(store.hasCell('pets', 'fido', 'color'));
+// -> false
+
+store.delTables();
+```
+
+## Breaking Change: Database Persistence
+
+**Important:** This release includes a breaking change for applications using
+database persisters (the Sqlite3Persister, PostgresPersister, or PglitePersister
+interfaces, for example).
+
+SQL `NULL` values are now loaded as TinyBase `null` values. Previously, SQL
+`NULL` would result in Cells being absent from the Store. Now, SQL `NULL` maps
+directly to TinyBase `null`, which means:
+
+- Tables loaded from SQL databases will be **dense** rather than **sparse**
+- Every Row will have every Cell Id present in the table schema
+- Cells that were SQL `NULL` will have the value `null`
+
+Example of the roundtrip transformation via a SQLite database:
+
+```js
+import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
+import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
+
+const sqlite3 = await sqlite3InitModule();
+let db = new sqlite3.oo1.DB(':memory:', 'c');
+
+store.setTable('pets', {
+  fido: {species: 'dog'},
+  felix: {species: 'cat', color: 'black'},
+});
+
+const tabularPersister = createSqliteWasmPersister(store, sqlite3, db, {
+  mode: 'tabular',
+  tables: {save: {pets: 'pets'}, load: {pets: 'pets'}},
+});
+
+await tabularPersister.save();
+// After saving the the SQL database:
+// SQL table: fido (species: 'dog', color: NULL)
+//           felix (species: 'cat', color: 'black')
+
+await tabularPersister.load();
+// After loading again, the Store now has a dense table with an explicit null:
+
+console.log(store.getRow('pets', 'fido'));
+// -> {species: 'dog', color: null}
+```
+
+This is the correct semantic mapping since SQL databases have fixed schemas
+where every row must account for every column. See the Database Persistence
+guide for more details.
+
+## Migration Guide
+
+If you are using database persisters, you should:
+
+1. **Review your data access patterns**: If you were checking `hasCell(...) ===
+false` to detect missing data, you now need to check `getCell(...) === null`
+   for null values.
+
+2. **Update your schemas**: Add `allowNull: true` to Cell definitions that
+   should permit null values:
+
+```js yolo
+store.setTablesSchema({
+  pets: {
+    species: {type: 'string'},
+    color: {type: 'string', allowNull: true},
+    age: {type: 'number', allowNull: true},
+  },
+});
+```
+
+3. **Consider memory implications**: Dense tables consume more memory than
+   sparse tables. If you have large tables with many optional Cells, this could
+   be significant.
+
+---
+
 # v6.7
 
 This release includes support for the Origin Private File System (OPFS) in a
@@ -12,22 +153,21 @@ browser. The createOpfsPersister function is the main entry point, and is
 available in the existing persister-browser module:
 
 ```js
-import {createStore} from 'tinybase';
 import {createOpfsPersister} from 'tinybase/persisters/persister-browser';
 
 const opfs = await navigator.storage.getDirectory();
 const handle = await opfs.getFileHandle('tinybase.json', {create: true});
 
-const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
-const persister = createOpfsPersister(store, handle);
+store.delTables().setTables({pets: {fido: {species: 'dog'}}});
+const opfsPersister = createOpfsPersister(store, handle);
 
-await persister.save();
+await opfsPersister.save();
 // Store JSON will be saved to the OPFS file.
 
-await persister.load();
+await opfsPersister.load();
 // Store JSON will be loaded from the OPFS file.
 
-await persister.destroy();
+await opfsPersister.destroy();
 ```
 
 That's it! If you've used other TinyBase persisters, this API should be easy and
@@ -68,7 +208,7 @@ import {createMMKV} from 'react-native-mmkv';
 import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
 
 const storage = createMMKV();
-const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+store.setTables({pets: {fido: {species: 'dog'}}});
 const persister = createReactNativeMmkvPersister(store, storage);
 
 await persister.save();
@@ -1222,12 +1362,9 @@ and from a local SQLite database. It uses an explicit tabular one-to-one mapping
 for the 'pets' table:
 
 ```js
-import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
-import {createSqliteWasmPersister} from 'tinybase/persisters/persister-sqlite-wasm';
-
-const sqlite3 = await sqlite3InitModule();
-const db = new sqlite3.oo1.DB(':memory:', 'c');
 store.setTables({pets: {fido: {species: 'dog'}}});
+
+db = new sqlite3.oo1.DB(':memory:', 'c');
 const sqlitePersister = createSqliteWasmPersister(store, sqlite3, db, {
   mode: 'tabular',
   tables: {load: {pets: 'pets'}, save: {pets: 'pets'}},
