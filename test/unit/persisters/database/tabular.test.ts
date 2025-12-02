@@ -1745,45 +1745,45 @@ describe.each(Object.entries(ALL_VARIANTS))(
         await pause(autoLoadPause);
 
         expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1, c2: null}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.setCell('t1', 'r1', 'c1', 2);
         await pause(autoLoadPause);
 
         expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+          {t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1, c2: null}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.delCell('t1', 'r1', 'c2');
         await pause(autoLoadPause);
 
         expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+          {t1: {r1: {c1: 2, c2: null}, r2: {c1: 1, c2: null}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.delRow('t1', 'r2');
         await pause(autoLoadPause);
 
         expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
+          {t1: {r1: {c1: 2, c2: null}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.delTable('t2');
         await pause(autoLoadPause);
 
         expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}}},
+          {t1: {r1: {c1: 2, c2: null}}},
           {v1: 1, v2: 2},
         ]);
         store1.delValue('v2');
         await pause(autoLoadPause);
 
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2, c2: null}}}, {v1: 1, v2: null}]);
         store1.setValue('v1', 2);
         await pause(autoLoadPause);
 
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2, c2: null}}}, {v1: 2, v2: null}]);
       }, 20000);
     });
 
@@ -1868,39 +1868,39 @@ describe.each(Object.entries(ALL_VARIANTS))(
         ]);
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+          {t1: {r1: {c1: 1, c2: 2}, r2: {c1: 1, c2: null}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.setCell('t1', 'r1', 'c1', 2);
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+          {t1: {r1: {c1: 2, c2: 2}, r2: {c1: 1, c2: null}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.delCell('t1', 'r1', 'c2');
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}, r2: {c1: 1}}, t2: {r1: {c1: 1}}},
+          {t1: {r1: {c1: 2, c2: null}, r2: {c1: 1, c2: null}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.delRow('t1', 'r2');
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}}, t2: {r1: {c1: 1}}},
+          {t1: {r1: {c1: 2, c2: null}}, t2: {r1: {c1: 1}}},
           {v1: 1, v2: 2},
         ]);
         store1.delTable('t2');
         await pause(autoLoadPause);
         expect(store2.getContent()).toEqual([
-          {t1: {r1: {c1: 2}}},
+          {t1: {r1: {c1: 2, c2: null}}},
           {v1: 1, v2: 2},
         ]);
         store1.delValue('v2');
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 1}]);
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2, c2: null}}}, {v1: 1, v2: null}]);
         store1.setValue('v1', 2);
         await pause(autoLoadPause);
-        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2}}}, {v1: 2}]);
+        expect(store2.getContent()).toEqual([{t1: {r1: {c1: 2, c2: null}}}, {v1: 2, v2: null}]);
       }, 20000);
     });
   },
