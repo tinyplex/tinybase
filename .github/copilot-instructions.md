@@ -141,6 +141,7 @@ The codebase uses specialized utility wrappers for common operations to ensure c
    - All public APIs documented with `///` comments in `.d.ts` files
    - Format: `/// TypeName` or `/// functionName`
    - Used for documentation generation
+   - See the `Documentation System` section below for details
 
 ### Code Organization
 
@@ -514,3 +515,66 @@ store.transaction(() => {
 - Will this work in all supported environments (browser, Node, Bun, Deno)?
 - Is documentation updated (TSDoc comments, guides)?
 - Does it pass all linting and formatting checks?
+
+## Documentation System
+
+TinyBase has a sophisticated documentation system that generates the website from source code and markdown files.
+
+### Documentation Structure
+
+1. **Type Definitions (`src/@types/*/`)**:
+   - TypeScript `.d.ts` files contain the API type definitions
+   - **Never add comments directly to `.d.ts` files**
+
+2. **Documentation Files (`src/@types/*/docs.js`)**:
+   - Companion `docs.js` files sit alongside `.d.ts` files
+   - Use `///` convention to document types and functions
+   - These are stitched together at build time to generate documentation
+   - Format: `/// TypeName` or `/// functionName` followed by description
+
+3. **Guide Files (`site/guides/*/*.md`)**:
+   - Markdown files in the `site/guides/` directory
+   - Organized by topic (basics, schemas, persistence, etc.)
+   - Source files for guides on the website
+
+4. **Generated Files**:
+   - `/releases.md` and `/readme.md` and `/agents.md` in the root are **GENERATED**
+   - These are built from `/site/guides/16_releases.md` and `/site/home/index.md` etc
+   - **Never edit the generated files directly**
+
+### Documentation Testing
+
+TinyBase has automated tests that validate all inline code examples in documentation:
+
+```bash
+npx vitest run ./test/unit/documentation.test.ts --retry=0
+```
+
+**How it works**:
+
+- Extracts all code blocks from markdown files and `docs.js` files
+- Concatenates all examples from each file together
+- Parses and executes them to ensure they work
+- This means examples in the same file share scope
+
+**Critical constraints**:
+
+- Don't redeclare variables across examples in the same file
+- First example can declare `const store = createStore()`, subsequent examples reuse it
+- Include necessary imports in examples that use them
+- Avoid async operations in examples unless necessary
+- Keep examples simple and focused
+
+**Common pitfalls**:
+
+- ❌ Declaring `const store` multiple times in the same file
+- ❌ Using undefined functions (forgot import statement)
+- ✅ First example: `const store = createStore()`
+- ✅ Later examples: `store.setCell(...)` (reuses existing store)
+
+### Adding New Documentation
+
+1. **API Documentation**: Edit `docs.js` file next to the type definition
+2. **Guide Content**: Edit markdown files in `/site/guides/`
+3. **Release Notes**: Edit `/site/guides/16_releases.md` (not `/releases.md`)
+4. **Always run documentation tests** after changes to verify examples work

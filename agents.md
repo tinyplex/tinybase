@@ -1,4 +1,105 @@
-<p>This file follows the <a href="https://agents.md/">agents.md</a> specification for AI agent context. If you&#x27;re a human reading this, it provides a comprehensive overview of the TinyBase project for AI assistants working with the codebase.</p><h2 id="overview">Overview</h2><p><strong>TinyBase</strong> is a reactive data store and sync engine for local-first applications. It is a TypeScript library that provides a reactive, in-memory data store with a powerful synchronization engine. It&#x27;s designed for building local-first applications that work offline and sync across devices. The library is exceptionally small (5.3kB-11.7kB), has zero runtime dependencies, and maintains 100% test coverage.</p><ul><li><strong>Website</strong>: <a href="https://tinybase.org">https://tinybase.org</a></li><li><strong>Repository</strong>: <a href="https://github.com/tinyplex/tinybase">https://github.com/tinyplex/tinybase</a></li><li><strong><a href="https://tinybase.org/guides/how-tinybase-is-built/documentation/">Documentation</a></strong>: <a href="https://tinybase.org/api/">https://tinybase.org/api/</a></li><li><strong>License</strong>: MIT</li><li><strong>Author</strong>: James Pearce (@jamesgpearce)</li></ul><h2 id="core-concepts">Core Concepts</h2><h3 id="data-store">Data <a href="https://tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a></h3><p>TinyBase provides two types of data structures:</p><ul><li><strong><a href="https://tinybase.org/api/store/type-aliases/store/tables/"><code>Tables</code></a></strong>: Tabular data organized as <a href="https://tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a> → <a href="https://tinybase.org/api/store/type-aliases/store/row/"><code>Row</code></a> → <a href="https://tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> (similar to relational databases)</li><li><strong><a href="https://tinybase.org/api/store/type-aliases/store/values/"><code>Values</code></a></strong>: Simple key-value pairs for application state</li></ul><p>Both can coexist in the same <a href="https://tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a> and support optional schemas with type enforcement.</p><h3 id="reactivity">Reactivity</h3><p>The library implements a fine-grained reactive system where you can listen to changes at any level:</p><ul><li>Entire store changes</li><li><a href="https://tinybase.org/api/store/type-aliases/store/table/"><code>Table</code></a>/value additions or removals</li><li><a href="https://tinybase.org/api/store/type-aliases/store/row/"><code>Row</code></a> changes within a table</li><li>Individual cell or value changes</li></ul><p>Listeners fire automatically when data changes, enabling efficient UI updates that only re-render affected components.</p><h3 id="synchronization"><a href="https://tinybase.org/guides/synchronization/">Synchronization</a></h3><p>TinyBase includes native CRDT (Conflict-free Replicated Data Type) support via the <a href="https://tinybase.org/api/mergeable-store/interfaces/mergeable/mergeablestore/"><code>MergeableStore</code></a>, allowing deterministic synchronization across multiple clients and servers using Hybrid Logical Clocks for causality tracking.</p><h2 id="key-features">Key Features</h2><h3 id="data-management">Data Management</h3><ul><li><strong><a href="https://tinybase.org/guides/schemas/">Schemas</a></strong>: Optional TypeScript-inferred schemas for type safety</li><li><strong><a href="https://tinybase.org/api/indexes/interfaces/indexes/indexes/"><code>Indexes</code></a></strong>: Fast lookups by cell values with slice-based grouping</li><li><strong><a href="https://tinybase.org/api/queries/interfaces/queries/queries/"><code>Queries</code></a></strong>: SQL-like query engine (select, join, filter, group) without actual SQL</li><li><strong><a href="https://tinybase.org/api/relationships/interfaces/relationships/relationships/"><code>Relationships</code></a></strong>: Define foreign-key relationships between tables</li><li><strong><a href="https://tinybase.org/api/metrics/interfaces/metrics/metrics/"><code>Metrics</code></a></strong>: Built-in aggregations (sum, avg, min, max)</li><li><strong><a href="https://tinybase.org/api/checkpoints/interfaces/checkpoints/checkpoints/"><code>Checkpoints</code></a></strong>: Undo/redo functionality with branching support</li></ul><h3 id="persistence"><a href="https://tinybase.org/guides/persistence/">Persistence</a></h3><p>Multiple storage backends supported via Persisters:</p><ul><li><strong>Browser</strong>: LocalStorage, SessionStorage, IndexedDB, OPFS</li><li><strong>Databases</strong>: SQLite (Bun, WASM, sqlite3), PostgreSQL, PGlite, Turso (libSQL)</li><li><strong>Third-party</strong>: ElectricSQL, PowerSync, CR-SQLite</li><li><strong>Cloud</strong>: PartyKit, <a href="https://tinybase.org/guides/integrations/cloudflare-durable-objects/">Cloudflare Durable Objects</a></li><li><strong>Files</strong>: Node.js file system</li><li><strong>CRDT</strong>: Yjs, Automerge integration</li><li><strong>React Native</strong>: MMKV, SQLite</li></ul><h3 id="synchronization"><a href="https://tinybase.org/guides/synchronization/">Synchronization</a></h3><p>Synchronizers enable real-time data sync:</p><ul><li>WebSocket (client and server)</li><li>BroadcastChannel (same-origin tabs)</li><li>Local (in-memory for testing)</li><li>Custom transports (extensible)</li></ul><h3 id="react-integration">React Integration</h3><p>Optional <code>ui-react</code> module provides:</p><ul><li><strong>Hooks</strong>: <code>useCell</code>, <code>useRow</code>, <code>useTable</code>, <code>useTables</code>, <code>useValue</code>, etc.</li><li><strong>Components</strong>: Pre-built reactive views for data rendering</li><li><strong>Context</strong>: Multi-store support with ID-based contexts</li><li><strong>DOM Components</strong>: <code>ui-react-dom</code> with interactive tables</li><li><strong>Inspector</strong>: Developer tools overlay for debugging</li></ul><h2 id="architecture"><a href="https://tinybase.org/guides/how-tinybase-is-built/architecture/">Architecture</a></h2><h3 id="modular-design">Modular Design</h3><p>TinyBase uses a modular architecture where each feature is an independent module that can be imported separately:</p>
+# Agents Guide
+
+This file follows the [agents.md](https://agents.md/) specification for AI agent
+context. If you're a human reading this, it provides a comprehensive overview of
+the TinyBase project for AI assistants working with the codebase.
+
+## Overview
+
+**TinyBase** is a reactive data store and sync engine for local-first
+applications. It is a TypeScript library that provides a reactive, in-memory
+data store with a powerful synchronization engine. It's designed for building
+local-first applications that work offline and sync across devices. The library
+is exceptionally small (5.3kB-11.7kB), has zero runtime dependencies, and
+maintains 100% test coverage.
+
+- **Website**: https://tinybase.org
+- **Repository**: https://github.com/tinyplex/tinybase
+- **Documentation**: https://tinybase.org/api/
+- **License**: MIT
+- **Author**: James Pearce (@jamesgpearce)
+
+## Core Concepts
+
+### Data Store
+
+TinyBase provides two types of data structures:
+
+- **Tables**: Tabular data organized as Table → Row → Cell (similar to
+  relational databases)
+- **Values**: Simple key-value pairs for application state
+
+Both can coexist in the same Store and support optional schemas with type
+enforcement.
+
+### Reactivity
+
+The library implements a fine-grained reactive system where you can listen to
+changes at any level:
+
+- Entire store changes
+- Table/value additions or removals
+- Row changes within a table
+- Individual cell or value changes
+
+Listeners fire automatically when data changes, enabling efficient UI updates
+that only re-render affected components.
+
+### Synchronization
+
+TinyBase includes native CRDT (Conflict-free Replicated Data Type) support via
+the MergeableStore, allowing deterministic synchronization across multiple
+clients and servers using Hybrid Logical Clocks for causality tracking.
+
+## Key Features
+
+### Data Management
+
+- **Schemas**: Optional TypeScript-inferred schemas for type safety
+- **Indexes**: Fast lookups by cell values with slice-based grouping
+- **Queries**: SQL-like query engine (select, join, filter, group) without
+  actual SQL
+- **Relationships**: Define foreign-key relationships between tables
+- **Metrics**: Built-in aggregations (sum, avg, min, max)
+- **Checkpoints**: Undo/redo functionality with branching support
+
+### Persistence
+
+Multiple storage backends supported via Persisters:
+
+- **Browser**: LocalStorage, SessionStorage, IndexedDB, OPFS
+- **Databases**: SQLite (Bun, WASM, sqlite3), PostgreSQL, PGlite, Turso (libSQL)
+- **Third-party**: ElectricSQL, PowerSync, CR-SQLite
+- **Cloud**: PartyKit, Cloudflare Durable Objects
+- **Files**: Node.js file system
+- **CRDT**: Yjs, Automerge integration
+- **React Native**: MMKV, SQLite
+
+### Synchronization
+
+Synchronizers enable real-time data sync:
+
+- WebSocket (client and server)
+- BroadcastChannel (same-origin tabs)
+- Local (in-memory for testing)
+- Custom transports (extensible)
+
+### React Integration
+
+Optional `ui-react` module provides:
+
+- **Hooks**: `useCell`, `useRow`, `useTable`, `useTables`, `useValue`, etc.
+- **Components**: Pre-built reactive views for data rendering
+- **Context**: Multi-store support with ID-based contexts
+- **DOM Components**: `ui-react-dom` with interactive tables
+- **Inspector**: Developer tools overlay for debugging
+
+## Architecture
+
+### Modular Design
+
+TinyBase uses a modular architecture where each feature is an independent module
+that can be imported separately:
 
 ```
 tinybase              # Core store module
@@ -15,7 +116,31 @@ tinybase/ui-react-dom # React DOM components
 tinybase/ui-react-inspector # DevTools
 ```
 
-<h3 id="type-system">Type System</h3><p>Strong TypeScript support with:</p><ul><li>Generic types that infer from schemas</li><li>Conditional types for schema-aware APIs</li><li>Mapped types for compile-time validation</li><li>Type-safe hooks and components</li></ul><h3 id="build-system">Build System</h3><ul><li><strong>Gulp</strong>: Build orchestration</li><li><strong>TypeScript</strong>: Source language with strict mode</li><li><strong>Rollup</strong>: Bundling (implied)</li><li><strong>ESM</strong>: Primary module format</li><li><strong>Tree-shaking</strong>: Aggressive optimization for minimal bundles</li></ul><h2 id="development">Development</h2><h3 id="prerequisites">Prerequisites</h3><ul><li>Node.js &gt;= 23.10.0</li><li>npm &gt;= 10.9.2</li></ul><h3 id="setup">Setup</h3>
+### Type System
+
+Strong TypeScript support with:
+
+- Generic types that infer from schemas
+- Conditional types for schema-aware APIs
+- Mapped types for compile-time validation
+- Type-safe hooks and components
+
+### Build System
+
+- **Gulp**: Build orchestration
+- **TypeScript**: Source language with strict mode
+- **Rollup**: Bundling (implied)
+- **ESM**: Primary module format
+- **Tree-shaking**: Aggressive optimization for minimal bundles
+
+## Development
+
+### Prerequisites
+
+- Node.js >= 23.10.0
+- npm >= 10.9.2
+
+### Setup
 
 ```bash
 git clone https://github.com/tinyplex/tinybase.git
@@ -23,7 +148,7 @@ cd tinybase
 npm install
 ```
 
-<h3 id="common-commands">Common Commands</h3>
+### Common Commands
 
 ```bash
 npm run compileAndTestUnit  # Compile and run unit tests
@@ -35,7 +160,23 @@ npm run compileDocs         # Generate API documentation
 npm run serveDocs           # Preview documentation locally
 ```
 
-<h3 id="testing"><a href="https://tinybase.org/guides/how-tinybase-is-built/testing/">Testing</a></h3><ul><li><strong>Framework</strong>: Vitest</li><li><strong>Coverage</strong>: 100% required (enforced)</li><li><strong>Types</strong>: Unit, performance, end-to-end, production</li><li><strong>Environment</strong>: happy-dom (unit), puppeteer (e2e)</li></ul><h3 id="code-style">Code Style</h3><ul><li><strong>ESLint</strong>: Enforced with strict rules</li><li><strong>Prettier</strong>: Automatic formatting</li><li><strong>Max line length</strong>: 80 characters</li><li><strong>Quotes</strong>: Single quotes (template literals allowed)</li><li><strong>Semicolons</strong>: Required</li><li><strong>Object spacing</strong>: No spaces in braces <code>{key: value}</code></li></ul><h2 id="project-structure">Project Structure</h2>
+### Testing
+
+- **Framework**: Vitest
+- **Coverage**: 100% required (enforced)
+- **Types**: Unit, performance, end-to-end, production
+- **Environment**: happy-dom (unit), puppeteer (e2e)
+
+### Code Style
+
+- **ESLint**: Enforced with strict rules
+- **Prettier**: Automatic formatting
+- **Max line length**: 80 characters
+- **Quotes**: Single quotes (template literals allowed)
+- **Semicolons**: Required
+- **Object spacing**: No spaces in braces `{key: value}`
+
+## Project Structure
 
 ```
 tinybase/
@@ -68,4 +209,135 @@ tinybase/
 └── tsconfig.json         # TypeScript config
 ```
 
-<h2 id="contributing">Contributing</h2><p>Contributions are welcome! This is a spare-time project, so response times may vary.</p><p><strong>Requirements</strong>:</p><ol><li>Follow the Prettier and ESLint configurations</li><li>Maintain 100% test coverage</li><li>Update documentation for API changes</li><li>Add examples for new features</li></ol><p><strong>Process</strong>:</p><ol><li>Fork the repository</li><li>Create a feature branch</li><li>Make your changes with tests</li><li>Run <code>npm run preCommit</code> to verify</li><li>Submit a pull request</li></ol><p>See <a href="CONTRIBUTING.md">CONTRIBUTING.md</a> for details.</p><h2 id="community">Community</h2><ul><li><strong>Discord</strong>: <a href="https://discord.com/invite/mGz3mevwP8">https://discord.com/invite/mGz3mevwP8</a></li><li><strong>Discussions</strong>: <a href="https://github.com/tinyplex/tinybase/discussions">https://github.com/tinyplex/tinybase/discussions</a></li><li><strong>Issues</strong>: <a href="https://github.com/tinyplex/tinybase/issues">https://github.com/tinyplex/tinybase/issues</a></li><li><strong>Bluesky</strong>: <a href="https://bsky.app/profile/tinybase.bsky.social">https://bsky.app/profile/tinybase.bsky.social</a></li><li><strong>Twitter/X</strong>: <a href="https://x.com/tinybasejs">https://x.com/tinybasejs</a></li></ul><h2 id="use-cases">Use Cases</h2><p>TinyBase is ideal for:</p><ul><li><strong>Local-first applications</strong>: Apps that work offline and sync later</li><li><strong>Real-time collaboration</strong>: Multi-user applications with CRDT sync</li><li><strong>Reactive UIs</strong>: Applications requiring fine-grained reactivity</li><li><strong>Mobile apps</strong>: React Native apps with local storage</li><li><strong>Edge computing</strong>: Cloudflare Workers, Durable Objects</li><li><strong>Progressive Web Apps</strong>: Offline-capable web applications</li><li><strong>Games</strong>: Real-time state management with undo/redo</li><li><strong>Data dashboards</strong>: Reactive data visualization</li></ul><h2 id="performance">Performance</h2><ul><li>Tiny bundle sizes (5.3kB - 11.7kB depending on features)</li><li>Zero runtime dependencies</li><li>Efficient change detection and listener notification</li><li>Memory pooling for ID generation</li><li>Tree-shakeable modular design</li><li>Optimized for bundle size and runtime performance</li></ul><h2 id="related-projects">Related Projects</h2><ul><li><strong>Synclets</strong>: Generic synchronization library (<a href="https://synclets.org">https://synclets.org</a>)</li><li><strong>TinyWidgets</strong>: Widget toolkit built on TinyBase (<a href="https://tinywidgets.org">https://tinywidgets.org</a>)</li><li><strong>TinyTick</strong>: Reactive ticker tape component (<a href="https://tinytick.org">https://tinytick.org</a>)</li></ul><h2 id="license">License</h2><p>MIT License - see <a href="LICENSE">LICENSE</a> file for details.</p><hr><p><strong>Note for AI Agents</strong>: TinyBase uses unique patterns including utility function wrappers (e.g., <code>arrayForEach</code>, <code>mapGet</code>, <code>objHas</code>) instead of native methods for consistency and tree-shaking. Always use factory functions (<code>createStore</code>, <code>createIndexes</code>, etc.) with builder pattern chaining. Maintain 100% test coverage and follow the strict 80-character line length. See <code>.github/copilot-instructions.md</code> for detailed coding patterns.</p>
+## Contributing
+
+Contributions are welcome! This is a spare-time project, so response times may
+vary.
+
+**Requirements**:
+
+1. Follow the Prettier and ESLint configurations
+2. Maintain 100% test coverage
+3. Update documentation for API changes
+4. Add examples for new features
+
+**Process**:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes with tests
+4. Run `npm run preCommit` to verify
+5. Submit a pull request
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+
+## Community
+
+- **Discord**: https://discord.com/invite/mGz3mevwP8
+- **Discussions**: https://github.com/tinyplex/tinybase/discussions
+- **Issues**: https://github.com/tinyplex/tinybase/issues
+- **Bluesky**: https://bsky.app/profile/tinybase.bsky.social
+- **Twitter/X**: https://x.com/tinybasejs
+
+## Use Cases
+
+TinyBase is ideal for:
+
+- **Local-first applications**: Apps that work offline and sync later
+- **Real-time collaboration**: Multi-user applications with CRDT sync
+- **Reactive UIs**: Applications requiring fine-grained reactivity
+- **Mobile apps**: React Native apps with local storage
+- **Edge computing**: Cloudflare Workers, Durable Objects
+- **Progressive Web Apps**: Offline-capable web applications
+- **Games**: Real-time state management with undo/redo
+- **Data dashboards**: Reactive data visualization
+
+## Performance
+
+- Tiny bundle sizes (5.3kB - 11.7kB depending on features)
+- Zero runtime dependencies
+- Efficient change detection and listener notification
+- Memory pooling for ID generation
+- Tree-shakeable modular design
+- Optimized for bundle size and runtime performance
+
+## Related Projects
+
+- **Synclets**: Generic synchronization library (https://synclets.org)
+- **TinyWidgets**: Widget toolkit built on TinyBase (https://tinywidgets.org)
+- **TinyTick**: Reactive ticker tape component (https://tinytick.org)
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
+---
+
+**Note for AI Agents**: TinyBase uses unique patterns including utility function
+wrappers (e.g., `arrayForEach`, `mapGet`, `objHas`) instead of native methods
+for consistency and tree-shaking. Always use factory functions (`createStore`,
+`createIndexes`, etc.) with builder pattern chaining. Maintain 100% test
+coverage and follow the strict 80-character line length. See
+`.github/copilot-instructions.md` for detailed coding patterns.
+
+## Documentation System
+
+TinyBase has a sophisticated documentation system that generates the website
+from source code and markdown files.
+
+### Documentation Structure
+
+1. **Type Definitions (`src/@types/*/`)**: TypeScript `.d.ts` files contain the
+   API type definitions. **Never add comments directly to `.d.ts` files**.
+
+2. **Documentation Files (`src/@types/*/docs.js`)**: Companion `docs.js` files
+   sit alongside `.d.ts` files. Use `///` convention to document types and
+   functions. These are stitched together at build time to generate
+   documentation.
+
+3. **Guide Files (`site/guides/*/*.md`)**: Markdown files in the `site/guides/`
+   directory, organized by topic (basics, schemas, persistence, etc.). These are
+   source files for guides on the website.
+
+4. **Generated Files**: `/releases.md` and `/readme.md` in the root are
+   **GENERATED** from `/site/guides/16_releases.md` and `/site/home/index.md`.
+   **Never edit the generated files directly**.
+
+### Documentation Testing
+
+TinyBase has automated tests that validate all inline code examples in
+documentation:
+
+```bash
+npx vitest run ./test/unit/documentation.test.ts --retry=0
+```
+
+**How it works**:
+
+- Extracts all code blocks from markdown files and `docs.js` files
+- Concatenates all examples from each file together
+- Parses and executes them to ensure they work
+- This means examples in the same file share scope
+
+**Critical constraints**:
+
+- Don't redeclare variables across examples in the same file
+- First example can declare `const store = createStore()`, subsequent examples
+  reuse it
+- Include necessary imports in examples that use them
+- Avoid async operations in examples unless necessary
+- Keep examples simple and focused
+
+**Common pitfalls**:
+
+- ❌ Declaring `const store` multiple times in the same file
+- ❌ Using undefined functions (forgot import statement)
+- ✅ First example: `const store = createStore()`
+- ✅ Later examples: `store.setCell(...)` (reuses existing store)
+
+### Adding New Documentation
+
+1. **API Documentation**: Edit `docs.js` file next to the type definition
+2. **Guide Content**: Edit markdown files in `/site/guides/`
+3. **Release Notes**: Edit `/site/guides/16_releases.md` (not `/releases.md`)
+4. **Always run documentation tests** after changes to verify examples work
