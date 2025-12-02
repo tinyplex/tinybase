@@ -3,7 +3,7 @@ import {BOOLEAN, FUNCTION, STRING, getTypeOf} from './strings.ts';
 const promise = Promise;
 
 const getIfNotFunction =
-  (predicate = isNullish) =>
+  (predicate: (value: unknown) => value is unknown) =>
   <Value, Return>(
     value: Value | null | undefined,
     then: (value: Value) => Return,

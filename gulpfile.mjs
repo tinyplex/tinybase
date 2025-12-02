@@ -687,7 +687,7 @@ export const testBun = () =>
   );
 
 export const testUnitFast = async () => {
-  await test(['test/unit/core']);
+  await test(['test/unit/core'], true);
 };
 
 export const compileAndTestUnit = series(compileForTest, testUnit);
