@@ -27,7 +27,7 @@ export const createLocalSynchronizer = ((
     requestId: IdOrNull,
     message: Message,
     body: any,
-  ): number =>
+  ): number | NodeJS.Timeout =>
     startTimeout(() =>
       isNull(toClientId)
         ? mapForEach(clients, (otherClientId, receive) =>

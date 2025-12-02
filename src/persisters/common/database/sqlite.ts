@@ -64,7 +64,7 @@ export const createCustomSqlitePersister = <
   const addPersisterListener = (
     listener: PersisterListener<Persist>,
   ): (() => void) => {
-    let interval: number;
+    let interval: number | NodeJS.Timeout;
 
     const startPolling = () =>
       (interval = startInterval(
