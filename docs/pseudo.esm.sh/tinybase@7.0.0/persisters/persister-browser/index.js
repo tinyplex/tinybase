@@ -1,7 +1,7 @@
 // dist/persisters/persister-browser/index.js
 var EMPTY_STRING = "";
 var UNDEFINED = "\uFFFC";
-var getIfNotFunction = (predicate = isNullish) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
+var getIfNotFunction = (predicate) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
 var GLOBAL = globalThis;
 var WINDOW = GLOBAL.window;
 var isNullish = (thing) => thing == null;

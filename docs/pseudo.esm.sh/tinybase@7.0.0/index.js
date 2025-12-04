@@ -37,7 +37,7 @@ var id = (key) => EMPTY_STRING + key;
 var strStartsWith = (str, prefix) => str.startsWith(prefix);
 var strEndsWith = (str, suffix) => str.endsWith(suffix);
 var strSplit = (str, separator = EMPTY_STRING, limit) => str.split(separator, limit);
-var getIfNotFunction = (predicate = isNullish) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
+var getIfNotFunction = (predicate) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
 var GLOBAL = globalThis;
 var math = Math;
 var mathMax = math.max;

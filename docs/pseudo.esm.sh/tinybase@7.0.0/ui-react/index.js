@@ -40,7 +40,7 @@ var LOCAL = "Local";
 var LINKED = "Linked";
 var QUERY = "Query";
 var CHECKPOINT = "Checkpoint";
-var getIfNotFunction = (predicate = isNullish) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
+var getIfNotFunction = (predicate) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
 var GLOBAL = globalThis;
 var isNullish = (thing) => thing == null;
 var isUndefined = (thing) => thing === void 0;
