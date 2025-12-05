@@ -76,8 +76,8 @@ export type PersisterListener<
 /// StatusListener
 export type StatusListener<
   Schemas extends OptionalSchemas,
-  Persist extends Persists = Persists.StoreOnly,
-> = (persister: Persister<Schemas, Persist>, status: Status) => void;
+  Persister extends AnyPersister<Schemas>,
+> = (persister: Persister, status: Status) => void;
 
 /// PersisterStats
 export type PersisterStats = {
@@ -214,7 +214,7 @@ export interface Persister<
   getStatus(): Status;
 
   /// Persister.addStatusListener
-  addStatusListener(listener: StatusListener<Schemas, Persist>): Id;
+  addStatusListener(listener: StatusListener<Schemas, this>): Id;
 
   /// Persister.delListener
   delListener(listenerId: Id): this;
