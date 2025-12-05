@@ -76,7 +76,7 @@ export type PersisterListener<
 /// StatusListener
 export type StatusListener<
   Schemas extends OptionalSchemas,
-  Persister extends AnyPersister<Schemas>,
+  Persister extends AnyPersister<Schemas> = AnyPersister<Schemas>,
 > = (persister: Persister, status: Status) => void;
 
 /// PersisterStats

@@ -1261,7 +1261,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// usePersisterStatusListener
   usePersisterStatusListener: (
-    listener: StatusListener<Schemas, Persists.StoreOrMergeableStore>,
+    listener: StatusListener<Schemas>,
     listenerDeps?: React.DependencyList,
     persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
   ) => void;
@@ -1303,7 +1303,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// useSynchronizerStatusListener
   useSynchronizerStatusListener: (
-    listener: StatusListener<Schemas, Persists.StoreOrMergeableStore>,
+    listener: StatusListener<Schemas>,
     listenerDeps?: React.DependencyList,
     synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
   ) => void;

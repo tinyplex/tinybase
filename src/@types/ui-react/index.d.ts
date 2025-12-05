@@ -1062,7 +1062,7 @@ export function usePersisterStatus(
 
 /// usePersisterStatusListener
 export function usePersisterStatusListener(
-  listener: StatusListener<Persists.StoreOrMergeableStore>,
+  listener: StatusListener,
   listenerDeps?: React.DependencyList,
   persisterOrPersisterId?: PersisterOrPersisterId,
 ): void;
@@ -1102,7 +1102,7 @@ export function useSynchronizerStatus(
 
 /// useSynchronizerStatusListener
 export function useSynchronizerStatusListener(
-  listener: StatusListener<Persists.MergeableStoreOnly>,
+  listener: StatusListener,
   listenerDeps?: React.DependencyList,
   synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
 ): void;

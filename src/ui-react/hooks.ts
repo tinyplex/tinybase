@@ -2136,7 +2136,7 @@ export const usePersisterStatus: typeof usePersisterStatusDecl = (
 
 export const usePersisterStatusListener: typeof usePersisterStatusListenerDecl =
   (
-    listener: StatusListener<Persists.StoreOrMergeableStore>,
+    listener: StatusListener,
     listenerDeps?: DependencyList,
     persisterOrPersisterId?: PersisterOrPersisterId,
   ): void =>
@@ -2211,7 +2211,7 @@ export const useSynchronizerStatus: typeof useSynchronizerStatusDecl = (
 
 export const useSynchronizerStatusListener: typeof useSynchronizerStatusListenerDecl =
   (
-    listener: StatusListener<Persists.MergeableStoreOnly>,
+    listener: StatusListener,
     listenerDeps?: DependencyList,
     synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
   ): void =>
