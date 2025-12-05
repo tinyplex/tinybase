@@ -60,8 +60,8 @@ export type PersisterListener<Persist extends Persists = Persists.StoreOnly> = (
 ) => void;
 
 /// StatusListener
-export type StatusListener<Persist extends Persists = Persists.StoreOnly> = (
-  persister: Persister<Persist>,
+export type StatusListener<Persister extends AnyPersister> = (
+  persister: Persister,
   status: Status,
 ) => void;
 
@@ -192,7 +192,7 @@ export interface Persister<Persist extends Persists = Persists.StoreOnly> {
   getStatus(): Status;
 
   /// Persister.addStatusListener
-  addStatusListener(listener: StatusListener<Persist>): Id;
+  addStatusListener(listener: StatusListener<this>): Id;
 
   /// Persister.delListener
   delListener(listenerId: Id): this;
