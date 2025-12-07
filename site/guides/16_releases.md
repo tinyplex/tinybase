@@ -5,6 +5,51 @@ highlighted features.
 
 ---
 
+# v7.1
+
+This release introduces **Schematizers**, a new system for converting schemas
+from popular validation libraries into TinyBase's schema format.
+
+## Schematizers
+
+Schematizers provide a bridge between external schema validation libraries (like
+Zod) and TinyBase's TablesSchema and ValuesSchema formats. Instead of manually
+writing TinyBase schemas, you can now convert existing schemas at runtime:
+
+```js
+import {createStore} from 'tinybase';
+import {createZodSchematizer} from 'tinybase/schematizers/schematizer-zod';
+import {z} from 'zod';
+
+const schematizer = createZodSchematizer();
+
+const zodSchema = {
+  pets: z.object({
+    species: z.string(),
+    age: z.number(),
+    sold: z.boolean().default(false),
+  }),
+};
+
+const schematizedStore = createStore().setTablesSchema(
+  schematizer.toTablesSchema(zodSchema),
+);
+
+schematizedStore.setRow('pets', 'fido', {species: 'dog', age: 3});
+console.log(schematizedStore.getRow('pets', 'fido'));
+// -> {species: 'dog', age: 3, sold: false}
+```
+
+Schematizers perform best-effort conversions, extracting basic type information
+(string, number, boolean), defaults, and nullable settings from your schemas.
+
+The initial release includes support for Zod via the createZodSchematizer
+function, with support for additional libraries planned for future releases.
+
+For more information, see the Using Schematizers guide.
+
+---
+
 # v7.0
 
 This important (and slightly breaking!) release adds support for `null` as a
