@@ -45,6 +45,8 @@ const ALL_MODULES = [
   'persisters/persister-yjs',
   'queries',
   'relationships',
+  'schematizers',
+  'schematizers/schematizer-zod',
   'store',
   'synchronizers',
   'synchronizers/synchronizer-broadcast-channel',

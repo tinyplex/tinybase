@@ -41,7 +41,8 @@
     "react-native-sqlite-storage": "^6.0.1",
     "sqlite3": "^5.1.7",
     "ws": "^8.18.3",
-    "yjs": "^13.6.27"
+    "yjs": "^13.6.27",
+    "zod": "^3.24.1"
   },
   "peerDependenciesMeta": {
     "@automerge/automerge-repo": {
@@ -105,6 +106,9 @@
       "optional": true
     },
     "yjs": {
+      "optional": true
+    },
+    "zod": {
       "optional": true
     }
   },
@@ -232,6 +236,7 @@
     "vitest-puppeteer": "^11.0.3",
     "wa-sqlite": "github:rhashimoto/wa-sqlite",
     "ws": "^8.18.3",
-    "yjs": "^13.6.27"
+    "yjs": "^13.6.27",
+    "zod": "^3.24.1"
   }
 }

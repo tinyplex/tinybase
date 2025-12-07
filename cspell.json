@@ -1,5 +1,12 @@
 {
-  "ignorePaths": ["*.tsv", "*.webp", "*.svg", "*.snap", "*.json", "*.test.ts"],
+  "ignorePaths": [
+    "*.tsv",
+    "*.webp",
+    "*.svg",
+    "*.snap",
+    "*.json",
+    "*.test.ts"
+  ],
   "words": [
     "Abad",
     "Adrien",
@@ -147,10 +154,11 @@
     "Riedl",
     "Rosso",
     "sandboxed",
+    "schematizer",
+    "schematizers",
     "shaneosullivan",
     "Shantell",
     "Shawshank",
-    "Synclets",
     "signifiers",
     "sliceinhtmltable",
     "smaug",
@@ -160,6 +168,7 @@
     "startautopersisting",
     "storeinspector",
     "Synchronizable",
+    "Synclets",
     "tableinhtmltable",
     "tablename",
     "Taika",
