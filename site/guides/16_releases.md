@@ -60,8 +60,6 @@ valid Cell and Value type, alongside `string`, `number`, and `boolean`.
 You can now set Cells and Values to `null`:
 
 ```js
-import {createStore} from 'tinybase';
-
 const store = createStore();
 store.setCell('pets', 'fido', 'species', 'dog');
 store.setCell('pets', 'fido', 'color', null);
