@@ -83,5 +83,7 @@ or impossible constraint solutions).
 
 One common circumstance for creating a TablesSchema for a Store is when you are
 loading data from a source and you want to ensure the data is sculpted as your
-application require. But how do you save and load Store data? For that we
-proceed to the Persistence guides.
+application require.
+
+But how do you convert schemas from other validation libraries? For that we
+proceed to the Using Schematizers guide.

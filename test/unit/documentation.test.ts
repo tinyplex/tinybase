@@ -28,6 +28,7 @@ import * as TinyBasePersisterBun from 'tinybase/persisters/persister-sqlite-bun'
 import * as TinyBasePersisterSqliteWasm from 'tinybase/persisters/persister-sqlite-wasm';
 import * as TinyBasePersisterSqlite3 from 'tinybase/persisters/persister-sqlite3';
 import * as TinyBasePersisterYjs from 'tinybase/persisters/persister-yjs';
+import * as TinyBaseSchematizersZod from 'tinybase/schematizers/schematizer-zod';
 import * as TinyBaseSynchronizers from 'tinybase/synchronizers';
 import * as TinyBaseSynchronizerBroadcastChannel from 'tinybase/synchronizers/synchronizer-broadcast-channel';
 import * as TinyBaseSynchronizerLocal from 'tinybase/synchronizers/synchronizer-local';
@@ -40,6 +41,7 @@ import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
 import {beforeAll, describe, expect, test} from 'vitest';
 import * as ws from 'ws';
 import * as yjs from 'yjs';
+import * as zod from 'zod';
 import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './common/automerge-adaptor.ts';
 import {getTimeFunctions} from './common/mergeable.ts';
 import {
@@ -101,9 +103,11 @@ const TinyBaseForTest = {
     TinyBaseSynchronizerWsServerSimple,
   'tinybase/synchronizers/synchronizer-broadcast-channel':
     TinyBaseSynchronizerBroadcastChannel,
+  'tinybase/schematizers/schematizer-zod': TinyBaseSchematizersZod,
   'tinybase/ui-react-inspector': TinyBaseUiReactInspector,
   ws,
   yjs,
+  zod,
 };
 
 Object.assign(globalThis as any, {
