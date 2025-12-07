@@ -578,3 +578,129 @@ npx vitest run ./test/unit/documentation.test.ts --retry=0
 2. **Guide Content**: Edit markdown files in `/site/guides/`
 3. **Release Notes**: Edit `/site/guides/16_releases.md` (not `/releases.md`)
 4. **Always run documentation tests** after changes to verify examples work
+
+### Creating New Schematizers
+
+Schematizers convert external schema validation libraries (like Zod) to TinyBase schemas. Follow this pattern:
+
+1. **Module Structure**:
+   ```
+   src/@types/schematizers/schematizer-{library}/
+     index.d.ts           # Type definitions
+     docs.js              # Documentation
+     with-schemas/
+       index.d.ts         # Re-exports for schema-aware variants
+   src/schematizers/schematizer-{library}/
+     index.ts             # Implementation
+   ```
+
+2. **Factory Pattern**:
+   ```typescript
+   export const createZodSchematizer: typeof createZodSchematizerDecl = () => {
+     const toTablesSchema = (schemas: {[tableId: string]: any}): TablesSchema => {
+       // Best-effort conversion logic
+     };
+
+     const toValuesSchema = (schemas: {[valueId: string]: any}): ValuesSchema => {
+       // Best-effort conversion logic
+     };
+
+     return objFreeze({
+       toTablesSchema,
+       toValuesSchema,
+     });
+   };
+   ```
+
+3. **Conversion Strategy**:
+   - Extract basic types only: `string`, `number`, `boolean`
+   - Handle defaults via schema introspection
+   - Support nullable and optional modifiers
+   - **Ignore** complex types (arrays, objects, etc.) - they won't appear in output
+   - Use recursive unwrapping for wrapper types (e.g., `ZodOptional`, `ZodNullable`, `ZodDefault`)
+
+4. **Implementation Idioms**:
+   - Use `objForEach` for iteration, not `for...in` loops
+   - Use `ifNotUndefined` for conditional logic
+   - Use `objIsEmpty` to filter out empty table schemas
+   - Extract string constants to module-level (e.g., `TYPE`, `DEFAULT`, `ALLOW_NULL`)
+   - Freeze the returned schematizer object with `objFreeze`
+
+5. **Example Conversion Logic**:
+   ```typescript
+   const unwrap = (
+     schema: any,
+     defaultValue?: any,
+     allowNull?: boolean,
+   ): [any, any, boolean] => {
+     const typeName = schema._def?.typeName;
+     return typeName === ZOD_OPTIONAL
+       ? unwrap(schema._def.innerType, defaultValue, allowNull)
+       : typeName === ZOD_NULLABLE
+         ? unwrap(schema._def.innerType, defaultValue, true)
+         : typeName === ZOD_DEFAULT
+           ? unwrap(schema._def.innerType, schema._def.defaultValue(), allowNull)
+           : [schema, defaultValue, allowNull ?? false];
+   };
+   ```
+
+6. **Build Configuration**:
+   - Add module to `ALL_MODULES` array in `gulpfile.mjs`
+   - Add peer dependency to `package.json` (marked as optional)
+   - Add as dev dependency for testing
+
+7. **Testing**:
+   - Create comprehensive test suite in `test/unit/schematizers/schematizer-{library}.test.ts`
+   - Test basic type conversion, defaults, nullable, optional
+   - Test unsupported types are filtered out
+   - Test integration with actual TinyBase stores
+   - Inline schemas directly in test calls (no intermediate variables unless needed multiple times)
+
+8. **Documentation Testing**:
+   - Add library import to `test/unit/documentation.test.ts`:
+     ```typescript
+     import * as z from 'zod';
+     import * as TinyBaseSchematizersZod from 'tinybase/schematizers/schematizer-zod';
+     ```
+   - Add to modules object:
+     ```typescript
+     (globalThis as any).modules = {
+       ...
+       'tinybase/schematizers/schematizer-zod': TinyBaseSchematizersZod,
+       zod: z,
+     };
+     ```
+
+### Guide Writing Best Practices
+
+1. **Examples Run Sequentially**:
+   - All code examples in a guide file are concatenated and executed as a test
+   - Use unique variable names (`store`, `store2`, `store3`) to avoid redeclaration
+   - First example includes all imports, later examples reuse them
+   - Clean up between examples if needed (`store.delTables()`)
+
+2. **Inline Simple Values**:
+   - Prefer inline schemas/data in method calls over intermediate variables
+   - Only extract to variables when used multiple times
+   - Keeps examples concise and focused
+
+3. **Guide Chains**:
+   - Each guide's summary should link to the next guide in sequence
+   - Pattern: "For that we proceed to the [Next Topic] guide."
+   - Creates a natural learning path
+
+### Release Notes Updates
+
+When adding a new feature:
+
+1. **Update `/site/guides/16_releases.md`** (NOT `/releases.md`):
+   - Add new version section at the top
+   - Include working code example that will be tested
+   - Link to relevant guide if applicable
+   - Use past releases as template for structure
+
+2. **Update `/site/home/index.md`**:
+   - Update the "NEW!" link to point to new version: `<a href='/guides/releases/#v7-1'>`
+   - Update the tagline: `<span id="one-with">"The one with Schematizers!"</span>`
+
+3. **Generated files update automatically** during build process
