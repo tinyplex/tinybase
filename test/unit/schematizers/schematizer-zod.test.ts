@@ -107,7 +107,7 @@ describe('Zod Schematizer', () => {
           pets: z.object({
             species: z.string(),
             tags: z.array(z.string()), // unsupported
-            metadata: z.record(z.string()), // unsupported
+            metadata: z.record(z.string(), z.string()), // unsupported
           }),
         }),
       ).toEqual({

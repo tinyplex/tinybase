@@ -7,38 +7,31 @@ import type {
 } from '../../@types/store/index.d.ts';
 import {objForEach, objFreeze, objIsEmpty, objNew} from '../../common/obj.ts';
 import {ifNotUndefined} from '../../common/other.ts';
+import {
+  ALLOW_NULL,
+  BOOLEAN,
+  DEFAULT,
+  NUMBER,
+  STRING,
+  TYPE,
+} from '../../common/strings.ts';
 
-const TYPE = 'type';
-const DEFAULT = 'default';
-const ALLOW_NULL = 'allowNull';
-
-const STRING = 'string';
-const NUMBER = 'number';
-const BOOLEAN = 'boolean';
-
-const ZOD_OPTIONAL = 'ZodOptional';
-const ZOD_NULLABLE = 'ZodNullable';
-const ZOD_DEFAULT = 'ZodDefault';
-const ZOD_STRING = 'ZodString';
-const ZOD_NUMBER = 'ZodNumber';
-const ZOD_BOOLEAN = 'ZodBoolean';
+const OPTIONAL = 'optional';
+const NULLABLE = 'nullable';
 
 const unwrapSchema = (
   schema: any,
   defaultValue?: any,
   allowNull?: boolean,
 ): [any, any, boolean] => {
-  const typeName = schema._def?.typeName;
-  return typeName === ZOD_OPTIONAL
-    ? unwrapSchema(schema._def.innerType, defaultValue, allowNull)
-    : typeName === ZOD_NULLABLE
-      ? unwrapSchema(schema._def.innerType, defaultValue, true)
-      : typeName === ZOD_DEFAULT
-        ? unwrapSchema(
-            schema._def.innerType,
-            schema._def.defaultValue(),
-            allowNull,
-          )
+  const type = schema?.def?.type;
+
+  return type === OPTIONAL
+    ? unwrapSchema(schema.def.innerType, defaultValue, allowNull)
+    : type === NULLABLE
+      ? unwrapSchema(schema.def.innerType, defaultValue, true)
+      : type === DEFAULT
+        ? unwrapSchema(schema.def.innerType, schema.def.defaultValue, allowNull)
         : [schema, defaultValue, allowNull ?? false];
 };
 
@@ -47,7 +40,7 @@ export const createZodSchematizer: typeof createZodSchematizerDecl = () => {
     const tablesSchema: TablesSchema = objNew();
     objForEach(schemas, (zodSchema, tableId) => {
       const tableSchema: {[cellId: string]: CellSchema} = objNew();
-      ifNotUndefined(zodSchema?._def?.shape?.() ?? zodSchema?.shape, (shape) =>
+      ifNotUndefined(zodSchema?.def?.shape, (shape) =>
         objForEach(shape, (cellZodSchema, cellId) =>
           ifNotUndefined(toCellOrValueSchema(cellZodSchema), (cellSchema) => {
             tableSchema[cellId] = cellSchema;
@@ -75,26 +68,21 @@ export const createZodSchematizer: typeof createZodSchematizerDecl = () => {
     zodSchema: any,
   ): CellSchema | ValueSchema | undefined => {
     const [schema, defaultValue, allowNull] = unwrapSchema(zodSchema);
-    const typeName = schema._def?.typeName;
-    const type =
-      typeName === ZOD_STRING
-        ? STRING
-        : typeName === ZOD_NUMBER
-          ? NUMBER
-          : typeName === ZOD_BOOLEAN
-            ? BOOLEAN
-            : undefined;
+    const type = schema?.type;
 
-    return ifNotUndefined(type, (type) => {
-      const cellOrValueSchema: CellSchema = {[TYPE]: type} as CellSchema;
-      ifNotUndefined(defaultValue, (defaultValue) => {
-        (cellOrValueSchema as any)[DEFAULT] = defaultValue;
-      });
-      if (allowNull) {
-        (cellOrValueSchema as any)[ALLOW_NULL] = true;
-      }
-      return cellOrValueSchema;
+    // Only accept basic TinyBase-supported types
+    if (type !== STRING && type !== NUMBER && type !== BOOLEAN) {
+      return undefined;
+    }
+
+    const cellOrValueSchema: CellSchema = {[TYPE]: type} as CellSchema;
+    ifNotUndefined(defaultValue, (defaultValue) => {
+      (cellOrValueSchema as any)[DEFAULT] = defaultValue;
     });
+    if (allowNull) {
+      (cellOrValueSchema as any)[ALLOW_NULL] = true;
+    }
+    return cellOrValueSchema;
   };
 
   return objFreeze({

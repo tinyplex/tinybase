@@ -467,19 +467,18 @@ All code examples in a guide file are concatenated and executed as a test:
 - Each guide's summary should link to the next guide in sequence
 - Pattern: "For that we proceed to the [Next Topic] guide."
 - Creates a natural learning path
+
 ## Release Notes Updates
 
 When adding a new feature:
 
 1. **Update `/site/guides/16_releases.md`** (NOT `/releases.md`):
-
    - Add new version section at the top
    - Include working code example that will be tested
    - Link to relevant guide if applicable
    - Use past releases as template for structure
 
 2. **Update `/site/home/index.md`**:
-
    - Update the "NEW!" link to point to new version:
      `<a href='/guides/releases/#v7-1'>`
    - Update the tagline:

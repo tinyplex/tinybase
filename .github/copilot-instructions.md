@@ -584,6 +584,7 @@ npx vitest run ./test/unit/documentation.test.ts --retry=0
 Schematizers convert external schema validation libraries (like Zod) to TinyBase schemas. Follow this pattern:
 
 1. **Module Structure**:
+
    ```
    src/@types/schematizers/schematizer-{library}/
      index.d.ts           # Type definitions
@@ -595,13 +596,18 @@ Schematizers convert external schema validation libraries (like Zod) to TinyBase
    ```
 
 2. **Factory Pattern**:
+
    ```typescript
    export const createZodSchematizer: typeof createZodSchematizerDecl = () => {
-     const toTablesSchema = (schemas: {[tableId: string]: any}): TablesSchema => {
+     const toTablesSchema = (schemas: {
+       [tableId: string]: any;
+     }): TablesSchema => {
        // Best-effort conversion logic
      };
 
-     const toValuesSchema = (schemas: {[valueId: string]: any}): ValuesSchema => {
+     const toValuesSchema = (schemas: {
+       [valueId: string]: any;
+     }): ValuesSchema => {
        // Best-effort conversion logic
      };
 
@@ -627,6 +633,7 @@ Schematizers convert external schema validation libraries (like Zod) to TinyBase
    - Freeze the returned schematizer object with `objFreeze`
 
 5. **Example Conversion Logic**:
+
    ```typescript
    const unwrap = (
      schema: any,
@@ -639,7 +646,11 @@ Schematizers convert external schema validation libraries (like Zod) to TinyBase
        : typeName === ZOD_NULLABLE
          ? unwrap(schema._def.innerType, defaultValue, true)
          : typeName === ZOD_DEFAULT
-           ? unwrap(schema._def.innerType, schema._def.defaultValue(), allowNull)
+           ? unwrap(
+               schema._def.innerType,
+               schema._def.defaultValue(),
+               allowNull,
+             )
            : [schema, defaultValue, allowNull ?? false];
    };
    ```
