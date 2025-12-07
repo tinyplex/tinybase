@@ -27,9 +27,9 @@
  * This example converts Zod schemas to TinyBase format.
  *
  * ```js
- * import {z} from 'zod';
- * import {createZodSchematizer} from 'tinybase/schematizers/schematizer-zod';
  * import {createStore} from 'tinybase';
+ * import {createZodSchematizer} from 'tinybase/schematizers/schematizer-zod';
+ * import {z} from 'zod';
  *
  * const schematizer = createZodSchematizer();
  *
@@ -63,9 +63,9 @@
  * This example converts Zod value schemas.
  *
  * ```js
- * import {z} from 'zod';
- * import {createZodSchematizer} from 'tinybase/schematizers/schematizer-zod';
  * import {createStore} from 'tinybase';
+ * import {createZodSchematizer} from 'tinybase/schematizers/schematizer-zod';
+ * import {z} from 'zod';
  *
  * const schematizer = createZodSchematizer();
  *
@@ -93,8 +93,8 @@
  * This example creates a Zod schematizer and uses it to convert schemas.
  *
  * ```js
- * import {z} from 'zod';
  * import {createZodSchematizer} from 'tinybase/schematizers/schematizer-zod';
+ * import {z} from 'zod';
  *
  * const schematizer = createZodSchematizer();
  *
