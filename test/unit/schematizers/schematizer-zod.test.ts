@@ -12,17 +12,15 @@ describe('Zod Schematizer', () => {
 
   describe('toTablesSchema', () => {
     test('converts basic Zod object schema', () => {
-      const zodSchemas = {
-        pets: z.object({
-          species: z.string(),
-          age: z.number(),
-          sold: z.boolean(),
+      expect(
+        schematizer.toTablesSchema({
+          pets: z.object({
+            species: z.string(),
+            age: z.number(),
+            sold: z.boolean(),
+          }),
         }),
-      };
-
-      const tablesSchema = schematizer.toTablesSchema(zodSchemas);
-
-      expect(tablesSchema).toEqual({
+      ).toEqual({
         pets: {
           species: {type: 'string'},
           age: {type: 'number'},
@@ -32,17 +30,15 @@ describe('Zod Schematizer', () => {
     });
 
     test('converts Zod schema with defaults', () => {
-      const zodSchemas = {
-        pets: z.object({
-          species: z.string(),
-          sold: z.boolean().default(false),
-          price: z.number().default(0),
+      expect(
+        schematizer.toTablesSchema({
+          pets: z.object({
+            species: z.string(),
+            sold: z.boolean().default(false),
+            price: z.number().default(0),
+          }),
         }),
-      };
-
-      const tablesSchema = schematizer.toTablesSchema(zodSchemas);
-
-      expect(tablesSchema).toEqual({
+      ).toEqual({
         pets: {
           species: {type: 'string'},
           sold: {type: 'boolean', default: false},
@@ -52,16 +48,14 @@ describe('Zod Schematizer', () => {
     });
 
     test('converts Zod schema with nullable fields', () => {
-      const zodSchemas = {
-        pets: z.object({
-          species: z.string().nullable(),
-          age: z.number(),
+      expect(
+        schematizer.toTablesSchema({
+          pets: z.object({
+            species: z.string().nullable(),
+            age: z.number(),
+          }),
         }),
-      };
-
-      const tablesSchema = schematizer.toTablesSchema(zodSchemas);
-
-      expect(tablesSchema).toEqual({
+      ).toEqual({
         pets: {
           species: {type: 'string', allowNull: true},
           age: {type: 'number'},
@@ -70,16 +64,14 @@ describe('Zod Schematizer', () => {
     });
 
     test('converts Zod schema with optional fields', () => {
-      const zodSchemas = {
-        pets: z.object({
-          species: z.string(),
-          nickname: z.string().optional(),
+      expect(
+        schematizer.toTablesSchema({
+          pets: z.object({
+            species: z.string(),
+            nickname: z.string().optional(),
+          }),
         }),
-      };
-
-      const tablesSchema = schematizer.toTablesSchema(zodSchemas);
-
-      expect(tablesSchema).toEqual({
+      ).toEqual({
         pets: {
           species: {type: 'string'},
           nickname: {type: 'string'},
@@ -88,19 +80,17 @@ describe('Zod Schematizer', () => {
     });
 
     test('converts multiple tables', () => {
-      const zodSchemas = {
-        pets: z.object({
-          species: z.string(),
+      expect(
+        schematizer.toTablesSchema({
+          pets: z.object({
+            species: z.string(),
+          }),
+          stores: z.object({
+            name: z.string(),
+            city: z.string(),
+          }),
         }),
-        stores: z.object({
-          name: z.string(),
-          city: z.string(),
-        }),
-      };
-
-      const tablesSchema = schematizer.toTablesSchema(zodSchemas);
-
-      expect(tablesSchema).toEqual({
+      ).toEqual({
         pets: {
           species: {type: 'string'},
         },
@@ -112,17 +102,15 @@ describe('Zod Schematizer', () => {
     });
 
     test('ignores unsupported Zod types', () => {
-      const zodSchemas = {
-        pets: z.object({
-          species: z.string(),
-          tags: z.array(z.string()), // unsupported
-          metadata: z.record(z.string()), // unsupported
+      expect(
+        schematizer.toTablesSchema({
+          pets: z.object({
+            species: z.string(),
+            tags: z.array(z.string()), // unsupported
+            metadata: z.record(z.string()), // unsupported
+          }),
         }),
-      };
-
-      const tablesSchema = schematizer.toTablesSchema(zodSchemas);
-
-      expect(tablesSchema).toEqual({
+      ).toEqual({
         pets: {
           species: {type: 'string'},
         },
@@ -162,15 +150,13 @@ describe('Zod Schematizer', () => {
 
   describe('toValuesSchema', () => {
     test('converts basic Zod schemas', () => {
-      const zodSchemas = {
-        theme: z.string(),
-        count: z.number(),
-        isOpen: z.boolean(),
-      };
-
-      const valuesSchema = schematizer.toValuesSchema(zodSchemas);
-
-      expect(valuesSchema).toEqual({
+      expect(
+        schematizer.toValuesSchema({
+          theme: z.string(),
+          count: z.number(),
+          isOpen: z.boolean(),
+        }),
+      ).toEqual({
         theme: {type: 'string'},
         count: {type: 'number'},
         isOpen: {type: 'boolean'},
@@ -178,15 +164,13 @@ describe('Zod Schematizer', () => {
     });
 
     test('converts Zod schemas with defaults', () => {
-      const zodSchemas = {
-        theme: z.string().default('light'),
-        count: z.number().default(0),
-        isOpen: z.boolean().default(true),
-      };
-
-      const valuesSchema = schematizer.toValuesSchema(zodSchemas);
-
-      expect(valuesSchema).toEqual({
+      expect(
+        schematizer.toValuesSchema({
+          theme: z.string().default('light'),
+          count: z.number().default(0),
+          isOpen: z.boolean().default(true),
+        }),
+      ).toEqual({
         theme: {type: 'string', default: 'light'},
         count: {type: 'number', default: 0},
         isOpen: {type: 'boolean', default: true},

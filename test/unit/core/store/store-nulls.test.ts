@@ -11,45 +11,45 @@ describe('Null values', () => {
 
   test('Setting and getting null', () => {
     store.setCell('t1', 'r1', 'c1', null);
-    expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
-    expect(store.hasCell('t1', 'r1', 'c1')).toBe(true);
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(null);
+    expect(store.hasCell('t1', 'r1', 'c1')).toEqual(true);
   });
 
   test('Null vs undefined', () => {
     store.setCell('t1', 'r1', 'c1', null);
-    expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
-    expect(store.hasCell('t1', 'r1', 'c1')).toBe(true);
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(null);
+    expect(store.hasCell('t1', 'r1', 'c1')).toEqual(true);
 
     store.delCell('t1', 'r1', 'c1');
     expect(store.getCell('t1', 'r1', 'c1')).toBeUndefined();
-    expect(store.hasCell('t1', 'r1', 'c1')).toBe(false);
+    expect(store.hasCell('t1', 'r1', 'c1')).toEqual(false);
   });
 
   test('Setting null value', () => {
     store.setValue('v1', null);
-    expect(store.getValue('v1')).toBe(null);
-    expect(store.hasValue('v1')).toBe(true);
+    expect(store.getValue('v1')).toEqual(null);
+    expect(store.hasValue('v1')).toEqual(true);
   });
 
   test('Null value vs undefined', () => {
     store.setValue('v1', null);
-    expect(store.getValue('v1')).toBe(null);
-    expect(store.hasValue('v1')).toBe(true);
+    expect(store.getValue('v1')).toEqual(null);
+    expect(store.hasValue('v1')).toEqual(true);
 
     store.delValue('v1');
     expect(store.getValue('v1')).toBeUndefined();
-    expect(store.hasValue('v1')).toBe(false);
+    expect(store.hasValue('v1')).toEqual(false);
   });
 
   test('Type changes with null', () => {
     store.setCell('t1', 'r1', 'c1', '1');
-    expect(store.getCell('t1', 'r1', 'c1')).toBe('1');
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual('1');
 
     store.setCell('t1', 'r1', 'c1', null);
-    expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(null);
 
     store.setCell('t1', 'r1', 'c1', 2);
-    expect(store.getCell('t1', 'r1', 'c1')).toBe(2);
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(2);
   });
 
   test('Null in table data', () => {
@@ -60,18 +60,18 @@ describe('Null values', () => {
       },
     });
 
-    expect(store.getCell('t1', 'r1', 'c1')).toBe('1');
-    expect(store.getCell('t1', 'r1', 'c2')).toBe(null);
-    expect(store.getCell('t1', 'r1', 'c3')).toBe(3);
-    expect(store.getCell('t1', 'r2', 'c1')).toBe(null);
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual('1');
+    expect(store.getCell('t1', 'r1', 'c2')).toEqual(null);
+    expect(store.getCell('t1', 'r1', 'c3')).toEqual(3);
+    expect(store.getCell('t1', 'r2', 'c1')).toEqual(null);
   });
 
   test('Null in values data', () => {
     store.setValues({v1: '1', v2: null, v3: 3});
 
-    expect(store.getValue('v1')).toBe('1');
-    expect(store.getValue('v2')).toBe(null);
-    expect(store.getValue('v3')).toBe(3);
+    expect(store.getValue('v1')).toEqual('1');
+    expect(store.getValue('v2')).toEqual(null);
+    expect(store.getValue('v3')).toEqual(3);
   });
 
   test('JSON serialization with null', () => {
@@ -79,13 +79,13 @@ describe('Null values', () => {
     store.setValue('v1', null);
 
     const json = store.getJson();
-    expect(json).toBe('[{"t1":{"r1":{"c1":null}}},{"v1":null}]');
+    expect(json).toEqual('[{"t1":{"r1":{"c1":null}}},{"v1":null}]');
 
     const newStore = createStore();
     newStore.setJson(json);
 
-    expect(newStore.getCell('t1', 'r1', 'c1')).toBe(null);
-    expect(newStore.getValue('v1')).toBe(null);
+    expect(newStore.getCell('t1', 'r1', 'c1')).toEqual(null);
+    expect(newStore.getValue('v1')).toEqual(null);
   });
 
   test('JSON round-trip with mixed types including null', () => {
@@ -107,9 +107,9 @@ describe('Null values', () => {
 
     expect(store2.getTables()).toEqual(store.getTables());
     expect(store2.getValues()).toEqual(store.getValues());
-    expect(store2.getCell('t1', 'r1', 'c3')).toBe(null);
-    expect(store2.getCell('t1', 'r2', 'c2')).toBe(null);
-    expect(store2.getValue('v1')).toBe(null);
+    expect(store2.getCell('t1', 'r1', 'c3')).toEqual(null);
+    expect(store2.getCell('t1', 'r2', 'c2')).toEqual(null);
+    expect(store2.getValue('v1')).toEqual(null);
   });
 });
 
@@ -128,10 +128,10 @@ describe('Null with schemas', () => {
     });
 
     store.setCell('t1', 'r1', 'c1', null);
-    expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(null);
 
     store.setCell('t1', 'r1', 'c1', 'hello');
-    expect(store.getCell('t1', 'r1', 'c1')).toBe('hello');
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual('hello');
   });
 
   test('Schema with allowNull: false (default)', () => {
@@ -142,7 +142,7 @@ describe('Null with schemas', () => {
     });
 
     store.setCell('t1', 'r1', 'c1', null);
-    expect(store.hasCell('t1', 'r1', 'c1')).toBe(false);
+    expect(store.hasCell('t1', 'r1', 'c1')).toEqual(false);
   });
 
   test('Schema with default: null', () => {
@@ -153,7 +153,7 @@ describe('Null with schemas', () => {
     });
 
     store.setRow('t1', 'r1', {});
-    expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(null);
   });
 
   test('Schema with default: null requires allowNull: true', () => {
@@ -163,8 +163,8 @@ describe('Null with schemas', () => {
       },
     });
 
-    expect(result).toBe(store);
-    expect(store.getTablesSchemaJson()).toBe('{}');
+    expect(result).toEqual(store);
+    expect(store.getTablesSchemaJson()).toEqual('{}');
   });
 
   test('Values schema with allowNull: true', () => {
@@ -173,10 +173,10 @@ describe('Null with schemas', () => {
     });
 
     store.setValue('v1', null);
-    expect(store.getValue('v1')).toBe(null);
+    expect(store.getValue('v1')).toEqual(null);
 
     store.setValue('v1', 42);
-    expect(store.getValue('v1')).toBe(42);
+    expect(store.getValue('v1')).toEqual(42);
   });
 
   test('Values schema with allowNull: false (default)', () => {
@@ -185,7 +185,7 @@ describe('Null with schemas', () => {
     });
 
     store.setValue('v1', null);
-    expect(store.hasValue('v1')).toBe(false);
+    expect(store.hasValue('v1')).toEqual(false);
   });
 
   test('Multiple types with different null settings', () => {
@@ -203,12 +203,12 @@ describe('Null with schemas', () => {
       c3: true,
     });
 
-    expect(store.getCell('t1', 'r1', 'c1')).toBe('1');
-    expect(store.getCell('t1', 'r1', 'c2')).toBe(null);
-    expect(store.getCell('t1', 'r1', 'c3')).toBe(true);
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual('1');
+    expect(store.getCell('t1', 'r1', 'c2')).toEqual(null);
+    expect(store.getCell('t1', 'r1', 'c3')).toEqual(true);
 
     store.setCell('t1', 'r1', 'c1', null);
-    expect(store.getCell('t1', 'r1', 'c1')).toBe('1');
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual('1');
   });
 });
 
@@ -226,7 +226,7 @@ describe('Null listeners and events', () => {
       'r1',
       'c1',
       (_store, _table, _row, _cell, newCell, oldCell) => {
-        expect(newCell).toBe(null);
+        expect(newCell).toEqual(null);
         expect(oldCell).toBeUndefined();
       },
     );
@@ -242,8 +242,8 @@ describe('Null listeners and events', () => {
       'r1',
       'c1',
       (_store, _table, _row, _cell, newCell, oldCell) => {
-        expect(newCell).toBe('1');
-        expect(oldCell).toBe(null);
+        expect(newCell).toEqual('1');
+        expect(oldCell).toEqual(null);
       },
     );
 
@@ -253,7 +253,7 @@ describe('Null listeners and events', () => {
   test('Value listener fires when setting to null', () => {
     expect.assertions(2);
     store.addValueListener('v1', (_store, _valueId, newValue, oldValue) => {
-      expect(newValue).toBe(null);
+      expect(newValue).toEqual(null);
       expect(oldValue).toBeUndefined();
     });
 
@@ -269,9 +269,9 @@ describe('Null listeners and events', () => {
       'c1',
       (_store, _table, _row, _cell, hasCell) => {
         if (callCount === 0) {
-          expect(hasCell).toBe(true);
+          expect(hasCell).toEqual(true);
         } else if (callCount === 1) {
-          expect(hasCell).toBe(false);
+          expect(hasCell).toEqual(false);
         }
         callCount++;
       },
@@ -291,24 +291,24 @@ describe('Null vs Delete semantics', () => {
 
   test('setCell(null) creates a cell, delCell removes it', () => {
     store.setCell('t1', 'r1', 'c1', null);
-    expect(store.hasCell('t1', 'r1', 'c1')).toBe(true);
-    expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
+    expect(store.hasCell('t1', 'r1', 'c1')).toEqual(true);
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(null);
     expect(store.getCellIds('t1', 'r1')).toEqual(['c1']);
 
     store.delCell('t1', 'r1', 'c1');
-    expect(store.hasCell('t1', 'r1', 'c1')).toBe(false);
+    expect(store.hasCell('t1', 'r1', 'c1')).toEqual(false);
     expect(store.getCell('t1', 'r1', 'c1')).toBeUndefined();
     expect(store.getCellIds('t1', 'r1')).toEqual([]);
   });
 
   test('setValue(null) creates a value, delValue removes it', () => {
     store.setValue('v1', null);
-    expect(store.hasValue('v1')).toBe(true);
-    expect(store.getValue('v1')).toBe(null);
+    expect(store.hasValue('v1')).toEqual(true);
+    expect(store.getValue('v1')).toEqual(null);
     expect(store.getValueIds()).toEqual(['v1']);
 
     store.delValue('v1');
-    expect(store.hasValue('v1')).toBe(false);
+    expect(store.hasValue('v1')).toEqual(false);
     expect(store.getValue('v1')).toBeUndefined();
     expect(store.getValueIds()).toEqual([]);
   });
@@ -360,10 +360,10 @@ describe('Transactions with null', () => {
 
     store.startTransaction();
     store.setCell('t1', 'r1', 'c1', null);
-    expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(null);
     store.finishTransaction();
 
-    expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(null);
   });
 
   test('Transaction can commit null values', () => {
@@ -372,7 +372,7 @@ describe('Transactions with null', () => {
       store.setValue('v1', null);
     });
 
-    expect(store.getCell('t1', 'r1', 'c1')).toBe(null);
-    expect(store.getValue('v1')).toBe(null);
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(null);
+    expect(store.getValue('v1')).toEqual(null);
   });
 });
