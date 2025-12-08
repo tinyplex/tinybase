@@ -41,6 +41,7 @@
     "react-native-mmkv": "4.1.0",
     "react-native-sqlite-storage": "^6.0.1",
     "sqlite3": "^5.1.7",
+    "valibot": "^1.2.0",
     "ws": "^8.18.3",
     "yjs": "^13.6.27",
     "zod": "^4.1.13"
@@ -104,6 +105,9 @@
       "optional": true
     },
     "sqlite3": {
+      "optional": true
+    },
+    "valibot": {
       "optional": true
     },
     "ws": {
@@ -236,6 +240,7 @@
     "ts-unused-exports": "^11.0.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.49.0",
+    "valibot": "^1.2.0",
     "vitest": "^4.0.15",
     "vitest-fetch-mock": "^0.4.5",
     "vitest-puppeteer": "^11.0.3",

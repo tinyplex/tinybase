@@ -161,6 +161,11 @@
   </a>
 </div>
 <div>
+  <a href='/api/schematizer-valibot/functions/creation/createvalibotschematizer'>
+    <img width="48" src="/valibot.svg?asImg" /> Valibot
+  </a>
+</div>
+<div>
   <a href='/api/schematizer-zod/functions/creation/createzodschematizer'>
     <img width="48" src="/zod.svg?asImg" /> Zod
   </a>

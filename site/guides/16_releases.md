@@ -13,8 +13,9 @@ from popular validation libraries into TinyBase's schema format.
 ## Schematizers
 
 Schematizers provide a bridge between external schema validation libraries (like
-Zod) and TinyBase's TablesSchema and ValuesSchema formats. Instead of manually
-writing TinyBase schemas, you can now convert existing schemas at runtime:
+Zod, TypeBox, and Valibot) and TinyBase's TablesSchema and ValuesSchema formats.
+Instead of manually writing TinyBase schemas, you can now convert existing
+schemas at runtime:
 
 ```js
 import {createStore} from 'tinybase';
@@ -43,9 +44,10 @@ console.log(schematizedStore.getRow('pets', 'fido'));
 Schematizers perform best-effort conversions, extracting basic type information
 (string, number, boolean), defaults, and nullable settings from your schemas.
 
-This release includes support for Zod via the createZodSchematizer function and
-TypeBox via the createTypeBoxSchematizer function, with support for additional
-libraries planned for future releases.
+This release includes support for Zod via the createZodSchematizer function,
+TypeBox via the createTypeBoxSchematizer function, and Valibot via the
+createValibotSchematizer function, with support for additional libraries planned
+for future releases.
 
 For more information, see the Using Schematizers guide.
 

@@ -4,8 +4,8 @@ Schematizers provide a convenient way to convert schemas from popular validation
 libraries into TinyBase's TablesSchema and ValuesSchema formats.
 
 Instead of manually writing TinyBase schemas, you can use your existing schemas
-from libraries like Zod and TypeBox, and convert them at runtime using a
-schematizer.
+from libraries like Zod, TypeBox, and Valibot, and convert them at runtime using
+a schematizer.
 
 ## Using The Zod Schematizer
 
@@ -148,8 +148,8 @@ TinyBase's schema system. They perform best-effort conversions, allowing you to
 reuse existing schema definitions while benefiting from TinyBase's runtime
 validation and defaults.
 
-TinyBase currently provides schematizers for Zod and TypeBox, with support for
-additional libraries coming in future releases.
+TinyBase currently provides schematizers for Zod, TypeBox, and Valibot, with
+support for additional libraries coming in future releases.
 
 Now that you can define and convert schemas, let's learn how to save and load
 Store data. For that we proceed to the Persistence guides.
