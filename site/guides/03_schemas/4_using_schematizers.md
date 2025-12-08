@@ -5,7 +5,22 @@ libraries into TinyBase's TablesSchema and ValuesSchema formats.
 
 Instead of manually writing TinyBase schemas, you can use your existing schemas
 from libraries like Zod, TypeBox, and Valibot, and convert them at runtime using
-a schematizer.
+a schematizer. The full list of supported schema systems and their entry points
+is as follows:
+
+| Library                                            | Creation function        |
+| -------------------------------------------------- | ------------------------ |
+| [Zod](https://github.com/colinhacks/zod)           | createZodSchematizer     |
+| [TypeBox](https://github.com/sinclairzx81/typebox) | createTypeBoxSchematizer |
+| [Valibot](https://github.com/valibot/valibot)      | createValibotSchematizer |
+
+The createCustomSchematizer function also allows you to create your own
+schematizer that convert from any schema system not supported directly by
+TinyBase.
+
+The rest of this guide will cover the Zod schematizer, but the concepts are
+exactly the same for other schema systems. Take a look at the API documentation
+for the other schematizers for exact details.
 
 ## Using The Zod Schematizer
 
