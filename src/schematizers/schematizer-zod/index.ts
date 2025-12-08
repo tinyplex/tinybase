@@ -70,7 +70,6 @@ export const createZodSchematizer: typeof createZodSchematizerDecl = () => {
     const [schema, defaultValue, allowNull] = unwrapSchema(zodSchema);
     const type = schema?.type;
 
-    // Only accept basic TinyBase-supported types
     if (type !== STRING && type !== NUMBER && type !== BOOLEAN) {
       return undefined;
     }

@@ -1,5 +1,6 @@
 import * as AutomergeRepo from '@automerge/automerge-repo';
 import * as pglite from '@electric-sql/pglite';
+import * as typeBox from '@sinclair/typebox';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import initWasm from '@vlcn.io/crsqlite-wasm';
 import {transformSync} from 'esbuild';
@@ -28,6 +29,7 @@ import * as TinyBasePersisterBun from 'tinybase/persisters/persister-sqlite-bun'
 import * as TinyBasePersisterSqliteWasm from 'tinybase/persisters/persister-sqlite-wasm';
 import * as TinyBasePersisterSqlite3 from 'tinybase/persisters/persister-sqlite3';
 import * as TinyBasePersisterYjs from 'tinybase/persisters/persister-yjs';
+import * as TinyBaseSchematizersTypeBox from 'tinybase/schematizers/schematizer-typebox';
 import * as TinyBaseSchematizersZod from 'tinybase/schematizers/schematizer-zod';
 import * as TinyBaseSynchronizers from 'tinybase/synchronizers';
 import * as TinyBaseSynchronizerBroadcastChannel from 'tinybase/synchronizers/synchronizer-broadcast-channel';
@@ -67,11 +69,12 @@ const TinyBaseForTest = {
   '@automerge/automerge-repo-network-broadcastchannel': {
     BroadcastChannelNetworkAdapter,
   },
+  '@electric-sql/pglite': pglite,
+  '@sinclair/typebox': typeBox,
   '@sqlite.org/sqlite-wasm': sqlite3InitModule,
   '@vlcn.io/crsqlite-wasm': initWasm,
   fs,
   postgres,
-  '@electric-sql/pglite': pglite,
   react: React,
   'react-dom/client': ReactDOMClient,
   sqlite3,
@@ -103,6 +106,7 @@ const TinyBaseForTest = {
     TinyBaseSynchronizerWsServerSimple,
   'tinybase/synchronizers/synchronizer-broadcast-channel':
     TinyBaseSynchronizerBroadcastChannel,
+  'tinybase/schematizers/schematizer-typebox': TinyBaseSchematizersTypeBox,
   'tinybase/schematizers/schematizer-zod': TinyBaseSchematizersZod,
   'tinybase/ui-react-inspector': TinyBaseUiReactInspector,
   ws,

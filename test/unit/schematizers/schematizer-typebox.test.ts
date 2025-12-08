@@ -1,23 +1,23 @@
+import {Type} from '@sinclair/typebox';
 import {createStore} from 'tinybase';
-import {createZodSchematizer} from 'tinybase/schematizers/schematizer-zod';
+import {createTypeBoxSchematizer} from 'tinybase/schematizers/schematizer-typebox';
 import {beforeEach, describe, expect, test} from 'vitest';
-import {z} from 'zod';
 
-describe('Zod Schematizer', () => {
-  let schematizer: ReturnType<typeof createZodSchematizer>;
+describe('TypeBox Schematizer', () => {
+  let schematizer: ReturnType<typeof createTypeBoxSchematizer>;
 
   beforeEach(() => {
-    schematizer = createZodSchematizer();
+    schematizer = createTypeBoxSchematizer();
   });
 
   describe('toTablesSchema', () => {
-    test('converts basic Zod object schema', () => {
+    test('converts basic TypeBox object schema', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: z.object({
-            species: z.string(),
-            age: z.number(),
-            sold: z.boolean(),
+          pets: Type.Object({
+            species: Type.String(),
+            age: Type.Number(),
+            sold: Type.Boolean(),
           }),
         }),
       ).toEqual({
@@ -29,13 +29,13 @@ describe('Zod Schematizer', () => {
       });
     });
 
-    test('converts Zod schema with defaults', () => {
+    test('converts TypeBox schema with defaults', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: z.object({
-            species: z.string(),
-            sold: z.boolean().default(false),
-            price: z.number().default(0),
+          pets: Type.Object({
+            species: Type.String(),
+            sold: Type.Boolean({default: false}),
+            price: Type.Number({default: 0}),
           }),
         }),
       ).toEqual({
@@ -47,12 +47,12 @@ describe('Zod Schematizer', () => {
       });
     });
 
-    test('converts Zod schema with nullable fields', () => {
+    test('converts TypeBox schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: z.object({
-            species: z.string().nullable(),
-            age: z.number(),
+          pets: Type.Object({
+            species: Type.Union([Type.String(), Type.Null()]),
+            age: Type.Number(),
           }),
         }),
       ).toEqual({
@@ -63,12 +63,12 @@ describe('Zod Schematizer', () => {
       });
     });
 
-    test('converts Zod schema with optional fields', () => {
+    test('converts TypeBox schema with optional fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: z.object({
-            species: z.string(),
-            nickname: z.string().optional(),
+          pets: Type.Object({
+            species: Type.String(),
+            nickname: Type.Optional(Type.String()),
           }),
         }),
       ).toEqual({
@@ -82,12 +82,12 @@ describe('Zod Schematizer', () => {
     test('converts multiple tables', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: z.object({
-            species: z.string(),
+          pets: Type.Object({
+            species: Type.String(),
           }),
-          stores: z.object({
-            name: z.string(),
-            city: z.string(),
+          stores: Type.Object({
+            name: Type.String(),
+            city: Type.String(),
           }),
         }),
       ).toEqual({
@@ -101,13 +101,13 @@ describe('Zod Schematizer', () => {
       });
     });
 
-    test('ignores unsupported Zod types', () => {
+    test('ignores unsupported TypeBox types', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: z.object({
-            species: z.string(),
-            tags: z.array(z.string()),
-            metadata: z.record(z.string(), z.string()),
+          pets: Type.Object({
+            species: Type.String(),
+            tags: Type.Array(Type.String()),
+            metadata: Type.Record(Type.String(), Type.String()),
           }),
         }),
       ).toEqual({
@@ -118,28 +118,17 @@ describe('Zod Schematizer', () => {
     });
 
     test('works with TinyBase store', () => {
-      const zodSchemas = {
-        pets: z.object({
-          species: z.string(),
-          age: z.number(),
-          sold: z.boolean().default(false),
+      const tablesSchema = schematizer.toTablesSchema({
+        pets: Type.Object({
+          species: Type.String(),
+          age: Type.Number(),
+          sold: Type.Boolean({default: false}),
         }),
-      };
+      });
 
-      const tablesSchema = schematizer.toTablesSchema(zodSchemas);
       const store = createStore().setTablesSchema(tablesSchema);
-
-      expect(store.getTablesSchemaJson()).toEqual(
-        JSON.stringify({
-          pets: {
-            species: {type: 'string'},
-            age: {type: 'number'},
-            sold: {type: 'boolean', default: false},
-          },
-        }),
-      );
-
       store.setRow('pets', 'fido', {species: 'dog', age: 3});
+
       expect(store.getRow('pets', 'fido')).toEqual({
         species: 'dog',
         age: 3,
@@ -149,12 +138,12 @@ describe('Zod Schematizer', () => {
   });
 
   describe('toValuesSchema', () => {
-    test('converts basic Zod schemas', () => {
+    test('converts basic TypeBox schemas', () => {
       expect(
         schematizer.toValuesSchema({
-          theme: z.string(),
-          count: z.number(),
-          isOpen: z.boolean(),
+          theme: Type.String(),
+          count: Type.Number(),
+          isOpen: Type.Boolean(),
         }),
       ).toEqual({
         theme: {type: 'string'},
@@ -163,12 +152,12 @@ describe('Zod Schematizer', () => {
       });
     });
 
-    test('converts Zod schemas with defaults', () => {
+    test('converts TypeBox schemas with defaults', () => {
       expect(
         schematizer.toValuesSchema({
-          theme: z.string().default('light'),
-          count: z.number().default(0),
-          isOpen: z.boolean().default(true),
+          theme: Type.String({default: 'light'}),
+          count: Type.Number({default: 0}),
+          isOpen: Type.Boolean({default: true}),
         }),
       ).toEqual({
         theme: {type: 'string', default: 'light'},
@@ -178,12 +167,11 @@ describe('Zod Schematizer', () => {
     });
 
     test('works with TinyBase store', () => {
-      const zodSchemas = {
-        theme: z.string().default('light'),
-        count: z.number(),
-      };
+      const valuesSchema = schematizer.toValuesSchema({
+        theme: Type.String({default: 'light'}),
+        count: Type.Number(),
+      });
 
-      const valuesSchema = schematizer.toValuesSchema(zodSchemas);
       const store = createStore().setValuesSchema(valuesSchema);
 
       expect(store.getValuesSchemaJson()).toEqual(
@@ -194,10 +182,7 @@ describe('Zod Schematizer', () => {
       );
 
       store.setValue('count', 42);
-      expect(store.getValues()).toEqual({
-        theme: 'light',
-        count: 42,
-      });
+      expect(store.getValues()).toEqual({theme: 'light', count: 42});
     });
   });
 });

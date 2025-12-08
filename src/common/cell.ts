@@ -10,7 +10,7 @@ import {
   isTypeStringOrBoolean,
   isUndefined,
 } from './other.ts';
-import {BOOLEAN, NUMBER, STRING, getTypeOf} from './strings.ts';
+import {BOOLEAN, NULL, NUMBER, STRING, getTypeOf} from './strings.ts';
 
 export type CellOrValueType = 'string' | 'number' | 'boolean' | 'null';
 
@@ -18,7 +18,7 @@ export const getCellOrValueType = (
   cellOrValue: any,
 ): CellOrValueType | undefined => {
   if (isNull(cellOrValue)) {
-    return 'null';
+    return NULL;
   }
   const type = getTypeOf(cellOrValue);
   return isTypeStringOrBoolean(type) ||

@@ -1,5 +1,2 @@
 /// schematizer-zod
-export type {
-  ZodSchematizer,
-  createZodSchematizer,
-} from '../../schematizer-zod/index.d.ts';
+export type {ZodSchematizer, createZodSchematizer} from '../index.d.ts';

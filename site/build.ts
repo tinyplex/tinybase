@@ -262,6 +262,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/persisters/persister-sqlite-bun/index.d.ts')
     .addApiFile('dist/@types/persisters/persister-yjs/index.d.ts')
     .addApiFile('dist/@types/schematizers/index.d.ts')
+    .addApiFile('dist/@types/schematizers/schematizer-typebox/index.d.ts')
     .addApiFile('dist/@types/schematizers/schematizer-zod/index.d.ts')
     .addApiFile('dist/@types/synchronizers/index.d.ts')
     .addApiFile('dist/@types/synchronizers/synchronizer-local/index.d.ts')
