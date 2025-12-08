@@ -164,14 +164,23 @@ export const createRelationships = getCreateFunction(
           change();
 
           collForEach(changedLocalRows, (localRowId) =>
-            callListeners(remoteRowIdListeners, [relationshipId, localRowId]),
+            callListeners(false, remoteRowIdListeners, [
+              relationshipId,
+              localRowId,
+            ]),
           );
           collForEach(changedRemoteRows, (remoteRowId) =>
-            callListeners(localRowIdsListeners, [relationshipId, remoteRowId]),
+            callListeners(false, localRowIdsListeners, [
+              relationshipId,
+              remoteRowId,
+            ]),
           );
           collForEach(changedLinkedRows, (firstRowId) => {
             delLinkedRowIdsCache(relationshipId, firstRowId);
-            callListeners(linkedRowIdsListeners, [relationshipId, firstRowId]);
+            callListeners(false, linkedRowIdsListeners, [
+              relationshipId,
+              firstRowId,
+            ]);
           });
         },
         getRowCellFunction(getRemoteRowId),
@@ -219,14 +228,17 @@ export const createRelationships = getCreateFunction(
       localRowId: IdOrNull,
       listener: RemoteRowIdListener,
     ): Id =>
-      addListener(listener, remoteRowIdListeners, [relationshipId, localRowId]);
+      addListener(false, listener, remoteRowIdListeners, [
+        relationshipId,
+        localRowId,
+      ]);
 
     const addLocalRowIdsListener = (
       relationshipId: IdOrNull,
       remoteRowId: IdOrNull,
       listener: LocalRowIdsListener,
     ): Id =>
-      addListener(listener, localRowIdsListeners, [
+      addListener(false, listener, localRowIdsListeners, [
         relationshipId,
         remoteRowId,
       ]);
@@ -237,7 +249,7 @@ export const createRelationships = getCreateFunction(
       listener: LinkedRowIdsListener,
     ): Id => {
       getLinkedRowIdsCache(relationshipId, firstRowId);
-      return addListener(listener, linkedRowIdsListeners, [
+      return addListener(false, listener, linkedRowIdsListeners, [
         relationshipId,
         firstRowId,
       ]);

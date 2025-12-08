@@ -149,7 +149,7 @@ export const createCustomPersister = <
   const setStatus = (newStatus: StatusValues): void => {
     if (newStatus != status) {
       status = newStatus;
-      callListeners(statusListeners, undefined, status);
+      callListeners(false, statusListeners, undefined, status);
     }
   };
 
@@ -332,7 +332,7 @@ export const createCustomPersister = <
   const getStatus = (): StatusValues => status;
 
   const addStatusListener = (listener: StatusListener): Id =>
-    addListener(listener, statusListeners);
+    addListener(false, listener, statusListeners);
 
   const delListener = (listenerId: Id): Store => {
     delListenerImpl(listenerId);

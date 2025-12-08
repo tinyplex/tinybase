@@ -96,7 +96,7 @@ export const createCheckpoints = getCreateFunction(
     const clearCheckpointId = (checkpointId: Id): void => {
       mapSet(deltas, checkpointId);
       mapSet(labels, checkpointId);
-      callListeners(checkpointListeners, [checkpointId]);
+      callListeners(false, checkpointListeners, [checkpointId]);
     };
 
     const clearCheckpointIds = (checkpointIds: Ids, to?: number): void =>
@@ -157,7 +157,7 @@ export const createCheckpoints = getCreateFunction(
 
     const callListenersIfChanged = (): void => {
       if (checkpointsChanged) {
-        callListeners(checkpointIdsListeners);
+        callListeners(false, checkpointIdsListeners);
         checkpointsChanged = 0;
       }
     };
@@ -180,7 +180,7 @@ export const createCheckpoints = getCreateFunction(
         mapGet(labels, checkpointId) !== label
       ) {
         mapSet(labels, checkpointId, label);
-        callListeners(checkpointListeners, [checkpointId]);
+        callListeners(false, checkpointListeners, [checkpointId]);
       }
       return checkpoints;
     };
@@ -227,12 +227,12 @@ export const createCheckpoints = getCreateFunction(
     };
 
     const addCheckpointIdsListener = (listener: CheckpointIdsListener): Id =>
-      addListener(listener, checkpointIdsListeners);
+      addListener(false, listener, checkpointIdsListeners);
 
     const addCheckpointListener = (
       checkpointId: IdOrNull,
       listener: CheckpointListener,
-    ): Id => addListener(listener, checkpointListeners, [checkpointId]);
+    ): Id => addListener(false, listener, checkpointListeners, [checkpointId]);
 
     const delListener = (listenerId: Id): Checkpoints => {
       delListenerImpl(listenerId);
@@ -254,7 +254,7 @@ export const createCheckpoints = getCreateFunction(
     const clearForward = (): Checkpoints => {
       if (!arrayIsEmpty(forwardIds)) {
         clearCheckpointIds(forwardIds);
-        callListeners(checkpointIdsListeners);
+        callListeners(false, checkpointIdsListeners);
       }
       return checkpoints;
     };

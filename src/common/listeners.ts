@@ -68,6 +68,7 @@ export type ListenerArgument = IdOrNull | boolean | number | undefined;
 export type PathGetters = ((...ids: Ids) => Ids)[];
 export type ExtraArgsGetter = (ids: Ids) => any[];
 export type AddListener = (
+  isInternal: boolean,
   listener: Listener,
   idSetNode: IdSetNode,
   path?: ListenerArgument[],
@@ -75,6 +76,7 @@ export type AddListener = (
   extraArgsGetter?: ExtraArgsGetter,
 ) => Id;
 export type CallListeners = (
+  isInternal: boolean,
   idSetNode: IdSetNode,
   ids?: Ids,
   ...extra: any[]
@@ -159,8 +161,10 @@ export const getListenerFunctions = (
   const allListeners: IdMap<
     [Listener, IdSetNode, ListenerArgument[], PathGetters, ExtraArgsGetter]
   > = mapNew();
+  const internalListenerIds: IdSet = setNew();
 
   const addListener = (
+    isInternal: boolean,
     listener: Listener,
     idSetNode: IdSetNode,
     path?: ListenerArgument[],
@@ -184,22 +188,29 @@ export const getListenerFunctions = (
       ),
       id,
     ) as IdSet;
+    if (isInternal) {
+      internalListenerIds.add(id);
+    }
     return id;
   };
 
   const callListeners = (
+    isInternal: boolean,
     idSetNode: IdSetNode,
     ids?: Ids,
     ...extraArgs: any[]
   ): void =>
     arrayForEach(getWildcardedLeaves(idSetNode, ids), (set) =>
-      collForEach(set, (id: Id) =>
+      collForEach(set, (id: Id) => {
+        if (internalListenerIds.has(id) !== isInternal) {
+          return;
+        }
         (mapGet(allListeners, id) as any)[0](
           thing,
           ...(ids ?? []),
           ...extraArgs,
-        ),
-      ),
+        );
+      }),
     );
 
   const delListener = (id: Id): Ids =>
@@ -215,6 +226,7 @@ export const getListenerFunctions = (
       );
       mapSet(allListeners, id);
       releaseId(id);
+      internalListenerIds.delete(id);
       return idOrNulls;
     }) as Ids;
 

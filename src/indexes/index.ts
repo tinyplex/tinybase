@@ -204,10 +204,10 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
         }
 
         if (sliceIdsChanged) {
-          callListeners(sliceIdsListeners, [indexId]);
+          callListeners(false, sliceIdsListeners, [indexId]);
         }
         collForEach(changedSlices, (sliceId) =>
-          callListeners(sliceRowIdsListeners, [indexId, sliceId]),
+          callListeners(false, sliceRowIdsListeners, [indexId, sliceId]),
         );
       },
       getRowCellFunction(getSliceIdOrIds),
@@ -256,13 +256,14 @@ export const createIndexes = getCreateFunction((store: Store): Indexes => {
   const addSliceIdsListener = (
     indexId: IdOrNull,
     listener: SliceIdsListener,
-  ): Id => addListener(listener, sliceIdsListeners, [indexId]);
+  ): Id => addListener(false, listener, sliceIdsListeners, [indexId]);
 
   const addSliceRowIdsListener = (
     indexId: IdOrNull,
     sliceId: IdOrNull,
     listener: SliceRowIdsListener,
-  ): Id => addListener(listener, sliceRowIdsListeners, [indexId, sliceId]);
+  ): Id =>
+    addListener(false, listener, sliceRowIdsListeners, [indexId, sliceId]);
 
   const delListener = (listenerId: Id): Indexes => {
     delListenerImpl(listenerId);

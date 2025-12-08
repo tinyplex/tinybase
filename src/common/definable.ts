@@ -124,7 +124,7 @@ export const getDefinableFunctions = <Thing, RowValue>(
       mapSet(things, id, getDefaultThing());
       mapSet(allRowValues, id, mapNew());
       mapSet(allSortKeys, id, mapNew());
-      callListeners(thingIdListeners);
+      callListeners(true, thingIdListeners);
     }
   };
 
@@ -206,10 +206,15 @@ export const getDefinableFunctions = <Thing, RowValue>(
     addStoreListeners(
       id,
       0,
-      store.addRowListener(tableId, null, (_store, _tableId, rowId) =>
-        processRow(rowId),
+      store.addRowListener.call(
+        {isInternal: true},
+        tableId,
+        null,
+        (_store, _tableId, rowId) => processRow(rowId),
       ),
-      store.addTableListener(tableId, () => processTable()),
+      store.addTableListener.call({isInternal: true}, tableId, () =>
+        processTable(),
+      ),
     );
   };
 
@@ -219,11 +224,11 @@ export const getDefinableFunctions = <Thing, RowValue>(
     mapSet(allRowValues, id);
     mapSet(allSortKeys, id);
     delStoreListeners(id);
-    callListeners(thingIdListeners);
+    callListeners(false, thingIdListeners);
   };
 
   const addThingIdsListener = (listener: () => void) =>
-    addListener(listener, thingIdListeners);
+    addListener(false, listener, thingIdListeners);
 
   const destroy = (): void => mapForEach(storeListenerIds, delDefinition);
 

@@ -192,11 +192,11 @@ export const createWsServer = (<
         );
 
         if (collIsEmpty(clients)) {
-          callListeners(pathIdListeners, undefined, pathId, 1);
+          callListeners(false, pathIdListeners, undefined, pathId, 1);
           await configureServerClient(serverClient, pathId, clients);
         }
         mapSet(clients, clientId, client);
-        callListeners(clientIdListeners, [pathId], clientId, 1);
+        callListeners(false, clientIdListeners, [pathId], clientId, 1);
 
         client.on(MESSAGE, (data) => {
           const payload = data.toString(UTF8);
@@ -215,12 +215,12 @@ export const createWsServer = (<
 
         client.on('close', async () => {
           collDel(clients, clientId);
-          callListeners(clientIdListeners, [pathId], clientId, -1);
+          callListeners(false, clientIdListeners, [pathId], clientId, -1);
           if (collIsEmpty(clients)) {
             await stopServerClient(serverClient);
             collDel(serverClientsByPath, pathId);
             collDel(clientsByPath, pathId);
-            callListeners(pathIdListeners, undefined, pathId, -1);
+            callListeners(false, pathIdListeners, undefined, pathId, -1);
           }
         });
 
@@ -243,12 +243,12 @@ export const createWsServer = (<
     mapKeys(mapGet(clientsByPath, pathId));
 
   const addPathIdsListener = (listener: PathIdsListener) =>
-    addListener(listener, pathIdListeners);
+    addListener(false, listener, pathIdListeners);
 
   const addClientIdsListener = (
     pathId: IdOrNull,
     listener: ClientIdsListener,
-  ) => addListener(listener, clientIdListeners, [pathId]);
+  ) => addListener(false, listener, clientIdListeners, [pathId]);
 
   const delListener = (listenerId: Id): WsServer => {
     delListenerImpl(listenerId);

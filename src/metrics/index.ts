@@ -116,7 +116,13 @@ export const createMetrics = getCreateFunction((store: Store): Metrics => {
 
         if (newMetric != oldMetric) {
           setMetric(metricId, newMetric);
-          callListeners(metricListeners, [metricId], newMetric, oldMetric);
+          callListeners(
+            false,
+            metricListeners,
+            [metricId],
+            newMetric,
+            oldMetric,
+          );
         }
       },
       getRowCellFunction(getNumber, 1),
@@ -132,7 +138,7 @@ export const createMetrics = getCreateFunction((store: Store): Metrics => {
   const addMetricListener = (
     metricId: IdOrNull,
     listener: MetricListener,
-  ): Id => addListener(listener, metricListeners, [metricId]);
+  ): Id => addListener(false, listener, metricListeners, [metricId]);
 
   const delListener = (listenerId: Id): Metrics => {
     delListenerImpl(listenerId);
