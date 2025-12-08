@@ -9,3 +9,13 @@ export interface Schematizer {
   /// Schematizer.toValuesSchema
   toValuesSchema(schemas: any): ValuesSchema;
 }
+
+/// createCustomSchematizer
+export function createCustomSchematizer(
+  unwrapSchema: (
+    schema: any,
+    defaultValue?: any,
+    allowNull?: boolean,
+  ) => [any, any, boolean],
+  getProperties: (schema: any) => any | undefined,
+): Schematizer;

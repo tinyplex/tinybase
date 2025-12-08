@@ -39,3 +39,53 @@
  * @since v7.1.0
  */
 /// Schematizer.toValuesSchema
+
+/**
+ * The createCustomSchematizer function creates a custom Schematizer that can
+ * convert schemas from any validation library into TinyBase schemas.
+ *
+ * This function allows you to build schematizers for validation libraries not
+ * natively supported by TinyBase. You provide two functions: one to unwrap
+ * optional/nullable/default wrappers from your library's schemas, and one to
+ * extract object properties.
+ * @param unwrapSchema - A function that unwraps a schema to extract the base
+ * type, default value, and nullable flag. It should recursively unwrap
+ * optional/nullable wrappers and return a tuple of [schema, defaultValue,
+ * allowNull].
+ * @param getProperties - A function that extracts the properties/entries/shape
+ * from an object schema. Returns undefined if the schema is not an object.
+ * @returns A new Schematizer instance.
+ * @example
+ * This example creates a custom schematizer for a hypothetical validation
+ * library.
+ *
+ * ```js
+ * import {createCustomSchematizer} from 'tinybase/schematizers';
+ *
+ * // Hypothetical library has schemas like:
+ * // {type: 'string'}, {type: 'optional', inner: ...}, etc.
+ *
+ * const unwrapSchema = (schema, defaultValue, allowNull) => {
+ *   if (schema.type === 'optional') {
+ *     return unwrapSchema(schema.inner, defaultValue, allowNull);
+ *   }
+ *   if (schema.type === 'nullable') {
+ *     return unwrapSchema(schema.inner, defaultValue, true);
+ *   }
+ *   return [schema, defaultValue ?? schema.default, allowNull ?? false];
+ * };
+ *
+ * const getProperties = (schema) => schema.fields;
+ *
+ * const schematizer = createCustomSchematizer(unwrapSchema, getProperties);
+ *
+ * const tablesSchema = schematizer.toTablesSchema({
+ *   pets: {type: 'object', fields: {name: {type: 'string'}}},
+ * });
+ * console.log(tablesSchema);
+ * // -> {pets: {name: {type: 'string'}}}
+ * ```
+ * @category Creation
+ * @since v7.1.0
+ */
+/// createCustomSchematizer

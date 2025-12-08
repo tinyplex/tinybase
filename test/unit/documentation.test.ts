@@ -29,6 +29,7 @@ import * as TinyBasePersisterBun from 'tinybase/persisters/persister-sqlite-bun'
 import * as TinyBasePersisterSqliteWasm from 'tinybase/persisters/persister-sqlite-wasm';
 import * as TinyBasePersisterSqlite3 from 'tinybase/persisters/persister-sqlite3';
 import * as TinyBasePersisterYjs from 'tinybase/persisters/persister-yjs';
+import * as TinyBaseSchematizers from 'tinybase/schematizers';
 import * as TinyBaseSchematizersTypeBox from 'tinybase/schematizers/schematizer-typebox';
 import * as TinyBaseSchematizersValibot from 'tinybase/schematizers/schematizer-valibot';
 import * as TinyBaseSchematizersZod from 'tinybase/schematizers/schematizer-zod';
@@ -41,8 +42,8 @@ import * as TinyBaseSynchronizerWsServerSimple from 'tinybase/synchronizers/sync
 import * as TinyBaseUiReact from 'tinybase/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
 import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
-import {beforeAll, describe, expect, test} from 'vitest';
 import * as valibot from 'valibot';
+import {beforeAll, describe, expect, test} from 'vitest';
 import * as ws from 'ws';
 import * as yjs from 'yjs';
 import * as zod from 'zod';
@@ -108,6 +109,7 @@ const TinyBaseForTest = {
     TinyBaseSynchronizerWsServerSimple,
   'tinybase/synchronizers/synchronizer-broadcast-channel':
     TinyBaseSynchronizerBroadcastChannel,
+  'tinybase/schematizers': TinyBaseSchematizers,
   'tinybase/schematizers/schematizer-typebox': TinyBaseSchematizersTypeBox,
   'tinybase/schematizers/schematizer-valibot': TinyBaseSchematizersValibot,
   'tinybase/schematizers/schematizer-zod': TinyBaseSchematizersZod,
