@@ -155,6 +155,16 @@
     <img width="48" src="/automerge.svg?asImg" /> Automerge
   </a>
 </div>
+<div>
+  <a href='/api/schematizer-typebox/functions/creation/createtypeboxschematizer'>
+    <img width="48" src="/typebox.svg?asImg" /> TypeBox
+  </a>
+</div>
+<div>
+  <a href='/api/schematizer-zod/functions/creation/createzodschematizer'>
+    <img width="48" src="/zod.svg?asImg" /> Zod
+  </a>
+</div>
 <p>
   (Baffled by all these logos? Check out our 
   <a href='/guides/the-basics/architectural-options'>architectural 
