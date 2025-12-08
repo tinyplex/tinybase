@@ -23,9 +23,9 @@
 > TinyBase lets you [listen to changes](#register-granular-listeners) made to
 > any part of your data. This means your app will be fast, since you only spend
 > rendering cycles on things that change. The optional [bindings to
-> React](#call-hooks-to-bind-to-data) and
-> [pre-built components](#pre-built-reactive-components) let you easily build
-> fully reactive UIs on top of TinyBase. You even get a built-in [undo
+> React](#call-hooks-to-bind-to-data) and [pre-built
+> components](#pre-built-reactive-components) let you easily build fully
+> reactive UIs on top of TinyBase. You even get a built-in [undo
 > stack](#set-checkpoints-for-an-undo-stack), and [developer
 > tools](#an-inspector-for-your-data)!
 
@@ -181,39 +181,39 @@
 
 <section id="follow">
 
-  <a href='@@EVAL("metadata.repository")' target='_blank'>
-    <img src="https://img.shields.io/github/stars/tinyplex/tinybase?style=for-the-badge&logo=GitHub&logoColor=%23fff&label=GitHub&labelColor=%23d81b60&color=%23333">
-  </a>
+<a href='@@EVAL("metadata.repository")' target='_blank'> <img
+    src="https://img.shields.io/github/stars/tinyplex/tinybase?style=for-the-badge&logo=GitHub&logoColor=%23fff&label=GitHub&labelColor=%23d81b60&color=%23333">
+</a>
 
-  <a href='https://bsky.app/profile/tinybase.bsky.social'>
-    <img src="https://img.shields.io/badge/Bluesky-Follow-blue?style=for-the-badge&logo=bluesky&logoColor=%23fff&color=%23333&labelColor=%230285FF" />
-  </a>
-  
-  <a href='https://x.com/tinybasejs' target='_blank'>
-    <img src="https://img.shields.io/badge/%2F%20Twitter-Follow-blue?style=for-the-badge&logo=x&logoColor=%23fff&color=%23333&labelColor=%23000" />
-  </a>
+<a href='https://bsky.app/profile/tinybase.bsky.social'> <img
+    src="https://img.shields.io/badge/Bluesky-Follow-blue?style=for-the-badge&logo=bluesky&logoColor=%23fff&color=%23333&labelColor=%230285FF"
+  /> </a>
 
-  <a href='https://discord.com/invite/mGz3mevwP8' target='_blank'>
-    <img src="https://img.shields.io/discord/1027918215323590676?style=for-the-badge&logo=discord&logoColor=%23fff&label=Discord&labelColor=%233131e8&color=%23333" />
-  </a>
+<a href='https://x.com/tinybasejs' target='_blank'> <img
+    src="https://img.shields.io/badge/%2F%20Twitter-Follow-blue?style=for-the-badge&logo=x&logoColor=%23fff&color=%23333&labelColor=%23000"
+  /> </a>
+
+<a href='https://discord.com/invite/mGz3mevwP8' target='_blank'> <img
+    src="https://img.shields.io/discord/1027918215323590676?style=for-the-badge&logo=discord&logoColor=%23fff&label=Discord&labelColor=%233131e8&color=%23333"
+  /> </a>
 
   <br />
 
-  <a href='@@EVAL("metadata.repository")/discussions' target='_blank'>
-    <img src="https://img.shields.io/github/discussions/tinyplex/tinybase?style=for-the-badge&logo=GitHub&logoColor=%23fff&label=Ideas&labelColor=%23d81b60&color=%23333">
-  </a>
+<a href='@@EVAL("metadata.repository")/discussions' target='_blank'> <img
+    src="https://img.shields.io/github/discussions/tinyplex/tinybase?style=for-the-badge&logo=GitHub&logoColor=%23fff&label=Ideas&labelColor=%23d81b60&color=%23333">
+</a>
 
-  <a href='@@EVAL("metadata.repository")/issues' target='_blank'>
-    <img src="https://img.shields.io/github/issues/tinyplex/tinybase?style=for-the-badge&logo=GitHub&logoColor=%23fff&label=Issues&labelColor=%23d81b60&color=%23333">
-  </a>
+<a href='@@EVAL("metadata.repository")/issues' target='_blank'> <img
+    src="https://img.shields.io/github/issues/tinyplex/tinybase?style=for-the-badge&logo=GitHub&logoColor=%23fff&label=Issues&labelColor=%23d81b60&color=%23333">
+</a>
 
-  <a href='#well-tested-and-documented'>
-    <img src="https://img.shields.io/badge/Tests-100%25-green?style=for-the-badge&logo=Vitest&logoColor=%23fff&color=%23333&labelColor=%2387c305" />
-  </a>
+<a href='#well-tested-and-documented'> <img
+    src="https://img.shields.io/badge/Tests-100%25-green?style=for-the-badge&logo=Vitest&logoColor=%23fff&color=%23333&labelColor=%2387c305"
+  /> </a>
 
-  <a href='@@EVAL("metadata.package")' target='_blank'>
-    <img src="https://img.shields.io/npm/v/tinybase?style=for-the-badge&logo=npm&logoColor=%23fff&labelColor=%23bd0005&color=%23333" />
-  </a>
+<a href='@@EVAL("metadata.package")' target='_blank'> <img
+    src="https://img.shields.io/npm/v/tinybase?style=for-the-badge&logo=npm&logoColor=%23fff&labelColor=%23bd0005&color=%23333"
+  /> </a>
 
 </section>
 
@@ -240,9 +240,9 @@ console.log(store.getValues());
 
 > ## Level up to use tabular data.
 >
-> For other types of data applications, a tabular data structure is more
-> useful. TinyBase lets you set and get nested Table, Row, or Cell data, by
-> unique Id - and in the same Store as the keyed values!
+> For other types of data applications, a tabular data structure is more useful.
+> TinyBase lets you set and get nested Table, Row, or Cell data, by unique Id -
+> and in the same Store as the keyed values!
 >
 > Read more about setting and changing data in The Basics guide.
 
@@ -338,14 +338,13 @@ root.unmount(); // !act
 
 > ## Apply schemas to tables & values.
 >
-> By default, a Store can contain any arbitrary Value, and a Row can contain any
-> arbitrary Cell. But you can add a ValuesSchema or a TablesSchema to a Store to
-> ensure that the values are always what you expect: constraining their types,
-> and providing defaults. There are even TypeScript definitions that infer API
-> types from the data schemas you apply.
+> Want clean data? You can add a ValuesSchema or a TablesSchema to a Store to
+> ensure that they are always what you expect by constraining types, and
+> providing defaults. There are even TypeScript definitions that infer API types
+> from the data schemas you apply.
 >
-> In this example, we set a new Row without the `sold` Cell in it. The schema
-> ensures it's present with default of `false`.
+> And our 'schematizer' modules let you convert schemas from libraries like Zod,
+> TypeBox, and Valibot into TinyBase at runtime.
 >
 > Read more about schemas in the Schemas guide.
 
@@ -644,9 +643,9 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 > ## Did we say tiny?
 >
 > If you use the basic store module alone, you'll only add a gzipped
-> _@@EVAL("toKb(modulesSizes.get('store').get('gz'))")_ to your app. Incrementally add the
-> other modules as you need more functionality, or get it all for
-> _@@EVAL("toKb(modulesSizes.get('').get('gz'))")_.
+> _@@EVAL("toKb(modulesSizes.get('store').get('gz'))")_ to your app.
+> Incrementally add the other modules as you need more functionality, or get it
+> all for _@@EVAL("toKb(modulesSizes.get('').get('gz'))")_.
 >
 > The optional ui-react module is just
 > _@@EVAL("toKb(modulesSizes.get('ui-react').get('gz'))")_, the ui-react-dom
