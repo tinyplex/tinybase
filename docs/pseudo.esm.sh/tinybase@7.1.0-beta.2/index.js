@@ -8,6 +8,7 @@ var FUNCTION = getTypeOf(getTypeOf);
 var TYPE = "type";
 var DEFAULT = "default";
 var ALLOW_NULL = "allowNull";
+var NULL = "null";
 var SUM = "sum";
 var AVG = "avg";
 var MIN = "min";
@@ -87,7 +88,7 @@ var arrayUnshift = (array, ...values) => array.unshift(...values);
 var arrayShift = (array) => array.shift();
 var getCellOrValueType = (cellOrValue) => {
   if (isNull(cellOrValue)) {
-    return "null";
+    return NULL;
   }
   const type = getTypeOf(cellOrValue);
   return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;

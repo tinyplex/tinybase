@@ -395,6 +395,7 @@ var FUNCTION2 = getTypeOf2(getTypeOf2);
 var TYPE = "type";
 var DEFAULT = "default";
 var ALLOW_NULL = "allowNull";
+var NULL = "null";
 var LISTENER2 = "Listener";
 var RESULT2 = "Result";
 var GET2 = "get";
@@ -921,7 +922,7 @@ var createStoragePersister = (store, storageName, storage, onIgnoredError) => {
 var createSessionPersister = (store, storageName, onIgnoredError) => createStoragePersister(store, storageName, sessionStorage, onIgnoredError);
 var getCellOrValueType = (cellOrValue) => {
   if (isNull(cellOrValue)) {
-    return "null";
+    return NULL;
   }
   const type = getTypeOf2(cellOrValue);
   return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;

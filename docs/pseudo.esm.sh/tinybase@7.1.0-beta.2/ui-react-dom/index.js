@@ -231,6 +231,7 @@ var STRING2 = getTypeOf2(EMPTY_STRING2);
 var BOOLEAN = getTypeOf2(true);
 var NUMBER = getTypeOf2(0);
 var FUNCTION2 = getTypeOf2(getTypeOf2);
+var NULL = "null";
 var LISTENER2 = "Listener";
 var RESULT2 = "Result";
 var GET2 = "get";
@@ -513,7 +514,7 @@ var useResultSortedRowIds = (queryId, cellId, descending, offset = 0, limit, que
 );
 var getCellOrValueType = (cellOrValue) => {
   if (isNull(cellOrValue)) {
-    return "null";
+    return NULL;
   }
   const type = getTypeOf2(cellOrValue);
   return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;
