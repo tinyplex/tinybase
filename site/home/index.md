@@ -182,7 +182,7 @@
 </div>
 <div>
   <a href='/api/schematizer-effect/functions/creation/createeffectschematizer'>
-    <img width="48" src="/effect.svg?asImg" /> Effect Schema
+    <img width="48" src="/effect.svg?asImg" /> Effect
   </a>
 </div>
 <p>
@@ -687,11 +687,13 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 ---
 
 <section id="sponsors">
-<h2>Proud to be sponsored by:</h2>
-@@EVAL("getGitHubAvatar('cpojer')")
+<h2>Proud to be supported by:</h2>
+@@EVAL("getGitHubAvatar('fastrepl')")
 @@EVAL("getGitHubAvatar('expo')")
-@@EVAL("getGitHubAvatar('beekeeb')")
+@@EVAL("getGitHubAvatar('ComputelessComputer')")
 @@EVAL("getGitHubAvatar('cancelself')")
+@@EVAL("getGitHubAvatar('cpojer')")
+@@EVAL("getGitHubAvatar('beekeeb')")
 @@EVAL("getGitHubAvatar('WonderPanda')")
 @@EVAL("getGitHubAvatar('arpitBhalla')")
 </section>
