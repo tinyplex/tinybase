@@ -34,6 +34,7 @@ import * as TinyBaseSchematizers from 'tinybase/schematizers';
 import * as TinyBaseSchematizersArkType from 'tinybase/schematizers/schematizer-arktype';
 import * as TinyBaseSchematizersTypeBox from 'tinybase/schematizers/schematizer-typebox';
 import * as TinyBaseSchematizersValibot from 'tinybase/schematizers/schematizer-valibot';
+import * as TinyBaseSchematizersYup from 'tinybase/schematizers/schematizer-yup';
 import * as TinyBaseSchematizersZod from 'tinybase/schematizers/schematizer-zod';
 import * as TinyBaseSynchronizers from 'tinybase/synchronizers';
 import * as TinyBaseSynchronizerBroadcastChannel from 'tinybase/synchronizers/synchronizer-broadcast-channel';
@@ -48,6 +49,7 @@ import * as valibot from 'valibot';
 import {beforeAll, describe, expect, test} from 'vitest';
 import * as ws from 'ws';
 import * as yjs from 'yjs';
+import * as yup from 'yup';
 import * as zod from 'zod';
 import {AutomergeTestNetworkAdapter as BroadcastChannelNetworkAdapter} from './common/automerge-adaptor.ts';
 import {getTimeFunctions} from './common/mergeable.ts';
@@ -116,11 +118,13 @@ const TinyBaseForTest = {
   'tinybase/schematizers/schematizer-arktype': TinyBaseSchematizersArkType,
   'tinybase/schematizers/schematizer-typebox': TinyBaseSchematizersTypeBox,
   'tinybase/schematizers/schematizer-valibot': TinyBaseSchematizersValibot,
+  'tinybase/schematizers/schematizer-yup': TinyBaseSchematizersYup,
   'tinybase/schematizers/schematizer-zod': TinyBaseSchematizersZod,
   'tinybase/ui-react-inspector': TinyBaseUiReactInspector,
   valibot,
   ws,
   yjs,
+  yup,
   zod,
 };
 

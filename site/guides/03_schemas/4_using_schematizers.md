@@ -14,6 +14,7 @@ is as follows:
 | [TypeBox](https://github.com/sinclairzx81/typebox) | createTypeBoxSchematizer |
 | [Valibot](https://github.com/valibot/valibot)      | createValibotSchematizer |
 | [ArkType](https://github.com/arktypeio/arktype)    | createArkTypeSchematizer |
+| [Yup](https://github.com/jquense/yup)              | createYupSchematizer     |
 
 The createCustomSchematizer function also allows you to create your own
 schematizer that convert from any schema system not supported directly by

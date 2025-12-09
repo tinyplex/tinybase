@@ -265,6 +265,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/schematizers/schematizer-arktype/index.d.ts')
     .addApiFile('dist/@types/schematizers/schematizer-typebox/index.d.ts')
     .addApiFile('dist/@types/schematizers/schematizer-valibot/index.d.ts')
+    .addApiFile('dist/@types/schematizers/schematizer-yup/index.d.ts')
     .addApiFile('dist/@types/schematizers/schematizer-zod/index.d.ts')
     .addApiFile('dist/@types/synchronizers/index.d.ts')
     .addApiFile('dist/@types/synchronizers/synchronizer-local/index.d.ts')

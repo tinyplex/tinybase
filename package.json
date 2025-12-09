@@ -254,6 +254,7 @@
     "wa-sqlite": "github:rhashimoto/wa-sqlite",
     "ws": "^8.18.3",
     "yjs": "^13.6.27",
+    "yup": "^1.7.1",
     "zod": "^4.1.13"
   }
 }

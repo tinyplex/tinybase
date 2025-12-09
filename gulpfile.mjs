@@ -49,6 +49,7 @@ const ALL_MODULES = [
   'schematizers/schematizer-arktype',
   'schematizers/schematizer-typebox',
   'schematizers/schematizer-valibot',
+  'schematizers/schematizer-yup',
   'schematizers/schematizer-zod',
   'store',
   'synchronizers',
