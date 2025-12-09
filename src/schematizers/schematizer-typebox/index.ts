@@ -1,9 +1,7 @@
 import type {createTypeBoxSchematizer as createTypeBoxSchematizerDecl} from '../../@types/schematizers/schematizer-typebox/index.d.ts';
 import {arrayFind} from '../../common/array.ts';
-import {DEFAULT, NULL} from '../../common/strings.ts';
+import {ANY_OF, DEFAULT, NULL} from '../../common/strings.ts';
 import {createCustomSchematizer} from '../index.ts';
-
-const ANY_OF = 'anyOf';
 
 const unwrapSchema = (
   schema: any,

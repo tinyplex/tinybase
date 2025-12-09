@@ -1,10 +1,6 @@
 import type {createValibotSchematizer as createValibotSchematizerDecl} from '../../@types/schematizers/schematizer-valibot/index.d.ts';
+import {FALLBACK, NULLABLE, OPTIONAL, WRAPPED} from '../../common/strings.ts';
 import {createCustomSchematizer} from '../index.ts';
-
-const OPTIONAL = 'optional';
-const NULLABLE = 'nullable';
-const FALLBACK = 'fallback';
-const WRAPPED = 'wrapped';
 
 const unwrapSchema = (
   schema: any,

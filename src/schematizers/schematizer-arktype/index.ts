@@ -2,14 +2,18 @@ import type {createArkTypeSchematizer as createArkTypeSchematizerDecl} from '../
 import {arrayEvery, arrayFind, arrayForEach} from '../../common/array.ts';
 import {objIsEmpty, objNew} from '../../common/obj.ts';
 import {isArray, isNull, isUndefined, size} from '../../common/other.ts';
-import {BOOLEAN, DEFAULT, TYPE, _VALUE} from '../../common/strings.ts';
+import {
+  BOOLEAN,
+  DEFAULT,
+  DOMAIN,
+  KEY,
+  OPTIONAL,
+  REQUIRED,
+  TYPE,
+  UNIT,
+  _VALUE,
+} from '../../common/strings.ts';
 import {createCustomSchematizer} from '../index.ts';
-
-const DOMAIN = 'domain';
-const REQUIRED = 'required';
-const OPTIONAL = 'optional';
-const KEY = 'key';
-const UNIT = 'unit';
 
 const unwrapSchema = (
   schema: any,

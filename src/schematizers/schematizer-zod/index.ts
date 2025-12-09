@@ -1,9 +1,6 @@
 import type {createZodSchematizer as createZodSchematizerDecl} from '../../@types/schematizers/schematizer-zod/index.d.ts';
-import {DEFAULT} from '../../common/strings.ts';
+import {DEFAULT, NULLABLE, OPTIONAL} from '../../common/strings.ts';
 import {createCustomSchematizer} from '../index.ts';
-
-const OPTIONAL = 'optional';
-const NULLABLE = 'nullable';
 
 const unwrapSchema = (
   schema: any,

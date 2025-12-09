@@ -71,6 +71,16 @@ export const MESSAGE = 'message';
 export const ERROR = 'error';
 export const EXTRA = 'extra';
 
+export const ANY_OF = 'anyOf';
+export const DOMAIN = 'domain';
+export const FALLBACK = 'fallback';
+export const KEY = 'key';
+export const NULLABLE = 'nullable';
+export const OPTIONAL = 'optional';
+export const REQUIRED = 'required';
+export const UNIT = 'unit';
+export const WRAPPED = 'wrapped';
+
 export const T = 't';
 export const V = 'v';
 
