@@ -4,6 +4,7 @@ import * as typeBox from '@sinclair/typebox';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import initWasm from '@vlcn.io/crsqlite-wasm';
 import * as arktype from 'arktype';
+import * as effectSchema from 'effect/Schema';
 import {transformSync} from 'esbuild';
 import 'fake-indexeddb/auto';
 import * as fs from 'fs';
@@ -32,6 +33,7 @@ import * as TinyBasePersisterSqlite3 from 'tinybase/persisters/persister-sqlite3
 import * as TinyBasePersisterYjs from 'tinybase/persisters/persister-yjs';
 import * as TinyBaseSchematizers from 'tinybase/schematizers';
 import * as TinyBaseSchematizersArkType from 'tinybase/schematizers/schematizer-arktype';
+import * as TinyBaseSchematizersEffect from 'tinybase/schematizers/schematizer-effect';
 import * as TinyBaseSchematizersTypeBox from 'tinybase/schematizers/schematizer-typebox';
 import * as TinyBaseSchematizersValibot from 'tinybase/schematizers/schematizer-valibot';
 import * as TinyBaseSchematizersYup from 'tinybase/schematizers/schematizer-yup';
@@ -116,11 +118,13 @@ const TinyBaseForTest = {
     TinyBaseSynchronizerBroadcastChannel,
   'tinybase/schematizers': TinyBaseSchematizers,
   'tinybase/schematizers/schematizer-arktype': TinyBaseSchematizersArkType,
+  'tinybase/schematizers/schematizer-effect': TinyBaseSchematizersEffect,
   'tinybase/schematizers/schematizer-typebox': TinyBaseSchematizersTypeBox,
   'tinybase/schematizers/schematizer-valibot': TinyBaseSchematizersValibot,
   'tinybase/schematizers/schematizer-yup': TinyBaseSchematizersYup,
   'tinybase/schematizers/schematizer-zod': TinyBaseSchematizersZod,
   'tinybase/ui-react-inspector': TinyBaseUiReactInspector,
+  'effect/Schema': effectSchema,
   valibot,
   ws,
   yjs,

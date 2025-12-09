@@ -31,6 +31,7 @@
     "@vlcn.io/crsqlite-wasm": "^0.16.0",
     "arktype": "^2.1.28",
     "bun": "^1.3.3",
+    "effect": "^3.19.10",
     "electric-sql": "^0.12.1",
     "expo": "^54.0.10",
     "expo-sqlite": "^16.0.10",
@@ -76,6 +77,9 @@
       "optional": true
     },
     "bun": {
+      "optional": true
+    },
+    "effect": {
       "optional": true
     },
     "electric-sql": {
@@ -210,6 +214,7 @@
     "bun": "^1.3.4",
     "country-flag-emoji-json": "^2.0.0",
     "cspell": "^9.4.0",
+    "effect": "^3.19.10",
     "electric-sql": "^0.12.1",
     "esbuild": "^0.27.1",
     "eslint": "^9.39.1",

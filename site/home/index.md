@@ -175,6 +175,16 @@
     <img width="48" src="/arktype.svg?asImg" /> ArkType
   </a>
 </div>
+<div>
+  <a href='/api/schematizer-yup/functions/creation/createyupschematizer'>
+    <img width="48" src="/yup.svg?asImg" /> Yup
+  </a>
+</div>
+<div>
+  <a href='/api/schematizer-effect/functions/creation/createeffectschematizer'>
+    <img width="48" src="/effect.svg?asImg" /> Effect Schema
+  </a>
+</div>
 <p>
   (Baffled by all these logos? Check out our 
   <a href='/guides/the-basics/architectural-options'>architectural 
@@ -349,7 +359,7 @@ root.unmount(); // !act
 > from the data schemas you apply.
 >
 > And our 'schematizer' modules let you convert schemas from libraries like Zod,
-> TypeBox, and Valibot into TinyBase at runtime.
+> TypeBox, Valibot, ArkType, Yup, and Effect Schema into TinyBase at runtime.
 >
 > Read more about schemas in the Schemas guide.
 

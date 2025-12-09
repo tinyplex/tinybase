@@ -44,10 +44,16 @@ console.log(schematizedStore.getRow('pets', 'fido'));
 Schematizers perform best-effort conversions, extracting basic type information
 (string, number, boolean), defaults, and nullable settings from your schemas.
 
-This release includes support for Zod via the createZodSchematizer function,
-TypeBox via the createTypeBoxSchematizer function, Valibot via the
-createValibotSchematizer function, and ArkType via the createArkTypeSchematizer
-function, with support for additional libraries planned for future releases.
+This release includes support for:
+
+- **Zod** via the createZodSchematizer function
+- **TypeBox** via the createTypeBoxSchematizer function
+- **Valibot** via the createValibotSchematizer function
+- **ArkType** via the createArkTypeSchematizer function
+- **Yup** via the createYupSchematizer function
+- **Effect Schema** via the createEffectSchematizer function
+
+Additional libraries are planned for future releases.
 
 For more information, see the Using Schematizers guide.
 

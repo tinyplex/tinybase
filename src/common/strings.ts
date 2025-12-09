@@ -81,6 +81,14 @@ export const REQUIRED = 'required';
 export const UNIT = 'unit';
 export const WRAPPED = 'wrapped';
 
+export const LITERAL = 'Literal';
+export const PROPERTY_SIGNATURES = 'propertySignatures';
+export const STRING_KEYWORD = 'StringKeyword';
+export const NUMBER_KEYWORD = 'NumberKeyword';
+export const BOOLEAN_KEYWORD = 'BooleanKeyword';
+export const TYPE_LITERAL = 'TypeLiteral';
+export const UNION = 'Union';
+
 export const T = 't';
 export const V = 'v';
 

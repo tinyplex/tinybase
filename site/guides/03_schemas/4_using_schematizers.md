@@ -8,13 +8,14 @@ from libraries like Zod, TypeBox, and Valibot, and convert them at runtime using
 a schematizer. The full list of supported schema systems and their entry points
 is as follows:
 
-| Library                                            | Creation function        |
-| -------------------------------------------------- | ------------------------ |
-| [Zod](https://github.com/colinhacks/zod)           | createZodSchematizer     |
-| [TypeBox](https://github.com/sinclairzx81/typebox) | createTypeBoxSchematizer |
-| [Valibot](https://github.com/valibot/valibot)      | createValibotSchematizer |
-| [ArkType](https://github.com/arktypeio/arktype)    | createArkTypeSchematizer |
-| [Yup](https://github.com/jquense/yup)              | createYupSchematizer     |
+| Library                                              | Creation function        |
+| ---------------------------------------------------- | ------------------------ |
+| [Zod](https://github.com/colinhacks/zod)             | createZodSchematizer     |
+| [TypeBox](https://github.com/sinclairzx81/typebox)   | createTypeBoxSchematizer |
+| [Valibot](https://github.com/valibot/valibot)        | createValibotSchematizer |
+| [ArkType](https://github.com/arktypeio/arktype)      | createArkTypeSchematizer |
+| [Yup](https://github.com/jquense/yup)                | createYupSchematizer     |
+| [Effect Schema](https://github.com/Effect-TS/effect) | createEffectSchematizer  |
 
 The createCustomSchematizer function also allows you to create your own
 schematizer that convert from any schema system not supported directly by
