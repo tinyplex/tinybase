@@ -1,5 +1,5 @@
 import {object} from './obj.ts';
-import {isInstanceOf} from './other.ts';
+import {isInstanceOf, isUndefined} from './other.ts';
 import {UNDEFINED} from './strings.ts';
 
 export const jsonString = JSON.stringify;
@@ -11,7 +11,7 @@ export const jsonStringWithMap = (obj: unknown): string =>
   );
 
 export const jsonStringWithUndefined = (obj: unknown): string =>
-  jsonString(obj, (_key, value) => (value === undefined ? UNDEFINED : value));
+  jsonString(obj, (_key, value) => (isUndefined(value) ? UNDEFINED : value));
 
 export const jsonParseWithUndefined = (str: string): any =>
   jsonParse(str, (_key, value) => (value === UNDEFINED ? undefined : value));

@@ -128,7 +128,7 @@ const getWildcardedLeaves = (
   const deep = (node: IdSetNode, p: number): number | void =>
     p == size(path)
       ? arrayPush(leaves, node)
-      : path[p] === null
+      : isNull(path[p])
         ? collForEach(node as Node<IdOrNull, IdSet>, (node) =>
             deep(node, p + 1),
           )

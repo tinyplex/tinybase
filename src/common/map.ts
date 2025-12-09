@@ -2,7 +2,7 @@ import type {Id} from '../@types/common/index.d.ts';
 import {arrayMap} from './array.ts';
 import {collDel, collForEach, collHas, collIsEmpty} from './coll.ts';
 import {IdObj, objHas, objIsEmpty, objMap} from './obj.ts';
-import {ifNotUndefined, size} from './other.ts';
+import {ifNotUndefined, isUndefined, size} from './other.ts';
 
 export type IdMap<Value> = Map<Id, Value>;
 export type IdMap2<Value> = IdMap<IdMap<Value>>;
@@ -37,7 +37,7 @@ export const mapSet = <Key, Value>(
   key: Key,
   value?: Value,
 ): Map<Key, Value> | undefined =>
-  value === undefined ? (collDel(map, key), map) : map?.set(key, value);
+  isUndefined(value) ? (collDel(map, key), map) : map?.set(key, value);
 
 export const mapEnsure = <Key, Value>(
   map: Map<Key, Value>,

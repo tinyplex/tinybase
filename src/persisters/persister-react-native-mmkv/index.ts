@@ -7,6 +7,7 @@ import type {
   Persists as PersistsType,
 } from '../../@types/persisters/index.d.ts';
 import type {Store} from '../../@types/store/index.d.ts';
+import {isUndefined} from '../../common/other.ts';
 import {createCustomPersister} from '../common/create.ts';
 
 interface Listener {
@@ -25,7 +26,7 @@ export const createReactNativeMmkvPersister = (
     PersistedContent<PersistsType.StoreOrMergeableStore>
   > => {
     const data = storage.getString(storageName);
-    const value = data === undefined ? undefined : JSON.parse(data);
+    const value = isUndefined(data) ? undefined : JSON.parse(data);
 
     return Promise.resolve(value);
   };
@@ -35,7 +36,7 @@ export const createReactNativeMmkvPersister = (
   ): Promise<void> => {
     const content = getContent();
 
-    if (content !== undefined) {
+    if (!isUndefined(content)) {
       storage.set(storageName, JSON.stringify(content));
     }
   };
