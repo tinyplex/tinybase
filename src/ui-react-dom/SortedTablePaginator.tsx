@@ -51,10 +51,9 @@ export const useSortingAndPagination = (
       setStateAndChange([currentCellId, currentDescending, offset]),
     [setStateAndChange, currentCellId, currentDescending],
   );
-  const PaginatorComponent =
-    isTrue(paginator)
-      ? SortedTablePaginator
-      : (paginator as ComponentType<SortedTablePaginatorProps>);
+  const PaginatorComponent = isTrue(paginator)
+    ? SortedTablePaginator
+    : (paginator as ComponentType<SortedTablePaginatorProps>);
   return [
     [currentCellId, currentDescending, currentOffset],
     handleSort,
