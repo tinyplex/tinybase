@@ -53,8 +53,6 @@ This release includes support for:
 - **Yup** via the createYupSchematizer function
 - **Effect Schema** via the createEffectSchematizer function
 
-Additional libraries are planned for future releases.
-
 For more information, see the Using Schematizers guide.
 
 ---
