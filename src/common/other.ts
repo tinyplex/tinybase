@@ -51,6 +51,10 @@ export const isUndefined = (thing: unknown): thing is undefined =>
 
 export const isNull = (thing: unknown): thing is null => thing === null;
 
+export const isTrue = (thing: unknown): thing is true => thing === true;
+
+export const isFalse = (thing: unknown): thing is false => thing === false;
+
 export const ifNotNullish = getIfNotFunction(isNullish);
 
 export const ifNotUndefined = getIfNotFunction(isUndefined);

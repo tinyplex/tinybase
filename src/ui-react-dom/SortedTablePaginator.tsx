@@ -2,7 +2,7 @@ import type {
   SortedTablePaginator as SortedTablePaginatorDecl,
   SortedTablePaginatorProps,
 } from '../@types/ui-react-dom/index.d.ts';
-import {mathMin} from '../common/other.ts';
+import {isFalse, isTrue, mathMin} from '../common/other.ts';
 import {useCallbackOrUndefined} from './common/hooks.tsx';
 
 import type {ComponentType, ReactNode} from 'react';
@@ -52,7 +52,7 @@ export const useSortingAndPagination = (
     [setStateAndChange, currentCellId, currentDescending],
   );
   const PaginatorComponent =
-    paginator === true
+    isTrue(paginator)
       ? SortedTablePaginator
       : (paginator as ComponentType<SortedTablePaginatorProps>);
   return [
@@ -60,7 +60,7 @@ export const useSortingAndPagination = (
     handleSort,
     useMemo(
       () =>
-        paginator === false ? null : (
+        isFalse(paginator) ? null : (
           <PaginatorComponent
             offset={currentOffset}
             limit={limit}

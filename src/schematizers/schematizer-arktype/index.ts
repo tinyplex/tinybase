@@ -1,7 +1,14 @@
 import type {createArkTypeSchematizer as createArkTypeSchematizerDecl} from '../../@types/schematizers/schematizer-arktype/index.d.ts';
 import {arrayEvery, arrayFind, arrayForEach} from '../../common/array.ts';
 import {objIsEmpty, objNew} from '../../common/obj.ts';
-import {isArray, isNull, isUndefined, size} from '../../common/other.ts';
+import {
+  isArray,
+  isFalse,
+  isNull,
+  isTrue,
+  isUndefined,
+  size,
+} from '../../common/other.ts';
 import {
   BOOLEAN,
   DEFAULT,
@@ -28,8 +35,8 @@ const unwrapSchema = (
 
     if (
       size(schema) === 2 &&
-      schema[0]?.[UNIT] === false &&
-      schema[1]?.[UNIT] === true
+      isFalse(schema[0]?.[UNIT]) &&
+      isTrue(schema[1]?.[UNIT])
     ) {
       return [{[TYPE]: BOOLEAN}, defaultValue, allowNull ?? false];
     }

@@ -10,7 +10,9 @@ import type {
 import {collValues} from '../../../common/coll.ts';
 import {IdObj} from '../../../common/obj.ts';
 import {
+  isFalse,
   isNullish,
+  isTrue,
   startInterval,
   stopInterval,
   tryCatch,
@@ -136,7 +138,7 @@ export const createCustomSqlitePersister = <
     EMPTY_STRING,
     upsert,
     (cellOrValue: any) =>
-      cellOrValue === true ? 1 : cellOrValue === false ? 0 : cellOrValue,
+      isTrue(cellOrValue) ? 1 : isFalse(cellOrValue) ? 0 : cellOrValue,
     undefined,
   );
 };

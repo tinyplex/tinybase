@@ -6,6 +6,7 @@ import type {
 } from '../@types/ui-react-dom/index.d.ts';
 import type {ValueProps} from '../@types/ui-react/index.d.ts';
 import {arrayMap} from '../common/array.ts';
+import {isFalse} from '../common/other.ts';
 import {getProps} from '../common/react.ts';
 import {EXTRA, VALUE} from '../common/strings.ts';
 import {useValueIds} from '../ui-react/hooks.ts';
@@ -52,7 +53,7 @@ export const ValuesInHtmlTable: typeof ValuesInHtmlTableDecl = ({
         return (
           <tr key={valueId}>
             {extraValueCells(extraCellsBefore, valueProps)}
-            {idColumn === false ? null : <th title={valueId}>{valueId}</th>}
+            {isFalse(idColumn) ? null : <th title={valueId}>{valueId}</th>}
             <td>
               <Value
                 {...getProps(getValueComponentProps, valueId)}

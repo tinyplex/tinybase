@@ -8,7 +8,7 @@ import {
   getTypeCase,
 } from '../../common/cell.ts';
 import {objToArray} from '../../common/obj.ts';
-import {isUndefined} from '../../common/other.ts';
+import {isFalse, isUndefined} from '../../common/other.ts';
 import {getProps, useCallback, useState} from '../../common/react.ts';
 import {
   _VALUE,
@@ -107,7 +107,7 @@ export const HtmlTable = ({
         return (
           <tr key={rowId}>
             {extraRowCells(extraCellsBefore, rowProps)}
-            {idColumn === false ? null : <th title={rowId}>{rowId}</th>}
+            {isFalse(idColumn) ? null : <th title={rowId}>{rowId}</th>}
             {objToArray(
               cells,
               ({component: CellView, getComponentProps}, cellId) => (

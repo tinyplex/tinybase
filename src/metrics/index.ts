@@ -22,8 +22,10 @@ import {IdMap, mapGet, mapNew} from '../common/map.ts';
 import {objFreeze} from '../common/obj.ts';
 import {
   getUndefined,
+  isFalse,
   isFiniteNumber,
   isFunction,
+  isTrue,
   isUndefined,
 } from '../common/other.ts';
 import {IdSet2} from '../common/set.ts';
@@ -61,8 +63,8 @@ export const createMetrics = getCreateFunction((store: Store): Metrics => {
     (value: any): number | undefined =>
       isNaN(value) ||
       isUndefined(value) ||
-      value === true ||
-      value === false ||
+      isTrue(value) ||
+      isFalse(value) ||
       value === EMPTY_STRING
         ? undefined
         : (value as any) * 1,
