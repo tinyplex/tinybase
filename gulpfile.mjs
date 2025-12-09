@@ -46,6 +46,7 @@ const ALL_MODULES = [
   'queries',
   'relationships',
   'schematizers',
+  'schematizers/schematizer-arktype',
   'schematizers/schematizer-typebox',
   'schematizers/schematizer-valibot',
   'schematizers/schematizer-zod',

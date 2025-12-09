@@ -1,10 +1,13 @@
 import {createStore} from 'tinybase';
-import {createValibotSchematizer} from 'tinybase/schematizers/schematizer-valibot';
+import {
+  createValibotSchematizer,
+  type ValibotSchematizer,
+} from 'tinybase/schematizers/schematizer-valibot';
 import * as v from 'valibot';
 import {beforeEach, describe, expect, test} from 'vitest';
 
 describe('Valibot Schematizer', () => {
-  let schematizer: ReturnType<typeof createValibotSchematizer>;
+  let schematizer: ValibotSchematizer;
 
   beforeEach(() => {
     schematizer = createValibotSchematizer();

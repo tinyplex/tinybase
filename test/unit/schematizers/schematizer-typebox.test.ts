@@ -1,10 +1,13 @@
 import {Type} from '@sinclair/typebox';
 import {createStore} from 'tinybase';
-import {createTypeBoxSchematizer} from 'tinybase/schematizers/schematizer-typebox';
+import {
+  createTypeBoxSchematizer,
+  type TypeBoxSchematizer,
+} from 'tinybase/schematizers/schematizer-typebox';
 import {beforeEach, describe, expect, test} from 'vitest';
 
 describe('TypeBox Schematizer', () => {
-  let schematizer: ReturnType<typeof createTypeBoxSchematizer>;
+  let schematizer: TypeBoxSchematizer;
 
   beforeEach(() => {
     schematizer = createTypeBoxSchematizer();

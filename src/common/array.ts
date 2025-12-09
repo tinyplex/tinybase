@@ -61,6 +61,11 @@ export const arrayFilter = <Value>(
   cb: (value: Value) => boolean,
 ): Value[] => array.filter(cb);
 
+export const arrayFind = <Value>(
+  array: Value[],
+  cb: (value: Value, index: number) => boolean,
+): Value | undefined => array.find(cb);
+
 export const arrayClear = <Value>(array: Value[], to?: number): Value[] =>
   array.splice(0, to);
 

@@ -170,6 +170,11 @@
     <img width="48" src="/zod.svg?asImg" /> Zod
   </a>
 </div>
+<div>
+  <a href='/api/schematizer-arktype/functions/creation/createarktypeschematizer'>
+    <img width="48" src="/arktype.svg?asImg" /> ArkType
+  </a>
+</div>
 <p>
   (Baffled by all these logos? Check out our 
   <a href='/guides/the-basics/architectural-options'>architectural 

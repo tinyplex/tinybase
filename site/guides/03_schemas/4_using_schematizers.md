@@ -13,6 +13,7 @@ is as follows:
 | [Zod](https://github.com/colinhacks/zod)           | createZodSchematizer     |
 | [TypeBox](https://github.com/sinclairzx81/typebox) | createTypeBoxSchematizer |
 | [Valibot](https://github.com/valibot/valibot)      | createValibotSchematizer |
+| [ArkType](https://github.com/arktypeio/arktype)    | createArkTypeSchematizer |
 
 The createCustomSchematizer function also allows you to create your own
 schematizer that convert from any schema system not supported directly by
@@ -162,9 +163,6 @@ Schematizers provide a bridge between popular schema validation libraries and
 TinyBase's schema system. They perform best-effort conversions, allowing you to
 reuse existing schema definitions while benefiting from TinyBase's runtime
 validation and defaults.
-
-TinyBase currently provides schematizers for Zod, TypeBox, and Valibot, with
-support for additional libraries coming in future releases.
 
 Now that you can define and convert schemas, let's learn how to save and load
 Store data. For that we proceed to the Persistence guides.

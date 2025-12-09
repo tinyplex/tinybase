@@ -3,6 +3,7 @@ import * as pglite from '@electric-sql/pglite';
 import * as typeBox from '@sinclair/typebox';
 import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import initWasm from '@vlcn.io/crsqlite-wasm';
+import * as arktype from 'arktype';
 import {transformSync} from 'esbuild';
 import 'fake-indexeddb/auto';
 import * as fs from 'fs';
@@ -30,6 +31,7 @@ import * as TinyBasePersisterSqliteWasm from 'tinybase/persisters/persister-sqli
 import * as TinyBasePersisterSqlite3 from 'tinybase/persisters/persister-sqlite3';
 import * as TinyBasePersisterYjs from 'tinybase/persisters/persister-yjs';
 import * as TinyBaseSchematizers from 'tinybase/schematizers';
+import * as TinyBaseSchematizersArkType from 'tinybase/schematizers/schematizer-arktype';
 import * as TinyBaseSchematizersTypeBox from 'tinybase/schematizers/schematizer-typebox';
 import * as TinyBaseSchematizersValibot from 'tinybase/schematizers/schematizer-valibot';
 import * as TinyBaseSchematizersZod from 'tinybase/schematizers/schematizer-zod';
@@ -76,6 +78,7 @@ const TinyBaseForTest = {
   '@sinclair/typebox': typeBox,
   '@sqlite.org/sqlite-wasm': sqlite3InitModule,
   '@vlcn.io/crsqlite-wasm': initWasm,
+  arktype,
   fs,
   postgres,
   react: React,
@@ -110,6 +113,7 @@ const TinyBaseForTest = {
   'tinybase/synchronizers/synchronizer-broadcast-channel':
     TinyBaseSynchronizerBroadcastChannel,
   'tinybase/schematizers': TinyBaseSchematizers,
+  'tinybase/schematizers/schematizer-arktype': TinyBaseSchematizersArkType,
   'tinybase/schematizers/schematizer-typebox': TinyBaseSchematizersTypeBox,
   'tinybase/schematizers/schematizer-valibot': TinyBaseSchematizersValibot,
   'tinybase/schematizers/schematizer-zod': TinyBaseSchematizersZod,

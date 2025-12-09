@@ -1,26 +1,26 @@
+import {type} from 'arktype';
 import {createStore} from 'tinybase';
 import {
-  createZodSchematizer,
-  type ZodSchematizer,
-} from 'tinybase/schematizers/schematizer-zod';
+  type ArkTypeSchematizer,
+  createArkTypeSchematizer,
+} from 'tinybase/schematizers/schematizer-arktype';
 import {beforeEach, describe, expect, test} from 'vitest';
-import {z} from 'zod';
 
-describe('Zod Schematizer', () => {
-  let schematizer: ZodSchematizer;
+describe('ArkType Schematizer', () => {
+  let schematizer: ArkTypeSchematizer;
 
   beforeEach(() => {
-    schematizer = createZodSchematizer();
+    schematizer = createArkTypeSchematizer();
   });
 
   describe('toTablesSchema', () => {
-    test('converts basic Zod object schema', () => {
+    test('converts basic ArkType object schema', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: z.object({
-            species: z.string(),
-            age: z.number(),
-            sold: z.boolean(),
+          pets: type({
+            species: 'string',
+            age: 'number',
+            sold: 'boolean',
           }),
         }),
       ).toEqual({
@@ -32,13 +32,13 @@ describe('Zod Schematizer', () => {
       });
     });
 
-    test('converts Zod schema with defaults', () => {
+    test('converts ArkType schema with defaults', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: z.object({
-            species: z.string(),
-            sold: z.boolean().default(false),
-            price: z.number().default(0),
+          pets: type({
+            species: 'string',
+            sold: type('boolean').default(false),
+            price: type('number').default(0),
           }),
         }),
       ).toEqual({
@@ -50,12 +50,12 @@ describe('Zod Schematizer', () => {
       });
     });
 
-    test('converts Zod schema with nullable fields', () => {
+    test('converts ArkType schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: z.object({
-            species: z.string().nullable(),
-            age: z.number(),
+          pets: type({
+            species: 'string | null',
+            age: 'number',
           }),
         }),
       ).toEqual({
@@ -66,12 +66,12 @@ describe('Zod Schematizer', () => {
       });
     });
 
-    test('converts Zod schema with optional fields', () => {
+    test('converts ArkType schema with optional fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: z.object({
-            species: z.string(),
-            nickname: z.string().optional(),
+          pets: type({
+            species: 'string',
+            nickname: 'string?',
           }),
         }),
       ).toEqual({
@@ -85,12 +85,12 @@ describe('Zod Schematizer', () => {
     test('converts multiple tables', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: z.object({
-            species: z.string(),
+          pets: type({
+            species: 'string',
           }),
-          stores: z.object({
-            name: z.string(),
-            city: z.string(),
+          stores: type({
+            name: 'string',
+            city: 'string',
           }),
         }),
       ).toEqual({
@@ -104,13 +104,13 @@ describe('Zod Schematizer', () => {
       });
     });
 
-    test('ignores unsupported Zod types', () => {
+    test('ignores unsupported ArkType types', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: z.object({
-            species: z.string(),
-            tags: z.array(z.string()),
-            metadata: z.record(z.string(), z.string()),
+          pets: type({
+            species: 'string',
+            tags: 'string[]',
+            metadata: 'Record<string, string>',
           }),
         }),
       ).toEqual({
@@ -121,26 +121,24 @@ describe('Zod Schematizer', () => {
     });
 
     test('works with TinyBase store', () => {
-      const zodSchemas = {
-        pets: z.object({
-          species: z.string(),
-          age: z.number(),
-          sold: z.boolean().default(false),
+      const arkTypeSchemas = {
+        pets: type({
+          species: 'string',
+          age: 'number',
+          sold: type('boolean').default(false),
         }),
       };
 
-      const tablesSchema = schematizer.toTablesSchema(zodSchemas);
+      const tablesSchema = schematizer.toTablesSchema(arkTypeSchemas);
       const store = createStore().setTablesSchema(tablesSchema);
 
-      expect(store.getTablesSchemaJson()).toEqual(
-        JSON.stringify({
-          pets: {
-            species: {type: 'string'},
-            age: {type: 'number'},
-            sold: {type: 'boolean', default: false},
-          },
-        }),
-      );
+      expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
+        pets: {
+          species: {type: 'string'},
+          age: {type: 'number'},
+          sold: {type: 'boolean', default: false},
+        },
+      });
 
       store.setRow('pets', 'fido', {species: 'dog', age: 3});
       expect(store.getRow('pets', 'fido')).toEqual({
@@ -152,12 +150,12 @@ describe('Zod Schematizer', () => {
   });
 
   describe('toValuesSchema', () => {
-    test('converts basic Zod schemas', () => {
+    test('converts basic ArkType schemas', () => {
       expect(
         schematizer.toValuesSchema({
-          theme: z.string(),
-          count: z.number(),
-          isOpen: z.boolean(),
+          theme: 'string',
+          count: 'number',
+          isOpen: 'boolean',
         }),
       ).toEqual({
         theme: {type: 'string'},
@@ -166,12 +164,12 @@ describe('Zod Schematizer', () => {
       });
     });
 
-    test('converts Zod schemas with defaults', () => {
+    test('converts ArkType schemas with defaults', () => {
       expect(
         schematizer.toValuesSchema({
-          theme: z.string().default('light'),
-          count: z.number().default(0),
-          isOpen: z.boolean().default(true),
+          theme: type('string').default('light'),
+          count: type('number').default(0),
+          isOpen: type('boolean').default(true),
         }),
       ).toEqual({
         theme: {type: 'string', default: 'light'},
@@ -181,20 +179,18 @@ describe('Zod Schematizer', () => {
     });
 
     test('works with TinyBase store', () => {
-      const zodSchemas = {
-        theme: z.string().default('light'),
-        count: z.number(),
+      const arkTypeSchemas = {
+        theme: type('string').default('light'),
+        count: 'number',
       };
 
-      const valuesSchema = schematizer.toValuesSchema(zodSchemas);
+      const valuesSchema = schematizer.toValuesSchema(arkTypeSchemas);
       const store = createStore().setValuesSchema(valuesSchema);
 
-      expect(store.getValuesSchemaJson()).toEqual(
-        JSON.stringify({
-          theme: {type: 'string', default: 'light'},
-          count: {type: 'number'},
-        }),
-      );
+      expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
+        theme: {type: 'string', default: 'light'},
+        count: {type: 'number'},
+      });
 
       store.setValue('count', 42);
       expect(store.getValues()).toEqual({

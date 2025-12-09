@@ -45,9 +45,9 @@ Schematizers perform best-effort conversions, extracting basic type information
 (string, number, boolean), defaults, and nullable settings from your schemas.
 
 This release includes support for Zod via the createZodSchematizer function,
-TypeBox via the createTypeBoxSchematizer function, and Valibot via the
-createValibotSchematizer function, with support for additional libraries planned
-for future releases.
+TypeBox via the createTypeBoxSchematizer function, Valibot via the
+createValibotSchematizer function, and ArkType via the createArkTypeSchematizer
+function, with support for additional libraries planned for future releases.
 
 For more information, see the Using Schematizers guide.
 
@@ -170,8 +170,8 @@ guide for more details.
 If you are using database persisters, you should:
 
 1. **Review your data access patterns**: If you were checking `hasCell(...) ===
-false` to detect missing data, you now need to check `getCell(...) === null`
-   for null values.
+false` to detect missing data, you now need to check `getCell(...) === null` for
+   null values.
 
 2. **Update your schemas**: Add `allowNull: true` to Cell definitions that
    should permit null values:
