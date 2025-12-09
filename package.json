@@ -141,6 +141,8 @@
     "compileAndTestUnit": "gulp compileAndTestUnit",
     "testUnitFast": "gulp testUnitFast",
     "compileAndTestUnitFast": "gulp compileAndTestUnitFast",
+    "testDocs": "gulp testDocs",
+    "compileAndTestDocs": "gulp compileAndTestDocs",
     "testPerf": "gulp testPerf",
     "compileAndTestPerf": "gulp compileAndTestPerf",
     "testE2e": "gulp testE2e",

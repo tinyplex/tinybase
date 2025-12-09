@@ -684,6 +684,8 @@ export const testUnit = async () => {
   await test(['test/unit'], true);
 };
 
+export const compileAndTestUnit = series(compileForTest, testUnit);
+
 export const testBun = () =>
   execute(
     'bun test ' +
@@ -695,8 +697,13 @@ export const testUnitFast = async () => {
   await test(['test/unit/core'], true);
 };
 
-export const compileAndTestUnit = series(compileForTest, testUnit);
 export const compileAndTestUnitFast = series(compileForTest, testUnitFast);
+
+export const testDocs = async () => {
+  await test(['test/unit/documentation.test.ts'], true);
+};
+
+export const compileAndTestDocs = series(compileForTest, testDocs);
 
 export const testPerf = async () => {
   await test(['test/perf']);
