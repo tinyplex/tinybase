@@ -12,7 +12,7 @@ is as follows:
 | ---------------------------------------------------- | ------------------------ |
 | [Zod](https://github.com/colinhacks/zod)             | createZodSchematizer     |
 | [TypeBox](https://github.com/sinclairzx81/typebox)   | createTypeBoxSchematizer |
-| [Valibot](https://github.com/valibot/valibot)        | createValibotSchematizer |
+| [Valibot](https://github.com/open-circle/valibot)    | createValibotSchematizer |
 | [ArkType](https://github.com/arktypeio/arktype)      | createArkTypeSchematizer |
 | [Yup](https://github.com/jquense/yup)                | createYupSchematizer     |
 | [Effect Schema](https://github.com/Effect-TS/effect) | createEffectSchematizer  |
