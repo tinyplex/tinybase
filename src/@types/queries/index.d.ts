@@ -8,6 +8,12 @@ import type {
   Store,
 } from '../store/index.d.ts';
 
+/// ParamValue
+export type ParamValue = string | number | boolean | null;
+
+/// ParamValues
+export type ParamValues = {[paramId: Id]: ParamValue};
+
 /// ResultTable
 export type ResultTable = {[rowId: Id]: ResultRow};
 
@@ -174,6 +180,9 @@ export type GetTableCell = {
   (joinedTableId: Id, joinedCellId: Id): CellOrUndefined;
 };
 
+/// Param
+export type Param = (paramId: Id) => ParamValue | undefined;
+
 /// Select
 export type Select = {
   /// Select.1
@@ -266,11 +275,19 @@ export interface Queries {
       where: Where;
       group: Group;
       having: Having;
+      param: Param;
     }) => void,
+    paramValues?: ParamValues,
   ): Queries;
 
   /// Queries.delQueryDefinition
   delQueryDefinition(queryId: Id): Queries;
+
+  /// Queries.setParamValues
+  setParamValues(queryId: Id, paramValues: ParamValues): Queries;
+
+  /// Queries.setParamValue
+  setParamValue(queryId: Id, paramId: Id, value: ParamValue): Queries;
 
   /// Queries.getStore
   getStore(): Store;

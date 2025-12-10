@@ -19,6 +19,12 @@ import type {
   Store,
 } from '../../store/with-schemas/index.d.ts';
 
+/// ParamValue
+export type ParamValue = string | number | boolean | null;
+
+/// ParamValues
+export type ParamValues = {[paramId: Id]: ParamValue};
+
 /// ResultTable
 export type ResultTable = {[rowId: Id]: ResultRow};
 
@@ -203,6 +209,9 @@ export type GetTableCell<
     | undefined;
 };
 
+/// Param
+export type Param = (paramId: Id) => ParamValue | undefined;
+
 /// Select
 export type Select<
   Schema extends OptionalTablesSchema,
@@ -352,11 +361,19 @@ export interface Queries<in out Schemas extends OptionalSchemas> {
       where: Where<Schemas[0], RootTableId>;
       group: Group;
       having: Having;
+      param: Param;
     }) => void,
+    paramValues?: ParamValues,
   ): Queries<Schemas>;
 
   /// Queries.delQueryDefinition
   delQueryDefinition(queryId: Id): Queries<Schemas>;
+
+  /// Queries.setParamValues
+  setParamValues(queryId: Id, paramValues: ParamValues): Queries<Schemas>;
+
+  /// Queries.setParamValue
+  setParamValue(queryId: Id, paramId: Id, value: ParamValue): Queries<Schemas>;
 
   /// Queries.getStore
   getStore(): Store<Schemas>;
