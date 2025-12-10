@@ -8,6 +8,9 @@ import type {
   Group,
   Having,
   Join,
+  Param,
+  ParamValue,
+  ParamValues,
   Queries,
   QueriesListenerStats,
   QueryIdsListener,
@@ -52,7 +55,7 @@ import {
   mapSet,
   visitTree,
 } from '../common/map.ts';
-import {objFreeze, objMap} from '../common/obj.ts';
+import {objEntries, objFreeze, objMap} from '../common/obj.ts';
 import {
   getUndefined,
   ifNotUndefined,
@@ -106,6 +109,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const preStore = createStore();
   const resultStore = createStore();
   const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
+  const queryParamValues: IdMap2<ParamValue> = mapNew();
 
   const {
     addListener,
@@ -193,10 +197,13 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       where: Where;
       group: Group;
       having: Having;
+      param: Param;
     }) => void,
+    paramValues: ParamValues = {},
   ): Queries => {
     setDefinition(queryId, tableId);
     resetPreStores(queryId);
+    mapSet(queryParamValues, queryId, mapNew(objEntries(paramValues)));
 
     const selectEntries: [Id, SelectClause][] = [];
     const joinEntries: [Id | undefined, JoinClause][] = [
@@ -205,6 +212,9 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     const wheres: WhereClause[] = [];
     const groupEntries: [Id, GroupClause][] = [];
     const havings: HavingClause[] = [];
+
+    const param = (paramId: Id) =>
+      mapGet(mapGet(queryParamValues, queryId), paramId);
 
     const select = (
       arg1: Id | ((getTableCell: GetTableCell, rowId: Id) => CellOrUndefined),
@@ -290,7 +300,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
               getSelectedOrGroupedCell(arg1) === arg2,
       );
 
-    build({select, join, where, group, having});
+    build({select, join, where, group, having, param});
 
     const selects: IdMap<SelectClause> = mapNew(selectEntries);
     if (collIsEmpty(selects)) {
