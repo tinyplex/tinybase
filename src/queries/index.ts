@@ -53,9 +53,10 @@ import {
   mapGet,
   mapNew,
   mapSet,
+  mapToObj,
   visitTree,
 } from '../common/map.ts';
-import {objEntries, objFreeze, objMap} from '../common/obj.ts';
+import {objFreeze, objMap, objToMap} from '../common/obj.ts';
 import {
   getUndefined,
   ifNotUndefined,
@@ -79,6 +80,15 @@ import {
   SORTED_ROW_IDS,
   TABLE,
 } from '../common/strings.ts';
+
+type Build = (builders: {
+  select: Select;
+  join: Join;
+  where: Where;
+  group: Group;
+  having: Having;
+  param: Param;
+}) => void;
 
 type StoreWithPrivateMethods = Store & {
   createStore: () => Store;
@@ -109,7 +119,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const preStore = createStore();
   const resultStore = createStore();
   const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
-  const queryParamValues: IdMap2<ParamValue> = mapNew();
 
   const {
     addListener,
@@ -122,8 +131,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     forEachQuery,
     hasQuery,
     getTableId,
-    ,
-    ,
+    getQueryArgs,
+    setQueryArgs,
     setDefinition,
     ,
     delDefinition,
@@ -131,9 +140,9 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     destroy,
     addStoreListeners,
     delStoreListeners,
-  ] = getDefinableFunctions<true, undefined>(
+  ] = getDefinableFunctions<[Build, IdMap<ParamValue>], undefined>(
     store,
-    () => true,
+    () => [() => {}, mapNew()],
     getUndefined,
     addListener,
     callListeners,
@@ -191,20 +200,14 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const setQueryDefinition = (
     queryId: Id,
     tableId: Id,
-    build: (builders: {
-      select: Select;
-      join: Join;
-      where: Where;
-      group: Group;
-      having: Having;
-      param: Param;
-    }) => void,
+    build: Build,
     paramValues: ParamValues = {},
   ): Queries => {
     setDefinition(queryId, tableId);
+    setQueryArgs(queryId, [build, objToMap(paramValues)]);
     resetPreStores(queryId);
-    mapSet(queryParamValues, queryId, mapNew(objEntries(paramValues)));
 
+    const [, paramsMap] = getQueryArgs(queryId)!;
     const selectEntries: [Id, SelectClause][] = [];
     const joinEntries: [Id | undefined, JoinClause][] = [
       [undefined, [tableId, undefined, undefined, [], mapNew()]],
@@ -213,8 +216,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     const groupEntries: [Id, GroupClause][] = [];
     const havings: HavingClause[] = [];
 
-    const param = (paramId: Id) =>
-      mapGet(mapGet(queryParamValues, queryId), paramId);
+    const param = (paramId: Id) => mapGet(paramsMap, paramId);
 
     const select = (
       arg1: Id | ((getTableCell: GetTableCell, rowId: Id) => CellOrUndefined),
@@ -589,6 +591,28 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     return queries;
   };
 
+  const setParamValues = (queryId: Id, paramValues: ParamValues): Queries => {
+    ifNotUndefined(getQueryArgs(queryId), (definition) =>
+      setQueryDefinition(
+        queryId,
+        getTableId(queryId),
+        definition[0],
+        paramValues,
+      ),
+    );
+    return queries;
+  };
+
+  const setParamValue = (
+    queryId: Id,
+    paramId: Id,
+    value: ParamValue,
+  ): Queries =>
+    setParamValues(queryId, {
+      ...mapToObj(getQueryArgs(queryId)?.[1]),
+      [paramId]: value,
+    });
+
   const addQueryIdsListener = (listener: QueryIdsListener) =>
     addQueryIdsListenerImpl(() => listener(queries));
 
@@ -610,6 +634,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const queries: any = {
     setQueryDefinition,
     delQueryDefinition,
+    setParamValues,
+    setParamValue,
 
     getStore,
     getQueryIds,

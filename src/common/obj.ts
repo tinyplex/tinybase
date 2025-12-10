@@ -45,6 +45,9 @@ export const objDel = <Value>(obj: IdObj<Value>, id: Id): IdObj<Value> => {
   return obj;
 };
 
+export const objToMap = <Value>(obj: IdObj<Value>): Map<Id, Value> =>
+  new Map(objEntries(obj));
+
 export const objForEach = <Value>(
   obj: IdObj<Value>,
   cb: (value: Value, id: string) => void,
