@@ -320,12 +320,13 @@ console.log(queries.getResultTable('query'));
 ## Param
 
 The Param type describes the `param` function that lets you use parameterized
-values in your queries. Parameters make queries more flexible and reusable by
+values in your queries. Params make queries more flexible and reusable by
 allowing you to change filtering, selection, or grouping criteria without
 redefining the entire query.
 
-Parameters are passed as the fourth argument to setQueryDefinition and can be
-accessed within any of the query keyword functions using the `param` function:
+The initial param values are passed as the fourth argument to setQueryDefinition
+and can be accessed anywhere you want within the query definition using the
+`param` function:
 
 ```js
 queries.setQueryDefinition(
@@ -333,16 +334,18 @@ queries.setQueryDefinition(
   'pets',
   ({select, where, param}) => {
     select('species');
-    where((getCell) => getCell('species') === param('type'));
+    where('species', param('type'));
+    // OR in callbacks, for example:
+    // where((getCell) => getCell('species') === param('type'));
   },
-  {type: 'dog'}, // Initial parameter values
+  {type: 'dog'}, // Initial param values
 );
 
 console.log(queries.getResultTable('query'));
 // -> {fido: {species: 'dog'}, cujo: {species: 'dog'}}
 ```
 
-You can update parameter values using setParamValue or setParamValues methods,
+You can update param values using setParamValue or setParamValues methods,
 which will automatically re-evaluate the query:
 
 ```js
@@ -352,7 +355,7 @@ console.log(queries.getResultTable('query'));
 // -> {felix: {species: 'cat'}, tom: {species: 'cat'}}
 ```
 
-Parameters work with all query keywords and can be used in complex expressions:
+Params work with all query keywords and can be used in complex expressions:
 
 ```js
 queries.setQueryDefinition(
@@ -361,18 +364,24 @@ queries.setQueryDefinition(
   ({select, where, group, having, param}) => {
     select('species');
     select('price');
-    where((getCell) => (getCell('price') as number) >= (param('minPrice') as number));
+    where(
+      (getCell) =>
+        (getCell('price') as number) >= (param('minPrice') as number)
+    );
     group('price', 'avg').as('avgPrice');
-    having((getCell) => (getCell('avgPrice') as number) > (param('avgThreshold') as number));
+    having(
+      (getCell) =>
+        (getCell('avgPrice') as number) > (param('avgThreshold') as number));
   },
   {minPrice: 3, avgThreshold: 3},
 );
 ```
 
-Parameter values can be strings, numbers, booleans, or null. When a query
-definition includes parameters, any listeners on the query results will be
-notified when parameter values change, just as they would for underlying data
-changes.
+Param values can be strings, numbers, booleans, or null, though notice, above,
+that you may have to cast them in TypeScript if you are comparing them in
+expressions. When a query definition includes params, any listeners on the query
+results will be notified when param values changes affect the result data, just
+as they would for underlying data changes.
 
 ## Putting It All Together
 
