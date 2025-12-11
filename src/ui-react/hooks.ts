@@ -28,6 +28,8 @@ import type {
   StatusListener,
 } from '../@types/persisters/index.d.ts';
 import type {
+  ParamValue,
+  ParamValues,
   Queries,
   ResultCellIdsListener,
   ResultCellListener,
@@ -198,6 +200,8 @@ import type {
   useSetCheckpointCallback as useSetCheckpointCallbackDecl,
   useSetPartialRowCallback as useSetPartialRowCallbackDecl,
   useSetPartialValuesCallback as useSetPartialValuesCallbackDecl,
+  useSetQueryParamValueCallback as useSetQueryParamValueCallbackDecl,
+  useSetQueryParamValuesCallback as useSetQueryParamValuesCallbackDecl,
   useSetRowCallback as useSetRowCallbackDecl,
   useSetTableCallback as useSetTableCallbackDecl,
   useSetTablesCallback as useSetTablesCallbackDecl,
@@ -1903,6 +1907,87 @@ export const useResultCellListener: typeof useResultCellListenerDecl = (
     listenerDeps,
     [queryId, rowId, cellId],
   );
+
+export const useSetQueryParamValueCallback: typeof useSetQueryParamValueCallbackDecl =
+  <Parameter>(
+    queryId: Id | GetId<Parameter>,
+    paramId: Id | GetId<Parameter>,
+    getParamValue: (parameter: Parameter, queries: Queries) => ParamValue,
+    getParamValueDeps: DependencyList = EMPTY_ARRAY,
+    queriesOrQueriesId?: QueriesOrQueriesId,
+    then: (queries: Queries, paramValue: ParamValue) => void = getUndefined,
+    thenDeps: DependencyList = EMPTY_ARRAY,
+  ): ParameterizedCallback<Parameter> => {
+    const queries = useQueriesOrQueriesById(queriesOrQueriesId);
+    return useCallback(
+      (parameter?: Parameter) =>
+        ifNotUndefined(queries, (queries: any) =>
+          ifNotUndefined(
+            getParamValue(parameter as any, queries),
+            (paramValue: ParamValue) =>
+              then(
+                queries.setParamValue(
+                  isFunction(queryId)
+                    ? queryId(parameter as any, queries)
+                    : queryId,
+                  isFunction(paramId)
+                    ? paramId(parameter as any, queries)
+                    : paramId,
+                  paramValue,
+                ),
+                paramValue,
+              ),
+          ),
+        ),
+      /* eslint-disable react-hooks/exhaustive-deps */
+      [
+        queries,
+        ...getParamValueDeps,
+        ...thenDeps,
+        ...(isFunction(queryId) ? EMPTY_ARRAY : [queryId]),
+        ...(isFunction(paramId) ? EMPTY_ARRAY : [paramId]),
+      ],
+      /* eslint-enable react-hooks/exhaustive-deps */
+    );
+  };
+
+export const useSetQueryParamValuesCallback: typeof useSetQueryParamValuesCallbackDecl =
+  <Parameter>(
+    queryId: Id | GetId<Parameter>,
+    getParamValues: (parameter: Parameter, queries: Queries) => ParamValues,
+    getParamValuesDeps: DependencyList = EMPTY_ARRAY,
+    queriesOrQueriesId?: QueriesOrQueriesId,
+    then: (queries: Queries, paramValues: ParamValues) => void = getUndefined,
+    thenDeps: DependencyList = EMPTY_ARRAY,
+  ): ParameterizedCallback<Parameter> => {
+    const queries = useQueriesOrQueriesById(queriesOrQueriesId);
+    return useCallback(
+      (parameter?: Parameter) =>
+        ifNotUndefined(queries, (queries: any) =>
+          ifNotUndefined(
+            getParamValues(parameter as any, queries),
+            (paramValues: ParamValues) =>
+              then(
+                queries.setParamValues(
+                  isFunction(queryId)
+                    ? queryId(parameter as any, queries)
+                    : queryId,
+                  paramValues,
+                ),
+                paramValues,
+              ),
+          ),
+        ),
+      /* eslint-disable react-hooks/exhaustive-deps */
+      [
+        queries,
+        ...getParamValuesDeps,
+        ...thenDeps,
+        ...(isFunction(queryId) ? EMPTY_ARRAY : [queryId]),
+      ],
+      /* eslint-enable react-hooks/exhaustive-deps */
+    );
+  };
 
 export const useCreateCheckpoints: typeof useCreateCheckpointsDecl = (
   store: Store | undefined,

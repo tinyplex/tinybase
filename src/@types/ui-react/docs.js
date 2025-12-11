@@ -10054,6 +10054,272 @@
  */
 /// useResultCellListener
 /**
+ * The useSetQueryParamValueCallback hook returns a parameterized callback that
+ * can be used to set a single parameter value for a query.
+ *
+ * This hook is useful, for example, when creating an event handler that will
+ * update query parameters based on user interaction. In this case, the
+ * parameter will likely be the event, so that you can use data from it to
+ * update the query parameter.
+ *
+ * The third parameter is a function which will produce the parameter value that
+ * will then be used to update the query in the callback.
+ *
+ * If that function has any other dependencies, the changing of which should
+ * also cause the callback to be recreated, you can provide them in an array in
+ * the optional fourth parameter, just as you would for any React hook with
+ * dependencies.
+ *
+ * For convenience, you can optionally provide a `then` function (with its own
+ * set of dependencies) which will be called just after the query parameter has
+ * been updated.
+ *
+ * The Queries object to which the callback will make the mutation (indicated by
+ * the hook's `queriesOrQueriesId` parameter) is always automatically used as a
+ * hook dependency for the callback.
+ * @param queryId The Id of the query to update, or a GetId function that will
+ * return it.
+ * @param paramId The Id of the parameter to update, or a GetId function that
+ * will return it.
+ * @param getParamValue A function which returns the parameter value that will
+ * be used to update the query, based on the parameter the callback will receive
+ * (and which is most likely a DOM event).
+ * @param getParamValueDeps An optional array of dependencies for the
+ * `getParamValue` function, which, if any change, result in the regeneration of
+ * the callback. This parameter defaults to an empty array. Also use this to
+ * indicate the dependencies of any GetId functions if used as the queryId or
+ * paramId arguments.
+ * @param queriesOrQueriesId The Queries object to be updated: omit for the
+ * default context Queries object, provide an Id for a named context Queries
+ * object, or provide an explicit reference.
+ * @param then A function which is called after the mutation, with a reference
+ * to the Queries object and the parameter value used in the update.
+ * @param thenDeps An optional array of dependencies for the `then` function,
+ * which, if any change, result in the regeneration of the callback. This
+ * parameter defaults to an empty array.
+ * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example uses the useSetQueryParamValueCallback hook to create an event
+ * handler which updates a query parameter when an input element changes.
+ *
+ * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {
+ *   useResultTable,
+ *   useSetQueryParamValueCallback,
+ * } from 'tinybase/ui-react';
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ *   cujo: {species: 'dog', color: 'black'},
+ * });
+ * const queries = createQueries(store);
+ * queries.setQueryDefinition(
+ *   'dogOrCat',
+ *   'pets',
+ *   ({select, where, param}) => {
+ *     select('species');
+ *     where('species', param('species'));
+ *   },
+ *   {species: 'dog'},
+ * );
+ *
+ * const App = () => {
+ *   const handleInput = useSetQueryParamValueCallback(
+ *     'dogOrCat',
+ *     'species',
+ *     (e) => e.target.value,
+ *     [],
+ *     queries,
+ *     (_queries, paramValue) => console.log(`Updated: ${paramValue}`),
+ *   );
+ *   return (
+ *     <div>
+ *       <input id="input" onInput={handleInput} />
+ *       {JSON.stringify(useResultTable('dogOrCat', queries))}
+ *     </div>
+ *   );
+ * };
+ *
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App />); // !act
+ * const input = app.querySelector('input');
+ * console.log(app.innerHTML);
+ * // ->
+ * `
+ * <div>
+ *   <input id="input">
+ *   {"fido":{"species":"dog"},"cujo":{"species":"dog"}}
+ * </div>
+ * `;
+ *
+ * // User types 'cat' in the input and event fires:
+ * input.value = 'cat';
+ * // -> input Event('input', {bubbles: true})
+ * // -> 'Updated: cat'
+ *
+ * console.log(app.innerHTML);
+ * // ->
+ * `
+ * <div>
+ *   <input id="input">
+ *   {"felix":{"species":"cat"}}
+ * </div>
+ * `;
+ * ```
+ * @category Queries hooks
+ * @since v7.2.0
+ */
+/// useSetQueryParamValueCallback
+/**
+ * The useSetQueryParamValuesCallback hook returns a parameterized callback that
+ * can be used to set multiple parameter values for a query at once.
+ *
+ * This hook is useful, for example, when creating an event handler that will
+ * update multiple query parameters based on user interaction. In this case, the
+ * parameter will likely be the event, so that you can use data from it to
+ * update the query parameters.
+ *
+ * The second parameter is a function which will produce the parameter values
+ * object that will then be used to update the query in the callback.
+ *
+ * If that function has any other dependencies, the changing of which should
+ * also cause the callback to be recreated, you can provide them in an array in
+ * the optional third parameter, just as you would for any React hook with
+ * dependencies.
+ *
+ * For convenience, you can optionally provide a `then` function (with its own
+ * set of dependencies) which will be called just after the query parameters
+ * have been updated.
+ *
+ * The Queries object to which the callback will make the mutation (indicated by
+ * the hook's `queriesOrQueriesId` parameter) is always automatically used as a
+ * hook dependency for the callback.
+ * @param queryId The Id of the query to update, or a GetId function that will
+ * return it.
+ * @param getParamValues A function which returns the parameter values object
+ * that will be used to update the query, based on the parameter the callback
+ * will receive (and which is most likely a DOM event).
+ * @param getParamValuesDeps An optional array of dependencies for the
+ * `getParamValues` function, which, if any change, result in the regeneration
+ * of the callback. This parameter defaults to an empty array. Also use this to
+ * indicate the dependencies of any GetId functions if used as the queryId
+ * argument.
+ * @param queriesOrQueriesId The Queries object to be updated: omit for the
+ * default context Queries object, provide an Id for a named context Queries
+ * object, or provide an explicit reference.
+ * @param then A function which is called after the mutation, with a reference
+ * to the Queries object and the parameter values used in the update.
+ * @param thenDeps An optional array of dependencies for the `then` function,
+ * which, if any change, result in the regeneration of the callback. This
+ * parameter defaults to an empty array.
+ * @returns A parameterized callback for subsequent use.
+ * @example
+ * This example uses the useSetQueryParamValuesCallback hook to create an event
+ * handler which updates multiple query parameters when a form is submitted.
+ *
+ * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {
+ *   useResultTable,
+ *   useSetQueryParamValuesCallback,
+ * } from 'tinybase/ui-react';
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ *   cujo: {species: 'dog', color: 'black'},
+ * });
+ * const queries = createQueries(store);
+ * queries.setQueryDefinition(
+ *   'speciesAndColor',
+ *   'pets',
+ *   ({select, where, param}) => {
+ *     select('species');
+ *     select('color');
+ *     where('species', param('species'));
+ *     where('color', param('color'));
+ *   },
+ *   {species: 'dog', color: 'brown'},
+ * );
+ *
+ * const App = () => {
+ *   const handleSubmit = useSetQueryParamValuesCallback(
+ *     'speciesAndColor',
+ *     (e) => {
+ *       e.preventDefault();
+ *       return {
+ *         species: e.target.querySelector('#species').value,
+ *         color: e.target.querySelector('#color').value,
+ *       };
+ *     },
+ *     [],
+ *     queries,
+ *     (_, paramValues) =>
+ *       console.log(`Updated: ${JSON.stringify(paramValues)}`),
+ *   );
+ *   return (
+ *     <div>
+ *       <form onSubmit={handleSubmit}>
+ *         <input id="species" />
+ *         <input id="color" />
+ *         <button type="submit">Filter</button>
+ *       </form>
+ *       {JSON.stringify(useResultTable('speciesAndColor', queries))}
+ *     </div>
+ *   );
+ * };
+ *
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App />); // !act
+ * const form = app.querySelector('form');
+ * console.log(app.innerHTML);
+ * // ->
+ * `
+ * <div>
+ *   <form>
+ *     <input id="species">
+ *     <input id="color">
+ *     <button type="submit">Filter</button>
+ *   </form>
+ *   {"fido":{"species":"dog","color":"brown"}}
+ * </div>
+ * `;
+ *
+ * // User fills form with new values:
+ * const species = form.querySelector('#species');
+ * const color = form.querySelector('#color');
+ *
+ * species.value = 'cat'; // !act
+ * color.value = 'black'; // !act
+ *
+ * // And submits the form:
+ * // -> form SubmitEvent('submit', {bubbles: true})
+ * // -> 'Updated: {"species":"cat","color":"black"}'
+ *
+ * console.log(app.innerHTML);
+ * // ->
+ * `
+ * <div>
+ *   <form>
+ *     <input id="species">
+ *     <input id="color">
+ *     <button type="submit">Filter</button>
+ *   </form>
+ *   {"felix":{"species":"cat","color":"black"}}
+ * </div>
+ * `;
+ * ```
+ * @category Queries hooks
+ * @since v7.2.0
+ */
+/// useSetQueryParamValuesCallback
+/**
  * The useCreateCheckpoints hook is used to create a Checkpoints object within a
  * React application with convenient memoization.
  *

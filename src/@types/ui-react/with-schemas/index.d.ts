@@ -76,6 +76,8 @@ import type {
   StatusListener,
 } from '../../persisters/with-schemas/index.d.ts';
 import type {
+  ParamValue,
+  ParamValues,
   Queries,
   ResultCell,
   ResultCellIdsListener,
@@ -1126,6 +1128,33 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     listenerDeps?: React.DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
+
+  /// useSetQueryParamValueCallback
+  useSetQueryParamValueCallback: <Parameter>(
+    queryId: Id | GetId<Schemas, Parameter, Id>,
+    paramId: Id | GetId<Schemas, Parameter, Id>,
+    getParamValue: (
+      parameter: Parameter,
+      queries: Queries<Schemas>,
+    ) => ParamValue,
+    getParamValueDeps?: React.DependencyList,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    then?: (queries: Queries<Schemas>, paramValue: ParamValue) => void,
+    thenDeps?: React.DependencyList,
+  ) => ParameterizedCallback<Parameter>;
+
+  /// useSetQueryParamValuesCallback
+  useSetQueryParamValuesCallback: <Parameter>(
+    queryId: Id | GetId<Schemas, Parameter, Id>,
+    getParamValues: (
+      parameter: Parameter,
+      queries: Queries<Schemas>,
+    ) => ParamValues,
+    getParamValuesDeps?: React.DependencyList,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+    then?: (queries: Queries<Schemas>, paramValues: ParamValues) => void,
+    thenDeps?: React.DependencyList,
+  ) => ParameterizedCallback<Parameter>;
 
   /// useCreateCheckpoints
   useCreateCheckpoints: (

@@ -29,6 +29,8 @@ import type {
   StatusListener,
 } from '../persisters/index.d.ts';
 import type {
+  ParamValue,
+  ParamValues,
   Queries,
   ResultCellIdsListener,
   ResultCellListener,
@@ -933,6 +935,27 @@ export function useResultCellListener(
   listenerDeps?: React.DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
+
+/// useSetQueryParamValueCallback
+export function useSetQueryParamValueCallback<Parameter>(
+  queryId: Id | GetId<Parameter>,
+  paramId: Id | GetId<Parameter>,
+  getParamValue: (parameter: Parameter, queries: Queries) => ParamValue,
+  getParamValueDeps?: React.DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+  then?: (queries: Queries, paramValue: ParamValue) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter>;
+
+/// useSetQueryParamValuesCallback
+export function useSetQueryParamValuesCallback<Parameter>(
+  queryId: Id | GetId<Parameter>,
+  getParamValues: (parameter: Parameter, queries: Queries) => ParamValues,
+  getParamValuesDeps?: React.DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+  then?: (queries: Queries, paramValues: ParamValues) => void,
+  thenDeps?: React.DependencyList,
+): ParameterizedCallback<Parameter>;
 
 /// useCreateCheckpoints
 export function useCreateCheckpoints(
