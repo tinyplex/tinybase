@@ -4981,7 +4981,6 @@ describe('Parameterized', () => {
         listener,
         '/q1',
         {q1: {r1: {c1: 'a'}}},
-        {q1: {}},
         {q1: {r2: {c1: 'b'}}},
       );
     });
@@ -5006,7 +5005,6 @@ describe('Parameterized', () => {
         listener,
         '/q1/*',
         {q1: {r1: {c1: 'a'}}},
-        {q1: {r1: {}}},
         {q1: {r1: {c2: 'odd'}}},
       );
     });
@@ -5033,7 +5031,6 @@ describe('Parameterized', () => {
         listener,
         '/q1/r1/c1',
         {q1: {r1: {c: 'a_1'}}},
-        {q1: {r1: {c: undefined}}},
         {q1: {r1: {c: 'a_2'}}},
       );
     });

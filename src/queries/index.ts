@@ -593,11 +593,13 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
 
   const setParamValues = (queryId: Id, paramValues: ParamValues): Queries => {
     ifNotUndefined(getQueryArgs(queryId), (definition) =>
-      setQueryDefinition(
-        queryId,
-        getTableId(queryId),
-        definition[0],
-        paramValues,
+      resultStore.transaction(() =>
+        setQueryDefinition(
+          queryId,
+          getTableId(queryId),
+          definition[0],
+          paramValues,
+        ),
       ),
     );
     return queries;
