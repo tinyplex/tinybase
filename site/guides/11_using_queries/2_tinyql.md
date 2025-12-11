@@ -36,7 +36,7 @@ the result of a query can never have more Rows than that underlying Table did.)
 
 The third parameter, `build`, is where the magic happens: you provide a function
 to define the query. that will be called with with an object that contains the
-five named 'keyword' functions for the query:
+six named 'keyword' functions for the query:
 
 - `select`: a function that lets you specify a Cell or calculated value for
   including into the query's result.
@@ -48,14 +48,16 @@ five named 'keyword' functions for the query:
   in multiple result Rows should be aggregated together.
 - `having` describes a function that lets you specify conditions to filter
   results, based on the grouped Cells resulting from a Group clause.
+- `param` describes a function that lets you access parameterized values that
+  can be dynamically changed without redefining the query.
 
-All five can be destructured from the callback's single parameter:
+All six can be destructured from the callback's single parameter:
 
 ```js
 queries.setQueryDefinition(
   'query',
   'pets',
-  ({select, join, where, group, having}) => {
+  ({select, join, where, group, having, param}) => {
     select(/* ... */);
     select(/* ... */);
     join(/* ... */);
@@ -71,7 +73,7 @@ Any of these keyword functions can be called multiple times (even imperatively,
 such as in a loop). The only requirement for a valid query is that at least one
 `select` function call is made.
 
-Here's a quick summary of each of the five keyword functions. Some of them are
+Here's a quick summary of each of the six keyword functions. Some of them are
 overloaded and have different effects based on the number of arguments, but they
 are all fully typed with TypeScript and well documented with examples.
 
@@ -315,6 +317,63 @@ console.log(queries.getResultTable('query'));
 // -> {0: {species: 'parrot', minPrice: 3, maxPrice: 3}}
 ```
 
+## Param
+
+The Param type describes the `param` function that lets you use parameterized
+values in your queries. Parameters make queries more flexible and reusable by
+allowing you to change filtering, selection, or grouping criteria without
+redefining the entire query.
+
+Parameters are passed as the fourth argument to setQueryDefinition and can be
+accessed within any of the query keyword functions using the `param` function:
+
+```js
+queries.setQueryDefinition(
+  'query',
+  'pets',
+  ({select, where, param}) => {
+    select('species');
+    where((getCell) => getCell('species') === param('type'));
+  },
+  {type: 'dog'}, // Initial parameter values
+);
+
+console.log(queries.getResultTable('query'));
+// -> {fido: {species: 'dog'}, cujo: {species: 'dog'}}
+```
+
+You can update parameter values using setParamValue or setParamValues methods,
+which will automatically re-evaluate the query:
+
+```js
+queries.setParamValue('query', 'type', 'cat');
+
+console.log(queries.getResultTable('query'));
+// -> {felix: {species: 'cat'}, tom: {species: 'cat'}}
+```
+
+Parameters work with all query keywords and can be used in complex expressions:
+
+```js
+queries.setQueryDefinition(
+  'query',
+  'pets',
+  ({select, where, group, having, param}) => {
+    select('species');
+    select('price');
+    where((getCell) => (getCell('price') as number) >= (param('minPrice') as number));
+    group('price', 'avg').as('avgPrice');
+    having((getCell) => (getCell('avgPrice') as number) > (param('avgThreshold') as number));
+  },
+  {minPrice: 3, avgThreshold: 3},
+);
+```
+
+Parameter values can be strings, numbers, booleans, or null. When a query
+definition includes parameters, any listeners on the query results will be
+notified when parameter values change, just as they would for underlying data
+changes.
+
 ## Putting It All Together
 
 To finish off, let's look at a more complex complex TinyQL query that includes
@@ -391,10 +450,10 @@ queries.setQueryDefinition(
 );
 ```
 
-(Notice how the joins to the `species`, `color`, and `owner` tables are performed
-programmatically here - just to prove a point! - because there's a useful
-convention on the Cell Ids used. Also see the Movie Database demo for an example of
-modular query composition.)
+(Notice how the joins to the `species`, `color`, and `owner` tables are
+performed programmatically here - just to prove a point! - because there's a
+useful convention on the Cell Ids used. Also see the Movie Database demo for an
+example of modular query composition.)
 
 This query is roughly expressed in English as "The average price of pets per
 state (based on their color and species) sold to owners who live in the US, for
