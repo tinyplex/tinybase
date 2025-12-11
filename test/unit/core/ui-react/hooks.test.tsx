@@ -123,6 +123,8 @@ import {
   useSetCheckpointCallback,
   useSetPartialRowCallback,
   useSetPartialValuesCallback,
+  useSetQueryParamValueCallback,
+  useSetQueryParamValuesCallback,
   useSetRowCallback,
   useSetTableCallback,
   useSetTablesCallback,
@@ -2526,6 +2528,276 @@ describe('Read Hooks', () => {
     rerender(<button />);
 
     expect(didRender).toHaveBeenCalledTimes(5);
+
+    unmount();
+  });
+
+  test('useSetQueryParamValueCallback', () => {
+    const queries = createQueries(store);
+    queries.setQueryDefinition(
+      'q1',
+      't1',
+      ({select, where, param}) => {
+        select('c1');
+        where('c1', param('p1') as Cell);
+      },
+      {p1: 1},
+    );
+
+    const then = vi.fn((_queries: any, _paramValue: any) => null);
+    const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
+
+    const Test = ({
+      multiplier,
+      then,
+    }: {
+      readonly multiplier: number;
+      readonly then: (queries: any, paramValue: any) => void;
+    }) => {
+      const handler = useSetQueryParamValueCallback<
+        MouseEvent<HTMLButtonElement>
+      >('q1', 'p1', (e) => e.screenX * multiplier, [multiplier], queries, then);
+      handlers[multiplier] = handler;
+      return <button onClick={handler} />;
+    };
+
+    const {getByRole, rerender, unmount} = render(
+      <Test multiplier={2} then={then} />,
+    );
+
+    act(() => store.setTables({t1: {r1: {c1: 1}, r2: {c1: 2}, r3: {c1: 3}}}));
+    expect(queries.getResultTable('q1')).toEqual({r1: {c1: 1}});
+
+    fireEvent.click(getByRole('button'), {screenX: 1});
+    expect(queries.getResultTable('q1')).toEqual({r2: {c1: 2}});
+    expect(then).toHaveBeenCalledWith(queries, 2);
+
+    rerender(<Test multiplier={3} then={then} />);
+    expect(handlers[2]).not.toEqual(handlers[3]);
+
+    fireEvent.click(getByRole('button'), {screenX: 1});
+    expect(queries.getResultTable('q1')).toEqual({r3: {c1: 3}});
+    expect(then).toHaveBeenCalledWith(queries, 3);
+
+    unmount();
+  });
+
+  test('useSetQueryParamValueCallback, parameterized Ids', () => {
+    const queries = createQueries(store);
+    queries
+      .setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c1', param('p1') as Cell);
+        },
+        {p1: 1},
+      )
+      .setQueryDefinition(
+        'q2',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c1', param('p2') as Cell);
+        },
+        {p2: 1},
+      );
+
+    const then = vi.fn((_queries: any, _paramValue: any) => null);
+    const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
+
+    const Test = ({
+      multiplier,
+      then,
+    }: {
+      readonly multiplier: number;
+      readonly then: (queries: any, paramValue: any) => void;
+    }) => {
+      const handler = useSetQueryParamValueCallback<
+        MouseEvent<HTMLButtonElement>
+      >(
+        (e) => 'q' + e.screenY,
+        (e) => 'p' + e.screenY,
+        (e) => e.screenX * multiplier,
+        [multiplier],
+        queries,
+        then,
+      );
+      handlers[multiplier] = handler;
+      return <button onClick={handler} />;
+    };
+
+    const {getByRole, rerender, unmount} = render(
+      <Test multiplier={2} then={then} />,
+    );
+
+    act(() => store.setTables({t1: {r1: {c1: 1}, r2: {c1: 2}, r3: {c1: 3}}}));
+
+    fireEvent.click(getByRole('button'), {screenX: 1, screenY: 1});
+    expect(queries.getResultTable('q1')).toEqual({r2: {c1: 2}});
+    expect(then).toHaveBeenCalledWith(queries, 2);
+
+    fireEvent.click(getByRole('button'), {screenX: 1, screenY: 2});
+    expect(queries.getResultTable('q2')).toEqual({r2: {c1: 2}});
+    expect(then).toHaveBeenCalledWith(queries, 2);
+
+    rerender(<Test multiplier={3} then={then} />);
+    expect(handlers[2]).not.toEqual(handlers[3]);
+
+    unmount();
+  });
+
+  test('useSetQueryParamValuesCallback', () => {
+    const queries = createQueries(store);
+    queries.setQueryDefinition(
+      'q1',
+      't1',
+      ({select, where, param}) => {
+        select('c1');
+        where(
+          (getCell) => (getCell('c1') as number) >= (param('min') as number),
+        );
+        where(
+          (getCell) => (getCell('c1') as number) <= (param('max') as number),
+        );
+      },
+      {min: 3, max: 5},
+    );
+
+    const then = vi.fn((_queries: any, _paramValues: any) => null);
+    const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
+
+    const Test = ({
+      multiplier,
+      then,
+    }: {
+      readonly multiplier: number;
+      readonly then: (queries: any, paramValues: any) => void;
+    }) => {
+      const handler = useSetQueryParamValuesCallback<
+        MouseEvent<HTMLButtonElement>
+      >(
+        'q1',
+        (e) => ({
+          min: e.screenX * multiplier,
+          max: e.screenY * multiplier,
+        }),
+        [multiplier],
+        queries,
+        then,
+      );
+      handlers[multiplier] = handler;
+      return <button onClick={handler} />;
+    };
+
+    const {getByRole, rerender, unmount} = render(
+      <Test multiplier={2} then={then} />,
+    );
+
+    act(() =>
+      store.setTables({
+        t1: {
+          r1: {c1: 1},
+          r2: {c1: 2},
+          r3: {c1: 3},
+          r4: {c1: 4},
+          r5: {c1: 5},
+          r6: {c1: 6},
+          r7: {c1: 7},
+          r8: {c1: 8},
+          r9: {c1: 9},
+        },
+      }),
+    );
+    expect(queries.getResultTable('q1')).toEqual({
+      r3: {c1: 3},
+      r4: {c1: 4},
+      r5: {c1: 5},
+    });
+
+    fireEvent.click(getByRole('button'), {screenX: 1, screenY: 2});
+    expect(queries.getResultTable('q1')).toEqual({
+      r2: {c1: 2},
+      r3: {c1: 3},
+      r4: {c1: 4},
+    });
+    expect(then).toHaveBeenCalledWith(queries, {min: 2, max: 4});
+
+    rerender(<Test multiplier={3} then={then} />);
+    expect(handlers[2]).not.toEqual(handlers[3]);
+
+    fireEvent.click(getByRole('button'), {screenX: 0, screenY: 1});
+    expect(queries.getResultTable('q1')).toEqual({
+      r1: {c1: 1},
+      r2: {c1: 2},
+      r3: {c1: 3},
+    });
+    expect(then).toHaveBeenCalledWith(queries, {min: 0, max: 3});
+    unmount();
+  });
+
+  test('useSetQueryParamValuesCallback, parameterized queryId', () => {
+    const queries = createQueries(store);
+    queries
+      .setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where((getCell) => getCell('c1') === param('value'));
+        },
+        {value: 1},
+      )
+      .setQueryDefinition(
+        'q2',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where((getCell) => getCell('c1') === param('value'));
+        },
+        {value: 1},
+      );
+
+    const then = vi.fn((_queries: any, _paramValues: any) => null);
+    const handlers: MouseEventHandler<HTMLButtonElement>[] = [];
+
+    const Test = ({
+      multiplier,
+      then,
+    }: {
+      readonly multiplier: number;
+      readonly then: (queries: any, paramValues: any) => void;
+    }) => {
+      const handler = useSetQueryParamValuesCallback<
+        MouseEvent<HTMLButtonElement>
+      >(
+        (e) => 'q' + e.screenY,
+        (e) => ({value: e.screenX * multiplier}),
+        [multiplier],
+        queries,
+        then,
+      );
+      handlers[multiplier] = handler;
+      return <button onClick={handler} />;
+    };
+
+    const {getByRole, rerender, unmount} = render(
+      <Test multiplier={2} then={then} />,
+    );
+
+    act(() => store.setTables({t1: {r1: {c1: 1}, r2: {c1: 2}, r3: {c1: 3}}}));
+
+    fireEvent.click(getByRole('button'), {screenX: 1, screenY: 1});
+    expect(queries.getResultTable('q1')).toEqual({r2: {c1: 2}});
+    expect(then).toHaveBeenCalledWith(queries, {value: 2});
+
+    fireEvent.click(getByRole('button'), {screenX: 1, screenY: 2});
+    expect(queries.getResultTable('q2')).toEqual({r2: {c1: 2}});
+    expect(then).toHaveBeenCalledWith(queries, {value: 2});
+
+    rerender(<Test multiplier={3} then={then} />);
+    expect(handlers[2]).not.toEqual(handlers[3]);
 
     unmount();
   });
