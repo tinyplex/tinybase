@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#v7-1'><em>NEW!</em> v7.1 release</a>
+<a href='/guides/releases/#v7-2'><em>NEW!</em> v7.2 release</a>
 
-<span id="one-with">"The one with Schematizers!"</span>
+<span id="one-with">"The one with parameterized queries!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
@@ -465,7 +465,7 @@ await sessionStorage.clear();
 > "which is the highest-priced species, and in which state?"
 >
 > Needless to say, the results are reactive too! You can add listeners to
-> queries just as easily as you do to raw tables.
+> queries, and since v7.2, even parameterize them.
 >
 > Read more about Queries in the [v2.0 Release Notes](/guides/releases/#v2-0),
 > the Using Queries guide, and the Car Analysis demo and Movie Database demo.

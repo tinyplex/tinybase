@@ -5,6 +5,58 @@ highlighted features.
 
 ---
 
+# v7.2
+
+This release introduces **parameterized queries** to TinyQL - finally!
+
+These allow you to define queries using named 'params' that you can then easily
+update to change the query's results - without redefining the whole query each
+time.
+
+Let's take a look with a simple example:
+
+```js
+import {createStore, createQueries} from 'tinybase';
+
+const store = createStore().setTable('pets', {
+  fido: {age: 2, species: 'dog'},
+  felix: {age: 1, species: 'cat'},
+  cujo: {age: 3, species: 'dog'},
+});
+
+const queries = createQueries(store).setQueryDefinition(
+  'petsBySpecies',
+  'pets',
+  ({select, where, param}) => {
+    select('age');
+    where('species', param('species'));
+  },
+  {species: 'dog'}, // Initial param value
+);
+
+console.log(queries.getResultTable('petsBySpecies'));
+// -> {fido: {age: 2}, cujo: {age: 3}}
+
+// Update the 'species' param to 'cat' to change the results:
+queries.setParamValue('petsBySpecies', 'species', 'cat');
+console.log(queries.getResultTable('petsBySpecies'));
+// -> {felix: {age: 1}}
+```
+
+You can of course have multiple params in a query definition, and use them in
+any part of the query definition that you would like. Listeners also work as
+expected - if you are listening to a query's results, and you change a param
+that affects those results, your listener will be called accordingly.
+
+For React users, We also shipped the useSetParamValue hook and the
+useSetParamValues hook, which let you easily update param values from, say, an
+event handler in your application.
+
+We know this has been a long-awaited feature, so we hope you enjoy it! See the
+TinyQL guide for more details, and please let us know how it goes!
+
+---
+
 # v7.1
 
 This release introduces **Schematizers**, a new system for converting schemas
@@ -18,7 +70,6 @@ Instead of manually writing TinyBase schemas, you can now convert existing
 schemas at runtime:
 
 ```js
-import {createStore} from 'tinybase';
 import {createZodSchematizer} from 'tinybase/schematizers/schematizer-zod';
 import {z} from 'zod';
 
@@ -67,7 +118,6 @@ valid Cell and Value type, alongside `string`, `number`, and `boolean`.
 You can now set Cells and Values to `null`:
 
 ```js
-const store = createStore();
 store.setCell('pets', 'fido', 'species', 'dog');
 store.setCell('pets', 'fido', 'color', null);
 
