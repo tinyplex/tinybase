@@ -430,7 +430,7 @@ const useSetCallback = <Parameter, Thing, StoreOrQueries>(
   getDeps: DependencyList = EMPTY_ARRAY,
   then: (obj: StoreOrQueries, thing: Thing) => void = getUndefined,
   thenDeps: DependencyList = EMPTY_ARRAY,
-  methodPrefix: string = EMPTY_STRING,
+  methodPrefix?: string,
   ...args: (Id | GetId<Parameter>)[]
 ): ParameterizedCallback<Parameter> =>
   useCallback(
@@ -462,9 +462,9 @@ const useStoreSetCallback = <Parameter, Thing>(
   storeOrStoreId: StoreOrStoreId | undefined,
   settable: string,
   get: (parameter: Parameter, store: Store) => Thing,
-  getDeps: DependencyList = EMPTY_ARRAY,
-  then: (store: Store, thing: Thing) => void = getUndefined,
-  thenDeps: DependencyList = EMPTY_ARRAY,
+  getDeps?: DependencyList,
+  then?: (store: Store, thing: Thing) => void,
+  thenDeps?: DependencyList,
   ...args: (Id | GetId<Parameter>)[]
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(
@@ -482,9 +482,9 @@ const useQueriesSetCallback = <Parameter, Thing>(
   queriesOrQueriesId: QueriesOrQueriesId | undefined,
   settable: string,
   get: (parameter: Parameter, queries: Queries) => Thing,
-  getDeps: DependencyList = EMPTY_ARRAY,
-  then: (queries: Queries, thing: Thing) => void = getUndefined,
-  thenDeps: DependencyList = EMPTY_ARRAY,
+  getDeps?: DependencyList,
+  then?: (queries: Queries, thing: Thing) => void,
+  thenDeps?: DependencyList,
   ...args: (Id | GetId<Parameter>)[]
 ): ParameterizedCallback<Parameter> =>
   useSetCallback(

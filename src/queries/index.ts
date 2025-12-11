@@ -142,7 +142,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     delStoreListeners,
   ] = getDefinableFunctions<[Build, IdMap<ParamValue>], undefined>(
     store,
-    () => [() => {}, mapNew()],
+    () => [] as any,
     getUndefined,
     addListener,
     callListeners,
