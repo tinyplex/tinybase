@@ -487,9 +487,24 @@ store.transaction(() => {
    ```
 
 3. **Documentation**
+
    ```bash
    npm run compileDocs         # Generate API docs
    npm run serveDocs           # Preview docs locally
+   ```
+
+4. **Demo Iteration** (modifying files in `site/demos/`)
+
+   ```bash
+   # One-time setup (if TinyBase code has changed)
+   npm run compileForProd
+
+   # Fast iteration loop
+   npm run compileDocsPagesOnly  # Rebuild demo pages from markdown
+   npm run testE2e               # Verify demos work correctly
+
+   # Note: compileDocsPagesOnly is significantly faster than full compileDocs
+   # when you're only changing demo content, not TinyBase code itself.
    ```
 
 ## Key Takeaways for Copilot
