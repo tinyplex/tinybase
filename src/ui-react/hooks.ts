@@ -423,7 +423,42 @@ const useListener = (
     [thing, listenable, ...preArgs, ...listenerDeps, ...postArgs],
   );
 
-const useSetCallback = <Parameter, Thing>(
+const useSetCallback = <Parameter, Thing, StoreOrQueries>(
+  storeOrQueries: StoreOrQueries | undefined,
+  settable: string,
+  get: (parameter: Parameter, obj: StoreOrQueries) => Thing,
+  getDeps: DependencyList = EMPTY_ARRAY,
+  then: (obj: StoreOrQueries, thing: Thing) => void = getUndefined,
+  thenDeps: DependencyList = EMPTY_ARRAY,
+  methodPrefix: string = EMPTY_STRING,
+  ...args: (Id | GetId<Parameter>)[]
+): ParameterizedCallback<Parameter> =>
+  useCallback(
+    (parameter?: Parameter) =>
+      ifNotUndefined(storeOrQueries, (obj: any) =>
+        ifNotUndefined(get(parameter as any, obj), (thing: Thing) =>
+          then(
+            obj[methodPrefix + settable](
+              ...argsOrGetArgs(args, obj, parameter),
+              thing,
+            ),
+            thing,
+          ),
+        ),
+      ),
+    /* eslint-disable react-hooks/exhaustive-deps */
+    [
+      storeOrQueries,
+      settable,
+      ...getDeps,
+      ...thenDeps,
+      methodPrefix,
+      ...nonFunctionDeps(args),
+    ],
+    /* eslint-enable react-hooks/exhaustive-deps */
+  );
+
+const useStoreSetCallback = <Parameter, Thing>(
   storeOrStoreId: StoreOrStoreId | undefined,
   settable: string,
   get: (parameter: Parameter, store: Store) => Thing,
@@ -431,25 +466,37 @@ const useSetCallback = <Parameter, Thing>(
   then: (store: Store, thing: Thing) => void = getUndefined,
   thenDeps: DependencyList = EMPTY_ARRAY,
   ...args: (Id | GetId<Parameter>)[]
-): ParameterizedCallback<Parameter> => {
-  const store = useStoreOrStoreById(storeOrStoreId);
-  return useCallback(
-    (parameter?: Parameter) =>
-      ifNotUndefined(store, (store: any) =>
-        ifNotUndefined(get(parameter as any, store), (thing: Thing) =>
-          then(
-            store[SET + settable](
-              ...argsOrGetArgs(args, store, parameter),
-              thing,
-            ),
-            thing,
-          ),
-        ),
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, settable, ...getDeps, ...thenDeps, ...nonFunctionDeps(args)],
+): ParameterizedCallback<Parameter> =>
+  useSetCallback(
+    useStoreOrStoreById(storeOrStoreId),
+    settable,
+    get,
+    getDeps,
+    then,
+    thenDeps,
+    SET,
+    ...args,
   );
-};
+
+const useQueriesSetCallback = <Parameter, Thing>(
+  queriesOrQueriesId: QueriesOrQueriesId | undefined,
+  settable: string,
+  get: (parameter: Parameter, queries: Queries) => Thing,
+  getDeps: DependencyList = EMPTY_ARRAY,
+  then: (queries: Queries, thing: Thing) => void = getUndefined,
+  thenDeps: DependencyList = EMPTY_ARRAY,
+  ...args: (Id | GetId<Parameter>)[]
+): ParameterizedCallback<Parameter> =>
+  useSetCallback(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    settable,
+    get,
+    getDeps,
+    then,
+    thenDeps,
+    EMPTY_STRING,
+    ...args,
+  );
 
 const argsOrGetArgs = <Parameter>(
   args: (Id | GetId<Parameter> | boolean | undefined)[],
@@ -477,36 +524,6 @@ const useDel = <Parameter>(
       then(store?.[DEL + deletable](...argsOrGetArgs(args, store, parameter))),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [store, deletable, ...thenDeps, ...nonFunctionDeps(args)],
-  );
-};
-
-const useSetQueryCallback = <Parameter, Thing>(
-  queriesOrQueriesId: QueriesOrQueriesId | undefined,
-  settable: string,
-  get: (parameter: Parameter, queries: Queries) => Thing,
-  getDeps: DependencyList = EMPTY_ARRAY,
-  then: (queries: Queries, thing: Thing) => void = getUndefined,
-  thenDeps: DependencyList = EMPTY_ARRAY,
-  ...args: (Id | GetId<Parameter>)[]
-): ParameterizedCallback<Parameter> => {
-  const queries = useQueriesOrQueriesById(queriesOrQueriesId);
-  return useCallback(
-    (parameter?: Parameter) =>
-      ifNotUndefined(queries, (queries: any) =>
-        ifNotUndefined(get(parameter as any, queries), (thing: Thing) =>
-          then(
-            queries[settable](
-              ...arrayMap(args, (arg) =>
-                isFunction(arg) ? arg(parameter as any, queries) : arg,
-              ),
-              thing,
-            ),
-            thing,
-          ),
-        ),
-      ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [queries, settable, ...getDeps, ...thenDeps, ...nonFunctionDeps(args)],
   );
 };
 
@@ -819,7 +836,7 @@ export const useSetTablesCallback: typeof useSetTablesCallbackDecl = <
   then?: (store: Store, tables: Tables) => void,
   thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useSetCallback(
+  useStoreSetCallback(
     storeOrStoreId,
     TABLES,
     getTables,
@@ -836,7 +853,7 @@ export const useSetTableCallback: typeof useSetTableCallbackDecl = <Parameter>(
   then?: (store: Store, table: Table) => void,
   thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useSetCallback(
+  useStoreSetCallback(
     storeOrStoreId,
     TABLE,
     getTable,
@@ -855,7 +872,7 @@ export const useSetRowCallback: typeof useSetRowCallbackDecl = <Parameter>(
   then?: (store: Store, row: Row) => void,
   thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useSetCallback(
+  useStoreSetCallback(
     storeOrStoreId,
     ROW,
     getRow,
@@ -907,7 +924,7 @@ export const useSetPartialRowCallback: typeof useSetPartialRowCallbackDecl = <
   then?: (store: Store, partialRow: Row) => void,
   thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useSetCallback(
+  useStoreSetCallback(
     storeOrStoreId,
     PARTIAL + ROW,
     getPartialRow,
@@ -928,7 +945,7 @@ export const useSetCellCallback: typeof useSetCellCallbackDecl = <Parameter>(
   then?: (store: Store, cell: Cell | MapCell) => void,
   thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useSetCallback(
+  useStoreSetCallback(
     storeOrStoreId,
     CELL,
     getCell,
@@ -949,7 +966,7 @@ export const useSetValuesCallback: typeof useSetValuesCallbackDecl = <
   then?: (store: Store, values: Values) => void,
   thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useSetCallback(
+  useStoreSetCallback(
     storeOrStoreId,
     VALUES,
     getValues,
@@ -966,7 +983,7 @@ export const useSetPartialValuesCallback: typeof useSetPartialValuesCallbackDecl
     then?: (store: Store, partialValues: Values) => void,
     thenDeps?: DependencyList,
   ): ParameterizedCallback<Parameter> =>
-    useSetCallback(
+    useStoreSetCallback(
       storeOrStoreId,
       PARTIAL + VALUES,
       getPartialValues,
@@ -983,7 +1000,7 @@ export const useSetValueCallback: typeof useSetValueCallbackDecl = <Parameter>(
   then?: (store: Store, value: Value | MapValue) => void,
   thenDeps?: DependencyList,
 ): ParameterizedCallback<Parameter> =>
-  useSetCallback(
+  useStoreSetCallback(
     storeOrStoreId,
     VALUE,
     getValue,
@@ -1948,7 +1965,7 @@ export const useSetQueryParamValueCallback: typeof useSetQueryParamValueCallback
     then?: (queries: Queries, paramValue: ParamValue) => void,
     thenDeps?: DependencyList,
   ): ParameterizedCallback<Parameter> =>
-    useSetQueryCallback(
+    useQueriesSetCallback(
       queriesOrQueriesId,
       'setParamValue',
       getParamValue,
@@ -1968,7 +1985,7 @@ export const useSetQueryParamValuesCallback: typeof useSetQueryParamValuesCallba
     then?: (queries: Queries, paramValues: ParamValues) => void,
     thenDeps?: DependencyList,
   ): ParameterizedCallback<Parameter> =>
-    useSetQueryCallback(
+    useQueriesSetCallback(
       queriesOrQueriesId,
       'setParamValues',
       getParamValues,
