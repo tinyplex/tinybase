@@ -43,30 +43,29 @@ These act as de-normalized 'views' of the underlying normalized data and make it
 easy for the application to render 'virtual' rows comprised of Cell values from
 multiple joined Table objects in the Store.
 
-Some of these, like the main `movies` query, are set up for the lifetime of the
-application:
+The following queries are set up for the lifetime of the application:
 
-| Query       | From&nbsp;Tables             | Cell Ids                                                                                                                                                                                                                                                    |
-| ----------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `movies`    | `movies`, `genres`, `people` | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName`, `overview`, `directorId`, `directorName`, `directorImage`, `castId1`, `castName1`, `castImage1`, `castId2`, `castName2`, `castImage2`, `castId3`, `castName3`, `castImage3` |
-| `years`     | `movies`                     | `year`, `movieCount`                                                                                                                                                                                                                                        |
-| `genres`    | `movies`                     | `genreId`, `genreName`, `movieCount`                                                                                                                                                                                                                        |
-| `directors` | `movies`, `people`           | `directorId`, `directorName`, `directorImage`, `gender`, `popularity`, `movieCount`                                                                                                                                                                         |
-| `cast`      | `cast`, `people`             | `castId`, `castName`, `castImage`, `gender`, `popularity`, `movieCount`                                                                                                                                                                                     |
+| Query             | From&nbsp;Tables             | Cell Ids                                                                                                                                                                                                                                                    |
+| ----------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `movies`          | `movies`, `genres`, `people` | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName`, `overview`, `directorId`, `directorName`, `directorImage`, `castId1`, `castName1`, `castImage1`, `castId2`, `castName2`, `castImage2`, `castId3`, `castName3`, `castImage3` |
+| `years`           | `movies`                     | `year`, `movieCount`                                                                                                                                                                                                                                        |
+| `genres`          | `movies`                     | `genreId`, `genreName`, `movieCount`                                                                                                                                                                                                                        |
+| `directors`       | `movies`, `people`           | `directorId`, `directorName`, `directorImage`, `gender`, `popularity`, `movieCount`                                                                                                                                                                         |
+| `cast`            | `cast`, `people`             | `castId`, `castName`, `castImage`, `gender`, `popularity`, `movieCount`                                                                                                                                                                                     |
+| `yearGenreMovies` | `movies`, `genres`           | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName`                                                                                                                                                                              |
+| `directedMovies`  | `movies`, `genres`           | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName`                                                                                                                                                                              |
+| `appearedMovies`  | `cast`, `movies`, `genres`   | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName`                                                                                                                                                                              |
 
-Others, like the `moviesInYear` query, are set up when a specific page is being
-viewed (in that case, the detail page for a particular year):
+The final three queries are interesting since they are parameterized.
+`yearGenreMovies` query accepts optional `year` and `genreId` params to filter
+movies dynamically. Similarly, the `directedMovies` and `appearedMovies` queries
+accept a `personId` param. This means we can set up these queries once, but
+update them with different params to get different results as the user drills
+into different pages.
 
-| Query                | From&nbsp;Tables           | Cell Ids                                                                       |
-| -------------------- | -------------------------- | ------------------------------------------------------------------------------ |
-| `moviesInYear`       | `movies`, `genres`         | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
-| `moviesInGenre`      | `movies`, `genres`         | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
-| `moviesWithDirector` | `movies`, `genres`         | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
-| `moviesWithCast`     | `cast`, `movies`, `genres` | `movieId`, `movieName`, `movieImage`, `year`, `rating`, `genreId`, `genreName` |
-
-You might notice that many of these queries share the same Cell Ids. You'll
-discover that TinyBase lets you compose queries programmatically, so we'll be
-able to build these queries without much repetition: the common
+You might notice that many of these queries share the same selected Cell Ids.
+You'll discover that TinyBase lets you compose queries programmatically, so
+we'll be able to build these queries without much repetition: the common
 `queryMovieBasics` function is used to select the same Cell Ids into most of
 these query views.
 
@@ -523,51 +522,56 @@ We also create query definitions for the other persistent queries. These use the
 `group` function to count the number of movies per year, genre, and so on, used
 in the overview components of each of the main sections of the app.
 
-The `movies` query definition is re-used across the app, so note that it takes
-optional params for `year` and `genreId` so that different views can show movies
-by year or genre if required.
+```js
+// ...
+queries.setQueryDefinition('years', 'movies', ({select, group}) => {
+  select('year');
+  select((_, rowId) => rowId).as('movieId');
+  group('movieId', 'count').as('movieCount');
+});
+
+queries.setQueryDefinition('genres', 'movies', ({select, join, group}) => {
+  select('genreId');
+  select((_, rowId) => rowId).as('movieId');
+  join('genres', 'genreId');
+  select('genres', 'name').as('genreName');
+  group('movieId', 'count').as('movieCount');
+});
+
+queries.setQueryDefinition('directors', 'movies', ({select, join, group}) => {
+  select('directorId');
+  select((_, rowId) => rowId).as('movieId');
+  select('people', 'name').as('directorName');
+  select('people', 'image').as('directorImage');
+  select('people', 'gender');
+  select('people', 'popularity');
+  join('people', 'directorId');
+  group('movieId', 'count').as('movieCount');
+});
+
+queries.setQueryDefinition('cast', 'cast', ({select, join, group}) => {
+  select('castId');
+  select('movieId');
+  select('people', 'name').as('castName');
+  select('people', 'image').as('castImage');
+  select('people', 'gender');
+  select('people', 'popularity');
+  join('people', 'castId');
+  group('movieId', 'count').as('movieCount');
+});
+// ...
+```
+
+And finally the parameterized queries. The `yearGenreMovies` query definition is
+re-used across the app, so note that it takes optional params for `year` and
+`genreId` so that different views can show movies by year or genre if required.
+Similarly, the `directedMovies` and `appearedMovies` queries take a `personId`
+param to show movies for a specific director or actor.
 
 ```js
   // ...
-  queries.setQueryDefinition('years', 'movies', ({select, group}) => {
-    select('year');
-    select((_, rowId) => rowId).as('movieId');
-    group('movieId', 'count').as('movieCount');
-  });
-
-  queries.setQueryDefinition('genres', 'movies', ({select, join, group}) => {
-    select('genreId');
-    select((_, rowId) => rowId).as('movieId');
-    join('genres', 'genreId');
-    select('genres', 'name').as('genreName');
-    group('movieId', 'count').as('movieCount');
-  });
-
-  queries.setQueryDefinition('directors', 'movies', ({select, join, group}) => {
-    select('directorId');
-    select((_, rowId) => rowId).as('movieId');
-    select('people', 'name').as('directorName');
-    select('people', 'image').as('directorImage');
-    select('people', 'gender');
-    select('people', 'popularity');
-    join('people', 'directorId');
-    group('movieId', 'count').as('movieCount');
-  });
-
-  queries.setQueryDefinition('cast', 'cast', ({select, join, group}) => {
-    select('castId');
-    select('movieId');
-    select('people', 'name').as('castName');
-    select('people', 'image').as('castImage');
-    select('people', 'gender');
-    select('people', 'popularity');
-
-    join('people', 'castId');
-    group('movieId', 'count').as('movieCount');
-  });
-
   queries.setQueryDefinition(
-    'movies',
+    'yearGenreMovies',
     'movies',
     ({select, join, where, param}) => {
       queryMovieBasics({select, join});
@@ -581,13 +585,58 @@ by year or genre if required.
     {year: null, genreId: null},
   );
 
+  queries.setQueryDefinition(
+    'directedMovies',
+    'movies',
+    ({select, join, where, param}) => {
+      queryMovieBasics({select, join});
+      where('directorId', param('personId'));
+    },
+    {personId: null},
+  );
+
+  queries.setQueryDefinition(
+    'appearedMovies',
+    'cast',
+    ({select, join, where, param}) => {
+      select('movieId');
+      select('movies', 'name').as('movieName');
+      select('movies', 'image').as('movieImage');
+      select('movies', 'year');
+      select('movies', 'rating');
+      select('movies', 'genreId');
+      select('genres', 'name').as('genreName');
+      join('movies', 'movieId');
+      join('genres', 'movies', 'genreId');
+      where('castId', param('personId'));
+    },
+    {personId: null},
+  );
+
   return queries;
 }
 ```
 
-That's it for the main persistent queries that power most of the major views of
+That's it for the main persistent queries that power all the different views of
 the app. We'll refer to these by their query Id when we actually bind them to
 components.
+
+Finally, let's create a convenient hook that will allow us to parameterize the
+`yearGenreMovies` query, and one to parameterize both the `directedMovies` and
+`appearedMovies` queries for a given person:
+
+```js
+const useSetYearGenre = ({year, genreId}) =>
+  useSetParamValuesCallback(
+    'yearGenreMovies',
+    (yearGenre) => yearGenre,
+  )({year, genreId});
+
+const useSetPersonMovies = (personId) => {
+  useSetParamValuesCallback('directedMovies', (person) => person)({personId});
+  useSetParamValuesCallback('appearedMovies', (person) => person)({personId});
+};
+```
 
 ## The ResultSortedTableInHtmlTable Component
 
@@ -824,7 +873,7 @@ components to create the major views of the application.
 
 First, the overview of all the rated movies in the database (which displays on
 the 'Movies' tab when the app first loads), comprising a
-`ResultSortedTableInHtmlTable` that renders the `movies` query with four
+ResultSortedTableInHtmlTable component that renders the `movies` query with four
 columns, sorted by rating.
 
 ```jsx
@@ -1010,19 +1059,18 @@ Moving on, the detail for a specific year is just a sorted table of the movies
 from that year.
 
 Here is a case where we can use a parameterized query, introduced in TinyBase
-v7.2. The `movies` query was set up once in the app initialization, so we use
-the `useSetParamValuesCallback` hook to update its parameters whenever the
+v7.2. The `yearGenreMovies` query was set up once in the app initialization, so
+we use the useSetParamValuesCallback hook to update its params whenever the
 `year` prop changes. This is more efficient and ergonomic than rebuilding the
 query definition every time.
 
 ```jsx
 const YearDetail = ({year}) => {
-  useSetParamValuesCallback('movies', () => ({year}), [year])();
-
+  useSetYearGenre({year});
   return (
     <Page title={`Movies from ${year}`}>
       <ResultSortedTableInHtmlTable
-        queryId="movies"
+        queryId="yearGenreMovies"
         customCells={customCellsForMoviesInYear}
         cellId="rating"
         descending={true}
@@ -1043,16 +1091,16 @@ const customCellsForMoviesInYear = {
 ```
 
 The genre detail page is very similar, using the same parameterized query but
-setting the `genreId` parameter instead:
+setting the `genreId` param instead:
 
 ```jsx
 const GenreDetail = ({genreId}) => {
-  useSetParamValuesCallback('movies', () => ({genreId}), [genreId])();
+  useSetYearGenre({genreId});
   const name = useCell('genres', genreId, 'name');
   return name == null ? null : (
     <Page title={`${name} movies`}>
       <ResultSortedTableInHtmlTable
-        queryId="movies"
+        queryId="yearGenreMovies"
         customCells={customCellsForMoviesInGenre}
         cellId="rating"
         descending={true}
@@ -1072,59 +1120,24 @@ const customCellsForMoviesInGenre = {
 };
 ```
 
-Finally, we build the detail page for a person. We create two queries on the fly
-here, one for those movies for which the person is the director, and one for
-those in which they are cast.
+Finally, we build the detail page for a person. Again, we use parameterized
+queries to get the movies they have directed and the movies in which they have
+appeared without having to re-define the whole query each time.
 
-The latter is slightly more complex since it needs to use the many-to-many
-`cast` Table as its root, from where it joins to the `movies` Table and `genres`
-Table in turn. Nevertheless, the result Cell Ids are named to be consistent with
-the other queries, so that we can use the same custom components to render each
-part of the HTML table.
-
-This component is also slightly more complex that the others because it is also
+This component is slightly more complex than the others because it is also
 rendering some parts of its content directly from the `people` Table (rather
 than via a query) - hence the use of the basic `useCell` hook and `CellView`
 component, for example.
 
 ```jsx
 const PersonDetail = ({personId}) => {
-  const queries = useQueries();
-  useMemo(
-    () =>
-      queries
-        .setQueryDefinition(
-          'moviesWithDirector',
-          'movies',
-          ({select, join, where}) => {
-            queryMovieBasics({select, join});
-            where('directorId', personId);
-          },
-        )
-        .setQueryDefinition(
-          'moviesWithCast',
-          'cast',
-          ({select, join, where}) => {
-            select('movieId');
-            select('movies', 'name').as('movieName');
-            select('movies', 'image').as('movieImage');
-            select('movies', 'year');
-            select('movies', 'rating');
-            select('movies', 'genreId');
-            select('genres', 'name').as('genreName');
-            join('movies', 'movieId');
-            join('genres', 'movies', 'genreId');
-            where('castId', personId);
-          },
-        ),
-    [personId],
-  );
+  useSetPersonMovies(personId);
 
   const props = {tableId: 'people', rowId: personId};
   const name = useCell('people', personId, 'name');
   const died = useCell('people', personId, 'died');
-  const moviesWithDirector = useResultRowIds('moviesWithDirector');
-  const moviesWithCast = useResultRowIds('moviesWithCast');
+  const directedMovies = useResultRowIds('directedMovies');
+  const appearedMovies = useResultRowIds('appearedMovies');
 
   return name == null ? null : (
     <Page title={name}>
@@ -1149,11 +1162,11 @@ const PersonDetail = ({personId}) => {
         <CellView {...props} cellId="biography" />
       </p>
 
-      {moviesWithDirector.length == 0 ? null : (
+      {directedMovies.length == 0 ? null : (
         <>
           <h2>As director:</h2>
           <ResultSortedTableInHtmlTable
-            queryId="moviesWithDirector"
+            queryId="directedMovies"
             customCells={customCellsForMoviesWithPeople}
             cellId="rating"
             descending={true}
@@ -1165,11 +1178,11 @@ const PersonDetail = ({personId}) => {
         </>
       )}
 
-      {moviesWithCast.length == 0 ? null : (
+      {appearedMovies.length == 0 ? null : (
         <>
           <h2>As cast:</h2>
           <ResultSortedTableInHtmlTable
-            queryId="moviesWithCast"
+            queryId="appearedMovies"
             customCells={customCellsForMoviesWithPeople}
             cellId="rating"
             descending={true}
