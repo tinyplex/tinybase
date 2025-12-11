@@ -4531,7 +4531,7 @@ describe('Miscellaneous', () => {
   });
 });
 
-describe.only('Parameterized', () => {
+describe('Parameterized', () => {
   beforeEach(() => {
     store.setTables({
       t1: {
@@ -4959,6 +4959,7 @@ describe.only('Parameterized', () => {
 
   describe('Listeners', () => {
     test('triggers result table listener when param changes', () => {
+      store.delTables();
       queries.setQueryDefinition(
         'q1',
         't1',
@@ -4968,70 +4969,72 @@ describe.only('Parameterized', () => {
         },
         {p1: 'a'},
       );
-
       listener = createQueriesListener(queries);
       listener.listenToResultTable('/q1', 'q1');
+      store.setTables({
+        t1: {r1: {c1: 'a', c2: 'odd', c3: 1}, r2: {c1: 'b', c2: 'even', c3: 2}},
+      });
 
       queries.setParamValue('q1', 'p1', 'b');
 
       expectChanges(
         listener,
         '/q1',
-        {q1: {r2: {c1: 'b'}}},
         {q1: {r1: {c1: 'a'}}},
+        {q1: {}},
+        {q1: {r2: {c1: 'b'}}},
       );
     });
 
     test('triggers row listener when param changes', () => {
+      store.delTables();
       queries.setQueryDefinition(
         'q1',
         't1',
-        ({select, where, param}) => {
-          select('c1');
-          select('c2');
-          where(
-            (getTableCell) =>
-              getTableCell('c1') === param('p1') &&
-              (getTableCell('c3') as number) >= (param('p2') as number),
-          );
+        ({select, param}) => {
+          select(param('c') as string);
         },
-        {p1: 'a', p2: 4},
+        {c: 'c1'},
       );
-
       listener = createQueriesListener(queries);
-      listener.listenToResultRow('/q1/r1', 'q1', 'r1');
+      listener.listenToResultRow('/q1/*', 'q1', null);
+      store.setTables({t1: {r1: {c1: 'a', c2: 'odd', c3: 1}}});
 
-      queries.setParamValue('q1', 'p2', 1);
+      queries.setParamValue('q1', 'c', 'c2');
 
       expectChanges(
         listener,
-        '/q1/r1',
-        {q1: {r1: {c1: 'a', c2: 'odd'}}},
-        {q1: {r1: {c1: 'a', c2: 'odd'}}},
+        '/q1/*',
+        {q1: {r1: {c1: 'a'}}},
+        {q1: {r1: {}}},
+        {q1: {r1: {c2: 'odd'}}},
       );
     });
 
     test('triggers cell listener when param changes', () => {
+      store.delTables();
       queries.setQueryDefinition(
         'q1',
         't1',
-        ({select, where, param}) => {
-          select('c1');
-          where((getTableCell) => getTableCell('c1') === param('p1'));
+        ({select, param}) => {
+          select(
+            (getTableCell) => getTableCell('c1') + (param('p') as string),
+          ).as('c');
         },
-        {p1: 'a'},
+        {p: '_1'},
       );
-
       listener = createQueriesListener(queries);
-      listener.listenToResultCell('/q1/r1/c1', 'q1', 'r1', 'c1');
+      listener.listenToResultCell('/q1/r1/c1', 'q1', 'r1', 'c');
+      store.setTables({t1: {r1: {c1: 'a', c2: 'odd', c3: 1}}});
 
-      queries.setParamValue('q1', 'p1', 'b');
+      queries.setParamValue('q1', 'p', '_2');
 
       expectChanges(
         listener,
         '/q1/r1/c1',
-        {q1: {r1: {c1: undefined}}},
-        {q1: {r1: {c1: 'a'}}},
+        {q1: {r1: {c: 'a_1'}}},
+        {q1: {r1: {c: undefined}}},
+        {q1: {r1: {c: 'a_2'}}},
       );
     });
   });
