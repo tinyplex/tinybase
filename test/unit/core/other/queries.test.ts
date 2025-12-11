@@ -4610,14 +4610,10 @@ describe('Parameterized Queries', () => {
     });
 
     test('param with undefined value', () => {
-      queries.setQueryDefinition(
-        'q1',
-        't1',
-        ({select, where, param}) => {
-          select('c1');
-          where((getTableCell) => getTableCell('c1') === param('p1'));
-        },
-      );
+      queries.setQueryDefinition('q1', 't1', ({select, where, param}) => {
+        select('c1');
+        where((getTableCell) => getTableCell('c1') === param('p1'));
+      });
 
       expect(queries.getResultTable('q1')).toEqual({});
     });
@@ -4798,14 +4794,10 @@ describe('Parameterized Queries', () => {
     });
 
     test('sets params when initially undefined', () => {
-      queries.setQueryDefinition(
-        'q1',
-        't1',
-        ({select, where, param}) => {
-          select('c1');
-          where((getTableCell) => getTableCell('c1') === param('p1'));
-        },
-      );
+      queries.setQueryDefinition('q1', 't1', ({select, where, param}) => {
+        select('c1');
+        where((getTableCell) => getTableCell('c1') === param('p1'));
+      });
 
       expect(queries.getResultTable('q1')).toEqual({});
 
@@ -4828,7 +4820,7 @@ describe('Parameterized Queries', () => {
       );
 
       listener = createQueriesListener(queries);
-      listener.listenToResultTable('/q1');
+      listener.listenToResultTable('/q1', 'q1');
 
       queries.setParamValue('q1', 'p1', 'v2');
 
@@ -4901,9 +4893,8 @@ describe('Parameterized Queries', () => {
         't1',
         ({select, param}) => {
           select('c1');
-          select(
-            (getTableCell) =>
-              getTableCell('c1') === param('p1') ? 'match' : 'no',
+          select((getTableCell) =>
+            getTableCell('c1') === param('p1') ? 'match' : 'no',
           ).as('c4');
         },
         {p1: 'v1'},
