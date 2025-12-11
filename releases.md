@@ -1,7 +1,36 @@
-<link rel="preload" as="image" href="https://beta.tinybase.org/inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://beta.tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v7-1">v7.1</h1><p>This release introduces <strong>Schematizers</strong>, a new system for converting schemas from popular validation libraries into TinyBase&#x27;s schema format.</p><h2 id="schematizers">Schematizers</h2><p>Schematizers provide a bridge between external schema validation libraries (like Zod, TypeBox, and Valibot) and TinyBase&#x27;s <a href="https://beta.tinybase.org/api/store/type-aliases/schema/tablesschema/"><code>TablesSchema</code></a> and <a href="https://beta.tinybase.org/api/store/type-aliases/schema/valuesschema/"><code>ValuesSchema</code></a> formats. Instead of manually writing TinyBase schemas, you can now convert existing schemas at runtime:</p>
+<link rel="preload" as="image" href="https://beta.tinybase.org/inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://beta.tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v7-2">v7.2</h1><p>This release introduces <strong>parameterized queries</strong> to <a href="https://beta.tinybase.org/guides/using-queries/tinyql/">TinyQL</a> - finally!</p><p>These allow you to define queries using named &#x27;params&#x27; that you can then easily update to change the query&#x27;s results - without redefining the whole query each time.</p><p>Let&#x27;s take a look with a simple example:</p>
 
 ```js
-import {createStore} from 'tinybase';
+import {createStore, createQueries} from 'tinybase';
+
+const store = createStore().setTable('pets', {
+  fido: {age: 2, species: 'dog'},
+  felix: {age: 1, species: 'cat'},
+  cujo: {age: 3, species: 'dog'},
+});
+
+const queries = createQueries(store).setQueryDefinition(
+  'petsBySpecies',
+  'pets',
+  ({select, where, param}) => {
+    select('age');
+    where('species', param('species'));
+  },
+  {species: 'dog'}, // Initial param value
+);
+
+console.log(queries.getResultTable('petsBySpecies'));
+// -> {fido: {age: 2}, cujo: {age: 3}}
+
+// Update the 'species' param to 'cat' to change the results:
+queries.setParamValue('petsBySpecies', 'species', 'cat');
+console.log(queries.getResultTable('petsBySpecies'));
+// -> {felix: {age: 1}}
+```
+
+<p>You can of course have multiple params in a query definition, and use them in any part of the query definition that you would like. Listeners also work as expected - if you are listening to a query&#x27;s results, and you change a param that affects those results, your listener will be called accordingly.</p><p>For React users, We also shipped the useSetParamValue hook and the useSetParamValues hook, which let you easily update param values from, say, an event handler in your application.</p><p>We know this has been a long-awaited feature, so we hope you enjoy it! See the <a href="https://beta.tinybase.org/guides/using-queries/tinyql/">TinyQL</a> guide for more details, and please let us know how it goes!</p><hr><h1 id="v7-1">v7.1</h1><p>This release introduces <strong>Schematizers</strong>, a new system for converting schemas from popular validation libraries into TinyBase&#x27;s schema format.</p><h2 id="schematizers">Schematizers</h2><p>Schematizers provide a bridge between external schema validation libraries (like Zod, TypeBox, and Valibot) and TinyBase&#x27;s <a href="https://beta.tinybase.org/api/store/type-aliases/schema/tablesschema/"><code>TablesSchema</code></a> and <a href="https://beta.tinybase.org/api/store/type-aliases/schema/valuesschema/"><code>ValuesSchema</code></a> formats. Instead of manually writing TinyBase schemas, you can now convert existing schemas at runtime:</p>
+
+```js
 import {createZodSchematizer} from 'tinybase/schematizers/schematizer-zod';
 import {z} from 'zod';
 
@@ -27,7 +56,6 @@ console.log(schematizedStore.getRow('pets', 'fido'));
 <p>Schematizers perform best-effort conversions, extracting basic type information (string, number, boolean), defaults, and nullable settings from your schemas.</p><p>This release includes support for:</p><ul><li><strong>Zod</strong> via the <a href="https://beta.tinybase.org/api/schematizer-zod/functions/creation/createzodschematizer/"><code>createZodSchematizer</code></a> function</li><li><strong>TypeBox</strong> via the <a href="https://beta.tinybase.org/api/schematizer-typebox/functions/creation/createtypeboxschematizer/"><code>createTypeBoxSchematizer</code></a> function</li><li><strong>Valibot</strong> via the <a href="https://beta.tinybase.org/api/schematizer-valibot/functions/creation/createvalibotschematizer/"><code>createValibotSchematizer</code></a> function</li><li><strong>ArkType</strong> via the <a href="https://beta.tinybase.org/api/schematizer-arktype/functions/creation/createarktypeschematizer/"><code>createArkTypeSchematizer</code></a> function</li><li><strong>Yup</strong> via the <a href="https://beta.tinybase.org/api/schematizer-yup/functions/creation/createyupschematizer/"><code>createYupSchematizer</code></a> function</li><li><strong>Effect Schema</strong> via the <a href="https://beta.tinybase.org/api/schematizer-effect/functions/creation/createeffectschematizer/"><code>createEffectSchematizer</code></a> function</li></ul><p>For more information, see the <a href="https://beta.tinybase.org/guides/schemas/using-schematizers/">Using Schematizers</a> guide.</p><hr><h1 id="v7-0">v7.0</h1><p>This important (and slightly breaking!) release adds support for <code>null</code> as a valid <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> and <a href="https://beta.tinybase.org/api/store/type-aliases/store/value/"><code>Value</code></a> type, alongside <code>string</code>, <code>number</code>, and <code>boolean</code>.</p><h2 id="null-type-support">Null Type Support</h2><p>You can now set Cells and <a href="https://beta.tinybase.org/api/store/type-aliases/store/values/"><code>Values</code></a> to <code>null</code>:</p>
 
 ```js
-const store = createStore();
 store.setCell('pets', 'fido', 'species', 'dog');
 store.setCell('pets', 'fido', 'color', null);
 

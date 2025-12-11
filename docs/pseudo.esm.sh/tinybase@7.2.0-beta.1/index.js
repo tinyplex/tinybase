@@ -127,6 +127,7 @@ var objDel = (obj, id2) => {
   delete obj[id2];
   return obj;
 };
+var objToMap = (obj) => new Map(objEntries(obj));
 var objForEach = (obj, cb) => arrayForEach(objEntries(obj), ([id2, value]) => cb(value, id2));
 var objToArray = (obj, cb) => arrayMap(objEntries(obj), ([id2, value]) => cb(value, id2));
 var objMap = (obj, cb) => objNew(objToArray(obj, (value, id2) => [id2, cb(value, id2)]));
@@ -2787,8 +2788,8 @@ var createQueries = getCreateFunction((store) => {
     forEachQuery,
     hasQuery,
     getTableId,
-    ,
-    ,
+    getQueryArgs,
+    setQueryArgs,
     setDefinition,
     ,
     delDefinition,
@@ -2798,7 +2799,8 @@ var createQueries = getCreateFunction((store) => {
     delStoreListeners
   ] = getDefinableFunctions(
     store,
-    () => true,
+    () => [() => {
+    }, mapNew()],
     getUndefined,
     addListener,
     callListeners
@@ -2838,14 +2840,17 @@ var createQueries = getCreateFunction((store) => {
       () => toStore.finishTransaction()
     )
   );
-  const setQueryDefinition = (queryId, tableId, build) => {
+  const setQueryDefinition = (queryId, tableId, build, paramValues = {}) => {
     setDefinition(queryId, tableId);
+    setQueryArgs(queryId, [build, objToMap(paramValues)]);
     resetPreStores(queryId);
+    const [, paramsMap] = getQueryArgs(queryId);
     const selectEntries = [];
     const joinEntries = [[void 0, [tableId, void 0, void 0, [], mapNew()]]];
     const wheres = [];
     const groupEntries = [];
     const havings = [];
+    const param = (paramId) => mapGet(paramsMap, paramId);
     const select = (arg1, arg2) => {
       const selectEntry = isFunction(arg1) ? [size(selectEntries) + EMPTY_STRING, arg1] : [
         isUndefined(arg2) ? arg1 : arg2,
@@ -2891,7 +2896,7 @@ var createQueries = getCreateFunction((store) => {
       havings,
       isFunction(arg1) ? arg1 : (getSelectedOrGroupedCell) => getSelectedOrGroupedCell(arg1) === arg2
     );
-    build({ select, join, where, group, having });
+    build({ select, join, where, group, having, param });
     const selects = mapNew(selectEntries);
     if (collIsEmpty(selects)) {
       return queries;
@@ -3134,6 +3139,24 @@ var createQueries = getCreateFunction((store) => {
     delDefinition(queryId);
     return queries;
   };
+  const setParamValues = (queryId, paramValues) => {
+    ifNotUndefined(
+      getQueryArgs(queryId),
+      (definition) => resultStore.transaction(
+        () => setQueryDefinition(
+          queryId,
+          getTableId(queryId),
+          definition[0],
+          paramValues
+        )
+      )
+    );
+    return queries;
+  };
+  const setParamValue = (queryId, paramId, value) => setParamValues(queryId, {
+    ...mapToObj(getQueryArgs(queryId)?.[1]),
+    [paramId]: value
+  });
   const addQueryIdsListener = (listener) => addQueryIdsListenerImpl(() => listener(queries));
   const delListener = (listenerId) => {
     delListenerImpl(listenerId);
@@ -3151,6 +3174,8 @@ var createQueries = getCreateFunction((store) => {
   const queries = {
     setQueryDefinition,
     delQueryDefinition,
+    setParamValues,
+    setParamValue,
     getStore,
     getQueryIds,
     forEachQuery,

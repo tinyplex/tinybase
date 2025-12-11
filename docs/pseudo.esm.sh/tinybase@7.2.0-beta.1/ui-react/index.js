@@ -330,26 +330,51 @@ var useListener = (listenable, thing, listener, listenerDeps = EMPTY_ARRAY, preA
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [thing, listenable, ...preArgs, ...listenerDeps, ...postArgs]
 );
-var useSetCallback = (storeOrStoreId, settable, get, getDeps = EMPTY_ARRAY, then = getUndefined, thenDeps = EMPTY_ARRAY, ...args) => {
-  const store = useStoreOrStoreById(storeOrStoreId);
-  return useCallback(
-    (parameter) => ifNotUndefined(
-      store,
-      (store2) => ifNotUndefined(
-        get(parameter, store2),
-        (thing) => then(
-          store2[SET + settable](
-            ...argsOrGetArgs(args, store2, parameter),
-            thing
-          ),
+var useSetCallback = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY, then = getUndefined, thenDeps = EMPTY_ARRAY, methodPrefix = EMPTY_STRING, ...args) => useCallback(
+  (parameter) => ifNotUndefined(
+    storeOrQueries,
+    (obj) => ifNotUndefined(
+      get(parameter, obj),
+      (thing) => then(
+        obj[methodPrefix + settable](
+          ...argsOrGetArgs(args, obj, parameter),
           thing
-        )
+        ),
+        thing
       )
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, settable, ...getDeps, ...thenDeps, ...nonFunctionDeps(args)]
-  );
-};
+    )
+  ),
+  /* eslint-disable react-hooks/exhaustive-deps */
+  [
+    storeOrQueries,
+    settable,
+    ...getDeps,
+    ...thenDeps,
+    methodPrefix,
+    ...nonFunctionDeps(args)
+  ]
+  /* eslint-enable react-hooks/exhaustive-deps */
+);
+var useStoreSetCallback = (storeOrStoreId, settable, get, getDeps = EMPTY_ARRAY, then = getUndefined, thenDeps = EMPTY_ARRAY, ...args) => useSetCallback(
+  useStoreOrStoreById(storeOrStoreId),
+  settable,
+  get,
+  getDeps,
+  then,
+  thenDeps,
+  SET,
+  ...args
+);
+var useQueriesSetCallback = (queriesOrQueriesId, settable, get, getDeps = EMPTY_ARRAY, then = getUndefined, thenDeps = EMPTY_ARRAY, ...args) => useSetCallback(
+  useQueriesOrQueriesById(queriesOrQueriesId),
+  settable,
+  get,
+  getDeps,
+  then,
+  thenDeps,
+  EMPTY_STRING,
+  ...args
+);
 var argsOrGetArgs = (args, store, parameter) => arrayMap(args, (arg) => isFunction(arg) ? arg(parameter, store) : arg);
 var nonFunctionDeps = (args) => arrayFilter(args, (arg) => !isFunction(arg));
 var useDel = (storeOrStoreId, deletable, then = getUndefined, thenDeps = EMPTY_ARRAY, ...args) => {
@@ -502,7 +527,7 @@ var useValue = (valueId, storeOrStoreId) => useListenable(
   3,
   [valueId]
 );
-var useSetTablesCallback = (getTables, getTablesDeps, storeOrStoreId, then, thenDeps) => useSetCallback(
+var useSetTablesCallback = (getTables, getTablesDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
   storeOrStoreId,
   TABLES,
   getTables,
@@ -510,7 +535,7 @@ var useSetTablesCallback = (getTables, getTablesDeps, storeOrStoreId, then, then
   then,
   thenDeps
 );
-var useSetTableCallback = (tableId, getTable, getTableDeps, storeOrStoreId, then, thenDeps) => useSetCallback(
+var useSetTableCallback = (tableId, getTable, getTableDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
   storeOrStoreId,
   TABLE,
   getTable,
@@ -519,7 +544,7 @@ var useSetTableCallback = (tableId, getTable, getTableDeps, storeOrStoreId, then
   thenDeps,
   tableId
 );
-var useSetRowCallback = (tableId, rowId, getRow, getRowDeps, storeOrStoreId, then, thenDeps) => useSetCallback(
+var useSetRowCallback = (tableId, rowId, getRow, getRowDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
   storeOrStoreId,
   ROW,
   getRow,
@@ -551,7 +576,7 @@ var useAddRowCallback = (tableId, getRow, getRowDeps = EMPTY_ARRAY, storeOrStore
     [store, tableId, ...getRowDeps, ...thenDeps, reuseRowIds]
   );
 };
-var useSetPartialRowCallback = (tableId, rowId, getPartialRow, getPartialRowDeps, storeOrStoreId, then, thenDeps) => useSetCallback(
+var useSetPartialRowCallback = (tableId, rowId, getPartialRow, getPartialRowDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
   storeOrStoreId,
   PARTIAL + ROW,
   getPartialRow,
@@ -561,7 +586,7 @@ var useSetPartialRowCallback = (tableId, rowId, getPartialRow, getPartialRowDeps
   tableId,
   rowId
 );
-var useSetCellCallback = (tableId, rowId, cellId, getCell, getCellDeps, storeOrStoreId, then, thenDeps) => useSetCallback(
+var useSetCellCallback = (tableId, rowId, cellId, getCell, getCellDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
   storeOrStoreId,
   CELL,
   getCell,
@@ -572,7 +597,7 @@ var useSetCellCallback = (tableId, rowId, cellId, getCell, getCellDeps, storeOrS
   rowId,
   cellId
 );
-var useSetValuesCallback = (getValues, getValuesDeps, storeOrStoreId, then, thenDeps) => useSetCallback(
+var useSetValuesCallback = (getValues, getValuesDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
   storeOrStoreId,
   VALUES,
   getValues,
@@ -580,7 +605,7 @@ var useSetValuesCallback = (getValues, getValuesDeps, storeOrStoreId, then, then
   then,
   thenDeps
 );
-var useSetPartialValuesCallback = (getPartialValues, getPartialValuesDeps, storeOrStoreId, then, thenDeps) => useSetCallback(
+var useSetPartialValuesCallback = (getPartialValues, getPartialValuesDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
   storeOrStoreId,
   PARTIAL + VALUES,
   getPartialValues,
@@ -588,7 +613,7 @@ var useSetPartialValuesCallback = (getPartialValues, getPartialValuesDeps, store
   then,
   thenDeps
 );
-var useSetValueCallback = (valueId, getValue, getValueDeps, storeOrStoreId, then, thenDeps) => useSetCallback(
+var useSetValueCallback = (valueId, getValue, getValueDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
   storeOrStoreId,
   VALUE,
   getValue,
@@ -1026,6 +1051,25 @@ var useResultCellListener = (queryId, rowId, cellId, listener, listenerDeps, que
   listener,
   listenerDeps,
   [queryId, rowId, cellId]
+);
+var useSetQueryParamValueCallback = (queryId, paramId, getParamValue, getParamValueDeps, queriesOrQueriesId, then, thenDeps) => useQueriesSetCallback(
+  queriesOrQueriesId,
+  "setParamValue",
+  getParamValue,
+  getParamValueDeps,
+  then,
+  thenDeps,
+  queryId,
+  paramId
+);
+var useSetQueryParamValuesCallback = (queryId, getParamValues, getParamValuesDeps, queriesOrQueriesId, then, thenDeps) => useQueriesSetCallback(
+  queriesOrQueriesId,
+  "setParamValues",
+  getParamValues,
+  getParamValuesDeps,
+  then,
+  thenDeps,
+  queryId
 );
 var useCreateCheckpoints = (store, create, createDeps) => useCreate(store, create, createDeps);
 var useCheckpointsIds = () => useThingIds(OFFSET_CHECKPOINTS);
@@ -1720,6 +1764,8 @@ export {
   useSetCheckpointCallback,
   useSetPartialRowCallback,
   useSetPartialValuesCallback,
+  useSetQueryParamValueCallback,
+  useSetQueryParamValuesCallback,
   useSetRowCallback,
   useSetTableCallback,
   useSetTablesCallback,

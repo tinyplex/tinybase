@@ -376,26 +376,41 @@ var useListenable2 = (listenable, thing, returnType, args = EMPTY_ARRAY2) => {
   );
   return useSyncExternalStore2(subscribe, getResult, getResult);
 };
-var useSetCallback = (storeOrStoreId, settable, get, getDeps = EMPTY_ARRAY2, then = getUndefined, thenDeps = EMPTY_ARRAY2, ...args) => {
-  const store = useStoreOrStoreById2(storeOrStoreId);
-  return useCallback2(
-    (parameter) => ifNotUndefined2(
-      store,
-      (store2) => ifNotUndefined2(
-        get(parameter, store2),
-        (thing) => then(
-          store2[SET + settable](
-            ...argsOrGetArgs(args, store2, parameter),
-            thing
-          ),
+var useSetCallback = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY2, then = getUndefined, thenDeps = EMPTY_ARRAY2, methodPrefix = EMPTY_STRING2, ...args) => useCallback2(
+  (parameter) => ifNotUndefined2(
+    storeOrQueries,
+    (obj) => ifNotUndefined2(
+      get(parameter, obj),
+      (thing) => then(
+        obj[methodPrefix + settable](
+          ...argsOrGetArgs(args, obj, parameter),
           thing
-        )
+        ),
+        thing
       )
-    ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, settable, ...getDeps, ...thenDeps, ...nonFunctionDeps(args)]
-  );
-};
+    )
+  ),
+  /* eslint-disable react-hooks/exhaustive-deps */
+  [
+    storeOrQueries,
+    settable,
+    ...getDeps,
+    ...thenDeps,
+    methodPrefix,
+    ...nonFunctionDeps(args)
+  ]
+  /* eslint-enable react-hooks/exhaustive-deps */
+);
+var useStoreSetCallback = (storeOrStoreId, settable, get, getDeps = EMPTY_ARRAY2, then = getUndefined, thenDeps = EMPTY_ARRAY2, ...args) => useSetCallback(
+  useStoreOrStoreById2(storeOrStoreId),
+  settable,
+  get,
+  getDeps,
+  then,
+  thenDeps,
+  SET,
+  ...args
+);
 var argsOrGetArgs = (args, store, parameter) => arrayMap2(args, (arg) => isFunction(arg) ? arg(parameter, store) : arg);
 var nonFunctionDeps = (args) => arrayFilter(args, (arg) => !isFunction(arg));
 var useSortedRowIdsImpl = (tableId, cellId, descending, offset, limit, storeOrStoreId) => useListenable2(
@@ -455,7 +470,7 @@ var useValue2 = (valueId, storeOrStoreId) => useListenable2(
   3,
   [valueId]
 );
-var useSetCellCallback = (tableId, rowId, cellId, getCell, getCellDeps, storeOrStoreId, then, thenDeps) => useSetCallback(
+var useSetCellCallback = (tableId, rowId, cellId, getCell, getCellDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
   storeOrStoreId,
   CELL2,
   getCell,
@@ -466,7 +481,7 @@ var useSetCellCallback = (tableId, rowId, cellId, getCell, getCellDeps, storeOrS
   rowId,
   cellId
 );
-var useSetValueCallback = (valueId, getValue, getValueDeps, storeOrStoreId, then, thenDeps) => useSetCallback(
+var useSetValueCallback = (valueId, getValue, getValueDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
   storeOrStoreId,
   VALUE2,
   getValue,
