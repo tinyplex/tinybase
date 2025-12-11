@@ -1690,8 +1690,8 @@
    * The third `query` parameter is a callback that you provide to define the
    * query. That callback is provided with a `keywords` object that contains the
    * functions you use to define the query, like `select`, `join`, and so on.
-   * You can see how that is used in the simple example below. The following
-   * five clause types are supported:
+   * You can see how that is used in the simple example below. The following six
+   * clause types are supported:
    *
    * - The Select type describes a function that lets you specify a Cell or
    *   calculated value for including into the query's result.
@@ -1704,6 +1704,8 @@
    *   of a Cell in multiple ResultRows should be aggregated together.
    * - The Having type describes a function that lets you specify conditions to
    *   filter results, based on the grouped Cells resulting from a Group clause.
+   * - The Param type (since v7.2) describes a function that lets you specify
+   *   parameters for a parameterized query.
    *
    * Full documentation and examples are provided in the sections for each of
    * those clause types.
