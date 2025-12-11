@@ -4531,58 +4531,74 @@ describe('Miscellaneous', () => {
   });
 });
 
-describe('Parameterized Queries', () => {
+describe.only('Parameterized', () => {
   beforeEach(() => {
     store.setTables({
       t1: {
-        r1: {c1: 'v1', c2: 'odd', c3: 1},
-        r2: {c1: 'v2', c2: 'even', c3: 2},
-        r3: {c1: 'v1', c2: 'even', c3: 3},
-        r4: {c1: 'v2', c2: 'odd', c3: 4},
-        r5: {c1: 'v1', c2: 'odd', c3: 5},
+        r1: {c1: 'a', c2: 'odd', c3: 1},
+        r2: {c1: 'b', c2: 'even', c3: 2},
+        r3: {c1: 'c', c2: 'odd', c3: 3},
+        r4: {c1: 'd', c2: 'even', c3: 4},
+        r5: {c1: 'e', c2: 'odd', c3: 5},
       },
     });
   });
 
-  describe('Basic Params', () => {
-    test('use param in where clause with string value', () => {
+  describe('Basics (Where)', () => {
+    test('where clause with string value, raw', () => {
       queries.setQueryDefinition(
         'q1',
         't1',
         ({select, where, param}) => {
-          select('c1');
           select('c2');
-          where((getTableCell) => getTableCell('c1') === param('p1'));
+          where('c2', param('p2') ?? '');
         },
-        {p1: 'v1'},
+        {p2: 'odd'},
       );
 
       expect(queries.getResultTable('q1')).toEqual({
-        r1: {c1: 'v1', c2: 'odd'},
-        r3: {c1: 'v1', c2: 'even'},
-        r5: {c1: 'v1', c2: 'odd'},
+        r1: {c2: 'odd'},
+        r3: {c2: 'odd'},
+        r5: {c2: 'odd'},
       });
     });
 
-    test('use param in where clause with number value', () => {
+    test('where clause with string value, lambda', () => {
       queries.setQueryDefinition(
         'q1',
         't1',
         ({select, where, param}) => {
-          select('c1');
-          select('c3');
-          where(
-            (getTableCell) =>
-              (getTableCell('c3') as number) > (param('p1') as number),
-          );
+          select('c2');
+          where((getTableCell) => getTableCell('c2') === param('p2'));
         },
-        {p1: 2},
+        {p2: 'odd'},
       );
 
       expect(queries.getResultTable('q1')).toEqual({
-        r3: {c1: 'v1', c3: 3},
-        r4: {c1: 'v2', c3: 4},
-        r5: {c1: 'v1', c3: 5},
+        r1: {c2: 'odd'},
+        r3: {c2: 'odd'},
+        r5: {c2: 'odd'},
+      });
+    });
+
+    test('where clause with number value', () => {
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c3');
+          where(
+            (getTableCell) =>
+              (getTableCell('c3') as number) > (param('p3') as number),
+          );
+        },
+        {p3: 2},
+      );
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r3: {c3: 3},
+        r4: {c3: 4},
+        r5: {c3: 5},
       });
     });
 
@@ -4591,21 +4607,20 @@ describe('Parameterized Queries', () => {
         'q1',
         't1',
         ({select, where, param}) => {
-          select('c1');
           select('c2');
           select('c3');
           where(
             (getTableCell) =>
-              getTableCell('c1') === param('p1') &&
-              getTableCell('c2') === param('p2'),
+              getTableCell('c2') === param('p2') &&
+              (getTableCell('c3') as number) > (param('p3') as number),
           );
         },
-        {p1: 'v1', p2: 'odd'},
+        {p2: 'odd', p3: 2},
       );
 
       expect(queries.getResultTable('q1')).toEqual({
-        r1: {c1: 'v1', c2: 'odd', c3: 1},
-        r5: {c1: 'v1', c2: 'odd', c3: 5},
+        r3: {c2: 'odd', c3: 3},
+        r5: {c2: 'odd', c3: 5},
       });
     });
 
@@ -4630,9 +4645,7 @@ describe('Parameterized Queries', () => {
         {p1: null},
       );
 
-      expect(queries.getResultTable('q1')).toEqual({
-        r6: {c1: null},
-      });
+      expect(queries.getResultTable('q1')).toEqual({r6: {c1: null}});
     });
 
     test('param with boolean value', () => {
@@ -4642,16 +4655,154 @@ describe('Parameterized Queries', () => {
         'q1',
         't1',
         ({select, where, param}) => {
-          select('c1');
           select('c4');
-          where((getTableCell) => getTableCell('c4') === param('p1'));
+          where((getTableCell) => getTableCell('c4') === param('p4'));
         },
-        {p1: true},
+        {p4: true},
+      );
+
+      expect(queries.getResultTable('q1')).toEqual({r1: {c4: true}});
+    });
+  });
+
+  describe('Select', () => {
+    test('column name', () => {
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, param}) => {
+          select((param('c') as string) ?? '');
+        },
+        {c: 'c1'},
       );
 
       expect(queries.getResultTable('q1')).toEqual({
-        r1: {c1: 'v1', c4: true},
+        r1: {c1: 'a'},
+        r2: {c1: 'b'},
+        r3: {c1: 'c'},
+        r4: {c1: 'd'},
+        r5: {c1: 'e'},
       });
+
+      queries.setParamValue('q1', 'c', 'c2');
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c2: 'odd'},
+        r2: {c2: 'even'},
+        r3: {c2: 'odd'},
+        r4: {c2: 'even'},
+        r5: {c2: 'odd'},
+      });
+    });
+
+    test('custom select', () => {
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, param}) => {
+          select('c1');
+          select((getTableCell) =>
+            getTableCell('c1') === param('p1') ? 'match' : 'no',
+          ).as('c4');
+        },
+        {p1: 'a'},
+      );
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'a', c4: 'match'},
+        r2: {c1: 'b', c4: 'no'},
+        r3: {c1: 'c', c4: 'no'},
+        r4: {c1: 'd', c4: 'no'},
+        r5: {c1: 'e', c4: 'no'},
+      });
+
+      queries.setParamValue('q1', 'p1', 'b');
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'a', c4: 'no'},
+        r2: {c1: 'b', c4: 'match'},
+        r3: {c1: 'c', c4: 'no'},
+        r4: {c1: 'd', c4: 'no'},
+        r5: {c1: 'e', c4: 'no'},
+      });
+    });
+  });
+
+  describe('Groups', () => {
+    test('where before grouping', () => {
+      store.setRow('t1', 'r6', {c1: 'a', c2: 'even', c3: 6});
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, group, param}) => {
+          select('c2');
+          select('c3');
+          where('c2', param('p2') ?? '');
+          group('c3', 'avg').as('a');
+        },
+        {p2: 'odd'},
+      );
+
+      expect(queries.getResultTable('q1')).toEqual({0: {c2: 'odd', a: 3}});
+
+      queries.setParamValue('q1', 'p2', 'even');
+
+      expect(queries.getResultTable('q1')).toEqual({0: {c2: 'even', a: 4}});
+    });
+
+    test('in grouping definition', () => {
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, group, param}) => {
+          select('c2');
+          select('c3');
+          group('c3', param('c') as 'avg' | 'sum').as('a');
+        },
+        {c: 'avg'},
+      );
+
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c2: 'odd', a: 3},
+        1: {c2: 'even', a: 3},
+      });
+
+      queries.setParamValue('q1', 'c', 'sum');
+
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c2: 'odd', a: 9},
+        1: {c2: 'even', a: 6},
+      });
+    });
+  });
+
+  describe('Having', () => {
+    test('having clause', () => {
+      store.setRow('t1', 'r6', {c1: 'a', c2: 'even', c3: 6});
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, group, having, param}) => {
+          select('c2');
+          select('c3');
+          group('c3', 'avg').as('a');
+          having(
+            (getSelectedOrGroupedCell) =>
+              (getSelectedOrGroupedCell('a') as number) >
+              (param('a') as number),
+          );
+        },
+        {a: 2},
+      );
+
+      expect(queries.getResultTable('q1')).toEqual({
+        0: {c2: 'even', a: 4},
+        1: {c2: 'odd', a: 3},
+      });
+
+      queries.setParamValue('q1', 'a', 3);
+
+      expect(queries.getResultTable('q1')).toEqual({0: {c2: 'even', a: 4}});
     });
   });
 
@@ -4661,21 +4812,23 @@ describe('Parameterized Queries', () => {
         'q1',
         't1',
         ({select, where, param}) => {
-          select('c1');
           select('c2');
-          where((getTableCell) => getTableCell('c1') === param('p1'));
+          where((getTableCell) => getTableCell('c2') === param('p2'));
         },
-        {p1: 'v1'},
+        {p2: 'even'},
       );
 
-      expect(queries.getResultRowIds('q1')).toEqual(['r1', 'r3', 'r5']);
-
-      queries.setParamValue('q1', 'p1', 'v2');
-
-      expect(queries.getResultRowIds('q1')).toEqual(['r2', 'r4']);
       expect(queries.getResultTable('q1')).toEqual({
-        r2: {c1: 'v2', c2: 'even'},
-        r4: {c1: 'v2', c2: 'odd'},
+        r2: {c2: 'even'},
+        r4: {c2: 'even'},
+      });
+
+      queries.setParamValue('q1', 'p2', 'odd');
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c2: 'odd'},
+        r3: {c2: 'odd'},
+        r5: {c2: 'odd'},
       });
     });
 
@@ -4684,21 +4837,25 @@ describe('Parameterized Queries', () => {
         'q1',
         't1',
         ({select, where, param}) => {
-          select('c1');
           select('c3');
           where(
             (getTableCell) =>
-              (getTableCell('c3') as number) >= (param('p1') as number),
+              (getTableCell('c3') as number) >= (param('p3') as number),
           );
         },
-        {p1: 4},
+        {p3: 4},
       );
 
-      expect(queries.getResultRowIds('q1')).toEqual(['r4', 'r5']);
+      expect(queries.getResultTable('q1')).toEqual({r4: {c3: 4}, r5: {c3: 5}});
 
-      queries.setParamValue('q1', 'p1', 2);
+      queries.setParamValue('q1', 'p3', 2);
 
-      expect(queries.getResultRowIds('q1')).toEqual(['r2', 'r3', 'r4', 'r5']);
+      expect(queries.getResultTable('q1')).toEqual({
+        r2: {c3: 2},
+        r3: {c3: 3},
+        r4: {c3: 4},
+        r5: {c3: 5},
+      });
     });
 
     test('updates param to null', () => {
@@ -4710,14 +4867,14 @@ describe('Parameterized Queries', () => {
           select('c1');
           where((getTableCell) => getTableCell('c1') === param('p1'));
         },
-        {p1: 'v1'},
+        {p1: 'a'},
       );
 
-      expect(queries.getResultRowIds('q1')).toEqual(['r1', 'r3', 'r5']);
+      expect(queries.getResultTable('q1')).toEqual({r1: {c1: 'a'}});
 
       queries.setParamValue('q1', 'p1', null);
 
-      expect(queries.getResultRowIds('q1')).toEqual(['r6']);
+      expect(queries.getResultTable('q1')).toEqual({r6: {c1: null}});
     });
 
     test('adds new param', () => {
@@ -4733,17 +4890,14 @@ describe('Parameterized Queries', () => {
               getTableCell('c2') === param('p2'),
           );
         },
-        {p1: 'v1'},
+        {p1: 'a'},
       );
 
       expect(queries.getResultTable('q1')).toEqual({});
 
       queries.setParamValue('q1', 'p2', 'odd');
 
-      expect(queries.getResultTable('q1')).toEqual({
-        r1: {c1: 'v1', c2: 'odd'},
-        r5: {c1: 'v1', c2: 'odd'},
-      });
+      expect(queries.getResultTable('q1')).toEqual({r1: {c1: 'a', c2: 'odd'}});
     });
   });
 
@@ -4755,24 +4909,20 @@ describe('Parameterized Queries', () => {
         ({select, where, param}) => {
           select('c1');
           select('c2');
-          select('c3');
           where(
             (getTableCell) =>
               getTableCell('c1') === param('p1') &&
               getTableCell('c2') === param('p2'),
           );
         },
-        {p1: 'v1', p2: 'odd'},
+        {p1: 'a', p2: 'odd'},
       );
 
-      expect(queries.getResultRowIds('q1')).toEqual(['r1', 'r5']);
+      expect(queries.getResultTable('q1')).toEqual({r1: {c1: 'a', c2: 'odd'}});
 
-      queries.setParamValues('q1', {p1: 'v1', p2: 'even'});
+      queries.setParamValues('q1', {p1: 'c', p2: 'odd'});
 
-      expect(queries.getResultRowIds('q1')).toEqual(['r3']);
-      expect(queries.getResultTable('q1')).toEqual({
-        r3: {c1: 'v1', c2: 'even', c3: 3},
-      });
+      expect(queries.getResultTable('q1')).toEqual({r3: {c1: 'c', c2: 'odd'}});
     });
 
     test('replaces all params', () => {
@@ -4783,14 +4933,14 @@ describe('Parameterized Queries', () => {
           select('c1');
           where((getTableCell) => getTableCell('c1') === param('p1'));
         },
-        {p1: 'v1'},
+        {p1: 'a'},
       );
 
-      expect(queries.getResultRowIds('q1')).toEqual(['r1', 'r3', 'r5']);
+      expect(queries.getResultTable('q1')).toEqual({r1: {c1: 'a'}});
 
-      queries.setParamValues('q1', {p1: 'v2'});
+      queries.setParamValues('q1', {p1: 'b'});
 
-      expect(queries.getResultRowIds('q1')).toEqual(['r2', 'r4']);
+      expect(queries.getResultTable('q1')).toEqual({r2: {c1: 'b'}});
     });
 
     test('sets params when initially undefined', () => {
@@ -4801,13 +4951,13 @@ describe('Parameterized Queries', () => {
 
       expect(queries.getResultTable('q1')).toEqual({});
 
-      queries.setParamValues('q1', {p1: 'v2'});
+      queries.setParamValues('q1', {p1: 'b'});
 
-      expect(queries.getResultRowIds('q1')).toEqual(['r2', 'r4']);
+      expect(queries.getResultRowIds('q1')).toEqual(['r2']);
     });
   });
 
-  describe('Params with Listeners', () => {
+  describe('Listeners', () => {
     test('triggers result table listener when param changes', () => {
       queries.setQueryDefinition(
         'q1',
@@ -4816,19 +4966,19 @@ describe('Parameterized Queries', () => {
           select('c1');
           where((getTableCell) => getTableCell('c1') === param('p1'));
         },
-        {p1: 'v1'},
+        {p1: 'a'},
       );
 
       listener = createQueriesListener(queries);
       listener.listenToResultTable('/q1', 'q1');
 
-      queries.setParamValue('q1', 'p1', 'v2');
+      queries.setParamValue('q1', 'p1', 'b');
 
       expectChanges(
         listener,
         '/q1',
-        {q1: {r2: {c1: 'v2'}, r4: {c1: 'v2'}}},
-        {q1: {r1: {c1: 'v1'}, r3: {c1: 'v1'}, r5: {c1: 'v1'}}},
+        {q1: {r2: {c1: 'b'}}},
+        {q1: {r1: {c1: 'a'}}},
       );
     });
 
@@ -4845,7 +4995,7 @@ describe('Parameterized Queries', () => {
               (getTableCell('c3') as number) >= (param('p2') as number),
           );
         },
-        {p1: 'v1', p2: 4},
+        {p1: 'a', p2: 4},
       );
 
       listener = createQueriesListener(queries);
@@ -4856,8 +5006,8 @@ describe('Parameterized Queries', () => {
       expectChanges(
         listener,
         '/q1/r1',
-        {q1: {r1: {c1: 'v1', c2: 'odd'}}},
-        {q1: {r1: {c1: 'v1', c2: 'odd'}}},
+        {q1: {r1: {c1: 'a', c2: 'odd'}}},
+        {q1: {r1: {c1: 'a', c2: 'odd'}}},
       );
     });
 
@@ -4869,106 +5019,20 @@ describe('Parameterized Queries', () => {
           select('c1');
           where((getTableCell) => getTableCell('c1') === param('p1'));
         },
-        {p1: 'v1'},
+        {p1: 'a'},
       );
 
       listener = createQueriesListener(queries);
       listener.listenToResultCell('/q1/r1/c1', 'q1', 'r1', 'c1');
 
-      queries.setParamValue('q1', 'p1', 'v2');
+      queries.setParamValue('q1', 'p1', 'b');
 
       expectChanges(
         listener,
         '/q1/r1/c1',
         {q1: {r1: {c1: undefined}}},
-        {q1: {r1: {c1: 'v1'}}},
+        {q1: {r1: {c1: 'a'}}},
       );
-    });
-  });
-
-  describe('Params with Select Expressions', () => {
-    test('use param in custom select', () => {
-      queries.setQueryDefinition(
-        'q1',
-        't1',
-        ({select, param}) => {
-          select('c1');
-          select((getTableCell) =>
-            getTableCell('c1') === param('p1') ? 'match' : 'no',
-          ).as('c4');
-        },
-        {p1: 'v1'},
-      );
-
-      expect(queries.getResultTable('q1')).toEqual({
-        r1: {c1: 'v1', c4: 'match'},
-        r2: {c1: 'v2', c4: 'no'},
-        r3: {c1: 'v1', c4: 'match'},
-        r4: {c1: 'v2', c4: 'no'},
-        r5: {c1: 'v1', c4: 'match'},
-      });
-
-      queries.setParamValue('q1', 'p1', 'v2');
-
-      expect(queries.getResultTable('q1')).toEqual({
-        r1: {c1: 'v1', c4: 'no'},
-        r2: {c1: 'v2', c4: 'match'},
-        r3: {c1: 'v1', c4: 'no'},
-        r4: {c1: 'v2', c4: 'match'},
-        r5: {c1: 'v1', c4: 'no'},
-      });
-    });
-  });
-
-  describe('Params with Groups', () => {
-    test('use param in where before grouping', () => {
-      queries.setQueryDefinition(
-        'q1',
-        't1',
-        ({select, where, group, param}) => {
-          select('c2');
-          select('c3');
-          where((getTableCell) => getTableCell('c1') === param('p1'));
-          group('c3', 'avg').as('c4');
-        },
-        {p1: 'v1'},
-      );
-
-      expect(queries.getResultRowCount('q1')).toEqual(2);
-      expect(queries.getResultCell('q1', 'odd', 'c4')).toEqual(3);
-      expect(queries.getResultCell('q1', 'even', 'c4')).toEqual(3);
-
-      queries.setParamValue('q1', 'p1', 'v2');
-
-      expect(queries.getResultRowCount('q1')).toEqual(2);
-      expect(queries.getResultCell('q1', 'even', 'c4')).toEqual(2);
-      expect(queries.getResultCell('q1', 'odd', 'c4')).toEqual(4);
-    });
-  });
-
-  describe('Params with Having', () => {
-    test('use param in having clause', () => {
-      queries.setQueryDefinition(
-        'q1',
-        't1',
-        ({select, group, having, param}) => {
-          select('c1');
-          select('c3');
-          group('c3', 'avg').as('c4');
-          having(
-            (getSelectedOrGroupedCell) =>
-              (getSelectedOrGroupedCell('c4') as number) >
-              (param('p1') as number),
-          );
-        },
-        {p1: 3},
-      );
-
-      expect(queries.getResultRowIds('q1')).toEqual(['v2']);
-
-      queries.setParamValue('q1', 'p1', 2);
-
-      expect(queries.getResultRowIds('q1')).toEqual(['v1', 'v2']);
     });
   });
 });
