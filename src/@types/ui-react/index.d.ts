@@ -936,8 +936,8 @@ export function useResultCellListener(
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
 
-/// useSetQueryParamValueCallback
-export function useSetQueryParamValueCallback<Parameter>(
+/// useSetParamValueCallback
+export function useSetParamValueCallback<Parameter>(
   queryId: Id | GetId<Parameter>,
   paramId: Id | GetId<Parameter>,
   getParamValue: (parameter: Parameter, queries: Queries) => ParamValue,
@@ -947,8 +947,8 @@ export function useSetQueryParamValueCallback<Parameter>(
   thenDeps?: React.DependencyList,
 ): ParameterizedCallback<Parameter>;
 
-/// useSetQueryParamValuesCallback
-export function useSetQueryParamValuesCallback<Parameter>(
+/// useSetParamValuesCallback
+export function useSetParamValuesCallback<Parameter>(
   queryId: Id | GetId<Parameter>,
   getParamValues: (parameter: Parameter, queries: Queries) => ParamValues,
   getParamValuesDeps?: React.DependencyList,

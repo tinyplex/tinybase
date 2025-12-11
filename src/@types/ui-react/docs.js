@@ -10054,7 +10054,7 @@
  */
 /// useResultCellListener
 /**
- * The useSetQueryParamValueCallback hook returns a parameterized callback that
+ * The useSetParamValueCallback hook returns a parameterized callback that
  * can be used to set a single parameter value for a query.
  *
  * This hook is useful, for example, when creating an event handler that will
@@ -10099,7 +10099,7 @@
  * parameter defaults to an empty array.
  * @returns A parameterized callback for subsequent use.
  * @example
- * This example uses the useSetQueryParamValueCallback hook to create an event
+ * This example uses the useSetParamValueCallback hook to create an event
  * handler which updates a query parameter when an input element changes.
  *
  * ```jsx
@@ -10108,7 +10108,7 @@
  * import {createQueries, createStore} from 'tinybase';
  * import {
  *   useResultTable,
- *   useSetQueryParamValueCallback,
+ *   useSetParamValueCallback,
  * } from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -10128,7 +10128,7 @@
  * );
  *
  * const App = () => {
- *   const handleInput = useSetQueryParamValueCallback(
+ *   const handleInput = useSetParamValueCallback(
  *     'dogOrCat',
  *     'species',
  *     (e) => e.target.value,
@@ -10173,9 +10173,9 @@
  * @category Queries hooks
  * @since v7.2.0
  */
-/// useSetQueryParamValueCallback
+/// useSetParamValueCallback
 /**
- * The useSetQueryParamValuesCallback hook returns a parameterized callback that
+ * The useSetParamValuesCallback hook returns a parameterized callback that
  * can be used to set multiple parameter values for a query at once.
  *
  * This hook is useful, for example, when creating an event handler that will
@@ -10218,7 +10218,7 @@
  * parameter defaults to an empty array.
  * @returns A parameterized callback for subsequent use.
  * @example
- * This example uses the useSetQueryParamValuesCallback hook to create an event
+ * This example uses the useSetParamValuesCallback hook to create an event
  * handler which updates multiple query parameters when a form is submitted.
  *
  * ```jsx
@@ -10227,7 +10227,7 @@
  * import {createQueries, createStore} from 'tinybase';
  * import {
  *   useResultTable,
- *   useSetQueryParamValuesCallback,
+ *   useSetParamValuesCallback,
  * } from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
@@ -10249,7 +10249,7 @@
  * );
  *
  * const App = () => {
- *   const handleSubmit = useSetQueryParamValuesCallback(
+ *   const handleSubmit = useSetParamValuesCallback(
  *     'speciesAndColor',
  *     (e) => {
  *       e.preventDefault();
@@ -10318,7 +10318,7 @@
  * @category Queries hooks
  * @since v7.2.0
  */
-/// useSetQueryParamValuesCallback
+/// useSetParamValuesCallback
 /**
  * The useCreateCheckpoints hook is used to create a Checkpoints object within a
  * React application with convenient memoization.

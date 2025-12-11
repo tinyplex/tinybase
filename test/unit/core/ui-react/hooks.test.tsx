@@ -121,10 +121,10 @@ import {
   useRowListener,
   useSetCellCallback,
   useSetCheckpointCallback,
+  useSetParamValueCallback,
+  useSetParamValuesCallback,
   useSetPartialRowCallback,
   useSetPartialValuesCallback,
-  useSetQueryParamValueCallback,
-  useSetQueryParamValuesCallback,
   useSetRowCallback,
   useSetTableCallback,
   useSetTablesCallback,
@@ -2532,7 +2532,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useSetQueryParamValueCallback', () => {
+  test('useSetParamValueCallback', () => {
     const queries = createQueries(store);
     queries.setQueryDefinition(
       'q1',
@@ -2554,9 +2554,14 @@ describe('Read Hooks', () => {
       readonly multiplier: number;
       readonly then: (queries: any, paramValue: any) => void;
     }) => {
-      const handler = useSetQueryParamValueCallback<
-        MouseEvent<HTMLButtonElement>
-      >('q1', 'p1', (e) => e.screenX * multiplier, [multiplier], queries, then);
+      const handler = useSetParamValueCallback<MouseEvent<HTMLButtonElement>>(
+        'q1',
+        'p1',
+        (e) => e.screenX * multiplier,
+        [multiplier],
+        queries,
+        then,
+      );
       handlers[multiplier] = handler;
       return <button onClick={handler} />;
     };
@@ -2582,7 +2587,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useSetQueryParamValueCallback, parameterized Ids', () => {
+  test('useSetParamValueCallback, parameterized Ids', () => {
     const queries = createQueries(store);
     queries
       .setQueryDefinition(
@@ -2614,9 +2619,7 @@ describe('Read Hooks', () => {
       readonly multiplier: number;
       readonly then: (queries: any, paramValue: any) => void;
     }) => {
-      const handler = useSetQueryParamValueCallback<
-        MouseEvent<HTMLButtonElement>
-      >(
+      const handler = useSetParamValueCallback<MouseEvent<HTMLButtonElement>>(
         (e) => 'q' + e.screenY,
         (e) => 'p' + e.screenY,
         (e) => e.screenX * multiplier,
@@ -2648,7 +2651,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useSetQueryParamValuesCallback', () => {
+  test('useSetParamValuesCallback', () => {
     const queries = createQueries(store);
     queries.setQueryDefinition(
       'q1',
@@ -2675,9 +2678,7 @@ describe('Read Hooks', () => {
       readonly multiplier: number;
       readonly then: (queries: any, paramValues: any) => void;
     }) => {
-      const handler = useSetQueryParamValuesCallback<
-        MouseEvent<HTMLButtonElement>
-      >(
+      const handler = useSetParamValuesCallback<MouseEvent<HTMLButtonElement>>(
         'q1',
         (e) => ({
           min: e.screenX * multiplier,
@@ -2737,7 +2738,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useSetQueryParamValuesCallback, parameterized queryId', () => {
+  test('useSetParamValuesCallback, parameterized queryId', () => {
     const queries = createQueries(store);
     queries
       .setQueryDefinition(
@@ -2769,9 +2770,7 @@ describe('Read Hooks', () => {
       readonly multiplier: number;
       readonly then: (queries: any, paramValues: any) => void;
     }) => {
-      const handler = useSetQueryParamValuesCallback<
-        MouseEvent<HTMLButtonElement>
-      >(
+      const handler = useSetParamValuesCallback<MouseEvent<HTMLButtonElement>>(
         (e) => 'q' + e.screenY,
         (e) => ({value: e.screenX * multiplier}),
         [multiplier],

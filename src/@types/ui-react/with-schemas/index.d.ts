@@ -1129,8 +1129,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// useSetQueryParamValueCallback
-  useSetQueryParamValueCallback: <Parameter>(
+  /// useSetParamValueCallback
+  useSetParamValueCallback: <Parameter>(
     queryId: Id | GetId<Schemas, Parameter, Id>,
     paramId: Id | GetId<Schemas, Parameter, Id>,
     getParamValue: (
@@ -1143,8 +1143,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     thenDeps?: React.DependencyList,
   ) => ParameterizedCallback<Parameter>;
 
-  /// useSetQueryParamValuesCallback
-  useSetQueryParamValuesCallback: <Parameter>(
+  /// useSetParamValuesCallback
+  useSetParamValuesCallback: <Parameter>(
     queryId: Id | GetId<Schemas, Parameter, Id>,
     getParamValues: (
       parameter: Parameter,

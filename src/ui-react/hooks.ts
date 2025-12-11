@@ -198,10 +198,10 @@ import type {
   useRowListener as useRowListenerDecl,
   useSetCellCallback as useSetCellCallbackDecl,
   useSetCheckpointCallback as useSetCheckpointCallbackDecl,
+  useSetParamValueCallback as useSetParamValueCallbackDecl,
+  useSetParamValuesCallback as useSetParamValuesCallbackDecl,
   useSetPartialRowCallback as useSetPartialRowCallbackDecl,
   useSetPartialValuesCallback as useSetPartialValuesCallbackDecl,
-  useSetQueryParamValueCallback as useSetQueryParamValueCallbackDecl,
-  useSetQueryParamValuesCallback as useSetQueryParamValuesCallbackDecl,
   useSetRowCallback as useSetRowCallbackDecl,
   useSetTableCallback as useSetTableCallbackDecl,
   useSetTablesCallback as useSetTablesCallbackDecl,
@@ -1955,45 +1955,47 @@ export const useResultCellListener: typeof useResultCellListenerDecl = (
     [queryId, rowId, cellId],
   );
 
-export const useSetQueryParamValueCallback: typeof useSetQueryParamValueCallbackDecl =
-  <Parameter>(
-    queryId: Id | GetId<Parameter>,
-    paramId: Id | GetId<Parameter>,
-    getParamValue: (parameter: Parameter, queries: Queries) => ParamValue,
-    getParamValueDeps?: DependencyList,
-    queriesOrQueriesId?: QueriesOrQueriesId,
-    then?: (queries: Queries, paramValue: ParamValue) => void,
-    thenDeps?: DependencyList,
-  ): ParameterizedCallback<Parameter> =>
-    useQueriesSetCallback(
-      queriesOrQueriesId,
-      'setParamValue',
-      getParamValue,
-      getParamValueDeps,
-      then,
-      thenDeps,
-      queryId,
-      paramId,
-    );
+export const useSetParamValueCallback: typeof useSetParamValueCallbackDecl = <
+  Parameter,
+>(
+  queryId: Id | GetId<Parameter>,
+  paramId: Id | GetId<Parameter>,
+  getParamValue: (parameter: Parameter, queries: Queries) => ParamValue,
+  getParamValueDeps?: DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+  then?: (queries: Queries, paramValue: ParamValue) => void,
+  thenDeps?: DependencyList,
+): ParameterizedCallback<Parameter> =>
+  useQueriesSetCallback(
+    queriesOrQueriesId,
+    'setParamValue',
+    getParamValue,
+    getParamValueDeps,
+    then,
+    thenDeps,
+    queryId,
+    paramId,
+  );
 
-export const useSetQueryParamValuesCallback: typeof useSetQueryParamValuesCallbackDecl =
-  <Parameter>(
-    queryId: Id | GetId<Parameter>,
-    getParamValues: (parameter: Parameter, queries: Queries) => ParamValues,
-    getParamValuesDeps?: DependencyList,
-    queriesOrQueriesId?: QueriesOrQueriesId,
-    then?: (queries: Queries, paramValues: ParamValues) => void,
-    thenDeps?: DependencyList,
-  ): ParameterizedCallback<Parameter> =>
-    useQueriesSetCallback(
-      queriesOrQueriesId,
-      'setParamValues',
-      getParamValues,
-      getParamValuesDeps,
-      then,
-      thenDeps,
-      queryId,
-    );
+export const useSetParamValuesCallback: typeof useSetParamValuesCallbackDecl = <
+  Parameter,
+>(
+  queryId: Id | GetId<Parameter>,
+  getParamValues: (parameter: Parameter, queries: Queries) => ParamValues,
+  getParamValuesDeps?: DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+  then?: (queries: Queries, paramValues: ParamValues) => void,
+  thenDeps?: DependencyList,
+): ParameterizedCallback<Parameter> =>
+  useQueriesSetCallback(
+    queriesOrQueriesId,
+    'setParamValues',
+    getParamValues,
+    getParamValuesDeps,
+    then,
+    thenDeps,
+    queryId,
+  );
 
 export const useCreateCheckpoints: typeof useCreateCheckpointsDecl = (
   store: Store | undefined,
