@@ -1052,7 +1052,7 @@ var useResultCellListener = (queryId, rowId, cellId, listener, listenerDeps, que
   listenerDeps,
   [queryId, rowId, cellId]
 );
-var useSetQueryParamValueCallback = (queryId, paramId, getParamValue, getParamValueDeps, queriesOrQueriesId, then, thenDeps) => useQueriesSetCallback(
+var useSetParamValueCallback = (queryId, paramId, getParamValue, getParamValueDeps, queriesOrQueriesId, then, thenDeps) => useQueriesSetCallback(
   queriesOrQueriesId,
   "setParamValue",
   getParamValue,
@@ -1062,7 +1062,7 @@ var useSetQueryParamValueCallback = (queryId, paramId, getParamValue, getParamVa
   queryId,
   paramId
 );
-var useSetQueryParamValuesCallback = (queryId, getParamValues, getParamValuesDeps, queriesOrQueriesId, then, thenDeps) => useQueriesSetCallback(
+var useSetParamValuesCallback = (queryId, getParamValues, getParamValuesDeps, queriesOrQueriesId, then, thenDeps) => useQueriesSetCallback(
   queriesOrQueriesId,
   "setParamValues",
   getParamValues,
@@ -1762,10 +1762,10 @@ export {
   useRowListener,
   useSetCellCallback,
   useSetCheckpointCallback,
+  useSetParamValueCallback,
+  useSetParamValuesCallback,
   useSetPartialRowCallback,
   useSetPartialValuesCallback,
-  useSetQueryParamValueCallback,
-  useSetQueryParamValuesCallback,
   useSetRowCallback,
   useSetTableCallback,
   useSetTablesCallback,

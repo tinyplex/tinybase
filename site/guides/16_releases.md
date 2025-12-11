@@ -48,9 +48,9 @@ any part of the query definition that you would like. Listeners also work as
 expected - if you are listening to a query's results, and you change a param
 that affects those results, your listener will be called accordingly.
 
-For React users, We also shipped the useSetParamValue hook and the
-useSetParamValues hook, which let you easily update param values from, say, an
-event handler in your application.
+For React users, We also shipped the useSetParamValueCallback hook and the
+useSetParamValuesCallback hook, which let you easily update param values from,
+say, an event handler in your application.
 
 We know this has been a long-awaited feature, so we hope you enjoy it! See the
 TinyQL guide for more details, and please let us know how it goes!
