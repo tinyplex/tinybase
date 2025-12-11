@@ -10106,10 +10106,7 @@
  * import React from 'react';
  * import {createRoot} from 'react-dom/client';
  * import {createQueries, createStore} from 'tinybase';
- * import {
- *   useResultTable,
- *   useSetParamValueCallback,
- * } from 'tinybase/ui-react';
+ * import {useResultTable, useSetParamValueCallback} from 'tinybase/ui-react';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
