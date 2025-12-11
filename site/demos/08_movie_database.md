@@ -115,6 +115,7 @@ import {
   useQueries,
   useResultCell,
   useResultRowIds,
+  useSetParamValuesCallback,
   useSetValuesCallback,
   useValues,
 } from 'tinybase/ui-react';
@@ -172,9 +173,9 @@ loading spinner is shown.
 }
 ```
 
-We also added the Inspector component at the end there so you can inspect
-what is going on with the data during this demo. Simply click the TinyBase logo
-in the corner.
+We also added the Inspector component at the end there so you can inspect what
+is going on with the data during this demo. Simply click the TinyBase logo in
+the corner.
 
 With simple boilerplate code to load the component, off we go:
 
@@ -522,6 +523,10 @@ We also create query definitions for the other persistent queries. These use the
 `group` function to count the number of movies per year, genre, and so on, used
 in the overview components of each of the main sections of the app.
 
+The `movies` query definition is re-used across the app, so note that it takes
+optional params for `year` and `genreId` so that different views can show movies
+by year or genre if required.
+
 ```js
   // ...
   queries.setQueryDefinition('years', 'movies', ({select, group}) => {
@@ -556,9 +561,25 @@ in the overview components of each of the main sections of the app.
     select('people', 'image').as('castImage');
     select('people', 'gender');
     select('people', 'popularity');
+
     join('people', 'castId');
     group('movieId', 'count').as('movieCount');
   });
+
+  queries.setQueryDefinition(
+    'movies',
+    'movies',
+    ({select, join, where, param}) => {
+      queryMovieBasics({select, join});
+      if (param('year')) {
+        where('year', param('year'));
+      }
+      if (param('genreId')) {
+        where('genreId', param('genreId'));
+      }
+    },
+    {year: null, genreId: null},
+  );
 
   return queries;
 }
@@ -988,32 +1009,20 @@ those shortly.
 Moving on, the detail for a specific year is just a sorted table of the movies
 from that year.
 
-But here is a case where we need to run the query within the component (rather
-than globally across the app). The `moviesInYear` query is constructed whenever
-the `year` prop changes, and uses the `where` function to show the basic movie
-data for just those movies matching that year. We get to benefit from the
-`queryMovieBasics` function again since we just need movie Id, name, rating and
-genre.
+Here is a case where we can use a parameterized query, introduced in TinyBase
+v7.2. The `movies` query was set up once in the app initialization, so we use
+the `useSetParamValuesCallback` hook to update its parameters whenever the
+`year` prop changes. This is more efficient and ergonomic than rebuilding the
+query definition every time.
 
 ```jsx
 const YearDetail = ({year}) => {
-  const queries = useQueries();
-  useMemo(
-    () =>
-      queries.setQueryDefinition(
-        'moviesInYear',
-        'movies',
-        ({select, join, where}) => {
-          queryMovieBasics({select, join});
-          where('year', year);
-        },
-      ),
-    [year],
-  );
+  useSetParamValuesCallback('movies', () => ({year}), [year])();
+
   return (
     <Page title={`Movies from ${year}`}>
       <ResultSortedTableInHtmlTable
-        queryId="moviesInYear"
+        queryId="movies"
         customCells={customCellsForMoviesInYear}
         cellId="rating"
         descending={true}
@@ -1033,29 +1042,17 @@ const customCellsForMoviesInYear = {
 };
 ```
 
-The genre detail page is very similar, with a `where` clause to match the
-genre's Id:
+The genre detail page is very similar, using the same parameterized query but
+setting the `genreId` parameter instead:
 
 ```jsx
 const GenreDetail = ({genreId}) => {
-  const queries = useQueries();
-  useMemo(
-    () =>
-      queries.setQueryDefinition(
-        'moviesInGenre',
-        'movies',
-        ({select, join, where}) => {
-          queryMovieBasics({select, join});
-          where('genreId', genreId);
-        },
-      ),
-    [genreId],
-  );
+  useSetParamValuesCallback('movies', () => ({genreId}), [genreId])();
   const name = useCell('genres', genreId, 'name');
   return name == null ? null : (
     <Page title={`${name} movies`}>
       <ResultSortedTableInHtmlTable
-        queryId="moviesInGenre"
+        queryId="movies"
         customCells={customCellsForMoviesInGenre}
         cellId="rating"
         descending={true}

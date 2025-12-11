@@ -2799,8 +2799,7 @@ var createQueries = getCreateFunction((store) => {
     delStoreListeners
   ] = getDefinableFunctions(
     store,
-    () => [() => {
-    }, mapNew()],
+    () => [],
     getUndefined,
     addListener,
     callListeners

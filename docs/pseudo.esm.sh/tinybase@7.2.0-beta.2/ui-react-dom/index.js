@@ -376,7 +376,7 @@ var useListenable2 = (listenable, thing, returnType, args = EMPTY_ARRAY2) => {
   );
   return useSyncExternalStore2(subscribe, getResult, getResult);
 };
-var useSetCallback = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY2, then = getUndefined, thenDeps = EMPTY_ARRAY2, methodPrefix = EMPTY_STRING2, ...args) => useCallback2(
+var useSetCallback = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY2, then = getUndefined, thenDeps = EMPTY_ARRAY2, methodPrefix, ...args) => useCallback2(
   (parameter) => ifNotUndefined2(
     storeOrQueries,
     (obj) => ifNotUndefined2(
@@ -401,7 +401,7 @@ var useSetCallback = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY2, the
   ]
   /* eslint-enable react-hooks/exhaustive-deps */
 );
-var useStoreSetCallback = (storeOrStoreId, settable, get, getDeps = EMPTY_ARRAY2, then = getUndefined, thenDeps = EMPTY_ARRAY2, ...args) => useSetCallback(
+var useStoreSetCallback = (storeOrStoreId, settable, get, getDeps, then, thenDeps, ...args) => useSetCallback(
   useStoreOrStoreById2(storeOrStoreId),
   settable,
   get,

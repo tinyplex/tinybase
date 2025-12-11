@@ -140,7 +140,7 @@ var useListenable = (listenable, thing, returnType, args = EMPTY_ARRAY) => {
   );
   return useSyncExternalStore(subscribe, getResult, getResult);
 };
-var useSetCallback = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY, then = getUndefined, thenDeps = EMPTY_ARRAY, methodPrefix = EMPTY_STRING, ...args) => useCallback(
+var useSetCallback = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY, then = getUndefined, thenDeps = EMPTY_ARRAY, methodPrefix, ...args) => useCallback(
   (parameter) => ifNotUndefined(
     storeOrQueries,
     (obj) => ifNotUndefined(
@@ -165,7 +165,7 @@ var useSetCallback = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY, then
   ]
   /* eslint-enable react-hooks/exhaustive-deps */
 );
-var useStoreSetCallback = (storeOrStoreId, settable, get, getDeps = EMPTY_ARRAY, then = getUndefined, thenDeps = EMPTY_ARRAY, ...args) => useSetCallback(
+var useStoreSetCallback = (storeOrStoreId, settable, get, getDeps, then, thenDeps, ...args) => useSetCallback(
   useStoreOrStoreById(storeOrStoreId),
   settable,
   get,
@@ -2261,7 +2261,7 @@ var useListenable2 = (listenable, thing, returnType, args = EMPTY_ARRAY2) => {
   );
   return useSyncExternalStore2(subscribe, getResult, getResult);
 };
-var useSetCallback2 = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY2, then = getUndefined2, thenDeps = EMPTY_ARRAY2, methodPrefix = EMPTY_STRING2, ...args) => useCallback2(
+var useSetCallback2 = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY2, then = getUndefined2, thenDeps = EMPTY_ARRAY2, methodPrefix, ...args) => useCallback2(
   (parameter) => ifNotUndefined2(
     storeOrQueries,
     (obj) => ifNotUndefined2(
@@ -2286,7 +2286,7 @@ var useSetCallback2 = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY2, th
   ]
   /* eslint-enable react-hooks/exhaustive-deps */
 );
-var useStoreSetCallback2 = (storeOrStoreId, settable, get, getDeps = EMPTY_ARRAY2, then = getUndefined2, thenDeps = EMPTY_ARRAY2, ...args) => useSetCallback2(
+var useStoreSetCallback2 = (storeOrStoreId, settable, get, getDeps, then, thenDeps, ...args) => useSetCallback2(
   useStoreOrStoreById2(storeOrStoreId),
   settable,
   get,

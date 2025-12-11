@@ -330,7 +330,7 @@ var useListener = (listenable, thing, listener, listenerDeps = EMPTY_ARRAY, preA
   // eslint-disable-next-line react-hooks/exhaustive-deps
   [thing, listenable, ...preArgs, ...listenerDeps, ...postArgs]
 );
-var useSetCallback = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY, then = getUndefined, thenDeps = EMPTY_ARRAY, methodPrefix = EMPTY_STRING, ...args) => useCallback(
+var useSetCallback = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY, then = getUndefined, thenDeps = EMPTY_ARRAY, methodPrefix, ...args) => useCallback(
   (parameter) => ifNotUndefined(
     storeOrQueries,
     (obj) => ifNotUndefined(
@@ -355,7 +355,7 @@ var useSetCallback = (storeOrQueries, settable, get, getDeps = EMPTY_ARRAY, then
   ]
   /* eslint-enable react-hooks/exhaustive-deps */
 );
-var useStoreSetCallback = (storeOrStoreId, settable, get, getDeps = EMPTY_ARRAY, then = getUndefined, thenDeps = EMPTY_ARRAY, ...args) => useSetCallback(
+var useStoreSetCallback = (storeOrStoreId, settable, get, getDeps, then, thenDeps, ...args) => useSetCallback(
   useStoreOrStoreById(storeOrStoreId),
   settable,
   get,
@@ -365,7 +365,7 @@ var useStoreSetCallback = (storeOrStoreId, settable, get, getDeps = EMPTY_ARRAY,
   SET,
   ...args
 );
-var useQueriesSetCallback = (queriesOrQueriesId, settable, get, getDeps = EMPTY_ARRAY, then = getUndefined, thenDeps = EMPTY_ARRAY, ...args) => useSetCallback(
+var useQueriesSetCallback = (queriesOrQueriesId, settable, get, getDeps, then, thenDeps, ...args) => useSetCallback(
   useQueriesOrQueriesById(queriesOrQueriesId),
   settable,
   get,
