@@ -1,6 +1,6 @@
 import {beforeEach, describe, expect, test, vi} from 'vitest';
 
-import type {Id, Queries, Store} from 'tinybase';
+import type {Cell, Id, Queries, Store} from 'tinybase';
 import {createQueries, createStore} from 'tinybase';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
 import {createQueriesListener} from '../../common/listeners.ts';
@@ -4551,7 +4551,7 @@ describe('Parameterized', () => {
         't1',
         ({select, where, param}) => {
           select('c2');
-          where('c2', param('p2') ?? '');
+          where('c2', param('p2') as Cell);
         },
         {p2: 'odd'},
       );
@@ -4663,6 +4663,110 @@ describe('Parameterized', () => {
 
       expect(queries.getResultTable('q1')).toEqual({r1: {c4: true}});
     });
+
+    test('param with string array value', () => {
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          select('c2');
+          where((getTableCell) =>
+            (param('colors') as string[])?.includes(
+              getTableCell('c2') as string,
+            ),
+          );
+        },
+        {colors: ['odd', 'even']},
+      );
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'a', c2: 'odd'},
+        r2: {c1: 'b', c2: 'even'},
+        r3: {c1: 'c', c2: 'odd'},
+        r4: {c1: 'd', c2: 'even'},
+        r5: {c1: 'e', c2: 'odd'},
+      });
+
+      queries.setParamValue('q1', 'colors', ['odd']);
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'a', c2: 'odd'},
+        r3: {c1: 'c', c2: 'odd'},
+        r5: {c1: 'e', c2: 'odd'},
+      });
+
+      queries.setParamValue('q1', 'colors', ['even']);
+      expect(queries.getResultTable('q1')).toEqual({
+        r2: {c1: 'b', c2: 'even'},
+        r4: {c1: 'd', c2: 'even'},
+      });
+    });
+
+    test('param with number array value', () => {
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          select('c3');
+          where((getTableCell) =>
+            (param('values') as number[])?.includes(
+              getTableCell('c3') as number,
+            ),
+          );
+        },
+        {values: [1, 3, 5]},
+      );
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'a', c3: 1},
+        r3: {c1: 'c', c3: 3},
+        r5: {c1: 'e', c3: 5},
+      });
+
+      queries.setParamValue('q1', 'values', [2, 4]);
+      expect(queries.getResultTable('q1')).toEqual({
+        r2: {c1: 'b', c3: 2},
+        r4: {c1: 'd', c3: 4},
+      });
+    });
+
+    test('param with boolean array value', () => {
+      store.setCell('t1', 'r1', 'c4', true);
+      store.setCell('t1', 'r2', 'c4', false);
+      store.setCell('t1', 'r3', 'c4', true);
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          select('c4');
+          where((getTableCell) =>
+            (param('flags') as boolean[])?.includes(
+              getTableCell('c4') as boolean,
+            ),
+          );
+        },
+        {flags: [true]},
+      );
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'a', c4: true},
+        r3: {c1: 'c', c4: true},
+      });
+
+      queries.setParamValue('q1', 'flags', [false]);
+      expect(queries.getResultTable('q1')).toEqual({
+        r2: {c1: 'b', c4: false},
+      });
+
+      queries.setParamValue('q1', 'flags', [true, false]);
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'a', c4: true},
+        r2: {c1: 'b', c4: false},
+        r3: {c1: 'c', c4: true},
+      });
+    });
   });
 
   describe('Select', () => {
@@ -4737,7 +4841,7 @@ describe('Parameterized', () => {
         ({select, where, group, param}) => {
           select('c2');
           select('c3');
-          where('c2', param('p2') ?? '');
+          where('c2', param('p2') as Cell);
           group('c3', 'avg').as('a');
         },
         {p2: 'odd'},

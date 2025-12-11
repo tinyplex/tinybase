@@ -15,8 +15,9 @@
  * The ParamValue type describes a single param value that can be used in a
  * parameterized query.
  *
- * A ParamValue is similar to a Cell, but params cannot be `undefined`. They
- * must be a JavaScript string, number, boolean, or null.
+ * A ParamValue is a JavaScript string, number, boolean, null - or an array of
+ * strings, numbers, or booleans. Arrays are useful for filtering by multiple
+ * values, such as checking if a cell value is included in a list of options.
  * @example
  * ```js
  * import type {ParamValue} from 'tinybase';
@@ -25,6 +26,9 @@
  * export const paramValue2: ParamValue = 5;
  * export const paramValue3: ParamValue = true;
  * export const paramValue4: ParamValue = null;
+ * export const paramValue5: ParamValue = ['Ford', 'Toyota', 'Honda'];
+ * export const paramValue6: ParamValue = [1970, 1975, 1980];
+ * export const paramValue7: ParamValue = [true, false];
  * ```
  * @category Params
  * @since v7.2.0
@@ -597,7 +601,8 @@
  *
  * A Param function is provided when setting parameterized query definitions,
  * and allows you to reference dynamic param values that can be updated without
- * redefining the entire query.
+ * redefining the entire query. Param values can be primitives (string, number,
+ * boolean, null) or arrays of those types.
  * @param paramId The Id of the param to fetch the value for.
  * @returns A Cell value or `undefined` if the param is not set.
  * @example
@@ -629,6 +634,40 @@
  * queries.setParamValue('query', 'species', 'cat');
  * console.log(queries.getResultTable('query'));
  * // -> {felix: {color: 'black'}}
+ * ```
+ * @example
+ * This example shows a query that uses an array param to filter by multiple
+ * values.
+ *
+ * ```js
+ * import {createQueries, createStore} from 'tinybase';
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ *   cujo: {species: 'dog', color: 'black'},
+ *   rex: {species: 'dog', color: 'gold'},
+ * });
+ *
+ * const queries = createQueries(store);
+ * queries.setQueryDefinition(
+ *   'query',
+ *   'pets',
+ *   ({select, where, param}) => {
+ *     select('species');
+ *     where((getTableCell) =>
+ *       (param('colors') as string[])?.includes(getTableCell('color')),
+ *     );
+ *   },
+ *   {colors: ['brown', 'gold']},
+ * );
+ *
+ * console.log(queries.getResultTable('query'));
+ * // -> {fido: {species: 'dog'}, rex: {species: 'dog'}}
+ *
+ * queries.setParamValue('query', 'colors', ['black']);
+ * console.log(queries.getResultTable('query'));
+ * // -> {felix: {species: 'cat'}, cujo: {species: 'dog'}}
  * ```
  * @category Definition
  * @since v7.2.0

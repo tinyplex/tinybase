@@ -9,7 +9,14 @@ import type {
 } from '../store/index.d.ts';
 
 /// ParamValue
-export type ParamValue = string | number | boolean | null;
+export type ParamValue =
+  | string
+  | number
+  | boolean
+  | null
+  | string[]
+  | number[]
+  | boolean[];
 
 /// ParamValues
 export type ParamValues = {[paramId: Id]: ParamValue};
