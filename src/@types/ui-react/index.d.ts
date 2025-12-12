@@ -151,6 +151,11 @@ export function useHasTables(storeOrStoreId?: StoreOrStoreId): boolean;
 /// useTables
 export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
 
+/// useTablesState
+export function useTablesState(
+  storeOrStoreId?: StoreOrStoreId,
+): [Tables, (tables: Tables) => void];
+
 /// useTableIds
 export function useTableIds(storeOrStoreId?: StoreOrStoreId): Ids;
 

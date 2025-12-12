@@ -736,6 +736,69 @@
  */
 /// useTables
 /**
+ * The useTablesState hook returns a Tables object and a function to set it,
+ * following the same pattern as React's useState hook.
+ *
+ * This is a convenience hook that combines the useTables and
+ * useSetTablesCallback hooks. It's useful when you need both read and write
+ * access to all Tables in a single component.
+ *
+ * A Provider component is used to wrap part of an application in a context,
+ * and it can contain a default Store or a set of Store objects named by Id.
+ * The useTablesState hook lets you indicate which Store to use: omit the
+ * parameter for the default context Store, provide an Id for a named context
+ * Store, or provide a Store explicitly by reference.
+ * @param storeOrStoreId The Store to be accessed: omit for the default
+ * context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @returns An array containing the Tables object and a function to set it.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useTablesState hook by reference. A button updates the Tables when clicked.
+ *
+ * ```jsx
+ * import {createStore} from 'tinybase';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {useTablesState} from 'tinybase/ui-react';
+ *
+ * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
+ * const App = () => {
+ *   const [tables, setTables] = useTablesState(store);
+ *   return (
+ *     <div>
+ *       {JSON.stringify(tables)}
+ *       <button
+ *         onClick={() => setTables({...tables, species: {dog: {price: 5}}})}
+ *       >
+ *         Add
+ *       </button>
+ *     </div>
+ *   );
+ * };
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>{"pets":{"fido":{"species":"dog"}}}<button>Add</button></div>'
+ *
+ * const _button = app.querySelector('button');
+ * // -> _button MouseEvent('click', {bubbles: true})
+ * console.log(app.innerHTML);
+ * // ->
+ * `
+ * <div>
+ *   {"pets":{"fido":{"species":"dog"}},"species":{"dog":{"price":5}}}
+ *   <button>Add</button>
+ * </div>
+ * `;
+ * ```
+ * @category State hooks
+ * @since v7.3.0
+ */
+/// useTablesState
+/**
  * The useTableIds hook returns the Ids of every Table in a Store, and registers
  * a listener so that any changes to that result will cause a re-render.
  *
@@ -1050,7 +1113,9 @@
  *   return (
  *     <div>
  *       {JSON.stringify(table)}
- *       <button onClick={() => setTable({...table, felix: {species: 'cat'}})}>
+ *       <button
+ *         onClick={() => setTable({...table, felix: {species: 'cat'}})}
+ *       >
  *         Add
  *       </button>
  *     </div>
@@ -1063,8 +1128,8 @@
  * console.log(app.innerHTML);
  * // -> '<div>{"fido":{"species":"dog"}}<button>Add</button></div>'
  *
- * const button = app.querySelector('button');
- * // -> button MouseEvent('click', {bubbles: true})
+ * const _button = app.querySelector('button');
+ * // -> _button MouseEvent('click', {bubbles: true})
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1879,8 +1944,8 @@
  * console.log(app.innerHTML);
  * // -> '<div>{\"c1\":\"Alice\",\"c2\":30}<button>Birthday</button></div>'
  *
- * const button = app.querySelector('button');
- * // -> button MouseEvent('click', {bubbles: true})
+ * const _button = app.querySelector('button');
+ * // -> _button MouseEvent('click', {bubbles: true})
  * console.log(app.innerHTML);
  * // -> '<div>{\"c1\":\"Alice\",\"c2\":31}<button>Birthday</button></div>'
  * ```
@@ -2215,7 +2280,12 @@
  *
  * const store = createStore().setCell('pets', 'fido', 'visits', 0);
  * const App = () => {
- *   const [visits, setVisits] = useCellState('pets', 'fido', 'visits', store);
+ *   const [visits, setVisits] = useCellState(
+ *     'pets',
+ *     'fido',
+ *     'visits',
+ *     store,
+ *   );
  *   return (
  *     <span>
  *       Visits: {visits}
@@ -2230,8 +2300,8 @@
  * console.log(app.innerHTML);
  * // -> '<span>Visits: 0<button>Visit</button></span>'
  *
- * const button = app.querySelector('button');
- * // -> button MouseEvent('click', {bubbles: true})
+ * const _button = app.querySelector('button');
+ * // -> _button MouseEvent('click', {bubbles: true})
  * console.log(app.innerHTML);
  * // -> '<span>Visits: 1<button>Visit</button></span>'
  *
@@ -3570,8 +3640,8 @@
  * console.log(app.innerHTML);
  * // -> '<span>Employees: 3<button>Hire</button></span>'
  *
- * const button = app.querySelector('button');
- * // -> button MouseEvent('click', {bubbles: true})
+ * const _button = app.querySelector('button');
+ * // -> _button MouseEvent('click', {bubbles: true})
  *
  * console.log(app.innerHTML);
  * // -> '<span>Employees: 4<button>Hire</button></span>'

@@ -155,6 +155,7 @@ import {
   useTableState,
   useTables,
   useTablesListener,
+  useTablesState,
   useUndoInformation,
   useValue,
   useValueIds,
@@ -1087,6 +1088,39 @@ describe('Read Hooks', () => {
     rerender(<button />);
     expect(store.getListenerStats().tables).toEqual(0);
     expect(didRender).toHaveBeenCalledTimes(3);
+
+    unmount();
+  });
+
+  test('useTablesState', () => {
+    const Test = () => {
+      const [tables, setTables] = useTablesState(store);
+      return (
+        <span>
+          {JSON.stringify(tables)}
+          <button onClick={() => setTables({...tables, t2: {r1: {c1: 2}}})} />
+        </span>
+      );
+    };
+
+    store.setTables({t1: {r1: {c1: 1}}});
+    const {container, unmount} = render(<Test />);
+
+    expect(container.innerHTML).toEqual(
+      '<span>{"t1":{"r1":{"c1":1}}}<button></button></span>',
+    );
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual(
+      // eslint-disable-next-line max-len
+      '<span>{"t1":{"r1":{"c1":1}},"t2":{"r1":{"c1":2}}}<button></button></span>',
+    );
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual(
+      // eslint-disable-next-line max-len
+      '<span>{"t1":{"r1":{"c1":1}},"t2":{"r1":{"c1":2}}}<button></button></span>',
+    );
 
     unmount();
   });
