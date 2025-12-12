@@ -10691,6 +10691,80 @@
  */
 /// useParamValue
 /**
+ * The useParamValueState hook returns a parameter value and a function to set
+ * it, following the same pattern as React's useState hook.
+ *
+ * This is a convenience hook that combines the useParamValue and
+ * useSetParamValueCallback hooks. It's useful when you need both read and write
+ * access to a query parameter in a single component.
+ *
+ * A Provider component is used to wrap part of an application in a context,
+ * and it can contain a default Queries object or a set of Queries objects
+ * named by Id. The useParamValueState hook lets you indicate which Queries
+ * object to use: omit the final parameter for the default context Queries
+ * object, provide an Id for a named context Queries object, or provide an
+ * explicit reference.
+ * @param queryId The Id of the query.
+ * @param paramId The Id of the parameter.
+ * @param queriesOrQueriesId The Queries object to be accessed: omit for the
+ * default context Queries object, provide an Id for a named context Queries
+ * object, or provide an explicit reference.
+ * @returns An array containing the parameter value and a function to set it.
+ * @example
+ * This example creates a Queries object outside the application, which is used
+ * in the useParamValueState hook by reference. A button updates the parameter
+ * when clicked.
+ *
+ * ```jsx
+ * import {createQueries, createStore} from 'tinybase';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {useParamValueState} from 'tinybase/ui-react';
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
+ * });
+ * const queries = createQueries(store);
+ * queries.setQueryDefinition(
+ *   'petsBySpecies',
+ *   'pets',
+ *   ({select, where, param}) => {
+ *     select('species');
+ *     where('species', param('species'));
+ *   },
+ *   {species: 'dog'},
+ * );
+ * const App = () => {
+ *   const [species, setSpecies] = useParamValueState(
+ *     'petsBySpecies',
+ *     'species',
+ *     queries,
+ *   );
+ *   return (
+ *     <div>
+ *       Species: {species}
+ *       <button onClick={() => setSpecies('cat')}>Change</button>
+ *     </div>
+ *   );
+ * };
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>Species: dog<button>Change</button></div>'
+ *
+ * const _button = app.querySelector('button');
+ * // -> _button MouseEvent('click', {bubbles: true})
+ * console.log(app.innerHTML);
+ * // -> '<div>Species: cat<button>Change</button></div>'
+ * ```
+ * @category State hooks
+ * @since v7.3.0
+ */
+/// useParamValueState
+/**
  * The useParamValuesListener hook registers a listener function with a Queries
  * object that will be called whenever the parameter values for a query change.
  *

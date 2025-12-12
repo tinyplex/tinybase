@@ -988,6 +988,13 @@ export function useParamValue(
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): ParamValue | undefined;
 
+/// useParamValueState
+export function useParamValueState(
+  queryId: Id,
+  paramId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): [ParamValue | undefined, (paramValue: ParamValue) => void];
+
 /// useParamValuesListener
 export function useParamValuesListener(
   queryId: IdOrNull,

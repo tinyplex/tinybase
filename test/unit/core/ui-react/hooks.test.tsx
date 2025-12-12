@@ -90,6 +90,7 @@ import {
   useMetricsIds,
   useParamValue,
   useParamValueListener,
+  useParamValueState,
   useParamValues,
   useParamValuesListener,
   useProvideStore,
@@ -2946,6 +2947,44 @@ describe('Read Hooks', () => {
 
     rerender(<Test multiplier={3} then={then} />);
     expect(handlers[2]).not.toEqual(handlers[3]);
+
+    unmount();
+  });
+
+  test('useParamValueState', () => {
+    const queries = createQueries(store);
+    queries.setQueryDefinition(
+      'q1',
+      't1',
+      ({select, where, param}) => {
+        select('c1');
+        where('c1', param('p1') as Cell);
+      },
+      {p1: 1},
+    );
+
+    const Test = () => {
+      const [paramValue, setParamValue] = useParamValueState(
+        'q1',
+        'p1',
+        queries,
+      );
+      return (
+        <button onClick={() => setParamValue(2)}>
+          {JSON.stringify(paramValue)}
+        </button>
+      );
+    };
+
+    const {container, unmount} = render(<Test />);
+
+    expect(container.innerHTML).toEqual('<button>1</button>');
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual('<button>2</button>');
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual('<button>2</button>');
 
     unmount();
   });
