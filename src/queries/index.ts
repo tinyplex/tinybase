@@ -633,9 +633,14 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     return queries;
   };
 
-  const setParamValues = (queryId: Id, paramValues: ParamValues): Queries => {
+  const setParamValues = (
+    queryId: Id,
+    paramValues: ParamValues,
+    force: 0 | 1 = 0,
+  ): Queries => {
     ifNotUndefined(getQueryArgs(queryId), ([definition, oldParamValues]) => {
       if (
+        force ||
         !objIsEqual(mapToObj(oldParamValues), paramValues, arrayOrValueEqual)
       ) {
         resultStore.transaction(() =>
@@ -657,7 +662,11 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     value: ParamValue,
   ): Queries => {
     if (!arrayOrValueEqual(getParamValue(queryId, paramId), value)) {
-      setParamValues(queryId, {...getParamValues(queryId), [paramId]: value});
+      setParamValues(
+        queryId,
+        {...getParamValues(queryId), [paramId]: value},
+        1,
+      );
     }
     return queries;
   };
