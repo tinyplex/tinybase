@@ -3357,6 +3357,59 @@
  */
 /// useSetValueCallback
 /**
+ * The useValueState hook returns a Value from a Store and a callback to set it,
+ * following the common React `useState` convention.
+ *
+ * This hook is useful for creating components that read and write a Value in a
+ * single line, similar to how you would use React's `useState` hook.
+ *
+ * The component this is used in will re-render when the Value changes.
+ * @param valueId The Id of the Value.
+ * @param storeOrStoreId The Store to get data from: omit for the default
+ * context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @returns A tuple containing the current Value and a setter callback that can
+ * be called with a new Value.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useValueState hook by reference.
+ *
+ * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import React from 'react';
+ * import {useValueState} from 'tinybase/ui-react';
+ *
+ * const store = createStore().setValues({employees: 3});
+ * const App = () => {
+ *   const [employees, setEmployees] = useValueState('employees', store);
+ *   return (
+ *     <span>
+ *       Employees: {employees}
+ *       <button onClick={() => setEmployees(employees + 1)}>Hire</button>
+ *     </span>
+ *   );
+ * };
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>Employees: 3<button>Hire</button></span>'
+ *
+ * const button = app.querySelector('button');
+ * // -> button MouseEvent('click', {bubbles: true})
+ *
+ * console.log(app.innerHTML);
+ * // -> '<span>Employees: 4<button>Hire</button></span>'
+ *
+ * root.unmount(); // !act
+ * ```
+ * @category State hooks
+ * @since v7.2.0
+ */
+/// useValueState
+/**
  * The useDelTablesCallback hook returns a callback that can be used to remove
  * all of the tabular data in a Store.
  *

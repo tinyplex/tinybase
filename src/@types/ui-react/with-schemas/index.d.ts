@@ -328,6 +328,15 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => DefaultedValueFromSchema<Schemas[1], ValueId>;
 
+  /// useValueState
+  useValueState: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
+    valueId: ValueId,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => [
+    value: DefaultedValueFromSchema<Schemas[1], ValueId>,
+    setValue: (value: Value<Schemas[1], ValueId>) => void,
+  ];
+
   /// useSetTablesCallback
   useSetTablesCallback: <Parameter, SetTables = Tables<Schemas[0], true>>(
     getTables: (

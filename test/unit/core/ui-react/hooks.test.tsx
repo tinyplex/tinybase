@@ -157,6 +157,7 @@ import {
   useValueIds,
   useValueIdsListener,
   useValueListener,
+  useValueState,
   useValues,
   useValuesListener,
   useWillFinishTransactionListener,
@@ -1785,6 +1786,31 @@ describe('Read Hooks', () => {
 
     expect(store.getListenerStats().value).toEqual(0);
     expect(didRender).toHaveBeenCalledTimes(5);
+
+    unmount();
+  });
+
+  test('useValueState', () => {
+    const Test = () => {
+      const [value, setValue] = useValueState('v1', store);
+      return (
+        <span>
+          {JSON.stringify(value)}
+          <button onClick={() => setValue(!value)} />
+        </span>
+      );
+    };
+
+    store.setValues({v1: false});
+    const {container, unmount} = render(<Test />);
+
+    expect(container.innerHTML).toEqual('<span>false<button></button></span>');
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual('<span>true<button></button></span>');
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual('<span>false<button></button></span>');
 
     unmount();
   });

@@ -259,6 +259,12 @@ export function useValue(
   storeOrStoreId?: StoreOrStoreId,
 ): ValueOrUndefined;
 
+/// useValueState
+export function useValueState(
+  valueId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): [value: ValueOrUndefined, setValue: (value: Value) => void];
+
 /// useSetTablesCallback
 export function useSetTablesCallback<Parameter>(
   getTables: (parameter: Parameter, store: Store) => Tables,

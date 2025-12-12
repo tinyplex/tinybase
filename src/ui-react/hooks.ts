@@ -78,6 +78,7 @@ import type {
   Value,
   ValueIdsListener,
   ValueListener,
+  ValueOrUndefined,
   Values,
   ValuesListener,
 } from '../@types/store/index.d.ts';
@@ -242,6 +243,7 @@ import type {
   useValueIds as useValueIdsDecl,
   useValueIdsListener as useValueIdsListenerDecl,
   useValueListener as useValueListenerDecl,
+  useValueState as useValueStateDecl,
   useValues as useValuesDecl,
   useValuesListener as useValuesListenerDecl,
   useWillFinishTransactionListener as useWillFinishTransactionListenerDecl,
@@ -833,13 +835,21 @@ export const useHasValue: typeof useHasValueDecl = (
 export const useValue: typeof useValueDecl = (
   valueId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): Value =>
+): ValueOrUndefined =>
   useListenable(
     VALUE,
     useStoreOrStoreById(storeOrStoreId),
     ReturnType.CellOrValue,
     [valueId],
   );
+
+export const useValueState: typeof useValueStateDecl = (
+  valueId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): [ValueOrUndefined, (value: Value) => void] => [
+  useValue(valueId, storeOrStoreId),
+  useSetValueCallback(valueId, (value) => value, [], storeOrStoreId),
+];
 
 export const useSetTablesCallback: typeof useSetTablesCallbackDecl = <
   Parameter,
