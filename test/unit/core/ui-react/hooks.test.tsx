@@ -2563,7 +2563,7 @@ describe('Read Hooks', () => {
     expect(container.textContent).toEqual('{"p1":3,"p2":"updated"}');
 
     act(() => queries.delQueryDefinition('q1'));
-    expect(container.textContent).toEqual('');
+    expect(container.textContent).toEqual('{}');
     rerender(<button />);
 
     expect(didRender).toHaveBeenCalledTimes(5);

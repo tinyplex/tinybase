@@ -594,8 +594,15 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   };
 
   const delQueryDefinition = (queryId: Id): Queries => {
+    const oldParamValues = getQueryArgs(queryId)?.[1];
     resetPreStores(queryId);
     delDefinition(queryId);
+    ifNotUndefined(oldParamValues, (paramValues) => {
+      mapForEach(paramValues, (paramId) =>
+        callListeners(paramValueListeners, [queryId, paramId], undefined),
+      );
+      callListeners(paramValuesListeners, [queryId], {});
+    });
     return queries;
   };
 
@@ -613,10 +620,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
         (_, paramId) => mapSet(changedParamValues, paramId, undefined),
       );
       if (!collIsEmpty(changedParamValues)) {
-        mapForEach(changedParamValues, (paramId, value) =>
-          callListeners(paramValueListeners, [queryId, paramId], value),
-        );
-        callListeners(paramValuesListeners, [queryId], {...paramValues});
         resultStore.transaction(() =>
           setQueryDefinition(
             queryId,
@@ -625,6 +628,10 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             paramValues,
           ),
         );
+        mapForEach(changedParamValues, (paramId, value) =>
+          callListeners(paramValueListeners, [queryId, paramId], value),
+        );
+        callListeners(paramValuesListeners, [queryId], {...paramValues});
       }
     });
     return queries;
@@ -640,8 +647,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       [paramId]: value,
     });
 
-  const getParamValues = (queryId: Id): ParamValues | undefined =>
-    ifNotUndefined(getQueryArgs(queryId)?.[1], mapToObj);
+  const getParamValues = (queryId: Id): ParamValues =>
+    ifNotUndefined(getQueryArgs(queryId)?.[1], mapToObj) ?? {};
 
   const getParamValue = (queryId: Id, paramId: Id): ParamValue | undefined =>
     mapGet(getQueryArgs(queryId)?.[1], paramId);
