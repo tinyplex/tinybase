@@ -5177,5 +5177,199 @@ describe('Parameterized', () => {
         {q1: {r1: {c: 'a_2'}}},
       );
     });
+
+    test('addParamValuesListener for specific query', () => {
+      store.setTable('t1', {
+        r1: {c1: 'a', c2: 'b'},
+        r2: {c1: 'c', c2: 'd'},
+        r3: {c1: 'e', c2: 'f'},
+      });
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c2', param('p1') as Cell);
+        },
+        {p1: 'b'},
+      );
+
+      const listener = vi.fn();
+      const listenerId = queries.addParamValuesListener('q1', listener);
+
+      queries.setParamValues('q1', {p1: 'd'});
+      expect(listener).toHaveBeenCalledWith(queries, 'q1', {p1: 'd'});
+
+      queries.setParamValues('q1', {p1: 'f'});
+      expect(listener).toHaveBeenCalledWith(queries, 'q1', {p1: 'f'});
+
+      queries.delListener(listenerId);
+      queries.setParamValues('q1', {p1: 'b'});
+      expect(listener).toHaveBeenCalledTimes(2);
+    });
+
+    test('addParamValuesListener with wildcard', () => {
+      store.setTable('t1', {
+        r1: {c1: 'a', c2: 'b'},
+        r2: {c1: 'c', c2: 'd'},
+      });
+      queries
+        .setQueryDefinition(
+          'q1',
+          't1',
+          ({select, where, param}) => {
+            select('c1');
+            where('c2', param('p1') as Cell);
+          },
+          {p1: 'b'},
+        )
+        .setQueryDefinition(
+          'q2',
+          't1',
+          ({select, where, param}) => {
+            select('c2');
+            where('c1', param('p2') as Cell);
+          },
+          {p2: 'a'},
+        );
+
+      const listener = vi.fn();
+      queries.addParamValuesListener(null, listener);
+
+      queries.setParamValues('q1', {p1: 'd'});
+      expect(listener).toHaveBeenCalledWith(queries, 'q1', {p1: 'd'});
+
+      queries.setParamValues('q2', {p2: 'c'});
+      expect(listener).toHaveBeenCalledWith(queries, 'q2', {p2: 'c'});
+
+      expect(listener).toHaveBeenCalledTimes(2);
+    });
+
+    test('addParamValuesListener only fires when values change', () => {
+      store.setTable('t1', {r1: {c1: 'a', c2: 'b'}});
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c2', param('p1') as Cell);
+        },
+        {p1: 'b'},
+      );
+
+      const listener = vi.fn();
+      queries.addParamValuesListener('q1', listener);
+      queries.setParamValues('q1', {p1: 'b'}); // Same value
+      expect(listener).toHaveBeenCalledTimes(0);
+
+      queries.setParamValues('q1', {p1: 'd'}); // Different value
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      queries.setParamValues('q1', {p1: 'd'}); // Same value again
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    test('addParamValueListener for specific query and param', () => {
+      store.setTable('t1', {
+        r1: {c1: 'a', c2: 'b', c3: 5},
+        r2: {c1: 'c', c2: 'd', c3: 3},
+      });
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where(
+            (getTableCell) =>
+              getTableCell('c2') === param('p1') &&
+              (getTableCell('c3') as number) >= (param('p2') as number),
+          );
+        },
+        {p1: 'b', p2: 3},
+      );
+
+      const listener = vi.fn();
+      const listenerId = queries.addParamValueListener('q1', 'p1', listener);
+
+      queries.setParamValue('q1', 'p1', 'd');
+      expect(listener).toHaveBeenCalledWith(queries, 'q1', 'p1', 'd');
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      queries.setParamValue('q1', 'p2', 5);
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      queries.setParamValue('q1', 'p1', 'e');
+      expect(listener).toHaveBeenCalledWith(queries, 'q1', 'p1', 'e');
+      expect(listener).toHaveBeenCalledTimes(2);
+
+      queries.delListener(listenerId);
+      queries.setParamValue('q1', 'p1', 'b');
+      expect(listener).toHaveBeenCalledTimes(2);
+    });
+
+    test('addParamValueListener with wildcards', () => {
+      store.setTable('t1', {
+        r1: {c1: 'a', c2: 'b', c3: 5},
+        r2: {c1: 'c', c2: 'd', c3: 3},
+      });
+      queries
+        .setQueryDefinition(
+          'q1',
+          't1',
+          ({select, where, param}) => {
+            select('c1');
+            where('c2', param('p1') as Cell);
+          },
+          {p1: 'b'},
+        )
+        .setQueryDefinition(
+          'q2',
+          't1',
+          ({select, where, param}) => {
+            select('c2');
+            where(
+              (getTableCell) =>
+                (getTableCell('c3') as number) >= (param('p2') as number),
+            );
+          },
+          {p2: 3},
+        );
+
+      const listener = vi.fn();
+      queries.addParamValueListener(null, null, listener);
+
+      queries.setParamValue('q1', 'p1', 'd');
+      expect(listener).toHaveBeenCalledWith(queries, 'q1', 'p1', 'd');
+
+      queries.setParamValue('q2', 'p2', 5);
+      expect(listener).toHaveBeenCalledWith(queries, 'q2', 'p2', 5);
+
+      expect(listener).toHaveBeenCalledTimes(2);
+    });
+
+    test('addParamValueListener only fires when value actually changes', () => {
+      store.setTable('t1', {r1: {c1: 'a', c2: 'b'}});
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c2', param('p1') as Cell);
+        },
+        {p1: 'b'},
+      );
+
+      const listener = vi.fn();
+      queries.addParamValueListener('q1', 'p1', listener);
+
+      queries.setParamValue('q1', 'p1', 'b'); // Same value
+      expect(listener).toHaveBeenCalledTimes(0);
+
+      queries.setParamValue('q1', 'p1', 'd'); // Different value
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      queries.setParamValue('q1', 'p1', 'd'); // Same value again
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
   });
 });
