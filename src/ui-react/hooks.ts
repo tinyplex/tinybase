@@ -247,7 +247,6 @@ import type {
   useWillFinishTransactionListener as useWillFinishTransactionListenerDecl,
 } from '../@types/ui-react/index.d.ts';
 import {
-  arrayEvery,
   arrayFilter,
   arrayIsEmpty,
   arrayIsEqual,
@@ -255,7 +254,7 @@ import {
   arrayOrValueEqual,
 } from '../common/array.ts';
 import {ListenerArgument} from '../common/listeners.ts';
-import {IdObj, isObject, objIds, objIsEqual} from '../common/obj.ts';
+import {IdObj, isObject, objIsEqual} from '../common/obj.ts';
 import {
   getUndefined,
   ifNotUndefined,
@@ -358,16 +357,8 @@ const IS_EQUALS: ((thing1: any, thing2: any) => boolean)[] = [
     currentId1 === currentId2 &&
     arrayIsEqual(backwardIds1, backwardIds2) &&
     arrayIsEqual(forwardIds1, forwardIds2),
-  (paramValues1: ParamValues, paramValues2: ParamValues): boolean => {
-    const keys1 = objIds(paramValues1);
-    const keys2 = objIds(paramValues2);
-    return (
-      arrayIsEqual(keys1, keys2) &&
-      arrayEvery(keys1, (key) =>
-        arrayOrValueEqual(paramValues1[key], paramValues2[key]),
-      )
-    );
-  },
+  (paramValues1: ParamValues, paramValues2: ParamValues): boolean =>
+    objIsEqual(paramValues1, paramValues2, arrayOrValueEqual),
   arrayOrValueEqual,
 ];
 const isEqual = (thing1: any, thing2: any) => thing1 === thing2;

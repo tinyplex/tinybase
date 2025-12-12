@@ -75,6 +75,8 @@ export const objIsEmpty = <Value>(obj: IdObj<Value> | any): boolean =>
 export const objIsEqual = (
   obj1: IdObj<unknown>,
   obj2: IdObj<unknown>,
+  isEqual: (value1: unknown, value2: unknown) => boolean = (value1, value2) =>
+    value1 === value2,
 ): boolean => {
   const entries1 = objEntries(obj1);
   return (
@@ -84,7 +86,7 @@ export const objIsEqual = (
         ? isObject(obj2[index])
           ? objIsEqual(obj2[index] as any, value1 as any)
           : false
-        : obj2[index] === value1,
+        : isEqual(value1, obj2[index]),
     )
   );
 };
