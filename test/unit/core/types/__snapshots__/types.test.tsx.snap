@@ -20,8 +20,6 @@ exports[`Types in checkpoints.ts > 45:56 1`] = `"Property 't2' does not exist on
 
 exports[`Types in checkpoints.ts > 48:53 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in checkpoints.ts > 849:0 1`] = `"Declaration or statement expected."`;
-
 exports[`Types in indexes.ts > 23:43 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
 exports[`Types in indexes.ts > 24:49 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | ((getCell: GetCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">, rowId: string) => string | Ids) | undefined'."`;
@@ -77,8 +75,6 @@ exports[`Types in indexes.ts > 104:33 1`] = `"Property 't2' does not exist on ty
 exports[`Types in indexes.ts > 109:33 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in indexes.ts > 113:59 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
-
-exports[`Types in indexes.ts > 849:0 1`] = `"Declaration or statement expected."`;
 
 exports[`Types in mergeable-store.ts > 31:2 1`] = `"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
@@ -608,8 +604,6 @@ exports[`Types in mergeable-store.ts > 842:4 1`] = `"This comparison appears to 
 
 exports[`Types in mergeable-store.ts > 843:4 1`] = `"This comparison appears to be unintentional because the types '"r1"' and '"r2"' have no overlap."`;
 
-exports[`Types in mergeable-store.ts > 849:0 1`] = `"Declaration or statement expected."`;
-
 exports[`Types in mergeable-store.ts > 854:24 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in mergeable-store.ts > 855:6 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
@@ -1018,8 +1012,6 @@ exports[`Types in metrics.ts > 62:33 1`] = `"Property 't2' does not exist on typ
 
 exports[`Types in metrics.ts > 66:59 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "number"; readonly default: 0; }; readonly c1s: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in metrics.ts > 849:0 1`] = `"Declaration or statement expected."`;
-
 exports[`Types in persisters.ts > 24:37 1`] = `"Argument of type '[{ t1: { r1: { c2: number; }; }; }, {}]' is not assignable to parameter of type 'Content<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], true> | (() => Content<...>) | undefined'."`;
 
 exports[`Types in persisters.ts > 25:25 1`] = `"Argument of type '[{ t1: { r1: { c1: string; }; }; }, {}]' is not assignable to parameter of type 'Content<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], true> | (() => Content<...>) | undefined'."`;
@@ -1049,8 +1041,6 @@ exports[`Types in persisters.ts > 45:61 1`] = `"Property 't2' does not exist on 
 exports[`Types in persisters.ts > 49:60 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in persisters.ts > 52:69 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
-
-exports[`Types in persisters.ts > 849:0 1`] = `"Declaration or statement expected."`;
 
 exports[`Types in queries.ts > 18:9 1`] = `"No overload matches this call."`;
 
@@ -1114,8 +1104,6 @@ exports[`Types in queries.ts > 111:33 1`] = `"Property 't2' does not exist on ty
 
 exports[`Types in queries.ts > 115:59 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in queries.ts > 849:0 1`] = `"Declaration or statement expected."`;
-
 exports[`Types in relationships.ts > 23:68 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d" | ((getCell: GetCell<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">, localRowId: string) => string)'."`;
 
 exports[`Types in relationships.ts > 24:62 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
@@ -1145,8 +1133,6 @@ exports[`Types in relationships.ts > 73:39 1`] = `"Property 't2' does not exist 
 exports[`Types in relationships.ts > 78:39 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in relationships.ts > 82:65 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
-
-exports[`Types in relationships.ts > 849:0 1`] = `"Declaration or statement expected."`;
 
 exports[`Types in store.ts > 31:2 1`] = `"Conversion of type 'number | undefined' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
@@ -1677,8 +1663,6 @@ exports[`Types in store.ts > 842:22 1`] = `"Property 't2' does not exist on type
 exports[`Types in store.ts > 843:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
 exports[`Types in store.ts > 848:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
-
-exports[`Types in store.ts > 849:0 1`] = `"Declaration or statement expected."`;
 
 exports[`Types in store.ts > 852:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
@@ -2470,8 +2454,6 @@ exports[`Types in ui-react.tsx > 846:22 1`] = `"Property 't2' does not exist on 
 
 exports[`Types in ui-react.tsx > 847:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
-exports[`Types in ui-react.tsx > 849:0 1`] = `"Declaration or statement expected."`;
-
 exports[`Types in ui-react.tsx > 852:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-react.tsx > 853:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
@@ -2901,5 +2883,3 @@ exports[`Types in ui-react-dom.tsx > 166:22 1`] = `"Type '"t2"' is not assignabl
 exports[`Types in ui-react-dom.tsx > 166:46 1`] = `"Type '"c2"' is not assignable to type '"c0" | "c1" | "c1d"'."`;
 
 exports[`Types in ui-react-dom.tsx > 171:23 1`] = `"Type '"v2"' is not assignable to type '"v1" | "v1d"'."`;
-
-exports[`Types in ui-react-dom.tsx > 849:0 1`] = `"Declaration or statement expected."`;

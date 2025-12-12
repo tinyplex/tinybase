@@ -50,6 +50,7 @@ var size = (arrayOrString) => arrayOrString.length;
 var getUndefined = () => void 0;
 var arrayEvery = (array, cb) => array.every(cb);
 var arrayIsEqual = (array1, array2) => size(array1) === size(array2) && arrayEvery(array1, (value1, index) => array2[index] === value1);
+var arrayOrValueEqual = (value1, value2) => isArray(value1) && isArray(value2) ? arrayIsEqual(value1, value2) : value1 === value2;
 var arrayMap = (array, cb) => array.map(cb);
 var arrayFilter = (array, cb) => array.filter(cb);
 var object = Object;
@@ -64,11 +65,11 @@ var isObject = (obj) => !isNullish(obj) && ifNotNullish(
 var objIds = object.keys;
 var objGet = (obj, id2) => ifNotUndefined(obj, (obj2) => obj2[id2]);
 var objSize = (obj) => size(objIds(obj));
-var objIsEqual = (obj1, obj2) => {
+var objIsEqual = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2) => {
   const entries1 = objEntries(obj1);
   return size(entries1) === objSize(obj2) && arrayEvery(
     entries1,
-    ([index, value1]) => isObject(value1) ? isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false : obj2[index] === value1
+    ([index, value1]) => isObject(value1) ? isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false : isEqual3(value1, obj2[index])
   );
 };
 var {
@@ -105,11 +106,22 @@ var OFFSET_RELATIONSHIPS = 3;
 var OFFSET_QUERIES = 4;
 var OFFSET_CHECKPOINTS = 5;
 var EMPTY_ARRAY = [];
-var DEFAULTS = [{}, [], [EMPTY_ARRAY, void 0, EMPTY_ARRAY], void 0, false, 0];
+var DEFAULTS = [
+  {},
+  [],
+  [EMPTY_ARRAY, void 0, EMPTY_ARRAY],
+  {},
+  void 0,
+  void 0,
+  false,
+  0
+];
 var IS_EQUALS = [
   objIsEqual,
   arrayIsEqual,
-  ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual(backwardIds1, backwardIds2) && arrayIsEqual(forwardIds1, forwardIds2)
+  ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual(backwardIds1, backwardIds2) && arrayIsEqual(forwardIds1, forwardIds2),
+  (paramValues1, paramValues2) => objIsEqual(paramValues1, paramValues2, arrayOrValueEqual),
+  arrayOrValueEqual
 ];
 var isEqual = (thing1, thing2) => thing1 === thing2;
 var addAndDelListener = (thing, listenable, ...args) => {
@@ -120,7 +132,7 @@ var useListenable = (listenable, thing, returnType, args = EMPTY_ARRAY) => {
   const lastResult = useRef(DEFAULTS[returnType]);
   const getResult = useCallback(
     () => {
-      const nextResult = thing?.[(returnType == 4 ? _HAS : GET) + listenable]?.(
+      const nextResult = thing?.[(returnType == 6 ? _HAS : GET) + listenable]?.(
         ...args
       ) ?? DEFAULTS[returnType];
       return !(IS_EQUALS[returnType] ?? isEqual)(nextResult, lastResult.current) ? lastResult.current = nextResult : lastResult.current;
@@ -131,7 +143,7 @@ var useListenable = (listenable, thing, returnType, args = EMPTY_ARRAY) => {
   const subscribe = useCallback(
     (listener) => addAndDelListener(
       thing,
-      (returnType == 4 ? HAS : EMPTY_STRING) + listenable,
+      (returnType == 6 ? HAS : EMPTY_STRING) + listenable,
       ...args,
       listener
     ),
@@ -193,7 +205,7 @@ var useTableCellIds = (tableId, storeOrStoreId) => useListenable(
   1,
   [tableId]
 );
-var useHasCell = (tableId, rowId, cellId, storeOrStoreId) => useListenable(CELL, useStoreOrStoreById(storeOrStoreId), 4, [
+var useHasCell = (tableId, rowId, cellId, storeOrStoreId) => useListenable(CELL, useStoreOrStoreById(storeOrStoreId), 6, [
   tableId,
   rowId,
   cellId
@@ -201,7 +213,7 @@ var useHasCell = (tableId, rowId, cellId, storeOrStoreId) => useListenable(CELL,
 var useCell = (tableId, rowId, cellId, storeOrStoreId) => useListenable(
   CELL,
   useStoreOrStoreById(storeOrStoreId),
-  3,
+  5,
   [tableId, rowId, cellId]
 );
 var useValues = (storeOrStoreId) => useListenable(
@@ -219,7 +231,7 @@ var useValueIds = (storeOrStoreId) => useListenable(
 var useValue = (valueId, storeOrStoreId) => useListenable(
   VALUE,
   useStoreOrStoreById(storeOrStoreId),
-  3,
+  5,
   [valueId]
 );
 var useSetCellCallback = (tableId, rowId, cellId, getCell, getCellDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
@@ -253,7 +265,7 @@ var useMetricIds = (metricsOrMetricsId) => useListenable(
 var useMetric = (metricId, metricsOrMetricsId) => useListenable(
   METRIC,
   useMetricsOrMetricsById(metricsOrMetricsId),
-  3,
+  5,
   [metricId]
 );
 var useIndexesIds = () => useThingIds(OFFSET_INDEXES);
@@ -289,7 +301,7 @@ var useQueryIds = (queriesOrQueriesId) => useListenable(
 var useResultCell = (queryId, rowId, cellId, queriesOrQueriesId) => useListenable(
   RESULT + CELL,
   useQueriesOrQueriesById(queriesOrQueriesId),
-  3,
+  5,
   [queryId, rowId, cellId]
 );
 var useCheckpointsOrCheckpointsById = (checkpointsOrCheckpointsId) => useThingOrThingById(checkpointsOrCheckpointsId, OFFSET_CHECKPOINTS);
@@ -301,7 +313,7 @@ var useCheckpointIds = (checkpointsOrCheckpointsId) => useListenable(
 var useCheckpoint = (checkpointId, checkpointsOrCheckpointsId) => useListenable(
   CHECKPOINT,
   useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
-  3,
+  5,
   [checkpointId]
 );
 var useCreatePersister = (store, create, createDeps = EMPTY_ARRAY, then, thenDeps = EMPTY_ARRAY, destroy, destroyDeps = EMPTY_ARRAY) => {
@@ -476,6 +488,7 @@ var tryCatch = async (action, then1, then2) => {
 var arrayHas = (array, value) => array.includes(value);
 var arrayEvery2 = (array, cb) => array.every(cb);
 var arrayIsEqual2 = (array1, array2) => size2(array1) === size2(array2) && arrayEvery2(array1, (value1, index) => array2[index] === value1);
+var arrayOrValueEqual2 = (value1, value2) => isArray2(value1) && isArray2(value2) ? arrayIsEqual2(value1, value2) : value1 === value2;
 var arraySort = (array, sorter) => array.sort(sorter);
 var arrayForEach = (array, cb) => array.forEach(cb);
 var arrayJoin = (array, sep = EMPTY_STRING2) => array.join(sep);
@@ -510,11 +523,11 @@ var objToArray = (obj, cb) => arrayMap2(objEntries2(obj), ([id2, value]) => cb(v
 var objMap = (obj, cb) => objNew(objToArray(obj, (value, id2) => [id2, cb(value, id2)]));
 var objSize2 = (obj) => size2(objIds2(obj));
 var objIsEmpty = (obj) => isObject2(obj) && objSize2(obj) == 0;
-var objIsEqual2 = (obj1, obj2) => {
+var objIsEqual2 = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2) => {
   const entries1 = objEntries2(obj1);
   return size2(entries1) === objSize2(obj2) && arrayEvery2(
     entries1,
-    ([index, value1]) => isObject2(value1) ? isObject2(obj2[index]) ? objIsEqual2(obj2[index], value1) : false : obj2[index] === value1
+    ([index, value1]) => isObject2(value1) ? isObject2(obj2[index]) ? objIsEqual2(obj2[index], value1) : false : isEqual3(value1, obj2[index])
   );
 };
 var objValidate = (obj, validateChild, onInvalidObj, emptyIsValid = 0) => {
@@ -2226,11 +2239,22 @@ var OFFSET_INDEXES2 = 2;
 var OFFSET_RELATIONSHIPS2 = 3;
 var OFFSET_QUERIES2 = 4;
 var EMPTY_ARRAY2 = [];
-var DEFAULTS2 = [{}, [], [EMPTY_ARRAY2, void 0, EMPTY_ARRAY2], void 0, false, 0];
+var DEFAULTS2 = [
+  {},
+  [],
+  [EMPTY_ARRAY2, void 0, EMPTY_ARRAY2],
+  {},
+  void 0,
+  void 0,
+  false,
+  0
+];
 var IS_EQUALS2 = [
   objIsEqual2,
   arrayIsEqual2,
-  ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual2(backwardIds1, backwardIds2) && arrayIsEqual2(forwardIds1, forwardIds2)
+  ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual2(backwardIds1, backwardIds2) && arrayIsEqual2(forwardIds1, forwardIds2),
+  (paramValues1, paramValues2) => objIsEqual2(paramValues1, paramValues2, arrayOrValueEqual2),
+  arrayOrValueEqual2
 ];
 var isEqual2 = (thing1, thing2) => thing1 === thing2;
 var addAndDelListener2 = (thing, listenable, ...args) => {
@@ -2241,7 +2265,7 @@ var useListenable2 = (listenable, thing, returnType, args = EMPTY_ARRAY2) => {
   const lastResult = useRef2(DEFAULTS2[returnType]);
   const getResult = useCallback2(
     () => {
-      const nextResult = thing?.[(returnType == 4 ? _HAS2 : GET2) + listenable]?.(
+      const nextResult = thing?.[(returnType == 6 ? _HAS2 : GET2) + listenable]?.(
         ...args
       ) ?? DEFAULTS2[returnType];
       return !(IS_EQUALS2[returnType] ?? isEqual2)(nextResult, lastResult.current) ? lastResult.current = nextResult : lastResult.current;
@@ -2252,7 +2276,7 @@ var useListenable2 = (listenable, thing, returnType, args = EMPTY_ARRAY2) => {
   const subscribe = useCallback2(
     (listener) => addAndDelListener2(
       thing,
-      (returnType == 4 ? HAS2 : EMPTY_STRING2) + listenable,
+      (returnType == 6 ? HAS2 : EMPTY_STRING2) + listenable,
       ...args,
       listener
     ),
@@ -2316,7 +2340,7 @@ var useStoreOrStoreById2 = (storeOrStoreId) => useThingOrThingById2(storeOrStore
 var useHasTables = (storeOrStoreId) => useListenable2(
   TABLES2,
   useStoreOrStoreById2(storeOrStoreId),
-  4,
+  6,
   []
 );
 var useTableCellIds2 = (tableId, storeOrStoreId) => useListenable2(
@@ -2328,7 +2352,7 @@ var useTableCellIds2 = (tableId, storeOrStoreId) => useListenable2(
 var useRowCount = (tableId, storeOrStoreId) => useListenable2(
   ROW_COUNT2,
   useStoreOrStoreById2(storeOrStoreId),
-  5,
+  7,
   [tableId]
 );
 var useRowIds = (tableId, storeOrStoreId) => useListenable2(ROW_IDS2, useStoreOrStoreById2(storeOrStoreId), 1, [
@@ -2354,13 +2378,13 @@ var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset
 var useCell2 = (tableId, rowId, cellId, storeOrStoreId) => useListenable2(
   CELL2,
   useStoreOrStoreById2(storeOrStoreId),
-  3,
+  5,
   [tableId, rowId, cellId]
 );
 var useHasValues = (storeOrStoreId) => useListenable2(
   VALUES2,
   useStoreOrStoreById2(storeOrStoreId),
-  4,
+  6,
   []
 );
 var useValueIds2 = (storeOrStoreId) => useListenable2(
@@ -2372,7 +2396,7 @@ var useValueIds2 = (storeOrStoreId) => useListenable2(
 var useValue2 = (valueId, storeOrStoreId) => useListenable2(
   VALUE2,
   useStoreOrStoreById2(storeOrStoreId),
-  3,
+  5,
   [valueId]
 );
 var useSetTableCallback = (tableId, getTable, getTableDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback2(
@@ -2440,7 +2464,7 @@ var useRelationshipsOrRelationshipsById2 = (relationshipsOrRelationshipsId) => u
 var useRemoteRowId = (relationshipId, localRowId, relationshipsOrRelationshipsId) => useListenable2(
   REMOTE_ROW_ID2,
   useRelationshipsOrRelationshipsById2(relationshipsOrRelationshipsId),
-  3,
+  5,
   [relationshipId, localRowId]
 );
 var useQueriesOrQueriesById2 = (queriesOrQueriesId) => useThingOrThingById2(queriesOrQueriesId, OFFSET_QUERIES2);
@@ -2453,7 +2477,7 @@ var useResultTableCellIds = (queryId, queriesOrQueriesId) => useListenable2(
 var useResultRowCount = (queryId, queriesOrQueriesId) => useListenable2(
   RESULT2 + ROW_COUNT2,
   useQueriesOrQueriesById2(queriesOrQueriesId),
-  5,
+  7,
   [queryId]
 );
 var useResultSortedRowIds = (queryId, cellId, descending, offset = 0, limit, queriesOrQueriesId) => useListenable2(

@@ -73,6 +73,7 @@ var tryCatch = async (action, then1, then2) => {
 var arrayHas = (array, value) => array.includes(value);
 var arrayEvery = (array, cb) => array.every(cb);
 var arrayIsEqual = (array1, array2) => size(array1) === size(array2) && arrayEvery(array1, (value1, index) => array2[index] === value1);
+var arrayOrValueEqual = (value1, value2) => isArray(value1) && isArray(value2) ? arrayIsEqual(value1, value2) : value1 === value2;
 var arrayIsSorted = (array, sorter) => arrayEvery(
   array,
   (value, index) => index == 0 || sorter(array[index - 1], value) <= 0
@@ -2777,6 +2778,8 @@ var createQueries = getCreateFunction((store) => {
   const preStore = createStore2();
   const resultStore = createStore2();
   const preStoreListenerIds = mapNew();
+  const paramValuesListeners = mapNew();
+  const paramValueListeners = mapNew();
   const {
     addListener,
     callListeners,
@@ -3134,29 +3137,66 @@ var createQueries = getCreateFunction((store) => {
     return queries;
   };
   const delQueryDefinition = (queryId) => {
+    const oldParamValues = getQueryArgs(queryId)?.[1];
     resetPreStores(queryId);
     delDefinition(queryId);
+    ifNotUndefined(oldParamValues, (paramValues) => {
+      mapForEach(
+        paramValues,
+        (paramId) => callListeners(paramValueListeners, [queryId, paramId], void 0)
+      );
+      callListeners(paramValuesListeners, [queryId], {});
+    });
     return queries;
   };
   const setParamValues = (queryId, paramValues) => {
-    ifNotUndefined(
-      getQueryArgs(queryId),
-      (definition) => resultStore.transaction(
-        () => setQueryDefinition(
-          queryId,
-          getTableId(queryId),
-          definition[0],
-          paramValues
-        )
-      )
-    );
+    ifNotUndefined(getQueryArgs(queryId), ([definition, oldParamValues]) => {
+      const changedParamValues = mapNew();
+      mapMatch(
+        oldParamValues,
+        paramValues,
+        (_, paramId, newValue) => {
+          if (!arrayOrValueEqual(newValue, mapGet(oldParamValues, paramId))) {
+            mapSet(changedParamValues, paramId, newValue);
+          }
+        },
+        (_, paramId) => mapSet(changedParamValues, paramId, void 0)
+      );
+      if (!collIsEmpty(changedParamValues)) {
+        resultStore.transaction(
+          () => setQueryDefinition(
+            queryId,
+            getTableId(queryId),
+            definition,
+            paramValues
+          )
+        );
+        mapForEach(
+          changedParamValues,
+          (paramId, value) => callListeners(paramValueListeners, [queryId, paramId], value)
+        );
+        callListeners(paramValuesListeners, [queryId], { ...paramValues });
+      }
+    });
     return queries;
   };
   const setParamValue = (queryId, paramId, value) => setParamValues(queryId, {
     ...mapToObj(getQueryArgs(queryId)?.[1]),
     [paramId]: value
   });
+  const getParamValues = (queryId) => ifNotUndefined(getQueryArgs(queryId)?.[1], mapToObj) ?? {};
+  const getParamValue = (queryId, paramId) => mapGet(getQueryArgs(queryId)?.[1], paramId);
   const addQueryIdsListener = (listener) => addQueryIdsListenerImpl(() => listener(queries));
+  const addParamValuesListener = (queryId, listener) => addListener(
+    (_, queryId2, paramValues) => listener(queries, queryId2, paramValues),
+    paramValuesListeners,
+    [queryId]
+  );
+  const addParamValueListener = (queryId, paramId, listener) => addListener(
+    (_, queryId2, paramId2, paramValue) => listener(queries, queryId2, paramId2, paramValue),
+    paramValueListeners,
+    [queryId, paramId]
+  );
   const delListener = (listenerId) => {
     delListenerImpl(listenerId);
     return queries;
@@ -3168,11 +3208,17 @@ var createQueries = getCreateFunction((store) => {
       transaction: _3,
       ...stats
     } = resultStore.getListenerStats();
-    return stats;
+    return {
+      ...stats,
+      paramValues: collSize2(paramValuesListeners),
+      paramValue: collSize3(paramValueListeners)
+    };
   };
   const queries = {
     setQueryDefinition,
     delQueryDefinition,
+    getParamValues,
+    getParamValue,
     setParamValues,
     setParamValue,
     getStore,
@@ -3181,6 +3227,8 @@ var createQueries = getCreateFunction((store) => {
     hasQuery,
     getTableId,
     addQueryIdsListener,
+    addParamValuesListener,
+    addParamValueListener,
     delListener,
     destroy,
     getListenerStats

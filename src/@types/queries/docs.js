@@ -584,32 +584,26 @@
    */
   /// QueriesListenerStats.cellIds
   /**
-   * The number of ResultCellIdsListener functions registered with the Queries
+   * The number of ResultCellListener functions registered with the Queries
    * object.
    * @category Stat
    * @since v2.0.0
    */
   /// QueriesListenerStats.cell
   /**
-   * The number of ResultCellListener functions registered with the Queries
+   * The number of ParamValuesListener functions registered with the Queries
    * object.
    * @category Stat
    * @since v2.0.0
    */
   /// QueriesListenerStats.paramValues
   /**
-   * The number of ParamValuesListener functions registered with the Queries
-   * object.
-   * @category Stat
-   * @since v7.2.0
-   */
-  /// QueriesListenerStats.paramValue
-  /**
    * The number of ParamValueListener functions registered with the Queries
    * object.
    * @category Stat
    * @since v7.2.0
    */
+  /// QueriesListenerStats.paramValue
 }
 /**
  * The GetTableCell type describes a function that takes a Id and returns the

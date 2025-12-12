@@ -54,6 +54,7 @@ var getUndefined = () => void 0;
 var arrayNew = (size2, cb) => arrayMap(new Array(size2).fill(0), (_, index) => cb(index));
 var arrayEvery = (array, cb) => array.every(cb);
 var arrayIsEqual = (array1, array2) => size(array1) === size(array2) && arrayEvery(array1, (value1, index) => array2[index] === value1);
+var arrayOrValueEqual = (value1, value2) => isArray(value1) && isArray(value2) ? arrayIsEqual(value1, value2) : value1 === value2;
 var arrayMap = (array, cb) => array.map(cb);
 var arrayIsEmpty = (array) => size(array) == 0;
 var arrayFilter = (array, cb) => array.filter(cb);
@@ -75,11 +76,11 @@ var objDel = (obj, id) => {
   return obj;
 };
 var objSize = (obj) => size(objIds(obj));
-var objIsEqual = (obj1, obj2) => {
+var objIsEqual = (obj1, obj2, isEqual2 = (value1, value2) => value1 === value2) => {
   const entries1 = objEntries(obj1);
   return size(entries1) === objSize(obj2) && arrayEvery(
     entries1,
-    ([index, value1]) => isObject(value1) ? isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false : obj2[index] === value1
+    ([index, value1]) => isObject(value1) ? isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false : isEqual2(value1, obj2[index])
   );
 };
 var {
@@ -275,11 +276,22 @@ var Provider = ({
   });
 };
 var EMPTY_ARRAY = [];
-var DEFAULTS = [{}, [], [EMPTY_ARRAY, void 0, EMPTY_ARRAY], void 0, false, 0];
+var DEFAULTS = [
+  {},
+  [],
+  [EMPTY_ARRAY, void 0, EMPTY_ARRAY],
+  {},
+  void 0,
+  void 0,
+  false,
+  0
+];
 var IS_EQUALS = [
   objIsEqual,
   arrayIsEqual,
-  ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual(backwardIds1, backwardIds2) && arrayIsEqual(forwardIds1, forwardIds2)
+  ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual(backwardIds1, backwardIds2) && arrayIsEqual(forwardIds1, forwardIds2),
+  (paramValues1, paramValues2) => objIsEqual(paramValues1, paramValues2, arrayOrValueEqual),
+  arrayOrValueEqual
 ];
 var isEqual = (thing1, thing2) => thing1 === thing2;
 var useCreate = (store, create, createDeps = EMPTY_ARRAY) => {
@@ -305,7 +317,7 @@ var useListenable = (listenable, thing, returnType, args = EMPTY_ARRAY) => {
   const lastResult = useRef(DEFAULTS[returnType]);
   const getResult = useCallback(
     () => {
-      const nextResult = thing?.[(returnType == 4 ? _HAS : GET) + listenable]?.(
+      const nextResult = thing?.[(returnType == 6 ? _HAS : GET) + listenable]?.(
         ...args
       ) ?? DEFAULTS[returnType];
       return !(IS_EQUALS[returnType] ?? isEqual)(nextResult, lastResult.current) ? lastResult.current = nextResult : lastResult.current;
@@ -316,7 +328,7 @@ var useListenable = (listenable, thing, returnType, args = EMPTY_ARRAY) => {
   const subscribe = useCallback(
     (listener) => addAndDelListener(
       thing,
-      (returnType == 4 ? HAS : EMPTY_STRING) + listenable,
+      (returnType == 6 ? HAS : EMPTY_STRING) + listenable,
       ...args,
       listener
     ),
@@ -418,7 +430,7 @@ var useCreateMergeableStore = (create, createDeps = EMPTY_ARRAY) => useMemo(crea
 var useHasTables = (storeOrStoreId) => useListenable(
   TABLES,
   useStoreOrStoreById(storeOrStoreId),
-  4,
+  6,
   []
 );
 var useTables = (storeOrStoreId) => useListenable(
@@ -433,7 +445,7 @@ var useTableIds = (storeOrStoreId) => useListenable(
   1
   /* Array */
 );
-var useHasTable = (tableId, storeOrStoreId) => useListenable(TABLE, useStoreOrStoreById(storeOrStoreId), 4, [
+var useHasTable = (tableId, storeOrStoreId) => useListenable(TABLE, useStoreOrStoreById(storeOrStoreId), 6, [
   tableId
 ]);
 var useTable = (tableId, storeOrStoreId) => useListenable(TABLE, useStoreOrStoreById(storeOrStoreId), 0, [
@@ -448,13 +460,13 @@ var useTableCellIds = (tableId, storeOrStoreId) => useListenable(
 var useHasTableCell = (tableId, cellId, storeOrStoreId) => useListenable(
   TABLE + CELL,
   useStoreOrStoreById(storeOrStoreId),
-  4,
+  6,
   [tableId, cellId]
 );
 var useRowCount = (tableId, storeOrStoreId) => useListenable(
   ROW_COUNT,
   useStoreOrStoreById(storeOrStoreId),
-  5,
+  7,
   [tableId]
 );
 var useRowIds = (tableId, storeOrStoreId) => useListenable(ROW_IDS, useStoreOrStoreById(storeOrStoreId), 1, [
@@ -477,7 +489,7 @@ var useSortedRowIds = (tableIdOrArgs, cellIdOrStoreOrStoreId, descending, offset
     storeOrStoreId
   ]
 );
-var useHasRow = (tableId, rowId, storeOrStoreId) => useListenable(ROW, useStoreOrStoreById(storeOrStoreId), 4, [
+var useHasRow = (tableId, rowId, storeOrStoreId) => useListenable(ROW, useStoreOrStoreById(storeOrStoreId), 6, [
   tableId,
   rowId
 ]);
@@ -489,7 +501,7 @@ var useCellIds = (tableId, rowId, storeOrStoreId) => useListenable(CELL_IDS, use
   tableId,
   rowId
 ]);
-var useHasCell = (tableId, rowId, cellId, storeOrStoreId) => useListenable(CELL, useStoreOrStoreById(storeOrStoreId), 4, [
+var useHasCell = (tableId, rowId, cellId, storeOrStoreId) => useListenable(CELL, useStoreOrStoreById(storeOrStoreId), 6, [
   tableId,
   rowId,
   cellId
@@ -497,13 +509,13 @@ var useHasCell = (tableId, rowId, cellId, storeOrStoreId) => useListenable(CELL,
 var useCell = (tableId, rowId, cellId, storeOrStoreId) => useListenable(
   CELL,
   useStoreOrStoreById(storeOrStoreId),
-  3,
+  5,
   [tableId, rowId, cellId]
 );
 var useHasValues = (storeOrStoreId) => useListenable(
   VALUES,
   useStoreOrStoreById(storeOrStoreId),
-  4,
+  6,
   []
 );
 var useValues = (storeOrStoreId) => useListenable(
@@ -518,13 +530,13 @@ var useValueIds = (storeOrStoreId) => useListenable(
   1
   /* Array */
 );
-var useHasValue = (valueId, storeOrStoreId) => useListenable(VALUE, useStoreOrStoreById(storeOrStoreId), 4, [
+var useHasValue = (valueId, storeOrStoreId) => useListenable(VALUE, useStoreOrStoreById(storeOrStoreId), 6, [
   valueId
 ]);
 var useValue = (valueId, storeOrStoreId) => useListenable(
   VALUE,
   useStoreOrStoreById(storeOrStoreId),
-  3,
+  5,
   [valueId]
 );
 var useSetTablesCallback = (getTables, getTablesDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
@@ -843,7 +855,7 @@ var useMetricIds = (metricsOrMetricsId) => useListenable(
 var useMetric = (metricId, metricsOrMetricsId) => useListenable(
   METRIC,
   useMetricsOrMetricsById(metricsOrMetricsId),
-  3,
+  5,
   [metricId]
 );
 var useMetricListener = (metricId, listener, listenerDeps, metricsOrMetricsId) => useListener(
@@ -902,7 +914,7 @@ var useRelationshipIds = (relationshipsOrRelationshipsId) => useListenable(
 var useRemoteRowId = (relationshipId, localRowId, relationshipsOrRelationshipsId) => useListenable(
   REMOTE_ROW_ID,
   useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
-  3,
+  5,
   [relationshipId, localRowId]
 );
 var useLocalRowIds = (relationshipId, remoteRowId, relationshipsOrRelationshipsId) => useListenable(
@@ -963,7 +975,7 @@ var useResultTableCellIds = (queryId, queriesOrQueriesId) => useListenable(
 var useResultRowCount = (queryId, queriesOrQueriesId) => useListenable(
   RESULT + ROW_COUNT,
   useQueriesOrQueriesById(queriesOrQueriesId),
-  5,
+  7,
   [queryId]
 );
 var useResultRowIds = (queryId, queriesOrQueriesId) => useListenable(
@@ -993,7 +1005,7 @@ var useResultCellIds = (queryId, rowId, queriesOrQueriesId) => useListenable(
 var useResultCell = (queryId, rowId, cellId, queriesOrQueriesId) => useListenable(
   RESULT + CELL,
   useQueriesOrQueriesById(queriesOrQueriesId),
-  3,
+  5,
   [queryId, rowId, cellId]
 );
 var useResultTableListener = (queryId, listener, listenerDeps, queriesOrQueriesId) => useListener(
@@ -1052,6 +1064,32 @@ var useResultCellListener = (queryId, rowId, cellId, listener, listenerDeps, que
   listenerDeps,
   [queryId, rowId, cellId]
 );
+var useParamValues = (queryId, queriesOrQueriesId) => useListenable(
+  "ParamValues",
+  useQueriesOrQueriesById(queriesOrQueriesId),
+  3,
+  [queryId]
+);
+var useParamValue = (queryId, paramId, queriesOrQueriesId) => useListenable(
+  "ParamValue",
+  useQueriesOrQueriesById(queriesOrQueriesId),
+  4,
+  [queryId, paramId]
+);
+var useParamValuesListener = (queryId, listener, listenerDeps, queriesOrQueriesId) => useListener(
+  "ParamValues",
+  useQueriesOrQueriesById(queriesOrQueriesId),
+  listener,
+  listenerDeps,
+  [queryId]
+);
+var useParamValueListener = (queryId, paramId, listener, listenerDeps, queriesOrQueriesId) => useListener(
+  "ParamValue",
+  useQueriesOrQueriesById(queriesOrQueriesId),
+  listener,
+  listenerDeps,
+  [queryId, paramId]
+);
 var useSetParamValueCallback = (queryId, paramId, getParamValue, getParamValueDeps, queriesOrQueriesId, then, thenDeps) => useQueriesSetCallback(
   queriesOrQueriesId,
   "setParamValue",
@@ -1084,7 +1122,7 @@ var useCheckpointIds = (checkpointsOrCheckpointsId) => useListenable(
 var useCheckpoint = (checkpointId, checkpointsOrCheckpointsId) => useListenable(
   CHECKPOINT,
   useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
-  3,
+  5,
   [checkpointId]
 );
 var useSetCheckpointCallback = (getCheckpoint = getUndefined, getCheckpointDeps = EMPTY_ARRAY, checkpointsOrCheckpointsId, then = getUndefined, thenDeps = EMPTY_ARRAY) => {
@@ -1193,7 +1231,7 @@ var useProvidePersister = (persisterId, persister) => useProvideThing(persisterI
 var usePersisterStatus = (persisterOrPersisterId) => useListenable(
   STATUS,
   usePersisterOrPersisterById(persisterOrPersisterId),
-  5,
+  7,
   []
 );
 var usePersisterStatusListener = (listener, listenerDeps, persisterOrPersisterId) => useListener(
@@ -1234,7 +1272,7 @@ var useProvideSynchronizer = (persisterId, persister) => useProvideThing(persist
 var useSynchronizerStatus = (synchronizerOrSynchronizerId) => useListenable(
   STATUS,
   useSynchronizerOrSynchronizerById(synchronizerOrSynchronizerId),
-  5,
+  7,
   []
 );
 var useSynchronizerStatusListener = (listener, listenerDeps, synchronizerOrSynchronizerId) => useListener(
@@ -1714,6 +1752,10 @@ export {
   useMetrics,
   useMetricsIds,
   useMetricsOrMetricsById,
+  useParamValue,
+  useParamValueListener,
+  useParamValues,
+  useParamValuesListener,
   usePersister,
   usePersisterIds,
   usePersisterOrPersisterById,
