@@ -77,7 +77,9 @@ import type {
 } from '../../persisters/with-schemas/index.d.ts';
 import type {
   ParamValue,
+  ParamValueListener,
   ParamValues,
+  ParamValuesListener,
   Queries,
   ResultCell,
   ResultCellIdsListener,
@@ -1125,6 +1127,36 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     rowId: IdOrNull,
     cellId: IdOrNull,
     listener: ResultCellListener<Schemas>,
+    listenerDeps?: React.DependencyList,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// useParamValues
+  useParamValues: (
+    queryId: Id,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => ParamValues | undefined;
+
+  /// useParamValue
+  useParamValue: (
+    queryId: Id,
+    paramId: Id,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => ParamValue | undefined;
+
+  /// useParamValuesListener
+  useParamValuesListener: (
+    queryId: IdOrNull,
+    listener: ParamValuesListener<Schemas>,
+    listenerDeps?: React.DependencyList,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// useParamValueListener
+  useParamValueListener: (
+    queryId: IdOrNull,
+    paramId: IdOrNull,
+    listener: ParamValueListener<Schemas>,
     listenerDeps?: React.DependencyList,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;

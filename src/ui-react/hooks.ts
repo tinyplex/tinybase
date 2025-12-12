@@ -29,7 +29,9 @@ import type {
 } from '../@types/persisters/index.d.ts';
 import type {
   ParamValue,
+  ParamValueListener,
   ParamValues,
+  ParamValuesListener,
   Queries,
   ResultCellIdsListener,
   ResultCellListener,
@@ -150,6 +152,10 @@ import type {
   useMetrics as useMetricsDecl,
   useMetricsIds as useMetricsIdsDecl,
   useMetricsOrMetricsById as useMetricsOrMetricsByIdDecl,
+  useParamValue as useParamValueDecl,
+  useParamValueListener as useParamValueListenerDecl,
+  useParamValues as useParamValuesDecl,
+  useParamValuesListener as useParamValuesListenerDecl,
   usePersister as usePersisterDecl,
   usePersisterIds as usePersisterIdsDecl,
   usePersisterOrPersisterById as usePersisterOrPersisterByIdDecl,
@@ -241,13 +247,15 @@ import type {
   useWillFinishTransactionListener as useWillFinishTransactionListenerDecl,
 } from '../@types/ui-react/index.d.ts';
 import {
+  arrayEvery,
   arrayFilter,
   arrayIsEmpty,
   arrayIsEqual,
   arrayMap,
+  arrayOrValueEqual,
 } from '../common/array.ts';
 import {ListenerArgument} from '../common/listeners.ts';
-import {IdObj, isObject, objIsEqual} from '../common/obj.ts';
+import {IdObj, isObject, objIds, objIsEqual} from '../common/obj.ts';
 import {
   getUndefined,
   ifNotUndefined,
@@ -324,6 +332,8 @@ enum ReturnType {
   Object,
   Array,
   Checkpoints,
+  ParamValues,
+  ParamValue,
   CellOrValue,
   Boolean,
   Number,
@@ -332,6 +342,8 @@ const DEFAULTS = [
   {},
   [],
   [EMPTY_ARRAY, undefined, EMPTY_ARRAY],
+  {},
+  undefined,
   undefined,
   false,
   0,
@@ -346,6 +358,17 @@ const IS_EQUALS: ((thing1: any, thing2: any) => boolean)[] = [
     currentId1 === currentId2 &&
     arrayIsEqual(backwardIds1, backwardIds2) &&
     arrayIsEqual(forwardIds1, forwardIds2),
+  (paramValues1: ParamValues, paramValues2: ParamValues): boolean => {
+    const keys1 = objIds(paramValues1);
+    const keys2 = objIds(paramValues2);
+    return (
+      arrayIsEqual(keys1, keys2) &&
+      arrayEvery(keys1, (key) =>
+        arrayOrValueEqual(paramValues1[key], paramValues2[key]),
+      )
+    );
+  },
+  arrayOrValueEqual,
 ];
 const isEqual = (thing1: any, thing2: any) => thing1 === thing2;
 
@@ -1953,6 +1976,58 @@ export const useResultCellListener: typeof useResultCellListenerDecl = (
     listener,
     listenerDeps,
     [queryId, rowId, cellId],
+  );
+
+export const useParamValues: typeof useParamValuesDecl = (
+  queryId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): ParamValues | undefined =>
+  useListenable(
+    'ParamValues',
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    ReturnType.ParamValues,
+    [queryId],
+  );
+
+export const useParamValue: typeof useParamValueDecl = (
+  queryId: Id,
+  paramId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): ParamValue | undefined =>
+  useListenable(
+    'ParamValue',
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    ReturnType.ParamValue,
+    [queryId, paramId],
+  );
+
+export const useParamValuesListener: typeof useParamValuesListenerDecl = (
+  queryId: IdOrNull,
+  listener: ParamValuesListener,
+  listenerDeps?: DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): void =>
+  useListener(
+    'ParamValues',
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    listener,
+    listenerDeps,
+    [queryId],
+  );
+
+export const useParamValueListener: typeof useParamValueListenerDecl = (
+  queryId: IdOrNull,
+  paramId: IdOrNull,
+  listener: ParamValueListener,
+  listenerDeps?: DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): void =>
+  useListener(
+    'ParamValue',
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    listener,
+    listenerDeps,
+    [queryId, paramId],
   );
 
 export const useSetParamValueCallback: typeof useSetParamValueCallbackDecl = <

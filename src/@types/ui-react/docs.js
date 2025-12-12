@@ -10054,8 +10054,456 @@
  */
 /// useResultCellListener
 /**
- * The useSetParamValueCallback hook returns a parameterized callback that
- * can be used to set a single parameter value for a query.
+ * The useParamValues hook returns an object containing all the parameter values
+ * currently set for a query.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Queries object or a set of Queries objects named by
+ * Id. The useParamValues hook lets you indicate which Queries object to get
+ * data for: omit the optional final parameter for the default context Queries
+ * object, provide an Id for a named context Queries object, or provide a
+ * Queries object explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * parameter values will cause a re-render. When the component containing this
+ * hook is unmounted, the listener will be automatically removed.
+ * @param queryId The Id of the query to get parameter values for.
+ * @param queriesOrQueriesId The Queries object to be accessed: omit for the
+ * default context Queries object, provide an Id for a named context Queries
+ * object, or provide an explicit reference.
+ * @returns An object containing all parameter values for the query, or
+ * undefined if the query doesn't exist.
+ * @example
+ * This example creates a Queries object outside the application, which is used
+ * in the useParamValues hook by reference. A change to the parameter values
+ * re-renders the component.
+ *
+ * ```jsx
+ * import React from 'react';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {createRoot} from 'react-dom/client';
+ * import {useParamValues} from 'tinybase/ui-react';
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ * });
+ * const queries = createQueries(store);
+ * queries.setQueryDefinition(
+ *   'petsBySpecies',
+ *   'pets',
+ *   ({select, where, param}) => {
+ *     select('species');
+ *     where('species', param('species'));
+ *   },
+ *   {species: 'dog'},
+ * );
+ *
+ * const App = () => (
+ *   <span>{JSON.stringify(useParamValues('petsBySpecies', queries))}</span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>{"species":"dog"}</span>'
+ *
+ * queries.setParamValue('petsBySpecies', 'species', 'cat'); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>{"species":"cat"}</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Queries object
+ * is provided. A component within it then uses the useParamValues hook.
+ *
+ * ```jsx
+ * import {Provider, useParamValues} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {createRoot} from 'react-dom/client';
+ *
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>{JSON.stringify(useParamValues('petsBySpecies'))}</span>
+ * );
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
+ * });
+ * const queries = createQueries(store);
+ * queries.setQueryDefinition(
+ *   'petsBySpecies',
+ *   'pets',
+ *   ({select, where, param}) => {
+ *     select('species');
+ *     where('species', param('species'));
+ *   },
+ *   {species: 'dog'},
+ * );
+ *
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App queries={queries} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>{"species":"dog"}</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Queries object is
+ * provided, named by Id. A component within it then uses the useParamValues
+ * hook.
+ *
+ * ```jsx
+ * import {Provider, useParamValues} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {createRoot} from 'react-dom/client';
+ *
+ * const App = ({queries}) => (
+ *   <Provider queriesById={{petQueries: queries}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>
+ *     {JSON.stringify(useParamValues('petsBySpecies', 'petQueries'))}
+ *   </span>
+ * );
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
+ * });
+ * const queries = createQueries(store);
+ * queries.setQueryDefinition(
+ *   'petsBySpecies',
+ *   'pets',
+ *   ({select, where, param}) => {
+ *     select('species');
+ *     where('species', param('species'));
+ *   },
+ *   {species: 'dog'},
+ * );
+ *
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App queries={queries} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>{"species":"dog"}</span>'
+ * ```
+ * @category Queries hooks
+ * @since v7.2.0
+ */
+/// useParamValues
+/**
+ * The useParamValue hook returns the current value of a single parameter in a
+ * query.
+ *
+ * A Provider component is used to wrap part of an application in a context, and
+ * it can contain a default Queries object or a set of Queries objects named by
+ * Id. The useParamValue hook lets you indicate which Queries object to get data
+ * for: omit the optional final parameter for the default context Queries
+ * object, provide an Id for a named context Queries object, or provide a
+ * Queries object explicitly by reference.
+ *
+ * When first rendered, this hook will create a listener so that changes to the
+ * parameter value will cause a re-render. When the component containing this
+ * hook is unmounted, the listener will be automatically removed.
+ * @param queryId The Id of the query to get the parameter value from.
+ * @param paramId The Id of the parameter to get the value of.
+ * @param queriesOrQueriesId The Queries object to be accessed: omit for the
+ * default context Queries object, provide an Id for a named context Queries
+ * object, or provide an explicit reference.
+ * @returns The value of the parameter, or undefined if it doesn't exist.
+ * @example
+ * This example creates a Queries object outside the application, which is used
+ * in the useParamValue hook by reference. A change to the parameter value
+ * re-renders the component.
+ *
+ * ```jsx
+ * import React from 'react';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {createRoot} from 'react-dom/client';
+ * import {useParamValue} from 'tinybase/ui-react';
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog', color: 'brown'},
+ *   felix: {species: 'cat', color: 'black'},
+ * });
+ * const queries = createQueries(store);
+ * queries.setQueryDefinition(
+ *   'petsBySpecies',
+ *   'pets',
+ *   ({select, where, param}) => {
+ *     select('species');
+ *     where('species', param('species'));
+ *   },
+ *   {species: 'dog'},
+ * );
+ *
+ * const App = () => (
+ *   <span>{useParamValue('petsBySpecies', 'species', queries)}</span>
+ * );
+ *
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>dog</span>'
+ *
+ * queries.setParamValue('petsBySpecies', 'species', 'cat'); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>cat</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a default Queries object
+ * is provided. A component within it then uses the useParamValue hook.
+ *
+ * ```jsx
+ * import {Provider, useParamValue} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {createRoot} from 'react-dom/client';
+ *
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>{useParamValue('petsBySpecies', 'species')}</span>
+ * );
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
+ * });
+ * const queries = createQueries(store);
+ * queries.setQueryDefinition(
+ *   'petsBySpecies',
+ *   'pets',
+ *   ({select, where, param}) => {
+ *     select('species');
+ *     where('species', param('species'));
+ *   },
+ *   {species: 'dog'},
+ * );
+ *
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App queries={queries} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>dog</span>'
+ * ```
+ * @example
+ * This example creates a Provider context into which a Queries object is
+ * provided, named by Id. A component within it then uses the useParamValue
+ * hook.
+ *
+ * ```jsx
+ * import {Provider, useParamValue} from 'tinybase/ui-react';
+ * import React from 'react';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {createRoot} from 'react-dom/client';
+ *
+ * const App = ({queries}) => (
+ *   <Provider queriesById={{petQueries: queries}}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => (
+ *   <span>{useParamValue('petsBySpecies', 'species', 'petQueries')}</span>
+ * );
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
+ * });
+ * const queries = createQueries(store);
+ * queries.setQueryDefinition(
+ *   'petsBySpecies',
+ *   'pets',
+ *   ({select, where, param}) => {
+ *     select('species');
+ *     where('species', param('species'));
+ *   },
+ *   {species: 'dog'},
+ * );
+ *
+ * const app = document.createElement('div');
+ * createRoot(app).render(<App queries={queries} />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>dog</span>'
+ * ```
+ * @category Queries hooks
+ * @since v7.2.0
+ */
+/// useParamValue
+/**
+ * The useParamValuesListener hook registers a listener function with a Queries
+ * object that will be called whenever the parameter values for a query change.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the values (which is
+ * more easily done with the useParamValues hook).
+ *
+ * Unlike the addParamValuesListener method, which returns a listener Id and
+ * requires you to remove it manually, the useParamValuesListener hook manages
+ * this lifecycle for you: when the listener changes (per its `listenerDeps`
+ * dependencies) or the component unmounts, the listener on the underlying
+ * Queries object will be deleted.
+ * @param queryId The Id of the query to listen to, or `null` as a wildcard.
+ * @param listener The function that will be called whenever the parameter
+ * values for the query change.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param queriesOrQueriesId The Queries object to register the listener with:
+ * omit for the default context Queries object, provide an Id for a named
+ * context Queries object, or provide an explicit reference.
+ * @example
+ * This example uses the useParamValuesListener hook to create a listener that
+ * is scoped to a single component. When the component is unmounted, the
+ * listener is removed from the Queries object.
+ *
+ * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useParamValuesListener} from 'tinybase/ui-react';
+ *
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useParamValuesListener('petsBySpecies', () =>
+ *     console.log('Param values changed'),
+ *   );
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
+ * });
+ * const queries = createQueries(store);
+ * queries.setQueryDefinition(
+ *   'petsBySpecies',
+ *   'pets',
+ *   ({select, where, param}) => {
+ *     select('species');
+ *     where('species', param('species'));
+ *   },
+ *   {species: 'dog'},
+ * );
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App queries={queries} />); // !act
+ * console.log(queries.getListenerStats().paramValues);
+ * // -> 1
+ *
+ * queries.setParamValue('petsBySpecies', 'species', 'cat'); // !act
+ * // -> 'Param values changed'
+ *
+ * root.unmount(); // !act
+ * console.log(queries.getListenerStats().paramValues);
+ * // -> 0
+ * ```
+ * @category Queries hooks
+ * @since v7.2.0
+ */
+/// useParamValuesListener
+/**
+ * The useParamValueListener hook registers a listener function with a Queries
+ * object that will be called whenever a single parameter value for a query
+ * changes.
+ *
+ * This hook is useful for situations where a component needs to register its
+ * own specific listener to do more than simply tracking the value (which is
+ * more easily done with the useParamValue hook).
+ *
+ * You can either listen to a single parameter (by specifying the query Id and
+ * parameter Id as the method's first two parameters) or changes to any
+ * parameter (by providing `null` wildcards).
+ *
+ * Both the `queryId` and `paramId` parameters can be wildcarded with `null`.
+ * You can listen to a specific parameter in a specific query, any parameter in
+ * any query, for example - or every other combination of wildcards.
+ *
+ * Unlike the addParamValueListener method, which returns a listener Id and
+ * requires you to remove it manually, the useParamValueListener hook manages
+ * this lifecycle for you: when the listener changes (per its `listenerDeps`
+ * dependencies) or the component unmounts, the listener on the underlying
+ * Queries object will be deleted.
+ * @param queryId The Id of the query to listen to, or `null` as a wildcard.
+ * @param paramId The Id of the parameter to listen to, or `null` as a wildcard.
+ * @param listener The function that will be called whenever the parameter value
+ * changes.
+ * @param listenerDeps An optional array of dependencies for the `listener`
+ * function, which, if any change, result in the re-registration of the
+ * listener. This parameter defaults to an empty array.
+ * @param queriesOrQueriesId The Queries object to register the listener with:
+ * omit for the default context Queries object, provide an Id for a named
+ * context Queries object, or provide an explicit reference.
+ * @example
+ * This example uses the useParamValueListener hook to create a listener that
+ * is scoped to a single component. When the component is unmounted, the
+ * listener is removed from the Queries object.
+ *
+ * ```jsx
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {createQueries, createStore} from 'tinybase';
+ * import {Provider, useParamValueListener} from 'tinybase/ui-react';
+ *
+ * const App = ({queries}) => (
+ *   <Provider queries={queries}>
+ *     <Pane />
+ *   </Provider>
+ * );
+ * const Pane = () => {
+ *   useParamValueListener('petsBySpecies', 'species', () =>
+ *     console.log('Param value changed'),
+ *   );
+ *   return <span>App</span>;
+ * };
+ *
+ * const store = createStore().setTable('pets', {
+ *   fido: {species: 'dog'},
+ *   felix: {species: 'cat'},
+ * });
+ * const queries = createQueries(store);
+ * queries.setQueryDefinition(
+ *   'petsBySpecies',
+ *   'pets',
+ *   ({select, where, param}) => {
+ *     select('species');
+ *     where('species', param('species'));
+ *   },
+ *   {species: 'dog'},
+ * );
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App queries={queries} />); // !act
+ * console.log(queries.getListenerStats().paramValue);
+ * // -> 1
+ *
+ * queries.setParamValue('petsBySpecies', 'species', 'cat'); // !act
+ * // -> 'Param value changed'
+ *
+ * root.unmount(); // !act
+ * console.log(queries.getListenerStats().paramValue);
+ * // -> 0
+ * ```
+ * @category Queries hooks
+ * @since v7.2.0
+ */
+/// useParamValueListener
+/**
+ * The useSetParamValueCallback hook returns a parameterized callback that can
+ * be used to set a single parameter value for a query.
  *
  * This hook is useful, for example, when creating an event handler that will
  * update query parameters based on user interaction. In this case, the
@@ -10172,8 +10620,8 @@
  */
 /// useSetParamValueCallback
 /**
- * The useSetParamValuesCallback hook returns a parameterized callback that
- * can be used to set multiple parameter values for a query at once.
+ * The useSetParamValuesCallback hook returns a parameterized callback that can
+ * be used to set multiple parameter values for a query at once.
  *
  * This hook is useful, for example, when creating an event handler that will
  * update multiple query parameters based on user interaction. In this case, the

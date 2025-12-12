@@ -30,7 +30,9 @@ import type {
 } from '../persisters/index.d.ts';
 import type {
   ParamValue,
+  ParamValueListener,
   ParamValues,
+  ParamValuesListener,
   Queries,
   ResultCellIdsListener,
   ResultCellListener,
@@ -932,6 +934,36 @@ export function useResultCellListener(
   rowId: IdOrNull,
   cellId: IdOrNull,
   listener: ResultCellListener,
+  listenerDeps?: React.DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): void;
+
+/// useParamValues
+export function useParamValues(
+  queryId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): ParamValues | undefined;
+
+/// useParamValue
+export function useParamValue(
+  queryId: Id,
+  paramId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): ParamValue | undefined;
+
+/// useParamValuesListener
+export function useParamValuesListener(
+  queryId: IdOrNull,
+  listener: ParamValuesListener,
+  listenerDeps?: React.DependencyList,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): void;
+
+/// useParamValueListener
+export function useParamValueListener(
+  queryId: IdOrNull,
+  paramId: IdOrNull,
+  listener: ParamValueListener,
   listenerDeps?: React.DependencyList,
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): void;
