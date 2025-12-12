@@ -485,3 +485,37 @@ When adding a new feature:
      `<span id="one-with">"The one with Schematizers!"</span>`
 
 3. **Generated files update automatically** during build process
+
+## Demo Development Workflow
+
+Demos are located in `/site/demos/` as markdown files containing embedded code
+blocks that are assembled into working applications.
+
+### Demo Structure
+
+- **Demo files**: `/site/demos/*.md` or `/site/demos/*/`
+- **E2E tests**: `/test/e2e/demos/*.test.ts`
+- Code blocks in markdown are extracted and combined into complete applications
+- All code fragments in a demo share scope (variables declared in one block are
+  available in subsequent blocks)
+
+### Iteration Workflow
+
+When modifying demos:
+
+```bash
+# One-time setup (only if TinyBase source code has changed)
+npm run compileForProd
+
+# Fast iteration loop
+npm run compileDocsPagesOnly  # Rebuild just the demo pages
+npm run testE2e               # Run E2E tests to verify demos
+```
+
+**Key points**:
+
+- `compileForProd` builds the TinyBase libraries themselves
+- `compileDocsPagesOnly` is much faster - only rebuilds demo pages from markdown
+- You only need `compileForProd` once, unless you've changed TinyBase source
+- E2E tests use Playwright to verify demos work in a real browser
+- Individual E2E tests can be run for faster verification during iteration
