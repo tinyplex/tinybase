@@ -5042,6 +5042,124 @@ describe('Parameterized', () => {
 
       expect(queries.getResultTable('q1')).toEqual({r1: {c1: 'a', c2: 'odd'}});
     });
+
+    test('changes param from string to array and back', () => {
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where((getTableCell) => {
+            const p = param('p1');
+            return Array.isArray(p)
+              ? (p as string[]).includes(getTableCell('c1') as string)
+              : getTableCell('c1') === p;
+          });
+        },
+        {p1: 'a'},
+      );
+
+      expect(queries.getResultTable('q1')).toEqual({r1: {c1: 'a'}});
+
+      queries.setParamValue('q1', 'p1', ['a', 'c', 'e']);
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'a'},
+        r3: {c1: 'c'},
+        r5: {c1: 'e'},
+      });
+
+      queries.setParamValue('q1', 'p1', 'b');
+
+      expect(queries.getResultTable('q1')).toEqual({r2: {c1: 'b'}});
+    });
+
+    test('changes param from one array to another array', () => {
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where((getTableCell) => {
+            const p = param('p1') as string[];
+            return p.includes(getTableCell('c1') as string);
+          });
+        },
+        {p1: ['a', 'c']},
+      );
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'a'},
+        r3: {c1: 'c'},
+      });
+
+      queries.setParamValue('q1', 'p1', ['b', 'd']);
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r2: {c1: 'b'},
+        r4: {c1: 'd'},
+      });
+
+      queries.setParamValue('q1', 'p1', ['a', 'c']);
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'a'},
+        r3: {c1: 'c'},
+      });
+    });
+
+    test('setting array param to equivalent array does not trigger', () => {
+      const listener = vi.fn();
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where((getTableCell) => {
+            const p = param('p1') as string[];
+            return p.includes(getTableCell('c1') as string);
+          });
+        },
+        {p1: ['a', 'c']},
+      );
+
+      queries.addResultTableListener('q1', listener);
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'a'},
+        r3: {c1: 'c'},
+      });
+
+      queries.setParamValue('q1', 'p1', ['a', 'c']);
+
+      expect(listener).not.toHaveBeenCalled();
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'a'},
+        r3: {c1: 'c'},
+      });
+    });
+
+    test('setting primitive param to same value does not trigger', () => {
+      const listener = vi.fn();
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where((getTableCell) => getTableCell('c1') === param('p1'));
+        },
+        {p1: 'a'},
+      );
+
+      queries.addResultTableListener('q1', listener);
+
+      expect(queries.getResultTable('q1')).toEqual({r1: {c1: 'a'}});
+
+      queries.setParamValue('q1', 'p1', 'a');
+
+      expect(listener).not.toHaveBeenCalled();
+      expect(queries.getResultTable('q1')).toEqual({r1: {c1: 'a'}});
+    });
   });
 
   describe('setParamValues', () => {
@@ -5097,6 +5215,33 @@ describe('Parameterized', () => {
       queries.setParamValues('q1', {p1: 'b'});
 
       expect(queries.getResultRowIds('q1')).toEqual(['r2']);
+    });
+
+    test('deletes param when missing from setParamValues', () => {
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where(
+            (getTableCell) =>
+              getTableCell('c1') === param('p1') ||
+              getTableCell('c2') === param('p2'),
+          );
+        },
+        {p1: 'a', p2: 'even'},
+      );
+
+      expect(queries.getResultTable('q1')).toEqual({
+        r1: {c1: 'a'},
+        r2: {c1: 'b'},
+        r4: {c1: 'd'},
+      });
+
+      queries.setParamValues('q1', {p1: 'c'});
+
+      expect(queries.getResultTable('q1')).toEqual({r3: {c1: 'c'}});
+      expect(queries.getParamValues('q1')).toEqual({p1: 'c'});
     });
   });
 

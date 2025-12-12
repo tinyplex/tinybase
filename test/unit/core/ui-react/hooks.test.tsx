@@ -2612,6 +2612,43 @@ describe('Read Hooks', () => {
     unmount();
   });
 
+  test('useParamValue with array changes', () => {
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select, where, param}) => {
+        select('c1');
+        where((getTableCell) => {
+          const p = param('p1');
+          return Array.isArray(p)
+            ? (p as string[]).includes(getTableCell('c1') as string)
+            : getTableCell('c1') === p;
+        });
+      },
+      {p1: 'a'},
+    );
+    const Test = ({queryId, paramId}: {queryId: Id; paramId: Id}) =>
+      didRender(JSON.stringify(useParamValue(queryId, paramId, queries)));
+    const {container, rerender, unmount} = render(
+      <Test queryId="q1" paramId="p1" />,
+    );
+
+    expect(container.textContent).toEqual('"a"');
+
+    act(() => queries.setParamValue('q1', 'p1', ['a', 'c']));
+    expect(container.textContent).toEqual('["a","c"]');
+
+    act(() => queries.setParamValue('q1', 'p1', ['b', 'd']));
+    expect(container.textContent).toEqual('["b","d"]');
+
+    act(() => queries.setParamValue('q1', 'p1', 'e'));
+    expect(container.textContent).toEqual('"e"');
+
+    expect(didRender).toHaveBeenCalledTimes(4);
+
+    unmount();
+  });
+
   test('useSetParamValueCallback', () => {
     const queries = createQueries(store);
     queries.setQueryDefinition(
