@@ -10,7 +10,9 @@ import type {
   Join,
   Param,
   ParamValue,
+  ParamValueListener,
   ParamValues,
+  ParamValuesListener,
   Queries,
   QueriesListenerStats,
   QueryIdsListener,
@@ -51,6 +53,7 @@ import {
   mapEnsure,
   mapForEach,
   mapGet,
+  mapMatch,
   mapNew,
   mapSet,
   mapToObj,
@@ -65,7 +68,7 @@ import {
   size,
   slice,
 } from '../common/other.ts';
-import {IdSet, setAdd, setNew} from '../common/set.ts';
+import {IdSet, IdSet2, IdSet3, setAdd, setNew} from '../common/set.ts';
 import {
   ADD,
   CELL,
@@ -119,6 +122,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const preStore = createStore();
   const resultStore = createStore();
   const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
+  const paramValuesListeners: IdSet2 = mapNew();
+  const paramValueListeners: IdSet3 = mapNew();
 
   const {
     addListener,
@@ -592,16 +597,33 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   };
 
   const setParamValues = (queryId: Id, paramValues: ParamValues): Queries => {
-    ifNotUndefined(getQueryArgs(queryId), (definition) =>
-      resultStore.transaction(() =>
-        setQueryDefinition(
-          queryId,
-          getTableId(queryId),
-          definition[0],
-          paramValues,
-        ),
-      ),
-    );
+    ifNotUndefined(getQueryArgs(queryId), ([definition, oldParamValues]) => {
+      const changedParamValues: IdMap<ParamValue> = mapNew();
+      mapMatch(
+        oldParamValues,
+        paramValues,
+        (_, paramId, newValue) => {
+          if (newValue !== mapGet(oldParamValues, paramId)) {
+            mapSet(changedParamValues, paramId, newValue);
+          }
+        },
+        (_, paramId) => mapSet(changedParamValues, paramId, undefined),
+      );
+      if (!collIsEmpty(changedParamValues)) {
+        mapForEach(changedParamValues, (paramId, value) =>
+          callListeners(paramValueListeners, [queryId, paramId], value),
+        );
+        callListeners(paramValuesListeners, [queryId], {...paramValues});
+        resultStore.transaction(() =>
+          setQueryDefinition(
+            queryId,
+            getTableId(queryId),
+            definition,
+            paramValues,
+          ),
+        );
+      }
+    });
     return queries;
   };
 
@@ -623,6 +645,29 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
 
   const addQueryIdsListener = (listener: QueryIdsListener) =>
     addQueryIdsListenerImpl(() => listener(queries));
+
+  const addParamValuesListener = (
+    queryId: Id,
+    listener: ParamValuesListener,
+  ): Id =>
+    addListener(
+      (_: any, queryId: Id, paramValues: ParamValues) =>
+        listener(queries, queryId, paramValues),
+      paramValuesListeners,
+      [queryId],
+    );
+
+  const addParamValueListener = (
+    queryId: Id,
+    paramId: Id,
+    listener: ParamValueListener,
+  ): Id =>
+    addListener(
+      (_: any, queryId: Id, paramId: Id, paramValue: ParamValue) =>
+        listener(queries, queryId, paramId, paramValue),
+      paramValueListeners,
+      [queryId, paramId],
+    );
 
   const delListener = (listenerId: Id): Queries => {
     delListenerImpl(listenerId);
@@ -654,6 +699,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     getTableId,
 
     addQueryIdsListener,
+    addParamValuesListener,
+    addParamValueListener,
     delListener,
 
     destroy,

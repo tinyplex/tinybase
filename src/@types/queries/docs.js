@@ -293,12 +293,12 @@
  * The ParamValueListener type describes a function that is used to listen to
  * changes to a single param value of a parameterized query.
  *
- * A ParamValueListener is provided when using the addParamValueListener
- * method. See that method for specific examples.
+ * A ParamValueListener is provided when using the addParamValueListener method.
+ * See that method for specific examples.
  *
- * When called, a ParamValueListener is given a reference to the Queries
- * object, the Id of the query whose param value changed, and the Id of the
- * param whose value changed.
+ * When called, a ParamValueListener is given a reference to the Queries object,
+ * the Id of the query whose param value changed, and the Id of the param whose
+ * value changed.
  * @param queries A reference to the Queries object that changed.
  * @param queryId The Id of the query whose param value changed.
  * @param paramId The Id of the param whose value changed.
@@ -2823,6 +2823,137 @@
    * @since v4.1.0
    */
   /// Queries.addQueryIdsListener
+  /**
+   * The addParamValuesListener method registers a listener function with the
+   * Queries object that will be called whenever the param values of a query
+   * change.
+   *
+   * You can either listen to a single query (by specifying a query Id as the
+   * method's first parameter) or changes to any query (by providing a `null`
+   * wildcard).
+   *
+   * The provided listener is a ParamValuesListener function, and will be called
+   * with a reference to the Queries object, the Id of the query whose param
+   * values changed, and an object containing the new param values.
+   * @param queryId The Id of the query to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever the param values
+   * of the query change.
+   * @example
+   * This example registers two listeners that respond to changes to the param
+   * values of a specific query, or any query respectively.
+   *
+   * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
+   * const store = createStore().setTable('pets', {
+   *   // store data
+   * });
+   *
+   * const queries = createQueries(store).setQueryDefinition(
+   *   'petsByColor',
+   *   'pets',
+   *   () => {
+   *     // query definition
+   *   },
+   *   {color: 'white'},
+   * );
+   *
+   * const listenerId1 = queries.addParamValuesListener(
+   *   'petsByColor',
+   *   (queries, queryId, paramValues) => {
+   *     console.log(`Params for specific query changed: ${JSON.stringify(paramValues)}`);
+   *   },
+   * );
+   * const listenerId2 = queries.addParamValuesListener(
+   *   null,
+   *   (queries, queryId, paramValues) => {
+   *     console.log(`Params for "${queryId}" changed: ${JSON.stringify(paramValues)}`);
+   *   },
+   * );
+   *
+   * queries.setParamValues('petsByColor', {color: 'black'});
+   * // -> 'Params for specific query changed: {"color":"black"}'
+   * // -> 'Params for "petsByColor" changed: {"color":"black"}'
+   * queries.setParamValues('petsByColor', {color: 'brown'});
+   * // -> 'Params for specific query changed: {"color":"brown"}'
+   * // -> 'Params for "petsByColor" changed: {"color":"brown"}'
+   *
+   * queries.delListener(listenerId1);
+   * queries.delListener(listenerId2);
+   * ```
+   * @category Listener
+   * @since v7.2.0
+   */
+  /// Queries.addParamValuesListener
+  /**
+   * The addParamValueListener method registers a listener function with the
+   * Queries object that will be called whenever a specific param value of a
+   * query changes.
+   *
+   * You can either listen to a single query (by specifying a query Id as the
+   * method's first parameter) or changes to any query (by providing a `null`
+   * wildcard). Additionally, you can either listen to a specific param (by
+   * specifying a param Id as the second parameter) or changes to any param (by
+   * providing a `null` wildcard).
+   *
+   * The provided listener is a ParamValueListener function, and will be called
+   * with a reference to the Queries object, the Id of the query whose param
+   * value changed, the Id of the param whose value changed, and the new value
+   * of the param.
+   * @param queryId The Id of the query to listen to, or `null` as a wildcard.
+   * @param paramId The Id of the param to listen to, or `null` as a wildcard.
+   * @param listener The function that will be called whenever the specific
+   * param value of the query changes.
+   * @example
+   * This example registers two listeners that respond to changes to a specific
+   * param value of a specific query, or any param value of any query
+   * respectively.
+   *
+   * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
+   * const store = createStore().setTable('pets', {
+   *   // store data
+   * });
+   *
+   * const queries = createQueries(store).setQueryDefinition(
+   *   'petsByColor',
+   *   'pets',
+   *   () => {
+   *     // query definition
+   *   },
+   *   {color: 'white'},
+   * );
+   *
+   * const listenerId1 = queries.addParamValueListener(
+   *   'petsByColor',
+   *   'color',
+   *   (queries, queryId, paramId, value) => {
+   *     console.log(`Specific param for specific query changed: "${value}"`);
+   *   },
+   * );
+   * const listenerId2 = queries.addParamValueListener(
+   *   null,
+   *   null,
+   *   (queries, queryId, paramId, value) => {
+   *     console.log(`Param "${paramId}" for "${queryId}" changed: "${value}"`);
+   *   },
+   * );
+   *
+   * queries.setParamValue('petsByColor', 'color', 'black');
+   * // -> 'Specific param for specific query changed: "black"'
+   * // -> 'Param "color" for "petsByColor" changed: "black"'
+   * queries.setParamValue('petsByColor', 'color', 'brown');
+   * // -> 'Specific param for specific query changed: "brown"'
+   * // -> 'Param "color" for "petsByColor" changed: "brown"'
+   *
+   * queries.delListener(listenerId1);
+   * queries.delListener(listenerId2);
+   * ```
+   * @category Listener
+   * @since v7.2.0
+   */
+  /// Queries.addParamValueListener
   /**
    * The addResultTableListener method registers a listener function with the
    * Queries object that will be called whenever data in a ResultTable changes.

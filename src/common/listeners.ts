@@ -17,6 +17,8 @@ import type {
 } from '../@types/metrics/index.d.ts';
 import type {StatusListener} from '../@types/persisters/index.d.ts';
 import type {
+  ParamValueListener,
+  ParamValuesListener,
   QueryIdsListener,
   ResultCellIdsListener,
   ResultCellListener,
@@ -117,7 +119,9 @@ type Listener =
   | ResultCellListener
   | PathIdsListener
   | ClientIdsListener
-  | StatusListener;
+  | StatusListener
+  | ParamValuesListener
+  | ParamValueListener;
 type IdOrBoolean = Id | boolean;
 
 const getWildcardedLeaves = (

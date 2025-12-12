@@ -387,6 +387,16 @@ export interface Queries {
   /// Queries.addQueryIdsListener
   addQueryIdsListener(listener: QueryIdsListener): Id;
 
+  /// Queries.addParamValuesListener
+  addParamValuesListener(queryId: IdOrNull, listener: ParamValuesListener): Id;
+
+  /// Queries.addParamValueListener
+  addParamValueListener(
+    queryId: IdOrNull,
+    paramId: IdOrNull,
+    listener: ParamValueListener,
+  ): Id;
+
   /// Queries.addResultTableListener
   addResultTableListener(queryId: IdOrNull, listener: ResultTableListener): Id;
 

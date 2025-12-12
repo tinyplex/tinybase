@@ -475,6 +475,19 @@ export interface Queries<in out Schemas extends OptionalSchemas> {
   /// Queries.addQueryIdsListener
   addQueryIdsListener(listener: QueryIdsListener<Schemas>): Id;
 
+  /// Queries.addParamValuesListener
+  addParamValuesListener(
+    queryId: IdOrNull,
+    listener: ParamValuesListener<Schemas>,
+  ): Id;
+
+  /// Queries.addParamValueListener
+  addParamValueListener(
+    queryId: IdOrNull,
+    paramId: IdOrNull,
+    listener: ParamValueListener<Schemas>,
+  ): Id;
+
   /// Queries.addResultTableListener
   addResultTableListener(
     queryId: IdOrNull,
