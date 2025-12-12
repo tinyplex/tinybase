@@ -205,6 +205,7 @@ import type {
   useRowIds as useRowIdsDecl,
   useRowIdsListener as useRowIdsListenerDecl,
   useRowListener as useRowListenerDecl,
+  useRowState as useRowStateDecl,
   useSetCellCallback as useSetCellCallbackDecl,
   useSetCheckpointCallback as useSetCheckpointCallbackDecl,
   useSetParamValueCallback as useSetParamValueCallbackDecl,
@@ -761,6 +762,15 @@ export const useRow: typeof useRowDecl = (
     tableId,
     rowId,
   ]);
+
+export const useRowState: typeof useRowStateDecl = (
+  tableId: Id,
+  rowId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): [Row, (row: Row) => void] => [
+  useRow(tableId, rowId, storeOrStoreId),
+  useSetRowCallback(tableId, rowId, (row) => row, [], storeOrStoreId),
+];
 
 export const useCellIds: typeof useCellIdsDecl = (
   tableId: Id,

@@ -215,6 +215,13 @@ export function useRow(
   storeOrStoreId?: StoreOrStoreId,
 ): Row;
 
+/// useRowState
+export function useRowState(
+  tableId: Id,
+  rowId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): [Row, (row: Row) => void];
+
 /// useCellIds
 export function useCellIds(
   tableId: Id,

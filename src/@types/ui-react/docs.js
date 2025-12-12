@@ -1770,6 +1770,63 @@
  */
 /// useRow
 /**
+ * The useRowState hook returns a Row and a function to set it, following the
+ * same pattern as React's useState hook.
+ *
+ * This is a convenience hook that combines the useRow and useSetRowCallback
+ * hooks. It's useful when you need both read and write access to a Row in a
+ * single component.
+ *
+ * A Provider component is used to wrap part of an application in a context,
+ * and it can contain a default Store or a set of Store objects named by Id.
+ * The useRowState hook lets you indicate which Store to use: omit the final
+ * parameter for the default context Store, provide an Id for a named context
+ * Store, or provide a Store explicitly by reference.
+ * @param tableId The Id of the Table in the Store.
+ * @param rowId The Id of the Row in the Table.
+ * @param storeOrStoreId The Store to be accessed: omit for the default
+ * context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @returns An array containing the Row and a function to set it.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useRowState hook by reference. A button updates the Row when clicked.
+ *
+ * ```jsx
+ * import {createStore} from 'tinybase';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {useRowState} from 'tinybase/ui-react';
+ *
+ * const store = createStore().setTable('t1', {r1: {c1: 'Alice', c2: 30}});
+ * const App = () => {
+ *   const [row, setRow] = useRowState('t1', 'r1', store);
+ *   return (
+ *     <div>
+ *       {JSON.stringify(row)}
+ *       <button onClick={() => setRow({...row, c2: (row.c2 || 0) + 1})}>
+ *         Birthday
+ *       </button>
+ *     </div>
+ *   );
+ * };
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>{\"c1\":\"Alice\",\"c2\":30}<button>Birthday</button></div>'
+ *
+ * const button = app.querySelector('button');
+ * // -> button MouseEvent('click', {bubbles: true})
+ * console.log(app.innerHTML);
+ * // -> '<div>{\"c1\":\"Alice\",\"c2\":31}<button>Birthday</button></div>'
+ * ```
+ * @category State hooks
+ * @since v7.3.0
+ */
+/// useRowState
+/**
  * The useCellIds hook returns the Ids of every Cell in a given Row, in a given
  * Table, and registers a listener so that any changes to that result will cause
  * a re-render.
@@ -2119,7 +2176,7 @@
  * root.unmount(); // !act
  * ```
  * @category State hooks
- * @since v7.2.0
+ * @since v7.3.0
  */
 /// useCellState
 /**
@@ -3460,7 +3517,7 @@
  * root.unmount(); // !act
  * ```
  * @category State hooks
- * @since v7.2.0
+ * @since v7.3.0
  */
 /// useValueState
 /**

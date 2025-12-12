@@ -124,6 +124,7 @@ import {
   useRowIds,
   useRowIdsListener,
   useRowListener,
+  useRowState,
   useSetCellCallback,
   useSetCheckpointCallback,
   useSetParamValueCallback,
@@ -1685,6 +1686,39 @@ describe('Read Hooks', () => {
 
     act(() => fireEvent.click(container.querySelector('button') as Element));
     expect(container.innerHTML).toEqual('<span>2<button></button></span>');
+
+    unmount();
+  });
+
+  test('useRowState', () => {
+    const Test = () => {
+      const [row, setRow] = useRowState('t1', 'r1', store);
+      return (
+        <span>
+          {JSON.stringify(row)}
+          <button
+            onClick={() => setRow({...row, c1: ((row.c1 as number) ?? 0) + 1})}
+          />
+        </span>
+      );
+    };
+
+    store.setRow('t1', 'r1', {c1: 0, c2: 'a'});
+    const {container, unmount} = render(<Test />);
+
+    expect(container.innerHTML).toEqual(
+      '<span>{"c1":0,"c2":"a"}<button></button></span>',
+    );
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual(
+      '<span>{"c1":1,"c2":"a"}<button></button></span>',
+    );
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual(
+      '<span>{"c1":2,"c2":"a"}<button></button></span>',
+    );
 
     unmount();
   });

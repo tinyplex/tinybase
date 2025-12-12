@@ -276,6 +276,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => Row<Schemas[0], TableId>;
 
+  /// useRowState
+  useRowState: <TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId,
+    rowId: Id,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => [Row<Schemas[0], TableId>, (row: Row<Schemas[0], TableId>) => void];
+
   /// useCellIds
   useCellIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: TableId,
