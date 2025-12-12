@@ -69,7 +69,10 @@ var objIsEqual = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2) 
   const entries1 = objEntries(obj1);
   return size(entries1) === objSize(obj2) && arrayEvery(
     entries1,
-    ([index, value1]) => isObject(value1) ? isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false : isEqual3(value1, obj2[index])
+    ([index, value1]) => isObject(value1) ? (
+      /* istanbul ignore next */
+      isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false
+    ) : isEqual3(value1, obj2[index])
   );
 };
 var {
@@ -527,7 +530,10 @@ var objIsEqual2 = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2)
   const entries1 = objEntries2(obj1);
   return size2(entries1) === objSize2(obj2) && arrayEvery2(
     entries1,
-    ([index, value1]) => isObject2(value1) ? isObject2(obj2[index]) ? objIsEqual2(obj2[index], value1) : false : isEqual3(value1, obj2[index])
+    ([index, value1]) => isObject2(value1) ? (
+      /* istanbul ignore next */
+      isObject2(obj2[index]) ? objIsEqual2(obj2[index], value1) : false
+    ) : isEqual3(value1, obj2[index])
   );
 };
 var objValidate = (obj, validateChild, onInvalidObj, emptyIsValid = 0) => {

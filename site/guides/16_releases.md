@@ -50,9 +50,9 @@ any part of the query definition that you would like. Listeners also work as
 expected - if you are listening to a query's results, and you change a param
 that affects those results, your listener will be called accordingly.
 
-This is TinyBase so you shouldn't be surprised, but params themselves are
-reactive! You can get and listen to their values with the getParamValue
-method and addParamValueListener method for example.
+This is TinyBase so you should not be too surprised... but params themselves are
+reactive! You can get and listen to their values with the getParamValue method
+and addParamValueListener method, for example.
 
 For React users, we also shipped a bunch of new hooks that cover params in
 exactly the way you would expect, including the useSetParamValueCallback hook

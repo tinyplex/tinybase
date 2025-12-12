@@ -80,7 +80,10 @@ var objIsEqual = (obj1, obj2, isEqual2 = (value1, value2) => value1 === value2) 
   const entries1 = objEntries(obj1);
   return size(entries1) === objSize(obj2) && arrayEvery(
     entries1,
-    ([index, value1]) => isObject(value1) ? isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false : isEqual2(value1, obj2[index])
+    ([index, value1]) => isObject(value1) ? (
+      /* istanbul ignore next */
+      isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false
+    ) : isEqual2(value1, obj2[index])
   );
 };
 var {

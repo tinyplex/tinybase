@@ -123,6 +123,7 @@ var isObject = (obj) => !isNullish(obj) && ifNotNullish(
 var objIds = object.keys;
 var objFreeze = object.freeze;
 var objNew = (entries = []) => object.fromEntries(entries);
+var objGet = (obj, id2) => ifNotUndefined(obj, (obj2) => obj2[id2]);
 var objHas = (obj, id2) => id2 in obj;
 var objDel = (obj, id2) => {
   delete obj[id2];
@@ -134,6 +135,16 @@ var objToArray = (obj, cb) => arrayMap(objEntries(obj), ([id2, value]) => cb(val
 var objMap = (obj, cb) => objNew(objToArray(obj, (value, id2) => [id2, cb(value, id2)]));
 var objSize = (obj) => size(objIds(obj));
 var objIsEmpty = (obj) => isObject(obj) && objSize(obj) == 0;
+var objIsEqual = (obj1, obj2, isEqual = (value1, value2) => value1 === value2) => {
+  const entries1 = objEntries(obj1);
+  return size(entries1) === objSize(obj2) && arrayEvery(
+    entries1,
+    ([index, value1]) => isObject(value1) ? (
+      /* istanbul ignore next */
+      isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false
+    ) : isEqual(value1, obj2[index])
+  );
+};
 var objEnsure = (obj, id2, getDefaultValue) => {
   if (!objHas(obj, id2)) {
     obj[id2] = getDefaultValue();
@@ -2843,8 +2854,10 @@ var createQueries = getCreateFunction((store) => {
     )
   );
   const setQueryDefinition = (queryId, tableId, build, paramValues = {}) => {
+    const oldParamValues = getParamValues(queryId);
     setDefinition(queryId, tableId);
     setQueryArgs(queryId, [build, objToMap(paramValues)]);
+    callParamListeners(queryId, oldParamValues, paramValues);
     resetPreStores(queryId);
     const [, paramsMap] = getQueryArgs(queryId);
     const selectEntries = [];
@@ -3136,33 +3149,33 @@ var createQueries = getCreateFunction((store) => {
     );
     return queries;
   };
+  const callParamListeners = (queryId, oldParamValues, newParamValues) => {
+    const allParamIds = setNew([
+      ...objIds(oldParamValues),
+      ...objIds(newParamValues)
+    ]);
+    let changed = 0;
+    collForEach(allParamIds, (paramId) => {
+      const newParamValue = objGet(newParamValues, paramId);
+      if (!arrayOrValueEqual(objGet(oldParamValues, paramId), newParamValue)) {
+        changed = 1;
+        callListeners(paramValueListeners, [queryId, paramId], newParamValue);
+      }
+    });
+    if (changed) {
+      callListeners(paramValuesListeners, [queryId], newParamValues);
+    }
+  };
   const delQueryDefinition = (queryId) => {
-    const oldParamValues = getQueryArgs(queryId)?.[1];
+    const oldParamValues = getParamValues(queryId);
     resetPreStores(queryId);
     delDefinition(queryId);
-    ifNotUndefined(oldParamValues, (paramValues) => {
-      mapForEach(
-        paramValues,
-        (paramId) => callListeners(paramValueListeners, [queryId, paramId], void 0)
-      );
-      callListeners(paramValuesListeners, [queryId], {});
-    });
+    callParamListeners(queryId, oldParamValues, {});
     return queries;
   };
-  const setParamValues = (queryId, paramValues) => {
+  const setParamValues = (queryId, paramValues, force = 0) => {
     ifNotUndefined(getQueryArgs(queryId), ([definition, oldParamValues]) => {
-      const changedParamValues = mapNew();
-      mapMatch(
-        oldParamValues,
-        paramValues,
-        (_, paramId, newValue) => {
-          if (!arrayOrValueEqual(newValue, mapGet(oldParamValues, paramId))) {
-            mapSet(changedParamValues, paramId, newValue);
-          }
-        },
-        (_, paramId) => mapSet(changedParamValues, paramId, void 0)
-      );
-      if (!collIsEmpty(changedParamValues)) {
+      if (force || !objIsEqual(mapToObj(oldParamValues), paramValues, arrayOrValueEqual)) {
         resultStore.transaction(
           () => setQueryDefinition(
             queryId,
@@ -3171,20 +3184,21 @@ var createQueries = getCreateFunction((store) => {
             paramValues
           )
         );
-        mapForEach(
-          changedParamValues,
-          (paramId, value) => callListeners(paramValueListeners, [queryId, paramId], value)
-        );
-        callListeners(paramValuesListeners, [queryId], { ...paramValues });
       }
     });
     return queries;
   };
-  const setParamValue = (queryId, paramId, value) => setParamValues(queryId, {
-    ...mapToObj(getQueryArgs(queryId)?.[1]),
-    [paramId]: value
-  });
-  const getParamValues = (queryId) => ifNotUndefined(getQueryArgs(queryId)?.[1], mapToObj) ?? {};
+  const setParamValue = (queryId, paramId, value) => {
+    if (!arrayOrValueEqual(getParamValue(queryId, paramId), value)) {
+      setParamValues(
+        queryId,
+        { ...getParamValues(queryId), [paramId]: value },
+        1
+      );
+    }
+    return queries;
+  };
+  const getParamValues = (queryId) => mapToObj(getQueryArgs(queryId)?.[1]);
   const getParamValue = (queryId, paramId) => mapGet(getQueryArgs(queryId)?.[1], paramId);
   const addQueryIdsListener = (listener) => addQueryIdsListenerImpl(() => listener(queries));
   const addParamValuesListener = (queryId, listener) => addListener(
