@@ -92,6 +92,21 @@ export type QueryIdsListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,
 ) => void;
 
+/// ParamValuesListener
+export type ParamValuesListener<Schemas extends OptionalSchemas> = (
+  queries: Queries<Schemas>,
+  queryId: Id,
+  paramValues: ParamValues,
+) => void;
+
+/// ParamValueListener
+export type ParamValueListener<Schemas extends OptionalSchemas> = (
+  queries: Queries<Schemas>,
+  queryId: Id,
+  paramId: Id,
+  paramValue: ParamValue,
+) => void;
+
 /// ResultTableListener
 export type ResultTableListener<Schemas extends OptionalSchemas> = (
   queries: Queries<Schemas>,

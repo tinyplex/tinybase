@@ -275,6 +275,38 @@
  */
 /// QueryIdsListener
 /**
+ * The ParamValuesListener type describes a function that is used to listen to
+ * changes to the param values of a parameterized query.
+ *
+ * A ParamValuesListener is provided when using the addParamValuesListener
+ * method. See that method for specific examples.
+ *
+ * When called, a ParamValuesListener is given a reference to the Queries
+ * object, and the Id of the query whose param values changed.
+ * @param queries A reference to the Queries object that changed.
+ * @param queryId The Id of the query whose param values changed.
+ * @category Listener
+ * @since v7.2.0
+ */
+/// ParamValuesListener
+/**
+ * The ParamValueListener type describes a function that is used to listen to
+ * changes to a single param value of a parameterized query.
+ *
+ * A ParamValueListener is provided when using the addParamValueListener
+ * method. See that method for specific examples.
+ *
+ * When called, a ParamValueListener is given a reference to the Queries
+ * object, the Id of the query whose param value changed, and the Id of the
+ * param whose value changed.
+ * @param queries A reference to the Queries object that changed.
+ * @param queryId The Id of the query whose param value changed.
+ * @param paramId The Id of the param whose value changed.
+ * @category Listener
+ * @since v7.2.0
+ */
+/// ParamValueListener
+/**
  * The ResultTableListener type describes a function that is used to listen to
  * changes to a query's ResultTable.
  *

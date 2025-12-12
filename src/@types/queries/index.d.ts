@@ -79,6 +79,21 @@ export type ResultCellCallback = (cellId: Id, cell: ResultCell) => void;
 /// QueryIdsListener
 export type QueryIdsListener = (queries: Queries) => void;
 
+/// ParamValuesListener
+export type ParamValuesListener = (
+  queries: Queries,
+  queryId: Id,
+  paramValues: ParamValues,
+) => void;
+
+/// ParamValueListener
+export type ParamValueListener = (
+  queries: Queries,
+  queryId: Id,
+  paramId: Id,
+  paramValue: ParamValue,
+) => void;
+
 /// ResultTableListener
 export type ResultTableListener = (
   queries: Queries,
