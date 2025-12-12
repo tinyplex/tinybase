@@ -87,6 +87,8 @@ export const getUndefined = (): undefined => undefined;
 
 export const noop = () => {};
 
+export const getArg = <T>(value: T): T => value;
+
 export const promiseNew = <Value>(
   resolver: (
     resolve: (value: Value) => void,

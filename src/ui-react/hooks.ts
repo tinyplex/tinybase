@@ -266,6 +266,7 @@ import {
 import {ListenerArgument} from '../common/listeners.ts';
 import {IdObj, isObject, objIsEqual} from '../common/obj.ts';
 import {
+  getArg,
   getUndefined,
   ifNotUndefined,
   isFunction,
@@ -651,7 +652,7 @@ export const useTablesState: typeof useTablesStateDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): [Tables, (tables: Tables) => void] => [
   useTables(storeOrStoreId),
-  useSetTablesCallback((tables) => tables, [], storeOrStoreId),
+  useSetTablesCallback(getArg, [], storeOrStoreId),
 ];
 
 export const useTableIds: typeof useTableIdsDecl = (
@@ -687,7 +688,7 @@ export const useTableState: typeof useTableStateDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): [Table, (table: Table) => void] => [
   useTable(tableId, storeOrStoreId),
-  useSetTableCallback(tableId, (table) => table, [], storeOrStoreId),
+  useSetTableCallback(tableId, getArg, [], storeOrStoreId),
 ];
 
 export const useTableCellIds: typeof useTableCellIdsDecl = (
@@ -789,7 +790,7 @@ export const useRowState: typeof useRowStateDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): [Row, (row: Row) => void] => [
   useRow(tableId, rowId, storeOrStoreId),
-  useSetRowCallback(tableId, rowId, (row) => row, [], storeOrStoreId),
+  useSetRowCallback(tableId, rowId, getArg, [], storeOrStoreId),
 ];
 
 export const useCellIds: typeof useCellIdsDecl = (
@@ -836,14 +837,7 @@ export const useCellState: typeof useCellStateDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): [CellOrUndefined, (cell: Cell) => void] => [
   useCell(tableId, rowId, cellId, storeOrStoreId),
-  useSetCellCallback(
-    tableId,
-    rowId,
-    cellId,
-    (cell) => cell,
-    [],
-    storeOrStoreId,
-  ),
+  useSetCellCallback(tableId, rowId, cellId, getArg, [], storeOrStoreId),
 ];
 
 export const useHasValues: typeof useHasValuesDecl = (
@@ -865,7 +859,7 @@ export const useValuesState: typeof useValuesStateDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): [Values, (values: Values) => void] => [
   useValues(storeOrStoreId),
-  useSetValuesCallback((values) => values, [], storeOrStoreId),
+  useSetValuesCallback(getArg, [], storeOrStoreId),
 ];
 
 export const useValueIds: typeof useValueIdsDecl = (
@@ -904,7 +898,7 @@ export const useValueState: typeof useValueStateDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): [ValueOrUndefined, (value: Value) => void] => [
   useValue(valueId, storeOrStoreId),
-  useSetValueCallback(valueId, (value) => value, [], storeOrStoreId),
+  useSetValueCallback(valueId, getArg, [], storeOrStoreId),
 ];
 
 export const useSetTablesCallback: typeof useSetTablesCallbackDecl = <
@@ -2038,7 +2032,7 @@ export const useResultCellListener: typeof useResultCellListenerDecl = (
 export const useParamValues: typeof useParamValuesDecl = (
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): ParamValues | undefined =>
+): ParamValues =>
   useListenable(
     'ParamValues',
     useQueriesOrQueriesById(queriesOrQueriesId),
@@ -2049,14 +2043,9 @@ export const useParamValues: typeof useParamValuesDecl = (
 export const useParamValuesState: typeof useParamValuesStateDecl = (
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): [ParamValues | undefined, (paramValues: ParamValues) => void] => [
+): [ParamValues, (paramValues: ParamValues) => void] => [
   useParamValues(queryId, queriesOrQueriesId),
-  useSetParamValuesCallback(
-    queryId,
-    (paramValues) => paramValues,
-    [],
-    queriesOrQueriesId,
-  ),
+  useSetParamValuesCallback(queryId, getArg, [], queriesOrQueriesId),
 ];
 
 export const useParamValue: typeof useParamValueDecl = (
@@ -2077,13 +2066,7 @@ export const useParamValueState: typeof useParamValueStateDecl = (
   queriesOrQueriesId?: QueriesOrQueriesId,
 ): [ParamValue | undefined, (paramValue: ParamValue) => void] => [
   useParamValue(queryId, paramId, queriesOrQueriesId),
-  useSetParamValueCallback(
-    queryId,
-    paramId,
-    (paramValue) => paramValue,
-    [],
-    queriesOrQueriesId,
-  ),
+  useSetParamValueCallback(queryId, paramId, getArg, [], queriesOrQueriesId),
 ];
 
 export const useParamValuesListener: typeof useParamValuesListenerDecl = (
