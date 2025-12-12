@@ -251,6 +251,7 @@ import type {
   useValueState as useValueStateDecl,
   useValues as useValuesDecl,
   useValuesListener as useValuesListenerDecl,
+  useValuesState as useValuesStateDecl,
   useWillFinishTransactionListener as useWillFinishTransactionListenerDecl,
 } from '../@types/ui-react/index.d.ts';
 import {
@@ -857,6 +858,13 @@ export const useValues: typeof useValuesDecl = (
   storeOrStoreId?: StoreOrStoreId,
 ): Values =>
   useListenable(VALUES, useStoreOrStoreById(storeOrStoreId), ReturnType.Object);
+
+export const useValuesState: typeof useValuesStateDecl = (
+  storeOrStoreId?: StoreOrStoreId,
+): [Values, (values: Values) => void] => [
+  useValues(storeOrStoreId),
+  useSetValuesCallback((values) => values, [], storeOrStoreId),
+];
 
 export const useValueIds: typeof useValueIdsDecl = (
   storeOrStoreId?: StoreOrStoreId,

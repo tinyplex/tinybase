@@ -270,6 +270,11 @@ export function useHasValues(storeOrStoreId?: StoreOrStoreId): boolean;
 /// useValues
 export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
 
+/// useValuesState
+export function useValuesState(
+  storeOrStoreId?: StoreOrStoreId,
+): [Values, (values: Values) => void];
+
 /// useValueIds
 export function useValueIds(storeOrStoreId?: StoreOrStoreId): Ids;
 

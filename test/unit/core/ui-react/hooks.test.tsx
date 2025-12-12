@@ -164,6 +164,7 @@ import {
   useValueState,
   useValues,
   useValuesListener,
+  useValuesState,
   useWillFinishTransactionListener,
 } from 'tinybase/ui-react';
 import tmp from 'tmp';
@@ -1827,6 +1828,37 @@ describe('Read Hooks', () => {
 
     expect(store.getListenerStats().values).toEqual(0);
     expect(didRender).toHaveBeenCalledTimes(3);
+
+    unmount();
+  });
+
+  test('useValuesState', () => {
+    const Test = () => {
+      const [values, setValues] = useValuesState(store);
+      return (
+        <span>
+          {JSON.stringify(values)}
+          <button onClick={() => setValues({...values, v2: 2})} />
+        </span>
+      );
+    };
+
+    store.setValues({v1: 1});
+    const {container, unmount} = render(<Test />);
+
+    expect(container.innerHTML).toEqual(
+      '<span>{"v1":1}<button></button></span>',
+    );
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual(
+      '<span>{"v1":1,"v2":2}<button></button></span>',
+    );
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual(
+      '<span>{"v1":1,"v2":2}<button></button></span>',
+    );
 
     unmount();
   });

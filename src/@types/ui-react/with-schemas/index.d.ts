@@ -346,6 +346,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// useValues
   useValues: (storeOrStoreId?: StoreOrStoreId<Schemas>) => Values<Schemas[1]>;
 
+  /// useValuesState
+  useValuesState: (
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => [Values<Schemas[1]>, (values: Values<Schemas[1]>) => void];
+
   /// useValueIds
   useValueIds: (
     storeOrStoreId?: StoreOrStoreId<Schemas>,
