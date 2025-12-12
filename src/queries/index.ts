@@ -56,13 +56,19 @@ import {
   mapEnsure,
   mapForEach,
   mapGet,
-  mapMatch,
   mapNew,
   mapSet,
   mapToObj,
   visitTree,
 } from '../common/map.ts';
-import {objFreeze, objMap, objToMap} from '../common/obj.ts';
+import {
+  objFreeze,
+  objGet,
+  objIds,
+  objIsEqual,
+  objMap,
+  objToMap,
+} from '../common/obj.ts';
 import {
   getUndefined,
   ifNotUndefined,
@@ -211,8 +217,11 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     build: Build,
     paramValues: ParamValues = {},
   ): Queries => {
+    const oldParamValues = getParamValues(queryId);
+
     setDefinition(queryId, tableId);
     setQueryArgs(queryId, [build, objToMap(paramValues)]);
+    callParamListeners(queryId, oldParamValues, paramValues);
     resetPreStores(queryId);
 
     const [, paramsMap] = getQueryArgs(queryId)!;
@@ -593,33 +602,42 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     return queries;
   };
 
+  const callParamListeners = (
+    queryId: Id,
+    oldParamValues: ParamValues,
+    newParamValues: ParamValues,
+  ) => {
+    const allParamIds = setNew<Id>([
+      ...objIds(oldParamValues),
+      ...objIds(newParamValues),
+    ]);
+
+    let changed = 0;
+    collForEach(allParamIds, (paramId) => {
+      const newParamValue = objGet(newParamValues, paramId);
+      if (!arrayOrValueEqual(objGet(oldParamValues, paramId), newParamValue)) {
+        changed = 1;
+        callListeners(paramValueListeners, [queryId, paramId], newParamValue);
+      }
+    });
+    if (changed) {
+      callListeners(paramValuesListeners, [queryId], newParamValues);
+    }
+  };
+
   const delQueryDefinition = (queryId: Id): Queries => {
-    const oldParamValues = getQueryArgs(queryId)?.[1];
+    const oldParamValues = getParamValues(queryId);
     resetPreStores(queryId);
     delDefinition(queryId);
-    ifNotUndefined(oldParamValues, (paramValues) => {
-      mapForEach(paramValues, (paramId) =>
-        callListeners(paramValueListeners, [queryId, paramId], undefined),
-      );
-      callListeners(paramValuesListeners, [queryId], {});
-    });
+    callParamListeners(queryId, oldParamValues, {});
     return queries;
   };
 
   const setParamValues = (queryId: Id, paramValues: ParamValues): Queries => {
     ifNotUndefined(getQueryArgs(queryId), ([definition, oldParamValues]) => {
-      const changedParamValues: IdMap<ParamValue> = mapNew();
-      mapMatch(
-        oldParamValues,
-        paramValues,
-        (_, paramId, newValue) => {
-          if (!arrayOrValueEqual(newValue, mapGet(oldParamValues, paramId))) {
-            mapSet(changedParamValues, paramId, newValue);
-          }
-        },
-        (_, paramId) => mapSet(changedParamValues, paramId, undefined),
-      );
-      if (!collIsEmpty(changedParamValues)) {
+      if (
+        !objIsEqual(mapToObj(oldParamValues), paramValues, arrayOrValueEqual)
+      ) {
         resultStore.transaction(() =>
           setQueryDefinition(
             queryId,
@@ -628,10 +646,6 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
             paramValues,
           ),
         );
-        mapForEach(changedParamValues, (paramId, value) =>
-          callListeners(paramValueListeners, [queryId, paramId], value),
-        );
-        callListeners(paramValuesListeners, [queryId], {...paramValues});
       }
     });
     return queries;
@@ -641,14 +655,15 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
     queryId: Id,
     paramId: Id,
     value: ParamValue,
-  ): Queries =>
-    setParamValues(queryId, {
-      ...mapToObj(getQueryArgs(queryId)?.[1]),
-      [paramId]: value,
-    });
+  ): Queries => {
+    if (!arrayOrValueEqual(getParamValue(queryId, paramId), value)) {
+      setParamValues(queryId, {...getParamValues(queryId), [paramId]: value});
+    }
+    return queries;
+  };
 
   const getParamValues = (queryId: Id): ParamValues =>
-    ifNotUndefined(getQueryArgs(queryId)?.[1], mapToObj) ?? {};
+    mapToObj(getQueryArgs(queryId)?.[1]);
 
   const getParamValue = (queryId: Id, paramId: Id): ParamValue | undefined =>
     mapGet(getQueryArgs(queryId)?.[1], paramId);

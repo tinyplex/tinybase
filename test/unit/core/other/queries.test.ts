@@ -5597,5 +5597,44 @@ describe('Parameterized', () => {
       queries.setParamValue('q1', 'p1', [false]);
       expect(listener).toHaveBeenCalledTimes(1);
     });
+
+    test('addParamValuesListener before query exists', () => {
+      const listener = vi.fn();
+      queries.addParamValuesListener('q1', listener);
+
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c1', param('p1') as Cell);
+        },
+        {p1: 'a', p2: 'test'},
+      );
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledWith(queries, 'q1', {
+        p1: 'a',
+        p2: 'test',
+      });
+    });
+
+    test('addParamValueListener before query exists', () => {
+      const listener = vi.fn();
+      queries.addParamValueListener('q1', 'p1', listener);
+
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c1', param('p1') as Cell);
+        },
+        {p1: 'a', p2: 'test'},
+      );
+
+      expect(listener).toHaveBeenCalledTimes(1);
+      expect(listener).toHaveBeenCalledWith(queries, 'q1', 'p1', 'a');
+    });
   });
 });

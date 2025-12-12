@@ -72,6 +72,7 @@ export const objSize = (obj: IdObj<unknown>): number => size(objIds(obj));
 export const objIsEmpty = <Value>(obj: IdObj<Value> | any): boolean =>
   isObject(obj) && objSize(obj) == 0;
 
+/*! istanbul ignore next */
 export const objIsEqual = (
   obj1: IdObj<unknown>,
   obj2: IdObj<unknown>,
@@ -83,7 +84,8 @@ export const objIsEqual = (
     size(entries1) === objSize(obj2) &&
     arrayEvery(entries1, ([index, value1]) =>
       isObject(value1)
-        ? isObject(obj2[index])
+        ? /*! istanbul ignore next */
+          isObject(obj2[index])
           ? objIsEqual(obj2[index] as any, value1 as any)
           : false
         : isEqual(value1, obj2[index]),

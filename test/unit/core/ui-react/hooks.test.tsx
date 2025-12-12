@@ -2629,9 +2629,7 @@ describe('Read Hooks', () => {
     );
     const Test = ({queryId, paramId}: {queryId: Id; paramId: Id}) =>
       didRender(JSON.stringify(useParamValue(queryId, paramId, queries)));
-    const {container, rerender, unmount} = render(
-      <Test queryId="q1" paramId="p1" />,
-    );
+    const {container, unmount} = render(<Test queryId="q1" paramId="p1" />);
 
     expect(container.textContent).toEqual('"a"');
 
