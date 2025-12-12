@@ -87,6 +87,10 @@ import {
   useMetricListener,
   useMetrics,
   useMetricsIds,
+  useParamValue,
+  useParamValueListener,
+  useParamValues,
+  useParamValuesListener,
   useProvideStore,
   useQueries,
   useQueriesIds,
@@ -2528,6 +2532,82 @@ describe('Read Hooks', () => {
     rerender(<button />);
 
     expect(didRender).toHaveBeenCalledTimes(5);
+
+    unmount();
+  });
+
+  test('useParamValues', () => {
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select, where, param}) => {
+        select('c1');
+        where('c1', param('p1') as Cell);
+      },
+      {p1: 1, p2: 'test'},
+    );
+    const Test = ({queryId}: {queryId: Id}) =>
+      didRender(JSON.stringify(useParamValues(queryId, queries)));
+    const {container, rerender, unmount} = render(<Test queryId="q0" />);
+
+    expect(container.textContent).toEqual('{}');
+
+    rerender(<Test queryId="q1" />);
+
+    expect(container.textContent).toEqual('{"p1":1,"p2":"test"}');
+
+    act(() => queries.setParamValue('q1', 'p1', 2));
+    expect(container.textContent).toEqual('{"p1":2,"p2":"test"}');
+
+    act(() => queries.setParamValues('q1', {p1: 3, p2: 'updated'}));
+    expect(container.textContent).toEqual('{"p1":3,"p2":"updated"}');
+
+    act(() => queries.delQueryDefinition('q1'));
+    expect(container.textContent).toEqual('');
+    rerender(<button />);
+
+    expect(didRender).toHaveBeenCalledTimes(5);
+
+    unmount();
+  });
+
+  test('useParamValue', () => {
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select, where, param}) => {
+        select('c1');
+        where('c1', param('p1') as Cell);
+      },
+      {p1: 1, p2: 'test'},
+    );
+    const Test = ({queryId, paramId}: {queryId: Id; paramId: Id}) =>
+      didRender(useParamValue(queryId, paramId, queries));
+    const {container, rerender, unmount} = render(
+      <Test queryId="q0" paramId="p0" />,
+    );
+
+    expect(container.textContent).toEqual('');
+
+    rerender(<Test queryId="q1" paramId="p1" />);
+
+    expect(container.textContent).toEqual('1');
+
+    act(() => queries.setParamValue('q1', 'p1', 2));
+    expect(container.textContent).toEqual('2');
+
+    rerender(<Test queryId="q1" paramId="p2" />);
+
+    expect(container.textContent).toEqual('test');
+
+    act(() => queries.setParamValue('q1', 'p2', 'updated'));
+    expect(container.textContent).toEqual('updated');
+
+    act(() => queries.delQueryDefinition('q1'));
+    expect(container.textContent).toEqual('');
+    rerender(<button />);
+
+    expect(didRender).toHaveBeenCalledTimes(6);
 
     unmount();
   });
@@ -5058,6 +5138,79 @@ describe('Listener Hooks', () => {
     rerender(<button />);
 
     expect(queries.getListenerStats().cell).toEqual(0);
+
+    unmount();
+  });
+
+  test('useParamValuesListener', () => {
+    expect.assertions(6);
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select, where, param}) => {
+        select('c1');
+        where('c1', param('p1') as Cell);
+      },
+      {p1: 1},
+    );
+    const Test = ({value}: {readonly value: Cell}) => {
+      useParamValuesListener(
+        'q1',
+        (queries) => expect(queries?.getParamValue('q1', 'p1')).toEqual(value),
+        [value],
+        queries,
+      );
+      return <button />;
+    };
+    expect(queries.getListenerStats().paramValues).toEqual(0);
+    const {rerender, unmount} = render(<Test value={2} />);
+
+    expect(queries.getListenerStats().paramValues).toEqual(1);
+    queries.setParamValue('q1', 'p1', 2);
+    rerender(<Test value={3} />);
+
+    expect(queries.getListenerStats().paramValues).toEqual(1);
+    queries.setParamValue('q1', 'p1', 3);
+    rerender(<button />);
+
+    expect(queries.getListenerStats().paramValues).toEqual(0);
+
+    unmount();
+  });
+
+  test('useParamValueListener', () => {
+    expect.assertions(6);
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select, where, param}) => {
+        select('c1');
+        where('c1', param('p1') as Cell);
+      },
+      {p1: 1, p2: 'test'},
+    );
+    const Test = ({value}: {readonly value: Cell}) => {
+      useParamValueListener(
+        'q1',
+        'p1',
+        (queries) => expect(queries?.getParamValue('q1', 'p1')).toEqual(value),
+        [value],
+        queries,
+      );
+      return <button />;
+    };
+    expect(queries.getListenerStats().paramValue).toEqual(0);
+    const {rerender, unmount} = render(<Test value={2} />);
+
+    expect(queries.getListenerStats().paramValue).toEqual(1);
+    queries.setParamValue('q1', 'p1', 2);
+    rerender(<Test value={3} />);
+
+    expect(queries.getListenerStats().paramValue).toEqual(1);
+    queries.setParamValue('q1', 'p1', 3);
+    rerender(<button />);
+
+    expect(queries.getListenerStats().paramValue).toEqual(0);
 
     unmount();
   });
