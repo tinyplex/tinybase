@@ -2861,13 +2861,17 @@
    * const listenerId1 = queries.addParamValuesListener(
    *   'petsByColor',
    *   (queries, queryId, paramValues) => {
-   *     console.log(`Params for specific query changed: ${JSON.stringify(paramValues)}`);
+   *     console.log(
+   *       `Params for specific query changed: ${JSON.stringify(paramValues)}`,
+   *     );
    *   },
    * );
    * const listenerId2 = queries.addParamValuesListener(
    *   null,
    *   (queries, queryId, paramValues) => {
-   *     console.log(`Params for "${queryId}" changed: ${JSON.stringify(paramValues)}`);
+   *     console.log(
+   *       `Params for "${queryId}" changed: ${JSON.stringify(paramValues)}`,
+   *     );
    *   },
    * );
    *
