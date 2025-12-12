@@ -1184,7 +1184,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useParamValues: (
     queryId: Id,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
-  ) => ParamValues | undefined;
+  ) => ParamValues;
+
+  /// useParamValuesState
+  useParamValuesState: (
+    queryId: Id,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => [ParamValues, (paramValues: ParamValues) => void];
 
   /// useParamValue
   useParamValue: (

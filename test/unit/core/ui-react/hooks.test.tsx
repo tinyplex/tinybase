@@ -93,6 +93,7 @@ import {
   useParamValueState,
   useParamValues,
   useParamValuesListener,
+  useParamValuesState,
   useProvideStore,
   useQueries,
   useQueriesIds,
@@ -3135,6 +3136,64 @@ describe('Read Hooks', () => {
 
     rerender(<Test multiplier={3} then={then} />);
     expect(handlers[2]).not.toEqual(handlers[3]);
+
+    unmount();
+  });
+
+  test('useParamValuesState', () => {
+    const queries = createQueries(store);
+    queries.setQueryDefinition(
+      'q1',
+      't1',
+      ({select, where, param}) => {
+        select('c1');
+        where(
+          (getCell) => (getCell('c1') as number) >= (param('min') as number),
+        );
+        where(
+          (getCell) => (getCell('c1') as number) <= (param('max') as number),
+        );
+      },
+      {min: 3, max: 5},
+    );
+
+    const Test = () => {
+      const [paramValues, setParamValues] = useParamValuesState('q1', queries);
+      return (
+        <button onClick={() => setParamValues({min: 2, max: 4})}>
+          {JSON.stringify(paramValues)}
+        </button>
+      );
+    };
+
+    store.setTable('t1', {
+      r1: {c1: 1},
+      r2: {c1: 2},
+      r3: {c1: 3},
+      r4: {c1: 4},
+      r5: {c1: 5},
+      r6: {c1: 6},
+    });
+
+    const {container, unmount} = render(<Test />);
+
+    expect(container.innerHTML).toEqual('<button>{"min":3,"max":5}</button>');
+    expect(queries.getResultTable('q1')).toEqual({
+      r3: {c1: 3},
+      r4: {c1: 4},
+      r5: {c1: 5},
+    });
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual('<button>{"min":2,"max":4}</button>');
+    expect(queries.getResultTable('q1')).toEqual({
+      r2: {c1: 2},
+      r3: {c1: 3},
+      r4: {c1: 4},
+    });
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual('<button>{"min":2,"max":4}</button>');
 
     unmount();
   });

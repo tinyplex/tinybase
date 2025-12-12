@@ -160,6 +160,7 @@ import type {
   useParamValueState as useParamValueStateDecl,
   useParamValues as useParamValuesDecl,
   useParamValuesListener as useParamValuesListenerDecl,
+  useParamValuesState as useParamValuesStateDecl,
   usePersister as usePersisterDecl,
   usePersisterIds as usePersisterIdsDecl,
   usePersisterOrPersisterById as usePersisterOrPersisterByIdDecl,
@@ -2044,6 +2045,19 @@ export const useParamValues: typeof useParamValuesDecl = (
     ReturnType.ParamValues,
     [queryId],
   );
+
+export const useParamValuesState: typeof useParamValuesStateDecl = (
+  queryId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): [ParamValues | undefined, (paramValues: ParamValues) => void] => [
+  useParamValues(queryId, queriesOrQueriesId),
+  useSetParamValuesCallback(
+    queryId,
+    (paramValues) => paramValues,
+    [],
+    queriesOrQueriesId,
+  ),
+];
 
 export const useParamValue: typeof useParamValueDecl = (
   queryId: Id,

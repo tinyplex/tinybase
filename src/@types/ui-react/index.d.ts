@@ -979,7 +979,13 @@ export function useResultCellListener(
 export function useParamValues(
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): ParamValues | undefined;
+): ParamValues;
+
+/// useParamValuesState
+export function useParamValuesState(
+  queryId: Id,
+  queriesOrQueriesId?: QueriesOrQueriesId,
+): [ParamValues, (paramValues: ParamValues) => void];
 
 /// useParamValue
 export function useParamValue(
