@@ -52,6 +52,7 @@ import type {
   Cell,
   CellIdsListener,
   CellListener,
+  CellOrUndefined,
   HasCellListener,
   HasRowListener,
   HasTableCellListener,
@@ -99,6 +100,7 @@ import type {
   useCellIds as useCellIdsDecl,
   useCellIdsListener as useCellIdsListenerDecl,
   useCellListener as useCellListenerDecl,
+  useCellState as useCellStateDecl,
   useCheckpoint as useCheckpointDecl,
   useCheckpointIds as useCheckpointIdsDecl,
   useCheckpointIdsListener as useCheckpointIdsListenerDecl,
@@ -789,13 +791,30 @@ export const useCell: typeof useCellDecl = (
   rowId: Id,
   cellId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): Cell | undefined =>
+): CellOrUndefined =>
   useListenable(
     CELL,
     useStoreOrStoreById(storeOrStoreId),
     ReturnType.CellOrValue,
     [tableId, rowId, cellId],
   );
+
+export const useCellState: typeof useCellStateDecl = (
+  tableId: Id,
+  rowId: Id,
+  cellId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): [CellOrUndefined, (cell: Cell) => void] => [
+  useCell(tableId, rowId, cellId, storeOrStoreId),
+  useSetCellCallback(
+    tableId,
+    rowId,
+    cellId,
+    (cell) => cell,
+    [],
+    storeOrStoreId,
+  ),
+];
 
 export const useHasValues: typeof useHasValuesDecl = (
   storeOrStoreId?: StoreOrStoreId,

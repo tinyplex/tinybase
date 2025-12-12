@@ -37,6 +37,7 @@ import {
   useCellIds,
   useCellIdsListener,
   useCellListener,
+  useCellState,
   useCheckpointIds,
   useCheckpointIdsListener,
   useCheckpointListener,
@@ -1659,6 +1660,31 @@ describe('Read Hooks', () => {
 
     expect(store.getListenerStats().cell).toEqual(0);
     expect(didRender).toHaveBeenCalledTimes(5);
+
+    unmount();
+  });
+
+  test('useCellState', () => {
+    const Test = () => {
+      const [cell, setCell] = useCellState('t1', 'r1', 'c1', store);
+      return (
+        <span>
+          {cell}
+          <button onClick={() => setCell(((cell as number) ?? 0) + 1)} />
+        </span>
+      );
+    };
+
+    store.setCell('t1', 'r1', 'c1', 0);
+    const {container, unmount} = render(<Test />);
+
+    expect(container.innerHTML).toEqual('<span>0<button></button></span>');
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual('<span>1<button></button></span>');
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual('<span>2<button></button></span>');
 
     unmount();
   });

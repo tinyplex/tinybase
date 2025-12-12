@@ -238,6 +238,14 @@ export function useCell(
   storeOrStoreId?: StoreOrStoreId,
 ): CellOrUndefined;
 
+/// useCellState
+export function useCellState(
+  tableId: Id,
+  rowId: Id,
+  cellId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): [CellOrUndefined, (cell: Cell) => void];
+
 /// useHasValues
 export function useHasValues(storeOrStoreId?: StoreOrStoreId): boolean;
 

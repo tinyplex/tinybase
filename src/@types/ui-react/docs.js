@@ -2069,6 +2069,60 @@
  */
 /// useCell
 /**
+ * The useCellState hook returns a Cell from a Store and a callback to set it,
+ * following the common React `useState` convention.
+ *
+ * This hook is useful for creating components that read and write a Cell in a
+ * single line, similar to how you would use React's `useState` hook.
+ *
+ * The component this is used in will re-render when the Cell changes.
+ * @param tableId The Id of the Table in the Store.
+ * @param rowId The Id of the Row in the Table.
+ * @param cellId The Id of the Cell in the Row.
+ * @param storeOrStoreId The Store to get data from: omit for the default
+ * context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @returns A tuple containing the current Cell and a setter callback that can
+ * be called with a new Cell value.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useCellState hook by reference.
+ *
+ * ```jsx
+ * import {createRoot} from 'react-dom/client';
+ * import {createStore} from 'tinybase';
+ * import React from 'react';
+ * import {useCellState} from 'tinybase/ui-react';
+ *
+ * const store = createStore().setCell('pets', 'fido', 'visits', 0);
+ * const App = () => {
+ *   const [visits, setVisits] = useCellState('pets', 'fido', 'visits', store);
+ *   return (
+ *     <span>
+ *       Visits: {visits}
+ *       <button onClick={() => setVisits(visits + 1)}>Visit</button>
+ *     </span>
+ *   );
+ * };
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<span>Visits: 0<button>Visit</button></span>'
+ *
+ * const button = app.querySelector('button');
+ * // -> button MouseEvent('click', {bubbles: true})
+ * console.log(app.innerHTML);
+ * // -> '<span>Visits: 1<button>Visit</button></span>'
+ *
+ * root.unmount(); // !act
+ * ```
+ * @category State hooks
+ * @since v7.2.0
+ */
+/// useCellState
+/**
  * The useHasValues hook returns a boolean indicating whether any Values exist
  * in the Store, and registers a listener so that any changes to that result
  * will cause a re-render.
