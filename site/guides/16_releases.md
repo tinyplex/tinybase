@@ -7,7 +7,9 @@ highlighted features.
 
 # v7.2
 
-This release introduces **parameterized queries** to TinyQL - finally!
+## Introducing Parameterized Queries!
+
+This release introduces parameterized queries to TinyQL - finally!
 
 These allow you to define queries using named 'params' that you can then easily
 update to change the query's results - without redefining the whole query each
@@ -48,12 +50,46 @@ any part of the query definition that you would like. Listeners also work as
 expected - if you are listening to a query's results, and you change a param
 that affects those results, your listener will be called accordingly.
 
-For React users, We also shipped the useSetParamValueCallback hook and the
-useSetParamValuesCallback hook, which let you easily update param values from,
-say, an event handler in your application.
+This is TinyBase so you shouldn't be surprised, but params themselves are
+reactive! You can get and listen to their values with the getParamValue
+method and addParamValueListener method for example.
+
+For React users, we also shipped a bunch of new hooks that cover params in
+exactly the way you would expect, including the useSetParamValueCallback hook
+and the useSetParamValuesCallback hook, which let you easily update param values
+from, say, an event handler in your application.
 
 We know this has been a long-awaited feature, so we hope you enjoy it! See the
 TinyQL guide for more details, and please let us know how it goes!
+
+## Demos
+
+We have updated the Movie Database demo to use parameterized queries, and as a
+result is more efficient and easier to (we think) understand. See the
+`yearGenreMovies`, `directedMovies`, and `appearedMovies` queries to see
+params in action.
+
+## Full API additions
+
+This release includes the following new Queries interface methods:
+
+- getParamValues method
+- getParamValue method
+- setParamValues method
+- setParamValue method
+- addParamValuesListener method
+- addParamValueListener method
+
+It also includes the following new React hooks:
+
+- useParamValues hook
+- useParamValue hook
+- useSetParamValuesCallback hook
+- useSetParamValueCallback hook
+- useParamValuesListener hook
+- useParamValueListener hook
+
+Check out the API docs for each. They should seem very familiar!
 
 ---
 
