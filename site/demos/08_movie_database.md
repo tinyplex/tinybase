@@ -4,6 +4,9 @@ In this demo, we build an app that showcases the relational query capabilities
 of TinyBase v2.0, joining together information about movies, directors, and
 actors.
 
+We've also updated it to use parameterized queries to take advantage of TinyBase
+v7.2.
+
 ![TMDB](https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg 'Inline logo for TMDB') - we use The Movie Database as the source of the movie
 information in this app. Thank you for a great data set to demonstrate TinyBase!
 

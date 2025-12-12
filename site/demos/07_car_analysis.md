@@ -3,6 +3,9 @@
 In this demo, we build an app that showcases the query capabilities of TinyBase
 v2.0, grouping and sorting dimensional data for lightweight analytical usage.
 
+We've also updated it to use parameterized queries to take advantage of TinyBase
+v7.2.
+
 The data from this demo is derived from `cars.json` in the [Vega
 datasets](https://github.com/vega/vega-datasets) - thank you [UW Interactive
 Data Lab](https://idl.cs.washington.edu/)!
@@ -63,10 +66,12 @@ import {
   Provider,
   useCreateQueries,
   useCreateStore,
+  useParamValue,
   useQueries,
   useResultCell,
   useResultSortedRowIds,
   useResultTable,
+  useSetParamValueCallback,
 } from 'tinybase/ui-react';
 import {ResultSortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 import {Inspector} from 'tinybase/ui-react-inspector';
@@ -130,9 +135,33 @@ app is rendered.
 ```jsx
 const App = () => {
   const store = useCreateStore(createStore);
-  const queries = useCreateQueries(store, createQueries);
-  // ...
+  const queries = useCreateQueries(store, () =>
+    createQueries(store)
+    // ...
 ```
+
+Since v7.2, we can define a single parameterized query for the whole application
+and then simply pass in new params as the user interacts with the UI. We're
+going to call this master query `cars`:
+
+```js
+// ...
+  .setQueryDefinition('cars', 'cars', ({select, where, group, param}) => {
+    param('dimensions').forEach((cellId) => select(cellId));
+    param('measures').forEach((cellId) => {
+      select(cellId);
+      group(cellId, AGGREGATES[param('aggregate')]);
+    });
+  }, {
+    dimensions: ['Manufacturer'],
+    measures: ['MPG', 'Horsepower'],
+    aggregate: 'Average',
+  }),
+);
+```
+
+We will be able to set the 'dimensions', 'measures', and 'aggregate' params
+based on user interactions.
 
 This application depends on loading data into the main Store the first time it
 is rendered. We do this by having an `isLoading` flag in the application's
@@ -242,31 +271,43 @@ left hand side that allows the user to select dimensions, measures, and the
 aggregation to be used.
 
 The `Body` component wraps the sidebar and the field selection state, and then
-the `ResultGraph` and `ResultTable` components render the two modes.
-
-The state of the application is based on selected dimensions and measures, which
-aggregate is used, and whether the data is rendered as a table. This is
-set up with the following hooks:
+the `ResultGraph` and `ResultTable` components render the two modes. We start
+off with a state variable indicating whether the data is rendered as a table
+(`true`) or a graph (`false`):
 
 ```js
 const Body = () => {
-  const [dimensions, setDimensions] = useState(['Manufacturer']);
-  const [measures, setMeasures] = useState(['MPG', 'Horsepower']);
-  const [aggregate, setAggregate] = useState('Average');
-  const [showTable, setAsGraph] = useState(false);
+  const [showTable, setShowTable] = useState(false);
   // ...
 ```
 
-The first three of these state variables - `dimensions`, `measures`, and
-`aggregate` - are used to create a query from the `cars` Table, and group the
-fields accordingly. We run the memoized creation of the query in a separate
-hook (which we'll come to shortly), and get its Id so we can use it in the UI:
+The state of the application's result rendering is based on selected dimensions
+and measures, and which aggregate is used. These state variables - `dimensions`,
+`measures`, and `aggregate` - are used as the params to the `cars` query against
+the `cars` Table, and are used to group the fields accordingly.
+
+Let's create three state-like pairs containing the values of these params and
+callbacks that will be used set them in the Queries object whenever they change
+in the application's sidebar:
 
 ```js
-const queryId = useBuildQuery(dimensions, measures, aggregate);
+const [dimensions, setDimensions] = [
+  useParamValue('cars', 'dimensions'),
+  useSetParamValueCallback('cars', 'dimensions', (dimensions) => dimensions),
+];
+
+const [measures, setMeasures] = [
+  useParamValue('cars', 'measures'),
+  useSetParamValueCallback('cars', 'measures', (measures) => measures),
+];
+
+const [aggregate, setAggregate] = [
+  useParamValue('cars', 'aggregate'),
+  useSetParamValueCallback('cars', 'aggregate', (aggregate) => aggregate),
+];
 ```
 
-Here we render the left-hand sidebar, showing the available dimensions,
+Next we render the left-hand sidebar, showing the available dimensions,
 measures, and aggregates. We also show a toggle for the tabular view, and offer
 a link to the source of the data. (We'll also cover the simple `Select`
 component later.)
@@ -301,7 +342,7 @@ return (
         id="showTable"
         type="checkbox"
         checked={showTable}
-        onChange={useCallback(({target}) => setAsGraph(target.checked), [])}
+        onChange={useCallback(({target}) => setShowTable(target.checked), [])}
       />
       <label for="showTable">Show table</label>
       <br />
@@ -311,56 +352,24 @@ return (
         </a>
       </small>
     </aside>
-    {/* ... */}
 ```
 
 We complete the `Body` component with a simple toggle between the two main
 views, which of course we will also shortly explore in detail. Both take the
-query Id and the columns to display:
+list of columns to display:
 
 ```jsx
-      {/* ... */}
-      {showTable ? (
-        <ResultTable
-          queryId={queryId}
-          columns={[...dimensions, ...measures]}
-        />
-      ) : (
-        <ResultGraph
-          queryId={queryId}
-          dimensions={dimensions}
-          measures={measures}
-        />
-      )}
+      {
+        showTable ? (
+          <ResultTable columns={[...dimensions, ...measures]} />
+        ) : (
+          <ResultGraph dimensions={dimensions} measures={measures} />
+        )
+      }
     </>
   );
 };
 ```
-
-That's the main outer structure of the application, but a lot of the magic is in
-the `useBuildQuery` hook we mentioned earlier. Whenever the dimensions,
-measures, or aggregate selections change, we want to run a new query on the data
-accordingly. Here's the implementation:
-
-```js
-const useBuildQuery = (dimensions, measures, aggregate) =>
-  useMemo(() => {
-    useQueries().setQueryDefinition('query', 'cars', ({select, group}) => {
-      dimensions.forEach((cellId) => select(cellId));
-      measures.forEach((cellId) => {
-        select(cellId);
-        group(cellId, AGGREGATES[aggregate]);
-      });
-    });
-    return 'query';
-  }, [dimensions, measures, aggregate]);
-```
-
-The whole hook is memoized so that the query is not run every time the `Body`
-component is run. The query is (imaginatively) called `query`, and is against
-the `cars` Table in the main Store. The query simply selects every selected
-dimension, and every selected measure. Each measure is then grouped with the
-selected aggregate.
 
 And that's it! Enough to query the dataset such that both the graphical and
 tabular views work. We'll dive into _their_ implementations next.
@@ -409,9 +418,9 @@ new ui-react-dom module straight out of the box. The only extra step is
 transforming the array of selected columns into the customCells prop to render.
 
 ```jsx
-const ResultTable = ({queryId, columns}) => (
+const ResultTable = ({columns}) => (
   <ResultSortedTableInHtmlTable
-    queryId={queryId}
+    queryId="cars"
     sortOnClick={true}
     paginator={true}
     limit={10}
@@ -433,8 +442,8 @@ cellId as className so we can color the left-hand border.
 
 ```jsx
 // ...
-const CustomCell = ({queryId, rowId, cellId}) => {
-  const cell = useResultCell(queryId, rowId, cellId);
+const CustomCell = ({rowId, cellId}) => {
+  const cell = useResultCell('cars', rowId, cellId);
   return (
     <span className={cellId}>{Number.isFinite(cell) ? round(cell) : cell}</span>
   );
@@ -498,7 +507,7 @@ size of the component on the screen. To track this, we use the browser's
 `ResizeObserver` API, and set width and height state variables whenever it changes:
 
 ```jsx
-const ResultGraph = ({queryId, dimensions, measures}) => {
+const ResultGraph = ({dimensions, measures}) => {
   const ref = useRef(null);
   const [{width = 0, height = 0}, setDimensions] = useState({});
   useEffect(() => {
@@ -518,11 +527,7 @@ present so we can decide how high to make the y-axis:
 
 ```jsx
 // ...
-const [xAllLabels, yValueSets, yMax] = useGraphData(
-  queryId,
-  dimensions,
-  measures,
-);
+const [xAllLabels, yValueSets, yMax] = useGraphData(dimensions, measures);
 // ...
 ```
 
@@ -613,7 +618,6 @@ hidden) `<circle />` and `<text />` elements tht serve as hover-over labels for
 each data point:
 
 ```jsx
-        {/* ... */}
         {yValueSets.map((yValueSet, s) => (
           <g className={measures[s]} key={s}>
             <path
@@ -722,9 +726,9 @@ Note that the Row Ids are sorted according to the values of the first measure
 selected. In a real analytical scenario, this would be better to be configurable.
 
 ```js
-const useGraphData = (queryId, dimensions, measures) => {
-  const table = useResultTable(queryId);
-  const sortedRowIds = useResultSortedRowIds(queryId, measures[0] ?? undefined);
+const useGraphData = (dimensions, measures) => {
+  const table = useResultTable('cars');
+  const sortedRowIds = useResultSortedRowIds('cars', measures[0] ?? undefined);
   return useMemo(() => {
     const yAll = [1];
     const xAllLabels = [];

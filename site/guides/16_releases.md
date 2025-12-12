@@ -69,6 +69,9 @@ result is more efficient and easier to (we think) understand. See the
 `yearGenreMovies`, `directedMovies`, and `appearedMovies` queries to see
 params in action.
 
+We have also updated the Car Analysis demo to use just one single parameterized
+query for the whole app!
+
 ## Full API additions
 
 This release includes the following new Queries interface methods:
@@ -89,7 +92,9 @@ It also includes the following new React hooks:
 - useParamValuesListener hook
 - useParamValueListener hook
 
-Check out the API docs for each. They should seem very familiar!
+Check out the API docs for each. They should seem very familiar.
+
+Please check out this new release and let us know what you think!
 
 ---
 
