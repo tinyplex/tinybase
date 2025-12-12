@@ -34,6 +34,7 @@ import {
   arrayEvery,
   arrayForEach,
   arrayIsEmpty,
+  arrayOrValueEqual,
   arrayPush,
 } from '../common/array.ts';
 import {getCellOrValueType, setOrDelCell} from '../common/cell.ts';
@@ -603,7 +604,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
         oldParamValues,
         paramValues,
         (_, paramId, newValue) => {
-          if (newValue !== mapGet(oldParamValues, paramId)) {
+          if (!arrayOrValueEqual(newValue, mapGet(oldParamValues, paramId))) {
             mapSet(changedParamValues, paramId, newValue);
           }
         },

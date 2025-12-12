@@ -5269,6 +5269,60 @@ describe('Parameterized', () => {
       expect(listener).toHaveBeenCalledTimes(1);
     });
 
+    test('addParamValuesListener ignores equal string[] params', () => {
+      store.setTable('t1', {r1: {c1: 'a'}, r2: {c1: 'b'}, r3: {c1: 'c'}});
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where((getTableCell) =>
+            (param('p1') as string[]).includes(getTableCell('c1') as string),
+          );
+        },
+        {p1: ['a', 'b']},
+      );
+
+      const listener = vi.fn();
+      queries.addParamValuesListener('q1', listener);
+
+      queries.setParamValues('q1', {p1: ['a', 'b']});
+      expect(listener).toHaveBeenCalledTimes(0);
+
+      queries.setParamValues('q1', {p1: ['a']});
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      queries.setParamValues('q1', {p1: ['a']});
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    test('addParamValuesListener ignores equal number[] params', () => {
+      store.setTable('t1', {r1: {c1: 1}, r2: {c1: 2}, r3: {c1: 3}});
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where((getTableCell) =>
+            (param('p1') as number[]).includes(getTableCell('c1') as number),
+          );
+        },
+        {p1: [1, 2]},
+      );
+
+      const listener = vi.fn();
+      queries.addParamValuesListener('q1', listener);
+
+      queries.setParamValues('q1', {p1: [1, 2]});
+      expect(listener).toHaveBeenCalledTimes(0);
+
+      queries.setParamValues('q1', {p1: [2, 3]});
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      queries.setParamValues('q1', {p1: [2, 3]});
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
     test('addParamValueListener for specific query and param', () => {
       store.setTable('t1', {
         r1: {c1: 'a', c2: 'b', c3: 5},
@@ -5369,6 +5423,33 @@ describe('Parameterized', () => {
       expect(listener).toHaveBeenCalledTimes(1);
 
       queries.setParamValue('q1', 'p1', 'd'); // Same value again
+      expect(listener).toHaveBeenCalledTimes(1);
+    });
+
+    test('addParamValueListener ignores equal boolean[] params', () => {
+      store.setTable('t1', {r1: {c1: true}, r2: {c1: false}});
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where((getTableCell) =>
+            (param('p1') as boolean[]).includes(getTableCell('c1') as boolean),
+          );
+        },
+        {p1: [true]},
+      );
+
+      const listener = vi.fn();
+      queries.addParamValueListener('q1', 'p1', listener);
+
+      queries.setParamValue('q1', 'p1', [true]);
+      expect(listener).toHaveBeenCalledTimes(0);
+
+      queries.setParamValue('q1', 'p1', [false]);
+      expect(listener).toHaveBeenCalledTimes(1);
+
+      queries.setParamValue('q1', 'p1', [false]);
       expect(listener).toHaveBeenCalledTimes(1);
     });
   });

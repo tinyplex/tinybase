@@ -1,4 +1,4 @@
-import {size} from './other.ts';
+import {isArray, size} from './other.ts';
 import {EMPTY_STRING} from './strings.ts';
 
 export const arrayNew = <Value>(
@@ -17,6 +17,11 @@ export const arrayEvery = <Value>(
 export const arrayIsEqual = (array1: unknown[], array2: unknown[]): boolean =>
   size(array1) === size(array2) &&
   arrayEvery(array1, (value1, index) => array2[index] === value1);
+
+export const arrayOrValueEqual = (value1: any, value2: any): boolean =>
+  isArray(value1) && isArray(value2)
+    ? arrayIsEqual(value1, value2)
+    : value1 === value2;
 
 export const arrayIsSorted = <Value>(
   array: Value[],
