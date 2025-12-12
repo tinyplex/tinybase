@@ -310,7 +310,7 @@ export interface Queries {
   delQueryDefinition(queryId: Id): Queries;
 
   /// Queries.getParamValues
-  getParamValues(queryId: Id): ParamValues | undefined;
+  getParamValues(queryId: Id): ParamValues;
 
   /// Queries.getParamValue
   getParamValue(queryId: Id, paramId: Id): ParamValue | undefined;

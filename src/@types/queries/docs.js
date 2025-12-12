@@ -1872,8 +1872,8 @@
    * The getParamValues method returns all the param values currently set for a
    * parameterized query.
    * @param queryId The Id of the query to get the params for.
-   * @returns An object containing all param Ids and their values, or
-   * `undefined` if the query doesn't exist.
+   * @returns An object containing all param Ids and their values, or an empty
+   * object if the query doesn't exist.
    * @example
    * This example creates a parameterized query and retrieves its param values.
    *

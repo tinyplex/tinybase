@@ -4784,7 +4784,7 @@ describe('Parameterized', () => {
       queries.setParamValue('q1', 'p2', 'even');
       expect(queries.getParamValues('q1')).toEqual({p2: 'even', p3: 5});
 
-      expect(queries.getParamValues('nonexistent')).toBeUndefined();
+      expect(queries.getParamValues('nonexistent')).toEqual({});
     });
 
     test('getParamValue', () => {

@@ -392,7 +392,7 @@ export interface Queries<in out Schemas extends OptionalSchemas> {
   delQueryDefinition(queryId: Id): Queries<Schemas>;
 
   /// Queries.getParamValues
-  getParamValues(queryId: Id): ParamValues | undefined;
+  getParamValues(queryId: Id): ParamValues;
 
   /// Queries.getParamValue
   getParamValue(queryId: Id, paramId: Id): ParamValue | undefined;
