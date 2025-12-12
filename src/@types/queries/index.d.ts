@@ -192,6 +192,10 @@ export type QueriesListenerStats = {
   cellIds: number;
   /// QueriesListenerStats.cell
   cell: number;
+  /// QueriesListenerStats.paramValues
+  paramValues: number;
+  /// QueriesListenerStats.paramValue
+  paramValue: number;
 };
 
 /// GetTableCell

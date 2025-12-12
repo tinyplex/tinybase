@@ -45,6 +45,8 @@ import {
   collHas,
   collIsEmpty,
   collSize,
+  collSize2,
+  collSize3,
 } from '../common/coll.ts';
 import {getCreateFunction, getDefinableFunctions} from '../common/definable.ts';
 import {AddListener, CallListeners} from '../common/listeners.ts';
@@ -682,7 +684,11 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       transaction: _3,
       ...stats
     } = resultStore.getListenerStats();
-    return stats;
+    return {
+      ...stats,
+      paramValues: collSize2(paramValuesListeners),
+      paramValue: collSize3(paramValueListeners),
+    };
   };
 
   const queries: any = {
