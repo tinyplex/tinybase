@@ -615,6 +615,12 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       [paramId]: value,
     });
 
+  const getParamValues = (queryId: Id): ParamValues | undefined =>
+    ifNotUndefined(getQueryArgs(queryId)?.[1], mapToObj);
+
+  const getParamValue = (queryId: Id, paramId: Id): ParamValue | undefined =>
+    mapGet(getQueryArgs(queryId)?.[1], paramId);
+
   const addQueryIdsListener = (listener: QueryIdsListener) =>
     addQueryIdsListenerImpl(() => listener(queries));
 
@@ -636,6 +642,8 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const queries: any = {
     setQueryDefinition,
     delQueryDefinition,
+    getParamValues,
+    getParamValue,
     setParamValues,
     setParamValue,
 

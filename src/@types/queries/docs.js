@@ -1817,6 +1817,89 @@
    */
   /// Queries.delQueryDefinition
   /**
+   * The getParamValues method returns all the param values currently set for a
+   * parameterized query.
+   * @param queryId The Id of the query to get the params for.
+   * @returns An object containing all param Ids and their values, or
+   * `undefined` if the query doesn't exist.
+   * @example
+   * This example creates a parameterized query and retrieves its param values.
+   *
+   * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   *
+   * const queries = createQueries(store);
+   * queries.setQueryDefinition(
+   *   'query',
+   *   'pets',
+   *   ({select, where, param}) => {
+   *     select('color');
+   *     where('species', param('species'));
+   *     where((getTableCell) => getTableCell('age') >= param('minAge'));
+   *   },
+   *   {species: 'dog', minAge: 5},
+   * );
+   *
+   * console.log(queries.getParamValues('query'));
+   * // -> {species: 'dog', minAge: 5}
+   *
+   * queries.setParamValue('query', 'species', 'cat');
+   * console.log(queries.getParamValues('query'));
+   * // -> {species: 'cat', minAge: 5}
+   * ```
+   * @category Getter
+   * @since v7.2.0
+   */
+  /// Queries.getParamValues
+  /**
+   * The getParamValue method returns a single param value currently set for a
+   * parameterized query.
+   * @param queryId The Id of the query to get the param for.
+   * @param paramId The Id of the param to get.
+   * @returns The value of the param, or `undefined` if the query or param
+   * doesn't exist.
+   * @example
+   * This example creates a parameterized query and retrieves one of its param
+   * values.
+   *
+   * ```js
+   * import {createQueries, createStore} from 'tinybase';
+   *
+   * const store = createStore().setTable('pets', {
+   *   fido: {species: 'dog', color: 'brown'},
+   *   felix: {species: 'cat', color: 'black'},
+   *   cujo: {species: 'dog', color: 'black'},
+   * });
+   *
+   * const queries = createQueries(store);
+   * queries.setQueryDefinition(
+   *   'query',
+   *   'pets',
+   *   ({select, where, param}) => {
+   *     select('color');
+   *     where('species', param('species'));
+   *   },
+   *   {species: 'dog'},
+   * );
+   *
+   * console.log(queries.getParamValue('query', 'species'));
+   * // -> 'dog'
+   *
+   * queries.setParamValue('query', 'species', 'cat');
+   * console.log(queries.getParamValue('query', 'species'));
+   * // -> 'cat'
+   * ```
+   * @category Getter
+   * @since v7.2.0
+   */
+  /// Queries.getParamValue
+  /**
    * The setParamValues method sets multiple param values for a parameterized
    * query at once, causing the query to re-evaluate with the new param values.
    * @param queryId The Id of the query to update the params for.

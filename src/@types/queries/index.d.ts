@@ -290,6 +290,12 @@ export interface Queries {
   /// Queries.delQueryDefinition
   delQueryDefinition(queryId: Id): Queries;
 
+  /// Queries.getParamValues
+  getParamValues(queryId: Id): ParamValues | undefined;
+
+  /// Queries.getParamValue
+  getParamValue(queryId: Id, paramId: Id): ParamValue | undefined;
+
   /// Queries.setParamValues
   setParamValues(queryId: Id, paramValues: ParamValues): Queries;
 

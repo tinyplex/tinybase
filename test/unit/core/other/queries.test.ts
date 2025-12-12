@@ -4767,6 +4767,45 @@ describe('Parameterized', () => {
         r3: {c1: 'c', c4: true},
       });
     });
+
+    test('getParamValues', () => {
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c2', param('p2') as Cell);
+        },
+        {p2: 'odd', p3: 5},
+      );
+
+      expect(queries.getParamValues('q1')).toEqual({p2: 'odd', p3: 5});
+
+      queries.setParamValue('q1', 'p2', 'even');
+      expect(queries.getParamValues('q1')).toEqual({p2: 'even', p3: 5});
+
+      expect(queries.getParamValues('nonexistent')).toBeUndefined();
+    });
+
+    test('getParamValue', () => {
+      queries.setQueryDefinition(
+        'q1',
+        't1',
+        ({select, where, param}) => {
+          select('c1');
+          where('c2', param('p2') as Cell);
+        },
+        {p2: 'odd', p3: 5},
+      );
+
+      expect(queries.getParamValue('q1', 'p2')).toBe('odd');
+      expect(queries.getParamValue('q1', 'p3')).toBe(5);
+      expect(queries.getParamValue('q1', 'nonexistent')).toBeUndefined();
+      expect(queries.getParamValue('nonexistent', 'p2')).toBeUndefined();
+
+      queries.setParamValue('q1', 'p2', 'even');
+      expect(queries.getParamValue('q1', 'p2')).toBe('even');
+    });
   });
 
   describe('Select', () => {
