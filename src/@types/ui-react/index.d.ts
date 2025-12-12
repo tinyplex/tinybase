@@ -163,6 +163,12 @@ export function useHasTable(
 /// useTable
 export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
 
+/// useTableState
+export function useTableState(
+  tableId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): [Table, (table: Table) => void];
+
 /// useTableCellIds
 export function useTableCellIds(
   tableId: Id,

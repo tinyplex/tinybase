@@ -1017,6 +1017,68 @@
  */
 /// useTable
 /**
+ * The useTableState hook returns a Table and a function to set it, following
+ * the same pattern as React's useState hook.
+ *
+ * This is a convenience hook that combines the useTable and useSetTableCallback
+ * hooks. It's useful when you need both read and write access to a Table in a
+ * single component.
+ *
+ * A Provider component is used to wrap part of an application in a context,
+ * and it can contain a default Store or a set of Store objects named by Id.
+ * The useTableState hook lets you indicate which Store to use: omit the final
+ * parameter for the default context Store, provide an Id for a named context
+ * Store, or provide a Store explicitly by reference.
+ * @param tableId The Id of the Table in the Store.
+ * @param storeOrStoreId The Store to be accessed: omit for the default
+ * context Store, provide an Id for a named context Store, or provide an
+ * explicit reference.
+ * @returns An array containing the Table and a function to set it.
+ * @example
+ * This example creates a Store outside the application, which is used in the
+ * useTableState hook by reference. A button updates the Table when clicked.
+ *
+ * ```jsx
+ * import {createStore} from 'tinybase';
+ * import React from 'react';
+ * import {createRoot} from 'react-dom/client';
+ * import {useTableState} from 'tinybase/ui-react';
+ *
+ * const store = createStore().setTable('pets', {fido: {species: 'dog'}});
+ * const App = () => {
+ *   const [table, setTable] = useTableState('pets', store);
+ *   return (
+ *     <div>
+ *       {JSON.stringify(table)}
+ *       <button onClick={() => setTable({...table, felix: {species: 'cat'}})}>
+ *         Add
+ *       </button>
+ *     </div>
+ *   );
+ * };
+ *
+ * const app = document.createElement('div');
+ * const root = createRoot(app);
+ * root.render(<App />); // !act
+ * console.log(app.innerHTML);
+ * // -> '<div>{"fido":{"species":"dog"}}<button>Add</button></div>'
+ *
+ * const button = app.querySelector('button');
+ * // -> button MouseEvent('click', {bubbles: true})
+ * console.log(app.innerHTML);
+ * // ->
+ * `
+ * <div>
+ *   {"fido":{"species":"dog"},"felix":{"species":"cat"}}
+ *   <button>Add</button>
+ * </div>
+ * `;
+ * ```
+ * @category State hooks
+ * @since v7.3.0
+ */
+/// useTableState
+/**
  * The useTableCellIds hook returns the Ids of every Cell used across the whole
  * Table, and registers a listener so that any changes to that result will cause
  * a re-render.

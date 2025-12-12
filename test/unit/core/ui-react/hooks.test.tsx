@@ -152,6 +152,7 @@ import {
   useTableIds,
   useTableIdsListener,
   useTableListener,
+  useTableState,
   useTables,
   useTablesListener,
   useUndoInformation,
@@ -1170,6 +1171,37 @@ describe('Read Hooks', () => {
     rerender(<button />);
     expect(store.getListenerStats().table).toEqual(0);
     expect(didRender).toHaveBeenCalledTimes(5);
+
+    unmount();
+  });
+
+  test('useTableState', () => {
+    const Test = () => {
+      const [table, setTable] = useTableState('t1', store);
+      return (
+        <span>
+          {JSON.stringify(table)}
+          <button onClick={() => setTable({...table, r2: {c1: 2}})} />
+        </span>
+      );
+    };
+
+    store.setTable('t1', {r1: {c1: 1}});
+    const {container, unmount} = render(<Test />);
+
+    expect(container.innerHTML).toEqual(
+      '<span>{"r1":{"c1":1}}<button></button></span>',
+    );
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual(
+      '<span>{"r1":{"c1":1},"r2":{"c1":2}}<button></button></span>',
+    );
+
+    act(() => fireEvent.click(container.querySelector('button') as Element));
+    expect(container.innerHTML).toEqual(
+      '<span>{"r1":{"c1":1},"r2":{"c1":2}}<button></button></span>',
+    );
 
     unmount();
   });

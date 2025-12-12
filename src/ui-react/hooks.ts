@@ -239,6 +239,7 @@ import type {
   useTableIds as useTableIdsDecl,
   useTableIdsListener as useTableIdsListenerDecl,
   useTableListener as useTableListenerDecl,
+  useTableState as useTableStateDecl,
   useTables as useTablesDecl,
   useTablesListener as useTablesListenerDecl,
   useUndoInformation as useUndoInformationDecl,
@@ -669,6 +670,14 @@ export const useTable: typeof useTableDecl = (
   useListenable(TABLE, useStoreOrStoreById(storeOrStoreId), ReturnType.Object, [
     tableId,
   ]);
+
+export const useTableState: typeof useTableStateDecl = (
+  tableId: Id,
+  storeOrStoreId?: StoreOrStoreId,
+): [Table, (table: Table) => void] => [
+  useTable(tableId, storeOrStoreId),
+  useSetTableCallback(tableId, (table) => table, [], storeOrStoreId),
+];
 
 export const useTableCellIds: typeof useTableCellIdsDecl = (
   tableId: Id,
