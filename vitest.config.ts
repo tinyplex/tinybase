@@ -1,8 +1,14 @@
+import {tmpdir} from 'os';
+import {resolve} from 'path';
 import {coverageConfigDefaults, defineConfig} from 'vitest/config';
 
 export default defineConfig({
   test: {
     environment: 'happy-dom',
+    execArgv: [
+      '--localstorage-file',
+      resolve(tmpdir(), `vitest-${process.pid}.localstorage`),
+    ],
     setupFiles: ['test/vitest/setup.ts'],
     reporters: [['test/vitest/reporter.ts', {hideSkipped: true}]],
     slowTestThreshold: 3000,
