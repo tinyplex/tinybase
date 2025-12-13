@@ -134,23 +134,15 @@ function:
 ```jsx
 import {useCellState} from 'tinybase/ui-react';
 
-const App4 = () => {
+const ColorSetter = () => {
   const [color, setColor] = useCellState('pets', 'fido', 'color', store);
-
   return (
     <div>
-      <div>Color: {pet.color}</div>
+      <div>Color: {color}</div>
       <button onClick={() => setColor('black')}>Change Color</button>
     </div>
   );
 };
-
-root.render(<App4 />); // !act
-// User clicks the button:
-// -> button MouseEvent('click', {bubbles: true})
-
-console.log(store.getRow('pets', 'fido'));
-// -> {color: 'black', species: 'dog', sold: true}
 ```
 
 These state hooks combine the functionality of getter hooks (like the useRow
@@ -189,7 +181,7 @@ inside a component without fear of creating a new instance per render:
 ```jsx
 import {useCreateStore} from 'tinybase/ui-react';
 
-const App4 = () => {
+const App5 = () => {
   const store = useCreateStore(() => {
     console.log('Store created');
     return createStore().setTables({pets: {fido: {species: 'dog'}}});
@@ -197,10 +189,10 @@ const App4 = () => {
   return <span>{store.getCell('pets', 'fido', 'species')}</span>;
 };
 
-root.render(<App4 />); // !act
+root.render(<App5 />); // !act
 // -> 'Store created'
 
-root.render(<App4 />); // !act
+root.render(<App5 />); // !act
 // No second Store creation
 ```
 

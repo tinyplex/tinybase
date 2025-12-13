@@ -88,9 +88,9 @@ time.
 Let's take a look with a simple example:
 
 ```js
-import {createStore, createQueries} from 'tinybase';
+import {createQueries} from 'tinybase';
 
-const store = createStore().setTable('pets', {
+store.setTable('pets', {
   fido: {age: 2, species: 'dog'},
   felix: {age: 1, species: 'cat'},
   cujo: {age: 3, species: 'dog'},

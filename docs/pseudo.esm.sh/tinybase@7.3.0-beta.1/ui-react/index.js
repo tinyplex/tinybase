@@ -51,6 +51,7 @@ var isFunction = (thing) => getTypeOf(thing) == FUNCTION;
 var isArray = (thing) => Array.isArray(thing);
 var size = (arrayOrString) => arrayOrString.length;
 var getUndefined = () => void 0;
+var getArg = (value) => value;
 var arrayNew = (size2, cb) => arrayMap(new Array(size2).fill(0), (_, index) => cb(index));
 var arrayEvery = (array, cb) => array.every(cb);
 var arrayIsEqual = (array1, array2) => size(array1) === size(array2) && arrayEvery(array1, (value1, index) => array2[index] === value1);
@@ -442,6 +443,10 @@ var useTables = (storeOrStoreId) => useListenable(
   0
   /* Object */
 );
+var useTablesState = (storeOrStoreId) => [
+  useTables(storeOrStoreId),
+  useSetTablesCallback(getArg, [], storeOrStoreId)
+];
 var useTableIds = (storeOrStoreId) => useListenable(
   TABLE_IDS,
   useStoreOrStoreById(storeOrStoreId),
@@ -454,6 +459,10 @@ var useHasTable = (tableId, storeOrStoreId) => useListenable(TABLE, useStoreOrSt
 var useTable = (tableId, storeOrStoreId) => useListenable(TABLE, useStoreOrStoreById(storeOrStoreId), 0, [
   tableId
 ]);
+var useTableState = (tableId, storeOrStoreId) => [
+  useTable(tableId, storeOrStoreId),
+  useSetTableCallback(tableId, getArg, [], storeOrStoreId)
+];
 var useTableCellIds = (tableId, storeOrStoreId) => useListenable(
   TABLE + CELL_IDS,
   useStoreOrStoreById(storeOrStoreId),
@@ -500,6 +509,10 @@ var useRow = (tableId, rowId, storeOrStoreId) => useListenable(ROW, useStoreOrSt
   tableId,
   rowId
 ]);
+var useRowState = (tableId, rowId, storeOrStoreId) => [
+  useRow(tableId, rowId, storeOrStoreId),
+  useSetRowCallback(tableId, rowId, getArg, [], storeOrStoreId)
+];
 var useCellIds = (tableId, rowId, storeOrStoreId) => useListenable(CELL_IDS, useStoreOrStoreById(storeOrStoreId), 1, [
   tableId,
   rowId
@@ -515,6 +528,10 @@ var useCell = (tableId, rowId, cellId, storeOrStoreId) => useListenable(
   5,
   [tableId, rowId, cellId]
 );
+var useCellState = (tableId, rowId, cellId, storeOrStoreId) => [
+  useCell(tableId, rowId, cellId, storeOrStoreId),
+  useSetCellCallback(tableId, rowId, cellId, getArg, [], storeOrStoreId)
+];
 var useHasValues = (storeOrStoreId) => useListenable(
   VALUES,
   useStoreOrStoreById(storeOrStoreId),
@@ -527,6 +544,10 @@ var useValues = (storeOrStoreId) => useListenable(
   0
   /* Object */
 );
+var useValuesState = (storeOrStoreId) => [
+  useValues(storeOrStoreId),
+  useSetValuesCallback(getArg, [], storeOrStoreId)
+];
 var useValueIds = (storeOrStoreId) => useListenable(
   VALUE_IDS,
   useStoreOrStoreById(storeOrStoreId),
@@ -542,6 +563,10 @@ var useValue = (valueId, storeOrStoreId) => useListenable(
   5,
   [valueId]
 );
+var useValueState = (valueId, storeOrStoreId) => [
+  useValue(valueId, storeOrStoreId),
+  useSetValueCallback(valueId, getArg, [], storeOrStoreId)
+];
 var useSetTablesCallback = (getTables, getTablesDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
   storeOrStoreId,
   TABLES,
@@ -1073,12 +1098,20 @@ var useParamValues = (queryId, queriesOrQueriesId) => useListenable(
   3,
   [queryId]
 );
+var useParamValuesState = (queryId, queriesOrQueriesId) => [
+  useParamValues(queryId, queriesOrQueriesId),
+  useSetParamValuesCallback(queryId, getArg, [], queriesOrQueriesId)
+];
 var useParamValue = (queryId, paramId, queriesOrQueriesId) => useListenable(
   "ParamValue",
   useQueriesOrQueriesById(queriesOrQueriesId),
   4,
   [queryId, paramId]
 );
+var useParamValueState = (queryId, paramId, queriesOrQueriesId) => [
+  useParamValue(queryId, paramId, queriesOrQueriesId),
+  useSetParamValueCallback(queryId, paramId, getArg, [], queriesOrQueriesId)
+];
 var useParamValuesListener = (queryId, listener, listenerDeps, queriesOrQueriesId) => useListener(
   "ParamValues",
   useQueriesOrQueriesById(queriesOrQueriesId),
@@ -1701,6 +1734,7 @@ export {
   useCellIds,
   useCellIdsListener,
   useCellListener,
+  useCellState,
   useCheckpoint,
   useCheckpointIds,
   useCheckpointIdsListener,
@@ -1757,8 +1791,10 @@ export {
   useMetricsOrMetricsById,
   useParamValue,
   useParamValueListener,
+  useParamValueState,
   useParamValues,
   useParamValuesListener,
+  useParamValuesState,
   usePersister,
   usePersisterIds,
   usePersisterOrPersisterById,
@@ -1805,6 +1841,7 @@ export {
   useRowIds,
   useRowIdsListener,
   useRowListener,
+  useRowState,
   useSetCellCallback,
   useSetCheckpointCallback,
   useSetParamValueCallback,
@@ -1839,14 +1876,18 @@ export {
   useTableIds,
   useTableIdsListener,
   useTableListener,
+  useTableState,
   useTables,
   useTablesListener,
+  useTablesState,
   useUndoInformation,
   useValue,
   useValueIds,
   useValueIdsListener,
   useValueListener,
+  useValueState,
   useValues,
   useValuesListener,
+  useValuesState,
   useWillFinishTransactionListener
 };

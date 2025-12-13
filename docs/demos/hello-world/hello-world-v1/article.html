@@ -1,11 +1,11 @@
 <nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/hello-world/">Hello World</a></li><li><a href="/demos/hello-world/hello-world-v1/">Hello World v1</a></li></ul></nav><section class="s1" id="/demos/hello-world/hello-world-v1/" data-id="HW2"><h1>Hello World v1</h1><iframe srcdoc="&lt;html&gt;&lt;head&gt;&lt;script type=&quot;importmap&quot;&gt;{
     &quot;imports&quot;: {
-      &quot;tinybase&quot;: &quot;https://esm.sh/tinybase@7.3.0-beta.0&quot;
+      &quot;tinybase&quot;: &quot;https://esm.sh/tinybase@7.3.0-beta.1&quot;
     }
   }&lt;/script&gt;&lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}body{align-items:center;display:flex;font-family:Inter,sans-serif;letter-spacing:-.04rem;height:100vh;justify-content:center;margin:0}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;script type=&quot;module&quot;&gt;import{createStore as o}from&quot;tinybase&quot;;const e=o();e.setValue(&quot;v1&quot;,&quot;Hello World&quot;),document.body.innerHTML=e.getValue(&quot;v1&quot;);&lt;/script&gt;&lt;/html&gt;"></iframe><p>In this demo, we set data in, and then get data from, a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object. We&#x27;re using keyed values (not even tabular data!), so this is about as simple as it gets.</p><p>First, since we&#x27;re running this in a browser, we register some import aliases for <code>esm.sh</code>:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@7.3.0-beta.0"</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@7.3.0-beta.1"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>
 </span></span><span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>script</span><span class="punctuation">></span></span>

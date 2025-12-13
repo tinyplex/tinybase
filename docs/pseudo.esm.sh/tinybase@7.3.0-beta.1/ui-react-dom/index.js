@@ -288,6 +288,7 @@ var isFunction = (thing) => getTypeOf2(thing) == FUNCTION2;
 var isArray2 = (thing) => Array.isArray(thing);
 var size2 = (arrayOrString) => arrayOrString.length;
 var getUndefined = () => void 0;
+var getArg = (value) => value;
 var arrayEvery2 = (array, cb) => array.every(cb);
 var arrayIsEqual2 = (array1, array2) => size2(array1) === size2(array2) && arrayEvery2(array1, (value1, index) => array2[index] === value1);
 var arrayOrValueEqual2 = (value1, value2) => isArray2(value1) && isArray2(value2) ? arrayIsEqual2(value1, value2) : value1 === value2;
@@ -488,6 +489,10 @@ var useCell2 = (tableId, rowId, cellId, storeOrStoreId) => useListenable2(
   5,
   [tableId, rowId, cellId]
 );
+var useCellState = (tableId, rowId, cellId, storeOrStoreId) => [
+  useCell2(tableId, rowId, cellId, storeOrStoreId),
+  useSetCellCallback(tableId, rowId, cellId, getArg, [], storeOrStoreId)
+];
 var useValueIds = (storeOrStoreId) => useListenable2(
   VALUE_IDS2,
   useStoreOrStoreById2(storeOrStoreId),
@@ -500,6 +505,10 @@ var useValue2 = (valueId, storeOrStoreId) => useListenable2(
   5,
   [valueId]
 );
+var useValueState = (valueId, storeOrStoreId) => [
+  useValue2(valueId, storeOrStoreId),
+  useSetValueCallback(valueId, getArg, [], storeOrStoreId)
+];
 var useSetCellCallback = (tableId, rowId, cellId, getCell, getCellDeps, storeOrStoreId, then, thenDeps) => useStoreSetCallback(
   storeOrStoreId,
   CELL2,
@@ -819,27 +828,26 @@ var EditableCellView = ({
   store,
   className,
   showType
-}) => /* @__PURE__ */ jsx2(EditableThing, {
-  thing: useCell2(tableId, rowId, cellId, store),
-  onThingChange: useSetCellCallback(
-    tableId,
-    rowId,
-    cellId,
-    (cell) => cell,
-    [],
-    store
-  ),
-  className: className ?? EDITABLE + CELL2,
-  showType,
-  hasSchema: useStoreOrStoreById2(store)?.hasTablesSchema
-});
-var EditableValueView = ({ valueId, store, className, showType }) => /* @__PURE__ */ jsx2(EditableThing, {
-  thing: useValue2(valueId, store),
-  onThingChange: useSetValueCallback(valueId, (value) => value, [], store),
-  className: className ?? EDITABLE + VALUE2,
-  showType,
-  hasSchema: useStoreOrStoreById2(store)?.hasValuesSchema
-});
+}) => {
+  const [cell, setCell] = useCellState(tableId, rowId, cellId, store);
+  return /* @__PURE__ */ jsx2(EditableThing, {
+    thing: cell,
+    onThingChange: setCell,
+    className: className ?? EDITABLE + CELL2,
+    showType,
+    hasSchema: useStoreOrStoreById2(store)?.hasTablesSchema
+  });
+};
+var EditableValueView = ({ valueId, store, className, showType }) => {
+  const [value, setValue] = useValueState(valueId, store);
+  return /* @__PURE__ */ jsx2(EditableThing, {
+    thing: value,
+    onThingChange: setValue,
+    className: className ?? EDITABLE + VALUE2,
+    showType,
+    hasSchema: useStoreOrStoreById2(store)?.hasValuesSchema
+  });
+};
 var useDottedCellIds = (tableId, store) => arrayMap2(useTableCellIds(tableId, store), (cellId) => tableId + DOT + cellId);
 var RelationshipInHtmlRow = ({
   localRowId,
