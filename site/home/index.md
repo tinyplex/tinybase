@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#v7-2'><em>NEW!</em> v7.2 release</a>
+<a href='/guides/releases/#v7-3'><em>NEW!</em> v7.3 release</a>
 
-<span id="one-with">"The one with parameterized queries!"</span>
+<span id="one-with">"The one with state hooks!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
