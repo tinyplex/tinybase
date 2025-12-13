@@ -155,10 +155,8 @@ The following state hooks are available:
 - the useTableState hook for reading and writing a single Table
 - the useRowState hook for reading and writing a single Row
 - the useCellState hook for reading and writing a single Cell
--
 - the useValuesState hook for reading and writing all Values
 - the useValueState hook for reading and writing a single Value
--
 - the useParamValuesState hook for reading and writing all query parameters
 - the useParamValueState hook for reading and writing a single query parameter
 
