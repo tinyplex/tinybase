@@ -124,6 +124,56 @@ handle the content of a text input to write into the Store. See the Todo demo
 for a working example of doing that with the useAddRowCallback hook to add new
 todos.
 
+## State Hooks: useState-Style Convenience
+
+For common scenarios where you need both read and write access to data,
+TinyBase provides a family of "state hooks" that follow React's `useState`
+pattern. These hooks return a tuple containing the current value and a setter
+function:
+
+```jsx
+import {useCellState} from 'tinybase/ui-react';
+
+const App4 = () => {
+  const [color, setColor] = useCellState('pets', 'fido', 'color', store);
+
+  return (
+    <div>
+      <div>Color: {pet.color}</div>
+      <button onClick={() => setColor('black')}>Change Color</button>
+    </div>
+  );
+};
+
+root.render(<App4 />); // !act
+// User clicks the button:
+// -> button MouseEvent('click', {bubbles: true})
+
+console.log(store.getRow('pets', 'fido'));
+// -> {color: 'black', species: 'dog', sold: true}
+```
+
+These state hooks combine the functionality of getter hooks (like the useRow
+hook) with setter callback hooks (like the useSetRowCallback hook), reducing
+boilerplate and providing a familiar API for React developers.
+
+The following state hooks are available:
+
+- the useTablesState hook for reading and writing all Tables
+- the useTableState hook for reading and writing a single Table
+- the useRowState hook for reading and writing a single Row
+- the useCellState hook for reading and writing a single Cell
+-
+- the useValuesState hook for reading and writing all Values
+- the useValueState hook for reading and writing a single Value
+-
+- the useParamValuesState hook for reading and writing all query parameters
+- the useParamValueState hook for reading and writing a single query parameter
+
+These hooks are particularly useful when building forms, editors, or any UI that
+requires bidirectional data binding. They handle all the memoization and
+re-rendering logic for you, just like the standard hooks.
+
 ## Other Hook Types
 
 The hooks to read and write Store data (described above) will be the ones you

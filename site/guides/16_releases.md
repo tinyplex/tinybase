@@ -5,6 +5,63 @@ highlighted features.
 
 ---
 
+# v7.3
+
+## Introducing State Hooks
+
+This release introduces a new family of convenience hooks that follow React's
+`useState` pattern, making it even easier to read and write TinyBase data in
+your React components.
+
+Each state hook returns a tuple containing both the current value and a setter
+function, eliminating the need to use separate getter and setter hooks.
+
+State hooks combine the functionality of getter hooks (like the useRow hook) and
+setter callback hooks (like the useSetRowCallback hook) into a single,
+convenient API that feels just like React's `useState`:
+
+```jsx
+import {createStore} from 'tinybase';
+import {useCellState} from 'tinybase/ui-react';
+
+const store = createStore().setRow('pets', 'fido', {
+  species: 'dog',
+  color: 'brown',
+});
+
+const PetEditor = () => {
+  const [color, setColor] = useCellState('pets', 'fido', 'color', store);
+
+  return (
+    <div>
+      <div>Color: {color}</div>
+      <button onClick={() => setColor('black')}>Change Color</button>
+    </div>
+  );
+};
+```
+
+## Available State Hooks
+
+This release includes eight new state hooks covering the most common data access
+patterns:
+
+- the useTablesState hook for reading and writing all Tables
+- the useTableState hook for reading and writing a single Table
+- the useRowState hook for reading and writing a single Row
+- the useCellState hook for reading and writing a single Cell
+-
+- the useValuesState hook for reading and writing all Values
+- the useValueState hook for reading and writing a single Value
+
+- the useParamValuesState hook for reading and writing all query parameters
+- the useParamValueState hook for reading and writing a single query parameter
+
+These hopefully mean less boilerplate, are particularly useful when building
+forms, editors, or any interactive UI that needs bidirectional data binding.
+
+---
+
 # v7.2
 
 ## Introducing Parameterized Queries!
