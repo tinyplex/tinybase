@@ -60,6 +60,19 @@ patterns:
 These hopefully mean less boilerplate, are particularly useful when building
 forms, editors, or any interactive UI that needs bidirectional data binding.
 
+## Demo Updates
+
+We've updated a few of the demos to showcase these new state hooks:
+
+- The Countries demo now uses the useCellState hook for the star/unstar toggle
+  functionality.
+- The Todo App demo uses the useCellState hook to simplify todo completion
+  toggling, and the useValueState hook for managing the selected type filter.
+- The Car Analysis demo uses the useParamValueState hook to manage query
+  parameters for dimensions, measures, and aggregates. Much more elegant!
+
+Check out these demos to see the state hooks in action.
+
 ---
 
 # v7.2

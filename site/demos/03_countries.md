@@ -44,12 +44,10 @@ import {
   IndexView,
   Provider,
   SliceView,
-  useCell,
+  useCellState,
   useCreateIndexes,
   useCreatePersister,
   useCreateStore,
-  useDelCellCallback,
-  useSetCellCallback,
   useSetRowCallback,
   useSetValuesCallback,
   useSliceRowIds,
@@ -390,34 +388,16 @@ component renders a small panel for each.
 
 As well as rendering the name and flag of the country (from the `countryStore`
 store), we also add a small 'star' at the top of each country panel. Clicking
-this will either call the `setStar` callback to favorite the country by adding
-it to the `starStore`, or it will call the `setUnstar` callback to unfavorite it
-and remove it again:
+this will toggle the `star` value to favorite or unfavorite the country:
 
 ```jsx
 const Country = (props) => {
   const {tableId, rowId} = props;
-  const star = useCell(tableId, rowId, 'star', 'starStore');
-  const setStar = useSetCellCallback(
-    tableId,
-    rowId,
-    'star',
-    () => true,
-    [],
-    'starStore',
-  );
-  const setUnstar = useDelCellCallback(
-    tableId,
-    rowId,
-    'star',
-    true,
-    'starStore',
-  );
-  const handleClick = star ? setUnstar : setStar;
+  const [star, setStar] = useCellState(tableId, rowId, 'star', 'starStore');
 
   return (
     <div className="country">
-      <div className="star" onClick={handleClick}>
+      <div className="star" onClick={() => setStar(!star)}>
         {star ? STAR : UNSTAR}
       </div>
       <div className="flag">
@@ -430,11 +410,6 @@ const Country = (props) => {
   );
 };
 ```
-
-Removing a country from the `starStore` store rather than setting the `star`
-flag to false prevents the `starStore` store from growing to include all the
-countries that were _ever_ starred, even if no longer so. Since we are storing
-this in the browser, it's more efficient just to remove it.
 
 The styling for the main panel of the app is a little more complex, but we want
 the country cards and flags to look good!

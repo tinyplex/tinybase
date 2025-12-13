@@ -66,12 +66,11 @@ import {
   Provider,
   useCreateQueries,
   useCreateStore,
-  useParamValue,
+  useParamValueState,
   useQueries,
   useResultCell,
   useResultSortedRowIds,
   useResultTable,
-  useSetParamValueCallback,
 } from 'tinybase/ui-react';
 import {ResultSortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 import {Inspector} from 'tinybase/ui-react-inspector';
@@ -286,25 +285,14 @@ and measures, and which aggregate is used. These state variables - `dimensions`,
 `measures`, and `aggregate` - are used as the params to the `cars` query against
 the `cars` Table, and are used to group the fields accordingly.
 
-Let's create three state-like pairs containing the values of these params and
-callbacks that will be used set them in the Queries object whenever they change
-in the application's sidebar:
+Let's use the useParamValueState hook to create three state-like pairs
+containing the values of these params and setters that will update them in the
+Queries object whenever they change in the application's sidebar:
 
 ```js
-const [dimensions, setDimensions] = [
-  useParamValue('cars', 'dimensions'),
-  useSetParamValueCallback('cars', 'dimensions', (dimensions) => dimensions),
-];
-
-const [measures, setMeasures] = [
-  useParamValue('cars', 'measures'),
-  useSetParamValueCallback('cars', 'measures', (measures) => measures),
-];
-
-const [aggregate, setAggregate] = [
-  useParamValue('cars', 'aggregate'),
-  useSetParamValueCallback('cars', 'aggregate', (aggregate) => aggregate),
-];
+const [dimensions, setDimensions] = useParamValueState('cars', 'dimensions');
+const [measures, setMeasures] = useParamValueState('cars', 'measures');
+const [aggregate, setAggregate] = useParamValueState('cars', 'aggregate');
 ```
 
 Next we render the left-hand sidebar, showing the available dimensions,
