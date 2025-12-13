@@ -136,7 +136,7 @@ export const EditableThing = <Thing extends Cell | Value>({
   showType = true,
 }: {
   readonly thing: Thing | undefined;
-  readonly onThingChange: (thing: Thing | undefined) => void;
+  readonly onThingChange: (thing: Thing) => void;
   readonly className: string;
   readonly hasSchema: (() => boolean) | undefined;
   readonly showType?: boolean;
