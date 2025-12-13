@@ -151,14 +151,14 @@ boilerplate and providing a familiar API for React developers.
 
 The following state hooks are available:
 
-- the useTablesState hook for reading and writing all Tables
-- the useTableState hook for reading and writing a single Table
-- the useRowState hook for reading and writing a single Row
-- the useCellState hook for reading and writing a single Cell
-- the useValuesState hook for reading and writing all Values
-- the useValueState hook for reading and writing a single Value
-- the useParamValuesState hook for reading and writing all query parameters
-- the useParamValueState hook for reading and writing a single query parameter
+- The useTablesState hook for reading and writing all Tables
+- The useTableState hook for reading and writing a single Table
+- The useRowState hook for reading and writing a single Row
+- The useCellState hook for reading and writing a single Cell
+- The useValuesState hook for reading and writing all Values
+- The useValueState hook for reading and writing a single Value
+- The useParamValuesState hook for reading and writing all query ParamValues
+- The useParamValueState hook for reading and writing a single query ParamValue
 
 These hooks are particularly useful when building forms, editors, or any UI that
 requires bidirectional data binding. They handle all the memoization and

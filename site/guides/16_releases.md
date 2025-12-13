@@ -46,14 +46,14 @@ const PetEditor = () => {
 This release includes eight new state hooks covering the most common data access
 patterns:
 
-- the useTablesState hook for reading and writing all Tables
-- the useTableState hook for reading and writing a single Table
-- the useRowState hook for reading and writing a single Row
-- the useCellState hook for reading and writing a single Cell
-- the useValuesState hook for reading and writing all Values
-- the useValueState hook for reading and writing a single Value
-- the useParamValuesState hook for reading and writing all query parameters
-- the useParamValueState hook for reading and writing a single query parameter
+- The useTablesState hook for reading and writing all Tables
+- The useTableState hook for reading and writing a single Table
+- The useRowState hook for reading and writing a single Row
+- The useCellState hook for reading and writing a single Cell
+- The useValuesState hook for reading and writing all Values
+- The useValueState hook for reading and writing a single Value
+- The useParamValuesState hook for reading and writing all query ParamValues
+- The useParamValueState hook for reading and writing a single query ParamValue
 
 These hopefully mean less boilerplate, are particularly useful when building
 forms, editors, or any interactive UI that needs bidirectional data binding.
