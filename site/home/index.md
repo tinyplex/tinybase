@@ -195,41 +195,31 @@
 ---
 
 <section id="follow">
-
 <a href='@@EVAL("metadata.repository")' target='_blank'> <img
     src="https://img.shields.io/github/stars/tinyplex/tinybase?style=for-the-badge&logo=GitHub&logoColor=%23fff&label=GitHub&labelColor=%23d81b60&color=%23333">
 </a>
-
 <a href='https://bsky.app/profile/tinybase.bsky.social'> <img
     src="https://img.shields.io/badge/Bluesky-Follow-blue?style=for-the-badge&logo=bluesky&logoColor=%23fff&color=%23333&labelColor=%230285FF"
   /> </a>
-
 <a href='https://x.com/tinybasejs' target='_blank'> <img
     src="https://img.shields.io/badge/%2F%20Twitter-Follow-blue?style=for-the-badge&logo=x&logoColor=%23fff&color=%23333&labelColor=%23000"
   /> </a>
-
 <a href='https://discord.com/invite/mGz3mevwP8' target='_blank'> <img
     src="https://img.shields.io/discord/1027918215323590676?style=for-the-badge&logo=discord&logoColor=%23fff&label=Discord&labelColor=%233131e8&color=%23333"
   /> </a>
-
   <br />
-
 <a href='@@EVAL("metadata.repository")/discussions' target='_blank'> <img
     src="https://img.shields.io/github/discussions/tinyplex/tinybase?style=for-the-badge&logo=GitHub&logoColor=%23fff&label=Ideas&labelColor=%23d81b60&color=%23333">
 </a>
-
 <a href='@@EVAL("metadata.repository")/issues' target='_blank'> <img
     src="https://img.shields.io/github/issues/tinyplex/tinybase?style=for-the-badge&logo=GitHub&logoColor=%23fff&label=Issues&labelColor=%23d81b60&color=%23333">
 </a>
-
 <a href='#well-tested-and-documented'> <img
     src="https://img.shields.io/badge/Tests-100%25-green?style=for-the-badge&logo=Vitest&logoColor=%23fff&color=%23333&labelColor=%2387c305"
   /> </a>
-
 <a href='@@EVAL("metadata.package")' target='_blank'> <img
     src="https://img.shields.io/npm/v/tinybase?style=for-the-badge&logo=npm&logoColor=%23fff&labelColor=%23bd0005&color=%23333"
   /> </a>
-
 </section>
 
 ---
