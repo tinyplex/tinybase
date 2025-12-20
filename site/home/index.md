@@ -690,6 +690,7 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 <h2>Proud to be supported by:</h2>
 @@EVAL("getGitHubAvatar('fastrepl')")
 @@EVAL("getGitHubAvatar('expo')")
+@@EVAL("getGitHubAvatar('dylmye')")
 @@EVAL("getGitHubAvatar('ComputelessComputer')")
 @@EVAL("getGitHubAvatar('cancelself')")
 @@EVAL("getGitHubAvatar('cpojer')")
