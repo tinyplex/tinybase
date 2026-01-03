@@ -1,8 +1,10 @@
 /// mergeable-store
 import type {GetNow, Hash, Hlc, Id} from '../common/index.d.ts';
 import type {
+  AllTablesRowMiddleware,
   CellOrUndefined,
   Content,
+  RowMiddleware,
   Store,
   ValueOrUndefined,
 } from '../store/index.d.ts';
@@ -129,6 +131,24 @@ export interface MergeableStore extends Store {
 
   /// MergeableStore.merge
   merge(mergeableStore: MergeableStore): MergeableStore;
+
+  /// MergeableStore.use
+  /**
+   * Register middleware to intercept mutations before they are applied.
+   *
+   * Middleware runs on both local mutations (setRow, setCell, etc.) and
+   * incoming sync changes (applyMergeableChanges).
+   *
+   * Overloads:
+   * - `use(tableId, handler)` - Row-level middleware for a specific table.
+   * - `use('*', handler)` - Row-level middleware for all tables.
+   *
+   * Row-level handlers receive `(rowId, cells)` or `(tableId, rowId, cells)`
+   * and return the cells to accept (modified), or null to reject the row.
+   * @since v7.4.0
+   */
+  use(tableId: Id, handler: RowMiddleware): this;
+  use(tableId: '*', handler: AllTablesRowMiddleware): this;
 
   /// Store.isMergeable
   isMergeable(): boolean;

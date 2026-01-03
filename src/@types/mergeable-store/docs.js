@@ -921,6 +921,23 @@
    * @since v5.0.0
    */
   /// MergeableStore.merge
+  /**
+   * The use method registers middleware to intercept mutations before they are
+   * applied. This is inherited from Store and works identically on
+   * MergeableStore.
+   *
+   * Middleware runs on both local mutations (setRow, setCell, etc.) and on
+   * incoming sync changes (applyMergeableChanges). It does NOT run on
+   * setMergeableContent (used for trusted persistence/hydration).
+   *
+   * See Store.use for full documentation and examples.
+   * @param tableId The table to intercept, or '*' for all tables.
+   * @param handler The handler function.
+   * @returns A reference to the MergeableStore for chaining.
+   * @category Middleware
+   * @since v7.4.0
+   */
+  /// MergeableStore.use
 }
 /**
  * The createMergeableStore function creates a MergeableStore, and is the main
