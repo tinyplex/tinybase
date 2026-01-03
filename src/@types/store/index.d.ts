@@ -361,6 +361,24 @@ export type Changes = [
   isChanges: 1,
 ];
 
+/// RowMiddleware
+/**
+ * Row-level middleware handler for a specific table.
+ * @since v7.4.0
+ */
+export type RowMiddleware = (rowId: Id | undefined, cells: Row) => Row | null;
+
+/// AllTablesRowMiddleware
+/**
+ * Row-level middleware handler for all tables (catch-all).
+ * @since v7.4.0
+ */
+export type AllTablesRowMiddleware = (
+  tableId: Id,
+  rowId: Id | undefined,
+  cells: Row,
+) => Row | null;
+
 /// TransactionLog
 export type TransactionLog = [
   cellsTouched: boolean,
@@ -809,6 +827,21 @@ export interface Store {
 
   /// Store.isMergeable
   isMergeable(): boolean;
+
+  /// Store.use
+  /**
+   * Register middleware to intercept mutations before they are applied.
+   *
+   * Overloads:
+   * - `use(tableId, handler)` - Row-level middleware for a specific table.
+   * - `use('*', handler)` - Row-level middleware for all tables.
+   *
+   * Row-level handlers receive `(rowId, cells)` or `(tableId, rowId, cells)`
+   * and return the cells to accept (modified), or null to reject the row.
+   * @since v7.4.0
+   */
+  use(tableId: Id, handler: RowMiddleware): this;
+  use(tableId: '*', handler: AllTablesRowMiddleware): this;
   //
 }
 
