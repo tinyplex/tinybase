@@ -662,6 +662,96 @@ exports[`Persists to/from customSynchronizer > saves 2`] = `
 ]
 `;
 
+exports[`Persists to/from durableObjectStorage > autoSaves > delCell 1`] = `undefined`;
+
+exports[`Persists to/from durableObjectStorage > autoSaves > delValue 1`] = `undefined`;
+
+exports[`Persists to/from durableObjectStorage > autoSaves > initial 1`] = `undefined`;
+
+exports[`Persists to/from durableObjectStorage > autoSaves > setTables 1`] = `undefined`;
+
+exports[`Persists to/from durableObjectStorage > autoSaves > setValues 1`] = `undefined`;
+
+exports[`Persists to/from durableObjectStorage > loads 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "_",
+                4065945599,
+              ],
+            },
+            "",
+            1279994494,
+          ],
+        },
+        "",
+        1293085726,
+      ],
+    },
+    "",
+    4033596827,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "_",
+        4065945599,
+      ],
+    },
+    "",
+    2304392760,
+  ],
+]
+`;
+
+exports[`Persists to/from durableObjectStorage > saves 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                1,
+                "Nn1JUF-----7JQY8",
+                1003668370,
+              ],
+            },
+            "",
+            550994372,
+          ],
+        },
+        "",
+        1072852846,
+      ],
+    },
+    "",
+    1771939739,
+  ],
+  [
+    {
+      "v1": [
+        1,
+        "Nn1JUF----07JQY8",
+        1130939691,
+      ],
+    },
+    "",
+    3877632732,
+  ],
+]
+`;
+
+exports[`Persists to/from durableObjectStorage > saves 2`] = `undefined`;
+
 exports[`Persists to/from file > autoLoads 1`] = `
 [
   [
