@@ -1273,6 +1273,31 @@
  */
 /// Changes
 /**
+ * The RowMiddleware type represents a function that intercepts row mutations
+ * for a specific table before they are applied.
+ *
+ * The handler receives the rowId and cells object and can return the cells
+ * unchanged (accept), return modified cells (transform), or return null to
+ * reject the row mutation entirely.
+ *
+ * Register with `store.use(tableId, handler)`.
+ * @category Middleware
+ * @since v7.4.0
+ */
+/// RowMiddleware
+/**
+ * The AllTablesRowMiddleware type represents a function that intercepts row
+ * mutations for all tables before they are applied.
+ *
+ * This catch-all handler receives the tableId, rowId, and cells object.
+ * It runs after any table-specific handlers.
+ *
+ * Register with `store.use('*', handler)`.
+ * @category Middleware
+ * @since v7.4.0
+ */
+/// AllTablesRowMiddleware
+/**
  * The TransactionLog type describes the changes that were made to a Store
  * during a transaction in detail.
  *
@@ -7267,6 +7292,20 @@
    * @since v5.0.0
    */
   /// Store.isMergeable
+  /**
+   * The use method registers middleware to intercept mutations before they are
+   * applied to the Store.
+   *
+   * Middleware handlers can modify incoming data or reject mutations entirely.
+   * Use `use(tableId, handler)` for a specific table, or `use('*', handler)`
+   * to intercept mutations across all tables.
+   * @param tableId The Id of the Table to intercept, or '*' for all tables.
+   * @param handler The middleware handler function.
+   * @returns A reference to the Store.
+   * @category Middleware
+   * @since v7.4.0
+   */
+  /// Store.use
 }
 /**
  * The createStore function creates a Store, and is the main entry point into

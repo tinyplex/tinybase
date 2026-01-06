@@ -1,6 +1,7 @@
 {
   "name": "tinybase",
-  "version": "7.3.1",
+  "version": "7.4.0",
+  "private": true,
   "author": "jamesgpearce",
   "repository": "github:tinyplex/tinybase",
   "license": "MIT",
@@ -128,7 +129,6 @@
       "optional": true
     }
   },
-  "private": true,
   "scripts": {
     "lintFiles": "gulp lintFiles",
     "lintDocs": "gulp lintDocs",
