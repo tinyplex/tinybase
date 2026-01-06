@@ -43,7 +43,7 @@ export const createDurableObjectStoragePersister = ((
     key: string,
   ): [type: string, ...ids: Ids] | undefined => {
     if (strStartsWith(key, storagePrefix)) {
-      const type = slice(key, storagePrefix.length, 1);
+      const type = slice(key, storagePrefix.length, storagePrefix.length + 1);
       return type == T || type == V
         ? [
             type,
@@ -54,7 +54,7 @@ export const createDurableObjectStoragePersister = ((
   };
 
   const getPersisted = async (): Promise<
-    PersistedContent<PersistsType.MergeableStoreOnly>
+    PersistedContent<PersistsType.MergeableStoreOnly> | undefined
   > => {
     const tables: TablesStamp<true> = stampNewObjectWithHash();
     const values: ValuesStamp<true> = stampNewObjectWithHash();
@@ -100,6 +100,9 @@ export const createDurableObjectStoragePersister = ((
               : 0,
         ),
     );
+    if (Object.keys(tables[0]).length === 0 && Object.keys(values[0]).length === 0) {
+      return undefined;
+    }
     return [tables, values];
   };
 
