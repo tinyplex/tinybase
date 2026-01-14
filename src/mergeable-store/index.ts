@@ -536,7 +536,10 @@ export const createMergeableStore = ((
         ? store.transaction(() => {
             store.delTables().delValues();
             contentStampMap = newContentStampMap();
-            store.applyChanges(mergeContentOrChanges(mergeableContent, 1));
+            // Use _applyChanges to bypass middleware (trusted source)
+            (store as any)._applyChanges(
+              mergeContentOrChanges(mergeableContent, 1),
+            );
           })
         : 0,
     );
@@ -607,10 +610,19 @@ export const createMergeableStore = ((
 
   const applyMergeableChanges = (
     mergeableChanges: MergeableChanges | MergeableContent,
-  ): MergeableStore =>
-    disableListeningToRawStoreChanges(() =>
-      store.applyChanges(mergeContentOrChanges(mergeableChanges)),
+  ): MergeableStore => {
+    const validatedChanges = (store as any).middleware.applyToMergeableChanges(
+      mergeableChanges,
+      getNextHlc,
     );
+    if (validatedChanges === null) {
+      return mergeableStore as MergeableStore;
+    }
+    // Use _applyChanges to bypass base Store's middleware (already validated)
+    return disableListeningToRawStoreChanges(() =>
+      (store as any)._applyChanges(mergeContentOrChanges(validatedChanges)),
+    );
+  };
 
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableChanges = getMergeableContent();
@@ -655,7 +667,8 @@ export const createMergeableStore = ((
         strStartsWith(name, DEL) ||
         strStartsWith(name, 'apply') ||
         strEndsWith(name, TRANSACTION) ||
-        name == 'call' + LISTENER
+        name == 'call' + LISTENER ||
+        name == 'use'
           ? (...args: any[]) => {
               method(...args);
               return mergeableStore;
