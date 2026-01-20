@@ -195,7 +195,7 @@ export interface MergeableStore<
 
   /// MergeableStore.setDefaultContent
   setDefaultContent(
-    content: Content<Schemas> | (() => Content<Schemas>),
+    content: Content<Schemas, true> | (() => Content<Schemas, true>),
   ): MergeableStore<Schemas>;
 
   /// MergeableStore.getTransactionMergeableChanges
