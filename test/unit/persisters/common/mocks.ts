@@ -860,8 +860,10 @@ export const mockDurableObjectStorage: Persistable<MockDurableObjectStorage> = {
     content: Content | MergeableContent,
   ): Promise<void> => {
     // Convert MergeableContent to the key-value format the persister uses
-    const [[tablesObj, tablesHlc, tablesHash], [valuesObj, valuesHlc, valuesHash]] =
-      content as MergeableContent;
+    const [
+      [tablesObj, tablesHlc, tablesHash],
+      [valuesObj, valuesHlc, valuesHash],
+    ] = content as MergeableContent;
     const entries: Record<string, any> = {};
 
     // Store tables root
