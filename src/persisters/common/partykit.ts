@@ -1,4 +1,7 @@
-import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
+import {
+  jsonParseWithUndefined,
+  jsonStringWithUndefined,
+} from '../../common/json.ts';
 import {isString, size, slice} from '../../common/other.ts';
 import {T, V, strStartsWith} from '../../common/strings.ts';
 
@@ -15,7 +18,9 @@ export const construct = (
   type: MessageType | StorageKeyType,
   payload: any,
 ): string =>
-  prefix + type + (isString(payload) ? payload : jsonStringWithMap(payload));
+  prefix +
+  type +
+  (isString(payload) ? payload : jsonStringWithUndefined(payload));
 
 export const deconstruct = (
   prefix: string,
@@ -26,7 +31,9 @@ export const deconstruct = (
   return strStartsWith(message, prefix)
     ? [
         message[prefixSize] as MessageType | StorageKeyType,
-        (stringified ? jsonParse : String)(slice(message, prefixSize + 1)),
+        (stringified ? jsonParseWithUndefined : String)(
+          slice(message, prefixSize + 1),
+        ),
       ]
     : undefined;
 };
