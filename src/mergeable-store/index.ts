@@ -43,6 +43,7 @@ import {
   objForEach,
   objFreeze,
   objHas,
+  objIsEmpty,
   objMap,
   objNew,
   objValidate,
@@ -153,6 +154,7 @@ export const createMergeableStore = ((
   getNow?: GetNow,
 ): MergeableStore => {
   let listeningToRawStoreChanges = 1;
+  let incomingChanges: Changes | undefined;
   let contentStampMap = newContentStampMap();
   let defaultingContent: 0 | 1 = 0;
   const touchedCells: IdSet3 = mapNew();
@@ -327,15 +329,28 @@ export const createMergeableStore = ((
     cellId: Id,
     newCell: CellOrUndefined,
   ) => {
-    setAdd(
-      mapEnsure(
-        mapEnsure(touchedCells, tableId, mapNew<Id, IdSet>),
-        rowId,
-        setNew<Id>,
-      ),
-      cellId,
-    );
-    if (listeningToRawStoreChanges) {
+    const tableChanges = incomingChanges?.[0]?.[tableId];
+    const rowChanges = tableChanges?.[rowId];
+    const hasExpected = !!rowChanges && objHas(rowChanges, cellId);
+    const expectedCell = rowChanges?.[cellId];
+    const isExpected = hasExpected && Object.is(expectedCell, newCell);
+    if (isExpected) {
+      delete incomingChanges?.[0]?.[tableId]?.[rowId]?.[cellId];
+      if (objIsEmpty(incomingChanges?.[0]?.[tableId]?.[rowId])) {
+        delete incomingChanges?.[0]?.[tableId]?.[rowId];
+      }
+      if (objIsEmpty(incomingChanges?.[0]?.[tableId])) {
+        delete incomingChanges?.[0]?.[tableId];
+      }
+    } else if (listeningToRawStoreChanges || incomingChanges) {
+      setAdd(
+        mapEnsure(
+          mapEnsure(touchedCells, tableId, mapNew<Id, IdSet>),
+          rowId,
+          setNew<Id>,
+        ),
+        cellId,
+      );
       mergeContentOrChanges([
         [
           {
@@ -360,8 +375,14 @@ export const createMergeableStore = ((
   };
 
   const valueChanged = (valueId: Id, newValue: ValueOrUndefined) => {
-    setAdd(touchedValues, valueId);
-    if (listeningToRawStoreChanges) {
+    const valueChanges = incomingChanges?.[1];
+    const hasExpected = !!valueChanges && objHas(valueChanges, valueId);
+    const expectedValue = valueChanges?.[valueId];
+    const isExpected = hasExpected && Object.is(expectedValue, newValue);
+    if (isExpected) {
+      delete incomingChanges?.[1]?.[valueId];
+    } else if (listeningToRawStoreChanges || incomingChanges) {
+      setAdd(touchedValues, valueId);
       mergeContentOrChanges([
         [{}],
         [
@@ -607,10 +628,17 @@ export const createMergeableStore = ((
 
   const applyMergeableChanges = (
     mergeableChanges: MergeableChanges | MergeableContent,
-  ): MergeableStore =>
-    disableListeningToRawStoreChanges(() =>
-      store.applyChanges(mergeContentOrChanges(mergeableChanges)),
-    );
+  ): MergeableStore => {
+    const changes = mergeContentOrChanges(mergeableChanges);
+    return disableListeningToRawStoreChanges(() => {
+      incomingChanges = changes;
+      try {
+        store.applyChanges(changes);
+      } finally {
+        incomingChanges = undefined;
+      }
+    });
+  };
 
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableChanges = getMergeableContent();

@@ -548,6 +548,29 @@ describe.each([
         ]);
       });
 
+      test('mutating listener deletions during sync are propagated back', async () => {
+        store2.addRowListener(
+          'tasks',
+          null,
+          (_store, _tableId, rowId) => {
+            if (store2.getCell('tasks', rowId, 'pending') === false) {
+              store2.delRow('tasks', rowId);
+            }
+          },
+          true,
+        );
+
+        store1.setRow('tasks', 'task1', {
+          pending: false,
+          title: 'demo',
+        });
+
+        await pause(synchronizable.pauseMilliseconds);
+
+        expect(store1.getTable('tasks')).toEqual({});
+        expect(store2.getTable('tasks')).toEqual({});
+      });
+
       test('deleted cell', async () => {
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
