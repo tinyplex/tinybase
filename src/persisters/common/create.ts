@@ -270,7 +270,10 @@ export const createCustomPersister = <
     >,
   ): Promise<Persister<Persist>> => {
     /*! istanbul ignore else */
-    if (status != StatusValues.Loading) {
+    if (
+      status != StatusValues.Loading ||
+      ((isSynchronizer as 0 | 1) && !isUndefined(changes))
+    ) {
       setStatus(StatusValues.Saving);
       saves++;
       await schedule(async () => {
