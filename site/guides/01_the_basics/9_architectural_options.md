@@ -162,13 +162,9 @@ See the createWsServer function for details of how to create a persister for the
 synchronization server, such as Sqlite3Persister or PostgresPersister.
 
 A reliable all-in-one solution is to run both synchronization and storage on
-Cloudflare. Check out the Cloudflare Durable Objects guide and the dedicated
-[Vite starter
-template](https://github.com/tinyplex/vite-tinybase-ts-react-sync-durable-object)
-to see how to set this up. This approach can use either the
-DurableObjectStoragePersister (for KV-based storage) or the
-DurableObjectSqlStoragePersister (for SQLite-based storage) to persist data in a
-Durable Object.
+Cloudflare. Check out the Cloudflare Durable Objects guide and/or try the
+Durable Objects option in the [`create-tinybase`
+tool](https://github.com/tinyplex/create-tinybase).
 
 ## 6. Third-Party Synchronization
 

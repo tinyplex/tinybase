@@ -23,23 +23,30 @@ browser, and bound to the UI with vanilla JavaScript. The code, if you're
 curious, is
 [here](https://github.com/tinyplex/tinybase/blob/main/site/js/common/search.ts).
 
-## Vite Templates
+## create-tinybase
 
-You can also use Vite to start simple demo apps of your own and then build your
-full app from them. We provide the following templates to get started with:
+You can also use a tool called `create-tinybase` to build simple demo apps and
+then extend them to create a full apps of your own. Simply run the following
+command to get started:
 
-| Template                                                                                                             | Language   | React | Plus                   |
-| -------------------------------------------------------------------------------------------------------------------- | ---------- | ----- | ---------------------- |
-| [vite-tinybase](https://github.com/tinyplex/vite-tinybase)                                                           | JavaScript | No    |                        |
-| [vite-tinybase-ts](https://github.com/tinyplex/vite-tinybase-ts)                                                     | TypeScript | No    |                        |
-| [vite-tinybase-react](https://github.com/tinyplex/vite-tinybase-react)                                               | JavaScript | Yes   |                        |
-| [vite-tinybase-ts-react](https://github.com/tinyplex/vite-tinybase-ts-react)                                         | TypeScript | Yes   |                        |
-| [vite-tinybase-ts-react-sync](https://github.com/tinyplex/vite-tinybase-ts-react-sync)                               | TypeScript | Yes   | Synchronization        |
-| [vite-tinybase-ts-react-sync-durable-object](https://github.com/tinyplex/vite-tinybase-ts-react-sync-durable-object) | TypeScript | Yes   | Sync & Durable Objects |
-| [vite-tinybase-ts-react-pglite](https://github.com/tinyplex/vite-tinybase-ts-react-pglite)                           | TypeScript | Yes   | PGlite                 |
-| [tinybase-ts-react-partykit](https://github.com/tinyplex/tinybase-ts-react-partykit)                                 | TypeScript | Yes   | PartyKit               |
-| [tinybase-ts-react-electricsql](https://github.com/tinyplex/tinybase-ts-react-electricsql)                           | TypeScript | Yes   | ElectricSQL            |
-| [expo/examples/with-tinybase](https://github.com/expo/examples/tree/master/with-tinybase)                            | JavaScript | Yes   | React Native & Expo    |
+```bash
+npm create tinybase@latest
+```
+
+This tool provides the following templates to get started with:
+
+- Todos: a simple todo list app with support for adding, editing, and deleting
+  tasks.
+- Chat: a real-time chat app with support for multiple rooms and message
+  history.
+- Drawing: a collaborative drawing app with support for multiple users and
+  real-time updates.
+- Tic-tac-toe: a turn-based tic-tac-toe game with computed game state and win
+  detection.
+
+You can also configure these templates with different options, such as using
+TypeScript or JavaScript, adding persistence with SQLite or PGlite, and enabling
+synchronization with a remote server or Durable Objects.
 
 ## On-site Demos
 

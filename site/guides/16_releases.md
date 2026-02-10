@@ -796,9 +796,9 @@ export class MyDurableObject extends WsServerDurableObject {
 }
 ```
 
-You can get started quickly with this architecture using the [new Vite
-template](https://github.com/tinyplex/vite-tinybase-ts-react-sync-durable-object)
-that accompanies this release.
+You can get started quickly with this architecture using the Durable Objects
+option in the [`create-tinybase`
+tool](https://github.com/tinyplex/create-tinybase).
 
 ## Server Reference Implementation
 

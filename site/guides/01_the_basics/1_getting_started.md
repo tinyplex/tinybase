@@ -16,43 +16,31 @@ Let's go!
 
 ## TinyBase from a template
 
-[Vite](https://vitejs.dev/) is a build tool that makes it easy to get started
-with modern web projects based on application templates. To use the TinyBase
-template, firstly make a copy of it:
+The easiest way to get started with TinyBase from scratch is to use a tool
+called `create-tinybase` to build simple demo apps on your local machine. Simply
+run the following command to get started:
 
-```sh
-npx tiged tinyplex/vite-tinybase my-tinybase-app
+```bash
+npm create tinybase@latest
 ```
 
-Then go into the directory, install the dependencies, and run the application:
+This tool provides the following templates to get started with:
 
-```sh
-cd my-tinybase-app
-npm install
-npm run dev
-```
+- Todos: a simple todo list app with support for adding, editing, and deleting
+  tasks.
+- Chat: a real-time chat app with support for multiple rooms and message
+  history.
+- Drawing: a collaborative drawing app with support for multiple users and
+  real-time updates.
+- Tic-tac-toe: a turn-based tic-tac-toe game with computed game state and win
+  detection.
 
-The final step will display a local URL, which should serve up a basic TinyBase
-application for you:
+You can also configure these templates with different options, such as using
+TypeScript or JavaScript, adding persistence with SQLite or PGlite, and enabling
+synchronization with a remote server or Durable Objects.
 
-![Thumbnail of Vite app](/vite-tinybase.png 'Thumbnail of Vite app')
-
-In fact, there are several templates for TinyBase, depending on whether you want
-to use TypeScript or React, and the integrations you want to target.
-Instructions are available in the README of each:
-
-| Template                                                                                                             | Language   | React | Plus                   |
-| -------------------------------------------------------------------------------------------------------------------- | ---------- | ----- | ---------------------- |
-| [vite-tinybase](https://github.com/tinyplex/vite-tinybase)                                                           | JavaScript | No    |                        |
-| [vite-tinybase-ts](https://github.com/tinyplex/vite-tinybase-ts)                                                     | TypeScript | No    |                        |
-| [vite-tinybase-react](https://github.com/tinyplex/vite-tinybase-react)                                               | JavaScript | Yes   |                        |
-| [vite-tinybase-ts-react](https://github.com/tinyplex/vite-tinybase-ts-react)                                         | TypeScript | Yes   |                        |
-| [vite-tinybase-ts-react-sync](https://github.com/tinyplex/vite-tinybase-ts-react-sync)                               | TypeScript | Yes   | Synchronization        |
-| [vite-tinybase-ts-react-sync-durable-object](https://github.com/tinyplex/vite-tinybase-ts-react-sync-durable-object) | TypeScript | Yes   | Sync & Durable Objects |
-| [vite-tinybase-ts-react-pglite](https://github.com/tinyplex/vite-tinybase-ts-react-pglite)                           | TypeScript | Yes   | PGlite                 |
-| [tinybase-ts-react-partykit](https://github.com/tinyplex/tinybase-ts-react-partykit)                                 | TypeScript | Yes   | PartyKit               |
-| [tinybase-ts-react-electricsql](https://github.com/tinyplex/tinybase-ts-react-electricsql)                           | TypeScript | Yes   | ElectricSQL            |
-| [expo/examples/with-tinybase](https://github.com/expo/examples/tree/master/with-tinybase)                            | JavaScript | Yes   | React Native & Expo    |
+Check out the [create-tinybase
+documentation](https://github.com/tinyplex/create-tinybase) for more details.
 
 ## TinyBase in a browser
 
