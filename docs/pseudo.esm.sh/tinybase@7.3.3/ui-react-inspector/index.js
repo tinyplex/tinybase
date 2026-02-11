@@ -556,7 +556,11 @@ var jsonStringWithMap = (obj) => jsonString(
   (_key, value) => isInstanceOf(value, Map) ? object2.fromEntries([...value]) : value
 );
 var jsonStringWithUndefined = (obj) => jsonString(obj, (_key, value) => isUndefined2(value) ? UNDEFINED : value);
-var jsonParseWithUndefined = (str) => jsonParse(str, (_key, value) => value === UNDEFINED ? void 0 : value);
+var jsonParseWithUndefined = (str) => (
+  // JSON.parse reviver removes properties with undefined values
+  replaceUndefinedString(jsonParse(str))
+);
+var replaceUndefinedString = (obj) => obj === UNDEFINED ? void 0 : isArray2(obj) ? arrayMap2(obj, replaceUndefinedString) : isObject2(obj) ? objMap(obj, replaceUndefinedString) : obj;
 var collSizeN = (collSizer) => (coll) => arrayReduce(collValues(coll), (total, coll2) => total + collSizer(coll2), 0);
 var collSize = (coll) => coll?.size ?? 0;
 var collSize2 = collSizeN(collSize);
