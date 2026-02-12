@@ -548,29 +548,6 @@ describe.each([
         ]);
       });
 
-      test('mutating listener deletions during sync are propagated back', async () => {
-        store2.addRowListener(
-          'tasks',
-          null,
-          (_store, _tableId, rowId) => {
-            if (store2.getCell('tasks', rowId, 'pending') === false) {
-              store2.delRow('tasks', rowId);
-            }
-          },
-          true,
-        );
-
-        store1.setRow('tasks', 'task1', {
-          pending: false,
-          title: 'demo',
-        });
-
-        await pause(synchronizable.pauseMilliseconds);
-
-        expect(store1.getTable('tasks')).toEqual({});
-        expect(store2.getTable('tasks')).toEqual({});
-      });
-
       test('deleted cell', async () => {
         store1.setContent([
           {t1: {r1: {c1: 1, c2: 2}, r2: {c2: 2}}, t2: {r2: {c2: 2}}},
@@ -677,6 +654,52 @@ describe.each([
         store2.setValue('v1', 2);
         await pause(synchronizable.pauseMilliseconds);
         expectEachToHaveContent([{}, {v1: 2}]);
+      });
+
+      test('mutator mutation', async () => {
+        store2.addRowListener(
+          't1',
+          null,
+          (store, tableId, rowId) => {
+            if (store.getCell(tableId, rowId, 'c1') === true) {
+              store.setCell(tableId, rowId, 'c2', 'b');
+            }
+          },
+          true,
+        );
+
+        store1.setRow('t1', 'r1', {c1: true, c2: 'a'});
+        await pause(synchronizable.pauseMilliseconds);
+        expect(store1.getTable('t1')).toEqual({r1: {c1: true, c2: 'b'}});
+        expect(store2.getTable('t1')).toEqual({r1: {c1: true, c2: 'b'}});
+
+        store1.setRow('t2', 'r2', {c1: false, c2: 'a'});
+        await pause(synchronizable.pauseMilliseconds);
+        expect(store1.getTable('t2')).toEqual({r2: {c1: false, c2: 'a'}});
+        expect(store2.getTable('t2')).toEqual({r2: {c1: false, c2: 'a'}});
+      });
+
+      test('mutator deletion', async () => {
+        store2.addRowListener(
+          't1',
+          null,
+          (store, tableId, rowId) => {
+            if (store.getCell(tableId, rowId, 'c1') === true) {
+              store.delRow(tableId, rowId);
+            }
+          },
+          true,
+        );
+
+        store1.setRow('t1', 'r1', {c1: true, c2: 'a'});
+        await pause(synchronizable.pauseMilliseconds);
+        expect(store1.getTable('t1')).toEqual({});
+        expect(store2.getTable('t1')).toEqual({});
+
+        store1.setRow('t2', 'r2', {c1: false, c2: 'a'});
+        await pause(synchronizable.pauseMilliseconds);
+        expect(store1.getTable('t2')).toEqual({r2: {c1: false, c2: 'a'}});
+        expect(store2.getTable('t2')).toEqual({r2: {c1: false, c2: 'a'}});
       });
 
       describe('tracking messages', () => {
