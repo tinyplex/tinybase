@@ -302,15 +302,18 @@ const copyDefinitions = async (dir) => {
 };
 
 const execute = async (cmd) => {
-  const {exec} = await import('child_process');
-  const {promisify} = await import('util');
-  try {
-    await promisify(exec)(cmd);
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error(e);
-    throw e.stdout;
-  }
+  const {spawn} = await import('child_process');
+  return new Promise((resolve, reject) => {
+    const [command, ...args] = cmd.split(' ');
+    const child = spawn(command, args, {stdio: 'inherit'});
+    child.on('close', (code) => {
+      if (code === 0) {
+        resolve();
+      } else {
+        reject(new Error(`Command failed with code ${code}`));
+      }
+    });
+  });
 };
 
 const lintCheckFiles = async (dir) => {
@@ -720,7 +723,7 @@ export const compileDocs = () => compileDocsAndAssets();
 
 export const compileForProdAndDocs = series(compileForProd, compileDocs);
 
-export const testE2e = () => test(['test/e2e']);
+export const testE2e = () => execute('npx playwright test');
 
 export const compileAndTestE2e = series(compileForProdAndDocs, testE2e);
 

@@ -44,17 +44,6 @@ export default defineConfig({
         extends: true,
         test: {name: 'prod', include: ['test/prod/**/*.test.ts']},
       },
-      {
-        extends: true,
-        test: {
-          name: 'e2e',
-          include: ['test/e2e/**/*.test.ts'],
-          environment: 'puppeteer',
-          globalSetup: 'vitest-environment-puppeteer/global-init',
-          globals: true,
-          retry: 0,
-        },
-      },
     ],
   },
 });
