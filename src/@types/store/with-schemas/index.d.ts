@@ -293,6 +293,7 @@ export type ChangedValueIds<Schema extends OptionalValuesSchema> = {
 /// DoRollback
 export type DoRollback<Schemas extends OptionalSchemas> = (
   store: Store<Schemas>,
+  mutated: boolean,
 ) => boolean;
 
 /// SortedRowIdsArgs

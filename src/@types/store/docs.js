@@ -522,6 +522,8 @@
  * can use the getTransactionChanges method and getTransactionLog method of the
  * Store directly to decide whether to do the rollback.
  * @param store A reference to the Store that is completing a transaction.
+ * @param mutated A hint as to whether any changes were made to the Store by
+ * data-based listeners at the end of the transaction, since v7.3.4.
  * @category Callback
  * @since v1.0.0
  */

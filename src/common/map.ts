@@ -1,16 +1,21 @@
 import type {Id} from '../@types/common/index.d.ts';
-import {arrayMap} from './array.ts';
-import {collDel, collForEach, collHas, collIsEmpty} from './coll.ts';
+import {arrayEvery, arrayMap} from './array.ts';
+import {collDel, collForEach, collHas, collIsEmpty, collSize} from './coll.ts';
 import {IdObj, objHas, objIsEmpty, objMap} from './obj.ts';
-import {ifNotUndefined, isUndefined, size} from './other.ts';
+import {ifNotUndefined, isInstanceOf, isUndefined, size} from './other.ts';
 
 export type IdMap<Value> = Map<Id, Value>;
 export type IdMap2<Value> = IdMap<IdMap<Value>>;
 export type IdMap3<Value> = IdMap<IdMap2<Value>>;
 
+const map = Map;
+
+const isMap = (value: unknown): value is Map<unknown, unknown> =>
+  isInstanceOf(value, map);
+
 export const mapNew = /* @__PURE__ */ <Key, Value>(
   entries?: [Key, Value][],
-): Map<Key, Value> => new Map(entries);
+): Map<Key, Value> => new map(entries);
 
 export const mapKeys = <Key>(map: Map<Key, unknown> | undefined): Key[] => [
   ...(map?.keys() ?? []),
@@ -38,6 +43,19 @@ export const mapSet = <Key, Value>(
   value?: Value,
 ): Map<Key, Value> | undefined =>
   isUndefined(value) ? (collDel(map, key), map) : map?.set(key, value);
+
+export const mapEquals = <Key, Value>(
+  map1: Map<Key, Value>,
+  map2: Map<Key, Value>,
+): boolean =>
+  collSize(map1) === collSize(map2) &&
+  arrayEvery(mapKeys(map1), (key) => {
+    const value1 = mapGet(map1, key);
+    const value2 = mapGet(map2, key);
+    return isMap(value1) && isMap(value2)
+      ? mapEquals(value1, value2)
+      : value1 === value2;
+  });
 
 export const mapEnsure = <Key, Value>(
   map: Map<Key, Value>,

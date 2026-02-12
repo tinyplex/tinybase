@@ -76,6 +76,7 @@ import {
   mapClone2,
   mapClone3,
   mapEnsure,
+  mapEquals,
   mapForEach,
   mapGet,
   mapKeys,
@@ -797,16 +798,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
   };
 
-  const callTabularListenersForChanges = (mutator: 0 | 1) => {
-    const hasTablesNow = hasTables();
-    if (hasTablesNow != hadTables) {
-      callListeners(hasTablesListeners[mutator], undefined, hasTablesNow);
-    }
-
-    const emptySortedRowIdListeners = collIsEmpty(
+  const callTabularListenersForChanges = (
+    mutator: 0 | 1,
+    checkIfMutated: 0 | 1 = 0,
+  ): boolean => {
+    const hasHasTablesListeners = !collIsEmpty(hasTablesListeners[mutator]);
+    const hasSortedRowIdListeners = !collIsEmpty(
       sortedRowIdsListeners[mutator],
     );
-    const emptyIdAndHasListeners =
+    const hasIdOrHasListeners = !(
       collIsEmpty(cellIdsListeners[mutator]) &&
       collIsEmpty(hasCellListeners[mutator]) &&
       collIsEmpty(rowIdsListeners[mutator]) &&
@@ -814,15 +814,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
       collIsEmpty(tableCellIdsListeners[mutator]) &&
       collIsEmpty(hasTableCellListeners[mutator]) &&
       collIsEmpty(rowCountListeners[mutator]) &&
-      emptySortedRowIdListeners &&
+      !hasSortedRowIdListeners &&
       collIsEmpty(tableIdsListeners[mutator]) &&
-      collIsEmpty(hasTableListeners[mutator]);
-    const emptyOtherListeners =
+      collIsEmpty(hasTableListeners[mutator])
+    );
+    const hasOtherListeners = !(
       collIsEmpty(cellListeners[mutator]) &&
       collIsEmpty(rowListeners[mutator]) &&
       collIsEmpty(tableListeners[mutator]) &&
-      collIsEmpty(tablesListeners[mutator]);
-    if (!emptyIdAndHasListeners || !emptyOtherListeners) {
+      collIsEmpty(tablesListeners[mutator])
+    );
+
+    if (hasHasTablesListeners || hasIdOrHasListeners || hasOtherListeners) {
       const changes: [
         ChangedIdsMap,
         ChangedIdsMap2,
@@ -848,7 +851,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
             changedCells,
           ];
 
-      if (!emptyIdAndHasListeners) {
+      if (hasHasTablesListeners) {
+        const hasTablesNow = hasTables();
+        if (hasTablesNow != hadTables) {
+          callListeners(hasTablesListeners[mutator], undefined, hasTablesNow);
+        }
+      }
+
+      if (hasIdOrHasListeners) {
         callIdsAndHasListenersIfChanged(
           changes[0],
           tableIdsListeners[mutator],
@@ -883,14 +893,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
               hasRowListeners[mutator],
               [tableId],
             ) &&
-            !emptySortedRowIdListeners
+            hasSortedRowIdListeners
           ) {
             callListeners(sortedRowIdsListeners[mutator], [tableId, null]);
             setAdd(calledSortableTableIds, tableId);
           }
         });
 
-        if (!emptySortedRowIdListeners) {
+        if (hasSortedRowIdListeners) {
           collForEach(changes[5], (rows, tableId) => {
             if (!collHas(calledSortableTableIds, tableId)) {
               const sortableCellIds: IdSet = setNew();
@@ -923,7 +933,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         );
       }
 
-      if (!emptyOtherListeners) {
+      if (hasOtherListeners) {
         let tablesChanged;
         collForEach(changes[5], (rows, tableId) => {
           let tableChanged;
@@ -957,27 +967,38 @@ export const createStore: typeof createStoreDecl = (): Store => {
           callListeners(tablesListeners[mutator], undefined, getCellChange);
         }
       }
+
+      if (mutator && checkIfMutated) {
+        return !mapEquals(changedCells, changes[5]);
+      }
     }
+    return false;
   };
 
-  const callValuesListenersForChanges = (mutator: 0 | 1) => {
-    const hasValuesNow = hasValues();
-    if (hasValuesNow != hadValues) {
-      callListeners(hasValuesListeners[mutator], undefined, hasValuesNow);
-    }
-
-    const emptyIdAndHasListeners =
-      collIsEmpty(valueIdsListeners[mutator]) &&
-      collIsEmpty(hasValueListeners[mutator]);
-    const emptyOtherListeners =
-      collIsEmpty(valueListeners[mutator]) &&
-      collIsEmpty(valuesListeners[mutator]);
-    if (!emptyIdAndHasListeners || !emptyOtherListeners) {
+  const callValuesListenersForChanges = (
+    mutator: 0 | 1,
+    checkIfMutated: 0 | 1 = 0,
+  ): boolean => {
+    const hasHasValuesListeners = !collIsEmpty(hasValuesListeners[mutator]);
+    const hasIdOrHasListeners =
+      !collIsEmpty(valueIdsListeners[mutator]) ||
+      !collIsEmpty(hasValueListeners[mutator]);
+    const hasOtherListeners =
+      !collIsEmpty(valueListeners[mutator]) ||
+      !collIsEmpty(valuesListeners[mutator]);
+    if (hasHasValuesListeners || hasIdOrHasListeners || hasOtherListeners) {
       const changes: [ChangedIdsMap, IdMap<ChangedCell>] = mutator
         ? [mapClone(changedValueIds), mapClone(changedValues)]
         : [changedValueIds, changedValues];
 
-      if (!emptyIdAndHasListeners) {
+      if (hasHasValuesListeners) {
+        const hasValuesNow = hasValues();
+        if (hasValuesNow != hadValues) {
+          callListeners(hasValuesListeners[mutator], undefined, hasValuesNow);
+        }
+      }
+
+      if (hasIdOrHasListeners) {
         callIdsAndHasListenersIfChanged(
           changes[0],
           valueIdsListeners[mutator],
@@ -985,7 +1006,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         );
       }
 
-      if (!emptyOtherListeners) {
+      if (hasOtherListeners) {
         let valuesChanged;
         collForEach(changes[1], ([oldValue, newValue], valueId) => {
           if (newValue !== oldValue) {
@@ -1003,7 +1024,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
           callListeners(valuesListeners[mutator], undefined, getValueChange);
         }
       }
+
+      if (mutator && checkIfMutated) {
+        return !mapEquals(changedValues, changes[1]);
+      }
     }
+    return false;
   };
 
   const fluentTransaction = (
@@ -1470,16 +1496,22 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
       if (transactions == 0) {
         transactions = 1;
+
+        let mutated = false;
         callInvalidCellListeners(1);
         if (!collIsEmpty(changedCells)) {
-          callTabularListenersForChanges(1);
+          if (callTabularListenersForChanges(1, doRollback ? 1 : 0)) {
+            mutated = true;
+          }
         }
         callInvalidValueListeners(1);
         if (!collIsEmpty(changedValues)) {
-          callValuesListenersForChanges(1);
+          if (callValuesListenersForChanges(1, doRollback ? 1 : 0)) {
+            mutated = true;
+          }
         }
 
-        if (doRollback?.(store)) {
+        if (doRollback?.(store, mutated)) {
           collForEach(changedCells, (table, tableId) =>
             collForEach(table, (row, rowId) =>
               collForEach(row, ([oldCell], cellId) =>
