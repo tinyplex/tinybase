@@ -840,7 +840,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
             mapClone(changedRowCount),
             mapClone2(changedRowIds),
             mapClone3(changedCellIds),
-            mapClone3(changedCells),
+            mapClone(changedCells, (map) =>
+              mapClone(map, (map) => mapClone(map, pairClone)),
+            ),
           ]
         : [
             changedTableIds,
@@ -969,7 +971,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       }
 
       if (mutator && checkIfMutated) {
-        return !mapEquals(changedCells, changes[5]);
+        return !mapEquals(changes[5], changedCells);
       }
     }
     return false;
@@ -988,7 +990,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       !collIsEmpty(valuesListeners[mutator]);
     if (hasHasValuesListeners || hasIdOrHasListeners || hasOtherListeners) {
       const changes: [ChangedIdsMap, IdMap<ChangedCell>] = mutator
-        ? [mapClone(changedValueIds), mapClone(changedValues)]
+        ? [mapClone(changedValueIds), mapClone(changedValues, pairClone)]
         : [changedValueIds, changedValues];
 
       if (hasHasValuesListeners) {
@@ -1026,7 +1028,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       }
 
       if (mutator && checkIfMutated) {
-        return !mapEquals(changedValues, changes[1]);
+        return !mapEquals(changes[1], changedValues);
       }
     }
     return false;
