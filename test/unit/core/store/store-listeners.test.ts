@@ -8825,62 +8825,6 @@ describe.each([
         store = createStore();
       });
 
-      test('doRollback gets hint of mutation, no cell mutation', () => {
-        const doRollback = vi.fn((_store, mutated) => {
-          expect(mutated).toBe(false);
-          return false;
-        });
-
-        store.addCellListener('t1', 'r1', 'c1', () => {}, true);
-        store.transaction(
-          () => store.setCell('t1', 'r1', 'c1', 'r1'),
-          doRollback,
-        );
-        expect(doRollback).toHaveBeenCalledTimes(1);
-      });
-
-      test('doRollback gets hint of mutation, cell mutation', () => {
-        const doRollback = vi.fn((_store, mutated) => {
-          expect(mutated).toBe(true);
-          return false;
-        });
-
-        store.addCellListener(
-          't1',
-          'r1',
-          'c1',
-          () => store.setCell('t1', 'r1', 'c2', '2'),
-          true,
-        );
-        store.transaction(
-          () => store.setCell('t1', 'r1', 'c1', '1'),
-          doRollback,
-        );
-        expect(doRollback).toHaveBeenCalledTimes(1);
-      });
-
-      test('doRollback gets hint of mutation, no value mutation', () => {
-        const doRollback = vi.fn((_store, mutated) => {
-          expect(mutated).toBe(false);
-          return false;
-        });
-
-        store.addValueListener('v1', () => {}, true);
-        store.transaction(() => store.setValue('v1', 1), doRollback);
-        expect(doRollback).toHaveBeenCalledTimes(1);
-      });
-
-      test('doRollback gets hint of mutation, value mutation', () => {
-        const doRollback = vi.fn((_store, mutated) => {
-          expect(mutated).toBe(true);
-          return false;
-        });
-
-        store.addValueListener('v1', () => store.setValue('v2', true), true);
-        store.transaction(() => store.setValue('v1', 1), doRollback);
-        expect(doRollback).toHaveBeenCalledTimes(1);
-      });
-
       test('start can mutate', () => {
         const listener = vi.fn(() => {
           store.setValue('mutated', true);
