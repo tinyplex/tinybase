@@ -669,9 +669,13 @@ describe.each([
         );
 
         store1.setRow('t1', 'r1', {c1: true, c2: 'a'});
+        expect(store1.getTable('t1')).toEqual({r1: {c1: true, c2: 'a'}});
+
+        await pause(synchronizable.pauseMilliseconds);
+        expect(store2.getTable('t1')).toEqual({r1: {c1: true, c2: 'b'}});
+
         await pause(synchronizable.pauseMilliseconds);
         expect(store1.getTable('t1')).toEqual({r1: {c1: true, c2: 'b'}});
-        expect(store2.getTable('t1')).toEqual({r1: {c1: true, c2: 'b'}});
 
         store1.setRow('t2', 'r2', {c1: false, c2: 'a'});
         await pause(synchronizable.pauseMilliseconds);
@@ -693,8 +697,10 @@ describe.each([
 
         store1.setRow('t1', 'r1', {c1: true, c2: 'a'});
         await pause(synchronizable.pauseMilliseconds);
-        expect(store1.getTable('t1')).toEqual({});
         expect(store2.getTable('t1')).toEqual({});
+
+        await pause(synchronizable.pauseMilliseconds);
+        expect(store1.getTable('t1')).toEqual({});
 
         store1.setRow('t2', 'r2', {c1: false, c2: 'a'});
         await pause(synchronizable.pauseMilliseconds);
