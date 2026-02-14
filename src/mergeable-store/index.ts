@@ -43,7 +43,6 @@ import {
   objForEach,
   objFreeze,
   objHas,
-  objIsEmpty,
   objMap,
   objNew,
   objValidate,
@@ -154,9 +153,9 @@ export const createMergeableStore = ((
   getNow?: GetNow,
 ): MergeableStore => {
   let listeningToRawStoreChanges = 1;
-  let incomingChanges: Changes | undefined;
   let contentStampMap = newContentStampMap();
   let defaultingContent: 0 | 1 = 0;
+  let mutated: 0 | 1 = 0;
   const touchedCells: IdSet3 = mapNew();
   const touchedValues: IdSet = setNew();
   const [getNextHlc, seenHlc] = getHlcFunctions(uniqueId, getNow);
@@ -328,29 +327,20 @@ export const createMergeableStore = ((
     rowId: Id,
     cellId: Id,
     newCell: CellOrUndefined,
+    mutating: 0 | 1,
   ) => {
-    const tableChanges = incomingChanges?.[0]?.[tableId];
-    const rowChanges = tableChanges?.[rowId];
-    const hasExpected = !!rowChanges && objHas(rowChanges, cellId);
-    const expectedCell = rowChanges?.[cellId];
-    const isExpected = hasExpected && Object.is(expectedCell, newCell);
-    if (isExpected) {
-      delete incomingChanges?.[0]?.[tableId]?.[rowId]?.[cellId];
-      if (objIsEmpty(incomingChanges?.[0]?.[tableId]?.[rowId])) {
-        delete incomingChanges?.[0]?.[tableId]?.[rowId];
+    setAdd(
+      mapEnsure(
+        mapEnsure(touchedCells, tableId, mapNew<Id, IdSet>),
+        rowId,
+        setNew<Id>,
+      ),
+      cellId,
+    );
+    if (listeningToRawStoreChanges || mutating) {
+      if (mutating) {
+        mutated = 1;
       }
-      if (objIsEmpty(incomingChanges?.[0]?.[tableId])) {
-        delete incomingChanges?.[0]?.[tableId];
-      }
-    } else if (listeningToRawStoreChanges || incomingChanges) {
-      setAdd(
-        mapEnsure(
-          mapEnsure(touchedCells, tableId, mapNew<Id, IdSet>),
-          rowId,
-          setNew<Id>,
-        ),
-        cellId,
-      );
       mergeContentOrChanges([
         [
           {
@@ -374,15 +364,16 @@ export const createMergeableStore = ((
     }
   };
 
-  const valueChanged = (valueId: Id, newValue: ValueOrUndefined) => {
-    const valueChanges = incomingChanges?.[1];
-    const hasExpected = !!valueChanges && objHas(valueChanges, valueId);
-    const expectedValue = valueChanges?.[valueId];
-    const isExpected = hasExpected && Object.is(expectedValue, newValue);
-    if (isExpected) {
-      delete incomingChanges?.[1]?.[valueId];
-    } else if (listeningToRawStoreChanges || incomingChanges) {
-      setAdd(touchedValues, valueId);
+  const valueChanged = (
+    valueId: Id,
+    newValue: ValueOrUndefined,
+    mutating: 0 | 1,
+  ) => {
+    setAdd(touchedValues, valueId);
+    if (listeningToRawStoreChanges || mutating) {
+      if (mutating) {
+        mutated = 1;
+      }
       mergeContentOrChanges([
         [{}],
         [
@@ -628,23 +619,22 @@ export const createMergeableStore = ((
 
   const applyMergeableChanges = (
     mergeableChanges: MergeableChanges | MergeableContent,
-  ): MergeableStore => {
-    const changes = mergeContentOrChanges(mergeableChanges);
-    return disableListeningToRawStoreChanges(() => {
-      incomingChanges = changes;
-      try {
-        store.applyChanges(changes);
-      } finally {
-        incomingChanges = undefined;
-      }
-    });
-  };
+  ): MergeableStore =>
+    disableListeningToRawStoreChanges(() =>
+      store.applyChanges(mergeContentOrChanges(mergeableChanges)),
+    );
 
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableChanges = getMergeableContent();
     const mergeableChanges2 = mergeableStore2.getMergeableContent();
     mergeableStore2.applyMergeableChanges(mergeableChanges);
     return applyMergeableChanges(mergeableChanges2);
+  };
+
+  const hadMutated = (): 0 | 1 => {
+    const result = mutated;
+    mutated = 0;
+    return result;
   };
 
   const mergeableStore: IdObj<any> = {
@@ -664,6 +654,9 @@ export const createMergeableStore = ((
     getTransactionMergeableChanges,
     applyMergeableChanges,
     merge,
+
+    // only used internally by other modules
+    hadMutated,
   };
 
   (store as any).setInternalListeners(
