@@ -22,7 +22,7 @@
   "sideEffects": false,
   "peerDependencies": {
     "@automerge/automerge-repo": "^2.5.1",
-    "@cloudflare/workers-types": "^4.20260210.0",
+    "@cloudflare/workers-types": "^4.20260214.0",
     "@electric-sql/pglite": "^0.3.15",
     "@libsql/client": "^0.17.0",
     "@powersync/common": "^1.46.0",
@@ -177,7 +177,7 @@
     "@arethetypeswrong/cli": "^0.18.2",
     "@automerge/automerge-repo": "^2.5.1",
     "@automerge/automerge-repo-network-broadcastchannel": "^2.5.1",
-    "@cloudflare/workers-types": "^4.20260210.0",
+    "@cloudflare/workers-types": "^4.20260214.0",
     "@electric-sql/pglite": "^0.3.15",
     "@eslint/js": "^9.39.2",
     "@journeyapps/wa-sqlite": "^1.4.1",
