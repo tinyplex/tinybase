@@ -113,7 +113,7 @@ export type ChangedCellIds = {
 export type ChangedValueIds = {[valueId: Id]: IdAddedOrRemoved};
 
 /// DoRollback
-export type DoRollback = (store: Store, mutated: boolean) => boolean;
+export type DoRollback = (store: Store) => boolean;
 
 /// SortedRowIdsArgs
 export type SortedRowIdsArgs = {

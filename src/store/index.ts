@@ -76,7 +76,6 @@ import {
   mapClone2,
   mapClone3,
   mapEnsure,
-  mapEquals,
   mapForEach,
   mapGet,
   mapKeys,
@@ -175,9 +174,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
       rowId: Id,
       cellId: Id,
       newCell: CellOrUndefined,
+      mutating: 0 | 1,
     ) => void,
-    valueChanged?: (valueId: Id, newValue: ValueOrUndefined) => void,
+    valueChanged?: (
+      valueId: Id,
+      newValue: ValueOrUndefined,
+      mutating: 0 | 1,
+    ) => void,
   ] = [];
+  let mutating: 0 | 1 = 0;
   const changedTableIds: ChangedIdsMap = mapNew();
   const changedTableCellIds: ChangedIdsMap2 = mapNew();
   const changedRowCount: IdMap<number> = mapNew();
@@ -681,7 +686,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       cellId,
       () => [oldCell, 0],
     )[1] = newCell;
-    internalListeners[3]?.(tableId, rowId, cellId, newCell);
+    internalListeners[3]?.(tableId, rowId, cellId, newCell, mutating);
   };
 
   const valueIdsChanged = (
@@ -698,7 +703,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       oldValue,
       0,
     ])[1] = newValue;
-    internalListeners[4]?.(valueId, newValue);
+    internalListeners[4]?.(valueId, newValue, mutating);
   };
 
   const cellInvalid = (
@@ -798,10 +803,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
   };
 
-  const callTabularListenersForChanges = (
-    mutator: 0 | 1,
-    checkIfMutated: 0 | 1 = 0,
-  ): boolean => {
+  const callTabularListenersForChanges = (mutator: 0 | 1): void => {
     const hasHasTablesListeners = !collIsEmpty(hasTablesListeners[mutator]);
     const hasSortedRowIdListeners = !collIsEmpty(
       sortedRowIdsListeners[mutator],
@@ -969,18 +971,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
           callListeners(tablesListeners[mutator], undefined, getCellChange);
         }
       }
-
-      if (mutator && checkIfMutated) {
-        return !mapEquals(changes[5], changedCells);
-      }
     }
-    return false;
   };
 
-  const callValuesListenersForChanges = (
-    mutator: 0 | 1,
-    checkIfMutated: 0 | 1 = 0,
-  ): boolean => {
+  const callValuesListenersForChanges = (mutator: 0 | 1): void => {
     const hasHasValuesListeners = !collIsEmpty(hasValuesListeners[mutator]);
     const hasIdOrHasListeners =
       !collIsEmpty(valueIdsListeners[mutator]) ||
@@ -1026,12 +1020,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           callListeners(valuesListeners[mutator], undefined, getValueChange);
         }
       }
-
-      if (mutator && checkIfMutated) {
-        return !mapEquals(changes[1], changedValues);
-      }
     }
-    return false;
   };
 
   const fluentTransaction = (
@@ -1499,21 +1488,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
       if (transactions == 0) {
         transactions = 1;
 
-        let mutated = false;
+        mutating = 1;
         callInvalidCellListeners(1);
         if (!collIsEmpty(changedCells)) {
-          if (callTabularListenersForChanges(1, doRollback ? 1 : 0)) {
-            mutated = true;
-          }
+          callTabularListenersForChanges(1);
         }
         callInvalidValueListeners(1);
         if (!collIsEmpty(changedValues)) {
-          if (callValuesListenersForChanges(1, doRollback ? 1 : 0)) {
-            mutated = true;
-          }
+          callValuesListenersForChanges(1);
         }
+        mutating = 0;
 
-        if (doRollback?.(store, mutated)) {
+        if (doRollback?.(store)) {
           collForEach(changedCells, (table, tableId) =>
             collForEach(table, (row, rowId) =>
               collForEach(row, ([oldCell], cellId) =>
@@ -1683,8 +1669,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
       rowId: Id,
       cellId: Id,
       newCell: CellOrUndefined,
+      mutating: 0 | 1,
     ) => void,
-    valueChanged: (valueId: Id, newValue: ValueOrUndefined) => void,
+    valueChanged: (
+      valueId: Id,
+      newValue: ValueOrUndefined,
+      mutating: 0 | 1,
+    ) => void,
   ) =>
     (internalListeners = [
       preStartTransaction,
