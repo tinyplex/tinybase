@@ -1,12 +1,9 @@
-// dist/persisters/persister-remote/index.js
+// dist/persisters/persister-browser/index.js
 var EMPTY_STRING = "";
+var UNDEFINED = "\uFFFC";
 var getIfNotFunction = (predicate) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
-var THOUSAND = 1e3;
-var startInterval = (callback, sec, immediate) => {
-  return setInterval(callback, sec * THOUSAND);
-};
-var stopInterval = clearInterval;
-var isInstanceOf = (thing, cls) => thing instanceof cls;
+var GLOBAL = globalThis;
+var WINDOW = GLOBAL.window;
 var isNullish = (thing) => thing == null;
 var isUndefined = (thing) => thing === void 0;
 var isNull = (thing) => thing === null;
@@ -26,11 +23,13 @@ var tryCatch = async (action, then1, then2) => {
   }
 };
 var arrayForEach = (array, cb) => array.forEach(cb);
+var arrayMap = (array, cb) => array.map(cb);
 var arrayClear = (array, to) => array.splice(0, to);
 var arrayPush = (array, ...values) => array.push(...values);
 var arrayShift = (array) => array.shift();
 var object = Object;
 var getPrototypeOf = (obj) => object.getPrototypeOf(obj);
+var objEntries = object.entries;
 var isObject = (obj) => !isNullish(obj) && ifNotNullish(
   getPrototypeOf(obj),
   (objPrototype) => objPrototype == object.prototype || isNullish(getPrototypeOf(objPrototype)),
@@ -39,29 +38,35 @@ var isObject = (obj) => !isNullish(obj) && ifNotNullish(
 );
 var objIds = object.keys;
 var objFreeze = object.freeze;
+var objNew = (entries = []) => object.fromEntries(entries);
+var objToArray = (obj, cb) => arrayMap(objEntries(obj), ([id, value]) => cb(value, id));
+var objMap = (obj, cb) => objNew(objToArray(obj, (value, id) => [id, cb(value, id)]));
 var objSize = (obj) => size(objIds(obj));
 var objIsEmpty = (obj) => isObject(obj) && objSize(obj) == 0;
 var jsonString = JSON.stringify;
 var jsonParse = JSON.parse;
-var jsonStringWithMap = (obj) => jsonString(
-  obj,
-  (_key, value) => isInstanceOf(value, Map) ? object.fromEntries([...value]) : value
+var jsonStringWithUndefined = (obj) => jsonString(obj, (_key, value) => isUndefined(value) ? UNDEFINED : value);
+var jsonParseWithUndefined = (str) => (
+  // JSON.parse reviver removes properties with undefined values
+  replaceUndefinedString(jsonParse(str))
 );
+var replaceUndefinedString = (obj) => obj === UNDEFINED ? void 0 : isArray(obj) ? arrayMap(obj, replaceUndefinedString) : isObject(obj) ? objMap(obj, replaceUndefinedString) : obj;
 var collSize = (coll) => coll?.size ?? 0;
 var collHas = (coll, keyOrValue) => coll?.has(keyOrValue) ?? false;
 var collIsEmpty = (coll) => isUndefined(coll) || collSize(coll) == 0;
 var collForEach = (coll, cb) => coll?.forEach(cb);
 var collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
-var mapNew = (entries) => new Map(entries);
-var mapGet = (map, key) => map?.get(key);
-var mapSet = (map, key, value) => isUndefined(value) ? (collDel(map, key), map) : map?.set(key, value);
-var mapEnsure = (map, key, getDefaultValue, hadExistingValue) => {
-  if (!collHas(map, key)) {
-    mapSet(map, key, getDefaultValue());
+var map = Map;
+var mapNew = (entries) => new map(entries);
+var mapGet = (map2, key) => map2?.get(key);
+var mapSet = (map2, key, value) => isUndefined(value) ? (collDel(map2, key), map2) : map2?.set(key, value);
+var mapEnsure = (map2, key, getDefaultValue, hadExistingValue) => {
+  if (!collHas(map2, key)) {
+    mapSet(map2, key, getDefaultValue());
   } else {
-    hadExistingValue?.(mapGet(map, key));
+    hadExistingValue?.(mapGet(map2, key));
   }
-  return mapGet(map, key);
+  return mapGet(map2, key);
 };
 var visitTree = (node, path, ensureLeaf, pruneLeaf, p = 0) => ifNotUndefined(
   (ensureLeaf ? mapEnsure : mapGet)(
@@ -213,6 +218,11 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   const setContentOrChanges = (contentOrChanges) => {
     (isMergeableStore && isArray(contentOrChanges?.[0]) ? contentOrChanges?.[2] === 1 ? store.applyMergeableChanges : store.setMergeableContent : contentOrChanges?.[2] === 1 ? store.applyChanges : store.setContent)(contentOrChanges);
   };
+  const saveAfterMutated = async () => {
+    if (isAutoSaving() && store.hadMutated?.()) {
+      await save();
+    }
+  };
   const load = async (initialContent) => {
     if (status != 2) {
       setStatus(
@@ -242,6 +252,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
           0
           /* Idle */
         );
+        await saveAfterMutated();
       });
     }
     return persister;
@@ -264,6 +275,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
                 0
                 /* Idle */
               );
+              await saveAfterMutated();
             }
           } else {
             await load();
@@ -372,28 +384,23 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   };
   return objFreeze(persister);
 };
-var getETag = (response) => response.headers.get("ETag");
-var createRemotePersister = (store, loadUrl, saveUrl, autoLoadIntervalSeconds = 5, onIgnoredError) => {
-  let lastEtag;
-  const getPersisted = async () => {
-    const response = await fetch(loadUrl);
-    lastEtag = getETag(response);
-    return jsonParse(await response.text());
+var STORAGE = "storage";
+var createStoragePersister = (store, storageName, storage, onIgnoredError) => {
+  const getPersisted = async () => jsonParseWithUndefined(storage.getItem(storageName));
+  const setPersisted = async (getContent) => storage.setItem(storageName, jsonStringWithUndefined(getContent()));
+  const addPersisterListener = (listener) => {
+    const storageListener = (event) => {
+      if (event.storageArea === storage && event.key === storageName) {
+        tryCatch(
+          () => listener(jsonParseWithUndefined(event.newValue)),
+          listener
+        );
+      }
+    };
+    WINDOW.addEventListener(STORAGE, storageListener);
+    return storageListener;
   };
-  const setPersisted = async (getContent) => await fetch(saveUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: jsonStringWithMap(getContent())
-  });
-  const addPersisterListener = (listener) => startInterval(async () => {
-    const response = await fetch(loadUrl, { method: "HEAD" });
-    const currentEtag = getETag(response);
-    if (!isNull(lastEtag) && !isNull(currentEtag) && currentEtag != lastEtag) {
-      lastEtag = currentEtag;
-      listener();
-    }
-  }, autoLoadIntervalSeconds);
-  const delPersisterListener = (interval) => stopInterval(interval);
+  const delPersisterListener = (storageListener) => WINDOW.removeEventListener(STORAGE, storageListener);
   return createCustomPersister(
     store,
     getPersisted,
@@ -401,11 +408,40 @@ var createRemotePersister = (store, loadUrl, saveUrl, autoLoadIntervalSeconds = 
     addPersisterListener,
     delPersisterListener,
     onIgnoredError,
-    1,
-    // StoreOnly,
-    { getUrls: () => [loadUrl, saveUrl] }
+    3,
+    // StoreOrMergeableStore,
+    { getStorageName: () => storageName }
+  );
+};
+var createLocalPersister = (store, storageName, onIgnoredError) => createStoragePersister(store, storageName, localStorage, onIgnoredError);
+var createSessionPersister = (store, storageName, onIgnoredError) => createStoragePersister(store, storageName, sessionStorage, onIgnoredError);
+var createOpfsPersister = (store, handle, onIgnoredError) => {
+  const getPersisted = async () => jsonParseWithUndefined(await (await handle.getFile()).text());
+  const setPersisted = async (getContent) => {
+    const writable = await handle.createWritable();
+    await writable.write(jsonStringWithUndefined(getContent()));
+    await writable.close();
+  };
+  const addPersisterListener = async (listener) => {
+    const observer = new FileSystemObserver(() => listener());
+    await observer.observe(handle);
+    return observer;
+  };
+  const delPersisterListener = (observer) => observer?.disconnect();
+  return createCustomPersister(
+    store,
+    getPersisted,
+    setPersisted,
+    addPersisterListener,
+    delPersisterListener,
+    onIgnoredError,
+    3,
+    // StoreOrMergeableStore,
+    { getHandle: () => handle }
   );
 };
 export {
-  createRemotePersister
+  createLocalPersister,
+  createOpfsPersister,
+  createSessionPersister
 };
