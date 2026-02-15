@@ -12,7 +12,13 @@
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "allowImportingTsExtensions": true,
-    "types": ["asciichart", "node", "http-server", "bun-types"],
+    "types": [
+      "asciichart",
+      "node",
+      "http-server",
+      "@cloudflare/workers-types",
+      "bun-types"
+    ],
     "composite": true,
     "skipLibCheck": true,
     "allowJs": true

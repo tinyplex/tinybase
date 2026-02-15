@@ -19,8 +19,8 @@ import type {
 import type {Cell, Value} from '../../@types/store/index.d.ts';
 import {jsonStringWithUndefined} from '../../common/json.ts';
 import {IdMap, mapNew, mapSet, mapToObj} from '../../common/map.ts';
-import {objEnsure, objForEach} from '../../common/obj.ts';
-import {ifNotUndefined, noop, slice} from '../../common/other.ts';
+import {objEnsure, objForEach, objIsEmpty} from '../../common/obj.ts';
+import {ifNotUndefined, noop, size, slice} from '../../common/other.ts';
 import {stampNewWithHash, stampUpdate} from '../../common/stamps.ts';
 import {EMPTY_STRING, T, V, strStartsWith} from '../../common/strings.ts';
 import {createCustomPersister} from '../common/create.ts';
@@ -43,18 +43,15 @@ export const createDurableObjectStoragePersister = ((
     key: string,
   ): [type: string, ...ids: Ids] | undefined => {
     if (strStartsWith(key, storagePrefix)) {
-      const type = slice(key, storagePrefix.length, 1);
+      const type = slice(key, size(storagePrefix), size(storagePrefix) + 1);
       return type == T || type == V
-        ? [
-            type,
-            ...JSON.parse('[' + slice(key, storagePrefix.length + 1) + ']'),
-          ]
+        ? [type, ...JSON.parse('[' + slice(key, size(storagePrefix) + 1) + ']')]
         : undefined;
     }
   };
 
   const getPersisted = async (): Promise<
-    PersistedContent<PersistsType.MergeableStoreOnly>
+    PersistedContent<PersistsType.MergeableStoreOnly> | undefined
   > => {
     const tables: TablesStamp<true> = stampNewObjectWithHash();
     const values: ValuesStamp<true> = stampNewObjectWithHash();
@@ -100,7 +97,10 @@ export const createDurableObjectStoragePersister = ((
               : 0,
         ),
     );
-    return [tables, values];
+
+    return objIsEmpty(tables[0]) && objIsEmpty(values[0])
+      ? undefined
+      : [tables, values];
   };
 
   const setPersisted = async (

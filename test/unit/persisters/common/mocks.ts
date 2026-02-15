@@ -28,6 +28,7 @@ import {
   createOpfsPersister,
   createSessionPersister,
 } from 'tinybase/persisters/persister-browser';
+import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage';
 import {createFilePersister} from 'tinybase/persisters/persister-file';
 import {createIndexedDbPersister} from 'tinybase/persisters/persister-indexed-db';
 import {createRemotePersister} from 'tinybase/persisters/persister-remote';
@@ -777,4 +778,136 @@ export const mockAutomerge: Persistable<DocHandle<any>> = {
   del: async (docHandle: DocHandle<any>): Promise<void> => docHandle.delete(),
   testMissing: false,
   testAutoLoad: true,
+};
+
+// Mock DurableObjectStorage - simple Map-based implementation
+class MockDurableObjectStorage {
+  private data = new Map<string, any>();
+
+  async get<T>(key: string): Promise<T | undefined>;
+  async get<T>(keys: string[]): Promise<Map<string, T>>;
+  async get<T>(
+    keyOrKeys: string | string[],
+  ): Promise<T | undefined | Map<string, T>> {
+    if (Array.isArray(keyOrKeys)) {
+      const result = new Map<string, T>();
+      for (const key of keyOrKeys) {
+        const value = this.data.get(key);
+        if (value !== undefined) result.set(key, value);
+      }
+      return result;
+    }
+    return this.data.get(keyOrKeys);
+  }
+
+  async put(entries: Record<string, any>): Promise<void> {
+    for (const [key, value] of Object.entries(entries)) {
+      this.data.set(key, value);
+    }
+  }
+
+  async list<T>(options?: {prefix?: string}): Promise<Map<string, T>> {
+    const result = new Map<string, T>();
+    const prefix = options?.prefix ?? '';
+    for (const [key, value] of this.data.entries()) {
+      if (key.startsWith(prefix)) {
+        result.set(key, value);
+      }
+    }
+    return result;
+  }
+
+  async delete(key: string): Promise<boolean> {
+    return this.data.delete(key);
+  }
+
+  clear(): void {
+    this.data.clear();
+  }
+}
+
+const STORAGE_PREFIX = 'tinybase_';
+const T = 't';
+const V = 'v';
+
+// Key construction matching the persister's format
+const constructStorageKey = (type: string, ...ids: string[]) =>
+  STORAGE_PREFIX + type + JSON.stringify(ids).slice(1, -1);
+
+export const mockDurableObjectStorage: Persistable<MockDurableObjectStorage> = {
+  autoLoadPause: 10,
+  getLocation: async () => new MockDurableObjectStorage(),
+  getLocationMethod: ['getStorage', (storage) => storage],
+  getPersister: (
+    store: Store | MergeableStore,
+    storage: MockDurableObjectStorage,
+  ) =>
+    createDurableObjectStoragePersister(
+      store as MergeableStore,
+      storage as unknown as DurableObjectStorage,
+      STORAGE_PREFIX,
+    ),
+  get: async (
+    storage: MockDurableObjectStorage,
+  ): Promise<MergeableContent | void> => {
+    const entries = await storage.list({prefix: STORAGE_PREFIX});
+    if (entries.size > 0) {
+      return undefined;
+    }
+  },
+  set: async (
+    storage: MockDurableObjectStorage,
+    content: Content | MergeableContent,
+  ): Promise<void> => {
+    // Convert MergeableContent to the key-value format the persister uses
+    const [
+      [tablesObj, tablesHlc, tablesHash],
+      [valuesObj, valuesHlc, valuesHash],
+    ] = content as MergeableContent;
+    const entries: Record<string, any> = {};
+
+    // Store tables root
+    entries[constructStorageKey(T)] = [0, tablesHlc, tablesHash];
+
+    // Process tables
+    Object.entries(tablesObj).forEach(
+      ([tableId, [tableObj, tableHlc, tableHash]]: any) => {
+        entries[constructStorageKey(T, tableId)] = [0, tableHlc, tableHash];
+        Object.entries(tableObj).forEach(
+          ([rowId, [rowObj, rowHlc, rowHash]]: any) => {
+            entries[constructStorageKey(T, tableId, rowId)] = [
+              0,
+              rowHlc,
+              rowHash,
+            ];
+            Object.entries(rowObj).forEach(([cellId, cellStamp]) => {
+              entries[constructStorageKey(T, tableId, rowId, cellId)] =
+                cellStamp;
+            });
+          },
+        );
+      },
+    );
+
+    // Store values root
+    entries[constructStorageKey(V)] = [0, valuesHlc, valuesHash];
+
+    // Process values
+    Object.entries(valuesObj).forEach(([valueId, valueStamp]) => {
+      entries[constructStorageKey(V, valueId)] = valueStamp;
+    });
+
+    await storage.put(entries);
+  },
+  write: async (
+    _storage: MockDurableObjectStorage,
+    _rawContent: any,
+  ): Promise<void> => {
+    // Not used for DO storage
+  },
+  del: async (storage: MockDurableObjectStorage): Promise<void> => {
+    storage.clear();
+  },
+  testMissing: false,
+  testAutoLoad: false,
 };

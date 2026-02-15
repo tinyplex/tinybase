@@ -171,9 +171,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
       rowId: Id,
       cellId: Id,
       newCell: CellOrUndefined,
+      mutating: 0 | 1,
     ) => void,
-    valueChanged?: (valueId: Id, newValue: ValueOrUndefined) => void,
+    valueChanged?: (
+      valueId: Id,
+      newValue: ValueOrUndefined,
+      mutating: 0 | 1,
+    ) => void,
   ] = [];
+  let mutating: 0 | 1 = 0;
   const changedTableIds: ChangedIdsMap = mapNew();
   const changedTableCellIds: ChangedIdsMap2 = mapNew();
   const changedRowCount: IdMap<number> = mapNew();
@@ -678,7 +684,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       cellId,
       () => [oldCell, 0],
     )[1] = newCell;
-    internalListeners[3]?.(tableId, rowId, cellId, newCell);
+    internalListeners[3]?.(tableId, rowId, cellId, newCell, mutating);
   };
 
   const valueIdsChanged = (
@@ -695,7 +701,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       oldValue,
       0,
     ])[1] = newValue;
-    internalListeners[4]?.(valueId, newValue);
+    internalListeners[4]?.(valueId, newValue, mutating);
   };
 
   const cellInvalid = (
@@ -795,16 +801,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
   };
 
-  const callTabularListenersForChanges = (mutator: 0 | 1) => {
-    const hasTablesNow = hasTables();
-    if (hasTablesNow != hadTables) {
-      callListeners(hasTablesListeners[mutator], undefined, hasTablesNow);
-    }
-
-    const emptySortedRowIdListeners = collIsEmpty(
+  const callTabularListenersForChanges = (mutator: 0 | 1): void => {
+    const hasHasTablesListeners = !collIsEmpty(hasTablesListeners[mutator]);
+    const hasSortedRowIdListeners = !collIsEmpty(
       sortedRowIdsListeners[mutator],
     );
-    const emptyIdAndHasListeners =
+    const hasIdOrHasListeners = !(
       collIsEmpty(cellIdsListeners[mutator]) &&
       collIsEmpty(hasCellListeners[mutator]) &&
       collIsEmpty(rowIdsListeners[mutator]) &&
@@ -812,15 +814,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
       collIsEmpty(tableCellIdsListeners[mutator]) &&
       collIsEmpty(hasTableCellListeners[mutator]) &&
       collIsEmpty(rowCountListeners[mutator]) &&
-      emptySortedRowIdListeners &&
+      !hasSortedRowIdListeners &&
       collIsEmpty(tableIdsListeners[mutator]) &&
-      collIsEmpty(hasTableListeners[mutator]);
-    const emptyOtherListeners =
+      collIsEmpty(hasTableListeners[mutator])
+    );
+    const hasOtherListeners = !(
       collIsEmpty(cellListeners[mutator]) &&
       collIsEmpty(rowListeners[mutator]) &&
       collIsEmpty(tableListeners[mutator]) &&
-      collIsEmpty(tablesListeners[mutator]);
-    if (!emptyIdAndHasListeners || !emptyOtherListeners) {
+      collIsEmpty(tablesListeners[mutator])
+    );
+
+    if (hasHasTablesListeners || hasIdOrHasListeners || hasOtherListeners) {
       const changes: [
         ChangedIdsMap,
         ChangedIdsMap2,
@@ -835,7 +840,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
             mapClone(changedRowCount),
             mapClone2(changedRowIds),
             mapClone3(changedCellIds),
-            mapClone3(changedCells),
+            mapClone(changedCells, (map) =>
+              mapClone(map, (map) => mapClone(map, pairClone)),
+            ),
           ]
         : [
             changedTableIds,
@@ -846,7 +853,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
             changedCells,
           ];
 
-      if (!emptyIdAndHasListeners) {
+      if (hasHasTablesListeners) {
+        const hasTablesNow = hasTables();
+        if (hasTablesNow != hadTables) {
+          callListeners(hasTablesListeners[mutator], undefined, hasTablesNow);
+        }
+      }
+
+      if (hasIdOrHasListeners) {
         callIdsAndHasListenersIfChanged(
           changes[0],
           tableIdsListeners[mutator],
@@ -881,14 +895,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
               hasRowListeners[mutator],
               [tableId],
             ) &&
-            !emptySortedRowIdListeners
+            hasSortedRowIdListeners
           ) {
             callListeners(sortedRowIdsListeners[mutator], [tableId, null]);
             setAdd(calledSortableTableIds, tableId);
           }
         });
 
-        if (!emptySortedRowIdListeners) {
+        if (hasSortedRowIdListeners) {
           collForEach(changes[5], (rows, tableId) => {
             if (!collHas(calledSortableTableIds, tableId)) {
               const sortableCellIds: IdSet = setNew();
@@ -921,7 +935,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         );
       }
 
-      if (!emptyOtherListeners) {
+      if (hasOtherListeners) {
         let tablesChanged;
         collForEach(changes[5], (rows, tableId) => {
           let tableChanged;
@@ -958,24 +972,27 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
   };
 
-  const callValuesListenersForChanges = (mutator: 0 | 1) => {
-    const hasValuesNow = hasValues();
-    if (hasValuesNow != hadValues) {
-      callListeners(hasValuesListeners[mutator], undefined, hasValuesNow);
-    }
-
-    const emptyIdAndHasListeners =
-      collIsEmpty(valueIdsListeners[mutator]) &&
-      collIsEmpty(hasValueListeners[mutator]);
-    const emptyOtherListeners =
-      collIsEmpty(valueListeners[mutator]) &&
-      collIsEmpty(valuesListeners[mutator]);
-    if (!emptyIdAndHasListeners || !emptyOtherListeners) {
+  const callValuesListenersForChanges = (mutator: 0 | 1): void => {
+    const hasHasValuesListeners = !collIsEmpty(hasValuesListeners[mutator]);
+    const hasIdOrHasListeners =
+      !collIsEmpty(valueIdsListeners[mutator]) ||
+      !collIsEmpty(hasValueListeners[mutator]);
+    const hasOtherListeners =
+      !collIsEmpty(valueListeners[mutator]) ||
+      !collIsEmpty(valuesListeners[mutator]);
+    if (hasHasValuesListeners || hasIdOrHasListeners || hasOtherListeners) {
       const changes: [ChangedIdsMap, IdMap<ChangedCell>] = mutator
-        ? [mapClone(changedValueIds), mapClone(changedValues)]
+        ? [mapClone(changedValueIds), mapClone(changedValues, pairClone)]
         : [changedValueIds, changedValues];
 
-      if (!emptyIdAndHasListeners) {
+      if (hasHasValuesListeners) {
+        const hasValuesNow = hasValues();
+        if (hasValuesNow != hadValues) {
+          callListeners(hasValuesListeners[mutator], undefined, hasValuesNow);
+        }
+      }
+
+      if (hasIdOrHasListeners) {
         callIdsAndHasListenersIfChanged(
           changes[0],
           valueIdsListeners[mutator],
@@ -983,7 +1000,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         );
       }
 
-      if (!emptyOtherListeners) {
+      if (hasOtherListeners) {
         let valuesChanged;
         collForEach(changes[1], ([oldValue, newValue], valueId) => {
           if (newValue !== oldValue) {
@@ -1511,6 +1528,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
       if (transactions == 0) {
         transactions = 1;
+
+        mutating = 1;
         callInvalidCellListeners(1);
         if (!collIsEmpty(changedCells)) {
           callTabularListenersForChanges(1);
@@ -1519,6 +1538,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         if (!collIsEmpty(changedValues)) {
           callValuesListenersForChanges(1);
         }
+        mutating = 0;
 
         if (doRollback?.(store)) {
           collForEach(changedCells, (table, tableId) =>
@@ -1690,8 +1710,13 @@ export const createStore: typeof createStoreDecl = (): Store => {
       rowId: Id,
       cellId: Id,
       newCell: CellOrUndefined,
+      mutating: 0 | 1,
     ) => void,
-    valueChanged: (valueId: Id, newValue: ValueOrUndefined) => void,
+    valueChanged: (
+      valueId: Id,
+      newValue: ValueOrUndefined,
+      mutating: 0 | 1,
+    ) => void,
   ) =>
     (internalListeners = [
       preStartTransaction,

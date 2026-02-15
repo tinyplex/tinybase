@@ -155,6 +155,7 @@ export const createMergeableStore = ((
   let listeningToRawStoreChanges = 1;
   let contentStampMap = newContentStampMap();
   let defaultingContent: 0 | 1 = 0;
+  let mutated: 0 | 1 = 0;
   const touchedCells: IdSet3 = mapNew();
   const touchedValues: IdSet = setNew();
   const [getNextHlc, seenHlc] = getHlcFunctions(uniqueId, getNow);
@@ -326,6 +327,7 @@ export const createMergeableStore = ((
     rowId: Id,
     cellId: Id,
     newCell: CellOrUndefined,
+    mutating: 0 | 1,
   ) => {
     setAdd(
       mapEnsure(
@@ -335,7 +337,10 @@ export const createMergeableStore = ((
       ),
       cellId,
     );
-    if (listeningToRawStoreChanges) {
+    if (listeningToRawStoreChanges || mutating) {
+      if (mutating) {
+        mutated = 1;
+      }
       mergeContentOrChanges([
         [
           {
@@ -359,9 +364,16 @@ export const createMergeableStore = ((
     }
   };
 
-  const valueChanged = (valueId: Id, newValue: ValueOrUndefined) => {
+  const valueChanged = (
+    valueId: Id,
+    newValue: ValueOrUndefined,
+    mutating: 0 | 1,
+  ) => {
     setAdd(touchedValues, valueId);
-    if (listeningToRawStoreChanges) {
+    if (listeningToRawStoreChanges || mutating) {
+      if (mutating) {
+        mutated = 1;
+      }
       mergeContentOrChanges([
         [{}],
         [
@@ -631,6 +643,12 @@ export const createMergeableStore = ((
     return applyMergeableChanges(mergeableChanges2);
   };
 
+  const hadMutated = (): 0 | 1 => {
+    const result = mutated;
+    mutated = 0;
+    return result;
+  };
+
   const mergeableStore: IdObj<any> = {
     getMergeableContent,
 
@@ -648,6 +666,9 @@ export const createMergeableStore = ((
     getTransactionMergeableChanges,
     applyMergeableChanges,
     merge,
+
+    // only used internally by other modules
+    hadMutated,
   };
 
   (store as any).setInternalListeners(

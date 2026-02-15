@@ -15,6 +15,7 @@ import {MERGEABLE_VARIANTS} from './common/databases.ts';
 import {
   getMockDatabases,
   mockCustomSynchronizer,
+  mockDurableObjectStorage,
   mockFile,
   mockLocalStorage,
   mockLocalSynchronizer,
@@ -40,6 +41,7 @@ describe.each([
   ['opfs', mockOpfs],
   ['localStorage', mockLocalStorage],
   ['sessionStorage', mockSessionStorage],
+  ['durableObjectStorage', mockDurableObjectStorage],
   ['localSynchronizer', mockLocalSynchronizer],
   ['customSynchronizer', mockCustomSynchronizer],
   ...getMockDatabases(MERGEABLE_VARIANTS),

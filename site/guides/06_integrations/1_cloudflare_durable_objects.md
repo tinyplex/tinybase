@@ -21,59 +21,10 @@ As this guide hopefully shows, this can be done with minimal effort!
 ## Getting Started with Vite
 
 The quickest way to get started with TinyBase and Cloudflare Durable Objects is
-to use our [Vite
-template](https://github.com/tinyplex/vite-tinybase-ts-react-sync-durable-object).
-This includes both a client implementation (that by default connects to a demo
-server we provide) and a server implementation that you can instead use for your
-own Cloudflare installation.
-
-### Install The Client
-
-1. Make a copy of the template into a new directory:
-
-```sh
-npx tiged tinyplex/vite-tinybase-ts-react-sync-durable-object my-tinybase-app
-```
-
-2. Go into the client directory:
-
-```sh
-cd my-tinybase-app/client
-```
-
-3. Install the dependencies:
-
-```sh
-npm install
-```
-
-4. Run the application:
-
-```sh
-npm run dev
-```
-
-5. Go the URL shown and enjoy!
-
-![Vite app](/vite-tinybase-sync.png 'Vite app')
-
-### Run Your Own Server
-
-This template uses a lightweight socket server on `vite.tinybase.cloud` to
-synchronize data between clients. This is fine for a demo but not intended as a
-production server for your apps!
-
-If you wish to run your own instance, see the `server` directory and start from
-there.
-
-The `vite.tinybase.cloud` server is hosted on Cloudflare (of course), so you
-should adapt the `wrangler.toml` configuration in the server directory. Update
-it to match your account, domains, and required configuration. In the `index.ts`
-file, you can configure whether data will be stored in the Durable Object or
-just synchronized between clients.
-
-You will also have to have your client communicate with your new server by
-configuring the `SERVER` constant at the top of the client's `App.tsx` file.
+to use the Durable Objects option in the [`create-tinybase`
+tool](https://github.com/tinyplex/create-tinybase). This will set up a Vite app
+with synchronization to a Durable Object on a local server, and local
+persistence in the browser.
 
 ## How It All Works
 

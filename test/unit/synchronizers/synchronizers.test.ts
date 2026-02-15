@@ -656,6 +656,58 @@ describe.each([
         expectEachToHaveContent([{}, {v1: 2}]);
       });
 
+      test('mutator mutation', async () => {
+        store2.addRowListener(
+          't1',
+          null,
+          (store, tableId, rowId) => {
+            if (store.getCell(tableId, rowId, 'c1') === true) {
+              store.setCell(tableId, rowId, 'c2', 'b');
+            }
+          },
+          true,
+        );
+
+        store1.setRow('t1', 'r1', {c1: true, c2: 'a'});
+        expect(store1.getTable('t1')).toEqual({r1: {c1: true, c2: 'a'}});
+
+        await pause(synchronizable.pauseMilliseconds);
+        expect(store2.getTable('t1')).toEqual({r1: {c1: true, c2: 'b'}});
+
+        await pause(synchronizable.pauseMilliseconds);
+        expect(store1.getTable('t1')).toEqual({r1: {c1: true, c2: 'b'}});
+
+        store1.setRow('t2', 'r2', {c1: false, c2: 'a'});
+        await pause(synchronizable.pauseMilliseconds);
+        expect(store1.getTable('t2')).toEqual({r2: {c1: false, c2: 'a'}});
+        expect(store2.getTable('t2')).toEqual({r2: {c1: false, c2: 'a'}});
+      });
+
+      test('mutator deletion', async () => {
+        store2.addRowListener(
+          't1',
+          null,
+          (store, tableId, rowId) => {
+            if (store.getCell(tableId, rowId, 'c1') === true) {
+              store.delRow(tableId, rowId);
+            }
+          },
+          true,
+        );
+
+        store1.setRow('t1', 'r1', {c1: true, c2: 'a'});
+        await pause(synchronizable.pauseMilliseconds);
+        expect(store2.getTable('t1')).toEqual({});
+
+        await pause(synchronizable.pauseMilliseconds);
+        expect(store1.getTable('t1')).toEqual({});
+
+        store1.setRow('t2', 'r2', {c1: false, c2: 'a'});
+        await pause(synchronizable.pauseMilliseconds);
+        expect(store1.getTable('t2')).toEqual({r2: {c1: false, c2: 'a'}});
+        expect(store2.getTable('t2')).toEqual({r2: {c1: false, c2: 'a'}});
+      });
+
       describe('tracking messages', () => {
         test('new tables, new table, new row, new cell; then all', async () => {
           if (environment && environment[1]) {

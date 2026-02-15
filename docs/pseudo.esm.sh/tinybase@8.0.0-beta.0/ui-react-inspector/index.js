@@ -556,7 +556,11 @@ var jsonStringWithMap = (obj) => jsonString(
   (_key, value) => isInstanceOf(value, Map) ? object2.fromEntries([...value]) : value
 );
 var jsonStringWithUndefined = (obj) => jsonString(obj, (_key, value) => isUndefined2(value) ? UNDEFINED : value);
-var jsonParseWithUndefined = (str) => jsonParse(str, (_key, value) => value === UNDEFINED ? void 0 : value);
+var jsonParseWithUndefined = (str) => (
+  // JSON.parse reviver removes properties with undefined values
+  replaceUndefinedString(jsonParse(str))
+);
+var replaceUndefinedString = (obj) => obj === UNDEFINED ? void 0 : isArray2(obj) ? arrayMap2(obj, replaceUndefinedString) : isObject2(obj) ? objMap(obj, replaceUndefinedString) : obj;
 var collSizeN = (collSizer) => (coll) => arrayReduce(collValues(coll), (total, coll2) => total + collSizer(coll2), 0);
 var collSize = (coll) => coll?.size ?? 0;
 var collSize2 = collSizeN(collSize);
@@ -568,28 +572,29 @@ var collValues = (coll) => [...coll?.values() ?? []];
 var collClear = (coll) => coll.clear();
 var collForEach = (coll, cb) => coll?.forEach(cb);
 var collDel = (coll, keyOrValue) => coll?.delete(keyOrValue);
-var mapNew = (entries) => new Map(entries);
-var mapKeys = (map) => [...map?.keys() ?? []];
-var mapGet = (map, key) => map?.get(key);
-var mapForEach = (map, cb) => collForEach(map, (value, key) => cb(key, value));
+var map = Map;
+var mapNew = (entries) => new map(entries);
+var mapKeys = (map2) => [...map2?.keys() ?? []];
+var mapGet = (map2, key) => map2?.get(key);
+var mapForEach = (map2, cb) => collForEach(map2, (value, key) => cb(key, value));
 var mapMap = (coll, cb) => arrayMap2([...coll?.entries() ?? []], ([key, value]) => cb(value, key));
-var mapSet = (map, key, value) => isUndefined2(value) ? (collDel(map, key), map) : map?.set(key, value);
-var mapEnsure = (map, key, getDefaultValue, hadExistingValue) => {
-  if (!collHas(map, key)) {
-    mapSet(map, key, getDefaultValue());
+var mapSet = (map2, key, value) => isUndefined2(value) ? (collDel(map2, key), map2) : map2?.set(key, value);
+var mapEnsure = (map2, key, getDefaultValue, hadExistingValue) => {
+  if (!collHas(map2, key)) {
+    mapSet(map2, key, getDefaultValue());
   } else {
-    hadExistingValue?.(mapGet(map, key));
+    hadExistingValue?.(mapGet(map2, key));
   }
-  return mapGet(map, key);
+  return mapGet(map2, key);
 };
-var mapMatch = (map, obj, set, del = mapSet) => {
-  objMap(obj, (value, id2) => set(map, id2, value));
-  mapForEach(map, (id2) => objHas(obj, id2) ? 0 : del(map, id2));
-  return map;
+var mapMatch = (map2, obj, set, del = mapSet) => {
+  objMap(obj, (value, id2) => set(map2, id2, value));
+  mapForEach(map2, (id2) => objHas(obj, id2) ? 0 : del(map2, id2));
+  return map2;
 };
-var mapToObj = (map, valueMapper, excludeMapValue, excludeObjValue) => {
+var mapToObj = (map2, valueMapper, excludeMapValue, excludeObjValue) => {
   const obj = {};
-  collForEach(map, (mapValue, id2) => {
+  collForEach(map2, (mapValue, id2) => {
     if (!excludeMapValue?.(mapValue, id2)) {
       const objValue = valueMapper ? valueMapper(mapValue, id2) : mapValue;
       if (!excludeObjValue?.(objValue)) {
@@ -599,25 +604,25 @@ var mapToObj = (map, valueMapper, excludeMapValue, excludeObjValue) => {
   });
   return obj;
 };
-var mapToObj2 = (map, valueMapper, excludeMapValue) => mapToObj(
-  map,
+var mapToObj2 = (map2, valueMapper, excludeMapValue) => mapToObj(
+  map2,
   (childMap) => mapToObj(childMap, valueMapper, excludeMapValue),
   collIsEmpty,
   objIsEmpty
 );
-var mapToObj3 = (map, valueMapper, excludeMapValue) => mapToObj(
-  map,
+var mapToObj3 = (map2, valueMapper, excludeMapValue) => mapToObj(
+  map2,
   (childMap) => mapToObj2(childMap, valueMapper, excludeMapValue),
   collIsEmpty,
   objIsEmpty
 );
-var mapClone = (map, mapValue) => {
-  const map2 = mapNew();
-  collForEach(map, (value, key) => map2.set(key, mapValue?.(value) ?? value));
-  return map2;
+var mapClone = (map2, mapValue) => {
+  const map22 = mapNew();
+  collForEach(map2, (value, key) => map22.set(key, mapValue?.(value) ?? value));
+  return map22;
 };
-var mapClone2 = (map) => mapClone(map, mapClone);
-var mapClone3 = (map) => mapClone(map, mapClone2);
+var mapClone2 = (map2) => mapClone(map2, mapClone);
+var mapClone3 = (map2) => mapClone(map2, mapClone2);
 var visitTree = (node, path, ensureLeaf, pruneLeaf, p = 0) => ifNotUndefined2(
   (ensureLeaf ? mapEnsure : mapGet)(
     node,
@@ -768,6 +773,11 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   const setContentOrChanges = (contentOrChanges) => {
     (isMergeableStore && isArray2(contentOrChanges?.[0]) ? contentOrChanges?.[2] === 1 ? store.applyMergeableChanges : store.setMergeableContent : contentOrChanges?.[2] === 1 ? store.applyChanges : store.setContent)(contentOrChanges);
   };
+  const saveAfterMutated = async () => {
+    if (isAutoSaving() && store.hadMutated?.()) {
+      await save();
+    }
+  };
   const load = async (initialContent) => {
     if (status != 2) {
       setStatus(
@@ -797,6 +807,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
           0
           /* Idle */
         );
+        await saveAfterMutated();
       });
     }
     return persister;
@@ -819,6 +830,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
                 0
                 /* Idle */
               );
+              await saveAfterMutated();
             }
           } else {
             await load();
@@ -985,6 +997,7 @@ var createStore = () => {
   let hadValues = false;
   let transactions = 0;
   let internalListeners = [];
+  let mutating = 0;
   const changedTableIds = mapNew();
   const changedTableCellIds = mapNew();
   const changedRowCount = mapNew();
@@ -1334,12 +1347,12 @@ var createStore = () => {
       cellId,
       () => [oldCell, 0]
     )[1] = newCell;
-    internalListeners[3]?.(tableId, rowId, cellId, newCell);
+    internalListeners[3]?.(tableId, rowId, cellId, newCell, mutating);
   };
   const valueIdsChanged = (valueId, addedOrRemoved) => idsChanged(changedValueIds, valueId, addedOrRemoved);
   const valueChanged = (valueId, oldValue, newValue) => {
     mapEnsure(changedValues, valueId, () => [oldValue, 0])[1] = newValue;
-    internalListeners[4]?.(valueId, newValue);
+    internalListeners[4]?.(valueId, newValue, mutating);
   };
   const cellInvalid = (tableId, rowId, cellId, invalidCell, defaultedCell) => {
     arrayPush(
@@ -1402,23 +1415,23 @@ var createStore = () => {
     }
   };
   const callTabularListenersForChanges = (mutator) => {
-    const hasTablesNow = hasTables();
-    if (hasTablesNow != hadTables) {
-      callListeners(hasTablesListeners[mutator], void 0, hasTablesNow);
-    }
-    const emptySortedRowIdListeners = collIsEmpty(
+    const hasHasTablesListeners = !collIsEmpty(hasTablesListeners[mutator]);
+    const hasSortedRowIdListeners = !collIsEmpty(
       sortedRowIdsListeners[mutator]
     );
-    const emptyIdAndHasListeners = collIsEmpty(cellIdsListeners[mutator]) && collIsEmpty(hasCellListeners[mutator]) && collIsEmpty(rowIdsListeners[mutator]) && collIsEmpty(hasRowListeners[mutator]) && collIsEmpty(tableCellIdsListeners[mutator]) && collIsEmpty(hasTableCellListeners[mutator]) && collIsEmpty(rowCountListeners[mutator]) && emptySortedRowIdListeners && collIsEmpty(tableIdsListeners[mutator]) && collIsEmpty(hasTableListeners[mutator]);
-    const emptyOtherListeners = collIsEmpty(cellListeners[mutator]) && collIsEmpty(rowListeners[mutator]) && collIsEmpty(tableListeners[mutator]) && collIsEmpty(tablesListeners[mutator]);
-    if (!emptyIdAndHasListeners || !emptyOtherListeners) {
+    const hasIdOrHasListeners = !(collIsEmpty(cellIdsListeners[mutator]) && collIsEmpty(hasCellListeners[mutator]) && collIsEmpty(rowIdsListeners[mutator]) && collIsEmpty(hasRowListeners[mutator]) && collIsEmpty(tableCellIdsListeners[mutator]) && collIsEmpty(hasTableCellListeners[mutator]) && collIsEmpty(rowCountListeners[mutator]) && !hasSortedRowIdListeners && collIsEmpty(tableIdsListeners[mutator]) && collIsEmpty(hasTableListeners[mutator]));
+    const hasOtherListeners = !(collIsEmpty(cellListeners[mutator]) && collIsEmpty(rowListeners[mutator]) && collIsEmpty(tableListeners[mutator]) && collIsEmpty(tablesListeners[mutator]));
+    if (hasHasTablesListeners || hasIdOrHasListeners || hasOtherListeners) {
       const changes = mutator ? [
         mapClone(changedTableIds),
         mapClone2(changedTableCellIds),
         mapClone(changedRowCount),
         mapClone2(changedRowIds),
         mapClone3(changedCellIds),
-        mapClone3(changedCells)
+        mapClone(
+          changedCells,
+          (map2) => mapClone(map2, (map22) => mapClone(map22, pairClone))
+        )
       ] : [
         changedTableIds,
         changedTableCellIds,
@@ -1427,7 +1440,13 @@ var createStore = () => {
         changedCellIds,
         changedCells
       ];
-      if (!emptyIdAndHasListeners) {
+      if (hasHasTablesListeners) {
+        const hasTablesNow = hasTables();
+        if (hasTablesNow != hadTables) {
+          callListeners(hasTablesListeners[mutator], void 0, hasTablesNow);
+        }
+      }
+      if (hasIdOrHasListeners) {
         callIdsAndHasListenersIfChanged(
           changes[0],
           tableIdsListeners[mutator],
@@ -1458,12 +1477,12 @@ var createStore = () => {
             rowIdsListeners[mutator],
             hasRowListeners[mutator],
             [tableId]
-          ) && !emptySortedRowIdListeners) {
+          ) && hasSortedRowIdListeners) {
             callListeners(sortedRowIdsListeners[mutator], [tableId, null]);
             setAdd(calledSortableTableIds, tableId);
           }
         });
-        if (!emptySortedRowIdListeners) {
+        if (hasSortedRowIdListeners) {
           collForEach(changes[5], (rows, tableId) => {
             if (!collHas(calledSortableTableIds, tableId)) {
               const sortableCellIds = setNew();
@@ -1497,7 +1516,7 @@ var createStore = () => {
           )
         );
       }
-      if (!emptyOtherListeners) {
+      if (hasOtherListeners) {
         let tablesChanged;
         collForEach(changes[5], (rows, tableId) => {
           let tableChanged;
@@ -1534,22 +1553,25 @@ var createStore = () => {
     }
   };
   const callValuesListenersForChanges = (mutator) => {
-    const hasValuesNow = hasValues();
-    if (hasValuesNow != hadValues) {
-      callListeners(hasValuesListeners[mutator], void 0, hasValuesNow);
-    }
-    const emptyIdAndHasListeners = collIsEmpty(valueIdsListeners[mutator]) && collIsEmpty(hasValueListeners[mutator]);
-    const emptyOtherListeners = collIsEmpty(valueListeners[mutator]) && collIsEmpty(valuesListeners[mutator]);
-    if (!emptyIdAndHasListeners || !emptyOtherListeners) {
-      const changes = mutator ? [mapClone(changedValueIds), mapClone(changedValues)] : [changedValueIds, changedValues];
-      if (!emptyIdAndHasListeners) {
+    const hasHasValuesListeners = !collIsEmpty(hasValuesListeners[mutator]);
+    const hasIdOrHasListeners = !collIsEmpty(valueIdsListeners[mutator]) || !collIsEmpty(hasValueListeners[mutator]);
+    const hasOtherListeners = !collIsEmpty(valueListeners[mutator]) || !collIsEmpty(valuesListeners[mutator]);
+    if (hasHasValuesListeners || hasIdOrHasListeners || hasOtherListeners) {
+      const changes = mutator ? [mapClone(changedValueIds), mapClone(changedValues, pairClone)] : [changedValueIds, changedValues];
+      if (hasHasValuesListeners) {
+        const hasValuesNow = hasValues();
+        if (hasValuesNow != hadValues) {
+          callListeners(hasValuesListeners[mutator], void 0, hasValuesNow);
+        }
+      }
+      if (hasIdOrHasListeners) {
         callIdsAndHasListenersIfChanged(
           changes[0],
           valueIdsListeners[mutator],
           hasValueListeners[mutator]
         );
       }
-      if (!emptyOtherListeners) {
+      if (hasOtherListeners) {
         let valuesChanged;
         collForEach(changes[1], ([oldValue, newValue], valueId) => {
           if (newValue !== oldValue) {
@@ -1882,6 +1904,7 @@ var createStore = () => {
       transactions--;
       if (transactions == 0) {
         transactions = 1;
+        mutating = 1;
         callInvalidCellListeners(1);
         if (!collIsEmpty(changedCells)) {
           callTabularListenersForChanges(1);
@@ -1890,6 +1913,7 @@ var createStore = () => {
         if (!collIsEmpty(changedValues)) {
           callValuesListenersForChanges(1);
         }
+        mutating = 0;
         if (doRollback?.(store)) {
           collForEach(
             changedCells,

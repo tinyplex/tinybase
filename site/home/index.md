@@ -18,6 +18,19 @@
 
 ---
 
+> ## Let's build _local-first_ apps
+>
+> Create a todo list, a chat app, a drawing tool, or a tic-tac-toe game - with
+> sync & persistence! - in less than 60 seconds.
+
+```bash
+> npm create tinybase@latest
+
+📦 Creating your project...
+```
+
+---
+
 > ## It's _Reactive_
 >
 > TinyBase lets you [listen to changes](#register-granular-listeners) made to
@@ -186,8 +199,8 @@
   </a>
 </div>
 <p>
-  (Baffled by all these logos? Check out our 
-  <a href='/guides/the-basics/architectural-options'>architectural 
+  (Baffled by all these logos? Check out our
+  <a href='/guides/the-basics/architectural-options'>architectural
   options</a> guide to make sense of it all!)
 </p>
 </section>

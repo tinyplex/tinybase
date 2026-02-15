@@ -192,6 +192,14 @@ export const createCustomPersister = <
     );
   };
 
+  const saveAfterMutated = async (): Promise<void> => {
+    if (isAutoSaving() && (store as any).hadMutated?.()) {
+      await save();
+    }
+  };
+
+  // --
+
   const load = async (
     initialContent?: Content | (() => Content),
   ): Promise<Persister> => {
@@ -218,6 +226,7 @@ export const createCustomPersister = <
           },
         );
         setStatus(StatusValues.Idle);
+        await saveAfterMutated();
       });
     }
     return persister;
@@ -239,6 +248,7 @@ export const createCustomPersister = <
                 loads++;
                 setContentOrChanges(changes ?? content);
                 setStatus(StatusValues.Idle);
+                await saveAfterMutated();
               }
             } else {
               await load();

@@ -1,15 +1,10 @@
-import {expect as puppeteerExpect} from 'expect-puppeteer';
+import {Locator, Page, expect} from '@playwright/test';
 import {Server} from 'http';
-import {ElementHandle} from 'puppeteer';
-import {expect} from 'vitest';
-import 'vitest-puppeteer';
 import {createTestServer} from '../server.mjs';
-
-let browserWarmed = false;
 
 export const getServerFunctions = (
   port: number,
-): [() => void, () => void, (path: string) => Promise<void>] => {
+): [() => void, () => void, (page: Page, path: string) => Promise<void>] => {
   const DOMAIN = `http://0.0.0.0:${port}`;
 
   let server: Server;
@@ -22,12 +17,7 @@ export const getServerFunctions = (
     server.close();
   };
 
-  const expectPage = async (path: string): Promise<void> => {
-    if (!browserWarmed) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      // ^ needed since Puppeteer 23.4.0
-      browserWarmed = true;
-    }
+  const expectPage = async (page: Page, path: string): Promise<void> => {
     await page.goto(`${DOMAIN}${path}`);
   };
 
@@ -35,42 +25,84 @@ export const getServerFunctions = (
 };
 
 export const expectedFramedElement = async (
+  page: Page,
+  selector: string,
+  text?: string | RegExp,
+  options: number | {timeout?: number; state?: 'visible' | 'attached'} = 5000,
+): Promise<Locator> => {
+  const timeout =
+    typeof options === 'number' ? options : (options.timeout ?? 5000);
+  const state =
+    typeof options === 'number' ? 'visible' : (options.state ?? 'visible');
+  const frame = page.frameLocator('iframe').first();
+  const locator = frame.locator(selector);
+
+  const element = text
+    ? locator.filter({hasText: text}).first()
+    : locator.first();
+
+  if (state === 'visible') {
+    await expect(element).toBeVisible({timeout});
+  } else {
+    await expect(element).toBeAttached({timeout});
+  }
+  return element;
+};
+
+export const expectedFramedSvgElement = async (
+  page: Page,
   selector: string,
   text?: string | RegExp,
   timeout = 5000,
-): Promise<ElementHandle> =>
-  (await puppeteerExpect(
-    await (await expectedElement('iframe')).contentFrame(),
-  ).toMatchElement(selector, {
-    text,
+): Promise<Locator> =>
+  expectedFramedElement(page, `svg ${selector}`, text, {
     timeout,
-  })) as any;
+    state: 'attached',
+  });
 
 export const expectedElement = async (
+  page: Page,
   selector: string,
   text?: string | RegExp,
   timeout = 5000,
-): Promise<ElementHandle> =>
-  (await puppeteerExpect(page).toMatchElement(selector, {
-    text,
-    timeout,
-  })) as any;
+): Promise<Locator> => {
+  const locator = page.locator(selector);
+
+  if (text) {
+    const filtered = locator.filter({hasText: text}).first();
+    await expect(filtered).toBeVisible({timeout});
+    return filtered;
+  }
+
+  const element = locator.first();
+  await expect(element).toBeVisible({timeout});
+  return element;
+};
 
 export const expectProperty = async (
-  element: ElementHandle,
+  element: Locator,
   property: string,
   value: string | boolean,
-): Promise<void> =>
-  expect(await (await element.getProperty(property))?.jsonValue()).toEqual(
-    value,
+): Promise<void> => {
+  const propValue = await element.evaluate(
+    (el: any, prop) => el[prop],
+    property,
   );
+  expect(propValue).toEqual(value);
+};
 
 export const expectNoFramedElement = async (
+  page: Page,
   selector: string,
   text?: string | RegExp,
   timeout = 5000,
 ): Promise<void> => {
-  await puppeteerExpect(
-    await (await expectedElement('iframe')).contentFrame(),
-  ).not.toMatchElement(selector, {text, timeout});
+  const frame = page.frameLocator('iframe').first();
+  const locator = frame.locator(selector);
+
+  if (text) {
+    await expect(locator.filter({hasText: text})).toBeHidden({timeout});
+  } else {
+    await expect(locator).toBeHidden({timeout});
+  }
 };

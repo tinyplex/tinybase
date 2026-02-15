@@ -8993,7 +8993,7 @@ describe.each([
             't2',
             'r2',
             'c2',
-            2,
+            1,
             undefined,
             expect.any(Function),
           );
@@ -9014,7 +9014,7 @@ describe.each([
             store.setCell('t1', 'r1', 'c1', 1);
             store.setCell('t2', 'r2', 'c2', 2);
           });
-          expect(secondMutator).toHaveBeenCalledTimes(0);
+          expect(secondMutator).toHaveBeenCalledTimes(1);
           expect(secondListener).toHaveBeenCalledTimes(0);
         });
 
