@@ -301,16 +301,25 @@ const copyDefinitions = async (dir) => {
   await allDefinitions((module) => copyDefinition(dir, module));
 };
 
-const execute = async (cmd) => {
+const execute = async (cmd, showOutput = false) => {
   const {spawn} = await import('child_process');
   return new Promise((resolve, reject) => {
     const [command, ...args] = cmd.split(' ');
-    const child = spawn(command, args, {stdio: 'inherit'});
+    const child = spawn(command, args);
+    let output = '';
+    child.stdout.on('data', (data) => (output += data.toString()));
+    child.stderr.on('data', (data) => (output += data.toString()));
     child.on('close', (code) => {
       if (code === 0) {
+        if (showOutput && output.trim() !== '') {
+          // eslint-disable-next-line no-console
+          console.log(output);
+        }
         resolve();
       } else {
-        reject(new Error(`Command failed with code ${code}`));
+        // eslint-disable-next-line no-console
+        console.error(`Command failed with code ${code}: ${cmd}\n${output}`);
+        reject();
       }
     });
   });
@@ -423,8 +432,9 @@ const lintCheckDocs = async (dir) => {
   });
 };
 
-const spellCheck = (dir, deep = false) =>
-  execute(`cspell "${dir}/*${deep ? '*' : ''}"`);
+const spellCheck = (dir, deep = false) => {
+  execute(`npx cspell ${dir}/*${deep ? '*' : ''}`);
+};
 
 const getTsOptions = async (dir) => {
   const {default: tsc} = await import('typescript');
@@ -723,7 +733,7 @@ export const compileDocs = () => compileDocsAndAssets();
 
 export const compileForProdAndDocs = series(compileForProd, compileDocs);
 
-export const testE2e = () => execute('npx playwright test');
+export const testE2e = () => execute('npx playwright test', true);
 
 export const compileAndTestE2e = series(compileForProdAndDocs, testE2e);
 
