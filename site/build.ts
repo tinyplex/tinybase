@@ -229,6 +229,7 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/checkpoints/index.d.ts')
     .addApiFile('dist/@types/indexes/index.d.ts')
     .addApiFile('dist/@types/metrics/index.d.ts')
+    .addApiFile('dist/@types/middleware/index.d.ts')
     .addApiFile('dist/@types/relationships/index.d.ts')
     .addApiFile('dist/@types/queries/index.d.ts')
     .addApiFile('dist/@types/mergeable-store/index.d.ts')
