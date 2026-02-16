@@ -1,4 +1,4 @@
-import {beforeEach, describe, expect, test} from 'vitest';
+import {beforeEach, describe, expect, test, vi} from 'vitest';
 
 import type {Middleware, Store} from 'tinybase';
 import {createMiddleware, createStore} from 'tinybase';
@@ -28,5 +28,812 @@ describe('Creates', () => {
 describe('Destroys', () => {
   test('basic', () => {
     middleware.destroy();
+  });
+});
+
+describe('willSetCell', () => {
+  describe('passthrough', () => {
+    test('returns same value', () => {
+      middleware.addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+        return cell;
+      });
+      store.setCell('t1', 'r1', 'c1', 'a');
+      expect(store.getCell('t1', 'r1', 'c1')).toBe('a');
+    });
+  });
+
+  describe('transform', () => {
+    test('modifies string cell', () => {
+      middleware.addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+        return typeof cell === 'string' ? cell.toUpperCase() : cell;
+      });
+      store.setCell('t1', 'r1', 'c1', 'a');
+      expect(store.getCell('t1', 'r1', 'c1')).toBe('A');
+    });
+
+    test('modifies number cell', () => {
+      middleware.addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+        return typeof cell === 'number' ? cell * 2 : cell;
+      });
+      store.setCell('t1', 'r1', 'c1', 2);
+      expect(store.getCell('t1', 'r1', 'c1')).toBe(4);
+    });
+
+    test('changes cell type', () => {
+      middleware.addWillSetCellCallback(() => {
+        return 1;
+      });
+      store.setCell('t1', 'r1', 'c1', 'a');
+      expect(store.getCell('t1', 'r1', 'c1')).toBe(1);
+    });
+
+    test('transform based on tableId/rowId/cellId', () => {
+      middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+        if (tableId === 't1' && cellId === 'c1') {
+          return typeof cell === 'number' ? cell + 1 : cell;
+        }
+        return cell;
+      });
+      store.setCell('t1', 'r1', 'c1', 1);
+      store.setCell('t1', 'r1', 'c2', 'a');
+      store.setCell('t2', 'r1', 'c1', 1);
+      expect(store.getCell('t1', 'r1', 'c1')).toBe(2);
+      expect(store.getCell('t1', 'r1', 'c2')).toBe('a');
+      expect(store.getCell('t2', 'r1', 'c1')).toBe(1);
+    });
+  });
+
+  describe('block', () => {
+    test('returning undefined blocks the cell set', () => {
+      middleware.addWillSetCellCallback(() => {
+        return undefined;
+      });
+      store.setCell('t1', 'r1', 'c1', 'a');
+      expect(store.getCell('t1', 'r1', 'c1')).toBeUndefined();
+      expect(store.getTables()).toEqual({});
+    });
+
+    test('conditionally blocks', () => {
+      middleware.addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+        return typeof cell === 'number' && cell < 0 ? undefined : cell;
+      });
+      store.setCell('t1', 'r1', 'c1', 1);
+      expect(store.getCell('t1', 'r1', 'c1')).toBe(1);
+      store.setCell('t1', 'r1', 'c2', -1);
+      expect(store.getCell('t1', 'r1', 'c2')).toBeUndefined();
+    });
+  });
+
+  describe('chaining', () => {
+    test('multiple callbacks applied in order', () => {
+      middleware
+        .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+          return typeof cell === 'number' ? cell + 1 : cell;
+        })
+        .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+          return typeof cell === 'number' ? cell * 10 : cell;
+        });
+      store.setCell('t1', 'r1', 'c1', 1);
+      // (1 + 1) * 10 = 20
+      expect(store.getCell('t1', 'r1', 'c1')).toBe(20);
+    });
+
+    test('second callback sees transformed value from first', () => {
+      const seen: any[] = [];
+      middleware
+        .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+          seen.push(cell);
+          return typeof cell === 'string' ? cell + 'b' : cell;
+        })
+        .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+          seen.push(cell);
+          return cell;
+        });
+      store.setCell('t1', 'r1', 'c1', 'a');
+      expect(seen).toEqual(['a', 'ab']);
+      expect(store.getCell('t1', 'r1', 'c1')).toBe('ab');
+    });
+
+    test('first callback blocks, second never called', () => {
+      const secondCalled = vi.fn();
+      middleware
+        .addWillSetCellCallback(() => undefined)
+        .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+          secondCalled();
+          return cell;
+        });
+      store.setCell('t1', 'r1', 'c1', 'a');
+      expect(secondCalled).not.toHaveBeenCalled();
+      expect(store.getTables()).toEqual({});
+    });
+
+    test('second of three callbacks blocks, third never called', () => {
+      const thirdCalled = vi.fn();
+      middleware
+        .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => cell)
+        .addWillSetCellCallback(() => undefined)
+        .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+          thirdCalled();
+          return cell;
+        });
+      store.setCell('t1', 'r1', 'c1', 'a');
+      expect(thirdCalled).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('entry points', () => {
+    test('called from setCell', () => {
+      const calls: string[] = [];
+      middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+        calls.push(`${tableId}/${rowId}/${cellId}=${cell}`);
+        return cell;
+      });
+      store.setCell('t1', 'r1', 'c1', 'v1');
+      expect(calls).toEqual(['t1/r1/c1=v1']);
+    });
+
+    test('called from setRow', () => {
+      const calls: string[] = [];
+      middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+        calls.push(`${tableId}/${rowId}/${cellId}=${cell}`);
+        return cell;
+      });
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      expect(calls).toEqual(['t1/r1/c1=a', 't1/r1/c2=b']);
+    });
+
+    test('called from setTable', () => {
+      const calls: string[] = [];
+      middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+        calls.push(`${tableId}/${rowId}/${cellId}=${cell}`);
+        return cell;
+      });
+      store.setTable('t1', {r1: {c1: 1}, r2: {c2: 2}});
+      expect(calls).toEqual(['t1/r1/c1=1', 't1/r2/c2=2']);
+    });
+
+    test('called from setTables', () => {
+      const calls: string[] = [];
+      middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+        calls.push(`${tableId}/${rowId}/${cellId}=${cell}`);
+        return cell;
+      });
+      store.setTables({t1: {r1: {c1: 1}}, t2: {r1: {c2: 2}}});
+      expect(calls).toEqual(['t1/r1/c1=1', 't2/r1/c2=2']);
+    });
+
+    test('called from setPartialRow', () => {
+      const calls: string[] = [];
+      middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+        calls.push(`${tableId}/${rowId}/${cellId}=${cell}`);
+        return cell;
+      });
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      calls.length = 0;
+      store.setPartialRow('t1', 'r1', {c2: 'B', c3: 'c'});
+      expect(calls).toEqual(['t1/r1/c2=B', 't1/r1/c3=c']);
+    });
+
+    test('called from addRow', () => {
+      const calls: string[] = [];
+      middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+        calls.push(`${tableId}/${rowId}/${cellId}=${cell}`);
+        return cell;
+      });
+      store.addRow('t1', {c1: 'a', c2: 'b'});
+      expect(calls).toEqual(['t1/0/c1=a', 't1/0/c2=b']);
+    });
+
+    test('transform applies from setRow', () => {
+      middleware.addWillSetCellCallback((_tableId, _rowId, _cellId, cell) =>
+        typeof cell === 'string' ? cell.toUpperCase() : cell,
+      );
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'A', c2: 'B'});
+    });
+
+    test('transform applies from setTable', () => {
+      middleware.addWillSetCellCallback((_tableId, _rowId, _cellId, cell) =>
+        typeof cell === 'number' ? cell + 1 : cell,
+      );
+      store.setTable('t1', {r1: {c1: 1}, r2: {c1: 2}});
+      expect(store.getTable('t1')).toEqual({r1: {c1: 2}, r2: {c1: 3}});
+    });
+
+    test('block from setRow blocks individual cells', () => {
+      middleware.addWillSetCellCallback((_tableId, _rowId, cellId, cell) =>
+        cellId === 'c2' ? undefined : cell,
+      );
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a'});
+    });
+
+    test('block from setTable blocks individual cells', () => {
+      middleware.addWillSetCellCallback((_tableId, _rowId, cellId, cell) =>
+        cellId === 'c2' ? undefined : cell,
+      );
+      store.setTable('t1', {r1: {c1: 'a', c2: 'b'}});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a'});
+    });
+  });
+});
+
+describe('willSetValue', () => {
+  describe('passthrough', () => {
+    test('returns same value', () => {
+      middleware.addWillSetValueCallback((_valueId, value) => {
+        return value;
+      });
+      store.setValue('v1', 'a');
+      expect(store.getValue('v1')).toBe('a');
+    });
+  });
+
+  describe('transform', () => {
+    test('modifies string value', () => {
+      middleware.addWillSetValueCallback((_valueId, value) => {
+        return typeof value === 'string' ? value.toUpperCase() : value;
+      });
+      store.setValue('v1', 'a');
+      expect(store.getValue('v1')).toBe('A');
+    });
+
+    test('modifies number value', () => {
+      middleware.addWillSetValueCallback((_valueId, value) => {
+        return typeof value === 'number' ? value * 3 : value;
+      });
+      store.setValue('v1', 2);
+      expect(store.getValue('v1')).toBe(6);
+    });
+
+    test('transform based on valueId', () => {
+      middleware.addWillSetValueCallback((valueId, value) => {
+        if (valueId === 'v1') {
+          return typeof value === 'number' ? value + 1 : value;
+        }
+        return value;
+      });
+      store.setValue('v1', 1);
+      store.setValue('v2', 'a');
+      expect(store.getValue('v1')).toBe(2);
+      expect(store.getValue('v2')).toBe('a');
+    });
+  });
+
+  describe('block', () => {
+    test('returning undefined blocks the value set', () => {
+      middleware.addWillSetValueCallback(() => undefined);
+      store.setValue('v1', 'a');
+      expect(store.getValue('v1')).toBeUndefined();
+      expect(store.getValues()).toEqual({});
+    });
+
+    test('conditionally blocks', () => {
+      middleware.addWillSetValueCallback((_valueId, value) => {
+        return value === 'b' ? undefined : value;
+      });
+      store.setValue('v1', 'a');
+      expect(store.getValue('v1')).toBe('a');
+      store.setValue('v2', 'b');
+      expect(store.getValue('v2')).toBeUndefined();
+    });
+  });
+
+  describe('chaining', () => {
+    test('multiple callbacks applied in order', () => {
+      middleware
+        .addWillSetValueCallback((_valueId, value) => {
+          return typeof value === 'number' ? value + 1 : value;
+        })
+        .addWillSetValueCallback((_valueId, value) => {
+          return typeof value === 'number' ? value * 2 : value;
+        });
+      store.setValue('v1', 1);
+      // (1 + 1) * 2 = 4
+      expect(store.getValue('v1')).toBe(4);
+    });
+
+    test('first callback blocks, second never called', () => {
+      const secondCalled = vi.fn();
+      middleware
+        .addWillSetValueCallback(() => undefined)
+        .addWillSetValueCallback((_valueId, value) => {
+          secondCalled();
+          return value;
+        });
+      store.setValue('v1', 'a');
+      expect(secondCalled).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('entry points', () => {
+    test('called from setValue', () => {
+      const calls: string[] = [];
+      middleware.addWillSetValueCallback((valueId, value) => {
+        calls.push(`${valueId}=${value}`);
+        return value;
+      });
+      store.setValue('v1', 'a');
+      expect(calls).toEqual(['v1=a']);
+    });
+
+    test('called from setValues', () => {
+      const calls: string[] = [];
+      middleware.addWillSetValueCallback((valueId, value) => {
+        calls.push(`${valueId}=${value}`);
+        return value;
+      });
+      store.setValues({v1: 'a', v2: 'b'});
+      expect(calls).toEqual(['v1=a', 'v2=b']);
+    });
+
+    test('called from setPartialValues', () => {
+      const calls: string[] = [];
+      middleware.addWillSetValueCallback((valueId, value) => {
+        calls.push(`${valueId}=${value}`);
+        return value;
+      });
+      store.setValues({v1: 'a', v2: 'b'});
+      calls.length = 0;
+      store.setPartialValues({v2: 'B', v3: 'c'});
+      expect(calls).toEqual(['v2=B', 'v3=c']);
+    });
+
+    test('transform applies from setValues', () => {
+      middleware.addWillSetValueCallback((_valueId, value) =>
+        typeof value === 'string' ? value.toUpperCase() : value,
+      );
+      store.setValues({v1: 'a', v2: 'b'});
+      expect(store.getValues()).toEqual({v1: 'A', v2: 'B'});
+    });
+  });
+});
+
+describe('willDelCell', () => {
+  describe('allow', () => {
+    test('returning true allows delete', () => {
+      middleware.addWillDelCellCallback(() => true);
+      store.setCell('t1', 'r1', 'c1', 'a');
+      store.delCell('t1', 'r1', 'c1');
+      expect(store.getCell('t1', 'r1', 'c1')).toBeUndefined();
+    });
+  });
+
+  describe('block', () => {
+    test('returning false blocks delete', () => {
+      middleware.addWillDelCellCallback(() => false);
+      store.setCell('t1', 'r1', 'c1', 'a');
+      store.delCell('t1', 'r1', 'c1');
+      expect(store.getCell('t1', 'r1', 'c1')).toBe('a');
+    });
+
+    test('conditionally blocks', () => {
+      middleware.addWillDelCellCallback((_tableId, _rowId, cellId) => {
+        return cellId !== 'c2';
+      });
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      store.delCell('t1', 'r1', 'c1');
+      store.delCell('t1', 'r1', 'c2');
+      expect(store.getCell('t1', 'r1', 'c1')).toBeUndefined();
+      expect(store.getCell('t1', 'r1', 'c2')).toBe('b');
+    });
+  });
+
+  describe('chaining', () => {
+    test('all must return true to allow', () => {
+      middleware
+        .addWillDelCellCallback(() => true)
+        .addWillDelCellCallback(() => true);
+      store.setCell('t1', 'r1', 'c1', 'a');
+      store.delCell('t1', 'r1', 'c1');
+      expect(store.getCell('t1', 'r1', 'c1')).toBeUndefined();
+    });
+
+    test('any returning false blocks', () => {
+      middleware
+        .addWillDelCellCallback(() => true)
+        .addWillDelCellCallback(() => false);
+      store.setCell('t1', 'r1', 'c1', 'a');
+      store.delCell('t1', 'r1', 'c1');
+      expect(store.getCell('t1', 'r1', 'c1')).toBe('a');
+    });
+
+    test('first blocks, second never called', () => {
+      const secondCalled = vi.fn();
+      middleware
+        .addWillDelCellCallback(() => false)
+        .addWillDelCellCallback((...args) => {
+          secondCalled(...args);
+          return true;
+        });
+      store.setCell('t1', 'r1', 'c1', 'a');
+      store.delCell('t1', 'r1', 'c1');
+      expect(secondCalled).not.toHaveBeenCalled();
+      expect(store.getCell('t1', 'r1', 'c1')).toBe('a');
+    });
+  });
+
+  describe('entry points', () => {
+    test('called from delCell', () => {
+      const calls: string[] = [];
+      middleware.addWillDelCellCallback((tableId, rowId, cellId) => {
+        calls.push(`${tableId}/${rowId}/${cellId}`);
+        return true;
+      });
+      store.setCell('t1', 'r1', 'c1', 'a');
+      store.delCell('t1', 'r1', 'c1');
+      expect(calls).toEqual(['t1/r1/c1']);
+    });
+
+    test('called from delRow', () => {
+      const calls: string[] = [];
+      middleware.addWillDelCellCallback((tableId, rowId, cellId) => {
+        calls.push(`${tableId}/${rowId}/${cellId}`);
+        return true;
+      });
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      store.delRow('t1', 'r1');
+      expect(calls).toEqual(['t1/r1/c1', 't1/r1/c2']);
+    });
+
+    test('called from delTable', () => {
+      const calls: string[] = [];
+      middleware.addWillDelCellCallback((tableId, rowId, cellId) => {
+        calls.push(`${tableId}/${rowId}/${cellId}`);
+        return true;
+      });
+      store.setTable('t1', {r1: {c1: 'a'}, r2: {c2: 'b'}});
+      store.delTable('t1');
+      expect(calls).toEqual(['t1/r1/c1', 't1/r2/c2']);
+    });
+
+    test('called from delTables', () => {
+      const calls: string[] = [];
+      middleware.addWillDelCellCallback((tableId, rowId, cellId) => {
+        calls.push(`${tableId}/${rowId}/${cellId}`);
+        return true;
+      });
+      store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c2: 'b'}}});
+      store.delTables();
+      expect(calls).toEqual(['t1/r1/c1', 't2/r1/c2']);
+    });
+
+    test('block from delRow prevents cell deletion', () => {
+      middleware.addWillDelCellCallback(() => false);
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      store.delRow('t1', 'r1');
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a', c2: 'b'});
+    });
+
+    test('block from delTable prevents cell deletion', () => {
+      middleware.addWillDelCellCallback(() => false);
+      store.setTable('t1', {r1: {c1: 'a'}});
+      store.delTable('t1');
+      expect(store.getTable('t1')).toEqual({r1: {c1: 'a'}});
+    });
+
+    test('called when setRow replaces existing cells', () => {
+      const delCalls: string[] = [];
+      middleware.addWillDelCellCallback((tableId, rowId, cellId) => {
+        delCalls.push(`${tableId}/${rowId}/${cellId}`);
+        return true;
+      });
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      delCalls.length = 0;
+      store.setRow('t1', 'r1', {c1: 'A'});
+      // c2 should be deleted
+      expect(delCalls).toEqual(['t1/r1/c2']);
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'A'});
+    });
+
+    test('block prevents removal of old cells during setRow', () => {
+      middleware.addWillDelCellCallback(() => false);
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      store.setRow('t1', 'r1', {c1: 'A'});
+      // c2 should be preserved because delete was blocked
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'A', c2: 'b'});
+    });
+  });
+});
+
+describe('willDelValue', () => {
+  describe('allow', () => {
+    test('returning true allows delete', () => {
+      middleware.addWillDelValueCallback(() => true);
+      store.setValue('v1', 'a');
+      store.delValue('v1');
+      expect(store.getValue('v1')).toBeUndefined();
+    });
+  });
+
+  describe('block', () => {
+    test('returning false blocks delete', () => {
+      middleware.addWillDelValueCallback(() => false);
+      store.setValue('v1', 'a');
+      store.delValue('v1');
+      expect(store.getValue('v1')).toBe('a');
+    });
+
+    test('conditionally blocks', () => {
+      middleware.addWillDelValueCallback((valueId) => {
+        return valueId !== 'v2';
+      });
+      store.setValues({v1: 'a', v2: 'b'});
+      store.delValue('v1');
+      store.delValue('v2');
+      expect(store.getValue('v1')).toBeUndefined();
+      expect(store.getValue('v2')).toBe('b');
+    });
+  });
+
+  describe('chaining', () => {
+    test('all must return true to allow', () => {
+      middleware
+        .addWillDelValueCallback(() => true)
+        .addWillDelValueCallback(() => true);
+      store.setValue('v1', 'a');
+      store.delValue('v1');
+      expect(store.getValue('v1')).toBeUndefined();
+    });
+
+    test('any returning false blocks', () => {
+      middleware
+        .addWillDelValueCallback(() => true)
+        .addWillDelValueCallback(() => false);
+      store.setValue('v1', 'a');
+      store.delValue('v1');
+      expect(store.getValue('v1')).toBe('a');
+    });
+
+    test('first blocks, second never called', () => {
+      const secondCalled = vi.fn();
+      middleware
+        .addWillDelValueCallback(() => false)
+        .addWillDelValueCallback((valueId) => {
+          secondCalled(valueId);
+          return true;
+        });
+      store.setValue('v1', 'a');
+      store.delValue('v1');
+      expect(secondCalled).not.toHaveBeenCalled();
+      expect(store.getValue('v1')).toBe('a');
+    });
+  });
+
+  describe('entry points', () => {
+    test('called from delValue', () => {
+      const calls: string[] = [];
+      middleware.addWillDelValueCallback((valueId) => {
+        calls.push(valueId);
+        return true;
+      });
+      store.setValue('v1', 'a');
+      store.delValue('v1');
+      expect(calls).toEqual(['v1']);
+    });
+
+    test('called from delValues', () => {
+      const calls: string[] = [];
+      middleware.addWillDelValueCallback((valueId) => {
+        calls.push(valueId);
+        return true;
+      });
+      store.setValues({v1: 'a', v2: 'b'});
+      store.delValues();
+      expect(calls).toEqual(['v1', 'v2']);
+    });
+
+    test('block from delValues prevents deletion', () => {
+      middleware.addWillDelValueCallback(() => false);
+      store.setValues({v1: 'a', v2: 'b'});
+      store.delValues();
+      expect(store.getValues()).toEqual({v1: 'a', v2: 'b'});
+    });
+
+    test('called when setValues replaces existing values', () => {
+      const delCalls: string[] = [];
+      middleware.addWillDelValueCallback((valueId) => {
+        delCalls.push(valueId);
+        return true;
+      });
+      store.setValues({v1: 'a', v2: 'b'});
+      delCalls.length = 0;
+      store.setValues({v1: 'A'});
+      // v2 should be deleted
+      expect(delCalls).toEqual(['v2']);
+      expect(store.getValues()).toEqual({v1: 'A'});
+    });
+
+    test('block prevents removal of old values during setValues', () => {
+      middleware.addWillDelValueCallback(() => false);
+      store.setValues({v1: 'a', v2: 'b'});
+      store.setValues({v1: 'A'});
+      // v2 should be preserved because delete was blocked
+      expect(store.getValues()).toEqual({v1: 'A', v2: 'b'});
+    });
+  });
+});
+
+describe('schema interaction', () => {
+  describe('willSetCell not called for schema-rejected cells', () => {
+    test('invalid cell type rejected before callback', () => {
+      const callback = vi.fn(
+        (_tableId: any, _rowId: any, _cellId: any, cell: any) => cell,
+      );
+      middleware.addWillSetCellCallback(callback);
+      store.setTablesSchema({t1: {c1: {type: 'string'}}});
+      store.setCell('t1', 'r1', 'c1', 1 as any);
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    test('valid cell type reaches callback', () => {
+      const callback = vi.fn(
+        (_tableId: any, _rowId: any, _cellId: any, cell: any) => cell,
+      );
+      middleware.addWillSetCellCallback(callback);
+      store.setTablesSchema({t1: {c1: {type: 'string'}}});
+      store.setCell('t1', 'r1', 'c1', 'a');
+      expect(callback).toHaveBeenCalledWith('t1', 'r1', 'c1', 'a');
+    });
+
+    test('unknown table rejected before callback', () => {
+      const callback = vi.fn(
+        (_tableId: any, _rowId: any, _cellId: any, cell: any) => cell,
+      );
+      middleware.addWillSetCellCallback(callback);
+      store.setTablesSchema({t1: {c1: {type: 'string'}}});
+      store.setCell('t2', 'r1', 'c1', 'a');
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    test('unknown cell rejected before callback', () => {
+      const callback = vi.fn(
+        (_tableId: any, _rowId: any, _cellId: any, cell: any) => cell,
+      );
+      middleware.addWillSetCellCallback(callback);
+      store.setTablesSchema({t1: {c1: {type: 'string'}}});
+      store.setCell('t1', 'r1', 'c2', 'a');
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    test('setRow with invalid cells does not trigger callback', () => {
+      const callback = vi.fn(
+        (_tableId: any, _rowId: any, _cellId: any, cell: any) => cell,
+      );
+      middleware.addWillSetCellCallback(callback);
+      store.setTablesSchema({t1: {c1: {type: 'string'}}});
+      store.setRow('t1', 'r1', {c1: 1 as any});
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    test('setTable with invalid cells does not trigger callback', () => {
+      const callback = vi.fn(
+        (_tableId: any, _rowId: any, _cellId: any, cell: any) => cell,
+      );
+      middleware.addWillSetCellCallback(callback);
+      store.setTablesSchema({t1: {c1: {type: 'string'}}});
+      store.setTable('t1', {r1: {c1: 1 as any}});
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    test('setRow with mix of valid and invalid cells', () => {
+      const calls: string[] = [];
+      middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+        calls.push(`${tableId}/${rowId}/${cellId}=${cell}`);
+        return cell;
+      });
+      store.setTablesSchema({
+        t1: {c1: {type: 'string'}, c2: {type: 'number'}},
+      });
+      // c1 valid string, c2 invalid (string instead of number) - gets removed
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b' as any});
+      // Only c1 reaches the callback; c2 is rejected by schema validation
+      expect(calls).toEqual(['t1/r1/c1=a']);
+    });
+  });
+
+  describe('willSetValue not called for schema-rejected values', () => {
+    test('invalid value type rejected before callback', () => {
+      const callback = vi.fn((_valueId: any, value: any) => value);
+      middleware.addWillSetValueCallback(callback);
+      store.setValuesSchema({v1: {type: 'string'}});
+      store.setValue('v1', 1 as any);
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    test('valid value type reaches callback', () => {
+      const callback = vi.fn((_valueId: any, value: any) => value);
+      middleware.addWillSetValueCallback(callback);
+      store.setValuesSchema({v1: {type: 'string'}});
+      store.setValue('v1', 'a');
+      expect(callback).toHaveBeenCalledWith('v1', 'a');
+    });
+
+    test('unknown valueId rejected before callback', () => {
+      const callback = vi.fn((_valueId: any, value: any) => value);
+      middleware.addWillSetValueCallback(callback);
+      store.setValuesSchema({v1: {type: 'string'}});
+      store.setValue('v2', 'a');
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    test('setValues with invalid values does not trigger callback', () => {
+      const callback = vi.fn((_valueId: any, value: any) => value);
+      middleware.addWillSetValueCallback(callback);
+      store.setValuesSchema({v1: {type: 'string'}});
+      store.setValues({v1: 1 as any});
+      expect(callback).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('schema defaults and middleware interaction', () => {
+    test('callback receives defaulted cell value', () => {
+      const calls: any[] = [];
+      middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+        calls.push({tableId, rowId, cellId, cell});
+        return cell;
+      });
+      store.setTablesSchema({
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'number', default: 1},
+        },
+      });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      // c2 should be defaulted to 1, and the callback should see it
+      expect(calls).toEqual([
+        {tableId: 't1', rowId: 'r1', cellId: 'c1', cell: 'a'},
+        {tableId: 't1', rowId: 'r1', cellId: 'c2', cell: 1},
+      ]);
+    });
+
+    test('middleware can transform defaulted cell value', () => {
+      middleware.addWillSetCellCallback((_tableId, _rowId, _cellId, cell) =>
+        typeof cell === 'number' ? cell + 1 : cell,
+      );
+      store.setTablesSchema({
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'number', default: 1},
+        },
+      });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(store.getCell('t1', 'r1', 'c2')).toBe(2);
+    });
+  });
+});
+
+describe('fluent API', () => {
+  test('addWillSetCellCallback returns middleware', () => {
+    const result = middleware.addWillSetCellCallback(
+      (_tableId, _rowId, _cellId, cell) => cell,
+    );
+    expect(result).toBe(middleware);
+  });
+
+  test('addWillSetValueCallback returns middleware', () => {
+    const result = middleware.addWillSetValueCallback(
+      (_valueId, value) => value,
+    );
+    expect(result).toBe(middleware);
+  });
+
+  test('addWillDelCellCallback returns middleware', () => {
+    const result = middleware.addWillDelCellCallback(() => true);
+    expect(result).toBe(middleware);
+  });
+
+  test('addWillDelValueCallback returns middleware', () => {
+    const result = middleware.addWillDelValueCallback(() => true);
+    expect(result).toBe(middleware);
+  });
+
+  test('full chained setup', () => {
+    const result = middleware
+      .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => cell)
+      .addWillSetValueCallback((_valueId, value) => value)
+      .addWillDelCellCallback(() => true)
+      .addWillDelValueCallback(() => true);
+    expect(result).toBe(middleware);
   });
 });
