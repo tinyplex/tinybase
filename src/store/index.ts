@@ -163,6 +163,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let hadValues = false;
   let transactions = 0;
   let internalWillSets: [
+    willSetCell?: (
+      tableId: Id,
+      rowId: Id,
+      cellId: Id,
+      cell: Cell,
+    ) => Cell | undefined,
     willSetValue?: (valueId: Id, value: Value) => Value | undefined,
   ] = [];
   let internalListeners: [
@@ -497,16 +503,24 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowMap: RowMap,
     cellId: Id,
     cell: Cell,
-  ): void => {
-    if (!collHas(rowMap, cellId)) {
-      cellIdsChanged(tableId, rowId, cellId, 1);
-    }
-    const oldCell = mapGet(rowMap, cellId);
-    if (cell !== oldCell) {
-      cellChanged(tableId, rowId, cellId, oldCell, cell);
-      mapSet(rowMap, cellId, cell);
-    }
-  };
+  ): void =>
+    ifNotUndefined(
+      ifNotUndefined(
+        internalWillSets[0],
+        (willSetCell) => willSetCell(tableId, rowId, cellId, cell),
+        () => cell,
+      ),
+      (cell) => {
+        if (!collHas(rowMap, cellId)) {
+          cellIdsChanged(tableId, rowId, cellId, 1);
+        }
+        const oldCell = mapGet(rowMap, cellId);
+        if (cell !== oldCell) {
+          cellChanged(tableId, rowId, cellId, oldCell, cell);
+          mapSet(rowMap, cellId, cell);
+        }
+      },
+    );
 
   const setCellIntoDefaultRow = (
     tableId: Id,
@@ -541,7 +555,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const setValidValue = (valueId: Id, value: Value): void =>
     ifNotUndefined(
       ifNotUndefined(
-        internalWillSets[0],
+        internalWillSets[1],
         (willSetValue) => willSetValue(valueId, value),
         () => value,
       ),
@@ -1713,8 +1727,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
   });
 
   const setInternalWillSets = (
+    willSetCell: (
+      tableId: Id,
+      rowId: Id,
+      cellId: Id,
+      cell: Cell,
+    ) => Cell | undefined,
     willSetValue: (valueId: Id, value: Value) => Value | undefined,
-  ) => (internalWillSets = [willSetValue]);
+  ) => (internalWillSets = [willSetCell, willSetValue]);
 
   const setInternalListeners = (
     preStartTransaction: () => void,
