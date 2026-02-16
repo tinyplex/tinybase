@@ -889,7 +889,10 @@ describe('Context Hooks', () => {
     const Test = () =>
       didRender(
         <>
-          {JSON.stringify([useStores(), useStores()?.['store1']?.getTables()])}
+          {JSON.stringify([
+            Object.keys(useStores()),
+            useStores()?.['store1']?.getTables(),
+          ])}
         </>,
       );
     const store1 = createStore().setTables({t1: {r1: {c1: 2}}});
@@ -899,14 +902,14 @@ describe('Context Hooks', () => {
         <Test />
       </Provider>,
     );
-    expect(container.textContent).toEqual('[{},null]');
+    expect(container.textContent).toEqual('[[],null]');
     rerender(
       <Provider storesById={{store1, store2}}>
         <Test />
       </Provider>,
     );
     expect(container.textContent).toEqual(
-      '[{"store1":{},"store2":{}},{"t1":{"r1":{"c1":2}}}]',
+      '[["store1","store2"],{"t1":{"r1":{"c1":2}}}]',
     );
     expect(didRender).toHaveBeenCalledTimes(2);
 
