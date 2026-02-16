@@ -162,6 +162,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let hadTables = false;
   let hadValues = false;
   let transactions = 0;
+  let internalWillSets: [
+    willSetValue?: (valueId: Id, value: Value) => Value | undefined,
+  ] = [];
   let internalListeners: [
     preStartTransaction?: () => void,
     preFinishTransaction?: () => void,
@@ -535,16 +538,24 @@ export const createStore: typeof createStoreDecl = (): Store => {
       (_valuesMap, valueId) => delValidValue(valueId),
     );
 
-  const setValidValue = (valueId: Id, value: Value): void => {
-    if (!collHas(valuesMap, valueId)) {
-      valueIdsChanged(valueId, 1);
-    }
-    const oldValue = mapGet(valuesMap, valueId);
-    if (value !== oldValue) {
-      valueChanged(valueId, oldValue, value);
-      mapSet(valuesMap, valueId, value);
-    }
-  };
+  const setValidValue = (valueId: Id, value: Value): void =>
+    ifNotUndefined(
+      ifNotUndefined(
+        internalWillSets[0],
+        (willSetValue) => willSetValue(valueId, value),
+        () => value,
+      ),
+      (value) => {
+        if (!collHas(valuesMap, valueId)) {
+          valueIdsChanged(valueId, 1);
+        }
+        const oldValue = mapGet(valuesMap, valueId);
+        if (value !== oldValue) {
+          valueChanged(valueId, oldValue, value);
+          mapSet(valuesMap, valueId, value);
+        }
+      },
+    );
 
   const getNewRowId = (tableId: Id, reuse: 0 | 1): Id => {
     const [getId] = mapGet(tablePoolFunctions, tableId) as PoolFunctions;
@@ -1701,6 +1712,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
       pairCollSize2(finishTransactionListeners),
   });
 
+  const setInternalWillSets = (
+    willSetValue: (valueId: Id, value: Value) => Value | undefined,
+  ) => (internalWillSets = [willSetValue]);
+
   const setInternalListeners = (
     preStartTransaction: () => void,
     preFinishTransaction: () => void,
@@ -1823,6 +1838,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     addListener,
     callListeners,
     setInternalListeners,
+    setInternalWillSets,
     _applyChanges,
     middleware,
   };
