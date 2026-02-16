@@ -2,6 +2,7 @@ import type {Checkpoints} from '../@types/checkpoints/index.d.ts';
 import type {Id, Ids, SortKey} from '../@types/common/index.d.ts';
 import type {Indexes} from '../@types/indexes/index.d.ts';
 import type {Metrics} from '../@types/metrics/index.d.ts';
+import type {Middleware} from '../@types/middleware/index.d.ts';
 import type {Queries} from '../@types/queries/index.d.ts';
 import type {Relationships} from '../@types/relationships/index.d.ts';
 import type {Cell, GetCell, Store} from '../@types/store/index.d.ts';
@@ -255,7 +256,13 @@ export const getRowCellFunction = <RowValue>(
       ((): RowValue => defaultCellValue ?? (EMPTY_STRING as any as RowValue)));
 
 export const getCreateFunction = <
-  Thing extends Metrics | Indexes | Relationships | Checkpoints | Queries,
+  Thing extends
+    | Metrics
+    | Middleware
+    | Indexes
+    | Relationships
+    | Checkpoints
+    | Queries,
 >(
   getFunction: (store: Store) => Thing,
   initFunction?: (thing: Thing) => void,

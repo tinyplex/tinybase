@@ -20,6 +20,7 @@ const ALL_MODULES = [
   'indexes',
   'mergeable-store',
   'metrics',
+  'middleware',
   'persisters',
   'persisters/persister-automerge',
   'persisters/persister-browser',

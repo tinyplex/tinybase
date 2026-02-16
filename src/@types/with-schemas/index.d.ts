@@ -8,6 +8,7 @@ export * from '../common/with-schemas/index.d.ts';
 export * from '../indexes/with-schemas/index.d.ts';
 export * from '../mergeable-store/with-schemas/index.d.ts';
 export * from '../metrics/with-schemas/index.d.ts';
+export * from '../middleware/with-schemas/index.d.ts';
 export * from '../queries/with-schemas/index.d.ts';
 export * from '../relationships/with-schemas/index.d.ts';
 export * from '../store/with-schemas/index.d.ts';
