@@ -314,12 +314,13 @@ npx vitest run ./test/unit/documentation.test.ts --retry=0
 
 **How it works**:
 
-- Extracts all code blocks from markdown files and `docs.js` files
-- Concatenates all examples from each file together
-- Parses and executes them to ensure they work
-- This means examples in the same file share scope
+- Extracts code blocks from markdown files and `docs.js` files
+- For **guide `.md` files**: concatenates all code blocks from the file together
+  and runs them as a single test — examples in the same file share scope
+- For **`docs.js` files**: each `@example` block is extracted independently (via
+  regex) and run as its own isolated test — examples do NOT share scope
 
-**Critical constraints**:
+**Critical constraints for guide `.md` files**:
 
 - Don't redeclare variables across examples in the same file
 - First example can declare `const store = createStore()`, subsequent examples
@@ -328,12 +329,22 @@ npx vitest run ./test/unit/documentation.test.ts --retry=0
 - Avoid async operations in examples unless necessary
 - Keep examples simple and focused
 
+**Critical constraints for `docs.js` files**:
+
+- Each `@example` block runs in complete isolation
+- You CAN (and should) reuse simple variable names like `store`, `middleware`
+  across `@example` blocks — no suffixing needed
+- Each `@example` must include its own imports and setup
+- Keep examples self-contained
+
 **Common pitfalls**:
 
-- ❌ Declaring `const store` multiple times in the same file
+- ❌ Declaring `const store` multiple times in the same **guide** file
 - ❌ Using undefined functions (forgot import statement)
-- ✅ First example: `const store = createStore()`
-- ✅ Later examples: `store.setCell(...)` (reuses existing store)
+- ❌ Adding unnecessary suffixes (`store2`, `store3`) in `docs.js` examples
+- ✅ First guide example: `const store = createStore()`
+- ✅ Later guide examples: `store.setCell(...)` (reuses existing store)
+- ✅ Each `docs.js` `@example`: `const store = createStore()` (independent)
 
 ### Adding New Documentation
 
@@ -519,3 +530,12 @@ npm run testE2e               # Run E2E tests to verify demos
 - You only need `compileForProd` once, unless you've changed TinyBase source
 - E2E tests use Playwright to verify demos work in a real browser
 - Individual E2E tests can be run for faster verification during iteration
+
+## Maintaining This Guide
+
+At the end of each major project or task, add any new **general** learnings to
+this file. This ensures future agents benefit from discoveries about the
+codebase, build system, testing patterns, or documentation conventions. Only add
+broadly applicable insights — not project-specific implementation details.
+
+
