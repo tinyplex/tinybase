@@ -33,6 +33,26 @@
  */
 /// WillSetCellCallback
 /**
+ * The WillSetRowCallback type describes a function that is called before a
+ * Row is set in the Store.
+ *
+ * The callback receives the table Id, row Id, and the Row object that is about
+ * to be set. It can return the Row (possibly transformed) to allow the write,
+ * or `undefined` to prevent the Row from being set.
+ *
+ * Multiple WillSetRowCallback functions can be registered and they will be
+ * called sequentially, the Row being updated successively. If any callback
+ * returns `undefined`, the chain short-circuits and the Row will not be set.
+ * @param tableId The Id of the Table being written to.
+ * @param rowId The Id of the Row being set.
+ * @param row The Row object about to be set.
+ * @returns The Row to use (possibly transformed), or `undefined` to prevent
+ * the write.
+ * @category Callback
+ * @since v8.0.0
+ */
+/// WillSetRowCallback
+/**
  * The WillSetValueCallback type describes a function that is called before a
  * Value is set in the Store.
  *
@@ -191,6 +211,67 @@
    * @since v8.0.0
    */
   /// Middleware.addWillSetCellCallback
+  /**
+   * The addWillSetRowCallback method registers a WillSetRowCallback that
+   * will be called before any Row is set in the Store.
+   *
+   * The callback can transform the Row or return `undefined` to prevent the
+   * write. Multiple callbacks can be registered and they are called
+   * sequentially, each receiving the (possibly transformed) row from the
+   * previous callback.
+   * @param callback The WillSetRowCallback to register.
+   * @returns A reference to the Middleware object, for chaining.
+   * @example
+   * This example registers a callback that upper-cases string Cell values in
+   * rows set to the 'pets' table.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * middleware.addWillSetRowCallback((tableId, _rowId, row) =>
+   *   tableId === 'pets'
+   *     ? Object.fromEntries(
+   *         Object.entries(row).map(([k, v]) => [
+   *           k,
+   *           typeof v === 'string' ? v.toUpperCase() : v,
+   *         ]),
+   *       )
+   *     : row,
+   * );
+   *
+   * store.setRow('pets', 'fido', {species: 'dog', legs: 4});
+   * console.log(store.getRow('pets', 'fido'));
+   * // -> {species: 'DOG', legs: 4}
+   *
+   * middleware.destroy();
+   * ```
+   * @example
+   * This example registers a callback that prevents writes to a 'locked'
+   * table.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * middleware.addWillSetRowCallback((tableId, _rowId, row) =>
+   *   tableId === 'locked' ? undefined : row,
+   * );
+   *
+   * store.setRow('locked', 'r1', {c1: 'value'});
+   * console.log(store.getTables());
+   * // -> {}
+   *
+   * middleware.destroy();
+   * ```
+   * @category Configuration
+   * @since v8.0.0
+   */
+  /// Middleware.addWillSetRowCallback
   /**
    * The addWillSetValueCallback method registers a WillSetValueCallback that
    * will be called before any Value is set in the Store.

@@ -10,6 +10,7 @@ import type {
   OptionalSchemas,
   OptionalTablesSchema,
   OptionalValuesSchema,
+  Row,
   Store,
   Value,
 } from '../../store/with-schemas/index.d.ts';
@@ -34,6 +35,22 @@ export type WillSetCellCallback<
 > = (
   ...params: Params | [tableId: never, rowId: never, cellId: never, cell: never]
 ) => Params[3] | undefined;
+
+/// WillSetRowCallback
+export type WillSetRowCallback<
+  Schema extends OptionalTablesSchema,
+  Params extends any[] = TableIdFromSchema<Schema> extends infer TableId
+    ? TableId extends TableIdFromSchema<Schema>
+      ? [
+          tableId: TableId,
+          rowId: Id,
+          row: Row<Schema, TableId>,
+        ]
+      : never
+    : never,
+> = (
+  ...params: Params | [tableId: never, rowId: never, row: never]
+) => Params[2] | undefined;
 
 /// WillSetValueCallback
 export type WillSetValueCallback<
@@ -81,6 +98,11 @@ export interface Middleware<in out Schemas extends OptionalSchemas> {
   /// Middleware.addWillSetCellCallback
   addWillSetCellCallback(
     callback: WillSetCellCallback<Schemas[0]>,
+  ): Middleware<Schemas>;
+
+  /// Middleware.addWillSetRowCallback
+  addWillSetRowCallback(
+    callback: WillSetRowCallback<Schemas[0]>,
   ): Middleware<Schemas>;
 
   /// Middleware.addWillSetValueCallback

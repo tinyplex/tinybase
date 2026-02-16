@@ -3,6 +3,7 @@ import type {Id} from '../common/index.d.ts';
 import type {
   Cell,
   CellOrUndefined,
+  Row,
   Store,
   Value,
   ValueOrUndefined,
@@ -15,6 +16,13 @@ export type WillSetCellCallback = (
   cellId: Id,
   cell: Cell,
 ) => CellOrUndefined;
+
+/// WillSetRowCallback
+export type WillSetRowCallback = (
+  tableId: Id,
+  rowId: Id,
+  row: Row,
+) => Row | undefined;
 
 /// WillSetValueCallback
 export type WillSetValueCallback = (
@@ -39,6 +47,9 @@ export interface Middleware {
 
   /// Middleware.addWillSetCellCallback
   addWillSetCellCallback(callback: WillSetCellCallback): Middleware;
+
+  /// Middleware.addWillSetRowCallback
+  addWillSetRowCallback(callback: WillSetRowCallback): Middleware;
 
   /// Middleware.addWillSetValueCallback
   addWillSetValueCallback(callback: WillSetValueCallback): Middleware;

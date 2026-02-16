@@ -258,6 +258,251 @@ describe('willSetCell', () => {
   });
 });
 
+describe('willSetRow', () => {
+  describe('passthrough', () => {
+    test('returns same row', () => {
+      middleware.addWillSetRowCallback((_tableId, _rowId, row) => {
+        return row;
+      });
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a', c2: 'b'});
+    });
+  });
+
+  describe('transform', () => {
+    test('modifies row by adding a cell', () => {
+      middleware.addWillSetRowCallback((_tableId, _rowId, row) => {
+        return {...row, c2: 1};
+      });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a', c2: 1});
+    });
+
+    test('modifies row by removing a cell', () => {
+      middleware.addWillSetRowCallback((_tableId, _rowId, row) => {
+        const {c2: _, ...rest} = row;
+        return rest;
+      });
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a'});
+    });
+
+    test('modifies row by transforming cell values', () => {
+      middleware.addWillSetRowCallback((_tableId, _rowId, row) => {
+        return Object.fromEntries(
+          Object.entries(row).map(([k, v]) => [
+            k,
+            typeof v === 'string' ? v.toUpperCase() : v,
+          ]),
+        );
+      });
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'A', c2: 'B'});
+    });
+
+    test('transform based on tableId', () => {
+      middleware.addWillSetRowCallback((tableId, _rowId, row) => {
+        if (tableId === 't1') {
+          return {...row, source: 't1'};
+        }
+        return row;
+      });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      store.setRow('t2', 'r1', {c1: 'a'});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a', source: 't1'});
+      expect(store.getRow('t2', 'r1')).toEqual({c1: 'a'});
+    });
+  });
+
+  describe('block', () => {
+    test('returning undefined blocks the row set', () => {
+      middleware.addWillSetRowCallback(() => {
+        return undefined;
+      });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(store.getRow('t1', 'r1')).toEqual({});
+      expect(store.getTables()).toEqual({});
+    });
+
+    test('conditionally blocks', () => {
+      middleware.addWillSetRowCallback((tableId, _rowId, row) => {
+        return tableId === 'locked' ? undefined : row;
+      });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a'});
+      store.setRow('locked', 'r1', {c1: 'a'});
+      expect(store.getRow('locked', 'r1')).toEqual({});
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+    });
+  });
+
+  describe('chaining', () => {
+    test('multiple callbacks applied in order', () => {
+      middleware
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
+          return {...row, step1: true};
+        })
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
+          return {...row, step2: true};
+        });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(store.getRow('t1', 'r1')).toEqual({
+        c1: 'a',
+        step1: true,
+        step2: true,
+      });
+    });
+
+    test('second callback sees transformed row from first', () => {
+      const seen: any[] = [];
+      middleware
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
+          seen.push({...row});
+          return {...row, added: 1};
+        })
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
+          seen.push({...row});
+          return row;
+        });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(seen).toEqual([{c1: 'a'}, {c1: 'a', added: 1}]);
+    });
+
+    test('first callback blocks, second never called', () => {
+      const secondCalled = vi.fn();
+      middleware
+        .addWillSetRowCallback(() => undefined)
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
+          secondCalled();
+          return row;
+        });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(secondCalled).not.toHaveBeenCalled();
+      expect(store.getTables()).toEqual({});
+    });
+
+    test('second of three callbacks blocks, third never called', () => {
+      const thirdCalled = vi.fn();
+      middleware
+        .addWillSetRowCallback((_tableId, _rowId, row) => row)
+        .addWillSetRowCallback(() => undefined)
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
+          thirdCalled();
+          return row;
+        });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(thirdCalled).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('entry points', () => {
+    test('called from setRow', () => {
+      const calls: string[] = [];
+      middleware.addWillSetRowCallback((tableId, rowId, row) => {
+        calls.push(`${tableId}/${rowId}`);
+        return row;
+      });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(calls).toEqual(['t1/r1']);
+    });
+
+    test('called from setTable', () => {
+      const calls: string[] = [];
+      middleware.addWillSetRowCallback((tableId, rowId, row) => {
+        calls.push(`${tableId}/${rowId}`);
+        return row;
+      });
+      store.setTable('t1', {r1: {c1: 1}, r2: {c2: 2}});
+      expect(calls).toEqual(['t1/r1', 't1/r2']);
+    });
+
+    test('called from setTables', () => {
+      const calls: string[] = [];
+      middleware.addWillSetRowCallback((tableId, rowId, row) => {
+        calls.push(`${tableId}/${rowId}`);
+        return row;
+      });
+      store.setTables({t1: {r1: {c1: 1}}, t2: {r1: {c2: 2}}});
+      expect(calls).toEqual(['t1/r1', 't2/r1']);
+    });
+
+    test('called from addRow', () => {
+      const calls: string[] = [];
+      middleware.addWillSetRowCallback((tableId, rowId, row) => {
+        calls.push(`${tableId}/${rowId}`);
+        return row;
+      });
+      store.addRow('t1', {c1: 'a'});
+      expect(calls).toEqual(['t1/0']);
+    });
+
+    test('transform applies from setTable', () => {
+      middleware.addWillSetRowCallback((_tableId, _rowId, row) =>
+        Object.fromEntries(
+          Object.entries(row).map(([k, v]) => [
+            k,
+            typeof v === 'number' ? v + 1 : v,
+          ]),
+        ),
+      );
+      store.setTable('t1', {r1: {c1: 1}, r2: {c1: 2}});
+      expect(store.getTable('t1')).toEqual({r1: {c1: 2}, r2: {c1: 3}});
+    });
+
+    test('block from setTable blocks individual rows', () => {
+      middleware.addWillSetRowCallback((_tableId, rowId, row) =>
+        rowId === 'r2' ? undefined : row,
+      );
+      store.setTable('t1', {r1: {c1: 'a'}, r2: {c2: 'b'}});
+      expect(store.getTable('t1')).toEqual({r1: {c1: 'a'}});
+    });
+  });
+
+  describe('interaction with willSetCell', () => {
+    test('willSetRow runs before willSetCell', () => {
+      const order: string[] = [];
+      middleware
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
+          order.push('row');
+          return row;
+        })
+        .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+          order.push('cell');
+          return cell;
+        });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(order).toEqual(['row', 'cell']);
+    });
+
+    test('willSetRow transforms are seen by willSetCell', () => {
+      middleware
+        .addWillSetRowCallback((_tableId, _rowId, row) => ({
+          ...row,
+          extra: 'added',
+        }))
+        .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) =>
+          typeof cell === 'string' ? cell.toUpperCase() : cell,
+        );
+      store.setRow('t1', 'r1', {c1: 'hello'});
+      expect(store.getRow('t1', 'r1')).toEqual({
+        c1: 'HELLO',
+        extra: 'ADDED',
+      });
+    });
+
+    test('willSetRow block prevents willSetCell from being called', () => {
+      const cellCallback = vi.fn(
+        (_tableId: any, _rowId: any, _cellId: any, cell: any) => cell,
+      );
+      middleware
+        .addWillSetRowCallback(() => undefined)
+        .addWillSetCellCallback(cellCallback);
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(cellCallback).not.toHaveBeenCalled();
+    });
+  });
+});
+
 describe('willSetValue', () => {
   describe('passthrough', () => {
     test('returns same value', () => {
@@ -811,6 +1056,13 @@ describe('fluent API', () => {
     expect(result).toBe(middleware);
   });
 
+  test('addWillSetRowCallback returns middleware', () => {
+    const result = middleware.addWillSetRowCallback(
+      (_tableId, _rowId, row) => row,
+    );
+    expect(result).toBe(middleware);
+  });
+
   test('addWillSetValueCallback returns middleware', () => {
     const result = middleware.addWillSetValueCallback(
       (_valueId, value) => value,
@@ -831,6 +1083,7 @@ describe('fluent API', () => {
   test('full chained setup', () => {
     const result = middleware
       .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => cell)
+      .addWillSetRowCallback((_tableId, _rowId, row) => row)
       .addWillSetValueCallback((_valueId, value) => value)
       .addWillDelCellCallback(() => true)
       .addWillDelValueCallback(() => true);

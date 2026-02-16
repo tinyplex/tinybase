@@ -4,12 +4,14 @@ import type {
   WillDelCellCallback,
   WillDelValueCallback,
   WillSetCellCallback,
+  WillSetRowCallback,
   WillSetValueCallback,
   createMiddleware as createMiddlewareDecl,
 } from '../@types/middleware/index.d.ts';
 import type {
   Cell,
   CellOrUndefined,
+  Row,
   Store,
   Value,
   ValueOrUndefined,
@@ -22,6 +24,7 @@ import {isUndefined} from '../common/other.ts';
 export const createMiddleware = getCreateFunction(
   (store: Store): Middleware => {
     const willSetCellCallbacks: WillSetCellCallback[] = [];
+    const willSetRowCallbacks: WillSetRowCallback[] = [];
     const willSetValueCallbacks: WillSetValueCallback[] = [];
     const willDelCellCallbacks: WillDelCellCallback[] = [];
     const willDelValueCallbacks: WillDelValueCallback[] = [];
@@ -39,6 +42,20 @@ export const createMiddleware = getCreateFunction(
             ? current
             : callback(tableId, rowId, cellId, current as Cell),
         cell as CellOrUndefined,
+      );
+
+    const willSetRow = (
+      tableId: Id,
+      rowId: Id,
+      row: Row,
+    ): Row | undefined =>
+      arrayReduce(
+        willSetRowCallbacks,
+        (current, callback) =>
+          isUndefined(current)
+            ? current
+            : callback(tableId, rowId, current as Row),
+        row as Row | undefined,
       );
 
     const willSetValue = (valueId: Id, value: Value): ValueOrUndefined =>
@@ -62,6 +79,7 @@ export const createMiddleware = getCreateFunction(
       willSetValue,
       willDelCell,
       willDelValue,
+      willSetRow,
     );
 
     const getStore = (): Store => store;
@@ -74,6 +92,10 @@ export const createMiddleware = getCreateFunction(
     const addWillSetCellCallback = (
       callback: WillSetCellCallback,
     ): Middleware => fluent(() => arrayPush(willSetCellCallbacks, callback));
+
+    const addWillSetRowCallback = (
+      callback: WillSetRowCallback,
+    ): Middleware => fluent(() => arrayPush(willSetRowCallbacks, callback));
 
     const addWillSetValueCallback = (
       callback: WillSetValueCallback,
@@ -92,6 +114,7 @@ export const createMiddleware = getCreateFunction(
     const middleware: Middleware = objFreeze({
       getStore,
       addWillSetCellCallback,
+      addWillSetRowCallback,
       addWillSetValueCallback,
       addWillDelCellCallback,
       addWillDelValueCallback,

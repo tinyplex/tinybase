@@ -172,6 +172,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willSetValue?: (valueId: Id, value: Value) => ValueOrUndefined,
     willDelCell?: (tableId: Id, rowId: Id, cellId: Id) => boolean,
     willDelValue?: (valueId: Id) => boolean,
+    willSetRow?: (tableId: Id, rowId: Id, row: Row) => Row | undefined,
   ] = [];
   let internalListeners: [
     preStartTransaction?: () => void,
@@ -487,17 +488,27 @@ export const createStore: typeof createStoreDecl = (): Store => {
     row: Row,
     forceDel?: boolean,
   ): RowMap =>
-    mapMatch(
-      mapEnsure(tableMap, rowId, () => {
-        rowIdsChanged(tableId, rowId, 1);
-        return mapNew();
-      }),
-      row,
-      (rowMap, cellId, cell) =>
-        setValidCell(tableId, rowId, rowMap, cellId, cell),
-      (rowMap, cellId) =>
-        delValidCell(tableId, tableMap, rowId, rowMap, cellId, forceDel),
-    );
+    ifNotUndefined(
+      forceDel
+        ? row
+        : ifNotUndefined(
+            internalWillSets[4],
+            (willSetRow) => willSetRow(tableId, rowId, row),
+            () => row,
+          ),
+      (validRow) =>
+        mapMatch(
+          mapEnsure(tableMap, rowId, () => {
+            rowIdsChanged(tableId, rowId, 1);
+            return mapNew();
+          }),
+          validRow,
+          (rowMap, cellId, cell) =>
+            setValidCell(tableId, rowId, rowMap, cellId, cell),
+          (rowMap, cellId) =>
+            delValidCell(tableId, tableMap, rowId, rowMap, cellId, forceDel),
+        ),
+    ) as RowMap;
 
   const setValidCell = (
     tableId: Id,
@@ -1742,8 +1753,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willSetValue: (valueId: Id, value: Value) => ValueOrUndefined,
     willDelCell: (tableId: Id, rowId: Id, cellId: Id) => boolean,
     willDelValue: (valueId: Id) => boolean,
+    willSetRow: (tableId: Id, rowId: Id, row: Row) => Row | undefined,
   ) =>
-    (internalWillSets = [willSetCell, willSetValue, willDelCell, willDelValue]);
+    (internalWillSets = [
+      willSetCell,
+      willSetValue,
+      willDelCell,
+      willDelValue,
+      willSetRow,
+    ]);
 
   const setInternalListeners = (
     preStartTransaction: () => void,
