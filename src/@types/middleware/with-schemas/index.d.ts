@@ -7,7 +7,6 @@ import type {
 import type {Id} from '../../common/with-schemas/index.d.ts';
 import type {
   Cell,
-  CellOrUndefined,
   OptionalSchemas,
   OptionalTablesSchema,
   OptionalValuesSchema,
@@ -32,12 +31,9 @@ export type WillSetCellCallback<
         : never
       : never
     : never,
-  Params4 extends any[] =
-    | Params
-    | [tableId: never, rowId: never, cellId: never, cell: never],
-> = Params extends any[]
-  ? (...params: Params4) => CellOrUndefined<Schema, Params4[0], Params4[2]>
-  : never;
+> = (
+  ...params: Params | [tableId: never, rowId: never, cellId: never, cell: never]
+) => Params[3] | undefined;
 
 /// WillSetValueCallback
 export type WillSetValueCallback<
@@ -47,10 +43,9 @@ export type WillSetValueCallback<
       ? [valueId: ValueId, value: Value<Schema, ValueId>]
       : never
     : never,
-  Params2 extends any[] = Params | [valueId: never, value: never],
-> = Params extends any[]
-  ? (...params: Params2) => Value<Schema, Params2[0]> | undefined
-  : never;
+> = (
+  ...params: Params | [valueId: never, value: never]
+) => Params[1] | undefined;
 
 /// WillDelCellCallback
 export type WillDelCellCallback<
@@ -64,10 +59,9 @@ export type WillDelCellCallback<
         : never
       : never
     : never,
-  Params3 extends any[] =
-    | Params
-    | [tableId: never, rowId: never, cellId: never],
-> = Params extends any[] ? (...params: Params3) => boolean : never;
+> = (
+  ...params: Params | [tableId: never, rowId: never, cellId: never]
+) => boolean;
 
 /// WillDelValueCallback
 export type WillDelValueCallback<
@@ -77,8 +71,7 @@ export type WillDelValueCallback<
       ? [valueId: ValueId]
       : never
     : never,
-  Params1 extends any[] = Params | [valueId: never],
-> = Params extends any[] ? (...params: Params1) => boolean : never;
+> = (...params: Params | [valueId: never]) => boolean;
 
 /// Middleware
 export interface Middleware<in out Schemas extends OptionalSchemas> {

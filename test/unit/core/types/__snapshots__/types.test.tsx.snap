@@ -1012,6 +1012,40 @@ exports[`Types in metrics.ts > 62:33 1`] = `"Property 't2' does not exist on typ
 
 exports[`Types in metrics.ts > 66:59 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "number"; readonly default: 0; }; readonly c1s: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
+exports[`Types in middleware.ts > 22:44 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types in middleware.ts > 32:44 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types in middleware.ts > 33:25 1`] = `"This comparison appears to be unintentional because the types '"c0"' and '"c1"' have no overlap."`;
+
+exports[`Types in middleware.ts > 34:6 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
+
+exports[`Types in middleware.ts > 35:6 1`] = `"This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap."`;
+
+exports[`Types in middleware.ts > 47:52 1`] = `"Type 'boolean' is not assignable to type 'string | number | undefined'."`;
+
+exports[`Types in middleware.ts > 56:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types in middleware.ts > 67:24 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types in middleware.ts > 68:4 1`] = `"This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"v2"' have no overlap."`;
+
+exports[`Types in middleware.ts > 77:53 1`] = `"Type 'boolean' is not assignable to type 'string | number | undefined'."`;
+
+exports[`Types in middleware.ts > 86:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types in middleware.ts > 95:23 1`] = `"This comparison appears to be unintentional because the types '"c0"' and '"c1"' have no overlap."`;
+
+exports[`Types in middleware.ts > 96:4 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
+
+exports[`Types in middleware.ts > 97:4 1`] = `"This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap."`;
+
+exports[`Types in middleware.ts > 109:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
+exports[`Types in middleware.ts > 118:4 1`] = `"This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"v2"' have no overlap."`;
+
+exports[`Types in middleware.ts > 130:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
 exports[`Types in persisters.ts > 24:37 1`] = `"Argument of type '[{ t1: { r1: { c2: number; }; }; }, {}]' is not assignable to parameter of type 'Content<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], true> | (() => Content<...>) | undefined'."`;
 
 exports[`Types in persisters.ts > 25:25 1`] = `"Argument of type '[{ t1: { r1: { c1: string; }; }; }, {}]' is not assignable to parameter of type 'Content<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], true> | (() => Content<...>) | undefined'."`;
