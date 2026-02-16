@@ -1,10 +1,53 @@
 /// middleware
-import type {Store} from '../store/index.d.ts';
+import type {Id} from '../common/index.d.ts';
+import type {
+  Cell,
+  CellOrUndefined,
+  Store,
+  Value,
+  ValueOrUndefined,
+} from '../store/index.d.ts';
+
+/// WillSetCellCallback
+export type WillSetCellCallback = (
+  tableId: Id,
+  rowId: Id,
+  cellId: Id,
+  cell: Cell,
+) => CellOrUndefined;
+
+/// WillSetValueCallback
+export type WillSetValueCallback = (
+  valueId: Id,
+  value: Value,
+) => ValueOrUndefined;
+
+/// WillDelCellCallback
+export type WillDelCellCallback = (
+  tableId: Id,
+  rowId: Id,
+  cellId: Id,
+) => boolean;
+
+/// WillDelValueCallback
+export type WillDelValueCallback = (valueId: Id) => boolean;
 
 /// Middleware
 export interface Middleware {
   /// Middleware.getStore
   getStore(): Store;
+
+  /// Middleware.addWillSetCellCallback
+  addWillSetCellCallback(callback: WillSetCellCallback): Middleware;
+
+  /// Middleware.addWillSetValueCallback
+  addWillSetValueCallback(callback: WillSetValueCallback): Middleware;
+
+  /// Middleware.addWillDelCellCallback
+  addWillDelCellCallback(callback: WillDelCellCallback): Middleware;
+
+  /// Middleware.addWillDelValueCallback
+  addWillDelValueCallback(callback: WillDelValueCallback): Middleware;
 
   /// Middleware.destroy
   destroy(): void;

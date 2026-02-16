@@ -11,6 +11,82 @@
  */
 /// middleware
 /**
+ * The WillSetCellCallback type describes a function that is called before a
+ * Cell is set in the Store.
+ *
+ * The callback receives the table Id, row Id, cell Id, and the Cell value that
+ * is about to be set. It can return the Cell value (possibly transformed) to
+ * allow the write, or `undefined` to prevent the Cell from being set.
+ *
+ * Multiple WillSetCellCallback functions can be registered and they will be
+ * called sequentially, the Cell value being updated successively. If any
+ * callback returns `undefined`, the chain short-circuits and the Cell will not
+ * be set.
+ * @param tableId The Id of the Table being written to.
+ * @param rowId The Id of the Row being written to.
+ * @param cellId The Id of the Cell being set.
+ * @param cell The Cell value about to be set.
+ * @returns The Cell value to use (possibly transformed), or `undefined` to
+ * prevent the write.
+ * @category Callback
+ * @since v8.0.0
+ */
+/// WillSetCellCallback
+/**
+ * The WillSetValueCallback type describes a function that is called before a
+ * Value is set in the Store.
+ *
+ * The callback receives the value Id and the Value that is about to be set. It
+ * can return the Value (possibly transformed) to allow the write, or
+ * `undefined` to prevent the Value from being set.
+ *
+ * Multiple WillSetValueCallback functions can be registered and they will be
+ * called sequentially, the Value being updated successively. If any callback
+ * returns `undefined`, the chain short-circuits and the Value will not be set.
+ * @param valueId The Id of the Value being set.
+ * @param value The Value about to be set.
+ * @returns The Value to use (possibly transformed), or `undefined` to prevent
+ * the write.
+ * @category Callback
+ * @since v8.0.0
+ */
+/// WillSetValueCallback
+/**
+ * The WillDelCellCallback type describes a function that is called before a
+ * Cell is deleted from the Store.
+ *
+ * The callback receives the table Id, row Id, and cell Id of the Cell about to
+ * be deleted. It returns `true` to allow the deletion, or `false` to prevent
+ * it.
+ *
+ * Multiple WillDelCellCallback functions can be registered and they will be
+ * called sequentially. If any callback returns `false`, the chain
+ * short-circuits and the Cell will not be deleted.
+ * @param tableId The Id of the Table containing the Cell.
+ * @param rowId The Id of the Row containing the Cell.
+ * @param cellId The Id of the Cell being deleted.
+ * @returns `true` to allow the deletion, `false` to prevent it.
+ * @category Callback
+ * @since v8.0.0
+ */
+/// WillDelCellCallback
+/**
+ * The WillDelValueCallback type describes a function that is called before a
+ * Value is deleted from the Store.
+ *
+ * The callback receives the value Id of the Value about to be deleted. It
+ * returns `true` to allow the deletion, or `false` to prevent it.
+ *
+ * Multiple WillDelValueCallback functions can be registered and they will be
+ * called sequentially. If any callback returns `false`, the chain
+ * short-circuits and the Value will not be deleted.
+ * @param valueId The Id of the Value being deleted.
+ * @returns `true` to allow the deletion, `false` to prevent it.
+ * @category Callback
+ * @since v8.0.0
+ */
+/// WillDelValueCallback
+/**
  * A Middleware object lets you intercept and validate writes to a Store.
  *
  * This is useful for enforcing business rules, data validation, or
@@ -57,6 +133,169 @@
    * @since v8.0.0
    */
   /// Middleware.getStore
+  /**
+   * The addWillSetCellCallback method registers a WillSetCellCallback that
+   * will be called before any Cell is set in the Store.
+   *
+   * The callback can transform the Cell value or return `undefined` to prevent
+   * the write. Multiple callbacks can be registered and they are called
+   * sequentially, each receiving the (possibly transformed) value from the
+   * previous callback.
+   * @param callback The WillSetCellCallback to register.
+   * @returns A reference to the Middleware object, for chaining.
+   * @example
+   * This example registers a callback that upper-cases string Cell values in
+   * the 'pets' table.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * middleware.addWillSetCellCallback(
+   *   (tableId, rowId, cellId, cell) =>
+   *     tableId === 'pets' && typeof cell === 'string'
+   *       ? cell.toUpperCase()
+   *       : cell,
+   * );
+   *
+   * store.setCell('pets', 'fido', 'species', 'dog');
+   * console.log(store.getCell('pets', 'fido', 'species'));
+   * // -> 'DOG'
+   *
+   * middleware.destroy();
+   * ```
+   * @example
+   * This example registers a callback that prevents writes to a 'locked'
+   * table.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * middleware.addWillSetCellCallback(
+   *   (tableId, _rowId, _cellId, cell) =>
+   *     tableId === 'locked' ? undefined : cell,
+   * );
+   *
+   * store.setCell('locked', 'r1', 'c1', 'value');
+   * console.log(store.getTables());
+   * // -> {}
+   *
+   * middleware.destroy();
+   * ```
+   * @category Configuration
+   * @since v8.0.0
+   */
+  /// Middleware.addWillSetCellCallback
+  /**
+   * The addWillSetValueCallback method registers a WillSetValueCallback that
+   * will be called before any Value is set in the Store.
+   *
+   * The callback can transform the Value or return `undefined` to prevent the
+   * write. Multiple callbacks can be registered and they are called
+   * sequentially, each receiving the (possibly transformed) value from the
+   * previous callback.
+   * @param callback The WillSetValueCallback to register.
+   * @returns A reference to the Middleware object, for chaining.
+   * @example
+   * This example registers a callback that clamps a numeric Value.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * middleware.addWillSetValueCallback((valueId, value) =>
+   *   valueId === 'score' && typeof value === 'number'
+   *     ? Math.min(100, Math.max(0, value))
+   *     : value,
+   * );
+   *
+   * store.setValue('score', 150);
+   * console.log(store.getValue('score'));
+   * // -> 100
+   *
+   * middleware.destroy();
+   * ```
+   * @category Configuration
+   * @since v8.0.0
+   */
+  /// Middleware.addWillSetValueCallback
+  /**
+   * The addWillDelCellCallback method registers a WillDelCellCallback that
+   * will be called before any Cell is deleted from the Store.
+   *
+   * The callback returns `true` to allow the deletion or `false` to prevent
+   * it. Multiple callbacks can be registered and they are called sequentially.
+   * If any callback returns `false`, the deletion is prevented.
+   * @param callback The WillDelCellCallback to register.
+   * @returns A reference to the Middleware object, for chaining.
+   * @example
+   * This example registers a callback that prevents deleting cells from the
+   * 'protected' table.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * store.setCell('protected', 'r1', 'name', 'Alice');
+   *
+   * middleware.addWillDelCellCallback(
+   *   (tableId) => tableId !== 'protected',
+   * );
+   *
+   * store.delCell('protected', 'r1', 'name', true);
+   * console.log(store.getCell('protected', 'r1', 'name'));
+   * // -> 'Alice'
+   *
+   * middleware.destroy();
+   * ```
+   * @category Configuration
+   * @since v8.0.0
+   */
+  /// Middleware.addWillDelCellCallback
+  /**
+   * The addWillDelValueCallback method registers a WillDelValueCallback that
+   * will be called before any Value is deleted from the Store.
+   *
+   * The callback returns `true` to allow the deletion or `false` to prevent
+   * it. Multiple callbacks can be registered and they are called sequentially.
+   * If any callback returns `false`, the deletion is prevented.
+   * @param callback The WillDelValueCallback to register.
+   * @returns A reference to the Middleware object, for chaining.
+   * @example
+   * This example registers a callback that prevents deleting a specific
+   * Value.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * store.setValue('theme', 'dark');
+   *
+   * middleware.addWillDelValueCallback(
+   *   (valueId) => valueId !== 'theme',
+   * );
+   *
+   * store.delValue('theme');
+   * console.log(store.getValue('theme'));
+   * // -> 'dark'
+   *
+   * middleware.destroy();
+   * ```
+   * @category Configuration
+   * @since v8.0.0
+   */
+  /// Middleware.addWillDelValueCallback
   /**
    * The destroy method should be called when this Middleware object is no
    * longer used. It removes all hooks and listeners from the Store, and

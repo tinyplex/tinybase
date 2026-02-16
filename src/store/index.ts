@@ -168,13 +168,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
       rowId: Id,
       cellId: Id,
       cell: Cell,
-    ) => Cell | undefined,
-    willSetValue?: (valueId: Id, value: Value) => Value | undefined,
-    willDelCell?: (
-      tableId: Id,
-      rowId: Id,
-      cellId: Id,
-    ) => boolean,
+    ) => CellOrUndefined,
+    willSetValue?: (valueId: Id, value: Value) => ValueOrUndefined,
+    willDelCell?: (tableId: Id, rowId: Id, cellId: Id) => boolean,
     willDelValue?: (valueId: Id) => boolean,
   ] = [];
   let internalListeners: [
@@ -1742,17 +1738,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
       rowId: Id,
       cellId: Id,
       cell: Cell,
-    ) => Cell | undefined,
-    willSetValue: (valueId: Id, value: Value) => Value | undefined,
-    willDelCell: (
-      tableId: Id,
-      rowId: Id,
-      cellId: Id,
-    ) => boolean,
+    ) => CellOrUndefined,
+    willSetValue: (valueId: Id, value: Value) => ValueOrUndefined,
+    willDelCell: (tableId: Id, rowId: Id, cellId: Id) => boolean,
     willDelValue: (valueId: Id) => boolean,
-  ) => (internalWillSets = [
-    willSetCell, willSetValue, willDelCell, willDelValue,
-  ]);
+  ) =>
+    (internalWillSets = [willSetCell, willSetValue, willDelCell, willDelValue]);
 
   const setInternalListeners = (
     preStartTransaction: () => void,
