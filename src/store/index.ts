@@ -83,7 +83,6 @@ import {
   mapToObj2,
   mapToObj3,
 } from '../common/map.ts';
-import {MiddlewareHandler, createMiddleware} from '../common/middleware.ts';
 import {
   isObject,
   objDel,
@@ -218,7 +217,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const tableCellIds: IdMap<IdMap<number>> = mapNew();
   const tablesMap: TablesMap = mapNew();
   const valuesMap: ValuesMap = mapNew();
-  const middleware = createMiddleware();
   const hasTablesListeners: Pair<IdSet2> = pairNewMap();
   const tablesListeners: Pair<IdSet2> = pairNewMap();
   const tableIdsListeners: Pair<IdSet2> = pairNewMap();
@@ -566,7 +564,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       },
     );
 
-  const setCellIntoDefaultRow = (
+  const setCellIntoNewRow = (
     tableId: Id,
     tableMap: TableMap,
     rowId: Id,
@@ -1274,13 +1272,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const setRow = (tableId: Id, rowId: Id, row: Row): Store =>
     fluentTransaction(
-      (tableId, rowId) => {
-        const validatedRow = middleware.applyToRow(tableId, rowId, row);
-        return validatedRow !== null &&
-          validateRow(tableId, rowId, validatedRow)
-          ? setValidRow(tableId, getOrCreateTable(tableId), rowId, validatedRow)
-          : 0;
-      },
+      (tableId, rowId) =>
+        validateRow(tableId, rowId, row)
+          ? setValidRow(tableId, getOrCreateTable(tableId), rowId, row)
+          : 0,
       tableId,
       rowId,
     );
@@ -1288,12 +1283,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const addRow = (tableId: Id, row: Row, reuseRowIds = true): Id | undefined =>
     transaction(() => {
       let rowId: Id | undefined = undefined;
-      tableId = id(tableId);
-      const validatedRow = middleware.applyToRow(tableId, undefined, row);
-      if (validatedRow !== null && validateRow(tableId, rowId, validatedRow)) {
-        const table = getOrCreateTable(tableId);
-        rowId = getNewRowId(tableId, reuseRowIds ? 1 : 0);
-        setValidRow(tableId, table, rowId, validatedRow);
+      if (validateRow(tableId, rowId, row)) {
+        tableId = id(tableId);
+        setValidRow(
+          tableId,
+          getOrCreateTable(tableId),
+          (rowId = getNewRowId(tableId, reuseRowIds ? 1 : 0)),
+          row,
+        );
       }
       return rowId;
     });
@@ -1301,14 +1298,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const setPartialRow = (tableId: Id, rowId: Id, partialRow: Row): Store =>
     fluentTransaction(
       (tableId, rowId) => {
-        const validatedRow = middleware.applyToRow(tableId, rowId, partialRow);
-        if (
-          validatedRow !== null &&
-          validateRow(tableId, rowId, validatedRow, 1)
-        ) {
+        if (validateRow(tableId, rowId, partialRow, 1)) {
           const table = getOrCreateTable(tableId);
-          objMap(validatedRow, (cell, cellId) =>
-            setCellIntoDefaultRow(tableId, table, rowId, cellId, cell as Cell),
+          objMap(partialRow, (cell, cellId) =>
+            setCellIntoNewRow(tableId, table, rowId, cellId, cell as Cell),
           );
         }
       },
@@ -1323,31 +1316,23 @@ export const createStore: typeof createStoreDecl = (): Store => {
     cell: Cell | MapCell,
   ): Store =>
     fluentTransaction(
-      (tableId, rowId, cellId) => {
-        const resolvedCell = isFunction(cell)
-          ? cell(getCell(tableId, rowId, cellId))
-          : cell;
-        const row = {[cellId]: resolvedCell};
-        const validatedRow = middleware.applyToRow(tableId, rowId, row);
-        if (validatedRow !== null) {
-          ifNotUndefined(
-            getValidatedCell(
+      (tableId, rowId, cellId) =>
+        ifNotUndefined(
+          getValidatedCell(
+            tableId,
+            rowId,
+            cellId,
+            isFunction(cell) ? cell(getCell(tableId, rowId, cellId)) : cell,
+          ),
+          (validCell) =>
+            setCellIntoNewRow(
               tableId,
+              getOrCreateTable(tableId),
               rowId,
               cellId,
-              validatedRow[cellId] as Cell,
+              validCell,
             ),
-            (validCell) =>
-              setCellIntoDefaultRow(
-                tableId,
-                getOrCreateTable(tableId),
-                rowId,
-                cellId,
-                validCell,
-              ),
-          );
-        }
-      },
+        ),
       tableId,
       rowId,
       cellId,
@@ -1366,7 +1351,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       ifNotUndefined(
         getValidatedCell(tableId, rowId, cellId, cell),
         (validCell) =>
-          setCellIntoDefaultRow(
+          setCellIntoNewRow(
             tableId,
             getOrCreateTable(tableId),
             rowId,
@@ -1404,8 +1389,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       valueId,
     );
 
-  // Internal applyChanges without middleware (for MergeableStore sync path)
-  const _applyChanges = (changes: Changes): Store =>
+  const applyChanges = (changes: Changes): Store =>
     fluentTransaction(() => {
       objMap(changes[0], (table, tableId) =>
         isUndefined(table)
@@ -1427,12 +1411,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
         setOrDelValue(store, valueId, value as ValueOrUndefined),
       );
     });
-
-  // Public applyChanges with middleware validation
-  const applyChanges = (changes: Changes): Store => {
-    const validatedChanges = middleware.applyToChanges(changes);
-    return validatedChanges === null ? store : _applyChanges(validatedChanges);
-  };
 
   const setTablesJson = (tablesJson: Json): Store => {
     tryCatch(() => setOrDelTables(jsonParse(tablesJson)));
@@ -1952,19 +1930,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
     isMergeable: () => false,
 
-    use: (tableId: Id, handler: MiddlewareHandler): Store => {
-      middleware.register(tableId, handler);
-      return store;
-    },
-
     // only used internally by other modules
     createStore,
     addListener,
     callListeners,
     setInternalListeners,
     setWillCallbacks,
-    _applyChanges,
-    middleware,
   };
 
   // and now for some gentle meta-programming
