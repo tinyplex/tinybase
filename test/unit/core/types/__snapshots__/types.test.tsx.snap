@@ -1094,6 +1094,8 @@ exports[`Types in middleware.ts > 187:4 1`] = `"This comparison appears to be un
 
 exports[`Types in middleware.ts > 199:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
+exports[`Types in middleware.ts > 211:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+
 exports[`Types in persisters.ts > 24:37 1`] = `"Argument of type '[{ t1: { r1: { c2: number; }; }; }, {}]' is not assignable to parameter of type 'Content<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], true> | (() => Content<...>) | undefined'."`;
 
 exports[`Types in persisters.ts > 25:25 1`] = `"Argument of type '[{ t1: { r1: { c1: string; }; }; }, {}]' is not assignable to parameter of type 'Content<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], true> | (() => Content<...>) | undefined'."`;

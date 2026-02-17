@@ -1273,6 +1273,112 @@ describe('willDelValue', () => {
   });
 });
 
+describe('willDelValues', () => {
+  describe('allow', () => {
+    test('returning true allows delete', () => {
+      middleware.addWillDelValuesCallback(() => true);
+      store.setValues({v1: 'a', v2: 'b'});
+      store.delValues();
+      expect(store.getValues()).toEqual({});
+    });
+  });
+
+  describe('block', () => {
+    test('returning false blocks delete', () => {
+      middleware.addWillDelValuesCallback(() => false);
+      store.setValues({v1: 'a', v2: 'b'});
+      store.delValues();
+      expect(store.getValues()).toEqual({v1: 'a', v2: 'b'});
+    });
+  });
+
+  describe('chaining', () => {
+    test('all must return true to allow', () => {
+      middleware
+        .addWillDelValuesCallback(() => true)
+        .addWillDelValuesCallback(() => true);
+      store.setValues({v1: 'a'});
+      store.delValues();
+      expect(store.getValues()).toEqual({});
+    });
+
+    test('any returning false blocks', () => {
+      middleware
+        .addWillDelValuesCallback(() => true)
+        .addWillDelValuesCallback(() => false);
+      store.setValues({v1: 'a'});
+      store.delValues();
+      expect(store.getValues()).toEqual({v1: 'a'});
+    });
+
+    test('first blocks, second never called', () => {
+      const secondCalled = vi.fn();
+      middleware
+        .addWillDelValuesCallback(() => false)
+        .addWillDelValuesCallback(() => {
+          secondCalled();
+          return true;
+        });
+      store.setValues({v1: 'a'});
+      store.delValues();
+      expect(secondCalled).not.toHaveBeenCalled();
+      expect(store.getValues()).toEqual({v1: 'a'});
+    });
+  });
+
+  describe('entry points', () => {
+    test('called from delValues', () => {
+      const calls: number[] = [];
+      middleware.addWillDelValuesCallback(() => {
+        calls.push(1);
+        return true;
+      });
+      store.setValues({v1: 'a'});
+      store.delValues();
+      expect(calls).toEqual([1]);
+    });
+
+    test('not called from delValue', () => {
+      const calls: number[] = [];
+      middleware.addWillDelValuesCallback(() => {
+        calls.push(1);
+        return true;
+      });
+      store.setValues({v1: 'a', v2: 'b'});
+      store.delValue('v1');
+      expect(calls).toEqual([]);
+      expect(store.getValues()).toEqual({v2: 'b'});
+    });
+  });
+
+  describe('interaction with willDelValue', () => {
+    test('willDelValues blocks before willDelValue is called', () => {
+      const valueCalls = vi.fn();
+      middleware.addWillDelValuesCallback(() => false);
+      middleware.addWillDelValueCallback((...args) => {
+        valueCalls(...args);
+        return true;
+      });
+      store.setValues({v1: 'a', v2: 'b'});
+      store.delValues();
+      expect(valueCalls).not.toHaveBeenCalled();
+      expect(store.getValues()).toEqual({v1: 'a', v2: 'b'});
+    });
+
+    test('willDelValues allows, willDelValue still checked', () => {
+      const valueCalls: string[] = [];
+      middleware.addWillDelValuesCallback(() => true);
+      middleware.addWillDelValueCallback((valueId) => {
+        valueCalls.push(valueId);
+        return true;
+      });
+      store.setValues({v1: 'a', v2: 'b'});
+      store.delValues();
+      expect(valueCalls).toEqual(['v1', 'v2']);
+    });
+  });
+});
+
 describe('schema interaction', () => {
   describe('willSetCell not called for schema-rejected cells', () => {
     test('invalid cell type rejected before callback', () => {
@@ -1464,6 +1570,11 @@ describe('fluent API', () => {
     expect(result).toBe(middleware);
   });
 
+  test('addWillDelValuesCallback returns middleware', () => {
+    const result = middleware.addWillDelValuesCallback(() => true);
+    expect(result).toBe(middleware);
+  });
+
   test('full chained setup', () => {
     const result = middleware
       .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => cell)
@@ -1472,7 +1583,8 @@ describe('fluent API', () => {
       .addWillSetValuesCallback((values) => values)
       .addWillDelCellCallback(() => true)
       .addWillDelRowCallback(() => true)
-      .addWillDelValueCallback(() => true);
+      .addWillDelValueCallback(() => true)
+      .addWillDelValuesCallback(() => true);
     expect(result).toBe(middleware);
   });
 });

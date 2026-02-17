@@ -4,6 +4,7 @@ import type {
   WillDelCellCallback,
   WillDelRowCallback,
   WillDelValueCallback,
+  WillDelValuesCallback,
   WillSetCellCallback,
   WillSetRowCallback,
   WillSetValueCallback,
@@ -33,6 +34,7 @@ export const createMiddleware = getCreateFunction(
     const willDelCellCallbacks: WillDelCellCallback[] = [];
     const willDelRowCallbacks: WillDelRowCallback[] = [];
     const willDelValueCallbacks: WillDelValueCallback[] = [];
+    const willDelValuesCallbacks: WillDelValuesCallback[] = [];
 
     const willSetCell = (
       tableId: Id,
@@ -86,6 +88,9 @@ export const createMiddleware = getCreateFunction(
     const willDelValue = (valueId: Id): boolean =>
       arrayEvery(willDelValueCallbacks, (callback) => callback(valueId));
 
+    const willDelValues = (): boolean =>
+      arrayEvery(willDelValuesCallbacks, (callback) => callback());
+
     (store as any).setInternalWillSets(
       willSetCell,
       willSetValue,
@@ -94,6 +99,7 @@ export const createMiddleware = getCreateFunction(
       willSetRow,
       willSetValues,
       willDelRow,
+      willDelValues,
     );
 
     const getStore = (): Store => store;
@@ -129,6 +135,11 @@ export const createMiddleware = getCreateFunction(
       callback: WillDelValueCallback,
     ): Middleware => fluent(() => arrayPush(willDelValueCallbacks, callback));
 
+    const addWillDelValuesCallback = (
+      callback: WillDelValuesCallback,
+    ): Middleware =>
+      fluent(() => arrayPush(willDelValuesCallbacks, callback));
+
     const destroy = (): void => {};
 
     const middleware: Middleware = objFreeze({
@@ -140,6 +151,7 @@ export const createMiddleware = getCreateFunction(
       addWillDelCellCallback,
       addWillDelRowCallback,
       addWillDelValueCallback,
+      addWillDelValuesCallback,
       destroy,
     } as Middleware);
 

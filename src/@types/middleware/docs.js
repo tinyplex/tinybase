@@ -142,6 +142,21 @@
  */
 /// WillDelValueCallback
 /**
+ * The WillDelValuesCallback type describes a function that is called before all
+ * Values are deleted from the Store.
+ *
+ * The callback takes no parameters. It returns `true` to allow the deletion, or
+ * `false` to prevent it.
+ *
+ * Multiple WillDelValuesCallback functions can be registered and they will be
+ * called sequentially. If any callback returns `false`, the chain
+ * short-circuits and the Values will not be deleted.
+ * @returns `true` to allow the deletion, `false` to prevent it.
+ * @category Callback
+ * @since v8.0.0
+ */
+/// WillDelValuesCallback
+/**
  * A Middleware object lets you intercept and validate writes to a Store.
  *
  * This is useful for enforcing business rules, data validation, or
@@ -499,6 +514,39 @@
    * @since v8.0.0
    */
   /// Middleware.addWillDelValueCallback
+  /**
+   * The addWillDelValuesCallback method registers a WillDelValuesCallback that
+   * will be called before all Values are deleted from the Store.
+   *
+   * The callback returns `true` to allow the deletion or `false` to prevent it.
+   * Multiple callbacks can be registered and they are called sequentially. If
+   * any callback returns `false`, the deletion is prevented.
+   * @param callback The WillDelValuesCallback to register.
+   * @returns A reference to the Middleware object, for chaining.
+   * @example
+   * This example registers a callback that prevents deleting all Values from
+   * the pet store.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * store.setValues({storeName: 'happy pets', limit: 50});
+   *
+   * middleware.addWillDelValuesCallback(() => false);
+   *
+   * store.delValues();
+   * console.log(store.getValues());
+   * // -> {storeName: 'happy pets', limit: 50}
+   *
+   * middleware.destroy();
+   * ```
+   * @category Configuration
+   * @since v8.0.0
+   */
+  /// Middleware.addWillDelValuesCallback
   /**
    * The destroy method should be called when this Middleware object is no
    * longer used. It removes all hooks and listeners from the Store, and

@@ -47,6 +47,9 @@ export type WillDelRowCallback = (tableId: Id, rowId: Id) => boolean;
 /// WillDelValueCallback
 export type WillDelValueCallback = (valueId: Id) => boolean;
 
+/// WillDelValuesCallback
+export type WillDelValuesCallback = () => boolean;
+
 /// Middleware
 export interface Middleware {
   /// Middleware.getStore
@@ -72,6 +75,9 @@ export interface Middleware {
 
   /// Middleware.addWillDelValueCallback
   addWillDelValueCallback(callback: WillDelValueCallback): Middleware;
+
+  /// Middleware.addWillDelValuesCallback
+  addWillDelValuesCallback(callback: WillDelValuesCallback): Middleware;
 
   /// Middleware.destroy
   destroy(): void;
