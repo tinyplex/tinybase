@@ -21,6 +21,77 @@ const middlewareWithSchema = createMiddleware(storeWithSchemas);
 
 middlewareWithSchema.getStore().getTables().t1;
 middlewareWithSchema.getStore().getTables().t2; // !
+// addWillSetTablesCallback
+() => {
+  middlewareWithSchema.addWillSetTablesCallback((tables) => {
+    tables.t0;
+    tables.t1;
+
+    tables.t2; // !
+
+    return tables;
+  });
+
+  middlewareWithSchema.addWillSetTablesCallback((tables) => tables);
+  middlewareWithSchema.addWillSetTablesCallback(() => undefined);
+
+  middlewareWithSchema
+    .addWillSetTablesCallback((tables) => tables)
+    .getStore()
+    .getTables().t1;
+  middlewareWithSchema
+    .addWillSetTablesCallback((tables) => tables)
+    .getStore()
+    .getTables().t2; // !
+};
+
+// addWillSetTableCallback
+() => {
+  middlewareWithSchema.addWillSetTableCallback((tableId, _table) => {
+    tableId == 't0';
+    tableId == 't1';
+
+    tableId == 't2'; // !
+
+    return _table;
+  });
+
+  middlewareWithSchema.addWillSetTableCallback((_tableId, table) => table);
+  middlewareWithSchema.addWillSetTableCallback(() => undefined);
+
+  middlewareWithSchema
+    .addWillSetTableCallback((_tableId, table) => table)
+    .getStore()
+    .getTables().t1;
+  middlewareWithSchema
+    .addWillSetTableCallback((_tableId, table) => table)
+    .getStore()
+    .getTables().t2; // !
+};
+
+// addWillSetRowCallback
+() => {
+  middlewareWithSchema.addWillSetRowCallback((tableId, _rowId, row) => {
+    tableId == 't0';
+    tableId == 't1';
+
+    tableId == 't2'; // !
+
+    return row;
+  });
+
+  middlewareWithSchema.addWillSetRowCallback((_tableId, _rowId, row) => row);
+  middlewareWithSchema.addWillSetRowCallback(() => undefined);
+
+  middlewareWithSchema
+    .addWillSetRowCallback((_tableId, _rowId, row) => row)
+    .getStore()
+    .getTables().t1;
+  middlewareWithSchema
+    .addWillSetRowCallback((_tableId, _rowId, row) => row)
+    .getStore()
+    .getTables().t2; // !
+};
 
 // addWillSetCellCallback
 () => {
@@ -57,50 +128,26 @@ middlewareWithSchema.getStore().getTables().t2; // !
     .getTables().t2; // !
 };
 
-// addWillSetRowCallback
+// addWillSetValuesCallback
 () => {
-  middlewareWithSchema.addWillSetRowCallback((tableId, _rowId, row) => {
-    tableId == 't0';
-    tableId == 't1';
+  middlewareWithSchema.addWillSetValuesCallback((values) => {
+    values.v1;
+    values.v1d;
 
-    tableId == 't2'; // !
+    values.v2; // !
 
-    return row;
+    return values;
   });
 
-  middlewareWithSchema.addWillSetRowCallback((_tableId, _rowId, row) => row);
-  middlewareWithSchema.addWillSetRowCallback(() => undefined);
+  middlewareWithSchema.addWillSetValuesCallback((values) => values);
+  middlewareWithSchema.addWillSetValuesCallback(() => undefined);
 
   middlewareWithSchema
-    .addWillSetRowCallback((_tableId, _rowId, row) => row)
+    .addWillSetValuesCallback((values) => values)
     .getStore()
     .getTables().t1;
   middlewareWithSchema
-    .addWillSetRowCallback((_tableId, _rowId, row) => row)
-    .getStore()
-    .getTables().t2; // !
-};
-
-// addWillSetTableCallback
-() => {
-  middlewareWithSchema.addWillSetTableCallback((tableId, _table) => {
-    tableId == 't0';
-    tableId == 't1';
-
-    tableId == 't2'; // !
-
-    return _table;
-  });
-
-  middlewareWithSchema.addWillSetTableCallback((_tableId, table) => table);
-  middlewareWithSchema.addWillSetTableCallback(() => undefined);
-
-  middlewareWithSchema
-    .addWillSetTableCallback((_tableId, table) => table)
-    .getStore()
-    .getTables().t1;
-  middlewareWithSchema
-    .addWillSetTableCallback((_tableId, table) => table)
+    .addWillSetValuesCallback((values) => values)
     .getStore()
     .getTables().t2; // !
 };
@@ -135,50 +182,56 @@ middlewareWithSchema.getStore().getTables().t2; // !
     .getTables().t2; // !
 };
 
-// addWillSetValuesCallback
+// addWillDelTablesCallback
 () => {
-  middlewareWithSchema.addWillSetValuesCallback((values) => {
-    values.v1;
-    values.v1d;
-
-    values.v2; // !
-
-    return values;
-  });
-
-  middlewareWithSchema.addWillSetValuesCallback((values) => values);
-  middlewareWithSchema.addWillSetValuesCallback(() => undefined);
-
   middlewareWithSchema
-    .addWillSetValuesCallback((values) => values)
+    .addWillDelTablesCallback(() => true)
     .getStore()
     .getTables().t1;
   middlewareWithSchema
-    .addWillSetValuesCallback((values) => values)
+    .addWillDelTablesCallback(() => true)
     .getStore()
     .getTables().t2; // !
 };
 
-// addWillSetTablesCallback
+// addWillDelTableCallback
 () => {
-  middlewareWithSchema.addWillSetTablesCallback((tables) => {
-    tables.t0;
-    tables.t1;
+  middlewareWithSchema.addWillDelTableCallback((tableId) => {
+    tableId == 't0';
+    tableId == 't1';
 
-    tables.t2; // !
+    tableId == 't2'; // !
 
-    return tables;
+    return true;
   });
 
-  middlewareWithSchema.addWillSetTablesCallback((tables) => tables);
-  middlewareWithSchema.addWillSetTablesCallback(() => undefined);
-
   middlewareWithSchema
-    .addWillSetTablesCallback((tables) => tables)
+    .addWillDelTableCallback(() => true)
     .getStore()
     .getTables().t1;
   middlewareWithSchema
-    .addWillSetTablesCallback((tables) => tables)
+    .addWillDelTableCallback(() => true)
+    .getStore()
+    .getTables().t2; // !
+};
+
+// addWillDelRowCallback
+() => {
+  middlewareWithSchema.addWillDelRowCallback((tableId, _rowId) => {
+    tableId == 't0';
+    tableId == 't1';
+
+    tableId == 't2'; // !
+
+    return true;
+  });
+
+  middlewareWithSchema
+    .addWillDelRowCallback(() => true)
+    .getStore()
+    .getTables().t1;
+  middlewareWithSchema
+    .addWillDelRowCallback(() => true)
     .getStore()
     .getTables().t2; // !
 };
@@ -206,56 +259,14 @@ middlewareWithSchema.getStore().getTables().t2; // !
     .getTables().t2; // !
 };
 
-// addWillDelRowCallback
+// addWillDelValuesCallback
 () => {
-  middlewareWithSchema.addWillDelRowCallback((tableId, _rowId) => {
-    tableId == 't0';
-    tableId == 't1';
-
-    tableId == 't2'; // !
-
-    return true;
-  });
-
   middlewareWithSchema
-    .addWillDelRowCallback(() => true)
+    .addWillDelValuesCallback(() => true)
     .getStore()
     .getTables().t1;
   middlewareWithSchema
-    .addWillDelRowCallback(() => true)
-    .getStore()
-    .getTables().t2; // !
-};
-
-// addWillDelTableCallback
-() => {
-  middlewareWithSchema.addWillDelTableCallback((tableId) => {
-    tableId == 't0';
-    tableId == 't1';
-
-    tableId == 't2'; // !
-
-    return true;
-  });
-
-  middlewareWithSchema
-    .addWillDelTableCallback(() => true)
-    .getStore()
-    .getTables().t1;
-  middlewareWithSchema
-    .addWillDelTableCallback(() => true)
-    .getStore()
-    .getTables().t2; // !
-};
-
-// addWillDelTablesCallback
-() => {
-  middlewareWithSchema
-    .addWillDelTablesCallback(() => true)
-    .getStore()
-    .getTables().t1;
-  middlewareWithSchema
-    .addWillDelTablesCallback(() => true)
+    .addWillDelValuesCallback(() => true)
     .getStore()
     .getTables().t2; // !
 };
@@ -277,18 +288,6 @@ middlewareWithSchema.getStore().getTables().t2; // !
     .getTables().t1;
   middlewareWithSchema
     .addWillDelValueCallback(() => true)
-    .getStore()
-    .getTables().t2; // !
-};
-
-// addWillDelValuesCallback
-() => {
-  middlewareWithSchema
-    .addWillDelValuesCallback(() => true)
-    .getStore()
-    .getTables().t1;
-  middlewareWithSchema
-    .addWillDelValuesCallback(() => true)
     .getStore()
     .getTables().t2; // !
 };

@@ -163,23 +163,23 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let hadValues = false;
   let transactions = 0;
   let internalWillSets: [
+    willSetTables?: (tables: Tables) => Tables | undefined,
+    willSetTable?: (tableId: Id, table: Table) => Table | undefined,
+    willSetRow?: (tableId: Id, rowId: Id, row: Row) => Row | undefined,
     willSetCell?: (
       tableId: Id,
       rowId: Id,
       cellId: Id,
       cell: Cell,
     ) => CellOrUndefined,
-    willSetValue?: (valueId: Id, value: Value) => ValueOrUndefined,
-    willDelCell?: (tableId: Id, rowId: Id, cellId: Id) => boolean,
-    willDelValue?: (valueId: Id) => boolean,
-    willSetRow?: (tableId: Id, rowId: Id, row: Row) => Row | undefined,
     willSetValues?: (values: Values) => Values | undefined,
-    willDelRow?: (tableId: Id, rowId: Id) => boolean,
-    willDelValues?: () => boolean,
-    willSetTable?: (tableId: Id, table: Table) => Table | undefined,
-    willDelTable?: (tableId: Id) => boolean,
-    willSetTables?: (tables: Tables) => Tables | undefined,
+    willSetValue?: (valueId: Id, value: Value) => ValueOrUndefined,
     willDelTables?: () => boolean,
+    willDelTable?: (tableId: Id) => boolean,
+    willDelRow?: (tableId: Id, rowId: Id) => boolean,
+    willDelCell?: (tableId: Id, rowId: Id, cellId: Id) => boolean,
+    willDelValues?: () => boolean,
+    willDelValue?: (valueId: Id) => boolean,
   ] = [];
   let internalListeners: [
     preStartTransaction?: () => void,
@@ -472,7 +472,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       forceDel
         ? tables
         : ifNotUndefined(
-            internalWillSets[10],
+            internalWillSets[0],
             (willSetTables) => willSetTables(tables),
             () => tables,
           ),
@@ -495,7 +495,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       forceDel
         ? table
         : ifNotUndefined(
-            internalWillSets[8],
+            internalWillSets[1],
             (willSetTable) => willSetTable(tableId, table),
             () => table,
           ),
@@ -526,7 +526,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       forceDel
         ? row
         : ifNotUndefined(
-            internalWillSets[4],
+            internalWillSets[2],
             (willSetRow) => willSetRow(tableId, rowId, row),
             () => row,
           ),
@@ -553,7 +553,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   ): void =>
     ifNotUndefined(
       ifNotUndefined(
-        internalWillSets[0],
+        internalWillSets[3],
         (willSetCell) => willSetCell(tableId, rowId, cellId, cell),
         () => cell,
       ),
@@ -599,7 +599,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       forceDel
         ? values
         : ifNotUndefined(
-            internalWillSets[5],
+            internalWillSets[4],
             (willSetValues) => willSetValues(values),
             () => values,
           ),
@@ -615,7 +615,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const setValidValue = (valueId: Id, value: Value): void =>
     ifNotUndefined(
       ifNotUndefined(
-        internalWillSets[1],
+        internalWillSets[5],
         (willSetValue) => willSetValue(valueId, value),
         () => value,
       ),
@@ -644,14 +644,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapGet(tablesMap, tableId) ?? setValidTable(tableId, {});
 
   const delValidTable = (tableId: Id): TableMap => {
-    if (internalWillSets[9]?.(tableId) ?? true) {
+    if (internalWillSets[7]?.(tableId) ?? true) {
       return setValidTable(tableId, {}, true);
     }
     return mapGet(tablesMap, tableId) as TableMap;
   };
 
   const delValidRow = (tableId: Id, tableMap: TableMap, rowId: Id): void => {
-    if (internalWillSets[6]?.(tableId, rowId) ?? true) {
+    if (internalWillSets[8]?.(tableId, rowId) ?? true) {
       const [, releaseId] = mapGet(
         tablePoolFunctions,
         tableId,
@@ -676,7 +676,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     if (!isUndefined(defaultCell) && !forceDel) {
       return setValidCell(tableId, rowId, row, cellId, defaultCell);
     }
-    if (internalWillSets[2]?.(tableId, rowId, cellId) ?? true) {
+    if (internalWillSets[9]?.(tableId, rowId, cellId) ?? true) {
       const delCell = (cellId: Id) => {
         cellChanged(tableId, rowId, cellId, mapGet(row, cellId));
         cellIdsChanged(tableId, rowId, cellId, -1);
@@ -704,7 +704,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     if (!isUndefined(defaultValue)) {
       return setValidValue(valueId, defaultValue);
     }
-    if (internalWillSets[3]?.(valueId) ?? true) {
+    if (internalWillSets[11]?.(valueId) ?? true) {
       valueChanged(valueId, mapGet(valuesMap, valueId));
       valueIdsChanged(valueId, -1);
       mapSet(valuesMap, valueId);
@@ -1492,7 +1492,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const delTables = (): Store =>
     fluentTransaction(
       () =>
-        (internalWillSets[11]?.() ?? true)
+        (internalWillSets[6]?.() ?? true)
           ? setValidTables({}, true)
           : 0,
     );
@@ -1535,7 +1535,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const delValues = (): Store =>
     fluentTransaction(() =>
-      (internalWillSets[7]?.() ?? true)
+      (internalWillSets[10]?.() ?? true)
         ? setValidValues({}, true)
         : 0,
     );
@@ -1812,37 +1812,37 @@ export const createStore: typeof createStoreDecl = (): Store => {
   });
 
   const setInternalWillSets = (
+    willSetTables: (tables: Tables) => Tables | undefined,
+    willSetTable: (tableId: Id, table: Table) => Table | undefined,
+    willSetRow: (tableId: Id, rowId: Id, row: Row) => Row | undefined,
     willSetCell: (
       tableId: Id,
       rowId: Id,
       cellId: Id,
       cell: Cell,
     ) => CellOrUndefined,
-    willSetValue: (valueId: Id, value: Value) => ValueOrUndefined,
-    willDelCell: (tableId: Id, rowId: Id, cellId: Id) => boolean,
-    willDelValue: (valueId: Id) => boolean,
-    willSetRow: (tableId: Id, rowId: Id, row: Row) => Row | undefined,
     willSetValues: (values: Values) => Values | undefined,
-    willDelRow: (tableId: Id, rowId: Id) => boolean,
-    willDelValues: () => boolean,
-    willSetTable: (tableId: Id, table: Table) => Table | undefined,
-    willDelTable: (tableId: Id) => boolean,
-    willSetTables: (tables: Tables) => Tables | undefined,
+    willSetValue: (valueId: Id, value: Value) => ValueOrUndefined,
     willDelTables: () => boolean,
+    willDelTable: (tableId: Id) => boolean,
+    willDelRow: (tableId: Id, rowId: Id) => boolean,
+    willDelCell: (tableId: Id, rowId: Id, cellId: Id) => boolean,
+    willDelValues: () => boolean,
+    willDelValue: (valueId: Id) => boolean,
   ) =>
     (internalWillSets = [
-      willSetCell,
-      willSetValue,
-      willDelCell,
-      willDelValue,
-      willSetRow,
-      willSetValues,
-      willDelRow,
-      willDelValues,
-      willSetTable,
-      willDelTable,
       willSetTables,
+      willSetTable,
+      willSetRow,
+      willSetCell,
+      willSetValues,
+      willSetValue,
       willDelTables,
+      willDelTable,
+      willDelRow,
+      willDelCell,
+      willDelValues,
+      willDelValue,
     ]);
 
   const setInternalListeners = (

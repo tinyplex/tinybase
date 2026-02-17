@@ -18,26 +18,10 @@ import type {
   Values,
 } from '../../store/with-schemas/index.d.ts';
 
-/// WillSetCellCallback
-export type WillSetCellCallback<
-  Schema extends OptionalTablesSchema,
-  Params extends any[] = TableIdFromSchema<Schema> extends infer TableId
-    ? TableId extends TableIdFromSchema<Schema>
-      ? CellIdFromSchema<Schema, TableId> extends infer CellId
-        ? CellId extends CellIdFromSchema<Schema, TableId>
-          ? [
-              tableId: TableId,
-              rowId: Id,
-              cellId: CellId,
-              cell: Cell<Schema, TableId, CellId>,
-            ]
-          : never
-        : never
-      : never
-    : never,
-> = (
-  ...params: Params | [tableId: never, rowId: never, cellId: never, cell: never]
-) => Params[3] | undefined;
+/// WillSetTablesCallback
+export type WillSetTablesCallback<Schema extends OptionalTablesSchema> = (
+  tables: Tables<Schema>,
+) => Tables<Schema> | undefined;
 
 /// WillSetTableCallback
 export type WillSetTableCallback<
@@ -63,6 +47,32 @@ export type WillSetRowCallback<
   ...params: Params | [tableId: never, rowId: never, row: never]
 ) => Params[2] | undefined;
 
+/// WillSetCellCallback
+export type WillSetCellCallback<
+  Schema extends OptionalTablesSchema,
+  Params extends any[] = TableIdFromSchema<Schema> extends infer TableId
+    ? TableId extends TableIdFromSchema<Schema>
+      ? CellIdFromSchema<Schema, TableId> extends infer CellId
+        ? CellId extends CellIdFromSchema<Schema, TableId>
+          ? [
+              tableId: TableId,
+              rowId: Id,
+              cellId: CellId,
+              cell: Cell<Schema, TableId, CellId>,
+            ]
+          : never
+        : never
+      : never
+    : never,
+> = (
+  ...params: Params | [tableId: never, rowId: never, cellId: never, cell: never]
+) => Params[3] | undefined;
+
+/// WillSetValuesCallback
+export type WillSetValuesCallback<Schema extends OptionalValuesSchema> = (
+  values: Values<Schema>,
+) => Values<Schema> | undefined;
+
 /// WillSetValueCallback
 export type WillSetValueCallback<
   Schema extends OptionalValuesSchema,
@@ -75,33 +85,8 @@ export type WillSetValueCallback<
   ...params: Params | [valueId: never, value: never]
 ) => Params[1] | undefined;
 
-/// WillSetTablesCallback
-export type WillSetTablesCallback<
-  Schema extends OptionalTablesSchema,
-> = (
-  tables: Tables<Schema>,
-) => Tables<Schema> | undefined;
-
-/// WillSetValuesCallback
-export type WillSetValuesCallback<Schema extends OptionalValuesSchema> = (
-  values: Values<Schema>,
-) => Values<Schema> | undefined;
-
-/// WillDelCellCallback
-export type WillDelCellCallback<
-  Schema extends OptionalTablesSchema,
-  Params extends any[] = TableIdFromSchema<Schema> extends infer TableId
-    ? TableId extends TableIdFromSchema<Schema>
-      ? CellIdFromSchema<Schema, TableId> extends infer CellId
-        ? CellId extends CellIdFromSchema<Schema, TableId>
-          ? [tableId: TableId, rowId: Id, cellId: CellId]
-          : never
-        : never
-      : never
-    : never,
-> = (
-  ...params: Params | [tableId: never, rowId: never, cellId: never]
-) => boolean;
+/// WillDelTablesCallback
+export type WillDelTablesCallback = () => boolean;
 
 /// WillDelTableCallback
 export type WillDelTableCallback<
@@ -123,6 +108,25 @@ export type WillDelRowCallback<
     : never,
 > = (...params: Params | [tableId: never, rowId: never]) => boolean;
 
+/// WillDelCellCallback
+export type WillDelCellCallback<
+  Schema extends OptionalTablesSchema,
+  Params extends any[] = TableIdFromSchema<Schema> extends infer TableId
+    ? TableId extends TableIdFromSchema<Schema>
+      ? CellIdFromSchema<Schema, TableId> extends infer CellId
+        ? CellId extends CellIdFromSchema<Schema, TableId>
+          ? [tableId: TableId, rowId: Id, cellId: CellId]
+          : never
+        : never
+      : never
+    : never,
+> = (
+  ...params: Params | [tableId: never, rowId: never, cellId: never]
+) => boolean;
+
+/// WillDelValuesCallback
+export type WillDelValuesCallback = () => boolean;
+
 /// WillDelValueCallback
 export type WillDelValueCallback<
   Schema extends OptionalValuesSchema,
@@ -133,20 +137,14 @@ export type WillDelValueCallback<
     : never,
 > = (...params: Params | [valueId: never]) => boolean;
 
-/// WillDelTablesCallback
-export type WillDelTablesCallback = () => boolean;
-
-/// WillDelValuesCallback
-export type WillDelValuesCallback = () => boolean;
-
 /// Middleware
 export interface Middleware<in out Schemas extends OptionalSchemas> {
   /// Middleware.getStore
   getStore(): Store<Schemas>;
 
-  /// Middleware.addWillSetCellCallback
-  addWillSetCellCallback(
-    callback: WillSetCellCallback<Schemas[0]>,
+  /// Middleware.addWillSetTablesCallback
+  addWillSetTablesCallback(
+    callback: WillSetTablesCallback<Schemas[0]>,
   ): Middleware<Schemas>;
 
   /// Middleware.addWillSetTableCallback
@@ -159,14 +157,9 @@ export interface Middleware<in out Schemas extends OptionalSchemas> {
     callback: WillSetRowCallback<Schemas[0]>,
   ): Middleware<Schemas>;
 
-  /// Middleware.addWillSetValueCallback
-  addWillSetValueCallback(
-    callback: WillSetValueCallback<Schemas[1]>,
-  ): Middleware<Schemas>;
-
-  /// Middleware.addWillSetTablesCallback
-  addWillSetTablesCallback(
-    callback: WillSetTablesCallback<Schemas[0]>,
+  /// Middleware.addWillSetCellCallback
+  addWillSetCellCallback(
+    callback: WillSetCellCallback<Schemas[0]>,
   ): Middleware<Schemas>;
 
   /// Middleware.addWillSetValuesCallback
@@ -174,9 +167,14 @@ export interface Middleware<in out Schemas extends OptionalSchemas> {
     callback: WillSetValuesCallback<Schemas[1]>,
   ): Middleware<Schemas>;
 
-  /// Middleware.addWillDelCellCallback
-  addWillDelCellCallback(
-    callback: WillDelCellCallback<Schemas[0]>,
+  /// Middleware.addWillSetValueCallback
+  addWillSetValueCallback(
+    callback: WillSetValueCallback<Schemas[1]>,
+  ): Middleware<Schemas>;
+
+  /// Middleware.addWillDelTablesCallback
+  addWillDelTablesCallback(
+    callback: WillDelTablesCallback,
   ): Middleware<Schemas>;
 
   /// Middleware.addWillDelTableCallback
@@ -189,19 +187,19 @@ export interface Middleware<in out Schemas extends OptionalSchemas> {
     callback: WillDelRowCallback<Schemas[0]>,
   ): Middleware<Schemas>;
 
-  /// Middleware.addWillDelValueCallback
-  addWillDelValueCallback(
-    callback: WillDelValueCallback<Schemas[1]>,
-  ): Middleware<Schemas>;
-
-  /// Middleware.addWillDelTablesCallback
-  addWillDelTablesCallback(
-    callback: WillDelTablesCallback,
+  /// Middleware.addWillDelCellCallback
+  addWillDelCellCallback(
+    callback: WillDelCellCallback<Schemas[0]>,
   ): Middleware<Schemas>;
 
   /// Middleware.addWillDelValuesCallback
   addWillDelValuesCallback(
     callback: WillDelValuesCallback,
+  ): Middleware<Schemas>;
+
+  /// Middleware.addWillDelValueCallback
+  addWillDelValueCallback(
+    callback: WillDelValueCallback<Schemas[1]>,
   ): Middleware<Schemas>;
 
   /// Middleware.destroy

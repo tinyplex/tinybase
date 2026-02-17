@@ -4,8 +4,8 @@ import type {
   WillDelCellCallback,
   WillDelRowCallback,
   WillDelTableCallback,
-  WillDelValueCallback,
   WillDelTablesCallback,
+  WillDelValueCallback,
   WillDelValuesCallback,
   WillSetCellCallback,
   WillSetRowCallback,
@@ -33,18 +33,51 @@ import {isUndefined} from '../common/other.ts';
 
 export const createMiddleware = getCreateFunction(
   (store: Store): Middleware => {
-    const willSetCellCallbacks: WillSetCellCallback[] = [];
-    const willSetTableCallbacks: WillSetTableCallback[] = [];
     const willSetTablesCallbacks: WillSetTablesCallback[] = [];
+    const willSetTableCallbacks: WillSetTableCallback[] = [];
     const willSetRowCallbacks: WillSetRowCallback[] = [];
-    const willSetValueCallbacks: WillSetValueCallback[] = [];
+    const willSetCellCallbacks: WillSetCellCallback[] = [];
     const willSetValuesCallbacks: WillSetValuesCallback[] = [];
-    const willDelCellCallbacks: WillDelCellCallback[] = [];
-    const willDelTableCallbacks: WillDelTableCallback[] = [];
+    const willSetValueCallbacks: WillSetValueCallback[] = [];
     const willDelTablesCallbacks: WillDelTablesCallback[] = [];
+    const willDelTableCallbacks: WillDelTableCallback[] = [];
     const willDelRowCallbacks: WillDelRowCallback[] = [];
-    const willDelValueCallbacks: WillDelValueCallback[] = [];
+    const willDelCellCallbacks: WillDelCellCallback[] = [];
     const willDelValuesCallbacks: WillDelValuesCallback[] = [];
+    const willDelValueCallbacks: WillDelValueCallback[] = [];
+
+    const willSetTables = (tables: Tables): Tables | undefined =>
+      arrayReduce(
+        willSetTablesCallbacks,
+        (current, callback) =>
+          isUndefined(current)
+            ? current
+            : callback(current as Tables),
+        tables as Tables | undefined,
+      );
+
+    const willSetTable = (
+      tableId: Id,
+      table: Table,
+    ): Table | undefined =>
+      arrayReduce(
+        willSetTableCallbacks,
+        (current, callback) =>
+          isUndefined(current)
+            ? current
+            : callback(tableId, current as Table),
+        table as Table | undefined,
+      );
+
+    const willSetRow = (tableId: Id, rowId: Id, row: Row): Row | undefined =>
+      arrayReduce(
+        willSetRowCallbacks,
+        (current, callback) =>
+          isUndefined(current)
+            ? current
+            : callback(tableId, rowId, current as Row),
+        row as Row | undefined,
+      );
 
     const willSetCell = (
       tableId: Id,
@@ -61,27 +94,12 @@ export const createMiddleware = getCreateFunction(
         cell as CellOrUndefined,
       );
 
-    const willSetRow = (tableId: Id, rowId: Id, row: Row): Row | undefined =>
+    const willSetValues = (values: Values): Values | undefined =>
       arrayReduce(
-        willSetRowCallbacks,
+        willSetValuesCallbacks,
         (current, callback) =>
-          isUndefined(current)
-            ? current
-            : callback(tableId, rowId, current as Row),
-        row as Row | undefined,
-      );
-
-    const willSetTable = (
-      tableId: Id,
-      table: Table,
-    ): Table | undefined =>
-      arrayReduce(
-        willSetTableCallbacks,
-        (current, callback) =>
-          isUndefined(current)
-            ? current
-            : callback(tableId, current as Table),
-        table as Table | undefined,
+          isUndefined(current) ? current : callback(current as Values),
+        values as Values | undefined,
       );
 
     const willSetValue = (valueId: Id, value: Value): ValueOrUndefined =>
@@ -92,57 +110,39 @@ export const createMiddleware = getCreateFunction(
         value as ValueOrUndefined,
       );
 
-    const willSetValues = (values: Values): Values | undefined =>
-      arrayReduce(
-        willSetValuesCallbacks,
-        (current, callback) =>
-          isUndefined(current) ? current : callback(current as Values),
-        values as Values | undefined,
-      );
+    const willDelTables = (): boolean =>
+      arrayEvery(willDelTablesCallbacks, (callback) => callback());
 
-    const willSetTables = (tables: Tables): Tables | undefined =>
-      arrayReduce(
-        willSetTablesCallbacks,
-        (current, callback) =>
-          isUndefined(current)
-            ? current
-            : callback(current as Tables),
-        tables as Tables | undefined,
-      );
+    const willDelTable = (tableId: Id): boolean =>
+      arrayEvery(willDelTableCallbacks, (callback) => callback(tableId));
+
+    const willDelRow = (tableId: Id, rowId: Id): boolean =>
+      arrayEvery(willDelRowCallbacks, (callback) => callback(tableId, rowId));
 
     const willDelCell = (tableId: Id, rowId: Id, cellId: Id): boolean =>
       arrayEvery(willDelCellCallbacks, (callback) =>
         callback(tableId, rowId, cellId),
       );
 
-    const willDelRow = (tableId: Id, rowId: Id): boolean =>
-      arrayEvery(willDelRowCallbacks, (callback) => callback(tableId, rowId));
-
-    const willDelTable = (tableId: Id): boolean =>
-      arrayEvery(willDelTableCallbacks, (callback) => callback(tableId));
+    const willDelValues = (): boolean =>
+      arrayEvery(willDelValuesCallbacks, (callback) => callback());
 
     const willDelValue = (valueId: Id): boolean =>
       arrayEvery(willDelValueCallbacks, (callback) => callback(valueId));
 
-    const willDelTables = (): boolean =>
-      arrayEvery(willDelTablesCallbacks, (callback) => callback());
-
-    const willDelValues = (): boolean =>
-      arrayEvery(willDelValuesCallbacks, (callback) => callback());
-
     (store as any).setInternalWillSets(
-      willSetCell,
-      willSetValue,
-      willDelCell,
-      willDelValue,
-      willSetRow,
-      willSetValues,
-      willDelRow,
-      willDelValues,
-      willSetTable,
-      willDelTable,
       willSetTables,
+      willSetTable,
+      willSetRow,
+      willSetCell,
+      willSetValues,
+      willSetValue,
       willDelTables,
+      willDelTable,
+      willDelRow,
+      willDelCell,
+      willDelValues,
+      willDelValue,
     );
 
     const getStore = (): Store => store;
@@ -152,73 +152,73 @@ export const createMiddleware = getCreateFunction(
       return middleware;
     };
 
-    const addWillSetCellCallback = (
-      callback: WillSetCellCallback,
-    ): Middleware => fluent(() => arrayPush(willSetCellCallbacks, callback));
-
-    const addWillSetRowCallback = (callback: WillSetRowCallback): Middleware =>
-      fluent(() => arrayPush(willSetRowCallbacks, callback));
+    const addWillSetTablesCallback = (
+      callback: WillSetTablesCallback,
+    ): Middleware =>
+      fluent(() => arrayPush(willSetTablesCallbacks, callback));
 
     const addWillSetTableCallback = (
       callback: WillSetTableCallback,
     ): Middleware =>
       fluent(() => arrayPush(willSetTableCallbacks, callback));
 
-    const addWillSetTablesCallback = (
-      callback: WillSetTablesCallback,
-    ): Middleware =>
-      fluent(() => arrayPush(willSetTablesCallbacks, callback));
+    const addWillSetRowCallback = (callback: WillSetRowCallback): Middleware =>
+      fluent(() => arrayPush(willSetRowCallbacks, callback));
 
-    const addWillSetValueCallback = (
-      callback: WillSetValueCallback,
-    ): Middleware => fluent(() => arrayPush(willSetValueCallbacks, callback));
+    const addWillSetCellCallback = (
+      callback: WillSetCellCallback,
+    ): Middleware => fluent(() => arrayPush(willSetCellCallbacks, callback));
 
     const addWillSetValuesCallback = (
       callback: WillSetValuesCallback,
     ): Middleware => fluent(() => arrayPush(willSetValuesCallbacks, callback));
 
-    const addWillDelCellCallback = (
-      callback: WillDelCellCallback,
-    ): Middleware => fluent(() => arrayPush(willDelCellCallbacks, callback));
-
-    const addWillDelRowCallback = (callback: WillDelRowCallback): Middleware =>
-      fluent(() => arrayPush(willDelRowCallbacks, callback));
-
-    const addWillDelTableCallback = (
-      callback: WillDelTableCallback,
-    ): Middleware =>
-      fluent(() => arrayPush(willDelTableCallbacks, callback));
+    const addWillSetValueCallback = (
+      callback: WillSetValueCallback,
+    ): Middleware => fluent(() => arrayPush(willSetValueCallbacks, callback));
 
     const addWillDelTablesCallback = (
       callback: WillDelTablesCallback,
     ): Middleware =>
       fluent(() => arrayPush(willDelTablesCallbacks, callback));
 
-    const addWillDelValueCallback = (
-      callback: WillDelValueCallback,
-    ): Middleware => fluent(() => arrayPush(willDelValueCallbacks, callback));
+    const addWillDelTableCallback = (
+      callback: WillDelTableCallback,
+    ): Middleware =>
+      fluent(() => arrayPush(willDelTableCallbacks, callback));
+
+    const addWillDelRowCallback = (callback: WillDelRowCallback): Middleware =>
+      fluent(() => arrayPush(willDelRowCallbacks, callback));
+
+    const addWillDelCellCallback = (
+      callback: WillDelCellCallback,
+    ): Middleware => fluent(() => arrayPush(willDelCellCallbacks, callback));
 
     const addWillDelValuesCallback = (
       callback: WillDelValuesCallback,
     ): Middleware =>
       fluent(() => arrayPush(willDelValuesCallbacks, callback));
 
+    const addWillDelValueCallback = (
+      callback: WillDelValueCallback,
+    ): Middleware => fluent(() => arrayPush(willDelValueCallbacks, callback));
+
     const destroy = (): void => {};
 
     const middleware: Middleware = objFreeze({
       getStore,
-      addWillSetCellCallback,
-      addWillSetTableCallback,
       addWillSetTablesCallback,
+      addWillSetTableCallback,
       addWillSetRowCallback,
-      addWillSetValueCallback,
+      addWillSetCellCallback,
       addWillSetValuesCallback,
-      addWillDelCellCallback,
-      addWillDelTableCallback,
+      addWillSetValueCallback,
       addWillDelTablesCallback,
+      addWillDelTableCallback,
       addWillDelRowCallback,
-      addWillDelValueCallback,
+      addWillDelCellCallback,
       addWillDelValuesCallback,
+      addWillDelValueCallback,
       destroy,
     } as Middleware);
 

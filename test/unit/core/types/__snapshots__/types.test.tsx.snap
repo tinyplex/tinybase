@@ -1014,65 +1014,65 @@ exports[`Types in metrics.ts > 66:59 1`] = `"Property 't2' does not exist on typ
 
 exports[`Types in middleware.ts > 22:44 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in middleware.ts > 32:44 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types in middleware.ts > 29:11 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'."`;
 
-exports[`Types in middleware.ts > 33:25 1`] = `"This comparison appears to be unintentional because the types '"c0"' and '"c1"' have no overlap."`;
+exports[`Types in middleware.ts > 44:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in middleware.ts > 34:6 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
+exports[`Types in middleware.ts > 53:4 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
 
-exports[`Types in middleware.ts > 35:6 1`] = `"This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap."`;
+exports[`Types in middleware.ts > 68:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in middleware.ts > 47:52 1`] = `"Type 'boolean' is not assignable to type 'string | number | undefined'."`;
+exports[`Types in middleware.ts > 77:4 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
 
-exports[`Types in middleware.ts > 56:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types in middleware.ts > 92:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in middleware.ts > 65:4 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
+exports[`Types in middleware.ts > 103:44 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types in middleware.ts > 80:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types in middleware.ts > 104:25 1`] = `"This comparison appears to be unintentional because the types '"c0"' and '"c1"' have no overlap."`;
 
-exports[`Types in middleware.ts > 89:4 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
+exports[`Types in middleware.ts > 105:6 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
 
-exports[`Types in middleware.ts > 106:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types in middleware.ts > 106:6 1`] = `"This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap."`;
 
-exports[`Types in middleware.ts > 117:24 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+exports[`Types in middleware.ts > 118:52 1`] = `"Type 'boolean' is not assignable to type 'string | number | undefined'."`;
 
-exports[`Types in middleware.ts > 118:4 1`] = `"This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"v2"' have no overlap."`;
+exports[`Types in middleware.ts > 127:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in middleware.ts > 127:53 1`] = `"Type 'boolean' is not assignable to type 'string | number | undefined'."`;
+exports[`Types in middleware.ts > 136:11 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'."`;
 
-exports[`Types in middleware.ts > 136:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types in middleware.ts > 151:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in middleware.ts > 145:11 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'."`;
+exports[`Types in middleware.ts > 162:24 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
-exports[`Types in middleware.ts > 160:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types in middleware.ts > 163:4 1`] = `"This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"v2"' have no overlap."`;
 
-exports[`Types in middleware.ts > 169:11 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'."`;
+exports[`Types in middleware.ts > 172:53 1`] = `"Type 'boolean' is not assignable to type 'string | number | undefined'."`;
 
-exports[`Types in middleware.ts > 184:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types in middleware.ts > 181:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in middleware.ts > 193:23 1`] = `"This comparison appears to be unintentional because the types '"c0"' and '"c1"' have no overlap."`;
+exports[`Types in middleware.ts > 193:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in middleware.ts > 194:4 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
+exports[`Types in middleware.ts > 202:4 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
 
-exports[`Types in middleware.ts > 195:4 1`] = `"This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap."`;
+exports[`Types in middleware.ts > 214:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in middleware.ts > 207:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types in middleware.ts > 223:4 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
 
-exports[`Types in middleware.ts > 216:4 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
+exports[`Types in middleware.ts > 235:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in middleware.ts > 228:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types in middleware.ts > 244:23 1`] = `"This comparison appears to be unintentional because the types '"c0"' and '"c1"' have no overlap."`;
 
-exports[`Types in middleware.ts > 237:4 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
+exports[`Types in middleware.ts > 245:4 1`] = `"This comparison appears to be unintentional because the types '"t1" | "t0"' and '"t2"' have no overlap."`;
 
-exports[`Types in middleware.ts > 249:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types in middleware.ts > 246:4 1`] = `"This comparison appears to be unintentional because the types '"c0" | "c1" | "c1d"' and '"c2"' have no overlap."`;
 
-exports[`Types in middleware.ts > 261:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types in middleware.ts > 258:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in middleware.ts > 270:4 1`] = `"This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"v2"' have no overlap."`;
+exports[`Types in middleware.ts > 270:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
-exports[`Types in middleware.ts > 282:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types in middleware.ts > 279:4 1`] = `"This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"v2"' have no overlap."`;
 
-exports[`Types in middleware.ts > 294:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
+exports[`Types in middleware.ts > 291:17 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in persisters.ts > 24:37 1`] = `"Argument of type '[{ t1: { r1: { c2: number; }; }; }, {}]' is not assignable to parameter of type 'Content<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }], true> | (() => Content<...>) | undefined'."`;
 

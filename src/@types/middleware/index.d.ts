@@ -12,13 +12,8 @@ import type {
   Values,
 } from '../store/index.d.ts';
 
-/// WillSetCellCallback
-export type WillSetCellCallback = (
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
-  cell: Cell,
-) => CellOrUndefined;
+/// WillSetTablesCallback
+export type WillSetTablesCallback = (tables: Tables) => Tables | undefined;
 
 /// WillSetTableCallback
 export type WillSetTableCallback = (
@@ -33,17 +28,31 @@ export type WillSetRowCallback = (
   row: Row,
 ) => Row | undefined;
 
+/// WillSetCellCallback
+export type WillSetCellCallback = (
+  tableId: Id,
+  rowId: Id,
+  cellId: Id,
+  cell: Cell,
+) => CellOrUndefined;
+
+/// WillSetValuesCallback
+export type WillSetValuesCallback = (values: Values) => Values | undefined;
+
 /// WillSetValueCallback
 export type WillSetValueCallback = (
   valueId: Id,
   value: Value,
 ) => ValueOrUndefined;
 
-/// WillSetTablesCallback
-export type WillSetTablesCallback = (tables: Tables) => Tables | undefined;
+/// WillDelTablesCallback
+export type WillDelTablesCallback = () => boolean;
 
-/// WillSetValuesCallback
-export type WillSetValuesCallback = (values: Values) => Values | undefined;
+/// WillDelTableCallback
+export type WillDelTableCallback = (tableId: Id) => boolean;
+
+/// WillDelRowCallback
+export type WillDelRowCallback = (tableId: Id, rowId: Id) => boolean;
 
 /// WillDelCellCallback
 export type WillDelCellCallback = (
@@ -52,28 +61,19 @@ export type WillDelCellCallback = (
   cellId: Id,
 ) => boolean;
 
-/// WillDelTableCallback
-export type WillDelTableCallback = (tableId: Id) => boolean;
-
-/// WillDelRowCallback
-export type WillDelRowCallback = (tableId: Id, rowId: Id) => boolean;
+/// WillDelValuesCallback
+export type WillDelValuesCallback = () => boolean;
 
 /// WillDelValueCallback
 export type WillDelValueCallback = (valueId: Id) => boolean;
-
-/// WillDelTablesCallback
-export type WillDelTablesCallback = () => boolean;
-
-/// WillDelValuesCallback
-export type WillDelValuesCallback = () => boolean;
 
 /// Middleware
 export interface Middleware {
   /// Middleware.getStore
   getStore(): Store;
 
-  /// Middleware.addWillSetCellCallback
-  addWillSetCellCallback(callback: WillSetCellCallback): Middleware;
+  /// Middleware.addWillSetTablesCallback
+  addWillSetTablesCallback(callback: WillSetTablesCallback): Middleware;
 
   /// Middleware.addWillSetTableCallback
   addWillSetTableCallback(callback: WillSetTableCallback): Middleware;
@@ -81,17 +81,17 @@ export interface Middleware {
   /// Middleware.addWillSetRowCallback
   addWillSetRowCallback(callback: WillSetRowCallback): Middleware;
 
-  /// Middleware.addWillSetValueCallback
-  addWillSetValueCallback(callback: WillSetValueCallback): Middleware;
-
-  /// Middleware.addWillSetTablesCallback
-  addWillSetTablesCallback(callback: WillSetTablesCallback): Middleware;
+  /// Middleware.addWillSetCellCallback
+  addWillSetCellCallback(callback: WillSetCellCallback): Middleware;
 
   /// Middleware.addWillSetValuesCallback
   addWillSetValuesCallback(callback: WillSetValuesCallback): Middleware;
 
-  /// Middleware.addWillDelCellCallback
-  addWillDelCellCallback(callback: WillDelCellCallback): Middleware;
+  /// Middleware.addWillSetValueCallback
+  addWillSetValueCallback(callback: WillSetValueCallback): Middleware;
+
+  /// Middleware.addWillDelTablesCallback
+  addWillDelTablesCallback(callback: WillDelTablesCallback): Middleware;
 
   /// Middleware.addWillDelTableCallback
   addWillDelTableCallback(callback: WillDelTableCallback): Middleware;
@@ -99,14 +99,14 @@ export interface Middleware {
   /// Middleware.addWillDelRowCallback
   addWillDelRowCallback(callback: WillDelRowCallback): Middleware;
 
-  /// Middleware.addWillDelValueCallback
-  addWillDelValueCallback(callback: WillDelValueCallback): Middleware;
-
-  /// Middleware.addWillDelTablesCallback
-  addWillDelTablesCallback(callback: WillDelTablesCallback): Middleware;
+  /// Middleware.addWillDelCellCallback
+  addWillDelCellCallback(callback: WillDelCellCallback): Middleware;
 
   /// Middleware.addWillDelValuesCallback
   addWillDelValuesCallback(callback: WillDelValuesCallback): Middleware;
+
+  /// Middleware.addWillDelValueCallback
+  addWillDelValueCallback(callback: WillDelValueCallback): Middleware;
 
   /// Middleware.destroy
   destroy(): void;
