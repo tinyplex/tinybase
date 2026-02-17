@@ -37,7 +37,7 @@ import {
   arrayOrValueEqual,
   arrayPush,
 } from '../common/array.ts';
-import {getCellOrValueType, setOrDelCell} from '../common/cell.ts';
+import {getCellOrValueType} from '../common/cell.ts';
 import {
   collClear,
   collDel,
@@ -516,8 +516,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       selectJoinWhereStore.transaction(() =>
         arrayEvery(wheres, (where) => where(getTableCell))
           ? mapForEach(selects, (asCellId, tableCellGetter) =>
-              setOrDelCell(
-                selectJoinWhereStore,
+              (selectJoinWhereStore as any).setOrDelCell(
                 queryId,
                 rootRowId,
                 asCellId,

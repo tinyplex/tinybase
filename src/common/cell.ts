@@ -1,9 +1,3 @@
-import type {Id} from '../@types/common/index.d.ts';
-import type {
-  CellOrUndefined,
-  Store,
-  ValueOrUndefined,
-} from '../@types/store/index.d.ts';
 import {
   isFiniteNumber,
   isNull,
@@ -29,24 +23,6 @@ export const getCellOrValueType = (
 
 export const isCellOrValueOrUndefined = (cellOrValue: any): boolean =>
   isUndefined(cellOrValue) || !isUndefined(getCellOrValueType(cellOrValue));
-
-export const setOrDelCell = (
-  store: Store,
-  tableId: Id,
-  rowId: Id,
-  cellId: Id,
-  cell: CellOrUndefined,
-) =>
-  isUndefined(cell)
-    ? store.delCell(tableId, rowId, cellId, true)
-    : store.setCell(tableId, rowId, cellId, cell);
-
-export const setOrDelValue = (
-  store: Store,
-  valueId: Id,
-  value: ValueOrUndefined,
-) =>
-  isUndefined(value) ? store.delValue(valueId) : store.setValue(valueId, value);
 
 export const getTypeCase = <IfStringReturn, IfNumberReturn, IfBooleanReturn>(
   type: CellOrValueType | undefined,
