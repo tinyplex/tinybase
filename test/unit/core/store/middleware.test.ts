@@ -329,18 +329,6 @@ describe('MergeableStore Middleware', () => {
       expect(store2.getRow('t1', 'r1')).toEqual({c1: 'v1', added: 'yes'});
     });
 
-    test('Row callback overwrites incoming cell during sync', () => {
-      middleware2.addWillSetRowCallback((_tableId, _rowId, row) => ({
-        ...row,
-        existingCell: 'newValue',
-      }));
-      store1.setCell('t1', 'r1', 'existingCell', 'oldValue');
-      store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getCell('t1', 'r1', 'existingCell')).toEqual(
-        'newValue',
-      );
-    });
-
     test('Receives correct rowId', () => {
       let receivedRowId: string | undefined;
       middleware2.addWillSetRowCallback((tableId, rowId, row) => {

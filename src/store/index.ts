@@ -576,13 +576,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
     ifNotUndefined(
       mapGet(tableMap, rowId),
       (rowMap): any => setValidCell(tableId, rowId, rowMap, cellId, validCell),
-      () =>
-        setValidRow(
-          tableId,
-          tableMap,
-          rowId,
+      () => {
+        const rowMap: RowMap = mapNew();
+        mapSet(tableMap, rowId, rowMap);
+        rowIdsChanged(tableId, rowId, 1);
+        objMap(
           addDefaultsToRow({[cellId]: validCell}, tableId, rowId),
-        ),
+          (cell, cellId) =>
+            setValidCell(tableId, rowId, rowMap, cellId, cell as Cell),
+        );
+      },
     );
 
   const setOrDelValues = (values: Values) =>
