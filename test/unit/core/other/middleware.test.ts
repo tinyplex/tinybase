@@ -1408,6 +1408,173 @@ describe('willDelRow', () => {
   });
 });
 
+describe('willDelTable', () => {
+  describe('allow', () => {
+    test('returning true allows delete', () => {
+      middleware.addWillDelTableCallback(() => true);
+      store.setTable('t1', {r1: {c1: 'a'}});
+      store.delTable('t1');
+      expect(store.getTable('t1')).toEqual({});
+      expect(store.getTables()).toEqual({});
+    });
+  });
+
+  describe('block', () => {
+    test('returning false blocks delete', () => {
+      middleware.addWillDelTableCallback(() => false);
+      store.setTable('t1', {r1: {c1: 'a'}});
+      store.delTable('t1');
+      expect(store.getTable('t1')).toEqual({r1: {c1: 'a'}});
+    });
+
+    test('conditionally blocks', () => {
+      middleware.addWillDelTableCallback((tableId) => {
+        return tableId !== 'protected';
+      });
+      store.setTables({
+        t1: {r1: {c1: 'a'}},
+        protected: {r1: {c1: 'b'}},
+      });
+      store.delTable('t1');
+      store.delTable('protected');
+      expect(store.getTable('t1')).toEqual({});
+      expect(store.getTable('protected')).toEqual({r1: {c1: 'b'}});
+    });
+  });
+
+  describe('chaining', () => {
+    test('all must return true to allow', () => {
+      middleware
+        .addWillDelTableCallback(() => true)
+        .addWillDelTableCallback(() => true);
+      store.setTable('t1', {r1: {c1: 'a'}});
+      store.delTable('t1');
+      expect(store.getTables()).toEqual({});
+    });
+
+    test('any returning false blocks', () => {
+      middleware
+        .addWillDelTableCallback(() => true)
+        .addWillDelTableCallback(() => false);
+      store.setTable('t1', {r1: {c1: 'a'}});
+      store.delTable('t1');
+      expect(store.getTable('t1')).toEqual({r1: {c1: 'a'}});
+    });
+
+    test('first blocks, second never called', () => {
+      const secondCalled = vi.fn();
+      middleware
+        .addWillDelTableCallback(() => false)
+        .addWillDelTableCallback((...args) => {
+          secondCalled(...args);
+          return true;
+        });
+      store.setTable('t1', {r1: {c1: 'a'}});
+      store.delTable('t1');
+      expect(secondCalled).not.toHaveBeenCalled();
+      expect(store.getTable('t1')).toEqual({r1: {c1: 'a'}});
+    });
+  });
+
+  describe('entry points', () => {
+    test('called from delTable', () => {
+      const calls: string[] = [];
+      middleware.addWillDelTableCallback((tableId) => {
+        calls.push(tableId);
+        return true;
+      });
+      store.setTable('t1', {r1: {c1: 'a'}});
+      store.delTable('t1');
+      expect(calls).toEqual(['t1']);
+    });
+
+    test('called from delTables', () => {
+      const calls: string[] = [];
+      middleware.addWillDelTableCallback((tableId) => {
+        calls.push(tableId);
+        return true;
+      });
+      store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}});
+      store.delTables();
+      expect(calls).toEqual(['t1', 't2']);
+    });
+
+    test('not called from delRow', () => {
+      const calls: string[] = [];
+      middleware.addWillDelTableCallback((tableId) => {
+        calls.push(tableId);
+        return true;
+      });
+      store.setTable('t1', {r1: {c1: 'a'}, r2: {c1: 'b'}});
+      store.delRow('t1', 'r1');
+      expect(calls).toEqual([]);
+      expect(store.getTable('t1')).toEqual({r2: {c1: 'b'}});
+    });
+
+    test('block from delTables prevents table deletion', () => {
+      middleware.addWillDelTableCallback(() => false);
+      store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}});
+      store.delTables();
+      expect(store.getTables()).toEqual({
+        t1: {r1: {c1: 'a'}},
+        t2: {r1: {c1: 'b'}},
+      });
+    });
+
+    test('called when setTables replaces existing tables', () => {
+      const delCalls: string[] = [];
+      middleware.addWillDelTableCallback((tableId) => {
+        delCalls.push(tableId);
+        return true;
+      });
+      store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}});
+      delCalls.length = 0;
+      store.setTables({t1: {r1: {c1: 'A'}}});
+      // t2 should be deleted
+      expect(delCalls).toEqual(['t2']);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'A'}}});
+    });
+
+    test('block prevents removal of old tables during setTables', () => {
+      middleware.addWillDelTableCallback(() => false);
+      store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}});
+      store.setTables({t1: {r1: {c1: 'A'}}});
+      // t2 should be preserved because delete was blocked
+      expect(store.getTables()).toEqual({
+        t1: {r1: {c1: 'A'}},
+        t2: {r1: {c1: 'b'}},
+      });
+    });
+  });
+
+  describe('interaction with willDelRow', () => {
+    test('willDelTable blocks before willDelRow is called', () => {
+      const rowCalls = vi.fn();
+      middleware.addWillDelTableCallback(() => false);
+      middleware.addWillDelRowCallback((...args) => {
+        rowCalls(...args);
+        return true;
+      });
+      store.setTable('t1', {r1: {c1: 'a'}});
+      store.delTable('t1');
+      expect(rowCalls).not.toHaveBeenCalled();
+      expect(store.getTable('t1')).toEqual({r1: {c1: 'a'}});
+    });
+
+    test('willDelTable allows, willDelRow still checked', () => {
+      const rowCalls: string[] = [];
+      middleware.addWillDelTableCallback(() => true);
+      middleware.addWillDelRowCallback((tableId, rowId) => {
+        rowCalls.push(`${tableId}/${rowId}`);
+        return true;
+      });
+      store.setTable('t1', {r1: {c1: 'a'}, r2: {c1: 'b'}});
+      store.delTable('t1');
+      expect(rowCalls).toEqual(['t1/r1', 't1/r2']);
+    });
+  });
+});
+
 describe('willDelValue', () => {
   describe('allow', () => {
     test('returning true allows delete', () => {
@@ -1825,6 +1992,11 @@ describe('fluent API', () => {
     expect(result).toBe(middleware);
   });
 
+  test('addWillDelTableCallback returns middleware', () => {
+    const result = middleware.addWillDelTableCallback(() => true);
+    expect(result).toBe(middleware);
+  });
+
   test('addWillDelValueCallback returns middleware', () => {
     const result = middleware.addWillDelValueCallback(() => true);
     expect(result).toBe(middleware);
@@ -1843,6 +2015,7 @@ describe('fluent API', () => {
       .addWillSetValueCallback((_valueId, value) => value)
       .addWillSetValuesCallback((values) => values)
       .addWillDelCellCallback(() => true)
+      .addWillDelTableCallback(() => true)
       .addWillDelRowCallback(() => true)
       .addWillDelValueCallback(() => true)
       .addWillDelValuesCallback(() => true);

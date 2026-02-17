@@ -177,6 +177,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willDelRow?: (tableId: Id, rowId: Id) => boolean,
     willDelValues?: () => boolean,
     willSetTable?: (tableId: Id, table: Table) => Table | undefined,
+    willDelTable?: (tableId: Id) => boolean,
   ] = [];
   let internalListeners: [
     preStartTransaction?: () => void,
@@ -629,8 +630,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getOrCreateTable = (tableId: Id) =>
     mapGet(tablesMap, tableId) ?? setValidTable(tableId, {});
 
-  const delValidTable = (tableId: Id): TableMap =>
-    setValidTable(tableId, {}, true);
+  const delValidTable = (tableId: Id): TableMap => {
+    if (internalWillSets[9]?.(tableId) ?? true) {
+      return setValidTable(tableId, {}, true);
+    }
+    return mapGet(tablesMap, tableId) as TableMap;
+  };
 
   const delValidRow = (tableId: Id, tableMap: TableMap, rowId: Id): void => {
     if (internalWillSets[6]?.(tableId, rowId) ?? true) {
@@ -1802,6 +1807,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willDelRow: (tableId: Id, rowId: Id) => boolean,
     willDelValues: () => boolean,
     willSetTable: (tableId: Id, table: Table) => Table | undefined,
+    willDelTable: (tableId: Id) => boolean,
   ) =>
     (internalWillSets = [
       willSetCell,
@@ -1813,6 +1819,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       willDelRow,
       willDelValues,
       willSetTable,
+      willDelTable,
     ]);
 
   const setInternalListeners = (

@@ -128,6 +128,22 @@
  */
 /// WillDelCellCallback
 /**
+ * The WillDelTableCallback type describes a function that is called before a
+ * Table is deleted from the Store.
+ *
+ * The callback receives the table Id of the Table about to be deleted. It
+ * returns `true` to allow the deletion, or `false` to prevent it.
+ *
+ * Multiple WillDelTableCallback functions can be registered and they will be
+ * called sequentially. If any callback returns `false`, the chain
+ * short-circuits and the Table will not be deleted.
+ * @param tableId The Id of the Table being deleted.
+ * @returns `true` to allow the deletion, `false` to prevent it.
+ * @category Callback
+ * @since v8.0.0
+ */
+/// WillDelTableCallback
+/**
  * The WillDelRowCallback type describes a function that is called before a
  * Row is deleted from the Store.
  *
@@ -533,6 +549,39 @@
    * @since v8.0.0
    */
   /// Middleware.addWillDelCellCallback
+  /**
+   * The addWillDelTableCallback method registers a WillDelTableCallback that
+   * will be called before any Table is deleted from the Store.
+   *
+   * The callback returns `true` to allow the deletion or `false` to prevent
+   * it. Multiple callbacks can be registered and they are called sequentially.
+   * If any callback returns `false`, the deletion is prevented.
+   * @param callback The WillDelTableCallback to register.
+   * @returns A reference to the Middleware object, for chaining.
+   * @example
+   * This example registers a callback that prevents deleting the 'pets' table
+   * from the pet store.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * store.setTable('pets', {fido: {species: 'dog'}, felix: {species: 'cat'}});
+   *
+   * middleware.addWillDelTableCallback((tableId) => tableId !== 'pets');
+   *
+   * store.delTable('pets');
+   * console.log(store.getTable('pets'));
+   * // -> {fido: {species: 'dog'}, felix: {species: 'cat'}}
+   *
+   * middleware.destroy();
+   * ```
+   * @category Configuration
+   * @since v8.0.0
+   */
+  /// Middleware.addWillDelTableCallback
   /**
    * The addWillDelRowCallback method registers a WillDelRowCallback that will
    * be called before any Row is deleted from the Store.
