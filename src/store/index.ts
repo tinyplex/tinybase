@@ -179,6 +179,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willSetTable?: (tableId: Id, table: Table) => Table | undefined,
     willDelTable?: (tableId: Id) => boolean,
     willSetTables?: (tables: Tables) => Tables | undefined,
+    willDelTables?: () => boolean,
   ] = [];
   let internalListeners: [
     preStartTransaction?: () => void,
@@ -1489,7 +1490,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
     });
 
   const delTables = (): Store =>
-    fluentTransaction(() => setValidTables({}, true));
+    fluentTransaction(
+      () =>
+        (internalWillSets[11]?.() ?? true)
+          ? setValidTables({}, true)
+          : 0,
+    );
 
   const delTable = (tableId: Id): Store =>
     fluentTransaction(
@@ -1822,6 +1828,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willSetTable: (tableId: Id, table: Table) => Table | undefined,
     willDelTable: (tableId: Id) => boolean,
     willSetTables: (tables: Tables) => Tables | undefined,
+    willDelTables: () => boolean,
   ) =>
     (internalWillSets = [
       willSetCell,
@@ -1835,6 +1842,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       willSetTable,
       willDelTable,
       willSetTables,
+      willDelTables,
     ]);
 
   const setInternalListeners = (

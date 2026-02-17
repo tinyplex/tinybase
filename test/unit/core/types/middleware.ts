@@ -92,9 +92,7 @@ middlewareWithSchema.getStore().getTables().t2; // !
     return _table;
   });
 
-  middlewareWithSchema.addWillSetTableCallback(
-    (_tableId, table) => table,
-  );
+  middlewareWithSchema.addWillSetTableCallback((_tableId, table) => table);
   middlewareWithSchema.addWillSetTableCallback(() => undefined);
 
   middlewareWithSchema
@@ -246,6 +244,18 @@ middlewareWithSchema.getStore().getTables().t2; // !
     .getTables().t1;
   middlewareWithSchema
     .addWillDelTableCallback(() => true)
+    .getStore()
+    .getTables().t2; // !
+};
+
+// addWillDelTablesCallback
+() => {
+  middlewareWithSchema
+    .addWillDelTablesCallback(() => true)
+    .getStore()
+    .getTables().t1;
+  middlewareWithSchema
+    .addWillDelTablesCallback(() => true)
     .getStore()
     .getTables().t2; // !
 };

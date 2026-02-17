@@ -133,6 +133,9 @@ export type WillDelValueCallback<
     : never,
 > = (...params: Params | [valueId: never]) => boolean;
 
+/// WillDelTablesCallback
+export type WillDelTablesCallback = () => boolean;
+
 /// WillDelValuesCallback
 export type WillDelValuesCallback = () => boolean;
 
@@ -189,6 +192,11 @@ export interface Middleware<in out Schemas extends OptionalSchemas> {
   /// Middleware.addWillDelValueCallback
   addWillDelValueCallback(
     callback: WillDelValueCallback<Schemas[1]>,
+  ): Middleware<Schemas>;
+
+  /// Middleware.addWillDelTablesCallback
+  addWillDelTablesCallback(
+    callback: WillDelTablesCallback,
   ): Middleware<Schemas>;
 
   /// Middleware.addWillDelValuesCallback

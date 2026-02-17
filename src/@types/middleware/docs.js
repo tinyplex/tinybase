@@ -211,6 +211,21 @@
  */
 /// WillDelValuesCallback
 /**
+ * The WillDelTablesCallback type describes a function that is called before all
+ * Tables are deleted from the Store.
+ *
+ * The callback takes no parameters. It returns `true` to allow the deletion, or
+ * `false` to prevent it.
+ *
+ * Multiple WillDelTablesCallback functions can be registered and they will be
+ * called sequentially. If any callback returns `false`, the chain
+ * short-circuits and the Tables will not be deleted.
+ * @returns `true` to allow the deletion, `false` to prevent it.
+ * @category Callback
+ * @since v8.0.0
+ */
+/// WillDelTablesCallback
+/**
  * A Middleware object lets you intercept and validate writes to a Store.
  *
  * This is useful for enforcing business rules, data validation, or
@@ -769,6 +784,39 @@
    * @since v8.0.0
    */
   /// Middleware.addWillDelValuesCallback
+  /**
+   * The addWillDelTablesCallback method registers a WillDelTablesCallback that
+   * will be called before all Tables are deleted from the Store.
+   *
+   * The callback returns `true` to allow the deletion or `false` to prevent
+   * it. Multiple callbacks can be registered and they are called sequentially.
+   * If any callback returns `false`, the deletion is prevented.
+   * @param callback The WillDelTablesCallback to register.
+   * @returns A reference to the Middleware object, for chaining.
+   * @example
+   * This example registers a callback that prevents deleting all Tables from
+   * the pet store.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * store.setTables({pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}});
+   *
+   * middleware.addWillDelTablesCallback(() => false);
+   *
+   * store.delTables();
+   * console.log(store.getTables());
+   * // -> {pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}}
+   *
+   * middleware.destroy();
+   * ```
+   * @category Configuration
+   * @since v8.0.0
+   */
+  /// Middleware.addWillDelTablesCallback
   /**
    * The destroy method should be called when this Middleware object is no
    * longer used. It removes all hooks and listeners from the Store, and

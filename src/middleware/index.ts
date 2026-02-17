@@ -5,6 +5,7 @@ import type {
   WillDelRowCallback,
   WillDelTableCallback,
   WillDelValueCallback,
+  WillDelTablesCallback,
   WillDelValuesCallback,
   WillSetCellCallback,
   WillSetRowCallback,
@@ -40,6 +41,7 @@ export const createMiddleware = getCreateFunction(
     const willSetValuesCallbacks: WillSetValuesCallback[] = [];
     const willDelCellCallbacks: WillDelCellCallback[] = [];
     const willDelTableCallbacks: WillDelTableCallback[] = [];
+    const willDelTablesCallbacks: WillDelTablesCallback[] = [];
     const willDelRowCallbacks: WillDelRowCallback[] = [];
     const willDelValueCallbacks: WillDelValueCallback[] = [];
     const willDelValuesCallbacks: WillDelValuesCallback[] = [];
@@ -122,6 +124,9 @@ export const createMiddleware = getCreateFunction(
     const willDelValue = (valueId: Id): boolean =>
       arrayEvery(willDelValueCallbacks, (callback) => callback(valueId));
 
+    const willDelTables = (): boolean =>
+      arrayEvery(willDelTablesCallbacks, (callback) => callback());
+
     const willDelValues = (): boolean =>
       arrayEvery(willDelValuesCallbacks, (callback) => callback());
 
@@ -137,6 +142,7 @@ export const createMiddleware = getCreateFunction(
       willSetTable,
       willDelTable,
       willSetTables,
+      willDelTables,
     );
 
     const getStore = (): Store => store;
@@ -183,6 +189,11 @@ export const createMiddleware = getCreateFunction(
     ): Middleware =>
       fluent(() => arrayPush(willDelTableCallbacks, callback));
 
+    const addWillDelTablesCallback = (
+      callback: WillDelTablesCallback,
+    ): Middleware =>
+      fluent(() => arrayPush(willDelTablesCallbacks, callback));
+
     const addWillDelValueCallback = (
       callback: WillDelValueCallback,
     ): Middleware => fluent(() => arrayPush(willDelValueCallbacks, callback));
@@ -204,6 +215,7 @@ export const createMiddleware = getCreateFunction(
       addWillSetValuesCallback,
       addWillDelCellCallback,
       addWillDelTableCallback,
+      addWillDelTablesCallback,
       addWillDelRowCallback,
       addWillDelValueCallback,
       addWillDelValuesCallback,

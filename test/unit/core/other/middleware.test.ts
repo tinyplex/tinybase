@@ -1851,6 +1851,130 @@ describe('willDelTable', () => {
   });
 });
 
+describe('willDelTables', () => {
+  describe('allow', () => {
+    test('returning true allows delete', () => {
+      middleware.addWillDelTablesCallback(() => true);
+      store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}});
+      store.delTables();
+      expect(store.getTables()).toEqual({});
+    });
+  });
+
+  describe('block', () => {
+    test('returning false blocks delete', () => {
+      middleware.addWillDelTablesCallback(() => false);
+      store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}});
+      store.delTables();
+      expect(store.getTables()).toEqual({
+        t1: {r1: {c1: 'a'}},
+        t2: {r1: {c1: 'b'}},
+      });
+    });
+  });
+
+  describe('chaining', () => {
+    test('all must return true to allow', () => {
+      middleware
+        .addWillDelTablesCallback(() => true)
+        .addWillDelTablesCallback(() => true);
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      store.delTables();
+      expect(store.getTables()).toEqual({});
+    });
+
+    test('any returning false blocks', () => {
+      middleware
+        .addWillDelTablesCallback(() => true)
+        .addWillDelTablesCallback(() => false);
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      store.delTables();
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+    });
+
+    test('first blocks, second never called', () => {
+      const secondCalled = vi.fn();
+      middleware
+        .addWillDelTablesCallback(() => false)
+        .addWillDelTablesCallback(() => {
+          secondCalled();
+          return true;
+        });
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      store.delTables();
+      expect(secondCalled).not.toHaveBeenCalled();
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+    });
+  });
+
+  describe('entry points', () => {
+    test('called from delTables', () => {
+      const calls: number[] = [];
+      middleware.addWillDelTablesCallback(() => {
+        calls.push(1);
+        return true;
+      });
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      store.delTables();
+      expect(calls).toEqual([1]);
+    });
+
+    test('not called from delTable', () => {
+      const calls: number[] = [];
+      middleware.addWillDelTablesCallback(() => {
+        calls.push(1);
+        return true;
+      });
+      store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}});
+      store.delTable('t1');
+      expect(calls).toEqual([]);
+      expect(store.getTables()).toEqual({t2: {r1: {c1: 'b'}}});
+    });
+
+    test('not called from setTables', () => {
+      const calls: number[] = [];
+      middleware.addWillDelTablesCallback(() => {
+        calls.push(1);
+        return true;
+      });
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      calls.length = 0;
+      store.setTables({t2: {r1: {c1: 'b'}}});
+      expect(calls).toEqual([]);
+    });
+  });
+
+  describe('interaction with willDelTable', () => {
+    test('willDelTables blocks before willDelTable is called', () => {
+      const tableCalls = vi.fn();
+      middleware.addWillDelTablesCallback(() => false);
+      middleware.addWillDelTableCallback((...args) => {
+        tableCalls(...args);
+        return true;
+      });
+      store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}});
+      store.delTables();
+      expect(tableCalls).not.toHaveBeenCalled();
+      expect(store.getTables()).toEqual({
+        t1: {r1: {c1: 'a'}},
+        t2: {r1: {c1: 'b'}},
+      });
+    });
+
+    test('willDelTables allows, willDelTable still checked', () => {
+      const tableCalls: string[] = [];
+      middleware.addWillDelTablesCallback(() => true);
+      middleware.addWillDelTableCallback((tableId) => {
+        tableCalls.push(tableId);
+        return true;
+      });
+      store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}});
+      store.delTables();
+      expect(tableCalls).toEqual(['t1', 't2']);
+    });
+  });
+});
+
 describe('willDelValue', () => {
   describe('allow', () => {
     test('returning true allows delete', () => {
