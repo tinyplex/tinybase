@@ -161,7 +161,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let hadTables = false;
   let hadValues = false;
   let transactions = 0;
-  let willCallbacks: [
+  let middleware: [
     willSetContent?: (content: Content) => Content | undefined,
     willSetTables?: (tables: Tables) => Tables | undefined,
     willSetTable?: (tableId: Id, table: Table) => Table | undefined,
@@ -467,11 +467,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowId: Id,
     cellId: Id,
     cell: CellOrUndefined,
-    skipWillCallbacks?: boolean,
+    skipMiddleware?: boolean,
   ) =>
     isUndefined(cell)
-      ? delCell(tableId, rowId, cellId, true, skipWillCallbacks)
-      : setCell(tableId, rowId, cellId, cell, skipWillCallbacks);
+      ? delCell(tableId, rowId, cellId, true, skipMiddleware)
+      : setCell(tableId, rowId, cellId, cell, skipMiddleware);
 
   const setOrDelValues = (values: Values) =>
     objIsEmpty(values) ? delValues() : setValues(values);
@@ -479,16 +479,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const setOrDelValue = (
     valueId: Id,
     value: ValueOrUndefined,
-    skipWillCallbacks?: boolean,
+    skipMiddleware?: boolean,
   ) =>
     isUndefined(value)
-      ? delValue(valueId, skipWillCallbacks)
-      : setValue(valueId, value, skipWillCallbacks);
+      ? delValue(valueId, skipMiddleware)
+      : setValue(valueId, value, skipMiddleware);
 
   const setValidContent = (content: Content): void =>
     ifNotUndefined(
       ifNotUndefined(
-        willCallbacks[0],
+        middleware[0],
         (willSetContent) => willSetContent(content),
         () => content,
       ),
@@ -503,7 +503,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       forceDel
         ? tables
         : ifNotUndefined(
-            willCallbacks[1],
+            middleware[1],
             (willSetTables) => willSetTables(tables),
             () => tables,
           ),
@@ -525,7 +525,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       forceDel
         ? table
         : ifNotUndefined(
-            willCallbacks[2],
+            middleware[2],
             (willSetTable) => willSetTable(tableId, table),
             () => table,
           ),
@@ -554,7 +554,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       forceDel
         ? row
         : ifNotUndefined(
-            willCallbacks[3],
+            middleware[3],
             (willSetRow) => willSetRow(tableId, rowId, row),
             () => row,
           ),
@@ -578,11 +578,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowMap: RowMap,
     cellId: Id,
     cell: Cell,
-    skipWillCallbacks?: boolean,
+    skipMiddleware?: boolean,
   ): void =>
     ifNotUndefined(
       ifNotUndefined(
-        skipWillCallbacks ? undefined : willCallbacks[4],
+        skipMiddleware ? undefined : middleware[4],
         (willSetCell) => willSetCell(tableId, rowId, cellId, cell),
         () => cell,
       ),
@@ -604,19 +604,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowId: Id,
     cellId: Id,
     validCell: Cell,
-    skipWillCallbacks?: boolean,
+    skipMiddleware?: boolean,
   ): void =>
     ifNotUndefined(
       mapGet(tableMap, rowId),
       (rowMap): any =>
-        setValidCell(
-          tableId,
-          rowId,
-          rowMap,
-          cellId,
-          validCell,
-          skipWillCallbacks,
-        ),
+        setValidCell(tableId, rowId, rowMap, cellId, validCell, skipMiddleware),
       () => {
         const rowMap: RowMap = mapNew();
         mapSet(tableMap, rowId, rowMap);
@@ -630,7 +623,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
               rowMap,
               cellId,
               cell as Cell,
-              skipWillCallbacks,
+              skipMiddleware,
             ),
         );
       },
@@ -644,7 +637,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       forceDel
         ? values
         : ifNotUndefined(
-            willCallbacks[5],
+            middleware[5],
             (willSetValues) => willSetValues(values),
             () => values,
           ),
@@ -660,11 +653,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const setValidValue = (
     valueId: Id,
     value: Value,
-    skipWillCallbacks?: boolean,
+    skipMiddleware?: boolean,
   ): void =>
     ifNotUndefined(
       ifNotUndefined(
-        skipWillCallbacks ? undefined : willCallbacks[6],
+        skipMiddleware ? undefined : middleware[6],
         (willSetValue) => willSetValue(valueId, value),
         () => value,
       ),
@@ -693,14 +686,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapGet(tablesMap, tableId) ?? setValidTable(tableId, {});
 
   const delValidTable = (tableId: Id): TableMap => {
-    if (willCallbacks[8]?.(tableId) ?? true) {
+    if (middleware[8]?.(tableId) ?? true) {
       return setValidTable(tableId, {}, true);
     }
     return mapGet(tablesMap, tableId) as TableMap;
   };
 
   const delValidRow = (tableId: Id, tableMap: TableMap, rowId: Id): void => {
-    if (willCallbacks[9]?.(tableId, rowId) ?? true) {
+    if (middleware[9]?.(tableId, rowId) ?? true) {
       const [, releaseId] = mapGet(
         tablePoolFunctions,
         tableId,
@@ -717,7 +710,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     row: RowMap,
     cellId: Id,
     forceDel?: boolean,
-    skipWillCallbacks?: boolean,
+    skipMiddleware?: boolean,
   ): void => {
     const defaultCell = mapGet(
       mapGet(tablesSchemaRowCache, tableId)?.[0],
@@ -726,10 +719,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     if (!isUndefined(defaultCell) && !forceDel) {
       return setValidCell(tableId, rowId, row, cellId, defaultCell);
     }
-    if (
-      skipWillCallbacks ||
-      (willCallbacks[10]?.(tableId, rowId, cellId) ?? true)
-    ) {
+    if (skipMiddleware || (middleware[10]?.(tableId, rowId, cellId) ?? true)) {
       const delCell = (cellId: Id) => {
         cellChanged(tableId, rowId, cellId, mapGet(row, cellId));
         cellIdsChanged(tableId, rowId, cellId, -1);
@@ -752,12 +742,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
     }
   };
 
-  const delValidValue = (valueId: Id, skipWillCallbacks?: boolean): void => {
+  const delValidValue = (valueId: Id, skipMiddleware?: boolean): void => {
     const defaultValue = mapGet(valuesDefaulted, valueId);
     if (!isUndefined(defaultValue)) {
       return setValidValue(valueId, defaultValue);
     }
-    if (skipWillCallbacks || (willCallbacks[12]?.(valueId) ?? true)) {
+    if (skipMiddleware || (middleware[12]?.(valueId) ?? true)) {
       valueChanged(valueId, mapGet(valuesMap, valueId));
       valueIdsChanged(valueId, -1);
       mapSet(valuesMap, valueId);
@@ -1369,7 +1359,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowId: Id,
     cellId: Id,
     cell: Cell | MapCell,
-    skipWillCallbacks?: boolean,
+    skipMiddleware?: boolean,
   ): Store =>
     fluentTransaction(
       (tableId, rowId, cellId) =>
@@ -1387,7 +1377,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
               rowId,
               cellId,
               validCell,
-              skipWillCallbacks,
+              skipMiddleware,
             ),
         ),
       tableId,
@@ -1412,7 +1402,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const setValue = (
     valueId: Id,
     value: Value,
-    skipWillCallbacks?: boolean,
+    skipMiddleware?: boolean,
   ): Store =>
     fluentTransaction(
       (valueId) =>
@@ -1421,7 +1411,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
             valueId,
             isFunction(value) ? value(getValue(valueId)) : value,
           ),
-          (validValue) => setValidValue(valueId, validValue, skipWillCallbacks),
+          (validValue) => setValidValue(valueId, validValue, skipMiddleware),
         ),
       valueId,
     );
@@ -1430,7 +1420,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     fluentTransaction(() =>
       ifNotUndefined(
         ifNotUndefined(
-          willCallbacks[13],
+          middleware[13],
           (willApplyChanges) => willApplyChanges(changes),
           () => changes,
         ),
@@ -1515,7 +1505,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const delTables = (): Store =>
     fluentTransaction(() =>
-      (willCallbacks[7]?.() ?? true) ? setValidTables({}, true) : 0,
+      (middleware[7]?.() ?? true) ? setValidTables({}, true) : 0,
     );
 
   const delTable = (tableId: Id): Store =>
@@ -1539,7 +1529,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowId: Id,
     cellId: Id,
     forceDel?: boolean,
-    skipWillCallbacks?: boolean,
+    skipMiddleware?: boolean,
   ): Store =>
     fluentTransaction(
       (tableId, rowId, cellId) =>
@@ -1553,7 +1543,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
                   rowMap,
                   cellId,
                   forceDel,
-                  skipWillCallbacks,
+                  skipMiddleware,
                 )
               : 0,
           ),
@@ -1565,14 +1555,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const delValues = (): Store =>
     fluentTransaction(() =>
-      (willCallbacks[11]?.() ?? true) ? setValidValues({}, true) : 0,
+      (middleware[11]?.() ?? true) ? setValidValues({}, true) : 0,
     );
 
-  const delValue = (valueId: Id, skipWillCallbacks?: boolean): Store =>
+  const delValue = (valueId: Id, skipMiddleware?: boolean): Store =>
     fluentTransaction(
       (valueId) =>
         collHas(valuesMap, valueId)
-          ? delValidValue(valueId, skipWillCallbacks)
+          ? delValidValue(valueId, skipMiddleware)
           : 0,
       valueId,
     );
@@ -1842,7 +1832,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       pairCollSize2(finishTransactionListeners),
   });
 
-  const setWillCallbacks = (
+  const setMiddleware = (
     willSetContent: (content: Content) => Content | undefined,
     willSetTables: (tables: Tables) => Tables | undefined,
     willSetTable: (tableId: Id, table: Table) => Table | undefined,
@@ -1863,7 +1853,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willDelValue: (valueId: Id) => boolean,
     willApplyChanges: (changes: Changes) => Changes | undefined,
   ) =>
-    (willCallbacks = [
+    (middleware = [
       willSetContent,
       willSetTables,
       willSetTable,
@@ -1997,7 +1987,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     addListener,
     callListeners,
     setInternalListeners,
-    setWillCallbacks,
+    setMiddleware,
     setOrDelCell,
     setOrDelValue,
   };

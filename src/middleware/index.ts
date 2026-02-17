@@ -124,23 +124,6 @@ export const createMiddleware = getCreateFunction(
     const willApplyChanges = (changes: Changes): Changes | undefined =>
       reduceCallbacks(willApplyChangesCallbacks, changes);
 
-    (store as any).setWillCallbacks(
-      willSetContent,
-      willSetTables,
-      willSetTable,
-      willSetRow,
-      willSetCell,
-      willSetValues,
-      willSetValue,
-      willDelTables,
-      willDelTable,
-      willDelRow,
-      willDelCell,
-      willDelValues,
-      willDelValue,
-      willApplyChanges,
-    );
-
     const getStore = (): Store => store;
 
     const addWillSetContentCallback = addCallback(willSetContentCallbacks);
@@ -178,6 +161,23 @@ export const createMiddleware = getCreateFunction(
       addWillApplyChangesCallback,
       destroy,
     } as Middleware);
+
+    (store as any).setMiddleware(
+      willSetContent,
+      willSetTables,
+      willSetTable,
+      willSetRow,
+      willSetCell,
+      willSetValues,
+      willSetValue,
+      willDelTables,
+      willDelTable,
+      willDelRow,
+      willDelCell,
+      willDelValues,
+      willDelValue,
+      willApplyChanges,
+    );
 
     return middleware;
   },
