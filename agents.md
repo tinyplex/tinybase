@@ -336,6 +336,8 @@ npx vitest run ./test/unit/documentation.test.ts --retry=0
   across `@example` blocks — no suffixing needed
 - Each `@example` must include its own imports and setup
 - Keep examples self-contained
+- Try to make the tests about simple data that relates to a real life pet store
+  (eg 'pets', 'species', 'employees' etc)
 
 **Common pitfalls**:
 
