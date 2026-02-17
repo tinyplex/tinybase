@@ -683,7 +683,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
   };
 
   const getOrCreateTable = (tableId: Id) =>
-    mapGet(tablesMap, tableId) ?? setValidTable(tableId, {});
+    mapEnsure(tablesMap, tableId, () => {
+      tableIdsChanged(tableId, 1);
+      mapSet(tablePoolFunctions, tableId, getPoolFunctions());
+      mapSet(tableCellIds, tableId, mapNew());
+      return mapNew();
+    });
 
   const delValidTable = (tableId: Id): TableMap => {
     if (middleware[8]?.(tableId) ?? true) {

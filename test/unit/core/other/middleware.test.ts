@@ -2977,3 +2977,431 @@ describe('fluent API', () => {
     expect(result).toBe(middleware);
   });
 });
+
+describe('callback granularity', () => {
+  let calls: Record<string, number>;
+
+  const registerAllCallbacks = () => {
+    calls = {};
+    middleware.addWillSetContentCallback((content) => {
+      calls['willSetContent'] = (calls['willSetContent'] ?? 0) + 1;
+      return content;
+    });
+    middleware.addWillSetTablesCallback((tables) => {
+      calls['willSetTables'] = (calls['willSetTables'] ?? 0) + 1;
+      return tables;
+    });
+    middleware.addWillSetTableCallback((tableId, table) => {
+      calls['willSetTable'] = (calls['willSetTable'] ?? 0) + 1;
+      return table;
+    });
+    middleware.addWillSetRowCallback((tableId, rowId, row) => {
+      calls['willSetRow'] = (calls['willSetRow'] ?? 0) + 1;
+      return row;
+    });
+    middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+      calls['willSetCell'] = (calls['willSetCell'] ?? 0) + 1;
+      return cell;
+    });
+    middleware.addWillSetValuesCallback((values) => {
+      calls['willSetValues'] = (calls['willSetValues'] ?? 0) + 1;
+      return values;
+    });
+    middleware.addWillSetValueCallback((valueId, value) => {
+      calls['willSetValue'] = (calls['willSetValue'] ?? 0) + 1;
+      return value;
+    });
+    middleware.addWillDelTablesCallback(() => {
+      calls['willDelTables'] = (calls['willDelTables'] ?? 0) + 1;
+      return true;
+    });
+    middleware.addWillDelTableCallback((_tableId) => {
+      calls['willDelTable'] = (calls['willDelTable'] ?? 0) + 1;
+      return true;
+    });
+    middleware.addWillDelRowCallback((_tableId, _rowId) => {
+      calls['willDelRow'] = (calls['willDelRow'] ?? 0) + 1;
+      return true;
+    });
+    middleware.addWillDelCellCallback((_tableId, _rowId, _cellId) => {
+      calls['willDelCell'] = (calls['willDelCell'] ?? 0) + 1;
+      return true;
+    });
+    middleware.addWillDelValuesCallback(() => {
+      calls['willDelValues'] = (calls['willDelValues'] ?? 0) + 1;
+      return true;
+    });
+    middleware.addWillDelValueCallback((_valueId) => {
+      calls['willDelValue'] = (calls['willDelValue'] ?? 0) + 1;
+      return true;
+    });
+    middleware.addWillApplyChangesCallback((changes) => {
+      calls['willApplyChanges'] = (calls['willApplyChanges'] ?? 0) + 1;
+      return changes;
+    });
+  };
+
+  describe('setCell only triggers willSetCell', () => {
+    test('into existing row', () => {
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      registerAllCallbacks();
+      store.setCell('t1', 'r1', 'c2', 'b');
+      expect(calls).toEqual({willSetCell: 1});
+    });
+
+    test('into new row of existing table', () => {
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      registerAllCallbacks();
+      store.setCell('t1', 'r2', 'c1', 'b');
+      expect(calls).toEqual({willSetCell: 1});
+    });
+
+    test('into new row of new table', () => {
+      registerAllCallbacks();
+      store.setCell('t1', 'r1', 'c1', 'a');
+      expect(calls).toEqual({willSetCell: 1});
+    });
+  });
+
+  describe('setRow only triggers willSetRow and willSetCell', () => {
+    test('into existing table', () => {
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      registerAllCallbacks();
+      store.setRow('t1', 'r2', {c1: 'b'});
+      expect(calls).toEqual({willSetRow: 1, willSetCell: 1});
+    });
+
+    test('into new table', () => {
+      registerAllCallbacks();
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(calls).toEqual({willSetRow: 1, willSetCell: 1});
+    });
+  });
+
+  // eslint-disable-next-line max-len
+  describe('setTable only triggers willSetTable, willSetRow, willSetCell', () => {
+    test('new table', () => {
+      registerAllCallbacks();
+      store.setTable('t1', {r1: {c1: 'a'}});
+      expect(calls).toEqual({
+        willSetTable: 1,
+        willSetRow: 1,
+        willSetCell: 1,
+      });
+    });
+
+    test('existing table', () => {
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      registerAllCallbacks();
+      store.setTable('t1', {r1: {c1: 'b'}});
+      expect(calls).toEqual({
+        willSetTable: 1,
+        willSetRow: 1,
+        willSetCell: 1,
+      });
+    });
+  });
+
+  describe('setTables triggers willSetTables down to willSetCell', () => {
+    test('new tables', () => {
+      registerAllCallbacks();
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      expect(calls).toEqual({
+        willSetTables: 1,
+        willSetTable: 1,
+        willSetRow: 1,
+        willSetCell: 1,
+      });
+    });
+  });
+
+  describe('setValue only triggers willSetValue', () => {
+    test('new value', () => {
+      registerAllCallbacks();
+      store.setValue('v1', 'a');
+      expect(calls).toEqual({willSetValue: 1});
+    });
+
+    test('existing value', () => {
+      store.setValues({v1: 'a'});
+      registerAllCallbacks();
+      store.setValue('v1', 'b');
+      expect(calls).toEqual({willSetValue: 1});
+    });
+  });
+
+  describe('setValues triggers willSetValues and willSetValue', () => {
+    test('new values', () => {
+      registerAllCallbacks();
+      store.setValues({v1: 'a'});
+      expect(calls).toEqual({willSetValues: 1, willSetValue: 1});
+    });
+  });
+
+  describe('setPartialRow only triggers willSetCell', () => {
+    test('into existing row', () => {
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      registerAllCallbacks();
+      store.setPartialRow('t1', 'r1', {c2: 'b'});
+      expect(calls).toEqual({willSetCell: 1});
+    });
+  });
+
+  describe('setPartialValues only triggers willSetValue', () => {
+    test('existing values', () => {
+      store.setValues({v1: 'a'});
+      registerAllCallbacks();
+      store.setPartialValues({v2: 'b'});
+      expect(calls).toEqual({willSetValue: 1});
+    });
+  });
+
+  describe('addRow only triggers willSetRow and willSetCell', () => {
+    test('into existing table', () => {
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      registerAllCallbacks();
+      store.addRow('t1', {c1: 'b'});
+      expect(calls).toEqual({willSetRow: 1, willSetCell: 1});
+    });
+
+    test('into new table', () => {
+      registerAllCallbacks();
+      store.addRow('t1', {c1: 'a'});
+      expect(calls).toEqual({willSetRow: 1, willSetCell: 1});
+    });
+  });
+
+  describe('delCell only triggers willDelCell', () => {
+    test('existing cell', () => {
+      store.setTables({t1: {r1: {c1: 'a', c2: 'b'}}});
+      registerAllCallbacks();
+      store.delCell('t1', 'r1', 'c2');
+      expect(calls).toEqual({willDelCell: 1});
+    });
+  });
+
+  describe('delValue only triggers willDelValue', () => {
+    test('existing value', () => {
+      store.setValues({v1: 'a', v2: 'b'});
+      registerAllCallbacks();
+      store.delValue('v2');
+      expect(calls).toEqual({willDelValue: 1});
+    });
+  });
+
+  describe('delRow only triggers willDelRow and willDelCell', () => {
+    test('existing row', () => {
+      store.setTables({t1: {r1: {c1: 'a'}, r2: {c1: 'b'}}});
+      registerAllCallbacks();
+      store.delRow('t1', 'r1');
+      expect(calls).toEqual({willDelRow: 1, willDelCell: 1});
+    });
+  });
+
+  describe('delTable only triggers willDelTable down to willDelCell', () => {
+    test('existing table', () => {
+      store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}});
+      registerAllCallbacks();
+      store.delTable('t1');
+      expect(calls).toEqual({
+        willDelTable: 1,
+        willDelRow: 1,
+        willDelCell: 1,
+      });
+    });
+  });
+
+  describe('delTables triggers willDelTables down to willDelCell', () => {
+    test('existing tables', () => {
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      registerAllCallbacks();
+      store.delTables();
+      expect(calls).toEqual({
+        willDelTables: 1,
+        willDelTable: 1,
+        willDelRow: 1,
+        willDelCell: 1,
+      });
+    });
+  });
+
+  describe('delValues triggers willDelValues and willDelValue', () => {
+    test('existing values', () => {
+      store.setValues({v1: 'a'});
+      registerAllCallbacks();
+      store.delValues();
+      expect(calls).toEqual({willDelValues: 1, willDelValue: 1});
+    });
+  });
+
+  describe('setContent triggers full set hierarchy', () => {
+    test('new content', () => {
+      registerAllCallbacks();
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {v1: 'b'}]);
+      expect(calls).toEqual({
+        willSetContent: 1,
+        willSetTables: 1,
+        willSetTable: 1,
+        willSetRow: 1,
+        willSetCell: 1,
+        willSetValues: 1,
+        willSetValue: 1,
+      });
+    });
+
+    test('with multiple tables, rows, cells, values', () => {
+      registerAllCallbacks();
+      store.setContent([
+        {t1: {r1: {c1: 'a', c2: 'b'}, r2: {c1: 'c'}}, t2: {r1: {c1: 'd'}}},
+        {v1: 'x', v2: 'y'},
+      ]);
+      expect(calls).toEqual({
+        willSetContent: 1,
+        willSetTables: 1,
+        willSetTable: 2,
+        willSetRow: 3,
+        willSetCell: 4,
+        willSetValues: 1,
+        willSetValue: 2,
+      });
+    });
+
+    test('replacing existing content triggers del callbacks too', () => {
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {v1: 'x'}]);
+      registerAllCallbacks();
+      store.setContent([{t2: {r1: {c1: 'b'}}}, {v2: 'y'}]);
+      expect(calls).toEqual({
+        willSetContent: 1,
+        willSetTables: 1,
+        willSetTable: 1,
+        willSetRow: 1,
+        willSetCell: 1,
+        willDelTable: 1,
+        willDelRow: 1,
+        willDelCell: 1,
+        willSetValues: 1,
+        willSetValue: 1,
+        willDelValue: 1,
+      });
+    });
+  });
+
+  describe('applyChanges triggers willApplyChanges and granular', () => {
+    test('setting cells', () => {
+      registerAllCallbacks();
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {}, 1]);
+      expect(calls).toEqual({
+        willApplyChanges: 1,
+        willSetCell: 1,
+      });
+    });
+
+    test('setting values', () => {
+      registerAllCallbacks();
+      store.applyChanges([{}, {v1: 'a'}, 1]);
+      expect(calls).toEqual({
+        willApplyChanges: 1,
+        willSetValue: 1,
+      });
+    });
+
+    test('setting cells and values', () => {
+      registerAllCallbacks();
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {v1: 'b'}, 1]);
+      expect(calls).toEqual({
+        willApplyChanges: 1,
+        willSetCell: 1,
+        willSetValue: 1,
+      });
+    });
+
+    test('deleting cells', () => {
+      store.setTables({t1: {r1: {c1: 'a', c2: 'b'}}});
+      registerAllCallbacks();
+      store.applyChanges([{t1: {r1: {c2: undefined}}}, {}, 1]);
+      expect(calls).toEqual({
+        willApplyChanges: 1,
+        willDelCell: 1,
+      });
+    });
+
+    test('deleting cells (deleting rows)', () => {
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      registerAllCallbacks();
+      store.applyChanges([{t1: {r1: {c1: undefined}}}, {}, 1]);
+      expect(calls).toEqual({
+        willApplyChanges: 1,
+        willDelCell: 1,
+      });
+    });
+
+    test('deleting rows', () => {
+      store.setTables({t1: {r1: {c1: 'a'}, r2: {c1: 'b'}}});
+      registerAllCallbacks();
+      store.applyChanges([{t1: {r1: undefined}}, {}, 1]);
+      expect(calls).toEqual({
+        willApplyChanges: 1,
+        willDelRow: 1,
+        willDelCell: 1,
+      });
+    });
+
+    test('deleting tables', () => {
+      store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}});
+      registerAllCallbacks();
+      store.applyChanges([{t1: undefined}, {}, 1]);
+      expect(calls).toEqual({
+        willApplyChanges: 1,
+        willDelTable: 1,
+        willDelRow: 1,
+        willDelCell: 1,
+      });
+    });
+
+    test('deleting values', () => {
+      store.setValues({v1: 'a', v2: 'b'});
+      registerAllCallbacks();
+      store.applyChanges([{}, {v1: undefined}, 1]);
+      expect(calls).toEqual({
+        willApplyChanges: 1,
+        willDelValue: 1,
+      });
+    });
+
+    test('mixed set and delete', () => {
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {v1: 'x'}]);
+      registerAllCallbacks();
+      store.applyChanges([
+        {t1: {r1: {c1: undefined, c2: 'b'}}},
+        {v1: undefined, v2: 'y'},
+        1,
+      ]);
+      expect(calls).toEqual({
+        willApplyChanges: 1,
+        willDelCell: 1,
+        willSetCell: 1,
+        willDelValue: 1,
+        willSetValue: 1,
+      });
+    });
+
+    test('does not trigger parent set callbacks', () => {
+      registerAllCallbacks();
+      store.applyChanges([
+        {t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}},
+        {v1: 'x', v2: 'y'},
+        1,
+      ]);
+      expect(calls).toEqual({
+        willApplyChanges: 1,
+        willSetCell: 2,
+        willSetValue: 2,
+      });
+      expect(calls).not.toHaveProperty('willSetContent');
+      expect(calls).not.toHaveProperty('willSetTables');
+      expect(calls).not.toHaveProperty('willSetTable');
+      expect(calls).not.toHaveProperty('willSetRow');
+      expect(calls).not.toHaveProperty('willSetValues');
+    });
+  });
+});
