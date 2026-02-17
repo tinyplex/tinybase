@@ -548,8 +548,7 @@ export const createMergeableStore = ((
         ? store.transaction(() => {
             store.delTables().delValues();
             contentStampMap = newContentStampMap();
-            // Use _applyChanges to bypass middleware (trusted source)
-            (store as any)._applyChanges(
+            store.applyChanges(
               mergeContentOrChanges(mergeableContent, 1),
             );
           })
@@ -622,19 +621,10 @@ export const createMergeableStore = ((
 
   const applyMergeableChanges = (
     mergeableChanges: MergeableChanges | MergeableContent,
-  ): MergeableStore => {
-    const validatedChanges = (store as any).middleware.applyToMergeableChanges(
-      mergeableChanges,
-      getNextHlc,
+  ): MergeableStore =>
+    disableListeningToRawStoreChanges(() =>
+      store.applyChanges(mergeContentOrChanges(mergeableChanges)),
     );
-    if (validatedChanges === null) {
-      return mergeableStore as MergeableStore;
-    }
-    // Use _applyChanges to bypass base Store's middleware (already validated)
-    return disableListeningToRawStoreChanges(() =>
-      (store as any)._applyChanges(mergeContentOrChanges(validatedChanges)),
-    );
-  };
 
   const merge = (mergeableStore2: MergeableStore) => {
     const mergeableChanges = getMergeableContent();

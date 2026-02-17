@@ -30,6 +30,264 @@ describe('Destroys', () => {
     middleware.destroy();
   });
 });
+
+describe('willSetContent', () => {
+  describe('passthrough', () => {
+    test('returns same content', () => {
+      middleware.addWillSetContentCallback((content) => {
+        return content;
+      });
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {v1: 1}]);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+      expect(store.getValues()).toEqual({v1: 1});
+    });
+  });
+
+  describe('transform', () => {
+    test('modifies content by adding a table', () => {
+      middleware.addWillSetContentCallback(([tables, values]) => {
+        return [{...tables, t2: {r1: {c1: 1}}}, values];
+      });
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {}]);
+      expect(store.getTables()).toEqual({
+        t1: {r1: {c1: 'a'}},
+        t2: {r1: {c1: 1}},
+      });
+    });
+
+    test('modifies content by adding a value', () => {
+      middleware.addWillSetContentCallback(([tables, values]) => {
+        return [tables, {...values, v2: 'added'}];
+      });
+      store.setContent([{}, {v1: 'a'}]);
+      expect(store.getValues()).toEqual({v1: 'a', v2: 'added'});
+    });
+
+    test('modifies content by removing a table', () => {
+      middleware.addWillSetContentCallback(([tables, values]) => {
+        const {t2: _, ...rest} = tables;
+        return [rest, values];
+      });
+      store.setContent([{t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}}, {}]);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+    });
+
+    test('replaces entire content', () => {
+      middleware.addWillSetContentCallback(() => {
+        return [{replaced: {r1: {c1: 'yes'}}}, {flag: true}];
+      });
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {v1: 1}]);
+      expect(store.getTables()).toEqual({replaced: {r1: {c1: 'yes'}}});
+      expect(store.getValues()).toEqual({flag: true});
+    });
+  });
+
+  describe('block', () => {
+    test('returning undefined blocks the content set', () => {
+      middleware.addWillSetContentCallback(() => {
+        return undefined;
+      });
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {v1: 1}]);
+      expect(store.getTables()).toEqual({});
+      expect(store.getValues()).toEqual({});
+    });
+
+    test('conditionally blocks', () => {
+      middleware.addWillSetContentCallback(([tables, values]) => {
+        return 'banned' in tables ? undefined : [tables, values];
+      });
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {}]);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+      store.setContent([{banned: {r1: {c1: 1}}, t2: {r1: {c1: 'b'}}}, {}]);
+      // blocked, so t1 from previous setContent remains
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+    });
+  });
+
+  describe('chaining', () => {
+    test('multiple callbacks applied in order', () => {
+      middleware
+        .addWillSetContentCallback(([tables, values]) => {
+          return [{...tables, step1: {r1: {done: true}}}, values];
+        })
+        .addWillSetContentCallback(([tables, values]) => {
+          return [{...tables, step2: {r1: {done: true}}}, values];
+        });
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {}]);
+      expect(store.getTables()).toEqual({
+        t1: {r1: {c1: 'a'}},
+        step1: {r1: {done: true}},
+        step2: {r1: {done: true}},
+      });
+    });
+
+    test('second callback sees transformed content from first', () => {
+      const seen: any[] = [];
+      middleware
+        .addWillSetContentCallback(([tables, values]) => {
+          seen.push([{...tables}, {...values}]);
+          return [{...tables, added: {r1: {c1: 1}}}, values];
+        })
+        .addWillSetContentCallback(([tables, values]) => {
+          seen.push([{...tables}, {...values}]);
+          return [tables, values];
+        });
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {v1: 1}]);
+      expect(seen).toEqual([
+        [{t1: {r1: {c1: 'a'}}}, {v1: 1}],
+        [{t1: {r1: {c1: 'a'}}, added: {r1: {c1: 1}}}, {v1: 1}],
+      ]);
+    });
+
+    test('first callback blocks, second never called', () => {
+      const secondCalled = vi.fn();
+      middleware
+        .addWillSetContentCallback(() => undefined)
+        .addWillSetContentCallback((content) => {
+          secondCalled();
+          return content;
+        });
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {}]);
+      expect(secondCalled).not.toHaveBeenCalled();
+      expect(store.getTables()).toEqual({});
+    });
+
+    test('second of three callbacks blocks, third never called', () => {
+      const thirdCalled = vi.fn();
+      middleware
+        .addWillSetContentCallback((content) => content)
+        .addWillSetContentCallback(() => undefined)
+        .addWillSetContentCallback((content) => {
+          thirdCalled();
+          return content;
+        });
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {}]);
+      expect(thirdCalled).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('entry points', () => {
+    test('called from setContent', () => {
+      const calls: any[] = [];
+      middleware.addWillSetContentCallback((content) => {
+        calls.push(content);
+        return content;
+      });
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {v1: 1}]);
+      expect(calls).toEqual([[{t1: {r1: {c1: 'a'}}}, {v1: 1}]]);
+    });
+
+    test('not called from setTables', () => {
+      const calls: any[] = [];
+      middleware.addWillSetContentCallback((content) => {
+        calls.push(content);
+        return content;
+      });
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      expect(calls).toEqual([]);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+    });
+
+    test('not called from setValues', () => {
+      const calls: any[] = [];
+      middleware.addWillSetContentCallback((content) => {
+        calls.push(content);
+        return content;
+      });
+      store.setValues({v1: 'a'});
+      expect(calls).toEqual([]);
+      expect(store.getValues()).toEqual({v1: 'a'});
+    });
+
+    test('not called from setRow', () => {
+      const calls: any[] = [];
+      middleware.addWillSetContentCallback((content) => {
+        calls.push(content);
+        return content;
+      });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(calls).toEqual([]);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+    });
+
+    test('not called from applyChanges', () => {
+      const calls: any[] = [];
+      middleware.addWillSetContentCallback((content) => {
+        calls.push(content);
+        return content;
+      });
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {}, 1]);
+      expect(calls).toEqual([]);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+    });
+
+    test('block from setContent blocks all content', () => {
+      middleware.addWillSetContentCallback(() => undefined);
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {v1: 1}]);
+      expect(store.getTables()).toEqual({});
+      expect(store.getValues()).toEqual({});
+    });
+  });
+
+  describe('interaction with willSetTables', () => {
+    test('willSetContent runs before willSetTables', () => {
+      const order: string[] = [];
+      middleware
+        .addWillSetContentCallback((content) => {
+          order.push('content');
+          return content;
+        })
+        .addWillSetTablesCallback((tables) => {
+          order.push('tables');
+          return tables;
+        });
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {}]);
+      expect(order).toEqual(['content', 'tables']);
+    });
+
+    test('willSetContent transforms are seen by willSetTables', () => {
+      middleware
+        .addWillSetContentCallback(([tables, values]) => [
+          {...tables, extra: {r1: {c1: 'added'}}},
+          values,
+        ])
+        .addWillSetTablesCallback((tables) =>
+          Object.fromEntries(
+            Object.entries(tables).map(([tableId, table]) => [
+              tableId,
+              Object.fromEntries(
+                Object.entries(table).map(([rowId, row]) => [
+                  rowId,
+                  Object.fromEntries(
+                    Object.entries(row).map(([k, v]) => [
+                      k,
+                      typeof v === 'string' ? v.toUpperCase() : v,
+                    ]),
+                  ),
+                ]),
+              ),
+            ]),
+          ),
+        );
+      store.setContent([{t1: {r1: {c1: 'hello'}}}, {}]);
+      expect(store.getTables()).toEqual({
+        t1: {r1: {c1: 'HELLO'}},
+        extra: {r1: {c1: 'ADDED'}},
+      });
+    });
+
+    // eslint-disable-next-line max-len
+    test('willSetContent block prevents willSetTables from being called', () => {
+      const tablesCallback = vi.fn((tables: any) => tables);
+      middleware
+        .addWillSetContentCallback(() => undefined)
+        .addWillSetTablesCallback(tablesCallback);
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {}]);
+      expect(tablesCallback).not.toHaveBeenCalled();
+    });
+  });
+});
+
 describe('willSetTables', () => {
   describe('passthrough', () => {
     test('returns same tables', () => {
@@ -294,9 +552,7 @@ describe('willSetTables', () => {
     });
 
     test('willSetTables block prevents willSetTable from being called', () => {
-      const tableCallback = vi.fn(
-        (_tableId: any, table: any) => table,
-      );
+      const tableCallback = vi.fn((_tableId: any, table: any) => table);
       middleware
         .addWillSetTablesCallback(() => undefined)
         .addWillSetTableCallback(tableCallback);
@@ -427,10 +683,7 @@ describe('willSetTable', () => {
           return table;
         });
       store.setTable('t1', {r1: {c1: 'a'}});
-      expect(seen).toEqual([
-        {r1: {c1: 'a'}},
-        {r1: {c1: 'a'}, added: {v: 1}},
-      ]);
+      expect(seen).toEqual([{r1: {c1: 'a'}}, {r1: {c1: 'a'}, added: {v: 1}}]);
     });
 
     test('first callback blocks, second never called', () => {
@@ -547,9 +800,7 @@ describe('willSetTable', () => {
     });
 
     test('willSetTable block prevents willSetRow from being called', () => {
-      const rowCallback = vi.fn(
-        (_tableId: any, _rowId: any, row: any) => row,
-      );
+      const rowCallback = vi.fn((_tableId: any, _rowId: any, row: any) => row);
       middleware
         .addWillSetTableCallback(() => undefined)
         .addWillSetRowCallback(rowCallback);
@@ -2198,6 +2449,299 @@ describe('willDelValue', () => {
   });
 });
 
+describe('willApplyChanges', () => {
+  describe('passthrough', () => {
+    test('returns same changes', () => {
+      middleware.addWillApplyChangesCallback((changes) => {
+        return changes;
+      });
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {v1: 1}, 1]);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+      expect(store.getValues()).toEqual({v1: 1});
+    });
+  });
+
+  describe('transform', () => {
+    test('modifies changes by adding a table', () => {
+      middleware.addWillApplyChangesCallback(
+        ([changedTables, changedValues]) => {
+          return [{...changedTables, t2: {r1: {c1: 1}}}, changedValues, 1];
+        },
+      );
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {}, 1]);
+      expect(store.getTables()).toEqual({
+        t1: {r1: {c1: 'a'}},
+        t2: {r1: {c1: 1}},
+      });
+    });
+
+    test('modifies changes by adding a value', () => {
+      middleware.addWillApplyChangesCallback(
+        ([changedTables, changedValues]) => {
+          return [changedTables, {...changedValues, v2: 'added'}, 1];
+        },
+      );
+      store.applyChanges([{}, {v1: 'a'}, 1]);
+      expect(store.getValues()).toEqual({v1: 'a', v2: 'added'});
+    });
+
+    test('modifies changes by removing a table', () => {
+      middleware.addWillApplyChangesCallback(
+        ([changedTables, changedValues]) => {
+          const {t2: _, ...rest} = changedTables;
+          return [rest, changedValues, 1];
+        },
+      );
+      store.applyChanges([{t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}}, {}, 1]);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+    });
+
+    test('modifies changes by removing a value', () => {
+      middleware.addWillApplyChangesCallback(
+        ([changedTables, changedValues]) => {
+          const {secret: _, ...rest} = changedValues;
+          return [changedTables, rest, 1];
+        },
+      );
+      store.applyChanges([{}, {v1: 'ok', secret: 'hidden'}, 1]);
+      expect(store.getValue('v1')).toBe('ok');
+      expect(store.getValue('secret')).toBeUndefined();
+    });
+  });
+
+  describe('block', () => {
+    test('returning undefined blocks the changes', () => {
+      middleware.addWillApplyChangesCallback(() => {
+        return undefined;
+      });
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {v1: 1}, 1]);
+      expect(store.getTables()).toEqual({});
+      expect(store.getValues()).toEqual({});
+    });
+
+    test('conditionally blocks', () => {
+      middleware.addWillApplyChangesCallback(
+        ([changedTables, changedValues]) => {
+          return 'banned' in changedTables
+            ? undefined
+            : [changedTables, changedValues, 1];
+        },
+      );
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {}, 1]);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+      store.applyChanges([{banned: {r1: {c1: 1}}}, {}, 1]);
+      // blocked, so t1 from previous applyChanges remains
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+    });
+
+    test('blocks deletions', () => {
+      store.setRow('t1', 'r1', {c1: 'a'});
+      store.setValue('v1', 1);
+      middleware.addWillApplyChangesCallback(() => undefined);
+      store.applyChanges([{t1: {r1: undefined}}, {v1: undefined}, 1]);
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a'});
+      expect(store.getValue('v1')).toBe(1);
+    });
+  });
+
+  describe('chaining', () => {
+    test('multiple callbacks applied in order', () => {
+      middleware
+        .addWillApplyChangesCallback(([changedTables, changedValues]) => {
+          return [
+            {...changedTables, step1: {r1: {done: true}}},
+            changedValues,
+            1,
+          ];
+        })
+        .addWillApplyChangesCallback(([changedTables, changedValues]) => {
+          return [
+            {...changedTables, step2: {r1: {done: true}}},
+            changedValues,
+            1,
+          ];
+        });
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {}, 1]);
+      expect(store.getTables()).toEqual({
+        t1: {r1: {c1: 'a'}},
+        step1: {r1: {done: true}},
+        step2: {r1: {done: true}},
+      });
+    });
+
+    test('second callback sees transformed changes from first', () => {
+      const seen: any[] = [];
+      middleware
+        .addWillApplyChangesCallback(([changedTables, changedValues]) => {
+          seen.push([{...changedTables}, {...changedValues}]);
+          return [{...changedTables, added: {r1: {c1: 1}}}, changedValues, 1];
+        })
+        .addWillApplyChangesCallback(([changedTables, changedValues]) => {
+          seen.push([{...changedTables}, {...changedValues}]);
+          return [changedTables, changedValues, 1];
+        });
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {}, 1]);
+      expect(seen).toEqual([
+        [{t1: {r1: {c1: 'a'}}}, {}],
+        [{t1: {r1: {c1: 'a'}}, added: {r1: {c1: 1}}}, {}],
+      ]);
+    });
+
+    test('first callback blocks, second never called', () => {
+      const secondCalled = vi.fn();
+      middleware
+        .addWillApplyChangesCallback(() => undefined)
+        .addWillApplyChangesCallback((changes) => {
+          secondCalled();
+          return changes;
+        });
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {}, 1]);
+      expect(secondCalled).not.toHaveBeenCalled();
+      expect(store.getTables()).toEqual({});
+    });
+
+    test('second of three callbacks blocks, third never called', () => {
+      const thirdCalled = vi.fn();
+      middleware
+        .addWillApplyChangesCallback((changes) => changes)
+        .addWillApplyChangesCallback(() => undefined)
+        .addWillApplyChangesCallback((changes) => {
+          thirdCalled();
+          return changes;
+        });
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {}, 1]);
+      expect(thirdCalled).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('entry points', () => {
+    test('called from applyChanges', () => {
+      const calls: any[] = [];
+      middleware.addWillApplyChangesCallback((changes) => {
+        calls.push(changes);
+        return changes;
+      });
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {v1: 1}, 1]);
+      expect(calls).toEqual([[{t1: {r1: {c1: 'a'}}}, {v1: 1}, 1]]);
+    });
+
+    test('not called from setTables', () => {
+      const calls: any[] = [];
+      middleware.addWillApplyChangesCallback((changes) => {
+        calls.push(changes);
+        return changes;
+      });
+      store.setTables({t1: {r1: {c1: 'a'}}});
+      expect(calls).toEqual([]);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+    });
+
+    test('not called from setRow', () => {
+      const calls: any[] = [];
+      middleware.addWillApplyChangesCallback((changes) => {
+        calls.push(changes);
+        return changes;
+      });
+      store.setRow('t1', 'r1', {c1: 'a'});
+      expect(calls).toEqual([]);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+    });
+
+    test('not called from setContent', () => {
+      const calls: any[] = [];
+      middleware.addWillApplyChangesCallback((changes) => {
+        calls.push(changes);
+        return changes;
+      });
+      store.setContent([{t1: {r1: {c1: 'a'}}}, {}]);
+      expect(calls).toEqual([]);
+      expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
+    });
+
+    test('not called from setValues', () => {
+      const calls: any[] = [];
+      middleware.addWillApplyChangesCallback((changes) => {
+        calls.push(changes);
+        return changes;
+      });
+      store.setValues({v1: 'a'});
+      expect(calls).toEqual([]);
+      expect(store.getValues()).toEqual({v1: 'a'});
+    });
+
+    test('block from applyChanges blocks all changes', () => {
+      middleware.addWillApplyChangesCallback(() => undefined);
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {v1: 1}, 1]);
+      expect(store.getTables()).toEqual({});
+      expect(store.getValues()).toEqual({});
+    });
+  });
+
+  describe('interaction with willSetCell', () => {
+    test('willApplyChanges runs before willSetCell', () => {
+      const order: string[] = [];
+      middleware
+        .addWillApplyChangesCallback((changes) => {
+          order.push('changes');
+          return changes;
+        })
+        .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => {
+          order.push('cell');
+          return cell;
+        });
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {}, 1]);
+      expect(order).toEqual(['changes', 'cell']);
+    });
+
+    test('willApplyChanges transforms are seen by willSetCell', () => {
+      middleware
+        .addWillApplyChangesCallback(([changedTables, changedValues]) => [
+          {...changedTables, extra: {r1: {c1: 'added'}}},
+          changedValues,
+          1,
+        ])
+        .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) =>
+          typeof cell === 'string' ? cell.toUpperCase() : cell,
+        );
+      store.applyChanges([{t1: {r1: {c1: 'hello'}}}, {}, 1]);
+      expect(store.getTables()).toEqual({
+        t1: {r1: {c1: 'HELLO'}},
+        extra: {r1: {c1: 'ADDED'}},
+      });
+    });
+
+    // eslint-disable-next-line max-len
+    test('willApplyChanges block prevents willSetCell from being called', () => {
+      const cellCallback = vi.fn(
+        (_tableId: any, _rowId: any, _cellId: any, cell: any) => cell,
+      );
+      middleware
+        .addWillApplyChangesCallback(() => undefined)
+        .addWillSetCellCallback(cellCallback);
+      store.applyChanges([{t1: {r1: {c1: 'a'}}}, {}, 1]);
+      expect(cellCallback).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('changes with deletions', () => {
+    test('deletions pass through when accepted', () => {
+      store.setRow('t1', 'r1', {c1: 'a'});
+      store.setValue('v1', 1);
+      middleware.addWillApplyChangesCallback((changes) => changes);
+      store.applyChanges([{t1: {r1: undefined}}, {v1: undefined}, 1]);
+      expect(store.getTables()).toEqual({});
+      expect(store.getValues()).toEqual({});
+    });
+
+    test('table deletions pass through when accepted', () => {
+      store.setRow('t1', 'r1', {c1: 'a'});
+      middleware.addWillApplyChangesCallback((changes) => changes);
+      store.applyChanges([{t1: undefined}, {}, 1]);
+      expect(store.getTables()).toEqual({});
+    });
+  });
+});
+
 describe('schema interaction', () => {
   describe('willSetCell not called for schema-rejected cells', () => {
     test('invalid cell type rejected before callback', () => {
@@ -2406,8 +2950,19 @@ describe('fluent API', () => {
     expect(result).toBe(middleware);
   });
 
+  test('addWillSetContentCallback returns middleware', () => {
+    const result = middleware.addWillSetContentCallback((content) => content);
+    expect(result).toBe(middleware);
+  });
+
+  test('addWillApplyChangesCallback returns middleware', () => {
+    const result = middleware.addWillApplyChangesCallback((changes) => changes);
+    expect(result).toBe(middleware);
+  });
+
   test('full chained setup', () => {
     const result = middleware
+      .addWillSetContentCallback((content) => content)
       .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => cell)
       .addWillSetTableCallback((_tableId, table) => table)
       .addWillSetRowCallback((_tableId, _rowId, row) => row)
@@ -2417,7 +2972,8 @@ describe('fluent API', () => {
       .addWillDelTableCallback(() => true)
       .addWillDelRowCallback(() => true)
       .addWillDelValueCallback(() => true)
-      .addWillDelValuesCallback(() => true);
+      .addWillDelValuesCallback(() => true)
+      .addWillApplyChangesCallback((changes) => changes);
     expect(result).toBe(middleware);
   });
 });

@@ -3,6 +3,8 @@ import type {Id} from '../common/index.d.ts';
 import type {
   Cell,
   CellOrUndefined,
+  Changes,
+  Content,
   Row,
   Store,
   Table,
@@ -11,6 +13,11 @@ import type {
   ValueOrUndefined,
   Values,
 } from '../store/index.d.ts';
+
+/// WillSetContentCallback
+export type WillSetContentCallback = (
+  content: Content,
+) => Content | undefined;
 
 /// WillSetTablesCallback
 export type WillSetTablesCallback = (tables: Tables) => Tables | undefined;
@@ -67,10 +74,20 @@ export type WillDelValuesCallback = () => boolean;
 /// WillDelValueCallback
 export type WillDelValueCallback = (valueId: Id) => boolean;
 
+/// WillApplyChangesCallback
+export type WillApplyChangesCallback = (
+  changes: Changes,
+) => Changes | undefined;
+
 /// Middleware
 export interface Middleware {
   /// Middleware.getStore
   getStore(): Store;
+
+  /// Middleware.addWillSetContentCallback
+  addWillSetContentCallback(
+    callback: WillSetContentCallback,
+  ): Middleware;
 
   /// Middleware.addWillSetTablesCallback
   addWillSetTablesCallback(callback: WillSetTablesCallback): Middleware;
@@ -107,6 +124,11 @@ export interface Middleware {
 
   /// Middleware.addWillDelValueCallback
   addWillDelValueCallback(callback: WillDelValueCallback): Middleware;
+
+  /// Middleware.addWillApplyChangesCallback
+  addWillApplyChangesCallback(
+    callback: WillApplyChangesCallback,
+  ): Middleware;
 
   /// Middleware.destroy
   destroy(): void;

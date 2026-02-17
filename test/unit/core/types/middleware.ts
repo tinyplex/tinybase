@@ -21,6 +21,36 @@ const middlewareWithSchema = createMiddleware(storeWithSchemas);
 
 middlewareWithSchema.getStore().getTables().t1;
 middlewareWithSchema.getStore().getTables().t2; // !
+
+// addWillSetContentCallback
+() => {
+  middlewareWithSchema.addWillSetContentCallback((content) => {
+    content[0].t0;
+    content[0].t1;
+
+    content[0].t2; // !
+
+    content[1].v1;
+    content[1].v1d;
+
+    content[1].v2; // !
+
+    return content;
+  });
+
+  middlewareWithSchema.addWillSetContentCallback((content) => content);
+  middlewareWithSchema.addWillSetContentCallback(() => undefined);
+
+  middlewareWithSchema
+    .addWillSetContentCallback((content) => content)
+    .getStore()
+    .getTables().t1;
+  middlewareWithSchema
+    .addWillSetContentCallback((content) => content)
+    .getStore()
+    .getTables().t2; // !
+};
+
 // addWillSetTablesCallback
 () => {
   middlewareWithSchema.addWillSetTablesCallback((tables) => {
@@ -288,6 +318,25 @@ middlewareWithSchema.getStore().getTables().t2; // !
     .getTables().t1;
   middlewareWithSchema
     .addWillDelValueCallback(() => true)
+    .getStore()
+    .getTables().t2; // !
+};
+
+// addWillApplyChangesCallback
+() => {
+  middlewareWithSchema.addWillApplyChangesCallback((changes) => {
+    return changes;
+  });
+
+  middlewareWithSchema.addWillApplyChangesCallback((changes) => changes);
+  middlewareWithSchema.addWillApplyChangesCallback(() => undefined);
+
+  middlewareWithSchema
+    .addWillApplyChangesCallback((changes) => changes)
+    .getStore()
+    .getTables().t1;
+  middlewareWithSchema
+    .addWillApplyChangesCallback((changes) => changes)
     .getStore()
     .getTables().t2; // !
 };

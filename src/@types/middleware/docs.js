@@ -11,6 +11,25 @@
  */
 /// middleware
 /**
+ * The WillSetContentCallback type describes a function that is called before
+ * Content is set in the Store.
+ *
+ * The callback receives the Content (a [Tables, Values] tuple) that is about
+ * to be set. It can return the Content (possibly transformed) to allow the
+ * write, or `undefined` to prevent the Content from being set.
+ *
+ * Multiple WillSetContentCallback functions can be registered and they will be
+ * called sequentially, the Content being updated successively. If any callback
+ * returns `undefined`, the chain short-circuits and the Content will not be
+ * set.
+ * @param content The Content about to be set.
+ * @returns The Content to use (possibly transformed), or `undefined` to
+ * prevent the write.
+ * @category Callback
+ * @since v8.0.0
+ */
+/// WillSetContentCallback
+/**
  * The WillSetTablesCallback type describes a function that is called before
  * Tables are set in the Store.
  *
@@ -226,6 +245,25 @@
  */
 /// WillDelValueCallback
 /**
+ * The WillApplyChangesCallback type describes a function that is called before
+ * Changes are applied to the Store.
+ *
+ * The callback receives the Changes object that is about to be applied. It can
+ * return the Changes (possibly transformed) to allow the write, or `undefined`
+ * to prevent the Changes from being applied.
+ *
+ * Multiple WillApplyChangesCallback functions can be registered and they will
+ * be called sequentially, the Changes being updated successively. If any
+ * callback returns `undefined`, the chain short-circuits and the Changes will
+ * not be applied.
+ * @param changes The Changes about to be applied.
+ * @returns The Changes to use (possibly transformed), or `undefined` to
+ * prevent the write.
+ * @category Callback
+ * @since v8.0.0
+ */
+/// WillApplyChangesCallback
+/**
  * A Middleware object lets you intercept and validate writes to a Store.
  *
  * This is useful for enforcing business rules, data validation, or
@@ -272,6 +310,45 @@
    * @since v8.0.0
    */
   /// Middleware.getStore
+  /**
+   * The addWillSetContentCallback method registers a
+   * WillSetContentCallback that will be called before Content is set in the
+   * Store.
+   *
+   * The callback can transform the Content or return `undefined` to prevent
+   * the write. Multiple callbacks can be registered and they are called
+   * sequentially, each receiving the (possibly transformed) Content from
+   * the previous callback.
+   * @param callback The WillSetContentCallback to register.
+   * @returns A reference to the Middleware object, for chaining.
+   * @example
+   * This example registers a callback that prevents setting Content with
+   * empty Tables in the pet store.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * middleware.addWillSetContentCallback(([tables, values]) =>
+   *   Object.keys(tables).length > 0 ? [tables, values] : undefined,
+   * );
+   *
+   * store.setContent([{}, {open: true}]);
+   * console.log(store.getContent());
+   * // -> [{}, {}]
+   *
+   * store.setContent([{pets: {fido: {species: 'dog'}}}, {}]);
+   * console.log(store.getContent());
+   * // -> [{pets: {fido: {species: 'dog'}}}, {}]
+   *
+   * middleware.destroy();
+   * ```
+   * @category Configuration
+   * @since v8.0.0
+   */
+  /// Middleware.addWillSetContentCallback
   /**
    * The addWillSetTablesCallback method registers a WillSetTablesCallback that
    * will be called before Tables are set in the Store.
@@ -817,6 +894,53 @@
    * @since v8.0.0
    */
   /// Middleware.addWillDelValueCallback
+  /**
+   * The addWillApplyChangesCallback method registers a
+   * WillApplyChangesCallback that will be called before Changes are applied to
+   * the Store via the applyChanges method.
+   *
+   * This callback receives the Changes object and can return it (to allow),
+   * return a modified Changes object (to transform), or return `undefined` (to
+   * reject). Multiple callbacks can be registered and they are called
+   * sequentially, each receiving the output of the previous. If any callback
+   * returns `undefined`, all remaining callbacks are skipped and the changes
+   * are rejected.
+   *
+   * This fires when applyChanges is called directly, or indirectly via
+   * applyMergeableChanges, setMergeableContent, or merge on a MergeableStore.
+   * @param callback The WillApplyChangesCallback to register.
+   * @returns A reference to the Middleware object, for chaining.
+   * @example
+   * This example registers a callback that rejects changes containing a
+   * 'secret' table.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * middleware.addWillApplyChangesCallback(
+   *   ([changedTables, changedValues]) =>
+   *     changedTables['secret'] != null
+   *       ? undefined
+   *       : [changedTables, changedValues, 1],
+   * );
+   *
+   * store.applyChanges([{pets: {fido: {species: 'dog'}}}, {}, 1]);
+   * console.log(store.getRow('pets', 'fido'));
+   * // -> {species: 'dog'}
+   *
+   * store.applyChanges([{secret: {r1: {c1: 'v1'}}}, {}, 1]);
+   * console.log(store.getTable('secret'));
+   * // -> {}
+   *
+   * middleware.destroy();
+   * ```
+   * @category Configuration
+   * @since v8.0.0
+   */
+  /// Middleware.addWillApplyChangesCallback
   /**
    * The destroy method should be called when this Middleware object is no
    * longer used. It removes all hooks and listeners from the Store, and

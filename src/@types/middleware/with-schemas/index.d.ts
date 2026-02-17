@@ -7,6 +7,8 @@ import type {
 import type {Id} from '../../common/with-schemas/index.d.ts';
 import type {
   Cell,
+  Changes,
+  Content,
   OptionalSchemas,
   OptionalTablesSchema,
   OptionalValuesSchema,
@@ -17,6 +19,11 @@ import type {
   Value,
   Values,
 } from '../../store/with-schemas/index.d.ts';
+
+/// WillSetContentCallback
+export type WillSetContentCallback<Schemas extends OptionalSchemas> = (
+  content: Content<Schemas>,
+) => Content<Schemas> | undefined;
 
 /// WillSetTablesCallback
 export type WillSetTablesCallback<Schema extends OptionalTablesSchema> = (
@@ -137,10 +144,20 @@ export type WillDelValueCallback<
     : never,
 > = (...params: Params | [valueId: never]) => boolean;
 
+/// WillApplyChangesCallback
+export type WillApplyChangesCallback<Schemas extends OptionalSchemas> = (
+  changes: Changes<Schemas>,
+) => Changes<Schemas> | undefined;
+
 /// Middleware
 export interface Middleware<in out Schemas extends OptionalSchemas> {
   /// Middleware.getStore
   getStore(): Store<Schemas>;
+
+  /// Middleware.addWillSetContentCallback
+  addWillSetContentCallback(
+    callback: WillSetContentCallback<Schemas>,
+  ): Middleware<Schemas>;
 
   /// Middleware.addWillSetTablesCallback
   addWillSetTablesCallback(
@@ -200,6 +217,11 @@ export interface Middleware<in out Schemas extends OptionalSchemas> {
   /// Middleware.addWillDelValueCallback
   addWillDelValueCallback(
     callback: WillDelValueCallback<Schemas[1]>,
+  ): Middleware<Schemas>;
+
+  /// Middleware.addWillApplyChangesCallback
+  addWillApplyChangesCallback(
+    callback: WillApplyChangesCallback<Schemas>,
   ): Middleware<Schemas>;
 
   /// Middleware.destroy
