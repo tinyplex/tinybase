@@ -162,7 +162,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   let hadTables = false;
   let hadValues = false;
   let transactions = 0;
-  let internalWillSets: [
+  let willCallbacks: [
     willSetTables?: (tables: Tables) => Tables | undefined,
     willSetTable?: (tableId: Id, table: Table) => Table | undefined,
     willSetRow?: (tableId: Id, rowId: Id, row: Row) => Row | undefined,
@@ -472,7 +472,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       forceDel
         ? tables
         : ifNotUndefined(
-            internalWillSets[0],
+            willCallbacks[0],
             (willSetTables) => willSetTables(tables),
             () => tables,
           ),
@@ -480,8 +480,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
         mapMatch(
           tablesMap,
           validTables,
-          (_tables, tableId, table) =>
-            setValidTable(tableId, table),
+          (_tables, tableId, table) => setValidTable(tableId, table),
           (_tables, tableId) => delValidTable(tableId),
         ),
     ) as TablesMap;
@@ -495,7 +494,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       forceDel
         ? table
         : ifNotUndefined(
-            internalWillSets[1],
+            willCallbacks[1],
             (willSetTable) => willSetTable(tableId, table),
             () => table,
           ),
@@ -508,10 +507,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
             return mapNew();
           }),
           validTable,
-          (tableMap, rowId, row) =>
-            setValidRow(tableId, tableMap, rowId, row),
-          (tableMap, rowId) =>
-            delValidRow(tableId, tableMap, rowId),
+          (tableMap, rowId, row) => setValidRow(tableId, tableMap, rowId, row),
+          (tableMap, rowId) => delValidRow(tableId, tableMap, rowId),
         ),
     ) as TableMap;
 
@@ -526,7 +523,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       forceDel
         ? row
         : ifNotUndefined(
-            internalWillSets[2],
+            willCallbacks[2],
             (willSetRow) => willSetRow(tableId, rowId, row),
             () => row,
           ),
@@ -553,7 +550,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   ): void =>
     ifNotUndefined(
       ifNotUndefined(
-        internalWillSets[3],
+        willCallbacks[3],
         (willSetCell) => willSetCell(tableId, rowId, cellId, cell),
         () => cell,
       ),
@@ -599,7 +596,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       forceDel
         ? values
         : ifNotUndefined(
-            internalWillSets[4],
+            willCallbacks[4],
             (willSetValues) => willSetValues(values),
             () => values,
           ),
@@ -615,7 +612,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const setValidValue = (valueId: Id, value: Value): void =>
     ifNotUndefined(
       ifNotUndefined(
-        internalWillSets[5],
+        willCallbacks[5],
         (willSetValue) => willSetValue(valueId, value),
         () => value,
       ),
@@ -644,14 +641,14 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapGet(tablesMap, tableId) ?? setValidTable(tableId, {});
 
   const delValidTable = (tableId: Id): TableMap => {
-    if (internalWillSets[7]?.(tableId) ?? true) {
+    if (willCallbacks[7]?.(tableId) ?? true) {
       return setValidTable(tableId, {}, true);
     }
     return mapGet(tablesMap, tableId) as TableMap;
   };
 
   const delValidRow = (tableId: Id, tableMap: TableMap, rowId: Id): void => {
-    if (internalWillSets[8]?.(tableId, rowId) ?? true) {
+    if (willCallbacks[8]?.(tableId, rowId) ?? true) {
       const [, releaseId] = mapGet(
         tablePoolFunctions,
         tableId,
@@ -676,7 +673,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     if (!isUndefined(defaultCell) && !forceDel) {
       return setValidCell(tableId, rowId, row, cellId, defaultCell);
     }
-    if (internalWillSets[9]?.(tableId, rowId, cellId) ?? true) {
+    if (willCallbacks[9]?.(tableId, rowId, cellId) ?? true) {
       const delCell = (cellId: Id) => {
         cellChanged(tableId, rowId, cellId, mapGet(row, cellId));
         cellIdsChanged(tableId, rowId, cellId, -1);
@@ -704,7 +701,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     if (!isUndefined(defaultValue)) {
       return setValidValue(valueId, defaultValue);
     }
-    if (internalWillSets[11]?.(valueId) ?? true) {
+    if (willCallbacks[11]?.(valueId) ?? true) {
       valueChanged(valueId, mapGet(valuesMap, valueId));
       valueIdsChanged(valueId, -1);
       mapSet(valuesMap, valueId);
@@ -1490,11 +1487,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
     });
 
   const delTables = (): Store =>
-    fluentTransaction(
-      () =>
-        (internalWillSets[6]?.() ?? true)
-          ? setValidTables({}, true)
-          : 0,
+    fluentTransaction(() =>
+      (willCallbacks[6]?.() ?? true) ? setValidTables({}, true) : 0,
     );
 
   const delTable = (tableId: Id): Store =>
@@ -1535,9 +1529,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const delValues = (): Store =>
     fluentTransaction(() =>
-      (internalWillSets[10]?.() ?? true)
-        ? setValidValues({}, true)
-        : 0,
+      (willCallbacks[10]?.() ?? true) ? setValidValues({}, true) : 0,
     );
 
   const delValue = (valueId: Id): Store =>
@@ -1811,7 +1803,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       pairCollSize2(finishTransactionListeners),
   });
 
-  const setInternalWillSets = (
+  const setWillCallbacks = (
     willSetTables: (tables: Tables) => Tables | undefined,
     willSetTable: (tableId: Id, table: Table) => Table | undefined,
     willSetRow: (tableId: Id, rowId: Id, row: Row) => Row | undefined,
@@ -1830,7 +1822,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willDelValues: () => boolean,
     willDelValue: (valueId: Id) => boolean,
   ) =>
-    (internalWillSets = [
+    (willCallbacks = [
       willSetTables,
       willSetTable,
       willSetRow,
@@ -1967,7 +1959,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     addListener,
     callListeners,
     setInternalListeners,
-    setInternalWillSets,
+    setWillCallbacks,
     _applyChanges,
     middleware,
   };
