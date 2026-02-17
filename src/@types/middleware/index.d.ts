@@ -7,6 +7,7 @@ import type {
   Store,
   Value,
   ValueOrUndefined,
+  Values,
 } from '../store/index.d.ts';
 
 /// WillSetCellCallback
@@ -29,6 +30,9 @@ export type WillSetValueCallback = (
   valueId: Id,
   value: Value,
 ) => ValueOrUndefined;
+
+/// WillSetValuesCallback
+export type WillSetValuesCallback = (values: Values) => Values | undefined;
 
 /// WillDelCellCallback
 export type WillDelCellCallback = (
@@ -53,6 +57,9 @@ export interface Middleware {
 
   /// Middleware.addWillSetValueCallback
   addWillSetValueCallback(callback: WillSetValueCallback): Middleware;
+
+  /// Middleware.addWillSetValuesCallback
+  addWillSetValuesCallback(callback: WillSetValuesCallback): Middleware;
 
   /// Middleware.addWillDelCellCallback
   addWillDelCellCallback(callback: WillDelCellCallback): Middleware;

@@ -13,6 +13,7 @@ import type {
   Row,
   Store,
   Value,
+  Values,
 } from '../../store/with-schemas/index.d.ts';
 
 /// WillSetCellCallback
@@ -41,11 +42,7 @@ export type WillSetRowCallback<
   Schema extends OptionalTablesSchema,
   Params extends any[] = TableIdFromSchema<Schema> extends infer TableId
     ? TableId extends TableIdFromSchema<Schema>
-      ? [
-          tableId: TableId,
-          rowId: Id,
-          row: Row<Schema, TableId>,
-        ]
+      ? [tableId: TableId, rowId: Id, row: Row<Schema, TableId>]
       : never
     : never,
 > = (
@@ -63,6 +60,11 @@ export type WillSetValueCallback<
 > = (
   ...params: Params | [valueId: never, value: never]
 ) => Params[1] | undefined;
+
+/// WillSetValuesCallback
+export type WillSetValuesCallback<Schema extends OptionalValuesSchema> = (
+  values: Values<Schema>,
+) => Values<Schema> | undefined;
 
 /// WillDelCellCallback
 export type WillDelCellCallback<
@@ -108,6 +110,11 @@ export interface Middleware<in out Schemas extends OptionalSchemas> {
   /// Middleware.addWillSetValueCallback
   addWillSetValueCallback(
     callback: WillSetValueCallback<Schemas[1]>,
+  ): Middleware<Schemas>;
+
+  /// Middleware.addWillSetValuesCallback
+  addWillSetValuesCallback(
+    callback: WillSetValuesCallback<Schemas[1]>,
   ): Middleware<Schemas>;
 
   /// Middleware.addWillDelCellCallback

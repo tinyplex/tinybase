@@ -634,6 +634,221 @@ describe('willSetValue', () => {
   });
 });
 
+describe('willSetValues', () => {
+  describe('passthrough', () => {
+    test('returns same values', () => {
+      middleware.addWillSetValuesCallback((values) => {
+        return values;
+      });
+      store.setValues({v1: 'a', v2: 1});
+      expect(store.getValues()).toEqual({v1: 'a', v2: 1});
+    });
+  });
+
+  describe('transform', () => {
+    test('modifies values by adding a value', () => {
+      middleware.addWillSetValuesCallback((values) => {
+        return {...values, v2: 1};
+      });
+      store.setValues({v1: 'a'});
+      expect(store.getValues()).toEqual({v1: 'a', v2: 1});
+    });
+
+    test('modifies values by removing a value', () => {
+      middleware.addWillSetValuesCallback((values) => {
+        const {v2: _, ...rest} = values;
+        return rest;
+      });
+      store.setValues({v1: 'a', v2: 'b'});
+      expect(store.getValues()).toEqual({v1: 'a'});
+    });
+
+    test('modifies values by transforming value contents', () => {
+      middleware.addWillSetValuesCallback((values) => {
+        return Object.fromEntries(
+          Object.entries(values).map(([k, v]) => [
+            k,
+            typeof v === 'string' ? v.toUpperCase() : v,
+          ]),
+        );
+      });
+      store.setValues({v1: 'a', v2: 'b'});
+      expect(store.getValues()).toEqual({v1: 'A', v2: 'B'});
+    });
+  });
+
+  describe('block', () => {
+    test('returning undefined blocks the values set', () => {
+      middleware.addWillSetValuesCallback(() => {
+        return undefined;
+      });
+      store.setValues({v1: 'a'});
+      expect(store.getValues()).toEqual({});
+    });
+
+    test('conditionally blocks', () => {
+      middleware.addWillSetValuesCallback((values) => {
+        return 'locked' in values ? undefined : values;
+      });
+      store.setValues({v1: 'a'});
+      expect(store.getValues()).toEqual({v1: 'a'});
+      store.setValues({locked: true, v2: 'b'});
+      // blocked, so v1 from previous setValues is deleted by the
+      // mapMatch since the blocked values resolve to undefined
+      expect(store.getValues()).toEqual({v1: 'a'});
+    });
+  });
+
+  describe('chaining', () => {
+    test('multiple callbacks applied in order', () => {
+      middleware
+        .addWillSetValuesCallback((values) => {
+          return {...values, step1: true};
+        })
+        .addWillSetValuesCallback((values) => {
+          return {...values, step2: true};
+        });
+      store.setValues({v1: 'a'});
+      expect(store.getValues()).toEqual({v1: 'a', step1: true, step2: true});
+    });
+
+    test('second callback sees transformed values from first', () => {
+      const seen: any[] = [];
+      middleware
+        .addWillSetValuesCallback((values) => {
+          seen.push({...values});
+          return {...values, added: 1};
+        })
+        .addWillSetValuesCallback((values) => {
+          seen.push({...values});
+          return values;
+        });
+      store.setValues({v1: 'a'});
+      expect(seen).toEqual([{v1: 'a'}, {v1: 'a', added: 1}]);
+    });
+
+    test('first callback blocks, second never called', () => {
+      const secondCalled = vi.fn();
+      middleware
+        .addWillSetValuesCallback(() => undefined)
+        .addWillSetValuesCallback((values) => {
+          secondCalled();
+          return values;
+        });
+      store.setValues({v1: 'a'});
+      expect(secondCalled).not.toHaveBeenCalled();
+      expect(store.getValues()).toEqual({});
+    });
+
+    test('second of three callbacks blocks, third never called', () => {
+      const thirdCalled = vi.fn();
+      middleware
+        .addWillSetValuesCallback((values) => values)
+        .addWillSetValuesCallback(() => undefined)
+        .addWillSetValuesCallback((values) => {
+          thirdCalled();
+          return values;
+        });
+      store.setValues({v1: 'a'});
+      expect(thirdCalled).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('entry points', () => {
+    test('called from setValues', () => {
+      const calls: any[] = [];
+      middleware.addWillSetValuesCallback((values) => {
+        calls.push({...values});
+        return values;
+      });
+      store.setValues({v1: 'a', v2: 1});
+      expect(calls).toEqual([{v1: 'a', v2: 1}]);
+    });
+
+    test('not called from setPartialValues', () => {
+      const calls: any[] = [];
+      middleware.addWillSetValuesCallback((values) => {
+        calls.push({...values});
+        return values;
+      });
+      store.setValues({v1: 'a'});
+      calls.length = 0;
+      store.setPartialValues({v2: 'b'});
+      expect(calls).toEqual([]);
+      expect(store.getValues()).toEqual({v1: 'a', v2: 'b'});
+    });
+
+    test('not called from setValue', () => {
+      const calls: any[] = [];
+      middleware.addWillSetValuesCallback((values) => {
+        calls.push({...values});
+        return values;
+      });
+      store.setValue('v1', 'a');
+      expect(calls).toEqual([]);
+      expect(store.getValues()).toEqual({v1: 'a'});
+    });
+
+    test('transform applies from setValues', () => {
+      middleware.addWillSetValuesCallback((values) =>
+        Object.fromEntries(
+          Object.entries(values).map(([k, v]) => [
+            k,
+            typeof v === 'string' ? v.toUpperCase() : v,
+          ]),
+        ),
+      );
+      store.setValues({v1: 'a', v2: 'b'});
+      expect(store.getValues()).toEqual({v1: 'A', v2: 'B'});
+    });
+
+    test('block from setValues blocks all values', () => {
+      middleware.addWillSetValuesCallback(() => undefined);
+      store.setValues({v1: 'a', v2: 'b'});
+      expect(store.getValues()).toEqual({});
+    });
+  });
+
+  describe('interaction with willSetValue', () => {
+    test('willSetValues runs before willSetValue', () => {
+      const order: string[] = [];
+      middleware
+        .addWillSetValuesCallback((values) => {
+          order.push('values');
+          return values;
+        })
+        .addWillSetValueCallback((_valueId, value) => {
+          order.push('value');
+          return value;
+        });
+      store.setValues({v1: 'a'});
+      expect(order).toEqual(['values', 'value']);
+    });
+
+    test('willSetValues transforms are seen by willSetValue', () => {
+      middleware
+        .addWillSetValuesCallback((values) => ({
+          ...values,
+          extra: 'added',
+        }))
+        .addWillSetValueCallback((_valueId, value) =>
+          typeof value === 'string' ? value.toUpperCase() : value,
+        );
+      store.setValues({v1: 'hello'});
+      expect(store.getValues()).toEqual({v1: 'HELLO', extra: 'ADDED'});
+    });
+
+    test('willSetValues block prevents willSetValue from being called', () => {
+      const valueCallback = vi.fn((_valueId: any, value: any) => value);
+      middleware
+        .addWillSetValuesCallback(() => undefined)
+        .addWillSetValueCallback(valueCallback);
+      store.setValues({v1: 'a'});
+      expect(valueCallback).not.toHaveBeenCalled();
+    });
+  });
+});
+
 describe('willDelCell', () => {
   describe('allow', () => {
     test('returning true allows delete', () => {
@@ -1070,6 +1285,11 @@ describe('fluent API', () => {
     expect(result).toBe(middleware);
   });
 
+  test('addWillSetValuesCallback returns middleware', () => {
+    const result = middleware.addWillSetValuesCallback((values) => values);
+    expect(result).toBe(middleware);
+  });
+
   test('addWillDelCellCallback returns middleware', () => {
     const result = middleware.addWillDelCellCallback(() => true);
     expect(result).toBe(middleware);
@@ -1085,6 +1305,7 @@ describe('fluent API', () => {
       .addWillSetCellCallback((_tableId, _rowId, _cellId, cell) => cell)
       .addWillSetRowCallback((_tableId, _rowId, row) => row)
       .addWillSetValueCallback((_valueId, value) => value)
+      .addWillSetValuesCallback((values) => values)
       .addWillDelCellCallback(() => true)
       .addWillDelValueCallback(() => true);
     expect(result).toBe(middleware);

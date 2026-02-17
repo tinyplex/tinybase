@@ -6,6 +6,7 @@ import type {
   WillSetCellCallback,
   WillSetRowCallback,
   WillSetValueCallback,
+  WillSetValuesCallback,
   createMiddleware as createMiddlewareDecl,
 } from '../@types/middleware/index.d.ts';
 import type {
@@ -15,6 +16,7 @@ import type {
   Store,
   Value,
   ValueOrUndefined,
+  Values,
 } from '../@types/store/index.d.ts';
 import {arrayEvery, arrayPush, arrayReduce} from '../common/array.ts';
 import {getCreateFunction} from '../common/definable.ts';
@@ -26,6 +28,7 @@ export const createMiddleware = getCreateFunction(
     const willSetCellCallbacks: WillSetCellCallback[] = [];
     const willSetRowCallbacks: WillSetRowCallback[] = [];
     const willSetValueCallbacks: WillSetValueCallback[] = [];
+    const willSetValuesCallbacks: WillSetValuesCallback[] = [];
     const willDelCellCallbacks: WillDelCellCallback[] = [];
     const willDelValueCallbacks: WillDelValueCallback[] = [];
 
@@ -44,11 +47,7 @@ export const createMiddleware = getCreateFunction(
         cell as CellOrUndefined,
       );
 
-    const willSetRow = (
-      tableId: Id,
-      rowId: Id,
-      row: Row,
-    ): Row | undefined =>
+    const willSetRow = (tableId: Id, rowId: Id, row: Row): Row | undefined =>
       arrayReduce(
         willSetRowCallbacks,
         (current, callback) =>
@@ -66,6 +65,14 @@ export const createMiddleware = getCreateFunction(
         value as ValueOrUndefined,
       );
 
+    const willSetValues = (values: Values): Values | undefined =>
+      arrayReduce(
+        willSetValuesCallbacks,
+        (current, callback) =>
+          isUndefined(current) ? current : callback(current as Values),
+        values as Values | undefined,
+      );
+
     const willDelCell = (tableId: Id, rowId: Id, cellId: Id): boolean =>
       arrayEvery(willDelCellCallbacks, (callback) =>
         callback(tableId, rowId, cellId),
@@ -80,6 +87,7 @@ export const createMiddleware = getCreateFunction(
       willDelCell,
       willDelValue,
       willSetRow,
+      willSetValues,
     );
 
     const getStore = (): Store => store;
@@ -93,13 +101,16 @@ export const createMiddleware = getCreateFunction(
       callback: WillSetCellCallback,
     ): Middleware => fluent(() => arrayPush(willSetCellCallbacks, callback));
 
-    const addWillSetRowCallback = (
-      callback: WillSetRowCallback,
-    ): Middleware => fluent(() => arrayPush(willSetRowCallbacks, callback));
+    const addWillSetRowCallback = (callback: WillSetRowCallback): Middleware =>
+      fluent(() => arrayPush(willSetRowCallbacks, callback));
 
     const addWillSetValueCallback = (
       callback: WillSetValueCallback,
     ): Middleware => fluent(() => arrayPush(willSetValueCallbacks, callback));
+
+    const addWillSetValuesCallback = (
+      callback: WillSetValuesCallback,
+    ): Middleware => fluent(() => arrayPush(willSetValuesCallbacks, callback));
 
     const addWillDelCellCallback = (
       callback: WillDelCellCallback,
@@ -116,6 +127,7 @@ export const createMiddleware = getCreateFunction(
       addWillSetCellCallback,
       addWillSetRowCallback,
       addWillSetValueCallback,
+      addWillSetValuesCallback,
       addWillDelCellCallback,
       addWillDelValueCallback,
       destroy,
