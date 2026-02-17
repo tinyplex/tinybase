@@ -44,7 +44,11 @@ import {
   arrayPush,
   arraySort,
 } from '../common/array.ts';
-import {getCellOrValueType, setOrDelValue} from '../common/cell.ts';
+import {
+  getCellOrValueType,
+  setOrDelCell,
+  setOrDelValue,
+} from '../common/cell.ts';
 import {
   collClear,
   collDel,
@@ -573,16 +577,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
         }
       },
     );
-
-  const setOrDelCell = (
-    tableId: Id,
-    rowId: Id,
-    cellId: Id,
-    cell: CellOrUndefined,
-  ): Store =>
-    isUndefined(cell)
-      ? delCell(tableId, rowId, cellId, true)
-      : setCell(tableId, rowId, cellId, cell);
 
   const setCellIntoNewRow = (
     tableId: Id,
@@ -1402,6 +1396,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
                     ? delRow(tableId, rowId)
                     : objMap(row, (cell, cellId) =>
                         setOrDelCell(
+                          store,
                           tableId,
                           rowId,
                           cellId,
@@ -1632,7 +1627,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           collForEach(changedCells, (table, tableId) =>
             collForEach(table, (row, rowId) =>
               collForEach(row, ([oldCell], cellId) =>
-                setOrDelCell(tableId, rowId, cellId, oldCell),
+                setOrDelCell(store, tableId, rowId, cellId, oldCell),
               ),
             ),
           );
