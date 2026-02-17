@@ -81,6 +81,32 @@ middlewareWithSchema.getStore().getTables().t2; // !
     .getTables().t2; // !
 };
 
+// addWillSetTableCallback
+() => {
+  middlewareWithSchema.addWillSetTableCallback((tableId, _table) => {
+    tableId == 't0';
+    tableId == 't1';
+
+    tableId == 't2'; // !
+
+    return _table;
+  });
+
+  middlewareWithSchema.addWillSetTableCallback(
+    (_tableId, table) => table,
+  );
+  middlewareWithSchema.addWillSetTableCallback(() => undefined);
+
+  middlewareWithSchema
+    .addWillSetTableCallback((_tableId, table) => table)
+    .getStore()
+    .getTables().t1;
+  middlewareWithSchema
+    .addWillSetTableCallback((_tableId, table) => table)
+    .getStore()
+    .getTables().t2; // !
+};
+
 // addWillSetValueCallback
 () => {
   middlewareWithSchema.addWillSetValueCallback((valueId, value) => {

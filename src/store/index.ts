@@ -176,6 +176,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willSetValues?: (values: Values) => Values | undefined,
     willDelRow?: (tableId: Id, rowId: Id) => boolean,
     willDelValues?: () => boolean,
+    willSetTable?: (tableId: Id, table: Table) => Table | undefined,
   ] = [];
   let internalListeners: [
     preStartTransaction?: () => void,
@@ -471,18 +472,34 @@ export const createStore: typeof createStoreDecl = (): Store => {
       (_tables, tableId) => delValidTable(tableId),
     );
 
-  const setValidTable = (tableId: Id, table: Table): TableMap =>
-    mapMatch(
-      mapEnsure(tablesMap, tableId, () => {
-        tableIdsChanged(tableId, 1);
-        mapSet(tablePoolFunctions, tableId, getPoolFunctions());
-        mapSet(tableCellIds, tableId, mapNew());
-        return mapNew();
-      }),
-      table,
-      (tableMap, rowId, row) => setValidRow(tableId, tableMap, rowId, row),
-      (tableMap, rowId) => delValidRow(tableId, tableMap, rowId),
-    );
+  const setValidTable = (
+    tableId: Id,
+    table: Table,
+    forceDel?: boolean,
+  ): TableMap =>
+    ifNotUndefined(
+      forceDel
+        ? table
+        : ifNotUndefined(
+            internalWillSets[8],
+            (willSetTable) => willSetTable(tableId, table),
+            () => table,
+          ),
+      (validTable) =>
+        mapMatch(
+          mapEnsure(tablesMap, tableId, () => {
+            tableIdsChanged(tableId, 1);
+            mapSet(tablePoolFunctions, tableId, getPoolFunctions());
+            mapSet(tableCellIds, tableId, mapNew());
+            return mapNew();
+          }),
+          validTable,
+          (tableMap, rowId, row) =>
+            setValidRow(tableId, tableMap, rowId, row),
+          (tableMap, rowId) =>
+            delValidRow(tableId, tableMap, rowId),
+        ),
+    ) as TableMap;
 
   const setValidRow = (
     tableId: Id,
@@ -612,7 +629,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getOrCreateTable = (tableId: Id) =>
     mapGet(tablesMap, tableId) ?? setValidTable(tableId, {});
 
-  const delValidTable = (tableId: Id): TableMap => setValidTable(tableId, {});
+  const delValidTable = (tableId: Id): TableMap =>
+    setValidTable(tableId, {}, true);
 
   const delValidRow = (tableId: Id, tableMap: TableMap, rowId: Id): void => {
     if (internalWillSets[6]?.(tableId, rowId) ?? true) {
@@ -1783,6 +1801,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willSetValues: (values: Values) => Values | undefined,
     willDelRow: (tableId: Id, rowId: Id) => boolean,
     willDelValues: () => boolean,
+    willSetTable: (tableId: Id, table: Table) => Table | undefined,
   ) =>
     (internalWillSets = [
       willSetCell,
@@ -1793,6 +1812,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       willSetValues,
       willDelRow,
       willDelValues,
+      willSetTable,
     ]);
 
   const setInternalListeners = (

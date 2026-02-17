@@ -33,6 +33,25 @@
  */
 /// WillSetCellCallback
 /**
+ * The WillSetTableCallback type describes a function that is called before a
+ * Table is set in the Store.
+ *
+ * The callback receives the table Id and the Table object that is about to be
+ * set. It can return the Table (possibly transformed) to allow the write, or
+ * `undefined` to prevent the Table from being set.
+ *
+ * Multiple WillSetTableCallback functions can be registered and they will be
+ * called sequentially, the Table being updated successively. If any callback
+ * returns `undefined`, the chain short-circuits and the Table will not be set.
+ * @param tableId The Id of the Table being set.
+ * @param table The Table object about to be set.
+ * @returns The Table to use (possibly transformed), or `undefined` to prevent
+ * the write.
+ * @category Callback
+ * @since v8.0.0
+ */
+/// WillSetTableCallback
+/**
  * The WillSetRowCallback type describes a function that is called before a Row
  * is set in the Store.
  *
@@ -259,6 +278,72 @@
    * @since v8.0.0
    */
   /// Middleware.addWillSetCellCallback
+  /**
+   * The addWillSetTableCallback method registers a WillSetTableCallback that
+   * will be called before any Table is set in the Store.
+   *
+   * The callback can transform the Table or return `undefined` to prevent the
+   * write. Multiple callbacks can be registered and they are called
+   * sequentially, each receiving the (possibly transformed) table from the
+   * previous callback.
+   * @param callback The WillSetTableCallback to register.
+   * @returns A reference to the Middleware object, for chaining.
+   * @example
+   * This example registers a callback that upper-cases string Cell values in
+   * rows set to the 'pets' table.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * middleware.addWillSetTableCallback((tableId, table) =>
+   *   tableId === 'pets'
+   *     ? Object.fromEntries(
+   *         Object.entries(table).map(([rowId, row]) => [
+   *           rowId,
+   *           Object.fromEntries(
+   *             Object.entries(row).map(([k, v]) => [
+   *               k,
+   *               typeof v === 'string' ? v.toUpperCase() : v,
+   *             ]),
+   *           ),
+   *         ]),
+   *       )
+   *     : table,
+   * );
+   *
+   * store.setTable('pets', {fido: {species: 'dog'}, felix: {species: 'cat'}});
+   * console.log(store.getTable('pets'));
+   * // -> {fido: {species: 'DOG'}, felix: {species: 'CAT'}}
+   *
+   * middleware.destroy();
+   * ```
+   * @example
+   * This example registers a callback that prevents writes to the 'species'
+   * table.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * middleware.addWillSetTableCallback((tableId, table) =>
+   *   tableId === 'species' ? undefined : table,
+   * );
+   *
+   * store.setTable('species', {dog: {legs: 4, sound: 'woof'}});
+   * console.log(store.getTables());
+   * // -> {}
+   *
+   * middleware.destroy();
+   * ```
+   * @category Configuration
+   * @since v8.0.0
+   */
+  /// Middleware.addWillSetTableCallback
   /**
    * The addWillSetRowCallback method registers a WillSetRowCallback that will
    * be called before any Row is set in the Store.

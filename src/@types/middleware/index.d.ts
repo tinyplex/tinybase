@@ -5,6 +5,7 @@ import type {
   CellOrUndefined,
   Row,
   Store,
+  Table,
   Value,
   ValueOrUndefined,
   Values,
@@ -17,6 +18,12 @@ export type WillSetCellCallback = (
   cellId: Id,
   cell: Cell,
 ) => CellOrUndefined;
+
+/// WillSetTableCallback
+export type WillSetTableCallback = (
+  tableId: Id,
+  table: Table,
+) => Table | undefined;
 
 /// WillSetRowCallback
 export type WillSetRowCallback = (
@@ -57,6 +64,9 @@ export interface Middleware {
 
   /// Middleware.addWillSetCellCallback
   addWillSetCellCallback(callback: WillSetCellCallback): Middleware;
+
+  /// Middleware.addWillSetTableCallback
+  addWillSetTableCallback(callback: WillSetTableCallback): Middleware;
 
   /// Middleware.addWillSetRowCallback
   addWillSetRowCallback(callback: WillSetRowCallback): Middleware;
