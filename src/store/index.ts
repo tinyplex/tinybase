@@ -574,6 +574,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
       },
     );
 
+  const setOrDelCell = (
+    tableId: Id,
+    rowId: Id,
+    cellId: Id,
+    cell: CellOrUndefined,
+  ): Store =>
+    isUndefined(cell)
+      ? delCell(tableId, rowId, cellId, true)
+      : setCell(tableId, rowId, cellId, cell);
+
   const setCellIntoNewRow = (
     tableId: Id,
     tableMap: TableMap,
@@ -1348,29 +1358,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
       cellId,
     );
 
-  const _setOrDelCell = (
-    tableId: Id,
-    rowId: Id,
-    cellId: Id,
-    cell: CellOrUndefined,
-  ): void => {
-    if (isUndefined(cell)) {
-      delCell(tableId, rowId, cellId, true);
-    } else {
-      ifNotUndefined(
-        getValidatedCell(tableId, rowId, cellId, cell),
-        (validCell) =>
-          setCellIntoNewRow(
-            tableId,
-            getOrCreateTable(tableId),
-            rowId,
-            cellId,
-            validCell,
-          ),
-      );
-    }
-  };
-
   const setValues = (values: Values): Store =>
     fluentTransaction(() =>
       validateValues(values) ? setValidValues(values) : 0,
@@ -1414,7 +1401,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
                   isUndefined(row)
                     ? delRow(tableId, rowId)
                     : objMap(row, (cell, cellId) =>
-                        _setOrDelCell(
+                        setOrDelCell(
                           tableId,
                           rowId,
                           cellId,
@@ -1645,7 +1632,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
           collForEach(changedCells, (table, tableId) =>
             collForEach(table, (row, rowId) =>
               collForEach(row, ([oldCell], cellId) =>
-                _setOrDelCell(tableId, rowId, cellId, oldCell),
+                setOrDelCell(tableId, rowId, cellId, oldCell),
               ),
             ),
           );
