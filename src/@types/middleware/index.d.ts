@@ -6,6 +6,7 @@ import type {
   Row,
   Store,
   Table,
+  Tables,
   Value,
   ValueOrUndefined,
   Values,
@@ -37,6 +38,9 @@ export type WillSetValueCallback = (
   valueId: Id,
   value: Value,
 ) => ValueOrUndefined;
+
+/// WillSetTablesCallback
+export type WillSetTablesCallback = (tables: Tables) => Tables | undefined;
 
 /// WillSetValuesCallback
 export type WillSetValuesCallback = (values: Values) => Values | undefined;
@@ -76,6 +80,9 @@ export interface Middleware {
 
   /// Middleware.addWillSetValueCallback
   addWillSetValueCallback(callback: WillSetValueCallback): Middleware;
+
+  /// Middleware.addWillSetTablesCallback
+  addWillSetTablesCallback(callback: WillSetTablesCallback): Middleware;
 
   /// Middleware.addWillSetValuesCallback
   addWillSetValuesCallback(callback: WillSetValuesCallback): Middleware;

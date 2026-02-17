@@ -109,6 +109,25 @@
  */
 /// WillSetValuesCallback
 /**
+ * The WillSetTablesCallback type describes a function that is called before
+ * Tables are set in the Store.
+ *
+ * The callback receives the Tables object that is about to be set. It can
+ * return the Tables (possibly transformed) to allow the write, or `undefined`
+ * to prevent the Tables from being set.
+ *
+ * Multiple WillSetTablesCallback functions can be registered and they will be
+ * called sequentially, the Tables being updated successively. If any callback
+ * returns `undefined`, the chain short-circuits and the Tables will not be
+ * set.
+ * @param tables The Tables object about to be set.
+ * @returns The Tables to use (possibly transformed), or `undefined` to prevent
+ * the write.
+ * @category Callback
+ * @since v8.0.0
+ */
+/// WillSetTablesCallback
+/**
  * The WillDelCellCallback type describes a function that is called before a
  * Cell is deleted from the Store.
  *
@@ -516,6 +535,75 @@
    * @since v8.0.0
    */
   /// Middleware.addWillSetValuesCallback
+  /**
+   * The addWillSetTablesCallback method registers a WillSetTablesCallback that
+   * will be called before Tables are set in the Store.
+   *
+   * The callback can transform the Tables or return `undefined` to prevent the
+   * write. Multiple callbacks can be registered and they are called
+   * sequentially, each receiving the (possibly transformed) tables from the
+   * previous callback.
+   * @param callback The WillSetTablesCallback to register.
+   * @returns A reference to the Middleware object, for chaining.
+   * @example
+   * This example registers a callback that upper-cases all string Cell values
+   * when entire Tables are set in the pet store.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * middleware.addWillSetTablesCallback((tables) =>
+   *   Object.fromEntries(
+   *     Object.entries(tables).map(([tableId, table]) => [
+   *       tableId,
+   *       Object.fromEntries(
+   *         Object.entries(table).map(([rowId, row]) => [
+   *           rowId,
+   *           Object.fromEntries(
+   *             Object.entries(row).map(([k, v]) => [
+   *               k,
+   *               typeof v === 'string' ? v.toUpperCase() : v,
+   *             ]),
+   *           ),
+   *         ]),
+   *       ),
+   *     ]),
+   *   ),
+   * );
+   *
+   * store.setTables({pets: {fido: {species: 'dog'}, felix: {species: 'cat'}}});
+   * console.log(store.getTables());
+   * // -> {pets: {fido: {species: 'DOG'}, felix: {species: 'CAT'}}}
+   *
+   * middleware.destroy();
+   * ```
+   * @example
+   * This example registers a callback that prevents setting any Tables that
+   * include a 'banned' table.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * middleware.addWillSetTablesCallback((tables) =>
+   *   'banned' in tables ? undefined : tables,
+   * );
+   *
+   * store.setTables({banned: {r1: {c1: 1}}, pets: {fido: {species: 'dog'}}});
+   * console.log(store.getTables());
+   * // -> {}
+   *
+   * middleware.destroy();
+   * ```
+   * @category Configuration
+   * @since v8.0.0
+   */
+  /// Middleware.addWillSetTablesCallback
   /**
    * The addWillDelCellCallback method registers a WillDelCellCallback that will
    * be called before any Cell is deleted from the Store.

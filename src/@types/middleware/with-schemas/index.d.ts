@@ -13,6 +13,7 @@ import type {
   Row,
   Store,
   Table,
+  Tables,
   Value,
   Values,
 } from '../../store/with-schemas/index.d.ts';
@@ -73,6 +74,13 @@ export type WillSetValueCallback<
 > = (
   ...params: Params | [valueId: never, value: never]
 ) => Params[1] | undefined;
+
+/// WillSetTablesCallback
+export type WillSetTablesCallback<
+  Schema extends OptionalTablesSchema,
+> = (
+  tables: Tables<Schema>,
+) => Tables<Schema> | undefined;
 
 /// WillSetValuesCallback
 export type WillSetValuesCallback<Schema extends OptionalValuesSchema> = (
@@ -151,6 +159,11 @@ export interface Middleware<in out Schemas extends OptionalSchemas> {
   /// Middleware.addWillSetValueCallback
   addWillSetValueCallback(
     callback: WillSetValueCallback<Schemas[1]>,
+  ): Middleware<Schemas>;
+
+  /// Middleware.addWillSetTablesCallback
+  addWillSetTablesCallback(
+    callback: WillSetTablesCallback<Schemas[0]>,
   ): Middleware<Schemas>;
 
   /// Middleware.addWillSetValuesCallback
