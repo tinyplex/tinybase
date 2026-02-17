@@ -1,5 +1,5 @@
-import type {MergeableStore, Row, Store} from 'tinybase';
-import {createMergeableStore, createStore} from 'tinybase';
+import type {MergeableStore, Middleware, Store} from 'tinybase';
+import {createMergeableStore, createMiddleware, createStore} from 'tinybase';
 import {beforeEach, describe, expect, test} from 'vitest';
 import {getTimeFunctions} from '../../common/mergeable.ts';
 
@@ -11,37 +11,45 @@ beforeEach(() => {
 
 describe('Base Store Middleware', () => {
   let store: Store;
+  let middleware: Middleware;
 
   beforeEach(() => {
     store = createStore();
+    middleware = createMiddleware(store);
   });
 
   describe('setRow', () => {
-    test('No middleware - row is set', () => {
+    test('No middleware callbacks - row is set', () => {
       store.setRow('t1', 'r1', {c1: 'v1'});
       expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1'});
     });
 
-    test('Accept row by returning cells', () => {
-      store.use('t1', (_rowId, cells) => cells);
+    test('Accept row by returning row', () => {
+      middleware.addWillSetRowCallback((_tableId, _rowId, row) => row);
       store.setRow('t1', 'r1', {c1: 'v1'});
       expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1'});
     });
 
-    test('Reject row by returning null', () => {
-      store.use('t1', () => null);
+    test('Reject row by returning undefined', () => {
+      middleware.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? undefined : row,
+      );
       store.setRow('t1', 'r1', {c1: 'v1'});
       expect(store.getTables()).toEqual({});
     });
 
     test('Transform cells', () => {
-      store.use('t1', (_rowId, cells) => ({...cells, added: 'yes'}));
+      middleware.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? {...row, added: 'yes'} : row,
+      );
       store.setRow('t1', 'r1', {c1: 'v1'});
       expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1', added: 'yes'});
     });
 
     test('Only affects specified table', () => {
-      store.use('t1', () => null);
+      middleware.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? undefined : row,
+      );
       store.setRow('t1', 'r1', {c1: 'v1'});
       store.setRow('t2', 'r1', {c1: 'v2'});
       expect(store.getTable('t1')).toEqual({});
@@ -49,52 +57,58 @@ describe('Base Store Middleware', () => {
     });
 
     test('Fluent chaining', () => {
-      const result = store.use('t1', (_r, c) => c);
-      expect(result).toBe(store);
+      const result = middleware.addWillSetRowCallback(
+        (_tableId, _rowId, row) => row,
+      );
+      expect(result).toBe(middleware);
     });
   });
 
   describe('setCell', () => {
-    test('No middleware - cell is set', () => {
+    test('No middleware callbacks - cell is set', () => {
       store.setCell('t1', 'r1', 'c1', 'v1');
       expect(store.getCell('t1', 'r1', 'c1')).toEqual('v1');
     });
 
-    test('Accept cell via row middleware', () => {
-      store.use('t1', (_rowId, cells) => cells);
+    test('Accept cell via cell middleware', () => {
+      middleware.addWillSetCellCallback(
+        (_tableId, _rowId, _cellId, cell) => cell,
+      );
       store.setCell('t1', 'r1', 'c1', 'v1');
       expect(store.getCell('t1', 'r1', 'c1')).toEqual('v1');
     });
 
-    test('Reject cell by returning null', () => {
-      store.use('t1', () => null);
+    test('Reject cell by returning undefined', () => {
+      middleware.addWillSetCellCallback((tableId, _rowId, _cellId, cell) =>
+        tableId === 't1' ? undefined : cell,
+      );
       store.setCell('t1', 'r1', 'c1', 'v1');
-      expect(store.getTables()).toEqual({});
+      expect(store.getCell('t1', 'r1', 'c1')).toBeUndefined();
     });
 
     test('Transform cell value', () => {
-      store.use('t1', (_rowId, cells) => {
-        const result: Row = {};
-        for (const [k, v] of Object.entries(cells)) {
-          result[k] = typeof v === 'string' ? v.toUpperCase() : v;
-        }
-        return result;
-      });
+      middleware.addWillSetCellCallback((tableId, _rowId, _cellId, cell) =>
+        tableId === 't1' && typeof cell === 'string'
+          ? cell.toUpperCase()
+          : cell,
+      );
       store.setCell('t1', 'r1', 'c1', 'hello');
       expect(store.getCell('t1', 'r1', 'c1')).toEqual('HELLO');
     });
   });
 
   describe('setPartialRow', () => {
-    test('No middleware - partial row is set', () => {
+    test('No middleware callbacks - partial row is set', () => {
       store.setRow('t1', 'r1', {c1: 'v1', c2: 'v2'});
       store.setPartialRow('t1', 'r1', {c2: 'updated'});
       expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1', c2: 'updated'});
     });
 
-    test('Reject partial row by returning null', () => {
+    test('Reject partial row by returning undefined', () => {
       store.setRow('t1', 'r1', {c1: 'v1'});
-      store.use('t1', () => null);
+      middleware.addWillSetCellCallback((tableId, _rowId, _cellId, cell) =>
+        tableId === 't1' ? undefined : cell,
+      );
       store.setPartialRow('t1', 'r1', {c2: 'v2'});
       // Original row unchanged
       expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1'});
@@ -102,146 +116,157 @@ describe('Base Store Middleware', () => {
 
     test('Transform partial row', () => {
       store.setRow('t1', 'r1', {c1: 'v1'});
-      store.use('t1', (_rowId, cells) => ({...cells, extra: 'added'}));
+      middleware.addWillSetCellCallback((tableId, _rowId, _cellId, cell) =>
+        tableId === 't1' && typeof cell === 'string'
+          ? cell.toUpperCase()
+          : cell,
+      );
       store.setPartialRow('t1', 'r1', {c2: 'v2'});
-      expect(store.getRow('t1', 'r1')).toEqual({
-        c1: 'v1',
-        c2: 'v2',
-        extra: 'added',
-      });
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1', c2: 'V2'});
     });
   });
 
   describe('addRow', () => {
-    test('No middleware - row is added', () => {
+    test('No middleware callbacks - row is added', () => {
       const rowId = store.addRow('t1', {c1: 'v1'});
       expect(rowId).toBeDefined();
       expect(store.getRow('t1', rowId!)).toEqual({c1: 'v1'});
     });
 
-    test('Reject row returns undefined', () => {
-      store.use('t1', () => null);
-      const rowId = store.addRow('t1', {c1: 'v1'});
-      expect(rowId).toBeUndefined();
-      expect(store.getTables()).toEqual({});
+    test('Reject row prevents creation', () => {
+      middleware.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? undefined : row,
+      );
+      store.addRow('t1', {c1: 'v1'});
+      expect(store.getRowCount('t1')).toBe(0);
     });
 
     test('Transform added row', () => {
-      store.use('t1', (_rowId, cells) => ({...cells, auto: 'yes'}));
+      middleware.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? {...row, auto: 'yes'} : row,
+      );
       const rowId = store.addRow('t1', {c1: 'v1'});
       expect(store.getRow('t1', rowId!)).toEqual({c1: 'v1', auto: 'yes'});
     });
   });
 
   describe('applyChanges', () => {
-    test('No middleware - changes applied', () => {
+    test('No middleware callbacks - changes applied', () => {
       store.applyChanges([{t1: {r1: {c1: 'v1'}}}, {}, 1]);
       expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1'});
     });
 
     test('Reject rows via middleware', () => {
-      store.use('t1', () => null);
+      middleware.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? undefined : row,
+      );
       store.applyChanges([{t1: {r1: {c1: 'v1'}}}, {}, 1]);
-      expect(store.getTables()).toEqual({});
+      expect(store.getRowCount('t1')).toBe(0);
     });
 
     test('Transform rows', () => {
-      store.use('t1', (_rowId, cells) => ({...cells, validated: true}));
+      middleware.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? {...row, validated: true} : row,
+      );
       store.applyChanges([{t1: {r1: {c1: 'v1'}}}, {}, 1]);
       expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1', validated: true});
     });
 
     test('Row deletions pass through', () => {
       store.setRow('t1', 'r1', {c1: 'v1'});
-      store.use('t1', () => null); // reject middleware
-      // Deletions (undefined) should still pass through
+      middleware.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? undefined : row,
+      );
+      // Deletions are not affected by willSetRow
       store.applyChanges([{t1: {r1: undefined}}, {}, 1]);
       expect(store.getTable('t1')).toEqual({});
     });
 
     test('Table deletions pass through', () => {
       store.setRow('t1', 'r1', {c1: 'v1'});
-      store.use('t1', () => null);
+      middleware.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? undefined : row,
+      );
       store.applyChanges([{t1: undefined}, {}, 1]);
       expect(store.getTables()).toEqual({});
     });
   });
 
-  describe('Catch-all middleware use("*", handler)', () => {
+  describe('Callbacks for all tables', () => {
     test('Runs for all tables', () => {
       const seen: string[] = [];
-      store.use('*', (tableId, _rowId, cells) => {
+      middleware.addWillSetRowCallback((tableId, _rowId, row) => {
         seen.push(tableId);
-        return cells;
+        return row;
       });
       store.setRow('t1', 'r1', {c1: 'v1'});
       store.setRow('t2', 'r1', {c1: 'v2'});
       expect(seen.sort()).toEqual(['t1', 't2']);
     });
 
-    test('Receives correct tableId, rowId, cells', () => {
-      let received: [string, string | undefined, object] | undefined;
-      store.use('*', (tableId, rowId, cells) => {
-        received = [tableId, rowId, cells];
-        return cells;
+    test('Receives correct tableId, rowId, row', () => {
+      let received: [string, string, object] | undefined;
+      middleware.addWillSetRowCallback((tableId, rowId, row) => {
+        received = [tableId, rowId, row];
+        return row;
       });
       store.setRow('myTable', 'myRow', {a: 1, b: 2});
       expect(received).toEqual(['myTable', 'myRow', {a: 1, b: 2}]);
     });
 
     test('Can reject rows from any table', () => {
-      store.use('*', () => null);
+      middleware.addWillSetRowCallback(() => undefined);
       store.setRow('t1', 'r1', {c1: 'v1'});
       store.setRow('t2', 'r1', {c1: 'v2'});
       expect(store.getTables()).toEqual({});
     });
 
-    test('Runs after table-specific handlers', () => {
+    test('Callbacks run in registration order', () => {
       const order: string[] = [];
-      store
-        .use('t1', (_rowId, cells) => {
-          order.push('t1-specific');
-          return cells;
+      middleware
+        .addWillSetRowCallback((tableId, _rowId, row) => {
+          if (tableId === 't1') order.push('t1-specific');
+          return row;
         })
-        .use('*', (_tableId, _rowId, cells) => {
-          order.push('catch-all');
-          return cells;
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
+          order.push('general');
+          return row;
         });
       store.setRow('t1', 'r1', {c1: 'v1'});
-      expect(order).toEqual(['t1-specific', 'catch-all']);
+      expect(order).toEqual(['t1-specific', 'general']);
     });
   });
 
   describe('Multiple handlers', () => {
-    test('Multiple handlers for same table run in order', () => {
+    test('Multiple handlers run in order', () => {
       const order: number[] = [];
-      store
-        .use('t1', (_rowId, cells) => {
+      middleware
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
           order.push(1);
-          return cells;
+          return row;
         })
-        .use('t1', (_rowId, cells) => {
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
           order.push(2);
-          return cells;
+          return row;
         });
       store.setRow('t1', 'r1', {c1: 'v1'});
       expect(order).toEqual([1, 2]);
     });
 
-    test('Short-circuit on null in chain', () => {
+    test('Short-circuit on undefined in chain', () => {
       const order: number[] = [];
-      store
-        .use('t1', (_rowId, cells) => {
+      middleware
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
           order.push(1);
-          return cells;
+          return row;
         })
-        .use('t1', () => {
+        .addWillSetRowCallback(() => {
           order.push(2);
-          return null;
+          return undefined;
         })
-        .use('t1', (_rowId, cells) => {
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
           order.push(3);
-          return cells;
+          return row;
         });
       store.setRow('t1', 'r1', {c1: 'v1'});
       expect(order).toEqual([1, 2]);
@@ -253,65 +278,74 @@ describe('Base Store Middleware', () => {
 describe('MergeableStore Middleware', () => {
   let store1: MergeableStore;
   let store2: MergeableStore;
+  let middleware2: Middleware;
 
   beforeEach(() => {
     store1 = createMergeableStore('s1', getNow);
     store2 = createMergeableStore('s2', getNow);
+    middleware2 = createMiddleware(store2);
   });
 
   describe('Sync path (applyMergeableChanges)', () => {
-    test('No middleware - sync works', () => {
+    test('No middleware callbacks - sync works', () => {
       store1.setCell('t1', 'r1', 'c1', 'v1');
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getCell('t1', 'r1', 'c1')).toEqual('v1');
     });
 
-    test('Accept row by returning cells', () => {
-      store2.use('t1', (_rowId, cells) => cells);
+    test('Accept row by returning row', () => {
+      middleware2.addWillSetRowCallback((_tableId, _rowId, row) => row);
       store1.setCell('t1', 'r1', 'c1', 'v1');
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getCell('t1', 'r1', 'c1')).toEqual('v1');
     });
 
-    test('Reject row by returning null', () => {
-      store2.use('t1', () => null);
+    test('Reject row by returning undefined', () => {
+      middleware2.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? undefined : row,
+      );
       store1.setCell('t1', 'r1', 'c1', 'v1');
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getTables()).toEqual({});
+      expect(store2.getCell('t1', 'r1', 'c1')).toBeUndefined();
     });
 
     test('Only affects specified table', () => {
-      store2.use('t1', () => null);
+      middleware2.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? undefined : row,
+      );
       store1.setCell('t1', 'r1', 'c1', 'v1');
       store1.setCell('t2', 'r1', 'c1', 'v2');
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getTable('t1')).toEqual({});
+      expect(store2.getCell('t1', 'r1', 'c1')).toBeUndefined();
       expect(store2.getCell('t2', 'r1', 'c1')).toEqual('v2');
     });
 
-    test('Transform cells', () => {
-      store2.use('t1', (_rowId, cells) => ({...cells, added: 'yes'}));
+    test('Transform cells via row callback', () => {
+      middleware2.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? {...row, added: 'yes'} : row,
+      );
       store1.setCell('t1', 'r1', 'c1', 'v1');
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getRow('t1', 'r1')).toEqual({c1: 'v1', added: 'yes'});
     });
 
-    test('Added cell overwrites existing cell with older HLC', () => {
-      store2.setCell('t1', 'r1', 'existingCell', 'oldValue');
-      store2.use('t1', (_rowId, cells) => ({
-        ...cells,
+    test('Row callback overwrites incoming cell during sync', () => {
+      middleware2.addWillSetRowCallback((_tableId, _rowId, row) => ({
+        ...row,
         existingCell: 'newValue',
       }));
-      store1.setCell('t1', 'r1', 'c1', 'v1');
+      store1.setCell('t1', 'r1', 'existingCell', 'oldValue');
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getCell('t1', 'r1', 'existingCell')).toEqual('newValue');
+      expect(store2.getCell('t1', 'r1', 'existingCell')).toEqual(
+        'newValue',
+      );
     });
 
     test('Receives correct rowId', () => {
       let receivedRowId: string | undefined;
-      store2.use('t1', (rowId, cells) => {
-        receivedRowId = rowId;
-        return cells;
+      middleware2.addWillSetRowCallback((tableId, rowId, row) => {
+        if (tableId === 't1') receivedRowId = rowId;
+        return row;
       });
       store1.setCell('t1', 'myRow', 'c1', 'v1');
       store2.applyMergeableChanges(store1.getMergeableContent());
@@ -320,52 +354,54 @@ describe('MergeableStore Middleware', () => {
 
     test('Multiple handlers run in order', () => {
       const order: number[] = [];
-      store2
-        .use('t1', (_rowId, cells) => {
+      middleware2
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
           order.push(1);
-          return cells;
+          return row;
         })
-        .use('t1', (_rowId, cells) => {
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
           order.push(2);
-          return cells;
+          return row;
         });
       store1.setCell('t1', 'r1', 'c1', 'v1');
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(order).toEqual([1, 2]);
     });
 
-    test('Short-circuit on null', () => {
+    test('Short-circuit on undefined', () => {
       const order: number[] = [];
-      store2
-        .use('t1', (_rowId, cells) => {
+      middleware2
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
           order.push(1);
-          return cells;
+          return row;
         })
-        .use('t1', () => {
+        .addWillSetRowCallback(() => {
           order.push(2);
-          return null;
+          return undefined;
         })
-        .use('t1', (_rowId, cells) => {
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
           order.push(3);
-          return cells;
+          return row;
         });
       store1.setCell('t1', 'r1', 'c1', 'v1');
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(order).toEqual([1, 2]);
-      expect(store2.getTables()).toEqual({});
+      expect(store2.getCell('t1', 'r1', 'c1')).toBeUndefined();
     });
 
     test('Fluent chaining', () => {
-      const result = store2.use('t1', (_r, c) => c);
-      expect(result).toBe(store2);
+      const result = middleware2.addWillSetRowCallback(
+        (_tableId, _rowId, row) => row,
+      );
+      expect(result).toBe(middleware2);
     });
 
     test('Mixed valid/invalid rows', () => {
-      store2.use('t1', (_rowId, cells) => {
-        return cells.reject ? null : cells;
-      });
+      middleware2.addWillSetRowCallback((_tableId, rowId, row) =>
+        rowId === 'invalid' ? undefined : row,
+      );
       store1.setRow('t1', 'valid', {c1: 'v1'});
-      store1.setRow('t1', 'invalid', {c1: 'v2', reject: true});
+      store1.setRow('t1', 'invalid', {c1: 'v2', c2: 'v3'});
       store2.applyMergeableChanges(store1.getMergeableContent());
       expect(store2.getRowIds('t1')).toEqual(['valid']);
     });
@@ -373,22 +409,26 @@ describe('MergeableStore Middleware', () => {
 
   describe('Local mutations (setRow, setCell)', () => {
     test('Middleware runs on local setRow', () => {
-      store2.use('t1', () => null);
+      middleware2.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? undefined : row,
+      );
       store2.setRow('t1', 'r1', {c1: 'v1'});
-      expect(store2.getTables()).toEqual({});
+      expect(store2.getRowCount('t1')).toBe(0);
     });
 
     test('Middleware runs on local setCell', () => {
-      store2.use('t1', () => null);
+      middleware2.addWillSetCellCallback((tableId, _rowId, _cellId, cell) =>
+        tableId === 't1' ? undefined : cell,
+      );
       store2.setCell('t1', 'r1', 'c1', 'v1');
-      expect(store2.getTables()).toEqual({});
+      expect(store2.getCell('t1', 'r1', 'c1')).toBeUndefined();
     });
 
     test('Same middleware runs on both local and sync', () => {
       const calls: string[] = [];
-      store2.use('t1', (_rowId, cells) => {
+      middleware2.addWillSetRowCallback((_tableId, _rowId, row) => {
         calls.push('middleware');
-        return cells;
+        return row;
       });
 
       // Local mutation
@@ -402,12 +442,12 @@ describe('MergeableStore Middleware', () => {
     });
   });
 
-  describe('Catch-all middleware use("*", handler)', () => {
+  describe('Callbacks for all tables', () => {
     test('Runs for all tables on sync', () => {
       const seen: string[] = [];
-      store2.use('*', (tableId, _rowId, cells) => {
+      middleware2.addWillSetRowCallback((tableId, _rowId, row) => {
         seen.push(tableId);
-        return cells;
+        return row;
       });
       store1.setCell('t1', 'r1', 'c1', 'v1');
       store1.setCell('t2', 'r1', 'c1', 'v2');
@@ -415,81 +455,79 @@ describe('MergeableStore Middleware', () => {
       expect(seen.sort()).toEqual(['t1', 't2']);
     });
 
-    test('Receives correct tableId, rowId, cells', () => {
-      let received: [string, string | undefined, object] | undefined;
-      store2.use('*', (tableId, rowId, cells) => {
-        received = [tableId, rowId, cells];
-        return cells;
+    test('Receives correct tableId and rowId', () => {
+      let receivedTableId: string | undefined;
+      let receivedRowId: string | undefined;
+      middleware2.addWillSetRowCallback((tableId, rowId, row) => {
+        receivedTableId = tableId;
+        receivedRowId = rowId;
+        return row;
       });
       store1.setRow('myTable', 'myRow', {a: 1, b: 2});
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(received).toEqual(['myTable', 'myRow', {a: 1, b: 2}]);
+      expect(receivedTableId).toEqual('myTable');
+      expect(receivedRowId).toEqual('myRow');
     });
 
-    test('Runs after table-specific handlers', () => {
+    test('Callbacks run in registration order', () => {
       const order: string[] = [];
-      store2
-        .use('t1', (_rowId, cells) => {
-          order.push('t1-specific');
-          return cells;
+      middleware2
+        .addWillSetRowCallback((tableId, _rowId, row) => {
+          if (tableId === 't1') order.push('t1-specific');
+          return row;
         })
-        .use('*', (_tableId, _rowId, cells) => {
-          order.push('catch-all');
-          return cells;
+        .addWillSetRowCallback((_tableId, _rowId, row) => {
+          order.push('general');
+          return row;
         });
       store1.setCell('t1', 'r1', 'c1', 'v1');
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(order).toEqual(['t1-specific', 'catch-all']);
+      expect(order).toEqual(['t1-specific', 'general']);
     });
 
     test('Can reject rows', () => {
-      store2.use('*', () => null);
+      middleware2.addWillSetRowCallback(() => undefined);
       store1.setCell('t1', 'r1', 'c1', 'v1');
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getTables()).toEqual({});
+      expect(store2.getCell('t1', 'r1', 'c1')).toBeUndefined();
     });
 
     test('Can transform rows', () => {
-      store2.use('*', (tableId, _rowId, cells) => ({
-        ...cells,
+      middleware2.addWillSetRowCallback((tableId, _rowId, row) => ({
+        ...row,
         fromTable: tableId,
       }));
       store1.setCell('t1', 'r1', 'c1', 'v1');
       store2.applyMergeableChanges(store1.getMergeableContent());
-      expect(store2.getRow('t1', 'r1')).toEqual({c1: 'v1', fromTable: 't1'});
+      expect(store2.getRow('t1', 'r1')).toEqual({
+        c1: 'v1',
+        fromTable: 't1',
+      });
     });
   });
 
   describe('setMergeableContent', () => {
-    // Middleware intentionally does NOT run on setMergeableContent.
-    // This method is for trusted sources (persistence, initial hydration).
-    // Use applyMergeableChanges for peer sync where validation is needed.
-    test('Bypasses middleware', () => {
-      let rowCalled = false;
-      let catchAllCalled = false;
-      store2
-        .use('t1', () => {
-          rowCalled = true;
-          return null;
-        })
-        .use('*', () => {
-          catchAllCalled = true;
-          return null;
-        });
+    test('Middleware runs on setMergeableContent', () => {
+      let rowCallbackCalled = false;
+      middleware2.addWillSetRowCallback((_tableId, _rowId, row) => {
+        rowCallbackCalled = true;
+        return row;
+      });
       store1.setCell('t1', 'r1', 'c1', 'v1');
       store2.setMergeableContent(store1.getMergeableContent());
-      expect(rowCalled).toBe(false);
-      expect(catchAllCalled).toBe(false);
+      expect(rowCallbackCalled).toBe(true);
       expect(store2.getCell('t1', 'r1', 'c1')).toEqual('v1');
     });
   });
 
   describe('merge()', () => {
     test('Middleware runs on merge', () => {
-      store2.use('t1', () => null);
+      middleware2.addWillSetRowCallback((tableId, _rowId, row) =>
+        tableId === 't1' ? undefined : row,
+      );
       store1.setCell('t1', 'r1', 'c1', 'v1');
       store2.merge(store1);
-      expect(store2.getTables()).toEqual({});
+      expect(store2.getCell('t1', 'r1', 'c1')).toBeUndefined();
       // store1 should be unchanged (received store2's empty content)
       expect(store1.getCell('t1', 'r1', 'c1')).toEqual('v1');
     });
@@ -497,12 +535,14 @@ describe('MergeableStore Middleware', () => {
 
   describe('Middleware side-effects with setRow', () => {
     test('setRow inside middleware persists locally', () => {
-      store2.use('jobs', (_rowId, cells) => {
-        store2.setRow('audit', 'a1', {
-          action: 'job-created',
-          jobId: _rowId ?? 'unknown',
-        });
-        return cells;
+      middleware2.addWillSetRowCallback((tableId, rowId, row) => {
+        if (tableId === 'jobs') {
+          store2.setRow('audit', 'a1', {
+            action: 'job-created',
+            jobId: rowId,
+          });
+        }
+        return row;
       });
 
       store1.setRow('jobs', 'j1', {name: 'Test Job'});
@@ -515,44 +555,20 @@ describe('MergeableStore Middleware', () => {
       });
     });
 
-    test('setRow side-effects sync back to originating store', () => {
-      store2.use('jobs', (rowId, cells) => {
-        store2.setRow('audit', `audit-${rowId ?? 'unknown'}`, {
-          action: 'job-received',
-          jobId: rowId ?? 'unknown',
-        });
-        return cells;
-      });
-
-      store1.setRow('jobs', 'j1', {name: 'Test Job'});
-      store2.applyMergeableChanges(store1.getMergeableContent());
-
-      expect(store2.getRow('jobs', 'j1')).toEqual({name: 'Test Job'});
-      expect(store2.getRow('audit', 'audit-j1')).toEqual({
-        action: 'job-received',
-        jobId: 'j1',
-      });
-
-      store1.applyMergeableChanges(store2.getMergeableContent());
-
-      expect(store1.getRow('audit', 'audit-j1')).toEqual({
-        action: 'job-received',
-        jobId: 'j1',
-      });
-    });
-
     test('middleware can read existing store state', () => {
       store2.setRow('config', 'settings', {auditEnabled: true});
 
-      store2.use('jobs', (rowId, cells) => {
-        const settings = store2.getRow('config', 'settings');
-        if (settings.auditEnabled) {
-          store2.setRow('audit', `audit-${rowId ?? 'unknown'}`, {
-            action: 'job-created',
-            jobId: rowId ?? 'unknown',
-          });
+      middleware2.addWillSetRowCallback((tableId, rowId, row) => {
+        if (tableId === 'jobs') {
+          const settings = store2.getRow('config', 'settings');
+          if (settings.auditEnabled) {
+            store2.setRow('audit', 'audit-' + rowId, {
+              action: 'job-created',
+              jobId: rowId,
+            });
+          }
         }
-        return cells;
+        return row;
       });
 
       store1.setRow('jobs', 'j1', {name: 'Test Job'});
