@@ -41,6 +41,9 @@ export type WillDelCellCallback = (
   cellId: Id,
 ) => boolean;
 
+/// WillDelRowCallback
+export type WillDelRowCallback = (tableId: Id, rowId: Id) => boolean;
+
 /// WillDelValueCallback
 export type WillDelValueCallback = (valueId: Id) => boolean;
 
@@ -63,6 +66,9 @@ export interface Middleware {
 
   /// Middleware.addWillDelCellCallback
   addWillDelCellCallback(callback: WillDelCellCallback): Middleware;
+
+  /// Middleware.addWillDelRowCallback
+  addWillDelRowCallback(callback: WillDelRowCallback): Middleware;
 
   /// Middleware.addWillDelValueCallback
   addWillDelValueCallback(callback: WillDelValueCallback): Middleware;

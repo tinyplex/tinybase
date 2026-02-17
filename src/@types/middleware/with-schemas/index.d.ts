@@ -82,6 +82,16 @@ export type WillDelCellCallback<
   ...params: Params | [tableId: never, rowId: never, cellId: never]
 ) => boolean;
 
+/// WillDelRowCallback
+export type WillDelRowCallback<
+  Schema extends OptionalTablesSchema,
+  Params extends any[] = TableIdFromSchema<Schema> extends infer TableId
+    ? TableId extends TableIdFromSchema<Schema>
+      ? [tableId: TableId, rowId: Id]
+      : never
+    : never,
+> = (...params: Params | [tableId: never, rowId: never]) => boolean;
+
 /// WillDelValueCallback
 export type WillDelValueCallback<
   Schema extends OptionalValuesSchema,
@@ -120,6 +130,11 @@ export interface Middleware<in out Schemas extends OptionalSchemas> {
   /// Middleware.addWillDelCellCallback
   addWillDelCellCallback(
     callback: WillDelCellCallback<Schemas[0]>,
+  ): Middleware<Schemas>;
+
+  /// Middleware.addWillDelRowCallback
+  addWillDelRowCallback(
+    callback: WillDelRowCallback<Schemas[0]>,
   ): Middleware<Schemas>;
 
   /// Middleware.addWillDelValueCallback

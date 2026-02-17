@@ -2,6 +2,7 @@ import type {Id} from '../@types/common/index.d.ts';
 import type {
   Middleware,
   WillDelCellCallback,
+  WillDelRowCallback,
   WillDelValueCallback,
   WillSetCellCallback,
   WillSetRowCallback,
@@ -30,6 +31,7 @@ export const createMiddleware = getCreateFunction(
     const willSetValueCallbacks: WillSetValueCallback[] = [];
     const willSetValuesCallbacks: WillSetValuesCallback[] = [];
     const willDelCellCallbacks: WillDelCellCallback[] = [];
+    const willDelRowCallbacks: WillDelRowCallback[] = [];
     const willDelValueCallbacks: WillDelValueCallback[] = [];
 
     const willSetCell = (
@@ -78,6 +80,9 @@ export const createMiddleware = getCreateFunction(
         callback(tableId, rowId, cellId),
       );
 
+    const willDelRow = (tableId: Id, rowId: Id): boolean =>
+      arrayEvery(willDelRowCallbacks, (callback) => callback(tableId, rowId));
+
     const willDelValue = (valueId: Id): boolean =>
       arrayEvery(willDelValueCallbacks, (callback) => callback(valueId));
 
@@ -88,6 +93,7 @@ export const createMiddleware = getCreateFunction(
       willDelValue,
       willSetRow,
       willSetValues,
+      willDelRow,
     );
 
     const getStore = (): Store => store;
@@ -116,6 +122,9 @@ export const createMiddleware = getCreateFunction(
       callback: WillDelCellCallback,
     ): Middleware => fluent(() => arrayPush(willDelCellCallbacks, callback));
 
+    const addWillDelRowCallback = (callback: WillDelRowCallback): Middleware =>
+      fluent(() => arrayPush(willDelRowCallbacks, callback));
+
     const addWillDelValueCallback = (
       callback: WillDelValueCallback,
     ): Middleware => fluent(() => arrayPush(willDelValueCallbacks, callback));
@@ -129,6 +138,7 @@ export const createMiddleware = getCreateFunction(
       addWillSetValueCallback,
       addWillSetValuesCallback,
       addWillDelCellCallback,
+      addWillDelRowCallback,
       addWillDelValueCallback,
       destroy,
     } as Middleware);

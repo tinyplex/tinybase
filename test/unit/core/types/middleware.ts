@@ -158,6 +158,27 @@ middlewareWithSchema.getStore().getTables().t2; // !
     .getTables().t2; // !
 };
 
+// addWillDelRowCallback
+() => {
+  middlewareWithSchema.addWillDelRowCallback((tableId, _rowId) => {
+    tableId == 't0';
+    tableId == 't1';
+
+    tableId == 't2'; // !
+
+    return true;
+  });
+
+  middlewareWithSchema
+    .addWillDelRowCallback(() => true)
+    .getStore()
+    .getTables().t1;
+  middlewareWithSchema
+    .addWillDelRowCallback(() => true)
+    .getStore()
+    .getTables().t2; // !
+};
+
 // addWillDelValueCallback
 () => {
   middlewareWithSchema.addWillDelValueCallback((valueId) => {
@@ -175,6 +196,18 @@ middlewareWithSchema.getStore().getTables().t2; // !
     .getTables().t1;
   middlewareWithSchema
     .addWillDelValueCallback(() => true)
+    .getStore()
+    .getTables().t2; // !
+};
+
+// addWillDelValuesCallback
+() => {
+  middlewareWithSchema
+    .addWillDelValuesCallback(() => true)
+    .getStore()
+    .getTables().t1;
+  middlewareWithSchema
+    .addWillDelValuesCallback(() => true)
     .getStore()
     .getTables().t2; // !
 };
