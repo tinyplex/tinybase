@@ -165,6 +165,18 @@ custom validation, defaulting, and correction logic that is not easily captured
 in a plain type-based schema. Just be aware of the relationship between
 Middleware and schemas, and use that power wisely!
 
+## When Middleware Is Not Called
+
+There are two main cases where Middleware callbacks will not be called:
+
+* When `doRollback` returns true at the end of a Store transaction: the
+  transaction will be rolled back and no callbacks will be called on the changes
+  that are made to the data to return it to its previous state.
+* When the Store is being updated from a checkpoint (using the checkpoint
+  module): the changes from the checkpoint will be applied directly to the Store
+  without calling any of the callbacks on the changes required to get it to the
+  old 'undo' state or the new 'redo' state.
+
 ## Summary
 
 Middleware gives you a powerful way to manipulate data coming into the Store,
