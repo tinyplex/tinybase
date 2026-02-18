@@ -20,17 +20,15 @@ import {createMiddleware, createStore} from 'tinybase';
 const store = createStore();
 
 const middleware = createMiddleware(store);
-middleware.setWillSetCellCallback((tableId, rowId, cellId, newValue) => {
-  if (typeof newValue === 'string') {
-    return newValue.toUpperCase();
+middleware.addWillSetValueCallback((valueId, value) => {
+  if (typeof value === 'string') {
+    return value.toUpperCase();
   }
 });
 
-store.setCell('pets', 'fido', 'species', 'dog');
-console.log(store.getCell('pets', 'fido', 'species'));
-// -> 'DOG'
-
-middleware.destroy();
+store.setValue('shopName', 'happy pets');
+console.log(store.getValue('shopName'));
+// -> 'HAPPY PETS'
 ```
 
 ## Available Callbacks
@@ -69,6 +67,16 @@ The full list of `willDel*` callbacks you can register is as follows:
 | willDelValues | valueIds               | When delValues is called. | boolean |
 | willDelValue  | valueId                | When delValue is called.  | boolean |
 
+The callbacks are registered with the Middleware object using fluent methods
+with the `add*` prefix:
+
+```js
+middleware
+  .addWillSetContentCallback((content) => { /* ... */})
+  .addWillSetTablesCallback((tables) => { /* ... */ });
+// and so on for each callback type
+```
+
 ## Callback Chaining And Cascade
 
 When an operation is made on the Store, the relevant callback will be called. If
@@ -81,26 +89,25 @@ callback cancels the operation, subsequent `willSet*` callbacks will not be
 called. 
 
 ```js
-const middleware2 = createMiddleware(store);
-middleware2.setWillSetCellCallback((tableId, rowId, cellId, cell) => {
-  console.log('Callback 1');
-  return cell + '!'; 
+middleware.addWillSetRowCallback((tableId, rowId, row) => {
+  console.log('Timestamp row');
+  return {...row, timestamp: Date.now()}; 
 });
-middleware2.setWillSetCellCallback((tableId, rowId, cellId, cell) => {
-  console.log('Callback 2');
+middleware.addWillSetRowCallback((tableId, rowId, row) => {
+  console.log('Cancel setting row');
   return undefined; 
 });
-middleware2.setWillSetCellCallback((tableId, rowId, cellId, cell) => {
-  console.log('Callback 3');
-  return cell + '?'; 
+middleware.addWillSetRowCallback((tableId, rowId, row) => {
+  console.log('Defaulting pet to be alive');
+  return {...row, alive: true}; 
 });
 
-store.setCell('pets', 'fido', 'species', 'dog');
-// -> 'Callback 1'
-// -> 'Callback 2'
+store.setRow('pets', 'fido', {'species': 'dog'});
+// -> 'Timestamp row'
+// -> 'Cancel setting row'
 // (Callback 3 is not called because Callback 2 cancels the operation)
 
-console.log(store.getCell('pets', 'fido', 'species'));
+console.log(store.getTable('pets'));
 // -> {}
 ```
 
@@ -121,9 +128,9 @@ elements from there.
 
 ## Middleware And Schemas
 
-The middleware callbacks are called after the schema has been applied to the
-data. So, for example, if your schema ignores a Cell that is being set because
-it was the wrong type, the `willSetCell` callback will not be called:
+The callbacks are called after the schema has been applied to the data. So, for
+example, if your schema ignores a Cell that is being set because it was the
+wrong type, the `willSetCell` callback will not be called:
 
 ```js
 store.setTablesSchema({
@@ -132,33 +139,38 @@ store.setTablesSchema({
   },
 }); 
 
-middleware.setWillSetCellCallback((tableId, rowId, cellId, cell) => {
-  console.log('willSetCell called');
+middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+  console.log('WillSetCellCallback');
   return cell;
 });
 
 store.setCell('pets', 'fido', 'species', 'dog');
-// -> 'willSetCell called'
+// -> 'WillSetCellCallback'
 
 store.setCell('pets', 'fido', 'species', 123);
 // (no output, callback not called)
 ```
 
 It is very important to note that there is no further schema validation again
-_after_ the middleware has been applied. Your middleware callbacks are powerful!
+_after_ the Middleware has been applied. Your Middleware callbacks are powerful!
 And they need to be implicitly aware of the schema and ensure that they return
 values that are compliant with it.
 
-So, for example, if the middleware returns a transformed value that is the wrong
-type, that value will be set in the Store, which might lead to all sorts of
-surprises.
+So, for example, if a Middleware callback returns a transformed value that is
+the wrong type, that value will be set in the Store, which might lead to all
+sorts of surprises.
+
+That said, the power of Middleware is that it can be used to implement your own
+custom validation, defaulting, and correction logic that is not easily captured
+in a plain type-based schema. Just be aware of the relationship between
+Middleware and schemas, and use that power wisely!
 
 ## Summary
 
 Middleware gives you a powerful way to manipulate data coming into the Store,
 and to cancel operations on the Store. It is important to understand the
 chaining and cascade of callbacks, and to be aware of the relationship between
-middleware and schemas.
+Middleware and schemas.
 
 Now that you understand how to manipulate data coming into the Store, let's
 learn how to save and load Store data. For that we proceed to the Persistence
