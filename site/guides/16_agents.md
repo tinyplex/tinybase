@@ -300,7 +300,7 @@ from source code and markdown files.
    source files for guides on the website.
 
 4. **Generated Files**: `/releases.md` and `/readme.md` in the root are
-   **GENERATED** from `/site/guides/16_releases.md` and `/site/home/index.md`.
+   **GENERATED** from `/site/guides/17_releases.md` and `/site/home/index.md`.
    **Never edit the generated files directly**.
 
 ### Documentation Testing
@@ -352,7 +352,7 @@ npx vitest run ./test/unit/documentation.test.ts --retry=0
 
 1. **API Documentation**: Edit `docs.js` file next to the type definition
 2. **Guide Content**: Edit markdown files in `/site/guides/`
-3. **Release Notes**: Edit `/site/guides/16_releases.md` (not `/releases.md`)
+3. **Release Notes**: Edit `/site/guides/17_releases.md` (not `/releases.md`)
 4. **Always run documentation tests** after changes to verify examples work
 
 ## Creating New Schematizers
@@ -485,7 +485,7 @@ All code examples in a guide file are concatenated and executed as a test:
 
 When adding a new feature:
 
-1. **Update `/site/guides/16_releases.md`** (NOT `/releases.md`):
+1. **Update `/site/guides/17_releases.md`** (NOT `/releases.md`):
    - Add new version section at the top
    - Include working code example that will be tested
    - Link to relevant guide if applicable

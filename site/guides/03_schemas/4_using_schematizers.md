@@ -166,5 +166,5 @@ TinyBase's schema system. They perform best-effort conversions, allowing you to
 reuse existing schema definitions while benefiting from TinyBase's runtime
 validation and defaults.
 
-Now that you can define and convert schemas, let's learn how to save and load
-Store data. For that we proceed to the Persistence guides.
+Now that you can define and convert schemas, let's learn how to manipulate data
+coming into the Store, which is covered in the Middleware guide.
