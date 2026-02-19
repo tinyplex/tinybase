@@ -1,7 +1,7 @@
 import {beforeEach, describe, expect, test, vi} from 'vitest';
 
 import type {Middleware, Store} from 'tinybase';
-import {createMiddleware, createStore} from 'tinybase';
+import {createCheckpoints, createMiddleware, createStore} from 'tinybase';
 
 let store: Store;
 let middleware: Middleware;
@@ -99,7 +99,6 @@ describe('willSetContent', () => {
       store.setContent([{t1: {r1: {c1: 'a'}}}, {}]);
       expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
       store.setContent([{banned: {r1: {c1: 1}}, t2: {r1: {c1: 'b'}}}, {}]);
-      // blocked, so t1 from previous setContent remains
       expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
     });
   });
@@ -363,7 +362,6 @@ describe('willSetTables', () => {
       store.setTables({t1: {r1: {c1: 'a'}}});
       expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
       store.setTables({banned: {r1: {c1: 1}}, t2: {r1: {c1: 'b'}}});
-      // blocked, so t1 from previous setTables remains
       expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
     });
   });
@@ -1138,7 +1136,6 @@ describe('willSetCell', () => {
           return typeof cell === 'number' ? cell * 10 : cell;
         });
       store.setCell('t1', 'r1', 'c1', 1);
-      // (1 + 1) * 10 = 20
       expect(store.getCell('t1', 'r1', 'c1')).toBe(20);
     });
 
@@ -1341,8 +1338,6 @@ describe('willSetValues', () => {
       store.setValues({v1: 'a'});
       expect(store.getValues()).toEqual({v1: 'a'});
       store.setValues({locked: true, v2: 'b'});
-      // blocked, so v1 from previous setValues is deleted by the
-      // mapMatch since the blocked values resolve to undefined
       expect(store.getValues()).toEqual({v1: 'a'});
     });
   });
@@ -1568,7 +1563,6 @@ describe('willSetValue', () => {
           return typeof value === 'number' ? value * 2 : value;
         });
       store.setValue('v1', 1);
-      // (1 + 1) * 2 = 4
       expect(store.getValue('v1')).toBe(4);
     });
 
@@ -1874,7 +1868,7 @@ describe('willDelTable', () => {
       store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}});
       delCalls.length = 0;
       store.setTables({t1: {r1: {c1: 'A'}}});
-      // t2 should be deleted
+
       expect(delCalls).toEqual(['t2']);
       expect(store.getTables()).toEqual({t1: {r1: {c1: 'A'}}});
     });
@@ -1883,7 +1877,7 @@ describe('willDelTable', () => {
       middleware.addWillDelTableCallback(() => false);
       store.setTables({t1: {r1: {c1: 'a'}}, t2: {r1: {c1: 'b'}}});
       store.setTables({t1: {r1: {c1: 'A'}}});
-      // t2 should be preserved because delete was blocked
+
       expect(store.getTables()).toEqual({
         t1: {r1: {c1: 'A'}},
         t2: {r1: {c1: 'b'}},
@@ -2033,7 +2027,7 @@ describe('willDelRow', () => {
       store.setTable('t1', {r1: {c1: 'a'}, r2: {c1: 'b'}});
       delCalls.length = 0;
       store.setTable('t1', {r1: {c1: 'A'}});
-      // r2 should be deleted
+
       expect(delCalls).toEqual(['t1/r2']);
       expect(store.getTable('t1')).toEqual({r1: {c1: 'A'}});
     });
@@ -2042,7 +2036,7 @@ describe('willDelRow', () => {
       middleware.addWillDelRowCallback(() => false);
       store.setTable('t1', {r1: {c1: 'a'}, r2: {c1: 'b'}});
       store.setTable('t1', {r1: {c1: 'A'}});
-      // r2 should be preserved because delete was blocked
+
       expect(store.getTable('t1')).toEqual({
         r1: {c1: 'A'},
         r2: {c1: 'b'},
@@ -2210,7 +2204,7 @@ describe('willDelCell', () => {
       store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
       delCalls.length = 0;
       store.setRow('t1', 'r1', {c1: 'A'});
-      // c2 should be deleted
+
       expect(delCalls).toEqual(['t1/r1/c2']);
       expect(store.getRow('t1', 'r1')).toEqual({c1: 'A'});
     });
@@ -2219,7 +2213,7 @@ describe('willDelCell', () => {
       middleware.addWillDelCellCallback(() => false);
       store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
       store.setRow('t1', 'r1', {c1: 'A'});
-      // c2 should be preserved because delete was blocked
+
       expect(store.getRow('t1', 'r1')).toEqual({c1: 'A', c2: 'b'});
     });
   });
@@ -2434,7 +2428,7 @@ describe('willDelValue', () => {
       store.setValues({v1: 'a', v2: 'b'});
       delCalls.length = 0;
       store.setValues({v1: 'A'});
-      // v2 should be deleted
+
       expect(delCalls).toEqual(['v2']);
       expect(store.getValues()).toEqual({v1: 'A'});
     });
@@ -2443,7 +2437,7 @@ describe('willDelValue', () => {
       middleware.addWillDelValueCallback(() => false);
       store.setValues({v1: 'a', v2: 'b'});
       store.setValues({v1: 'A'});
-      // v2 should be preserved because delete was blocked
+
       expect(store.getValues()).toEqual({v1: 'A', v2: 'b'});
     });
   });
@@ -2530,7 +2524,7 @@ describe('willApplyChanges', () => {
       store.applyChanges([{t1: {r1: {c1: 'a'}}}, {}, 1]);
       expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
       store.applyChanges([{banned: {r1: {c1: 1}}}, {}, 1]);
-      // blocked, so t1 from previous applyChanges remains
+
       expect(store.getTables()).toEqual({t1: {r1: {c1: 'a'}}});
     });
 
@@ -2813,9 +2807,9 @@ describe('schema interaction', () => {
       store.setTablesSchema({
         t1: {c1: {type: 'string'}, c2: {type: 'number'}},
       });
-      // c1 valid string, c2 invalid (string instead of number) - gets removed
+
       store.setRow('t1', 'r1', {c1: 'a', c2: 'b' as any});
-      // Only c1 reaches the callback; c2 is rejected by schema validation
+
       expect(calls).toEqual(['t1/r1/c1=a']);
     });
   });
@@ -2868,7 +2862,7 @@ describe('schema interaction', () => {
         },
       });
       store.setRow('t1', 'r1', {c1: 'a'});
-      // c2 should be defaulted to 1, and the callback should see it
+
       expect(calls).toEqual([
         {tableId: 't1', rowId: 'r1', cellId: 'c1', cell: 'a'},
         {tableId: 't1', rowId: 'r1', cellId: 'c2', cell: 1},
@@ -3403,5 +3397,203 @@ describe('callback granularity', () => {
       expect(calls).not.toHaveProperty('willSetRow');
       expect(calls).not.toHaveProperty('willSetValues');
     });
+  });
+});
+
+describe('middleware not called during doRollback', () => {
+  let calls: Record<string, number>;
+
+  const registerAllCallbacks = () => {
+    calls = {};
+    middleware.addWillSetCellCallback((_tId, _rId, _cId, cell) => {
+      calls['willSetCell'] = (calls['willSetCell'] ?? 0) + 1;
+      return cell;
+    });
+    middleware.addWillSetValueCallback((_vId, value) => {
+      calls['willSetValue'] = (calls['willSetValue'] ?? 0) + 1;
+      return value;
+    });
+    middleware.addWillDelCellCallback(() => {
+      calls['willDelCell'] = (calls['willDelCell'] ?? 0) + 1;
+      return true;
+    });
+    middleware.addWillDelValueCallback(() => {
+      calls['willDelValue'] = (calls['willDelValue'] ?? 0) + 1;
+      return true;
+    });
+  };
+
+  test('rolling back cell changes does not trigger middleware', () => {
+    store.setTables({t1: {r1: {c1: 'a'}}});
+    registerAllCallbacks();
+    store.transaction(
+      () => {
+        store.setCell('t1', 'r1', 'c1', 'b');
+      },
+      () => true,
+    );
+
+    expect(calls).toEqual({willSetCell: 1});
+    expect(store.getCell('t1', 'r1', 'c1')).toBe('a');
+  });
+
+  test('rolling back new cell does not trigger middleware', () => {
+    registerAllCallbacks();
+    store.transaction(
+      () => {
+        store.setCell('t1', 'r1', 'c1', 'a');
+      },
+      () => true,
+    );
+
+    expect(calls).toEqual({willSetCell: 1});
+    expect(store.getTables()).toEqual({});
+  });
+
+  test('rolling back value changes does not trigger middleware', () => {
+    store.setValues({v1: 'a'});
+    registerAllCallbacks();
+    store.transaction(
+      () => {
+        store.setValue('v1', 'b');
+      },
+      () => true,
+    );
+    expect(calls).toEqual({willSetValue: 1});
+    expect(store.getValue('v1')).toBe('a');
+  });
+
+  test('rolling back new value does not trigger middleware', () => {
+    registerAllCallbacks();
+    store.transaction(
+      () => {
+        store.setValue('v1', 'a');
+      },
+      () => true,
+    );
+    expect(calls).toEqual({willSetValue: 1});
+    expect(store.getValues()).toEqual({});
+  });
+
+  test('rolling back cell deletion does not trigger middleware', () => {
+    store.setTables({t1: {r1: {c1: 'a', c2: 'b'}}});
+    registerAllCallbacks();
+    store.transaction(
+      () => {
+        store.delCell('t1', 'r1', 'c2');
+      },
+      () => true,
+    );
+    expect(calls).toEqual({willDelCell: 1});
+    expect(store.getRow('t1', 'r1')).toEqual({c1: 'a', c2: 'b'});
+  });
+
+  test('rolling back value deletion does not trigger middleware', () => {
+    store.setValues({v1: 'a', v2: 'b'});
+    registerAllCallbacks();
+    store.transaction(
+      () => {
+        store.delValue('v2');
+      },
+      () => true,
+    );
+    expect(calls).toEqual({willDelValue: 1});
+    expect(store.getValues()).toEqual({v1: 'a', v2: 'b'});
+  });
+});
+
+describe('middleware not called during checkpoint undo/redo', () => {
+  let calls: Record<string, number>;
+
+  const registerAllCallbacks = () => {
+    calls = {};
+    middleware.addWillSetRowCallback((_tId, _rId, row) => {
+      calls['willSetRow'] = (calls['willSetRow'] ?? 0) + 1;
+      return row;
+    });
+    middleware.addWillSetCellCallback((_tId, _rId, _cId, cell) => {
+      calls['willSetCell'] = (calls['willSetCell'] ?? 0) + 1;
+      return cell;
+    });
+    middleware.addWillSetValueCallback((_vId, value) => {
+      calls['willSetValue'] = (calls['willSetValue'] ?? 0) + 1;
+      return value;
+    });
+    middleware.addWillDelCellCallback(() => {
+      calls['willDelCell'] = (calls['willDelCell'] ?? 0) + 1;
+      return true;
+    });
+    middleware.addWillDelValueCallback(() => {
+      calls['willDelValue'] = (calls['willDelValue'] ?? 0) + 1;
+      return true;
+    });
+  };
+
+  test('undo does not trigger middleware', () => {
+    const checkpoints = createCheckpoints(store);
+    store.setTables({t1: {r1: {c1: 'a'}}});
+    checkpoints.addCheckpoint('initial');
+    registerAllCallbacks();
+    store.setCell('t1', 'r1', 'c1', 'b');
+    checkpoints.addCheckpoint('changed');
+    expect(calls).toEqual({willSetCell: 1});
+    calls = {};
+    checkpoints.goBackward();
+    expect(calls).toEqual({});
+    expect(store.getCell('t1', 'r1', 'c1')).toBe('a');
+  });
+
+  test('redo does not trigger middleware', () => {
+    const checkpoints = createCheckpoints(store);
+    store.setTables({t1: {r1: {c1: 'a'}}});
+    checkpoints.addCheckpoint('initial');
+    registerAllCallbacks();
+    store.setCell('t1', 'r1', 'c1', 'b');
+    checkpoints.addCheckpoint('changed');
+    calls = {};
+    checkpoints.goBackward();
+    checkpoints.goForward();
+    expect(calls).toEqual({});
+    expect(store.getCell('t1', 'r1', 'c1')).toBe('b');
+  });
+
+  test('undo of new row does not trigger middleware', () => {
+    const checkpoints = createCheckpoints(store);
+    checkpoints.addCheckpoint('empty');
+    registerAllCallbacks();
+    store.setRow('t1', 'r1', {c1: 'a'});
+    checkpoints.addCheckpoint('added');
+    expect(calls).toEqual({willSetRow: 1, willSetCell: 1});
+    calls = {};
+    checkpoints.goBackward();
+    expect(calls).toEqual({});
+    expect(store.getTables()).toEqual({});
+  });
+
+  test('undo of value change does not trigger middleware', () => {
+    const checkpoints = createCheckpoints(store);
+    store.setValues({v1: 'a'});
+    checkpoints.addCheckpoint('initial');
+    registerAllCallbacks();
+    store.setValue('v1', 'b');
+    checkpoints.addCheckpoint('changed');
+    expect(calls).toEqual({willSetValue: 1});
+    calls = {};
+    checkpoints.goBackward();
+    expect(calls).toEqual({});
+    expect(store.getValue('v1')).toBe('a');
+  });
+
+  test('undo of new value does not trigger middleware', () => {
+    const checkpoints = createCheckpoints(store);
+    checkpoints.addCheckpoint('empty');
+    registerAllCallbacks();
+    store.setValue('v1', 'a');
+    checkpoints.addCheckpoint('added');
+    expect(calls).toEqual({willSetValue: 1});
+    calls = {};
+    checkpoints.goBackward();
+    expect(calls).toEqual({});
+    expect(store.getValues()).toEqual({});
   });
 });
