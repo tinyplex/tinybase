@@ -11,8 +11,8 @@ Store.
 ## The Basics
 
 Here's a simple example to show a Middleware object in action. We create a
-middleware callback that will be called whenever a single Cell is set, and makes
-sure that strings written to the Store are always uppercase:
+middleware callback that will be called whenever a single Value is set, and
+makes sure that strings written to the Store are always uppercase:
 
 ```js
 import {createMiddleware, createStore} from 'tinybase';
@@ -60,11 +60,11 @@ The full list of `willDel*` callbacks you can register is as follows:
 
 | Callback      | Parameters             | Called                    | Return  |
 | ------------- | ---------------------- | ------------------------- | ------- |
-| willDelTables | tableIds               | When delTables is called. | boolean |
+| willDelTables |                        | When delTables is called. | boolean |
 | willDelTable  | tableId                | When delTable is called.  | boolean |
 | willDelRow    | tableId, rowId         | When delRow is called.    | boolean |
 | willDelCell   | tableId, rowId, cellId | When delCell is called.   | boolean |
-| willDelValues | valueIds               | When delValues is called. | boolean |
+| willDelValues |                        | When delValues is called. | boolean |
 | willDelValue  | valueId                | When delValue is called.  | boolean |
 
 The callbacks are registered with the Middleware object using fluent methods
