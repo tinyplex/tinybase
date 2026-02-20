@@ -1,7 +1,14 @@
 import {beforeEach, describe, expect, test, vi} from 'vitest';
 
-import type {Middleware, Store} from 'tinybase';
-import {createCheckpoints, createMiddleware, createStore} from 'tinybase';
+import type {MergeableStore, Middleware, Store} from 'tinybase';
+import {
+  createCheckpoints,
+  createMergeableStore,
+  createMiddleware,
+  createStore,
+} from 'tinybase';
+import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+import {getTimeFunctions} from '../../common/mergeable.ts';
 
 let store: Store;
 let middleware: Middleware;
@@ -3595,5 +3602,165 @@ describe('middleware not called during checkpoint undo/redo', () => {
     checkpoints.goBackward();
     expect(calls).toEqual({});
     expect(store.getValues()).toEqual({});
+  });
+});
+
+describe('middleware with synchronization', () => {
+  const [reset, getNow, pause] = getTimeFunctions();
+  let store1: MergeableStore;
+  let store2: MergeableStore;
+  let middleware2: Middleware;
+
+  beforeEach(() => {
+    reset();
+    store1 = createMergeableStore('s1', getNow);
+    store2 = createMergeableStore('s2', getNow);
+    middleware2 = createMiddleware(store2);
+  });
+
+  test('middleware intercepts incoming synced cell', async () => {
+    const calls: string[] = [];
+    middleware2.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+      calls.push(`willSetCell:${tableId}/${rowId}/${cellId}=${cell}`);
+      return cell;
+    });
+
+    const sync1 = createLocalSynchronizer(store1);
+    const sync2 = createLocalSynchronizer(store2);
+    await sync1.startSync();
+    await sync2.startSync();
+    await pause();
+
+    store1.setCell('t1', 'r1', 'c1', 'a');
+    await pause();
+
+    expect(store2.getCell('t1', 'r1', 'c1')).toBe('a');
+    expect(calls).toEqual(['willSetCell:t1/r1/c1=a']);
+
+    await sync1.destroy();
+    await sync2.destroy();
+  });
+
+  test('middleware transforms incoming synced cell', async () => {
+    middleware2.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+      if (typeof cell === 'string') {
+        return cell.toUpperCase();
+      }
+      return cell;
+    });
+
+    const sync1 = createLocalSynchronizer(store1);
+    const sync2 = createLocalSynchronizer(store2);
+    await sync1.startSync();
+    await sync2.startSync();
+    await pause();
+
+    store1.setCell('t1', 'r1', 'c1', 'a');
+    await pause();
+
+    expect(store2.getCell('t1', 'r1', 'c1')).toBe('A');
+
+    await sync1.destroy();
+    await sync2.destroy();
+  });
+
+  test('middleware blocks incoming synced cell', async () => {
+    middleware2.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+      if (cellId === 'c2') {
+        return undefined;
+      }
+      return cell;
+    });
+
+    const sync1 = createLocalSynchronizer(store1);
+    const sync2 = createLocalSynchronizer(store2);
+    await sync1.startSync();
+    await sync2.startSync();
+    await pause();
+
+    store1.setCell('t1', 'r1', 'c1', 'a');
+    store1.setCell('t1', 'r1', 'c2', 'z');
+    await pause();
+
+    expect(store2.getCell('t1', 'r1', 'c1')).toBe('a');
+    expect(store2.getCell('t1', 'r1', 'c2')).toBeUndefined();
+
+    await sync1.destroy();
+    await sync2.destroy();
+  });
+
+  test('middleware intercepts incoming synced value', async () => {
+    middleware2.addWillSetValueCallback((valueId, value) => {
+      if (typeof value === 'string') {
+        return value.toUpperCase();
+      }
+      return value;
+    });
+
+    const sync1 = createLocalSynchronizer(store1);
+    const sync2 = createLocalSynchronizer(store2);
+    await sync1.startSync();
+    await sync2.startSync();
+    await pause();
+
+    store1.setValue('v1', 'a');
+    await pause();
+
+    expect(store2.getValue('v1')).toBe('A');
+
+    await sync1.destroy();
+    await sync2.destroy();
+  });
+
+  test('middleware-transformed data syncs back to originator', async () => {
+    middleware2.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+      if (typeof cell === 'string') {
+        return cell.toUpperCase();
+      }
+      return cell;
+    });
+
+    const sync1 = createLocalSynchronizer(store1);
+    const sync2 = createLocalSynchronizer(store2);
+    await sync1.startSync();
+    await sync2.startSync();
+    await pause();
+
+    store1.setCell('t1', 'r1', 'c1', 'a');
+    await pause();
+
+    expect(store2.getCell('t1', 'r1', 'c1')).toBe('A');
+
+    await pause(100);
+    expect(store1.getCell('t1', 'r1', 'c1')).toBe('A');
+
+    await sync1.destroy();
+    await sync2.destroy();
+  });
+
+  test('middleware-transformed value syncs back to originator', async () => {
+    middleware2.addWillSetValueCallback((valueId, value) => {
+      if (typeof value === 'string') {
+        return value.toUpperCase();
+      }
+      return value;
+    });
+
+    const sync1 = createLocalSynchronizer(store1);
+    const sync2 = createLocalSynchronizer(store2);
+    await sync1.startSync();
+    await sync2.startSync();
+    await pause();
+
+    store1.setValue('v1', 'a');
+    await pause();
+
+    expect(store2.getValue('v1')).toBe('A');
+
+    await pause(100);
+    expect(store1.getValue('v1')).toBe('A');
+
+    await sync1.destroy();
+    await sync2.destroy();
   });
 });
