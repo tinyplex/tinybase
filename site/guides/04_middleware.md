@@ -126,6 +126,67 @@ technically being updated. But the key is to think about the actual method that
 was called on the Store, and then expect callbacks for only more granular
 elements from there.
 
+## Complex Object Callbacks
+
+Callbacks for Cell and Value operations (`willSetCell`, `willSetValue`) receive
+primitive values directly. But callbacks for Row, Table, Tables, Content, and
+Changes operations receive more complex objects — and the Store passes a deep
+clone of the original data to the callback, not the original itself.
+
+This means you can safely mutate the received object in place and return it, or
+you can return a completely new object. Both approaches work:
+
+```js
+// Approach 1: return a new object
+middleware.addWillSetRowCallback((tableId, rowId, row) => {
+  return {...row, validated: true};
+});
+
+// Approach 2: mutate in place and return
+middleware.addWillSetRowCallback((tableId, rowId, row) => {
+  row.validated = true;
+  return row;
+});
+```
+
+Because the callback receives a clone, the original data passed to the Store
+method is never mutated by the middleware regardless of which approach you use.
+
+When middleware transforms a rich object (i.e. returns something other than what
+it received), that change is applied as a mutation. This ensures the correct
+reactive behavior: listeners will see the transformed data, and the change will
+be tracked as a write in MergeableStore synchronization.
+
+Note that there is a small cost to the cloning and mutation tracking for these
+more complex types of callbacks, so if you have performance-sensitive code, you
+might prefer to use the more granular Cell and Value callbacks where possible.
+
+## Middleware And Listeners
+
+Mutator listeners (that is, listeners registered with the `isMutator` flag set
+to `true`) are allowed to write data back to the Store during a transaction.
+Any writes made by a mutator listener will also pass through the middleware
+pipeline:
+
+```js
+middleware.addWillSetCellCallback((_tableId, _rowId, _cellId, cell) =>
+  typeof cell === 'string' ? cell.toUpperCase() : cell,
+);
+
+store.addCellListener('pets', 'fido', 'name', (store) => {
+  store.setCell('pets', 'fido', 'slug', 'from_listener');
+}, true);
+
+store.setCell('pets', 'fido', 'name', 'Rex');
+console.log(store.getCell('pets', 'fido', 'name'));
+// -> 'REX'
+console.log(store.getCell('pets', 'fido', 'slug'));
+// -> 'FROM_LISTENER'
+```
+
+In the example above, both the original `setCell` call and the listener's
+`setCell` call pass through the uppercase middleware.
+
 ## Middleware And Schemas
 
 The callbacks are called after the schema has been applied to the data. So, for
@@ -167,7 +228,7 @@ Middleware and schemas, and use that power wisely!
 
 ## When Middleware Is Not Called
 
-There are two main cases where Middleware callbacks will not be called:
+There are two specific cases where Middleware callbacks will not be called:
 
 * When `doRollback` returns true at the end of a Store transaction: the
   transaction will be rolled back and no callbacks will be called on the changes
