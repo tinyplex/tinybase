@@ -38,11 +38,31 @@ describe('Base Store Middleware', () => {
       expect(store.getTables()).toEqual({});
     });
 
-    test('Transform cells', () => {
+    test('Transform cells - new object returned', () => {
       middleware.addWillSetRowCallback((tableId, _rowId, row) =>
         tableId === 't1' ? {...row, added: 'yes'} : row,
       );
       store.setRow('t1', 'r1', {c1: 'v1'});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1', added: 'yes'});
+    });
+
+    test('Transform cells - mutate received object in place', () => {
+      middleware.addWillSetRowCallback((_tableId, _rowId, row) => {
+        row.mutated = 'yes';
+        return row;
+      });
+      store.setRow('t1', 'r1', {c1: 'v1'});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1', mutated: 'yes'});
+    });
+
+    test('Original row object is not mutated by middleware', () => {
+      const original = {c1: 'v1'};
+      middleware.addWillSetRowCallback((_tableId, _rowId, row) => {
+        row.added = 'yes';
+        return row;
+      });
+      store.setRow('t1', 'r1', original);
+      expect(original).toEqual({c1: 'v1'});
       expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1', added: 'yes'});
     });
 
@@ -161,7 +181,7 @@ describe('Base Store Middleware', () => {
       expect(store.getTables()).toEqual({});
     });
 
-    test('Transform via willApplyChanges', () => {
+    test('Transform via willApplyChanges - mutate in place', () => {
       middleware.addWillApplyChangesCallback((changes) => {
         const t1 = changes[0].t1;
         if (t1?.r1) {
@@ -171,6 +191,33 @@ describe('Base Store Middleware', () => {
       });
       store.applyChanges([{t1: {r1: {c1: 'v1'}}}, {}, 1]);
       expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1', validated: true});
+    });
+
+    test('Transform via willApplyChanges - return new object', () => {
+      middleware.addWillApplyChangesCallback((changes) => [
+        {t1: {r1: {...changes[0].t1?.r1, added: 'yes'}}},
+        changes[1],
+        changes[2],
+      ]);
+      store.applyChanges([{t1: {r1: {c1: 'v1'}}}, {}, 1]);
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1', added: 'yes'});
+    });
+
+    test('Original changes object is not mutated by middleware', () => {
+      const original: Parameters<typeof store.applyChanges>[0] = [
+        {t1: {r1: {c1: 'v1'}}},
+        {},
+        1,
+      ];
+      middleware.addWillApplyChangesCallback((changes) => {
+        if (changes[0].t1?.r1) {
+          changes[0].t1.r1.added = 'yes';
+        }
+        return changes;
+      });
+      store.applyChanges(original);
+      expect(original[0]).toEqual({t1: {r1: {c1: 'v1'}}});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'v1', added: 'yes'});
     });
 
     test('Reject via willSetCell', () => {

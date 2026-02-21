@@ -99,6 +99,8 @@ export const promiseNew = <Value>(
 export const promiseAll = async (promises: Promise<any>[]) =>
   promise.all(promises);
 
+export const structuredClone = GLOBAL.structuredClone as <T>(value: T) => T;
+
 export const errorNew = (message: string) => {
   throw new Error(message);
 };
