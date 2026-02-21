@@ -1,10 +1,26 @@
-<link rel="preload" as="image" href="https://beta.tinybase.org/inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://beta.tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v7-3">v7.3</h1><h2 id="introducing-state-hooks">Introducing State Hooks</h2><p>This release introduces a new family of convenience hooks that follow React&#x27;s <code>useState</code> pattern, making it even easier to read and write TinyBase data in your React components.</p><p>Each state hook returns a tuple containing both the current value and a setter function, eliminating the need to use separate getter and setter hooks.</p><p>State hooks combine the functionality of getter hooks (like the <a href="https://beta.tinybase.org/api/the-essentials/using-react/userow/"><code>useRow</code></a> hook) and setter callback hooks (like the <a href="https://beta.tinybase.org/api/ui-react/functions/store-hooks/usesetrowcallback/"><code>useSetRowCallback</code></a> hook) into a single, convenient API that feels just like React&#x27;s <code>useState</code>:</p>
+<link rel="preload" as="image" href="https://beta.tinybase.org/inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://beta.tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v8-0">v8.0</h1><h2 id="introducing-middleware">Introducing <a href="https://beta.tinybase.org/api/middleware/interfaces/middleware/middleware/"><code>Middleware</code></a></h2><p>This release introduces a powerful new system for intercepting and transforming data as it flows into your TinyBase <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a>. <a href="https://beta.tinybase.org/api/middleware/interfaces/middleware/middleware/"><code>Middleware</code></a> callbacks can be registered to fire before data is written to the <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a>, allowing you to modify, validate, or even reject changes before they take effect.</p>
 
 ```jsx
-import {createStore} from 'tinybase';
+import {createMiddleware, createStore} from 'tinybase';
+const store = createStore();
+
+const middleware = createMiddleware(store);
+middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+  if (tableId === 'pets' && cellId === 'age' && cell < 0) {
+    // Reject negative ages by returning undefined
+    return undefined;
+  }
+  // Otherwise, allow the change to proceed unmodified
+  return cell;
+});
+```
+
+<p>Read more in our new comprehensive <a href="https://beta.tinybase.org/guides/using-middleware/">Using Middleware</a> guide, which includes examples of using <a href="https://beta.tinybase.org/api/middleware/interfaces/middleware/middleware/"><code>Middleware</code></a> for data validation, transformation, and more.</p><p><a href="https://beta.tinybase.org/api/middleware/interfaces/middleware/middleware/"><code>Middleware</code></a> complements listeners but is distinct in that it runs before changes are applied to the <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a>, whereas listeners run after. <a href="https://beta.tinybase.org/api/middleware/interfaces/middleware/middleware/"><code>Middleware</code></a> can modify the data that listeners see, and can prevent changes from being applied at all by returning <code>undefined</code>. In conjunction with schemas, <a href="https://beta.tinybase.org/api/middleware/interfaces/middleware/middleware/"><code>Middleware</code></a> provides a powerful way to enforce data integrity and implement complex data transformations - and it should work in synchronization environments too.</p><p>Many, many thanks to <a href="https://github.com/bitmage">Brandon Mason</a> for designing and implementing this concept. Despite the major version number, we trust there are no breaking changes in this release. But please let us know if you find any!</p><hr><h1 id="v7-3">v7.3</h1><h2 id="introducing-state-hooks">Introducing State Hooks</h2><p>This release introduces a new family of convenience hooks that follow React&#x27;s <code>useState</code> pattern, making it even easier to read and write TinyBase data in your React components.</p><p>Each state hook returns a tuple containing both the current value and a setter function, eliminating the need to use separate getter and setter hooks.</p><p>State hooks combine the functionality of getter hooks (like the <a href="https://beta.tinybase.org/api/the-essentials/using-react/userow/"><code>useRow</code></a> hook) and setter callback hooks (like the <a href="https://beta.tinybase.org/api/ui-react/functions/store-hooks/usesetrowcallback/"><code>useSetRowCallback</code></a> hook) into a single, convenient API that feels just like React&#x27;s <code>useState</code>:</p>
+
+```jsx
 import {useCellState} from 'tinybase/ui-react';
 
-const store = createStore().setRow('pets', 'fido', {
+store.setRow('pets', 'fido', {
   species: 'dog',
   color: 'brown',
 });

@@ -548,9 +548,7 @@ export const createMergeableStore = ((
         ? store.transaction(() => {
             store.delTables().delValues();
             contentStampMap = newContentStampMap();
-            store.applyChanges(
-              mergeContentOrChanges(mergeableContent, 1),
-            );
+            store.applyChanges(mergeContentOrChanges(mergeableContent, 1));
           })
         : 0,
     );

@@ -15,9 +15,7 @@ import type {
 } from '../store/index.d.ts';
 
 /// WillSetContentCallback
-export type WillSetContentCallback = (
-  content: Content,
-) => Content | undefined;
+export type WillSetContentCallback = (content: Content) => Content | undefined;
 
 /// WillSetTablesCallback
 export type WillSetTablesCallback = (tables: Tables) => Tables | undefined;
@@ -85,9 +83,7 @@ export interface Middleware {
   getStore(): Store;
 
   /// Middleware.addWillSetContentCallback
-  addWillSetContentCallback(
-    callback: WillSetContentCallback,
-  ): Middleware;
+  addWillSetContentCallback(callback: WillSetContentCallback): Middleware;
 
   /// Middleware.addWillSetTablesCallback
   addWillSetTablesCallback(callback: WillSetTablesCallback): Middleware;
@@ -126,9 +122,7 @@ export interface Middleware {
   addWillDelValueCallback(callback: WillDelValueCallback): Middleware;
 
   /// Middleware.addWillApplyChangesCallback
-  addWillApplyChangesCallback(
-    callback: WillApplyChangesCallback,
-  ): Middleware;
+  addWillApplyChangesCallback(callback: WillApplyChangesCallback): Middleware;
 
   /// Middleware.destroy
   destroy(): void;

@@ -920,11 +920,10 @@
    * const store = createStore();
    * const middleware = createMiddleware(store);
    *
-   * middleware.addWillApplyChangesCallback(
-   *   ([changedTables, changedValues]) =>
-   *     changedTables['secret'] != null
-   *       ? undefined
-   *       : [changedTables, changedValues, 1],
+   * middleware.addWillApplyChangesCallback(([changedTables, changedValues]) =>
+   *   changedTables['secret'] != null
+   *     ? undefined
+   *     : [changedTables, changedValues, 1],
    * );
    *
    * store.applyChanges([{pets: {fido: {species: 'dog'}}}, {}, 1]);

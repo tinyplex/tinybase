@@ -5,6 +5,46 @@ highlighted features.
 
 ---
 
+# v8.0
+
+## Introducing Middleware
+
+This release introduces a powerful new system for intercepting and transforming
+data as it flows into your TinyBase Store. Middleware callbacks can be
+registered to fire before data is written to the Store, allowing you to modify,
+validate, or even reject changes before they take effect.
+
+```jsx
+import {createMiddleware, createStore} from 'tinybase';
+const store = createStore();
+
+const middleware = createMiddleware(store);
+middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
+  if (tableId === 'pets' && cellId === 'age' && cell < 0) {
+    // Reject negative ages by returning undefined
+    return undefined;
+  }
+  // Otherwise, allow the change to proceed unmodified
+  return cell;
+});
+```
+
+Read more in our new comprehensive Using Middleware guide, which includes
+examples of using Middleware for data validation, transformation, and more.
+
+Middleware complements listeners but is distinct in that it runs before changes
+are applied to the Store, whereas listeners run after. Middleware can modify the
+data that listeners see, and can prevent changes from being applied at all by
+returning `undefined`. In conjunction with schemas, Middleware provides a
+powerful way to enforce data integrity and implement complex data
+transformations - and it should work in synchronization environments too.
+
+Many, many thanks to [Brandon Mason](https://github.com/bitmage) for designing
+and implementing this concept. Despite the major version number, we trust there
+are no breaking changes in this release. But please let us know if you find any!
+
+---
+
 # v7.3
 
 ## Introducing State Hooks
@@ -21,10 +61,9 @@ setter callback hooks (like the useSetRowCallback hook) into a single,
 convenient API that feels just like React's `useState`:
 
 ```jsx
-import {createStore} from 'tinybase';
 import {useCellState} from 'tinybase/ui-react';
 
-const store = createStore().setRow('pets', 'fido', {
+store.setRow('pets', 'fido', {
   species: 'dog',
   color: 'brown',
 });
