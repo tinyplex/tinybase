@@ -328,6 +328,40 @@ describe('Base Store Middleware', () => {
       expect(store.getTables()).toEqual({});
     });
   });
+
+  describe('Mutator listeners', () => {
+    test('middleware runs on cells set by a mutator listener', () => {
+      middleware.addWillSetCellCallback((_tableId, _rowId, _cellId, cell) =>
+        typeof cell === 'string' ? cell.toUpperCase() : cell,
+      );
+      store.addCellListener(
+        't1',
+        'r1',
+        'c1',
+        (store) => store.setCell('t2', 'r2', 'c2', 'from_mutator'),
+        true,
+      );
+      store.setCell('t1', 'r1', 'c1', 'hello');
+      expect(store.getCell('t1', 'r1', 'c1')).toEqual('HELLO');
+      expect(store.getCell('t2', 'r2', 'c2')).toEqual('FROM_MUTATOR');
+    });
+
+    test('middleware can block cells set by a mutator listener', () => {
+      middleware.addWillSetCellCallback((tableId, _rowId, _cellId, cell) =>
+        tableId === 't2' ? undefined : cell,
+      );
+      store.addCellListener(
+        't1',
+        'r1',
+        'c1',
+        (store) => store.setCell('t2', 'r2', 'c2', 'blocked'),
+        true,
+      );
+      store.setCell('t1', 'r1', 'c1', 'hello');
+      expect(store.getCell('t1', 'r1', 'c1')).toEqual('hello');
+      expect(store.getCell('t2', 'r2', 'c2')).toBeUndefined();
+    });
+  });
 });
 
 describe('MergeableStore Middleware', () => {
