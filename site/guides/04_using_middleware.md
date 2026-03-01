@@ -33,7 +33,7 @@ console.log(store.getValue('shopName'));
 
 ## Available Callbacks
 
-A Middleware object supports 14 different callbacks that you can register. Each
+A Middleware object supports 15 different callbacks that you can register. Each
 callback is passed relevant parameters for the operation, and can return a
 value. The meaning of this return value depends on the type of callback:
 
@@ -42,6 +42,9 @@ value. The meaning of this return value depends on the type of callback:
   If the function returns undefined (or void), the operation is cancelled.
 * For `willDel*` callbacks, the return value is a boolean that indicates whether
   the delete operation should proceed (true) or be cancelled (false).
+* For `didSetRow`, the return value is the final Row state to apply. Return
+  `newRow` to accept, a different `Row` to replace, `oldRow` to revert, or an
+  empty object to delete. See below for more details.
 
 The full list of `willSet*` callbacks you can register is as follows:
 
@@ -56,7 +59,16 @@ The full list of `willSet*` callbacks you can register is as follows:
 | willSetValue     | valueId, value               | When setValue is called.     | Value or undefined   |
 | willApplyChanges | changes                      | When applyChanges is called. | Changes or undefined |
 
-The full list of `willDel*` callbacks you can register is as follows:
+There is also one special `did*` callback that is called at the end of the
+transaction - after all `will*` callbacks have settled and before any listeners
+are called. This gives you a chance to inspect or validate the final state of a
+Row for a specific table:
+
+| Callback  | Parameters                     | Called                                         | Return |
+| --------- | ------------------------------ | ---------------------------------------------- | ------ |
+| didSetRow | tableId, rowId, oldRow, newRow | After all row changes settle in a transaction. | Row    |
+
+Finally, the full list of `willDel*` callbacks you can register is as follows:
 
 | Callback      | Parameters             | Called                    | Return  |
 | ------------- | ---------------------- | ------------------------- | ------- |
@@ -164,8 +176,8 @@ might prefer to use the more granular Cell and Value callbacks where possible.
 ## Middleware And Listeners
 
 Mutator listeners (that is, listeners registered with the `isMutator` flag set
-to `true`) are allowed to write data back to the Store during a transaction.
-Any writes made by a mutator listener will also pass through the middleware
+to `true`) are allowed to write data back to the Store during a transaction. Any
+writes made by a mutator listener will also pass through the middleware
 pipeline:
 
 ```js
@@ -186,6 +198,55 @@ console.log(store.getCell('pets', 'fido', 'slug'));
 
 In the example above, both the original `setCell` call and the listener's
 `setCell` call pass through the uppercase middleware.
+
+## Post-Transaction Row Callback
+
+The `will*` callbacks fire synchronously as each write happens. Sometimes you
+want to inspect or validate a Row *after* all the dust has settled — after every
+cell change in a transaction has been applied and the Row is in its final state.
+That's what `didSetRow` is for.
+
+`addDidSetRowCallback` is **table-scoped**: you register it for a specific
+table, so there is zero overhead for tables you don't care about.
+
+```js
+const store2 = createStore();
+const middleware2 = createMiddleware(store2);
+
+middleware2.addDidSetRowCallback('pets', (tableId, rowId, oldRow, newRow) => {
+  // Require 'species' — revert rows that don't have it
+  return 'species' in newRow ? newRow : oldRow;
+});
+
+store2.setRow('pets', 'fido', {species: 'dog', name: 'Fido'});
+console.log(store2.getRow('pets', 'fido'));
+// -> {species: 'dog', name: 'Fido'}
+
+store2.setRow('pets', 'nemo', {name: 'Nemo'});
+console.log(store2.getRow('pets', 'nemo'));
+// -> {}
+```
+
+The callback receives `oldRow` (the Row as it was at the start of the
+transaction), and `newRow` (the Row as it is now, after all cell writes).
+
+The callback needs to return the Row that should be the final state of the Row
+after any corrections. Return:
+
+- `newRow` to accept the changes.
+- a different `Row` to replace the final state.
+- `oldRow` to revert all changes to the Row.
+- an empty object to delete the Row.
+
+Unlike `willSet*` callbacks, the `didSetRow` chain never short-circuits: all
+registered callbacks for the table always run, each receiving the Row returned
+by the previous one.
+
+Because `didSetRow` fires *after* mutating listeners, `newRow` reflects the
+truly final state of the Row — including any writes those listeners made.
+
+Also note that multiple cell changes to the same Row within one transaction
+produce only one `didSetRow` call, not one per cell.
 
 ## Middleware And Schemas
 
