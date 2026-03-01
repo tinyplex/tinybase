@@ -1755,13 +1755,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
                 ? objDel(oldRow, cellId)
                 : (oldRow[cellId] = oldCell),
             );
-            const finalRow = middleware[14]!(tableId, rowId, oldRow, newRow);
-            if (!objIsEqual(finalRow, newRow)) {
-              if (objIsEmpty(finalRow)) {
-                delRow(tableId, rowId);
-              } else {
-                setRow(tableId, rowId, finalRow);
-              }
+            const didSetRow = middleware[14]!(tableId, rowId, oldRow, newRow);
+            if (!objIsEqual(didSetRow, newRow)) {
+              const setOrDelRow: {[id: string]: CellOrUndefined} = objMap(
+                newRow,
+                () => undefined,
+              );
+              objMap(didSetRow, (cell, cellId) => (setOrDelRow[cellId] = cell));
+              objMap(setOrDelRow, (cell, cellId) =>
+                setOrDelCell(tableId, rowId, cellId, cell, true),
+              );
             }
           }
         }),
