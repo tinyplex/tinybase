@@ -3028,6 +3028,274 @@ describe('fluent API', () => {
   });
 });
 
+describe('didSetRow', () => {
+  test('fires after transaction with correct oldRow and newRow', () => {
+    store.setRow('pets', 'fido', {species: 'dog'});
+    const seen: {oldRow: object; newRow: object}[] = [];
+    middleware.addDidSetRowCallback(
+      'pets',
+      (_tableId, _rowId, oldRow, newRow) => {
+        seen.push({oldRow: {...oldRow}, newRow: {...newRow}});
+        return newRow;
+      },
+    );
+    store.setCell('pets', 'fido', 'name', 'Fido');
+    expect(seen).toEqual([
+      {oldRow: {species: 'dog'}, newRow: {species: 'dog', name: 'Fido'}},
+    ]);
+  });
+
+  test('multiple cell changes in one transaction produce one callback', () => {
+    let callCount = 0;
+    let finalOld: object | undefined;
+    let finalNew: object | undefined;
+    middleware.addDidSetRowCallback(
+      'pets',
+      (_tableId, _rowId, oldRow, newRow) => {
+        callCount++;
+        finalOld = {...oldRow};
+        finalNew = {...newRow};
+        return newRow;
+      },
+    );
+    store.transaction(() => {
+      store.setCell('pets', 'fido', 'species', 'dog');
+      store.setCell('pets', 'fido', 'name', 'Fido');
+      store.setCell('pets', 'fido', 'legs', 4);
+    });
+    expect(callCount).toBe(1);
+    expect(finalOld).toEqual({});
+    expect(finalNew).toEqual({species: 'dog', name: 'Fido', legs: 4});
+  });
+
+  test('returning newRow leaves store unchanged', () => {
+    store.setRow('pets', 'fido', {species: 'dog'});
+    middleware.addDidSetRowCallback(
+      'pets',
+      (_tableId, _rowId, _oldRow, newRow) => newRow,
+    );
+    store.setCell('pets', 'fido', 'name', 'Fido');
+    expect(store.getRow('pets', 'fido')).toEqual({
+      species: 'dog',
+      name: 'Fido',
+    });
+  });
+
+  test('returning oldRow explicitly reverts the row', () => {
+    store.setRow('pets', 'fido', {species: 'dog'});
+    middleware.addDidSetRowCallback(
+      'pets',
+      (_tableId, _rowId, oldRow, _newRow) => oldRow,
+    );
+    store.setCell('pets', 'fido', 'name', 'Fido');
+    expect(store.getRow('pets', 'fido')).toEqual({species: 'dog'});
+  });
+
+  test('returning a different Row applies that Row', () => {
+    store.setRow('pets', 'fido', {species: 'dog'});
+    middleware.addDidSetRowCallback(
+      'pets',
+      (_tableId, _rowId, _oldRow, newRow) => ({
+        ...newRow,
+        validated: true,
+      }),
+    );
+    store.setCell('pets', 'fido', 'name', 'Fido');
+    expect(store.getRow('pets', 'fido')).toEqual({
+      species: 'dog',
+      name: 'Fido',
+      validated: true,
+    });
+  });
+
+  test('only fires for the registered table, not others', () => {
+    let fired = false;
+    middleware.addDidSetRowCallback('pets', (_t, _r, _o, newRow) => {
+      fired = true;
+      return newRow;
+    });
+    store.setCell('species', 'dog', 'legs', 4);
+    expect(fired).toBe(false);
+    expect(store.getCell('species', 'dog', 'legs')).toBe(4);
+    store.setCell('pets', 'fido', 'name', 'Fido');
+    expect(fired).toBe(true);
+  });
+
+  test('not called when net cell change is zero', () => {
+    store.setRow('pets', 'fido', {species: 'dog'});
+    let callCount = 0;
+    middleware.addDidSetRowCallback(
+      'pets',
+      (_tableId, _rowId, _oldRow, newRow) => {
+        callCount++;
+        return newRow;
+      },
+    );
+    store.transaction(() => {
+      store.setCell('pets', 'fido', 'name', 'Fido');
+      store.delCell('pets', 'fido', 'name');
+    });
+
+    expect(callCount).toBe(0);
+    expect(store.getRow('pets', 'fido')).toEqual({species: 'dog'});
+  });
+
+  test('chaining: multiple callbacks run in order', () => {
+    const order: number[] = [];
+    middleware
+      .addDidSetRowCallback('pets', (_tableId, _rowId, _oldRow, newRow) => {
+        order.push(1);
+        return {...newRow, step1: true};
+      })
+      .addDidSetRowCallback('pets', (_tableId, _rowId, _oldRow, newRow) => {
+        order.push(2);
+        return {...newRow, step2: true};
+      });
+    store.setCell('pets', 'fido', 'species', 'dog');
+    expect(order).toEqual([1, 2]);
+    expect(store.getRow('pets', 'fido')).toEqual({
+      species: 'dog',
+      step1: true,
+      step2: true,
+    });
+  });
+
+  test('chaining: all callbacks always run, including after a revert', () => {
+    const order: number[] = [];
+    store.setRow('pets', 'fido', {species: 'dog'});
+    middleware
+      .addDidSetRowCallback('pets', (_tableId, _rowId, _oldRow, newRow) => {
+        order.push(1);
+        return newRow;
+      })
+      .addDidSetRowCallback('pets', (_tableId, _rowId, oldRow) => {
+        order.push(2);
+        return oldRow;
+      })
+      .addDidSetRowCallback('pets', (_tableId, _rowId, _oldRow, newRow) => {
+        order.push(3);
+        return {...newRow, step3: true};
+      });
+    store.setCell('pets', 'fido', 'name', 'Fido');
+    expect(order).toEqual([1, 2, 3]);
+    expect(store.getRow('pets', 'fido')).toEqual({species: 'dog', step3: true});
+  });
+
+  test('fires for rows touched by setCell', () => {
+    let fired = false;
+    middleware.addDidSetRowCallback(
+      'pets',
+      (_tableId, _rowId, _oldRow, newRow) => {
+        fired = true;
+        return newRow;
+      },
+    );
+    store.setCell('pets', 'fido', 'species', 'dog');
+    expect(fired).toBe(true);
+  });
+
+  test('fires for rows touched by setPartialRow', () => {
+    store.setRow('pets', 'fido', {species: 'dog'});
+    let fired = false;
+    middleware.addDidSetRowCallback(
+      'pets',
+      (_tableId, _rowId, _oldRow, newRow) => {
+        fired = true;
+        return newRow;
+      },
+    );
+    store.setPartialRow('pets', 'fido', {name: 'Fido'});
+    expect(fired).toBe(true);
+  });
+
+  test('fires for rows touched by applyChanges', () => {
+    let seen: object | undefined;
+    middleware.addDidSetRowCallback(
+      'pets',
+      (_tableId, _rowId, _oldRow, newRow) => {
+        seen = {...newRow};
+        return newRow;
+      },
+    );
+    store.applyChanges([{pets: {fido: {species: 'dog'}}}, {}, 1]);
+    expect(seen).toEqual({species: 'dog'});
+  });
+
+  test('fires for deleted row (newRow is empty)', () => {
+    store.setRow('pets', 'fido', {species: 'dog'});
+    const seen: object[] = [];
+    middleware.addDidSetRowCallback(
+      'pets',
+      (_tableId, _rowId, _oldRow, newRow) => {
+        seen.push({...newRow});
+        return newRow;
+      },
+    );
+    store.delRow('pets', 'fido');
+    expect(seen).toEqual([{}]);
+  });
+
+  test('reverting a deletion restores the row', () => {
+    store.setRow('pets', 'fido', {species: 'dog'});
+    middleware.addDidSetRowCallback(
+      'pets',
+      (_tableId, _rowId, oldRow, _newRow) => oldRow,
+    );
+    store.delRow('pets', 'fido');
+    expect(store.getRow('pets', 'fido')).toEqual({species: 'dog'});
+  });
+
+  test('mutating listener changes are visible to didSetRow', () => {
+    store.addRowListener(
+      'pets',
+      'fido',
+      (store) => {
+        store.setCell('pets', 'fido', 'validated', true);
+      },
+      true,
+    );
+    let seenNew: object | undefined;
+    middleware.addDidSetRowCallback(
+      'pets',
+      (_tableId, _rowId, _oldRow, newRow) => {
+        seenNew = {...newRow};
+        return newRow;
+      },
+    );
+    store.setCell('pets', 'fido', 'species', 'dog');
+    expect(seenNew).toEqual({species: 'dog', validated: true});
+  });
+
+  test('will* middleware does not re-run when didSetRow applies a Row', () => {
+    const willSetCellCalls: string[] = [];
+    middleware.addWillSetCellCallback((_tableId, _rowId, cellId, cell) => {
+      willSetCellCalls.push(cellId);
+      return cell;
+    });
+    middleware.addDidSetRowCallback(
+      'pets',
+      (_tableId, _rowId, _oldRow, newRow) => ({
+        ...newRow,
+        fromDid: true,
+      }),
+    );
+    store.setCell('pets', 'fido', 'species', 'dog');
+    expect(willSetCellCalls.filter((c) => c === 'fromDid').length).toBe(0);
+    expect(store.getRow('pets', 'fido')).toEqual({
+      species: 'dog',
+      fromDid: true,
+    });
+  });
+
+  test('fluent chaining', () => {
+    const result = middleware.addDidSetRowCallback(
+      'pets',
+      (_t, _r, _o, newRow) => newRow,
+    );
+    expect(result).toBe(middleware);
+  });
+});
+
 describe('callback granularity', () => {
   let calls: Record<string, number>;
 
