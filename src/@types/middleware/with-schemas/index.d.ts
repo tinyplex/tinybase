@@ -149,6 +149,17 @@ export type WillApplyChangesCallback<Schemas extends OptionalSchemas> = (
   changes: Changes<Schemas>,
 ) => Changes<Schemas> | undefined;
 
+/// DidSetRowCallback
+export type DidSetRowCallback<
+  Schema extends OptionalTablesSchema,
+  TableId extends TableIdFromSchema<Schema>,
+> = (
+  tableId: TableId,
+  rowId: Id,
+  oldRow: Row<Schema, TableId>,
+  newRow: Row<Schema, TableId>,
+) => Row<Schema, TableId>;
+
 /// Middleware
 export interface Middleware<in out Schemas extends OptionalSchemas> {
   /// Middleware.getStore
@@ -222,6 +233,12 @@ export interface Middleware<in out Schemas extends OptionalSchemas> {
   /// Middleware.addWillApplyChangesCallback
   addWillApplyChangesCallback(
     callback: WillApplyChangesCallback<Schemas>,
+  ): Middleware<Schemas>;
+
+  /// Middleware.addDidSetRowCallback
+  addDidSetRowCallback<TableId extends TableIdFromSchema<Schemas[0]>>(
+    tableId: TableId,
+    callback: DidSetRowCallback<Schemas[0], TableId>,
   ): Middleware<Schemas>;
 
   /// Middleware.destroy
