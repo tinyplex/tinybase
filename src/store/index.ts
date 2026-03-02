@@ -45,7 +45,14 @@ import {
   arrayPush,
   arraySort,
 } from '../common/array.ts';
-import {getCellOrValueType} from '../common/cell.ts';
+import {
+  PrimitiveCellOrValue,
+  decodeIfJson,
+  encodeIfJson,
+  getCellOrValueType,
+  isEncodedJson,
+  isJsonType,
+} from '../common/cell.ts';
 import {
   collClear,
   collDel,
@@ -298,15 +305,19 @@ export const createStore: typeof createStoreDecl = (): Store => {
       return false;
     }
     const type = schema[TYPE];
-    if (!isTypeStringOrBoolean(type) && type != NUMBER) {
+    if (!isTypeStringOrBoolean(type) && type != NUMBER && !isJsonType(type)) {
       return false;
     }
     const defaultValue = schema[DEFAULT];
     if (isNull(defaultValue) && !schema[ALLOW_NULL]) {
       return false;
     }
-    if (!isNull(defaultValue) && getCellOrValueType(defaultValue) != type) {
-      objDel(schema as any, DEFAULT);
+    if (!isNull(defaultValue)) {
+      if (getCellOrValueType(defaultValue) != type) {
+        objDel(schema as any, DEFAULT);
+      } else {
+        (schema as any)[DEFAULT] = encodeIfJson(defaultValue as Cell);
+      }
     }
     return true;
   };
@@ -361,20 +372,22 @@ export const createStore: typeof createStoreDecl = (): Store => {
               ? cellSchema[ALLOW_NULL]
                 ? cell
                 : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT])
-              : getCellOrValueType(cell) == cellSchema[TYPE]
-                ? cell
-                : cellInvalid(
-                    tableId,
-                    rowId,
-                    cellId,
-                    cell,
-                    cellSchema[DEFAULT],
-                  ),
+              : getCellOrValueType(cell) === cellSchema[TYPE]
+                ? encodeIfJson(cell)
+                : isJsonType(cellSchema[TYPE]) && isEncodedJson(cell)
+                  ? cell
+                  : cellInvalid(
+                      tableId,
+                      rowId,
+                      cellId,
+                      cell,
+                      cellSchema[DEFAULT],
+                    ),
           () => cellInvalid(tableId, rowId, cellId, cell),
         )
       : isUndefined(getCellOrValueType(cell))
         ? cellInvalid(tableId, rowId, cellId, cell)
-        : cell;
+        : encodeIfJson(cell);
 
   const validateValues = (values: Values, skipDefaults?: 1): boolean =>
     objValidate(
@@ -400,14 +413,16 @@ export const createStore: typeof createStoreDecl = (): Store => {
               ? valueSchema[ALLOW_NULL]
                 ? value
                 : valueInvalid(valueId, value, valueSchema[DEFAULT])
-              : getCellOrValueType(value) == valueSchema[TYPE]
-                ? value
-                : valueInvalid(valueId, value, valueSchema[DEFAULT]),
+              : getCellOrValueType(value) === valueSchema[TYPE]
+                ? encodeIfJson(value)
+                : isJsonType(valueSchema[TYPE]) && isEncodedJson(value)
+                  ? value
+                  : valueInvalid(valueId, value, valueSchema[DEFAULT]),
           () => valueInvalid(valueId, value),
         )
       : isUndefined(getCellOrValueType(value))
         ? valueInvalid(valueId, value)
-        : value;
+        : encodeIfJson(value);
 
   const addDefaultsToRow = (row: Row, tableId: Id, rowId?: Id): Row => {
     ifNotUndefined(
@@ -958,14 +973,22 @@ export const createStore: typeof createStoreDecl = (): Store => {
   const getCellChange: GetCellChange = (tableId: Id, rowId: Id, cellId: Id) =>
     ifNotUndefined(
       mapGet(mapGet(mapGet(changedCells, tableId), rowId), cellId),
-      ([oldCell, newCell]) => [true, oldCell, newCell],
+      ([oldCell, newCell]) => [
+        true,
+        decodeIfJson(oldCell),
+        decodeIfJson(newCell),
+      ],
       () => [false, ...pairNew(getCell(tableId, rowId, cellId))] as CellChange,
     ) as CellChange;
 
   const getValueChange: GetValueChange = (valueId: Id) =>
     ifNotUndefined(
       mapGet(changedValues, valueId),
-      ([oldValue, newValue]) => [true, oldValue, newValue],
+      ([oldValue, newValue]) => [
+        true,
+        decodeIfJson(oldValue),
+        decodeIfJson(newValue),
+      ],
       () => [false, ...pairNew(getValue(valueId))] as ValueChange,
     ) as ValueChange;
 
@@ -1164,8 +1187,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
                 callListeners(
                   cellListeners[mutator],
                   [tableId, rowId, cellId],
-                  newCell,
-                  oldCell,
+                  decodeIfJson(newCell),
+                  decodeIfJson(oldCell),
                   getCellChange,
                 );
                 tablesChanged = tableChanged = rowChanged = 1;
@@ -1225,8 +1248,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
             callListeners(
               valueListeners[mutator],
               [valueId],
-              newValue,
-              oldValue,
+              decodeIfJson(newValue),
+              decodeIfJson(oldValue),
               getValueChange,
             );
             valuesChanged = 1;
@@ -1273,12 +1296,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const getContent = (): Content => [getTables(), getValues()];
 
-  const getTables = (): Tables => mapToObj3(tablesMap);
+  const getTables = (): Tables => mapToObj3(tablesMap, decodeIfJson);
 
   const getTableIds = (): Ids => mapKeys(tablesMap);
 
   const getTable = (tableId: Id): Table =>
-    mapToObj2(mapGet(tablesMap, id(tableId)));
+    mapToObj2(mapGet(tablesMap, id(tableId)), decodeIfJson);
 
   const getTableCellIds = (tableId: Id): Ids =>
     mapKeys(mapGet(tableCellIds, id(tableId)));
@@ -1307,12 +1330,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
       : arrayMap(
           slice(
             arraySort(
-              mapMap<Id, RowMap, [Cell, Id]>(
+              mapMap<Id, RowMap, [PrimitiveCellOrValue, Id]>(
                 mapGet(tablesMap, id(tableIdOrArgs)),
                 (row, rowId) => [
                   isUndefined(cellId)
                     ? rowId
-                    : (mapGet(row, id(cellId)) as Cell),
+                    : (mapGet(row, id(cellId)) as PrimitiveCellOrValue),
                   rowId,
                 ],
               ),
@@ -1326,20 +1349,22 @@ export const createStore: typeof createStoreDecl = (): Store => {
         );
 
   const getRow = (tableId: Id, rowId: Id): Row =>
-    mapToObj(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));
+    mapToObj(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), decodeIfJson);
 
   const getCellIds = (tableId: Id, rowId: Id): Ids =>
     mapKeys(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));
 
   const getCell = (tableId: Id, rowId: Id, cellId: Id): CellOrUndefined =>
-    mapGet(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId));
+    decodeIfJson(
+      mapGet(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId)),
+    );
 
-  const getValues = (): Values => mapToObj(valuesMap);
+  const getValues = (): Values => mapToObj(valuesMap, decodeIfJson);
 
   const getValueIds = (): Ids => mapKeys(valuesMap);
 
   const getValue = (valueId: Id): ValueOrUndefined =>
-    mapGet(valuesMap, id(valueId));
+    decodeIfJson(mapGet(valuesMap, id(valueId)));
 
   const hasTables = (): boolean => !collIsEmpty(tablesMap);
 
@@ -1862,7 +1887,11 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
   const forEachRow = (tableId: Id, rowCallback: RowCallback): void =>
     collForEach(mapGet(tablesMap, id(tableId)), (rowMap, rowId) =>
-      rowCallback(rowId, (cellCallback) => mapForEach(rowMap, cellCallback)),
+      rowCallback(rowId, (cellCallback) =>
+        mapForEach(rowMap, (cellId, cell) =>
+          cellCallback(cellId, decodeIfJson(cell)),
+        ),
+      ),
     );
 
   const forEachCell = (
@@ -1870,10 +1899,15 @@ export const createStore: typeof createStoreDecl = (): Store => {
     rowId: Id,
     cellCallback: CellCallback,
   ): void =>
-    mapForEach(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), cellCallback);
+    mapForEach(
+      mapGet(mapGet(tablesMap, id(tableId)), id(rowId)),
+      (cellId, cell) => cellCallback(cellId, decodeIfJson(cell)),
+    );
 
   const forEachValue = (valueCallback: ValueCallback): void =>
-    mapForEach(valuesMap, valueCallback);
+    mapForEach(valuesMap, (valueId, value) =>
+      valueCallback(valueId, decodeIfJson(value) as Value),
+    );
 
   const addSortedRowIdsListener = (
     tableIdOrArgs: Id | SortedRowIdsArgs,

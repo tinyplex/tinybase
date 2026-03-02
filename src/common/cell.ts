@@ -1,11 +1,21 @@
+import type {
+  AnyArray,
+  AnyObject,
+  Cell,
+  CellOrUndefined,
+  Value,
+  ValueOrUndefined,
+} from '../@types/index.d.ts';
 import {jsonParse, jsonString} from './json.ts';
 import {isObject} from './obj.ts';
 import {
   isArray,
   isFiniteNumber,
   isNull,
+  isString,
   isTypeStringOrBoolean,
   isUndefined,
+  slice,
 } from './other.ts';
 import {
   ARRAY,
@@ -17,6 +27,8 @@ import {
   STRING,
   getTypeOf,
 } from './strings.ts';
+
+export type PrimitiveCellOrValue = string | number | boolean | null;
 
 export type CellOrValueType =
   | 'string'
@@ -48,12 +60,24 @@ export const getCellOrValueType = (
 export const isCellOrValueOrUndefined = (cellOrValue: any): boolean =>
   isUndefined(cellOrValue) || !isUndefined(getCellOrValueType(cellOrValue));
 
-export const encodeJson = (value: object): string =>
-  JSON_PREFIX + jsonString(value);
+export const isJsonType = (type: any): boolean =>
+  type == OBJECT || type == ARRAY;
 
-export const decodeIfJson = (raw: any): any =>
-  typeof raw === STRING && raw[0] === JSON_PREFIX
-    ? jsonParse(raw.slice(1))
+export const encodeIfJson = <CV extends Cell | Value>(value: CV): CV =>
+  isObject(value) || isArray(value)
+    ? ((JSON_PREFIX + jsonString(value)) as CV)
+    : value;
+
+export const isEncodedJson = (value: any): value is string =>
+  isString(value) && value[0] == JSON_PREFIX;
+
+export const decodeIfJson = <
+  CV extends Cell | Value | CellOrUndefined | ValueOrUndefined,
+>(
+  raw: CV,
+): CV =>
+  isEncodedJson(raw)
+    ? (jsonParse(slice(raw, 1)) as AnyObject | AnyArray as CV)
     : raw;
 
 export const getTypeCase = <
