@@ -5,6 +5,12 @@ import type {CellOrUndefined, ValueOrUndefined} from '../store/index.d.ts';
 /// Json
 export type Json = string;
 
+/// AnyObject
+export type AnyObject = {[key: string]: unknown};
+
+/// AnyArray
+export type AnyArray = unknown[];
+
 /// Ids
 export type Ids = Id[];
 
