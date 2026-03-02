@@ -692,10 +692,12 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 <section id="sponsors">
 <h2>Proud to be supported by:</h2>
 @@EVAL("getGitHubAvatar('fastrepl')")
-@@EVAL("getGitHubAvatar('expo')")
-@@EVAL("getGitHubAvatar('dylmye')")
 @@EVAL("getGitHubAvatar('ComputelessComputer')")
 @@EVAL("getGitHubAvatar('cancelself')")
+@@EVAL("getGitHubAvatar('expo')")
+@@EVAL("getGitHubAvatar('braden-w')")
+@@EVAL("getGitHubAvatar('dylmye')")
+@@EVAL("getGitHubAvatar('gonza224')")
 @@EVAL("getGitHubAvatar('cpojer')")
 @@EVAL("getGitHubAvatar('beekeeb')")
 @@EVAL("getGitHubAvatar('WonderPanda')")
