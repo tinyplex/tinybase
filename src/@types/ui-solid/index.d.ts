@@ -1,5 +1,4 @@
-import type {Component, JSXElement} from 'solid-js';
-import type {DependencyList} from '../common/solid.ts';
+import type {Accessor, Component, JSXElement} from 'solid-js';
 import type {
   CheckpointIds,
   CheckpointIdsListener,
@@ -86,6 +85,8 @@ import type {
 } from '../store/index.d.ts';
 import type {Synchronizer} from '../synchronizers/index.d.ts';
 
+type DependencyList = ReadonlyArray<unknown>;
+
 export type StoreOrStoreId = Store | Id;
 
 export type MetricsOrMetricsId = Metrics | Id;
@@ -109,64 +110,64 @@ export type GetId<Parameter> = (parameter: Parameter, store: Store) => Id;
 export function useCreateStore(
   create: () => Store,
   createDeps?: DependencyList,
-): Store;
+): Accessor<Store>;
 
 export function useCreateMergeableStore(
   create: () => MergeableStore,
   createDeps?: DependencyList,
-): MergeableStore;
+): Accessor<MergeableStore>;
 
-export function useStoreIds(): Ids;
+export function useStoreIds(): Accessor<Ids>;
 
-export function useStore(id?: Id): Store | undefined;
+export function useStore(id?: Id): Accessor<Store | undefined>;
 
-export function useStores(): {[storeId: Id]: Store};
+export function useStores(): Accessor<{[storeId: Id]: Store}>;
 
 export function useStoreOrStoreById(
   storeOrStoreId?: StoreOrStoreId,
-): Store | undefined;
+): Accessor<Store | undefined>;
 
 export function useProvideStore(storeId: Id, store: Store): void;
 
-export function useHasTables(storeOrStoreId?: StoreOrStoreId): boolean;
+export function useHasTables(storeOrStoreId?: StoreOrStoreId): Accessor<boolean>;
 
-export function useTables(storeOrStoreId?: StoreOrStoreId): Tables;
+export function useTables(storeOrStoreId?: StoreOrStoreId): Accessor<Tables>;
 
 export function useTablesState(
   storeOrStoreId?: StoreOrStoreId,
-): [Tables, (tables: Tables) => void];
+): [Accessor<Tables>, (tables: Tables) => void];
 
-export function useTableIds(storeOrStoreId?: StoreOrStoreId): Ids;
+export function useTableIds(storeOrStoreId?: StoreOrStoreId): Accessor<Ids>;
 
 export function useHasTable(
   tableId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): boolean;
+): Accessor<boolean>;
 
-export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Table;
+export function useTable(tableId: Id, storeOrStoreId?: StoreOrStoreId): Accessor<Table>;
 
 export function useTableState(
   tableId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): [Table, (table: Table) => void];
+): [Accessor<Table>, (table: Table) => void];
 
 export function useTableCellIds(
   tableId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): Ids;
+): Accessor<Ids>;
 
 export function useHasTableCell(
   tableId: Id,
   cellId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): boolean;
+): Accessor<boolean>;
 
 export function useRowCount(
   tableId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): number;
+): Accessor<number>;
 
-export function useRowIds(tableId: Id, storeOrStoreId?: StoreOrStoreId): Ids;
+export function useRowIds(tableId: Id, storeOrStoreId?: StoreOrStoreId): Accessor<Ids>;
 
 export function useSortedRowIds(
   tableId: Id,
@@ -175,82 +176,82 @@ export function useSortedRowIds(
   offset?: number,
   limit?: number,
   storeOrStoreId?: StoreOrStoreId,
-): Ids;
+): Accessor<Ids>;
 
 export function useSortedRowIds(
   args: SortedRowIdsArgs,
   storeOrStoreId?: StoreOrStoreId,
-): Ids;
+): Accessor<Ids>;
 
 export function useHasRow(
   tableId: Id,
   rowId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): boolean;
+): Accessor<boolean>;
 
 export function useRow(
   tableId: Id,
   rowId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): Row;
+): Accessor<Row>;
 
 export function useRowState(
   tableId: Id,
   rowId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): [Row, (row: Row) => void];
+): [Accessor<Row>, (row: Row) => void];
 
 export function useCellIds(
   tableId: Id,
   rowId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): Ids;
+): Accessor<Ids>;
 
 export function useHasCell(
   tableId: Id,
   rowId: Id,
   cellId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): boolean;
+): Accessor<boolean>;
 
 export function useCell(
   tableId: Id,
   rowId: Id,
   cellId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): CellOrUndefined;
+): Accessor<CellOrUndefined>;
 
 export function useCellState(
   tableId: Id,
   rowId: Id,
   cellId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): [CellOrUndefined, (cell: Cell) => void];
+): [Accessor<CellOrUndefined>, (cell: Cell) => void];
 
-export function useHasValues(storeOrStoreId?: StoreOrStoreId): boolean;
+export function useHasValues(storeOrStoreId?: StoreOrStoreId): Accessor<boolean>;
 
-export function useValues(storeOrStoreId?: StoreOrStoreId): Values;
+export function useValues(storeOrStoreId?: StoreOrStoreId): Accessor<Values>;
 
 export function useValuesState(
   storeOrStoreId?: StoreOrStoreId,
-): [Values, (values: Values) => void];
+): [Accessor<Values>, (values: Values) => void];
 
-export function useValueIds(storeOrStoreId?: StoreOrStoreId): Ids;
+export function useValueIds(storeOrStoreId?: StoreOrStoreId): Accessor<Ids>;
 
 export function useHasValue(
   valueId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): boolean;
+): Accessor<boolean>;
 
 export function useValue(
   valueId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): ValueOrUndefined;
+): Accessor<ValueOrUndefined>;
 
 export function useValueState(
   valueId: Id,
   storeOrStoreId?: StoreOrStoreId,
-): [value: ValueOrUndefined, setValue: (value: Value) => void];
+): [value: Accessor<ValueOrUndefined>, setValue: (value: Value) => void];
 
 export function useSetTablesCallback<Parameter>(
   getTables: (parameter: Parameter, store: Store) => Tables,
@@ -575,24 +576,24 @@ export function useCreateMetrics(
   store: Store | undefined,
   create: (store: Store) => Metrics,
   createDeps?: DependencyList,
-): Metrics | undefined;
+): Accessor<Metrics | undefined>;
 
-export function useMetricsIds(): Ids;
+export function useMetricsIds(): Accessor<Ids>;
 
-export function useMetrics(id?: Id): Metrics | undefined;
+export function useMetrics(id?: Id): Accessor<Metrics | undefined>;
 
 export function useMetricsOrMetricsById(
   metricsOrMetricsId?: MetricsOrMetricsId,
-): Metrics | undefined;
+): Accessor<Metrics | undefined>;
 
 export function useProvideMetrics(metricsId: Id, metrics: Metrics): void;
 
-export function useMetricIds(metricsOrMetricsId?: MetricsOrMetricsId): Ids;
+export function useMetricIds(metricsOrMetricsId?: MetricsOrMetricsId): Accessor<Ids>;
 
 export function useMetric(
   metricId: Id,
   metricsOrMetricsId?: MetricsOrMetricsId,
-): number | undefined;
+): Accessor<number | undefined>;
 
 export function useMetricListener(
   metricId: IdOrNull,
@@ -605,30 +606,30 @@ export function useCreateIndexes(
   store: Store | undefined,
   create: (store: Store) => Indexes,
   createDeps?: DependencyList,
-): Indexes | undefined;
+): Accessor<Indexes | undefined>;
 
-export function useIndexesIds(): Ids;
+export function useIndexesIds(): Accessor<Ids>;
 
-export function useIndexes(id?: Id): Indexes | undefined;
+export function useIndexes(id?: Id): Accessor<Indexes | undefined>;
 
 export function useIndexesOrIndexesById(
   indexesOrIndexesId?: IndexesOrIndexesId,
-): Indexes | undefined;
+): Accessor<Indexes | undefined>;
 
 export function useProvideIndexes(indexesId: Id, indexes: Indexes): void;
 
-export function useIndexIds(indexesOrIndexesId?: IndexesOrIndexesId): Ids;
+export function useIndexIds(indexesOrIndexesId?: IndexesOrIndexesId): Accessor<Ids>;
 
 export function useSliceIds(
   indexId: Id,
   indexesOrIndexesId?: IndexesOrIndexesId,
-): Ids;
+): Accessor<Ids>;
 
 export function useSliceRowIds(
   indexId: Id,
   sliceId: Id,
   indexesOrIndexesId?: IndexesOrIndexesId,
-): Ids;
+): Accessor<Ids>;
 
 export function useSliceIdsListener(
   indexId: IdOrNull,
@@ -649,15 +650,15 @@ export function useCreateRelationships(
   store: Store | undefined,
   create: (store: Store) => Relationships,
   createDeps?: DependencyList,
-): Relationships | undefined;
+): Accessor<Relationships | undefined>;
 
-export function useRelationshipsIds(): Ids;
+export function useRelationshipsIds(): Accessor<Ids>;
 
-export function useRelationships(id?: Id): Relationships | undefined;
+export function useRelationships(id?: Id): Accessor<Relationships | undefined>;
 
 export function useRelationshipsOrRelationshipsById(
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): Relationships | undefined;
+): Accessor<Relationships | undefined>;
 
 export function useProvideRelationships(
   relationshipsId: Id,
@@ -666,25 +667,25 @@ export function useProvideRelationships(
 
 export function useRelationshipIds(
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): Ids;
+): Accessor<Ids>;
 
 export function useRemoteRowId(
   relationshipId: Id,
   localRowId: Id,
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): Id | undefined;
+): Accessor<Id | undefined>;
 
 export function useLocalRowIds(
   relationshipId: Id,
   remoteRowId: Id,
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): Ids;
+): Accessor<Ids>;
 
 export function useLinkedRowIds(
   relationshipId: Id,
   firstRowId: Id,
   relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId,
-): Ids;
+): Accessor<Ids>;
 
 export function useRemoteRowIdListener(
   relationshipId: IdOrNull,
@@ -714,39 +715,39 @@ export function useCreateQueries(
   store: Store | undefined,
   create: (store: Store) => Queries,
   createDeps?: DependencyList,
-): Queries | undefined;
+): Accessor<Queries | undefined>;
 
-export function useQueriesIds(): Ids;
+export function useQueriesIds(): Accessor<Ids>;
 
-export function useQueries(id?: Id): Queries | undefined;
+export function useQueries(id?: Id): Accessor<Queries | undefined>;
 
 export function useQueriesOrQueriesById(
   queriesOrQueriesId?: QueriesOrQueriesId,
-): Queries | undefined;
+): Accessor<Queries | undefined>;
 
 export function useProvideQueries(queriesId: Id, queries: Queries): void;
 
-export function useQueryIds(queriesOrQueriesId?: QueriesOrQueriesId): Ids;
+export function useQueryIds(queriesOrQueriesId?: QueriesOrQueriesId): Accessor<Ids>;
 
 export function useResultTable(
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): Table;
+): Accessor<Table>;
 
 export function useResultTableCellIds(
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): Ids;
+): Accessor<Ids>;
 
 export function useResultRowCount(
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): number;
+): Accessor<number>;
 
 export function useResultRowIds(
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): Ids;
+): Accessor<Ids>;
 
 export function useResultSortedRowIds(
   queryId: Id,
@@ -755,26 +756,26 @@ export function useResultSortedRowIds(
   offset?: number,
   limit?: number,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): Ids;
+): Accessor<Ids>;
 
 export function useResultRow(
   queryId: Id,
   rowId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): Row;
+): Accessor<Row>;
 
 export function useResultCellIds(
   queryId: Id,
   rowId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): Ids;
+): Accessor<Ids>;
 
 export function useResultCell(
   queryId: Id,
   rowId: Id,
   cellId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): Cell | undefined;
+): Accessor<Cell | undefined>;
 
 export function useResultTableListener(
   queryId: IdOrNull,
@@ -843,24 +844,24 @@ export function useResultCellListener(
 export function useParamValues(
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): ParamValues;
+): Accessor<ParamValues>;
 
 export function useParamValuesState(
   queryId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): [ParamValues, (paramValues: ParamValues) => void];
+): [Accessor<ParamValues>, (paramValues: ParamValues) => void];
 
 export function useParamValue(
   queryId: Id,
   paramId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): ParamValue | undefined;
+): Accessor<ParamValue | undefined>;
 
 export function useParamValueState(
   queryId: Id,
   paramId: Id,
   queriesOrQueriesId?: QueriesOrQueriesId,
-): [ParamValue | undefined, (paramValue: ParamValue) => void];
+): [Accessor<ParamValue | undefined>, (paramValue: ParamValue) => void];
 
 export function useParamValuesListener(
   queryId: IdOrNull,
@@ -900,15 +901,15 @@ export function useCreateCheckpoints(
   store: Store | undefined,
   create: (store: Store) => Checkpoints,
   createDeps?: DependencyList,
-): Checkpoints | undefined;
+): Accessor<Checkpoints | undefined>;
 
-export function useCheckpointsIds(): Ids;
+export function useCheckpointsIds(): Accessor<Ids>;
 
-export function useCheckpoints(id?: Id): Checkpoints | undefined;
+export function useCheckpoints(id?: Id): Accessor<Checkpoints | undefined>;
 
 export function useCheckpointsOrCheckpointsById(
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): Checkpoints | undefined;
+): Accessor<Checkpoints | undefined>;
 
 export function useProvideCheckpoints(
   checkpointsId: Id,
@@ -917,12 +918,12 @@ export function useProvideCheckpoints(
 
 export function useCheckpointIds(
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): CheckpointIds;
+): Accessor<CheckpointIds>;
 
 export function useCheckpoint(
   checkpointId: Id,
   checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId,
-): string | undefined;
+): Accessor<string | undefined>;
 
 export function useSetCheckpointCallback<Parameter>(
   getCheckpoint?: (parameter: Parameter) => string,
@@ -982,15 +983,15 @@ export function useCreatePersister<
   thenDeps?: DependencyList,
   destroy?: (persister: Persister<Persist>) => void,
   destroyDeps?: DependencyList,
-): PersisterOrUndefined;
+): Accessor<PersisterOrUndefined>;
 
-export function usePersisterIds(): Ids;
+export function usePersisterIds(): Accessor<Ids>;
 
-export function usePersister(id?: Id): AnyPersister | undefined;
+export function usePersister(id?: Id): Accessor<AnyPersister | undefined>;
 
 export function usePersisterOrPersisterById(
   persisterOrPersisterId?: PersisterOrPersisterId,
-): AnyPersister | undefined;
+): Accessor<AnyPersister | undefined>;
 
 export function useProvidePersister(
   persisterId: Id,
@@ -999,7 +1000,7 @@ export function useProvidePersister(
 
 export function usePersisterStatus(
   persisterOrPersisterId?: PersisterOrPersisterId,
-): Status;
+): Accessor<Status>;
 
 export function usePersisterStatusListener(
   listener: StatusListener,
@@ -1015,15 +1016,15 @@ export function useCreateSynchronizer<
   createDeps?: DependencyList,
   destroy?: (synchronizer: Synchronizer) => void,
   destroyDeps?: DependencyList,
-): SynchronizerOrUndefined;
+): Accessor<SynchronizerOrUndefined>;
 
-export function useSynchronizerIds(): Ids;
+export function useSynchronizerIds(): Accessor<Ids>;
 
-export function useSynchronizer(id?: Id): Synchronizer | undefined;
+export function useSynchronizer(id?: Id): Accessor<Synchronizer | undefined>;
 
 export function useSynchronizerOrSynchronizerById(
   synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
-): Synchronizer | undefined;
+): Accessor<Synchronizer | undefined>;
 
 export function useProvideSynchronizer(
   synchronizerId: Id,
@@ -1032,7 +1033,7 @@ export function useProvideSynchronizer(
 
 export function useSynchronizerStatus(
   synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
-): Status;
+): Accessor<Status>;
 
 export function useSynchronizerStatusListener(
   listener: StatusListener,

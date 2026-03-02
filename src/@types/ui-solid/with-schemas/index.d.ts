@@ -1,5 +1,4 @@
 import type {JSXElement} from 'solid-js';
-import type {DependencyList} from '../../common/solid.ts';
 import type {
   AllCellIdFromSchema,
   CellIdFromSchema,
@@ -135,6 +134,8 @@ import type {
   ValuesListener,
 } from '../../store/with-schemas/index.d.ts';
 import type {Synchronizer} from '../../synchronizers/with-schemas/index.d.ts';
+
+type DependencyList = ReadonlyArray<unknown>;
 
 export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// StoreOrStoreId
