@@ -39,6 +39,12 @@ returning `undefined`. In conjunction with schemas, Middleware provides a
 powerful way to enforce data integrity and implement complex data
 transformations - and it should work in synchronization environments too.
 
+As well as intercepting changes with the `WillSet*` callbacks, Middleware can
+also provide a post-transaction DidSetRowCallback callback. This fires once per
+changed Row after all writes in a transaction have settled, including writes
+made by mutating listeners, hence providing you ultimate definitive control over
+the rows written to a Table.
+
 Many, many thanks to [Brandon Mason](https://github.com/bitmage) for designing
 and implementing this concept. Despite the major version number, we trust there
 are no breaking changes in this release. But please let us know if you find any!
@@ -173,8 +179,8 @@ TinyQL guide for more details, and please let us know how it goes!
 
 We have updated the Movie Database demo to use parameterized queries, and as a
 result is more efficient and easier to (we think) understand. See the
-`yearGenreMovies`, `directedMovies`, and `appearedMovies` queries to see
-params in action.
+`yearGenreMovies`, `directedMovies`, and `appearedMovies` queries to see params
+in action.
 
 We have also updated the Car Analysis demo to use just one single parameterized
 query for the whole app!
@@ -544,7 +550,8 @@ class to use SQLite storage by adding a migration to your `wrangler.toml` or
 configuration to enable SQLite storage for your Durable Object class. See the
 module documentation for more information.
 
-This release also addresses a local-storage persistence issue, #[257](https://github.com/tinyplex/tinybase/issues/257).
+This release also addresses a local-storage persistence issue,
+#[257](https://github.com/tinyplex/tinybase/issues/257).
 
 ---
 

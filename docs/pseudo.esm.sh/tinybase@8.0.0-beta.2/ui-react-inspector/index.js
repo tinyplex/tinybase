@@ -517,6 +517,7 @@ var isObject2 = (obj) => !isNullish2(obj) && ifNotNullish2(
 var objIds2 = object2.keys;
 var objFreeze = object2.freeze;
 var objNew = (entries = []) => object2.fromEntries(entries);
+var objMerge = (...objs) => object2.assign({}, ...objs);
 var objGet2 = (obj, id2) => ifNotUndefined2(obj, (obj2) => obj2[id2]);
 var objHas = (obj, id2) => id2 in obj;
 var objDel = (obj, id2) => {
@@ -1512,6 +1513,10 @@ var createStore = () => {
       return 1;
     }
   };
+  const clonedChangedCells = (changedCells2) => mapClone(
+    changedCells2,
+    (map2) => mapClone(map2, (map22) => mapClone(map22, pairClone))
+  );
   const callTabularListenersForChanges = (mutator) => {
     const hasHasTablesListeners = !collIsEmpty(hasTablesListeners[mutator]);
     const hasSortedRowIdListeners = !collIsEmpty(
@@ -1526,10 +1531,7 @@ var createStore = () => {
         mapClone(changedRowCount),
         mapClone2(changedRowIds),
         mapClone3(changedCellIds),
-        mapClone(
-          changedCells,
-          (map2) => mapClone(map2, (map22) => mapClone(map22, pairClone))
-        )
+        clonedChangedCells(changedCells)
       ] : [
         changedTableIds,
         changedTableCellIds,
@@ -2014,6 +2016,36 @@ var createStore = () => {
     mapToObj3(changedCellIds),
     mapToObj(changedValueIds)
   ];
+  const doDidSetRows = () => {
+    if (middleware[14]) {
+      const changedCells2 = clonedChangedCells(changedCells);
+      collForEach(
+        changedCells2,
+        (rows, tableId) => collForEach(rows, (cells, rowId) => {
+          if (!arrayEvery2(
+            collValues(cells),
+            ([oldCell, newCell]) => oldCell === newCell
+          )) {
+            const newRow = getRow(tableId, rowId);
+            const oldRow = objMerge(newRow);
+            collForEach(
+              cells,
+              ([oldCell], cellId) => isUndefined2(oldCell) ? objDel(oldRow, cellId) : oldRow[cellId] = oldCell
+            );
+            const didSetRow = middleware[14](tableId, rowId, oldRow, newRow);
+            if (!objIsEqual2(didSetRow, newRow)) {
+              const setOrDelRow = objMap(newRow, () => void 0);
+              objMap(didSetRow, (cell, cellId) => setOrDelRow[cellId] = cell);
+              objMap(
+                setOrDelRow,
+                (cell, cellId) => setOrDelCell(tableId, rowId, cellId, cell, true)
+              );
+            }
+          }
+        })
+      );
+    }
+  };
   const finishTransaction = (doRollback) => {
     if (transactions > 0) {
       transactions--;
@@ -2023,6 +2055,7 @@ var createStore = () => {
           callInvalidCellListeners(1);
           if (!collIsEmpty(changedCells)) {
             callTabularListenersForChanges(1);
+            doDidSetRows();
           }
           callInvalidValueListeners(1);
           if (!collIsEmpty(changedValues)) {
@@ -2155,7 +2188,7 @@ var createStore = () => {
     invalidValue: pairCollSize2(invalidValueListeners),
     transaction: collSize2(startTransactionListeners) + pairCollSize2(finishTransactionListeners)
   });
-  const setMiddleware = (willSetContent, willSetTables, willSetTable, willSetRow, willSetCell, willSetValues, willSetValue, willDelTables, willDelTable, willDelRow, willDelCell, willDelValues, willDelValue, willApplyChanges) => middleware = [
+  const setMiddleware = (willSetContent, willSetTables, willSetTable, willSetRow, willSetCell, willSetValues, willSetValue, willDelTables, willDelTable, willDelRow, willDelCell, willDelValues, willDelValue, willApplyChanges, didSetRow) => middleware = [
     willSetContent,
     willSetTables,
     willSetTable,
@@ -2169,7 +2202,8 @@ var createStore = () => {
     willDelCell,
     willDelValues,
     willDelValue,
-    willApplyChanges
+    willApplyChanges,
+    didSetRow
   ];
   const setInternalListeners = (preStartTransaction, preFinishTransaction, postFinishTransaction, cellChanged2, valueChanged2) => internalListeners = [
     preStartTransaction,

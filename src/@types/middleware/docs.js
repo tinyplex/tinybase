@@ -1003,8 +1003,10 @@
    * const store = createStore();
    * const middleware = createMiddleware(store);
    *
-   * middleware.addDidSetRowCallback('pets', (_tableId, _rowId, oldRow, newRow) =>
-   *   'species' in newRow ? newRow : oldRow,
+   * middleware.addDidSetRowCallback(
+   *   'pets',
+   *   (_tableId, _rowId, oldRow, newRow) =>
+   *     'species' in newRow ? newRow : oldRow,
    * );
    *
    * store.setRow('pets', 'fido', {species: 'dog', name: 'Fido'});
@@ -1028,10 +1030,13 @@
    * const middleware = createMiddleware(store);
    *
    * const seen = [];
-   * middleware.addDidSetRowCallback('pets', (_tableId, rowId, oldRow, newRow) => {
-   *   seen.push({rowId, oldRow: {...oldRow}, newRow: {...newRow}});
-   *   return newRow;
-   * });
+   * middleware.addDidSetRowCallback(
+   *   'pets',
+   *   (_tableId, rowId, oldRow, newRow) => {
+   *     seen.push({rowId, oldRow: {...oldRow}, newRow: {...newRow}});
+   *     return newRow;
+   *   },
+   * );
    *
    * store.transaction(() => {
    *   store.setCell('pets', 'fido', 'name', 'Fido');
