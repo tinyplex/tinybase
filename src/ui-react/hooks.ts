@@ -263,12 +263,14 @@ import {
   arrayMap,
   arrayOrValueEqual,
 } from '../common/array.ts';
+import {jsonString} from '../common/json.ts';
 import {ListenerArgument} from '../common/listeners.ts';
 import {IdObj, isObject, objIsEqual} from '../common/obj.ts';
 import {
   getArg,
   getUndefined,
   ifNotUndefined,
+  isArray,
   isFunction,
   isUndefined,
 } from '../common/other.ts';
@@ -371,6 +373,10 @@ const IS_EQUALS: ((thing1: any, thing2: any) => boolean)[] = [
   (paramValues1: ParamValues, paramValues2: ParamValues): boolean =>
     objIsEqual(paramValues1, paramValues2, arrayOrValueEqual),
   arrayOrValueEqual,
+  (thing1: any, thing2: any): boolean =>
+    thing1 === thing2 ||
+    ((isObject(thing1) || isArray(thing1)) &&
+      jsonString(thing1) === jsonString(thing2)),
 ];
 const isEqual = (thing1: any, thing2: any) => thing1 === thing2;
 
