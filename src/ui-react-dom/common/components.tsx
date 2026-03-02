@@ -7,15 +7,18 @@ import {
   getCellOrValueType,
   getTypeCase,
 } from '../../common/cell.ts';
-import {objToArray} from '../../common/obj.ts';
-import {isFalse, isUndefined} from '../../common/other.ts';
+import {jsonParse, jsonString} from '../../common/json.ts';
+import {isObject, objToArray} from '../../common/obj.ts';
+import {isFalse, isArray, isUndefined} from '../../common/other.ts';
 import {getProps, useCallback, useState} from '../../common/react.ts';
 import {
   _VALUE,
+  ARRAY,
   BOOLEAN,
   CURRENT_TARGET,
   EMPTY_STRING,
   NUMBER,
+  OBJECT,
   STRING,
 } from '../../common/strings.ts';
 import {useCallbackOrUndefined} from './hooks.tsx';
@@ -148,13 +151,23 @@ export const EditableThing = <Thing extends Cell | Value>({
   const [stringThing, setStringThing] = useState<string>();
   const [numberThing, setNumberThing] = useState<number>();
   const [booleanThing, setBooleanThing] = useState<boolean>();
+  const [objectThingJson, setObjectThingJson] = useState<string>(
+    EMPTY_STRING,
+  );
+  const [arrayThingJson, setArrayThingJson] = useState<string>(EMPTY_STRING);
 
   if (currentThing !== thing) {
     setThingType(getCellOrValueType(thing));
-    setCurrentThing(thing);
-    setStringThing(String(thing));
-    setNumberThing(Number(thing) || 0);
-    setBooleanThing(Boolean(thing));
+    setCurrentThing(thing as string | number | boolean | null);
+    if (isObject(thing)) {
+      setObjectThingJson(jsonString(thing));
+    } else if (isArray(thing)) {
+      setArrayThingJson(jsonString(thing));
+    } else {
+      setStringThing(String(thing));
+      setNumberThing(Number(thing) || 0);
+      setBooleanThing(Boolean(thing));
+    }
   }
 
   const handleThingChange = useCallback(
@@ -172,6 +185,8 @@ export const EditableThing = <Thing extends Cell | Value>({
         thingType,
         NUMBER,
         BOOLEAN,
+        OBJECT,
+        ARRAY,
         STRING,
       ) as CellOrValueType;
       const thing = getTypeCase(
@@ -179,6 +194,12 @@ export const EditableThing = <Thing extends Cell | Value>({
         stringThing,
         numberThing,
         booleanThing,
+        (objectThingJson
+          ? jsonParse(objectThingJson)
+          : {}) as any,
+        (arrayThingJson
+          ? jsonParse(arrayThingJson)
+          : []) as any,
       );
       setThingType(nextType);
       setCurrentThing(thing);
@@ -190,6 +211,8 @@ export const EditableThing = <Thing extends Cell | Value>({
     stringThing,
     numberThing,
     booleanThing,
+    objectThingJson,
+    arrayThingJson,
     thingType,
   ]);
 
@@ -231,6 +254,40 @@ export const EditableThing = <Thing extends Cell | Value>({
             setBooleanThing,
           ),
         [handleThingChange],
+      )}
+    />,
+    <textarea
+      key={thingType}
+      value={objectThingJson}
+      onChange={useCallback(
+        (event: FormEvent<HTMLTextAreaElement>) => {
+          const str = event[CURRENT_TARGET][_VALUE];
+          setObjectThingJson(str);
+          try {
+            const parsed = jsonParse(str);
+            if (isObject(parsed)) {
+              onThingChange(parsed as Thing);
+            }
+          } catch  {}
+        },
+        [onThingChange],
+      )}
+    />,
+    <textarea
+      key={thingType}
+      value={arrayThingJson}
+      onChange={useCallback(
+        (event: FormEvent<HTMLTextAreaElement>) => {
+          const str = event[CURRENT_TARGET][_VALUE];
+          setArrayThingJson(str);
+          try {
+            const parsed = jsonParse(str);
+            if (isArray(parsed)) {
+              onThingChange(parsed as Thing);
+            }
+          } catch {}
+        },
+        [onThingChange],
       )}
     />,
   );
