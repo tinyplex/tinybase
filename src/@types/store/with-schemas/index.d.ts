@@ -16,6 +16,8 @@ import type {
   IdOrNull,
   Ids,
   Json,
+  AnyObject,
+  AnyArray,
 } from '../../common/with-schemas/index.d.ts';
 
 /// TablesSchema
@@ -25,7 +27,9 @@ export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
 export type CellSchema =
   | {type: 'string'; default?: string}
   | {type: 'number'; default?: number}
-  | {type: 'boolean'; default?: boolean};
+  | {type: 'boolean'; default?: boolean}
+  | {type: 'object'; default?: AnyObject}
+  | {type: 'array'; default?: AnyArray};
 
 /// ValuesSchema
 export type ValuesSchema = {[valueId: Id]: ValueSchema};
@@ -34,7 +38,9 @@ export type ValuesSchema = {[valueId: Id]: ValueSchema};
 export type ValueSchema =
   | {type: 'string'; default?: string}
   | {type: 'number'; default?: number}
-  | {type: 'boolean'; default?: boolean};
+  | {type: 'boolean'; default?: boolean}
+  | {type: 'object'; default?: AnyObject}
+  | {type: 'array'; default?: AnyArray};
 
 /// NoTablesSchema
 export type NoTablesSchema = {[tableId: Id]: {[cellId: Id]: {type: 'any'}}};
@@ -118,7 +124,11 @@ export type Cell<
     ? number
     : CellType extends 'boolean'
       ? boolean
-      : string | number | boolean;
+      : CellType extends 'object'
+        ? AnyObject
+        : CellType extends 'array'
+          ? AnyArray
+          : string | number | boolean | AnyObject | AnyArray;
 
 /// CellOrUndefined
 export type CellOrUndefined<
@@ -161,7 +171,11 @@ export type Value<
     ? number
     : ValueType extends 'boolean'
       ? boolean
-      : string | number | boolean;
+      : ValueType extends 'object'
+        ? AnyObject
+        : ValueType extends 'array'
+          ? AnyArray
+          : string | number | boolean | AnyObject | AnyArray;
 
 /// ValueOrUndefined
 export type ValueOrUndefined<

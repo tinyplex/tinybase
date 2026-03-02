@@ -1,6 +1,6 @@
 /// store
 import type {StoreAlias} from '../_internal/store/index.d.ts';
-import type {Id, IdOrNull, Ids, Json} from '../common/index.d.ts';
+import type {AnyArray, AnyObject, Id, IdOrNull, Ids, Json} from '../common/index.d.ts';
 
 /// TablesSchema
 export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
@@ -9,7 +9,9 @@ export type TablesSchema = {[tableId: Id]: {[cellId: Id]: CellSchema}};
 export type CellSchema =
   | {type: 'string'; default?: string | null; allowNull?: boolean}
   | {type: 'number'; default?: number | null; allowNull?: boolean}
-  | {type: 'boolean'; default?: boolean | null; allowNull?: boolean};
+  | {type: 'boolean'; default?: boolean | null; allowNull?: boolean}
+  | {type: 'object'; default?: AnyObject; allowNull?: boolean}
+  | {type: 'array'; default?: AnyArray; allowNull?: boolean};
 
 /// ValuesSchema
 export type ValuesSchema = {[valueId: Id]: ValueSchema};
@@ -18,7 +20,9 @@ export type ValuesSchema = {[valueId: Id]: ValueSchema};
 export type ValueSchema =
   | {type: 'string'; default?: string | null; allowNull?: boolean}
   | {type: 'number'; default?: number | null; allowNull?: boolean}
-  | {type: 'boolean'; default?: boolean | null; allowNull?: boolean};
+  | {type: 'boolean'; default?: boolean | null; allowNull?: boolean}
+  | {type: 'object'; default?: AnyObject; allowNull?: boolean}
+  | {type: 'array'; default?: AnyArray; allowNull?: boolean};
 
 /// NoTablesSchema
 export type NoTablesSchema = {[tableId: Id]: {[cellId: Id]: {type: 'any'}}};
@@ -51,7 +55,7 @@ export type Table = {[rowId: Id]: Row};
 export type Row = {[cellId: Id]: Cell};
 
 /// Cell
-export type Cell = string | number | boolean | null;
+export type Cell = string | number | boolean | null | AnyObject | AnyArray;
 
 /// CellOrUndefined
 export type CellOrUndefined = Cell | undefined;
@@ -60,7 +64,7 @@ export type CellOrUndefined = Cell | undefined;
 export type Values = {[valueId: Id]: Value};
 
 /// Value
-export type Value = string | number | boolean | null;
+export type Value = string | number | boolean | null | AnyObject | AnyArray;
 
 /// ValueOrUndefined
 export type ValueOrUndefined = Value | undefined;

@@ -41,9 +41,13 @@
  * The CellSchema type describes what values are allowed for each Cell in a
  * Table.
  *
- * A CellSchema specifies the type of the Cell (`string`, `boolean`, `number`;
- * or `null`, since v7.0), and what the default value can be when an explicit
- * value is not specified.
+ * A CellSchema specifies the type of the Cell (`string`, `boolean`, `number`,
+ * `null` since v7.0, or `object` or `array` since v8.0), and what the default
+ * value can be when an explicit value is not specified.
+ *
+ * For `object` and `array` types, TinyBase automatically serializes values to
+ * and from JSON when storing and retrieving them. This means you can set an
+ * object or array Cell directly, and get back the same structure.
  *
  * If a default value is provided (and its type is correct), you can be certain
  * that that Cell will always be present in a Row.
@@ -61,6 +65,18 @@
  * export const requiredBoolean: CellSchema = {
  *   type: 'boolean',
  *   default: false,
+ * };
+ * ```
+ * @example
+ * When applied to a Store, this CellSchema allows an object Cell containing
+ * arbitrary data, defaulting to an empty object.
+ *
+ * ```js
+ * import type {CellSchema} from 'tinybase';
+ *
+ * export const tagsCell: CellSchema = {
+ *   type: 'object',
+ *   default: {},
  * };
  * ```
  * @category Schema
@@ -92,9 +108,12 @@
  * The ValueSchema type describes what values are allowed for keyed Values in a
  * Store.
  *
- * A ValueSchema specifies the type of the Value (`string`, `boolean`, `number`;
- * or `null` since v7.0), and what the default value can be when an explicit
- * value is not specified.
+ * A ValueSchema specifies the type of the Value (`string`, `boolean`, `number`,
+ * `null` since v7.0, or `object` or `array` since v8.0), and what the default
+ * value can be when an explicit value is not specified.
+ *
+ * For `object` and `array` types, TinyBase automatically serializes values
+ * to and from JSON when storing and retrieving them.
  *
  * If a default value is provided (and its type is correct), you can be certain
  * that the Value will always be present in a Store.
@@ -112,6 +131,18 @@
  * export const requiredBoolean: ValueSchema = {
  *   type: 'boolean',
  *   default: false,
+ * };
+ * ```
+ * @example
+ * When applied to a Store, this ValueSchema allows an array Value containing
+ * a list of items, defaulting to an empty array.
+ *
+ * ```js
+ * import type {ValueSchema} from 'tinybase';
+ *
+ * export const cartItems: ValueSchema = {
+ *   type: 'array',
+ *   default: [],
  * };
  * ```
  * @category Schema
@@ -2728,7 +2759,7 @@
    *   {open: true, employees: 3},
    * ]);
    *
-   * store.setContent([{pets: {felix: {species: 'cat', bug: []}}}, '']);
+   * store.setContent([{pets: {felix: {species: 'cat', bug: new Date(0)}}}, '']);
    * console.log(store.getTables());
    * // -> {pets: {felix: {species: 'cat'}}}
    * console.log(store.getValues());
@@ -2783,7 +2814,7 @@
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
-   * store.setTables({pets: {felix: {species: 'cat', bug: []}}});
+   * store.setTables({pets: {felix: {species: 'cat', bug: new Date(0)}}});
    * console.log(store.getTables());
    * // -> {pets: {felix: {species: 'cat'}}}
    *
@@ -2838,7 +2869,7 @@
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
-   * store.setTable('pets', {felix: {species: 'cat', bug: []}});
+   * store.setTable('pets', {felix: {species: 'cat', bug: new Date(0)}});
    * console.log(store.getTables());
    * // -> {pets: {felix: {species: 'cat'}}}
    *
@@ -2891,7 +2922,7 @@
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
-   * store.setRow('pets', 'fido', {color: 'brown', bug: []});
+   * store.setRow('pets', 'fido', {color: 'brown', bug: new Date(0)});
    * console.log(store.getTables());
    * // -> {pets: {fido: {color: 'brown'}}}
    *
@@ -2955,7 +2986,7 @@
    *
    * const store = createStore().setTables({pets: {'0': {species: 'dog'}}});
    *
-   * console.log(store.addRow('pets', {species: 'cat', bug: []}));
+   * console.log(store.addRow('pets', {species: 'cat', bug: new Date(0)}));
    * // -> '1'
    * console.log(store.getTables());
    * // -> {pets: {'0': {species: 'dog'}, '1': {species: 'cat'}}}
@@ -3013,7 +3044,7 @@
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
-   * store.setPartialRow('pets', 'fido', {color: 'brown', bug: []});
+   * store.setPartialRow('pets', 'fido', {color: 'brown', bug: new Date(0)});
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
    *
@@ -3080,7 +3111,7 @@
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
-   * store.setCell('pets', 'fido', 'bug', []);
+   * store.setCell('pets', 'fido', 'bug', new Date(0));
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog'}}}
    * ```
@@ -3127,7 +3158,7 @@
    *
    * const store = createStore().setValues({open: true});
    *
-   * store.setValues({employees: 3, bug: []});
+   * store.setValues({employees: 3, bug: new Date(0)});
    * console.log(store.getValues());
    * // -> {employees: 3}
    *
@@ -3179,7 +3210,7 @@
    *
    * const store = createStore().setValues({open: true});
    *
-   * store.setPartialValues({employees: 3, bug: []});
+   * store.setPartialValues({employees: 3, bug: new Date(0)});
    * console.log(store.getValues());
    * // -> {open: true, employees: 3}
    *
@@ -3241,7 +3272,7 @@
    *
    * const store = createStore().setValues({employees: 3});
    *
-   * store.setValue('bug', []);
+   * store.setValue('bug', new Date(0));
    * console.log(store.getValues());
    * // -> {employees: 3}
    * ```
@@ -3960,10 +3991,10 @@
    *   () =>
    *     store
    *       .setCell('pets', 'fido', 'color', 'black')
-   *       .setCell('pets', 'fido', 'eyes', ['left', 'right'])
-   *       .setCell('pets', 'fido', 'info', {sold: null})
+   *       .setCell('pets', 'fido', 'date0', new Date(0))
+   *       .setCell('pets', 'fido', 'date1', new Date(1))
    *       .setValue('open', false)
-   *       .setValue('employees', ['alice', 'bob']),
+   *       .setValue('date2', new Date(2)),
    *   () => {
    *     const [, , changedCells, invalidCells, changedValues, invalidValues] =
    *       store.getTransactionLog();
@@ -3977,9 +4008,9 @@
    * );
    * // -> {pets: {fido: {species: 'dog', color: 'black'}}}
    * // -> {pets: {fido: {color: ['brown', 'black']}}}
-   * // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
+   * // -> {pets: {fido: {date0: [new Date(0)], date1: [new Date(1)]}}}
    * // -> {open: [true, false]}
-   * // -> {employees: [['alice', 'bob']]}
+   * // -> {date2: [new Date(2)]}
    *
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
@@ -4100,10 +4131,10 @@
    * store
    *   .startTransaction()
    *   .setCell('pets', 'fido', 'color', 'black')
-   *   .setCell('pets', 'fido', 'eyes', ['left', 'right'])
-   *   .setCell('pets', 'fido', 'info', {sold: null})
+   *   .setCell('pets', 'fido', 'date0', new Date(0))
+   *   .setCell('pets', 'fido', 'date1', new Date(1))
    *   .setValue('open', false)
-   *   .setValue('employees', ['alice', 'bob'])
+   *   .setValue('date2', new Date(2))
    *   .finishTransaction(() => {
    *     const [, , changedCells, invalidCells, changedValues, invalidValues] =
    *       store.getTransactionLog();
@@ -4113,9 +4144,9 @@
    *     console.log(invalidValues);
    *   });
    * // -> {pets: {fido: {color: ['brown', 'black']}}}
-   * // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
+   * // -> {pets: {fido: {date0: [new Date(0)], date1: [new Date(1)]}}}
    * // -> {open: [true, false]}
-   * // -> {employees: [['alice', 'bob']]}
+   * // -> {date2: [new Date(2)]}
    * ```
    * @category Transaction
    * @since v5.0.0
@@ -4192,10 +4223,10 @@
    * store
    *   .startTransaction()
    *   .setCell('pets', 'fido', 'color', 'black')
-   *   .setCell('pets', 'fido', 'eyes', ['left', 'right'])
-   *   .setCell('pets', 'fido', 'info', {sold: null})
+   *   .setCell('pets', 'fido', 'date0', new Date(0))
+   *   .setCell('pets', 'fido', 'date1', new Date(1))
    *   .setValue('open', false)
-   *   .setValue('employees', ['alice', 'bob'])
+   *   .setValue('date2', new Date(2))
    *   .finishTransaction(() => {
    *     const [, , changedCells, invalidCells, changedValues, invalidValues] =
    *       store.getTransactionLog();
@@ -4208,9 +4239,9 @@
    *   });
    * // -> {pets: {fido: {species: 'dog', color: 'black'}}}
    * // -> {pets: {fido: {color: ['brown', 'black']}}}
-   * // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
+   * // -> {pets: {fido: {date0: [new Date(0)], date1: [new Date(1)]}}}
    * // -> {open: [true, false]}
-   * // -> {employees: [['alice', 'bob']]}
+   * // -> {date2: [new Date(2)]}
    *
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
@@ -6495,9 +6526,9 @@
    *   },
    * );
    *
-   * store.setCell('pets', 'fido', 'color', {r: '96', g: '4B', b: '00'});
-   * // -> 'Invalid color cell in fido row in pets table'
-   * // -> [{r: '96', g: '4B', b: '00'}]
+   * store.setCell('pets', 'fido', 'birth', new Date(0));
+   * // -> 'Invalid birth cell in fido row in pets table'
+   * // -> [new Date(0)]
    *
    * store.delListener(listenerId);
    * ```
@@ -6524,10 +6555,10 @@
    *   },
    * );
    *
-   * store.setCell('pets', 'fido', 'color', {r: '96', g: '4B', b: '00'});
-   * // -> 'Invalid color cell in fido row in pets table'
-   * store.setTable('sales', {fido: {date: new Date()}});
-   * // -> 'Invalid date cell in fido row in sales table'
+   * store.setCell('pets', 'fido', 'birth', new Date(0));
+   * // -> 'Invalid birth cell in fido row in pets table'
+   * store.setTable('sales', {fido: {birth: new Date()}});
+   * // -> 'Invalid birth cell in fido row in sales table'
    *
    * store.setRow('pets', 'felix', {});
    * // -> 'Invalid undefined cell in felix row in pets table'
@@ -6642,9 +6673,9 @@
    *   true,
    * );
    *
-   * store.setCell('pets', 'fido', 'color', {r: '96', g: '4B', b: '00'});
+   * store.setCell('pets', 'fido', 'birth', new Date(0));
    * console.log(store.getRow('meta', 'invalid_updates'));
-   * // -> {'pets_fido_color': '{"r":"96","g":"4B","b":"00"}'}
+   * // -> {'pets_fido_birth': '"1970-01-01T00:00:00.000Z"'}
    *
    * store.delListener(listenerId);
    * ```
@@ -6713,9 +6744,9 @@
    *   },
    * );
    *
-   * store.setValue('open', {yes: true});
-   * // -> 'Invalid open value'
-   * // -> [{yes: true}]
+   * store.setValue('openDate', new Date(0));
+   * // -> 'Invalid openDate value'
+   * // -> [new Date(0)]
    *
    * store.delListener(listenerId);
    * ```
@@ -6735,10 +6766,10 @@
    *   },
    * );
    *
-   * store.setValue('open', {yes: true});
-   * // -> 'Invalid open value'
-   * store.setValue('employees', ['alice', 'bob']);
-   * // -> 'Invalid employees value'
+   * store.setValue('openDate', new Date(0));
+   * // -> 'Invalid openDate value'
+   * store.setValue('closeDate', new Date(1));
+   * // -> 'Invalid closeDate value'
    *
    * store.setValues('pets', 'felix', {});
    * // -> 'Invalid undefined value'
@@ -6820,9 +6851,9 @@
    *   true,
    * );
    *
-   * store.setValue('open', {yes: true});
+   * store.setValue('openDate', new Date(0));
    * console.log(store.getValue('invalid_updates'));
-   * // -> '{"yes":true}'
+   * // -> '"1970-01-01T00:00:00.000Z"'
    *
    * store.delListener(listenerId);
    * ```
