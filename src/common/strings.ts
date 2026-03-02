@@ -11,6 +11,8 @@ export const STRING = getTypeOf(EMPTY_STRING);
 export const BOOLEAN = getTypeOf(true);
 export const NUMBER = getTypeOf(0);
 export const FUNCTION = getTypeOf(getTypeOf);
+export const OBJECT = 'object';
+export const ARRAY = 'array';
 
 export const TRUE = 'true';
 export const TYPE = 'type';
@@ -93,6 +95,7 @@ export const T = 't';
 export const V = 'v';
 
 export const UNDEFINED = '\uFFFC';
+export const JSON_PREFIX = '\uFFFD';
 
 export const id = (key: unknown): Id => EMPTY_STRING + key;
 
