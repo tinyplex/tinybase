@@ -10,17 +10,25 @@ exports[`EditableCellView > change type and Cell 3`] = `"<div class="editableCel
 
 exports[`EditableCellView > change type and Cell 4`] = `"<div class="editableCell"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
 
-exports[`EditableCellView > change type and Cell 5`] = `"<div class="editableCell"><button title="string" class="string">string</button><input value="1"></div>"`;
+exports[`EditableCellView > change type and Cell 5`] = `"<div class="editableCell"><button title="object" class="object">object</button><textarea>{}</textarea></div>"`;
 
-exports[`EditableCellView > change type and Cell 6`] = `"<div class="editableCell"><button title="string" class="string">string</button><input value="two"></div>"`;
+exports[`EditableCellView > change type and Cell 6`] = `"<div class="editableCell"><button title="object" class="object">object</button><textarea>{"x":1}</textarea></div>"`;
 
-exports[`EditableCellView > change type and Cell 7`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="2"></div>"`;
+exports[`EditableCellView > change type and Cell 7`] = `"<div class="editableCell"><button title="array" class="array">array</button><textarea>[]</textarea></div>"`;
 
-exports[`EditableCellView > change type and Cell 8`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="3"></div>"`;
+exports[`EditableCellView > change type and Cell 8`] = `"<div class="editableCell"><button title="array" class="array">array</button><textarea>[1,2]</textarea></div>"`;
 
-exports[`EditableCellView > change type and Cell 9`] = `"<div class="editableCell"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+exports[`EditableCellView > change type and Cell 9`] = `"<div class="editableCell"><button title="string" class="string">string</button><input value="1"></div>"`;
 
-exports[`EditableCellView > change type and Cell 10`] = `"<div class="editableCell"><button title="string" class="string">string</button><input value="three"></div>"`;
+exports[`EditableCellView > change type and Cell 10`] = `"<div class="editableCell"><button title="string" class="string">string</button><input value="two"></div>"`;
+
+exports[`EditableCellView > change type and Cell 11`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="2"></div>"`;
+
+exports[`EditableCellView > change type and Cell 12`] = `"<div class="editableCell"><button title="number" class="number">number</button><input type="number" value="3"></div>"`;
+
+exports[`EditableCellView > change type and Cell 13`] = `"<div class="editableCell"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+
+exports[`EditableCellView > change type and Cell 14`] = `"<div class="editableCell"><button title="string" class="string">string</button><input value="three"></div>"`;
 
 exports[`EditableCellView > className 1`] = `"<div class="e"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
 
@@ -36,17 +44,25 @@ exports[`EditableValueView > change type and Value 3`] = `"<div class="editableV
 
 exports[`EditableValueView > change type and Value 4`] = `"<div class="editableValue"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
 
-exports[`EditableValueView > change type and Value 5`] = `"<div class="editableValue"><button title="string" class="string">string</button><input value="1"></div>"`;
+exports[`EditableValueView > change type and Value 5`] = `"<div class="editableValue"><button title="object" class="object">object</button><textarea>{}</textarea></div>"`;
 
-exports[`EditableValueView > change type and Value 6`] = `"<div class="editableValue"><button title="string" class="string">string</button><input value="two"></div>"`;
+exports[`EditableValueView > change type and Value 6`] = `"<div class="editableValue"><button title="object" class="object">object</button><textarea>{"x":1}</textarea></div>"`;
 
-exports[`EditableValueView > change type and Value 7`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="2"></div>"`;
+exports[`EditableValueView > change type and Value 7`] = `"<div class="editableValue"><button title="array" class="array">array</button><textarea>[]</textarea></div>"`;
 
-exports[`EditableValueView > change type and Value 8`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="3"></div>"`;
+exports[`EditableValueView > change type and Value 8`] = `"<div class="editableValue"><button title="array" class="array">array</button><textarea>[1,2]</textarea></div>"`;
 
-exports[`EditableValueView > change type and Value 9`] = `"<div class="editableValue"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+exports[`EditableValueView > change type and Value 9`] = `"<div class="editableValue"><button title="string" class="string">string</button><input value="1"></div>"`;
 
-exports[`EditableValueView > change type and Value 10`] = `"<div class="editableValue"><button title="string" class="string">string</button><input value="three"></div>"`;
+exports[`EditableValueView > change type and Value 10`] = `"<div class="editableValue"><button title="string" class="string">string</button><input value="two"></div>"`;
+
+exports[`EditableValueView > change type and Value 11`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="2"></div>"`;
+
+exports[`EditableValueView > change type and Value 12`] = `"<div class="editableValue"><button title="number" class="number">number</button><input type="number" value="3"></div>"`;
+
+exports[`EditableValueView > change type and Value 13`] = `"<div class="editableValue"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
+
+exports[`EditableValueView > change type and Value 14`] = `"<div class="editableValue"><button title="string" class="string">string</button><input value="three"></div>"`;
 
 exports[`EditableValueView > className 1`] = `"<div class="e"><button title="number" class="number">number</button><input type="number" value="1"></div>"`;
 

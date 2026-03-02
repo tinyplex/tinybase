@@ -153,11 +153,6 @@ describe.each([
       expect(store.getValues()).toEqual({v1: 1});
     });
 
-    test('part invalid object', () => {
-      store.setValuesJson('{"v1": [1, 2, 3]}');
-      expect(store.getValues()).toEqual({v1: 1});
-    });
-
     test('empty object', () => {
       store.setValuesJson('{}');
       expect(store.getValues()).toEqual({});
@@ -981,7 +976,7 @@ describe.each([
           expect.assertions(10);
           store.transaction(
             // @ts-ignore
-            () => store.setTables({t2: {r2: {c2: 2, c3: [3]}}}),
+            () => store.setTables({t2: {r2: {c2: 2, c3: new Date(3)}}}),
             () => {
               const [
                 ,
@@ -1000,7 +995,7 @@ describe.each([
                 t1: {r1: {c1: [1, undefined]}},
                 t2: {r2: {c2: [undefined, 2]}},
               });
-              expect(invalidCells).toEqual({t2: {r2: {c3: [[3]]}}});
+              expect(invalidCells).toEqual({t2: {r2: {c3: [new Date(3)]}}});
               expect(changedValues).toEqual({});
               expect(invalidValues).toEqual({});
               expect(changedTableIds).toEqual({t1: -1, t2: 1});
@@ -1020,7 +1015,7 @@ describe.each([
           expect.assertions(10);
           store.transaction(
             // @ts-ignore
-            () => store.setTable('t2', {r2: {c2: 2, c3: [3]}}),
+            () => store.setTable('t2', {r2: {c2: 2, c3: new Date(3)}}),
             () => {
               const [
                 ,
@@ -1039,7 +1034,7 @@ describe.each([
                 t2: {r2: {c2: 2}},
               });
               expect(changedCells).toEqual({t2: {r2: {c2: [undefined, 2]}}});
-              expect(invalidCells).toEqual({t2: {r2: {c3: [[3]]}}});
+              expect(invalidCells).toEqual({t2: {r2: {c3: [new Date(3)]}}});
               expect(changedValues).toEqual({});
               expect(invalidValues).toEqual({});
               expect(changedTableIds).toEqual({t2: 1});
@@ -1056,7 +1051,7 @@ describe.each([
           expect.assertions(10);
           store.transaction(
             // @ts-ignore
-            () => store.setRow('t2', 'r2', {c2: 2, c3: [3]}),
+            () => store.setRow('t2', 'r2', {c2: 2, c3: new Date(3)}),
             () => {
               const [
                 ,
@@ -1075,7 +1070,7 @@ describe.each([
                 t2: {r2: {c2: 2}},
               });
               expect(changedCells).toEqual({t2: {r2: {c2: [undefined, 2]}}});
-              expect(invalidCells).toEqual({t2: {r2: {c3: [[3]]}}});
+              expect(invalidCells).toEqual({t2: {r2: {c3: [new Date(3)]}}});
               expect(changedValues).toEqual({});
               expect(invalidValues).toEqual({});
               expect(changedTableIds).toEqual({t2: 1});
@@ -1133,7 +1128,7 @@ describe.each([
           expect.assertions(10);
           store.transaction(
             // @ts-ignore
-            () => store.setCell('t2', 'r2', 'c3', [3]),
+            () => store.setCell('t2', 'r2', 'c3', new Date(3)),
             () => {
               const [
                 ,
@@ -1149,7 +1144,7 @@ describe.each([
               ] = store.getTransactionLog();
               expect(store.getTables()).toEqual(originalTables);
               expect(changedCells).toEqual({});
-              expect(invalidCells).toEqual({t2: {r2: {c3: [[3]]}}});
+              expect(invalidCells).toEqual({t2: {r2: {c3: [new Date(3)]}}});
               expect(changedValues).toEqual({});
               expect(invalidValues).toEqual({});
               expect(changedTableIds).toEqual({});
@@ -1166,7 +1161,7 @@ describe.each([
           expect.assertions(10);
           store.transaction(
             // @ts-ignore
-            () => store.setValues({v2: 2, v3: [3]}),
+            () => store.setValues({v2: 2, v3: new Date(3)}),
             () => {
               const [
                 ,
@@ -1187,7 +1182,7 @@ describe.each([
                 v1: [1, undefined],
                 v2: [undefined, 2],
               });
-              expect(invalidValues).toEqual({v3: [[3]]});
+              expect(invalidValues).toEqual({v3: [new Date(3)]});
               expect(changedTableIds).toEqual({});
               expect(changedRowIds).toEqual({});
               expect(changedCellIds).toEqual({});
@@ -1237,7 +1232,7 @@ describe.each([
           expect.assertions(10);
           store.transaction(
             // @ts-ignore
-            () => store.setValue('v3', [3]),
+            () => store.setValue('v3', new Date(3)),
             () => {
               const [
                 ,
@@ -1255,7 +1250,7 @@ describe.each([
               expect(changedCells).toEqual({});
               expect(invalidCells).toEqual({});
               expect(changedValues).toEqual({});
-              expect(invalidValues).toEqual({v3: [[3]]});
+              expect(invalidValues).toEqual({v3: [new Date(3)]});
               expect(changedTableIds).toEqual({});
               expect(changedRowIds).toEqual({});
               expect(changedCellIds).toEqual({});
@@ -1362,7 +1357,7 @@ describe.each([
       test('with setTables', () => {
         store.transaction(
           // @ts-ignore
-          () => store.setTables({t2: {r2: {c2: 2, c3: [3]}}}),
+          () => store.setTables({t2: {r2: {c2: 2, c3: new Date(3)}}}),
           () => false,
         );
         expect(store.getTables()).toEqual({t2: {r2: {c2: 2}}});
@@ -1371,7 +1366,7 @@ describe.each([
       test('with setTable', () => {
         store.transaction(
           // @ts-ignore
-          () => store.setTable('t2', {r2: {c2: 2, c3: [3]}}),
+          () => store.setTable('t2', {r2: {c2: 2, c3: new Date(3)}}),
           () => false,
         );
         expect(store.getTables()).toEqual({
@@ -1383,7 +1378,7 @@ describe.each([
       test('with setRow', () => {
         store.transaction(
           // @ts-ignore
-          () => store.setRow('t2', 'r2', {c2: 2, c3: [3]}),
+          () => store.setRow('t2', 'r2', {c2: 2, c3: new Date(3)}),
           () => false,
         );
         expect(store.getTables()).toEqual({
@@ -1409,7 +1404,7 @@ describe.each([
       test('with invalid setCell', () => {
         store.transaction(
           // @ts-ignore
-          () => store.setCell('t2', 'r2', 'c3', [3]),
+          () => store.setCell('t2', 'r2', 'c3', new Date(3)),
           () => false,
         );
         expect(store.getTables()).toEqual(originalTables);

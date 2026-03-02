@@ -85,8 +85,8 @@ should be rolled back to its original state.
 store.transaction(
   () => {
     store.setCell('pets', 'fido', 'color', 'black');
-    store.setCell('pets', 'fido', 'eyes', ['left', 'right']);
-    store.setCell('pets', 'fido', 'buyer', {name: 'Bob'});
+    store.setCell('pets', 'fido', 'eyes', new Date(0));
+    store.setCell('pets', 'fido', 'buyer', new Date(1));
   },
   () => {
     const [, , changedCells, invalidCells] = store.getTransactionLog();
@@ -95,7 +95,7 @@ store.transaction(
     console.log(changedCells);
     // -> {pets: {fido: {color: ['brown', 'black']}}}
     console.log(invalidCells);
-    // -> {pets: {fido: {eyes: [['left', 'right']], buyer: [{name: 'Bob'}]}}}
+    // -> {pets: {fido: {eyes: [new Date(0)], buyer: [new Date(1)]}}}
     return invalidCells['pets'] != null;
   },
 );
