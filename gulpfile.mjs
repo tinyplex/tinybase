@@ -64,6 +64,7 @@ const ALL_MODULES = [
   'ui-react-dom',
   'ui-react-inspector',
   'ui-react',
+  'ui-solid',
   'ui-svelte-dom',
   'ui-svelte-inspector',
   'ui-svelte',
@@ -74,6 +75,7 @@ const ALL_DEFINITIONS = [
   '_internal/queries',
   '_internal/ui',
   '_internal/ui-react',
+  '_internal/ui-solid',
 ];
 
 const DIST_DIR = 'dist';
@@ -541,6 +543,8 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       'react',
       'react-dom',
       'react/jsx-runtime',
+      'solid-js',
+      'solid-js/jsx-runtime',
       'url',
       'yjs',
       ...(module == 'omni' ? [] : ['tinybase/store', '../' + uiModule]),
@@ -612,6 +616,11 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
     [['../' + uiModule, '../../' + uiModule + '/with-schemas/' + index]],
     outputFileWithSchemas,
   );
+  await copyWithReplace(
+    outputFileWithSchemas,
+    ['../ui-solid', '../../ui-solid/with-schemas/' + index],
+    outputFileWithSchemas,
+  );
 
   await copyWithReplace(
     outputFile,
@@ -620,6 +629,11 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       ['../ui-svelte', '../ui-svelte/' + index],
       [/(\w+) = \$\.noop/g, '/* istanbul ignore next */ $1 = $.noop'],
     ],
+    outputFile,
+  );
+  await copyWithReplace(
+    outputFile,
+    ['../ui-solid', '../ui-solid/' + index],
     outputFile,
   );
 
