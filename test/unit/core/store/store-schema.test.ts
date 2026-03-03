@@ -2767,6 +2767,58 @@ describe.each([
         expectChanges(listener, 'invalids', {v1: ['a']}, {v1: [true]});
         expectNoChanges(listener);
       });
+
+      test('to object', () => {
+        const store = createStore();
+        store.setValuesSchema({v1: {type: 'object'}});
+        const listener = createStoreListener(store);
+        listener.listenToValues('/');
+        listener.listenToValue('/v*', null);
+        listener.listenToInvalidValue('invalids', null);
+        store
+          // @ts-ignore
+          .setValue('v1', 1)
+          // @ts-ignore
+          .setValue('v1', [1, 2])
+          .setValue('v1', {a: 1})
+          // @ts-ignore - pre-encoded JSON string (e.g., as loaded from persistence)
+          .setValue('v1', '\uFFFD{"b":2}')
+          .setValue('v1', {c: 3});
+        expect(store.getValues()).toEqual({v1: {c: 3}});
+        expectChanges(listener, '/', {v1: {a: 1}}, {v1: {b: 2}}, {v1: {c: 3}});
+        expectChanges(
+          listener,
+          '/v*',
+          {v1: {a: 1}},
+          {v1: {b: 2}},
+          {v1: {c: 3}},
+        );
+        expectChanges(listener, 'invalids', {v1: [1]}, {v1: [[1, 2]]});
+        expectNoChanges(listener);
+      });
+
+      test('to array', () => {
+        const store = createStore();
+        store.setValuesSchema({v1: {type: 'array'}});
+        const listener = createStoreListener(store);
+        listener.listenToValues('/');
+        listener.listenToValue('/v*', null);
+        listener.listenToInvalidValue('invalids', null);
+        store
+          // @ts-ignore
+          .setValue('v1', 1)
+          // @ts-ignore
+          .setValue('v1', {a: 1})
+          .setValue('v1', [])
+          // @ts-ignore - pre-encoded JSON string (e.g., as loaded from persistence)
+          .setValue('v1', '\uFFFD[1,2]')
+          .setValue('v1', [3, 4]);
+        expect(store.getValues()).toEqual({v1: [3, 4]});
+        expectChanges(listener, '/', {v1: []}, {v1: [1, 2]}, {v1: [3, 4]});
+        expectChanges(listener, '/v*', {v1: []}, {v1: [1, 2]}, {v1: [3, 4]});
+        expectChanges(listener, 'invalids', {v1: [1]}, {v1: [{a: 1}]});
+        expectNoChanges(listener);
+      });
     });
   });
 
