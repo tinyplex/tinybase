@@ -417,7 +417,7 @@ export const createMergeableStore = ((
   ];
 
   const getTransactionMergeableChangesImpl = (
-    withHashes = false,
+    withHashes: boolean,
     encoded = false,
   ): MergeableChanges<typeof withHashes> => {
     const [
@@ -655,7 +655,7 @@ export const createMergeableStore = ((
     getTransactionMergeableChangesImpl(withHashes);
 
   const getEncodedTransactionMergeableChanges = (
-    withHashes = false,
+    withHashes: boolean,
   ): MergeableChanges<typeof withHashes> =>
     getTransactionMergeableChangesImpl(withHashes, true);
 

@@ -1737,6 +1737,46 @@ describe('Read Hooks', () => {
     unmount();
   });
 
+  test('useCell with object', () => {
+    store
+      .setTablesSchema({t1: {c1: {type: 'object'}}})
+      .setCell('t1', 'r1', 'c1', {k: 'v'});
+    const Test = () =>
+      didRender(JSON.stringify(useCell('t1', 'r1', 'c1', store)));
+    const {container, unmount} = render(<Test />);
+    expect(container.textContent).toEqual('{"k":"v"}');
+
+    act(() => store.setCell('t1', 'r1', 'c1', {k: 'v'}));
+    expect(container.textContent).toEqual('{"k":"v"}');
+    expect(didRender).toHaveBeenCalledTimes(1);
+
+    act(() => store.setCell('t1', 'r1', 'c1', {k: 'w'}));
+    expect(container.textContent).toEqual('{"k":"w"}');
+    expect(didRender).toHaveBeenCalledTimes(2);
+
+    unmount();
+  });
+
+  test('useCell with array', () => {
+    store
+      .setTablesSchema({t1: {c1: {type: 'array'}}})
+      .setCell('t1', 'r1', 'c1', ['a', 'b']);
+    const Test = () =>
+      didRender(JSON.stringify(useCell('t1', 'r1', 'c1', store)));
+    const {container, unmount} = render(<Test />);
+    expect(container.textContent).toEqual('["a","b"]');
+
+    act(() => store.setCell('t1', 'r1', 'c1', ['a', 'b']));
+    expect(container.textContent).toEqual('["a","b"]');
+    expect(didRender).toHaveBeenCalledTimes(1);
+
+    act(() => store.setCell('t1', 'r1', 'c1', ['a', 'c']));
+    expect(container.textContent).toEqual('["a","c"]');
+    expect(didRender).toHaveBeenCalledTimes(2);
+
+    unmount();
+  });
+
   test('useCellState', () => {
     const Test = () => {
       const [cell, setCell] = useCellState('t1', 'r1', 'c1', store);
@@ -1949,6 +1989,40 @@ describe('Read Hooks', () => {
 
     expect(store.getListenerStats().value).toEqual(0);
     expect(didRender).toHaveBeenCalledTimes(5);
+
+    unmount();
+  });
+
+  test('useValue with object', () => {
+    store.setValuesSchema({v1: {type: 'object'}}).setValue('v1', {k: 'v'});
+    const Test = () => didRender(JSON.stringify(useValue('v1', store)));
+    const {container, unmount} = render(<Test />);
+    expect(container.textContent).toEqual('{"k":"v"}');
+
+    act(() => store.setValue('v1', {k: 'v'}));
+    expect(container.textContent).toEqual('{"k":"v"}');
+    expect(didRender).toHaveBeenCalledTimes(1);
+
+    act(() => store.setValue('v1', {k: 'w'}));
+    expect(container.textContent).toEqual('{"k":"w"}');
+    expect(didRender).toHaveBeenCalledTimes(2);
+
+    unmount();
+  });
+
+  test('useValue with array', () => {
+    store.setValuesSchema({v1: {type: 'array'}}).setValue('v1', ['a', 'b']);
+    const Test = () => didRender(JSON.stringify(useValue('v1', store)));
+    const {container, unmount} = render(<Test />);
+    expect(container.textContent).toEqual('["a","b"]');
+
+    act(() => store.setValue('v1', ['a', 'b']));
+    expect(container.textContent).toEqual('["a","b"]');
+    expect(didRender).toHaveBeenCalledTimes(1);
+
+    act(() => store.setValue('v1', ['a', 'c']));
+    expect(container.textContent).toEqual('["a","c"]');
+    expect(didRender).toHaveBeenCalledTimes(2);
 
     unmount();
   });
