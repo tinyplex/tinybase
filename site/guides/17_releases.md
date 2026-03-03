@@ -7,6 +7,53 @@ highlighted features.
 
 # v8.0
 
+## Object And Array Types
+
+This release also extends the range of types that a Cell or Value can hold.
+Previously, TinyBase supported `string`, `number`, `boolean`, and (since v7.0)
+`null`. Now you can also store plain JavaScript **objects** and **arrays**
+directly in a Store.
+
+```js
+const richStore = createStore().setRow('pets', 'fido', {
+  species: 'dog',
+  traits: {friendly: true, energetic: true},
+  vaccinations: ['rabies', 'distemper', 'parvovirus'],
+});
+
+console.log(richStore.getCell('pets', 'fido', 'traits'));
+// -> {friendly: true, energetic: true}
+
+console.log(richStore.getCell('pets', 'fido', 'vaccinations'));
+// -> ['rabies', 'distemper', 'parvovirus']
+```
+
+Internally, objects and arrays are stored as JSON-encoded strings with a special
+prefix character, so they round-trip transparently through persistence layers.
+But in and out of your application code, the Store API always expects or returns
+them as native JavaScript values.
+
+Schemas also gain `object` and `array` as valid types:
+
+```js
+const richSchemaStore = createStore().setTablesSchema({
+  pets: {
+    species: {type: 'string'},
+    traits: {type: 'object', default: {}},
+    vaccinations: {type: 'array', default: []},
+  },
+});
+
+richSchemaStore.setRow('pets', 'fido', {species: 'dog'});
+console.log(richSchemaStore.getRow('pets', 'fido'));
+// -> {species: 'dog', traits: {}, vaccinations: []}
+```
+
+Note that TinyBase does not deeply validate the contents of objects or arrays
+when a schema is applied - it simply checks that the value is of the right
+top-level type. For deeper validation, consider combining with a
+[Middleware](/guides/the-basics/using-middleware/) callback. On which note...
+
 ## Introducing Middleware
 
 This release introduces a powerful new system for intercepting and transforming
