@@ -36,6 +36,7 @@ import {getCreateFunction} from '../common/definable.ts';
 import {IdMap, mapEnsure, mapGet, mapNew} from '../common/map.ts';
 import {objFreeze} from '../common/obj.ts';
 import {ifNotUndefined, isUndefined} from '../common/other.ts';
+import {ProtectedStore} from '../store/index.ts';
 
 const reduceCallbacks = (
   callbacks: ((...args: any[]) => any)[],
@@ -190,7 +191,7 @@ export const createMiddleware = getCreateFunction(
       destroy,
     } as Middleware);
 
-    (store as any).setMiddleware(
+    (store as ProtectedStore)._[4](
       willSetContent,
       willSetTables,
       willSetTable,

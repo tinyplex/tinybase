@@ -78,7 +78,17 @@ import {
   strEndsWith,
   strStartsWith,
 } from '../common/strings.ts';
-import {createStore} from '../store/index.ts';
+import {ProtectedStore, createStore} from '../store/index.ts';
+
+export type ProtectedMergeableStore = ProtectedStore & {__: ProtectedMethods};
+
+type ProtectedMethods = [
+  hadMutated: () => 0 | 1,
+  getEncodedMergeableContent: () => MergeableContent,
+  getEncodedTransactionMergeableChanges: (
+    withHashes: boolean,
+  ) => MergeableChanges<typeof withHashes>,
+];
 
 const LISTENER_ARGS: IdObj<number> = {
   HasTable: 1,
@@ -687,13 +697,14 @@ export const createMergeableStore = ((
     applyMergeableChanges,
     merge,
 
-    // only used internally by other modules
-    hadMutated,
-    getEncodedMergeableContent,
-    getEncodedTransactionMergeableChanges,
+    __: [
+      hadMutated,
+      getEncodedMergeableContent,
+      getEncodedTransactionMergeableChanges,
+    ] as ProtectedMethods,
   };
 
-  (store as any).setInternalListeners(
+  (store as ProtectedStore)._[3](
     preStartTransaction,
     preFinishTransaction,
     postFinishTransaction,

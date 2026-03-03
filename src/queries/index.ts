@@ -49,7 +49,6 @@ import {
   collSize3,
 } from '../common/coll.ts';
 import {getCreateFunction, getDefinableFunctions} from '../common/definable.ts';
-import {AddListener, CallListeners} from '../common/listeners.ts';
 import {
   IdMap,
   IdMap2,
@@ -92,6 +91,7 @@ import {
   SORTED_ROW_IDS,
   TABLE,
 } from '../common/strings.ts';
+import {ProtectedStore} from '../index.ts';
 
 type Build = (builders: {
   select: Select;
@@ -102,11 +102,6 @@ type Build = (builders: {
   param: Param;
 }) => void;
 
-type StoreWithPrivateMethods = Store & {
-  createStore: () => Store;
-  addListener: AddListener;
-  callListeners: CallListeners;
-};
 type SelectClause = (getTableCell: GetTableCell, rowId: Id) => CellOrUndefined;
 type JoinClause = [
   realTableId: Id,
@@ -127,7 +122,7 @@ type Aggregators = [
 ];
 
 export const createQueries = getCreateFunction((store: Store): Queries => {
-  const createStore = (store as StoreWithPrivateMethods).createStore;
+  const createStore = (store as ProtectedStore)._[0];
   const preStore = createStore();
   const resultStore = createStore();
   const preStoreListenerIds: Map<Id, Map<Store, IdSet>> = mapNew();
@@ -135,10 +130,9 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
   const paramValueListeners: IdSet3 = mapNew();
 
   const {
-    addListener,
-    callListeners,
+    _: [, addListener, callListeners],
     delListener: delListenerImpl,
-  } = resultStore as StoreWithPrivateMethods;
+  } = resultStore as ProtectedStore;
   const [
     getStore,
     getQueryIds,
@@ -516,7 +510,7 @@ export const createQueries = getCreateFunction((store: Store): Queries => {
       selectJoinWhereStore.transaction(() =>
         arrayEvery(wheres, (where) => where(getTableCell))
           ? mapForEach(selects, (asCellId, tableCellGetter) =>
-              (selectJoinWhereStore as any).setOrDelCell(
+              (selectJoinWhereStore as ProtectedStore)._[5](
                 queryId,
                 rootRowId,
                 asCellId,

@@ -43,6 +43,7 @@ import {objFreeze} from '../common/obj.ts';
 import {ifNotUndefined, isUndefined, size} from '../common/other.ts';
 import {IdSet2} from '../common/set.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
+import {ProtectedStore} from '../index.ts';
 
 type CellsDelta = IdMap3<ChangedCell>;
 type ValuesDelta = IdMap<ChangedValue>;
@@ -76,7 +77,7 @@ export const createCheckpoints = getCreateFunction(
         collForEach(cellsDelta, (table, tableId) =>
           collForEach(table, (row, rowId) =>
             collForEach(row, (oldNew, cellId) =>
-              (store as any).setOrDelCell(
+              (store as ProtectedStore)._[5](
                 tableId,
                 rowId,
                 cellId,
@@ -87,7 +88,7 @@ export const createCheckpoints = getCreateFunction(
           ),
         );
         collForEach(valuesDelta, (oldNew, valueId) =>
-          (store as any).setOrDelValue(
+          (store as ProtectedStore)._[6](
             valueId,
             oldNew[oldOrNew] as ValueOrUndefined,
             true,

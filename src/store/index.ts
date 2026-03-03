@@ -68,6 +68,8 @@ import {
 import {defaultSorter} from '../common/index.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {
+  AddListener,
+  CallListeners,
   ExtraArgsGetter,
   IdSetNode,
   PathGetters,
@@ -146,6 +148,67 @@ import {
   VALUE_IDS,
   id,
 } from '../common/strings.ts';
+
+export type ProtectedStore = Store & {_: ProtectedMethods};
+
+type ProtectedMethods = [
+  createStore: () => Store,
+  addListener: AddListener,
+  callListeners: CallListeners,
+  setInternalListeners: (
+    preStartTransaction: () => void,
+    preFinishTransaction: () => void,
+    postFinishTransaction: () => void,
+    cellChanged: (
+      tableId: Id,
+      rowId: Id,
+      cellId: Id,
+      newCell: CellOrUndefined,
+      mutating: 0 | 1,
+    ) => void,
+    valueChanged: (
+      valueId: Id,
+      newValue: ValueOrUndefined,
+      mutating: 0 | 1,
+    ) => void,
+  ) => void,
+  setMiddleware: (
+    willSetContent: (content: Content) => Content | undefined,
+    willSetTables: (tables: Tables) => Tables | undefined,
+    willSetTable: (tableId: Id, table: Table) => Table | undefined,
+    willSetRow: (tableId: Id, rowId: Id, row: Row) => Row | undefined,
+    willSetCell: (
+      tableId: Id,
+      rowId: Id,
+      cellId: Id,
+      cell: Cell,
+    ) => CellOrUndefined,
+    willSetValues: (values: Values) => Values | undefined,
+    willSetValue: (valueId: Id, value: Value) => ValueOrUndefined,
+    willDelTables: () => boolean,
+    willDelTable: (tableId: Id) => boolean,
+    willDelRow: (tableId: Id, rowId: Id) => boolean,
+    willDelCell: (tableId: Id, rowId: Id, cellId: Id) => boolean,
+    willDelValues: () => boolean,
+    willDelValue: (valueId: Id) => boolean,
+    willApplyChanges: (changes: Changes) => Changes | undefined,
+    didSetRow: (tableId: Id, rowId: Id, oldRow: Row, newRow: Row) => Row,
+  ) => void,
+  setOrDelCell: (
+    tableId: Id,
+    rowId: Id,
+    cellId: Id,
+    cell: CellOrUndefined,
+    skipMiddleware?: boolean,
+  ) => Store,
+  setOrDelValue: (
+    valueId: Id,
+    value: ValueOrUndefined,
+    skipMiddleware?: boolean,
+  ) => Store,
+  getEncodedContent: () => Content,
+  getEncodedTransactionChanges: () => Changes,
+];
 
 type TablesSchemaMap = IdMap2<CellSchema>;
 type ValuesSchemaMap = IdMap<ValueSchema>;
@@ -2152,16 +2215,17 @@ export const createStore: typeof createStoreDecl = (): Store => {
 
     isMergeable: () => false,
 
-    // only used internally by other modules
-    createStore,
-    addListener,
-    callListeners,
-    setInternalListeners,
-    setMiddleware,
-    setOrDelCell,
-    setOrDelValue,
-    getEncodedContent,
-    getEncodedTransactionChanges,
+    _: [
+      createStore,
+      addListener,
+      callListeners,
+      setInternalListeners,
+      setMiddleware,
+      setOrDelCell,
+      setOrDelValue,
+      getEncodedContent,
+      getEncodedTransactionChanges,
+    ] as ProtectedMethods,
   };
 
   // and now for some gentle meta-programming
