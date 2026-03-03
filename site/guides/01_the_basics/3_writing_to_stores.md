@@ -15,8 +15,8 @@ hierarchical structure:
 Once you have created a Store, you can write data to it with one of its setter
 methods, according to the level of the hierarchy that you want to set.
 
-For example, you can set the data for the keyed value structure of Store with the setValues
-method:
+For example, you can set the data for the keyed value structure of Store with
+the setValues method:
 
 ```js
 import {createStore} from 'tinybase';
@@ -25,8 +25,8 @@ const store = createStore();
 store.setValues({employees: 3, open: true});
 ```
 
-Similarly, you can set the data for the tabular structure of Store with the setTables
-method:
+Similarly, you can set the data for the tabular structure of Store with the
+setTables method:
 
 ```js
 store.setTables({pets: {fido: {species: 'dog'}}});
@@ -66,7 +66,9 @@ console.log(store.getTables());
 // -> {pets: {fido: {species: 'dog', color: 'brown'}}, species: {dog: {price: 5}, cat: {price: 4}}}
 ```
 
-The data in a Value or a Cell can be a string, a number, or a boolean type.
+The data in a Value or a Cell can be a string, a number, a boolean, or `null`.
+You can also store richer data as plain JavaScript objects or arrays, which
+TinyBase encodes internally as JSON strings.
 
 It's worth mentioning here that there are two extra methods to manipulate Row
 objects. The addRow method is like the setRow method but automatically assigns

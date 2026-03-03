@@ -112,8 +112,8 @@
  * `null` since v7.0, or `object` or `array` since v8.0), and what the default
  * value can be when an explicit value is not specified.
  *
- * For `object` and `array` types, TinyBase automatically serializes values
- * to and from JSON when storing and retrieving them.
+ * For `object` and `array` types, TinyBase automatically serializes values to
+ * and from JSON when storing and retrieving them.
  *
  * If a default value is provided (and its type is correct), you can be certain
  * that the Value will always be present in a Store.
@@ -289,7 +289,8 @@
  *
  * A Cell is used when setting a cell with the setCell method, and when getting
  * it back out again with the getCell method. A Cell is a JavaScript string,
- * number, boolean; or null since v7.0.
+ * number, boolean, or null (since v7.0), or a plain JavaScript object or array
+ * (since v8.0).
  * @example
  * ```js
  * import type {Cell} from 'tinybase';
@@ -335,7 +336,8 @@
  *
  * A Value is used when setting a value with the setValue method, and when
  * getting it back out again with the getValue method. A Value is a JavaScript
- * string, number, boolean; or null since v7.0.
+ * string, number, boolean, or null (since v7.0), or a plain JavaScript object
+ * or array (since v8.0).
  * @example
  * ```js
  * import type {Value} from 'tinybase';
@@ -1222,8 +1224,8 @@
  * transaction, primarily used so that you can indicate whether the transaction
  * should be rolled back.
  *
- * It provides both the old and new Values in a two-part array. These
- * describe the state of the changed Value in the Store at the _start_ of the
+ * It provides both the old and new Values in a two-part array. These describe
+ * the state of the changed Value in the Store at the _start_ of the
  * transaction, and by the _end_ of the transaction.
  *
  * Hence, an `undefined` value for the first item in the array means that the
@@ -1511,14 +1513,17 @@
  *
  * The keyed value support is best thought of as a flat JavaScript object. The
  * Store contains a number of Value objects, each with a unique ID, and which is
- * a string, boolean, number; or null since v7.0.
+ * a string, boolean, number, null (since v7.0), or a plain JavaScript object or
+ * array (since v8.0).
  *
  * ```json
- * {                  // Store
- *   "value1": "one",   // Value (string)
- *   "value2": true,    // Value (boolean)
- *   "value3": 3,       // Value (number)
- *   "value4": null,    // Value (null since v7.0)
+ * {                           // Store
+ *   "value1": "one",            // Value (string)
+ *   "value2": true,             // Value (boolean)
+ *   "value3": 3,                // Value (number)
+ *   "value4": null,             // Value (null since v7.0)
+ *   "value5": {"x": 1},         // Value (object since v8.0)
+ *   "value6": [1, 2, 3],        // Value (array since v8.0)
  *   ...
  * }
  * ```
@@ -1535,7 +1540,8 @@
  * - Each Table contains a number of Row objects.
  * - Each Row contains a number of Cell objects.
  *
- * A Cell is a string, boolean, number; or null since v7.0.
+ * A Cell is a string, boolean, number, null (since v7.0), or a plain JavaScript
+ * object or array (since v8.0).
  *
  * The members of each level of this hierarchy are identified with a unique Id
  * (which is a string). In other words you can naively think of a Store as a
@@ -1549,6 +1555,8 @@
  *       "cell2": true,        // Cell (boolean)
  *       "cell3": 3,           // Cell (number)
  *       "cell4": null,        // Cell (null since v7.0)
+ *       "cell5": {"x": 1},    // Cell (object since v8.0)
+ *       "cell6": [1, 2, 3],   // Cell (array since v8.0)
  *       ...
  *     },
  *     ...
@@ -3069,10 +3077,10 @@
    * does not match a TablesSchema associated with the Store), will be ignored
    * silently.
    *
-   * As well as string, number, or boolean Cell types, this method can also take
-   * a MapCell function that takes the current Cell value as a parameter and
-   * maps it. This is useful if you want to efficiently increment a value
-   * without fetching it first, for example.
+   * As well as string, number, boolean, null, object, and array Cell types,
+   * this method can also take a MapCell function that takes the current Cell
+   * value as a parameter and maps it. This is useful if you want to efficiently
+   * increment a value without fetching it first, for example.
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
@@ -3234,10 +3242,10 @@
    * If the Value is invalid (either because of its type, or because it does not
    * match a ValuesSchema associated with the Store), will be ignored silently.
    *
-   * As well as string, number, or boolean Value types, this method can also
-   * take a MapValue function that takes the current Value as a parameter and
-   * maps it. This is useful if you want to efficiently increment a value
-   * without fetching it first, for example.
+   * As well as string, number, boolean, null, object, and array Value types,
+   * this method can also take a MapValue function that takes the current Value
+   * as a parameter and maps it. This is useful if you want to efficiently
+   * increment a value without fetching it first, for example.
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.

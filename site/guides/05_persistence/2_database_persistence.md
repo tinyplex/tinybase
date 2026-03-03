@@ -377,8 +377,11 @@ structure of your Store.
 ### SQL NULL is TinyBase null
 
 In TinyBase v7.0, `null` became a valid Cell and Value type alongside `string`,
-`number`, and `boolean`. When a database persister loads data from a SQL table,
-any SQL `NULL` values are loaded as TinyBase `null` values.
+`number`, and `boolean`. From v8.0, `object` and `array` types are also allowed;
+these are stored as JSON-encoded strings in SQL columns. When a database
+persister loads data from a SQL table, any SQL `NULL` values are loaded as
+TinyBase `null` values, and JSON-encoded columns are decoded back to objects or
+arrays.
 
 This is the natural and correct behavior: SQL `NULL` represents an explicit null
 value, which maps directly to TinyBase's `null` type.

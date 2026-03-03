@@ -32,9 +32,11 @@ As you can see, when a Values object is used that doesn't quite match those
 constraints, the data is corrected. The `website` Value is ignored, and the
 missing `open` Value gets defaulted to `false`.
 
-TinyBase supports four primitive types: `string`, `number`, `boolean`, and
-`null`. You can also allow `null` values for a specific Cell or Value by adding
-the `allowNull` property:
+TinyBase supports four primitive types in schemas: `string`, `number`,
+`boolean`, and `null`. It also supports `object` and `array` types for richer
+structured data, which are stored internally as JSON-encoded strings. You can
+also allow `null` values for a specific Cell or Value by adding the `allowNull`
+property:
 
 ```js
 const store2 = createStore().setValuesSchema({
@@ -139,8 +141,8 @@ console.log(store.getTables());
 // -> {}
 ```
 
-When no longer needed, you can also completely removes existing schemas
-with the delValuesSchema method or the delTablesSchema method.
+When no longer needed, you can also completely removes existing schemas with the
+delValuesSchema method or the delTablesSchema method.
 
 ## Summary
 
