@@ -130,6 +130,7 @@ import {
   CELL,
   CELL_IDS,
   DEFAULT,
+  EMPTY_STRING,
   HAS,
   LISTENER,
   NUMBER,
@@ -1292,9 +1293,45 @@ export const createStore: typeof createStoreDecl = (): Store => {
     );
   };
 
+  const getTransactionChangesImpl = (encoded = false): Changes => [
+    mapToObj(
+      changedCells,
+      (table, tableId) =>
+        mapGet(changedTableIds, tableId) === -1
+          ? undefined
+          : mapToObj(
+              table,
+              (row, rowId) =>
+                mapGet(mapGet(changedRowIds, tableId), rowId) === -1
+                  ? undefined
+                  : mapToObj(
+                      row,
+                      ([, newCell]) =>
+                        decodeIfJson(newCell, EMPTY_STRING, encoded),
+                      (changedCell) => pairIsEqual(changedCell),
+                    ),
+              collIsEmpty,
+              objIsEmpty,
+            ),
+      collIsEmpty,
+      objIsEmpty,
+    ),
+    mapToObj(
+      changedValues,
+      ([, newValue]) => decodeIfJson(newValue, EMPTY_STRING, encoded),
+      (changedValue) => pairIsEqual(changedValue),
+    ),
+    1,
+  ];
+
   // --
 
   const getContent = (): Content => [getTables(), getValues()];
+
+  const getEncodedContent = (): Content => [
+    mapToObj3(tablesMap),
+    mapToObj(valuesMap),
+  ];
 
   const getTables = (): Tables => mapToObj3(tablesMap, decodeIfJson);
 
@@ -1719,35 +1756,10 @@ export const createStore: typeof createStoreDecl = (): Store => {
     return store;
   };
 
-  const getTransactionChanges = (): Changes => [
-    mapToObj(
-      changedCells,
-      (table, tableId) =>
-        mapGet(changedTableIds, tableId) === -1
-          ? undefined
-          : mapToObj(
-              table,
-              (row, rowId) =>
-                mapGet(mapGet(changedRowIds, tableId), rowId) === -1
-                  ? undefined
-                  : mapToObj(
-                      row,
-                      ([, newCell]) => decodeIfJson(newCell),
-                      (changedCell) => pairIsEqual(changedCell),
-                    ),
-              collIsEmpty,
-              objIsEmpty,
-            ),
-      collIsEmpty,
-      objIsEmpty,
-    ),
-    mapToObj(
-      changedValues,
-      ([, newValue]) => decodeIfJson(newValue),
-      (changedValue) => pairIsEqual(changedValue),
-    ),
-    1,
-  ];
+  const getTransactionChanges = (): Changes => getTransactionChangesImpl();
+
+  const getEncodedTransactionChanges = (): Changes =>
+    getTransactionChangesImpl(true);
 
   const getTransactionLog = (): TransactionLog => [
     !collIsEmpty(changedCells),
@@ -2148,6 +2160,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
     setMiddleware,
     setOrDelCell,
     setOrDelValue,
+    getEncodedContent,
+    getEncodedTransactionChanges,
   };
 
   // and now for some gentle meta-programming

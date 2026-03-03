@@ -3,6 +3,7 @@ import type {
   AnyObject,
   Cell,
   CellOrUndefined,
+  Id,
   Value,
   ValueOrUndefined,
 } from '../@types/index.d.ts';
@@ -75,8 +76,10 @@ export const decodeIfJson = <
   CV extends Cell | Value | CellOrUndefined | ValueOrUndefined,
 >(
   raw: CV,
+  _id?: Id,
+  encoded?: boolean,
 ): CV =>
-  isEncodedJson(raw)
+  !encoded && isEncodedJson(raw)
     ? (jsonParse(slice(raw, 1)) as AnyObject | AnyArray as CV)
     : raw;
 

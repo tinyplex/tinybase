@@ -22,7 +22,7 @@ import type {
   Store,
   ValueOrUndefined,
 } from '../@types/store/index.d.ts';
-import {isCellOrValueOrUndefined} from '../common/cell.ts';
+import {decodeIfJson, isCellOrValueOrUndefined} from '../common/cell.ts';
 import {collClear, collForEach} from '../common/coll.ts';
 import {
   addOrRemoveHash,
@@ -389,16 +389,91 @@ export const createMergeableStore = ((
     }
   };
 
-  // ---
-
-  const getMergeableContent = (): MergeableContent => [
+  const getMergeableContentImpl = (encoded = false): MergeableContent => [
     stampMapToObjWithHash(contentStampMap[0], (tableStampMap) =>
       stampMapToObjWithHash(tableStampMap, (rowStampMap) =>
-        stampMapToObjWithHash(rowStampMap),
+        stampMapToObjWithHash(rowStampMap, ([cell, hlc, hash]) => [
+          decodeIfJson(cell, EMPTY_STRING, encoded),
+          hlc,
+          hash,
+        ]),
       ),
     ),
-    stampMapToObjWithHash(contentStampMap[1]),
+    stampMapToObjWithHash(contentStampMap[1], ([value, hlc, hash]) => [
+      decodeIfJson(value, EMPTY_STRING, encoded),
+      hlc,
+      hash,
+    ]),
   ];
+
+  const getTransactionMergeableChangesImpl = (
+    withHashes = false,
+    encoded = false,
+  ): MergeableChanges<typeof withHashes> => {
+    const [
+      [tableStampMaps, tablesHlc, tablesHash],
+      [valueStampMaps, valuesHlc, valuesHash],
+    ] = contentStampMap;
+
+    const newStamp = withHashes ? stampNewWithHash : stampNew;
+
+    const tablesObj: TablesStamp<typeof withHashes>[0] = {};
+    collForEach(touchedCells, (touchedTable, tableId) =>
+      ifNotUndefined(
+        mapGet(tableStampMaps, tableId),
+        ([rowStampMaps, tableHlc, tableHash]) => {
+          const tableObj: TableStamp<typeof withHashes>[0] = {};
+          collForEach(touchedTable, (touchedRow, rowId) =>
+            ifNotUndefined(
+              mapGet(rowStampMaps, rowId),
+              ([cellStampMaps, rowHlc, rowHash]) => {
+                const rowObj: RowStamp<typeof withHashes>[0] = {};
+                collForEach(touchedRow, (cellId) => {
+                  ifNotUndefined(
+                    mapGet(cellStampMaps, cellId),
+                    ([cell, time, hash]) =>
+                      (rowObj[cellId] = newStamp(
+                        encoded ? cell : decodeIfJson(cell),
+                        time,
+                        hash,
+                      )),
+                  );
+                });
+                tableObj[rowId] = newStamp(rowObj, rowHlc, rowHash);
+              },
+            ),
+          );
+          tablesObj[tableId] = newStamp(tableObj, tableHlc, tableHash);
+        },
+      ),
+    );
+
+    const valuesObj: ValuesStamp<typeof withHashes>[0] = {};
+    collForEach(touchedValues, (valueId) =>
+      ifNotUndefined(
+        mapGet(valueStampMaps, valueId),
+        ([value, time, hash]) =>
+          (valuesObj[valueId] = newStamp(
+            encoded ? value : decodeIfJson(value),
+            time,
+            hash,
+          )),
+      ),
+    );
+
+    return [
+      newStamp(tablesObj, tablesHlc, tablesHash),
+      newStamp(valuesObj, valuesHlc, valuesHash),
+      1,
+    ];
+  };
+
+  // ---
+
+  const getMergeableContent = (): MergeableContent => getMergeableContentImpl();
+
+  const getEncodedMergeableContent = (): MergeableContent =>
+    getMergeableContentImpl(true);
 
   const getMergeableContentHashes = (): ContentHashes => [
     contentStampMap[0][2],
@@ -566,56 +641,13 @@ export const createMergeableStore = ((
 
   const getTransactionMergeableChanges = (
     withHashes = false,
-  ): MergeableChanges<typeof withHashes> => {
-    const [
-      [tableStampMaps, tablesHlc, tablesHash],
-      [valueStampMaps, valuesHlc, valuesHash],
-    ] = contentStampMap;
+  ): MergeableChanges<typeof withHashes> =>
+    getTransactionMergeableChangesImpl(withHashes);
 
-    const newStamp = withHashes ? stampNewWithHash : stampNew;
-
-    const tablesObj: TablesStamp<typeof withHashes>[0] = {};
-    collForEach(touchedCells, (touchedTable, tableId) =>
-      ifNotUndefined(
-        mapGet(tableStampMaps, tableId),
-        ([rowStampMaps, tableHlc, tableHash]) => {
-          const tableObj: TableStamp<typeof withHashes>[0] = {};
-          collForEach(touchedTable, (touchedRow, rowId) =>
-            ifNotUndefined(
-              mapGet(rowStampMaps, rowId),
-              ([cellStampMaps, rowHlc, rowHash]) => {
-                const rowObj: RowStamp<typeof withHashes>[0] = {};
-                collForEach(touchedRow, (cellId) => {
-                  ifNotUndefined(
-                    mapGet(cellStampMaps, cellId),
-                    ([cell, time, hash]) =>
-                      (rowObj[cellId] = newStamp(cell, time, hash)),
-                  );
-                });
-                tableObj[rowId] = newStamp(rowObj, rowHlc, rowHash);
-              },
-            ),
-          );
-          tablesObj[tableId] = newStamp(tableObj, tableHlc, tableHash);
-        },
-      ),
-    );
-
-    const valuesObj: ValuesStamp<typeof withHashes>[0] = {};
-    collForEach(touchedValues, (valueId) =>
-      ifNotUndefined(
-        mapGet(valueStampMaps, valueId),
-        ([value, time, hash]) =>
-          (valuesObj[valueId] = newStamp(value, time, hash)),
-      ),
-    );
-
-    return [
-      newStamp(tablesObj, tablesHlc, tablesHash),
-      newStamp(valuesObj, valuesHlc, valuesHash),
-      1,
-    ];
-  };
+  const getEncodedTransactionMergeableChanges = (
+    withHashes = false,
+  ): MergeableChanges<typeof withHashes> =>
+    getTransactionMergeableChangesImpl(withHashes, true);
 
   const applyMergeableChanges = (
     mergeableChanges: MergeableChanges | MergeableContent,
@@ -657,6 +689,8 @@ export const createMergeableStore = ((
 
     // only used internally by other modules
     hadMutated,
+    getEncodedMergeableContent,
+    getEncodedTransactionMergeableChanges,
   };
 
   (store as any).setInternalListeners(
