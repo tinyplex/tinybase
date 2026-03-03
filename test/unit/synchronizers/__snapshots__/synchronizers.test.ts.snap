@@ -2346,12 +2346,18 @@ exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data alread
           "r1": [
             {
               "c1": [
-                "�{"k1":"v"}",
+                {
+                  "k1": "v",
+                },
                 "Nn1JUF-----7JQY8",
                 4180514038,
               ],
               "c2": [
-                "�[1,2,3]",
+                [
+                  1,
+                  2,
+                  3,
+                ],
                 "Nn1JUF-----4JQFF",
                 3823624040,
               ],
@@ -6757,12 +6763,18 @@ exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present
           "r1": [
             {
               "c1": [
-                "�{"k1":"v"}",
+                {
+                  "k1": "v",
+                },
                 "Nn1JUF-----7JQY8",
                 4180514038,
               ],
               "c2": [
-                "�[1,2,3]",
+                [
+                  1,
+                  2,
+                  3,
+                ],
                 "Nn1JUF-----4JQFF",
                 3823624040,
               ],
@@ -10606,12 +10618,18 @@ exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present >
           "r1": [
             {
               "c1": [
-                "�{"k1":"v"}",
+                {
+                  "k1": "v",
+                },
                 "Nn1JUF-----7JQY8",
                 4180514038,
               ],
               "c2": [
-                "�[1,2,3]",
+                [
+                  1,
+                  2,
+                  3,
+                ],
                 "Nn1JUF-----4JQFF",
                 3823624040,
               ],
@@ -14455,12 +14473,18 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > ob
           "r1": [
             {
               "c1": [
-                "�{"k1":"v"}",
+                {
+                  "k1": "v",
+                },
                 "Nn1JUF-----7JQY8",
                 4180514038,
               ],
               "c2": [
-                "�[1,2,3]",
+                [
+                  1,
+                  2,
+                  3,
+                ],
                 "Nn1JUF-----4JQFF",
                 3823624040,
               ],

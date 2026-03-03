@@ -99,8 +99,8 @@ describe.each([
       .setValues({v1: {x: 1}, v2: [4, 5]});
     await persister.save();
     expect(await persistable.get(location)).toEqual([
-      {t1: {r1: {c1: {k1: 'v'}, c2: [1, 2, 3]}}},
-      {v1: {x: 1}, v2: [4, 5]},
+      {t1: {r1: {c1: '�{"k1":"v"}', c2: '�[1,2,3]'}}},
+      {v1: '�{"x":1}', v2: '�[4,5]'},
     ]);
     store.delTables().delValues();
     await persister.load();

@@ -75,11 +75,9 @@ const getStoreFunctions = (
   persist != PersistsValues.StoreOnly && store.isMergeable()
     ? [
         1,
-        (store as MergeableStore).getMergeableContent,
+        (store as any).getEncodedMergeableContent,
         () =>
-          (store as MergeableStore).getTransactionMergeableChanges(
-            !isSynchronizer,
-          ),
+          (store as any).getEncodedTransactionMergeableChanges(!isSynchronizer),
         ([[changedTables], [changedValues]]: MergeableChanges) =>
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
         (store as MergeableStore).setDefaultContent,
@@ -87,8 +85,8 @@ const getStoreFunctions = (
     : persist != PersistsValues.MergeableStoreOnly
       ? [
           0,
-          store.getContent,
-          store.getTransactionChanges,
+          (store as any).getEncodedContent,
+          (store as any).getEncodedTransactionChanges,
           ([changedTables, changedValues]: Changes) =>
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setContent,

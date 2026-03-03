@@ -195,7 +195,7 @@ describe.each(Object.entries(ALL_VARIANTS))(
                 _id: '_',
                 store:
                   // eslint-disable-next-line max-len
-                  '[{"t1":{"r1":{"c1":{"k1":"v"},"c2":[1,2,3]}}},{"v1":{"x":1},"v2":[4,5]}]',
+                  '[{"t1":{"r1":{"c1":"\uFFFD{\\"k1\\":\\"v\\"}","c2":"\uFFFD[1,2,3]"}}},{"v1":"\uFFFD{\\"x\\":1}","v2":"\uFFFD[4,5]"}]',
               },
             ],
           ],
