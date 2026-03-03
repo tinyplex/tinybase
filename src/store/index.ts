@@ -1732,7 +1732,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
                   ? undefined
                   : mapToObj(
                       row,
-                      ([, newCell]) => newCell,
+                      ([, newCell]) => decodeIfJson(newCell),
                       (changedCell) => pairIsEqual(changedCell),
                     ),
               collIsEmpty,
@@ -1743,7 +1743,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     ),
     mapToObj(
       changedValues,
-      ([, newValue]) => newValue,
+      ([, newValue]) => decodeIfJson(newValue),
       (changedValue) => pairIsEqual(changedValue),
     ),
     1,
@@ -1874,7 +1874,9 @@ export const createStore: typeof createStoreDecl = (): Store => {
       tableCallback(tableId, (rowCallback) =>
         collForEach(tableMap, (rowMap, rowId) =>
           rowCallback(rowId, (cellCallback) =>
-            mapForEach(rowMap, cellCallback),
+            mapForEach(rowMap, (cellId, cell) =>
+              cellCallback(cellId, decodeIfJson(cell)),
+            ),
           ),
         ),
       ),
