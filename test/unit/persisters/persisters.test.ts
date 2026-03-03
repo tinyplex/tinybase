@@ -93,6 +93,24 @@ describe.each([
     expect(persister.getStats()).toEqual({loads: 0, saves: 1});
   });
 
+  test('saves and loads objects and arrays', async () => {
+    store
+      .setTables({t1: {r1: {c1: {k1: 'v'}, c2: [1, 2, 3]}}})
+      .setValues({v1: {x: 1}, v2: [4, 5]});
+    await persister.save();
+    expect(await persistable.get(location)).toEqual([
+      {t1: {r1: {c1: {k1: 'v'}, c2: [1, 2, 3]}}},
+      {v1: {x: 1}, v2: [4, 5]},
+    ]);
+    store.delTables().delValues();
+    await persister.load();
+    expect(store.getTables()).toEqual({
+      t1: {r1: {c1: {k1: 'v'}, c2: [1, 2, 3]}},
+    });
+    expect(store.getValues()).toEqual({v1: {x: 1}, v2: [4, 5]});
+    expect(persister.getStats()).toEqual({loads: 1, saves: 1});
+  });
+
   test('saving status', () =>
     new Promise((done: any) => {
       expect.assertions(3);

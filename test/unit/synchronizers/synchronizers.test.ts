@@ -299,6 +299,16 @@ describe.each([
         await sync();
         expectEachToHaveContent([{t1: {r1: {c1: 1}}, t2: {r2: {c2: 2}}}, {}]);
       });
+
+      test('object and array cell', async () => {
+        store1.setCell('t1', 'r1', 'c1', {k1: 'v'});
+        store2.setCell('t1', 'r1', 'c2', [1, 2, 3]);
+        await sync();
+        expectEachToHaveContent([
+          {t1: {r1: {c1: {k1: 'v'}, c2: [1, 2, 3]}}},
+          {},
+        ]);
+      });
     });
 
     describe('Bidirectional', () => {

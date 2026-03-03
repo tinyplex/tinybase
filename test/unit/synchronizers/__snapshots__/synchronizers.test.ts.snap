@@ -2324,6 +2324,57 @@ exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data alread
 ]
 `;
 
+exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data already present > object and array cell > stats 1`] = `
+[
+  {
+    "receives": 11,
+    "sends": 12,
+  },
+  {
+    "receives": 12,
+    "sends": 11,
+  },
+]
+`;
+
+exports[`Syncs to/from BroadcastChannelSynchronizer > Bidirectional, data already present > object and array cell 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                "�{"species":"dog"}",
+                "Nn1JUF-----7JQY8",
+                722943614,
+              ],
+              "c2": [
+                "�[1,2,3]",
+                "Nn1JUF-----4JQFF",
+                3823624040,
+              ],
+            },
+            "",
+            414463156,
+          ],
+        },
+        "",
+        1228841038,
+      ],
+    },
+    "",
+    337359595,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
 exports[`Syncs to/from BroadcastChannelSynchronizer > Multidirectional > All but first empty > stats 1`] = `
 {
   "receives": 279,
@@ -6684,6 +6735,57 @@ exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present
 ]
 `;
 
+exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present > object and array cell > stats 1`] = `
+[
+  {
+    "receives": 11,
+    "sends": 12,
+  },
+  {
+    "receives": 12,
+    "sends": 11,
+  },
+]
+`;
+
+exports[`Syncs to/from Custom Synchronizer > Bidirectional, data already present > object and array cell 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                "�{"species":"dog"}",
+                "Nn1JUF-----7JQY8",
+                722943614,
+              ],
+              "c2": [
+                "�[1,2,3]",
+                "Nn1JUF-----4JQFF",
+                3823624040,
+              ],
+            },
+            "",
+            414463156,
+          ],
+        },
+        "",
+        1228841038,
+      ],
+    },
+    "",
+    337359595,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
 exports[`Syncs to/from Custom Synchronizer > Multidirectional > All but first empty > stats 1`] = `
 {
   "receives": 279,
@@ -10482,6 +10584,57 @@ exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present >
 ]
 `;
 
+exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present > object and array cell > stats 1`] = `
+[
+  {
+    "receives": 11,
+    "sends": 12,
+  },
+  {
+    "receives": 12,
+    "sends": 11,
+  },
+]
+`;
+
+exports[`Syncs to/from LocalSynchronizer > Bidirectional, data already present > object and array cell 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                "�{"species":"dog"}",
+                "Nn1JUF-----7JQY8",
+                722943614,
+              ],
+              "c2": [
+                "�[1,2,3]",
+                "Nn1JUF-----4JQFF",
+                3823624040,
+              ],
+            },
+            "",
+            414463156,
+          ],
+        },
+        "",
+        1228841038,
+      ],
+    },
+    "",
+    337359595,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
 exports[`Syncs to/from LocalSynchronizer > Multidirectional > All but first empty > stats 1`] = `
 {
   "receives": 279,
@@ -14271,6 +14424,57 @@ exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > di
     },
     "",
     2579067098,
+  ],
+  [
+    {},
+    "",
+    0,
+  ],
+]
+`;
+
+exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > object and array cell > stats 1`] = `
+[
+  {
+    "receives": 11,
+    "sends": 12,
+  },
+  {
+    "receives": 12,
+    "sends": 11,
+  },
+]
+`;
+
+exports[`Syncs to/from WsSynchronizer > Bidirectional, data already present > object and array cell 1`] = `
+[
+  [
+    {
+      "t1": [
+        {
+          "r1": [
+            {
+              "c1": [
+                "�{"species":"dog"}",
+                "Nn1JUF-----7JQY8",
+                722943614,
+              ],
+              "c2": [
+                "�[1,2,3]",
+                "Nn1JUF-----4JQFF",
+                3823624040,
+              ],
+            },
+            "",
+            414463156,
+          ],
+        },
+        "",
+        1228841038,
+      ],
+    },
+    "",
+    337359595,
   ],
   [
     {},
