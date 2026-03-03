@@ -15,16 +15,18 @@ Previously, TinyBase supported `string`, `number`, `boolean`, and (since v7.0)
 directly in a Store.
 
 ```js
-const richStore = createStore().setRow('pets', 'fido', {
+import {createStore} from 'tinybase';
+
+const store = createStore().setRow('pets', 'fido', {
   species: 'dog',
   traits: {friendly: true, energetic: true},
   vaccinations: ['rabies', 'distemper', 'parvovirus'],
 });
 
-console.log(richStore.getCell('pets', 'fido', 'traits'));
+console.log(store.getCell('pets', 'fido', 'traits'));
 // -> {friendly: true, energetic: true}
 
-console.log(richStore.getCell('pets', 'fido', 'vaccinations'));
+console.log(store.getCell('pets', 'fido', 'vaccinations'));
 // -> ['rabies', 'distemper', 'parvovirus']
 ```
 
@@ -36,7 +38,7 @@ them as native JavaScript values.
 Schemas also gain `object` and `array` as valid types:
 
 ```js
-const richSchemaStore = createStore().setTablesSchema({
+store.setTablesSchema({
   pets: {
     species: {type: 'string'},
     traits: {type: 'object', default: {}},
@@ -44,9 +46,11 @@ const richSchemaStore = createStore().setTablesSchema({
   },
 });
 
-richSchemaStore.setRow('pets', 'fido', {species: 'dog'});
-console.log(richSchemaStore.getRow('pets', 'fido'));
+store.setRow('pets', 'fido', {species: 'dog'});
+console.log(store.getRow('pets', 'fido'));
 // -> {species: 'dog', traits: {}, vaccinations: []}
+
+store.delSchema();
 ```
 
 Note that TinyBase does not deeply validate the contents of objects or arrays
@@ -62,8 +66,7 @@ registered to fire before data is written to the Store, allowing you to modify,
 validate, or even reject changes before they take effect.
 
 ```jsx
-import {createMiddleware, createStore} from 'tinybase';
-const store = createStore();
+import {createMiddleware} from 'tinybase';
 
 const middleware = createMiddleware(store);
 middleware.addWillSetCellCallback((tableId, rowId, cellId, cell) => {
@@ -85,12 +88,6 @@ data that listeners see, and can prevent changes from being applied at all by
 returning `undefined`. In conjunction with schemas, Middleware provides a
 powerful way to enforce data integrity and implement complex data
 transformations - and it should work in synchronization environments too.
-
-As well as intercepting changes with the `WillSet*` callbacks, Middleware can
-also provide a post-transaction DidSetRowCallback callback. This fires once per
-changed Row after all writes in a transaction have settled, including writes
-made by mutating listeners, hence providing you ultimate definitive control over
-the rows written to a Table.
 
 Many, many thanks to [Brandon Mason](https://github.com/bitmage) for designing
 and implementing this concept. Despite the major version number, we trust there
