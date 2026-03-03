@@ -89,12 +89,30 @@ describe('Effect Schematizer', () => {
         schematizer.toTablesSchema({
           pets: S.Struct({
             species: S.String,
-            data: S.Array(S.String),
+            birthday: S.DateFromSelf,
           }),
         }),
       ).toEqual({
         pets: {
           species: {type: 'string'},
+        },
+      });
+    });
+
+    test('converts Effect object and array cells', () => {
+      expect(
+        schematizer.toTablesSchema({
+          pets: S.Struct({
+            species: S.String,
+            tags: S.Array(S.String),
+            profile: S.Struct({city: S.String}),
+          }),
+        }),
+      ).toEqual({
+        pets: {
+          species: {type: 'string'},
+          tags: {type: 'array'},
+          profile: {type: 'object'},
         },
       });
     });
@@ -119,6 +137,18 @@ describe('Effect Schematizer', () => {
   });
 
   describe('toValuesSchema', () => {
+    test('converts Effect object and array values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          config: S.Record({key: S.String, value: S.String}),
+          tags: S.Array(S.String),
+        }),
+      ).toEqual({
+        config: {type: 'object'},
+        tags: {type: 'array'},
+      });
+    });
+
     test('converts basic Effect schemas', () => {
       expect(
         schematizer.toValuesSchema({

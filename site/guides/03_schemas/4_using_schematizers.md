@@ -104,25 +104,66 @@ nullable. The `bio` field is optional, so it doesn't need to be provided (and
 TinyBase will not add a default for it since none was specified in the Zod
 schema).
 
-## Unsupported Types
+## Object And Array Cells
 
-The Zod schematizer only converts basic types (string, number, boolean) and
-ignores complex types like arrays, objects, and records. These will simply be
-excluded from the resulting TinyBase schema:
+The Zod schematizer also converts array and object (record) fields into
+TinyBase's `array` and `object` cell types:
 
 ```js
 const store4 = createStore().setTablesSchema(
   schematizer.toTablesSchema({
     pets: z.object({
       species: z.string(),
-      tags: z.array(z.string()), // ignored
-      metadata: z.record(z.string()), // ignored
+      tags: z.array(z.string()),
+      profile: z.record(z.string(), z.string()),
     }),
   }),
 );
 
-store4.setRow('pets', 'fido', {species: 'dog', tags: ['friendly']});
+store4.setRow('pets', 'fido', {
+  species: 'dog',
+  tags: ['friendly', 'playful'],
+  profile: {color: 'brown'},
+});
 console.log(store4.getRow('pets', 'fido'));
+// -> {species: 'dog', tags: ['friendly', 'playful'], profile: {color: 'brown'}}
+```
+
+You can also specify defaults for object and array cells:
+
+```js
+const store5 = createStore().setTablesSchema(
+  schematizer.toTablesSchema({
+    pets: z.object({
+      species: z.string(),
+      tags: z.array(z.string()).default(['unknown']),
+    }),
+  }),
+);
+
+store5.setRow('pets', 'fido', {species: 'dog'});
+console.log(store5.getRow('pets', 'fido'));
+// -> {species: 'dog', tags: ['unknown']}
+```
+
+## Unsupported Types
+
+The Zod schematizer only converts basic types (string, number, boolean, array,
+and object/record) and ignores complex types like dates. These will simply be
+excluded from the resulting TinyBase schema:
+
+```js
+const store6 = createStore().setTablesSchema(
+  schematizer.toTablesSchema({
+    pets: z.object({
+      species: z.string(),
+      birthday: z.date(), // ignored
+    }),
+  }),
+);
+
+store6.setRow('pets', 'fido', {species: 'dog'});
+console.log(store6.getRow('pets', 'fido'));
 // -> {species: 'dog'}
 ```
 
@@ -149,13 +190,13 @@ const valuesSchema = schematizer2.toValuesSchema({
   corporateName: z.string().default('Pet Store Inc'),
 });
 
-const store5 = createStore().setSchema(tablesSchema, valuesSchema);
+const store7 = createStore().setSchema(tablesSchema, valuesSchema);
 
-store5.setRow('stores', 'downtown', {name: 'Downtown Pets', city: 'Boston'});
-console.log(store5.getRow('stores', 'downtown'));
+store7.setRow('stores', 'downtown', {name: 'Downtown Pets', city: 'Boston'});
+console.log(store7.getRow('stores', 'downtown'));
 // -> {name: 'Downtown Pets', city: 'Boston'}
 
-console.log(store5.getValues());
+console.log(store7.getValues());
 // -> {openStores: 0, corporateName: 'Pet Store Inc'}
 ```
 

@@ -109,13 +109,48 @@ describe('Valibot Schematizer', () => {
         schematizer.toTablesSchema({
           pets: v.object({
             species: v.string(),
-            tags: v.array(v.string()),
-            metadata: v.record(v.string(), v.string()),
+            coords: v.tuple([v.number(), v.number()]),
           }),
         }),
       ).toEqual({
         pets: {
           species: {type: 'string'},
+        },
+      });
+    });
+
+    test('converts Valibot object and array cells', () => {
+      expect(
+        schematizer.toTablesSchema({
+          pets: v.object({
+            species: v.string(),
+            tags: v.array(v.string()),
+            profile: v.record(v.string(), v.string()),
+          }),
+        }),
+      ).toEqual({
+        pets: {
+          species: {type: 'string'},
+          tags: {type: 'array'},
+          profile: {type: 'object'},
+        },
+      });
+    });
+
+    test('converts Valibot object and array cell defaults', () => {
+      expect(
+        schematizer.toTablesSchema({
+          pets: v.object({
+            tags: v.fallback(v.array(v.string()), ['cat', 'dog']),
+            profile: v.fallback(v.record(v.string(), v.string()), {
+              city: 'london',
+            }),
+          }),
+        }),
+      ).toEqual({
+        pets: {
+          tags: {type: 'array', default: ['cat', 'dog']},
+          profile: {type: 'object', default: {city: 'london'}},
         },
       });
     });
@@ -163,6 +198,18 @@ describe('Valibot Schematizer', () => {
         theme: {type: 'string'},
         count: {type: 'number'},
         isOpen: {type: 'boolean'},
+      });
+    });
+
+    test('converts Valibot object and array values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          config: v.record(v.string(), v.string()),
+          tags: v.array(v.string()),
+        }),
+      ).toEqual({
+        config: {type: 'object'},
+        tags: {type: 'array'},
       });
     });
 

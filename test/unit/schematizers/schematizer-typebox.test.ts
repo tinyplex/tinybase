@@ -109,13 +109,49 @@ describe('TypeBox Schematizer', () => {
         schematizer.toTablesSchema({
           pets: Type.Object({
             species: Type.String(),
-            tags: Type.Array(Type.String()),
-            metadata: Type.Record(Type.String(), Type.String()),
+            birthday: Type.Date(),
           }),
         }),
       ).toEqual({
         pets: {
           species: {type: 'string'},
+        },
+      });
+    });
+
+    test('converts TypeBox object and array cells', () => {
+      expect(
+        schematizer.toTablesSchema({
+          pets: Type.Object({
+            species: Type.String(),
+            tags: Type.Array(Type.String()),
+            profile: Type.Record(Type.String(), Type.String()),
+          }),
+        }),
+      ).toEqual({
+        pets: {
+          species: {type: 'string'},
+          tags: {type: 'array'},
+          profile: {type: 'object'},
+        },
+      });
+    });
+
+    test('converts TypeBox object and array cell defaults', () => {
+      expect(
+        schematizer.toTablesSchema({
+          pets: Type.Object({
+            tags: Type.Array(Type.String(), {default: ['cat', 'dog']}),
+            profile: Type.Object(
+              {city: Type.String()},
+              {default: {city: 'london'}},
+            ),
+          }),
+        }),
+      ).toEqual({
+        pets: {
+          tags: {type: 'array', default: ['cat', 'dog']},
+          profile: {type: 'object', default: {city: 'london'}},
         },
       });
     });
@@ -152,6 +188,18 @@ describe('TypeBox Schematizer', () => {
         theme: {type: 'string'},
         count: {type: 'number'},
         isOpen: {type: 'boolean'},
+      });
+    });
+
+    test('converts TypeBox object and array values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          config: Type.Record(Type.String(), Type.String()),
+          tags: Type.Array(Type.String()),
+        }),
+      ).toEqual({
+        config: {type: 'object'},
+        tags: {type: 'array'},
       });
     });
 

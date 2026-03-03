@@ -109,13 +109,46 @@ describe('Zod Schematizer', () => {
         schematizer.toTablesSchema({
           pets: z.object({
             species: z.string(),
-            tags: z.array(z.string()),
-            metadata: z.record(z.string(), z.string()),
+            birthday: z.date(),
           }),
         }),
       ).toEqual({
         pets: {
           species: {type: 'string'},
+        },
+      });
+    });
+
+    test('converts Zod object and array cells', () => {
+      expect(
+        schematizer.toTablesSchema({
+          pets: z.object({
+            species: z.string(),
+            tags: z.array(z.string()),
+            profile: z.record(z.string(), z.string()),
+          }),
+        }),
+      ).toEqual({
+        pets: {
+          species: {type: 'string'},
+          tags: {type: 'array'},
+          profile: {type: 'object'},
+        },
+      });
+    });
+
+    test('converts Zod object and array cell defaults', () => {
+      expect(
+        schematizer.toTablesSchema({
+          pets: z.object({
+            tags: z.array(z.string()).default(['cat', 'dog']),
+            profile: z.record(z.string(), z.string()).default({city: 'london'}),
+          }),
+        }),
+      ).toEqual({
+        pets: {
+          tags: {type: 'array', default: ['cat', 'dog']},
+          profile: {type: 'object', default: {city: 'london'}},
         },
       });
     });
@@ -163,6 +196,18 @@ describe('Zod Schematizer', () => {
         theme: {type: 'string'},
         count: {type: 'number'},
         isOpen: {type: 'boolean'},
+      });
+    });
+
+    test('converts Zod object and array values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          config: z.record(z.string(), z.string()),
+          tags: z.array(z.string()),
+        }),
+      ).toEqual({
+        config: {type: 'object'},
+        tags: {type: 'array'},
       });
     });
 

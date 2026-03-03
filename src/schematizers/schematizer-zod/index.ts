@@ -1,5 +1,11 @@
 import type {createZodSchematizer as createZodSchematizerDecl} from '../../@types/schematizers/schematizer-zod/index.d.ts';
-import {DEFAULT, NULLABLE, OPTIONAL} from '../../common/strings.ts';
+import {
+  DEFAULT,
+  NULLABLE,
+  OBJECT,
+  OPTIONAL,
+  RECORD,
+} from '../../common/strings.ts';
 import {createCustomSchematizer} from '../index.ts';
 
 const unwrapSchema = (
@@ -15,7 +21,9 @@ const unwrapSchema = (
       ? unwrapSchema(schema.def.innerType, defaultValue, true)
       : type === DEFAULT
         ? unwrapSchema(schema.def.innerType, schema.def.defaultValue, allowNull)
-        : [schema, defaultValue, allowNull ?? false];
+        : type === RECORD
+          ? [{type: OBJECT}, defaultValue, allowNull ?? false]
+          : [schema, defaultValue, allowNull ?? false];
 };
 
 const getProperties = (schema: any) => schema?.def?.shape;

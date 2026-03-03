@@ -10,12 +10,14 @@ import {
   size,
 } from '../../common/other.ts';
 import {
+  ARRAY,
   BOOLEAN,
   DEFAULT,
   DOMAIN,
   KEY,
   OPTIONAL,
   REQUIRED,
+  SEQUENCE,
   TYPE,
   UNIT,
   _VALUE,
@@ -35,8 +37,8 @@ const unwrapSchema = (
 
     if (
       size(schema) === 2 &&
-      isFalse(schema[0]?.[UNIT]) &&
-      isTrue(schema[1]?.[UNIT])
+      isFalse((schema[0] as any)?.[UNIT]) &&
+      isTrue((schema[1] as any)?.[UNIT])
     ) {
       return [{[TYPE]: BOOLEAN}, defaultValue, allowNull ?? false];
     }
@@ -50,6 +52,13 @@ const unwrapSchema = (
         return unwrapSchema(nonNullItem, defaultValue, true);
       }
     }
+  }
+
+  if (
+    !isArray(schema) &&
+    !isUndefined(schema?.[SEQUENCE] ?? schema?.json?.[SEQUENCE])
+  ) {
+    return [{[TYPE]: ARRAY}, defaultValue, allowNull ?? false];
   }
 
   return [
@@ -88,7 +97,7 @@ const unwrapSchemaWithDefaults = (
   allowNull?: boolean,
 ): [any, any, boolean] => {
   if (isArray(schema) && size(schema) === 3 && schema[1] === '=') {
-    const schemaValue = schema[0]?.json ?? schema[0];
+    const schemaValue = (schema[0] as any)?.json ?? schema[0];
     return unwrapSchema(schemaValue, schema[2], allowNull);
   }
 

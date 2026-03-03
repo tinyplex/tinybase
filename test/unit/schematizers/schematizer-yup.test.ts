@@ -107,12 +107,30 @@ describe('Yup Schematizer', () => {
         schematizer.toTablesSchema({
           pets: yup.object({
             species: yup.string(),
-            data: yup.array(),
+            birthday: yup.date(),
           }),
         }),
       ).toEqual({
         pets: {
           species: {type: 'string'},
+        },
+      });
+    });
+
+    test('converts Yup object and array cells', () => {
+      expect(
+        schematizer.toTablesSchema({
+          pets: yup.object({
+            species: yup.string(),
+            tags: yup.array(),
+            profile: yup.object(),
+          }),
+        }),
+      ).toEqual({
+        pets: {
+          species: {type: 'string'},
+          tags: {type: 'array'},
+          profile: {type: 'object'},
         },
       });
     });
@@ -146,6 +164,18 @@ describe('Yup Schematizer', () => {
       ).toEqual({
         open: {type: 'boolean'},
         employees: {type: 'number'},
+      });
+    });
+
+    test('converts Yup object and array values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          config: yup.object(),
+          tags: yup.array(),
+        }),
+      ).toEqual({
+        config: {type: 'object'},
+        tags: {type: 'array'},
       });
     });
 

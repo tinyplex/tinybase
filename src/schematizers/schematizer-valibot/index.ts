@@ -1,5 +1,12 @@
 import type {createValibotSchematizer as createValibotSchematizerDecl} from '../../@types/schematizers/schematizer-valibot/index.d.ts';
-import {FALLBACK, NULLABLE, OPTIONAL, WRAPPED} from '../../common/strings.ts';
+import {
+  FALLBACK,
+  NULLABLE,
+  OBJECT,
+  OPTIONAL,
+  RECORD,
+  WRAPPED,
+} from '../../common/strings.ts';
 import {createCustomSchematizer} from '../index.ts';
 
 const unwrapSchema = (
@@ -13,7 +20,13 @@ const unwrapSchema = (
     ? unwrapSchema(schema[WRAPPED], defaultValue, allowNull)
     : type === NULLABLE
       ? unwrapSchema(schema[WRAPPED], defaultValue, true)
-      : [schema, defaultValue ?? schema?.[FALLBACK], allowNull ?? false];
+      : type === RECORD
+        ? [
+            {type: OBJECT},
+            defaultValue ?? schema?.[FALLBACK],
+            allowNull ?? false,
+          ]
+        : [schema, defaultValue ?? schema?.[FALLBACK], allowNull ?? false];
 };
 
 const getProperties = (schema: any) => schema?.entries;

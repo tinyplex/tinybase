@@ -109,13 +109,30 @@ describe('ArkType Schematizer', () => {
         schematizer.toTablesSchema({
           pets: type({
             species: 'string',
-            tags: 'string[]',
-            metadata: 'Record<string, string>',
+            score: 'bigint',
           }),
         }),
       ).toEqual({
         pets: {
           species: {type: 'string'},
+        },
+      });
+    });
+
+    test('converts ArkType object and array cells', () => {
+      expect(
+        schematizer.toTablesSchema({
+          pets: type({
+            species: 'string',
+            tags: 'string[]',
+            profile: 'object',
+          }),
+        }),
+      ).toEqual({
+        pets: {
+          species: {type: 'string'},
+          tags: {type: 'array'},
+          profile: {type: 'object'},
         },
       });
     });
@@ -161,6 +178,18 @@ describe('ArkType Schematizer', () => {
         theme: {type: 'string'},
         count: {type: 'number'},
         isOpen: {type: 'boolean'},
+      });
+    });
+
+    test('converts ArkType object and array values', () => {
+      expect(
+        schematizer.toValuesSchema({
+          profile: 'object',
+          tags: type('string[]'),
+        }),
+      ).toEqual({
+        profile: {type: 'object'},
+        tags: {type: 'array'},
       });
     });
 
