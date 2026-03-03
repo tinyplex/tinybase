@@ -182,6 +182,26 @@ describe.each(Object.entries(ALL_VARIANTS))(
         });
       });
 
+      test('objects and arrays', async () => {
+        store
+          .setTables({t1: {r1: {c1: {k1: 'v'}, c2: [1, 2, 3]}}})
+          .setValues({v1: {x: 1}, v2: [4, 5]});
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          tinybase: [
+            {_id: columnType, store: columnType},
+            [
+              {
+                _id: '_',
+                store:
+                  // eslint-disable-next-line max-len
+                  '[{"t1":{"r1":{"c1":{"k1":"v"},"c2":[1,2,3]}}},{"v1":{"x":1},"v2":[4,5]}]',
+              },
+            ],
+          ],
+        });
+      });
+
       test('both, change, and then load again', async () => {
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await persister.save();
@@ -426,6 +446,31 @@ describe.each(Object.entries(ALL_VARIANTS))(
         });
         await persister.load();
         expect(store.getContent()).toEqual([{}, {v1: 1}]);
+      });
+
+      test('objects and arrays', async () => {
+        await setDatabase(db, {
+          tinybase: [
+            'CREATE TABLE "tinybase" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "store" ' +
+              columnType +
+              ')',
+            [
+              {
+                _id: '_',
+                store:
+                  // eslint-disable-next-line max-len
+                  '[{"t1":{"r1":{"c1":{"k1":"v"},"c2":[1,2,3]}}},{"v1":{"x":1},"v2":[4,5]}]',
+              },
+            ],
+          ],
+        });
+        await persister.load();
+        expect(store.getContent()).toEqual([
+          {t1: {r1: {c1: {k1: 'v'}, c2: [1, 2, 3]}}},
+          {v1: {x: 1}, v2: [4, 5]},
+        ]);
       });
 
       describe('both', () => {
