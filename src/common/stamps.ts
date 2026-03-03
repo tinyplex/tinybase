@@ -22,11 +22,6 @@ export const stampClone = <Value>([value, hlc]: Stamp<
   boolean
 >): Stamp<Value> => stampNew(value, hlc);
 
-const stampCloneWithHash = <Value>([value, hlc, hash]: Stamp<
-  Value,
-  true
->): Stamp<Value, true> => [value, hlc, hash];
-
 export const stampNew = <Value>(
   value: Value,
   hlc: Hlc | undefined,
@@ -72,7 +67,7 @@ export const stampNewMap = <Thing>(hlc = EMPTY_STRING): StampMap<Thing> => [
 
 export const stampMapToObjWithHash = <From, To = From>(
   [map, hlc, hash]: Stamp<IdMap<From>, true>,
-  mapper: (mapValue: From) => To = stampCloneWithHash as any,
+  mapper: (mapValue: From) => To,
 ): Stamp<IdObj<To>, true> => [mapToObj(map, mapper), hlc, hash];
 
 export const stampMapToObjWithoutHash = <From, To = From>(
