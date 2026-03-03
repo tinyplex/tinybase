@@ -17,17 +17,17 @@ describe('TypeBox Schematizer', () => {
     test('converts basic TypeBox object schema', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: Type.Object({
-            species: Type.String(),
-            age: Type.Number(),
-            sold: Type.Boolean(),
+          t1: Type.Object({
+            c1: Type.String(),
+            c2: Type.Number(),
+            c3: Type.Boolean(),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          age: {type: 'number'},
-          sold: {type: 'boolean'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'number'},
+          c3: {type: 'boolean'},
         },
       });
     });
@@ -35,17 +35,17 @@ describe('TypeBox Schematizer', () => {
     test('converts TypeBox schema with defaults', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: Type.Object({
-            species: Type.String(),
-            sold: Type.Boolean({default: false}),
-            price: Type.Number({default: 0}),
+          t1: Type.Object({
+            c1: Type.String(),
+            c2: Type.Boolean({default: false}),
+            c3: Type.Number({default: 0}),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          sold: {type: 'boolean', default: false},
-          price: {type: 'number', default: 0},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'boolean', default: false},
+          c3: {type: 'number', default: 0},
         },
       });
     });
@@ -53,15 +53,15 @@ describe('TypeBox Schematizer', () => {
     test('converts TypeBox schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: Type.Object({
-            species: Type.Union([Type.String(), Type.Null()]),
-            age: Type.Number(),
+          t1: Type.Object({
+            c1: Type.Union([Type.String(), Type.Null()]),
+            c2: Type.Number(),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string', allowNull: true},
-          age: {type: 'number'},
+        t1: {
+          c1: {type: 'string', allowNull: true},
+          c2: {type: 'number'},
         },
       });
     });
@@ -69,15 +69,15 @@ describe('TypeBox Schematizer', () => {
     test('converts TypeBox schema with optional fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: Type.Object({
-            species: Type.String(),
-            nickname: Type.Optional(Type.String()),
+          t1: Type.Object({
+            c1: Type.String(),
+            c2: Type.Optional(Type.String()),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          nickname: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'string'},
         },
       });
     });
@@ -85,21 +85,21 @@ describe('TypeBox Schematizer', () => {
     test('converts multiple tables', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: Type.Object({
-            species: Type.String(),
+          t1: Type.Object({
+            c1: Type.String(),
           }),
-          stores: Type.Object({
-            name: Type.String(),
-            city: Type.String(),
+          t2: Type.Object({
+            c1: Type.String(),
+            c2: Type.String(),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
         },
-        stores: {
-          name: {type: 'string'},
-          city: {type: 'string'},
+        t2: {
+          c1: {type: 'string'},
+          c2: {type: 'string'},
         },
       });
     });
@@ -107,14 +107,14 @@ describe('TypeBox Schematizer', () => {
     test('ignores unsupported TypeBox types', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: Type.Object({
-            species: Type.String(),
-            birthday: Type.Date(),
+          t1: Type.Object({
+            c1: Type.String(),
+            c2: Type.Date(),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
         },
       });
     });
@@ -122,17 +122,17 @@ describe('TypeBox Schematizer', () => {
     test('converts TypeBox object and array cells', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: Type.Object({
-            species: Type.String(),
-            tags: Type.Array(Type.String()),
-            profile: Type.Record(Type.String(), Type.String()),
+          t1: Type.Object({
+            c1: Type.String(),
+            c2: Type.Array(Type.String()),
+            c3: Type.Record(Type.String(), Type.String()),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          tags: {type: 'array'},
-          profile: {type: 'object'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'array'},
+          c3: {type: 'object'},
         },
       });
     });
@@ -140,39 +140,32 @@ describe('TypeBox Schematizer', () => {
     test('converts TypeBox object and array cell defaults', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: Type.Object({
-            tags: Type.Array(Type.String(), {default: ['cat', 'dog']}),
-            profile: Type.Object(
-              {city: Type.String()},
-              {default: {city: 'london'}},
-            ),
+          t1: Type.Object({
+            c1: Type.Array(Type.String(), {default: ['a', 'b']}),
+            c2: Type.Object({k: Type.String()}, {default: {k: 'v'}}),
           }),
         }),
       ).toEqual({
-        pets: {
-          tags: {type: 'array', default: ['cat', 'dog']},
-          profile: {type: 'object', default: {city: 'london'}},
+        t1: {
+          c1: {type: 'array', default: ['a', 'b']},
+          c2: {type: 'object', default: {k: 'v'}},
         },
       });
     });
 
     test('works with TinyBase store', () => {
       const tablesSchema = schematizer.toTablesSchema({
-        pets: Type.Object({
-          species: Type.String(),
-          age: Type.Number(),
-          sold: Type.Boolean({default: false}),
+        t1: Type.Object({
+          c1: Type.String(),
+          c2: Type.Number(),
+          c3: Type.Boolean({default: false}),
         }),
       });
 
       const store = createStore().setTablesSchema(tablesSchema);
-      store.setRow('pets', 'fido', {species: 'dog', age: 3});
+      store.setRow('t1', 'r1', {c1: 'a', c2: 1});
 
-      expect(store.getRow('pets', 'fido')).toEqual({
-        species: 'dog',
-        age: 3,
-        sold: false,
-      });
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a', c2: 1, c3: false});
     });
   });
 
@@ -180,60 +173,60 @@ describe('TypeBox Schematizer', () => {
     test('converts basic TypeBox schemas', () => {
       expect(
         schematizer.toValuesSchema({
-          theme: Type.String(),
-          count: Type.Number(),
-          isOpen: Type.Boolean(),
+          v1: Type.String(),
+          v2: Type.Number(),
+          v3: Type.Boolean(),
         }),
       ).toEqual({
-        theme: {type: 'string'},
-        count: {type: 'number'},
-        isOpen: {type: 'boolean'},
+        v1: {type: 'string'},
+        v2: {type: 'number'},
+        v3: {type: 'boolean'},
       });
     });
 
     test('converts TypeBox object and array values', () => {
       expect(
         schematizer.toValuesSchema({
-          config: Type.Record(Type.String(), Type.String()),
-          tags: Type.Array(Type.String()),
+          v1: Type.Record(Type.String(), Type.String()),
+          v2: Type.Array(Type.String()),
         }),
       ).toEqual({
-        config: {type: 'object'},
-        tags: {type: 'array'},
+        v1: {type: 'object'},
+        v2: {type: 'array'},
       });
     });
 
     test('converts TypeBox schemas with defaults', () => {
       expect(
         schematizer.toValuesSchema({
-          theme: Type.String({default: 'light'}),
-          count: Type.Number({default: 0}),
-          isOpen: Type.Boolean({default: true}),
+          v1: Type.String({default: 'a'}),
+          v2: Type.Number({default: 0}),
+          v3: Type.Boolean({default: true}),
         }),
       ).toEqual({
-        theme: {type: 'string', default: 'light'},
-        count: {type: 'number', default: 0},
-        isOpen: {type: 'boolean', default: true},
+        v1: {type: 'string', default: 'a'},
+        v2: {type: 'number', default: 0},
+        v3: {type: 'boolean', default: true},
       });
     });
 
     test('works with TinyBase store', () => {
       const valuesSchema = schematizer.toValuesSchema({
-        theme: Type.String({default: 'light'}),
-        count: Type.Number(),
+        v1: Type.String({default: 'a'}),
+        v2: Type.Number(),
       });
 
       const store = createStore().setValuesSchema(valuesSchema);
 
       expect(store.getValuesSchemaJson()).toEqual(
         JSON.stringify({
-          theme: {type: 'string', default: 'light'},
-          count: {type: 'number'},
+          v1: {type: 'string', default: 'a'},
+          v2: {type: 'number'},
         }),
       );
 
-      store.setValue('count', 42);
-      expect(store.getValues()).toEqual({theme: 'light', count: 42});
+      store.setValue('v2', 1);
+      expect(store.getValues()).toEqual({v1: 'a', v2: 1});
     });
   });
 });

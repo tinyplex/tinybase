@@ -17,17 +17,17 @@ describe('Effect Schematizer', () => {
     test('converts basic Effect object schema', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: S.Struct({
-            species: S.String,
-            age: S.Number,
-            sold: S.Boolean,
+          t1: S.Struct({
+            c1: S.String,
+            c2: S.Number,
+            c3: S.Boolean,
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          age: {type: 'number'},
-          sold: {type: 'boolean'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'number'},
+          c3: {type: 'boolean'},
         },
       });
     });
@@ -35,15 +35,15 @@ describe('Effect Schematizer', () => {
     test('converts Effect schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: S.Struct({
-            species: S.NullOr(S.String),
-            age: S.Number,
+          t1: S.Struct({
+            c1: S.NullOr(S.String),
+            c2: S.Number,
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string', allowNull: true},
-          age: {type: 'number'},
+        t1: {
+          c1: {type: 'string', allowNull: true},
+          c2: {type: 'number'},
         },
       });
     });
@@ -51,15 +51,15 @@ describe('Effect Schematizer', () => {
     test('converts Effect schema with optional fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: S.Struct({
-            species: S.String,
-            nickname: S.optional(S.String),
+          t1: S.Struct({
+            c1: S.String,
+            c2: S.optional(S.String),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          nickname: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'string'},
         },
       });
     });
@@ -67,19 +67,19 @@ describe('Effect Schematizer', () => {
     test('converts multiple tables', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: S.Struct({
-            species: S.String,
+          t1: S.Struct({
+            c1: S.String,
           }),
-          owners: S.Struct({
-            name: S.String,
+          t2: S.Struct({
+            c1: S.String,
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
         },
-        owners: {
-          name: {type: 'string'},
+        t2: {
+          c1: {type: 'string'},
         },
       });
     });
@@ -87,14 +87,14 @@ describe('Effect Schematizer', () => {
     test('ignores unsupported Effect types', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: S.Struct({
-            species: S.String,
-            birthday: S.DateFromSelf,
+          t1: S.Struct({
+            c1: S.String,
+            c2: S.DateFromSelf,
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
         },
       });
     });
@@ -102,17 +102,17 @@ describe('Effect Schematizer', () => {
     test('converts Effect object and array cells', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: S.Struct({
-            species: S.String,
-            tags: S.Array(S.String),
-            profile: S.Struct({city: S.String}),
+          t1: S.Struct({
+            c1: S.String,
+            c2: S.Array(S.String),
+            c3: S.Struct({k: S.String}),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          tags: {type: 'array'},
-          profile: {type: 'object'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'array'},
+          c3: {type: 'object'},
         },
       });
     });
@@ -120,19 +120,16 @@ describe('Effect Schematizer', () => {
     test('works with TinyBase store', () => {
       const store = createStore().setTablesSchema(
         schematizer.toTablesSchema({
-          pets: S.Struct({
-            species: S.String,
-            age: S.Number,
+          t1: S.Struct({
+            c1: S.String,
+            c2: S.Number,
           }),
         }),
       );
 
-      store.setRow('pets', 'fido', {species: 'dog', age: 3});
+      store.setRow('t1', 'r1', {c1: 'a', c2: 1});
 
-      expect(store.getRow('pets', 'fido')).toEqual({
-        species: 'dog',
-        age: 3,
-      });
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a', c2: 1});
     });
   });
 
@@ -140,50 +137,50 @@ describe('Effect Schematizer', () => {
     test('converts Effect object and array values', () => {
       expect(
         schematizer.toValuesSchema({
-          config: S.Record({key: S.String, value: S.String}),
-          tags: S.Array(S.String),
+          v1: S.Record({key: S.String, value: S.String}),
+          v2: S.Array(S.String),
         }),
       ).toEqual({
-        config: {type: 'object'},
-        tags: {type: 'array'},
+        v1: {type: 'object'},
+        v2: {type: 'array'},
       });
     });
 
     test('converts basic Effect schemas', () => {
       expect(
         schematizer.toValuesSchema({
-          open: S.Boolean,
-          employees: S.Number,
+          v1: S.Boolean,
+          v2: S.Number,
         }),
       ).toEqual({
-        open: {type: 'boolean'},
-        employees: {type: 'number'},
+        v1: {type: 'boolean'},
+        v2: {type: 'number'},
       });
     });
 
     test('converts Effect schemas with nullable', () => {
       expect(
         schematizer.toValuesSchema({
-          open: S.Boolean,
-          manager: S.NullOr(S.String),
+          v1: S.Boolean,
+          v2: S.NullOr(S.String),
         }),
       ).toEqual({
-        open: {type: 'boolean'},
-        manager: {type: 'string', allowNull: true},
+        v1: {type: 'boolean'},
+        v2: {type: 'string', allowNull: true},
       });
     });
 
     test('works with TinyBase store', () => {
       const store = createStore().setValuesSchema(
         schematizer.toValuesSchema({
-          open: S.Boolean,
-          employees: S.Number,
+          v1: S.Boolean,
+          v2: S.Number,
         }),
       );
 
-      store.setValues({open: true, employees: 5});
+      store.setValues({v1: true, v2: 1});
 
-      expect(store.getValues()).toEqual({open: true, employees: 5});
+      expect(store.getValues()).toEqual({v1: true, v2: 1});
     });
   });
 });

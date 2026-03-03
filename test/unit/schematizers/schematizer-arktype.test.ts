@@ -17,17 +17,17 @@ describe('ArkType Schematizer', () => {
     test('converts basic ArkType object schema', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: type({
-            species: 'string',
-            age: 'number',
-            sold: 'boolean',
+          t1: type({
+            c1: 'string',
+            c2: 'number',
+            c3: 'boolean',
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          age: {type: 'number'},
-          sold: {type: 'boolean'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'number'},
+          c3: {type: 'boolean'},
         },
       });
     });
@@ -35,17 +35,17 @@ describe('ArkType Schematizer', () => {
     test('converts ArkType schema with defaults', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: type({
-            species: 'string',
-            sold: type('boolean').default(false),
-            price: type('number').default(0),
+          t1: type({
+            c1: 'string',
+            c2: type('boolean').default(false),
+            c3: type('number').default(0),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          sold: {type: 'boolean', default: false},
-          price: {type: 'number', default: 0},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'boolean', default: false},
+          c3: {type: 'number', default: 0},
         },
       });
     });
@@ -53,15 +53,15 @@ describe('ArkType Schematizer', () => {
     test('converts ArkType schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: type({
-            species: 'string | null',
-            age: 'number',
+          t1: type({
+            c1: 'string | null',
+            c2: 'number',
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string', allowNull: true},
-          age: {type: 'number'},
+        t1: {
+          c1: {type: 'string', allowNull: true},
+          c2: {type: 'number'},
         },
       });
     });
@@ -69,15 +69,15 @@ describe('ArkType Schematizer', () => {
     test('converts ArkType schema with optional fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: type({
-            species: 'string',
-            nickname: 'string?',
+          t1: type({
+            c1: 'string',
+            c2: 'string?',
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          nickname: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'string'},
         },
       });
     });
@@ -85,21 +85,21 @@ describe('ArkType Schematizer', () => {
     test('converts multiple tables', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: type({
-            species: 'string',
+          t1: type({
+            c1: 'string',
           }),
-          stores: type({
-            name: 'string',
-            city: 'string',
+          t2: type({
+            c1: 'string',
+            c2: 'string',
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
         },
-        stores: {
-          name: {type: 'string'},
-          city: {type: 'string'},
+        t2: {
+          c1: {type: 'string'},
+          c2: {type: 'string'},
         },
       });
     });
@@ -107,14 +107,14 @@ describe('ArkType Schematizer', () => {
     test('ignores unsupported ArkType types', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: type({
-            species: 'string',
-            score: 'bigint',
+          t1: type({
+            c1: 'string',
+            c2: 'bigint',
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
         },
       });
     });
@@ -122,47 +122,41 @@ describe('ArkType Schematizer', () => {
     test('converts ArkType object and array cells', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: type({
-            species: 'string',
-            tags: 'string[]',
-            profile: 'object',
+          t1: type({
+            c1: 'string',
+            c2: 'string[]',
+            c3: 'object',
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          tags: {type: 'array'},
-          profile: {type: 'object'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'array'},
+          c3: {type: 'object'},
         },
       });
     });
 
     test('works with TinyBase store', () => {
-      const arkTypeSchemas = {
-        pets: type({
-          species: 'string',
-          age: 'number',
-          sold: type('boolean').default(false),
+      const tablesSchema = schematizer.toTablesSchema({
+        t1: type({
+          c1: 'string',
+          c2: 'number',
+          c3: type('boolean').default(false),
         }),
-      };
-
-      const tablesSchema = schematizer.toTablesSchema(arkTypeSchemas);
+      });
       const store = createStore().setTablesSchema(tablesSchema);
 
       expect(JSON.parse(store.getTablesSchemaJson())).toEqual({
-        pets: {
-          species: {type: 'string'},
-          age: {type: 'number'},
-          sold: {type: 'boolean', default: false},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'number'},
+          c3: {type: 'boolean', default: false},
         },
       });
 
-      store.setRow('pets', 'fido', {species: 'dog', age: 3});
-      expect(store.getRow('pets', 'fido')).toEqual({
-        species: 'dog',
-        age: 3,
-        sold: false,
-      });
+      store.setRow('t1', 'r1', {c1: 'a', c2: 1});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a', c2: 1, c3: false});
     });
   });
 
@@ -170,62 +164,57 @@ describe('ArkType Schematizer', () => {
     test('converts basic ArkType schemas', () => {
       expect(
         schematizer.toValuesSchema({
-          theme: 'string',
-          count: 'number',
-          isOpen: 'boolean',
+          v1: 'string',
+          v2: 'number',
+          v3: 'boolean',
         }),
       ).toEqual({
-        theme: {type: 'string'},
-        count: {type: 'number'},
-        isOpen: {type: 'boolean'},
+        v1: {type: 'string'},
+        v2: {type: 'number'},
+        v3: {type: 'boolean'},
       });
     });
 
     test('converts ArkType object and array values', () => {
       expect(
         schematizer.toValuesSchema({
-          profile: 'object',
-          tags: type('string[]'),
+          v1: 'object',
+          v2: type('string[]'),
         }),
       ).toEqual({
-        profile: {type: 'object'},
-        tags: {type: 'array'},
+        v1: {type: 'object'},
+        v2: {type: 'array'},
       });
     });
 
     test('converts ArkType schemas with defaults', () => {
       expect(
         schematizer.toValuesSchema({
-          theme: type('string').default('light'),
-          count: type('number').default(0),
-          isOpen: type('boolean').default(true),
+          v1: type('string').default('a'),
+          v2: type('number').default(0),
+          v3: type('boolean').default(true),
         }),
       ).toEqual({
-        theme: {type: 'string', default: 'light'},
-        count: {type: 'number', default: 0},
-        isOpen: {type: 'boolean', default: true},
+        v1: {type: 'string', default: 'a'},
+        v2: {type: 'number', default: 0},
+        v3: {type: 'boolean', default: true},
       });
     });
 
     test('works with TinyBase store', () => {
-      const arkTypeSchemas = {
-        theme: type('string').default('light'),
-        count: 'number',
-      };
-
-      const valuesSchema = schematizer.toValuesSchema(arkTypeSchemas);
+      const valuesSchema = schematizer.toValuesSchema({
+        v1: type('string').default('a'),
+        v2: 'number',
+      });
       const store = createStore().setValuesSchema(valuesSchema);
 
       expect(JSON.parse(store.getValuesSchemaJson())).toEqual({
-        theme: {type: 'string', default: 'light'},
-        count: {type: 'number'},
+        v1: {type: 'string', default: 'a'},
+        v2: {type: 'number'},
       });
 
-      store.setValue('count', 42);
-      expect(store.getValues()).toEqual({
-        theme: 'light',
-        count: 42,
-      });
+      store.setValue('v2', 1);
+      expect(store.getValues()).toEqual({v1: 'a', v2: 1});
     });
   });
 });

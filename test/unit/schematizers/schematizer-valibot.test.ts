@@ -17,17 +17,17 @@ describe('Valibot Schematizer', () => {
     test('converts basic Valibot object schema', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: v.object({
-            species: v.string(),
-            age: v.number(),
-            sold: v.boolean(),
+          t1: v.object({
+            c1: v.string(),
+            c2: v.number(),
+            c3: v.boolean(),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          age: {type: 'number'},
-          sold: {type: 'boolean'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'number'},
+          c3: {type: 'boolean'},
         },
       });
     });
@@ -35,17 +35,17 @@ describe('Valibot Schematizer', () => {
     test('converts Valibot schema with fallbacks', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: v.object({
-            species: v.string(),
-            sold: v.fallback(v.boolean(), false),
-            price: v.fallback(v.number(), 0),
+          t1: v.object({
+            c1: v.string(),
+            c2: v.fallback(v.boolean(), false),
+            c3: v.fallback(v.number(), 0),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          sold: {type: 'boolean', default: false},
-          price: {type: 'number', default: 0},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'boolean', default: false},
+          c3: {type: 'number', default: 0},
         },
       });
     });
@@ -53,15 +53,15 @@ describe('Valibot Schematizer', () => {
     test('converts Valibot schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: v.object({
-            species: v.nullable(v.string()),
-            age: v.number(),
+          t1: v.object({
+            c1: v.nullable(v.string()),
+            c2: v.number(),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string', allowNull: true},
-          age: {type: 'number'},
+        t1: {
+          c1: {type: 'string', allowNull: true},
+          c2: {type: 'number'},
         },
       });
     });
@@ -69,15 +69,15 @@ describe('Valibot Schematizer', () => {
     test('converts Valibot schema with optional fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: v.object({
-            species: v.string(),
-            nickname: v.optional(v.string()),
+          t1: v.object({
+            c1: v.string(),
+            c2: v.optional(v.string()),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          nickname: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'string'},
         },
       });
     });
@@ -85,21 +85,21 @@ describe('Valibot Schematizer', () => {
     test('converts multiple tables', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: v.object({
-            species: v.string(),
+          t1: v.object({
+            c1: v.string(),
           }),
-          stores: v.object({
-            name: v.string(),
-            city: v.string(),
+          t2: v.object({
+            c1: v.string(),
+            c2: v.string(),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
         },
-        stores: {
-          name: {type: 'string'},
-          city: {type: 'string'},
+        t2: {
+          c1: {type: 'string'},
+          c2: {type: 'string'},
         },
       });
     });
@@ -107,14 +107,14 @@ describe('Valibot Schematizer', () => {
     test('ignores unsupported Valibot types', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: v.object({
-            species: v.string(),
-            coords: v.tuple([v.number(), v.number()]),
+          t1: v.object({
+            c1: v.string(),
+            c2: v.tuple([v.number(), v.number()]),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
         },
       });
     });
@@ -122,17 +122,17 @@ describe('Valibot Schematizer', () => {
     test('converts Valibot object and array cells', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: v.object({
-            species: v.string(),
-            tags: v.array(v.string()),
-            profile: v.record(v.string(), v.string()),
+          t1: v.object({
+            c1: v.string(),
+            c2: v.array(v.string()),
+            c3: v.record(v.string(), v.string()),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          tags: {type: 'array'},
-          profile: {type: 'object'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'array'},
+          c3: {type: 'object'},
         },
       });
     });
@@ -140,49 +140,41 @@ describe('Valibot Schematizer', () => {
     test('converts Valibot object and array cell defaults', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: v.object({
-            tags: v.fallback(v.array(v.string()), ['cat', 'dog']),
-            profile: v.fallback(v.record(v.string(), v.string()), {
-              city: 'london',
-            }),
+          t1: v.object({
+            c1: v.fallback(v.array(v.string()), ['a', 'b']),
+            c2: v.fallback(v.record(v.string(), v.string()), {k: 'v'}),
           }),
         }),
       ).toEqual({
-        pets: {
-          tags: {type: 'array', default: ['cat', 'dog']},
-          profile: {type: 'object', default: {city: 'london'}},
+        t1: {
+          c1: {type: 'array', default: ['a', 'b']},
+          c2: {type: 'object', default: {k: 'v'}},
         },
       });
     });
 
     test('works with TinyBase store', () => {
-      const valibotSchemas = {
-        pets: v.object({
-          species: v.string(),
-          age: v.number(),
-          sold: v.fallback(v.boolean(), false),
+      const tablesSchema = schematizer.toTablesSchema({
+        t1: v.object({
+          c1: v.string(),
+          c2: v.number(),
+          c3: v.fallback(v.boolean(), false),
         }),
-      };
-
-      const tablesSchema = schematizer.toTablesSchema(valibotSchemas);
+      });
       const store = createStore().setTablesSchema(tablesSchema);
 
       expect(store.getTablesSchemaJson()).toEqual(
         JSON.stringify({
-          pets: {
-            species: {type: 'string'},
-            age: {type: 'number'},
-            sold: {type: 'boolean', default: false},
+          t1: {
+            c1: {type: 'string'},
+            c2: {type: 'number'},
+            c3: {type: 'boolean', default: false},
           },
         }),
       );
 
-      store.setRow('pets', 'fido', {species: 'dog', age: 3});
-      expect(store.getRow('pets', 'fido')).toEqual({
-        species: 'dog',
-        age: 3,
-        sold: false,
-      });
+      store.setRow('t1', 'r1', {c1: 'a', c2: 1});
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a', c2: 1, c3: false});
     });
   });
 
@@ -190,64 +182,59 @@ describe('Valibot Schematizer', () => {
     test('converts basic Valibot schemas', () => {
       expect(
         schematizer.toValuesSchema({
-          theme: v.string(),
-          count: v.number(),
-          isOpen: v.boolean(),
+          v1: v.string(),
+          v2: v.number(),
+          v3: v.boolean(),
         }),
       ).toEqual({
-        theme: {type: 'string'},
-        count: {type: 'number'},
-        isOpen: {type: 'boolean'},
+        v1: {type: 'string'},
+        v2: {type: 'number'},
+        v3: {type: 'boolean'},
       });
     });
 
     test('converts Valibot object and array values', () => {
       expect(
         schematizer.toValuesSchema({
-          config: v.record(v.string(), v.string()),
-          tags: v.array(v.string()),
+          v1: v.record(v.string(), v.string()),
+          v2: v.array(v.string()),
         }),
       ).toEqual({
-        config: {type: 'object'},
-        tags: {type: 'array'},
+        v1: {type: 'object'},
+        v2: {type: 'array'},
       });
     });
 
     test('converts Valibot schemas with fallbacks', () => {
       expect(
         schematizer.toValuesSchema({
-          theme: v.fallback(v.string(), 'light'),
-          count: v.fallback(v.number(), 0),
-          isOpen: v.fallback(v.boolean(), true),
+          v1: v.fallback(v.string(), 'a'),
+          v2: v.fallback(v.number(), 0),
+          v3: v.fallback(v.boolean(), true),
         }),
       ).toEqual({
-        theme: {type: 'string', default: 'light'},
-        count: {type: 'number', default: 0},
-        isOpen: {type: 'boolean', default: true},
+        v1: {type: 'string', default: 'a'},
+        v2: {type: 'number', default: 0},
+        v3: {type: 'boolean', default: true},
       });
     });
 
     test('works with TinyBase store', () => {
-      const valibotSchemas = {
-        theme: v.fallback(v.string(), 'light'),
-        count: v.number(),
-      };
-
-      const valuesSchema = schematizer.toValuesSchema(valibotSchemas);
+      const valuesSchema = schematizer.toValuesSchema({
+        v1: v.fallback(v.string(), 'a'),
+        v2: v.number(),
+      });
       const store = createStore().setValuesSchema(valuesSchema);
 
       expect(store.getValuesSchemaJson()).toEqual(
         JSON.stringify({
-          theme: {type: 'string', default: 'light'},
-          count: {type: 'number'},
+          v1: {type: 'string', default: 'a'},
+          v2: {type: 'number'},
         }),
       );
 
-      store.setValue('count', 42);
-      expect(store.getValues()).toEqual({
-        theme: 'light',
-        count: 42,
-      });
+      store.setValue('v2', 1);
+      expect(store.getValues()).toEqual({v1: 'a', v2: 1});
     });
   });
 });

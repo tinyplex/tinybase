@@ -17,17 +17,17 @@ describe('Yup Schematizer', () => {
     test('converts basic Yup object schema', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: yup.object({
-            species: yup.string(),
-            age: yup.number(),
-            sold: yup.boolean(),
+          t1: yup.object({
+            c1: yup.string(),
+            c2: yup.number(),
+            c3: yup.boolean(),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          age: {type: 'number'},
-          sold: {type: 'boolean'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'number'},
+          c3: {type: 'boolean'},
         },
       });
     });
@@ -35,17 +35,17 @@ describe('Yup Schematizer', () => {
     test('converts Yup schema with defaults', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: yup.object({
-            species: yup.string(),
-            sold: yup.boolean().default(false),
-            price: yup.number().default(0),
+          t1: yup.object({
+            c1: yup.string(),
+            c2: yup.boolean().default(false),
+            c3: yup.number().default(0),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          sold: {type: 'boolean', default: false},
-          price: {type: 'number', default: 0},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'boolean', default: false},
+          c3: {type: 'number', default: 0},
         },
       });
     });
@@ -53,15 +53,15 @@ describe('Yup Schematizer', () => {
     test('converts Yup schema with nullable fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: yup.object({
-            species: yup.string().nullable(),
-            age: yup.number(),
+          t1: yup.object({
+            c1: yup.string().nullable(),
+            c2: yup.number(),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string', allowNull: true},
-          age: {type: 'number'},
+        t1: {
+          c1: {type: 'string', allowNull: true},
+          c2: {type: 'number'},
         },
       });
     });
@@ -69,15 +69,15 @@ describe('Yup Schematizer', () => {
     test('converts Yup schema with optional fields', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: yup.object({
-            species: yup.string(),
-            nickname: yup.string().optional(),
+          t1: yup.object({
+            c1: yup.string(),
+            c2: yup.string().optional(),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          nickname: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'string'},
         },
       });
     });
@@ -85,19 +85,19 @@ describe('Yup Schematizer', () => {
     test('converts multiple tables', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: yup.object({
-            species: yup.string(),
+          t1: yup.object({
+            c1: yup.string(),
           }),
-          owners: yup.object({
-            name: yup.string(),
+          t2: yup.object({
+            c1: yup.string(),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
         },
-        owners: {
-          name: {type: 'string'},
+        t2: {
+          c1: {type: 'string'},
         },
       });
     });
@@ -105,14 +105,14 @@ describe('Yup Schematizer', () => {
     test('ignores unsupported Yup types', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: yup.object({
-            species: yup.string(),
-            birthday: yup.date(),
+          t1: yup.object({
+            c1: yup.string(),
+            c2: yup.date(),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
+        t1: {
+          c1: {type: 'string'},
         },
       });
     });
@@ -120,17 +120,17 @@ describe('Yup Schematizer', () => {
     test('converts Yup object and array cells', () => {
       expect(
         schematizer.toTablesSchema({
-          pets: yup.object({
-            species: yup.string(),
-            tags: yup.array(),
-            profile: yup.object(),
+          t1: yup.object({
+            c1: yup.string(),
+            c2: yup.array(),
+            c3: yup.object(),
           }),
         }),
       ).toEqual({
-        pets: {
-          species: {type: 'string'},
-          tags: {type: 'array'},
-          profile: {type: 'object'},
+        t1: {
+          c1: {type: 'string'},
+          c2: {type: 'array'},
+          c3: {type: 'object'},
         },
       });
     });
@@ -138,19 +138,16 @@ describe('Yup Schematizer', () => {
     test('works with TinyBase store', () => {
       const store = createStore().setTablesSchema(
         schematizer.toTablesSchema({
-          pets: yup.object({
-            species: yup.string(),
-            price: yup.number().default(5),
+          t1: yup.object({
+            c1: yup.string(),
+            c2: yup.number().default(0),
           }),
         }),
       );
 
-      store.setRow('pets', 'fido', {species: 'dog'});
+      store.setRow('t1', 'r1', {c1: 'a'});
 
-      expect(store.getRow('pets', 'fido')).toEqual({
-        species: 'dog',
-        price: 5,
-      });
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a', c2: 0});
     });
   });
 
@@ -158,47 +155,47 @@ describe('Yup Schematizer', () => {
     test('converts basic Yup schemas', () => {
       expect(
         schematizer.toValuesSchema({
-          open: yup.boolean(),
-          employees: yup.number(),
+          v1: yup.boolean(),
+          v2: yup.number(),
         }),
       ).toEqual({
-        open: {type: 'boolean'},
-        employees: {type: 'number'},
+        v1: {type: 'boolean'},
+        v2: {type: 'number'},
       });
     });
 
     test('converts Yup object and array values', () => {
       expect(
         schematizer.toValuesSchema({
-          config: yup.object(),
-          tags: yup.array(),
+          v1: yup.object(),
+          v2: yup.array(),
         }),
       ).toEqual({
-        config: {type: 'object'},
-        tags: {type: 'array'},
+        v1: {type: 'object'},
+        v2: {type: 'array'},
       });
     });
 
     test('converts Yup schemas with defaults', () => {
       expect(
         schematizer.toValuesSchema({
-          open: yup.boolean().default(true),
-          employees: yup.number().default(3),
+          v1: yup.boolean().default(true),
+          v2: yup.number().default(0),
         }),
       ).toEqual({
-        open: {type: 'boolean', default: true},
-        employees: {type: 'number', default: 3},
+        v1: {type: 'boolean', default: true},
+        v2: {type: 'number', default: 0},
       });
     });
 
     test('works with TinyBase store', () => {
       const store = createStore().setValuesSchema(
         schematizer.toValuesSchema({
-          open: yup.boolean().default(true),
+          v1: yup.boolean().default(true),
         }),
       );
 
-      expect(store.getValues()).toEqual({open: true});
+      expect(store.getValues()).toEqual({v1: true});
     });
   });
 });
