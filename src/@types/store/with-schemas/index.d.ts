@@ -997,7 +997,7 @@ export interface Store<in out Schemas extends OptionalSchemas> {
     tableId: TableId,
     rowId: Id,
     cellId: CellId,
-  ): CellOrUndefined<Schemas[0], TableId, CellId>;
+  ): DefaultedCellFromSchema<Schemas[0], TableId, CellId>;
 
   /// Store.getValues
   getValues(): Values<Schemas[1]>;

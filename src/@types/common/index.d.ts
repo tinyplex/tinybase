@@ -9,7 +9,7 @@ export type Json = string;
 export type AnyObject = {[key: string]: unknown};
 
 /// AnyArray
-export type AnyArray = unknown[];
+export type AnyArray = unknown[] | readonly unknown[];
 
 /// Ids
 export type Ids = Id[];

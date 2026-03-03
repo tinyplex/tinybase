@@ -1,8 +1,4 @@
-import type {
-  AnyArray,
-  AnyObject,
-  Id,
-} from '../../../common/with-schemas/index.d.ts';
+import type {Id} from '../../../common/with-schemas/index.d.ts';
 import type {
   Cell,
   OptionalSchemas,
@@ -52,7 +48,7 @@ export type CellIsDefaultedFromSchema<
   Then,
   Else,
 > = Schema[TableId][CellId] extends {
-  default: string | number | boolean | AnyObject | AnyArray;
+  default: infer _;
 }
   ? Then
   : Else;
@@ -87,7 +83,7 @@ export type ValueIsDefaultedFromSchema<
   Then,
   Else,
 > = Schema[ValueId] extends {
-  default: string | number | boolean | AnyObject | AnyArray;
+  default: infer _;
 }
   ? Then
   : Else;
