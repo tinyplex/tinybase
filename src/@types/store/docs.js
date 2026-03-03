@@ -6519,9 +6519,9 @@
    * const listenerId = store.addInvalidCellListener(
    *   'pets',
    *   'fido',
-   *   'color',
+   *   'birth',
    *   (store, tableId, rowId, cellId, invalidCells) => {
-   *     console.log('Invalid color cell in fido row in pets table');
+   *     console.log('Invalid birth cell in fido row in pets table');
    *     console.log(invalidCells);
    *   },
    * );
@@ -6662,7 +6662,7 @@
    * const listenerId = store.addInvalidCellListener(
    *   'pets',
    *   'fido',
-   *   'color',
+   *   'birth',
    *   (store, tableId, rowId, cellId, invalidCells) =>
    *     store.setCell(
    *       'meta',
@@ -6737,9 +6737,9 @@
    *
    * const store = createStore().setValues({open: true});
    * const listenerId = store.addInvalidValueListener(
-   *   'open',
+   *   'openDate',
    *   (store, valueId, invalidValues) => {
-   *     console.log('Invalid open value');
+   *     console.log('Invalid openDate value');
    *     console.log(invalidValues);
    *   },
    * );
@@ -6845,7 +6845,7 @@
    *
    * const store = createStore().setValues({open: true});
    * const listenerId = store.addInvalidValueListener(
-   *   'open',
+   *   'openDate',
    *   (store, valueId, invalidValues) =>
    *     store.setValue('invalid_updates', JSON.stringify(invalidValues[0])),
    *   true,
