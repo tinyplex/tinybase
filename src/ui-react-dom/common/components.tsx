@@ -9,7 +9,7 @@ import {
 } from '../../common/cell.ts';
 import {jsonParse, jsonString} from '../../common/json.ts';
 import {isObject, objToArray} from '../../common/obj.ts';
-import {isFalse, isArray, isUndefined} from '../../common/other.ts';
+import {isArray, isFalse, isUndefined} from '../../common/other.ts';
 import {getProps, useCallback, useState} from '../../common/react.ts';
 import {
   _VALUE,
@@ -151,9 +151,7 @@ export const EditableThing = <Thing extends Cell | Value>({
   const [stringThing, setStringThing] = useState<string>();
   const [numberThing, setNumberThing] = useState<number>();
   const [booleanThing, setBooleanThing] = useState<boolean>();
-  const [objectThingJson, setObjectThingJson] = useState<string>(
-    EMPTY_STRING,
-  );
+  const [objectThingJson, setObjectThingJson] = useState<string>(EMPTY_STRING);
   const [arrayThingJson, setArrayThingJson] = useState<string>(EMPTY_STRING);
 
   if (currentThing !== thing) {
@@ -194,12 +192,8 @@ export const EditableThing = <Thing extends Cell | Value>({
         stringThing,
         numberThing,
         booleanThing,
-        (objectThingJson
-          ? jsonParse(objectThingJson)
-          : {}) as any,
-        (arrayThingJson
-          ? jsonParse(arrayThingJson)
-          : []) as any,
+        (objectThingJson ? jsonParse(objectThingJson) : {}) as any,
+        (arrayThingJson ? jsonParse(arrayThingJson) : []) as any,
       );
       setThingType(nextType);
       setCurrentThing(thing);
@@ -268,7 +262,7 @@ export const EditableThing = <Thing extends Cell | Value>({
             if (isObject(parsed)) {
               onThingChange(parsed as Thing);
             }
-          } catch  {}
+          } catch {}
         },
         [onThingChange],
       )}

@@ -5117,8 +5117,12 @@ describe.each([
       test('addRow', () => {
         // @ts-ignore
         store.addRow('t2', {c1: new Date(0)});
-        expectChanges(listener, 'i:/t*/r*/c1', {t2: {undefined: {c1: [new Date(0)]}}});
-        expectChanges(listener, 'i:/t*/r*/c*', {t2: {undefined: {c1: [new Date(0)]}}});
+        expectChanges(listener, 'i:/t*/r*/c1', {
+          t2: {undefined: {c1: [new Date(0)]}},
+        });
+        expectChanges(listener, 'i:/t*/r*/c*', {
+          t2: {undefined: {c1: [new Date(0)]}},
+        });
         expectNoChanges(listener);
       });
 
@@ -8209,7 +8213,9 @@ describe.each([
         setMutatorListeners();
         // @ts-ignore
         store.setTables({t1: {r1: {c1: new Date(1)}}});
-        expectChanges(listener, 'i:/t1/r1/c1', {t1: {r1: {c1: [new Date(1), new Date(2)]}}});
+        expectChanges(listener, 'i:/t1/r1/c1', {
+          t1: {r1: {c1: [new Date(1), new Date(2)]}},
+        });
         expectChanges(
           listener,
           'i:/t1/r1/c*',
@@ -8271,7 +8277,9 @@ describe.each([
         setMutatorListeners();
         // @ts-ignore
         store.setTable('t1', {r1: {c1: new Date(1)}});
-        expectChanges(listener, 'i:/t1/r1/c1', {t1: {r1: {c1: [new Date(1), new Date(2)]}}});
+        expectChanges(listener, 'i:/t1/r1/c1', {
+          t1: {r1: {c1: [new Date(1), new Date(2)]}},
+        });
         expectChanges(
           listener,
           'i:/t1/r1/c*',
@@ -8333,7 +8341,9 @@ describe.each([
         setMutatorListeners();
         // @ts-ignore
         store.setRow('t1', 'r1', {c1: new Date(1)});
-        expectChanges(listener, 'i:/t1/r1/c1', {t1: {r1: {c1: [new Date(1), new Date(2)]}}});
+        expectChanges(listener, 'i:/t1/r1/c1', {
+          t1: {r1: {c1: [new Date(1), new Date(2)]}},
+        });
         expectChanges(
           listener,
           'i:/t1/r1/c*',
@@ -8468,7 +8478,9 @@ describe.each([
         setMutatorListeners();
         // @ts-ignore
         store.setCell('t1', 'r1', 'c1', new Date(1));
-        expectChanges(listener, 'i:/t1/r1/c1', {t1: {r1: {c1: [new Date(1), new Date(2)]}}});
+        expectChanges(listener, 'i:/t1/r1/c1', {
+          t1: {r1: {c1: [new Date(1), new Date(2)]}},
+        });
         expectChanges(
           listener,
           'i:/t1/r1/c*',
@@ -8774,11 +8786,7 @@ describe.each([
         // @ts-ignore
         store.setValues({v1: new Date(1)});
         expectChanges(listener, '/v1', {v1: [new Date(1)]});
-        expectChanges(
-          listener,
-          '/v*',
-          {v1: [new Date(1)]},
-        );
+        expectChanges(listener, '/v*', {v1: [new Date(1)]});
         expectNoChanges(listener);
       });
 
@@ -8788,12 +8796,7 @@ describe.each([
         // @ts-ignore
         store.setPartialValues({v2: new Date(2), v3: undefined});
         expectChanges(listener, '/v2', {v2: [new Date(2)]});
-        expectChanges(
-          listener,
-          '/v*',
-          {v2: [new Date(2)]},
-          {v3: [undefined]},
-        );
+        expectChanges(listener, '/v*', {v2: [new Date(2)]}, {v3: [undefined]});
         expectNoChanges(listener);
       });
 
@@ -8802,11 +8805,7 @@ describe.each([
         // @ts-ignore
         store.setValue('v1', new Date(1));
         expectChanges(listener, '/v1', {v1: [new Date(1)]});
-        expectChanges(
-          listener,
-          '/v*',
-          {v1: [new Date(1)]},
-        );
+        expectChanges(listener, '/v*', {v1: [new Date(1)]});
         expectNoChanges(listener);
       });
     });

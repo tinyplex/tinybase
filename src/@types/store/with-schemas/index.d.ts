@@ -12,12 +12,12 @@ import type {
   ValueIdFromSchema,
 } from '../../_internal/store/with-schemas/index.d.ts';
 import type {
+  AnyArray,
+  AnyObject,
   Id,
   IdOrNull,
   Ids,
   Json,
-  AnyObject,
-  AnyArray,
 } from '../../common/with-schemas/index.d.ts';
 
 /// TablesSchema

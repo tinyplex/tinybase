@@ -2759,7 +2759,10 @@
    *   {open: true, employees: 3},
    * ]);
    *
-   * store.setContent([{pets: {felix: {species: 'cat', bug: new Date(0)}}}, '']);
+   * store.setContent([
+   *   {pets: {felix: {species: 'cat', bug: new Date(0)}}},
+   *   '',
+   * ]);
    * console.log(store.getTables());
    * // -> {pets: {felix: {species: 'cat'}}}
    * console.log(store.getValues());
