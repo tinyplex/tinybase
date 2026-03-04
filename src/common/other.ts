@@ -106,6 +106,18 @@ export const errorNew = (message: string) => {
   throw new Error(message);
 };
 
+export const tryReturn = <Return>(
+  tryF: () => Return,
+  catchReturn?: Return,
+): Return | void => {
+  try {
+    return tryF();
+  } catch {
+    /*! istanbul ignore next */
+    return catchReturn;
+  }
+};
+
 export const tryCatch = async <Return>(
   action: () => Return | Promise<Return>,
   then1?: (error: any) => void,

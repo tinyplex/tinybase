@@ -55,6 +55,9 @@ We can style its container and the button that lets you change type:
     margin-right: 0.5rem;
   }
 }
+input.invalid {
+  background: #fdd;
+}
 ```
 
 And finally, we can enable the `editable` prop on the original ValuesInHtmlTable
