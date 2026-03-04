@@ -66,6 +66,7 @@ var objIsEqual = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2) 
     ) : isEqual3(value1, obj2[index])
   );
 };
+var jsonString = JSON.stringify;
 var {
   PureComponent,
   createContext,
@@ -111,7 +112,8 @@ var IS_EQUALS = [
   arrayIsEqual,
   ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual(backwardIds1, backwardIds2) && arrayIsEqual(forwardIds1, forwardIds2),
   (paramValues1, paramValues2) => objIsEqual(paramValues1, paramValues2, arrayOrValueEqual),
-  arrayOrValueEqual
+  arrayOrValueEqual,
+  (thing1, thing2) => thing1 === thing2 || (isObject(thing1) || isArray(thing1)) && jsonString(thing1) === jsonString(thing2)
 ];
 var isEqual = (thing1, thing2) => thing1 === thing2;
 var addAndDelListener = (thing, listenable, ...args) => {
@@ -246,6 +248,8 @@ var STRING2 = getTypeOf2(EMPTY_STRING2);
 var BOOLEAN = getTypeOf2(true);
 var NUMBER = getTypeOf2(0);
 var FUNCTION2 = getTypeOf2(getTypeOf2);
+var OBJECT = "object";
+var ARRAY = "array";
 var NULL = "null";
 var LISTENER2 = "Listener";
 var RESULT2 = "Result";
@@ -319,6 +323,8 @@ var objIsEqual2 = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2)
     ) : isEqual3(value1, obj2[index])
   );
 };
+var jsonString2 = JSON.stringify;
+var jsonParse = JSON.parse;
 var {
   PureComponent: PureComponent2,
   createContext: createContext2,
@@ -376,7 +382,8 @@ var IS_EQUALS2 = [
   arrayIsEqual2,
   ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual2(backwardIds1, backwardIds2) && arrayIsEqual2(forwardIds1, forwardIds2),
   (paramValues1, paramValues2) => objIsEqual2(paramValues1, paramValues2, arrayOrValueEqual2),
-  arrayOrValueEqual2
+  arrayOrValueEqual2,
+  (thing1, thing2) => thing1 === thing2 || (isObject2(thing1) || isArray2(thing1)) && jsonString2(thing1) === jsonString2(thing2)
 ];
 var isEqual2 = (thing1, thing2) => thing1 === thing2;
 var addAndDelListener2 = (thing, listenable, ...args) => {
@@ -572,10 +579,16 @@ var getCellOrValueType = (cellOrValue) => {
   if (isNull(cellOrValue)) {
     return NULL;
   }
+  if (isArray2(cellOrValue)) {
+    return ARRAY;
+  }
+  if (isObject2(cellOrValue)) {
+    return OBJECT;
+  }
   const type = getTypeOf2(cellOrValue);
   return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;
 };
-var getTypeCase = (type, stringCase, numberCase, booleanCase) => type == STRING2 ? stringCase : type == NUMBER ? numberCase : type == BOOLEAN ? booleanCase : null;
+var getTypeCase = (type, stringCase, numberCase, booleanCase, objectCase, arrayCase) => type == STRING2 ? stringCase : type == NUMBER ? numberCase : type == BOOLEAN ? booleanCase : type == OBJECT ? objectCase : type == ARRAY ? arrayCase : null;
 var useStoreCellComponentProps = (store, tableId) => useMemo2(() => ({ store, tableId }), [store, tableId]);
 var useQueriesCellComponentProps = (queries, queryId) => useMemo2(() => ({ queries, queryId }), [queries, queryId]);
 var useCallbackOrUndefined = (callback, deps, test) => {
@@ -725,12 +738,20 @@ var EditableThing = ({
   const [stringThing, setStringThing] = useState2();
   const [numberThing, setNumberThing] = useState2();
   const [booleanThing, setBooleanThing] = useState2();
+  const [objectThingJson, setObjectThingJson] = useState2(EMPTY_STRING2);
+  const [arrayThingJson, setArrayThingJson] = useState2(EMPTY_STRING2);
   if (currentThing !== thing) {
     setThingType(getCellOrValueType(thing));
     setCurrentThing(thing);
-    setStringThing(String(thing));
-    setNumberThing(Number(thing) || 0);
-    setBooleanThing(Boolean(thing));
+    if (isObject2(thing)) {
+      setObjectThingJson(jsonString2(thing));
+    } else if (isArray2(thing)) {
+      setArrayThingJson(jsonString2(thing));
+    } else {
+      setStringThing(String(thing));
+      setNumberThing(Number(thing) || 0);
+      setBooleanThing(Boolean(thing));
+    }
   }
   const handleThingChange = useCallback2(
     (thing2, setTypedThing) => {
@@ -742,12 +763,21 @@ var EditableThing = ({
   );
   const handleTypeChange = useCallback2(() => {
     if (!hasSchema?.()) {
-      const nextType = getTypeCase(thingType, NUMBER, BOOLEAN, STRING2);
+      const nextType = getTypeCase(
+        thingType,
+        NUMBER,
+        BOOLEAN,
+        OBJECT,
+        ARRAY,
+        STRING2
+      );
       const thing2 = getTypeCase(
         nextType,
         stringThing,
         numberThing,
-        booleanThing
+        booleanThing,
+        objectThingJson ? jsonParse(objectThingJson) : {},
+        arrayThingJson ? jsonParse(arrayThingJson) : []
       );
       setThingType(nextType);
       setCurrentThing(thing2);
@@ -759,6 +789,8 @@ var EditableThing = ({
     stringThing,
     numberThing,
     booleanThing,
+    objectThingJson,
+    arrayThingJson,
     thingType
   ]);
   const widget = getTypeCase(
@@ -803,6 +835,48 @@ var EditableThing = ({
             setBooleanThing
           ),
           [handleThingChange]
+        )
+      },
+      thingType
+    ),
+    /* @__PURE__ */ jsx2(
+      "textarea",
+      {
+        value: objectThingJson,
+        onChange: useCallback2(
+          (event) => {
+            const str = event[CURRENT_TARGET][_VALUE];
+            setObjectThingJson(str);
+            try {
+              const parsed = jsonParse(str);
+              if (isObject2(parsed)) {
+                onThingChange(parsed);
+              }
+            } catch {
+            }
+          },
+          [onThingChange]
+        )
+      },
+      thingType
+    ),
+    /* @__PURE__ */ jsx2(
+      "textarea",
+      {
+        value: arrayThingJson,
+        onChange: useCallback2(
+          (event) => {
+            const str = event[CURRENT_TARGET][_VALUE];
+            setArrayThingJson(str);
+            try {
+              const parsed = jsonParse(str);
+              if (isArray2(parsed)) {
+                onThingChange(parsed);
+              }
+            } catch {
+            }
+          },
+          [onThingChange]
         )
       },
       thingType

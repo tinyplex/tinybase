@@ -169,14 +169,14 @@ var scheduleRunning = mapNew();
 var scheduleActions = mapNew();
 var getStoreFunctions = (persist = 1, store, isSynchronizer) => persist != 1 && store.isMergeable() ? [
   1,
-  store.getMergeableContent,
-  () => store.getTransactionMergeableChanges(!isSynchronizer),
+  store.__[1],
+  () => store.__[2](!isSynchronizer),
   ([[changedTables], [changedValues]]) => !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
   store.setDefaultContent
 ] : persist != 2 ? [
   0,
-  store.getContent,
-  store.getTransactionChanges,
+  store._[7],
+  store._[8],
   ([changedTables, changedValues]) => !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
   store.setContent
 ] : errorNew("Store type not supported by this Persister");
@@ -219,7 +219,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     (isMergeableStore && isArray(contentOrChanges?.[0]) ? contentOrChanges?.[2] === 1 ? store.applyMergeableChanges : store.setMergeableContent : contentOrChanges?.[2] === 1 ? store.applyChanges : store.setContent)(contentOrChanges);
   };
   const saveAfterMutated = async () => {
-    if (isAutoSaving() && store.hadMutated?.()) {
+    if (isAutoSaving() && store.__?.[0]?.()) {
       await save();
     }
   };

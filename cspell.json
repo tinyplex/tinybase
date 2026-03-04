@@ -5,7 +5,8 @@
     "*.svg",
     "*.snap",
     "*.json",
-    "*.test.ts"
+    "*.test.ts",
+    "*.code-workspace"
   ],
   "words": [
     "Abad",

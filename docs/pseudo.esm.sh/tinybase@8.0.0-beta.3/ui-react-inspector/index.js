@@ -75,6 +75,7 @@ var objIsEqual = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2) 
     ) : isEqual3(value1, obj2[index])
   );
 };
+var jsonString = JSON.stringify;
 var {
   PureComponent,
   createContext,
@@ -124,7 +125,8 @@ var IS_EQUALS = [
   arrayIsEqual,
   ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual(backwardIds1, backwardIds2) && arrayIsEqual(forwardIds1, forwardIds2),
   (paramValues1, paramValues2) => objIsEqual(paramValues1, paramValues2, arrayOrValueEqual),
-  arrayOrValueEqual
+  arrayOrValueEqual,
+  (thing1, thing2) => thing1 === thing2 || (isObject(thing1) || isArray(thing1)) && jsonString(thing1) === jsonString(thing2)
 ];
 var isEqual = (thing1, thing2) => thing1 === thing2;
 var addAndDelListener = (thing, listenable, ...args) => {
@@ -422,6 +424,8 @@ var STRING2 = getTypeOf2(EMPTY_STRING2);
 var BOOLEAN = getTypeOf2(true);
 var NUMBER = getTypeOf2(0);
 var FUNCTION2 = getTypeOf2(getTypeOf2);
+var OBJECT = "object";
+var ARRAY = "array";
 var TYPE = "type";
 var DEFAULT = "default";
 var ALLOW_NULL = "allowNull";
@@ -453,6 +457,7 @@ var CURRENT_TARGET = "currentTarget";
 var _VALUE = "value";
 var EXTRA = "extra";
 var UNDEFINED = "\uFFFC";
+var JSON_PREFIX = "\uFFFD";
 var id = (key) => EMPTY_STRING2 + key;
 var strSplit = (str, separator = EMPTY_STRING2, limit) => str.split(separator, limit);
 var getIfNotFunction2 = (predicate) => (value, then, otherwise) => predicate(value) ? otherwise?.() : then(value);
@@ -551,13 +556,13 @@ var objValidate = (obj, validateChild, onInvalidObj, emptyIsValid = 0) => {
   });
   return emptyIsValid ? true : !objIsEmpty(obj);
 };
-var jsonString = JSON.stringify;
+var jsonString2 = JSON.stringify;
 var jsonParse = JSON.parse;
-var jsonStringWithMap = (obj) => jsonString(
+var jsonStringWithMap = (obj) => jsonString2(
   obj,
   (_key, value) => isInstanceOf(value, Map) ? object2.fromEntries([...value]) : value
 );
-var jsonStringWithUndefined = (obj) => jsonString(obj, (_key, value) => isUndefined2(value) ? UNDEFINED : value);
+var jsonStringWithUndefined = (obj) => jsonString2(obj, (_key, value) => isUndefined2(value) ? UNDEFINED : value);
 var jsonParseWithUndefined = (str) => (
   // JSON.parse reviver removes properties with undefined values
   replaceUndefinedString(jsonParse(str))
@@ -726,14 +731,14 @@ var scheduleRunning = mapNew();
 var scheduleActions = mapNew();
 var getStoreFunctions = (persist = 1, store, isSynchronizer) => persist != 1 && store.isMergeable() ? [
   1,
-  store.getMergeableContent,
-  () => store.getTransactionMergeableChanges(!isSynchronizer),
+  store.__[1],
+  () => store.__[2](!isSynchronizer),
   ([[changedTables], [changedValues]]) => !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
   store.setDefaultContent
 ] : persist != 2 ? [
   0,
-  store.getContent,
-  store.getTransactionChanges,
+  store._[7],
+  store._[8],
   ([changedTables, changedValues]) => !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
   store.setContent
 ] : errorNew("Store type not supported by this Persister");
@@ -776,7 +781,7 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
     (isMergeableStore && isArray2(contentOrChanges?.[0]) ? contentOrChanges?.[2] === 1 ? store.applyMergeableChanges : store.setMergeableContent : contentOrChanges?.[2] === 1 ? store.applyChanges : store.setContent)(contentOrChanges);
   };
   const saveAfterMutated = async () => {
-    if (isAutoSaving() && store.hadMutated?.()) {
+    if (isAutoSaving() && store.__?.[0]?.()) {
       await save();
     }
   };
@@ -975,10 +980,20 @@ var getCellOrValueType = (cellOrValue) => {
   if (isNull(cellOrValue)) {
     return NULL;
   }
+  if (isArray2(cellOrValue)) {
+    return ARRAY;
+  }
+  if (isObject2(cellOrValue)) {
+    return OBJECT;
+  }
   const type = getTypeOf2(cellOrValue);
   return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;
 };
-var getTypeCase = (type, stringCase, numberCase, booleanCase) => type == STRING2 ? stringCase : type == NUMBER ? numberCase : type == BOOLEAN ? booleanCase : null;
+var isJsonType = (type) => type == OBJECT || type == ARRAY;
+var encodeIfJson = (value) => isObject2(value) || isArray2(value) ? JSON_PREFIX + jsonString2(value) : value;
+var isEncodedJson = (value) => isString2(value) && value[0] == JSON_PREFIX;
+var decodeIfJson = (raw, _id, encoded) => !encoded && isEncodedJson(raw) ? jsonParse(slice(raw, 1)) : raw;
+var getTypeCase = (type, stringCase, numberCase, booleanCase, objectCase, arrayCase) => type == STRING2 ? stringCase : type == NUMBER ? numberCase : type == BOOLEAN ? booleanCase : type == OBJECT ? objectCase : type == ARRAY ? arrayCase : null;
 var defaultSorter = (sortKey1, sortKey2) => (sortKey1 ?? 0) < (sortKey2 ?? 0) ? -1 : 1;
 var pairNew = (value) => [value, value];
 var pairCollSize2 = (pair, func = collSize2) => func(pair[0]) + func(pair[1]);
@@ -1068,15 +1083,19 @@ var createStore = () => {
       return false;
     }
     const type = schema[TYPE];
-    if (!isTypeStringOrBoolean(type) && type != NUMBER) {
+    if (!isTypeStringOrBoolean(type) && type != NUMBER && !isJsonType(type)) {
       return false;
     }
     const defaultValue = schema[DEFAULT];
     if (isNull(defaultValue) && !schema[ALLOW_NULL]) {
       return false;
     }
-    if (!isNull(defaultValue) && getCellOrValueType(defaultValue) != type) {
-      objDel(schema, DEFAULT);
+    if (!isNull(defaultValue)) {
+      if (getCellOrValueType(defaultValue) != type) {
+        objDel(schema, DEFAULT);
+      } else {
+        schema[DEFAULT] = encodeIfJson(defaultValue);
+      }
     }
     return true;
   };
@@ -1102,7 +1121,7 @@ var createStore = () => {
   );
   const getValidatedCell = (tableId, rowId, cellId, cell) => hasTablesSchema ? ifNotUndefined2(
     mapGet(mapGet(tablesSchemaMap, tableId), cellId),
-    (cellSchema) => isNull(cell) ? cellSchema[ALLOW_NULL] ? cell : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT]) : getCellOrValueType(cell) == cellSchema[TYPE] ? cell : cellInvalid(
+    (cellSchema) => isNull(cell) ? cellSchema[ALLOW_NULL] ? cell : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT]) : getCellOrValueType(cell) === cellSchema[TYPE] ? encodeIfJson(cell) : isJsonType(cellSchema[TYPE]) && isEncodedJson(cell) ? cell : cellInvalid(
       tableId,
       rowId,
       cellId,
@@ -1110,7 +1129,7 @@ var createStore = () => {
       cellSchema[DEFAULT]
     ),
     () => cellInvalid(tableId, rowId, cellId, cell)
-  ) : isUndefined2(getCellOrValueType(cell)) ? cellInvalid(tableId, rowId, cellId, cell) : cell;
+  ) : isUndefined2(getCellOrValueType(cell)) ? cellInvalid(tableId, rowId, cellId, cell) : encodeIfJson(cell);
   const validateValues = (values, skipDefaults) => objValidate(
     skipDefaults ? values : addDefaultsToValues(values),
     (value, valueId) => ifNotUndefined2(
@@ -1125,9 +1144,9 @@ var createStore = () => {
   );
   const getValidatedValue = (valueId, value) => hasValuesSchema ? ifNotUndefined2(
     mapGet(valuesSchemaMap, valueId),
-    (valueSchema) => isNull(value) ? valueSchema[ALLOW_NULL] ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]) : getCellOrValueType(value) == valueSchema[TYPE] ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]),
+    (valueSchema) => isNull(value) ? valueSchema[ALLOW_NULL] ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]) : getCellOrValueType(value) === valueSchema[TYPE] ? encodeIfJson(value) : isJsonType(valueSchema[TYPE]) && isEncodedJson(value) ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]),
     () => valueInvalid(valueId, value)
-  ) : isUndefined2(getCellOrValueType(value)) ? valueInvalid(valueId, value) : value;
+  ) : isUndefined2(getCellOrValueType(value)) ? valueInvalid(valueId, value) : encodeIfJson(value);
   const addDefaultsToRow = (row, tableId, rowId) => {
     ifNotUndefined2(
       mapGet(tablesSchemaRowCache, tableId),
@@ -1473,12 +1492,20 @@ var createStore = () => {
   };
   const getCellChange = (tableId, rowId, cellId) => ifNotUndefined2(
     mapGet(mapGet(mapGet(changedCells, tableId), rowId), cellId),
-    ([oldCell, newCell]) => [true, oldCell, newCell],
+    ([oldCell, newCell]) => [
+      true,
+      decodeIfJson(oldCell),
+      decodeIfJson(newCell)
+    ],
     () => [false, ...pairNew(getCell(tableId, rowId, cellId))]
   );
   const getValueChange = (valueId) => ifNotUndefined2(
     mapGet(changedValues, valueId),
-    ([oldValue, newValue]) => [true, oldValue, newValue],
+    ([oldValue, newValue]) => [
+      true,
+      decodeIfJson(oldValue),
+      decodeIfJson(newValue)
+    ],
     () => [false, ...pairNew(getValue(valueId))]
   );
   const callInvalidCellListeners = (mutator) => !collIsEmpty(invalidCells) && !collIsEmpty(invalidCellListeners[mutator]) ? collForEach(
@@ -1627,8 +1654,8 @@ var createStore = () => {
                 callListeners(
                   cellListeners[mutator],
                   [tableId, rowId, cellId],
-                  newCell,
-                  oldCell,
+                  decodeIfJson(newCell),
+                  decodeIfJson(oldCell),
                   getCellChange
                 );
                 tablesChanged = tableChanged = rowChanged = 1;
@@ -1678,8 +1705,8 @@ var createStore = () => {
             callListeners(
               valueListeners[mutator],
               [valueId],
-              newValue,
-              oldValue,
+              decodeIfJson(newValue),
+              decodeIfJson(oldValue),
               getValueChange
             );
             valuesChanged = 1;
@@ -1710,10 +1737,34 @@ var createStore = () => {
       [getTableIds]
     );
   };
+  const getTransactionChangesImpl = (encoded = false) => [
+    mapToObj(
+      changedCells,
+      (table, tableId) => mapGet(changedTableIds, tableId) === -1 ? void 0 : mapToObj(
+        table,
+        (row, rowId) => mapGet(mapGet(changedRowIds, tableId), rowId) === -1 ? void 0 : mapToObj(
+          row,
+          ([, newCell]) => decodeIfJson(newCell, EMPTY_STRING2, encoded),
+          (changedCell) => pairIsEqual(changedCell)
+        ),
+        collIsEmpty,
+        objIsEmpty
+      ),
+      collIsEmpty,
+      objIsEmpty
+    ),
+    mapToObj(
+      changedValues,
+      ([, newValue]) => decodeIfJson(newValue, EMPTY_STRING2, encoded),
+      (changedValue) => pairIsEqual(changedValue)
+    ),
+    1
+  ];
   const getContent = () => [getTables(), getValues()];
-  const getTables = () => mapToObj3(tablesMap);
+  const getEncodedContent = () => [mapToObj3(tablesMap), mapToObj(valuesMap)];
+  const getTables = () => mapToObj3(tablesMap, decodeIfJson);
   const getTableIds = () => mapKeys(tablesMap);
-  const getTable = (tableId) => mapToObj2(mapGet(tablesMap, id(tableId)));
+  const getTable = (tableId) => mapToObj2(mapGet(tablesMap, id(tableId)), decodeIfJson);
   const getTableCellIds = (tableId) => mapKeys(mapGet(tableCellIds, id(tableId)));
   const getRowCount = (tableId) => collSize(mapGet(tablesMap, id(tableId)));
   const getRowIds = (tableId) => mapKeys(mapGet(tablesMap, id(tableId)));
@@ -1737,12 +1788,14 @@ var createStore = () => {
     ),
     ([, rowId]) => rowId
   );
-  const getRow = (tableId, rowId) => mapToObj(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));
+  const getRow = (tableId, rowId) => mapToObj(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), decodeIfJson);
   const getCellIds = (tableId, rowId) => mapKeys(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));
-  const getCell = (tableId, rowId, cellId) => mapGet(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId));
-  const getValues = () => mapToObj(valuesMap);
+  const getCell = (tableId, rowId, cellId) => decodeIfJson(
+    mapGet(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId))
+  );
+  const getValues = () => mapToObj(valuesMap, decodeIfJson);
   const getValueIds = () => mapKeys(valuesMap);
-  const getValue = (valueId) => mapGet(valuesMap, id(valueId));
+  const getValue = (valueId) => decodeIfJson(mapGet(valuesMap, id(valueId)));
   const hasTables = () => !collIsEmpty(tablesMap);
   const hasTable = (tableId) => collHas(tablesMap, id(tableId));
   const hasTableCell = (tableId, cellId) => collHas(mapGet(tableCellIds, id(tableId)), id(cellId));
@@ -1981,29 +2034,8 @@ var createStore = () => {
     }
     return store;
   };
-  const getTransactionChanges = () => [
-    mapToObj(
-      changedCells,
-      (table, tableId) => mapGet(changedTableIds, tableId) === -1 ? void 0 : mapToObj(
-        table,
-        (row, rowId) => mapGet(mapGet(changedRowIds, tableId), rowId) === -1 ? void 0 : mapToObj(
-          row,
-          ([, newCell]) => newCell,
-          (changedCell) => pairIsEqual(changedCell)
-        ),
-        collIsEmpty,
-        objIsEmpty
-      ),
-      collIsEmpty,
-      objIsEmpty
-    ),
-    mapToObj(
-      changedValues,
-      ([, newValue]) => newValue,
-      (changedValue) => pairIsEqual(changedValue)
-    ),
-    1
-  ];
+  const getTransactionChanges = () => getTransactionChangesImpl();
+  const getEncodedTransactionChanges = () => getTransactionChangesImpl(true);
   const getTransactionLog = () => [
     !collIsEmpty(changedCells),
     !collIsEmpty(changedValues),
@@ -2123,7 +2155,10 @@ var createStore = () => {
         tableMap,
         (rowMap, rowId) => rowCallback(
           rowId,
-          (cellCallback) => mapForEach(rowMap, cellCallback)
+          (cellCallback) => mapForEach(
+            rowMap,
+            (cellId, cell) => cellCallback(cellId, decodeIfJson(cell))
+          )
         )
       )
     )
@@ -2131,10 +2166,22 @@ var createStore = () => {
   const forEachTableCell = (tableId, tableCellCallback) => mapForEach(mapGet(tableCellIds, id(tableId)), tableCellCallback);
   const forEachRow = (tableId, rowCallback) => collForEach(
     mapGet(tablesMap, id(tableId)),
-    (rowMap, rowId) => rowCallback(rowId, (cellCallback) => mapForEach(rowMap, cellCallback))
+    (rowMap, rowId) => rowCallback(
+      rowId,
+      (cellCallback) => mapForEach(
+        rowMap,
+        (cellId, cell) => cellCallback(cellId, decodeIfJson(cell))
+      )
+    )
   );
-  const forEachCell = (tableId, rowId, cellCallback) => mapForEach(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), cellCallback);
-  const forEachValue = (valueCallback) => mapForEach(valuesMap, valueCallback);
+  const forEachCell = (tableId, rowId, cellCallback) => mapForEach(
+    mapGet(mapGet(tablesMap, id(tableId)), id(rowId)),
+    (cellId, cell) => cellCallback(cellId, decodeIfJson(cell))
+  );
+  const forEachValue = (valueCallback) => mapForEach(
+    valuesMap,
+    (valueId, value) => valueCallback(valueId, decodeIfJson(value))
+  );
   const addSortedRowIdsListener = (tableIdOrArgs, cellIdOrListener, descendingOrMutator, offset, limit, listener, mutator) => isObject2(tableIdOrArgs) ? addSortedRowIdsListenerImpl(
     tableIdOrArgs.tableId,
     tableIdOrArgs.cellId,
@@ -2286,14 +2333,17 @@ var createStore = () => {
     delListener,
     getListenerStats,
     isMergeable: () => false,
-    // only used internally by other modules
-    createStore,
-    addListener,
-    callListeners,
-    setInternalListeners,
-    setMiddleware,
-    setOrDelCell,
-    setOrDelValue
+    _: [
+      createStore,
+      addListener,
+      callListeners,
+      setInternalListeners,
+      setMiddleware,
+      setOrDelCell,
+      setOrDelValue,
+      getEncodedContent,
+      getEncodedTransactionChanges
+    ]
   };
   objMap(
     {
@@ -2453,7 +2503,8 @@ var IS_EQUALS2 = [
   arrayIsEqual2,
   ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual2(backwardIds1, backwardIds2) && arrayIsEqual2(forwardIds1, forwardIds2),
   (paramValues1, paramValues2) => objIsEqual2(paramValues1, paramValues2, arrayOrValueEqual2),
-  arrayOrValueEqual2
+  arrayOrValueEqual2,
+  (thing1, thing2) => thing1 === thing2 || (isObject2(thing1) || isArray2(thing1)) && jsonString2(thing1) === jsonString2(thing2)
 ];
 var isEqual2 = (thing1, thing2) => thing1 === thing2;
 var addAndDelListener2 = (thing, listenable, ...args) => {
@@ -2842,12 +2893,20 @@ var EditableThing = ({
   const [stringThing, setStringThing] = useState2();
   const [numberThing, setNumberThing] = useState2();
   const [booleanThing, setBooleanThing] = useState2();
+  const [objectThingJson, setObjectThingJson] = useState2(EMPTY_STRING2);
+  const [arrayThingJson, setArrayThingJson] = useState2(EMPTY_STRING2);
   if (currentThing !== thing) {
     setThingType(getCellOrValueType(thing));
     setCurrentThing(thing);
-    setStringThing(String(thing));
-    setNumberThing(Number(thing) || 0);
-    setBooleanThing(Boolean(thing));
+    if (isObject2(thing)) {
+      setObjectThingJson(jsonString2(thing));
+    } else if (isArray2(thing)) {
+      setArrayThingJson(jsonString2(thing));
+    } else {
+      setStringThing(String(thing));
+      setNumberThing(Number(thing) || 0);
+      setBooleanThing(Boolean(thing));
+    }
   }
   const handleThingChange = useCallback2(
     (thing2, setTypedThing) => {
@@ -2859,12 +2918,21 @@ var EditableThing = ({
   );
   const handleTypeChange = useCallback2(() => {
     if (!hasSchema?.()) {
-      const nextType = getTypeCase(thingType, NUMBER, BOOLEAN, STRING2);
+      const nextType = getTypeCase(
+        thingType,
+        NUMBER,
+        BOOLEAN,
+        OBJECT,
+        ARRAY,
+        STRING2
+      );
       const thing2 = getTypeCase(
         nextType,
         stringThing,
         numberThing,
-        booleanThing
+        booleanThing,
+        objectThingJson ? jsonParse(objectThingJson) : {},
+        arrayThingJson ? jsonParse(arrayThingJson) : []
       );
       setThingType(nextType);
       setCurrentThing(thing2);
@@ -2876,6 +2944,8 @@ var EditableThing = ({
     stringThing,
     numberThing,
     booleanThing,
+    objectThingJson,
+    arrayThingJson,
     thingType
   ]);
   const widget = getTypeCase(
@@ -2920,6 +2990,48 @@ var EditableThing = ({
             setBooleanThing
           ),
           [handleThingChange]
+        )
+      },
+      thingType
+    ),
+    /* @__PURE__ */ jsx2(
+      "textarea",
+      {
+        value: objectThingJson,
+        onChange: useCallback2(
+          (event) => {
+            const str = event[CURRENT_TARGET][_VALUE];
+            setObjectThingJson(str);
+            try {
+              const parsed = jsonParse(str);
+              if (isObject2(parsed)) {
+                onThingChange(parsed);
+              }
+            } catch {
+            }
+          },
+          [onThingChange]
+        )
+      },
+      thingType
+    ),
+    /* @__PURE__ */ jsx2(
+      "textarea",
+      {
+        value: arrayThingJson,
+        onChange: useCallback2(
+          (event) => {
+            const str = event[CURRENT_TARGET][_VALUE];
+            setArrayThingJson(str);
+            try {
+              const parsed = jsonParse(str);
+              if (isArray2(parsed)) {
+                onThingChange(parsed);
+              }
+            } catch {
+            }
+          },
+          [onThingChange]
         )
       },
       thingType

@@ -5,6 +5,8 @@ var STRING = getTypeOf(EMPTY_STRING);
 var BOOLEAN = getTypeOf(true);
 var NUMBER = getTypeOf(0);
 var FUNCTION = getTypeOf(getTypeOf);
+var OBJECT = "object";
+var ARRAY = "array";
 var TYPE = "type";
 var DEFAULT = "default";
 var ALLOW_NULL = "allowNull";
@@ -34,6 +36,7 @@ var VALUE = "Value";
 var VALUES = VALUE + "s";
 var VALUE_IDS = VALUE + IDS;
 var TRANSACTION = "Transaction";
+var JSON_PREFIX = "\uFFFD";
 var id = (key) => EMPTY_STRING + key;
 var strStartsWith = (str, prefix) => str.startsWith(prefix);
 var strEndsWith = (str, suffix) => str.endsWith(suffix);
@@ -477,19 +480,13 @@ var createCheckpoints = getCreateFunction(
             table,
             (row, rowId) => collForEach(
               row,
-              (oldNew, cellId) => store.setOrDelCell(
-                tableId,
-                rowId,
-                cellId,
-                oldNew[oldOrNew],
-                true
-              )
+              (oldNew, cellId) => store._[5](tableId, rowId, cellId, oldNew[oldOrNew], true)
             )
           )
         );
         collForEach(
           valuesDelta2,
-          (oldNew, valueId) => store.setOrDelValue(valueId, oldNew[oldOrNew], true)
+          (oldNew, valueId) => store._[6](valueId, oldNew[oldOrNew], true)
         );
       });
       listening = 1;
@@ -988,12 +985,21 @@ var getCellOrValueType = (cellOrValue) => {
   if (isNull(cellOrValue)) {
     return NULL;
   }
+  if (isArray(cellOrValue)) {
+    return ARRAY;
+  }
+  if (isObject(cellOrValue)) {
+    return OBJECT;
+  }
   const type = getTypeOf(cellOrValue);
   return isTypeStringOrBoolean(type) || type == NUMBER && isFiniteNumber(cellOrValue) ? type : void 0;
 };
 var isCellOrValueOrUndefined = (cellOrValue) => isUndefined(cellOrValue) || !isUndefined(getCellOrValueType(cellOrValue));
+var isJsonType = (type) => type == OBJECT || type == ARRAY;
+var encodeIfJson = (value) => isObject(value) || isArray(value) ? JSON_PREFIX + jsonString(value) : value;
+var isEncodedJson = (value) => isString(value) && value[0] == JSON_PREFIX;
+var decodeIfJson = (raw, _id, encoded) => !encoded && isEncodedJson(raw) ? jsonParse(slice(raw, 1)) : raw;
 var stampClone = ([value, hlc]) => stampNew(value, hlc);
-var stampCloneWithHash = ([value, hlc, hash]) => [value, hlc, hash];
 var stampNew = (value, hlc) => hlc ? [value, hlc] : [value];
 var stampNewWithHash = (value, hlc, hash) => [value, hlc, hash];
 var getStampHash = (stamp) => stamp[2];
@@ -1010,7 +1016,11 @@ var stampUpdate = (stamp, hlc, hash) => {
 };
 var stampNewObj = (hlc = EMPTY_STRING) => stampNew(objNew(), hlc);
 var stampNewMap = (hlc = EMPTY_STRING) => [mapNew(), hlc, 0];
-var stampMapToObjWithHash = ([map2, hlc, hash], mapper = stampCloneWithHash) => [mapToObj(map2, mapper), hlc, hash];
+var stampMapToObjWithHash = ([map2, hlc, hash], mapper) => [
+  mapToObj(map2, mapper),
+  hlc,
+  hash
+];
 var stampMapToObjWithoutHash = ([map2, hlc], mapper = stampClone) => stampNew(mapToObj(map2, mapper), hlc);
 var stampValidate = (stamp, validateThing) => isArray(stamp) && size(stamp) == 3 && isString(stamp[1]) && getTypeOf(stamp[2]) == NUMBER && isFiniteNumber(stamp[2]) && validateThing(stamp[0]);
 var pairNew = (value) => [value, value];
@@ -1101,15 +1111,19 @@ var createStore = () => {
       return false;
     }
     const type = schema[TYPE];
-    if (!isTypeStringOrBoolean(type) && type != NUMBER) {
+    if (!isTypeStringOrBoolean(type) && type != NUMBER && !isJsonType(type)) {
       return false;
     }
     const defaultValue = schema[DEFAULT];
     if (isNull(defaultValue) && !schema[ALLOW_NULL]) {
       return false;
     }
-    if (!isNull(defaultValue) && getCellOrValueType(defaultValue) != type) {
-      objDel(schema, DEFAULT);
+    if (!isNull(defaultValue)) {
+      if (getCellOrValueType(defaultValue) != type) {
+        objDel(schema, DEFAULT);
+      } else {
+        schema[DEFAULT] = encodeIfJson(defaultValue);
+      }
     }
     return true;
   };
@@ -1135,7 +1149,7 @@ var createStore = () => {
   );
   const getValidatedCell = (tableId, rowId, cellId, cell) => hasTablesSchema ? ifNotUndefined(
     mapGet(mapGet(tablesSchemaMap, tableId), cellId),
-    (cellSchema) => isNull(cell) ? cellSchema[ALLOW_NULL] ? cell : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT]) : getCellOrValueType(cell) == cellSchema[TYPE] ? cell : cellInvalid(
+    (cellSchema) => isNull(cell) ? cellSchema[ALLOW_NULL] ? cell : cellInvalid(tableId, rowId, cellId, cell, cellSchema[DEFAULT]) : getCellOrValueType(cell) === cellSchema[TYPE] ? encodeIfJson(cell) : isJsonType(cellSchema[TYPE]) && isEncodedJson(cell) ? cell : cellInvalid(
       tableId,
       rowId,
       cellId,
@@ -1143,7 +1157,7 @@ var createStore = () => {
       cellSchema[DEFAULT]
     ),
     () => cellInvalid(tableId, rowId, cellId, cell)
-  ) : isUndefined(getCellOrValueType(cell)) ? cellInvalid(tableId, rowId, cellId, cell) : cell;
+  ) : isUndefined(getCellOrValueType(cell)) ? cellInvalid(tableId, rowId, cellId, cell) : encodeIfJson(cell);
   const validateValues = (values, skipDefaults) => objValidate(
     skipDefaults ? values : addDefaultsToValues(values),
     (value, valueId) => ifNotUndefined(
@@ -1158,9 +1172,9 @@ var createStore = () => {
   );
   const getValidatedValue = (valueId, value) => hasValuesSchema ? ifNotUndefined(
     mapGet(valuesSchemaMap, valueId),
-    (valueSchema) => isNull(value) ? valueSchema[ALLOW_NULL] ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]) : getCellOrValueType(value) == valueSchema[TYPE] ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]),
+    (valueSchema) => isNull(value) ? valueSchema[ALLOW_NULL] ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]) : getCellOrValueType(value) === valueSchema[TYPE] ? encodeIfJson(value) : isJsonType(valueSchema[TYPE]) && isEncodedJson(value) ? value : valueInvalid(valueId, value, valueSchema[DEFAULT]),
     () => valueInvalid(valueId, value)
-  ) : isUndefined(getCellOrValueType(value)) ? valueInvalid(valueId, value) : value;
+  ) : isUndefined(getCellOrValueType(value)) ? valueInvalid(valueId, value) : encodeIfJson(value);
   const addDefaultsToRow = (row, tableId, rowId) => {
     ifNotUndefined(
       mapGet(tablesSchemaRowCache, tableId),
@@ -1506,12 +1520,20 @@ var createStore = () => {
   };
   const getCellChange = (tableId, rowId, cellId) => ifNotUndefined(
     mapGet(mapGet(mapGet(changedCells, tableId), rowId), cellId),
-    ([oldCell, newCell]) => [true, oldCell, newCell],
+    ([oldCell, newCell]) => [
+      true,
+      decodeIfJson(oldCell),
+      decodeIfJson(newCell)
+    ],
     () => [false, ...pairNew(getCell(tableId, rowId, cellId))]
   );
   const getValueChange = (valueId) => ifNotUndefined(
     mapGet(changedValues, valueId),
-    ([oldValue, newValue]) => [true, oldValue, newValue],
+    ([oldValue, newValue]) => [
+      true,
+      decodeIfJson(oldValue),
+      decodeIfJson(newValue)
+    ],
     () => [false, ...pairNew(getValue(valueId))]
   );
   const callInvalidCellListeners = (mutator) => !collIsEmpty(invalidCells) && !collIsEmpty(invalidCellListeners[mutator]) ? collForEach(
@@ -1660,8 +1682,8 @@ var createStore = () => {
                 callListeners(
                   cellListeners[mutator],
                   [tableId, rowId, cellId],
-                  newCell,
-                  oldCell,
+                  decodeIfJson(newCell),
+                  decodeIfJson(oldCell),
                   getCellChange
                 );
                 tablesChanged = tableChanged = rowChanged = 1;
@@ -1711,8 +1733,8 @@ var createStore = () => {
             callListeners(
               valueListeners[mutator],
               [valueId],
-              newValue,
-              oldValue,
+              decodeIfJson(newValue),
+              decodeIfJson(oldValue),
               getValueChange
             );
             valuesChanged = 1;
@@ -1743,10 +1765,34 @@ var createStore = () => {
       [getTableIds]
     );
   };
+  const getTransactionChangesImpl = (encoded = false) => [
+    mapToObj(
+      changedCells,
+      (table, tableId) => mapGet(changedTableIds, tableId) === -1 ? void 0 : mapToObj(
+        table,
+        (row, rowId) => mapGet(mapGet(changedRowIds, tableId), rowId) === -1 ? void 0 : mapToObj(
+          row,
+          ([, newCell]) => decodeIfJson(newCell, EMPTY_STRING, encoded),
+          (changedCell) => pairIsEqual(changedCell)
+        ),
+        collIsEmpty,
+        objIsEmpty
+      ),
+      collIsEmpty,
+      objIsEmpty
+    ),
+    mapToObj(
+      changedValues,
+      ([, newValue]) => decodeIfJson(newValue, EMPTY_STRING, encoded),
+      (changedValue) => pairIsEqual(changedValue)
+    ),
+    1
+  ];
   const getContent = () => [getTables(), getValues()];
-  const getTables = () => mapToObj3(tablesMap);
+  const getEncodedContent = () => [mapToObj3(tablesMap), mapToObj(valuesMap)];
+  const getTables = () => mapToObj3(tablesMap, decodeIfJson);
   const getTableIds = () => mapKeys(tablesMap);
-  const getTable = (tableId) => mapToObj2(mapGet(tablesMap, id(tableId)));
+  const getTable = (tableId) => mapToObj2(mapGet(tablesMap, id(tableId)), decodeIfJson);
   const getTableCellIds = (tableId) => mapKeys(mapGet(tableCellIds, id(tableId)));
   const getRowCount = (tableId) => collSize(mapGet(tablesMap, id(tableId)));
   const getRowIds = (tableId) => mapKeys(mapGet(tablesMap, id(tableId)));
@@ -1770,12 +1816,14 @@ var createStore = () => {
     ),
     ([, rowId]) => rowId
   );
-  const getRow = (tableId, rowId) => mapToObj(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));
+  const getRow = (tableId, rowId) => mapToObj(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), decodeIfJson);
   const getCellIds = (tableId, rowId) => mapKeys(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)));
-  const getCell = (tableId, rowId, cellId) => mapGet(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId));
-  const getValues = () => mapToObj(valuesMap);
+  const getCell = (tableId, rowId, cellId) => decodeIfJson(
+    mapGet(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), id(cellId))
+  );
+  const getValues = () => mapToObj(valuesMap, decodeIfJson);
   const getValueIds = () => mapKeys(valuesMap);
-  const getValue = (valueId) => mapGet(valuesMap, id(valueId));
+  const getValue = (valueId) => decodeIfJson(mapGet(valuesMap, id(valueId)));
   const hasTables = () => !collIsEmpty(tablesMap);
   const hasTable = (tableId) => collHas(tablesMap, id(tableId));
   const hasTableCell = (tableId, cellId) => collHas(mapGet(tableCellIds, id(tableId)), id(cellId));
@@ -2014,29 +2062,8 @@ var createStore = () => {
     }
     return store;
   };
-  const getTransactionChanges = () => [
-    mapToObj(
-      changedCells,
-      (table, tableId) => mapGet(changedTableIds, tableId) === -1 ? void 0 : mapToObj(
-        table,
-        (row, rowId) => mapGet(mapGet(changedRowIds, tableId), rowId) === -1 ? void 0 : mapToObj(
-          row,
-          ([, newCell]) => newCell,
-          (changedCell) => pairIsEqual(changedCell)
-        ),
-        collIsEmpty,
-        objIsEmpty
-      ),
-      collIsEmpty,
-      objIsEmpty
-    ),
-    mapToObj(
-      changedValues,
-      ([, newValue]) => newValue,
-      (changedValue) => pairIsEqual(changedValue)
-    ),
-    1
-  ];
+  const getTransactionChanges = () => getTransactionChangesImpl();
+  const getEncodedTransactionChanges = () => getTransactionChangesImpl(true);
   const getTransactionLog = () => [
     !collIsEmpty(changedCells),
     !collIsEmpty(changedValues),
@@ -2156,7 +2183,10 @@ var createStore = () => {
         tableMap,
         (rowMap, rowId) => rowCallback(
           rowId,
-          (cellCallback) => mapForEach(rowMap, cellCallback)
+          (cellCallback) => mapForEach(
+            rowMap,
+            (cellId, cell) => cellCallback(cellId, decodeIfJson(cell))
+          )
         )
       )
     )
@@ -2164,10 +2194,22 @@ var createStore = () => {
   const forEachTableCell = (tableId, tableCellCallback) => mapForEach(mapGet(tableCellIds, id(tableId)), tableCellCallback);
   const forEachRow = (tableId, rowCallback) => collForEach(
     mapGet(tablesMap, id(tableId)),
-    (rowMap, rowId) => rowCallback(rowId, (cellCallback) => mapForEach(rowMap, cellCallback))
+    (rowMap, rowId) => rowCallback(
+      rowId,
+      (cellCallback) => mapForEach(
+        rowMap,
+        (cellId, cell) => cellCallback(cellId, decodeIfJson(cell))
+      )
+    )
   );
-  const forEachCell = (tableId, rowId, cellCallback) => mapForEach(mapGet(mapGet(tablesMap, id(tableId)), id(rowId)), cellCallback);
-  const forEachValue = (valueCallback) => mapForEach(valuesMap, valueCallback);
+  const forEachCell = (tableId, rowId, cellCallback) => mapForEach(
+    mapGet(mapGet(tablesMap, id(tableId)), id(rowId)),
+    (cellId, cell) => cellCallback(cellId, decodeIfJson(cell))
+  );
+  const forEachValue = (valueCallback) => mapForEach(
+    valuesMap,
+    (valueId, value) => valueCallback(valueId, decodeIfJson(value))
+  );
   const addSortedRowIdsListener = (tableIdOrArgs, cellIdOrListener, descendingOrMutator, offset, limit, listener, mutator) => isObject(tableIdOrArgs) ? addSortedRowIdsListenerImpl(
     tableIdOrArgs.tableId,
     tableIdOrArgs.cellId,
@@ -2319,14 +2361,17 @@ var createStore = () => {
     delListener,
     getListenerStats,
     isMergeable: () => false,
-    // only used internally by other modules
-    createStore,
-    addListener,
-    callListeners,
-    setInternalListeners,
-    setMiddleware,
-    setOrDelCell,
-    setOrDelValue
+    _: [
+      createStore,
+      addListener,
+      callListeners,
+      setInternalListeners,
+      setMiddleware,
+      setOrDelCell,
+      setOrDelValue,
+      getEncodedContent,
+      getEncodedTransactionChanges
+    ]
   };
   objMap(
     {
@@ -2616,16 +2661,81 @@ var createMergeableStore = (uniqueId, getNow) => {
       ]);
     }
   };
-  const getMergeableContent = () => [
+  const getMergeableContentImpl = (encoded = false) => [
     stampMapToObjWithHash(
       contentStampMap[0],
       (tableStampMap) => stampMapToObjWithHash(
         tableStampMap,
-        (rowStampMap) => stampMapToObjWithHash(rowStampMap)
+        (rowStampMap) => stampMapToObjWithHash(rowStampMap, ([cell, hlc, hash]) => [
+          decodeIfJson(cell, EMPTY_STRING, encoded),
+          hlc,
+          hash
+        ])
       )
     ),
-    stampMapToObjWithHash(contentStampMap[1])
+    stampMapToObjWithHash(contentStampMap[1], ([value, hlc, hash]) => [
+      decodeIfJson(value, EMPTY_STRING, encoded),
+      hlc,
+      hash
+    ])
   ];
+  const getTransactionMergeableChangesImpl = (withHashes, encoded = false) => {
+    const [
+      [tableStampMaps, tablesHlc, tablesHash],
+      [valueStampMaps, valuesHlc, valuesHash]
+    ] = contentStampMap;
+    const newStamp = withHashes ? stampNewWithHash : stampNew;
+    const tablesObj = {};
+    collForEach(
+      touchedCells,
+      (touchedTable, tableId) => ifNotUndefined(
+        mapGet(tableStampMaps, tableId),
+        ([rowStampMaps, tableHlc, tableHash]) => {
+          const tableObj = {};
+          collForEach(
+            touchedTable,
+            (touchedRow, rowId) => ifNotUndefined(
+              mapGet(rowStampMaps, rowId),
+              ([cellStampMaps, rowHlc, rowHash]) => {
+                const rowObj = {};
+                collForEach(touchedRow, (cellId) => {
+                  ifNotUndefined(
+                    mapGet(cellStampMaps, cellId),
+                    ([cell, time, hash]) => rowObj[cellId] = newStamp(
+                      encoded ? cell : decodeIfJson(cell),
+                      time,
+                      hash
+                    )
+                  );
+                });
+                tableObj[rowId] = newStamp(rowObj, rowHlc, rowHash);
+              }
+            )
+          );
+          tablesObj[tableId] = newStamp(tableObj, tableHlc, tableHash);
+        }
+      )
+    );
+    const valuesObj = {};
+    collForEach(
+      touchedValues,
+      (valueId) => ifNotUndefined(
+        mapGet(valueStampMaps, valueId),
+        ([value, time, hash]) => valuesObj[valueId] = newStamp(
+          encoded ? value : decodeIfJson(value),
+          time,
+          hash
+        )
+      )
+    );
+    return [
+      newStamp(tablesObj, tablesHlc, tablesHash),
+      newStamp(valuesObj, valuesHlc, valuesHash),
+      1
+    ];
+  };
+  const getMergeableContent = () => getMergeableContentImpl();
+  const getEncodedMergeableContent = () => getMergeableContentImpl(true);
   const getMergeableContentHashes = () => [
     contentStampMap[0][2],
     contentStampMap[1][2]
@@ -2747,53 +2857,8 @@ var createMergeableStore = (uniqueId, getNow) => {
     });
     return mergeableStore;
   };
-  const getTransactionMergeableChanges = (withHashes = false) => {
-    const [
-      [tableStampMaps, tablesHlc, tablesHash],
-      [valueStampMaps, valuesHlc, valuesHash]
-    ] = contentStampMap;
-    const newStamp = withHashes ? stampNewWithHash : stampNew;
-    const tablesObj = {};
-    collForEach(
-      touchedCells,
-      (touchedTable, tableId) => ifNotUndefined(
-        mapGet(tableStampMaps, tableId),
-        ([rowStampMaps, tableHlc, tableHash]) => {
-          const tableObj = {};
-          collForEach(
-            touchedTable,
-            (touchedRow, rowId) => ifNotUndefined(
-              mapGet(rowStampMaps, rowId),
-              ([cellStampMaps, rowHlc, rowHash]) => {
-                const rowObj = {};
-                collForEach(touchedRow, (cellId) => {
-                  ifNotUndefined(
-                    mapGet(cellStampMaps, cellId),
-                    ([cell, time, hash]) => rowObj[cellId] = newStamp(cell, time, hash)
-                  );
-                });
-                tableObj[rowId] = newStamp(rowObj, rowHlc, rowHash);
-              }
-            )
-          );
-          tablesObj[tableId] = newStamp(tableObj, tableHlc, tableHash);
-        }
-      )
-    );
-    const valuesObj = {};
-    collForEach(
-      touchedValues,
-      (valueId) => ifNotUndefined(
-        mapGet(valueStampMaps, valueId),
-        ([value, time, hash]) => valuesObj[valueId] = newStamp(value, time, hash)
-      )
-    );
-    return [
-      newStamp(tablesObj, tablesHlc, tablesHash),
-      newStamp(valuesObj, valuesHlc, valuesHash),
-      1
-    ];
-  };
+  const getTransactionMergeableChanges = (withHashes = false) => getTransactionMergeableChangesImpl(withHashes);
+  const getEncodedTransactionMergeableChanges = (withHashes) => getTransactionMergeableChangesImpl(withHashes, true);
   const applyMergeableChanges = (mergeableChanges) => disableListeningToRawStoreChanges(
     () => store.applyChanges(mergeContentOrChanges(mergeableChanges))
   );
@@ -2824,10 +2889,13 @@ var createMergeableStore = (uniqueId, getNow) => {
     getTransactionMergeableChanges,
     applyMergeableChanges,
     merge,
-    // only used internally by other modules
-    hadMutated
+    __: [
+      hadMutated,
+      getEncodedMergeableContent,
+      getEncodedTransactionMergeableChanges
+    ]
   };
-  store.setInternalListeners(
+  store._[3](
     preStartTransaction,
     preFinishTransaction,
     postFinishTransaction,
@@ -3077,7 +3145,7 @@ var createMiddleware = getCreateFunction((store) => {
     addDidSetRowCallback,
     destroy
   });
-  store.setMiddleware(
+  store._[4](
     willSetContent,
     willSetTables,
     willSetTable,
@@ -3097,15 +3165,14 @@ var createMiddleware = getCreateFunction((store) => {
   return middleware;
 });
 var createQueries = getCreateFunction((store) => {
-  const createStore2 = store.createStore;
+  const createStore2 = store._[0];
   const preStore = createStore2();
   const resultStore = createStore2();
   const preStoreListenerIds = mapNew();
   const paramValuesListeners = mapNew();
   const paramValueListeners = mapNew();
   const {
-    addListener,
-    callListeners,
+    _: [, addListener, callListeners],
     delListener: delListenerImpl
   } = resultStore;
   const [
@@ -3390,7 +3457,7 @@ var createQueries = getCreateFunction((store) => {
       selectJoinWhereStore.transaction(
         () => arrayEvery(wheres, (where2) => where2(getTableCell)) ? mapForEach(
           selects,
-          (asCellId, tableCellGetter) => selectJoinWhereStore.setOrDelCell(
+          (asCellId, tableCellGetter) => selectJoinWhereStore._[5](
             queryId,
             rootRowId,
             asCellId,

@@ -87,6 +87,7 @@ var objIsEqual = (obj1, obj2, isEqual2 = (value1, value2) => value1 === value2) 
     ) : isEqual2(value1, obj2[index])
   );
 };
+var jsonString = JSON.stringify;
 var {
   PureComponent,
   createContext,
@@ -295,7 +296,8 @@ var IS_EQUALS = [
   arrayIsEqual,
   ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual(backwardIds1, backwardIds2) && arrayIsEqual(forwardIds1, forwardIds2),
   (paramValues1, paramValues2) => objIsEqual(paramValues1, paramValues2, arrayOrValueEqual),
-  arrayOrValueEqual
+  arrayOrValueEqual,
+  (thing1, thing2) => thing1 === thing2 || (isObject(thing1) || isArray(thing1)) && jsonString(thing1) === jsonString(thing2)
 ];
 var isEqual = (thing1, thing2) => thing1 === thing2;
 var useCreate = (store, create, createDeps = EMPTY_ARRAY) => {
