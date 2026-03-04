@@ -77,14 +77,6 @@ export type WillApplyChangesCallback = (
   changes: Changes,
 ) => Changes | undefined;
 
-/// DidSetRowCallback
-export type DidSetRowCallback = (
-  tableId: Id,
-  rowId: Id,
-  oldRow: Row,
-  newRow: Row,
-) => Row;
-
 /// Middleware
 export interface Middleware {
   /// Middleware.getStore
@@ -131,9 +123,6 @@ export interface Middleware {
 
   /// Middleware.addWillApplyChangesCallback
   addWillApplyChangesCallback(callback: WillApplyChangesCallback): Middleware;
-
-  /// Middleware.addDidSetRowCallback
-  addDidSetRowCallback(tableId: Id, callback: DidSetRowCallback): Middleware;
 
   /// Middleware.destroy
   destroy(): void;

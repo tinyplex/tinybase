@@ -1,6 +1,5 @@
 import type {Id} from '../@types/common/index.d.ts';
 import type {
-  DidSetRowCallback,
   Middleware,
   WillApplyChangesCallback,
   WillDelCellCallback,
@@ -33,9 +32,8 @@ import type {
 } from '../@types/store/index.d.ts';
 import {arrayEvery, arrayPush, arrayReduce} from '../common/array.ts';
 import {getCreateFunction} from '../common/definable.ts';
-import {IdMap, mapEnsure, mapGet, mapNew} from '../common/map.ts';
 import {objFreeze} from '../common/obj.ts';
-import {ifNotUndefined, isUndefined} from '../common/other.ts';
+import {isUndefined} from '../common/other.ts';
 import {ProtectedStore} from '../store/index.ts';
 
 const reduceCallbacks = (
@@ -81,7 +79,6 @@ export const createMiddleware = getCreateFunction(
     const willDelValuesCallbacks: WillDelValuesCallback[] = [];
     const willDelValueCallbacks: WillDelValueCallback[] = [];
     const willApplyChangesCallbacks: WillApplyChangesCallback[] = [];
-    const didSetRowCallbacksMap: IdMap<DidSetRowCallback[]> = mapNew();
 
     const willSetContent = (content: Content): Content | undefined =>
       reduceCallbacks(willSetContentCallbacks, content);
@@ -128,19 +125,6 @@ export const createMiddleware = getCreateFunction(
     const willApplyChanges = (changes: Changes): Changes | undefined =>
       reduceCallbacks(willApplyChangesCallbacks, changes);
 
-    const didSetRow = (tableId: Id, rowId: Id, oldRow: Row, newRow: Row): Row =>
-      ifNotUndefined(
-        mapGet(didSetRowCallbacksMap, tableId),
-        (callbacks) =>
-          arrayReduce(
-            callbacks,
-            (current: Row, callback) =>
-              callback(tableId, rowId, oldRow, current),
-            newRow,
-          ),
-        () => newRow,
-      ) as Row;
-
     const getStore = (): Store => store;
 
     const addWillSetContentCallback = addCallback(willSetContentCallbacks);
@@ -157,17 +141,6 @@ export const createMiddleware = getCreateFunction(
     const addWillDelValuesCallback = addCallback(willDelValuesCallbacks);
     const addWillDelValueCallback = addCallback(willDelValueCallbacks);
     const addWillApplyChangesCallback = addCallback(willApplyChangesCallbacks);
-
-    const addDidSetRowCallback = (
-      tableId: Id,
-      callback: DidSetRowCallback,
-    ): Middleware =>
-      fluent(() =>
-        arrayPush(
-          mapEnsure(didSetRowCallbacksMap, tableId, () => []),
-          callback,
-        ),
-      );
 
     const destroy = (): void => {};
 
@@ -187,7 +160,6 @@ export const createMiddleware = getCreateFunction(
       addWillDelValuesCallback,
       addWillDelValueCallback,
       addWillApplyChangesCallback,
-      addDidSetRowCallback,
       destroy,
     } as Middleware);
 
@@ -206,7 +178,6 @@ export const createMiddleware = getCreateFunction(
       willDelValues,
       willDelValue,
       willApplyChanges,
-      didSetRow,
     );
 
     return middleware;

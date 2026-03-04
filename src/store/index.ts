@@ -37,7 +37,6 @@ import type {
   createStore as createStoreDecl,
 } from '../@types/store/index.d.ts';
 import {
-  arrayEvery,
   arrayForEach,
   arrayHas,
   arrayIsEqual,
@@ -63,7 +62,6 @@ import {
   collSize2,
   collSize3,
   collSize4,
-  collValues,
 } from '../common/coll.ts';
 import {defaultSorter} from '../common/index.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
@@ -102,7 +100,6 @@ import {
   objIsEmpty,
   objIsEqual,
   objMap,
-  objMerge,
   objValidate,
 } from '../common/obj.ts';
 import {
@@ -192,7 +189,6 @@ type ProtectedMethods = [
     willDelValues: () => boolean,
     willDelValue: (valueId: Id) => boolean,
     willApplyChanges: (changes: Changes) => Changes | undefined,
-    didSetRow: (tableId: Id, rowId: Id, oldRow: Row, newRow: Row) => Row,
   ) => void,
   setOrDelCell: (
     tableId: Id,
@@ -262,7 +258,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willDelValues?: () => boolean,
     willDelValue?: (valueId: Id) => boolean,
     willApplyChanges?: (changes: Changes) => Changes | undefined,
-    didSetRow?: (tableId: Id, rowId: Id, oldRow: Row, newRow: Row) => Row,
   ] = [];
   let internalListeners: [
     preStartTransaction?: () => void,
@@ -1837,41 +1832,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
     mapToObj(changedValueIds),
   ];
 
-  const doDidSetRows = () => {
-    if (middleware[14]) {
-      const changedCells2 = clonedChangedCells(changedCells);
-      collForEach(changedCells2, (rows, tableId) =>
-        collForEach(rows, (cells, rowId) => {
-          if (
-            !arrayEvery(
-              collValues(cells),
-              ([oldCell, newCell]) => oldCell === newCell,
-            )
-          ) {
-            const newRow = getRow(tableId, rowId);
-            const oldRow: Row = objMerge(newRow);
-            collForEach(cells, ([oldCell], cellId) =>
-              isUndefined(oldCell)
-                ? objDel(oldRow, cellId)
-                : (oldRow[cellId] = oldCell),
-            );
-            const didSetRow = middleware[14]!(tableId, rowId, oldRow, newRow);
-            if (!objIsEqual(didSetRow, newRow)) {
-              const setOrDelRow: {[id: string]: CellOrUndefined} = objMap(
-                newRow,
-                () => undefined,
-              );
-              objMap(didSetRow, (cell, cellId) => (setOrDelRow[cellId] = cell));
-              objMap(setOrDelRow, (cell, cellId) =>
-                setOrDelCell(tableId, rowId, cellId, cell, true),
-              );
-            }
-          }
-        }),
-      );
-    }
-  };
-
   const finishTransaction = (doRollback?: DoRollback): Store => {
     if (transactions > 0) {
       transactions--;
@@ -1883,7 +1843,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
           callInvalidCellListeners(1);
           if (!collIsEmpty(changedCells)) {
             callTabularListenersForChanges(1);
-            doDidSetRows();
           }
           callInvalidValueListeners(1);
           if (!collIsEmpty(changedValues)) {
@@ -2083,7 +2042,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willDelValues: () => boolean,
     willDelValue: (valueId: Id) => boolean,
     willApplyChanges: (changes: Changes) => Changes | undefined,
-    didSetRow: (tableId: Id, rowId: Id, oldRow: Row, newRow: Row) => Row,
   ) =>
     (middleware = [
       willSetContent,
@@ -2100,7 +2058,6 @@ export const createStore: typeof createStoreDecl = (): Store => {
       willDelValues,
       willDelValue,
       willApplyChanges,
-      didSetRow,
     ]);
 
   const setInternalListeners = (

@@ -263,43 +263,6 @@
  */
 /// WillApplyChangesCallback
 /**
- * The DidSetRowCallback type describes a function called after a Row is changed
- * during a transaction, and after mutator listeners have fired.
- *
- * Unlike the `willSet*` callbacks, which intercept writes as they happen,
- * `didSetRow` fires once per touched Row after all cell writes in the
- * transaction have completed. This means multiple cell changes to the same Row
- * within a single transaction result in just one `didSetRow` call, with the
- * full before-transaction and after-transaction Row states.
- *
- * The callback receives the Table Id, Row Id, the Row as it was at the start of
- * the transaction (`oldRow`), and the Row as it is now (`newRow`). It must
- * return a Row:
- *
- * - `newRow` to accept the changes.
- * - a different `Row` to replace the final state.
- * - `oldRow` to revert all changes to the Row.
- * - an empty object to delete the Row.
- *
- * Multiple DidSetRowCallback functions can be registered for the same table and
- * they will be called sequentially, each receiving the Row returned by the
- * previous callback. The chain never short-circuits: all registered callbacks
- * always run.
- *
- * Note that `addDidSetRowCallback` is table-scoped: you must specify the table
- * Id when registering. Callbacks are only invoked for rows in the specified
- * table, keeping overhead to zero for other tables.
- * @param tableId The Id of the Table containing the changed Row.
- * @param rowId The Id of the Row that was changed.
- * @param oldRow The Row as it was at the start of the transaction.
- * @param newRow The Row as it is now, after all cell writes including those
- * made by mutating listeners.
- * @returns The Row to use as the final state.
- * @category Callback
- * @since v8.0.0
- */
-/// DidSetRowCallback
-/**
  * A Middleware object lets you intercept and validate writes to a Store.
  *
  * This is useful for enforcing business rules, data validation, or
@@ -975,86 +938,6 @@
    * @since v8.0.0
    */
   /// Middleware.addWillApplyChangesCallback
-  /**
-   * The addDidSetRowCallback method registers a DidSetRowCallback for a
-   * specific table that will be called after any Row in that table is changed
-   * during a transaction, after mutator listeners have fired.
-   *
-   * Unlike `willSetRow`, which fires synchronously during each write, this
-   * callback fires once per changed Row after all cell writes in the
-   * transaction have landed. Multiple cell changes to the same Row within a
-   * transaction produce a single callback with the full before/after Row
-   * states.
-   *
-   * The callback receives `oldRow` (the Row at the start of the transaction)
-   * and `newRow` (the Row after all writes). Return `newRow` to accept, a
-   * different `Row` to replace, `oldRow` to revert, or an empty object to
-   * delete.
-   * @param tableId The Id of the Table to watch.
-   * @param callback The DidSetRowCallback to register.
-   * @returns A reference to the Middleware object, for chaining.
-   * @example
-   * This example registers a callback that validates the 'pets' table,
-   * reverting any row that ends up without a required 'species' cell.
-   *
-   * ```js
-   * import {createMiddleware, createStore} from 'tinybase';
-   *
-   * const store = createStore();
-   * const middleware = createMiddleware(store);
-   *
-   * middleware.addDidSetRowCallback(
-   *   'pets',
-   *   (_tableId, _rowId, oldRow, newRow) =>
-   *     'species' in newRow ? newRow : oldRow,
-   * );
-   *
-   * store.setRow('pets', 'fido', {species: 'dog', name: 'Fido'});
-   * console.log(store.getRow('pets', 'fido'));
-   * // -> {species: 'dog', name: 'Fido'}
-   *
-   * store.setRow('pets', 'nemo', {name: 'Nemo'});
-   * console.log(store.getRow('pets', 'nemo'));
-   * // -> {}
-   *
-   * middleware.destroy();
-   * ```
-   * @example
-   * This example shows that multiple cell changes in one transaction result in
-   * a single didSetRow callback with the full before/after row states.
-   *
-   * ```js
-   * import {createMiddleware, createStore} from 'tinybase';
-   *
-   * const store = createStore();
-   * const middleware = createMiddleware(store);
-   *
-   * const seen = [];
-   * middleware.addDidSetRowCallback(
-   *   'pets',
-   *   (_tableId, rowId, oldRow, newRow) => {
-   *     seen.push({rowId, oldRow: {...oldRow}, newRow: {...newRow}});
-   *     return newRow;
-   *   },
-   * );
-   *
-   * store.transaction(() => {
-   *   store.setCell('pets', 'fido', 'name', 'Fido');
-   *   store.setCell('pets', 'fido', 'species', 'dog');
-   * });
-   * console.log(seen.length);
-   * // -> 1
-   * console.log(seen[0].rowId);
-   * // -> 'fido'
-   * console.log(seen[0].newRow);
-   * // -> {name: 'Fido', species: 'dog'}
-   *
-   * middleware.destroy();
-   * ```
-   * @category Configuration
-   * @since v8.0.0
-   */
-  /// Middleware.addDidSetRowCallback
   /**
    * The destroy method should be called when this Middleware object is no
    * longer used. It removes all hooks and listeners from the Store, and
