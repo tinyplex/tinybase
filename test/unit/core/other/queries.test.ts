@@ -139,7 +139,9 @@ describe('Sets', () => {
       setCells();
       queries.setQueryDefinition('q1', 't1', ({select}) => {
         select((getTableCell) =>
-          getTableCell('c2') == 'even' ? getTableCell('c1') : undefined,
+          getTableCell('c2') == 'even'
+            ? (getTableCell('c1') as string)
+            : undefined,
         ).as('c1e');
       });
       expect(queries.getResultTable('q1')).toEqual({
@@ -1124,7 +1126,9 @@ describe('Listens to Queries when sets', () => {
     test('one root table column by derivation, some missing', () => {
       queries.setQueryDefinition('q1', 't1', ({select}) => {
         select((getTableCell) =>
-          getTableCell('c2') == 'even' ? getTableCell('c1') : undefined,
+          getTableCell('c2') == 'even'
+            ? (getTableCell('c1') as string)
+            : undefined,
         ).as('c1e');
       });
       setCells();

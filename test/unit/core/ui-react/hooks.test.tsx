@@ -1782,7 +1782,7 @@ describe('Read Hooks', () => {
       const [cell, setCell] = useCellState('t1', 'r1', 'c1', store);
       return (
         <span>
-          {cell}
+          {cell as string | number | boolean}
           <button onClick={() => setCell(((cell as number) ?? 0) + 1)} />
         </span>
       );
