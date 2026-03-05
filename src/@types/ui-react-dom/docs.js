@@ -1737,8 +1737,9 @@
  * Id, Cell Id, and Store (which is either the default context Store, a named
  * context Store, or an explicit reference).
  *
- * A Cell contains a string, number, or boolean, so the value is rendered in an
- * appropriate <input> tag and a button lets the user change type, if possible.
+ * A Cell contains a string, number, boolean, object or array (since v8.0) so
+ * the value is rendered in an appropriate <input> tag, possibly as JSON and a
+ * button lets the user cycle through the types.
  *
  * Set the `showType` prop to false to remove the ability for the user to see or
  * change the Cell type. They will also not be able to change the type if there
@@ -1801,8 +1802,9 @@
  * Id, Value Id, and Store (which is either the default context Store, a named
  * context Store, or an explicit reference).
  *
- * A Value contains a string, number, or boolean, so the value is rendered in an
- * appropriate <input> tag and a button lets the user change type, if possible.
+ * A Value contains a string, number, boolean, object or array (since v8.0) so
+ * the value is rendered in an appropriate <input> tag, possibly as JSON and a
+ * button lets the user cycle through the types.
  *
  * Set the `showType` prop to false to remove the ability for the user to see or
  * change the Value type. They will also not be able to change the type if there
