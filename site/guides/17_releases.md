@@ -9,7 +9,7 @@ highlighted features.
 
 ## Object And Array Types
 
-This release also extends the range of types that a Cell or Value can hold.
+This release extends the range of types that a Cell or Value can hold.
 Previously, TinyBase supported `string`, `number`, `boolean`, and (since v7.0)
 `null`. Now you can also store plain JavaScript **objects** and **arrays**
 directly in a Store.
