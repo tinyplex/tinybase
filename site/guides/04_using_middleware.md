@@ -45,16 +45,16 @@ value. The meaning of this return value depends on the type of callback:
 
 The full list of `willSet*` callbacks you can register is as follows:
 
-| Callback         | Parameters                   | Called                       | Return               |
-| ---------------- | ---------------------------- | ---------------------------- | -------------------- |
-| willSetContent   | content                      | When setContent is called.   | Content or undefined |
-| willSetTables    | tables                       | When setTables is called.    | Tables or undefined  |
-| willSetTable     | tableId, table               | When setTable is called.     | Table or undefined   |
-| willSetRow       | tableId, rowId, row          | When setRow is called.       | Row or undefined     |
-| willSetCell      | tableId, rowId, cellId, cell | When setCell is called.      | Cell or undefined    |
-| willSetValues    | values                       | When setValues is called.    | Values or undefined  |
-| willSetValue     | valueId, value               | When setValue is called.     | Value or undefined   |
-| willApplyChanges | changes                      | When applyChanges is called. | Changes or undefined |
+| Callback         | Parameters                   | Called                            | Return               |
+| ---------------- | ---------------------------- | --------------------------------- | -------------------- |
+| willSetContent   | content                      | When setContent is called.        | Content or undefined |
+| willSetTables    | tables                       | When setTables is called.         | Tables or undefined  |
+| willSetTable     | tableId, table               | When setTable is called.          | Table or undefined   |
+| willSetRow       | tableId, rowId, row          | When setRow or setCell is called. | Row or undefined     |
+| willSetCell      | tableId, rowId, cellId, cell | When setCell is called.           | Cell or undefined    |
+| willSetValues    | values                       | When setValues is called.         | Values or undefined  |
+| willSetValue     | valueId, value               | When setValue is called.          | Value or undefined   |
+| willApplyChanges | changes                      | When applyChanges is called.      | Changes or undefined |
 
 Finally, the full list of `willDel*` callbacks you can register is as follows:
 
@@ -89,25 +89,29 @@ callback cancels the operation, subsequent `willSet*` callbacks will not be
 called. 
 
 ```js
-middleware.addWillSetRowCallback((tableId, rowId, row) => {
-  console.log('Timestamp row');
-  return {...row, timestamp: Date.now()}; 
-});
-middleware.addWillSetRowCallback((tableId, rowId, row) => {
-  console.log('Cancel setting row');
-  return undefined; 
-});
-middleware.addWillSetRowCallback((tableId, rowId, row) => {
-  console.log('Defaulting pet to be alive');
-  return {...row, alive: true}; 
-});
+middleware
+  .addWillSetRowCallback((_tableId, _rowId, row) => ({...row, step1: true}))
+  .addWillSetRowCallback((_tableId, _rowId, row) => ({...row, step2: true}));
 
-store.setRow('pets', 'fido', {'species': 'dog'});
-// -> 'Timestamp row'
-// -> 'Cancel setting row'
-// (Callback 3 is not called because Callback 2 cancels the operation)
+store.setRow('pets', 'fido', {species: 'dog'});
+console.log(store.getRow('pets', 'fido'));
+// -> {species: 'dog', step1: true, step2: true}
+```
 
-console.log(store.getTable('pets'));
+Returning `undefined` from a callback cancels the entire operation, and
+subsequent callbacks will not be called:
+
+```js
+middleware.addWillSetRowCallback((tableId, _rowId, row) =>
+  tableId === 'readonly' ? undefined : row,
+);
+
+store.setRow('employees', 'alice', {role: 'admin'});
+console.log(store.getRow('employees', 'alice'));
+// -> {role: 'admin', step1: true, step2: true}
+
+store.setRow('readonly', 'r1', {data: 'test'});
+console.log(store.getTable('readonly'));
 // -> {}
 ```
 
@@ -115,16 +119,21 @@ Similarly, if a `willDel*` callback cancels the delete operation, subsequent
 `willDel*` callbacks will not be called. In other words, a callback cannot
 re-enable a delete operation that has been cancelled by a previous callback.
 
-A less granular operation on the Store (e.g. setting a Table, which will call
-`willSetTable`) will also then call more granular callbacks (e.g. `willSetRow`,
-`willSetCell`) for each relevant Row and Cell. BUT a more granular operation
-(e.g. setting a Cell, which will call `willSetCell`) will NOT call less granular
-callbacks (e.g. `willSetRow`, `willSetTable`, `willSetContent` and so on).
+In terms of cascading, a less granular operation on the Store (e.g. setting a
+Table, which will call `willSetTable`) will also then call more granular
+callbacks (e.g. `willSetRow`, `willSetCell`) for each relevant Row and Cell.
 
-This might seem strange since, in a way, the Row, Table, and Content were
-technically being updated. But the key is to think about the actual method that
-was called on the Store, and then expect callbacks for only more granular
-elements from there.
+BUT there is one important exception to this rule though! Calling `setCell`
+will also fire `willSetRow` (receiving existing cells merged with the new cell),
+in addition to the `willSetCell` calls for each Cell in the Row. In other words,
+The entire resulting Row is applied as though `setRow` had been called with it.
+
+This is to allow for row- or schema-level validation and transformation to be
+applied even when only `setCell` calls are being made.
+
+Note that `setCell` does not fire `willSetTable`, `willSetTables`, or
+`willSetContent` though. The 'upwards' cascade only goes as far as `willSetRow`
+for `setCell` calls.
 
 ## Complex Object Callbacks
 

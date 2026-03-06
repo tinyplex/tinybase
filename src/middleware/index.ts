@@ -178,6 +178,7 @@ export const createMiddleware = getCreateFunction(
       willDelValues,
       willDelValue,
       willApplyChanges,
+      () => willSetRowCallbacks.length > 0,
     );
 
     return middleware;

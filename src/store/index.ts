@@ -189,6 +189,7 @@ type ProtectedMethods = [
     willDelValues: () => boolean,
     willDelValue: (valueId: Id) => boolean,
     willApplyChanges: (changes: Changes) => Changes | undefined,
+    hasWillSetRowCallbacks: () => boolean,
   ) => void,
   setOrDelCell: (
     tableId: Id,
@@ -196,6 +197,7 @@ type ProtectedMethods = [
     cellId: Id,
     cell: CellOrUndefined,
     skipMiddleware?: boolean,
+    skipRowMiddleware?: boolean,
   ) => Store,
   setOrDelValue: (
     valueId: Id,
@@ -258,6 +260,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willDelValues?: () => boolean,
     willDelValue?: (valueId: Id) => boolean,
     willApplyChanges?: (changes: Changes) => Changes | undefined,
+    hasWillSetRowCallbacks?: () => boolean,
   ] = [];
   let internalListeners: [
     preStartTransaction?: () => void,
@@ -573,10 +576,18 @@ export const createStore: typeof createStoreDecl = (): Store => {
     cellId: Id,
     cell: CellOrUndefined,
     skipMiddleware?: boolean,
+    skipRowMiddleware?: boolean,
   ) =>
     isUndefined(cell)
       ? delCell(tableId, rowId, cellId, true, skipMiddleware)
-      : setCell(tableId, rowId, cellId, cell, skipMiddleware);
+      : setCell(
+          tableId,
+          rowId,
+          cellId,
+          cell,
+          skipMiddleware,
+          skipRowMiddleware,
+        );
 
   const setOrDelValues = (values: Values) =>
     objIsEmpty(values) ? delValues() : setValues(values);
@@ -696,6 +707,37 @@ export const createStore: typeof createStoreDecl = (): Store => {
         ),
       objIsEqual,
     ) as RowMap;
+
+  const applyRowDirectly = (
+    tableId: Id,
+    tableMap: TableMap,
+    rowId: Id,
+    row: Row,
+    skipMiddleware?: boolean,
+  ): void => {
+    mapMatch(
+      mapEnsure(tableMap, rowId, () => {
+        rowIdsChanged(tableId, rowId, 1);
+        return mapNew();
+      }),
+      row,
+      (rowMap, cellId, cell) =>
+        ifNotUndefined(
+          getValidatedCell(tableId, rowId, cellId, cell as Cell),
+          (validCell) =>
+            setValidCell(
+              tableId,
+              rowId,
+              rowMap,
+              cellId,
+              validCell,
+              skipMiddleware,
+            ),
+        ),
+      (rowMap, cellId) =>
+        delValidCell(tableId, tableMap, rowId, rowMap, cellId, true),
+    );
+  };
 
   const setValidCell = (
     tableId: Id,
@@ -1556,6 +1598,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     cellId: Id,
     cell: Cell | MapCell,
     skipMiddleware?: boolean,
+    skipRowMiddleware?: boolean,
   ): Store =>
     fluentTransaction(
       (tableId, rowId, cellId) =>
@@ -1566,15 +1609,49 @@ export const createStore: typeof createStoreDecl = (): Store => {
             cellId,
             isFunction(cell) ? cell(getCell(tableId, rowId, cellId)) : cell,
           ),
-          (validCell) =>
-            setCellIntoNewRow(
-              tableId,
-              getOrCreateTable(tableId),
-              rowId,
-              cellId,
-              validCell,
-              skipMiddleware,
-            ),
+          (validCell) => {
+            const tableMap = getOrCreateTable(tableId);
+            ifNotUndefined(
+              skipMiddleware || skipRowMiddleware || !middleware[14]?.()
+                ? undefined
+                : middleware[3],
+              (willSetRow) => {
+                const existingRowMap = mapGet(tableMap, rowId);
+                const prospectiveRow: Row = {
+                  ...(existingRowMap
+                    ? mapToObj<Cell>(existingRowMap)
+                    : {}),
+                  [cellId]: validCell,
+                };
+                ifNotUndefined(
+                  whileMutating(() =>
+                    willSetRow(
+                      tableId,
+                      rowId,
+                      structuredClone(prospectiveRow),
+                    ),
+                  ),
+                  (row) =>
+                    applyRowDirectly(
+                      tableId,
+                      tableMap,
+                      rowId,
+                      row,
+                      skipMiddleware,
+                    ),
+                );
+              },
+              () =>
+                setCellIntoNewRow(
+                  tableId,
+                  tableMap,
+                  rowId,
+                  cellId,
+                  validCell,
+                  skipMiddleware,
+                ),
+            );
+          },
         ),
       tableId,
       rowId,
@@ -1636,6 +1713,8 @@ export const createStore: typeof createStoreDecl = (): Store => {
                           rowId,
                           cellId,
                           cell as CellOrUndefined,
+                          undefined,
+                          true,
                         ),
                       ),
                 ),
@@ -2042,6 +2121,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
     willDelValues: () => boolean,
     willDelValue: (valueId: Id) => boolean,
     willApplyChanges: (changes: Changes) => Changes | undefined,
+    hasWillSetRowCallbacks: () => boolean,
   ) =>
     (middleware = [
       willSetContent,
@@ -2058,6 +2138,7 @@ export const createStore: typeof createStoreDecl = (): Store => {
       willDelValues,
       willDelValue,
       willApplyChanges,
+      hasWillSetRowCallbacks,
     ]);
 
   const setInternalListeners = (

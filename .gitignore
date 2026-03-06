@@ -7,4 +7,5 @@ node_modules
 npm-debug.log
 .partykit
 .vscode
-tinybase.code-workspace
+*.code-workspace
+*.tsbuildinfo

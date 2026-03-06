@@ -77,6 +77,15 @@
  * Multiple WillSetRowCallback functions can be registered and they will be
  * called sequentially, the Row being updated successively. If any callback
  * returns `undefined`, the chain short-circuits and the Row will not be set.
+ *
+ * This callback fires both when setRow is called with a whole Row, and when
+ * setCell is called for a single Cell. When fired from setCell, the Row passed
+ * to the callback is a prospective row containing the existing Cell values
+ * merged with the new Cell value. The entire returned Row is then applied as
+ * though setRow had been called with it: cells present in the returned Row are
+ * written (each also passing through willSetCell), and cells absent from the
+ * returned Row that were present in the existing Row will be deleted. Return
+ * `undefined` to cancel the operation entirely.
  * @param tableId The Id of the Table being written to.
  * @param rowId The Id of the Row being set.
  * @param row The Row object about to be set.
@@ -490,6 +499,15 @@
    * write. Multiple callbacks can be registered and they are called
    * sequentially, each receiving the (possibly transformed) row from the
    * previous callback.
+   *
+   * This callback fires both when a whole Row is set with the setRow method,
+   * _and_ when a single Cell is set with the setCell method. When called from
+   * setCell, the callback receives a prospective row consisting of the existing
+   * Cell values merged with the new Cell value. The entire returned Row is then
+   * applied as though setRow had been called: all cells in the returned Row are
+   * written (each also passing through willSetCell), and any cells absent from
+   * the returned Row that existed before will be deleted. Return `undefined` to
+   * cancel the operation entirely.
    * @param callback The WillSetRowCallback to register.
    * @returns A reference to the Middleware object, for chaining.
    * @example
@@ -536,6 +554,32 @@
    * store.setRow('species', 'dog', {legs: 4, sound: 'woof'});
    * console.log(store.getTables());
    * // -> {}
+   *
+   * middleware.destroy();
+   * ```
+   * @example
+   * This example shows the callback firing when setCell is called,
+   * automatically stamping an 'updated' timestamp onto the row each time any
+   * cell in it is written.
+   *
+   * ```js
+   * import {createMiddleware, createStore} from 'tinybase';
+   *
+   * const store = createStore();
+   * const middleware = createMiddleware(store);
+   *
+   * store.setRow('pets', 'fido', {species: 'dog'});
+   *
+   * middleware.addWillSetRowCallback((_tableId, _rowId, row) => ({
+   *   ...row,
+   *   updated: Date.now(),
+   * }));
+   *
+   * store.setCell('pets', 'fido', 'legs', 4);
+   * console.log(store.getCell('pets', 'fido', 'legs'));
+   * // -> 4
+   * console.log(typeof store.getCell('pets', 'fido', 'updated'));
+   * // -> 'number'
    *
    * middleware.destroy();
    * ```

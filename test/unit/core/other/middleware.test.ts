@@ -1033,6 +1033,64 @@ describe('willSetRow', () => {
       store.setTable('t1', {r1: {c1: 'a'}, r2: {c2: 'b'}});
       expect(store.getTable('t1')).toEqual({r1: {c1: 'a'}});
     });
+
+    test('called from setCell', () => {
+      const calls: string[] = [];
+      middleware.addWillSetRowCallback((tableId, rowId, row) => {
+        calls.push(`${tableId}/${rowId}`);
+        return row;
+      });
+      store.setCell('t1', 'r1', 'c1', 'a');
+      expect(calls).toEqual(['t1/r1']);
+    });
+
+    test('setCell provides existing row context', () => {
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      let seen: any;
+      middleware.addWillSetRowCallback((_tableId, _rowId, row) => {
+        seen = {...row};
+        return row;
+      });
+      store.setCell('t1', 'r1', 'c3', 'c');
+      expect(seen).toEqual({c1: 'a', c2: 'b', c3: 'c'});
+    });
+
+    test('transform from setCell applies full returned row', () => {
+      store.setRow('t1', 'r1', {c1: 'a'});
+      middleware.addWillSetRowCallback((_tableId, _rowId, row) => ({
+        ...row,
+        c1: 'modified',
+        c2: 'extra',
+      }));
+      store.setCell('t1', 'r1', 'c2', 'b');
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'modified', c2: 'extra'});
+    });
+
+    test('block from setCell prevents cell set', () => {
+      middleware.addWillSetRowCallback(() => undefined);
+      store.setCell('t1', 'r1', 'c1', 'a');
+      expect(store.getTables()).toEqual({});
+    });
+
+    test('omitting cellId from returned row prevents setCell', () => {
+      store.setRow('t1', 'r1', {c1: 'a'});
+      middleware.addWillSetRowCallback((_tableId, _rowId, row) => {
+        const {c2: _, ...rest} = row;
+        return rest;
+      });
+      store.setCell('t1', 'r1', 'c2', 'b');
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a'});
+    });
+
+    test('not called from setPartialRow', () => {
+      const calls: string[] = [];
+      middleware.addWillSetRowCallback((tableId, rowId, row) => {
+        calls.push(`${tableId}/${rowId}`);
+        return row;
+      });
+      store.setPartialRow('t1', 'r1', {c1: 'a'});
+      expect(calls).toEqual([]);
+    });
   });
 
   describe('interaction with willSetCell', () => {
@@ -3091,25 +3149,26 @@ describe('callback granularity', () => {
     });
   };
 
-  describe('setCell only triggers willSetCell', () => {
+  describe('setCell triggers willSetRow and willSetCell', () => {
     test('into existing row', () => {
       store.setTables({t1: {r1: {c1: 'a'}}});
       registerAllCallbacks();
       store.setCell('t1', 'r1', 'c2', 'b');
-      expect(calls).toEqual({willSetCell: 1});
+      // prospective row {c1,c2} → applyRowDirectly fires setValidCell for both
+      expect(calls).toEqual({willSetRow: 1, willSetCell: 2});
     });
 
     test('into new row of existing table', () => {
       store.setTables({t1: {r1: {c1: 'a'}}});
       registerAllCallbacks();
       store.setCell('t1', 'r2', 'c1', 'b');
-      expect(calls).toEqual({willSetCell: 1});
+      expect(calls).toEqual({willSetRow: 1, willSetCell: 1});
     });
 
     test('into new row of new table', () => {
       registerAllCallbacks();
       store.setCell('t1', 'r1', 'c1', 'a');
-      expect(calls).toEqual({willSetCell: 1});
+      expect(calls).toEqual({willSetRow: 1, willSetCell: 1});
     });
   });
 
@@ -3592,7 +3651,7 @@ describe('middleware not called during checkpoint undo/redo', () => {
     registerAllCallbacks();
     store.setCell('t1', 'r1', 'c1', 'b');
     checkpoints.addCheckpoint('changed');
-    expect(calls).toEqual({willSetCell: 1});
+    expect(calls).toEqual({willSetRow: 1, willSetCell: 1});
     calls = {};
     checkpoints.goBackward();
     expect(calls).toEqual({});
