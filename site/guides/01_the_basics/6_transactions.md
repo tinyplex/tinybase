@@ -44,10 +44,10 @@ store.delListener(listenerId);
 If multiple changes are made to a piece of Store data throughout the
 transaction, a relevant listener will only be called with the final value
 (assuming it is different to the value at the start of the transaction),
-regardless of the changes that happened in between. For example, if a Cell
-had a value `'a'` and then, within a transaction, it was changed to `'b'`
-and then `'c'`, any CellListener registered for that cell would be called
-once as if there had been a single change from `'a'` to `'c'`:
+regardless of the changes that happened in between. For example, if a Cell had a
+value `'a'` and then, within a transaction, it was changed to `'b'` and then
+`'c'`, any CellListener registered for that cell would be called once as if
+there had been a single change from `'a'` to `'c'`:
 
 ```js
 const listenerId2 = store.addCellListener(
@@ -151,6 +151,37 @@ store
   .delListener(willFinishListenerId)
   .delListener(didFinishListenerId);
 ```
+
+## Transaction Lifecycle
+
+Since TinyBase now has multiple phases around a transaction, it helps to think
+of one complete transaction in this order:
+
+1. The transaction starts.
+2. `startTransaction` listeners fire (as added with the
+   addStartTransactionListener method).
+3. Your transaction actions run.
+4. For each attempted write in those actions, middleware callbacks run first (as
+   added with the addWillSetRow method, for example).
+5. Changes are buffered in the transaction log; non-mutating listeners are not
+   called yet.
+6. Mutating listeners fire for net changes and invalid attempts (as added with
+   the addRowListener method, for example, with the final `mutator` flag set).
+7. Any writes made by mutating listeners also go through middleware, but do not
+   trigger mutating listeners again.
+8. If provided to the transaction method or the startTransaction method,
+   `doRollback` runs with the transaction log after all mutating listeners and
+   their writes.
+9. If `doRollback` returns `true`, TinyBase rolls back the transaction changes.
+10. `willFinish` transaction listeners fire (as added with the
+    addWillFinishTransactionListener method).
+11. Non-mutating listeners fire for the final committed result (if the
+    transaction has not rolled back).
+12. `didFinish` transaction listeners fire (as added with the
+    addDidFinishTransactionListener method).
+
+If transactions are nested, this full lifecycle only happens when the outermost
+transaction finishes.
 
 ## Summary
 
