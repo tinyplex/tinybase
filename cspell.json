@@ -6,7 +6,8 @@
     "*.snap",
     "*.json",
     "*.test.ts",
-    "*.code-workspace"
+    "*.code-workspace",
+    "*.tsbuildinfo"
   ],
   "words": [
     "Abad",

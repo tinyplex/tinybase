@@ -1618,18 +1618,12 @@ export const createStore: typeof createStoreDecl = (): Store => {
               (willSetRow) => {
                 const existingRowMap = mapGet(tableMap, rowId);
                 const prospectiveRow: Row = {
-                  ...(existingRowMap
-                    ? mapToObj<Cell>(existingRowMap)
-                    : {}),
+                  ...(existingRowMap ? mapToObj<Cell>(existingRowMap) : {}),
                   [cellId]: validCell,
                 };
                 ifNotUndefined(
                   whileMutating(() =>
-                    willSetRow(
-                      tableId,
-                      rowId,
-                      structuredClone(prospectiveRow),
-                    ),
+                    willSetRow(tableId, rowId, structuredClone(prospectiveRow)),
                   ),
                   (row) =>
                     applyRowDirectly(

@@ -10,13 +10,13 @@ exports[`EditableCellView > change type and Cell 3`] = `"<div class="editableCel
 
 exports[`EditableCellView > change type and Cell 4`] = `"<div class="editableCell"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
 
-exports[`EditableCellView > change type and Cell 5`] = `"<div class="editableCell"><button title="object" class="object">object</button><textarea>{}</textarea></div>"`;
+exports[`EditableCellView > change type and Cell 5`] = `"<div class="editableCell"><button title="object" class="object">object</button><input class="" value="{}"></div>"`;
 
-exports[`EditableCellView > change type and Cell 6`] = `"<div class="editableCell"><button title="object" class="object">object</button><textarea>{"x":1}</textarea></div>"`;
+exports[`EditableCellView > change type and Cell 6`] = `"<div class="editableCell"><button title="object" class="object">object</button><input class="" value="{&quot;x&quot;:1}"></div>"`;
 
-exports[`EditableCellView > change type and Cell 7`] = `"<div class="editableCell"><button title="array" class="array">array</button><textarea>[]</textarea></div>"`;
+exports[`EditableCellView > change type and Cell 7`] = `"<div class="editableCell"><button title="array" class="array">array</button><input class="" value="[]"></div>"`;
 
-exports[`EditableCellView > change type and Cell 8`] = `"<div class="editableCell"><button title="array" class="array">array</button><textarea>[1,2]</textarea></div>"`;
+exports[`EditableCellView > change type and Cell 8`] = `"<div class="editableCell"><button title="array" class="array">array</button><input class="" value="[1,2]"></div>"`;
 
 exports[`EditableCellView > change type and Cell 9`] = `"<div class="editableCell"><button title="string" class="string">string</button><input value="1"></div>"`;
 
@@ -44,13 +44,13 @@ exports[`EditableValueView > change type and Value 3`] = `"<div class="editableV
 
 exports[`EditableValueView > change type and Value 4`] = `"<div class="editableValue"><button title="boolean" class="boolean">boolean</button><input type="checkbox" checked=""></div>"`;
 
-exports[`EditableValueView > change type and Value 5`] = `"<div class="editableValue"><button title="object" class="object">object</button><textarea>{}</textarea></div>"`;
+exports[`EditableValueView > change type and Value 5`] = `"<div class="editableValue"><button title="object" class="object">object</button><input class="" value="{}"></div>"`;
 
-exports[`EditableValueView > change type and Value 6`] = `"<div class="editableValue"><button title="object" class="object">object</button><textarea>{"x":1}</textarea></div>"`;
+exports[`EditableValueView > change type and Value 6`] = `"<div class="editableValue"><button title="object" class="object">object</button><input class="" value="{&quot;x&quot;:1}"></div>"`;
 
-exports[`EditableValueView > change type and Value 7`] = `"<div class="editableValue"><button title="array" class="array">array</button><textarea>[]</textarea></div>"`;
+exports[`EditableValueView > change type and Value 7`] = `"<div class="editableValue"><button title="array" class="array">array</button><input class="" value="[]"></div>"`;
 
-exports[`EditableValueView > change type and Value 8`] = `"<div class="editableValue"><button title="array" class="array">array</button><textarea>[1,2]</textarea></div>"`;
+exports[`EditableValueView > change type and Value 8`] = `"<div class="editableValue"><button title="array" class="array">array</button><input class="" value="[1,2]"></div>"`;
 
 exports[`EditableValueView > change type and Value 9`] = `"<div class="editableValue"><button title="string" class="string">string</button><input value="1"></div>"`;
 
