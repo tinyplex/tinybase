@@ -117,7 +117,6 @@ var isObject = (obj) => !isNullish(obj) && ifNotNullish(
 var objIds = object.keys;
 var objFreeze = object.freeze;
 var objNew = (entries = []) => object.fromEntries(entries);
-var objMerge = (...objs) => object.assign({}, ...objs);
 var objGet = (obj, id2) => ifNotUndefined(obj, (obj2) => obj2[id2]);
 var objHas = (obj, id2) => id2 in obj;
 var objDel = (obj, id2) => {
@@ -1251,7 +1250,14 @@ var createStore = () => {
     }
   );
   const setOrDelTables = (tables) => objIsEmpty(tables) ? delTables() : setTables(tables);
-  const setOrDelCell = (tableId, rowId, cellId, cell, skipMiddleware) => isUndefined(cell) ? delCell(tableId, rowId, cellId, true, skipMiddleware) : setCell(tableId, rowId, cellId, cell, skipMiddleware);
+  const setOrDelCell = (tableId, rowId, cellId, cell, skipMiddleware, skipRowMiddleware) => isUndefined(cell) ? delCell(tableId, rowId, cellId, true, skipMiddleware) : setCell(
+    tableId,
+    rowId,
+    cellId,
+    cell,
+    skipMiddleware,
+    skipRowMiddleware
+  );
   const setOrDelValues = (values) => objIsEmpty(values) ? delValues() : setValues(values);
   const setOrDelValue = (valueId, value, skipMiddleware) => isUndefined(value) ? delValue(valueId, skipMiddleware) : setValue(valueId, value, skipMiddleware);
   const setValidContent = (content) => ifTransformed(
@@ -1324,6 +1330,27 @@ var createStore = () => {
     ),
     objIsEqual
   );
+  const applyRowDirectly = (tableId, tableMap, rowId, row, skipMiddleware) => {
+    mapMatch(
+      mapEnsure(tableMap, rowId, () => {
+        rowIdsChanged(tableId, rowId, 1);
+        return mapNew();
+      }),
+      row,
+      (rowMap, cellId, cell) => ifNotUndefined(
+        getValidatedCell(tableId, rowId, cellId, cell),
+        (validCell) => setValidCell(
+          tableId,
+          rowId,
+          rowMap,
+          cellId,
+          validCell,
+          skipMiddleware
+        )
+      ),
+      (rowMap, cellId) => delValidCell(tableId, tableMap, rowId, rowMap, cellId, true)
+    );
+  };
   const setValidCell = (tableId, rowId, rowMap, cellId, cell, skipMiddleware) => ifTransformed(
     cell,
     () => ifNotUndefined(
@@ -1881,7 +1908,7 @@ var createStore = () => {
     tableId,
     rowId
   );
-  const setCell = (tableId, rowId, cellId, cell, skipMiddleware) => fluentTransaction(
+  const setCell = (tableId, rowId, cellId, cell, skipMiddleware, skipRowMiddleware) => fluentTransaction(
     (tableId2, rowId2, cellId2) => ifNotUndefined(
       getValidatedCell(
         tableId2,
@@ -1889,14 +1916,43 @@ var createStore = () => {
         cellId2,
         isFunction(cell) ? cell(getCell(tableId2, rowId2, cellId2)) : cell
       ),
-      (validCell) => setCellIntoNewRow(
-        tableId2,
-        getOrCreateTable(tableId2),
-        rowId2,
-        cellId2,
-        validCell,
-        skipMiddleware
-      )
+      (validCell) => {
+        const tableMap = getOrCreateTable(tableId2);
+        ifNotUndefined(
+          skipMiddleware || skipRowMiddleware || !middleware[14]?.() ? void 0 : middleware[3],
+          (willSetRow) => {
+            const existingRowMap = mapGet(tableMap, rowId2);
+            const prospectiveRow = {
+              ...existingRowMap ? mapToObj(existingRowMap) : {},
+              [cellId2]: validCell
+            };
+            ifNotUndefined(
+              whileMutating(
+                () => willSetRow(
+                  tableId2,
+                  rowId2,
+                  structuredClone(prospectiveRow)
+                )
+              ),
+              (row) => applyRowDirectly(
+                tableId2,
+                tableMap,
+                rowId2,
+                row,
+                skipMiddleware
+              )
+            );
+          },
+          () => setCellIntoNewRow(
+            tableId2,
+            tableMap,
+            rowId2,
+            cellId2,
+            validCell,
+            skipMiddleware
+          )
+        );
+      }
     ),
     tableId,
     rowId,
@@ -1936,7 +1992,14 @@ var createStore = () => {
             table,
             (row, rowId) => isUndefined(row) ? delRow(tableId, rowId) : objMap(
               row,
-              (cell, cellId) => setOrDelCell(tableId, rowId, cellId, cell)
+              (cell, cellId) => setOrDelCell(
+                tableId,
+                rowId,
+                cellId,
+                cell,
+                void 0,
+                true
+              )
             )
           )
         );
@@ -2076,36 +2139,6 @@ var createStore = () => {
     mapToObj3(changedCellIds),
     mapToObj(changedValueIds)
   ];
-  const doDidSetRows = () => {
-    if (middleware[14]) {
-      const changedCells2 = clonedChangedCells(changedCells);
-      collForEach(
-        changedCells2,
-        (rows, tableId) => collForEach(rows, (cells, rowId) => {
-          if (!arrayEvery(
-            collValues(cells),
-            ([oldCell, newCell]) => oldCell === newCell
-          )) {
-            const newRow = getRow(tableId, rowId);
-            const oldRow = objMerge(newRow);
-            collForEach(
-              cells,
-              ([oldCell], cellId) => isUndefined(oldCell) ? objDel(oldRow, cellId) : oldRow[cellId] = oldCell
-            );
-            const didSetRow = middleware[14](tableId, rowId, oldRow, newRow);
-            if (!objIsEqual(didSetRow, newRow)) {
-              const setOrDelRow = objMap(newRow, () => void 0);
-              objMap(didSetRow, (cell, cellId) => setOrDelRow[cellId] = cell);
-              objMap(
-                setOrDelRow,
-                (cell, cellId) => setOrDelCell(tableId, rowId, cellId, cell, true)
-              );
-            }
-          }
-        })
-      );
-    }
-  };
   const finishTransaction = (doRollback) => {
     if (transactions > 0) {
       transactions--;
@@ -2115,7 +2148,6 @@ var createStore = () => {
           callInvalidCellListeners(1);
           if (!collIsEmpty(changedCells)) {
             callTabularListenersForChanges(1);
-            doDidSetRows();
           }
           callInvalidValueListeners(1);
           if (!collIsEmpty(changedValues)) {
@@ -2263,7 +2295,7 @@ var createStore = () => {
     invalidValue: pairCollSize2(invalidValueListeners),
     transaction: collSize2(startTransactionListeners) + pairCollSize2(finishTransactionListeners)
   });
-  const setMiddleware = (willSetContent, willSetTables, willSetTable, willSetRow, willSetCell, willSetValues, willSetValue, willDelTables, willDelTable, willDelRow, willDelCell, willDelValues, willDelValue, willApplyChanges, didSetRow) => middleware = [
+  const setMiddleware = (willSetContent, willSetTables, willSetTable, willSetRow, willSetCell, willSetValues, willSetValue, willDelTables, willDelTable, willDelRow, willDelCell, willDelValues, willDelValue, willApplyChanges, hasWillSetRowCallbacks) => middleware = [
     willSetContent,
     willSetTables,
     willSetTable,
@@ -2278,7 +2310,7 @@ var createStore = () => {
     willDelValues,
     willDelValue,
     willApplyChanges,
-    didSetRow
+    hasWillSetRowCallbacks
   ];
   const setInternalListeners = (preStartTransaction, preFinishTransaction, postFinishTransaction, cellChanged2, valueChanged2) => internalListeners = [
     preStartTransaction,
@@ -3079,7 +3111,6 @@ var createMiddleware = getCreateFunction((store) => {
   const willDelValuesCallbacks = [];
   const willDelValueCallbacks = [];
   const willApplyChangesCallbacks = [];
-  const didSetRowCallbacksMap = mapNew();
   const willSetContent = (content) => reduceCallbacks(willSetContentCallbacks, content);
   const willSetTables = (tables) => reduceCallbacks(willSetTablesCallbacks, tables);
   const willSetTable = (tableId, table) => reduceCallbacks(willSetTableCallbacks, table, tableId);
@@ -3094,15 +3125,6 @@ var createMiddleware = getCreateFunction((store) => {
   const willDelValues = () => everyCallback(willDelValuesCallbacks);
   const willDelValue = (valueId) => everyCallback(willDelValueCallbacks, valueId);
   const willApplyChanges = (changes) => reduceCallbacks(willApplyChangesCallbacks, changes);
-  const didSetRow = (tableId, rowId, oldRow, newRow) => ifNotUndefined(
-    mapGet(didSetRowCallbacksMap, tableId),
-    (callbacks) => arrayReduce(
-      callbacks,
-      (current, callback) => callback(tableId, rowId, oldRow, current),
-      newRow
-    ),
-    () => newRow
-  );
   const getStore = () => store;
   const addWillSetContentCallback = addCallback(willSetContentCallbacks);
   const addWillSetTablesCallback = addCallback(willSetTablesCallbacks);
@@ -3118,12 +3140,6 @@ var createMiddleware = getCreateFunction((store) => {
   const addWillDelValuesCallback = addCallback(willDelValuesCallbacks);
   const addWillDelValueCallback = addCallback(willDelValueCallbacks);
   const addWillApplyChangesCallback = addCallback(willApplyChangesCallbacks);
-  const addDidSetRowCallback = (tableId, callback) => fluent(
-    () => arrayPush(
-      mapEnsure(didSetRowCallbacksMap, tableId, () => []),
-      callback
-    )
-  );
   const destroy = () => {
   };
   const middleware = objFreeze({
@@ -3142,7 +3158,6 @@ var createMiddleware = getCreateFunction((store) => {
     addWillDelValuesCallback,
     addWillDelValueCallback,
     addWillApplyChangesCallback,
-    addDidSetRowCallback,
     destroy
   });
   store._[4](
@@ -3160,7 +3175,7 @@ var createMiddleware = getCreateFunction((store) => {
     willDelValues,
     willDelValue,
     willApplyChanges,
-    didSetRow
+    () => willSetRowCallbacks.length > 0
   );
   return middleware;
 });

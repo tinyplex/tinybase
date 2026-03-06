@@ -293,6 +293,13 @@ var isArray2 = (thing) => Array.isArray(thing);
 var size2 = (arrayOrString) => arrayOrString.length;
 var getUndefined = () => void 0;
 var getArg = (value) => value;
+var tryReturn = (tryF, catchReturn) => {
+  try {
+    return tryF();
+  } catch {
+    return catchReturn;
+  }
+};
 var arrayEvery2 = (array, cb) => array.every(cb);
 var arrayIsEqual2 = (array1, array2) => size2(array1) === size2(array2) && arrayEvery2(array1, (value1, index) => array2[index] === value1);
 var arrayOrValueEqual2 = (value1, value2) => isArray2(value1) && isArray2(value2) ? arrayIsEqual2(value1, value2) : value1 === value2;
@@ -738,15 +745,17 @@ var EditableThing = ({
   const [stringThing, setStringThing] = useState2();
   const [numberThing, setNumberThing] = useState2();
   const [booleanThing, setBooleanThing] = useState2();
-  const [objectThingJson, setObjectThingJson] = useState2(EMPTY_STRING2);
-  const [arrayThingJson, setArrayThingJson] = useState2(EMPTY_STRING2);
+  const [objectThing, setObjectThing] = useState2("{}");
+  const [arrayThing, setArrayThing] = useState2("[]");
+  const [objectClassName, setObjectClassName] = useState2("");
+  const [arrayClassName, setArrayClassName] = useState2("");
   if (currentThing !== thing) {
     setThingType(getCellOrValueType(thing));
     setCurrentThing(thing);
     if (isObject2(thing)) {
-      setObjectThingJson(jsonString2(thing));
+      setObjectThing(jsonString2(thing));
     } else if (isArray2(thing)) {
-      setArrayThingJson(jsonString2(thing));
+      setArrayThing(jsonString2(thing));
     } else {
       setStringThing(String(thing));
       setNumberThing(Number(thing) || 0);
@@ -758,6 +767,22 @@ var EditableThing = ({
       setTypedThing(thing2);
       setCurrentThing(thing2);
       onThingChange(thing2);
+    },
+    [onThingChange]
+  );
+  const handleJsonThingChange = useCallback2(
+    (value, setTypedThing, isThing, setTypedClassName) => {
+      setTypedThing(value);
+      try {
+        const object3 = jsonParse(value);
+        if (isThing(object3)) {
+          setCurrentThing(object3);
+          onThingChange(object3);
+          setTypedClassName("");
+        }
+      } catch {
+        setTypedClassName("invalid");
+      }
     },
     [onThingChange]
   );
@@ -776,8 +801,8 @@ var EditableThing = ({
         stringThing,
         numberThing,
         booleanThing,
-        objectThingJson ? jsonParse(objectThingJson) : {},
-        arrayThingJson ? jsonParse(arrayThingJson) : []
+        tryReturn(() => jsonParse(objectThing), {}),
+        tryReturn(() => jsonParse(arrayThing), [])
       );
       setThingType(nextType);
       setCurrentThing(thing2);
@@ -789,8 +814,8 @@ var EditableThing = ({
     stringThing,
     numberThing,
     booleanThing,
-    objectThingJson,
-    arrayThingJson,
+    objectThing,
+    arrayThing,
     thingType
   ]);
   const widget = getTypeCase(
@@ -840,43 +865,35 @@ var EditableThing = ({
       thingType
     ),
     /* @__PURE__ */ jsx2(
-      "textarea",
+      "input",
       {
-        value: objectThingJson,
+        value: objectThing,
+        className: objectClassName,
         onChange: useCallback2(
-          (event) => {
-            const str = event[CURRENT_TARGET][_VALUE];
-            setObjectThingJson(str);
-            try {
-              const parsed = jsonParse(str);
-              if (isObject2(parsed)) {
-                onThingChange(parsed);
-              }
-            } catch {
-            }
-          },
-          [onThingChange]
+          (event) => handleJsonThingChange(
+            event[CURRENT_TARGET][_VALUE],
+            setObjectThing,
+            isObject2,
+            setObjectClassName
+          ),
+          [handleJsonThingChange]
         )
       },
       thingType
     ),
     /* @__PURE__ */ jsx2(
-      "textarea",
+      "input",
       {
-        value: arrayThingJson,
+        value: arrayThing,
+        className: arrayClassName,
         onChange: useCallback2(
-          (event) => {
-            const str = event[CURRENT_TARGET][_VALUE];
-            setArrayThingJson(str);
-            try {
-              const parsed = jsonParse(str);
-              if (isArray2(parsed)) {
-                onThingChange(parsed);
-              }
-            } catch {
-            }
-          },
-          [onThingChange]
+          (event) => handleJsonThingChange(
+            event[CURRENT_TARGET][_VALUE],
+            setArrayThing,
+            isArray2,
+            setArrayClassName
+          ),
+          [handleJsonThingChange]
         )
       },
       thingType

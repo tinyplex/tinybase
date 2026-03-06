@@ -488,6 +488,13 @@ var structuredClone = GLOBAL2.structuredClone;
 var errorNew = (message) => {
   throw new Error(message);
 };
+var tryReturn = (tryF, catchReturn) => {
+  try {
+    return tryF();
+  } catch {
+    return catchReturn;
+  }
+};
 var tryCatch = async (action, then1, then2) => {
   try {
     return await action();
@@ -522,7 +529,6 @@ var isObject2 = (obj) => !isNullish2(obj) && ifNotNullish2(
 var objIds2 = object2.keys;
 var objFreeze = object2.freeze;
 var objNew = (entries = []) => object2.fromEntries(entries);
-var objMerge = (...objs) => object2.assign({}, ...objs);
 var objGet2 = (obj, id2) => ifNotUndefined2(obj, (obj2) => obj2[id2]);
 var objHas = (obj, id2) => id2 in obj;
 var objDel = (obj, id2) => {
@@ -1223,7 +1229,14 @@ var createStore = () => {
     }
   );
   const setOrDelTables = (tables) => objIsEmpty(tables) ? delTables() : setTables(tables);
-  const setOrDelCell = (tableId, rowId, cellId, cell, skipMiddleware) => isUndefined2(cell) ? delCell(tableId, rowId, cellId, true, skipMiddleware) : setCell(tableId, rowId, cellId, cell, skipMiddleware);
+  const setOrDelCell = (tableId, rowId, cellId, cell, skipMiddleware, skipRowMiddleware) => isUndefined2(cell) ? delCell(tableId, rowId, cellId, true, skipMiddleware) : setCell(
+    tableId,
+    rowId,
+    cellId,
+    cell,
+    skipMiddleware,
+    skipRowMiddleware
+  );
   const setOrDelValues = (values) => objIsEmpty(values) ? delValues() : setValues(values);
   const setOrDelValue = (valueId, value, skipMiddleware) => isUndefined2(value) ? delValue(valueId, skipMiddleware) : setValue(valueId, value, skipMiddleware);
   const setValidContent = (content) => ifTransformed(
@@ -1296,6 +1309,27 @@ var createStore = () => {
     ),
     objIsEqual2
   );
+  const applyRowDirectly = (tableId, tableMap, rowId, row, skipMiddleware) => {
+    mapMatch(
+      mapEnsure(tableMap, rowId, () => {
+        rowIdsChanged(tableId, rowId, 1);
+        return mapNew();
+      }),
+      row,
+      (rowMap, cellId, cell) => ifNotUndefined2(
+        getValidatedCell(tableId, rowId, cellId, cell),
+        (validCell) => setValidCell(
+          tableId,
+          rowId,
+          rowMap,
+          cellId,
+          validCell,
+          skipMiddleware
+        )
+      ),
+      (rowMap, cellId) => delValidCell(tableId, tableMap, rowId, rowMap, cellId, true)
+    );
+  };
   const setValidCell = (tableId, rowId, rowMap, cellId, cell, skipMiddleware) => ifTransformed(
     cell,
     () => ifNotUndefined2(
@@ -1853,7 +1887,7 @@ var createStore = () => {
     tableId,
     rowId
   );
-  const setCell = (tableId, rowId, cellId, cell, skipMiddleware) => fluentTransaction(
+  const setCell = (tableId, rowId, cellId, cell, skipMiddleware, skipRowMiddleware) => fluentTransaction(
     (tableId2, rowId2, cellId2) => ifNotUndefined2(
       getValidatedCell(
         tableId2,
@@ -1861,14 +1895,43 @@ var createStore = () => {
         cellId2,
         isFunction2(cell) ? cell(getCell(tableId2, rowId2, cellId2)) : cell
       ),
-      (validCell) => setCellIntoNewRow(
-        tableId2,
-        getOrCreateTable(tableId2),
-        rowId2,
-        cellId2,
-        validCell,
-        skipMiddleware
-      )
+      (validCell) => {
+        const tableMap = getOrCreateTable(tableId2);
+        ifNotUndefined2(
+          skipMiddleware || skipRowMiddleware || !middleware[14]?.() ? void 0 : middleware[3],
+          (willSetRow) => {
+            const existingRowMap = mapGet(tableMap, rowId2);
+            const prospectiveRow = {
+              ...existingRowMap ? mapToObj(existingRowMap) : {},
+              [cellId2]: validCell
+            };
+            ifNotUndefined2(
+              whileMutating(
+                () => willSetRow(
+                  tableId2,
+                  rowId2,
+                  structuredClone(prospectiveRow)
+                )
+              ),
+              (row) => applyRowDirectly(
+                tableId2,
+                tableMap,
+                rowId2,
+                row,
+                skipMiddleware
+              )
+            );
+          },
+          () => setCellIntoNewRow(
+            tableId2,
+            tableMap,
+            rowId2,
+            cellId2,
+            validCell,
+            skipMiddleware
+          )
+        );
+      }
     ),
     tableId,
     rowId,
@@ -1908,7 +1971,14 @@ var createStore = () => {
             table,
             (row, rowId) => isUndefined2(row) ? delRow(tableId, rowId) : objMap(
               row,
-              (cell, cellId) => setOrDelCell(tableId, rowId, cellId, cell)
+              (cell, cellId) => setOrDelCell(
+                tableId,
+                rowId,
+                cellId,
+                cell,
+                void 0,
+                true
+              )
             )
           )
         );
@@ -2048,36 +2118,6 @@ var createStore = () => {
     mapToObj3(changedCellIds),
     mapToObj(changedValueIds)
   ];
-  const doDidSetRows = () => {
-    if (middleware[14]) {
-      const changedCells2 = clonedChangedCells(changedCells);
-      collForEach(
-        changedCells2,
-        (rows, tableId) => collForEach(rows, (cells, rowId) => {
-          if (!arrayEvery2(
-            collValues(cells),
-            ([oldCell, newCell]) => oldCell === newCell
-          )) {
-            const newRow = getRow(tableId, rowId);
-            const oldRow = objMerge(newRow);
-            collForEach(
-              cells,
-              ([oldCell], cellId) => isUndefined2(oldCell) ? objDel(oldRow, cellId) : oldRow[cellId] = oldCell
-            );
-            const didSetRow = middleware[14](tableId, rowId, oldRow, newRow);
-            if (!objIsEqual2(didSetRow, newRow)) {
-              const setOrDelRow = objMap(newRow, () => void 0);
-              objMap(didSetRow, (cell, cellId) => setOrDelRow[cellId] = cell);
-              objMap(
-                setOrDelRow,
-                (cell, cellId) => setOrDelCell(tableId, rowId, cellId, cell, true)
-              );
-            }
-          }
-        })
-      );
-    }
-  };
   const finishTransaction = (doRollback) => {
     if (transactions > 0) {
       transactions--;
@@ -2087,7 +2127,6 @@ var createStore = () => {
           callInvalidCellListeners(1);
           if (!collIsEmpty(changedCells)) {
             callTabularListenersForChanges(1);
-            doDidSetRows();
           }
           callInvalidValueListeners(1);
           if (!collIsEmpty(changedValues)) {
@@ -2235,7 +2274,7 @@ var createStore = () => {
     invalidValue: pairCollSize2(invalidValueListeners),
     transaction: collSize2(startTransactionListeners) + pairCollSize2(finishTransactionListeners)
   });
-  const setMiddleware = (willSetContent, willSetTables, willSetTable, willSetRow, willSetCell, willSetValues, willSetValue, willDelTables, willDelTable, willDelRow, willDelCell, willDelValues, willDelValue, willApplyChanges, didSetRow) => middleware = [
+  const setMiddleware = (willSetContent, willSetTables, willSetTable, willSetRow, willSetCell, willSetValues, willSetValue, willDelTables, willDelTable, willDelRow, willDelCell, willDelValues, willDelValue, willApplyChanges, hasWillSetRowCallbacks) => middleware = [
     willSetContent,
     willSetTables,
     willSetTable,
@@ -2250,7 +2289,7 @@ var createStore = () => {
     willDelValues,
     willDelValue,
     willApplyChanges,
-    didSetRow
+    hasWillSetRowCallbacks
   ];
   const setInternalListeners = (preStartTransaction, preFinishTransaction, postFinishTransaction, cellChanged2, valueChanged2) => internalListeners = [
     preStartTransaction,
@@ -2893,15 +2932,17 @@ var EditableThing = ({
   const [stringThing, setStringThing] = useState2();
   const [numberThing, setNumberThing] = useState2();
   const [booleanThing, setBooleanThing] = useState2();
-  const [objectThingJson, setObjectThingJson] = useState2(EMPTY_STRING2);
-  const [arrayThingJson, setArrayThingJson] = useState2(EMPTY_STRING2);
+  const [objectThing, setObjectThing] = useState2("{}");
+  const [arrayThing, setArrayThing] = useState2("[]");
+  const [objectClassName, setObjectClassName] = useState2("");
+  const [arrayClassName, setArrayClassName] = useState2("");
   if (currentThing !== thing) {
     setThingType(getCellOrValueType(thing));
     setCurrentThing(thing);
     if (isObject2(thing)) {
-      setObjectThingJson(jsonString2(thing));
+      setObjectThing(jsonString2(thing));
     } else if (isArray2(thing)) {
-      setArrayThingJson(jsonString2(thing));
+      setArrayThing(jsonString2(thing));
     } else {
       setStringThing(String(thing));
       setNumberThing(Number(thing) || 0);
@@ -2913,6 +2954,22 @@ var EditableThing = ({
       setTypedThing(thing2);
       setCurrentThing(thing2);
       onThingChange(thing2);
+    },
+    [onThingChange]
+  );
+  const handleJsonThingChange = useCallback2(
+    (value, setTypedThing, isThing, setTypedClassName) => {
+      setTypedThing(value);
+      try {
+        const object3 = jsonParse(value);
+        if (isThing(object3)) {
+          setCurrentThing(object3);
+          onThingChange(object3);
+          setTypedClassName("");
+        }
+      } catch {
+        setTypedClassName("invalid");
+      }
     },
     [onThingChange]
   );
@@ -2931,8 +2988,8 @@ var EditableThing = ({
         stringThing,
         numberThing,
         booleanThing,
-        objectThingJson ? jsonParse(objectThingJson) : {},
-        arrayThingJson ? jsonParse(arrayThingJson) : []
+        tryReturn(() => jsonParse(objectThing), {}),
+        tryReturn(() => jsonParse(arrayThing), [])
       );
       setThingType(nextType);
       setCurrentThing(thing2);
@@ -2944,8 +3001,8 @@ var EditableThing = ({
     stringThing,
     numberThing,
     booleanThing,
-    objectThingJson,
-    arrayThingJson,
+    objectThing,
+    arrayThing,
     thingType
   ]);
   const widget = getTypeCase(
@@ -2995,43 +3052,35 @@ var EditableThing = ({
       thingType
     ),
     /* @__PURE__ */ jsx2(
-      "textarea",
+      "input",
       {
-        value: objectThingJson,
+        value: objectThing,
+        className: objectClassName,
         onChange: useCallback2(
-          (event) => {
-            const str = event[CURRENT_TARGET][_VALUE];
-            setObjectThingJson(str);
-            try {
-              const parsed = jsonParse(str);
-              if (isObject2(parsed)) {
-                onThingChange(parsed);
-              }
-            } catch {
-            }
-          },
-          [onThingChange]
+          (event) => handleJsonThingChange(
+            event[CURRENT_TARGET][_VALUE],
+            setObjectThing,
+            isObject2,
+            setObjectClassName
+          ),
+          [handleJsonThingChange]
         )
       },
       thingType
     ),
     /* @__PURE__ */ jsx2(
-      "textarea",
+      "input",
       {
-        value: arrayThingJson,
+        value: arrayThing,
+        className: arrayClassName,
         onChange: useCallback2(
-          (event) => {
-            const str = event[CURRENT_TARGET][_VALUE];
-            setArrayThingJson(str);
-            try {
-              const parsed = jsonParse(str);
-              if (isArray2(parsed)) {
-                onThingChange(parsed);
-              }
-            } catch {
-            }
-          },
-          [onThingChange]
+          (event) => handleJsonThingChange(
+            event[CURRENT_TARGET][_VALUE],
+            setArrayThing,
+            isArray2,
+            setArrayClassName
+          ),
+          [handleJsonThingChange]
         )
       },
       thingType
