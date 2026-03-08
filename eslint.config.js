@@ -74,6 +74,7 @@ export default tsLint.config(
             '^custom-remote-handlers$',
             '^electric-sql/(client/model|notifiers|wa-sqlite)$',
             '^cloudflare:workers$',
+            '@sveltejs/vite-plugin-svelte',
             'eslint/config',
             'typescript-eslint',
             'bun:sqlite',
