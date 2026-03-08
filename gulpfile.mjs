@@ -64,6 +64,7 @@ const ALL_MODULES = [
   'ui-react-dom',
   'ui-react-inspector',
   'ui-react',
+  'ui-svelte',
 ];
 const ALL_DEFINITIONS = [
   ...ALL_MODULES,
@@ -499,6 +500,10 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   const {default: shebang} = await import('rollup-plugin-preserve-shebang');
   const {default: image} = await import('@rollup/plugin-image');
   const {default: terser} = await import('@rollup/plugin-terser');
+  const sveltePlugin =
+    module == 'ui-svelte'
+      ? (await import('rollup-plugin-svelte')).default
+      : null;
 
   let inputFile = `src/${module}/index.ts`;
   if (!existsSync(inputFile)) {
@@ -521,6 +526,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       'url',
       'yjs',
       ...(module == 'omni' ? [] : ['tinybase/store', '../ui-react']),
+      ...(module == 'ui-svelte' ? [/^svelte/] : []),
     ],
     input: inputFile,
     plugins: [
@@ -540,6 +546,14 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       min
         ? [terser({toplevel: true, compress: {unsafe: true, passes: 3}})]
         : prettierPlugin(await getPrettierConfig()),
+      ...(sveltePlugin
+        ? [
+            sveltePlugin({
+              extensions: ['.svelte', '.svelte.ts'],
+              compilerOptions: {runes: true},
+            }),
+          ]
+        : []),
     ],
     onwarn: (warning, warn) => {
       if (warning.code !== 'MISSING_NODE_BUILTINS') {
