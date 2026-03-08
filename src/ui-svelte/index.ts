@@ -1,4 +1,12 @@
 export {
+  provideCheckpoints,
+  provideIndexes,
+  provideMetrics,
+  providePersister,
+  provideQueries,
+  provideRelationships,
+  provideStore,
+  provideSynchronizer,
   useCell,
   useCellIds,
   useCellState,
@@ -62,3 +70,4 @@ export {
   useValueState,
   useValues,
 } from './hooks.svelte.ts';
+export {default as Provider} from './Provider.svelte';

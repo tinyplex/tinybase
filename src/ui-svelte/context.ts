@@ -28,4 +28,6 @@ export type ContextValue = [
   persistersById?: {[id: Id]: AnyPersister},
   synchronizer?: Synchronizer,
   synchronizersById?: {[id: Id]: Synchronizer},
+  addThing?: (offset: number, id: Id, thing: any) => void,
+  delThing?: (offset: number, id: Id) => void,
 ];
