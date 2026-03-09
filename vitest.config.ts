@@ -35,11 +35,8 @@ export default defineConfig({
         extends: true,
         test: {
           name: 'unit',
-          include: [
-            'test/unit/**/*.test.ts',
-            'test/unit/**/*.test.tsx',
-            '!test/unit/core/ui-svelte/**',
-          ],
+          include: ['test/unit/**/*.test.ts', 'test/unit/**/*.test.tsx'],
+          exclude: ['test/unit/core/ui-svelte/**'],
         },
       },
       {
