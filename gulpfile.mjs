@@ -706,6 +706,10 @@ export const ts = async () => {
   await tsCheck('src');
   await tsCheck('test');
   await tsCheck('site');
+  await execute(
+    'npx svelte-check --workspace test/unit/core/ui-svelte ' +
+      '--tsconfig svelte.tsconfig.json',
+  );
 };
 
 export const compileForProd = () => compileModulesForProd();

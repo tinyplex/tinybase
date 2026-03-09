@@ -582,7 +582,9 @@ export function useMetrics(id?: Id): Metrics | undefined;
 export function useMetricsIds(): {readonly current: Ids};
 
 /// ui-svelte.useMetricIds
-export function useMetricIds(metricsOrMetricsId?: R<Metrics | Id | undefined>): {
+export function useMetricIds(
+  metricsOrMetricsId?: R<Metrics | Id | undefined>,
+): {
   readonly current: Ids;
 };
 

@@ -279,14 +279,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useHasTables
   useHasTables: (
-    storeOrStoreId?: Store<Schemas> | Id | (() => Store<Schemas> | Id | undefined),
+    storeOrStoreId?:
+      | Store<Schemas>
+      | Id
+      | (() => Store<Schemas> | Id | undefined),
   ) => {
     readonly current: boolean;
   };
 
   /// ui-svelte.useTables
   useTables: (
-    storeOrStoreId?: Store<Schemas> | Id | (() => Store<Schemas> | Id | undefined),
+    storeOrStoreId?:
+      | Store<Schemas>
+      | Id
+      | (() => Store<Schemas> | Id | undefined),
   ) => {
     readonly current: Tables<Schemas[0]>;
   };
@@ -415,14 +421,20 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useHasValues
   useHasValues: (
-    storeOrStoreId?: Store<Schemas> | Id | (() => Store<Schemas> | Id | undefined),
+    storeOrStoreId?:
+      | Store<Schemas>
+      | Id
+      | (() => Store<Schemas> | Id | undefined),
   ) => {
     readonly current: boolean;
   };
 
   /// ui-svelte.useValues
   useValues: (
-    storeOrStoreId?: Store<Schemas> | Id | (() => Store<Schemas> | Id | undefined),
+    storeOrStoreId?:
+      | Store<Schemas>
+      | Id
+      | (() => Store<Schemas> | Id | undefined),
   ) => {
     readonly current: Values<Schemas[1]>;
   };
@@ -469,7 +481,10 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useMetricIds
   useMetricIds: (
-    metricsOrMetricsId?: Metrics<Schemas> | Id | (() => Metrics<Schemas> | Id | undefined),
+    metricsOrMetricsId?:
+      | Metrics<Schemas>
+      | Id
+      | (() => Metrics<Schemas> | Id | undefined),
   ) => {
     readonly current: Ids;
   };
@@ -488,7 +503,10 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useIndexIds
   useIndexIds: (
-    indexesOrIndexesId?: Indexes<Schemas> | Id | (() => Indexes<Schemas> | Id | undefined),
+    indexesOrIndexesId?:
+      | Indexes<Schemas>
+      | Id
+      | (() => Indexes<Schemas> | Id | undefined),
   ) => {
     readonly current: Ids;
   };
@@ -514,7 +532,10 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useQueryIds
   useQueryIds: (
-    queriesOrQueriesId?: Queries<Schemas> | Id | (() => Queries<Schemas> | Id | undefined),
+    queriesOrQueriesId?:
+      | Queries<Schemas>
+      | Id
+      | (() => Queries<Schemas> | Id | undefined),
   ) => {
     readonly current: Ids;
   };
