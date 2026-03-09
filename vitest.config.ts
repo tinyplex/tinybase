@@ -5,7 +5,6 @@ import {resolve} from 'path';
 import {coverageConfigDefaults, defineConfig} from 'vitest/config';
 
 export default defineConfig({
-  plugins: [svelte(), svelteTesting({autoCleanup: false})],
   test: {
     environment: 'happy-dom',
     execArgv: [
@@ -36,7 +35,19 @@ export default defineConfig({
         extends: true,
         test: {
           name: 'unit',
-          include: ['test/unit/**/*.test.ts', 'test/unit/**/*.test.tsx'],
+          include: [
+            'test/unit/**/*.test.ts',
+            'test/unit/**/*.test.tsx',
+            '!test/unit/core/ui-svelte/**',
+          ],
+        },
+      },
+      {
+        extends: true,
+        plugins: [svelte(), svelteTesting()],
+        test: {
+          name: 'svelte',
+          include: ['test/unit/core/ui-svelte/**/*.test.ts'],
         },
       },
       {
