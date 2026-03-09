@@ -5,7 +5,7 @@ import {resolve} from 'path';
 import {coverageConfigDefaults, defineConfig} from 'vitest/config';
 
 export default defineConfig({
-  plugins: [svelte(), svelteTesting()],
+  plugins: [svelte(), svelteTesting({autoCleanup: false})],
   test: {
     environment: 'happy-dom',
     execArgv: [
