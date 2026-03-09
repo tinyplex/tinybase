@@ -5,6 +5,61 @@ highlighted features.
 
 ---
 
+# v8.1
+
+## Svelte 5 Support
+
+This release introduces the new `tinybase/ui-svelte` module, bringing native
+Svelte 5 runes-based reactive bindings to TinyBase. The module provides hooks
+and view components for building reactive UIs without any additional state
+management.
+
+Hooks return a reactive `{ current }` object backed by Svelte's `$state` rune.
+Any component that reads `hook.current` will automatically re-render when the
+underlying TinyBase data changes:
+
+```svelte
+<script>
+  import {createStore} from 'tinybase';
+  import {useCell} from 'tinybase/ui-svelte';
+
+  const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+  const color = useCell('pets', 'fido', 'color', store);
+</script>
+
+<p>Color: {color.current}</p>
+```
+
+The `useCellState` and `useValueState` hooks go further, providing a writable
+`current` property that pairs naturally with Svelte's `bind:` directive for
+two-way data binding:
+
+```svelte
+<script>
+  import {useCellState} from 'tinybase/ui-svelte';
+
+  const color = useCellState('pets', 'fido', 'color', store);
+</script>
+
+<input bind:value={color.current} />
+```
+
+All hooks accept reactive getter functions as parameters — the `R<T>` type
+(`T | (() => T)`) — so passing `() => rowId` from a `$state` variable causes
+the hook to reactively track which row it reads, without unmounting and
+remounting.
+
+The module further includes a `Provider` component and context helpers
+(`useStore`, `useMetrics`, etc.) for sharing TinyBase objects across a component
+tree, and ~23 built-in view components (`CellView`, `RowView`, `TablesView`,
+and more) for assembling UIs directly from Store data.
+
+Read more in the new
+[Building UIs With Svelte](/guides/building-uis/building-uis-with-svelte/)
+guide.
+
+---
+
 # v8.0
 
 ## Object And Array Types

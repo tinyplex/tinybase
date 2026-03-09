@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#v8-0'><em>NEW!</em> v8.0 release</a>
+<a href='/guides/releases/#v8-1'><em>NEW!</em> v8.1 release</a>
 
-<span id="one-with">"The one with objects, arrays & middleware!"</span>
+<span id="one-with">"The one with Svelte 5 support!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
