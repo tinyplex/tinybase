@@ -199,11 +199,11 @@ const useHas = (
   );
 
 export const useHasTables = (
-  storeOrStoreId?: Store | Id,
+  storeOrStoreId?: R<Store | Id | undefined>,
 ): {readonly current: boolean} => useHas(sg(storeOrStoreId), TABLES);
 
 export const useTables = (
-  storeOrStoreId?: Store | Id,
+  storeOrStoreId?: R<Store | Id | undefined>,
 ): {readonly current: Tables} =>
   useGet(sg(storeOrStoreId), TABLES, EMPTY_OBJ as Tables);
 
@@ -343,11 +343,11 @@ export const useCellState = (
 };
 
 export const useHasValues = (
-  storeOrStoreId?: Store | Id,
+  storeOrStoreId?: R<Store | Id | undefined>,
 ): {readonly current: boolean} => useHas(sg(storeOrStoreId), VALUES);
 
 export const useValues = (
-  storeOrStoreId?: Store | Id,
+  storeOrStoreId?: R<Store | Id | undefined>,
 ): {readonly current: Values} =>
   useGet(sg(storeOrStoreId), VALUES, EMPTY_OBJ as Values);
 
@@ -425,7 +425,7 @@ export const useMetricsIds = (): {readonly current: Ids} => {
 };
 
 export const useMetricIds = (
-  metricsOrMetricsId?: Metrics | Id,
+  metricsOrMetricsId?: R<Metrics | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(mg(metricsOrMetricsId), METRIC + IDS, EMPTY_ARR);
 
@@ -452,7 +452,7 @@ export const useIndexesIds = (): {readonly current: Ids} => {
 };
 
 export const useIndexIds = (
-  indexesOrIndexesId?: Indexes | Id,
+  indexesOrIndexesId?: R<Indexes | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(ig(indexesOrIndexesId), INDEX + IDS, EMPTY_ARR);
 
@@ -489,7 +489,7 @@ export const useQueriesIds = (): {readonly current: Ids} => {
 };
 
 export const useQueryIds = (
-  queriesOrQueriesId?: Queries | Id,
+  queriesOrQueriesId?: R<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(qg(queriesOrQueriesId), QUERY + IDS, EMPTY_ARR);
 
@@ -588,7 +588,7 @@ export const useRelationshipsIds = (): {readonly current: Ids} => {
 };
 
 export const useRelationshipIds = (
-  relationshipsOrRelationshipsId?: Relationships | Id,
+  relationshipsOrRelationshipsId?: R<Relationships | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(rg(relationshipsOrRelationshipsId), RELATIONSHIP + IDS, EMPTY_ARR);
 
@@ -658,14 +658,14 @@ export const useCheckpoint = (
   ]);
 
 export const useGoBackwardCallback = (
-  checkpointsOrCheckpointsId?: Checkpoints | Id,
+  checkpointsOrCheckpointsId?: R<Checkpoints | Id | undefined>,
 ): (() => void) => {
   const getC = cg(checkpointsOrCheckpointsId);
   return () => getC()?.goBackward();
 };
 
 export const useGoForwardCallback = (
-  checkpointsOrCheckpointsId?: Checkpoints | Id,
+  checkpointsOrCheckpointsId?: R<Checkpoints | Id | undefined>,
 ): (() => void) => {
   const getC = cg(checkpointsOrCheckpointsId);
   return () => getC()?.goForward();

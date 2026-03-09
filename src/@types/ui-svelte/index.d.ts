@@ -1,9 +1,6 @@
 /// ui-svelte
 import type {Component, Snippet} from 'svelte';
-import type {
-  CheckpointIds,
-  Checkpoints,
-} from '../checkpoints/index.d.ts';
+import type {CheckpointIds, Checkpoints} from '../checkpoints/index.d.ts';
 import type {Id, Ids} from '../common/index.d.ts';
 import type {Indexes} from '../indexes/index.d.ts';
 import type {Metrics} from '../metrics/index.d.ts';
@@ -433,19 +430,19 @@ export declare const ValueView: Component<ValueViewProps>;
 export declare const ValuesView: Component<ValuesViewProps>;
 
 /// ui-svelte.useHasTables
-export function useHasTables(
-  storeOrStoreId?: Store | Id,
-): {readonly current: boolean};
+export function useHasTables(storeOrStoreId?: R<Store | Id | undefined>): {
+  readonly current: boolean;
+};
 
 /// ui-svelte.useTables
-export function useTables(
-  storeOrStoreId?: Store | Id,
-): {readonly current: Tables};
+export function useTables(storeOrStoreId?: R<Store | Id | undefined>): {
+  readonly current: Tables;
+};
 
 /// ui-svelte.useTableIds
-export function useTableIds(
-  storeOrStoreId?: R<Store | Id | undefined>,
-): {readonly current: Ids};
+export function useTableIds(storeOrStoreId?: R<Store | Id | undefined>): {
+  readonly current: Ids;
+};
 
 /// ui-svelte.useHasTable
 export function useHasTable(
@@ -540,19 +537,19 @@ export function useCellState(
 ): {get current(): CellOrUndefined; set current(v: Cell)};
 
 /// ui-svelte.useHasValues
-export function useHasValues(
-  storeOrStoreId?: Store | Id,
-): {readonly current: boolean};
+export function useHasValues(storeOrStoreId?: R<Store | Id | undefined>): {
+  readonly current: boolean;
+};
 
 /// ui-svelte.useValues
-export function useValues(
-  storeOrStoreId?: Store | Id,
-): {readonly current: Values};
+export function useValues(storeOrStoreId?: R<Store | Id | undefined>): {
+  readonly current: Values;
+};
 
 /// ui-svelte.useValueIds
-export function useValueIds(
-  storeOrStoreId?: R<Store | Id | undefined>,
-): {readonly current: Ids};
+export function useValueIds(storeOrStoreId?: R<Store | Id | undefined>): {
+  readonly current: Ids;
+};
 
 /// ui-svelte.useHasValue
 export function useHasValue(
@@ -585,9 +582,9 @@ export function useMetrics(id?: Id): Metrics | undefined;
 export function useMetricsIds(): {readonly current: Ids};
 
 /// ui-svelte.useMetricIds
-export function useMetricIds(
-  metricsOrMetricsId?: Metrics | Id,
-): {readonly current: Ids};
+export function useMetricIds(metricsOrMetricsId?: R<Metrics | Id | undefined>): {
+  readonly current: Ids;
+};
 
 /// ui-svelte.useMetric
 export function useMetric(
@@ -602,9 +599,9 @@ export function useIndexes(id?: Id): Indexes | undefined;
 export function useIndexesIds(): {readonly current: Ids};
 
 /// ui-svelte.useIndexIds
-export function useIndexIds(
-  indexesOrIndexesId?: Indexes | Id,
-): {readonly current: Ids};
+export function useIndexIds(indexesOrIndexesId?: R<Indexes | Id | undefined>): {
+  readonly current: Ids;
+};
 
 /// ui-svelte.useSliceIds
 export function useSliceIds(
@@ -626,9 +623,9 @@ export function useQueries(id?: Id): Queries | undefined;
 export function useQueriesIds(): {readonly current: Ids};
 
 /// ui-svelte.useQueryIds
-export function useQueryIds(
-  queriesOrQueriesId?: Queries | Id,
-): {readonly current: Ids};
+export function useQueryIds(queriesOrQueriesId?: R<Queries | Id | undefined>): {
+  readonly current: Ids;
+};
 
 /// ui-svelte.useResultTable
 export function useResultTable(
@@ -694,7 +691,7 @@ export function useRelationshipsIds(): {readonly current: Ids};
 
 /// ui-svelte.useRelationshipIds
 export function useRelationshipIds(
-  relationshipsOrRelationshipsId?: Relationships | Id,
+  relationshipsOrRelationshipsId?: R<Relationships | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useRemoteRowId
@@ -737,12 +734,12 @@ export function useCheckpoint(
 
 /// ui-svelte.useGoBackwardCallback
 export function useGoBackwardCallback(
-  checkpointsOrCheckpointsId?: Checkpoints | Id,
+  checkpointsOrCheckpointsId?: R<Checkpoints | Id | undefined>,
 ): () => void;
 
 /// ui-svelte.useGoForwardCallback
 export function useGoForwardCallback(
-  checkpointsOrCheckpointsId?: Checkpoints | Id,
+  checkpointsOrCheckpointsId?: R<Checkpoints | Id | undefined>,
 ): () => void;
 
 /// ui-svelte.usePersister
