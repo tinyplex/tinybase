@@ -75,6 +75,7 @@ export default tsLint.config(
             '^electric-sql/(client/model|notifiers|wa-sqlite)$',
             '^cloudflare:workers$',
             '@sveltejs/vite-plugin-svelte',
+            '@testing-library/svelte/vite',
             'eslint/config',
             'typescript-eslint',
             'bun:sqlite',
