@@ -14,7 +14,7 @@ export default defineConfig({
     setupFiles: ['test/vitest/setup.ts'],
     reporters: [['test/vitest/reporter.ts', {hideSkipped: true}]],
     slowTestThreshold: 3000,
-    maxWorkers: 10,
+    maxWorkers: 8,
     passWithNoTests: true,
     testTimeout: 20000,
     retry: 10,
