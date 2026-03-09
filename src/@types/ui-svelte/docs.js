@@ -908,8 +908,6 @@
  * This example creates a Provider context with a default Store.
  *
  * ```ts
- * import {createStore} from 'tinybase';
- * import {Provider} from 'tinybase/ui-svelte';
  * // In a .svelte file:
  * // <Provider store={createStore()}>
  * //   <App />
@@ -1300,8 +1298,6 @@
  * This example uses the useCell hook to display a Cell value reactively.
  *
  * ```ts
- * import {createStore} from 'tinybase';
- * import {useCell} from 'tinybase/ui-svelte';
  * // In a .svelte file:
  * // const store = createStore().setCell('pets', 'cat', 'name', 'Fido');
  * // const name = useCell('pets', 'cat', 'name', store);
