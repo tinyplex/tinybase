@@ -70,7 +70,7 @@ import ContextRelationships from './helpers/ContextRelationships.svelte';
 import ContextStore from './helpers/ContextStore.svelte';
 import ContextSynchronizer from './helpers/ContextSynchronizer.svelte';
 
-const sep = createRawSnippet(() => ({render: () => '/'}));
+const sep = createRawSnippet(() => ({render: () => '<span>/</span>'}));
 
 let store: Store;
 
