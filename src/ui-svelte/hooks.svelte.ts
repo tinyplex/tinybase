@@ -493,6 +493,21 @@ export const useSliceRowIds = (
     get(sliceId),
   ]);
 
+export const useIndexStoreTableId = (
+  indexesOrId: MaybeGetter<Indexes | Id | undefined>,
+  indexId: MaybeGetter<Id>,
+) => {
+  const getI = ig(indexesOrId);
+  return {
+    get store() {
+      return getI()?.getStore();
+    },
+    get tableId() {
+      return getI()?.getTableId(get(indexId));
+    },
+  };
+};
+
 export const useQueries = (id?: Id): Queries | undefined =>
   resolveByOffset(id, OFFSET_QUERIES) as Queries | undefined;
 
@@ -648,6 +663,24 @@ export const useLinkedRowIds = (
     EMPTY_ARR,
     () => [get(relationshipId), get(firstRowId)],
   );
+
+export const useRelationshipsStoreTableIds = (
+  relationshipsOrId: MaybeGetter<Relationships | Id | undefined>,
+  relationshipId: MaybeGetter<Id>,
+) => {
+  const getR = rg(relationshipsOrId);
+  return {
+    get store() {
+      return getR()?.getStore();
+    },
+    get localTableId() {
+      return getR()?.getLocalTableId(get(relationshipId));
+    },
+    get remoteTableId() {
+      return getR()?.getRemoteTableId(get(relationshipId));
+    },
+  };
+};
 
 export const useCheckpoints = (id?: Id): Checkpoints | undefined =>
   resolveByOffset(id, OFFSET_CHECKPOINTS) as Checkpoints | undefined;
