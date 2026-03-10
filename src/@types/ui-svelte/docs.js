@@ -9,7 +9,7 @@
  * re-render when data changes.
  *
  * Hook parameters accept either plain values or reactive getter functions
- * (`R<T> = T | (() => T)`), so passing `() => tableId` from a `let`-bound
+ * (`MaybeGetter<T> = T | (() => T)`), so passing `() => tableId` from a `let`-bound
  * Svelte prop makes the hook re-execute whenever the prop changes.
  *
  * The components in this module provide a further abstraction over those hooks

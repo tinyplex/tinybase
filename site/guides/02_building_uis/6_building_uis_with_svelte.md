@@ -65,7 +65,7 @@ There are also hooks for the higher-level TinyBase objects: `useMetric`,
 ## Reactive Parameters With R
 
 All hook parameters accept either a plain value or a reactive getter function.
-This is the `R<T>` type: `T | (() => T)`.
+This is the `MaybeGetter<T>` type: `T | (() => T)`.
 
 Passing a getter function that reads a `$state` variable makes the hook
 reactively track which data it fetches. In this example, `rowId` is a prop and
