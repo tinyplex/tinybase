@@ -2,8 +2,5 @@
   "bracketSpacing": false,
   "singleQuote": true,
   "trailingComma": "all",
-  "plugins": [
-    "prettier-plugin-organize-imports",
-    "prettier-plugin-svelte"
-  ]
+  "plugins": ["prettier-plugin-organize-imports", "prettier-plugin-svelte"]
 }

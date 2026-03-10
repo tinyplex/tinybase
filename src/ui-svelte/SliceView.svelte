@@ -8,7 +8,7 @@
   import {TINYBASE_CONTEXT_KEY} from './context.ts';
   import {useSliceRowIds} from './hooks.svelte.ts';
   import RowView from './RowView.svelte';
-  import ItemsView from './common/ItemsView.svelte';
+  import Wrap from './common/Wrap.svelte';
 
   let {indexId, sliceId, indexes, separator, debugIds, row}: SliceViewProps =
     $props();
@@ -31,7 +31,7 @@
   );
 </script>
 
-<ItemsView
+<Wrap
   ids={rowIds.current}
   {separator}
   {debugIds}
@@ -46,4 +46,4 @@
         {debugIds}
       />{/if}
   {/snippet}
-</ItemsView>
+</Wrap>

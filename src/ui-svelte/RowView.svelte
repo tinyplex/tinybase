@@ -2,7 +2,7 @@
   import type {RowViewProps} from '../@types/ui-svelte/index.d.ts';
   import {useCellIds} from './hooks.svelte.ts';
   import CellView from './CellView.svelte';
-  import ItemsView from './common/ItemsView.svelte';
+  import Wrap from './common/Wrap.svelte';
 
   let {
     tableId,
@@ -22,8 +22,8 @@
   const activeCellIds = $derived(customCellIds ?? defaultCellIds.current);
 </script>
 
-<ItemsView ids={activeCellIds} {separator} {debugIds} id={rowId} custom={cell}>
+<Wrap ids={activeCellIds} {separator} {debugIds} id={rowId} custom={cell}>
   {#snippet children(cellId)}
     <CellView {tableId} {rowId} {cellId} {store} {debugIds} />
   {/snippet}
-</ItemsView>
+</Wrap>

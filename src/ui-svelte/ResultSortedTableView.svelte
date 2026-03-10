@@ -2,7 +2,7 @@
   import type {ResultSortedTableViewProps} from '../@types/ui-svelte/index.d.ts';
   import {useResultSortedRowIds} from './hooks.svelte.ts';
   import ResultRowView from './ResultRowView.svelte';
-  import ItemsView from './common/ItemsView.svelte';
+  import Wrap from './common/Wrap.svelte';
 
   let {
     queryId,
@@ -26,7 +26,7 @@
   );
 </script>
 
-<ItemsView
+<Wrap
   ids={rowIds.current}
   {separator}
   {debugIds}
@@ -36,4 +36,4 @@
   {#snippet children(rowId)}
     <ResultRowView {queryId} {rowId} {queries} {debugIds} />
   {/snippet}
-</ItemsView>
+</Wrap>

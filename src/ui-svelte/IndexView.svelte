@@ -2,7 +2,7 @@
   import type {IndexViewProps} from '../@types/ui-svelte/index.d.ts';
   import {useSliceIds} from './hooks.svelte.ts';
   import SliceView from './SliceView.svelte';
-  import ItemsView from './common/ItemsView.svelte';
+  import Wrap from './common/Wrap.svelte';
 
   let {indexId, indexes, separator, debugIds, slice}: IndexViewProps = $props();
   const sliceIds = useSliceIds(
@@ -11,7 +11,7 @@
   );
 </script>
 
-<ItemsView
+<Wrap
   ids={sliceIds.current}
   {separator}
   {debugIds}
@@ -21,4 +21,4 @@
   {#snippet children(sliceId)}
     <SliceView {indexId} {sliceId} {indexes} {debugIds} />
   {/snippet}
-</ItemsView>
+</Wrap>

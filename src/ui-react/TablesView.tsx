@@ -4,7 +4,7 @@ import type {
 } from '../@types/ui-react/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getProps} from '../common/react.ts';
-import {wrap} from './common/wrap.tsx';
+import {Wrap} from './common/Wrap.tsx';
 import {useTableIds} from './hooks.ts';
 import {TableView} from './TableView.tsx';
 
@@ -14,9 +14,9 @@ export const TablesView: typeof TablesViewDecl = ({
   getTableComponentProps,
   separator,
   debugIds,
-}: TablesProps): any =>
-  wrap(
-    arrayMap(useTableIds(store), (tableId) => (
+}: TablesProps): any => (
+  <Wrap separator={separator}>
+    {arrayMap(useTableIds(store), (tableId) => (
       <Table
         key={tableId}
         {...getProps(getTableComponentProps, tableId)}
@@ -24,6 +24,6 @@ export const TablesView: typeof TablesViewDecl = ({
         store={store}
         debugIds={debugIds}
       />
-    )),
-    separator,
-  );
+    ))}
+  </Wrap>
+);

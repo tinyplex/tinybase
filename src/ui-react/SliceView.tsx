@@ -5,7 +5,7 @@ import type {
 } from '../@types/ui-react/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getIndexStoreTableId, getProps} from '../common/react.ts';
-import {wrap} from './common/wrap.tsx';
+import {Wrap} from './common/Wrap.tsx';
 import {useIndexesOrIndexesById, useSliceRowIds} from './hooks.ts';
 import {RowView} from './RowView.tsx';
 
@@ -23,19 +23,18 @@ export const SliceView: typeof SliceViewDecl = ({
     indexId,
   );
   const rowIds = useSliceRowIds(indexId, sliceId, resolvedIndexes);
-  return wrap(
-    arrayMap(rowIds, (rowId) => (
-      <Row
-        key={rowId}
-        {...getProps(getRowComponentProps, rowId)}
-        tableId={tableId as Id}
-        rowId={rowId}
-        store={store}
-        debugIds={debugIds}
-      />
-    )),
-    separator,
-    debugIds,
-    sliceId,
+  return (
+    <Wrap separator={separator} debugIds={debugIds} id={sliceId}>
+      {arrayMap(rowIds, (rowId) => (
+        <Row
+          key={rowId}
+          {...getProps(getRowComponentProps, rowId)}
+          tableId={tableId as Id}
+          rowId={rowId}
+          store={store}
+          debugIds={debugIds}
+        />
+      ))}
+    </Wrap>
   );
 };

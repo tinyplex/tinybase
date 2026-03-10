@@ -2,7 +2,7 @@
   import type {ResultTableViewProps} from '../@types/ui-svelte/index.d.ts';
   import {useResultRowIds} from './hooks.svelte.ts';
   import ResultRowView from './ResultRowView.svelte';
-  import ItemsView from './common/ItemsView.svelte';
+  import Wrap from './common/Wrap.svelte';
 
   let {queryId, queries, separator, debugIds, row}: ResultTableViewProps =
     $props();
@@ -12,7 +12,7 @@
   );
 </script>
 
-<ItemsView
+<Wrap
   ids={rowIds.current}
   {separator}
   {debugIds}
@@ -22,4 +22,4 @@
   {#snippet children(rowId)}
     <ResultRowView {queryId} {rowId} {queries} {debugIds} />
   {/snippet}
-</ItemsView>
+</Wrap>

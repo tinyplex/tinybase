@@ -2,7 +2,7 @@
   import type {TableViewProps} from '../@types/ui-svelte/index.d.ts';
   import {useRowIds} from './hooks.svelte.ts';
   import RowView from './RowView.svelte';
-  import ItemsView from './common/ItemsView.svelte';
+  import Wrap from './common/Wrap.svelte';
 
   let {
     tableId,
@@ -19,7 +19,7 @@
   );
 </script>
 
-<ItemsView
+<Wrap
   ids={rowIds.current}
   {separator}
   {debugIds}
@@ -29,4 +29,4 @@
   {#snippet children(rowId)}
     <RowView {tableId} {rowId} {store} {customCellIds} {debugIds} />
   {/snippet}
-</ItemsView>
+</Wrap>
