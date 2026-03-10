@@ -91,14 +91,14 @@ const resolveWithCtx = <T>(
         | undefined);
 };
 
-const resolveByOffset = <T>(
+const useThing = <T>(
   thingOrId: T | Id | undefined,
   offset: number,
 ): T | undefined => resolveWithCtx(getCtx(), thingOrId, offset);
 
-const mkGetter = <T>(
-  offset: number,
+const useThingOrThingById = <T>(
   thingOrId?: T | Id | (() => T | Id | undefined),
+  offset?: number,
 ): (() => T | undefined) => {
   const ctx = getCtx();
   return () =>
@@ -107,7 +107,7 @@ const mkGetter = <T>(
       (typeof thingOrId === 'function'
         ? (thingOrId as () => T | Id | undefined)()
         : thingOrId) as T | Id | undefined,
-      offset,
+      offset!,
     );
 };
 
@@ -115,40 +115,56 @@ const getThingIds = (ctx: ContextValue, offset: number): Ids =>
   objIds((ctx[offset * 2 + 1] ?? EMPTY_OBJ) as IdObj<unknown>);
 
 export const useStoreOrStoreById = (
-  s?: MaybeGetter<Store | Id | undefined>,
-): (() => Store | undefined) => mkGetter<Store>(OFFSET_STORE, s as any);
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): (() => Store | undefined) =>
+  useThingOrThingById<Store>(storeOrStoreId as any, OFFSET_STORE);
 
 export const useMetricsOrMetricsById = (
-  m?: MaybeGetter<Metrics | Id | undefined>,
-): (() => Metrics | undefined) => mkGetter<Metrics>(OFFSET_METRICS, m as any);
+  metricsOrMetricsId?: MaybeGetter<Metrics | Id | undefined>,
+): (() => Metrics | undefined) =>
+  useThingOrThingById<Metrics>(metricsOrMetricsId as any, OFFSET_METRICS);
 
 export const useIndexesOrIndexesById = (
-  i?: MaybeGetter<Indexes | Id | undefined>,
-): (() => Indexes | undefined) => mkGetter<Indexes>(OFFSET_INDEXES, i as any);
+  indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
+): (() => Indexes | undefined) =>
+  useThingOrThingById<Indexes>(indexesOrIndexesId as any, OFFSET_INDEXES);
 
 export const useRelationshipsOrRelationshipsById = (
-  r?: MaybeGetter<Relationships | Id | undefined>,
+  relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): (() => Relationships | undefined) =>
-  mkGetter<Relationships>(OFFSET_RELATIONSHIPS, r as any);
+  useThingOrThingById<Relationships>(
+    relationshipsOrRelationshipsId as any,
+    OFFSET_RELATIONSHIPS,
+  );
 
 export const useQueriesOrQueriesById = (
-  q?: MaybeGetter<Queries | Id | undefined>,
-): (() => Queries | undefined) => mkGetter<Queries>(OFFSET_QUERIES, q as any);
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
+): (() => Queries | undefined) =>
+  useThingOrThingById<Queries>(queriesOrQueriesId as any, OFFSET_QUERIES);
 
 export const useCheckpointsOrCheckpointsById = (
-  c?: MaybeGetter<Checkpoints | Id | undefined>,
+  checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): (() => Checkpoints | undefined) =>
-  mkGetter<Checkpoints>(OFFSET_CHECKPOINTS, c as any);
+  useThingOrThingById<Checkpoints>(
+    checkpointsOrCheckpointsId as any,
+    OFFSET_CHECKPOINTS,
+  );
 
 export const usePersisterOrPersisterById = (
-  p?: MaybeGetter<AnyPersister | Id | undefined>,
+  persisterOrPersisterId?: MaybeGetter<AnyPersister | Id | undefined>,
 ): (() => AnyPersister | undefined) =>
-  mkGetter<AnyPersister>(OFFSET_PERSISTER, p as any);
+  useThingOrThingById<AnyPersister>(
+    persisterOrPersisterId as any,
+    OFFSET_PERSISTER,
+  );
 
 export const useSynchronizerOrSynchronizerById = (
-  sy?: MaybeGetter<Synchronizer | Id | undefined>,
+  synchronizerOrSynchronizerId?: MaybeGetter<Synchronizer | Id | undefined>,
 ): (() => Synchronizer | undefined) =>
-  mkGetter<Synchronizer>(OFFSET_SYNCHRONIZER, sy as any);
+  useThingOrThingById<Synchronizer>(
+    synchronizerOrSynchronizerId as any,
+    OFFSET_SYNCHRONIZER,
+  );
 
 const useListenable = <T>(
   getThing: () => any,
@@ -207,7 +223,8 @@ const useHas = (
 
 export const useHasTables = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
-): {readonly current: boolean} => useHas(useStoreOrStoreById(storeOrStoreId), TABLES);
+): {readonly current: boolean} =>
+  useHas(useStoreOrStoreById(storeOrStoreId), TABLES);
 
 export const useTables = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
@@ -216,7 +233,8 @@ export const useTables = (
 
 export const useTableIds = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
-): {readonly current: Ids} => useGet(useStoreOrStoreById(storeOrStoreId), TABLE_IDS, EMPTY_ARR);
+): {readonly current: Ids} =>
+  useGet(useStoreOrStoreById(storeOrStoreId), TABLE_IDS, EMPTY_ARR);
 
 export const useHasTable = (
   tableId: MaybeGetter<Id>,
@@ -228,32 +246,46 @@ export const useTable = (
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Table} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), TABLE, EMPTY_OBJ as Table, () => [get(tableId)]);
+  useGet(useStoreOrStoreById(storeOrStoreId), TABLE, EMPTY_OBJ as Table, () => [
+    get(tableId),
+  ]);
 
 export const useTableCellIds = (
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), TABLE + CELL_IDS, EMPTY_ARR, () => [get(tableId)]);
+  useGet(
+    useStoreOrStoreById(storeOrStoreId),
+    TABLE + CELL_IDS,
+    EMPTY_ARR,
+    () => [get(tableId)],
+  );
 
 export const useHasTableCell = (
   tableId: MaybeGetter<Id>,
   cellId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(useStoreOrStoreById(storeOrStoreId), TABLE + CELL, () => [get(tableId), get(cellId)]);
+  useHas(useStoreOrStoreById(storeOrStoreId), TABLE + CELL, () => [
+    get(tableId),
+    get(cellId),
+  ]);
 
 export const useRowCount = (
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: number} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), ROW_COUNT, 0, () => [get(tableId)]);
+  useGet(useStoreOrStoreById(storeOrStoreId), ROW_COUNT, 0, () => [
+    get(tableId),
+  ]);
 
 export const useRowIds = (
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), ROW_IDS, EMPTY_ARR, () => [get(tableId)]);
+  useGet(useStoreOrStoreById(storeOrStoreId), ROW_IDS, EMPTY_ARR, () => [
+    get(tableId),
+  ]);
 
 export const useSortedRowIds = (
   tableId: MaybeGetter<Id>,
@@ -276,7 +308,10 @@ export const useHasRow = (
   rowId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(useStoreOrStoreById(storeOrStoreId), ROW, () => [get(tableId), get(rowId)]);
+  useHas(useStoreOrStoreById(storeOrStoreId), ROW, () => [
+    get(tableId),
+    get(rowId),
+  ]);
 
 export const useRow = (
   tableId: MaybeGetter<Id>,
@@ -357,7 +392,8 @@ export const useBindableCell = (
 
 export const useHasValues = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
-): {readonly current: boolean} => useHas(useStoreOrStoreById(storeOrStoreId), VALUES);
+): {readonly current: boolean} =>
+  useHas(useStoreOrStoreById(storeOrStoreId), VALUES);
 
 export const useValues = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
@@ -366,7 +402,8 @@ export const useValues = (
 
 export const useValueIds = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
-): {readonly current: Ids} => useGet(useStoreOrStoreById(storeOrStoreId), VALUE_IDS, EMPTY_ARR);
+): {readonly current: Ids} =>
+  useGet(useStoreOrStoreById(storeOrStoreId), VALUE_IDS, EMPTY_ARR);
 
 export const useHasValue = (
   valueId: MaybeGetter<Id>,
@@ -378,7 +415,9 @@ export const useValue = (
   valueId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: ValueOrUndefined} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), VALUE, undefined, () => [get(valueId)]);
+  useGet(useStoreOrStoreById(storeOrStoreId), VALUE, undefined, () => [
+    get(valueId),
+  ]);
 
 export const useBindableValue = (
   valueId: MaybeGetter<Id>,
@@ -408,7 +447,7 @@ export const useBindableValue = (
 };
 
 export const useStore = (id?: Id): Store | undefined =>
-  resolveByOffset(id, OFFSET_STORE) as Store | undefined;
+  useThing(id, OFFSET_STORE) as Store | undefined;
 
 export const useStoreIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
@@ -426,7 +465,7 @@ export const useStoreIds = (): {readonly current: Ids} => {
 };
 
 export const useMetrics = (id?: Id): Metrics | undefined =>
-  resolveByOffset(id, OFFSET_METRICS) as Metrics | undefined;
+  useThing(id, OFFSET_METRICS) as Metrics | undefined;
 
 export const useMetricsIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
@@ -452,10 +491,12 @@ export const useMetric = (
   metricId: MaybeGetter<Id>,
   metricsOrMetricsId?: MaybeGetter<Metrics | Id | undefined>,
 ): {readonly current: number | undefined} =>
-  useGet(useMetricsOrMetricsById(metricsOrMetricsId), METRIC, undefined, () => [get(metricId)]);
+  useGet(useMetricsOrMetricsById(metricsOrMetricsId), METRIC, undefined, () => [
+    get(metricId),
+  ]);
 
 export const useIndexes = (id?: Id): Indexes | undefined =>
-  resolveByOffset(id, OFFSET_INDEXES) as Indexes | undefined;
+  useThing(id, OFFSET_INDEXES) as Indexes | undefined;
 
 export const useIndexesIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
@@ -481,17 +522,24 @@ export const useSliceIds = (
   indexId: MaybeGetter<Id>,
   indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useIndexesOrIndexesById(indexesOrIndexesId), SLICE + IDS, EMPTY_ARR, () => [get(indexId)]);
+  useGet(
+    useIndexesOrIndexesById(indexesOrIndexesId),
+    SLICE + IDS,
+    EMPTY_ARR,
+    () => [get(indexId)],
+  );
 
 export const useSliceRowIds = (
   indexId: MaybeGetter<Id>,
   sliceId: MaybeGetter<Id>,
   indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useIndexesOrIndexesById(indexesOrIndexesId), SLICE + ROW_IDS, EMPTY_ARR, () => [
-    get(indexId),
-    get(sliceId),
-  ]);
+  useGet(
+    useIndexesOrIndexesById(indexesOrIndexesId),
+    SLICE + ROW_IDS,
+    EMPTY_ARR,
+    () => [get(indexId), get(sliceId)],
+  );
 
 export const useIndexStoreTableId = (
   indexesOrId: MaybeGetter<Indexes | Id | undefined>,
@@ -509,7 +557,7 @@ export const useIndexStoreTableId = (
 };
 
 export const useQueries = (id?: Id): Queries | undefined =>
-  resolveByOffset(id, OFFSET_QUERIES) as Queries | undefined;
+  useThing(id, OFFSET_QUERIES) as Queries | undefined;
 
 export const useQueriesIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
@@ -535,31 +583,45 @@ export const useResultTable = (
   queryId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Table} =>
-  useGet(useQueriesOrQueriesById(queriesOrQueriesId), RESULT + TABLE, EMPTY_OBJ as Table, () => [
-    get(queryId),
-  ]);
+  useGet(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + TABLE,
+    EMPTY_OBJ as Table,
+    () => [get(queryId)],
+  );
 
 export const useResultTableCellIds = (
   queryId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useQueriesOrQueriesById(queriesOrQueriesId), RESULT + TABLE + CELL_IDS, EMPTY_ARR, () => [
-    get(queryId),
-  ]);
+  useGet(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + TABLE + CELL_IDS,
+    EMPTY_ARR,
+    () => [get(queryId)],
+  );
 
 export const useResultRowCount = (
   queryId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: number} =>
-  useGet(useQueriesOrQueriesById(queriesOrQueriesId), RESULT + ROW_COUNT, 0, () => [get(queryId)]);
+  useGet(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + ROW_COUNT,
+    0,
+    () => [get(queryId)],
+  );
 
 export const useResultRowIds = (
   queryId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useQueriesOrQueriesById(queriesOrQueriesId), RESULT + ROW_IDS, EMPTY_ARR, () => [
-    get(queryId),
-  ]);
+  useGet(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + ROW_IDS,
+    EMPTY_ARR,
+    () => [get(queryId)],
+  );
 
 export const useResultSortedRowIds = (
   queryId: MaybeGetter<Id>,
@@ -569,33 +631,36 @@ export const useResultSortedRowIds = (
   limit?: MaybeGetter<number | undefined>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useQueriesOrQueriesById(queriesOrQueriesId), RESULT + SORTED_ROW_IDS, EMPTY_ARR, () => [
-    get(queryId),
-    get(cellId),
-    get(descending),
-    get(offset),
-    get(limit),
-  ]);
+  useGet(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + SORTED_ROW_IDS,
+    EMPTY_ARR,
+    () => [get(queryId), get(cellId), get(descending), get(offset), get(limit)],
+  );
 
 export const useResultRow = (
   queryId: MaybeGetter<Id>,
   rowId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Row} =>
-  useGet(useQueriesOrQueriesById(queriesOrQueriesId), RESULT + ROW, EMPTY_OBJ as Row, () => [
-    get(queryId),
-    get(rowId),
-  ]);
+  useGet(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + ROW,
+    EMPTY_OBJ as Row,
+    () => [get(queryId), get(rowId)],
+  );
 
 export const useResultCellIds = (
   queryId: MaybeGetter<Id>,
   rowId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useQueriesOrQueriesById(queriesOrQueriesId), RESULT + CELL_IDS, EMPTY_ARR, () => [
-    get(queryId),
-    get(rowId),
-  ]);
+  useGet(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + CELL_IDS,
+    EMPTY_ARR,
+    () => [get(queryId), get(rowId)],
+  );
 
 export const useResultCell = (
   queryId: MaybeGetter<Id>,
@@ -603,14 +668,15 @@ export const useResultCell = (
   cellId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Cell | undefined} =>
-  useGet(useQueriesOrQueriesById(queriesOrQueriesId), RESULT + CELL, undefined, () => [
-    get(queryId),
-    get(rowId),
-    get(cellId),
-  ]);
+  useGet(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + CELL,
+    undefined,
+    () => [get(queryId), get(rowId), get(cellId)],
+  );
 
 export const useRelationships = (id?: Id): Relationships | undefined =>
-  resolveByOffset(id, OFFSET_RELATIONSHIPS) as Relationships | undefined;
+  useThing(id, OFFSET_RELATIONSHIPS) as Relationships | undefined;
 
 export const useRelationshipsIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
@@ -630,27 +696,35 @@ export const useRelationshipsIds = (): {readonly current: Ids} => {
 export const useRelationshipIds = (
   relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId), RELATIONSHIP + IDS, EMPTY_ARR);
+  useGet(
+    useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
+    RELATIONSHIP + IDS,
+    EMPTY_ARR,
+  );
 
 export const useRemoteRowId = (
   relationshipId: MaybeGetter<Id>,
   localRowId: MaybeGetter<Id>,
   relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Id | undefined} =>
-  useGet(useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId), REMOTE_ROW_ID, undefined, () => [
-    get(relationshipId),
-    get(localRowId),
-  ]);
+  useGet(
+    useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
+    REMOTE_ROW_ID,
+    undefined,
+    () => [get(relationshipId), get(localRowId)],
+  );
 
 export const useLocalRowIds = (
   relationshipId: MaybeGetter<Id>,
   remoteRowId: MaybeGetter<Id>,
   relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId), LOCAL + ROW_IDS, EMPTY_ARR, () => [
-    get(relationshipId),
-    get(remoteRowId),
-  ]);
+  useGet(
+    useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
+    LOCAL + ROW_IDS,
+    EMPTY_ARR,
+    () => [get(relationshipId), get(remoteRowId)],
+  );
 
 export const useLinkedRowIds = (
   relationshipId: MaybeGetter<Id>,
@@ -683,7 +757,7 @@ export const useRelationshipsStoreTableIds = (
 };
 
 export const useCheckpoints = (id?: Id): Checkpoints | undefined =>
-  resolveByOffset(id, OFFSET_CHECKPOINTS) as Checkpoints | undefined;
+  useThing(id, OFFSET_CHECKPOINTS) as Checkpoints | undefined;
 
 export const useCheckpointsIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
@@ -713,9 +787,12 @@ export const useCheckpoint = (
   checkpointId: MaybeGetter<Id>,
   checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): {readonly current: string | undefined} =>
-  useGet(useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId), CHECKPOINT, undefined, () => [
-    get(checkpointId),
-  ]);
+  useGet(
+    useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
+    CHECKPOINT,
+    undefined,
+    () => [get(checkpointId)],
+  );
 
 export const useGoBackwardCallback = (
   checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
@@ -732,7 +809,7 @@ export const useGoForwardCallback = (
 };
 
 export const usePersister = (id?: Id): AnyPersister | undefined =>
-  resolveByOffset(id, OFFSET_PERSISTER) as AnyPersister | undefined;
+  useThing(id, OFFSET_PERSISTER) as AnyPersister | undefined;
 
 export const usePersisterIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
@@ -752,10 +829,14 @@ export const usePersisterIds = (): {readonly current: Ids} => {
 export const usePersisterStatus = (
   persisterOrPersisterId?: AnyPersister | Id,
 ): {readonly current: Status} =>
-  useGet(usePersisterOrPersisterById(persisterOrPersisterId), STATUS, 0 as Status);
+  useGet(
+    usePersisterOrPersisterById(persisterOrPersisterId),
+    STATUS,
+    0 as Status,
+  );
 
 export const useSynchronizer = (id?: Id): Synchronizer | undefined =>
-  resolveByOffset(id, OFFSET_SYNCHRONIZER) as Synchronizer | undefined;
+  useThing(id, OFFSET_SYNCHRONIZER) as Synchronizer | undefined;
 
 export const useSynchronizerIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
@@ -775,46 +856,50 @@ export const useSynchronizerIds = (): {readonly current: Ids} => {
 export const useSynchronizerStatus = (
   synchronizerOrSynchronizerId?: Synchronizer | Id,
 ): {readonly current: Status} =>
-  useGet(useSynchronizerOrSynchronizerById(synchronizerOrSynchronizerId), STATUS, 0 as Status);
+  useGet(
+    useSynchronizerOrSynchronizerById(synchronizerOrSynchronizerId),
+    STATUS,
+    0 as Status,
+  );
 
-const injectThing = (offset: number, id: Id, thing: any): void => {
+const provideThing = (thingId: Id, thing: any, offset: number): void => {
   const ctx = getCtx();
   if (typeof window !== 'undefined') {
     $effect(() => {
-      ctx[16]?.(offset, id, thing);
-      return () => ctx[17]?.(offset, id);
+      ctx[16]?.(offset, thingId, thing);
+      return () => ctx[17]?.(offset, thingId);
     });
   }
 };
 
 export const provideStore = (storeId: Id, store: Store): void =>
-  injectThing(OFFSET_STORE, storeId, store);
+  provideThing(storeId, store, OFFSET_STORE);
 
 export const provideMetrics = (metricsId: Id, metrics: Metrics): void =>
-  injectThing(OFFSET_METRICS, metricsId, metrics);
+  provideThing(metricsId, metrics, OFFSET_METRICS);
 
 export const provideIndexes = (indexesId: Id, indexes: Indexes): void =>
-  injectThing(OFFSET_INDEXES, indexesId, indexes);
+  provideThing(indexesId, indexes, OFFSET_INDEXES);
 
 export const provideRelationships = (
   relationshipsId: Id,
   relationships: Relationships,
-): void => injectThing(OFFSET_RELATIONSHIPS, relationshipsId, relationships);
+): void => provideThing(relationshipsId, relationships, OFFSET_RELATIONSHIPS);
 
 export const provideQueries = (queriesId: Id, queries: Queries): void =>
-  injectThing(OFFSET_QUERIES, queriesId, queries);
+  provideThing(queriesId, queries, OFFSET_QUERIES);
 
 export const provideCheckpoints = (
   checkpointsId: Id,
   checkpoints: Checkpoints,
-): void => injectThing(OFFSET_CHECKPOINTS, checkpointsId, checkpoints);
+): void => provideThing(checkpointsId, checkpoints, OFFSET_CHECKPOINTS);
 
 export const providePersister = (
   persisterId: Id,
   persister: AnyPersister,
-): void => injectThing(OFFSET_PERSISTER, persisterId, persister);
+): void => provideThing(persisterId, persister, OFFSET_PERSISTER);
 
 export const provideSynchronizer = (
   synchronizerId: Id,
   synchronizer: Synchronizer,
-): void => injectThing(OFFSET_SYNCHRONIZER, synchronizerId, synchronizer);
+): void => provideThing(synchronizerId, synchronizer, OFFSET_SYNCHRONIZER);
