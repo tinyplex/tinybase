@@ -36,6 +36,3 @@ export * from '../synchronizers/synchronizer-ws-client/index.ts';
 export * from '../synchronizers/synchronizer-ws-server-durable-object/index.ts';
 export * from '../synchronizers/synchronizer-ws-server-simple/index.ts';
 export * from '../synchronizers/synchronizer-ws-server/index.ts';
-export * from '../ui-react-dom/index.tsx';
-export * from '../ui-react-inspector/index.tsx';
-export * from '../ui-react/index.ts';

@@ -58,6 +58,26 @@ Read more in the new
 [Building UIs With Svelte](/guides/building-uis/building-uis-with-svelte/)
 guide.
 
+## Breaking Change: UI Modules Removed From `omni`
+
+The `tinybase/omni` module no longer includes `tinybase/ui-react`,
+`tinybase/ui-react-dom`, or `tinybase/ui-react-inspector`. Since
+`tinybase/ui-svelte` exports many of the same names as the React UI modules
+(`useStore`, `useCell`, `Provider`, etc.), including both in a single flat
+namespace would cause silent name collisions. The `omni` module is now
+framework-neutral.
+
+If you were importing React UI helpers from `tinybase/omni`, update your
+imports:
+
+```js
+// Before
+import {useCell, Provider} from 'tinybase/omni';
+
+// After
+import {useCell, Provider} from 'tinybase/ui-react';
+```
+
 ---
 
 # v8.0
