@@ -20,346 +20,346 @@ import type {
 } from '../store/index.d.ts';
 import type {Synchronizer} from '../synchronizers/index.d.ts';
 
-/// ui-svelte.R
+/// ui-svelte.MaybeGetter
 export type MaybeGetter<T> = T | (() => T);
 
 /// ui-svelte.ProviderProps
 export type ProviderProps = {
-  /// ProviderProps.store
+  /// ui-svelte.ProviderProps.store
   readonly store?: Store;
-  /// ProviderProps.storesById
+  /// ui-svelte.ProviderProps.storesById
   readonly storesById?: {readonly [id: Id]: Store};
-  /// ProviderProps.metrics
+  /// ui-svelte.ProviderProps.metrics
   readonly metrics?: Metrics;
-  /// ProviderProps.metricsById
+  /// ui-svelte.ProviderProps.metricsById
   readonly metricsById?: {readonly [id: Id]: Metrics};
-  /// ProviderProps.indexes
+  /// ui-svelte.ProviderProps.indexes
   readonly indexes?: Indexes;
-  /// ProviderProps.indexesById
+  /// ui-svelte.ProviderProps.indexesById
   readonly indexesById?: {readonly [id: Id]: Indexes};
-  /// ProviderProps.relationships
+  /// ui-svelte.ProviderProps.relationships
   readonly relationships?: Relationships;
-  /// ProviderProps.relationshipsById
+  /// ui-svelte.ProviderProps.relationshipsById
   readonly relationshipsById?: {readonly [id: Id]: Relationships};
-  /// ProviderProps.queries
+  /// ui-svelte.ProviderProps.queries
   readonly queries?: Queries;
-  /// ProviderProps.queriesById
+  /// ui-svelte.ProviderProps.queriesById
   readonly queriesById?: {readonly [id: Id]: Queries};
-  /// ProviderProps.checkpoints
+  /// ui-svelte.ProviderProps.checkpoints
   readonly checkpoints?: Checkpoints;
-  /// ProviderProps.checkpointsById
+  /// ui-svelte.ProviderProps.checkpointsById
   readonly checkpointsById?: {readonly [id: Id]: Checkpoints};
-  /// ProviderProps.persister
+  /// ui-svelte.ProviderProps.persister
   readonly persister?: AnyPersister;
-  /// ProviderProps.persistersById
+  /// ui-svelte.ProviderProps.persistersById
   readonly persistersById?: {readonly [id: Id]: AnyPersister};
-  /// ProviderProps.synchronizer
+  /// ui-svelte.ProviderProps.synchronizer
   readonly synchronizer?: Synchronizer;
-  /// ProviderProps.synchronizersById
+  /// ui-svelte.ProviderProps.synchronizersById
   readonly synchronizersById?: {readonly [id: Id]: Synchronizer};
-  /// ProviderProps.children
+  /// ui-svelte.ProviderProps.children
   readonly children: Snippet;
 };
 
 /// ui-svelte.CellViewProps
 export type CellViewProps = {
-  /// CellViewProps.tableId
+  /// ui-svelte.CellViewProps.tableId
   readonly tableId: Id;
-  /// CellViewProps.rowId
+  /// ui-svelte.CellViewProps.rowId
   readonly rowId: Id;
-  /// CellViewProps.cellId
+  /// ui-svelte.CellViewProps.cellId
   readonly cellId: Id;
-  /// CellViewProps.store
+  /// ui-svelte.CellViewProps.store
   readonly store?: Store | Id;
-  /// CellViewProps.debugIds
+  /// ui-svelte.CellViewProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// ui-svelte.ValueViewProps
 export type ValueViewProps = {
-  /// ValueViewProps.valueId
+  /// ui-svelte.ValueViewProps.valueId
   readonly valueId: Id;
-  /// ValueViewProps.store
+  /// ui-svelte.ValueViewProps.store
   readonly store?: Store | Id;
-  /// ValueViewProps.debugIds
+  /// ui-svelte.ValueViewProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// ui-svelte.MetricViewProps
 export type MetricViewProps = {
-  /// MetricViewProps.metricId
+  /// ui-svelte.MetricViewProps.metricId
   readonly metricId: Id;
-  /// MetricViewProps.metrics
+  /// ui-svelte.MetricViewProps.metrics
   readonly metrics?: Metrics | Id;
-  /// MetricViewProps.debugIds
+  /// ui-svelte.MetricViewProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// ui-svelte.CheckpointViewProps
 export type CheckpointViewProps = {
-  /// CheckpointViewProps.checkpointId
+  /// ui-svelte.CheckpointViewProps.checkpointId
   readonly checkpointId: Id;
-  /// CheckpointViewProps.checkpoints
+  /// ui-svelte.CheckpointViewProps.checkpoints
   readonly checkpoints?: Checkpoints | Id;
-  /// CheckpointViewProps.debugIds
+  /// ui-svelte.CheckpointViewProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// ui-svelte.RowViewProps
 export type RowViewProps = {
-  /// RowViewProps.tableId
+  /// ui-svelte.RowViewProps.tableId
   readonly tableId: Id;
-  /// RowViewProps.rowId
+  /// ui-svelte.RowViewProps.rowId
   readonly rowId: Id;
-  /// RowViewProps.store
+  /// ui-svelte.RowViewProps.store
   readonly store?: Store | Id;
-  /// RowViewProps.customCellIds
+  /// ui-svelte.RowViewProps.customCellIds
   readonly customCellIds?: Ids;
-  /// RowViewProps.separator
+  /// ui-svelte.RowViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// RowViewProps.debugIds
+  /// ui-svelte.RowViewProps.debugIds
   readonly debugIds?: boolean;
-  /// RowViewProps.cell
+  /// ui-svelte.RowViewProps.cell
   readonly cell?: Snippet<[cellId: Id]>;
 };
 
 /// ui-svelte.TableViewProps
 export type TableViewProps = {
-  /// TableViewProps.tableId
+  /// ui-svelte.TableViewProps.tableId
   readonly tableId: Id;
-  /// TableViewProps.store
+  /// ui-svelte.TableViewProps.store
   readonly store?: Store | Id;
-  /// TableViewProps.customCellIds
+  /// ui-svelte.TableViewProps.customCellIds
   readonly customCellIds?: Ids;
-  /// TableViewProps.separator
+  /// ui-svelte.TableViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// TableViewProps.debugIds
+  /// ui-svelte.TableViewProps.debugIds
   readonly debugIds?: boolean;
-  /// TableViewProps.row
+  /// ui-svelte.TableViewProps.row
   readonly row?: Snippet<[rowId: Id]>;
 };
 
 /// ui-svelte.SortedTableViewProps
 export type SortedTableViewProps = {
-  /// SortedTableViewProps.tableId
+  /// ui-svelte.SortedTableViewProps.tableId
   readonly tableId: Id;
-  /// SortedTableViewProps.cellId
+  /// ui-svelte.SortedTableViewProps.cellId
   readonly cellId?: Id;
-  /// SortedTableViewProps.descending
+  /// ui-svelte.SortedTableViewProps.descending
   readonly descending?: boolean;
-  /// SortedTableViewProps.offset
+  /// ui-svelte.SortedTableViewProps.offset
   readonly offset?: number;
-  /// SortedTableViewProps.limit
+  /// ui-svelte.SortedTableViewProps.limit
   readonly limit?: number;
-  /// SortedTableViewProps.store
+  /// ui-svelte.SortedTableViewProps.store
   readonly store?: Store | Id;
-  /// SortedTableViewProps.customCellIds
+  /// ui-svelte.SortedTableViewProps.customCellIds
   readonly customCellIds?: Ids;
-  /// SortedTableViewProps.separator
+  /// ui-svelte.SortedTableViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// SortedTableViewProps.debugIds
+  /// ui-svelte.SortedTableViewProps.debugIds
   readonly debugIds?: boolean;
-  /// SortedTableViewProps.row
+  /// ui-svelte.SortedTableViewProps.row
   readonly row?: Snippet<[rowId: Id]>;
 };
 
 /// ui-svelte.TablesViewProps
 export type TablesViewProps = {
-  /// TablesViewProps.store
+  /// ui-svelte.TablesViewProps.store
   readonly store?: Store | Id;
-  /// TablesViewProps.separator
+  /// ui-svelte.TablesViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// TablesViewProps.debugIds
+  /// ui-svelte.TablesViewProps.debugIds
   readonly debugIds?: boolean;
-  /// TablesViewProps.table
+  /// ui-svelte.TablesViewProps.table
   readonly table?: Snippet<[tableId: Id]>;
 };
 
 /// ui-svelte.ValuesViewProps
 export type ValuesViewProps = {
-  /// ValuesViewProps.store
+  /// ui-svelte.ValuesViewProps.store
   readonly store?: Store | Id;
-  /// ValuesViewProps.separator
+  /// ui-svelte.ValuesViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// ValuesViewProps.debugIds
+  /// ui-svelte.ValuesViewProps.debugIds
   readonly debugIds?: boolean;
-  /// ValuesViewProps.value
+  /// ui-svelte.ValuesViewProps.value
   readonly value?: Snippet<[valueId: Id]>;
 };
 
 /// ui-svelte.IndexViewProps
 export type IndexViewProps = {
-  /// IndexViewProps.indexId
+  /// ui-svelte.IndexViewProps.indexId
   readonly indexId: Id;
-  /// IndexViewProps.indexes
+  /// ui-svelte.IndexViewProps.indexes
   readonly indexes?: Indexes | Id;
-  /// IndexViewProps.separator
+  /// ui-svelte.IndexViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// IndexViewProps.debugIds
+  /// ui-svelte.IndexViewProps.debugIds
   readonly debugIds?: boolean;
-  /// IndexViewProps.slice
+  /// ui-svelte.IndexViewProps.slice
   readonly slice?: Snippet<[sliceId: Id]>;
 };
 
 /// ui-svelte.SliceViewProps
 export type SliceViewProps = {
-  /// SliceViewProps.indexId
+  /// ui-svelte.SliceViewProps.indexId
   readonly indexId: Id;
-  /// SliceViewProps.sliceId
+  /// ui-svelte.SliceViewProps.sliceId
   readonly sliceId: Id;
-  /// SliceViewProps.indexes
+  /// ui-svelte.SliceViewProps.indexes
   readonly indexes?: Indexes | Id;
-  /// SliceViewProps.separator
+  /// ui-svelte.SliceViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// SliceViewProps.debugIds
+  /// ui-svelte.SliceViewProps.debugIds
   readonly debugIds?: boolean;
-  /// SliceViewProps.row
+  /// ui-svelte.SliceViewProps.row
   readonly row?: Snippet<[rowId: Id]>;
 };
 
 /// ui-svelte.RemoteRowViewProps
 export type RemoteRowViewProps = {
-  /// RemoteRowViewProps.relationshipId
+  /// ui-svelte.RemoteRowViewProps.relationshipId
   readonly relationshipId: Id;
-  /// RemoteRowViewProps.localRowId
+  /// ui-svelte.RemoteRowViewProps.localRowId
   readonly localRowId: Id;
-  /// RemoteRowViewProps.relationships
+  /// ui-svelte.RemoteRowViewProps.relationships
   readonly relationships?: Relationships | Id;
-  /// RemoteRowViewProps.debugIds
+  /// ui-svelte.RemoteRowViewProps.debugIds
   readonly debugIds?: boolean;
-  /// RemoteRowViewProps.row
+  /// ui-svelte.RemoteRowViewProps.row
   readonly row?: Snippet<[rowId: Id]>;
 };
 
 /// ui-svelte.LocalRowsViewProps
 export type LocalRowsViewProps = {
-  /// LocalRowsViewProps.relationshipId
+  /// ui-svelte.LocalRowsViewProps.relationshipId
   readonly relationshipId: Id;
-  /// LocalRowsViewProps.remoteRowId
+  /// ui-svelte.LocalRowsViewProps.remoteRowId
   readonly remoteRowId: Id;
-  /// LocalRowsViewProps.relationships
+  /// ui-svelte.LocalRowsViewProps.relationships
   readonly relationships?: Relationships | Id;
-  /// LocalRowsViewProps.separator
+  /// ui-svelte.LocalRowsViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// LocalRowsViewProps.debugIds
+  /// ui-svelte.LocalRowsViewProps.debugIds
   readonly debugIds?: boolean;
-  /// LocalRowsViewProps.row
+  /// ui-svelte.LocalRowsViewProps.row
   readonly row?: Snippet<[rowId: Id]>;
 };
 
 /// ui-svelte.LinkedRowsViewProps
 export type LinkedRowsViewProps = {
-  /// LinkedRowsViewProps.relationshipId
+  /// ui-svelte.LinkedRowsViewProps.relationshipId
   readonly relationshipId: Id;
-  /// LinkedRowsViewProps.firstRowId
+  /// ui-svelte.LinkedRowsViewProps.firstRowId
   readonly firstRowId: Id;
-  /// LinkedRowsViewProps.relationships
+  /// ui-svelte.LinkedRowsViewProps.relationships
   readonly relationships?: Relationships | Id;
-  /// LinkedRowsViewProps.separator
+  /// ui-svelte.LinkedRowsViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// LinkedRowsViewProps.debugIds
+  /// ui-svelte.LinkedRowsViewProps.debugIds
   readonly debugIds?: boolean;
-  /// LinkedRowsViewProps.row
+  /// ui-svelte.LinkedRowsViewProps.row
   readonly row?: Snippet<[rowId: Id]>;
 };
 
 /// ui-svelte.ResultCellViewProps
 export type ResultCellViewProps = {
-  /// ResultCellViewProps.queryId
+  /// ui-svelte.ResultCellViewProps.queryId
   readonly queryId: Id;
-  /// ResultCellViewProps.rowId
+  /// ui-svelte.ResultCellViewProps.rowId
   readonly rowId: Id;
-  /// ResultCellViewProps.cellId
+  /// ui-svelte.ResultCellViewProps.cellId
   readonly cellId: Id;
-  /// ResultCellViewProps.queries
+  /// ui-svelte.ResultCellViewProps.queries
   readonly queries?: Queries | Id;
-  /// ResultCellViewProps.debugIds
+  /// ui-svelte.ResultCellViewProps.debugIds
   readonly debugIds?: boolean;
 };
 
 /// ui-svelte.ResultRowViewProps
 export type ResultRowViewProps = {
-  /// ResultRowViewProps.queryId
+  /// ui-svelte.ResultRowViewProps.queryId
   readonly queryId: Id;
-  /// ResultRowViewProps.rowId
+  /// ui-svelte.ResultRowViewProps.rowId
   readonly rowId: Id;
-  /// ResultRowViewProps.queries
+  /// ui-svelte.ResultRowViewProps.queries
   readonly queries?: Queries | Id;
-  /// ResultRowViewProps.separator
+  /// ui-svelte.ResultRowViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// ResultRowViewProps.debugIds
+  /// ui-svelte.ResultRowViewProps.debugIds
   readonly debugIds?: boolean;
-  /// ResultRowViewProps.cell
+  /// ui-svelte.ResultRowViewProps.cell
   readonly cell?: Snippet<[cellId: Id]>;
 };
 
 /// ui-svelte.ResultTableViewProps
 export type ResultTableViewProps = {
-  /// ResultTableViewProps.queryId
+  /// ui-svelte.ResultTableViewProps.queryId
   readonly queryId: Id;
-  /// ResultTableViewProps.queries
+  /// ui-svelte.ResultTableViewProps.queries
   readonly queries?: Queries | Id;
-  /// ResultTableViewProps.separator
+  /// ui-svelte.ResultTableViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// ResultTableViewProps.debugIds
+  /// ui-svelte.ResultTableViewProps.debugIds
   readonly debugIds?: boolean;
-  /// ResultTableViewProps.row
+  /// ui-svelte.ResultTableViewProps.row
   readonly row?: Snippet<[rowId: Id]>;
 };
 
 /// ui-svelte.ResultSortedTableViewProps
 export type ResultSortedTableViewProps = {
-  /// ResultSortedTableViewProps.queryId
+  /// ui-svelte.ResultSortedTableViewProps.queryId
   readonly queryId: Id;
-  /// ResultSortedTableViewProps.cellId
+  /// ui-svelte.ResultSortedTableViewProps.cellId
   readonly cellId?: Id;
-  /// ResultSortedTableViewProps.descending
+  /// ui-svelte.ResultSortedTableViewProps.descending
   readonly descending?: boolean;
-  /// ResultSortedTableViewProps.offset
+  /// ui-svelte.ResultSortedTableViewProps.offset
   readonly offset?: number;
-  /// ResultSortedTableViewProps.limit
+  /// ui-svelte.ResultSortedTableViewProps.limit
   readonly limit?: number;
-  /// ResultSortedTableViewProps.queries
+  /// ui-svelte.ResultSortedTableViewProps.queries
   readonly queries?: Queries | Id;
-  /// ResultSortedTableViewProps.separator
+  /// ui-svelte.ResultSortedTableViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// ResultSortedTableViewProps.debugIds
+  /// ui-svelte.ResultSortedTableViewProps.debugIds
   readonly debugIds?: boolean;
-  /// ResultSortedTableViewProps.row
+  /// ui-svelte.ResultSortedTableViewProps.row
   readonly row?: Snippet<[rowId: Id]>;
 };
 
 /// ui-svelte.BackwardCheckpointsViewProps
 export type BackwardCheckpointsViewProps = {
-  /// BackwardCheckpointsViewProps.checkpoints
+  /// ui-svelte.BackwardCheckpointsViewProps.checkpoints
   readonly checkpoints?: Checkpoints | Id;
-  /// BackwardCheckpointsViewProps.separator
+  /// ui-svelte.BackwardCheckpointsViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// BackwardCheckpointsViewProps.debugIds
+  /// ui-svelte.BackwardCheckpointsViewProps.debugIds
   readonly debugIds?: boolean;
-  /// BackwardCheckpointsViewProps.checkpoint
+  /// ui-svelte.BackwardCheckpointsViewProps.checkpoint
   readonly checkpoint?: Snippet<[checkpointId: Id]>;
 };
 
 /// ui-svelte.ForwardCheckpointsViewProps
 export type ForwardCheckpointsViewProps = {
-  /// ForwardCheckpointsViewProps.checkpoints
+  /// ui-svelte.ForwardCheckpointsViewProps.checkpoints
   readonly checkpoints?: Checkpoints | Id;
-  /// ForwardCheckpointsViewProps.separator
+  /// ui-svelte.ForwardCheckpointsViewProps.separator
   readonly separator?: Snippet<[]>;
-  /// ForwardCheckpointsViewProps.debugIds
+  /// ui-svelte.ForwardCheckpointsViewProps.debugIds
   readonly debugIds?: boolean;
-  /// ForwardCheckpointsViewProps.checkpoint
+  /// ui-svelte.ForwardCheckpointsViewProps.checkpoint
   readonly checkpoint?: Snippet<[checkpointId: Id]>;
 };
 
 /// ui-svelte.CurrentCheckpointViewProps
 export type CurrentCheckpointViewProps = {
-  /// CurrentCheckpointViewProps.checkpoints
+  /// ui-svelte.CurrentCheckpointViewProps.checkpoints
   readonly checkpoints?: Checkpoints | Id;
-  /// CurrentCheckpointViewProps.debugIds
+  /// ui-svelte.CurrentCheckpointViewProps.debugIds
   readonly debugIds?: boolean;
-  /// CurrentCheckpointViewProps.checkpoint
+  /// ui-svelte.CurrentCheckpointViewProps.checkpoint
   readonly checkpoint?: Snippet<[checkpointId: Id]>;
 };
 
@@ -430,17 +430,23 @@ export declare const ValueView: Component<ValueViewProps>;
 export declare const ValuesView: Component<ValuesViewProps>;
 
 /// ui-svelte.useHasTables
-export function useHasTables(storeOrStoreId?: MaybeGetter<Store | Id | undefined>): {
+export function useHasTables(
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): {
   readonly current: boolean;
 };
 
 /// ui-svelte.useTables
-export function useTables(storeOrStoreId?: MaybeGetter<Store | Id | undefined>): {
+export function useTables(
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): {
   readonly current: Tables;
 };
 
 /// ui-svelte.useTableIds
-export function useTableIds(storeOrStoreId?: MaybeGetter<Store | Id | undefined>): {
+export function useTableIds(
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): {
   readonly current: Ids;
 };
 
@@ -537,17 +543,23 @@ export function useBindableCell(
 ): {get current(): CellOrUndefined; set current(v: Cell)};
 
 /// ui-svelte.useHasValues
-export function useHasValues(storeOrStoreId?: MaybeGetter<Store | Id | undefined>): {
+export function useHasValues(
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): {
   readonly current: boolean;
 };
 
 /// ui-svelte.useValues
-export function useValues(storeOrStoreId?: MaybeGetter<Store | Id | undefined>): {
+export function useValues(
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): {
   readonly current: Values;
 };
 
 /// ui-svelte.useValueIds
-export function useValueIds(storeOrStoreId?: MaybeGetter<Store | Id | undefined>): {
+export function useValueIds(
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): {
   readonly current: Ids;
 };
 
@@ -601,7 +613,9 @@ export function useIndexes(id?: Id): Indexes | undefined;
 export function useIndexesIds(): {readonly current: Ids};
 
 /// ui-svelte.useIndexIds
-export function useIndexIds(indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>): {
+export function useIndexIds(
+  indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
+): {
   readonly current: Ids;
 };
 
@@ -625,7 +639,9 @@ export function useQueries(id?: Id): Queries | undefined;
 export function useQueriesIds(): {readonly current: Ids};
 
 /// ui-svelte.useQueryIds
-export function useQueryIds(queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>): {
+export function useQueryIds(
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
+): {
   readonly current: Ids;
 };
 

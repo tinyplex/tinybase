@@ -60,15 +60,15 @@ type GetId<Schemas extends OptionalSchemas, Parameter, Id> = (
 type ExtraProps = {[propName: string]: any};
 
 type TablesProps<Schemas extends OptionalSchemas> = {
-  /// TablesProps.store
+  /// ui-react.TablesProps.store
   readonly store?: StoreOrStoreId<Schemas>;
-  /// TablesProps.tableComponent
+  /// ui-react.TablesProps.tableComponent
   readonly tableComponent?: ComponentType<TableProps<Schemas>>;
-  /// TablesProps.getTableComponentProps
+  /// ui-react.TablesProps.getTableComponentProps
   readonly getTableComponentProps?: (tableId: Id) => ExtraProps;
-  /// TablesProps.separator
+  /// ui-react.TablesProps.separator
   readonly separator?: ReactElement | string;
-  /// TablesProps.debugIds
+  /// ui-react.TablesProps.debugIds
   readonly debugIds?: boolean;
 };
 
@@ -80,19 +80,19 @@ export type TableProps<
 > = TableIds extends infer TableId
   ? TableId extends TableIdFromSchema<Schemas[0]>
     ? {
-        /// TableProps.tableId
+        /// ui-react.TableProps.tableId
         readonly tableId: TableId;
-        /// TableProps.store
+        /// ui-react.TableProps.store
         readonly store?: StoreOrStoreId<Schemas>;
-        /// TableProps.rowComponent
+        /// ui-react.TableProps.rowComponent
         readonly rowComponent?: ComponentType<RowProps<Schemas, TableId>>;
-        /// TableProps.getRowComponentProps
+        /// ui-react.TableProps.getRowComponentProps
         readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-        /// TableProps.customCellIds
+        /// ui-react.TableProps.customCellIds
         readonly customCellIds?: CellIdFromSchema<Schemas[0], TableId>[];
-        /// TableProps.separator
+        /// ui-react.TableProps.separator
         readonly separator?: ReactElement | string;
-        /// TableProps.debugIds
+        /// ui-react.TableProps.debugIds
         readonly debugIds?: boolean;
       }
     : never
@@ -106,27 +106,27 @@ export type SortedTableProps<
 > = TableIds extends infer TableId
   ? TableId extends TableIdFromSchema<Schemas[0]>
     ? {
-        /// SortedTableProps.tableId
+        /// ui-react.SortedTableProps.tableId
         readonly tableId: TableId;
-        /// SortedTableProps.cellId
+        /// ui-react.SortedTableProps.cellId
         readonly cellId?: CellIdFromSchema<Schemas[0], TableId>;
-        /// SortedTableProps.descending
+        /// ui-react.SortedTableProps.descending
         readonly descending?: boolean;
-        /// SortedTableProps.offset
+        /// ui-react.SortedTableProps.offset
         readonly offset?: number;
-        /// SortedTableProps.limit
+        /// ui-react.SortedTableProps.limit
         readonly limit?: number;
-        /// SortedTableProps.store
+        /// ui-react.SortedTableProps.store
         readonly store?: StoreOrStoreId<Schemas>;
-        /// SortedTableProps.rowComponent
+        /// ui-react.SortedTableProps.rowComponent
         readonly rowComponent?: ComponentType<RowProps<Schemas, TableId>>;
-        /// SortedTableProps.getRowComponentProps
+        /// ui-react.SortedTableProps.getRowComponentProps
         readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-        /// SortedTableProps.customCellIds
+        /// ui-react.SortedTableProps.customCellIds
         readonly customCellIds?: CellIdFromSchema<Schemas[0], TableId>[];
-        /// SortedTableProps.separator
+        /// ui-react.SortedTableProps.separator
         readonly separator?: ReactElement | string;
-        /// SortedTableProps.debugIds
+        /// ui-react.SortedTableProps.debugIds
         readonly debugIds?: boolean;
       }
     : never
@@ -140,21 +140,21 @@ export type RowProps<
 > = TableIds extends infer TableId
   ? TableId extends TableIdFromSchema<Schemas[0]>
     ? {
-        /// RowProps.tableId
+        /// ui-react.RowProps.tableId
         readonly tableId: TableId;
-        /// RowProps.rowId
+        /// ui-react.RowProps.rowId
         readonly rowId: Id;
-        /// RowProps.store
+        /// ui-react.RowProps.store
         readonly store?: StoreOrStoreId<Schemas>;
-        /// RowProps.cellComponent
+        /// ui-react.RowProps.cellComponent
         readonly cellComponent?: ComponentType<CellProps<Schemas, TableId>>;
-        /// RowProps.getCellComponentProps
+        /// ui-react.RowProps.getCellComponentProps
         readonly getCellComponentProps?: (cellId: Id) => ExtraProps;
-        /// RowProps.customCellIds
+        /// ui-react.RowProps.customCellIds
         readonly customCellIds?: CellIdFromSchema<Schemas[0], TableId>[];
-        /// RowProps.separator
+        /// ui-react.RowProps.separator
         readonly separator?: ReactElement | string;
-        /// RowProps.debugIds
+        /// ui-react.RowProps.debugIds
         readonly debugIds?: boolean;
       }
     : never
@@ -180,278 +180,278 @@ export type CellPropsForTableIdAndCellId<
   TableId extends TableIdFromSchema<Schemas[0]>,
   CellId extends CellIdFromSchema<Schemas[0], TableId>,
 > = {
-  /// CellProps.tableId
+  /// ui-react.CellProps.tableId
   readonly tableId: TableId;
-  /// CellProps.rowId
+  /// ui-react.CellProps.rowId
   readonly rowId: Id;
-  /// CellProps.cellId
+  /// ui-react.CellProps.cellId
   readonly cellId: CellId;
-  /// CellProps.store
+  /// ui-react.CellProps.store
   readonly store?: StoreOrStoreId<Schemas>;
-  /// CellProps.debugIds
+  /// ui-react.CellProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ValuesProps<Schemas extends OptionalSchemas> = {
-  /// ValuesProps.store
+  /// ui-react.ValuesProps.store
   readonly store?: StoreOrStoreId<Schemas>;
-  /// ValuesProps.valueComponent
+  /// ui-react.ValuesProps.valueComponent
   readonly valueComponent?: ComponentType<ValueProps<Schemas>>;
-  /// ValuesProps.getValueComponentProps
+  /// ui-react.ValuesProps.getValueComponentProps
   readonly getValueComponentProps?: (valueId: Id) => ExtraProps;
-  /// ValuesProps.separator
+  /// ui-react.ValuesProps.separator
   readonly separator?: ReactElement | string;
-  /// ValuesProps.debugIds
+  /// ui-react.ValuesProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ValueProps<Schemas extends OptionalSchemas> = {
-  /// ValueProps.valueId
+  /// ui-react.ValueProps.valueId
   readonly valueId: ValueIdFromSchema<Schemas[1]>;
-  /// ValueProps.store
+  /// ui-react.ValueProps.store
   readonly store?: StoreOrStoreId<Schemas>;
-  /// ValueProps.debugIds
+  /// ui-react.ValueProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type MetricProps<Schemas extends OptionalSchemas> = {
-  /// MetricProps.metricId
+  /// ui-react.MetricProps.metricId
   readonly metricId: Id;
-  /// MetricProps.metrics
+  /// ui-react.MetricProps.metrics
   readonly metrics?: MetricsOrMetricsId<Schemas>;
-  /// MetricProps.debugIds
+  /// ui-react.MetricProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type IndexProps<Schemas extends OptionalSchemas> = {
-  /// IndexProps.indexId
+  /// ui-react.IndexProps.indexId
   readonly indexId: Id;
-  /// IndexProps.indexes
+  /// ui-react.IndexProps.indexes
   readonly indexes?: IndexesOrIndexesId<Schemas>;
-  /// IndexProps.sliceComponent
+  /// ui-react.IndexProps.sliceComponent
   readonly sliceComponent?: ComponentType<SliceProps<Schemas>>;
-  /// IndexProps.getSliceComponentProps
+  /// ui-react.IndexProps.getSliceComponentProps
   readonly getSliceComponentProps?: (sliceId: Id) => ExtraProps;
-  /// IndexProps.separator
+  /// ui-react.IndexProps.separator
   readonly separator?: ReactElement | string;
-  /// IndexProps.debugIds
+  /// ui-react.IndexProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type SliceProps<Schemas extends OptionalSchemas> = {
-  /// SliceProps.indexId
+  /// ui-react.SliceProps.indexId
   readonly indexId: Id;
-  /// SliceProps.sliceId
+  /// ui-react.SliceProps.sliceId
   readonly sliceId: Id;
-  /// SliceProps.indexes
+  /// ui-react.SliceProps.indexes
   readonly indexes?: IndexesOrIndexesId<Schemas>;
-  /// SliceProps.rowComponent
+  /// ui-react.SliceProps.rowComponent
   readonly rowComponent?: ComponentType<RowProps<Schemas>>;
-  /// SliceProps.getRowComponentProps
+  /// ui-react.SliceProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// SliceProps.separator
+  /// ui-react.SliceProps.separator
   readonly separator?: ReactElement | string;
-  /// SliceProps.debugIds
+  /// ui-react.SliceProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type RemoteRowProps<Schemas extends OptionalSchemas> = {
-  /// RemoteRowProps.relationshipId
+  /// ui-react.RemoteRowProps.relationshipId
   readonly relationshipId: Id;
-  /// RemoteRowProps.localRowId
+  /// ui-react.RemoteRowProps.localRowId
   readonly localRowId: Id;
-  /// RemoteRowProps.relationships
+  /// ui-react.RemoteRowProps.relationships
   readonly relationships?: RelationshipsOrRelationshipsId<Schemas>;
-  /// RemoteRowProps.rowComponent
+  /// ui-react.RemoteRowProps.rowComponent
   readonly rowComponent?: ComponentType<RowProps<Schemas>>;
-  /// RemoteRowProps.getRowComponentProps
+  /// ui-react.RemoteRowProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// RemoteRowProps.debugIds
+  /// ui-react.RemoteRowProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type LocalRowsProps<Schemas extends OptionalSchemas> = {
-  /// LocalRowsProps.relationshipId
+  /// ui-react.LocalRowsProps.relationshipId
   readonly relationshipId: Id;
-  /// LocalRowsProps.remoteRowId
+  /// ui-react.LocalRowsProps.remoteRowId
   readonly remoteRowId: Id;
-  /// LocalRowsProps.relationships
+  /// ui-react.LocalRowsProps.relationships
   readonly relationships?: RelationshipsOrRelationshipsId<Schemas>;
-  /// LocalRowsProps.rowComponent
+  /// ui-react.LocalRowsProps.rowComponent
   readonly rowComponent?: ComponentType<RowProps<Schemas>>;
-  /// LocalRowsProps.getRowComponentProps
+  /// ui-react.LocalRowsProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// LocalRowsProps.separator
+  /// ui-react.LocalRowsProps.separator
   readonly separator?: ReactElement | string;
-  /// LocalRowsProps.debugIds
+  /// ui-react.LocalRowsProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type LinkedRowsProps<Schemas extends OptionalSchemas> = {
-  /// LinkedRowsProps.relationshipId
+  /// ui-react.LinkedRowsProps.relationshipId
   readonly relationshipId: Id;
-  /// LinkedRowsProps.firstRowId
+  /// ui-react.LinkedRowsProps.firstRowId
   readonly firstRowId: Id;
-  /// LinkedRowsProps.relationships
+  /// ui-react.LinkedRowsProps.relationships
   readonly relationships?: RelationshipsOrRelationshipsId<Schemas>;
-  /// LinkedRowsProps.rowComponent
+  /// ui-react.LinkedRowsProps.rowComponent
   readonly rowComponent?: ComponentType<RowProps<Schemas>>;
-  /// LinkedRowsProps.getRowComponentProps
+  /// ui-react.LinkedRowsProps.getRowComponentProps
   readonly getRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// LinkedRowsProps.separator
+  /// ui-react.LinkedRowsProps.separator
   readonly separator?: ReactElement | string;
-  /// LinkedRowsProps.debugIds
+  /// ui-react.LinkedRowsProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ResultTableProps<Schemas extends OptionalSchemas> = {
-  /// ResultTableProps.queryId
+  /// ui-react.ResultTableProps.queryId
   readonly queryId: Id;
-  /// ResultTableProps.queries
+  /// ui-react.ResultTableProps.queries
   readonly queries?: QueriesOrQueriesId<Schemas>;
-  /// ResultTableProps.resultRowComponent
+  /// ui-react.ResultTableProps.resultRowComponent
   readonly resultRowComponent?: ComponentType<ResultRowProps<Schemas>>;
-  /// ResultTableProps.getResultRowComponentProps
+  /// ui-react.ResultTableProps.getResultRowComponentProps
   readonly getResultRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// ResultTableProps.separator
+  /// ui-react.ResultTableProps.separator
   readonly separator?: ReactElement | string;
-  /// ResultTableProps.debugIds
+  /// ui-react.ResultTableProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ResultSortedTableProps<Schemas extends OptionalSchemas> = {
-  /// ResultSortedTableProps.queryId
+  /// ui-react.ResultSortedTableProps.queryId
   readonly queryId: Id;
-  /// ResultSortedTableProps.cellId
+  /// ui-react.ResultSortedTableProps.cellId
   readonly cellId?: Id;
-  /// ResultSortedTableProps.descending
+  /// ui-react.ResultSortedTableProps.descending
   readonly descending?: boolean;
-  /// ResultSortedTableProps.offset
+  /// ui-react.ResultSortedTableProps.offset
   readonly offset?: number;
-  /// ResultSortedTableProps.limit
+  /// ui-react.ResultSortedTableProps.limit
   readonly limit?: number;
-  /// ResultSortedTableProps.queries
+  /// ui-react.ResultSortedTableProps.queries
   readonly queries?: QueriesOrQueriesId<Schemas>;
-  /// ResultSortedTableProps.resultRowComponent
+  /// ui-react.ResultSortedTableProps.resultRowComponent
   readonly resultRowComponent?: ComponentType<ResultRowProps<Schemas>>;
-  /// ResultSortedTableProps.getResultRowComponentProps
+  /// ui-react.ResultSortedTableProps.getResultRowComponentProps
   readonly getResultRowComponentProps?: (rowId: Id) => ExtraProps;
-  /// ResultSortedTableProps.separator
+  /// ui-react.ResultSortedTableProps.separator
   readonly separator?: ReactElement | string;
-  /// ResultSortedTableProps.debugIds
+  /// ui-react.ResultSortedTableProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ResultRowProps<Schemas extends OptionalSchemas> = {
-  /// ResultRowProps.queryId
+  /// ui-react.ResultRowProps.queryId
   readonly queryId: Id;
-  /// ResultRowProps.rowId
+  /// ui-react.ResultRowProps.rowId
   readonly rowId: Id;
-  /// ResultRowProps.queries
+  /// ui-react.ResultRowProps.queries
   readonly queries?: QueriesOrQueriesId<Schemas>;
-  /// ResultRowProps.resultCellComponent
+  /// ui-react.ResultRowProps.resultCellComponent
   readonly resultCellComponent?: ComponentType<ResultCellProps<Schemas>>;
-  /// ResultRowProps.getResultCellComponentProps
+  /// ui-react.ResultRowProps.getResultCellComponentProps
   readonly getResultCellComponentProps?: (cellId: Id) => ExtraProps;
-  /// ResultRowProps.separator
+  /// ui-react.ResultRowProps.separator
   readonly separator?: ReactElement | string;
-  /// ResultRowProps.debugIds
+  /// ui-react.ResultRowProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ResultCellProps<Schemas extends OptionalSchemas> = {
-  /// ResultCellProps.queryId
+  /// ui-react.ResultCellProps.queryId
   readonly queryId: Id;
-  /// ResultCellProps.rowId
+  /// ui-react.ResultCellProps.rowId
   readonly rowId: Id;
-  /// ResultCellProps.cellId
+  /// ui-react.ResultCellProps.cellId
   readonly cellId: Id;
-  /// ResultCellProps.queries
+  /// ui-react.ResultCellProps.queries
   readonly queries?: QueriesOrQueriesId<Schemas>;
-  /// ResultCellProps.debugIds
+  /// ui-react.ResultCellProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type CheckpointProps<Schemas extends OptionalSchemas> = {
-  /// CheckpointProps.checkpointId
+  /// ui-react.CheckpointProps.checkpointId
   readonly checkpointId: Id;
-  /// CheckpointProps.checkpoints
+  /// ui-react.CheckpointProps.checkpoints
   readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
-  /// CheckpointProps.debugIds
+  /// ui-react.CheckpointProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type BackwardCheckpointsProps<Schemas extends OptionalSchemas> = {
-  /// BackwardCheckpointsProps.checkpoints
+  /// ui-react.BackwardCheckpointsProps.checkpoints
   readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
-  /// BackwardCheckpointsProps.checkpointComponent
+  /// ui-react.BackwardCheckpointsProps.checkpointComponent
   readonly checkpointComponent?: ComponentType<CheckpointProps<Schemas>>;
-  /// BackwardCheckpointsProps.getCheckpointComponentProps
+  /// ui-react.BackwardCheckpointsProps.getCheckpointComponentProps
   readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
-  /// BackwardCheckpointsProps.separator
+  /// ui-react.BackwardCheckpointsProps.separator
   readonly separator?: ReactElement | string;
-  /// BackwardCheckpointsProps.debugIds
+  /// ui-react.BackwardCheckpointsProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type CurrentCheckpointProps<Schemas extends OptionalSchemas> = {
-  /// CurrentCheckpointProps.checkpoints
+  /// ui-react.CurrentCheckpointProps.checkpoints
   readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
-  /// CurrentCheckpointProps.checkpointComponent
+  /// ui-react.CurrentCheckpointProps.checkpointComponent
   readonly checkpointComponent?: ComponentType<CheckpointProps<Schemas>>;
-  /// CurrentCheckpointProps.getCheckpointComponentProps
+  /// ui-react.CurrentCheckpointProps.getCheckpointComponentProps
   readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
-  /// CurrentCheckpointProps.debugIds
+  /// ui-react.CurrentCheckpointProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ForwardCheckpointsProps<Schemas extends OptionalSchemas> = {
-  /// ForwardCheckpointsProps.checkpoints
+  /// ui-react.ForwardCheckpointsProps.checkpoints
   readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
-  /// ForwardCheckpointsProps.checkpointComponent
+  /// ui-react.ForwardCheckpointsProps.checkpointComponent
   readonly checkpointComponent?: ComponentType<CheckpointProps<Schemas>>;
-  /// ForwardCheckpointsProps.getCheckpointComponentProps
+  /// ui-react.ForwardCheckpointsProps.getCheckpointComponentProps
   readonly getCheckpointComponentProps?: (checkpointId: Id) => ExtraProps;
-  /// ForwardCheckpointsProps.separator
+  /// ui-react.ForwardCheckpointsProps.separator
   readonly separator?: ReactElement | string;
-  /// ForwardCheckpointsProps.debugIds
+  /// ui-react.ForwardCheckpointsProps.debugIds
   readonly debugIds?: boolean;
 };
 
 export type ProviderProps<Schemas extends OptionalSchemas> = {
-  /// ProviderProps.store
+  /// ui-react.ProviderProps.store
   readonly store?: Store<Schemas>;
-  /// ProviderProps.storesById
+  /// ui-react.ProviderProps.storesById
   readonly storesById?: {[storeId: Id]: Store<Schemas>};
-  /// ProviderProps.metrics
+  /// ui-react.ProviderProps.metrics
   readonly metrics?: Metrics<Schemas>;
-  /// ProviderProps.metricsById
+  /// ui-react.ProviderProps.metricsById
   readonly metricsById?: {[metricsId: Id]: Metrics<Schemas>};
-  /// ProviderProps.indexes
+  /// ui-react.ProviderProps.indexes
   readonly indexes?: Indexes<Schemas>;
-  /// ProviderProps.indexesById
+  /// ui-react.ProviderProps.indexesById
   readonly indexesById?: {[indexesId: Id]: Indexes<Schemas>};
-  /// ProviderProps.relationships
+  /// ui-react.ProviderProps.relationships
   readonly relationships?: Relationships<Schemas>;
-  /// ProviderProps.relationshipsById
+  /// ui-react.ProviderProps.relationshipsById
   readonly relationshipsById?: {[relationshipsId: Id]: Relationships<Schemas>};
-  /// ProviderProps.queries
+  /// ui-react.ProviderProps.queries
   readonly queries?: Queries<Schemas>;
-  /// ProviderProps.queriesById
+  /// ui-react.ProviderProps.queriesById
   readonly queriesById?: {[queriesId: Id]: Queries<Schemas>};
-  /// ProviderProps.checkpoints
+  /// ui-react.ProviderProps.checkpoints
   readonly checkpoints?: Checkpoints<Schemas>;
-  /// ProviderProps.checkpointsById
+  /// ui-react.ProviderProps.checkpointsById
   readonly checkpointsById?: {[checkpointsId: Id]: Checkpoints<Schemas>};
-  /// ProviderProps.persister
+  /// ui-react.ProviderProps.persister
   readonly persister?: Persister<Schemas, Persists.StoreOrMergeableStore>;
-  /// ProviderProps.persistersById
+  /// ui-react.ProviderProps.persistersById
   readonly persistersById?: {
     [persisterId: Id]: Persister<Schemas, Persists.StoreOrMergeableStore>;
   };
-  /// ProviderProps.synchronizer
+  /// ui-react.ProviderProps.synchronizer
   readonly synchronizer?: Synchronizer<Schemas>;
-  /// ProviderProps.synchronizersById
+  /// ui-react.ProviderProps.synchronizersById
   readonly synchronizersById?: {[synchronizerId: Id]: Synchronizer<Schemas>};
 };
 
