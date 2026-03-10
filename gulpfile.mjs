@@ -658,7 +658,6 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
     platform: 'node',
   });
 
-  // eslint-disable-next-line import/no-unresolved
   const {build} = await import('./tmp/build.js');
   await build(esbuild, DOCS_DIR, api, pages);
   await removeDir(TMP_DIR);
@@ -706,6 +705,10 @@ export const ts = async () => {
   await tsCheck('src');
   await tsCheck('test');
   await tsCheck('site');
+  await execute(
+    'npx svelte-check --workspace src/ui-svelte ' +
+      '--tsconfig svelte.tsconfig.json',
+  );
   await execute(
     'npx svelte-check --workspace test/unit/core/ui-svelte ' +
       '--tsconfig svelte.tsconfig.json',

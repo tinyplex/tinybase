@@ -1,23 +1,8 @@
 <script lang="ts">
-  import type {Id, Ids} from '../@types/common/index.d.ts';
-  import type {Store} from '../@types/store/index.d.ts';
-  import type {Snippet} from 'svelte';
+  import type {SortedTableViewProps} from '../@types/ui-svelte/index.d.ts';
   import {useSortedRowIds} from './hooks.svelte.ts';
   import RowView from './RowView.svelte';
   import ItemsView from './common/ItemsView.svelte';
-
-  type Props = {
-    tableId: Id;
-    cellId?: Id;
-    descending?: boolean;
-    offset?: number;
-    limit?: number;
-    store?: Store | Id;
-    customCellIds?: Ids;
-    separator?: Snippet<[]>;
-    debugIds?: boolean;
-    row?: Snippet<[rowId: Id]>;
-  };
 
   let {
     tableId,
@@ -30,7 +15,7 @@
     separator,
     debugIds,
     row,
-  }: Props = $props();
+  }: SortedTableViewProps = $props();
 
   const rowIds = useSortedRowIds(
     () => tableId,

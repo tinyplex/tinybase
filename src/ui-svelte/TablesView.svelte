@@ -1,19 +1,10 @@
 <script lang="ts">
-  import type {Id} from '../@types/common/index.d.ts';
-  import type {Store} from '../@types/store/index.d.ts';
-  import type {Snippet} from 'svelte';
+  import type {TablesViewProps} from '../@types/ui-svelte/index.d.ts';
   import {useTableIds} from './hooks.svelte.ts';
   import TableView from './TableView.svelte';
   import ItemsView from './common/ItemsView.svelte';
 
-  type Props = {
-    store?: Store | Id;
-    separator?: Snippet<[]>;
-    debugIds?: boolean;
-    table?: Snippet<[tableId: Id]>;
-  };
-
-  let {store, separator, debugIds, table}: Props = $props();
+  let {store, separator, debugIds, table}: TablesViewProps = $props();
   const tableIds = useTableIds(() => store);
 </script>
 

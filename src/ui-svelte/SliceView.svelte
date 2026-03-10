@@ -1,8 +1,7 @@
 <script lang="ts">
   import {getContext} from 'svelte';
-  import type {Id} from '../@types/common/index.d.ts';
+  import type {SliceViewProps} from '../@types/ui-svelte/index.d.ts';
   import type {Indexes} from '../@types/indexes/index.d.ts';
-  import type {Snippet} from 'svelte';
   import {isString} from '../common/other.ts';
   import {objGet} from '../common/obj.ts';
   import type {ContextValue} from './context.ts';
@@ -11,16 +10,8 @@
   import RowView from './RowView.svelte';
   import ItemsView from './common/ItemsView.svelte';
 
-  type Props = {
-    indexId: Id;
-    sliceId: Id;
-    indexes?: Indexes | Id;
-    separator?: Snippet<[]>;
-    debugIds?: boolean;
-    row?: Snippet<[rowId: Id]>;
-  };
-
-  let {indexId, sliceId, indexes, separator, debugIds, row}: Props = $props();
+  let {indexId, sliceId, indexes, separator, debugIds, row}: SliceViewProps =
+    $props();
 
   // Capture context at init to resolve Indexes → store/tableId
   const _ctx: ContextValue = (getContext(TINYBASE_CONTEXT_KEY) ??
