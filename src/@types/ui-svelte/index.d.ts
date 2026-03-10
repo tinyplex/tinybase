@@ -584,11 +584,21 @@ export function useBindableValue(
 /// ui-svelte.useStore
 export function useStore(id?: Id): Store | undefined;
 
+/// ui-svelte.useStoreOrStoreById
+export function useStoreOrStoreById(
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): () => Store | undefined;
+
 /// ui-svelte.useStoreIds
 export function useStoreIds(): {readonly current: Ids};
 
 /// ui-svelte.useMetrics
 export function useMetrics(id?: Id): Metrics | undefined;
+
+/// ui-svelte.useMetricsOrMetricsById
+export function useMetricsOrMetricsById(
+  metricsOrMetricsId?: MaybeGetter<Metrics | Id | undefined>,
+): () => Metrics | undefined;
 
 /// ui-svelte.useMetricsIds
 export function useMetricsIds(): {readonly current: Ids};
@@ -608,6 +618,17 @@ export function useMetric(
 
 /// ui-svelte.useIndexes
 export function useIndexes(id?: Id): Indexes | undefined;
+
+/// ui-svelte.useIndexesOrIndexesById
+export function useIndexesOrIndexesById(
+  indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
+): () => Indexes | undefined;
+
+/// ui-svelte.useIndexStoreTableId
+export function useIndexStoreTableId(
+  indexesOrId: MaybeGetter<Indexes | Id | undefined>,
+  indexId: MaybeGetter<Id>,
+): {readonly store: Store | undefined; readonly tableId: Id | undefined};
 
 /// ui-svelte.useIndexesIds
 export function useIndexesIds(): {readonly current: Ids};
@@ -634,6 +655,11 @@ export function useSliceRowIds(
 
 /// ui-svelte.useQueries
 export function useQueries(id?: Id): Queries | undefined;
+
+/// ui-svelte.useQueriesOrQueriesById
+export function useQueriesOrQueriesById(
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
+): () => Queries | undefined;
 
 /// ui-svelte.useQueriesIds
 export function useQueriesIds(): {readonly current: Ids};
@@ -704,6 +730,21 @@ export function useResultCell(
 /// ui-svelte.useRelationships
 export function useRelationships(id?: Id): Relationships | undefined;
 
+/// ui-svelte.useRelationshipsOrRelationshipsById
+export function useRelationshipsOrRelationshipsById(
+  relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
+): () => Relationships | undefined;
+
+/// ui-svelte.useRelationshipsStoreTableIds
+export function useRelationshipsStoreTableIds(
+  relationshipsOrId: MaybeGetter<Relationships | Id | undefined>,
+  relationshipId: MaybeGetter<Id>,
+): {
+  readonly store: Store | undefined;
+  readonly localTableId: Id | undefined;
+  readonly remoteTableId: Id | undefined;
+};
+
 /// ui-svelte.useRelationshipsIds
 export function useRelationshipsIds(): {readonly current: Ids};
 
@@ -736,6 +777,11 @@ export function useLinkedRowIds(
 /// ui-svelte.useCheckpoints
 export function useCheckpoints(id?: Id): Checkpoints | undefined;
 
+/// ui-svelte.useCheckpointsOrCheckpointsById
+export function useCheckpointsOrCheckpointsById(
+  checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
+): () => Checkpoints | undefined;
+
 /// ui-svelte.useCheckpointsIds
 export function useCheckpointsIds(): {readonly current: Ids};
 
@@ -763,6 +809,11 @@ export function useGoForwardCallback(
 /// ui-svelte.usePersister
 export function usePersister(id?: Id): AnyPersister | undefined;
 
+/// ui-svelte.usePersisterOrPersisterById
+export function usePersisterOrPersisterById(
+  persisterOrPersisterId?: MaybeGetter<AnyPersister | Id | undefined>,
+): () => AnyPersister | undefined;
+
 /// ui-svelte.usePersisterIds
 export function usePersisterIds(): {readonly current: Ids};
 
@@ -773,6 +824,11 @@ export function usePersisterStatus(
 
 /// ui-svelte.useSynchronizer
 export function useSynchronizer(id?: Id): Synchronizer | undefined;
+
+/// ui-svelte.useSynchronizerOrSynchronizerById
+export function useSynchronizerOrSynchronizerById(
+  synchronizerOrSynchronizerId?: MaybeGetter<Synchronizer | Id | undefined>,
+): () => Synchronizer | undefined;
 
 /// ui-svelte.useSynchronizerIds
 export function useSynchronizerIds(): {readonly current: Ids};

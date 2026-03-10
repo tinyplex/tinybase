@@ -1491,6 +1491,15 @@
  */
 /// ui-svelte.useStore
 /**
+ * The useStoreOrStoreById hook is used to get a reference to a Store object
+ * from a Provider context, or have it passed directly.
+ * @param storeOrStoreId The Store, its Id, or a getter returning either.
+ * @returns A getter function returning the Store, or `undefined`.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useStoreOrStoreById
+/**
  * The useStoreIds hook returns a reactive object with the Ids of all Stores
  * registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
@@ -1507,6 +1516,16 @@
  * @since v8.1.0
  */
 /// ui-svelte.useMetrics
+/**
+ * The useMetricsOrMetricsById hook is used to get a reference to a Metrics
+ * object from a Provider context, or have it passed directly.
+ * @param metricsOrMetricsId The Metrics object, its Id, or a getter returning
+ * either.
+ * @returns A getter function returning the Metrics object, or `undefined`.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useMetricsOrMetricsById
 /**
  * The useMetricsIds hook returns a reactive object with the Ids of all Metrics
  * objects registered in the current Provider context.
@@ -1546,6 +1565,26 @@
  * @since v8.1.0
  */
 /// ui-svelte.useIndexes
+/**
+ * The useIndexesOrIndexesById hook is used to get a reference to an Indexes
+ * object from a Provider context, or have it passed directly.
+ * @param indexesOrIndexesId The Indexes object, its Id, or a getter returning
+ * either.
+ * @returns A getter function returning the Indexes object, or `undefined`.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useIndexesOrIndexesById
+/**
+ * The useIndexStoreTableId hook returns the Store and table Id for a given
+ * Indexes object and index Id.
+ * @param indexesOrId The Indexes object, its Id, or a getter returning either.
+ * @param indexId The Id of the index, or a getter returning it.
+ * @returns An object with `store` and `tableId` getter properties.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useIndexStoreTableId
 /**
  * The useIndexesIds hook returns a reactive object with the Ids of all Indexes
  * objects registered in the current Provider context.
@@ -1598,6 +1637,16 @@
  * @since v8.1.0
  */
 /// ui-svelte.useQueries
+/**
+ * The useQueriesOrQueriesById hook is used to get a reference to a Queries
+ * object from a Provider context, or have it passed directly.
+ * @param queriesOrQueriesId The Queries object, its Id, or a getter returning
+ * either.
+ * @returns A getter function returning the Queries object, or `undefined`.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useQueriesOrQueriesById
 /**
  * The useQueriesIds hook returns a reactive object with the Ids of all Queries
  * objects registered in the current Provider context.
@@ -1731,6 +1780,29 @@
  */
 /// ui-svelte.useRelationships
 /**
+ * The useRelationshipsOrRelationshipsById hook is used to get a reference to a
+ * Relationships object from a Provider context, or have it passed directly.
+ * @param relationshipsOrRelationshipsId The Relationships object, its Id, or a
+ * getter returning either.
+ * @returns A getter function returning the Relationships object, or
+ * `undefined`.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useRelationshipsOrRelationshipsById
+/**
+ * The useRelationshipsStoreTableIds hook returns the Store, local table Id, and
+ * remote table Id for a given Relationships object and relationship Id.
+ * @param relationshipsOrId The Relationships object, its Id, or a getter
+ * returning either.
+ * @param relationshipId The Id of the relationship, or a getter returning it.
+ * @returns An object with `store`, `localTableId`, and `remoteTableId` getter
+ * properties.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useRelationshipsStoreTableIds
+/**
  * The useRelationshipsIds hook returns a reactive object with the Ids of all
  * Relationships objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
@@ -1799,6 +1871,16 @@
  */
 /// ui-svelte.useCheckpoints
 /**
+ * The useCheckpointsOrCheckpointsById hook is used to get a reference to a
+ * Checkpoints object from a Provider context, or have it passed directly.
+ * @param checkpointsOrCheckpointsId The Checkpoints object, its Id, or a
+ * getter returning either.
+ * @returns A getter function returning the Checkpoints object, or `undefined`.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useCheckpointsOrCheckpointsById
+/**
  * The useCheckpointsIds hook returns a reactive object with the Ids of all
  * Checkpoints objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
@@ -1857,6 +1939,16 @@
  */
 /// ui-svelte.usePersister
 /**
+ * The usePersisterOrPersisterById hook is used to get a reference to a
+ * Persister object from a Provider context, or have it passed directly.
+ * @param persisterOrPersisterId The Persister object, its Id, or a getter
+ * returning either.
+ * @returns A getter function returning the Persister object, or `undefined`.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.usePersisterOrPersisterById
+/**
  * The usePersisterIds hook returns a reactive object with the Ids of all
  * Persisters registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
@@ -1883,6 +1975,16 @@
  * @since v8.1.0
  */
 /// ui-svelte.useSynchronizer
+/**
+ * The useSynchronizerOrSynchronizerById hook is used to get a reference to a
+ * Synchronizer object from a Provider context, or have it passed directly.
+ * @param synchronizerOrSynchronizerId The Synchronizer object, its Id, or a
+ * getter returning either.
+ * @returns A getter function returning the Synchronizer object, or `undefined`.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useSynchronizerOrSynchronizerById
 /**
  * The useSynchronizerIds hook returns a reactive object with the Ids of all
  * Synchronizers registered in the current Provider context.

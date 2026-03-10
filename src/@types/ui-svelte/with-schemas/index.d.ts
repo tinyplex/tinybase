@@ -470,11 +470,27 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// ui-svelte.useStore
   useStore: (id?: Id) => Store<Schemas> | undefined;
 
+  /// ui-svelte.useStoreOrStoreById
+  useStoreOrStoreById: (
+    storeOrStoreId?:
+      | Store<Schemas>
+      | Id
+      | (() => Store<Schemas> | Id | undefined),
+  ) => () => Store<Schemas> | undefined;
+
   /// ui-svelte.useStoreIds
   useStoreIds: () => {readonly current: Ids};
 
   /// ui-svelte.useMetrics
   useMetrics: (id?: Id) => Metrics<Schemas> | undefined;
+
+  /// ui-svelte.useMetricsOrMetricsById
+  useMetricsOrMetricsById: (
+    metricsOrMetricsId?:
+      | Metrics<Schemas>
+      | Id
+      | (() => Metrics<Schemas> | Id | undefined),
+  ) => () => Metrics<Schemas> | undefined;
 
   /// ui-svelte.useMetricsIds
   useMetricsIds: () => {readonly current: Ids};
@@ -497,6 +513,26 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useIndexes
   useIndexes: (id?: Id) => Indexes<Schemas> | undefined;
+
+  /// ui-svelte.useIndexesOrIndexesById
+  useIndexesOrIndexesById: (
+    indexesOrIndexesId?:
+      | Indexes<Schemas>
+      | Id
+      | (() => Indexes<Schemas> | Id | undefined),
+  ) => () => Indexes<Schemas> | undefined;
+
+  /// ui-svelte.useIndexStoreTableId
+  useIndexStoreTableId: (
+    indexesOrId:
+      | Indexes<Schemas>
+      | Id
+      | (() => Indexes<Schemas> | Id | undefined),
+    indexId: Id | (() => Id),
+  ) => {
+    readonly store: Store<Schemas> | undefined;
+    readonly tableId: Id | undefined;
+  };
 
   /// ui-svelte.useIndexesIds
   useIndexesIds: () => {readonly current: Ids};
@@ -526,6 +562,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useQueries
   useQueries: (id?: Id) => Queries<Schemas> | undefined;
+
+  /// ui-svelte.useQueriesOrQueriesById
+  useQueriesOrQueriesById: (
+    queriesOrQueriesId?:
+      | Queries<Schemas>
+      | Id
+      | (() => Queries<Schemas> | Id | undefined),
+  ) => () => Queries<Schemas> | undefined;
 
   /// ui-svelte.useQueriesIds
   useQueriesIds: () => {readonly current: Ids};
@@ -599,6 +643,27 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// ui-svelte.useRelationships
   useRelationships: (id?: Id) => Relationships<Schemas> | undefined;
 
+  /// ui-svelte.useRelationshipsOrRelationshipsById
+  useRelationshipsOrRelationshipsById: (
+    relationshipsOrRelationshipsId?:
+      | Relationships<Schemas>
+      | Id
+      | (() => Relationships<Schemas> | Id | undefined),
+  ) => () => Relationships<Schemas> | undefined;
+
+  /// ui-svelte.useRelationshipsStoreTableIds
+  useRelationshipsStoreTableIds: (
+    relationshipsOrId:
+      | Relationships<Schemas>
+      | Id
+      | (() => Relationships<Schemas> | Id | undefined),
+    relationshipId: Id | (() => Id),
+  ) => {
+    readonly store: Store<Schemas> | undefined;
+    readonly localTableId: Id | undefined;
+    readonly remoteTableId: Id | undefined;
+  };
+
   /// ui-svelte.useRelationshipsIds
   useRelationshipsIds: () => {readonly current: Ids};
 
@@ -634,6 +699,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// ui-svelte.useCheckpoints
   useCheckpoints: (id?: Id) => Checkpoints<Schemas> | undefined;
 
+  /// ui-svelte.useCheckpointsOrCheckpointsById
+  useCheckpointsOrCheckpointsById: (
+    checkpointsOrCheckpointsId?:
+      | Checkpoints<Schemas>
+      | Id
+      | (() => Checkpoints<Schemas> | Id | undefined),
+  ) => () => Checkpoints<Schemas> | undefined;
+
   /// ui-svelte.useCheckpointsIds
   useCheckpointsIds: () => {readonly current: Ids};
 
@@ -667,6 +740,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// ui-svelte.usePersister
   usePersister: (id?: Id) => AnyPersister<Schemas> | undefined;
 
+  /// ui-svelte.usePersisterOrPersisterById
+  usePersisterOrPersisterById: (
+    persisterOrPersisterId?:
+      | AnyPersister<Schemas>
+      | Id
+      | (() => AnyPersister<Schemas> | Id | undefined),
+  ) => () => AnyPersister<Schemas> | undefined;
+
   /// ui-svelte.usePersisterIds
   usePersisterIds: () => {readonly current: Ids};
 
@@ -677,6 +758,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useSynchronizer
   useSynchronizer: (id?: Id) => Synchronizer<Schemas> | undefined;
+
+  /// ui-svelte.useSynchronizerOrSynchronizerById
+  useSynchronizerOrSynchronizerById: (
+    synchronizerOrSynchronizerId?:
+      | Synchronizer<Schemas>
+      | Id
+      | (() => Synchronizer<Schemas> | Id | undefined),
+  ) => () => Synchronizer<Schemas> | undefined;
 
   /// ui-svelte.useSynchronizerIds
   useSynchronizerIds: () => {readonly current: Ids};
