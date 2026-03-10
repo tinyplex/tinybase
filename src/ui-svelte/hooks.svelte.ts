@@ -155,15 +155,17 @@ const useListenable = <T>(
   let value = $state<T>(
     (getThing()?.[getMethod]?.(...getArgs()) ?? defaultValue) as T,
   );
-  $effect(() => {
-    const thing = getThing();
-    const args = getArgs();
-    value = (thing?.[getMethod]?.(...args) ?? defaultValue) as T;
-    const listenerId = thing?.[addMethod]?.(...args, () => {
-      value = (thing[getMethod](...getArgs()) ?? defaultValue) as T;
+  if (typeof window !== 'undefined') {
+    $effect(() => {
+      const thing = getThing();
+      const args = getArgs();
+      value = (thing?.[getMethod]?.(...args) ?? defaultValue) as T;
+      const listenerId = thing?.[addMethod]?.(...args, () => {
+        value = (thing[getMethod](...getArgs()) ?? defaultValue) as T;
+      });
+      return () => thing?.delListener?.(listenerId);
     });
-    return () => thing?.delListener?.(listenerId);
-  });
+  }
   return {
     get current(): T {
       return value as T;
@@ -311,7 +313,7 @@ export const useCell = (
     rv(cellId),
   ]);
 
-export const useCellState = (
+export const useBindableCell = (
   tableId: R<Id>,
   rowId: R<Id>,
   cellId: R<Id>,
@@ -321,17 +323,19 @@ export const useCellState = (
   let value = $state<CellOrUndefined>(
     getS()?.getCell(rv(tableId), rv(rowId), rv(cellId)),
   );
-  $effect(() => {
-    const s: any = getS();
-    const t = rv(tableId),
-      r = rv(rowId),
-      c = rv(cellId);
-    value = s?.getCell(t, r, c);
-    const listenerId = s?.addCellListener(t, r, c, (st: any) => {
-      value = st.getCell(rv(tableId), rv(rowId), rv(cellId));
+  if (typeof window !== 'undefined') {
+    $effect(() => {
+      const s: any = getS();
+      const t = rv(tableId),
+        r = rv(rowId),
+        c = rv(cellId);
+      value = s?.getCell(t, r, c);
+      const listenerId = s?.addCellListener(t, r, c, (st: any) => {
+        value = st.getCell(rv(tableId), rv(rowId), rv(cellId));
+      });
+      return () => s?.delListener?.(listenerId);
     });
-    return () => s?.delListener?.(listenerId);
-  });
+  }
   return {
     get current(): CellOrUndefined {
       return value;
@@ -367,21 +371,23 @@ export const useValue = (
 ): {readonly current: ValueOrUndefined} =>
   useGet(sg(storeOrStoreId), VALUE, undefined, () => [rv(valueId)]);
 
-export const useValueState = (
+export const useBindableValue = (
   valueId: R<Id>,
   storeOrStoreId?: R<Store | Id | undefined>,
 ): {get current(): ValueOrUndefined; set current(v: Value)} => {
   const getS = sg(storeOrStoreId);
   let value = $state<ValueOrUndefined>(getS()?.getValue(rv(valueId)));
-  $effect(() => {
-    const s: any = getS();
-    const vid = rv(valueId);
-    value = s?.getValue(vid);
-    const listenerId = s?.addValueListener(vid, (st: any) => {
-      value = st.getValue(rv(valueId));
+  if (typeof window !== 'undefined') {
+    $effect(() => {
+      const s: any = getS();
+      const vid = rv(valueId);
+      value = s?.getValue(vid);
+      const listenerId = s?.addValueListener(vid, (st: any) => {
+        value = st.getValue(rv(valueId));
+      });
+      return () => s?.delListener?.(listenerId);
     });
-    return () => s?.delListener?.(listenerId);
-  });
+  }
   return {
     get current(): ValueOrUndefined {
       return value;
@@ -398,9 +404,11 @@ export const useStore = (id?: Id): Store | undefined =>
 export const useStoreIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
   let ids = $state<Ids>(getThingIds(ctx, OFFSET_STORE));
-  $effect(() => {
-    ids = getThingIds(ctx, OFFSET_STORE);
-  });
+  if (typeof window !== 'undefined') {
+    $effect(() => {
+      ids = getThingIds(ctx, OFFSET_STORE);
+    });
+  }
   return {
     get current() {
       return ids;
@@ -414,9 +422,11 @@ export const useMetrics = (id?: Id): Metrics | undefined =>
 export const useMetricsIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
   let ids = $state<Ids>(getThingIds(ctx, OFFSET_METRICS));
-  $effect(() => {
-    ids = getThingIds(ctx, OFFSET_METRICS);
-  });
+  if (typeof window !== 'undefined') {
+    $effect(() => {
+      ids = getThingIds(ctx, OFFSET_METRICS);
+    });
+  }
   return {
     get current() {
       return ids;
@@ -441,9 +451,11 @@ export const useIndexes = (id?: Id): Indexes | undefined =>
 export const useIndexesIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
   let ids = $state<Ids>(getThingIds(ctx, OFFSET_INDEXES));
-  $effect(() => {
-    ids = getThingIds(ctx, OFFSET_INDEXES);
-  });
+  if (typeof window !== 'undefined') {
+    $effect(() => {
+      ids = getThingIds(ctx, OFFSET_INDEXES);
+    });
+  }
   return {
     get current() {
       return ids;
@@ -478,9 +490,11 @@ export const useQueries = (id?: Id): Queries | undefined =>
 export const useQueriesIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
   let ids = $state<Ids>(getThingIds(ctx, OFFSET_QUERIES));
-  $effect(() => {
-    ids = getThingIds(ctx, OFFSET_QUERIES);
-  });
+  if (typeof window !== 'undefined') {
+    $effect(() => {
+      ids = getThingIds(ctx, OFFSET_QUERIES);
+    });
+  }
   return {
     get current() {
       return ids;
@@ -577,9 +591,11 @@ export const useRelationships = (id?: Id): Relationships | undefined =>
 export const useRelationshipsIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
   let ids = $state<Ids>(getThingIds(ctx, OFFSET_RELATIONSHIPS));
-  $effect(() => {
-    ids = getThingIds(ctx, OFFSET_RELATIONSHIPS);
-  });
+  if (typeof window !== 'undefined') {
+    $effect(() => {
+      ids = getThingIds(ctx, OFFSET_RELATIONSHIPS);
+    });
+  }
   return {
     get current() {
       return ids;
@@ -630,9 +646,11 @@ export const useCheckpoints = (id?: Id): Checkpoints | undefined =>
 export const useCheckpointsIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
   let ids = $state<Ids>(getThingIds(ctx, OFFSET_CHECKPOINTS));
-  $effect(() => {
-    ids = getThingIds(ctx, OFFSET_CHECKPOINTS);
-  });
+  if (typeof window !== 'undefined') {
+    $effect(() => {
+      ids = getThingIds(ctx, OFFSET_CHECKPOINTS);
+    });
+  }
   return {
     get current() {
       return ids;
@@ -677,9 +695,11 @@ export const usePersister = (id?: Id): AnyPersister | undefined =>
 export const usePersisterIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
   let ids = $state<Ids>(getThingIds(ctx, OFFSET_PERSISTER));
-  $effect(() => {
-    ids = getThingIds(ctx, OFFSET_PERSISTER);
-  });
+  if (typeof window !== 'undefined') {
+    $effect(() => {
+      ids = getThingIds(ctx, OFFSET_PERSISTER);
+    });
+  }
   return {
     get current() {
       return ids;
@@ -698,9 +718,11 @@ export const useSynchronizer = (id?: Id): Synchronizer | undefined =>
 export const useSynchronizerIds = (): {readonly current: Ids} => {
   const ctx = getCtx();
   let ids = $state<Ids>(getThingIds(ctx, OFFSET_SYNCHRONIZER));
-  $effect(() => {
-    ids = getThingIds(ctx, OFFSET_SYNCHRONIZER);
-  });
+  if (typeof window !== 'undefined') {
+    $effect(() => {
+      ids = getThingIds(ctx, OFFSET_SYNCHRONIZER);
+    });
+  }
   return {
     get current() {
       return ids;
@@ -715,10 +737,12 @@ export const useSynchronizerStatus = (
 
 const injectThing = (offset: number, id: Id, thing: any): void => {
   const ctx = getCtx();
-  $effect(() => {
-    ctx[16]?.(offset, id, thing);
-    return () => ctx[17]?.(offset, id);
-  });
+  if (typeof window !== 'undefined') {
+    $effect(() => {
+      ctx[16]?.(offset, id, thing);
+      return () => ctx[17]?.(offset, id);
+    });
+  }
 };
 
 export const provideStore = (storeId: Id, store: Store): void =>

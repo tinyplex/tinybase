@@ -528,8 +528,8 @@ export function useCell(
   storeOrStoreId?: R<Store | Id | undefined>,
 ): {readonly current: CellOrUndefined};
 
-/// ui-svelte.useCellState
-export function useCellState(
+/// ui-svelte.useBindableCell
+export function useBindableCell(
   tableId: R<Id>,
   rowId: R<Id>,
   cellId: R<Id>,
@@ -563,8 +563,8 @@ export function useValue(
   storeOrStoreId?: R<Store | Id | undefined>,
 ): {readonly current: ValueOrUndefined};
 
-/// ui-svelte.useValueState
-export function useValueState(
+/// ui-svelte.useBindableValue
+export function useBindableValue(
   valueId: R<Id>,
   storeOrStoreId?: R<Store | Id | undefined>,
 ): {get current(): ValueOrUndefined; set current(v: Value)};

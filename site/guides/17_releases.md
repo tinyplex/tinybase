@@ -30,15 +30,15 @@ underlying TinyBase data changes:
 <p>Color: {color.current}</p>
 ```
 
-The `useCellState` and `useValueState` hooks go further, providing a writable
-`current` property that pairs naturally with Svelte's `bind:` directive for
-two-way data binding:
+The `useBindableCell` and `useBindableValue` hooks go further, providing a
+writable `current` property that pairs naturally with Svelte's `bind:`
+directive for two-way data binding:
 
 ```svelte
 <script>
-  import {useCellState} from 'tinybase/ui-svelte';
+  import {useBindableCell} from 'tinybase/ui-svelte';
 
-  const color = useCellState('pets', 'fido', 'color', store);
+  const color = useBindableCell('pets', 'fido', 'color', store);
 </script>
 
 <input bind:value={color.current} />

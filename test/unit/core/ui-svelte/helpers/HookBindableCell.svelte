@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useCellState} from 'tinybase/ui-svelte';
+  import {useBindableCell} from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
   import type {Store} from 'tinybase';
   import type {Cell} from 'tinybase';
@@ -17,7 +17,7 @@
     cellId: Id;
     newValue?: Cell;
   } = $props();
-  const v = useCellState(
+  const v = useBindableCell(
     () => tableId,
     () => rowId,
     () => cellId,

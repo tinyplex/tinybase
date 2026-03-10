@@ -1308,7 +1308,7 @@
  */
 /// ui-svelte.useCell
 /**
- * The useCellState hook returns a reactive object reflecting the value of a
+ * The useBindableCell hook returns a reactive object reflecting the value of a
  * Cell, with a settable `current` property that writes back to the Store.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
@@ -1318,7 +1318,7 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useCellState
+/// ui-svelte.useBindableCell
 /**
  * The useHasValues hook returns a reactive object indicating whether any Values
  * exist in the Store, and registers a listener so that any changes to that
@@ -1371,7 +1371,7 @@
  */
 /// ui-svelte.useValue
 /**
- * The useValueState hook returns a reactive object reflecting the value of a
+ * The useBindableValue hook returns a reactive object reflecting the value of a
  * Value, with a settable `current` property that writes back to the Store.
  * @param valueId The Id of the Value (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
@@ -1379,7 +1379,7 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useValueState
+/// ui-svelte.useBindableValue
 /**
  * The useStore hook returns the default Store from the current Provider context
  * (or a named Store if an Id is provided).

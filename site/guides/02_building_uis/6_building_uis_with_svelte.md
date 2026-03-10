@@ -85,19 +85,19 @@ the hook re-fetches automatically when it changes:
 Without the `() => rowId` wrapper, changing the `rowId` prop would not cause
 the hook to re-read the Store for the new row.
 
-## Writable State With useCellState
+## Writable State With useBindableCell
 
-The `useCellState` and `useValueState` hooks expose a writable `current`
+The `useBindableCell` and `useBindableValue` hooks expose a writable `current`
 property. Writing to it calls `store.setCell()` or `store.setValue()`. This
 makes Svelte's `bind:value` directive work for two-way binding:
 
 ```svelte
 <script>
   import {createStore} from 'tinybase';
-  import {useCellState} from 'tinybase/ui-svelte';
+  import {useBindableCell} from 'tinybase/ui-svelte';
 
   const store = createStore().setCell('pets', 'fido', 'color', 'brown');
-  const color = useCellState('pets', 'fido', 'color', store);
+  const color = useBindableCell('pets', 'fido', 'color', store);
 </script>
 
 <input bind:value={color.current} />
