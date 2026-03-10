@@ -19,7 +19,7 @@ import {beforeEach, describe, expect, test} from 'vitest';
 
 import HookCell from './helpers/HookCell.svelte';
 import HookCellIds from './helpers/HookCellIds.svelte';
-import HookCellState from './helpers/HookCellState.svelte';
+import HookBindableCell from './helpers/HookBindableCell.svelte';
 import HookCheckpointIds from './helpers/HookCheckpointIds.svelte';
 import HookGoBackwardCallback from './helpers/HookGoBackwardCallback.svelte';
 import HookGoForwardCallback from './helpers/HookGoForwardCallback.svelte';
@@ -57,7 +57,7 @@ import HookTables from './helpers/HookTables.svelte';
 import HookValue from './helpers/HookValue.svelte';
 import HookValueIds from './helpers/HookValueIds.svelte';
 import HookValues from './helpers/HookValues.svelte';
-import HookValueState from './helpers/HookValueState.svelte';
+import HookBindableValue from './helpers/HookBindableValue.svelte';
 
 let store: Store;
 
@@ -426,9 +426,9 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useCellState', async () => {
+  test('useBindableCell', async () => {
     store.setCell('t1', 'r1', 'c1', 0);
-    const {container, unmount} = render(HookCellState, {
+    const {container, unmount} = render(HookBindableCell, {
       props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', newValue: 1},
     });
     expect(container.textContent).toContain('0');
@@ -520,9 +520,9 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useValueState', async () => {
+  test('useBindableValue', async () => {
     store.setValues({v1: false});
-    const {container, unmount} = render(HookValueState, {
+    const {container, unmount} = render(HookBindableValue, {
       props: {store, valueId: 'v1', newValue: true},
     });
     expect(container.textContent).toContain('false');

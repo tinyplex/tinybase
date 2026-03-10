@@ -405,8 +405,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     readonly current: NoInfer<CellOrUndefined<Schemas[0], TableId, CellId>>;
   };
 
-  /// ui-svelte.useCellState
-  useCellState: <
+  /// ui-svelte.useBindableCell
+  useBindableCell: <
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
@@ -458,8 +458,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     readonly current: NoInfer<DefaultedValueFromSchema<Schemas[1], ValueId>>;
   };
 
-  /// ui-svelte.useValueState
-  useValueState: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
+  /// ui-svelte.useBindableValue
+  useBindableValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: ValueId | (() => ValueId),
     storeOrStoreId?: Store<Schemas> | Id,
   ) => {

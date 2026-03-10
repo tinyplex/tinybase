@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useValueState} from 'tinybase/ui-svelte';
+  import {useBindableValue} from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
   import type {Store} from 'tinybase';
   import type {Value} from 'tinybase';
@@ -13,7 +13,7 @@
     valueId: Id;
     newValue?: Value;
   } = $props();
-  const v = useValueState(
+  const v = useBindableValue(
     () => valueId,
     () => store,
   );
