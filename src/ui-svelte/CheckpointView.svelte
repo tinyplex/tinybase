@@ -1,15 +1,8 @@
 <script lang="ts">
-  import type {Id} from '../@types/common/index.d.ts';
-  import type {Checkpoints} from '../@types/checkpoints/index.d.ts';
+  import type {CheckpointViewProps} from '../@types/ui-svelte/index.d.ts';
   import {useCheckpoint} from './hooks.svelte.ts';
 
-  type Props = {
-    checkpointId: Id;
-    checkpoints?: Checkpoints | Id;
-    debugIds?: boolean;
-  };
-
-  let {checkpointId, checkpoints, debugIds}: Props = $props();
+  let {checkpointId, checkpoints, debugIds}: CheckpointViewProps = $props();
   const checkpoint = useCheckpoint(
     () => checkpointId,
     () => checkpoints,

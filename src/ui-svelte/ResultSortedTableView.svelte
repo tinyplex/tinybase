@@ -1,22 +1,8 @@
 <script lang="ts">
-  import type {Id} from '../@types/common/index.d.ts';
-  import type {Queries} from '../@types/queries/index.d.ts';
-  import type {Snippet} from 'svelte';
+  import type {ResultSortedTableViewProps} from '../@types/ui-svelte/index.d.ts';
   import {useResultSortedRowIds} from './hooks.svelte.ts';
   import ResultRowView from './ResultRowView.svelte';
   import ItemsView from './common/ItemsView.svelte';
-
-  type Props = {
-    queryId: Id;
-    cellId?: Id;
-    descending?: boolean;
-    offset?: number;
-    limit?: number;
-    queries?: Queries | Id;
-    separator?: Snippet<[]>;
-    debugIds?: boolean;
-    row?: Snippet<[rowId: Id]>;
-  };
 
   let {
     queryId,
@@ -28,7 +14,7 @@
     separator,
     debugIds,
     row,
-  }: Props = $props();
+  }: ResultSortedTableViewProps = $props();
 
   const rowIds = useResultSortedRowIds(
     () => queryId,

@@ -1,23 +1,18 @@
 <script lang="ts">
-  import type {Id, Ids} from '../@types/common/index.d.ts';
-  import type {Store} from '../@types/store/index.d.ts';
-  import type {Snippet} from 'svelte';
+  import type {RowViewProps} from '../@types/ui-svelte/index.d.ts';
   import {useCellIds} from './hooks.svelte.ts';
   import CellView from './CellView.svelte';
   import ItemsView from './common/ItemsView.svelte';
 
-  type Props = {
-    tableId: Id;
-    rowId: Id;
-    store?: Store | Id;
-    customCellIds?: Ids;
-    separator?: Snippet<[]>;
-    debugIds?: boolean;
-    cell?: Snippet<[cellId: Id]>;
-  };
-
-  let {tableId, rowId, store, customCellIds, separator, debugIds, cell}: Props =
-    $props();
+  let {
+    tableId,
+    rowId,
+    store,
+    customCellIds,
+    separator,
+    debugIds,
+    cell,
+  }: RowViewProps = $props();
 
   const defaultCellIds = useCellIds(
     () => tableId,

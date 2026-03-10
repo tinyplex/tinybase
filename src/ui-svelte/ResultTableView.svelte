@@ -1,20 +1,11 @@
 <script lang="ts">
-  import type {Id} from '../@types/common/index.d.ts';
-  import type {Queries} from '../@types/queries/index.d.ts';
-  import type {Snippet} from 'svelte';
+  import type {ResultTableViewProps} from '../@types/ui-svelte/index.d.ts';
   import {useResultRowIds} from './hooks.svelte.ts';
   import ResultRowView from './ResultRowView.svelte';
   import ItemsView from './common/ItemsView.svelte';
 
-  type Props = {
-    queryId: Id;
-    queries?: Queries | Id;
-    separator?: Snippet<[]>;
-    debugIds?: boolean;
-    row?: Snippet<[rowId: Id]>;
-  };
-
-  let {queryId, queries, separator, debugIds, row}: Props = $props();
+  let {queryId, queries, separator, debugIds, row}: ResultTableViewProps =
+    $props();
   const rowIds = useResultRowIds(
     () => queryId,
     () => queries,

@@ -1,8 +1,7 @@
 <script lang="ts">
   import {getContext} from 'svelte';
-  import type {Id} from '../@types/common/index.d.ts';
+  import type {LinkedRowsViewProps} from '../@types/ui-svelte/index.d.ts';
   import type {Relationships} from '../@types/relationships/index.d.ts';
-  import type {Snippet} from 'svelte';
   import {isString} from '../common/other.ts';
   import {objGet} from '../common/obj.ts';
   import type {ContextValue} from './context.ts';
@@ -11,15 +10,6 @@
   import RowView from './RowView.svelte';
   import ItemsView from './common/ItemsView.svelte';
 
-  type Props = {
-    relationshipId: Id;
-    firstRowId: Id;
-    relationships?: Relationships | Id;
-    separator?: Snippet<[]>;
-    debugIds?: boolean;
-    row?: Snippet<[rowId: Id]>;
-  };
-
   let {
     relationshipId,
     firstRowId,
@@ -27,7 +17,7 @@
     separator,
     debugIds,
     row,
-  }: Props = $props();
+  }: LinkedRowsViewProps = $props();
 
   // Capture context at init to resolve Relationships → store/tableId
   const _ctx: ContextValue = (getContext(TINYBASE_CONTEXT_KEY) ??
