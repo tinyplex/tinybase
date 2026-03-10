@@ -3,7 +3,7 @@ import type {
   CellView as CellViewDecl,
 } from '../@types/ui-react/index.d.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
-import {wrap} from './common/wrap.tsx';
+import {Wrap} from './common/Wrap.tsx';
 import {useCell} from './hooks.ts';
 
 export const CellView: typeof CellViewDecl = ({
@@ -12,10 +12,8 @@ export const CellView: typeof CellViewDecl = ({
   cellId,
   store,
   debugIds,
-}: CellProps): any =>
-  wrap(
-    EMPTY_STRING + (useCell(tableId, rowId, cellId, store) ?? EMPTY_STRING),
-    undefined,
-    debugIds,
-    cellId,
-  );
+}: CellProps): any => (
+  <Wrap debugIds={debugIds} id={cellId}>
+    {EMPTY_STRING + (useCell(tableId, rowId, cellId, store) ?? EMPTY_STRING)}
+  </Wrap>
+);

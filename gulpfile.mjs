@@ -341,11 +341,7 @@ const lintCheckFiles = async (dir) => {
       : {...prettierConfig, filepath: filePath};
     const code = await promises.readFile(filePath, UTF8);
     if (!(await prettier.check(code, fileConfig))) {
-      writeFileSync(
-        filePath,
-        await prettier.format(code, fileConfig),
-        UTF8,
-      );
+      writeFileSync(filePath, await prettier.format(code, fileConfig), UTF8);
     }
   });
 

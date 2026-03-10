@@ -3,7 +3,7 @@ import type {
   ResultCellView as ResultCellViewDecl,
 } from '../@types/ui-react/index.d.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
-import {wrap} from './common/wrap.tsx';
+import {Wrap} from './common/Wrap.tsx';
 import {useResultCell} from './hooks.ts';
 
 export const ResultCellView: typeof ResultCellViewDecl = ({
@@ -12,11 +12,9 @@ export const ResultCellView: typeof ResultCellViewDecl = ({
   cellId,
   queries,
   debugIds,
-}: ResultCellProps): any =>
-  wrap(
-    EMPTY_STRING +
-      (useResultCell(queryId, rowId, cellId, queries) ?? EMPTY_STRING),
-    undefined,
-    debugIds,
-    cellId,
-  );
+}: ResultCellProps): any => (
+  <Wrap debugIds={debugIds} id={cellId}>
+    {EMPTY_STRING +
+      (useResultCell(queryId, rowId, cellId, queries) ?? EMPTY_STRING)}
+  </Wrap>
+);

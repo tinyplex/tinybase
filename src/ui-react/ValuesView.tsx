@@ -4,7 +4,7 @@ import type {
 } from '../@types/ui-react/index.d.ts';
 import {arrayMap} from '../common/array.ts';
 import {getProps} from '../common/react.ts';
-import {wrap} from './common/wrap.tsx';
+import {Wrap} from './common/Wrap.tsx';
 import {useValueIds} from './hooks.ts';
 import {ValueView} from './ValueView.tsx';
 
@@ -14,9 +14,9 @@ export const ValuesView: typeof ValuesViewDecl = ({
   getValueComponentProps,
   separator,
   debugIds,
-}: ValuesProps): any =>
-  wrap(
-    arrayMap(useValueIds(store), (valueId) => (
+}: ValuesProps): any => (
+  <Wrap separator={separator}>
+    {arrayMap(useValueIds(store), (valueId) => (
       <Value
         key={valueId}
         {...getProps(getValueComponentProps, valueId)}
@@ -24,6 +24,6 @@ export const ValuesView: typeof ValuesViewDecl = ({
         store={store}
         debugIds={debugIds}
       />
-    )),
-    separator,
-  );
+    ))}
+  </Wrap>
+);
