@@ -32,13 +32,15 @@
   // Capture context at init to resolve Relationships → store/tableId
   const _ctx: ContextValue = (getContext(TINYBASE_CONTEXT_KEY) ??
     []) as ContextValue;
-  const _resolvedRels = $derived(
+  const _resolvedRelationships = $derived(
     (isString(relationships)
       ? objGet(_ctx[7] as any, relationships)
       : (relationships ?? _ctx[6])) as Relationships | undefined,
   );
-  const _store = $derived(_resolvedRels?.getStore());
-  const _tableId = $derived(_resolvedRels?.getLocalTableId(relationshipId));
+  const _store = $derived(_resolvedRelationships?.getStore());
+  const _tableId = $derived(
+    _resolvedRelationships?.getLocalTableId(relationshipId),
+  );
 
   const rowIds = useLocalRowIds(
     () => relationshipId,

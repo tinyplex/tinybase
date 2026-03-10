@@ -69,7 +69,7 @@ This is the `R<T>` type: `T | (() => T)`.
 
 Passing a getter function that reads a `$state` variable makes the hook
 reactively track which data it fetches. In this example, `rowId` is a prop and
-the hook refetches automatically when it changes:
+the hook re-fetches automatically when it changes:
 
 ```svelte
 <script>
