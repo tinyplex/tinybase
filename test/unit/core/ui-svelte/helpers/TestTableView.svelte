@@ -1,7 +1,6 @@
 <script lang="ts">
   import {TableView, RowView, CellView} from 'tinybase/ui-svelte';
-  import type {Id} from 'tinybase';
-  import type {Store} from 'tinybase';
+  import type {Id, Store} from 'tinybase';
 
   let {
     tableId,

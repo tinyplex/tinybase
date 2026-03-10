@@ -332,21 +332,19 @@ const lintCheckFiles = async (dir) => {
   const prettierConfig = await getPrettierConfig();
 
   const filePaths = [];
-  ['.ts', '.tsx', '.js', '.d.ts'].forEach((extension) =>
+  ['.ts', '.tsx', '.js', '.d.ts', '.svelte'].forEach((extension) =>
     forEachDeepFile(dir, (filePath) => filePaths.push(filePath), extension),
   );
   await allOf(filePaths, async (filePath) => {
+    const fileConfig = filePath.endsWith('.svelte')
+      ? {...prettierConfig, filepath: filePath, parser: undefined}
+      : {...prettierConfig, filepath: filePath};
     const code = await promises.readFile(filePath, UTF8);
-    if (
-      !(await prettier.check(code, {...prettierConfig, filepath: filePath}))
-    ) {
+    if (!(await prettier.check(code, fileConfig))) {
       writeFileSync(
         filePath,
-        await prettier.format(
-          code,
-          {...prettierConfig, filepath: filePath},
-          UTF8,
-        ),
+        await prettier.format(code, fileConfig),
+        UTF8,
       );
     }
   });
