@@ -2,7 +2,7 @@
   import {getContext} from 'svelte';
   import type {RemoteRowViewProps} from '../@types/ui-svelte/index.d.ts';
   import type {Relationships} from '../@types/relationships/index.d.ts';
-  import {isString} from '../common/other.ts';
+  import {isString, isUndefined} from '../common/other.ts';
   import {objGet} from '../common/obj.ts';
   import type {ContextValue} from './context.ts';
   import {TINYBASE_CONTEXT_KEY} from './context.ts';
@@ -38,7 +38,7 @@
 </script>
 
 {#if debugIds}{localRowId}:{'{'}
-{/if}{#if remoteRowId.current !== undefined}{#if row}{@render row(
+{/if}{#if !isUndefined(remoteRowId.current)}{#if row}{@render row(
       remoteRowId.current,
     )}{:else if _tableId}<RowView
       tableId={_tableId}
