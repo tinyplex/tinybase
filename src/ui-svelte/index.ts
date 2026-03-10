@@ -12,9 +12,10 @@ export {
   provideRelationships,
   provideStore,
   provideSynchronizer,
+  useBindableCell,
+  useBindableValue,
   useCell,
   useCellIds,
-  useBindableCell,
   useCheckpoint,
   useCheckpointIds,
   useCheckpoints,
@@ -72,7 +73,6 @@ export {
   useTables,
   useValue,
   useValueIds,
-  useBindableValue,
   useValues,
 } from './hooks.svelte.ts';
 export {default as IndexView} from './IndexView.svelte';

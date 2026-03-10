@@ -62,8 +62,9 @@ const EMPTY_ARR: Ids = [];
 const EMPTY_OBJ: Record<string, never> = {};
 const DEFAULT_CHECKPOINT_IDS: CheckpointIds = [EMPTY_ARR, undefined, EMPTY_ARR];
 
-type R<T> = T | (() => T);
-const rv = <T>(v: R<T>): T => (typeof v === 'function' ? (v as () => T)() : v);
+type MaybeGetter<T> = T | (() => T);
+const get = <T>(v: MaybeGetter<T>): T =>
+  typeof v === 'function' ? (v as () => T)() : v;
 
 const OFFSET_STORE = 0;
 const OFFSET_METRICS = 1;
@@ -113,35 +114,39 @@ const mkGetter = <T>(
 const getThingIds = (ctx: ContextValue, offset: number): Ids =>
   objIds((ctx[offset * 2 + 1] ?? EMPTY_OBJ) as IdObj<unknown>);
 
-const sg = (s?: R<Store | Id | undefined>): (() => Store | undefined) =>
-  mkGetter<Store>(OFFSET_STORE, s as any);
+const sg = (
+  s?: MaybeGetter<Store | Id | undefined>,
+): (() => Store | undefined) => mkGetter<Store>(OFFSET_STORE, s as any);
 
-const mg = (m?: R<Metrics | Id | undefined>): (() => Metrics | undefined) =>
-  mkGetter<Metrics>(OFFSET_METRICS, m as any);
+const mg = (
+  m?: MaybeGetter<Metrics | Id | undefined>,
+): (() => Metrics | undefined) => mkGetter<Metrics>(OFFSET_METRICS, m as any);
 
-const ig = (i?: R<Indexes | Id | undefined>): (() => Indexes | undefined) =>
-  mkGetter<Indexes>(OFFSET_INDEXES, i as any);
+const ig = (
+  i?: MaybeGetter<Indexes | Id | undefined>,
+): (() => Indexes | undefined) => mkGetter<Indexes>(OFFSET_INDEXES, i as any);
 
 const rg = (
-  r?: R<Relationships | Id | undefined>,
+  r?: MaybeGetter<Relationships | Id | undefined>,
 ): (() => Relationships | undefined) =>
   mkGetter<Relationships>(OFFSET_RELATIONSHIPS, r as any);
 
-const qg = (q?: R<Queries | Id | undefined>): (() => Queries | undefined) =>
-  mkGetter<Queries>(OFFSET_QUERIES, q as any);
+const qg = (
+  q?: MaybeGetter<Queries | Id | undefined>,
+): (() => Queries | undefined) => mkGetter<Queries>(OFFSET_QUERIES, q as any);
 
 const cg = (
-  c?: R<Checkpoints | Id | undefined>,
+  c?: MaybeGetter<Checkpoints | Id | undefined>,
 ): (() => Checkpoints | undefined) =>
   mkGetter<Checkpoints>(OFFSET_CHECKPOINTS, c as any);
 
 const pg = (
-  p?: R<AnyPersister | Id | undefined>,
+  p?: MaybeGetter<AnyPersister | Id | undefined>,
 ): (() => AnyPersister | undefined) =>
   mkGetter<AnyPersister>(OFFSET_PERSISTER, p as any);
 
 const syg = (
-  sy?: R<Synchronizer | Id | undefined>,
+  sy?: MaybeGetter<Synchronizer | Id | undefined>,
 ): (() => Synchronizer | undefined) =>
   mkGetter<Synchronizer>(OFFSET_SYNCHRONIZER, sy as any);
 
@@ -201,137 +206,141 @@ const useHas = (
   );
 
 export const useHasTables = (
-  storeOrStoreId?: R<Store | Id | undefined>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} => useHas(sg(storeOrStoreId), TABLES);
 
 export const useTables = (
-  storeOrStoreId?: R<Store | Id | undefined>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Tables} =>
   useGet(sg(storeOrStoreId), TABLES, EMPTY_OBJ as Tables);
 
 export const useTableIds = (
-  storeOrStoreId?: R<Store | Id | undefined>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} => useGet(sg(storeOrStoreId), TABLE_IDS, EMPTY_ARR);
 
 export const useHasTable = (
-  tableId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(sg(storeOrStoreId), TABLE, () => [rv(tableId)]);
+  useHas(sg(storeOrStoreId), TABLE, () => [get(tableId)]);
 
 export const useTable = (
-  tableId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Table} =>
-  useGet(sg(storeOrStoreId), TABLE, EMPTY_OBJ as Table, () => [rv(tableId)]);
+  useGet(sg(storeOrStoreId), TABLE, EMPTY_OBJ as Table, () => [get(tableId)]);
 
 export const useTableCellIds = (
-  tableId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(sg(storeOrStoreId), TABLE + CELL_IDS, EMPTY_ARR, () => [rv(tableId)]);
+  useGet(sg(storeOrStoreId), TABLE + CELL_IDS, EMPTY_ARR, () => [get(tableId)]);
 
 export const useHasTableCell = (
-  tableId: R<Id>,
-  cellId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  cellId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(sg(storeOrStoreId), TABLE + CELL, () => [rv(tableId), rv(cellId)]);
+  useHas(sg(storeOrStoreId), TABLE + CELL, () => [get(tableId), get(cellId)]);
 
 export const useRowCount = (
-  tableId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: number} =>
-  useGet(sg(storeOrStoreId), ROW_COUNT, 0, () => [rv(tableId)]);
+  useGet(sg(storeOrStoreId), ROW_COUNT, 0, () => [get(tableId)]);
 
 export const useRowIds = (
-  tableId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(sg(storeOrStoreId), ROW_IDS, EMPTY_ARR, () => [rv(tableId)]);
+  useGet(sg(storeOrStoreId), ROW_IDS, EMPTY_ARR, () => [get(tableId)]);
 
 export const useSortedRowIds = (
-  tableId: R<Id>,
-  cellId?: R<Id | undefined>,
-  descending: R<boolean> = false,
-  offset: R<number> = 0,
-  limit?: R<number | undefined>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  cellId?: MaybeGetter<Id | undefined>,
+  descending: MaybeGetter<boolean> = false,
+  offset: MaybeGetter<number> = 0,
+  limit?: MaybeGetter<number | undefined>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(sg(storeOrStoreId), SORTED_ROW_IDS, EMPTY_ARR, () => [
-    rv(tableId),
-    rv(cellId),
-    rv(descending),
-    rv(offset),
-    rv(limit),
+    get(tableId),
+    get(cellId),
+    get(descending),
+    get(offset),
+    get(limit),
   ]);
 
 export const useHasRow = (
-  tableId: R<Id>,
-  rowId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(sg(storeOrStoreId), ROW, () => [rv(tableId), rv(rowId)]);
+  useHas(sg(storeOrStoreId), ROW, () => [get(tableId), get(rowId)]);
 
 export const useRow = (
-  tableId: R<Id>,
-  rowId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Row} =>
   useGet(sg(storeOrStoreId), ROW, EMPTY_OBJ as Row, () => [
-    rv(tableId),
-    rv(rowId),
+    get(tableId),
+    get(rowId),
   ]);
 
 export const useCellIds = (
-  tableId: R<Id>,
-  rowId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(sg(storeOrStoreId), CELL_IDS, EMPTY_ARR, () => [
-    rv(tableId),
-    rv(rowId),
+    get(tableId),
+    get(rowId),
   ]);
 
 export const useHasCell = (
-  tableId: R<Id>,
-  rowId: R<Id>,
-  cellId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  cellId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(sg(storeOrStoreId), CELL, () => [rv(tableId), rv(rowId), rv(cellId)]);
+  useHas(sg(storeOrStoreId), CELL, () => [
+    get(tableId),
+    get(rowId),
+    get(cellId),
+  ]);
 
 export const useCell = (
-  tableId: R<Id>,
-  rowId: R<Id>,
-  cellId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  cellId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: CellOrUndefined} =>
   useGet(sg(storeOrStoreId), CELL, undefined, () => [
-    rv(tableId),
-    rv(rowId),
-    rv(cellId),
+    get(tableId),
+    get(rowId),
+    get(cellId),
   ]);
 
 export const useBindableCell = (
-  tableId: R<Id>,
-  rowId: R<Id>,
-  cellId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  cellId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {get current(): CellOrUndefined; set current(v: Cell)} => {
   const getS = sg(storeOrStoreId);
   let value = $state<CellOrUndefined>(
-    getS()?.getCell(rv(tableId), rv(rowId), rv(cellId)),
+    getS()?.getCell(get(tableId), get(rowId), get(cellId)),
   );
   if (typeof window !== 'undefined') {
     $effect(() => {
       const s: any = getS();
-      const t = rv(tableId),
-        r = rv(rowId),
-        c = rv(cellId);
+      const t = get(tableId),
+        r = get(rowId),
+        c = get(cellId);
       value = s?.getCell(t, r, c);
       const listenerId = s?.addCellListener(t, r, c, (st: any) => {
-        value = st.getCell(rv(tableId), rv(rowId), rv(cellId));
+        value = st.getCell(get(tableId), get(rowId), get(cellId));
       });
       return () => s?.delListener?.(listenerId);
     });
@@ -341,49 +350,49 @@ export const useBindableCell = (
       return value;
     },
     set current(v: Cell) {
-      getS()?.setCell(rv(tableId), rv(rowId), rv(cellId), v);
+      getS()?.setCell(get(tableId), get(rowId), get(cellId), v);
     },
   };
 };
 
 export const useHasValues = (
-  storeOrStoreId?: R<Store | Id | undefined>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} => useHas(sg(storeOrStoreId), VALUES);
 
 export const useValues = (
-  storeOrStoreId?: R<Store | Id | undefined>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Values} =>
   useGet(sg(storeOrStoreId), VALUES, EMPTY_OBJ as Values);
 
 export const useValueIds = (
-  storeOrStoreId?: R<Store | Id | undefined>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} => useGet(sg(storeOrStoreId), VALUE_IDS, EMPTY_ARR);
 
 export const useHasValue = (
-  valueId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  valueId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(sg(storeOrStoreId), VALUE, () => [rv(valueId)]);
+  useHas(sg(storeOrStoreId), VALUE, () => [get(valueId)]);
 
 export const useValue = (
-  valueId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  valueId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: ValueOrUndefined} =>
-  useGet(sg(storeOrStoreId), VALUE, undefined, () => [rv(valueId)]);
+  useGet(sg(storeOrStoreId), VALUE, undefined, () => [get(valueId)]);
 
 export const useBindableValue = (
-  valueId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  valueId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {get current(): ValueOrUndefined; set current(v: Value)} => {
   const getS = sg(storeOrStoreId);
-  let value = $state<ValueOrUndefined>(getS()?.getValue(rv(valueId)));
+  let value = $state<ValueOrUndefined>(getS()?.getValue(get(valueId)));
   if (typeof window !== 'undefined') {
     $effect(() => {
       const s: any = getS();
-      const vid = rv(valueId);
+      const vid = get(valueId);
       value = s?.getValue(vid);
       const listenerId = s?.addValueListener(vid, (st: any) => {
-        value = st.getValue(rv(valueId));
+        value = st.getValue(get(valueId));
       });
       return () => s?.delListener?.(listenerId);
     });
@@ -393,7 +402,7 @@ export const useBindableValue = (
       return value;
     },
     set current(v: Value) {
-      getS()?.setValue(rv(valueId), v);
+      getS()?.setValue(get(valueId), v);
     },
   };
 };
@@ -435,15 +444,15 @@ export const useMetricsIds = (): {readonly current: Ids} => {
 };
 
 export const useMetricIds = (
-  metricsOrMetricsId?: R<Metrics | Id | undefined>,
+  metricsOrMetricsId?: MaybeGetter<Metrics | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(mg(metricsOrMetricsId), METRIC + IDS, EMPTY_ARR);
 
 export const useMetric = (
-  metricId: R<Id>,
-  metricsOrMetricsId?: R<Metrics | Id | undefined>,
+  metricId: MaybeGetter<Id>,
+  metricsOrMetricsId?: MaybeGetter<Metrics | Id | undefined>,
 ): {readonly current: number | undefined} =>
-  useGet(mg(metricsOrMetricsId), METRIC, undefined, () => [rv(metricId)]);
+  useGet(mg(metricsOrMetricsId), METRIC, undefined, () => [get(metricId)]);
 
 export const useIndexes = (id?: Id): Indexes | undefined =>
   resolveByOffset(id, OFFSET_INDEXES) as Indexes | undefined;
@@ -464,24 +473,24 @@ export const useIndexesIds = (): {readonly current: Ids} => {
 };
 
 export const useIndexIds = (
-  indexesOrIndexesId?: R<Indexes | Id | undefined>,
+  indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(ig(indexesOrIndexesId), INDEX + IDS, EMPTY_ARR);
 
 export const useSliceIds = (
-  indexId: R<Id>,
-  indexesOrIndexesId?: R<Indexes | Id | undefined>,
+  indexId: MaybeGetter<Id>,
+  indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(ig(indexesOrIndexesId), SLICE + IDS, EMPTY_ARR, () => [rv(indexId)]);
+  useGet(ig(indexesOrIndexesId), SLICE + IDS, EMPTY_ARR, () => [get(indexId)]);
 
 export const useSliceRowIds = (
-  indexId: R<Id>,
-  sliceId: R<Id>,
-  indexesOrIndexesId?: R<Indexes | Id | undefined>,
+  indexId: MaybeGetter<Id>,
+  sliceId: MaybeGetter<Id>,
+  indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(ig(indexesOrIndexesId), SLICE + ROW_IDS, EMPTY_ARR, () => [
-    rv(indexId),
-    rv(sliceId),
+    get(indexId),
+    get(sliceId),
   ]);
 
 export const useQueries = (id?: Id): Queries | undefined =>
@@ -503,86 +512,86 @@ export const useQueriesIds = (): {readonly current: Ids} => {
 };
 
 export const useQueryIds = (
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(qg(queriesOrQueriesId), QUERY + IDS, EMPTY_ARR);
 
 export const useResultTable = (
-  queryId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Table} =>
   useGet(qg(queriesOrQueriesId), RESULT + TABLE, EMPTY_OBJ as Table, () => [
-    rv(queryId),
+    get(queryId),
   ]);
 
 export const useResultTableCellIds = (
-  queryId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(qg(queriesOrQueriesId), RESULT + TABLE + CELL_IDS, EMPTY_ARR, () => [
-    rv(queryId),
+    get(queryId),
   ]);
 
 export const useResultRowCount = (
-  queryId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: number} =>
-  useGet(qg(queriesOrQueriesId), RESULT + ROW_COUNT, 0, () => [rv(queryId)]);
+  useGet(qg(queriesOrQueriesId), RESULT + ROW_COUNT, 0, () => [get(queryId)]);
 
 export const useResultRowIds = (
-  queryId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(qg(queriesOrQueriesId), RESULT + ROW_IDS, EMPTY_ARR, () => [
-    rv(queryId),
+    get(queryId),
   ]);
 
 export const useResultSortedRowIds = (
-  queryId: R<Id>,
-  cellId?: R<Id | undefined>,
-  descending: R<boolean> = false,
-  offset: R<number> = 0,
-  limit?: R<number | undefined>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  cellId?: MaybeGetter<Id | undefined>,
+  descending: MaybeGetter<boolean> = false,
+  offset: MaybeGetter<number> = 0,
+  limit?: MaybeGetter<number | undefined>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(qg(queriesOrQueriesId), RESULT + SORTED_ROW_IDS, EMPTY_ARR, () => [
-    rv(queryId),
-    rv(cellId),
-    rv(descending),
-    rv(offset),
-    rv(limit),
+    get(queryId),
+    get(cellId),
+    get(descending),
+    get(offset),
+    get(limit),
   ]);
 
 export const useResultRow = (
-  queryId: R<Id>,
-  rowId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Row} =>
   useGet(qg(queriesOrQueriesId), RESULT + ROW, EMPTY_OBJ as Row, () => [
-    rv(queryId),
-    rv(rowId),
+    get(queryId),
+    get(rowId),
   ]);
 
 export const useResultCellIds = (
-  queryId: R<Id>,
-  rowId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(qg(queriesOrQueriesId), RESULT + CELL_IDS, EMPTY_ARR, () => [
-    rv(queryId),
-    rv(rowId),
+    get(queryId),
+    get(rowId),
   ]);
 
 export const useResultCell = (
-  queryId: R<Id>,
-  rowId: R<Id>,
-  cellId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  cellId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Cell | undefined} =>
   useGet(qg(queriesOrQueriesId), RESULT + CELL, undefined, () => [
-    rv(queryId),
-    rv(rowId),
-    rv(cellId),
+    get(queryId),
+    get(rowId),
+    get(cellId),
   ]);
 
 export const useRelationships = (id?: Id): Relationships | undefined =>
@@ -604,40 +613,40 @@ export const useRelationshipsIds = (): {readonly current: Ids} => {
 };
 
 export const useRelationshipIds = (
-  relationshipsOrRelationshipsId?: R<Relationships | Id | undefined>,
+  relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(rg(relationshipsOrRelationshipsId), RELATIONSHIP + IDS, EMPTY_ARR);
 
 export const useRemoteRowId = (
-  relationshipId: R<Id>,
-  localRowId: R<Id>,
-  relationshipsOrRelationshipsId?: R<Relationships | Id | undefined>,
+  relationshipId: MaybeGetter<Id>,
+  localRowId: MaybeGetter<Id>,
+  relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Id | undefined} =>
   useGet(rg(relationshipsOrRelationshipsId), REMOTE_ROW_ID, undefined, () => [
-    rv(relationshipId),
-    rv(localRowId),
+    get(relationshipId),
+    get(localRowId),
   ]);
 
 export const useLocalRowIds = (
-  relationshipId: R<Id>,
-  remoteRowId: R<Id>,
-  relationshipsOrRelationshipsId?: R<Relationships | Id | undefined>,
+  relationshipId: MaybeGetter<Id>,
+  remoteRowId: MaybeGetter<Id>,
+  relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(rg(relationshipsOrRelationshipsId), LOCAL + ROW_IDS, EMPTY_ARR, () => [
-    rv(relationshipId),
-    rv(remoteRowId),
+    get(relationshipId),
+    get(remoteRowId),
   ]);
 
 export const useLinkedRowIds = (
-  relationshipId: R<Id>,
-  firstRowId: R<Id>,
-  relationshipsOrRelationshipsId?: R<Relationships | Id | undefined>,
+  relationshipId: MaybeGetter<Id>,
+  firstRowId: MaybeGetter<Id>,
+  relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Ids} =>
   useGet(
     rg(relationshipsOrRelationshipsId),
     LINKED + ROW_IDS,
     EMPTY_ARR,
-    () => [rv(relationshipId), rv(firstRowId)],
+    () => [get(relationshipId), get(firstRowId)],
   );
 
 export const useCheckpoints = (id?: Id): Checkpoints | undefined =>
@@ -659,7 +668,7 @@ export const useCheckpointsIds = (): {readonly current: Ids} => {
 };
 
 export const useCheckpointIds = (
-  checkpointsOrCheckpointsId?: R<Checkpoints | Id | undefined>,
+  checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): {readonly current: CheckpointIds} =>
   useGet(
     cg(checkpointsOrCheckpointsId),
@@ -668,22 +677,22 @@ export const useCheckpointIds = (
   );
 
 export const useCheckpoint = (
-  checkpointId: R<Id>,
-  checkpointsOrCheckpointsId?: R<Checkpoints | Id | undefined>,
+  checkpointId: MaybeGetter<Id>,
+  checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): {readonly current: string | undefined} =>
   useGet(cg(checkpointsOrCheckpointsId), CHECKPOINT, undefined, () => [
-    rv(checkpointId),
+    get(checkpointId),
   ]);
 
 export const useGoBackwardCallback = (
-  checkpointsOrCheckpointsId?: R<Checkpoints | Id | undefined>,
+  checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): (() => void) => {
   const getC = cg(checkpointsOrCheckpointsId);
   return () => getC()?.goBackward();
 };
 
 export const useGoForwardCallback = (
-  checkpointsOrCheckpointsId?: R<Checkpoints | Id | undefined>,
+  checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): (() => void) => {
   const getC = cg(checkpointsOrCheckpointsId);
   return () => getC()?.goForward();

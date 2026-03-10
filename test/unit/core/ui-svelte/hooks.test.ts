@@ -17,9 +17,10 @@ import {
 } from 'tinybase';
 import {beforeEach, describe, expect, test} from 'vitest';
 
+import HookBindableCell from './helpers/HookBindableCell.svelte';
+import HookBindableValue from './helpers/HookBindableValue.svelte';
 import HookCell from './helpers/HookCell.svelte';
 import HookCellIds from './helpers/HookCellIds.svelte';
-import HookBindableCell from './helpers/HookBindableCell.svelte';
 import HookCheckpointIds from './helpers/HookCheckpointIds.svelte';
 import HookGoBackwardCallback from './helpers/HookGoBackwardCallback.svelte';
 import HookGoForwardCallback from './helpers/HookGoForwardCallback.svelte';
@@ -57,7 +58,6 @@ import HookTables from './helpers/HookTables.svelte';
 import HookValue from './helpers/HookValue.svelte';
 import HookValueIds from './helpers/HookValueIds.svelte';
 import HookValues from './helpers/HookValues.svelte';
-import HookBindableValue from './helpers/HookBindableValue.svelte';
 
 let store: Store;
 

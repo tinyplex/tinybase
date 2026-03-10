@@ -21,7 +21,7 @@ import type {
 import type {Synchronizer} from '../synchronizers/index.d.ts';
 
 /// ui-svelte.R
-export type R<T> = T | (() => T);
+export type MaybeGetter<T> = T | (() => T);
 
 /// ui-svelte.ProviderProps
 export type ProviderProps = {
@@ -430,143 +430,143 @@ export declare const ValueView: Component<ValueViewProps>;
 export declare const ValuesView: Component<ValuesViewProps>;
 
 /// ui-svelte.useHasTables
-export function useHasTables(storeOrStoreId?: R<Store | Id | undefined>): {
+export function useHasTables(storeOrStoreId?: MaybeGetter<Store | Id | undefined>): {
   readonly current: boolean;
 };
 
 /// ui-svelte.useTables
-export function useTables(storeOrStoreId?: R<Store | Id | undefined>): {
+export function useTables(storeOrStoreId?: MaybeGetter<Store | Id | undefined>): {
   readonly current: Tables;
 };
 
 /// ui-svelte.useTableIds
-export function useTableIds(storeOrStoreId?: R<Store | Id | undefined>): {
+export function useTableIds(storeOrStoreId?: MaybeGetter<Store | Id | undefined>): {
   readonly current: Ids;
 };
 
 /// ui-svelte.useHasTable
 export function useHasTable(
-  tableId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean};
 
 /// ui-svelte.useTable
 export function useTable(
-  tableId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Table};
 
 /// ui-svelte.useTableCellIds
 export function useTableCellIds(
-  tableId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useHasTableCell
 export function useHasTableCell(
-  tableId: R<Id>,
-  cellId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  cellId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean};
 
 /// ui-svelte.useRowCount
 export function useRowCount(
-  tableId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: number};
 
 /// ui-svelte.useRowIds
 export function useRowIds(
-  tableId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useSortedRowIds
 export function useSortedRowIds(
-  tableId: R<Id>,
-  cellId?: R<Id | undefined>,
-  descending?: R<boolean>,
-  offset?: R<number>,
-  limit?: R<number | undefined>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  cellId?: MaybeGetter<Id | undefined>,
+  descending?: MaybeGetter<boolean>,
+  offset?: MaybeGetter<number>,
+  limit?: MaybeGetter<number | undefined>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useHasRow
 export function useHasRow(
-  tableId: R<Id>,
-  rowId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean};
 
 /// ui-svelte.useRow
 export function useRow(
-  tableId: R<Id>,
-  rowId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Row};
 
 /// ui-svelte.useCellIds
 export function useCellIds(
-  tableId: R<Id>,
-  rowId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useHasCell
 export function useHasCell(
-  tableId: R<Id>,
-  rowId: R<Id>,
-  cellId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  cellId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean};
 
 /// ui-svelte.useCell
 export function useCell(
-  tableId: R<Id>,
-  rowId: R<Id>,
-  cellId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  cellId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: CellOrUndefined};
 
 /// ui-svelte.useBindableCell
 export function useBindableCell(
-  tableId: R<Id>,
-  rowId: R<Id>,
-  cellId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  tableId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  cellId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {get current(): CellOrUndefined; set current(v: Cell)};
 
 /// ui-svelte.useHasValues
-export function useHasValues(storeOrStoreId?: R<Store | Id | undefined>): {
+export function useHasValues(storeOrStoreId?: MaybeGetter<Store | Id | undefined>): {
   readonly current: boolean;
 };
 
 /// ui-svelte.useValues
-export function useValues(storeOrStoreId?: R<Store | Id | undefined>): {
+export function useValues(storeOrStoreId?: MaybeGetter<Store | Id | undefined>): {
   readonly current: Values;
 };
 
 /// ui-svelte.useValueIds
-export function useValueIds(storeOrStoreId?: R<Store | Id | undefined>): {
+export function useValueIds(storeOrStoreId?: MaybeGetter<Store | Id | undefined>): {
   readonly current: Ids;
 };
 
 /// ui-svelte.useHasValue
 export function useHasValue(
-  valueId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  valueId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean};
 
 /// ui-svelte.useValue
 export function useValue(
-  valueId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  valueId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: ValueOrUndefined};
 
 /// ui-svelte.useBindableValue
 export function useBindableValue(
-  valueId: R<Id>,
-  storeOrStoreId?: R<Store | Id | undefined>,
+  valueId: MaybeGetter<Id>,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {get current(): ValueOrUndefined; set current(v: Value)};
 
 /// ui-svelte.useStore
@@ -583,15 +583,15 @@ export function useMetricsIds(): {readonly current: Ids};
 
 /// ui-svelte.useMetricIds
 export function useMetricIds(
-  metricsOrMetricsId?: R<Metrics | Id | undefined>,
+  metricsOrMetricsId?: MaybeGetter<Metrics | Id | undefined>,
 ): {
   readonly current: Ids;
 };
 
 /// ui-svelte.useMetric
 export function useMetric(
-  metricId: R<Id>,
-  metricsOrMetricsId?: R<Metrics | Id | undefined>,
+  metricId: MaybeGetter<Id>,
+  metricsOrMetricsId?: MaybeGetter<Metrics | Id | undefined>,
 ): {readonly current: number | undefined};
 
 /// ui-svelte.useIndexes
@@ -601,21 +601,21 @@ export function useIndexes(id?: Id): Indexes | undefined;
 export function useIndexesIds(): {readonly current: Ids};
 
 /// ui-svelte.useIndexIds
-export function useIndexIds(indexesOrIndexesId?: R<Indexes | Id | undefined>): {
+export function useIndexIds(indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>): {
   readonly current: Ids;
 };
 
 /// ui-svelte.useSliceIds
 export function useSliceIds(
-  indexId: R<Id>,
-  indexesOrIndexesId?: R<Indexes | Id | undefined>,
+  indexId: MaybeGetter<Id>,
+  indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useSliceRowIds
 export function useSliceRowIds(
-  indexId: R<Id>,
-  sliceId: R<Id>,
-  indexesOrIndexesId?: R<Indexes | Id | undefined>,
+  indexId: MaybeGetter<Id>,
+  sliceId: MaybeGetter<Id>,
+  indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useQueries
@@ -625,64 +625,64 @@ export function useQueries(id?: Id): Queries | undefined;
 export function useQueriesIds(): {readonly current: Ids};
 
 /// ui-svelte.useQueryIds
-export function useQueryIds(queriesOrQueriesId?: R<Queries | Id | undefined>): {
+export function useQueryIds(queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>): {
   readonly current: Ids;
 };
 
 /// ui-svelte.useResultTable
 export function useResultTable(
-  queryId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Table};
 
 /// ui-svelte.useResultTableCellIds
 export function useResultTableCellIds(
-  queryId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useResultRowCount
 export function useResultRowCount(
-  queryId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: number};
 
 /// ui-svelte.useResultRowIds
 export function useResultRowIds(
-  queryId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useResultSortedRowIds
 export function useResultSortedRowIds(
-  queryId: R<Id>,
-  cellId?: R<Id | undefined>,
-  descending?: R<boolean>,
-  offset?: R<number>,
-  limit?: R<number | undefined>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  cellId?: MaybeGetter<Id | undefined>,
+  descending?: MaybeGetter<boolean>,
+  offset?: MaybeGetter<number>,
+  limit?: MaybeGetter<number | undefined>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useResultRow
 export function useResultRow(
-  queryId: R<Id>,
-  rowId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Row};
 
 /// ui-svelte.useResultCellIds
 export function useResultCellIds(
-  queryId: R<Id>,
-  rowId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useResultCell
 export function useResultCell(
-  queryId: R<Id>,
-  rowId: R<Id>,
-  cellId: R<Id>,
-  queriesOrQueriesId?: R<Queries | Id | undefined>,
+  queryId: MaybeGetter<Id>,
+  rowId: MaybeGetter<Id>,
+  cellId: MaybeGetter<Id>,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: CellOrUndefined};
 
 /// ui-svelte.useRelationships
@@ -693,28 +693,28 @@ export function useRelationshipsIds(): {readonly current: Ids};
 
 /// ui-svelte.useRelationshipIds
 export function useRelationshipIds(
-  relationshipsOrRelationshipsId?: R<Relationships | Id | undefined>,
+  relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useRemoteRowId
 export function useRemoteRowId(
-  relationshipId: R<Id>,
-  localRowId: R<Id>,
-  relationshipsOrRelationshipsId?: R<Relationships | Id | undefined>,
+  relationshipId: MaybeGetter<Id>,
+  localRowId: MaybeGetter<Id>,
+  relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Id | undefined};
 
 /// ui-svelte.useLocalRowIds
 export function useLocalRowIds(
-  relationshipId: R<Id>,
-  remoteRowId: R<Id>,
-  relationshipsOrRelationshipsId?: R<Relationships | Id | undefined>,
+  relationshipId: MaybeGetter<Id>,
+  remoteRowId: MaybeGetter<Id>,
+  relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useLinkedRowIds
 export function useLinkedRowIds(
-  relationshipId: R<Id>,
-  firstRowId: R<Id>,
-  relationshipsOrRelationshipsId?: R<Relationships | Id | undefined>,
+  relationshipId: MaybeGetter<Id>,
+  firstRowId: MaybeGetter<Id>,
+  relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Ids};
 
 /// ui-svelte.useCheckpoints
@@ -725,23 +725,23 @@ export function useCheckpointsIds(): {readonly current: Ids};
 
 /// ui-svelte.useCheckpointIds
 export function useCheckpointIds(
-  checkpointsOrCheckpointsId?: R<Checkpoints | Id | undefined>,
+  checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): {readonly current: CheckpointIds};
 
 /// ui-svelte.useCheckpoint
 export function useCheckpoint(
-  checkpointId: R<Id>,
-  checkpointsOrCheckpointsId?: R<Checkpoints | Id | undefined>,
+  checkpointId: MaybeGetter<Id>,
+  checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): {readonly current: string | undefined};
 
 /// ui-svelte.useGoBackwardCallback
 export function useGoBackwardCallback(
-  checkpointsOrCheckpointsId?: R<Checkpoints | Id | undefined>,
+  checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): () => void;
 
 /// ui-svelte.useGoForwardCallback
 export function useGoForwardCallback(
-  checkpointsOrCheckpointsId?: R<Checkpoints | Id | undefined>,
+  checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): () => void;
 
 /// ui-svelte.usePersister
