@@ -1,8 +1,6 @@
 <script lang="ts">
   import {useBindableCell} from 'tinybase/ui-svelte';
-  import type {Id} from 'tinybase';
-  import type {Store} from 'tinybase';
-  import type {Cell} from 'tinybase';
+  import type {Id, Store, Cell} from 'tinybase';
 
   let {
     store,

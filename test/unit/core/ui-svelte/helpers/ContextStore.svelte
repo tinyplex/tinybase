@@ -1,7 +1,6 @@
 <script lang="ts">
   import {Provider} from 'tinybase/ui-svelte';
-  import type {Store} from 'tinybase';
-  import type {Id} from 'tinybase';
+  import type {Store, Id} from 'tinybase';
   import ContextStoreChild from './ContextStoreChild.svelte';
 
   let {

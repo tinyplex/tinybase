@@ -1,7 +1,6 @@
 <script lang="ts">
   import {ValuesView, ValueView} from 'tinybase/ui-svelte';
-  import type {Store} from 'tinybase';
-  import type {Id} from 'tinybase';
+  import type {Store, Id} from 'tinybase';
 
   let {
     store,

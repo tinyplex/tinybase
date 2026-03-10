@@ -1,8 +1,6 @@
 <script lang="ts">
   import {useBindableValue} from 'tinybase/ui-svelte';
-  import type {Id} from 'tinybase';
-  import type {Store} from 'tinybase';
-  import type {Value} from 'tinybase';
+  import type {Id, Store, Value} from 'tinybase';
 
   let {
     store,
