@@ -1,4 +1,30 @@
-<link rel="preload" as="image" href="https://beta.tinybase.org/inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://beta.tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v8-0">v8.0</h1><h2 id="object-and-array-types">Object And Array Types</h2><p>This release extends the range of types that a <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> or <a href="https://beta.tinybase.org/api/store/type-aliases/store/value/"><code>Value</code></a> can hold. Previously, TinyBase supported <code>string</code>, <code>number</code>, <code>boolean</code>, and (since v7.0) <code>null</code>. Now you can also store plain JavaScript <strong>objects</strong> and <strong>arrays</strong> directly in a <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a>.</p>
+<link rel="preload" as="image" href="https://beta.tinybase.org/inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/partykit.gif"><link rel="preload" as="image" href="https://beta.tinybase.org/ui-react-dom.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/store-inspector.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/car-analysis.webp"><link rel="preload" as="image" href="https://beta.tinybase.org/movie-database.webp"><p>This is a reverse chronological list of the major TinyBase releases, with highlighted features.</p><hr><h1 id="v8-1">v8.1</h1><h2 id="svelte-5-support">Svelte 5 Support</h2><p>This release introduces the new <code>tinybase/ui-svelte</code> module, bringing native Svelte 5 runes-based reactive bindings to TinyBase. The module provides hooks and view components for building reactive UIs without any additional state management.</p><p>Hooks return a reactive <code>{ current }</code> object backed by Svelte&#x27;s <code>$state</code> rune. Any component that reads <code>hook.current</code> will automatically re-render when the underlying TinyBase data changes:</p>
+
+```svelte
+<script>
+  import {createStore} from 'tinybase';
+  import {useCell} from 'tinybase/ui-svelte';
+
+  const store = createStore().setCell('pets', 'fido', 'color', 'brown');
+  const color = useCell('pets', 'fido', 'color', store);
+</script>
+
+<p>Color: {color.current}</p>
+```
+
+<p>The <code>useCellState</code> and <code>useValueState</code> hooks go further, providing a writable <code>current</code> property that pairs naturally with Svelte&#x27;s <code>bind:</code> directive for two-way data binding:</p>
+
+```svelte
+<script>
+  import {useCellState} from 'tinybase/ui-svelte';
+
+  const color = useCellState('pets', 'fido', 'color', store);
+</script>
+
+<input bind:value={color.current} />
+```
+
+<p>All hooks accept reactive getter functions as parameters — the <code>R&lt;T&gt;</code> type (<code>T | (() =&gt; T)</code>) — so passing <code>() =&gt; rowId</code> from a <code>$state</code> variable causes the hook to reactively track which row it reads, without unmounting and remounting.</p><p>The module further includes a <code>Provider</code> component and context helpers (<code>useStore</code>, <code>useMetrics</code>, etc.) for sharing TinyBase objects across a component tree, and ~23 built-in view components (<code>CellView</code>, <code>RowView</code>, <code>TablesView</code>, and more) for assembling UIs directly from <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a> data.</p><p>Read more in the new <a href="https://beta.tinybase.org/guides/building-uis/building-uis-with-svelte/">Building UIs With Svelte</a> guide.</p><hr><h1 id="v8-0">v8.0</h1><h2 id="object-and-array-types">Object And Array Types</h2><p>This release extends the range of types that a <a href="https://beta.tinybase.org/api/store/type-aliases/store/cell/"><code>Cell</code></a> or <a href="https://beta.tinybase.org/api/store/type-aliases/store/value/"><code>Value</code></a> can hold. Previously, TinyBase supported <code>string</code>, <code>number</code>, <code>boolean</code>, and (since v7.0) <code>null</code>. Now you can also store plain JavaScript <strong>objects</strong> and <strong>arrays</strong> directly in a <a href="https://beta.tinybase.org/api/the-essentials/creating-stores/store/"><code>Store</code></a>.</p>
 
 ```js
 import {createStore} from 'tinybase';
