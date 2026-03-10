@@ -9,8 +9,8 @@
  * re-render when data changes.
  *
  * Hook parameters accept either plain values or reactive getter functions
- * (`MaybeGetter<T> = T | (() => T)`), so passing `() => tableId` from a `let`-bound
- * Svelte prop makes the hook re-execute whenever the prop changes.
+ * (`MaybeGetter<T> = T | (() => T)`), so passing `() => tableId` from a
+ * `let`-bound Svelte prop makes the hook re-execute whenever the prop changes.
  *
  * The components in this module provide a further abstraction over those hooks
  * to ease the composition of user interfaces that use TinyBase.
@@ -21,8 +21,8 @@
  */
 /// ui-svelte
 /**
- * The R type represents a value that can be provided either as a plain value
- * or as a reactive getter function.
+ * The MaybeGetter type represents a value that can be provided either as a
+ * plain value or as a reactive getter function.
  *
  * When a getter function is provided to a hook, the hook's internal `$effect`
  * will re-run whenever the getter's reactive dependencies change. This is the
@@ -30,37 +30,139 @@
  * @category Identity
  * @since v8.1.0
  */
-/// ui-svelte.R
+/// ui-svelte.MaybeGetter
 /**
- * The ProviderProps type describes the props of the Provider component.
+ * ProviderProps props are used with the Provider component, so that Store,
+ * Metrics, Indexes, Relationships, Queries, and Checkpoints objects can be
+ * passed into the context of a Svelte 5 application and used throughout.
+ *
+ * One of each type of object can be provided as a default within the context.
+ * Additionally, multiple of each type of object can be provided in an Id-keyed
+ * map to the `___ById` props.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.ProviderProps
 {
-  /// ProviderProps.store
-  /// ProviderProps.storesById
-  /// ProviderProps.metrics
-  /// ProviderProps.metricsById
-  /// ProviderProps.indexes
-  /// ProviderProps.indexesById
-  /// ProviderProps.relationships
-  /// ProviderProps.relationshipsById
-  /// ProviderProps.queries
-  /// ProviderProps.queriesById
-  /// ProviderProps.checkpoints
-  /// ProviderProps.checkpointsById
-  /// ProviderProps.persister
-  /// ProviderProps.persistersById
-  /// ProviderProps.synchronizer
-  /// ProviderProps.synchronizersById
+  /**
+   * A default single Store object that will be available within the Provider
+   * context.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.store
+  /**
+   * An object containing multiple Store objects that will be available within
+   * the Provider context by their Id.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.storesById
+  /**
+   * A default single Metrics object that will be available within the Provider
+   * context.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.metrics
+  /**
+   * An object containing multiple Metrics objects that will be available within
+   * the Provider context by their Id.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.metricsById
+  /**
+   * A default single Indexes object that will be available within the Provider
+   * context.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.indexes
+  /**
+   * An object containing multiple Indexes objects that will be available within
+   * the Provider context by their Id.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.indexesById
+  /**
+   * A default single Relationships object that will be available within the
+   * Provider context.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.relationships
+  /**
+   * An object containing multiple Relationships objects that will be available
+   * within the Provider context by their Id.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.relationshipsById
+  /**
+   * A default single Queries object that will be available within the Provider
+   * context.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.queries
+  /**
+   * An object containing multiple Queries objects that will be available within
+   * the Provider context by their Id.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.queriesById
+  /**
+   * A default single Checkpoints object that will be available within the
+   * Provider context.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.checkpoints
+  /**
+   * An object containing multiple Checkpoints objects that will be available
+   * within the Provider context by their Id.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.checkpointsById
+  /**
+   * A default single Persister object that will be available within the
+   * Provider context.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.persister
+  /**
+   * An object containing multiple Persister objects that will be available
+   * within the Provider context by their Id.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.persistersById
+  /**
+   * A default single Synchronizer object that will be available within the
+   * Provider context.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.synchronizer
+  /**
+   * An object containing multiple Synchronizer objects that will be available
+   * within the Provider context by their Id.
+   * @category Prop
+   * @since v8.1.0
+   */
+  /// ui-svelte.ProviderProps.synchronizersById
   /**
    * The `children` prop of a ProviderProps object — the app subtree that will
    * have access to the provided context.
-   * @category Props
+   * @category Prop
    * @since v8.1.0
    */
-  /// ProviderProps.children
+  /// ui-svelte.ProviderProps.children
 }
 /**
  * The CellViewProps type describes the props of the CellView component.
@@ -74,31 +176,31 @@
    * @category Props
    * @since v8.1.0
    */
-  /// CellViewProps.tableId
+  /// ui-svelte.CellViewProps.tableId
   /**
    * The `rowId` prop of a CellViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// CellViewProps.rowId
+  /// ui-svelte.CellViewProps.rowId
   /**
    * The `cellId` prop of a CellViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// CellViewProps.cellId
+  /// ui-svelte.CellViewProps.cellId
   /**
    * The `store` prop of a CellViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// CellViewProps.store
+  /// ui-svelte.CellViewProps.store
   /**
    * The `debugIds` prop of a CellViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// CellViewProps.debugIds
+  /// ui-svelte.CellViewProps.debugIds
 }
 /**
  * The ValueViewProps type describes the props of the ValueView component.
@@ -112,19 +214,19 @@
    * @category Props
    * @since v8.1.0
    */
-  /// ValueViewProps.valueId
+  /// ui-svelte.ValueViewProps.valueId
   /**
    * The `store` prop of a ValueViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ValueViewProps.store
+  /// ui-svelte.ValueViewProps.store
   /**
    * The `debugIds` prop of a ValueViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ValueViewProps.debugIds
+  /// ui-svelte.ValueViewProps.debugIds
 }
 /**
  * The MetricViewProps type describes the props of the MetricView component.
@@ -138,19 +240,19 @@
    * @category Props
    * @since v8.1.0
    */
-  /// MetricViewProps.metricId
+  /// ui-svelte.MetricViewProps.metricId
   /**
    * The `metrics` prop of a MetricViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// MetricViewProps.metrics
+  /// ui-svelte.MetricViewProps.metrics
   /**
    * The `debugIds` prop of a MetricViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// MetricViewProps.debugIds
+  /// ui-svelte.MetricViewProps.debugIds
 }
 /**
  * The CheckpointViewProps type describes the props of the CheckpointView
@@ -165,19 +267,19 @@
    * @category Props
    * @since v8.1.0
    */
-  /// CheckpointViewProps.checkpointId
+  /// ui-svelte.CheckpointViewProps.checkpointId
   /**
    * The `checkpoints` prop of a CheckpointViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// CheckpointViewProps.checkpoints
+  /// ui-svelte.CheckpointViewProps.checkpoints
   /**
    * The `debugIds` prop of a CheckpointViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// CheckpointViewProps.debugIds
+  /// ui-svelte.CheckpointViewProps.debugIds
 }
 /**
  * The RowViewProps type describes the props of the RowView component.
@@ -191,43 +293,43 @@
    * @category Props
    * @since v8.1.0
    */
-  /// RowViewProps.tableId
+  /// ui-svelte.RowViewProps.tableId
   /**
    * The `rowId` prop of a RowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// RowViewProps.rowId
+  /// ui-svelte.RowViewProps.rowId
   /**
    * The `store` prop of a RowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// RowViewProps.store
+  /// ui-svelte.RowViewProps.store
   /**
    * The `customCellIds` prop of a RowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// RowViewProps.customCellIds
+  /// ui-svelte.RowViewProps.customCellIds
   /**
    * The `separator` prop of a RowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// RowViewProps.separator
+  /// ui-svelte.RowViewProps.separator
   /**
    * The `debugIds` prop of a RowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// RowViewProps.debugIds
+  /// ui-svelte.RowViewProps.debugIds
   /**
    * The `cell` snippet prop of a RowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// RowViewProps.cell
+  /// ui-svelte.RowViewProps.cell
 }
 /**
  * The TableViewProps type describes the props of the TableView component.
@@ -241,37 +343,37 @@
    * @category Props
    * @since v8.1.0
    */
-  /// TableViewProps.tableId
+  /// ui-svelte.TableViewProps.tableId
   /**
    * The `store` prop of a TableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// TableViewProps.store
+  /// ui-svelte.TableViewProps.store
   /**
    * The `customCellIds` prop of a TableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// TableViewProps.customCellIds
+  /// ui-svelte.TableViewProps.customCellIds
   /**
    * The `separator` prop of a TableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// TableViewProps.separator
+  /// ui-svelte.TableViewProps.separator
   /**
    * The `debugIds` prop of a TableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// TableViewProps.debugIds
+  /// ui-svelte.TableViewProps.debugIds
   /**
    * The `row` snippet prop of a TableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// TableViewProps.row
+  /// ui-svelte.TableViewProps.row
 }
 /**
  * The SortedTableViewProps type describes the props of the SortedTableView
@@ -286,61 +388,61 @@
    * @category Props
    * @since v8.1.0
    */
-  /// SortedTableViewProps.tableId
+  /// ui-svelte.SortedTableViewProps.tableId
   /**
    * The `cellId` prop of a SortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SortedTableViewProps.cellId
+  /// ui-svelte.SortedTableViewProps.cellId
   /**
    * The `descending` prop of a SortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SortedTableViewProps.descending
+  /// ui-svelte.SortedTableViewProps.descending
   /**
    * The `offset` prop of a SortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SortedTableViewProps.offset
+  /// ui-svelte.SortedTableViewProps.offset
   /**
    * The `limit` prop of a SortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SortedTableViewProps.limit
+  /// ui-svelte.SortedTableViewProps.limit
   /**
    * The `store` prop of a SortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SortedTableViewProps.store
+  /// ui-svelte.SortedTableViewProps.store
   /**
    * The `customCellIds` prop of a SortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SortedTableViewProps.customCellIds
+  /// ui-svelte.SortedTableViewProps.customCellIds
   /**
    * The `separator` prop of a SortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SortedTableViewProps.separator
+  /// ui-svelte.SortedTableViewProps.separator
   /**
    * The `debugIds` prop of a SortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SortedTableViewProps.debugIds
+  /// ui-svelte.SortedTableViewProps.debugIds
   /**
    * The `row` snippet prop of a SortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SortedTableViewProps.row
+  /// ui-svelte.SortedTableViewProps.row
 }
 /**
  * The TablesViewProps type describes the props of the TablesView component.
@@ -354,25 +456,25 @@
    * @category Props
    * @since v8.1.0
    */
-  /// TablesViewProps.store
+  /// ui-svelte.TablesViewProps.store
   /**
    * The `separator` prop of a TablesViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// TablesViewProps.separator
+  /// ui-svelte.TablesViewProps.separator
   /**
    * The `debugIds` prop of a TablesViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// TablesViewProps.debugIds
+  /// ui-svelte.TablesViewProps.debugIds
   /**
    * The `table` snippet prop of a TablesViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// TablesViewProps.table
+  /// ui-svelte.TablesViewProps.table
 }
 /**
  * The ValuesViewProps type describes the props of the ValuesView component.
@@ -386,25 +488,25 @@
    * @category Props
    * @since v8.1.0
    */
-  /// ValuesViewProps.store
+  /// ui-svelte.ValuesViewProps.store
   /**
    * The `separator` prop of a ValuesViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ValuesViewProps.separator
+  /// ui-svelte.ValuesViewProps.separator
   /**
    * The `debugIds` prop of a ValuesViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ValuesViewProps.debugIds
+  /// ui-svelte.ValuesViewProps.debugIds
   /**
    * The `value` snippet prop of a ValuesViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ValuesViewProps.value
+  /// ui-svelte.ValuesViewProps.value
 }
 /**
  * The IndexViewProps type describes the props of the IndexView component.
@@ -418,31 +520,31 @@
    * @category Props
    * @since v8.1.0
    */
-  /// IndexViewProps.indexId
+  /// ui-svelte.IndexViewProps.indexId
   /**
    * The `indexes` prop of an IndexViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// IndexViewProps.indexes
+  /// ui-svelte.IndexViewProps.indexes
   /**
    * The `separator` prop of an IndexViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// IndexViewProps.separator
+  /// ui-svelte.IndexViewProps.separator
   /**
    * The `debugIds` prop of an IndexViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// IndexViewProps.debugIds
+  /// ui-svelte.IndexViewProps.debugIds
   /**
    * The `slice` snippet prop of an IndexViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// IndexViewProps.slice
+  /// ui-svelte.IndexViewProps.slice
 }
 /**
  * The SliceViewProps type describes the props of the SliceView component.
@@ -456,37 +558,37 @@
    * @category Props
    * @since v8.1.0
    */
-  /// SliceViewProps.indexId
+  /// ui-svelte.SliceViewProps.indexId
   /**
    * The `sliceId` prop of a SliceViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SliceViewProps.sliceId
+  /// ui-svelte.SliceViewProps.sliceId
   /**
    * The `indexes` prop of a SliceViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SliceViewProps.indexes
+  /// ui-svelte.SliceViewProps.indexes
   /**
    * The `separator` prop of a SliceViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SliceViewProps.separator
+  /// ui-svelte.SliceViewProps.separator
   /**
    * The `debugIds` prop of a SliceViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SliceViewProps.debugIds
+  /// ui-svelte.SliceViewProps.debugIds
   /**
    * The `row` snippet prop of a SliceViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// SliceViewProps.row
+  /// ui-svelte.SliceViewProps.row
 }
 /**
  * The RemoteRowViewProps type describes the props of the RemoteRowView
@@ -501,31 +603,31 @@
    * @category Props
    * @since v8.1.0
    */
-  /// RemoteRowViewProps.relationshipId
+  /// ui-svelte.RemoteRowViewProps.relationshipId
   /**
    * The `localRowId` prop of a RemoteRowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// RemoteRowViewProps.localRowId
+  /// ui-svelte.RemoteRowViewProps.localRowId
   /**
    * The `relationships` prop of a RemoteRowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// RemoteRowViewProps.relationships
+  /// ui-svelte.RemoteRowViewProps.relationships
   /**
    * The `debugIds` prop of a RemoteRowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// RemoteRowViewProps.debugIds
+  /// ui-svelte.RemoteRowViewProps.debugIds
   /**
    * The `row` snippet prop of a RemoteRowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// RemoteRowViewProps.row
+  /// ui-svelte.RemoteRowViewProps.row
 }
 /**
  * The LocalRowsViewProps type describes the props of the LocalRowsView
@@ -540,37 +642,37 @@
    * @category Props
    * @since v8.1.0
    */
-  /// LocalRowsViewProps.relationshipId
+  /// ui-svelte.LocalRowsViewProps.relationshipId
   /**
    * The `remoteRowId` prop of a LocalRowsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// LocalRowsViewProps.remoteRowId
+  /// ui-svelte.LocalRowsViewProps.remoteRowId
   /**
    * The `relationships` prop of a LocalRowsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// LocalRowsViewProps.relationships
+  /// ui-svelte.LocalRowsViewProps.relationships
   /**
    * The `separator` prop of a LocalRowsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// LocalRowsViewProps.separator
+  /// ui-svelte.LocalRowsViewProps.separator
   /**
    * The `debugIds` prop of a LocalRowsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// LocalRowsViewProps.debugIds
+  /// ui-svelte.LocalRowsViewProps.debugIds
   /**
    * The `row` snippet prop of a LocalRowsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// LocalRowsViewProps.row
+  /// ui-svelte.LocalRowsViewProps.row
 }
 /**
  * The LinkedRowsViewProps type describes the props of the LinkedRowsView
@@ -585,37 +687,37 @@
    * @category Props
    * @since v8.1.0
    */
-  /// LinkedRowsViewProps.relationshipId
+  /// ui-svelte.LinkedRowsViewProps.relationshipId
   /**
    * The `firstRowId` prop of a LinkedRowsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// LinkedRowsViewProps.firstRowId
+  /// ui-svelte.LinkedRowsViewProps.firstRowId
   /**
    * The `relationships` prop of a LinkedRowsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// LinkedRowsViewProps.relationships
+  /// ui-svelte.LinkedRowsViewProps.relationships
   /**
    * The `separator` prop of a LinkedRowsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// LinkedRowsViewProps.separator
+  /// ui-svelte.LinkedRowsViewProps.separator
   /**
    * The `debugIds` prop of a LinkedRowsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// LinkedRowsViewProps.debugIds
+  /// ui-svelte.LinkedRowsViewProps.debugIds
   /**
    * The `row` snippet prop of a LinkedRowsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// LinkedRowsViewProps.row
+  /// ui-svelte.LinkedRowsViewProps.row
 }
 /**
  * The ResultCellViewProps type describes the props of the ResultCellView
@@ -630,31 +732,31 @@
    * @category Props
    * @since v8.1.0
    */
-  /// ResultCellViewProps.queryId
+  /// ui-svelte.ResultCellViewProps.queryId
   /**
    * The `rowId` prop of a ResultCellViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultCellViewProps.rowId
+  /// ui-svelte.ResultCellViewProps.rowId
   /**
    * The `cellId` prop of a ResultCellViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultCellViewProps.cellId
+  /// ui-svelte.ResultCellViewProps.cellId
   /**
    * The `queries` prop of a ResultCellViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultCellViewProps.queries
+  /// ui-svelte.ResultCellViewProps.queries
   /**
    * The `debugIds` prop of a ResultCellViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultCellViewProps.debugIds
+  /// ui-svelte.ResultCellViewProps.debugIds
 }
 /**
  * The ResultRowViewProps type describes the props of the ResultRowView
@@ -669,37 +771,37 @@
    * @category Props
    * @since v8.1.0
    */
-  /// ResultRowViewProps.queryId
+  /// ui-svelte.ResultRowViewProps.queryId
   /**
    * The `rowId` prop of a ResultRowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultRowViewProps.rowId
+  /// ui-svelte.ResultRowViewProps.rowId
   /**
    * The `queries` prop of a ResultRowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultRowViewProps.queries
+  /// ui-svelte.ResultRowViewProps.queries
   /**
    * The `separator` prop of a ResultRowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultRowViewProps.separator
+  /// ui-svelte.ResultRowViewProps.separator
   /**
    * The `debugIds` prop of a ResultRowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultRowViewProps.debugIds
+  /// ui-svelte.ResultRowViewProps.debugIds
   /**
    * The `cell` snippet prop of a ResultRowViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultRowViewProps.cell
+  /// ui-svelte.ResultRowViewProps.cell
 }
 /**
  * The ResultTableViewProps type describes the props of the ResultTableView
@@ -714,31 +816,31 @@
    * @category Props
    * @since v8.1.0
    */
-  /// ResultTableViewProps.queryId
+  /// ui-svelte.ResultTableViewProps.queryId
   /**
    * The `queries` prop of a ResultTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultTableViewProps.queries
+  /// ui-svelte.ResultTableViewProps.queries
   /**
    * The `separator` prop of a ResultTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultTableViewProps.separator
+  /// ui-svelte.ResultTableViewProps.separator
   /**
    * The `debugIds` prop of a ResultTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultTableViewProps.debugIds
+  /// ui-svelte.ResultTableViewProps.debugIds
   /**
    * The `row` snippet prop of a ResultTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultTableViewProps.row
+  /// ui-svelte.ResultTableViewProps.row
 }
 /**
  * The ResultSortedTableViewProps type describes the props of the
@@ -753,55 +855,55 @@
    * @category Props
    * @since v8.1.0
    */
-  /// ResultSortedTableViewProps.queryId
+  /// ui-svelte.ResultSortedTableViewProps.queryId
   /**
    * The `cellId` prop of a ResultSortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultSortedTableViewProps.cellId
+  /// ui-svelte.ResultSortedTableViewProps.cellId
   /**
    * The `descending` prop of a ResultSortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultSortedTableViewProps.descending
+  /// ui-svelte.ResultSortedTableViewProps.descending
   /**
    * The `offset` prop of a ResultSortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultSortedTableViewProps.offset
+  /// ui-svelte.ResultSortedTableViewProps.offset
   /**
    * The `limit` prop of a ResultSortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultSortedTableViewProps.limit
+  /// ui-svelte.ResultSortedTableViewProps.limit
   /**
    * The `queries` prop of a ResultSortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultSortedTableViewProps.queries
+  /// ui-svelte.ResultSortedTableViewProps.queries
   /**
    * The `separator` prop of a ResultSortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultSortedTableViewProps.separator
+  /// ui-svelte.ResultSortedTableViewProps.separator
   /**
    * The `debugIds` prop of a ResultSortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultSortedTableViewProps.debugIds
+  /// ui-svelte.ResultSortedTableViewProps.debugIds
   /**
    * The `row` snippet prop of a ResultSortedTableViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ResultSortedTableViewProps.row
+  /// ui-svelte.ResultSortedTableViewProps.row
 }
 /**
  * The BackwardCheckpointsViewProps type describes the props of the
@@ -816,25 +918,25 @@
    * @category Props
    * @since v8.1.0
    */
-  /// BackwardCheckpointsViewProps.checkpoints
+  /// ui-svelte.BackwardCheckpointsViewProps.checkpoints
   /**
    * The `separator` prop of a BackwardCheckpointsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// BackwardCheckpointsViewProps.separator
+  /// ui-svelte.BackwardCheckpointsViewProps.separator
   /**
    * The `debugIds` prop of a BackwardCheckpointsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// BackwardCheckpointsViewProps.debugIds
+  /// ui-svelte.BackwardCheckpointsViewProps.debugIds
   /**
    * The `checkpoint` snippet prop of a BackwardCheckpointsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// BackwardCheckpointsViewProps.checkpoint
+  /// ui-svelte.BackwardCheckpointsViewProps.checkpoint
 }
 /**
  * The ForwardCheckpointsViewProps type describes the props of the
@@ -849,25 +951,25 @@
    * @category Props
    * @since v8.1.0
    */
-  /// ForwardCheckpointsViewProps.checkpoints
+  /// ui-svelte.ForwardCheckpointsViewProps.checkpoints
   /**
    * The `separator` prop of a ForwardCheckpointsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ForwardCheckpointsViewProps.separator
+  /// ui-svelte.ForwardCheckpointsViewProps.separator
   /**
    * The `debugIds` prop of a ForwardCheckpointsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ForwardCheckpointsViewProps.debugIds
+  /// ui-svelte.ForwardCheckpointsViewProps.debugIds
   /**
    * The `checkpoint` snippet prop of a ForwardCheckpointsViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// ForwardCheckpointsViewProps.checkpoint
+  /// ui-svelte.ForwardCheckpointsViewProps.checkpoint
 }
 /**
  * The CurrentCheckpointViewProps type describes the props of the
@@ -882,19 +984,19 @@
    * @category Props
    * @since v8.1.0
    */
-  /// CurrentCheckpointViewProps.checkpoints
+  /// ui-svelte.CurrentCheckpointViewProps.checkpoints
   /**
    * The `debugIds` prop of a CurrentCheckpointViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// CurrentCheckpointViewProps.debugIds
+  /// ui-svelte.CurrentCheckpointViewProps.debugIds
   /**
    * The `checkpoint` snippet prop of a CurrentCheckpointViewProps object.
    * @category Props
    * @since v8.1.0
    */
-  /// CurrentCheckpointViewProps.checkpoint
+  /// ui-svelte.CurrentCheckpointViewProps.checkpoint
 }
 /**
  * The Provider component wraps part of an application to make TinyBase objects
@@ -928,9 +1030,9 @@
  */
 /// ui-svelte.BackwardCheckpointsView
 /**
- * The CellView component renders the value of a single Cell in a given Row in
- * a given Table, and registers a listener so that any changes to that result
- * will cause a re-render.
+ * The CellView component renders the value of a single Cell in a given Row in a
+ * given Table, and registers a listener so that any changes to that result will
+ * cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the Cell, or nothing if not present.
  * @category Component
@@ -1067,8 +1169,8 @@
  */
 /// ui-svelte.RowView
 /**
- * The SliceView component renders the Row Ids in a named Slice in an Index,
- * and registers a listener so that any changes to that result will cause a
+ * The SliceView component renders the Row Ids in a named Slice in an Index, and
+ * registers a listener so that any changes to that result will cause a
  * re-render.
  * @param props The props for this component.
  * @returns A rendering of the Rows in the Slice.
@@ -1087,9 +1189,8 @@
  */
 /// ui-svelte.SortedTableView
 /**
- * The TableView component renders the contents of a single Table, and
- * registers a listener so that any changes to that result will cause a
- * re-render.
+ * The TableView component renders the contents of a single Table, and registers
+ * a listener so that any changes to that result will cause a re-render.
  * @param props The props for this component.
  * @returns A rendering of the Table.
  * @category Component
@@ -1190,8 +1291,8 @@
 /// ui-svelte.useTableCellIds
 /**
  * The useHasTableCell hook returns a reactive object indicating whether a
- * particular Cell is used anywhere in a Table, and registers a listener so
- * that any changes to that result will update `.current`.
+ * particular Cell is used anywhere in a Table, and registers a listener so that
+ * any changes to that result will update `.current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param cellId The Id of the Cell (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
@@ -1261,8 +1362,8 @@
  */
 /// ui-svelte.useRow
 /**
- * The useCellIds hook returns a reactive object reflecting the Ids of the
- * Cells in a Row, and registers a listener so that any changes will update
+ * The useCellIds hook returns a reactive object reflecting the Ids of the Cells
+ * in a Row, and registers a listener so that any changes will update
  * `.current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
@@ -1429,8 +1530,8 @@
  * Metric in a Metrics object, and registers a listener so that any changes to
  * that Metric will update `.current`.
  * @param metricId The Id of the Metric (or a getter returning it).
- * @param metricsOrMetricsId The Metrics object to use (plain or getter), or
- * its Id.
+ * @param metricsOrMetricsId The Metrics object to use (plain or getter), or its
+ * Id.
  * @returns A reactive object with a `current` number | undefined property.
  * @category Hook
  * @since v8.1.0
@@ -1468,8 +1569,8 @@
  * Slices in an Index, and registers a listener so that any changes will update
  * `.current`.
  * @param indexId The Id of the Index (or a getter returning it).
- * @param indexesOrIndexesId The Indexes object to use (plain or getter), or
- * its Id.
+ * @param indexesOrIndexesId The Indexes object to use (plain or getter), or its
+ * Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0
@@ -1481,8 +1582,8 @@
  * `.current`.
  * @param indexId The Id of the Index (or a getter returning it).
  * @param sliceId The Id of the Slice (or a getter returning it).
- * @param indexesOrIndexesId The Indexes object to use (plain or getter), or
- * its Id.
+ * @param indexesOrIndexesId The Indexes object to use (plain or getter), or its
+ * Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0
@@ -1520,8 +1621,8 @@
  * in a Queries object, and registers a listener so that any changes to that
  * result will update `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
- * @param queriesOrQueriesId The Queries object to use (plain or getter), or
- * its Id.
+ * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
+ * Id.
  * @returns A reactive object with a `current` Table property.
  * @category Hook
  * @since v8.1.0
@@ -1529,11 +1630,11 @@
 /// ui-svelte.useResultTable
 /**
  * The useResultTableCellIds hook returns a reactive object reflecting the Ids
- * of all Cells used across a result Table, and registers a listener so that
- * any changes will update `.current`.
+ * of all Cells used across a result Table, and registers a listener so that any
+ * changes will update `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
- * @param queriesOrQueriesId The Queries object to use (plain or getter), or
- * its Id.
+ * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
+ * Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0
@@ -1544,8 +1645,8 @@
  * Rows in a result Table, and registers a listener so that any changes will
  * update `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
- * @param queriesOrQueriesId The Queries object to use (plain or getter), or
- * its Id.
+ * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
+ * Id.
  * @returns A reactive object with a `current` number property.
  * @category Hook
  * @since v8.1.0
@@ -1556,8 +1657,8 @@
  * Rows in a result Table, and registers a listener so that any changes will
  * update `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
- * @param queriesOrQueriesId The Queries object to use (plain or getter), or
- * its Id.
+ * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
+ * Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0
@@ -1572,8 +1673,8 @@
  * @param descending Whether to sort descending (or a getter returning it).
  * @param offset The starting Row offset (or a getter returning it).
  * @param limit The maximum number of Rows (or a getter returning it).
- * @param queriesOrQueriesId The Queries object to use (plain or getter), or
- * its Id.
+ * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
+ * Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0
@@ -1585,8 +1686,8 @@
  * `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
- * @param queriesOrQueriesId The Queries object to use (plain or getter), or
- * its Id.
+ * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
+ * Id.
  * @returns A reactive object with a `current` Row property.
  * @category Hook
  * @since v8.1.0
@@ -1598,8 +1699,8 @@
  * update `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
- * @param queriesOrQueriesId The Queries object to use (plain or getter), or
- * its Id.
+ * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
+ * Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0
@@ -1612,8 +1713,8 @@
  * @param queryId The Id of the Query (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param cellId The Id of the Cell (or a getter returning it).
- * @param queriesOrQueriesId The Queries object to use (plain or getter), or
- * its Id.
+ * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
+ * Id.
  * @returns A reactive object with a `current` Cell | undefined property.
  * @category Hook
  * @since v8.1.0
@@ -1639,10 +1740,10 @@
 /// ui-svelte.useRelationshipsIds
 /**
  * The useRelationshipIds hook returns a reactive object reflecting the Ids of
- * the Relationships in a Relationships object, and registers a listener so
- * that any changes will update `.current`.
- * @param relationshipsOrRelationshipsId The Relationships object to use, or
- * its Id.
+ * the Relationships in a Relationships object, and registers a listener so that
+ * any changes will update `.current`.
+ * @param relationshipsOrRelationshipsId The Relationships object to use, or its
+ * Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0

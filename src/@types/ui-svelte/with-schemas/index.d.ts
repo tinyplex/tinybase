@@ -39,7 +39,7 @@ import type {
 import type {Synchronizer} from '../../synchronizers/with-schemas/index.d.ts';
 
 export type WithSchemas<Schemas extends OptionalSchemas> = {
-  /// ui-svelte.R
+  /// ui-svelte.MaybeGetter
   R: <T>(t: T) => T | (() => T);
 
   /// ui-svelte.ProviderProps

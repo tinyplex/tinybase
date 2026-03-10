@@ -13497,34 +13497,34 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// TablesProps.store
+  /// ui-react.TablesProps.store
   /**
    * A component for rendering each Table in the Store (to override the default
    * TableView component).
    * @category Prop
    * @since v1.0.0
    */
-  /// TablesProps.tableComponent
+  /// ui-react.TablesProps.tableComponent
   /**
    * A custom function for generating extra props for each Table component based
    * on its Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// TablesProps.getTableComponentProps
+  /// ui-react.TablesProps.getTableComponentProps
   /**
    * A component or string to separate each Table component.
    * @category Prop
    * @since v1.0.0
    */
-  /// TablesProps.separator
+  /// ui-react.TablesProps.separator
   /**
    * Whether the component should also render the Ids of each Table, and its
    * descendent objects, to assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// TablesProps.debugIds
+  /// ui-react.TablesProps.debugIds
 }
 /**
  * TableProps props are used for components that refer to a single Table in a
@@ -13539,48 +13539,48 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// TableProps.tableId
+  /// ui-react.TableProps.tableId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    * @category Prop
    * @since v1.0.0
    */
-  /// TableProps.store
+  /// ui-react.TableProps.store
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default RowView component).
    * @category Prop
    * @since v1.0.0
    */
-  /// TableProps.rowComponent
+  /// ui-react.TableProps.rowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// TableProps.getRowComponentProps
+  /// ui-react.TableProps.getRowComponentProps
   /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
    * Table's Cells in a given order.
    * @category Prop
    * @since v1.0.0
    */
-  /// TableProps.customCellIds
+  /// ui-react.TableProps.customCellIds
   /**
    * A component or string to separate each Row component.
    * @category Prop
    * @since v1.0.0
    */
-  /// TableProps.separator
+  /// ui-react.TableProps.separator
   /**
    * Whether the component should also render the Id of the Table, and its
    * descendent objects, to assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// TableProps.debugIds
+  /// ui-react.TableProps.debugIds
 }
 /**
  * SortedTableProps props are used for components that refer to a single sorted
@@ -13595,73 +13595,73 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// SortedTableProps.tableId
+  /// ui-react.SortedTableProps.tableId
   /**
    * The Id of the Cell whose values are used for the sorting. If omitted, the
    * view will sort the Row Id itself.
    * @category Prop
    * @since v1.0.0
    */
-  /// SortedTableProps.cellId
+  /// ui-react.SortedTableProps.cellId
   /**
    * Whether the sorting should be in descending order.
    * @category Prop
    * @since v1.0.0
    */
-  /// SortedTableProps.descending
+  /// ui-react.SortedTableProps.descending
   /**
    * The number of Row Ids to skip for pagination purposes.
    * @category Prop
    * @since v1.0.0
    */
-  /// SortedTableProps.offset
+  /// ui-react.SortedTableProps.offset
   /**
    * The maximum number of Row Ids to return.
    * @category Prop
    * @since v1.0.0
    */
-  /// SortedTableProps.limit
+  /// ui-react.SortedTableProps.limit
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    * @category Prop
    * @since v1.0.0
    */
-  /// SortedTableProps.store
+  /// ui-react.SortedTableProps.store
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default RowView component).
    * @category Prop
    * @since v1.0.0
    */
-  /// SortedTableProps.rowComponent
+  /// ui-react.SortedTableProps.rowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// SortedTableProps.getRowComponentProps
+  /// ui-react.SortedTableProps.getRowComponentProps
   /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
    * sorted Table's Cells in a given order.
    * @category Prop
    * @since v1.0.0
    */
-  /// SortedTableProps.customCellIds
+  /// ui-react.SortedTableProps.customCellIds
   /**
    * A component or string to separate each Row component.
    * @category Prop
    * @since v1.0.0
    */
-  /// SortedTableProps.separator
+  /// ui-react.SortedTableProps.separator
   /**
    * Whether the component should also render the Id of the Table, and its
    * descendent objects, to assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// SortedTableProps.debugIds
+  /// ui-react.SortedTableProps.debugIds
 }
 /**
  * RowProps props are used for components that refer to a single Row in a Table,
@@ -13676,54 +13676,54 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// RowProps.tableId
+  /// ui-react.RowProps.tableId
   /**
    * The Id of the Row in the Table to be rendered.
    * @category Prop
    * @since v1.0.0
    */
-  /// RowProps.rowId
+  /// ui-react.RowProps.rowId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    * @category Prop
    * @since v1.0.0
    */
-  /// RowProps.store
+  /// ui-react.RowProps.store
   /**
    * A custom component for rendering each Cell in the Row (to override the
    * default CellView component).
    * @category Prop
    * @since v1.0.0
    */
-  /// RowProps.cellComponent
+  /// ui-react.RowProps.cellComponent
   /**
    * A function for generating extra props for each custom Cell component based
    * on its Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// RowProps.getCellComponentProps
+  /// ui-react.RowProps.getCellComponentProps
   /**
    * An optional list of Cell Ids to use for rendering a prescribed set of the
    * Row's Cells in a given order.
    * @category Prop
    * @since v1.0.0
    */
-  /// RowProps.customCellIds
+  /// ui-react.RowProps.customCellIds
   /**
    * A component or string to separate each Cell component.
    * @category Prop
    * @since v1.0.0
    */
-  /// RowProps.separator
+  /// ui-react.RowProps.separator
   /**
    * Whether the component should also render the Id of the Row, and its
    * descendent objects, to assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// RowProps.debugIds
+  /// ui-react.RowProps.debugIds
 }
 /**
  * CellProps props are used for components that refer to a single Cell in a Row,
@@ -13738,33 +13738,33 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// CellProps.tableId
+  /// ui-react.CellProps.tableId
   /**
    * The Id of the Row in the Table.
    * @category Prop
    * @since v1.0.0
    */
-  /// CellProps.rowId
+  /// ui-react.CellProps.rowId
   /**
    * The Id of the Cell in the Row to be rendered.
    * @category Prop
    * @since v1.0.0
    */
-  /// CellProps.cellId
+  /// ui-react.CellProps.cellId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    * @category Prop
    * @since v1.0.0
    */
-  /// CellProps.store
+  /// ui-react.CellProps.store
   /**
    * Whether the component should also render the Id of the Cell to assist with
    * debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// CellProps.debugIds
+  /// ui-react.CellProps.debugIds
 }
 /**
  * ValuesProps props are used for components that refer to all the Values in a
@@ -13780,34 +13780,34 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// ValuesProps.store
+  /// ui-react.ValuesProps.store
   /**
    * A custom component for rendering each Value in the Store (to override the
    * default ValueView component).
    * @category Prop
    * @since v1.0.0
    */
-  /// ValuesProps.valueComponent
+  /// ui-react.ValuesProps.valueComponent
   /**
    * A function for generating extra props for each custom Value component based
    * on its Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// ValuesProps.getValueComponentProps
+  /// ui-react.ValuesProps.getValueComponentProps
   /**
    * A component or string to separate each Value component.
    * @category Prop
    * @since v1.0.0
    */
-  /// ValuesProps.separator
+  /// ui-react.ValuesProps.separator
   /**
    * Whether the component should also render the Ids of each Value to assist
    * with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// ValuesProps.debugIds
+  /// ui-react.ValuesProps.debugIds
 }
 /**
  * ValueProps props are used for components that refer to a single Value in a
@@ -13822,21 +13822,21 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// ValueProps.valueId
+  /// ui-react.ValueProps.valueId
   /**
    * The Store to be accessed: omit for the default context Store, provide an Id
    * for a named context Store, or provide an explicit reference.
    * @category Prop
    * @since v1.0.0
    */
-  /// ValueProps.store
+  /// ui-react.ValueProps.store
   /**
    * Whether the component should also render the Id of the Value to assist with
    * debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// ValueProps.debugIds
+  /// ui-react.ValueProps.debugIds
 }
 /**
  * MetricProps props are used for components that refer to a single Metric in a
@@ -13851,7 +13851,7 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// MetricProps.metricId
+  /// ui-react.MetricProps.metricId
   /**
    * The Metrics object to be accessed: omit for the default context Metrics
    * object, provide an Id for a named context Metrics object, or provide an
@@ -13859,14 +13859,14 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// MetricProps.metrics
+  /// ui-react.MetricProps.metrics
   /**
    * Whether the component should also render the Id of the Metric to assist
    * with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// MetricProps.debugIds
+  /// ui-react.MetricProps.debugIds
 }
 /**
  * IndexProps props are used for components that refer to a single Index in an
@@ -13881,7 +13881,7 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// IndexProps.indexId
+  /// ui-react.IndexProps.indexId
   /**
    * The Indexes object to be accessed: omit for the default context Indexes
    * object, provide an Id for a named context Indexes object, or provide an
@@ -13889,33 +13889,33 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// IndexProps.indexes
+  /// ui-react.IndexProps.indexes
   /**
    * A component for rendering each Slice in the Index.
    * @category Prop
    * @since v1.0.0
    */
-  /// IndexProps.sliceComponent
+  /// ui-react.IndexProps.sliceComponent
   /**
    * A function for generating extra props for each Slice component based on its
    * Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// IndexProps.getSliceComponentProps
+  /// ui-react.IndexProps.getSliceComponentProps
   /**
    * A component or string to separate each Slice component.
    * @category Prop
    * @since v1.0.0
    */
-  /// IndexProps.separator
+  /// ui-react.IndexProps.separator
   /**
    * Whether the component should also render the Id of the Index, and its
    * descendent objects, to assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// IndexProps.debugIds
+  /// ui-react.IndexProps.debugIds
 }
 /**
  * SliceProps props are used for components that refer to a single Slice in an
@@ -13930,13 +13930,13 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// SliceProps.indexId
+  /// ui-react.SliceProps.indexId
   /**
    * The Id of the Slice in the Index to be rendered.
    * @category Prop
    * @since v1.0.0
    */
-  /// SliceProps.sliceId
+  /// ui-react.SliceProps.sliceId
   /**
    * The Indexes object to be accessed: omit for the default context Indexes
    * object, provide an Id for a named context Indexes object, or provide an
@@ -13944,33 +13944,33 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// SliceProps.indexes
+  /// ui-react.SliceProps.indexes
   /**
    * A component for rendering each Row in the Index.
    * @category Prop
    * @since v1.0.0
    */
-  /// SliceProps.rowComponent
+  /// ui-react.SliceProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// SliceProps.getRowComponentProps
+  /// ui-react.SliceProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
    * @category Prop
    * @since v1.0.0
    */
-  /// SliceProps.separator
+  /// ui-react.SliceProps.separator
   /**
    * Whether the component should also render the Id of the Slice, and its
    * descendent objects, to assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// SliceProps.debugIds
+  /// ui-react.SliceProps.debugIds
 }
 /**
  * RemoteRowProps props are used for components that refer to a single
@@ -13986,13 +13986,13 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// RemoteRowProps.relationshipId
+  /// ui-react.RemoteRowProps.relationshipId
   /**
    * The Id of the local Row for which to render the remote Row.
    * @category Prop
    * @since v1.0.0
    */
-  /// RemoteRowProps.localRowId
+  /// ui-react.RemoteRowProps.localRowId
   /**
    * The Relationships object to be accessed: omit for the default context
    * Relationships object, provide an Id for a named context Relationships
@@ -14000,28 +14000,28 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// RemoteRowProps.relationships
+  /// ui-react.RemoteRowProps.relationships
   /**
    * A component for rendering each (remote, local, or linked) Row in the
    * Relationship.
    * @category Prop
    * @since v1.0.0
    */
-  /// RemoteRowProps.rowComponent
+  /// ui-react.RemoteRowProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// RemoteRowProps.getRowComponentProps
+  /// ui-react.RemoteRowProps.getRowComponentProps
   /**
    * Whether the component should also render the Id of the Row in the
    * Relationship, and its descendent objects, to assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// RemoteRowProps.debugIds
+  /// ui-react.RemoteRowProps.debugIds
 }
 /**
  * LocalRowsProps props are used for components that refer to a single
@@ -14037,13 +14037,13 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// LocalRowsProps.relationshipId
+  /// ui-react.LocalRowsProps.relationshipId
   /**
    * The Id of the remote Row for which to render the local Rows.
    * @category Prop
    * @since v1.0.0
    */
-  /// LocalRowsProps.remoteRowId
+  /// ui-react.LocalRowsProps.remoteRowId
   /**
    * The Relationships object to be accessed: omit for the default context
    * Relationships object, provide an Id for a named context Relationships
@@ -14051,34 +14051,34 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// LocalRowsProps.relationships
+  /// ui-react.LocalRowsProps.relationships
   /**
    * A component for rendering each (remote, local, or linked) Row in the
    * Relationship.
    * @category Prop
    * @since v1.0.0
    */
-  /// LocalRowsProps.rowComponent
+  /// ui-react.LocalRowsProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// LocalRowsProps.getRowComponentProps
+  /// ui-react.LocalRowsProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
    * @category Prop
    * @since v1.0.0
    */
-  /// LocalRowsProps.separator
+  /// ui-react.LocalRowsProps.separator
   /**
    * Whether the component should also render the Id of the Row in the
    * Relationship, and its descendent objects, to assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// LocalRowsProps.debugIds
+  /// ui-react.LocalRowsProps.debugIds
 }
 /**
  * LinkedRowsProps props are used for components that refer to a single
@@ -14094,13 +14094,13 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// LinkedRowsProps.relationshipId
+  /// ui-react.LinkedRowsProps.relationshipId
   /**
    * The Id of the first Row in the linked list Relationship.
    * @category Prop
    * @since v1.0.0
    */
-  /// LinkedRowsProps.firstRowId
+  /// ui-react.LinkedRowsProps.firstRowId
   /**
    * The Relationships object to be accessed: omit for the default context
    * Relationships object, provide an Id for a named context Relationships
@@ -14108,34 +14108,34 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// LinkedRowsProps.relationships
+  /// ui-react.LinkedRowsProps.relationships
   /**
    * A component for rendering each (remote, local, or linked) Row in the
    * Relationship.
    * @category Prop
    * @since v1.0.0
    */
-  /// LinkedRowsProps.rowComponent
+  /// ui-react.LinkedRowsProps.rowComponent
   /**
    * A function for generating extra props for each Row component based on its
    * Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// LinkedRowsProps.getRowComponentProps
+  /// ui-react.LinkedRowsProps.getRowComponentProps
   /**
    * A component or string to separate each Row component.
    * @category Prop
    * @since v1.0.0
    */
-  /// LinkedRowsProps.separator
+  /// ui-react.LinkedRowsProps.separator
   /**
    * Whether the component should also render the Id of the Row in the
    * Relationship, and its descendent objects, to assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// LinkedRowsProps.debugIds
+  /// ui-react.LinkedRowsProps.debugIds
 }
 /**
  * ResultTableProps props are used for components that refer to a single query
@@ -14151,7 +14151,7 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultTableProps.queryId
+  /// ui-react.ResultTableProps.queryId
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
@@ -14159,34 +14159,34 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultTableProps.queries
+  /// ui-react.ResultTableProps.queries
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default ResultRowView component).
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultTableProps.resultRowComponent
+  /// ui-react.ResultTableProps.resultRowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultTableProps.getResultRowComponentProps
+  /// ui-react.ResultTableProps.getResultRowComponentProps
   /**
    * A component or string to separate each Row component.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultTableProps.separator
+  /// ui-react.ResultTableProps.separator
   /**
    * Whether the component should also render the Id of the query, and its
    * descendent objects, to assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultTableProps.debugIds
+  /// ui-react.ResultTableProps.debugIds
 }
 /**
  * ResultSortedTableProps props are used for components that refer to a single
@@ -14202,32 +14202,32 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultSortedTableProps.queryId
+  /// ui-react.ResultSortedTableProps.queryId
   /**
    * The Id of the Cell whose values are used for the sorting. If omitted, the
    * view will sort the Row Id itself.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultSortedTableProps.cellId
+  /// ui-react.ResultSortedTableProps.cellId
   /**
    * Whether the sorting should be in descending order.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultSortedTableProps.descending
+  /// ui-react.ResultSortedTableProps.descending
   /**
    * The number of Row Ids to skip for pagination purposes.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultSortedTableProps.offset
+  /// ui-react.ResultSortedTableProps.offset
   /**
    * The maximum number of Row Ids to return.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultSortedTableProps.limit
+  /// ui-react.ResultSortedTableProps.limit
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
@@ -14235,34 +14235,34 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultSortedTableProps.queries
+  /// ui-react.ResultSortedTableProps.queries
   /**
    * A custom component for rendering each Row in the Table (to override the
    * default ResultRowView component).
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultSortedTableProps.resultRowComponent
+  /// ui-react.ResultSortedTableProps.resultRowComponent
   /**
    * A function for generating extra props for each custom Row component based
    * on its Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultSortedTableProps.getResultRowComponentProps
+  /// ui-react.ResultSortedTableProps.getResultRowComponentProps
   /**
    * A component or string to separate each Row component.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultSortedTableProps.separator
+  /// ui-react.ResultSortedTableProps.separator
   /**
    * Whether the component should also render the Id of the query, and its
    * descendent objects, to assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultSortedTableProps.debugIds
+  /// ui-react.ResultSortedTableProps.debugIds
 }
 /**
  * ResultRowProps props are used for components that refer to a single Row in a
@@ -14278,13 +14278,13 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultRowProps.queryId
+  /// ui-react.ResultRowProps.queryId
   /**
    * The Id of the Row in the ResultTable to be rendered.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultRowProps.rowId
+  /// ui-react.ResultRowProps.rowId
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
@@ -14292,34 +14292,34 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultRowProps.queries
+  /// ui-react.ResultRowProps.queries
   /**
    * A custom component for rendering each Cell in the Row (to override the
    * default CellView component).
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultRowProps.resultCellComponent
+  /// ui-react.ResultRowProps.resultCellComponent
   /**
    * A function for generating extra props for each custom Cell component based
    * on its Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultRowProps.getResultCellComponentProps
+  /// ui-react.ResultRowProps.getResultCellComponentProps
   /**
    * A component or string to separate each Cell component.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultRowProps.separator
+  /// ui-react.ResultRowProps.separator
   /**
    * Whether the component should also render the Id of the Row, and its
    * descendent objects, to assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultRowProps.debugIds
+  /// ui-react.ResultRowProps.debugIds
 }
 /**
  * ResultRowProps props are used for components that refer to a single Cell in a
@@ -14335,19 +14335,19 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultCellProps.queryId
+  /// ui-react.ResultCellProps.queryId
   /**
    * The Id of the Row in the Table.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultCellProps.rowId
+  /// ui-react.ResultCellProps.rowId
   /**
    * The Id of the Cell in the Row to be rendered.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultCellProps.cellId
+  /// ui-react.ResultCellProps.cellId
   /**
    * The Queries object to be accessed: omit for the default context Queries
    * object, provide an Id for a named context Queries object, or provide an
@@ -14355,14 +14355,14 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultCellProps.queries
+  /// ui-react.ResultCellProps.queries
   /**
    * Whether the component should also render the Id of the Cell to assist with
    * debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// ResultCellProps.debugIds
+  /// ui-react.ResultCellProps.debugIds
 }
 /**
  * CheckpointProps props are used for components that refer to a single
@@ -14377,7 +14377,7 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// CheckpointProps.checkpointId
+  /// ui-react.CheckpointProps.checkpointId
   /**
    * The Checkpoints object to be accessed: omit for the default context
    * Checkpoints object, provide an Id for a named context Checkpoints object,
@@ -14385,14 +14385,14 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// CheckpointProps.checkpoints
+  /// ui-react.CheckpointProps.checkpoints
   /**
    * Whether the component should also render the Id of the checkpoint to assist
    * with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// CheckpointProps.debugIds
+  /// ui-react.CheckpointProps.debugIds
 }
 /**
  * BackwardCheckpointsProps props are used for components that refer to a list
@@ -14410,33 +14410,33 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// BackwardCheckpointsProps.checkpoints
+  /// ui-react.BackwardCheckpointsProps.checkpoints
   /**
    * A component for rendering each checkpoint in the Checkpoints object.
    * @category Prop
    * @since v1.0.0
    */
-  /// BackwardCheckpointsProps.checkpointComponent
+  /// ui-react.BackwardCheckpointsProps.checkpointComponent
   /**
    * A function for generating extra props for each checkpoint component based
    * on its Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// BackwardCheckpointsProps.getCheckpointComponentProps
+  /// ui-react.BackwardCheckpointsProps.getCheckpointComponentProps
   /**
    * A component or string to separate each Checkpoint component.
    * @category Prop
    * @since v1.0.0
    */
-  /// BackwardCheckpointsProps.separator
+  /// ui-react.BackwardCheckpointsProps.separator
   /**
    * Whether the component should also render the Ids of the checkpoints to
    * assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// BackwardCheckpointsProps.debugIds
+  /// ui-react.BackwardCheckpointsProps.debugIds
 }
 /**
  * CurrentCheckpointsProps props are used for components that refer to the
@@ -14454,27 +14454,27 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// CurrentCheckpointProps.checkpoints
+  /// ui-react.CurrentCheckpointProps.checkpoints
   /**
    * A component for rendering each checkpoint in the Checkpoints object.
    * @category Prop
    * @since v1.0.0
    */
-  /// CurrentCheckpointProps.checkpointComponent
+  /// ui-react.CurrentCheckpointProps.checkpointComponent
   /**
    * A function for generating extra props for each checkpoint component based
    * on its Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// CurrentCheckpointProps.getCheckpointComponentProps
+  /// ui-react.CurrentCheckpointProps.getCheckpointComponentProps
   /**
    * Whether the component should also render the Ids of the checkpoints to
    * assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// CurrentCheckpointProps.debugIds
+  /// ui-react.CurrentCheckpointProps.debugIds
 }
 /**
  * ForwardCheckpointsProps props are used for components that refer to a list of
@@ -14492,33 +14492,33 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// ForwardCheckpointsProps.checkpoints
+  /// ui-react.ForwardCheckpointsProps.checkpoints
   /**
    * A component for rendering each checkpoint in the Checkpoints object.
    * @category Prop
    * @since v1.0.0
    */
-  /// ForwardCheckpointsProps.checkpointComponent
+  /// ui-react.ForwardCheckpointsProps.checkpointComponent
   /**
    * A function for generating extra props for each checkpoint component based
    * on its Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// ForwardCheckpointsProps.getCheckpointComponentProps
+  /// ui-react.ForwardCheckpointsProps.getCheckpointComponentProps
   /**
    * A component or string to separate each Checkpoint component.
    * @category Prop
    * @since v1.0.0
    */
-  /// ForwardCheckpointsProps.separator
+  /// ui-react.ForwardCheckpointsProps.separator
   /**
    * Whether the component should also render the Ids of the checkpoints to
    * assist with debugging.
    * @category Prop
    * @since v1.0.0
    */
-  /// ForwardCheckpointsProps.debugIds
+  /// ui-react.ForwardCheckpointsProps.debugIds
 }
 /**
  * ProviderProps props are used with the Provider component, so that Store
@@ -14539,112 +14539,112 @@
    * @category Prop
    * @since v1.0.0
    */
-  /// ProviderProps.store
+  /// ui-react.ProviderProps.store
   /**
    * An object containing multiple Store objects that will be available within
    * the Provider context by their Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// ProviderProps.storesById
+  /// ui-react.ProviderProps.storesById
   /**
    * A default single Metrics object that will be available within the Provider
    * context.
    * @category Prop
    * @since v1.0.0
    */
-  /// ProviderProps.metrics
+  /// ui-react.ProviderProps.metrics
   /**
    * An object containing multiple Metrics objects that will be available within
    * the Provider context by their Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// ProviderProps.metricsById
+  /// ui-react.ProviderProps.metricsById
   /**
    * A default single Indexes object that will be available within the Provider
    * context.
    * @category Prop
    * @since v1.0.0
    */
-  /// ProviderProps.indexes
+  /// ui-react.ProviderProps.indexes
   /**
    * An object containing multiple Indexes objects that will be available within
    * the Provider context by their Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// ProviderProps.indexesById
+  /// ui-react.ProviderProps.indexesById
   /**
    * A default single Relationships object that will be available within the
    * Provider context.
    * @category Prop
    * @since v1.0.0
    */
-  /// ProviderProps.relationships
+  /// ui-react.ProviderProps.relationships
   /**
    * An object containing multiple Relationships objects that will be available
    * within the Provider context by their Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// ProviderProps.relationshipsById
+  /// ui-react.ProviderProps.relationshipsById
   /**
    * A default single Queries object that will be available within the Provider
    * context, since v2.0.
    * @category Prop
    * @since v1.0.0
    */
-  /// ProviderProps.queries
+  /// ui-react.ProviderProps.queries
   /**
    * An object containing multiple Queries objects that will be available within
    * the Provider context by their Id, since v2.0.
    * @category Prop
    * @since v1.0.0
    */
-  /// ProviderProps.queriesById
+  /// ui-react.ProviderProps.queriesById
   /**
    * A default single Checkpoints object that will be available within the
    * Provider context.
    * @category Prop
    * @since v1.0.0
    */
-  /// ProviderProps.checkpoints
+  /// ui-react.ProviderProps.checkpoints
   /**
    * An object containing multiple Checkpoints objects that will be available
    * within the Provider context by their Id.
    * @category Prop
    * @since v1.0.0
    */
-  /// ProviderProps.checkpointsById
+  /// ui-react.ProviderProps.checkpointsById
   /**
    * A default single Persister object that will be available within the
    * Provider context.
    * @category Prop
    * @since v5.3.0
    */
-  /// ProviderProps.persister
+  /// ui-react.ProviderProps.persister
   /**
    * An object containing multiple Persister objects that will be available
    * within the Provider context by their Id.
    * @category Prop
    * @since v5.3.0
    */
-  /// ProviderProps.persistersById
+  /// ui-react.ProviderProps.persistersById
   /**
    * A default single Synchronizer object that will be available within the
    * Provider context.
    * @category Prop
    * @since v5.3.0
    */
-  /// ProviderProps.synchronizer
+  /// ui-react.ProviderProps.synchronizer
   /**
    * An object containing multiple Synchronizer objects that will be available
    * within the Provider context by their Id.
    * @category Prop
    * @since v5.3.0
    */
-  /// ProviderProps.synchronizersById
+  /// ui-react.ProviderProps.synchronizersById
 }
 /**
  * ComponentReturnType is a simple alias for what a React component can return:
