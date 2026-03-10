@@ -1,12 +1,9 @@
 <script lang="ts">
-  import {getContext} from 'svelte';
   import type {LinkedRowsViewProps} from '../@types/ui-svelte/index.d.ts';
-  import type {Relationships} from '../@types/relationships/index.d.ts';
-  import {isString} from '../common/other.ts';
-  import {objGet} from '../common/obj.ts';
-  import type {ContextValue} from './context.ts';
-  import {TINYBASE_CONTEXT_KEY} from './context.ts';
-  import {useLinkedRowIds} from './hooks.svelte.ts';
+  import {
+    useLinkedRowIds,
+    useRelationshipsStoreTableIds,
+  } from './hooks.svelte.ts';
   import RowView from './RowView.svelte';
   import Wrap from './common/Wrap.svelte';
 
@@ -19,19 +16,10 @@
     row,
   }: LinkedRowsViewProps = $props();
 
-  // Capture context at init to resolve Relationships → store/tableId
-  const _ctx: ContextValue = (getContext(TINYBASE_CONTEXT_KEY) ??
-    []) as ContextValue;
-  const _resolvedRelationships = $derived(
-    (isString(relationships)
-      ? objGet(_ctx[7] as any, relationships)
-      : (relationships ?? _ctx[6])) as Relationships | undefined,
+  const {store, localTableId} = useRelationshipsStoreTableIds(
+    () => relationships,
+    () => relationshipId,
   );
-  const _store = $derived(_resolvedRelationships?.getStore());
-  const _tableId = $derived(
-    _resolvedRelationships?.getLocalTableId(relationshipId),
-  );
-
   const rowIds = useLinkedRowIds(
     () => relationshipId,
     () => firstRowId,
@@ -39,18 +27,12 @@
   );
 </script>
 
-<Wrap
-  ids={rowIds.current}
-  {separator}
-  {debugIds}
-  id={firstRowId}
-  custom={row}
->
+<Wrap ids={rowIds.current} {separator} {debugIds} id={firstRowId} custom={row}>
   {#snippet children(rowId)}
-    {#if _tableId}<RowView
-        tableId={_tableId}
+    {#if localTableId}<RowView
+        tableId={localTableId}
         {rowId}
-        store={_store}
+        {store}
         {debugIds}
       />{/if}
   {/snippet}
