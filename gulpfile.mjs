@@ -70,6 +70,7 @@ const ALL_DEFINITIONS = [
   ...ALL_MODULES,
   '_internal/store',
   '_internal/queries',
+  '_internal/ui',
   '_internal/ui-react',
 ];
 
@@ -652,6 +653,7 @@ const compileDocsAndAssets = async (api = true, pages = true) => {
     platform: 'node',
   });
 
+  // eslint-disable-next-line import/no-unresolved
   const {build} = await import('./tmp/build.js');
   await build(esbuild, DOCS_DIR, api, pages);
   await removeDir(TMP_DIR);

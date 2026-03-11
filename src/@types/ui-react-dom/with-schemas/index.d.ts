@@ -9,14 +9,16 @@ import type {
   CellPropsForTableIdAndCellId,
   ComponentReturnType,
   ExtraProps,
+  ResultCellProps,
+  RowProps,
+  ValueProps,
+} from '../../_internal/ui-react/with-schemas/index.d.ts';
+import type {
   IndexesOrIndexesId,
   QueriesOrQueriesId,
   RelationshipsOrRelationshipsId,
-  ResultCellProps,
-  RowProps,
   StoreOrStoreId,
-  ValueProps,
-} from '../../_internal/ui-react/with-schemas/index.d.ts';
+} from '../../_internal/ui/with-schemas/index.d.ts';
 import type {Id, Ids} from '../../common/with-schemas/index.d.ts';
 import type {NoSchemas} from '../../store/index.d.ts';
 import type {OptionalSchemas} from '../../store/with-schemas/index.d.ts';
