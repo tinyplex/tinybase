@@ -1,24 +1,72 @@
 import {getContext} from 'svelte';
 import type {
   CheckpointIds,
+  CheckpointIdsListener,
+  CheckpointListener,
   Checkpoints,
 } from '../@types/checkpoints/index.d.ts';
-import type {Id, Ids} from '../@types/common/index.d.ts';
-import type {Indexes} from '../@types/indexes/index.d.ts';
-import type {Metrics} from '../@types/metrics/index.d.ts';
-import type {AnyPersister, Status} from '../@types/persisters/index.d.ts';
-import type {Queries} from '../@types/queries/index.d.ts';
-import type {Relationships} from '../@types/relationships/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../@types/common/index.d.ts';
+import type {
+  Indexes,
+  SliceIdsListener,
+  SliceRowIdsListener,
+} from '../@types/indexes/index.d.ts';
+import type {MetricListener, Metrics} from '../@types/metrics/index.d.ts';
+import type {
+  AnyPersister,
+  Status,
+  StatusListener,
+} from '../@types/persisters/index.d.ts';
+import type {
+  ParamValueListener,
+  ParamValuesListener,
+  Queries,
+  ResultCellIdsListener,
+  ResultCellListener,
+  ResultRowCountListener,
+  ResultRowIdsListener,
+  ResultRowListener,
+  ResultSortedRowIdsListener,
+  ResultTableCellIdsListener,
+  ResultTableListener,
+} from '../@types/queries/index.d.ts';
+import type {
+  LinkedRowIdsListener,
+  LocalRowIdsListener,
+  Relationships,
+  RemoteRowIdListener,
+} from '../@types/relationships/index.d.ts';
 import type {
   Cell,
+  CellIdsListener,
+  CellListener,
   CellOrUndefined,
+  HasCellListener,
+  HasRowListener,
+  HasTableCellListener,
+  HasTableListener,
+  HasTablesListener,
+  HasValueListener,
+  HasValuesListener,
   Row,
+  RowCountListener,
+  RowIdsListener,
+  RowListener,
+  SortedRowIdsListener,
   Store,
   Table,
+  TableCellIdsListener,
+  TableIdsListener,
+  TableListener,
   Tables,
+  TablesListener,
+  TransactionListener,
   Value,
+  ValueIdsListener,
+  ValueListener,
   ValueOrUndefined,
   Values,
+  ValuesListener,
 } from '../@types/store/index.d.ts';
 import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
 import type {MaybeGetter} from '../@types/ui-svelte/index.d.ts';
@@ -31,6 +79,7 @@ import {
   CELL,
   CELL_IDS,
   CHECKPOINT,
+  FINISH,
   GET,
   HAS,
   IDS,
@@ -52,6 +101,7 @@ import {
   TABLE,
   TABLE_IDS,
   TABLES,
+  TRANSACTION,
   VALUE,
   VALUE_IDS,
   VALUES,
@@ -82,7 +132,9 @@ const OFFSET_CHECKPOINTS = 5;
 const OFFSET_PERSISTER = 6;
 const OFFSET_SYNCHRONIZER = 7;
 
-const maybeGet = <T extends Thing | string | number | boolean | undefined>(
+const maybeGet = <
+  T extends Thing | string | number | boolean | null | undefined,
+>(
   thing: MaybeGetter<T>,
 ): T => (isFunction(thing) ? thing() : thing);
 
@@ -200,6 +252,27 @@ const useListenable = <T>(
       return value as T;
     },
   };
+};
+
+const useListener = (
+  getThing: () => any,
+  listenable: string,
+  listener: (...args: any[]) => void,
+  getPreArgs: () => readonly any[] = () => EMPTY_ARR,
+  mutator?: boolean,
+): void => {
+  if (typeof window !== 'undefined') {
+    $effect(() => {
+      const thing = getThing();
+      const preArgs = getPreArgs();
+      const listenerId = thing?.[ADD + listenable + LISTENER]?.(
+        ...preArgs,
+        listener,
+        ...(mutator !== undefined ? [mutator] : EMPTY_ARR),
+      );
+      return () => thing?.delListener?.(listenerId);
+    });
+  }
 };
 
 export const useHasTables = (
@@ -918,6 +991,581 @@ export const useSynchronizerStatus = (
     useSynchronizerOrSynchronizerById(synchronizerOrSynchronizerId),
     STATUS,
     0 as Status,
+  );
+
+export const useHasTablesListener = (
+  listener: HasTablesListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    HAS + TABLES,
+    listener,
+    () => EMPTY_ARR,
+    mutator,
+  );
+
+export const useTablesListener = (
+  listener: TablesListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    TABLES,
+    listener,
+    () => EMPTY_ARR,
+    mutator,
+  );
+
+export const useTableIdsListener = (
+  listener: TableIdsListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    TABLE_IDS,
+    listener,
+    () => EMPTY_ARR,
+    mutator,
+  );
+
+export const useHasTableListener = (
+  tableId: MaybeGetter<IdOrNull>,
+  listener: HasTableListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    HAS + TABLE,
+    listener,
+    () => [maybeGet(tableId)],
+    mutator,
+  );
+
+export const useTableListener = (
+  tableId: MaybeGetter<IdOrNull>,
+  listener: TableListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    TABLE,
+    listener,
+    () => [maybeGet(tableId)],
+    mutator,
+  );
+
+export const useTableCellIdsListener = (
+  tableId: MaybeGetter<IdOrNull>,
+  listener: TableCellIdsListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    TABLE + CELL_IDS,
+    listener,
+    () => [maybeGet(tableId)],
+    mutator,
+  );
+
+export const useHasTableCellListener = (
+  tableId: MaybeGetter<IdOrNull>,
+  cellId: MaybeGetter<IdOrNull>,
+  listener: HasTableCellListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    HAS + TABLE + CELL,
+    listener,
+    () => [maybeGet(tableId), maybeGet(cellId)],
+    mutator,
+  );
+
+export const useRowCountListener = (
+  tableId: MaybeGetter<IdOrNull>,
+  listener: RowCountListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    ROW_COUNT,
+    listener,
+    () => [maybeGet(tableId)],
+    mutator,
+  );
+
+export const useRowIdsListener = (
+  tableId: MaybeGetter<IdOrNull>,
+  listener: RowIdsListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    ROW_IDS,
+    listener,
+    () => [maybeGet(tableId)],
+    mutator,
+  );
+
+export const useSortedRowIdsListener = (
+  tableId: MaybeGetter<Id>,
+  cellId: MaybeGetter<Id | undefined>,
+  descending: MaybeGetter<boolean>,
+  offset: MaybeGetter<number>,
+  limit: MaybeGetter<number | undefined>,
+  listener: SortedRowIdsListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    SORTED_ROW_IDS,
+    listener,
+    () => [
+      maybeGet(tableId),
+      maybeGet(cellId),
+      maybeGet(descending),
+      maybeGet(offset),
+      maybeGet(limit),
+    ],
+    mutator,
+  );
+
+export const useHasRowListener = (
+  tableId: MaybeGetter<IdOrNull>,
+  rowId: MaybeGetter<IdOrNull>,
+  listener: HasRowListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    HAS + ROW,
+    listener,
+    () => [maybeGet(tableId), maybeGet(rowId)],
+    mutator,
+  );
+
+export const useRowListener = (
+  tableId: MaybeGetter<IdOrNull>,
+  rowId: MaybeGetter<IdOrNull>,
+  listener: RowListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    ROW,
+    listener,
+    () => [maybeGet(tableId), maybeGet(rowId)],
+    mutator,
+  );
+
+export const useCellIdsListener = (
+  tableId: MaybeGetter<IdOrNull>,
+  rowId: MaybeGetter<IdOrNull>,
+  listener: CellIdsListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    CELL_IDS,
+    listener,
+    () => [maybeGet(tableId), maybeGet(rowId)],
+    mutator,
+  );
+
+export const useHasCellListener = (
+  tableId: MaybeGetter<IdOrNull>,
+  rowId: MaybeGetter<IdOrNull>,
+  cellId: MaybeGetter<IdOrNull>,
+  listener: HasCellListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    HAS + CELL,
+    listener,
+    () => [maybeGet(tableId), maybeGet(rowId), maybeGet(cellId)],
+    mutator,
+  );
+
+export const useCellListener = (
+  tableId: MaybeGetter<IdOrNull>,
+  rowId: MaybeGetter<IdOrNull>,
+  cellId: MaybeGetter<IdOrNull>,
+  listener: CellListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    CELL,
+    listener,
+    () => [maybeGet(tableId), maybeGet(rowId), maybeGet(cellId)],
+    mutator,
+  );
+
+export const useHasValuesListener = (
+  listener: HasValuesListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    HAS + VALUES,
+    listener,
+    () => EMPTY_ARR,
+    mutator,
+  );
+
+export const useValuesListener = (
+  listener: ValuesListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    VALUES,
+    listener,
+    () => EMPTY_ARR,
+    mutator,
+  );
+
+export const useValueIdsListener = (
+  listener: ValueIdsListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    VALUE_IDS,
+    listener,
+    () => EMPTY_ARR,
+    mutator,
+  );
+
+export const useHasValueListener = (
+  valueId: MaybeGetter<IdOrNull>,
+  listener: HasValueListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    HAS + VALUE,
+    listener,
+    () => [maybeGet(valueId)],
+    mutator,
+  );
+
+export const useValueListener = (
+  valueId: MaybeGetter<IdOrNull>,
+  listener: ValueListener,
+  mutator?: boolean,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    VALUE,
+    listener,
+    () => [maybeGet(valueId)],
+    mutator,
+  );
+
+export const useStartTransactionListener = (
+  listener: TransactionListener,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    'Start' + TRANSACTION,
+    listener,
+  );
+
+export const useWillFinishTransactionListener = (
+  listener: TransactionListener,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    'Will' + FINISH + TRANSACTION,
+    listener,
+  );
+
+export const useDidFinishTransactionListener = (
+  listener: TransactionListener,
+  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
+): void =>
+  useListener(
+    useStoreOrStoreById(storeOrStoreId),
+    'Did' + FINISH + TRANSACTION,
+    listener,
+  );
+
+export const useMetricListener = (
+  metricId: MaybeGetter<IdOrNull>,
+  listener: MetricListener,
+  metricsOrMetricsId?: MaybeGetter<Metrics | Id | undefined>,
+): void =>
+  useListener(
+    useMetricsOrMetricsById(metricsOrMetricsId),
+    METRIC,
+    listener,
+    () => [maybeGet(metricId)],
+  );
+
+export const useSliceIdsListener = (
+  indexId: MaybeGetter<IdOrNull>,
+  listener: SliceIdsListener,
+  indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
+): void =>
+  useListener(
+    useIndexesOrIndexesById(indexesOrIndexesId),
+    SLICE + IDS,
+    listener,
+    () => [maybeGet(indexId)],
+  );
+
+export const useSliceRowIdsListener = (
+  indexId: MaybeGetter<IdOrNull>,
+  sliceId: MaybeGetter<IdOrNull>,
+  listener: SliceRowIdsListener,
+  indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
+): void =>
+  useListener(
+    useIndexesOrIndexesById(indexesOrIndexesId),
+    SLICE + ROW_IDS,
+    listener,
+    () => [maybeGet(indexId), maybeGet(sliceId)],
+  );
+
+export const useRemoteRowIdListener = (
+  relationshipId: MaybeGetter<IdOrNull>,
+  localRowId: MaybeGetter<IdOrNull>,
+  listener: RemoteRowIdListener,
+  relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
+): void =>
+  useListener(
+    useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
+    REMOTE_ROW_ID,
+    listener,
+    () => [maybeGet(relationshipId), maybeGet(localRowId)],
+  );
+
+export const useLocalRowIdsListener = (
+  relationshipId: MaybeGetter<IdOrNull>,
+  remoteRowId: MaybeGetter<IdOrNull>,
+  listener: LocalRowIdsListener,
+  relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
+): void =>
+  useListener(
+    useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
+    LOCAL + ROW_IDS,
+    listener,
+    () => [maybeGet(relationshipId), maybeGet(remoteRowId)],
+  );
+
+export const useLinkedRowIdsListener = (
+  relationshipId: MaybeGetter<Id>,
+  firstRowId: MaybeGetter<Id>,
+  listener: LinkedRowIdsListener,
+  relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
+): void =>
+  useListener(
+    useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
+    LINKED + ROW_IDS,
+    listener,
+    () => [maybeGet(relationshipId), maybeGet(firstRowId)],
+  );
+
+export const useResultTableListener = (
+  queryId: MaybeGetter<IdOrNull>,
+  listener: ResultTableListener,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
+): void =>
+  useListener(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + TABLE,
+    listener,
+    () => [maybeGet(queryId)],
+  );
+
+export const useResultTableCellIdsListener = (
+  queryId: MaybeGetter<IdOrNull>,
+  listener: ResultTableCellIdsListener,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
+): void =>
+  useListener(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + TABLE + CELL_IDS,
+    listener,
+    () => [maybeGet(queryId)],
+  );
+
+export const useResultRowCountListener = (
+  queryId: MaybeGetter<IdOrNull>,
+  listener: ResultRowCountListener,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
+): void =>
+  useListener(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + ROW_COUNT,
+    listener,
+    () => [maybeGet(queryId)],
+  );
+
+export const useResultRowIdsListener = (
+  queryId: MaybeGetter<IdOrNull>,
+  listener: ResultRowIdsListener,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
+): void =>
+  useListener(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + ROW_IDS,
+    listener,
+    () => [maybeGet(queryId)],
+  );
+
+export const useResultSortedRowIdsListener = (
+  queryId: MaybeGetter<Id>,
+  cellId: MaybeGetter<Id | undefined>,
+  descending: MaybeGetter<boolean>,
+  offset: MaybeGetter<number>,
+  limit: MaybeGetter<number | undefined>,
+  listener: ResultSortedRowIdsListener,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
+): void =>
+  useListener(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + SORTED_ROW_IDS,
+    listener,
+    () => [
+      maybeGet(queryId),
+      maybeGet(cellId),
+      maybeGet(descending),
+      maybeGet(offset),
+      maybeGet(limit),
+    ],
+  );
+
+export const useResultRowListener = (
+  queryId: MaybeGetter<IdOrNull>,
+  rowId: MaybeGetter<IdOrNull>,
+  listener: ResultRowListener,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
+): void =>
+  useListener(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + ROW,
+    listener,
+    () => [maybeGet(queryId), maybeGet(rowId)],
+  );
+
+export const useResultCellIdsListener = (
+  queryId: MaybeGetter<IdOrNull>,
+  rowId: MaybeGetter<IdOrNull>,
+  listener: ResultCellIdsListener,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
+): void =>
+  useListener(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + CELL_IDS,
+    listener,
+    () => [maybeGet(queryId), maybeGet(rowId)],
+  );
+
+export const useResultCellListener = (
+  queryId: MaybeGetter<IdOrNull>,
+  rowId: MaybeGetter<IdOrNull>,
+  cellId: MaybeGetter<IdOrNull>,
+  listener: ResultCellListener,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
+): void =>
+  useListener(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    RESULT + CELL,
+    listener,
+    () => [maybeGet(queryId), maybeGet(rowId), maybeGet(cellId)],
+  );
+
+export const useParamValuesListener = (
+  queryId: MaybeGetter<IdOrNull>,
+  listener: ParamValuesListener,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
+): void =>
+  useListener(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    'ParamValues',
+    listener,
+    () => [maybeGet(queryId)],
+  );
+
+export const useParamValueListener = (
+  queryId: MaybeGetter<IdOrNull>,
+  paramId: MaybeGetter<IdOrNull>,
+  listener: ParamValueListener,
+  queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
+): void =>
+  useListener(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    'ParamValue',
+    listener,
+    () => [maybeGet(queryId), maybeGet(paramId)],
+  );
+
+export const useCheckpointIdsListener = (
+  listener: CheckpointIdsListener,
+  checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
+): void =>
+  useListener(
+    useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
+    CHECKPOINT + IDS,
+    listener,
+  );
+
+export const useCheckpointListener = (
+  checkpointId: MaybeGetter<IdOrNull>,
+  listener: CheckpointListener,
+  checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
+): void =>
+  useListener(
+    useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
+    CHECKPOINT,
+    listener,
+    () => [maybeGet(checkpointId)],
+  );
+
+export const usePersisterStatusListener = (
+  listener: StatusListener,
+  persisterOrPersisterId?: MaybeGetter<AnyPersister | Id | undefined>,
+): void =>
+  useListener(
+    usePersisterOrPersisterById(persisterOrPersisterId),
+    STATUS,
+    listener,
+  );
+
+export const useSynchronizerStatusListener = (
+  listener: StatusListener,
+  synchronizerOrSynchronizerId?: MaybeGetter<Synchronizer | Id | undefined>,
+): void =>
+  useListener(
+    useSynchronizerOrSynchronizerById(synchronizerOrSynchronizerId),
+    STATUS,
+    listener,
   );
 
 const provideThing = (thingId: Id, thing: any, offset: number): void => {

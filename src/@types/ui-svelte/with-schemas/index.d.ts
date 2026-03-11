@@ -19,32 +19,78 @@ import type {
 } from '../../_internal/ui/with-schemas/index.d.ts';
 import type {
   CheckpointIds,
+  CheckpointIdsListener,
+  CheckpointListener,
   Checkpoints,
 } from '../../checkpoints/with-schemas/index.d.ts';
-import type {Id, Ids} from '../../common/with-schemas/index.d.ts';
-import type {Indexes} from '../../indexes/with-schemas/index.d.ts';
-import type {Metrics} from '../../metrics/with-schemas/index.d.ts';
+import type {Id, IdOrNull, Ids} from '../../common/with-schemas/index.d.ts';
+import type {
+  Indexes,
+  SliceIdsListener,
+  SliceRowIdsListener,
+} from '../../indexes/with-schemas/index.d.ts';
+import type {
+  MetricListener,
+  Metrics,
+} from '../../metrics/with-schemas/index.d.ts';
 import type {
   AnyPersister,
   Status,
+  StatusListener,
 } from '../../persisters/with-schemas/index.d.ts';
 import type {
+  ParamValueListener,
+  ParamValuesListener,
   Queries,
   ResultCell,
+  ResultCellIdsListener,
+  ResultCellListener,
   ResultRow,
+  ResultRowCountListener,
+  ResultRowIdsListener,
+  ResultRowListener,
+  ResultSortedRowIdsListener,
   ResultTable,
+  ResultTableCellIdsListener,
+  ResultTableListener,
 } from '../../queries/with-schemas/index.d.ts';
-import type {Relationships} from '../../relationships/with-schemas/index.d.ts';
+import type {
+  LinkedRowIdsListener,
+  LocalRowIdsListener,
+  Relationships,
+  RemoteRowIdListener,
+} from '../../relationships/with-schemas/index.d.ts';
 import type {
   Cell,
+  CellIdsListener,
+  CellListener,
   CellOrUndefined,
+  HasCellListener,
+  HasRowListener,
+  HasTableCellListener,
+  HasTableListener,
+  HasTablesListener,
+  HasValueListener,
+  HasValuesListener,
   OptionalSchemas,
   Row,
+  RowCountListener,
+  RowIdsListener,
+  RowListener,
+  SortedRowIdsListener,
   Store,
   Table,
+  TableCellIdsListener,
+  TableIdsListener,
+  TableListener,
   Tables,
+  TablesListener,
+  TransactionListener,
   Value,
+  ValueIdsListener,
+  ValueListener,
   Values,
+  ValuesListener,
 } from '../../store/with-schemas/index.d.ts';
 import type {Synchronizer} from '../../synchronizers/with-schemas/index.d.ts';
 
@@ -790,6 +836,394 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useSynchronizerStatus: (
     synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
   ) => {readonly current: Status};
+
+  /// ui-svelte.useHasTablesListener
+  useHasTablesListener: (
+    listener: HasTablesListener<Schemas>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useTablesListener
+  useTablesListener: (
+    listener: TablesListener<Schemas>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useTableIdsListener
+  useTableIdsListener: (
+    listener: TableIdsListener<Schemas>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useHasTableListener
+  useHasTableListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  >(
+    tableId: TableIdOrNull | (() => TableIdOrNull),
+    listener: HasTableListener<Schemas, TableIdOrNull>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useTableListener
+  useTableListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  >(
+    tableId: TableIdOrNull | (() => TableIdOrNull),
+    listener: TableListener<Schemas, TableIdOrNull>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useTableCellIdsListener
+  useTableCellIdsListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  >(
+    tableId: TableIdOrNull | (() => TableIdOrNull),
+    listener: TableCellIdsListener<Schemas, TableIdOrNull>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useHasTableCellListener
+  useHasTableCellListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    CellIdOrNull extends
+      | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+          ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+          : AllCellIdFromSchema<Schemas[0]>)
+      | null,
+  >(
+    tableId: TableIdOrNull | (() => TableIdOrNull),
+    cellId: CellIdOrNull | (() => CellIdOrNull),
+    listener: HasTableCellListener<Schemas, TableIdOrNull, CellIdOrNull>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useRowCountListener
+  useRowCountListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  >(
+    tableId: TableIdOrNull | (() => TableIdOrNull),
+    listener: RowCountListener<Schemas, TableIdOrNull>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useRowIdsListener
+  useRowIdsListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+  >(
+    tableId: TableIdOrNull | (() => TableIdOrNull),
+    listener: RowIdsListener<Schemas, TableIdOrNull>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useSortedRowIdsListener
+  useSortedRowIdsListener: <
+    TableId extends TableIdFromSchema<Schemas[0]>,
+    CellIdOrUndefined extends CellIdFromSchema<Schemas[0], TableId> | undefined,
+  >(
+    tableId: TableId | (() => TableId),
+    cellId: CellIdOrUndefined | (() => CellIdOrUndefined),
+    descending: boolean | (() => boolean),
+    offset: number | (() => number),
+    limit: number | undefined | (() => number | undefined),
+    listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useHasRowListener
+  useHasRowListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
+  >(
+    tableId: TableIdOrNull | (() => TableIdOrNull),
+    rowId: RowIdOrNull | (() => RowIdOrNull),
+    listener: HasRowListener<Schemas, TableIdOrNull, RowIdOrNull>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useRowListener
+  useRowListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
+  >(
+    tableId: TableIdOrNull | (() => TableIdOrNull),
+    rowId: RowIdOrNull | (() => RowIdOrNull),
+    listener: RowListener<Schemas, TableIdOrNull, RowIdOrNull>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useCellIdsListener
+  useCellIdsListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
+  >(
+    tableId: TableIdOrNull | (() => TableIdOrNull),
+    rowId: RowIdOrNull | (() => RowIdOrNull),
+    listener: CellIdsListener<Schemas, TableIdOrNull, RowIdOrNull>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useHasCellListener
+  useHasCellListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
+    CellIdOrNull extends
+      | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+          ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+          : AllCellIdFromSchema<Schemas[0]>)
+      | null,
+  >(
+    tableId: TableIdOrNull | (() => TableIdOrNull),
+    rowId: RowIdOrNull | (() => RowIdOrNull),
+    cellId: CellIdOrNull | (() => CellIdOrNull),
+    listener: HasCellListener<
+      Schemas,
+      TableIdOrNull,
+      RowIdOrNull,
+      CellIdOrNull
+    >,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useCellListener
+  useCellListener: <
+    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
+    RowIdOrNull extends IdOrNull,
+    CellIdOrNull extends
+      | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
+          ? CellIdFromSchema<Schemas[0], TableIdOrNull>
+          : AllCellIdFromSchema<Schemas[0]>)
+      | null,
+  >(
+    tableId: TableIdOrNull | (() => TableIdOrNull),
+    rowId: RowIdOrNull | (() => RowIdOrNull),
+    cellId: CellIdOrNull | (() => CellIdOrNull),
+    listener: CellListener<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useHasValuesListener
+  useHasValuesListener: (
+    listener: HasValuesListener<Schemas>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useValuesListener
+  useValuesListener: (
+    listener: ValuesListener<Schemas>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useValueIdsListener
+  useValueIdsListener: (
+    listener: ValueIdsListener<Schemas>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useHasValueListener
+  useHasValueListener: <
+    ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
+  >(
+    valueId: ValueIdOrNull | (() => ValueIdOrNull),
+    listener: HasValueListener<Schemas, ValueIdOrNull>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useValueListener
+  useValueListener: <
+    ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
+  >(
+    valueId: ValueIdOrNull | (() => ValueIdOrNull),
+    listener: ValueListener<Schemas, ValueIdOrNull>,
+    mutator?: boolean,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useStartTransactionListener
+  useStartTransactionListener: (
+    listener: TransactionListener<Schemas>,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useWillFinishTransactionListener
+  useWillFinishTransactionListener: (
+    listener: TransactionListener<Schemas>,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useDidFinishTransactionListener
+  useDidFinishTransactionListener: (
+    listener: TransactionListener<Schemas>,
+    storeOrStoreId?: StoreOrStoreId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useMetricListener
+  useMetricListener: (
+    metricId: IdOrNull | (() => IdOrNull),
+    listener: MetricListener<Schemas>,
+    metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useSliceIdsListener
+  useSliceIdsListener: (
+    indexId: IdOrNull | (() => IdOrNull),
+    listener: SliceIdsListener<Schemas>,
+    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useSliceRowIdsListener
+  useSliceRowIdsListener: (
+    indexId: IdOrNull | (() => IdOrNull),
+    sliceId: IdOrNull | (() => IdOrNull),
+    listener: SliceRowIdsListener<Schemas>,
+    indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useRemoteRowIdListener
+  useRemoteRowIdListener: (
+    relationshipId: IdOrNull | (() => IdOrNull),
+    localRowId: IdOrNull | (() => IdOrNull),
+    listener: RemoteRowIdListener<Schemas>,
+    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useLocalRowIdsListener
+  useLocalRowIdsListener: (
+    relationshipId: IdOrNull | (() => IdOrNull),
+    remoteRowId: IdOrNull | (() => IdOrNull),
+    listener: LocalRowIdsListener<Schemas>,
+    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useLinkedRowIdsListener
+  useLinkedRowIdsListener: (
+    relationshipId: Id | (() => Id),
+    firstRowId: Id | (() => Id),
+    listener: LinkedRowIdsListener<Schemas>,
+    relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useResultTableListener
+  useResultTableListener: (
+    queryId: IdOrNull | (() => IdOrNull),
+    listener: ResultTableListener<Schemas>,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useResultTableCellIdsListener
+  useResultTableCellIdsListener: (
+    queryId: IdOrNull | (() => IdOrNull),
+    listener: ResultTableCellIdsListener<Schemas>,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useResultRowCountListener
+  useResultRowCountListener: (
+    queryId: IdOrNull | (() => IdOrNull),
+    listener: ResultRowCountListener<Schemas>,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useResultRowIdsListener
+  useResultRowIdsListener: (
+    queryId: IdOrNull | (() => IdOrNull),
+    listener: ResultRowIdsListener<Schemas>,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useResultSortedRowIdsListener
+  useResultSortedRowIdsListener: (
+    queryId: Id | (() => Id),
+    cellId: Id | undefined | (() => Id | undefined),
+    descending: boolean | (() => boolean),
+    offset: number | (() => number),
+    limit: number | undefined | (() => number | undefined),
+    listener: ResultSortedRowIdsListener<Schemas>,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useResultRowListener
+  useResultRowListener: (
+    queryId: IdOrNull | (() => IdOrNull),
+    rowId: IdOrNull | (() => IdOrNull),
+    listener: ResultRowListener<Schemas>,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useResultCellIdsListener
+  useResultCellIdsListener: (
+    queryId: IdOrNull | (() => IdOrNull),
+    rowId: IdOrNull | (() => IdOrNull),
+    listener: ResultCellIdsListener<Schemas>,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useResultCellListener
+  useResultCellListener: (
+    queryId: IdOrNull | (() => IdOrNull),
+    rowId: IdOrNull | (() => IdOrNull),
+    cellId: IdOrNull | (() => IdOrNull),
+    listener: ResultCellListener<Schemas>,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useParamValuesListener
+  useParamValuesListener: (
+    queryId: IdOrNull | (() => IdOrNull),
+    listener: ParamValuesListener<Schemas>,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useParamValueListener
+  useParamValueListener: (
+    queryId: IdOrNull | (() => IdOrNull),
+    paramId: IdOrNull | (() => IdOrNull),
+    listener: ParamValueListener<Schemas>,
+    queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useCheckpointIdsListener
+  useCheckpointIdsListener: (
+    listener: CheckpointIdsListener<Schemas>,
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useCheckpointListener
+  useCheckpointListener: (
+    checkpointId: IdOrNull | (() => IdOrNull),
+    listener: CheckpointListener<Schemas>,
+    checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.usePersisterStatusListener
+  usePersisterStatusListener: (
+    listener: StatusListener<Schemas>,
+    persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
+  ) => void;
+
+  /// ui-svelte.useSynchronizerStatusListener
+  useSynchronizerStatusListener: (
+    listener: StatusListener<Schemas>,
+    synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
+  ) => void;
 
   /// ui-svelte.provideStore
   provideStore: (storeId: Id, store: Store<Schemas>) => void;

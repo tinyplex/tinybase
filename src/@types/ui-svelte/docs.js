@@ -2152,6 +2152,592 @@
  */
 /// ui-svelte.useSynchronizerStatus
 /**
+ * The useHasTablesListener hook registers a listener that is
+ * called whenever any Tables are added to or removed from the
+ * Store. The listener is tied to the component's `$effect`
+ * lifecycle and is removed when the component unmounts.
+ * @param listener The function to call when table presence
+ * changes.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useHasTablesListener
+/**
+ * The useTablesListener hook registers a listener that is
+ * called whenever tabular data in the Store changes.
+ * @param listener The function to call when Tables change.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useTablesListener
+/**
+ * The useTableIdsListener hook registers a listener that is
+ * called whenever the set of Table Ids in the Store changes.
+ * @param listener The function to call when Table Ids change.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useTableIdsListener
+/**
+ * The useHasTableListener hook registers a listener that is
+ * called whenever a specified Table is added to or removed
+ * from the Store.
+ * @param tableId The Id of the Table to listen to, or `null`
+ * to listen to any Table.
+ * @param listener The function to call when the Table changes.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useHasTableListener
+/**
+ * The useTableListener hook registers a listener that is
+ * called whenever data in a specified Table changes.
+ * @param tableId The Id of the Table to listen to, or `null`
+ * to listen to any Table.
+ * @param listener The function to call when the Table changes.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useTableListener
+/**
+ * The useTableCellIdsListener hook registers a listener that
+ * is called whenever the Cell Ids used across a Table change.
+ * @param tableId The Id of the Table to listen to, or `null`
+ * to listen to any Table.
+ * @param listener The function to call when Cell Ids change.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useTableCellIdsListener
+/**
+ * The useHasTableCellListener hook registers a listener that
+ * is called whenever a specified Cell Id is added to or
+ * removed from across a Table.
+ * @param tableId The Id of the Table to listen to, or `null`
+ * to listen to any Table.
+ * @param cellId The Id of the Cell to listen to, or `null`
+ * to listen to any Cell Id.
+ * @param listener The function to call when the Cell Id
+ * changes.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useHasTableCellListener
+/**
+ * The useRowCountListener hook registers a listener that is
+ * called whenever the count of Rows in a Table changes.
+ * @param tableId The Id of the Table to listen to, or `null`
+ * to listen to any Table.
+ * @param listener The function to call when the Row count
+ * changes.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useRowCountListener
+/**
+ * The useRowIdsListener hook registers a listener that is
+ * called whenever the Row Ids in a Table change.
+ * @param tableId The Id of the Table to listen to, or `null`
+ * to listen to any Table.
+ * @param listener The function to call when Row Ids change.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useRowIdsListener
+/**
+ * The useSortedRowIdsListener hook registers a listener that
+ * is called whenever the sorted Row Ids in a Table change.
+ * @param tableId The Id of the Table to listen to.
+ * @param cellId The Id of the Cell to sort by, or `undefined`
+ * for default order.
+ * @param descending Whether to sort descending.
+ * @param offset The index of the first Row to include.
+ * @param limit The maximum number of Rows to include, or
+ * `undefined` for all.
+ * @param listener The function to call when sorted Row Ids
+ * change.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useSortedRowIdsListener
+/**
+ * The useHasRowListener hook registers a listener that is
+ * called whenever a specified Row is added to or removed from
+ * a Table.
+ * @param tableId The Id of the Table to listen to, or `null`
+ * to listen to any Table.
+ * @param rowId The Id of the Row to listen to, or `null` to
+ * listen to any Row.
+ * @param listener The function to call when the Row changes.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useHasRowListener
+/**
+ * The useRowListener hook registers a listener that is called
+ * whenever data in a specified Row changes.
+ * @param tableId The Id of the Table to listen to, or `null`
+ * to listen to any Table.
+ * @param rowId The Id of the Row to listen to, or `null` to
+ * listen to any Row.
+ * @param listener The function to call when the Row changes.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useRowListener
+/**
+ * The useCellIdsListener hook registers a listener that is
+ * called whenever the Cell Ids in a Row change.
+ * @param tableId The Id of the Table to listen to, or `null`
+ * to listen to any Table.
+ * @param rowId The Id of the Row to listen to, or `null` to
+ * listen to any Row.
+ * @param listener The function to call when Cell Ids change.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useCellIdsListener
+/**
+ * The useHasCellListener hook registers a listener that is
+ * called whenever a specified Cell is added to or removed from
+ * a Row.
+ * @param tableId The Id of the Table to listen to, or `null`
+ * to listen to any Table.
+ * @param rowId The Id of the Row to listen to, or `null` to
+ * listen to any Row.
+ * @param cellId The Id of the Cell to listen to, or `null` to
+ * listen to any Cell.
+ * @param listener The function to call when the Cell changes.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useHasCellListener
+/**
+ * The useCellListener hook registers a listener that is called
+ * whenever the value of a specified Cell changes.
+ * @param tableId The Id of the Table to listen to, or `null`
+ * to listen to any Table.
+ * @param rowId The Id of the Row to listen to, or `null` to
+ * listen to any Row.
+ * @param cellId The Id of the Cell to listen to, or `null` to
+ * listen to any Cell.
+ * @param listener The function to call when the Cell changes.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useCellListener
+/**
+ * The useHasValuesListener hook registers a listener that is
+ * called whenever any Values are added to or removed from the
+ * Store.
+ * @param listener The function to call when value presence
+ * changes.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useHasValuesListener
+/**
+ * The useValuesListener hook registers a listener that is
+ * called whenever any Values in the Store change.
+ * @param listener The function to call when Values change.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useValuesListener
+/**
+ * The useValueIdsListener hook registers a listener that is
+ * called whenever the Value Ids in the Store change.
+ * @param listener The function to call when Value Ids change.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useValueIdsListener
+/**
+ * The useHasValueListener hook registers a listener that is
+ * called whenever a specified Value is added to or removed
+ * from the Store.
+ * @param valueId The Id of the Value to listen to, or `null`
+ * to listen to any Value.
+ * @param listener The function to call when the Value changes.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useHasValueListener
+/**
+ * The useValueListener hook registers a listener that is
+ * called whenever the value of a specified Value changes.
+ * @param valueId The Id of the Value to listen to, or `null`
+ * to listen to any Value.
+ * @param listener The function to call when the Value changes.
+ * @param mutator An optional boolean indicating the listener
+ * mutates Store data.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useValueListener
+/**
+ * The useStartTransactionListener hook registers a listener
+ * that is called at the start of every Store transaction.
+ * @param listener The function to call at transaction start.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useStartTransactionListener
+/**
+ * The useWillFinishTransactionListener hook registers a
+ * listener called just before a Store transaction completes.
+ * @param listener The function to call before transaction end.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useWillFinishTransactionListener
+/**
+ * The useDidFinishTransactionListener hook registers a
+ * listener called just after a Store transaction completes.
+ * @param listener The function to call after transaction end.
+ * @param storeOrStoreId The Store to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useDidFinishTransactionListener
+/**
+ * The useMetricListener hook registers a listener that is
+ * called whenever a specified Metric value changes.
+ * @param metricId The Id of the Metric to listen to, or
+ * `null` to listen to any Metric.
+ * @param listener The function to call when the Metric
+ * changes.
+ * @param metricsOrMetricsId The Metrics object to use, or
+ * its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useMetricListener
+/**
+ * The useSliceIdsListener hook registers a listener that is
+ * called whenever the Slice Ids in an Index change.
+ * @param indexId The Id of the Index to listen to, or `null`
+ * to listen to any Index.
+ * @param listener The function to call when Slice Ids change.
+ * @param indexesOrIndexesId The Indexes object to use, or its
+ * Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useSliceIdsListener
+/**
+ * The useSliceRowIdsListener hook registers a listener that
+ * is called whenever the Row Ids in a Slice change.
+ * @param indexId The Id of the Index to listen to, or `null`
+ * to listen to any Index.
+ * @param sliceId The Id of the Slice to listen to, or `null`
+ * to listen to any Slice.
+ * @param listener The function to call when Slice Row Ids
+ * change.
+ * @param indexesOrIndexesId The Indexes object to use, or its
+ * Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useSliceRowIdsListener
+/**
+ * The useRemoteRowIdListener hook registers a listener that
+ * is called whenever the remote Row Id for a local Row
+ * changes.
+ * @param relationshipId The Id of the Relationship, or `null`
+ * to listen to any Relationship.
+ * @param localRowId The Id of the local Row, or `null` to
+ * listen to any local Row.
+ * @param listener The function to call when the remote Row Id
+ * changes.
+ * @param relationshipsOrRelationshipsId The Relationships
+ * object to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useRemoteRowIdListener
+/**
+ * The useLocalRowIdsListener hook registers a listener that
+ * is called whenever the local Row Ids for a remote Row
+ * change.
+ * @param relationshipId The Id of the Relationship, or `null`
+ * to listen to any Relationship.
+ * @param remoteRowId The Id of the remote Row, or `null` to
+ * listen to any remote Row.
+ * @param listener The function to call when local Row Ids
+ * change.
+ * @param relationshipsOrRelationshipsId The Relationships
+ * object to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useLocalRowIdsListener
+/**
+ * The useLinkedRowIdsListener hook registers a listener that
+ * is called whenever the linked Row Ids for a first Row
+ * change.
+ * @param relationshipId The Id of the Relationship.
+ * @param firstRowId The Id of the first Row.
+ * @param listener The function to call when linked Row Ids
+ * change.
+ * @param relationshipsOrRelationshipsId The Relationships
+ * object to use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useLinkedRowIdsListener
+/**
+ * The useResultTableListener hook registers a listener that
+ * is called whenever the result Table of a query changes.
+ * @param queryId The Id of the query to listen to, or `null`
+ * to listen to any query.
+ * @param listener The function to call when the result Table
+ * changes.
+ * @param queriesOrQueriesId The Queries object to use, or its
+ * Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useResultTableListener
+/**
+ * The useResultTableCellIdsListener hook registers a listener
+ * that is called whenever the Cell Ids across a result Table
+ * change.
+ * @param queryId The Id of the query to listen to, or `null`
+ * to listen to any query.
+ * @param listener The function to call when Cell Ids change.
+ * @param queriesOrQueriesId The Queries object to use, or its
+ * Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useResultTableCellIdsListener
+/**
+ * The useResultRowCountListener hook registers a listener that
+ * is called whenever the count of result Rows changes.
+ * @param queryId The Id of the query to listen to, or `null`
+ * to listen to any query.
+ * @param listener The function to call when the count changes.
+ * @param queriesOrQueriesId The Queries object to use, or its
+ * Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useResultRowCountListener
+/**
+ * The useResultRowIdsListener hook registers a listener that
+ * is called whenever the result Row Ids of a query change.
+ * @param queryId The Id of the query to listen to, or `null`
+ * to listen to any query.
+ * @param listener The function to call when result Row Ids
+ * change.
+ * @param queriesOrQueriesId The Queries object to use, or its
+ * Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useResultRowIdsListener
+/**
+ * The useResultSortedRowIdsListener hook registers a listener
+ * that is called whenever the sorted result Row Ids change.
+ * @param queryId The Id of the query to listen to.
+ * @param cellId The Id of the Cell to sort by, or `undefined`
+ * for default order.
+ * @param descending Whether to sort descending.
+ * @param offset The index of the first Row to include.
+ * @param limit The maximum number of Rows to include, or
+ * `undefined` for all.
+ * @param listener The function to call when sorted Row Ids
+ * change.
+ * @param queriesOrQueriesId The Queries object to use, or its
+ * Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useResultSortedRowIdsListener
+/**
+ * The useResultRowListener hook registers a listener that is
+ * called whenever a result Row changes.
+ * @param queryId The Id of the query to listen to, or `null`
+ * to listen to any query.
+ * @param rowId The Id of the result Row to listen to, or
+ * `null` to listen to any result Row.
+ * @param listener The function to call when the result Row
+ * changes.
+ * @param queriesOrQueriesId The Queries object to use, or its
+ * Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useResultRowListener
+/**
+ * The useResultCellIdsListener hook registers a listener that
+ * is called whenever the Cell Ids in a result Row change.
+ * @param queryId The Id of the query to listen to, or `null`
+ * to listen to any query.
+ * @param rowId The Id of the result Row to listen to, or
+ * `null` to listen to any result Row.
+ * @param listener The function to call when Cell Ids change.
+ * @param queriesOrQueriesId The Queries object to use, or its
+ * Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useResultCellIdsListener
+/**
+ * The useResultCellListener hook registers a listener that is
+ * called whenever the value of a result Cell changes.
+ * @param queryId The Id of the query to listen to, or `null`
+ * to listen to any query.
+ * @param rowId The Id of the result Row to listen to, or
+ * `null` to listen to any result Row.
+ * @param cellId The Id of the result Cell to listen to, or
+ * `null` to listen to any result Cell.
+ * @param listener The function to call when the result Cell
+ * changes.
+ * @param queriesOrQueriesId The Queries object to use, or its
+ * Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useResultCellListener
+/**
+ * The useParamValuesListener hook registers a listener that
+ * is called whenever the parameter values for a query change.
+ * @param queryId The Id of the query to listen to, or `null`
+ * to listen to any query.
+ * @param listener The function to call when parameter values
+ * change.
+ * @param queriesOrQueriesId The Queries object to use, or its
+ * Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useParamValuesListener
+/**
+ * The useParamValueListener hook registers a listener that is
+ * called whenever a specific parameter value for a query
+ * changes.
+ * @param queryId The Id of the query to listen to, or `null`
+ * to listen to any query.
+ * @param paramId The Id of the parameter to listen to, or
+ * `null` to listen to any parameter.
+ * @param listener The function to call when the parameter
+ * value changes.
+ * @param queriesOrQueriesId The Queries object to use, or its
+ * Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useParamValueListener
+/**
+ * The useCheckpointIdsListener hook registers a listener that
+ * is called whenever the Checkpoint Ids change.
+ * @param listener The function to call when Checkpoint Ids
+ * change.
+ * @param checkpointsOrCheckpointsId The Checkpoints object to
+ * use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useCheckpointIdsListener
+/**
+ * The useCheckpointListener hook registers a listener that is
+ * called whenever the label of a specified Checkpoint changes.
+ * @param checkpointId The Id of the Checkpoint to listen to,
+ * or `null` to listen to any Checkpoint.
+ * @param listener The function to call when the Checkpoint
+ * label changes.
+ * @param checkpointsOrCheckpointsId The Checkpoints object to
+ * use, or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useCheckpointListener
+/**
+ * The usePersisterStatusListener hook registers a listener
+ * that is called whenever the status of a Persister changes.
+ * @param listener The function to call when the status
+ * changes.
+ * @param persisterOrPersisterId The Persister to use, or its
+ * Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.usePersisterStatusListener
+/**
+ * The useSynchronizerStatusListener hook registers a listener
+ * that is called whenever the status of a Synchronizer
+ * changes.
+ * @param listener The function to call when the status
+ * changes.
+ * @param synchronizerOrSynchronizerId The Synchronizer to use,
+ * or its Id.
+ * @category Hook
+ * @since v8.1.0
+ */
+/// ui-svelte.useSynchronizerStatusListener
+/**
  * The provideStore function registers a Store with a given Id into the current
  * Provider context, making it available to all descendant components.
  *
