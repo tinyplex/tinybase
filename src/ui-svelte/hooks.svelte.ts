@@ -958,7 +958,7 @@ export const usePersisterIds = (): {readonly current: Ids} => {
 };
 
 export const usePersisterStatus = (
-  persisterOrPersisterId?: AnyPersister | Id,
+  persisterOrPersisterId?: MaybeGetter<AnyPersister | Id | undefined>,
 ): {readonly current: Status} =>
   useListenable(
     usePersisterOrPersisterById(persisterOrPersisterId),
@@ -985,7 +985,7 @@ export const useSynchronizerIds = (): {readonly current: Ids} => {
 };
 
 export const useSynchronizerStatus = (
-  synchronizerOrSynchronizerId?: Synchronizer | Id,
+  synchronizerOrSynchronizerId?: MaybeGetter<Synchronizer | Id | undefined>,
 ): {readonly current: Status} =>
   useListenable(
     useSynchronizerOrSynchronizerById(synchronizerOrSynchronizerId),
