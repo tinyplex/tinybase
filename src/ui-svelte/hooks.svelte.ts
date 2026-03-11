@@ -108,13 +108,14 @@ const useThing = <UsedThing extends Thing>(
   offset: number,
 ): UsedThing | undefined => getThing(getContextValue(), thingOrThingId, offset);
 
-const useThingOrThingById =
-  <UsedThing extends Thing>(
-    thingOrThingId: MaybeGetter<UsedThing | Id | undefined>,
-    offset: number,
-  ): (() => UsedThing | undefined) =>
-  () =>
-    getThing<UsedThing>(getContextValue(), maybeGet(thingOrThingId), offset);
+const useThingOrThingById = <UsedThing extends Thing>(
+  thingOrThingId: MaybeGetter<UsedThing | Id | undefined>,
+  offset: number,
+): (() => UsedThing | undefined) => {
+  const contextValue = getContextValue();
+  return () =>
+    getThing<UsedThing>(contextValue, maybeGet(thingOrThingId), offset);
+};
 
 const getThingIds = (contextValue: ContextValue, offset: number): Ids =>
   objIds((contextValue[offset * 2 + 1] ?? EMPTY_OBJ) as IdObj<unknown>);
