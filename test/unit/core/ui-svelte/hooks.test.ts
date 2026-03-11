@@ -15,49 +15,98 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase';
-import {beforeEach, describe, expect, test} from 'vitest';
+import {createMergeableStore} from 'tinybase/mergeable-store';
+import type {AnyPersister} from 'tinybase/persisters';
+import {createSessionPersister} from 'tinybase/persisters/persister-browser';
+import type {Synchronizer} from 'tinybase/synchronizers';
+import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
+import {beforeEach, describe, expect, test, vi} from 'vitest';
 
-import HookBindableCell from './helpers/HookBindableCell.svelte';
-import HookBindableValue from './helpers/HookBindableValue.svelte';
-import HookCell from './helpers/HookCell.svelte';
-import HookCellIds from './helpers/HookCellIds.svelte';
-import HookCheckpointIds from './helpers/HookCheckpointIds.svelte';
-import HookGoBackwardCallback from './helpers/HookGoBackwardCallback.svelte';
-import HookGoForwardCallback from './helpers/HookGoForwardCallback.svelte';
-import HookHasCell from './helpers/HookHasCell.svelte';
-import HookHasRow from './helpers/HookHasRow.svelte';
-import HookHasTable from './helpers/HookHasTable.svelte';
-import HookHasTableCell from './helpers/HookHasTableCell.svelte';
-import HookHasTables from './helpers/HookHasTables.svelte';
-import HookHasValue from './helpers/HookHasValue.svelte';
-import HookHasValues from './helpers/HookHasValues.svelte';
-import HookIndexIds from './helpers/HookIndexIds.svelte';
-import HookLinkedRowIds from './helpers/HookLinkedRowIds.svelte';
-import HookLocalRowIds from './helpers/HookLocalRowIds.svelte';
-import HookMetric from './helpers/HookMetric.svelte';
-import HookMetricIds from './helpers/HookMetricIds.svelte';
-import HookQueryIds from './helpers/HookQueryIds.svelte';
-import HookRelationshipIds from './helpers/HookRelationshipIds.svelte';
-import HookRemoteRowId from './helpers/HookRemoteRowId.svelte';
-import HookResultCell from './helpers/HookResultCell.svelte';
-import HookResultCellIds from './helpers/HookResultCellIds.svelte';
-import HookResultRow from './helpers/HookResultRow.svelte';
-import HookResultRowIds from './helpers/HookResultRowIds.svelte';
-import HookResultSortedRowIds from './helpers/HookResultSortedRowIds.svelte';
-import HookResultTable from './helpers/HookResultTable.svelte';
-import HookRow from './helpers/HookRow.svelte';
-import HookRowCount from './helpers/HookRowCount.svelte';
-import HookRowIds from './helpers/HookRowIds.svelte';
-import HookSliceIds from './helpers/HookSliceIds.svelte';
-import HookSliceRowIds from './helpers/HookSliceRowIds.svelte';
-import HookSortedRowIds from './helpers/HookSortedRowIds.svelte';
-import HookTable from './helpers/HookTable.svelte';
-import HookTableCellIds from './helpers/HookTableCellIds.svelte';
-import HookTableIds from './helpers/HookTableIds.svelte';
-import HookTables from './helpers/HookTables.svelte';
-import HookValue from './helpers/HookValue.svelte';
-import HookValueIds from './helpers/HookValueIds.svelte';
-import HookValues from './helpers/HookValues.svelte';
+import ListenerHookCell from './components/ListenerHookCell.svelte';
+import ListenerHookCellIds from './components/ListenerHookCellIds.svelte';
+import ListenerHookCheckpoint from './components/ListenerHookCheckpoint.svelte';
+import ListenerHookCheckpointIds from './components/ListenerHookCheckpointIds.svelte';
+import ListenerHookDidFinishTransaction from './components/ListenerHookDidFinishTransaction.svelte';
+import ListenerHookHasCell from './components/ListenerHookHasCell.svelte';
+import ListenerHookHasRow from './components/ListenerHookHasRow.svelte';
+import ListenerHookHasTable from './components/ListenerHookHasTable.svelte';
+import ListenerHookHasTableCell from './components/ListenerHookHasTableCell.svelte';
+import ListenerHookHasTables from './components/ListenerHookHasTables.svelte';
+import ListenerHookHasValue from './components/ListenerHookHasValue.svelte';
+import ListenerHookHasValues from './components/ListenerHookHasValues.svelte';
+import ListenerHookLinkedRowIds from './components/ListenerHookLinkedRowIds.svelte';
+import ListenerHookLocalRowIds from './components/ListenerHookLocalRowIds.svelte';
+import ListenerHookMetric from './components/ListenerHookMetric.svelte';
+import ListenerHookParamValue from './components/ListenerHookParamValue.svelte';
+import ListenerHookParamValues from './components/ListenerHookParamValues.svelte';
+import ListenerHookPersisterStatus from './components/ListenerHookPersisterStatus.svelte';
+import ListenerHookRemoteRowId from './components/ListenerHookRemoteRowId.svelte';
+import ListenerHookResultCell from './components/ListenerHookResultCell.svelte';
+import ListenerHookResultCellIds from './components/ListenerHookResultCellIds.svelte';
+import ListenerHookResultRow from './components/ListenerHookResultRow.svelte';
+import ListenerHookResultRowCount from './components/ListenerHookResultRowCount.svelte';
+import ListenerHookResultRowIds from './components/ListenerHookResultRowIds.svelte';
+import ListenerHookResultSortedRowIds from './components/ListenerHookResultSortedRowIds.svelte';
+import ListenerHookResultTable from './components/ListenerHookResultTable.svelte';
+import ListenerHookResultTableCellIds from './components/ListenerHookResultTableCellIds.svelte';
+import ListenerHookRow from './components/ListenerHookRow.svelte';
+import ListenerHookRowCount from './components/ListenerHookRowCount.svelte';
+import ListenerHookRowIds from './components/ListenerHookRowIds.svelte';
+import ListenerHookSliceIds from './components/ListenerHookSliceIds.svelte';
+import ListenerHookSliceRowIds from './components/ListenerHookSliceRowIds.svelte';
+import ListenerHookSortedRowIds from './components/ListenerHookSortedRowIds.svelte';
+import ListenerHookStartTransaction from './components/ListenerHookStartTransaction.svelte';
+import ListenerHookSynchronizerStatus from './components/ListenerHookSynchronizerStatus.svelte';
+import ListenerHookTable from './components/ListenerHookTable.svelte';
+import ListenerHookTableCellIds from './components/ListenerHookTableCellIds.svelte';
+import ListenerHookTableIds from './components/ListenerHookTableIds.svelte';
+import ListenerHookTables from './components/ListenerHookTables.svelte';
+import ListenerHookValue from './components/ListenerHookValue.svelte';
+import ListenerHookValueIds from './components/ListenerHookValueIds.svelte';
+import ListenerHookValues from './components/ListenerHookValues.svelte';
+import ListenerHookWillFinishTransaction from './components/ListenerHookWillFinishTransaction.svelte';
+
+import HookBindableCell from './components/HookBindableCell.svelte';
+import HookBindableValue from './components/HookBindableValue.svelte';
+import HookCell from './components/HookCell.svelte';
+import HookCellIds from './components/HookCellIds.svelte';
+import HookCheckpointIds from './components/HookCheckpointIds.svelte';
+import HookGoBackwardCallback from './components/HookGoBackwardCallback.svelte';
+import HookGoForwardCallback from './components/HookGoForwardCallback.svelte';
+import HookHasCell from './components/HookHasCell.svelte';
+import HookHasRow from './components/HookHasRow.svelte';
+import HookHasTable from './components/HookHasTable.svelte';
+import HookHasTableCell from './components/HookHasTableCell.svelte';
+import HookHasTables from './components/HookHasTables.svelte';
+import HookHasValue from './components/HookHasValue.svelte';
+import HookHasValues from './components/HookHasValues.svelte';
+import HookIndexIds from './components/HookIndexIds.svelte';
+import HookLinkedRowIds from './components/HookLinkedRowIds.svelte';
+import HookLocalRowIds from './components/HookLocalRowIds.svelte';
+import HookMetric from './components/HookMetric.svelte';
+import HookMetricIds from './components/HookMetricIds.svelte';
+import HookQueryIds from './components/HookQueryIds.svelte';
+import HookRelationshipIds from './components/HookRelationshipIds.svelte';
+import HookRemoteRowId from './components/HookRemoteRowId.svelte';
+import HookResultCell from './components/HookResultCell.svelte';
+import HookResultCellIds from './components/HookResultCellIds.svelte';
+import HookResultRow from './components/HookResultRow.svelte';
+import HookResultRowIds from './components/HookResultRowIds.svelte';
+import HookResultSortedRowIds from './components/HookResultSortedRowIds.svelte';
+import HookResultTable from './components/HookResultTable.svelte';
+import HookRow from './components/HookRow.svelte';
+import HookRowCount from './components/HookRowCount.svelte';
+import HookRowIds from './components/HookRowIds.svelte';
+import HookSliceIds from './components/HookSliceIds.svelte';
+import HookSliceRowIds from './components/HookSliceRowIds.svelte';
+import HookSortedRowIds from './components/HookSortedRowIds.svelte';
+import HookTable from './components/HookTable.svelte';
+import HookTableCellIds from './components/HookTableCellIds.svelte';
+import HookTableIds from './components/HookTableIds.svelte';
+import HookTables from './components/HookTables.svelte';
+import HookValue from './components/HookValue.svelte';
+import HookValueIds from './components/HookValueIds.svelte';
+import HookValues from './components/HookValues.svelte';
 
 let store: Store;
 
@@ -1086,5 +1135,783 @@ describe('Checkpoint Callbacks', () => {
     expect(checkpoints.getCheckpointIds()).toEqual([['0', '1'], '2', []]);
 
     unmount();
+  });
+});
+
+describe('Listener Hooks', () => {
+  test('useHasTablesListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().hasTables).toEqual(0);
+
+    const {unmount} = render(ListenerHookHasTables, {props: {store, listener}});
+    expect(store.getListenerStats().hasTables).toEqual(1);
+
+    await act(() => store.delTables());
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().hasTables).toEqual(0);
+  });
+
+  test('useTablesListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().tables).toEqual(0);
+
+    const {unmount} = render(ListenerHookTables, {props: {store, listener}});
+    expect(store.getListenerStats().tables).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().tables).toEqual(0);
+  });
+
+  test('useTableIdsListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().tableIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookTableIds, {props: {store, listener}});
+    expect(store.getListenerStats().tableIds).toEqual(1);
+
+    await act(() => store.setCell('t2', 'r1', 'c1', 0));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().tableIds).toEqual(0);
+  });
+
+  test('useHasTableListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().hasTable).toEqual(0);
+
+    const {unmount} = render(ListenerHookHasTable, {
+      props: {store, tableId: 't1', listener},
+    });
+    expect(store.getListenerStats().hasTable).toEqual(1);
+
+    await act(() => store.delTable('t1'));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().hasTable).toEqual(0);
+  });
+
+  test('useTableListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().table).toEqual(0);
+
+    const {unmount} = render(ListenerHookTable, {
+      props: {store, tableId: 't1', listener},
+    });
+    expect(store.getListenerStats().table).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().table).toEqual(0);
+  });
+
+  test('useTableCellIdsListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().tableCellIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookTableCellIds, {
+      props: {store, tableId: 't1', listener},
+    });
+    expect(store.getListenerStats().tableCellIds).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c2', 0));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().tableCellIds).toEqual(0);
+  });
+
+  test('useHasTableCellListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().hasTableCell).toEqual(0);
+
+    const {unmount} = render(ListenerHookHasTableCell, {
+      props: {store, tableId: 't1', cellId: 'c1', listener},
+    });
+    expect(store.getListenerStats().hasTableCell).toEqual(1);
+
+    await act(() => store.delCell('t1', 'r1', 'c1', true));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().hasTableCell).toEqual(0);
+  });
+
+  test('useRowCountListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().rowCount).toEqual(0);
+
+    const {unmount} = render(ListenerHookRowCount, {
+      props: {store, tableId: 't1', listener},
+    });
+    expect(store.getListenerStats().rowCount).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r2', 'c1', 0));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().rowCount).toEqual(0);
+  });
+
+  test('useRowIdsListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().rowIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookRowIds, {
+      props: {store, tableId: 't1', listener},
+    });
+    expect(store.getListenerStats().rowIds).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r2', 'c1', 0));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().rowIds).toEqual(0);
+  });
+
+  test('useSortedRowIdsListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().sortedRowIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookSortedRowIds, {
+      props: {store, tableId: 't1', cellId: 'c1', listener},
+    });
+    expect(store.getListenerStats().sortedRowIds).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r2', 'c1', 0));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().sortedRowIds).toEqual(0);
+  });
+
+  test('useHasRowListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().hasRow).toEqual(0);
+
+    const {unmount} = render(ListenerHookHasRow, {
+      props: {store, tableId: 't1', rowId: 'r1', listener},
+    });
+    expect(store.getListenerStats().hasRow).toEqual(1);
+
+    await act(() => store.delRow('t1', 'r1'));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().hasRow).toEqual(0);
+  });
+
+  test('useRowListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().row).toEqual(0);
+
+    const {unmount} = render(ListenerHookRow, {
+      props: {store, tableId: 't1', rowId: 'r1', listener},
+    });
+    expect(store.getListenerStats().row).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().row).toEqual(0);
+  });
+
+  test('useCellIdsListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().cellIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookCellIds, {
+      props: {store, tableId: 't1', rowId: 'r1', listener},
+    });
+    expect(store.getListenerStats().cellIds).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c2', 0));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().cellIds).toEqual(0);
+  });
+
+  test('useHasCellListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().hasCell).toEqual(0);
+
+    const {unmount} = render(ListenerHookHasCell, {
+      props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', listener},
+    });
+    expect(store.getListenerStats().hasCell).toEqual(1);
+
+    await act(() => store.delCell('t1', 'r1', 'c1', true));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().hasCell).toEqual(0);
+  });
+
+  test('useCellListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().cell).toEqual(0);
+
+    const {unmount} = render(ListenerHookCell, {
+      props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', listener},
+    });
+    expect(store.getListenerStats().cell).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().cell).toEqual(0);
+  });
+
+  test('useHasValuesListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().hasValues).toEqual(0);
+
+    const {unmount} = render(ListenerHookHasValues, {props: {store, listener}});
+    expect(store.getListenerStats().hasValues).toEqual(1);
+
+    await act(() => store.delValues());
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().hasValues).toEqual(0);
+  });
+
+  test('useValuesListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().values).toEqual(0);
+
+    const {unmount} = render(ListenerHookValues, {props: {store, listener}});
+    expect(store.getListenerStats().values).toEqual(1);
+
+    await act(() => store.setValue('v1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().values).toEqual(0);
+  });
+
+  test('useValueIdsListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().valueIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookValueIds, {props: {store, listener}});
+    expect(store.getListenerStats().valueIds).toEqual(1);
+
+    await act(() => store.setValue('v2', 0));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().valueIds).toEqual(0);
+  });
+
+  test('useHasValueListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().hasValue).toEqual(0);
+
+    const {unmount} = render(ListenerHookHasValue, {
+      props: {store, valueId: 'v1', listener},
+    });
+    expect(store.getListenerStats().hasValue).toEqual(1);
+
+    await act(() => store.delValue('v1'));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().hasValue).toEqual(0);
+  });
+
+  test('useValueListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().value).toEqual(0);
+
+    const {unmount} = render(ListenerHookValue, {
+      props: {store, valueId: 'v1', listener},
+    });
+    expect(store.getListenerStats().value).toEqual(1);
+
+    await act(() => store.setValue('v1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().value).toEqual(0);
+  });
+
+  test('useStartTransactionListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().transaction).toEqual(0);
+
+    const {unmount} = render(ListenerHookStartTransaction, {
+      props: {store, listener},
+    });
+    expect(store.getListenerStats().transaction).toEqual(1);
+
+    await act(() => store.setValue('v1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().transaction).toEqual(0);
+  });
+
+  test('useWillFinishTransactionListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().transaction).toEqual(0);
+
+    const {unmount} = render(ListenerHookWillFinishTransaction, {
+      props: {store, listener},
+    });
+    expect(store.getListenerStats().transaction).toEqual(1);
+
+    await act(() => store.setValue('v1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().transaction).toEqual(0);
+  });
+
+  test('useDidFinishTransactionListener', async () => {
+    const listener = vi.fn();
+    expect(store.getListenerStats().transaction).toEqual(0);
+
+    const {unmount} = render(ListenerHookDidFinishTransaction, {
+      props: {store, listener},
+    });
+    expect(store.getListenerStats().transaction).toEqual(1);
+
+    await act(() => store.setValue('v1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(store.getListenerStats().transaction).toEqual(0);
+  });
+
+  test('useMetricListener', async () => {
+    const metrics: Metrics = createMetrics(store).setMetricDefinition(
+      'm1',
+      't1',
+      'max',
+      'c1',
+    );
+    const listener = vi.fn();
+    expect(metrics.getListenerStats().metric).toEqual(0);
+
+    const {unmount} = render(ListenerHookMetric, {
+      props: {metrics, metricId: 'm1', listener},
+    });
+    expect(metrics.getListenerStats().metric).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(metrics.getListenerStats().metric).toEqual(0);
+  });
+
+  test('useSliceIdsListener', async () => {
+    const indexes: Indexes = createIndexes(store).setIndexDefinition(
+      'i1',
+      't1',
+      'c1',
+    );
+    const listener = vi.fn();
+    expect(indexes.getListenerStats().sliceIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookSliceIds, {
+      props: {indexes, indexId: 'i1', listener},
+    });
+    expect(indexes.getListenerStats().sliceIds).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c1', 'a'));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(indexes.getListenerStats().sliceIds).toEqual(0);
+  });
+
+  test('useSliceRowIdsListener', async () => {
+    const indexes: Indexes = createIndexes(store).setIndexDefinition(
+      'i1',
+      't1',
+      'c1',
+    );
+    const listener = vi.fn();
+    expect(indexes.getListenerStats().sliceRowIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookSliceRowIds, {
+      props: {indexes, indexId: 'i1', sliceId: 'a', listener},
+    });
+    expect(indexes.getListenerStats().sliceRowIds).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c1', 'a'));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(indexes.getListenerStats().sliceRowIds).toEqual(0);
+  });
+
+  test('useRemoteRowIdListener', async () => {
+    const relationships: Relationships = createRelationships(
+      store,
+    ).setRelationshipDefinition('r1', 't1', 'T1', 'c1');
+    const listener = vi.fn();
+    expect(relationships.getListenerStats().remoteRowId).toEqual(0);
+
+    const {unmount} = render(ListenerHookRemoteRowId, {
+      props: {relationships, relationshipId: 'r1', localRowId: 'r1', listener},
+    });
+    expect(relationships.getListenerStats().remoteRowId).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c1', 'R1'));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(relationships.getListenerStats().remoteRowId).toEqual(0);
+  });
+
+  test('useLocalRowIdsListener', async () => {
+    const relationships: Relationships = createRelationships(
+      store,
+    ).setRelationshipDefinition('r1', 't1', 'T1', 'c1');
+    const listener = vi.fn();
+    expect(relationships.getListenerStats().localRowIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookLocalRowIds, {
+      props: {
+        relationships,
+        relationshipId: 'r1',
+        remoteRowId: 'R1',
+        listener,
+      },
+    });
+    expect(relationships.getListenerStats().localRowIds).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c1', 'R1'));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(relationships.getListenerStats().localRowIds).toEqual(0);
+  });
+
+  test('useLinkedRowIdsListener', async () => {
+    const relationships: Relationships = createRelationships(
+      store,
+    ).setRelationshipDefinition('r1', 't1', 't1', 'c1');
+    const listener = vi.fn();
+    expect(relationships.getListenerStats().linkedRowIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookLinkedRowIds, {
+      props: {
+        relationships,
+        relationshipId: 'r1',
+        firstRowId: 'r1',
+        listener,
+      },
+    });
+    expect(relationships.getListenerStats().linkedRowIds).toEqual(1);
+
+    await act(() => store.setTables({t1: {r1: {c1: 'r2'}, r2: {c1: 'r3'}}}));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(relationships.getListenerStats().linkedRowIds).toEqual(0);
+  });
+
+  test('useResultTableListener', async () => {
+    const queries: Queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => select('c1'),
+    );
+    const listener = vi.fn();
+    expect(queries.getListenerStats().table).toEqual(0);
+
+    const {unmount} = render(ListenerHookResultTable, {
+      props: {queries, queryId: 'q1', listener},
+    });
+    expect(queries.getListenerStats().table).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(queries.getListenerStats().table).toEqual(0);
+  });
+
+  test('useResultTableCellIdsListener', async () => {
+    const queries: Queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => {
+        select('c1');
+        select('c2');
+      },
+    );
+    const listener = vi.fn();
+    expect(queries.getListenerStats().tableCellIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookResultTableCellIds, {
+      props: {queries, queryId: 'q1', listener},
+    });
+    expect(queries.getListenerStats().tableCellIds).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c2', 0));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(queries.getListenerStats().tableCellIds).toEqual(0);
+  });
+
+  test('useResultRowCountListener', async () => {
+    const queries: Queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => select('c1'),
+    );
+    const listener = vi.fn();
+    expect(queries.getListenerStats().rowCount).toEqual(0);
+
+    const {unmount} = render(ListenerHookResultRowCount, {
+      props: {queries, queryId: 'q1', listener},
+    });
+    expect(queries.getListenerStats().rowCount).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r2', 'c1', 0));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(queries.getListenerStats().rowCount).toEqual(0);
+  });
+
+  test('useResultRowIdsListener', async () => {
+    const queries: Queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => select('c1'),
+    );
+    const listener = vi.fn();
+    expect(queries.getListenerStats().rowIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookResultRowIds, {
+      props: {queries, queryId: 'q1', listener},
+    });
+    expect(queries.getListenerStats().rowIds).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r2', 'c1', 0));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(queries.getListenerStats().rowIds).toEqual(0);
+  });
+
+  test('useResultSortedRowIdsListener', async () => {
+    const queries: Queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => select('c1'),
+    );
+    const listener = vi.fn();
+    expect(queries.getListenerStats().sortedRowIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookResultSortedRowIds, {
+      props: {queries, queryId: 'q1', cellId: 'c1', listener},
+    });
+    expect(queries.getListenerStats().sortedRowIds).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r2', 'c1', 0));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(queries.getListenerStats().sortedRowIds).toEqual(0);
+  });
+
+  test('useResultRowListener', async () => {
+    const queries: Queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => select('c1'),
+    );
+    const listener = vi.fn();
+    expect(queries.getListenerStats().row).toEqual(0);
+
+    const {unmount} = render(ListenerHookResultRow, {
+      props: {queries, queryId: 'q1', rowId: 'r1', listener},
+    });
+    expect(queries.getListenerStats().row).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(queries.getListenerStats().row).toEqual(0);
+  });
+
+  test('useResultCellIdsListener', async () => {
+    const queries: Queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => {
+        select('c1');
+        select('c2');
+      },
+    );
+    const listener = vi.fn();
+    expect(queries.getListenerStats().cellIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookResultCellIds, {
+      props: {queries, queryId: 'q1', rowId: 'r1', listener},
+    });
+    expect(queries.getListenerStats().cellIds).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c2', 0));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(queries.getListenerStats().cellIds).toEqual(0);
+  });
+
+  test('useResultCellListener', async () => {
+    const queries: Queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => select('c1'),
+    );
+    const listener = vi.fn();
+    expect(queries.getListenerStats().cell).toEqual(0);
+
+    const {unmount} = render(ListenerHookResultCell, {
+      props: {queries, queryId: 'q1', rowId: 'r1', cellId: 'c1', listener},
+    });
+    expect(queries.getListenerStats().cell).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(queries.getListenerStats().cell).toEqual(0);
+  });
+
+  test('useParamValuesListener', async () => {
+    const queries: Queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select, where, param}) => {
+        select('c1');
+        where('c1', param('p1') as number);
+      },
+      {p1: 1},
+    );
+    const listener = vi.fn();
+    expect(queries.getListenerStats().paramValues).toEqual(0);
+
+    const {unmount} = render(ListenerHookParamValues, {
+      props: {queries, queryId: 'q1', listener},
+    });
+    expect(queries.getListenerStats().paramValues).toEqual(1);
+
+    await act(() => queries.setParamValue('q1', 'p1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(queries.getListenerStats().paramValues).toEqual(0);
+  });
+
+  test('useParamValueListener', async () => {
+    const queries: Queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select, where, param}) => {
+        select('c1');
+        where('c1', param('p1') as number);
+      },
+      {p1: 1},
+    );
+    const listener = vi.fn();
+    expect(queries.getListenerStats().paramValue).toEqual(0);
+
+    const {unmount} = render(ListenerHookParamValue, {
+      props: {queries, queryId: 'q1', paramId: 'p1', listener},
+    });
+    expect(queries.getListenerStats().paramValue).toEqual(1);
+
+    await act(() => queries.setParamValue('q1', 'p1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(queries.getListenerStats().paramValue).toEqual(0);
+  });
+
+  test('useCheckpointIdsListener', async () => {
+    const checkpoints: Checkpoints = createCheckpoints(store);
+    const listener = vi.fn();
+    expect(checkpoints.getListenerStats().checkpointIds).toEqual(0);
+
+    const {unmount} = render(ListenerHookCheckpointIds, {
+      props: {checkpoints, listener},
+    });
+    expect(checkpoints.getListenerStats().checkpointIds).toEqual(1);
+
+    await act(() => store.setCell('t1', 'r1', 'c1', 2));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(checkpoints.getListenerStats().checkpointIds).toEqual(0);
+  });
+
+  test('useCheckpointListener', async () => {
+    const checkpoints: Checkpoints = createCheckpoints(store);
+    const listener = vi.fn();
+    expect(checkpoints.getListenerStats().checkpoint).toEqual(0);
+
+    const {unmount} = render(ListenerHookCheckpoint, {
+      props: {checkpoints, checkpointId: '0', listener},
+    });
+    expect(checkpoints.getListenerStats().checkpoint).toEqual(1);
+
+    await act(() => checkpoints.setCheckpoint('0', 'c1'));
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    unmount();
+    expect(checkpoints.getListenerStats().checkpoint).toEqual(0);
+  });
+
+  test('usePersisterStatusListener', async () => {
+    const persister: AnyPersister = createSessionPersister(store, 'test-key');
+    const listener = vi.fn();
+
+    const {unmount} = render(ListenerHookPersisterStatus, {
+      props: {persister, listener},
+    });
+
+    await act(() => persister.save());
+    expect(listener).toHaveBeenCalled();
+
+    unmount();
+    persister.destroy();
+  });
+
+  test('useSynchronizerStatusListener', async () => {
+    const store2 = createMergeableStore();
+    const synchronizer: Synchronizer = createLocalSynchronizer(store2);
+    const listener = vi.fn();
+
+    const {unmount} = render(ListenerHookSynchronizerStatus, {
+      props: {synchronizer, listener},
+    });
+
+    await act(() => synchronizer.save());
+    expect(listener).toHaveBeenCalled();
+
+    unmount();
+    synchronizer.destroy();
   });
 });
