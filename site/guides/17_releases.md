@@ -70,11 +70,12 @@ framework-neutral.
 If you were importing React UI helpers from `tinybase/omni`, update your
 imports:
 
-```js
+```js yolo
 // Before
-import {useCell, Provider} from 'tinybase/omni';
+import {createStore, useCell, Provider} from 'tinybase/omni';
 
 // After
+import {createStore} from 'tinybase/omni';
 import {useCell, Provider} from 'tinybase/ui-react';
 ```
 
