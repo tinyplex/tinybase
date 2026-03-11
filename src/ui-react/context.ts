@@ -90,24 +90,14 @@ export const useThings = <UsedThing extends Thing>(
 ): IdObj<UsedThing> =>
   ({...useContext(Context)[offset * 2 + 1]}) as IdObj<UsedThing>;
 
-export const useThingOrThingById = <
-  Thing extends
-    | Store
-    | Metrics
-    | Indexes
-    | Relationships
-    | Queries
-    | Checkpoints
-    | AnyPersister
-    | Synchronizer,
->(
-  thingOrThingId: Thing | Id | undefined,
+export const useThingOrThingById = <T extends Thing>(
+  thingOrThingId: T | Id | undefined,
   offset: Offsets,
-): Thing | undefined => {
+): T | undefined => {
   const thing = useThing(thingOrThingId as Id, offset);
   return isUndefined(thingOrThingId) || isString(thingOrThingId)
-    ? (thing as Thing | undefined)
-    : (thingOrThingId as Thing);
+    ? (thing as T | undefined)
+    : (thingOrThingId as T);
 };
 
 export const useProvideThing = <Offset extends Offsets>(

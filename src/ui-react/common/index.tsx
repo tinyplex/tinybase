@@ -135,7 +135,7 @@ export const getUseCheckpointView =
     | CurrentCheckpointProps
     | ForwardCheckpointsProps
   ) & {
-    separator?: ReactElement | string;
+    readonly separator?: ReactElement | string;
   }): any => {
     const resolvedCheckpoints = useCheckpointsOrCheckpointsById(checkpoints);
     return (

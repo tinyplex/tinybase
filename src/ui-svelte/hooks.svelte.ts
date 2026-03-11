@@ -24,7 +24,7 @@ import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
 import type {MaybeGetter} from '../@types/ui-svelte/index.d.ts';
 import type {IdObj} from '../common/obj.ts';
 import {objGet, objIds} from '../common/obj.ts';
-import {isString, isUndefined} from '../common/other.ts';
+import {isFunction, isString, isUndefined} from '../common/other.ts';
 import {
   _HAS,
   ADD,
@@ -59,12 +59,19 @@ import {
 import type {ContextValue} from './context.ts';
 import {TINYBASE_CONTEXT_KEY} from './context.ts';
 
+type Thing =
+  | Store
+  | Metrics
+  | Indexes
+  | Relationships
+  | Queries
+  | Checkpoints
+  | AnyPersister
+  | Synchronizer;
+
 const EMPTY_ARR: Ids = [];
 const EMPTY_OBJ: Record<string, never> = {};
 const DEFAULT_CHECKPOINT_IDS: CheckpointIds = [EMPTY_ARR, undefined, EMPTY_ARR];
-
-const get = <T>(v: MaybeGetter<T>): T =>
-  typeof v === 'function' ? (v as () => T)() : v;
 
 const OFFSET_STORE = 0;
 const OFFSET_METRICS = 1;
@@ -75,44 +82,42 @@ const OFFSET_CHECKPOINTS = 5;
 const OFFSET_PERSISTER = 6;
 const OFFSET_SYNCHRONIZER = 7;
 
-const getCtx = (): ContextValue =>
-  (getContext(TINYBASE_CONTEXT_KEY) as ContextValue) ?? [];
+const maybeGet = <T extends Thing | string | number | boolean | undefined>(
+  thing: MaybeGetter<T>,
+): T => (isFunction(thing) ? thing() : thing);
 
-const resolveWithCtx = <T>(
-  ctx: ContextValue,
-  thingOrId: T | Id | undefined,
+const getContextValue = (): ContextValue =>
+  getContext(TINYBASE_CONTEXT_KEY) ?? [];
+
+const getThing = <UsedThing extends Thing>(
+  contextValue: ContextValue,
+  thingOrThingId: UsedThing | Id | undefined,
   offset: number,
-): T | undefined => {
-  if (!isUndefined(thingOrId) && !isString(thingOrId)) return thingOrId as T;
-  return isUndefined(thingOrId)
-    ? (ctx[offset * 2] as T | undefined)
-    : (objGet(ctx[offset * 2 + 1] as IdObj<T>, thingOrId as Id) as
-        | T
-        | undefined);
-};
+): UsedThing | undefined =>
+  isUndefined(thingOrThingId)
+    ? (contextValue[offset * 2] as UsedThing | undefined)
+    : isString(thingOrThingId)
+      ? (objGet(
+          contextValue[offset * 2 + 1] as IdObj<UsedThing>,
+          thingOrThingId,
+        ) as UsedThing | undefined)
+      : (thingOrThingId as UsedThing);
 
-const useThing = <T>(
-  thingOrId: T | Id | undefined,
+const useThing = <UsedThing extends Thing>(
+  thingOrThingId: UsedThing | Id | undefined,
   offset: number,
-): T | undefined => resolveWithCtx(getCtx(), thingOrId, offset);
+): UsedThing | undefined => getThing(getContextValue(), thingOrThingId, offset);
 
-const useThingOrThingById = <T>(
-  thingOrId?: T | Id | (() => T | Id | undefined),
-  offset?: number,
-): (() => T | undefined) => {
-  const ctx = getCtx();
-  return () =>
-    resolveWithCtx<T>(
-      ctx,
-      (typeof thingOrId === 'function'
-        ? (thingOrId as () => T | Id | undefined)()
-        : thingOrId) as T | Id | undefined,
-      offset!,
-    );
-};
+const useThingOrThingById =
+  <UsedThing extends Thing>(
+    thingOrThingId: MaybeGetter<UsedThing | Id | undefined>,
+    offset: number,
+  ): (() => UsedThing | undefined) =>
+  () =>
+    getThing<UsedThing>(getContextValue(), maybeGet(thingOrThingId), offset);
 
-const getThingIds = (ctx: ContextValue, offset: number): Ids =>
-  objIds((ctx[offset * 2 + 1] ?? EMPTY_OBJ) as IdObj<unknown>);
+const getThingIds = (contextValue: ContextValue, offset: number): Ids =>
+  objIds((contextValue[offset * 2 + 1] ?? EMPTY_OBJ) as IdObj<unknown>);
 
 export const useStoreOrStoreById = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
@@ -168,11 +173,13 @@ export const useSynchronizerOrSynchronizerById = (
 
 const useListenable = <T>(
   getThing: () => any,
-  getMethod: string,
-  addMethod: string,
+  listenable: string,
   defaultValue: T,
-  getArgs: () => readonly any[],
+  getArgs: () => readonly any[] = () => EMPTY_ARR,
+  isHas?: 0 | 1,
 ): {readonly current: T} => {
+  const getMethod = (isHas ? _HAS : GET) + listenable;
+  const addMethod = ADD + (isHas ? HAS : '') + listenable + LISTENER;
   let value = $state<T>(
     (getThing()?.[getMethod]?.(...getArgs()) ?? defaultValue) as T,
   );
@@ -194,71 +201,63 @@ const useListenable = <T>(
   };
 };
 
-const useGet = <T>(
-  getThing: () => any,
-  listenable: string,
-  defaultValue: T,
-  getArgs: () => readonly any[] = () => EMPTY_ARR,
-): {readonly current: T} =>
-  useListenable(
-    getThing,
-    GET + listenable,
-    ADD + listenable + LISTENER,
-    defaultValue,
-    getArgs,
-  );
-
-const useHas = (
-  getThing: () => any,
-  listenable: string,
-  getArgs: () => readonly any[] = () => EMPTY_ARR,
-): {readonly current: boolean} =>
-  useListenable(
-    getThing,
-    _HAS + listenable,
-    ADD + HAS + listenable + LISTENER,
-    false,
-    getArgs,
-  );
-
 export const useHasTables = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(useStoreOrStoreById(storeOrStoreId), TABLES);
+  useListenable(
+    useStoreOrStoreById(storeOrStoreId),
+    TABLES,
+    false,
+    () => EMPTY_ARR,
+    1,
+  );
 
 export const useTables = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Tables} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), TABLES, EMPTY_OBJ as Tables);
+  useListenable(
+    useStoreOrStoreById(storeOrStoreId),
+    TABLES,
+    EMPTY_OBJ as Tables,
+  );
 
 export const useTableIds = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), TABLE_IDS, EMPTY_ARR);
+  useListenable(useStoreOrStoreById(storeOrStoreId), TABLE_IDS, EMPTY_ARR);
 
 export const useHasTable = (
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(useStoreOrStoreById(storeOrStoreId), TABLE, () => [get(tableId)]);
+  useListenable(
+    useStoreOrStoreById(storeOrStoreId),
+    TABLE,
+    false,
+    () => [maybeGet(tableId)],
+    1,
+  );
 
 export const useTable = (
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Table} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), TABLE, EMPTY_OBJ as Table, () => [
-    get(tableId),
-  ]);
+  useListenable(
+    useStoreOrStoreById(storeOrStoreId),
+    TABLE,
+    EMPTY_OBJ as Table,
+    () => [maybeGet(tableId)],
+  );
 
 export const useTableCellIds = (
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(
+  useListenable(
     useStoreOrStoreById(storeOrStoreId),
     TABLE + CELL_IDS,
     EMPTY_ARR,
-    () => [get(tableId)],
+    () => [maybeGet(tableId)],
   );
 
 export const useHasTableCell = (
@@ -266,25 +265,28 @@ export const useHasTableCell = (
   cellId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(useStoreOrStoreById(storeOrStoreId), TABLE + CELL, () => [
-    get(tableId),
-    get(cellId),
-  ]);
+  useListenable(
+    useStoreOrStoreById(storeOrStoreId),
+    TABLE + CELL,
+    false,
+    () => [maybeGet(tableId), maybeGet(cellId)],
+    1,
+  );
 
 export const useRowCount = (
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: number} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), ROW_COUNT, 0, () => [
-    get(tableId),
+  useListenable(useStoreOrStoreById(storeOrStoreId), ROW_COUNT, 0, () => [
+    maybeGet(tableId),
   ]);
 
 export const useRowIds = (
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), ROW_IDS, EMPTY_ARR, () => [
-    get(tableId),
+  useListenable(useStoreOrStoreById(storeOrStoreId), ROW_IDS, EMPTY_ARR, () => [
+    maybeGet(tableId),
   ]);
 
 export const useSortedRowIds = (
@@ -295,43 +297,55 @@ export const useSortedRowIds = (
   limit?: MaybeGetter<number | undefined>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), SORTED_ROW_IDS, EMPTY_ARR, () => [
-    get(tableId),
-    get(cellId),
-    get(descending),
-    get(offset),
-    get(limit),
-  ]);
+  useListenable(
+    useStoreOrStoreById(storeOrStoreId),
+    SORTED_ROW_IDS,
+    EMPTY_ARR,
+    () => [
+      maybeGet(tableId),
+      maybeGet(cellId),
+      maybeGet(descending),
+      maybeGet(offset),
+      maybeGet(limit),
+    ],
+  );
 
 export const useHasRow = (
   tableId: MaybeGetter<Id>,
   rowId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(useStoreOrStoreById(storeOrStoreId), ROW, () => [
-    get(tableId),
-    get(rowId),
-  ]);
+  useListenable(
+    useStoreOrStoreById(storeOrStoreId),
+    ROW,
+    false,
+    () => [maybeGet(tableId), maybeGet(rowId)],
+    1,
+  );
 
 export const useRow = (
   tableId: MaybeGetter<Id>,
   rowId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Row} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), ROW, EMPTY_OBJ as Row, () => [
-    get(tableId),
-    get(rowId),
-  ]);
+  useListenable(
+    useStoreOrStoreById(storeOrStoreId),
+    ROW,
+    EMPTY_OBJ as Row,
+    () => [maybeGet(tableId), maybeGet(rowId)],
+  );
 
 export const useCellIds = (
   tableId: MaybeGetter<Id>,
   rowId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), CELL_IDS, EMPTY_ARR, () => [
-    get(tableId),
-    get(rowId),
-  ]);
+  useListenable(
+    useStoreOrStoreById(storeOrStoreId),
+    CELL_IDS,
+    EMPTY_ARR,
+    () => [maybeGet(tableId), maybeGet(rowId)],
+  );
 
 export const useHasCell = (
   tableId: MaybeGetter<Id>,
@@ -339,11 +353,13 @@ export const useHasCell = (
   cellId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(useStoreOrStoreById(storeOrStoreId), CELL, () => [
-    get(tableId),
-    get(rowId),
-    get(cellId),
-  ]);
+  useListenable(
+    useStoreOrStoreById(storeOrStoreId),
+    CELL,
+    false,
+    () => [maybeGet(tableId), maybeGet(rowId), maybeGet(cellId)],
+    1,
+  );
 
 export const useCell = (
   tableId: MaybeGetter<Id>,
@@ -351,10 +367,10 @@ export const useCell = (
   cellId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: CellOrUndefined} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), CELL, undefined, () => [
-    get(tableId),
-    get(rowId),
-    get(cellId),
+  useListenable(useStoreOrStoreById(storeOrStoreId), CELL, undefined, () => [
+    maybeGet(tableId),
+    maybeGet(rowId),
+    maybeGet(cellId),
   ]);
 
 export const useBindableCell = (
@@ -365,17 +381,21 @@ export const useBindableCell = (
 ): {get current(): CellOrUndefined; set current(v: Cell)} => {
   const getS = useStoreOrStoreById(storeOrStoreId);
   let value = $state<CellOrUndefined>(
-    getS()?.getCell(get(tableId), get(rowId), get(cellId)),
+    getS()?.getCell(maybeGet(tableId), maybeGet(rowId), maybeGet(cellId)),
   );
   if (typeof window !== 'undefined') {
     $effect(() => {
       const s: any = getS();
-      const t = get(tableId),
-        r = get(rowId),
-        c = get(cellId);
+      const t = maybeGet(tableId),
+        r = maybeGet(rowId),
+        c = maybeGet(cellId);
       value = s?.getCell(t, r, c);
       const listenerId = s?.addCellListener(t, r, c, (st: any) => {
-        value = st.getCell(get(tableId), get(rowId), get(cellId));
+        value = st.getCell(
+          maybeGet(tableId),
+          maybeGet(rowId),
+          maybeGet(cellId),
+        );
       });
       return () => s?.delListener?.(listenerId);
     });
@@ -385,7 +405,7 @@ export const useBindableCell = (
       return value;
     },
     set current(v: Cell) {
-      getS()?.setCell(get(tableId), get(rowId), get(cellId), v);
+      getS()?.setCell(maybeGet(tableId), maybeGet(rowId), maybeGet(cellId), v);
     },
   };
 };
@@ -393,30 +413,46 @@ export const useBindableCell = (
 export const useHasValues = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(useStoreOrStoreById(storeOrStoreId), VALUES);
+  useListenable(
+    useStoreOrStoreById(storeOrStoreId),
+    VALUES,
+    false,
+    () => EMPTY_ARR,
+    1,
+  );
 
 export const useValues = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Values} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), VALUES, EMPTY_OBJ as Values);
+  useListenable(
+    useStoreOrStoreById(storeOrStoreId),
+    VALUES,
+    EMPTY_OBJ as Values,
+  );
 
 export const useValueIds = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), VALUE_IDS, EMPTY_ARR);
+  useListenable(useStoreOrStoreById(storeOrStoreId), VALUE_IDS, EMPTY_ARR);
 
 export const useHasValue = (
   valueId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
-  useHas(useStoreOrStoreById(storeOrStoreId), VALUE, () => [get(valueId)]);
+  useListenable(
+    useStoreOrStoreById(storeOrStoreId),
+    VALUE,
+    false,
+    () => [maybeGet(valueId)],
+    1,
+  );
 
 export const useValue = (
   valueId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: ValueOrUndefined} =>
-  useGet(useStoreOrStoreById(storeOrStoreId), VALUE, undefined, () => [
-    get(valueId),
+  useListenable(useStoreOrStoreById(storeOrStoreId), VALUE, undefined, () => [
+    maybeGet(valueId),
   ]);
 
 export const useBindableValue = (
@@ -424,14 +460,14 @@ export const useBindableValue = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {get current(): ValueOrUndefined; set current(v: Value)} => {
   const getS = useStoreOrStoreById(storeOrStoreId);
-  let value = $state<ValueOrUndefined>(getS()?.getValue(get(valueId)));
+  let value = $state<ValueOrUndefined>(getS()?.getValue(maybeGet(valueId)));
   if (typeof window !== 'undefined') {
     $effect(() => {
       const s: any = getS();
-      const vid = get(valueId);
+      const vid = maybeGet(valueId);
       value = s?.getValue(vid);
       const listenerId = s?.addValueListener(vid, (st: any) => {
-        value = st.getValue(get(valueId));
+        value = st.getValue(maybeGet(valueId));
       });
       return () => s?.delListener?.(listenerId);
     });
@@ -441,7 +477,7 @@ export const useBindableValue = (
       return value;
     },
     set current(v: Value) {
-      getS()?.setValue(get(valueId), v);
+      getS()?.setValue(maybeGet(valueId), v);
     },
   };
 };
@@ -450,11 +486,11 @@ export const useStore = (id?: Id): Store | undefined =>
   useThing(id, OFFSET_STORE) as Store | undefined;
 
 export const useStoreIds = (): {readonly current: Ids} => {
-  const ctx = getCtx();
-  let ids = $state<Ids>(getThingIds(ctx, OFFSET_STORE));
+  const contextValue = getContextValue();
+  let ids = $state<Ids>(getThingIds(contextValue, OFFSET_STORE));
   if (typeof window !== 'undefined') {
     $effect(() => {
-      ids = getThingIds(ctx, OFFSET_STORE);
+      ids = getThingIds(contextValue, OFFSET_STORE);
     });
   }
   return {
@@ -468,11 +504,11 @@ export const useMetrics = (id?: Id): Metrics | undefined =>
   useThing(id, OFFSET_METRICS) as Metrics | undefined;
 
 export const useMetricsIds = (): {readonly current: Ids} => {
-  const ctx = getCtx();
-  let ids = $state<Ids>(getThingIds(ctx, OFFSET_METRICS));
+  const contextValue = getContextValue();
+  let ids = $state<Ids>(getThingIds(contextValue, OFFSET_METRICS));
   if (typeof window !== 'undefined') {
     $effect(() => {
-      ids = getThingIds(ctx, OFFSET_METRICS);
+      ids = getThingIds(contextValue, OFFSET_METRICS);
     });
   }
   return {
@@ -485,25 +521,32 @@ export const useMetricsIds = (): {readonly current: Ids} => {
 export const useMetricIds = (
   metricsOrMetricsId?: MaybeGetter<Metrics | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useMetricsOrMetricsById(metricsOrMetricsId), METRIC + IDS, EMPTY_ARR);
+  useListenable(
+    useMetricsOrMetricsById(metricsOrMetricsId),
+    METRIC + IDS,
+    EMPTY_ARR,
+  );
 
 export const useMetric = (
   metricId: MaybeGetter<Id>,
   metricsOrMetricsId?: MaybeGetter<Metrics | Id | undefined>,
 ): {readonly current: number | undefined} =>
-  useGet(useMetricsOrMetricsById(metricsOrMetricsId), METRIC, undefined, () => [
-    get(metricId),
-  ]);
+  useListenable(
+    useMetricsOrMetricsById(metricsOrMetricsId),
+    METRIC,
+    undefined,
+    () => [maybeGet(metricId)],
+  );
 
 export const useIndexes = (id?: Id): Indexes | undefined =>
   useThing(id, OFFSET_INDEXES) as Indexes | undefined;
 
 export const useIndexesIds = (): {readonly current: Ids} => {
-  const ctx = getCtx();
-  let ids = $state<Ids>(getThingIds(ctx, OFFSET_INDEXES));
+  const contextValue = getContextValue();
+  let ids = $state<Ids>(getThingIds(contextValue, OFFSET_INDEXES));
   if (typeof window !== 'undefined') {
     $effect(() => {
-      ids = getThingIds(ctx, OFFSET_INDEXES);
+      ids = getThingIds(contextValue, OFFSET_INDEXES);
     });
   }
   return {
@@ -516,17 +559,21 @@ export const useIndexesIds = (): {readonly current: Ids} => {
 export const useIndexIds = (
   indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useIndexesOrIndexesById(indexesOrIndexesId), INDEX + IDS, EMPTY_ARR);
+  useListenable(
+    useIndexesOrIndexesById(indexesOrIndexesId),
+    INDEX + IDS,
+    EMPTY_ARR,
+  );
 
 export const useSliceIds = (
   indexId: MaybeGetter<Id>,
   indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(
+  useListenable(
     useIndexesOrIndexesById(indexesOrIndexesId),
     SLICE + IDS,
     EMPTY_ARR,
-    () => [get(indexId)],
+    () => [maybeGet(indexId)],
   );
 
 export const useSliceRowIds = (
@@ -534,11 +581,11 @@ export const useSliceRowIds = (
   sliceId: MaybeGetter<Id>,
   indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(
+  useListenable(
     useIndexesOrIndexesById(indexesOrIndexesId),
     SLICE + ROW_IDS,
     EMPTY_ARR,
-    () => [get(indexId), get(sliceId)],
+    () => [maybeGet(indexId), maybeGet(sliceId)],
   );
 
 export const useIndexStoreTableId = (
@@ -551,7 +598,7 @@ export const useIndexStoreTableId = (
       return getI()?.getStore();
     },
     get tableId() {
-      return getI()?.getTableId(get(indexId));
+      return getI()?.getTableId(maybeGet(indexId));
     },
   };
 };
@@ -560,11 +607,11 @@ export const useQueries = (id?: Id): Queries | undefined =>
   useThing(id, OFFSET_QUERIES) as Queries | undefined;
 
 export const useQueriesIds = (): {readonly current: Ids} => {
-  const ctx = getCtx();
-  let ids = $state<Ids>(getThingIds(ctx, OFFSET_QUERIES));
+  const contextValue = getContextValue();
+  let ids = $state<Ids>(getThingIds(contextValue, OFFSET_QUERIES));
   if (typeof window !== 'undefined') {
     $effect(() => {
-      ids = getThingIds(ctx, OFFSET_QUERIES);
+      ids = getThingIds(contextValue, OFFSET_QUERIES);
     });
   }
   return {
@@ -577,50 +624,54 @@ export const useQueriesIds = (): {readonly current: Ids} => {
 export const useQueryIds = (
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(useQueriesOrQueriesById(queriesOrQueriesId), QUERY + IDS, EMPTY_ARR);
+  useListenable(
+    useQueriesOrQueriesById(queriesOrQueriesId),
+    QUERY + IDS,
+    EMPTY_ARR,
+  );
 
 export const useResultTable = (
   queryId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Table} =>
-  useGet(
+  useListenable(
     useQueriesOrQueriesById(queriesOrQueriesId),
     RESULT + TABLE,
     EMPTY_OBJ as Table,
-    () => [get(queryId)],
+    () => [maybeGet(queryId)],
   );
 
 export const useResultTableCellIds = (
   queryId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(
+  useListenable(
     useQueriesOrQueriesById(queriesOrQueriesId),
     RESULT + TABLE + CELL_IDS,
     EMPTY_ARR,
-    () => [get(queryId)],
+    () => [maybeGet(queryId)],
   );
 
 export const useResultRowCount = (
   queryId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: number} =>
-  useGet(
+  useListenable(
     useQueriesOrQueriesById(queriesOrQueriesId),
     RESULT + ROW_COUNT,
     0,
-    () => [get(queryId)],
+    () => [maybeGet(queryId)],
   );
 
 export const useResultRowIds = (
   queryId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(
+  useListenable(
     useQueriesOrQueriesById(queriesOrQueriesId),
     RESULT + ROW_IDS,
     EMPTY_ARR,
-    () => [get(queryId)],
+    () => [maybeGet(queryId)],
   );
 
 export const useResultSortedRowIds = (
@@ -631,11 +682,17 @@ export const useResultSortedRowIds = (
   limit?: MaybeGetter<number | undefined>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(
+  useListenable(
     useQueriesOrQueriesById(queriesOrQueriesId),
     RESULT + SORTED_ROW_IDS,
     EMPTY_ARR,
-    () => [get(queryId), get(cellId), get(descending), get(offset), get(limit)],
+    () => [
+      maybeGet(queryId),
+      maybeGet(cellId),
+      maybeGet(descending),
+      maybeGet(offset),
+      maybeGet(limit),
+    ],
   );
 
 export const useResultRow = (
@@ -643,11 +700,11 @@ export const useResultRow = (
   rowId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Row} =>
-  useGet(
+  useListenable(
     useQueriesOrQueriesById(queriesOrQueriesId),
     RESULT + ROW,
     EMPTY_OBJ as Row,
-    () => [get(queryId), get(rowId)],
+    () => [maybeGet(queryId), maybeGet(rowId)],
   );
 
 export const useResultCellIds = (
@@ -655,11 +712,11 @@ export const useResultCellIds = (
   rowId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(
+  useListenable(
     useQueriesOrQueriesById(queriesOrQueriesId),
     RESULT + CELL_IDS,
     EMPTY_ARR,
-    () => [get(queryId), get(rowId)],
+    () => [maybeGet(queryId), maybeGet(rowId)],
   );
 
 export const useResultCell = (
@@ -668,22 +725,22 @@ export const useResultCell = (
   cellId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): {readonly current: Cell | undefined} =>
-  useGet(
+  useListenable(
     useQueriesOrQueriesById(queriesOrQueriesId),
     RESULT + CELL,
     undefined,
-    () => [get(queryId), get(rowId), get(cellId)],
+    () => [maybeGet(queryId), maybeGet(rowId), maybeGet(cellId)],
   );
 
 export const useRelationships = (id?: Id): Relationships | undefined =>
   useThing(id, OFFSET_RELATIONSHIPS) as Relationships | undefined;
 
 export const useRelationshipsIds = (): {readonly current: Ids} => {
-  const ctx = getCtx();
-  let ids = $state<Ids>(getThingIds(ctx, OFFSET_RELATIONSHIPS));
+  const contextValue = getContextValue();
+  let ids = $state<Ids>(getThingIds(contextValue, OFFSET_RELATIONSHIPS));
   if (typeof window !== 'undefined') {
     $effect(() => {
-      ids = getThingIds(ctx, OFFSET_RELATIONSHIPS);
+      ids = getThingIds(contextValue, OFFSET_RELATIONSHIPS);
     });
   }
   return {
@@ -696,7 +753,7 @@ export const useRelationshipsIds = (): {readonly current: Ids} => {
 export const useRelationshipIds = (
   relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(
+  useListenable(
     useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     RELATIONSHIP + IDS,
     EMPTY_ARR,
@@ -707,11 +764,11 @@ export const useRemoteRowId = (
   localRowId: MaybeGetter<Id>,
   relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Id | undefined} =>
-  useGet(
+  useListenable(
     useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     REMOTE_ROW_ID,
     undefined,
-    () => [get(relationshipId), get(localRowId)],
+    () => [maybeGet(relationshipId), maybeGet(localRowId)],
   );
 
 export const useLocalRowIds = (
@@ -719,11 +776,11 @@ export const useLocalRowIds = (
   remoteRowId: MaybeGetter<Id>,
   relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(
+  useListenable(
     useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     LOCAL + ROW_IDS,
     EMPTY_ARR,
-    () => [get(relationshipId), get(remoteRowId)],
+    () => [maybeGet(relationshipId), maybeGet(remoteRowId)],
   );
 
 export const useLinkedRowIds = (
@@ -731,11 +788,11 @@ export const useLinkedRowIds = (
   firstRowId: MaybeGetter<Id>,
   relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): {readonly current: Ids} =>
-  useGet(
+  useListenable(
     useRelationshipsOrRelationshipsById(relationshipsOrRelationshipsId),
     LINKED + ROW_IDS,
     EMPTY_ARR,
-    () => [get(relationshipId), get(firstRowId)],
+    () => [maybeGet(relationshipId), maybeGet(firstRowId)],
   );
 
 export const useRelationshipsStoreTableIds = (
@@ -748,10 +805,10 @@ export const useRelationshipsStoreTableIds = (
       return getR()?.getStore();
     },
     get localTableId() {
-      return getR()?.getLocalTableId(get(relationshipId));
+      return getR()?.getLocalTableId(maybeGet(relationshipId));
     },
     get remoteTableId() {
-      return getR()?.getRemoteTableId(get(relationshipId));
+      return getR()?.getRemoteTableId(maybeGet(relationshipId));
     },
   };
 };
@@ -760,11 +817,11 @@ export const useCheckpoints = (id?: Id): Checkpoints | undefined =>
   useThing(id, OFFSET_CHECKPOINTS) as Checkpoints | undefined;
 
 export const useCheckpointsIds = (): {readonly current: Ids} => {
-  const ctx = getCtx();
-  let ids = $state<Ids>(getThingIds(ctx, OFFSET_CHECKPOINTS));
+  const contextValue = getContextValue();
+  let ids = $state<Ids>(getThingIds(contextValue, OFFSET_CHECKPOINTS));
   if (typeof window !== 'undefined') {
     $effect(() => {
-      ids = getThingIds(ctx, OFFSET_CHECKPOINTS);
+      ids = getThingIds(contextValue, OFFSET_CHECKPOINTS);
     });
   }
   return {
@@ -777,7 +834,7 @@ export const useCheckpointsIds = (): {readonly current: Ids} => {
 export const useCheckpointIds = (
   checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): {readonly current: CheckpointIds} =>
-  useGet(
+  useListenable(
     useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
     CHECKPOINT + IDS,
     DEFAULT_CHECKPOINT_IDS,
@@ -787,11 +844,11 @@ export const useCheckpoint = (
   checkpointId: MaybeGetter<Id>,
   checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): {readonly current: string | undefined} =>
-  useGet(
+  useListenable(
     useCheckpointsOrCheckpointsById(checkpointsOrCheckpointsId),
     CHECKPOINT,
     undefined,
-    () => [get(checkpointId)],
+    () => [maybeGet(checkpointId)],
   );
 
 export const useGoBackwardCallback = (
@@ -812,11 +869,11 @@ export const usePersister = (id?: Id): AnyPersister | undefined =>
   useThing(id, OFFSET_PERSISTER) as AnyPersister | undefined;
 
 export const usePersisterIds = (): {readonly current: Ids} => {
-  const ctx = getCtx();
-  let ids = $state<Ids>(getThingIds(ctx, OFFSET_PERSISTER));
+  const contextValue = getContextValue();
+  let ids = $state<Ids>(getThingIds(contextValue, OFFSET_PERSISTER));
   if (typeof window !== 'undefined') {
     $effect(() => {
-      ids = getThingIds(ctx, OFFSET_PERSISTER);
+      ids = getThingIds(contextValue, OFFSET_PERSISTER);
     });
   }
   return {
@@ -829,7 +886,7 @@ export const usePersisterIds = (): {readonly current: Ids} => {
 export const usePersisterStatus = (
   persisterOrPersisterId?: AnyPersister | Id,
 ): {readonly current: Status} =>
-  useGet(
+  useListenable(
     usePersisterOrPersisterById(persisterOrPersisterId),
     STATUS,
     0 as Status,
@@ -839,11 +896,11 @@ export const useSynchronizer = (id?: Id): Synchronizer | undefined =>
   useThing(id, OFFSET_SYNCHRONIZER) as Synchronizer | undefined;
 
 export const useSynchronizerIds = (): {readonly current: Ids} => {
-  const ctx = getCtx();
-  let ids = $state<Ids>(getThingIds(ctx, OFFSET_SYNCHRONIZER));
+  const contextValue = getContextValue();
+  let ids = $state<Ids>(getThingIds(contextValue, OFFSET_SYNCHRONIZER));
   if (typeof window !== 'undefined') {
     $effect(() => {
-      ids = getThingIds(ctx, OFFSET_SYNCHRONIZER);
+      ids = getThingIds(contextValue, OFFSET_SYNCHRONIZER);
     });
   }
   return {
@@ -856,18 +913,18 @@ export const useSynchronizerIds = (): {readonly current: Ids} => {
 export const useSynchronizerStatus = (
   synchronizerOrSynchronizerId?: Synchronizer | Id,
 ): {readonly current: Status} =>
-  useGet(
+  useListenable(
     useSynchronizerOrSynchronizerById(synchronizerOrSynchronizerId),
     STATUS,
     0 as Status,
   );
 
 const provideThing = (thingId: Id, thing: any, offset: number): void => {
-  const ctx = getCtx();
+  const contextValue = getContextValue();
   if (typeof window !== 'undefined') {
     $effect(() => {
-      ctx[16]?.(offset, thingId, thing);
-      return () => ctx[17]?.(offset, thingId);
+      contextValue[16]?.(offset, thingId, thing);
+      return () => contextValue[17]?.(offset, thingId);
     });
   }
 };
