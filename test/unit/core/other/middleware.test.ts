@@ -1082,6 +1082,16 @@ describe('willSetRow', () => {
       expect(store.getRow('t1', 'r1')).toEqual({c1: 'a'});
     });
 
+    test('omitting existing cellId from returned row deletes it', () => {
+      store.setRow('t1', 'r1', {c1: 'a', c2: 'b'});
+      middleware.addWillSetRowCallback((_tableId, _rowId, row) => {
+        const {c2: _, ...rest} = row;
+        return rest;
+      });
+      store.setCell('t1', 'r1', 'c3', 'c');
+      expect(store.getRow('t1', 'r1')).toEqual({c1: 'a', c3: 'c'});
+    });
+
     test('not called from setPartialRow', () => {
       const calls: string[] = [];
       middleware.addWillSetRowCallback((tableId, rowId, row) => {
