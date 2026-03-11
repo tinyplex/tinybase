@@ -32,6 +32,154 @@
  */
 /// ui-svelte.MaybeGetter
 /**
+ * The StoreOrStoreId type is used when you need to refer to a Store in a
+ * Svelte hook or component.
+ *
+ * In some simple cases you will already have a direct reference to the Store.
+ *
+ * This module also includes a Provider component that can be used to wrap
+ * multiple Store objects into a context that can be used throughout the app. In
+ * this case you will want to refer to a Store by its Id in that context.
+ *
+ * Many hooks and components in this ui-svelte module take this type as a
+ * parameter or a prop, allowing you to pass in either the Store or its Id.
+ * @category Identity
+ * @since v8.1.0
+ */
+/// ui-svelte.StoreOrStoreId
+/**
+ * The MetricsOrMetricsId type is used when you need to refer to a Metrics
+ * object in a Svelte hook or component.
+ *
+ * In some simple cases you will already have a direct reference to the Metrics
+ * object.
+ *
+ * This module also includes a Provider component that can be used to wrap
+ * multiple Metrics objects into a context that can be used throughout the app.
+ * In this case you will want to refer to a Metrics object by its Id in that
+ * context.
+ *
+ * Many hooks and components in this ui-svelte module take this type as a
+ * parameter or a prop, allowing you to pass in either the Metrics object or its
+ * Id.
+ * @category Identity
+ * @since v8.1.0
+ */
+/// ui-svelte.MetricsOrMetricsId
+/**
+ * The IndexesOrIndexesId type is used when you need to refer to an Indexes
+ * object in a Svelte hook or component.
+ *
+ * In some simple cases you will already have a direct reference to the Indexes
+ * object.
+ *
+ * This module also includes a Provider component that can be used to wrap
+ * multiple Indexes objects into a context that can be used throughout the app.
+ * In this case you will want to refer to an Indexes object by its Id in that
+ * context.
+ *
+ * Many hooks and components in this ui-svelte module take this type as a
+ * parameter or a prop, allowing you to pass in either the Indexes object or its
+ * Id.
+ * @category Identity
+ * @since v8.1.0
+ */
+/// ui-svelte.IndexesOrIndexesId
+/**
+ * The RelationshipsOrRelationshipsId type is used when you need to refer to a
+ * Relationships object in a Svelte hook or component.
+ *
+ * In some simple cases you will already have a direct reference to the
+ * Relationships object.
+ *
+ * This module also includes a Provider component that can be used to wrap
+ * multiple Relationships objects into a context that can be used throughout the
+ * app. In this case you will want to refer to a Relationships object by its Id
+ * in that context.
+ *
+ * Many hooks and components in this ui-svelte module take this type as a
+ * parameter or a prop, allowing you to pass in either the Relationships object
+ * or its Id.
+ * @category Identity
+ * @since v8.1.0
+ */
+/// ui-svelte.RelationshipsOrRelationshipsId
+/**
+ * The QueriesOrQueriesId type is used when you need to refer to a Queries
+ * object in a Svelte hook or component.
+ *
+ * In some simple cases you will already have a direct reference to the Queries
+ * object.
+ *
+ * This module also includes a Provider component that can be used to wrap
+ * multiple Queries objects into a context that can be used throughout the app.
+ * In this case you will want to refer to a Queries object by its Id in that
+ * context.
+ *
+ * Many hooks and components in this ui-svelte module take this type as a
+ * parameter or a prop, allowing you to pass in either the Queries object or its
+ * Id.
+ * @category Identity
+ * @since v8.1.0
+ */
+/// ui-svelte.QueriesOrQueriesId
+/**
+ * The CheckpointsOrCheckpointsId type is used when you need to refer to a
+ * Checkpoints object in a Svelte hook or component.
+ *
+ * In some simple cases you will already have a direct reference to the
+ * Checkpoints object.
+ *
+ * This module also includes a Provider component that can be used to wrap
+ * multiple Checkpoints objects into a context that can be used throughout the
+ * app. In this case you will want to refer to a Checkpoints object by its Id in
+ * that context.
+ *
+ * Many hooks and components in this ui-svelte module take this type as a
+ * parameter or a prop, allowing you to pass in either the Checkpoints object or
+ * its Id.
+ * @category Identity
+ * @since v8.1.0
+ */
+/// ui-svelte.CheckpointsOrCheckpointsId
+/**
+ * The PersisterOrPersisterId type is used when you need to refer to a Persister
+ * object in a Svelte hook or component.
+ *
+ * In some simple cases you will already have a direct reference to the
+ * Persister object.
+ *
+ * This module also includes a Provider component that can be used to wrap
+ * multiple Persister objects into a context that can be used throughout the
+ * app. In this case you will want to refer to a Persister object by its Id in
+ * that context.
+ *
+ * Many hooks and components in this ui-svelte module take this type as a
+ * parameter or a prop, allowing you to pass in either the Persister or its Id.
+ * @category Identity
+ * @since v8.1.0
+ */
+/// ui-svelte.PersisterOrPersisterId
+/**
+ * The SynchronizerOrSynchronizerId type is used when you need to refer to a
+ * Synchronizer object in a Svelte hook or component.
+ *
+ * In some simple cases you will already have a direct reference to the
+ * Synchronizer object.
+ *
+ * This module also includes a Provider component that can be used to wrap
+ * multiple Synchronizer objects into a context that can be used throughout the
+ * app. In this case you will want to refer to a Synchronizer object by its Id
+ * in that context.
+ *
+ * Many hooks and components in this ui-svelte module take this type as a
+ * parameter or a prop, allowing you to pass in either the Synchronizer or its
+ * Id.
+ * @category Identity
+ * @since v8.1.0
+ */
+/// ui-svelte.SynchronizerOrSynchronizerId
+/**
  * ProviderProps props are used with the Provider component, so that Store,
  * Metrics, Indexes, Relationships, Queries, and Checkpoints objects can be
  * passed into the context of a Svelte 5 application and used throughout.
