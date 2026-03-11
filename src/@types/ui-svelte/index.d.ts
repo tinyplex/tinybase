@@ -439,70 +439,70 @@ export type CurrentCheckpointViewProps = {
 };
 
 /// ui-svelte.Provider
-export declare const Provider: Component<ProviderProps>;
+export const Provider: Component<ProviderProps>;
 
 /// ui-svelte.BackwardCheckpointsView
-export declare const BackwardCheckpointsView: Component<BackwardCheckpointsViewProps>;
+export const BackwardCheckpointsView: Component<BackwardCheckpointsViewProps>;
 
 /// ui-svelte.CellView
-export declare const CellView: Component<CellViewProps>;
+export const CellView: Component<CellViewProps>;
 
 /// ui-svelte.CheckpointView
-export declare const CheckpointView: Component<CheckpointViewProps>;
+export const CheckpointView: Component<CheckpointViewProps>;
 
 /// ui-svelte.CurrentCheckpointView
-export declare const CurrentCheckpointView: Component<CurrentCheckpointViewProps>;
+export const CurrentCheckpointView: Component<CurrentCheckpointViewProps>;
 
 /// ui-svelte.ForwardCheckpointsView
-export declare const ForwardCheckpointsView: Component<ForwardCheckpointsViewProps>;
+export const ForwardCheckpointsView: Component<ForwardCheckpointsViewProps>;
 
 /// ui-svelte.IndexView
-export declare const IndexView: Component<IndexViewProps>;
+export const IndexView: Component<IndexViewProps>;
 
 /// ui-svelte.LinkedRowsView
-export declare const LinkedRowsView: Component<LinkedRowsViewProps>;
+export const LinkedRowsView: Component<LinkedRowsViewProps>;
 
 /// ui-svelte.LocalRowsView
-export declare const LocalRowsView: Component<LocalRowsViewProps>;
+export const LocalRowsView: Component<LocalRowsViewProps>;
 
 /// ui-svelte.MetricView
-export declare const MetricView: Component<MetricViewProps>;
+export const MetricView: Component<MetricViewProps>;
 
 /// ui-svelte.RemoteRowView
-export declare const RemoteRowView: Component<RemoteRowViewProps>;
+export const RemoteRowView: Component<RemoteRowViewProps>;
 
 /// ui-svelte.ResultCellView
-export declare const ResultCellView: Component<ResultCellViewProps>;
+export const ResultCellView: Component<ResultCellViewProps>;
 
 /// ui-svelte.ResultRowView
-export declare const ResultRowView: Component<ResultRowViewProps>;
+export const ResultRowView: Component<ResultRowViewProps>;
 
 /// ui-svelte.ResultSortedTableView
-export declare const ResultSortedTableView: Component<ResultSortedTableViewProps>;
+export const ResultSortedTableView: Component<ResultSortedTableViewProps>;
 
 /// ui-svelte.ResultTableView
-export declare const ResultTableView: Component<ResultTableViewProps>;
+export const ResultTableView: Component<ResultTableViewProps>;
 
 /// ui-svelte.RowView
-export declare const RowView: Component<RowViewProps>;
+export const RowView: Component<RowViewProps>;
 
 /// ui-svelte.SliceView
-export declare const SliceView: Component<SliceViewProps>;
+export const SliceView: Component<SliceViewProps>;
 
 /// ui-svelte.SortedTableView
-export declare const SortedTableView: Component<SortedTableViewProps>;
+export const SortedTableView: Component<SortedTableViewProps>;
 
 /// ui-svelte.TableView
-export declare const TableView: Component<TableViewProps>;
+export const TableView: Component<TableViewProps>;
 
 /// ui-svelte.TablesView
-export declare const TablesView: Component<TablesViewProps>;
+export const TablesView: Component<TablesViewProps>;
 
 /// ui-svelte.ValueView
-export declare const ValueView: Component<ValueViewProps>;
+export const ValueView: Component<ValueViewProps>;
 
 /// ui-svelte.ValuesView
-export declare const ValuesView: Component<ValuesViewProps>;
+export const ValuesView: Component<ValuesViewProps>;
 
 /// ui-svelte.useHasTables
 export function useHasTables(
@@ -914,7 +914,7 @@ export function usePersisterIds(): {readonly current: Ids};
 
 /// ui-svelte.usePersisterStatus
 export function usePersisterStatus(
-  persisterOrPersisterId?: PersisterOrPersisterId,
+  persisterOrPersisterId?: MaybeGetter<PersisterOrPersisterId | undefined>,
 ): {readonly current: Status};
 
 /// ui-svelte.useSynchronizer
@@ -932,7 +932,9 @@ export function useSynchronizerIds(): {readonly current: Ids};
 
 /// ui-svelte.useSynchronizerStatus
 export function useSynchronizerStatus(
-  synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId,
+  synchronizerOrSynchronizerId?: MaybeGetter<
+    SynchronizerOrSynchronizerId | undefined
+  >,
 ): {readonly current: Status};
 
 /// ui-svelte.useHasTablesListener

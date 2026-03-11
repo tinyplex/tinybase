@@ -93,6 +93,7 @@ import type {
   ValuesListener,
 } from '../../store/with-schemas/index.d.ts';
 import type {Synchronizer} from '../../synchronizers/with-schemas/index.d.ts';
+import type {MaybeGetter} from '../index.d.ts';
 
 export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// ui-svelte.MaybeGetter
@@ -124,253 +125,428 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.ProviderProps
   ProviderProps: {
+    /// ui-svelte.ProviderProps.store
     readonly store?: Store<Schemas>;
+    /// ui-svelte.ProviderProps.storesById
     readonly storesById?: {readonly [id: Id]: Store<Schemas>};
+    /// ui-svelte.ProviderProps.metrics
     readonly metrics?: Metrics<Schemas>;
+    /// ui-svelte.ProviderProps.metricsById
     readonly metricsById?: {readonly [id: Id]: Metrics<Schemas>};
+    /// ui-svelte.ProviderProps.indexes
     readonly indexes?: Indexes<Schemas>;
+    /// ui-svelte.ProviderProps.indexesById
     readonly indexesById?: {readonly [id: Id]: Indexes<Schemas>};
+    /// ui-svelte.ProviderProps.relationships
     readonly relationships?: Relationships<Schemas>;
+    /// ui-svelte.ProviderProps.relationshipsById
     readonly relationshipsById?: {readonly [id: Id]: Relationships<Schemas>};
+    /// ui-svelte.ProviderProps.queries
     readonly queries?: Queries<Schemas>;
+    /// ui-svelte.ProviderProps.queriesById
     readonly queriesById?: {readonly [id: Id]: Queries<Schemas>};
+    /// ui-svelte.ProviderProps.checkpoints
     readonly checkpoints?: Checkpoints<Schemas>;
+    /// ui-svelte.ProviderProps.checkpointsById
     readonly checkpointsById?: {readonly [id: Id]: Checkpoints<Schemas>};
+    /// ui-svelte.ProviderProps.persister
     readonly persister?: AnyPersister<Schemas>;
+    /// ui-svelte.ProviderProps.persistersById
     readonly persistersById?: {readonly [id: Id]: AnyPersister<Schemas>};
+    /// ui-svelte.ProviderProps.synchronizer
     readonly synchronizer?: Synchronizer<Schemas>;
+    /// ui-svelte.ProviderProps.synchronizersById
     readonly synchronizersById?: {readonly [id: Id]: Synchronizer<Schemas>};
+    /// ui-svelte.ProviderProps.children
     readonly children: Snippet;
   };
 
+  /// ui-svelte.CellViewProps
+  CellViewProps: {
+    /// ui-svelte.CellViewProps.tableId
+    readonly tableId: TableIdFromSchema<Schemas[0]>;
+    /// ui-svelte.CellViewProps.rowId
+    readonly rowId: Id;
+    /// ui-svelte.CellViewProps.cellId
+    readonly cellId: AllCellIdFromSchema<Schemas[0]>;
+    /// ui-svelte.CellViewProps.store
+    readonly store?: StoreOrStoreId<Schemas>;
+    /// ui-svelte.CellViewProps.debugIds
+    readonly debugIds?: boolean;
+  };
+
+  /// ui-svelte.ValueViewProps
+  ValueViewProps: {
+    /// ui-svelte.ValueViewProps.valueId
+    readonly valueId: ValueIdFromSchema<Schemas[1]>;
+    /// ui-svelte.ValueViewProps.store
+    readonly store?: StoreOrStoreId<Schemas>;
+    /// ui-svelte.ValueViewProps.debugIds
+    readonly debugIds?: boolean;
+  };
+
+  /// ui-svelte.MetricViewProps
+  MetricViewProps: {
+    /// ui-svelte.MetricViewProps.metricId
+    readonly metricId: Id;
+    /// ui-svelte.MetricViewProps.metrics
+    readonly metrics?: MetricsOrMetricsId<Schemas>;
+    /// ui-svelte.MetricViewProps.debugIds
+    readonly debugIds?: boolean;
+  };
+
+  /// ui-svelte.CheckpointViewProps
+  CheckpointViewProps: {
+    /// ui-svelte.CheckpointViewProps.checkpointId
+    readonly checkpointId: Id;
+    /// ui-svelte.CheckpointViewProps.checkpoints
+    readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
+    /// ui-svelte.CheckpointViewProps.debugIds
+    readonly debugIds?: boolean;
+  };
+
+  /// ui-svelte.RowViewProps
+  RowViewProps: {
+    /// ui-svelte.RowViewProps.tableId
+    readonly tableId: TableIdFromSchema<Schemas[0]>;
+    /// ui-svelte.RowViewProps.rowId
+    readonly rowId: Id;
+    /// ui-svelte.RowViewProps.store
+    readonly store?: StoreOrStoreId<Schemas>;
+    /// ui-svelte.RowViewProps.customCellIds
+    readonly customCellIds?: Ids;
+    /// ui-svelte.RowViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.RowViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.RowViewProps.cell
+    readonly cell?: Snippet<[cellId: AllCellIdFromSchema<Schemas[0]>]>;
+  };
+
+  /// ui-svelte.TableViewProps
+  TableViewProps: {
+    /// ui-svelte.TableViewProps.tableId
+    readonly tableId: TableIdFromSchema<Schemas[0]>;
+    /// ui-svelte.TableViewProps.store
+    readonly store?: StoreOrStoreId<Schemas>;
+    /// ui-svelte.TableViewProps.customCellIds
+    readonly customCellIds?: Ids;
+    /// ui-svelte.TableViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.TableViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.TableViewProps.row
+    readonly row?: Snippet<[rowId: Id]>;
+  };
+
+  /// ui-svelte.SortedTableViewProps
+  SortedTableViewProps: {
+    /// ui-svelte.SortedTableViewProps.tableId
+    readonly tableId: TableIdFromSchema<Schemas[0]>;
+    /// ui-svelte.SortedTableViewProps.cellId
+    readonly cellId?: AllCellIdFromSchema<Schemas[0]>;
+    /// ui-svelte.SortedTableViewProps.descending
+    readonly descending?: boolean;
+    /// ui-svelte.SortedTableViewProps.offset
+    readonly offset?: number;
+    /// ui-svelte.SortedTableViewProps.limit
+    readonly limit?: number;
+    /// ui-svelte.SortedTableViewProps.store
+    readonly store?: StoreOrStoreId<Schemas>;
+    /// ui-svelte.SortedTableViewProps.customCellIds
+    readonly customCellIds?: Ids;
+    /// ui-svelte.SortedTableViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.SortedTableViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.SortedTableViewProps.row
+    readonly row?: Snippet<[rowId: Id]>;
+  };
+
+  /// ui-svelte.TablesViewProps
+  TablesViewProps: {
+    /// ui-svelte.TablesViewProps.store
+    readonly store?: StoreOrStoreId<Schemas>;
+    /// ui-svelte.TablesViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.TablesViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.TablesViewProps.table
+    readonly table?: Snippet<[tableId: TableIdFromSchema<Schemas[0]>]>;
+  };
+
+  /// ui-svelte.ValuesViewProps
+  ValuesViewProps: {
+    /// ui-svelte.ValuesViewProps.store
+    readonly store?: StoreOrStoreId<Schemas>;
+    /// ui-svelte.ValuesViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.ValuesViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.ValuesViewProps.value
+    readonly value?: Snippet<[valueId: ValueIdFromSchema<Schemas[1]>]>;
+  };
+
+  /// ui-svelte.IndexViewProps
+  IndexViewProps: {
+    /// ui-svelte.IndexViewProps.indexId
+    readonly indexId: Id;
+    /// ui-svelte.IndexViewProps.indexes
+    readonly indexes?: IndexesOrIndexesId<Schemas>;
+    /// ui-svelte.IndexViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.IndexViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.IndexViewProps.slice
+    readonly slice?: Snippet<[sliceId: Id]>;
+  };
+
+  /// ui-svelte.SliceViewProps
+  SliceViewProps: {
+    /// ui-svelte.SliceViewProps.indexId
+    readonly indexId: Id;
+    /// ui-svelte.SliceViewProps.sliceId
+    readonly sliceId: Id;
+    /// ui-svelte.SliceViewProps.indexes
+    readonly indexes?: IndexesOrIndexesId<Schemas>;
+    /// ui-svelte.SliceViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.SliceViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.SliceViewProps.row
+    readonly row?: Snippet<[rowId: Id]>;
+  };
+
+  /// ui-svelte.RemoteRowViewProps
+  RemoteRowViewProps: {
+    /// ui-svelte.RemoteRowViewProps.relationshipId
+    readonly relationshipId: Id;
+    /// ui-svelte.RemoteRowViewProps.localRowId
+    readonly localRowId: Id;
+    /// ui-svelte.RemoteRowViewProps.relationships
+    readonly relationships?: RelationshipsOrRelationshipsId<Schemas>;
+    /// ui-svelte.RemoteRowViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.RemoteRowViewProps.row
+    readonly row?: Snippet<[rowId: Id]>;
+  };
+
+  /// ui-svelte.LocalRowsViewProps
+  LocalRowsViewProps: {
+    /// ui-svelte.LocalRowsViewProps.relationshipId
+    readonly relationshipId: Id;
+    /// ui-svelte.LocalRowsViewProps.remoteRowId
+    readonly remoteRowId: Id;
+    /// ui-svelte.LocalRowsViewProps.relationships
+    readonly relationships?: RelationshipsOrRelationshipsId<Schemas>;
+    /// ui-svelte.LocalRowsViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.LocalRowsViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.LocalRowsViewProps.row
+    readonly row?: Snippet<[rowId: Id]>;
+  };
+
+  /// ui-svelte.LinkedRowsViewProps
+  LinkedRowsViewProps: {
+    /// ui-svelte.LinkedRowsViewProps.relationshipId
+    readonly relationshipId: Id;
+    /// ui-svelte.LinkedRowsViewProps.firstRowId
+    readonly firstRowId: Id;
+    /// ui-svelte.LinkedRowsViewProps.relationships
+    readonly relationships?: RelationshipsOrRelationshipsId<Schemas>;
+    /// ui-svelte.LinkedRowsViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.LinkedRowsViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.LinkedRowsViewProps.row
+    readonly row?: Snippet<[rowId: Id]>;
+  };
+
+  /// ui-svelte.ResultCellViewProps
+  ResultCellViewProps: {
+    /// ui-svelte.ResultCellViewProps.queryId
+    readonly queryId: Id;
+    /// ui-svelte.ResultCellViewProps.rowId
+    readonly rowId: Id;
+    /// ui-svelte.ResultCellViewProps.cellId
+    readonly cellId: Id;
+    /// ui-svelte.ResultCellViewProps.queries
+    readonly queries?: QueriesOrQueriesId<Schemas>;
+    /// ui-svelte.ResultCellViewProps.debugIds
+    readonly debugIds?: boolean;
+  };
+
+  /// ui-svelte.ResultRowViewProps
+  ResultRowViewProps: {
+    /// ui-svelte.ResultRowViewProps.queryId
+    readonly queryId: Id;
+    /// ui-svelte.ResultRowViewProps.rowId
+    readonly rowId: Id;
+    /// ui-svelte.ResultRowViewProps.queries
+    readonly queries?: QueriesOrQueriesId<Schemas>;
+    /// ui-svelte.ResultRowViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.ResultRowViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.ResultRowViewProps.cell
+    readonly cell?: Snippet<[cellId: Id]>;
+  };
+
+  /// ui-svelte.ResultTableViewProps
+  ResultTableViewProps: {
+    /// ui-svelte.ResultTableViewProps.queryId
+    readonly queryId: Id;
+    /// ui-svelte.ResultTableViewProps.queries
+    readonly queries?: QueriesOrQueriesId<Schemas>;
+    /// ui-svelte.ResultTableViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.ResultTableViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.ResultTableViewProps.row
+    readonly row?: Snippet<[rowId: Id]>;
+  };
+
+  /// ui-svelte.ResultSortedTableViewProps
+  ResultSortedTableViewProps: {
+    /// ui-svelte.ResultSortedTableViewProps.queryId
+    readonly queryId: Id;
+    /// ui-svelte.ResultSortedTableViewProps.cellId
+    readonly cellId?: Id;
+    /// ui-svelte.ResultSortedTableViewProps.descending
+    readonly descending?: boolean;
+    /// ui-svelte.ResultSortedTableViewProps.offset
+    readonly offset?: number;
+    /// ui-svelte.ResultSortedTableViewProps.limit
+    readonly limit?: number;
+    /// ui-svelte.ResultSortedTableViewProps.queries
+    readonly queries?: QueriesOrQueriesId<Schemas>;
+    /// ui-svelte.ResultSortedTableViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.ResultSortedTableViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.ResultSortedTableViewProps.row
+    readonly row?: Snippet<[rowId: Id]>;
+  };
+
+  /// ui-svelte.BackwardCheckpointsViewProps
+  BackwardCheckpointsViewProps: {
+    /// ui-svelte.BackwardCheckpointsViewProps.checkpoints
+    readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
+    /// ui-svelte.BackwardCheckpointsViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.BackwardCheckpointsViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.BackwardCheckpointsViewProps.checkpoint
+    readonly checkpoint?: Snippet<[checkpointId: Id]>;
+  };
+
+  /// ui-svelte.ForwardCheckpointsViewProps
+  ForwardCheckpointsViewProps: {
+    /// ui-svelte.ForwardCheckpointsViewProps.checkpoints
+    readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
+    /// ui-svelte.ForwardCheckpointsViewProps.separator
+    readonly separator?: Snippet<[]>;
+    /// ui-svelte.ForwardCheckpointsViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.ForwardCheckpointsViewProps.checkpoint
+    readonly checkpoint?: Snippet<[checkpointId: Id]>;
+  };
+
+  /// ui-svelte.CurrentCheckpointViewProps
+  CurrentCheckpointViewProps: {
+    /// ui-svelte.CurrentCheckpointViewProps.checkpoints
+    readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
+    /// ui-svelte.CurrentCheckpointViewProps.debugIds
+    readonly debugIds?: boolean;
+    /// ui-svelte.CurrentCheckpointViewProps.checkpoint
+    readonly checkpoint?: Snippet<[checkpointId: Id]>;
+  };
+
   /// ui-svelte.Provider
-  Provider: Component<{
-    readonly store?: Store<Schemas>;
-    readonly storesById?: {readonly [id: Id]: Store<Schemas>};
-    readonly metrics?: Metrics<Schemas>;
-    readonly metricsById?: {readonly [id: Id]: Metrics<Schemas>};
-    readonly indexes?: Indexes<Schemas>;
-    readonly indexesById?: {readonly [id: Id]: Indexes<Schemas>};
-    readonly relationships?: Relationships<Schemas>;
-    readonly relationshipsById?: {readonly [id: Id]: Relationships<Schemas>};
-    readonly queries?: Queries<Schemas>;
-    readonly queriesById?: {readonly [id: Id]: Queries<Schemas>};
-    readonly checkpoints?: Checkpoints<Schemas>;
-    readonly checkpointsById?: {readonly [id: Id]: Checkpoints<Schemas>};
-    readonly persister?: AnyPersister<Schemas>;
-    readonly persistersById?: {readonly [id: Id]: AnyPersister<Schemas>};
-    readonly synchronizer?: Synchronizer<Schemas>;
-    readonly synchronizersById?: {readonly [id: Id]: Synchronizer<Schemas>};
-    readonly children: Snippet;
-  }>;
+  Provider: Component<WithSchemas<Schemas>['ProviderProps']>;
 
   /// ui-svelte.CellView
-  CellView: Component<{
-    readonly tableId: TableIdFromSchema<Schemas[0]>;
-    readonly rowId: Id;
-    readonly cellId: AllCellIdFromSchema<Schemas[0]>;
-    readonly store?: StoreOrStoreId<Schemas>;
-    readonly debugIds?: boolean;
-  }>;
+  CellView: Component<WithSchemas<Schemas>['CellViewProps']>;
 
   /// ui-svelte.ValueView
-  ValueView: Component<{
-    readonly valueId: ValueIdFromSchema<Schemas[1]>;
-    readonly store?: StoreOrStoreId<Schemas>;
-    readonly debugIds?: boolean;
-  }>;
+  ValueView: Component<WithSchemas<Schemas>['ValueViewProps']>;
 
   /// ui-svelte.RowView
-  RowView: Component<{
-    readonly tableId: TableIdFromSchema<Schemas[0]>;
-    readonly rowId: Id;
-    readonly store?: StoreOrStoreId<Schemas>;
-    readonly customCellIds?: Ids;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly cell?: Snippet<[cellId: AllCellIdFromSchema<Schemas[0]>]>;
-  }>;
+  RowView: Component<WithSchemas<Schemas>['RowViewProps']>;
 
   /// ui-svelte.TableView
-  TableView: Component<{
-    readonly tableId: TableIdFromSchema<Schemas[0]>;
-    readonly store?: StoreOrStoreId<Schemas>;
-    readonly customCellIds?: Ids;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly row?: Snippet<[rowId: Id]>;
-  }>;
+  TableView: Component<WithSchemas<Schemas>['TableViewProps']>;
 
   /// ui-svelte.SortedTableView
-  SortedTableView: Component<{
-    readonly tableId: TableIdFromSchema<Schemas[0]>;
-    readonly cellId?: AllCellIdFromSchema<Schemas[0]>;
-    readonly descending?: boolean;
-    readonly offset?: number;
-    readonly limit?: number;
-    readonly store?: StoreOrStoreId<Schemas>;
-    readonly customCellIds?: Ids;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly row?: Snippet<[rowId: Id]>;
-  }>;
+  SortedTableView: Component<WithSchemas<Schemas>['SortedTableViewProps']>;
 
   /// ui-svelte.TablesView
-  TablesView: Component<{
-    readonly store?: StoreOrStoreId<Schemas>;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly table?: Snippet<[tableId: TableIdFromSchema<Schemas[0]>]>;
-  }>;
+  TablesView: Component<WithSchemas<Schemas>['TablesViewProps']>;
 
   /// ui-svelte.ValuesView
-  ValuesView: Component<{
-    readonly store?: StoreOrStoreId<Schemas>;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly value?: Snippet<[valueId: ValueIdFromSchema<Schemas[1]>]>;
-  }>;
+  ValuesView: Component<WithSchemas<Schemas>['ValuesViewProps']>;
 
   /// ui-svelte.MetricView
-  MetricView: Component<{
-    readonly metricId: Id;
-    readonly metrics?: MetricsOrMetricsId<Schemas>;
-    readonly debugIds?: boolean;
-  }>;
+  MetricView: Component<WithSchemas<Schemas>['MetricViewProps']>;
 
   /// ui-svelte.IndexView
-  IndexView: Component<{
-    readonly indexId: Id;
-    readonly indexes?: IndexesOrIndexesId<Schemas>;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly slice?: Snippet<[sliceId: Id]>;
-  }>;
+  IndexView: Component<WithSchemas<Schemas>['IndexViewProps']>;
 
   /// ui-svelte.SliceView
-  SliceView: Component<{
-    readonly indexId: Id;
-    readonly sliceId: Id;
-    readonly indexes?: IndexesOrIndexesId<Schemas>;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly row?: Snippet<[rowId: Id]>;
-  }>;
+  SliceView: Component<WithSchemas<Schemas>['SliceViewProps']>;
 
   /// ui-svelte.RemoteRowView
-  RemoteRowView: Component<{
-    readonly relationshipId: Id;
-    readonly localRowId: Id;
-    readonly relationships?: RelationshipsOrRelationshipsId<Schemas>;
-    readonly debugIds?: boolean;
-    readonly row?: Snippet<[rowId: Id]>;
-  }>;
+  RemoteRowView: Component<WithSchemas<Schemas>['RemoteRowViewProps']>;
 
   /// ui-svelte.LocalRowsView
-  LocalRowsView: Component<{
-    readonly relationshipId: Id;
-    readonly remoteRowId: Id;
-    readonly relationships?: RelationshipsOrRelationshipsId<Schemas>;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly row?: Snippet<[rowId: Id]>;
-  }>;
+  LocalRowsView: Component<WithSchemas<Schemas>['LocalRowsViewProps']>;
 
   /// ui-svelte.LinkedRowsView
-  LinkedRowsView: Component<{
-    readonly relationshipId: Id;
-    readonly firstRowId: Id;
-    readonly relationships?: RelationshipsOrRelationshipsId<Schemas>;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly row?: Snippet<[rowId: Id]>;
-  }>;
+  LinkedRowsView: Component<WithSchemas<Schemas>['LinkedRowsViewProps']>;
 
   /// ui-svelte.ResultCellView
-  ResultCellView: Component<{
-    readonly queryId: Id;
-    readonly rowId: Id;
-    readonly cellId: Id;
-    readonly queries?: QueriesOrQueriesId<Schemas>;
-    readonly debugIds?: boolean;
-  }>;
+  ResultCellView: Component<WithSchemas<Schemas>['ResultCellViewProps']>;
 
   /// ui-svelte.ResultRowView
-  ResultRowView: Component<{
-    readonly queryId: Id;
-    readonly rowId: Id;
-    readonly queries?: QueriesOrQueriesId<Schemas>;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly cell?: Snippet<[cellId: Id]>;
-  }>;
+  ResultRowView: Component<WithSchemas<Schemas>['ResultRowViewProps']>;
 
   /// ui-svelte.ResultTableView
-  ResultTableView: Component<{
-    readonly queryId: Id;
-    readonly queries?: QueriesOrQueriesId<Schemas>;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly row?: Snippet<[rowId: Id]>;
-  }>;
+  ResultTableView: Component<WithSchemas<Schemas>['ResultTableViewProps']>;
 
   /// ui-svelte.ResultSortedTableView
-  ResultSortedTableView: Component<{
-    readonly queryId: Id;
-    readonly cellId?: Id;
-    readonly descending?: boolean;
-    readonly offset?: number;
-    readonly limit?: number;
-    readonly queries?: QueriesOrQueriesId<Schemas>;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly row?: Snippet<[rowId: Id]>;
-  }>;
+  ResultSortedTableView: Component<
+    WithSchemas<Schemas>['ResultSortedTableViewProps']
+  >;
 
   /// ui-svelte.CheckpointView
-  CheckpointView: Component<{
-    readonly checkpointId: Id;
-    readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
-    readonly debugIds?: boolean;
-  }>;
+  CheckpointView: Component<WithSchemas<Schemas>['CheckpointViewProps']>;
 
   /// ui-svelte.BackwardCheckpointsView
-  BackwardCheckpointsView: Component<{
-    readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly checkpoint?: Snippet<[checkpointId: Id]>;
-  }>;
+  BackwardCheckpointsView: Component<
+    WithSchemas<Schemas>['BackwardCheckpointsViewProps']
+  >;
 
   /// ui-svelte.ForwardCheckpointsView
-  ForwardCheckpointsView: Component<{
-    readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
-    readonly separator?: Snippet<[]>;
-    readonly debugIds?: boolean;
-    readonly checkpoint?: Snippet<[checkpointId: Id]>;
-  }>;
+  ForwardCheckpointsView: Component<
+    WithSchemas<Schemas>['ForwardCheckpointsViewProps']
+  >;
 
   /// ui-svelte.CurrentCheckpointView
-  CurrentCheckpointView: Component<{
-    readonly checkpoints?: CheckpointsOrCheckpointsId<Schemas>;
-    readonly debugIds?: boolean;
-    readonly checkpoint?: Snippet<[checkpointId: Id]>;
-  }>;
+  CurrentCheckpointView: Component<
+    WithSchemas<Schemas>['CurrentCheckpointViewProps']
+  >;
 
   /// ui-svelte.useHasTables
   useHasTables: (
-    storeOrStoreId?:
-      | StoreOrStoreId<Schemas>
-      | (() => StoreOrStoreId<Schemas> | undefined),
+    storeOrStoreId?: MaybeGetter<StoreOrStoreId<Schemas> | undefined>,
   ) => {
     readonly current: boolean;
   };
 
   /// ui-svelte.useTables
   useTables: (
-    storeOrStoreId?:
-      | StoreOrStoreId<Schemas>
-      | (() => StoreOrStoreId<Schemas> | undefined),
+    storeOrStoreId?: MaybeGetter<StoreOrStoreId<Schemas> | undefined>,
   ) => {
     readonly current: Tables<Schemas[0]>;
   };
@@ -382,80 +558,69 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useHasTable
   useHasTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId | (() => TableId),
+    tableId: MaybeGetter<TableId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: boolean};
 
   /// ui-svelte.useTable
   useTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId | (() => TableId),
+    tableId: MaybeGetter<TableId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: Table<Schemas[0], TableId>};
 
   /// ui-svelte.useTableCellIds
   useTableCellIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId | (() => TableId),
+    tableId: MaybeGetter<TableId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: CellIdFromSchema<Schemas[0], TableId>[]};
 
   /// ui-svelte.useHasTableCell
   useHasTableCell: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId | (() => TableId),
-    cellId:
-      | CellIdFromSchema<Schemas[0], TableId>
-      | (() => CellIdFromSchema<Schemas[0], TableId>),
+    tableId: MaybeGetter<TableId>,
+    cellId: MaybeGetter<CellIdFromSchema<Schemas[0], TableId>>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: boolean};
 
   /// ui-svelte.useRowCount
   useRowCount: (
-    tableId:
-      | TableIdFromSchema<Schemas[0]>
-      | (() => TableIdFromSchema<Schemas[0]>),
+    tableId: MaybeGetter<TableIdFromSchema<Schemas[0]>>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: number};
 
   /// ui-svelte.useRowIds
   useRowIds: (
-    tableId:
-      | TableIdFromSchema<Schemas[0]>
-      | (() => TableIdFromSchema<Schemas[0]>),
+    tableId: MaybeGetter<TableIdFromSchema<Schemas[0]>>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: Ids};
 
   /// ui-svelte.useSortedRowIds
   useSortedRowIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId | (() => TableId),
-    cellId?:
-      | CellIdFromSchema<Schemas[0], TableId>
-      | (() => CellIdFromSchema<Schemas[0], TableId>)
-      | undefined,
-    descending?: boolean | (() => boolean),
-    offset?: number | (() => number),
-    limit?: number | (() => number) | undefined,
+    tableId: MaybeGetter<TableId>,
+    cellId?: MaybeGetter<CellIdFromSchema<Schemas[0], TableId> | undefined>,
+    descending?: MaybeGetter<boolean>,
+    offset?: MaybeGetter<number>,
+    limit?: MaybeGetter<number | undefined>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: Ids};
 
   /// ui-svelte.useHasRow
   useHasRow: (
-    tableId:
-      | TableIdFromSchema<Schemas[0]>
-      | (() => TableIdFromSchema<Schemas[0]>),
-    rowId: Id | (() => Id),
+    tableId: MaybeGetter<TableIdFromSchema<Schemas[0]>>,
+    rowId: MaybeGetter<Id>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: boolean};
 
   /// ui-svelte.useRow
   useRow: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId | (() => TableId),
-    rowId: Id | (() => Id),
+    tableId: MaybeGetter<TableId>,
+    rowId: MaybeGetter<Id>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: Row<Schemas[0], TableId>};
 
   /// ui-svelte.useCellIds
   useCellIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
-    tableId: TableId | (() => TableId),
-    rowId: Id | (() => Id),
+    tableId: MaybeGetter<TableId>,
+    rowId: MaybeGetter<Id>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: CellIdFromSchema<Schemas[0], TableId>[]};
 
@@ -464,9 +629,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
-    tableId: TableId | (() => TableId),
-    rowId: Id | (() => Id),
-    cellId: CellId | (() => CellId),
+    tableId: MaybeGetter<TableId>,
+    rowId: MaybeGetter<Id>,
+    cellId: MaybeGetter<CellId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: boolean};
 
@@ -475,9 +640,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
-    tableId: TableId | (() => TableId),
-    rowId: Id | (() => Id),
-    cellId: CellId | (() => CellId),
+    tableId: MaybeGetter<TableId>,
+    rowId: MaybeGetter<Id>,
+    cellId: MaybeGetter<CellId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {
     readonly current: NoInfer<CellOrUndefined<Schemas[0], TableId, CellId>>;
@@ -488,9 +653,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
-    tableId: TableId | (() => TableId),
-    rowId: Id | (() => Id),
-    cellId: CellId | (() => CellId),
+    tableId: MaybeGetter<TableId>,
+    rowId: MaybeGetter<Id>,
+    cellId: MaybeGetter<CellId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {
     get current(): NoInfer<CellOrUndefined<Schemas[0], TableId, CellId>>;
@@ -499,18 +664,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useHasValues
   useHasValues: (
-    storeOrStoreId?:
-      | StoreOrStoreId<Schemas>
-      | (() => StoreOrStoreId<Schemas> | undefined),
+    storeOrStoreId?: MaybeGetter<StoreOrStoreId<Schemas> | undefined>,
   ) => {
     readonly current: boolean;
   };
 
   /// ui-svelte.useValues
   useValues: (
-    storeOrStoreId?:
-      | StoreOrStoreId<Schemas>
-      | (() => StoreOrStoreId<Schemas> | undefined),
+    storeOrStoreId?: MaybeGetter<StoreOrStoreId<Schemas> | undefined>,
   ) => {
     readonly current: Values<Schemas[1]>;
   };
@@ -522,13 +683,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useHasValue
   useHasValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
-    valueId: ValueId | (() => ValueId),
+    valueId: MaybeGetter<ValueId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: boolean};
 
   /// ui-svelte.useValue
   useValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
-    valueId: ValueId | (() => ValueId),
+    valueId: MaybeGetter<ValueId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {
     readonly current: NoInfer<DefaultedValueFromSchema<Schemas[1], ValueId>>;
@@ -536,7 +697,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useBindableValue
   useBindableValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
-    valueId: ValueId | (() => ValueId),
+    valueId: MaybeGetter<ValueId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {
     get current(): NoInfer<DefaultedValueFromSchema<Schemas[1], ValueId>>;
@@ -548,9 +709,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useStoreOrStoreById
   useStoreOrStoreById: (
-    storeOrStoreId?:
-      | StoreOrStoreId<Schemas>
-      | (() => StoreOrStoreId<Schemas> | undefined),
+    storeOrStoreId?: MaybeGetter<StoreOrStoreId<Schemas> | undefined>,
   ) => () => Store<Schemas> | undefined;
 
   /// ui-svelte.useStoreIds
@@ -561,9 +720,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useMetricsOrMetricsById
   useMetricsOrMetricsById: (
-    metricsOrMetricsId?:
-      | MetricsOrMetricsId<Schemas>
-      | (() => MetricsOrMetricsId<Schemas> | undefined),
+    metricsOrMetricsId?: MaybeGetter<MetricsOrMetricsId<Schemas> | undefined>,
   ) => () => Metrics<Schemas> | undefined;
 
   /// ui-svelte.useMetricsIds
@@ -571,16 +728,14 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useMetricIds
   useMetricIds: (
-    metricsOrMetricsId?:
-      | MetricsOrMetricsId<Schemas>
-      | (() => MetricsOrMetricsId<Schemas> | undefined),
+    metricsOrMetricsId?: MaybeGetter<MetricsOrMetricsId<Schemas> | undefined>,
   ) => {
     readonly current: Ids;
   };
 
   /// ui-svelte.useMetric
   useMetric: (
-    metricId: Id | (() => Id),
+    metricId: MaybeGetter<Id>,
     metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
   ) => {readonly current: number | undefined};
 
@@ -589,17 +744,13 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useIndexesOrIndexesById
   useIndexesOrIndexesById: (
-    indexesOrIndexesId?:
-      | IndexesOrIndexesId<Schemas>
-      | (() => IndexesOrIndexesId<Schemas> | undefined),
+    indexesOrIndexesId?: MaybeGetter<IndexesOrIndexesId<Schemas> | undefined>,
   ) => () => Indexes<Schemas> | undefined;
 
   /// ui-svelte.useIndexStoreTableId
   useIndexStoreTableId: (
-    indexesOrId:
-      | IndexesOrIndexesId<Schemas>
-      | (() => IndexesOrIndexesId<Schemas> | undefined),
-    indexId: Id | (() => Id),
+    indexesOrId: MaybeGetter<IndexesOrIndexesId<Schemas> | undefined>,
+    indexId: MaybeGetter<Id>,
   ) => {
     readonly store: Store<Schemas> | undefined;
     readonly tableId: Id | undefined;
@@ -610,23 +761,21 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useIndexIds
   useIndexIds: (
-    indexesOrIndexesId?:
-      | IndexesOrIndexesId<Schemas>
-      | (() => IndexesOrIndexesId<Schemas> | undefined),
+    indexesOrIndexesId?: MaybeGetter<IndexesOrIndexesId<Schemas> | undefined>,
   ) => {
     readonly current: Ids;
   };
 
   /// ui-svelte.useSliceIds
   useSliceIds: (
-    indexId: Id | (() => Id),
+    indexId: MaybeGetter<Id>,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => {readonly current: Ids};
 
   /// ui-svelte.useSliceRowIds
   useSliceRowIds: (
-    indexId: Id | (() => Id),
-    sliceId: Id | (() => Id),
+    indexId: MaybeGetter<Id>,
+    sliceId: MaybeGetter<Id>,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => {readonly current: Ids};
 
@@ -635,9 +784,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useQueriesOrQueriesById
   useQueriesOrQueriesById: (
-    queriesOrQueriesId?:
-      | QueriesOrQueriesId<Schemas>
-      | (() => QueriesOrQueriesId<Schemas> | undefined),
+    queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId<Schemas> | undefined>,
   ) => () => Queries<Schemas> | undefined;
 
   /// ui-svelte.useQueriesIds
@@ -645,66 +792,64 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useQueryIds
   useQueryIds: (
-    queriesOrQueriesId?:
-      | QueriesOrQueriesId<Schemas>
-      | (() => QueriesOrQueriesId<Schemas> | undefined),
+    queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId<Schemas> | undefined>,
   ) => {
     readonly current: Ids;
   };
 
   /// ui-svelte.useResultTable
   useResultTable: (
-    queryId: Id | (() => Id),
+    queryId: MaybeGetter<Id>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: ResultTable};
 
   /// ui-svelte.useResultTableCellIds
   useResultTableCellIds: (
-    queryId: Id | (() => Id),
+    queryId: MaybeGetter<Id>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: Ids};
 
   /// ui-svelte.useResultRowCount
   useResultRowCount: (
-    queryId: Id | (() => Id),
+    queryId: MaybeGetter<Id>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: number};
 
   /// ui-svelte.useResultRowIds
   useResultRowIds: (
-    queryId: Id | (() => Id),
+    queryId: MaybeGetter<Id>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: Ids};
 
   /// ui-svelte.useResultSortedRowIds
   useResultSortedRowIds: (
-    queryId: Id | (() => Id),
-    cellId?: Id | (() => Id) | undefined,
-    descending?: boolean | (() => boolean),
-    offset?: number | (() => number),
-    limit?: number | (() => number) | undefined,
+    queryId: MaybeGetter<Id>,
+    cellId?: MaybeGetter<Id | undefined>,
+    descending?: MaybeGetter<boolean>,
+    offset?: MaybeGetter<number>,
+    limit?: MaybeGetter<number | undefined>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: Ids};
 
   /// ui-svelte.useResultRow
   useResultRow: (
-    queryId: Id | (() => Id),
-    rowId: Id | (() => Id),
+    queryId: MaybeGetter<Id>,
+    rowId: MaybeGetter<Id>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: ResultRow};
 
   /// ui-svelte.useResultCellIds
   useResultCellIds: (
-    queryId: Id | (() => Id),
-    rowId: Id | (() => Id),
+    queryId: MaybeGetter<Id>,
+    rowId: MaybeGetter<Id>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: Ids};
 
   /// ui-svelte.useResultCell
   useResultCell: (
-    queryId: Id | (() => Id),
-    rowId: Id | (() => Id),
-    cellId: Id | (() => Id),
+    queryId: MaybeGetter<Id>,
+    rowId: MaybeGetter<Id>,
+    cellId: MaybeGetter<Id>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: ResultCell | undefined};
 
@@ -713,17 +858,17 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useRelationshipsOrRelationshipsById
   useRelationshipsOrRelationshipsById: (
-    relationshipsOrRelationshipsId?:
-      | RelationshipsOrRelationshipsId<Schemas>
-      | (() => RelationshipsOrRelationshipsId<Schemas> | undefined),
+    relationshipsOrRelationshipsId?: MaybeGetter<
+      RelationshipsOrRelationshipsId<Schemas> | undefined
+    >,
   ) => () => Relationships<Schemas> | undefined;
 
   /// ui-svelte.useRelationshipsStoreTableIds
   useRelationshipsStoreTableIds: (
-    relationshipsOrId:
-      | RelationshipsOrRelationshipsId<Schemas>
-      | (() => RelationshipsOrRelationshipsId<Schemas> | undefined),
-    relationshipId: Id | (() => Id),
+    relationshipsOrId: MaybeGetter<
+      RelationshipsOrRelationshipsId<Schemas> | undefined
+    >,
+    relationshipId: MaybeGetter<Id>,
   ) => {
     readonly store: Store<Schemas> | undefined;
     readonly localTableId: Id | undefined;
@@ -735,29 +880,29 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useRelationshipIds
   useRelationshipIds: (
-    relationshipsOrRelationshipsId?:
-      | RelationshipsOrRelationshipsId<Schemas>
-      | (() => RelationshipsOrRelationshipsId<Schemas> | undefined),
+    relationshipsOrRelationshipsId?: MaybeGetter<
+      RelationshipsOrRelationshipsId<Schemas> | undefined
+    >,
   ) => {readonly current: Ids};
 
   /// ui-svelte.useRemoteRowId
   useRemoteRowId: (
-    relationshipId: Id | (() => Id),
-    localRowId: Id | (() => Id),
+    relationshipId: MaybeGetter<Id>,
+    localRowId: MaybeGetter<Id>,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => {readonly current: Id | undefined};
 
   /// ui-svelte.useLocalRowIds
   useLocalRowIds: (
-    relationshipId: Id | (() => Id),
-    remoteRowId: Id | (() => Id),
+    relationshipId: MaybeGetter<Id>,
+    remoteRowId: MaybeGetter<Id>,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => {readonly current: Ids};
 
   /// ui-svelte.useLinkedRowIds
   useLinkedRowIds: (
-    relationshipId: Id | (() => Id),
-    firstRowId: Id | (() => Id),
+    relationshipId: MaybeGetter<Id>,
+    firstRowId: MaybeGetter<Id>,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => {readonly current: Ids};
 
@@ -766,9 +911,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useCheckpointsOrCheckpointsById
   useCheckpointsOrCheckpointsById: (
-    checkpointsOrCheckpointsId?:
-      | CheckpointsOrCheckpointsId<Schemas>
-      | (() => CheckpointsOrCheckpointsId<Schemas> | undefined),
+    checkpointsOrCheckpointsId?: MaybeGetter<
+      CheckpointsOrCheckpointsId<Schemas> | undefined
+    >,
   ) => () => Checkpoints<Schemas> | undefined;
 
   /// ui-svelte.useCheckpointsIds
@@ -781,22 +926,22 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useCheckpoint
   useCheckpoint: (
-    checkpointId: Id | (() => Id),
+    checkpointId: MaybeGetter<Id>,
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => {readonly current: string | undefined};
 
   /// ui-svelte.useGoBackwardCallback
   useGoBackwardCallback: (
-    checkpointsOrCheckpointsId?:
-      | CheckpointsOrCheckpointsId<Schemas>
-      | (() => CheckpointsOrCheckpointsId<Schemas> | undefined),
+    checkpointsOrCheckpointsId?: MaybeGetter<
+      CheckpointsOrCheckpointsId<Schemas> | undefined
+    >,
   ) => () => void;
 
   /// ui-svelte.useGoForwardCallback
   useGoForwardCallback: (
-    checkpointsOrCheckpointsId?:
-      | CheckpointsOrCheckpointsId<Schemas>
-      | (() => CheckpointsOrCheckpointsId<Schemas> | undefined),
+    checkpointsOrCheckpointsId?: MaybeGetter<
+      CheckpointsOrCheckpointsId<Schemas> | undefined
+    >,
   ) => () => void;
 
   /// ui-svelte.usePersister
@@ -804,9 +949,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.usePersisterOrPersisterById
   usePersisterOrPersisterById: (
-    persisterOrPersisterId?:
-      | PersisterOrPersisterId<Schemas>
-      | (() => PersisterOrPersisterId<Schemas> | undefined),
+    persisterOrPersisterId?: MaybeGetter<
+      PersisterOrPersisterId<Schemas> | undefined
+    >,
   ) => () => AnyPersister<Schemas> | undefined;
 
   /// ui-svelte.usePersisterIds
@@ -814,7 +959,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.usePersisterStatus
   usePersisterStatus: (
-    persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
+    persisterOrPersisterId?: MaybeGetter<
+      PersisterOrPersisterId<Schemas> | undefined
+    >,
   ) => {
     readonly current: Status;
   };
@@ -824,9 +971,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useSynchronizerOrSynchronizerById
   useSynchronizerOrSynchronizerById: (
-    synchronizerOrSynchronizerId?:
-      | SynchronizerOrSynchronizerId<Schemas>
-      | (() => SynchronizerOrSynchronizerId<Schemas> | undefined),
+    synchronizerOrSynchronizerId?: MaybeGetter<
+      SynchronizerOrSynchronizerId<Schemas> | undefined
+    >,
   ) => () => Synchronizer<Schemas> | undefined;
 
   /// ui-svelte.useSynchronizerIds
@@ -834,7 +981,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useSynchronizerStatus
   useSynchronizerStatus: (
-    synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
+    synchronizerOrSynchronizerId?: MaybeGetter<
+      SynchronizerOrSynchronizerId<Schemas> | undefined
+    >,
   ) => {readonly current: Status};
 
   /// ui-svelte.useHasTablesListener
@@ -862,7 +1011,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useHasTableListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
-    tableId: TableIdOrNull | (() => TableIdOrNull),
+    tableId: MaybeGetter<TableIdOrNull>,
     listener: HasTableListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -872,7 +1021,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useTableListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
-    tableId: TableIdOrNull | (() => TableIdOrNull),
+    tableId: MaybeGetter<TableIdOrNull>,
     listener: TableListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -882,7 +1031,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useTableCellIdsListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
-    tableId: TableIdOrNull | (() => TableIdOrNull),
+    tableId: MaybeGetter<TableIdOrNull>,
     listener: TableCellIdsListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -897,8 +1046,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
           : AllCellIdFromSchema<Schemas[0]>)
       | null,
   >(
-    tableId: TableIdOrNull | (() => TableIdOrNull),
-    cellId: CellIdOrNull | (() => CellIdOrNull),
+    tableId: MaybeGetter<TableIdOrNull>,
+    cellId: MaybeGetter<CellIdOrNull>,
     listener: HasTableCellListener<Schemas, TableIdOrNull, CellIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -908,7 +1057,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useRowCountListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
-    tableId: TableIdOrNull | (() => TableIdOrNull),
+    tableId: MaybeGetter<TableIdOrNull>,
     listener: RowCountListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -918,7 +1067,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useRowIdsListener: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
   >(
-    tableId: TableIdOrNull | (() => TableIdOrNull),
+    tableId: MaybeGetter<TableIdOrNull>,
     listener: RowIdsListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -929,11 +1078,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellIdOrUndefined extends CellIdFromSchema<Schemas[0], TableId> | undefined,
   >(
-    tableId: TableId | (() => TableId),
-    cellId: CellIdOrUndefined | (() => CellIdOrUndefined),
-    descending: boolean | (() => boolean),
-    offset: number | (() => number),
-    limit: number | undefined | (() => number | undefined),
+    tableId: MaybeGetter<TableId>,
+    cellId: MaybeGetter<CellIdOrUndefined>,
+    descending: MaybeGetter<boolean>,
+    offset: MaybeGetter<number>,
+    limit: MaybeGetter<number | undefined>,
     listener: SortedRowIdsListener<Schemas, TableId, CellIdOrUndefined>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -944,8 +1093,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
   >(
-    tableId: TableIdOrNull | (() => TableIdOrNull),
-    rowId: RowIdOrNull | (() => RowIdOrNull),
+    tableId: MaybeGetter<TableIdOrNull>,
+    rowId: MaybeGetter<RowIdOrNull>,
     listener: HasRowListener<Schemas, TableIdOrNull, RowIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -956,8 +1105,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
   >(
-    tableId: TableIdOrNull | (() => TableIdOrNull),
-    rowId: RowIdOrNull | (() => RowIdOrNull),
+    tableId: MaybeGetter<TableIdOrNull>,
+    rowId: MaybeGetter<RowIdOrNull>,
     listener: RowListener<Schemas, TableIdOrNull, RowIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -968,8 +1117,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
   >(
-    tableId: TableIdOrNull | (() => TableIdOrNull),
-    rowId: RowIdOrNull | (() => RowIdOrNull),
+    tableId: MaybeGetter<TableIdOrNull>,
+    rowId: MaybeGetter<RowIdOrNull>,
     listener: CellIdsListener<Schemas, TableIdOrNull, RowIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -985,9 +1134,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
           : AllCellIdFromSchema<Schemas[0]>)
       | null,
   >(
-    tableId: TableIdOrNull | (() => TableIdOrNull),
-    rowId: RowIdOrNull | (() => RowIdOrNull),
-    cellId: CellIdOrNull | (() => CellIdOrNull),
+    tableId: MaybeGetter<TableIdOrNull>,
+    rowId: MaybeGetter<RowIdOrNull>,
+    cellId: MaybeGetter<CellIdOrNull>,
     listener: HasCellListener<
       Schemas,
       TableIdOrNull,
@@ -1008,9 +1157,9 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
           : AllCellIdFromSchema<Schemas[0]>)
       | null,
   >(
-    tableId: TableIdOrNull | (() => TableIdOrNull),
-    rowId: RowIdOrNull | (() => RowIdOrNull),
-    cellId: CellIdOrNull | (() => CellIdOrNull),
+    tableId: MaybeGetter<TableIdOrNull>,
+    rowId: MaybeGetter<RowIdOrNull>,
+    cellId: MaybeGetter<CellIdOrNull>,
     listener: CellListener<Schemas, TableIdOrNull, RowIdOrNull, CellIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -1041,7 +1190,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useHasValueListener: <
     ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
   >(
-    valueId: ValueIdOrNull | (() => ValueIdOrNull),
+    valueId: MaybeGetter<ValueIdOrNull>,
     listener: HasValueListener<Schemas, ValueIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -1051,7 +1200,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   useValueListener: <
     ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
   >(
-    valueId: ValueIdOrNull | (() => ValueIdOrNull),
+    valueId: MaybeGetter<ValueIdOrNull>,
     listener: ValueListener<Schemas, ValueIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
@@ -1077,125 +1226,125 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useMetricListener
   useMetricListener: (
-    metricId: IdOrNull | (() => IdOrNull),
+    metricId: MaybeGetter<IdOrNull>,
     listener: MetricListener<Schemas>,
     metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
   ) => void;
 
   /// ui-svelte.useSliceIdsListener
   useSliceIdsListener: (
-    indexId: IdOrNull | (() => IdOrNull),
+    indexId: MaybeGetter<IdOrNull>,
     listener: SliceIdsListener<Schemas>,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => void;
 
   /// ui-svelte.useSliceRowIdsListener
   useSliceRowIdsListener: (
-    indexId: IdOrNull | (() => IdOrNull),
-    sliceId: IdOrNull | (() => IdOrNull),
+    indexId: MaybeGetter<IdOrNull>,
+    sliceId: MaybeGetter<IdOrNull>,
     listener: SliceRowIdsListener<Schemas>,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => void;
 
   /// ui-svelte.useRemoteRowIdListener
   useRemoteRowIdListener: (
-    relationshipId: IdOrNull | (() => IdOrNull),
-    localRowId: IdOrNull | (() => IdOrNull),
+    relationshipId: MaybeGetter<IdOrNull>,
+    localRowId: MaybeGetter<IdOrNull>,
     listener: RemoteRowIdListener<Schemas>,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => void;
 
   /// ui-svelte.useLocalRowIdsListener
   useLocalRowIdsListener: (
-    relationshipId: IdOrNull | (() => IdOrNull),
-    remoteRowId: IdOrNull | (() => IdOrNull),
+    relationshipId: MaybeGetter<IdOrNull>,
+    remoteRowId: MaybeGetter<IdOrNull>,
     listener: LocalRowIdsListener<Schemas>,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => void;
 
   /// ui-svelte.useLinkedRowIdsListener
   useLinkedRowIdsListener: (
-    relationshipId: Id | (() => Id),
-    firstRowId: Id | (() => Id),
+    relationshipId: MaybeGetter<Id>,
+    firstRowId: MaybeGetter<Id>,
     listener: LinkedRowIdsListener<Schemas>,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => void;
 
   /// ui-svelte.useResultTableListener
   useResultTableListener: (
-    queryId: IdOrNull | (() => IdOrNull),
+    queryId: MaybeGetter<IdOrNull>,
     listener: ResultTableListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-svelte.useResultTableCellIdsListener
   useResultTableCellIdsListener: (
-    queryId: IdOrNull | (() => IdOrNull),
+    queryId: MaybeGetter<IdOrNull>,
     listener: ResultTableCellIdsListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-svelte.useResultRowCountListener
   useResultRowCountListener: (
-    queryId: IdOrNull | (() => IdOrNull),
+    queryId: MaybeGetter<IdOrNull>,
     listener: ResultRowCountListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-svelte.useResultRowIdsListener
   useResultRowIdsListener: (
-    queryId: IdOrNull | (() => IdOrNull),
+    queryId: MaybeGetter<IdOrNull>,
     listener: ResultRowIdsListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-svelte.useResultSortedRowIdsListener
   useResultSortedRowIdsListener: (
-    queryId: Id | (() => Id),
-    cellId: Id | undefined | (() => Id | undefined),
-    descending: boolean | (() => boolean),
-    offset: number | (() => number),
-    limit: number | undefined | (() => number | undefined),
+    queryId: MaybeGetter<Id>,
+    cellId: MaybeGetter<Id | undefined>,
+    descending: MaybeGetter<boolean>,
+    offset: MaybeGetter<number>,
+    limit: MaybeGetter<number | undefined>,
     listener: ResultSortedRowIdsListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-svelte.useResultRowListener
   useResultRowListener: (
-    queryId: IdOrNull | (() => IdOrNull),
-    rowId: IdOrNull | (() => IdOrNull),
+    queryId: MaybeGetter<IdOrNull>,
+    rowId: MaybeGetter<IdOrNull>,
     listener: ResultRowListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-svelte.useResultCellIdsListener
   useResultCellIdsListener: (
-    queryId: IdOrNull | (() => IdOrNull),
-    rowId: IdOrNull | (() => IdOrNull),
+    queryId: MaybeGetter<IdOrNull>,
+    rowId: MaybeGetter<IdOrNull>,
     listener: ResultCellIdsListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-svelte.useResultCellListener
   useResultCellListener: (
-    queryId: IdOrNull | (() => IdOrNull),
-    rowId: IdOrNull | (() => IdOrNull),
-    cellId: IdOrNull | (() => IdOrNull),
+    queryId: MaybeGetter<IdOrNull>,
+    rowId: MaybeGetter<IdOrNull>,
+    cellId: MaybeGetter<IdOrNull>,
     listener: ResultCellListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-svelte.useParamValuesListener
   useParamValuesListener: (
-    queryId: IdOrNull | (() => IdOrNull),
+    queryId: MaybeGetter<IdOrNull>,
     listener: ParamValuesListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
   /// ui-svelte.useParamValueListener
   useParamValueListener: (
-    queryId: IdOrNull | (() => IdOrNull),
-    paramId: IdOrNull | (() => IdOrNull),
+    queryId: MaybeGetter<IdOrNull>,
+    paramId: MaybeGetter<IdOrNull>,
     listener: ParamValueListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
@@ -1208,7 +1357,7 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useCheckpointListener
   useCheckpointListener: (
-    checkpointId: IdOrNull | (() => IdOrNull),
+    checkpointId: MaybeGetter<IdOrNull>,
     listener: CheckpointListener<Schemas>,
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => void;
@@ -1216,13 +1365,17 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
   /// ui-svelte.usePersisterStatusListener
   usePersisterStatusListener: (
     listener: StatusListener<Schemas>,
-    persisterOrPersisterId?: PersisterOrPersisterId<Schemas>,
+    persisterOrPersisterId?: MaybeGetter<
+      PersisterOrPersisterId<Schemas> | undefined
+    >,
   ) => void;
 
   /// ui-svelte.useSynchronizerStatusListener
   useSynchronizerStatusListener: (
     listener: StatusListener<Schemas>,
-    synchronizerOrSynchronizerId?: SynchronizerOrSynchronizerId<Schemas>,
+    synchronizerOrSynchronizerId?: MaybeGetter<
+      SynchronizerOrSynchronizerId<Schemas> | undefined
+    >,
   ) => void;
 
   /// ui-svelte.provideStore
