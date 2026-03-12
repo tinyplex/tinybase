@@ -139,10 +139,15 @@ const forEachDirAndFile = (dir, dirCallback, fileCallback, extension = '') =>
     }
   });
 
-const copyWithReplace = async (src, [from, to], dst = src) => {
-  const file = await promises.readFile(src, UTF8);
-  await promises.writeFile(dst, file.replace(from, to), UTF8);
-};
+const copyWithReplace = async (src, replacements, dst = src) =>
+  await promises.writeFile(
+    dst,
+    replacements.reduce(
+      (file, [from, to]) => file.replaceAll(from, to),
+      await promises.readFile(src, UTF8),
+    ),
+    UTF8,
+  );
 
 const gzipFile = async (fileName) =>
   await promises.writeFile(
@@ -580,13 +585,16 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   outputFiles.push(outputFileWithSchemas);
   await copyWithReplace(
     outputFile,
-    ['../ui-react', '../../ui-react/with-schemas/' + index],
+    [['../ui-react', '../../ui-react/with-schemas/' + index]],
     outputFileWithSchemas,
   );
 
   await copyWithReplace(
     outputFile,
-    ['../ui-react', '../ui-react/' + index],
+    [
+      ['../ui-react', '../ui-react/' + index],
+      [/(\w+) = \$\.noop/g, '/* istanbul ignore next */ $1 = $.noop'],
+    ],
     outputFile,
   );
 
