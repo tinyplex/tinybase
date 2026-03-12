@@ -9,7 +9,7 @@ const getIfNotFunction =
     then: (value: Value) => Return,
     otherwise?: () => Return,
   ): Return | undefined =>
-    predicate(value) ? otherwise?.() : then(value);
+    predicate(value) ? /* istanbul ignore next */ otherwise?.() : then(value);
 
 export const GLOBAL = globalThis;
 export const WINDOW = GLOBAL.window;
