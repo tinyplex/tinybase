@@ -94,6 +94,7 @@ import {
   useParamValues,
   useParamValuesListener,
   useParamValuesState,
+  usePersisterIds,
   usePersisterStatus,
   usePersisterStatusListener,
   useProvideCheckpoints,
@@ -157,6 +158,7 @@ import {
   useStore,
   useStoreIds,
   useStores,
+  useSynchronizerIds,
   useSynchronizerStatus,
   useSynchronizerStatusListener,
   useTable,
@@ -1014,6 +1016,36 @@ describe('Context Hooks', () => {
       </Provider>,
     );
     expect(container.textContent).toEqual('["checkpoints1","checkpoints2"]');
+    expect(didRender).toHaveBeenCalledTimes(1);
+
+    unmount();
+  });
+
+  test('usePersisterIds', () => {
+    const Test = () => didRender(JSON.stringify(usePersisterIds()));
+    const persister1 = createFilePersister(createStore(), tmp.fileSync().name);
+    const persister2 = createFilePersister(createStore(), tmp.fileSync().name);
+    const {container, unmount} = render(
+      <Provider persistersById={{persister1, persister2}}>
+        <Test />
+      </Provider>,
+    );
+    expect(container.textContent).toEqual('["persister1","persister2"]');
+    expect(didRender).toHaveBeenCalledTimes(1);
+
+    unmount();
+  });
+
+  test('useSynchronizerIds', () => {
+    const Test = () => didRender(JSON.stringify(useSynchronizerIds()));
+    const synchronizer1 = createLocalSynchronizer(createMergeableStore());
+    const synchronizer2 = createLocalSynchronizer(createMergeableStore());
+    const {container, unmount} = render(
+      <Provider synchronizersById={{synchronizer1, synchronizer2}}>
+        <Test />
+      </Provider>,
+    );
+    expect(container.textContent).toEqual('["synchronizer1","synchronizer2"]');
     expect(didRender).toHaveBeenCalledTimes(1);
 
     unmount();
