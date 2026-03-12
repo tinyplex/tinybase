@@ -17,7 +17,9 @@ import {
   createRelationships,
   createStore,
 } from 'tinybase';
+import type {AnyPersister} from 'tinybase/persisters';
 import {createLocalPersister} from 'tinybase/persisters/persister-browser';
+import type {Synchronizer} from 'tinybase/synchronizers';
 import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import {
   BackwardCheckpointsView,
@@ -64,11 +66,14 @@ import ContextCheckpoints from './components/ContextCheckpoints.svelte';
 import ContextIndexes from './components/ContextIndexes.svelte';
 import ContextMetrics from './components/ContextMetrics.svelte';
 import ContextNested from './components/ContextNested.svelte';
+import ContextNestedDefaults from './components/ContextNestedDefaults.svelte';
 import ContextPersister from './components/ContextPersister.svelte';
 import ContextQueries from './components/ContextQueries.svelte';
 import ContextRelationships from './components/ContextRelationships.svelte';
 import ContextStore from './components/ContextStore.svelte';
 import ContextSynchronizer from './components/ContextSynchronizer.svelte';
+import ProvideThings from './components/ProvideThings.svelte';
+import TestCurrentCheckpointViewSnippet from './components/TestCurrentCheckpointViewSnippet.svelte';
 
 const sep = createRawSnippet(() => ({render: () => '<span>/</span>'}));
 
@@ -1111,6 +1116,21 @@ describe('Read Components', () => {
 
       unmount();
     });
+
+    test('Custom checkpoint snippet', async () => {
+      const {container, unmount} = render(TestCurrentCheckpointViewSnippet, {
+        props: {checkpoints},
+      });
+      expect(container.textContent).toContain('current:');
+
+      await act(() => checkpoints.clear());
+      expect(container.textContent).toContain('current:0');
+
+      await act(() => store.setTables({t1: {r1: {c1: 2}}}));
+      expect(container.textContent).toEqual('');
+
+      unmount();
+    });
   });
 });
 
@@ -1456,6 +1476,73 @@ describe('Context Provider', () => {
       });
       expect(container.textContent).toEqual('["a","b"]1001');
       unmount();
+    });
+  });
+
+  describe('provide', () => {
+    test('provideXxx functions', async () => {
+      const metrics: Metrics = createMetrics(store);
+      const indexes: Indexes = createIndexes(store);
+      const relationships: Relationships = createRelationships(store);
+      const queries: Queries = createQueries(store);
+      const checkpoints: Checkpoints = createCheckpoints(store);
+      const persister: AnyPersister = createLocalPersister(store, 'pt');
+      const mergeableStore = createMergeableStore();
+      const synchronizer: Synchronizer =
+        createLocalSynchronizer(mergeableStore);
+
+      const {container, unmount} = render(ProvideThings, {
+        props: {
+          store,
+          metrics,
+          indexes,
+          relationships,
+          queries,
+          checkpoints,
+          persister,
+          synchronizer,
+        },
+      });
+      expect(container.textContent).toContain('provided');
+      unmount();
+      synchronizer.destroy();
+    });
+  });
+
+  describe('nested defaults', () => {
+    test('parentCtx fallbacks', async () => {
+      const metrics: Metrics = createMetrics(store);
+      const indexes: Indexes = createIndexes(store);
+      const relationships: Relationships = createRelationships(store);
+      const queries: Queries = createQueries(store);
+      const checkpoints: Checkpoints = createCheckpoints(store);
+      const persister: AnyPersister = createLocalPersister(store, 'nd');
+      const mergeableStore = createMergeableStore();
+      const synchronizer: Synchronizer =
+        createLocalSynchronizer(mergeableStore);
+
+      const {container, unmount} = render(ContextNestedDefaults, {
+        props: {
+          store,
+          metrics,
+          indexes,
+          relationships,
+          queries,
+          checkpoints,
+          persister,
+          synchronizer,
+        },
+      });
+      expect(container.textContent).toContain('s');
+      expect(container.textContent).toContain('m');
+      expect(container.textContent).toContain('i');
+      expect(container.textContent).toContain('r');
+      expect(container.textContent).toContain('q');
+      expect(container.textContent).toContain('c');
+      expect(container.textContent).toContain('p');
+      expect(container.textContent).toContain('syn');
+      unmount();
+      synchronizer.destroy();
     });
   });
 });
