@@ -22,7 +22,11 @@ export default defineConfig({
       enabled: false,
       provider: 'istanbul',
       exclude: coverageConfigDefaults.exclude.filter((e) => e !== 'dist/**'),
-      include: ['dist/index.js', 'dist/ui-react/index.js'],
+      include: [
+        'dist/index.js',
+        'dist/ui-react/index.js',
+        'dist/ui-svelte/index.js',
+      ],
       reportsDirectory: './tmp/coverage',
       reporter: ['text-summary', 'json-summary', 'html'],
     },
