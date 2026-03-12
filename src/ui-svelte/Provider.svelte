@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {getContext, setContext} from 'svelte';
+  import {getContext, setContext, untrack} from 'svelte';
   import type {Id} from '../@types/common/index.d.ts';
   import type {ProviderProps} from '../@types/ui-svelte/index.d.ts';
   import {type ContextValue, TINYBASE_CONTEXT_KEY} from './context.ts';
@@ -30,11 +30,13 @@
   let extras: {[id: Id]: any}[] = $state(Array.from({length: 8}, () => ({})));
 
   const addThing = (offset: number, id: Id, thing: any): void => {
-    extras[offset] = {...extras[offset], [id]: thing};
+    extras[offset] = {...untrack(() => extras[offset]), [id]: thing};
   };
 
   const delThing = (offset: number, id: Id): void => {
-    const {[id]: _, ...rest} = extras[offset] as {[id: Id]: any};
+    const {[id]: _, ...rest} = untrack(() => extras[offset]) as {
+      [id: Id]: any;
+    };
     extras[offset] = rest;
   };
 
