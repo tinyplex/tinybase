@@ -120,6 +120,7 @@ import HookTables from './components/HookTables.svelte';
 import HookValue from './components/HookValue.svelte';
 import HookValueIds from './components/HookValueIds.svelte';
 import HookValues from './components/HookValues.svelte';
+import HookWindowlessCoverage from './components/HookWindowlessCoverage.svelte';
 
 let store: Store;
 
@@ -127,6 +128,19 @@ beforeEach(() => {
   store = createStore()
     .setTables({t1: {r1: {c1: 1}}})
     .setValues({v1: 1});
+});
+
+test('windowless hooks skip effects', () => {
+  vi.stubGlobal('window', undefined);
+  try {
+    const {container, unmount} = render(HookWindowlessCoverage);
+    expect(container.textContent).toEqual(
+      JSON.stringify([['t1'], 1, 1, [], [], [], [], [], [], [], []]),
+    );
+    unmount();
+  } finally {
+    vi.unstubAllGlobals();
+  }
 });
 
 describe('Read Hooks', () => {

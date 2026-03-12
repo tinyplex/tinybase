@@ -3,9 +3,10 @@ import {beforeEach, describe, expect, test, vi} from 'vitest';
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type {Row, Store, Table, Tables, Values} from 'tinybase';
 import {createMergeableStore, createStore} from 'tinybase';
+import {createCustomPersister, Persists} from 'tinybase/persisters';
 import {expectChanges, expectNoChanges} from '../../common/expect.ts';
 import {createStoreListener} from '../../common/listeners.ts';
-import {noop} from '../../common/other.ts';
+import {noop, pause} from '../../common/other.ts';
 import {StoreListener} from '../../common/types.ts';
 
 describe.each([
@@ -1521,5 +1522,59 @@ describe.each([
         expect(store.getListenerStats()).toEqual(expectedListenerStats);
       });
     });
+  });
+});
+
+describe('Encoded persistence paths', () => {
+  test('Store changes are encoded during auto-save', async () => {
+    const store = createStore().setCell('t1', 'r1', 'c1', {a: 1});
+    const persisted: any[] = [];
+    const persister = createCustomPersister(
+      store,
+      async () => undefined,
+      async (getContent, changes) => {
+        persisted.push([getContent(), changes]);
+      },
+      async () => undefined,
+      async () => undefined,
+    );
+
+    await persister.startAutoSave();
+    store.setValue('v1', {b: 2});
+    await pause(1);
+    await persister.destroy();
+
+    const changes = persisted.find(([, changes]) => changes != undefined)?.[1];
+    expect(changes).toEqual([{}, {v1: expect.any(String)}, 1]);
+    expect(changes[1].v1).toContain('"b":2');
+  });
+
+  test('Mergeable content is encoded during save', async () => {
+    const store = createMergeableStore('s1')
+      .setCell('t1', 'r1', 'c1', {a: 1})
+      .setValue('v1', {b: 2});
+    let persisted: any;
+    const persister = createCustomPersister(
+      store,
+      async () => undefined,
+      async (getContent) => {
+        persisted = getContent();
+      },
+      async () => undefined,
+      async () => undefined,
+      undefined,
+      Persists.StoreOrMergeableStore,
+    );
+
+    await persister.save();
+    await persister.destroy();
+
+    expect(typeof store.getMergeableContent()[0][0].t1[0].r1[0].c1[0]).toEqual(
+      'object',
+    );
+    expect(typeof persisted[0][0].t1[0].r1[0].c1[0]).toEqual('string');
+    expect(persisted[0][0].t1[0].r1[0].c1[0]).toContain('"a":1');
+    expect(typeof persisted[1][0].v1[0]).toEqual('string');
+    expect(persisted[1][0].v1[0]).toContain('"b":2');
   });
 });
