@@ -71,6 +71,7 @@ import HookBindableValue from './components/HookBindableValue.svelte';
 import HookCell from './components/HookCell.svelte';
 import HookCellIds from './components/HookCellIds.svelte';
 import HookCheckpointIds from './components/HookCheckpointIds.svelte';
+import HookCheckpointsIds from './components/HookCheckpointsIds.svelte';
 import HookGoBackwardCallback from './components/HookGoBackwardCallback.svelte';
 import HookGoForwardCallback from './components/HookGoForwardCallback.svelte';
 import HookHasCell from './components/HookHasCell.svelte';
@@ -81,25 +82,37 @@ import HookHasTables from './components/HookHasTables.svelte';
 import HookHasValue from './components/HookHasValue.svelte';
 import HookHasValues from './components/HookHasValues.svelte';
 import HookIndexIds from './components/HookIndexIds.svelte';
+import HookIndexesIds from './components/HookIndexesIds.svelte';
 import HookLinkedRowIds from './components/HookLinkedRowIds.svelte';
 import HookLocalRowIds from './components/HookLocalRowIds.svelte';
 import HookMetric from './components/HookMetric.svelte';
 import HookMetricIds from './components/HookMetricIds.svelte';
+import HookMetricsIds from './components/HookMetricsIds.svelte';
+import HookPersisterIds from './components/HookPersisterIds.svelte';
+import HookPersisterStatus from './components/HookPersisterStatus.svelte';
+import HookQueriesIds from './components/HookQueriesIds.svelte';
 import HookQueryIds from './components/HookQueryIds.svelte';
 import HookRelationshipIds from './components/HookRelationshipIds.svelte';
+import HookRelationshipsIds from './components/HookRelationshipsIds.svelte';
 import HookRemoteRowId from './components/HookRemoteRowId.svelte';
 import HookResultCell from './components/HookResultCell.svelte';
 import HookResultCellIds from './components/HookResultCellIds.svelte';
 import HookResultRow from './components/HookResultRow.svelte';
+import HookResultRowCount from './components/HookResultRowCount.svelte';
 import HookResultRowIds from './components/HookResultRowIds.svelte';
 import HookResultSortedRowIds from './components/HookResultSortedRowIds.svelte';
+import HookResultSortedRowIdsNoDefaults from './components/HookResultSortedRowIdsNoDefaults.svelte';
 import HookResultTable from './components/HookResultTable.svelte';
+import HookResultTableCellIds from './components/HookResultTableCellIds.svelte';
 import HookRow from './components/HookRow.svelte';
 import HookRowCount from './components/HookRowCount.svelte';
 import HookRowIds from './components/HookRowIds.svelte';
 import HookSliceIds from './components/HookSliceIds.svelte';
 import HookSliceRowIds from './components/HookSliceRowIds.svelte';
 import HookSortedRowIds from './components/HookSortedRowIds.svelte';
+import HookSortedRowIdsNoDefaults from './components/HookSortedRowIdsNoDefaults.svelte';
+import HookSynchronizerIds from './components/HookSynchronizerIds.svelte';
+import HookSynchronizerStatus from './components/HookSynchronizerStatus.svelte';
 import HookTable from './components/HookTable.svelte';
 import HookTableCellIds from './components/HookTableCellIds.svelte';
 import HookTableIds from './components/HookTableIds.svelte';
@@ -350,6 +363,14 @@ describe('Read Hooks', () => {
     unmount();
   });
 
+  test('useSortedRowIds, no-default descending and offset', async () => {
+    const {container, unmount} = render(HookSortedRowIdsNoDefaults, {
+      props: {store, tableId: 't1', cellId: 'c1'},
+    });
+    expect(container.textContent).toEqual(JSON.stringify(['r1']));
+    unmount();
+  });
+
   test('useHasRow', async () => {
     const {container, rerender, unmount} = render(HookHasRow, {
       props: {store, tableId: 't0', rowId: 'r0'},
@@ -582,6 +603,48 @@ describe('Read Hooks', () => {
     expect(container.textContent).toContain('true');
     expect(store.getValue('v1')).toEqual(true);
 
+    unmount();
+  });
+
+  test('useMetricsIds', async () => {
+    const {container, unmount} = render(HookMetricsIds);
+    expect(container.textContent).toEqual('[]');
+    unmount();
+  });
+
+  test('useIndexesIds', async () => {
+    const {container, unmount} = render(HookIndexesIds);
+    expect(container.textContent).toEqual('[]');
+    unmount();
+  });
+
+  test('useQueriesIds', async () => {
+    const {container, unmount} = render(HookQueriesIds);
+    expect(container.textContent).toEqual('[]');
+    unmount();
+  });
+
+  test('useRelationshipsIds', async () => {
+    const {container, unmount} = render(HookRelationshipsIds);
+    expect(container.textContent).toEqual('[]');
+    unmount();
+  });
+
+  test('useCheckpointsIds', async () => {
+    const {container, unmount} = render(HookCheckpointsIds);
+    expect(container.textContent).toEqual('[]');
+    unmount();
+  });
+
+  test('usePersisterIds', async () => {
+    const {container, unmount} = render(HookPersisterIds);
+    expect(container.textContent).toEqual('[]');
+    unmount();
+  });
+
+  test('useSynchronizerIds', async () => {
+    const {container, unmount} = render(HookSynchronizerIds);
+    expect(container.textContent).toEqual('[]');
     unmount();
   });
 
@@ -916,6 +979,57 @@ describe('Read Hooks', () => {
     unmount();
   });
 
+  test('useResultTableCellIds', async () => {
+    const queries: Queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => {
+        select('c1');
+        select('c2');
+      },
+    );
+    const {container, rerender, unmount} = render(HookResultTableCellIds, {
+      props: {queries, queryId: 'q0'},
+    });
+    expect(container.textContent).toEqual(JSON.stringify([]));
+
+    await rerender({queryId: 'q1'});
+    expect(container.textContent).toEqual(JSON.stringify(['c1']));
+
+    await act(() =>
+      store
+        .setTables({t1: {r1: {c1: 2, c2: 3}}})
+        .setTables({t1: {r1: {c1: 2, c2: 3}}}),
+    );
+    expect(container.textContent).toEqual(JSON.stringify(['c1', 'c2']));
+
+    unmount();
+  });
+
+  test('useResultRowCount', async () => {
+    const queries: Queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => select('c1'),
+    );
+    const {container, rerender, unmount} = render(HookResultRowCount, {
+      props: {queries, queryId: 'q0'},
+    });
+    expect(container.textContent).toEqual('0');
+
+    await rerender({queryId: 'q1'});
+    expect(container.textContent).toEqual('1');
+
+    await act(() =>
+      store
+        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}})
+        .setTables({t1: {r1: {c1: 2}, r2: {c1: 3}}}),
+    );
+    expect(container.textContent).toEqual('2');
+
+    unmount();
+  });
+
   test('useResultSortedRowIds', async () => {
     const queries: Queries = createQueries(store)
       .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
@@ -977,6 +1091,19 @@ describe('Read Hooks', () => {
     await act(() => store.delTables());
     expect(container.textContent).toEqual(JSON.stringify([]));
 
+    unmount();
+  });
+
+  test('useResultSortedRowIds, no-default descending and offset', async () => {
+    const queries: Queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => select('c1'),
+    );
+    const {container, unmount} = render(HookResultSortedRowIdsNoDefaults, {
+      props: {queries, queryId: 'q1', cellId: 'c1'},
+    });
+    expect(container.textContent).toEqual(JSON.stringify(['r1']));
     unmount();
   });
 
@@ -1092,6 +1219,27 @@ describe('Read Hooks', () => {
     expect(container.textContent).toEqual(JSON.stringify([['0'], '1', []]));
 
     unmount();
+  });
+
+  test('usePersisterStatus', async () => {
+    const persister: AnyPersister = createSessionPersister(store, 'test-key');
+    const {container, unmount} = render(HookPersisterStatus, {
+      props: {persister},
+    });
+    expect(container.textContent).toEqual('0');
+    unmount();
+    persister.destroy();
+  });
+
+  test('useSynchronizerStatus', async () => {
+    const store2 = createMergeableStore();
+    const synchronizer: Synchronizer = createLocalSynchronizer(store2);
+    const {container, unmount} = render(HookSynchronizerStatus, {
+      props: {synchronizer},
+    });
+    expect(container.textContent).toEqual('0');
+    unmount();
+    synchronizer.destroy();
   });
 });
 
