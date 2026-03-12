@@ -1887,6 +1887,17 @@ describe.each([
           expectNoChanges(listener);
         });
 
+        test('to object with pre-encoded json string', () => {
+          const store = createStore();
+          store.setTablesSchema({t1: {c1: {type: 'object'}}});
+          const listener = createStoreListener(store);
+          listener.listenToInvalidCell('invalids', null, null, null);
+          // @ts-ignore
+          store.setCell('t1', 'r1', 'c1', '\uFFFD{"a":1}');
+          expect(store.getCell('t1', 'r1', 'c1')).toEqual({a: 1});
+          expectNoChanges(listener);
+        });
+
         test('to string', () => {
           const store = createStore();
           store.setTablesSchema({

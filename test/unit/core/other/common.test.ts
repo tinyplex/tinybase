@@ -11,6 +11,7 @@ import {
   getTableHash,
   getTableInTablesHash,
   getTablesHash,
+  getUniqueId,
   getValueHash,
   getValueInValuesHash,
   getValuesHash,
@@ -20,6 +21,11 @@ const [reset, getNow] = getTimeFunctions();
 
 beforeEach(() => {
   reset();
+});
+
+test('getUniqueId', () => {
+  expect(getUniqueId()).toHaveLength(16);
+  expect(getUniqueId(5)).toHaveLength(5);
 });
 
 test('getHlcFunctions', () => {

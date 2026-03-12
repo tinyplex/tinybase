@@ -590,6 +590,11 @@ describe('getTransactionMergeableChanges', () => {
     store.setValue('v1', 1);
     expect(store.getTransactionMergeableChanges()).toMatchSnapshot();
   });
+
+  test('With hashes', () => {
+    store.setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
+    expect(store.getTransactionMergeableChanges(true)).toMatchSnapshot();
+  });
 });
 
 describe('applyMergeableChanges/setMergeableContent', () => {
@@ -608,6 +613,16 @@ describe('applyMergeableChanges/setMergeableContent', () => {
     ] as MergeableContent);
     expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
     expect(store.getMergeableContent()).toMatchSnapshot();
+  });
+
+  test('apply with missing cell hlc', () => {
+    store.applyMergeableChanges([
+      // @ts-ignore
+      stamped(0, 0, {t1: stamped(0, 0, {r1: stamped(0, 0, {c1: [1]})})}),
+      // @ts-ignore
+      stamped(0, 0, {v1: [1]}),
+    ] as MergeableContent);
+    expect(store.getContent()).toEqual([{t1: {r1: {c1: 1}}}, {v1: 1}]);
   });
 
   test('apply over existing content', () => {
