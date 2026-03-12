@@ -160,6 +160,14 @@ describe('Read Components', () => {
       unmount();
     });
 
+    test('Debug Ids with null tableId', () => {
+      const {container, unmount} = render(TableView, {
+        props: {store, tableId: null as any, debugIds: true},
+      });
+      expect(container.textContent).toEqual(':{}');
+      unmount();
+    });
+
     test('Custom', async () => {
       const {container, rerender, unmount} = render(TestTableView, {
         props: {store, tableId: 't0', cellPrefix: ':'},
@@ -567,6 +575,16 @@ describe('Read Components', () => {
       unmount();
     });
 
+    test('Falsy tableId skips row rendering', () => {
+      store.setTable('', {r1: {c1: 1}});
+      indexes.setIndexDefinition('i0', '' as any, 'c1');
+      const {container, unmount} = render(SliceView, {
+        props: {indexes, indexId: 'i0', sliceId: '1'},
+      });
+      expect(container.textContent).toEqual('');
+      unmount();
+    });
+
     test('Custom', async () => {
       const {container, rerender, unmount} = render(TestSliceView, {
         props: {indexes, indexId: 'i0', sliceId: '0', cellPrefix: ':'},
@@ -623,6 +641,33 @@ describe('Read Components', () => {
         },
       });
       expect(container.textContent).toEqual('r1:{R1:{C1:{1}}}');
+      unmount();
+    });
+
+    test('Debug Ids with null localRowId', () => {
+      const {container, unmount} = render(RemoteRowView, {
+        props: {
+          relationships,
+          relationshipId: 'r1',
+          localRowId: null as any,
+          debugIds: true,
+        },
+      });
+      expect(container.textContent).toEqual(':{}');
+      unmount();
+    });
+
+    test('Missing remote table skips row rendering', () => {
+      relationships.setRelationshipDefinition(
+        'r3',
+        't1',
+        undefined as any,
+        'c1',
+      );
+      const {container, unmount} = render(RemoteRowView, {
+        props: {relationships, relationshipId: 'r3', localRowId: 'r1'},
+      });
+      expect(container.textContent).toEqual('');
       unmount();
     });
 
@@ -701,6 +746,16 @@ describe('Read Components', () => {
       unmount();
     });
 
+    test('Falsy localTableId skips row rendering', () => {
+      store.setTable('', {r1: {c1: 'R1'}, r2: {c1: 'R1'}});
+      relationships.setRelationshipDefinition('r0', '' as any, 'T1', 'c1');
+      const {container, unmount} = render(LocalRowsView, {
+        props: {relationships, relationshipId: 'r0', remoteRowId: 'R1'},
+      });
+      expect(container.textContent).toEqual('');
+      unmount();
+    });
+
     test('Custom', async () => {
       const {container, rerender, unmount} = render(TestLocalRowsView, {
         props: {
@@ -773,6 +828,20 @@ describe('Read Components', () => {
       expect(container.textContent).toEqual(
         'r1:{r1:{c1:{r2}}r2:{c1:{r3}}r3:{c1:{r4}}r4:{}}',
       );
+      unmount();
+    });
+
+    test('Falsy localTableId skips row rendering', () => {
+      store.setTable('', {
+        r1: {c1: 'r2'},
+        r2: {c1: 'r3'},
+        r3: {c1: 'r4'},
+      });
+      relationships.setRelationshipDefinition('r0', '' as any, '' as any, 'c1');
+      const {container, unmount} = render(LinkedRowsView, {
+        props: {relationships, relationshipId: 'r0', firstRowId: 'r1'},
+      });
+      expect(container.textContent).toEqual('');
       unmount();
     });
 
