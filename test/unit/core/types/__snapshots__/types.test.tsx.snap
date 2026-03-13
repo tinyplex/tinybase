@@ -3074,7 +3074,9 @@ exports[`Types in ui-svelte.ts > 167:22 1`] = `"Argument of type '"c2"' is not a
 
 exports[`Types in ui-svelte.ts > 168:10 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
-exports[`Types in ui-svelte.ts > 172:2 1`] = `"Type 'string' is not assignable to type 'number'."`;
+exports[`Types in ui-svelte.ts > 171:2 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types in ui-svelte.ts > 172:2 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'boolean' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
 exports[`Types in ui-svelte.ts > 173:30 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d">'."`;
 
@@ -3092,7 +3094,9 @@ exports[`Types in ui-svelte.ts > 189:2 1`] = `"Conversion of type 'DefaultedValu
 
 exports[`Types in ui-svelte.ts > 190:11 1`] = `"Argument of type '"v2"' is not assignable to parameter of type 'MaybeGetter<"v1" | "v1d">'."`;
 
-exports[`Types in ui-svelte.ts > 194:2 1`] = `"Type 'string' is not assignable to type 'number'."`;
+exports[`Types in ui-svelte.ts > 193:2 1`] = `"Conversion of type 'DefaultedValueFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
+
+exports[`Types in ui-svelte.ts > 194:2 1`] = `"Conversion of type 'DefaultedValueFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">' to type 'boolean' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
 exports[`Types in ui-svelte.ts > 195:19 1`] = `"Argument of type '"v2"' is not assignable to parameter of type 'MaybeGetter<"v1" | "v1d">'."`;
 

@@ -5408,13 +5408,13 @@ describe('Parameterized', () => {
 
       const listener = vi.fn();
       queries.addParamValuesListener('q1', listener);
-      queries.setParamValues('q1', {p1: 'b'}); // Same value
+      queries.setParamValues('q1', {p1: 'b'});
       expect(listener).toHaveBeenCalledTimes(0);
 
-      queries.setParamValues('q1', {p1: 'd'}); // Different value
+      queries.setParamValues('q1', {p1: 'd'});
       expect(listener).toHaveBeenCalledTimes(1);
 
-      queries.setParamValues('q1', {p1: 'd'}); // Same value again
+      queries.setParamValues('q1', {p1: 'd'});
       expect(listener).toHaveBeenCalledTimes(1);
     });
 
@@ -5565,13 +5565,13 @@ describe('Parameterized', () => {
       const listener = vi.fn();
       queries.addParamValueListener('q1', 'p1', listener);
 
-      queries.setParamValue('q1', 'p1', 'b'); // Same value
+      queries.setParamValue('q1', 'p1', 'b');
       expect(listener).toHaveBeenCalledTimes(0);
 
-      queries.setParamValue('q1', 'p1', 'd'); // Different value
+      queries.setParamValue('q1', 'p1', 'd');
       expect(listener).toHaveBeenCalledTimes(1);
 
-      queries.setParamValue('q1', 'p1', 'd'); // Same value again
+      queries.setParamValue('q1', 'p1', 'd');
       expect(listener).toHaveBeenCalledTimes(1);
     });
 

@@ -3164,7 +3164,6 @@ describe('callback granularity', () => {
       store.setTables({t1: {r1: {c1: 'a'}}});
       registerAllCallbacks();
       store.setCell('t1', 'r1', 'c2', 'b');
-      // prospective row {c1,c2} → applyRowDirectly fires setValidCell for both
       expect(calls).toEqual({willSetRow: 1, willSetCell: 2});
     });
 

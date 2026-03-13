@@ -16,12 +16,14 @@
     useTablesListener,
   } from 'tinybase/ui-svelte';
 
-  const store = createStore()
-    .setCell('t1', 'r1', 'c1', 1)
-    .setValue('v1', 1);
+  const store = createStore().setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
 
   const tableIds = useTableIds(() => store);
-  useTablesListener(() => undefined, false, () => store);
+  useTablesListener(
+    () => undefined,
+    false,
+    () => store,
+  );
 
   const cell = useBindableCell(
     () => 't1',
@@ -29,7 +31,10 @@
     () => 'c1',
     () => store,
   );
-  const value = useBindableValue(() => 'v1', () => store);
+  const value = useBindableValue(
+    () => 'v1',
+    () => store,
+  );
 
   const storeIds = useStoreIds();
   const metricsIds = useMetricsIds();
