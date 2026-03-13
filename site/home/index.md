@@ -8,7 +8,7 @@
 
 <a href='/guides/releases/#v8-1'><em>NEW!</em> v8.1 release</a>
 
-<span id="one-with">"The one with Svelte 5 support!"</span>
+<span id="one-with">"The one with Svelte!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 

@@ -7,15 +7,15 @@ highlighted features.
 
 # v8.1
 
-## Svelte 5 Support
+## Svelte Support
 
-This release introduces the new `tinybase/ui-svelte` module, bringing native
-Svelte 5 runes-based reactive bindings to TinyBase. The module provides hooks
-and view components for building reactive UIs without any additional state
+This highly-anticipated release introduces the new ui-svelte module, bringing
+native Svelte 5 runes-based reactive bindings to TinyBase. The module provides
+hooks and view components for building reactive UIs without any additional state
 management.
 
-Hooks return a reactive `{ current }` object backed by Svelte's `$state` rune.
-Any component that reads `hook.current` will automatically re-render when the
+Hooks return a reactive `{current}` object backed by Svelte's `$state` rune. Any
+component that reads `hook.current` will automatically re-render when the
 underlying TinyBase data changes:
 
 ```svelte
@@ -30,9 +30,9 @@ underlying TinyBase data changes:
 <p>Color: {color.current}</p>
 ```
 
-The `useBindableCell` and `useBindableValue` hooks go further, providing a
-writable `current` property that pairs naturally with Svelte's `bind:`
-directive for two-way data binding:
+The useBindableCell hook and useBindableValue hook go further, providing a
+writable `current` property that pairs naturally with Svelte's `bind:` directive
+for two-way data binding:
 
 ```svelte
 <script>
@@ -44,28 +44,23 @@ directive for two-way data binding:
 <input bind:value={color.current} />
 ```
 
-All hooks accept reactive getter functions as parameters — the `R<T>` type
-(`T | (() => T)`) — so passing `() => rowId` from a `$state` variable causes
-the hook to reactively track which row it reads, without unmounting and
-remounting.
+All hooks accept reactive getter functions as parameters — the MaybeGetter type
+(`T | (() => T)`) — so passing `() => rowId` from a `$state` variable causes the
+hook to reactively track which row it reads, without unmounting and remounting.
 
-The module further includes a `Provider` component and context helpers
-(`useStore`, `useMetrics`, etc.) for sharing TinyBase objects across a component
-tree, and ~23 built-in view components (`CellView`, `RowView`, `TablesView`,
-and more) for assembling UIs directly from Store data.
+The module further includes a provider component and context helpers for sharing
+TinyBase objects across a component tree, and many built-in view components for
+assembling UIs directly from Store data.
 
-Read more in the new
-[Building UIs With Svelte](/guides/building-uis/building-uis-with-svelte/)
-guide.
+Read more in the ui-svelte module documentation and the [Building UIs With
+Svelte](/guides/building-uis/building-uis-with-svelte/) guide.
 
-## Breaking Change: UI Modules Removed From `omni`
+## Breaking Change
 
-The `tinybase/omni` module no longer includes `tinybase/ui-react`,
-`tinybase/ui-react-dom`, or `tinybase/ui-react-inspector`. Since
-`tinybase/ui-svelte` exports many of the same names as the React UI modules
-(`useStore`, `useCell`, `Provider`, etc.), including both in a single flat
-namespace would cause silent name collisions. The `omni` module is now
-framework-neutral.
+This release contains a minor breaking change. The `tinybase/omni` module no
+longer includes the ui-react module, ui-react-dom module, or ui-react-inspector
+module. Since the ui-svelte module exports many of the same names, including
+both in a single flat namespace would cause silent name collisions.
 
 If you were importing React UI helpers from `tinybase/omni`, update your
 imports:
@@ -78,6 +73,15 @@ import {createStore, useCell, Provider} from 'tinybase/omni';
 import {createStore} from 'tinybase/omni';
 import {useCell, Provider} from 'tinybase/ui-react';
 ```
+
+(Sorry about that!)
+
+## We need your help
+
+We hope you enjoy exploring this early new Svelte support. But we really need
+feedback on how it works and whether or not you find it easy and idiomatic to
+work with! Please let us know in the issues, discussions, or on social media.
+Thanks and good luck!
 
 ---
 
