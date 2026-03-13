@@ -19,13 +19,7 @@
   );
 </script>
 
-<Wrap
-  ids={rowIds.current}
-  {separator}
-  {debugIds}
-  id={tableId}
-  custom={row}
->
+<Wrap ids={rowIds.current} {separator} {debugIds} id={tableId} custom={row}>
   {#snippet children(rowId)}
     <RowView {tableId} {rowId} {store} {customCellIds} {debugIds} />
   {/snippet}

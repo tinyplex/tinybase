@@ -26,13 +26,7 @@
   );
 </script>
 
-<Wrap
-  ids={rowIds.current}
-  {separator}
-  {debugIds}
-  id={queryId}
-  custom={row}
->
+<Wrap ids={rowIds.current} {separator} {debugIds} id={queryId} custom={row}>
   {#snippet children(rowId)}
     <ResultRowView {queryId} {rowId} {queries} {debugIds} />
   {/snippet}
