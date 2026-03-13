@@ -1,18 +1,18 @@
-import type {Checkpoints} from '../../../checkpoints/with-schemas/index.js';
-import type {Id} from '../../../common/with-schemas/index.js';
-import type {Indexes} from '../../../indexes/with-schemas/index.js';
-import type {Metrics} from '../../../metrics/with-schemas/index.js';
+import type {Checkpoints} from '../../../checkpoints/with-schemas/index.d.ts';
+import type {Id} from '../../../common/with-schemas/index.d.ts';
+import type {Indexes} from '../../../indexes/with-schemas/index.d.ts';
+import type {Metrics} from '../../../metrics/with-schemas/index.d.ts';
 import type {
   Persister,
   Persists,
-} from '../../../persisters/with-schemas/index.js';
-import type {Queries} from '../../../queries/with-schemas/index.js';
-import type {Relationships} from '../../../relationships/with-schemas/index.js';
+} from '../../../persisters/with-schemas/index.d.ts';
+import type {Queries} from '../../../queries/with-schemas/index.d.ts';
+import type {Relationships} from '../../../relationships/with-schemas/index.d.ts';
 import type {
   OptionalSchemas,
   Store,
-} from '../../../store/with-schemas/index.js';
-import type {Synchronizer} from '../../../synchronizers/with-schemas/index.js';
+} from '../../../store/with-schemas/index.d.ts';
+import type {Synchronizer} from '../../../synchronizers/with-schemas/index.d.ts';
 
 export type StoreOrStoreId<Schemas extends OptionalSchemas> =
   | Store<Schemas>
