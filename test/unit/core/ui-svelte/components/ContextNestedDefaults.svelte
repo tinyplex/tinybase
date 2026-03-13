@@ -33,7 +33,6 @@
   } = $props();
 </script>
 
-<!-- Outer Provider has all default things -->
 <Provider
   {store}
   {metrics}
@@ -44,7 +43,6 @@
   {persister}
   {synchronizer}
 >
-  <!-- Inner Provider has no default things - child should inherit from outer -->
   <Provider>
     <ContextNestedDefaultsChild />
   </Provider>

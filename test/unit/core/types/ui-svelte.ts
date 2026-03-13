@@ -169,8 +169,8 @@ const Getters = () => {
   useCell('t2', 'r2', 'c1'); // !
 
   useBindableCell('t1', 'r1', 'c1').current as number;
-  useBindableCell('t1', 'r1', 'c1').current = 1;
-  useBindableCell('t1', 'r1', 'c1').current = ''; // !
+  useBindableCell('t1', 'r1', 'c1').current as string; // !
+  useBindableCell('t1', 'r1', 'c1').current as boolean; // !
   useBindableCell('t1', 'r1', 'c2'); // !
   useBindableCell('t2', 'r2', 'c1'); // !
 
@@ -191,8 +191,8 @@ const Getters = () => {
   useValue('v2'); // !
 
   useBindableValue('v1').current as number;
-  useBindableValue('v1').current = 1;
-  useBindableValue('v1').current = ''; // !
+  useBindableValue('v1').current as string; // !
+  useBindableValue('v1').current as boolean; // !
   useBindableValue('v2'); // !
 
   useGoBackwardCallback() as () => void;

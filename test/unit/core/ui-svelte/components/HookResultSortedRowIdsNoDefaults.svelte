@@ -1,7 +1,6 @@
 <script lang="ts">
   import {useResultSortedRowIds} from 'tinybase/ui-svelte';
-  import type {Queries} from 'tinybase';
-  import type {Id} from 'tinybase';
+  import type {Id, Queries} from 'tinybase';
 
   let {queries, queryId, cellId}: {queries: Queries; queryId: Id; cellId?: Id} =
     $props();
