@@ -13,13 +13,7 @@
   );
 </script>
 
-<Wrap
-  ids={cellIds.current}
-  {separator}
-  {debugIds}
-  id={rowId}
-  custom={cell}
->
+<Wrap ids={cellIds.current} {separator} {debugIds} id={rowId} custom={cell}>
   {#snippet children(cellId)}
     <ResultCellView {queryId} {rowId} {cellId} {queries} {debugIds} />
   {/snippet}

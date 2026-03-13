@@ -6,7 +6,7 @@
 </script>
 
 <Provider>
-  <Inner {store} />
+  {@render Inner({store})}
 </Provider>
 
 {#snippet Inner({store}: {store: Store})}

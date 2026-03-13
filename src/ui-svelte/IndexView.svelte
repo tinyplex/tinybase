@@ -11,13 +11,7 @@
   );
 </script>
 
-<Wrap
-  ids={sliceIds.current}
-  {separator}
-  {debugIds}
-  id={indexId}
-  custom={slice}
->
+<Wrap ids={sliceIds.current} {separator} {debugIds} id={indexId} custom={slice}>
   {#snippet children(sliceId)}
     <SliceView {indexId} {sliceId} {indexes} {debugIds} />
   {/snippet}
