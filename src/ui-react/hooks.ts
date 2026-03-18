@@ -360,8 +360,12 @@ const DEFAULTS = [
   false,
   0,
 ];
+const cellOrValueEqual = (thing1: any, thing2: any): boolean =>
+  thing1 === thing2 ||
+  ((isObject(thing1) || isArray(thing1)) &&
+    jsonString(thing1) === jsonString(thing2));
 const IS_EQUALS: ((thing1: any, thing2: any) => boolean)[] = [
-  objIsEqual,
+  (obj1: any, obj2: any) => objIsEqual(obj1, obj2, cellOrValueEqual),
   arrayIsEqual,
   (
     [backwardIds1, currentId1, forwardIds1]: CheckpointIds,
@@ -373,10 +377,7 @@ const IS_EQUALS: ((thing1: any, thing2: any) => boolean)[] = [
   (paramValues1: ParamValues, paramValues2: ParamValues): boolean =>
     objIsEqual(paramValues1, paramValues2, arrayOrValueEqual),
   arrayOrValueEqual,
-  (thing1: any, thing2: any): boolean =>
-    thing1 === thing2 ||
-    ((isObject(thing1) || isArray(thing1)) &&
-      jsonString(thing1) === jsonString(thing2)),
+  cellOrValueEqual,
 ];
 const isEqual = (thing1: any, thing2: any) => thing1 === thing2;
 
