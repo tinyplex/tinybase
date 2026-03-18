@@ -1098,6 +1098,31 @@ describe('Read Hooks', () => {
     unmount();
   });
 
+  test('useTables re-render for array or object', () => {
+    store
+      .setTablesSchema({t1: {c1: {type: 'array'}, c2: {type: 'object'}}})
+      .setRow('t1', 'r1', {c1: [1, 2, 3], c2: {k: 'v'}});
+    const Test = () => didRender(JSON.stringify(useTables(store)));
+    const {container, unmount} = render(<Test />);
+    expect(container.textContent).toEqual(
+      JSON.stringify({t1: {r1: {c1: [1, 2, 3], c2: {k: 'v'}}}}),
+    );
+
+    act(() => store.setRow('t1', 'r1', {c1: [1, 2, 3], c2: {k: 'v'}}));
+    expect(container.textContent).toEqual(
+      JSON.stringify({t1: {r1: {c1: [1, 2, 3], c2: {k: 'v'}}}}),
+    );
+    expect(didRender).toHaveBeenCalledTimes(1);
+
+    act(() => store.setCell('t1', 'r1', 'c1', [9]));
+    expect(container.textContent).toEqual(
+      JSON.stringify({t1: {r1: {c1: [9], c2: {k: 'v'}}}}),
+    );
+    expect(didRender).toHaveBeenCalledTimes(2);
+
+    unmount();
+  });
+
   test('useTablesState', () => {
     const Test = () => {
       const [tables, setTables] = useTablesState(store);
@@ -1211,6 +1236,31 @@ describe('Read Hooks', () => {
     rerender(<button />);
     expect(store.getListenerStats().table).toEqual(0);
     expect(didRender).toHaveBeenCalledTimes(5);
+
+    unmount();
+  });
+
+  test('useTable re-render for array or object', () => {
+    store
+      .setTablesSchema({t1: {c1: {type: 'array'}, c2: {type: 'object'}}})
+      .setRow('t1', 'r1', {c1: [1, 2, 3], c2: {k: 'v'}});
+    const Test = () => didRender(JSON.stringify(useTable('t1', store)));
+    const {container, unmount} = render(<Test />);
+    expect(container.textContent).toEqual(
+      JSON.stringify({r1: {c1: [1, 2, 3], c2: {k: 'v'}}}),
+    );
+
+    act(() => store.setRow('t1', 'r1', {c1: [1, 2, 3], c2: {k: 'v'}}));
+    expect(container.textContent).toEqual(
+      JSON.stringify({r1: {c1: [1, 2, 3], c2: {k: 'v'}}}),
+    );
+    expect(didRender).toHaveBeenCalledTimes(1);
+
+    act(() => store.setCell('t1', 'r1', 'c1', [9]));
+    expect(container.textContent).toEqual(
+      JSON.stringify({r1: {c1: [9], c2: {k: 'v'}}}),
+    );
+    expect(didRender).toHaveBeenCalledTimes(2);
 
     unmount();
   });
@@ -1609,6 +1659,31 @@ describe('Read Hooks', () => {
     unmount();
   });
 
+  test('useRow re-render for array or object', () => {
+    store
+      .setTablesSchema({t1: {c1: {type: 'array'}, c2: {type: 'object'}}})
+      .setRow('t1', 'r1', {c1: [1, 2, 3], c2: {k: 'v'}});
+    const Test = () => didRender(JSON.stringify(useRow('t1', 'r1', store)));
+    const {container, unmount} = render(<Test />);
+    expect(container.textContent).toEqual(
+      JSON.stringify({c1: [1, 2, 3], c2: {k: 'v'}}),
+    );
+
+    act(() => store.setRow('t1', 'r1', {c1: [1, 2, 3], c2: {k: 'v'}}));
+    expect(container.textContent).toEqual(
+      JSON.stringify({c1: [1, 2, 3], c2: {k: 'v'}}),
+    );
+    expect(didRender).toHaveBeenCalledTimes(1);
+
+    act(() => store.setCell('t1', 'r1', 'c1', [9]));
+    expect(container.textContent).toEqual(
+      JSON.stringify({c1: [9], c2: {k: 'v'}}),
+    );
+    expect(didRender).toHaveBeenCalledTimes(2);
+
+    unmount();
+  });
+
   test('useCellIds', () => {
     const Test = ({tableId, rowId}: {tableId: Id; rowId: Id}) =>
       didRender(JSON.stringify(useCellIds(tableId, rowId, store)));
@@ -1873,6 +1948,31 @@ describe('Read Hooks', () => {
 
     expect(store.getListenerStats().values).toEqual(0);
     expect(didRender).toHaveBeenCalledTimes(3);
+
+    unmount();
+  });
+
+  test('useValues re-render for array or object', () => {
+    store
+      .setValuesSchema({v1: {type: 'array'}, v2: {type: 'object'}})
+      .setValues({v1: [1, 2, 3], v2: {k: 'v'}});
+    const Test = () => didRender(JSON.stringify(useValues(store)));
+    const {container, unmount} = render(<Test />);
+    expect(container.textContent).toEqual(
+      JSON.stringify({v1: [1, 2, 3], v2: {k: 'v'}}),
+    );
+
+    act(() => store.setValues({v1: [1, 2, 3], v2: {k: 'v'}}));
+    expect(container.textContent).toEqual(
+      JSON.stringify({v1: [1, 2, 3], v2: {k: 'v'}}),
+    );
+    expect(didRender).toHaveBeenCalledTimes(1);
+
+    act(() => store.setValue('v1', [9]));
+    expect(container.textContent).toEqual(
+      JSON.stringify({v1: [9], v2: {k: 'v'}}),
+    );
+    expect(didRender).toHaveBeenCalledTimes(2);
 
     unmount();
   });
