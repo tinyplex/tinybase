@@ -83,7 +83,7 @@ var objIsEqual = (obj1, obj2, isEqual2 = (value1, value2) => value1 === value2) 
     entries1,
     ([index, value1]) => isObject(value1) ? (
       /* istanbul ignore next */
-      isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false
+      isObject(obj2[index]) ? objIsEqual(obj2[index], value1, isEqual2) : false
     ) : isEqual2(value1, obj2[index])
   );
 };
@@ -291,13 +291,14 @@ var DEFAULTS = [
   false,
   0
 ];
+var cellOrValueEqual = (thing1, thing2) => thing1 === thing2 || (isObject(thing1) || isArray(thing1)) && jsonString(thing1) === jsonString(thing2);
 var IS_EQUALS = [
-  objIsEqual,
+  (obj1, obj2) => objIsEqual(obj1, obj2, cellOrValueEqual),
   arrayIsEqual,
   ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual(backwardIds1, backwardIds2) && arrayIsEqual(forwardIds1, forwardIds2),
   (paramValues1, paramValues2) => objIsEqual(paramValues1, paramValues2, arrayOrValueEqual),
   arrayOrValueEqual,
-  (thing1, thing2) => thing1 === thing2 || (isObject(thing1) || isArray(thing1)) && jsonString(thing1) === jsonString(thing2)
+  cellOrValueEqual
 ];
 var isEqual = (thing1, thing2) => thing1 === thing2;
 var useCreate = (store, create, createDeps = EMPTY_ARRAY) => {

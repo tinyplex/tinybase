@@ -71,7 +71,7 @@ var objIsEqual = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2) 
     entries1,
     ([index, value1]) => isObject(value1) ? (
       /* istanbul ignore next */
-      isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false
+      isObject(obj2[index]) ? objIsEqual(obj2[index], value1, isEqual3) : false
     ) : isEqual3(value1, obj2[index])
   );
 };
@@ -120,13 +120,14 @@ var DEFAULTS = [
   false,
   0
 ];
+var cellOrValueEqual = (thing1, thing2) => thing1 === thing2 || (isObject(thing1) || isArray(thing1)) && jsonString(thing1) === jsonString(thing2);
 var IS_EQUALS = [
-  objIsEqual,
+  (obj1, obj2) => objIsEqual(obj1, obj2, cellOrValueEqual),
   arrayIsEqual,
   ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual(backwardIds1, backwardIds2) && arrayIsEqual(forwardIds1, forwardIds2),
   (paramValues1, paramValues2) => objIsEqual(paramValues1, paramValues2, arrayOrValueEqual),
   arrayOrValueEqual,
-  (thing1, thing2) => thing1 === thing2 || (isObject(thing1) || isArray(thing1)) && jsonString(thing1) === jsonString(thing2)
+  cellOrValueEqual
 ];
 var isEqual = (thing1, thing2) => thing1 === thing2;
 var addAndDelListener = (thing, listenable, ...args) => {
@@ -546,7 +547,7 @@ var objIsEqual2 = (obj1, obj2, isEqual3 = (value1, value2) => value1 === value2)
     entries1,
     ([index, value1]) => isObject2(value1) ? (
       /* istanbul ignore next */
-      isObject2(obj2[index]) ? objIsEqual2(obj2[index], value1) : false
+      isObject2(obj2[index]) ? objIsEqual2(obj2[index], value1, isEqual3) : false
     ) : isEqual3(value1, obj2[index])
   );
 };
@@ -2537,13 +2538,14 @@ var DEFAULTS2 = [
   false,
   0
 ];
+var cellOrValueEqual2 = (thing1, thing2) => thing1 === thing2 || (isObject2(thing1) || isArray2(thing1)) && jsonString2(thing1) === jsonString2(thing2);
 var IS_EQUALS2 = [
-  objIsEqual2,
+  (obj1, obj2) => objIsEqual2(obj1, obj2, cellOrValueEqual2),
   arrayIsEqual2,
   ([backwardIds1, currentId1, forwardIds1], [backwardIds2, currentId2, forwardIds2]) => currentId1 === currentId2 && arrayIsEqual2(backwardIds1, backwardIds2) && arrayIsEqual2(forwardIds1, forwardIds2),
   (paramValues1, paramValues2) => objIsEqual2(paramValues1, paramValues2, arrayOrValueEqual2),
   arrayOrValueEqual2,
-  (thing1, thing2) => thing1 === thing2 || (isObject2(thing1) || isArray2(thing1)) && jsonString2(thing1) === jsonString2(thing2)
+  cellOrValueEqual2
 ];
 var isEqual2 = (thing1, thing2) => thing1 === thing2;
 var addAndDelListener2 = (thing, listenable, ...args) => {
@@ -4102,7 +4104,7 @@ var TablesView = ({ store, storeId, s }) => {
     handleEditable,
     s,
     children: [
-      arrayIsEmpty(tableIds) ? /* @__PURE__ */ jsx2("caption", { children: "No tables." }) : sortedIdsMap(
+      arrayIsEmpty(tableIds) ? /* @__PURE__ */ jsx2("p", { children: "No tables." }) : sortedIdsMap(
         tableIds,
         (tableId) => /* @__PURE__ */ jsx2(
           TableView,
@@ -4190,7 +4192,7 @@ var ValuesView = ({ store, storeId, s }) => {
     handleEditable,
     s,
     children: [
-      arrayIsEmpty(useValueIds(store)) ? /* @__PURE__ */ jsx2("caption", { children: "No values." }) : /* @__PURE__ */ jsx2(ValuesInHtmlTable, {
+      arrayIsEmpty(useValueIds(store)) ? /* @__PURE__ */ jsx2("p", { children: "No values." }) : /* @__PURE__ */ jsx2(ValuesInHtmlTable, {
         store,
         editable,
         extraCellsAfter: editable ? valueActions : []
@@ -4432,10 +4434,10 @@ var MAX_WIDTH = "max-" + WIDTH;
 var MIN_WIDTH = "min-" + WIDTH;
 var HEIGHT = "height";
 var BORDER = "border";
-var BORDER_RADIUS = BORDER + "-radius";
+var RADIUS = "radius";
+var BORDER_RADIUS = BORDER + "-" + RADIUS;
 var PADDING = "padding";
 var MARGIN = "margin";
-var MARGIN_RIGHT = MARGIN + "-right";
 var TOP = "top";
 var BOTTOM = "bottom";
 var LEFT = "left";
@@ -4450,6 +4452,11 @@ var CURSOR = "cursor";
 var VERTICAL_ALIGN = "vertical-align";
 var TEXT_ALIGN = "text-align";
 var JUSTIFY_CONTENT = "justify-content";
+var WHITE_SPACE = "white-space";
+var TEXT_OVERFLOW = "text-overflow";
+var ALIGN_ITEMS = "align-items";
+var BACKDROP_FILTER = "backdrop-filter";
+var MARGIN_RIGHT = MARGIN + "-" + RIGHT;
 var FIXED = "fixed";
 var REVERT = "revert";
 var UNSET = "unset";
@@ -4578,8 +4585,8 @@ var APP_STYLESHEET = arrayJoin(
         [WIDTH]: "calc(100% - .5rem)",
         [POSITION]: "absolute",
         [BORDER + "-" + BOTTOM]: cssVar(BORDER),
-        "align-items": "center",
-        "backdrop-filter": "blur(4px)"
+        [ALIGN_ITEMS]: "center",
+        [BACKDROP_FILTER]: "blur(4px)"
       },
       "header>img:nth-of-type(1)": {
         [HEIGHT]: rem(1),
@@ -4597,8 +4604,8 @@ var APP_STYLESHEET = arrayJoin(
         [OVERFLOW]: HIDDEN,
         [FLEX]: 1,
         "font-weight": 800,
-        "white-space": NOWRAP,
-        "text-overflow": "ellipsis"
+        [WHITE_SPACE]: NOWRAP,
+        [TEXT_OVERFLOW]: "ellipsis"
       },
       // Body
       article: { [OVERFLOW]: AUTO, [FLEX]: 1, [PADDING + "-" + TOP]: rem(2) },
@@ -4616,7 +4623,8 @@ var APP_STYLESHEET = arrayJoin(
         [BORDER_RADIUS]: rem(0.25),
         "user-select": NONE,
         [JUSTIFY_CONTENT]: "space-between",
-        "align-items": "center"
+        [ALIGN_ITEMS]: "center",
+        [BACKDROP_FILTER]: "blur(4px)"
       },
       "summary>span::before": {
         [DISPLAY]: "inline-block",
@@ -4627,8 +4635,8 @@ var APP_STYLESHEET = arrayJoin(
         ...RIGHT_SVG
       },
       "details[open]>summary": {
-        "border-bottom-left-radius": 0,
-        "border-bottom-right-radius": 0,
+        [BORDER + "-" + BOTTOM + "-" + LEFT + "-" + RADIUS]: 0,
+        [BORDER + "-" + BOTTOM + "-" + RIGHT + "-" + RADIUS]: 0,
         [MARGIN + "-" + BOTTOM]: 0
       },
       "details[open]>summary>span::before": DOWN_SVG,
@@ -4638,11 +4646,12 @@ var APP_STYLESHEET = arrayJoin(
         [MARGIN + "-" + LEFT]: rem(0.25)
       },
       "details>div": { [OVERFLOW]: AUTO },
-      caption: {
+      [`caption,#${UNIQUE_ID} p`]: {
         [COLOR]: cssVar("fg2"),
         [PADDING]: rem(0.25, 0.5),
         [TEXT_ALIGN]: LEFT,
-        "white-space": NOWRAP
+        [MARGIN]: 0,
+        [WHITE_SPACE]: NOWRAP
       },
       "caption button": {
         [WIDTH]: rem(1.5),
@@ -4672,8 +4681,8 @@ var APP_STYLESHEET = arrayJoin(
         [PADDING]: rem(0.25, 0.5),
         [MAX_WIDTH]: rem(20),
         [BORDER]: cssVar(BORDER),
-        "text-overflow": "ellipsis",
-        "white-space": NOWRAP,
+        [TEXT_OVERFLOW]: "ellipsis",
+        [WHITE_SPACE]: NOWRAP,
         "border-width": px(1, 0, 0),
         [TEXT_ALIGN]: LEFT
       },

@@ -135,7 +135,7 @@ var objIsEqual = (obj1, obj2, isEqual = (value1, value2) => value1 === value2) =
     entries1,
     ([index, value1]) => isObject(value1) ? (
       /* istanbul ignore next */
-      isObject(obj2[index]) ? objIsEqual(obj2[index], value1) : false
+      isObject(obj2[index]) ? objIsEqual(obj2[index], value1, isEqual) : false
     ) : isEqual(value1, obj2[index])
   );
 };
