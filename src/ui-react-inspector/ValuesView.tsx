@@ -27,7 +27,7 @@ export const ValuesView = ({
       s={s}
     >
       {arrayIsEmpty(useValueIds(store)) ? (
-        <caption>No values.</caption>
+        <p>No values.</p>
       ) : (
         <ValuesInHtmlTable
           store={store}
