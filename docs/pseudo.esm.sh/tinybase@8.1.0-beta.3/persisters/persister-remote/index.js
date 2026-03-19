@@ -397,7 +397,10 @@ var createRemotePersister = (store, loadUrl, saveUrl, autoLoadIntervalSeconds = 
     body: jsonStringWithMap(getContent())
   });
   const addPersisterListener = (listener) => startInterval(async () => {
-    const response = await fetch(loadUrl, { method: "HEAD" });
+    const response = await fetch(loadUrl, {
+      method: "HEAD",
+      headers: { "If-None-Match": lastEtag ?? "" }
+    });
     const currentEtag = getETag(response);
     if (!isNull(lastEtag) && !isNull(currentEtag) && currentEtag != lastEtag) {
       lastEtag = currentEtag;
