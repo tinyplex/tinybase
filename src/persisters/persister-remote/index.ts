@@ -5,10 +5,10 @@ import type {
 } from '../../@types/persisters/persister-remote/index.d.ts';
 import type {Content, Store} from '../../@types/store/index.d.ts';
 import {jsonParse, jsonStringWithMap} from '../../common/json.ts';
-import {isNull, startInterval, stopInterval} from '../../common/other.ts';
+import {startInterval, stopInterval} from '../../common/other.ts';
 import {createCustomPersister} from '../common/create.ts';
 
-const getETag = (response: Response) => response.headers.get('ETag');
+const getETag = (response: Response) => response.headers.get('ETag') ?? '';
 
 export const createRemotePersister = ((
   store: Store,
@@ -17,11 +17,14 @@ export const createRemotePersister = ((
   autoLoadIntervalSeconds = 5,
   onIgnoredError?: (error: any) => void,
 ): RemotePersister => {
-  let lastEtag: string | null;
+  let lastEtag: string = '';
 
   const getPersisted = async (): Promise<Content> => {
-    const response = await fetch(loadUrl);
+    const response = await fetch(loadUrl, {
+      headers: {'If-None-Match': lastEtag},
+    });
     lastEtag = getETag(response);
+    console.log([...response.headers.entries()], lastEtag);
     return jsonParse(await response.text());
   };
 
@@ -38,14 +41,10 @@ export const createRemotePersister = ((
     startInterval(async () => {
       const response = await fetch(loadUrl, {
         method: 'HEAD',
-        headers: {'If-None-Match': lastEtag ?? ''},
+        headers: {'If-None-Match': lastEtag},
       });
       const currentEtag = getETag(response);
-      if (
-        !isNull(lastEtag) &&
-        !isNull(currentEtag) &&
-        currentEtag != lastEtag
-      ) {
+      if (currentEtag != lastEtag) {
         lastEtag = currentEtag;
         listener();
       }
