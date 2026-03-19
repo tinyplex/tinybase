@@ -36,7 +36,10 @@ export const createRemotePersister = ((
     listener: PersisterListener,
   ): number | NodeJS.Timeout =>
     startInterval(async () => {
-      const response = await fetch(loadUrl, {method: 'HEAD'});
+      const response = await fetch(loadUrl, {
+        method: 'HEAD',
+        headers: {'If-None-Match': lastEtag ?? ''},
+      });
       const currentEtag = getETag(response);
       if (
         !isNull(lastEtag) &&
