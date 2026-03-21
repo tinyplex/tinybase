@@ -21,6 +21,8 @@ import {mapEnsure, mapGet, mapNew, mapSet} from '../../common/map.ts';
 import {objFreeze, objIsEmpty} from '../../common/obj.ts';
 import {errorNew, isArray, isUndefined, tryCatch} from '../../common/other.ts';
 import {IdSet2} from '../../common/set.ts';
+import {ProtectedMergeableStore} from '../../mergeable-store/index.ts';
+import {ProtectedStore} from '../../store/index.ts';
 
 const enum StatusValues {
   Idle = 0,
@@ -75,11 +77,11 @@ const getStoreFunctions = (
   persist != PersistsValues.StoreOnly && store.isMergeable()
     ? [
         1,
-        (store as MergeableStore).getMergeableContent,
+        (store as ProtectedMergeableStore).__[1],
         () =>
-          (store as MergeableStore).getTransactionMergeableChanges(
+          (store as ProtectedMergeableStore).__[2](
             !isSynchronizer,
-          ),
+          ) as MergeableChanges<typeof isSynchronizer extends 1 ? false : true>,
         ([[changedTables], [changedValues]]: MergeableChanges) =>
           !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
         (store as MergeableStore).setDefaultContent,
@@ -87,8 +89,8 @@ const getStoreFunctions = (
     : persist != PersistsValues.MergeableStoreOnly
       ? [
           0,
-          store.getContent,
-          store.getTransactionChanges,
+          (store as ProtectedStore)._[7],
+          (store as ProtectedStore)._[8],
           ([changedTables, changedValues]: Changes) =>
             !objIsEmpty(changedTables) || !objIsEmpty(changedValues),
           store.setContent,
@@ -193,7 +195,7 @@ export const createCustomPersister = <
   };
 
   const saveAfterMutated = async (): Promise<void> => {
-    if (isAutoSaving() && (store as any).hadMutated?.()) {
+    if (isAutoSaving() && (store as ProtectedMergeableStore).__?.[0]?.()) {
       await save();
     }
   };

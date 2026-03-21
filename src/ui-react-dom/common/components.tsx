@@ -7,15 +7,18 @@ import {
   getCellOrValueType,
   getTypeCase,
 } from '../../common/cell.ts';
-import {objToArray} from '../../common/obj.ts';
-import {isFalse, isUndefined} from '../../common/other.ts';
+import {jsonParse, jsonString} from '../../common/json.ts';
+import {isObject, objToArray} from '../../common/obj.ts';
+import {isArray, isFalse, isUndefined, tryReturn} from '../../common/other.ts';
 import {getProps, useCallback, useState} from '../../common/react.ts';
 import {
   _VALUE,
+  ARRAY,
   BOOLEAN,
   CURRENT_TARGET,
   EMPTY_STRING,
   NUMBER,
+  OBJECT,
   STRING,
 } from '../../common/strings.ts';
 import {useCallbackOrUndefined} from './hooks.tsx';
@@ -128,40 +131,71 @@ export const HtmlTable = ({
   </table>
 );
 
-export const EditableThing = <Thing extends Cell | Value>({
+export const EditableThing = ({
   thing,
   onThingChange,
   className,
   hasSchema,
   showType = true,
 }: {
-  readonly thing: Thing | undefined;
-  readonly onThingChange: (thing: Thing) => void;
+  readonly thing: Cell | Value | undefined;
+  readonly onThingChange: (thing: Cell | Value) => void;
   readonly className: string;
   readonly hasSchema: (() => boolean) | undefined;
   readonly showType?: boolean;
 }) => {
   const [thingType, setThingType] = useState<CellOrValueType>();
-  const [currentThing, setCurrentThing] = useState<
-    string | number | boolean | null
-  >();
+  const [currentThing, setCurrentThing] = useState<Cell | Value>();
   const [stringThing, setStringThing] = useState<string>();
   const [numberThing, setNumberThing] = useState<number>();
   const [booleanThing, setBooleanThing] = useState<boolean>();
+  const [objectThing, setObjectThing] = useState<string>('{}');
+  const [arrayThing, setArrayThing] = useState<string>('[]');
+
+  const [objectClassName, setObjectClassName] = useState<string>('');
+  const [arrayClassName, setArrayClassName] = useState<string>('');
 
   if (currentThing !== thing) {
     setThingType(getCellOrValueType(thing));
     setCurrentThing(thing);
-    setStringThing(String(thing));
-    setNumberThing(Number(thing) || 0);
-    setBooleanThing(Boolean(thing));
+    if (isObject(thing)) {
+      setObjectThing(jsonString(thing));
+    } else if (isArray(thing)) {
+      setArrayThing(jsonString(thing));
+    } else {
+      setStringThing(String(thing));
+      setNumberThing(Number(thing) || 0);
+      setBooleanThing(Boolean(thing));
+    }
   }
 
   const handleThingChange = useCallback(
-    (thing: string | number | boolean, setTypedThing: (thing: any) => void) => {
+    <T extends Cell | Value>(thing: T, setTypedThing: (thing: T) => void) => {
       setTypedThing(thing);
       setCurrentThing(thing);
-      onThingChange(thing as Thing);
+      onThingChange(thing);
+    },
+    [onThingChange],
+  );
+
+  const handleJsonThingChange = useCallback(
+    (
+      value: string,
+      setTypedThing: (value: string) => void,
+      isThing: (thing: any) => boolean,
+      setTypedClassName: (className: string) => void,
+    ) => {
+      setTypedThing(value);
+      try {
+        const object = jsonParse(value);
+        if (isThing(object)) {
+          setCurrentThing(object);
+          onThingChange(object);
+          setTypedClassName('');
+        }
+      } catch {
+        setTypedClassName('invalid');
+      }
     },
     [onThingChange],
   );
@@ -172,6 +206,8 @@ export const EditableThing = <Thing extends Cell | Value>({
         thingType,
         NUMBER,
         BOOLEAN,
+        OBJECT,
+        ARRAY,
         STRING,
       ) as CellOrValueType;
       const thing = getTypeCase(
@@ -179,10 +215,12 @@ export const EditableThing = <Thing extends Cell | Value>({
         stringThing,
         numberThing,
         booleanThing,
+        tryReturn(() => jsonParse(objectThing), {}),
+        tryReturn(() => jsonParse(arrayThing), []),
       );
       setThingType(nextType);
       setCurrentThing(thing);
-      onThingChange(thing as Thing);
+      onThingChange(thing);
     }
   }, [
     hasSchema,
@@ -190,6 +228,8 @@ export const EditableThing = <Thing extends Cell | Value>({
     stringThing,
     numberThing,
     booleanThing,
+    objectThing,
+    arrayThing,
     thingType,
   ]);
 
@@ -231,6 +271,36 @@ export const EditableThing = <Thing extends Cell | Value>({
             setBooleanThing,
           ),
         [handleThingChange],
+      )}
+    />,
+    <input
+      key={thingType}
+      value={objectThing}
+      className={objectClassName}
+      onChange={useCallback(
+        (event: FormEvent<HTMLInputElement>) =>
+          handleJsonThingChange(
+            event[CURRENT_TARGET][_VALUE],
+            setObjectThing,
+            isObject,
+            setObjectClassName,
+          ),
+        [handleJsonThingChange],
+      )}
+    />,
+    <input
+      key={thingType}
+      value={arrayThing}
+      className={arrayClassName}
+      onChange={useCallback(
+        (event: FormEvent<HTMLInputElement>) =>
+          handleJsonThingChange(
+            event[CURRENT_TARGET][_VALUE],
+            setArrayThing,
+            isArray,
+            setArrayClassName,
+          ),
+        [handleJsonThingChange],
       )}
     />,
   );

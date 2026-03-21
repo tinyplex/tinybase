@@ -11,6 +11,8 @@ export const STRING = getTypeOf(EMPTY_STRING);
 export const BOOLEAN = getTypeOf(true);
 export const NUMBER = getTypeOf(0);
 export const FUNCTION = getTypeOf(getTypeOf);
+export const OBJECT = 'object';
+export const ARRAY = 'array';
 
 export const TRUE = 'true';
 export const TYPE = 'type';
@@ -83,9 +85,12 @@ export const WRAPPED = 'wrapped';
 
 export const LITERAL = 'Literal';
 export const PROPERTY_SIGNATURES = 'propertySignatures';
+export const RECORD = 'record';
+export const SEQUENCE = 'sequence';
 export const STRING_KEYWORD = 'StringKeyword';
 export const NUMBER_KEYWORD = 'NumberKeyword';
 export const BOOLEAN_KEYWORD = 'BooleanKeyword';
+export const TUPLE_TYPE = 'TupleType';
 export const TYPE_LITERAL = 'TypeLiteral';
 export const UNION = 'Union';
 
@@ -93,6 +98,7 @@ export const T = 't';
 export const V = 'v';
 
 export const UNDEFINED = '\uFFFC';
+export const JSON_PREFIX = '\uFFFD';
 
 export const id = (key: unknown): Id => EMPTY_STRING + key;
 

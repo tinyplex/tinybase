@@ -38,6 +38,23 @@ test('isMergeable', () => {
   expect(store.isMergeable()).toEqual(true);
 });
 
+test('merges object and array cells', () => {
+  const store1 = createMergeableStore('s1', getNow);
+  store1.setCell('t1', 'r1', 'c1', {k1: 'v'});
+  pause(1);
+  const store2 = createMergeableStore('s2', getNow);
+  store2.setCell('t1', 'r1', 'c2', [1, 2, 3]);
+  store1.merge(store2);
+  expect(store1.getContent()).toEqual([
+    {t1: {r1: {c1: {k1: 'v'}, c2: [1, 2, 3]}}},
+    {},
+  ]);
+  expect(store2.getContent()).toEqual([
+    {t1: {r1: {c1: {k1: 'v'}, c2: [1, 2, 3]}}},
+    {},
+  ]);
+});
+
 test('Protocol basics', () => {
   const store1 = createMergeableStore('s1', getNow).setContent([
     {t1: {r1: {c1: 1}}},

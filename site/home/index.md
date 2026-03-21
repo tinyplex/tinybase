@@ -6,9 +6,9 @@
   </h2>
 </section>
 
-<a href='/guides/releases/#v7-3'><em>NEW!</em> v7.3 release</a>
+<a href='/guides/releases/#v8-0'><em>NEW!</em> v8.0 release</a>
 
-<span id="one-with">"The one with state hooks!"</span>
+<span id="one-with">"The one with objects, arrays & middleware!"</span>
 
 <a class='start' href='/guides/the-basics/getting-started/'>Get started</a>
 
@@ -692,10 +692,12 @@ console.log(store.getCell('pets', 'felix', 'sold'));
 <section id="sponsors">
 <h2>Proud to be supported by:</h2>
 @@EVAL("getGitHubAvatar('fastrepl')")
-@@EVAL("getGitHubAvatar('expo')")
-@@EVAL("getGitHubAvatar('dylmye')")
 @@EVAL("getGitHubAvatar('ComputelessComputer')")
 @@EVAL("getGitHubAvatar('cancelself')")
+@@EVAL("getGitHubAvatar('expo')")
+@@EVAL("getGitHubAvatar('braden-w')")
+@@EVAL("getGitHubAvatar('dylmye')")
+@@EVAL("getGitHubAvatar('gonza224')")
 @@EVAL("getGitHubAvatar('cpojer')")
 @@EVAL("getGitHubAvatar('beekeeb')")
 @@EVAL("getGitHubAvatar('WonderPanda')")

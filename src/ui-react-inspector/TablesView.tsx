@@ -126,7 +126,7 @@ export const TablesView = ({
       s={s}
     >
       {arrayIsEmpty(tableIds) ? (
-        <caption>No tables.</caption>
+        <p>No tables.</p>
       ) : (
         sortedIdsMap(tableIds, (tableId) => (
           <TableView

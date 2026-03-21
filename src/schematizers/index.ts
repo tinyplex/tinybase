@@ -9,9 +9,11 @@ import {objForEach, objFreeze, objIsEmpty, objNew} from '../common/obj.ts';
 import {ifNotUndefined} from '../common/other.ts';
 import {
   ALLOW_NULL,
+  ARRAY,
   BOOLEAN,
   DEFAULT,
   NUMBER,
+  OBJECT,
   STRING,
   TYPE,
 } from '../common/strings.ts';
@@ -26,7 +28,13 @@ export const createCustomSchematizer: typeof createCustomSchematizerDecl = (
     const [unwrapped, defaultValue, allowNull] = unwrapSchema(schema);
     const type = unwrapped?.type;
 
-    if (type !== STRING && type !== NUMBER && type !== BOOLEAN) {
+    if (
+      type !== STRING &&
+      type !== NUMBER &&
+      type !== BOOLEAN &&
+      type !== OBJECT &&
+      type !== ARRAY
+    ) {
       return undefined;
     }
 

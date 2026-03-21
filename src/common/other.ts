@@ -69,7 +69,8 @@ export const isString = (thing: unknown): thing is string =>
 export const isFunction = (thing: unknown): thing is (...args: any[]) => any =>
   getTypeOf(thing) == FUNCTION;
 
-export const isArray = (thing: unknown): thing is any[] => Array.isArray(thing);
+export const isArray = (thing: unknown): thing is unknown[] =>
+  Array.isArray(thing);
 
 export const slice = <ArrayOrString extends string | any[]>(
   arrayOrString: ArrayOrString,
@@ -99,8 +100,22 @@ export const promiseNew = <Value>(
 export const promiseAll = async (promises: Promise<any>[]) =>
   promise.all(promises);
 
+export const structuredClone = GLOBAL.structuredClone as <T>(value: T) => T;
+
 export const errorNew = (message: string) => {
   throw new Error(message);
+};
+
+export const tryReturn = <Return>(
+  tryF: () => Return,
+  catchReturn?: Return,
+): Return | void => {
+  try {
+    return tryF();
+  } catch {
+    /*! istanbul ignore next */
+    return catchReturn;
+  }
 };
 
 export const tryCatch = async <Return>(

@@ -61,8 +61,6 @@ const INVALID_CELLS_OR_VALUES: [string, any][] = [
   ['Date', new Date()],
   ['Function', () => 42],
   ['Regex', /1/],
-  ['empty array', []],
-  ['array', [1, 2, 3]],
   ['Number', new Number(1)],
   ['String', new String('1')],
   ['Boolean', new Boolean(true)],

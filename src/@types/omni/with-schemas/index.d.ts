@@ -8,6 +8,7 @@ export * from '../../common/with-schemas/index.d.ts';
 export * from '../../indexes/with-schemas/index.d.ts';
 export * from '../../mergeable-store/with-schemas/index.d.ts';
 export * from '../../metrics/with-schemas/index.d.ts';
+export * from '../../middleware/with-schemas/index.d.ts';
 export * from '../../persisters/persister-automerge/with-schemas/index.d.ts';
 export * from '../../persisters/persister-browser/with-schemas/index.d.ts';
 export * from '../../persisters/persister-cr-sqlite-wasm/with-schemas/index.d.ts';

@@ -849,6 +849,29 @@ describe.each(Object.entries(ALL_VARIANTS))(
         });
       });
 
+      test('objects and arrays', async () => {
+        store
+          .setTables({t1: {r1: {c1: {k1: 'v'}, c2: [1, 2, 3]}}})
+          .setValues({v1: {x: 1}, v2: [4, 5]});
+        await persister.save();
+        expect(await getDatabase(db)).toEqual({
+          t1: [
+            {_id: columnType, c1: columnType, c2: columnType},
+            [
+              {
+                _id: 'r1',
+                c1: '\uFFFD{"k1":"v"}',
+                c2: '\uFFFD[1,2,3]',
+              },
+            ],
+          ],
+          tinybase_values: [
+            {_id: columnType, v1: columnType, v2: columnType},
+            [{_id: '_', v1: '\uFFFD{"x":1}', v2: '\uFFFD[4,5]'}],
+          ],
+        });
+      });
+
       test('both, change, and then load again', async () => {
         store.setTables({t1: {r1: {c1: 1}}}).setValues({v1: 1});
         await persister.save();
@@ -960,6 +983,36 @@ describe.each(Object.entries(ALL_VARIANTS))(
         });
         await persister.load();
         expect(store.getContent()).toEqual([{}, {v1: 1}]);
+      });
+
+      test('objects and arrays', async () => {
+        await setDatabase(db, {
+          t1: [
+            'CREATE TABLE "t1" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "c1" ' +
+              columnType +
+              ', "c2" ' +
+              columnType +
+              ')',
+            [{_id: 'r1', c1: '\uFFFD{"k1":"v"}', c2: '\uFFFD[1,2,3]'}],
+          ],
+          tinybase_values: [
+            'CREATE TABLE "tinybase_values" ("_id" ' +
+              columnType +
+              ' PRIMARY KEY, "v1" ' +
+              columnType +
+              ', "v2" ' +
+              columnType +
+              ')',
+            [{_id: '_', v1: '\uFFFD{"x":1}', v2: '\uFFFD[4,5]'}],
+          ],
+        });
+        await persister.load();
+        expect(store.getContent()).toEqual([
+          {t1: {r1: {c1: {k1: 'v'}, c2: [1, 2, 3]}}},
+          {v1: {x: 1}, v2: [4, 5]},
+        ]);
       });
 
       describe('both', () => {

@@ -2,15 +2,18 @@ import type {createEffectSchematizer as createEffectSchematizerDecl} from '../..
 import {arrayFind} from '../../common/array.ts';
 import {isNull} from '../../common/other.ts';
 import {
+  ARRAY,
   BOOLEAN,
   BOOLEAN_KEYWORD,
   EMPTY_STRING,
   LITERAL,
   NUMBER,
   NUMBER_KEYWORD,
+  OBJECT,
   PROPERTY_SIGNATURES,
   STRING,
   STRING_KEYWORD,
+  TUPLE_TYPE,
   TYPE,
   TYPE_LITERAL,
   UNION,
@@ -49,7 +52,11 @@ const getSimpleType = (tag: string): string =>
       ? NUMBER
       : tag === BOOLEAN_KEYWORD
         ? BOOLEAN
-        : EMPTY_STRING;
+        : tag === TUPLE_TYPE
+          ? ARRAY
+          : tag === TYPE_LITERAL
+            ? OBJECT
+            : EMPTY_STRING;
 
 const getProperties = (schema: any) => {
   const ast = schema.ast;

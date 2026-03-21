@@ -86,7 +86,7 @@ export const objIsEqual = (
       isObject(value1)
         ? /*! istanbul ignore next */
           isObject(obj2[index])
-          ? objIsEqual(obj2[index] as any, value1 as any)
+          ? objIsEqual(obj2[index] as any, value1 as any, isEqual)
           : false
         : isEqual(value1, obj2[index]),
     )

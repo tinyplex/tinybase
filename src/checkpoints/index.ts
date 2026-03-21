@@ -25,7 +25,7 @@ import {
   arrayShift,
   arrayUnshift,
 } from '../common/array.ts';
-import {setOrDelCell, setOrDelValue} from '../common/cell.ts';
+
 import {collForEach, collHas, collIsEmpty, collSize2} from '../common/coll.ts';
 import {getCreateFunction} from '../common/definable.ts';
 import {getListenerFunctions} from '../common/listeners.ts';
@@ -43,6 +43,7 @@ import {objFreeze} from '../common/obj.ts';
 import {ifNotUndefined, isUndefined, size} from '../common/other.ts';
 import {IdSet2} from '../common/set.ts';
 import {EMPTY_STRING} from '../common/strings.ts';
+import {ProtectedStore} from '../index.ts';
 
 type CellsDelta = IdMap3<ChangedCell>;
 type ValuesDelta = IdMap<ChangedValue>;
@@ -76,18 +77,22 @@ export const createCheckpoints = getCreateFunction(
         collForEach(cellsDelta, (table, tableId) =>
           collForEach(table, (row, rowId) =>
             collForEach(row, (oldNew, cellId) =>
-              setOrDelCell(
-                store,
+              (store as ProtectedStore)._[5](
                 tableId,
                 rowId,
                 cellId,
                 oldNew[oldOrNew] as CellOrUndefined,
+                true,
               ),
             ),
           ),
         );
         collForEach(valuesDelta, (oldNew, valueId) =>
-          setOrDelValue(store, valueId, oldNew[oldOrNew] as ValueOrUndefined),
+          (store as ProtectedStore)._[6](
+            valueId,
+            oldNew[oldOrNew] as ValueOrUndefined,
+            true,
+          ),
         );
       });
       listening = 1;

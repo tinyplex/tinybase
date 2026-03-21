@@ -1025,6 +1025,32 @@ describe('EditableCellView', () => {
     expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('button')[0]);
     expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: {}}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(container.innerHTML).toMatchSnapshot();
+    fireEvent.change(getAllByRole('textbox')[0], {
+      target: {value: '{"x":1}'},
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: {x: 1}}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(container.innerHTML).toMatchSnapshot();
+    fireEvent.click(getAllByRole('button')[0]);
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: []}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(container.innerHTML).toMatchSnapshot();
+    fireEvent.change(getAllByRole('textbox')[0], {target: {value: '[1,2]'}});
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: [1, 2]}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: 1, v2: 2},
+    ]);
+    expect(container.innerHTML).toMatchSnapshot();
+    fireEvent.click(getAllByRole('button')[0]);
+    expect(store.getContent()).toEqual([
       {t1: {r1: {c1: '1'}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: 1, v2: 2},
     ]);
@@ -1117,6 +1143,32 @@ describe('EditableValueView', () => {
     expect(store.getContent()).toEqual([
       {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
       {v1: false, v2: 2},
+    ]);
+    expect(container.innerHTML).toMatchSnapshot();
+    fireEvent.click(getAllByRole('button')[0]);
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: {}, v2: 2},
+    ]);
+    expect(container.innerHTML).toMatchSnapshot();
+    fireEvent.change(getAllByRole('textbox')[0], {
+      target: {value: '{"x":1}'},
+    });
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: {x: 1}, v2: 2},
+    ]);
+    expect(container.innerHTML).toMatchSnapshot();
+    fireEvent.click(getAllByRole('button')[0]);
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: [], v2: 2},
+    ]);
+    expect(container.innerHTML).toMatchSnapshot();
+    fireEvent.change(getAllByRole('textbox')[0], {target: {value: '[1,2]'}});
+    expect(store.getContent()).toEqual([
+      {t1: {r1: {c1: 1}}, t2: {r1: {c1: 2}, r2: {c1: 3, c2: 4}}},
+      {v1: [1, 2], v2: 2},
     ]);
     expect(container.innerHTML).toMatchSnapshot();
     fireEvent.click(getAllByRole('button')[0]);

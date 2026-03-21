@@ -41,9 +41,13 @@
  * The CellSchema type describes what values are allowed for each Cell in a
  * Table.
  *
- * A CellSchema specifies the type of the Cell (`string`, `boolean`, `number`;
- * or `null`, since v7.0), and what the default value can be when an explicit
- * value is not specified.
+ * A CellSchema specifies the type of the Cell (`string`, `boolean`, `number`,
+ * `null` since v7.0, or `object` or `array` since v8.0), and what the default
+ * value can be when an explicit value is not specified.
+ *
+ * For `object` and `array` types, TinyBase automatically serializes values to
+ * and from JSON when storing and retrieving them. This means you can set an
+ * object or array Cell directly, and get back the same structure.
  *
  * If a default value is provided (and its type is correct), you can be certain
  * that that Cell will always be present in a Row.
@@ -61,6 +65,18 @@
  * export const requiredBoolean: CellSchema = {
  *   type: 'boolean',
  *   default: false,
+ * };
+ * ```
+ * @example
+ * When applied to a Store, this CellSchema allows an object Cell containing
+ * arbitrary data, defaulting to an empty object.
+ *
+ * ```js
+ * import type {CellSchema} from 'tinybase';
+ *
+ * export const tagsCell: CellSchema = {
+ *   type: 'object',
+ *   default: {},
  * };
  * ```
  * @category Schema
@@ -92,9 +108,12 @@
  * The ValueSchema type describes what values are allowed for keyed Values in a
  * Store.
  *
- * A ValueSchema specifies the type of the Value (`string`, `boolean`, `number`;
- * or `null` since v7.0), and what the default value can be when an explicit
- * value is not specified.
+ * A ValueSchema specifies the type of the Value (`string`, `boolean`, `number`,
+ * `null` since v7.0, or `object` or `array` since v8.0), and what the default
+ * value can be when an explicit value is not specified.
+ *
+ * For `object` and `array` types, TinyBase automatically serializes values to
+ * and from JSON when storing and retrieving them.
  *
  * If a default value is provided (and its type is correct), you can be certain
  * that the Value will always be present in a Store.
@@ -112,6 +131,18 @@
  * export const requiredBoolean: ValueSchema = {
  *   type: 'boolean',
  *   default: false,
+ * };
+ * ```
+ * @example
+ * When applied to a Store, this ValueSchema allows an array Value containing
+ * a list of items, defaulting to an empty array.
+ *
+ * ```js
+ * import type {ValueSchema} from 'tinybase';
+ *
+ * export const cartItems: ValueSchema = {
+ *   type: 'array',
+ *   default: [],
  * };
  * ```
  * @category Schema
@@ -258,7 +289,8 @@
  *
  * A Cell is used when setting a cell with the setCell method, and when getting
  * it back out again with the getCell method. A Cell is a JavaScript string,
- * number, boolean; or null since v7.0.
+ * number, boolean, or null (since v7.0), or a plain JavaScript object or array
+ * (since v8.0).
  * @example
  * ```js
  * import type {Cell} from 'tinybase';
@@ -304,7 +336,8 @@
  *
  * A Value is used when setting a value with the setValue method, and when
  * getting it back out again with the getValue method. A Value is a JavaScript
- * string, number, boolean; or null since v7.0.
+ * string, number, boolean, or null (since v7.0), or a plain JavaScript object
+ * or array (since v8.0).
  * @example
  * ```js
  * import type {Value} from 'tinybase';
@@ -1191,8 +1224,8 @@
  * transaction, primarily used so that you can indicate whether the transaction
  * should be rolled back.
  *
- * It provides both the old and new Values in a two-part array. These
- * describe the state of the changed Value in the Store at the _start_ of the
+ * It provides both the old and new Values in a two-part array. These describe
+ * the state of the changed Value in the Store at the _start_ of the
  * transaction, and by the _end_ of the transaction.
  *
  * Hence, an `undefined` value for the first item in the array means that the
@@ -1480,14 +1513,17 @@
  *
  * The keyed value support is best thought of as a flat JavaScript object. The
  * Store contains a number of Value objects, each with a unique ID, and which is
- * a string, boolean, number; or null since v7.0.
+ * a string, boolean, number, null (since v7.0), or a plain JavaScript object or
+ * array (since v8.0).
  *
  * ```json
- * {                  // Store
- *   "value1": "one",   // Value (string)
- *   "value2": true,    // Value (boolean)
- *   "value3": 3,       // Value (number)
- *   "value4": null,    // Value (null since v7.0)
+ * {                           // Store
+ *   "value1": "one",            // Value (string)
+ *   "value2": true,             // Value (boolean)
+ *   "value3": 3,                // Value (number)
+ *   "value4": null,             // Value (null since v7.0)
+ *   "value5": {"x": 1},         // Value (object since v8.0)
+ *   "value6": [1, 2, 3],        // Value (array since v8.0)
  *   ...
  * }
  * ```
@@ -1504,7 +1540,8 @@
  * - Each Table contains a number of Row objects.
  * - Each Row contains a number of Cell objects.
  *
- * A Cell is a string, boolean, number; or null since v7.0.
+ * A Cell is a string, boolean, number, null (since v7.0), or a plain JavaScript
+ * object or array (since v8.0).
  *
  * The members of each level of this hierarchy are identified with a unique Id
  * (which is a string). In other words you can naively think of a Store as a
@@ -1518,6 +1555,8 @@
  *       "cell2": true,        // Cell (boolean)
  *       "cell3": 3,           // Cell (number)
  *       "cell4": null,        // Cell (null since v7.0)
+ *       "cell5": {"x": 1},    // Cell (object since v8.0)
+ *       "cell6": [1, 2, 3],   // Cell (array since v8.0)
  *       ...
  *     },
  *     ...
@@ -2728,7 +2767,10 @@
    *   {open: true, employees: 3},
    * ]);
    *
-   * store.setContent([{pets: {felix: {species: 'cat', bug: []}}}, '']);
+   * store.setContent([
+   *   {pets: {felix: {species: 'cat', bug: new Date(0)}}},
+   *   '',
+   * ]);
    * console.log(store.getTables());
    * // -> {pets: {felix: {species: 'cat'}}}
    * console.log(store.getValues());
@@ -2783,7 +2825,7 @@
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
-   * store.setTables({pets: {felix: {species: 'cat', bug: []}}});
+   * store.setTables({pets: {felix: {species: 'cat', bug: new Date(0)}}});
    * console.log(store.getTables());
    * // -> {pets: {felix: {species: 'cat'}}}
    *
@@ -2838,7 +2880,7 @@
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
-   * store.setTable('pets', {felix: {species: 'cat', bug: []}});
+   * store.setTable('pets', {felix: {species: 'cat', bug: new Date(0)}});
    * console.log(store.getTables());
    * // -> {pets: {felix: {species: 'cat'}}}
    *
@@ -2891,7 +2933,7 @@
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
-   * store.setRow('pets', 'fido', {color: 'brown', bug: []});
+   * store.setRow('pets', 'fido', {color: 'brown', bug: new Date(0)});
    * console.log(store.getTables());
    * // -> {pets: {fido: {color: 'brown'}}}
    *
@@ -2955,7 +2997,7 @@
    *
    * const store = createStore().setTables({pets: {'0': {species: 'dog'}}});
    *
-   * console.log(store.addRow('pets', {species: 'cat', bug: []}));
+   * console.log(store.addRow('pets', {species: 'cat', bug: new Date(0)}));
    * // -> '1'
    * console.log(store.getTables());
    * // -> {pets: {'0': {species: 'dog'}, '1': {species: 'cat'}}}
@@ -3013,7 +3055,7 @@
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
-   * store.setPartialRow('pets', 'fido', {color: 'brown', bug: []});
+   * store.setPartialRow('pets', 'fido', {color: 'brown', bug: new Date(0)});
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
    *
@@ -3035,10 +3077,10 @@
    * does not match a TablesSchema associated with the Store), will be ignored
    * silently.
    *
-   * As well as string, number, or boolean Cell types, this method can also take
-   * a MapCell function that takes the current Cell value as a parameter and
-   * maps it. This is useful if you want to efficiently increment a value
-   * without fetching it first, for example.
+   * As well as string, number, boolean, null, object, and array Cell types,
+   * this method can also take a MapCell function that takes the current Cell
+   * value as a parameter and maps it. This is useful if you want to efficiently
+   * increment a value without fetching it first, for example.
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
@@ -3080,7 +3122,7 @@
    *
    * const store = createStore().setTables({pets: {fido: {species: 'dog'}}});
    *
-   * store.setCell('pets', 'fido', 'bug', []);
+   * store.setCell('pets', 'fido', 'bug', new Date(0));
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog'}}}
    * ```
@@ -3127,7 +3169,7 @@
    *
    * const store = createStore().setValues({open: true});
    *
-   * store.setValues({employees: 3, bug: []});
+   * store.setValues({employees: 3, bug: new Date(0)});
    * console.log(store.getValues());
    * // -> {employees: 3}
    *
@@ -3179,7 +3221,7 @@
    *
    * const store = createStore().setValues({open: true});
    *
-   * store.setPartialValues({employees: 3, bug: []});
+   * store.setPartialValues({employees: 3, bug: new Date(0)});
    * console.log(store.getValues());
    * // -> {open: true, employees: 3}
    *
@@ -3200,10 +3242,10 @@
    * If the Value is invalid (either because of its type, or because it does not
    * match a ValuesSchema associated with the Store), will be ignored silently.
    *
-   * As well as string, number, or boolean Value types, this method can also
-   * take a MapValue function that takes the current Value as a parameter and
-   * maps it. This is useful if you want to efficiently increment a value
-   * without fetching it first, for example.
+   * As well as string, number, boolean, null, object, and array Value types,
+   * this method can also take a MapValue function that takes the current Value
+   * as a parameter and maps it. This is useful if you want to efficiently
+   * increment a value without fetching it first, for example.
    *
    * The method returns a reference to the Store so that subsequent operations
    * can be chained in a fluent style.
@@ -3241,7 +3283,7 @@
    *
    * const store = createStore().setValues({employees: 3});
    *
-   * store.setValue('bug', []);
+   * store.setValue('bug', new Date(0));
    * console.log(store.getValues());
    * // -> {employees: 3}
    * ```
@@ -3960,10 +4002,10 @@
    *   () =>
    *     store
    *       .setCell('pets', 'fido', 'color', 'black')
-   *       .setCell('pets', 'fido', 'eyes', ['left', 'right'])
-   *       .setCell('pets', 'fido', 'info', {sold: null})
+   *       .setCell('pets', 'fido', 'date0', new Date(0))
+   *       .setCell('pets', 'fido', 'date1', new Date(1))
    *       .setValue('open', false)
-   *       .setValue('employees', ['alice', 'bob']),
+   *       .setValue('date2', new Date(2)),
    *   () => {
    *     const [, , changedCells, invalidCells, changedValues, invalidValues] =
    *       store.getTransactionLog();
@@ -3977,9 +4019,9 @@
    * );
    * // -> {pets: {fido: {species: 'dog', color: 'black'}}}
    * // -> {pets: {fido: {color: ['brown', 'black']}}}
-   * // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
+   * // -> {pets: {fido: {date0: [new Date(0)], date1: [new Date(1)]}}}
    * // -> {open: [true, false]}
-   * // -> {employees: [['alice', 'bob']]}
+   * // -> {date2: [new Date(2)]}
    *
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
@@ -4100,10 +4142,10 @@
    * store
    *   .startTransaction()
    *   .setCell('pets', 'fido', 'color', 'black')
-   *   .setCell('pets', 'fido', 'eyes', ['left', 'right'])
-   *   .setCell('pets', 'fido', 'info', {sold: null})
+   *   .setCell('pets', 'fido', 'date0', new Date(0))
+   *   .setCell('pets', 'fido', 'date1', new Date(1))
    *   .setValue('open', false)
-   *   .setValue('employees', ['alice', 'bob'])
+   *   .setValue('date2', new Date(2))
    *   .finishTransaction(() => {
    *     const [, , changedCells, invalidCells, changedValues, invalidValues] =
    *       store.getTransactionLog();
@@ -4113,9 +4155,9 @@
    *     console.log(invalidValues);
    *   });
    * // -> {pets: {fido: {color: ['brown', 'black']}}}
-   * // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
+   * // -> {pets: {fido: {date0: [new Date(0)], date1: [new Date(1)]}}}
    * // -> {open: [true, false]}
-   * // -> {employees: [['alice', 'bob']]}
+   * // -> {date2: [new Date(2)]}
    * ```
    * @category Transaction
    * @since v5.0.0
@@ -4192,10 +4234,10 @@
    * store
    *   .startTransaction()
    *   .setCell('pets', 'fido', 'color', 'black')
-   *   .setCell('pets', 'fido', 'eyes', ['left', 'right'])
-   *   .setCell('pets', 'fido', 'info', {sold: null})
+   *   .setCell('pets', 'fido', 'date0', new Date(0))
+   *   .setCell('pets', 'fido', 'date1', new Date(1))
    *   .setValue('open', false)
-   *   .setValue('employees', ['alice', 'bob'])
+   *   .setValue('date2', new Date(2))
    *   .finishTransaction(() => {
    *     const [, , changedCells, invalidCells, changedValues, invalidValues] =
    *       store.getTransactionLog();
@@ -4208,9 +4250,9 @@
    *   });
    * // -> {pets: {fido: {species: 'dog', color: 'black'}}}
    * // -> {pets: {fido: {color: ['brown', 'black']}}}
-   * // -> {pets: {fido: {eyes: [['left', 'right']], info: [{sold: null}]}}}
+   * // -> {pets: {fido: {date0: [new Date(0)], date1: [new Date(1)]}}}
    * // -> {open: [true, false]}
-   * // -> {employees: [['alice', 'bob']]}
+   * // -> {date2: [new Date(2)]}
    *
    * console.log(store.getTables());
    * // -> {pets: {fido: {species: 'dog', color: 'brown'}}}
@@ -6488,16 +6530,16 @@
    * const listenerId = store.addInvalidCellListener(
    *   'pets',
    *   'fido',
-   *   'color',
+   *   'birth',
    *   (store, tableId, rowId, cellId, invalidCells) => {
-   *     console.log('Invalid color cell in fido row in pets table');
+   *     console.log('Invalid birth cell in fido row in pets table');
    *     console.log(invalidCells);
    *   },
    * );
    *
-   * store.setCell('pets', 'fido', 'color', {r: '96', g: '4B', b: '00'});
-   * // -> 'Invalid color cell in fido row in pets table'
-   * // -> [{r: '96', g: '4B', b: '00'}]
+   * store.setCell('pets', 'fido', 'birth', new Date(0));
+   * // -> 'Invalid birth cell in fido row in pets table'
+   * // -> [new Date(0)]
    *
    * store.delListener(listenerId);
    * ```
@@ -6524,10 +6566,10 @@
    *   },
    * );
    *
-   * store.setCell('pets', 'fido', 'color', {r: '96', g: '4B', b: '00'});
-   * // -> 'Invalid color cell in fido row in pets table'
-   * store.setTable('sales', {fido: {date: new Date()}});
-   * // -> 'Invalid date cell in fido row in sales table'
+   * store.setCell('pets', 'fido', 'birth', new Date(0));
+   * // -> 'Invalid birth cell in fido row in pets table'
+   * store.setTable('sales', {fido: {birth: new Date()}});
+   * // -> 'Invalid birth cell in fido row in sales table'
    *
    * store.setRow('pets', 'felix', {});
    * // -> 'Invalid undefined cell in felix row in pets table'
@@ -6631,7 +6673,7 @@
    * const listenerId = store.addInvalidCellListener(
    *   'pets',
    *   'fido',
-   *   'color',
+   *   'birth',
    *   (store, tableId, rowId, cellId, invalidCells) =>
    *     store.setCell(
    *       'meta',
@@ -6642,9 +6684,9 @@
    *   true,
    * );
    *
-   * store.setCell('pets', 'fido', 'color', {r: '96', g: '4B', b: '00'});
+   * store.setCell('pets', 'fido', 'birth', new Date(0));
    * console.log(store.getRow('meta', 'invalid_updates'));
-   * // -> {'pets_fido_color': '{"r":"96","g":"4B","b":"00"}'}
+   * // -> {'pets_fido_birth': '"1970-01-01T00:00:00.000Z"'}
    *
    * store.delListener(listenerId);
    * ```
@@ -6706,16 +6748,16 @@
    *
    * const store = createStore().setValues({open: true});
    * const listenerId = store.addInvalidValueListener(
-   *   'open',
+   *   'openDate',
    *   (store, valueId, invalidValues) => {
-   *     console.log('Invalid open value');
+   *     console.log('Invalid openDate value');
    *     console.log(invalidValues);
    *   },
    * );
    *
-   * store.setValue('open', {yes: true});
-   * // -> 'Invalid open value'
-   * // -> [{yes: true}]
+   * store.setValue('openDate', new Date(0));
+   * // -> 'Invalid openDate value'
+   * // -> [new Date(0)]
    *
    * store.delListener(listenerId);
    * ```
@@ -6735,10 +6777,10 @@
    *   },
    * );
    *
-   * store.setValue('open', {yes: true});
-   * // -> 'Invalid open value'
-   * store.setValue('employees', ['alice', 'bob']);
-   * // -> 'Invalid employees value'
+   * store.setValue('openDate', new Date(0));
+   * // -> 'Invalid openDate value'
+   * store.setValue('closeDate', new Date(1));
+   * // -> 'Invalid closeDate value'
    *
    * store.setValues('pets', 'felix', {});
    * // -> 'Invalid undefined value'
@@ -6814,15 +6856,15 @@
    *
    * const store = createStore().setValues({open: true});
    * const listenerId = store.addInvalidValueListener(
-   *   'open',
+   *   'openDate',
    *   (store, valueId, invalidValues) =>
    *     store.setValue('invalid_updates', JSON.stringify(invalidValues[0])),
    *   true,
    * );
    *
-   * store.setValue('open', {yes: true});
+   * store.setValue('openDate', new Date(0));
    * console.log(store.getValue('invalid_updates'));
-   * // -> '{"yes":true}'
+   * // -> '"1970-01-01T00:00:00.000Z"'
    *
    * store.delListener(listenerId);
    * ```

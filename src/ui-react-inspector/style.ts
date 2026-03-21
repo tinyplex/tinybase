@@ -25,10 +25,10 @@ const MAX_WIDTH = 'max-' + WIDTH;
 const MIN_WIDTH = 'min-' + WIDTH;
 const HEIGHT = 'height';
 const BORDER = 'border';
-const BORDER_RADIUS = BORDER + '-radius';
+const RADIUS = 'radius';
+const BORDER_RADIUS = BORDER + '-' + RADIUS;
 const PADDING = 'padding';
 const MARGIN = 'margin';
-const MARGIN_RIGHT = MARGIN + '-right';
 const TOP = 'top';
 const BOTTOM = 'bottom';
 const LEFT = 'left';
@@ -43,6 +43,11 @@ const CURSOR = 'cursor';
 const VERTICAL_ALIGN = 'vertical-align';
 const TEXT_ALIGN = 'text-align';
 const JUSTIFY_CONTENT = 'justify-content';
+const WHITE_SPACE = 'white-space';
+const TEXT_OVERFLOW = 'text-overflow';
+const ALIGN_ITEMS = 'align-items';
+const BACKDROP_FILTER = 'backdrop-filter';
+const MARGIN_RIGHT = MARGIN + '-' + RIGHT;
 
 const FIXED = 'fixed';
 const REVERT = 'revert';
@@ -180,8 +185,8 @@ export const APP_STYLESHEET = arrayJoin(
         [WIDTH]: 'calc(100% - .5rem)',
         [POSITION]: 'absolute',
         [BORDER + '-' + BOTTOM]: cssVar(BORDER),
-        'align-items': 'center',
-        'backdrop-filter': 'blur(4px)',
+        [ALIGN_ITEMS]: 'center',
+        [BACKDROP_FILTER]: 'blur(4px)',
       },
       'header>img:nth-of-type(1)': {
         [HEIGHT]: rem(1),
@@ -199,8 +204,8 @@ export const APP_STYLESHEET = arrayJoin(
         [OVERFLOW]: HIDDEN,
         [FLEX]: 1,
         'font-weight': 800,
-        'white-space': NOWRAP,
-        'text-overflow': 'ellipsis',
+        [WHITE_SPACE]: NOWRAP,
+        [TEXT_OVERFLOW]: 'ellipsis',
       },
 
       // Body
@@ -220,7 +225,8 @@ export const APP_STYLESHEET = arrayJoin(
         [BORDER_RADIUS]: rem(0.25),
         'user-select': NONE,
         [JUSTIFY_CONTENT]: 'space-between',
-        'align-items': 'center',
+        [ALIGN_ITEMS]: 'center',
+        [BACKDROP_FILTER]: 'blur(4px)',
       },
       'summary>span::before': {
         [DISPLAY]: 'inline-block',
@@ -231,8 +237,8 @@ export const APP_STYLESHEET = arrayJoin(
         ...RIGHT_SVG,
       },
       'details[open]>summary': {
-        'border-bottom-left-radius': 0,
-        'border-bottom-right-radius': 0,
+        [BORDER + '-' + BOTTOM + '-' + LEFT + '-' + RADIUS]: 0,
+        [BORDER + '-' + BOTTOM + '-' + RIGHT + '-' + RADIUS]: 0,
         [MARGIN + '-' + BOTTOM]: 0,
       },
       'details[open]>summary>span::before': DOWN_SVG,
@@ -243,11 +249,12 @@ export const APP_STYLESHEET = arrayJoin(
       },
       'details>div': {[OVERFLOW]: AUTO},
 
-      caption: {
+      [`caption,#${UNIQUE_ID} p`]: {
         [COLOR]: cssVar('fg2'),
         [PADDING]: rem(0.25, 0.5),
         [TEXT_ALIGN]: LEFT,
-        'white-space': NOWRAP,
+        [MARGIN]: 0,
+        [WHITE_SPACE]: NOWRAP,
       },
       'caption button': {
         [WIDTH]: rem(1.5),
@@ -279,8 +286,8 @@ export const APP_STYLESHEET = arrayJoin(
         [PADDING]: rem(0.25, 0.5),
         [MAX_WIDTH]: rem(20),
         [BORDER]: cssVar(BORDER),
-        'text-overflow': 'ellipsis',
-        'white-space': NOWRAP,
+        [TEXT_OVERFLOW]: 'ellipsis',
+        [WHITE_SPACE]: NOWRAP,
         'border-width': px(1, 0, 0),
         [TEXT_ALIGN]: LEFT,
       },

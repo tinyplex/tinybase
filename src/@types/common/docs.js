@@ -14,6 +14,26 @@
  */
 /// Json
 /**
+ * The AnyObject type is a simple alias for a plain object with string keys and
+ * unknown values.
+ *
+ * It is used to indicate that the value should be considered to be a plain
+ * JavaScript object, as can be stored in a Cell or Value with the `object`
+ * schema type.
+ * @category General
+ * @since v8.0.0
+ */
+/// AnyObject
+/**
+ * The AnyArray type is a simple alias for an array with unknown values.
+ *
+ * It is used to indicate that the value should be considered to be a JavaScript
+ * array, as can be stored in a Cell or Value with the `array` schema type.
+ * @category General
+ * @since v8.0.0
+ */
+/// AnyArray
+/**
  * The Ids type is a simple alias for an array of strings, but is used to
  * indicate that the strings should be considered to be the keys of objects
  * (such as the Row Id strings used in a Table).

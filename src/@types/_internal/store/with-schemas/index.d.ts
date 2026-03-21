@@ -48,7 +48,7 @@ export type CellIsDefaultedFromSchema<
   Then,
   Else,
 > = Schema[TableId][CellId] extends {
-  default: string | number | boolean;
+  default: infer _;
 }
   ? Then
   : Else;
@@ -83,7 +83,7 @@ export type ValueIsDefaultedFromSchema<
   Then,
   Else,
 > = Schema[ValueId] extends {
-  default: string | number | boolean;
+  default: infer _;
 }
   ? Then
   : Else;

@@ -609,6 +609,34 @@ describe('ui-components', () => {
     await expectedFramedElement(
       page,
       'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+      'object',
+    );
+    await expectedFramedElement(page, '#edit button', 'object');
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+        'object',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+      'array',
+    );
+    await expectedFramedElement(page, '#edit button', 'array');
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
+        'array',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(1) td button',
       'string',
     );
     await expect(input1).toHaveValue('John Appleseed');
@@ -690,6 +718,34 @@ describe('ui-components', () => {
         page,
         'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
         'boolean',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+      'object',
+    );
+    await expectedFramedElement(page, '#edit button', 'object');
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+        'object',
+      )
+    ).click();
+    await expectedFramedElement(
+      page,
+      'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+      'array',
+    );
+    await expectedFramedElement(page, '#edit button', 'array');
+
+    await (
+      await expectedFramedElement(
+        page,
+        'table:nth-of-type(1) tbody tr:nth-of-type(5) td button',
+        'array',
       )
     ).click();
     await expectedFramedElement(

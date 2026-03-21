@@ -5,7 +5,9 @@
     "*.svg",
     "*.snap",
     "*.json",
-    "*.test.ts"
+    "*.test.ts",
+    "*.code-workspace",
+    "*.tsbuildinfo"
   ],
   "words": [
     "Abad",
@@ -28,6 +30,7 @@
     "Bluesky",
     "bndkt",
     "Bolin",
+    "braden",
     "brentvatne",
     "broadcastchannel",
     "Burnham",
@@ -81,6 +84,7 @@
     "fullfat",
     "getnow",
     "Giulio",
+    "gonza",
     "granularities",
     "gulpfile",
     "gzipped",
@@ -147,6 +151,7 @@
     "partykit",
     "partyserver",
     "partysocket",
+    "parvovirus",
     "Pearce",
     "Persistable",
     "Persistables",

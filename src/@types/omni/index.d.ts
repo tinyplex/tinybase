@@ -8,6 +8,7 @@ export * from '../common/index.d.ts';
 export * from '../indexes/index.d.ts';
 export * from '../mergeable-store/index.d.ts';
 export * from '../metrics/index.d.ts';
+export * from '../middleware/index.d.ts';
 export * from '../persisters/index.d.ts';
 export * from '../persisters/persister-automerge/index.d.ts';
 export * from '../persisters/persister-browser/index.d.ts';

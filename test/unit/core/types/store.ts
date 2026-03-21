@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 // NB: an exclamation mark after a line visually indicates an expected TS error
+import type {AnyArray, AnyObject} from 'tinybase';
 import {createStore} from 'tinybase/with-schemas';
 
 const tablesSchema = {
@@ -16,12 +17,33 @@ const oneValueSchema = {
   v1: {type: 'number'},
 } as const;
 
+const jsonTablesSchema = {
+  t1: {
+    co: {type: 'object'},
+    cod: {type: 'object', default: {}},
+    ca: {type: 'array'},
+    cad: {type: 'array', default: []},
+  },
+} as const;
+
+const jsonValuesSchema = {
+  vo: {type: 'object'},
+  vod: {type: 'object', default: {}},
+  va: {type: 'array'},
+  vad: {type: 'array', default: []},
+} as const;
+
 const store = createStore();
 
 const storeWithSchemas = store.setSchema(tablesSchema, valuesSchema);
 storeWithSchemas.setTables({t1: {r1: {c1: 1}}});
 
 const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
+
+const storeWithJsonSchemas = store.setSchema(
+  jsonTablesSchema,
+  jsonValuesSchema,
+);
 
 // Getters
 (() => {
@@ -180,6 +202,84 @@ const storeWithSchemasOneValue = store.setSchema(tablesSchema, oneValueSchema);
 
   storeWithSchemas.delValue('v1');
   storeWithSchemas.delValue('v2'); // !
+})();
+
+// Object and array schema types
+(() => {
+  // Cell getters - object
+  storeWithJsonSchemas.getCell('t1', 'r1', 'co') as AnyObject;
+  storeWithJsonSchemas.getCell('t1', 'r1', 'co') as undefined;
+  storeWithJsonSchemas.getCell('t1', 'r1', 'cod') as AnyObject;
+  storeWithJsonSchemas.getCell('t1', 'r1', 'co') as string; // !
+  storeWithJsonSchemas.getCell('t1', 'r1', 'co') as number; // !
+  storeWithJsonSchemas.getCell('t1', 'r1', 'co') as boolean; // !
+  storeWithJsonSchemas.getCell('t1', 'r1', 'cod') as undefined; // !
+
+  // Cell getters - array
+  storeWithJsonSchemas.getCell('t1', 'r1', 'ca') as AnyArray;
+  storeWithJsonSchemas.getCell('t1', 'r1', 'ca') as undefined;
+  storeWithJsonSchemas.getCell('t1', 'r1', 'cad') as AnyArray;
+  storeWithJsonSchemas.getCell('t1', 'r1', 'ca') as string; // !
+  storeWithJsonSchemas.getCell('t1', 'r1', 'ca') as number; // !
+  storeWithJsonSchemas.getCell('t1', 'r1', 'ca') as boolean; // !
+  storeWithJsonSchemas.getCell('t1', 'r1', 'cad') as undefined; // !
+
+  // Cell getters - invalid ids
+  storeWithJsonSchemas.getCell('t1', 'r1', 'cx'); // !
+  storeWithJsonSchemas.getCell('t2', 'r1', 'co'); // !
+
+  // Value getters - object
+  storeWithJsonSchemas.getValue('vo') as AnyObject;
+  storeWithJsonSchemas.getValue('vo') as undefined;
+  storeWithJsonSchemas.getValue('vod') as AnyObject;
+  storeWithJsonSchemas.getValue('vo') as string; // !
+  storeWithJsonSchemas.getValue('vo') as number; // !
+  storeWithJsonSchemas.getValue('vo') as boolean; // !
+  storeWithJsonSchemas.getValue('vod') as undefined; // !
+
+  // Value getters - array
+  storeWithJsonSchemas.getValue('va') as AnyArray;
+  storeWithJsonSchemas.getValue('va') as undefined;
+  storeWithJsonSchemas.getValue('vad') as AnyArray;
+  storeWithJsonSchemas.getValue('va') as string; // !
+  storeWithJsonSchemas.getValue('va') as number; // !
+  storeWithJsonSchemas.getValue('va') as boolean; // !
+  storeWithJsonSchemas.getValue('vad') as undefined; // !
+
+  // Value getters - invalid id
+  storeWithJsonSchemas.getValue('vx'); // !
+
+  // Cell setters - object
+  storeWithJsonSchemas.setCell('t1', 'r1', 'co', {species: 'dog'});
+  storeWithJsonSchemas.setCell('t1', 'r1', 'co', (v) => v ?? {});
+  storeWithJsonSchemas.setCell('t1', 'r1', 'co', 'dog'); // !
+  storeWithJsonSchemas.setCell('t1', 'r1', 'co', 1); // !
+  storeWithJsonSchemas.setCell('t1', 'r1', 'co', true); // !
+  storeWithJsonSchemas.setCell('t1', 'r1', 'co', () => 'dog'); // !
+
+  // Cell setters - array
+  storeWithJsonSchemas.setCell('t1', 'r1', 'ca', ['dog', 'cat']);
+  storeWithJsonSchemas.setCell('t1', 'r1', 'ca', (v) => v ?? []);
+  storeWithJsonSchemas.setCell('t1', 'r1', 'ca', 'dog'); // !
+  storeWithJsonSchemas.setCell('t1', 'r1', 'ca', 1); // !
+  storeWithJsonSchemas.setCell('t1', 'r1', 'ca', true); // !
+  storeWithJsonSchemas.setCell('t1', 'r1', 'ca', () => 'dog'); // !
+
+  // Value setters - object
+  storeWithJsonSchemas.setValue('vo', {species: 'dog'});
+  storeWithJsonSchemas.setValue('vo', (v) => v ?? {});
+  storeWithJsonSchemas.setValue('vo', 'dog'); // !
+  storeWithJsonSchemas.setValue('vo', 1); // !
+  storeWithJsonSchemas.setValue('vo', true); // !
+  storeWithJsonSchemas.setValue('vo', () => 'dog'); // !
+
+  // Value setters - array
+  storeWithJsonSchemas.setValue('va', ['dog', 'cat']);
+  storeWithJsonSchemas.setValue('va', (v) => v ?? []);
+  storeWithJsonSchemas.setValue('va', 'dog'); // !
+  storeWithJsonSchemas.setValue('va', 1); // !
+  storeWithJsonSchemas.setValue('va', true); // !
+  storeWithJsonSchemas.setValue('va', () => 'dog'); // !
 })();
 
 // Iterators
