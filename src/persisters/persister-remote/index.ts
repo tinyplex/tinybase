@@ -24,7 +24,6 @@ export const createRemotePersister = ((
       headers: {'If-None-Match': lastEtag},
     });
     lastEtag = getETag(response);
-    console.log([...response.headers.entries()], lastEtag);
     return jsonParse(await response.text());
   };
 
