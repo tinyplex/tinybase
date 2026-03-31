@@ -130,7 +130,7 @@ class ReactiveHandle<Current> {
   readonly #get: () => Current;
   readonly #sub: () => void;
 
-  constructor(getCurrent: () => Current, subscribe: () => void = noop) {
+  constructor(getCurrent: () => Current, subscribe: () => void) {
     this.#get = getCurrent;
     this.#sub = subscribe;
   }
@@ -147,7 +147,7 @@ class WritableHandle<Current, Next = Current> extends ReactiveHandle<Current> {
   constructor(
     getCurrent: () => Current,
     setCurrent: (value: Next) => void,
-    subscribe: () => void = noop,
+    subscribe: () => void,
   ) {
     super(getCurrent, subscribe);
     this.#set = setCurrent;
