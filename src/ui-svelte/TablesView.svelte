@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {TablesViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {createTableIds} from './hooks.svelte.ts';
+  import {createTableIds} from './functions.svelte.ts';
   import TableView from './TableView.svelte';
   import Wrap from './common/Wrap.svelte';
 

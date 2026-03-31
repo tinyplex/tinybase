@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {RowViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {createCellIds} from './hooks.svelte.ts';
+  import {createCellIds} from './functions.svelte.ts';
   import CellView from './CellView.svelte';
   import Wrap from './common/Wrap.svelte';
 

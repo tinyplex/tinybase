@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {ResultSortedTableViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {createResultSortedRowIds} from './hooks.svelte.ts';
+  import {createResultSortedRowIds} from './functions.svelte.ts';
   import ResultRowView from './ResultRowView.svelte';
   import Wrap from './common/Wrap.svelte';
 

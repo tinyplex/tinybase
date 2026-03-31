@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {CurrentCheckpointViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {createCheckpointIds} from './hooks.svelte.ts';
+  import {createCheckpointIds} from './functions.svelte.ts';
   import CheckpointView from './CheckpointView.svelte';
   import {isUndefined} from '../common/other.ts';
 

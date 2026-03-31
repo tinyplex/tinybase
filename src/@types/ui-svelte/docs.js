@@ -1380,7 +1380,7 @@
  * that result will update `.current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` boolean property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createHasTables
@@ -1390,7 +1390,7 @@
  * update `.current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` Tables property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createTables
@@ -1400,7 +1400,7 @@
  * Ids will update `.current`.
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createTableIds
@@ -1411,7 +1411,7 @@
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createHasTable
@@ -1422,7 +1422,7 @@
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Table property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createTable
@@ -1433,7 +1433,7 @@
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createTableCellIds
@@ -1445,7 +1445,7 @@
  * @param cellId The Id of the Cell (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createHasTableCell
@@ -1456,7 +1456,7 @@
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` number property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createRowCount
@@ -1467,7 +1467,7 @@
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createRowIds
@@ -1482,7 +1482,7 @@
  * @param limit The maximum number of Rows to return (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createSortedRowIds
@@ -1494,7 +1494,7 @@
  * @param rowId The Id of the Row (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createHasRow
@@ -1506,7 +1506,7 @@
  * @param rowId The Id of the Row (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Row property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createRow
@@ -1518,7 +1518,7 @@
  * @param rowId The Id of the Row (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createCellIds
@@ -1531,7 +1531,7 @@
  * @param cellId The Id of the Cell (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createHasCell
@@ -1556,7 +1556,7 @@
  * // const name = createCell('pets', 'cat', 'name', store);
  * // $: console.log(name.current); // 'Fido'
  * ```
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createCell
@@ -1566,7 +1566,7 @@
  * that result will update `.current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` boolean property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createHasValues
@@ -1576,7 +1576,7 @@
  * update `.current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` Values property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createValues
@@ -1586,7 +1586,7 @@
  * update `.current`.
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createValueIds
@@ -1597,7 +1597,7 @@
  * @param valueId The Id of the Value (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createHasValue
@@ -1611,7 +1611,7 @@
  * @param valueId The Id of the Value (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with gettable and settable `current`.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createValue
@@ -1620,7 +1620,7 @@
  * context (or a named Store if an Id is provided).
  * @param id An optional Id of a named Store in the Provider context.
  * @returns The Store, or `undefined` if not found.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.getStore
@@ -1629,7 +1629,7 @@
  * Provider context, or have it passed directly.
  * @param storeOrStoreId The Store, its Id, or a getter returning either.
  * @returns A getter function returning the Store, or `undefined`.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.resolveStore
@@ -1637,7 +1637,7 @@
  * The createStoreIds function returns a reactive object with the Ids of all
  * Stores registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createStoreIds
@@ -1646,7 +1646,7 @@
  * Provider context (or a named one if an Id is provided).
  * @param id An optional Id of a named Metrics object in the Provider context.
  * @returns The Metrics object, or `undefined` if not found.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.getMetrics
@@ -1656,7 +1656,7 @@
  * @param metricsOrMetricsId The Metrics object, its Id, or a getter returning
  * either.
  * @returns A getter function returning the Metrics object, or `undefined`.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.resolveMetrics
@@ -1664,7 +1664,7 @@
  * The createMetricsIds function returns a reactive object with the Ids of all
  * Metrics objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createMetricsIds
@@ -1674,7 +1674,7 @@
  * will update `.current`.
  * @param metricsOrMetricsId The Metrics object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createMetricIds
@@ -1686,7 +1686,7 @@
  * @param metricsOrMetricsId The Metrics object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` number | undefined property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createMetric
@@ -1695,7 +1695,7 @@
  * Provider context (or a named one if an Id is provided).
  * @param id An optional Id of a named Indexes object in the Provider context.
  * @returns The Indexes object, or `undefined` if not found.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.getIndexes
@@ -1705,7 +1705,7 @@
  * @param indexesOrIndexesId The Indexes object, its Id, or a getter returning
  * either.
  * @returns A getter function returning the Indexes object, or `undefined`.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.resolveIndexes
@@ -1715,7 +1715,7 @@
  * @param indexesOrId The Indexes object, its Id, or a getter returning either.
  * @param indexId The Id of the index, or a getter returning it.
  * @returns An object with `store` and `tableId` getter properties.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.getIndexStoreTableId
@@ -1723,7 +1723,7 @@
  * The createIndexesIds function returns a reactive object with the Ids of all
  * Indexes objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createIndexesIds
@@ -1733,7 +1733,7 @@
  * changes will update `.current`.
  * @param indexesOrIndexesId The Indexes object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createIndexIds
@@ -1745,7 +1745,7 @@
  * @param indexesOrIndexesId The Indexes object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createSliceIds
@@ -1758,7 +1758,7 @@
  * @param indexesOrIndexesId The Indexes object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createSliceRowIds
@@ -1767,7 +1767,7 @@
  * Provider context (or a named one if an Id is provided).
  * @param id An optional Id of a named Queries object in the Provider context.
  * @returns The Queries object, or `undefined` if not found.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.getQueries
@@ -1777,7 +1777,7 @@
  * @param queriesOrQueriesId The Queries object, its Id, or a getter returning
  * either.
  * @returns A getter function returning the Queries object, or `undefined`.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.resolveQueries
@@ -1785,7 +1785,7 @@
  * The createQueriesIds function returns a reactive object with the Ids of all
  * Queries objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createQueriesIds
@@ -1795,7 +1795,7 @@
  * will update `.current`.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createQueryIds
@@ -1807,7 +1807,7 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Table property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createResultTable
@@ -1819,7 +1819,7 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createResultTableCellIds
@@ -1831,7 +1831,7 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` number property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createResultRowCount
@@ -1843,7 +1843,7 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createResultRowIds
@@ -1859,7 +1859,7 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createResultSortedRowIds
@@ -1872,7 +1872,7 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Row property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createResultRow
@@ -1885,7 +1885,7 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createResultCellIds
@@ -1899,7 +1899,7 @@
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
  * @returns A reactive object with a `current` Cell | undefined property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createResultCell
@@ -1909,7 +1909,7 @@
  * @param id An optional Id of a named Relationships object in the Provider
  * context.
  * @returns The Relationships object, or `undefined` if not found.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.getRelationships
@@ -1920,7 +1920,7 @@
  * getter returning either.
  * @returns A getter function returning the Relationships object, or
  * `undefined`.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.resolveRelationships
@@ -1932,7 +1932,7 @@
  * @param relationshipId The Id of the relationship, or a getter returning it.
  * @returns An object with `store`, `localTableId`, and `remoteTableId` getter
  * properties.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.getRelationshipsStoreTableIds
@@ -1940,7 +1940,7 @@
  * The createRelationshipsIds function returns a reactive object with the Ids of
  * all Relationships objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createRelationshipsIds
@@ -1951,7 +1951,7 @@
  * @param relationshipsOrRelationshipsId The Relationships object to use, or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createRelationshipIds
@@ -1964,7 +1964,7 @@
  * @param relationshipsOrRelationshipsId The Relationships object to use (plain
  * or getter), or its Id.
  * @returns A reactive object with a `current` Id | undefined property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createRemoteRowId
@@ -1977,7 +1977,7 @@
  * @param relationshipsOrRelationshipsId The Relationships object to use (plain
  * or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createLocalRowIds
@@ -1990,7 +1990,7 @@
  * @param relationshipsOrRelationshipsId The Relationships object to use (plain
  * or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createLinkedRowIds
@@ -2000,7 +2000,7 @@
  * @param id An optional Id of a named Checkpoints object in the Provider
  * context.
  * @returns The Checkpoints object, or `undefined` if not found.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.getCheckpoints
@@ -2010,7 +2010,7 @@
  * @param checkpointsOrCheckpointsId The Checkpoints object, its Id, or a getter
  * returning either.
  * @returns A getter function returning the Checkpoints object, or `undefined`.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.resolveCheckpoints
@@ -2018,7 +2018,7 @@
  * The createCheckpointsIds function returns a reactive object with the Ids of
  * all Checkpoints objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createCheckpointsIds
@@ -2029,7 +2029,7 @@
  * @param checkpointsOrCheckpointsId The Checkpoints object to use (plain or
  * getter), or its Id.
  * @returns A reactive object with a `current` CheckpointIds property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createCheckpointIds
@@ -2041,7 +2041,7 @@
  * @param checkpointsOrCheckpointsId The Checkpoints object to use (plain or
  * getter), or its Id.
  * @returns A reactive object with a `current` string | undefined property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createCheckpoint
@@ -2050,7 +2050,7 @@
  * called, moves the Checkpoints object backward to the previous checkpoint.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use, or its Id.
  * @returns A callback function.
- * @category Hook
+ * @category Callback
  * @since v8.1.0
  */
 /// ui-svelte.createGoBackwardCallback
@@ -2059,7 +2059,7 @@
  * called, moves the Checkpoints object forward to the next checkpoint.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use, or its Id.
  * @returns A callback function.
- * @category Hook
+ * @category Callback
  * @since v8.1.0
  */
 /// ui-svelte.createGoForwardCallback
@@ -2068,7 +2068,7 @@
  * Provider context (or a named one if an Id is provided).
  * @param id An optional Id of a named Persister in the Provider context.
  * @returns The Persister, or `undefined` if not found.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.getPersister
@@ -2078,7 +2078,7 @@
  * @param persisterOrPersisterId The Persister object, its Id, or a getter
  * returning either.
  * @returns A getter function returning the Persister object, or `undefined`.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.resolvePersister
@@ -2086,7 +2086,7 @@
  * The createPersisterIds function returns a reactive object with the Ids of all
  * Persisters registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createPersisterIds
@@ -2096,7 +2096,7 @@
  * update `.current`.
  * @param persisterOrPersisterId The Persister to use, or its Id.
  * @returns A reactive object with a `current` Status property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createPersisterStatus
@@ -2105,7 +2105,7 @@
  * current Provider context (or a named one if an Id is provided).
  * @param id An optional Id of a named Synchronizer in the Provider context.
  * @returns The Synchronizer, or `undefined` if not found.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.getSynchronizer
@@ -2115,7 +2115,7 @@
  * @param synchronizerOrSynchronizerId The Synchronizer object, its Id, or a
  * getter returning either.
  * @returns A getter function returning the Synchronizer object, or `undefined`.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.resolveSynchronizer
@@ -2123,7 +2123,7 @@
  * The createSynchronizerIds function returns a reactive object with the Ids of
  * all Synchronizers registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createSynchronizerIds
@@ -2133,7 +2133,7 @@
  * will update `.current`.
  * @param synchronizerOrSynchronizerId The Synchronizer to use, or its Id.
  * @returns A reactive object with a `current` Status property.
- * @category Hook
+ * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.createSynchronizerStatus
@@ -2145,7 +2145,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onHasTables
@@ -2156,7 +2156,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onTables
@@ -2167,7 +2167,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onTableIds
@@ -2180,7 +2180,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onHasTable
@@ -2193,7 +2193,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onTable
@@ -2206,7 +2206,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onTableCellIds
@@ -2221,7 +2221,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onHasTableCell
@@ -2234,7 +2234,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onRowCount
@@ -2247,7 +2247,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onRowIds
@@ -2264,7 +2264,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onSortedRowIds
@@ -2278,7 +2278,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onHasRow
@@ -2292,7 +2292,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onRow
@@ -2306,7 +2306,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onCellIds
@@ -2322,7 +2322,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onHasCell
@@ -2338,7 +2338,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onCell
@@ -2349,7 +2349,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onHasValues
@@ -2360,7 +2360,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onValues
@@ -2371,7 +2371,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onValueIds
@@ -2384,7 +2384,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onHasValue
@@ -2397,7 +2397,7 @@
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onValue
@@ -2406,7 +2406,7 @@
  * start of every Store transaction.
  * @param listener The function to call at transaction start.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onStartTransaction
@@ -2415,7 +2415,7 @@
  * a Store transaction completes.
  * @param listener The function to call before transaction end.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onWillFinishTransaction
@@ -2424,7 +2424,7 @@
  * Store transaction completes.
  * @param listener The function to call after transaction end.
  * @param storeOrStoreId The Store to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onDidFinishTransaction
@@ -2435,7 +2435,7 @@
  * Metric.
  * @param listener The function to call when the Metric changes.
  * @param metricsOrMetricsId The Metrics object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onMetric
@@ -2446,7 +2446,7 @@
  * Index.
  * @param listener The function to call when Slice Ids change.
  * @param indexesOrIndexesId The Indexes object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onSliceIds
@@ -2459,7 +2459,7 @@
  * Slice.
  * @param listener The function to call when Slice Row Ids change.
  * @param indexesOrIndexesId The Indexes object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onSliceRowIds
@@ -2473,7 +2473,7 @@
  * @param listener The function to call when the remote Row Id changes.
  * @param relationshipsOrRelationshipsId The Relationships object to use, or its
  * Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onRemoteRowId
@@ -2487,7 +2487,7 @@
  * @param listener The function to call when local Row Ids change.
  * @param relationshipsOrRelationshipsId The Relationships object to use, or its
  * Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onLocalRowIds
@@ -2499,7 +2499,7 @@
  * @param listener The function to call when linked Row Ids change.
  * @param relationshipsOrRelationshipsId The Relationships object to use, or its
  * Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onLinkedRowIds
@@ -2510,7 +2510,7 @@
  * query.
  * @param listener The function to call when the result Table changes.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onResultTable
@@ -2521,7 +2521,7 @@
  * query.
  * @param listener The function to call when Cell Ids change.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onResultTableCellIds
@@ -2532,7 +2532,7 @@
  * query.
  * @param listener The function to call when the count changes.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onResultRowCount
@@ -2543,7 +2543,7 @@
  * query.
  * @param listener The function to call when result Row Ids change.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onResultRowIds
@@ -2558,7 +2558,7 @@
  * @param limit The maximum number of Rows to include, or `undefined` for all.
  * @param listener The function to call when sorted Row Ids change.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onResultSortedRowIds
@@ -2571,7 +2571,7 @@
  * any result Row.
  * @param listener The function to call when the result Row changes.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onResultRow
@@ -2584,7 +2584,7 @@
  * any result Row.
  * @param listener The function to call when Cell Ids change.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onResultCellIds
@@ -2599,7 +2599,7 @@
  * any result Cell.
  * @param listener The function to call when the result Cell changes.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onResultCell
@@ -2610,7 +2610,7 @@
  * query.
  * @param listener The function to call when parameter values change.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onParamValues
@@ -2623,7 +2623,7 @@
  * any parameter.
  * @param listener The function to call when the parameter value changes.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onParamValue
@@ -2632,7 +2632,7 @@
  * Checkpoint Ids change.
  * @param listener The function to call when Checkpoint Ids change.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onCheckpointIds
@@ -2643,7 +2643,7 @@
  * listen to any Checkpoint.
  * @param listener The function to call when the Checkpoint label changes.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onCheckpoint
@@ -2652,7 +2652,7 @@
  * the status of a Persister changes.
  * @param listener The function to call when the status changes.
  * @param persisterOrPersisterId The Persister to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onPersisterStatus
@@ -2661,7 +2661,7 @@
  * whenever the status of a Synchronizer changes.
  * @param listener The function to call when the status changes.
  * @param synchronizerOrSynchronizerId The Synchronizer to use, or its Id.
- * @category Hook
+ * @category Listener
  * @since v8.1.0
  */
 /// ui-svelte.onSynchronizerStatus
@@ -2669,8 +2669,8 @@
  * The provideStore function registers a Store with a given Id into the current
  * Provider context, making it available to all descendant components.
  *
- * This function must be called inside a Svelte component's `<script>` block
- * that is a descendant of a Provider component.
+ * The provideStore function must be called inside a Svelte component's
+ * `<script>` block that is a descendant of a Provider component.
  * @param storeId The Id to register the Store under.
  * @param store The Store to register.
  * @category Provider

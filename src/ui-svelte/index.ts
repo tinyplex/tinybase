@@ -125,7 +125,7 @@ export {
   resolveRelationships,
   resolveStore,
   resolveSynchronizer,
-} from './hooks.svelte.ts';
+} from './functions.svelte.ts';
 export {default as IndexView} from './IndexView.svelte';
 export {default as LinkedRowsView} from './LinkedRowsView.svelte';
 export {default as LocalRowsView} from './LocalRowsView.svelte';

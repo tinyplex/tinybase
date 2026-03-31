@@ -3,7 +3,7 @@
   import {
     createLinkedRowIds,
     getRelationshipsStoreTableIds,
-  } from './hooks.svelte.ts';
+  } from './functions.svelte.ts';
   import RowView from './RowView.svelte';
   import Wrap from './common/Wrap.svelte';
 

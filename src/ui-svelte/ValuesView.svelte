@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {ValuesViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {createValueIds} from './hooks.svelte.ts';
+  import {createValueIds} from './functions.svelte.ts';
   import ValueView from './ValueView.svelte';
   import Wrap from './common/Wrap.svelte';
 

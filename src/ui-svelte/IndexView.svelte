@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {IndexViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {createSliceIds} from './hooks.svelte.ts';
+  import {createSliceIds} from './functions.svelte.ts';
   import SliceView from './SliceView.svelte';
   import Wrap from './common/Wrap.svelte';
 

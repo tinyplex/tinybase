@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {ResultRowViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {createResultCellIds} from './hooks.svelte.ts';
+  import {createResultCellIds} from './functions.svelte.ts';
   import ResultCellView from './ResultCellView.svelte';
   import Wrap from './common/Wrap.svelte';
 

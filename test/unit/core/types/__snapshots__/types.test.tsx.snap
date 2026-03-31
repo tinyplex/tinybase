@@ -3120,8 +3120,6 @@ exports[`Types in ui-svelte.ts > 243:22 1`] = `"Property 't2' does not exist on 
 
 exports[`Types in ui-svelte.ts > 245:13 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
 
-exports[`Types in ui-svelte.ts > 245:22 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
-
 exports[`Types in ui-svelte.ts > 251:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-svelte.ts > 252:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
@@ -3136,8 +3134,6 @@ exports[`Types in ui-svelte.ts > 264:22 1`] = `"Property 't2' does not exist on 
 
 exports[`Types in ui-svelte.ts > 266:10 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
 
-exports[`Types in ui-svelte.ts > 266:19 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
-
 exports[`Types in ui-svelte.ts > 271:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-svelte.ts > 272:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
@@ -3150,13 +3146,9 @@ exports[`Types in ui-svelte.ts > 280:4 1`] = `"This comparison appears to be uni
 
 exports[`Types in ui-svelte.ts > 282:23 1`] = `"Argument of type '(store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>) => void' is not assignable to parameter of type '((...params: [store: never, tableId: never, getIdChanges: never] | [store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>, tableId: "t1", getIdChang...'."`;
 
-exports[`Types in ui-svelte.ts > 282:32 1`] = `"Argument of type '(store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>) => void' is not assignable to parameter of type '((...params: [store: never, tableId: never, getIdChanges: never] | [store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>, tableId: "t1", getIdChang...'."`;
-
 exports[`Types in ui-svelte.ts > 284:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-svelte.ts > 287:17 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
-
-exports[`Types in ui-svelte.ts > 287:26 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
 
 exports[`Types in ui-svelte.ts > 293:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
@@ -3176,15 +3168,11 @@ exports[`Types in ui-svelte.ts > 306:4 1`] = `"This comparison appears to be uni
 
 exports[`Types in ui-svelte.ts > 308:29 1`] = `"Argument of type '(store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>) => void' is not assignable to parameter of type '((...params: [store: never, tableId: never, cellId: never, hasTableCell: never] | [store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>, tableId: "...'."`;
 
-exports[`Types in ui-svelte.ts > 308:38 1`] = `"Argument of type '(store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>) => void' is not assignable to parameter of type '((...params: [store: never, tableId: never, cellId: never, hasTableCell: never] | [store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>, tableId: "...'."`;
-
 exports[`Types in ui-svelte.ts > 310:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-svelte.ts > 315:4 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d" | null>'."`;
 
 exports[`Types in ui-svelte.ts > 318:17 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
-
-exports[`Types in ui-svelte.ts > 318:26 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
 
 exports[`Types in ui-svelte.ts > 323:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
@@ -3197,8 +3185,6 @@ exports[`Types in ui-svelte.ts > 331:22 1`] = `"Property 't2' does not exist on 
 exports[`Types in ui-svelte.ts > 332:4 1`] = `"This comparison appears to be unintentional because the types '"t0" | "t1"' and '"t2"' have no overlap."`;
 
 exports[`Types in ui-svelte.ts > 335:13 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
-
-exports[`Types in ui-svelte.ts > 335:22 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
 
 exports[`Types in ui-svelte.ts > 340:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
@@ -3213,8 +3199,6 @@ exports[`Types in ui-svelte.ts > 349:4 1`] = `"This comparison appears to be uni
 exports[`Types in ui-svelte.ts > 353:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-svelte.ts > 356:11 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
-
-exports[`Types in ui-svelte.ts > 356:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
 
 exports[`Types in ui-svelte.ts > 362:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
@@ -3248,8 +3232,6 @@ exports[`Types in ui-svelte.ts > 414:4 1`] = `"This comparison appears to be uni
 
 exports[`Types in ui-svelte.ts > 416:11 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
 
-exports[`Types in ui-svelte.ts > 416:20 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
-
 exports[`Types in ui-svelte.ts > 423:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-svelte.ts > 424:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
@@ -3270,8 +3252,6 @@ exports[`Types in ui-svelte.ts > 444:4 1`] = `"This comparison appears to be uni
 
 exports[`Types in ui-svelte.ts > 446:8 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
 
-exports[`Types in ui-svelte.ts > 446:17 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
-
 exports[`Types in ui-svelte.ts > 452:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-svelte.ts > 453:4 1`] = `"This comparison appears to be unintentional because the types '"t1"' and '"t0"' have no overlap."`;
@@ -3286,13 +3266,9 @@ exports[`Types in ui-svelte.ts > 464:4 1`] = `"This comparison appears to be uni
 
 exports[`Types in ui-svelte.ts > 466:24 1`] = `"Argument of type '(store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>) => void' is not assignable to parameter of type '((...params: [store: never, tableId: never, rowId: never, getIdChanges: never] | [store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>, tableId: "t...'."`;
 
-exports[`Types in ui-svelte.ts > 466:33 1`] = `"Argument of type '(store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>) => void' is not assignable to parameter of type '((...params: [store: never, tableId: never, rowId: never, getIdChanges: never] | [store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>, tableId: "t...'."`;
-
 exports[`Types in ui-svelte.ts > 468:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-svelte.ts > 471:12 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
-
-exports[`Types in ui-svelte.ts > 471:21 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
 
 exports[`Types in ui-svelte.ts > 479:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
@@ -3312,17 +3288,11 @@ exports[`Types in ui-svelte.ts > 500:4 1`] = `"This comparison appears to be uni
 
 exports[`Types in ui-svelte.ts > 502:30 1`] = `"Argument of type '(store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>) => void' is not assignable to parameter of type '((...params: [store: never, tableId: never, rowId: never, cellId: never, hasCell: boolean] | [store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>,...'."`;
 
-exports[`Types in ui-svelte.ts > 502:39 1`] = `"Argument of type '(store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>) => void' is not assignable to parameter of type '((...params: [store: never, tableId: never, rowId: never, cellId: never, hasCell: boolean] | [store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>,...'."`;
-
 exports[`Types in ui-svelte.ts > 504:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-svelte.ts > 507:24 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d" | null>'."`;
 
-exports[`Types in ui-svelte.ts > 507:33 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d" | null>'."`;
-
 exports[`Types in ui-svelte.ts > 508:12 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
-
-exports[`Types in ui-svelte.ts > 508:21 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
 
 exports[`Types in ui-svelte.ts > 521:6 1`] = `"Conversion of type 'number' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
@@ -3368,17 +3338,11 @@ exports[`Types in ui-svelte.ts > 580:4 1`] = `"This comparison appears to be uni
 
 exports[`Types in ui-svelte.ts > 582:27 1`] = `"Argument of type '(store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>) => void' is not assignable to parameter of type '((...params: [store: never, tableId: never, rowId: never, cellId: never, newCell: never, oldCell: never, getCellChange: never] | [store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readon...'."`;
 
-exports[`Types in ui-svelte.ts > 582:36 1`] = `"Argument of type '(store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>) => void' is not assignable to parameter of type '((...params: [store: never, tableId: never, rowId: never, cellId: never, newCell: never, oldCell: never, getCellChange: never] | [store: StoreAlias<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readon...'."`;
-
 exports[`Types in ui-svelte.ts > 584:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 
 exports[`Types in ui-svelte.ts > 587:21 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d" | null>'."`;
 
-exports[`Types in ui-svelte.ts > 587:30 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d" | null>'."`;
-
 exports[`Types in ui-svelte.ts > 588:9 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
-
-exports[`Types in ui-svelte.ts > 588:18 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1" | null>'."`;
 
 exports[`Types in ui-svelte.ts > 592:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
 
@@ -3399,8 +3363,6 @@ exports[`Types in ui-svelte.ts > 621:22 1`] = `"Property 'v2' does not exist on 
 exports[`Types in ui-svelte.ts > 622:4 1`] = `"This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"v2"' have no overlap."`;
 
 exports[`Types in ui-svelte.ts > 625:13 1`] = `"Argument of type '"v2"' is not assignable to parameter of type 'MaybeGetter<"v1" | "v1d" | null>'."`;
-
-exports[`Types in ui-svelte.ts > 625:22 1`] = `"Argument of type '"v2"' is not assignable to parameter of type 'MaybeGetter<"v1" | "v1d" | null>'."`;
 
 exports[`Types in ui-svelte.ts > 632:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, false>'."`;
 
@@ -3423,8 +3385,6 @@ exports[`Types in ui-svelte.ts > 657:22 1`] = `"Property 'v2' does not exist on 
 exports[`Types in ui-svelte.ts > 658:4 1`] = `"This comparison appears to be unintentional because the types '"v1" | "v1d"' and '"v2"' have no overlap."`;
 
 exports[`Types in ui-svelte.ts > 661:10 1`] = `"Argument of type '"v2"' is not assignable to parameter of type 'MaybeGetter<"v1" | "v1d" | null>'."`;
-
-exports[`Types in ui-svelte.ts > 661:19 1`] = `"Argument of type '"v2"' is not assignable to parameter of type 'MaybeGetter<"v1" | "v1d" | null>'."`;
 
 exports[`Types in ui-svelte.ts > 665:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, false>'."`;
 

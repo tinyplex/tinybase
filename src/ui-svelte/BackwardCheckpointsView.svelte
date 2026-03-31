@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {BackwardCheckpointsViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {createCheckpointIds} from './hooks.svelte.ts';
+  import {createCheckpointIds} from './functions.svelte.ts';
   import CheckpointView from './CheckpointView.svelte';
   import Wrap from './common/Wrap.svelte';
 
