@@ -22,105 +22,105 @@ import type {Synchronizer} from 'tinybase/synchronizers';
 import {createLocalSynchronizer} from 'tinybase/synchronizers/synchronizer-local';
 import {beforeEach, describe, expect, test, vi} from 'vitest';
 
-import ListenerHookCell from './components/ListenerHookCell.svelte';
-import ListenerHookCellIds from './components/ListenerHookCellIds.svelte';
-import ListenerHookCheckpoint from './components/ListenerHookCheckpoint.svelte';
-import ListenerHookCheckpointIds from './components/ListenerHookCheckpointIds.svelte';
-import ListenerHookDidFinishTransaction from './components/ListenerHookDidFinishTransaction.svelte';
-import ListenerHookHasCell from './components/ListenerHookHasCell.svelte';
-import ListenerHookHasRow from './components/ListenerHookHasRow.svelte';
-import ListenerHookHasTable from './components/ListenerHookHasTable.svelte';
-import ListenerHookHasTableCell from './components/ListenerHookHasTableCell.svelte';
-import ListenerHookHasTables from './components/ListenerHookHasTables.svelte';
-import ListenerHookHasValue from './components/ListenerHookHasValue.svelte';
-import ListenerHookHasValues from './components/ListenerHookHasValues.svelte';
-import ListenerHookLinkedRowIds from './components/ListenerHookLinkedRowIds.svelte';
-import ListenerHookLocalRowIds from './components/ListenerHookLocalRowIds.svelte';
-import ListenerHookMetric from './components/ListenerHookMetric.svelte';
-import ListenerHookParamValue from './components/ListenerHookParamValue.svelte';
-import ListenerHookParamValues from './components/ListenerHookParamValues.svelte';
-import ListenerHookPersisterStatus from './components/ListenerHookPersisterStatus.svelte';
-import ListenerHookRemoteRowId from './components/ListenerHookRemoteRowId.svelte';
-import ListenerHookResultCell from './components/ListenerHookResultCell.svelte';
-import ListenerHookResultCellIds from './components/ListenerHookResultCellIds.svelte';
-import ListenerHookResultRow from './components/ListenerHookResultRow.svelte';
-import ListenerHookResultRowCount from './components/ListenerHookResultRowCount.svelte';
-import ListenerHookResultRowIds from './components/ListenerHookResultRowIds.svelte';
-import ListenerHookResultSortedRowIds from './components/ListenerHookResultSortedRowIds.svelte';
-import ListenerHookResultTable from './components/ListenerHookResultTable.svelte';
-import ListenerHookResultTableCellIds from './components/ListenerHookResultTableCellIds.svelte';
-import ListenerHookRow from './components/ListenerHookRow.svelte';
-import ListenerHookRowCount from './components/ListenerHookRowCount.svelte';
-import ListenerHookRowIds from './components/ListenerHookRowIds.svelte';
-import ListenerHookSliceIds from './components/ListenerHookSliceIds.svelte';
-import ListenerHookSliceRowIds from './components/ListenerHookSliceRowIds.svelte';
-import ListenerHookSortedRowIds from './components/ListenerHookSortedRowIds.svelte';
-import ListenerHookStartTransaction from './components/ListenerHookStartTransaction.svelte';
-import ListenerHookSynchronizerStatus from './components/ListenerHookSynchronizerStatus.svelte';
-import ListenerHookTable from './components/ListenerHookTable.svelte';
-import ListenerHookTableCellIds from './components/ListenerHookTableCellIds.svelte';
-import ListenerHookTableIds from './components/ListenerHookTableIds.svelte';
-import ListenerHookTables from './components/ListenerHookTables.svelte';
-import ListenerHookValue from './components/ListenerHookValue.svelte';
-import ListenerHookValueIds from './components/ListenerHookValueIds.svelte';
-import ListenerHookValues from './components/ListenerHookValues.svelte';
-import ListenerHookWillFinishTransaction from './components/ListenerHookWillFinishTransaction.svelte';
+import ListenerFunctionCell from './components/ListenerFunctionCell.svelte';
+import ListenerFunctionCellIds from './components/ListenerFunctionCellIds.svelte';
+import ListenerFunctionCheckpoint from './components/ListenerFunctionCheckpoint.svelte';
+import ListenerFunctionCheckpointIds from './components/ListenerFunctionCheckpointIds.svelte';
+import ListenerFunctionDidFinishTransaction from './components/ListenerFunctionDidFinishTransaction.svelte';
+import ListenerFunctionHasCell from './components/ListenerFunctionHasCell.svelte';
+import ListenerFunctionHasRow from './components/ListenerFunctionHasRow.svelte';
+import ListenerFunctionHasTable from './components/ListenerFunctionHasTable.svelte';
+import ListenerFunctionHasTableCell from './components/ListenerFunctionHasTableCell.svelte';
+import ListenerFunctionHasTables from './components/ListenerFunctionHasTables.svelte';
+import ListenerFunctionHasValue from './components/ListenerFunctionHasValue.svelte';
+import ListenerFunctionHasValues from './components/ListenerFunctionHasValues.svelte';
+import ListenerFunctionLinkedRowIds from './components/ListenerFunctionLinkedRowIds.svelte';
+import ListenerFunctionLocalRowIds from './components/ListenerFunctionLocalRowIds.svelte';
+import ListenerFunctionMetric from './components/ListenerFunctionMetric.svelte';
+import ListenerFunctionParamValue from './components/ListenerFunctionParamValue.svelte';
+import ListenerFunctionParamValues from './components/ListenerFunctionParamValues.svelte';
+import ListenerFunctionPersisterStatus from './components/ListenerFunctionPersisterStatus.svelte';
+import ListenerFunctionRemoteRowId from './components/ListenerFunctionRemoteRowId.svelte';
+import ListenerFunctionResultCell from './components/ListenerFunctionResultCell.svelte';
+import ListenerFunctionResultCellIds from './components/ListenerFunctionResultCellIds.svelte';
+import ListenerFunctionResultRow from './components/ListenerFunctionResultRow.svelte';
+import ListenerFunctionResultRowCount from './components/ListenerFunctionResultRowCount.svelte';
+import ListenerFunctionResultRowIds from './components/ListenerFunctionResultRowIds.svelte';
+import ListenerFunctionResultSortedRowIds from './components/ListenerFunctionResultSortedRowIds.svelte';
+import ListenerFunctionResultTable from './components/ListenerFunctionResultTable.svelte';
+import ListenerFunctionResultTableCellIds from './components/ListenerFunctionResultTableCellIds.svelte';
+import ListenerFunctionRow from './components/ListenerFunctionRow.svelte';
+import ListenerFunctionRowCount from './components/ListenerFunctionRowCount.svelte';
+import ListenerFunctionRowIds from './components/ListenerFunctionRowIds.svelte';
+import ListenerFunctionSliceIds from './components/ListenerFunctionSliceIds.svelte';
+import ListenerFunctionSliceRowIds from './components/ListenerFunctionSliceRowIds.svelte';
+import ListenerFunctionSortedRowIds from './components/ListenerFunctionSortedRowIds.svelte';
+import ListenerFunctionStartTransaction from './components/ListenerFunctionStartTransaction.svelte';
+import ListenerFunctionSynchronizerStatus from './components/ListenerFunctionSynchronizerStatus.svelte';
+import ListenerFunctionTable from './components/ListenerFunctionTable.svelte';
+import ListenerFunctionTableCellIds from './components/ListenerFunctionTableCellIds.svelte';
+import ListenerFunctionTableIds from './components/ListenerFunctionTableIds.svelte';
+import ListenerFunctionTables from './components/ListenerFunctionTables.svelte';
+import ListenerFunctionValue from './components/ListenerFunctionValue.svelte';
+import ListenerFunctionValueIds from './components/ListenerFunctionValueIds.svelte';
+import ListenerFunctionValues from './components/ListenerFunctionValues.svelte';
+import ListenerFunctionWillFinishTransaction from './components/ListenerFunctionWillFinishTransaction.svelte';
 
-import HookCell from './components/HookCell.svelte';
-import HookCellIds from './components/HookCellIds.svelte';
-import HookCheckpointIds from './components/HookCheckpointIds.svelte';
-import HookCheckpointsIds from './components/HookCheckpointsIds.svelte';
-import HookGoBackwardCallback from './components/HookGoBackwardCallback.svelte';
-import HookGoForwardCallback from './components/HookGoForwardCallback.svelte';
-import HookHasCell from './components/HookHasCell.svelte';
-import HookHasRow from './components/HookHasRow.svelte';
-import HookHasTable from './components/HookHasTable.svelte';
-import HookHasTableCell from './components/HookHasTableCell.svelte';
-import HookHasTables from './components/HookHasTables.svelte';
-import HookHasValue from './components/HookHasValue.svelte';
-import HookHasValues from './components/HookHasValues.svelte';
-import HookIndexIds from './components/HookIndexIds.svelte';
-import HookIndexesIds from './components/HookIndexesIds.svelte';
-import HookLinkedRowIds from './components/HookLinkedRowIds.svelte';
-import HookLocalRowIds from './components/HookLocalRowIds.svelte';
-import HookMetric from './components/HookMetric.svelte';
-import HookMetricIds from './components/HookMetricIds.svelte';
-import HookMetricsIds from './components/HookMetricsIds.svelte';
-import HookPersisterIds from './components/HookPersisterIds.svelte';
-import HookPersisterStatus from './components/HookPersisterStatus.svelte';
-import HookQueriesIds from './components/HookQueriesIds.svelte';
-import HookQueryIds from './components/HookQueryIds.svelte';
-import HookRelationshipIds from './components/HookRelationshipIds.svelte';
-import HookRelationshipsIds from './components/HookRelationshipsIds.svelte';
-import HookRemoteRowId from './components/HookRemoteRowId.svelte';
-import HookResultCell from './components/HookResultCell.svelte';
-import HookResultCellIds from './components/HookResultCellIds.svelte';
-import HookResultRow from './components/HookResultRow.svelte';
-import HookResultRowCount from './components/HookResultRowCount.svelte';
-import HookResultRowIds from './components/HookResultRowIds.svelte';
-import HookResultSortedRowIds from './components/HookResultSortedRowIds.svelte';
-import HookResultSortedRowIdsNoDefaults from './components/HookResultSortedRowIdsNoDefaults.svelte';
-import HookResultTable from './components/HookResultTable.svelte';
-import HookResultTableCellIds from './components/HookResultTableCellIds.svelte';
-import HookRow from './components/HookRow.svelte';
-import HookRowCount from './components/HookRowCount.svelte';
-import HookRowIds from './components/HookRowIds.svelte';
-import HookSliceIds from './components/HookSliceIds.svelte';
-import HookSliceRowIds from './components/HookSliceRowIds.svelte';
-import HookSortedRowIds from './components/HookSortedRowIds.svelte';
-import HookSortedRowIdsNoDefaults from './components/HookSortedRowIdsNoDefaults.svelte';
-import HookSynchronizerIds from './components/HookSynchronizerIds.svelte';
-import HookSynchronizerStatus from './components/HookSynchronizerStatus.svelte';
-import HookTable from './components/HookTable.svelte';
-import HookTableCellIds from './components/HookTableCellIds.svelte';
-import HookTableIds from './components/HookTableIds.svelte';
-import HookTables from './components/HookTables.svelte';
-import HookValue from './components/HookValue.svelte';
-import HookValueIds from './components/HookValueIds.svelte';
-import HookValues from './components/HookValues.svelte';
-import HookWindowlessCoverage from './components/HookWindowlessCoverage.svelte';
-import HookWritableCell from './components/HookWritableCell.svelte';
-import HookWritableValue from './components/HookWritableValue.svelte';
+import FunctionCell from './components/FunctionCell.svelte';
+import FunctionCellIds from './components/FunctionCellIds.svelte';
+import FunctionCheckpointIds from './components/FunctionCheckpointIds.svelte';
+import FunctionCheckpointsIds from './components/FunctionCheckpointsIds.svelte';
+import FunctionGoBackwardCallback from './components/FunctionGoBackwardCallback.svelte';
+import FunctionGoForwardCallback from './components/FunctionGoForwardCallback.svelte';
+import FunctionHasCell from './components/FunctionHasCell.svelte';
+import FunctionHasRow from './components/FunctionHasRow.svelte';
+import FunctionHasTable from './components/FunctionHasTable.svelte';
+import FunctionHasTableCell from './components/FunctionHasTableCell.svelte';
+import FunctionHasTables from './components/FunctionHasTables.svelte';
+import FunctionHasValue from './components/FunctionHasValue.svelte';
+import FunctionHasValues from './components/FunctionHasValues.svelte';
+import FunctionIndexIds from './components/FunctionIndexIds.svelte';
+import FunctionIndexesIds from './components/FunctionIndexesIds.svelte';
+import FunctionLinkedRowIds from './components/FunctionLinkedRowIds.svelte';
+import FunctionLocalRowIds from './components/FunctionLocalRowIds.svelte';
+import FunctionMetric from './components/FunctionMetric.svelte';
+import FunctionMetricIds from './components/FunctionMetricIds.svelte';
+import FunctionMetricsIds from './components/FunctionMetricsIds.svelte';
+import FunctionPersisterIds from './components/FunctionPersisterIds.svelte';
+import FunctionPersisterStatus from './components/FunctionPersisterStatus.svelte';
+import FunctionQueriesIds from './components/FunctionQueriesIds.svelte';
+import FunctionQueryIds from './components/FunctionQueryIds.svelte';
+import FunctionRelationshipIds from './components/FunctionRelationshipIds.svelte';
+import FunctionRelationshipsIds from './components/FunctionRelationshipsIds.svelte';
+import FunctionRemoteRowId from './components/FunctionRemoteRowId.svelte';
+import FunctionResultCell from './components/FunctionResultCell.svelte';
+import FunctionResultCellIds from './components/FunctionResultCellIds.svelte';
+import FunctionResultRow from './components/FunctionResultRow.svelte';
+import FunctionResultRowCount from './components/FunctionResultRowCount.svelte';
+import FunctionResultRowIds from './components/FunctionResultRowIds.svelte';
+import FunctionResultSortedRowIds from './components/FunctionResultSortedRowIds.svelte';
+import FunctionResultSortedRowIdsNoDefaults from './components/FunctionResultSortedRowIdsNoDefaults.svelte';
+import FunctionResultTable from './components/FunctionResultTable.svelte';
+import FunctionResultTableCellIds from './components/FunctionResultTableCellIds.svelte';
+import FunctionRow from './components/FunctionRow.svelte';
+import FunctionRowCount from './components/FunctionRowCount.svelte';
+import FunctionRowIds from './components/FunctionRowIds.svelte';
+import FunctionSliceIds from './components/FunctionSliceIds.svelte';
+import FunctionSliceRowIds from './components/FunctionSliceRowIds.svelte';
+import FunctionSortedRowIds from './components/FunctionSortedRowIds.svelte';
+import FunctionSortedRowIdsNoDefaults from './components/FunctionSortedRowIdsNoDefaults.svelte';
+import FunctionSynchronizerIds from './components/FunctionSynchronizerIds.svelte';
+import FunctionSynchronizerStatus from './components/FunctionSynchronizerStatus.svelte';
+import FunctionTable from './components/FunctionTable.svelte';
+import FunctionTableCellIds from './components/FunctionTableCellIds.svelte';
+import FunctionTableIds from './components/FunctionTableIds.svelte';
+import FunctionTables from './components/FunctionTables.svelte';
+import FunctionValue from './components/FunctionValue.svelte';
+import FunctionValueIds from './components/FunctionValueIds.svelte';
+import FunctionValues from './components/FunctionValues.svelte';
+import FunctionWindowlessCoverage from './components/FunctionWindowlessCoverage.svelte';
+import FunctionWritableCell from './components/FunctionWritableCell.svelte';
+import FunctionWritableValue from './components/FunctionWritableValue.svelte';
 
 let store: Store;
 
@@ -133,7 +133,7 @@ beforeEach(() => {
 test('windowless ui-svelte functions skip effects', () => {
   vi.stubGlobal('window', undefined);
   try {
-    const {container, unmount} = render(HookWindowlessCoverage);
+    const {container, unmount} = render(FunctionWindowlessCoverage);
     expect(container.textContent).toEqual(
       JSON.stringify([['t1'], 1, 1, [], [], [], [], [], [], [], []]),
     );
@@ -145,7 +145,7 @@ test('windowless ui-svelte functions skip effects', () => {
 
 describe('Read Functions', () => {
   test('createHasTables', async () => {
-    const {container, unmount} = render(HookHasTables, {props: {store}});
+    const {container, unmount} = render(FunctionHasTables, {props: {store}});
     expect(container.textContent).toEqual('true');
 
     await act(() => store.delTables());
@@ -155,7 +155,7 @@ describe('Read Functions', () => {
   });
 
   test('createTables', async () => {
-    const {container, unmount} = render(HookTables, {props: {store}});
+    const {container, unmount} = render(FunctionTables, {props: {store}});
     expect(container.textContent).toEqual(JSON.stringify({t1: {r1: {c1: 1}}}));
 
     await act(() =>
@@ -170,7 +170,7 @@ describe('Read Functions', () => {
   });
 
   test('createTableIds', async () => {
-    const {container, unmount} = render(HookTableIds, {props: {store}});
+    const {container, unmount} = render(FunctionTableIds, {props: {store}});
     expect(container.textContent).toEqual(JSON.stringify(['t1']));
 
     await act(() =>
@@ -187,7 +187,7 @@ describe('Read Functions', () => {
   });
 
   test('createHasTable', async () => {
-    const {container, rerender, unmount} = render(HookHasTable, {
+    const {container, rerender, unmount} = render(FunctionHasTable, {
       props: {store, tableId: 't0'},
     });
     expect(container.textContent).toEqual('false');
@@ -212,7 +212,7 @@ describe('Read Functions', () => {
   });
 
   test('createTable', async () => {
-    const {container, rerender, unmount} = render(HookTable, {
+    const {container, rerender, unmount} = render(FunctionTable, {
       props: {store, tableId: 't0'},
     });
     expect(container.textContent).toEqual(JSON.stringify({}));
@@ -237,7 +237,7 @@ describe('Read Functions', () => {
   });
 
   test('createTableCellIds', async () => {
-    const {container, rerender, unmount} = render(HookTableCellIds, {
+    const {container, rerender, unmount} = render(FunctionTableCellIds, {
       props: {store, tableId: 't0'},
     });
     expect(container.textContent).toEqual(JSON.stringify([]));
@@ -262,7 +262,7 @@ describe('Read Functions', () => {
   });
 
   test('createHasTableCell', async () => {
-    const {container, rerender, unmount} = render(HookHasTableCell, {
+    const {container, rerender, unmount} = render(FunctionHasTableCell, {
       props: {store, tableId: 't0', cellId: 'c0'},
     });
     expect(container.textContent).toEqual('false');
@@ -287,7 +287,7 @@ describe('Read Functions', () => {
   });
 
   test('createRowCount', async () => {
-    const {container, rerender, unmount} = render(HookRowCount, {
+    const {container, rerender, unmount} = render(FunctionRowCount, {
       props: {store, tableId: 't0'},
     });
     expect(container.textContent).toEqual('0');
@@ -312,7 +312,7 @@ describe('Read Functions', () => {
   });
 
   test('createRowIds', async () => {
-    const {container, rerender, unmount} = render(HookRowIds, {
+    const {container, rerender, unmount} = render(FunctionRowIds, {
       props: {store, tableId: 't0'},
     });
     expect(container.textContent).toEqual(JSON.stringify([]));
@@ -337,7 +337,7 @@ describe('Read Functions', () => {
   });
 
   test('createSortedRowIds', async () => {
-    const {container, rerender, unmount} = render(HookSortedRowIds, {
+    const {container, rerender, unmount} = render(FunctionSortedRowIds, {
       props: {
         store,
         tableId: 't0',
@@ -378,7 +378,7 @@ describe('Read Functions', () => {
   });
 
   test('createSortedRowIds, no-default descending and offset', async () => {
-    const {container, unmount} = render(HookSortedRowIdsNoDefaults, {
+    const {container, unmount} = render(FunctionSortedRowIdsNoDefaults, {
       props: {store, tableId: 't1', cellId: 'c1'},
     });
     expect(container.textContent).toEqual(JSON.stringify(['r1']));
@@ -386,7 +386,7 @@ describe('Read Functions', () => {
   });
 
   test('createHasRow', async () => {
-    const {container, rerender, unmount} = render(HookHasRow, {
+    const {container, rerender, unmount} = render(FunctionHasRow, {
       props: {store, tableId: 't0', rowId: 'r0'},
     });
     expect(container.textContent).toEqual('false');
@@ -411,7 +411,7 @@ describe('Read Functions', () => {
   });
 
   test('createRow', async () => {
-    const {container, rerender, unmount} = render(HookRow, {
+    const {container, rerender, unmount} = render(FunctionRow, {
       props: {store, tableId: 't0', rowId: 'r0'},
     });
     expect(container.textContent).toEqual(JSON.stringify({}));
@@ -436,7 +436,7 @@ describe('Read Functions', () => {
   });
 
   test('createCellIds', async () => {
-    const {container, rerender, unmount} = render(HookCellIds, {
+    const {container, rerender, unmount} = render(FunctionCellIds, {
       props: {store, tableId: 't0', rowId: 'r0'},
     });
     expect(container.textContent).toEqual(JSON.stringify([]));
@@ -461,7 +461,7 @@ describe('Read Functions', () => {
   });
 
   test('createHasCell', async () => {
-    const {container, rerender, unmount} = render(HookHasCell, {
+    const {container, rerender, unmount} = render(FunctionHasCell, {
       props: {store, tableId: 't0', rowId: 'r0', cellId: 'c0'},
     });
     expect(container.textContent).toEqual('false');
@@ -486,7 +486,7 @@ describe('Read Functions', () => {
   });
 
   test('createCell', async () => {
-    const {container, rerender, unmount} = render(HookCell, {
+    const {container, rerender, unmount} = render(FunctionCell, {
       props: {store, tableId: 't0', rowId: 'r0', cellId: 'c0'},
     });
     expect(container.textContent).toEqual('');
@@ -512,7 +512,7 @@ describe('Read Functions', () => {
 
   test('createCell can set values', async () => {
     store.setCell('t1', 'r1', 'c1', 0);
-    const {container, unmount} = render(HookWritableCell, {
+    const {container, unmount} = render(FunctionWritableCell, {
       props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', newValue: 1},
     });
     expect(container.textContent).toContain('0');
@@ -527,7 +527,7 @@ describe('Read Functions', () => {
   });
 
   test('createHasValues', async () => {
-    const {container, unmount} = render(HookHasValues, {props: {store}});
+    const {container, unmount} = render(FunctionHasValues, {props: {store}});
     expect(container.textContent).toEqual('true');
 
     await act(() => store.delValues());
@@ -537,7 +537,7 @@ describe('Read Functions', () => {
   });
 
   test('createValues', async () => {
-    const {container, unmount} = render(HookValues, {props: {store}});
+    const {container, unmount} = render(FunctionValues, {props: {store}});
     expect(container.textContent).toEqual(JSON.stringify({v1: 1}));
 
     await act(() => store.setValues({v1: 2}).setValues({v1: 2}));
@@ -550,7 +550,7 @@ describe('Read Functions', () => {
   });
 
   test('createValueIds', async () => {
-    const {container, unmount} = render(HookValueIds, {props: {store}});
+    const {container, unmount} = render(FunctionValueIds, {props: {store}});
     expect(container.textContent).toEqual(JSON.stringify(['v1']));
 
     await act(() => store.setValues({v1: 1, v2: 2}).setValues({v1: 1, v2: 2}));
@@ -563,7 +563,7 @@ describe('Read Functions', () => {
   });
 
   test('createHasValue', async () => {
-    const {container, rerender, unmount} = render(HookHasValue, {
+    const {container, rerender, unmount} = render(FunctionHasValue, {
       props: {store, valueId: 'v0'},
     });
     expect(container.textContent).toEqual('false');
@@ -584,7 +584,7 @@ describe('Read Functions', () => {
   });
 
   test('createValue', async () => {
-    const {container, rerender, unmount} = render(HookValue, {
+    const {container, rerender, unmount} = render(FunctionValue, {
       props: {store, valueId: 'v0'},
     });
     expect(container.textContent).toEqual('');
@@ -606,7 +606,7 @@ describe('Read Functions', () => {
 
   test('createValue can set values', async () => {
     store.setValues({v1: false});
-    const {container, unmount} = render(HookWritableValue, {
+    const {container, unmount} = render(FunctionWritableValue, {
       props: {store, valueId: 'v1', newValue: true},
     });
     expect(container.textContent).toContain('false');
@@ -621,50 +621,50 @@ describe('Read Functions', () => {
   });
 
   test('createMetricsIds', async () => {
-    const {container, unmount} = render(HookMetricsIds);
+    const {container, unmount} = render(FunctionMetricsIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
   test('createIndexesIds', async () => {
-    const {container, unmount} = render(HookIndexesIds);
+    const {container, unmount} = render(FunctionIndexesIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
   test('createQueriesIds', async () => {
-    const {container, unmount} = render(HookQueriesIds);
+    const {container, unmount} = render(FunctionQueriesIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
   test('createRelationshipsIds', async () => {
-    const {container, unmount} = render(HookRelationshipsIds);
+    const {container, unmount} = render(FunctionRelationshipsIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
   test('createCheckpointsIds', async () => {
-    const {container, unmount} = render(HookCheckpointsIds);
+    const {container, unmount} = render(FunctionCheckpointsIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
   test('createPersisterIds', async () => {
-    const {container, unmount} = render(HookPersisterIds);
+    const {container, unmount} = render(FunctionPersisterIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
   test('createSynchronizerIds', async () => {
-    const {container, unmount} = render(HookSynchronizerIds);
+    const {container, unmount} = render(FunctionSynchronizerIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
   test('createMetricIds', async () => {
     const metrics: Metrics = createMetrics(store);
-    const {container, unmount} = render(HookMetricIds, {props: {metrics}});
+    const {container, unmount} = render(FunctionMetricIds, {props: {metrics}});
     expect(container.textContent).toEqual('[]');
 
     await act(() =>
@@ -683,7 +683,7 @@ describe('Read Functions', () => {
       .setMetricDefinition('m1', 't1')
       .setMetricDefinition('m2', 't1', 'max', 'c1')
       .setMetricDefinition('m3', 't3');
-    const {container, rerender, unmount} = render(HookMetric, {
+    const {container, rerender, unmount} = render(FunctionMetric, {
       props: {metrics, metricId: 'm0'},
     });
     expect(container.textContent).toEqual('');
@@ -710,7 +710,7 @@ describe('Read Functions', () => {
 
   test('createIndexIds', async () => {
     const indexes: Indexes = createIndexes(store);
-    const {container, unmount} = render(HookIndexIds, {props: {indexes}});
+    const {container, unmount} = render(FunctionIndexIds, {props: {indexes}});
     expect(container.textContent).toEqual('[]');
 
     await act(() =>
@@ -729,7 +729,7 @@ describe('Read Functions', () => {
       .setIndexDefinition('i1', 't1', 'c1')
       .setIndexDefinition('i2', 't1', 'c2')
       .setIndexDefinition('i3', 't3', 'c3');
-    const {container, rerender, unmount} = render(HookSliceIds, {
+    const {container, rerender, unmount} = render(FunctionSliceIds, {
       props: {indexes, indexId: 'i0'},
     });
     expect(container.textContent).toEqual(JSON.stringify([]));
@@ -761,7 +761,7 @@ describe('Read Functions', () => {
     const indexes: Indexes = createIndexes(store)
       .setIndexDefinition('i1', 't1', 'c1')
       .setIndexDefinition('i2', 't2', 'c2');
-    const {container, rerender, unmount} = render(HookSliceRowIds, {
+    const {container, rerender, unmount} = render(FunctionSliceRowIds, {
       props: {indexes, indexId: 'i0', sliceId: '0'},
     });
     expect(container.textContent).toEqual(JSON.stringify([]));
@@ -791,7 +791,7 @@ describe('Read Functions', () => {
 
   test('createRelationshipIds', async () => {
     const relationships: Relationships = createRelationships(store);
-    const {container, unmount} = render(HookRelationshipIds, {
+    const {container, unmount} = render(FunctionRelationshipIds, {
       props: {relationships},
     });
     expect(container.textContent).toEqual('[]');
@@ -813,7 +813,7 @@ describe('Read Functions', () => {
     const relationships: Relationships = createRelationships(store)
       .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
       .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
-    const {container, rerender, unmount} = render(HookRemoteRowId, {
+    const {container, rerender, unmount} = render(FunctionRemoteRowId, {
       props: {relationships, relationshipId: 'r0', localRowId: 'r0'},
     });
     expect(container.textContent).toEqual('');
@@ -845,7 +845,7 @@ describe('Read Functions', () => {
     const relationships: Relationships = createRelationships(store)
       .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
       .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
-    const {container, rerender, unmount} = render(HookLocalRowIds, {
+    const {container, rerender, unmount} = render(FunctionLocalRowIds, {
       props: {relationships, relationshipId: 'r0', remoteRowId: 'R0'},
     });
     expect(container.textContent).toEqual(JSON.stringify([]));
@@ -877,7 +877,7 @@ describe('Read Functions', () => {
     const relationships: Relationships = createRelationships(store)
       .setRelationshipDefinition('r1', 't1', 't1', 'c1')
       .setRelationshipDefinition('r2', 't2', 't2', 'c2');
-    const {container, rerender, unmount} = render(HookLinkedRowIds, {
+    const {container, rerender, unmount} = render(FunctionLinkedRowIds, {
       props: {relationships, relationshipId: 'r0', firstRowId: 'r0'},
     });
     expect(container.textContent).toEqual(JSON.stringify(['r0']));
@@ -908,7 +908,7 @@ describe('Read Functions', () => {
 
   test('createQueryIds', async () => {
     const queries: Queries = createQueries(store);
-    const {container, unmount} = render(HookQueryIds, {props: {queries}});
+    const {container, unmount} = render(FunctionQueryIds, {props: {queries}});
     expect(container.textContent).toEqual('[]');
 
     await act(() =>
@@ -931,7 +931,7 @@ describe('Read Functions', () => {
         select('c1');
         where('c1', 3);
       });
-    const {container, rerender, unmount} = render(HookResultTable, {
+    const {container, rerender, unmount} = render(FunctionResultTable, {
       props: {queries, queryId: 'q0'},
     });
     expect(container.textContent).toEqual(JSON.stringify({}));
@@ -965,7 +965,7 @@ describe('Read Functions', () => {
         select('c2');
         where('c1', 3);
       });
-    const {container, rerender, unmount} = render(HookResultRowIds, {
+    const {container, rerender, unmount} = render(FunctionResultRowIds, {
       props: {queries, queryId: 'q0'},
     });
     expect(container.textContent).toEqual(JSON.stringify([]));
@@ -1002,7 +1002,7 @@ describe('Read Functions', () => {
         select('c2');
       },
     );
-    const {container, rerender, unmount} = render(HookResultTableCellIds, {
+    const {container, rerender, unmount} = render(FunctionResultTableCellIds, {
       props: {queries, queryId: 'q0'},
     });
     expect(container.textContent).toEqual(JSON.stringify([]));
@@ -1026,7 +1026,7 @@ describe('Read Functions', () => {
       't1',
       ({select}) => select('c1'),
     );
-    const {container, rerender, unmount} = render(HookResultRowCount, {
+    const {container, rerender, unmount} = render(FunctionResultRowCount, {
       props: {queries, queryId: 'q0'},
     });
     expect(container.textContent).toEqual('0');
@@ -1052,7 +1052,7 @@ describe('Read Functions', () => {
         select('c2');
         where('c1', 3);
       });
-    const {container, rerender, unmount} = render(HookResultSortedRowIds, {
+    const {container, rerender, unmount} = render(FunctionResultSortedRowIds, {
       props: {
         queries,
         queryId: 'q0',
@@ -1114,7 +1114,7 @@ describe('Read Functions', () => {
       't1',
       ({select}) => select('c1'),
     );
-    const {container, unmount} = render(HookResultSortedRowIdsNoDefaults, {
+    const {container, unmount} = render(FunctionResultSortedRowIdsNoDefaults, {
       props: {queries, queryId: 'q1', cellId: 'c1'},
     });
     expect(container.textContent).toEqual(JSON.stringify(['r1']));
@@ -1128,7 +1128,7 @@ describe('Read Functions', () => {
         select('c1');
         where('c1', 3);
       });
-    const {container, rerender, unmount} = render(HookResultRow, {
+    const {container, rerender, unmount} = render(FunctionResultRow, {
       props: {queries, queryId: 'q0', rowId: 'r0'},
     });
     expect(container.textContent).toEqual(JSON.stringify({}));
@@ -1161,7 +1161,7 @@ describe('Read Functions', () => {
         select('c3');
         where('c1', 3);
       });
-    const {container, rerender, unmount} = render(HookResultCellIds, {
+    const {container, rerender, unmount} = render(FunctionResultCellIds, {
       props: {queries, queryId: 'q0', rowId: 'r0'},
     });
     expect(container.textContent).toEqual(JSON.stringify([]));
@@ -1193,7 +1193,7 @@ describe('Read Functions', () => {
         select('c2');
         where('c1', 3);
       });
-    const {container, rerender, unmount} = render(HookResultCell, {
+    const {container, rerender, unmount} = render(FunctionResultCell, {
       props: {queries, queryId: 'q0', rowId: 'r0', cellId: 'c0'},
     });
     expect(container.textContent).toEqual('');
@@ -1219,7 +1219,7 @@ describe('Read Functions', () => {
 
   test('createCheckpointIds', async () => {
     const checkpoints: Checkpoints = createCheckpoints(store);
-    const {container, unmount} = render(HookCheckpointIds, {
+    const {container, unmount} = render(FunctionCheckpointIds, {
       props: {checkpoints},
     });
     expect(container.textContent).toEqual(JSON.stringify([[], '0', []]));
@@ -1237,7 +1237,7 @@ describe('Read Functions', () => {
 
   test('createPersisterStatus', async () => {
     const persister: AnyPersister = createSessionPersister(store, 'test-key');
-    const {container, unmount} = render(HookPersisterStatus, {
+    const {container, unmount} = render(FunctionPersisterStatus, {
       props: {persister},
     });
     expect(container.textContent).toEqual('0');
@@ -1248,7 +1248,7 @@ describe('Read Functions', () => {
   test('createSynchronizerStatus', async () => {
     const store2 = createMergeableStore();
     const synchronizer: Synchronizer = createLocalSynchronizer(store2);
-    const {container, unmount} = render(HookSynchronizerStatus, {
+    const {container, unmount} = render(FunctionSynchronizerStatus, {
       props: {synchronizer},
     });
     expect(container.textContent).toEqual('0');
@@ -1270,7 +1270,7 @@ describe('Checkpoint Callbacks', () => {
   });
 
   test('createGoBackwardCallback', async () => {
-    const {getByRole, unmount} = render(HookGoBackwardCallback, {
+    const {getByRole, unmount} = render(FunctionGoBackwardCallback, {
       props: {checkpoints},
     });
 
@@ -1284,7 +1284,7 @@ describe('Checkpoint Callbacks', () => {
   });
 
   test('createGoForwardCallback', async () => {
-    const {getByRole, unmount} = render(HookGoForwardCallback, {
+    const {getByRole, unmount} = render(FunctionGoForwardCallback, {
       props: {checkpoints},
     });
 
@@ -1305,7 +1305,9 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasTables).toEqual(0);
 
-    const {unmount} = render(ListenerHookHasTables, {props: {store, listener}});
+    const {unmount} = render(ListenerFunctionHasTables, {
+      props: {store, listener},
+    });
     expect(store.getListenerStats().hasTables).toEqual(1);
 
     await act(() => store.delTables());
@@ -1319,7 +1321,9 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().tables).toEqual(0);
 
-    const {unmount} = render(ListenerHookTables, {props: {store, listener}});
+    const {unmount} = render(ListenerFunctionTables, {
+      props: {store, listener},
+    });
     expect(store.getListenerStats().tables).toEqual(1);
 
     await act(() => store.setCell('t1', 'r1', 'c1', 2));
@@ -1333,7 +1337,9 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().tableIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookTableIds, {props: {store, listener}});
+    const {unmount} = render(ListenerFunctionTableIds, {
+      props: {store, listener},
+    });
     expect(store.getListenerStats().tableIds).toEqual(1);
 
     await act(() => store.setCell('t2', 'r1', 'c1', 0));
@@ -1347,7 +1353,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasTable).toEqual(0);
 
-    const {unmount} = render(ListenerHookHasTable, {
+    const {unmount} = render(ListenerFunctionHasTable, {
       props: {store, tableId: 't1', listener},
     });
     expect(store.getListenerStats().hasTable).toEqual(1);
@@ -1363,7 +1369,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().table).toEqual(0);
 
-    const {unmount} = render(ListenerHookTable, {
+    const {unmount} = render(ListenerFunctionTable, {
       props: {store, tableId: 't1', listener},
     });
     expect(store.getListenerStats().table).toEqual(1);
@@ -1379,7 +1385,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().tableCellIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookTableCellIds, {
+    const {unmount} = render(ListenerFunctionTableCellIds, {
       props: {store, tableId: 't1', listener},
     });
     expect(store.getListenerStats().tableCellIds).toEqual(1);
@@ -1395,7 +1401,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasTableCell).toEqual(0);
 
-    const {unmount} = render(ListenerHookHasTableCell, {
+    const {unmount} = render(ListenerFunctionHasTableCell, {
       props: {store, tableId: 't1', cellId: 'c1', listener},
     });
     expect(store.getListenerStats().hasTableCell).toEqual(1);
@@ -1411,7 +1417,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().rowCount).toEqual(0);
 
-    const {unmount} = render(ListenerHookRowCount, {
+    const {unmount} = render(ListenerFunctionRowCount, {
       props: {store, tableId: 't1', listener},
     });
     expect(store.getListenerStats().rowCount).toEqual(1);
@@ -1427,7 +1433,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().rowIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookRowIds, {
+    const {unmount} = render(ListenerFunctionRowIds, {
       props: {store, tableId: 't1', listener},
     });
     expect(store.getListenerStats().rowIds).toEqual(1);
@@ -1443,7 +1449,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().sortedRowIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookSortedRowIds, {
+    const {unmount} = render(ListenerFunctionSortedRowIds, {
       props: {store, tableId: 't1', cellId: 'c1', listener},
     });
     expect(store.getListenerStats().sortedRowIds).toEqual(1);
@@ -1459,7 +1465,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasRow).toEqual(0);
 
-    const {unmount} = render(ListenerHookHasRow, {
+    const {unmount} = render(ListenerFunctionHasRow, {
       props: {store, tableId: 't1', rowId: 'r1', listener},
     });
     expect(store.getListenerStats().hasRow).toEqual(1);
@@ -1475,7 +1481,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().row).toEqual(0);
 
-    const {unmount} = render(ListenerHookRow, {
+    const {unmount} = render(ListenerFunctionRow, {
       props: {store, tableId: 't1', rowId: 'r1', listener},
     });
     expect(store.getListenerStats().row).toEqual(1);
@@ -1491,7 +1497,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().cellIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookCellIds, {
+    const {unmount} = render(ListenerFunctionCellIds, {
       props: {store, tableId: 't1', rowId: 'r1', listener},
     });
     expect(store.getListenerStats().cellIds).toEqual(1);
@@ -1507,7 +1513,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasCell).toEqual(0);
 
-    const {unmount} = render(ListenerHookHasCell, {
+    const {unmount} = render(ListenerFunctionHasCell, {
       props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', listener},
     });
     expect(store.getListenerStats().hasCell).toEqual(1);
@@ -1523,7 +1529,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().cell).toEqual(0);
 
-    const {unmount} = render(ListenerHookCell, {
+    const {unmount} = render(ListenerFunctionCell, {
       props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', listener},
     });
     expect(store.getListenerStats().cell).toEqual(1);
@@ -1539,7 +1545,9 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasValues).toEqual(0);
 
-    const {unmount} = render(ListenerHookHasValues, {props: {store, listener}});
+    const {unmount} = render(ListenerFunctionHasValues, {
+      props: {store, listener},
+    });
     expect(store.getListenerStats().hasValues).toEqual(1);
 
     await act(() => store.delValues());
@@ -1553,7 +1561,9 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().values).toEqual(0);
 
-    const {unmount} = render(ListenerHookValues, {props: {store, listener}});
+    const {unmount} = render(ListenerFunctionValues, {
+      props: {store, listener},
+    });
     expect(store.getListenerStats().values).toEqual(1);
 
     await act(() => store.setValue('v1', 2));
@@ -1567,7 +1577,9 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().valueIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookValueIds, {props: {store, listener}});
+    const {unmount} = render(ListenerFunctionValueIds, {
+      props: {store, listener},
+    });
     expect(store.getListenerStats().valueIds).toEqual(1);
 
     await act(() => store.setValue('v2', 0));
@@ -1581,7 +1593,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasValue).toEqual(0);
 
-    const {unmount} = render(ListenerHookHasValue, {
+    const {unmount} = render(ListenerFunctionHasValue, {
       props: {store, valueId: 'v1', listener},
     });
     expect(store.getListenerStats().hasValue).toEqual(1);
@@ -1597,7 +1609,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().value).toEqual(0);
 
-    const {unmount} = render(ListenerHookValue, {
+    const {unmount} = render(ListenerFunctionValue, {
       props: {store, valueId: 'v1', listener},
     });
     expect(store.getListenerStats().value).toEqual(1);
@@ -1613,7 +1625,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().transaction).toEqual(0);
 
-    const {unmount} = render(ListenerHookStartTransaction, {
+    const {unmount} = render(ListenerFunctionStartTransaction, {
       props: {store, listener},
     });
     expect(store.getListenerStats().transaction).toEqual(1);
@@ -1629,7 +1641,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().transaction).toEqual(0);
 
-    const {unmount} = render(ListenerHookWillFinishTransaction, {
+    const {unmount} = render(ListenerFunctionWillFinishTransaction, {
       props: {store, listener},
     });
     expect(store.getListenerStats().transaction).toEqual(1);
@@ -1645,7 +1657,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(store.getListenerStats().transaction).toEqual(0);
 
-    const {unmount} = render(ListenerHookDidFinishTransaction, {
+    const {unmount} = render(ListenerFunctionDidFinishTransaction, {
       props: {store, listener},
     });
     expect(store.getListenerStats().transaction).toEqual(1);
@@ -1667,7 +1679,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(metrics.getListenerStats().metric).toEqual(0);
 
-    const {unmount} = render(ListenerHookMetric, {
+    const {unmount} = render(ListenerFunctionMetric, {
       props: {metrics, metricId: 'm1', listener},
     });
     expect(metrics.getListenerStats().metric).toEqual(1);
@@ -1688,7 +1700,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(indexes.getListenerStats().sliceIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookSliceIds, {
+    const {unmount} = render(ListenerFunctionSliceIds, {
       props: {indexes, indexId: 'i1', listener},
     });
     expect(indexes.getListenerStats().sliceIds).toEqual(1);
@@ -1709,7 +1721,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(indexes.getListenerStats().sliceRowIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookSliceRowIds, {
+    const {unmount} = render(ListenerFunctionSliceRowIds, {
       props: {indexes, indexId: 'i1', sliceId: 'a', listener},
     });
     expect(indexes.getListenerStats().sliceRowIds).toEqual(1);
@@ -1728,7 +1740,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(relationships.getListenerStats().remoteRowId).toEqual(0);
 
-    const {unmount} = render(ListenerHookRemoteRowId, {
+    const {unmount} = render(ListenerFunctionRemoteRowId, {
       props: {relationships, relationshipId: 'r1', localRowId: 'r1', listener},
     });
     expect(relationships.getListenerStats().remoteRowId).toEqual(1);
@@ -1747,7 +1759,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(relationships.getListenerStats().localRowIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookLocalRowIds, {
+    const {unmount} = render(ListenerFunctionLocalRowIds, {
       props: {
         relationships,
         relationshipId: 'r1',
@@ -1771,7 +1783,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(relationships.getListenerStats().linkedRowIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookLinkedRowIds, {
+    const {unmount} = render(ListenerFunctionLinkedRowIds, {
       props: {
         relationships,
         relationshipId: 'r1',
@@ -1797,7 +1809,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(queries.getListenerStats().table).toEqual(0);
 
-    const {unmount} = render(ListenerHookResultTable, {
+    const {unmount} = render(ListenerFunctionResultTable, {
       props: {queries, queryId: 'q1', listener},
     });
     expect(queries.getListenerStats().table).toEqual(1);
@@ -1821,7 +1833,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(queries.getListenerStats().tableCellIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookResultTableCellIds, {
+    const {unmount} = render(ListenerFunctionResultTableCellIds, {
       props: {queries, queryId: 'q1', listener},
     });
     expect(queries.getListenerStats().tableCellIds).toEqual(1);
@@ -1842,7 +1854,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(queries.getListenerStats().rowCount).toEqual(0);
 
-    const {unmount} = render(ListenerHookResultRowCount, {
+    const {unmount} = render(ListenerFunctionResultRowCount, {
       props: {queries, queryId: 'q1', listener},
     });
     expect(queries.getListenerStats().rowCount).toEqual(1);
@@ -1863,7 +1875,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(queries.getListenerStats().rowIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookResultRowIds, {
+    const {unmount} = render(ListenerFunctionResultRowIds, {
       props: {queries, queryId: 'q1', listener},
     });
     expect(queries.getListenerStats().rowIds).toEqual(1);
@@ -1884,7 +1896,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(queries.getListenerStats().sortedRowIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookResultSortedRowIds, {
+    const {unmount} = render(ListenerFunctionResultSortedRowIds, {
       props: {queries, queryId: 'q1', cellId: 'c1', listener},
     });
     expect(queries.getListenerStats().sortedRowIds).toEqual(1);
@@ -1905,7 +1917,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(queries.getListenerStats().row).toEqual(0);
 
-    const {unmount} = render(ListenerHookResultRow, {
+    const {unmount} = render(ListenerFunctionResultRow, {
       props: {queries, queryId: 'q1', rowId: 'r1', listener},
     });
     expect(queries.getListenerStats().row).toEqual(1);
@@ -1929,7 +1941,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(queries.getListenerStats().cellIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookResultCellIds, {
+    const {unmount} = render(ListenerFunctionResultCellIds, {
       props: {queries, queryId: 'q1', rowId: 'r1', listener},
     });
     expect(queries.getListenerStats().cellIds).toEqual(1);
@@ -1950,7 +1962,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(queries.getListenerStats().cell).toEqual(0);
 
-    const {unmount} = render(ListenerHookResultCell, {
+    const {unmount} = render(ListenerFunctionResultCell, {
       props: {queries, queryId: 'q1', rowId: 'r1', cellId: 'c1', listener},
     });
     expect(queries.getListenerStats().cell).toEqual(1);
@@ -1975,7 +1987,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(queries.getListenerStats().paramValues).toEqual(0);
 
-    const {unmount} = render(ListenerHookParamValues, {
+    const {unmount} = render(ListenerFunctionParamValues, {
       props: {queries, queryId: 'q1', listener},
     });
     expect(queries.getListenerStats().paramValues).toEqual(1);
@@ -2000,7 +2012,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(queries.getListenerStats().paramValue).toEqual(0);
 
-    const {unmount} = render(ListenerHookParamValue, {
+    const {unmount} = render(ListenerFunctionParamValue, {
       props: {queries, queryId: 'q1', paramId: 'p1', listener},
     });
     expect(queries.getListenerStats().paramValue).toEqual(1);
@@ -2017,7 +2029,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(checkpoints.getListenerStats().checkpointIds).toEqual(0);
 
-    const {unmount} = render(ListenerHookCheckpointIds, {
+    const {unmount} = render(ListenerFunctionCheckpointIds, {
       props: {checkpoints, listener},
     });
     expect(checkpoints.getListenerStats().checkpointIds).toEqual(1);
@@ -2034,7 +2046,7 @@ describe('Listener Functions', () => {
     const listener = vi.fn();
     expect(checkpoints.getListenerStats().checkpoint).toEqual(0);
 
-    const {unmount} = render(ListenerHookCheckpoint, {
+    const {unmount} = render(ListenerFunctionCheckpoint, {
       props: {checkpoints, checkpointId: '0', listener},
     });
     expect(checkpoints.getListenerStats().checkpoint).toEqual(1);
@@ -2050,7 +2062,7 @@ describe('Listener Functions', () => {
     const persister: AnyPersister = createSessionPersister(store, 'test-key');
     const listener = vi.fn();
 
-    const {unmount} = render(ListenerHookPersisterStatus, {
+    const {unmount} = render(ListenerFunctionPersisterStatus, {
       props: {persister, listener},
     });
 
@@ -2066,7 +2078,7 @@ describe('Listener Functions', () => {
     const synchronizer: Synchronizer = createLocalSynchronizer(store2);
     const listener = vi.fn();
 
-    const {unmount} = render(ListenerHookSynchronizerStatus, {
+    const {unmount} = render(ListenerFunctionSynchronizerStatus, {
       props: {synchronizer, listener},
     });
 
