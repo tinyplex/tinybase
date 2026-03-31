@@ -645,7 +645,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     cellId: MaybeGetter<CellId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {
-    readonly current: NoInfer<CellOrUndefined<Schemas[0], TableId, CellId>>;
+    get current(): NoInfer<CellOrUndefined<Schemas[0], TableId, CellId>>;
+    set current(v: Cell<Schemas[0], TableId, CellId>);
   };
 
   /// ui-svelte.useBindableCell
@@ -692,7 +693,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     valueId: MaybeGetter<ValueId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {
-    readonly current: NoInfer<DefaultedValueFromSchema<Schemas[1], ValueId>>;
+    get current(): NoInfer<DefaultedValueFromSchema<Schemas[1], ValueId>>;
+    set current(v: Value<Schemas[1], ValueId>);
   };
 
   /// ui-svelte.useBindableValue

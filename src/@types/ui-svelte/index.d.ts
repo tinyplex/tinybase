@@ -607,7 +607,7 @@ export function useCell(
   rowId: MaybeGetter<Id>,
   cellId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
-): {readonly current: CellOrUndefined};
+): {get current(): CellOrUndefined; set current(v: Cell)};
 
 /// ui-svelte.useBindableCell
 export function useBindableCell(
@@ -648,7 +648,7 @@ export function useHasValue(
 export function useValue(
   valueId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
-): {readonly current: ValueOrUndefined};
+): {get current(): ValueOrUndefined; set current(v: Value)};
 
 /// ui-svelte.useBindableValue
 export function useBindableValue(

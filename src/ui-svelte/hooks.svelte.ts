@@ -119,6 +119,24 @@ type Thing =
   | AnyPersister
   | Synchronizer;
 
+class WritableHandle<TRead, TWrite extends TRead> {
+  readonly #getCurrent: () => TRead;
+  readonly #setCurrent: (value: TWrite) => void;
+
+  constructor(getCurrent: () => TRead, setCurrent: (value: TWrite) => void) {
+    this.#getCurrent = getCurrent;
+    this.#setCurrent = setCurrent;
+  }
+
+  get current(): TRead {
+    return this.#getCurrent();
+  }
+
+  set current(value: TWrite) {
+    this.#setCurrent(value);
+  }
+}
+
 const EMPTY_ARR: Ids = [];
 const EMPTY_OBJ: Record<string, never> = {};
 const DEFAULT_CHECKPOINT_IDS: CheckpointIds = [EMPTY_ARR, undefined, EMPTY_ARR];
@@ -440,18 +458,6 @@ export const useCell = (
   rowId: MaybeGetter<Id>,
   cellId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
-): {readonly current: CellOrUndefined} =>
-  useListenable(useStoreOrStoreById(storeOrStoreId), CELL, undefined, () => [
-    maybeGet(tableId),
-    maybeGet(rowId),
-    maybeGet(cellId),
-  ]);
-
-export const useBindableCell = (
-  tableId: MaybeGetter<Id>,
-  rowId: MaybeGetter<Id>,
-  cellId: MaybeGetter<Id>,
-  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {get current(): CellOrUndefined; set current(v: Cell)} => {
   const getS = useStoreOrStoreById(storeOrStoreId);
   let value = $state<CellOrUndefined>(
@@ -474,15 +480,14 @@ export const useBindableCell = (
       return () => s?.delListener?.(listenerId);
     });
   }
-  return {
-    get current(): CellOrUndefined {
-      return value;
-    },
-    set current(v: Cell) {
-      getS()?.setCell(maybeGet(tableId), maybeGet(rowId), maybeGet(cellId), v);
-    },
-  };
+  return new WritableHandle<CellOrUndefined, Cell>(
+    () => value,
+    (v) =>
+      getS()?.setCell(maybeGet(tableId), maybeGet(rowId), maybeGet(cellId), v),
+  );
 };
+
+export const useBindableCell = useCell;
 
 export const useHasValues = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
@@ -524,14 +529,6 @@ export const useHasValue = (
 export const useValue = (
   valueId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
-): {readonly current: ValueOrUndefined} =>
-  useListenable(useStoreOrStoreById(storeOrStoreId), VALUE, undefined, () => [
-    maybeGet(valueId),
-  ]);
-
-export const useBindableValue = (
-  valueId: MaybeGetter<Id>,
-  storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {get current(): ValueOrUndefined; set current(v: Value)} => {
   const getS = useStoreOrStoreById(storeOrStoreId);
   let value = $state<ValueOrUndefined>(getS()?.getValue(maybeGet(valueId)));
@@ -546,15 +543,13 @@ export const useBindableValue = (
       return () => s?.delListener?.(listenerId);
     });
   }
-  return {
-    get current(): ValueOrUndefined {
-      return value;
-    },
-    set current(v: Value) {
-      getS()?.setValue(maybeGet(valueId), v);
-    },
-  };
+  return new WritableHandle<ValueOrUndefined, Value>(
+    () => value,
+    (v) => getS()?.setValue(maybeGet(valueId), v),
+  );
 };
+
+export const useBindableValue = useValue;
 
 export const useStore = (id?: Id): Store | undefined =>
   useThing(id, OFFSET_STORE) as Store | undefined;

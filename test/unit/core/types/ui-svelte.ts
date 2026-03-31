@@ -165,6 +165,11 @@ const Getters = () => {
   useCell('t1', 'r1', 'c1').current;
   useCell('t1', 'r1', 'c1').current as number;
   useCell('t1', 'r1', 'c1').current as string; // !
+  const cellRef = useCell('t1', 'r1', 'c1');
+  // eslint-disable-next-line react-hooks/refs
+  cellRef.current = 1;
+  // eslint-disable-next-line react-hooks/refs
+  cellRef.current = '1'; // !
   useCell('t1', 'r1', 'c2'); // !
   useCell('t2', 'r2', 'c1'); // !
 
@@ -188,6 +193,11 @@ const Getters = () => {
 
   useValue('v1').current as number;
   useValue('v1').current as string; // !
+  const valueRef = useValue('v1');
+  // eslint-disable-next-line react-hooks/refs
+  valueRef.current = 1;
+  // eslint-disable-next-line react-hooks/refs
+  valueRef.current = '1'; // !
   useValue('v2'); // !
 
   useBindableValue('v1').current as number;

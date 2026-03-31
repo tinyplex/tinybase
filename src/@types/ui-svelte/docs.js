@@ -1538,11 +1538,14 @@
  * The useCell hook returns a reactive object reflecting the value of a Cell in
  * a Row in a Table, and registers a listener so that any changes to that Cell
  * will update `.current`.
+ *
+ * Since Cells are mutable leaf values in a Store, the returned object's
+ * `current` property can also be assigned to write back to the Store.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param cellId The Id of the Cell (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
- * @returns A reactive object with a `current` CellOrUndefined property.
+ * @returns A reactive object with gettable and settable `current`.
  * @example
  * This example uses the useCell hook to display a Cell value reactively.
  *
@@ -1557,8 +1560,8 @@
  */
 /// ui-svelte.useCell
 /**
- * The useBindableCell hook returns a reactive object reflecting the value of a
- * Cell, with a settable `current` property that writes back to the Store.
+ * The useBindableCell hook returns the same reactive object as the useCell
+ * hook, with a settable `current` property that writes back to the Store.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param cellId The Id of the Cell (or a getter returning it).
@@ -1612,16 +1615,19 @@
  * The useValue hook returns a reactive object reflecting the value of a Value
  * in a Store, and registers a listener so that any changes to that Value will
  * update `.current`.
+ *
+ * Since Values are mutable leaf values in a Store, the returned object's
+ * `current` property can also be assigned to write back to the Store.
  * @param valueId The Id of the Value (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
- * @returns A reactive object with a `current` ValueOrUndefined property.
+ * @returns A reactive object with gettable and settable `current`.
  * @category Hook
  * @since v8.1.0
  */
 /// ui-svelte.useValue
 /**
- * The useBindableValue hook returns a reactive object reflecting the value of a
- * Value, with a settable `current` property that writes back to the Store.
+ * The useBindableValue hook returns the same reactive object as the useValue
+ * hook, with a settable `current` property that writes back to the Store.
  * @param valueId The Id of the Value (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with gettable and settable `current`.

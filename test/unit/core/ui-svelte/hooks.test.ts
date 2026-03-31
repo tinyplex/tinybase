@@ -121,6 +121,8 @@ import HookValue from './components/HookValue.svelte';
 import HookValueIds from './components/HookValueIds.svelte';
 import HookValues from './components/HookValues.svelte';
 import HookWindowlessCoverage from './components/HookWindowlessCoverage.svelte';
+import HookWritableCell from './components/HookWritableCell.svelte';
+import HookWritableValue from './components/HookWritableValue.svelte';
 
 let store: Store;
 
@@ -526,6 +528,22 @@ describe('Read Hooks', () => {
     unmount();
   });
 
+  test('useCell can set values', async () => {
+    store.setCell('t1', 'r1', 'c1', 0);
+    const {container, unmount} = render(HookWritableCell, {
+      props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', newValue: 1},
+    });
+    expect(container.textContent).toContain('0');
+
+    await act(() =>
+      fireEvent.click(container.querySelector('button') as Element),
+    );
+    expect(container.textContent).toContain('1');
+    expect(store.getCell('t1', 'r1', 'c1')).toEqual(1);
+
+    unmount();
+  });
+
   test('useHasValues', async () => {
     const {container, unmount} = render(HookHasValues, {props: {store}});
     expect(container.textContent).toEqual('true');
@@ -607,6 +625,22 @@ describe('Read Hooks', () => {
   test('useBindableValue', async () => {
     store.setValues({v1: false});
     const {container, unmount} = render(HookBindableValue, {
+      props: {store, valueId: 'v1', newValue: true},
+    });
+    expect(container.textContent).toContain('false');
+
+    await act(() =>
+      fireEvent.click(container.querySelector('button') as Element),
+    );
+    expect(container.textContent).toContain('true');
+    expect(store.getValue('v1')).toEqual(true);
+
+    unmount();
+  });
+
+  test('useValue can set values', async () => {
+    store.setValues({v1: false});
+    const {container, unmount} = render(HookWritableValue, {
       props: {store, valueId: 'v1', newValue: true},
     });
     expect(container.textContent).toContain('false');
