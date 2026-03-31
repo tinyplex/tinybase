@@ -8,17 +8,15 @@
  * objects with a `current` property. Those functions register listeners such
  * that components using them re-render when data changes.
  *
- * Functions like `getStore` and `getMetrics` return TinyBase objects directly
- * from Provider context. Functions like `getCell`, `getRow`, `getTable`,
- * `getValue`, and `hasCell` return reactive objects whose `.current` property
- * reflects underlying TinyBase data.
+ * Functions like the getStore function and getMetrics function return TinyBase
+ * objects directly from Provider context. Functions like the getCell function,
+ * the getRow function, the getTable function, the getValue function, and the
+ * hasCell function return reactive objects whose `current` property reflects
+ * underlying TinyBase data.
  *
  * Function parameters accept either plain values or reactive getter functions
- * (see the MaybeGetter type), so passing `() => tableId` from a `let`-bound
+ * (as per the MaybeGetter type), so passing `() => tableId` from a `let`-bound
  * Svelte prop makes the function re-execute whenever the prop changes.
- *
- * The components in this module provide a further abstraction over those
- * functions to ease the composition of user interfaces that use TinyBase.
  * @see Building UIs With Svelte guide
  * @packageDocumentation
  * @module ui-svelte
@@ -56,17 +54,17 @@
  * The MetricsOrMetricsId type is used when you need to refer to a Metrics
  * object in a ui-svelte function or component.
  *
- * In some simple cases you will already have a direct reference to the
- * Metrics object.
+ * In some simple cases you will already have a direct reference to the Metrics
+ * object.
  *
  * This module also includes a Provider component that can be used to wrap
  * multiple Metrics objects into a context that can be used throughout the app.
- * In this case you will want to refer to a Metrics object by its Id in
- * that context.
+ * In this case you will want to refer to a Metrics object by its Id in that
+ * context.
  *
  * Many functions and components in this ui-svelte module take this type as a
- * parameter or a prop, allowing you to pass in either the Metrics object or
- * its Id.
+ * parameter or a prop, allowing you to pass in either the Metrics object or its
+ * Id.
  * @category Identity
  * @since v8.1.0
  */
@@ -75,17 +73,17 @@
  * The IndexesOrIndexesId type is used when you need to refer to an Indexes
  * object in a ui-svelte function or component.
  *
- * In some simple cases you will already have a direct reference to the
- * Indexes object.
+ * In some simple cases you will already have a direct reference to the Indexes
+ * object.
  *
  * This module also includes a Provider component that can be used to wrap
  * multiple Indexes objects into a context that can be used throughout the app.
- * In this case you will want to refer to an Indexes object by its Id in
- * that context.
+ * In this case you will want to refer to an Indexes object by its Id in that
+ * context.
  *
  * Many functions and components in this ui-svelte module take this type as a
- * parameter or a prop, allowing you to pass in either the Indexes object or
- * its Id.
+ * parameter or a prop, allowing you to pass in either the Indexes object or its
+ * Id.
  * @category Identity
  * @since v8.1.0
  */
@@ -113,17 +111,17 @@
  * The QueriesOrQueriesId type is used when you need to refer to a Queries
  * object in a ui-svelte function or component.
  *
- * In some simple cases you will already have a direct reference to the
- * Queries object.
+ * In some simple cases you will already have a direct reference to the Queries
+ * object.
  *
  * This module also includes a Provider component that can be used to wrap
  * multiple Queries objects into a context that can be used throughout the app.
- * In this case you will want to refer to a Queries object by its Id in
- * that context.
+ * In this case you will want to refer to a Queries object by its Id in that
+ * context.
  *
  * Many functions and components in this ui-svelte module take this type as a
- * parameter or a prop, allowing you to pass in either the Queries object or
- * its Id.
+ * parameter or a prop, allowing you to pass in either the Queries object or its
+ * Id.
  * @category Identity
  * @since v8.1.0
  */
@@ -178,8 +176,8 @@
  * in that context.
  *
  * Many functions and components in this ui-svelte module take this type as a
- * parameter or a prop, allowing you to pass in either the Synchronizer or
- * its Id.
+ * parameter or a prop, allowing you to pass in either the Synchronizer or its
+ * Id.
  * @category Identity
  * @since v8.1.0
  */
@@ -408,8 +406,8 @@
   /// ui-svelte.MetricViewProps.debugIds
 }
 /**
- * The CheckpointViewProps type describes the props of the
- * CheckpointView component.
+ * The CheckpointViewProps type describes the props of the CheckpointView
+ * component.
  * @category Props
  * @since v8.1.0
  */
@@ -529,8 +527,8 @@
   /// ui-svelte.TableViewProps.row
 }
 /**
- * The SortedTableViewProps type describes the props of the
- * SortedTableView component.
+ * The SortedTableViewProps type describes the props of the SortedTableView
+ * component.
  * @category Props
  * @since v8.1.0
  */
@@ -744,8 +742,8 @@
   /// ui-svelte.SliceViewProps.row
 }
 /**
- * The RemoteRowViewProps type describes the props of the
- * RemoteRowView component.
+ * The RemoteRowViewProps type describes the props of the RemoteRowView
+ * component.
  * @category Props
  * @since v8.1.0
  */
@@ -783,8 +781,8 @@
   /// ui-svelte.RemoteRowViewProps.row
 }
 /**
- * The LocalRowsViewProps type describes the props of the
- * LocalRowsView component.
+ * The LocalRowsViewProps type describes the props of the LocalRowsView
+ * component.
  * @category Props
  * @since v8.1.0
  */
@@ -828,8 +826,8 @@
   /// ui-svelte.LocalRowsViewProps.row
 }
 /**
- * The LinkedRowsViewProps type describes the props of the
- * LinkedRowsView component.
+ * The LinkedRowsViewProps type describes the props of the LinkedRowsView
+ * component.
  * @category Props
  * @since v8.1.0
  */
@@ -873,8 +871,8 @@
   /// ui-svelte.LinkedRowsViewProps.row
 }
 /**
- * The ResultCellViewProps type describes the props of the
- * ResultCellView component.
+ * The ResultCellViewProps type describes the props of the ResultCellView
+ * component.
  * @category Props
  * @since v8.1.0
  */
@@ -912,8 +910,8 @@
   /// ui-svelte.ResultCellViewProps.debugIds
 }
 /**
- * The ResultRowViewProps type describes the props of the
- * ResultRowView component.
+ * The ResultRowViewProps type describes the props of the ResultRowView
+ * component.
  * @category Props
  * @since v8.1.0
  */
@@ -957,8 +955,8 @@
   /// ui-svelte.ResultRowViewProps.cell
 }
 /**
- * The ResultTableViewProps type describes the props of the
- * ResultTableView component.
+ * The ResultTableViewProps type describes the props of the ResultTableView
+ * component.
  * @category Props
  * @since v8.1.0
  */
@@ -1233,8 +1231,8 @@
 /// ui-svelte.IndexView
 /**
  * The LinkedRowsView component renders the Rows in a linked list Relationship,
- * and registers a listener so that any changes to that result will cause
- * a re-render.
+ * and registers a listener so that any changes to that result will cause a
+ * re-render.
  * @param props The props for this component.
  * @returns A rendering of the linked Row Ids.
  * @category Component
@@ -1313,8 +1311,8 @@
 /// ui-svelte.ResultTableView
 /**
  * The RowView component renders the contents of a single Row in a given Table,
- * and registers a listener so that any changes to that result will cause
- * a re-render.
+ * and registers a listener so that any changes to that result will cause a
+ * re-render.
  * @param props The props for this component.
  * @returns A rendering of the Row, or nothing if not present.
  * @category Component
@@ -1323,8 +1321,8 @@
 /// ui-svelte.RowView
 /**
  * The SliceView component renders the Row Ids in a named Slice in an Index, and
- * registers a listener so that any changes to that result will cause
- * a re-render.
+ * registers a listener so that any changes to that result will cause a
+ * re-render.
  * @param props The props for this component.
  * @returns A rendering of the Rows in the Slice.
  * @category Component
@@ -1352,8 +1350,8 @@
 /// ui-svelte.TableView
 /**
  * The TablesView component renders the contents of all Tables in a Store, and
- * registers a listener so that any changes to that result will cause
- * a re-render.
+ * registers a listener so that any changes to that result will cause a
+ * re-render.
  * @param props The props for this component.
  * @returns A rendering of all Tables.
  * @category Component
@@ -1362,8 +1360,8 @@
 /// ui-svelte.TablesView
 /**
  * The ValueView component renders the value of a single Value in a Store, and
- * registers a listener so that any changes to that result will cause
- * a re-render.
+ * registers a listener so that any changes to that result will cause a
+ * re-render.
  * @param props The props for this component.
  * @returns A rendering of the Value, or nothing if not present.
  * @category Component
@@ -1382,7 +1380,7 @@
 /**
  * The hasTables function returns a reactive object indicating whether any
  * Tables exist in the Store, and registers a listener so that any changes to
- * that result will update `.current`.
+ * that result will update `current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` boolean property.
  * @category Getter
@@ -1390,9 +1388,9 @@
  */
 /// ui-svelte.hasTables
 /**
- * The getTables function returns a reactive object reflecting the Tables in
- * the Store, and registers a listener so that any changes to those Tables will
- * update `.current`.
+ * The getTables function returns a reactive object reflecting the Tables in the
+ * Store, and registers a listener so that any changes to those Tables will
+ * update `current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` Tables property.
  * @category Getter
@@ -1400,9 +1398,9 @@
  */
 /// ui-svelte.getTables
 /**
- * The getTableIds function returns a reactive object reflecting the Ids of
- * the Tables in a Store, and registers a listener so that any changes to those
- * Ids will update `.current`.
+ * The getTableIds function returns a reactive object reflecting the Ids of the
+ * Tables in a Store, and registers a listener so that any changes to those Ids
+ * will update `current`.
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Getter
@@ -1410,9 +1408,9 @@
  */
 /// ui-svelte.getTableIds
 /**
- * The hasTable function returns a reactive object indicating whether a
- * Table exists in the Store, and registers a listener so that any changes to
- * that result will update `.current`.
+ * The hasTable function returns a reactive object indicating whether a Table
+ * exists in the Store, and registers a listener so that any changes to that
+ * result will update `current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
@@ -1422,8 +1420,8 @@
 /// ui-svelte.hasTable
 /**
  * The getTable function returns a reactive object reflecting a Table in a
- * Store, and registers a listener so that any changes to that Table will
- * update `.current`.
+ * Store, and registers a listener so that any changes to that Table will update
+ * `current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Table property.
@@ -1432,9 +1430,9 @@
  */
 /// ui-svelte.getTable
 /**
- * The getTableCellIds function returns a reactive object reflecting the Ids
- * of all Cells used across a Table, and registers a listener so that any
- * changes to those Ids will update `.current`.
+ * The getTableCellIds function returns a reactive object reflecting the Ids of
+ * all Cells used across a Table, and registers a listener so that any changes
+ * to those Ids will update `current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
@@ -1443,9 +1441,9 @@
  */
 /// ui-svelte.getTableCellIds
 /**
- * The hasTableCell function returns a reactive object indicating whether
- * a particular Cell is used anywhere in a Table, and registers a listener so
- * that any changes to that result will update `.current`.
+ * The hasTableCell function returns a reactive object indicating whether a
+ * particular Cell is used anywhere in a Table, and registers a listener so that
+ * any changes to that result will update `current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param cellId The Id of the Cell (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
@@ -1455,9 +1453,9 @@
  */
 /// ui-svelte.hasTableCell
 /**
- * The getRowCount function returns a reactive object reflecting the number
- * of Rows in a Table, and registers a listener so that any changes will
- * update `.current`.
+ * The getRowCount function returns a reactive object reflecting the number of
+ * Rows in a Table, and registers a listener so that any changes will update
+ * `current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` number property.
@@ -1467,8 +1465,8 @@
 /// ui-svelte.getRowCount
 /**
  * The getRowIds function returns a reactive object reflecting the Ids of the
- * Rows in a Table, and registers a listener so that any changes will
- * update `.current`.
+ * Rows in a Table, and registers a listener so that any changes will update
+ * `current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
@@ -1477,9 +1475,9 @@
  */
 /// ui-svelte.getRowIds
 /**
- * The getSortedRowIds function returns a reactive object reflecting the
- * sorted Row Ids in a Table, and registers a listener so that any changes will
- * update `.current`.
+ * The getSortedRowIds function returns a reactive object reflecting the sorted
+ * Row Ids in a Table, and registers a listener so that any changes will update
+ * `current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param cellId The Id of the Cell to sort by (or a getter returning it).
  * @param descending Whether to sort descending (or a getter returning it).
@@ -1492,9 +1490,9 @@
  */
 /// ui-svelte.getSortedRowIds
 /**
- * The hasRow function returns a reactive object indicating whether a Row
- * exists in a Table, and registers a listener so that any changes to that
- * result will update `.current`.
+ * The hasRow function returns a reactive object indicating whether a Row exists
+ * in a Table, and registers a listener so that any changes to that result will
+ * update `current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
@@ -1505,8 +1503,8 @@
 /// ui-svelte.hasRow
 /**
  * The getRow function returns a reactive object reflecting a Row in a Table,
- * and registers a listener so that any changes to that Row will
- * update `.current`.
+ * and registers a listener so that any changes to that Row will update
+ * `current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
@@ -1516,9 +1514,9 @@
  */
 /// ui-svelte.getRow
 /**
- * The getCellIds function returns a reactive object reflecting the Ids of
- * the Cells in a Row, and registers a listener so that any changes will
- * update `.current`.
+ * The getCellIds function returns a reactive object reflecting the Ids of the
+ * Cells in a Row, and registers a listener so that any changes will update
+ * `current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
@@ -1528,9 +1526,9 @@
  */
 /// ui-svelte.getCellIds
 /**
- * The hasCell function returns a reactive object indicating whether a
- * Cell exists in a Row in a Table, and registers a listener so that any changes
- * to that result will update `.current`.
+ * The hasCell function returns a reactive object indicating whether a Cell
+ * exists in a Row in a Table, and registers a listener so that any changes to
+ * that result will update `current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param cellId The Id of the Cell (or a getter returning it).
@@ -1541,9 +1539,9 @@
  */
 /// ui-svelte.hasCell
 /**
- * The getCell function returns a reactive object reflecting the value of a
- * Cell in a Row in a Table, and registers a listener so that any changes to
- * that Cell will update `.current`.
+ * The getCell function returns a reactive object reflecting the value of a Cell
+ * in a Row in a Table, and registers a listener so that any changes to that
+ * Cell will update `current`.
  *
  * Since Cells are mutable leaf values in a Store, the returned object's
  * `current` property can also be assigned to write back to the Store.
@@ -1568,7 +1566,7 @@
 /**
  * The hasValues function returns a reactive object indicating whether any
  * Values exist in the Store, and registers a listener so that any changes to
- * that result will update `.current`.
+ * that result will update `current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` boolean property.
  * @category Getter
@@ -1576,9 +1574,8 @@
  */
 /// ui-svelte.hasValues
 /**
- * The getValues function returns a reactive object reflecting the Values in
- * the Store, and registers a listener so that any changes will
- * update `.current`.
+ * The getValues function returns a reactive object reflecting the Values in the
+ * Store, and registers a listener so that any changes will update `current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` Values property.
  * @category Getter
@@ -1586,9 +1583,9 @@
  */
 /// ui-svelte.getValues
 /**
- * The getValueIds function returns a reactive object reflecting the Ids of
- * the Values in a Store, and registers a listener so that any changes will
- * update `.current`.
+ * The getValueIds function returns a reactive object reflecting the Ids of the
+ * Values in a Store, and registers a listener so that any changes will update
+ * `current`.
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Getter
@@ -1596,9 +1593,9 @@
  */
 /// ui-svelte.getValueIds
 /**
- * The hasValue function returns a reactive object indicating whether a
- * Value exists in the Store, and registers a listener so that any changes to
- * that result will update `.current`.
+ * The hasValue function returns a reactive object indicating whether a Value
+ * exists in the Store, and registers a listener so that any changes to that
+ * result will update `current`.
  * @param valueId The Id of the Value (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
@@ -1609,7 +1606,7 @@
 /**
  * The getValue function returns a reactive object reflecting the value of a
  * Value in a Store, and registers a listener so that any changes to that Value
- * will update `.current`.
+ * will update `current`.
  *
  * Since Values are mutable leaf values in a Store, the returned object's
  * `current` property can also be assigned to write back to the Store.
@@ -1639,8 +1636,8 @@
  */
 /// ui-svelte.resolveStore
 /**
- * The getStoreIds function returns a reactive object with the Ids of all
- * Stores registered in the current Provider context.
+ * The getStoreIds function returns a reactive object with the Ids of all Stores
+ * registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @category Getter
  * @since v8.1.0
@@ -1674,9 +1671,9 @@
  */
 /// ui-svelte.getMetricsIds
 /**
- * The getMetricIds function returns a reactive object reflecting the Ids of
- * the Metrics in a Metrics object, and registers a listener so that any changes
- * will update `.current`.
+ * The getMetricIds function returns a reactive object reflecting the Ids of the
+ * Metrics in a Metrics object, and registers a listener so that any changes
+ * will update `current`.
  * @param metricsOrMetricsId The Metrics object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Getter
@@ -1686,7 +1683,7 @@
 /**
  * The getMetric function returns a reactive object reflecting the value of a
  * named Metric in a Metrics object, and registers a listener so that any
- * changes to that Metric will update `.current`.
+ * changes to that Metric will update `current`.
  * @param metricId The Id of the Metric (or a getter returning it).
  * @param metricsOrMetricsId The Metrics object to use (plain or getter), or its
  * Id.
@@ -1733,9 +1730,9 @@
  */
 /// ui-svelte.getIndexesIds
 /**
- * The getIndexIds function returns a reactive object reflecting the Ids of
- * the Indexes in an Indexes object, and registers a listener so that any
- * changes will update `.current`.
+ * The getIndexIds function returns a reactive object reflecting the Ids of the
+ * Indexes in an Indexes object, and registers a listener so that any changes
+ * will update `current`.
  * @param indexesOrIndexesId The Indexes object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Getter
@@ -1743,9 +1740,9 @@
  */
 /// ui-svelte.getIndexIds
 /**
- * The getSliceIds function returns a reactive object reflecting the Ids of
- * the Slices in an Index, and registers a listener so that any changes will
- * update `.current`.
+ * The getSliceIds function returns a reactive object reflecting the Ids of the
+ * Slices in an Index, and registers a listener so that any changes will update
+ * `current`.
  * @param indexId The Id of the Index (or a getter returning it).
  * @param indexesOrIndexesId The Indexes object to use (plain or getter), or its
  * Id.
@@ -1755,9 +1752,9 @@
  */
 /// ui-svelte.getSliceIds
 /**
- * The getSliceRowIds function returns a reactive object reflecting the Ids
- * of the Rows in a Slice, and registers a listener so that any changes will
- * update `.current`.
+ * The getSliceRowIds function returns a reactive object reflecting the Ids of
+ * the Rows in a Slice, and registers a listener so that any changes will update
+ * `current`.
  * @param indexId The Id of the Index (or a getter returning it).
  * @param sliceId The Id of the Slice (or a getter returning it).
  * @param indexesOrIndexesId The Indexes object to use (plain or getter), or its
@@ -1795,9 +1792,9 @@
  */
 /// ui-svelte.getQueriesIds
 /**
- * The getQueryIds function returns a reactive object reflecting the Ids of
- * the Queries in a Queries object, and registers a listener so that any changes
- * will update `.current`.
+ * The getQueryIds function returns a reactive object reflecting the Ids of the
+ * Queries in a Queries object, and registers a listener so that any changes
+ * will update `current`.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Getter
@@ -1807,7 +1804,7 @@
 /**
  * The getResultTable function returns a reactive object reflecting a result
  * Table in a Queries object, and registers a listener so that any changes to
- * that result will update `.current`.
+ * that result will update `current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
@@ -1817,9 +1814,9 @@
  */
 /// ui-svelte.getResultTable
 /**
- * The getResultTableCellIds function returns a reactive object reflecting
- * the Ids of all Cells used across a result Table, and registers a listener so
- * that any changes will update `.current`.
+ * The getResultTableCellIds function returns a reactive object reflecting the
+ * Ids of all Cells used across a result Table, and registers a listener so that
+ * any changes will update `current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
@@ -1831,7 +1828,7 @@
 /**
  * The getResultRowCount function returns a reactive object reflecting the
  * number of Rows in a result Table, and registers a listener so that any
- * changes will update `.current`.
+ * changes will update `current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
@@ -1841,9 +1838,9 @@
  */
 /// ui-svelte.getResultRowCount
 /**
- * The getResultRowIds function returns a reactive object reflecting the Ids
- * of the Rows in a result Table, and registers a listener so that any changes
- * will update `.current`.
+ * The getResultRowIds function returns a reactive object reflecting the Ids of
+ * the Rows in a result Table, and registers a listener so that any changes will
+ * update `current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
@@ -1853,9 +1850,9 @@
  */
 /// ui-svelte.getResultRowIds
 /**
- * The getResultSortedRowIds function returns a reactive object reflecting
- * the sorted Row Ids in a result Table, and registers a listener so that any
- * changes will update `.current`.
+ * The getResultSortedRowIds function returns a reactive object reflecting the
+ * sorted Row Ids in a result Table, and registers a listener so that any
+ * changes will update `current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param cellId The Id of the Cell to sort by (or a getter returning it).
  * @param descending Whether to sort descending (or a getter returning it).
@@ -1869,9 +1866,9 @@
  */
 /// ui-svelte.getResultSortedRowIds
 /**
- * The getResultRow function returns a reactive object reflecting a result
- * Row in a result Table, and registers a listener so that any changes will
- * update `.current`.
+ * The getResultRow function returns a reactive object reflecting a result Row
+ * in a result Table, and registers a listener so that any changes will update
+ * `current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
@@ -1882,9 +1879,9 @@
  */
 /// ui-svelte.getResultRow
 /**
- * The getResultCellIds function returns a reactive object reflecting the Ids
- * of the Cells in a result Row, and registers a listener so that any changes
- * will update `.current`.
+ * The getResultCellIds function returns a reactive object reflecting the Ids of
+ * the Cells in a result Row, and registers a listener so that any changes will
+ * update `current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
@@ -1895,9 +1892,9 @@
  */
 /// ui-svelte.getResultCellIds
 /**
- * The getResultCell function returns a reactive object reflecting the value
- * of a Cell in a result Row, and registers a listener so that any changes will
- * update `.current`.
+ * The getResultCell function returns a reactive object reflecting the value of
+ * a Cell in a result Row, and registers a listener so that any changes will
+ * update `current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param cellId The Id of the Cell (or a getter returning it).
@@ -1950,9 +1947,9 @@
  */
 /// ui-svelte.getRelationshipsIds
 /**
- * The getRelationshipIds function returns a reactive object reflecting the
- * Ids of the Relationships in a Relationships object, and registers a listener
- * so that any changes will update `.current`.
+ * The getRelationshipIds function returns a reactive object reflecting the Ids
+ * of the Relationships in a Relationships object, and registers a listener so
+ * that any changes will update `current`.
  * @param relationshipsOrRelationshipsId The Relationships object to use, or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
@@ -1961,9 +1958,9 @@
  */
 /// ui-svelte.getRelationshipIds
 /**
- * The getRemoteRowId function returns a reactive object reflecting the
- * remote Row Id for a given local Row in a Relationship, and registers a
- * listener so that any changes will update `.current`.
+ * The getRemoteRowId function returns a reactive object reflecting the remote
+ * Row Id for a given local Row in a Relationship, and registers a listener so
+ * that any changes will update `current`.
  * @param relationshipId The Id of the Relationship (or a getter returning it).
  * @param localRowId The Id of the local Row (or a getter returning it).
  * @param relationshipsOrRelationshipsId The Relationships object to use (plain
@@ -1976,7 +1973,7 @@
 /**
  * The getLocalRowIds function returns a reactive object reflecting the local
  * Row Ids for a given remote Row in a Relationship, and registers a listener so
- * that any changes will update `.current`.
+ * that any changes will update `current`.
  * @param relationshipId The Id of the Relationship (or a getter returning it).
  * @param remoteRowId The Id of the remote Row (or a getter returning it).
  * @param relationshipsOrRelationshipsId The Relationships object to use (plain
@@ -1987,9 +1984,9 @@
  */
 /// ui-svelte.getLocalRowIds
 /**
- * The getLinkedRowIds function returns a reactive object reflecting the
- * linked Row Ids in a Relationship, and registers a listener so that any
- * changes will update `.current`.
+ * The getLinkedRowIds function returns a reactive object reflecting the linked
+ * Row Ids in a Relationship, and registers a listener so that any changes will
+ * update `current`.
  * @param relationshipId The Id of the Relationship (or a getter returning it).
  * @param firstRowId The Id of the first Row (or a getter returning it).
  * @param relationshipsOrRelationshipsId The Relationships object to use (plain
@@ -2020,8 +2017,8 @@
  */
 /// ui-svelte.resolveCheckpoints
 /**
- * The getCheckpointsIds function returns a reactive object with the Ids of
- * all Checkpoints objects registered in the current Provider context.
+ * The getCheckpointsIds function returns a reactive object with the Ids of all
+ * Checkpoints objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @category Getter
  * @since v8.1.0
@@ -2030,7 +2027,7 @@
 /**
  * The getCheckpointIds function returns a reactive object reflecting the
  * CheckpointIds (backward, current, forward) in a Checkpoints object, and
- * registers a listener so that any changes will update `.current`.
+ * registers a listener so that any changes will update `current`.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use (plain or
  * getter), or its Id.
  * @returns A reactive object with a `current` CheckpointIds property.
@@ -2039,9 +2036,9 @@
  */
 /// ui-svelte.getCheckpointIds
 /**
- * The getCheckpoint function returns a reactive object reflecting the label
- * of a checkpoint, and registers a listener so that any changes will
- * update `.current`.
+ * The getCheckpoint function returns a reactive object reflecting the label of
+ * a checkpoint, and registers a listener so that any changes will update
+ * `current`.
  * @param checkpointId The Id of the checkpoint (or a getter returning it).
  * @param checkpointsOrCheckpointsId The Checkpoints object to use (plain or
  * getter), or its Id.
@@ -2098,7 +2095,7 @@
 /**
  * The getPersisterStatus function returns a reactive object reflecting the
  * status of a Persister, and registers a listener so that any changes will
- * update `.current`.
+ * update `current`.
  * @param persisterOrPersisterId The Persister to use, or its Id.
  * @returns A reactive object with a `current` Status property.
  * @category Getter
@@ -2125,17 +2122,17 @@
  */
 /// ui-svelte.resolveSynchronizer
 /**
- * The getSynchronizerIds function returns a reactive object with the Ids of
- * all Synchronizers registered in the current Provider context.
+ * The getSynchronizerIds function returns a reactive object with the Ids of all
+ * Synchronizers registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @category Getter
  * @since v8.1.0
  */
 /// ui-svelte.getSynchronizerIds
 /**
- * The getSynchronizerStatus function returns a reactive object reflecting
- * the status of a Synchronizer, and registers a listener so that any changes
- * will update `.current`.
+ * The getSynchronizerStatus function returns a reactive object reflecting the
+ * status of a Synchronizer, and registers a listener so that any changes will
+ * update `current`.
  * @param synchronizerOrSynchronizerId The Synchronizer to use, or its Id.
  * @returns A reactive object with a `current` Status property.
  * @category Getter

@@ -1,15 +1,15 @@
 # Building UIs With Svelte
 
-This guide describes how to use the `tinybase/ui-svelte` module to build
-reactive user interfaces in Svelte 5 applications.
+This guide describes how to use the ui-svelte module to build reactive user
+interfaces in Svelte 5 applications.
 
 ## Reactive Functions
 
-Every reactive function in the `ui-svelte` module returns a reactive object with
-a `current` property. Any part of your template that reads it will automatically
+Every reactive function in the ui-svelte module returns a reactive object with a
+`current` property. Any part of your template that reads it will automatically
 update when the underlying Store data changes.
 
-Here is the `getCell` function reading the color of a pet and displaying it in a
+Here is the getCell function reading the color of a pet and displaying it in a
 paragraph:
 
 ```svelte
@@ -31,28 +31,31 @@ subscriptions, nor `$:` labels, nor `onDestroy` cleanup. The reactive object
 registers and removes TinyBase listeners automatically using Svelte's reactivity
 lifecycle.
 
-There are reactive functions corresponding to every Store reading method:
+There are reactive functions corresponding to every Store reading method. For
+example:
 
-- The getValues function is the reactive equivalent of the getValues method
-- The getValueIds function is the reactive equivalent of the getValueIds method
-- The getValue function is the reactive equivalent of the getValue method
-- The getTables function is the reactive equivalent of the getTables method
-- The getTableIds function is the reactive equivalent of the getTableIds method
-- The getTable function is the reactive equivalent of the getTable method
-- The getRowIds function is the reactive equivalent of the getRowIds method
-- The getSortedRowIds function is the reactive equivalent of the getSortedRowIds
-  method
-- The getRow function is the reactive equivalent of the getRow method
-- The getCellIds function is the reactive equivalent of the getCellIds method
-- The getCell function is the reactive equivalent of the getCell method
+| TinyBase Store         | Svelte Reactive Function |
+| ---------------------- | ------------------------ |
+| getValues method       | getValues function       |
+| getValueIds method     | getValueIds function     |
+| getValue method        | getValue function        |
+| getTables method       | getTables function       |
+| getTableIds method     | getTableIds function     |
+| getTable method        | getTable function        |
+| getRowIds method       | getRowIds function       |
+| getSortedRowIds method | getSortedRowIds function |
+| getRow method          | getRow function          |
+| getCellIds method      | getCellIds function      |
+| getCell method         | getCell function         |
 
 There are also reactive functions for the derived TinyBase data or objects.
 Examples include the getMetric function, getSliceRowIds function, or
 getResultTable function, and so on.
 
 Functions that access higher-level TinyBase objects - like the getStore
-function, getMetrics function, and getQueries function - are different: they
-return TinyBase objects directly from a Provider context. 
+function, getMetrics function, and getQueries function - are different: rather
+than returning a reactive object, they return TinyBase objects directly from a
+Provider context. 
 
 ## Reactive Parameters With MaybeGetter
 

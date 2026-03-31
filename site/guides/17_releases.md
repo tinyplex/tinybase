@@ -30,7 +30,7 @@ underlying TinyBase data changes:
 <p>Color: {color.current}</p>
 ```
 
-The `getCell` function and the `getValue` function provide a writable `current`
+The getCell function and the getValue function provide a writable `current`
 property that pairs naturally with Svelte's `bind:` directive for two-way data
 binding:
 
@@ -53,8 +53,8 @@ The module further includes a provider component and context helpers for sharing
 TinyBase objects across a component tree, and many built-in view components for
 assembling UIs directly from Store data.
 
-Read more in the ui-svelte module documentation and the [Building UIs With
-Svelte](/guides/building-uis/building-uis-with-svelte/) guide.
+Read more in the ui-svelte module documentation and the Building UIs With
+Svelte guide.
 
 ## Breaking Changes
 
@@ -62,13 +62,13 @@ If you tried the ui-svelte module in earlier beta releases, there are some
 intentional breaking changes made to ensure the API is more idiomatic for
 Svelte. What was `useX` is now a reactive `getX` or `hasX` function, so for
 example `useCell` has become the getCell function and `useHasCell` has become
-the hasCell function. Context lookups also use `getX`, as with the
-getMetrics function, but those return TinyBase objects directly from Provider
-context rather than reactive `{current}` wrappers. Listener functions now use
-`onX`; so for example `useCellListener` has become the onCell function. The
-old `useBindableCell` and `useBindableValue` beta names have also gone away
-because the getCell function and getValue function expose the writable
-scalar accessors directly.
+the hasCell function. Context lookups also use `getX`, as with the getMetrics
+function, but those return TinyBase objects directly from Provider context
+rather than reactive `current`-based wrappers. Listener functions now use `onX`;
+so for example `useCellListener` has become the onCell function. The old
+`useBindableCell` and `useBindableValue` beta names have also gone away because
+the getCell function and getValue function expose the writable scalar accessors
+directly.
 
 This release also contains a minor breaking change since v8.0. The
 `tinybase/omni` module no longer includes the ui-react module, ui-react-dom
