@@ -245,32 +245,35 @@ export const resolveSynchronizer = (
     OFFSET_SYNCHRONIZER,
   );
 
-const createListenable = <T>(
+const createListenable = <Thing>(
   getThing: () => any,
   listenable: string,
-  defaultValue: T,
+  defaultValue: Thing,
   getArgs: () => readonly any[] = () => EMPTY_ARR,
   isHas?: 0 | 1,
-): {readonly current: T} => {
-  const getMethod = (isHas ? _HAS : GET) + listenable;
-  const addMethod = ADD + (isHas ? HAS : '') + listenable + LISTENER;
-  let value = $state<T>(
-    (getThing()?.[getMethod]?.(...getArgs()) ?? defaultValue) as T,
+): {readonly current: Thing} => {
+  const getListenableMethod = (isHas ? _HAS : GET) + listenable;
+  const addListenableMethod = ADD + (isHas ? HAS : '') + listenable + LISTENER;
+  let value = $state<Thing>(
+    (getThing()?.[getListenableMethod]?.(...getArgs()) ??
+      defaultValue) as Thing,
   );
   if (hasWindow()) {
     $effect(() => {
       const thing = getThing();
       const args = getArgs();
-      value = (thing?.[getMethod]?.(...args) ?? defaultValue) as T;
-      const listenerId = thing?.[addMethod]?.(...args, () => {
-        value = (thing[getMethod](...getArgs()) ?? defaultValue) as T;
+      const listenerId = thing?.[addListenableMethod]?.(...args, () => {
+        value = (thing[getListenableMethod](...getArgs()) ??
+          defaultValue) as Thing;
       });
+      value = (thing?.[getListenableMethod]?.(...args) ??
+        defaultValue) as Thing;
       return () => thing?.delListener?.(listenerId);
     });
   }
   return {
-    get current(): T {
-      return value as T;
+    get current(): Thing {
+      return value as Thing;
     },
   };
 };
@@ -454,31 +457,41 @@ export const createCell = (
   cellId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {get current(): CellOrUndefined; set current(v: Cell)} => {
-  const getS = resolveStore(storeOrStoreId);
+  const getStore = resolveStore(storeOrStoreId);
   let value = $state<CellOrUndefined>(
-    getS()?.getCell(maybeGet(tableId), maybeGet(rowId), maybeGet(cellId)),
+    getStore()?.getCell(maybeGet(tableId), maybeGet(rowId), maybeGet(cellId)),
   );
   if (hasWindow()) {
     $effect(() => {
-      const s: any = getS();
-      const t = maybeGet(tableId),
-        r = maybeGet(rowId),
-        c = maybeGet(cellId);
-      value = s?.getCell(t, r, c);
-      const listenerId = s?.addCellListener(t, r, c, (st: any) => {
-        value = st.getCell(
-          maybeGet(tableId),
-          maybeGet(rowId),
-          maybeGet(cellId),
-        );
-      });
-      return () => s?.delListener?.(listenerId);
+      const store: any = getStore();
+      const tableIdValue = maybeGet(tableId);
+      const rowIdValue = maybeGet(rowId);
+      const cellIdValue = maybeGet(cellId);
+      const listenerId = store?.addCellListener(
+        tableIdValue,
+        rowIdValue,
+        cellIdValue,
+        (changedStore: any) => {
+          value = changedStore.getCell(
+            maybeGet(tableId),
+            maybeGet(rowId),
+            maybeGet(cellId),
+          );
+        },
+      );
+      value = store?.getCell(tableIdValue, rowIdValue, cellIdValue);
+      return () => store?.delListener?.(listenerId);
     });
   }
   return new WritableHandle<Cell>(
     () => value,
-    (v) =>
-      getS()?.setCell(maybeGet(tableId), maybeGet(rowId), maybeGet(cellId), v),
+    (nextCell) =>
+      getStore()?.setCell(
+        maybeGet(tableId),
+        maybeGet(rowId),
+        maybeGet(cellId),
+        nextCell,
+      ),
   );
 };
 
@@ -519,22 +532,25 @@ export const createValue = (
   valueId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {get current(): ValueOrUndefined; set current(v: Value)} => {
-  const getS = resolveStore(storeOrStoreId);
-  let value = $state<ValueOrUndefined>(getS()?.getValue(maybeGet(valueId)));
+  const getStore = resolveStore(storeOrStoreId);
+  let value = $state<ValueOrUndefined>(getStore()?.getValue(maybeGet(valueId)));
   if (hasWindow()) {
     $effect(() => {
-      const s: any = getS();
-      const vid = maybeGet(valueId);
-      value = s?.getValue(vid);
-      const listenerId = s?.addValueListener(vid, (st: any) => {
-        value = st.getValue(maybeGet(valueId));
-      });
-      return () => s?.delListener?.(listenerId);
+      const store: any = getStore();
+      const valueIdValue = maybeGet(valueId);
+      const listenerId = store?.addValueListener(
+        valueIdValue,
+        (changedStore: any) => {
+          value = changedStore.getValue(maybeGet(valueId));
+        },
+      );
+      value = store?.getValue(valueIdValue);
+      return () => store?.delListener?.(listenerId);
     });
   }
   return new WritableHandle<Value>(
     () => value,
-    (v) => getS()?.setValue(maybeGet(valueId), v),
+    (nextValue) => getStore()?.setValue(maybeGet(valueId), nextValue),
   );
 };
 
@@ -640,13 +656,13 @@ export const getIndexStoreTableId = (
   indexesOrId: MaybeGetter<Indexes | Id | undefined>,
   indexId: MaybeGetter<Id>,
 ) => {
-  const getI = resolveIndexes(indexesOrId);
+  const getIndexes = resolveIndexes(indexesOrId);
   return {
     get store() {
-      return getI()?.getStore();
+      return getIndexes()?.getStore();
     },
     get tableId() {
-      return getI()?.getTableId(maybeGet(indexId));
+      return getIndexes()?.getTableId(maybeGet(indexId));
     },
   };
 };
@@ -843,16 +859,16 @@ export const getRelationshipsStoreTableIds = (
   relationshipsOrId: MaybeGetter<Relationships | Id | undefined>,
   relationshipId: MaybeGetter<Id>,
 ) => {
-  const getR = resolveRelationships(relationshipsOrId);
+  const getRelationships = resolveRelationships(relationshipsOrId);
   return {
     get store() {
-      return getR()?.getStore();
+      return getRelationships()?.getStore();
     },
     get localTableId() {
-      return getR()?.getLocalTableId(maybeGet(relationshipId));
+      return getRelationships()?.getLocalTableId(maybeGet(relationshipId));
     },
     get remoteTableId() {
-      return getR()?.getRemoteTableId(maybeGet(relationshipId));
+      return getRelationships()?.getRemoteTableId(maybeGet(relationshipId));
     },
   };
 };
@@ -898,15 +914,15 @@ export const createCheckpoint = (
 export const createGoBackwardCallback = (
   checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): (() => void) => {
-  const getC = resolveCheckpoints(checkpointsOrCheckpointsId);
-  return () => getC()?.goBackward();
+  const getCheckpoints = resolveCheckpoints(checkpointsOrCheckpointsId);
+  return () => getCheckpoints()?.goBackward();
 };
 
 export const createGoForwardCallback = (
   checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): (() => void) => {
-  const getC = resolveCheckpoints(checkpointsOrCheckpointsId);
-  return () => getC()?.goForward();
+  const getCheckpoints = resolveCheckpoints(checkpointsOrCheckpointsId);
+  return () => getCheckpoints()?.goForward();
 };
 
 export const getPersister = (id?: Id): AnyPersister | undefined =>
