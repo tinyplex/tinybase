@@ -3,25 +3,14 @@
 This guide describes how to use the `tinybase/ui-svelte` module to build
 reactive user interfaces in Svelte 5 applications.
 
-## Installation
-
-Install TinyBase and Svelte together:
-
-```bash
-npm install tinybase svelte
-```
-
-Then import functions and components directly from the `tinybase/ui-svelte`
-module in your component's `<script>` block.
-
 ## Reactive Functions
 
-Every reactive function in the `ui-svelte` module returns a reactive object
-with a `current` property. Any part of your template that reads it will
-automatically update when the underlying Store data changes.
+Every reactive function in the `ui-svelte` module returns a reactive object with
+a `current` property. Any part of your template that reads it will automatically
+update when the underlying Store data changes.
 
-Here is the `getCell` function reading the color of a pet and displaying it in
-a paragraph:
+Here is the `getCell` function reading the color of a pet and displaying it in a
+paragraph:
 
 ```svelte
 <script>
@@ -36,37 +25,36 @@ a paragraph:
 <!-- Renders: <p>Color: brown</p> -->
 ```
 
-When `store.setCell('pets', 'fido', 'color', 'walnut')` is called anywhere, the
-paragraph immediately re-renders to show `walnut`. No manual subscriptions, no
-`$:` labels, no `onDestroy` cleanup. The reactive object registers and removes
-TinyBase listeners automatically using Svelte's reactivity lifecycle.
+When the color cell is updated elsewhere in the application, the paragraph
+immediately re-renders to show the new value. You don't need to add any manual
+subscriptions, nor `$:` labels, nor `onDestroy` cleanup. The reactive object
+registers and removes TinyBase listeners automatically using Svelte's reactivity
+lifecycle.
 
 There are reactive functions corresponding to every Store reading method:
 
-- `getValues` — reactive equivalent of `getValues`
-- `getValueIds` — reactive equivalent of `getValueIds`
-- `getValue` — reactive equivalent of `getValue`
-- `hasValues` — reactive equivalent of `hasValues`
-- `getTables` — reactive equivalent of `getTables`
-- `getTableIds` — reactive equivalent of `getTableIds`
-- `getTable` — reactive equivalent of `getTable`
-- `getRowIds` — reactive equivalent of `getRowIds`
-- `getSortedRowIds` — reactive equivalent of `getSortedRowIds`
-- `getRow` — reactive equivalent of `getRow`
-- `getCellIds` — reactive equivalent of `getCellIds`
-- `getCell` — reactive equivalent of `getCell`
+- The getValues function is the reactive equivalent of the getValues method
+- The getValueIds function is the reactive equivalent of the getValueIds method
+- The getValue function is the reactive equivalent of the getValue method
+- The getTables function is the reactive equivalent of the getTables method
+- The getTableIds function is the reactive equivalent of the getTableIds method
+- The getTable function is the reactive equivalent of the getTable method
+- The getRowIds function is the reactive equivalent of the getRowIds method
+- The getSortedRowIds function is the reactive equivalent of the getSortedRowIds
+  method
+- The getRow function is the reactive equivalent of the getRow method
+- The getCellIds function is the reactive equivalent of the getCellIds method
+- The getCell function is the reactive equivalent of the getCell method
 
-There are also reactive functions for the higher-level TinyBase objects:
-`getMetric`, `getMetricIds`, `getSliceIds`, `getSliceRowIds`,
-`getResultCell`, `getResultRow`, `getResultTable`,
-`getResultRowIds`, `getCheckpointIds`, `getCheckpoint`, and more.
+There are also reactive functions for the derived TinyBase data or objects.
+Examples include the getMetric function, getSliceRowIds function, or
+getResultTable function, and so on.
 
-Functions like `getStore`, `getMetrics`, and `getQueries` are different: they
-return TinyBase objects directly from Provider context. The reactive `getX`
-and `hasX` functions described here return reactive objects whose `.current`
-tracks Store data.
+Functions that access higher-level TinyBase objects - like the getStore
+function, getMetrics function, and getQueries function - are different: they
+return TinyBase objects directly from a Provider context. 
 
-## Reactive Parameters With R
+## Reactive Parameters With MaybeGetter
 
 All function parameters accept either a plain value or a reactive getter
 function. This is the `MaybeGetter<T>` type: `T | (() => T)`.
@@ -86,15 +74,14 @@ the function re-fetches automatically when it changes:
 <p>{color.current}</p>
 ```
 
-Without the `() => rowId` wrapper, changing the `rowId` prop would not cause
-the function to re-read the Store for the new row.
+Without the `() => rowId` wrapper, changing the `rowId` prop would not cause the
+function to re-read the Store for the new row.
 
 ## Writable State With `getCell`
 
-The `getCell` and `getValue` functions expose a writable `current`
-property for scalar values. Writing to it calls `store.setCell()` or
-`store.setValue()`. This makes Svelte's `bind:value` directive work for
-two-way binding:
+The `getCell` and `getValue` functions expose a writable `current` property for
+scalar values. Writing to it calls `store.setCell()` or `store.setValue()`. This
+makes Svelte's `bind:value` directive work for two-way binding:
 
 ```svelte
 <script>
@@ -109,13 +96,13 @@ two-way binding:
 <p>Current color: {color.current}</p>
 ```
 
-Typing in the `<input>` updates the Store, which is immediately reflected
-in the paragraph — without any additional event handling.
+Typing in the `<input>` updates the Store, which is immediately reflected in the
+paragraph — without any additional event handling.
 
 ## Context With Provider
 
 For larger apps, passing the `store` object to every function as the last
-argument gets repetitive. The `Provider` component sets a context that all
+argument gets repetitive. The Provider component sets a context that all
 descendant functions use automatically when no explicit reference is given:
 
 ```svelte
@@ -161,8 +148,8 @@ provided, functions reference them by Id:
 ```
 
 Descendant components can register additional objects into the nearest Provider
-context at runtime using `provideStore`, `provideMetrics`, and similar
-functions.
+context at runtime using the provideStore function, the provideMetrics function,
+and similar.
 
 ## View Components
 
@@ -209,17 +196,5 @@ how individual cells or rows are rendered:
 ```
 
 The full set of view components covers every level of the Store hierarchy and
-the higher-level TinyBase objects:
-
-- `CellView`, `RowView`, `TableView`, `TablesView`
-- `ValueView`, `ValuesView`
-- `SliceView`, `IndexView`
-- `ResultCellView`, `ResultRowView`, `ResultTableView`, `ResultSortedTableView`
-- `SortedTableView`
-- `MetricView`
-- `CheckpointView`, `BackwardCheckpointsView`, `CurrentCheckpointView`,
-  `ForwardCheckpointsView`
-- `RemoteRowView`, `LocalRowsView`, `LinkedRowsView`
-
-That completes the overview of the `ui-svelte` module. For API reference, see
-the [ui-svelte](/api/ui-svelte/) documentation.
+the higher-level TinyBase objects. For the full API reference, see the ui-svelte
+module documentation.

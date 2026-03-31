@@ -14,9 +14,9 @@ native Svelte 5 runes-based reactive bindings to TinyBase. The module provides
 reactive functions and view components for building reactive UIs without any
 additional state management.
 
-Reactive functions return a reactive `{current}` object backed by Svelte's
-reactivity. Any component that reads `value.current` will automatically
-re-render when the underlying TinyBase data changes:
+Reactive functions return a reactive object backed by Svelte's reactivity. Any
+component that reads `current` from it will automatically re-render when the
+underlying TinyBase data changes:
 
 ```svelte
 <script>
@@ -30,9 +30,9 @@ re-render when the underlying TinyBase data changes:
 <p>Color: {color.current}</p>
 ```
 
-The `getCell` function and the `getValue` function provide a writable
-`current` property that pairs naturally with Svelte's `bind:` directive for
-two-way data binding:
+The `getCell` function and the `getValue` function provide a writable `current`
+property that pairs naturally with Svelte's `bind:` directive for two-way data
+binding:
 
 ```svelte
 <script>
@@ -61,14 +61,14 @@ Svelte](/guides/building-uis/building-uis-with-svelte/) guide.
 If you tried the ui-svelte module in earlier beta releases, there are some
 intentional breaking changes made to ensure the API is more idiomatic for
 Svelte. What was `useX` is now a reactive `getX` or `hasX` function, so for
-example `useCell` has become the `getCell` function and `useHasCell` has
-become the `hasCell` function. Context lookups also use `getX`, as with the
-`getMetrics` function, but those return TinyBase objects directly from
-Provider context rather than reactive `{current}` wrappers. Listener functions
-now use `onX`, so for example `useCellListener` has become the `onCell`
-function. The old `useBindableCell` and `useBindableValue` beta names have
-also gone away because the `getCell` function and `getValue` function expose
-the writable scalar accessors directly.
+example `useCell` has become the getCell function and `useHasCell` has become
+the hasCell function. Context lookups also use `getX`, as with the
+getMetrics function, but those return TinyBase objects directly from Provider
+context rather than reactive `{current}` wrappers. Listener functions now use
+`onX`; so for example `useCellListener` has become the onCell function. The
+old `useBindableCell` and `useBindableValue` beta names have also gone away
+because the getCell function and getValue function expose the writable
+scalar accessors directly.
 
 This release also contains a minor breaking change since v8.0. The
 `tinybase/omni` module no longer includes the ui-react module, ui-react-dom
