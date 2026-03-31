@@ -40,7 +40,18 @@ export default defineConfig({
         test: {
           name: 'unit',
           include: ['test/unit/**/*.test.ts', 'test/unit/**/*.test.tsx'],
-          exclude: ['test/unit/core/ui-svelte/**'],
+          exclude: [
+            'test/unit/core/ui-svelte/**',
+            'test/unit/synchronizers/synchronizer-ws-server.test.ts',
+          ],
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'unit-ws-server',
+          include: ['test/unit/synchronizers/synchronizer-ws-server.test.ts'],
+          sequence: {groupOrder: 1},
         },
       },
       {
