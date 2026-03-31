@@ -119,21 +119,24 @@ type Thing =
   | AnyPersister
   | Synchronizer;
 
-class WritableHandle<TRead, TWrite extends TRead> {
-  readonly #getCurrent: () => TRead;
-  readonly #setCurrent: (value: TWrite) => void;
+class WritableHandle<Thing> {
+  readonly #get: () => Thing | undefined;
+  readonly #set: (value: Thing) => void;
 
-  constructor(getCurrent: () => TRead, setCurrent: (value: TWrite) => void) {
-    this.#getCurrent = getCurrent;
-    this.#setCurrent = setCurrent;
+  constructor(
+    getCurrent: () => Thing | undefined,
+    setCurrent: (value: Thing) => void,
+  ) {
+    this.#get = getCurrent;
+    this.#set = setCurrent;
   }
 
-  get current(): TRead {
-    return this.#getCurrent();
+  get current(): Thing | undefined {
+    return this.#get();
   }
 
-  set current(value: TWrite) {
-    this.#setCurrent(value);
+  set current(value: Thing) {
+    this.#set(value);
   }
 }
 
@@ -472,7 +475,7 @@ export const createCell = (
       return () => s?.delListener?.(listenerId);
     });
   }
-  return new WritableHandle<CellOrUndefined, Cell>(
+  return new WritableHandle<Cell>(
     () => value,
     (v) =>
       getS()?.setCell(maybeGet(tableId), maybeGet(rowId), maybeGet(cellId), v),
@@ -529,7 +532,7 @@ export const createValue = (
       return () => s?.delListener?.(listenerId);
     });
   }
-  return new WritableHandle<ValueOrUndefined, Value>(
+  return new WritableHandle<Value>(
     () => value,
     (v) => getS()?.setValue(maybeGet(valueId), v),
   );
