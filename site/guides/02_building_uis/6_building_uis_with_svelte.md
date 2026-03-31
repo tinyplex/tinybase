@@ -11,26 +11,26 @@ Install TinyBase and Svelte together:
 npm install tinybase svelte
 ```
 
-Then import hooks and components directly from the `tinybase/ui-svelte` module
-in your component's `<script>` block.
+Then import functions and components directly from the `tinybase/ui-svelte`
+module in your component's `<script>` block.
 
-## Reactive Hooks
+## Reactive Functions
 
-Every hook in the `ui-svelte` module returns a reactive object with a `current`
-property. Because `current` is backed by Svelte's `$state` rune, any part of
-your template that reads it will automatically update when the underlying Store
-data changes.
+Every reactive function in the `ui-svelte` module returns a reactive object
+with a `current` property. Any part of your template that reads it will
+automatically update when the underlying Store data changes.
 
-Here is the `useCell` hook reading the color of a pet and displaying it in a
+Here is the `createCell` function reading the color of a pet and displaying it
+in a
 paragraph:
 
 ```svelte
 <script>
   import {createStore} from 'tinybase';
-  import {useCell} from 'tinybase/ui-svelte';
+  import {createCell} from 'tinybase/ui-svelte';
 
   const store = createStore().setCell('pets', 'fido', 'color', 'brown');
-  const color = useCell('pets', 'fido', 'color', store);
+  const color = createCell('pets', 'fido', 'color', store);
 </script>
 
 <p>Color: {color.current}</p>
@@ -39,65 +39,66 @@ paragraph:
 
 When `store.setCell('pets', 'fido', 'color', 'walnut')` is called anywhere, the
 paragraph immediately re-renders to show `walnut`. No manual subscriptions, no
-`$:` labels, no `onDestroy` cleanup — the hook registers and removes TinyBase
-listeners automatically using Svelte's `$effect` lifecycle.
+`$:` labels, no `onDestroy` cleanup. The reactive object registers and removes
+TinyBase listeners automatically using Svelte's reactivity lifecycle.
 
-There are hooks corresponding to every Store reading method:
+There are reactive functions corresponding to every Store reading method:
 
-- `useValues` — reactive equivalent of `getValues`
-- `useValueIds` — reactive equivalent of `getValueIds`
-- `useValue` — reactive equivalent of `getValue`
-- `useHasValues` — reactive equivalent of `hasValues`
-- `useTables` — reactive equivalent of `getTables`
-- `useTableIds` — reactive equivalent of `getTableIds`
-- `useTable` — reactive equivalent of `getTable`
-- `useRowIds` — reactive equivalent of `getRowIds`
-- `useSortedRowIds` — reactive equivalent of `getSortedRowIds`
-- `useRow` — reactive equivalent of `getRow`
-- `useCellIds` — reactive equivalent of `getCellIds`
-- `useCell` — reactive equivalent of `getCell`
+- `createValues` — reactive equivalent of `getValues`
+- `createValueIds` — reactive equivalent of `getValueIds`
+- `createValue` — reactive equivalent of `getValue`
+- `createHasValues` — reactive equivalent of `hasValues`
+- `createTables` — reactive equivalent of `getTables`
+- `createTableIds` — reactive equivalent of `getTableIds`
+- `createTable` — reactive equivalent of `getTable`
+- `createRowIds` — reactive equivalent of `getRowIds`
+- `createSortedRowIds` — reactive equivalent of `getSortedRowIds`
+- `createRow` — reactive equivalent of `getRow`
+- `createCellIds` — reactive equivalent of `getCellIds`
+- `createCell` — reactive equivalent of `getCell`
 
-There are also hooks for the higher-level TinyBase objects: `useMetric`,
-`useMetricIds`, `useSliceIds`, `useSliceRowIds`, `useResultCell`,
-`useResultRow`, `useResultTable`, `useResultRowIds`, `useCheckpointIds`,
-`useCheckpoint`, and more.
+There are also reactive functions for the higher-level TinyBase objects:
+`createMetric`, `createMetricIds`, `createSliceIds`, `createSliceRowIds`,
+`createResultCell`, `createResultRow`, `createResultTable`,
+`createResultRowIds`, `createCheckpointIds`, `createCheckpoint`, and more.
 
 ## Reactive Parameters With R
 
-All hook parameters accept either a plain value or a reactive getter function.
-This is the `MaybeGetter<T>` type: `T | (() => T)`.
+All function parameters accept either a plain value or a reactive getter
+function. This is the `MaybeGetter<T>` type: `T | (() => T)`.
 
-Passing a getter function that reads a `$state` variable makes the hook
+Passing a getter function that reads a `$state` variable makes the function
 reactively track which data it fetches. In this example, `rowId` is a prop and
-the hook re-fetches automatically when it changes:
+the function re-fetches automatically when it changes:
 
 ```svelte
 <script>
-  import {useCell} from 'tinybase/ui-svelte';
+  import {createCell} from 'tinybase/ui-svelte';
 
   let {rowId, store} = $props();
-  const color = useCell('pets', () => rowId, 'color', store);
+  const color = createCell('pets', () => rowId, 'color', store);
 </script>
 
 <p>{color.current}</p>
 ```
 
 Without the `() => rowId` wrapper, changing the `rowId` prop would not cause
-the hook to re-read the Store for the new row.
+the function to re-read the Store for the new row.
 
-## Writable State With useBindableCell
+## Writable State With createCell
 
-The `useBindableCell` and `useBindableValue` hooks expose a writable `current`
-property. Writing to it calls `store.setCell()` or `store.setValue()`. This
-makes Svelte's `bind:value` directive work for two-way binding:
+The `createCell` and `createValue` functions expose a writable `current`
+property for scalar values. Writing to it calls `store.setCell()` or
+`store.setValue()`. This makes Svelte's `bind:value` directive work for
+two-way binding:
 
 ```svelte
 <script>
   import {createStore} from 'tinybase';
-  import {useBindableCell} from 'tinybase/ui-svelte';
+  import {createCell} from 'tinybase/ui-svelte';
 
   const store = createStore().setCell('pets', 'fido', 'color', 'brown');
-  const color = useBindableCell('pets', 'fido', 'color', store);
+  const color = createCell('pets', 'fido', 'color', store);
 </script>
 
 <input bind:value={color.current} />
@@ -109,9 +110,9 @@ in the paragraph — without any additional event handling.
 
 ## Context With Provider
 
-For larger apps, passing the `store` object to every hook as the last argument
-gets repetitive. The `Provider` component sets a context that all descendant
-hooks use automatically when no explicit reference is given:
+For larger apps, passing the `store` object to every function as the last
+argument gets repetitive. The `Provider` component sets a context that all
+descendant functions use automatically when no explicit reference is given:
 
 ```svelte
 <!-- App.svelte -->
@@ -133,11 +134,11 @@ hooks use automatically when no explicit reference is given:
 ```svelte
 <!-- Pane.svelte -->
 <script>
-  import {useCell} from 'tinybase/ui-svelte';
+  import {createCell} from 'tinybase/ui-svelte';
 
-  // No store argument — resolved automatically from the nearest Provider
-  const species = useCell('pets', 'fido', 'species');
-  const color = useCell('pets', 'fido', 'color');
+  // No store argument; resolved automatically from the nearest Provider
+  const species = createCell('pets', 'fido', 'species');
+  const color = createCell('pets', 'fido', 'color');
 </script>
 
 <p>{species.current} ({color.current})</p>
@@ -145,13 +146,13 @@ hooks use automatically when no explicit reference is given:
 
 `Provider` accepts `store`, `storesById`, `metrics`, `metricsById`, and
 equivalent props for every TinyBase object type. When multiple stores are
-provided, hooks reference them by Id:
+provided, functions reference them by Id:
 
 ```svelte
 <script>
-  import {useCell} from 'tinybase/ui-svelte';
+  import {createCell} from 'tinybase/ui-svelte';
 
-  const color = useCell('pets', 'fido', 'color', 'petStore');
+  const color = createCell('pets', 'fido', 'color', 'petStore');
 </script>
 ```
 
@@ -162,8 +163,8 @@ functions.
 ## View Components
 
 For common rendering tasks, the module provides pre-built view components that
-wrap the hooks and render data directly. These make it easy to compose UIs from
-Store data:
+wrap the reactive functions and render data directly. These make it easy to
+compose UIs from Store data:
 
 ```svelte
 <script>
