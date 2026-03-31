@@ -72,7 +72,7 @@ import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
 import type {MaybeGetter} from '../@types/ui-svelte/index.d.ts';
 import type {IdObj} from '../common/obj.ts';
 import {objGet, objIds} from '../common/obj.ts';
-import {isFunction, isString, isUndefined} from '../common/other.ts';
+import {hasWindow, isFunction, isString, isUndefined} from '../common/other.ts';
 import {
   _HAS,
   ADD,
@@ -257,7 +257,7 @@ const createListenable = <T>(
   let value = $state<T>(
     (getThing()?.[getMethod]?.(...getArgs()) ?? defaultValue) as T,
   );
-  if (typeof window !== 'undefined') {
+  if (hasWindow()) {
     $effect(() => {
       const thing = getThing();
       const args = getArgs();
@@ -282,7 +282,7 @@ const addListenerEffect = (
   getPreArgs: () => readonly any[] = () => EMPTY_ARR,
   mutator?: boolean,
 ): void => {
-  if (typeof window !== 'undefined') {
+  if (hasWindow()) {
     $effect(() => {
       const thing = getThing();
       const preArgs = getPreArgs();
@@ -458,7 +458,7 @@ export const createCell = (
   let value = $state<CellOrUndefined>(
     getS()?.getCell(maybeGet(tableId), maybeGet(rowId), maybeGet(cellId)),
   );
-  if (typeof window !== 'undefined') {
+  if (hasWindow()) {
     $effect(() => {
       const s: any = getS();
       const t = maybeGet(tableId),
@@ -521,7 +521,7 @@ export const createValue = (
 ): {get current(): ValueOrUndefined; set current(v: Value)} => {
   const getS = resolveStore(storeOrStoreId);
   let value = $state<ValueOrUndefined>(getS()?.getValue(maybeGet(valueId)));
-  if (typeof window !== 'undefined') {
+  if (hasWindow()) {
     $effect(() => {
       const s: any = getS();
       const vid = maybeGet(valueId);
@@ -544,7 +544,7 @@ export const getStore = (id?: Id): Store | undefined =>
 export const createStoreIds = (): {readonly current: Ids} => {
   const contextValue = getContextValue();
   let ids = $state<Ids>(getThingIds(contextValue, OFFSET_STORE));
-  if (typeof window !== 'undefined') {
+  if (hasWindow()) {
     $effect(() => {
       ids = getThingIds(contextValue, OFFSET_STORE);
     });
@@ -562,7 +562,7 @@ export const getMetrics = (id?: Id): Metrics | undefined =>
 export const createMetricsIds = (): {readonly current: Ids} => {
   const contextValue = getContextValue();
   let ids = $state<Ids>(getThingIds(contextValue, OFFSET_METRICS));
-  if (typeof window !== 'undefined') {
+  if (hasWindow()) {
     $effect(() => {
       ids = getThingIds(contextValue, OFFSET_METRICS);
     });
@@ -596,7 +596,7 @@ export const getIndexes = (id?: Id): Indexes | undefined =>
 export const createIndexesIds = (): {readonly current: Ids} => {
   const contextValue = getContextValue();
   let ids = $state<Ids>(getThingIds(contextValue, OFFSET_INDEXES));
-  if (typeof window !== 'undefined') {
+  if (hasWindow()) {
     $effect(() => {
       ids = getThingIds(contextValue, OFFSET_INDEXES);
     });
@@ -657,7 +657,7 @@ export const getQueries = (id?: Id): Queries | undefined =>
 export const createQueriesIds = (): {readonly current: Ids} => {
   const contextValue = getContextValue();
   let ids = $state<Ids>(getThingIds(contextValue, OFFSET_QUERIES));
-  if (typeof window !== 'undefined') {
+  if (hasWindow()) {
     $effect(() => {
       ids = getThingIds(contextValue, OFFSET_QUERIES);
     });
@@ -782,7 +782,7 @@ export const getRelationships = (id?: Id): Relationships | undefined =>
 export const createRelationshipsIds = (): {readonly current: Ids} => {
   const contextValue = getContextValue();
   let ids = $state<Ids>(getThingIds(contextValue, OFFSET_RELATIONSHIPS));
-  if (typeof window !== 'undefined') {
+  if (hasWindow()) {
     $effect(() => {
       ids = getThingIds(contextValue, OFFSET_RELATIONSHIPS);
     });
@@ -863,7 +863,7 @@ export const getCheckpoints = (id?: Id): Checkpoints | undefined =>
 export const createCheckpointsIds = (): {readonly current: Ids} => {
   const contextValue = getContextValue();
   let ids = $state<Ids>(getThingIds(contextValue, OFFSET_CHECKPOINTS));
-  if (typeof window !== 'undefined') {
+  if (hasWindow()) {
     $effect(() => {
       ids = getThingIds(contextValue, OFFSET_CHECKPOINTS);
     });
@@ -915,7 +915,7 @@ export const getPersister = (id?: Id): AnyPersister | undefined =>
 export const createPersisterIds = (): {readonly current: Ids} => {
   const contextValue = getContextValue();
   let ids = $state<Ids>(getThingIds(contextValue, OFFSET_PERSISTER));
-  if (typeof window !== 'undefined') {
+  if (hasWindow()) {
     $effect(() => {
       ids = getThingIds(contextValue, OFFSET_PERSISTER);
     });
@@ -942,7 +942,7 @@ export const getSynchronizer = (id?: Id): Synchronizer | undefined =>
 export const createSynchronizerIds = (): {readonly current: Ids} => {
   const contextValue = getContextValue();
   let ids = $state<Ids>(getThingIds(contextValue, OFFSET_SYNCHRONIZER));
-  if (typeof window !== 'undefined') {
+  if (hasWindow()) {
     $effect(() => {
       ids = getThingIds(contextValue, OFFSET_SYNCHRONIZER);
     });
@@ -1536,7 +1536,7 @@ export const onSynchronizerStatus = (
 
 const provideThing = (thingId: Id, thing: any, offset: number): void => {
   const contextValue = getContextValue();
-  if (typeof window !== 'undefined') {
+  if (hasWindow()) {
     $effect(() => {
       contextValue[16]?.(offset, thingId, thing);
       return () => contextValue[17]?.(offset, thingId);

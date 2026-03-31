@@ -49,6 +49,8 @@ export const isNullish = (thing: unknown): thing is undefined | null =>
 export const isUndefined = (thing: unknown): thing is undefined =>
   thing === undefined;
 
+export const hasWindow = (): boolean => !isUndefined(GLOBAL.window);
+
 export const isNull = (thing: unknown): thing is null => thing === null;
 
 export const isTrue = (thing: unknown): thing is true => thing === true;
