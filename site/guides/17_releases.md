@@ -11,42 +11,51 @@ highlighted features.
 
 This highly-anticipated release introduces the new ui-svelte module, bringing
 native Svelte 5 runes-based reactive bindings to TinyBase. The module provides
-hooks and view components for building reactive UIs without any additional state
-management.
+reactive functions and view components for building reactive UIs without any
+additional state management.
 
-Hooks return a reactive `{current}` object backed by Svelte's `$state` rune. Any
-component that reads `hook.current` will automatically re-render when the
-underlying TinyBase data changes:
+Reactive functions return a reactive `{current}` object backed by Svelte's
+`$state` rune. Any component that reads `value.current` will automatically
+re-render when the underlying TinyBase data changes:
 
 ```svelte
 <script>
   import {createStore} from 'tinybase';
-  import {useCell} from 'tinybase/ui-svelte';
+  import {createCell} from 'tinybase/ui-svelte';
 
   const store = createStore().setCell('pets', 'fido', 'color', 'brown');
-  const color = useCell('pets', 'fido', 'color', store);
+  const color = createCell('pets', 'fido', 'color', store);
 </script>
 
 <p>Color: {color.current}</p>
 ```
 
-The useBindableCell hook and useBindableValue hook go further, providing a
-writable `current` property that pairs naturally with Svelte's `bind:` directive
-for two-way data binding:
+`createCell` and `createValue` go further, providing a writable `current`
+property that pairs naturally with Svelte's `bind:` directive for two-way data
+binding:
 
 ```svelte
 <script>
-  import {useBindableCell} from 'tinybase/ui-svelte';
+  import {createCell} from 'tinybase/ui-svelte';
 
-  const color = useBindableCell('pets', 'fido', 'color', store);
+  const color = createCell('pets', 'fido', 'color', store);
 </script>
 
 <input bind:value={color.current} />
 ```
 
-All hooks accept reactive getter functions as parameters — the MaybeGetter type
-(`T | (() => T)`) — so passing `() => rowId` from a `$state` variable causes the
-hook to reactively track which row it reads, without unmounting and remounting.
+If you tried the ui-svelte module in earlier beta releases, there are some
+intentional breaking changes we made to ensure the API was more idiomatic for
+Svelte. What was `useX` is now `createX` for reactive accessors, such as
+`useCell` becoming `createCell`, for example. Context lookups use `getX`, such
+as `getStore`, for example. And the old `useBindableCell` and `useBindableValue`
+beta names have also gone away because `createCell` and `createValue` are now
+the writable scalar accessors directly.
+
+All reactive functions accept reactive getter functions as parameters — the
+MaybeGetter type (`T | (() => T)`) — so passing `() => rowId` from a `$state`
+variable causes the function to reactively track which row it reads, without
+unmounting and remounting.
 
 The module further includes a provider component and context helpers for sharing
 TinyBase objects across a component tree, and many built-in view components for
