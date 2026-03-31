@@ -965,59 +965,53 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     >,
   ) => {readonly current: Status};
 
-  /// ui-svelte.useHasTablesListener
-  useHasTablesListener: (
+  /// ui-svelte.onHasTables
+  onHasTables: (
     listener: HasTablesListener<Schemas>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useTablesListener
-  useTablesListener: (
+  /// ui-svelte.onTables
+  onTables: (
     listener: TablesListener<Schemas>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useTableIdsListener
-  useTableIdsListener: (
+  /// ui-svelte.onTableIds
+  onTableIds: (
     listener: TableIdsListener<Schemas>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useHasTableListener
-  useHasTableListener: <
-    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
-  >(
+  /// ui-svelte.onHasTable
+  onHasTable: <TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null>(
     tableId: MaybeGetter<TableIdOrNull>,
     listener: HasTableListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useTableListener
-  useTableListener: <
-    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
-  >(
+  /// ui-svelte.onTable
+  onTable: <TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null>(
     tableId: MaybeGetter<TableIdOrNull>,
     listener: TableListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useTableCellIdsListener
-  useTableCellIdsListener: <
-    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
-  >(
+  /// ui-svelte.onTableCellIds
+  onTableCellIds: <TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null>(
     tableId: MaybeGetter<TableIdOrNull>,
     listener: TableCellIdsListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useHasTableCellListener
-  useHasTableCellListener: <
+  /// ui-svelte.onHasTableCell
+  onHasTableCell: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     CellIdOrNull extends
       | (TableIdOrNull extends TableIdFromSchema<Schemas[0]>
@@ -1032,28 +1026,24 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useRowCountListener
-  useRowCountListener: <
-    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
-  >(
+  /// ui-svelte.onRowCount
+  onRowCount: <TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null>(
     tableId: MaybeGetter<TableIdOrNull>,
     listener: RowCountListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useRowIdsListener
-  useRowIdsListener: <
-    TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
-  >(
+  /// ui-svelte.onRowIds
+  onRowIds: <TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null>(
     tableId: MaybeGetter<TableIdOrNull>,
     listener: RowIdsListener<Schemas, TableIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useSortedRowIdsListener
-  useSortedRowIdsListener: <
+  /// ui-svelte.onSortedRowIds
+  onSortedRowIds: <
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellIdOrUndefined extends CellIdFromSchema<Schemas[0], TableId> | undefined,
   >(
@@ -1067,8 +1057,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useHasRowListener
-  useHasRowListener: <
+  /// ui-svelte.onHasRow
+  onHasRow: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
   >(
@@ -1079,8 +1069,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useRowListener
-  useRowListener: <
+  /// ui-svelte.onRow
+  onRow: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
   >(
@@ -1091,8 +1081,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useCellIdsListener
-  useCellIdsListener: <
+  /// ui-svelte.onCellIds
+  onCellIds: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
   >(
@@ -1103,8 +1093,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useHasCellListener
-  useHasCellListener: <
+  /// ui-svelte.onHasCell
+  onHasCell: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
     CellIdOrNull extends
@@ -1126,8 +1116,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useCellListener
-  useCellListener: <
+  /// ui-svelte.onCell
+  onCell: <
     TableIdOrNull extends TableIdFromSchema<Schemas[0]> | null,
     RowIdOrNull extends IdOrNull,
     CellIdOrNull extends
@@ -1144,141 +1134,137 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useHasValuesListener
-  useHasValuesListener: (
+  /// ui-svelte.onHasValues
+  onHasValues: (
     listener: HasValuesListener<Schemas>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useValuesListener
-  useValuesListener: (
+  /// ui-svelte.onValues
+  onValues: (
     listener: ValuesListener<Schemas>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useValueIdsListener
-  useValueIdsListener: (
+  /// ui-svelte.onValueIds
+  onValueIds: (
     listener: ValueIdsListener<Schemas>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useHasValueListener
-  useHasValueListener: <
-    ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
-  >(
+  /// ui-svelte.onHasValue
+  onHasValue: <ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null>(
     valueId: MaybeGetter<ValueIdOrNull>,
     listener: HasValueListener<Schemas, ValueIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useValueListener
-  useValueListener: <
-    ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null,
-  >(
+  /// ui-svelte.onValue
+  onValue: <ValueIdOrNull extends ValueIdFromSchema<Schemas[1]> | null>(
     valueId: MaybeGetter<ValueIdOrNull>,
     listener: ValueListener<Schemas, ValueIdOrNull>,
     mutator?: boolean,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useStartTransactionListener
-  useStartTransactionListener: (
+  /// ui-svelte.onStartTransaction
+  onStartTransaction: (
     listener: TransactionListener<Schemas>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useWillFinishTransactionListener
-  useWillFinishTransactionListener: (
+  /// ui-svelte.onWillFinishTransaction
+  onWillFinishTransaction: (
     listener: TransactionListener<Schemas>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useDidFinishTransactionListener
-  useDidFinishTransactionListener: (
+  /// ui-svelte.onDidFinishTransaction
+  onDidFinishTransaction: (
     listener: TransactionListener<Schemas>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useMetricListener
-  useMetricListener: (
+  /// ui-svelte.onMetric
+  onMetric: (
     metricId: MaybeGetter<IdOrNull>,
     listener: MetricListener<Schemas>,
     metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useSliceIdsListener
-  useSliceIdsListener: (
+  /// ui-svelte.onSliceIds
+  onSliceIds: (
     indexId: MaybeGetter<IdOrNull>,
     listener: SliceIdsListener<Schemas>,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useSliceRowIdsListener
-  useSliceRowIdsListener: (
+  /// ui-svelte.onSliceRowIds
+  onSliceRowIds: (
     indexId: MaybeGetter<IdOrNull>,
     sliceId: MaybeGetter<IdOrNull>,
     listener: SliceRowIdsListener<Schemas>,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useRemoteRowIdListener
-  useRemoteRowIdListener: (
+  /// ui-svelte.onRemoteRowId
+  onRemoteRowId: (
     relationshipId: MaybeGetter<IdOrNull>,
     localRowId: MaybeGetter<IdOrNull>,
     listener: RemoteRowIdListener<Schemas>,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useLocalRowIdsListener
-  useLocalRowIdsListener: (
+  /// ui-svelte.onLocalRowIds
+  onLocalRowIds: (
     relationshipId: MaybeGetter<IdOrNull>,
     remoteRowId: MaybeGetter<IdOrNull>,
     listener: LocalRowIdsListener<Schemas>,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useLinkedRowIdsListener
-  useLinkedRowIdsListener: (
+  /// ui-svelte.onLinkedRowIds
+  onLinkedRowIds: (
     relationshipId: MaybeGetter<Id>,
     firstRowId: MaybeGetter<Id>,
     listener: LinkedRowIdsListener<Schemas>,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useResultTableListener
-  useResultTableListener: (
+  /// ui-svelte.onResultTable
+  onResultTable: (
     queryId: MaybeGetter<IdOrNull>,
     listener: ResultTableListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useResultTableCellIdsListener
-  useResultTableCellIdsListener: (
+  /// ui-svelte.onResultTableCellIds
+  onResultTableCellIds: (
     queryId: MaybeGetter<IdOrNull>,
     listener: ResultTableCellIdsListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useResultRowCountListener
-  useResultRowCountListener: (
+  /// ui-svelte.onResultRowCount
+  onResultRowCount: (
     queryId: MaybeGetter<IdOrNull>,
     listener: ResultRowCountListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useResultRowIdsListener
-  useResultRowIdsListener: (
+  /// ui-svelte.onResultRowIds
+  onResultRowIds: (
     queryId: MaybeGetter<IdOrNull>,
     listener: ResultRowIdsListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useResultSortedRowIdsListener
-  useResultSortedRowIdsListener: (
+  /// ui-svelte.onResultSortedRowIds
+  onResultSortedRowIds: (
     queryId: MaybeGetter<Id>,
     cellId: MaybeGetter<Id | undefined>,
     descending: MaybeGetter<boolean>,
@@ -1288,24 +1274,24 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useResultRowListener
-  useResultRowListener: (
+  /// ui-svelte.onResultRow
+  onResultRow: (
     queryId: MaybeGetter<IdOrNull>,
     rowId: MaybeGetter<IdOrNull>,
     listener: ResultRowListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useResultCellIdsListener
-  useResultCellIdsListener: (
+  /// ui-svelte.onResultCellIds
+  onResultCellIds: (
     queryId: MaybeGetter<IdOrNull>,
     rowId: MaybeGetter<IdOrNull>,
     listener: ResultCellIdsListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useResultCellListener
-  useResultCellListener: (
+  /// ui-svelte.onResultCell
+  onResultCell: (
     queryId: MaybeGetter<IdOrNull>,
     rowId: MaybeGetter<IdOrNull>,
     cellId: MaybeGetter<IdOrNull>,
@@ -1313,44 +1299,44 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useParamValuesListener
-  useParamValuesListener: (
+  /// ui-svelte.onParamValues
+  onParamValues: (
     queryId: MaybeGetter<IdOrNull>,
     listener: ParamValuesListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useParamValueListener
-  useParamValueListener: (
+  /// ui-svelte.onParamValue
+  onParamValue: (
     queryId: MaybeGetter<IdOrNull>,
     paramId: MaybeGetter<IdOrNull>,
     listener: ParamValueListener<Schemas>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useCheckpointIdsListener
-  useCheckpointIdsListener: (
+  /// ui-svelte.onCheckpointIds
+  onCheckpointIds: (
     listener: CheckpointIdsListener<Schemas>,
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => void;
 
-  /// ui-svelte.useCheckpointListener
-  useCheckpointListener: (
+  /// ui-svelte.onCheckpoint
+  onCheckpoint: (
     checkpointId: MaybeGetter<IdOrNull>,
     listener: CheckpointListener<Schemas>,
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => void;
 
-  /// ui-svelte.usePersisterStatusListener
-  usePersisterStatusListener: (
+  /// ui-svelte.onPersisterStatus
+  onPersisterStatus: (
     listener: StatusListener<Schemas>,
     persisterOrPersisterId?: MaybeGetter<
       PersisterOrPersisterId<Schemas> | undefined
     >,
   ) => void;
 
-  /// ui-svelte.useSynchronizerStatusListener
-  useSynchronizerStatusListener: (
+  /// ui-svelte.onSynchronizerStatus
+  onSynchronizerStatus: (
     listener: StatusListener<Schemas>,
     synchronizerOrSynchronizerId?: MaybeGetter<
       SynchronizerOrSynchronizerId<Schemas> | undefined

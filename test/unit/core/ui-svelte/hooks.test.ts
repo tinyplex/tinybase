@@ -1300,8 +1300,8 @@ describe('Checkpoint Callbacks', () => {
   });
 });
 
-describe('Listener Hooks', () => {
-  test('useHasTablesListener', async () => {
+describe('Listener Functions', () => {
+  test('onHasTables', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasTables).toEqual(0);
 
@@ -1315,7 +1315,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().hasTables).toEqual(0);
   });
 
-  test('useTablesListener', async () => {
+  test('onTables', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().tables).toEqual(0);
 
@@ -1329,7 +1329,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().tables).toEqual(0);
   });
 
-  test('useTableIdsListener', async () => {
+  test('onTableIds', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().tableIds).toEqual(0);
 
@@ -1343,7 +1343,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().tableIds).toEqual(0);
   });
 
-  test('useHasTableListener', async () => {
+  test('onHasTable', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasTable).toEqual(0);
 
@@ -1359,7 +1359,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().hasTable).toEqual(0);
   });
 
-  test('useTableListener', async () => {
+  test('onTable', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().table).toEqual(0);
 
@@ -1375,7 +1375,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().table).toEqual(0);
   });
 
-  test('useTableCellIdsListener', async () => {
+  test('onTableCellIds', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().tableCellIds).toEqual(0);
 
@@ -1391,7 +1391,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().tableCellIds).toEqual(0);
   });
 
-  test('useHasTableCellListener', async () => {
+  test('onHasTableCell', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasTableCell).toEqual(0);
 
@@ -1407,7 +1407,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().hasTableCell).toEqual(0);
   });
 
-  test('useRowCountListener', async () => {
+  test('onRowCount', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().rowCount).toEqual(0);
 
@@ -1423,7 +1423,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().rowCount).toEqual(0);
   });
 
-  test('useRowIdsListener', async () => {
+  test('onRowIds', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().rowIds).toEqual(0);
 
@@ -1439,7 +1439,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().rowIds).toEqual(0);
   });
 
-  test('useSortedRowIdsListener', async () => {
+  test('onSortedRowIds', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().sortedRowIds).toEqual(0);
 
@@ -1455,7 +1455,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().sortedRowIds).toEqual(0);
   });
 
-  test('useHasRowListener', async () => {
+  test('onHasRow', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasRow).toEqual(0);
 
@@ -1471,7 +1471,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().hasRow).toEqual(0);
   });
 
-  test('useRowListener', async () => {
+  test('onRow', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().row).toEqual(0);
 
@@ -1487,7 +1487,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().row).toEqual(0);
   });
 
-  test('useCellIdsListener', async () => {
+  test('onCellIds', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().cellIds).toEqual(0);
 
@@ -1503,7 +1503,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().cellIds).toEqual(0);
   });
 
-  test('useHasCellListener', async () => {
+  test('onHasCell', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasCell).toEqual(0);
 
@@ -1519,7 +1519,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().hasCell).toEqual(0);
   });
 
-  test('useCellListener', async () => {
+  test('onCell', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().cell).toEqual(0);
 
@@ -1535,7 +1535,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().cell).toEqual(0);
   });
 
-  test('useHasValuesListener', async () => {
+  test('onHasValues', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasValues).toEqual(0);
 
@@ -1549,7 +1549,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().hasValues).toEqual(0);
   });
 
-  test('useValuesListener', async () => {
+  test('onValues', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().values).toEqual(0);
 
@@ -1563,7 +1563,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().values).toEqual(0);
   });
 
-  test('useValueIdsListener', async () => {
+  test('onValueIds', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().valueIds).toEqual(0);
 
@@ -1577,7 +1577,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().valueIds).toEqual(0);
   });
 
-  test('useHasValueListener', async () => {
+  test('onHasValue', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().hasValue).toEqual(0);
 
@@ -1593,7 +1593,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().hasValue).toEqual(0);
   });
 
-  test('useValueListener', async () => {
+  test('onValue', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().value).toEqual(0);
 
@@ -1609,7 +1609,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().value).toEqual(0);
   });
 
-  test('useStartTransactionListener', async () => {
+  test('onStartTransaction', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().transaction).toEqual(0);
 
@@ -1625,7 +1625,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().transaction).toEqual(0);
   });
 
-  test('useWillFinishTransactionListener', async () => {
+  test('onWillFinishTransaction', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().transaction).toEqual(0);
 
@@ -1641,7 +1641,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().transaction).toEqual(0);
   });
 
-  test('useDidFinishTransactionListener', async () => {
+  test('onDidFinishTransaction', async () => {
     const listener = vi.fn();
     expect(store.getListenerStats().transaction).toEqual(0);
 
@@ -1657,7 +1657,7 @@ describe('Listener Hooks', () => {
     expect(store.getListenerStats().transaction).toEqual(0);
   });
 
-  test('useMetricListener', async () => {
+  test('onMetric', async () => {
     const metrics: Metrics = createMetrics(store).setMetricDefinition(
       'm1',
       't1',
@@ -1679,7 +1679,7 @@ describe('Listener Hooks', () => {
     expect(metrics.getListenerStats().metric).toEqual(0);
   });
 
-  test('useSliceIdsListener', async () => {
+  test('onSliceIds', async () => {
     const indexes: Indexes = createIndexes(store).setIndexDefinition(
       'i1',
       't1',
@@ -1700,7 +1700,7 @@ describe('Listener Hooks', () => {
     expect(indexes.getListenerStats().sliceIds).toEqual(0);
   });
 
-  test('useSliceRowIdsListener', async () => {
+  test('onSliceRowIds', async () => {
     const indexes: Indexes = createIndexes(store).setIndexDefinition(
       'i1',
       't1',
@@ -1721,7 +1721,7 @@ describe('Listener Hooks', () => {
     expect(indexes.getListenerStats().sliceRowIds).toEqual(0);
   });
 
-  test('useRemoteRowIdListener', async () => {
+  test('onRemoteRowId', async () => {
     const relationships: Relationships = createRelationships(
       store,
     ).setRelationshipDefinition('r1', 't1', 'T1', 'c1');
@@ -1740,7 +1740,7 @@ describe('Listener Hooks', () => {
     expect(relationships.getListenerStats().remoteRowId).toEqual(0);
   });
 
-  test('useLocalRowIdsListener', async () => {
+  test('onLocalRowIds', async () => {
     const relationships: Relationships = createRelationships(
       store,
     ).setRelationshipDefinition('r1', 't1', 'T1', 'c1');
@@ -1764,7 +1764,7 @@ describe('Listener Hooks', () => {
     expect(relationships.getListenerStats().localRowIds).toEqual(0);
   });
 
-  test('useLinkedRowIdsListener', async () => {
+  test('onLinkedRowIds', async () => {
     const relationships: Relationships = createRelationships(
       store,
     ).setRelationshipDefinition('r1', 't1', 't1', 'c1');
@@ -1788,7 +1788,7 @@ describe('Listener Hooks', () => {
     expect(relationships.getListenerStats().linkedRowIds).toEqual(0);
   });
 
-  test('useResultTableListener', async () => {
+  test('onResultTable', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1809,7 +1809,7 @@ describe('Listener Hooks', () => {
     expect(queries.getListenerStats().table).toEqual(0);
   });
 
-  test('useResultTableCellIdsListener', async () => {
+  test('onResultTableCellIds', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1833,7 +1833,7 @@ describe('Listener Hooks', () => {
     expect(queries.getListenerStats().tableCellIds).toEqual(0);
   });
 
-  test('useResultRowCountListener', async () => {
+  test('onResultRowCount', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1854,7 +1854,7 @@ describe('Listener Hooks', () => {
     expect(queries.getListenerStats().rowCount).toEqual(0);
   });
 
-  test('useResultRowIdsListener', async () => {
+  test('onResultRowIds', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1875,7 +1875,7 @@ describe('Listener Hooks', () => {
     expect(queries.getListenerStats().rowIds).toEqual(0);
   });
 
-  test('useResultSortedRowIdsListener', async () => {
+  test('onResultSortedRowIds', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1896,7 +1896,7 @@ describe('Listener Hooks', () => {
     expect(queries.getListenerStats().sortedRowIds).toEqual(0);
   });
 
-  test('useResultRowListener', async () => {
+  test('onResultRow', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1917,7 +1917,7 @@ describe('Listener Hooks', () => {
     expect(queries.getListenerStats().row).toEqual(0);
   });
 
-  test('useResultCellIdsListener', async () => {
+  test('onResultCellIds', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1941,7 +1941,7 @@ describe('Listener Hooks', () => {
     expect(queries.getListenerStats().cellIds).toEqual(0);
   });
 
-  test('useResultCellListener', async () => {
+  test('onResultCell', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1962,7 +1962,7 @@ describe('Listener Hooks', () => {
     expect(queries.getListenerStats().cell).toEqual(0);
   });
 
-  test('useParamValuesListener', async () => {
+  test('onParamValues', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1987,7 +1987,7 @@ describe('Listener Hooks', () => {
     expect(queries.getListenerStats().paramValues).toEqual(0);
   });
 
-  test('useParamValueListener', async () => {
+  test('onParamValue', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -2012,7 +2012,7 @@ describe('Listener Hooks', () => {
     expect(queries.getListenerStats().paramValue).toEqual(0);
   });
 
-  test('useCheckpointIdsListener', async () => {
+  test('onCheckpointIds', async () => {
     const checkpoints: Checkpoints = createCheckpoints(store);
     const listener = vi.fn();
     expect(checkpoints.getListenerStats().checkpointIds).toEqual(0);
@@ -2029,7 +2029,7 @@ describe('Listener Hooks', () => {
     expect(checkpoints.getListenerStats().checkpointIds).toEqual(0);
   });
 
-  test('useCheckpointListener', async () => {
+  test('onCheckpoint', async () => {
     const checkpoints: Checkpoints = createCheckpoints(store);
     const listener = vi.fn();
     expect(checkpoints.getListenerStats().checkpoint).toEqual(0);
@@ -2046,7 +2046,7 @@ describe('Listener Hooks', () => {
     expect(checkpoints.getListenerStats().checkpoint).toEqual(0);
   });
 
-  test('usePersisterStatusListener', async () => {
+  test('onPersisterStatus', async () => {
     const persister: AnyPersister = createSessionPersister(store, 'test-key');
     const listener = vi.fn();
 
@@ -2061,7 +2061,7 @@ describe('Listener Hooks', () => {
     persister.destroy();
   });
 
-  test('useSynchronizerStatusListener', async () => {
+  test('onSynchronizerStatus', async () => {
     const store2 = createMergeableStore();
     const synchronizer: Synchronizer = createLocalSynchronizer(store2);
     const listener = vi.fn();

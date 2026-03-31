@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useLinkedRowIdsListener} from 'tinybase/ui-svelte';
+  import {onLinkedRowIds} from 'tinybase/ui-svelte';
   import type {Relationships} from 'tinybase';
 
   let {
@@ -13,7 +13,7 @@
     firstRowId: string;
     listener: (...args: any[]) => void;
   } = $props();
-  useLinkedRowIdsListener(
+  onLinkedRowIds(
     () => relationshipId,
     () => firstRowId,
     (...args) => listener(...args),

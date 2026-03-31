@@ -47,10 +47,11 @@ binding:
 If you tried the ui-svelte module in earlier beta releases, there are some
 intentional breaking changes we made to ensure the API was more idiomatic for
 Svelte. What was `useX` is now `createX` for reactive accessors, such as
-`useCell` becoming `createCell`, for example. Context lookups use `getX`, such
-as `getStore`, for example. And the old `useBindableCell` and `useBindableValue`
-beta names have also gone away because `createCell` and `createValue` are now
-the writable scalar accessors directly.
+`useCell` becoming `createCell`. Context lookups use `getX`, such as `getStore`,
+and listener functions now use `onX`, such as `useCellListener` becoming
+`onCell`. The old `useBindableCell` and `useBindableValue` beta names have also
+gone away because `createCell` and `createValue` are now the writable scalar
+accessors directly.
 
 All reactive functions accept reactive getter functions as parameters — the
 MaybeGetter type (`T | (() => T)`) — so passing `() => rowId` from a `$state`

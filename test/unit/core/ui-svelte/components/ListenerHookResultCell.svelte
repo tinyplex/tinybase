@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useResultCellListener} from 'tinybase/ui-svelte';
+  import {onResultCell} from 'tinybase/ui-svelte';
   import type {Queries} from 'tinybase';
 
   let {
@@ -15,7 +15,7 @@
     cellId: string;
     listener: (...args: any[]) => void;
   } = $props();
-  useResultCellListener(
+  onResultCell(
     () => queryId,
     () => rowId,
     () => cellId,

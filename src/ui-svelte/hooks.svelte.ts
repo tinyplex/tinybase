@@ -272,7 +272,7 @@ const createListenable = <T>(
   };
 };
 
-const useListener = (
+const addListenerEffect = (
   getThing: () => any,
   listenable: string,
   listener: (...args: any[]) => void,
@@ -960,12 +960,12 @@ export const createSynchronizerStatus = (
     0 as Status,
   );
 
-export const useHasTablesListener = (
+export const onHasTables = (
   listener: HasTablesListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     HAS + TABLES,
     listener,
@@ -973,12 +973,12 @@ export const useHasTablesListener = (
     mutator,
   );
 
-export const useTablesListener = (
+export const onTables = (
   listener: TablesListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     TABLES,
     listener,
@@ -986,12 +986,12 @@ export const useTablesListener = (
     mutator,
   );
 
-export const useTableIdsListener = (
+export const onTableIds = (
   listener: TableIdsListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     TABLE_IDS,
     listener,
@@ -999,13 +999,13 @@ export const useTableIdsListener = (
     mutator,
   );
 
-export const useHasTableListener = (
+export const onHasTable = (
   tableId: MaybeGetter<IdOrNull>,
   listener: HasTableListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     HAS + TABLE,
     listener,
@@ -1013,13 +1013,13 @@ export const useHasTableListener = (
     mutator,
   );
 
-export const useTableListener = (
+export const onTable = (
   tableId: MaybeGetter<IdOrNull>,
   listener: TableListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     TABLE,
     listener,
@@ -1027,13 +1027,13 @@ export const useTableListener = (
     mutator,
   );
 
-export const useTableCellIdsListener = (
+export const onTableCellIds = (
   tableId: MaybeGetter<IdOrNull>,
   listener: TableCellIdsListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     TABLE + CELL_IDS,
     listener,
@@ -1041,14 +1041,14 @@ export const useTableCellIdsListener = (
     mutator,
   );
 
-export const useHasTableCellListener = (
+export const onHasTableCell = (
   tableId: MaybeGetter<IdOrNull>,
   cellId: MaybeGetter<IdOrNull>,
   listener: HasTableCellListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     HAS + TABLE + CELL,
     listener,
@@ -1056,13 +1056,13 @@ export const useHasTableCellListener = (
     mutator,
   );
 
-export const useRowCountListener = (
+export const onRowCount = (
   tableId: MaybeGetter<IdOrNull>,
   listener: RowCountListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     ROW_COUNT,
     listener,
@@ -1070,13 +1070,13 @@ export const useRowCountListener = (
     mutator,
   );
 
-export const useRowIdsListener = (
+export const onRowIds = (
   tableId: MaybeGetter<IdOrNull>,
   listener: RowIdsListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     ROW_IDS,
     listener,
@@ -1084,7 +1084,7 @@ export const useRowIdsListener = (
     mutator,
   );
 
-export const useSortedRowIdsListener = (
+export const onSortedRowIds = (
   tableId: MaybeGetter<Id>,
   cellId: MaybeGetter<Id | undefined>,
   descending: MaybeGetter<boolean>,
@@ -1094,7 +1094,7 @@ export const useSortedRowIdsListener = (
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     SORTED_ROW_IDS,
     listener,
@@ -1108,14 +1108,14 @@ export const useSortedRowIdsListener = (
     mutator,
   );
 
-export const useHasRowListener = (
+export const onHasRow = (
   tableId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   listener: HasRowListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     HAS + ROW,
     listener,
@@ -1123,14 +1123,14 @@ export const useHasRowListener = (
     mutator,
   );
 
-export const useRowListener = (
+export const onRow = (
   tableId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   listener: RowListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     ROW,
     listener,
@@ -1138,14 +1138,14 @@ export const useRowListener = (
     mutator,
   );
 
-export const useCellIdsListener = (
+export const onCellIds = (
   tableId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   listener: CellIdsListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     CELL_IDS,
     listener,
@@ -1153,7 +1153,7 @@ export const useCellIdsListener = (
     mutator,
   );
 
-export const useHasCellListener = (
+export const onHasCell = (
   tableId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   cellId: MaybeGetter<IdOrNull>,
@@ -1161,7 +1161,7 @@ export const useHasCellListener = (
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     HAS + CELL,
     listener,
@@ -1169,7 +1169,7 @@ export const useHasCellListener = (
     mutator,
   );
 
-export const useCellListener = (
+export const onCell = (
   tableId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   cellId: MaybeGetter<IdOrNull>,
@@ -1177,7 +1177,7 @@ export const useCellListener = (
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     CELL,
     listener,
@@ -1185,12 +1185,12 @@ export const useCellListener = (
     mutator,
   );
 
-export const useHasValuesListener = (
+export const onHasValues = (
   listener: HasValuesListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     HAS + VALUES,
     listener,
@@ -1198,12 +1198,12 @@ export const useHasValuesListener = (
     mutator,
   );
 
-export const useValuesListener = (
+export const onValues = (
   listener: ValuesListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     VALUES,
     listener,
@@ -1211,12 +1211,12 @@ export const useValuesListener = (
     mutator,
   );
 
-export const useValueIdsListener = (
+export const onValueIds = (
   listener: ValueIdsListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     VALUE_IDS,
     listener,
@@ -1224,13 +1224,13 @@ export const useValueIdsListener = (
     mutator,
   );
 
-export const useHasValueListener = (
+export const onHasValue = (
   valueId: MaybeGetter<IdOrNull>,
   listener: HasValueListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     HAS + VALUE,
     listener,
@@ -1238,13 +1238,13 @@ export const useHasValueListener = (
     mutator,
   );
 
-export const useValueListener = (
+export const onValue = (
   valueId: MaybeGetter<IdOrNull>,
   listener: ValueListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     VALUE,
     listener,
@@ -1252,151 +1252,161 @@ export const useValueListener = (
     mutator,
   );
 
-export const useStartTransactionListener = (
+export const onStartTransaction = (
   listener: TransactionListener,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(resolveStore(storeOrStoreId), 'Start' + TRANSACTION, listener);
+  addListenerEffect(
+    resolveStore(storeOrStoreId),
+    'Start' + TRANSACTION,
+    listener,
+  );
 
-export const useWillFinishTransactionListener = (
+export const onWillFinishTransaction = (
   listener: TransactionListener,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     'Will' + FINISH + TRANSACTION,
     listener,
   );
 
-export const useDidFinishTransactionListener = (
+export const onDidFinishTransaction = (
   listener: TransactionListener,
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveStore(storeOrStoreId),
     'Did' + FINISH + TRANSACTION,
     listener,
   );
 
-export const useMetricListener = (
+export const onMetric = (
   metricId: MaybeGetter<IdOrNull>,
   listener: MetricListener,
   metricsOrMetricsId?: MaybeGetter<Metrics | Id | undefined>,
 ): void =>
-  useListener(resolveMetrics(metricsOrMetricsId), METRIC, listener, () => [
-    maybeGet(metricId),
-  ]);
+  addListenerEffect(
+    resolveMetrics(metricsOrMetricsId),
+    METRIC,
+    listener,
+    () => [maybeGet(metricId)],
+  );
 
-export const useSliceIdsListener = (
+export const onSliceIds = (
   indexId: MaybeGetter<IdOrNull>,
   listener: SliceIdsListener,
   indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
 ): void =>
-  useListener(resolveIndexes(indexesOrIndexesId), SLICE + IDS, listener, () => [
-    maybeGet(indexId),
-  ]);
+  addListenerEffect(
+    resolveIndexes(indexesOrIndexesId),
+    SLICE + IDS,
+    listener,
+    () => [maybeGet(indexId)],
+  );
 
-export const useSliceRowIdsListener = (
+export const onSliceRowIds = (
   indexId: MaybeGetter<IdOrNull>,
   sliceId: MaybeGetter<IdOrNull>,
   listener: SliceRowIdsListener,
   indexesOrIndexesId?: MaybeGetter<Indexes | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveIndexes(indexesOrIndexesId),
     SLICE + ROW_IDS,
     listener,
     () => [maybeGet(indexId), maybeGet(sliceId)],
   );
 
-export const useRemoteRowIdListener = (
+export const onRemoteRowId = (
   relationshipId: MaybeGetter<IdOrNull>,
   localRowId: MaybeGetter<IdOrNull>,
   listener: RemoteRowIdListener,
   relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveRelationships(relationshipsOrRelationshipsId),
     REMOTE_ROW_ID,
     listener,
     () => [maybeGet(relationshipId), maybeGet(localRowId)],
   );
 
-export const useLocalRowIdsListener = (
+export const onLocalRowIds = (
   relationshipId: MaybeGetter<IdOrNull>,
   remoteRowId: MaybeGetter<IdOrNull>,
   listener: LocalRowIdsListener,
   relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveRelationships(relationshipsOrRelationshipsId),
     LOCAL + ROW_IDS,
     listener,
     () => [maybeGet(relationshipId), maybeGet(remoteRowId)],
   );
 
-export const useLinkedRowIdsListener = (
+export const onLinkedRowIds = (
   relationshipId: MaybeGetter<Id>,
   firstRowId: MaybeGetter<Id>,
   listener: LinkedRowIdsListener,
   relationshipsOrRelationshipsId?: MaybeGetter<Relationships | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveRelationships(relationshipsOrRelationshipsId),
     LINKED + ROW_IDS,
     listener,
     () => [maybeGet(relationshipId), maybeGet(firstRowId)],
   );
 
-export const useResultTableListener = (
+export const onResultTable = (
   queryId: MaybeGetter<IdOrNull>,
   listener: ResultTableListener,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveQueries(queriesOrQueriesId),
     RESULT + TABLE,
     listener,
     () => [maybeGet(queryId)],
   );
 
-export const useResultTableCellIdsListener = (
+export const onResultTableCellIds = (
   queryId: MaybeGetter<IdOrNull>,
   listener: ResultTableCellIdsListener,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveQueries(queriesOrQueriesId),
     RESULT + TABLE + CELL_IDS,
     listener,
     () => [maybeGet(queryId)],
   );
 
-export const useResultRowCountListener = (
+export const onResultRowCount = (
   queryId: MaybeGetter<IdOrNull>,
   listener: ResultRowCountListener,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveQueries(queriesOrQueriesId),
     RESULT + ROW_COUNT,
     listener,
     () => [maybeGet(queryId)],
   );
 
-export const useResultRowIdsListener = (
+export const onResultRowIds = (
   queryId: MaybeGetter<IdOrNull>,
   listener: ResultRowIdsListener,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveQueries(queriesOrQueriesId),
     RESULT + ROW_IDS,
     listener,
     () => [maybeGet(queryId)],
   );
 
-export const useResultSortedRowIdsListener = (
+export const onResultSortedRowIds = (
   queryId: MaybeGetter<Id>,
   cellId: MaybeGetter<Id | undefined>,
   descending: MaybeGetter<boolean>,
@@ -1405,7 +1415,7 @@ export const useResultSortedRowIdsListener = (
   listener: ResultSortedRowIdsListener,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveQueries(queriesOrQueriesId),
     RESULT + SORTED_ROW_IDS,
     listener,
@@ -1418,104 +1428,104 @@ export const useResultSortedRowIdsListener = (
     ],
   );
 
-export const useResultRowListener = (
+export const onResultRow = (
   queryId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   listener: ResultRowListener,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveQueries(queriesOrQueriesId),
     RESULT + ROW,
     listener,
     () => [maybeGet(queryId), maybeGet(rowId)],
   );
 
-export const useResultCellIdsListener = (
+export const onResultCellIds = (
   queryId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   listener: ResultCellIdsListener,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveQueries(queriesOrQueriesId),
     RESULT + CELL_IDS,
     listener,
     () => [maybeGet(queryId), maybeGet(rowId)],
   );
 
-export const useResultCellListener = (
+export const onResultCell = (
   queryId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   cellId: MaybeGetter<IdOrNull>,
   listener: ResultCellListener,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveQueries(queriesOrQueriesId),
     RESULT + CELL,
     listener,
     () => [maybeGet(queryId), maybeGet(rowId), maybeGet(cellId)],
   );
 
-export const useParamValuesListener = (
+export const onParamValues = (
   queryId: MaybeGetter<IdOrNull>,
   listener: ParamValuesListener,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveQueries(queriesOrQueriesId),
     'ParamValues',
     listener,
     () => [maybeGet(queryId)],
   );
 
-export const useParamValueListener = (
+export const onParamValue = (
   queryId: MaybeGetter<IdOrNull>,
   paramId: MaybeGetter<IdOrNull>,
   listener: ParamValueListener,
   queriesOrQueriesId?: MaybeGetter<Queries | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveQueries(queriesOrQueriesId),
     'ParamValue',
     listener,
     () => [maybeGet(queryId), maybeGet(paramId)],
   );
 
-export const useCheckpointIdsListener = (
+export const onCheckpointIds = (
   listener: CheckpointIdsListener,
   checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveCheckpoints(checkpointsOrCheckpointsId),
     CHECKPOINT + IDS,
     listener,
   );
 
-export const useCheckpointListener = (
+export const onCheckpoint = (
   checkpointId: MaybeGetter<IdOrNull>,
   listener: CheckpointListener,
   checkpointsOrCheckpointsId?: MaybeGetter<Checkpoints | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveCheckpoints(checkpointsOrCheckpointsId),
     CHECKPOINT,
     listener,
     () => [maybeGet(checkpointId)],
   );
 
-export const usePersisterStatusListener = (
+export const onPersisterStatus = (
   listener: StatusListener,
   persisterOrPersisterId?: MaybeGetter<AnyPersister | Id | undefined>,
 ): void =>
-  useListener(resolvePersister(persisterOrPersisterId), STATUS, listener);
+  addListenerEffect(resolvePersister(persisterOrPersisterId), STATUS, listener);
 
-export const useSynchronizerStatusListener = (
+export const onSynchronizerStatus = (
   listener: StatusListener,
   synchronizerOrSynchronizerId?: MaybeGetter<Synchronizer | Id | undefined>,
 ): void =>
-  useListener(
+  addListenerEffect(
     resolveSynchronizer(synchronizerOrSynchronizerId),
     STATUS,
     listener,

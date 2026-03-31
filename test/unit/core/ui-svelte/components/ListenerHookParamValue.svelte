@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useParamValueListener} from 'tinybase/ui-svelte';
+  import {onParamValue} from 'tinybase/ui-svelte';
   import type {Queries} from 'tinybase';
 
   let {
@@ -13,7 +13,7 @@
     paramId: string;
     listener: (...args: any[]) => void;
   } = $props();
-  useParamValueListener(
+  onParamValue(
     () => queryId,
     () => paramId,
     (...args) => listener(...args),

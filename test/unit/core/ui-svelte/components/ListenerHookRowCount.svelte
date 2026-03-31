@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useRowCountListener} from 'tinybase/ui-svelte';
+  import {onRowCount} from 'tinybase/ui-svelte';
   import type {Store} from 'tinybase';
 
   let {
@@ -8,7 +8,7 @@
     listener,
   }: {store: Store; tableId: string; listener: (...args: any[]) => void} =
     $props();
-  useRowCountListener(
+  onRowCount(
     () => tableId,
     (...args) => listener(...args),
     false,

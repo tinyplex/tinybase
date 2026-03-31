@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useSortedRowIdsListener} from 'tinybase/ui-svelte';
+  import {onSortedRowIds} from 'tinybase/ui-svelte';
   import type {Store} from 'tinybase';
 
   let {
@@ -13,7 +13,7 @@
     cellId: string;
     listener: (...args: any[]) => void;
   } = $props();
-  useSortedRowIdsListener(
+  onSortedRowIds(
     () => tableId,
     () => cellId,
     () => false,

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useSliceIdsListener} from 'tinybase/ui-svelte';
+  import {onSliceIds} from 'tinybase/ui-svelte';
   import type {Indexes} from 'tinybase';
 
   let {
@@ -8,7 +8,7 @@
     listener,
   }: {indexes: Indexes; indexId: string; listener: (...args: any[]) => void} =
     $props();
-  useSliceIdsListener(
+  onSliceIds(
     () => indexId,
     (...args) => listener(...args),
     () => indexes,

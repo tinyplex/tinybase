@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useResultTableListener} from 'tinybase/ui-svelte';
+  import {onResultTable} from 'tinybase/ui-svelte';
   import type {Queries} from 'tinybase';
 
   let {
@@ -8,7 +8,7 @@
     listener,
   }: {queries: Queries; queryId: string; listener: (...args: any[]) => void} =
     $props();
-  useResultTableListener(
+  onResultTable(
     () => queryId,
     (...args) => listener(...args),
     () => queries,

@@ -1,7 +1,7 @@
 /**
  * The ui-svelte module of the TinyBase project provides reactive functions,
- * listener functions, and components to make it easy to create reactive
- * Svelte 5 apps with Store objects.
+ * listener functions, and components to make it easy to create reactive Svelte
+ * 5 apps with Store objects.
  *
  * The reactive functions in this module provide access to the data and
  * structures exposed by other modules in the project. They return reactive
@@ -9,9 +9,8 @@
  * that components using them re-render when data changes.
  *
  * Function parameters accept either plain values or reactive getter functions
- * (see
- * the MaybeGetter type), so passing `() => tableId` from a `let`-bound Svelte
- * prop makes the function re-execute whenever the prop changes.
+ * (see the MaybeGetter type), so passing `() => tableId` from a `let`-bound
+ * Svelte prop makes the function re-execute whenever the prop changes.
  *
  * The components in this module provide a further abstraction over those
  * functions to ease the composition of user interfaces that use TinyBase.
@@ -27,8 +26,7 @@
  *
  * When a getter function is provided to a reactive function, its internal
  * `$effect` will re-run whenever the getter's reactive dependencies change.
- * This is the mechanism that makes Svelte 5 props reactive in these
- * functions.
+ * This is the mechanism that makes Svelte 5 props reactive in these functions.
  * @category Identity
  * @since v8.1.0
  */
@@ -53,17 +51,17 @@
  * The MetricsOrMetricsId type is used when you need to refer to a Metrics
  * object in a ui-svelte function or component.
  *
- * In some simple cases you will already have a direct reference to the Metrics
- * object.
+ * In some simple cases you will already have a direct reference to the
+ * Metrics object.
  *
  * This module also includes a Provider component that can be used to wrap
  * multiple Metrics objects into a context that can be used throughout the app.
- * In this case you will want to refer to a Metrics object by its Id in that
- * context.
+ * In this case you will want to refer to a Metrics object by its Id in
+ * that context.
  *
  * Many functions and components in this ui-svelte module take this type as a
- * parameter or a prop, allowing you to pass in either the Metrics object or its
- * Id.
+ * parameter or a prop, allowing you to pass in either the Metrics object or
+ * its Id.
  * @category Identity
  * @since v8.1.0
  */
@@ -72,17 +70,17 @@
  * The IndexesOrIndexesId type is used when you need to refer to an Indexes
  * object in a ui-svelte function or component.
  *
- * In some simple cases you will already have a direct reference to the Indexes
- * object.
+ * In some simple cases you will already have a direct reference to the
+ * Indexes object.
  *
  * This module also includes a Provider component that can be used to wrap
  * multiple Indexes objects into a context that can be used throughout the app.
- * In this case you will want to refer to an Indexes object by its Id in that
- * context.
+ * In this case you will want to refer to an Indexes object by its Id in
+ * that context.
  *
  * Many functions and components in this ui-svelte module take this type as a
- * parameter or a prop, allowing you to pass in either the Indexes object or its
- * Id.
+ * parameter or a prop, allowing you to pass in either the Indexes object or
+ * its Id.
  * @category Identity
  * @since v8.1.0
  */
@@ -110,17 +108,17 @@
  * The QueriesOrQueriesId type is used when you need to refer to a Queries
  * object in a ui-svelte function or component.
  *
- * In some simple cases you will already have a direct reference to the Queries
- * object.
+ * In some simple cases you will already have a direct reference to the
+ * Queries object.
  *
  * This module also includes a Provider component that can be used to wrap
  * multiple Queries objects into a context that can be used throughout the app.
- * In this case you will want to refer to a Queries object by its Id in that
- * context.
+ * In this case you will want to refer to a Queries object by its Id in
+ * that context.
  *
  * Many functions and components in this ui-svelte module take this type as a
- * parameter or a prop, allowing you to pass in either the Queries object or its
- * Id.
+ * parameter or a prop, allowing you to pass in either the Queries object or
+ * its Id.
  * @category Identity
  * @since v8.1.0
  */
@@ -175,8 +173,8 @@
  * in that context.
  *
  * Many functions and components in this ui-svelte module take this type as a
- * parameter or a prop, allowing you to pass in either the Synchronizer or its
- * Id.
+ * parameter or a prop, allowing you to pass in either the Synchronizer or
+ * its Id.
  * @category Identity
  * @since v8.1.0
  */
@@ -405,8 +403,8 @@
   /// ui-svelte.MetricViewProps.debugIds
 }
 /**
- * The CheckpointViewProps type describes the props of the CheckpointView
- * component.
+ * The CheckpointViewProps type describes the props of the
+ * CheckpointView component.
  * @category Props
  * @since v8.1.0
  */
@@ -526,8 +524,8 @@
   /// ui-svelte.TableViewProps.row
 }
 /**
- * The SortedTableViewProps type describes the props of the SortedTableView
- * component.
+ * The SortedTableViewProps type describes the props of the
+ * SortedTableView component.
  * @category Props
  * @since v8.1.0
  */
@@ -741,8 +739,8 @@
   /// ui-svelte.SliceViewProps.row
 }
 /**
- * The RemoteRowViewProps type describes the props of the RemoteRowView
- * component.
+ * The RemoteRowViewProps type describes the props of the
+ * RemoteRowView component.
  * @category Props
  * @since v8.1.0
  */
@@ -780,8 +778,8 @@
   /// ui-svelte.RemoteRowViewProps.row
 }
 /**
- * The LocalRowsViewProps type describes the props of the LocalRowsView
- * component.
+ * The LocalRowsViewProps type describes the props of the
+ * LocalRowsView component.
  * @category Props
  * @since v8.1.0
  */
@@ -825,8 +823,8 @@
   /// ui-svelte.LocalRowsViewProps.row
 }
 /**
- * The LinkedRowsViewProps type describes the props of the LinkedRowsView
- * component.
+ * The LinkedRowsViewProps type describes the props of the
+ * LinkedRowsView component.
  * @category Props
  * @since v8.1.0
  */
@@ -870,8 +868,8 @@
   /// ui-svelte.LinkedRowsViewProps.row
 }
 /**
- * The ResultCellViewProps type describes the props of the ResultCellView
- * component.
+ * The ResultCellViewProps type describes the props of the
+ * ResultCellView component.
  * @category Props
  * @since v8.1.0
  */
@@ -909,8 +907,8 @@
   /// ui-svelte.ResultCellViewProps.debugIds
 }
 /**
- * The ResultRowViewProps type describes the props of the ResultRowView
- * component.
+ * The ResultRowViewProps type describes the props of the
+ * ResultRowView component.
  * @category Props
  * @since v8.1.0
  */
@@ -954,8 +952,8 @@
   /// ui-svelte.ResultRowViewProps.cell
 }
 /**
- * The ResultTableViewProps type describes the props of the ResultTableView
- * component.
+ * The ResultTableViewProps type describes the props of the
+ * ResultTableView component.
  * @category Props
  * @since v8.1.0
  */
@@ -1230,8 +1228,8 @@
 /// ui-svelte.IndexView
 /**
  * The LinkedRowsView component renders the Rows in a linked list Relationship,
- * and registers a listener so that any changes to that result will cause a
- * re-render.
+ * and registers a listener so that any changes to that result will cause
+ * a re-render.
  * @param props The props for this component.
  * @returns A rendering of the linked Row Ids.
  * @category Component
@@ -1310,8 +1308,8 @@
 /// ui-svelte.ResultTableView
 /**
  * The RowView component renders the contents of a single Row in a given Table,
- * and registers a listener so that any changes to that result will cause a
- * re-render.
+ * and registers a listener so that any changes to that result will cause
+ * a re-render.
  * @param props The props for this component.
  * @returns A rendering of the Row, or nothing if not present.
  * @category Component
@@ -1320,8 +1318,8 @@
 /// ui-svelte.RowView
 /**
  * The SliceView component renders the Row Ids in a named Slice in an Index, and
- * registers a listener so that any changes to that result will cause a
- * re-render.
+ * registers a listener so that any changes to that result will cause
+ * a re-render.
  * @param props The props for this component.
  * @returns A rendering of the Rows in the Slice.
  * @category Component
@@ -1349,8 +1347,8 @@
 /// ui-svelte.TableView
 /**
  * The TablesView component renders the contents of all Tables in a Store, and
- * registers a listener so that any changes to that result will cause a
- * re-render.
+ * registers a listener so that any changes to that result will cause
+ * a re-render.
  * @param props The props for this component.
  * @returns A rendering of all Tables.
  * @category Component
@@ -1359,8 +1357,8 @@
 /// ui-svelte.TablesView
 /**
  * The ValueView component renders the value of a single Value in a Store, and
- * registers a listener so that any changes to that result will cause a
- * re-render.
+ * registers a listener so that any changes to that result will cause
+ * a re-render.
  * @param props The props for this component.
  * @returns A rendering of the Value, or nothing if not present.
  * @category Component
@@ -1377,9 +1375,9 @@
  */
 /// ui-svelte.ValuesView
 /**
- * The  function returns a reactive object indicating whether any Tables
- * exist in the Store, and registers a listener so that any changes to that
- * result will update `.current`.
+ * The createHasTables function returns a reactive object indicating whether any
+ * Tables exist in the Store, and registers a listener so that any changes to
+ * that result will update `.current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` boolean property.
  * @category Hook
@@ -1387,8 +1385,8 @@
  */
 /// ui-svelte.createHasTables
 /**
- * The  function returns a reactive object reflecting the Tables in the
- * Store, and registers a listener so that any changes to those Tables will
+ * The createTables function returns a reactive object reflecting the Tables in
+ * the Store, and registers a listener so that any changes to those Tables will
  * update `.current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` Tables property.
@@ -1397,9 +1395,9 @@
  */
 /// ui-svelte.createTables
 /**
- * The  function returns a reactive object reflecting the Ids of the
- * Tables in a Store, and registers a listener so that any changes to those Ids
- * will update `.current`.
+ * The createTableIds function returns a reactive object reflecting the Ids of
+ * the Tables in a Store, and registers a listener so that any changes to those
+ * Ids will update `.current`.
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
@@ -1407,9 +1405,9 @@
  */
 /// ui-svelte.createTableIds
 /**
- * The  function returns a reactive object indicating whether a Table
- * exists in the Store, and registers a listener so that any changes to that
- * result will update `.current`.
+ * The createHasTable function returns a reactive object indicating whether a
+ * Table exists in the Store, and registers a listener so that any changes to
+ * that result will update `.current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
@@ -1418,9 +1416,9 @@
  */
 /// ui-svelte.createHasTable
 /**
- * The  function returns a reactive object reflecting a Table in a Store,
- * and registers a listener so that any changes to that Table will update
- * `.current`.
+ * The createTable function returns a reactive object reflecting a Table in a
+ * Store, and registers a listener so that any changes to that Table will
+ * update `.current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Table property.
@@ -1429,9 +1427,9 @@
  */
 /// ui-svelte.createTable
 /**
- * The  function returns a reactive object reflecting the Ids of all
- * Cells used across a Table, and registers a listener so that any changes to
- * those Ids will update `.current`.
+ * The createTableCellIds function returns a reactive object reflecting the Ids
+ * of all Cells used across a Table, and registers a listener so that any
+ * changes to those Ids will update `.current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
@@ -1440,9 +1438,9 @@
  */
 /// ui-svelte.createTableCellIds
 /**
- * The  function returns a reactive object indicating whether a
- * particular Cell is used anywhere in a Table, and registers a listener so that
- * any changes to that result will update `.current`.
+ * The createHasTableCell function returns a reactive object indicating whether
+ * a particular Cell is used anywhere in a Table, and registers a listener so
+ * that any changes to that result will update `.current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param cellId The Id of the Cell (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
@@ -1452,9 +1450,9 @@
  */
 /// ui-svelte.createHasTableCell
 /**
- * The  function returns a reactive object reflecting the number of Rows
- * in a Table, and registers a listener so that any changes will update
- * `.current`.
+ * The createRowCount function returns a reactive object reflecting the number
+ * of Rows in a Table, and registers a listener so that any changes will
+ * update `.current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` number property.
@@ -1463,9 +1461,9 @@
  */
 /// ui-svelte.createRowCount
 /**
- * The  function returns a reactive object reflecting the Ids of the Rows
- * in a Table, and registers a listener so that any changes will update
- * `.current`.
+ * The createRowIds function returns a reactive object reflecting the Ids of the
+ * Rows in a Table, and registers a listener so that any changes will
+ * update `.current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
@@ -1474,9 +1472,9 @@
  */
 /// ui-svelte.createRowIds
 /**
- * The  function returns a reactive object reflecting the sorted Row
- * Ids in a Table, and registers a listener so that any changes will update
- * `.current`.
+ * The createSortedRowIds function returns a reactive object reflecting the
+ * sorted Row Ids in a Table, and registers a listener so that any changes will
+ * update `.current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param cellId The Id of the Cell to sort by (or a getter returning it).
  * @param descending Whether to sort descending (or a getter returning it).
@@ -1489,9 +1487,9 @@
  */
 /// ui-svelte.createSortedRowIds
 /**
- * The  function returns a reactive object indicating whether a Row exists
- * in a Table, and registers a listener so that any changes to that result will
- * update `.current`.
+ * The createHasRow function returns a reactive object indicating whether a Row
+ * exists in a Table, and registers a listener so that any changes to that
+ * result will update `.current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
@@ -1501,8 +1499,9 @@
  */
 /// ui-svelte.createHasRow
 /**
- * The  function returns a reactive object reflecting a Row in a Table, and
- * registers a listener so that any changes to that Row will update `.current`.
+ * The createRow function returns a reactive object reflecting a Row in a Table,
+ * and registers a listener so that any changes to that Row will
+ * update `.current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
@@ -1512,9 +1511,9 @@
  */
 /// ui-svelte.createRow
 /**
- * The  function returns a reactive object reflecting the Ids of the Cells
- * in a Row, and registers a listener so that any changes will update
- * `.current`.
+ * The createCellIds function returns a reactive object reflecting the Ids of
+ * the Cells in a Row, and registers a listener so that any changes will
+ * update `.current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
@@ -1524,9 +1523,9 @@
  */
 /// ui-svelte.createCellIds
 /**
- * The  function returns a reactive object indicating whether a Cell
- * exists in a Row in a Table, and registers a listener so that any changes to
- * that result will update `.current`.
+ * The createHasCell function returns a reactive object indicating whether a
+ * Cell exists in a Row in a Table, and registers a listener so that any changes
+ * to that result will update `.current`.
  * @param tableId The Id of the Table (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param cellId The Id of the Cell (or a getter returning it).
@@ -1537,9 +1536,9 @@
  */
 /// ui-svelte.createHasCell
 /**
- * The  function returns a reactive object reflecting the value of a Cell in
- * a Row in a Table, and registers a listener so that any changes to that Cell
- * will update `.current`.
+ * The createCell function returns a reactive object reflecting the value of a
+ * Cell in a Row in a Table, and registers a listener so that any changes to
+ * that Cell will update `.current`.
  *
  * Since Cells are mutable leaf values in a Store, the returned object's
  * `current` property can also be assigned to write back to the Store.
@@ -1549,7 +1548,7 @@
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with gettable and settable `current`.
  * @example
- * This example uses the  function to display a Cell value reactively.
+ * This example uses the createCell function to display a Cell value reactively.
  *
  * ```ts
  * // In a .svelte file:
@@ -1562,9 +1561,9 @@
  */
 /// ui-svelte.createCell
 /**
- * The  function returns a reactive object indicating whether any Values
- * exist in the Store, and registers a listener so that any changes to that
- * result will update `.current`.
+ * The createHasValues function returns a reactive object indicating whether any
+ * Values exist in the Store, and registers a listener so that any changes to
+ * that result will update `.current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` boolean property.
  * @category Hook
@@ -1572,8 +1571,9 @@
  */
 /// ui-svelte.createHasValues
 /**
- * The  function returns a reactive object reflecting the Values in the
- * Store, and registers a listener so that any changes will update `.current`.
+ * The createValues function returns a reactive object reflecting the Values in
+ * the Store, and registers a listener so that any changes will
+ * update `.current`.
  * @param storeOrStoreId The Store to use, or its Id in a Provider context.
  * @returns A reactive object with a `current` Values property.
  * @category Hook
@@ -1581,9 +1581,9 @@
  */
 /// ui-svelte.createValues
 /**
- * The  function returns a reactive object reflecting the Ids of the
- * Values in a Store, and registers a listener so that any changes will update
- * `.current`.
+ * The createValueIds function returns a reactive object reflecting the Ids of
+ * the Values in a Store, and registers a listener so that any changes will
+ * update `.current`.
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
@@ -1591,9 +1591,9 @@
  */
 /// ui-svelte.createValueIds
 /**
- * The  function returns a reactive object indicating whether a Value
- * exists in the Store, and registers a listener so that any changes to that
- * result will update `.current`.
+ * The createHasValue function returns a reactive object indicating whether a
+ * Value exists in the Store, and registers a listener so that any changes to
+ * that result will update `.current`.
  * @param valueId The Id of the Value (or a getter returning it).
  * @param storeOrStoreId The Store to use (plain value or getter), or its Id.
  * @returns A reactive object with a `current` boolean property.
@@ -1602,9 +1602,9 @@
  */
 /// ui-svelte.createHasValue
 /**
- * The  function returns a reactive object reflecting the value of a Value
- * in a Store, and registers a listener so that any changes to that Value will
- * update `.current`.
+ * The createValue function returns a reactive object reflecting the value of a
+ * Value in a Store, and registers a listener so that any changes to that Value
+ * will update `.current`.
  *
  * Since Values are mutable leaf values in a Store, the returned object's
  * `current` property can also be assigned to write back to the Store.
@@ -1616,8 +1616,8 @@
  */
 /// ui-svelte.createValue
 /**
- * The  function returns the default Store from the current Provider context
- * (or a named Store if an Id is provided).
+ * The getStore function returns the default Store from the current Provider
+ * context (or a named Store if an Id is provided).
  * @param id An optional Id of a named Store in the Provider context.
  * @returns The Store, or `undefined` if not found.
  * @category Hook
@@ -1625,8 +1625,8 @@
  */
 /// ui-svelte.getStore
 /**
- * The  function is used to get a reference to a Store object
- * from a Provider context, or have it passed directly.
+ * The resolveStore function is used to get a reference to a Store object from a
+ * Provider context, or have it passed directly.
  * @param storeOrStoreId The Store, its Id, or a getter returning either.
  * @returns A getter function returning the Store, or `undefined`.
  * @category Hook
@@ -1634,15 +1634,15 @@
  */
 /// ui-svelte.resolveStore
 /**
- * The  function returns a reactive object with the Ids of all Stores
- * registered in the current Provider context.
+ * The createStoreIds function returns a reactive object with the Ids of all
+ * Stores registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0
  */
 /// ui-svelte.createStoreIds
 /**
- * The  function returns the default Metrics object from the current
+ * The getMetrics function returns the default Metrics object from the current
  * Provider context (or a named one if an Id is provided).
  * @param id An optional Id of a named Metrics object in the Provider context.
  * @returns The Metrics object, or `undefined` if not found.
@@ -1651,8 +1651,8 @@
  */
 /// ui-svelte.getMetrics
 /**
- * The  function is used to get a reference to a Metrics
- * object from a Provider context, or have it passed directly.
+ * The resolveMetrics function is used to get a reference to a Metrics object
+ * from a Provider context, or have it passed directly.
  * @param metricsOrMetricsId The Metrics object, its Id, or a getter returning
  * either.
  * @returns A getter function returning the Metrics object, or `undefined`.
@@ -1661,16 +1661,16 @@
  */
 /// ui-svelte.resolveMetrics
 /**
- * The  function returns a reactive object with the Ids of all Metrics
- * objects registered in the current Provider context.
+ * The createMetricsIds function returns a reactive object with the Ids of all
+ * Metrics objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0
  */
 /// ui-svelte.createMetricsIds
 /**
- * The  function returns a reactive object reflecting the Ids of the
- * Metrics in a Metrics object, and registers a listener so that any changes
+ * The createMetricIds function returns a reactive object reflecting the Ids of
+ * the Metrics in a Metrics object, and registers a listener so that any changes
  * will update `.current`.
  * @param metricsOrMetricsId The Metrics object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
@@ -1679,9 +1679,9 @@
  */
 /// ui-svelte.createMetricIds
 /**
- * The  function returns a reactive object reflecting the value of a named
- * Metric in a Metrics object, and registers a listener so that any changes to
- * that Metric will update `.current`.
+ * The createMetric function returns a reactive object reflecting the value of a
+ * named Metric in a Metrics object, and registers a listener so that any
+ * changes to that Metric will update `.current`.
  * @param metricId The Id of the Metric (or a getter returning it).
  * @param metricsOrMetricsId The Metrics object to use (plain or getter), or its
  * Id.
@@ -1691,7 +1691,7 @@
  */
 /// ui-svelte.createMetric
 /**
- * The  function returns the default Indexes object from the current
+ * The getIndexes function returns the default Indexes object from the current
  * Provider context (or a named one if an Id is provided).
  * @param id An optional Id of a named Indexes object in the Provider context.
  * @returns The Indexes object, or `undefined` if not found.
@@ -1700,8 +1700,8 @@
  */
 /// ui-svelte.getIndexes
 /**
- * The  function is used to get a reference to an Indexes
- * object from a Provider context, or have it passed directly.
+ * The resolveIndexes function is used to get a reference to an Indexes object
+ * from a Provider context, or have it passed directly.
  * @param indexesOrIndexesId The Indexes object, its Id, or a getter returning
  * either.
  * @returns A getter function returning the Indexes object, or `undefined`.
@@ -1710,7 +1710,7 @@
  */
 /// ui-svelte.resolveIndexes
 /**
- * The  function returns the Store and table Id for a given
+ * The getIndexStoreTableId function returns the Store and table Id for a given
  * Indexes object and index Id.
  * @param indexesOrId The Indexes object, its Id, or a getter returning either.
  * @param indexId The Id of the index, or a getter returning it.
@@ -1720,17 +1720,17 @@
  */
 /// ui-svelte.getIndexStoreTableId
 /**
- * The  function returns a reactive object with the Ids of all Indexes
- * objects registered in the current Provider context.
+ * The createIndexesIds function returns a reactive object with the Ids of all
+ * Indexes objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0
  */
 /// ui-svelte.createIndexesIds
 /**
- * The  function returns a reactive object reflecting the Ids of the
- * Indexes in an Indexes object, and registers a listener so that any changes
- * will update `.current`.
+ * The createIndexIds function returns a reactive object reflecting the Ids of
+ * the Indexes in an Indexes object, and registers a listener so that any
+ * changes will update `.current`.
  * @param indexesOrIndexesId The Indexes object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
@@ -1738,9 +1738,9 @@
  */
 /// ui-svelte.createIndexIds
 /**
- * The  function returns a reactive object reflecting the Ids of the
- * Slices in an Index, and registers a listener so that any changes will update
- * `.current`.
+ * The createSliceIds function returns a reactive object reflecting the Ids of
+ * the Slices in an Index, and registers a listener so that any changes will
+ * update `.current`.
  * @param indexId The Id of the Index (or a getter returning it).
  * @param indexesOrIndexesId The Indexes object to use (plain or getter), or its
  * Id.
@@ -1750,9 +1750,9 @@
  */
 /// ui-svelte.createSliceIds
 /**
- * The  function returns a reactive object reflecting the Ids of the
- * Rows in a Slice, and registers a listener so that any changes will update
- * `.current`.
+ * The createSliceRowIds function returns a reactive object reflecting the Ids
+ * of the Rows in a Slice, and registers a listener so that any changes will
+ * update `.current`.
  * @param indexId The Id of the Index (or a getter returning it).
  * @param sliceId The Id of the Slice (or a getter returning it).
  * @param indexesOrIndexesId The Indexes object to use (plain or getter), or its
@@ -1763,7 +1763,7 @@
  */
 /// ui-svelte.createSliceRowIds
 /**
- * The  function returns the default Queries object from the current
+ * The getQueries function returns the default Queries object from the current
  * Provider context (or a named one if an Id is provided).
  * @param id An optional Id of a named Queries object in the Provider context.
  * @returns The Queries object, or `undefined` if not found.
@@ -1772,8 +1772,8 @@
  */
 /// ui-svelte.getQueries
 /**
- * The  function is used to get a reference to a Queries
- * object from a Provider context, or have it passed directly.
+ * The resolveQueries function is used to get a reference to a Queries object
+ * from a Provider context, or have it passed directly.
  * @param queriesOrQueriesId The Queries object, its Id, or a getter returning
  * either.
  * @returns A getter function returning the Queries object, or `undefined`.
@@ -1782,16 +1782,16 @@
  */
 /// ui-svelte.resolveQueries
 /**
- * The  function returns a reactive object with the Ids of all Queries
- * objects registered in the current Provider context.
+ * The createQueriesIds function returns a reactive object with the Ids of all
+ * Queries objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0
  */
 /// ui-svelte.createQueriesIds
 /**
- * The  function returns a reactive object reflecting the Ids of the
- * Queries in a Queries object, and registers a listener so that any changes
+ * The createQueryIds function returns a reactive object reflecting the Ids of
+ * the Queries in a Queries object, and registers a listener so that any changes
  * will update `.current`.
  * @param queriesOrQueriesId The Queries object to use, or its Id.
  * @returns A reactive object with a `current` Ids property.
@@ -1800,9 +1800,9 @@
  */
 /// ui-svelte.createQueryIds
 /**
- * The  function returns a reactive object reflecting a result Table
- * in a Queries object, and registers a listener so that any changes to that
- * result will update `.current`.
+ * The createResultTable function returns a reactive object reflecting a result
+ * Table in a Queries object, and registers a listener so that any changes to
+ * that result will update `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
@@ -1812,9 +1812,9 @@
  */
 /// ui-svelte.createResultTable
 /**
- * The  function returns a reactive object reflecting the Ids
- * of all Cells used across a result Table, and registers a listener so that any
- * changes will update `.current`.
+ * The createResultTableCellIds function returns a reactive object reflecting
+ * the Ids of all Cells used across a result Table, and registers a listener so
+ * that any changes will update `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
@@ -1824,9 +1824,9 @@
  */
 /// ui-svelte.createResultTableCellIds
 /**
- * The  function returns a reactive object reflecting the number of
- * Rows in a result Table, and registers a listener so that any changes will
- * update `.current`.
+ * The createResultRowCount function returns a reactive object reflecting the
+ * number of Rows in a result Table, and registers a listener so that any
+ * changes will update `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
@@ -1836,9 +1836,9 @@
  */
 /// ui-svelte.createResultRowCount
 /**
- * The  function returns a reactive object reflecting the Ids of the
- * Rows in a result Table, and registers a listener so that any changes will
- * update `.current`.
+ * The createResultRowIds function returns a reactive object reflecting the Ids
+ * of the Rows in a result Table, and registers a listener so that any changes
+ * will update `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
  * Id.
@@ -1848,8 +1848,8 @@
  */
 /// ui-svelte.createResultRowIds
 /**
- * The  function returns a reactive object reflecting the
- * sorted Row Ids in a result Table, and registers a listener so that any
+ * The createResultSortedRowIds function returns a reactive object reflecting
+ * the sorted Row Ids in a result Table, and registers a listener so that any
  * changes will update `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param cellId The Id of the Cell to sort by (or a getter returning it).
@@ -1864,9 +1864,9 @@
  */
 /// ui-svelte.createResultSortedRowIds
 /**
- * The  function returns a reactive object reflecting a result Row in a
- * result Table, and registers a listener so that any changes will update
- * `.current`.
+ * The createResultRow function returns a reactive object reflecting a result
+ * Row in a result Table, and registers a listener so that any changes will
+ * update `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
@@ -1877,9 +1877,9 @@
  */
 /// ui-svelte.createResultRow
 /**
- * The  function returns a reactive object reflecting the Ids of the
- * Cells in a result Row, and registers a listener so that any changes will
- * update `.current`.
+ * The createResultCellIds function returns a reactive object reflecting the Ids
+ * of the Cells in a result Row, and registers a listener so that any changes
+ * will update `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
  * @param queriesOrQueriesId The Queries object to use (plain or getter), or its
@@ -1890,8 +1890,8 @@
  */
 /// ui-svelte.createResultCellIds
 /**
- * The  function returns a reactive object reflecting the value of a
- * Cell in a result Row, and registers a listener so that any changes will
+ * The createResultCell function returns a reactive object reflecting the value
+ * of a Cell in a result Row, and registers a listener so that any changes will
  * update `.current`.
  * @param queryId The Id of the Query (or a getter returning it).
  * @param rowId The Id of the Row (or a getter returning it).
@@ -1904,8 +1904,8 @@
  */
 /// ui-svelte.createResultCell
 /**
- * The  function returns the default Relationships object from the
- * current Provider context (or a named one if an Id is provided).
+ * The getRelationships function returns the default Relationships object from
+ * the current Provider context (or a named one if an Id is provided).
  * @param id An optional Id of a named Relationships object in the Provider
  * context.
  * @returns The Relationships object, or `undefined` if not found.
@@ -1914,7 +1914,7 @@
  */
 /// ui-svelte.getRelationships
 /**
- * The  function is used to get a reference to a
+ * The resolveRelationships function is used to get a reference to a
  * Relationships object from a Provider context, or have it passed directly.
  * @param relationshipsOrRelationshipsId The Relationships object, its Id, or a
  * getter returning either.
@@ -1925,8 +1925,8 @@
  */
 /// ui-svelte.resolveRelationships
 /**
- * The  function returns the Store, local table Id, and
- * remote table Id for a given Relationships object and relationship Id.
+ * The getRelationshipsStoreTableIds function returns the Store, local table Id,
+ * and remote table Id for a given Relationships object and relationship Id.
  * @param relationshipsOrId The Relationships object, its Id, or a getter
  * returning either.
  * @param relationshipId The Id of the relationship, or a getter returning it.
@@ -1937,17 +1937,17 @@
  */
 /// ui-svelte.getRelationshipsStoreTableIds
 /**
- * The  function returns a reactive object with the Ids of all
- * Relationships objects registered in the current Provider context.
+ * The createRelationshipsIds function returns a reactive object with the Ids of
+ * all Relationships objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0
  */
 /// ui-svelte.createRelationshipsIds
 /**
- * The  function returns a reactive object reflecting the Ids of
- * the Relationships in a Relationships object, and registers a listener so that
- * any changes will update `.current`.
+ * The createRelationshipIds function returns a reactive object reflecting the
+ * Ids of the Relationships in a Relationships object, and registers a listener
+ * so that any changes will update `.current`.
  * @param relationshipsOrRelationshipsId The Relationships object to use, or its
  * Id.
  * @returns A reactive object with a `current` Ids property.
@@ -1956,9 +1956,9 @@
  */
 /// ui-svelte.createRelationshipIds
 /**
- * The  function returns a reactive object reflecting the remote Row
- * Id for a given local Row in a Relationship, and registers a listener so that
- * any changes will update `.current`.
+ * The createRemoteRowId function returns a reactive object reflecting the
+ * remote Row Id for a given local Row in a Relationship, and registers a
+ * listener so that any changes will update `.current`.
  * @param relationshipId The Id of the Relationship (or a getter returning it).
  * @param localRowId The Id of the local Row (or a getter returning it).
  * @param relationshipsOrRelationshipsId The Relationships object to use (plain
@@ -1969,8 +1969,8 @@
  */
 /// ui-svelte.createRemoteRowId
 /**
- * The  function returns a reactive object reflecting the local Row
- * Ids for a given remote Row in a Relationship, and registers a listener so
+ * The createLocalRowIds function returns a reactive object reflecting the local
+ * Row Ids for a given remote Row in a Relationship, and registers a listener so
  * that any changes will update `.current`.
  * @param relationshipId The Id of the Relationship (or a getter returning it).
  * @param remoteRowId The Id of the remote Row (or a getter returning it).
@@ -1982,9 +1982,9 @@
  */
 /// ui-svelte.createLocalRowIds
 /**
- * The  function returns a reactive object reflecting the linked Row
- * Ids in a Relationship, and registers a listener so that any changes will
- * update `.current`.
+ * The createLinkedRowIds function returns a reactive object reflecting the
+ * linked Row Ids in a Relationship, and registers a listener so that any
+ * changes will update `.current`.
  * @param relationshipId The Id of the Relationship (or a getter returning it).
  * @param firstRowId The Id of the first Row (or a getter returning it).
  * @param relationshipsOrRelationshipsId The Relationships object to use (plain
@@ -1995,7 +1995,7 @@
  */
 /// ui-svelte.createLinkedRowIds
 /**
- * The  function returns the default Checkpoints object from the
+ * The getCheckpoints function returns the default Checkpoints object from the
  * current Provider context (or a named one if an Id is provided).
  * @param id An optional Id of a named Checkpoints object in the Provider
  * context.
@@ -2005,8 +2005,8 @@
  */
 /// ui-svelte.getCheckpoints
 /**
- * The  function is used to get a reference to a
- * Checkpoints object from a Provider context, or have it passed directly.
+ * The resolveCheckpoints function is used to get a reference to a Checkpoints
+ * object from a Provider context, or have it passed directly.
  * @param checkpointsOrCheckpointsId The Checkpoints object, its Id, or a getter
  * returning either.
  * @returns A getter function returning the Checkpoints object, or `undefined`.
@@ -2015,15 +2015,15 @@
  */
 /// ui-svelte.resolveCheckpoints
 /**
- * The  function returns a reactive object with the Ids of all
- * Checkpoints objects registered in the current Provider context.
+ * The createCheckpointsIds function returns a reactive object with the Ids of
+ * all Checkpoints objects registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0
  */
 /// ui-svelte.createCheckpointsIds
 /**
- * The  function returns a reactive object reflecting the
+ * The createCheckpointIds function returns a reactive object reflecting the
  * CheckpointIds (backward, current, forward) in a Checkpoints object, and
  * registers a listener so that any changes will update `.current`.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use (plain or
@@ -2034,9 +2034,9 @@
  */
 /// ui-svelte.createCheckpointIds
 /**
- * The  function returns a reactive object reflecting the label of a
- * checkpoint, and registers a listener so that any changes will update
- * `.current`.
+ * The createCheckpoint function returns a reactive object reflecting the label
+ * of a checkpoint, and registers a listener so that any changes will
+ * update `.current`.
  * @param checkpointId The Id of the checkpoint (or a getter returning it).
  * @param checkpointsOrCheckpointsId The Checkpoints object to use (plain or
  * getter), or its Id.
@@ -2046,8 +2046,8 @@
  */
 /// ui-svelte.createCheckpoint
 /**
- * The  function returns a callback function that, when called,
- * moves the Checkpoints object backward to the previous checkpoint.
+ * The createGoBackwardCallback function returns a callback function that, when
+ * called, moves the Checkpoints object backward to the previous checkpoint.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use, or its Id.
  * @returns A callback function.
  * @category Hook
@@ -2055,8 +2055,8 @@
  */
 /// ui-svelte.createGoBackwardCallback
 /**
- * The  function returns a callback function that, when called,
- * moves the Checkpoints object forward to the next checkpoint.
+ * The createGoForwardCallback function returns a callback function that, when
+ * called, moves the Checkpoints object forward to the next checkpoint.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use, or its Id.
  * @returns A callback function.
  * @category Hook
@@ -2064,8 +2064,8 @@
  */
 /// ui-svelte.createGoForwardCallback
 /**
- * The  function returns the default Persister from the current Provider
- * context (or a named one if an Id is provided).
+ * The getPersister function returns the default Persister from the current
+ * Provider context (or a named one if an Id is provided).
  * @param id An optional Id of a named Persister in the Provider context.
  * @returns The Persister, or `undefined` if not found.
  * @category Hook
@@ -2073,8 +2073,8 @@
  */
 /// ui-svelte.getPersister
 /**
- * The  function is used to get a reference to a
- * Persister object from a Provider context, or have it passed directly.
+ * The resolvePersister function is used to get a reference to a Persister
+ * object from a Provider context, or have it passed directly.
  * @param persisterOrPersisterId The Persister object, its Id, or a getter
  * returning either.
  * @returns A getter function returning the Persister object, or `undefined`.
@@ -2083,7 +2083,7 @@
  */
 /// ui-svelte.resolvePersister
 /**
- * The  function returns a reactive object with the Ids of all
+ * The createPersisterIds function returns a reactive object with the Ids of all
  * Persisters registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
@@ -2091,9 +2091,9 @@
  */
 /// ui-svelte.createPersisterIds
 /**
- * The  function returns a reactive object reflecting the status
- * of a Persister, and registers a listener so that any changes will update
- * `.current`.
+ * The createPersisterStatus function returns a reactive object reflecting the
+ * status of a Persister, and registers a listener so that any changes will
+ * update `.current`.
  * @param persisterOrPersisterId The Persister to use, or its Id.
  * @returns A reactive object with a `current` Status property.
  * @category Hook
@@ -2101,8 +2101,8 @@
  */
 /// ui-svelte.createPersisterStatus
 /**
- * The  function returns the default Synchronizer from the current
- * Provider context (or a named one if an Id is provided).
+ * The getSynchronizer function returns the default Synchronizer from the
+ * current Provider context (or a named one if an Id is provided).
  * @param id An optional Id of a named Synchronizer in the Provider context.
  * @returns The Synchronizer, or `undefined` if not found.
  * @category Hook
@@ -2110,8 +2110,8 @@
  */
 /// ui-svelte.getSynchronizer
 /**
- * The  function is used to get a reference to a
- * Synchronizer object from a Provider context, or have it passed directly.
+ * The resolveSynchronizer function is used to get a reference to a Synchronizer
+ * object from a Provider context, or have it passed directly.
  * @param synchronizerOrSynchronizerId The Synchronizer object, its Id, or a
  * getter returning either.
  * @returns A getter function returning the Synchronizer object, or `undefined`.
@@ -2120,17 +2120,17 @@
  */
 /// ui-svelte.resolveSynchronizer
 /**
- * The  function returns a reactive object with the Ids of all
- * Synchronizers registered in the current Provider context.
+ * The createSynchronizerIds function returns a reactive object with the Ids of
+ * all Synchronizers registered in the current Provider context.
  * @returns A reactive object with a `current` Ids property.
  * @category Hook
  * @since v8.1.0
  */
 /// ui-svelte.createSynchronizerIds
 /**
- * The  function returns a reactive object reflecting the
- * status of a Synchronizer, and registers a listener so that any changes will
- * update `.current`.
+ * The createSynchronizerStatus function returns a reactive object reflecting
+ * the status of a Synchronizer, and registers a listener so that any changes
+ * will update `.current`.
  * @param synchronizerOrSynchronizerId The Synchronizer to use, or its Id.
  * @returns A reactive object with a `current` Status property.
  * @category Hook
@@ -2138,10 +2138,9 @@
  */
 /// ui-svelte.createSynchronizerStatus
 /**
- * The useHasTablesListener hook registers a listener that is called whenever
- * any Tables are added to or removed from the Store. The listener is tied to
- * the component's `$effect` lifecycle and is removed when the component
- * unmounts.
+ * The onHasTables function registers a listener that is called whenever any
+ * Tables are added to or removed from the Store. The listener is tied to the
+ * component's `$effect` lifecycle and is removed when the component unmounts.
  * @param listener The function to call when table presence changes.
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
@@ -2149,10 +2148,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useHasTablesListener
+/// ui-svelte.onHasTables
 /**
- * The useTablesListener hook registers a listener that is called whenever
- * tabular data in the Store changes.
+ * The onTables function registers a listener that is called whenever tabular
+ * data in the Store changes.
  * @param listener The function to call when Tables change.
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
@@ -2160,10 +2159,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useTablesListener
+/// ui-svelte.onTables
 /**
- * The useTableIdsListener hook registers a listener that is called whenever the
- * set of Table Ids in the Store changes.
+ * The onTableIds function registers a listener that is called whenever the set
+ * of Table Ids in the Store changes.
  * @param listener The function to call when Table Ids change.
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
@@ -2171,9 +2170,9 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useTableIdsListener
+/// ui-svelte.onTableIds
 /**
- * The useHasTableListener hook registers a listener that is called whenever a
+ * The onHasTable function registers a listener that is called whenever a
  * specified Table is added to or removed from the Store.
  * @param tableId The Id of the Table to listen to, or `null` to listen to any
  * Table.
@@ -2184,10 +2183,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useHasTableListener
+/// ui-svelte.onHasTable
 /**
- * The useTableListener hook registers a listener that is called whenever data
- * in a specified Table changes.
+ * The onTable function registers a listener that is called whenever data in a
+ * specified Table changes.
  * @param tableId The Id of the Table to listen to, or `null` to listen to any
  * Table.
  * @param listener The function to call when the Table changes.
@@ -2197,10 +2196,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useTableListener
+/// ui-svelte.onTable
 /**
- * The useTableCellIdsListener hook registers a listener that is called whenever
- * the Cell Ids used across a Table change.
+ * The onTableCellIds function registers a listener that is called whenever the
+ * Cell Ids used across a Table change.
  * @param tableId The Id of the Table to listen to, or `null` to listen to any
  * Table.
  * @param listener The function to call when Cell Ids change.
@@ -2210,10 +2209,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useTableCellIdsListener
+/// ui-svelte.onTableCellIds
 /**
- * The useHasTableCellListener hook registers a listener that is called whenever
- * a specified Cell Id is added to or removed from across a Table.
+ * The onHasTableCell function registers a listener that is called whenever a
+ * specified Cell Id is added to or removed from across a Table.
  * @param tableId The Id of the Table to listen to, or `null` to listen to any
  * Table.
  * @param cellId The Id of the Cell to listen to, or `null` to listen to any
@@ -2225,9 +2224,9 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useHasTableCellListener
+/// ui-svelte.onHasTableCell
 /**
- * The useRowCountListener hook registers a listener that is called whenever the
+ * The onRowCount function registers a listener that is called whenever the
  * count of Rows in a Table changes.
  * @param tableId The Id of the Table to listen to, or `null` to listen to any
  * Table.
@@ -2238,10 +2237,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useRowCountListener
+/// ui-svelte.onRowCount
 /**
- * The useRowIdsListener hook registers a listener that is called whenever the
- * Row Ids in a Table change.
+ * The onRowIds function registers a listener that is called whenever the Row
+ * Ids in a Table change.
  * @param tableId The Id of the Table to listen to, or `null` to listen to any
  * Table.
  * @param listener The function to call when Row Ids change.
@@ -2251,10 +2250,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useRowIdsListener
+/// ui-svelte.onRowIds
 /**
- * The useSortedRowIdsListener hook registers a listener that is called whenever
- * the sorted Row Ids in a Table change.
+ * The onSortedRowIds function registers a listener that is called whenever the
+ * sorted Row Ids in a Table change.
  * @param tableId The Id of the Table to listen to.
  * @param cellId The Id of the Cell to sort by, or `undefined` for default
  * order.
@@ -2268,9 +2267,9 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useSortedRowIdsListener
+/// ui-svelte.onSortedRowIds
 /**
- * The useHasRowListener hook registers a listener that is called whenever a
+ * The onHasRow function registers a listener that is called whenever a
  * specified Row is added to or removed from a Table.
  * @param tableId The Id of the Table to listen to, or `null` to listen to any
  * Table.
@@ -2282,10 +2281,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useHasRowListener
+/// ui-svelte.onHasRow
 /**
- * The useRowListener hook registers a listener that is called whenever data in
- * a specified Row changes.
+ * The onRow function registers a listener that is called whenever data in a
+ * specified Row changes.
  * @param tableId The Id of the Table to listen to, or `null` to listen to any
  * Table.
  * @param rowId The Id of the Row to listen to, or `null` to listen to any Row.
@@ -2296,10 +2295,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useRowListener
+/// ui-svelte.onRow
 /**
- * The useCellIdsListener hook registers a listener that is called whenever the
- * Cell Ids in a Row change.
+ * The onCellIds function registers a listener that is called whenever the Cell
+ * Ids in a Row change.
  * @param tableId The Id of the Table to listen to, or `null` to listen to any
  * Table.
  * @param rowId The Id of the Row to listen to, or `null` to listen to any Row.
@@ -2310,9 +2309,9 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useCellIdsListener
+/// ui-svelte.onCellIds
 /**
- * The useHasCellListener hook registers a listener that is called whenever a
+ * The onHasCell function registers a listener that is called whenever a
  * specified Cell is added to or removed from a Row.
  * @param tableId The Id of the Table to listen to, or `null` to listen to any
  * Table.
@@ -2326,10 +2325,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useHasCellListener
+/// ui-svelte.onHasCell
 /**
- * The useCellListener hook registers a listener that is called whenever the
- * value of a specified Cell changes.
+ * The onCell function registers a listener that is called whenever the value of
+ * a specified Cell changes.
  * @param tableId The Id of the Table to listen to, or `null` to listen to any
  * Table.
  * @param rowId The Id of the Row to listen to, or `null` to listen to any Row.
@@ -2342,10 +2341,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useCellListener
+/// ui-svelte.onCell
 /**
- * The useHasValuesListener hook registers a listener that is called whenever
- * any Values are added to or removed from the Store.
+ * The onHasValues function registers a listener that is called whenever any
+ * Values are added to or removed from the Store.
  * @param listener The function to call when value presence changes.
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
@@ -2353,10 +2352,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useHasValuesListener
+/// ui-svelte.onHasValues
 /**
- * The useValuesListener hook registers a listener that is called whenever any
- * Values in the Store change.
+ * The onValues function registers a listener that is called whenever any Values
+ * in the Store change.
  * @param listener The function to call when Values change.
  * @param mutator An optional boolean indicating the listener mutates Store
  * data.
@@ -2364,9 +2363,9 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useValuesListener
+/// ui-svelte.onValues
 /**
- * The useValueIdsListener hook registers a listener that is called whenever the
+ * The onValueIds function registers a listener that is called whenever the
  * Value Ids in the Store change.
  * @param listener The function to call when Value Ids change.
  * @param mutator An optional boolean indicating the listener mutates Store
@@ -2375,9 +2374,9 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useValueIdsListener
+/// ui-svelte.onValueIds
 /**
- * The useHasValueListener hook registers a listener that is called whenever a
+ * The onHasValue function registers a listener that is called whenever a
  * specified Value is added to or removed from the Store.
  * @param valueId The Id of the Value to listen to, or `null` to listen to any
  * Value.
@@ -2388,10 +2387,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useHasValueListener
+/// ui-svelte.onHasValue
 /**
- * The useValueListener hook registers a listener that is called whenever the
- * value of a specified Value changes.
+ * The onValue function registers a listener that is called whenever the value
+ * of a specified Value changes.
  * @param valueId The Id of the Value to listen to, or `null` to listen to any
  * Value.
  * @param listener The function to call when the Value changes.
@@ -2401,36 +2400,36 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useValueListener
+/// ui-svelte.onValue
 /**
- * The useStartTransactionListener hook registers a listener that is called at
- * the start of every Store transaction.
+ * The onStartTransaction function registers a listener that is called at the
+ * start of every Store transaction.
  * @param listener The function to call at transaction start.
  * @param storeOrStoreId The Store to use, or its Id.
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useStartTransactionListener
+/// ui-svelte.onStartTransaction
 /**
- * The useWillFinishTransactionListener hook registers a listener called just
- * before a Store transaction completes.
+ * The onWillFinishTransaction function registers a listener called just before
+ * a Store transaction completes.
  * @param listener The function to call before transaction end.
  * @param storeOrStoreId The Store to use, or its Id.
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useWillFinishTransactionListener
+/// ui-svelte.onWillFinishTransaction
 /**
- * The useDidFinishTransactionListener hook registers a listener called just
- * after a Store transaction completes.
+ * The onDidFinishTransaction function registers a listener called just after a
+ * Store transaction completes.
  * @param listener The function to call after transaction end.
  * @param storeOrStoreId The Store to use, or its Id.
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useDidFinishTransactionListener
+/// ui-svelte.onDidFinishTransaction
 /**
- * The useMetricListener hook registers a listener that is called whenever a
+ * The onMetric function registers a listener that is called whenever a
  * specified Metric value changes.
  * @param metricId The Id of the Metric to listen to, or `null` to listen to any
  * Metric.
@@ -2439,9 +2438,9 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useMetricListener
+/// ui-svelte.onMetric
 /**
- * The useSliceIdsListener hook registers a listener that is called whenever the
+ * The onSliceIds function registers a listener that is called whenever the
  * Slice Ids in an Index change.
  * @param indexId The Id of the Index to listen to, or `null` to listen to any
  * Index.
@@ -2450,10 +2449,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useSliceIdsListener
+/// ui-svelte.onSliceIds
 /**
- * The useSliceRowIdsListener hook registers a listener that is called whenever
- * the Row Ids in a Slice change.
+ * The onSliceRowIds function registers a listener that is called whenever the
+ * Row Ids in a Slice change.
  * @param indexId The Id of the Index to listen to, or `null` to listen to any
  * Index.
  * @param sliceId The Id of the Slice to listen to, or `null` to listen to any
@@ -2463,10 +2462,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useSliceRowIdsListener
+/// ui-svelte.onSliceRowIds
 /**
- * The useRemoteRowIdListener hook registers a listener that is called whenever
- * the remote Row Id for a local Row changes.
+ * The onRemoteRowId function registers a listener that is called whenever the
+ * remote Row Id for a local Row changes.
  * @param relationshipId The Id of the Relationship, or `null` to listen to any
  * Relationship.
  * @param localRowId The Id of the local Row, or `null` to listen to any local
@@ -2477,10 +2476,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useRemoteRowIdListener
+/// ui-svelte.onRemoteRowId
 /**
- * The useLocalRowIdsListener hook registers a listener that is called whenever
- * the local Row Ids for a remote Row change.
+ * The onLocalRowIds function registers a listener that is called whenever the
+ * local Row Ids for a remote Row change.
  * @param relationshipId The Id of the Relationship, or `null` to listen to any
  * Relationship.
  * @param remoteRowId The Id of the remote Row, or `null` to listen to any
@@ -2491,10 +2490,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useLocalRowIdsListener
+/// ui-svelte.onLocalRowIds
 /**
- * The useLinkedRowIdsListener hook registers a listener that is called whenever
- * the linked Row Ids for a first Row change.
+ * The onLinkedRowIds function registers a listener that is called whenever the
+ * linked Row Ids for a first Row change.
  * @param relationshipId The Id of the Relationship.
  * @param firstRowId The Id of the first Row.
  * @param listener The function to call when linked Row Ids change.
@@ -2503,10 +2502,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useLinkedRowIdsListener
+/// ui-svelte.onLinkedRowIds
 /**
- * The useResultTableListener hook registers a listener that is called whenever
- * the result Table of a query changes.
+ * The onResultTable function registers a listener that is called whenever the
+ * result Table of a query changes.
  * @param queryId The Id of the query to listen to, or `null` to listen to any
  * query.
  * @param listener The function to call when the result Table changes.
@@ -2514,9 +2513,9 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useResultTableListener
+/// ui-svelte.onResultTable
 /**
- * The useResultTableCellIdsListener hook registers a listener that is called
+ * The onResultTableCellIds function registers a listener that is called
  * whenever the Cell Ids across a result Table change.
  * @param queryId The Id of the query to listen to, or `null` to listen to any
  * query.
@@ -2525,10 +2524,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useResultTableCellIdsListener
+/// ui-svelte.onResultTableCellIds
 /**
- * The useResultRowCountListener hook registers a listener that is called
- * whenever the count of result Rows changes.
+ * The onResultRowCount function registers a listener that is called whenever
+ * the count of result Rows changes.
  * @param queryId The Id of the query to listen to, or `null` to listen to any
  * query.
  * @param listener The function to call when the count changes.
@@ -2536,10 +2535,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useResultRowCountListener
+/// ui-svelte.onResultRowCount
 /**
- * The useResultRowIdsListener hook registers a listener that is called whenever
- * the result Row Ids of a query change.
+ * The onResultRowIds function registers a listener that is called whenever the
+ * result Row Ids of a query change.
  * @param queryId The Id of the query to listen to, or `null` to listen to any
  * query.
  * @param listener The function to call when result Row Ids change.
@@ -2547,9 +2546,9 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useResultRowIdsListener
+/// ui-svelte.onResultRowIds
 /**
- * The useResultSortedRowIdsListener hook registers a listener that is called
+ * The onResultSortedRowIds function registers a listener that is called
  * whenever the sorted result Row Ids change.
  * @param queryId The Id of the query to listen to.
  * @param cellId The Id of the Cell to sort by, or `undefined` for default
@@ -2562,9 +2561,9 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useResultSortedRowIdsListener
+/// ui-svelte.onResultSortedRowIds
 /**
- * The useResultRowListener hook registers a listener that is called whenever a
+ * The onResultRow function registers a listener that is called whenever a
  * result Row changes.
  * @param queryId The Id of the query to listen to, or `null` to listen to any
  * query.
@@ -2575,10 +2574,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useResultRowListener
+/// ui-svelte.onResultRow
 /**
- * The useResultCellIdsListener hook registers a listener that is called
- * whenever the Cell Ids in a result Row change.
+ * The onResultCellIds function registers a listener that is called whenever the
+ * Cell Ids in a result Row change.
  * @param queryId The Id of the query to listen to, or `null` to listen to any
  * query.
  * @param rowId The Id of the result Row to listen to, or `null` to listen to
@@ -2588,10 +2587,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useResultCellIdsListener
+/// ui-svelte.onResultCellIds
 /**
- * The useResultCellListener hook registers a listener that is called whenever
- * the value of a result Cell changes.
+ * The onResultCell function registers a listener that is called whenever the
+ * value of a result Cell changes.
  * @param queryId The Id of the query to listen to, or `null` to listen to any
  * query.
  * @param rowId The Id of the result Row to listen to, or `null` to listen to
@@ -2603,10 +2602,10 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useResultCellListener
+/// ui-svelte.onResultCell
 /**
- * The useParamValuesListener hook registers a listener that is called whenever
- * the parameter values for a query change.
+ * The onParamValues function registers a listener that is called whenever the
+ * parameter values for a query change.
  * @param queryId The Id of the query to listen to, or `null` to listen to any
  * query.
  * @param listener The function to call when parameter values change.
@@ -2614,9 +2613,9 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useParamValuesListener
+/// ui-svelte.onParamValues
 /**
- * The useParamValueListener hook registers a listener that is called whenever a
+ * The onParamValue function registers a listener that is called whenever a
  * specific parameter value for a query changes.
  * @param queryId The Id of the query to listen to, or `null` to listen to any
  * query.
@@ -2627,19 +2626,19 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useParamValueListener
+/// ui-svelte.onParamValue
 /**
- * The useCheckpointIdsListener hook registers a listener that is called
- * whenever the Checkpoint Ids change.
+ * The onCheckpointIds function registers a listener that is called whenever the
+ * Checkpoint Ids change.
  * @param listener The function to call when Checkpoint Ids change.
  * @param checkpointsOrCheckpointsId The Checkpoints object to use, or its Id.
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useCheckpointIdsListener
+/// ui-svelte.onCheckpointIds
 /**
- * The useCheckpointListener hook registers a listener that is called whenever
- * the label of a specified Checkpoint changes.
+ * The onCheckpoint function registers a listener that is called whenever the
+ * label of a specified Checkpoint changes.
  * @param checkpointId The Id of the Checkpoint to listen to, or `null` to
  * listen to any Checkpoint.
  * @param listener The function to call when the Checkpoint label changes.
@@ -2647,25 +2646,25 @@
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useCheckpointListener
+/// ui-svelte.onCheckpoint
 /**
- * The usePersisterStatusListener hook registers a listener that is called
- * whenever the status of a Persister changes.
+ * The onPersisterStatus function registers a listener that is called whenever
+ * the status of a Persister changes.
  * @param listener The function to call when the status changes.
  * @param persisterOrPersisterId The Persister to use, or its Id.
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.usePersisterStatusListener
+/// ui-svelte.onPersisterStatus
 /**
- * The useSynchronizerStatusListener hook registers a listener that is called
+ * The onSynchronizerStatus function registers a listener that is called
  * whenever the status of a Synchronizer changes.
  * @param listener The function to call when the status changes.
  * @param synchronizerOrSynchronizerId The Synchronizer to use, or its Id.
  * @category Hook
  * @since v8.1.0
  */
-/// ui-svelte.useSynchronizerStatusListener
+/// ui-svelte.onSynchronizerStatus
 /**
  * The provideStore function registers a Store with a given Id into the current
  * Provider context, making it available to all descendant components.

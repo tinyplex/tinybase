@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useMetricListener} from 'tinybase/ui-svelte';
+  import {onMetric} from 'tinybase/ui-svelte';
   import type {Metrics} from 'tinybase';
 
   let {
@@ -8,7 +8,7 @@
     listener,
   }: {metrics: Metrics; metricId: string; listener: (...args: any[]) => void} =
     $props();
-  useMetricListener(
+  onMetric(
     () => metricId,
     (...args) => listener(...args),
     () => metrics,

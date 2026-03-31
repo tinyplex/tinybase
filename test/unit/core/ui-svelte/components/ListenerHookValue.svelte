@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useValueListener} from 'tinybase/ui-svelte';
+  import {onValue} from 'tinybase/ui-svelte';
   import type {Store} from 'tinybase';
 
   let {
@@ -8,7 +8,7 @@
     listener,
   }: {store: Store; valueId: string; listener: (...args: any[]) => void} =
     $props();
-  useValueListener(
+  onValue(
     () => valueId,
     (...args) => listener(...args),
     false,

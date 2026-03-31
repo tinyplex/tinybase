@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useResultSortedRowIdsListener} from 'tinybase/ui-svelte';
+  import {onResultSortedRowIds} from 'tinybase/ui-svelte';
   import type {Queries} from 'tinybase';
 
   let {
@@ -13,7 +13,7 @@
     cellId: string;
     listener: (...args: any[]) => void;
   } = $props();
-  useResultSortedRowIdsListener(
+  onResultSortedRowIds(
     () => queryId,
     () => cellId,
     () => false,

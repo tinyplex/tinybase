@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useHasTableCellListener} from 'tinybase/ui-svelte';
+  import {onHasTableCell} from 'tinybase/ui-svelte';
   import type {Store} from 'tinybase';
 
   let {
@@ -13,7 +13,7 @@
     cellId: string;
     listener: (...args: any[]) => void;
   } = $props();
-  useHasTableCellListener(
+  onHasTableCell(
     () => tableId,
     () => cellId,
     (...args) => listener(...args),

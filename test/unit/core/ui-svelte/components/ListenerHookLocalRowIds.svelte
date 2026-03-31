@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useLocalRowIdsListener} from 'tinybase/ui-svelte';
+  import {onLocalRowIds} from 'tinybase/ui-svelte';
   import type {Relationships} from 'tinybase';
 
   let {
@@ -13,7 +13,7 @@
     remoteRowId: string;
     listener: (...args: any[]) => void;
   } = $props();
-  useLocalRowIdsListener(
+  onLocalRowIds(
     () => relationshipId,
     () => remoteRowId,
     (...args) => listener(...args),

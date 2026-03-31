@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useSynchronizerStatusListener} from 'tinybase/ui-svelte';
+  import {onSynchronizerStatus} from 'tinybase/ui-svelte';
   import type {Synchronizer} from 'tinybase/synchronizers';
 
   let {
@@ -7,7 +7,7 @@
     listener,
   }: {synchronizer: Synchronizer; listener: (...args: any[]) => void} =
     $props();
-  useSynchronizerStatusListener(
+  onSynchronizerStatus(
     (...args) => listener(...args),
     () => synchronizer,
   );

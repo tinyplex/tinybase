@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useCheckpointListener} from 'tinybase/ui-svelte';
+  import {onCheckpoint} from 'tinybase/ui-svelte';
   import type {Checkpoints} from 'tinybase';
 
   let {
@@ -11,7 +11,7 @@
     checkpointId: string;
     listener: (...args: any[]) => void;
   } = $props();
-  useCheckpointListener(
+  onCheckpoint(
     () => checkpointId,
     (...args) => listener(...args),
     () => checkpoints,

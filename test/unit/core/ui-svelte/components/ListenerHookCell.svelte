@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useCellListener} from 'tinybase/ui-svelte';
+  import {onCell} from 'tinybase/ui-svelte';
   import type {Store} from 'tinybase';
 
   let {
@@ -15,7 +15,7 @@
     cellId: string;
     listener: (...args: any[]) => void;
   } = $props();
-  useCellListener(
+  onCell(
     () => tableId,
     () => rowId,
     () => cellId,

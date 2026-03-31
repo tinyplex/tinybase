@@ -52,49 +52,49 @@ const {
   createGoForwardCallback,
   createPersisterStatus,
   createSynchronizerStatus,
-  useHasTablesListener,
-  useTablesListener,
-  useTableIdsListener,
-  useHasTableListener,
-  useTableListener,
-  useTableCellIdsListener,
-  useHasTableCellListener,
-  useRowCountListener,
-  useRowIdsListener,
-  useSortedRowIdsListener,
-  useHasRowListener,
-  useRowListener,
-  useCellIdsListener,
-  useHasCellListener,
-  useCellListener,
-  useHasValuesListener,
-  useValuesListener,
-  useValueIdsListener,
-  useHasValueListener,
-  useValueListener,
-  useStartTransactionListener,
-  useWillFinishTransactionListener,
-  useDidFinishTransactionListener,
-  useMetricListener,
-  useSliceIdsListener,
-  useSliceRowIdsListener,
-  useRemoteRowIdListener,
-  useLocalRowIdsListener,
-  useLinkedRowIdsListener,
-  useResultTableListener,
-  useResultTableCellIdsListener,
-  useResultRowCountListener,
-  useResultRowIdsListener,
-  useResultSortedRowIdsListener,
-  useResultRowListener,
-  useResultCellIdsListener,
-  useResultCellListener,
-  useParamValuesListener,
-  useParamValueListener,
-  useCheckpointIdsListener,
-  useCheckpointListener,
-  usePersisterStatusListener,
-  useSynchronizerStatusListener,
+  onHasTables,
+  onTables,
+  onTableIds,
+  onHasTable,
+  onTable,
+  onTableCellIds,
+  onHasTableCell,
+  onRowCount,
+  onRowIds,
+  onSortedRowIds,
+  onHasRow,
+  onRow,
+  onCellIds,
+  onHasCell,
+  onCell,
+  onHasValues,
+  onValues,
+  onValueIds,
+  onHasValue,
+  onValue,
+  onStartTransaction,
+  onWillFinishTransaction,
+  onDidFinishTransaction,
+  onMetric,
+  onSliceIds,
+  onSliceRowIds,
+  onRemoteRowId,
+  onLocalRowIds,
+  onLinkedRowIds,
+  onResultTable,
+  onResultTableCellIds,
+  onResultRowCount,
+  onResultRowIds,
+  onResultSortedRowIds,
+  onResultRow,
+  onResultCellIds,
+  onResultCell,
+  onParamValues,
+  onParamValue,
+  onCheckpointIds,
+  onCheckpoint,
+  onPersisterStatus,
+  onSynchronizerStatus,
 } = UiSvelteWithSchemas;
 
 const UiSvelteWithSchemas2 = UiSvelte as UiSvelte.WithSchemas<
@@ -200,52 +200,52 @@ const Getters = () => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Listeners = () => {
-  useHasTablesListener((store) => {
+  onHasTables((store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useHasTablesListener(() => null);
+  onHasTables(() => null);
 
-  useTablesListener((store, getCellChange) => {
+  onTables((store, getCellChange) => {
     store.getTables().t1;
     getCellChange?.('t1', 'r1', 'c1') as [true, number, number];
     store.getTables().t2; // !
     getCellChange?.('t1', 'r1', 'c1') as [true, number, string]; // !
     getCellChange?.('t1', 'r1', 'c1') as [true, string, number]; // !
   });
-  useTablesListener((store) => {
+  onTables((store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useTablesListener(() => null);
+  onTables(() => null);
 
-  useTableIdsListener((store) => {
+  onTableIds((store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useTableIdsListener(() => null);
+  onTableIds(() => null);
 
-  useHasTableListener('t1', (store, tableId) => {
+  onHasTable('t1', (store, tableId) => {
     store.getTables().t1;
     tableId == 't1';
     store.getTables().t2; // !
     tableId == 't0'; // !
     tableId == 't2'; // !
   });
-  useHasTableListener(null, (store, tableId) => {
+  onHasTable(null, (store, tableId) => {
     store.getTables().t1;
     tableId == 't1';
     tableId == 't0';
     store.getTables().t2; // !
     tableId == 't2'; // !
   });
-  useHasTableListener(null, (store) => {
+  onHasTable(null, (store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useHasTableListener('t2', () => null); // !
+  onHasTable('t2', () => null); // !
 
-  useTableListener('t1', (store, tableId, getCellChange) => {
+  onTable('t1', (store, tableId, getCellChange) => {
     store.getTables().t1;
     tableId == 't1';
     getCellChange?.('t1', 'r1', 'c1') as [true, number, number];
@@ -253,41 +253,41 @@ const Listeners = () => {
     tableId == 't0'; // !
     tableId == 't2'; // !
   });
-  useTableListener(null, (store, tableId) => {
+  onTable(null, (store, tableId) => {
     store.getTables().t1;
     tableId == 't1';
     tableId == 't0';
     store.getTables().t2; // !
     tableId == 't2'; // !
   });
-  useTableListener(null, (store) => {
+  onTable(null, (store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useTableListener('t2', () => null); // !
+  onTable('t2', () => null); // !
 
-  useTableCellIdsListener('t1', (store, tableId) => {
+  onTableCellIds('t1', (store, tableId) => {
     store.getTables().t1;
     tableId == 't1';
     store.getTables().t2; // !
     tableId == 't0'; // !
     tableId == 't2'; // !
   });
-  useTableCellIdsListener(null, (store, tableId) => {
+  onTableCellIds(null, (store, tableId) => {
     store.getTables().t1;
     tableId == 't1';
     tableId == 't0';
     store.getTables().t2; // !
     tableId == 't2'; // !
   });
-  useTableCellIdsListener('t1', (store) => {
+  onTableCellIds('t1', (store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useTableCellIdsListener('t1', () => null);
-  useTableCellIdsListener('t2', () => null); // !
+  onTableCellIds('t1', () => null);
+  onTableCellIds('t2', () => null); // !
 
-  useHasTableCellListener('t1', 'c1', (store, tableId, cellId) => {
+  onHasTableCell('t1', 'c1', (store, tableId, cellId) => {
     store.getTables().t1;
     tableId == 't1';
     cellId == 'c1';
@@ -296,7 +296,7 @@ const Listeners = () => {
     tableId == 't2'; // !
     cellId == 'c2'; // !
   });
-  useHasTableCellListener('t1', null, (store, tableId, cellId) => {
+  onHasTableCell('t1', null, (store, tableId, cellId) => {
     store.getTables().t1;
     tableId == 't1';
     cellId == 'c1';
@@ -306,57 +306,57 @@ const Listeners = () => {
     tableId == 't2'; // !
     cellId == 'c2'; // !
   });
-  useHasTableCellListener('t1', 'c1', (store) => {
+  onHasTableCell('t1', 'c1', (store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useHasTableCellListener('t1', 'c1', () => null);
-  useHasTableCellListener(
+  onHasTableCell('t1', 'c1', () => null);
+  onHasTableCell(
     't1',
     'c2', // !
     () => null,
   );
-  useHasTableCellListener('t2', 'c1', () => null); // !
+  onHasTableCell('t2', 'c1', () => null); // !
 
-  useRowCountListener('t1', (store, tableId) => {
+  onRowCount('t1', (store, tableId) => {
     store.getTables().t1;
     tableId == 't1';
     store.getTables().t2; // !
     tableId == 't0'; // !
     tableId == 't2'; // !
   });
-  useRowCountListener(null, (store, tableId) => {
+  onRowCount(null, (store, tableId) => {
     store.getTables().t1;
     tableId == 't1';
     tableId == 't0';
     store.getTables().t2; // !
     tableId == 't2'; // !
   });
-  useRowCountListener('t1', () => null);
-  useRowCountListener('t2', () => null); // !
+  onRowCount('t1', () => null);
+  onRowCount('t2', () => null); // !
 
-  useRowIdsListener('t1', (store, tableId) => {
+  onRowIds('t1', (store, tableId) => {
     store.getTables().t1;
     tableId == 't1';
     store.getTables().t2; // !
     tableId == 't0'; // !
     tableId == 't2'; // !
   });
-  useRowIdsListener(null, (store, tableId) => {
+  onRowIds(null, (store, tableId) => {
     store.getTables().t1;
     tableId == 't1';
     tableId == 't0';
     store.getTables().t2; // !
     tableId == 't2'; // !
   });
-  useRowIdsListener('t1', (store) => {
+  onRowIds('t1', (store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useRowIdsListener('t1', () => null);
-  useRowIdsListener('t2', () => null); // !
+  onRowIds('t1', () => null);
+  onRowIds('t2', () => null); // !
 
-  useSortedRowIdsListener('t1', 'c1', true, 0, 10, (store, tableId, cellId) => {
+  onSortedRowIds('t1', 'c1', true, 0, 10, (store, tableId, cellId) => {
     store.getTables().t1;
     tableId == 't1';
     cellId == 'c1';
@@ -365,7 +365,7 @@ const Listeners = () => {
     tableId == 't2'; // !
     cellId == 'c2'; // !
   });
-  useSortedRowIdsListener(
+  onSortedRowIds(
     't1',
     'c2', // !
     true,
@@ -373,12 +373,12 @@ const Listeners = () => {
     10,
     () => null,
   );
-  useSortedRowIdsListener('t1', 'c1', true, 0, 10, (store) => {
+  onSortedRowIds('t1', 'c1', true, 0, 10, (store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useSortedRowIdsListener('t1', 'c1', true, 0, 10, () => null);
-  useSortedRowIdsListener(
+  onSortedRowIds('t1', 'c1', true, 0, 10, () => null);
+  onSortedRowIds(
     't2', // !
     undefined,
     true,
@@ -387,7 +387,7 @@ const Listeners = () => {
     () => null,
   );
 
-  useHasRowListener('t1', null, (store, tableId, rowId) => {
+  onHasRow('t1', null, (store, tableId, rowId) => {
     store.getTables().t1;
     tableId == 't1';
     rowId == 'r1';
@@ -396,7 +396,7 @@ const Listeners = () => {
     tableId == 't0'; // !
     tableId == 't2'; // !
   });
-  useHasRowListener(null, 'r1', (store, tableId, rowId) => {
+  onHasRow(null, 'r1', (store, tableId, rowId) => {
     store.getTables().t1;
     tableId == 't1';
     tableId == 't0';
@@ -405,7 +405,7 @@ const Listeners = () => {
     tableId == 't2'; // !
     rowId == 'r2'; // !
   });
-  useHasRowListener(null, null, (store, tableId, rowId) => {
+  onHasRow(null, null, (store, tableId, rowId) => {
     store.getTables().t1;
     tableId == 't1';
     tableId == 't0';
@@ -414,9 +414,9 @@ const Listeners = () => {
     store.getTables().t2; // !
     tableId == 't2'; // !
   });
-  useHasRowListener('t2', 'r2', () => null); // !
+  onHasRow('t2', 'r2', () => null); // !
 
-  useRowListener('t1', 'r1', (store, tableId, rowId, getCellChange) => {
+  onRow('t1', 'r1', (store, tableId, rowId, getCellChange) => {
     store.getTables().t1;
     tableId == 't1';
     rowId == 'r1';
@@ -426,7 +426,7 @@ const Listeners = () => {
     tableId == 't2'; // !
     rowId == 'r2'; // !
   });
-  useRowListener('t1', null, (store, tableId, rowId) => {
+  onRow('t1', null, (store, tableId, rowId) => {
     store.getTables().t1;
     tableId == 't1';
     rowId == 'r1';
@@ -435,7 +435,7 @@ const Listeners = () => {
     tableId == 't0'; // !
     tableId == 't2'; // !
   });
-  useRowListener(null, null, (store, tableId, rowId) => {
+  onRow(null, null, (store, tableId, rowId) => {
     store.getTables().t1;
     tableId == 't1';
     tableId == 't0';
@@ -444,9 +444,9 @@ const Listeners = () => {
     store.getTables().t2; // !
     tableId == 't2'; // !
   });
-  useRowListener('t2', 'r1', () => null); // !
+  onRow('t2', 'r1', () => null); // !
 
-  useCellIdsListener('t1', 'r1', (store, tableId, rowId) => {
+  onCellIds('t1', 'r1', (store, tableId, rowId) => {
     store.getTables().t1;
     tableId == 't1';
     rowId == 'r1';
@@ -455,7 +455,7 @@ const Listeners = () => {
     tableId == 't2'; // !
     rowId == 'r2'; // !
   });
-  useCellIdsListener(null, null, (store, tableId, rowId) => {
+  onCellIds(null, null, (store, tableId, rowId) => {
     store.getTables().t1;
     tableId == 't1';
     tableId == 't0';
@@ -464,14 +464,14 @@ const Listeners = () => {
     store.getTables().t2; // !
     tableId == 't2'; // !
   });
-  useCellIdsListener('t1', 'r1', (store) => {
+  onCellIds('t1', 'r1', (store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useCellIdsListener('t1', 'r1', () => null);
-  useCellIdsListener('t2', 'r1', () => null); // !
+  onCellIds('t1', 'r1', () => null);
+  onCellIds('t2', 'r1', () => null); // !
 
-  useHasCellListener('t1', null, 'c1', (store, tableId, rowId, cellId) => {
+  onHasCell('t1', null, 'c1', (store, tableId, rowId, cellId) => {
     store.getTables().t1;
     tableId == 't1';
     rowId == 'r1';
@@ -482,7 +482,7 @@ const Listeners = () => {
     tableId == 't2'; // !
     cellId == 'c2'; // !
   });
-  useHasCellListener(null, null, null, (store, tableId, rowId, cellId) => {
+  onHasCell(null, null, null, (store, tableId, rowId, cellId) => {
     store.getTables().t1;
     tableId == 't1';
     tableId == 't0';
@@ -500,15 +500,15 @@ const Listeners = () => {
     tableId == 't2'; // !
     cellId == 'c2'; // !
   });
-  useHasCellListener('t1', 'r1', 'c1', (store) => {
+  onHasCell('t1', 'r1', 'c1', (store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useHasCellListener('t1', 'r1', 'c1', () => null);
-  useHasCellListener('t1', 'r1', 'c2', () => null); // !
-  useHasCellListener('t2', 'r1', 'c1', () => null); // !
+  onHasCell('t1', 'r1', 'c1', () => null);
+  onHasCell('t1', 'r1', 'c2', () => null); // !
+  onHasCell('t2', 'r1', 'c1', () => null); // !
 
-  useCellListener(
+  onCell(
     't1',
     'r1',
     'c1',
@@ -529,7 +529,7 @@ const Listeners = () => {
       cellId == 'c2'; // !
     },
   );
-  useCellListener(
+  onCell(
     't1',
     'r1',
     null,
@@ -562,7 +562,7 @@ const Listeners = () => {
       cellId == 'c2'; // !
     },
   );
-  useCellListener(null, null, null, (store, tableId, rowId, cellId) => {
+  onCell(null, null, null, (store, tableId, rowId, cellId) => {
     store.getTables().t1;
     tableId == 't1';
     tableId == 't0';
@@ -580,52 +580,52 @@ const Listeners = () => {
     tableId == 't2'; // !
     cellId == 'c2'; // !
   });
-  useCellListener('t1', 'r1', 'c1', (store) => {
+  onCell('t1', 'r1', 'c1', (store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useCellListener('t1', 'r1', 'c1', () => null);
-  useCellListener('t1', 'r1', 'c2', () => null); // !
-  useCellListener('t2', 'r1', 'c1', () => null); // !
+  onCell('t1', 'r1', 'c1', () => null);
+  onCell('t1', 'r1', 'c2', () => null); // !
+  onCell('t2', 'r1', 'c1', () => null); // !
 
-  useHasValuesListener((store) => {
+  onHasValues((store) => {
     store.getValues().v1;
     store.getValues().v2; // !
   });
-  useHasValuesListener(() => null);
+  onHasValues(() => null);
 
-  useValuesListener((store, getValueChange) => {
+  onValues((store, getValueChange) => {
     store.getValues().v1;
     getValueChange?.('v1') as [true, number, number];
     store.getValues().v2; // !
     getValueChange?.('v1') as [true, number, string]; // !
     getValueChange?.('v1') as [true, string, number]; // !
   });
-  useValuesListener(() => null);
+  onValues(() => null);
 
-  useValueIdsListener((store) => {
+  onValueIds((store) => {
     store.getValues().v1;
     store.getValues().v2; // !
   });
-  useValueIdsListener(() => null);
+  onValueIds(() => null);
 
-  useHasValueListener('v1', (store, valueId) => {
+  onHasValue('v1', (store, valueId) => {
     store.getValues().v1;
     valueId == 'v1';
     store.getValues().v2; // !
     valueId == 'v2'; // !
   });
-  useHasValueListener(null, (store, valueId) => {
+  onHasValue(null, (store, valueId) => {
     store.getValues().v1;
     valueId == 'v1';
     valueId == 'v1d';
     store.getValues().v2; // !
     valueId == 'v2'; // !
   });
-  useHasValueListener('v1', () => null);
-  useHasValueListener('v2', () => null); // !
+  onHasValue('v1', () => null);
+  onHasValue('v2', () => null); // !
 
-  useValueListener('v1', (store, valueId, newValue, oldValue) => {
+  onValue('v1', (store, valueId, newValue, oldValue) => {
     store.getValues().v1;
     valueId == 'v1';
     newValue as number;
@@ -635,7 +635,7 @@ const Listeners = () => {
     newValue as string; // !
     oldValue as string; // !
   });
-  useValueListener(null, (store, valueId, newValue, oldValue) => {
+  onValue(null, (store, valueId, newValue, oldValue) => {
     store.getValues().v1;
     valueId == 'v1';
     valueId == 'v1d';
@@ -658,18 +658,18 @@ const Listeners = () => {
     store.getValues().v2; // !
     valueId == 'v2'; // !
   });
-  useValueListener('v1', () => null);
-  useValueListener('v2', () => null); // !
+  onValue('v1', () => null);
+  onValue('v2', () => null); // !
 
-  useStartTransactionListener((store) => {
+  onStartTransaction((store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useWillFinishTransactionListener((store) => {
+  onWillFinishTransaction((store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
-  useDidFinishTransactionListener((store) => {
+  onDidFinishTransaction((store) => {
     store.getTables().t1;
     store.getTables().t2; // !
   });
@@ -680,17 +680,17 @@ const Metrics = () => {
   getMetrics()?.getStore().getTables().t1;
   getMetrics()?.getStore().getTables().t2; // !
 
-  useMetricListener('m1', (metrics) => {
+  onMetric('m1', (metrics) => {
     metrics.getStore().getTables().t1;
     metrics.getStore().getTables().t2; // !
   });
 
-  useSliceIdsListener('i1', (indexes) => {
+  onSliceIds('i1', (indexes) => {
     indexes.getStore().getTables().t1;
     indexes.getStore().getTables().t2; // !
   });
 
-  useSliceRowIdsListener('i1', 's1', (indexes) => {
+  onSliceRowIds('i1', 's1', (indexes) => {
     indexes.getStore().getTables().t1;
     indexes.getStore().getTables().t2; // !
   });
@@ -707,17 +707,17 @@ const Relationships = () => {
   getRelationships()?.getStore().getTables().t1;
   getRelationships()?.getStore().getTables().t2; // !
 
-  useRemoteRowIdListener('r1', 'r1', (relationships) => {
+  onRemoteRowId('r1', 'r1', (relationships) => {
     relationships.getStore().getTables().t1;
     relationships.getStore().getTables().t2; // !
   });
 
-  useLocalRowIdsListener('r1', 'r1', (relationships) => {
+  onLocalRowIds('r1', 'r1', (relationships) => {
     relationships.getStore().getTables().t1;
     relationships.getStore().getTables().t2; // !
   });
 
-  useLinkedRowIdsListener('r1', 'r1', (relationships) => {
+  onLinkedRowIds('r1', 'r1', (relationships) => {
     relationships.getStore().getTables().t1;
     relationships.getStore().getTables().t2; // !
   });
@@ -728,52 +728,52 @@ const Queries = () => {
   getQueries()?.getStore().getTables().t1;
   getQueries()?.getStore().getTables().t2; // !
 
-  useResultTableListener('q1', (queries) => {
+  onResultTable('q1', (queries) => {
     queries.getStore().getTables().t1;
     queries.getStore().getTables().t2; // !
   });
 
-  useResultTableCellIdsListener('q1', (queries) => {
+  onResultTableCellIds('q1', (queries) => {
     queries.getStore().getTables().t1;
     queries.getStore().getTables().t2; // !
   });
 
-  useResultRowCountListener('q1', (queries) => {
+  onResultRowCount('q1', (queries) => {
     queries.getStore().getTables().t1;
     queries.getStore().getTables().t2; // !
   });
 
-  useResultRowIdsListener('q1', (queries) => {
+  onResultRowIds('q1', (queries) => {
     queries.getStore().getTables().t1;
     queries.getStore().getTables().t2; // !
   });
 
-  useResultSortedRowIdsListener('q1', 'rc1', true, 0, 10, (queries) => {
+  onResultSortedRowIds('q1', 'rc1', true, 0, 10, (queries) => {
     queries.getStore().getTables().t1;
     queries.getStore().getTables().t2; // !
   });
 
-  useResultRowListener('q1', 'rr1', (queries) => {
+  onResultRow('q1', 'rr1', (queries) => {
     queries.getStore().getTables().t1;
     queries.getStore().getTables().t2; // !
   });
 
-  useResultCellIdsListener('q1', 'rr1', (queries) => {
+  onResultCellIds('q1', 'rr1', (queries) => {
     queries.getStore().getTables().t1;
     queries.getStore().getTables().t2; // !
   });
 
-  useResultCellListener('q1', 'rr1', 'c1', (queries) => {
+  onResultCell('q1', 'rr1', 'c1', (queries) => {
     queries.getStore().getTables().t1;
     queries.getStore().getTables().t2; // !
   });
 
-  useParamValuesListener('q1', (queries) => {
+  onParamValues('q1', (queries) => {
     queries.getStore().getTables().t1;
     queries.getStore().getTables().t2; // !
   });
 
-  useParamValueListener('q1', 'p1', (queries) => {
+  onParamValue('q1', 'p1', (queries) => {
     queries.getStore().getTables().t1;
     queries.getStore().getTables().t2; // !
   });
@@ -784,12 +784,12 @@ const Checkpoints = () => {
   getCheckpoints()?.getStore().getTables().t1;
   getCheckpoints()?.getStore().getTables().t2; // !
 
-  useCheckpointIdsListener((checkpoints) => {
+  onCheckpointIds((checkpoints) => {
     checkpoints.getStore().getTables().t1;
     checkpoints.getStore().getTables().t2; // !
   });
 
-  useCheckpointListener('c1', (checkpoints) => {
+  onCheckpoint('c1', (checkpoints) => {
     checkpoints.getStore().getTables().t1;
     checkpoints.getStore().getTables().t2; // !
   });
@@ -797,12 +797,12 @@ const Checkpoints = () => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Persister = () => {
-  usePersisterStatusListener((persister) => {
+  onPersisterStatus((persister) => {
     persister.getStore().getTables().t1;
     persister.getStore().getTables().t2; // !
   });
 
-  useSynchronizerStatusListener((synchronizer) => {
+  onSynchronizerStatus((synchronizer) => {
     synchronizer.getStore().getTables().t1;
     synchronizer.getStore().getTables().t2; // !
   });

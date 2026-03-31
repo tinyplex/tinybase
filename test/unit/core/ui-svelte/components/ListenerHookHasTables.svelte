@@ -1,10 +1,10 @@
 <script lang="ts">
-  import {useHasTablesListener} from 'tinybase/ui-svelte';
+  import {onHasTables} from 'tinybase/ui-svelte';
   import type {Store} from 'tinybase';
 
   let {store, listener}: {store: Store; listener: (...args: any[]) => void} =
     $props();
-  useHasTablesListener(
+  onHasTables(
     (...args) => listener(...args),
     false,
     () => store,

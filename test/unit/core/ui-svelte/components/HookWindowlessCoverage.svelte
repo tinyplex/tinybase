@@ -12,14 +12,14 @@
     createStoreIds,
     createSynchronizerIds,
     createTableIds,
-    useTablesListener,
+    onTables,
     createValue,
   } from 'tinybase/ui-svelte';
 
   const store = createStore().setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
 
   const tableIds = createTableIds(() => store);
-  useTablesListener(
+  onTables(
     () => undefined,
     false,
     () => store,

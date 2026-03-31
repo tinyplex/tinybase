@@ -923,53 +923,53 @@ export function createSynchronizerStatus(
   >,
 ): {readonly current: Status};
 
-/// ui-svelte.useHasTablesListener
-export function useHasTablesListener(
+/// ui-svelte.onHasTables
+export function onHasTables(
   listener: HasTablesListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useTablesListener
-export function useTablesListener(
+/// ui-svelte.onTables
+export function onTables(
   listener: TablesListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useTableIdsListener
-export function useTableIdsListener(
+/// ui-svelte.onTableIds
+export function onTableIds(
   listener: TableIdsListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useHasTableListener
-export function useHasTableListener(
+/// ui-svelte.onHasTable
+export function onHasTable(
   tableId: MaybeGetter<IdOrNull>,
   listener: HasTableListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useTableListener
-export function useTableListener(
+/// ui-svelte.onTable
+export function onTable(
   tableId: MaybeGetter<IdOrNull>,
   listener: TableListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useTableCellIdsListener
-export function useTableCellIdsListener(
+/// ui-svelte.onTableCellIds
+export function onTableCellIds(
   tableId: MaybeGetter<IdOrNull>,
   listener: TableCellIdsListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useHasTableCellListener
-export function useHasTableCellListener(
+/// ui-svelte.onHasTableCell
+export function onHasTableCell(
   tableId: MaybeGetter<IdOrNull>,
   cellId: MaybeGetter<IdOrNull>,
   listener: HasTableCellListener,
@@ -977,24 +977,24 @@ export function useHasTableCellListener(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useRowCountListener
-export function useRowCountListener(
+/// ui-svelte.onRowCount
+export function onRowCount(
   tableId: MaybeGetter<IdOrNull>,
   listener: RowCountListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useRowIdsListener
-export function useRowIdsListener(
+/// ui-svelte.onRowIds
+export function onRowIds(
   tableId: MaybeGetter<IdOrNull>,
   listener: RowIdsListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useSortedRowIdsListener
-export function useSortedRowIdsListener(
+/// ui-svelte.onSortedRowIds
+export function onSortedRowIds(
   tableId: MaybeGetter<Id>,
   cellId: MaybeGetter<Id | undefined>,
   descending: MaybeGetter<boolean>,
@@ -1005,8 +1005,8 @@ export function useSortedRowIdsListener(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useHasRowListener
-export function useHasRowListener(
+/// ui-svelte.onHasRow
+export function onHasRow(
   tableId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   listener: HasRowListener,
@@ -1014,8 +1014,8 @@ export function useHasRowListener(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useRowListener
-export function useRowListener(
+/// ui-svelte.onRow
+export function onRow(
   tableId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   listener: RowListener,
@@ -1023,8 +1023,8 @@ export function useRowListener(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useCellIdsListener
-export function useCellIdsListener(
+/// ui-svelte.onCellIds
+export function onCellIds(
   tableId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   listener: CellIdsListener,
@@ -1032,8 +1032,8 @@ export function useCellIdsListener(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useHasCellListener
-export function useHasCellListener(
+/// ui-svelte.onHasCell
+export function onHasCell(
   tableId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   cellId: MaybeGetter<IdOrNull>,
@@ -1042,8 +1042,8 @@ export function useHasCellListener(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useCellListener
-export function useCellListener(
+/// ui-svelte.onCell
+export function onCell(
   tableId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   cellId: MaybeGetter<IdOrNull>,
@@ -1052,85 +1052,85 @@ export function useCellListener(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useHasValuesListener
-export function useHasValuesListener(
+/// ui-svelte.onHasValues
+export function onHasValues(
   listener: HasValuesListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useValuesListener
-export function useValuesListener(
+/// ui-svelte.onValues
+export function onValues(
   listener: ValuesListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useValueIdsListener
-export function useValueIdsListener(
+/// ui-svelte.onValueIds
+export function onValueIds(
   listener: ValueIdsListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useHasValueListener
-export function useHasValueListener(
+/// ui-svelte.onHasValue
+export function onHasValue(
   valueId: MaybeGetter<IdOrNull>,
   listener: HasValueListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useValueListener
-export function useValueListener(
+/// ui-svelte.onValue
+export function onValue(
   valueId: MaybeGetter<IdOrNull>,
   listener: ValueListener,
   mutator?: boolean,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useStartTransactionListener
-export function useStartTransactionListener(
+/// ui-svelte.onStartTransaction
+export function onStartTransaction(
   listener: TransactionListener,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useWillFinishTransactionListener
-export function useWillFinishTransactionListener(
+/// ui-svelte.onWillFinishTransaction
+export function onWillFinishTransaction(
   listener: TransactionListener,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useDidFinishTransactionListener
-export function useDidFinishTransactionListener(
+/// ui-svelte.onDidFinishTransaction
+export function onDidFinishTransaction(
   listener: TransactionListener,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): void;
 
-/// ui-svelte.useMetricListener
-export function useMetricListener(
+/// ui-svelte.onMetric
+export function onMetric(
   metricId: MaybeGetter<IdOrNull>,
   listener: MetricListener,
   metricsOrMetricsId?: MaybeGetter<MetricsOrMetricsId | undefined>,
 ): void;
 
-/// ui-svelte.useSliceIdsListener
-export function useSliceIdsListener(
+/// ui-svelte.onSliceIds
+export function onSliceIds(
   indexId: MaybeGetter<IdOrNull>,
   listener: SliceIdsListener,
   indexesOrIndexesId?: MaybeGetter<IndexesOrIndexesId | undefined>,
 ): void;
 
-/// ui-svelte.useSliceRowIdsListener
-export function useSliceRowIdsListener(
+/// ui-svelte.onSliceRowIds
+export function onSliceRowIds(
   indexId: MaybeGetter<IdOrNull>,
   sliceId: MaybeGetter<IdOrNull>,
   listener: SliceRowIdsListener,
   indexesOrIndexesId?: MaybeGetter<IndexesOrIndexesId | undefined>,
 ): void;
 
-/// ui-svelte.useRemoteRowIdListener
-export function useRemoteRowIdListener(
+/// ui-svelte.onRemoteRowId
+export function onRemoteRowId(
   relationshipId: MaybeGetter<IdOrNull>,
   localRowId: MaybeGetter<IdOrNull>,
   listener: RemoteRowIdListener,
@@ -1139,8 +1139,8 @@ export function useRemoteRowIdListener(
   >,
 ): void;
 
-/// ui-svelte.useLocalRowIdsListener
-export function useLocalRowIdsListener(
+/// ui-svelte.onLocalRowIds
+export function onLocalRowIds(
   relationshipId: MaybeGetter<IdOrNull>,
   remoteRowId: MaybeGetter<IdOrNull>,
   listener: LocalRowIdsListener,
@@ -1149,8 +1149,8 @@ export function useLocalRowIdsListener(
   >,
 ): void;
 
-/// ui-svelte.useLinkedRowIdsListener
-export function useLinkedRowIdsListener(
+/// ui-svelte.onLinkedRowIds
+export function onLinkedRowIds(
   relationshipId: MaybeGetter<Id>,
   firstRowId: MaybeGetter<Id>,
   listener: LinkedRowIdsListener,
@@ -1159,36 +1159,36 @@ export function useLinkedRowIdsListener(
   >,
 ): void;
 
-/// ui-svelte.useResultTableListener
-export function useResultTableListener(
+/// ui-svelte.onResultTable
+export function onResultTable(
   queryId: MaybeGetter<IdOrNull>,
   listener: ResultTableListener,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): void;
 
-/// ui-svelte.useResultTableCellIdsListener
-export function useResultTableCellIdsListener(
+/// ui-svelte.onResultTableCellIds
+export function onResultTableCellIds(
   queryId: MaybeGetter<IdOrNull>,
   listener: ResultTableCellIdsListener,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): void;
 
-/// ui-svelte.useResultRowCountListener
-export function useResultRowCountListener(
+/// ui-svelte.onResultRowCount
+export function onResultRowCount(
   queryId: MaybeGetter<IdOrNull>,
   listener: ResultRowCountListener,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): void;
 
-/// ui-svelte.useResultRowIdsListener
-export function useResultRowIdsListener(
+/// ui-svelte.onResultRowIds
+export function onResultRowIds(
   queryId: MaybeGetter<IdOrNull>,
   listener: ResultRowIdsListener,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): void;
 
-/// ui-svelte.useResultSortedRowIdsListener
-export function useResultSortedRowIdsListener(
+/// ui-svelte.onResultSortedRowIds
+export function onResultSortedRowIds(
   queryId: MaybeGetter<Id>,
   cellId: MaybeGetter<Id | undefined>,
   descending: MaybeGetter<boolean>,
@@ -1198,24 +1198,24 @@ export function useResultSortedRowIdsListener(
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): void;
 
-/// ui-svelte.useResultRowListener
-export function useResultRowListener(
+/// ui-svelte.onResultRow
+export function onResultRow(
   queryId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   listener: ResultRowListener,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): void;
 
-/// ui-svelte.useResultCellIdsListener
-export function useResultCellIdsListener(
+/// ui-svelte.onResultCellIds
+export function onResultCellIds(
   queryId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   listener: ResultCellIdsListener,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): void;
 
-/// ui-svelte.useResultCellListener
-export function useResultCellListener(
+/// ui-svelte.onResultCell
+export function onResultCell(
   queryId: MaybeGetter<IdOrNull>,
   rowId: MaybeGetter<IdOrNull>,
   cellId: MaybeGetter<IdOrNull>,
@@ -1223,31 +1223,31 @@ export function useResultCellListener(
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): void;
 
-/// ui-svelte.useParamValuesListener
-export function useParamValuesListener(
+/// ui-svelte.onParamValues
+export function onParamValues(
   queryId: MaybeGetter<IdOrNull>,
   listener: ParamValuesListener,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): void;
 
-/// ui-svelte.useParamValueListener
-export function useParamValueListener(
+/// ui-svelte.onParamValue
+export function onParamValue(
   queryId: MaybeGetter<IdOrNull>,
   paramId: MaybeGetter<IdOrNull>,
   listener: ParamValueListener,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): void;
 
-/// ui-svelte.useCheckpointIdsListener
-export function useCheckpointIdsListener(
+/// ui-svelte.onCheckpointIds
+export function onCheckpointIds(
   listener: CheckpointIdsListener,
   checkpointsOrCheckpointsId?: MaybeGetter<
     CheckpointsOrCheckpointsId | undefined
   >,
 ): void;
 
-/// ui-svelte.useCheckpointListener
-export function useCheckpointListener(
+/// ui-svelte.onCheckpoint
+export function onCheckpoint(
   checkpointId: MaybeGetter<IdOrNull>,
   listener: CheckpointListener,
   checkpointsOrCheckpointsId?: MaybeGetter<
@@ -1255,14 +1255,14 @@ export function useCheckpointListener(
   >,
 ): void;
 
-/// ui-svelte.usePersisterStatusListener
-export function usePersisterStatusListener(
+/// ui-svelte.onPersisterStatus
+export function onPersisterStatus(
   listener: StatusListener,
   persisterOrPersisterId?: MaybeGetter<PersisterOrPersisterId | undefined>,
 ): void;
 
-/// ui-svelte.useSynchronizerStatusListener
-export function useSynchronizerStatusListener(
+/// ui-svelte.onSynchronizerStatus
+export function onSynchronizerStatus(
   listener: StatusListener,
   synchronizerOrSynchronizerId?: MaybeGetter<
     SynchronizerOrSynchronizerId | undefined

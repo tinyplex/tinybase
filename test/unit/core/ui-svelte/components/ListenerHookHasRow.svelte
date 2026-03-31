@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useHasRowListener} from 'tinybase/ui-svelte';
+  import {onHasRow} from 'tinybase/ui-svelte';
   import type {Store} from 'tinybase';
 
   let {
@@ -13,7 +13,7 @@
     rowId: string;
     listener: (...args: any[]) => void;
   } = $props();
-  useHasRowListener(
+  onHasRow(
     () => tableId,
     () => rowId,
     (...args) => listener(...args),
