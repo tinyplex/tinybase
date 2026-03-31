@@ -132,7 +132,6 @@ export type ProviderProps = {
   readonly synchronizer?: Synchronizer;
   /// ui-svelte.ProviderProps.synchronizersById
   readonly synchronizersById?: {readonly [id: Id]: Synchronizer};
-  /// ui-svelte.ProviderProps.children
   readonly children: Snippet;
 };
 

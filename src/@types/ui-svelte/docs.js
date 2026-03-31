@@ -184,8 +184,9 @@
 /// ui-svelte.SynchronizerOrSynchronizerId
 /**
  * ProviderProps props are used with the Provider component, so that Store,
- * Metrics, Indexes, Relationships, Queries, and Checkpoints objects can be
- * passed into the context of a Svelte 5 application and used throughout.
+ * Metrics, Indexes, Relationships, Queries, Checkpoints, Persisters, and
+ * Synchronizers can be passed into the context of a Svelte 5 application and
+ * used throughout.
  *
  * One of each type of object can be provided as a default within the context.
  * Additionally, multiple of each type of object can be provided in an Id-keyed
@@ -307,526 +308,576 @@
    * @since v8.1.0
    */
   /// ui-svelte.ProviderProps.synchronizersById
-  /**
-   * The `children` prop of a ProviderProps object — the app subtree that will
-   * have access to the provided context.
-   * @category Prop
-   * @since v8.1.0
-   */
-  /// ui-svelte.ProviderProps.children
 }
 /**
- * The CellViewProps type describes the props of the CellView component.
+ * CellViewProps props are used for components that refer to a single Cell in a
+ * Row, such as the CellView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.CellViewProps
 {
   /**
-   * The `tableId` prop of a CellViewProps object.
+   * The Id of the Table in the Store.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.CellViewProps.tableId
   /**
-   * The `rowId` prop of a CellViewProps object.
+   * The Id of the Row in the Table.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.CellViewProps.rowId
   /**
-   * The `cellId` prop of a CellViewProps object.
+   * The Id of the Cell in the Row to be rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.CellViewProps.cellId
   /**
-   * The `store` prop of a CellViewProps object.
+   * The Store to be accessed: omit for the default context Store, provide an
+   * Id for a named context Store, or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.CellViewProps.store
   /**
-   * The `debugIds` prop of a CellViewProps object.
+   * Whether the component should also render the Id of the Cell to assist with
+   * debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.CellViewProps.debugIds
 }
 /**
- * The ValueViewProps type describes the props of the ValueView component.
+ * ValueViewProps props are used for components that refer to a single Value in
+ * a Store, such as the ValueView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.ValueViewProps
 {
   /**
-   * The `valueId` prop of a ValueViewProps object.
+   * The Id of the Value in the Store to be rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ValueViewProps.valueId
   /**
-   * The `store` prop of a ValueViewProps object.
+   * The Store to be accessed: omit for the default context Store, provide an
+   * Id for a named context Store, or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ValueViewProps.store
   /**
-   * The `debugIds` prop of a ValueViewProps object.
+   * Whether the component should also render the Id of the Value to assist
+   * with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ValueViewProps.debugIds
 }
 /**
- * The MetricViewProps type describes the props of the MetricView component.
+ * MetricViewProps props are used for components that refer to a single Metric
+ * in a Metrics object, such as the MetricView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.MetricViewProps
 {
   /**
-   * The `metricId` prop of a MetricViewProps object.
+   * The Id of the Metric in the Metrics object to be rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.MetricViewProps.metricId
   /**
-   * The `metrics` prop of a MetricViewProps object.
+   * The Metrics object to be accessed: omit for the default context Metrics
+   * object, provide an Id for a named context Metrics object, or provide an
+   * explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.MetricViewProps.metrics
   /**
-   * The `debugIds` prop of a MetricViewProps object.
+   * Whether the component should also render the Id of the Metric to assist
+   * with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.MetricViewProps.debugIds
 }
 /**
- * The CheckpointViewProps type describes the props of the CheckpointView
- * component.
+ * CheckpointViewProps props are used for components that refer to a single
+ * checkpoint in a Checkpoints object, such as the CheckpointView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.CheckpointViewProps
 {
   /**
-   * The `checkpointId` prop of a CheckpointViewProps object.
+   * The Id of the checkpoint in the Checkpoints object.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.CheckpointViewProps.checkpointId
   /**
-   * The `checkpoints` prop of a CheckpointViewProps object.
+   * The Checkpoints object to be accessed: omit for the default context
+   * Checkpoints object, provide an Id for a named context Checkpoints object,
+   * or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.CheckpointViewProps.checkpoints
   /**
-   * The `debugIds` prop of a CheckpointViewProps object.
+   * Whether the component should also render the Id of the checkpoint to
+   * assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.CheckpointViewProps.debugIds
 }
 /**
- * The RowViewProps type describes the props of the RowView component.
+ * RowViewProps props are used for components that refer to a single Row in a
+ * Table, such as the RowView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.RowViewProps
 {
   /**
-   * The `tableId` prop of a RowViewProps object.
+   * The Id of the Table in the Store.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.RowViewProps.tableId
   /**
-   * The `rowId` prop of a RowViewProps object.
+   * The Id of the Row in the Table to be rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.RowViewProps.rowId
   /**
-   * The `store` prop of a RowViewProps object.
+   * The Store to be accessed: omit for the default context Store, provide an
+   * Id for a named context Store, or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.RowViewProps.store
   /**
-   * The `customCellIds` prop of a RowViewProps object.
+   * An optional list of Cell Ids to use for rendering a prescribed set of the
+   * Row's Cells in a given order.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.RowViewProps.customCellIds
   /**
-   * The `separator` prop of a RowViewProps object.
+   * A component or string to separate each rendered Cell.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.RowViewProps.separator
   /**
-   * The `debugIds` prop of a RowViewProps object.
+   * Whether the component should also render the Id of the Row, and its
+   * descendent objects, to assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.RowViewProps.debugIds
   /**
-   * The `cell` snippet prop of a RowViewProps object.
+   * A snippet for rendering each Cell in the Row, to override the default
+   * CellView component.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.RowViewProps.cell
 }
 /**
- * The TableViewProps type describes the props of the TableView component.
+ * TableViewProps props are used for components that refer to a single Table in
+ * a Store, such as the TableView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.TableViewProps
 {
   /**
-   * The `tableId` prop of a TableViewProps object.
+   * The Id of the Table in the Store to be rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.TableViewProps.tableId
   /**
-   * The `store` prop of a TableViewProps object.
+   * The Store to be accessed: omit for the default context Store, provide an
+   * Id for a named context Store, or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.TableViewProps.store
   /**
-   * The `customCellIds` prop of a TableViewProps object.
+   * An optional list of Cell Ids to use for rendering a prescribed set of the
+   * Table's Cells in a given order for each Row.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.TableViewProps.customCellIds
   /**
-   * The `separator` prop of a TableViewProps object.
+   * A component or string to separate each rendered Row.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.TableViewProps.separator
   /**
-   * The `debugIds` prop of a TableViewProps object.
+   * Whether the component should also render the Id of the Table, and its
+   * descendent objects, to assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.TableViewProps.debugIds
   /**
-   * The `row` snippet prop of a TableViewProps object.
+   * A snippet for rendering each Row in the Table, to override the default
+   * RowView component.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.TableViewProps.row
 }
 /**
- * The SortedTableViewProps type describes the props of the SortedTableView
- * component.
+ * SortedTableViewProps props are used for components that refer to a single
+ * sorted Table in a Store, such as the SortedTableView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.SortedTableViewProps
 {
   /**
-   * The `tableId` prop of a SortedTableViewProps object.
+   * The Id of the Table in the Store to be rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SortedTableViewProps.tableId
   /**
-   * The `cellId` prop of a SortedTableViewProps object.
+   * The Id of the Cell whose values are used for sorting. If omitted, the view
+   * will sort the Row Id itself.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SortedTableViewProps.cellId
   /**
-   * The `descending` prop of a SortedTableViewProps object.
+   * Whether the sorting should be in descending order.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SortedTableViewProps.descending
   /**
-   * The `offset` prop of a SortedTableViewProps object.
+   * The number of Row Ids to skip for pagination purposes.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SortedTableViewProps.offset
   /**
-   * The `limit` prop of a SortedTableViewProps object.
+   * The maximum number of Row Ids to return.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SortedTableViewProps.limit
   /**
-   * The `store` prop of a SortedTableViewProps object.
+   * The Store to be accessed: omit for the default context Store, provide an
+   * Id for a named context Store, or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SortedTableViewProps.store
   /**
-   * The `customCellIds` prop of a SortedTableViewProps object.
+   * An optional list of Cell Ids to use for rendering a prescribed set of the
+   * sorted Table's Cells in a given order.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SortedTableViewProps.customCellIds
   /**
-   * The `separator` prop of a SortedTableViewProps object.
+   * A component or string to separate each rendered Row.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SortedTableViewProps.separator
   /**
-   * The `debugIds` prop of a SortedTableViewProps object.
+   * Whether the component should also render the Id of the Table, and its
+   * descendent objects, to assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SortedTableViewProps.debugIds
   /**
-   * The `row` snippet prop of a SortedTableViewProps object.
+   * A snippet for rendering each Row in the sorted Table, to override the
+   * default RowView component.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SortedTableViewProps.row
 }
 /**
- * The TablesViewProps type describes the props of the TablesView component.
+ * TablesViewProps props are used for components that refer to all the Tables
+ * in a Store, such as the TablesView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.TablesViewProps
 {
   /**
-   * The `store` prop of a TablesViewProps object.
+   * The Store to be accessed: omit for the default context Store, provide an
+   * Id for a named context Store, or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.TablesViewProps.store
   /**
-   * The `separator` prop of a TablesViewProps object.
+   * A component or string to separate each rendered Table.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.TablesViewProps.separator
   /**
-   * The `debugIds` prop of a TablesViewProps object.
+   * Whether the component should also render the Ids of each Table, and its
+   * descendent objects, to assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.TablesViewProps.debugIds
   /**
-   * The `table` snippet prop of a TablesViewProps object.
+   * A snippet for rendering each Table in the Store, to override the default
+   * TableView component.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.TablesViewProps.table
 }
 /**
- * The ValuesViewProps type describes the props of the ValuesView component.
+ * ValuesViewProps props are used for components that refer to all the Values
+ * in a Store, such as the ValuesView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.ValuesViewProps
 {
   /**
-   * The `store` prop of a ValuesViewProps object.
+   * The Store to be accessed: omit for the default context Store, provide an
+   * Id for a named context Store, or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ValuesViewProps.store
   /**
-   * The `separator` prop of a ValuesViewProps object.
+   * A component or string to separate each rendered Value.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ValuesViewProps.separator
   /**
-   * The `debugIds` prop of a ValuesViewProps object.
+   * Whether the component should also render the Ids of each Value to assist
+   * with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ValuesViewProps.debugIds
   /**
-   * The `value` snippet prop of a ValuesViewProps object.
+   * A snippet for rendering each Value in the Store, to override the default
+   * ValueView component.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ValuesViewProps.value
 }
 /**
- * The IndexViewProps type describes the props of the IndexView component.
+ * IndexViewProps props are used for components that refer to a single Index in
+ * an Indexes object, such as the IndexView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.IndexViewProps
 {
   /**
-   * The `indexId` prop of an IndexViewProps object.
+   * The Id of the Index in the Indexes object to be rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.IndexViewProps.indexId
   /**
-   * The `indexes` prop of an IndexViewProps object.
+   * The Indexes object to be accessed: omit for the default context Indexes
+   * object, provide an Id for a named context Indexes object, or provide an
+   * explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.IndexViewProps.indexes
   /**
-   * The `separator` prop of an IndexViewProps object.
+   * A component or string to separate each rendered Slice.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.IndexViewProps.separator
   /**
-   * The `debugIds` prop of an IndexViewProps object.
+   * Whether the component should also render the Id of the Index, and its
+   * descendent objects, to assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.IndexViewProps.debugIds
   /**
-   * The `slice` snippet prop of an IndexViewProps object.
+   * A snippet for rendering each Slice in the Index.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.IndexViewProps.slice
 }
 /**
- * The SliceViewProps type describes the props of the SliceView component.
+ * SliceViewProps props are used for components that refer to a single Slice in
+ * an Index object, such as the SliceView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.SliceViewProps
 {
   /**
-   * The `indexId` prop of a SliceViewProps object.
+   * The Id of the Index in the Indexes object.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SliceViewProps.indexId
   /**
-   * The `sliceId` prop of a SliceViewProps object.
+   * The Id of the Slice in the Index to be rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SliceViewProps.sliceId
   /**
-   * The `indexes` prop of a SliceViewProps object.
+   * The Indexes object to be accessed: omit for the default context Indexes
+   * object, provide an Id for a named context Indexes object, or provide an
+   * explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SliceViewProps.indexes
   /**
-   * The `separator` prop of a SliceViewProps object.
+   * A component or string to separate each rendered Row.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SliceViewProps.separator
   /**
-   * The `debugIds` prop of a SliceViewProps object.
+   * Whether the component should also render the Id of the Slice, and its
+   * descendent objects, to assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SliceViewProps.debugIds
   /**
-   * The `row` snippet prop of a SliceViewProps object.
+   * A snippet for rendering each Row in the Slice, to override the default
+   * RowView component.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.SliceViewProps.row
 }
 /**
- * The RemoteRowViewProps type describes the props of the RemoteRowView
- * component.
+ * RemoteRowViewProps props are used for components that refer to a single
+ * Relationship in a Relationships object, and where you want to render a
+ * remote Row based on a local Row, such as in the RemoteRowView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.RemoteRowViewProps
 {
   /**
-   * The `relationshipId` prop of a RemoteRowViewProps object.
+   * The Id of the Relationship in the Relationships object.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.RemoteRowViewProps.relationshipId
   /**
-   * The `localRowId` prop of a RemoteRowViewProps object.
+   * The Id of the local Row for which to render the remote Row.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.RemoteRowViewProps.localRowId
   /**
-   * The `relationships` prop of a RemoteRowViewProps object.
+   * The Relationships object to be accessed: omit for the default context
+   * Relationships object, provide an Id for a named context Relationships
+   * object, or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.RemoteRowViewProps.relationships
   /**
-   * The `debugIds` prop of a RemoteRowViewProps object.
+   * Whether the component should also render the Id of the Row in the
+   * Relationship, and its descendent objects, to assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.RemoteRowViewProps.debugIds
   /**
-   * The `row` snippet prop of a RemoteRowViewProps object.
+   * A snippet for rendering each (remote, local, or linked) Row in the
+   * Relationship.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.RemoteRowViewProps.row
 }
 /**
- * The LocalRowsViewProps type describes the props of the LocalRowsView
- * component.
+ * LocalRowsViewProps props are used for components that refer to a single
+ * Relationship in a Relationships object, and where you want to render local
+ * Rows based on a remote Row, such as the LocalRowsView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.LocalRowsViewProps
 {
   /**
-   * The `relationshipId` prop of a LocalRowsViewProps object.
+   * The Id of the Relationship in the Relationships object.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.LocalRowsViewProps.relationshipId
   /**
-   * The `remoteRowId` prop of a LocalRowsViewProps object.
+   * The Id of the remote Row for which to render the local Rows.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.LocalRowsViewProps.remoteRowId
   /**
-   * The `relationships` prop of a LocalRowsViewProps object.
+   * The Relationships object to be accessed: omit for the default context
+   * Relationships object, provide an Id for a named context Relationships
+   * object, or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.LocalRowsViewProps.relationships
   /**
-   * The `separator` prop of a LocalRowsViewProps object.
+   * A component or string to separate each rendered Row.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.LocalRowsViewProps.separator
   /**
-   * The `debugIds` prop of a LocalRowsViewProps object.
+   * Whether the component should also render the Id of the Row in the
+   * Relationship, and its descendent objects, to assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.LocalRowsViewProps.debugIds
   /**
-   * The `row` snippet prop of a LocalRowsViewProps object.
+   * A snippet for rendering each (remote, local, or linked) Row in the
+   * Relationship.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.LocalRowsViewProps.row
 }
 /**
- * The LinkedRowsViewProps type describes the props of the LinkedRowsView
+ * LinkedRowsViewProps props are used for components that refer to a single
+ * Relationship in a Relationships object, and where you want to render a
+ * linked list of Rows starting from a first Row, such as the LinkedRowsView
  * component.
  * @category Props
  * @since v8.1.0
@@ -834,230 +885,256 @@
 /// ui-svelte.LinkedRowsViewProps
 {
   /**
-   * The `relationshipId` prop of a LinkedRowsViewProps object.
+   * The Id of the Relationship in the Relationships object.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.LinkedRowsViewProps.relationshipId
   /**
-   * The `firstRowId` prop of a LinkedRowsViewProps object.
+   * The Id of the first Row in the linked list Relationship.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.LinkedRowsViewProps.firstRowId
   /**
-   * The `relationships` prop of a LinkedRowsViewProps object.
+   * The Relationships object to be accessed: omit for the default context
+   * Relationships object, provide an Id for a named context Relationships
+   * object, or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.LinkedRowsViewProps.relationships
   /**
-   * The `separator` prop of a LinkedRowsViewProps object.
+   * A component or string to separate each rendered Row.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.LinkedRowsViewProps.separator
   /**
-   * The `debugIds` prop of a LinkedRowsViewProps object.
+   * Whether the component should also render the Id of the Row in the
+   * Relationship, and its descendent objects, to assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.LinkedRowsViewProps.debugIds
   /**
-   * The `row` snippet prop of a LinkedRowsViewProps object.
+   * A snippet for rendering each (remote, local, or linked) Row in the
+   * Relationship.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.LinkedRowsViewProps.row
 }
 /**
- * The ResultCellViewProps type describes the props of the ResultCellView
- * component.
+ * ResultCellViewProps props are used for components that refer to a single
+ * Cell in a Row of a query ResultTable, such as the ResultCellView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.ResultCellViewProps
 {
   /**
-   * The `queryId` prop of a ResultCellViewProps object.
+   * The Id of the query in the Queries object for which the ResultTable will be
+   * rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultCellViewProps.queryId
   /**
-   * The `rowId` prop of a ResultCellViewProps object.
+   * The Id of the Row in the ResultTable.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultCellViewProps.rowId
   /**
-   * The `cellId` prop of a ResultCellViewProps object.
+   * The Id of the Cell in the Row to be rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultCellViewProps.cellId
   /**
-   * The `queries` prop of a ResultCellViewProps object.
+   * The Queries object to be accessed: omit for the default context Queries
+   * object, provide an Id for a named context Queries object, or provide an
+   * explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultCellViewProps.queries
   /**
-   * The `debugIds` prop of a ResultCellViewProps object.
+   * Whether the component should also render the Id of the Cell to assist with
+   * debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultCellViewProps.debugIds
 }
 /**
- * The ResultRowViewProps type describes the props of the ResultRowView
- * component.
+ * ResultRowViewProps props are used for components that refer to a single Row
+ * in a query ResultTable, such as the ResultRowView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.ResultRowViewProps
 {
   /**
-   * The `queryId` prop of a ResultRowViewProps object.
+   * The Id of the query in the Queries object for which the ResultTable will be
+   * rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultRowViewProps.queryId
   /**
-   * The `rowId` prop of a ResultRowViewProps object.
+   * The Id of the Row in the ResultTable to be rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultRowViewProps.rowId
   /**
-   * The `queries` prop of a ResultRowViewProps object.
+   * The Queries object to be accessed: omit for the default context Queries
+   * object, provide an Id for a named context Queries object, or provide an
+   * explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultRowViewProps.queries
   /**
-   * The `separator` prop of a ResultRowViewProps object.
+   * A component or string to separate each rendered Cell.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultRowViewProps.separator
   /**
-   * The `debugIds` prop of a ResultRowViewProps object.
+   * Whether the component should also render the Id of the Row, and its
+   * descendent objects, to assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultRowViewProps.debugIds
   /**
-   * The `cell` snippet prop of a ResultRowViewProps object.
+   * A snippet for rendering each Cell in the Row, to override the default
+   * ResultCellView component.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultRowViewProps.cell
 }
 /**
- * The ResultTableViewProps type describes the props of the ResultTableView
- * component.
+ * ResultTableViewProps props are used for components that refer to a single
+ * query ResultTable, such as the ResultTableView component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.ResultTableViewProps
 {
   /**
-   * The `queryId` prop of a ResultTableViewProps object.
+   * The Id of the query in the Queries object for which the ResultTable will be
+   * rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultTableViewProps.queryId
   /**
-   * The `queries` prop of a ResultTableViewProps object.
+   * The Queries object to be accessed: omit for the default context Queries
+   * object, provide an Id for a named context Queries object, or provide an
+   * explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultTableViewProps.queries
   /**
-   * The `separator` prop of a ResultTableViewProps object.
+   * A component or string to separate each rendered Row.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultTableViewProps.separator
   /**
-   * The `debugIds` prop of a ResultTableViewProps object.
+   * Whether the component should also render the Id of the query, and its
+   * descendent objects, to assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultTableViewProps.debugIds
   /**
-   * The `row` snippet prop of a ResultTableViewProps object.
+   * A snippet for rendering each Row in the Table, to override the default
+   * ResultRowView component.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultTableViewProps.row
 }
 /**
- * The ResultSortedTableViewProps type describes the props of the
- * ResultSortedTableView component.
+ * ResultSortedTableViewProps props are used for components that refer to a
+ * single sorted query ResultTable, such as the ResultSortedTableView
+ * component.
  * @category Props
  * @since v8.1.0
  */
 /// ui-svelte.ResultSortedTableViewProps
 {
   /**
-   * The `queryId` prop of a ResultSortedTableViewProps object.
+   * The Id of the query in the Queries object for which the sorted ResultTable
+   * will be rendered.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultSortedTableViewProps.queryId
   /**
-   * The `cellId` prop of a ResultSortedTableViewProps object.
+   * The Id of the Cell whose values are used for sorting. If omitted, the view
+   * will sort the Row Id itself.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultSortedTableViewProps.cellId
   /**
-   * The `descending` prop of a ResultSortedTableViewProps object.
+   * Whether the sorting should be in descending order.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultSortedTableViewProps.descending
   /**
-   * The `offset` prop of a ResultSortedTableViewProps object.
+   * The number of Row Ids to skip for pagination purposes.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultSortedTableViewProps.offset
   /**
-   * The `limit` prop of a ResultSortedTableViewProps object.
+   * The maximum number of Row Ids to return.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultSortedTableViewProps.limit
   /**
-   * The `queries` prop of a ResultSortedTableViewProps object.
+   * The Queries object to be accessed: omit for the default context Queries
+   * object, provide an Id for a named context Queries object, or provide an
+   * explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultSortedTableViewProps.queries
   /**
-   * The `separator` prop of a ResultSortedTableViewProps object.
+   * A component or string to separate each rendered Row.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultSortedTableViewProps.separator
   /**
-   * The `debugIds` prop of a ResultSortedTableViewProps object.
+   * Whether the component should also render the Id of the query, and its
+   * descendent objects, to assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultSortedTableViewProps.debugIds
   /**
-   * The `row` snippet prop of a ResultSortedTableViewProps object.
+   * A snippet for rendering each Row in the Table, to override the default
+   * ResultRowView component.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ResultSortedTableViewProps.row
 }
 /**
- * The BackwardCheckpointsViewProps type describes the props of the
+ * BackwardCheckpointsViewProps props are used for components that refer to a
+ * list of previous checkpoints in a Checkpoints object, such as the
  * BackwardCheckpointsView component.
  * @category Props
  * @since v8.1.0
@@ -1065,32 +1142,36 @@
 /// ui-svelte.BackwardCheckpointsViewProps
 {
   /**
-   * The `checkpoints` prop of a BackwardCheckpointsViewProps object.
+   * The Checkpoints object to be accessed: omit for the default context
+   * Checkpoints object, provide an Id for a named context Checkpoints object,
+   * or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.BackwardCheckpointsViewProps.checkpoints
   /**
-   * The `separator` prop of a BackwardCheckpointsViewProps object.
+   * A component or string to separate each rendered checkpoint.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.BackwardCheckpointsViewProps.separator
   /**
-   * The `debugIds` prop of a BackwardCheckpointsViewProps object.
+   * Whether the component should also render the Ids of the checkpoints to
+   * assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.BackwardCheckpointsViewProps.debugIds
   /**
-   * The `checkpoint` snippet prop of a BackwardCheckpointsViewProps object.
+   * A snippet for rendering each checkpoint in the Checkpoints object.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.BackwardCheckpointsViewProps.checkpoint
 }
 /**
- * The ForwardCheckpointsViewProps type describes the props of the
+ * ForwardCheckpointsViewProps props are used for components that refer to a
+ * list of future checkpoints in a Checkpoints object, such as the
  * ForwardCheckpointsView component.
  * @category Props
  * @since v8.1.0
@@ -1098,32 +1179,36 @@
 /// ui-svelte.ForwardCheckpointsViewProps
 {
   /**
-   * The `checkpoints` prop of a ForwardCheckpointsViewProps object.
+   * The Checkpoints object to be accessed: omit for the default context
+   * Checkpoints object, provide an Id for a named context Checkpoints object,
+   * or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ForwardCheckpointsViewProps.checkpoints
   /**
-   * The `separator` prop of a ForwardCheckpointsViewProps object.
+   * A component or string to separate each rendered checkpoint.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ForwardCheckpointsViewProps.separator
   /**
-   * The `debugIds` prop of a ForwardCheckpointsViewProps object.
+   * Whether the component should also render the Ids of the checkpoints to
+   * assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ForwardCheckpointsViewProps.debugIds
   /**
-   * The `checkpoint` snippet prop of a ForwardCheckpointsViewProps object.
+   * A snippet for rendering each checkpoint in the Checkpoints object.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.ForwardCheckpointsViewProps.checkpoint
 }
 /**
- * The CurrentCheckpointViewProps type describes the props of the
+ * CurrentCheckpointViewProps props are used for components that refer to the
+ * current checkpoint in a Checkpoints object, such as the
  * CurrentCheckpointView component.
  * @category Props
  * @since v8.1.0
@@ -1131,19 +1216,22 @@
 /// ui-svelte.CurrentCheckpointViewProps
 {
   /**
-   * The `checkpoints` prop of a CurrentCheckpointViewProps object.
+   * The Checkpoints object to be accessed: omit for the default context
+   * Checkpoints object, provide an Id for a named context Checkpoints object,
+   * or provide an explicit reference.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.CurrentCheckpointViewProps.checkpoints
   /**
-   * The `debugIds` prop of a CurrentCheckpointViewProps object.
+   * Whether the component should also render the Id of the current checkpoint
+   * to assist with debugging.
    * @category Props
    * @since v8.1.0
    */
   /// ui-svelte.CurrentCheckpointViewProps.debugIds
   /**
-   * The `checkpoint` snippet prop of a CurrentCheckpointViewProps object.
+   * A snippet for rendering the current checkpoint in the Checkpoints object.
    * @category Props
    * @since v8.1.0
    */

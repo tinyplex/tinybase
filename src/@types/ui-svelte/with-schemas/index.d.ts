@@ -157,7 +157,6 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     readonly synchronizer?: Synchronizer<Schemas>;
     /// ui-svelte.ProviderProps.synchronizersById
     readonly synchronizersById?: {readonly [id: Id]: Synchronizer<Schemas>};
-    /// ui-svelte.ProviderProps.children
     readonly children: Snippet;
   };
 
