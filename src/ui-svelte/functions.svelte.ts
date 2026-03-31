@@ -1,4 +1,5 @@
 import {getContext} from 'svelte';
+import {createSubscriber} from 'svelte/reactivity';
 import type {
   CheckpointIds,
   CheckpointIdsListener,
@@ -72,7 +73,13 @@ import type {Synchronizer} from '../@types/synchronizers/index.d.ts';
 import type {MaybeGetter} from '../@types/ui-svelte/index.d.ts';
 import type {IdObj} from '../common/obj.ts';
 import {objGet, objIds} from '../common/obj.ts';
-import {hasWindow, isFunction, isString, isUndefined} from '../common/other.ts';
+import {
+  hasWindow,
+  isFunction,
+  isString,
+  isUndefined,
+  noop,
+} from '../common/other.ts';
 import {
   _HAS,
   ADD,
@@ -119,23 +126,38 @@ type Thing =
   | AnyPersister
   | Synchronizer;
 
-class WritableHandle<Thing> {
-  readonly #get: () => Thing | undefined;
-  readonly #set: (value: Thing) => void;
+class ReactiveHandle<Current> {
+  readonly #get: () => Current;
+  readonly #sub: () => void;
+
+  constructor(getCurrent: () => Current, subscribe: () => void = noop) {
+    this.#get = getCurrent;
+    this.#sub = subscribe;
+  }
+
+  get current(): Current {
+    this.#sub();
+    return this.#get();
+  }
+}
+
+class WritableHandle<Current, Next = Current> extends ReactiveHandle<Current> {
+  readonly #set: (value: Next) => void;
 
   constructor(
-    getCurrent: () => Thing | undefined,
-    setCurrent: (value: Thing) => void,
+    getCurrent: () => Current,
+    setCurrent: (value: Next) => void,
+    subscribe: () => void = noop,
   ) {
-    this.#get = getCurrent;
+    super(getCurrent, subscribe);
     this.#set = setCurrent;
   }
 
-  get current(): Thing | undefined {
-    return this.#get();
+  get current(): Current {
+    return super.current;
   }
 
-  set current(value: Thing) {
+  set current(value: Next) {
     this.#set(value);
   }
 }
@@ -254,28 +276,23 @@ const createListenable = <Thing>(
 ): {readonly current: Thing} => {
   const getListenableMethod = (isHas ? _HAS : GET) + listenable;
   const addListenableMethod = ADD + (isHas ? HAS : '') + listenable + LISTENER;
-  let value = $state<Thing>(
-    (getThing()?.[getListenableMethod]?.(...getArgs()) ??
-      defaultValue) as Thing,
-  );
+  let subscribe = $state<() => void>(noop);
   if (hasWindow()) {
     $effect(() => {
       const thing = getThing();
       const args = getArgs();
-      const listenerId = thing?.[addListenableMethod]?.(...args, () => {
-        value = (thing[getListenableMethod](...getArgs()) ??
-          defaultValue) as Thing;
+      subscribe = createSubscriber((update) => {
+        const listenerId = thing?.[addListenableMethod]?.(...args, update);
+        return () => thing?.delListener?.(listenerId);
       });
-      value = (thing?.[getListenableMethod]?.(...args) ??
-        defaultValue) as Thing;
-      return () => thing?.delListener?.(listenerId);
     });
   }
-  return {
-    get current(): Thing {
-      return value as Thing;
-    },
-  };
+  return new ReactiveHandle(
+    () =>
+      (getThing()?.[getListenableMethod]?.(...getArgs()) ??
+        defaultValue) as Thing,
+    () => subscribe(),
+  );
 };
 
 const addListenerEffect = (
@@ -458,33 +475,27 @@ export const createCell = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {get current(): CellOrUndefined; set current(v: Cell)} => {
   const getStore = resolveStore(storeOrStoreId);
-  let value = $state<CellOrUndefined>(
-    getStore()?.getCell(maybeGet(tableId), maybeGet(rowId), maybeGet(cellId)),
-  );
+  let subscribe = $state<() => void>(noop);
   if (hasWindow()) {
     $effect(() => {
       const store: any = getStore();
       const tableIdValue = maybeGet(tableId);
       const rowIdValue = maybeGet(rowId);
       const cellIdValue = maybeGet(cellId);
-      const listenerId = store?.addCellListener(
-        tableIdValue,
-        rowIdValue,
-        cellIdValue,
-        (changedStore: any) => {
-          value = changedStore.getCell(
-            maybeGet(tableId),
-            maybeGet(rowId),
-            maybeGet(cellId),
-          );
-        },
-      );
-      value = store?.getCell(tableIdValue, rowIdValue, cellIdValue);
-      return () => store?.delListener?.(listenerId);
+      subscribe = createSubscriber((update) => {
+        const listenerId = store?.addCellListener(
+          tableIdValue,
+          rowIdValue,
+          cellIdValue,
+          update,
+        );
+        return () => store?.delListener?.(listenerId);
+      });
     });
   }
-  return new WritableHandle<Cell>(
-    () => value,
+  return new WritableHandle<CellOrUndefined, Cell>(
+    () =>
+      getStore()?.getCell(maybeGet(tableId), maybeGet(rowId), maybeGet(cellId)),
     (nextCell) =>
       getStore()?.setCell(
         maybeGet(tableId),
@@ -492,6 +503,7 @@ export const createCell = (
         maybeGet(cellId),
         nextCell,
       ),
+    () => subscribe(),
   );
 };
 
@@ -533,24 +545,21 @@ export const createValue = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {get current(): ValueOrUndefined; set current(v: Value)} => {
   const getStore = resolveStore(storeOrStoreId);
-  let value = $state<ValueOrUndefined>(getStore()?.getValue(maybeGet(valueId)));
+  let subscribe = $state<() => void>(noop);
   if (hasWindow()) {
     $effect(() => {
       const store: any = getStore();
       const valueIdValue = maybeGet(valueId);
-      const listenerId = store?.addValueListener(
-        valueIdValue,
-        (changedStore: any) => {
-          value = changedStore.getValue(maybeGet(valueId));
-        },
-      );
-      value = store?.getValue(valueIdValue);
-      return () => store?.delListener?.(listenerId);
+      subscribe = createSubscriber((update) => {
+        const listenerId = store?.addValueListener(valueIdValue, update);
+        return () => store?.delListener?.(listenerId);
+      });
     });
   }
-  return new WritableHandle<Value>(
-    () => value,
+  return new WritableHandle<ValueOrUndefined, Value>(
+    () => getStore()?.getValue(maybeGet(valueId)),
     (nextValue) => getStore()?.setValue(maybeGet(valueId), nextValue),
+    () => subscribe(),
   );
 };
 
