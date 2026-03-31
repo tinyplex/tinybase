@@ -30,9 +30,9 @@ re-render when the underlying TinyBase data changes:
 <p>Color: {color.current}</p>
 ```
 
-`createCell` and `createValue` go further, providing a writable `current`
-property that pairs naturally with Svelte's `bind:` directive for two-way data
-binding:
+The createCell function and the createValue function provide a writable
+`current` property that pairs naturally with Svelte's `bind:` directive for
+two-way data binding:
 
 ```svelte
 <script>
@@ -43,15 +43,6 @@ binding:
 
 <input bind:value={color.current} />
 ```
-
-If you tried the ui-svelte module in earlier beta releases, there are some
-intentional breaking changes we made to ensure the API was more idiomatic for
-Svelte. What was `useX` is now `createX` for reactive accessors, such as
-`useCell` becoming `createCell`. Context lookups use `getX`, such as `getStore`,
-and listener functions now use `onX`, such as `useCellListener` becoming
-`onCell`. The old `useBindableCell` and `useBindableValue` beta names have also
-gone away because `createCell` and `createValue` are now the writable scalar
-accessors directly.
 
 All reactive functions accept reactive getter functions as parameters — the
 MaybeGetter type (`T | (() => T)`) — so passing `() => rowId` from a `$state`
@@ -65,12 +56,23 @@ assembling UIs directly from Store data.
 Read more in the ui-svelte module documentation and the [Building UIs With
 Svelte](/guides/building-uis/building-uis-with-svelte/) guide.
 
-## Breaking Change
+## Breaking Changes
 
-This release contains a minor breaking change. The `tinybase/omni` module no
-longer includes the ui-react module, ui-react-dom module, or ui-react-inspector
-module. Since the ui-svelte module exports many of the same names, including
-both in a single flat namespace would cause silent name collisions.
+If you tried the ui-svelte module in earlier beta releases, there are some
+intentional breaking changes made to ensure the API is more idiomatic for
+Svelte. What was `useX` is now `createX` for reactive accessors - such as
+`useCell` becoming the createCell function. Context lookups use `getX`, as with
+the getMetrics function. And finally, listener functions now use `onX` - so for
+example, `useCellListener` has become the onCell function. The old
+`useBindableCell` and `useBindableValue` beta names have also gone away because
+the createCell function and createValue function expose the writable scalar
+accessors directly.
+
+This release also contains a minor breaking change since v8.0. The
+`tinybase/omni` module no longer includes the ui-react module, ui-react-dom
+module, or ui-react-inspector module. Since the ui-svelte module exports many of
+the same names, including both in a single flat namespace would cause silent
+name collisions.
 
 If you were importing React UI helpers from `tinybase/omni`, update your
 imports:
