@@ -22,4 +22,4 @@ to the previous code. It's a little tricky to make sure the diffs always apply
 cleanly when you update preceding demo guides, but it reduces repetition.
 
 Finally, some client-side JavaScript makes it possible to launch the demos into
-CodePen via their pre-fill API.
+StackBlitz via their POST API.

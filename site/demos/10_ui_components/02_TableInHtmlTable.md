@@ -146,7 +146,7 @@ a {
 
 Take a look at the TableInHtmlTableProps type and HtmlTableProps type to see all
 the ways in which you can configure this component, and again, click the
-'CodePen' link under the demo above to try them out.
+'StackBlitz' link under the demo above to try them out.
 
 Let's move on to a slightly more complex component in the
 <SortedTableInHtmlTable /> demo.

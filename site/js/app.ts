@@ -1,5 +1,5 @@
 import {
-  addPen,
+  addStackblitz,
   doc,
   go,
   preventDefault,
@@ -15,7 +15,7 @@ darkLoad();
 searchLoad();
 
 addEventListener('load', () => {
-  addPen();
+  addStackblitz();
 
   doc.body.addEventListener('click', (event: MouseEvent) => {
     if (event.button != 0) {

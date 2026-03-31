@@ -199,8 +199,8 @@ demonstrate that:
 ```
 
 Take a look at the ValuesInHtmlTableProps type to see all the ways in which you
-can configure this component, and click the 'CodePen' link under the demo above
-to try them out.
+can configure this component, and click the 'StackBlitz' link under the demo
+above to try them out.
 
 There is plenty more that you can do with the ui-react-dom module's components,
 and so please continue to the next <TableInHtmlTable /> demo.

@@ -1,7 +1,7 @@
 # <SliceInHtmlTable />
 
-In this demo, we showcase the SliceInHtmlTable component, a way to display
-the Slice portions of an Index.
+In this demo, we showcase the SliceInHtmlTable component, a way to display the
+Slice portions of an Index.
 
 Rather than building the whole demo and boilerplate from scratch, we're going
 back and making changes to the <TableInHtmlTable /> demo to demonstrate this new
@@ -76,7 +76,7 @@ different Slice and disappear! So maybe not.
 
 Take a look at the SliceInHtmlTableProps type and HtmlTableProps type to see all
 the ways in which you can configure this component, and again, click the
-'CodePen' link under the demo above to try them out.
+'StackBlitz' link under the demo above to try them out.
 
 As well as displaying a Slice from an Indexes object, you can also render the
 links between Tables with a Relationships object, as you'll see next up in the

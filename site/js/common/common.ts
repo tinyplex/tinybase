@@ -81,7 +81,7 @@ export const go = (href: string, updateUrl = true): void => {
       const article = getArticle();
       article.innerHTML = html;
       article.scrollTo(0, 0);
-      addPen();
+      addStackblitz();
     });
 
   if (updateUrl) {
@@ -89,7 +89,24 @@ export const go = (href: string, updateUrl = true): void => {
   }
 };
 
-export const addPen = () => {
+type ExecutableProject = {
+  title: string;
+  description: string;
+  template: string;
+  files: {[filePath: string]: string};
+  settings?: unknown;
+  dependencies?: unknown;
+  options?: {[option: string]: string};
+};
+
+const addHiddenInput = (form: HTMLFormElement, field: string, value: string) =>
+  createElement('input', form, {
+    type: 'hidden',
+    name: 'project' + field,
+    value,
+  });
+
+export const addStackblitz = () => {
   const iframe = queryElement(getArticle(), ':scope iframe');
   const iframeParent = iframe?.parentElement;
   if (iframe == null || iframeParent == null) {
@@ -97,25 +114,45 @@ export const addPen = () => {
   }
   const form = iframeParent.insertBefore(
     createElement('form', null, {
-      action: 'https://codepen.io/pen/define',
+      action: 'https://stackblitz.com/run',
       method: 'post',
       target: '_blank',
     }),
     iframe,
   ) as HTMLFormElement;
   iframeParent.insertBefore(
-    createElement('a', null, {id: 'penEdit'}, 'Open this demo in CodePen'),
+    createElement('a', null, {id: 'sbEdit'}, 'Open this demo in StackBlitz'),
     iframe,
   ).onclick = () => {
     if (form.childNodes.length == 0) {
-      fetch('pen.json')
-        .then((response) => response.text())
-        .then((rawJson) => {
-          createElement('input', form, {
-            type: 'hidden',
-            name: 'data',
-            value: rawJson,
-          });
+      fetch('stackblitz.json')
+        .then((response) => response.json())
+        .then((project: ExecutableProject) => {
+          addHiddenInput(form, '[title]', project.title);
+          addHiddenInput(form, '[description]', project.description);
+          addHiddenInput(form, '[template]', project.template);
+          Object.entries(project.files).forEach(([filePath, contents]) =>
+            addHiddenInput(form, `[files][${filePath}]`, contents),
+          );
+          if (project.settings != null) {
+            addHiddenInput(
+              form,
+              '[settings]',
+              JSON.stringify(project.settings),
+            );
+          }
+          if (project.dependencies != null) {
+            addHiddenInput(
+              form,
+              '[dependencies]',
+              JSON.stringify(project.dependencies),
+            );
+          }
+          const action = new URL(form.action);
+          Object.entries(project.options ?? {}).forEach(([option, value]) =>
+            action.searchParams.set(option, value),
+          );
+          form.action = action.toString();
           form.submit();
         });
     } else {

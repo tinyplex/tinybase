@@ -2,7 +2,7 @@ import {readFileSync, writeFileSync} from 'fs';
 import type {Docs} from 'tinydocs';
 import {createDocs, getSorter} from 'tinydocs';
 import {ArticleInner} from './ui/ArticleInner.tsx';
-import {ExecutablePen} from './ui/ExecutablePen.tsx';
+import {ExecutableProject} from './ui/ExecutableProject.tsx';
 import {MarkdownPage} from './ui/MarkdownPage.tsx';
 import {NavJson} from './ui/NavJson.tsx';
 import {Page} from './ui/Page.tsx';
@@ -151,7 +151,7 @@ export const build = async (
       .addPageForEachNode('/', Page)
       .addPageForEachNode('/', ArticleInner, 'article.html')
       .addTextForEachNode('/', NavJson, 'nav.json')
-      .addTextForEachNode('/demos/', ExecutablePen, 'pen.json')
+      .addTextForEachNode('/demos/', ExecutableProject, 'stackblitz.json')
       .addPageForNode('/api/', Page, 'all.html', true)
       .addMarkdownForNode('/', Readme, '../readme.md')
       .addMarkdownForNode(

@@ -151,8 +151,8 @@ const customRelationshipCells = {
 
 As per usual, take a look at the RelationshipInHtmlTableProps type and
 HtmlTableProps type to see all the other ways in which you can configure this
-component, and again, click the 'CodePen' link under the demo above to try them
-out.
+component, and again, click the 'StackBlitz' link under the demo above to try
+them out.
 
 As well as displaying a Relationship from an Indexes object, you can also render
 the ResultTable of a Queries object, as you'll see next up in the
