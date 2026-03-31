@@ -66,8 +66,6 @@ import ListenerHookValueIds from './components/ListenerHookValueIds.svelte';
 import ListenerHookValues from './components/ListenerHookValues.svelte';
 import ListenerHookWillFinishTransaction from './components/ListenerHookWillFinishTransaction.svelte';
 
-import HookBindableCell from './components/HookBindableCell.svelte';
-import HookBindableValue from './components/HookBindableValue.svelte';
 import HookCell from './components/HookCell.svelte';
 import HookCellIds from './components/HookCellIds.svelte';
 import HookCheckpointIds from './components/HookCheckpointIds.svelte';
@@ -512,22 +510,6 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useBindableCell', async () => {
-    store.setCell('t1', 'r1', 'c1', 0);
-    const {container, unmount} = render(HookBindableCell, {
-      props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', newValue: 1},
-    });
-    expect(container.textContent).toContain('0');
-
-    await act(() =>
-      fireEvent.click(container.querySelector('button') as Element),
-    );
-    expect(container.textContent).toContain('1');
-    expect(store.getCell('t1', 'r1', 'c1')).toEqual(1);
-
-    unmount();
-  });
-
   test('useCell can set values', async () => {
     store.setCell('t1', 'r1', 'c1', 0);
     const {container, unmount} = render(HookWritableCell, {
@@ -618,22 +600,6 @@ describe('Read Hooks', () => {
 
     await act(() => store.delValues());
     expect(container.textContent).toEqual('');
-
-    unmount();
-  });
-
-  test('useBindableValue', async () => {
-    store.setValues({v1: false});
-    const {container, unmount} = render(HookBindableValue, {
-      props: {store, valueId: 'v1', newValue: true},
-    });
-    expect(container.textContent).toContain('false');
-
-    await act(() =>
-      fireEvent.click(container.querySelector('button') as Element),
-    );
-    expect(container.textContent).toContain('true');
-    expect(store.getValue('v1')).toEqual(true);
 
     unmount();
   });

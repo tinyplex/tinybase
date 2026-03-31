@@ -37,13 +37,11 @@ const {
   useCellIds,
   useHasCell,
   useCell,
-  useBindableCell,
   useHasValues,
   useValues,
   useValueIds,
   useHasValue,
   useValue,
-  useBindableValue,
   useStore,
   useMetrics,
   useIndexes,
@@ -173,12 +171,6 @@ const Getters = () => {
   useCell('t1', 'r1', 'c2'); // !
   useCell('t2', 'r2', 'c1'); // !
 
-  useBindableCell('t1', 'r1', 'c1').current as number;
-  useBindableCell('t1', 'r1', 'c1').current as string; // !
-  useBindableCell('t1', 'r1', 'c1').current as boolean; // !
-  useBindableCell('t1', 'r1', 'c2'); // !
-  useBindableCell('t2', 'r2', 'c1'); // !
-
   useHasValues().current as boolean;
   useHasValues().current as string; // !
 
@@ -199,11 +191,6 @@ const Getters = () => {
   // eslint-disable-next-line react-hooks/refs
   valueRef.current = '1'; // !
   useValue('v2'); // !
-
-  useBindableValue('v1').current as number;
-  useBindableValue('v1').current as string; // !
-  useBindableValue('v1').current as boolean; // !
-  useBindableValue('v2'); // !
 
   useGoBackwardCallback() as () => void;
   useGoBackwardCallback() as boolean; // !

@@ -2,8 +2,7 @@
   import {createStore} from 'tinybase';
   import {
     provideStore,
-    useBindableCell,
-    useBindableValue,
+    useCell,
     useCheckpointsIds,
     useIndexesIds,
     useMetricsIds,
@@ -14,6 +13,7 @@
     useSynchronizerIds,
     useTableIds,
     useTablesListener,
+    useValue,
   } from 'tinybase/ui-svelte';
 
   const store = createStore().setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
@@ -25,13 +25,13 @@
     () => store,
   );
 
-  const cell = useBindableCell(
+  const cell = useCell(
     () => 't1',
     () => 'r1',
     () => 'c1',
     () => store,
   );
-  const value = useBindableValue(
+  const value = useValue(
     () => 'v1',
     () => store,
   );

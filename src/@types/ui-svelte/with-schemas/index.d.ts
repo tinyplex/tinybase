@@ -649,20 +649,6 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     set current(v: Cell<Schemas[0], TableId, CellId>);
   };
 
-  /// ui-svelte.useBindableCell
-  useBindableCell: <
-    TableId extends TableIdFromSchema<Schemas[0]>,
-    CellId extends CellIdFromSchema<Schemas[0], TableId>,
-  >(
-    tableId: MaybeGetter<TableId>,
-    rowId: MaybeGetter<Id>,
-    cellId: MaybeGetter<CellId>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => {
-    get current(): NoInfer<CellOrUndefined<Schemas[0], TableId, CellId>>;
-    set current(v: Cell<Schemas[0], TableId, CellId>);
-  };
-
   /// ui-svelte.useHasValues
   useHasValues: (
     storeOrStoreId?: MaybeGetter<StoreOrStoreId<Schemas> | undefined>,
@@ -690,15 +676,6 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
 
   /// ui-svelte.useValue
   useValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
-    valueId: MaybeGetter<ValueId>,
-    storeOrStoreId?: StoreOrStoreId<Schemas>,
-  ) => {
-    get current(): NoInfer<DefaultedValueFromSchema<Schemas[1], ValueId>>;
-    set current(v: Value<Schemas[1], ValueId>);
-  };
-
-  /// ui-svelte.useBindableValue
-  useBindableValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: MaybeGetter<ValueId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {

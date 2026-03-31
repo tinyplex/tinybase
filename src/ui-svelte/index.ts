@@ -12,8 +12,6 @@ export {
   provideRelationships,
   provideStore,
   provideSynchronizer,
-  useBindableCell,
-  useBindableValue,
   useCell,
   useCellIds,
   useCellIdsListener,

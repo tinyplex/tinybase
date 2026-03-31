@@ -487,8 +487,6 @@ export const useCell = (
   );
 };
 
-export const useBindableCell = useCell;
-
 export const useHasValues = (
   storeOrStoreId?: MaybeGetter<Store | Id | undefined>,
 ): {readonly current: boolean} =>
@@ -548,8 +546,6 @@ export const useValue = (
     (v) => getS()?.setValue(maybeGet(valueId), v),
   );
 };
-
-export const useBindableValue = useValue;
 
 export const useStore = (id?: Id): Store | undefined =>
   useThing(id, OFFSET_STORE) as Store | undefined;
