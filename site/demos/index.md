@@ -5,9 +5,9 @@ applications.
 
 ## create-tinybase
 
-You can also use a tool called `create-tinybase` to build simple demo apps and
-then extend them to create a full apps of your own. Simply run the following
-command to get started:
+You can use a tool called `create-tinybase` to build simple demo apps and then
+extend them to create a full apps of your own. Simply run the following command
+to get started:
 
 ```bash
 npm create tinybase@latest
