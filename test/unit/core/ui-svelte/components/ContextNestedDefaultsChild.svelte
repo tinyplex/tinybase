@@ -1,18 +1,18 @@
 <script lang="ts">
   import {
-    useStore,
-    useMetrics,
-    useIndexes,
-    useRelationships,
-    useQueries,
-    useCheckpoints,
-    usePersister,
-    useSynchronizer,
+    getStore,
+    getMetrics,
+    getIndexes,
+    getRelationships,
+    getQueries,
+    getCheckpoints,
+    getPersister,
+    getSynchronizer,
   } from 'tinybase/ui-svelte';
 </script>
 
-{useStore() ? 's' : ''}{useMetrics() ? 'm' : ''}{useIndexes()
+{getStore() ? 's' : ''}{getMetrics() ? 'm' : ''}{getIndexes()
   ? 'i'
-  : ''}{useRelationships() ? 'r' : ''}{useQueries() ? 'q' : ''}{useCheckpoints()
+  : ''}{getRelationships() ? 'r' : ''}{getQueries() ? 'q' : ''}{getCheckpoints()
   ? 'c'
-  : ''}{usePersister() ? 'p' : ''}{useSynchronizer() ? 'syn' : ''}
+  : ''}{getPersister() ? 'p' : ''}{getSynchronizer() ? 'syn' : ''}

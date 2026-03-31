@@ -1,17 +1,17 @@
 <script lang="ts">
   import type {SliceViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {useIndexStoreTableId, useSliceRowIds} from './hooks.svelte.ts';
+  import {getIndexStoreTableId, createSliceRowIds} from './hooks.svelte.ts';
   import RowView from './RowView.svelte';
   import Wrap from './common/Wrap.svelte';
 
   let {indexId, sliceId, indexes, separator, debugIds, row}: SliceViewProps =
     $props();
 
-  const {store, tableId} = useIndexStoreTableId(
+  const {store, tableId} = getIndexStoreTableId(
     () => indexes,
     () => indexId,
   );
-  const rowIds = useSliceRowIds(
+  const rowIds = createSliceRowIds(
     () => indexId,
     () => sliceId,
     () => indexes,

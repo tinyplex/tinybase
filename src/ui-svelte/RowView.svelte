@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {RowViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {useCellIds} from './hooks.svelte.ts';
+  import {createCellIds} from './hooks.svelte.ts';
   import CellView from './CellView.svelte';
   import Wrap from './common/Wrap.svelte';
 
@@ -14,7 +14,7 @@
     cell,
   }: RowViewProps = $props();
 
-  const defaultCellIds = useCellIds(
+  const defaultCellIds = createCellIds(
     () => tableId,
     () => rowId,
     () => store,

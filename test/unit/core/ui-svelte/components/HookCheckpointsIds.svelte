@@ -1,7 +1,7 @@
 <script lang="ts">
-  import {useCheckpointsIds} from 'tinybase/ui-svelte';
+  import {createCheckpointsIds} from 'tinybase/ui-svelte';
 
-  const ids = useCheckpointsIds();
+  const ids = createCheckpointsIds();
 </script>
 
 {JSON.stringify(ids.current)}

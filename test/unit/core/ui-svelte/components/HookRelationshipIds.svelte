@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {useRelationshipIds} from 'tinybase/ui-svelte';
+  import {createRelationshipIds} from 'tinybase/ui-svelte';
   import type {Relationships} from 'tinybase';
 
   let {relationships}: {relationships: Relationships} = $props();
-  const v = useRelationshipIds(() => relationships);
+  const v = createRelationshipIds(() => relationships);
 </script>
 
 {JSON.stringify(v.current)}

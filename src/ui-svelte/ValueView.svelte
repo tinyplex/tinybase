@@ -1,9 +1,9 @@
 <script lang="ts">
   import type {ValueViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {useValue} from './hooks.svelte.ts';
+  import {createValue} from './hooks.svelte.ts';
 
   let {valueId, store, debugIds}: ValueViewProps = $props();
-  const value = useValue(
+  const value = createValue(
     () => valueId,
     () => store,
   );

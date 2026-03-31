@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {SortedTableViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {useSortedRowIds} from './hooks.svelte.ts';
+  import {createSortedRowIds} from './hooks.svelte.ts';
   import RowView from './RowView.svelte';
   import Wrap from './common/Wrap.svelte';
 
@@ -17,7 +17,7 @@
     row,
   }: SortedTableViewProps = $props();
 
-  const rowIds = useSortedRowIds(
+  const rowIds = createSortedRowIds(
     () => tableId,
     () => cellId,
     () => descending ?? false,

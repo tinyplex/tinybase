@@ -1,9 +1,9 @@
 <script lang="ts">
   import type {CheckpointViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {useCheckpoint} from './hooks.svelte.ts';
+  import {createCheckpoint} from './hooks.svelte.ts';
 
   let {checkpointId, checkpoints, debugIds}: CheckpointViewProps = $props();
-  const checkpoint = useCheckpoint(
+  const checkpoint = createCheckpoint(
     () => checkpointId,
     () => checkpoints,
   );

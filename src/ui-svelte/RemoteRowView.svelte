@@ -2,8 +2,8 @@
   import type {RemoteRowViewProps} from '../@types/ui-svelte/index.d.ts';
   import {isUndefined} from '../common/other.ts';
   import {
-    useRemoteRowId,
-    useRelationshipsStoreTableIds,
+    createRemoteRowId,
+    getRelationshipsStoreTableIds,
   } from './hooks.svelte.ts';
   import RowView from './RowView.svelte';
 
@@ -15,11 +15,11 @@
     row,
   }: RemoteRowViewProps = $props();
 
-  const {store, remoteTableId} = useRelationshipsStoreTableIds(
+  const {store, remoteTableId} = getRelationshipsStoreTableIds(
     () => relationships,
     () => relationshipId,
   );
-  const remoteRowId = useRemoteRowId(
+  const remoteRowId = createRemoteRowId(
     () => relationshipId,
     () => localRowId,
     () => relationships,

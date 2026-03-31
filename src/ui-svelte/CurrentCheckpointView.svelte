@@ -1,12 +1,12 @@
 <script lang="ts">
   import type {CurrentCheckpointViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {useCheckpointIds} from './hooks.svelte.ts';
+  import {createCheckpointIds} from './hooks.svelte.ts';
   import CheckpointView from './CheckpointView.svelte';
   import {isUndefined} from '../common/other.ts';
 
   let {checkpoints, debugIds, checkpoint}: CurrentCheckpointViewProps =
     $props();
-  const checkpointIds = useCheckpointIds(() => checkpoints);
+  const checkpointIds = createCheckpointIds(() => checkpoints);
   const currentId = $derived(checkpointIds.current[1]);
 </script>
 

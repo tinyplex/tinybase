@@ -2,18 +2,18 @@
   import {
     IndexView,
     SliceView,
-    useSliceIds,
-    useSliceRowIds,
+    createSliceIds,
+    createSliceRowIds,
   } from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
 
   let {indexesId}: {indexesId?: Id} = $props();
 
-  const sliceIds = useSliceIds(
+  const sliceIds = createSliceIds(
     () => 'i1',
     () => indexesId,
   );
-  const sliceRowIds = useSliceRowIds(
+  const sliceRowIds = createSliceRowIds(
     () => 'i1',
     () => '1',
     () => indexesId,

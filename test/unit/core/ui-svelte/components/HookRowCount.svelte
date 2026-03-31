@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {useRowCount} from 'tinybase/ui-svelte';
+  import {createRowCount} from 'tinybase/ui-svelte';
   import type {Id, Store} from 'tinybase';
 
   let {store, tableId}: {store: Store; tableId: Id} = $props();
-  const v = useRowCount(
+  const v = createRowCount(
     () => tableId,
     () => store,
   );

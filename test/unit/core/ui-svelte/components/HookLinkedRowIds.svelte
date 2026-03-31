@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useLinkedRowIds} from 'tinybase/ui-svelte';
+  import {createLinkedRowIds} from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
   import type {Relationships} from 'tinybase/relationships';
 
@@ -12,7 +12,7 @@
     relationshipId: Id;
     firstRowId: Id;
   } = $props();
-  const v = useLinkedRowIds(
+  const v = createLinkedRowIds(
     () => relationshipId,
     () => firstRowId,
     () => relationships,

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useResultCell} from 'tinybase/ui-svelte';
+  import {createResultCell} from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
   import type {Queries} from 'tinybase/queries';
 
@@ -14,7 +14,7 @@
     rowId: Id;
     cellId: Id;
   } = $props();
-  const v = useResultCell(
+  const v = createResultCell(
     () => queryId,
     () => rowId,
     () => cellId,

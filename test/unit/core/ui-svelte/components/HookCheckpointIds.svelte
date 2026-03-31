@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {useCheckpointIds} from 'tinybase/ui-svelte';
+  import {createCheckpointIds} from 'tinybase/ui-svelte';
   import type {Checkpoints} from 'tinybase/checkpoints';
 
   let {checkpoints}: {checkpoints: Checkpoints} = $props();
-  const v = useCheckpointIds(() => checkpoints);
+  const v = createCheckpointIds(() => checkpoints);
 </script>
 
 {JSON.stringify(v.current)}

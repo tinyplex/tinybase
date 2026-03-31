@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useResultSortedRowIds} from 'tinybase/ui-svelte';
+  import {createResultSortedRowIds} from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
   import type {Queries} from 'tinybase/queries';
 
@@ -18,7 +18,7 @@
     offset?: number;
     limit?: number;
   } = $props();
-  const v = useResultSortedRowIds(
+  const v = createResultSortedRowIds(
     () => queryId,
     () => cellId,
     () => descending,

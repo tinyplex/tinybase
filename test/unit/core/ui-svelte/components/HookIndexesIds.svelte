@@ -1,7 +1,7 @@
 <script lang="ts">
-  import {useIndexesIds} from 'tinybase/ui-svelte';
+  import {createIndexesIds} from 'tinybase/ui-svelte';
 
-  const ids = useIndexesIds();
+  const ids = createIndexesIds();
 </script>
 
 {JSON.stringify(ids.current)}

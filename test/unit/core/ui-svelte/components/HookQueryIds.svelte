@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {useQueryIds} from 'tinybase/ui-svelte';
+  import {createQueryIds} from 'tinybase/ui-svelte';
   import type {Queries} from 'tinybase';
 
   let {queries}: {queries: Queries} = $props();
-  const v = useQueryIds(() => queries);
+  const v = createQueryIds(() => queries);
 </script>
 
 {JSON.stringify(v.current)}

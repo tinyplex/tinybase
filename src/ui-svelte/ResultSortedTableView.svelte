@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {ResultSortedTableViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {useResultSortedRowIds} from './hooks.svelte.ts';
+  import {createResultSortedRowIds} from './hooks.svelte.ts';
   import ResultRowView from './ResultRowView.svelte';
   import Wrap from './common/Wrap.svelte';
 
@@ -16,7 +16,7 @@
     row,
   }: ResultSortedTableViewProps = $props();
 
-  const rowIds = useResultSortedRowIds(
+  const rowIds = createResultSortedRowIds(
     () => queryId,
     () => cellId,
     () => descending ?? false,

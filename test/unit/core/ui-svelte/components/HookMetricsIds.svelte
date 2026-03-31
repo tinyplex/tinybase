@@ -1,7 +1,7 @@
 <script lang="ts">
-  import {useMetricsIds} from 'tinybase/ui-svelte';
+  import {createMetricsIds} from 'tinybase/ui-svelte';
 
-  const ids = useMetricsIds();
+  const ids = createMetricsIds();
 </script>
 
 {JSON.stringify(ids.current)}

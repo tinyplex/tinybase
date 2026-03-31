@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useSliceRowIds} from 'tinybase/ui-svelte';
+  import {createSliceRowIds} from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
   import type {Indexes} from 'tinybase/indexes';
 
@@ -12,7 +12,7 @@
     indexId: Id;
     sliceId: Id;
   } = $props();
-  const v = useSliceRowIds(
+  const v = createSliceRowIds(
     () => indexId,
     () => sliceId,
     () => indexes,

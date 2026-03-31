@@ -1,8 +1,8 @@
 <script lang="ts">
   import type {LinkedRowsViewProps} from '../@types/ui-svelte/index.d.ts';
   import {
-    useLinkedRowIds,
-    useRelationshipsStoreTableIds,
+    createLinkedRowIds,
+    getRelationshipsStoreTableIds,
   } from './hooks.svelte.ts';
   import RowView from './RowView.svelte';
   import Wrap from './common/Wrap.svelte';
@@ -16,11 +16,11 @@
     row,
   }: LinkedRowsViewProps = $props();
 
-  const {store, localTableId} = useRelationshipsStoreTableIds(
+  const {store, localTableId} = getRelationshipsStoreTableIds(
     () => relationships,
     () => relationshipId,
   );
-  const rowIds = useLinkedRowIds(
+  const rowIds = createLinkedRowIds(
     () => relationshipId,
     () => firstRowId,
     () => relationships,

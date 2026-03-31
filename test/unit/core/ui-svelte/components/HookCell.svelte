@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {useCell} from 'tinybase/ui-svelte';
+  import {createCell} from 'tinybase/ui-svelte';
   import type {Id, Store} from 'tinybase';
 
   let {
@@ -13,7 +13,7 @@
     rowId: Id;
     cellId: Id;
   } = $props();
-  const v = useCell(
+  const v = createCell(
     () => tableId,
     () => rowId,
     () => cellId,

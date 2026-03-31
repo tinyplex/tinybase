@@ -130,7 +130,7 @@ beforeEach(() => {
     .setValues({v1: 1});
 });
 
-test('windowless hooks skip effects', () => {
+test('windowless ui-svelte functions skip effects', () => {
   vi.stubGlobal('window', undefined);
   try {
     const {container, unmount} = render(HookWindowlessCoverage);
@@ -143,8 +143,8 @@ test('windowless hooks skip effects', () => {
   }
 });
 
-describe('Read Hooks', () => {
-  test('useHasTables', async () => {
+describe('Read Functions', () => {
+  test('createHasTables', async () => {
     const {container, unmount} = render(HookHasTables, {props: {store}});
     expect(container.textContent).toEqual('true');
 
@@ -154,7 +154,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useTables', async () => {
+  test('createTables', async () => {
     const {container, unmount} = render(HookTables, {props: {store}});
     expect(container.textContent).toEqual(JSON.stringify({t1: {r1: {c1: 1}}}));
 
@@ -169,7 +169,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useTableIds', async () => {
+  test('createTableIds', async () => {
     const {container, unmount} = render(HookTableIds, {props: {store}});
     expect(container.textContent).toEqual(JSON.stringify(['t1']));
 
@@ -186,7 +186,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useHasTable', async () => {
+  test('createHasTable', async () => {
     const {container, rerender, unmount} = render(HookHasTable, {
       props: {store, tableId: 't0'},
     });
@@ -211,7 +211,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useTable', async () => {
+  test('createTable', async () => {
     const {container, rerender, unmount} = render(HookTable, {
       props: {store, tableId: 't0'},
     });
@@ -236,7 +236,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useTableCellIds', async () => {
+  test('createTableCellIds', async () => {
     const {container, rerender, unmount} = render(HookTableCellIds, {
       props: {store, tableId: 't0'},
     });
@@ -261,7 +261,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useHasTableCell', async () => {
+  test('createHasTableCell', async () => {
     const {container, rerender, unmount} = render(HookHasTableCell, {
       props: {store, tableId: 't0', cellId: 'c0'},
     });
@@ -286,7 +286,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useRowCount', async () => {
+  test('createRowCount', async () => {
     const {container, rerender, unmount} = render(HookRowCount, {
       props: {store, tableId: 't0'},
     });
@@ -311,7 +311,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useRowIds', async () => {
+  test('createRowIds', async () => {
     const {container, rerender, unmount} = render(HookRowIds, {
       props: {store, tableId: 't0'},
     });
@@ -336,7 +336,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useSortedRowIds', async () => {
+  test('createSortedRowIds', async () => {
     const {container, rerender, unmount} = render(HookSortedRowIds, {
       props: {
         store,
@@ -377,7 +377,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useSortedRowIds, no-default descending and offset', async () => {
+  test('createSortedRowIds, no-default descending and offset', async () => {
     const {container, unmount} = render(HookSortedRowIdsNoDefaults, {
       props: {store, tableId: 't1', cellId: 'c1'},
     });
@@ -385,7 +385,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useHasRow', async () => {
+  test('createHasRow', async () => {
     const {container, rerender, unmount} = render(HookHasRow, {
       props: {store, tableId: 't0', rowId: 'r0'},
     });
@@ -410,7 +410,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useRow', async () => {
+  test('createRow', async () => {
     const {container, rerender, unmount} = render(HookRow, {
       props: {store, tableId: 't0', rowId: 'r0'},
     });
@@ -435,7 +435,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useCellIds', async () => {
+  test('createCellIds', async () => {
     const {container, rerender, unmount} = render(HookCellIds, {
       props: {store, tableId: 't0', rowId: 'r0'},
     });
@@ -460,7 +460,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useHasCell', async () => {
+  test('createHasCell', async () => {
     const {container, rerender, unmount} = render(HookHasCell, {
       props: {store, tableId: 't0', rowId: 'r0', cellId: 'c0'},
     });
@@ -485,7 +485,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useCell', async () => {
+  test('createCell', async () => {
     const {container, rerender, unmount} = render(HookCell, {
       props: {store, tableId: 't0', rowId: 'r0', cellId: 'c0'},
     });
@@ -510,7 +510,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useCell can set values', async () => {
+  test('createCell can set values', async () => {
     store.setCell('t1', 'r1', 'c1', 0);
     const {container, unmount} = render(HookWritableCell, {
       props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', newValue: 1},
@@ -526,7 +526,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useHasValues', async () => {
+  test('createHasValues', async () => {
     const {container, unmount} = render(HookHasValues, {props: {store}});
     expect(container.textContent).toEqual('true');
 
@@ -536,7 +536,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useValues', async () => {
+  test('createValues', async () => {
     const {container, unmount} = render(HookValues, {props: {store}});
     expect(container.textContent).toEqual(JSON.stringify({v1: 1}));
 
@@ -549,7 +549,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useValueIds', async () => {
+  test('createValueIds', async () => {
     const {container, unmount} = render(HookValueIds, {props: {store}});
     expect(container.textContent).toEqual(JSON.stringify(['v1']));
 
@@ -562,7 +562,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useHasValue', async () => {
+  test('createHasValue', async () => {
     const {container, rerender, unmount} = render(HookHasValue, {
       props: {store, valueId: 'v0'},
     });
@@ -583,7 +583,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useValue', async () => {
+  test('createValue', async () => {
     const {container, rerender, unmount} = render(HookValue, {
       props: {store, valueId: 'v0'},
     });
@@ -604,7 +604,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useValue can set values', async () => {
+  test('createValue can set values', async () => {
     store.setValues({v1: false});
     const {container, unmount} = render(HookWritableValue, {
       props: {store, valueId: 'v1', newValue: true},
@@ -620,49 +620,49 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useMetricsIds', async () => {
+  test('createMetricsIds', async () => {
     const {container, unmount} = render(HookMetricsIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('useIndexesIds', async () => {
+  test('createIndexesIds', async () => {
     const {container, unmount} = render(HookIndexesIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('useQueriesIds', async () => {
+  test('createQueriesIds', async () => {
     const {container, unmount} = render(HookQueriesIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('useRelationshipsIds', async () => {
+  test('createRelationshipsIds', async () => {
     const {container, unmount} = render(HookRelationshipsIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('useCheckpointsIds', async () => {
+  test('createCheckpointsIds', async () => {
     const {container, unmount} = render(HookCheckpointsIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('usePersisterIds', async () => {
+  test('createPersisterIds', async () => {
     const {container, unmount} = render(HookPersisterIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('useSynchronizerIds', async () => {
+  test('createSynchronizerIds', async () => {
     const {container, unmount} = render(HookSynchronizerIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('useMetricIds', async () => {
+  test('createMetricIds', async () => {
     const metrics: Metrics = createMetrics(store);
     const {container, unmount} = render(HookMetricIds, {props: {metrics}});
     expect(container.textContent).toEqual('[]');
@@ -678,7 +678,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useMetric', async () => {
+  test('createMetric', async () => {
     const metrics: Metrics = createMetrics(store)
       .setMetricDefinition('m1', 't1')
       .setMetricDefinition('m2', 't1', 'max', 'c1')
@@ -708,7 +708,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useIndexIds', async () => {
+  test('createIndexIds', async () => {
     const indexes: Indexes = createIndexes(store);
     const {container, unmount} = render(HookIndexIds, {props: {indexes}});
     expect(container.textContent).toEqual('[]');
@@ -724,7 +724,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useSliceIds', async () => {
+  test('createSliceIds', async () => {
     const indexes: Indexes = createIndexes(store)
       .setIndexDefinition('i1', 't1', 'c1')
       .setIndexDefinition('i2', 't1', 'c2')
@@ -757,7 +757,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useSliceRowIds', async () => {
+  test('createSliceRowIds', async () => {
     const indexes: Indexes = createIndexes(store)
       .setIndexDefinition('i1', 't1', 'c1')
       .setIndexDefinition('i2', 't2', 'c2');
@@ -789,7 +789,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useRelationshipIds', async () => {
+  test('createRelationshipIds', async () => {
     const relationships: Relationships = createRelationships(store);
     const {container, unmount} = render(HookRelationshipIds, {
       props: {relationships},
@@ -809,7 +809,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useRemoteRowId', async () => {
+  test('createRemoteRowId', async () => {
     const relationships: Relationships = createRelationships(store)
       .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
       .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
@@ -841,7 +841,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useLocalRowIds', async () => {
+  test('createLocalRowIds', async () => {
     const relationships: Relationships = createRelationships(store)
       .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
       .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
@@ -873,7 +873,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useLinkedRowIds', async () => {
+  test('createLinkedRowIds', async () => {
     const relationships: Relationships = createRelationships(store)
       .setRelationshipDefinition('r1', 't1', 't1', 'c1')
       .setRelationshipDefinition('r2', 't2', 't2', 'c2');
@@ -906,7 +906,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useQueryIds', async () => {
+  test('createQueryIds', async () => {
     const queries: Queries = createQueries(store);
     const {container, unmount} = render(HookQueryIds, {props: {queries}});
     expect(container.textContent).toEqual('[]');
@@ -924,7 +924,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useResultTable', async () => {
+  test('createResultTable', async () => {
     const queries: Queries = createQueries(store)
       .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
       .setQueryDefinition('q2', 't1', ({select, where}) => {
@@ -957,7 +957,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useResultRowIds', async () => {
+  test('createResultRowIds', async () => {
     const queries: Queries = createQueries(store)
       .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
       .setQueryDefinition('q2', 't1', ({select, where}) => {
@@ -993,7 +993,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useResultTableCellIds', async () => {
+  test('createResultTableCellIds', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1020,7 +1020,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useResultRowCount', async () => {
+  test('createResultRowCount', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1044,7 +1044,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useResultSortedRowIds', async () => {
+  test('createResultSortedRowIds', async () => {
     const queries: Queries = createQueries(store)
       .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
       .setQueryDefinition('q2', 't1', ({select, where}) => {
@@ -1108,7 +1108,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useResultSortedRowIds, no-default descending and offset', async () => {
+  test('createResultSortedRowIds, no-default descending & offset', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1121,7 +1121,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useResultRow', async () => {
+  test('createResultRow', async () => {
     const queries: Queries = createQueries(store)
       .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
       .setQueryDefinition('q2', 't1', ({select, where}) => {
@@ -1152,7 +1152,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useResultCellIds', async () => {
+  test('createResultCellIds', async () => {
     const queries: Queries = createQueries(store)
       .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
       .setQueryDefinition('q2', 't1', ({select, where}) => {
@@ -1185,7 +1185,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useResultCell', async () => {
+  test('createResultCell', async () => {
     const queries: Queries = createQueries(store)
       .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
       .setQueryDefinition('q2', 't1', ({select, where}) => {
@@ -1217,7 +1217,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('useCheckpointIds', async () => {
+  test('createCheckpointIds', async () => {
     const checkpoints: Checkpoints = createCheckpoints(store);
     const {container, unmount} = render(HookCheckpointIds, {
       props: {checkpoints},
@@ -1235,7 +1235,7 @@ describe('Read Hooks', () => {
     unmount();
   });
 
-  test('usePersisterStatus', async () => {
+  test('createPersisterStatus', async () => {
     const persister: AnyPersister = createSessionPersister(store, 'test-key');
     const {container, unmount} = render(HookPersisterStatus, {
       props: {persister},
@@ -1245,7 +1245,7 @@ describe('Read Hooks', () => {
     persister.destroy();
   });
 
-  test('useSynchronizerStatus', async () => {
+  test('createSynchronizerStatus', async () => {
     const store2 = createMergeableStore();
     const synchronizer: Synchronizer = createLocalSynchronizer(store2);
     const {container, unmount} = render(HookSynchronizerStatus, {
@@ -1269,7 +1269,7 @@ describe('Checkpoint Callbacks', () => {
     checkpoints.addCheckpoint();
   });
 
-  test('useGoBackwardCallback', async () => {
+  test('createGoBackwardCallback', async () => {
     const {getByRole, unmount} = render(HookGoBackwardCallback, {
       props: {checkpoints},
     });
@@ -1283,7 +1283,7 @@ describe('Checkpoint Callbacks', () => {
     unmount();
   });
 
-  test('useGoForwardCallback', async () => {
+  test('createGoForwardCallback', async () => {
     const {getByRole, unmount} = render(HookGoForwardCallback, {
       props: {checkpoints},
     });

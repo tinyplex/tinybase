@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {useHasTable} from 'tinybase/ui-svelte';
+  import {createHasTable} from 'tinybase/ui-svelte';
   import type {Id, Store} from 'tinybase';
 
   let {store, tableId}: {store: Store; tableId: Id} = $props();
-  const v = useHasTable(
+  const v = createHasTable(
     () => tableId,
     () => store,
   );

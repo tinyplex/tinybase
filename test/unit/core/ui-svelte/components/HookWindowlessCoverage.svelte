@@ -2,48 +2,48 @@
   import {createStore} from 'tinybase';
   import {
     provideStore,
-    useCell,
-    useCheckpointsIds,
-    useIndexesIds,
-    useMetricsIds,
-    usePersisterIds,
-    useQueriesIds,
-    useRelationshipsIds,
-    useStoreIds,
-    useSynchronizerIds,
-    useTableIds,
+    createCell,
+    createCheckpointsIds,
+    createIndexesIds,
+    createMetricsIds,
+    createPersisterIds,
+    createQueriesIds,
+    createRelationshipsIds,
+    createStoreIds,
+    createSynchronizerIds,
+    createTableIds,
     useTablesListener,
-    useValue,
+    createValue,
   } from 'tinybase/ui-svelte';
 
   const store = createStore().setCell('t1', 'r1', 'c1', 1).setValue('v1', 1);
 
-  const tableIds = useTableIds(() => store);
+  const tableIds = createTableIds(() => store);
   useTablesListener(
     () => undefined,
     false,
     () => store,
   );
 
-  const cell = useCell(
+  const cell = createCell(
     () => 't1',
     () => 'r1',
     () => 'c1',
     () => store,
   );
-  const value = useValue(
+  const value = createValue(
     () => 'v1',
     () => store,
   );
 
-  const storeIds = useStoreIds();
-  const metricsIds = useMetricsIds();
-  const indexesIds = useIndexesIds();
-  const queriesIds = useQueriesIds();
-  const relationshipsIds = useRelationshipsIds();
-  const checkpointsIds = useCheckpointsIds();
-  const persisterIds = usePersisterIds();
-  const synchronizerIds = useSynchronizerIds();
+  const storeIds = createStoreIds();
+  const metricsIds = createMetricsIds();
+  const indexesIds = createIndexesIds();
+  const queriesIds = createQueriesIds();
+  const relationshipsIds = createRelationshipsIds();
+  const checkpointsIds = createCheckpointsIds();
+  const persisterIds = createPersisterIds();
+  const synchronizerIds = createSynchronizerIds();
 
   provideStore('s1', store);
 </script>

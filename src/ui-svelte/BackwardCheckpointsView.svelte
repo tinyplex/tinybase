@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {BackwardCheckpointsViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {useCheckpointIds} from './hooks.svelte.ts';
+  import {createCheckpointIds} from './hooks.svelte.ts';
   import CheckpointView from './CheckpointView.svelte';
   import Wrap from './common/Wrap.svelte';
 
@@ -10,7 +10,7 @@
     debugIds,
     checkpoint,
   }: BackwardCheckpointsViewProps = $props();
-  const checkpointIds = useCheckpointIds(() => checkpoints);
+  const checkpointIds = createCheckpointIds(() => checkpoints);
   const ids = $derived(checkpointIds.current[0]);
 </script>
 

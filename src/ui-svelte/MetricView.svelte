@@ -1,9 +1,9 @@
 <script lang="ts">
   import type {MetricViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {useMetric} from './hooks.svelte.ts';
+  import {createMetric} from './hooks.svelte.ts';
 
   let {metricId, metrics, debugIds}: MetricViewProps = $props();
-  const metric = useMetric(
+  const metric = createMetric(
     () => metricId,
     () => metrics,
   );

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import {usePersister} from 'tinybase/ui-svelte';
+  import {getPersister} from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
 
   let {persisterId}: {persisterId?: Id} = $props();
 
-  const persister = $derived(usePersister(persisterId));
+  const persister = $derived(getPersister(persisterId));
 </script>
 
 {persister?.getStatus()}

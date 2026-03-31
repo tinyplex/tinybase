@@ -1,10 +1,10 @@
 <script lang="ts">
-  import {MetricView, useMetric} from 'tinybase/ui-svelte';
+  import {MetricView, createMetric} from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
 
   let {metricsId}: {metricsId?: Id} = $props();
 
-  const metric = useMetric(
+  const metric = createMetric(
     () => 'm1',
     () => metricsId,
   );

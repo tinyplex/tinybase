@@ -22,36 +22,36 @@ const UiSvelteWithSchemas = UiSvelte as UiSvelte.WithSchemas<
   [typeof tablesSchema, typeof valuesSchema]
 >;
 const {
-  useHasTables,
-  useTables,
-  useTableIds,
-  useHasTable,
-  useTable,
-  useTableCellIds,
-  useHasTableCell,
-  useRowCount,
-  useRowIds,
-  useSortedRowIds,
-  useHasRow,
-  useRow,
-  useCellIds,
-  useHasCell,
-  useCell,
-  useHasValues,
-  useValues,
-  useValueIds,
-  useHasValue,
-  useValue,
-  useStore,
-  useMetrics,
-  useIndexes,
-  useQueries,
-  useRelationships,
-  useCheckpoints,
-  useGoBackwardCallback,
-  useGoForwardCallback,
-  usePersisterStatus,
-  useSynchronizerStatus,
+  createHasTables,
+  createTables,
+  createTableIds,
+  createHasTable,
+  createTable,
+  createTableCellIds,
+  createHasTableCell,
+  createRowCount,
+  createRowIds,
+  createSortedRowIds,
+  createHasRow,
+  createRow,
+  createCellIds,
+  createHasCell,
+  createCell,
+  createHasValues,
+  createValues,
+  createValueIds,
+  createHasValue,
+  createValue,
+  getStore,
+  getMetrics,
+  getIndexes,
+  getQueries,
+  getRelationships,
+  getCheckpoints,
+  createGoBackwardCallback,
+  createGoForwardCallback,
+  createPersisterStatus,
+  createSynchronizerStatus,
   useHasTablesListener,
   useTablesListener,
   useTableIdsListener,
@@ -100,106 +100,102 @@ const {
 const UiSvelteWithSchemas2 = UiSvelte as UiSvelte.WithSchemas<
   [{t2: {c2: {type: 'number'}}}, NoValuesSchema]
 >;
-const {useStore: useStore2} = UiSvelteWithSchemas2;
+const {getStore: getStore2} = UiSvelteWithSchemas2;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Getters = () => {
-  useStore()?.getTables().t1;
-  useStore()?.getTables().t2; // !
+  getStore()?.getTables().t1;
+  getStore()?.getTables().t2; // !
 
-  useStore2()?.getTables().t2;
-  useStore2()?.getTables().t3; // !
+  getStore2()?.getTables().t2;
+  getStore2()?.getTables().t3; // !
 
-  useHasTables().current as boolean;
-  useHasTables().current as string; // !
+  createHasTables().current as boolean;
+  createHasTables().current as string; // !
 
-  useTables().current.t1;
-  useTables().current.t2; // !
+  createTables().current.t1;
+  createTables().current.t2; // !
 
-  useTableIds().current.includes('t1');
-  useTableIds().current.includes('t2'); // !
+  createTableIds().current.includes('t1');
+  createTableIds().current.includes('t2'); // !
 
-  useHasTable('t1');
-  useHasTable('t2'); // !
+  createHasTable('t1');
+  createHasTable('t2'); // !
 
-  useTable('t1').current;
-  useTable('t1').current.r1!.c1;
-  useTable('t1').current.r1!.c2; // !
-  useTable('t2'); // !
+  createTable('t1').current;
+  createTable('t1').current.r1!.c1;
+  createTable('t1').current.r1!.c2; // !
+  createTable('t2'); // !
 
-  useTableCellIds('t1').current;
-  useTableCellIds('t2'); // !
+  createTableCellIds('t1').current;
+  createTableCellIds('t2'); // !
 
-  useHasTableCell('t1', 'c1');
-  useHasTableCell('t1', 'c2'); // !
-  useHasTableCell('t2', 'c1'); // !
+  createHasTableCell('t1', 'c1');
+  createHasTableCell('t1', 'c2'); // !
+  createHasTableCell('t2', 'c1'); // !
 
-  useRowCount('t1').current as number;
-  useRowCount('t2'); // !
+  createRowCount('t1').current as number;
+  createRowCount('t2'); // !
 
-  useRowIds('t1').current;
-  useRowIds('t2'); // !
+  createRowIds('t1').current;
+  createRowIds('t2'); // !
 
-  useSortedRowIds('t1', 'c1').current;
-  useSortedRowIds('t1', 'c2'); // !
-  useSortedRowIds('t2', 'c1'); // !
+  createSortedRowIds('t1', 'c1').current;
+  createSortedRowIds('t1', 'c2'); // !
+  createSortedRowIds('t2', 'c1'); // !
 
-  useHasRow('t1', 'r1').current as boolean;
-  useHasRow('t2', 'r1'); // !
+  createHasRow('t1', 'r1').current as boolean;
+  createHasRow('t2', 'r1'); // !
 
-  useRow('t1', 'r1').current;
-  useRow('t1', 'r1').current.c1;
-  useRow('t1', 'r1').current.c2; // !
-  useRow('t2', 'r2'); // !
+  createRow('t1', 'r1').current;
+  createRow('t1', 'r1').current.c1;
+  createRow('t1', 'r1').current.c2; // !
+  createRow('t2', 'r2'); // !
 
-  useCellIds('t1', 'r1').current.includes('c1');
-  useCellIds('t1', 'r1').current.includes('c2'); // !
-  useCellIds('t2', 'r2'); // !
+  createCellIds('t1', 'r1').current.includes('c1');
+  createCellIds('t1', 'r1').current.includes('c2'); // !
+  createCellIds('t2', 'r2'); // !
 
-  useHasCell('t1', 'r1', 'c1');
-  useHasCell('t1', 'r1', 'c2'); // !
-  useHasCell('t2', 'r2', 'c1'); // !
+  createHasCell('t1', 'r1', 'c1');
+  createHasCell('t1', 'r1', 'c2'); // !
+  createHasCell('t2', 'r2', 'c1'); // !
 
-  useCell('t1', 'r1', 'c1').current;
-  useCell('t1', 'r1', 'c1').current as number;
-  useCell('t1', 'r1', 'c1').current as string; // !
-  const cellRef = useCell('t1', 'r1', 'c1');
-  // eslint-disable-next-line react-hooks/refs
+  createCell('t1', 'r1', 'c1').current;
+  createCell('t1', 'r1', 'c1').current as number;
+  createCell('t1', 'r1', 'c1').current as string; // !
+  const cellRef = createCell('t1', 'r1', 'c1');
   cellRef.current = 1;
-  // eslint-disable-next-line react-hooks/refs
   cellRef.current = '1'; // !
-  useCell('t1', 'r1', 'c2'); // !
-  useCell('t2', 'r2', 'c1'); // !
+  createCell('t1', 'r1', 'c2'); // !
+  createCell('t2', 'r2', 'c1'); // !
 
-  useHasValues().current as boolean;
-  useHasValues().current as string; // !
+  createHasValues().current as boolean;
+  createHasValues().current as string; // !
 
-  useValues().current.v1;
-  useValues().current.v2; // !
+  createValues().current.v1;
+  createValues().current.v2; // !
 
-  useValueIds().current.includes('v1');
-  useValueIds().current.includes('v2'); // !
+  createValueIds().current.includes('v1');
+  createValueIds().current.includes('v2'); // !
 
-  useHasValue('v1');
-  useHasValue('v2'); // !
+  createHasValue('v1');
+  createHasValue('v2'); // !
 
-  useValue('v1').current as number;
-  useValue('v1').current as string; // !
-  const valueRef = useValue('v1');
-  // eslint-disable-next-line react-hooks/refs
+  createValue('v1').current as number;
+  createValue('v1').current as string; // !
+  const valueRef = createValue('v1');
   valueRef.current = 1;
-  // eslint-disable-next-line react-hooks/refs
   valueRef.current = '1'; // !
-  useValue('v2'); // !
+  createValue('v2'); // !
 
-  useGoBackwardCallback() as () => void;
-  useGoBackwardCallback() as boolean; // !
+  createGoBackwardCallback() as () => void;
+  createGoBackwardCallback() as boolean; // !
 
-  useGoForwardCallback() as () => void;
-  useGoForwardCallback() as boolean; // !
+  createGoForwardCallback() as () => void;
+  createGoForwardCallback() as boolean; // !
 
-  usePersisterStatus().current as Status;
-  useSynchronizerStatus().current as Status;
+  createPersisterStatus().current as Status;
+  createSynchronizerStatus().current as Status;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -681,8 +677,8 @@ const Listeners = () => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Metrics = () => {
-  useMetrics()?.getStore().getTables().t1;
-  useMetrics()?.getStore().getTables().t2; // !
+  getMetrics()?.getStore().getTables().t1;
+  getMetrics()?.getStore().getTables().t2; // !
 
   useMetricListener('m1', (metrics) => {
     metrics.getStore().getTables().t1;
@@ -702,14 +698,14 @@ const Metrics = () => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Indexes = () => {
-  useIndexes()?.getStore().getTables().t1;
-  useIndexes()?.getStore().getTables().t2; // !
+  getIndexes()?.getStore().getTables().t1;
+  getIndexes()?.getStore().getTables().t2; // !
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Relationships = () => {
-  useRelationships()?.getStore().getTables().t1;
-  useRelationships()?.getStore().getTables().t2; // !
+  getRelationships()?.getStore().getTables().t1;
+  getRelationships()?.getStore().getTables().t2; // !
 
   useRemoteRowIdListener('r1', 'r1', (relationships) => {
     relationships.getStore().getTables().t1;
@@ -729,8 +725,8 @@ const Relationships = () => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Queries = () => {
-  useQueries()?.getStore().getTables().t1;
-  useQueries()?.getStore().getTables().t2; // !
+  getQueries()?.getStore().getTables().t1;
+  getQueries()?.getStore().getTables().t2; // !
 
   useResultTableListener('q1', (queries) => {
     queries.getStore().getTables().t1;
@@ -785,8 +781,8 @@ const Queries = () => {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Checkpoints = () => {
-  useCheckpoints()?.getStore().getTables().t1;
-  useCheckpoints()?.getStore().getTables().t2; // !
+  getCheckpoints()?.getStore().getTables().t1;
+  getCheckpoints()?.getStore().getTables().t2; // !
 
   useCheckpointIdsListener((checkpoints) => {
     checkpoints.getStore().getTables().t1;

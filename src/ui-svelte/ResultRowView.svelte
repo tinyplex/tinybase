@@ -1,12 +1,12 @@
 <script lang="ts">
   import type {ResultRowViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {useResultCellIds} from './hooks.svelte.ts';
+  import {createResultCellIds} from './hooks.svelte.ts';
   import ResultCellView from './ResultCellView.svelte';
   import Wrap from './common/Wrap.svelte';
 
   let {queryId, rowId, queries, separator, debugIds, cell}: ResultRowViewProps =
     $props();
-  const cellIds = useResultCellIds(
+  const cellIds = createResultCellIds(
     () => queryId,
     () => rowId,
     () => queries,

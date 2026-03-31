@@ -1,7 +1,7 @@
 <script lang="ts">
-  import {useSynchronizerIds} from 'tinybase/ui-svelte';
+  import {createSynchronizerIds} from 'tinybase/ui-svelte';
 
-  const ids = useSynchronizerIds();
+  const ids = createSynchronizerIds();
 </script>
 
 {JSON.stringify(ids.current)}

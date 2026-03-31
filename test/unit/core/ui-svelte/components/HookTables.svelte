@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {useTables} from 'tinybase/ui-svelte';
+  import {createTables} from 'tinybase/ui-svelte';
   import type {Store} from 'tinybase';
 
   let {store}: {store: Store} = $props();
-  const v = useTables(() => store);
+  const v = createTables(() => store);
 </script>
 
 {JSON.stringify(v.current)}
