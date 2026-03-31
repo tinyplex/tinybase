@@ -1,11 +1,11 @@
 <script lang="ts">
-  import {createResultSortedRowIds} from 'tinybase/ui-svelte';
+  import {getResultSortedRowIds} from 'tinybase/ui-svelte';
   import type {Id, Queries} from 'tinybase';
 
   let {queries, queryId, cellId}: {queries: Queries; queryId: Id; cellId?: Id} =
     $props();
   // Pass undefined for descending and offset to trigger their default values
-  const v = createResultSortedRowIds(
+  const v = getResultSortedRowIds(
     () => queryId,
     () => cellId,
     undefined,

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {createRemoteRowId} from 'tinybase/ui-svelte';
+  import {getRemoteRowId} from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
   import type {Relationships} from 'tinybase/relationships';
 
@@ -12,7 +12,7 @@
     relationshipId: Id;
     localRowId: Id;
   } = $props();
-  const v = createRemoteRowId(
+  const v = getRemoteRowId(
     () => relationshipId,
     () => localRowId,
     () => relationships,

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import {createRelationshipsIds} from 'tinybase/ui-svelte';
+  import {getRelationshipsIds} from 'tinybase/ui-svelte';
 
-  const ids = createRelationshipsIds();
+  const ids = getRelationshipsIds();
 </script>
 
 {JSON.stringify(ids.current)}

@@ -1,6 +1,6 @@
 <script lang="ts">
   import type {ForwardCheckpointsViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {createCheckpointIds} from './functions.svelte.ts';
+  import {getCheckpointIds} from './functions.svelte.ts';
   import CheckpointView from './CheckpointView.svelte';
   import Wrap from './common/Wrap.svelte';
 
@@ -10,7 +10,7 @@
     debugIds,
     checkpoint,
   }: ForwardCheckpointsViewProps = $props();
-  const checkpointIds = createCheckpointIds(() => checkpoints);
+  const checkpointIds = getCheckpointIds(() => checkpoints);
   const ids = $derived(checkpointIds.current[2]);
 </script>
 

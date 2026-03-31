@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {createHasValues} from 'tinybase/ui-svelte';
+  import {hasValues} from 'tinybase/ui-svelte';
   import type {Store} from 'tinybase';
 
   let {store}: {store: Store} = $props();
-  const v = createHasValues(() => store);
+  const v = hasValues(() => store);
 </script>
 
 {JSON.stringify(v.current)}

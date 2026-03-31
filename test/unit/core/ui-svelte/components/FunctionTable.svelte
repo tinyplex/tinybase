@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {createTable} from 'tinybase/ui-svelte';
+  import {getTable} from 'tinybase/ui-svelte';
   import type {Id, Store} from 'tinybase';
 
   let {store, tableId}: {store: Store; tableId: Id} = $props();
-  const v = createTable(
+  const v = getTable(
     () => tableId,
     () => store,
   );

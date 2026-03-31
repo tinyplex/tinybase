@@ -1,10 +1,10 @@
 <script lang="ts">
-  import {createStoreIds, getStore} from 'tinybase/ui-svelte';
+  import {getStoreIds, getStore} from 'tinybase/ui-svelte';
   import type {Store} from 'tinybase';
 
   let {store1, store2}: {store1: Store; store2: Store} = $props();
 
-  const storeIds = createStoreIds();
+  const storeIds = getStoreIds();
   const storeA = getStore('a');
   const storeB = getStore('b');
 </script>

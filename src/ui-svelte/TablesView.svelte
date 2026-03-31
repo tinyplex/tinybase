@@ -1,11 +1,11 @@
 <script lang="ts">
   import type {TablesViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {createTableIds} from './functions.svelte.ts';
+  import {getTableIds} from './functions.svelte.ts';
   import TableView from './TableView.svelte';
   import Wrap from './common/Wrap.svelte';
 
   let {store, separator, debugIds, table}: TablesViewProps = $props();
-  const tableIds = createTableIds(() => store);
+  const tableIds = getTableIds(() => store);
 </script>
 
 <Wrap ids={tableIds.current} {separator} {debugIds} custom={table}>

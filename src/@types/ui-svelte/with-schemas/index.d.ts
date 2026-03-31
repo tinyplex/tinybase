@@ -537,64 +537,64 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     WithSchemas<Schemas>['CurrentCheckpointViewProps']
   >;
 
-  /// ui-svelte.createHasTables
-  createHasTables: (
+  /// ui-svelte.hasTables
+  hasTables: (
     storeOrStoreId?: MaybeGetter<StoreOrStoreId<Schemas> | undefined>,
   ) => {
     readonly current: boolean;
   };
 
-  /// ui-svelte.createTables
-  createTables: (
+  /// ui-svelte.getTables
+  getTables: (
     storeOrStoreId?: MaybeGetter<StoreOrStoreId<Schemas> | undefined>,
   ) => {
     readonly current: Tables<Schemas[0]>;
   };
 
-  /// ui-svelte.createTableIds
-  createTableIds: (storeOrStoreId?: StoreOrStoreId<Schemas>) => {
+  /// ui-svelte.getTableIds
+  getTableIds: (storeOrStoreId?: StoreOrStoreId<Schemas>) => {
     readonly current: TableIdFromSchema<Schemas[0]>[];
   };
 
-  /// ui-svelte.createHasTable
-  createHasTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
+  /// ui-svelte.hasTable
+  hasTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: MaybeGetter<TableId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: boolean};
 
-  /// ui-svelte.createTable
-  createTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
+  /// ui-svelte.getTable
+  getTable: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: MaybeGetter<TableId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: Table<Schemas[0], TableId>};
 
-  /// ui-svelte.createTableCellIds
-  createTableCellIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
+  /// ui-svelte.getTableCellIds
+  getTableCellIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: MaybeGetter<TableId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: CellIdFromSchema<Schemas[0], TableId>[]};
 
-  /// ui-svelte.createHasTableCell
-  createHasTableCell: <TableId extends TableIdFromSchema<Schemas[0]>>(
+  /// ui-svelte.hasTableCell
+  hasTableCell: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: MaybeGetter<TableId>,
     cellId: MaybeGetter<CellIdFromSchema<Schemas[0], TableId>>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: boolean};
 
-  /// ui-svelte.createRowCount
-  createRowCount: (
+  /// ui-svelte.getRowCount
+  getRowCount: (
     tableId: MaybeGetter<TableIdFromSchema<Schemas[0]>>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: number};
 
-  /// ui-svelte.createRowIds
-  createRowIds: (
+  /// ui-svelte.getRowIds
+  getRowIds: (
     tableId: MaybeGetter<TableIdFromSchema<Schemas[0]>>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: Ids};
 
-  /// ui-svelte.createSortedRowIds
-  createSortedRowIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
+  /// ui-svelte.getSortedRowIds
+  getSortedRowIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: MaybeGetter<TableId>,
     cellId?: MaybeGetter<CellIdFromSchema<Schemas[0], TableId> | undefined>,
     descending?: MaybeGetter<boolean>,
@@ -603,29 +603,29 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: Ids};
 
-  /// ui-svelte.createHasRow
-  createHasRow: (
+  /// ui-svelte.hasRow
+  hasRow: (
     tableId: MaybeGetter<TableIdFromSchema<Schemas[0]>>,
     rowId: MaybeGetter<Id>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: boolean};
 
-  /// ui-svelte.createRow
-  createRow: <TableId extends TableIdFromSchema<Schemas[0]>>(
+  /// ui-svelte.getRow
+  getRow: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: MaybeGetter<TableId>,
     rowId: MaybeGetter<Id>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: Row<Schemas[0], TableId>};
 
-  /// ui-svelte.createCellIds
-  createCellIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
+  /// ui-svelte.getCellIds
+  getCellIds: <TableId extends TableIdFromSchema<Schemas[0]>>(
     tableId: MaybeGetter<TableId>,
     rowId: MaybeGetter<Id>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: CellIdFromSchema<Schemas[0], TableId>[]};
 
-  /// ui-svelte.createHasCell
-  createHasCell: <
+  /// ui-svelte.hasCell
+  hasCell: <
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
@@ -635,8 +635,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: boolean};
 
-  /// ui-svelte.createCell
-  createCell: <
+  /// ui-svelte.getCell
+  getCell: <
     TableId extends TableIdFromSchema<Schemas[0]>,
     CellId extends CellIdFromSchema<Schemas[0], TableId>,
   >(
@@ -649,33 +649,33 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     set current(v: Cell<Schemas[0], TableId, CellId>);
   };
 
-  /// ui-svelte.createHasValues
-  createHasValues: (
+  /// ui-svelte.hasValues
+  hasValues: (
     storeOrStoreId?: MaybeGetter<StoreOrStoreId<Schemas> | undefined>,
   ) => {
     readonly current: boolean;
   };
 
-  /// ui-svelte.createValues
-  createValues: (
+  /// ui-svelte.getValues
+  getValues: (
     storeOrStoreId?: MaybeGetter<StoreOrStoreId<Schemas> | undefined>,
   ) => {
     readonly current: Values<Schemas[1]>;
   };
 
-  /// ui-svelte.createValueIds
-  createValueIds: (storeOrStoreId?: StoreOrStoreId<Schemas>) => {
+  /// ui-svelte.getValueIds
+  getValueIds: (storeOrStoreId?: StoreOrStoreId<Schemas>) => {
     readonly current: ValueIdFromSchema<Schemas[1]>[];
   };
 
-  /// ui-svelte.createHasValue
-  createHasValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
+  /// ui-svelte.hasValue
+  hasValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: MaybeGetter<ValueId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {readonly current: boolean};
 
-  /// ui-svelte.createValue
-  createValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
+  /// ui-svelte.getValue
+  getValue: <ValueId extends ValueIdFromSchema<Schemas[1]>>(
     valueId: MaybeGetter<ValueId>,
     storeOrStoreId?: StoreOrStoreId<Schemas>,
   ) => {
@@ -691,8 +691,8 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     storeOrStoreId?: MaybeGetter<StoreOrStoreId<Schemas> | undefined>,
   ) => () => Store<Schemas> | undefined;
 
-  /// ui-svelte.createStoreIds
-  createStoreIds: () => {readonly current: Ids};
+  /// ui-svelte.getStoreIds
+  getStoreIds: () => {readonly current: Ids};
 
   /// ui-svelte.getMetrics
   getMetrics: (id?: Id) => Metrics<Schemas> | undefined;
@@ -702,18 +702,18 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     metricsOrMetricsId?: MaybeGetter<MetricsOrMetricsId<Schemas> | undefined>,
   ) => () => Metrics<Schemas> | undefined;
 
-  /// ui-svelte.createMetricsIds
-  createMetricsIds: () => {readonly current: Ids};
+  /// ui-svelte.getMetricsIds
+  getMetricsIds: () => {readonly current: Ids};
 
-  /// ui-svelte.createMetricIds
-  createMetricIds: (
+  /// ui-svelte.getMetricIds
+  getMetricIds: (
     metricsOrMetricsId?: MaybeGetter<MetricsOrMetricsId<Schemas> | undefined>,
   ) => {
     readonly current: Ids;
   };
 
-  /// ui-svelte.createMetric
-  createMetric: (
+  /// ui-svelte.getMetric
+  getMetric: (
     metricId: MaybeGetter<Id>,
     metricsOrMetricsId?: MetricsOrMetricsId<Schemas>,
   ) => {readonly current: number | undefined};
@@ -735,24 +735,24 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     readonly tableId: Id | undefined;
   };
 
-  /// ui-svelte.createIndexesIds
-  createIndexesIds: () => {readonly current: Ids};
+  /// ui-svelte.getIndexesIds
+  getIndexesIds: () => {readonly current: Ids};
 
-  /// ui-svelte.createIndexIds
-  createIndexIds: (
+  /// ui-svelte.getIndexIds
+  getIndexIds: (
     indexesOrIndexesId?: MaybeGetter<IndexesOrIndexesId<Schemas> | undefined>,
   ) => {
     readonly current: Ids;
   };
 
-  /// ui-svelte.createSliceIds
-  createSliceIds: (
+  /// ui-svelte.getSliceIds
+  getSliceIds: (
     indexId: MaybeGetter<Id>,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
   ) => {readonly current: Ids};
 
-  /// ui-svelte.createSliceRowIds
-  createSliceRowIds: (
+  /// ui-svelte.getSliceRowIds
+  getSliceRowIds: (
     indexId: MaybeGetter<Id>,
     sliceId: MaybeGetter<Id>,
     indexesOrIndexesId?: IndexesOrIndexesId<Schemas>,
@@ -766,42 +766,42 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId<Schemas> | undefined>,
   ) => () => Queries<Schemas> | undefined;
 
-  /// ui-svelte.createQueriesIds
-  createQueriesIds: () => {readonly current: Ids};
+  /// ui-svelte.getQueriesIds
+  getQueriesIds: () => {readonly current: Ids};
 
-  /// ui-svelte.createQueryIds
-  createQueryIds: (
+  /// ui-svelte.getQueryIds
+  getQueryIds: (
     queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId<Schemas> | undefined>,
   ) => {
     readonly current: Ids;
   };
 
-  /// ui-svelte.createResultTable
-  createResultTable: (
+  /// ui-svelte.getResultTable
+  getResultTable: (
     queryId: MaybeGetter<Id>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: ResultTable};
 
-  /// ui-svelte.createResultTableCellIds
-  createResultTableCellIds: (
+  /// ui-svelte.getResultTableCellIds
+  getResultTableCellIds: (
     queryId: MaybeGetter<Id>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: Ids};
 
-  /// ui-svelte.createResultRowCount
-  createResultRowCount: (
+  /// ui-svelte.getResultRowCount
+  getResultRowCount: (
     queryId: MaybeGetter<Id>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: number};
 
-  /// ui-svelte.createResultRowIds
-  createResultRowIds: (
+  /// ui-svelte.getResultRowIds
+  getResultRowIds: (
     queryId: MaybeGetter<Id>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: Ids};
 
-  /// ui-svelte.createResultSortedRowIds
-  createResultSortedRowIds: (
+  /// ui-svelte.getResultSortedRowIds
+  getResultSortedRowIds: (
     queryId: MaybeGetter<Id>,
     cellId?: MaybeGetter<Id | undefined>,
     descending?: MaybeGetter<boolean>,
@@ -810,22 +810,22 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: Ids};
 
-  /// ui-svelte.createResultRow
-  createResultRow: (
+  /// ui-svelte.getResultRow
+  getResultRow: (
     queryId: MaybeGetter<Id>,
     rowId: MaybeGetter<Id>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: ResultRow};
 
-  /// ui-svelte.createResultCellIds
-  createResultCellIds: (
+  /// ui-svelte.getResultCellIds
+  getResultCellIds: (
     queryId: MaybeGetter<Id>,
     rowId: MaybeGetter<Id>,
     queriesOrQueriesId?: QueriesOrQueriesId<Schemas>,
   ) => {readonly current: Ids};
 
-  /// ui-svelte.createResultCell
-  createResultCell: (
+  /// ui-svelte.getResultCell
+  getResultCell: (
     queryId: MaybeGetter<Id>,
     rowId: MaybeGetter<Id>,
     cellId: MaybeGetter<Id>,
@@ -854,32 +854,32 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     readonly remoteTableId: Id | undefined;
   };
 
-  /// ui-svelte.createRelationshipsIds
-  createRelationshipsIds: () => {readonly current: Ids};
+  /// ui-svelte.getRelationshipsIds
+  getRelationshipsIds: () => {readonly current: Ids};
 
-  /// ui-svelte.createRelationshipIds
-  createRelationshipIds: (
+  /// ui-svelte.getRelationshipIds
+  getRelationshipIds: (
     relationshipsOrRelationshipsId?: MaybeGetter<
       RelationshipsOrRelationshipsId<Schemas> | undefined
     >,
   ) => {readonly current: Ids};
 
-  /// ui-svelte.createRemoteRowId
-  createRemoteRowId: (
+  /// ui-svelte.getRemoteRowId
+  getRemoteRowId: (
     relationshipId: MaybeGetter<Id>,
     localRowId: MaybeGetter<Id>,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => {readonly current: Id | undefined};
 
-  /// ui-svelte.createLocalRowIds
-  createLocalRowIds: (
+  /// ui-svelte.getLocalRowIds
+  getLocalRowIds: (
     relationshipId: MaybeGetter<Id>,
     remoteRowId: MaybeGetter<Id>,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
   ) => {readonly current: Ids};
 
-  /// ui-svelte.createLinkedRowIds
-  createLinkedRowIds: (
+  /// ui-svelte.getLinkedRowIds
+  getLinkedRowIds: (
     relationshipId: MaybeGetter<Id>,
     firstRowId: MaybeGetter<Id>,
     relationshipsOrRelationshipsId?: RelationshipsOrRelationshipsId<Schemas>,
@@ -895,16 +895,16 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     >,
   ) => () => Checkpoints<Schemas> | undefined;
 
-  /// ui-svelte.createCheckpointsIds
-  createCheckpointsIds: () => {readonly current: Ids};
+  /// ui-svelte.getCheckpointsIds
+  getCheckpointsIds: () => {readonly current: Ids};
 
-  /// ui-svelte.createCheckpointIds
-  createCheckpointIds: (
+  /// ui-svelte.getCheckpointIds
+  getCheckpointIds: (
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => {readonly current: CheckpointIds};
 
-  /// ui-svelte.createCheckpoint
-  createCheckpoint: (
+  /// ui-svelte.getCheckpoint
+  getCheckpoint: (
     checkpointId: MaybeGetter<Id>,
     checkpointsOrCheckpointsId?: CheckpointsOrCheckpointsId<Schemas>,
   ) => {readonly current: string | undefined};
@@ -933,11 +933,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     >,
   ) => () => AnyPersister<Schemas> | undefined;
 
-  /// ui-svelte.createPersisterIds
-  createPersisterIds: () => {readonly current: Ids};
+  /// ui-svelte.getPersisterIds
+  getPersisterIds: () => {readonly current: Ids};
 
-  /// ui-svelte.createPersisterStatus
-  createPersisterStatus: (
+  /// ui-svelte.getPersisterStatus
+  getPersisterStatus: (
     persisterOrPersisterId?: MaybeGetter<
       PersisterOrPersisterId<Schemas> | undefined
     >,
@@ -955,11 +955,11 @@ export type WithSchemas<Schemas extends OptionalSchemas> = {
     >,
   ) => () => Synchronizer<Schemas> | undefined;
 
-  /// ui-svelte.createSynchronizerIds
-  createSynchronizerIds: () => {readonly current: Ids};
+  /// ui-svelte.getSynchronizerIds
+  getSynchronizerIds: () => {readonly current: Ids};
 
-  /// ui-svelte.createSynchronizerStatus
-  createSynchronizerStatus: (
+  /// ui-svelte.getSynchronizerStatus
+  getSynchronizerStatus: (
     synchronizerOrSynchronizerId?: MaybeGetter<
       SynchronizerOrSynchronizerId<Schemas> | undefined
     >,

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type {LocalRowsViewProps} from '../@types/ui-svelte/index.d.ts';
   import {
-    createLocalRowIds,
+    getLocalRowIds,
     getRelationshipsStoreTableIds,
   } from './functions.svelte.ts';
   import RowView from './RowView.svelte';
@@ -20,7 +20,7 @@
     () => relationships,
     () => relationshipId,
   );
-  const rowIds = createLocalRowIds(
+  const rowIds = getLocalRowIds(
     () => relationshipId,
     () => remoteRowId,
     () => relationships,

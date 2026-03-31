@@ -1,7 +1,7 @@
 <script lang="ts">
   import type {LinkedRowsViewProps} from '../@types/ui-svelte/index.d.ts';
   import {
-    createLinkedRowIds,
+    getLinkedRowIds,
     getRelationshipsStoreTableIds,
   } from './functions.svelte.ts';
   import RowView from './RowView.svelte';
@@ -20,7 +20,7 @@
     () => relationships,
     () => relationshipId,
   );
-  const rowIds = createLinkedRowIds(
+  const rowIds = getLinkedRowIds(
     () => relationshipId,
     () => firstRowId,
     () => relationships,

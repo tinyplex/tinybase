@@ -1,7 +1,7 @@
 <script lang="ts">
-  import {createQueriesIds} from 'tinybase/ui-svelte';
+  import {getQueriesIds} from 'tinybase/ui-svelte';
 
-  const ids = createQueriesIds();
+  const ids = getQueriesIds();
 </script>
 
 {JSON.stringify(ids.current)}

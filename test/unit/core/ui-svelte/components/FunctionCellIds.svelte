@@ -1,10 +1,10 @@
 <script lang="ts">
-  import {createCellIds} from 'tinybase/ui-svelte';
+  import {getCellIds} from 'tinybase/ui-svelte';
   import type {Id, Store} from 'tinybase';
 
   let {store, tableId, rowId}: {store: Store; tableId: Id; rowId: Id} =
     $props();
-  const v = createCellIds(
+  const v = getCellIds(
     () => tableId,
     () => rowId,
     () => store,

@@ -3,35 +3,35 @@
     ResultTableView,
     ResultRowView,
     ResultCellView,
-    createResultTable,
-    createResultRowIds,
-    createResultRow,
-    createResultCellIds,
-    createResultCell,
+    getResultTable,
+    getResultRowIds,
+    getResultRow,
+    getResultCellIds,
+    getResultCell,
   } from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
 
   let {queriesId}: {queriesId?: Id} = $props();
 
-  const resultTable = createResultTable(
+  const resultTable = getResultTable(
     () => 'q1',
     () => queriesId,
   );
-  const resultRowIds = createResultRowIds(
+  const resultRowIds = getResultRowIds(
     () => 'q1',
     () => queriesId,
   );
-  const resultRow = createResultRow(
-    () => 'q1',
-    () => 'r1',
-    () => queriesId,
-  );
-  const resultCellIds = createResultCellIds(
+  const resultRow = getResultRow(
     () => 'q1',
     () => 'r1',
     () => queriesId,
   );
-  const resultCell = createResultCell(
+  const resultCellIds = getResultCellIds(
+    () => 'q1',
+    () => 'r1',
+    () => queriesId,
+  );
+  const resultCell = getResultCell(
     () => 'q1',
     () => 'r1',
     () => 'c1',

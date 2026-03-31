@@ -1,9 +1,9 @@
 <script lang="ts">
   import type {CellViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {createCell} from './functions.svelte.ts';
+  import {getCell} from './functions.svelte.ts';
 
   let {tableId, rowId, cellId, store, debugIds}: CellViewProps = $props();
-  const cell = createCell(
+  const cell = getCell(
     () => tableId,
     () => rowId,
     () => cellId,

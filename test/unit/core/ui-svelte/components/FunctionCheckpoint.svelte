@@ -1,5 +1,5 @@
 <script lang="ts">
-  import {createCheckpoint} from 'tinybase/ui-svelte';
+  import {getCheckpoint} from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
   import type {Checkpoints} from 'tinybase/checkpoints';
 
@@ -10,7 +10,7 @@
     checkpoints: Checkpoints;
     checkpointId: Id;
   } = $props();
-  const v = createCheckpoint(
+  const v = getCheckpoint(
     () => checkpointId,
     () => checkpoints,
   );

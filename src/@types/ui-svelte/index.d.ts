@@ -504,66 +504,66 @@ export const ValueView: Component<ValueViewProps>;
 /// ui-svelte.ValuesView
 export const ValuesView: Component<ValuesViewProps>;
 
-/// ui-svelte.createHasTables
-export function createHasTables(
+/// ui-svelte.hasTables
+export function hasTables(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {
   readonly current: boolean;
 };
 
-/// ui-svelte.createTables
-export function createTables(
+/// ui-svelte.getTables
+export function getTables(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {
   readonly current: Tables;
 };
 
-/// ui-svelte.createTableIds
-export function createTableIds(
+/// ui-svelte.getTableIds
+export function getTableIds(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {
   readonly current: Ids;
 };
 
-/// ui-svelte.createHasTable
-export function createHasTable(
+/// ui-svelte.hasTable
+export function hasTable(
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {readonly current: boolean};
 
-/// ui-svelte.createTable
-export function createTable(
+/// ui-svelte.getTable
+export function getTable(
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {readonly current: Table};
 
-/// ui-svelte.createTableCellIds
-export function createTableCellIds(
+/// ui-svelte.getTableCellIds
+export function getTableCellIds(
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {readonly current: Ids};
 
-/// ui-svelte.createHasTableCell
-export function createHasTableCell(
+/// ui-svelte.hasTableCell
+export function hasTableCell(
   tableId: MaybeGetter<Id>,
   cellId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {readonly current: boolean};
 
-/// ui-svelte.createRowCount
-export function createRowCount(
+/// ui-svelte.getRowCount
+export function getRowCount(
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {readonly current: number};
 
-/// ui-svelte.createRowIds
-export function createRowIds(
+/// ui-svelte.getRowIds
+export function getRowIds(
   tableId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {readonly current: Ids};
 
-/// ui-svelte.createSortedRowIds
-export function createSortedRowIds(
+/// ui-svelte.getSortedRowIds
+export function getSortedRowIds(
   tableId: MaybeGetter<Id>,
   cellId?: MaybeGetter<Id | undefined>,
   descending?: MaybeGetter<boolean>,
@@ -572,72 +572,72 @@ export function createSortedRowIds(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {readonly current: Ids};
 
-/// ui-svelte.createHasRow
-export function createHasRow(
+/// ui-svelte.hasRow
+export function hasRow(
   tableId: MaybeGetter<Id>,
   rowId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {readonly current: boolean};
 
-/// ui-svelte.createRow
-export function createRow(
+/// ui-svelte.getRow
+export function getRow(
   tableId: MaybeGetter<Id>,
   rowId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {readonly current: Row};
 
-/// ui-svelte.createCellIds
-export function createCellIds(
+/// ui-svelte.getCellIds
+export function getCellIds(
   tableId: MaybeGetter<Id>,
   rowId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {readonly current: Ids};
 
-/// ui-svelte.createHasCell
-export function createHasCell(
+/// ui-svelte.hasCell
+export function hasCell(
   tableId: MaybeGetter<Id>,
   rowId: MaybeGetter<Id>,
   cellId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {readonly current: boolean};
 
-/// ui-svelte.createCell
-export function createCell(
+/// ui-svelte.getCell
+export function getCell(
   tableId: MaybeGetter<Id>,
   rowId: MaybeGetter<Id>,
   cellId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {get current(): CellOrUndefined; set current(v: Cell)};
 
-/// ui-svelte.createHasValues
-export function createHasValues(
+/// ui-svelte.hasValues
+export function hasValues(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {
   readonly current: boolean;
 };
 
-/// ui-svelte.createValues
-export function createValues(
+/// ui-svelte.getValues
+export function getValues(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {
   readonly current: Values;
 };
 
-/// ui-svelte.createValueIds
-export function createValueIds(
+/// ui-svelte.getValueIds
+export function getValueIds(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {
   readonly current: Ids;
 };
 
-/// ui-svelte.createHasValue
-export function createHasValue(
+/// ui-svelte.hasValue
+export function hasValue(
   valueId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {readonly current: boolean};
 
-/// ui-svelte.createValue
-export function createValue(
+/// ui-svelte.getValue
+export function getValue(
   valueId: MaybeGetter<Id>,
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): {get current(): ValueOrUndefined; set current(v: Value)};
@@ -650,8 +650,8 @@ export function resolveStore(
   storeOrStoreId?: MaybeGetter<StoreOrStoreId | undefined>,
 ): () => Store | undefined;
 
-/// ui-svelte.createStoreIds
-export function createStoreIds(): {readonly current: Ids};
+/// ui-svelte.getStoreIds
+export function getStoreIds(): {readonly current: Ids};
 
 /// ui-svelte.getMetrics
 export function getMetrics(id?: Id): Metrics | undefined;
@@ -661,18 +661,18 @@ export function resolveMetrics(
   metricsOrMetricsId?: MaybeGetter<MetricsOrMetricsId | undefined>,
 ): () => Metrics | undefined;
 
-/// ui-svelte.createMetricsIds
-export function createMetricsIds(): {readonly current: Ids};
+/// ui-svelte.getMetricsIds
+export function getMetricsIds(): {readonly current: Ids};
 
-/// ui-svelte.createMetricIds
-export function createMetricIds(
+/// ui-svelte.getMetricIds
+export function getMetricIds(
   metricsOrMetricsId?: MaybeGetter<MetricsOrMetricsId | undefined>,
 ): {
   readonly current: Ids;
 };
 
-/// ui-svelte.createMetric
-export function createMetric(
+/// ui-svelte.getMetric
+export function getMetric(
   metricId: MaybeGetter<Id>,
   metricsOrMetricsId?: MaybeGetter<MetricsOrMetricsId | undefined>,
 ): {readonly current: number | undefined};
@@ -691,24 +691,24 @@ export function getIndexStoreTableId(
   indexId: MaybeGetter<Id>,
 ): {readonly store: Store | undefined; readonly tableId: Id | undefined};
 
-/// ui-svelte.createIndexesIds
-export function createIndexesIds(): {readonly current: Ids};
+/// ui-svelte.getIndexesIds
+export function getIndexesIds(): {readonly current: Ids};
 
-/// ui-svelte.createIndexIds
-export function createIndexIds(
+/// ui-svelte.getIndexIds
+export function getIndexIds(
   indexesOrIndexesId?: MaybeGetter<IndexesOrIndexesId | undefined>,
 ): {
   readonly current: Ids;
 };
 
-/// ui-svelte.createSliceIds
-export function createSliceIds(
+/// ui-svelte.getSliceIds
+export function getSliceIds(
   indexId: MaybeGetter<Id>,
   indexesOrIndexesId?: MaybeGetter<IndexesOrIndexesId | undefined>,
 ): {readonly current: Ids};
 
-/// ui-svelte.createSliceRowIds
-export function createSliceRowIds(
+/// ui-svelte.getSliceRowIds
+export function getSliceRowIds(
   indexId: MaybeGetter<Id>,
   sliceId: MaybeGetter<Id>,
   indexesOrIndexesId?: MaybeGetter<IndexesOrIndexesId | undefined>,
@@ -722,42 +722,42 @@ export function resolveQueries(
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): () => Queries | undefined;
 
-/// ui-svelte.createQueriesIds
-export function createQueriesIds(): {readonly current: Ids};
+/// ui-svelte.getQueriesIds
+export function getQueriesIds(): {readonly current: Ids};
 
-/// ui-svelte.createQueryIds
-export function createQueryIds(
+/// ui-svelte.getQueryIds
+export function getQueryIds(
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): {
   readonly current: Ids;
 };
 
-/// ui-svelte.createResultTable
-export function createResultTable(
+/// ui-svelte.getResultTable
+export function getResultTable(
   queryId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): {readonly current: Table};
 
-/// ui-svelte.createResultTableCellIds
-export function createResultTableCellIds(
+/// ui-svelte.getResultTableCellIds
+export function getResultTableCellIds(
   queryId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): {readonly current: Ids};
 
-/// ui-svelte.createResultRowCount
-export function createResultRowCount(
+/// ui-svelte.getResultRowCount
+export function getResultRowCount(
   queryId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): {readonly current: number};
 
-/// ui-svelte.createResultRowIds
-export function createResultRowIds(
+/// ui-svelte.getResultRowIds
+export function getResultRowIds(
   queryId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): {readonly current: Ids};
 
-/// ui-svelte.createResultSortedRowIds
-export function createResultSortedRowIds(
+/// ui-svelte.getResultSortedRowIds
+export function getResultSortedRowIds(
   queryId: MaybeGetter<Id>,
   cellId?: MaybeGetter<Id | undefined>,
   descending?: MaybeGetter<boolean>,
@@ -766,22 +766,22 @@ export function createResultSortedRowIds(
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): {readonly current: Ids};
 
-/// ui-svelte.createResultRow
-export function createResultRow(
+/// ui-svelte.getResultRow
+export function getResultRow(
   queryId: MaybeGetter<Id>,
   rowId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): {readonly current: Row};
 
-/// ui-svelte.createResultCellIds
-export function createResultCellIds(
+/// ui-svelte.getResultCellIds
+export function getResultCellIds(
   queryId: MaybeGetter<Id>,
   rowId: MaybeGetter<Id>,
   queriesOrQueriesId?: MaybeGetter<QueriesOrQueriesId | undefined>,
 ): {readonly current: Ids};
 
-/// ui-svelte.createResultCell
-export function createResultCell(
+/// ui-svelte.getResultCell
+export function getResultCell(
   queryId: MaybeGetter<Id>,
   rowId: MaybeGetter<Id>,
   cellId: MaybeGetter<Id>,
@@ -808,18 +808,18 @@ export function getRelationshipsStoreTableIds(
   readonly remoteTableId: Id | undefined;
 };
 
-/// ui-svelte.createRelationshipsIds
-export function createRelationshipsIds(): {readonly current: Ids};
+/// ui-svelte.getRelationshipsIds
+export function getRelationshipsIds(): {readonly current: Ids};
 
-/// ui-svelte.createRelationshipIds
-export function createRelationshipIds(
+/// ui-svelte.getRelationshipIds
+export function getRelationshipIds(
   relationshipsOrRelationshipsId?: MaybeGetter<
     RelationshipsOrRelationshipsId | undefined
   >,
 ): {readonly current: Ids};
 
-/// ui-svelte.createRemoteRowId
-export function createRemoteRowId(
+/// ui-svelte.getRemoteRowId
+export function getRemoteRowId(
   relationshipId: MaybeGetter<Id>,
   localRowId: MaybeGetter<Id>,
   relationshipsOrRelationshipsId?: MaybeGetter<
@@ -827,8 +827,8 @@ export function createRemoteRowId(
   >,
 ): {readonly current: Id | undefined};
 
-/// ui-svelte.createLocalRowIds
-export function createLocalRowIds(
+/// ui-svelte.getLocalRowIds
+export function getLocalRowIds(
   relationshipId: MaybeGetter<Id>,
   remoteRowId: MaybeGetter<Id>,
   relationshipsOrRelationshipsId?: MaybeGetter<
@@ -836,8 +836,8 @@ export function createLocalRowIds(
   >,
 ): {readonly current: Ids};
 
-/// ui-svelte.createLinkedRowIds
-export function createLinkedRowIds(
+/// ui-svelte.getLinkedRowIds
+export function getLinkedRowIds(
   relationshipId: MaybeGetter<Id>,
   firstRowId: MaybeGetter<Id>,
   relationshipsOrRelationshipsId?: MaybeGetter<
@@ -855,18 +855,18 @@ export function resolveCheckpoints(
   >,
 ): () => Checkpoints | undefined;
 
-/// ui-svelte.createCheckpointsIds
-export function createCheckpointsIds(): {readonly current: Ids};
+/// ui-svelte.getCheckpointsIds
+export function getCheckpointsIds(): {readonly current: Ids};
 
-/// ui-svelte.createCheckpointIds
-export function createCheckpointIds(
+/// ui-svelte.getCheckpointIds
+export function getCheckpointIds(
   checkpointsOrCheckpointsId?: MaybeGetter<
     CheckpointsOrCheckpointsId | undefined
   >,
 ): {readonly current: CheckpointIds};
 
-/// ui-svelte.createCheckpoint
-export function createCheckpoint(
+/// ui-svelte.getCheckpoint
+export function getCheckpoint(
   checkpointId: MaybeGetter<Id>,
   checkpointsOrCheckpointsId?: MaybeGetter<
     CheckpointsOrCheckpointsId | undefined
@@ -895,11 +895,11 @@ export function resolvePersister(
   persisterOrPersisterId?: MaybeGetter<PersisterOrPersisterId | undefined>,
 ): () => AnyPersister | undefined;
 
-/// ui-svelte.createPersisterIds
-export function createPersisterIds(): {readonly current: Ids};
+/// ui-svelte.getPersisterIds
+export function getPersisterIds(): {readonly current: Ids};
 
-/// ui-svelte.createPersisterStatus
-export function createPersisterStatus(
+/// ui-svelte.getPersisterStatus
+export function getPersisterStatus(
   persisterOrPersisterId?: MaybeGetter<PersisterOrPersisterId | undefined>,
 ): {readonly current: Status};
 
@@ -913,11 +913,11 @@ export function resolveSynchronizer(
   >,
 ): () => Synchronizer | undefined;
 
-/// ui-svelte.createSynchronizerIds
-export function createSynchronizerIds(): {readonly current: Ids};
+/// ui-svelte.getSynchronizerIds
+export function getSynchronizerIds(): {readonly current: Ids};
 
-/// ui-svelte.createSynchronizerStatus
-export function createSynchronizerStatus(
+/// ui-svelte.getSynchronizerStatus
+export function getSynchronizerStatus(
   synchronizerOrSynchronizerId?: MaybeGetter<
     SynchronizerOrSynchronizerId | undefined
   >,

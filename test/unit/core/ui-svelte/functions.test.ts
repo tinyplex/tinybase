@@ -144,7 +144,7 @@ test('windowless ui-svelte functions skip effects', () => {
 });
 
 describe('Read Functions', () => {
-  test('createHasTables', async () => {
+  test('hasTables', async () => {
     const {container, unmount} = render(FunctionHasTables, {props: {store}});
     expect(container.textContent).toEqual('true');
 
@@ -154,7 +154,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createTables', async () => {
+  test('getTables', async () => {
     const {container, unmount} = render(FunctionTables, {props: {store}});
     expect(container.textContent).toEqual(JSON.stringify({t1: {r1: {c1: 1}}}));
 
@@ -169,7 +169,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createTableIds', async () => {
+  test('getTableIds', async () => {
     const {container, unmount} = render(FunctionTableIds, {props: {store}});
     expect(container.textContent).toEqual(JSON.stringify(['t1']));
 
@@ -186,7 +186,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createHasTable', async () => {
+  test('hasTable', async () => {
     const {container, rerender, unmount} = render(FunctionHasTable, {
       props: {store, tableId: 't0'},
     });
@@ -211,7 +211,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createTable', async () => {
+  test('getTable', async () => {
     const {container, rerender, unmount} = render(FunctionTable, {
       props: {store, tableId: 't0'},
     });
@@ -236,7 +236,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createTableCellIds', async () => {
+  test('getTableCellIds', async () => {
     const {container, rerender, unmount} = render(FunctionTableCellIds, {
       props: {store, tableId: 't0'},
     });
@@ -261,7 +261,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createHasTableCell', async () => {
+  test('hasTableCell', async () => {
     const {container, rerender, unmount} = render(FunctionHasTableCell, {
       props: {store, tableId: 't0', cellId: 'c0'},
     });
@@ -286,7 +286,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createRowCount', async () => {
+  test('getRowCount', async () => {
     const {container, rerender, unmount} = render(FunctionRowCount, {
       props: {store, tableId: 't0'},
     });
@@ -311,7 +311,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createRowIds', async () => {
+  test('getRowIds', async () => {
     const {container, rerender, unmount} = render(FunctionRowIds, {
       props: {store, tableId: 't0'},
     });
@@ -336,7 +336,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createSortedRowIds', async () => {
+  test('getSortedRowIds', async () => {
     const {container, rerender, unmount} = render(FunctionSortedRowIds, {
       props: {
         store,
@@ -377,7 +377,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createSortedRowIds, no-default descending and offset', async () => {
+  test('getSortedRowIds, no-default descending and offset', async () => {
     const {container, unmount} = render(FunctionSortedRowIdsNoDefaults, {
       props: {store, tableId: 't1', cellId: 'c1'},
     });
@@ -385,7 +385,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createHasRow', async () => {
+  test('hasRow', async () => {
     const {container, rerender, unmount} = render(FunctionHasRow, {
       props: {store, tableId: 't0', rowId: 'r0'},
     });
@@ -410,7 +410,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createRow', async () => {
+  test('getRow', async () => {
     const {container, rerender, unmount} = render(FunctionRow, {
       props: {store, tableId: 't0', rowId: 'r0'},
     });
@@ -435,7 +435,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createCellIds', async () => {
+  test('getCellIds', async () => {
     const {container, rerender, unmount} = render(FunctionCellIds, {
       props: {store, tableId: 't0', rowId: 'r0'},
     });
@@ -460,7 +460,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createHasCell', async () => {
+  test('hasCell', async () => {
     const {container, rerender, unmount} = render(FunctionHasCell, {
       props: {store, tableId: 't0', rowId: 'r0', cellId: 'c0'},
     });
@@ -485,7 +485,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createCell', async () => {
+  test('getCell', async () => {
     const {container, rerender, unmount} = render(FunctionCell, {
       props: {store, tableId: 't0', rowId: 'r0', cellId: 'c0'},
     });
@@ -510,7 +510,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createCell can set values', async () => {
+  test('getCell can set values', async () => {
     store.setCell('t1', 'r1', 'c1', 0);
     const {container, unmount} = render(FunctionWritableCell, {
       props: {store, tableId: 't1', rowId: 'r1', cellId: 'c1', newValue: 1},
@@ -526,7 +526,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createHasValues', async () => {
+  test('hasValues', async () => {
     const {container, unmount} = render(FunctionHasValues, {props: {store}});
     expect(container.textContent).toEqual('true');
 
@@ -536,7 +536,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createValues', async () => {
+  test('getValues', async () => {
     const {container, unmount} = render(FunctionValues, {props: {store}});
     expect(container.textContent).toEqual(JSON.stringify({v1: 1}));
 
@@ -549,7 +549,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createValueIds', async () => {
+  test('getValueIds', async () => {
     const {container, unmount} = render(FunctionValueIds, {props: {store}});
     expect(container.textContent).toEqual(JSON.stringify(['v1']));
 
@@ -562,7 +562,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createHasValue', async () => {
+  test('hasValue', async () => {
     const {container, rerender, unmount} = render(FunctionHasValue, {
       props: {store, valueId: 'v0'},
     });
@@ -583,7 +583,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createValue', async () => {
+  test('getValue', async () => {
     const {container, rerender, unmount} = render(FunctionValue, {
       props: {store, valueId: 'v0'},
     });
@@ -604,7 +604,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createValue can set values', async () => {
+  test('getValue can set values', async () => {
     store.setValues({v1: false});
     const {container, unmount} = render(FunctionWritableValue, {
       props: {store, valueId: 'v1', newValue: true},
@@ -620,49 +620,49 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createMetricsIds', async () => {
+  test('getMetricsIds', async () => {
     const {container, unmount} = render(FunctionMetricsIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('createIndexesIds', async () => {
+  test('getIndexesIds', async () => {
     const {container, unmount} = render(FunctionIndexesIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('createQueriesIds', async () => {
+  test('getQueriesIds', async () => {
     const {container, unmount} = render(FunctionQueriesIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('createRelationshipsIds', async () => {
+  test('getRelationshipsIds', async () => {
     const {container, unmount} = render(FunctionRelationshipsIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('createCheckpointsIds', async () => {
+  test('getCheckpointsIds', async () => {
     const {container, unmount} = render(FunctionCheckpointsIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('createPersisterIds', async () => {
+  test('getPersisterIds', async () => {
     const {container, unmount} = render(FunctionPersisterIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('createSynchronizerIds', async () => {
+  test('getSynchronizerIds', async () => {
     const {container, unmount} = render(FunctionSynchronizerIds);
     expect(container.textContent).toEqual('[]');
     unmount();
   });
 
-  test('createMetricIds', async () => {
+  test('getMetricIds', async () => {
     const metrics: Metrics = createMetrics(store);
     const {container, unmount} = render(FunctionMetricIds, {props: {metrics}});
     expect(container.textContent).toEqual('[]');
@@ -678,7 +678,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createMetric', async () => {
+  test('getMetric', async () => {
     const metrics: Metrics = createMetrics(store)
       .setMetricDefinition('m1', 't1')
       .setMetricDefinition('m2', 't1', 'max', 'c1')
@@ -708,7 +708,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createIndexIds', async () => {
+  test('getIndexIds', async () => {
     const indexes: Indexes = createIndexes(store);
     const {container, unmount} = render(FunctionIndexIds, {props: {indexes}});
     expect(container.textContent).toEqual('[]');
@@ -724,7 +724,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createSliceIds', async () => {
+  test('getSliceIds', async () => {
     const indexes: Indexes = createIndexes(store)
       .setIndexDefinition('i1', 't1', 'c1')
       .setIndexDefinition('i2', 't1', 'c2')
@@ -757,7 +757,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createSliceRowIds', async () => {
+  test('getSliceRowIds', async () => {
     const indexes: Indexes = createIndexes(store)
       .setIndexDefinition('i1', 't1', 'c1')
       .setIndexDefinition('i2', 't2', 'c2');
@@ -789,7 +789,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createRelationshipIds', async () => {
+  test('getRelationshipIds', async () => {
     const relationships: Relationships = createRelationships(store);
     const {container, unmount} = render(FunctionRelationshipIds, {
       props: {relationships},
@@ -809,7 +809,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createRemoteRowId', async () => {
+  test('getRemoteRowId', async () => {
     const relationships: Relationships = createRelationships(store)
       .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
       .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
@@ -841,7 +841,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createLocalRowIds', async () => {
+  test('getLocalRowIds', async () => {
     const relationships: Relationships = createRelationships(store)
       .setRelationshipDefinition('r1', 't1', 'T1', 'c1')
       .setRelationshipDefinition('r2', 't2', 'T2', 'c2');
@@ -873,7 +873,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createLinkedRowIds', async () => {
+  test('getLinkedRowIds', async () => {
     const relationships: Relationships = createRelationships(store)
       .setRelationshipDefinition('r1', 't1', 't1', 'c1')
       .setRelationshipDefinition('r2', 't2', 't2', 'c2');
@@ -906,7 +906,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createQueryIds', async () => {
+  test('getQueryIds', async () => {
     const queries: Queries = createQueries(store);
     const {container, unmount} = render(FunctionQueryIds, {props: {queries}});
     expect(container.textContent).toEqual('[]');
@@ -924,7 +924,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createResultTable', async () => {
+  test('getResultTable', async () => {
     const queries: Queries = createQueries(store)
       .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
       .setQueryDefinition('q2', 't1', ({select, where}) => {
@@ -957,7 +957,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createResultRowIds', async () => {
+  test('getResultRowIds', async () => {
     const queries: Queries = createQueries(store)
       .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
       .setQueryDefinition('q2', 't1', ({select, where}) => {
@@ -993,7 +993,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createResultTableCellIds', async () => {
+  test('getResultTableCellIds', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1020,7 +1020,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createResultRowCount', async () => {
+  test('getResultRowCount', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1044,7 +1044,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createResultSortedRowIds', async () => {
+  test('getResultSortedRowIds', async () => {
     const queries: Queries = createQueries(store)
       .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
       .setQueryDefinition('q2', 't1', ({select, where}) => {
@@ -1108,7 +1108,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createResultSortedRowIds, no-default descending & offset', async () => {
+  test('getResultSortedRowIds, no-default descending & offset', async () => {
     const queries: Queries = createQueries(store).setQueryDefinition(
       'q1',
       't1',
@@ -1121,7 +1121,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createResultRow', async () => {
+  test('getResultRow', async () => {
     const queries: Queries = createQueries(store)
       .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
       .setQueryDefinition('q2', 't1', ({select, where}) => {
@@ -1152,7 +1152,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createResultCellIds', async () => {
+  test('getResultCellIds', async () => {
     const queries: Queries = createQueries(store)
       .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
       .setQueryDefinition('q2', 't1', ({select, where}) => {
@@ -1185,7 +1185,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createResultCell', async () => {
+  test('getResultCell', async () => {
     const queries: Queries = createQueries(store)
       .setQueryDefinition('q1', 't1', ({select}) => select('c1'))
       .setQueryDefinition('q2', 't1', ({select, where}) => {
@@ -1217,7 +1217,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createCheckpointIds', async () => {
+  test('getCheckpointIds', async () => {
     const checkpoints: Checkpoints = createCheckpoints(store);
     const {container, unmount} = render(FunctionCheckpointIds, {
       props: {checkpoints},
@@ -1235,7 +1235,7 @@ describe('Read Functions', () => {
     unmount();
   });
 
-  test('createPersisterStatus', async () => {
+  test('getPersisterStatus', async () => {
     const persister: AnyPersister = createSessionPersister(store, 'test-key');
     const {container, unmount} = render(FunctionPersisterStatus, {
       props: {persister},
@@ -1245,7 +1245,7 @@ describe('Read Functions', () => {
     persister.destroy();
   });
 
-  test('createSynchronizerStatus', async () => {
+  test('getSynchronizerStatus', async () => {
     const store2 = createMergeableStore();
     const synchronizer: Synchronizer = createLocalSynchronizer(store2);
     const {container, unmount} = render(FunctionSynchronizerStatus, {

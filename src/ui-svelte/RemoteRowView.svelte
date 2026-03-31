@@ -2,7 +2,7 @@
   import type {RemoteRowViewProps} from '../@types/ui-svelte/index.d.ts';
   import {isUndefined} from '../common/other.ts';
   import {
-    createRemoteRowId,
+    getRemoteRowId,
     getRelationshipsStoreTableIds,
   } from './functions.svelte.ts';
   import RowView from './RowView.svelte';
@@ -19,7 +19,7 @@
     () => relationships,
     () => relationshipId,
   );
-  const remoteRowId = createRemoteRowId(
+  const remoteRowId = getRemoteRowId(
     () => relationshipId,
     () => localRowId,
     () => relationships,

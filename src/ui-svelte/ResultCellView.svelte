@@ -1,10 +1,10 @@
 <script lang="ts">
   import type {ResultCellViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {createResultCell} from './functions.svelte.ts';
+  import {getResultCell} from './functions.svelte.ts';
 
   let {queryId, rowId, cellId, queries, debugIds}: ResultCellViewProps =
     $props();
-  const cell = createResultCell(
+  const cell = getResultCell(
     () => queryId,
     () => rowId,
     () => cellId,

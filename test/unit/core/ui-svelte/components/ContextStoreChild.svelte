@@ -4,10 +4,10 @@
     TableView,
     RowView,
     CellView,
-    createTables,
-    createTable,
-    createRow,
-    createCell,
+    getTables,
+    getTable,
+    getRow,
+    getCell,
   } from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
 
@@ -19,17 +19,17 @@
     mode: string;
   } = $props();
 
-  const tables = createTables(() => storeId);
-  const table = createTable(
+  const tables = getTables(() => storeId);
+  const table = getTable(
     () => 't1',
     () => storeId,
   );
-  const row = createRow(
+  const row = getRow(
     () => 't1',
     () => 'r1',
     () => storeId,
   );
-  const cell = createCell(
+  const cell = getCell(
     () => 't1',
     () => 'r1',
     () => 'c1',

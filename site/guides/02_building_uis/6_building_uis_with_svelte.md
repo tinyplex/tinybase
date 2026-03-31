@@ -20,17 +20,16 @@ Every reactive function in the `ui-svelte` module returns a reactive object
 with a `current` property. Any part of your template that reads it will
 automatically update when the underlying Store data changes.
 
-Here is the `createCell` function reading the color of a pet and displaying it
-in a
-paragraph:
+Here is the `getCell` function reading the color of a pet and displaying it in
+a paragraph:
 
 ```svelte
 <script>
   import {createStore} from 'tinybase';
-  import {createCell} from 'tinybase/ui-svelte';
+  import {getCell} from 'tinybase/ui-svelte';
 
   const store = createStore().setCell('pets', 'fido', 'color', 'brown');
-  const color = createCell('pets', 'fido', 'color', store);
+  const color = getCell('pets', 'fido', 'color', store);
 </script>
 
 <p>Color: {color.current}</p>
@@ -44,23 +43,28 @@ TinyBase listeners automatically using Svelte's reactivity lifecycle.
 
 There are reactive functions corresponding to every Store reading method:
 
-- `createValues` — reactive equivalent of `getValues`
-- `createValueIds` — reactive equivalent of `getValueIds`
-- `createValue` — reactive equivalent of `getValue`
-- `createHasValues` — reactive equivalent of `hasValues`
-- `createTables` — reactive equivalent of `getTables`
-- `createTableIds` — reactive equivalent of `getTableIds`
-- `createTable` — reactive equivalent of `getTable`
-- `createRowIds` — reactive equivalent of `getRowIds`
-- `createSortedRowIds` — reactive equivalent of `getSortedRowIds`
-- `createRow` — reactive equivalent of `getRow`
-- `createCellIds` — reactive equivalent of `getCellIds`
-- `createCell` — reactive equivalent of `getCell`
+- `getValues` — reactive equivalent of `getValues`
+- `getValueIds` — reactive equivalent of `getValueIds`
+- `getValue` — reactive equivalent of `getValue`
+- `hasValues` — reactive equivalent of `hasValues`
+- `getTables` — reactive equivalent of `getTables`
+- `getTableIds` — reactive equivalent of `getTableIds`
+- `getTable` — reactive equivalent of `getTable`
+- `getRowIds` — reactive equivalent of `getRowIds`
+- `getSortedRowIds` — reactive equivalent of `getSortedRowIds`
+- `getRow` — reactive equivalent of `getRow`
+- `getCellIds` — reactive equivalent of `getCellIds`
+- `getCell` — reactive equivalent of `getCell`
 
 There are also reactive functions for the higher-level TinyBase objects:
-`createMetric`, `createMetricIds`, `createSliceIds`, `createSliceRowIds`,
-`createResultCell`, `createResultRow`, `createResultTable`,
-`createResultRowIds`, `createCheckpointIds`, `createCheckpoint`, and more.
+`getMetric`, `getMetricIds`, `getSliceIds`, `getSliceRowIds`,
+`getResultCell`, `getResultRow`, `getResultTable`,
+`getResultRowIds`, `getCheckpointIds`, `getCheckpoint`, and more.
+
+Functions like `getStore`, `getMetrics`, and `getQueries` are different: they
+return TinyBase objects directly from Provider context. The reactive `getX`
+and `hasX` functions described here return reactive objects whose `.current`
+tracks Store data.
 
 ## Reactive Parameters With R
 
@@ -73,10 +77,10 @@ the function re-fetches automatically when it changes:
 
 ```svelte
 <script>
-  import {createCell} from 'tinybase/ui-svelte';
+  import {getCell} from 'tinybase/ui-svelte';
 
   let {rowId, store} = $props();
-  const color = createCell('pets', () => rowId, 'color', store);
+  const color = getCell('pets', () => rowId, 'color', store);
 </script>
 
 <p>{color.current}</p>
@@ -85,9 +89,9 @@ the function re-fetches automatically when it changes:
 Without the `() => rowId` wrapper, changing the `rowId` prop would not cause
 the function to re-read the Store for the new row.
 
-## Writable State With createCell
+## Writable State With `getCell`
 
-The `createCell` and `createValue` functions expose a writable `current`
+The `getCell` and `getValue` functions expose a writable `current`
 property for scalar values. Writing to it calls `store.setCell()` or
 `store.setValue()`. This makes Svelte's `bind:value` directive work for
 two-way binding:
@@ -95,10 +99,10 @@ two-way binding:
 ```svelte
 <script>
   import {createStore} from 'tinybase';
-  import {createCell} from 'tinybase/ui-svelte';
+  import {getCell} from 'tinybase/ui-svelte';
 
   const store = createStore().setCell('pets', 'fido', 'color', 'brown');
-  const color = createCell('pets', 'fido', 'color', store);
+  const color = getCell('pets', 'fido', 'color', store);
 </script>
 
 <input bind:value={color.current} />
@@ -134,11 +138,11 @@ descendant functions use automatically when no explicit reference is given:
 ```svelte
 <!-- Pane.svelte -->
 <script>
-  import {createCell} from 'tinybase/ui-svelte';
+  import {getCell} from 'tinybase/ui-svelte';
 
   // No store argument; resolved automatically from the nearest Provider
-  const species = createCell('pets', 'fido', 'species');
-  const color = createCell('pets', 'fido', 'color');
+  const species = getCell('pets', 'fido', 'species');
+  const color = getCell('pets', 'fido', 'color');
 </script>
 
 <p>{species.current} ({color.current})</p>
@@ -150,9 +154,9 @@ provided, functions reference them by Id:
 
 ```svelte
 <script>
-  import {createCell} from 'tinybase/ui-svelte';
+  import {getCell} from 'tinybase/ui-svelte';
 
-  const color = createCell('pets', 'fido', 'color', 'petStore');
+  const color = getCell('pets', 'fido', 'color', 'petStore');
 </script>
 ```
 

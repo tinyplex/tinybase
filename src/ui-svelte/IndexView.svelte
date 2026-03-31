@@ -1,11 +1,11 @@
 <script lang="ts">
   import type {IndexViewProps} from '../@types/ui-svelte/index.d.ts';
-  import {createSliceIds} from './functions.svelte.ts';
+  import {getSliceIds} from './functions.svelte.ts';
   import SliceView from './SliceView.svelte';
   import Wrap from './common/Wrap.svelte';
 
   let {indexId, indexes, separator, debugIds, slice}: IndexViewProps = $props();
-  const sliceIds = createSliceIds(
+  const sliceIds = getSliceIds(
     () => indexId,
     () => indexes,
   );

@@ -1,7 +1,7 @@
 <script lang="ts">
-  import {createPersisterIds} from 'tinybase/ui-svelte';
+  import {getPersisterIds} from 'tinybase/ui-svelte';
 
-  const ids = createPersisterIds();
+  const ids = getPersisterIds();
 </script>
 
 {JSON.stringify(ids.current)}

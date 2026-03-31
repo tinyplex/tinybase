@@ -1,10 +1,10 @@
 <script lang="ts">
-  import {createHasTableCell} from 'tinybase/ui-svelte';
+  import {hasTableCell} from 'tinybase/ui-svelte';
   import type {Id, Store} from 'tinybase';
 
   let {store, tableId, cellId}: {store: Store; tableId: Id; cellId: Id} =
     $props();
-  const v = createHasTableCell(
+  const v = hasTableCell(
     () => tableId,
     () => cellId,
     () => store,

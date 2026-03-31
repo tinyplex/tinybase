@@ -1,10 +1,10 @@
 <script lang="ts">
-  import {createHasRow} from 'tinybase/ui-svelte';
+  import {hasRow} from 'tinybase/ui-svelte';
   import type {Id, Store} from 'tinybase';
 
   let {store, tableId, rowId}: {store: Store; tableId: Id; rowId: Id} =
     $props();
-  const v = createHasRow(
+  const v = hasRow(
     () => tableId,
     () => rowId,
     () => store,

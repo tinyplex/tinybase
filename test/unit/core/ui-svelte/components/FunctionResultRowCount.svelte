@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {createResultRowCount} from 'tinybase/ui-svelte';
+  import {getResultRowCount} from 'tinybase/ui-svelte';
   import type {Id, Queries} from 'tinybase';
 
   let {queries, queryId}: {queries: Queries; queryId: Id} = $props();
-  const v = createResultRowCount(
+  const v = getResultRowCount(
     () => queryId,
     () => queries,
   );

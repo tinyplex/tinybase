@@ -22,26 +22,26 @@ const UiSvelteWithSchemas = UiSvelte as UiSvelte.WithSchemas<
   [typeof tablesSchema, typeof valuesSchema]
 >;
 const {
-  createHasTables,
-  createTables,
-  createTableIds,
-  createHasTable,
-  createTable,
-  createTableCellIds,
-  createHasTableCell,
-  createRowCount,
-  createRowIds,
-  createSortedRowIds,
-  createHasRow,
-  createRow,
-  createCellIds,
-  createHasCell,
-  createCell,
-  createHasValues,
-  createValues,
-  createValueIds,
-  createHasValue,
-  createValue,
+  hasTables,
+  getTables,
+  getTableIds,
+  hasTable,
+  getTable,
+  getTableCellIds,
+  hasTableCell,
+  getRowCount,
+  getRowIds,
+  getSortedRowIds,
+  hasRow,
+  getRow,
+  getCellIds,
+  hasCell,
+  getCell,
+  hasValues,
+  getValues,
+  getValueIds,
+  hasValue,
+  getValue,
   getStore,
   getMetrics,
   getIndexes,
@@ -50,8 +50,8 @@ const {
   getCheckpoints,
   createGoBackwardCallback,
   createGoForwardCallback,
-  createPersisterStatus,
-  createSynchronizerStatus,
+  getPersisterStatus,
+  getSynchronizerStatus,
   onHasTables,
   onTables,
   onTableIds,
@@ -110,83 +110,83 @@ const Getters = () => {
   getStore2()?.getTables().t2;
   getStore2()?.getTables().t3; // !
 
-  createHasTables().current as boolean;
-  createHasTables().current as string; // !
+  hasTables().current as boolean;
+  hasTables().current as string; // !
 
-  createTables().current.t1;
-  createTables().current.t2; // !
+  getTables().current.t1;
+  getTables().current.t2; // !
 
-  createTableIds().current.includes('t1');
-  createTableIds().current.includes('t2'); // !
+  getTableIds().current.includes('t1');
+  getTableIds().current.includes('t2'); // !
 
-  createHasTable('t1');
-  createHasTable('t2'); // !
+  hasTable('t1');
+  hasTable('t2'); // !
 
-  createTable('t1').current;
-  createTable('t1').current.r1!.c1;
-  createTable('t1').current.r1!.c2; // !
-  createTable('t2'); // !
+  getTable('t1').current;
+  getTable('t1').current.r1!.c1;
+  getTable('t1').current.r1!.c2; // !
+  getTable('t2'); // !
 
-  createTableCellIds('t1').current;
-  createTableCellIds('t2'); // !
+  getTableCellIds('t1').current;
+  getTableCellIds('t2'); // !
 
-  createHasTableCell('t1', 'c1');
-  createHasTableCell('t1', 'c2'); // !
-  createHasTableCell('t2', 'c1'); // !
+  hasTableCell('t1', 'c1');
+  hasTableCell('t1', 'c2'); // !
+  hasTableCell('t2', 'c1'); // !
 
-  createRowCount('t1').current as number;
-  createRowCount('t2'); // !
+  getRowCount('t1').current as number;
+  getRowCount('t2'); // !
 
-  createRowIds('t1').current;
-  createRowIds('t2'); // !
+  getRowIds('t1').current;
+  getRowIds('t2'); // !
 
-  createSortedRowIds('t1', 'c1').current;
-  createSortedRowIds('t1', 'c2'); // !
-  createSortedRowIds('t2', 'c1'); // !
+  getSortedRowIds('t1', 'c1').current;
+  getSortedRowIds('t1', 'c2'); // !
+  getSortedRowIds('t2', 'c1'); // !
 
-  createHasRow('t1', 'r1').current as boolean;
-  createHasRow('t2', 'r1'); // !
+  hasRow('t1', 'r1').current as boolean;
+  hasRow('t2', 'r1'); // !
 
-  createRow('t1', 'r1').current;
-  createRow('t1', 'r1').current.c1;
-  createRow('t1', 'r1').current.c2; // !
-  createRow('t2', 'r2'); // !
+  getRow('t1', 'r1').current;
+  getRow('t1', 'r1').current.c1;
+  getRow('t1', 'r1').current.c2; // !
+  getRow('t2', 'r2'); // !
 
-  createCellIds('t1', 'r1').current.includes('c1');
-  createCellIds('t1', 'r1').current.includes('c2'); // !
-  createCellIds('t2', 'r2'); // !
+  getCellIds('t1', 'r1').current.includes('c1');
+  getCellIds('t1', 'r1').current.includes('c2'); // !
+  getCellIds('t2', 'r2'); // !
 
-  createHasCell('t1', 'r1', 'c1');
-  createHasCell('t1', 'r1', 'c2'); // !
-  createHasCell('t2', 'r2', 'c1'); // !
+  hasCell('t1', 'r1', 'c1');
+  hasCell('t1', 'r1', 'c2'); // !
+  hasCell('t2', 'r2', 'c1'); // !
 
-  createCell('t1', 'r1', 'c1').current;
-  createCell('t1', 'r1', 'c1').current as number;
-  createCell('t1', 'r1', 'c1').current as string; // !
-  const cellRef = createCell('t1', 'r1', 'c1');
+  getCell('t1', 'r1', 'c1').current;
+  getCell('t1', 'r1', 'c1').current as number;
+  getCell('t1', 'r1', 'c1').current as string; // !
+  const cellRef = getCell('t1', 'r1', 'c1');
   cellRef.current = 1;
   cellRef.current = '1'; // !
-  createCell('t1', 'r1', 'c2'); // !
-  createCell('t2', 'r2', 'c1'); // !
+  getCell('t1', 'r1', 'c2'); // !
+  getCell('t2', 'r2', 'c1'); // !
 
-  createHasValues().current as boolean;
-  createHasValues().current as string; // !
+  hasValues().current as boolean;
+  hasValues().current as string; // !
 
-  createValues().current.v1;
-  createValues().current.v2; // !
+  getValues().current.v1;
+  getValues().current.v2; // !
 
-  createValueIds().current.includes('v1');
-  createValueIds().current.includes('v2'); // !
+  getValueIds().current.includes('v1');
+  getValueIds().current.includes('v2'); // !
 
-  createHasValue('v1');
-  createHasValue('v2'); // !
+  hasValue('v1');
+  hasValue('v2'); // !
 
-  createValue('v1').current as number;
-  createValue('v1').current as string; // !
-  const valueRef = createValue('v1');
+  getValue('v1').current as number;
+  getValue('v1').current as string; // !
+  const valueRef = getValue('v1');
   valueRef.current = 1;
   valueRef.current = '1'; // !
-  createValue('v2'); // !
+  getValue('v2'); // !
 
   createGoBackwardCallback() as () => void;
   createGoBackwardCallback() as boolean; // !
@@ -194,8 +194,8 @@ const Getters = () => {
   createGoForwardCallback() as () => void;
   createGoForwardCallback() as boolean; // !
 
-  createPersisterStatus().current as Status;
-  createSynchronizerStatus().current as Status;
+  getPersisterStatus().current as Status;
+  getSynchronizerStatus().current as Status;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

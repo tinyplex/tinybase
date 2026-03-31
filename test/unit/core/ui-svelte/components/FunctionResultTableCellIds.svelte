@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {createResultTableCellIds} from 'tinybase/ui-svelte';
+  import {getResultTableCellIds} from 'tinybase/ui-svelte';
   import type {Id, Queries} from 'tinybase';
 
   let {queries, queryId}: {queries: Queries; queryId: Id} = $props();
-  const v = createResultTableCellIds(
+  const v = getResultTableCellIds(
     () => queryId,
     () => queries,
   );

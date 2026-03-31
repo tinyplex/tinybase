@@ -3,25 +3,25 @@
     RemoteRowView,
     LocalRowsView,
     LinkedRowsView,
-    createRemoteRowId,
-    createLocalRowIds,
-    createLinkedRowIds,
+    getRemoteRowId,
+    getLocalRowIds,
+    getLinkedRowIds,
   } from 'tinybase/ui-svelte';
   import type {Id} from 'tinybase';
 
   let {relationshipsId}: {relationshipsId?: Id} = $props();
 
-  const remoteRowId = createRemoteRowId(
+  const remoteRowId = getRemoteRowId(
     () => 'r1',
     () => 'r1',
     () => relationshipsId,
   );
-  const localRowIds = createLocalRowIds(
+  const localRowIds = getLocalRowIds(
     () => 'r1',
     () => 'R1',
     () => relationshipsId,
   );
-  const linkedRowIds = createLinkedRowIds(
+  const linkedRowIds = getLinkedRowIds(
     () => 'r1',
     () => 'r1',
     () => relationshipsId,
