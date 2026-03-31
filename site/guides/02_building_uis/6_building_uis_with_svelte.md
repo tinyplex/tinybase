@@ -3,6 +3,11 @@
 This guide describes how to use the ui-svelte module to build reactive user
 interfaces in Svelte 5 applications.
 
+It is the Svelte counterpart to the ui-react module. Where ui-react exposes
+hooks and component override props, ui-svelte exposes reactive functions,
+listener functions, and view components that are customized with named
+snippets.
+
 ## Reactive Functions
 
 Every reactive function in the ui-svelte module returns a reactive object with a
@@ -55,7 +60,19 @@ getResultTable function, and so on.
 Functions that access higher-level TinyBase objects - like the getStore
 function, getMetrics function, and getQueries function - are different: rather
 than returning a reactive object, they return TinyBase objects directly from a
-Provider context. 
+Provider context.
+
+## Listener Functions
+
+The module also includes listener functions such as onCell, onRowIds, or
+onStartTransaction. These are the side-effect-oriented counterpart to the
+reactive functions: use them when you need to run code in response to TinyBase
+changes, rather than read a `current` value in the template.
+
+Most UI rendering can be built with reactive functions and view components
+alone. You should only need listener functions when you need behavior such as
+logging, analytics, imperative synchronization, or other non-render side
+effects.
 
 ## Reactive Parameters With MaybeGetter
 
@@ -154,6 +171,10 @@ Descendant components can register additional objects into the nearest Provider
 context at runtime using the provideStore function, the provideMetrics function,
 and similar.
 
+Provider components can also be nested. Their contexts merge in the same spirit
+as the ui-react module Provider, so outer defaults and named objects remain
+visible unless a nearer Provider replaces them.
+
 ## View Components
 
 For common rendering tasks, the module provides pre-built view components that
@@ -183,21 +204,49 @@ compose UIs from Store data:
 <TablesView {store} />
 ```
 
-Components accept a `cellComponent` or `rowComponent` snippet prop to customize
-how individual cells or rows are rendered:
+Like the ui-react module components, these have intentionally plain default
+renderings. For example, RowView concatenates the rendered Cells in a Row, while
+TablesView concatenates the rendered Tables in a Store. The `separator` and
+`debugIds` props are often useful while prototyping:
+
+```svelte
+<RowView tableId="pets" rowId="fido" {store}>
+  {#snippet separator()}
+    <span>/</span>
+  {/snippet}
+</RowView>
+
+<RowView tableId="pets" rowId="fido" {store} debugIds={true} />
+```
+
+## Customizing View Components
+
+Instead of props like `cellComponent` or `rowComponent`, ui-svelte uses named
+snippet props whose names match the level being customized: `cell`, `row`,
+`table`, `value`, `slice`, or `checkpoint`.
+
+This RowView example overrides how each Cell is rendered with a `cell` snippet:
 
 ```svelte
 <script>
-  import {RowView} from 'tinybase/ui-svelte';
+  import {CellView, RowView} from 'tinybase/ui-svelte';
+
+  let {store} = $props();
 </script>
 
 <RowView tableId="pets" rowId="fido" {store}>
-  {#snippet cellComponent(tableId, rowId, cellId)}
-    <span class="cell">{cellId}</span>
+  {#snippet cell(cellId)}
+    <span class="cell">
+      {cellId}: <CellView tableId="pets" rowId="fido" {cellId} {store} />
+    </span>
   {/snippet}
 </RowView>
 ```
 
+Since the snippet receives only the varying Id for that level, it stays concise
+and idiomatic. If you need more context, close over the surrounding props, as
+shown above with `tableId`, `rowId`, and `store`.
+
 The full set of view components covers every level of the Store hierarchy and
-the higher-level TinyBase objects. For the full API reference, see the ui-svelte
-module documentation.
+the higher-level TinyBase objects. For the full API reference, see the
+ui-svelte module documentation.

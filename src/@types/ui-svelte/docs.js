@@ -8,6 +8,10 @@
  * objects with a `current` property. Those functions register listeners such
  * that components using them re-render when data changes.
  *
+ * The components in this module provide a further abstraction over those
+ * reactive functions, and use Svelte snippet props to customize rendering in
+ * an idiomatic way.
+ *
  * Functions like the getStore function and getMetrics function return TinyBase
  * objects directly from Provider context. Functions like the getCell function,
  * the getRow function, the getTable function, the getValue function, and the
@@ -1244,6 +1248,10 @@
  * Store objects, Metrics, Indexes, Relationships, Queries, Checkpoints,
  * Persisters, and Synchronizers can all be provided both as single defaults and
  * as named instances in a `*ById` map.
+ *
+ * Provider components can be nested and their contexts are merged, so outer
+ * defaults and named instances remain visible unless a nearer Provider
+ * replaces them.
  * @param props The props for this component.
  * @example
  * This example creates a Provider context with a default Store.
