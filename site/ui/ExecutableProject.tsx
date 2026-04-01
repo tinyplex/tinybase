@@ -183,6 +183,18 @@ const getTsconfig = (): string =>
     2,
   );
 
+const getEntryFileName = (files: {[path: string]: string}): string | undefined =>
+  [
+    'src/main.tsx',
+    'src/main.ts',
+    'src/main.jsx',
+    'src/main.js',
+    'index.tsx',
+    'index.ts',
+    'index.jsx',
+    'index.js',
+  ].find((path) => files[path] != null);
+
 export const ExecutableProject: NoPropComponent = (): any => {
   const {name: title, summary: description = '', executables} = usePageNode();
   const {devDependencies, version} = usePackageData();
@@ -190,6 +202,28 @@ export const ExecutableProject: NoPropComponent = (): any => {
     return null;
   }
   const cleanDescription = description.replaceAll(/\s+/g, ' ').trim();
+  const files = executables.files;
+
+  if (files != null) {
+    const entryFileName = getEntryFileName(files);
+    const project = {
+      title,
+      description: cleanDescription,
+      template: 'node',
+      files: {
+        '.npmrc': 'legacy-peer-deps=true\n',
+        ...files,
+      },
+      options: {
+        ...(entryFileName == null ? {} : {file: entryFileName}),
+        hidedevtools: '1',
+        showSidebar: '1',
+        terminalHeight: '18',
+      },
+    };
+
+    return <code dangerouslySetInnerHTML={{__html: JSON.stringify(project)}} />;
+  }
 
   const {html = '', less = '', tsx = ''} = executables;
   const imports = getImportMap(html);
