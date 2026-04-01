@@ -1,7 +1,11 @@
 import type {NoPropComponent, Node} from 'tinydocs';
 import {Markdown, usePageNode} from 'tinydocs';
 import type {ModulesSizes} from './BuildContext.tsx';
-import {useCoverage, useMetadata, useModulesSizes} from './BuildContext.tsx';
+import {
+  useCoverage,
+  useModulesSizes,
+  usePackageData,
+} from './BuildContext.tsx';
 import {MODULES} from './common.ts';
 
 export const Readme: NoPropComponent = (): any => {
@@ -15,7 +19,7 @@ const toKb = (bytes: number | undefined) =>
   bytes != null ? `${(bytes / 1000).toFixed(1)}kB` : '';
 
 export const useReadme = (node: Node): [string, string] => {
-  const metadata = useMetadata();
+  const metadata = usePackageData();
   const modulesSizes = useModulesSizes();
   const coverage = useCoverage();
 

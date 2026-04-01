@@ -1,9 +1,9 @@
 import type {NoPropComponent} from 'tinydocs';
 import {NodeChildren, useRootNode} from 'tinydocs';
-import {useMetadata} from './BuildContext.tsx';
+import {usePackageData} from './BuildContext.tsx';
 
 export const Header: NoPropComponent = () => {
-  const {version} = useMetadata();
+  const {version} = usePackageData();
   const rootNode = useRootNode();
 
   return (
