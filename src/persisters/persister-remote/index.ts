@@ -9,6 +9,8 @@ import {startInterval, stopInterval} from '../../common/other.ts';
 import {createCustomPersister} from '../common/create.ts';
 
 const getETag = (response: Response) => response.headers.get('ETag') ?? '';
+const getIfNoneMatchHeaders = (lastEtag: string): HeadersInit | undefined =>
+  lastEtag == '' ? undefined : {'If-None-Match': lastEtag};
 
 export const createRemotePersister = ((
   store: Store,
@@ -21,7 +23,7 @@ export const createRemotePersister = ((
 
   const getPersisted = async (): Promise<Content> => {
     const response = await fetch(loadUrl, {
-      headers: {'If-None-Match': lastEtag},
+      headers: getIfNoneMatchHeaders(lastEtag),
     });
     lastEtag = getETag(response);
     return jsonParse(await response.text());
@@ -40,7 +42,7 @@ export const createRemotePersister = ((
     startInterval(async () => {
       const response = await fetch(loadUrl, {
         method: 'HEAD',
-        headers: {'If-None-Match': lastEtag},
+        headers: getIfNoneMatchHeaders(lastEtag),
       });
       const currentEtag = getETag(response);
       if (currentEtag != lastEtag) {
