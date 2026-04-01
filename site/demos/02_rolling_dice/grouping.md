@@ -8,7 +8,7 @@ the rolls by result. We're making changes to the Averaging Dice Rolls demo.
 
 We import the extra functions and components we need:
 
-```diff-js
+```diff-js file=src/main.jsx
 -import {createMetrics, createStore} from 'tinybase';
 +import {createIndexes, createStore} from 'tinybase';
 -import {MetricView, Provider, TableView, useCell} from 'tinybase/ui-react';
@@ -21,7 +21,7 @@ roll Row. It sorts the dice rolls according to the color of the dice (ie `blue`,
 then `green`, then `red` for each given result). We don't need metrics in this
 demo:
 
-```diff-js
+```diff-js file=src/main.jsx
 -const metrics = createMetrics(store)
 -  .setMetricDefinition('average', 'rolls', 'avg', 'result')
 -  .setMetricDefinition('count', 'rolls', 'sum');
@@ -36,7 +36,7 @@ demo:
 As in the previous demo, each roll is going to be rendered as a dice Unicode
 character, but we'll add color as a CSS class:
 
-```diff-jsx
+```diff-jsx file=src/main.jsx
  const Roll = ({tableId, rowId}) => (
 -  <span className="roll">
 +  <span className={`roll ${useCell(tableId, rowId, 'color')}`}>
@@ -45,7 +45,7 @@ character, but we'll add color as a CSS class:
  );
 ```
 
-```diff-less
+```diff-less file=src/index.less
  .roll {
    display: inline-block;
    font-size: 3rem;
@@ -67,7 +67,7 @@ We create a component for each slice. Its main purpose is to put each SliceView
 component on a new line and ensure the `Roll` component is used for each roll
 Row:
 
-```jsx
+```jsx file=src/main.jsx
 const Rolls = (props) => (
   <div className="rolls">
     <SliceView {...props} rowComponent={Roll} />
@@ -75,7 +75,7 @@ const Rolls = (props) => (
 );
 ```
 
-```less
+```less file=src/index.less
 .rolls {
   white-space: nowrap;
 }
@@ -85,7 +85,7 @@ We then change our React app to comprise an IndexView component which will rende
 the `Rolls` component for each slice in the index (in turn rendering the `Roll`
 component for each roll Row):
 
-```diff-jsx
+```diff-jsx file=src/main.jsx
 -createRoot(document.body).render(
 -  <Provider store={store} metrics={metrics}>
 -    <p>
@@ -99,7 +99,7 @@ component for each roll Row):
 -);
 ```
 
-```jsx
+```jsx file=src/main.jsx
 createRoot(document.body).render(
   <Provider store={store} indexes={indexes}>
     <IndexView indexId="rolls" sliceComponent={Rolls} />
@@ -111,7 +111,7 @@ createRoot(document.body).render(
 To roll the dice, we again add a new Row every half second with the result, but
 also add a random color:
 
-```diff-js
+```diff-js file=src/main.jsx
  store.addRow('rolls', {
    result: Math.ceil(Math.random() * 6),
 +  color: ['red', 'green', 'blue'][Math.floor(Math.random() * 3)],

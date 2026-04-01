@@ -10,7 +10,7 @@ use of drag and drop. Preferably try it out on a desktop browser.
 
 First, we create the import aliases for TinyBase and React modules we'll need:
 
-```html
+```html file=index.html
 <script type="importmap">
   {
     "imports": {
@@ -28,7 +28,7 @@ First, we create the import aliases for TinyBase and React modules we'll need:
 
 We'll use a good selection of the TinyBase API and the ui-react module:
 
-```js
+```js file=src/main.jsx
 import {
   createContext,
   useCallback,
@@ -71,7 +71,7 @@ resizing handles. We'll create a React hook called `useDraggableObject` that
 returns a `ref` that can be used to attach this behavior to component. Nothing
 about this is TinyBase-specific, so let's get it out of the way first.
 
-```js
+```js file=src/main.jsx
 const useDraggableObject = (
   getInitial,
   onDrag,
@@ -141,7 +141,7 @@ We have a selection of constants we will use throughout the app. The shapes will
 live in a TinyBase table called `shapes`, the background canvas itself will
 always be shape `0`, and shapes have a minimum size and one of two valid types:
 
-```js
+```js file=src/main.jsx
 const SHAPES = 'shapes';
 const CANVAS_ID = '0';
 const MIN_WIDTH = 50;
@@ -152,7 +152,7 @@ const TYPES = ['rectangle', 'ellipse'];
 We will use mutator listeners to ensure that the type and color of the shapes
 are always valid if present. These are the two functions to do that:
 
-```js
+```js file=src/main.jsx
 const constrainType = (store, tableId, rowId, cellId, type) => {
   if (type != null && !TYPES.includes(type)) {
     store.setCell(tableId, rowId, cellId, TYPES[0]);
@@ -170,7 +170,7 @@ At any given time, either a single shape is selected, or none are. We will set a
 context for the whole app that will provide the `useState` value and setter pair
 for the selected Id across the whole app:
 
-```js
+```js file=src/main.jsx
 const SelectedIdContext = createContext([null, () => {}]);
 const useSelectedIdState = () => useContext(SelectedIdContext);
 ```
@@ -182,7 +182,7 @@ a reference to the 'next' shape so they can be ordered in the z-index with a
 linked list. We also use the two mutator listeners to programmatically guarantee
 that types and colors are valid:
 
-```js
+```js file=src/main.jsx
 const App = () => {
   const store = useCreateStore(() => {
     const store = createStore().setTablesSchema({
@@ -212,7 +212,7 @@ local browser storage, and default it to a single shape on the canvas (which is
 the start of the linked list of all the shapes, modelled with the Relationships
 object):
 
-```js
+```js file=src/main.jsx
 // ...
 const checkpoints = useCreateCheckpoints(store, createCheckpoints);
 
@@ -251,7 +251,7 @@ all wrapped in a Provider component to make sure our top-level objects are
 defaulted throughout the app. The `SelectedIdContext` context provider also
 passes a `useState` value and setter pair into the app:
 
-```js
+```js file=src/main.jsx
   // ...
   return (
     <Provider
@@ -276,7 +276,7 @@ the corner.
 
 Anyway, let's mount it into the DOM...
 
-```jsx
+```jsx file=src/main.jsx
 addEventListener('load', () => createRoot(document.body).render(<App />));
 ```
 
@@ -288,7 +288,7 @@ The toolbar across the top of the app contains the undo and redo buttons, the
 button to add a new shape - and, when a shape is selected, the stack order and
 delete buttons
 
-```jsx
+```jsx file=src/main.jsx
 const Toolbar = () => {
   const [useSelectedId] = useSelectedIdState();
   return (
@@ -310,7 +310,7 @@ The undo and redo buttons use the useUndoInformation hook and useRedoInformation
 hook to disable or enable themselves, and handle the checkpoint moves
 accordingly:
 
-```jsx
+```jsx file=src/main.jsx
 const UndoRedo = () => {
   const [canUndo, handleUndo, , undoLabel] = useUndoInformation();
   const [canRedo, handleRedo, , redoLabel] = useRedoInformation();
@@ -337,7 +337,7 @@ the new shape with the `setSelectedId` function. The useSetCheckpointCallback
 hook is used to add the shape creation to the undo stack after the new shape Row
 has been added via the callback from the useAddRowCallback hook:
 
-```jsx
+```jsx file=src/main.jsx
 const ShapeAdd = () => {
   const frontId = useFrontId();
   const [, setSelectedId] = useSelectedIdState();
@@ -368,7 +368,7 @@ const ShapeAdd = () => {
 
 We'll have these two hooks for getting the front and back shapes of the ordered stack.
 
-```jsx
+```jsx file=src/main.jsx
 const useBackId = () => useLinkedRowIds('order', CANVAS_ID)[1];
 const useFrontId = () => useLinkedRowIds('order', CANVAS_ID).slice(-1)[0];
 ```
@@ -377,7 +377,7 @@ There are four buttons for changing the shape order: move to back, move
 backward, move forward, and move to front. Each of these change the order of the
 linked list created by the `nextId` pointer in the `shapes` Table:
 
-```jsx
+```jsx file=src/main.jsx
 const ShapeOrder = () => {
   const [selectedId] = useSelectedIdState();
   const frontId = useFrontId();
@@ -410,7 +410,7 @@ the `nextId` Cell values in a single transaction, accounting for edge cases like
 moving a shape from the top of the stack, and sealing up the linked list after a
 shape has been moved:
 
-```jsx
+```jsx file=src/main.jsx
 const useOrderShape = (toId, label) => {
   const store = useStore();
   const [selectedId] = useSelectedIdState();
@@ -442,7 +442,7 @@ linked list (and making its next shape the previous shape's next shape instead),
 but otherwise it simply uses the delRow method to remove the record from the
 table.
 
-```jsx
+```jsx file=src/main.jsx
 const ShapeDelete = () => {
   const store = useStore();
   const [selectedId, setSelectedId] = useSelectedIdState();
@@ -479,7 +479,7 @@ local storage with your browser developer tools.
 The sidebar comprises controls to configure a shape's type, color and position
 when selected:
 
-```jsx
+```jsx file=src/main.jsx
 const Sidebar = () => {
   const [selectedId] = useSelectedIdState();
   return (
@@ -503,7 +503,7 @@ const Sidebar = () => {
 Each of these controls will be nested in a component to allow the CSS to lay
 them out correctly:
 
-```jsx
+```jsx file=src/main.jsx
 const SidebarCell = ({label, children}) => (
   <div className="cell">
     {label}: {children}
@@ -518,7 +518,7 @@ to set the `type` Cell is extracted from the event's `target.value`, and the
 change is added to the undo stack after the change has been made, with the
 callback from the useSetCheckpointCallback hook.
 
-```jsx
+```jsx file=src/main.jsx
 const SidebarTypeCell = () => {
   const [selectedId] = useSelectedIdState();
   const setCheckpoint = useSetCheckpointCallback(() => 'change of type', []);
@@ -551,7 +551,7 @@ useSetCellCallback hook to get a callback that in this case uses the color
 picker event's `target.value` - and again, the useSetCheckpointCallback hook to
 add it to the undo stack after the change has been made:
 
-```jsx
+```jsx file=src/main.jsx
 const SidebarColorCell = ({label, cellId}) => {
   const [selectedId] = useSelectedIdState();
   const setCheckpoint = useSetCheckpointCallback(
@@ -583,7 +583,7 @@ you nudge the four numeric `x1`, `y1`, `x2`, and `y2` Cell values. One
 interesting difference here is that the useSetCellCallback hook is passed not an
 absolute number for those values, but a function that will nudge the value.
 
-```jsx
+```jsx file=src/main.jsx
 const nudgeUp = (cell) => cell + 1;
 const nudgeDown = (cell) => cell - 1;
 
@@ -658,7 +658,7 @@ the shape in to fit.
 Finally, the canvas listens to the `handleMouseDown` event so that if you click
 anywhere on the app background, the current shape will get deselected.
 
-```jsx
+```jsx file=src/main.jsx
 const Canvas = () => {
   const ref = useRef(null);
   const store = useStore();
@@ -797,7 +797,7 @@ demo to make itself movable via the `handleDrag` callback. When you finish a
 drag, the `handleDragStop` callback records a checkpoint so that you can undo
 a whole dragging movement.
 
-```jsx
+```jsx file=src/main.jsx
 const Shape = ({id}) => {
   const [selectedId, setSelectedId] = useSelectedIdState();
   const selected = id == selectedId;
@@ -858,7 +858,7 @@ turning into an `<input>` component. And once again, the
 useSetCheckpointCallback hook provides a callback to add text changes to the
 undo stack.
 
-```jsx
+```jsx file=src/main.jsx
 const ShapeText = ({id}) => {
   const {text, textColor} = useRow(SHAPES, id);
   const ref = useRef();
@@ -914,7 +914,7 @@ left, these adjust the `x1,y1` coordinates, the `y1` coordinate alone, the
 `y1,x2` coordinates, the `y2` coordinate alone, and so on. Each also has a
 different resizing cursor style to make it evident how they can move:
 
-```jsx
+```jsx file=src/main.jsx
 const ShapeGrips = ({id}) => {
   const {x1, y1, x2, y2} = useRow(SHAPES, id);
   const xm = (x1 + x2) / 2;
@@ -940,7 +940,7 @@ according to the 4-item `m` array passed in from the `ShapeGrips` component. Of
 course, the `useSetCheckpointCallback` hook also means that resizes get added to
 the undo stack:
 
-```jsx
+```jsx file=src/main.jsx
 const Grip = ({m: [mx1, my1, mx2, my2], id, x, y, d}) => {
   const store = useStore();
   const getInitial = useCallback(() => store.getRow(SHAPES, id), [store, id]);
@@ -973,7 +973,7 @@ const Grip = ({m: [mx1, my1, mx2, my2], id, x, y, d}) => {
 Finally we style the app with some LESS. This should be mostly self-explanatory,
 including the SVG for the button icons.
 
-```less
+```less file=src/index.less
 @accentColor: #d81b60;
 @font-face {
   font-family: Inter;

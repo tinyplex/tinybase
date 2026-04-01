@@ -12,7 +12,7 @@ changes to the <TableInHtmlTable /> demo to show this new component.
 
 We start off by simply adding the component to the imports:
 
-```diff-js
+```diff-js file=src/main.jsx
 -import {TableInHtmlTable} from 'tinybase/ui-react-dom';
 +import {EditableCellView, TableInHtmlTable} from 'tinybase/ui-react-dom';
 ```
@@ -23,7 +23,7 @@ The EditableCellView component simply needs a tableId, rowId, and cellId to
 render the Cell and make it editable. We replace two of the tables from the
 original demo to add the control:
 
-```diff-jsx
+```diff-jsx file=src/main.jsx
 -      <TableInHtmlTable tableId='genres' headerRow={false} idColumn={false} />
 -      <TableInHtmlTable tableId='genres' customCells={customCells} />
 +     <div id='edit'>
@@ -37,7 +37,7 @@ original demo to add the control:
 
 We can style its container and the button that lets you change type:
 
-```less
+```less file=src/index.less
 #edit {
   align-self: flex-start;
   background: white;
@@ -60,7 +60,7 @@ input.invalid {
 And finally, we can enable the `editable` prop on the original TableInHtmlTable
 component so that it uses this view for its own rendering:
 
-```diff-jsx
+```diff-jsx file=src/main.jsx
 -     <TableInHtmlTable tableId='genres' />
 +     <TableInHtmlTable tableId='genres' editable={true}/>
 ```

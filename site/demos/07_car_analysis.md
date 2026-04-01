@@ -35,7 +35,7 @@ results (either in graphical or tabular form) reactively update immediately.
 
 First, we create the import aliases for TinyBase and React modules we'll need:
 
-```html
+```html file=index.html
 <script type="importmap">
   {
     "imports": {
@@ -57,7 +57,7 @@ structured.
 We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
 
-```js
+```js file=src/main.jsx
 import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
@@ -80,7 +80,7 @@ For simplicity, we set up a few convenience arrays that distinguish the columns
 present in the data. In a more comprehensive app, these could certainly be
 programmatically determined.
 
-```js
+```js file=src/main.jsx
 const DIMENSION_CELL_IDS = ['Manufacturer', 'Name', 'Year', 'Region'];
 
 const MEASURE_CELL_IDS = [
@@ -95,7 +95,7 @@ const MEASURE_CELL_IDS = [
 
 We also set up the list of aggregations that are available in the user interface:
 
-```js
+```js file=src/main.jsx
 const AGGREGATES = {
   Maximum: 'max',
   Average: 'avg',
@@ -107,7 +107,7 @@ We set up some constants that we'll use in the app to help arrange the
 graph elements, and to detect numeric values in the imported files so that they
 can added to the Store as numbers:
 
-```js
+```js file=src/main.jsx
 const GRAPH_FONT = 11;
 const GRAPH_PADDING = 5;
 const NUMERIC = /^[\d\.]+$/;
@@ -117,7 +117,7 @@ And finally, while we are here, we create a handy little function to round down
 numbers to two significant figures. Nothing clever but sufficient for this basic
 application.
 
-```js
+```js file=src/main.jsx
 const round = (value) => Math.round(value * 100) / 100;
 ```
 
@@ -131,7 +131,7 @@ The two Store objects and the Queries object are memoized by the useCreateStore
 method and useCreateQueries method so they are only created the first time the
 app is rendered.
 
-```jsx
+```jsx file=src/main.jsx
 const App = () => {
   const store = useCreateStore(createStore);
   const queries = useCreateQueries(store, () =>
@@ -143,7 +143,7 @@ Since v7.2, we can define a single parameterized query for the whole application
 and then simply pass in new params as the user interacts with the UI. We're
 going to call this master query `cars`:
 
-```js
+```js file=src/main.jsx
 // ...
   .setQueryDefinition('cars', 'cars', ({select, where, group, param}) => {
     param('dimensions').forEach((cellId) => select(cellId));
@@ -168,7 +168,7 @@ state, and setting it to `false` only once the asynchronous loading sequence in
 the (soon-to-be described) `loadStore` function has completed. Until then, a
 loading spinner is shown.
 
-```jsx
+```jsx file=src/main.jsx
   // ...
   const [isLoading, setIsLoading] = useState(true);
   useMemo(async () => {
@@ -191,13 +191,13 @@ the corner.
 
 The loading spinner itself is a plain element with some CSS.
 
-```jsx
+```jsx file=src/main.jsx
 const Loading = () => <div id="loading" />;
 ```
 
 This is styled as a 270° arc with a spinning animation:
 
-```less
+```less file=src/index.less
 #loading {
   animation: spin 1s infinite linear;
   height: 2rem;
@@ -221,7 +221,7 @@ This is styled as a 270° arc with a spinning animation:
 And finally this simple boilerplate code loads the main `App` component to start
 things off:
 
-```jsx
+```jsx file=src/main.jsx
 addEventListener('load', () => createRoot(document.body).render(<App />));
 ```
 
@@ -234,7 +234,7 @@ In this loading function, we extract the column names from the top of the TSV,
 check each row has a matching cardinality, use the first column as the Row Id,
 coerce numeric Cell values, and load everything into a standard Table.
 
-```js
+```js file=src/main.jsx
 const loadTable = async (store) => {
   const rows = (
     await (await fetch(`https://tinybase.org/assets/cars.tsv`)).text()
@@ -274,7 +274,7 @@ the `ResultGraph` and `ResultTable` components render the two modes. We start
 off with a state variable indicating whether the data is rendered as a table
 (`true`) or a graph (`false`):
 
-```js
+```js file=src/main.jsx
 const Body = () => {
   const [showTable, setShowTable] = useState(false);
   // ...
@@ -289,7 +289,7 @@ Let's use the useParamValueState hook to create three state-like pairs
 containing the values of these params and setters that will update them in the
 Queries object whenever they change in the application's sidebar:
 
-```js
+```js file=src/main.jsx
 const [dimensions, setDimensions] = useParamValueState('cars', 'dimensions');
 const [measures, setMeasures] = useParamValueState('cars', 'measures');
 const [aggregate, setAggregate] = useParamValueState('cars', 'aggregate');
@@ -300,7 +300,7 @@ measures, and aggregates. We also show a toggle for the tabular view, and offer
 a link to the source of the data. (We'll also cover the simple `Select`
 component later.)
 
-```jsx
+```jsx file=src/main.jsx
 return (
   <>
     <aside>
@@ -346,7 +346,7 @@ We complete the `Body` component with a simple toggle between the two main
 views, which of course we will also shortly explore in detail. Both take the
 list of columns to display:
 
-```jsx
+```jsx file=src/main.jsx
       {
         showTable ? (
           <ResultTable columns={[...dimensions, ...measures]} />
@@ -364,7 +364,7 @@ tabular views work. We'll dive into _their_ implementations next.
 
 The styling for the main part of the application is simple:
 
-```less
+```less file=src/index.less
 body {
   display: flex;
   height: 100vh;
@@ -405,7 +405,7 @@ TinyBase v4.1, we just use the ResultSortedTableInHtmlTable component from the
 new ui-react-dom module straight out of the box. The only extra step is
 transforming the array of selected columns into the customCells prop to render.
 
-```jsx
+```jsx file=src/main.jsx
 const ResultTable = ({columns}) => (
   <ResultSortedTableInHtmlTable
     queryId="cars"
@@ -428,7 +428,7 @@ We're using a slightly custom component for the table cells. If a Cell has a
 numeric value, we crudely round it to two decimal places. Also we give it the
 cellId as className so we can color the left-hand border.
 
-```jsx
+```jsx file=src/main.jsx
 // ...
 const CustomCell = ({rowId, cellId}) => {
   const cell = useResultCell('cars', rowId, cellId);
@@ -440,7 +440,7 @@ const CustomCell = ({rowId, cellId}) => {
 
 The styling for the grid is as follows:
 
-```less
+```less file=src/index.less
 table {
   width: 100%;
   table-layout: fixed;
@@ -494,7 +494,7 @@ The graph is rendered in SVG, and to lay it out effectively, we need to know the
 size of the component on the screen. To track this, we use the browser's
 `ResizeObserver` API, and set width and height state variables whenever it changes:
 
-```jsx
+```jsx file=src/main.jsx
 const ResultGraph = ({dimensions, measures}) => {
   const ref = useRef(null);
   const [{width = 0, height = 0}, setDimensions] = useState({});
@@ -513,7 +513,7 @@ the graph. We want a list of all the compound x-axis labels, and a series of
 y values for every measure. We also use this phase to get the maximum y value
 present so we can decide how high to make the y-axis:
 
-```jsx
+```jsx file=src/main.jsx
 // ...
 const [xAllLabels, yValueSets, yMax] = useGraphData(dimensions, measures);
 // ...
@@ -527,7 +527,7 @@ we'll use to lay the SVG elements out. It also returns the exact labels to
 display on both axes, for example, which take into account how many can be
 shown, and at a suitable frequency.
 
-```jsx
+```jsx file=src/main.jsx
 // ...
 const [xToPixel, yToPixel, xLabels, yLabels, xRange] = useGraphSetup(
   width,
@@ -541,7 +541,7 @@ const [xToPixel, yToPixel, xLabels, yLabels, xRange] = useGraphSetup(
 At this point, we can bail out if the page hasn't fully rendered and the width
 and height aren't set yet:
 
-```jsx
+```jsx file=src/main.jsx
 // ...
 if (width == 0 || height == 0) {
   return <main ref={ref} />;
@@ -552,7 +552,7 @@ if (width == 0 || height == 0) {
 But if they are, we can go ahead and build the SVG chart. Firstly the bounding
 box and x-axis:
 
-```jsx
+```jsx file=src/main.jsx
 // ...
 return (
   <main ref={ref}>
@@ -565,7 +565,7 @@ return (
 
 Next, the x-axis labels, offset a little and rotated 90°:
 
-```jsx
+```jsx file=src/main.jsx
 <>
   {xLabels.map((xLabel, x) => {
     const textX = xToPixel(x) - GRAPH_FONT / 2;
@@ -583,7 +583,7 @@ Next, the x-axis labels, offset a little and rotated 90°:
 
 Then, the y-axis labels, right-aligned:
 
-```jsx
+```jsx file=src/main.jsx
 <>
   {yLabels.map((yLabel) => {
     const textX = xToPixel(0) - GRAPH_PADDING;
@@ -605,7 +605,7 @@ And finally a `<path />` for each measure, as well as series of (by default
 hidden) `<circle />` and `<text />` elements tht serve as hover-over labels for
 each data point:
 
-```jsx
+```jsx file=src/main.jsx
         {yValueSets.map((yValueSet, s) => (
           <g className={measures[s]} key={s}>
             <path
@@ -635,7 +635,7 @@ each data point:
 There's some styling for the SVG chart, which also takes care of the behavior of
 the hover-over tooltips.
 
-```less
+```less file=src/index.less
 svg {
   stroke: #666;
   stroke-width: 1;
@@ -671,7 +671,7 @@ We have also had a cheeky convention of setting the CSS class names to be Cell
 Ids. This allows us to have a consistent color scheme for the measures, across
 both the sidebar, the table, and the graph:
 
-```less
+```less file=src/index.less
 .measure(@color) {
   stroke-width: 2;
   stroke: @color;
@@ -713,7 +713,7 @@ chart.
 Note that the Row Ids are sorted according to the values of the first measure
 selected. In a real analytical scenario, this would be better to be configurable.
 
-```js
+```js file=src/main.jsx
 const useGraphData = (dimensions, measures) => {
   const table = useResultTable('cars');
   const sortedRowIds = useResultSortedRowIds('cars', measures[0] ?? undefined);
@@ -747,7 +747,7 @@ understand TinyBase! These are mostly just to create well-spaced labels on the
 axes, and in a real-world application, you'd be more likely to use more powerful
 charting support from something like D3 or Vega.
 
-```js
+```js file=src/main.jsx
 const useGraphSetup = (width, height, xAllLabels, yMax) =>
   useMemo(() => {
     const xOffset = height / 4;
@@ -785,7 +785,7 @@ To build the `Body` application sidebar, we use some `<select />` elements. This
 simple `Select` component provides a wrapper around that to callback with either
 the array of values, or a single value, when selected.
 
-```jsx
+```jsx file=src/main.jsx
 const Select = ({options, selected, onOptionsChange, multiple = true}) => {
   const handleOptionsChange = useCallback(
     ({target}) =>
@@ -821,7 +821,7 @@ colors for each measure.
 
 The `Select` component has some styling of its own:
 
-```less
+```less file=src/index.less
 select {
   border: 1px solid #ccc;
   display: block;
@@ -838,7 +838,7 @@ select {
 
 We finish off with a few final pieces of CSS that are applied across the application.
 
-```less
+```less file=src/index.less
 @font-face {
   font-family: Inter;
   src: url(https://tinybase.org/fonts/inter.woff2) format('woff2');

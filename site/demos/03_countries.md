@@ -7,7 +7,7 @@ load and display country data.
 
 First, we create the import aliases for TinyBase and React modules we'll need:
 
-```html
+```html file=index.html
 <script type="importmap">
   {
     "imports": {
@@ -29,7 +29,7 @@ structured.
 
 We import the functions and components we need:
 
-```js
+```js file=src/main.jsx
 import {useCallback} from 'react';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
@@ -58,7 +58,7 @@ import {Inspector} from 'tinybase/ui-react-inspector';
 
 We also set up some string constants for showing star emojis:
 
-```js
+```js file=src/main.jsx
 const STAR = '\u2605';
 const UNSTAR = '\u2606';
 ```
@@ -79,7 +79,7 @@ objects with their schemas:
   ids represent the 'current slice' view the user is looking at and we default
   the app to start showing the countries starting with the letter 'A'.
 
-```js
+```js file=src/main.jsx
 const App = () => {
   const countryStore = useCreateStore(() =>
     createStore().setTablesSchema({
@@ -145,7 +145,7 @@ We also create and memoize two Indexes objects with the useCreateIndexes hook:
 
 The code looks like this:
 
-```js
+```js file=src/main.jsx
 // ...
 const countryIndexes = useCreateIndexes(countryStore, (store) =>
   createIndexes(store).setIndexDefinition(
@@ -167,7 +167,7 @@ To start the app, we render the left-hand side `Filter` component and the main
 `Countries` component, wrapped in a Provider component that references the Store
 objects, and the Indexes objects:
 
-```jsx
+```jsx file=src/main.jsx
   // ...
   return (
     <Provider
@@ -188,7 +188,7 @@ the corner.
 
 We also use a simple grid layout to arrange the app:
 
-```less
+```less file=src/index.less
 @accentColor: #d81b60;
 @spacing: 0.5rem;
 @border: 1px solid #ccc;
@@ -210,7 +210,7 @@ body {
 Finally, when the window loads, we render the `App` component into the demo
 `div` to start the app:
 
-```js
+```js file=src/main.jsx
 window.addEventListener('load', () =>
   createRoot(document.body).render(<App />),
 );
@@ -227,7 +227,7 @@ Since both the left-hand and right-hand panels of the app need to read these
 parameters, we provide a custom `useCurrentSlice` hook to get those three Cell
 values out of the `viewStore`:
 
-```js
+```js file=src/main.jsx
 const useCurrentSlice = () => useValues('viewStore');
 ```
 
@@ -235,7 +235,7 @@ When a user clicks on the letters on the left-hand side of the app, we need to
 write these values too. So we also provide a custom `useSetCurrentSlice` hook
 that provides a callback to set the three Cell values:
 
-```js
+```js file=src/main.jsx
 const useSetCurrentSlice = (indexes, indexId, sliceId) =>
   useSetValuesCallback(
     () => ({indexes, indexId, sliceId}),
@@ -261,7 +261,7 @@ to the current slice, but in this case it is more efficient to do it once and
 pass down the `currentSlice` as a prop, using the `getSliceComponentProps`
 callback:
 
-```jsx
+```jsx file=src/main.jsx
 const Filters = () => {
   const {
     indexes: currentIndexes,
@@ -320,7 +320,7 @@ Instead of setting up a Metrics object to track this, it's simpler to just use
 the useSliceRowIds hook and show the `length` of the resulting array. Only the
 count of starred countries changes during the life of the app anyway:
 
-```jsx
+```jsx file=src/main.jsx
 const Filter = ({
   indexes = 'countryIndexes',
   indexId,
@@ -343,7 +343,7 @@ const Filter = ({
 
 These filters also have some straightforward styling:
 
-```less
+```less file=src/index.less
 #filters {
   overflow-y: scroll;
   border-right: @border;
@@ -375,7 +375,7 @@ the 'current slice' to be shown, comprising the name of the Indexes object in
 focus, an indexId, and a sliceId. We use those three parameters directly as the
 props for the SliceView component that forms the main part of the app:
 
-```jsx
+```jsx file=src/main.jsx
 const Countries = () => (
   <div id="countries">
     <SliceView {...useCurrentSlice()} rowComponent={Country} />
@@ -390,7 +390,7 @@ As well as rendering the name and flag of the country (from the `countryStore`
 store), we also add a small 'star' at the top of each country panel. Clicking
 this will toggle the `star` value to favorite or unfavorite the country:
 
-```jsx
+```jsx file=src/main.jsx
 const Country = (props) => {
   const {tableId, rowId} = props;
   const [star, setStar] = useCellState(tableId, rowId, 'star', 'starStore');
@@ -414,7 +414,7 @@ const Country = (props) => {
 The styling for the main panel of the app is a little more complex, but we want
 the country cards and flags to look good!
 
-```less
+```less file=src/index.less
 #countries {
   flex: 1;
   display: grid;

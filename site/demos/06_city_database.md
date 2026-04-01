@@ -12,7 +12,7 @@ demonstrate TinyBase!
 
 First, we create the import aliases for TinyBase and React modules we'll need:
 
-```html
+```html file=index.html
 <script type="importmap">
   {
     "imports": {
@@ -34,7 +34,7 @@ structured.
 We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
 
-```js
+```js file=src/main.jsx
 import {useMemo, useState} from 'react';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
@@ -52,7 +52,7 @@ In the main part of the application, we initialize a default Store (called
 The Store object is memoized by the useCreateStore method so it only created the
 first time the app is rendered.
 
-```jsx
+```jsx file=src/main.jsx
 const App = () => {
   const store = useCreateStore(createStore);
   // ...
@@ -64,7 +64,7 @@ state, and setting it to `false` only once the asynchronous loading sequence in
 the (soon-to-be described) `loadCities` function has completed. Until then, a
 loading spinner is shown.
 
-```jsx
+```jsx file=src/main.jsx
   // ...
   const [isLoading, setIsLoading] = useState(true);
   useMemo(async () => {
@@ -87,7 +87,7 @@ corner.
 
 With simple boilerplate code to load the component, off we go:
 
-```jsx
+```jsx file=src/main.jsx
 addEventListener('load', () => createRoot(document.body).render(<App />));
 ```
 
@@ -95,13 +95,13 @@ addEventListener('load', () => createRoot(document.body).render(<App />));
 
 Let's quickly dispatch with the loading spinner, a plain element with some CSS.
 
-```jsx
+```jsx file=src/main.jsx
 const Loading = () => <div id="loading" />;
 ```
 
 This is styled as a 270° arc with a spinning animation:
 
-```less
+```less file=src/index.less
 #loading {
   animation: spin 1s infinite linear;
   height: 2rem;
@@ -127,7 +127,7 @@ This is styled as a 270° arc with a spinning animation:
 The main body of the application is shown once the loading has completed and the
 spinner has disappeared. It simply contains the city table.
 
-```jsx
+```jsx file=src/main.jsx
 const Body = () => {
   return (
     <main>
@@ -139,7 +139,7 @@ const Body = () => {
 
 Again, this component has minimal styling:
 
-```less
+```less file=src/index.less
 main {
   padding: 0.5rem;
 }
@@ -155,7 +155,7 @@ We extract the column names from the top of the TSV, coerce numeric Cell values,
 and load everything into a standard Table called `cities`. Everything is wrapped
 in a transaction for performance.
 
-```js
+```js file=src/main.jsx
 const NUMERIC = /^[\d\.-]+$/;
 
 const loadCities = async (store) => {
@@ -187,7 +187,7 @@ loaded and we're ready to go.
 Finally, since the structure of the Table is well known, we create a constant
 list of column names for use when rendering:
 
-```js
+```js file=src/main.jsx
 const CUSTOM_CELLS = [
   'Name',
   'Country',
@@ -207,7 +207,7 @@ whole table implementation in this demo, but as of TinyBase v4.1, we just use
 the SortedTableInHtmlTable component from the new ui-react-dom module straight
 out of the box!
 
-```jsx
+```jsx file=src/main.jsx
 const CityTable = () => (
   <SortedTableInHtmlTable
     tableId="cities"
@@ -229,7 +229,7 @@ going through cities in pages of ten.
 The table benefits from some light styling for the pagination buttons and the
 table itself:
 
-```less
+```less file=src/index.less
 table {
   border-collapse: collapse;
   font-size: inherit;
@@ -272,7 +272,7 @@ That's it for the components.
 
 We finish off with the default CSS styling and typography that the app uses:
 
-```less
+```less file=src/index.less
 @font-face {
   font-family: Inter;
   src: url(https://tinybase.org/fonts/inter.woff2) format('woff2');

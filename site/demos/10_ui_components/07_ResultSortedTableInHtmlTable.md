@@ -15,7 +15,7 @@ displaying the result of a query from a Queries object.
 We switch out the TableInHtmlTable component and import the
 SortedTableInHtmlTable component instead.
 
-```diff-js
+```diff-js file=src/main.jsx
 -import {createStore} from 'tinybase';
 +import {createQueries, createStore} from 'tinybase';
 -import {Provider, useCell, useCreateStore} from 'tinybase/ui-react';
@@ -28,7 +28,7 @@ We need to register the query we are going to use. In the main `App` component,
 we can create the memoized Queries object, query a few columns for movies made
 since 2018...
 
-```diff-js
+```diff-js file=src/main.jsx
  const store = useCreateStore(createStore);
 +const queries = useCreateQueries(store, (store) =>
 +  createQueries(store).setQueryDefinition(
@@ -46,7 +46,7 @@ since 2018...
 
 ...and expose it into the app-wide context:
 
-```diff-js
+```diff-js file=src/main.jsx
    return (
 -    <Provider store={store}>{isLoading ? <Loading /> : <Body />}</Provider>
 +    <Provider store={store} queries={queries}>
@@ -61,7 +61,7 @@ The ResultSortedTableInHtmlTable component is very similar to the
 SortedTableInHtmlTable component, but instead of taking a tableId, we provide it
 with the queryId:
 
-```diff-jsx
+```diff-jsx file=src/main.jsx
  const Body = () => {
    return (
      <>
@@ -85,7 +85,7 @@ with the queryId:
 Note that we explicitly picked and labelled which columns were in the query, so
 we don't need the `customCells` prop any more.
 
-```diff-js
+```diff-js file=src/main.jsx
 -const customCells = {name: 'Name', year: 'Year', rating: 'Rating'};
 ```
 

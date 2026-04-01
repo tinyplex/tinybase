@@ -17,7 +17,7 @@ We switch out the TableInHtmlTable component and import the
 RelationshipInHtmlTable component instead. We'll also need the
 createRelationships function and useCreateRelationships hook:
 
-```diff-js
+```diff-js file=src/main.jsx
 -import {createStore} from 'tinybase';
 +import {createRelationships, createStore} from 'tinybase';
 -import {Provider, useCell, useCreateStore} from 'tinybase/ui-react';
@@ -37,7 +37,7 @@ demo we are going to hand-create a second table which the genres table links to
 to get extra metadata. Note how metadata is missing for genre 13, 'Music', and
 so that is empty in the table.
 
-```diff-js
+```diff-js file=src/main.jsx
    useMemo(async () => {
      await loadTable(store, 'genres');
 +    store.setTable('metadata', {
@@ -66,7 +66,7 @@ and create the relationship between the the genres Table and the 'remote'
 metadata Table. Note that we concatenate the genre Id and '\_meta' to link the
 rows from the two tables together.
 
-```diff-js
+```diff-js file=src/main.jsx
  const store = useCreateStore(createStore);
 +const relationships = useCreateRelationships(store, (store) =>
 +  createRelationships(store).setRelationshipDefinition(
@@ -80,7 +80,7 @@ rows from the two tables together.
 
 We expose the Relationships object into the app-wide context:
 
-```diff-js
+```diff-js file=src/main.jsx
    return (
 -    <Provider store={store}>{isLoading ? <Loading /> : <Body />}</Provider>
 +    <Provider store={store} relationships={relationships}>
@@ -95,7 +95,7 @@ The RelationshipInHtmlTable component is very similar to the TableInHtmlTable
 component, but instead of taking a tableId, we provide it with the
 relationshipId:
 
-```diff-jsx
+```diff-jsx file=src/main.jsx
  const Body = () => {
    return (
 -    <>
@@ -118,7 +118,7 @@ RelationshipInHtmlTable. We can use the `customCells` prop for this, using the
 dotted pair syntax (of Table Id and Row Id) to indicate their order, labels, and
 rendering:
 
-```diff-jsx
+```diff-jsx file=src/main.jsx
 -    <RelationshipInHtmlTable relationshipId='genresMetadata' />
 +    <RelationshipInHtmlTable
 +      relationshipId='genresMetadata'
@@ -132,7 +132,7 @@ rendering:
 The customized column ordering and rendering can be a constant, including our
 custom Cell component called Popularity that simply emboldens that number:
 
-```jsx
+```jsx file=src/main.jsx
 const Popularity = (props) => (
   <b>
     <CellView {...props} />

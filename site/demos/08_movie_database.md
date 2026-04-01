@@ -80,7 +80,7 @@ interface. Otherwise, that's enough preamble... let's get to some code!
 
 First, we create the import aliases for TinyBase and React modules we'll need:
 
-```html
+```html file=index.html
 <script type="importmap">
   {
     "imports": {
@@ -102,7 +102,7 @@ structured.
 We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
 
-```js
+```js file=src/main.jsx
 import {useMemo, useState} from 'react';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
@@ -139,7 +139,7 @@ The two Store objects and the Queries object are memoized by the useCreateStore
 method and useCreateQueries method so they are only created the first time the
 app is rendered.
 
-```jsx
+```jsx file=src/main.jsx
 const App = () => {
   const store = useCreateStore(createStore);
 
@@ -157,7 +157,7 @@ state, and setting it to `false` only once the asynchronous loading sequence in
 the (soon-to-be described) `loadStore` function has completed. Until then, a
 loading spinner is shown.
 
-```jsx
+```jsx file=src/main.jsx
   // ...
   const [isLoading, setIsLoading] = useState(true);
   useMemo(async () => {
@@ -181,7 +181,7 @@ the corner.
 
 With simple boilerplate code to load the component, off we go:
 
-```jsx
+```jsx file=src/main.jsx
 addEventListener('load', () => createRoot(document.body).render(<App />));
 ```
 
@@ -194,13 +194,13 @@ building blocks for the application's user interface.
 
 First the loading spinner, a plain element with some CSS.
 
-```jsx
+```jsx file=src/main.jsx
 const Loading = () => <div id="loading" />;
 ```
 
 This is styled as a 270° arc with a spinning animation:
 
-```less
+```less file=src/index.less
 #loading {
   animation: spin 1s infinite linear;
   height: 2rem;
@@ -228,7 +228,7 @@ Next the structure of the application. It has four sections: 'Movies', 'Years',
 collection of them. Each either shows an overview (for example, all movies) or
 the detail of one particular record (for example, a single movie):
 
-```jsx
+```jsx file=src/main.jsx
 const MoviesSection = ({detailId}) =>
   detailId == null ? <MoviesOverview /> : <MovieDetail movieId={detailId} />;
 
@@ -254,7 +254,7 @@ The `viewStore` contains the section name and optionally a string detail ID
 and the `useSetRouteCallback` hook will be used to set it in response to the
 user clicking links in the app.
 
-```js
+```js file=src/main.jsx
 const useRoute = () => useValues('viewStore');
 const useSetRouteCallback = (currentSection, currentDetailId) =>
   useSetValuesCallback(
@@ -277,7 +277,7 @@ pages viewed!)
 The header component simply renders all the links for the `SECTIONS` object and
 highlights the one that matches the current route.
 
-```jsx
+```jsx file=src/main.jsx
 const Header = () => {
   const {currentSection} = useRoute();
   return (
@@ -297,7 +297,7 @@ const Header = () => {
 
 The header also has very simple styling:
 
-```less
+```less file=src/index.less
 nav {
   background: #eee;
   display: flex;
@@ -318,7 +318,7 @@ nav {
 Finally, we use the current route to load the appropriate section and render it
 into the main part of the application:
 
-```jsx
+```jsx file=src/main.jsx
 const Body = () => {
   const {currentSection, currentDetailId} = useRoute();
   if (SECTIONS[currentSection] != null) {
@@ -335,7 +335,7 @@ const Body = () => {
 
 Again, this component has minimal styling:
 
-```less
+```less file=src/index.less
 main {
   padding: 0.5rem;
 }
@@ -355,7 +355,7 @@ from the top of the TSV, check each row has a matching cardinality, use the
 first column as the Row Id, coerce numeric Cell values, and load everything into
 a standard Table.
 
-```js
+```js file=src/main.jsx
 const NUMERIC = /^[\d\.]+$/;
 
 const loadTable = async (store, tableId) => {
@@ -384,7 +384,7 @@ There are four raw tables used in this application, as described in our opening
 section. We wait for all four to load (again, asynchronously) wrapped in a
 single Store transaction.
 
-```js
+```js file=src/main.jsx
 const loadStore = async (store) => {
   store.startTransaction();
   await Promise.all(
@@ -414,7 +414,7 @@ that specifies those Cell Ids. This can be used whenever the `movies` Table is
 the root of the query. When provided a `select` and `join` function, it selects
 those common columns:
 
-```js
+```js file=src/main.jsx
 const queryMovieBasics = ({select, join}) => {
   select((_, movieId) => movieId).as('movieId');
   select('name').as('movieName');
@@ -434,7 +434,7 @@ In the `App` component we described at the start of the article, we call a
 function called `createAndInitQueries` to initialize the queries. Here's its
 implementation:
 
-```js
+```js file=src/main.jsx
 const createAndInitQueries = (store) => {
   const queries = createQueries(store);
   // ...
@@ -450,7 +450,7 @@ the cast names and images. Each movie has up to three cast members captured in
 the `cast` many-to-many join Table - and so we join through _that_ table three
 times according to their billing.
 
-```js
+```js file=src/main.jsx
 // ...
 queries.setQueryDefinition('movies', 'movies', ({select, join}) => {
   queryMovieBasics({select, join});
@@ -525,7 +525,7 @@ We also create query definitions for the other persistent queries. These use the
 `group` function to count the number of movies per year, genre, and so on, used
 in the overview components of each of the main sections of the app.
 
-```js
+```js file=src/main.jsx
 // ...
 queries.setQueryDefinition('years', 'movies', ({select, group}) => {
   select('year');
@@ -571,7 +571,7 @@ re-used across the app, so note that it takes optional params for `year` and
 Similarly, the `directedMovies` and `appearedMovies` queries take a `personId`
 param to show movies for a specific director or actor.
 
-```js
+```js file=src/main.jsx
   // ...
   queries.setQueryDefinition(
     'yearGenreMovies',
@@ -628,7 +628,7 @@ Finally, let's create a convenient hook that will allow us to parameterize the
 `yearGenreMovies` query, and one to parameterize both the `directedMovies` and
 `appearedMovies` queries for a given person:
 
-```js
+```js file=src/main.jsx
 const useSetYearGenre = ({year, genreId}) =>
   useSetParamValuesCallback(
     'yearGenreMovies',
@@ -655,7 +655,7 @@ the app.
 This component also benefits from some light styling for the pagination buttons
 and the table itself:
 
-```less
+```less file=src/index.less
 table {
   border-collapse: collapse;
   font-size: inherit;
@@ -714,7 +714,7 @@ This component obviously assumes that the `movieId`, `movieImage`, and
 `movieName` Cell Ids are present in the query, so we only use this for queries
 that meaningfully populate those.
 
-```jsx
+```jsx file=src/main.jsx
 const MovieLink = ({queryId, rowId}) => {
   const movieId = useResultCell(queryId, rowId, 'movieId');
   return (
@@ -730,7 +730,7 @@ We do the same for queries that contain a `year` Cell Id, for those that contain
 `genreId` and `genreName` Cell Ids, and for those that contain `directorId` and
 `directorName` Cell Ids:
 
-```jsx
+```jsx file=src/main.jsx
 const YearLink = ({queryId, rowId}) => {
   const year = useResultCell(queryId, rowId, 'year');
   return (
@@ -763,7 +763,7 @@ const DirectorLink = ({queryId, rowId}) => {
 We do the same for actors, but for the billed cast members we need to check tor
 existence, in case a movie does not have three actors:
 
-```jsx
+```jsx file=src/main.jsx
 const CastLink = ({queryId, rowId, billing = ''}) => {
   const personId = useResultCell(queryId, rowId, `castId${billing}`);
   return personId == null ? null : (
@@ -791,7 +791,7 @@ defined up front.
 These take the numeric TMDB gender Id (from the Row of a Table or the result Row
 of query) and render it as a string:
 
-```jsx
+```jsx file=src/main.jsx
 const GenderFromQuery = ({queryId, rowId}) =>
   genderString(useResultCell(queryId, rowId, 'gender'));
 
@@ -815,7 +815,7 @@ const genderString = (genderId) => {
 These take a TMDB image path (again from the Row of a Table or the result Row of
 query) and render it in large or small format:
 
-```jsx
+```jsx file=src/main.jsx
 const ImageFromQuery = ({queryId, rowId, cellId, isLarge}) => (
   <Image imageFile={useResultCell(queryId, rowId, cellId)} isLarge={isLarge} />
 );
@@ -834,7 +834,7 @@ const Image = ({imageFile, isLarge}) => (
 
 These images have some light styling:
 
-```less
+```less file=src/index.less
 img {
   width: 1rem;
   height: 1.5rem;
@@ -857,7 +857,7 @@ img {
 And finally, this trivial component just wraps the main view of the application
 to apply a consistent title to the top of each page:
 
-```jsx
+```jsx file=src/main.jsx
 const Page = ({title, children}) => (
   <>
     <h1>{title}</h1>
@@ -879,7 +879,7 @@ the 'Movies' tab when the app first loads), comprising a
 ResultSortedTableInHtmlTable component that renders the `movies` query with four
 columns, sorted by rating.
 
-```jsx
+```jsx file=src/main.jsx
 const MoviesOverview = () => (
   <Page title="Rated movies">
     <ResultSortedTableInHtmlTable
@@ -910,7 +910,7 @@ components](#linking-between-views) later.
 The 'Years' tab renders the `years` query with two columns: the year and the
 number of movies in that year:
 
-```jsx
+```jsx file=src/main.jsx
 const YearsOverview = () => (
   <Page title="Years">
     <ResultSortedTableInHtmlTable
@@ -935,7 +935,7 @@ const customCellsForYearsOverview = {
 Similarly, the 'Genres' tab renders the `genres` query with two columns: the
 genre and the number of movies in that genre:
 
-```jsx
+```jsx file=src/main.jsx
 const GenresOverview = () => (
   <Page title="Genres">
     <ResultSortedTableInHtmlTable
@@ -960,7 +960,7 @@ const customCellsForGenresOverview = {
 Finally, the 'People' tab renders two tables: the `directors` query and the
 `cast` query with four columns each, both sorted by popularity:
 
-```jsx
+```jsx file=src/main.jsx
 const PeopleOverview = () => (
   <Page title="People">
     <h2>Directors</h2>
@@ -1013,7 +1013,7 @@ year, genre, or person. Firstly, for a single movie (assuming it exists!), we
 isolate a row in the de-normalized `movies` query and render its Cell values in
 a page format:
 
-```jsx
+```jsx file=src/main.jsx
 const MovieDetail = ({movieId}) => {
   const props = {queryId: 'movies', rowId: movieId};
   const name = useResultCell('movies', movieId, 'movieName');
@@ -1067,7 +1067,7 @@ we use the useSetParamValuesCallback hook to update its params whenever the
 `year` prop changes. This is more efficient and ergonomic than rebuilding the
 query definition every time.
 
-```jsx
+```jsx file=src/main.jsx
 const YearDetail = ({year}) => {
   useSetYearGenre({year});
   return (
@@ -1096,7 +1096,7 @@ const customCellsForMoviesInYear = {
 The genre detail page is very similar, using the same parameterized query but
 setting the `genreId` param instead:
 
-```jsx
+```jsx file=src/main.jsx
 const GenreDetail = ({genreId}) => {
   useSetYearGenre({genreId});
   const name = useCell('genres', genreId, 'name');
@@ -1132,7 +1132,7 @@ rendering some parts of its content directly from the `people` Table (rather
 than via a query) - hence the use of the basic `useCell` hook and `CellView`
 component, for example.
 
-```jsx
+```jsx file=src/main.jsx
 const PersonDetail = ({personId}) => {
   useSetPersonMovies(personId);
 
@@ -1213,7 +1213,7 @@ const customCellsForMoviesWithPeople = {
 Just for completeness, here is the default CSS styling and typography that the
 app uses:
 
-```less
+```less file=src/index.less
 @font-face {
   font-family: Inter;
   src: url(https://tinybase.org/fonts/inter.woff2) format('woff2');

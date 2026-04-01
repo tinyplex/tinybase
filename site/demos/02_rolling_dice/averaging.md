@@ -6,7 +6,7 @@ the average.
 
 First, we create the import aliases for TinyBase and React modules we'll need:
 
-```html
+```html file=index.html
 <script type="importmap">
   {
     "imports": {
@@ -26,7 +26,7 @@ structured.
 
 We import the functions and components we need, and create the Store object:
 
-```js
+```js file=src/main.jsx
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {createMetrics, createStore} from 'tinybase';
@@ -39,7 +39,7 @@ const store = createStore();
 To create the Metrics object, we use the createMetrics function, and configure
 two definitions for it:
 
-```js
+```js file=src/main.jsx
 const metrics = createMetrics(store)
   .setMetricDefinition('average', 'rolls', 'avg', 'result')
   .setMetricDefinition('count', 'rolls', 'sum');
@@ -47,7 +47,7 @@ const metrics = createMetrics(store)
 
 Each roll is going to be rendered as a dice Unicode character:
 
-```jsx
+```jsx file=src/main.jsx
 const Roll = ({tableId, rowId}) => (
   <span className="roll">
     {String.fromCharCode(9855 + useCell(tableId, rowId, 'result'))}
@@ -57,7 +57,7 @@ const Roll = ({tableId, rowId}) => (
 
 The dice require a little styling:
 
-```less
+```less file=src/index.less
 .roll {
   display: inline-block;
   font-size: 3rem;
@@ -69,7 +69,7 @@ The dice require a little styling:
 We then create a React app comprising two MetricView components and a TableView
 component which will render the `Roll` components:
 
-```jsx
+```jsx file=src/main.jsx
 createRoot(document.body).render(
   <Provider store={store} metrics={metrics}>
     <p>
@@ -90,7 +90,7 @@ the corner.
 To roll the dice, we add a new Row every half second with the result, until the
 count of rolls reaches 48:
 
-```js
+```js file=src/main.jsx
 let rolls = 0;
 const interval = setInterval(() => {
   if (rolls++ == 48) {
@@ -105,7 +105,7 @@ const interval = setInterval(() => {
 
 Add a little styling, and we're done!
 
-```less
+```less file=src/index.less
 @font-face {
   font-family: Inter;
   src: url(https://tinybase.org/fonts/inter.woff2) format('woff2');

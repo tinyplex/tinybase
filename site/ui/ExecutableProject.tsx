@@ -1,4 +1,5 @@
 import prettier from '@prettier/sync';
+import {dirname, relative} from 'path';
 import type {NoPropComponent} from 'tinydocs';
 import {usePageNode} from 'tinydocs';
 import {usePackageData} from './BuildContext.tsx';
@@ -160,40 +161,30 @@ export default defineConfig({
         .trim()
     : undefined;
 
-const getTsconfig = (): string =>
-  JSON.stringify(
-    {
-      compilerOptions: {
-        target: 'ES2022',
-        useDefineForClassFields: true,
-        lib: ['ES2022', 'DOM', 'DOM.Iterable'],
-        module: 'ESNext',
-        skipLibCheck: true,
-        allowJs: true,
-        moduleResolution: 'bundler',
-        allowImportingTsExtensions: true,
-        resolveJsonModule: true,
-        isolatedModules: true,
-        noEmit: true,
-        jsx: 'react-jsx',
-      },
-      include: ['src'],
-    },
-    null,
-    2,
-  );
-
 const getEntryFileName = (files: {[path: string]: string}): string | undefined =>
   [
-    'src/main.tsx',
-    'src/main.ts',
     'src/main.jsx',
+    'src/main.tsx',
     'src/main.js',
-    'index.tsx',
-    'index.ts',
+    'src/main.ts',
     'index.jsx',
+    'index.tsx',
     'index.js',
+    'index.ts',
   ].find((path) => files[path] != null);
+
+const getHtmlFileName = (files: {[path: string]: string}): string | undefined =>
+  Object.keys(files).find((path) => path.endsWith('.html'));
+
+const getStyleFileName = (files: {[path: string]: string}): string | undefined =>
+  Object.keys(files).find(
+    (path) => path.endsWith('.less') || path.endsWith('.css'),
+  );
+
+const getImportPath = (fromFile: string, toFile: string): string => {
+  const path = relative(dirname(fromFile), toFile);
+  return path.startsWith('.') ? path : './' + path;
+};
 
 export const ExecutableProject: NoPropComponent = (): any => {
   const {name: title, summary: description = '', executables} = usePageNode();
@@ -202,9 +193,11 @@ export const ExecutableProject: NoPropComponent = (): any => {
     return null;
   }
   const cleanDescription = description.replaceAll(/\s+/g, ' ').trim();
+  const {html = '', less = '', tsx = ''} = executables;
+  const legacy = html != '' || less != '' || tsx != '';
   const files = executables.files;
 
-  if (files != null) {
+  if (files != null && !legacy) {
     const entryFileName = getEntryFileName(files);
     const project = {
       title,
@@ -225,26 +218,37 @@ export const ExecutableProject: NoPropComponent = (): any => {
     return <code dangerouslySetInnerHTML={{__html: JSON.stringify(project)}} />;
   }
 
-  const {html = '', less = '', tsx = ''} = executables;
   const imports = getImportMap(html);
   const dependencies = getDependencies(imports, version, devDependencies);
   const react =
     imports.react != null ||
     imports['react-dom/client'] != null ||
     imports['react/jsx-runtime'] != null;
-  const entryFileName = react ? 'src/main.tsx' : 'src/main.js';
+  const entryFileName =
+    files == null
+      ? react
+        ? 'src/main.jsx'
+        : 'src/main.js'
+      : (getEntryFileName(files) ?? (react ? 'src/main.jsx' : 'src/main.js'));
+  const htmlFileName = files == null ? 'index.html' : (getHtmlFileName(files) ?? 'index.html');
+  const styleFileName =
+    less.trim() == ''
+      ? undefined
+      : files == null
+        ? 'src/index.less'
+        : (getStyleFileName(files) ?? 'src/index.less');
   const viteConfig = getViteConfig(react, devDependencies);
+  const styleImport =
+    styleFileName == null ? '' : `import '${getImportPath(entryFileName, styleFileName)}';\n\n`;
   const project = {
     title,
     description: cleanDescription,
     template: 'node',
     files: {
       '.npmrc': 'legacy-peer-deps=true\n',
-      'index.html': getHtml(title, html, entryFileName),
-      'src/index.less': getLess(less),
-      [entryFileName]: getSource(
-        `${less.trim() == '' ? '' : `import './index.less';\n\n`}${tsx}`,
-      ),
+      [htmlFileName]: getHtml(title, html, entryFileName),
+      ...(styleFileName == null ? {} : {[styleFileName]: getLess(less)}),
+      [entryFileName]: getSource(`${styleImport}${tsx}`),
       'package.json': getPackageJson(
         title,
         dependencies,
@@ -254,7 +258,6 @@ export const ExecutableProject: NoPropComponent = (): any => {
       ...(viteConfig == null
         ? {}
         : {
-            'tsconfig.json': getTsconfig(),
             'vite.config.js': viteConfig,
           }),
     },
