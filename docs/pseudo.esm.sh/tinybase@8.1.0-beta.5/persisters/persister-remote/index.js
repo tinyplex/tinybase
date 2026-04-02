@@ -384,11 +384,12 @@ var createCustomPersister = (store, getPersisted, setPersisted, addPersisterList
   return objFreeze(persister);
 };
 var getETag = (response) => response.headers.get("ETag") ?? "";
+var getIfNoneMatchHeaders = (lastEtag) => lastEtag == "" ? void 0 : { "If-None-Match": lastEtag };
 var createRemotePersister = (store, loadUrl, saveUrl, autoLoadIntervalSeconds = 5, onIgnoredError) => {
   let lastEtag = "";
   const getPersisted = async () => {
     const response = await fetch(loadUrl, {
-      headers: { "If-None-Match": lastEtag }
+      headers: getIfNoneMatchHeaders(lastEtag)
     });
     lastEtag = getETag(response);
     return jsonParse(await response.text());
@@ -401,7 +402,7 @@ var createRemotePersister = (store, loadUrl, saveUrl, autoLoadIntervalSeconds = 
   const addPersisterListener = (listener) => startInterval(async () => {
     const response = await fetch(loadUrl, {
       method: "HEAD",
-      headers: { "If-None-Match": lastEtag }
+      headers: getIfNoneMatchHeaders(lastEtag)
     });
     const currentEtag = getETag(response);
     if (currentEtag != lastEtag) {
