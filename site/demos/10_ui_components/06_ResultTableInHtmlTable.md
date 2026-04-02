@@ -16,7 +16,7 @@ We switch out the TableInHtmlTable component and import the
 ResultTableInHtmlTable component instead. We'll also need the createQueries
 function and useCreateQueries hook:
 
-```diff-js file=src/main.jsx
+```diff-js
 -import {createStore} from 'tinybase';
 +import {createQueries, createStore} from 'tinybase';
 -import {Provider, useCell, useCreateStore} from 'tinybase/ui-react';
@@ -29,7 +29,7 @@ We need to define the query we are going to use. In the main `App` component, we
 can create the memoized Queries object, query for genres starting with the
 letter 'A' (and the length of the word)...
 
-```diff-js file=src/main.jsx
+```diff-js
  const store = useCreateStore(createStore);
 +const queries = useCreateQueries(store, (store) =>
 +  createQueries(store).setQueryDefinition(
@@ -46,7 +46,7 @@ letter 'A' (and the length of the word)...
 
 ...and expose it into the app-wide context:
 
-```diff-js file=src/main.jsx
+```diff-js
    return (
 -    <Provider store={store}>{isLoading ? <Loading /> : <Body />}</Provider>
 +    <Provider store={store} queries={queries}>
@@ -60,7 +60,7 @@ letter 'A' (and the length of the word)...
 The ResultTableInHtmlTable component is very similar to the TableInHtmlTable
 component, but instead of taking a tableId, we provide it with the queryId:
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
  const Body = () => {
    return (
 -    <>

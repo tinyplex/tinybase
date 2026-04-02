@@ -13,7 +13,7 @@ changes to the <TableInHtmlTable /> demo to support this new component.
 We switch out the TableInHtmlTable component and import the
 SortedTableInHtmlTable component instead.
 
-```diff-js file=src/main.jsx
+```diff-js
 -import {TableInHtmlTable} from 'tinybase/ui-react-dom';
 +import {SortedTableInHtmlTable} from 'tinybase/ui-react-dom';
 ```
@@ -21,7 +21,7 @@ SortedTableInHtmlTable component instead.
 This component is best showcased with a larger data set, so we load up movies
 instead of genres:
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
    useMemo(async () => {
 -    await loadTable(store, 'genres');
 +    await loadTable(store, 'movies');
@@ -34,7 +34,7 @@ instead of genres:
 The SortedTableInHtmlTable component is similar to the TableInHtmlTable
 component, requiring at least the Table Id:
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
  const Body = () => {
    return (
      <>
@@ -56,7 +56,7 @@ few here.
 Firstly, since the Table is very wide (and contains a lengthy description), we
 will first explicitly set the Cell Ids we want to display:
 
-```diff-js file=src/main.jsx
+```diff-js
 -const customCells = {name: {label: 'Name', component: DictionaryCell}};
 +const customCells = {name: 'Name', year: 'Year', rating: 'Rating'};
 ```
@@ -65,7 +65,7 @@ will first explicitly set the Cell Ids we want to display:
 Id as key and label as value (like this), or an object made up of CustomCell
 objects. See the HtmlTableProps type for more details.)
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
        <SortedTableInHtmlTable
          tableId='movies'
 +        customCells={customCells}
@@ -77,7 +77,7 @@ can take props to indicate how the sorting should work. `cellId` indicates which
 Cell to use to sort on, and `descending` indicates the direction. We can sort
 the movies by rating accordingly:
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
        <SortedTableInHtmlTable
          tableId='movies'
          customCells={customCells}
@@ -93,7 +93,7 @@ The component automatically adds two classes to the heading of the column that
 is being used for the sorting. We can add styling to show which column it is,
 and a small arrow to indicate the direction:
 
-```less file=src/index.less
+```less
 th.sorted {
   background: #ddd;
 }
@@ -105,7 +105,7 @@ The SortedTableInHtmlTable component can be made to be interactive. By adding
 the sortOnClick flag prop, you can make it such that users can click on the
 column headings to change the sorting:
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
        <SortedTableInHtmlTable
          tableId='movies'
          customCells={customCells}
@@ -120,7 +120,7 @@ As this means the table's content can change, the columns might adjust their
 widths and the table jumps around. We can quickly fix this by hinting about the
 widths of the header row so that the layout is stable:
 
-```less file=src/index.less
+```less
 thead th {
   width: 5rem;
   &:nth-of-type(2) {
@@ -136,7 +136,7 @@ We can also add pagination controls, by adding the `paginator` prop. This either
 takes `true` to enable the default SortedTablePaginator component, or a
 paginator component of your own design that accepts SortedTablePaginatorProps.
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
        <SortedTableInHtmlTable
          tableId='movies'
          customCells={customCells}
@@ -152,7 +152,7 @@ This places the pagination controls in the `<caption>` element of the `<table>`,
 and you can use CSS to position and style it. We are removing the default text
 from
 
-```less file=src/index.less
+```less
 table caption {
   caption-side: top;
   text-align: left;

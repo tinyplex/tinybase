@@ -10,7 +10,7 @@ desktop browser.
 
 First, we create the import aliases for TinyBase and React modules we'll need:
 
-```html file=index.html
+```html
 <script type="importmap">
   {
     "imports": {
@@ -28,7 +28,7 @@ First, we create the import aliases for TinyBase and React modules we'll need:
 We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
 
-```js file=src/main.jsx
+```js
 import {useMemo, useState} from 'react';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
@@ -41,7 +41,7 @@ This is the main container of the demo, in a React component called `App`. It
 instantiates the Store with sample data (and memoizes it), and then renders the
 app with the Store in a Provider context so it's available throughout the app:
 
-```jsx file=src/main.jsx
+```jsx
 const App = () => {
   const store = useCreateStore(createStore);
   const [isLoading, setIsLoading] = useState(true);
@@ -63,7 +63,7 @@ addEventListener('load', () => createRoot(document.body).render(<App />));
 To start things off simple, we're loading a set of static Values into the Store,
 perhaps representing the user preferences of an app:
 
-```js file=src/main.jsx
+```js
 const loadValues = (store) => {
   store
     .startTransaction()
@@ -78,11 +78,11 @@ const loadValues = (store) => {
 Though currently synchronous, later demos will load data from a remote server,
 so let's set up a spinner now, to show while data loads:
 
-```jsx file=src/main.jsx
+```jsx
 const Loading = () => <div id="loading" />;
 ```
 
-```less file=src/index.less
+```less
 #loading {
   animation: spin 1s infinite linear;
   height: 2rem;
@@ -108,7 +108,7 @@ const Loading = () => <div id="loading" />;
 These demos have some default CSS for typography and color. Let's get that out
 of the way early, too:
 
-```less file=src/index.less
+```less
 @font-face {
   font-family: Inter;
   src: url(https://tinybase.org/fonts/inter.woff2) format('woff2');
@@ -143,7 +143,7 @@ with some data, we can render it with components from the ui-react-dom module.
 We will start off with a simple table, using the ValuesInHtmlTable component.
 This literally needs zero props to render the Values.
 
-```jsx file=src/main.jsx
+```jsx
 const Body = () => {
   return (
     <>
@@ -156,7 +156,7 @@ containing all the Store's Values.
 Of course we should provide some light styling to emphasize the borders and
 headings and so on. Oh, and an obligatory drop shadow.
 
-```less file=src/index.less
+```less
 table {
   background: white;
   border-collapse: collapse;
@@ -191,7 +191,7 @@ Note that you can disable the top header row and Id column on the left with the
 `headerRow` and `idColumn` props respectively. We can add a second table to
 demonstrate that:
 
-```jsx file=src/main.jsx
+```jsx
       <ValuesInHtmlTable headerRow={false} idColumn={false} />
     </>
   );

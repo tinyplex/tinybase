@@ -16,7 +16,7 @@ We switch out the TableInHtmlTable component and import the SliceInHtmlTable
 component instead. We'll also need the createIndexes function and
 useCreateIndexes hook:
 
-```diff-js file=src/main.jsx
+```diff-js
 -import {createStore} from 'tinybase';
 +import {createIndexes, createStore} from 'tinybase';
 -import {Provider, useCell, useCreateStore} from 'tinybase/ui-react';
@@ -29,7 +29,7 @@ We need to define the Index we are going to use. In the main `App` component, we
 can create the memoized Indexes object, and index the genres by the length of
 their name.
 
-```diff-js file=src/main.jsx
+```diff-js
  const store = useCreateStore(createStore);
 +const indexes = useCreateIndexes(store, (store) =>
 +  createIndexes(store).setIndexDefinition(
@@ -42,7 +42,7 @@ their name.
 
 ...and expose it into the app-wide context:
 
-```diff-js file=src/main.jsx
+```diff-js
    return (
 -    <Provider store={store}>{isLoading ? <Loading /> : <Body />}</Provider>
 +    <Provider store={store} indexes={indexes}>
@@ -57,7 +57,7 @@ The SliceInHtmlTable component is very similar to the TableInHtmlTable
 component, but instead of taking a tableId, we provide it with the indexId and
 the sliceId we want to display (here, the names that are 6 letters long):
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
  const Body = () => {
    return (
 -    <>

@@ -13,7 +13,7 @@ you!
 
 First, we create the import aliases for TinyBase and React modules we'll need:
 
-```html file=index.html
+```html
 <script type="importmap">
   {
     "imports": {
@@ -30,7 +30,7 @@ First, we create the import aliases for TinyBase and React modules we'll need:
 We need the following parts of the TinyBase API, the ui-react module, and React
 itself:
 
-```js file=src/main.jsx
+```js
 import {useCallback, useMemo, useState} from 'react';
 import React from 'react';
 import {createRoot} from 'react-dom/client';
@@ -62,7 +62,7 @@ TSV files are smaller and faster than JSON to load over the wire, but
 nonetheless, we load it asynchronously and insert it into the `words` Table in a
 single transaction:
 
-```js file=src/main.jsx
+```js
 const loadWords = async (store) => {
   const words = (
     await (await fetch(`https://tinybase.org/assets/words.tsv`)).text()
@@ -96,7 +96,7 @@ and `the`. The word `theme` will appear in those too, as well as those with Ids
 We build the Index with the setIndexDefinition method, providing a custom
 function that returns the stems (including the empty string) for each word:
 
-```js file=src/main.jsx
+```js
 const indexWords = (store) =>
   createIndexes(store).setIndexDefinition('stems', 'words', (getCell) => {
     const word = getCell('word');
@@ -125,7 +125,7 @@ initialized with the function above.
 The two objects are memoized by the useCreateStore method and useCreateIndexes
 method so they are only created the first time the app is rendered.
 
-```jsx file=src/main.jsx
+```jsx
 const App = () => {
   const store = useCreateStore(createStore);
   const indexes = useCreateIndexes(store, indexWords);
@@ -141,7 +141,7 @@ For the loaded application, the UI comprises literally just the input box and
 the results. They are bound together using just one state variable (`stem`),
 which contains the text that the user has entered into the search box.
 
-```jsx file=src/main.jsx
+```jsx
   // ...
   const [isLoading, setIsLoading] = useState(true);
   useMemo(async () => {
@@ -167,7 +167,7 @@ which contains the text that the user has entered into the search box.
 
 Let's go!
 
-```jsx file=src/main.jsx
+```jsx
 addEventListener('load', () => createRoot(document.body).render(<App />));
 ```
 
@@ -176,7 +176,7 @@ addEventListener('load', () => createRoot(document.body).render(<App />));
 The search box is a very lightly wrapped `<input>` element that displays the
 stem and reacts to changes, firing the `onChange` prop.
 
-```jsx file=src/main.jsx
+```jsx
 const Input = ({stem, onChange}) => (
   <input
     value={stem}
@@ -190,7 +190,7 @@ const Input = ({stem, onChange}) => (
 
 We have a little bit of styling for this too:
 
-```less file=src/index.less
+```less
 input {
   border: 0;
   border-bottom: 1px solid #999;
@@ -212,7 +212,7 @@ the results is trivial! We take the stem, get the array of Row Ids that are in
 that pre-indexed Slice, and then render a `Result` component for the first 14 of
 them:
 
-```jsx file=src/main.jsx
+```jsx
 const Results = ({stem}) => {
   const resultRowIds = useSliceRowIds('stems', stem.toLowerCase());
   return (
@@ -236,7 +236,7 @@ matching characters.
 For each matching word (identified by its Row Id in the `words` Table of the
 default Store), we want to display the word, its rank, and its frequency:
 
-```jsx file=src/main.jsx
+```jsx
 const Result = ({rowId, stemLength}) => {
   const {rank, word, perMillion} = useRow('words', rowId);
   return (
@@ -257,7 +257,7 @@ const Result = ({rowId, stemLength}) => {
 
 We style this:
 
-```less file=src/index.less
+```less
 .result {
   display: block;
   width: 20rem;
@@ -273,7 +273,7 @@ We style this:
 The `suffix` function simply puts the ordinal suffixes '-th', '-st',
 '-nd', and '-rd' at the end of the ranking number:
 
-```js file=src/main.jsx
+```js
 const suffix = (rank) => {
   switch (rank % 100) {
     case 11:
@@ -297,7 +297,7 @@ const suffix = (rank) => {
 And the frequency function takes the number of times the word typically appears per
 million words and displays a percentage:
 
-```js file=src/main.jsx
+```js
 const frequency = (perMillion) => {
   if (perMillion < 10) {
     return 'rare';
@@ -311,13 +311,13 @@ const frequency = (perMillion) => {
 Just for completeness, here is the loading spinner, a plain element with some
 CSS.
 
-```jsx file=src/main.jsx
+```jsx
 const Loading = () => <div id="loading" />;
 ```
 
 This is styled as a 270° arc with a spinning animation:
 
-```less file=src/index.less
+```less
 #loading {
   animation: spin 1s infinite linear;
   height: 2rem;
@@ -341,7 +341,7 @@ This is styled as a 270° arc with a spinning animation:
 And finally, for completeness, here is the remaining styling for the application
 as whole:
 
-```less file=src/index.less
+```less
 @font-face {
   font-family: Inter;
   src: url(https://tinybase.org/fonts/inter.woff2) format('woff2');

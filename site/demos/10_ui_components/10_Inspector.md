@@ -12,7 +12,7 @@ well-populated Store to inspect.
 
 Let's import the Inspector component:
 
-```diff-html file=index.html
+```diff-html
  <script type="importmap">
    {
      "imports": {
@@ -31,7 +31,7 @@ Let's import the Inspector component:
 We're going to use the useTableIds hook briefly, and the Inspector from the
 ui-react-inspector module:
 
-```diff-js file=src/main.jsx
+```diff-js
 -import {Provider, useCell, useCreateStore} from 'tinybase/ui-react';
 +import {Provider, useCreateStore, useTableIds} from 'tinybase/ui-react';
 -import {TableInHtmlTable} from 'tinybase/ui-react-dom';
@@ -41,7 +41,7 @@ ui-react-inspector module:
 The inspector component is best showcased with a larger data set, so we load up
 all four tables of the movie database data:
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
    useMemo(async () => {
 -    await loadTable(store, 'genres');
 +    store.startTransaction();
@@ -57,7 +57,7 @@ all four tables of the movie database data:
 
 Let's update the body of the app to show some very basic data about the Store:
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
  const Body = () => {
    return (
      <>
@@ -72,7 +72,7 @@ Let's update the body of the app to show some very basic data about the Store:
  };
 ```
 
-```less file=src/index.less
+```less
 #info {
   align-self: center;
 }
@@ -86,7 +86,7 @@ component.
 The Inspector component can appear anywhere in the app's virtual DOM and will
 appear as an overlay. It is added to an app like so:
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
        <div id='info'>
         Loaded tables: {useTableIds().join(', ')}
        </div>

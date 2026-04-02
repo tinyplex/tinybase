@@ -12,7 +12,7 @@ changes to the <ValuesInHtmlTable /> demo to show this new component.
 
 We start off by simply adding the component to the imports:
 
-```diff-js file=src/main.jsx
+```diff-js
 -import {ValuesInHtmlTable} from 'tinybase/ui-react-dom';
 +import {EditableValueView, ValuesInHtmlTable} from 'tinybase/ui-react-dom';
 ```
@@ -23,7 +23,7 @@ The EditableValueView component simply needs the valueId to render and make
 editable. We replace one of the tables from the original demo to add the
 control:
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
  const Body = () => {
    return (
      <>
@@ -41,7 +41,7 @@ control:
 
 We can style its container and the button that lets you change type:
 
-```less file=src/index.less
+```less
 #edit {
   background: white;
   box-shadow: 0 0 1rem #0004;
@@ -63,7 +63,7 @@ input.invalid {
 And finally, we can enable the `editable` prop on the original ValuesInHtmlTable
 component so that it uses this view for its own rendering:
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
 -     <ValuesInHtmlTable />
 +     <ValuesInHtmlTable editable={true}/>
 ```

@@ -12,7 +12,7 @@ changes to the <ValuesInHtmlTable /> demo to support this new component.
 We switch out the ValuesInHtmlTable component and import the TableInHtmlTable
 component instead.
 
-```diff-js file=src/main.jsx
+```diff-js
 -import {ValuesInHtmlTable} from 'tinybase/ui-react-dom';
 +import {TableInHtmlTable} from 'tinybase/ui-react-dom';
 ```
@@ -21,7 +21,7 @@ This component renders Table content rather than Values, so we change the load
 sequence to asynchronously load some tabular data, stealing from the Movie
 Database demo.
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
 -  useMemo(() => {
 -    loadValues(store);
 +  useMemo(async () => {
@@ -35,7 +35,7 @@ Database demo.
 We're loading a table of data in exactly the same way as we did in the Movie
 Database demo:
 
-```js file=src/main.jsx
+```js
 const NUMERIC = /^[\d\.]+$/;
 
 const loadTable = async (store, tableId) => {
@@ -70,7 +70,7 @@ genres.
 The TableInHtmlTable component is almost as simple as the ValuesInHtmlTable
 component, though it will need one prop, the Table Id:
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
  const Body = () => {
    return (
      <>
@@ -100,7 +100,7 @@ That component should accept props for the Table, Row, and Cell Ids (as well as
 the Store) in order to create a different rendering. Here we create a link to an
 online dictionary for each word in the column:
 
-```jsx file=src/main.jsx
+```jsx
 const DictionaryCell = ({tableId, rowId, cellId, store}) => {
   const word = useCell(tableId, rowId, cellId, store);
   return (
@@ -116,7 +116,7 @@ const DictionaryCell = ({tableId, rowId, cellId, store}) => {
 
 Also we need to update the imports to get access to the useCell hook:
 
-```diff-js file=src/main.jsx
+```diff-js
 -import {Provider, useCreateStore} from 'tinybase/ui-react';
 +import {Provider, useCell, useCreateStore} from 'tinybase/ui-react';
 ```
@@ -124,13 +124,13 @@ Also we need to update the imports to get access to the useCell hook:
 Then we configure this component to be used for the `name` Cell in the table,
 and capitalize the name at the top of the column:
 
-```js file=src/main.jsx
+```js
 const customCells = {name: {label: 'Name', component: DictionaryCell}};
 ```
 
 And apply that configuration to the table via the `customCells` prop:
 
-```diff-jsx file=src/main.jsx
+```diff-jsx
        <TableInHtmlTable tableId='genres' headerRow={false} idColumn={false} />
 +      <TableInHtmlTable tableId='genres' customCells={customCells} />
      </>
@@ -138,7 +138,7 @@ And apply that configuration to the table via the `customCells` prop:
 
 Finally, we can give the links some default styling.
 
-```less file=src/index.less
+```less
 a {
   color: inherit;
 }
