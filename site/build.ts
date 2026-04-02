@@ -151,7 +151,6 @@ export const build = async (
       .addPageForEachNode('/', Page)
       .addPageForEachNode('/', ArticleInner, 'article.html')
       .addTextForEachNode('/', NavJson, 'nav.json')
-      .addTextForEachNode('/demos/', ExecutableProject, 'stackblitz.json')
       .addPageForNode('/api/', Page, 'all.html', true)
       .addMarkdownForNode('/', Readme, '../readme.md')
       .addMarkdownForNode(
@@ -159,6 +158,11 @@ export const build = async (
         MarkdownPage,
         '../../../releases.md',
       );
+    docs.forEachNode((node) => {
+      if (node.url.startsWith('/demos/') && node.url != '/demos/') {
+        docs.addTextForNode(node.url, ExecutableProject, 'stackblitz.json');
+      }
+    });
   }
 
   internalEsm.forEach((module) => {

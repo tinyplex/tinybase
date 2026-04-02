@@ -1,5 +1,4 @@
 import prettier from '@prettier/sync';
-import {dirname, relative} from 'path';
 import type {NoPropComponent} from 'tinydocs';
 import {usePageNode} from 'tinydocs';
 import {usePackageData} from './BuildContext.tsx';
@@ -173,19 +172,6 @@ const getEntryFileName = (files: {[path: string]: string}): string | undefined =
     'index.ts',
   ].find((path) => files[path] != null);
 
-const getHtmlFileName = (files: {[path: string]: string}): string | undefined =>
-  Object.keys(files).find((path) => path.endsWith('.html'));
-
-const getStyleFileName = (files: {[path: string]: string}): string | undefined =>
-  Object.keys(files).find(
-    (path) => path.endsWith('.less') || path.endsWith('.css'),
-  );
-
-const getImportPath = (fromFile: string, toFile: string): string => {
-  const path = relative(dirname(fromFile), toFile);
-  return path.startsWith('.') ? path : './' + path;
-};
-
 export const ExecutableProject: NoPropComponent = (): any => {
   const {name: title, summary: description = '', executables} = usePageNode();
   const {devDependencies, version} = usePackageData();
@@ -224,31 +210,21 @@ export const ExecutableProject: NoPropComponent = (): any => {
     imports.react != null ||
     imports['react-dom/client'] != null ||
     imports['react/jsx-runtime'] != null;
-  const entryFileName =
-    files == null
-      ? react
-        ? 'src/main.jsx'
-        : 'src/main.js'
-      : (getEntryFileName(files) ?? (react ? 'src/main.jsx' : 'src/main.js'));
-  const htmlFileName = files == null ? 'index.html' : (getHtmlFileName(files) ?? 'index.html');
-  const styleFileName =
-    less.trim() == ''
-      ? undefined
-      : files == null
-        ? 'src/index.less'
-        : (getStyleFileName(files) ?? 'src/index.less');
+  const entryFileName = react ? 'src/main.jsx' : 'src/main.js';
+  const styleFileName = less.trim() == '' ? undefined : 'src/index.less';
   const viteConfig = getViteConfig(react, devDependencies);
-  const styleImport =
-    styleFileName == null ? '' : `import '${getImportPath(entryFileName, styleFileName)}';\n\n`;
   const project = {
     title,
     description: cleanDescription,
     template: 'node',
     files: {
       '.npmrc': 'legacy-peer-deps=true\n',
-      [htmlFileName]: getHtml(title, html, entryFileName),
+      ...files,
+      'index.html': getHtml(title, html, entryFileName),
       ...(styleFileName == null ? {} : {[styleFileName]: getLess(less)}),
-      [entryFileName]: getSource(`${styleImport}${tsx}`),
+      [entryFileName]: getSource(
+        `${styleFileName == null ? '' : "import './index.less';\n\n"}${tsx}`,
+      ),
       'package.json': getPackageJson(
         title,
         dependencies,
