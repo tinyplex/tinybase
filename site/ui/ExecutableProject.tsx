@@ -135,9 +135,6 @@ const getPackageJson = (
     toolDependencies['@sveltejs/vite-plugin-svelte'] =
       devDependencies['@sveltejs/vite-plugin-svelte'];
   }
-  if (framework == 'svelte' && devDependencies.svelte != null) {
-    toolDependencies.svelte = devDependencies.svelte;
-  }
   return JSON.stringify(
     {
       name: title.toLowerCase().replaceAll(/[^a-z0-9]+/g, '-'),
@@ -184,7 +181,7 @@ export default defineConfig({
   plugins: [svelte()],
 });
             `,
-            {parser: 'babel', s ingleQuote: true, trailingComma: 'all'},
+            {parser: 'babel', singleQuote: true, trailingComma: 'all'},
           )
           .trim()
       : undefined;
@@ -192,17 +189,9 @@ export default defineConfig({
 const getEntryFileName = (files: {
   [path: string]: string;
 }): string | undefined =>
-  [
-    'src/main.svelte',
-    'src/main.jsx',
-    'src/main.tsx',
-    'src/main.js',
-    'src/main.ts',
-    'index.jsx',
-    'index.tsx',
-    'index.js',
-    'index.ts',
-  ].find((path) => files[path] != null);
+  ['src/main.jsx', 'src/main.js', 'index.jsx', 'index.js'].find(
+    (path) => files[path] != null,
+  );
 
 export const ExecutableProject: NoPropComponent = (): any => {
   const {name: title, summary: description = '', executables} = usePageNode();
@@ -213,37 +202,18 @@ export const ExecutableProject: NoPropComponent = (): any => {
   const cleanDescription = description.replaceAll(/\s+/g, ' ').trim();
   const {html = '', less = '', tsx = ''} = executables;
   const legacy = html != '' || less != '' || tsx != '';
-  const files = executables.files;
-
-  if (files != null && !legacy) {
-    const entryFileName = getEntryFileName(files);
-    const project = {
-      title,
-      description: cleanDescription,
-      template: 'node',
-      files: {
-        '.npmrc': 'legacy-peer-deps=true\n',
-        ...files,
-      },
-      options: {
-        ...(entryFileName == null ? {} : {file: entryFileName}),
-        hidedevtools: '1',
-        showSidebar: '1',
-        terminalHeight: '18',
-      },
-    };
-
-    return <code dangerouslySetInnerHTML={{__html: JSON.stringify(project)}} />;
-  }
+  const files = executables.files ?? {};
 
   const imports = getImportMap(html);
   const dependencies = getDependencies(imports, version, devDependencies);
+  const svelte = Object.keys(files).some((path) => path.endsWith('.svelte'));
   const react =
     imports.react != null ||
     imports['react-dom/client'] != null ||
     imports['react/jsx-runtime'] != null;
-  const framework = react ? 'react' : 'none';
-  const entryFileName = react ? 'src/main.jsx' : 'src/main.js';
+  const framework = svelte ? 'svelte' : react ? 'react' : 'none';
+  const entryFileName =
+    getEntryFileName(files) ?? (react ? 'src/main.jsx' : 'src/main.js');
   const styleFileName = less.trim() == '' ? undefined : 'src/index.less';
   const viteConfig = getViteConfig(framework, devDependencies);
   const project = {
@@ -253,11 +223,17 @@ export const ExecutableProject: NoPropComponent = (): any => {
     files: {
       '.npmrc': 'legacy-peer-deps=true\n',
       ...files,
-      'index.html': getHtml(title, html, entryFileName),
+      ...(html == '' && files['index.html'] != null
+        ? {}
+        : {'index.html': getHtml(title, html, entryFileName)}),
       ...(styleFileName == null ? {} : {[styleFileName]: getLess(less)}),
-      [entryFileName]: getSource(
-        `${styleFileName == null ? '' : "import './index.less';\n\n"}${tsx}`,
-      ),
+      ...(tsx == ''
+        ? {}
+        : {
+            [entryFileName]: getSource(
+              (styleFileName == null ? '' : `import './index.less';\n\n`) + tsx,
+            ),
+          }),
       'package.json': getPackageJson(
         title,
         dependencies,
