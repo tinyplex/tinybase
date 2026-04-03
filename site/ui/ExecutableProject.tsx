@@ -110,19 +110,33 @@ const getHtml = (
 const getPackageJson = (
   title: string,
   dependencies: {[dependency: string]: string},
-  react: boolean,
+  framework: 'none' | 'react' | 'svelte',
   devDependencies: {[dependency: string]: string},
+  needsLess: boolean,
 ): string => {
   const toolDependencies: {[dependency: string]: string} = {};
-  ['less', 'vite'].forEach((dependency) => {
+  ['vite'].forEach((dependency) => {
     const version = devDependencies[dependency];
     if (version != null) {
       toolDependencies[dependency] = version;
     }
   });
-  if (react && devDependencies['@vitejs/plugin-react'] != null) {
+  if (needsLess && devDependencies.less != null) {
+    toolDependencies.less = devDependencies.less;
+  }
+  if (framework == 'react' && devDependencies['@vitejs/plugin-react'] != null) {
     toolDependencies['@vitejs/plugin-react'] =
       devDependencies['@vitejs/plugin-react'];
+  }
+  if (
+    framework == 'svelte' &&
+    devDependencies['@sveltejs/vite-plugin-svelte'] != null
+  ) {
+    toolDependencies['@sveltejs/vite-plugin-svelte'] =
+      devDependencies['@sveltejs/vite-plugin-svelte'];
+  }
+  if (framework == 'svelte' && devDependencies.svelte != null) {
+    toolDependencies.svelte = devDependencies.svelte;
   }
   return JSON.stringify(
     {
@@ -141,10 +155,10 @@ const getPackageJson = (
 };
 
 const getViteConfig = (
-  react: boolean,
+  framework: 'none' | 'react' | 'svelte',
   devDependencies: {[dependency: string]: string},
 ): string | undefined =>
-  react && devDependencies['@vitejs/plugin-react'] != null
+  framework == 'react' && devDependencies['@vitejs/plugin-react'] != null
     ? prettier
         .format(
           `
@@ -158,10 +172,28 @@ export default defineConfig({
           {parser: 'babel', singleQuote: true, trailingComma: 'all'},
         )
         .trim()
-    : undefined;
+    : framework == 'svelte' &&
+        devDependencies['@sveltejs/vite-plugin-svelte'] != null
+      ? prettier
+          .format(
+            `
+import {defineConfig} from 'vite';
+import {svelte} from '@sveltejs/vite-plugin-svelte';
 
-const getEntryFileName = (files: {[path: string]: string}): string | undefined =>
+export default defineConfig({
+  plugins: [svelte()],
+});
+            `,
+            {parser: 'babel', s ingleQuote: true, trailingComma: 'all'},
+          )
+          .trim()
+      : undefined;
+
+const getEntryFileName = (files: {
+  [path: string]: string;
+}): string | undefined =>
   [
+    'src/main.svelte',
     'src/main.jsx',
     'src/main.tsx',
     'src/main.js',
@@ -210,9 +242,10 @@ export const ExecutableProject: NoPropComponent = (): any => {
     imports.react != null ||
     imports['react-dom/client'] != null ||
     imports['react/jsx-runtime'] != null;
+  const framework = react ? 'react' : 'none';
   const entryFileName = react ? 'src/main.jsx' : 'src/main.js';
   const styleFileName = less.trim() == '' ? undefined : 'src/index.less';
-  const viteConfig = getViteConfig(react, devDependencies);
+  const viteConfig = getViteConfig(framework, devDependencies);
   const project = {
     title,
     description: cleanDescription,
@@ -228,8 +261,9 @@ export const ExecutableProject: NoPropComponent = (): any => {
       'package.json': getPackageJson(
         title,
         dependencies,
-        react,
+        framework,
         devDependencies,
+        styleFileName != null,
       ),
       ...(viteConfig == null
         ? {}
