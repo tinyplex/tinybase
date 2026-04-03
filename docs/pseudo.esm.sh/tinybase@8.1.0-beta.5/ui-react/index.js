@@ -1,6 +1,6 @@
 // dist/ui-react/index.js
-import React from "react";
-import { jsx } from "react/jsx-runtime";
+import React from "https://esm.sh/react@^19.2.4";
+import { jsx } from "https://esm.sh/react@^19.2.4/jsx-runtime";
 var getTypeOf = (thing) => typeof thing;
 var TINYBASE = "tinybase";
 var EMPTY_STRING = "";
