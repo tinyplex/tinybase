@@ -1,9 +1,9 @@
-# Hello World v2
+# Hello World (Vanilla) v2
 
 In this demo, we again set data in, and then get data from, a Store object. But
 this time we're using tabular data.
 
-[base]: # 'Hello World v1'
+[base]: # 'Hello World (Vanilla)'
 
 It's just a few changes to do so. Firstly we use the setCell method instead of
 the setValue method:
@@ -27,4 +27,5 @@ The result is the same but now hopefully you get a sense for how the keyed value
 and tabular APIs to the Store are going to work.
 
 Next, we will set up a listener for data in the Store object and then change the
-Cell to see the display update. Please continue to the Hello World v3 demo.
+Cell to see the display update. Please continue to the Hello World (Vanilla) v3
+demo.

@@ -1,10 +1,10 @@
-# Hello World v3
+# Hello World (Vanilla) v3
 
 In this demo, we set up a listener for data in the Store object and then change
 the Cell to see the display update. We're making changes to the Hello World v2
 demo.
 
-[base]: # 'Hello World v2'
+[base]: # 'Hello World (Vanilla) v2'
 
 Instead of populating the Store object with a static Cell value, we use the
 current time:
@@ -42,4 +42,5 @@ setInterval(setTime, 1000);
 ```
 
 Next, we will use React to render data in the Store object and then change a
-Cell to see the display update. Please continue to the Hello World v4 demo.
+Cell to see the display update. Please continue to the Hello World (React)
+demo.

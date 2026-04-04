@@ -1,4 +1,4 @@
-# Hello World v1
+# Hello World (Vanilla)
 
 In this demo, we set data in, and then get data from, a Store object. We're
 using keyed values (not even tabular data!), so this is about as simple as it
@@ -60,4 +60,4 @@ body {
 And we're done! You now know the basics of setting and getting TinyBase data.
 
 Next, we will see how we could have done that using a tabular data structure.
-Please continue to the Hello World v2 demo.
+Please continue to the Hello World (Vanilla) v2 demo.
