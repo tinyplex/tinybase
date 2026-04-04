@@ -3,6 +3,9 @@
 This guide describes how to use the ui-svelte module to build reactive user
 interfaces in Svelte 5 applications.
 
+If you want to see the same ideas in a runnable site demo, take a look at the
+Hello World (Svelte) demo.
+
 It is the Svelte counterpart to the ui-react module. Where ui-react exposes
 hooks and component override props, ui-svelte exposes reactive functions,
 listener functions, and view components that are customized with named
