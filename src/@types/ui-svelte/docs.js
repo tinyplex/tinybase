@@ -23,6 +23,7 @@
  * Svelte prop makes the function re-execute whenever the prop changes.
  * @see Building UIs With Svelte guide
  * @see Hello World (Svelte) demo
+ * @see Countries (Svelte) demo
  * @packageDocumentation
  * @module ui-svelte
  * @since v8.1.0

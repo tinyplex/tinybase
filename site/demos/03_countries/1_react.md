@@ -1,7 +1,7 @@
-# Countries
+# Countries (React)
 
-In this demo, we build a simple app that uses React and a simple Store object to
-load and display country data.
+In this demo, we build a simple app that uses React and a simple Store object
+to load and display country data.
 
 ## Initialization
 
@@ -48,7 +48,6 @@ import {
   useCreateIndexes,
   useCreatePersister,
   useCreateStore,
-  useSetRowCallback,
   useSetValuesCallback,
   useSliceRowIds,
   useValues,
@@ -66,8 +65,8 @@ const UNSTAR = '\u2606';
 ## Starting The App
 
 We have a top-level `App` component, in which we initialize our data, and
-render the parts of the app. Firstly, we create and memoize a set of three Store
-objects with their schemas:
+render the parts of the app. Firstly, we create and memoize a set of three
+Store objects with their schemas:
 
 - `countryStore` contains a list of the world's countries, loaded once from a
   JSON file using a remote Persister object.
@@ -88,11 +87,7 @@ const App = () => {
   );
   useCreatePersister(
     countryStore,
-    (store) =>
-      createRemotePersister(
-        store,
-        'https://tinybase.org/assets/countries.json',
-      ),
+    (store) => createRemotePersister(store, '/assets/countries.json'),
     [],
     (persister) => persister.load(),
   );
@@ -132,12 +127,13 @@ const App = () => {
     viewStore,
     (store) => createSessionPersister(store, 'countries/viewStore'),
     [],
-    (persister) =>  persister.startAutoPersisting()
+    (persister) => persister.startAutoPersisting(),
   );
   // ...
 ```
 
-We also create and memoize two Indexes objects with the useCreateIndexes hook:
+We also create and memoize two Indexes objects with the `useCreateIndexes`
+hook:
 
 - `countryIndexes` contains a single Index of countries in `countryStore` by
   their first letter, sorted alphabetically.
@@ -218,9 +214,9 @@ window.addEventListener('load', () =>
 
 ## The 'Current Slice'
 
-At the heart of this app is the concept of the 'current slice': at any one time,
-the app is displaying the countries present in a specific sliceId of a specific
-indexId of a specific Indexes object. We store these three ids in the
+At the heart of this app is the concept of the 'current slice': at any one
+time, the app is displaying the countries present in a specific sliceId of a
+specific indexId of a specific Indexes object. We store these three ids in the
 `viewStore` as keyed values so they persist between reloads.
 
 Since both the left-hand and right-hand panels of the app need to read these
@@ -247,19 +243,19 @@ const useSetCurrentSlice = (indexes, indexId, sliceId) =>
 ## The `Filters` Component
 
 This component provides the list of countries' first letters down the left-hand
-side of the app. We actually build this as an IndexView component that lists all
-the `sliceIds` in the `countryIndexes` index, but also add an explicit item at
-the top of the list to allow the user to select starred countries from the
+side of the app. We actually build this as an `IndexView` component that lists
+all the `sliceIds` in the `countryIndexes` index, but also add an explicit item
+at the top of the list to allow the user to select starred countries from the
 `starIndexes` index.
 
 The custom `useCurrentSlice` hook is used to get the current Indexes object
 name, current indexId, and current sliceId. We use these to determine whether a
 Filter is selected, and that flag is passed down as the `selected` prop to each
 of the child Filter components so they know whether to display themselves as
-selected or not. We could have each letter of the side bar listening for changes
-to the current slice, but in this case it is more efficient to do it once and
-pass down the `currentSlice` as a prop, using the `getSliceComponentProps`
-callback:
+selected or not. We could have each letter of the side bar listening for
+changes to the current slice, but in this case it is more efficient to do it
+once and pass down the `currentSlice` as a prop, using the
+`getSliceComponentProps` callback:
 
 ```jsx
 const Filters = () => {
@@ -302,23 +298,23 @@ const Filters = () => {
 ```
 
 Each letter in the left hand `Filters` component is a `Filter` component, which
-knows which Indexes object the app needs to show, along with the index and slice
-Ids. This is set with the callback returned by the `useSetCurrentSlice` custom
-hook.
+knows which Indexes object the app needs to show, along with the index and
+slice Ids. This is set with the callback returned by the `useSetCurrentSlice`
+custom hook.
 
 For example, clicking the letter 'N' will set the current named Indexes object
-to be `countryIndexes`, the current indexId to be `firstLetter`, and the current
-sliceId to be 'N'. Clicking the star at the to of the list will set the current
-named Indexes object to be `starIndexes`, the current indexId to be `star`, and
-the current sliceId to be 'true'.
+to be `countryIndexes`, the current indexId to be `firstLetter`, and the
+current sliceId to be 'N'. Clicking the star at the top of the list will set
+the current named Indexes object to be `starIndexes`, the current indexId to be
+`star`, and the current sliceId to be 'true'.
 
 The `currentSlice` prop passed down from the `Filters` component is used to
 decide whether to style the letter as the 'current' selection.
 
 We also display the number of countries in the slice of the relevant index.
 Instead of setting up a Metrics object to track this, it's simpler to just use
-the useSliceRowIds hook and show the `length` of the resulting array. Only the
-count of starred countries changes during the life of the app anyway:
+the `useSliceRowIds` hook and show the `length` of the resulting array. Only
+the count of starred countries changes during the life of the app anyway:
 
 ```jsx
 const Filter = ({
@@ -369,11 +365,12 @@ These filters also have some straightforward styling:
 
 ## The `Countries` Component
 
-The main right-hand side of the app is a panel that shows the view selected with
-the left-hand `Filters` component. As we have seen, that component is setting
-the 'current slice' to be shown, comprising the name of the Indexes object in
-focus, an indexId, and a sliceId. We use those three parameters directly as the
-props for the SliceView component that forms the main part of the app:
+The main right-hand side of the app is a panel that shows the view selected
+with the left-hand `Filters` component. As we have seen, that component is
+setting the 'current slice' to be shown, comprising the name of the Indexes
+object in focus, an indexId, and a sliceId. We use those three parameters
+directly as the props for the `SliceView` component that forms the main part of
+the app:
 
 ```jsx
 const Countries = () => (
@@ -451,5 +448,6 @@ the country cards and flags to look good!
 }
 ```
 
-And that's it! A simple app, all in all, but one that demonstrates using Indexes
-objects and passing down props to build a useful stateful user interface.
+And that's it! A simple app, all in all, but one that demonstrates using
+Indexes objects and passing down props to build a useful stateful user
+interface.

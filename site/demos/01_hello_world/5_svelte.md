@@ -56,6 +56,8 @@ ui-svelte module:
 Unlike the React version, there is not yet a Svelte Inspector component, so
 this demo just focuses on the live-updating Cell itself.
 
+Some final CSS...
+
 ```less
 @font-face {
   font-family: Inter;
@@ -73,6 +75,4 @@ body {
 }
 ```
 
-Next, we will use a Metrics object to keep a count (and a rolling average) of
-the values in each Cell in a Store. Please continue to the Averaging Dice Rolls
-demo.
+...and we're done!

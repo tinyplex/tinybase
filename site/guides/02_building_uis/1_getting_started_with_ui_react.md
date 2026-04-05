@@ -6,6 +6,9 @@ ui-react module in addition to the main module, and, of course, React itself.
 If you want to see the same pattern in a runnable site demo, take a look at the
 Hello World (React) demo.
 
+For a fuller example using indexes and persistence, see the Countries (React)
+demo.
+
 For example, in an HTML file, you can get started with boilerplate that might
 look like this:
 

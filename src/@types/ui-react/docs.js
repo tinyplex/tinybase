@@ -16,7 +16,7 @@
  * @see Building UIs With Queries guide
  * @see Building UIs With Checkpoints guide
  * @see Hello World (React) demo
- * @see Countries demo
+ * @see Countries (React) demo
  * @see Todo App demos
  * @see Drawing demo
  * @packageDocumentation

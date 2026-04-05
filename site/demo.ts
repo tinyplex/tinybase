@@ -96,12 +96,7 @@ const getCss = (source: string): string => {
   return css;
 };
 
-const getHtmlDoc = (html: string): string =>
-  html
-    .replace(/\n+/g, ' ')
-    .replace(/>\s+</g, '><')
-    .replace(/\s{2,}/g, ' ')
-    .trim();
+const getHtmlDoc = (html: string): string => html.trim();
 
 const getJs = (esbuild: any, path: string, source: string): string =>
   esbuild.transformSync(source, {
@@ -131,7 +126,7 @@ const getBundle = async (
         bundle: true,
         format: 'esm',
         jsx: 'automatic',
-        minify: true,
+        minify: false,
         platform: 'browser',
         target: 'esnext',
         write: false,
