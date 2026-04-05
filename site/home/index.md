@@ -94,6 +94,11 @@
   </a>
 </div>
 <div>
+  <a href='/guides/building-uis/building-uis-with-svelte'>
+    <img width="48" src="/svelte.svg?asImg" /> Svelte
+  </a>
+</div>
+<div>
   <a href='/api/persister-indexed-db/functions/creation/createindexeddbpersister'>
     <img width="48" src="/indexeddb.svg?asImg" /> IndexedDB
   </a>
@@ -293,19 +298,21 @@ store.setCell('pets', 'fido', 'sold', false);
 store.delListener(listenerId);
 ```
 
-> ## Call hooks to bind to data.
+> ## Bind to data in UI libraries.
 >
-> If you're using React in your application, the optional ui-react module
-> provides hooks to bind to the data in a Store.
+> If you're using React or Svelte in your application, the optional ui-react
+> module and ui-svelte module provides hooks and functions to bind to the data
+> in a Store.
 >
-> More magic! The useCell hook in this example fetches the dog's color. But it
+> For example, the useCell hook in this example fetches the dog's color. But it
 > also registers a listener on that cell that will fire and re-render the
-> component whenever the value changes.
+> component whenever the value changes!
 >
 > Basically you simply describe what data you want in your user interface and
 > TinyBase will take care of the whole lifecycle of updating it for you.
 >
-> Read more about the using hooks in the Using React Hooks guide.
+> Read more about the using hooks in the Using React Hooks guide and the
+> Building UIs With Svelte guide.
 
 ```jsx
 import React from 'react';
@@ -332,10 +339,10 @@ root.unmount(); // !act
 
 > ## Pre-built reactive components.
 >
-> The ui-react module provides bare React components that let you build up a
-> fully reactive user interface based on a Store.
+> The UI modules also provides bare React and Svelte components that let you
+> build up a fully reactive user interface based on a Store.
 >
-> For web applications in particular, the new ui-react-dom module provides
+> For React web applications in particular, the new ui-react-dom module provides
 > pre-built components for tabular display of your data, with lots of
 > customization and interactivity options.
 >
@@ -346,9 +353,10 @@ root.unmount(); // !act
 
 > ## An inspector for your data.
 >
-> If you are building a web application, the new Inspector component lets you
-> overlay a view of the data in your Store, Indexes, Relationships, and so on.
-> You can even edit the data in place and see it update in your app immediately.
+> If you are building a web application with React, the new Inspector component
+> lets you overlay a view of the data in your Store, Indexes, Relationships, and
+> so on. You can even edit the data in place and see it update in your app
+> immediately.
 >
 > Read more about this powerful new tool in the Inspecting Data guide.
 
