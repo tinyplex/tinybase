@@ -79,7 +79,7 @@ export default defineConfig({
           name: 'unit-persisters',
           include: ['test/unit/persisters/**/*.test.ts'],
           sequence: {groupOrder: 4},
-          maxWorkers: 1,
+          maxWorkers: 2,
         },
       },
       {
