@@ -1,4 +1,40 @@
-<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/hello-world/">Hello World</a></li><li><a href="/demos/hello-world/hello-world-svelte/">Hello World (Svelte)</a></li></ul></nav><section class="s1" id="/demos/hello-world/hello-world-svelte/" data-id="HWS"><h1>Hello World (Svelte)</h1><iframe srcdoc="&lt;html&gt;&lt;head&gt;&lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}body{align-items:center;display:flex;font-family:Inter,sans-serif;letter-spacing:-0.04rem;height:100vh;justify-content:center;margin:0}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;script type=&#x27;module&#x27;&gt;import{createStore as i}from&quot;https://esm.sh/tinybase@8.1.0-beta.5&quot;;import{mount as n}from&quot;https://esm.sh/svelte@^5.55.1&quot;;import&quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;import&quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;import{CellView as p,Provider as s}from&quot;https://esm.sh/tinybase@8.1.0-beta.5/ui-svelte&quot;;function t(o,m){s(o,{get store(){return m.store},children:(l,c)=&gt;{p(l,{tableId:&quot;t1&quot;,rowId:&quot;r1&quot;,cellId:&quot;c1&quot;})},$$slots:{default:!0}})}var e=i(),r=()=&gt;{e.setCell(&quot;t1&quot;,&quot;r1&quot;,&quot;c1&quot;,new Date().toLocaleTimeString())};r();n(t,{target:document.body,props:{store:e}});setInterval(r,1e3);&lt;/script&gt;&lt;/html&gt;"></iframe><p>In this demo, we use Svelte to render data in the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object and then change the <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> to see the display update.</p><p>First, since we&#x27;re running this in a browser, we register some import aliases for <code>esm.sh</code>:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
+<nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/hello-world/">Hello World</a></li><li><a href="/demos/hello-world/hello-world-svelte/">Hello World (Svelte)</a></li></ul></nav><section class="s1" id="/demos/hello-world/hello-world-svelte/" data-id="HWS"><h1>Hello World (Svelte)</h1><iframe srcdoc="&lt;html&gt;
+      &lt;head&gt;
+        
+        &lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}body{align-items:center;display:flex;font-family:Inter,sans-serif;letter-spacing:-0.04rem;height:100vh;justify-content:center;margin:0}&lt;/style&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        
+      &lt;/body&gt;
+      &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
+import { createStore } from &quot;https://esm.sh/tinybase@8.1.0-beta.5&quot;;
+import { mount } from &quot;https://esm.sh/svelte@^5.55.1&quot;;
+
+// demo-files:/demo/src/App.svelte
+import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
+import * as $ from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
+import { CellView, Provider } from &quot;https://esm.sh/tinybase@8.1.0-beta.5/ui-svelte&quot;;
+function App($$anchor, $$props) {
+  Provider($$anchor, {
+    get store() {
+      return $$props.store;
+    },
+    children: ($$anchor2, $$slotProps) =&gt; {
+      CellView($$anchor2, { tableId: &quot;t1&quot;, rowId: &quot;r1&quot;, cellId: &quot;c1&quot; });
+    },
+    $$slots: { default: true }
+  });
+}
+
+// ../../../../../../demo/src/main.js
+var store = createStore();
+var setTime = () =&gt; {
+  store.setCell(&quot;t1&quot;, &quot;r1&quot;, &quot;c1&quot;, (new Date()).toLocaleTimeString());
+};
+setTime();
+mount(App, { target: document.body, props: { store } });
+setInterval(setTime, 1e3);&lt;/script&gt;
+    &lt;/html&gt;"></iframe><p>In this demo, we use Svelte to render data in the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object and then change the <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> to see the display update.</p><p>First, since we&#x27;re running this in a browser, we register some import aliases for <code>esm.sh</code>:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
       <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.1.0-beta.5"</span><span class="punctuation">,</span>
@@ -30,7 +66,7 @@
 <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>Provider</span> <span class="language-javascript"><span class="punctuation">{</span>store<span class="punctuation">}</span></span><span class="punctuation">></span></span>
   <span class="tag"><span class="tag"><span class="punctuation">&lt;</span>CellView</span> <span class="attr-name">tableId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>t1<span class="punctuation">"</span></span> <span class="attr-name">rowId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>r1<span class="punctuation">"</span></span> <span class="attr-name">cellId</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>c1<span class="punctuation">"</span></span> <span class="punctuation">/></span></span>
 <span class="tag"><span class="tag"><span class="punctuation">&lt;/</span>Provider</span><span class="punctuation">></span></span>
-</code></pre><p>Unlike the React version, there is not yet a Svelte <a href="/api/the-essentials/using-react/inspector/"><code>Inspector</code></a> component, so this demo just focuses on the live-updating <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> itself.</p><pre><code><span class="atrule">@font-face</span> <span class="punctuation">{</span>
+</code></pre><p>Unlike the React version, there is not yet a Svelte <a href="/api/the-essentials/using-react/inspector/"><code>Inspector</code></a> component, so this demo just focuses on the live-updating <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> itself.</p><p>Some final CSS...</p><pre><code><span class="atrule">@font-face</span> <span class="punctuation">{</span>
   <span class="property">font-family</span><span class="punctuation">:</span> Inter<span class="punctuation">;</span>
   <span class="property">src</span><span class="punctuation">:</span> <span class="url"><span class="function">url</span><span class="punctuation">(</span>https://tinybase.org/fonts/inter.woff2<span class="punctuation">)</span></span> <span class="function">format</span><span class="punctuation">(</span><span class="string">'woff2'</span><span class="punctuation">)</span><span class="punctuation">;</span>
 <span class="punctuation">}</span>
@@ -44,4 +80,4 @@
   <span class="property">justify-content</span><span class="punctuation">:</span> center<span class="punctuation">;</span>
   <span class="property">margin</span><span class="punctuation">:</span> 0<span class="punctuation">;</span>
 <span class="punctuation">}</span>
-</code></pre><p>Next, we will use a <a href="/api/metrics/interfaces/metrics/metrics/"><code>Metrics</code></a> object to keep a count (and a rolling average) of the values in each <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> in a <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a>. Please continue to the <a href="/demos/rolling-dice/averaging-dice-rolls/">Averaging Dice Rolls</a> demo.</p></section>
+</code></pre><p>...and we&#x27;re done!</p></section>
