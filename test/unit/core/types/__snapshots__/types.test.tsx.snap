@@ -3032,79 +3032,41 @@ exports[`Types in ui-svelte.ts > 113:2 1`] = `"Conversion of type 'boolean' to t
 
 exports[`Types in ui-svelte.ts > 116:22 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'."`;
 
-exports[`Types in ui-svelte.ts > 116:25 1`] = `"Property 't2' does not exist on type 'Tables<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }>'."`;
-
 exports[`Types in ui-svelte.ts > 119:33 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
-
-exports[`Types in ui-svelte.ts > 119:36 1`] = `"Argument of type '"t2"' is not assignable to parameter of type '"t0" | "t1"'."`;
 
 exports[`Types in ui-svelte.ts > 122:11 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
-exports[`Types in ui-svelte.ts > 122:17 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
-
 exports[`Types in ui-svelte.ts > 126:29 1`] = `"Property 'c2' does not exist on type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", false>'."`;
-
-exports[`Types in ui-svelte.ts > 126:32 1`] = `"Property 'c2' does not exist on type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", false>'."`;
 
 exports[`Types in ui-svelte.ts > 127:11 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
-exports[`Types in ui-svelte.ts > 127:14 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
-
 exports[`Types in ui-svelte.ts > 130:18 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
-
-exports[`Types in ui-svelte.ts > 130:21 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
 exports[`Types in ui-svelte.ts > 133:21 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d">'."`;
 
-exports[`Types in ui-svelte.ts > 133:27 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d">'."`;
-
 exports[`Types in ui-svelte.ts > 134:15 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
-
-exports[`Types in ui-svelte.ts > 134:21 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
 exports[`Types in ui-svelte.ts > 137:14 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
-exports[`Types in ui-svelte.ts > 137:17 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
-
 exports[`Types in ui-svelte.ts > 140:12 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
-
-exports[`Types in ui-svelte.ts > 140:15 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
 exports[`Types in ui-svelte.ts > 143:24 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d" | undefined>'."`;
 
-exports[`Types in ui-svelte.ts > 143:27 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d" | undefined>'."`;
-
 exports[`Types in ui-svelte.ts > 144:18 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
-
-exports[`Types in ui-svelte.ts > 144:21 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
 exports[`Types in ui-svelte.ts > 147:9 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
-exports[`Types in ui-svelte.ts > 147:15 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
-
 exports[`Types in ui-svelte.ts > 151:29 1`] = `"Property 'c2' does not exist on type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
-
-exports[`Types in ui-svelte.ts > 151:32 1`] = `"Property 'c2' does not exist on type 'Row<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1">'."`;
 
 exports[`Types in ui-svelte.ts > 152:9 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
-exports[`Types in ui-svelte.ts > 152:12 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
-
 exports[`Types in ui-svelte.ts > 155:42 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
-
-exports[`Types in ui-svelte.ts > 155:45 1`] = `"Argument of type '"c2"' is not assignable to parameter of type '"c1" | "c1d"'."`;
 
 exports[`Types in ui-svelte.ts > 156:13 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
-exports[`Types in ui-svelte.ts > 156:16 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
-
 exports[`Types in ui-svelte.ts > 159:22 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d">'."`;
 
-exports[`Types in ui-svelte.ts > 159:28 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d">'."`;
-
 exports[`Types in ui-svelte.ts > 160:10 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
-
-exports[`Types in ui-svelte.ts > 160:16 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
 exports[`Types in ui-svelte.ts > 164:2 1`] = `"Conversion of type 'CellOrUndefined<{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, "t1", "c1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
@@ -3112,33 +3074,21 @@ exports[`Types in ui-svelte.ts > 167:2 1`] = `"Type 'string' is not assignable t
 
 exports[`Types in ui-svelte.ts > 168:22 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d">'."`;
 
-exports[`Types in ui-svelte.ts > 168:25 1`] = `"Argument of type '"c2"' is not assignable to parameter of type 'MaybeGetter<"c1" | "c1d">'."`;
-
 exports[`Types in ui-svelte.ts > 169:10 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
-
-exports[`Types in ui-svelte.ts > 169:13 1`] = `"Argument of type '"t2"' is not assignable to parameter of type 'MaybeGetter<"t0" | "t1">'."`;
 
 exports[`Types in ui-svelte.ts > 172:2 1`] = `"Conversion of type 'boolean' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
 exports[`Types in ui-svelte.ts > 175:22 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'."`;
 
-exports[`Types in ui-svelte.ts > 175:25 1`] = `"Property 'v2' does not exist on type 'Values<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }>'."`;
-
 exports[`Types in ui-svelte.ts > 178:33 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
 
-exports[`Types in ui-svelte.ts > 178:36 1`] = `"Argument of type '"v2"' is not assignable to parameter of type '"v1" | "v1d"'."`;
-
 exports[`Types in ui-svelte.ts > 181:11 1`] = `"Argument of type '"v2"' is not assignable to parameter of type 'MaybeGetter<"v1" | "v1d">'."`;
-
-exports[`Types in ui-svelte.ts > 181:17 1`] = `"Argument of type '"v2"' is not assignable to parameter of type 'MaybeGetter<"v1" | "v1d">'."`;
 
 exports[`Types in ui-svelte.ts > 184:2 1`] = `"Conversion of type 'DefaultedValueFromSchema<{ readonly v1: { readonly type: "number"; }; readonly v1d: { readonly type: "string"; readonly default: ""; }; }, "v1">' to type 'string' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
 exports[`Types in ui-svelte.ts > 187:2 1`] = `"Type 'string' is not assignable to type 'number'."`;
 
 exports[`Types in ui-svelte.ts > 188:11 1`] = `"Argument of type '"v2"' is not assignable to parameter of type 'MaybeGetter<"v1" | "v1d">'."`;
-
-exports[`Types in ui-svelte.ts > 188:14 1`] = `"Argument of type '"v2"' is not assignable to parameter of type 'MaybeGetter<"v1" | "v1d">'."`;
 
 exports[`Types in ui-svelte.ts > 191:2 1`] = `"Conversion of type '() => void' to type 'boolean' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first."`;
 
