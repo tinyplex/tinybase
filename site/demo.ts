@@ -85,12 +85,12 @@ const getCss = (source: string): string => {
     source,
     {syncImport: true, compress: true},
     (error: Error | null, result?: {css: string}) => {
-    if (error != null) {
-      throw error;
-    }
-    if (result != null) {
-      css = result.css;
-    }
+      if (error != null) {
+        throw error;
+      }
+      if (result != null) {
+        css = result.css;
+      }
     },
   );
   return css;
@@ -99,17 +99,18 @@ const getCss = (source: string): string => {
 const getHtmlDoc = (html: string): string => html.trim();
 
 const getJs = (esbuild: any, path: string, source: string): string =>
-  esbuild.transformSync(source, {
-    loader: path.endsWith('.tsx')
-      ? 'tsx'
-      : path.endsWith('.ts')
-        ? 'ts'
-        : path.endsWith('.jsx')
-          ? 'jsx'
-          : 'js',
-    format: 'esm',
-    jsx: 'automatic',
-  })
+  esbuild
+    .transformSync(source, {
+      loader: path.endsWith('.tsx')
+        ? 'tsx'
+        : path.endsWith('.ts')
+          ? 'ts'
+          : path.endsWith('.jsx')
+            ? 'jsx'
+            : 'js',
+      format: 'esm',
+      jsx: 'automatic',
+    })
     .code.replace(PURE_REGEX, '')
     .trim();
 

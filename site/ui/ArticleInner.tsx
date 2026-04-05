@@ -15,7 +15,11 @@ export const ArticleInner: NoPropComponent = (): any => {
           <NodeBreadcrumbs node={rootNode} />
         </ul>
       </nav>
-      {hasFiles ? <DemoNodeSection node={pageNode} /> : <NodeSection node={pageNode} />}
+      {hasFiles ? (
+        <DemoNodeSection node={pageNode} />
+      ) : (
+        <NodeSection node={pageNode} />
+      )}
     </>
   );
 };

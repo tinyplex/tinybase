@@ -201,7 +201,6 @@ export const ExecutableProject: NoPropComponent = (): any => {
   }
   const cleanDescription = description.replaceAll(/\s+/g, ' ').trim();
   const {html = '', less = '', tsx = ''} = executables;
-  const legacy = html != '' || less != '' || tsx != '';
   const files = executables.files ?? {};
 
   const imports = getImportMap(html);

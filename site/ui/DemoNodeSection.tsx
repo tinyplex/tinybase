@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from 'react';
+import {FunctionComponent} from 'react';
 import {Markdown, type Node} from 'tinydocs';
 
 type DemoNode = Node & {__demoDoc?: string};
@@ -19,7 +19,9 @@ const bumpMarkdownHeadings = (markdown: string): string => {
     .join('\n');
 };
 
-export const DemoNodeSection: FunctionComponent<{node: Node}> = ({node}) => {
+export const DemoNodeSection: FunctionComponent<{readonly node: Node}> = ({
+  node,
+}) => {
   const {__demoDoc: demoDoc, body, id, name, summary, url} = node as DemoNode;
 
   return (

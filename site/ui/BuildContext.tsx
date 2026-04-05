@@ -57,9 +57,7 @@ const build = ((): Build => {
     repository,
     license,
     devDependencies = {},
-  } = JSON.parse(
-    readFileSync('./package.json', 'utf-8'),
-  );
+  } = JSON.parse(readFileSync('./package.json', 'utf-8'));
   const packageData = {
     package: `https://www.npmjs.com/package/${name}/v/${version}`,
     version,
@@ -82,4 +80,5 @@ export const BuildContext: FunctionComponent<Props> = ({
 export const useCoverage = (): Coverage => useContext(Context).coverage;
 export const useModulesSizes = (): ModulesSizes =>
   useContext(Context).modulesSizes;
-export const usePackageData = (): PackageData => useContext(Context).packageData;
+export const usePackageData = (): PackageData =>
+  useContext(Context).packageData;

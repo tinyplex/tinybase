@@ -1,11 +1,7 @@
 import type {NoPropComponent, Node} from 'tinydocs';
 import {Markdown, usePageNode} from 'tinydocs';
 import type {ModulesSizes} from './BuildContext.tsx';
-import {
-  useCoverage,
-  useModulesSizes,
-  usePackageData,
-} from './BuildContext.tsx';
+import {useCoverage, useModulesSizes, usePackageData} from './BuildContext.tsx';
 import {MODULES} from './common.ts';
 
 export const Readme: NoPropComponent = (): any => {
