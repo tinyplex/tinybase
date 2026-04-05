@@ -7,13 +7,13 @@
         
       &lt;/body&gt;
       &lt;script type=&#x27;module&#x27;&gt;// ../../../../../../demo/src/main.js
-import { createStore } from &quot;https://esm.sh/tinybase@8.1.0-beta.5&quot;;
+import { createStore } from &quot;https://esm.sh/tinybase@8.1.0&quot;;
 import { mount } from &quot;https://esm.sh/svelte@^5.55.1&quot;;
 
 // demo-files:/demo/src/App.svelte
 import &quot;https://esm.sh/svelte@^5.55.1/internal/disclose-version&quot;;
 import * as $ from &quot;https://esm.sh/svelte@^5.55.1/internal/client&quot;;
-import { CellView, Provider } from &quot;https://esm.sh/tinybase@8.1.0-beta.5/ui-svelte&quot;;
+import { CellView, Provider } from &quot;https://esm.sh/tinybase@8.1.0/ui-svelte&quot;;
 function App($$anchor, $$props) {
   Provider($$anchor, {
     get store() {
@@ -37,8 +37,8 @@ setInterval(setTime, 1e3);&lt;/script&gt;
     &lt;/html&gt;"></iframe><p>In this demo, we use Svelte to render data in the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object and then change the <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> to see the display update.</p><p>First, since we&#x27;re running this in a browser, we register some import aliases for <code>esm.sh</code>:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.1.0-beta.5"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.1.0-beta.5/ui-svelte"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.1.0"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.1.0/ui-svelte"</span><span class="punctuation">,</span>
       <span class="string-property">"svelte"</span><span class="operator">:</span> <span class="string">"https://esm.sh/svelte@^5.55.1"</span>
     <span class="punctuation">}</span>
   <span class="punctuation">}</span>

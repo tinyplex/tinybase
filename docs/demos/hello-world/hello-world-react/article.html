@@ -1,8 +1,8 @@
 <nav><ul><li><a href="/">TinyBase</a></li><li><a href="/demos/">Demos</a></li><li><a href="/demos/hello-world/">Hello World</a></li><li><a href="/demos/hello-world/hello-world-react/">Hello World (React)</a></li></ul></nav><section class="s1" id="/demos/hello-world/hello-world-react/" data-id="HWR"><h1>Hello World (React)</h1><iframe srcdoc="&lt;html&gt;&lt;head&gt;&lt;script type=&quot;importmap&quot;&gt;{
     &quot;imports&quot;: {
-      &quot;tinybase&quot;: &quot;https://esm.sh/tinybase@8.1.0-beta.5&quot;,
-      &quot;tinybase/ui-react&quot;: &quot;https://esm.sh/tinybase@8.1.0-beta.5/ui-react&quot;,
-      &quot;tinybase/ui-react-inspector&quot;: &quot;https://esm.sh/tinybase@8.1.0-beta.5/ui-react-inspector&quot;,
+      &quot;tinybase&quot;: &quot;https://esm.sh/tinybase@8.1.0&quot;,
+      &quot;tinybase/ui-react&quot;: &quot;https://esm.sh/tinybase@8.1.0/ui-react&quot;,
+      &quot;tinybase/ui-react-inspector&quot;: &quot;https://esm.sh/tinybase@8.1.0/ui-react-inspector&quot;,
       &quot;react&quot;: &quot;https://esm.sh/react@^19.2.4&quot;,
       &quot;react/jsx-runtime&quot;: &quot;https://esm.sh/react@^19.2.4/jsx-runtime&quot;,
       &quot;react-dom/client&quot;: &quot;https://esm.sh/react-dom@^19.2.4/client&quot;
@@ -10,9 +10,9 @@
   }&lt;/script&gt;&lt;style&gt;@font-face{font-family:Inter;src:url(https://tinybase.org/fonts/inter.woff2) format(&#x27;woff2&#x27;)}body{align-items:center;display:flex;font-family:Inter,sans-serif;letter-spacing:-.04rem;height:100vh;justify-content:center;margin:0}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;/body&gt;&lt;script type=&quot;module&quot;&gt;import{jsx as r,jsxs as d}from&quot;react/jsx-runtime&quot;;import{createStore as t}from&quot;tinybase&quot;;import{CellView as m,Provider as c}from&quot;tinybase/ui-react&quot;;import{Inspector as i}from&quot;tinybase/ui-react-inspector&quot;;import{createRoot as l}from&quot;react-dom/client&quot;;const e=t(),o=()=&gt;{e.setCell(&quot;t1&quot;,&quot;r1&quot;,&quot;c1&quot;,new Date().toLocaleTimeString())};o(),l(document.body).render(d(c,{store:e,children:[r(m,{tableId:&quot;t1&quot;,rowId:&quot;r1&quot;,cellId:&quot;c1&quot;}),r(i,{})]})),setInterval(o,1e3);&lt;/script&gt;&lt;/html&gt;"></iframe><p>In this demo, we use React to render data in the <a href="/api/the-essentials/creating-stores/store/"><code>Store</code></a> object and then change a <a href="/api/store/type-aliases/store/cell/"><code>Cell</code></a> to see the display update.</p><p>First, since we&#x27;re running this in a browser, we register some import aliases for <code>esm.sh</code>:</p><pre><code><span class="tag"><span class="tag"><span class="punctuation">&lt;</span>script</span> <span class="attr-name">type</span><span class="attr-value"><span class="punctuation">=</span><span class="punctuation">"</span>importmap<span class="punctuation">"</span></span><span class="punctuation">></span></span><span class="script"><span class="language-javascript">
   <span class="punctuation">{</span>
     <span class="string-property">"imports"</span><span class="operator">:</span> <span class="punctuation">{</span>
-      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.1.0-beta.5"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.1.0-beta.5/ui-react"</span><span class="punctuation">,</span>
-      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.1.0-beta.5/ui-react-inspector"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.1.0"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.1.0/ui-react"</span><span class="punctuation">,</span>
+      <span class="string-property">"tinybase/ui-react-inspector"</span><span class="operator">:</span> <span class="string">"https://esm.sh/tinybase@8.1.0/ui-react-inspector"</span><span class="punctuation">,</span>
       <span class="string-property">"react"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.4"</span><span class="punctuation">,</span>
       <span class="string-property">"react/jsx-runtime"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react@^19.2.4/jsx-runtime"</span><span class="punctuation">,</span>
       <span class="string-property">"react-dom/client"</span><span class="operator">:</span> <span class="string">"https://esm.sh/react-dom@^19.2.4/client"</span>
