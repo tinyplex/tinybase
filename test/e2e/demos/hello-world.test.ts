@@ -12,20 +12,20 @@ beforeAll(startServer);
 afterAll(stopServer);
 
 test('hello-world-v1', async ({page}) => {
-  await expectPage(page, `/demos/hello-world/hello-world-v1/`);
-  await expectedElement(page, 'h1', 'Hello World v1');
+  await expectPage(page, `/demos/hello-world/hello-world-vanilla/`);
+  await expectedElement(page, 'h1', 'Hello World (Vanilla)');
   await expectedFramedElement(page, 'body', 'Hello World');
 });
 
 test('hello-world-v2', async ({page}) => {
-  await expectPage(page, `/demos/hello-world/hello-world-v2/`);
-  await expectedElement(page, 'h1', 'Hello World v2');
+  await expectPage(page, `/demos/hello-world/hello-world-vanilla-v2/`);
+  await expectedElement(page, 'h1', 'Hello World (Vanilla) v2');
   await expectedFramedElement(page, 'body', 'Hello World');
 });
 
 test('hello-world-v3', async ({page}) => {
-  await expectPage(page, `/demos/hello-world/hello-world-v3/`);
-  await expectedElement(page, 'h1', 'Hello World v3');
+  await expectPage(page, `/demos/hello-world/hello-world-vanilla-v3/`);
+  await expectedElement(page, 'h1', 'Hello World (Vanilla) v3');
   await expectedFramedElement(
     page,
     'body',
@@ -33,9 +33,19 @@ test('hello-world-v3', async ({page}) => {
   );
 });
 
-test('hello-world-v4', async ({page}) => {
-  await expectPage(page, `/demos/hello-world/hello-world-v4/`);
-  await expectedElement(page, 'h1', 'Hello World v4');
+test('hello-world-react', async ({page}) => {
+  await expectPage(page, `/demos/hello-world/hello-world-react/`);
+  await expectedElement(page, 'h1', 'Hello World (React)');
+  await expectedFramedElement(
+    page,
+    'body',
+    new Date(new Date().getTime() + 1000).toLocaleTimeString(),
+  );
+});
+
+test('hello-world-svelte', async ({page}) => {
+  await expectPage(page, `/demos/hello-world/hello-world-svelte/`);
+  await expectedElement(page, 'h1', 'Hello World (Svelte)');
   await expectedFramedElement(
     page,
     'body',
