@@ -43,6 +43,9 @@ export default defineConfig({
           exclude: [
             'test/unit/core/ui-svelte/**',
             'test/unit/synchronizers/synchronizer-ws-server.test.ts',
+            'test/unit/core/types/types.test.tsx',
+            'test/unit/documentation.test.ts',
+            'test/unit/persisters/**/*.test.ts',
           ],
         },
       },
@@ -52,6 +55,31 @@ export default defineConfig({
           name: 'unit-ws-server',
           include: ['test/unit/synchronizers/synchronizer-ws-server.test.ts'],
           sequence: {groupOrder: 1},
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'unit-types',
+          include: ['test/unit/core/types/types.test.tsx'],
+          sequence: {groupOrder: 2},
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'unit-documentation',
+          include: ['test/unit/documentation.test.ts'],
+          sequence: {groupOrder: 3},
+        },
+      },
+      {
+        extends: true,
+        test: {
+          name: 'unit-persisters',
+          include: ['test/unit/persisters/**/*.test.ts'],
+          sequence: {groupOrder: 4},
+          maxWorkers: 1,
         },
       },
       {
