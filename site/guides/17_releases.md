@@ -56,6 +56,22 @@ assembling UIs directly from Store data.
 Read more in the ui-svelte module documentation and the Building UIs With
 Svelte guide.
 
+## New Demos  
+
+To showcase the new Svelte support, we have created two new Svelte-specific
+demos: a Hello World (Svelte) demo and a Countries (Svelte) demo. Check them out
+to see the new module in action.
+
+The `create-tinybase` CLI tool also now includes an option to create a Svelte
+demo project, so you can easily get started with Svelte and TinyBase in exactly
+the same way you can with React:
+
+```bash
+> npm create tinybase@latest
+
+📦 Creating your project...
+```
+
 ## Breaking Changes
 
 If you tried the ui-svelte module in earlier beta releases, there are some
