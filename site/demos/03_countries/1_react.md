@@ -87,7 +87,8 @@ const App = () => {
   );
   useCreatePersister(
     countryStore,
-    (store) => createRemotePersister(store, '/assets/countries.json'),
+    (store) =>
+      createRemotePersister(store, 'https://tinybase.org/assets/countries.json'),
     [],
     (persister) => persister.load(),
   );
