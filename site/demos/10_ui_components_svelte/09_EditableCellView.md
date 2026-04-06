@@ -154,5 +154,4 @@ input.invalid {
 }
 ```
 
-This is enough to prove out the first Svelte DOM demo set. The remaining table
-components can now be added in the same style.
+This completes the Svelte DOM demo set for the ui-svelte-dom components.

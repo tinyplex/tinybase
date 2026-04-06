@@ -1,11 +1,12 @@
-# <SortedTableInHtmlTable /> (Svelte)
+# <ResultTableInHtmlTable /> (Svelte)
 
-In this demo, we showcase the SortedTableInHtmlTable component, which adds
-sorting and pagination behavior to an HTML table rendered from TinyBase data.
+In this demo, we showcase the ResultTableInHtmlTable component, a way to
+display the results of a query.
 
 ## Initialization
 
-As before, we register TinyBase, ui-svelte, ui-svelte-dom, and Svelte:
+We again use TinyBase, ui-svelte, ui-svelte-dom, and Svelte from the import
+map:
 
 ```html
 <script type="importmap">
@@ -20,10 +21,10 @@ As before, we register TinyBase, ui-svelte, ui-svelte-dom, and Svelte:
 </script>
 ```
 
-We load the wider `movies` table so there is something meaningful to sort:
+The entry point loads the `genres` table, creates a Query, and mounts the app:
 
 ```js
-import {createStore} from 'tinybase';
+import {createQueries, createStore} from 'tinybase';
 import {mount} from 'svelte';
 import App from './App.svelte';
 
@@ -56,41 +57,39 @@ const loadTable = async (store, tableId) => {
 
 const init = async () => {
   const store = createStore();
-  await loadTable(store, 'movies');
-  mount(App, {target: document.body, props: {store}});
+  await loadTable(store, 'genres');
+  const queries = createQueries(store).setQueryDefinition(
+    'genresStartingWithA',
+    'genres',
+    ({select, where}) => {
+      select('name');
+      select((getCell) => getCell('name').length).as('length');
+      where((getCell) => getCell('name').startsWith('A'));
+    },
+  );
+  mount(App, {target: document.body, props: {store, queries}});
 };
 
 window.addEventListener('load', init);
 ```
 
-The app uses a narrow set of columns, sorts by rating by default, and enables
-interactive sorting and pagination:
+The app provides both the Store and the Queries object, then renders the query
+result table:
 
 ```svelte file=src/App.svelte
 <script>
   import {Provider} from 'tinybase/ui-svelte';
-  import {SortedTableInHtmlTable} from 'tinybase/ui-svelte-dom';
+  import {ResultTableInHtmlTable} from 'tinybase/ui-svelte-dom';
 
-  let {store} = $props();
-
-  const customCells = {name: 'Name', year: 'Year', rating: 'Rating'};
+  let {store, queries} = $props();
 </script>
 
-<Provider {store}>
-  <SortedTableInHtmlTable
-    tableId="movies"
-    customCells={customCells}
-    cellId="rating"
-    descending={true}
-    limit={7}
-    sortOnClick={true}
-    paginator={true}
-  />
+<Provider {store} {queries}>
+  <ResultTableInHtmlTable queryId="genresStartingWithA" />
 </Provider>
 ```
 
-And then we add just enough CSS to make the sorted column and paginator stand
-out:
+And the styling remains the same as the other table demos:
 
 ```less
 @font-face {
@@ -135,26 +134,9 @@ table {
   }
   thead th {
     border-bottom-color: #ccc;
-    width: 6rem;
-    &:nth-of-type(2) {
-      width: 24rem;
-    }
   }
-  caption {
-    caption-side: top;
-    margin-bottom: 1rem;
-    text-align: left;
-    button {
-      margin-right: 0.5rem;
-    }
-  }
-}
-
-th.sorted {
-  background: #ddd;
 }
 ```
 
-Next, let's use the same data with an Index in the
-[<SliceInHtmlTable /> (Svelte)](/demos/ui-components-svelte/sliceinhtmltable-svelte/)
-demo.
+And because query results can also be sorted and paginated, the next demo is
+[<ResultSortedTableInHtmlTable /> (Svelte)](/demos/ui-components-svelte/resultsortedtableinhtmltable-svelte/).
