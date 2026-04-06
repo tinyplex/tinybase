@@ -47,6 +47,7 @@ import * as TinyBaseSynchronizerWsServerSimple from 'tinybase/synchronizers/sync
 import * as TinyBaseUiReact from 'tinybase/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
 import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
+import * as TinyBaseUiSvelteDom from 'tinybase/ui-svelte-dom';
 import * as valibot from 'valibot';
 import {beforeAll, describe, expect, test} from 'vitest';
 import * as ws from 'ws';
@@ -91,6 +92,7 @@ const TinyBaseForTest = {
   tinybase: TinyBaseForTest,
   'tinybase/ui-react': TinyBaseUiReact,
   'tinybase/ui-react-dom': TinyBaseUiReactDom,
+  'tinybase/ui-svelte-dom': TinyBaseUiSvelteDom,
   'tinybase/persisters': TinyBasePersisters,
   'tinybase/persisters/persister-automerge': TinyBasePersisterAutomerge,
   'tinybase/persisters/persister-browser': TinyBasePersisterBrowser,
