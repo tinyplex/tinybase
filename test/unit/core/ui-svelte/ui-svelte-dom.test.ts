@@ -166,6 +166,28 @@ describe('ValuesInHtmlTable', () => {
   });
 });
 
+describe('EditableThing', () => {
+  test('EditableCellView cycles through object', async () => {
+    const {container, getByRole, unmount} = render(EditableCellView, {
+      props: {store, tableId: 't2', rowId: 'r1', cellId: 'c1'},
+    });
+    const typeButton = getByRole('button');
+
+    await fireEvent.click(typeButton);
+    await fireEvent.click(typeButton);
+    expect(typeButton.getAttribute('title')).toBe('object');
+    expect(container.querySelector('input')?.value).toBe('{}');
+    expect(store.getCell('t2', 'r1', 'c1')).toEqual({});
+
+    await fireEvent.click(typeButton);
+    expect(typeButton.getAttribute('title')).toBe('array');
+    expect(container.querySelector('input')?.value).toBe('[]');
+    expect(store.getCell('t2', 'r1', 'c1')).toEqual([]);
+
+    unmount();
+  });
+});
+
 describe('SliceInHtmlTable', () => {
   test('basic', () => {
     const {container, unmount} = render(SliceInHtmlTable, {
