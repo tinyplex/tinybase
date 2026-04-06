@@ -19,6 +19,10 @@ UI Components (Svelte) demos:
 | ValuesInHtmlTable      | Renders Values.                                      | [demo](/demos/ui-components-svelte/valuesinhtmltable-svelte/)           |
 | TableInHtmlTable       | Renders a Table.                                     | [demo](/demos/ui-components-svelte/tableinhtmltable-svelte/)            |
 | SortedTableInHtmlTable | Renders a sorted Table, with optional interactivity. | [demo](/demos/ui-components-svelte/sortedtableinhtmltable-svelte/)      |
+| SliceInHtmlTable       | Renders a Slice from an Index.                       | [demo](/demos/ui-components-svelte/sliceinhtmltable-svelte/)            |
+| RelationshipInHtmlTable | Renders the local and remote Tables of a relationship. | [demo](/demos/ui-components-svelte/relationshipinhtmltable-svelte/)   |
+| ResultTableInHtmlTable | Renders a ResultTable.                               | [demo](/demos/ui-components-svelte/resulttableinhtmltable-svelte/)      |
+| ResultSortedTableInHtmlTable | Renders a sorted ResultTable, with optional interactivity. | [demo](/demos/ui-components-svelte/resultsortedtableinhtmltable-svelte/) |
 | EditableValueView      | Renders a Value and lets you change its type/value.  | [demo](/demos/ui-components-svelte/editablevalueview-svelte/)           |
 | EditableCellView       | Renders a Cell and lets you change its type/value.   | [demo](/demos/ui-components-svelte/editablecellview-svelte/)            |
 
