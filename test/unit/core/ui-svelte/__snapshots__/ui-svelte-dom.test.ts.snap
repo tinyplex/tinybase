@@ -1,0 +1,69 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`EditableCellView > basic 1`] = `"<div class="editableCell"><button title="number" class="number">number</button><!----> <input type="number"><!----></div>"`;
+
+exports[`EditableCellView > change type and cell 1`] = `"<div class="editableCell"><button title="number" class="number">number</button><!----> <input type="number"><!----></div>"`;
+
+exports[`EditableCellView > change type and cell 2`] = `"<div class="editableCell"><button title="number" class="number">number</button><!----> <input type="number"><!----></div>"`;
+
+exports[`EditableCellView > change type and cell 3`] = `"<div class="editableCell"><button title="boolean" class="boolean">boolean</button><!----> <input type="checkbox"><!----></div>"`;
+
+exports[`EditableCellView > change type and cell 4`] = `"<div class="editableCell"><button title="boolean" class="boolean">boolean</button><!----> <input type="checkbox"><!----></div>"`;
+
+exports[`EditableValueView > basic 1`] = `"<div class="editableValue"><button title="number" class="number">number</button><!----> <input type="number"><!----></div>"`;
+
+exports[`EditableValueView > change type and value 1`] = `"<div class="editableValue"><button title="number" class="number">number</button><!----> <input type="number"><!----></div>"`;
+
+exports[`EditableValueView > change type and value 2`] = `"<div class="editableValue"><button title="number" class="number">number</button><!----> <input type="number"><!----></div>"`;
+
+exports[`EditableValueView > change type and value 3`] = `"<div class="editableValue"><button title="boolean" class="boolean">boolean</button><!----> <input type="checkbox"><!----></div>"`;
+
+exports[`EditableValueView > change type and value 4`] = `"<div class="editableValue"><button title="boolean" class="boolean">boolean</button><!----> <input type="checkbox"><!----></div>"`;
+
+exports[`RelationshipInHtmlTable > basic 1`] = `"<table><thead><tr><!----><th>t1.Id</th> <th>t2.Id</th><!----><th>t1.c1</th><th>t2.c1</th><th>t2.c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r1">r1</th> <th title="r2">r2</th><!----><!----><td>1<!----></td><!----><td>3<!----></td><!----><td>4<!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`RelationshipInHtmlTable > editable and custom 1`] = `"<table><thead><tr><!----><th>t1.Id</th> <th>t2.Id</th><!----><th>T1C1</th><th>t2.c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r1">r1</th> <th title="r2">r2</th><!----><!----><td><b>{"0":"r1","1":"c1","tableId":"t1","rowId":"r1","cellId":"c1"}</b><!----></td><!----><td><b>{"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}</b><!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > basic 1`] = `"<table><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> c0</th><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>34<!----></td><td>3<!----></td><td>4<!----></td><!----><!----></tr><tr><!----><th title="r1">r1</th><!----><td>2_<!----></td><td>2<!----></td><td><!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > sortOnClick and paginator 1`] = `"<table><caption><!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 1 of<!----> 2 rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted descending">↓ <!----> C1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td><b>{"0":"r2","1":"c1","queryId":"q1","rowId":"r2","cellId":"c1"}</b><!----></td><td><b>{"0":"r2","1":"c2","queryId":"q1","rowId":"r2","cellId":"c2"}</b><!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > sortOnClick and paginator 2`] = `"<table><caption><!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 1 of<!----> 2 rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted ascending">↑ <!----> C1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r1">r1</th><!----><td><b>{"0":"r1","1":"c1","queryId":"q1","rowId":"r1","cellId":"c1"}</b><!----></td><td><b>{"0":"r1","1":"c2","queryId":"q1","rowId":"r1","cellId":"c2"}</b><!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`ResultSortedTableInHtmlTable > sortOnClick and paginator 3`] = `"<table><caption><!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 1 of<!----> 2 rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted ascending">↑ <!----> C1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r1">r1</th><!----><td><b>{"0":"r1","1":"c1","queryId":"q1","rowId":"r1","cellId":"c1"}</b><!----></td><td><b>{"0":"r1","1":"c2","queryId":"q1","rowId":"r1","cellId":"c2"}</b><!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`ResultTableInHtmlTable > basic 1`] = `"<table><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> c0</th><th><!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r1">r1</th><!----><td>2_<!----></td><td>2<!----></td><td><!----></td><!----><!----></tr><tr><!----><th title="r2">r2</th><!----><td>34<!----></td><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`ResultTableInHtmlTable > custom 1`] = `"<table><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> C1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r1">r1</th><!----><td><b>{"0":"r1","1":"c1","queryId":"q1","rowId":"r1","cellId":"c1"}</b><!----></td><td><b>{"0":"r1","1":"c2","queryId":"q1","rowId":"r1","cellId":"c2"}</b><!----></td><!----><!----></tr><tr><!----><th title="r2">r2</th><!----><td><b>{"0":"r2","1":"c1","queryId":"q1","rowId":"r2","cellId":"c1"}</b><!----></td><td><b>{"0":"r2","1":"c2","queryId":"q1","rowId":"r2","cellId":"c2"}</b><!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`SliceInHtmlTable > basic 1`] = `"<table><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r1">r1</th><!----><td>2<!----></td><td><!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`SliceInHtmlTable > editable and custom 1`] = `"<table><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> C1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r1">r1</th><!----><td><b>{"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}</b><!----></td><td><b>{"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}</b><!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > basic 1`] = `"<table><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr><tr><!----><th title="r1">r1</th><!----><td>2<!----></td><td><!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > paginator 1`] = `"<table><caption><!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 1 of<!----> 2 rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > paginator 2`] = `"<table><caption><!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 1 of<!----> 2 rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > sortOnClick and custom paginator 1`] = `"<table><caption><b>{"offset":0,"limit":1,"total":2}</b><!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted descending">↓ <!----> C1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td><b>{"0":"r2","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}</b><!----></td><td><b>{"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}</b><!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > sortOnClick and custom paginator 2`] = `"<table><caption><b>{"offset":0,"limit":1,"total":2}</b><!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted ascending">↑ <!----> C1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r1">r1</th><!----><td><b>{"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}</b><!----></td><td><b>{"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}</b><!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`SortedTableInHtmlTable > sortOnClick and custom paginator 3`] = `"<table><caption><b>{"offset":0,"limit":1,"total":2}</b><!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> C1</th><th class="sorted ascending">↑ <!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r1">r1</th><!----><td><b>{"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}</b><!----></td><td><b>{"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}</b><!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`SortedTablePaginator > states 1`] = `"<!----><!----> 100 rows"`;
+
+exports[`SortedTablePaginator > states 2`] = `"<!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 10 of<!----> 100 rows"`;
+
+exports[`SortedTablePaginator > states 3`] = `"<!----><button class="previous">←</button> <button class="next">→</button> 6 to 15 of<!----> 100 rows"`;
+
+exports[`SortedTablePaginator > states 4`] = `"<!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 10 of<!----> 100 rows"`;
+
+exports[`TableInHtmlTable > basic 1`] = `"<table><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r1">r1</th><!----><td>2<!----></td><td><!----></td><!----><!----></tr><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`TableInHtmlTable > editable and custom 1`] = `"<table><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> C1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r1">r1</th><!----><td><b>{"0":"r1","1":"c1","tableId":"t2","rowId":"r1","cellId":"c1"}</b><!----></td><td><b>{"0":"r1","1":"c2","tableId":"t2","rowId":"r1","cellId":"c2"}</b><!----></td><!----><!----></tr><tr><!----><th title="r2">r2</th><!----><td><b>{"0":"r2","1":"c1","tableId":"t2","rowId":"r2","cellId":"c1"}</b><!----></td><td><b>{"0":"r2","1":"c2","tableId":"t2","rowId":"r2","cellId":"c2"}</b><!----></td><!----><!----></tr></tbody></table>"`;
+
+exports[`ValuesInHtmlTable > basic 1`] = `"<table><thead><tr><!----><th>Id</th><!----><th>Value</th><!----></tr></thead><!----><tbody><tr><!----><th title="v1">v1</th><!----><td>1<!----></td><!----></tr><tr><!----><th title="v2">v2</th><!----><td>2<!----></td><!----></tr></tbody></table>"`;
+
+exports[`ValuesInHtmlTable > editable and custom 1`] = `"<table><thead><tr><!----><th>Id</th><!----><th>Value</th><!----></tr></thead><!----><tbody><tr><!----><th title="v1">v1</th><!----><td><b>{"0":"v1","valueId":"v1"}</b><!----></td><!----></tr><tr><!----><th title="v2">v2</th><!----><td><b>{"0":"v2","valueId":"v2"}</b><!----></td><!----></tr></tbody></table>"`;
