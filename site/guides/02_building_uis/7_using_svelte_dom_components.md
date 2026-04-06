@@ -12,15 +12,15 @@ Styling and class names are intentionally basic, since you are expected to
 style them with CSS to fit your app's overall visual language.
 
 The easiest way to understand these components is to see them in action in the
-UI Components Svelte demos:
+UI Components (Svelte) demos:
 
 | Component              | Purpose                                              |                                                                  |
 | ---------------------- | ---------------------------------------------------- | ---------------------------------------------------------------- |
-| ValuesInHtmlTable      | Renders Values.                                      | [demo](/demos/ui-components-svelte/valuesinhtmltable/)           |
-| TableInHtmlTable       | Renders a Table.                                     | [demo](/demos/ui-components-svelte/tableinhtmltable/)            |
-| SortedTableInHtmlTable | Renders a sorted Table, with optional interactivity. | [demo](/demos/ui-components-svelte/sortedtableinhtmltable/)      |
-| EditableValueView      | Renders a Value and lets you change its type/value.  | [demo](/demos/ui-components-svelte/editablevalueview/)           |
-| EditableCellView       | Renders a Cell and lets you change its type/value.   | [demo](/demos/ui-components-svelte/editablecellview/)            |
+| ValuesInHtmlTable      | Renders Values.                                      | [demo](/demos/ui-components-svelte/valuesinhtmltable-svelte/)           |
+| TableInHtmlTable       | Renders a Table.                                     | [demo](/demos/ui-components-svelte/tableinhtmltable-svelte/)            |
+| SortedTableInHtmlTable | Renders a sorted Table, with optional interactivity. | [demo](/demos/ui-components-svelte/sortedtableinhtmltable-svelte/)      |
+| EditableValueView      | Renders a Value and lets you change its type/value.  | [demo](/demos/ui-components-svelte/editablevalueview-svelte/)           |
+| EditableCellView       | Renders a Cell and lets you change its type/value.   | [demo](/demos/ui-components-svelte/editablecellview-svelte/)            |
 
 Like ui-svelte itself, the module uses Svelte components rather than React
 components, so customization is done by passing component constructors, not

@@ -81,7 +81,14 @@ describe('ui-components-svelte', () => {
     await expectPage(page, `/demos/ui-components-svelte/editablecellview-svelte`);
     await expectedElement(page, 'h1', '<EditableCellView /> (Svelte)');
     await expectedFramedElement(page, '#edit', 'Genre g05 name:');
+    await (await expectedFramedElement(page, '#edit button', 'string')).click();
+    await (await expectedFramedElement(page, '#edit button', 'number')).click();
+    await (await expectedFramedElement(page, '#edit button', 'boolean')).click();
+    await expectedFramedElement(page, '#edit button', 'object');
     const input = await expectedFramedElement(page, '#edit input', undefined);
-    await expect(input).toHaveValue('Animation');
+    await expect(input).toHaveValue('{}');
+    await (await expectedFramedElement(page, '#edit button', 'object')).click();
+    await expectedFramedElement(page, '#edit button', 'array');
+    await expect(input).toHaveValue('[]');
   });
 });
