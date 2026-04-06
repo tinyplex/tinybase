@@ -65,6 +65,7 @@ const ALL_MODULES = [
   'ui-react-inspector',
   'ui-react',
   'ui-svelte-dom',
+  'ui-svelte-inspector',
   'ui-svelte',
 ];
 const ALL_DEFINITIONS = [
@@ -502,9 +503,15 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   const {default: image} = await import('@rollup/plugin-image');
   const {default: terser} = await import('@rollup/plugin-terser');
   const sveltePlugin =
-    module == 'ui-svelte' || module == 'ui-svelte-dom'
+    module == 'ui-svelte' ||
+    module == 'ui-svelte-dom' ||
+    module == 'ui-svelte-inspector'
       ? (await import('rollup-plugin-svelte')).default
       : null;
+  const uiModule =
+    module == 'ui-svelte-dom' || module == 'ui-svelte-inspector'
+      ? 'ui-svelte'
+      : 'ui-react';
 
   let inputFile = `src/${module}/index.ts`;
   if (!existsSync(inputFile)) {
@@ -528,11 +535,12 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
       'yjs',
       ...(module == 'omni'
         ? []
-        : [
-            'tinybase/store',
-            ...(module == 'ui-svelte-dom' ? ['../ui-svelte'] : ['../ui-react']),
-          ]),
-      ...(module == 'ui-svelte' || module == 'ui-svelte-dom' ? [/^svelte/] : []),
+        : ['tinybase/store', '../' + uiModule]),
+      ...(module == 'ui-svelte' ||
+      module == 'ui-svelte-dom' ||
+      module == 'ui-svelte-inspector'
+        ? [/^svelte/]
+        : []),
     ],
     input: inputFile,
     plugins: [
@@ -547,9 +555,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
         preventAssignment: true,
         ...(module == 'omni'
           ? {}
-          : module == 'ui-svelte-dom'
-            ? {'../ui-svelte/index.ts': '../ui-svelte'}
-            : {'../ui-react/index.ts': '../ui-react'}),
+          : {['../' + uiModule + '/index.ts']: '../' + uiModule}),
       }),
       shebang(),
       image(),
@@ -596,13 +602,7 @@ const compileModule = async (module, dir = DIST_DIR, min = false) => {
   await copyWithReplace(
     outputFile,
     [
-      [
-        module == 'ui-svelte-dom' ? '../ui-svelte' : '../ui-react',
-        '../../' +
-          (module == 'ui-svelte-dom' ? 'ui-svelte' : 'ui-react') +
-          '/with-schemas/' +
-          index,
-      ],
+      ['../' + uiModule, '../../' + uiModule + '/with-schemas/' + index],
     ],
     outputFileWithSchemas,
   );
