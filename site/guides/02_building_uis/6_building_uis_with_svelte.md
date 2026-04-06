@@ -256,3 +256,12 @@ shown above with `tableId`, `rowId`, and `store`.
 The full set of view components covers every level of the Store hierarchy and
 the higher-level TinyBase objects. For the full API reference, see the
 ui-svelte module documentation.
+
+## Summary
+
+The ui-svelte module is the Svelte 5 counterpart to ui-react. It favors
+reactive handles, named snippets, and Provider-based context over hooks and
+component override props.
+
+If you want browser-oriented table components comparable to the ui-react-dom
+module, proceed to the Using Svelte DOM Components guide.
