@@ -36,7 +36,7 @@
   const INVALID = 'invalid';
 
   let thingType = $state<CellOrValueType>();
-  let currentThing = $state<Cell | Value>();
+  let currentThingKey = $state<string>();
   let stringThing = $state<string>();
   let numberThing = $state<number>();
   let booleanThing = $state<boolean>();
@@ -45,10 +45,16 @@
   let objectClassName = $state(EMPTY_STRING);
   let arrayClassName = $state(EMPTY_STRING);
 
+  const getThingKey = (thing: Cell | Value | undefined): string =>
+    `${getCellOrValueType(thing)}:${
+      isObject(thing) || isArray(thing) ? jsonString(thing) : String(thing)
+    }`;
+
   $effect(() => {
-    if (currentThing !== thing) {
+    const thingKey = getThingKey(thing);
+    if (currentThingKey !== thingKey) {
       thingType = getCellOrValueType(thing);
-      currentThing = thing;
+      currentThingKey = thingKey;
       if (isObject(thing)) {
         objectThing = jsonString(thing);
       } else if (isArray(thing)) {
@@ -66,7 +72,7 @@
     setTypedThing: (thing: T) => void,
   ) => {
     setTypedThing(nextThing);
-    currentThing = nextThing;
+    currentThingKey = getThingKey(nextThing);
     onThingChange(nextThing);
   };
 
@@ -80,7 +86,7 @@
     try {
       const object = jsonParse(value);
       if (isThing(object)) {
-        currentThing = object;
+        currentThingKey = getThingKey(object);
         onThingChange(object);
         setTypedClassName(EMPTY_STRING);
       }
@@ -108,7 +114,7 @@
         tryReturn(() => jsonParse(arrayThing), []),
       ) as Cell | Value;
       thingType = nextType;
-      currentThing = nextThing;
+      currentThingKey = getThingKey(nextThing);
       onThingChange(nextThing);
     }
   };
