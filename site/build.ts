@@ -309,7 +309,8 @@ const addApi = (docs: Docs): Docs =>
     .addApiFile('dist/@types/ui-react/index.d.ts')
     .addApiFile('dist/@types/ui-react-dom/index.d.ts')
     .addApiFile('dist/@types/ui-react-inspector/index.d.ts')
-    .addApiFile('dist/@types/ui-svelte/index.d.ts');
+    .addApiFile('dist/@types/ui-svelte/index.d.ts')
+    .addApiFile('dist/@types/ui-svelte-dom/index.d.ts');
 
 const addPages = (docs: Docs): Docs =>
   docs
