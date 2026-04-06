@@ -14,6 +14,7 @@ const internalEsm: string[] = [
   'tinybase/ui-react',
   'tinybase/ui-svelte',
   'tinybase/ui-react-dom',
+  'tinybase/ui-svelte-dom',
   'tinybase/ui-react-inspector',
   'tinybase/persisters/persister-browser',
   'tinybase/persisters/persister-remote',
