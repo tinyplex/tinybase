@@ -83,7 +83,7 @@ effects.
 ## Reactive Parameters With MaybeGetter
 
 All function parameters accept either a plain value or a reactive getter
-function. This is the `MaybeGetter<T>` type: `T | (() => T)`.
+function. This is the MaybeGetter type: `T | (() => T)`.
 
 Passing a getter function that reads a `$state` variable makes the function
 reactively track which data it fetches. In this example, `rowId` is a prop and
@@ -105,9 +105,10 @@ function to re-read the Store for the new row.
 
 ## Writable State With `getCell`
 
-The `getCell` and `getValue` functions expose a writable `current` property for
-scalar values. Writing to it calls `store.setCell()` or `store.setValue()`. This
-makes Svelte's `bind:value` directive work for two-way binding:
+The getCell function and getValue function both expose a writable `current`
+property for scalar values. Writing to them calls the Store's setCell method or
+setValue method respectively. This makes Svelte's `bind:value` directive work
+for two-way binding:
 
 ```svelte
 <script>
