@@ -1,15 +1,15 @@
-# <RelationshipInHtmlTable />
+# <RelationshipInHtmlTable /> (React)
 
 In this demo, we showcase the RelationshipInHtmlTable component, a way to
 display the two Tables linked together by a Relationship.
 
 Rather than building the whole demo and boilerplate from scratch, we're going
-back and making changes to the <TableInHtmlTable /> demo again to demonstrate
-this new component. Basically, where we previously displayed a Table from a
-Store, we are now creating an Relationships object and displaying one a defined
-Relationship from it.
+back and making changes to the <TableInHtmlTable /> (React) demo again to
+demonstrate this new component. Basically, where we previously displayed a
+Table from a Store, we are now creating an Relationships object and displaying
+one a defined Relationship from it.
 
-[base]: # '<TableInHtmlTable />'
+[base]: # '<TableInHtmlTable /> (React)'
 
 ## Set Up
 
@@ -156,4 +156,4 @@ them out.
 
 As well as displaying a Relationship from an Indexes object, you can also render
 the ResultTable of a Queries object, as you'll see next up in the
-<ResultTableInHtmlTable /> demo.
+<ResultTableInHtmlTable /> (React) demo.

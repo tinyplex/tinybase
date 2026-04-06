@@ -1,12 +1,12 @@
-# <EditableCellView />
+# <EditableCellView /> (React)
 
 In this demo, we showcase the EditableCellView component, which allows you to
 edit Cell values in the Store in a web environment.
 
 Rather than building the whole demo and boilerplate from scratch, we're making
-changes to the <TableInHtmlTable /> demo to show this new component.
+changes to the <TableInHtmlTable /> (React) demo to show this new component.
 
-[base]: # '<TableInHtmlTable />'
+[base]: # '<TableInHtmlTable /> (React)'
 
 ## Set Up
 
@@ -68,4 +68,4 @@ component so that it uses this view for its own rendering:
 And again, we now have editable data across the Table!
 
 We finish off the demos of the UI components with the debugging tool. Let's
-proceed to the <Inspector /> demo.
+proceed to the <Inspector /> (React) demo.

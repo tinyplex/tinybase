@@ -1,4 +1,4 @@
-# <ValuesInHtmlTable />
+# <ValuesInHtmlTable /> (React)
 
 In this first demo, we set up a Store containing some sample data, and showcase
 the ValuesInHtmlTable component.
@@ -203,4 +203,4 @@ can configure this component, and click the 'StackBlitz' link under the demo
 above to try them out.
 
 There is plenty more that you can do with the ui-react-dom module's components,
-and so please continue to the next <TableInHtmlTable /> demo.
+and so please continue to the next <TableInHtmlTable /> (React) demo.

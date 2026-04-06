@@ -1,14 +1,15 @@
-# <ResultSortedTableInHtmlTable />
+# <ResultSortedTableInHtmlTable /> (React)
 
 In this demo, we showcase the ResultSortedTableInHtmlTable component, a more
 complex and interactive way to render the results of a query.
 
 Rather than building the whole demo and boilerplate from scratch, we're making
-changes to the <SortedTableInHtmlTable /> demo to support this new component.
+changes to the <SortedTableInHtmlTable /> (React) demo to support this new
+component.
 Basically, where we previously displayed a Table from a Store, we are now
 displaying the result of a query from a Queries object.
 
-[base]: # '<SortedTableInHtmlTable />'
+[base]: # '<SortedTableInHtmlTable /> (React)'
 
 ## Set Up
 
@@ -89,8 +90,9 @@ we don't need the `customCells` prop any more.
 -const customCells = {name: 'Name', year: 'Year', rating: 'Rating'};
 ```
 
-We are using the same `sortOnClick` props from the <SortedTableInHtmlTable />
-demo so you should find it to be interactive just as before.
+We are using the same `sortOnClick` props from the
+<SortedTableInHtmlTable /> (React) demo so you should find it to be
+interactive just as before.
 
 Let's next look at components that let you edit Store data, starting with the
-<EditableValueView /> demo.
+<EditableValueView /> (React) demo.

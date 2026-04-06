@@ -11,25 +11,25 @@ Styling and class names are very basic, since you are expected to style them
 with CSS to fit your app's overall styling.
 
 The easiest way to understand these components is to see them all in action in
-the UI Components demos. There are table-based components for rendering Tables,
-sorted Tables, Values, and so on:
+the UI Components (React) demos. There are table-based components for rendering
+Tables, sorted Tables, Values, and so on:
 
 | Component                    | Purpose                                                    |                                                            |
 | ---------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------- |
-| ValuesInHtmlTable            | Renders Values.                                            | [demo](/demos/ui-components/valuesinhtmltable/)            |
-| TableInHtmlTable             | Renders a Table.                                           | [demo](/demos/ui-components/tableinhtmltable/)             |
-| SortedTableInHtmlTable       | Renders a sorted Table, with optional interactivity.       | [demo](/demos/ui-components/sortedtableinhtmltable/)       |
-| SliceInHtmlTable             | Renders a Slice from an Index.                             | [demo](/demos/ui-components/sliceinhtmltable/)             |
-| RelationshipInHtmlTable      | Renders the local and remote Tables of a relationship      | [demo](/demos/ui-components/relationshipinhtmltable/)      |
-| ResultTableInHtmlTable       | Renders a ResultTable.                                     | [demo](/demos/ui-components/resulttableinhtmltable/)       |
-| ResultSortedTableInHtmlTable | Renders a sorted ResultTable, with optional interactivity. | [demo](/demos/ui-components/resultsortedtableinhtmltable/) |
+| ValuesInHtmlTable            | Renders Values.                                            | [demo](/demos/ui-components-react/valuesinhtmltable-react/)            |
+| TableInHtmlTable             | Renders a Table.                                           | [demo](/demos/ui-components-react/tableinhtmltable-react/)             |
+| SortedTableInHtmlTable       | Renders a sorted Table, with optional interactivity.       | [demo](/demos/ui-components-react/sortedtableinhtmltable-react/)       |
+| SliceInHtmlTable             | Renders a Slice from an Index.                             | [demo](/demos/ui-components-react/sliceinhtmltable-react/)             |
+| RelationshipInHtmlTable      | Renders the local and remote Tables of a relationship      | [demo](/demos/ui-components-react/relationshipinhtmltable-react/)      |
+| ResultTableInHtmlTable       | Renders a ResultTable.                                     | [demo](/demos/ui-components-react/resulttableinhtmltable-react/)       |
+| ResultSortedTableInHtmlTable | Renders a sorted ResultTable, with optional interactivity. | [demo](/demos/ui-components-react/resultsortedtableinhtmltable-react/) |
 
 There are also editable components for individual Cells and Values:
 
 | Component         | Purpose                                                 |                                                 |
 | ----------------- | ------------------------------------------------------- | ----------------------------------------------- |
-| EditableCellView  | Renders a Cell and lets you change its type and value.  | [demo](/demos/ui-components/editablecellview/)  |
-| EditableValueView | Renders a Value and lets you change its type and value. | [demo](/demos/ui-components/editablevalueview/) |
+| EditableCellView  | Renders a Cell and lets you change its type and value.  | [demo](/demos/ui-components-react/editablecellview-react/)  |
+| EditableValueView | Renders a Value and lets you change its type and value. | [demo](/demos/ui-components-react/editablevalueview-react/) |
 
 We finish off this section with a best practice to avoid passing the global
 Store down into components. Please proceed to the Using Context guide!

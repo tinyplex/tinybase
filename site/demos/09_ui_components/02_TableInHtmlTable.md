@@ -1,11 +1,12 @@
-# <TableInHtmlTable />
+# <TableInHtmlTable /> (React)
 
 In this demo, we showcase the TableInHtmlTable component.
 
 Rather than building the whole demo and boilerplate from scratch, we're making
-changes to the <ValuesInHtmlTable /> demo to support this new component.
+changes to the <ValuesInHtmlTable /> (React) demo to support this new
+component.
 
-[base]: # '<ValuesInHtmlTable />'
+[base]: # '<ValuesInHtmlTable /> (React)'
 
 ## Set Up
 
@@ -149,4 +150,4 @@ the ways in which you can configure this component, and again, click the
 'StackBlitz' link under the demo above to try them out.
 
 Let's move on to a slightly more complex component in the
-<SortedTableInHtmlTable /> demo.
+<SortedTableInHtmlTable /> (React) demo.

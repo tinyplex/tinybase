@@ -5,7 +5,7 @@
  * The components in this module use the react-dom module and so are not
  * appropriate for environments like React Native (although those in the
  * lower-level ui-react module are).
- * @see UI Components demos
+ * @see UI Components (React) demos
  * @packageDocumentation
  * @module ui-react-dom
  * @since v4.1.0
@@ -664,7 +664,7 @@
  * Store as an HTML <table> element, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
- * See the <TableInHtmlTable /> demo for this component in action.
+ * See the <TableInHtmlTable /> (React) demo for this component in action.
  *
  * The component's props identify which Table to render based on Table Id, and
  * Store (which is either the default context Store, a named context Store, or
@@ -803,7 +803,8 @@
  * Table in a Store, as an HTML <table> element, and registers a listener so
  * that any changes to that result will cause a re-render.
  *
- * See the <SortedTableInHtmlTable /> demo for this component in action.
+ * See the <SortedTableInHtmlTable /> (React) demo for this component in
+ * action.
  *
  * The component's props identify which Table to render based on Table Id, and
  * Store (which is either the default context Store, a named context Store, or
@@ -970,7 +971,7 @@
  * as an HTML <table> element, and registers a listener so that any changes to
  * that result will cause a re-render.
  *
- * See the <ValuesInHtmlTable /> demo for this component in action.
+ * See the <ValuesInHtmlTable /> (React) demo for this component in action.
  *
  * The component's props identify which Row to render based on Table Id, Row Id,
  * and Store (which is either the default context Store, a named context Store,
@@ -1095,7 +1096,7 @@
  * <table> element, and registers a listener so that any changes to that result
  * will cause a re-render.
  *
- * See the <SliceInHtmlTable /> demo for this component in action.
+ * See the <SliceInHtmlTable /> (React) demo for this component in action.
  *
  * The component's props identify which Slice to render based on Index Id, Slice
  * Id, and Indexes object (which is either the default context Indexes object, a
@@ -1246,7 +1247,8 @@
  * linked by a Relationship as an HTML <table> element, and registers a listener
  * so that any changes to that result will cause a re-render.
  *
- * See the <RelationshipInHtmlTable /> demo for this component in action.
+ * See the <RelationshipInHtmlTable /> (React) demo for this component in
+ * action.
  *
  * The component's props identify which Relationship to render based on
  * Relationship Id and Relationships object (which is either the default context
@@ -1417,7 +1419,8 @@
  * ResultTable in a Queries object as an HTML <table> element, and registers a
  * listener so that any changes to that result will cause a re-render.
  *
- * See the <ResultTableInHtmlTable /> demo for this component in action.
+ * See the <ResultTableInHtmlTable /> (React) demo for this component in
+ * action.
  *
  * The component's props identify which ResultTable to render based on query Id,
  * and Queries object (which is either the default context Queries object, a
@@ -1563,7 +1566,8 @@
  * registers a listener so that any changes to that result will cause a
  * re-render.
  *
- * See the <ResultSortedTableInHtmlTable /> demo for this component in action.
+ * See the <ResultSortedTableInHtmlTable /> (React) demo for this component in
+ * action.
  *
  * The component's props identify which ResultTable to render based on query Id,
  * and Queries object (which is either the default context Queries object, a
@@ -1731,7 +1735,7 @@
  * that can be edited in a web browser, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
- * See the <EditableCellView /> demo for this component in action.
+ * See the <EditableCellView /> (React) demo for this component in action.
  *
  * The component's props identify which Cell to render based on Table Id, Row
  * Id, Cell Id, and Store (which is either the default context Store, a named
@@ -1796,7 +1800,7 @@
  * that can be edited in a web browser, and registers a listener so that any
  * changes to that result will cause a re-render.
  *
- * See the <EditableValueView /> demo for this component in action.
+ * See the <EditableValueView /> (React) demo for this component in action.
  *
  * The component's props identify which Value to render based on Table Id, Row
  * Id, Value Id, and Store (which is either the default context Store, a named
@@ -1857,7 +1861,8 @@
 /**
  * The SortedTablePaginator component renders a paginator for a sorted table.
  *
- * See the <SortedTableInHtmlTable /> demo for this component in action.
+ * See the <SortedTableInHtmlTable /> (React) demo for this component in
+ * action.
  *
  * The component displays 'previous' and 'next' buttons for paging through the
  * Table if there are more Row Ids than fit in each page. The component will

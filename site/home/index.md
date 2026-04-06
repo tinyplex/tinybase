@@ -346,8 +346,8 @@ root.unmount(); // !act
 > pre-built components for tabular display of your data, with lots of
 > customization and interactivity options.
 >
-> Try them out in the UI Components demos, and read more about the underlying
-> ui-react module in the Building UIs guides.
+> Try them out in the UI Components (React) demos, and read more about the
+> underlying ui-react module in the Building UIs guides.
 
 <img src='/ui-react-dom.webp' />
 

@@ -14,8 +14,8 @@ afterAll(stopServer);
 
 describe('ui-components', () => {
   test('ValuesInHtmlTable', async ({page}) => {
-    await expectPage(page, `/demos/ui-components/valuesinhtmltable`);
-    await expectedElement(page, 'h1', '<ValuesInHtmlTable />');
+    await expectPage(page, `/demos/ui-components-react/valuesinhtmltable-react`);
+    await expectedElement(page, 'h1', '<ValuesInHtmlTable /> (React)');
     await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
     await expectedFramedElement(
       page,
@@ -42,8 +42,8 @@ describe('ui-components', () => {
   });
 
   test('TableInHtmlTable', async ({page}) => {
-    await expectPage(page, `/demos/ui-components/tableinhtmltable`);
-    await expectedElement(page, 'h1', '<TableInHtmlTable />');
+    await expectPage(page, `/demos/ui-components-react/tableinhtmltable-react`);
+    await expectedElement(page, 'h1', '<TableInHtmlTable /> (React)');
     await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
     await expectedFramedElement(
       page,
@@ -82,8 +82,8 @@ describe('ui-components', () => {
   });
 
   test('SliceInHtmlTable', async ({page}) => {
-    await expectPage(page, `/demos/ui-components/sliceinhtmltable`);
-    await expectedElement(page, 'h1', '<SliceInHtmlTable />');
+    await expectPage(page, `/demos/ui-components-react/sliceinhtmltable-react`);
+    await expectedElement(page, 'h1', '<SliceInHtmlTable /> (React)');
     await expectedFramedElement(page, 'table thead th:nth-of-type(1)', 'Id');
     await expectedFramedElement(page, 'table thead th:nth-of-type(2)', 'name');
     await expectedFramedElement(page, 'table tbody tr:nth-of-type(1) th', '2');
@@ -113,8 +113,11 @@ describe('ui-components', () => {
   });
 
   test('RelationshipInHtmlTable', async ({page}) => {
-    await expectPage(page, `/demos/ui-components/relationshipinhtmltable`);
-    await expectedElement(page, 'h1', '<RelationshipInHtmlTable />');
+    await expectPage(
+      page,
+      `/demos/ui-components-react/relationshipinhtmltable-react`,
+    );
+    await expectedElement(page, 'h1', '<RelationshipInHtmlTable /> (React)');
     await expectedFramedElement(page, 'table thead th:nth-of-type(1)', 'Genre');
     await expectedFramedElement(
       page,
@@ -159,8 +162,11 @@ describe('ui-components', () => {
   });
 
   test('SortedTableInHtmlTable', async ({page}) => {
-    await expectPage(page, `/demos/ui-components/sortedtableinhtmltable`);
-    await expectedElement(page, 'h1', '<SortedTableInHtmlTable />');
+    await expectPage(
+      page,
+      `/demos/ui-components-react/sortedtableinhtmltable-react`,
+    );
+    await expectedElement(page, 'h1', '<SortedTableInHtmlTable /> (React)');
     await expectedFramedElement(page, 'table thead th', 'Id');
     await expectedFramedElement(
       page,
@@ -339,8 +345,11 @@ describe('ui-components', () => {
   });
 
   test('ResultTableInHtmlTable', async ({page}) => {
-    await expectPage(page, `/demos/ui-components/resulttableinhtmltable`);
-    await expectedElement(page, 'h1', '<ResultTableInHtmlTable />');
+    await expectPage(
+      page,
+      `/demos/ui-components-react/resulttableinhtmltable-react`,
+    );
+    await expectedElement(page, 'h1', '<ResultTableInHtmlTable /> (React)');
     await expectedFramedElement(page, 'table thead th', 'Id');
     await expectedFramedElement(
       page,
@@ -357,8 +366,15 @@ describe('ui-components', () => {
   });
 
   test('ResultSortedTableInHtmlTable', async ({page}) => {
-    await expectPage(page, `/demos/ui-components/resultsortedtableinhtmltable`);
-    await expectedElement(page, 'h1', '<ResultSortedTableInHtmlTable />');
+    await expectPage(
+      page,
+      `/demos/ui-components-react/resultsortedtableinhtmltable-react`,
+    );
+    await expectedElement(
+      page,
+      'h1',
+      '<ResultSortedTableInHtmlTable /> (React)',
+    );
     await expectedFramedElement(page, 'table thead th', 'Id');
     await expectedFramedElement(
       page,
@@ -537,8 +553,11 @@ describe('ui-components', () => {
   });
 
   test('EditableValueView', async ({page}) => {
-    await expectPage(page, `/demos/ui-components/editablevalueview`);
-    await expectedElement(page, 'h1', '<EditableValueView />');
+    await expectPage(
+      page,
+      `/demos/ui-components-react/editablevalueview-react`,
+    );
+    await expectedElement(page, 'h1', '<EditableValueView /> (React)');
     await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
     await expectedFramedElement(
       page,
@@ -651,8 +670,11 @@ describe('ui-components', () => {
   });
 
   test('EditableCellView', async ({page}) => {
-    await expectPage(page, `/demos/ui-components/editablecellview`);
-    await expectedElement(page, 'h1', '<EditableCellView />');
+    await expectPage(
+      page,
+      `/demos/ui-components-react/editablecellview-react`,
+    );
+    await expectedElement(page, 'h1', '<EditableCellView /> (React)');
     await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
     await expectedFramedElement(
       page,
