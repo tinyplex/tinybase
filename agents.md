@@ -530,6 +530,9 @@ npm run testE2e               # Run E2E tests to verify demos
 - `compileForProd` builds the TinyBase libraries themselves
 - `compileDocsPagesOnly` is much faster - only rebuilds demo pages from markdown
 - You only need `compileForProd` once, unless you've changed TinyBase source
+- The docs build resolves `tinybase/*` demo imports from the generated `dist`
+  package exports, so adding a new public module requires a fresh
+  `compileForProd` or `compileForTest` before docs pages can import it
 - E2E tests use Playwright to verify demos work in a real browser
 - Individual E2E tests can be run for faster verification during iteration
 
@@ -539,5 +542,4 @@ At the end of each major project or task, add any new **general** learnings to
 this file. This ensures future agents benefit from discoveries about the
 codebase, build system, testing patterns, or documentation conventions. Only add
 broadly applicable insights — not project-specific implementation details.
-
 
