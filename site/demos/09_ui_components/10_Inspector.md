@@ -1,12 +1,12 @@
-# <Inspector />
+# <Inspector /> (React)
 
 In this demo, we showcase the Inspector component, which allows you to view and
 edit the content of a Store in a debug web environment.
 
-Let's make changes to the <TableInHtmlTable /> demo so we can start with a
-well-populated Store to inspect.
+Let's make changes to the <TableInHtmlTable /> (React) demo so we can start
+with a well-populated Store to inspect.
 
-[base]: # '<TableInHtmlTable />'
+[base]: # '<TableInHtmlTable /> (React)'
 
 ## Set Up
 

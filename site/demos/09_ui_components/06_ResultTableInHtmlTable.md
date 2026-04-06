@@ -1,14 +1,15 @@
-# <ResultTableInHtmlTable />
+# <ResultTableInHtmlTable /> (React)
 
 In this demo, we showcase the ResultTableInHtmlTable component, a way to display
 the results of a query.
 
 Rather than building the whole demo and boilerplate from scratch, we're going
-back and making changes to the <TableInHtmlTable /> demo to demonstrate this new
-component. Basically, where we previously displayed a Table from a Store, we are
-now displaying the results of a query from a Queries object.
+back and making changes to the <TableInHtmlTable /> (React) demo to
+demonstrate this new component. Basically, where we previously displayed a
+Table from a Store, we are now displaying the results of a query from a
+Queries object.
 
-[base]: # '<TableInHtmlTable />'
+[base]: # '<TableInHtmlTable /> (React)'
 
 ## Set Up
 
@@ -75,4 +76,4 @@ component, but instead of taking a tableId, we provide it with the queryId:
 
 Hopefully that is eminently straightforward! You won't be surprised to learn
 that you can also use sorting and interactivity on query results, and for that,
-let's look at the next <ResultSortedTableInHtmlTable /> demo.
+let's look at the next <ResultSortedTableInHtmlTable /> (React) demo.

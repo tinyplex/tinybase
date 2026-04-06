@@ -1,14 +1,14 @@
-# <SliceInHtmlTable />
+# <SliceInHtmlTable /> (React)
 
 In this demo, we showcase the SliceInHtmlTable component, a way to display the
 Slice portions of an Index.
 
 Rather than building the whole demo and boilerplate from scratch, we're going
-back and making changes to the <TableInHtmlTable /> demo to demonstrate this new
-component. Basically, where we previously displayed a Table from a Store, we are
-now creating an Index and displaying one of its Slice objects.
+back and making changes to the <TableInHtmlTable /> (React) demo to demonstrate
+this new component. Basically, where we previously displayed a Table from a
+Store, we are now creating an Index and displaying one of its Slice objects.
 
-[base]: # '<TableInHtmlTable />'
+[base]: # '<TableInHtmlTable /> (React)'
 
 ## Set Up
 
@@ -80,4 +80,4 @@ the ways in which you can configure this component, and again, click the
 
 As well as displaying a Slice from an Indexes object, you can also render the
 links between Tables with a Relationships object, as you'll see next up in the
-<RelationshipInHtmlTable /> demo.
+<RelationshipInHtmlTable /> (React) demo.

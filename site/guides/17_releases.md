@@ -1375,7 +1375,8 @@ ui-react-inspector module (so that it can be used against non-debug code) and
 has been renamed to Inspector.
 
 Please update your imports and rename the component when used, accordingly. See
-the API documentation for details, or the <Inspector /> demo, for example.
+the API documentation for details, or the <Inspector /> (React) demo, for
+example.
 
 ### API Changes
 
@@ -1665,18 +1666,19 @@ The following is the list of all the components released in v4.1:
 
 | Component                    | Purpose                                                    |                                                           |
 | ---------------------------- | ---------------------------------------------------------- | --------------------------------------------------------- |
-| ValuesInHtmlTable            | Renders Values.                                            | [demo](/demos/ui-components/valuesinhtmltable)            |
-| TableInHtmlTable             | Renders a Table.                                           | [demo](/demos/ui-components/tableinhtmltable)             |
-| SortedTableInHtmlTable       | Renders a sorted Table, with optional interactivity.       | [demo](/demos/ui-components/sortedtableinhtmltable)       |
-| SliceInHtmlTable             | Renders a Slice from an Index.                             | [demo](/demos/ui-components/sliceinhtmltable)             |
-| RelationshipInHtmlTable      | Renders the local and remote Tables of a relationship      | [demo](/demos/ui-components/relationshipinhtmltable)      |
-| ResultTableInHtmlTable       | Renders a ResultTable.                                     | [demo](/demos/ui-components/resulttableinhtmltable)       |
-| ResultSortedTableInHtmlTable | Renders a sorted ResultTable, with optional interactivity. | [demo](/demos/ui-components/resultsortedtableinhtmltable) |
-| EditableCellView             | Renders a Cell and lets you change its type and value.     | [demo](/demos/ui-components/editablecellview)             |
-| EditableValueView            | Renders a Value and lets you change its type and value.    | [demo](/demos/ui-components/editablevalueview)            |
+| ValuesInHtmlTable            | Renders Values.                                            | [demo](/demos/ui-components-react/valuesinhtmltable-react)            |
+| TableInHtmlTable             | Renders a Table.                                           | [demo](/demos/ui-components-react/tableinhtmltable-react)             |
+| SortedTableInHtmlTable       | Renders a sorted Table, with optional interactivity.       | [demo](/demos/ui-components-react/sortedtableinhtmltable-react)       |
+| SliceInHtmlTable             | Renders a Slice from an Index.                             | [demo](/demos/ui-components-react/sliceinhtmltable-react)             |
+| RelationshipInHtmlTable      | Renders the local and remote Tables of a relationship      | [demo](/demos/ui-components-react/relationshipinhtmltable-react)      |
+| ResultTableInHtmlTable       | Renders a ResultTable.                                     | [demo](/demos/ui-components-react/resulttableinhtmltable-react)       |
+| ResultSortedTableInHtmlTable | Renders a sorted ResultTable, with optional interactivity. | [demo](/demos/ui-components-react/resultsortedtableinhtmltable-react) |
+| EditableCellView             | Renders a Cell and lets you change its type and value.     | [demo](/demos/ui-components-react/editablecellview-react)             |
+| EditableValueView            | Renders a Value and lets you change its type and value.    | [demo](/demos/ui-components-react/editablevalueview-react)            |
 
-These pre-built components are showcased in the UI Components demos. Using them
-should be very familiar if you have used the more abstract ui-react module:
+These pre-built components are showcased in the UI Components (React) demos.
+Using them should be very familiar if you have used the more abstract ui-react
+module:
 
 ```jsx
 import React from 'react';

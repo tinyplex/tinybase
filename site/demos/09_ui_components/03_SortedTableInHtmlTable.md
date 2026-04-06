@@ -1,12 +1,12 @@
-# <SortedTableInHtmlTable />
+# <SortedTableInHtmlTable /> (React)
 
 In this demo, we showcase the SortedTableInHtmlTable component, a more complex
 and interactive way to render a TinyBase Table.
 
 Rather than building the whole demo and boilerplate from scratch, we're making
-changes to the <TableInHtmlTable /> demo to support this new component.
+changes to the <TableInHtmlTable /> (React) demo to support this new component.
 
-[base]: # '<TableInHtmlTable />'
+[base]: # '<TableInHtmlTable /> (React)'
 
 ## Set Up
 
@@ -164,4 +164,5 @@ table caption {
 ```
 
 As well as rendering raw Tables from a Store, we can do the same for each Slice
-of an Indexes object - as you'll see in the next <SliceInHtmlTable /> demo.
+of an Indexes object - as you'll see in the next
+<SliceInHtmlTable /> (React) demo.

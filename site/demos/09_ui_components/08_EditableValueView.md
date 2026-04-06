@@ -1,12 +1,12 @@
-# <EditableValueView />
+# <EditableValueView /> (React)
 
 In this demo, we showcase the EditableValueView component, which allows you to
 edit Values in the Store in a web environment.
 
 Rather than building the whole demo and boilerplate from scratch, we're making
-changes to the <ValuesInHtmlTable /> demo to show this new component.
+changes to the <ValuesInHtmlTable /> (React) demo to show this new component.
 
-[base]: # '<ValuesInHtmlTable />'
+[base]: # '<ValuesInHtmlTable /> (React)'
 
 ## Set Up
 
@@ -71,4 +71,4 @@ component so that it uses this view for its own rendering:
 And just like that you have an internally consistent editing experience!
 
 There's a very similar component for Cells that we will now explore in the
-equivalent <EditableCellView /> demo.
+equivalent <EditableCellView /> (React) demo.
