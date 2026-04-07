@@ -2,12 +2,12 @@ import type {Id} from '../@types/common/index.d.ts';
 import type {Metrics} from '../@types/metrics/index.d.ts';
 import type {MetricProps} from '../@types/ui-react/index.d.ts';
 import {arrayIsEmpty, arrayMap} from '../common/array.ts';
+import {getUniqueId} from '../common/inspector/common.ts';
+import type {StoreProp} from '../common/inspector/types.ts';
 import {isUndefined} from '../common/other.ts';
 import {DEFAULT} from '../common/strings.ts';
 import {useMetric, useMetricIds, useMetrics} from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
-import {getUniqueId} from './common.ts';
-import type {StoreProp} from './types.ts';
 
 const MetricRow = ({metrics, metricId}: MetricProps) => (
   <tr>

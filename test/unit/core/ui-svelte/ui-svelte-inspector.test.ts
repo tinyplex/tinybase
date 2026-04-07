@@ -11,6 +11,59 @@ import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 import {Inspector} from 'tinybase/ui-svelte-inspector';
 import WithProvider from './components/inspector/WithProvider.svelte';
 
+const getDetails = (title: string): HTMLDetailsElement => {
+  const details = screen.getByText(title).closest('details');
+  expect(details).not.toBeNull();
+  return details as HTMLDetailsElement;
+};
+
+const getSummaryAction = (title: string, actionTitle: string): HTMLElement => {
+  const summary = screen.getByText(title).closest('summary');
+  expect(summary).not.toBeNull();
+  const action = summary?.querySelector(`img[title="${actionTitle}"]`);
+  expect(action).not.toBeNull();
+  return action as HTMLElement;
+};
+
+const getDetailsAction = (title: string, actionTitle: string): HTMLElement => {
+  const action = getDetails(title).querySelector(`img[title="${actionTitle}"]`);
+  expect(action).not.toBeNull();
+  return action as HTMLElement;
+};
+
+const getRowAction = (
+  tableTitle: string,
+  rowId: string,
+  actionTitle: string,
+): HTMLElement => {
+  const row = getDetails(tableTitle).querySelector(`th[title="${rowId}"]`)?.closest('tr');
+  expect(row).not.toBeNull();
+  const action = row?.querySelector(`img[title="${actionTitle}"]`);
+  expect(action).not.toBeNull();
+  return action as HTMLElement;
+};
+
+const getValueAction = (valueId: string, actionTitle: string): HTMLElement => {
+  const row = getDetails('Values').querySelector(`th[title="${valueId}"]`)?.closest('tr');
+  expect(row).not.toBeNull();
+  const action = row?.querySelector(`img[title="${actionTitle}"]`);
+  expect(action).not.toBeNull();
+  return action as HTMLElement;
+};
+
+const getCellAction = (
+  tableTitle: string,
+  rowId: string,
+  actionTitle: string,
+  index: number = 0,
+): HTMLElement => {
+  const row = getDetails(tableTitle).querySelector(`th[title="${rowId}"]`)?.closest('tr');
+  expect(row).not.toBeNull();
+  const actions = row?.querySelectorAll(`img[title="${actionTitle}"]`);
+  expect(actions?.[index]).not.toBeNull();
+  return actions?.[index] as HTMLElement;
+};
+
 describe('Inspector', () => {
   beforeEach(() => {
     sessionStorage.clear();
@@ -193,6 +246,135 @@ describe('Inspector', () => {
       expect(screen.getByText('Metric Id')).not.toBeNull();
       expect(screen.getByTitle('v1')).not.toBeNull();
     });
+
+    unmount();
+  });
+
+  test('editable values and tables', async () => {
+    const store = createStore()
+      .setTables({
+        t1: {r1: {c1: 1, c2: 'two'}, r2: {c1: 3, c2: 'four'}},
+        t2: {r1: {c1: 2}},
+      })
+      .setValues({v1: 1});
+    const indexes = createIndexes(store).setIndexDefinition('i1', 't1', 'c1');
+    const relationships = createRelationships(store).setRelationshipDefinition(
+      'r1',
+      't1',
+      't2',
+      'c1',
+    );
+    const {unmount} = render(WithProvider, {
+      props: {store, indexes, relationships},
+    });
+
+    await waitFor(() => expect(screen.getByText('Values')).not.toBeNull());
+
+    await fireEvent.click(getSummaryAction('Values', 'Edit'));
+    await waitFor(() =>
+      expect(getSummaryAction('Values', 'Done editing')).not.toBeNull(),
+    );
+
+    await fireEvent.click(getValueAction('v1', 'Clone value'));
+    await waitFor(() => expect(screen.getByDisplayValue('v1 (copy)')).not.toBeNull());
+    await fireEvent.click(screen.getByTitle('Confirm'));
+    await waitFor(() => expect(store.getValue('v1 (copy)')).toBe(1));
+
+    await fireEvent.click(getDetailsAction('Values', 'Add value'));
+    await fireEvent.input(screen.getByDisplayValue('value'), {
+      target: {value: 'v2'},
+    });
+    await fireEvent.click(screen.getByTitle('Confirm'));
+    await waitFor(() => expect(store.getValue('v2')).toBe(''));
+
+    await fireEvent.click(getValueAction('v1 (copy)', 'Delete value'));
+    await fireEvent.click(screen.getByTitle('Confirm'));
+    await waitFor(() => expect(store.hasValue('v1 (copy)')).toBe(false));
+
+    await fireEvent.click(getSummaryAction('Tables', 'Edit'));
+    await waitFor(() =>
+      expect(getSummaryAction('Tables', 'Done editing')).not.toBeNull(),
+    );
+
+    await fireEvent.click(getDetailsAction('Table: t1', 'Edit'));
+    await waitFor(() =>
+      expect(getSummaryAction('Table: t1', 'Done editing')).not.toBeNull(),
+    );
+
+    await fireEvent.click(getDetailsAction('Table: t1', 'Add row'));
+    await waitFor(() => expect(screen.getByDisplayValue('row')).not.toBeNull());
+    await fireEvent.click(screen.getByTitle('Confirm'));
+    await waitFor(() => expect(store.hasRow('t1', 'row')).toBe(true));
+
+    await fireEvent.click(getRowAction('Table: t1', 'r1', 'Add cell'));
+    await waitFor(() => expect(screen.getByDisplayValue('cell')).not.toBeNull());
+    await fireEvent.click(screen.getByTitle('Confirm'));
+    await waitFor(() => expect(store.hasCell('t1', 'r1', 'cell')).toBe(true));
+
+    await fireEvent.click(getSummaryAction('Slice: 1', 'Edit'));
+    await waitFor(() =>
+      expect(getDetails('Slice: 1').querySelector('input')).not.toBeNull(),
+    );
+
+    await fireEvent.click(getSummaryAction('Relationship: r1', 'Edit'));
+    await waitFor(() =>
+      expect(getDetails('Relationship: r1').querySelector('input')).not.toBeNull(),
+    );
+
+    await fireEvent.click(getCellAction('Table: t1', 'r1', 'Delete cell'));
+    await fireEvent.click(screen.getByTitle('Confirm'));
+    await waitFor(() => expect(store.hasCell('t1', 'r1', 'c1')).toBe(false));
+
+    await fireEvent.click(getRowAction('Table: t1', 'r1', 'Clone row'));
+    await waitFor(() => expect(screen.getByDisplayValue('r1 (copy)')).not.toBeNull());
+    await fireEvent.click(screen.getByTitle('Confirm'));
+    await waitFor(() => expect(store.hasRow('t1', 'r1 (copy)')).toBe(true));
+
+    await fireEvent.click(getDetailsAction('Table: t2', 'Edit'));
+    await waitFor(() =>
+      expect(getSummaryAction('Table: t2', 'Done editing')).not.toBeNull(),
+    );
+    await fireEvent.click(getDetailsAction('Table: t2', 'Delete table'));
+    await fireEvent.click(screen.getByTitle('Confirm'));
+    await waitFor(() => expect(store.hasTable('t2')).toBe(false));
+
+    await fireEvent.click(getDetailsAction('Table: t1', 'Clone table'));
+    await waitFor(() => expect(screen.getByDisplayValue('t1 (copy)')).not.toBeNull());
+    await fireEvent.click(screen.getByTitle('Confirm'));
+    await waitFor(() =>
+      expect(store.getTable('t1 (copy)')).toEqual(store.getTable('t1')),
+    );
+
+    await fireEvent.click(getDetailsAction('Tables', 'Add table'));
+    await waitFor(() => expect(screen.getByDisplayValue('table')).not.toBeNull());
+    await fireEvent.click(screen.getByTitle('Confirm'));
+    await waitFor(() => expect(store.hasTable('table')).toBe(true));
+
+    await fireEvent.click(getRowAction('Table: t1', 'r1', 'Delete row'));
+    await fireEvent.click(screen.getByTitle('Confirm'));
+    await waitFor(() => expect(store.hasRow('t1', 'r1')).toBe(false));
+
+    unmount();
+  });
+
+  test('delete all values and tables', async () => {
+    const store = createStore()
+      .setTables({t1: {r1: {c1: 1}}})
+      .setValues({v1: 1});
+    const {unmount} = render(WithProvider, {props: {store}});
+
+    await waitFor(() => expect(screen.getByText('Values')).not.toBeNull());
+
+    await fireEvent.click(getSummaryAction('Values', 'Edit'));
+    await fireEvent.click(getSummaryAction('Tables', 'Edit'));
+
+    await fireEvent.click(getDetailsAction('Values', 'Delete all values'));
+    await fireEvent.click(screen.getByTitle('Confirm'));
+    await waitFor(() => expect(store.hasValues()).toBe(false));
+
+    await fireEvent.click(getDetailsAction('Tables', 'Delete all tables'));
+    await fireEvent.click(screen.getByTitle('Confirm'));
+    await waitFor(() => expect(store.hasTables()).toBe(false));
 
     unmount();
   });

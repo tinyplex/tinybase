@@ -5,6 +5,7 @@
   import type {StoreProp} from '../common/inspector/types.ts';
   import {SliceInHtmlTable} from '../ui-svelte-dom/index.ts';
   import Details from './Details.svelte';
+  import {useEditable} from './editable.ts';
 
   type Props = {
     indexes: Indexes;
@@ -14,11 +15,24 @@
   } & StoreProp;
 
   let {indexes, indexesId, indexId, sliceId, s}: Props = $props();
+  const uniqueId = $derived(getUniqueId('i', indexesId, indexId, sliceId));
   const title = $derived('Slice: ' + sliceId);
+  const [editable, handleEditable] = useEditable(() => uniqueId, () => s);
 </script>
 
-<Details uniqueId={getUniqueId('i', indexesId, indexId, sliceId)} {title} {s}>
+<Details
+  {uniqueId}
+  {title}
+  editable={editable.current}
+  {handleEditable}
+  {s}
+>
   {#snippet children()}
-    <SliceInHtmlTable {indexId} {sliceId} {indexes} />
+    <SliceInHtmlTable
+      {indexId}
+      {sliceId}
+      {indexes}
+      editable={editable.current}
+    />
   {/snippet}
 </Details>

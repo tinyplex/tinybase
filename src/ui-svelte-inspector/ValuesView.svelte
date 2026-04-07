@@ -7,20 +7,39 @@
   import {VALUES} from '../common/strings.ts';
   import {getValueIds} from '../ui-svelte/functions.svelte.ts';
   import {ValuesInHtmlTable} from '../ui-svelte-dom/index.ts';
+  import ValueActions from './actions/ValueActions.svelte';
+  import ValuesActions from './actions/ValuesActions.svelte';
   import Details from './Details.svelte';
+  import {useEditable} from './editable.ts';
 
   type Props = {store: Store; storeId?: Id} & StoreProp;
 
   let {store, storeId, s}: Props = $props();
+  const uniqueId = $derived(getUniqueId('v', storeId));
   const valueIds = getValueIds(() => store);
+  const [editable, handleEditable] = useEditable(() => uniqueId, () => s);
+  const valueActions = [{label: '', component: ValueActions}];
 </script>
 
-<Details uniqueId={getUniqueId('v', storeId)} title={VALUES} {s}>
+<Details
+  {uniqueId}
+  title={VALUES}
+  editable={editable.current}
+  {handleEditable}
+  {s}
+>
   {#snippet children()}
     {#if arrayIsEmpty(valueIds.current)}
       <p>No values.</p>
     {:else}
-      <ValuesInHtmlTable {store} />
+      <ValuesInHtmlTable
+        {store}
+        editable={editable.current}
+        extraCellsAfter={editable.current ? valueActions : []}
+      />
+    {/if}
+    {#if editable.current}
+      <ValuesActions {store} />
     {/if}
   {/snippet}
 </Details>

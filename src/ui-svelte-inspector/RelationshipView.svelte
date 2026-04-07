@@ -5,6 +5,7 @@
   import type {StoreProp} from '../common/inspector/types.ts';
   import {RelationshipInHtmlTable} from '../ui-svelte-dom/index.ts';
   import Details from './Details.svelte';
+  import {useEditable} from './editable.ts';
 
   type Props = {
     relationships?: Relationships;
@@ -13,11 +14,23 @@
   } & StoreProp;
 
   let {relationships, relationshipsId, relationshipId, s}: Props = $props();
+  const uniqueId = $derived(getUniqueId('r', relationshipsId, relationshipId));
   const title = $derived('Relationship: ' + relationshipId);
+  const [editable, handleEditable] = useEditable(() => uniqueId, () => s);
 </script>
 
-<Details uniqueId={getUniqueId('r', relationshipsId, relationshipId)} {title} {s}>
+<Details
+  {uniqueId}
+  {title}
+  editable={editable.current}
+  {handleEditable}
+  {s}
+>
   {#snippet children()}
-    <RelationshipInHtmlTable {relationshipId} {relationships} />
+    <RelationshipInHtmlTable
+      {relationshipId}
+      {relationships}
+      editable={editable.current}
+    />
   {/snippet}
 </Details>

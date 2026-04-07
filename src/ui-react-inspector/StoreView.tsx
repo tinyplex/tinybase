@@ -1,12 +1,12 @@
 import type {Id} from '../@types/common/index.d.ts';
+import {getUniqueId} from '../common/inspector/common.ts';
+import type {StoreProp} from '../common/inspector/types.ts';
 import {isUndefined} from '../common/other.ts';
 import {DEFAULT} from '../common/strings.ts';
 import {useStore} from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
 import {TablesView} from './TablesView.tsx';
 import {ValuesView} from './ValuesView.tsx';
-import {getUniqueId} from './common.ts';
-import type {StoreProp} from './types.ts';
 
 export const StoreView = ({
   storeId,

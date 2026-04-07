@@ -9,7 +9,7 @@
     uniqueId: Id;
     title: string;
     editable?: boolean;
-    handleEditable?: () => void;
+    handleEditable?: (event?: Event) => void;
     children: Snippet;
   } & StoreProp;
 
@@ -35,7 +35,7 @@
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key == 'Enter' || event.key == ' ') {
       event.preventDefault();
-      handleEditable?.();
+      handleEditable?.(event);
     }
   };
 </script>

@@ -1,6 +1,6 @@
+import {OPEN_VALUE, POSITION_VALUE, TITLE} from '../common/inspector/common.ts';
+import type {StoreProp} from '../common/inspector/types.ts';
 import {useSetValueCallback, useValue} from '../ui-react/index.ts';
-import {OPEN_VALUE, POSITION_VALUE, TITLE} from './common.ts';
-import type {StoreProp} from './types.ts';
 
 export const Nub = ({s}: StoreProp) => {
   const position = useValue(POSITION_VALUE, s) ?? 1;
