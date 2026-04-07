@@ -9,14 +9,14 @@
   import TablesActions from './actions/TablesActions.svelte';
   import Details from './Details.svelte';
   import TableView from './TableView.svelte';
-  import {useEditable} from './editable.ts';
+  import {getEditable} from './editable.ts';
 
   type Props = {store: Store; storeId?: Id} & StoreProp;
 
   let {store, storeId, s}: Props = $props();
   const uniqueId = $derived(getUniqueId('ts', storeId));
   const tableIds = getTableIds(() => store);
-  const [editable, handleEditable] = useEditable(() => uniqueId, () => s);
+  const [editable, handleEditable] = getEditable(() => uniqueId, () => s);
   const sortedTableIds = $derived(sortedIdsMap(tableIds.current, (tableId) => tableId));
 </script>
 

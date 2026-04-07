@@ -8,7 +8,7 @@ import {getCell} from '../ui-svelte/functions.svelte.ts';
 const maybeGet = <Value>(value: MaybeGetter<Value>): Value =>
   isFunction(value) ? value() : value;
 
-export const useEditable = (
+export const getEditable = (
   uniqueId: MaybeGetter<Id>,
   s: MaybeGetter<Store>,
 ) => {
