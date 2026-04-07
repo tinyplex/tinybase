@@ -65,6 +65,7 @@ const REFLECTIONS = [
   'synchronizers',
   /^synchronizer/,
   /^ui-react/,
+  /^ui-svelte/,
   /^TablesProps/,
   /^TableProps/,
   /^SortedTableProps/,
@@ -102,6 +103,7 @@ const REFLECTIONS = [
   /Values/,
   /Value/,
   '*',
+  /^Other/,
 ];
 
 export const build = async (
