@@ -103,52 +103,19 @@ Let's update the app to show some very basic data about the Store:
 ```
 
 ```diff-less
- body {
--  align-items: flex-start;
++body {
 +  align-items: center;
-   color: #333;
-   display: flex;
-   font-family: Inter, sans-serif;
-   font-size: 0.8rem;
--  justify-content: space-around;
 +  justify-content: center;
-   letter-spacing: -0.04rem;
-   line-height: 1.5rem;
-   margin: 0;
-   min-height: 100vh;
- }
- 
--table {
--  background: white;
--  border-collapse: collapse;
--  box-shadow: 0 0 1rem #0004;
--  font-size: inherit;
--  line-height: inherit;
--  margin: 2rem;
--  table-layout: fixed;
--  th,
--  td {
--    border-color: #eee;
--    border-style: solid;
--    border-width: 1px 0;
--    overflow: hidden;
--    padding: 0.25rem 0.5rem;
--    text-align: left;
--    white-space: nowrap;
--  }
--  thead th {
--    border-bottom-color: #ccc;
--  }
--}
-- 
--a {
--  color: inherit;
++}
+```
+
+```diff-less
 +#info {
 +  align-self: center;
 +  background: white;
 +  box-shadow: 0 0 1rem #0004;
 +  padding: 1rem 1.5rem;
- }
++}
 ```
 
 OK, that's not much of an app! But at least we can now instantiate the
