@@ -785,4 +785,55 @@ describe('ui-components', () => {
     await input2.fill('Animation!?');
     await expect(input1).toHaveValue('Animation!?');
   });
+
+  test('Inspector', async ({page}) => {
+    await expectPage(page, `/demos/ui-components-react/inspector-react`);
+    await expectedElement(page, 'h1', '<Inspector /> (React)');
+    await expectedFramedElement(page, '#info', 'Loaded tables:');
+    await expectedFramedElement(page, 'aside#tinybaseInspector', undefined, {
+      state: 'attached',
+    });
+    await expectedFramedElement(
+      page,
+      'aside#tinybaseInspector main[data-position="3"]',
+    );
+    await expectedFramedElement(page, 'main', 'Store: default');
+    await expectedFramedElement(page, 'main', 'Tables');
+    await expectedFramedElement(page, 'main', 'Table: genres');
+
+    await (
+      await expectedFramedElement(page, 'img[title="Dock to left"]')
+    ).click();
+    await expectedFramedElement(
+      page,
+      'aside#tinybaseInspector main[data-position="0"]',
+    );
+
+    const frame = page.frameLocator('iframe').first();
+    await frame
+      .locator('summary span')
+      .filter({hasText: 'Store: default'})
+      .first()
+      .click();
+    await frame.locator('summary span').filter({hasText: 'Tables'}).first().click();
+    await frame
+      .locator('summary span')
+      .filter({hasText: 'Table: genres'})
+      .first()
+      .click();
+
+    const genresDetails = frame.locator(
+      'details:has(> summary span:has-text("Table: genres"))',
+    );
+    await genresDetails.locator('summary img[title="Edit"]').click();
+
+    const genreInput = genresDetails
+      .locator('tbody tr:nth-of-type(1) td input')
+      .first();
+    await expect(genreInput).toHaveValue('Drama');
+    await genreInput.fill('Drama!');
+
+    await genresDetails.locator('summary img[title="Done editing"]').click();
+    await expectedFramedElement(page, 'details td', 'Drama!');
+  });
 });
