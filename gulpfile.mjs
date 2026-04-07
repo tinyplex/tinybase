@@ -375,6 +375,7 @@ const lintCheckDocs = async (dir) => {
   const esLint = new ESLint({
     overrideConfig: {
       rules: {
+        'import/no-unresolved': 0,
         'no-console': 0,
         'react/prop-types': 0,
         'react-hooks/rules-of-hooks': 0,
