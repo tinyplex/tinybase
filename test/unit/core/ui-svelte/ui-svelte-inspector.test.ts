@@ -1,5 +1,11 @@
 import {fireEvent, render, screen, waitFor} from '@testing-library/svelte';
-import {createStore} from 'tinybase';
+import {
+  createIndexes,
+  createMetrics,
+  createQueries,
+  createRelationships,
+  createStore,
+} from 'tinybase';
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest';
 
 import {Inspector} from 'tinybase/ui-svelte-inspector';
@@ -136,11 +142,56 @@ describe('Inspector', () => {
 
     await waitFor(() => {
       expect(container.querySelector('main')).not.toBeNull();
+      expect(screen.getByText('No values.')).not.toBeNull();
+      expect(screen.getByText('No tables.')).not.toBeNull();
       expect(
         screen.queryByText(
           'There are no Stores or other objects to inspect. Make sure you placed the Inspector inside a Provider component.',
         ),
       ).toBeNull();
+    });
+
+    unmount();
+  });
+
+  test('open, with provider and content', async () => {
+    const store = createStore()
+      .setTables({
+        t1: {r1: {c1: 1, c2: 'two'}, r2: {c1: 3, c2: 'four'}},
+        t2: {r1: {c1: 2}},
+      })
+      .setValues({v1: 1});
+    const metrics = createMetrics(store).setMetricDefinition('m1', 't1', 'sum', 'c1');
+    const indexes = createIndexes(store).setIndexDefinition('i1', 't1', 'c1');
+    const relationships = createRelationships(store).setRelationshipDefinition(
+      'r1',
+      't1',
+      't2',
+      'c1',
+    );
+    const queries = createQueries(store).setQueryDefinition('q1', 't1', ({select}) => {
+      select('c1');
+      select('c2');
+    });
+    const {unmount} = render(WithProvider, {
+      props: {store, metrics, indexes, relationships, queries},
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText('No values.')).toBeNull();
+      expect(screen.queryByText('No tables.')).toBeNull();
+      expect(screen.getByText('Store: default')).not.toBeNull();
+      expect(screen.getByText('Values')).not.toBeNull();
+      expect(screen.getByText('Tables')).not.toBeNull();
+      expect(screen.getByText('Metrics: default')).not.toBeNull();
+      expect(screen.getByText('Indexes: default')).not.toBeNull();
+      expect(screen.getByText('Relationships: default')).not.toBeNull();
+      expect(screen.getByText('Queries: default')).not.toBeNull();
+      expect(screen.getByText('Index: i1')).not.toBeNull();
+      expect(screen.getByText('Relationship: r1')).not.toBeNull();
+      expect(screen.getByText('Query: q1')).not.toBeNull();
+      expect(screen.getByText('Metric Id')).not.toBeNull();
+      expect(screen.getByTitle('v1')).not.toBeNull();
     });
 
     unmount();
