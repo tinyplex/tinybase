@@ -3468,7 +3468,11 @@ exports[`Types in ui-svelte.ts > 860:20 1`] = `"Argument of type 'Store<[NoTable
 
 exports[`Types in ui-svelte.ts > 861:20 1`] = `"Argument of type 'Store<NoSchemas>' is not assignable to parameter of type 'Store<[{ readonly t0: { readonly c0: { readonly type: "number"; }; }; readonly t1: { readonly c1: { readonly type: "number"; }; readonly c1d: { readonly type: "string"; readonly default: ""; }; }; }, { ...; }]>'."`;
 
+exports[`Types in ui-svelte-dom.ts > 43:11 1`] = `"Cannot assign to 'tableId' because it is a read-only property."`;
+
 exports[`Types in ui-svelte-dom.ts > 50:11 1`] = `"Cannot assign to 'tableId' because it is a read-only property."`;
+
+exports[`Types in ui-svelte-dom.ts > 51:12 1`] = `"Cannot assign to 'cellId' because it is a read-only property."`;
 
 exports[`Types in ui-svelte-dom.ts > 56:12 1`] = `"Cannot assign to 'cellId' because it is a read-only property."`;
 

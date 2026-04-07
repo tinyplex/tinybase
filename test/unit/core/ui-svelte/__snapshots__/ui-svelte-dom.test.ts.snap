@@ -102,11 +102,20 @@ exports[`ResultSortedTableInHtmlTable > no sorting specified 1`] = `"<table><!--
 
 exports[`ResultSortedTableInHtmlTable > paginator, custom 1`] = `"<table><caption><b>{"offset":0,"limit":1,"total":2}</b><!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> c0</th><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>34<!----></td><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"`;
 
-exports[`ResultSortedTableInHtmlTable > paginator, larger 1`] = `"<table><caption><!----><!----> 2 rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> c0</th><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>34<!----></td><td>3<!----></td><td>4<!----></td><!----><!----></tr><tr><!----><th title="r1">r1</th><!----><td>2_<!----></td><td>2<!----></td><td><!----></td><!----><!----></tr></tbody></table>"`;
+exports[`ResultSortedTableInHtmlTable > paginator, larger 1`] = `
+"<table><caption><!----><!----> 2
+rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> c0</th><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>34<!----></td><td>3<!----></td><td>4<!----></td><!----><!----></tr><tr><!----><th title="r1">r1</th><!----><td>2_<!----></td><td>2<!----></td><td><!----></td><!----><!----></tr></tbody></table>"
+`;
 
-exports[`ResultSortedTableInHtmlTable > paginator, smaller 1`] = `"<table><caption><!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 1 of<!----> 2 rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> c0</th><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>34<!----></td><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"`;
+exports[`ResultSortedTableInHtmlTable > paginator, smaller 1`] = `
+"<table><caption><!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 1 of<!----> 2
+rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> c0</th><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>34<!----></td><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"
+`;
 
-exports[`ResultSortedTableInHtmlTable > paginator, smaller 2`] = `"<table><caption><!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 1 of<!----> 2 rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> c0</th><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>34<!----></td><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"`;
+exports[`ResultSortedTableInHtmlTable > paginator, smaller 2`] = `
+"<table><caption><!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 1 of<!----> 2
+rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> c0</th><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>34<!----></td><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"
+`;
 
 exports[`ResultSortedTableInHtmlTable > sortOnClick 1`] = `"<table><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> c0</th><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>34<!----></td><td>3<!----></td><td>4<!----></td><!----><!----></tr><tr><!----><th title="r1">r1</th><!----><td>2_<!----></td><td>2<!----></td><td><!----></td><!----><!----></tr></tbody></table>"`;
 
@@ -170,11 +179,20 @@ exports[`SortedTableInHtmlTable > no sorting specified 1`] = `"<table><!----><th
 
 exports[`SortedTableInHtmlTable > paginator, custom 1`] = `"<table><caption><b>{"offset":0,"limit":1,"total":2}</b><!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"`;
 
-exports[`SortedTableInHtmlTable > paginator, larger 1`] = `"<table><caption><!----><!----> 2 rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr><tr><!----><th title="r1">r1</th><!----><td>2<!----></td><td><!----></td><!----><!----></tr></tbody></table>"`;
+exports[`SortedTableInHtmlTable > paginator, larger 1`] = `
+"<table><caption><!----><!----> 2
+rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr><tr><!----><th title="r1">r1</th><!----><td>2<!----></td><td><!----></td><!----><!----></tr></tbody></table>"
+`;
 
-exports[`SortedTableInHtmlTable > paginator, smaller 1`] = `"<table><caption><!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 1 of<!----> 2 rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"`;
+exports[`SortedTableInHtmlTable > paginator, smaller 1`] = `
+"<table><caption><!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 1 of<!----> 2
+rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"
+`;
 
-exports[`SortedTableInHtmlTable > paginator, smaller 2`] = `"<table><caption><!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 1 of<!----> 2 rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"`;
+exports[`SortedTableInHtmlTable > paginator, smaller 2`] = `
+"<table><caption><!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 1 of<!----> 2
+rows<!----></caption><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"
+`;
 
 exports[`SortedTableInHtmlTable > sortOnClick 1`] = `"<table><!----><thead><tr><!----><th><!----> Id</th><!----><th class="sorted descending">↓ <!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr><tr><!----><th title="r1">r1</th><!----><td>2<!----></td><td><!----></td><!----><!----></tr></tbody></table>"`;
 
@@ -188,17 +206,35 @@ exports[`SortedTableInHtmlTable > sortOnClick 5`] = `"<table><!----><thead><tr><
 
 exports[`SortedTableInHtmlTable > sortOnClick 6`] = `"<table><!----><thead><tr><!----><th class="sorted descending">↓ <!----> Id</th><!----><th><!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr><tr><!----><th title="r1">r1</th><!----><td>2<!----></td><td><!----></td><!----><!----></tr></tbody></table>"`;
 
-exports[`SortedTablePaginator > basic 1`] = `"<!----><!----> 100 rows"`;
+exports[`SortedTablePaginator > basic 1`] = `
+"<!----><!----> 100
+rows"
+`;
 
-exports[`SortedTablePaginator > limit & offset 1`] = `"<!----><button class="previous">←</button> <button class="next">→</button> 6 to 15 of<!----> 100 rows"`;
+exports[`SortedTablePaginator > limit & offset 1`] = `
+"<!----><button class="previous">←</button> <button class="next">→</button> 6 to 15 of<!----> 100
+rows"
+`;
 
-exports[`SortedTablePaginator > limit 1`] = `"<!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 10 of<!----> 100 rows"`;
+exports[`SortedTablePaginator > limit 1`] = `
+"<!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 10 of<!----> 100
+rows"
+`;
 
-exports[`SortedTablePaginator > limit larger than size 1`] = `"<!----><!----> 100 rows"`;
+exports[`SortedTablePaginator > limit larger than size 1`] = `
+"<!----><!----> 100
+rows"
+`;
 
-exports[`SortedTablePaginator > offset larger than size 1`] = `"<!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 10 of<!----> 100 rows"`;
+exports[`SortedTablePaginator > offset larger than size 1`] = `
+"<!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 10 of<!----> 100
+rows"
+`;
 
-exports[`SortedTablePaginator > offset smaller than 0 1`] = `"<!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 10 of<!----> 100 rows"`;
+exports[`SortedTablePaginator > offset smaller than 0 1`] = `
+"<!----><button class="previous" disabled="">←</button> <button class="next">→</button> 1 to 10 of<!----> 100
+rows"
+`;
 
 exports[`TableInHtmlTable > basic 1`] = `"<table><!----><thead><tr><!----><th><!----> Id</th><!----><th><!----> c1</th><th><!----> c2</th><!----><!----></tr></thead><!----><tbody><tr><!----><th title="r1">r1</th><!----><td>2<!----></td><td><!----></td><!----><!----></tr><tr><!----><th title="r2">r2</th><!----><td>3<!----></td><td>4<!----></td><!----><!----></tr></tbody></table>"`;
 
