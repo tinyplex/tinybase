@@ -1,20 +1,19 @@
 <script lang="ts">
   import {onMount} from 'svelte';
   import type {InspectorProps} from '../@types/ui-svelte-inspector/index.d.ts';
+  import {
+    UNIQUE_ID,
+    getInitialPosition,
+  } from '../common/inspector/common.ts';
+  import {APP_STYLESHEET} from '../common/inspector/style.ts';
   import {createSessionPersister} from '../persisters/persister-browser/index.ts';
   import {createStore} from '../store/index.ts';
   import Nub from './Nub.svelte';
   import Panel from './Panel.svelte';
-  import {POSITIONS, UNIQUE_ID} from './common.ts';
-  import {APP_STYLESHEET} from './style.ts';
 
   let {position = 'right', open = false, hue = 270}: InspectorProps = $props();
 
   const s = createStore();
-  const getInitialPosition = () => {
-    const index = POSITIONS.indexOf(position);
-    return index == -1 ? 1 : index;
-  };
 
   onMount(() => {
     let mounted = true;
@@ -27,7 +26,7 @@
       await persister.load([
         {},
         {
-          position: getInitialPosition(),
+          position: getInitialPosition(position),
           open: !!open,
         },
       ]);

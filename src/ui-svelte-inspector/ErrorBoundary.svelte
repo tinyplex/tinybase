@@ -1,4 +1,5 @@
 <script lang="ts">
+  import {INSPECTOR_ERROR_MESSAGE} from '../common/inspector/common.ts';
   import type {Snippet} from 'svelte';
 
   type Props = {
@@ -15,6 +16,6 @@
 <svelte:boundary onerror={handleError}>
   {@render children()}
   {#snippet failed(_error, _reset)}
-    <span class="warn">Inspector error: please see console for details.</span>
+    <span class="warn">{INSPECTOR_ERROR_MESSAGE}</span>
   {/snippet}
 </svelte:boundary>

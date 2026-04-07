@@ -1,3 +1,1 @@
-import type {Store} from '../@types/store/index.d.ts';
-
-export type StoreProp = {readonly s: Store};
+export type {StoreProp} from '../common/inspector/types.ts';

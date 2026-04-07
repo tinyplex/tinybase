@@ -1,30 +1,12 @@
 import type {SyntheticEvent} from 'react';
-import type {Id, Ids} from '../@types/common/index.d.ts';
+import type {Id} from '../@types/common/index.d.ts';
 import type {Store} from '../@types/store/index.d.ts';
-import {arrayMap, arraySort} from '../common/array.ts';
-import {jsonStringWithMap} from '../common/json.ts';
+import {STATE_TABLE} from '../common/inspector/common.ts';
 import {useCallback} from '../common/react.ts';
 import {useCell} from '../ui-react/index.ts';
-
-export const UNIQUE_ID = 'tinybaseInspector';
-export const TITLE = 'TinyBase Inspector';
-export const POSITIONS = ['left', 'top', 'bottom', 'right', 'full'];
-
-export const STATE_TABLE = 'state';
-export const SORT_CELL = 'sort';
-export const OPEN_CELL = 'open';
-export const POSITION_VALUE = 'position';
-export const OPEN_VALUE = OPEN_CELL;
+export * from '../common/inspector/common.ts';
 
 const EDITABLE_CELL = 'editable';
-
-export const getUniqueId = (...args: (Id | undefined)[]) =>
-  jsonStringWithMap(args);
-
-export const sortedIdsMap = <Return>(
-  ids: Ids,
-  callback: (id: Id) => Return,
-): Return[] => arrayMap(arraySort([...ids]), callback);
 
 export const useEditable = (
   uniqueId: Id,
