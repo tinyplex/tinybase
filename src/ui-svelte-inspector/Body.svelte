@@ -1,8 +1,6 @@
 <script lang="ts">
   import {onDestroy} from 'svelte';
-  import {
-    NO_PROVIDED_OBJECTS_MESSAGE,
-  } from '../common/inspector/common.ts';
+  import {NO_PROVIDED_OBJECTS_MESSAGE} from '../common/inspector/common.ts';
   import {
     cancelInspectorIdleCallback,
     requestInspectorIdleCallback,
@@ -78,18 +76,21 @@
       s.setPartialValues({scrollLeft, scrollTop});
     });
   };
+  const noProvidedObjects = $derived(
+    isUndefined(store) &&
+      arrayIsEmpty(storeIds.current) &&
+      isUndefined(metrics) &&
+      arrayIsEmpty(metricsIds.current) &&
+      isUndefined(indexes) &&
+      arrayIsEmpty(indexesIds.current) &&
+      isUndefined(relationships) &&
+      arrayIsEmpty(relationshipsIds.current) &&
+      isUndefined(queries) &&
+      arrayIsEmpty(queriesIds.current),
+  );
 </script>
 
-{#if isUndefined(store) &&
-  arrayIsEmpty(storeIds.current) &&
-  isUndefined(metrics) &&
-  arrayIsEmpty(metricsIds.current) &&
-  isUndefined(indexes) &&
-  arrayIsEmpty(indexesIds.current) &&
-  isUndefined(relationships) &&
-  arrayIsEmpty(relationshipsIds.current) &&
-  isUndefined(queries) &&
-  arrayIsEmpty(queriesIds.current)}
+{#if noProvidedObjects}
   <span class="warn">
     {NO_PROVIDED_OBJECTS_MESSAGE}
   </span>

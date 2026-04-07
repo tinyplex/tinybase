@@ -1,11 +1,9 @@
 import type {Component} from 'svelte';
-import type {
-  SortedTablePaginatorProps,
-} from '../../@types/ui-svelte-dom/index.d.ts';
 import type {Id} from '../../@types/common/index.d.ts';
+import type {SortedTablePaginatorProps} from '../../@types/ui-svelte-dom/index.d.ts';
 import {isFalse, isTrue} from '../../common/other.ts';
-import type {HandleSort, Paginator, SortAndOffset} from './index.ts';
 import SortedTablePaginator from '../SortedTablePaginator.svelte';
+import type {HandleSort, Paginator, SortAndOffset} from './index.ts';
 
 export const createSortingAndPagination = (
   getCellId: () => Id | undefined,
@@ -33,12 +31,12 @@ export const createSortingAndPagination = (
   };
 
   const handleSort = getSortOnClick()
-    ? ((nextCellId) =>
+    ? (((nextCellId) =>
         setState([
           nextCellId,
           nextCellId == currentCellId ? !currentDescending : false,
           currentOffset,
-        ])) satisfies HandleSort
+        ])) satisfies HandleSort)
     : undefined;
 
   const handleChangeOffset = (nextOffset: number) =>

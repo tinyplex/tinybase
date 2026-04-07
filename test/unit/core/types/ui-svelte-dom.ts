@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 // NB: an exclamation mark after a line visually indicates an expected TS error
 import type {Component, ComponentProps} from 'svelte';
-import type {Id} from 'tinybase/with-schemas';
 import * as UiSvelteDom from 'tinybase/ui-svelte-dom/with-schemas';
+import type {Id} from 'tinybase/with-schemas';
 
-const tablesSchema = {
+const _tablesSchema = {
   t0: {c0: {type: 'number'}},
   t1: {
     c1: {type: 'number'},
@@ -12,21 +11,14 @@ const tablesSchema = {
   },
 } as const;
 
-const valuesSchema = {
+const _valuesSchema = {
   v1: {type: 'number'},
   v1d: {type: 'string', default: ''},
 } as const;
 
-const UiSvelteDomWithSchemas = UiSvelteDom as UiSvelteDom.WithSchemas<
-  [typeof tablesSchema, typeof valuesSchema]
+type _UiSvelteDomWithSchemas = UiSvelteDom.WithSchemas<
+  [typeof _tablesSchema, typeof _valuesSchema]
 >;
-const {
-  TableInHtmlTable,
-  SortedTableInHtmlTable,
-  ValuesInHtmlTable,
-  EditableCellView,
-  EditableValueView,
-} = UiSvelteDomWithSchemas;
 
 const GoodCellView = undefined as unknown as Component<{
   readonly tableId: 't0' | 't1';
@@ -47,45 +39,49 @@ const PoorValueView = undefined as unknown as Component<{
   readonly valueId: 'v1' | 'v2';
 }>;
 
-const tableProps: ComponentProps<typeof TableInHtmlTable> = {tableId: 't1'};
+const tableProps: ComponentProps<_UiSvelteDomWithSchemas['TableInHtmlTable']> =
+  {tableId: 't1'};
 tableProps.tableId = 't2'; // !
 
-const sortedProps: ComponentProps<typeof SortedTableInHtmlTable> = {
+const sortedProps: ComponentProps<
+  _UiSvelteDomWithSchemas['SortedTableInHtmlTable']
+> = {
   tableId: 't1',
   cellId: 'c1',
 };
 sortedProps.cellId = 'c2'; // !
 
-const valuesProps: ComponentProps<typeof ValuesInHtmlTable> = {};
+const valuesProps: ComponentProps<
+  _UiSvelteDomWithSchemas['ValuesInHtmlTable']
+> = {};
 valuesProps.valueComponent = PoorValueView; // !
 
-const editableCellProps: ComponentProps<typeof EditableCellView> = {
+const editableCellProps: ComponentProps<
+  _UiSvelteDomWithSchemas['EditableCellView']
+> = {
   tableId: 't1',
   rowId: 'r1',
   cellId: 'c1',
 };
 editableCellProps.cellId = 'c2'; // !
 
-const editableValueProps: ComponentProps<typeof EditableValueView> = {
+const editableValueProps: ComponentProps<
+  _UiSvelteDomWithSchemas['EditableValueView']
+> = {
   valueId: 'v1',
 };
 editableValueProps.valueId = 'v2'; // !
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const _App = {
-  goodTable: (
-    {
-      tableId: 't1',
-      customCells: {
-        c1: {component: GoodCellView},
-        c1d: {component: GoodT1C1CellView},
-      },
-    } satisfies ComponentProps<typeof TableInHtmlTable>
-  ),
-  badTable: (
-    {
-      tableId: 't1',
-      customCells: {c1: {component: PoorCellView}},
-    } satisfies ComponentProps<typeof TableInHtmlTable>
-  ), // !
+  goodTable: {
+    tableId: 't1',
+    customCells: {
+      c1: {component: GoodCellView},
+      c1d: {component: GoodT1C1CellView},
+    },
+  } satisfies ComponentProps<_UiSvelteDomWithSchemas['TableInHtmlTable']>,
+  badTable: {
+    tableId: 't1',
+    customCells: {c1: {component: PoorCellView}},
+  } satisfies ComponentProps<_UiSvelteDomWithSchemas['TableInHtmlTable']>, // !
 };

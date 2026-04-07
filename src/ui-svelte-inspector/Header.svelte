@@ -1,6 +1,11 @@
 <script lang="ts">
   import {getValue} from '../ui-svelte/functions.svelte.ts';
-  import {OPEN_VALUE, POSITIONS, POSITION_VALUE, TITLE} from '../common/inspector/common.ts';
+  import {
+    OPEN_VALUE,
+    POSITIONS,
+    POSITION_VALUE,
+    TITLE,
+  } from '../common/inspector/common.ts';
   import type {StoreProp} from '../common/inspector/types.ts';
 
   let {s}: StoreProp = $props();
@@ -26,7 +31,8 @@
 </script>
 
 <header>
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <img
     class="flat"
     title={TITLE}
@@ -38,10 +44,12 @@
   <span>{TITLE}</span>
   {#each POSITIONS as name, p (p)}
     {#if p != (position.current ?? 1)}
-      <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
+      <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+      <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
       <img
         onclick={handleDock}
-        onkeydown={(event) => onKeyDown(event, () => s.setValue(POSITION_VALUE, p))}
+        onkeydown={(event) =>
+          onKeyDown(event, () => s.setValue(POSITION_VALUE, p))}
         data-id={p}
         title={'Dock to ' + name}
         tabindex="0"
@@ -49,7 +57,8 @@
       />
     {/if}
   {/each}
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <img
     class="flat"
     onclick={handleClose}

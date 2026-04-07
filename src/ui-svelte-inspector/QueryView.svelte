@@ -1,7 +1,11 @@
 <script lang="ts">
   import type {Id} from '../@types/common/index.d.ts';
   import type {Queries} from '../@types/queries/index.d.ts';
-  import {SORT_CELL, STATE_TABLE, getUniqueId} from '../common/inspector/common.ts';
+  import {
+    SORT_CELL,
+    STATE_TABLE,
+    getUniqueId,
+  } from '../common/inspector/common.ts';
   import type {StoreProp} from '../common/inspector/types.ts';
   import {jsonParse, jsonStringWithMap} from '../common/json.ts';
   import {getCell} from '../ui-svelte/functions.svelte.ts';
@@ -29,24 +33,26 @@
   const title = $derived('Query: ' + queryId);
 
   const handleChange = (
-    sortAndOffset: [cellId: Id | undefined, descending: boolean, offset: number],
+    sortAndOffset: [
+      cellId: Id | undefined,
+      descending: boolean,
+      offset: number,
+    ],
   ) => {
     sort.current = jsonStringWithMap(sortAndOffset);
   };
 </script>
 
 <Details {uniqueId} {title} {s}>
-  {#snippet children()}
-    <ResultSortedTableInHtmlTable
-      {queryId}
-      {queries}
-      cellId={sortAndOffset[0]}
-      descending={sortAndOffset[1]}
-      offset={sortAndOffset[2]}
-      limit={10}
-      paginator={true}
-      sortOnClick={true}
-      onChange={handleChange}
-    />
-  {/snippet}
+  <ResultSortedTableInHtmlTable
+    {queryId}
+    {queries}
+    cellId={sortAndOffset[0]}
+    descending={sortAndOffset[1]}
+    offset={sortAndOffset[2]}
+    limit={10}
+    paginator={true}
+    sortOnClick={true}
+    onChange={handleChange}
+  />
 </Details>

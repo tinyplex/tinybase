@@ -17,22 +17,12 @@
   let {indexes, indexesId, indexId, sliceId, s}: Props = $props();
   const uniqueId = $derived(getUniqueId('i', indexesId, indexId, sliceId));
   const title = $derived('Slice: ' + sliceId);
-  const [editable, handleEditable] = getEditable(() => uniqueId, () => s);
+  const [editable, handleEditable] = getEditable(
+    () => uniqueId,
+    () => s,
+  );
 </script>
 
-<Details
-  {uniqueId}
-  {title}
-  editable={editable.current}
-  {handleEditable}
-  {s}
->
-  {#snippet children()}
-    <SliceInHtmlTable
-      {indexId}
-      {sliceId}
-      {indexes}
-      editable={editable.current}
-    />
-  {/snippet}
+<Details {uniqueId} {title} editable={editable.current} {handleEditable} {s}>
+  <SliceInHtmlTable {indexId} {sliceId} {indexes} editable={editable.current} />
 </Details>

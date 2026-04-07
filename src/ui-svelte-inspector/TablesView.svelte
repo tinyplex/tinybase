@@ -16,8 +16,13 @@
   let {store, storeId, s}: Props = $props();
   const uniqueId = $derived(getUniqueId('ts', storeId));
   const tableIds = getTableIds(() => store);
-  const [editable, handleEditable] = getEditable(() => uniqueId, () => s);
-  const sortedTableIds = $derived(sortedIdsMap(tableIds.current, (tableId) => tableId));
+  const [editable, handleEditable] = getEditable(
+    () => uniqueId,
+    () => s,
+  );
+  const sortedTableIds = $derived(
+    sortedIdsMap(tableIds.current, (tableId) => tableId),
+  );
 </script>
 
 <Details
@@ -27,16 +32,14 @@
   {handleEditable}
   {s}
 >
-  {#snippet children()}
-    {#if arrayIsEmpty(tableIds.current)}
-      <p>No tables.</p>
-    {:else}
-      {#each sortedTableIds as tableId (tableId)}
-        <TableView {store} {storeId} {tableId} {s} />
-      {/each}
-    {/if}
-    {#if editable.current}
-      <TablesActions {store} />
-    {/if}
-  {/snippet}
+  {#if arrayIsEmpty(tableIds.current)}
+    <p>No tables.</p>
+  {:else}
+    {#each sortedTableIds as tableId (tableId)}
+      <TableView {store} {storeId} {tableId} {s} />
+    {/each}
+  {/if}
+  {#if editable.current}
+    <TablesActions {store} />
+  {/if}
 </Details>

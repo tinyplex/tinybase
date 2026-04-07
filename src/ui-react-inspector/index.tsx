@@ -1,9 +1,6 @@
 import type {CSSProperties} from 'react';
 import type {InspectorProps} from '../@types/ui-react-inspector/index.d.ts';
-import {
-  UNIQUE_ID,
-  getInitialPosition,
-} from '../common/inspector/common.ts';
+import {UNIQUE_ID, getInitialPosition} from '../common/inspector/common.ts';
 import {APP_STYLESHEET} from '../common/inspector/style.ts';
 import {createSessionPersister} from '../persisters/persister-browser/index.ts';
 import {createStore} from '../store/index.ts';

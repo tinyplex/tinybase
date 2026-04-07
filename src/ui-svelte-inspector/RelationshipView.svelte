@@ -16,21 +16,16 @@
   let {relationships, relationshipsId, relationshipId, s}: Props = $props();
   const uniqueId = $derived(getUniqueId('r', relationshipsId, relationshipId));
   const title = $derived('Relationship: ' + relationshipId);
-  const [editable, handleEditable] = getEditable(() => uniqueId, () => s);
+  const [editable, handleEditable] = getEditable(
+    () => uniqueId,
+    () => s,
+  );
 </script>
 
-<Details
-  {uniqueId}
-  {title}
-  editable={editable.current}
-  {handleEditable}
-  {s}
->
-  {#snippet children()}
-    <RelationshipInHtmlTable
-      {relationshipId}
-      {relationships}
-      editable={editable.current}
-    />
-  {/snippet}
+<Details {uniqueId} {title} editable={editable.current} {handleEditable} {s}>
+  <RelationshipInHtmlTable
+    {relationshipId}
+    {relationships}
+    editable={editable.current}
+  />
 </Details>

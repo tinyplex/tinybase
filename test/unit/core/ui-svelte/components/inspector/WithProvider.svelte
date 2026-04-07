@@ -19,7 +19,5 @@
 </script>
 
 <Provider {store} {metrics} {indexes} {relationships} {queries}>
-  {#snippet children()}
-    <Inspector open={true} />
-  {/snippet}
+  <Inspector open={true} />
 </Provider>

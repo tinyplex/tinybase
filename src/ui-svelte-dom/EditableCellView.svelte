@@ -1,7 +1,4 @@
 <script lang="ts">
-  import type {
-    EditableCellView as EditableCellViewDecl,
-  } from '../@types/ui-svelte-dom/index.d.ts';
   import type {CellViewProps} from '../@types/ui-svelte/index.d.ts';
   import {CELL} from '../common/strings.ts';
   import {getCell, resolveStore} from '../ui-svelte/functions.svelte.ts';
@@ -15,8 +12,10 @@
     store,
     className,
     showType,
-  }: CellViewProps & {readonly className?: string; readonly showType?: boolean} =
-    $props();
+  }: CellViewProps & {
+    readonly className?: string;
+    readonly showType?: boolean;
+  } = $props();
 
   const cell = getCell(
     () => tableId,

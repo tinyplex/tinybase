@@ -2,10 +2,7 @@
   import {hasWindow, isUndefined} from '../../common/other.ts';
   import Delete from './Delete.svelte';
   import NewId from './NewId.svelte';
-  import {
-    isNewIdAction,
-    type InspectorAction,
-  } from './common.ts';
+  import {isNewIdAction, type InspectorAction} from './common.ts';
 
   let {
     actions,
@@ -51,11 +48,13 @@
       prompt={action.prompt}
     />
   {/if}
-  <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
+  <!-- svelte-ignore a11y_click_events_have_key_events -->
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <img onclick={handleDone} title="Cancel" class="cancel" alt="" />
 {:else}
   {#each actions as action, index (index)}
-    <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <img
       onclick={() => (confirming = index)}
       title={action.title}

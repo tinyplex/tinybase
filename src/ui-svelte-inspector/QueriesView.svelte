@@ -14,20 +14,20 @@
   let {queriesId, s}: Props = $props();
   const queries = $derived(getQueries(queriesId));
   const queryIds = getQueryIds(() => queries);
-  const sortedQueryIds = $derived(sortedIdsMap(queryIds.current, (queryId) => queryId));
+  const sortedQueryIds = $derived(
+    sortedIdsMap(queryIds.current, (queryId) => queryId),
+  );
   const title = $derived('Queries: ' + (queriesId ?? DEFAULT));
 </script>
 
 {#if !isUndefined(queries)}
   <Details uniqueId={getUniqueId('q', queriesId)} {title} {s}>
-    {#snippet children()}
-      {#if arrayIsEmpty(queryIds.current)}
-        No queries defined
-      {:else}
-        {#each sortedQueryIds as queryId (queryId)}
-          <QueryView {queries} {queriesId} {queryId} {s} />
-        {/each}
-      {/if}
-    {/snippet}
+    {#if arrayIsEmpty(queryIds.current)}
+      No queries defined
+    {:else}
+      {#each sortedQueryIds as queryId (queryId)}
+        <QueryView {queries} {queriesId} {queryId} {s} />
+      {/each}
+    {/if}
   </Details>
 {/if}

@@ -20,6 +20,5 @@ export type DeleteAction = BaseAction & {
 
 export type InspectorAction = NewIdAction | DeleteAction;
 
-export const isNewIdAction = (
-  action: InspectorAction,
-): action is NewIdAction => 'set' in action;
+export const isNewIdAction = (action: InspectorAction): action is NewIdAction =>
+  'set' in action;

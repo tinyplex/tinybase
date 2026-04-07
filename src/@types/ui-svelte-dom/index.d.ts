@@ -240,7 +240,9 @@ export const ValuesInHtmlTable: Component<
 >;
 
 /// ui-svelte-dom.SliceInHtmlTable
-export const SliceInHtmlTable: Component<SliceInHtmlTableProps & HtmlTableProps>;
+export const SliceInHtmlTable: Component<
+  SliceInHtmlTableProps & HtmlTableProps
+>;
 
 /// ui-svelte-dom.RelationshipInHtmlTable
 export const RelationshipInHtmlTable: Component<

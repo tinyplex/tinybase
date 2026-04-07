@@ -14,7 +14,10 @@ afterAll(stopServer);
 
 describe('ui-components-svelte', () => {
   test('ValuesInHtmlTable', async ({page}) => {
-    await expectPage(page, `/demos/ui-components-svelte/valuesinhtmltable-svelte`);
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/valuesinhtmltable-svelte`,
+    );
     await expectedElement(page, 'h1', '<ValuesInHtmlTable /> (Svelte)');
     await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
     await expectedFramedElement(
@@ -41,7 +44,10 @@ describe('ui-components-svelte', () => {
   });
 
   test('TableInHtmlTable', async ({page}) => {
-    await expectPage(page, `/demos/ui-components-svelte/tableinhtmltable-svelte`);
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/tableinhtmltable-svelte`,
+    );
     await expectedElement(page, 'h1', '<TableInHtmlTable /> (Svelte)');
     await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
     await expectedFramedElement(
@@ -145,9 +151,7 @@ describe('ui-components-svelte', () => {
       'table tbody tr:nth-of-type(1) td',
       '8.7',
     );
-    await (
-      await expectedFramedElement(page, 'table thead th', 'Year')
-    ).click();
+    await (await expectedFramedElement(page, 'table thead th', 'Year')).click();
     await expectedFramedElement(
       page,
       'table tbody tr:nth-of-type(1) th',
@@ -258,29 +262,48 @@ describe('ui-components-svelte', () => {
   });
 
   test('SliceInHtmlTable', async ({page}) => {
-    await expectPage(page, `/demos/ui-components-svelte/sliceinhtmltable-svelte`);
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/sliceinhtmltable-svelte`,
+    );
     await expectedElement(page, 'h1', '<SliceInHtmlTable /> (Svelte)');
     await expectedFramedElement(page, 'table thead th:nth-of-type(1)', 'Id');
     await expectedFramedElement(page, 'table thead th:nth-of-type(2)', 'name');
-    await expectedFramedElement(page, 'table tbody tr:nth-of-type(1) th', 'g02');
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(1) th',
+      'g02',
+    );
     await expectedFramedElement(
       page,
       'table tbody tr:nth-of-type(1) td',
       'Comedy',
     );
-    await expectedFramedElement(page, 'table tbody tr:nth-of-type(2) th', 'g03');
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(2) th',
+      'g03',
+    );
     await expectedFramedElement(
       page,
       'table tbody tr:nth-of-type(2) td',
       'Family',
     );
-    await expectedFramedElement(page, 'table tbody tr:nth-of-type(3) th', 'g10');
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(3) th',
+      'g10',
+    );
     await expectedFramedElement(
       page,
       'table tbody tr:nth-of-type(3) td',
       'Action',
     );
-    await expectedFramedElement(page, 'table tbody tr:nth-of-type(4) th', 'g11');
+    await expectedFramedElement(
+      page,
+      'table tbody tr:nth-of-type(4) th',
+      'g11',
+    );
     await expectedFramedElement(
       page,
       'table tbody tr:nth-of-type(4) td',
@@ -545,7 +568,10 @@ describe('ui-components-svelte', () => {
   });
 
   test('EditableValueView', async ({page}) => {
-    await expectPage(page, `/demos/ui-components-svelte/editablevalueview-svelte`);
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/editablevalueview-svelte`,
+    );
     await expectedElement(page, 'h1', '<EditableValueView /> (Svelte)');
     await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
     await expectedFramedElement(
@@ -659,7 +685,10 @@ describe('ui-components-svelte', () => {
   });
 
   test('EditableCellView', async ({page}) => {
-    await expectPage(page, `/demos/ui-components-svelte/editablecellview-svelte`);
+    await expectPage(
+      page,
+      `/demos/ui-components-svelte/editablecellview-svelte`,
+    );
     await expectedElement(page, 'h1', '<EditableCellView /> (Svelte)');
     await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
     await expectedFramedElement(
@@ -779,13 +808,21 @@ describe('ui-components-svelte', () => {
     await expectedFramedElement(page, 'aside#tinybaseInspector', undefined, {
       state: 'attached',
     });
-    await expectedFramedElement(page, 'aside#tinybaseInspector main[data-position="3"]');
+    await expectedFramedElement(
+      page,
+      'aside#tinybaseInspector main[data-position="3"]',
+    );
     await expectedFramedElement(page, 'main', 'Store: default');
     await expectedFramedElement(page, 'main', 'Tables');
     await expectedFramedElement(page, 'main', 'Table: genres');
 
-    await (await expectedFramedElement(page, 'img[title="Dock to left"]')).click();
-    await expectedFramedElement(page, 'aside#tinybaseInspector main[data-position="0"]');
+    await (
+      await expectedFramedElement(page, 'img[title="Dock to left"]')
+    ).click();
+    await expectedFramedElement(
+      page,
+      'aside#tinybaseInspector main[data-position="0"]',
+    );
 
     const frame = page.frameLocator('iframe').first();
     await frame
@@ -793,7 +830,11 @@ describe('ui-components-svelte', () => {
       .filter({hasText: 'Store: default'})
       .first()
       .click();
-    await frame.locator('summary span').filter({hasText: 'Tables'}).first().click();
+    await frame
+      .locator('summary span')
+      .filter({hasText: 'Tables'})
+      .first()
+      .click();
     await frame
       .locator('summary span')
       .filter({hasText: 'Table: genres'})
@@ -805,7 +846,9 @@ describe('ui-components-svelte', () => {
     );
     await genresDetails.locator('summary img[title="Edit"]').click();
 
-    const genreInput = genresDetails.locator('tbody tr:nth-of-type(1) td input').first();
+    const genreInput = genresDetails
+      .locator('tbody tr:nth-of-type(1) td input')
+      .first();
     await expect(genreInput).toHaveValue('Drama');
     await genreInput.fill('Drama!');
 

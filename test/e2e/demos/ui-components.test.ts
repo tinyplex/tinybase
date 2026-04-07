@@ -14,7 +14,10 @@ afterAll(stopServer);
 
 describe('ui-components', () => {
   test('ValuesInHtmlTable', async ({page}) => {
-    await expectPage(page, `/demos/ui-components-react/valuesinhtmltable-react`);
+    await expectPage(
+      page,
+      `/demos/ui-components-react/valuesinhtmltable-react`,
+    );
     await expectedElement(page, 'h1', '<ValuesInHtmlTable /> (React)');
     await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
     await expectedFramedElement(
@@ -670,10 +673,7 @@ describe('ui-components', () => {
   });
 
   test('EditableCellView', async ({page}) => {
-    await expectPage(
-      page,
-      `/demos/ui-components-react/editablecellview-react`,
-    );
+    await expectPage(page, `/demos/ui-components-react/editablecellview-react`);
     await expectedElement(page, 'h1', '<EditableCellView /> (React)');
     await expectedFramedElement(page, 'table:nth-of-type(1) thead th', 'Id');
     await expectedFramedElement(
@@ -815,7 +815,11 @@ describe('ui-components', () => {
       .filter({hasText: 'Store: default'})
       .first()
       .click();
-    await frame.locator('summary span').filter({hasText: 'Tables'}).first().click();
+    await frame
+      .locator('summary span')
+      .filter({hasText: 'Tables'})
+      .first()
+      .click();
     await frame
       .locator('summary span')
       .filter({hasText: 'Table: genres'})

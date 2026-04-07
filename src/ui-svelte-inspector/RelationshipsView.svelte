@@ -5,7 +5,10 @@
   import type {StoreProp} from '../common/inspector/types.ts';
   import {arrayIsEmpty} from '../common/array.ts';
   import {isUndefined} from '../common/other.ts';
-  import {getRelationshipIds, getRelationships} from '../ui-svelte/functions.svelte.ts';
+  import {
+    getRelationshipIds,
+    getRelationships,
+  } from '../ui-svelte/functions.svelte.ts';
   import Details from './Details.svelte';
   import RelationshipView from './RelationshipView.svelte';
 
@@ -22,19 +25,17 @@
 
 {#if !isUndefined(relationships)}
   <Details uniqueId={getUniqueId('r', relationshipsId)} {title} {s}>
-    {#snippet children()}
-      {#if arrayIsEmpty(relationshipIds.current)}
-        No relationships defined
-      {:else}
-        {#each sortedRelationshipIds as relationshipId (relationshipId)}
-          <RelationshipView
-            {relationships}
-            {relationshipsId}
-            {relationshipId}
-            {s}
-          />
-        {/each}
-      {/if}
-    {/snippet}
+    {#if arrayIsEmpty(relationshipIds.current)}
+      No relationships defined
+    {:else}
+      {#each sortedRelationshipIds as relationshipId (relationshipId)}
+        <RelationshipView
+          {relationships}
+          {relationshipsId}
+          {relationshipId}
+          {s}
+        />
+      {/each}
+    {/if}
   </Details>
 {/if}

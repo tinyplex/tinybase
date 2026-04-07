@@ -1,13 +1,11 @@
 import type {SyntheticEvent} from 'react';
-import {
-  NO_PROVIDED_OBJECTS_MESSAGE,
-} from '../common/inspector/common.ts';
+import {arrayIsEmpty, arrayMap} from '../common/array.ts';
+import {NO_PROVIDED_OBJECTS_MESSAGE} from '../common/inspector/common.ts';
 import {
   cancelInspectorIdleCallback,
   requestInspectorIdleCallback,
 } from '../common/inspector/idle.ts';
 import type {StoreProp} from '../common/inspector/types.ts';
-import {arrayIsEmpty, arrayMap} from '../common/array.ts';
 import {isUndefined, mathFloor} from '../common/other.ts';
 import {
   useCallback,

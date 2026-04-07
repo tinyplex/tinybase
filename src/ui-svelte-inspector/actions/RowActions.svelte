@@ -2,9 +2,7 @@
   import type {Id} from '../../@types/common/index.d.ts';
   import type {StoreOrStoreId} from '../../@types/ui-svelte/index.d.ts';
   import {arrayHas} from '../../common/array.ts';
-  import {
-    getNewIdFromSuggestedId,
-  } from '../../common/inspector/common.ts';
+  import {getNewIdFromSuggestedId} from '../../common/inspector/common.ts';
   import {
     getCellIds,
     getRowIds,
@@ -34,7 +32,8 @@
   );
   const hasCell = (cellId: Id) =>
     getStore()?.hasCell(tableId, rowId, cellId) ?? false;
-  const hasRow = (nextRowId: Id) => getStore()?.hasRow(tableId, nextRowId) ?? false;
+  const hasRow = (nextRowId: Id) =>
+    getStore()?.hasRow(tableId, nextRowId) ?? false;
 
   const actions = $derived([
     {

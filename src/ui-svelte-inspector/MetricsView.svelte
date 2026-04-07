@@ -19,29 +19,27 @@
 
 {#if !isUndefined(metrics)}
   <Details uniqueId={getUniqueId('m', metricsId)} {title} {s}>
-    {#snippet children()}
-      {#if arrayIsEmpty(metricIds.current)}
-        No metrics defined
-      {:else}
-        <table>
-          <thead>
+    {#if arrayIsEmpty(metricIds.current)}
+      No metrics defined
+    {:else}
+      <table>
+        <thead>
+          <tr>
+            <th>Metric Id</th>
+            <th>Table Id</th>
+            <th>Metric</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each metricIds.current as metricId (metricId)}
             <tr>
-              <th>Metric Id</th>
-              <th>Table Id</th>
-              <th>Metric</th>
+              <th title={metricId}>{metricId}</th>
+              <td>{metrics?.getTableId(metricId)}</td>
+              <td><MetricView {metricId} {metrics} /></td>
             </tr>
-          </thead>
-          <tbody>
-            {#each metricIds.current as metricId (metricId)}
-              <tr>
-                <th title={metricId}>{metricId}</th>
-                <td>{metrics?.getTableId(metricId)}</td>
-                <td><MetricView {metricId} {metrics} /></td>
-              </tr>
-            {/each}
-          </tbody>
-        </table>
-      {/if}
-    {/snippet}
+          {/each}
+        </tbody>
+      </table>
+    {/if}
   </Details>
 {/if}

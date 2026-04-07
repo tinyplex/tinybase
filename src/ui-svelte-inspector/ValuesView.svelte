@@ -17,7 +17,10 @@
   let {store, storeId, s}: Props = $props();
   const uniqueId = $derived(getUniqueId('v', storeId));
   const valueIds = getValueIds(() => store);
-  const [editable, handleEditable] = getEditable(() => uniqueId, () => s);
+  const [editable, handleEditable] = getEditable(
+    () => uniqueId,
+    () => s,
+  );
   const valueActions = [{label: '', component: ValueActions}];
 </script>
 
@@ -28,18 +31,16 @@
   {handleEditable}
   {s}
 >
-  {#snippet children()}
-    {#if arrayIsEmpty(valueIds.current)}
-      <p>No values.</p>
-    {:else}
-      <ValuesInHtmlTable
-        {store}
-        editable={editable.current}
-        extraCellsAfter={editable.current ? valueActions : []}
-      />
-    {/if}
-    {#if editable.current}
-      <ValuesActions {store} />
-    {/if}
-  {/snippet}
+  {#if arrayIsEmpty(valueIds.current)}
+    <p>No values.</p>
+  {:else}
+    <ValuesInHtmlTable
+      {store}
+      editable={editable.current}
+      extraCellsAfter={editable.current ? valueActions : []}
+    />
+  {/if}
+  {#if editable.current}
+    <ValuesActions {store} />
+  {/if}
 </Details>
