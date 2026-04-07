@@ -12,6 +12,7 @@ for `esm.sh`:
     "imports": {
       "tinybase": "https://esm.sh/tinybase@",
       "tinybase/ui-svelte": "https://esm.sh/tinybase@/ui-svelte",
+      "tinybase/ui-svelte-inspector": "https://esm.sh/tinybase@/ui-svelte-inspector",
       "svelte": "https://esm.sh/svelte@"
     }
   }
@@ -44,17 +45,20 @@ ui-svelte module:
 ```svelte file=src/App.svelte
 <script>
   import {CellView, Provider} from 'tinybase/ui-svelte';
+  import {Inspector} from 'tinybase/ui-svelte-inspector';
 
   let {store} = $props();
 </script>
 
 <Provider {store}>
   <CellView tableId="t1" rowId="r1" cellId="c1" />
+  <Inspector />
 </Provider>
 ```
 
-Unlike the React version, there is not yet a Svelte Inspector component, so
-this demo just focuses on the live-updating Cell itself.
+Like the React version, this demo can also include the Inspector component so
+you can see how the data is structured. Simply click the TinyBase logo in the
+corner.
 
 Some final CSS...
 
