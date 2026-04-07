@@ -83,7 +83,7 @@
  * This example creates a RemotePersister object and persists the Store to a
  * remote server.
  *
- * ```js yolo
+ * ```js ignore
  * import {createStore} from 'tinybase';
  * import {createRemotePersister} from 'tinybase/persisters/persister-remote';
  *

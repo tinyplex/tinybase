@@ -62,7 +62,7 @@
    * This example enables Durable Object persistence by creating a Persister
    * object within the createPersister method of a WsServerDurableObject.
    *
-   * ```js yolo
+   * ```js ignore
    * import {createMergeableStore} from 'tinybase';
    * import {createDurableObjectStoragePersister} from 'tinybase/persisters/persister-durable-object-storage';
    * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
@@ -96,7 +96,7 @@
    * This example logs the path being served by the Durable Object every time a
    * synchronization method is handled.
    *
-   * ```js yolo
+   * ```js ignore
    * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
    *
    * export class MyDurableObject extends WsServerDurableObject {
@@ -121,7 +121,7 @@
    * This example logs the list of clients being served by the Durable Object
    * every time a synchronization method is handled.
    *
-   * ```js yolo
+   * ```js ignore
    * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
    *
    * export class MyDurableObject extends WsServerDurableObject {
@@ -149,7 +149,7 @@
    * when the first client joins (the path Id is 'added'), and when the last
    * client leaves (the path Id is 'removed').
    *
-   * ```js yolo
+   * ```js ignore
    * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
    *
    * export class MyDurableObject extends WsServerDurableObject {
@@ -183,7 +183,7 @@
    * leaves (the client Id is 'removed') on the path being served by the Durable
    * Object.
    *
-   * ```js yolo
+   * ```js ignore
    * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
    *
    * export class MyDurableObject extends WsServerDurableObject {
@@ -218,7 +218,7 @@
    * This example logs every message routed by the Durable Object between
    * clients.
    *
-   * ```js yolo
+   * ```js ignore
    * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
    *
    * export class MyDurableObject extends WsServerDurableObject {
@@ -279,7 +279,7 @@
  * Durable Object in the `MyDurableObjects` namespace. This would require the
  * `wrangler.toml` configuration shown above.
  *
- * ```js yolo
+ * ```js ignore
  * import {
  *   WsServerDurableObject,
  *   getWsServerDurableObjectFetch,

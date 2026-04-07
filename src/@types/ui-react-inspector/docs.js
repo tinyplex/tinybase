@@ -76,8 +76,8 @@
  * const app = document.createElement('div');
  * createRoot(app).render(<App store={store} />); // !act
  * // ... // !act
- * console.log(app.innerHTML.substring(0, 30));
- * // -> '<aside id="tinybaseInspector">'
+ * console.log(app.querySelector('aside')?.id);
+ * // -> 'tinybaseInspector'
  * ```
  * @category Development components
  * @essential Using React

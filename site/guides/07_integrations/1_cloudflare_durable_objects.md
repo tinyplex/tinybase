@@ -34,7 +34,7 @@ On the client, we create a simple TinyBase MergeableStore to encapsulate the
 data we need for the app. The following are simplified extracts of the code in
 the `App.tsx` file of the Vite template:
 
-```js yolo
+```js ignore
 export const App = () => {
   const store = useCreateMergeableStore(createMergeableStore);
   // ...
@@ -47,7 +47,7 @@ We also create a local Persister so that if the client goes offline, and the
 browser window is refreshed, changes will have been cached locally in session
 storage, with a key 'foo':
 
-```js yolo
+```js ignore
 // ...
 useCreatePersister(
   store,
@@ -61,7 +61,7 @@ useCreatePersister(
 More interestingly, we also set up a Synchronizer that connects to the
 Cloudflare installation, on a path that also happens to be called 'foo':
 
-```js yolo
+```js ignore
 // ...
 useCreateSynchronizer(store, async (store) => {
   const synchronizer = await createWsSynchronizer(
@@ -105,7 +105,7 @@ to configure the worker as the default export from the file. TinyBase provides a
 convenience getWsServerDurableObjectFetch function that will create a `fetch`
 method that routes WebSocket requests based on the path of the URL:
 
-```js yolo
+```js ignore
 export default {
   fetch: getWsServerDurableObjectFetch('TinyBaseDurableObjects'),
 };
@@ -116,7 +116,7 @@ In here, the argument is the namespace containing your bound Durable Objects.
 Now we need to create the Durable Object itself. This can be as simple as simply
 extending TinyBase's WsServerDurableObject class:
 
-```js yolo
+```js ignore
 export class TinyBaseDurableObject extends WsServerDurableObject {
   // ...
 }
@@ -150,7 +150,7 @@ Stores the entire Store as JSON in a single database row. This is efficient for
 smaller stores and uses fewer database writes, but may hit Cloudflare's 2MB row
 limit for very large stores.
 
-```js yolo
+```js ignore
 // ...
 createPersister() {
   return createDurableObjectSqlStoragePersister(
@@ -168,7 +168,7 @@ if you're concerned about hitting Cloudflare's 2MB row limit with large stores
 in JSON mode. This mode creates more database writes but avoids row size
 limitations:
 
-```js yolo
+```js ignore
 // ...
 createPersister() {
   return createDurableObjectSqlStoragePersister(
@@ -186,7 +186,7 @@ parameters for more advanced use cases.
 If you need a custom table name, you can specify a custom table name for the
 JSON serialization mode:
 
-```js yolo
+```js ignore
 // ...
 createPersister() {
   return createDurableObjectSqlStoragePersister(
@@ -200,7 +200,7 @@ createPersister() {
 
 You can use fragmented mode with a custom storage prefix:
 
-```js yolo
+```js ignore
 // ...
 createPersister() {
   return createDurableObjectSqlStoragePersister(
@@ -215,7 +215,7 @@ createPersister() {
 And for debugging and logging, you can add SQL command logging and error
 handling. This is useful for development:
 
-```js yolo
+```js ignore
 // ...
 createPersister() {
   return createDurableObjectSqlStoragePersister(
@@ -232,7 +232,7 @@ createPersister() {
 Alternatively, if you're using an existing Durable Object namespace with
 key-value storage, you can use the legacy persister:
 
-```js yolo
+```js ignore
 // ...
 createPersister() {
   return createDurableObjectStoragePersister(

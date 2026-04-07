@@ -95,7 +95,7 @@ name collisions.
 If you were importing React UI helpers from `tinybase/omni`, update your
 imports:
 
-```js yolo
+```js ignore
 // Before
 import {createStore, useCell, Provider} from 'tinybase/omni';
 
@@ -538,7 +538,7 @@ false` to detect missing data, you now need to check `getCell(...) === null` for
 2. **Update your schemas**: Add `allowNull: true` to Cell definitions that
    should permit null values:
 
-```js yolo
+```js ignore
 store.setTablesSchema({
   pets: {
     species: {type: 'string'},
@@ -611,7 +611,7 @@ you to persist data in a React Native MMKV store via the
 
 Usage should be as simple as this:
 
-```js yolo
+```js ignore
 import {createMMKV} from 'react-native-mmkv';
 import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
 
@@ -637,7 +637,7 @@ library.
 
 Usage should be as simple as this:
 
-```js yolo
+```js ignore
 import {enablePromise, openDatabase} from 'react-native-sqlite-storage';
 import {createStore} from 'tinybase';
 import {createReactNativeSqlitePersister} from 'tinybase/persisters/persister-react-native-sqlite';
@@ -666,7 +666,7 @@ WsServerDurableObject class).
 Huge thanks to [Corey Jepperson](https://github.com/acoreyj) for implementing
 the entirety of this functionality!
 
-```js yolo
+```js ignore
 import {createMergeableStore} from 'tinybase';
 import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
 import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
@@ -724,7 +724,7 @@ component. This is useful for applications that want to use multiple facets of
 the overall TinyBase ecosystem and also benefit from the fact they share a lot
 of code internally.
 
-```js yolo
+```js ignore
 import {createStore, createSqliteBunPersister} from 'tinybase/omni';
 ```
 
@@ -833,7 +833,7 @@ observing data in the table.
 For example, the following code will only load rows from the `pets` database
 table where the `sold` column is set to `0`:
 
-```js yolo
+```js ignore
 const subsetPersister = createSqliteWasmPersister(store, sqlite3, db, {
   mode: 'tabular',
   tables: {
@@ -858,13 +858,13 @@ that you can pass an object with the parameters as properties.
 
 So instead of:
 
-```js yolo
+```js ignore
 store.getSortedRowIds('pets', undefined, undefined, undefined, 10);
 ```
 
 You can now do:
 
-```js yolo
+```js ignore
 store.getSortedRowIds({tableId: 'pets', limit: 10});
 ```
 
@@ -948,7 +948,7 @@ It's in the new synchronizer-ws-server-durable-object module, and you use it by
 extending the WsServerDurableObject class. Use the getWsServerDurableObjectFetch
 function for conveniently binding your Cloudflare Worker to your Durable Object:
 
-```js yolo
+```js ignore
 import {
   WsServerDurableObject,
   getWsServerDurableObjectFetch,
@@ -985,7 +985,7 @@ You create it with the createDurableObjectStoragePersister function, and hook it
 into the Durable Object by returning it from the createPersister method of your
 WsServerDurableObject:
 
-```js yolo
+```js ignore
 export class MyDurableObject extends WsServerDurableObject {
   createPersister() {
     return createDurableObjectStoragePersister(
@@ -1425,7 +1425,7 @@ Persister for [PowerSync's SQLite](https://www.powersync.com/) database.
 Much like the other SQLite persisters, use it by passing in a PowerSync instance
 to the createPowerSyncPersister function; something like:
 
-```js yolo
+```js ignore
 const powerSync = usePowerSync();
 
 const persister = createPowerSyncPersister(store, powerSync, {
@@ -1451,7 +1451,7 @@ Persister for [Turso's LibSQL](https://turso.tech/libsql) database.
 Use the Persister by passing in a reference to the LibSQL client to the
 createLibSQLPersister function; something like:
 
-```js yolo
+```js ignore
 const client = createClient({url: 'file:my.db'});
 
 const persister = createLibSqlPersister(store, client, {
@@ -1476,7 +1476,7 @@ Persister for [ElectricSQL](https://electric-sql.com/) client databases.
 Use the Persister by passing in a reference to the Electric client to the
 createElectricSqlPersister function; something like:
 
-```js yolo
+```js ignore
 const electric = await electrify(connection, schema, config);
 
 const persister = createElectricSqlPersister(store, electric, {
@@ -1559,7 +1559,7 @@ This release includes two new modules:
 
 A TinyBase server implementation on PartyKit can be as simple as this:
 
-```js yolo
+```js ignore
 import {TinyBasePartyKitServer} from 'tinybase/persisters/persister-partykit-server';
 
 export default class extends TinyBasePartyKitServer {}
@@ -1569,7 +1569,7 @@ On the client, use the familiar Persister API, passing in a reference to a
 PartyKit socket object that's been configured to connect to your server
 deployment and named room:
 
-```js yolo
+```js ignore
 import {createPartyKitPersister} from 'tinybase/persisters/persister-partykit-client';
 
 const persister = createPartyKitPersister(
@@ -1996,7 +1996,7 @@ If you define the shape and structure of your data with a TablesSchema or
 ValuesSchema, you can benefit from an enhanced developer experience when
 operating on it. For example:
 
-```ts yolo
+```ts ignore
 // Import the 'with-schemas' definition:
 import {createStore} from 'tinybase/with-schemas';
 
@@ -2145,7 +2145,7 @@ production use, but are instead to be used as part of your engineering workflow
 to perform tasks like generating APIs from schemas, or schemas from data. For
 example:
 
-```js yolo
+```js ignore
 import {createTools} from 'tinybase/tools';
 
 store.setTable('pets', {
@@ -2160,7 +2160,7 @@ const [dTs, ts] = tools.getStoreApi('shop');
 
 This will generate two files:
 
-```js yolo
+```js ignore
 // -- shop.d.ts --
 /* Represents the 'pets' Table. */
 export type PetsTable = {[rowId: Id]: PetsRow};
