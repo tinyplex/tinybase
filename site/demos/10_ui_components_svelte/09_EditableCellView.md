@@ -154,4 +154,6 @@ input.invalid {
 }
 ```
 
-This completes the Svelte DOM demo set for the ui-svelte-dom components.
+We finish off the demos of the UI components with the debugging tool. Let's
+proceed to the [<Inspector /> (Svelte)](/demos/ui-components-svelte/inspector-svelte/)
+demo.
