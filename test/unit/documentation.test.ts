@@ -13,6 +13,7 @@ import {join, resolve} from 'path';
 import postgres from 'postgres';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
+import * as Svelte from 'svelte';
 import * as sqlite3 from 'sqlite3';
 import type {Id} from 'tinybase';
 import * as TinyBase from 'tinybase';
@@ -47,7 +48,9 @@ import * as TinyBaseSynchronizerWsServerSimple from 'tinybase/synchronizers/sync
 import * as TinyBaseUiReact from 'tinybase/ui-react';
 import * as TinyBaseUiReactDom from 'tinybase/ui-react-dom';
 import * as TinyBaseUiReactInspector from 'tinybase/ui-react-inspector';
+import * as TinyBaseUiSvelte from 'tinybase/ui-svelte';
 import * as TinyBaseUiSvelteDom from 'tinybase/ui-svelte-dom';
+import * as TinyBaseUiSvelteInspector from 'tinybase/ui-svelte-inspector';
 import * as valibot from 'valibot';
 import {beforeAll, describe, expect, test} from 'vitest';
 import * as ws from 'ws';
@@ -88,11 +91,14 @@ const TinyBaseForTest = {
   postgres,
   react: React,
   'react-dom/client': ReactDOMClient,
+  svelte: Svelte,
   sqlite3,
   tinybase: TinyBaseForTest,
   'tinybase/ui-react': TinyBaseUiReact,
   'tinybase/ui-react-dom': TinyBaseUiReactDom,
+  'tinybase/ui-svelte': TinyBaseUiSvelte,
   'tinybase/ui-svelte-dom': TinyBaseUiSvelteDom,
+  'tinybase/ui-svelte-inspector': TinyBaseUiSvelteInspector,
   'tinybase/persisters': TinyBasePersisters,
   'tinybase/persisters/persister-automerge': TinyBasePersisterAutomerge,
   'tinybase/persisters/persister-browser': TinyBasePersisterBrowser,
