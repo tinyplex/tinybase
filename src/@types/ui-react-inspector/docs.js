@@ -15,7 +15,7 @@
  * @category Props
  * @since v5.0.0
  */
-/// InspectorProps
+/// ui-react-inspector.InspectorProps
 {
   /**
    * An optional string to indicate where you want the inspector to first
@@ -23,21 +23,21 @@
    * @category Prop
    * @since v5.0.0
    */
-  /// InspectorProps.position
+  /// ui-react-inspector.InspectorProps.position
   /**
    * An optional boolean to indicate whether the inspector should start in the
    * opened state.
    * @category Prop
    * @since v5.0.0
    */
-  /// InspectorProps.open
+  /// ui-react-inspector.InspectorProps.open
   /**
    * An optional number to indicate the hue of the inspector's UI, defaulting to
    * 270.
    * @category Prop
    * @since v6.6.0
    */
-  /// InspectorProps.hue
+  /// ui-react-inspector.InspectorProps.hue
 }
 /**
  * The Inspector component renders a tool which allows you to view and edit the
@@ -83,4 +83,4 @@
  * @essential Using React
  * @since v5.0.0
  */
-/// Inspector
+/// ui-react-inspector.Inspector

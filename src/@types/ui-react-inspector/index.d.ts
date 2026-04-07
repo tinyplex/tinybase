@@ -1,15 +1,15 @@
 /// ui-react-inspector
 import type {ComponentReturnType} from '../ui-react/index.d.ts';
 
-/// InspectorProps
+/// ui-react-inspector.InspectorProps
 export type InspectorProps = {
-  /// InspectorProps.position
+  /// ui-react-inspector.InspectorProps.position
   readonly position?: 'top' | 'right' | 'bottom' | 'left' | 'full';
-  /// InspectorProps.open
+  /// ui-react-inspector.InspectorProps.open
   readonly open?: boolean;
-  /// InspectorProps.hue
+  /// ui-react-inspector.InspectorProps.hue
   readonly hue?: number;
 };
 
-/// Inspector
+/// ui-react-inspector.Inspector
 export function Inspector(props: InspectorProps): ComponentReturnType;
