@@ -23,6 +23,11 @@
     getStoreIds,
     getValues,
   } from '../ui-svelte/functions.svelte.ts';
+  import IndexesView from './IndexesView.svelte';
+  import MetricsView from './MetricsView.svelte';
+  import QueriesView from './QueriesView.svelte';
+  import RelationshipsView from './RelationshipsView.svelte';
+  import StoreView from './StoreView.svelte';
 
   let {s}: StoreProp = $props();
 
@@ -89,5 +94,26 @@
     {NO_PROVIDED_OBJECTS_MESSAGE}
   </span>
 {:else}
-  <article bind:this={article} onscroll={handleScroll}></article>
+  <article bind:this={article} onscroll={handleScroll}>
+    <StoreView {s} />
+    {#each storeIds.current as storeId (storeId)}
+      <StoreView {storeId} {s} />
+    {/each}
+    <MetricsView {s} />
+    {#each metricsIds.current as metricsId (metricsId)}
+      <MetricsView {metricsId} {s} />
+    {/each}
+    <IndexesView {s} />
+    {#each indexesIds.current as indexesId (indexesId)}
+      <IndexesView {indexesId} {s} />
+    {/each}
+    <RelationshipsView {s} />
+    {#each relationshipsIds.current as relationshipsId (relationshipsId)}
+      <RelationshipsView {relationshipsId} {s} />
+    {/each}
+    <QueriesView {s} />
+    {#each queriesIds.current as queriesId (queriesId)}
+      <QueriesView {queriesId} {s} />
+    {/each}
+  </article>
 {/if}
