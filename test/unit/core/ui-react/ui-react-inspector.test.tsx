@@ -83,7 +83,7 @@ describe('Inspector', () => {
       consoleError.mock.calls
         .map(([msg]: [string, ...any[]]) => msg)
         .filter(
-          (msg) =>
+          (msg: string) =>
             !msg.startsWith('In HTML, %s cannot be a child of <%s>.%s'),
         ),
       'Unexpected React console.error calls',

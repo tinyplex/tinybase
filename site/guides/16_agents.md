@@ -84,15 +84,18 @@ Synchronizers enable real-time data sync:
 - Local (in-memory for testing)
 - Custom transports (extensible)
 
-### React Integration
+### UI Integration
 
-Optional `ui-react` module provides:
+Optional UI modules provide:
 
-- **Hooks**: `useCell`, `useRow`, `useTable`, `useTables`, `useValue`, etc.
-- **Components**: Pre-built reactive views for data rendering
-- **Context**: Multi-store support with ID-based contexts
-- **DOM Components**: `ui-react-dom` with interactive tables
-- **Inspector**: Developer tools overlay for debugging
+- **React Hooks & Components**: `ui-react` with hooks like `useCell`,
+  `useRow`, `useTable`, `useTables`, `useValue`, and component/context support
+- **React DOM Components**: `ui-react-dom` with interactive tables
+- **React Inspector**: `ui-react-inspector` for debugging and editing data
+- **Svelte Reactivity & Components**: `ui-svelte` with reactive functions,
+  components, and context support
+- **Svelte DOM Components**: `ui-svelte-dom` with interactive tables
+- **Svelte Inspector**: `ui-svelte-inspector` for debugging and editing data
 
 ## Architecture
 
@@ -114,6 +117,9 @@ tinybase/synchronizers/synchronizer-* # Sync transports
 tinybase/ui-react     # React hooks
 tinybase/ui-react-dom # React DOM components
 tinybase/ui-react-inspector # DevTools
+tinybase/ui-svelte    # Svelte reactivity & components
+tinybase/ui-svelte-dom # Svelte DOM components
+tinybase/ui-svelte-inspector # DevTools
 ```
 
 ### Type System
@@ -194,6 +200,9 @@ tinybase/
 │   ├── ui-react/          # React hooks
 │   ├── ui-react-dom/      # React DOM components
 │   ├── ui-react-inspector/ # DevTools
+│   ├── ui-svelte/         # Svelte reactivity & components
+│   ├── ui-svelte-dom/     # Svelte DOM components
+│   ├── ui-svelte-inspector/ # DevTools
 │   └── common/            # Shared utilities
 ├── test/                  # Tests
 │   ├── unit/             # Unit tests
@@ -539,5 +548,3 @@ At the end of each major project or task, add any new **general** learnings to
 this file. This ensures future agents benefit from discoveries about the
 codebase, build system, testing patterns, or documentation conventions. Only add
 broadly applicable insights — not project-specific implementation details.
-
-

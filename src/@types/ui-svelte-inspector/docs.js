@@ -3,7 +3,7 @@
  * to help debug the state of your TinyBase stores and other objects.
  *
  * The component in this module uses the Svelte DOM runtime and so is not
- * appropriate for environments like Svelte-native-like.
+ * appropriate for non-DOM environments.
  * @see <Inspector /> (Svelte) demo
  * @packageDocumentation
  * @module ui-svelte-inspector
