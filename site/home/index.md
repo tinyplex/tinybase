@@ -300,9 +300,9 @@ store.delListener(listenerId);
 
 > ## Bind to data in UI libraries.
 >
-> If you're using React or Svelte in your application, the optional ui-react
-> module and ui-svelte module provides hooks and functions to bind to the data
-> in a Store.
+> If you're using React or Svelte in your application, the optional `ui-react`
+> and `ui-svelte` modules provide hooks and functions to bind to the data in a
+> Store.
 >
 > For example, the useCell hook in this example fetches the dog's color. But it
 > also registers a listener on that cell that will fire and re-render the
@@ -353,10 +353,10 @@ root.unmount(); // !act
 
 > ## An inspector for your data.
 >
-> If you are building a web application with React, the new Inspector component
-> lets you overlay a view of the data in your Store, Indexes, Relationships, and
-> so on. You can even edit the data in place and see it update in your app
-> immediately.
+> If you are building a web application with React or Svelte, the Inspector
+> component lets you overlay a view of the data in your Store, Indexes,
+> Relationships, and so on. You can even edit the data in place and see it
+> update in your app immediately.
 >
 > Read more about this powerful new tool in the Inspecting Data guide.
 
