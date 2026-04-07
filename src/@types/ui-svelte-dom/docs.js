@@ -1297,7 +1297,7 @@
  * </table>
  * `;
  * ```
- * @category Indexes components
+ * @category Other components
  * @since v4.1.0
  */
 /// ui-svelte-dom.SliceInHtmlTable
@@ -1478,7 +1478,7 @@
  * </table>
  * `;
  * ```
- * @category Relationships components
+ * @category Other components
  * @since v4.1.0
  */
 /// ui-svelte-dom.RelationshipInHtmlTable

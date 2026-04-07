@@ -1238,7 +1238,7 @@
  * </table>
  * `;
  * ```
- * @category Indexes components
+ * @category Other components
  * @since v4.1.0
  */
 /// SliceInHtmlTable
@@ -1410,7 +1410,7 @@
  * </table>
  * `;
  * ```
- * @category Relationships components
+ * @category Other components
  * @since v4.1.0
  */
 /// RelationshipInHtmlTable

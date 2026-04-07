@@ -49,7 +49,7 @@ const CATEGORIES = [
   'Deleter',
   'Development',
   'Internal',
-  'Other',
+  /^Other/,
 ];
 const REFLECTIONS = [
   'store',
@@ -64,7 +64,7 @@ const REFLECTIONS = [
   /^persister/,
   'synchronizers',
   /^synchronizer/,
-  '/^ui-react/',
+  /^ui-react/,
   /^TablesProps/,
   /^TableProps/,
   /^SortedTableProps/,
