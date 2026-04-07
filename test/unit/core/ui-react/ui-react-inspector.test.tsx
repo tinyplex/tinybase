@@ -70,6 +70,10 @@ const getCellAction = (
   return actions?.[index] as HTMLElement;
 };
 
+const NO_PROVIDER_MESSAGE =
+  'There are no Stores or other objects to inspect. Make sure you placed ' +
+  'the Inspector inside a Provider component.';
+
 describe('Inspector', () => {
   let consoleError: ReturnType<typeof vi.spyOn>;
 
@@ -135,7 +139,10 @@ describe('Inspector', () => {
 
     await waitFor(() => {
       expect(container.querySelector('main')).not.toBeNull();
-      expect(container.querySelector('main')).toHaveAttribute('data-position', '3');
+      expect(container.querySelector('main')).toHaveAttribute(
+        'data-position',
+        '3',
+      );
       expect(container.querySelector('aside')?.getAttribute('style')).toContain(
         '120',
       );
@@ -143,7 +150,10 @@ describe('Inspector', () => {
 
     fireEvent.click(screen.getByTitle('Dock to left'));
     await waitFor(() =>
-      expect(container.querySelector('main')).toHaveAttribute('data-position', '0'),
+      expect(container.querySelector('main')).toHaveAttribute(
+        'data-position',
+        '0',
+      ),
     );
 
     fireEvent.click(screen.getByTitle('Close'));
@@ -157,7 +167,10 @@ describe('Inspector', () => {
 
     fireEvent.click(screen.getByTitle('TinyBase Inspector'));
     await waitFor(() =>
-      expect(container.querySelector('main')).toHaveAttribute('data-position', '0'),
+      expect(container.querySelector('main')).toHaveAttribute(
+        'data-position',
+        '0',
+      ),
     );
 
     unmount();
@@ -169,7 +182,10 @@ describe('Inspector', () => {
     await waitFor(() => expect(screen.getByRole('main')).toBeInTheDocument());
     fireEvent.click(screen.getByTitle('Dock to left'));
     await waitFor(() =>
-      expect(container.querySelector('main')).toHaveAttribute('data-position', '0'),
+      expect(container.querySelector('main')).toHaveAttribute(
+        'data-position',
+        '0',
+      ),
     );
     await waitFor(() =>
       expect(sessionStorage.getItem('tinybaseInspector')).toContain(
@@ -192,11 +208,7 @@ describe('Inspector', () => {
     const {unmount} = render(<Inspector open={true} />);
 
     await waitFor(() => {
-      expect(
-        screen.getByText(
-          'There are no Stores or other objects to inspect. Make sure you placed the Inspector inside a Provider component.',
-        ),
-      ).toBeInTheDocument();
+      expect(screen.getByText(NO_PROVIDER_MESSAGE)).toBeInTheDocument();
     });
 
     unmount();
@@ -214,11 +226,7 @@ describe('Inspector', () => {
       expect(container.querySelector('main')).not.toBeNull();
       expect(screen.getByText('No values.')).toBeInTheDocument();
       expect(screen.getByText('No tables.')).toBeInTheDocument();
-      expect(
-        screen.queryByText(
-          'There are no Stores or other objects to inspect. Make sure you placed the Inspector inside a Provider component.',
-        ),
-      ).toBeNull();
+      expect(screen.queryByText(NO_PROVIDER_MESSAGE)).toBeNull();
     });
 
     unmount();
@@ -231,7 +239,12 @@ describe('Inspector', () => {
         t2: {r1: {c1: 2}},
       })
       .setValues({v1: 1});
-    const metrics = createMetrics(store).setMetricDefinition('m1', 't1', 'sum', 'c1');
+    const metrics = createMetrics(store).setMetricDefinition(
+      'm1',
+      't1',
+      'sum',
+      'c1',
+    );
     const indexes = createIndexes(store).setIndexDefinition('i1', 't1', 'c1');
     const relationships = createRelationships(store).setRelationshipDefinition(
       'r1',
@@ -239,10 +252,14 @@ describe('Inspector', () => {
       't2',
       'c1',
     );
-    const queries = createQueries(store).setQueryDefinition('q1', 't1', ({select}) => {
-      select('c1');
-      select('c2');
-    });
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => {
+        select('c1');
+        select('c2');
+      },
+    );
     const {unmount} = render(
       <Provider
         store={store}
@@ -303,12 +320,16 @@ describe('Inspector', () => {
     );
 
     fireEvent.click(getValueAction('v1', 'Clone value'));
-    await waitFor(() => expect(screen.getByDisplayValue('v1 (copy)')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('v1 (copy)')).toBeInTheDocument(),
+    );
     fireEvent.click(screen.getByTitle('Confirm'));
     await waitFor(() => expect(store.getValue('v1 (copy)')).toBe(1));
 
     fireEvent.click(getDetailsAction('Values', 'Add value'));
-    await waitFor(() => expect(screen.getByDisplayValue('value')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('value')).toBeInTheDocument(),
+    );
     fireEvent.input(screen.getByDisplayValue('value'), {
       target: {value: 'v2'},
     });
@@ -330,12 +351,16 @@ describe('Inspector', () => {
     );
 
     fireEvent.click(getDetailsAction('Table: t1', 'Add row'));
-    await waitFor(() => expect(screen.getByDisplayValue('row')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('row')).toBeInTheDocument(),
+    );
     fireEvent.click(screen.getByTitle('Confirm'));
     await waitFor(() => expect(store.hasRow('t1', 'row')).toBe(true));
 
     fireEvent.click(getRowAction('Table: t1', 'r1', 'Add cell'));
-    await waitFor(() => expect(screen.getByDisplayValue('cell')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('cell')).toBeInTheDocument(),
+    );
     fireEvent.click(screen.getByTitle('Confirm'));
     await waitFor(() => expect(store.hasCell('t1', 'r1', 'cell')).toBe(true));
 
@@ -346,7 +371,9 @@ describe('Inspector', () => {
 
     fireEvent.click(getSummaryAction('Relationship: r1', 'Edit'));
     await waitFor(() =>
-      expect(getDetails('Relationship: r1').querySelector('input')).not.toBeNull(),
+      expect(
+        getDetails('Relationship: r1').querySelector('input'),
+      ).not.toBeNull(),
     );
 
     fireEvent.click(getCellAction('Table: t1', 'r1', 'Delete cell'));
@@ -354,7 +381,9 @@ describe('Inspector', () => {
     await waitFor(() => expect(store.hasCell('t1', 'r1', 'c1')).toBe(false));
 
     fireEvent.click(getRowAction('Table: t1', 'r1', 'Clone row'));
-    await waitFor(() => expect(screen.getByDisplayValue('r1 (copy)')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('r1 (copy)')).toBeInTheDocument(),
+    );
     fireEvent.click(screen.getByTitle('Confirm'));
     await waitFor(() => expect(store.hasRow('t1', 'r1 (copy)')).toBe(true));
 
@@ -367,14 +396,18 @@ describe('Inspector', () => {
     await waitFor(() => expect(store.hasTable('t2')).toBe(false));
 
     fireEvent.click(getDetailsAction('Table: t1', 'Clone table'));
-    await waitFor(() => expect(screen.getByDisplayValue('t1 (copy)')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('t1 (copy)')).toBeInTheDocument(),
+    );
     fireEvent.click(screen.getByTitle('Confirm'));
     await waitFor(() =>
       expect(store.getTable('t1 (copy)')).toEqual(store.getTable('t1')),
     );
 
     fireEvent.click(getDetailsAction('Tables', 'Add table'));
-    await waitFor(() => expect(screen.getByDisplayValue('table')).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('table')).toBeInTheDocument(),
+    );
     fireEvent.click(screen.getByTitle('Confirm'));
     await waitFor(() => expect(store.hasTable('table')).toBe(true));
 

@@ -66,7 +66,7 @@ static Value loading with an asynchronous table loader:
 ## Using the TableInHtmlTable Component
 
 We can replace the body of the app with a full Table view, including the same
-headerless variant from the first demo:
+header-less variant from the first demo:
 
 ```svelte file=src/App.svelte
 <script>

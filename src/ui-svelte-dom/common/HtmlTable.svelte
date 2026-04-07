@@ -68,11 +68,9 @@
         {/each}
         {#if idColumn !== false}
           <th
-            class={
-              isUndefined(sortAndOffset) || sortAndOffset[0] != null
-                ? undefined
-                : `sorted ${sortAndOffset[1] ? 'de' : 'a'}scending`
-            }
+            class={isUndefined(sortAndOffset) || sortAndOffset[0] != null
+              ? undefined
+              : `sorted ${sortAndOffset[1] ? 'de' : 'a'}scending`}
             onclick={() => handleSort?.(undefined)}
           >
             {#if !isUndefined(sortAndOffset) && sortAndOffset[0] == null}
@@ -85,11 +83,9 @@
           {@const cellId = entry[0] as Id}
           {@const cell = entry[1]}
           <th
-            class={
-              isUndefined(sortAndOffset) || sortAndOffset[0] != cellId
-                ? undefined
-                : `sorted ${sortAndOffset[1] ? 'de' : 'a'}scending`
-            }
+            class={isUndefined(sortAndOffset) || sortAndOffset[0] != cellId
+              ? undefined
+              : `sorted ${sortAndOffset[1] ? 'de' : 'a'}scending`}
             onclick={() => handleSort?.(cellId)}
           >
             {#if !isUndefined(sortAndOffset) && sortAndOffset[0] == cellId}

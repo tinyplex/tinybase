@@ -1,8 +1,5 @@
 <script lang="ts">
-  import type {
-    SortedTablePaginator as SortedTablePaginatorDecl,
-    SortedTablePaginatorProps,
-  } from '../@types/ui-svelte-dom/index.d.ts';
+  import type {SortedTablePaginatorProps} from '../@types/ui-svelte-dom/index.d.ts';
   import {mathMin} from '../common/other.ts';
 
   const LEFT_ARROW = '\u2190';
@@ -43,4 +40,5 @@
   </button>
   {offset + 1} to {mathMin(props.total, offset + limit)} of
 {/if}
-{props.total} {props.total != 1 ? plural : singular}
+{props.total}
+{props.total != 1 ? plural : singular}

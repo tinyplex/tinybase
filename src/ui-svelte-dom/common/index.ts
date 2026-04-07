@@ -1,5 +1,5 @@
+import type {Component} from 'svelte';
 import type {Id, Ids} from '../../@types/common/index.d.ts';
-import type {IdObj} from '../../common/obj.ts';
 import type {
   ExtraRowCell,
   ExtraValueCell,
@@ -10,10 +10,10 @@ import type {
   StoreOrStoreId,
 } from '../../@types/ui-svelte/index.d.ts';
 import {arrayMap} from '../../common/array.ts';
+import type {IdObj} from '../../common/obj.ts';
 import {objMap, objNew} from '../../common/obj.ts';
 import {isArray, isString} from '../../common/other.ts';
 import {EXTRA} from '../../common/strings.ts';
-import type {Component} from 'svelte';
 
 type CustomCellLike = {
   label?: string;

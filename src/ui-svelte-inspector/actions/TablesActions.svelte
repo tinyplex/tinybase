@@ -2,13 +2,8 @@
   import type {Id} from '../../@types/common/index.d.ts';
   import type {StoreOrStoreId} from '../../@types/ui-svelte/index.d.ts';
   import {arrayHas} from '../../common/array.ts';
-  import {
-    getNewIdFromSuggestedId,
-  } from '../../common/inspector/common.ts';
-  import {
-    getTableIds,
-    resolveStore,
-  } from '../../ui-svelte/functions.svelte.ts';
+  import {getNewIdFromSuggestedId} from '../../common/inspector/common.ts';
+  import {getTableIds, resolveStore} from '../../ui-svelte/functions.svelte.ts';
   import Actions from './Actions.svelte';
   import ConfirmableActions from './ConfirmableActions.svelte';
 

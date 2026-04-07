@@ -30,9 +30,7 @@ export type CustomCell<
   /// ui-svelte-dom.CustomCell.label
   label?: string;
   /// ui-svelte-dom.CustomCell.component
-  component?: Component<
-    CellPropsForTableIdAndCellId<Schemas, TableId, CellId>
-  >;
+  component?: Component<CellPropsForTableIdAndCellId<Schemas, TableId, CellId>>;
   /// ui-svelte-dom.CustomCell.getComponentProps
   getComponentProps?: (rowId: Id, cellId: CellId) => {[prop: string]: any};
 };

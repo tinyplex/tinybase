@@ -36,7 +36,9 @@ const getRowAction = (
   rowId: string,
   actionTitle: string,
 ): HTMLElement => {
-  const row = getDetails(tableTitle).querySelector(`th[title="${rowId}"]`)?.closest('tr');
+  const row = getDetails(tableTitle)
+    .querySelector(`th[title="${rowId}"]`)
+    ?.closest('tr');
   expect(row).not.toBeNull();
   const action = row?.querySelector(`img[title="${actionTitle}"]`);
   expect(action).not.toBeNull();
@@ -44,7 +46,9 @@ const getRowAction = (
 };
 
 const getValueAction = (valueId: string, actionTitle: string): HTMLElement => {
-  const row = getDetails('Values').querySelector(`th[title="${valueId}"]`)?.closest('tr');
+  const row = getDetails('Values')
+    .querySelector(`th[title="${valueId}"]`)
+    ?.closest('tr');
   expect(row).not.toBeNull();
   const action = row?.querySelector(`img[title="${actionTitle}"]`);
   expect(action).not.toBeNull();
@@ -57,12 +61,18 @@ const getCellAction = (
   actionTitle: string,
   index: number = 0,
 ): HTMLElement => {
-  const row = getDetails(tableTitle).querySelector(`th[title="${rowId}"]`)?.closest('tr');
+  const row = getDetails(tableTitle)
+    .querySelector(`th[title="${rowId}"]`)
+    ?.closest('tr');
   expect(row).not.toBeNull();
   const actions = row?.querySelectorAll(`img[title="${actionTitle}"]`);
   expect(actions?.[index]).not.toBeNull();
   return actions?.[index] as HTMLElement;
 };
+
+const NO_PROVIDER_MESSAGE =
+  'There are no Stores or other objects to inspect. Make sure you placed ' +
+  'the Inspector inside a Provider component.';
 
 describe('Inspector', () => {
   beforeEach(() => {
@@ -126,24 +136,24 @@ describe('Inspector', () => {
 
     await fireEvent.click(screen.getByTitle('Dock to left'));
     await waitFor(() =>
-      expect(container.querySelector('main')?.getAttribute('data-position')).toBe(
-        '0',
-      ),
+      expect(
+        container.querySelector('main')?.getAttribute('data-position'),
+      ).toBe('0'),
     );
 
     await fireEvent.click(screen.getByTitle('Close'));
     await waitFor(() => {
       expect(container.querySelector('main')).toBeNull();
-      expect(screen.getByTitle('TinyBase Inspector').getAttribute('data-position')).toBe(
-        '0',
-      );
+      expect(
+        screen.getByTitle('TinyBase Inspector').getAttribute('data-position'),
+      ).toBe('0');
     });
 
     await fireEvent.click(screen.getByTitle('TinyBase Inspector'));
     await waitFor(() =>
-      expect(container.querySelector('main')?.getAttribute('data-position')).toBe(
-        '0',
-      ),
+      expect(
+        container.querySelector('main')?.getAttribute('data-position'),
+      ).toBe('0'),
     );
 
     unmount();
@@ -155,9 +165,9 @@ describe('Inspector', () => {
     await waitFor(() => expect(screen.getByRole('main')).not.toBeNull());
     await fireEvent.click(screen.getByTitle('Dock to left'));
     await waitFor(() =>
-      expect(container.querySelector('main')?.getAttribute('data-position')).toBe(
-        '0',
-      ),
+      expect(
+        container.querySelector('main')?.getAttribute('data-position'),
+      ).toBe('0'),
     );
     await waitFor(() =>
       expect(sessionStorage.getItem('tinybaseInspector')).toContain(
@@ -169,7 +179,9 @@ describe('Inspector', () => {
     const rerendered = render(Inspector);
     await waitFor(() => {
       expect(
-        rerendered.container.querySelector('main')?.getAttribute('data-position'),
+        rerendered.container
+          .querySelector('main')
+          ?.getAttribute('data-position'),
       ).toBe('0');
     });
     rerendered.unmount();
@@ -179,11 +191,7 @@ describe('Inspector', () => {
     const {unmount} = render(Inspector, {props: {open: true}});
 
     await waitFor(() => {
-      expect(
-        screen.getByText(
-          'There are no Stores or other objects to inspect. Make sure you placed the Inspector inside a Provider component.',
-        ),
-      ).not.toBeNull();
+      expect(screen.getByText(NO_PROVIDER_MESSAGE)).not.toBeNull();
     });
 
     unmount();
@@ -197,11 +205,7 @@ describe('Inspector', () => {
       expect(container.querySelector('main')).not.toBeNull();
       expect(screen.getByText('No values.')).not.toBeNull();
       expect(screen.getByText('No tables.')).not.toBeNull();
-      expect(
-        screen.queryByText(
-          'There are no Stores or other objects to inspect. Make sure you placed the Inspector inside a Provider component.',
-        ),
-      ).toBeNull();
+      expect(screen.queryByText(NO_PROVIDER_MESSAGE)).toBeNull();
     });
 
     unmount();
@@ -214,7 +218,12 @@ describe('Inspector', () => {
         t2: {r1: {c1: 2}},
       })
       .setValues({v1: 1});
-    const metrics = createMetrics(store).setMetricDefinition('m1', 't1', 'sum', 'c1');
+    const metrics = createMetrics(store).setMetricDefinition(
+      'm1',
+      't1',
+      'sum',
+      'c1',
+    );
     const indexes = createIndexes(store).setIndexDefinition('i1', 't1', 'c1');
     const relationships = createRelationships(store).setRelationshipDefinition(
       'r1',
@@ -222,10 +231,14 @@ describe('Inspector', () => {
       't2',
       'c1',
     );
-    const queries = createQueries(store).setQueryDefinition('q1', 't1', ({select}) => {
-      select('c1');
-      select('c2');
-    });
+    const queries = createQueries(store).setQueryDefinition(
+      'q1',
+      't1',
+      ({select}) => {
+        select('c1');
+        select('c2');
+      },
+    );
     const {unmount} = render(WithProvider, {
       props: {store, metrics, indexes, relationships, queries},
     });
@@ -276,7 +289,9 @@ describe('Inspector', () => {
     );
 
     await fireEvent.click(getValueAction('v1', 'Clone value'));
-    await waitFor(() => expect(screen.getByDisplayValue('v1 (copy)')).not.toBeNull());
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('v1 (copy)')).not.toBeNull(),
+    );
     await fireEvent.click(screen.getByTitle('Confirm'));
     await waitFor(() => expect(store.getValue('v1 (copy)')).toBe(1));
 
@@ -307,7 +322,9 @@ describe('Inspector', () => {
     await waitFor(() => expect(store.hasRow('t1', 'row')).toBe(true));
 
     await fireEvent.click(getRowAction('Table: t1', 'r1', 'Add cell'));
-    await waitFor(() => expect(screen.getByDisplayValue('cell')).not.toBeNull());
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('cell')).not.toBeNull(),
+    );
     await fireEvent.click(screen.getByTitle('Confirm'));
     await waitFor(() => expect(store.hasCell('t1', 'r1', 'cell')).toBe(true));
 
@@ -318,7 +335,9 @@ describe('Inspector', () => {
 
     await fireEvent.click(getSummaryAction('Relationship: r1', 'Edit'));
     await waitFor(() =>
-      expect(getDetails('Relationship: r1').querySelector('input')).not.toBeNull(),
+      expect(
+        getDetails('Relationship: r1').querySelector('input'),
+      ).not.toBeNull(),
     );
 
     await fireEvent.click(getCellAction('Table: t1', 'r1', 'Delete cell'));
@@ -326,7 +345,9 @@ describe('Inspector', () => {
     await waitFor(() => expect(store.hasCell('t1', 'r1', 'c1')).toBe(false));
 
     await fireEvent.click(getRowAction('Table: t1', 'r1', 'Clone row'));
-    await waitFor(() => expect(screen.getByDisplayValue('r1 (copy)')).not.toBeNull());
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('r1 (copy)')).not.toBeNull(),
+    );
     await fireEvent.click(screen.getByTitle('Confirm'));
     await waitFor(() => expect(store.hasRow('t1', 'r1 (copy)')).toBe(true));
 
@@ -339,14 +360,18 @@ describe('Inspector', () => {
     await waitFor(() => expect(store.hasTable('t2')).toBe(false));
 
     await fireEvent.click(getDetailsAction('Table: t1', 'Clone table'));
-    await waitFor(() => expect(screen.getByDisplayValue('t1 (copy)')).not.toBeNull());
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('t1 (copy)')).not.toBeNull(),
+    );
     await fireEvent.click(screen.getByTitle('Confirm'));
     await waitFor(() =>
       expect(store.getTable('t1 (copy)')).toEqual(store.getTable('t1')),
     );
 
     await fireEvent.click(getDetailsAction('Tables', 'Add table'));
-    await waitFor(() => expect(screen.getByDisplayValue('table')).not.toBeNull());
+    await waitFor(() =>
+      expect(screen.getByDisplayValue('table')).not.toBeNull(),
+    );
     await fireEvent.click(screen.getByTitle('Confirm'));
     await waitFor(() => expect(store.hasTable('table')).toBe(true));
 

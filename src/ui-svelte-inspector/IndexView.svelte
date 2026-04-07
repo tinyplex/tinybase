@@ -18,9 +18,7 @@
 </script>
 
 <Details uniqueId={getUniqueId('i', indexesId, indexId)} {title} {s}>
-  {#snippet children()}
-    {#each sliceIds.current as sliceId (sliceId)}
-      <SliceView {indexes} {indexesId} {indexId} {sliceId} {s} />
-    {/each}
-  {/snippet}
+  {#each sliceIds.current as sliceId (sliceId)}
+    <SliceView {indexes} {indexesId} {indexId} {sliceId} {s} />
+  {/each}
 </Details>

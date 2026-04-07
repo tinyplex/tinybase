@@ -36,7 +36,10 @@
     () => SORT_CELL,
     () => s,
   );
-  const [editable, handleEditable] = getEditable(() => uniqueId, () => s);
+  const [editable, handleEditable] = getEditable(
+    () => uniqueId,
+    () => s,
+  );
   const sortAndOffset = $derived(
     jsonParse((sort.current as string) ?? '[]') as [
       cellId: Id | undefined,
@@ -59,43 +62,39 @@
   const rowActions = [{label: '', component: RowActions}];
 
   const handleChange = (
-    sortAndOffset: [cellId: Id | undefined, descending: boolean, offset: number],
+    sortAndOffset: [
+      cellId: Id | undefined,
+      descending: boolean,
+      offset: number,
+    ],
   ) => {
     sort.current = jsonStringWithMap(sortAndOffset);
   };
 </script>
 
-<Details
-  {uniqueId}
-  {title}
-  editable={editable.current}
-  {handleEditable}
-  {s}
->
-  {#snippet children()}
-    <SortedTableInHtmlTable
-      {tableId}
-      {store}
-      cellId={sortAndOffset[0]}
-      descending={sortAndOffset[1]}
-      offset={sortAndOffset[2]}
-      limit={10}
-      paginator={true}
-      sortOnClick={true}
-      onChange={handleChange}
-      editable={editable.current}
-      extraCellsAfter={editable.current ? rowActions : []}
-      {customCells}
-    />
-    {#if editable.current}
-      <Actions>
-        {#snippet left()}
-          <TableActions1 {tableId} {store} />
-        {/snippet}
-        {#snippet right()}
-          <TableActions2 {tableId} {store} />
-        {/snippet}
-      </Actions>
-    {/if}
-  {/snippet}
+<Details {uniqueId} {title} editable={editable.current} {handleEditable} {s}>
+  <SortedTableInHtmlTable
+    {tableId}
+    {store}
+    cellId={sortAndOffset[0]}
+    descending={sortAndOffset[1]}
+    offset={sortAndOffset[2]}
+    limit={10}
+    paginator={true}
+    sortOnClick={true}
+    onChange={handleChange}
+    editable={editable.current}
+    extraCellsAfter={editable.current ? rowActions : []}
+    {customCells}
+  />
+  {#if editable.current}
+    <Actions>
+      {#snippet left()}
+        <TableActions1 {tableId} {store} />
+      {/snippet}
+      {#snippet right()}
+        <TableActions2 {tableId} {store} />
+      {/snippet}
+    </Actions>
+  {/if}
 </Details>

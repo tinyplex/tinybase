@@ -14,15 +14,15 @@
   let {storeId, s}: Props = $props();
   const store = $derived(getStore(storeId));
   const title = $derived(
-    (store?.isMergeable() ? 'Mergeable' : '') + 'Store: ' + (storeId ?? DEFAULT),
+    (store?.isMergeable() ? 'Mergeable' : '') +
+      'Store: ' +
+      (storeId ?? DEFAULT),
   );
 </script>
 
 {#if !isUndefined(store)}
   <Details uniqueId={getUniqueId('s', storeId)} {title} {s}>
-    {#snippet children()}
-      <ValuesView store={store} {storeId} {s} />
-      <TablesView store={store} {storeId} {s} />
-    {/snippet}
+    <ValuesView {store} {storeId} {s} />
+    <TablesView {store} {storeId} {s} />
   </Details>
 {/if}

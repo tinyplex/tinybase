@@ -1,10 +1,7 @@
 <script lang="ts">
   import type {Cell, Value} from '../../@types/index.d.ts';
   import type {CellOrValueType} from '../../common/cell.ts';
-  import {
-    getCellOrValueType,
-    getTypeCase,
-  } from '../../common/cell.ts';
+  import {getCellOrValueType, getTypeCase} from '../../common/cell.ts';
   import {jsonParse, jsonString} from '../../common/json.ts';
   import {isObject} from '../../common/obj.ts';
   import {isArray, tryReturn} from '../../common/other.ts';

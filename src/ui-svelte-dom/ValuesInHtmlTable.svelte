@@ -3,7 +3,6 @@
     HtmlTableProps,
     ValuesInHtmlTableProps,
   } from '../@types/ui-svelte-dom/index.d.ts';
-  import {arrayMap} from '../common/array.ts';
   import {isFalse} from '../common/other.ts';
   import {EXTRA, VALUE} from '../common/strings.ts';
   import {getValueIds} from '../ui-svelte/functions.svelte.ts';

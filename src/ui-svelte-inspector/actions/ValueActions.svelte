@@ -2,13 +2,8 @@
   import type {Id} from '../../@types/common/index.d.ts';
   import type {StoreOrStoreId} from '../../@types/ui-svelte/index.d.ts';
   import {arrayHas} from '../../common/array.ts';
-  import {
-    getNewIdFromSuggestedId,
-  } from '../../common/inspector/common.ts';
-  import {
-    getValueIds,
-    resolveStore,
-  } from '../../ui-svelte/functions.svelte.ts';
+  import {getNewIdFromSuggestedId} from '../../common/inspector/common.ts';
+  import {getValueIds, resolveStore} from '../../ui-svelte/functions.svelte.ts';
   import ConfirmableActions from './ConfirmableActions.svelte';
 
   let {
@@ -32,7 +27,8 @@
         arrayHas(valueIds.current, nextValueId),
       ),
       has,
-      set: (newId: Id) => getStore()?.setValue(newId, getStore()?.getValue(valueId) ?? ''),
+      set: (newId: Id) =>
+        getStore()?.setValue(newId, getStore()?.getValue(valueId) ?? ''),
     },
     {
       icon: 'delete',

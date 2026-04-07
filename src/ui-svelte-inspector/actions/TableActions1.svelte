@@ -2,14 +2,9 @@
   import type {Id} from '../../@types/common/index.d.ts';
   import type {StoreOrStoreId} from '../../@types/ui-svelte/index.d.ts';
   import {arrayHas, arrayMap} from '../../common/array.ts';
-  import {
-    getNewIdFromSuggestedId,
-  } from '../../common/inspector/common.ts';
+  import {getNewIdFromSuggestedId} from '../../common/inspector/common.ts';
   import {objNew} from '../../common/obj.ts';
-  import {
-    getRowIds,
-    resolveStore,
-  } from '../../ui-svelte/functions.svelte.ts';
+  import {getRowIds, resolveStore} from '../../ui-svelte/functions.svelte.ts';
   import ConfirmableActions from './ConfirmableActions.svelte';
 
   let {

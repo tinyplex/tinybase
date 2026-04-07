@@ -1,7 +1,4 @@
 <script lang="ts">
-  import type {
-    EditableValueView as EditableValueViewDecl,
-  } from '../@types/ui-svelte-dom/index.d.ts';
   import type {ValueViewProps} from '../@types/ui-svelte/index.d.ts';
   import {VALUE} from '../common/strings.ts';
   import {getValue, resolveStore} from '../ui-svelte/functions.svelte.ts';
