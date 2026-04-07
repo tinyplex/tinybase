@@ -37,8 +37,7 @@
     onclick={() => props.onChange(offset + limit)}
   >
     {RIGHT_ARROW}
-  </button>
-  {offset + 1} to {mathMin(props.total, offset + limit)} of
+  </button>{offset + 1} to {mathMin(props.total, offset + limit)} of
 {/if}
 {props.total}
 {props.total != 1 ? plural : singular}
