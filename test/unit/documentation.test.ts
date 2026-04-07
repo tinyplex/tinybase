@@ -5,16 +5,18 @@ import sqlite3InitModule from '@sqlite.org/sqlite-wasm';
 import initWasm from '@vlcn.io/crsqlite-wasm';
 import * as arktype from 'arktype';
 import * as effectSchema from 'effect/Schema';
-import {transformSync} from 'esbuild';
+import {build, transformSync} from 'esbuild';
 import 'fake-indexeddb/auto';
 import * as fs from 'fs';
 import {readFileSync, readdirSync} from 'fs';
-import {join, resolve} from 'path';
+import {createRequire} from 'module';
+import {dirname, extname, join, resolve} from 'path';
 import postgres from 'postgres';
 import * as React from 'react';
 import * as ReactDOMClient from 'react-dom/client';
 import * as sqlite3 from 'sqlite3';
 import * as Svelte from 'svelte';
+import {compileModule, compile as compileSvelte} from 'svelte/compiler';
 import type {Id} from 'tinybase';
 import * as TinyBase from 'tinybase';
 import * as TinyBasePersisters from 'tinybase/persisters';
@@ -149,6 +151,43 @@ Object.assign(globalThis as any, {
 type Results = [any, any][];
 
 const resultsByName: {[name: string]: () => Promise<Results>} = {};
+const FILE_BLOCKS = /```([^\n]*)\n([\s\S]*?)```/g;
+const FILE_MATCH = /\bfile=(\S+)/;
+const SCRIPT_BLOCK = /^(?:[jt]sx?)$/;
+const nodeRequire = createRequire(import.meta.url);
+const DOCS_SVELTE_SHIM_PATH = '/__docs__/svelte.ts';
+const TINYBASE_CONTEXT_KEY = 'tinybase_uisc';
+const TINYBASE_SOURCE_MODULES: {[path: string]: string} = {
+  svelte: resolve('node_modules/svelte/src/index-client.js'),
+  'svelte/internal/client': resolve(
+    'node_modules/svelte/src/internal/client/index.js',
+  ),
+  'svelte/internal/disclose-version': resolve(
+    'node_modules/svelte/src/internal/disclose-version.js',
+  ),
+  'svelte/reactivity': resolve(
+    'node_modules/svelte/src/reactivity/index-client.js',
+  ),
+  'tinybase/ui-svelte': resolve('dist/ui-svelte/index.js'),
+  'tinybase/ui-svelte/with-schemas': resolve(
+    'dist/ui-svelte/with-schemas/index.js',
+  ),
+  'tinybase/ui-svelte-dom': resolve('dist/ui-svelte-dom/index.js'),
+  'tinybase/ui-svelte-dom/with-schemas': resolve(
+    'dist/ui-svelte-dom/with-schemas/index.js',
+  ),
+  'tinybase/ui-svelte-inspector': resolve('dist/ui-svelte-inspector/index.js'),
+  'tinybase/ui-svelte-inspector/with-schemas': resolve(
+    'dist/ui-svelte-inspector/with-schemas/index.js',
+  ),
+};
+const resolveSvelteInternalImport = (path: string): string | undefined =>
+  path.startsWith('#client/')
+    ? resolve(
+        'node_modules/svelte/src/internal/client',
+        path.slice('#client/'.length) + (extname(path) == '' ? '.js' : ''),
+      )
+    : undefined;
 
 const forEachDeepFile = (
   dir: string,
@@ -177,12 +216,364 @@ const forEachDirAndFile = (
     }
   });
 
+const prepareRunnableCode = (source: string, replaceImports: boolean): string =>
+  source
+    .replace(
+      /console\.log\((.+?)\.innerHTML\);$/gm,
+      '_actual.push(getHtml($1));',
+    )
+    .replace(/console\.log/gm, '_actual.push')
+    .replace(
+      /\/\/ -> (.+?)\s(.*?Event\(.*?)$/gm,
+      'act(() => $1.dispatchEvent(new $2));\n',
+    )
+    .replace(
+      /\/\/ -> (.*?Event\(.*?)$/gm,
+      'act(() => dispatchEvent(new $1));\n',
+    )
+    .replace(
+      /\/\/ ->\n(.*?);$/gms,
+      (match, expected) =>
+        '_expected.push(' + expected.replace(/\n\s*/gms, ``) + ');\n',
+    )
+    .replace(/\/\/ -> (.*?)$/gm, '_expected.push($1);\n')
+    .replace(/\/\/ \.\.\. \/\/ !act$/gm, 'await act(pause);\n')
+    .replace(/\/\/ \.\.\.$/gm, 'await pause();\n')
+    .replace(/^(.*?) \/\/ !act$/gm, 'act(() => {$1});')
+    .replace(/^(.*?) \/\/ !yolo$/gm, '')
+    .replace(/\/\/ !reset$/gm, 'reset();')
+    .replace(/\n+/g, '\n')
+    .replace(
+      replaceImports ? /import (type )?(.*?) from '(.*?)';/gms : /$^/,
+      'const $2 = modules[`$3`];',
+    )
+    .replace(/export (const|class) /gm, '$1 ');
+
+const parseCodeBlocks = (block: string) =>
+  [...block.matchAll(FILE_BLOCKS)].map(([, info = '', content = '']) => ({
+    content: content.trim(),
+    file: info.match(FILE_MATCH)?.[1],
+    info,
+    lang: info.trim().split(/\s+/, 1)[0] ?? '',
+  }));
+
+const splitImports = (source: string): [imports: string, body: string] => {
+  const lines = source.split('\n');
+  let index = 0;
+  for (; index < lines.length; index++) {
+    const line = lines[index];
+    if (line.trim() == '' || line.trim().startsWith('import ')) {
+      continue;
+    }
+    break;
+  }
+  return [lines.slice(0, index).join('\n'), lines.slice(index).join('\n')];
+};
+
+const HTML_HELPERS = `
+const VOID_ELEMENTS = new Set([
+  'area',
+  'base',
+  'br',
+  'col',
+  'embed',
+  'hr',
+  'img',
+  'input',
+  'link',
+  'meta',
+  'param',
+  'source',
+  'track',
+  'wbr',
+]);
+const escapeHtml = (text) =>
+  text
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;');
+const serializeNode = (node, index = 0, siblings = [node]) => {
+  if (node == null || node.nodeType === Node.COMMENT_NODE) {
+    return '';
+  }
+  if (node.nodeType === Node.TEXT_NODE) {
+    let text = (node.textContent ?? '').replace(/\\s+/g, ' ');
+    if (text.trim() === '') {
+      return '';
+    }
+    if (index === 0) {
+      text = text.trimStart();
+    }
+    if (siblings[index - 1]?.nodeType === Node.ELEMENT_NODE) {
+      text = text.trimStart();
+    }
+    if (siblings[index + 1]?.nodeType === Node.ELEMENT_NODE) {
+      text = text.trimEnd();
+    }
+    if (index === siblings.length - 1) {
+      text = text.trimEnd();
+    }
+    return text;
+  }
+  if (node.nodeType !== Node.ELEMENT_NODE) {
+    return '';
+  }
+  const element = node;
+  const tag = element.tagName.toLowerCase();
+  const attrs = element.getAttributeNames().map((name) => [
+    name,
+    element.getAttribute(name) ?? '',
+  ]);
+  if (
+    tag === 'input' &&
+    !element.hasAttribute('value') &&
+    element.value !== ''
+  ) {
+    attrs.push(['value', element.value]);
+  }
+  const attrsText = attrs
+    .map(([name, value]) => \` \${name}="\${escapeHtml(value)}"\`)
+    .join('');
+  const children = getHtml(element);
+  return VOID_ELEMENTS.has(tag)
+    ? \`<\${tag}\${attrsText}>\`
+    : \`<\${tag}\${attrsText}>\${children}</\${tag}>\`;
+};
+const getHtml = (element) =>
+  Array.from(element.childNodes)
+    .filter((node) => node.nodeType !== Node.COMMENT_NODE)
+    .map((node, index, siblings) => serializeNode(node, index, siblings))
+    .join('')
+    .replace(/ {2,}/g, ' ');
+`;
+
+const replaceSvelteImports = (source: string): string =>
+  source.replace(/from ['"]svelte['"]/g, `from '${DOCS_SVELTE_SHIM_PATH}'`);
+
+const isSvelteModule = (path: string): boolean => /\.svelte\.[jt]s$/.test(path);
+
+const compileSvelteModule = (source: string, path: string): string =>
+  compileModule(
+    transformSync(source, {
+      format: 'esm',
+      loader: extname(path).slice(1) as 'js' | 'ts',
+      target: 'esnext',
+    }).code,
+    {
+      filename: path,
+      generate: 'client',
+    },
+  ).js.code;
+
+const prepareBundledResults = async (
+  files: {[path: string]: string},
+  entryPath: string,
+): Promise<Results> => {
+  const allFiles = {
+    ...files,
+    [DOCS_SVELTE_SHIM_PATH]: `import * as Svelte from 'svelte';
+
+const getContextValue = (props = {}) => [
+  props.store,
+  props.storesById,
+  props.metrics,
+  props.metricsById,
+  props.indexes,
+  props.indexesById,
+  props.relationships,
+  props.relationshipsById,
+  props.queries,
+  props.queriesById,
+  props.checkpoints,
+  props.checkpointsById,
+  props.persister,
+  props.persistersById,
+  props.synchronizer,
+  props.synchronizersById,
+  undefined,
+  undefined,
+];
+
+export * from 'svelte';
+
+export const mount = (component, options = {}) => {
+  const context = new Map(options.context ?? []);
+  if (!context.has('${TINYBASE_CONTEXT_KEY}')) {
+    context.set('${TINYBASE_CONTEXT_KEY}', getContextValue(options.props));
+  }
+  const instance = Svelte.mount(component, {
+    ...options,
+    context,
+  });
+  Svelte.flushSync();
+  return {
+    destroy: () => Svelte.flushSync(() => Svelte.unmount(instance)),
+  };
+};`,
+  };
+  const result = await build({
+    bundle: true,
+    entryPoints: [entryPath],
+    format: 'cjs',
+    platform: 'node',
+    write: false,
+    plugins: [
+      {
+        name: 'docs-virtual',
+        setup(build) {
+          build.onResolve({filter: /.*/}, (args) => {
+            if (args.kind === 'entry-point') {
+              return {namespace: 'docs-virtual', path: args.path};
+            }
+            if (allFiles[args.path] != null) {
+              return {namespace: 'docs-virtual', path: args.path};
+            }
+            if (args.path.startsWith('.')) {
+              const resolvedPath = resolve(dirname(args.importer), args.path);
+              return args.namespace === 'docs-virtual'
+                ? {
+                    namespace: 'docs-virtual',
+                    path: resolvedPath,
+                  }
+                : null;
+            }
+            if (TINYBASE_SOURCE_MODULES[args.path] != null) {
+              return {path: TINYBASE_SOURCE_MODULES[args.path]};
+            }
+            const svelteInternalImport = resolveSvelteInternalImport(args.path);
+            if (svelteInternalImport != null) {
+              return {path: svelteInternalImport};
+            }
+            if (args.path.startsWith('/')) {
+              return {path: args.path};
+            }
+            return {external: true, path: args.path};
+          });
+          build.onLoad({filter: /.*/, namespace: 'docs-virtual'}, (args) => {
+            const file = allFiles[args.path];
+            if (file == null) {
+              throw new Error(`Unknown virtual file: ${args.path}`);
+            }
+            if (extname(args.path) == '.svelte') {
+              const compiled = compileSvelte(file, {
+                filename: args.path,
+                generate: 'client',
+              });
+              return {
+                contents: compiled.js.code,
+                loader: 'js',
+                resolveDir: dirname(args.path),
+              };
+            }
+            if (isSvelteModule(args.path)) {
+              return {
+                contents: compileSvelteModule(file, args.path),
+                loader: 'js',
+                resolveDir: dirname(args.path),
+              };
+            }
+            return {
+              contents: file,
+              loader: extname(args.path).slice(1) as
+                | 'js'
+                | 'jsx'
+                | 'ts'
+                | 'tsx',
+              resolveDir: dirname(args.path),
+            };
+          });
+          build.onLoad({filter: /\.svelte$/}, (args) => ({
+            contents: compileSvelte(readFileSync(args.path, 'utf8'), {
+              filename: args.path,
+              generate: 'client',
+            }).js.code,
+            loader: 'js',
+            resolveDir: dirname(args.path),
+          }));
+          build.onLoad({filter: /\.svelte\.[jt]s$/}, (args) => ({
+            contents: compileSvelteModule(
+              readFileSync(args.path, 'utf8'),
+              args.path,
+            ),
+            loader: 'js',
+            resolveDir: dirname(args.path),
+          }));
+        },
+      },
+    ],
+  });
+  const code = result.outputFiles[0]?.text;
+  if (code == null) {
+    throw new Error('No output from bundled docs example');
+  }
+  const getResults = new AsyncFunction(
+    '__require',
+    `
+      const require = (path) => globalThis.modules?.[path] ?? __require(path);
+      const module = {exports: {}};
+      const exports = module.exports;
+      ${code}
+      const run = module.exports.default ?? module.exports;
+      return await run();
+    `,
+  );
+  return getResults(nodeRequire) as Promise<Results>;
+};
+
 const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
   const name = prefix + ' - ' + (block.match(/(?<=^).*?(?=\n)/) ?? '');
   let count = 1;
   let suffixedName = name;
   while (resultsByName[suffixedName] != null) {
     suffixedName = name + ' ' + ++count;
+  }
+
+  const codeBlocks = parseCodeBlocks(block);
+  const hasSvelteBlocks = codeBlocks.some(({lang}) => lang == 'svelte');
+  const hasNamedFiles = codeBlocks.some(({file}) => file != null);
+  if (hasSvelteBlocks || hasNamedFiles) {
+    const files: {[path: string]: string} = {};
+    const scriptBlocks: string[] = [];
+    codeBlocks.forEach(({content, file, lang}) => {
+      if (content == '') {
+        return;
+      }
+      if (file != null) {
+        files[resolve('/', file)] = SCRIPT_BLOCK.test(extname(file).slice(1))
+          ? replaceSvelteImports(content)
+          : content;
+      } else if (lang == 'svelte') {
+        files['/App.svelte'] = content;
+      } else if (SCRIPT_BLOCK.test(lang)) {
+        scriptBlocks.push(replaceSvelteImports(content));
+      }
+    });
+    if (scriptBlocks.length == 0) {
+      return;
+    }
+    const entryPath =
+      Object.keys(files).find((path) =>
+        SCRIPT_BLOCK.test(extname(path).slice(1)),
+      ) ?? '/index.ts';
+    if (files[entryPath] == null) {
+      const [imports, body] = splitImports(
+        prepareRunnableCode(scriptBlocks.join('\n').trim(), false),
+      );
+      files[entryPath] = `${imports}
+export default async function () {
+  ${HTML_HELPERS}
+  const _expected = [];
+  const _actual = [];
+${body
+  .split('\n')
+  .map((line) => (line == '' ? line : '  ' + line))
+  .join('\n')}
+  return Array(Math.max(_expected.length, _actual.length))
+    .fill('')
+    .map((_, r) => [_expected[r], _actual[r]]);
+}`;
+    }
+    resultsByName[suffixedName] = () => prepareBundledResults(files, entryPath);
+    return;
   }
 
   const tsx = block
@@ -200,38 +591,12 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
 
   let problem;
   if (tsx != '') {
-    const realTsx =
-      tsx
-        ?.replace(/console\.log/gm, '_actual.push')
-        ?.replace(
-          /\/\/ -> (.+?)\s(.*?Event\(.*?)$/gm,
-          'act(() => $1.dispatchEvent(new $2));\n',
-        )
-        ?.replace(
-          /\/\/ -> (.*?Event\(.*?)$/gm,
-          'act(() => dispatchEvent(new $1));\n',
-        )
-        ?.replace(
-          /\/\/ ->\n(.*?);$/gms,
-          (match, expected) =>
-            '_expected.push(' + expected.replace(/\n\s*/gms, ``) + ');\n',
-        )
-        ?.replace(/\/\/ -> (.*?)$/gm, '_expected.push($1);\n')
-        ?.replace(/\/\/ \.\.\. \/\/ !act$/gm, 'await act(pause);\n')
-        ?.replace(/\/\/ \.\.\.$/gm, 'await pause();\n')
-        ?.replace(/^(.*?) \/\/ !act$/gm, 'act(() => {$1});')
-        ?.replace(/^(.*?) \/\/ !yolo$/gm, '')
-        ?.replace(/\/\/ !reset$/gm, 'reset();')
-        ?.replace(/\n+/g, '\n')
-        ?.replace(
-          /import (type )?(.*?) from '(.*?)';/gms,
-          'const $2 = modules[`$3`];',
-        )
-        ?.replace(/export (const|class) /gm, '$1 ') ?? '';
+    const realTsx = prepareRunnableCode(tsx, true) ?? '';
     // lol what could go wrong
     try {
       const js = transformSync(realTsx, {loader: 'tsx'});
       resultsByName[suffixedName] = new AsyncFunction(`
+        ${HTML_HELPERS}
         const _expected = [];
         const _actual = [];
         ${js.code}
