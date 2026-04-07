@@ -10,14 +10,14 @@
   import ValueActions from './actions/ValueActions.svelte';
   import ValuesActions from './actions/ValuesActions.svelte';
   import Details from './Details.svelte';
-  import {useEditable} from './editable.ts';
+  import {getEditable} from './editable.ts';
 
   type Props = {store: Store; storeId?: Id} & StoreProp;
 
   let {store, storeId, s}: Props = $props();
   const uniqueId = $derived(getUniqueId('v', storeId));
   const valueIds = getValueIds(() => store);
-  const [editable, handleEditable] = useEditable(() => uniqueId, () => s);
+  const [editable, handleEditable] = getEditable(() => uniqueId, () => s);
   const valueActions = [{label: '', component: ValueActions}];
 </script>
 

@@ -19,7 +19,7 @@
   import TableActions2 from './actions/TableActions2.svelte';
   import Details from './Details.svelte';
   import EditableCellViewWithActions from './EditableCellViewWithActions.svelte';
-  import {useEditable} from './editable.ts';
+  import {getEditable} from './editable.ts';
 
   type Props = {tableId: Id; store: Store; storeId?: Id} & StoreProp;
 
@@ -36,7 +36,7 @@
     () => SORT_CELL,
     () => s,
   );
-  const [editable, handleEditable] = useEditable(() => uniqueId, () => s);
+  const [editable, handleEditable] = getEditable(() => uniqueId, () => s);
   const sortAndOffset = $derived(
     jsonParse((sort.current as string) ?? '[]') as [
       cellId: Id | undefined,
