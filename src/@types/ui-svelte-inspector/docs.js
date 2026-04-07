@@ -1,9 +1,10 @@
 /**
- * The ui-svelte-inspector module of the TinyBase project provides the public
- * API surface for the Svelte Inspector component.
+ * The ui-svelte-inspector module of the TinyBase project provides a component
+ * to help debug the state of your TinyBase stores and other objects.
  *
- * This initial release scaffolds the module, types, and build integration for
- * the forthcoming Svelte Inspector UI.
+ * The component in this module uses the Svelte DOM runtime and so is not
+ * appropriate for environments like Svelte-native-like.
+ * @see <Inspector /> (Svelte) demo
  * @packageDocumentation
  * @module ui-svelte-inspector
  * @since v8.2.0
@@ -39,11 +40,28 @@
   /// ui-svelte-inspector.InspectorProps.hue
 }
 /**
- * The Inspector component provides the public entry point for the forthcoming
- * Svelte Inspector UI.
+ * The Inspector component renders a tool which allows you to view and edit the
+ * content of a Store in a debug web environment.
  *
+ * See the <Inspector /> (Svelte) demo for this component in action.
+ *
+ * The component displays a nub in the corner of the screen which you may then
+ * click to interact with all the Store objects in the Provider component
+ * context.
+ *
+ * The component's props identify the nub's initial location and panel state,
+ * though subsequent user changes to that will be preserved on each reload.
  * @param props The props for this component.
- * @returns The rendering of the inspector shell.
+ * @returns The rendering of the inspector tool.
+ * @example
+ * This example imports the Inspector component from the module.
+ *
+ * ```js
+ * import {Inspector} from 'tinybase/ui-svelte-inspector';
+ *
+ * console.log(typeof Inspector);
+ * // -> 'function'
+ * ```
  * @category Development components
  * @essential Using Svelte
  * @since v8.2.0
