@@ -567,7 +567,10 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
     if (files[entryPath] == null) {
       const [imports, body] = splitImports(
         prepareRunnableCode(
-          scriptBlocks.map(({content}) => content).join('\n').trim(),
+          scriptBlocks
+            .map(({content}) => content)
+            .join('\n')
+            .trim(),
           !hasNamedFiles,
         ),
       );
