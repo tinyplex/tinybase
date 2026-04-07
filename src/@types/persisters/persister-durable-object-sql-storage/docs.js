@@ -37,7 +37,7 @@
  * This example shows how to configure a DurableObjectSqlStoragePersister to use
  * fragmented mode with a custom storage prefix.
  *
- * ```js yolo
+ * ```js ignore
  * import {createMergeableStore} from 'tinybase';
  * import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
  * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
@@ -150,7 +150,7 @@
    * (within the createPersister method of a WsServerDurableObject instance) and
    * then gets the SQL storage reference back out again.
    *
-   * ```js yolo
+   * ```js ignore
    * import {createMergeableStore} from 'tinybase';
    * import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
    * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
@@ -258,7 +258,7 @@
  * default `tinybase` table. It uses this within the createPersister method of a
  * WsServerDurableObject instance.
  *
- * ```js yolo
+ * ```js ignore
  * import {createMergeableStore} from 'tinybase';
  * import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
  * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
@@ -278,7 +278,7 @@
  * This example creates a DurableObjectSqlStoragePersister object with a custom
  * table name and SQL command logging for debugging.
  *
- * ```js yolo
+ * ```js ignore
  * import {createMergeableStore} from 'tinybase';
  * import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
  * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
@@ -301,7 +301,7 @@
  * This example creates a DurableObjectSqlStoragePersister object using
  * fragmented mode to avoid Cloudflare's 2MB row limit for large stores.
  *
- * ```js yolo
+ * ```js ignore
  * import {createMergeableStore} from 'tinybase';
  * import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
  * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';
@@ -322,7 +322,7 @@
  * This example creates a DurableObjectSqlStoragePersister object using
  * fragmented mode with a custom storage prefix.
  *
- * ```js yolo
+ * ```js ignore
  * import {createMergeableStore} from 'tinybase';
  * import {createDurableObjectSqlStoragePersister} from 'tinybase/persisters/persister-durable-object-sql-storage';
  * import {WsServerDurableObject} from 'tinybase/synchronizers/synchronizer-ws-server-durable-object';

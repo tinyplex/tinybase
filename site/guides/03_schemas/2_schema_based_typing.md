@@ -7,7 +7,7 @@ shape of the data being stored.
 The schema-based definitions can be accessed by adding the `with-schemas` suffix
 to your imports. For example:
 
-```ts yolo
+```ts ignore
 import {createStore} from 'tinybase/with-schemas';
 
 // NB the 'with-schemas'
@@ -25,7 +25,7 @@ store.setValues({employees: 3, website: 'pets.com'}); // TypeScript error
 In this example, the store is known to have the ValuesSchema provided, and all
 relevant methods will have type constraints accordingly, even for listeners:
 
-```ts yolo
+```ts ignore
 store.addValueListener(null, (store, valueId, newValue, oldValue) => {
   valueId == 'employees'; // OK
   valueId == 'open'; //      OK
@@ -55,7 +55,7 @@ For example, the following will work at runtime, but you will _not_ benefit from
 the developer experience of typing on the `store` variable as we did in the
 example above.
 
-```ts yolo
+```ts ignore
 import {createStore} from 'tinybase/with-schemas';
 
 const store = createStore(); // This is not a schema-typed Store
@@ -69,7 +69,7 @@ store.setValuesSchema({
 One further thing to be aware of is that for the typing to work effectively, the
 schema must be passed in directly, or, if it is a variable, as a constant:
 
-```ts yolo
+```ts ignore
 const valuesSchema = {
   employees: {type: 'number'},
   open: {type: 'boolean', default: false},
@@ -80,7 +80,7 @@ store.setValuesSchema(valuesSchema);
 It's worth noting that typing will adapt according to schemas being added,
 removed, or changed:
 
-```ts yolo
+```ts ignore
 const tablesSchema = {
   pets: {species: {type: 'string'}},
 } as const;
@@ -113,7 +113,7 @@ schemas), and the following pattern after your import. This applies the schema
 types to the whole module en masse, and then you can select the hooks and
 components you want to use:
 
-```tsx yolo
+```tsx ignore
 import React from 'react';
 import * as UiReact from 'tinybase/ui-react/with-schemas';
 import {createStore} from 'tinybase/with-schemas';
@@ -142,7 +142,7 @@ Note that in React Native, the resolution of modules and types isn't yet quite
 compatible with Node and TypeScript. You may need to try something like the
 following to explicitly load code and types from different folders:
 
-```tsx yolo
+```tsx ignore
 // code
 import React from 'react';
 import * as UiReact from 'tinybase/ui-react';
@@ -170,7 +170,7 @@ You may also need to use the `unknown as` cast when using the `omni` module,
 since it exports both the ui-react module and ui-react-dom module, and you will
 need to distinguish them:
 
-```tsx yolo
+```tsx ignore
 import * as Omni from 'tinybase/omni';
 import type {
   UiReactDomWithSchemas,
@@ -193,7 +193,7 @@ In the case that you have multiple Store objects with different schemas, you
 will need to use `WithSchemas` several times, and deconstruct each, something
 like this:
 
-```tsx yolo
+```tsx ignore
 const UiReactWithPetShopSchemas = UiReact as UiReact.WithSchemas<
   [typeof petShopTablesSchema, typeof petShopValuesSchema]
 >;
@@ -243,7 +243,7 @@ folder](https://github.com/tinyplex/tinyhub/tree/main/client/src/stores)).
 
 If you want to use this pattern your app's top-level will look something like this:
 
-```tsx yolo
+```tsx ignore
 export const App = () => {
   return (
     <Provider>
@@ -262,7 +262,7 @@ The `MyStore.tsx` file might look something like this. (In this simplified case,
 we are just typing key values in our Store but of course this would work for a
 tabular Store too.)
 
-```tsx yolo
+```tsx ignore
 // A unique Id for this Store.
 const STORE_ID = 'myStore';
 
@@ -303,7 +303,7 @@ In that same file, you can also define domain-specific hooks that use an expose
 the schema. For example, this hook will be typed to return a string if passed
 'myStringValue', and a number if passed 'myNumericValue'.
 
-```tsx yolo
+```tsx ignore
 type ValueIds = keyof typeof VALUES_SCHEMA;
 export const useSettingsValue = <ValueId extends ValueIds>(valueId: ValueId) =>
   useValue<ValueId>(valueId, STORE_ID);

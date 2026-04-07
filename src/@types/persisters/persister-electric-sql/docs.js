@@ -31,7 +31,7 @@
    * This example creates a Persister object against a newly-created Store and
    * then gets the Electric client back out again.
    *
-   * ```js yolo
+   * ```js ignore
    * import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
    * import {createStore} from 'tinybase';
    * import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
@@ -103,7 +103,7 @@
  * table. It makes a change to the database directly and then reloads it back
  * into the Store.
  *
- * ```js yolo
+ * ```js ignore
  * import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
  * import {createStore} from 'tinybase';
  * import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';
@@ -144,7 +144,7 @@
  * This example creates a ElectricSqlPersister object and persists the Store to
  * a local ElectricSql database with tabular mapping.
  *
- * ```js yolo
+ * ```js ignore
  * import {ElectricDatabase, electrify} from 'electric-sql/wa-sqlite';
  * import {createStore} from 'tinybase';
  * import {createElectricSqlPersister} from 'tinybase/persisters/persister-electric-sql';

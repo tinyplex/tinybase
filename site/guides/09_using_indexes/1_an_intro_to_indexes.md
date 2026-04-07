@@ -21,7 +21,7 @@ each with a species, then an Index could be configured to contain the Ids of
 each Row, grouped into a Slice for each distinct species. In other words, this
 Table:
 
-```js yolo
+```js ignore
 { // Store
   pets: {
     fido: {species: 'dog'},
@@ -33,7 +33,7 @@ Table:
 
 would conceptually become this Index:
 
-```js yolo
+```js ignore
 { // Indexes
   bySpecies: {
     dog: ['fido', 'cujo'],

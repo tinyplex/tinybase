@@ -32,7 +32,7 @@
  * This example creates a Persister object against a newly-created Store and
  * then gets the unique key of the storage location back out again.
  *
- * ```js yolo
+ * ```js ignore
  * import {createMMKV} from 'react-native-mmkv';
  * import {createStore} from 'tinybase';
  * import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';
@@ -80,7 +80,7 @@
  * `my_tinybase` key. It makes a change to the storage directly and then
  * reloads it back into the Store.
  *
- * ```js yolo
+ * ```js ignore
  * import {createMMKV} from 'react-native-mmkv';
  * import {createStore} from 'tinybase';
  * import {createReactNativeMmkvPersister} from 'tinybase/persisters/persister-react-native-mmkv';

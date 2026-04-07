@@ -17,9 +17,10 @@ inspect.
 
 With React, the boilerplate will look something like this:
 
-```jsx yolo
-const {Provider, useCreateStore} = TinyBaseUiReact;
-const {Inspector} = TinyBaseUiReactInspector;
+```jsx ignore
+import {createStore} from 'tinybase';
+import {Provider, useCreateStore} from 'tinybase/ui-react';
+import {Inspector} from 'tinybase/ui-react-inspector';
 
 const App = () => (
   <Provider store={useCreateStore(createStore)}>

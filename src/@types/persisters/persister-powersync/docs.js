@@ -32,7 +32,7 @@
    * This example creates a Persister object against a newly-created Store and
    * then gets the PowerSync instance back out again.
    *
-   * ```js yolo
+   * ```js ignore
    * import {usePowerSync} from '@powersync/react';
    * import {createStore} from 'tinybase';
    * import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
@@ -95,7 +95,7 @@
  * It makes a change to the database directly and then reloads it back into the
  * Store.
  *
- * ```js yolo
+ * ```js ignore
  * import {usePowerSync} from '@powersync/react';
  * import {createStore} from 'tinybase';
  * import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';
@@ -131,7 +131,7 @@
  * This example creates a PowerSyncPersister object and persists the Store to a
  * local PowerSync instance with tabular mapping.
  *
- * ```js yolo
+ * ```js ignore
  * import {usePowerSync} from '@powersync/react';
  * import {createStore} from 'tinybase';
  * import {createPowerSyncPersister} from 'tinybase/persisters/persister-powersync';

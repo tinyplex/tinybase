@@ -11109,7 +11109,7 @@
  * // ->
  * `
  * <div>
- *   <input id="input">
+ *   <input id="input" value="cat">
  *   {"felix":{"species":"cat"}}
  * </div>
  * `;
@@ -11251,8 +11251,8 @@
  * `
  * <div>
  *   <form>
- *     <input id="species">
- *     <input id="color">
+ *     <input id="species" value="cat">
+ *     <input id="color" value="black">
  *     <button type="submit">Filter</button>
  *   </form>
  *   {"felix":{"species":"cat","color":"black"}}

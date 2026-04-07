@@ -240,12 +240,12 @@ const prepareRunnableCode = (source: string, replaceImports: boolean): string =>
     .replace(/\/\/ \.\.\. \/\/ !act$/gm, 'await act(pause);\n')
     .replace(/\/\/ \.\.\.$/gm, 'await pause();\n')
     .replace(/^(.*?) \/\/ !act$/gm, 'act(() => {$1});')
-    .replace(/^(.*?) \/\/ !yolo$/gm, '')
+    .replace(/^(.*?) \/\/ !ignore$/gm, '')
     .replace(/\/\/ !reset$/gm, 'reset();')
     .replace(/\n+/g, '\n')
     .replace(
       replaceImports ? /import (type )?(.*?) from '(.*?)';/gms : /$^/,
-      'const $2 = modules[`$3`];',
+      'var $2 = modules[`$3`];',
     )
     .replace(/export (const|class) /gm, '$1 ');
 
@@ -298,7 +298,10 @@ const serializeNode = (node, index = 0, siblings = [node]) => {
   if (node.nodeType === Node.TEXT_NODE) {
     let text = (node.textContent ?? '').replace(/\\s+/g, ' ');
     if (text.trim() === '') {
-      return '';
+      return siblings[index - 1]?.nodeType === Node.TEXT_NODE &&
+        siblings[index + 1]?.nodeType === Node.TEXT_NODE
+        ? ' '
+        : '';
     }
     if (index === 0) {
       text = text.trimStart();
@@ -532,9 +535,13 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
   const hasNamedFiles = codeBlocks.some(({file}) => file != null);
   if (hasSvelteBlocks || hasNamedFiles) {
     const files: {[path: string]: string} = {};
-    const scriptBlocks: string[] = [];
-    codeBlocks.forEach(({content, file, lang}) => {
-      if (content == '') {
+    const scriptBlocks: {content: string; lang: string}[] = [];
+    codeBlocks.forEach(({content, file, info, lang}) => {
+      if (
+        content == '' ||
+        info.includes('ignore') ||
+        (!isBun && info.includes(' bun'))
+      ) {
         return;
       }
       if (file != null) {
@@ -544,7 +551,7 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
       } else if (lang == 'svelte') {
         files['/App.svelte'] = content;
       } else if (SCRIPT_BLOCK.test(lang)) {
-        scriptBlocks.push(replaceSvelteImports(content));
+        scriptBlocks.push({content: replaceSvelteImports(content), lang});
       }
     });
     if (scriptBlocks.length == 0) {
@@ -553,10 +560,16 @@ const prepareTestResultsFromBlock = (block: string, prefix: string): void => {
     const entryPath =
       Object.keys(files).find((path) =>
         SCRIPT_BLOCK.test(extname(path).slice(1)),
-      ) ?? '/index.ts';
+      ) ??
+      (scriptBlocks.some(({lang}) => lang.endsWith('x'))
+        ? '/index.tsx'
+        : '/index.ts');
     if (files[entryPath] == null) {
       const [imports, body] = splitImports(
-        prepareRunnableCode(scriptBlocks.join('\n').trim(), false),
+        prepareRunnableCode(
+          scriptBlocks.map(({content}) => content).join('\n').trim(),
+          !hasNamedFiles,
+        ),
       );
       files[entryPath] = `${imports}
 export default async function () {
