@@ -45,5 +45,14 @@ test('countries-react', async ({page}) => {
 test('countries-svelte', async ({page}) => {
   await expectPage(page, `/demos/countries/countries-svelte/`);
   await expectedElement(page, 'h1', 'Countries (Svelte)');
+  await test
+    .expect(
+      page
+        .locator('iframe')
+        .first()
+        .contentFrame()
+        .locator('aside#tinybaseInspector'),
+    )
+    .toHaveCount(1);
   await exerciseCountriesDemo(page);
 });

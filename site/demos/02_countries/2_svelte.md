@@ -5,8 +5,8 @@ Svelte 5 and the ui-svelte module.
 
 ## Initialization
 
-First, we create the import aliases for TinyBase, the persister modules, and
-Svelte:
+First, we create the import aliases for TinyBase, the persister modules, the
+Svelte inspector module, and Svelte:
 
 ```html
 <script type="importmap">
@@ -16,6 +16,7 @@ Svelte:
       "tinybase/persisters/persister-browser": "https://esm.sh/tinybase/persisters/persister-browser@",
       "tinybase/persisters/persister-remote": "https://esm.sh/tinybase/persisters/persister-remote@",
       "tinybase/ui-svelte": "https://esm.sh/tinybase@/ui-svelte",
+      "tinybase/ui-svelte-inspector": "https://esm.sh/tinybase@/ui-svelte-inspector",
       "svelte": "https://esm.sh/svelte@"
     }
   }
@@ -124,6 +125,7 @@ blocks:
     getSliceRowIds,
     getValue,
   } from 'tinybase/ui-svelte';
+  import {Inspector} from 'tinybase/ui-svelte-inspector';
   import Country from './Country.svelte';
   import Filter from './Filter.svelte';
 
@@ -192,11 +194,13 @@ blocks:
       <Country tableId="countries" {rowId} />
     {/each}
   </div>
+  <Inspector />
 </Provider>
 ```
 
-Unlike the React version, there is not yet a Svelte Inspector component, so
-this version focuses on the data flow and the rendered UI itself.
+Like the React version, this Svelte version can now also include the Inspector
+component, so you can inspect the Stores and Indexes that drive the UI while
+you interact with it.
 
 ## The `Filter` Component
 
