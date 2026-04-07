@@ -368,7 +368,7 @@ const prepareBundledResults = async (
   files: {[path: string]: string},
   entryPath: string,
 ): Promise<Results> => {
-  const allFiles = {
+  const allFiles: {[path: string]: string} = {
     ...files,
     [DOCS_SVELTE_SHIM_PATH]: `import * as Svelte from 'svelte';
 
