@@ -5,6 +5,13 @@ import type {
   TablesProps,
 } from '../@types/ui-react/index.d.ts';
 import {arrayIsEmpty, arrayMap} from '../common/array.ts';
+import {
+  SORT_CELL,
+  STATE_TABLE,
+  getUniqueId,
+  sortedIdsMap,
+} from '../common/inspector/common.ts';
+import type {StoreProp} from '../common/inspector/types.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {objNew} from '../common/obj.ts';
 import {TABLE, TABLES} from '../common/strings.ts';
@@ -28,14 +35,7 @@ import {
   TableActions2,
   TablesActions,
 } from './actions/tables.tsx';
-import {
-  getUniqueId,
-  SORT_CELL,
-  sortedIdsMap,
-  STATE_TABLE,
-  useEditable,
-} from './common.ts';
-import type {StoreProp} from './types.ts';
+import {useEditable} from './editable.ts';
 
 const rowActions = [{label: '', component: RowActions}];
 

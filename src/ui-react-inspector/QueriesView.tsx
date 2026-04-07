@@ -1,6 +1,13 @@
 import type {Id} from '../@types/common/index.d.ts';
 import type {Queries} from '../@types/queries/index.d.ts';
 import {arrayIsEmpty} from '../common/array.ts';
+import {
+  SORT_CELL,
+  STATE_TABLE,
+  getUniqueId,
+  sortedIdsMap,
+} from '../common/inspector/common.ts';
+import type {StoreProp} from '../common/inspector/types.ts';
 import {jsonParse, jsonStringWithMap} from '../common/json.ts';
 import {isUndefined} from '../common/other.ts';
 import {DEFAULT} from '../common/strings.ts';
@@ -12,8 +19,6 @@ import {
   useSetCellCallback,
 } from '../ui-react/index.ts';
 import {Details} from './Details.tsx';
-import {SORT_CELL, STATE_TABLE, getUniqueId, sortedIdsMap} from './common.ts';
-import type {StoreProp} from './types.ts';
 
 const QueryView = ({
   queries,

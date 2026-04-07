@@ -1,7 +1,7 @@
 <script lang="ts">
   import {getValue} from '../ui-svelte/functions.svelte.ts';
-  import {OPEN_VALUE, POSITION_VALUE, TITLE} from './common.ts';
-  import type {StoreProp} from './types.ts';
+  import {OPEN_VALUE, POSITION_VALUE, TITLE} from '../common/inspector/common.ts';
+  import type {StoreProp} from '../common/inspector/types.ts';
 
   let {s}: StoreProp = $props();
 

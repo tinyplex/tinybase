@@ -9,6 +9,7 @@ export const POSITIONS = ['left', 'top', 'bottom', 'right', 'full'];
 export const STATE_TABLE = 'state';
 export const SORT_CELL = 'sort';
 export const OPEN_CELL = 'open';
+export const EDITABLE_CELL = 'editable';
 export const POSITION_VALUE = 'position';
 export const OPEN_VALUE = OPEN_CELL;
 
@@ -25,6 +26,24 @@ export const getInitialPosition = (position: string) => {
 
 export const getUniqueId = (...args: (Id | undefined)[]) =>
   jsonStringWithMap(args);
+
+export const getNewIdFromSuggestedId = (
+  suggestedId: Id,
+  has: (newId: Id) => boolean,
+) => {
+  let newId;
+  let suffix = 0;
+  while (
+    has(
+      (newId =
+        suggestedId +
+        (suffix > 0 ? ' (copy' + (suffix > 1 ? ' ' + suffix : '') + ')' : '')),
+    )
+  ) {
+    suffix++;
+  }
+  return newId;
+};
 
 export const sortedIdsMap = <Return>(
   ids: Ids,
