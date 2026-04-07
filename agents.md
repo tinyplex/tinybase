@@ -511,6 +511,10 @@ blocks that are assembled into working applications.
 - Code blocks in markdown are extracted and combined into complete applications
 - All code fragments in a demo share scope (variables declared in one block are
   available in subsequent blocks)
+- Tinydocs executable blocks can target explicit files with `file=...`, and
+  diff blocks such as `diff-js file=src/main.js` or
+  `diff-svelte file=src/App.svelte` patch those named files against the base
+  demo instead of replacing them with raw diff text
 
 ### Iteration Workflow
 
