@@ -40,7 +40,6 @@ const FONT_SIZE = 'font-size';
 const DISPLAY = 'display';
 const OVERFLOW = 'overflow';
 const CURSOR = 'cursor';
-const FLOAT = 'float';
 const VERTICAL_ALIGN = 'vertical-align';
 const TEXT_ALIGN = 'text-align';
 const JUSTIFY_CONTENT = 'justify-content';
@@ -48,7 +47,6 @@ const WHITE_SPACE = 'white-space';
 const TEXT_OVERFLOW = 'text-overflow';
 const ALIGN_ITEMS = 'align-items';
 const BACKDROP_FILTER = 'backdrop-filter';
-const MARGIN_BOTTOM = MARGIN + '-' + BOTTOM;
 const MARGIN_RIGHT = MARGIN + '-' + RIGHT;
 
 const FIXED = 'fixed';
@@ -111,6 +109,7 @@ export const APP_STYLESHEET = arrayJoin(
       },
       'img.flat': {[BORDER]: NONE, [BACKGROUND]: NONE, [BOX_SHADOW]: NONE},
 
+      // Nub
       '>img': {
         [PADDING]: rem(0.25),
         [BOTTOM]: 0,
@@ -130,6 +129,7 @@ export const APP_STYLESHEET = arrayJoin(
         ),
       ),
 
+      // Panel
       main: {
         [DISPLAY]: FLEX,
         [COLOR]: cssVar('fg'),
@@ -176,6 +176,7 @@ export const APP_STYLESHEET = arrayJoin(
         ),
       ),
 
+      // Header
       header: {
         [DISPLAY]: FLEX,
         [PADDING]: rem(0.5),
@@ -187,12 +188,12 @@ export const APP_STYLESHEET = arrayJoin(
         [ALIGN_ITEMS]: 'center',
         [BACKDROP_FILTER]: 'blur(4px)',
       },
-      'header>img:nth-of-type(6)': CLOSE_SVG,
       'header>img:nth-of-type(1)': {
         [HEIGHT]: rem(1),
         [WIDTH]: rem(1),
         ...LOGO_SVG,
       },
+      'header>img:nth-of-type(6)': CLOSE_SVG,
       ...objNew(
         arrayMap(POSITIONS_SVG, (SVG, p) => [
           `header>img[data-id='${p}']`,
@@ -207,6 +208,7 @@ export const APP_STYLESHEET = arrayJoin(
         [TEXT_OVERFLOW]: 'ellipsis',
       },
 
+      // Body
       article: {[OVERFLOW]: AUTO, [FLEX]: 1, [PADDING + '-' + TOP]: rem(2)},
 
       details: {
@@ -220,76 +222,81 @@ export const APP_STYLESHEET = arrayJoin(
         [BORDER]: cssVar(BORDER),
         [PADDING]: rem(0.25, 0.125),
         [DISPLAY]: FLEX,
-        [ALIGN_ITEMS]: 'center',
-      },
-      'summary::-webkit-details-marker': {[DISPLAY]: NONE},
-      'summary::before': {
-        [WIDTH]: rem(0.8),
-        [HEIGHT]: rem(0.8),
-        [PADDING]: px(2),
-        [BOX_SHADOW]: cssVar(BOX_SHADOW),
-        [BACKGROUND]: cssVar('bg2'),
         [BORDER_RADIUS]: rem(0.25),
-        [MARGIN_RIGHT]: rem(0.25),
-        [CURSOR]: POINTER,
+        'user-select': NONE,
+        [JUSTIFY_CONTENT]: 'space-between',
+        [ALIGN_ITEMS]: 'center',
+        [BACKDROP_FILTER]: 'blur(4px)',
+      },
+      'summary>span::before': {
+        [DISPLAY]: 'inline-block',
+        [VERTICAL_ALIGN]: 'sub',
+        [MARGIN]: px(2),
+        [WIDTH]: rem(1),
+        [HEIGHT]: rem(1),
         ...RIGHT_SVG,
       },
-      'details[open]>summary::before': DOWN_SVG,
-      'summary>span:first-child': {[FLEX]: 1, 'font-weight': 600},
-      'summary>span:nth-child(2)': {[COLOR]: cssVar('fg2')},
+      'details[open]>summary': {
+        [BORDER + '-' + BOTTOM + '-' + LEFT + '-' + RADIUS]: 0,
+        [BORDER + '-' + BOTTOM + '-' + RIGHT + '-' + RADIUS]: 0,
+        [MARGIN + '-' + BOTTOM]: 0,
+      },
+      'details[open]>summary>span::before': DOWN_SVG,
+      'details>summary img': {[DISPLAY]: NONE},
+      'details[open]>summary img': {
+        [DISPLAY]: UNSET,
+        [MARGIN + '-' + LEFT]: rem(0.25),
+      },
       'details>div': {[OVERFLOW]: AUTO},
 
-      'caption,p,.warn': {
+      [`caption,#${UNIQUE_ID} p`]: {
         [COLOR]: cssVar('fg2'),
         [PADDING]: rem(0.25, 0.5),
         [TEXT_ALIGN]: LEFT,
-      },
-      caption: {
-        [BACKGROUND]: cssVar('bg2'),
-        [POSITION]: 'sticky',
-        [TOP]: 0,
-        [MARGIN_BOTTOM]: rem(0.5),
+        [MARGIN]: 0,
         [WHITE_SPACE]: NOWRAP,
+      },
+      'caption button': {
+        [WIDTH]: rem(1.5),
+        [BORDER]: NONE,
+        [BACKGROUND]: NONE,
+        [COLOR]: cssVar('fg'),
+        [PADDING]: 0,
         [CURSOR]: POINTER,
-        [BORDER_RADIUS]: rem(0.25, 0.25, 0, 0),
       },
-      'caption .buttons': {[FLOAT]: RIGHT},
-      'caption .buttons img:last-child': {[MARGIN_RIGHT]: 0},
-      '.sort': {[CURSOR]: POINTER},
-      '.extra': {
-        [WIDTH]: rem(3),
-        [MIN_WIDTH]: rem(3),
-        [WHITE_SPACE]: NOWRAP,
-      },
-      '.extra>span': {
+      'caption button[disabled]': {[COLOR]: cssVar('fg2')},
+      '.actions': {
+        [PADDING]: rem(0.75, 0.5),
+        [MARGIN]: 0,
         [DISPLAY]: FLEX,
-        [ALIGN_ITEMS]: 'center',
+        [BORDER + '-' + TOP]: cssVar(BORDER),
         [JUSTIFY_CONTENT]: 'space-between',
       },
 
+      // tables
       table: {
         [MIN_WIDTH]: '100%',
         'border-collapse': 'collapse',
+        'table-layout': FIXED,
       },
-      th: {
-        [TEXT_ALIGN]: LEFT,
-        [BACKGROUND]: cssVar('bg2'),
-        [POSITION]: 'sticky',
-        [TOP]: rem(2.1),
-      },
-      'th,td': {
+
+      thead: {[BACKGROUND]: cssVar('bg')},
+      [`th,#${UNIQUE_ID} td`]: {
+        [OVERFLOW]: HIDDEN,
         [PADDING]: rem(0.25, 0.5),
+        [MAX_WIDTH]: rem(20),
+        [BORDER]: cssVar(BORDER),
+        [TEXT_OVERFLOW]: 'ellipsis',
         [WHITE_SPACE]: NOWRAP,
-        [VERTICAL_ALIGN]: 'top',
+        'border-width': px(1, 0, 0),
+        [TEXT_ALIGN]: LEFT,
       },
-      'tr:nth-child(odd)': {[BACKGROUND]: oklch(0, ' / 0.07')},
-      'tr:nth-child(even)': {[BACKGROUND]: oklch(0, ' / 0.14')},
-      'tr th:first-child, tr td:first-child': {[PADDING + '-' + LEFT]: rem(1)},
-      'tr th:last-child, tr td:last-child': {[PADDING + '-' + RIGHT]: rem(1)},
-      'td.id,th.id': {[COLOR]: cssVar('fg2')},
-      'td.number,td.boolean,td.undefined,td.null': {[TEXT_ALIGN]: RIGHT},
-      'td.boolean': {[FONT_SIZE]: 0},
-      'td.object': {[COLOR]: cssVar('fg2')},
+      'th:first-child': {
+        [WIDTH]: rem(3),
+        [MIN_WIDTH]: rem(3),
+        [MAX_WIDTH]: rem(3),
+      },
+      'th.sorted': {[BACKGROUND]: cssVar('bg3')},
       'td.extra': {[TEXT_ALIGN]: RIGHT},
       'tbody button': {
         [BACKGROUND]: NONE,
@@ -314,25 +321,21 @@ export const APP_STYLESHEET = arrayJoin(
       },
       'input:focus': {'outline-width': 0},
       'input[type="number"]': {[WIDTH]: rem(3)},
-      'input[type="checkbox"]': {
-        [WIDTH]: rem(0.8),
-        [HEIGHT]: rem(0.8),
-        [VERTICAL_ALIGN]: 'middle',
-        [MARGIN_RIGHT]: rem(0.25),
-      },
-      'input.invalid': {[BACKGROUND]: oklch(40, '% 0.15 20')},
+      'input[type="checkbox"]': {[VERTICAL_ALIGN]: px(-2)},
 
       '.editableCell': {[DISPLAY]: 'inline-block', [MARGIN_RIGHT]: px(2)},
       'button.next': {[MARGIN_RIGHT]: rem(0.5)},
 
       'img.add': ADD_SVG,
-      'img.cancel': CANCEL_SVG,
       'img.clone': CLONE_SVG,
       'img.delete': DELETE_SVG,
       'img.done': DONE_SVG,
       'img.edit': EDIT_SVG,
       'img.ok': OK_SVG,
       'img.okDis': OK_SVG_DISABLED,
+      'img.cancel': CANCEL_SVG,
+
+      'span.warn': {[MARGIN]: rem(2, 0.25), [COLOR]: '#d81b60'},
     },
     (css, selector) =>
       `#${UNIQUE_ID} ${selector}{${arrayJoin(
