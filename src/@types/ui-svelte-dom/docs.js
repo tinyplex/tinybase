@@ -689,26 +689,30 @@
  * provided. The TableInHtmlTable component within it then renders the Table in
  * a <table> element with a CSS class.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {Provider} from 'tinybase/ui-svelte';
- * import {TableInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {TableInHtmlTable} from 'tinybase/ui-svelte-dom';
  *
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => <TableInHtmlTable tableId="pets" className="table" />;
+ *   export let store;
+ * </script>
+ *
+ * <Provider {store}>
+ *   <TableInHtmlTable tableId="pets" className="table" />
+ * </Provider>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
  *   felix: {species: 'cat'},
  * });
- * const app = document.createElement('div');
- * createRoot(app).render(<App store={store} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -736,49 +740,63 @@
  * This example creates a Provider context into which a default Store is
  * provided. The TableInHtmlTable component within it then renders the Table
  * with a custom component and a custom props callback for the `species` Cell.
- * The header row at the top of the table and the Id column at the start of each
- * row is removed.
+ * The header row at the top of the table and the Id column at the start of
+ * each row is removed.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {CellView, Provider} from 'tinybase/ui-svelte';
- * import {TableInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=FormattedCellView.svelte
+ * <script>
+ *   import {CellView} from 'tinybase/ui-svelte';
  *
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
+ *   export let tableId;
+ *   export let rowId;
+ *   export let cellId;
+ *   export let bold = false;
+ * </script>
+ *
+ * {#if bold}<b>{rowId}</b>{:else}{rowId}{/if}:<CellView
+ *   {tableId}
+ *   {rowId}
+ *   {cellId}
+ * />
+ * ```
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {TableInHtmlTable} from 'tinybase/ui-svelte-dom';
+ *   import FormattedCellView from './FormattedCellView.svelte';
+ *
+ *   export let store;
+ *
+ *   const customCells = {
+ *     species: {
+ *       component: FormattedCellView,
+ *       getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
+ *     },
+ *   };
+ * </script>
+ *
+ * <Provider {store}>
  *   <TableInHtmlTable
  *     tableId="pets"
- *     customCells={customCells}
+ *     {customCells}
  *     headerRow={false}
  *     idColumn={false}
  *   />
- * );
+ * </Provider>
+ * ```
  *
- * const FormattedCellView = ({tableId, rowId, cellId, bold}) => (
- *   <>
- *     {bold ? <b>{rowId}</b> : rowId}:
- *     <CellView tableId={tableId} rowId={rowId} cellId={cellId} />
- *   </>
- * );
- * const customCells = {
- *   species: {
- *     component: FormattedCellView,
- *     getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
- *   },
- * };
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
  *   felix: {species: 'cat'},
  * });
- * const app = document.createElement('div');
- * createRoot(app).render(<App store={store} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -845,25 +863,27 @@
  * provided. The SortedTableInHtmlTable component within it then renders the
  * Table in a <table> element with a CSS class.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {Provider} from 'tinybase/ui-svelte';
- * import {SortedTableInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {SortedTableInHtmlTable} from 'tinybase/ui-svelte-dom';
  *
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
+ *   export let store;
+ * </script>
+ *
+ * <Provider {store}>
  *   <SortedTableInHtmlTable
  *     tableId="pets"
  *     cellId="species"
  *     className="table"
  *   />
- * );
+ * </Provider>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const store = createStore().setTables({
  *   pets: {
@@ -871,8 +891,8 @@
  *     felix: {species: 'cat'},
  *   },
  * });
- * const app = document.createElement('div');
- * createRoot(app).render(<App store={store} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -903,41 +923,54 @@
  * Cell. The header row at the top of the table and the Id column at the start
  * of each row is removed.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {CellView, Provider} from 'tinybase/ui-svelte';
- * import {SortedTableInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=FormattedCellView.svelte
+ * <script>
+ *   import {CellView} from 'tinybase/ui-svelte';
  *
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
+ *   export let tableId;
+ *   export let rowId;
+ *   export let cellId;
+ *   export let bold = false;
+ * </script>
  *
- * const Pane = () => (
+ * {#if bold}<b>{rowId}</b>{:else}{rowId}{/if}:<CellView
+ *   {tableId}
+ *   {rowId}
+ *   {cellId}
+ * />
+ * ```
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {SortedTableInHtmlTable} from 'tinybase/ui-svelte-dom';
+ *   import FormattedCellView from './FormattedCellView.svelte';
+ *
+ *   export let store;
+ *
+ *   const customCells = {
+ *     species: {
+ *       component: FormattedCellView,
+ *       getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
+ *     },
+ *   };
+ * </script>
+ *
+ * <Provider {store}>
  *   <SortedTableInHtmlTable
  *     tableId="pets"
  *     cellId="species"
- *     customCells={customCells}
+ *     {customCells}
  *     headerRow={false}
  *     idColumn={false}
  *   />
- * );
+ * </Provider>
+ * ```
  *
- * const FormattedCellView = ({tableId, rowId, cellId, bold}) => (
- *   <>
- *     {bold ? <b>{rowId}</b> : rowId}:
- *     <CellView tableId={tableId} rowId={rowId} cellId={cellId} />
- *   </>
- * );
- * const customCells = {
- *   species: {
- *     component: FormattedCellView,
- *     getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
- *   },
- * };
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const store = createStore().setTables({
  *   pets: {
@@ -945,8 +978,8 @@
  *     felix: {species: 'cat'},
  *   },
  * });
- * const app = document.createElement('div');
- * createRoot(app).render(<App store={store} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -998,23 +1031,27 @@
  * provided. The ValuesInHtmlTable component within it then renders the Values
  * in a <table> element with a CSS class.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {Provider} from 'tinybase/ui-svelte';
- * import {ValuesInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {ValuesInHtmlTable} from 'tinybase/ui-svelte-dom';
  *
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => <ValuesInHtmlTable className="values" />;
+ *   export let store;
+ * </script>
+ *
+ * <Provider {store}>
+ *   <ValuesInHtmlTable className="values" />
+ * </Provider>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const store = createStore().setValues({open: true, employees: 3});
- * const app = document.createElement('div');
- * createRoot(app).render(<App store={store} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1040,42 +1077,50 @@
  * ```
  * @example
  * This example creates a Provider context into which a default Store is
- * provided. The ValuesInHtmlTable component within it then renders the Row
- * with a custom Cell component and a custom props callback. The header row at
- * the top of the table and the Id column at the start of each row is removed.
+ * provided. The ValuesInHtmlTable component within it then renders the Values
+ * with a custom component and a custom props callback. The header row at the
+ * top of the table and the Id column at the start of each row is removed.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {Provider, ValueView} from 'tinybase/ui-svelte';
- * import {ValuesInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=FormattedValueView.svelte
+ * <script>
+ *   import {ValueView} from 'tinybase/ui-svelte';
  *
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
- * const getBoldProp = (valueId) => ({bold: valueId == 'open'});
- * const Pane = () => (
+ *   export let valueId;
+ *   export let bold = false;
+ * </script>
+ *
+ * {#if bold}<b>{valueId}</b>{:else}{valueId}{/if}: <ValueView {valueId} />
+ * ```
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {ValuesInHtmlTable} from 'tinybase/ui-svelte-dom';
+ *   import FormattedValueView from './FormattedValueView.svelte';
+ *
+ *   export let store;
+ *
+ *   const getBoldProp = (valueId) => ({bold: valueId == 'open'});
+ * </script>
+ *
+ * <Provider {store}>
  *   <ValuesInHtmlTable
  *     valueComponent={FormattedValueView}
  *     getValueComponentProps={getBoldProp}
  *     headerRow={false}
  *     idColumn={false}
  *   />
- * );
- * const FormattedValueView = ({valueId, bold}) => (
- *   <>
- *     {bold ? <b>{valueId}</b> : valueId}
- *     {': '}
- *     <ValueView valueId={valueId} />
- *   </>
- * );
+ * </Provider>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const store = createStore().setValues({open: true, employees: 3});
- * const app = document.createElement('div');
- * createRoot(app).render(<App store={store} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1122,21 +1167,23 @@
  * is provided. The SliceInHtmlTable component within it then renders the Slice
  * in a <table> element with a CSS class.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createIndexes, createStore} from 'tinybase';
- * import {Provider} from 'tinybase/ui-svelte';
- * import {SliceInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {SliceInHtmlTable} from 'tinybase/ui-svelte-dom';
  *
- * const App = ({indexes}) => (
- *   <Provider indexes={indexes}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
+ *   export let indexes;
+ * </script>
+ *
+ * <Provider {indexes}>
  *   <SliceInHtmlTable indexId="bySpecies" sliceId="dog" className="slice" />
- * );
+ * </Provider>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog'},
@@ -1145,9 +1192,8 @@
  * });
  * const indexes = createIndexes(store);
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
- *
- * const app = document.createElement('div');
- * createRoot(app).render(<App indexes={indexes} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {indexes}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1175,43 +1221,57 @@
  * This example creates a Provider context into which a default Indexes object
  * is provided. The SliceInHtmlTable component within it then renders the Slice
  * with a custom component and a custom props callback for the `species` Cell.
- * The header row at the top of the table and the Id column at the start of each
- * row is removed.
+ * The header row at the top of the table and the Id column at the start of
+ * each row is removed.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createIndexes, createStore} from 'tinybase';
- * import {CellView, Provider} from 'tinybase/ui-svelte';
- * import {SliceInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=FormattedCellView.svelte
+ * <script>
+ *   import {CellView} from 'tinybase/ui-svelte';
  *
- * const App = ({indexes}) => (
- *   <Provider indexes={indexes}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
+ *   export let tableId;
+ *   export let rowId;
+ *   export let cellId;
+ *   export let bold = false;
+ * </script>
+ *
+ * {#if bold}<b>{rowId}</b>{:else}{rowId}{/if}:<CellView
+ *   {tableId}
+ *   {rowId}
+ *   {cellId}
+ * />
+ * ```
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {SliceInHtmlTable} from 'tinybase/ui-svelte-dom';
+ *   import FormattedCellView from './FormattedCellView.svelte';
+ *
+ *   export let indexes;
+ *
+ *   const customCells = {
+ *     species: {
+ *       component: FormattedCellView,
+ *       getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
+ *     },
+ *   };
+ * </script>
+ *
+ * <Provider {indexes}>
  *   <SliceInHtmlTable
  *     indexId="bySpecies"
  *     sliceId="dog"
- *     customCells={customCells}
+ *     {customCells}
  *     headerRow={false}
  *     idColumn={false}
  *   />
- * );
+ * </Provider>
+ * ```
  *
- * const FormattedCellView = ({tableId, rowId, cellId, bold}) => (
- *   <>
- *     {bold ? <b>{rowId}</b> : rowId}:
- *     <CellView tableId={tableId} rowId={rowId} cellId={cellId} />
- *   </>
- * );
- * const customCells = {
- *   species: {
- *     component: FormattedCellView,
- *     getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
- *   },
- * };
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createIndexes, createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const store = createStore().setTable('pets', {
  *   fido: {species: 'dog', color: 'brown'},
@@ -1220,9 +1280,8 @@
  * });
  * const indexes = createIndexes(store);
  * indexes.setIndexDefinition('bySpecies', 'pets', 'species');
- *
- * const app = document.createElement('div');
- * createRoot(app).render(<App indexes={indexes} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {indexes}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1283,34 +1342,34 @@
  * renders the two Tables linked by a relationship in a <table> element with a
  * CSS class. Note the dotted pairs that are used as column headings.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createRelationships, createStore} from 'tinybase';
- * import {Provider} from 'tinybase/ui-svelte';
- * import {RelationshipInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {RelationshipInHtmlTable} from 'tinybase/ui-svelte-dom';
  *
- * const App = ({relationships}) => (
- *   <Provider relationships={relationships}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
+ *   export let relationships;
+ * </script>
+ *
+ * <Provider {relationships}>
  *   <RelationshipInHtmlTable
  *     relationshipId="petSpecies"
  *     className="relationship"
  *   />
- * );
+ * </Provider>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const relationships = createRelationships(
  *   createStore()
  *     .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'dog'}})
  *     .setTable('species', {wolf: {price: 10}, dog: {price: 5}}),
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
- *
- * const app = document.createElement('div');
- * const root = createRoot(app);
- * root.render(<App relationships={relationships} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {relationships}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1343,58 +1402,67 @@
  * @example
  * This example creates a Provider context into which a default Relationships
  * object is provided. The RelationshipInHtmlTable component within it then
- * renders the two Tables linked by a relationship with a custom component and a
- * custom props callback for the `species` Cell. The header row at the top of
- * the table and the Id column at the start of each row is removed.
+ * renders the two Tables linked by a relationship with a custom component and
+ * a custom props callback for the `species.price` Cell. The header row at the
+ * top of the table and the Id column at the start of each row is removed.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createRelationships, createStore} from 'tinybase';
- * import {CellView, Provider} from 'tinybase/ui-svelte';
- * import {RelationshipInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=FormattedCellView.svelte
+ * <script>
+ *   import {CellView} from 'tinybase/ui-svelte';
  *
- * const App = ({relationships}) => (
- *   <Provider relationships={relationships}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
+ *   export let tableId;
+ *   export let rowId;
+ *   export let cellId;
+ *   export let store;
+ *   export let bold = false;
+ * </script>
+ *
+ * {#if bold}<b>{rowId}</b>{:else}{rowId}{/if}:<CellView
+ *   {tableId}
+ *   {rowId}
+ *   {cellId}
+ *   {store}
+ * />
+ * ```
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {RelationshipInHtmlTable} from 'tinybase/ui-svelte-dom';
+ *   import FormattedCellView from './FormattedCellView.svelte';
+ *
+ *   export let relationships;
+ *
+ *   const customCells = {
+ *     'species.price': {
+ *       component: FormattedCellView,
+ *       getComponentProps: (rowId) => ({bold: rowId == 'dog'}),
+ *     },
+ *   };
+ * </script>
+ *
+ * <Provider {relationships}>
  *   <RelationshipInHtmlTable
  *     relationshipId="petSpecies"
- *     customCells={customCells}
+ *     {customCells}
  *     idColumn={false}
  *     headerRow={false}
  *   />
- * );
+ * </Provider>
+ * ```
  *
- * const FormattedCellView = ({tableId, rowId, cellId, store, bold}) => (
- *   <>
- *     {bold ? <b>{rowId}</b> : rowId}:
- *     <CellView
- *       tableId={tableId}
- *       rowId={rowId}
- *       cellId={cellId}
- *       store={store}
- *     />
- *   </>
- * );
- * const customCells = {
- *   'species.price': {
- *     component: FormattedCellView,
- *     getComponentProps: (rowId) => ({bold: rowId == 'dog'}),
- *   },
- * };
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createRelationships, createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const relationships = createRelationships(
  *   createStore()
  *     .setTable('pets', {fido: {species: 'dog'}, cujo: {species: 'wolf'}})
  *     .setTable('species', {wolf: {price: 10}, dog: {price: 5}}),
  * ).setRelationshipDefinition('petSpecies', 'pets', 'species', 'species');
- *
- * const app = document.createElement('div');
- * const root = createRoot(app);
- * root.render(<App relationships={relationships} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {relationships}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1445,21 +1513,23 @@
  * is provided. The ResultTableInHtmlTable component within it then renders the
  * ResultTable in a <table> element with a CSS class.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createQueries, createStore} from 'tinybase';
- * import {Provider} from 'tinybase/ui-svelte';
- * import {ResultTableInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {ResultTableInHtmlTable} from 'tinybase/ui-svelte-dom';
  *
- * const App = ({queries}) => (
- *   <Provider queries={queries}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
+ *   export let queries;
+ * </script>
+ *
+ * <Provider {queries}>
  *   <ResultTableInHtmlTable queryId="petColors" className="table" />
- * );
+ * </Provider>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const queries = createQueries(
  *   createStore().setTable('pets', {
@@ -1467,8 +1537,8 @@
  *     felix: {species: 'cat', color: 'black'},
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
- * const app = document.createElement('div');
- * createRoot(app).render(<App queries={queries} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1499,39 +1569,53 @@
  * `color` Cell. The header row at the top of the table and the Id column at
  * the start of each row is removed.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createQueries, createStore} from 'tinybase';
- * import {Provider, ResultCellView} from 'tinybase/ui-svelte';
- * import {ResultTableInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=FormattedResultCellView.svelte
+ * <script>
+ *   import {ResultCellView} from 'tinybase/ui-svelte';
  *
- * const App = ({queries}) => (
- *   <Provider queries={queries}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
+ *   export let queryId;
+ *   export let rowId;
+ *   export let cellId;
+ *   export let bold = false;
+ * </script>
+ *
+ * {#if bold}<b>{rowId}</b>{:else}{rowId}{/if}:<ResultCellView
+ *   {queryId}
+ *   {rowId}
+ *   {cellId}
+ * />
+ * ```
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {ResultTableInHtmlTable} from 'tinybase/ui-svelte-dom';
+ *   import FormattedResultCellView from './FormattedResultCellView.svelte';
+ *
+ *   export let queries;
+ *
+ *   const customCells = {
+ *     color: {
+ *       component: FormattedResultCellView,
+ *       getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
+ *     },
+ *   };
+ * </script>
+ *
+ * <Provider {queries}>
  *   <ResultTableInHtmlTable
  *     queryId="petColors"
- *     customCells={customCells}
+ *     {customCells}
  *     headerRow={false}
  *     idColumn={false}
  *   />
- * );
+ * </Provider>
+ * ```
  *
- * const FormattedResultCellView = ({queryId, rowId, cellId, bold}) => (
- *   <>
- *     {bold ? <b>{rowId}</b> : rowId}:
- *     <ResultCellView queryId={queryId} rowId={rowId} cellId={cellId} />
- *   </>
- * );
- * const customCells = {
- *   color: {
- *     component: FormattedResultCellView,
- *     getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
- *   },
- * };
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const queries = createQueries(
  *   createStore().setTable('pets', {
@@ -1539,8 +1623,8 @@
  *     felix: {species: 'cat', color: 'black'},
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
- * const app = document.createElement('div');
- * createRoot(app).render(<App queries={queries} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1609,25 +1693,27 @@
  * is provided. The ResultSortedTableInHtmlTable component within it then
  * renders the ResultTable in a <table> element with a CSS class.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createQueries, createStore} from 'tinybase';
- * import {Provider} from 'tinybase/ui-svelte';
- * import {ResultSortedTableInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {ResultSortedTableInHtmlTable} from 'tinybase/ui-svelte-dom';
  *
- * const App = ({queries}) => (
- *   <Provider queries={queries}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
+ *   export let queries;
+ * </script>
+ *
+ * <Provider {queries}>
  *   <ResultSortedTableInHtmlTable
  *     queryId="petColors"
  *     cellId="color"
  *     className="table"
  *   />
- * );
+ * </Provider>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const queries = createQueries(
  *   createStore().setTable('pets', {
@@ -1635,8 +1721,8 @@
  *     felix: {species: 'cat', color: 'black'},
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
- * const app = document.createElement('div');
- * createRoot(app).render(<App queries={queries} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1667,41 +1753,54 @@
  * for the `color` Cell. The header row at the top of the table and the Id
  * column at the start of each row is removed.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createQueries, createStore} from 'tinybase';
- * import {Provider, ResultCellView} from 'tinybase/ui-svelte';
- * import {ResultSortedTableInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=FormattedResultCellView.svelte
+ * <script>
+ *   import {ResultCellView} from 'tinybase/ui-svelte';
  *
- * const App = ({queries}) => (
- *   <Provider queries={queries}>
- *     <Pane />
- *   </Provider>
- * );
+ *   export let queryId;
+ *   export let rowId;
+ *   export let cellId;
+ *   export let bold = false;
+ * </script>
  *
- * const Pane = () => (
+ * {#if bold}<b>{rowId}</b>{:else}{rowId}{/if}:<ResultCellView
+ *   {queryId}
+ *   {rowId}
+ *   {cellId}
+ * />
+ * ```
+ *
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {ResultSortedTableInHtmlTable} from 'tinybase/ui-svelte-dom';
+ *   import FormattedResultCellView from './FormattedResultCellView.svelte';
+ *
+ *   export let queries;
+ *
+ *   const customCells = {
+ *     color: {
+ *       component: FormattedResultCellView,
+ *       getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
+ *     },
+ *   };
+ * </script>
+ *
+ * <Provider {queries}>
  *   <ResultSortedTableInHtmlTable
  *     queryId="petColors"
  *     cellId="color"
- *     customCells={customCells}
+ *     {customCells}
  *     headerRow={false}
  *     idColumn={false}
  *   />
- * );
+ * </Provider>
+ * ```
  *
- * const FormattedResultCellView = ({queryId, rowId, cellId, bold}) => (
- *   <>
- *     {bold ? <b>{rowId}</b> : rowId}:
- *     <ResultCellView queryId={queryId} rowId={rowId} cellId={cellId} />
- *   </>
- * );
- * const customCells = {
- *   color: {
- *     component: FormattedResultCellView,
- *     getComponentProps: (rowId) => ({bold: rowId == 'fido'}),
- *   },
- * };
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createQueries, createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const queries = createQueries(
  *   createStore().setTable('pets', {
@@ -1709,8 +1808,8 @@
  *     felix: {species: 'cat', color: 'black'},
  *   }),
  * ).setQueryDefinition('petColors', 'pets', ({select}) => select('color'));
- * const app = document.createElement('div');
- * createRoot(app).render(<App queries={queries} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {queries}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1763,25 +1862,27 @@
  * provided. The EditableCellView component within it then renders an editable
  * Cell.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {Provider} from 'tinybase/ui-svelte';
- * import {EditableCellView} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {EditableCellView} from 'tinybase/ui-svelte-dom';
  *
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
+ *   export let store;
+ * </script>
+ *
+ * <Provider {store}>
  *   <EditableCellView tableId="pets" rowId="fido" cellId="color" />
- * );
+ * </Provider>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const store = createStore().setCell('pets', 'fido', 'color', 'brown');
- * const app = document.createElement('div');
- * createRoot(app).render(<App store={store} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1828,23 +1929,27 @@
  * provided. The EditableValueView component within it then renders an editable
  * Value.
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {Provider} from 'tinybase/ui-svelte';
- * import {EditableValueView} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {EditableValueView} from 'tinybase/ui-svelte-dom';
  *
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => <EditableValueView valueId="employees" />;
+ *   export let store;
+ * </script>
+ *
+ * <Provider {store}>
+ *   <EditableValueView valueId="employees" />
+ * </Provider>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const store = createStore().setValue('employees', 3);
- * const app = document.createElement('div');
- * createRoot(app).render(<App store={store} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.innerHTML);
  * // ->
  * `
@@ -1878,26 +1983,28 @@
  * provided. The SortedTableInHtmlTable component within it then renders the
  * Table in a <table> element with a SortedTablePaginator (the default).
  *
- * ```jsx
- * import React from 'react';
- * import {createRoot} from 'react-dom/client';
- * import {createStore} from 'tinybase';
- * import {Provider} from 'tinybase/ui-svelte';
- * import {SortedTableInHtmlTable} from 'tinybase/ui-svelte-dom';
+ * ```svelte file=App.svelte
+ * <script>
+ *   import {Provider} from 'tinybase/ui-svelte';
+ *   import {SortedTableInHtmlTable} from 'tinybase/ui-svelte-dom';
  *
- * const App = ({store}) => (
- *   <Provider store={store}>
- *     <Pane />
- *   </Provider>
- * );
- * const Pane = () => (
+ *   export let store;
+ * </script>
+ *
+ * <Provider {store}>
  *   <SortedTableInHtmlTable
  *     tableId="pets"
  *     cellId="species"
  *     limit={2}
  *     paginator={true}
  *   />
- * );
+ * </Provider>
+ * ```
+ *
+ * ```ts
+ * import {flushSync, mount} from 'svelte';
+ * import {createStore} from 'tinybase';
+ * import App from './App.svelte';
  *
  * const store = createStore().setTables({
  *   pets: {
@@ -1908,8 +2015,8 @@
  *     polly: {species: 'parrot'},
  *   },
  * });
- * const app = document.createElement('div');
- * createRoot(app).render(<App store={store} />); // !act
+ * const app = document.body.appendChild(document.createElement('div'));
+ * flushSync(() => mount(App, {target: app, props: {store}}));
  * console.log(app.innerHTML);
  * // ->
  * `
