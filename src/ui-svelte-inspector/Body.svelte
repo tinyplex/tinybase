@@ -1,5 +1,13 @@
 <script lang="ts">
   import {onDestroy} from 'svelte';
+  import {
+    NO_PROVIDED_OBJECTS_MESSAGE,
+  } from '../common/inspector/common.ts';
+  import {
+    cancelInspectorIdleCallback,
+    requestInspectorIdleCallback,
+  } from '../common/inspector/idle.ts';
+  import type {StoreProp} from '../common/inspector/types.ts';
   import {arrayIsEmpty} from '../common/array.ts';
   import {isUndefined, mathFloor} from '../common/other.ts';
   import {
@@ -15,7 +23,6 @@
     getStoreIds,
     getValues,
   } from '../ui-svelte/functions.svelte.ts';
-  import type {StoreProp} from './types.ts';
 
   let {s}: StoreProp = $props();
 
@@ -30,21 +37,6 @@
   const queries = getQueries();
   const queriesIds = getQueriesIds();
   const values = getValues(() => s);
-
-  const requestIdle =
-    globalThis.requestIdleCallback ??
-    (((callback: IdleRequestCallback) =>
-      setTimeout(
-        () =>
-          callback({
-            didTimeout: false,
-            timeRemaining: () => 0,
-          } as IdleDeadline),
-        0,
-      )) as unknown as typeof requestIdleCallback);
-  const cancelIdle =
-    globalThis.cancelIdleCallback ??
-    ((id: number) => clearTimeout(id));
 
   let article = $state<HTMLElement | undefined>(undefined);
   let scrolled = $state(false);
@@ -71,12 +63,12 @@
     }
   });
 
-  onDestroy(() => cancelIdle(idleCallback));
+  onDestroy(() => cancelInspectorIdleCallback(idleCallback));
 
   const handleScroll = (event: Event) => {
     const {scrollLeft, scrollTop} = event.currentTarget as HTMLElement;
-    cancelIdle(idleCallback);
-    idleCallback = requestIdle(() => {
+    cancelInspectorIdleCallback(idleCallback);
+    idleCallback = requestInspectorIdleCallback(() => {
       scrolled = true;
       s.setPartialValues({scrollLeft, scrollTop});
     });
@@ -94,8 +86,7 @@
   isUndefined(queries) &&
   arrayIsEmpty(queriesIds.current)}
   <span class="warn">
-    There are no Stores or other objects to inspect. Make sure you placed the
-    Inspector inside a Provider component.
+    {NO_PROVIDED_OBJECTS_MESSAGE}
   </span>
 {:else}
   <article bind:this={article} onscroll={handleScroll}></article>

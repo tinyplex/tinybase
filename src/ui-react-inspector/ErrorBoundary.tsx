@@ -1,4 +1,5 @@
 import type {ErrorInfo, ReactNode} from 'react';
+import {INSPECTOR_ERROR_MESSAGE} from '../common/inspector/common.ts';
 import {PureComponent} from '../common/react.ts';
 
 interface Props {
@@ -26,9 +27,7 @@ export class ErrorBoundary extends PureComponent<Props, State> {
 
   render() {
     return this.state.e ? (
-      <span className="warn">
-        Inspector error: please see console for details.
-      </span>
+      <span className="warn">{INSPECTOR_ERROR_MESSAGE}</span>
     ) : (
       this.props.children
     );
