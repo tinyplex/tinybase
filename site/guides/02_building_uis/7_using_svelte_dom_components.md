@@ -49,5 +49,9 @@ functions internally:
 These demos intentionally mirror the React DOM set so it is easy to compare the
 framework-specific code side by side.
 
+If you also want a development overlay for inspecting and editing Stores,
+Indexes, Relationships, Queries, and other TinyBase objects, use the
+ui-svelte-inspector module and the <Inspector /> (Svelte) demo.
+
 This concludes the UI-focused guides. Next we move on to schemas and
 persistence in the Schemas guide.
