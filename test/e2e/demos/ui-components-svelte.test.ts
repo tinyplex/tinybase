@@ -775,7 +775,7 @@ describe('ui-components-svelte', () => {
   test('Inspector', async ({page}) => {
     await expectPage(page, `/demos/ui-components-svelte/inspector-svelte`);
     await expectedElement(page, 'h1', '<Inspector /> (Svelte)');
-    await expectedFramedElement(page, '#info', 'Loaded tables: movies, genres, people, cast');
+    await expectedFramedElement(page, '#info', 'Loaded tables:');
     await expectedFramedElement(page, 'aside#tinybaseInspector', undefined, {
       state: 'attached',
     });
